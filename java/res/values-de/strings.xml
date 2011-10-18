@@ -71,6 +71,7 @@
     <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pause"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Warten"</string>
+    <string name="spoken_use_headphones" msgid="896961781287283493">"Schließen Sie ein Headset an, um das Passwort gesprochen zu hören."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Aktueller Text lautet %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Kein Text eingegeben"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Tastencode %d"</string>

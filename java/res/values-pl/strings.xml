@@ -71,6 +71,7 @@
     <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pauza"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Czekaj"</string>
+    <string name="spoken_use_headphones" msgid="896961781287283493">"Podłącz zestaw słuchawkowy, aby usłyszeć znaki hasła wypowiadane na głos."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Aktualny tekst: %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Nie wprowadzono tekstu"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Kod klawisza: %d"</string>
@@ -147,5 +148,5 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"Angielska (Wielka Brytania)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Angielska (Stany Zjednoczone)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Tryb badania przydatności"</string>
-    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"Ustawienia czasu trwania wibracji"</string>
+    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"Ustawienia wibracji"</string>
 </resources>

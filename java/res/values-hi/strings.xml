@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="english_ime_name" msgid="7252517407088836577">"Android कीबोर्ड"</string>
+    <string name="english_ime_settings" msgid="6661589557206947774">"Android कीबोर्ड सेटिंग"</string>
+    <string name="english_ime_input_options" msgid="3909945612939668554">"इनपुट विकल्‍प"</string>
+    <string name="spell_checker_service_name" msgid="2003013122022285508">"Android correction"</string>
+    <string name="android_spell_checker_settings" msgid="5822324635435443689">"वर्तनी जांच सेटिंग"</string>
+    <string name="use_proximity_option_title" msgid="7469233942295924620">"निकटस्थ डेटा उपयोग करें"</string>
+    <string name="use_proximity_option_summary" msgid="2857708859847261945">"वर्तनी जांचने के लि‍ए कीबोर्ड जैसे नि‍कटस्‍थ एल्‍गोरि‍दम का उपयोग करें"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"कुंजी दबाने पर कंपन करता है"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"कुंजी दबाने पर आवाज"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"कुंजी दबाने पर पॉपअप दिखाएं"</string>
+    <string name="general_category" msgid="1859088467017573195">"सामान्य"</string>
+    <string name="correction_category" msgid="2236750915056607613">"पाठ सुधार"</string>
+    <string name="misc_category" msgid="6894192814868233453">"अन्य विकल्प"</string>
+    <string name="advanced_settings" msgid="362895144495591463">"उन्नत सेटिंग"</string>
+    <string name="advanced_settings_summary" msgid="5193513161106637254">"विशेषज्ञ उपयोगकर्ताओं के लिए विकल्‍प"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"कुंजी पॉपअप खारिज़ विलंब"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"कोई विलंब नहीं"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"डिफ़ॉल्ट"</string>
+    <string name="use_contacts_dict" msgid="4435317977804180815">"संपर्क नाम सुझाएं"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"सुझाव और सुधार के लिए संपर्क से नामों का उपयोग करें"</string>
+    <string name="enable_span_insert" msgid="7204653105667167620">"पुन: सुधार सक्षम करें"</string>
+    <string name="enable_span_insert_summary" msgid="2947317657871394467">"पुन: सुधार के लि‍ए सुझाव सेट करें"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"स्‍वत: अक्षर बड़े करना"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"एड-ऑन डिक्शनरी"</string>
+    <string name="main_dictionary" msgid="4798763781818361168">"मुख्‍य डिक्‍शनरी"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"सुधार सुझाव दिखाएं"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"लिखते समय सुझाए गए शब्‍द प्रदर्शित करें"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"हमेशा दिखाएं"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"र्पोट्रेट मोड पर प्रदर्शित करें"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"हमेशा छुपाएं"</string>
+    <string name="prefs_settings_key" msgid="4623341240804046498">"सेटिंग कुंजी प्रदर्शित करता है"</string>
+    <string name="auto_correction" msgid="4979925752001319458">"स्‍वत: सुधार"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Spacebar और विराम चिह्न गलत लिखे गए शब्‍दों को स्‍वचालित रूप से ठीक करते हैं"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"बंद"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"साधारण"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"तीव्र"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"बहुत तीव्र"</string>
+    <string name="bigram_suggestion" msgid="2636414079905220518">"बाइग्राम सुझाव"</string>
+    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"सुझाव को सुधारने के लिए पिछले शब्‍द का उपयोग करें"</string>
+    <string name="bigram_prediction" msgid="8914273444762259739">"बाइग्राम पूर्वानुमान"</string>
+    <string name="bigram_prediction_summary" msgid="1747261921174300098">"पूर्वानुमान के लिए पिछले शब्द का उपयोग करें"</string>
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: सहेजा गया"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"जाएं"</string>
+    <string name="label_next_key" msgid="362972844525672568">"अगला"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"पूर्ण"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"भेजें"</string>
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
+    <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
+    <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
+    <string name="label_pause_key" msgid="181098308428035340">"रोकें"</string>
+    <string name="label_wait_key" msgid="6402152600878093134">"प्रतीक्षा करें"</string>
+    <string name="spoken_use_headphones" msgid="896961781287283493">"ज़ोर से बोली गई पासवर्ड कुंजियां सुनने के लिए हेडसेट प्‍लग इन करें."</string>
+    <string name="spoken_current_text_is" msgid="2485723011272583845">"वर्तमान पाठ %s है"</string>
+    <string name="spoken_no_text_entered" msgid="7479685225597344496">"कोई पाठ दर्ज नहीं किया गया"</string>
+    <string name="spoken_description_unknown" msgid="3197434010402179157">"कुंजी कोड %d"</string>
+    <string name="spoken_description_shift" msgid="244197883292549308">"शिफ़्ट"</string>
+    <string name="spoken_description_shift_shifted" msgid="954941524766465022">"शिफ़्ट सक्षम किया गया है"</string>
+    <string name="spoken_description_caps_lock" msgid="5660626444912131764">"कैप्स लॉक सक्षम किया गया है"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"डिलीट"</string>
+    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"प्रतीक"</string>
+    <string name="spoken_description_to_alpha" msgid="23129338819771807">"अक्षर"</string>
+    <string name="spoken_description_to_numeric" msgid="591752092685161732">"संख्‍याएं"</string>
+    <string name="spoken_description_settings" msgid="4627462689603838099">"सेटिंग"</string>
+    <string name="spoken_description_tab" msgid="2667716002663482248">"टैब"</string>
+    <string name="spoken_description_space" msgid="2582521050049860859">"स्पेस"</string>
+    <string name="spoken_description_mic" msgid="615536748882611950">"ध्‍वनि इनपुट"</string>
+    <string name="spoken_description_smiley" msgid="2256309826200113918">"मुस्कुराता चेहरा"</string>
+    <string name="spoken_description_return" msgid="8178083177238315647">"रिटर्न"</string>
+    <string name="spoken_description_comma" msgid="4970844442999724586">"अल्पविराम"</string>
+    <string name="spoken_description_period" msgid="5286614628077903945">"पूर्णविराम"</string>
+    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"बायां कोष्ठक"</string>
+    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"दायां कोष्ठक"</string>
+    <string name="spoken_description_colon" msgid="4312420908484277077">"अपूर्ण विराम"</string>
+    <string name="spoken_description_semicolon" msgid="37737920987155179">"अर्द्धविराम"</string>
+    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"विस्मयादिबोधक चिह्न"</string>
+    <string name="spoken_description_question_mark" msgid="7074097784255379666">"प्रश्नचिह्न"</string>
+    <string name="spoken_description_double_quote" msgid="5485320575389905967">"दोहरा उद्धरण"</string>
+    <string name="spoken_description_single_quote" msgid="4451320362665463938">"एकल उद्धरण"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"बिंदु"</string>
+    <string name="spoken_description_square_root" msgid="190595160284757811">"वर्गमूल"</string>
+    <string name="spoken_description_pi" msgid="4554418247799952239">"पाइ"</string>
+    <string name="spoken_description_delta" msgid="3607948313655721579">"डेल्टा"</string>
+    <string name="spoken_description_trademark" msgid="475877774077871369">"ट्रेडमार्क"</string>
+    <string name="spoken_description_care_of" msgid="7492800237237796530">"संरक्षक"</string>
+    <string name="spoken_description_star" msgid="1009742725387231977">"तारा"</string>
+    <string name="spoken_description_pound" msgid="5530577649206922631">"पाउंड"</string>
+    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"पदलोप चिह्न"</string>
+    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"निम्न दोहरा उद्धरण"</string>
+    <string name="voice_warning_title" msgid="4419354150908395008">"ध्‍वनि इनपुट"</string>
+    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"ध्‍वनि इनपुट आपकी भाषा के लिए अभी समर्थित नहीं है, पर अंग्रेज़ी में कार्य करता है."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"ध्‍वनि इनपुट Google की वाक् पहचान का उपयोग करता है. "<a href="http://m.google.com/privacy">"मोबाइल गोपनीयता नीति"</a>" लागू होती है."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"ध्‍वनि इनपुट बंद करने के लिए, इनपुट पद्धति सेटिंग पर जाएं."</string>
+    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"ध्‍वनि इनपुट का उपयोग करने के लिए, माइक्रोफ़ोन बटन दबाएं."</string>
+    <string name="voice_listening" msgid="467518160751321844">"अब बोलें"</string>
+    <string name="voice_working" msgid="6666937792815731889">"कार्य कर रहा है"</string>
+    <string name="voice_initializing" msgid="661962047129906646"></string>
+    <string name="voice_error" msgid="5140896300312186162">"त्रुटि. कृपया पुन: प्रयास करें."</string>
+    <string name="voice_network_error" msgid="6649556447401862563">"कनेक्‍ट नहीं कर सका"</string>
+    <string name="voice_too_much_speech" msgid="5746973620134227376">"त्रुटि, बहुत अधिक बातचीत."</string>
+    <string name="voice_audio_error" msgid="5072707727016414454">"ऑडियो समस्या"</string>
+    <string name="voice_server_error" msgid="7807129913977261644">"सर्वर त्रुटि"</string>
+    <string name="voice_speech_timeout" msgid="8461817525075498795">"कोई बातचीत नहीं सुनाई दी"</string>
+    <string name="voice_no_match" msgid="4285117547030179174">"कोई मिलान नहीं मिले"</string>
+    <string name="voice_not_installed" msgid="5552450909753842415">"ध्‍वनि खोज इंस्टॉल नहीं है"</string>
+    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"संकेत:"</b>" बोलने के लिए कीबोर्ड पर स्‍वाइप करें"</string>
+    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"संकेत:"</b>" अगली बार, विरामचिन्‍ह बोलने का प्रयास करें जैसे \"पूर्णविराम\", \"अल्‍पविराम\", या \"प्रश्‍नचिह्न\"."</string>
+    <string name="cancel" msgid="6830980399865683324">"रद्द करें"</string>
+    <string name="ok" msgid="7898366843681727667">"ठीक"</string>
+    <string name="voice_input" msgid="3583258583521397548">"ध्‍वनि‍ इनपुट कुंजी"</string>
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"मुख्‍य कीबोर्ड पर"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"प्रतीक कीबोर्ड पर"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"बंद"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"मुख्‍य कीबोर्ड पर माइक"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"प्रतीक कीबोर्ड पर माइक"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"ध्‍वनि इनपुट अक्षम है"</string>
+    <string name="selectInputMethod" msgid="315076553378705821">"इनपुट विधि का चयन करें"</string>
+    <string name="configure_input_method" msgid="373356270290742459">"इनपुट पद्धति कॉन्‍फ़िगर करें"</string>
+    <string name="language_selection_title" msgid="1651299598555326750">"इनपुट भाषा"</string>
+    <string name="select_language" msgid="3693815588777926848">"इनपुट भाषाएं"</string>
+    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← सहेजने के लिए फिर से स्‍पर्श करें"</string>
+    <string name="has_dictionary" msgid="6071847973466625007">"शब्‍दकोश उपलब्‍ध है"</string>
+    <string name="prefs_enable_log" msgid="6620424505072963557">"उपयोगकर्ता फ़ीडबैक सक्षम करें"</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"उपयोग के आंकड़े और क्रैश रिपोर्ट Google को स्वचालित रूप से भेज कर इस इनपुट पद्धति संपादक को बेहतर बनाने में सहायता करें."</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"कीबोर्ड थीम"</string>
+    <string name="subtype_de_qwerty" msgid="3358900499589259491">"जर्मन QWERTY"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"अंग्रेज़ी (यूके)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"अंग्रेज़ी (यूएस)"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"उपयोगिता अध्ययन मोड"</string>
+    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"कंपन अवधि सेटिंग"</string>
+</resources>
