@@ -38,7 +38,6 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.Utils;
 
-import java.lang.ref.SoftReference;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
@@ -329,10 +328,12 @@ public class LatinKeyboard extends Keyboard {
                 Math.max(0, Math.min(y, mOccupiedHeight - 1)));
     }
 
+    private static final int[] ATTR_TEXT_SIZE = { android.R.attr.textSize };
+
     public static int getTextSizeFromTheme(Theme theme, int style, int defValue) {
-        TypedArray array = theme.obtainStyledAttributes(
-                style, new int[] { android.R.attr.textSize });
-        int textSize = array.getDimensionPixelSize(array.getResourceId(0, 0), defValue);
+        final TypedArray a = theme.obtainStyledAttributes(style, ATTR_TEXT_SIZE);
+        final int textSize = a.getDimensionPixelSize(a.getResourceId(0, 0), defValue);
+        a.recycle();
         return textSize;
     }
 }
