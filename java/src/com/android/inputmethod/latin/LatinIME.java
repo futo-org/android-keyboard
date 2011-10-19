@@ -765,14 +765,24 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (attribute == null)
             return;
         final int inputType = attribute.inputType;
+        if (inputType == InputType.TYPE_NULL) {
+            // TODO: We should honor TYPE_NULL specification.
+            Log.i(TAG, "InputType.TYPE_NULL is specified");
+        }
+        final int inputClass = inputType & InputType.TYPE_MASK_CLASS;
         final int variation = inputType & InputType.TYPE_MASK_VARIATION;
+        if (inputClass == 0) {
+            Log.w(TAG, String.format("Unexpected input class: inputType=0x%08x imeOptions=0x%08x",
+                    inputType, attribute.imeOptions));
+        }
+
         mShouldInsertMagicSpace = false;
         mInputTypeNoAutoCorrect = false;
         mIsSettingsSuggestionStripOn = false;
         mApplicationSpecifiedCompletionOn = false;
         mApplicationSpecifiedCompletions = null;
 
-        if ((inputType & InputType.TYPE_MASK_CLASS) == InputType.TYPE_CLASS_TEXT) {
+        if (inputClass == InputType.TYPE_CLASS_TEXT) {
             mIsSettingsSuggestionStripOn = true;
             // Make sure that passwords are not displayed in {@link SuggestionsView}.
             if (InputTypeCompatUtils.isPasswordInputType(inputType)
