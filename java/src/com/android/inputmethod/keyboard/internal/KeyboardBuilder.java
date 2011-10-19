@@ -323,7 +323,10 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 if (TAG_KEYBOARD.equals(tag)) {
                     final TypedArray keyboardAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                             R.styleable.Keyboard);
-                    return keyboardAttr.getString(R.styleable.Keyboard_keyboardLocale);
+                    final String locale = keyboardAttr.getString(
+                            R.styleable.Keyboard_keyboardLocale);
+                    keyboardAttr.recycle();
+                    return locale;
                 } else {
                     throw new IllegalStartTag(parser, TAG_KEYBOARD);
                 }
