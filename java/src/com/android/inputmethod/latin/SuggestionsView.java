@@ -324,6 +324,13 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             return Color.argb(newAlpha, Color.red(color), Color.green(color), Color.blue(color));
         }
 
+        private static void addDivider(final ViewGroup stripView, final View divider) {
+            stripView.addView(divider);
+            final LinearLayout.LayoutParams params =
+                    (LinearLayout.LayoutParams)divider.getLayoutParams();
+            params.gravity = Gravity.CENTER;
+        }
+
         public void layout(SuggestedWords suggestions, ViewGroup stripView, ViewGroup placer,
                 int stripWidth) {
             if (suggestions.isPunctuationSuggestions()) {
@@ -341,7 +348,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
                 if (index != 0) {
                     final View divider = mDividers.get(pos);
                     // Add divider if this isn't the left most suggestion in suggestions strip.
-                    stripView.addView(divider);
+                    addDivider(stripView, divider);
                     x += divider.getMeasuredWidth();
                 }
 
@@ -421,7 +428,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             for (int index = 0; index < countInStrip; index++) {
                 if (index != 0) {
                     // Add divider if this isn't the left most suggestion in suggestions strip.
-                    stripView.addView(mDividers.get(index));
+                    addDivider(stripView, mDividers.get(index));
                 }
 
                 final TextView word = mWords.get(index);
