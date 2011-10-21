@@ -48,7 +48,7 @@
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"수정 제안 표시"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"글자를 입력하는 동안 추천 단어 표시"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"항상 표시"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"세로 모드로 표시"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"세로 화면일 때만 표시"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"항상 숨기기"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"설정 키 표시"</string>
     <string name="auto_correction" msgid="4979925752001319458">"자동 수정"</string>
