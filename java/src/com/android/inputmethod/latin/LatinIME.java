@@ -181,7 +181,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     // TODO: Create an inner class to group options and pseudo-options to improve readability.
     // These variables are initialized according to the {@link EditorInfo#inputType}.
-    private boolean mShouldInsertMagicSpace;
+    private boolean mInsertSpaceOnPickSuggestionManually;
     private boolean mInputTypeNoAutoCorrect;
     private boolean mIsSettingsSuggestionStripOn;
     private boolean mApplicationSpecifiedCompletionOn;
@@ -775,7 +775,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     inputType, attribute.imeOptions));
         }
 
-        mShouldInsertMagicSpace = false;
+        mInsertSpaceOnPickSuggestionManually = false;
         mInputTypeNoAutoCorrect = false;
         mIsSettingsSuggestionStripOn = false;
         mApplicationSpecifiedCompletionOn = false;
@@ -790,9 +790,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             if (InputTypeCompatUtils.isEmailVariation(variation)
                     || variation == InputType.TYPE_TEXT_VARIATION_PERSON_NAME) {
-                mShouldInsertMagicSpace = false;
+                // The point in turning this off is that we don't want to insert a space after
+                // a name when filling a form: we can't delete trailing spaces when changing fields
+                mInsertSpaceOnPickSuggestionManually = false;
             } else {
-                mShouldInsertMagicSpace = true;
+                mInsertSpaceOnPickSuggestionManually = true;
             }
             if (InputTypeCompatUtils.isEmailVariation(variation)) {
                 mIsSettingsSuggestionStripOn = false;
@@ -1849,7 +1851,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 suggestion.toString(), index, suggestions.mWords);
         TextEntryState.acceptedSuggestion(mComposingStringBuilder.toString(), suggestion);
         // Follow it with a space
-        if (mShouldInsertMagicSpace && !recorrecting) {
+        if (mInsertSpaceOnPickSuggestionManually && !recorrecting) {
             sendMagicSpace();
         }
 
@@ -2326,7 +2328,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         p.println("  mCorrectionMode=" + mCorrectionMode);
         p.println("  mHasUncommittedTypedChars=" + mHasUncommittedTypedChars);
         p.println("  mAutoCorrectEnabled=" + mSettingsValues.mAutoCorrectEnabled);
-        p.println("  mShouldInsertMagicSpace=" + mShouldInsertMagicSpace);
+        p.println("  mInsertSpaceOnPickSuggestionManually=" + mInsertSpaceOnPickSuggestionManually);
         p.println("  mApplicationSpecifiedCompletionOn=" + mApplicationSpecifiedCompletionOn);
         p.println("  TextEntryState.state=" + TextEntryState.getState());
         p.println("  mSoundOn=" + mSettingsValues.mSoundOn);
