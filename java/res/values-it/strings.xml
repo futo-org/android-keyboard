@@ -114,7 +114,7 @@
     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Per disattivare l\'input vocale, vai alle impostazioni del metodo di input."</string>
     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Per utilizzare l\'input vocale, premi il pulsante del microfono."</string>
     <string name="voice_listening" msgid="467518160751321844">"Parla ora"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Elaborazione in corso"</string>
+    <string name="voice_working" msgid="6666937792815731889">"Elaborazione..."</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
     <string name="voice_error" msgid="5140896300312186162">"Errore. Riprova più tardi."</string>
     <string name="voice_network_error" msgid="6649556447401862563">"Impossibile connettersi."</string>
