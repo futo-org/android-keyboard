@@ -35,6 +35,7 @@ import com.android.inputmethod.latin.DictionaryFactory;
 import com.android.inputmethod.latin.Flag;
 import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.SynchronouslyLoadedContactsDictionary;
 import com.android.inputmethod.latin.SynchronouslyLoadedUserDictionary;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.WhitelistDictionary;
@@ -82,6 +83,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
             Collections.synchronizedMap(new TreeMap<String, Dictionary>());
     private Map<String, Dictionary> mWhitelistDictionaries =
             Collections.synchronizedMap(new TreeMap<String, Dictionary>());
+    private SynchronouslyLoadedContactsDictionary mContactsDictionary;
 
     // The threshold for a candidate to be offered as a suggestion.
     private double mSuggestionThreshold;
@@ -267,6 +269,14 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         for (Dictionary dict : oldWhitelistDictionaries.values()) {
             dict.close();
         }
+        if (null != mContactsDictionary) {
+            // The synchronously loaded contacts dictionary should have been in one
+            // or several pools, but it is shielded against multiple closing and it's
+            // safe to call it several times.
+            final SynchronouslyLoadedContactsDictionary dictToClose = mContactsDictionary;
+            mContactsDictionary = null;
+            dictToClose.close();
+        }
         return false;
     }
 
@@ -300,6 +310,11 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
             mWhitelistDictionaries.put(localeStr, whitelistDictionary);
         }
         dictionaryCollection.addDictionary(whitelistDictionary);
+        if (null == mContactsDictionary) {
+            mContactsDictionary = new SynchronouslyLoadedContactsDictionary(this);
+        }
+        // TODO: add a setting to use or not contacts when checking spelling
+        dictionaryCollection.addDictionary(mContactsDictionary);
         return new DictAndProximity(dictionaryCollection, proximityInfo);
     }
 
