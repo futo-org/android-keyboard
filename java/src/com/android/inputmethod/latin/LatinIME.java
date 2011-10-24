@@ -717,6 +717,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         voiceIme.resetVoiceStates(InputTypeCompatUtils.isPasswordInputType(inputType)
                 || InputTypeCompatUtils.isVisiblePasswordInputType(inputType));
 
+        // The EditorInfo might have a flag that affects fullscreen mode.
+        // Note: This call should be done by InputMethodService?
+        updateFullscreenMode();
         initializeInputAttributes(attribute);
 
         inputView.closing();
@@ -744,8 +747,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         if (mSuggestionsView != null)
             mSuggestionsView.clear();
-        // The EditorInfo might have a flag that affects fullscreen mode.
-        updateFullscreenMode();
         setSuggestionStripShownInternal(
                 isSuggestionsStripVisible(), /* needsInputViewShown */ false);
         // Delay updating suggestions because keyboard input view may not be shown at this point.
