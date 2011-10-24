@@ -40,8 +40,8 @@
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"기본값"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"주소록 이름 활용"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"추천 및 수정에 주소록의 이름 사용"</string>
-    <string name="enable_span_insert" msgid="7204653105667167620">"다시 수정 가능하도록 설정"</string>
-    <string name="enable_span_insert_summary" msgid="2947317657871394467">"다시 수정하기 위한 추천사항 설정"</string>
+    <string name="enable_span_insert" msgid="7204653105667167620">"재수정 가능 설정"</string>
+    <string name="enable_span_insert_summary" msgid="2947317657871394467">"재수정 추천어 사전 활성화"</string>
     <string name="auto_cap" msgid="1719746674854628252">"자동 대문자화"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"사전 추가"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"기본 사전"</string>

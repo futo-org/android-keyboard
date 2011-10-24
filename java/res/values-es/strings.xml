@@ -29,7 +29,7 @@
     <string name="use_proximity_option_summary" msgid="2857708859847261945">"Usar algoritmo de proximidad de teclado para corregir la ortografía"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar al pulsar tecla"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sonido al pulsar tecla"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Popup al pulsar tecla"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up al pulsar tecla"</string>
     <string name="general_category" msgid="1859088467017573195">"General"</string>
     <string name="correction_category" msgid="2236750915056607613">"Corrección ortográfica"</string>
     <string name="misc_category" msgid="6894192814868233453">"Otras opciones"</string>
@@ -52,11 +52,11 @@
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Ocultar siempre"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Mostrar tecla de ajustes"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Autocorrección"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"Espacio y punt para corregir errores"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Pulsa la tecla de espacio o punto para corregir errores"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Desactivada"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Parcial"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Total"</string>
-    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Muy agresivo"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Muy agresiva"</string>
     <string name="bigram_suggestion" msgid="2636414079905220518">"Sugerencias de bigramas"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Usar palabra anterior para mejorar sugerencias"</string>
     <string name="bigram_prediction" msgid="8914273444762259739">"Predicción de bigramas"</string>
@@ -132,15 +132,15 @@
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"En teclado principal"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"En teclado de símbolos"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Desactivada"</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Micro en teclado principal"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Micrófono en teclado principal"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Micro en teclado de símbolos"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Entrada de voz inhabilitada"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Seleccionar método de introducción de texto"</string>
+    <string name="selectInputMethod" msgid="315076553378705821">"Selecciona un método de introducción de texto"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de introducción"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas"</string>
     <string name="select_language" msgid="3693815588777926848">"Idiomas de entrada"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Volver a tocar para guardar"</string>
-    <string name="has_dictionary" msgid="6071847973466625007">"Hay un diccionario disponible."</string>
+    <string name="has_dictionary" msgid="6071847973466625007">"Hay un diccionario disponible"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Habilitar comentarios de usuarios"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Ayuda a mejorar este editor de método de introducción de texto enviando estadísticas de uso e informes de error a Google."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema de teclado"</string>
