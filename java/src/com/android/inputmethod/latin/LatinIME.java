@@ -1630,7 +1630,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     public boolean isSuggestionsStripVisible() {
         if (mSuggestionsView == null)
             return false;
-        if (mSuggestionsView.isShowingAddToDictionaryHint() || TextEntryState.isRecorrecting())
+        if (mSuggestionsView.isShowingAddToDictionaryHint())
             return true;
         if (!isShowingSuggestionsStrip())
             return false;
@@ -1735,7 +1735,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         // Don't auto-correct words with multiple capital letter
         autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
-        autoCorrectionAvailable &= !TextEntryState.isRecorrecting();
 
         // Basically, we update the suggestion strip only when suggestion count > 1.  However,
         // there is an exception: We update the suggestion strip whenever typed word's length
@@ -1808,7 +1807,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mVoiceProxy.flushAndLogAllTextModificationCounters(index, suggestion,
                 mSettingsValues.mWordSeparators);
 
-        final boolean recorrecting = TextEntryState.isRecorrecting();
         final InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
             ic.beginBatchEdit();
@@ -1882,7 +1880,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 suggestion.toString(), index, suggestions.mWords);
         TextEntryState.acceptedSuggestion(mComposingStringBuilder.toString(), suggestion);
         // Follow it with a space
-        if (mInsertSpaceOnPickSuggestionManually && !recorrecting) {
+        if (mInsertSpaceOnPickSuggestionManually) {
             sendMagicSpace();
         }
 
@@ -1902,13 +1900,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                         || !AutoCorrection.isValidWord(
                                 mSuggest.getUnigramDictionaries(), suggestion, true));
 
-        if (!recorrecting) {
-            // Fool the state watcher so that a subsequent backspace will not do a revert, unless
-            // we just did a correction, in which case we need to stay in
-            // TextEntryState.State.PICKED_SUGGESTION state.
-            TextEntryState.typedCharacter((char) Keyboard.CODE_SPACE, true,
-                    WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
-        }
+        // Fool the state watcher so that a subsequent backspace will not do a revert, unless
+        // we just did a correction, in which case we need to stay in
+        // TextEntryState.State.PICKED_SUGGESTION state.
+        TextEntryState.typedCharacter((char) Keyboard.CODE_SPACE, true,
+                WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
         if (!showingAddToDictionaryHint) {
             // If we're not showing the "Touch again to save", then show corrections again.
             // In case the cursor position doesn't change, make sure we show the suggestions again.
