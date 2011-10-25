@@ -157,9 +157,21 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         SUGGESTION_VISIBILILTY_HIDE_VALUE
     };
 
-    private static final int SPACE_STRENGTH_NORMAL = 0;
-    private static final int SPACE_STRENGTH_MAGIC = 1;
-    private static final int SPACE_STRENGTH_STRONG = 2;
+    // Magic space: a space that should disappear on space/apostrophe insertion, move after the
+    // punctuation on punctuation insertion, and become a real space on alpha char insertion.
+    // Weak space: a space that be swapped only by suggestion strip punctuation.
+    // Double space: the state where the user pressed space twice quickly, which LatinIME
+    // resolved as period-space. Undoing this converts the period to a space.
+    // Swap punctuation: the state where a (weak or magic) space and a punctuation from the
+    // suggestion strip have just been swapped. Undoing this swaps them back.
+    private static final int SPACE_STATE_NONE = 0;
+    private static final int SPACE_STATE_DOUBLE = 1;
+    private static final int SPACE_STATE_SWAP_PUNCTUATION = 2;
+    private static final int SPACE_STATE_MAGIC = 3;
+    private static final int SPACE_STATE_WEAK = 4;
+
+    // Current space state of the input method. This can be any of the above constants.
+    private int mSpaceState;
 
     private Settings.Values mSettingsValues;
 
@@ -194,12 +206,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private WordComposer mWordComposer = new WordComposer();
     private CharSequence mBestWord;
     private boolean mHasUncommittedTypedChars;
-    // Magic space: a space that should disappear on space/apostrophe insertion, move after the
-    // punctuation on punctuation insertion, and become a real space on alpha char insertion.
-    private int mLastSpaceStrength; // This indicates whether the last space is normal/magic/strong.
-    // This indicates whether the last keypress resulted in processing of double space replacement
-    // with period-space.
-    private boolean mJustReplacedDoubleSpace;
 
     private int mCorrectionMode;
     private int mCommittedLength;
@@ -731,8 +737,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mComposingStringBuilder.setLength(0);
         mHasUncommittedTypedChars = false;
         mDeleteCount = 0;
-        mLastSpaceStrength = SPACE_STRENGTH_NORMAL;
-        mJustReplacedDoubleSpace = false;
+        mSpaceState = SPACE_STATE_NONE;
 
         loadSettings();
         updateCorrectionMode();
@@ -893,10 +898,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 || newSelEnd != candidatesEnd) && mLastSelectionStart != newSelStart;
         final boolean candidatesCleared = candidatesStart == -1 && candidatesEnd == -1;
         if (!mExpectingUpdateSelection) {
-            if (isShowingPunctuationList()) {
-                // Test for the punctuation list because there is a race condition that
-                // may end up in coming here on a normal key press
-                mLastSpaceStrength = SPACE_STRENGTH_STRONG;
+            if (SPACE_STATE_WEAK == mSpaceState) {
+                // Test for no WEAK_SPACE action because there is a race condition that may end up
+                // in coming here on a normal key press. We set this to NONE because after
+                // a cursor move, we don't want the suggestion strip to swap the space with the
+                // newly inserted punctuation.
+                mSpaceState = SPACE_STATE_NONE;
             }
             if (((mComposingStringBuilder.length() > 0 && mHasUncommittedTypedChars)
                     || mVoiceProxy.isVoiceInputHighlighted())
@@ -915,7 +922,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 TextEntryState.reset();
                 updateSuggestions();
             }
-            mJustReplacedDoubleSpace = false;
         }
         mExpectingUpdateSelection = false;
         mHandler.postUpdateShiftKeyState();
@@ -1153,10 +1159,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
-    private void maybeDoubleSpace() {
-        if (mCorrectionMode == Suggest.CORRECTION_NONE) return;
-        final InputConnection ic = getCurrentInputConnection();
-        if (ic == null) return;
+    private boolean maybeDoubleSpaceWhileInBatchEdit(final InputConnection ic) {
+        if (mCorrectionMode == Suggest.CORRECTION_NONE) return false;
+        if (ic == null) return false;
         final CharSequence lastThree = ic.getTextBeforeCursor(3, 0);
         if (lastThree != null && lastThree.length() == 3
                 && Utils.canBeFollowedByPeriod(lastThree.charAt(0))
@@ -1164,15 +1169,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 && lastThree.charAt(2) == Keyboard.CODE_SPACE
                 && mHandler.isAcceptingDoubleSpaces()) {
             mHandler.cancelDoubleSpacesTimer();
-            ic.beginBatchEdit();
             ic.deleteSurroundingText(2, 0);
             ic.commitText(". ", 1);
-            ic.endBatchEdit();
             mKeyboardSwitcher.updateShiftState();
-            mJustReplacedDoubleSpace = true;
-        } else {
-            mHandler.startDoubleSpacesTimer();
+            return true;
         }
+        return false;
     }
 
     // "ic" must not be null
@@ -1246,12 +1248,26 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return mOptionsDialog != null && mOptionsDialog.isShowing();
     }
 
-    private void onCodeInputWithSpaceStrength(final int primaryCode, final int[] keyCodes,
-            final int x, final int y, final int spaceStrength) {
-        final int lastStateOfSpaceStrength = mLastSpaceStrength;
-        mLastSpaceStrength = spaceStrength;
-        onCodeInput(primaryCode, keyCodes, x, y);
-        mLastSpaceStrength = lastStateOfSpaceStrength;
+    private void insertPunctuationFromSuggestionStrip(final InputConnection ic, final int code) {
+        final CharSequence beforeText = ic != null ? ic.getTextBeforeCursor(1, 0) : null;
+        final int toLeft = TextUtils.isEmpty(beforeText) ? 0 : beforeText.charAt(0);
+        final boolean shouldRegisterSwapPunctuation;
+        // If we have a space left of the cursor and it's a weak or a magic space, then we should
+        // swap it, and override the space state with SPACESTATE_SWAP_PUNCTUATION.
+        // To swap it, we fool handleSeparator to think the previous space state was a
+        // magic space.
+        if (Keyboard.CODE_SPACE == toLeft && mSpaceState == SPACE_STATE_WEAK) {
+            mSpaceState = SPACE_STATE_MAGIC;
+            shouldRegisterSwapPunctuation = true;
+        } else {
+            shouldRegisterSwapPunctuation = false;
+        }
+        onCodeInput(code, new int[] { code },
+                KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
+                KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
+        if (shouldRegisterSwapPunctuation) {
+            mSpaceState = SPACE_STATE_SWAP_PUNCTUATION;
+        }
     }
 
     // Implementation of {@link KeyboardActionListener}.
@@ -1264,11 +1280,16 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mLastKeyTime = when;
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
-        final boolean lastStateOfJustReplacedDoubleSpace = mJustReplacedDoubleSpace;
-        mJustReplacedDoubleSpace = false;
+        // The space state depends only on the last character pressed and its own previous
+        // state. Here, we revert the space state to neutral if the key is actually modifying
+        // the input contents (any non-shift key), which is what we should do for
+        // all inputs that do not result in a special state. Each character handling is then
+        // free to override the state as they see fit.
+        final int spaceState = mSpaceState;
         switch (primaryCode) {
         case Keyboard.CODE_DELETE:
-            handleBackspace(lastStateOfJustReplacedDoubleSpace);
+            mSpaceState = SPACE_STATE_NONE;
+            handleBackspace(spaceState);
             mDeleteCount++;
             mExpectingUpdateSelection = true;
             LatinImeLogger.logOnDelete();
@@ -1314,10 +1335,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // To sum it up: do not update mExpectingUpdateSelection here.
             break;
         default:
+            mSpaceState = SPACE_STATE_NONE;
             if (mSettingsValues.isWordSeparator(primaryCode)) {
-                handleSeparator(primaryCode, x, y);
+                handleSeparator(primaryCode, x, y, spaceState);
             } else {
-                handleCharacter(primaryCode, keyCodes, x, y);
+                handleCharacter(primaryCode, keyCodes, x, y, spaceState);
             }
             mExpectingUpdateSelection = true;
             break;
@@ -1339,7 +1361,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         ic.endBatchEdit();
         mKeyboardSwitcher.updateShiftState();
         mKeyboardSwitcher.onKey(Keyboard.CODE_DUMMY);
-        mLastSpaceStrength = SPACE_STRENGTH_NORMAL;
+        mSpaceState = SPACE_STATE_NONE;
         mEnteredText = text;
     }
 
@@ -1349,7 +1371,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mKeyboardSwitcher.onCancelInput();
     }
 
-    private void handleBackspace(boolean justReplacedDoubleSpace) {
+    private void handleBackspace(final int spaceState) {
         if (mVoiceProxy.logAndRevertVoiceInput()) return;
 
         final InputConnection ic = getCurrentInputConnection();
@@ -1387,18 +1409,24 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         mHandler.postUpdateShiftKeyState();
 
-        // After backspace we want to reset the space to strong to prevent an undue swap with
-        // a subsequent press of a punctuation sign in the suggestion strip.
-        mLastSpaceStrength = SPACE_STRENGTH_STRONG;
+        // TODO: Merge space state with TextEntryState
         TextEntryState.backspace();
         if (TextEntryState.isUndoCommit()) {
             revertLastWord(ic);
             ic.endBatchEdit();
             return;
         }
-        if (justReplacedDoubleSpace) {
+        if (SPACE_STATE_DOUBLE == spaceState) {
             if (revertDoubleSpace(ic)) {
                 ic.endBatchEdit();
+                // No need to reset mSpaceState, it has already be done (that's why we
+                // receive it as a parameter)
+                return;
+            }
+        } else if (SPACE_STATE_SWAP_PUNCTUATION == spaceState) {
+            if (revertSwapPunctuation(ic)) {
+                ic.endBatchEdit();
+                // Likewise
                 return;
             }
         }
@@ -1448,12 +1476,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
-    private void handleCharacter(int primaryCode, int[] keyCodes, int x, int y) {
+    private void handleCharacter(final int primaryCode, final int[] keyCodes, final int x,
+            final int y, final int spaceState) {
         mVoiceProxy.handleCharacter();
 
         final InputConnection ic = getCurrentInputConnection();
         if (ic != null) ic.beginBatchEdit();
-        if (SPACE_STRENGTH_MAGIC == mLastSpaceStrength
+        if (SPACE_STATE_MAGIC == spaceState
                 && mSettingsValues.isMagicSpaceStripper(primaryCode)) {
             removeTrailingSpaceWhileInBatchEdit(ic);
         }
@@ -1512,11 +1541,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         } else {
             sendKeyChar((char)code);
         }
-        if (SPACE_STRENGTH_MAGIC == mLastSpaceStrength
+        if (SPACE_STATE_MAGIC == spaceState
                 && mSettingsValues.isMagicSpaceSwapper(primaryCode)) {
             if (null != ic) swapSwapperAndSpaceWhileInBatchEdit(ic);
-        } else {
-            mLastSpaceStrength = SPACE_STRENGTH_NORMAL;
         }
 
         switcher.updateShiftState();
@@ -1525,7 +1552,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (null != ic) ic.endBatchEdit();
     }
 
-    private void handleSeparator(int primaryCode, int x, int y) {
+    private void handleSeparator(final int primaryCode, final int x, final int y,
+            final int spaceState) {
         mVoiceProxy.handleSeparator();
         mComposingStateManager.onFinishComposingText();
 
@@ -1555,23 +1583,45 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         }
 
-        if (SPACE_STRENGTH_MAGIC == mLastSpaceStrength) {
+        final boolean swapMagicSpace;
+        if (SPACE_STATE_MAGIC == spaceState) {
             if (mSettingsValues.isMagicSpaceSwapper(primaryCode)) {
-                sendKeyChar((char)primaryCode);
-                swapSwapperAndSpaceWhileInBatchEdit(ic);
+                swapMagicSpace = true;
             } else {
+                swapMagicSpace = false;
                 if (mSettingsValues.isMagicSpaceStripper(primaryCode)) {
                     removeTrailingSpaceWhileInBatchEdit(ic);
                 }
-                sendKeyChar((char)primaryCode);
-                mLastSpaceStrength = SPACE_STRENGTH_NORMAL;
             }
         } else {
-            sendKeyChar((char)primaryCode);
+            swapMagicSpace = false;
         }
 
-        if (isSuggestionsRequested() && primaryCode == Keyboard.CODE_SPACE) {
-            maybeDoubleSpace();
+        sendKeyChar((char)primaryCode);
+
+        if (Keyboard.CODE_SPACE == primaryCode) {
+            if (isSuggestionsRequested()) {
+                if (maybeDoubleSpaceWhileInBatchEdit(ic)) {
+                    mSpaceState = SPACE_STATE_DOUBLE;
+                } else if (!isShowingPunctuationList()) {
+                    mSpaceState = SPACE_STATE_WEAK;
+                }
+            }
+
+            mHandler.startDoubleSpacesTimer();
+            if (!isCursorTouchingWord()) {
+                mHandler.cancelUpdateSuggestions();
+                mHandler.postUpdateBigramPredictions();
+            }
+        } else {
+            if (swapMagicSpace) {
+                swapSwapperAndSpaceWhileInBatchEdit(ic);
+                mSpaceState = SPACE_STATE_MAGIC;
+            }
+
+            // Set punctuation right away. onUpdateSelection will fire but tests whether it is
+            // already displayed or not, so it's okay.
+            setPunctuationSuggestions();
         }
 
         TextEntryState.typedCharacter((char) primaryCode, true, x, y);
@@ -1583,19 +1633,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 InputConnectionCompatUtils.commitCorrection(
                         ic, mLastSelectionEnd - typedWord.length(), typedWord, mBestWord);
             }
-        }
-        if (Keyboard.CODE_SPACE == primaryCode) {
-            if (isShowingPunctuationList()) {
-                mLastSpaceStrength = SPACE_STRENGTH_STRONG;
-            }
-            if (!isCursorTouchingWord()) {
-                mHandler.cancelUpdateSuggestions();
-                mHandler.postUpdateBigramPredictions();
-            }
-        } else {
-            // Set punctuation right away. onUpdateSelection will fire but tests whether it is
-            // already displayed or not, so it's okay.
-            setPunctuationSuggestions();
         }
         mKeyboardSwitcher.updateShiftState();
         if (ic != null) {
@@ -1836,8 +1873,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             LatinImeLogger.logOnManualSuggestion(
                     "", suggestion.toString(), index, suggestions.mWords);
             // Find out whether the previous character is a space. If it is, as a special case
-            // for punctuation entered through the suggestion strip, it should be considered
-            // a magic space even if it was a normal space. This is meant to help in case the user
+            // for punctuation entered through the suggestion strip, it should be swapped
+            // if it was a magic or a weak space. This is meant to help in case the user
             // pressed space on purpose of displaying the suggestion strip punctuation.
             final int rawPrimaryCode = suggestion.charAt(0);
             // Maybe apply the "bidi mirrored" conversions for parentheses
@@ -1845,18 +1882,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             final boolean isRtl = keyboard != null && keyboard.mIsRtlKeyboard;
             final int primaryCode = Key.getRtlParenthesisCode(rawPrimaryCode, isRtl);
 
-            final CharSequence beforeText = ic != null ? ic.getTextBeforeCursor(1, 0) : "";
-            final int toLeft = (ic == null || TextUtils.isEmpty(beforeText))
-                    ? 0 : beforeText.charAt(0);
-            final int spaceStrength;
-            if (Keyboard.CODE_SPACE == toLeft && mLastSpaceStrength != SPACE_STRENGTH_STRONG) {
-                spaceStrength = SPACE_STRENGTH_MAGIC;
-            } else {
-                spaceStrength = mLastSpaceStrength;
-            }
-            onCodeInputWithSpaceStrength(primaryCode, new int[] { primaryCode },
-                    KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
-                    KeyboardActionListener.NOT_A_TOUCH_COORDINATE, spaceStrength);
+            insertPunctuationFromSuggestionStrip(ic, primaryCode);
+            // TODO: the following endBatchEdit seems useless, check
             if (ic != null) {
                 ic.endBatchEdit();
             }
@@ -2046,13 +2073,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return false;
     }
 
-    // "ic" must not null
+    // "ic" must not be null
     private boolean sameAsTextBeforeCursor(final InputConnection ic, CharSequence text) {
         CharSequence beforeText = ic.getTextBeforeCursor(text.length(), 0);
         return TextUtils.equals(text, beforeText);
     }
 
-    // "ic" must not null
+    // "ic" must not be null
     private void revertLastWord(final InputConnection ic) {
         if (mHasUncommittedTypedChars || mComposingStringBuilder.length() <= 0) {
             sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
@@ -2086,7 +2113,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mHandler.postUpdateSuggestions();
     }
 
-    // "ic" must not null
+    // "ic" must not be null
     private boolean revertDoubleSpace(final InputConnection ic) {
         mHandler.cancelDoubleSpacesTimer();
         // Here we test whether we indeed have a period and a space before us. This should not
@@ -2101,13 +2128,28 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return true;
     }
 
+    private boolean revertSwapPunctuation(final InputConnection ic) {
+        // Here we test whether we indeed have a space and something else before us. This should not
+        // be needed, but it's there just in case something went wrong.
+        final CharSequence textBeforeCursor = ic.getTextBeforeCursor(2, 0);
+        // NOTE: This does not work with surrogate pairs. Hopefully when the keyboard is able to
+        // enter surrogate pairs this code will have been removed.
+        if (Keyboard.CODE_SPACE != textBeforeCursor.charAt(1))
+            return false;
+        ic.beginBatchEdit();
+        ic.deleteSurroundingText(2, 0);
+        ic.commitText(" " + textBeforeCursor.subSequence(0, 1), 1);
+        ic.endBatchEdit();
+        return true;
+    }
+
     public boolean isWordSeparator(int code) {
         return mSettingsValues.isWordSeparator(code);
     }
 
     private void sendMagicSpace() {
         sendKeyChar((char)Keyboard.CODE_SPACE);
-        mLastSpaceStrength = SPACE_STRENGTH_MAGIC;
+        mSpaceState = SPACE_STATE_MAGIC;
         mKeyboardSwitcher.updateShiftState();
     }
 
