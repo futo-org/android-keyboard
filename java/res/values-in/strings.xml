@@ -148,8 +148,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"Inggris (Inggris)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Inggris (AS)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modus studi daya guna"</string>
-    <!-- no translation found for prefs_keypress_vibration_duration_settings (1829950405285211668) -->
-    <skip />
-    <!-- no translation found for prefs_keypress_sound_volume_settings (5875933757082305040) -->
-    <skip />
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Setelan durasi getaran saat tombol ditekan"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Setelan volume suara saat tombol ditekan"</string>
 </resources>

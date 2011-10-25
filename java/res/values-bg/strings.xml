@@ -148,8 +148,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"английски (Великобритания)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"английски (САЩ)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Режим за изучаване на използваемостта"</string>
-    <!-- no translation found for prefs_keypress_vibration_duration_settings (1829950405285211668) -->
-    <skip />
-    <!-- no translation found for prefs_keypress_sound_volume_settings (5875933757082305040) -->
-    <skip />
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Настройки за продължителност на вибрирането при натискане на клавиш"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Настройки за силата на звука при натискане на клавиш"</string>
 </resources>

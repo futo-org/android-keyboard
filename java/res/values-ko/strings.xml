@@ -38,25 +38,25 @@
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"키 팝업 해제 지연"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"지연 없음"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"기본값"</string>
-    <string name="use_contacts_dict" msgid="4435317977804180815">"연락처 이름 추천"</string>
+    <string name="use_contacts_dict" msgid="4435317977804180815">"주소록 이름 활용"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"추천 및 수정에 주소록의 이름 사용"</string>
-    <string name="enable_span_insert" msgid="7204653105667167620">"다시 수정 가능하도록 설정"</string>
-    <string name="enable_span_insert_summary" msgid="2947317657871394467">"다시 수정하기 위한 추천사항 설정"</string>
+    <string name="enable_span_insert" msgid="7204653105667167620">"재수정 가능 설정"</string>
+    <string name="enable_span_insert_summary" msgid="2947317657871394467">"재수정 추천어 사전 활성화"</string>
     <string name="auto_cap" msgid="1719746674854628252">"자동 대문자화"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"사전 추가"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"기본 사전"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"수정 제안 표시"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"글자를 입력하는 동안 추천 단어 표시"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"항상 표시"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"세로 모드로 표시"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"세로 화면일 때만 표시"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"항상 숨기기"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"설정 키 표시"</string>
     <string name="auto_correction" msgid="4979925752001319458">"자동 수정"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"스페이스바와 문장부호 키를 사용하면 오타가 자동으로 교정됩니다."</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"사용 안함"</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"보통"</string>
-    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"적극적"</string>
-    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"매우 적극적"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"약"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"중"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"강"</string>
     <string name="bigram_suggestion" msgid="2636414079905220518">"Bigram 추천"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"이전 단어를 사용하여 추천 기능 개선"</string>
     <string name="bigram_prediction" msgid="8914273444762259739">"Bigram 예측"</string>

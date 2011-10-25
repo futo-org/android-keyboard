@@ -148,6 +148,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"Bahasa Inggeris (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Bahasa Inggeris (AS)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Mod kajian kebolehgunaan"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Tekan kunci tetapan tempoh getaran"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Tekan kunci tetapan kelantangan bunyi"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Tetapan tempoh getaran tekanan kekunci"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Tetapan kelantangan bunyi tekanan kekunci"</string>
 </resources>

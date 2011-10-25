@@ -34,14 +34,14 @@
     <string name="correction_category" msgid="2236750915056607613">"文本更正"</string>
     <string name="misc_category" msgid="6894192814868233453">"其他选项"</string>
     <string name="advanced_settings" msgid="362895144495591463">"高级设置"</string>
-    <string name="advanced_settings_summary" msgid="5193513161106637254">"适合专家级用户的选项"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"关闭弹出式键盘的延迟"</string>
+    <string name="advanced_settings_summary" msgid="5193513161106637254">"适合于资深用户的选项"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"关闭弹出键时的延迟"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"无延迟"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"默认"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"推荐联系人姓名"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"使用联系人中的姓名提供建议和更正"</string>
-    <string name="enable_span_insert" msgid="7204653105667167620">"启用更正"</string>
-    <string name="enable_span_insert_summary" msgid="2947317657871394467">"设置更正建议"</string>
+    <string name="enable_span_insert" msgid="7204653105667167620">"允许再次更正"</string>
+    <string name="enable_span_insert_summary" msgid="2947317657871394467">"设置建议以用于再次更正"</string>
     <string name="auto_cap" msgid="1719746674854628252">"自动大写"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"附加词典"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"主词典"</string>
@@ -52,10 +52,10 @@
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"始终隐藏"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"显示设置键"</string>
     <string name="auto_correction" msgid="4979925752001319458">"自动更正"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"空格键或标点自动更正拼写错误的字词"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"按空格键和标点可自动更正错别字"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"关闭"</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"部分"</string>
-    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"全部"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"小改"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"大改"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"改动极大"</string>
     <string name="bigram_suggestion" msgid="2636414079905220518">"双连词建议"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"使用以前的字词改进建议"</string>

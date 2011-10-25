@@ -148,6 +148,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"Anglais (Royaume-Uni)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Anglais (États-Unis)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Mode d\'étude de l\'utilisabilité"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Paramètres de durée du vibreur à chaque touche"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Paramètres de volume du son à chaque touche"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Paramètres de durée du vibreur à chaque pression de touche"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Paramètres de volume sonore à chaque pression de touche"</string>
 </resources>
