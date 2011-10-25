@@ -30,13 +30,12 @@ public class TextEntryState {
     private static final int IN_WORD = 2;
     private static final int ACCEPTED_DEFAULT = 3;
     private static final int PICKED_SUGGESTION = 4;
-    private static final int PUNCTUATION_AFTER_WORD = 5;
-    private static final int PUNCTUATION_AFTER_ACCEPTED = 6;
-    private static final int SPACE_AFTER_ACCEPTED = 7;
-    private static final int SPACE_AFTER_PICKED = 8;
-    private static final int UNDO_COMMIT = 9;
-    private static final int RECORRECTING = 10;
-    private static final int PICKED_RECORRECTION = 11;
+    private static final int PUNCTUATION_AFTER_ACCEPTED = 5;
+    private static final int SPACE_AFTER_ACCEPTED = 6;
+    private static final int SPACE_AFTER_PICKED = 7;
+    private static final int UNDO_COMMIT = 8;
+    private static final int RECORRECTING = 9;
+    private static final int PICKED_RECORRECTION = 10;
 
     private static int sState = UNKNOWN;
     private static int sPreviousState = UNKNOWN;
@@ -136,7 +135,6 @@ public class TextEntryState {
         case START:
         case UNKNOWN:
         case SPACE_AFTER_ACCEPTED:
-        case PUNCTUATION_AFTER_WORD:
             if (!isSpace && !isSeparator) {
                 setState(IN_WORD);
             } else {
@@ -182,10 +180,6 @@ public class TextEntryState {
         return sState == ACCEPTED_DEFAULT;
     }
 
-    public static boolean isSpaceAfterPicked() {
-        return sState == SPACE_AFTER_PICKED;
-    }
-
     public static boolean isUndoCommit() {
         return sState == UNDO_COMMIT;
     }
@@ -208,7 +202,6 @@ public class TextEntryState {
         case IN_WORD: return "IN_WORD";
         case ACCEPTED_DEFAULT: return "ACCEPTED_DEFAULT";
         case PICKED_SUGGESTION: return "PICKED_SUGGESTION";
-        case PUNCTUATION_AFTER_WORD: return "PUNCTUATION_AFTER_WORD";
         case PUNCTUATION_AFTER_ACCEPTED: return "PUNCTUATION_AFTER_ACCEPTED";
         case SPACE_AFTER_ACCEPTED: return "SPACE_AFTER_ACCEPTED";
         case SPACE_AFTER_PICKED: return "SPACE_AFTER_PICKED";
