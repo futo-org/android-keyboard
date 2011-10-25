@@ -1132,17 +1132,15 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return false;
     }
 
-    private void swapSwapperAndSpace() {
-        final InputConnection ic = getCurrentInputConnection();
-        if (ic == null) return;
+    // "ic" may be null
+    private void swapSwapperAndSpaceWhileInBatchEdit(final InputConnection ic) {
+        if (null == ic) return;
         CharSequence lastTwo = ic.getTextBeforeCursor(2, 0);
         // It is guaranteed lastTwo.charAt(1) is a swapper - else this method is not called.
         if (lastTwo != null && lastTwo.length() == 2
                 && lastTwo.charAt(0) == Keyboard.CODE_SPACE) {
-            ic.beginBatchEdit();
             ic.deleteSurroundingText(2, 0);
             ic.commitText(lastTwo.charAt(1) + " ", 1);
-            ic.endBatchEdit();
             mKeyboardSwitcher.updateShiftState();
         }
     }
@@ -1169,11 +1167,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
-    // "ic" must not null
+    // "ic" must not be null
     private void maybeRemovePreviousPeriod(final InputConnection ic, CharSequence text) {
         // When the text's first character is '.', remove the previous period
         // if there is one.
-        CharSequence lastOne = ic.getTextBeforeCursor(1, 0);
+        final CharSequence lastOne = ic.getTextBeforeCursor(1, 0);
         if (lastOne != null && lastOne.length() == 1
                 && lastOne.charAt(0) == Keyboard.CODE_PERIOD
                 && text.charAt(0) == Keyboard.CODE_PERIOD) {
@@ -1181,11 +1179,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
-    private void removeTrailingSpace() {
-        final InputConnection ic = getCurrentInputConnection();
+    // "ic" may be null
+    private void removeTrailingSpaceWhileInBatchEdit(final InputConnection ic) {
         if (ic == null) return;
-
-        CharSequence lastOne = ic.getTextBeforeCursor(1, 0);
+        final CharSequence lastOne = ic.getTextBeforeCursor(1, 0);
         if (lastOne != null && lastOne.length() == 1
                 && lastOne.charAt(0) == Keyboard.CODE_SPACE) {
             ic.deleteSurroundingText(1, 0);
@@ -1435,8 +1432,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private void handleCharacter(int primaryCode, int[] keyCodes, int x, int y) {
         mVoiceProxy.handleCharacter();
 
+        final InputConnection ic = getCurrentInputConnection();
+        if (ic != null) ic.beginBatchEdit();
         if (mJustAddedMagicSpace && mSettingsValues.isMagicSpaceStripper(primaryCode)) {
-            removeTrailingSpace();
+            removeTrailingSpaceWhileInBatchEdit(ic);
         }
 
         int code = primaryCode;
@@ -1454,6 +1453,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (switcher.isShiftedOrShiftLocked()) {
             if (keyCodes == null || keyCodes[0] < Character.MIN_CODE_POINT
                     || keyCodes[0] > Character.MAX_CODE_POINT) {
+                if (null != ic) ic.endBatchEdit();
                 return;
             }
             code = keyCodes[0];
@@ -1467,6 +1467,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 } else {
                     // Some keys, such as [eszett], have upper case as multi-characters.
                     onTextInput(upperCaseString);
+                    if (null != ic) ic.endBatchEdit();
                     return;
                 }
             }
@@ -1474,7 +1475,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (mHasUncommittedTypedChars) {
             mComposingStringBuilder.append((char) code);
             mWordComposer.add(code, keyCodes, x, y);
-            final InputConnection ic = getCurrentInputConnection();
             if (ic != null) {
                 // If it's the first letter, make note of auto-caps state
                 if (mWordComposer.size() == 1) {
@@ -1493,7 +1493,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             sendKeyChar((char)code);
         }
         if (mJustAddedMagicSpace && mSettingsValues.isMagicSpaceSwapper(primaryCode)) {
-            swapSwapperAndSpace();
+            if (null != ic) swapSwapperAndSpaceWhileInBatchEdit(ic);
         } else {
             mJustAddedMagicSpace = false;
         }
@@ -1501,6 +1501,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         switcher.updateShiftState();
         if (LatinIME.PERF_DEBUG) measureCps();
         TextEntryState.typedCharacter((char) code, mSettingsValues.isWordSeparator(code), x, y);
+        if (null != ic) ic.endBatchEdit();
     }
 
     private void handleSeparator(int primaryCode, int x, int y) {
@@ -1536,9 +1537,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (mJustAddedMagicSpace) {
             if (mSettingsValues.isMagicSpaceSwapper(primaryCode)) {
                 sendKeyChar((char)primaryCode);
-                swapSwapperAndSpace();
+                swapSwapperAndSpaceWhileInBatchEdit(ic);
             } else {
-                if (mSettingsValues.isMagicSpaceStripper(primaryCode)) removeTrailingSpace();
+                if (mSettingsValues.isMagicSpaceStripper(primaryCode)) {
+                    removeTrailingSpaceWhileInBatchEdit(ic);
+                }
                 sendKeyChar((char)primaryCode);
                 mJustAddedMagicSpace = false;
             }
