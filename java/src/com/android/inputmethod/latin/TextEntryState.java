@@ -34,8 +34,7 @@ public class TextEntryState {
     private static final int SPACE_AFTER_ACCEPTED = 6;
     private static final int SPACE_AFTER_PICKED = 7;
     private static final int UNDO_COMMIT = 8;
-    private static final int RECORRECTING = 9;
-    private static final int PICKED_RECORRECTION = 10;
+    private static final int PICKED_RECORRECTION = 9;
 
     private static int sState = UNKNOWN;
     private static int sPreviousState = UNKNOWN;
@@ -78,25 +77,15 @@ public class TextEntryState {
     }
 
     public static void acceptedSuggestion(CharSequence typedWord, CharSequence actualWord) {
-        if (sState == RECORRECTING || sState == PICKED_RECORRECTION) {
+        if (sState == PICKED_RECORRECTION) {
+            // TODO: this seems to be the only place where setState(PICKED_RECORRECTION) is done
+            // so this state should never be reached. Check this and remove.
             setState(PICKED_RECORRECTION);
         } else {
             setState(PICKED_SUGGESTION);
         }
         if (DEBUG)
             displayState("acceptedSuggestion", "typedWord", typedWord, "actualWord", actualWord);
-    }
-
-    public static void selectedForRecorrection() {
-        setState(RECORRECTING);
-        if (DEBUG) displayState("selectedForRecorrection");
-    }
-
-    public static void onAbortRecorrection() {
-        if (sState == RECORRECTING || sState == PICKED_RECORRECTION) {
-            setState(START);
-        }
-        if (DEBUG) displayState("onAbortRecorrection");
     }
 
     public static void typedCharacter(char c, boolean isSeparator, int x, int y) {
@@ -148,9 +137,6 @@ public class TextEntryState {
                 setState(IN_WORD);
             }
             break;
-        case RECORRECTING:
-            setState(START);
-            break;
         }
         RingCharBuffer.getInstance().push(c, x, y);
         if (isSeparator) {
@@ -176,20 +162,12 @@ public class TextEntryState {
         if (DEBUG) displayState("reset");
     }
 
-    public static boolean isAcceptedDefault() {
-        return sState == ACCEPTED_DEFAULT;
-    }
-
     public static boolean isUndoCommit() {
         return sState == UNDO_COMMIT;
     }
 
-    public static boolean isPunctuationAfterAccepted() {
-        return sState == PUNCTUATION_AFTER_ACCEPTED;
-    }
-
     public static boolean isRecorrecting() {
-        return sState == RECORRECTING || sState == PICKED_RECORRECTION;
+        return sState == PICKED_RECORRECTION;
     }
 
     public static String getState() {
@@ -206,7 +184,6 @@ public class TextEntryState {
         case SPACE_AFTER_ACCEPTED: return "SPACE_AFTER_ACCEPTED";
         case SPACE_AFTER_PICKED: return "SPACE_AFTER_PICKED";
         case UNDO_COMMIT: return "UNDO_COMMIT";
-        case RECORRECTING: return "RECORRECTING";
         case PICKED_RECORRECTION: return "PICKED_RECORRECTION";
         default: return "UNKNOWN";
         }
