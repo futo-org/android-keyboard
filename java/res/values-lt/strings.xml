@@ -148,6 +148,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"Anglų k. (JK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Anglų k. (JAV)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Tinkamumo tyrimo režimas"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Vibracijos nuspaudus mygtuką trukmės nustatymai"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Garso nuspaudus mygtuką garsumo nustatymai"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Vibracijos paspaudus mygtuką trukmės nustatymai"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Garso paspaudus mygtuką garsumo nustatymai"</string>
 </resources>

@@ -148,8 +148,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"英語（英国）"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"英語（米国）"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"使いやすさの研究モード"</string>
-    <!-- no translation found for prefs_keypress_vibration_duration_settings (1829950405285211668) -->
-    <skip />
-    <!-- no translation found for prefs_keypress_sound_volume_settings (5875933757082305040) -->
-    <skip />
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"キー操作バイブの振動時間の設定"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"キー操作音の音量設定"</string>
 </resources>
