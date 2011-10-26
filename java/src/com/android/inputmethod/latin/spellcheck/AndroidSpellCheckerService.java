@@ -61,11 +61,6 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
     private static final int CAPITALIZE_ALL = 2; // All caps
 
     private final static String[] EMPTY_STRING_ARRAY = new String[0];
-    private final static SuggestionsInfo NOT_IN_DICT_EMPTY_SUGGESTIONS =
-            new SuggestionsInfo(0, EMPTY_STRING_ARRAY);
-    private final static SuggestionsInfo IN_DICT_EMPTY_SUGGESTIONS =
-            new SuggestionsInfo(SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY,
-                    EMPTY_STRING_ARRAY);
     private final static Flag[] USE_FULL_EDIT_DISTANCE_FLAG_ARRAY;
     static {
         // See BinaryDictionary.java for an explanation of these flags
@@ -101,6 +96,15 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
     @Override
     public Session createSession() {
         return new AndroidSpellCheckerSession(this);
+    }
+
+    private static SuggestionsInfo getNotInDictEmptySuggestions() {
+        return new SuggestionsInfo(0, EMPTY_STRING_ARRAY);
+    }
+
+    private static SuggestionsInfo getInDictEmptySuggestions() {
+        return new SuggestionsInfo(SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY,
+                EMPTY_STRING_ARRAY);
     }
 
     private static class SuggestionsGatherer implements WordCallback {
@@ -408,9 +412,9 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                     DictAndProximity dictInfo = null;
                     try {
                         dictInfo = mDictionaryPool.takeOrGetNull();
-                        if (null == dictInfo) return NOT_IN_DICT_EMPTY_SUGGESTIONS;
-                        return dictInfo.mDictionary.isValidWord(text) ? IN_DICT_EMPTY_SUGGESTIONS
-                                : NOT_IN_DICT_EMPTY_SUGGESTIONS;
+                        if (null == dictInfo) return getNotInDictEmptySuggestions();
+                        return dictInfo.mDictionary.isValidWord(text) ? getInDictEmptySuggestions()
+                                : getNotInDictEmptySuggestions();
                     } finally {
                         if (null != dictInfo) {
                             if (!mDictionaryPool.offer(dictInfo)) {
@@ -445,7 +449,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 DictAndProximity dictInfo = null;
                 try {
                     dictInfo = mDictionaryPool.takeOrGetNull();
-                    if (null == dictInfo) return NOT_IN_DICT_EMPTY_SUGGESTIONS;
+                    if (null == dictInfo) return getNotInDictEmptySuggestions();
                     dictInfo.mDictionary.getWords(composer, suggestionsGatherer,
                             dictInfo.mProximityInfo);
                     isInDict = dictInfo.mDictionary.isValidWord(text);
@@ -490,7 +494,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                     throw e;
                 } else {
                     Log.e(TAG, "Exception while spellcheking: " + e);
-                    return NOT_IN_DICT_EMPTY_SUGGESTIONS;
+                    return getNotInDictEmptySuggestions();
                 }
             }
         }
