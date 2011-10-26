@@ -35,7 +35,6 @@ import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.KeyEventHandler;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 
-
 /**
  * A view that renders a virtual {@link MoreSuggestions}. It handles rendering of keys and detecting
  * key presses and touch movements.
@@ -125,7 +124,7 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
 
     @Override
     public DrawingProxy getDrawingProxy() {
-        return  this;
+        return this;
     }
 
     @Override
@@ -180,10 +179,15 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
         return x;
     }
 
+    private boolean mIsDismissing;
+
     @Override
     public boolean dismissMoreKeysPanel() {
-        if (mController == null) return false;
-        return mController.dismissMoreKeysPanel();
+        if (mIsDismissing) return false;
+        mIsDismissing = true;
+        final boolean dismissed = mController.dismissMoreKeysPanel();
+        mIsDismissing = false;
+        return dismissed;
     }
 
     @Override
