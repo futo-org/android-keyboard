@@ -21,7 +21,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.os.Message;
-import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -452,8 +451,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 this, this, pointX, pointY, mMoreKeysWindow, getKeyboardActionListener());
         final int translatedX = moreKeysPanel.translateX(tracker.getLastX());
         final int translatedY = moreKeysPanel.translateY(tracker.getLastY());
-        tracker.onShowMoreKeysPanel(
-                translatedX, translatedY, SystemClock.uptimeMillis(), moreKeysPanel);
+        tracker.onShowMoreKeysPanel(translatedX, translatedY, moreKeysPanel);
         dimEntireKeyboard(true);
         return true;
     }
