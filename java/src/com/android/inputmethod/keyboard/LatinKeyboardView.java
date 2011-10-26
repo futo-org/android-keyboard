@@ -349,9 +349,11 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         // When shift key is double tapped, the first tap is correctly processed as usual tap. And
         // the second tap is treated as this double tap event, so that we need not mark tracker
         // calling setAlreadyProcessed() nor remove the tracker from mPointerQueue.
-        final int primaryCode = ignore ? Keyboard.CODE_HAPTIC_AND_AUDIO_FEEDBACK_ONLY
-                : Keyboard.CODE_CAPSLOCK;
-        mKeyboardActionListener.onCodeInput(primaryCode, null, 0, 0);
+        if (ignore) {
+            mKeyboardActionListener.onCustomRequest(LatinIME.CODE_HAPTIC_AND_AUDIO_FEEDBACK);
+        } else {
+            mKeyboardActionListener.onCodeInput(Keyboard.CODE_CAPSLOCK, null, 0, 0);
+        }
     }
 
     // This default implementation returns a more keys panel.

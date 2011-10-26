@@ -1227,6 +1227,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     // Virtual codes representing custom requests.  These are used in onCustomRequest() below.
     public static final int CODE_SHOW_INPUT_METHOD_PICKER = 1;
+    public static final int CODE_HAPTIC_AND_AUDIO_FEEDBACK = 2;
 
     @Override
     public boolean onCustomRequest(int requestCode) {
@@ -1238,6 +1239,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 return true;
             }
             return false;
+        case CODE_HAPTIC_AND_AUDIO_FEEDBACK:
+            hapticAndAudioFeedback(Keyboard.CODE_UNSPECIFIED);
+            return true;
         }
         return false;
     }
@@ -1293,11 +1297,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             break;
         case Keyboard.CODE_CAPSLOCK:
             switcher.toggleCapsLock();
-            //$FALL-THROUGH$
-        case Keyboard.CODE_HAPTIC_AND_AUDIO_FEEDBACK_ONLY:
-            // Dummy code for haptic and audio feedbacks.
-            vibrate();
-            playKeyClick(primaryCode);
+            hapticAndAudioFeedback(primaryCode);
             break;
         case Keyboard.CODE_SHORTCUT:
             mSubtypeSwitcher.switchToShortcutIME();
@@ -2129,12 +2129,16 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         loadSettings();
     }
 
+    private void hapticAndAudioFeedback(int primaryCode) {
+        vibrate();
+        playKeyClick(primaryCode);
+    }
+
     @Override
     public void onPress(int primaryCode, boolean withSliding) {
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         if (switcher.isVibrateAndSoundFeedbackRequired()) {
-            vibrate();
-            playKeyClick(primaryCode);
+            hapticAndAudioFeedback(primaryCode);
         }
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         if (distinctMultiTouch && primaryCode == Keyboard.CODE_SHIFT) {
