@@ -149,5 +149,5 @@
     <string name="subtype_en_US" msgid="6160452336634534239">"Englisch (USA)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modus der Studie zur Benutzerfreundlichkeit"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Einstellungen für Vibrationsdauer bei Tastendruck"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Einstellungen für Sound-Lautstärke bei Tastendruck"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Einstellungen für Tonlautstärke bei Tastendruck"</string>
 </resources>
