@@ -1582,7 +1582,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
 
         final boolean swapMagicSpace;
-        if (SPACE_STATE_MAGIC == spaceState) {
+        if (Keyboard.CODE_ENTER == primaryCode && (SPACE_STATE_MAGIC == spaceState
+                || SPACE_STATE_SWAP_PUNCTUATION == spaceState)) {
+            removeTrailingSpaceWhileInBatchEdit(ic);
+            swapMagicSpace = false;
+        } else if (SPACE_STATE_MAGIC == spaceState) {
             if (mSettingsValues.isMagicSpaceSwapper(primaryCode)) {
                 swapMagicSpace = true;
             } else {
