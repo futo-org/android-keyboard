@@ -30,7 +30,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
-import android.os.SystemClock;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -832,8 +831,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
                 // Decided to be in the sliding input mode only when the touch point has been moved
                 // upward.
                 mMoreSuggestionsMode = MORE_SUGGESTIONS_IN_SLIDING_MODE;
-                tracker.onShowMoreKeysPanel(
-                        translatedX, translatedY, SystemClock.uptimeMillis(), moreKeysPanel);
+                tracker.onShowMoreKeysPanel(translatedX, translatedY, moreKeysPanel);
             } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP) {
                 // Decided to be in the modal input mode
                 mMoreSuggestionsMode = MORE_SUGGESTIONS_IN_MODAL_MODE;
