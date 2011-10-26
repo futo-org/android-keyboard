@@ -18,6 +18,7 @@ package com.android.inputmethod.keyboard;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.TextView;
@@ -615,9 +616,9 @@ public class PointerTracker {
         }
     }
 
-    public void onShowMoreKeysPanel(int x, int y, long eventTime, KeyEventHandler handler) {
+    public void onShowMoreKeysPanel(int x, int y, KeyEventHandler handler) {
         onLongPressed();
-        onDownEvent(x, y, eventTime, handler);
+        onDownEvent(x, y, SystemClock.uptimeMillis(), handler);
         mIsShowingMoreKeysPanel = true;
     }
 
