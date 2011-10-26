@@ -1655,6 +1655,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     public boolean isShowingPunctuationList() {
+        if (mSuggestionsView == null) return false;
         return mSettingsValues.mSuggestPuncList == mSuggestionsView.getSuggestions();
     }
 
