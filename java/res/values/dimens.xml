@@ -81,7 +81,7 @@
     <dimen name="more_suggestions_key_horizontal_padding">12dip</dimen>
     <dimen name="more_suggestions_row_height">40dip</dimen>
     <dimen name="more_suggestions_bottom_gap">6dip</dimen>
-    <dimen name="more_suggestions_modal_tolerance">0.05in</dimen>
+    <dimen name="more_suggestions_modal_tolerance">0.2in</dimen>
     <dimen name="more_suggestions_slide_allowance">0.1in</dimen>
     <integer name="max_more_suggestions_row">6</integer>
     <fraction name="min_more_suggestions_width">90%</fraction>
