@@ -1943,7 +1943,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         if (showingAddToDictionaryHint) {
             if (mIsUserDictionaryAvaliable) {
-                mSuggestionsView.showAddToDictionaryHint(suggestion);
+                mSuggestionsView.showAddToDictionaryHint(
+                        suggestion, mSettingsValues.mHintToSaveText);
             } else {
                 mHandler.postUpdateSuggestions();
             }

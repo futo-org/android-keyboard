@@ -171,7 +171,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
 
         public final TextView mWordToSaveView;
         private final TextView mHintToSaveView;
-        private final CharSequence mHintToSaveText;
 
         public SuggestionsViewParams(Context context, AttributeSet attrs, int defStyle,
                 List<TextView> words, List<View> dividers, List<TextView> infos) {
@@ -227,7 +226,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             final LayoutInflater inflater = LayoutInflater.from(context);
             mWordToSaveView = (TextView)inflater.inflate(R.layout.suggestion_word, null);
             mHintToSaveView = (TextView)inflater.inflate(R.layout.suggestion_word, null);
-            mHintToSaveText = context.getText(R.string.hint_add_to_dictionary);
         }
 
         private static Drawable getMoreSuggestionsHint(Resources res, float textSize, int color) {
@@ -444,7 +442,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         }
 
         public void layoutAddToDictionaryHint(CharSequence word, ViewGroup stripView,
-                int stripWidth) {
+                int stripWidth, CharSequence hintText) {
             final int width = stripWidth - mDividerWidth - mPadding * 2;
 
             final TextView wordView = mWordToSaveView;
@@ -463,8 +461,8 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             final TextView hintView = mHintToSaveView;
             hintView.setTextColor(mColorAutoCorrect);
             final int hintWidth = width - wordWidth;
-            final float hintScaleX = getTextScaleX(mHintToSaveText, hintWidth, hintView.getPaint());
-            hintView.setText(mHintToSaveText);
+            final float hintScaleX = getTextScaleX(hintText, hintWidth, hintView.getPaint());
+            hintView.setText(hintText);
             hintView.setTextScaleX(hintScaleX);
             stripView.addView(hintView);
             setLayoutWeight(
@@ -646,9 +644,9 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
                 && mSuggestionsStrip.getChildAt(0) == mParams.mWordToSaveView;
     }
 
-    public void showAddToDictionaryHint(CharSequence word) {
+    public void showAddToDictionaryHint(CharSequence word, CharSequence hintText) {
         clear();
-        mParams.layoutAddToDictionaryHint(word, mSuggestionsStrip, getWidth());
+        mParams.layoutAddToDictionaryHint(word, mSuggestionsStrip, getWidth(), hintText);
     }
 
     public boolean dismissAddToDictionaryHint() {
