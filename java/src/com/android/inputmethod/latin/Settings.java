@@ -115,6 +115,7 @@ public class Settings extends InputMethodSettingsActivity
         public final String mSuggestPuncs;
         public final SuggestedWords mSuggestPuncList;
         private final String mSymbolsExcludedFromWordSeparators;
+        public final CharSequence mHintToSaveText;
 
         // From preferences:
         public final boolean mSoundOn; // Sound setting private to Latin IME (see mSilentModeOn)
@@ -176,6 +177,7 @@ public class Settings extends InputMethodSettingsActivity
             mSuggestPuncs = res.getString(R.string.suggested_punctuations);
             // TODO: it would be nice not to recreate this each time we change the configuration
             mSuggestPuncList = createSuggestPuncList(mSuggestPuncs);
+            mHintToSaveText = context.getText(R.string.hint_add_to_dictionary);
 
             // Get the settings preferences
             final boolean hasVibrator = VibratorCompatWrapper.getInstance(context).hasVibrator();
