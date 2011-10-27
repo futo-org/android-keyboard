@@ -27,7 +27,6 @@ import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.latin.R;
 
-
 /**
  * A view that renders a virtual {@link MiniKeyboard}. It handles rendering of keys and detecting
  * key presses and touch movements.
@@ -115,7 +114,7 @@ public class MiniKeyboardView extends KeyboardView implements MoreKeysPanel {
 
     @Override
     public DrawingProxy getDrawingProxy() {
-        return  this;
+        return this;
     }
 
     @Override
@@ -174,9 +173,15 @@ public class MiniKeyboardView extends KeyboardView implements MoreKeysPanel {
         return x;
     }
 
+    private boolean mIsDismissing;
+
     @Override
     public boolean dismissMoreKeysPanel() {
-        return mController.dismissMoreKeysPanel();
+        if (mIsDismissing) return false;
+        mIsDismissing = true;
+        final boolean dismissed = mController.dismissMoreKeysPanel();
+        mIsDismissing = false;
+        return dismissed;
     }
 
     @Override
