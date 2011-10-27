@@ -372,6 +372,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         private boolean mHasPendingFinishInput;
 
         public void startOrientationChanging() {
+            removeMessages(MSG_PENDING_IMS_CALLBACK);
+            resetPendingImsCallback();
             mIsOrientationChanging = true;
             final LatinIME latinIme = getOuterInstance();
             latinIme.mKeyboardSwitcher.saveKeyboardState();
