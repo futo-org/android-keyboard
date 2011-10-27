@@ -253,12 +253,6 @@ void UnigramDictionary::initSuggestions(ProximityInfo *proximityInfo, const int 
     mProximityInfo = proximityInfo;
 }
 
-static inline void registerNextLetter(unsigned short c, int *nextLetters, int nextLettersSize) {
-    if (c < nextLettersSize) {
-        nextLetters[c]++;
-    }
-}
-
 // TODO: We need to optimize addWord by using STL or something
 // TODO: This needs to take an const unsigned short* and not tinker with its contents
 bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency) {
