@@ -102,5 +102,10 @@
     <!-- In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label. -->
     <string name="more_keys_for_dash">"\u0651,\u0652,\u064c,\u0653,\u064f,\u0650,\u064e,\u064b,\u0640\u0640\u0640|\u0640,\u064d,\u0654,\u0656,\u0655,\u0670"</string>
     <string name="more_keys_for_bullet">♪</string>
-    <string name="more_keys_for_star">★</string>
+    <!-- \u066d: ARABIC FIVE POINTED STAR -->
+    <string name="more_keys_for_star">★,\u066d</string>
+    <!-- \ufd3e: ORNATE LEFT PARENTHESIS -->
+    <string name="more_keys_for_left_parenthesis">[,{,&lt;,\ufd3e</string>
+    <!-- \ufd3f: ORNATE RIGHT PARENTHESIS -->
+    <string name="more_keys_for_right_parenthesis">],},&gt;,\ufd3f</string>
 </resources>

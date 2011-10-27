@@ -99,4 +99,6 @@
     <string name="more_keys_for_bullet">♪,♥,♠,♦,♣</string>
     <string name="more_keys_for_star">†,‡,★</string>
     <string name="more_keys_for_plus">±</string>
+    <string name="more_keys_for_left_parenthesis">[,{,&lt;</string>
+    <string name="more_keys_for_right_parenthesis">],},&gt;</string>
 </resources>

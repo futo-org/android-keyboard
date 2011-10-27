@@ -85,10 +85,10 @@
             latin:moreKeys="@string/more_keys_for_plus" />
         <Key
             latin:keyLabel="("
-            latin:moreKeys="[,{,&lt;" />
+            latin:moreKeys="@string/more_keys_for_left_parenthesis" />
         <Key
             latin:keyLabel=")"
-            latin:moreKeys="],},&gt;"
+            latin:moreKeys="@string/more_keys_for_right_parenthesis"
             latin:keyWidth="fillRight" />
     </Row>
     <Row
