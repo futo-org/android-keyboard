@@ -29,7 +29,7 @@
     <string name="use_proximity_option_summary" msgid="2857708859847261945">"استفاده از یک الگوریتم مجاورت مشابه صفحه کلید برای غلط گیری املایی"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"لرزش با فشار کلید"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"صدا با فشار کلید"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"بازشو با فشار کلید"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"بازشدن با فشار کلید"</string>
     <string name="general_category" msgid="1859088467017573195">"کلی"</string>
     <string name="correction_category" msgid="2236750915056607613">"تصحیح متن"</string>
     <string name="misc_category" msgid="6894192814868233453">"سایر گزینه ها"</string>
