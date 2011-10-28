@@ -144,7 +144,7 @@ public class Suggest implements Dictionary.WordCallback {
         initWhitelistAndAutocorrectAndPool(context, locale);
     }
 
-    private void addOrReplaceDictionary(Map<String, Dictionary> dictionaries, String key,
+    private static void addOrReplaceDictionary(Map<String, Dictionary> dictionaries, String key,
             Dictionary dict) {
         final Dictionary oldDict = (dict == null)
                 ? dictionaries.remove(key)
@@ -518,7 +518,8 @@ public class Suggest implements Dictionary.WordCallback {
         return -1;
     }
 
-    private void collectGarbage(ArrayList<CharSequence> suggestions, int prefMaxSuggestions) {
+    private static void collectGarbage(ArrayList<CharSequence> suggestions,
+            int prefMaxSuggestions) {
         int poolSize = StringBuilderPool.getSize();
         int garbageSize = suggestions.size();
         while (poolSize < prefMaxSuggestions && garbageSize > 0) {

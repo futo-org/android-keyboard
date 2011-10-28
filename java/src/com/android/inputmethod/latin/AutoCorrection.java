@@ -98,7 +98,7 @@ public class AutoCorrection {
         return whiteListedWord != null;
     }
 
-    private boolean hasAutoCorrectionForTypedWord(Map<String, Dictionary> dictionaries,
+    private static boolean hasAutoCorrectionForTypedWord(Map<String, Dictionary> dictionaries,
             WordComposer wordComposer, ArrayList<CharSequence> suggestions, CharSequence typedWord,
             int correctionMode) {
         if (TextUtils.isEmpty(typedWord)) return false;

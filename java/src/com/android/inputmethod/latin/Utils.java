@@ -242,7 +242,7 @@ public class Utils {
             UsabilityStudyLogUtils.getInstance().init(context);
             return sRingCharBuffer;
         }
-        private int normalize(int in) {
+        private static int normalize(int in) {
             int ret = in % BUFSIZE;
             return ret < 0 ? ret + BUFSIZE : ret;
         }
@@ -465,7 +465,7 @@ public class Utils {
             }
         }
 
-        public void writeBackSpace() {
+        public static void writeBackSpace() {
             UsabilityStudyLogUtils.getInstance().write("<backspace>\t0\t0");
         }
 

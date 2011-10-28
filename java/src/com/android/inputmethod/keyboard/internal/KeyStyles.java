@@ -235,7 +235,7 @@ public class KeyStyles {
         return mStyles.get(styleName);
     }
 
-    public KeyStyle getEmptyKeyStyle() {
+    public static KeyStyle getEmptyKeyStyle() {
         return EMPTY_KEY_STYLE;
     }
 }

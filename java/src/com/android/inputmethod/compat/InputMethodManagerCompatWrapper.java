@@ -153,8 +153,7 @@ public class InputMethodManagerCompatWrapper {
         return Utils.getInputMethodInfo(this, mLatinImePackageName);
     }
 
-    @SuppressWarnings("unused")
-    private InputMethodSubtypeCompatWrapper getLastResortSubtype(String mode) {
+    private static InputMethodSubtypeCompatWrapper getLastResortSubtype(String mode) {
         if (VOICE_MODE.equals(mode) && !FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES)
             return null;
         Locale inputLocale = SubtypeSwitcher.getInstance().getInputLocale();

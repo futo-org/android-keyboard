@@ -223,7 +223,7 @@ public class Key {
             if (style == null)
                 throw new ParseException("Unknown key style: " + styleName, parser);
         } else {
-            style = keyStyles.getEmptyKeyStyle();
+            style = KeyStyles.getEmptyKeyStyle();
         }
 
         final float keyXPos = row.getKeyX(keyAttr);
