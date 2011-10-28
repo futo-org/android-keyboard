@@ -47,7 +47,7 @@ ProximityInfo::ProximityInfo(const int maxProximityCharsSize, const int keyboard
           HAS_TOUCH_POSITION_CORRECTION_DATA(keyCount > 0 && keyXCoordinates && keyYCoordinates
                   && keyWidths && keyHeights && keyCharCodes && sweetSpotCenterXs
                   && sweetSpotCenterYs && sweetSpotRadii),
-          mInputXCoordinates(NULL), mInputYCoordinates(NULL),
+          mInputXCoordinates(0), mInputYCoordinates(0),
           mTouchPositionCorrectionEnabled(false) {
     const int len = GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE;
     mProximityCharsArray = new uint32_t[len];

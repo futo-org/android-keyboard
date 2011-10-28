@@ -21,10 +21,6 @@
 
 #include "defines.h"
 
-#ifndef NULL
-#define NULL 0
-#endif
-
 namespace latinime {
 
 class Correction;
@@ -60,7 +56,7 @@ public:
     bool existsCharInProximityAt(const int index, const int c) const;
     bool existsAdjacentProximityChars(const int index) const;
     ProximityType getMatchedProximityId(const int index, const unsigned short c,
-            const bool checkProximityChars, int *proximityIndex = NULL) const;
+            const bool checkProximityChars, int *proximityIndex = 0) const;
     int getNormalizedSquaredDistance(const int inputIndex, const int proximityIndex) const {
         return mNormalizedSquaredDistances[inputIndex * MAX_PROXIMITY_CHARS_SIZE + proximityIndex];
     }

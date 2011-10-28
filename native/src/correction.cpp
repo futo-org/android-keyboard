@@ -87,7 +87,7 @@ inline static void calcEditDistanceOneStep(int *editDistanceTable, const unsigne
     int *const current = editDistanceTable + outputLength * (inputLength + 1);
     const int *const prev = editDistanceTable + (outputLength - 1) * (inputLength + 1);
     const int *const prevprev =
-            outputLength >= 2 ? editDistanceTable + (outputLength - 2) * (inputLength + 1) : NULL;
+            outputLength >= 2 ? editDistanceTable + (outputLength - 2) * (inputLength + 1) : 0;
     current[0] = outputLength;
     const uint32_t co = Dictionary::toBaseLowerCase(output[outputLength - 1]);
     const uint32_t prevCO =

@@ -23,10 +23,6 @@
 #include "defines.h"
 #include "proximity_info.h"
 
-#ifndef NULL
-#define NULL 0
-#endif
-
 namespace latinime {
 
 class UnigramDictionary {
