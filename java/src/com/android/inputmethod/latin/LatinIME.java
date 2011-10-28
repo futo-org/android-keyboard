@@ -1178,7 +1178,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     // "ic" must not be null
-    private void maybeRemovePreviousPeriod(final InputConnection ic, CharSequence text) {
+    private static void maybeRemovePreviousPeriod(final InputConnection ic, CharSequence text) {
         // When the text's first character is '.', remove the previous period
         // if there is one.
         final CharSequence lastOne = ic.getTextBeforeCursor(1, 0);
@@ -1190,7 +1190,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     // "ic" may be null
-    private void removeTrailingSpaceWhileInBatchEdit(final InputConnection ic) {
+    private static void removeTrailingSpaceWhileInBatchEdit(final InputConnection ic) {
         if (ic == null) return;
         final CharSequence lastOne = ic.getTextBeforeCursor(1, 0);
         if (lastOne != null && lastOne.length() == 1
@@ -1208,12 +1208,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return true;
     }
 
-    private boolean isAlphabet(int code) {
-        if (Character.isLetter(code)) {
-            return true;
-        } else {
-            return false;
-        }
+    private static boolean isAlphabet(int code) {
+        return Character.isLetter(code);
     }
 
     private void onSettingsKeyPressed() {
@@ -2075,7 +2071,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     // "ic" must not be null
-    private boolean sameAsTextBeforeCursor(final InputConnection ic, CharSequence text) {
+    private static boolean sameAsTextBeforeCursor(final InputConnection ic, CharSequence text) {
         CharSequence beforeText = ic.getTextBeforeCursor(text.length(), 0);
         return TextUtils.equals(text, beforeText);
     }
@@ -2129,7 +2125,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return true;
     }
 
-    private boolean revertSwapPunctuation(final InputConnection ic) {
+    private static boolean revertSwapPunctuation(final InputConnection ic) {
         // Here we test whether we indeed have a space and something else before us. This should not
         // be needed, but it's there just in case something went wrong.
         final CharSequence textBeforeCursor = ic.getTextBeforeCursor(2, 0);

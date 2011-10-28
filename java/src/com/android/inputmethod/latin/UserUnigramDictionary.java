@@ -206,7 +206,7 @@ public class UserUnigramDictionary extends ExpandableDictionary {
         }
     }
 
-    private Cursor query(String selection, String[] selectionArgs) {
+    private static Cursor query(String selection, String[] selectionArgs) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         qb.setTables(USER_UNIGRAM_DICT_TABLE_NAME);
         qb.setProjectionMap(sDictProjectionMap);
@@ -251,7 +251,7 @@ public class UserUnigramDictionary extends ExpandableDictionary {
             return null;
         }
 
-        private ContentValues getContentValues(String word, int frequency, String locale) {
+        private static ContentValues getContentValues(String word, int frequency, String locale) {
             ContentValues values = new ContentValues(4);
             values.put(COLUMN_WORD, word);
             values.put(COLUMN_FREQUENCY, frequency);

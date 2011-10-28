@@ -238,7 +238,7 @@ public class UserBigramDictionary extends ExpandableDictionary {
     /**
      * Query the database
      */
-    private Cursor query(String selection, String[] selectionArgs) {
+    private static Cursor query(String selection, String[] selectionArgs) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
         // main INNER JOIN frequency ON (main._id=freq.pair_id)
@@ -310,7 +310,7 @@ public class UserBigramDictionary extends ExpandableDictionary {
         }
 
         /** Prune any old data if the database is getting too big. */
-        private void checkPruneData(SQLiteDatabase db) {
+        private static void checkPruneData(SQLiteDatabase db) {
             db.execSQL("PRAGMA foreign_keys = ON;");
             Cursor c = db.query(FREQ_TABLE_NAME, new String[] { FREQ_COLUMN_PAIR_ID },
                     null, null, null, null, null);
@@ -380,7 +380,7 @@ public class UserBigramDictionary extends ExpandableDictionary {
             return null;
         }
 
-        private ContentValues getContentValues(String word1, String word2, String locale) {
+        private static ContentValues getContentValues(String word1, String word2, String locale) {
             ContentValues values = new ContentValues(3);
             values.put(MAIN_COLUMN_WORD1, word1);
             values.put(MAIN_COLUMN_WORD2, word2);
@@ -388,7 +388,7 @@ public class UserBigramDictionary extends ExpandableDictionary {
             return values;
         }
 
-        private ContentValues getFrequencyContentValues(int pairId, int frequency) {
+        private static ContentValues getFrequencyContentValues(int pairId, int frequency) {
            ContentValues values = new ContentValues(2);
            values.put(FREQ_COLUMN_PAIR_ID, pairId);
            values.put(FREQ_COLUMN_FREQUENCY, frequency);

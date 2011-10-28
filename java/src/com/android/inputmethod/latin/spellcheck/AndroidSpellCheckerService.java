@@ -368,7 +368,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
          * @param text the string to evaluate.
          * @return true if we should filter this text out, false otherwise
          */
-        private boolean shouldFilterOut(final String text) {
+        private static boolean shouldFilterOut(final String text) {
             if (TextUtils.isEmpty(text) || text.length() <= 1) return true;
 
             // TODO: check if an equivalent processing can't be done more quickly with a

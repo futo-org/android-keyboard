@@ -135,7 +135,7 @@ public class WordComposer {
      * @param primaryCode the preferred character
      * @param codes array of codes based on distance from touch point
      */
-    private void correctPrimaryJuxtapos(int primaryCode, int[] codes) {
+    private static void correctPrimaryJuxtapos(int primaryCode, int[] codes) {
         if (codes.length < 2) return;
         if (codes[0] > 0 && codes[1] > 0 && codes[0] != primaryCode && codes[1] == primaryCode) {
             codes[1] = codes[0];
