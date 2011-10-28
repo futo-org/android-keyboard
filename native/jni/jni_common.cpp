@@ -32,14 +32,14 @@ using namespace latinime;
  * Returns the JNI version on success, -1 on failure.
  */
 jint JNI_OnLoad(JavaVM* vm, void* reserved) {
-    JNIEnv* env = NULL;
+    JNIEnv* env = 0;
     jint result = -1;
 
     if (vm->GetEnv((void**) &env, JNI_VERSION_1_4) != JNI_OK) {
         LOGE("ERROR: GetEnv failed");
         goto bail;
     }
-    assert(env != NULL);
+    assert(env != 0);
 
     if (!register_BinaryDictionary(env)) {
         LOGE("ERROR: BinaryDictionary native registration failed");
@@ -63,7 +63,7 @@ namespace latinime {
 int registerNativeMethods(JNIEnv* env, const char* className, JNINativeMethod* methods,
         int numMethods) {
     jclass clazz = env->FindClass(className);
-    if (clazz == NULL) {
+    if (clazz == 0) {
         LOGE("Native registration unable to find class '%s'", className);
         return JNI_FALSE;
     }
