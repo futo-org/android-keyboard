@@ -35,7 +35,7 @@ static jint latinime_Keyboard_setProximityInfo(JNIEnv *env, jobject object,
         jintArray keyHeightArray, jintArray keyCharCodeArray,
         jfloatArray sweetSpotCenterXArray, jfloatArray sweetSpotCenterYArray,
         jfloatArray sweetSpotRadiusArray) {
-    jint *proximityChars = env->GetIntArrayElements(proximityCharsArray, NULL);
+    jint *proximityChars = env->GetIntArrayElements(proximityCharsArray, 0);
     jint *keyXCoordinates = safeGetIntArrayElements(env, keyXCoordinateArray);
     jint *keyYCoordinates = safeGetIntArrayElements(env, keyYCoordinateArray);
     jint *keyWidths = safeGetIntArrayElements(env, keyWidthArray);

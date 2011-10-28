@@ -48,13 +48,13 @@ static jint latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         jint maxAlternatives) {
     PROF_OPEN;
     PROF_START(66);
-    const char *sourceDirChars = env->GetStringUTFChars(sourceDir, NULL);
-    if (sourceDirChars == NULL) {
+    const char *sourceDirChars = env->GetStringUTFChars(sourceDir, 0);
+    if (sourceDirChars == 0) {
         LOGE("DICT: Can't get sourceDir string");
         return 0;
     }
     int fd = 0;
-    void *dictBuf = NULL;
+    void *dictBuf = 0;
     int adjust = 0;
 #ifdef USE_MMAP_FOR_DICTIONARY
     /* mmap version */
@@ -67,7 +67,7 @@ static jint latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
     adjust = dictOffset % pagesize;
     int adjDictOffset = dictOffset - adjust;
     int adjDictSize = dictSize + adjust;
-    dictBuf = mmap(NULL, sizeof(char) * adjDictSize, PROT_READ, MAP_PRIVATE, fd, adjDictOffset);
+    dictBuf = mmap(0, sizeof(char) * adjDictSize, PROT_READ, MAP_PRIVATE, fd, adjDictOffset);
     if (dictBuf == MAP_FAILED) {
         LOGE("DICT: Can't mmap dictionary. errno=%d", errno);
         return 0;
@@ -75,9 +75,9 @@ static jint latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
     dictBuf = (void *)((char *)dictBuf + adjust);
 #else // USE_MMAP_FOR_DICTIONARY
     /* malloc version */
-    FILE *file = NULL;
+    FILE *file = 0;
     file = fopen(sourceDirChars, "rb");
-    if (file == NULL) {
+    if (file == 0) {
         LOGE("DICT: Can't fopen sourceDir. sourceDirChars=%s errno=%d", sourceDirChars, errno);
         return 0;
     }
@@ -108,7 +108,7 @@ static jint latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         LOGE("DICT: dictBuf is null");
         return 0;
     }
-    Dictionary *dictionary = NULL;
+    Dictionary *dictionary = 0;
     if (BinaryFormat::UNKNOWN_FORMAT == BinaryFormat::detectFormat((uint8_t*)dictBuf)) {
         LOGE("DICT: dictionary format is unknown, bad magic number");
 #ifdef USE_MMAP_FOR_DICTIONARY
@@ -133,12 +133,12 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object,
     if (!dictionary) return 0;
     ProximityInfo *pInfo = (ProximityInfo*)proximityInfo;
 
-    int *xCoordinates = env->GetIntArrayElements(xCoordinatesArray, NULL);
-    int *yCoordinates = env->GetIntArrayElements(yCoordinatesArray, NULL);
+    int *xCoordinates = env->GetIntArrayElements(xCoordinatesArray, 0);
+    int *yCoordinates = env->GetIntArrayElements(yCoordinatesArray, 0);
 
-    int *frequencies = env->GetIntArrayElements(frequencyArray, NULL);
-    int *inputCodes = env->GetIntArrayElements(inputArray, NULL);
-    jchar *outputChars = env->GetCharArrayElements(outputArray, NULL);
+    int *frequencies = env->GetIntArrayElements(frequencyArray, 0);
+    int *inputCodes = env->GetIntArrayElements(inputArray, 0);
+    jchar *outputChars = env->GetCharArrayElements(outputArray, 0);
 
     int count = dictionary->getSuggestions(pInfo, xCoordinates, yCoordinates, inputCodes,
             arraySize, flags, (unsigned short*) outputChars, frequencies);
@@ -159,10 +159,10 @@ static int latinime_BinaryDictionary_getBigrams(JNIEnv *env, jobject object, jin
     Dictionary *dictionary = (Dictionary*)dict;
     if (!dictionary) return 0;
 
-    jchar *prevWord = env->GetCharArrayElements(prevWordArray, NULL);
-    int *inputCodes = env->GetIntArrayElements(inputArray, NULL);
-    jchar *outputChars = env->GetCharArrayElements(outputArray, NULL);
-    int *frequencies = env->GetIntArrayElements(frequencyArray, NULL);
+    jchar *prevWord = env->GetCharArrayElements(prevWordArray, 0);
+    int *inputCodes = env->GetIntArrayElements(inputArray, 0);
+    jchar *outputChars = env->GetCharArrayElements(outputArray, 0);
+    int *frequencies = env->GetIntArrayElements(frequencyArray, 0);
 
     int count = dictionary->getBigrams((unsigned short*) prevWord, prevWordLength, inputCodes,
             inputArraySize, (unsigned short*) outputChars, frequencies, maxWordLength, maxBigrams,
@@ -181,7 +181,7 @@ static jboolean latinime_BinaryDictionary_isValidWord(JNIEnv *env, jobject objec
     Dictionary *dictionary = (Dictionary*)dict;
     if (!dictionary) return (jboolean) false;
 
-    jchar *word = env->GetCharArrayElements(wordArray, NULL);
+    jchar *word = env->GetCharArrayElements(wordArray, 0);
     jboolean result = dictionary->isValidWord((unsigned short*) word, wordLength);
     env->ReleaseCharArrayElements(wordArray, word, JNI_ABORT);
 

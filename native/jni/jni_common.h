@@ -29,17 +29,17 @@ int registerNativeMethods(JNIEnv *env, const char *className, JNINativeMethod *m
 
 inline jint *safeGetIntArrayElements(JNIEnv *env, jintArray jArray) {
     if (jArray) {
-        return env->GetIntArrayElements(jArray, NULL);
+        return env->GetIntArrayElements(jArray, 0);
     } else {
-        return NULL;
+        return 0;
     }
 }
 
 inline jfloat *safeGetFloatArrayElements(JNIEnv *env, jfloatArray jArray) {
     if (jArray) {
-        return env->GetFloatArrayElements(jArray, NULL);
+        return env->GetFloatArrayElements(jArray, 0);
     } else {
-        return NULL;
+        return 0;
     }
 }
 
