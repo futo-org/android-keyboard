@@ -21,6 +21,10 @@
 
 #include "defines.h"
 
+#ifndef NULL
+#define NULL 0
+#endif
+
 namespace latinime {
 
 class Correction;

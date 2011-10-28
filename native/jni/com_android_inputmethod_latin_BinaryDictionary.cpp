@@ -33,6 +33,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <unistd.h>
 #else // USE_MMAP_FOR_DICTIONARY
 #include <stdlib.h>
 #endif // USE_MMAP_FOR_DICTIONARY
