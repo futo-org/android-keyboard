@@ -43,7 +43,7 @@
     <string name="enable_span_insert" msgid="7204653105667167620">"再修正を有効にする"</string>
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"再修正の候補を挿入する"</string>
     <string name="auto_cap" msgid="1719746674854628252">"自動大文字変換"</string>
-    <string name="configure_dictionaries_title" msgid="4238652338556902049">"辞書を追加"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"アドオン辞書"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"メイン辞書"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"修正候補を表示する"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"入力中に入力候補を表示する"</string>
