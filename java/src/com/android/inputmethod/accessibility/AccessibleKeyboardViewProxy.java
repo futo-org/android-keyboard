@@ -23,7 +23,6 @@ import android.graphics.Paint;
 import android.inputmethodservice.InputMethodService;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.inputmethod.EditorInfo;
 
@@ -38,18 +37,12 @@ public class AccessibleKeyboardViewProxy {
     private static final String TAG = AccessibleKeyboardViewProxy.class.getSimpleName();
     private static final AccessibleKeyboardViewProxy sInstance = new AccessibleKeyboardViewProxy();
 
-    // Delay in milliseconds between key press DOWN and UP events
-    private static final long DELAY_KEY_PRESS = 10;
-
     private InputMethodService mInputMethod;
     private FlickGestureDetector mGestureDetector;
     private LatinKeyboardView mView;
     private AccessibleKeyboardActionListener mListener;
 
-    private int mScaledEdgeSlop;
     private int mLastHoverKeyIndex = KeyDetector.NOT_A_KEY;
-    private int mLastX = -1;
-    private int mLastY = -1;
 
     public static void init(InputMethodService inputMethod, SharedPreferences prefs) {
         sInstance.initInternal(inputMethod, prefs);
@@ -77,7 +70,6 @@ public class AccessibleKeyboardViewProxy {
 
         mInputMethod = inputMethod;
         mGestureDetector = new KeyboardFlickGestureDetector(inputMethod);
-        mScaledEdgeSlop = ViewConfiguration.get(inputMethod).getScaledEdgeSlop();
     }
 
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event,
@@ -143,24 +135,7 @@ public class AccessibleKeyboardViewProxy {
             if (keyIndex != mLastHoverKeyIndex) {
                 fireKeyHoverEvent(tracker, mLastHoverKeyIndex, false);
                 mLastHoverKeyIndex = keyIndex;
-                mLastX = x;
-                mLastY = y;
                 fireKeyHoverEvent(tracker, mLastHoverKeyIndex, true);
-            }
-
-            return true;
-        case MotionEventCompatUtils.ACTION_HOVER_EXIT:
-            final int width = mView.getWidth();
-            final int height = mView.getHeight();
-
-            if (x < mScaledEdgeSlop || y < mScaledEdgeSlop || x >= (width - mScaledEdgeSlop)
-                    || y >= (height - mScaledEdgeSlop)) {
-                fireKeyHoverEvent(tracker, mLastHoverKeyIndex, false);
-                mLastHoverKeyIndex = KeyDetector.NOT_A_KEY;
-                mLastX = -1;
-                mLastY = -1;
-            } else if (mLastHoverKeyIndex != KeyDetector.NOT_A_KEY) {
-                fireKeyPressEvent(tracker, mLastX, mLastY, event.getEventTime());
             }
 
             return true;
@@ -195,11 +170,6 @@ public class AccessibleKeyboardViewProxy {
             mListener.onHoverExit(key.mCode);
             mView.sendAccessibilityEvent(AccessibilityEventCompatUtils.TYPE_VIEW_HOVER_EXIT);
         }
-    }
-
-    private void fireKeyPressEvent(PointerTracker tracker, int x, int y, long eventTime) {
-        tracker.onDownEvent(x, y, eventTime, mView);
-        tracker.onUpEvent(x, y, eventTime + DELAY_KEY_PRESS);
     }
 
     private class KeyboardFlickGestureDetector extends FlickGestureDetector {

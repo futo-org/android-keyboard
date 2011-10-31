@@ -624,16 +624,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        // Drop non-hover touch events when touch exploration is enabled.
-        if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
-            return false;
-        }
-
-        return super.dispatchTouchEvent(event);
-    }
-
-    @Override
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
         if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
             final PointerTracker tracker = getPointerTracker(0);
