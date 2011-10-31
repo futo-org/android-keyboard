@@ -46,7 +46,7 @@ public class BinaryDictionary extends Dictionary {
     private static final int TYPED_LETTER_MULTIPLIER = 2;
 
     private int mDicTypeId;
-    private int mNativeDict;
+    private long mNativeDict;
     private final int[] mInputCodes = new int[MAX_WORD_LENGTH * MAX_PROXIMITY_CHARS_SIZE];
     private final char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_WORDS];
     private final char[] mOutputChars_bigrams = new char[MAX_WORD_LENGTH * MAX_BIGRAMS];
@@ -107,15 +107,15 @@ public class BinaryDictionary extends Dictionary {
         Utils.loadNativeLibrary();
     }
 
-    private native int openNative(String sourceDir, long dictOffset, long dictSize,
+    private native long openNative(String sourceDir, long dictOffset, long dictSize,
             int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength,
             int maxWords, int maxAlternatives);
-    private native void closeNative(int dict);
-    private native boolean isValidWordNative(int nativeData, char[] word, int wordLength);
-    private native int getSuggestionsNative(int dict, int proximityInfo, int[] xCoordinates,
+    private native void closeNative(long dict);
+    private native boolean isValidWordNative(long dict, char[] word, int wordLength);
+    private native int getSuggestionsNative(long dict, long proximityInfo, int[] xCoordinates,
             int[] yCoordinates, int[] inputCodes, int codesSize, int flags, char[] outputChars,
             int[] scores);
-    private native int getBigramsNative(int dict, char[] prevWord, int prevWordLength,
+    private native int getBigramsNative(long dict, char[] prevWord, int prevWordLength,
             int[] inputCodes, int inputCodesLength, char[] outputChars, int[] scores,
             int maxWordLength, int maxBigrams, int maxAlternatives);
 
