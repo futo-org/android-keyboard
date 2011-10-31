@@ -28,7 +28,7 @@
 
 namespace latinime {
 
-static jint latinime_Keyboard_setProximityInfo(JNIEnv *env, jobject object,
+static jlong latinime_Keyboard_setProximityInfo(JNIEnv *env, jobject object,
         jint maxProximityCharsSize, jint displayWidth, jint displayHeight, jint gridWidth,
         jint gridHeight, jintArray proximityCharsArray, jint keyCount,
         jintArray keyXCoordinateArray, jintArray keyYCoordinateArray, jintArray keyWidthArray,
@@ -59,19 +59,19 @@ static jint latinime_Keyboard_setProximityInfo(JNIEnv *env, jobject object,
     safeReleaseIntArrayElements(env, keyYCoordinateArray, keyYCoordinates);
     safeReleaseIntArrayElements(env, keyXCoordinateArray, keyXCoordinates);
     env->ReleaseIntArrayElements(proximityCharsArray, proximityChars, 0);
-    return (jint)proximityInfo;
+    return (jlong)proximityInfo;
 }
 
-static void latinime_Keyboard_release(JNIEnv *env, jobject object, jint proximityInfo) {
+static void latinime_Keyboard_release(JNIEnv *env, jobject object, jlong proximityInfo) {
     ProximityInfo *pi = (ProximityInfo*)proximityInfo;
     if (!pi) return;
     delete pi;
 }
 
 static JNINativeMethod sKeyboardMethods[] = {
-    {"setProximityInfoNative", "(IIIII[II[I[I[I[I[I[F[F[F)I",
+    {"setProximityInfoNative", "(IIIII[II[I[I[I[I[I[F[F[F)J",
             (void*)latinime_Keyboard_setProximityInfo},
-    {"releaseProximityInfoNative", "(I)V", (void*)latinime_Keyboard_release}
+    {"releaseProximityInfoNative", "(J)V", (void*)latinime_Keyboard_release}
 };
 
 int register_ProximityInfo(JNIEnv *env) {

@@ -75,16 +75,16 @@ public class ProximityInfo {
         return spellCheckerProximityInfo;
     }
 
-    private int mNativeProximityInfo;
+    private long mNativeProximityInfo;
     static {
         Utils.loadNativeLibrary();
     }
-    private native int setProximityInfoNative(int maxProximityCharsSize, int displayWidth,
+    private native long setProximityInfoNative(int maxProximityCharsSize, int displayWidth,
             int displayHeight, int gridWidth, int gridHeight, int[] proximityCharsArray,
             int keyCount, int[] keyXCoordinates, int[] keyYCoordinates,
             int[] keyWidths, int[] keyHeights, int[] keyCharCodes,
             float[] sweetSpotCenterX, float[] sweetSpotCenterY, float[] sweetSpotRadii);
-    private native void releaseProximityInfoNative(int nativeProximityInfo);
+    private native void releaseProximityInfoNative(long nativeProximityInfo);
 
     private final void setProximityInfo(int[][] gridNeighborKeyIndexes, int keyboardWidth,
             int keyboardHeight, List<Key> keys,
@@ -157,7 +157,7 @@ public class ProximityInfo {
         }
     }
 
-    public int getNativeProximityInfo() {
+    public long getNativeProximityInfo() {
         return mNativeProximityInfo;
     }
 
