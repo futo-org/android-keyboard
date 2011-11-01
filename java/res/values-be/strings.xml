@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="english_ime_name" msgid="7252517407088836577">"Клавіятура Android"</string>
+    <string name="english_ime_settings" msgid="6661589557206947774">"Налады клавіятуры Android"</string>
+    <string name="english_ime_input_options" msgid="3909945612939668554">"Параметры ўводу"</string>
+    <string name="spell_checker_service_name" msgid="2003013122022285508">"Папраўкі Android"</string>
+    <string name="android_spell_checker_settings" msgid="5822324635435443689">"Налады праверкі арфаграфіі"</string>
+    <string name="use_proximity_option_title" msgid="7469233942295924620">"Выкарыстоўвайць дадзеныя аб блізкасці"</string>
+    <string name="use_proximity_option_summary" msgid="2857708859847261945">"Для праверкі арфаграфіі выкарыстоўваць алгарытм блізкасці, падобны на клавіятуру"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Вібрацыя пры націску клавіш"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Гук пры націску"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Па націску на клавішы ўсплывае акно"</string>
+    <string name="general_category" msgid="1859088467017573195">"Агульныя"</string>
+    <string name="correction_category" msgid="2236750915056607613">"Выпраўленне тэксту"</string>
+    <string name="misc_category" msgid="6894192814868233453">"Іншыя параметры"</string>
+    <string name="advanced_settings" msgid="362895144495591463">"Адмысловыя налады"</string>
+    <string name="advanced_settings_summary" msgid="5193513161106637254">"Парам. для дасведч. карыст."</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Затрым. скр. падк. клав."</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Няма затрымкі"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Па змаўчанні"</string>
+    <string name="use_contacts_dict" msgid="4435317977804180815">"Прапан. імёны кантактаў"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Выкарыстоўваць імёны са спісу кантактаў для прапаноў і выпраўл."</string>
+    <string name="enable_span_insert" msgid="7204653105667167620">"Уключыць карэкцiроўкі"</string>
+    <string name="enable_span_insert_summary" msgid="2947317657871394467">"Задаць прапановы для карэкцiроўкі"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Аўтаматычна рабіць вялікія літары"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Дадатковыя слоўнікі"</string>
+    <string name="main_dictionary" msgid="4798763781818361168">"Асноўны слоўнік"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Паказаць прапановы на выпраўленне"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Паказваць прапанаваныя словы падчас набору тэксту"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Заўсёды паказваць"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Паказаць у партрэтным рэжыме"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Заўседы хаваць"</string>
+    <string name="prefs_settings_key" msgid="4623341240804046498">"Паказаць умоўныя азначэнні налад"</string>
+    <string name="auto_correction" msgid="4979925752001319458">"Аўтамат. выпраўленне"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Прабелы і пунктуацыйныя знакі дазваляюць аўтаматычна выпраўляць памылкова ўведзеныя словы"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Адключаны"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Сціплы"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Агрэсіўны"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Вельмі агрэсіўны"</string>
+    <string name="bigram_suggestion" msgid="2636414079905220518">"Біграмныя падказкi"</string>
+    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Выкарыстаць папярэдняе слова, каб палепшыць прапанову"</string>
+    <string name="bigram_prediction" msgid="8914273444762259739">"Бiграмныя падказкi"</string>
+    <string name="bigram_prediction_summary" msgid="1747261921174300098">"Выкарыстанне папярэдняга слова для падказак"</string>
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Захаваныя"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"Пачаць"</string>
+    <string name="label_next_key" msgid="362972844525672568">"Далей"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"Гатова"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"Адправіць"</string>
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
+    <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
+    <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
+    <string name="label_pause_key" msgid="181098308428035340">"Паўза"</string>
+    <string name="label_wait_key" msgid="6402152600878093134">"Чакае"</string>
+    <string name="spoken_use_headphones" msgid="896961781287283493">"Каб праслухаць паролi, падключыце гарнiтуру."</string>
+    <string name="spoken_current_text_is" msgid="2485723011272583845">"Бягучы тэкст %s"</string>
+    <string name="spoken_no_text_entered" msgid="7479685225597344496">"Тэкст не ўведзены"</string>
+    <string name="spoken_description_unknown" msgid="3197434010402179157">"Клавішны код %d"</string>
+    <string name="spoken_description_shift" msgid="244197883292549308">"Зрух"</string>
+    <string name="spoken_description_shift_shifted" msgid="954941524766465022">"Зрух уключаны"</string>
+    <string name="spoken_description_caps_lock" msgid="5660626444912131764">"Caps Lock уключаны"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"Выдаліць"</string>
+    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Сімвалы"</string>
+    <string name="spoken_description_to_alpha" msgid="23129338819771807">"Літары"</string>
+    <string name="spoken_description_to_numeric" msgid="591752092685161732">"Лічбы"</string>
+    <string name="spoken_description_settings" msgid="4627462689603838099">"Налады"</string>
+    <string name="spoken_description_tab" msgid="2667716002663482248">"Укладка"</string>
+    <string name="spoken_description_space" msgid="2582521050049860859">"Прабел"</string>
+    <string name="spoken_description_mic" msgid="615536748882611950">"Галасавы ўвод"</string>
+    <string name="spoken_description_smiley" msgid="2256309826200113918">"Смайлік"</string>
+    <string name="spoken_description_return" msgid="8178083177238315647">"Увод"</string>
+    <string name="spoken_description_comma" msgid="4970844442999724586">"Коска"</string>
+    <string name="spoken_description_period" msgid="5286614628077903945">"Кропка"</string>
+    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"Адчыняючая дужка"</string>
+    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"Дужка, якая зачыняе"</string>
+    <string name="spoken_description_colon" msgid="4312420908484277077">"Двукроп\'е"</string>
+    <string name="spoken_description_semicolon" msgid="37737920987155179">"Кропка з коскай"</string>
+    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"Клічнік"</string>
+    <string name="spoken_description_question_mark" msgid="7074097784255379666">"Пытальнік"</string>
+    <string name="spoken_description_double_quote" msgid="5485320575389905967">"Двукоссі"</string>
+    <string name="spoken_description_single_quote" msgid="4451320362665463938">"Паўдвукоссі"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"Кропка"</string>
+    <string name="spoken_description_square_root" msgid="190595160284757811">"Квадратны корань"</string>
+    <string name="spoken_description_pi" msgid="4554418247799952239">"Пі"</string>
+    <string name="spoken_description_delta" msgid="3607948313655721579">"Дэльта"</string>
+    <string name="spoken_description_trademark" msgid="475877774077871369">"Гандлёвая марка"</string>
+    <string name="spoken_description_care_of" msgid="7492800237237796530">"Працэнт"</string>
+    <string name="spoken_description_star" msgid="1009742725387231977">"Пазначыць"</string>
+    <string name="spoken_description_pound" msgid="5530577649206922631">"Фунт"</string>
+    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"Шматкроп\'е"</string>
+    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"Нізкія падвойныя двукоссі"</string>
+    <string name="voice_warning_title" msgid="4419354150908395008">"Галасавы ўвод"</string>
+    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Галасавы ўвод пакуль не падтрымліваецца для вашай мовы, але працуе на англійскай мове."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Галасавы набор выкарыстоўвае распазнанне гаворкі Google. Ужываецца "<a href="http://m.google.com/privacy">"палiтыка прыватнасцi для мабiльных прылад"</a>"."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Каб адключыць галасавы ўвод, перайдзіце ў налады метаду ўводу."</string>
+    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Каб выкарыстоўваць галасавы ўвод, націсніце кнопку мікрафона."</string>
+    <string name="voice_listening" msgid="467518160751321844">"Гаварыце"</string>
+    <string name="voice_working" msgid="6666937792815731889">"Апрацоўка"</string>
+    <string name="voice_initializing" msgid="661962047129906646"></string>
+    <string name="voice_error" msgid="5140896300312186162">"Памылка. Паспрабуйце яшчэ."</string>
+    <string name="voice_network_error" msgid="6649556447401862563">"Не атрымалася ўсталяваць падключэнне"</string>
+    <string name="voice_too_much_speech" msgid="5746973620134227376">"Памылка, зашмат гаворкі."</string>
+    <string name="voice_audio_error" msgid="5072707727016414454">"Праблема з гукам"</string>
+    <string name="voice_server_error" msgid="7807129913977261644">"Памылка сервера"</string>
+    <string name="voice_speech_timeout" msgid="8461817525075498795">"Не чуваць гаворку"</string>
+    <string name="voice_no_match" msgid="4285117547030179174">"Няма супадзенняў"</string>
+    <string name="voice_not_installed" msgid="5552450909753842415">"Галасавы пошук не ўсталяваны"</string>
+    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Падказка:"</b>" Правядзіце пальцам праз клавіятуру, каб казаць"</string>
+    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Падказка:"</b>" У наступны раз паспрабуйце прагаворваць такiя знакі пунктуацыі, як \"кропка\", \"коска\" або \"пытальнік\"."</string>
+    <string name="cancel" msgid="6830980399865683324">"Адмяніць"</string>
+    <string name="ok" msgid="7898366843681727667">"ОК"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Ключ галасавога ўводу"</string>
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"На асн. клавіятуры"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"На сімв. клавіятуры"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"Адключана"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Мік. на асн. клав."</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Мік. на сімв. клав."</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Галасавы набор адкл."</string>
+    <string name="selectInputMethod" msgid="315076553378705821">"Выберыце метад уводу"</string>
+    <string name="configure_input_method" msgid="373356270290742459">"Налада метадаў уводу"</string>
+    <string name="language_selection_title" msgid="1651299598555326750">"Мовы ўводу"</string>
+    <string name="select_language" msgid="3693815588777926848">"Мовы ўводу"</string>
+    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"... Дакраніцеся яшчэ раз, каб захаваць"</string>
+    <string name="has_dictionary" msgid="6071847973466625007">"Слоўнік даступны"</string>
+    <string name="prefs_enable_log" msgid="6620424505072963557">"Уключыць зваротную сувязь з карыстальнікамі"</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"Дапамажыце палепшыць гэты рэдактар ​​метаду ўводу, аўтаматычна адпраўляючы статыстыку выкарыстання і справаздачы аб збоях Google."</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"Тэма клавіятуры"</string>
+    <string name="subtype_de_qwerty" msgid="3358900499589259491">"Нямецкая QWERTY"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"Англійская (ЗК)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"Англійская (ЗША)"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Рэжым даследвання выкарыстальнасці"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Налады працягласцi вiбрацыi пры нацiску"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Налады гучнасцi пры нацiску"</string>
+</resources>
