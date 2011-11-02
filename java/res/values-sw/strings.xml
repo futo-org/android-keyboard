@@ -149,5 +149,5 @@
     <string name="subtype_en_US" msgid="6160452336634534239">"Kiingereza cha (Marekani)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modi ya uchunguzi wa utumizi"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Bonyeza mipangilio ya kipindi cha mtetemo"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Bonyeza mipangilio ya kurekebisha sauti"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Bonyeza mipangilio ya nguvu za sauti"</string>
 </resources>
