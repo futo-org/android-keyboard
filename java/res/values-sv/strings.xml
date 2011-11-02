@@ -80,7 +80,7 @@
     <string name="spoken_description_caps_lock" msgid="5660626444912131764">"Caps Lock är aktiverat"</string>
     <string name="spoken_description_delete" msgid="8740376944276199801">"Delete"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Symboler"</string>
-    <string name="spoken_description_to_alpha" msgid="23129338819771807">"Brev"</string>
+    <string name="spoken_description_to_alpha" msgid="23129338819771807">"Bokstäver"</string>
     <string name="spoken_description_to_numeric" msgid="591752092685161732">"Siffror"</string>
     <string name="spoken_description_settings" msgid="4627462689603838099">"Inställningar"</string>
     <string name="spoken_description_tab" msgid="2667716002663482248">"Tabb"</string>
