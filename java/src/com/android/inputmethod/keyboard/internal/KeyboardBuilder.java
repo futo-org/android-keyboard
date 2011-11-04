@@ -169,7 +169,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             keyboardAttr.recycle();
             TypedArray keyAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.Keyboard_Key);
-            mDefaultKeyWidth = KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
+            mDefaultKeyWidth = KeyboardBuilder.getDimensionOrFraction(keyAttr,
                     R.styleable.Keyboard_Key_keyWidth, params.mBaseWidth, params.mDefaultKeyWidth);
             keyAttr.recycle();
 
