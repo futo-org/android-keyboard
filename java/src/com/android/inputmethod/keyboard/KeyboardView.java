@@ -906,12 +906,16 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         int previewX = keyDrawX - (previewWidth - keyDrawWidth) / 2 + params.mCoordinates[0];
         final int previewY = key.mY - previewHeight
                 + params.mCoordinates[1] + params.mPreviewOffset;
-        if (previewX < 0 && params.mPreviewLeftBackground != null) {
-            previewText.setBackgroundDrawable(params.mPreviewLeftBackground);
+        if (previewX < 0) {
             previewX = 0;
-        } else if (previewX + previewWidth > getWidth() && params.mPreviewRightBackground != null) {
-            previewText.setBackgroundDrawable(params.mPreviewRightBackground);
+            if (params.mPreviewLeftBackground != null) {
+                previewText.setBackgroundDrawable(params.mPreviewLeftBackground);
+            }
+        } else if (previewX > getWidth() - previewWidth) {
             previewX = getWidth() - previewWidth;
+            if (params.mPreviewRightBackground != null) {
+                previewText.setBackgroundDrawable(params.mPreviewRightBackground);
+            }
         }
 
         // Set the preview background state
