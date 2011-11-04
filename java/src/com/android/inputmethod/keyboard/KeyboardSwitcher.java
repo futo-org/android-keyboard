@@ -656,11 +656,16 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return mKeyboardView == null ? 0 : mKeyboardView.getPointerCount();
     }
 
+    private boolean mPrevMainKeyboardWasShiftLocked;
+
     private void toggleKeyboardMode() {
         if (mCurrentId.equals(mMainKeyboardId)) {
+            mPrevMainKeyboardWasShiftLocked = isShiftLocked();
             setKeyboard(getKeyboard(mSymbolsKeyboardId));
         } else {
             setKeyboard(getKeyboard(mMainKeyboardId));
+            setShiftLocked(mPrevMainKeyboardWasShiftLocked);
+            mPrevMainKeyboardWasShiftLocked = false;
         }
     }
 
