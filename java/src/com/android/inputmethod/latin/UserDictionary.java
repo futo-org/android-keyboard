@@ -179,8 +179,9 @@ public class UserDictionary extends ExpandableDictionary {
         new Thread("addWord") {
             @Override
             public void run() {
+                Cursor cursor = null;
                 try {
-                    final Cursor cursor = client.query(Words.CONTENT_URI, PROJECTION_ADD,
+                    cursor = client.query(Words.CONTENT_URI, PROJECTION_ADD,
                             "word=? and ((locale IS NULL) or (locale=?))",
                                     new String[] { word, mLocale }, null);
                     if (cursor != null && cursor.moveToFirst()) {
@@ -201,6 +202,9 @@ public class UserDictionary extends ExpandableDictionary {
                     // If we come here, the activity is already about to be killed, and we
                     // have no means of contacting the content provider any more.
                     // See ContentResolver#insert, inside the catch(){}
+                } finally {
+                    if (null != cursor) cursor.close();
+                    client.release();
                 }
             }
         }.start();
