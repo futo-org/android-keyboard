@@ -360,6 +360,27 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
             mLocale = LocaleUtils.constructLocaleFromString(localeString);
         }
 
+        /*
+         * Returns whether the code point is a letter that makes sense for the specified
+         * locale for this spell checker.
+         * The dictionaries supported by Latin IME are described in res/xml/spellchecker.xml
+         * and is limited to EFIGS language.
+         * Hence at the moment this explicitly excludes non-Latin scripts, including CJK
+         * characters, but also Cyrillic, Arabic or Hebrew characters.
+         * The locale should be used to rule out inappropriate characters when we support
+         * spellchecking other languages like Russian.
+         */
+        private static boolean isLetterCheckableByLanguage(final int codePoint,
+                final Locale locale) {
+            // Our supported dictionaries (EFIGS) at the moment only includes characters
+            // in the C0, C1, Latin Extended A and B, IPA extensions unicode blocks.
+            // As it happens, those are back-to-back in the code range 0x40 to 0x2AF, so
+            // the below is a very efficient way to test for it. As for the 0-0x3F, it's
+            // excluded from isLetter anyway.
+            // TODO: change this to use locale when we support other scripts
+            return codePoint <= 0x2AF && Character.isLetter(codePoint);
+        }
+
         /**
          * Finds out whether a particular string should be filtered out of spell checking.
          *
@@ -368,7 +389,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
          * @param text the string to evaluate.
          * @return true if we should filter this text out, false otherwise
          */
-        private static boolean shouldFilterOut(final String text) {
+        private static boolean shouldFilterOut(final String text, final Locale locale) {
             if (TextUtils.isEmpty(text) || text.length() <= 1) return true;
 
             // TODO: check if an equivalent processing can't be done more quickly with a
@@ -376,7 +397,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
             // Filter by first letter
             final int firstCodePoint = text.codePointAt(0);
             // Filter out words that don't start with a letter or an apostrophe
-            if (!Character.isLetter(firstCodePoint)
+            if (!isLetterCheckableByLanguage(firstCodePoint, locale)
                     && '\'' != firstCodePoint) return true;
 
             // Filter contents
@@ -389,7 +410,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 // words or a URI - in either case we don't want to spell check that
                 if ('@' == codePoint
                         || '/' == codePoint) return true;
-                if (Character.isLetter(codePoint)) ++letterCount;
+                if (isLetterCheckableByLanguage(codePoint, locale)) ++letterCount;
             }
             // Guestimate heuristic: perform spell checking if at least 3/4 of the characters
             // in this word are letters
@@ -408,7 +429,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
             try {
                 final String text = textInfo.getText();
 
-                if (shouldFilterOut(text)) {
+                if (shouldFilterOut(text, mLocale)) {
                     DictAndProximity dictInfo = null;
                     try {
                         dictInfo = mDictionaryPool.takeOrGetNull();
