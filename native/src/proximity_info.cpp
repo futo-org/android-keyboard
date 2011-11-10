@@ -49,14 +49,17 @@ ProximityInfo::ProximityInfo(const int maxProximityCharsSize, const int keyboard
                   && sweetSpotCenterYs && sweetSpotRadii),
           mInputXCoordinates(0), mInputYCoordinates(0),
           mTouchPositionCorrectionEnabled(false) {
-    const int len = GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE;
-    mProximityCharsArray = new uint32_t[len];
-    mNormalizedSquaredDistances = new int[len];
+    const int proximityGridLength = GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE;
+    mProximityCharsArray = new uint32_t[proximityGridLength];
     if (DEBUG_PROXIMITY_INFO) {
-        LOGI("Create proximity info array %d", len);
+        LOGI("Create proximity info array %d", proximityGridLength);
     }
-    memcpy(mProximityCharsArray, proximityCharsArray, len * sizeof(mProximityCharsArray[0]));
-    for (int i = 0; i < len; ++i) {
+    memcpy(mProximityCharsArray, proximityCharsArray,
+            proximityGridLength * sizeof(mProximityCharsArray[0]));
+    const int normalizedSquaredDistancesLength =
+            MAX_PROXIMITY_CHARS_SIZE * MAX_WORD_LENGTH_INTERNAL;
+    mNormalizedSquaredDistances = new int[normalizedSquaredDistancesLength];
+    for (int i = 0; i < normalizedSquaredDistancesLength; ++i) {
         mNormalizedSquaredDistances[i] = NOT_A_DISTANCE;
     }
 
