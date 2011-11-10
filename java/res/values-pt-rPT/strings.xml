@@ -135,7 +135,7 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mic. tecl. principal"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mic. tecl. símbolos"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Entr. voz desact."</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Seleccionar método de entrada"</string>
+    <string name="selectInputMethod" msgid="315076553378705821">"Selecionar método de entrada"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de introdução"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas de entrada"</string>
     <string name="select_language" msgid="3693815588777926848">"Idiomas de introdução"</string>
