@@ -82,15 +82,15 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
 
     // The threshold for a candidate to be offered as a suggestion.
     private double mSuggestionThreshold;
-    // The threshold for a suggestion to be considered "likely".
-    private double mLikelyThreshold;
+    // The threshold for a suggestion to be considered "recommended".
+    private double mRecommendedThreshold;
 
     @Override public void onCreate() {
         super.onCreate();
         mSuggestionThreshold =
                 Double.parseDouble(getString(R.string.spellchecker_suggestion_threshold_value));
-        mLikelyThreshold =
-                Double.parseDouble(getString(R.string.spellchecker_likely_threshold_value));
+        mRecommendedThreshold =
+                Double.parseDouble(getString(R.string.spellchecker_recommended_threshold_value));
     }
 
     @Override
@@ -110,10 +110,11 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
     private static class SuggestionsGatherer implements WordCallback {
         public static class Result {
             public final String[] mSuggestions;
-            public final boolean mHasLikelySuggestions;
-            public Result(final String[] gatheredSuggestions, final boolean hasLikelySuggestions) {
+            public final boolean mHasRecommendedSuggestions;
+            public Result(final String[] gatheredSuggestions,
+                    final boolean hasRecommendedSuggestions) {
                 mSuggestions = gatheredSuggestions;
-                mHasLikelySuggestions = hasLikelySuggestions;
+                mHasRecommendedSuggestions = hasRecommendedSuggestions;
             }
         }
 
@@ -121,7 +122,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         private final int[] mScores;
         private final String mOriginalText;
         private final double mSuggestionThreshold;
-        private final double mLikelyThreshold;
+        private final double mRecommendedThreshold;
         private final int mMaxLength;
         private int mLength = 0;
 
@@ -131,10 +132,10 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         private int mBestScore = Integer.MIN_VALUE; // As small as possible
 
         SuggestionsGatherer(final String originalText, final double suggestionThreshold,
-                final double likelyThreshold, final int maxLength) {
+                final double recommendedThreshold, final int maxLength) {
             mOriginalText = originalText;
             mSuggestionThreshold = suggestionThreshold;
-            mLikelyThreshold = likelyThreshold;
+            mRecommendedThreshold = recommendedThreshold;
             mMaxLength = maxLength;
             mSuggestions = new ArrayList<CharSequence>(maxLength + 1);
             mScores = new int[mMaxLength];
@@ -198,19 +199,19 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
 
         public Result getResults(final int capitalizeType, final Locale locale) {
             final String[] gatheredSuggestions;
-            final boolean hasLikelySuggestions;
+            final boolean hasRecommendedSuggestions;
             if (0 == mLength) {
                 // Either we found no suggestions, or we found some BUT the max length was 0.
                 // If we found some mBestSuggestion will not be null. If it is null, then
                 // we found none, regardless of the max length.
                 if (null == mBestSuggestion) {
                     gatheredSuggestions = null;
-                    hasLikelySuggestions = false;
+                    hasRecommendedSuggestions = false;
                 } else {
                     gatheredSuggestions = EMPTY_STRING_ARRAY;
                     final double normalizedScore =
                             Utils.calcNormalizedScore(mOriginalText, mBestSuggestion, mBestScore);
-                    hasLikelySuggestions = (normalizedScore > mLikelyThreshold);
+                    hasRecommendedSuggestions = (normalizedScore > mRecommendedThreshold);
                 }
             } else {
                 if (DBG) {
@@ -244,15 +245,15 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 final CharSequence bestSuggestion = mSuggestions.get(0);
                 final double normalizedScore =
                         Utils.calcNormalizedScore(mOriginalText, bestSuggestion, bestScore);
-                hasLikelySuggestions = (normalizedScore > mLikelyThreshold);
+                hasRecommendedSuggestions = (normalizedScore > mRecommendedThreshold);
                 if (DBG) {
                     Log.i(TAG, "Best suggestion : " + bestSuggestion + ", score " + bestScore);
                     Log.i(TAG, "Normalized score = " + normalizedScore
-                            + " (threshold " + mLikelyThreshold
-                            + ") => hasLikelySuggestions = " + hasLikelySuggestions);
+                            + " (threshold " + mRecommendedThreshold
+                            + ") => hasRecommendedSuggestions = " + hasRecommendedSuggestions);
                 }
             }
-            return new Result(gatheredSuggestions, hasLikelySuggestions);
+            return new Result(gatheredSuggestions, hasRecommendedSuggestions);
         }
     }
 
@@ -426,7 +427,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
 
                 // TODO: Don't gather suggestions if the limit is <= 0 unless necessary
                 final SuggestionsGatherer suggestionsGatherer = new SuggestionsGatherer(text,
-                        mService.mSuggestionThreshold, mService.mLikelyThreshold, suggestionsLimit);
+                        mService.mSuggestionThreshold, mService.mRecommendedThreshold,
+                        suggestionsLimit);
                 final WordComposer composer = new WordComposer();
                 final int length = text.length();
                 for (int i = 0; i < length; ++i) {
@@ -475,7 +477,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                             + suggestionsLimit);
                     Log.i(TAG, "IsInDict = " + isInDict);
                     Log.i(TAG, "LooksLikeTypo = " + (!isInDict));
-                    Log.i(TAG, "HasLikelySuggestions = " + result.mHasLikelySuggestions);
+                    Log.i(TAG, "HasRecommendedSuggestions = " + result.mHasRecommendedSuggestions);
                     if (null != result.mSuggestions) {
                         for (String suggestion : result.mSuggestions) {
                             Log.i(TAG, suggestion);
@@ -483,10 +485,12 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                     }
                 }
 
-                // TODO: actually use result.mHasLikelySuggestions
                 final int flags =
                         (isInDict ? SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY
-                                : SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO);
+                                : SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO)
+                        | (result.mHasRecommendedSuggestions
+                                ? SuggestionsInfo.RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS
+                                : 0);
                 return new SuggestionsInfo(flags, result.mSuggestions);
             } catch (RuntimeException e) {
                 // Don't kill the keyboard if there is a bug in the spell checker
