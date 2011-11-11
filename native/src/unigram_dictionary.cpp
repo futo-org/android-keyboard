@@ -464,8 +464,8 @@ static inline bool testCharGroupForContinuedLikeness(const uint8_t flags,
     const bool hasMultipleChars = (0 != (UnigramDictionary::FLAG_HAS_MULTIPLE_CHARS & flags));
     int pos = startPos;
     int32_t character = BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
-    int32_t baseChar = Dictionary::toBaseLowerCase(character);
-    const uint16_t wChar = Dictionary::toBaseLowerCase(inWord[startInputIndex]);
+    int32_t baseChar = toBaseLowerCase(character);
+    const uint16_t wChar = toBaseLowerCase(inWord[startInputIndex]);
 
     if (baseChar != wChar) {
         *outPos = hasMultipleChars ? BinaryFormat::skipOtherCharacters(root, pos) : pos;
@@ -477,8 +477,8 @@ static inline bool testCharGroupForContinuedLikeness(const uint8_t flags,
     if (hasMultipleChars) {
         character = BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
         while (NOT_A_CHARACTER != character) {
-            baseChar = Dictionary::toBaseLowerCase(character);
-            if (Dictionary::toBaseLowerCase(inWord[++inputIndex]) != baseChar) {
+            baseChar = toBaseLowerCase(character);
+            if (toBaseLowerCase(inWord[++inputIndex]) != baseChar) {
                 *outPos = BinaryFormat::skipOtherCharacters(root, pos);
                 *outInputIndex = startInputIndex;
                 return false;

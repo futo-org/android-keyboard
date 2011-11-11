@@ -12,6 +12,7 @@ LOCAL_SRC_FILES := \
     jni/com_android_inputmethod_keyboard_ProximityInfo.cpp \
     jni/com_android_inputmethod_latin_BinaryDictionary.cpp \
     jni/jni_common.cpp \
+    src/basechars.cpp \
     src/bigram_dictionary.cpp \
     src/char_utils.cpp \
     src/correction.cpp \

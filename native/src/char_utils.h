@@ -19,7 +19,46 @@
 
 namespace latinime {
 
+inline static int isAsciiUpper(unsigned short c) {
+    return c >= 'A' && c <= 'Z';
+}
+
+inline static unsigned short toAsciiLower(unsigned short c) {
+    return c - 'A' + 'a';
+}
+
+inline static int isAscii(unsigned short c) {
+    return c <= 127;
+}
+
 unsigned short latin_tolower(unsigned short c);
+
+/**
+ * Table mapping most combined Latin, Greek, and Cyrillic characters
+ * to their base characters.  If c is in range, BASE_CHARS[c] == c
+ * if c is not a combined character, or the base character if it
+ * is combined.
+ */
+
+static const int BASE_CHARS_SIZE = 0x0500;
+extern const unsigned short BASE_CHARS[BASE_CHARS_SIZE];
+
+inline static unsigned short toBaseChar(unsigned short c) {
+    if (c < BASE_CHARS_SIZE) {
+        return BASE_CHARS[c];
+    }
+    return c;
+}
+
+inline static unsigned short toBaseLowerCase(unsigned short c) {
+    c = toBaseChar(c);
+    if (isAsciiUpper(c)) {
+        return toAsciiLower(c);
+    } else if (isAscii(c)) {
+        return c;
+    }
+    return latin_tolower(c);
+}
 
 } // namespace latinime
 
