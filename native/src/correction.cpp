@@ -21,6 +21,7 @@
 
 #define LOG_TAG "LatinIME: correction.cpp"
 
+#include "char_utils.h"
 #include "correction.h"
 #include "dictionary.h"
 #include "proximity_info.h"
@@ -48,13 +49,13 @@ inline static int editDistance(
 
     for (int i = 0; i < li - 1; ++i) {
         for (int j = 0; j < lo - 1; ++j) {
-            const uint32_t ci = Dictionary::toBaseLowerCase(input[i]);
-            const uint32_t co = Dictionary::toBaseLowerCase(output[j]);
+            const uint32_t ci = toBaseLowerCase(input[i]);
+            const uint32_t co = toBaseLowerCase(output[j]);
             const uint16_t cost = (ci == co) ? 0 : 1;
             dp[(i + 1) * lo + (j + 1)] = min(dp[i * lo + (j + 1)] + 1,
                     min(dp[(i + 1) * lo + j] + 1, dp[i * lo + j] + cost));
-            if (i > 0 && j > 0 && ci == Dictionary::toBaseLowerCase(output[j - 1])
-                    && co == Dictionary::toBaseLowerCase(input[i - 1])) {
+            if (i > 0 && j > 0 && ci == toBaseLowerCase(output[j - 1])
+                    && co == toBaseLowerCase(input[i - 1])) {
                 dp[(i + 1) * lo + (j + 1)] = min(
                         dp[(i + 1) * lo + (j + 1)], dp[(i - 1) * lo + (j - 1)] + cost);
             }
@@ -89,15 +90,13 @@ inline static void calcEditDistanceOneStep(int *editDistanceTable, const unsigne
     const int *const prevprev =
             outputLength >= 2 ? editDistanceTable + (outputLength - 2) * (inputLength + 1) : 0;
     current[0] = outputLength;
-    const uint32_t co = Dictionary::toBaseLowerCase(output[outputLength - 1]);
-    const uint32_t prevCO =
-            outputLength >= 2 ? Dictionary::toBaseLowerCase(output[outputLength - 2]) : 0;
+    const uint32_t co = toBaseLowerCase(output[outputLength - 1]);
+    const uint32_t prevCO = outputLength >= 2 ? toBaseLowerCase(output[outputLength - 2]) : 0;
     for (int i = 1; i <= inputLength; ++i) {
-        const uint32_t ci = Dictionary::toBaseLowerCase(input[i - 1]);
+        const uint32_t ci = toBaseLowerCase(input[i - 1]);
         const uint16_t cost = (ci == co) ? 0 : 1;
         current[i] = min(current[i - 1] + 1, min(prev[i] + 1, prev[i - 1] + cost));
-        if (i >= 2 && prevprev && ci == prevCO
-                && co == Dictionary::toBaseLowerCase(input[i - 2])) {
+        if (i >= 2 && prevprev && ci == prevCO && co == toBaseLowerCase(input[i - 2])) {
             current[i] = min(current[i], prevprev[i - 2] + 1);
         }
     }
@@ -607,13 +606,7 @@ inline static int getQuoteCount(const unsigned short* word, const int length) {
 }
 
 inline static bool isUpperCase(unsigned short c) {
-     if (c < sizeof(BASE_CHARS) / sizeof(BASE_CHARS[0])) {
-         c = BASE_CHARS[c];
-     }
-     if (isupper(c)) {
-         return true;
-     }
-     return false;
+     return isAsciiUpper(toBaseChar(c));
 }
 
 //////////////////////

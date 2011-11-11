@@ -17,7 +17,6 @@
 #ifndef LATINIME_DICTIONARY_H
 #define LATINIME_DICTIONARY_H
 
-#include "basechars.h"
 #include "bigram_dictionary.h"
 #include "char_utils.h"
 #include "defines.h"
@@ -63,7 +62,6 @@ public:
     static int setDictionaryValues(const unsigned char *dict, const bool isLatestDictVersion,
             const int pos, unsigned short *c, int *childrenPosition,
             bool *terminal, int *freq);
-    static inline unsigned short toBaseLowerCase(unsigned short c);
 
 private:
     bool hasBigram();
@@ -154,19 +152,6 @@ inline int Dictionary::setDictionaryValues(const unsigned char *dict,
     *freq = (*terminal) ? Dictionary::getFreq(dict, isLatestDictVersion, &position) : 1;
     // returns next sibling's position
     return position;
-}
-
-
-inline unsigned short Dictionary::toBaseLowerCase(unsigned short c) {
-    if (c < sizeof(BASE_CHARS) / sizeof(BASE_CHARS[0])) {
-        c = BASE_CHARS[c];
-    }
-    if (c >='A' && c <= 'Z') {
-        c |= 32;
-    } else if (c > 127) {
-        c = latin_tolower(c);
-    }
-    return c;
 }
 
 } // namespace latinime

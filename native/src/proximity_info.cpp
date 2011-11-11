@@ -167,7 +167,7 @@ int ProximityInfo::getKeyIndex(const int c) const {
         // We do not have the coordinate data
         return NOT_A_INDEX;
     }
-    const unsigned short baseLowerC = Dictionary::toBaseLowerCase(c);
+    const unsigned short baseLowerC = toBaseLowerCase(c);
     if (baseLowerC > MAX_CHAR_CODE) {
         return NOT_A_INDEX;
     }
@@ -232,7 +232,7 @@ ProximityInfo::ProximityType ProximityInfo::getMatchedProximityId(const int inde
         const unsigned short c, const bool checkProximityChars, int *proximityIndex) const {
     const int *currentChars = getProximityCharsAt(index);
     const int firstChar = currentChars[0];
-    const unsigned short baseLowerC = Dictionary::toBaseLowerCase(c);
+    const unsigned short baseLowerC = toBaseLowerCase(c);
 
     // The first char in the array is what user typed. If it matches right away,
     // that means the user typed that same char for this pos.
@@ -245,7 +245,7 @@ ProximityInfo::ProximityType ProximityInfo::getMatchedProximityId(const int inde
     // If the non-accented, lowercased version of that first character matches c,
     // then we have a non-accented version of the accented character the user
     // typed. Treat it as a close char.
-    if (Dictionary::toBaseLowerCase(firstChar) == baseLowerC)
+    if (toBaseLowerCase(firstChar) == baseLowerC)
         return NEAR_PROXIMITY_CHAR;
 
     // Not an exact nor an accent-alike match: search the list of close keys

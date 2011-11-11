@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 The Android Open Source Project
+ * Copyright (C) 2011 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_BASECHARS_H
-#define LATINIME_BASECHARS_H
+#include "char_utils.h"
+
+namespace latinime {
 
 /**
  * Table mapping most combined Latin, Greek, and Cyrillic characters
@@ -23,7 +24,7 @@
  * if c is not a combined character, or the base character if it
  * is combined.
  */
-static unsigned short BASE_CHARS[] = {
+const unsigned short BASE_CHARS[BASE_CHARS_SIZE] = {
     0x0000, 0x0001, 0x0002, 0x0003, 0x0004, 0x0005, 0x0006, 0x0007,
     0x0008, 0x0009, 0x000a, 0x000b, 0x000c, 0x000d, 0x000e, 0x000f,
     0x0010, 0x0011, 0x0012, 0x0013, 0x0014, 0x0015, 0x0016, 0x0017,
@@ -189,4 +190,5 @@ static unsigned short BASE_CHARS[] = {
 
 // generated with:
 // cat UnicodeData.txt | perl -e 'while (<>) { @foo = split(/;/); $foo[5] =~ s/<.*> //; $base[hex($foo[0])] = hex($foo[5]);} for ($i = 0; $i < 0x500; $i += 8) { for ($j = $i; $j < $i + 8; $j++) { printf("0x%04x, ", $base[$j] ? $base[$j] : $j)}; print "\n"; }'
-#endif // LATINIME_BASECHARS_H
+
+} // namespace latinime
