@@ -738,7 +738,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         if (mSuggest != null && mSettingsValues.mAutoCorrectEnabled) {
             mSuggest.setAutoCorrectionThreshold(mSettingsValues.mAutoCorrectionThreshold);
-         }
+        }
         mVoiceProxy.loadSettings(attribute, mPrefs);
         // This will work only when the subtype is not supported.
         LanguageSwitcherProxy.loadSettings();
@@ -1062,9 +1062,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         super.updateFullscreenMode();
 
         if (mKeyPreviewBackingView == null) return;
-        // In extract mode, no need to have extra space to show the key preview.
+        // In fullscreen mode, no need to have extra space to show the key preview.
         // If not, we should have extra space above the keyboard to show the key preview.
-        mKeyPreviewBackingView.setVisibility(isExtractViewShown() ? View.GONE : View.VISIBLE);
+        mKeyPreviewBackingView.setVisibility(isFullscreenMode() ? View.GONE : View.VISIBLE);
     }
 
     @Override
