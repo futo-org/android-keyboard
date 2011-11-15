@@ -159,7 +159,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     // Magic space: a space that should disappear on space/apostrophe insertion, move after the
     // punctuation on punctuation insertion, and become a real space on alpha char insertion.
-    // Weak space: a space that be swapped only by suggestion strip punctuation.
+    // Weak space: a space that should be swapped only by suggestion strip punctuation.
     // Double space: the state where the user pressed space twice quickly, which LatinIME
     // resolved as period-space. Undoing this converts the period to a space.
     // Swap punctuation: the state where a (weak or magic) space and a punctuation from the
@@ -762,6 +762,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 isSuggestionsStripVisible(), /* needsInputViewShown */ false);
         // Delay updating suggestions because keyboard input view may not be shown at this point.
         mHandler.postUpdateSuggestions();
+        mHandler.cancelDoubleSpacesTimer();
 
         inputView.setKeyPreviewPopupEnabled(mSettingsValues.mKeyPreviewPopupOn,
                 mSettingsValues.mKeyPreviewPopupDismissDelay);
@@ -1288,6 +1289,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // all inputs that do not result in a special state. Each character handling is then
         // free to override the state as they see fit.
         final int spaceState = mSpaceState;
+
+        // TODO: Consolidate the double space timer, mLastKeyTime, and the space state.
+        if (primaryCode != Keyboard.CODE_SPACE) {
+            mHandler.cancelDoubleSpacesTimer();
+        }
+
         switch (primaryCode) {
         case Keyboard.CODE_DELETE:
             mSpaceState = SPACE_STATE_NONE;
