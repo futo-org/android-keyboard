@@ -103,6 +103,10 @@ public class KeyboardShiftState {
         return mState == SHIFT_LOCKED || mState == SHIFT_LOCK_SHIFTED;
     }
 
+    public boolean isShiftLockShifted() {
+        return mState == SHIFT_LOCK_SHIFTED;
+    }
+
     public boolean isAutomaticTemporaryUpperCase() {
         return mState == AUTO_SHIFTED;
     }
