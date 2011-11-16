@@ -65,7 +65,7 @@
     <string name="label_go_key" msgid="1635148082137219148">"Đến"</string>
     <string name="label_next_key" msgid="362972844525672568">"Tiếp theo"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Xong"</string>
-    <string name="label_send_key" msgid="2815056534433717444">"Gửi"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"Gửi"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
     <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
@@ -116,7 +116,7 @@
     <string name="voice_listening" msgid="467518160751321844">"Xin mời nói"</string>
     <string name="voice_working" msgid="6666937792815731889">"Đang hoạt động"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Lỗi. Vui lòng thử lại."</string>
+    <string name="voice_error" msgid="5140896300312186162">"Lỗi. Vui lòng thử lại."</string>
     <string name="voice_network_error" msgid="6649556447401862563">"Không thể kết nối"</string>
     <string name="voice_too_much_speech" msgid="5746973620134227376">"Lỗi, quá nhiều câu thoại."</string>
     <string name="voice_audio_error" msgid="5072707727016414454">"Sự cố âm thanh"</string>
@@ -143,7 +143,7 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Có sẵn từ điển"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Bật phản hồi của người dùng"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Giúp nâng cao trình chỉnh sửa phương thức nhập này bằng cách tự động gửi thống kê sử dụng và báo cáo sự cố cho Google."</string>
-    <string name="keyboard_layout" msgid="8451164783510487501">"Chủ đề bàn phím"</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"Chủ đề bàn phím"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"Bàn phím QWERTY tiếng Đức"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Tiếng Anh (Anh)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Tiếng Anh (Mỹ)"</string>
