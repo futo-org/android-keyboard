@@ -56,7 +56,7 @@
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"כבוי"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"מצומצם"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"מחמיר"</string>
-    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"אגרסיבי מאוד"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"מחמיר מאוד"</string>
     <string name="bigram_suggestion" msgid="2636414079905220518">"הצעות של צמדי אותיות (Bigram)"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"השתמש במילה הקודמת כדי לשפר את ההצעה"</string>
     <string name="bigram_prediction" msgid="8914273444762259739">"חיזוי צמדי אותיות (Bigram)"</string>
