@@ -21,13 +21,13 @@ import com.android.inputmethod.keyboard.PointerTracker;
 import java.util.LinkedList;
 
 public class PointerTrackerQueue {
-    private LinkedList<PointerTracker> mQueue = new LinkedList<PointerTracker>();
+    private final LinkedList<PointerTracker> mQueue = new LinkedList<PointerTracker>();
 
-    public void add(PointerTracker tracker) {
+    public synchronized void add(PointerTracker tracker) {
         mQueue.add(tracker);
     }
 
-    public void releaseAllPointersOlderThan(PointerTracker tracker, long eventTime) {
+    public synchronized void releaseAllPointersOlderThan(PointerTracker tracker, long eventTime) {
         if (mQueue.lastIndexOf(tracker) < 0) {
             return;
         }
@@ -47,25 +47,28 @@ public class PointerTrackerQueue {
         releaseAllPointersExcept(null, eventTime);
     }
 
-    public void releaseAllPointersExcept(PointerTracker tracker, long eventTime) {
+    public synchronized void releaseAllPointersExcept(PointerTracker tracker, long eventTime) {
         for (PointerTracker t : mQueue) {
-            if (t == tracker)
+            if (t == tracker) {
                 continue;
+            }
             t.onPhantomUpEvent(t.getLastX(), t.getLastY(), eventTime);
         }
         mQueue.clear();
-        if (tracker != null)
+        if (tracker != null) {
             mQueue.add(tracker);
+        }
     }
 
-    public void remove(PointerTracker tracker) {
+    public synchronized void remove(PointerTracker tracker) {
         mQueue.remove(tracker);
     }
 
-    public boolean isAnyInSlidingKeyInput() {
+    public synchronized boolean isAnyInSlidingKeyInput() {
         for (final PointerTracker tracker : mQueue) {
-            if (tracker.isInSlidingKeyInput())
+            if (tracker.isInSlidingKeyInput()) {
                 return true;
+            }
         }
         return false;
     }
