@@ -42,10 +42,8 @@ public class KeyboardIconsSet {
     private static final int ICON_SHIFTED_SHIFT_KEY = 10;
     // This should be aligned with Keyboard.keyIconPreview enum.
     private static final int ICON_PREVIEW_TAB_KEY = 11;
-    private static final int ICON_PREVIEW_SETTINGS_KEY = 12;
-    private static final int ICON_PREVIEW_SHORTCUT_KEY = 13;
 
-    private static final int ICON_LAST = 13;
+    private static final int ICON_LAST = 11;
 
     private final Drawable mIcons[] = new Drawable[ICON_LAST + 1];
 
@@ -73,10 +71,6 @@ public class KeyboardIconsSet {
             return ICON_SHIFTED_SHIFT_KEY;
         case R.styleable.Keyboard_iconPreviewTabKey:
             return ICON_PREVIEW_TAB_KEY;
-        case R.styleable.Keyboard_iconPreviewSettingsKey:
-            return ICON_PREVIEW_SETTINGS_KEY;
-        case R.styleable.Keyboard_iconPreviewShortcutKey:
-            return ICON_PREVIEW_SHORTCUT_KEY;
         default:
             return ICON_UNDEFINED;
         }

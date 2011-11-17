@@ -28,8 +28,6 @@
         <item name="iconShortcutForLabel">@drawable/sym_keyboard_label_mic</item>
         <item name="iconShiftedShiftKey">@drawable/sym_keyboard_shift_locked</item>
         <item name="iconPreviewTabKey">@drawable/sym_keyboard_feedback_tab</item>
-        <item name="iconPreviewSettingsKey">@drawable/sym_keyboard_feedback_settings</item>
-        <item name="iconPreviewShortcutKey">@drawable/sym_keyboard_feedback_mic</item>
         <!-- LatinKeyboard icons -->
         <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
         <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>

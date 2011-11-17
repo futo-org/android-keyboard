@@ -353,9 +353,12 @@ public class PointerTracker {
     // The modifier key, such as shift key, should not show its key preview.
     private static boolean isKeyPreviewRequired(Key key) {
         final int code = key.mCode;
-        if (isModifierCode(code) || code == Keyboard.CODE_DELETE
-                || code == Keyboard.CODE_ENTER || code == Keyboard.CODE_SPACE)
+        // TODO: Stop hard-coding these key codes here, and add a new key attribute of a key.
+        if (code == Keyboard.CODE_SPACE || code == Keyboard.CODE_ENTER
+                || code == Keyboard.CODE_DELETE || isModifierCode(code)
+                || code == Keyboard.CODE_SETTINGS || code == Keyboard.CODE_SHORTCUT) {
             return false;
+        }
         return true;
     }
 
