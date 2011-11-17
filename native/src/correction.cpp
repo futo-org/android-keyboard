@@ -758,6 +758,9 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
                 //         \             .
                 // C        \            .
                 //   0   R1 R2
+                if (factor <= 0) {
+                    return -1;
+                }
                 multiplyRate((int)(factor * 100), &finalFreq);
             } else if (squaredDistance == PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO) {
                 multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
