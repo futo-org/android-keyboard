@@ -170,6 +170,10 @@ public class Keyboard {
         return mShiftState.isShiftLocked();
     }
 
+    public boolean isShiftLockShifted() {
+        return mShiftState.isShiftLockShifted();
+    }
+
     public boolean setShifted(boolean newShiftState) {
         for (final Key key : mShiftKeys) {
             if (!newShiftState && !mShiftState.isShiftLocked()) {

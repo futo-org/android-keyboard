@@ -351,7 +351,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         // calling setAlreadyProcessed() nor remove the tracker from mPointerQueue.
         final int primaryCode = ignore ? Keyboard.CODE_HAPTIC_AND_AUDIO_FEEDBACK_ONLY
                 : Keyboard.CODE_CAPSLOCK;
-        mKeyboardActionListener.onCodeInput(primaryCode, null, 0, 0);
+        invokeCodeInput(primaryCode);
     }
 
     // This default implementation returns a more keys panel.
@@ -399,18 +399,22 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             if (primaryCode == Keyboard.CODE_DIGIT0 && latinKeyboard.isPhoneKeyboard()) {
                 tracker.onLongPressed();
                 // Long pressing on 0 in phone number keypad gives you a '+'.
-                return invokeOnKey(Keyboard.CODE_PLUS);
+                invokeCodeInput(Keyboard.CODE_PLUS);
+                invokeReleaseKey(primaryCode);
+                return true;
             }
             if (primaryCode == Keyboard.CODE_SHIFT && latinKeyboard.isAlphaKeyboard()) {
                 tracker.onLongPressed();
-                return invokeOnKey(Keyboard.CODE_CAPSLOCK);
+                invokeCodeInput(Keyboard.CODE_CAPSLOCK);
+                invokeReleaseKey(primaryCode);
+                return true;
             }
         }
         if (primaryCode == Keyboard.CODE_SETTINGS || primaryCode == Keyboard.CODE_SPACE) {
             // Both long pressing settings key and space key invoke IME switcher dialog.
-            if (getKeyboardActionListener().onCustomRequest(
-                    LatinIME.CODE_SHOW_INPUT_METHOD_PICKER)) {
+            if (invokeCustomRequest(LatinIME.CODE_SHOW_INPUT_METHOD_PICKER)) {
                 tracker.onLongPressed();
+                invokeReleaseKey(primaryCode);
                 return true;
             } else {
                 return openMoreKeysPanel(parentKey, tracker);
@@ -420,11 +424,18 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
     }
 
-    private boolean invokeOnKey(int primaryCode) {
+    private boolean invokeCustomRequest(int code) {
+        return getKeyboardActionListener().onCustomRequest(code);
+    }
+
+    private void invokeCodeInput(int primaryCode) {
         getKeyboardActionListener().onCodeInput(primaryCode, null,
                 KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
                 KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
-        return true;
+    }
+
+    private void invokeReleaseKey(int primaryCode) {
+        getKeyboardActionListener().onRelease(primaryCode, false);
     }
 
     private boolean openMoreKeysPanel(Key parentKey, PointerTracker tracker) {
