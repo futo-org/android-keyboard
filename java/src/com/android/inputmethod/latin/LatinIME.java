@@ -255,18 +255,20 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         private static final int MSG_SET_BIGRAM_PREDICTIONS = 7;
         private static final int MSG_PENDING_IMS_CALLBACK = 8;
 
-        private final int mDelayBeforeFadeoutLanguageOnSpacebar;
-        private final int mDelayUpdateSuggestions;
-        private final int mDelayUpdateShiftState;
-        private final int mDurationOfFadeoutLanguageOnSpacebar;
-        private final float mFinalFadeoutFactorOfLanguageOnSpacebar;
-        private final long mDoubleSpacesTurnIntoPeriodTimeout;
-        private final long mIgnoreSpecialKeyTimeout;
+        private int mDelayBeforeFadeoutLanguageOnSpacebar;
+        private int mDelayUpdateSuggestions;
+        private int mDelayUpdateShiftState;
+        private int mDurationOfFadeoutLanguageOnSpacebar;
+        private float mFinalFadeoutFactorOfLanguageOnSpacebar;
+        private long mDoubleSpacesTurnIntoPeriodTimeout;
+        private long mIgnoreSpecialKeyTimeout;
 
         public UIHandler(LatinIME outerInstance) {
             super(outerInstance);
+        }
 
-            final Resources res = outerInstance.getResources();
+        public void onCreate() {
+            final Resources res = getOuterInstance().getResources();
             mDelayBeforeFadeoutLanguageOnSpacebar = res.getInteger(
                     R.integer.config_delay_before_fadeout_language_on_spacebar);
             mDelayUpdateSuggestions =
@@ -507,6 +509,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mVibrator = VibratorCompatWrapper.getInstance(this);
+        mHandler.onCreate();
         DEBUG = LatinImeLogger.sDBG;
 
         final Resources res = getResources();
