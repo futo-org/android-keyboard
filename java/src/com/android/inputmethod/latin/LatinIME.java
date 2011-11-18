@@ -1503,6 +1503,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 mComposingStateManager.onFinishComposingText();
             }
         }
+        if (code == Keyboard.CODE_SINGLE_QUOTE && !isCursorTouchingWord()) {
+            mHasUncommittedTypedChars = false;
+        }
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         if (switcher.isShiftedOrShiftLocked()) {
             if (keyCodes == null || keyCodes[0] < Character.MIN_CODE_POINT
@@ -1775,7 +1778,15 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // a boolean flag. Right now this is handled with a slight hack in
         // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
         final boolean allowsToBeAutoCorrected = AutoCorrection.allowsToBeAutoCorrected(
-                mSuggest.getUnigramDictionaries(), typedWord, preferCapitalization());
+                mSuggest.getUnigramDictionaries(),
+                // If the typed string ends with a single quote, for dictionary lookup purposes
+                // we behave as if the single quote was not here. Here, we are looking up the
+                // typed string in the dictionary (to avoid autocorrecting from an existing
+                // word, so for consistency this lookup should be made WITHOUT the trailing
+                // single quote.
+                wordComposer.isLastCharASingleQuote()
+                        ? typedWord.subSequence(0, typedWord.length() - 1) : typedWord,
+                preferCapitalization());
         if (mCorrectionMode == Suggest.CORRECTION_FULL
                 || mCorrectionMode == Suggest.CORRECTION_FULL_BIGRAM) {
             autoCorrectionAvailable |= (!allowsToBeAutoCorrected);
