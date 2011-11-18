@@ -100,7 +100,7 @@
         </Row>
     <Row>
         <Key
-            latin:keyStyle="tabKeyStyle"
+            latin:keyStyle="numTabKeyStyle"
             latin:keyWidth="11.00%p" />
         <Key
             latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"
