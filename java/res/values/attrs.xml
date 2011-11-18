@@ -180,8 +180,6 @@
         <attr name="iconShortcutForLabel" format="reference" />
         <attr name="iconShiftedShiftKey" format="reference" />
         <attr name="iconPreviewTabKey" format="reference" />
-        <attr name="iconPreviewSettingsKey" format="reference" />
-        <attr name="iconPreviewShortcutKey" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Key">
@@ -246,8 +244,6 @@
         <attr name="keyIconPreview" format="enum">
             <!-- This should be aligned with KeyboardIcons.ICON_PREVIEW_* -->
             <enum name="iconPreviewTabKey" value="11" />
-            <enum name="iconPreviewSettingsKey" value="12" />
-            <enum name="iconPreviewShortcutKey" value="13" />
         </attr>
         <!-- The key style to specify a set of key attributes defined by <key_style/> -->
         <attr name="keyStyle" format="string" />

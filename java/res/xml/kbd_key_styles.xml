@@ -154,13 +154,11 @@
         latin:styleName="shortcutKeyStyle"
         latin:code="@integer/key_shortcut"
         latin:keyIcon="iconShortcutKey"
-        latin:keyIconPreview="iconPreviewShortcutKey"
         latin:parentStyle="f1PopupStyle" />
     <key-style
         latin:styleName="settingsKeyStyle"
         latin:code="@integer/key_settings"
         latin:keyIcon="iconSettingsKey"
-        latin:keyIconPreview="iconPreviewSettingsKey"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="tabKeyStyle"
