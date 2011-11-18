@@ -193,7 +193,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private UserDictionary mUserDictionary;
     private UserBigramDictionary mUserBigramDictionary;
     private UserUnigramDictionary mUserUnigramDictionary;
-    private boolean mIsUserDictionaryAvaliable;
+    private boolean mIsUserDictionaryAvailable;
 
     // TODO: Create an inner class to group options and pseudo-options to improve readability.
     // These variables are initialized according to the {@link EditorInfo#inputType}.
@@ -552,7 +552,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         mUserDictionary = new UserDictionary(this, localeStr);
         mSuggest.setUserDictionary(mUserDictionary);
-        mIsUserDictionaryAvaliable = mUserDictionary.isEnabled();
+        mIsUserDictionaryAvailable = mUserDictionary.isEnabled();
 
         resetContactsDictionary(oldContactsDictionary);
 
@@ -1951,7 +1951,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // take a noticeable delay to update them which may feel uneasy.
         }
         if (showingAddToDictionaryHint) {
-            if (mIsUserDictionaryAvaliable) {
+            if (mIsUserDictionaryAvailable) {
                 mSuggestionsView.showAddToDictionaryHint(
                         suggestion, mSettingsValues.mHintToSaveText);
             } else {

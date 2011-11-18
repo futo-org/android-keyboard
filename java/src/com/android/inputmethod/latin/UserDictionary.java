@@ -134,7 +134,11 @@ public class UserDictionary extends ExpandableDictionary {
         final Cursor cursor = getContext().getContentResolver()
                 .query(Words.CONTENT_URI, PROJECTION_QUERY, request.toString(),
                         requestArguments, null);
-        addWords(cursor);
+        try {
+            addWords(cursor);
+        } finally {
+            if (null != cursor) cursor.close();
+        }
     }
 
     public boolean isEnabled() {
@@ -242,6 +246,5 @@ public class UserDictionary extends ExpandableDictionary {
                 cursor.moveToNext();
             }
         }
-        cursor.close();
     }
 }
