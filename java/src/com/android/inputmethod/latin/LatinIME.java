@@ -1295,13 +1295,17 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             break;
         case Keyboard.CODE_SHIFT:
             // Shift key is handled in onPress() when device has distinct multi-touch panel.
-            if (!distinctMultiTouch)
+            if (!distinctMultiTouch) {
                 switcher.toggleShift();
+            }
+            shouldStartKeyTypedTimer = false;
             break;
         case Keyboard.CODE_SWITCH_ALPHA_SYMBOL:
             // Symbol key is handled in onPress() when device has distinct multi-touch panel.
-            if (!distinctMultiTouch)
+            if (!distinctMultiTouch) {
                 switcher.changeKeyboardMode();
+            }
+            shouldStartKeyTypedTimer = false;
             break;
         case Keyboard.CODE_CANCEL:
             if (!isShowingOptionDialog()) {
@@ -1370,6 +1374,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mKeyboardSwitcher.onKey(Keyboard.CODE_DUMMY);
         mJustAddedMagicSpace = false;
         mEnteredText = text;
+        mHandler.startKeyTypedTimer();
     }
 
     @Override
