@@ -251,11 +251,36 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         private static final int MSG_FADEOUT_LANGUAGE_ON_SPACEBAR = 3;
         private static final int MSG_DISMISS_LANGUAGE_ON_SPACEBAR = 4;
         private static final int MSG_SPACE_TYPED = 5;
-        private static final int MSG_SET_BIGRAM_PREDICTIONS = 6;
-        private static final int MSG_PENDING_IMS_CALLBACK = 7;
+        private static final int MSG_KEY_TYPED = 6;
+        private static final int MSG_SET_BIGRAM_PREDICTIONS = 7;
+        private static final int MSG_PENDING_IMS_CALLBACK = 8;
+
+        private final int mDelayBeforeFadeoutLanguageOnSpacebar;
+        private final int mDelayUpdateSuggestions;
+        private final int mDelayUpdateShiftState;
+        private final int mDurationOfFadeoutLanguageOnSpacebar;
+        private final float mFinalFadeoutFactorOfLanguageOnSpacebar;
+        private final long mDoubleSpacesTurnIntoPeriodTimeout;
+        private final long mIgnoreSpecialKeyTimeout;
 
         public UIHandler(LatinIME outerInstance) {
             super(outerInstance);
+
+            final Resources res = outerInstance.getResources();
+            mDelayBeforeFadeoutLanguageOnSpacebar = res.getInteger(
+                    R.integer.config_delay_before_fadeout_language_on_spacebar);
+            mDelayUpdateSuggestions =
+                    res.getInteger(R.integer.config_delay_update_suggestions);
+            mDelayUpdateShiftState =
+                    res.getInteger(R.integer.config_delay_update_shift_state);
+            mDurationOfFadeoutLanguageOnSpacebar = res.getInteger(
+                    R.integer.config_duration_of_fadeout_language_on_spacebar);
+            mFinalFadeoutFactorOfLanguageOnSpacebar = res.getInteger(
+                    R.integer.config_final_fadeout_percentage_of_language_on_spacebar) / 100.0f;
+            mDoubleSpacesTurnIntoPeriodTimeout = res.getInteger(
+                    R.integer.config_double_spaces_turn_into_period_timeout);
+            mIgnoreSpecialKeyTimeout = res.getInteger(
+                    R.integer.config_ignore_special_key_timeout);
         }
 
         @Override
@@ -280,17 +305,15 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             case MSG_FADEOUT_LANGUAGE_ON_SPACEBAR:
                 if (inputView != null) {
                     inputView.setSpacebarTextFadeFactor(
-                            (1.0f + latinIme.mSettingsValues.
-                                    mFinalFadeoutFactorOfLanguageOnSpacebar) / 2,
+                            (1.0f + mFinalFadeoutFactorOfLanguageOnSpacebar) / 2,
                             (LatinKeyboard)msg.obj);
                 }
                 sendMessageDelayed(obtainMessage(MSG_DISMISS_LANGUAGE_ON_SPACEBAR, msg.obj),
-                        latinIme.mSettingsValues.mDurationOfFadeoutLanguageOnSpacebar);
+                        mDurationOfFadeoutLanguageOnSpacebar);
                 break;
             case MSG_DISMISS_LANGUAGE_ON_SPACEBAR:
                 if (inputView != null) {
-                    inputView.setSpacebarTextFadeFactor(
-                            latinIme.mSettingsValues.mFinalFadeoutFactorOfLanguageOnSpacebar,
+                    inputView.setSpacebarTextFadeFactor(mFinalFadeoutFactorOfLanguageOnSpacebar,
                             (LatinKeyboard)msg.obj);
                 }
                 break;
@@ -299,8 +322,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         public void postUpdateSuggestions() {
             removeMessages(MSG_UPDATE_SUGGESTIONS);
-            sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTIONS),
-                    getOuterInstance().mSettingsValues.mDelayUpdateSuggestions);
+            sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTIONS), mDelayUpdateSuggestions);
         }
 
         public void cancelUpdateSuggestions() {
@@ -313,8 +335,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         public void postUpdateShiftKeyState() {
             removeMessages(MSG_UPDATE_SHIFT_STATE);
-            sendMessageDelayed(obtainMessage(MSG_UPDATE_SHIFT_STATE),
-                    getOuterInstance().mSettingsValues.mDelayUpdateShiftState);
+            sendMessageDelayed(obtainMessage(MSG_UPDATE_SHIFT_STATE), mDelayUpdateShiftState);
         }
 
         public void cancelUpdateShiftState() {
@@ -323,8 +344,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         public void postUpdateBigramPredictions() {
             removeMessages(MSG_SET_BIGRAM_PREDICTIONS);
-            sendMessageDelayed(obtainMessage(MSG_SET_BIGRAM_PREDICTIONS),
-                    getOuterInstance().mSettingsValues.mDelayUpdateSuggestions);
+            sendMessageDelayed(obtainMessage(MSG_SET_BIGRAM_PREDICTIONS), mDelayUpdateSuggestions);
         }
 
         public void cancelUpdateBigramPredictions() {
@@ -344,26 +364,24 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 final LatinKeyboard keyboard = latinIme.mKeyboardSwitcher.getLatinKeyboard();
                 // The language is always displayed when the delay is negative.
                 final boolean needsToDisplayLanguage = localeChanged
-                        || latinIme.mSettingsValues.mDelayBeforeFadeoutLanguageOnSpacebar < 0;
+                        || mDelayBeforeFadeoutLanguageOnSpacebar < 0;
                 // The language is never displayed when the delay is zero.
-                if (latinIme.mSettingsValues.mDelayBeforeFadeoutLanguageOnSpacebar != 0) {
+                if (mDelayBeforeFadeoutLanguageOnSpacebar != 0) {
                     inputView.setSpacebarTextFadeFactor(needsToDisplayLanguage ? 1.0f
-                            : latinIme.mSettingsValues.mFinalFadeoutFactorOfLanguageOnSpacebar,
+                            : mFinalFadeoutFactorOfLanguageOnSpacebar,
                             keyboard);
                 }
                 // The fadeout animation will start when the delay is positive.
-                if (localeChanged
-                        && latinIme.mSettingsValues.mDelayBeforeFadeoutLanguageOnSpacebar > 0) {
+                if (localeChanged && mDelayBeforeFadeoutLanguageOnSpacebar > 0) {
                     sendMessageDelayed(obtainMessage(MSG_FADEOUT_LANGUAGE_ON_SPACEBAR, keyboard),
-                            latinIme.mSettingsValues.mDelayBeforeFadeoutLanguageOnSpacebar);
+                            mDelayBeforeFadeoutLanguageOnSpacebar);
                 }
             }
         }
 
         public void startDoubleSpacesTimer() {
             removeMessages(MSG_SPACE_TYPED);
-            sendMessageDelayed(obtainMessage(MSG_SPACE_TYPED),
-                    getOuterInstance().mSettingsValues.mDoubleSpacesTurnIntoPeriodTimeout);
+            sendMessageDelayed(obtainMessage(MSG_SPACE_TYPED), mDoubleSpacesTurnIntoPeriodTimeout);
         }
 
         public void cancelDoubleSpacesTimer() {
@@ -372,6 +390,15 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         public boolean isAcceptingDoubleSpaces() {
             return hasMessages(MSG_SPACE_TYPED);
+        }
+
+        public void startKeyTypedTimer() {
+            removeMessages(MSG_KEY_TYPED);
+            sendMessageDelayed(obtainMessage(MSG_KEY_TYPED), mIgnoreSpecialKeyTimeout);
+        }
+
+        public boolean isIgnoringSpecialKey() {
+            return hasMessages(MSG_KEY_TYPED);
         }
 
         // Working variables for the following methods.
@@ -1276,12 +1303,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // Implementation of {@link KeyboardActionListener}.
     @Override
     public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
-        long when = SystemClock.uptimeMillis();
+        final long when = SystemClock.uptimeMillis();
         if (primaryCode != Keyboard.CODE_DELETE || when > mLastKeyTime + QUICK_PRESS) {
             mDeleteCount = 0;
         }
         mLastKeyTime = when;
-        KeyboardSwitcher switcher = mKeyboardSwitcher;
+        final KeyboardSwitcher switcher = mKeyboardSwitcher;
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         // The space state depends only on the last character pressed and its own previous
         // state. Here, we revert the space state to neutral if the key is actually modifying
@@ -1295,6 +1322,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mHandler.cancelDoubleSpacesTimer();
         }
 
+        boolean shouldStartKeyTypedTimer = true;
         switch (primaryCode) {
         case Keyboard.CODE_DELETE:
             mSpaceState = SPACE_STATE_NONE;
@@ -1319,14 +1347,20 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             break;
         case Keyboard.CODE_SETTINGS:
-            onSettingsKeyPressed();
+            if (!mHandler.isIgnoringSpecialKey()) {
+                onSettingsKeyPressed();
+            }
+            shouldStartKeyTypedTimer = false;
             break;
         case Keyboard.CODE_CAPSLOCK:
             switcher.toggleCapsLock();
             hapticAndAudioFeedback(primaryCode);
             break;
         case Keyboard.CODE_SHORTCUT:
-            mSubtypeSwitcher.switchToShortcutIME();
+            if (!mHandler.isIgnoringSpecialKey()) {
+                mSubtypeSwitcher.switchToShortcutIME();
+            }
+            shouldStartKeyTypedTimer = false;
             break;
         case Keyboard.CODE_TAB:
             handleTab();
@@ -1352,6 +1386,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         switcher.onKey(primaryCode);
         // Reset after any single keystroke
         mEnteredText = null;
+        if (shouldStartKeyTypedTimer) {
+            mHandler.startKeyTypedTimer();
+        }
     }
 
     @Override

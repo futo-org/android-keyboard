@@ -102,13 +102,7 @@ public class Settings extends InputMethodSettingsActivity
 
     public static class Values {
         // From resources:
-        public final int mDelayBeforeFadeoutLanguageOnSpacebar;
-        public final int mDelayUpdateSuggestions;
         public final int mDelayUpdateOldSuggestions;
-        public final int mDelayUpdateShiftState;
-        public final int mDurationOfFadeoutLanguageOnSpacebar;
-        public final float mFinalFadeoutFactorOfLanguageOnSpacebar;
-        public final long mDoubleSpacesTurnIntoPeriodTimeout;
         public final String mWordSeparators;
         public final String mMagicSpaceStrippers;
         public final String mMagicSpaceSwappers;
@@ -148,20 +142,8 @@ public class Settings extends InputMethodSettingsActivity
             }
 
             // Get the resources
-            mDelayBeforeFadeoutLanguageOnSpacebar = res.getInteger(
-                    R.integer.config_delay_before_fadeout_language_on_spacebar);
-            mDelayUpdateSuggestions =
-                    res.getInteger(R.integer.config_delay_update_suggestions);
             mDelayUpdateOldSuggestions = res.getInteger(
                     R.integer.config_delay_update_old_suggestions);
-            mDelayUpdateShiftState =
-                    res.getInteger(R.integer.config_delay_update_shift_state);
-            mDurationOfFadeoutLanguageOnSpacebar = res.getInteger(
-                    R.integer.config_duration_of_fadeout_language_on_spacebar);
-            mFinalFadeoutFactorOfLanguageOnSpacebar = res.getInteger(
-                    R.integer.config_final_fadeout_percentage_of_language_on_spacebar) / 100.0f;
-            mDoubleSpacesTurnIntoPeriodTimeout = res.getInteger(
-                    R.integer.config_double_spaces_turn_into_period_timeout);
             mMagicSpaceStrippers = res.getString(R.string.magic_space_stripping_symbols);
             mMagicSpaceSwappers = res.getString(R.string.magic_space_swapping_symbols);
             String wordSeparators = mMagicSpaceStrippers + mMagicSpaceSwappers
