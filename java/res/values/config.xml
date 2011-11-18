@@ -63,6 +63,7 @@
     <integer name="config_long_press_space_key_timeout">@integer/config_long_press_key_timeout</integer>
     <integer name="config_touch_noise_threshold_millis">40</integer>
     <integer name="config_double_spaces_turn_into_period_timeout">1100</integer>
+    <integer name="config_ignore_special_key_timeout">700</integer>
     <dimen name="config_touch_noise_threshold_distance">2.0mm</dimen>
     <!-- This configuration is the index of the array {@link KeyboardSwitcher.KEYBOARD_THEMES}. -->
     <string name="config_default_keyboard_theme_id" translatable="false">5</string>
