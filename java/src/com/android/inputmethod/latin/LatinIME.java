@@ -2100,8 +2100,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // so that we need to re-create the keyboard input view here.
             setInputView(mKeyboardSwitcher.onCreateInputView());
         }
-        // Reload keyboard because the current language has been changed.
-        mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(), mSettingsValues);
+        // When the device locale is changed in SetupWizard etc., this method may get called via
+        // onConfigurationChanged before SoftInputWindow is shown.
+        if (mKeyboardSwitcher.getKeyboardView() != null) {
+            // Reload keyboard because the current language has been changed.
+            mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(), mSettingsValues);
+        }
         initSuggest();
         loadSettings();
     }
