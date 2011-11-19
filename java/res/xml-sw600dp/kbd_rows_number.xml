@@ -32,7 +32,7 @@
             <Row>
                 <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
                 <Spacer
-                    latin:keyWidth="24.875%p" />
+                    latin:keyWidth="27.50%p" />
                 <Key
                     latin:keyStyle="num1KeyStyle" />
                 <Key
@@ -47,7 +47,7 @@
             <Row>
                 <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
                 <Spacer
-                    latin:keyWidth="24.875%p" />
+                    latin:keyWidth="27.50%p" />
                 <Key
                     latin:keyStyle="num4KeyStyle" />
                 <Key
@@ -62,7 +62,7 @@
             <Row>
                 <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
                 <Spacer
-                    latin:keyWidth="24.875%p" />
+                    latin:keyWidth="27.50%p" />
                 <Key
                     latin:keyStyle="num7KeyStyle" />
                 <Key
@@ -77,10 +77,9 @@
                 <Key
                     latin:keyStyle="tabKeyStyle"
                     latin:keyWidth="11.00%p" />
-                <Spacer
-                    latin:keyXPos="24.875%p" />
                 <Key
-                    latin:keyStyle="num0KeyStyle" />
+                    latin:keyStyle="num0KeyStyle"
+                    latin:keyXPos="42.50%p"/>
                 <Spacer
                     latin:keyXPos="-11.00%p"
                     latin:keyWidth="0%p" />
@@ -93,7 +92,7 @@
             <Row>
                 <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
                 <Spacer
-                    latin:keyWidth="11.00%p" />
+                    latin:keyWidth="12.75%p" />
                 <Key
                     latin:keyLabel="-"
                     latin:keyStyle="numKeyStyle"
@@ -109,7 +108,7 @@
                 <Key
                     latin:keyLabel="1"
                     latin:keyStyle="numKeyStyle"
-                    latin:keyXPos="38.75%p" />
+                    latin:keyXPos="42.25%p" />
                 <Key
                     latin:keyLabel="2"
                     latin:keyStyle="numKeyStyle" />
@@ -119,12 +118,12 @@
                 <Key
                     latin:keyStyle="deleteKeyStyle"
                     latin:keyXPos="-11.00%p"
-                    latin:keyWidth="fillBoth" />
+                    latin:keyWidth="fillRight" />
             </Row>
             <Row>
                 <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
                 <Spacer
-                    latin:keyWidth="11.00%p" />
+                    latin:keyWidth="12.75%p" />
                 <Key
                     latin:keyStyle="numStarKeyStyle"
                     latin:keyWidth="9.25%p" />
@@ -139,7 +138,7 @@
                 <Key
                     latin:keyLabel="4"
                     latin:keyStyle="numKeyStyle"
-                    latin:keyXPos="38.75%p" />
+                    latin:keyXPos="42.25%p" />
                 <Key
                     latin:keyLabel="5"
                     latin:keyStyle="numKeyStyle" />
@@ -149,12 +148,12 @@
                 <Key
                     latin:keyStyle="returnKeyStyle"
                     latin:keyXPos="-11.00%p"
-                    latin:keyWidth="fillBoth" />
+                    latin:keyWidth="fillRight" />
             </Row>
             <Row>
                 <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
                 <Spacer
-                    latin:keyWidth="11.00%p" />
+                    latin:keyWidth="12.75%p" />
                 <Key
                     latin:keyLabel="("
                     latin:keyStyle="numKeyStyle"
@@ -170,7 +169,7 @@
                 <Key
                     latin:keyLabel="7"
                     latin:keyStyle="numKeyStyle"
-                    latin:keyXPos="38.75%p" />
+                    latin:keyXPos="42.25%p" />
                 <Key
                     latin:keyLabel="8"
                     latin:keyStyle="numKeyStyle" />
@@ -187,10 +186,11 @@
                     latin:keyWidth="11.00%p" />
                 <Key
                     latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"
-                    latin:keyWidth="27.75%p" />
+                    latin:keyWidth="27.75%p"
+                    latin:keyXPos="12.75%p" />
                 <Key
                     latin:keyStyle="numStarKeyStyle"
-                    latin:keyXPos="38.75%p" />
+                    latin:keyXPos="42.25%p" />
                 <Key
                     latin:keyLabel="0"
                     latin:keyStyle="numKeyStyle" />
