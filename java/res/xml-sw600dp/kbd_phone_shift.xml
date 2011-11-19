@@ -39,9 +39,7 @@
             latin:keyStyle="numKeyStyle"
             latin:keyWidth="9.25%p" />
         <Key
-            latin:code="44"
-            latin:keyLabel="@string/label_pause_key"
-            latin:keyLabelOption="followKeyHintLabelRatio|autoXScale"
+            latin:keyStyle="numPauseKeyStyle"
             latin:keyWidth="9.25%p" />
         <Key
             latin:keyStyle="num1KeyStyle"
@@ -68,9 +66,7 @@
             latin:keyStyle="numKeyStyle"
             latin:keyWidth="9.25%p" />
         <Key
-            latin:code="59"
-            latin:keyLabel="@string/label_wait_key"
-            latin:keyLabelOption="followKeyHintLabelRatio|autoXScale"
+            latin:keyStyle="numWaitKeyStyle"
             latin:keyWidth="9.25%p" />
         <Key
             latin:keyStyle="num4KeyStyle"
@@ -113,7 +109,7 @@
     </Row>
     <Row>
         <Key
-            latin:keyStyle="tabKeyStyle"
+            latin:keyStyle="numTabKeyStyle"
             latin:keyWidth="11.00%p" />
         <Key
             latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"

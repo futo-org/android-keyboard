@@ -42,13 +42,12 @@
     </Row>
     <Row>
         <Key
-            latin:keyLabel="N" />
+            latin:keyLabel="N"
+            latin:keyStyle="numKeyBaseStyle" />
         <!-- Pause is a comma. Check PhoneNumberUtils.java to see if this
             has changed. -->
         <Key
-            latin:code="44"
-            latin:keyLabel="@string/label_pause_key"
-            latin:keyLabelOption="followKeyHintLabelRatio|autoXScale" />
+            latin:keyStyle="numPauseKeyStyle" />
         <Key
             latin:keyLabel=","
             latin:keyStyle="numKeyStyle" />
@@ -62,9 +61,7 @@
             latin:keyStyle="numStarKeyStyle" />
         <!-- Wait is a semicolon. -->
         <Key
-            latin:code="59"
-            latin:keyLabel="@string/label_wait_key"
-            latin:keyLabelOption="followKeyHintLabelRatio|autoXScale" />
+            latin:keyStyle="numWaitKeyStyle" />
         <Key
             latin:keyLabel="#"
             latin:keyStyle="numKeyStyle" />

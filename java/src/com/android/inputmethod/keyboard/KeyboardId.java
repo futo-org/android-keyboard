@@ -133,10 +133,6 @@ public class KeyboardId {
         return mXmlId == R.xml.kbd_phone_shift;
     }
 
-    public boolean isNumberKeyboard() {
-        return mMode == MODE_NUMBER;
-    }
-
     @Override
     public boolean equals(Object other) {
         return other instanceof KeyboardId && equals((KeyboardId) other);

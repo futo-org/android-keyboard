@@ -263,20 +263,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         return mKeyTimerHandler;
     }
 
-    @Override
-    public void setKeyPreviewPopupEnabled(boolean previewEnabled, int delay) {
-        final Keyboard keyboard = getKeyboard();
-        if (keyboard instanceof LatinKeyboard) {
-            final LatinKeyboard latinKeyboard = (LatinKeyboard)keyboard;
-            if (latinKeyboard.isPhoneKeyboard() || latinKeyboard.isNumberKeyboard()) {
-                // Phone and number keyboard never shows popup preview.
-                super.setKeyPreviewPopupEnabled(false, delay);
-                return;
-            }
-        }
-        super.setKeyPreviewPopupEnabled(previewEnabled, delay);
-    }
-
     /**
      * Attaches a keyboard to this view. The keyboard can be switched at any time and the
      * view will re-layout itself to accommodate the keyboard.
