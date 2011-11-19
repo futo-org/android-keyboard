@@ -217,10 +217,6 @@ public class Keyboard {
         return mId.isPhoneKeyboard();
     }
 
-    public boolean isNumberKeyboard() {
-        return mId.isNumberKeyboard();
-    }
-
     public CharSequence adjustLabelCase(CharSequence label) {
         if (isShiftedOrShiftLocked() && !TextUtils.isEmpty(label) && label.length() < 3
                 && Character.isLowerCase(label.charAt(0))) {

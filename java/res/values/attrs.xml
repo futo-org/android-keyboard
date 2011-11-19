@@ -221,6 +221,7 @@
             <flag name="withIconLeft" value="0x1000" />
             <flag name="withIconRight" value="0x2000" />
             <flag name="autoXScale" value="0x4000" />
+            <flag name="noKeyPreview" value="0x8000" />
         </attr>
         <!-- The icon to display on the key instead of the label. -->
         <attr name="keyIcon" format="enum">

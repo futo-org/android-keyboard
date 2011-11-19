@@ -28,7 +28,7 @@
         latin:keyboardLayout="@xml/kbd_numkey_styles" />
     <Row>
         <Key
-            latin:keyStyle="tabKeyStyle"
+            latin:keyStyle="numTabKeyStyle"
             latin:keyLabelOption="alignLeft"
             latin:keyWidth="11.172%p" />
         <Key
@@ -41,9 +41,7 @@
             latin:keyStyle="numKeyStyle"
             latin:keyWidth="8.047%p" />
         <Key
-            latin:code="44"
-            latin:keyLabel="@string/label_pause_key"
-            latin:keyLabelOption="followKeyHintLabelRatio|autoXScale"
+            latin:keyStyle="numPauseKeyStyle"
             latin:keyWidth="8.047%p" />
         <Key
             latin:keyStyle="num1KeyStyle"
@@ -71,9 +69,7 @@
             latin:keyStyle="numKeyStyle"
             latin:keyWidth="8.047%p" />
         <Key
-            latin:code="59"
-            latin:keyLabel="@string/label_wait_key"
-            latin:keyLabelOption="followKeyHintLabelRatio|autoXScale"
+            latin:keyStyle="numWaitKeyStyle"
             latin:keyWidth="8.047%p" />
         <Key
             latin:keyStyle="num4KeyStyle"

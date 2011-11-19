@@ -22,15 +22,21 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <key-style
+        latin:styleName="numKeyBaseStyle"
+        latin:keyLabelOption="noKeyPreview" />
+    <key-style
         latin:styleName="numKeyStyle"
-        latin:keyLabelOption="largeLetter|followKeyLetterRatio" />
+        latin:keyLabelOption="largeLetter|followKeyLetterRatio"
+        latin:parentStyle="numKeyBaseStyle" />
     <key-style
         latin:styleName="numModeKeyStyle"
-        latin:keyLabelOption="fontNormal|followKeyLetterRatio" />
+        latin:keyLabelOption="fontNormal|followKeyLetterRatio"
+        latin:parentStyle="numKeyBaseStyle" />
     <key-style
         latin:styleName="numFunctionalKeyStyle"
         latin:keyLabelOption="largeLetter|followKeyLetterRatio"
-        latin:backgroundType="functional" />
+        latin:backgroundType="functional"
+        latin:parentStyle="numKeyBaseStyle" />
     <key-style
         latin:styleName="numberKeyStyle"
         latin:keyLabelOption="alignLeftOfCenter|hasHintLabel"
@@ -100,7 +106,24 @@
         latin:keyLabel="@string/label_to_phone_numeric_key"
         latin:parentStyle="numModeKeyStyle" />
     <key-style
+        latin:styleName="numPauseKeyStyle"
+        latin:code="44"
+        latin:keyLabel="@string/label_pause_key"
+        latin:keyLabelOption="followKeyHintLabelRatio|autoXScale"
+        latin:parentStyle="numKeyBaseStyle" />
+    <key-style
+        latin:styleName="numWaitKeyStyle"
+        latin:code="59"
+        latin:keyLabel="@string/label_wait_key"
+        latin:keyLabelOption="followKeyHintLabelRatio|autoXScale"
+        latin:parentStyle="numKeyBaseStyle" />
+    <key-style
+        latin:styleName="numTabKeyStyle"
+        latin:keyLabelOption="noKeyPreview"
+        latin:parentStyle="tabKeyStyle" />
+    <key-style
         latin:styleName="numSpaceKeyStyle"
         latin:code="@integer/key_space"
-        latin:keyIcon="iconSpaceKey" />
+        latin:keyIcon="iconSpaceKey"
+        latin:parentStyle="numKeyBaseStyle" />
 </merge>

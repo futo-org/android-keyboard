@@ -28,7 +28,7 @@
         latin:keyboardLayout="@xml/kbd_numkey_styles" />
     <Row>
         <Key
-            latin:keyStyle="tabKeyStyle"
+            latin:keyStyle="numTabKeyStyle"
             latin:keyLabelOption="alignLeft"
             latin:keyWidth="11.172%p" />
         <Key

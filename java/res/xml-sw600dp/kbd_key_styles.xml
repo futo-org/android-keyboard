@@ -44,24 +44,29 @@
         latin:code="@integer/key_shift"
         latin:keyIcon="iconShiftKey"
         latin:keyIconShifted="iconShiftedShiftKey"
+        latin:keyLabelOption="noKeyPreview"
         latin:backgroundType="sticky" />
     <key-style
         latin:styleName="deleteKeyStyle"
         latin:code="@integer/key_delete"
         latin:keyIcon="iconDeleteKey"
+        latin:keyLabelOption="noKeyPreview"
         latin:backgroundType="functional"
         latin:isRepeatable="true" />
     <key-style
         latin:styleName="returnKeyStyle"
         latin:code="@integer/key_return"
         latin:keyIcon="iconReturnKey"
+        latin:keyLabelOption="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="spaceKeyStyle"
-        latin:code="@integer/key_space" />
+        latin:code="@integer/key_space"
+        latin:keyLabelOption="noKeyPreview" />
     <key-style
         latin:styleName="nonSpecialBackgroundSpaceKeyStyle"
-        latin:code="@integer/key_space" />
+        latin:code="@integer/key_space"
+        latin:keyLabelOption="noKeyPreview" />
     <key-style
         latin:styleName="smileyKeyStyle"
         latin:keyLabel=":-)"
@@ -73,11 +78,13 @@
         latin:styleName="shortcutKeyStyle"
         latin:code="@integer/key_shortcut"
         latin:keyIcon="iconShortcutKey"
+        latin:keyLabelOption="noKeyPreview"
         latin:parentStyle="f2PopupStyle" />
     <key-style
         latin:styleName="settingsKeyStyle"
         latin:code="@integer/key_settings"
         latin:keyIcon="iconSettingsKey"
+        latin:keyLabelOption="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="tabKeyStyle"
@@ -89,21 +96,25 @@
         latin:styleName="toSymbolKeyStyle"
         latin:code="@integer/key_switch_alpha_symbol"
         latin:keyLabel="@string/label_to_symbol_key"
+        latin:keyLabelOption="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="toAlphaKeyStyle"
         latin:code="@integer/key_switch_alpha_symbol"
         latin:keyLabel="@string/label_to_alpha_key"
+        latin:keyLabelOption="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="toMoreSymbolKeyStyle"
         latin:code="@integer/key_shift"
         latin:keyLabel="@string/label_to_more_symbol_for_tablet_key"
+        latin:keyLabelOption="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="backFromMoreSymbolKeyStyle"
         latin:code="@integer/key_shift"
         latin:keyLabel="@string/label_to_symbol_key"
+        latin:keyLabelOption="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="comKeyStyle"
