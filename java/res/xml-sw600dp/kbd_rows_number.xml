@@ -18,9 +18,8 @@
 */
 -->
 
-<Keyboard
+<merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-    latin:keyWidth="16.75%p"
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
@@ -206,4 +205,4 @@
             </Row>
         </default>
     </switch>
-</Keyboard>
+</merge>
