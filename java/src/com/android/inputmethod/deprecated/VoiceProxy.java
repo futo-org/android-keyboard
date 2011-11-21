@@ -695,12 +695,12 @@ public class VoiceProxy implements VoiceInput.UiListener {
                 && !mVoiceInput.isBlacklistedField(fieldContext);
     }
 
-    private boolean shouldShowVoiceButton(FieldContext fieldContext, EditorInfo attribute) {
+    private boolean shouldShowVoiceButton(FieldContext fieldContext, EditorInfo editorInfo) {
         @SuppressWarnings("deprecation")
         final boolean noMic = Utils.inPrivateImeOptions(null,
-                LatinIME.IME_OPTION_NO_MICROPHONE_COMPAT, attribute)
+                LatinIME.IME_OPTION_NO_MICROPHONE_COMPAT, editorInfo)
                 || Utils.inPrivateImeOptions(mService.getPackageName(),
-                        LatinIME.IME_OPTION_NO_MICROPHONE, attribute);
+                        LatinIME.IME_OPTION_NO_MICROPHONE, editorInfo);
         return ENABLE_VOICE_BUTTON && fieldCanDoVoice(fieldContext) && !noMic
                 && SpeechRecognizer.isRecognitionAvailable(mService);
     }
@@ -709,7 +709,7 @@ public class VoiceProxy implements VoiceInput.UiListener {
         return SpeechRecognizer.isRecognitionAvailable(context);
     }
 
-    public void loadSettings(EditorInfo attribute, SharedPreferences sp) {
+    public void loadSettings(EditorInfo editorInfo, SharedPreferences sp) {
         if (!VOICE_INSTALLED) {
             return;
         }
@@ -723,7 +723,7 @@ public class VoiceProxy implements VoiceInput.UiListener {
         final String voiceMode = sp.getString(PREF_VOICE_MODE,
                 mService.getString(R.string.voice_mode_main));
         mVoiceButtonEnabled = !voiceMode.equals(mService.getString(R.string.voice_mode_off))
-                && shouldShowVoiceButton(makeFieldContext(), attribute);
+                && shouldShowVoiceButton(makeFieldContext(), editorInfo);
         mVoiceButtonOnPrimary = voiceMode.equals(mService.getString(R.string.voice_mode_main));
     }
 

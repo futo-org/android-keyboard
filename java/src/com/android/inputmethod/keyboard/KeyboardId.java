@@ -58,15 +58,15 @@ public class KeyboardId {
     public final int mImeAction;
 
     public final String mXmlName;
-    public final EditorInfo mAttribute;
+    public final EditorInfo mEditorInfo;
 
     private final int mHashCode;
 
     public KeyboardId(String xmlName, int xmlId, Locale locale, int orientation, int width,
-            int mode, EditorInfo attribute, boolean hasSettingsKey, int f2KeyMode,
+            int mode, EditorInfo editorInfo, boolean hasSettingsKey, int f2KeyMode,
             boolean clobberSettingsKey, boolean shortcutKeyEnabled, boolean hasShortcutKey) {
-        final int inputType = (attribute != null) ? attribute.inputType : 0;
-        final int imeOptions = (attribute != null) ? attribute.imeOptions : 0;
+        final int inputType = (editorInfo != null) ? editorInfo.inputType : 0;
+        final int imeOptions = (editorInfo != null) ? editorInfo.imeOptions : 0;
         this.mLocale = locale;
         this.mOrientation = orientation;
         this.mWidth = width;
@@ -89,7 +89,7 @@ public class KeyboardId {
                 EditorInfo.IME_MASK_ACTION | EditorInfo.IME_FLAG_NO_ENTER_ACTION);
 
         this.mXmlName = xmlName;
-        this.mAttribute = attribute;
+        this.mEditorInfo = editorInfo;
 
         this.mHashCode = Arrays.hashCode(new Object[] {
                 locale,
@@ -109,7 +109,7 @@ public class KeyboardId {
     }
 
     public KeyboardId cloneWithNewXml(String xmlName, int xmlId) {
-        return new KeyboardId(xmlName, xmlId, mLocale, mOrientation, mWidth, mMode, mAttribute,
+        return new KeyboardId(xmlName, xmlId, mLocale, mOrientation, mWidth, mMode, mEditorInfo,
                 false, F2KEY_MODE_NONE, false, false, false);
     }
 

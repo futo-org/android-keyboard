@@ -409,6 +409,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         private boolean mHasPendingStartInput;
         private boolean mHasPendingFinishInputView;
         private boolean mHasPendingFinishInput;
+        private EditorInfo mAppliedEditorInfo;
 
         public void startOrientationChanging() {
             removeMessages(MSG_PENDING_IMS_CALLBACK);
@@ -424,18 +425,18 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mHasPendingStartInput = false;
         }
 
-        private void executePendingImsCallback(LatinIME latinIme, EditorInfo attribute,
+        private void executePendingImsCallback(LatinIME latinIme, EditorInfo editorInfo,
                 boolean restarting) {
             if (mHasPendingFinishInputView)
                 latinIme.onFinishInputViewInternal(mHasPendingFinishInput);
             if (mHasPendingFinishInput)
                 latinIme.onFinishInputInternal();
             if (mHasPendingStartInput)
-                latinIme.onStartInputInternal(attribute, restarting);
+                latinIme.onStartInputInternal(editorInfo, restarting);
             resetPendingImsCallback();
         }
 
-        public void onStartInput(EditorInfo attribute, boolean restarting) {
+        public void onStartInput(EditorInfo editorInfo, boolean restarting) {
             if (hasMessages(MSG_PENDING_IMS_CALLBACK)) {
                 // Typically this is the second onStartInput after orientation changed.
                 mHasPendingStartInput = true;
@@ -446,27 +447,28 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     mPendingSuccesiveImsCallback = true;
                 }
                 final LatinIME latinIme = getOuterInstance();
-                executePendingImsCallback(latinIme, attribute, restarting);
-                latinIme.onStartInputInternal(attribute, restarting);
+                executePendingImsCallback(latinIme, editorInfo, restarting);
+                latinIme.onStartInputInternal(editorInfo, restarting);
             }
         }
 
-        public void onStartInputView(EditorInfo attribute, boolean restarting) {
-             if (hasMessages(MSG_PENDING_IMS_CALLBACK)) {
-                 // Typically this is the second onStartInputView after orientation changed.
-                 resetPendingImsCallback();
-             } else {
-                 if (mPendingSuccesiveImsCallback) {
-                     // This is the first onStartInputView after orientation changed.
-                     mPendingSuccesiveImsCallback = false;
-                     resetPendingImsCallback();
-                     sendMessageDelayed(obtainMessage(MSG_PENDING_IMS_CALLBACK),
-                             PENDING_IMS_CALLBACK_DURATION);
-                 }
-                 final LatinIME latinIme = getOuterInstance();
-                 executePendingImsCallback(latinIme, attribute, restarting);
-                 latinIme.onStartInputViewInternal(attribute, restarting);
-             }
+        public void onStartInputView(EditorInfo editorInfo, boolean restarting) {
+            if (hasMessages(MSG_PENDING_IMS_CALLBACK) && editorInfo == mAppliedEditorInfo) {
+                // Typically this is the second onStartInputView after orientation changed.
+                resetPendingImsCallback();
+            } else {
+                if (mPendingSuccesiveImsCallback) {
+                    // This is the first onStartInputView after orientation changed.
+                    mPendingSuccesiveImsCallback = false;
+                    resetPendingImsCallback();
+                    sendMessageDelayed(obtainMessage(MSG_PENDING_IMS_CALLBACK),
+                            PENDING_IMS_CALLBACK_DURATION);
+                }
+                final LatinIME latinIme = getOuterInstance();
+                executePendingImsCallback(latinIme, editorInfo, restarting);
+                latinIme.onStartInputViewInternal(editorInfo, restarting);
+                mAppliedEditorInfo = editorInfo;
+            }
         }
 
         public void onFinishInputView(boolean finishingInput) {
@@ -476,6 +478,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             } else {
                 final LatinIME latinIme = getOuterInstance();
                 latinIme.onFinishInputViewInternal(finishingInput);
+                mAppliedEditorInfo = null;
             }
         }
 
@@ -703,13 +706,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     @Override
-    public void onStartInput(EditorInfo attribute, boolean restarting) {
-        mHandler.onStartInput(attribute, restarting);
+    public void onStartInput(EditorInfo editorInfo, boolean restarting) {
+        mHandler.onStartInput(editorInfo, restarting);
     }
 
     @Override
-    public void onStartInputView(EditorInfo attribute, boolean restarting) {
-        mHandler.onStartInputView(attribute, restarting);
+    public void onStartInputView(EditorInfo editorInfo, boolean restarting) {
+        mHandler.onStartInputView(editorInfo, restarting);
     }
 
     @Override
@@ -722,19 +725,19 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mHandler.onFinishInput();
     }
 
-    private void onStartInputInternal(EditorInfo attribute, boolean restarting) {
-        super.onStartInput(attribute, restarting);
+    private void onStartInputInternal(EditorInfo editorInfo, boolean restarting) {
+        super.onStartInput(editorInfo, restarting);
     }
 
-    private void onStartInputViewInternal(EditorInfo attribute, boolean restarting) {
-        super.onStartInputView(attribute, restarting);
+    private void onStartInputViewInternal(EditorInfo editorInfo, boolean restarting) {
+        super.onStartInputView(editorInfo, restarting);
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         LatinKeyboardView inputView = switcher.getKeyboardView();
 
         if (DEBUG) {
-            Log.d(TAG, "onStartInputView: attribute:" + ((attribute == null) ? "none"
+            Log.d(TAG, "onStartInputView: editorInfo:" + ((editorInfo == null) ? "none"
                     : String.format("inputType=0x%08x imeOptions=0x%08x",
-                            attribute.inputType, attribute.imeOptions)));
+                            editorInfo.inputType, editorInfo.imeOptions)));
         }
         // In landscape mode, this method gets called without the input view being created.
         if (inputView == null) {
@@ -744,7 +747,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // Forward this event to the accessibility utilities, if enabled.
         final AccessibilityUtils accessUtils = AccessibilityUtils.getInstance();
         if (accessUtils.isTouchExplorationEnabled()) {
-            accessUtils.onStartInputViewInternal(attribute, restarting);
+            accessUtils.onStartInputViewInternal(editorInfo, restarting);
         }
 
         mSubtypeSwitcher.updateParametersOnStartInputView();
@@ -755,14 +758,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // know now whether this is a password text field, because we need to know now whether we
         // want to enable the voice button.
         final VoiceProxy voiceIme = mVoiceProxy;
-        final int inputType = (attribute != null) ? attribute.inputType : 0;
+        final int inputType = (editorInfo != null) ? editorInfo.inputType : 0;
         voiceIme.resetVoiceStates(InputTypeCompatUtils.isPasswordInputType(inputType)
                 || InputTypeCompatUtils.isVisiblePasswordInputType(inputType));
 
         // The EditorInfo might have a flag that affects fullscreen mode.
         // Note: This call should be done by InputMethodService?
         updateFullscreenMode();
-        initializeInputAttributes(attribute);
+        initializeInputAttributes(editorInfo);
 
         inputView.closing();
         mEnteredText = null;
@@ -778,12 +781,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (mSuggest != null && mSettingsValues.mAutoCorrectEnabled) {
             mSuggest.setAutoCorrectionThreshold(mSettingsValues.mAutoCorrectionThreshold);
         }
-        mVoiceProxy.loadSettings(attribute, mPrefs);
+        mVoiceProxy.loadSettings(editorInfo, mPrefs);
         // This will work only when the subtype is not supported.
         LanguageSwitcherProxy.loadSettings();
 
         if (mSubtypeSwitcher.isKeyboardMode()) {
-            switcher.loadKeyboard(attribute, mSettingsValues);
+            switcher.loadKeyboard(editorInfo, mSettingsValues);
         }
 
         if (mSuggestionsView != null)
@@ -803,10 +806,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
 
-    private void initializeInputAttributes(EditorInfo attribute) {
-        if (attribute == null)
+    private void initializeInputAttributes(EditorInfo editorInfo) {
+        if (editorInfo == null)
             return;
-        final int inputType = attribute.inputType;
+        final int inputType = editorInfo.inputType;
         if (inputType == InputType.TYPE_NULL) {
             // TODO: We should honor TYPE_NULL specification.
             Log.i(TAG, "InputType.TYPE_NULL is specified");
@@ -815,7 +818,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final int variation = inputType & InputType.TYPE_MASK_VARIATION;
         if (inputClass == 0) {
             Log.w(TAG, String.format("Unexpected input class: inputType=0x%08x imeOptions=0x%08x",
-                    inputType, attribute.imeOptions));
+                    inputType, editorInfo.imeOptions));
         }
 
         mInsertSpaceOnPickSuggestionManually = false;

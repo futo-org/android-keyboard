@@ -301,9 +301,9 @@ public class Settings extends InputMethodSettingsActivity
             return mShowSettingsKey;
         }
 
-        public boolean isVoiceKeyEnabled(EditorInfo attribute) {
+        public boolean isVoiceKeyEnabled(EditorInfo editorInfo) {
             final boolean shortcutImeEnabled = SubtypeSwitcher.getInstance().isShortcutImeEnabled();
-            final int inputType = (attribute != null) ? attribute.inputType : 0;
+            final int inputType = (editorInfo != null) ? editorInfo.inputType : 0;
             return shortcutImeEnabled && mVoiceKeyEnabled
                     && !InputTypeCompatUtils.isPasswordInputType(inputType);
         }
