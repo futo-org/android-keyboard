@@ -20,6 +20,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.ProximityInfo;
 
 import java.io.File;
@@ -81,6 +82,8 @@ public class Suggest implements Dictionary.WordCallback {
     public static final String DICT_KEY_USER_BIGRAM = "user_bigram";
     public static final String DICT_KEY_WHITELIST ="whitelist";
 
+    private static String SINGLE_QUOTE_AS_STRING = String.valueOf((char)Keyboard.CODE_SINGLE_QUOTE);
+
     private static final boolean DBG = LatinImeLogger.sDBG;
 
     private AutoCorrection mAutoCorrection;
@@ -101,11 +104,12 @@ public class Suggest implements Dictionary.WordCallback {
 
     private ArrayList<CharSequence> mSuggestions = new ArrayList<CharSequence>();
     ArrayList<CharSequence> mBigramSuggestions  = new ArrayList<CharSequence>();
-    private CharSequence mTypedWord;
+    private CharSequence mConsideredWord;
 
     // TODO: Remove these member variables by passing more context to addWord() callback method
     private boolean mIsFirstCharCapitalized;
     private boolean mIsAllUpperCase;
+    private boolean mIsLastCharASingleQuote;
 
     private int mCorrectionMode = CORRECTION_BASIC;
 
@@ -295,17 +299,19 @@ public class Suggest implements Dictionary.WordCallback {
         mAutoCorrection.init();
         mIsFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
         mIsAllUpperCase = wordComposer.isAllUpperCase();
+        mIsLastCharASingleQuote = wordComposer.isLastCharASingleQuote();
         collectGarbage(mSuggestions, mPrefMaxSuggestions);
         Arrays.fill(mScores, 0);
 
-        // Save a lowercase version of the original word
-        String typedWord = wordComposer.getTypedWord();
+        final String typedWord = wordComposer.getTypedWord();
+        final String consideredWord = mIsLastCharASingleQuote
+                ? typedWord.substring(0, typedWord.length() - 1) : typedWord;
         if (typedWord != null) {
             // Treating USER_TYPED as UNIGRAM suggestion for logging now.
             LatinImeLogger.onAddSuggestedWord(typedWord, Suggest.DIC_USER_TYPED,
                     Dictionary.DataType.UNIGRAM);
         }
-        mTypedWord = typedWord;
+        mConsideredWord = consideredWord;
 
         if (wordComposer.size() <= 1 && (mCorrectionMode == CORRECTION_FULL_BIGRAM
                 || mCorrectionMode == CORRECTION_BASIC)) {
@@ -321,7 +327,7 @@ public class Suggest implements Dictionary.WordCallback {
                 for (final Dictionary dictionary : mBigramDictionaries.values()) {
                     dictionary.getBigrams(wordComposer, prevWordForBigram, this);
                 }
-                if (TextUtils.isEmpty(typedWord)) {
+                if (TextUtils.isEmpty(consideredWord)) {
                     // Nothing entered: return all bigrams for the previous word
                     int insertCount = Math.min(mBigramSuggestions.size(), mPrefMaxSuggestions);
                     for (int i = 0; i < insertCount; ++i) {
@@ -330,7 +336,7 @@ public class Suggest implements Dictionary.WordCallback {
                 } else {
                     // Word entered: return only bigrams that match the first char of the typed word
                     @SuppressWarnings("null")
-                    final char currentChar = typedWord.charAt(0);
+                    final char currentChar = consideredWord.charAt(0);
                     // TODO: Must pay attention to locale when changing case.
                     final char currentCharUpper = Character.toUpperCase(currentChar);
                     int count = 0;
@@ -354,24 +360,32 @@ public class Suggest implements Dictionary.WordCallback {
                 if (key.equals(DICT_KEY_USER_UNIGRAM) || key.equals(DICT_KEY_WHITELIST))
                     continue;
                 final Dictionary dictionary = mUnigramDictionaries.get(key);
-                dictionary.getWords(wordComposer, this, proximityInfo);
+                if (mIsLastCharASingleQuote) {
+                    final WordComposer tmpWordComposer = new WordComposer(wordComposer);
+                    tmpWordComposer.deleteLast();
+                    dictionary.getWords(tmpWordComposer, this, proximityInfo);
+                } else {
+                    dictionary.getWords(wordComposer, this, proximityInfo);
+                }
             }
         }
-        final String typedWordString = typedWord == null ? null : typedWord.toString();
+        final String consideredWordString =
+                consideredWord == null ? null : consideredWord.toString();
 
         CharSequence whitelistedWord = capitalizeWord(mIsAllUpperCase, mIsFirstCharCapitalized,
-                mWhiteListDictionary.getWhitelistedWord(typedWordString));
+                mWhiteListDictionary.getWhitelistedWord(consideredWordString));
 
         mAutoCorrection.updateAutoCorrectionStatus(mUnigramDictionaries, wordComposer,
-                mSuggestions, mScores, typedWord, mAutoCorrectionThreshold, mCorrectionMode,
+                mSuggestions, mScores, consideredWord, mAutoCorrectionThreshold, mCorrectionMode,
                 whitelistedWord);
 
         if (whitelistedWord != null) {
-            mSuggestions.add(0, whitelistedWord);
+            mSuggestions.add(0, mIsLastCharASingleQuote
+                    ? whitelistedWord + SINGLE_QUOTE_AS_STRING : whitelistedWord);
         }
 
         if (typedWord != null) {
-            mSuggestions.add(0, typedWordString);
+            mSuggestions.add(0, typedWord.toString());
         }
         Utils.removeDupes(mSuggestions);
 
@@ -424,7 +438,7 @@ public class Suggest implements Dictionary.WordCallback {
         int pos = 0;
 
         // Check if it's the same word, only caps are different
-        if (Utils.equalsIgnoreCase(mTypedWord, word, offset, length)) {
+        if (Utils.equalsIgnoreCase(mConsideredWord, word, offset, length)) {
             // TODO: remove this surrounding if clause and move this logic to
             // getSuggestedWordBuilder.
             if (suggestions.size() > 0) {
@@ -485,6 +499,9 @@ public class Suggest implements Dictionary.WordCallback {
             }
         } else {
             sb.append(word, offset, length);
+        }
+        if (mIsLastCharASingleQuote) {
+            sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
         }
         suggestions.add(pos, sb);
         if (suggestions.size() > prefMaxSuggestions) {

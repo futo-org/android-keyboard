@@ -16,9 +16,11 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyDetector;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * A place to store the currently composing word with information such as adjacent key codes as well
@@ -41,7 +43,9 @@ public class WordComposer {
     private int mCapsCount;
 
     private boolean mAutoCapitalized;
-    
+    // Cache this value for performance
+    private boolean mIsLastCharASingleQuote;
+
     /**
      * Whether the user chose to capitalize the first char of the word.
      */
@@ -53,6 +57,7 @@ public class WordComposer {
         mTypedWord = new StringBuilder(N);
         mXCoordinates = new int[N];
         mYCoordinates = new int[N];
+        mIsLastCharASingleQuote = false;
     }
 
     public WordComposer(WordComposer source) {
@@ -62,11 +67,12 @@ public class WordComposer {
     public void init(WordComposer source) {
         mCodes = new ArrayList<int[]>(source.mCodes);
         mTypedWord = new StringBuilder(source.mTypedWord);
-        mXCoordinates = source.mXCoordinates;
-        mYCoordinates = source.mYCoordinates;
+        mXCoordinates = Arrays.copyOf(source.mXCoordinates, source.mXCoordinates.length);
+        mYCoordinates = Arrays.copyOf(source.mYCoordinates, source.mYCoordinates.length);
         mCapsCount = source.mCapsCount;
         mIsFirstCharCapitalized = source.mIsFirstCharCapitalized;
         mAutoCapitalized = source.mAutoCapitalized;
+        mIsLastCharASingleQuote = source.mIsLastCharASingleQuote;
     }
 
     /**
@@ -77,6 +83,7 @@ public class WordComposer {
         mTypedWord.setLength(0);
         mCapsCount = 0;
         mIsFirstCharCapitalized = false;
+        mIsLastCharASingleQuote = false;
     }
 
     /**
@@ -126,6 +133,7 @@ public class WordComposer {
         mIsFirstCharCapitalized = isFirstCharCapitalized(
                 newIndex, primaryCode, mIsFirstCharCapitalized);
         if (Character.isUpperCase(primaryCode)) mCapsCount++;
+        mIsLastCharASingleQuote = Keyboard.CODE_SINGLE_QUOTE == primaryCode;
     }
 
     /**
@@ -157,6 +165,10 @@ public class WordComposer {
         }
         if (size() == 0) {
             mIsFirstCharCapitalized = false;
+            mIsLastCharASingleQuote = false;
+        } else {
+            mIsLastCharASingleQuote =
+                    Keyboard.CODE_SINGLE_QUOTE == mTypedWord.codePointAt(mTypedWord.length() - 1);
         }
     }
 
@@ -177,6 +189,10 @@ public class WordComposer {
      */
     public boolean isFirstCharCapitalized() {
         return mIsFirstCharCapitalized;
+    }
+
+    public boolean isLastCharASingleQuote() {
+        return mIsLastCharASingleQuote;
     }
 
     /**
