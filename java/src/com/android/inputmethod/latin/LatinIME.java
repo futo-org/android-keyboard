@@ -934,11 +934,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mLastSelectionEnd = newSelEnd;
     }
 
-    public void setLastSelection(int start, int end) {
-        mLastSelectionStart = start;
-        mLastSelectionEnd = end;
-    }
-
     /**
      * This is called when the user has clicked on the extracted text view,
      * when running in fullscreen mode.  The default implementation hides
