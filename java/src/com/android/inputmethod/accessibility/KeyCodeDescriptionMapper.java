@@ -136,16 +136,14 @@ public class KeyCodeDescriptionMapper {
         if (!TextUtils.isEmpty(key.mLabel)) {
             final String label = key.mLabel.toString().trim();
 
+            // First, attempt to map the label to a pre-defined description.
             if (mKeyLabelMap.containsKey(label)) {
                 return context.getString(mKeyLabelMap.get(label));
-            } else if (label.length() == 1
-                    || (keyboard.isManualTemporaryUpperCase() && !TextUtils
-                            .isEmpty(key.mHintLabel))) {
-                return getDescriptionForKeyCode(context, keyboard, key, shouldObscure);
-            } else {
-                return label;
             }
-        } else if (key.mCode != Keyboard.CODE_DUMMY) {
+        }
+
+        // Just attempt to speak the description.
+        if (key.mCode != Keyboard.CODE_DUMMY) {
             return getDescriptionForKeyCode(context, keyboard, key, shouldObscure);
         }
 
@@ -187,11 +185,14 @@ public class KeyCodeDescriptionMapper {
      * @return the key code for the specified key
      */
     private int getCorrectKeyCode(Keyboard keyboard, Key key) {
-        if (keyboard.isManualTemporaryUpperCase() && !TextUtils.isEmpty(key.mHintLabel)) {
+        // If keyboard is in manual temporary upper case state and key has
+        // manual temporary uppercase letter as key hint letter, alternate
+        // character code should be sent.
+        if (keyboard.isManualTemporaryUpperCase() && key.hasUppercaseLetter()
+                && !TextUtils.isEmpty(key.mHintLabel)) {
             return key.mHintLabel.charAt(0);
-        } else {
-            return key.mCode;
         }
+        return key.mCode;
     }
 
     /**
