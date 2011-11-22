@@ -146,7 +146,22 @@ public class TextEntryState {
         } else if (sState == UNDO_COMMIT) {
             setState(IN_WORD);
         }
+        // TODO: tidy up this logic. At the moment, for example, writing a word goes to
+        // ACCEPTED_DEFAULT, backspace will go to UNDO_COMMIT, another backspace will go to IN_WORD,
+        // and subsequent backspaces will leave the status at IN_WORD, even if the user backspaces
+        // past the end of the word. We are not in a word any more but the state is still IN_WORD.
         if (DEBUG) displayState("backspace");
+    }
+
+    public static void restartSuggestionsOnWordBeforeCursor() {
+        if (UNKNOWN == sState || ACCEPTED_DEFAULT == sState) {
+            // Here we can come from pretty much any state, except the ones that we can't
+            // come from after backspace, so supposedly anything except UNKNOWN and
+            // ACCEPTED_DEFAULT. Note : we could be in UNDO_COMMIT if
+            // LatinIME#revertLastWord() was calling LatinIME#restartSuggestions...()
+            Log.e(TAG, "Strange state change : coming from state " + sState);
+        }
+        setState(IN_WORD);
     }
 
     public static void reset() {

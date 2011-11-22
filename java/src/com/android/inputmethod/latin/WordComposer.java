@@ -17,7 +17,9 @@
 package com.android.inputmethod.latin;
 
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
+import com.android.inputmethod.keyboard.LatinKeyboard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -134,6 +136,50 @@ public class WordComposer {
                 newIndex, primaryCode, mIsFirstCharCapitalized);
         if (Character.isUpperCase(primaryCode)) mCapsCount++;
         mIsLastCharASingleQuote = Keyboard.CODE_SINGLE_QUOTE == primaryCode;
+    }
+
+    /**
+     * Internal method to retrieve reasonable proximity info for a character.
+     */
+    private void addKeyInfo(final int codePoint, final LatinKeyboard keyboard,
+            final KeyDetector keyDetector) {
+        for (final Key key : keyboard.mKeys) {
+            if (key.mCode == codePoint) {
+                final int x = key.mX + key.mWidth / 2;
+                final int y = key.mY + key.mHeight / 2;
+                final int[] codes = keyDetector.newCodeArray();
+                keyDetector.getKeyIndexAndNearbyCodes(x, y, codes);
+                add(codePoint, codes, x, y);
+                return;
+            }
+        }
+        add(codePoint, new int[] { codePoint },
+                WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
+    }
+
+    /**
+     * Set the currently composing word to the one passed as an argument.
+     * This will register NOT_A_COORDINATE for X and Ys, and use the passed keyboard for proximity.
+     */
+    public void setComposingWord(final CharSequence word, final LatinKeyboard keyboard,
+            final KeyDetector keyDetector) {
+        reset();
+        final int length = word.length();
+        for (int i = 0; i < length; ++i) {
+            int codePoint = word.charAt(i);
+            addKeyInfo(codePoint, keyboard, keyDetector);
+        }
+    }
+
+    /**
+     * Shortcut for the above method, this will create a new KeyDetector for the passed keyboard.
+     */
+    public void setComposingWord(final CharSequence word, final LatinKeyboard keyboard) {
+        final KeyDetector keyDetector = new KeyDetector(0);
+        keyDetector.setKeyboard(keyboard, 0, 0);
+        keyDetector.setProximityCorrectionEnabled(true);
+        keyDetector.setProximityThreshold(keyboard.mMostCommonKeyWidth);
+        setComposingWord(word, keyboard, keyDetector);
     }
 
     /**
