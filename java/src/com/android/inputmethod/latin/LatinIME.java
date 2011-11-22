@@ -1539,15 +1539,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if ((isAlphabet(code) || mSettingsValues.isSymbolExcludedFromWordSeparators(code))
                 && isSuggestionsRequested() && !isCursorTouchingWord()) {
             if (!mHasUncommittedTypedChars) {
-                mHasUncommittedTypedChars = true;
+                // Reset entirely the composing state anyway, then start composing a new word unless
+                // the character is a single quote.
+                mHasUncommittedTypedChars = (Keyboard.CODE_SINGLE_QUOTE != code);
                 mComposingStringBuilder.setLength(0);
                 mWordComposer.reset();
                 clearSuggestions();
                 mComposingStateManager.onFinishComposingText();
             }
-        }
-        if (code == Keyboard.CODE_SINGLE_QUOTE && !isCursorTouchingWord()) {
-            mHasUncommittedTypedChars = false;
         }
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         if (switcher.isShiftedOrShiftLocked()) {
