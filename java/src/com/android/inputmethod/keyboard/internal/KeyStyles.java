@@ -40,7 +40,6 @@ public class KeyStyles {
         public CharSequence getText(TypedArray a, int index);
         public int getInt(TypedArray a, int index, int defaultValue);
         public int getFlag(TypedArray a, int index, int defaultValue);
-        public boolean getBoolean(TypedArray a, int index, boolean defaultValue);
     }
 
     /* package */ static class EmptyKeyStyle implements KeyStyle {
@@ -66,11 +65,6 @@ public class KeyStyles {
         @Override
         public int getFlag(TypedArray a, int index, int defaultValue) {
             return a.getInt(index, defaultValue);
-        }
-
-        @Override
-        public boolean getBoolean(TypedArray a, int index, boolean defaultValue) {
-            return a.getBoolean(index, defaultValue);
         }
 
         protected static CharSequence[] parseTextArray(TypedArray a, int index) {
@@ -151,12 +145,6 @@ public class KeyStyles {
             return super.getFlag(a, index, defaultValue) | (value != null ? value : 0);
         }
 
-        @Override
-        public boolean getBoolean(TypedArray a, int index, boolean defaultValue) {
-            final Boolean value = (Boolean)mAttributes.get(index);
-            return super.getBoolean(a, index, (value != null) ? value : defaultValue);
-        }
-
         private DeclaredKeyStyle() {
             super();
         }
@@ -168,14 +156,13 @@ public class KeyStyles {
             readText(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
             readText(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
             readTextArray(keyAttr, R.styleable.Keyboard_Key_moreKeys);
-            readFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelOption);
+            readFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags);
             readInt(keyAttr, R.styleable.Keyboard_Key_keyIcon);
             readInt(keyAttr, R.styleable.Keyboard_Key_keyIconPreview);
             readInt(keyAttr, R.styleable.Keyboard_Key_keyIconShifted);
             readInt(keyAttr, R.styleable.Keyboard_Key_maxMoreKeysColumn);
             readInt(keyAttr, R.styleable.Keyboard_Key_backgroundType);
-            readBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable);
-            readBoolean(keyAttr, R.styleable.Keyboard_Key_enabled);
+            readFlag(keyAttr, R.styleable.Keyboard_Key_keyActionFlags);
         }
 
         private void readText(TypedArray a, int index) {
@@ -192,11 +179,6 @@ public class KeyStyles {
             final Integer value = (Integer)mAttributes.get(index);
             if (a.hasValue(index))
                 mAttributes.put(index, a.getInt(index, 0) | (value != null ? value : 0));
-        }
-
-        private void readBoolean(TypedArray a, int index) {
-            if (a.hasValue(index))
-                mAttributes.put(index, a.getBoolean(index, false));
         }
 
         private void readTextArray(TypedArray a, int index) {

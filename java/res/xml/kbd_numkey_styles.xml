@@ -23,23 +23,23 @@
 >
     <key-style
         latin:styleName="numKeyBaseStyle"
-        latin:keyLabelOption="noKeyPreview" />
+        latin:keyActionFlags="noKeyPreview" />
     <key-style
         latin:styleName="numKeyStyle"
-        latin:keyLabelOption="largeLetter|followKeyLetterRatio"
+        latin:keyLabelFlags="largeLetter|followKeyLetterRatio"
         latin:parentStyle="numKeyBaseStyle" />
     <key-style
         latin:styleName="numModeKeyStyle"
-        latin:keyLabelOption="fontNormal|followKeyLetterRatio"
+        latin:keyLabelFlags="fontNormal|followKeyLetterRatio"
         latin:parentStyle="numKeyBaseStyle" />
     <key-style
         latin:styleName="numFunctionalKeyStyle"
-        latin:keyLabelOption="largeLetter|followKeyLetterRatio"
+        latin:keyLabelFlags="largeLetter|followKeyLetterRatio"
         latin:backgroundType="functional"
         latin:parentStyle="numKeyBaseStyle" />
     <key-style
         latin:styleName="numberKeyStyle"
-        latin:keyLabelOption="alignLeftOfCenter|hasHintLabel"
+        latin:keyLabelFlags="alignLeftOfCenter|hasHintLabel"
         latin:parentStyle="numKeyStyle" />
     <key-style
         latin:styleName="num0KeyStyle"
@@ -109,17 +109,17 @@
         latin:styleName="numPauseKeyStyle"
         latin:code="44"
         latin:keyLabel="@string/label_pause_key"
-        latin:keyLabelOption="followKeyHintLabelRatio|autoXScale"
+        latin:keyLabelFlags="followKeyHintLabelRatio|autoXScale"
         latin:parentStyle="numKeyBaseStyle" />
     <key-style
         latin:styleName="numWaitKeyStyle"
         latin:code="59"
         latin:keyLabel="@string/label_wait_key"
-        latin:keyLabelOption="followKeyHintLabelRatio|autoXScale"
+        latin:keyLabelFlags="followKeyHintLabelRatio|autoXScale"
         latin:parentStyle="numKeyBaseStyle" />
     <key-style
         latin:styleName="numTabKeyStyle"
-        latin:keyLabelOption="noKeyPreview"
+        latin:keyActionFlags="noKeyPreview"
         latin:parentStyle="tabKeyStyle" />
     <key-style
         latin:styleName="numSpaceKeyStyle"

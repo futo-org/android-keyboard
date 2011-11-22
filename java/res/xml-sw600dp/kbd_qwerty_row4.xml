@@ -45,7 +45,7 @@
             <default>
                 <Key
                     latin:keyLabel="/"
-                    latin:keyLabelOption="hasUppercaseLetter"
+                    latin:keyLabelFlags="hasUppercaseLetter"
                     latin:keyHintLabel="\@"
                     latin:moreKeys="\@" />
             </default>

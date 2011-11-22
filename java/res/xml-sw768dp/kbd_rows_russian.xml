@@ -28,7 +28,7 @@
     >
         <Key
             latin:keyStyle="tabKeyStyle"
-            latin:keyLabelOption="alignLeft" />
+            latin:keyLabelFlags="alignLeft" />
         <Key
             latin:keyLabel="й" />
         <Key
@@ -63,7 +63,7 @@
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
-            latin:keyLabelOption="alignLeft"
+            latin:keyLabelFlags="alignLeft"
             latin:keyWidth="9.375%p" />
         <Key
             latin:keyLabel="ф" />

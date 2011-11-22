@@ -647,7 +647,7 @@ public class PointerTracker {
 
     private void startRepeatKey(int keyIndex) {
         final Key key = getKey(keyIndex);
-        if (key != null && key.mRepeatable) {
+        if (key != null && key.isRepeatable()) {
             onRepeatKey(keyIndex);
             mTimerProxy.startKeyRepeatTimer(sDelayBeforeKeyRepeatStart, keyIndex, this);
             mIsRepeatableKey = true;

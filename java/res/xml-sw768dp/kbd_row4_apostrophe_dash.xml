@@ -33,14 +33,14 @@
         >
             <Key
                 latin:keyLabel="/"
-                latin:keyLabelOption="hasUppercaseLetter"
+                latin:keyLabelFlags="hasUppercaseLetter"
                 latin:keyHintLabel=":"
                 latin:moreKeys=":" />
         </case>
         <default>
             <Key
                 latin:keyLabel="@string/keylabel_for_apostrophe"
-                latin:keyLabelOption="hasUppercaseLetter"
+                latin:keyLabelFlags="hasUppercaseLetter"
                 latin:keyHintLabel="@string/keyhintlabel_for_apostrophe"
                 latin:moreKeys="@string/more_keys_for_apostrophe" />
         </default>
@@ -55,7 +55,7 @@
         <default>
             <Key
                 latin:keyLabel="@string/keylabel_for_dash"
-                latin:keyLabelOption="hasUppercaseLetter"
+                latin:keyLabelFlags="hasUppercaseLetter"
                 latin:keyHintLabel="@string/keyhintlabel_for_dash"
                 latin:moreKeys="@string/more_keys_for_dash" />
         </default>

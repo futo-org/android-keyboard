@@ -28,7 +28,7 @@
     <Row>
         <Key
             latin:keyStyle="numTabKeyStyle"
-            latin:keyLabelOption="alignLeft"
+            latin:keyLabelFlags="alignLeft"
             latin:keyWidth="11.172%p" />
         <Key
             latin:keyLabel="-"

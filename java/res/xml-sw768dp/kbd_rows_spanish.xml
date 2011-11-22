@@ -30,7 +30,7 @@
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
-            latin:keyLabelOption="alignLeft"
+            latin:keyLabelFlags="alignLeft"
             latin:keyWidth="10.167%p" />
         <Key
             latin:keyLabel="a"

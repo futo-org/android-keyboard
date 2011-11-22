@@ -35,7 +35,7 @@
         >
             <Key
                 latin:keyLabel="-"
-                latin:keyLabelOption="hasUppercaseLetter"
+                latin:keyLabelFlags="hasUppercaseLetter"
                 latin:keyHintLabel="_"
                 latin:moreKeys="_"
                 latin:keyXPos="-8.9%p"
@@ -46,7 +46,7 @@
         >
             <Key
                 latin:keyLabel=":"
-                latin:keyLabelOption="hasUppercaseLetter"
+                latin:keyLabelFlags="hasUppercaseLetter"
                 latin:keyHintLabel="+"
                 latin:moreKeys="+"
                 latin:keyXPos="-8.9%p"

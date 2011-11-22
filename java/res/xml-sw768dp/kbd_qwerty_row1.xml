@@ -26,7 +26,7 @@
     >
         <Key
             latin:keyStyle="tabKeyStyle"
-            latin:keyLabelOption="alignLeft"
+            latin:keyLabelFlags="alignLeft"
             latin:keyWidth="7.969%p" />
         <Key
             latin:keyLabel="q"
