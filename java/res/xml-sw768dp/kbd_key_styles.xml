@@ -26,82 +26,85 @@
         latin:code="@integer/key_shift"
         latin:keyIcon="iconShiftKey"
         latin:keyIconShifted="iconShiftedShiftKey"
-        latin:keyLabelOption="noKeyPreview"
+        latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="sticky" />
     <key-style
         latin:styleName="deleteKeyStyle"
         latin:code="@integer/key_delete"
         latin:keyIcon="iconDeleteKey"
-        latin:keyLabelOption="noKeyPreview"
-        latin:backgroundType="functional"
-        latin:isRepeatable="true" />
+        latin:keyActionFlags="isRepeatable|noKeyPreview"
+        latin:backgroundType="functional" />
     <key-style
         latin:styleName="returnKeyStyle"
         latin:code="@integer/key_return"
         latin:keyIcon="iconReturnKey"
-        latin:keyLabelOption="noKeyPreview"
+        latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="spaceKeyStyle"
         latin:code="@integer/key_space"
-        latin:keyLabelOption="noKeyPreview" />
+        latin:keyActionFlags="noKeyPreview" />
     <key-style
         latin:styleName="nonSpecialBackgroundSpaceKeyStyle"
         latin:code="@integer/key_space"
-        latin:keyLabelOption="noKeyPreview" />
+        latin:keyActionFlags="noKeyPreview" />
     <key-style
         latin:styleName="smileyKeyStyle"
         latin:keyLabel=":-)"
         latin:keyOutputText=":-) "
-        latin:keyLabelOption="hasPopupHint"
+        latin:keyLabelFlags="hasPopupHint"
         latin:moreKeys="@string/more_keys_for_smiley"
         latin:maxMoreKeysColumn="5" />
     <key-style
         latin:styleName="settingsKeyStyle"
         latin:code="@integer/key_settings"
         latin:keyIcon="iconSettingsKey"
-        latin:keyLabelOption="noKeyPreview"
+        latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="shortcutKeyStyle"
         latin:code="@integer/key_shortcut"
         latin:keyIcon="iconShortcutKey"
-        latin:keyLabelOption="noKeyPreview"
+        latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="tabKeyStyle"
         latin:code="@integer/key_tab"
         latin:keyLabel="@string/label_tab_key"
-        latin:keyLabelOption="fontNormal"
+        latin:keyLabelFlags="fontNormal"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="toSymbolKeyStyle"
         latin:code="@integer/key_switch_alpha_symbol"
         latin:keyLabel="@string/label_to_symbol_key"
-        latin:keyLabelOption="fontNormal|noKeyPreview"
+        latin:keyLabelFlags="fontNormal"
+        latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="toAlphaKeyStyle"
         latin:code="@integer/key_switch_alpha_symbol"
         latin:keyLabel="@string/label_to_alpha_key"
-        latin:keyLabelOption="fontNormal|noKeyPreview"
+        latin:keyLabelFlags="fontNormal"
+        latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="toMoreSymbolKeyStyle"
         latin:code="@integer/key_shift"
         latin:keyLabel="@string/label_to_more_symbol_for_tablet_key"
-        latin:keyLabelOption="fontNormal|noKeyPreview"
+        latin:keyLabelFlags="fontNormal"
+        latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="backFromMoreSymbolKeyStyle"
         latin:code="@integer/key_shift"
         latin:keyLabel="@string/label_to_symbol_key"
-        latin:keyLabelOption="fontNormal|noKeyPreview"
+        latin:keyLabelFlags="fontNormal"
+        latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="comKeyStyle"
         latin:keyLabel="@string/keylabel_for_popular_domain"
-        latin:keyLabelOption="fontNormal|hasPopupHint"
+        latin:keyLabelFlags="fontNormal|hasPopupHint"
         latin:keyOutputText="@string/keylabel_for_popular_domain"
         latin:moreKeys="@string/more_keys_for_popular_domain" />
 </merge>

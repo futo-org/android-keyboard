@@ -196,17 +196,21 @@
             <enum name="action" value="2" />
             <enum name="sticky" value="3" />
         </attr>
-        <!-- Whether long-pressing on this key will make it repeat. -->
-        <attr name="isRepeatable" format="boolean" />
+        <!-- The key action flags. -->
+        <attr name="keyActionFlags" format="integer">
+            <!-- This should be aligned with Key.ACTION_FLAGS_* -->
+            <flag name="isRepeatable" value="0x01" />
+            <flag name="noKeyPreview" value="0x02" />
+        </attr>
         <!-- The string of characters to output when this key is pressed. -->
         <attr name="keyOutputText" format="string" />
         <!-- The label to display on the key. -->
         <attr name="keyLabel" format="string" />
         <!-- The hint label to display on the key in conjunction with the label. -->
         <attr name="keyHintLabel" format="string" />
-        <!-- The key label option. -->
-        <attr name="keyLabelOption" format="integer">
-            <!-- This should be aligned with Key.LABEL_OPTION_* -->
+        <!-- The key label flags. -->
+        <attr name="keyLabelFlags" format="integer">
+            <!-- This should be aligned with Key.LABEL_FLAGS__* -->
             <flag name="alignLeft" value="0x01" />
             <flag name="alignRight" value="0x02" />
             <flag name="alignLeftOfCenter" value="0x08" />
@@ -221,7 +225,6 @@
             <flag name="withIconLeft" value="0x1000" />
             <flag name="withIconRight" value="0x2000" />
             <flag name="autoXScale" value="0x4000" />
-            <flag name="noKeyPreview" value="0x8000" />
         </attr>
         <!-- The icon to display on the key instead of the label. -->
         <attr name="keyIcon" format="enum">
@@ -248,8 +251,6 @@
         </attr>
         <!-- The key style to specify a set of key attributes defined by <key_style/> -->
         <attr name="keyStyle" format="string" />
-        <!-- The key is enabled and responds on press. -->
-        <attr name="enabled" format="boolean" />
         <!-- Visual insets -->
         <attr name="visualInsetsLeft" format="dimension|fraction" />
         <attr name="visualInsetsRight" format="dimension|fraction" />

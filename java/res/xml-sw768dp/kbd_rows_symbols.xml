@@ -30,7 +30,7 @@
     >
         <Key
             latin:keyStyle="tabKeyStyle"
-            latin:keyLabelOption="alignLeft"
+            latin:keyLabelFlags="alignLeft"
             latin:keyWidth="7.969%p" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_1"
@@ -72,7 +72,7 @@
     >
         <Key
             latin:keyStyle="toAlphaKeyStyle"
-            latin:keyLabelOption="alignLeft"
+            latin:keyLabelFlags="alignLeft"
             latin:keyWidth="11.172%p" />
         <Key
             latin:keyLabel="#" />

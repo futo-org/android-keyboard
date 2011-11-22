@@ -28,7 +28,7 @@
         >
             <key-style
                 latin:styleName="f1PopupStyle"
-                latin:keyLabelOption="hasPopupHint"
+                latin:keyLabelFlags="hasPopupHint"
                 latin:moreKeys="@string/more_keys_for_f1"
                 latin:backgroundType="functional" />
         </case>
@@ -38,7 +38,7 @@
         >
             <key-style
                 latin:styleName="f1PopupStyle"
-                latin:keyLabelOption="hasPopupHint"
+                latin:keyLabelFlags="hasPopupHint"
                 latin:moreKeys="@string/more_keys_for_f1_settings"
                 latin:backgroundType="functional" />
         </case>
@@ -48,7 +48,7 @@
         >
             <key-style
                 latin:styleName="f1PopupStyle"
-                latin:keyLabelOption="hasPopupHint"
+                latin:keyLabelFlags="hasPopupHint"
                 latin:moreKeys="@string/more_keys_for_f1_navigate"
                 latin:backgroundType="functional" />
         </case>
@@ -56,7 +56,7 @@
         <default>
             <key-style
                 latin:styleName="f1PopupStyle"
-                latin:keyLabelOption="hasPopupHint"
+                latin:keyLabelFlags="hasPopupHint"
                 latin:moreKeys="@string/more_keys_for_f1"
                 latin:backgroundType="functional" />
         </default>
@@ -67,15 +67,14 @@
         latin:code="@integer/key_shift"
         latin:keyIcon="iconShiftKey"
         latin:keyIconShifted="iconShiftedShiftKey"
-        latin:keyLabelOption="noKeyPreview"
+        latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="sticky" />
     <key-style
         latin:styleName="deleteKeyStyle"
         latin:code="@integer/key_delete"
         latin:keyIcon="iconDeleteKey"
-        latin:keyLabelOption="noKeyPreview"
-        latin:backgroundType="functional"
-        latin:isRepeatable="true" />
+        latin:keyActionFlags="isRepeatable|noKeyPreview"
+        latin:backgroundType="functional" />
     <!-- Return key style -->
     <switch>
         <case
@@ -86,7 +85,7 @@
                 latin:styleName="returnKeyStyle"
                 latin:keyLabel=":-)"
                 latin:keyOutputText=":-) "
-                latin:keyLabelOption="hasPopupHint"
+                latin:keyLabelFlags="hasPopupHint"
                 latin:moreKeys="@string/more_keys_for_smiley"
                 latin:maxMoreKeysColumn="5"
                 latin:backgroundType="functional" />
@@ -98,7 +97,8 @@
                 latin:styleName="returnKeyStyle"
                 latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_go_key"
-                latin:keyLabelOption="autoXScale|noKeyPreview"
+                latin:keyLabelFlags="autoXScale"
+                latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="action" />
         </case>
         <case
@@ -108,7 +108,8 @@
                 latin:styleName="returnKeyStyle"
                 latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_next_key"
-                latin:keyLabelOption="autoXScale|noKeyPreview"
+                latin:keyLabelFlags="autoXScale"
+                latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="action" />
         </case>
         <case
@@ -118,7 +119,8 @@
                 latin:styleName="returnKeyStyle"
                 latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_done_key"
-                latin:keyLabelOption="autoXScale|noKeyPreview"
+                latin:keyLabelFlags="autoXScale"
+                latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="action" />
         </case>
         <case
@@ -128,7 +130,8 @@
                 latin:styleName="returnKeyStyle"
                 latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_send_key"
-                latin:keyLabelOption="autoXScale|noKeyPreview"
+                latin:keyLabelFlags="autoXScale"
+                latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="action" />
         </case>
         <case
@@ -138,7 +141,8 @@
                 latin:styleName="returnKeyStyle"
                 latin:code="@integer/key_return"
                 latin:keyIcon="iconSearchKey"
-                latin:keyLabelOption="noKeyPreview"
+                latin:keyLabelFlags="autoXScale"
+                latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="action" />
         </case>
         <default>
@@ -146,26 +150,26 @@
                 latin:styleName="returnKeyStyle"
                 latin:code="@integer/key_return"
                 latin:keyIcon="iconReturnKey"
-                latin:keyLabelOption="noKeyPreview"
+                latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="functional" />
         </default>
     </switch>
     <key-style
         latin:styleName="spaceKeyStyle"
         latin:code="@integer/key_space"
-        latin:keyLabelOption="noKeyPreview"
+        latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="shortcutKeyStyle"
         latin:code="@integer/key_shortcut"
         latin:keyIcon="iconShortcutKey"
-        latin:keyLabelOption="noKeyPreview"
+        latin:keyActionFlags="noKeyPreview"
         latin:parentStyle="f1PopupStyle" />
     <key-style
         latin:styleName="settingsKeyStyle"
         latin:code="@integer/key_settings"
         latin:keyIcon="iconSettingsKey"
-        latin:keyLabelOption="noKeyPreview"
+        latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="tabKeyStyle"
@@ -193,7 +197,8 @@
                 latin:code="@integer/key_switch_alpha_symbol"
                 latin:keyIcon="iconShortcutForLabel"
                 latin:keyLabel="@string/label_to_symbol_with_microphone_key"
-                latin:keyLabelOption="withIconRight|noKeyPreview"
+                latin:keyLabelFlags="withIconRight"
+                latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="functional" />
         </case>
         <default>
@@ -201,7 +206,7 @@
                 latin:styleName="toSymbolKeyStyle"
                 latin:code="@integer/key_switch_alpha_symbol"
                 latin:keyLabel="@string/label_to_symbol_key"
-                latin:keyLabelOption="noKeyPreview"
+                latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="functional" />
         </default>
     </switch>
@@ -209,25 +214,25 @@
         latin:styleName="toAlphaKeyStyle"
         latin:code="@integer/key_switch_alpha_symbol"
         latin:keyLabel="@string/label_to_alpha_key"
-        latin:keyLabelOption="noKeyPreview"
+        latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="toMoreSymbolKeyStyle"
         latin:code="@integer/key_shift"
         latin:keyLabel="@string/label_to_more_symbol_key"
-        latin:keyLabelOption="noKeyPreview"
+        latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="backFromMoreSymbolKeyStyle"
         latin:code="@integer/key_shift"
         latin:keyLabel="@string/label_to_symbol_key"
-        latin:keyLabelOption="noKeyPreview"
+        latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="punctuationKeyStyle"
         latin:keyLabel="."
         latin:keyHintLabel="@string/keyhintlabel_for_punctuation"
-        latin:keyLabelOption="hasPopupHint"
+        latin:keyLabelFlags="hasPopupHint"
         latin:moreKeys="@string/more_keys_for_punctuation"
         latin:maxMoreKeysColumn="@integer/mini_keyboard_column_for_punctuation"
         latin:backgroundType="functional" />

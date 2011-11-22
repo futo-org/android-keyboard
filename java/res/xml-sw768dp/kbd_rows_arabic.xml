@@ -28,7 +28,7 @@
     >
         <Key
             latin:keyStyle="tabKeyStyle"
-            latin:keyLabelOption="alignLeft"
+            latin:keyLabelFlags="alignLeft"
             latin:keyWidth="7.500%p" />
         <!-- \u0636: ARABIC LETTER DAD -->
         <Key
@@ -84,7 +84,7 @@
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
-            latin:keyLabelOption="alignLeft"
+            latin:keyLabelFlags="alignLeft"
             latin:keyWidth="9.375%p" />
         <!-- \u0634: ARABIC LETTER SHEEN
              \u069c: ARABIC LETTER SEEN WITH THREE DOTS BELOW AND THREE DOTS ABOVE -->

@@ -158,7 +158,7 @@
             >
                 <Key
                     latin:keyLabel="-"
-                    latin:keyLabelOption="hasUppercaseLetter"
+                    latin:keyLabelFlags="hasUppercaseLetter"
                     latin:keyHintLabel="_"
                     latin:moreKeys="_" />
             </case>
@@ -167,7 +167,7 @@
             >
                 <Key
                     latin:keyLabel=":"
-                    latin:keyLabelOption="hasUppercaseLetter"
+                    latin:keyLabelFlags="hasUppercaseLetter"
                     latin:keyHintLabel="+"
                     latin:moreKeys="+" />
             </case>

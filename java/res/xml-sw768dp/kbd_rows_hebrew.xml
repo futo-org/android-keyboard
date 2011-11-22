@@ -28,7 +28,7 @@
     >
         <Key
             latin:keyStyle="tabKeyStyle"
-            latin:keyLabelOption="alignLeft"
+            latin:keyLabelFlags="alignLeft"
             latin:keyWidth="7.969%p" />
         <include
             latin:keyboardLayout="@xml/kbd_row4_apostrophe_dash" />
@@ -58,7 +58,7 @@
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
-            latin:keyLabelOption="alignLeft"
+            latin:keyLabelFlags="alignLeft"
             latin:keyWidth="11.172%p" />
         <Key
             latin:keyLabel="ש" />

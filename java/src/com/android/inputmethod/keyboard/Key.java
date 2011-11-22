@@ -51,23 +51,22 @@ public class Key {
     public final CharSequence mLabel;
     /** Hint label to display on the key in conjunction with the label */
     public final CharSequence mHintLabel;
-    /** Option of the label */
-    private final int mLabelOption;
-    private static final int LABEL_OPTION_ALIGN_LEFT = 0x01;
-    private static final int LABEL_OPTION_ALIGN_RIGHT = 0x02;
-    private static final int LABEL_OPTION_ALIGN_LEFT_OF_CENTER = 0x08;
-    private static final int LABEL_OPTION_LARGE_LETTER = 0x10;
-    private static final int LABEL_OPTION_FONT_NORMAL = 0x20;
-    private static final int LABEL_OPTION_FONT_MONO_SPACE = 0x40;
-    private static final int LABEL_OPTION_FOLLOW_KEY_LETTER_RATIO = 0x80;
-    private static final int LABEL_OPTION_FOLLOW_KEY_HINT_LABEL_RATIO = 0x100;
-    private static final int LABEL_OPTION_HAS_POPUP_HINT = 0x200;
-    private static final int LABEL_OPTION_HAS_UPPERCASE_LETTER = 0x400;
-    private static final int LABEL_OPTION_HAS_HINT_LABEL = 0x800;
-    private static final int LABEL_OPTION_WITH_ICON_LEFT = 0x1000;
-    private static final int LABEL_OPTION_WITH_ICON_RIGHT = 0x2000;
-    private static final int LABEL_OPTION_AUTO_X_SCALE = 0x4000;
-    private static final int LABEL_OPTION_NO_KEY_PREVIEW = 0x8000;
+    /** Flags of the label */
+    private final int mLabelFlags;
+    private static final int LABEL_FLAGS_ALIGN_LEFT = 0x01;
+    private static final int LABEL_FLAGS_ALIGN_RIGHT = 0x02;
+    private static final int LABEL_FLAGS_ALIGN_LEFT_OF_CENTER = 0x08;
+    private static final int LABEL_FLAGS_LARGE_LETTER = 0x10;
+    private static final int LABEL_FLAGS_FONT_NORMAL = 0x20;
+    private static final int LABEL_FLAGS_FONT_MONO_SPACE = 0x40;
+    private static final int LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO = 0x80;
+    private static final int LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO = 0x100;
+    private static final int LABEL_FLAGS_HAS_POPUP_HINT = 0x200;
+    private static final int LABEL_FLAGS_HAS_UPPERCASE_LETTER = 0x400;
+    private static final int LABEL_FLAGS_HAS_HINT_LABEL = 0x800;
+    private static final int LABEL_FLAGS_WITH_ICON_LEFT = 0x1000;
+    private static final int LABEL_FLAGS_WITH_ICON_RIGHT = 0x2000;
+    private static final int LABEL_FLAGS_AUTO_X_SCALE = 0x4000;
 
     /** Icon to display instead of a label. Icon takes precedence over a label */
     private Drawable mIcon;
@@ -106,8 +105,9 @@ public class Key {
     public static final int BACKGROUND_TYPE_ACTION = 2;
     public static final int BACKGROUND_TYPE_STICKY = 3;
 
-    /** Whether this key repeats itself when held down */
-    public final boolean mRepeatable;
+    private final int mActionFlags;
+    private static final int ACTION_FLAGS_IS_REPEATABLE = 0x01;
+    private static final int ACTION_FLAGS_NO_KEY_PREVIEW = 0x02;
 
     /** The current pressed state of this key */
     private boolean mPressed;
@@ -182,9 +182,9 @@ public class Key {
         mVisualInsetsLeft = mVisualInsetsRight = 0;
         mWidth = width - mHorizontalGap;
         mHintLabel = hintLabel;
-        mLabelOption = 0;
+        mLabelFlags = 0;
         mBackgroundType = BACKGROUND_TYPE_NORMAL;
-        mRepeatable = false;
+        mActionFlags = 0;
         mMoreKeys = null;
         mMaxMoreKeysColumn = 0;
         mLabel = label;
@@ -255,8 +255,7 @@ public class Key {
 
         mBackgroundType = style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_backgroundType, BACKGROUND_TYPE_NORMAL);
-        mRepeatable = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable, false);
-        mEnabled = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_enabled, true);
+        mActionFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyActionFlags, 0);
 
         final KeyboardIconsSet iconsSet = params.mIconsSet;
         mVisualInsetsLeft = (int) KeyboardBuilder.getDimensionOrFraction(keyAttr,
@@ -276,7 +275,7 @@ public class Key {
         mHintLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
 
         mLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyLabel);
-        mLabelOption = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelOption, 0);
+        mLabelFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags, 0);
         mOutputText = style.getText(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
         // Choose the first letter of the label as primary code if not
         // specified.
@@ -318,11 +317,19 @@ public class Key {
         return false;
     }
 
+    public boolean isRepeatable() {
+        return (mActionFlags & ACTION_FLAGS_IS_REPEATABLE) != 0;
+    }
+
+    public boolean noKeyPreview() {
+        return (mActionFlags & ACTION_FLAGS_NO_KEY_PREVIEW) != 0;
+    }
+
     public Typeface selectTypeface(Typeface defaultTypeface) {
         // TODO: Handle "bold" here too?
-        if ((mLabelOption & LABEL_OPTION_FONT_NORMAL) != 0) {
+        if ((mLabelFlags & LABEL_FLAGS_FONT_NORMAL) != 0) {
             return Typeface.DEFAULT;
-        } else if ((mLabelOption & LABEL_OPTION_FONT_MONO_SPACE) != 0) {
+        } else if ((mLabelFlags & LABEL_FLAGS_FONT_MONO_SPACE) != 0) {
             return Typeface.MONOSPACE;
         } else {
             return defaultTypeface;
@@ -331,12 +338,12 @@ public class Key {
 
     public int selectTextSize(int letter, int largeLetter, int label, int hintLabel) {
         if (mLabel.length() > 1
-                && (mLabelOption & (LABEL_OPTION_FOLLOW_KEY_LETTER_RATIO
-                        | LABEL_OPTION_FOLLOW_KEY_HINT_LABEL_RATIO)) == 0) {
+                && (mLabelFlags & (LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO
+                        | LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO)) == 0) {
             return label;
-        } else if ((mLabelOption & LABEL_OPTION_FOLLOW_KEY_HINT_LABEL_RATIO) != 0) {
+        } else if ((mLabelFlags & LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO) != 0) {
             return hintLabel;
-        } else if ((mLabelOption & LABEL_OPTION_LARGE_LETTER) != 0) {
+        } else if ((mLabelFlags & LABEL_FLAGS_LARGE_LETTER) != 0) {
             return largeLetter;
         } else {
             return letter;
@@ -344,19 +351,19 @@ public class Key {
     }
 
     public boolean isAlignLeft() {
-        return (mLabelOption & LABEL_OPTION_ALIGN_LEFT) != 0;
+        return (mLabelFlags & LABEL_FLAGS_ALIGN_LEFT) != 0;
     }
 
     public boolean isAlignRight() {
-        return (mLabelOption & LABEL_OPTION_ALIGN_RIGHT) != 0;
+        return (mLabelFlags & LABEL_FLAGS_ALIGN_RIGHT) != 0;
     }
 
     public boolean isAlignLeftOfCenter() {
-        return (mLabelOption & LABEL_OPTION_ALIGN_LEFT_OF_CENTER) != 0;
+        return (mLabelFlags & LABEL_FLAGS_ALIGN_LEFT_OF_CENTER) != 0;
     }
 
     public boolean hasPopupHint() {
-        return (mLabelOption & LABEL_OPTION_HAS_POPUP_HINT) != 0;
+        return (mLabelFlags & LABEL_FLAGS_HAS_POPUP_HINT) != 0;
     }
 
     public void setNeedsSpecialPopupHint(boolean needsSpecialPopupHint) {
@@ -368,27 +375,23 @@ public class Key {
     }
 
     public boolean hasUppercaseLetter() {
-        return (mLabelOption & LABEL_OPTION_HAS_UPPERCASE_LETTER) != 0;
+        return (mLabelFlags & LABEL_FLAGS_HAS_UPPERCASE_LETTER) != 0;
     }
 
     public boolean hasHintLabel() {
-        return (mLabelOption & LABEL_OPTION_HAS_HINT_LABEL) != 0;
+        return (mLabelFlags & LABEL_FLAGS_HAS_HINT_LABEL) != 0;
     }
 
     public boolean hasLabelWithIconLeft() {
-        return (mLabelOption & LABEL_OPTION_WITH_ICON_LEFT) != 0;
+        return (mLabelFlags & LABEL_FLAGS_WITH_ICON_LEFT) != 0;
     }
 
     public boolean hasLabelWithIconRight() {
-        return (mLabelOption & LABEL_OPTION_WITH_ICON_RIGHT) != 0;
+        return (mLabelFlags & LABEL_FLAGS_WITH_ICON_RIGHT) != 0;
     }
 
     public boolean needsXScale() {
-        return (mLabelOption & LABEL_OPTION_AUTO_X_SCALE) != 0;
-    }
-
-    public boolean noKeyPreview() {
-        return (mLabelOption & LABEL_OPTION_NO_KEY_PREVIEW) != 0;
+        return (mLabelFlags & LABEL_FLAGS_AUTO_X_SCALE) != 0;
     }
 
     public Drawable getIcon() {

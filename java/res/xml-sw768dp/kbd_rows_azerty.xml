@@ -28,7 +28,7 @@
     >
         <Key
             latin:keyStyle="tabKeyStyle"
-            latin:keyLabelOption="alignLeft"
+            latin:keyLabelFlags="alignLeft"
             latin:keyWidth="7.969%p" />
         <Key
             latin:keyLabel="a"
@@ -70,7 +70,7 @@
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
-            latin:keyLabelOption="alignLeft"
+            latin:keyLabelFlags="alignLeft"
             latin:keyWidth="10.167%p" />
         <Key
             latin:keyLabel="q"
@@ -127,7 +127,7 @@
             latin:moreKeys="@string/more_keys_for_n" />
         <Key
             latin:keyLabel="\'"
-            latin:keyLabelOption="hasUppercaseLetter"
+            latin:keyLabelFlags="hasUppercaseLetter"
             latin:keyHintLabel=":"
             latin:moreKeys=":" />
         <switch>
@@ -142,12 +142,12 @@
             <default>
                 <Key
                     latin:keyLabel=","
-                    latin:keyLabelOption="hasUppercaseLetter"
+                    latin:keyLabelFlags="hasUppercaseLetter"
                     latin:keyHintLabel="!"
                     latin:moreKeys="!" />
                 <Key
                     latin:keyLabel="."
-                    latin:keyLabelOption="hasUppercaseLetter"
+                    latin:keyLabelFlags="hasUppercaseLetter"
                     latin:keyHintLabel="\?"
                     latin:moreKeys="\?" />
             </default>
