@@ -116,8 +116,8 @@ public class AccessibilityUtils {
      * @return {@code true} if the device should not speak text (eg.
      *         non-control) characters
      */
-    public boolean shouldObscureInput(EditorInfo attribute) {
-        if (attribute == null)
+    public boolean shouldObscureInput(EditorInfo editorInfo) {
+        if (editorInfo == null)
             return false;
 
         // Always speak if the user is listening through headphones.
@@ -125,7 +125,7 @@ public class AccessibilityUtils {
             return false;
 
         // Don't speak if the IME is connected to a password field.
-        return InputTypeCompatUtils.isPasswordInputType(attribute.inputType);
+        return InputTypeCompatUtils.isPasswordInputType(editorInfo.inputType);
     }
 
     /**
@@ -159,11 +159,11 @@ public class AccessibilityUtils {
      * Handles speaking the "connect a headset to hear passwords" notification
      * when connecting to a password field.
      *
-     * @param attribute The input connection's editor info attribute.
+     * @param editorInfo The input connection's editor info attribute.
      * @param restarting Whether the connection is being restarted.
      */
-    public void onStartInputViewInternal(EditorInfo attribute, boolean restarting) {
-        if (shouldObscureInput(attribute)) {
+    public void onStartInputViewInternal(EditorInfo editorInfo, boolean restarting) {
+        if (shouldObscureInput(editorInfo)) {
             final CharSequence text = mContext.getText(R.string.spoken_use_headphones);
             speak(text);
         }

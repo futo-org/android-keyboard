@@ -43,10 +43,10 @@ public class FieldContext {
 
     Bundle mFieldInfo;
 
-    public FieldContext(InputConnection conn, EditorInfo info,
+    public FieldContext(InputConnection conn, EditorInfo editorInfo,
             String selectedLanguage, String[] enabledLanguages) {
         mFieldInfo = new Bundle();
-        addEditorInfoToBundle(info, mFieldInfo);
+        addEditorInfoToBundle(editorInfo, mFieldInfo);
         addInputConnectionToBundle(conn, mFieldInfo);
         addLanguageInfoToBundle(selectedLanguage, enabledLanguages, mFieldInfo);
         if (DBG) Log.i("FieldContext", "Bundle = " + mFieldInfo.toString());
