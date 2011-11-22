@@ -251,9 +251,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         private static final int MSG_FADEOUT_LANGUAGE_ON_SPACEBAR = 3;
         private static final int MSG_DISMISS_LANGUAGE_ON_SPACEBAR = 4;
         private static final int MSG_SPACE_TYPED = 5;
-        private static final int MSG_KEY_TYPED = 6;
-        private static final int MSG_SET_BIGRAM_PREDICTIONS = 7;
-        private static final int MSG_PENDING_IMS_CALLBACK = 8;
+        private static final int MSG_SET_BIGRAM_PREDICTIONS = 6;
+        private static final int MSG_PENDING_IMS_CALLBACK = 7;
 
         private int mDelayBeforeFadeoutLanguageOnSpacebar;
         private int mDelayUpdateSuggestions;
@@ -261,7 +260,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         private int mDurationOfFadeoutLanguageOnSpacebar;
         private float mFinalFadeoutFactorOfLanguageOnSpacebar;
         private long mDoubleSpacesTurnIntoPeriodTimeout;
-        private long mIgnoreSpecialKeyTimeout;
 
         public UIHandler(LatinIME outerInstance) {
             super(outerInstance);
@@ -281,8 +279,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     R.integer.config_final_fadeout_percentage_of_language_on_spacebar) / 100.0f;
             mDoubleSpacesTurnIntoPeriodTimeout = res.getInteger(
                     R.integer.config_double_spaces_turn_into_period_timeout);
-            mIgnoreSpecialKeyTimeout = res.getInteger(
-                    R.integer.config_ignore_special_key_timeout);
         }
 
         @Override
@@ -392,15 +388,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         public boolean isAcceptingDoubleSpaces() {
             return hasMessages(MSG_SPACE_TYPED);
-        }
-
-        public void startKeyTypedTimer() {
-            removeMessages(MSG_KEY_TYPED);
-            sendMessageDelayed(obtainMessage(MSG_KEY_TYPED), mIgnoreSpecialKeyTimeout);
-        }
-
-        public boolean isIgnoringSpecialKey() {
-            return hasMessages(MSG_KEY_TYPED);
         }
 
         // Working variables for the following methods.
@@ -1323,7 +1310,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mHandler.cancelDoubleSpacesTimer();
         }
 
-        boolean shouldStartKeyTypedTimer = true;
         switch (primaryCode) {
         case Keyboard.CODE_DELETE:
             mSpaceState = SPACE_STATE_NONE;
@@ -1337,14 +1323,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (!distinctMultiTouch) {
                 switcher.toggleShift();
             }
-            shouldStartKeyTypedTimer = false;
             break;
         case Keyboard.CODE_SWITCH_ALPHA_SYMBOL:
             // Symbol key is handled in onPress() when device has distinct multi-touch panel.
             if (!distinctMultiTouch) {
                 switcher.changeKeyboardMode();
             }
-            shouldStartKeyTypedTimer = false;
             break;
         case Keyboard.CODE_CANCEL:
             if (!isShowingOptionDialog()) {
@@ -1352,20 +1336,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             break;
         case Keyboard.CODE_SETTINGS:
-            if (!mHandler.isIgnoringSpecialKey()) {
-                onSettingsKeyPressed();
-            }
-            shouldStartKeyTypedTimer = false;
+            onSettingsKeyPressed();
             break;
         case Keyboard.CODE_CAPSLOCK:
             switcher.toggleCapsLock();
             hapticAndAudioFeedback(primaryCode);
             break;
         case Keyboard.CODE_SHORTCUT:
-            if (!mHandler.isIgnoringSpecialKey()) {
-                mSubtypeSwitcher.switchToShortcutIME();
-            }
-            shouldStartKeyTypedTimer = false;
+            mSubtypeSwitcher.switchToShortcutIME();
             break;
         case Keyboard.CODE_TAB:
             handleTab();
@@ -1391,9 +1369,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         switcher.onKey(primaryCode);
         // Reset after any single keystroke
         mEnteredText = null;
-        if (shouldStartKeyTypedTimer) {
-            mHandler.startKeyTypedTimer();
-        }
     }
 
     @Override
@@ -1410,7 +1385,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mKeyboardSwitcher.onKey(Keyboard.CODE_DUMMY);
         mSpaceState = SPACE_STATE_NONE;
         mEnteredText = text;
-        mHandler.startKeyTypedTimer();
     }
 
     @Override
