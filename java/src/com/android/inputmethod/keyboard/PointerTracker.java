@@ -74,12 +74,18 @@ public class PointerTracker {
     }
 
     public interface TimerProxy {
+        public void startKeyTypedTimer(long delay);
+        public boolean isIgnoringSpecialKey();
         public void startKeyRepeatTimer(long delay, int keyIndex, PointerTracker tracker);
         public void startLongPressTimer(long delay, int keyIndex, PointerTracker tracker);
         public void cancelLongPressTimer();
         public void cancelKeyTimers();
 
         public static class Adapter implements TimerProxy {
+            @Override
+            public void startKeyTypedTimer(long delay) {}
+            @Override
+            public boolean isIgnoringSpecialKey() { return false; }
             @Override
             public void startKeyRepeatTimer(long delay, int keyIndex, PointerTracker tracker) {}
             @Override
@@ -98,6 +104,7 @@ public class PointerTracker {
     private static int sLongPressKeyTimeout;
     private static int sLongPressShiftKeyTimeout;
     private static int sLongPressSpaceKeyTimeout;
+    private static int sIgnoreSpecialKeyTimeout;
     private static int sTouchNoiseThresholdMillis;
     private static int sTouchNoiseThresholdDistanceSquared;
 
@@ -168,7 +175,9 @@ public class PointerTracker {
         sLongPressKeyTimeout = res.getInteger(R.integer.config_long_press_key_timeout);
         sLongPressShiftKeyTimeout = res.getInteger(R.integer.config_long_press_shift_key_timeout);
         sLongPressSpaceKeyTimeout = res.getInteger(R.integer.config_long_press_space_key_timeout);
+        sIgnoreSpecialKeyTimeout = res.getInteger(R.integer.config_ignore_special_key_timeout);
         sTouchNoiseThresholdMillis = res.getInteger(R.integer.config_touch_noise_threshold_millis);
+
         final float touchNoiseThresholdDistance = res.getDimension(
                 R.dimen.config_touch_noise_threshold_distance);
         sTouchNoiseThresholdDistanceSquared = (int)(
@@ -233,8 +242,9 @@ public class PointerTracker {
         if (DEBUG_LISTENER)
             Log.d(TAG, "onPress    : " + keyCodePrintable(key.mCode) + " sliding=" + withSliding
                     + " ignoreModifier=" + ignoreModifierKey);
-        if (ignoreModifierKey)
+        if (ignoreModifierKey) {
             return false;
+        }
         if (key.isEnabled()) {
             mListener.onPress(key.mCode, withSliding);
             final boolean keyboardLayoutHasBeenChanged = mKeyboardLayoutHasBeenChanged;
@@ -254,15 +264,17 @@ public class PointerTracker {
                     + " ignoreModifier=" + ignoreModifierKey);
         if (ignoreModifierKey)
             return;
-        if (key.isEnabled())
+        if (key.isEnabled()) {
             mListener.onCodeInput(primaryCode, keyCodes, x, y);
+        }
     }
 
     private void callListenerOnTextInput(Key key) {
         if (DEBUG_LISTENER)
             Log.d(TAG, "onTextInput: text=" + key.mOutputText);
-        if (key.isEnabled())
+        if (key.isEnabled()) {
             mListener.onTextInput(key.mOutputText);
+        }
     }
 
     // Note that we need primaryCode argument because the keyboard may in shifted state and the
@@ -274,8 +286,9 @@ public class PointerTracker {
                     + withSliding + " ignoreModifier=" + ignoreModifierKey);
         if (ignoreModifierKey)
             return;
-        if (key.isEnabled())
+        if (key.isEnabled()) {
             mListener.onRelease(primaryCode, withSliding);
+        }
     }
 
     private void callListenerOnCancelInput() {
@@ -700,8 +713,8 @@ public class PointerTracker {
         }
     }
 
-    private void detectAndSendKey(int index, int x, int y) {
-        final Key key = getKey(index);
+    private void detectAndSendKey(int keyIndex, int x, int y) {
+        final Key key = getKey(keyIndex);
         if (key == null) {
             callListenerOnCancelInput();
             return;
@@ -709,6 +722,8 @@ public class PointerTracker {
         if (key.mOutputText != null) {
             callListenerOnTextInput(key);
             callListenerOnRelease(key, key.mCode, false);
+            // TODO: "text" input key could have a special action too
+            mTimerProxy.startKeyTypedTimer(sIgnoreSpecialKeyTimeout);
         } else {
             int code = key.mCode;
             final int[] codes = mKeyDetector.newCodeArray();
@@ -728,8 +743,18 @@ public class PointerTracker {
                 codes[1] = codes[0];
                 codes[0] = code;
             }
-            callListenerOnCodeInput(key, code, codes, x, y);
+            // TODO: Move this special action to Key.keyActionFlags
+            final boolean specialCode = (
+                    code == Keyboard.CODE_SETTINGS || code == Keyboard.CODE_SHORTCUT);
+            final boolean ignoreSpecialCode = specialCode && mTimerProxy.isIgnoringSpecialKey();
+            final boolean shouldStartKeyTypedTyper = !(specialCode || isModifierCode(code));
+            if (!ignoreSpecialCode) {
+                callListenerOnCodeInput(key, code, codes, x, y);
+            }
             callListenerOnRelease(key, code, false);
+            if (shouldStartKeyTypedTyper) {
+                mTimerProxy.startKeyTypedTimer(sIgnoreSpecialKeyTimeout);
+            }
         }
     }
 
