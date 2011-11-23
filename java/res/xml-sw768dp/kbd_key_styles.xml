@@ -56,16 +56,16 @@
         latin:moreKeys="@string/more_keys_for_smiley"
         latin:maxMoreKeysColumn="5" />
     <key-style
-        latin:styleName="settingsKeyStyle"
-        latin:code="@integer/key_settings"
-        latin:keyIcon="iconSettingsKey"
-        latin:keyActionFlags="noKeyPreview"
-        latin:backgroundType="functional" />
-    <key-style
         latin:styleName="shortcutKeyStyle"
         latin:code="@integer/key_shortcut"
         latin:keyIcon="iconShortcutKey"
-        latin:keyActionFlags="noKeyPreview"
+        latin:keyActionFlags="noKeyPreview|ignoreWhileTyping"
+        latin:backgroundType="functional" />
+    <key-style
+        latin:styleName="settingsKeyStyle"
+        latin:code="@integer/key_settings"
+        latin:keyIcon="iconSettingsKey"
+        latin:keyActionFlags="noKeyPreview|ignoreWhileTyping"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="tabKeyStyle"

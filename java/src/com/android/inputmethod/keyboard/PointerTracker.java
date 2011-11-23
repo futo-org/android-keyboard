@@ -75,7 +75,7 @@ public class PointerTracker {
 
     public interface TimerProxy {
         public void startKeyTypedTimer(long delay);
-        public boolean isIgnoringSpecialKey();
+        public boolean isTyping();
         public void startKeyRepeatTimer(long delay, int keyIndex, PointerTracker tracker);
         public void startLongPressTimer(long delay, int keyIndex, PointerTracker tracker);
         public void cancelLongPressTimer();
@@ -85,7 +85,7 @@ public class PointerTracker {
             @Override
             public void startKeyTypedTimer(long delay) {}
             @Override
-            public boolean isIgnoringSpecialKey() { return false; }
+            public boolean isTyping() { return false; }
             @Override
             public void startKeyRepeatTimer(long delay, int keyIndex, PointerTracker tracker) {}
             @Override
@@ -720,10 +720,14 @@ public class PointerTracker {
             return;
         }
         if (key.mOutputText != null) {
-            callListenerOnTextInput(key);
+            final boolean ignoreText = key.ignoreWhileTyping() && mTimerProxy.isTyping();
+            if (!ignoreText) {
+                callListenerOnTextInput(key);
+            }
             callListenerOnRelease(key, key.mCode, false);
-            // TODO: "text" input key could have a special action too
-            mTimerProxy.startKeyTypedTimer(sIgnoreSpecialKeyTimeout);
+            if (!ignoreText) {
+                mTimerProxy.startKeyTypedTimer(sIgnoreSpecialKeyTimeout);
+            }
         } else {
             int code = key.mCode;
             final int[] codes = mKeyDetector.newCodeArray();
@@ -743,16 +747,14 @@ public class PointerTracker {
                 codes[1] = codes[0];
                 codes[0] = code;
             }
-            // TODO: Move this special action to Key.keyActionFlags
-            final boolean specialCode = (
-                    code == Keyboard.CODE_SETTINGS || code == Keyboard.CODE_SHORTCUT);
-            final boolean ignoreSpecialCode = specialCode && mTimerProxy.isIgnoringSpecialKey();
-            final boolean shouldStartKeyTypedTyper = !(specialCode || isModifierCode(code));
-            if (!ignoreSpecialCode) {
+            final boolean ignoreCode = key.ignoreWhileTyping() && mTimerProxy.isTyping();
+            if (!ignoreCode) {
+                // TODO: It might be useful to register the nearest key code in codes[] instead of
+                // just ignoring.
                 callListenerOnCodeInput(key, code, codes, x, y);
             }
             callListenerOnRelease(key, code, false);
-            if (shouldStartKeyTypedTyper) {
+            if (!key.ignoreWhileTyping() && !isModifierCode(code)) {
                 mTimerProxy.startKeyTypedTimer(sIgnoreSpecialKeyTimeout);
             }
         }
