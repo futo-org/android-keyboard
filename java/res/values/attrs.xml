@@ -201,6 +201,7 @@
             <!-- This should be aligned with Key.ACTION_FLAGS_* -->
             <flag name="isRepeatable" value="0x01" />
             <flag name="noKeyPreview" value="0x02" />
+            <flag name="ignoreWhileTyping" value="0x04" />
         </attr>
         <!-- The string of characters to output when this key is pressed. -->
         <attr name="keyOutputText" format="string" />

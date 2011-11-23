@@ -145,7 +145,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
 
         @Override
-        public boolean isIgnoringSpecialKey() {
+        public boolean isTyping() {
             return hasMessages(MSG_KEY_TYPED);
         }
 

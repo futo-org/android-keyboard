@@ -108,6 +108,7 @@ public class Key {
     private final int mActionFlags;
     private static final int ACTION_FLAGS_IS_REPEATABLE = 0x01;
     private static final int ACTION_FLAGS_NO_KEY_PREVIEW = 0x02;
+    private static final int ACTION_FLAGS_IGNORE_WHILE_TYPING = 0x04;
 
     /** The current pressed state of this key */
     private boolean mPressed;
@@ -323,6 +324,10 @@ public class Key {
 
     public boolean noKeyPreview() {
         return (mActionFlags & ACTION_FLAGS_NO_KEY_PREVIEW) != 0;
+    }
+
+    public boolean ignoreWhileTyping() {
+        return (mActionFlags & ACTION_FLAGS_IGNORE_WHILE_TYPING) != 0;
     }
 
     public Typeface selectTypeface(Typeface defaultTypeface) {
