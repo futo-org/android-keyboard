@@ -89,6 +89,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         private static final int MSG_REPEAT_KEY = 1;
         private static final int MSG_LONGPRESS_KEY = 2;
         private static final int MSG_IGNORE_DOUBLE_TAP = 3;
+        private static final int MSG_KEY_TYPED = 4;
 
         private boolean mInKeyRepeat;
 
@@ -135,6 +136,17 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         @Override
         public void cancelLongPressTimer() {
             removeMessages(MSG_LONGPRESS_KEY);
+        }
+
+        @Override
+        public void startKeyTypedTimer(long delay) {
+            removeMessages(MSG_KEY_TYPED);
+            sendMessageDelayed(obtainMessage(MSG_KEY_TYPED), delay);
+        }
+
+        @Override
+        public boolean isIgnoringSpecialKey() {
+            return hasMessages(MSG_KEY_TYPED);
         }
 
         @Override
