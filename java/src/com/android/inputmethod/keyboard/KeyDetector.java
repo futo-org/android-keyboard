@@ -26,7 +26,7 @@ public class KeyDetector {
     private static final boolean DEBUG = false;
 
     public static final int NOT_A_CODE = -1;
-    public static final int NOT_A_KEY = -1;
+    private static final int NOT_A_KEY = -1;
 
     private final int mKeyHysteresisDistanceSquared;
 
@@ -96,22 +96,22 @@ public class KeyDetector {
     }
 
     /**
-     * Computes maximum size of the array that can contain all nearby key indices returned by
-     * {@link #getKeyIndexAndNearbyCodes}.
+     * Computes maximum size of the array that can contain all nearby key codes returned by
+     * {@link #getKeyAndNearbyCodes}.
      *
-     * @return Returns maximum size of the array that can contain all nearby key indices returned
-     *         by {@link #getKeyIndexAndNearbyCodes}.
+     * @return Returns maximum size of the array that can contain all nearby key codes returned
+     *         by {@link #getKeyAndNearbyCodes}.
      */
     protected int getMaxNearbyKeys() {
         return MAX_NEARBY_KEYS;
     }
 
     /**
-     * Allocates array that can hold all key indices returned by {@link #getKeyIndexAndNearbyCodes}
+     * Allocates array that can hold all key codes returned by {@link #getKeyAndNearbyCodes}
      * method. The maximum size of the array should be computed by {@link #getMaxNearbyKeys}.
      *
-     * @return Allocates and returns an array that can hold all key indices returned by
-     *         {@link #getKeyIndexAndNearbyCodes} method. All elements in the returned array are
+     * @return Allocates and returns an array that can hold all key codes returned by
+     *         {@link #getKeyAndNearbyCodes} method. All elements in the returned array are
      *         initialized by {@link #NOT_A_CODE} value.
      */
     public int[] newCodeArray() {
@@ -180,31 +180,32 @@ public class KeyDetector {
     }
 
     /**
-     * Finds all possible nearby key indices around a touch event point and returns the nearest key
-     * index. The algorithm to determine the nearby keys depends on the threshold set by
+     * Finds all possible nearby key codes around a touch event point and returns the nearest key.
+     * The algorithm to determine the nearby keys depends on the threshold set by
      * {@link #setProximityThreshold(int)} and the mode set by
      * {@link #setProximityCorrectionEnabled(boolean)}.
      *
      * @param x The x-coordinate of a touch point
      * @param y The y-coordinate of a touch point
-     * @param allCodes All nearby key code except functional key are returned in this array
-     * @return The nearest key index
+     * @param allCodes All nearby key codes except functional key are returned in this array
+     * @return The nearest key
      */
-    public int getKeyIndexAndNearbyCodes(int x, int y, final int[] allCodes) {
+    public Key getKeyAndNearbyCodes(int x, int y, final int[] allCodes) {
         final List<Key> keys = getKeyboard().mKeys;
         final int touchX = getTouchX(x);
         final int touchY = getTouchY(y);
 
         initializeNearbyKeys();
-        int primaryIndex = NOT_A_KEY;
+        Key primaryKey = null;
         for (final int index : mKeyboard.getNearestKeys(touchX, touchY)) {
             final Key key = keys.get(index);
             final boolean isOnKey = key.isOnKey(touchX, touchY);
             final int distance = key.squaredDistanceToEdge(touchX, touchY);
             if (isOnKey || (mProximityCorrectOn && distance < mProximityThresholdSquare)) {
                 final int insertedPosition = sortNearbyKeys(index, distance, isOnKey);
-                if (insertedPosition == 0 && isOnKey)
-                    primaryIndex = index;
+                if (insertedPosition == 0 && isOnKey) {
+                    primaryKey = key;
+                }
             }
         }
 
@@ -213,11 +214,11 @@ public class KeyDetector {
             if (DEBUG) {
                 Log.d(TAG, "x=" + x + " y=" + y
                         + " primary="
-                        + (primaryIndex == NOT_A_KEY ? "none" : keys.get(primaryIndex).mCode)
+                        + (primaryKey == null ? "none" : primaryKey.mCode)
                         + " codes=" + Arrays.toString(allCodes));
             }
         }
 
-        return primaryIndex;
+        return primaryKey;
     }
 }

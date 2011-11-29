@@ -148,7 +148,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             final PointerTracker tracker = (PointerTracker) msg.obj;
             switch (msg.what) {
             case MSG_SHOW_KEY_PREVIEW:
-                keyboardView.showKey(msg.arg1, tracker);
+                keyboardView.showKey(tracker);
                 break;
             case MSG_DISMISS_KEY_PREVIEW:
                 tracker.getKeyPreviewText().setVisibility(View.INVISIBLE);
@@ -156,16 +156,15 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             }
         }
 
-        public void showKeyPreview(long delay, int keyIndex, PointerTracker tracker) {
+        public void showKeyPreview(long delay, PointerTracker tracker) {
             removeMessages(MSG_SHOW_KEY_PREVIEW);
             final KeyboardView keyboardView = getOuterInstance();
             if (keyboardView == null) return;
             if (tracker.getKeyPreviewText().getVisibility() == VISIBLE || delay == 0) {
                 // Show right away, if it's already visible and finger is moving around
-                keyboardView.showKey(keyIndex, tracker);
+                keyboardView.showKey(tracker);
             } else {
-                sendMessageDelayed(
-                        obtainMessage(MSG_SHOW_KEY_PREVIEW, keyIndex, 0, tracker), delay);
+                sendMessageDelayed(obtainMessage(MSG_SHOW_KEY_PREVIEW, tracker), delay);
             }
         }
 
@@ -830,9 +829,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     @Override
-    public void showKeyPreview(int keyIndex, PointerTracker tracker) {
+    public void showKeyPreview(PointerTracker tracker) {
         if (mShowKeyPreviewPopup) {
-            mDrawingHandler.showKeyPreview(mDelayBeforePreview, keyIndex, tracker);
+            mDrawingHandler.showKeyPreview(mDelayBeforePreview, tracker);
         }
     }
 
@@ -858,7 +857,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 keyPreview, FrameLayoutCompatUtils.newLayoutParam(mPreviewPlacer, 0, 0));
     }
 
-    private void showKey(final int keyIndex, PointerTracker tracker) {
+    private void showKey(PointerTracker tracker) {
         final TextView previewText = tracker.getKeyPreviewText();
         // If the key preview has no parent view yet, add it to the ViewGroup which can place
         // key preview absolutely in SoftInputWindow.
@@ -867,8 +866,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
 
         mDrawingHandler.cancelDismissKeyPreview(tracker);
-        final Key key = tracker.getKey(keyIndex);
-        // If keyIndex is invalid or IME is already closed, we must not show key preview.
+        final Key key = tracker.getKey();
+        // If key is invalid or IME is already closed, we must not show key preview.
         // Trying to show key preview while root window is closed causes
         // WindowManager.BadTokenException.
         if (key == null)

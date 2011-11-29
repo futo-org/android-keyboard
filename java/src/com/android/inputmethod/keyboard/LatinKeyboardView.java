@@ -74,7 +74,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
     private final boolean mHasDistinctMultitouch;
     private int mOldPointerCount = 1;
-    private int mOldKeyIndex;
+    private Key mOldKey;
 
     private final boolean mConfigShowMiniKeyboardAtTouchedPoint;
     protected KeyDetector mKeyDetector;
@@ -103,19 +103,19 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             final PointerTracker tracker = (PointerTracker) msg.obj;
             switch (msg.what) {
             case MSG_REPEAT_KEY:
-                tracker.onRepeatKey(msg.arg1);
-                startKeyRepeatTimer(keyboardView.mKeyRepeatInterval, msg.arg1, tracker);
+                tracker.onRepeatKey(tracker.getKey());
+                startKeyRepeatTimer(keyboardView.mKeyRepeatInterval, tracker);
                 break;
             case MSG_LONGPRESS_KEY:
-                keyboardView.openMiniKeyboardIfRequired(msg.arg1, tracker);
+                keyboardView.openMiniKeyboardIfRequired(tracker.getKey(), tracker);
                 break;
             }
         }
 
         @Override
-        public void startKeyRepeatTimer(long delay, int keyIndex, PointerTracker tracker) {
+        public void startKeyRepeatTimer(long delay, PointerTracker tracker) {
             mInKeyRepeat = true;
-            sendMessageDelayed(obtainMessage(MSG_REPEAT_KEY, keyIndex, 0, tracker), delay);
+            sendMessageDelayed(obtainMessage(MSG_REPEAT_KEY, tracker), delay);
         }
 
         public void cancelKeyRepeatTimer() {
@@ -128,9 +128,9 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
 
         @Override
-        public void startLongPressTimer(long delay, int keyIndex, PointerTracker tracker) {
+        public void startLongPressTimer(long delay, PointerTracker tracker) {
             cancelLongPressTimer();
-            sendMessageDelayed(obtainMessage(MSG_LONGPRESS_KEY, keyIndex, 0, tracker), delay);
+            sendMessageDelayed(obtainMessage(MSG_LONGPRESS_KEY, tracker), delay);
         }
 
         @Override
@@ -181,8 +181,9 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 final int pointerIndex = firstDown.getActionIndex();
                 final int id = firstDown.getPointerId(pointerIndex);
                 final PointerTracker tracker = getPointerTracker(id);
+                final Key key = tracker.getKeyOn((int)firstDown.getX(), (int)firstDown.getY());
                 // If the first down event is on shift key.
-                if (tracker.isOnShiftKey((int) firstDown.getX(), (int) firstDown.getY())) {
+                if (key != null && key.isShift()) {
                     mProcessingShiftDoubleTapEvent = true;
                     return true;
                 }
@@ -199,8 +200,9 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 final int pointerIndex = secondDown.getActionIndex();
                 final int id = secondDown.getPointerId(pointerIndex);
                 final PointerTracker tracker = getPointerTracker(id);
+                final Key key = tracker.getKeyOn((int)secondDown.getX(), (int)secondDown.getY());
                 // If the second down event is also on shift key.
-                if (tracker.isOnShiftKey((int) secondDown.getX(), (int) secondDown.getY())) {
+                if (key != null && key.isShift()) {
                     // Detected a double tap on shift key. If we are in the ignoring double tap
                     // mode, it means we have already turned off caps lock in
                     // {@link KeyboardSwitcher#onReleaseShift} .
@@ -326,7 +328,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         super.cancelAllMessages();
     }
 
-    private boolean openMiniKeyboardIfRequired(int keyIndex, PointerTracker tracker) {
+    private boolean openMiniKeyboardIfRequired(Key parentKey, PointerTracker tracker) {
         // Check if we have a popup layout specified first.
         if (mMoreKeysLayout == 0) {
             return false;
@@ -335,7 +337,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         // Check if we are already displaying popup panel.
         if (mMoreKeysPanel != null)
             return false;
-        final Key parentKey = tracker.getKey(keyIndex);
         if (parentKey == null)
             return false;
         return onLongPress(parentKey, tracker);
@@ -546,8 +547,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 // Multi-touch to single touch transition.
                 // Send a down event for the latest pointer if the key is different from the
                 // previous key.
-                final int newKeyIndex = tracker.getKeyIndexOn(x, y);
-                if (mOldKeyIndex != newKeyIndex) {
+                final Key newKey = tracker.getKeyOn(x, y);
+                if (mOldKey != newKey) {
                     tracker.onDownEvent(x, y, eventTime, this);
                     if (action == MotionEvent.ACTION_UP)
                         tracker.onUpEvent(x, y, eventTime);
@@ -557,7 +558,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 // Send an up event for the last pointer.
                 final int lastX = tracker.getLastX();
                 final int lastY = tracker.getLastY();
-                mOldKeyIndex = tracker.getKeyIndexOn(lastX, lastY);
+                mOldKey = tracker.getKeyOn(lastX, lastY);
                 tracker.onUpEvent(lastX, lastY, eventTime);
             } else if (pointerCount == 1 && oldPointerCount == 1) {
                 tracker.processMotionEvent(action, x, y, eventTime, this);

@@ -318,6 +318,14 @@ public class Key {
         return false;
     }
 
+    public boolean isShift() {
+        return mCode == Keyboard.CODE_SHIFT;
+    }
+
+    public boolean isModifier() {
+        return mCode == Keyboard.CODE_SHIFT || mCode == Keyboard.CODE_SWITCH_ALPHA_SYMBOL;
+    }
+
     public boolean isRepeatable() {
         return (mActionFlags & ACTION_FLAGS_IS_REPEATABLE) != 0;
     }

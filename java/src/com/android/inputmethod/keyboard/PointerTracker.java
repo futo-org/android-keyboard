@@ -68,7 +68,7 @@ public class PointerTracker {
     public interface DrawingProxy extends MoreKeysPanel.Controller {
         public void invalidateKey(Key key);
         public TextView inflateKeyPreviewText();
-        public void showKeyPreview(int keyIndex, PointerTracker tracker);
+        public void showKeyPreview(PointerTracker tracker);
         public void cancelShowKeyPreview(PointerTracker tracker);
         public void dismissKeyPreview(PointerTracker tracker);
     }
@@ -76,8 +76,8 @@ public class PointerTracker {
     public interface TimerProxy {
         public void startKeyTypedTimer(long delay);
         public boolean isTyping();
-        public void startKeyRepeatTimer(long delay, int keyIndex, PointerTracker tracker);
-        public void startLongPressTimer(long delay, int keyIndex, PointerTracker tracker);
+        public void startKeyRepeatTimer(long delay, PointerTracker tracker);
+        public void startLongPressTimer(long delay, PointerTracker tracker);
         public void cancelLongPressTimer();
         public void cancelKeyTimers();
 
@@ -87,9 +87,9 @@ public class PointerTracker {
             @Override
             public boolean isTyping() { return false; }
             @Override
-            public void startKeyRepeatTimer(long delay, int keyIndex, PointerTracker tracker) {}
+            public void startKeyRepeatTimer(long delay, PointerTracker tracker) {}
             @Override
-            public void startLongPressTimer(long delay, int keyIndex, PointerTracker tracker) {}
+            public void startLongPressTimer(long delay, PointerTracker tracker) {}
             @Override
             public void cancelLongPressTimer() {}
             @Override
@@ -127,9 +127,9 @@ public class PointerTracker {
     private long mDownTime;
     private long mUpTime;
 
-    // The current key index where this pointer is.
-    private int mKeyIndex = KeyDetector.NOT_A_KEY;
-    // The position where mKeyIndex was recognized for the first time.
+    // The current key where this pointer is.
+    private Key mCurrentKey = null;
+    // The position where the current key was recognized for the first time.
     private int mKeyX;
     private int mKeyY;
 
@@ -217,7 +217,7 @@ public class PointerTracker {
 
     public static void dismissAllKeyPreviews() {
         for (final PointerTracker tracker : sTrackers) {
-            tracker.setReleasedKeyGraphics(tracker.mKeyIndex);
+            tracker.setReleasedKeyGraphics(tracker.mCurrentKey);
         }
     }
 
@@ -238,7 +238,7 @@ public class PointerTracker {
 
     // Returns true if keyboard has been changed by this callback.
     private boolean callListenerOnPressAndCheckKeyboardLayoutChange(Key key, boolean withSliding) {
-        final boolean ignoreModifierKey = mIgnoreModifierKey && isModifierCode(key.mCode);
+        final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
         if (DEBUG_LISTENER)
             Log.d(TAG, "onPress    : " + keyCodePrintable(key.mCode) + " sliding=" + withSliding
                     + " ignoreModifier=" + ignoreModifierKey);
@@ -257,13 +257,14 @@ public class PointerTracker {
     // Note that we need primaryCode argument because the keyboard may in shifted state and the
     // primaryCode is different from {@link Key#mCode}.
     private void callListenerOnCodeInput(Key key, int primaryCode, int[] keyCodes, int x, int y) {
-        final boolean ignoreModifierKey = mIgnoreModifierKey && isModifierCode(key.mCode);
+        final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
         if (DEBUG_LISTENER)
             Log.d(TAG, "onCodeInput: " + keyCodePrintable(primaryCode)
                     + " codes="+ Arrays.toString(keyCodes) + " x=" + x + " y=" + y
                     + " ignoreModifier=" + ignoreModifierKey);
-        if (ignoreModifierKey)
+        if (ignoreModifierKey) {
             return;
+        }
         if (key.isEnabled()) {
             mListener.onCodeInput(primaryCode, keyCodes, x, y);
         }
@@ -280,12 +281,13 @@ public class PointerTracker {
     // Note that we need primaryCode argument because the keyboard may in shifted state and the
     // primaryCode is different from {@link Key#mCode}.
     private void callListenerOnRelease(Key key, int primaryCode, boolean withSliding) {
-        final boolean ignoreModifierKey = mIgnoreModifierKey && isModifierCode(key.mCode);
+        final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
         if (DEBUG_LISTENER)
             Log.d(TAG, "onRelease  : " + keyCodePrintable(primaryCode) + " sliding="
                     + withSliding + " ignoreModifier=" + ignoreModifierKey);
-        if (ignoreModifierKey)
+        if (ignoreModifierKey) {
             return;
+        }
         if (key.isEnabled()) {
             mListener.onRelease(primaryCode, withSliding);
         }
@@ -309,55 +311,30 @@ public class PointerTracker {
         return mIsInSlidingKeyInput;
     }
 
-    private boolean isValidKeyIndex(int keyIndex) {
-        return keyIndex >= 0 && keyIndex < mKeys.size();
-    }
-
-    public Key getKey(int keyIndex) {
-        return isValidKeyIndex(keyIndex) ? mKeys.get(keyIndex) : null;
-    }
-
-    private static boolean isModifierCode(int primaryCode) {
-        return primaryCode == Keyboard.CODE_SHIFT
-                || primaryCode == Keyboard.CODE_SWITCH_ALPHA_SYMBOL;
-    }
-
-    private boolean isModifierInternal(int keyIndex) {
-        final Key key = getKey(keyIndex);
-        return key == null ? false : isModifierCode(key.mCode);
+    public Key getKey() {
+        return mCurrentKey;
     }
 
     public boolean isModifier() {
-        return isModifierInternal(mKeyIndex);
+        return mCurrentKey != null && mCurrentKey.isModifier();
     }
 
-    private boolean isOnModifierKey(int x, int y) {
-        return isModifierInternal(mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null));
+    public Key getKeyOn(int x, int y) {
+        return mKeyDetector.getKeyAndNearbyCodes(x, y, null);
     }
 
-    public boolean isOnShiftKey(int x, int y) {
-        final Key key = getKey(mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null));
-        return key != null && key.mCode == Keyboard.CODE_SHIFT;
-    }
-
-    public int getKeyIndexOn(int x, int y) {
-        return mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null);
-    }
-
-    private void setReleasedKeyGraphics(int keyIndex) {
+    private void setReleasedKeyGraphics(Key key) {
         mDrawingProxy.dismissKeyPreview(this);
-        final Key key = getKey(keyIndex);
         if (key != null && key.isEnabled()) {
             key.onReleased();
             mDrawingProxy.invalidateKey(key);
         }
     }
 
-    private void setPressedKeyGraphics(int keyIndex) {
-        final Key key = getKey(keyIndex);
+    private void setPressedKeyGraphics(Key key) {
         if (key != null && key.isEnabled()) {
             if (!key.noKeyPreview()) {
-                mDrawingProxy.showKeyPreview(keyIndex, this);
+                mDrawingProxy.showKeyPreview(this);
             }
             key.onPressed();
             mDrawingProxy.invalidateKey(key);
@@ -376,31 +353,31 @@ public class PointerTracker {
         return mDownTime;
     }
 
-    private int onDownKey(int x, int y, long eventTime) {
+    private Key onDownKey(int x, int y, long eventTime) {
         mDownTime = eventTime;
         return onMoveToNewKey(onMoveKeyInternal(x, y), x, y);
     }
 
-    private int onMoveKeyInternal(int x, int y) {
+    private Key onMoveKeyInternal(int x, int y) {
         mLastX = x;
         mLastY = y;
-        return mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null);
+        return mKeyDetector.getKeyAndNearbyCodes(x, y, null);
     }
 
-    private int onMoveKey(int x, int y) {
+    private Key onMoveKey(int x, int y) {
         return onMoveKeyInternal(x, y);
     }
 
-    private int onMoveToNewKey(int keyIndex, int x, int y) {
-        mKeyIndex = keyIndex;
+    private Key onMoveToNewKey(Key newKey, int x, int y) {
+        mCurrentKey = newKey;
         mKeyX = x;
         mKeyY = y;
-        return keyIndex;
+        return newKey;
     }
 
-    private int onUpKey(int x, int y, long eventTime) {
+    private Key onUpKey(int x, int y, long eventTime) {
         mUpTime = eventTime;
-        mKeyIndex = KeyDetector.NOT_A_KEY;
+        mCurrentKey = null;
         return onMoveKeyInternal(x, y);
     }
 
@@ -449,7 +426,8 @@ public class PointerTracker {
 
         final PointerTrackerQueue queue = sPointerTrackerQueue;
         if (queue != null) {
-            if (isOnModifierKey(x, y)) {
+            final Key key = getKeyOn(x, y);
+            if (key != null && key.isModifier()) {
                 // Before processing a down event of modifier key, all pointers already being
                 // tracked should be released.
                 queue.releaseAllPointers(eventTime);
@@ -460,32 +438,34 @@ public class PointerTracker {
     }
 
     private void onDownEventInternal(int x, int y, long eventTime) {
-        int keyIndex = onDownKey(x, y, eventTime);
+        Key key = onDownKey(x, y, eventTime);
         // Sliding key is allowed when 1) enabled by configuration, 2) this pointer starts sliding
         // from modifier key, or 3) this pointer's KeyDetector always allows sliding input.
-        mIsAllowedSlidingKeyInput = sConfigSlidingKeyInputEnabled || isModifierInternal(keyIndex)
+        mIsAllowedSlidingKeyInput = sConfigSlidingKeyInputEnabled || key.isModifier()
                 || mKeyDetector.alwaysAllowsSlidingInput();
         mKeyboardLayoutHasBeenChanged = false;
         mKeyAlreadyProcessed = false;
         mIsRepeatableKey = false;
         mIsInSlidingKeyInput = false;
         mIgnoreModifierKey = false;
-        if (isValidKeyIndex(keyIndex)) {
+        if (key != null) {
             // This onPress call may have changed keyboard layout. Those cases are detected at
-            // {@link #setKeyboard}. In those cases, we should update keyIndex according to the new
+            // {@link #setKeyboard}. In those cases, we should update key according to the new
             // keyboard layout.
-            if (callListenerOnPressAndCheckKeyboardLayoutChange(getKey(keyIndex), false))
-                keyIndex = onDownKey(x, y, eventTime);
+            if (callListenerOnPressAndCheckKeyboardLayoutChange(key, false)) {
+                key = onDownKey(x, y, eventTime);
+            }
 
-            startRepeatKey(keyIndex);
-            startLongPressTimer(keyIndex);
-            setPressedKeyGraphics(keyIndex);
+            startRepeatKey(key);
+            startLongPressTimer(key);
+            setPressedKeyGraphics(key);
         }
     }
 
     private void startSlidingKeyInput(Key key) {
-        if (!mIsInSlidingKeyInput)
-            mIgnoreModifierKey = isModifierCode(key.mCode);
+        if (!mIsInSlidingKeyInput) {
+            mIgnoreModifierKey = key.isModifier();
+        }
         mIsInSlidingKeyInput = true;
     }
 
@@ -497,39 +477,40 @@ public class PointerTracker {
 
         final int lastX = mLastX;
         final int lastY = mLastY;
-        final int oldKeyIndex = mKeyIndex;
-        final Key oldKey = getKey(oldKeyIndex);
-        int keyIndex = onMoveKey(x, y);
-        if (isValidKeyIndex(keyIndex)) {
+        final Key oldKey = mCurrentKey;
+        Key key = onMoveKey(x, y);
+        if (key != null) {
             if (oldKey == null) {
                 // The pointer has been slid in to the new key, but the finger was not on any keys.
                 // In this case, we must call onPress() to notify that the new key is being pressed.
                 // This onPress call may have changed keyboard layout. Those cases are detected at
-                // {@link #setKeyboard}. In those cases, we should update keyIndex according to the
+                // {@link #setKeyboard}. In those cases, we should update key according to the
                 // new keyboard layout.
-                if (callListenerOnPressAndCheckKeyboardLayoutChange(getKey(keyIndex), true))
-                    keyIndex = onMoveKey(x, y);
-                onMoveToNewKey(keyIndex, x, y);
-                startLongPressTimer(keyIndex);
-                setPressedKeyGraphics(keyIndex);
-            } else if (isMajorEnoughMoveToBeOnNewKey(x, y, keyIndex)) {
+                if (callListenerOnPressAndCheckKeyboardLayoutChange(key, true)) {
+                    key = onMoveKey(x, y);
+                }
+                onMoveToNewKey(key, x, y);
+                startLongPressTimer(key);
+                setPressedKeyGraphics(key);
+            } else if (isMajorEnoughMoveToBeOnNewKey(x, y, key)) {
                 // The pointer has been slid in to the new key from the previous key, we must call
                 // onRelease() first to notify that the previous key has been released, then call
                 // onPress() to notify that the new key is being pressed.
-                setReleasedKeyGraphics(oldKeyIndex);
+                setReleasedKeyGraphics(oldKey);
                 callListenerOnRelease(oldKey, oldKey.mCode, true);
                 startSlidingKeyInput(oldKey);
                 mTimerProxy.cancelKeyTimers();
-                startRepeatKey(keyIndex);
+                startRepeatKey(key);
                 if (mIsAllowedSlidingKeyInput) {
                     // This onPress call may have changed keyboard layout. Those cases are detected
-                    // at {@link #setKeyboard}. In those cases, we should update keyIndex according
+                    // at {@link #setKeyboard}. In those cases, we should update key according
                     // to the new keyboard layout.
-                    if (callListenerOnPressAndCheckKeyboardLayoutChange(getKey(keyIndex), true))
-                        keyIndex = onMoveKey(x, y);
-                    onMoveToNewKey(keyIndex, x, y);
-                    startLongPressTimer(keyIndex);
-                    setPressedKeyGraphics(keyIndex);
+                    if (callListenerOnPressAndCheckKeyboardLayoutChange(key, true)) {
+                        key = onMoveKey(x, y);
+                    }
+                    onMoveToNewKey(key, x, y);
+                    startLongPressTimer(key);
+                    setPressedKeyGraphics(key);
                 } else {
                     // HACK: On some devices, quick successive touches may be translated to sudden
                     // move by touch panel firmware. This hack detects the case and translates the
@@ -545,20 +526,20 @@ public class PointerTracker {
                         onDownEventInternal(x, y, eventTime);
                     } else {
                         mKeyAlreadyProcessed = true;
-                        setReleasedKeyGraphics(oldKeyIndex);
+                        setReleasedKeyGraphics(oldKey);
                     }
                 }
             }
         } else {
-            if (oldKey != null && isMajorEnoughMoveToBeOnNewKey(x, y, keyIndex)) {
+            if (oldKey != null && isMajorEnoughMoveToBeOnNewKey(x, y, key)) {
                 // The pointer has been slid out from the previous key, we must call onRelease() to
                 // notify that the previous key has been released.
-                setReleasedKeyGraphics(oldKeyIndex);
+                setReleasedKeyGraphics(oldKey);
                 callListenerOnRelease(oldKey, oldKey.mCode, true);
                 startSlidingKeyInput(oldKey);
                 mTimerProxy.cancelLongPressTimer();
                 if (mIsAllowedSlidingKeyInput) {
-                    onMoveToNewKey(keyIndex, x, y);
+                    onMoveToNewKey(key, x, y);
                 } else {
                     mKeyAlreadyProcessed = true;
                 }
@@ -572,7 +553,7 @@ public class PointerTracker {
 
         final PointerTrackerQueue queue = sPointerTrackerQueue;
         if (queue != null) {
-            if (isModifier()) {
+            if (mCurrentKey != null && mCurrentKey.isModifier()) {
                 // Before processing an up event of modifier key, all pointers already being
                 // tracked should be released.
                 queue.releaseAllPointersExcept(this, eventTime);
@@ -607,8 +588,8 @@ public class PointerTracker {
             keyX = mKeyX;
             keyY = mKeyY;
         }
-        final int keyIndex = onUpKey(keyX, keyY, eventTime);
-        setReleasedKeyGraphics(keyIndex);
+        final Key key = onUpKey(keyX, keyY, eventTime);
+        setReleasedKeyGraphics(key);
         if (mIsShowingMoreKeysPanel) {
             mDrawingProxy.dismissMoreKeysPanel();
             mIsShowingMoreKeysPanel = false;
@@ -616,7 +597,7 @@ public class PointerTracker {
         if (mKeyAlreadyProcessed)
             return;
         if (!mIsRepeatableKey) {
-            detectAndSendKey(keyIndex, keyX, keyY);
+            detectAndSendKey(key, keyX, keyY);
         }
     }
 
@@ -628,7 +609,7 @@ public class PointerTracker {
 
     public void onLongPressed() {
         mKeyAlreadyProcessed = true;
-        setReleasedKeyGraphics(mKeyIndex);
+        setReleasedKeyGraphics(mCurrentKey);
         final PointerTrackerQueue queue = sPointerTrackerQueue;
         if (queue != null) {
             queue.remove(this);
@@ -650,7 +631,7 @@ public class PointerTracker {
     private void onCancelEventInternal() {
         mTimerProxy.cancelKeyTimers();
         mDrawingProxy.cancelShowKeyPreview(this);
-        setReleasedKeyGraphics(mKeyIndex);
+        setReleasedKeyGraphics(mCurrentKey);
         mIsInSlidingKeyInput = false;
         if (mIsShowingMoreKeysPanel) {
             mDrawingProxy.dismissMoreKeysPanel();
@@ -658,48 +639,45 @@ public class PointerTracker {
         }
     }
 
-    private void startRepeatKey(int keyIndex) {
-        final Key key = getKey(keyIndex);
+    private void startRepeatKey(Key key) {
         if (key != null && key.isRepeatable()) {
-            onRepeatKey(keyIndex);
-            mTimerProxy.startKeyRepeatTimer(sDelayBeforeKeyRepeatStart, keyIndex, this);
+            onRepeatKey(key);
+            mTimerProxy.startKeyRepeatTimer(sDelayBeforeKeyRepeatStart, this);
             mIsRepeatableKey = true;
         } else {
             mIsRepeatableKey = false;
         }
     }
 
-    public void onRepeatKey(int keyIndex) {
-        Key key = getKey(keyIndex);
+    public void onRepeatKey(Key key) {
         if (key != null) {
-            detectAndSendKey(keyIndex, key.mX, key.mY);
+            detectAndSendKey(key, key.mX, key.mY);
         }
     }
 
-    private boolean isMajorEnoughMoveToBeOnNewKey(int x, int y, int newKey) {
+    private boolean isMajorEnoughMoveToBeOnNewKey(int x, int y, Key newKey) {
         if (mKeys == null || mKeyDetector == null)
             throw new NullPointerException("keyboard and/or key detector not set");
-        int curKey = mKeyIndex;
+        Key curKey = mCurrentKey;
         if (newKey == curKey) {
             return false;
-        } else if (isValidKeyIndex(curKey)) {
-            return mKeys.get(curKey).squaredDistanceToEdge(x, y)
+        } else if (curKey != null) {
+            return curKey.squaredDistanceToEdge(x, y)
                     >= mKeyDetector.getKeyHysteresisDistanceSquared();
         } else {
             return true;
         }
     }
 
-    private void startLongPressTimer(int keyIndex) {
-        Key key = getKey(keyIndex);
+    private void startLongPressTimer(Key key) {
         if (key == null) return;
         if (key.mCode == Keyboard.CODE_SHIFT) {
             if (sLongPressShiftKeyTimeout > 0) {
-                mTimerProxy.startLongPressTimer(sLongPressShiftKeyTimeout, keyIndex, this);
+                mTimerProxy.startLongPressTimer(sLongPressShiftKeyTimeout, this);
             }
         } else if (key.mCode == Keyboard.CODE_SPACE) {
             if (sLongPressSpaceKeyTimeout > 0) {
-                mTimerProxy.startLongPressTimer(sLongPressSpaceKeyTimeout, keyIndex, this);
+                mTimerProxy.startLongPressTimer(sLongPressSpaceKeyTimeout, this);
             }
         } else if (key.hasUppercaseLetter() && mKeyboard.isManualTemporaryUpperCase()) {
             // We need not start long press timer on the key which has manual temporary upper case
@@ -707,14 +685,13 @@ public class PointerTracker {
             return;
         } else if (sKeyboardSwitcher.isInMomentarySwitchState()) {
             // We use longer timeout for sliding finger input started from the symbols mode key.
-            mTimerProxy.startLongPressTimer(sLongPressKeyTimeout * 3, keyIndex, this);
+            mTimerProxy.startLongPressTimer(sLongPressKeyTimeout * 3, this);
         } else {
-            mTimerProxy.startLongPressTimer(sLongPressKeyTimeout, keyIndex, this);
+            mTimerProxy.startLongPressTimer(sLongPressKeyTimeout, this);
         }
     }
 
-    private void detectAndSendKey(int keyIndex, int x, int y) {
-        final Key key = getKey(keyIndex);
+    private void detectAndSendKey(Key key, int x, int y) {
         if (key == null) {
             callListenerOnCancelInput();
             return;
@@ -731,7 +708,7 @@ public class PointerTracker {
         } else {
             int code = key.mCode;
             final int[] codes = mKeyDetector.newCodeArray();
-            mKeyDetector.getKeyIndexAndNearbyCodes(x, y, codes);
+            mKeyDetector.getKeyAndNearbyCodes(x, y, codes);
 
             // If keyboard is in manual temporary upper case state and key has manual temporary
             // uppercase letter as key hint letter, alternate character code should be sent.
@@ -754,7 +731,7 @@ public class PointerTracker {
                 callListenerOnCodeInput(key, code, codes, x, y);
             }
             callListenerOnRelease(key, code, false);
-            if (!key.ignoreWhileTyping() && !isModifierCode(code)) {
+            if (!key.ignoreWhileTyping() && !key.isModifier()) {
                 mTimerProxy.startKeyTypedTimer(sIgnoreSpecialKeyTimeout);
             }
         }
@@ -763,17 +740,17 @@ public class PointerTracker {
     private long mPreviousEventTime;
 
     private void printTouchEvent(String title, int x, int y, long eventTime) {
-        final int keyIndex = mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null);
-        final Key key = getKey(keyIndex);
+        final Key key = mKeyDetector.getKeyAndNearbyCodes(x, y, null);
         final String code = (key == null) ? "----" : keyCodePrintable(key.mCode);
         final long delta = eventTime - mPreviousEventTime;
-        Log.d(TAG, String.format("%s%s[%d] %4d %4d %5d %3d(%s)", title,
-                (mKeyAlreadyProcessed ? "-" : " "), mPointerId, x, y, delta, keyIndex, code));
+        Log.d(TAG, String.format("%s%s[%d] %4d %4d %5d %s", title,
+                (mKeyAlreadyProcessed ? "-" : " "), mPointerId, x, y, delta, code));
         mPreviousEventTime = eventTime;
     }
 
     private static String keyCodePrintable(int primaryCode) {
-        final String modifier = isModifierCode(primaryCode) ? " modifier" : "";
-        return  String.format((primaryCode < 0) ? "%4d" : "0x%02x", primaryCode) + modifier;
+        if (primaryCode < 0) return String.format("%4d", primaryCode);
+        if (primaryCode < 0x100) return String.format("\\u%02x", primaryCode);
+        return String.format("\\u04x", primaryCode);
     }
 }
