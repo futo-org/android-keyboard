@@ -950,6 +950,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         mExpectingUpdateSelection = false;
         mHandler.postUpdateShiftKeyState();
+        // TODO: Decide to call restartSuggestionsOnWordBeforeCursorIfAtEndOfWord() or not
+        // here. It would probably be too expensive to call directly here but we may want to post a
+        // message to delay it. The point would be to unify behavior between backspace to the
+        // end of a word and manually put the pointer at the end of the word.
 
         // Make a note of the cursor position
         mLastSelectionStart = newSelStart;
@@ -1468,10 +1472,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 // inconsistent with backspacing after selecting other suggestions.
                 revertLastWord(ic);
             } else {
-                sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
+                ic.deleteSurroundingText(1, 0);
                 if (mDeleteCount > DELETE_ACCELERATE_AT) {
-                    sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
+                    ic.deleteSurroundingText(1, 0);
                 }
+                restartSuggestionsOnWordBeforeCursorIfAtEndOfWord(ic);
             }
         }
         ic.endBatchEdit();
@@ -2121,6 +2126,53 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     // "ic" must not be null
+    /**
+     * Check if the cursor is actually at the end of a word. If so, restart suggestions on this
+     * word, else do nothing.
+     */
+    private void restartSuggestionsOnWordBeforeCursorIfAtEndOfWord(
+            final InputConnection ic) {
+        // Bail out if the cursor is not at the end of a word (cursor must be preceded by
+        // non-whitespace, non-separator, non-start-of-text)
+        // Example ("|" is the cursor here) : <SOL>"|a" " |a" " | " all get rejected here.
+        final CharSequence textBeforeCursor = ic.getTextBeforeCursor(1, 0);
+        if (TextUtils.isEmpty(textBeforeCursor)
+                || mSettingsValues.isWordSeparator(textBeforeCursor.charAt(0))) return;
+
+        // Bail out if the cursor is in the middle of a word (cursor must be followed by whitespace,
+        // separator or end of line/text)
+        // Example: "test|"<EOL> "te|st" get rejected here
+        final CharSequence textAfterCursor = ic.getTextAfterCursor(1, 0);
+        if (!TextUtils.isEmpty(textAfterCursor)
+                && !mSettingsValues.isWordSeparator(textAfterCursor.charAt(0))) return;
+
+        // Bail out if word before cursor is 0-length or a single non letter (like an apostrophe)
+        // Example: " '|" gets rejected here but "I'|" and "I|" are okay
+        final CharSequence word = EditingUtils.getWordAtCursor(ic, mSettingsValues.mWordSeparators);
+        if (TextUtils.isEmpty(word)) return;
+        if (word.length() == 1 && !Character.isLetter(word.charAt(0))) return;
+
+        // Okay, we are at the end of a word. Restart suggestions.
+        restartSuggestionsOnWordBeforeCursor(ic, word);
+    }
+
+    // "ic" must not be null
+    private void restartSuggestionsOnWordBeforeCursor(final InputConnection ic,
+            final CharSequence word) {
+        mWordComposer.setComposingWord(word, mKeyboardSwitcher.getLatinKeyboard());
+        mComposingStringBuilder.setLength(0);
+        mComposingStringBuilder.append(word);
+        // mBestWord will be set appropriately by updateSuggestions() called by the handler
+        mBestWord = null;
+        mHasUncommittedTypedChars = true;
+        mComposingStateManager.onStartComposingText();
+        TextEntryState.restartSuggestionsOnWordBeforeCursor();
+        ic.deleteSurroundingText(word.length(), 0);
+        ic.setComposingText(word, 1);
+        mHandler.postUpdateSuggestions();
+    }
+
+    // "ic" must not be null
     private void revertLastWord(final InputConnection ic) {
         if (mHasUncommittedTypedChars || mComposingStringBuilder.length() <= 0) {
             sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
@@ -2146,6 +2198,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // Clear composing text
             mComposingStringBuilder.setLength(0);
         } else {
+            // Note: this relies on the last word still being held in the WordComposer
+            // Note: in the interest of code simplicity, we may want to just call
+            // restartSuggestionsOnWordBeforeCursorIfAtEndOfWord instead, but retrieving
+            // the old WordComposer allows to reuse the actual typed coordinates.
             mHasUncommittedTypedChars = true;
             ic.setComposingText(mComposingStringBuilder, 1);
             TextEntryState.backspace();
