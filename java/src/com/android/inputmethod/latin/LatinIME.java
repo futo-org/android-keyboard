@@ -403,7 +403,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             resetPendingImsCallback();
             mIsOrientationChanging = true;
             final LatinIME latinIme = getOuterInstance();
-            latinIme.mKeyboardSwitcher.saveKeyboardState();
+            if (latinIme.isInputViewShown()) {
+                latinIme.mKeyboardSwitcher.saveKeyboardState();
+            }
         }
 
         private void resetPendingImsCallback() {
