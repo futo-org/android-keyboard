@@ -20,7 +20,7 @@
 <!-- The attributes in this XML file provide configuration information -->
 <!-- for the Input Method Manager. -->
 
-<!-- Keyboard: en_US, en_GB, ar, cs, da, de, de(QWERTY), es, es_US, fi, fr, fr_CA, fr_CH, hr, hu, it, iw, nb, nl, pl, pt, ru, sr, sv, tr -->
+<!-- Keyboard: en_US, en_GB, ar, cs, da, de, de(QWERTY), es, es_US, et, fi, fr, fr_CA, fr_CH, hr, hu, it, iw, lt, lv, nb, nl, pl, pt, ru, sr, sv, tr -->
 <!-- TODO: use <lang>_keyboard icon instead of a common keyboard icon. -->
 <!-- If IME doesn't have an applicable subtype, the first subtype will be used as a default
      subtype.-->
@@ -77,6 +77,12 @@
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
+            android:imeSubtypeLocale="et"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
             android:imeSubtypeLocale="fi"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection"
@@ -123,6 +129,18 @@
             android:imeSubtypeLocale="iw"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="SupportTouchPositionCorrection"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:imeSubtypeLocale="lt"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:imeSubtypeLocale="lv"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
