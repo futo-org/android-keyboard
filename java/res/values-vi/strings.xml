@@ -35,7 +35,7 @@
     <string name="misc_category" msgid="6894192814868233453">"Tùy chọn khác"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Cài đặt nâng cao"</string>
     <string name="advanced_settings_summary" msgid="5193513161106637254">"Tùy chọn cho người dùng chuyên gia"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Hlại việc l.bỏ csổ b.lên chính"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Loại bỏ hiển thị phím trễ"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Không có tgian trễ"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Mặc định"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Đề xuất tên liên hệ"</string>
@@ -62,10 +62,10 @@
     <string name="bigram_prediction" msgid="8914273444762259739">"Dự đoán Bigram"</string>
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"Cũng sử dụng từ trước đó để dự đoán"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Đã lưu"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"Đến"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"Tìm"</string>
     <string name="label_next_key" msgid="362972844525672568">"Tiếp theo"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Xong"</string>
-    <string name="label_send_key" msgid="2815056534433717444">"Gửi"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"Gửi"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
     <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
@@ -113,10 +113,10 @@
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Nhập liệu bằng giọng nói sử dụng nhận dạng giọng nói của Google. Áp dụng "<a href="http://m.google.com/privacy">"Chính sách bảo mật dành cho điện thoại di động"</a>"."</string>
     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Để tắt nhập liệu bằng giọng nói, đi tới cài đặt phương pháp nhập liệu."</string>
     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Để sử dụng nhập liệu bằng giọng nói, hãy nhấn nút micrô."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Xin mời nói"</string>
+    <string name="voice_listening" msgid="467518160751321844">"Nói ngay"</string>
     <string name="voice_working" msgid="6666937792815731889">"Đang hoạt động"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Lỗi. Vui lòng thử lại."</string>
+    <string name="voice_error" msgid="5140896300312186162">"Lỗi. Vui lòng thử lại."</string>
     <string name="voice_network_error" msgid="6649556447401862563">"Không thể kết nối"</string>
     <string name="voice_too_much_speech" msgid="5746973620134227376">"Lỗi, quá nhiều câu thoại."</string>
     <string name="voice_audio_error" msgid="5072707727016414454">"Sự cố âm thanh"</string>
@@ -134,7 +134,7 @@
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Tắt"</string>
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Micrô trên bàn phím chính"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Micrô trên bàn phím biểu tượng"</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Nhập liệu bằng giọng nói đã bị vô hiệu hóa"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Nhập liệu bằng giọng nói đã bị tắt"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Chọn phương thức nhập"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Định cấu hình phương thức nhập"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Ngôn ngữ nhập"</string>
@@ -143,7 +143,7 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Có sẵn từ điển"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Bật phản hồi của người dùng"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Giúp nâng cao trình chỉnh sửa phương thức nhập này bằng cách tự động gửi thống kê sử dụng và báo cáo sự cố cho Google."</string>
-    <string name="keyboard_layout" msgid="8451164783510487501">"Chủ đề bàn phím"</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"Chủ đề bàn phím"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"Bàn phím QWERTY tiếng Đức"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Tiếng Anh (Anh)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Tiếng Anh (Mỹ)"</string>
