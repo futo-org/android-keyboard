@@ -1793,6 +1793,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // The whitelist should be case-insensitive, so it's not possible to be consistent with
         // a boolean flag. Right now this is handled with a slight hack in
         // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
+        final int quotesCount = wordComposer.trailingSingleQuotesCount();
         final boolean allowsToBeAutoCorrected = AutoCorrection.allowsToBeAutoCorrected(
                 mSuggest.getUnigramDictionaries(),
                 // If the typed string ends with a single quote, for dictionary lookup purposes
@@ -1800,8 +1801,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 // typed string in the dictionary (to avoid autocorrecting from an existing
                 // word, so for consistency this lookup should be made WITHOUT the trailing
                 // single quote.
-                wordComposer.isLastCharASingleQuote()
-                        ? typedWord.subSequence(0, typedWord.length() - 1) : typedWord,
+                quotesCount > 0
+                        ? typedWord.subSequence(0, typedWord.length() - quotesCount) : typedWord,
                 preferCapitalization());
         if (mCorrectionMode == Suggest.CORRECTION_FULL
                 || mCorrectionMode == Suggest.CORRECTION_FULL_BIGRAM) {
