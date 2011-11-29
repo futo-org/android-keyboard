@@ -44,7 +44,7 @@ public class WordComposer {
 
     private boolean mAutoCapitalized;
     // Cache this value for performance
-    private boolean mIsLastCharASingleQuote;
+    private int mTrailingSingleQuotesCount;
 
     /**
      * Whether the user chose to capitalize the first char of the word.
@@ -57,7 +57,7 @@ public class WordComposer {
         mTypedWord = new StringBuilder(N);
         mXCoordinates = new int[N];
         mYCoordinates = new int[N];
-        mIsLastCharASingleQuote = false;
+        mTrailingSingleQuotesCount = 0;
     }
 
     public WordComposer(WordComposer source) {
@@ -72,7 +72,7 @@ public class WordComposer {
         mCapsCount = source.mCapsCount;
         mIsFirstCharCapitalized = source.mIsFirstCharCapitalized;
         mAutoCapitalized = source.mAutoCapitalized;
-        mIsLastCharASingleQuote = source.mIsLastCharASingleQuote;
+        mTrailingSingleQuotesCount = source.mTrailingSingleQuotesCount;
     }
 
     /**
@@ -83,7 +83,7 @@ public class WordComposer {
         mTypedWord.setLength(0);
         mCapsCount = 0;
         mIsFirstCharCapitalized = false;
-        mIsLastCharASingleQuote = false;
+        mTrailingSingleQuotesCount = 0;
     }
 
     /**
@@ -133,7 +133,11 @@ public class WordComposer {
         mIsFirstCharCapitalized = isFirstCharCapitalized(
                 newIndex, primaryCode, mIsFirstCharCapitalized);
         if (Character.isUpperCase(primaryCode)) mCapsCount++;
-        mIsLastCharASingleQuote = Keyboard.CODE_SINGLE_QUOTE == primaryCode;
+        if (Keyboard.CODE_SINGLE_QUOTE == primaryCode) {
+            ++mTrailingSingleQuotesCount;
+        } else {
+            mTrailingSingleQuotesCount = 0;
+        }
     }
 
     /**
@@ -165,10 +169,14 @@ public class WordComposer {
         }
         if (size() == 0) {
             mIsFirstCharCapitalized = false;
-            mIsLastCharASingleQuote = false;
+        }
+        if (mTrailingSingleQuotesCount > 0) {
+            --mTrailingSingleQuotesCount;
         } else {
-            mIsLastCharASingleQuote =
-                    Keyboard.CODE_SINGLE_QUOTE == mTypedWord.codePointAt(mTypedWord.length() - 1);
+            for (int i = mTypedWord.length() - 1; i >= 0; --i) {
+                if (Keyboard.CODE_SINGLE_QUOTE != mTypedWord.codePointAt(i)) break;
+                ++mTrailingSingleQuotesCount;
+            }
         }
     }
 
@@ -191,8 +199,8 @@ public class WordComposer {
         return mIsFirstCharCapitalized;
     }
 
-    public boolean isLastCharASingleQuote() {
-        return mIsLastCharASingleQuote;
+    public int trailingSingleQuotesCount() {
+        return mTrailingSingleQuotesCount;
     }
 
     /**

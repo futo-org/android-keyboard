@@ -82,8 +82,6 @@ public class Suggest implements Dictionary.WordCallback {
     public static final String DICT_KEY_USER_BIGRAM = "user_bigram";
     public static final String DICT_KEY_WHITELIST ="whitelist";
 
-    private static String SINGLE_QUOTE_AS_STRING = String.valueOf((char)Keyboard.CODE_SINGLE_QUOTE);
-
     private static final boolean DBG = LatinImeLogger.sDBG;
 
     private AutoCorrection mAutoCorrection;
@@ -109,7 +107,7 @@ public class Suggest implements Dictionary.WordCallback {
     // TODO: Remove these member variables by passing more context to addWord() callback method
     private boolean mIsFirstCharCapitalized;
     private boolean mIsAllUpperCase;
-    private boolean mIsLastCharASingleQuote;
+    private int mTrailingSingleQuotesCount;
 
     private int mCorrectionMode = CORRECTION_BASIC;
 
@@ -299,13 +297,14 @@ public class Suggest implements Dictionary.WordCallback {
         mAutoCorrection.init();
         mIsFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
         mIsAllUpperCase = wordComposer.isAllUpperCase();
-        mIsLastCharASingleQuote = wordComposer.isLastCharASingleQuote();
+        mTrailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
         collectGarbage(mSuggestions, mPrefMaxSuggestions);
         Arrays.fill(mScores, 0);
 
         final String typedWord = wordComposer.getTypedWord();
-        final String consideredWord = mIsLastCharASingleQuote
-                ? typedWord.substring(0, typedWord.length() - 1) : typedWord;
+        final String consideredWord = mTrailingSingleQuotesCount > 0
+                ? typedWord.substring(0, typedWord.length() - mTrailingSingleQuotesCount)
+                : typedWord;
         if (typedWord != null) {
             // Treating USER_TYPED as UNIGRAM suggestion for logging now.
             LatinImeLogger.onAddSuggestedWord(typedWord, Suggest.DIC_USER_TYPED,
@@ -360,9 +359,11 @@ public class Suggest implements Dictionary.WordCallback {
                 if (key.equals(DICT_KEY_USER_UNIGRAM) || key.equals(DICT_KEY_WHITELIST))
                     continue;
                 final Dictionary dictionary = mUnigramDictionaries.get(key);
-                if (mIsLastCharASingleQuote) {
+                if (mTrailingSingleQuotesCount > 0) {
                     final WordComposer tmpWordComposer = new WordComposer(wordComposer);
-                    tmpWordComposer.deleteLast();
+                    for (int i = mTrailingSingleQuotesCount - 1; i >= 0; --i) {
+                        tmpWordComposer.deleteLast();
+                    }
                     dictionary.getWords(tmpWordComposer, this, proximityInfo);
                 } else {
                     dictionary.getWords(wordComposer, this, proximityInfo);
@@ -380,8 +381,15 @@ public class Suggest implements Dictionary.WordCallback {
                 whitelistedWord);
 
         if (whitelistedWord != null) {
-            mSuggestions.add(0, mIsLastCharASingleQuote
-                    ? whitelistedWord + SINGLE_QUOTE_AS_STRING : whitelistedWord);
+            if (mTrailingSingleQuotesCount > 0) {
+                final StringBuilder sb = new StringBuilder(whitelistedWord);
+                for (int i = mTrailingSingleQuotesCount - 1; i >= 0; --i) {
+                    sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
+                }
+                mSuggestions.add(0, sb.toString());
+            } else {
+                mSuggestions.add(0, whitelistedWord);
+            }
         }
 
         if (typedWord != null) {
@@ -500,7 +508,7 @@ public class Suggest implements Dictionary.WordCallback {
         } else {
             sb.append(word, offset, length);
         }
-        if (mIsLastCharASingleQuote) {
+        for (int i = mTrailingSingleQuotesCount - 1; i >= 0; --i) {
             sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
         }
         suggestions.add(pos, sb);
