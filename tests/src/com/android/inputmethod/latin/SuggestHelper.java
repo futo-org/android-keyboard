@@ -65,26 +65,9 @@ public class SuggestHelper {
         return mSuggest.hasMainDictionary();
     }
 
-    private void addKeyInfo(WordComposer word, char c) {
-        for (final Key key : mKeyboard.mKeys) {
-            if (key.mCode == c) {
-                final int x = key.mX + key.mWidth / 2;
-                final int y = key.mY + key.mHeight / 2;
-                final int[] codes = mKeyDetector.newCodeArray();
-                mKeyDetector.getKeyIndexAndNearbyCodes(x, y, codes);
-                word.add(c, codes, x, y);
-                return;
-            }
-        }
-        word.add(c, new int[] { c }, WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
-    }
-
     protected WordComposer createWordComposer(CharSequence s) {
         WordComposer word = new WordComposer();
-        for (int i = 0; i < s.length(); i++) {
-            final char c = s.charAt(i);
-            addKeyInfo(word, c);
-        }
+        word.setComposingWord(s, mKeyboard, mKeyDetector);
         return word;
     }
 
