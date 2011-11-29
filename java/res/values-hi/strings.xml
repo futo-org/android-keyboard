@@ -37,7 +37,7 @@
     <string name="advanced_settings_summary" msgid="5193513161106637254">"विशेषज्ञ उपयोगकर्ताओं के लिए विकल्‍प"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"कुंजी पॉपअप खारिज़ विलंब"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"कोई विलंब नहीं"</string>
-    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"डिफ़ॉल्ट"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"डिफ़ॉल्ट"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"संपर्क नाम सुझाएं"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"सुझाव और सुधार के लिए संपर्क से नामों का उपयोग करें"</string>
     <string name="enable_span_insert" msgid="7204653105667167620">"पुन: सुधार सक्षम करें"</string>

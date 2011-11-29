@@ -130,7 +130,7 @@
     <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="3583258583521397548">"Kunci input suara"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Hidpkn kekunci utama"</string>
-    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Pd ppn kekunci simbl"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Pd ppn k’unci simbol"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Matikan"</string>
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mik. pd kekunci utma"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mik. pd kekunci smbl"</string>
@@ -148,6 +148,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"Bahasa Inggeris (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Bahasa Inggeris (AS)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Mod kajian kebolehgunaan"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Tetapan tempoh getaran tekanan kekunci"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Tetapan tempoh getaran tekan kekunci"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Tetapan kelantangan bunyi tekanan kekunci"</string>
 </resources>
