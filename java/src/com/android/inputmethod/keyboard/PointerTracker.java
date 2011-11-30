@@ -258,23 +258,27 @@ public class PointerTracker {
     // primaryCode is different from {@link Key#mCode}.
     private void callListenerOnCodeInput(Key key, int primaryCode, int[] keyCodes, int x, int y) {
         final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
-        if (DEBUG_LISTENER)
-            Log.d(TAG, "onCodeInput: " + keyCodePrintable(primaryCode)
+        final boolean alterCode = key.altCodeWhileTyping() && mTimerProxy.isTyping();
+        final int code = alterCode ? key.mAltCode : primaryCode;
+        // If code is CODE_DUMMY here, this key will be ignored or generate text.
+        final CharSequence text = (code != Keyboard.CODE_DUMMY) ? null : key.mOutputText;
+        if (DEBUG_LISTENER) {
+            Log.d(TAG, "onCodeInput: " + keyCodePrintable(code) + " text=" + text
                     + " codes="+ Arrays.toString(keyCodes) + " x=" + x + " y=" + y
-                    + " ignoreModifier=" + ignoreModifierKey);
+                    + " ignoreModifier=" + ignoreModifierKey + " alterCode=" + alterCode);
+        }
         if (ignoreModifierKey) {
             return;
         }
         if (key.isEnabled()) {
-            mListener.onCodeInput(primaryCode, keyCodes, x, y);
-        }
-    }
-
-    private void callListenerOnTextInput(Key key) {
-        if (DEBUG_LISTENER)
-            Log.d(TAG, "onTextInput: text=" + key.mOutputText);
-        if (key.isEnabled()) {
-            mListener.onTextInput(key.mOutputText);
+            if (code != Keyboard.CODE_DUMMY) {
+                mListener.onCodeInput(code, keyCodes, x, y);
+            } else if (text != null) {
+                mListener.onTextInput(text);
+            }
+            if (!key.altCodeWhileTyping() && !key.isModifier()) {
+                mTimerProxy.startKeyTypedTimer(sIgnoreSpecialKeyTimeout);
+            }
         }
     }
 
@@ -328,6 +332,23 @@ public class PointerTracker {
         if (key != null && key.isEnabled()) {
             key.onReleased();
             mDrawingProxy.invalidateKey(key);
+
+            if (key.isShift()) {
+                for (final Key shiftKey : mKeyboard.mShiftKeys) {
+                    if (shiftKey != key) {
+                        shiftKey.onReleased();
+                        mDrawingProxy.invalidateKey(shiftKey);
+                    }
+                }
+            }
+
+            if (key.altCodeWhileTyping()) {
+                final Key altKey = mKeyboard.getKey(key.mAltCode);
+                if (altKey != null) {
+                    altKey.onReleased();
+                    mDrawingProxy.invalidateKey(altKey);
+                }
+            }
         }
     }
 
@@ -338,6 +359,24 @@ public class PointerTracker {
             }
             key.onPressed();
             mDrawingProxy.invalidateKey(key);
+
+            if (key.isShift()) {
+                for (final Key shiftKey : mKeyboard.mShiftKeys) {
+                    if (shiftKey != key) {
+                        shiftKey.onPressed();
+                        mDrawingProxy.invalidateKey(shiftKey);
+                    }
+                }
+            }
+
+            if (key.altCodeWhileTyping() && mTimerProxy.isTyping()) {
+                final Key altKey = mKeyboard.getKey(key.mAltCode);
+                if (altKey != null) {
+                    // TODO: Show altKey's preview.
+                    altKey.onPressed();
+                    mDrawingProxy.invalidateKey(altKey);
+                }
+            }
         }
     }
 
@@ -696,45 +735,27 @@ public class PointerTracker {
             callListenerOnCancelInput();
             return;
         }
-        if (key.mOutputText != null) {
-            final boolean ignoreText = key.ignoreWhileTyping() && mTimerProxy.isTyping();
-            if (!ignoreText) {
-                callListenerOnTextInput(key);
-            }
-            callListenerOnRelease(key, key.mCode, false);
-            if (!ignoreText) {
-                mTimerProxy.startKeyTypedTimer(sIgnoreSpecialKeyTimeout);
-            }
-        } else {
-            int code = key.mCode;
-            final int[] codes = mKeyDetector.newCodeArray();
-            mKeyDetector.getKeyAndNearbyCodes(x, y, codes);
 
-            // If keyboard is in manual temporary upper case state and key has manual temporary
-            // uppercase letter as key hint letter, alternate character code should be sent.
-            if (mKeyboard.isManualTemporaryUpperCase() && key.hasUppercaseLetter()) {
-                code = key.mHintLabel.charAt(0);
-                codes[0] = code;
-            }
+        int code = key.mCode;
+        final int[] codes = mKeyDetector.newCodeArray();
+        mKeyDetector.getKeyAndNearbyCodes(x, y, codes);
 
-            // Swap the first and second values in the codes array if the primary code is not the
-            // first value but the second value in the array. This happens when key debouncing is
-            // in effect.
-            if (codes.length >= 2 && codes[0] != code && codes[1] == code) {
-                codes[1] = codes[0];
-                codes[0] = code;
-            }
-            final boolean ignoreCode = key.ignoreWhileTyping() && mTimerProxy.isTyping();
-            if (!ignoreCode) {
-                // TODO: It might be useful to register the nearest key code in codes[] instead of
-                // just ignoring.
-                callListenerOnCodeInput(key, code, codes, x, y);
-            }
-            callListenerOnRelease(key, code, false);
-            if (!key.ignoreWhileTyping() && !key.isModifier()) {
-                mTimerProxy.startKeyTypedTimer(sIgnoreSpecialKeyTimeout);
-            }
+        // If keyboard is in manual temporary upper case state and key has manual temporary
+        // uppercase letter as key hint letter, alternate character code should be sent.
+        if (mKeyboard.isManualTemporaryUpperCase() && key.hasUppercaseLetter()) {
+            code = key.mHintLabel.charAt(0);
+            codes[0] = code;
         }
+
+        // Swap the first and second values in the codes array if the primary code is not the
+        // first value but the second value in the array. This happens when key debouncing is
+        // in effect.
+        if (codes.length >= 2 && codes[0] != code && codes[1] == code) {
+            codes[1] = codes[0];
+            codes[0] = code;
+        }
+        callListenerOnCodeInput(key, code, codes, x, y);
+        callListenerOnRelease(key, code, false);
     }
 
     private long mPreviousEventTime;

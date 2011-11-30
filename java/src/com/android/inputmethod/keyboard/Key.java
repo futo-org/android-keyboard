@@ -46,6 +46,7 @@ public class Key {
      * The key code (unicode or custom code) that this key generates.
      */
     public final int mCode;
+    public final int mAltCode;
 
     /** Label to display */
     public final CharSequence mLabel;
@@ -108,7 +109,7 @@ public class Key {
     private final int mActionFlags;
     private static final int ACTION_FLAGS_IS_REPEATABLE = 0x01;
     private static final int ACTION_FLAGS_NO_KEY_PREVIEW = 0x02;
-    private static final int ACTION_FLAGS_IGNORE_WHILE_TYPING = 0x04;
+    private static final int ACTION_FLAGS_ALT_CODE_WHILE_TYPING = 0x04;
 
     /** The current pressed state of this key */
     private boolean mPressed;
@@ -191,6 +192,7 @@ public class Key {
         mLabel = label;
         mOutputText = outputText;
         mCode = code;
+        mAltCode = Keyboard.CODE_DUMMY;
         mIcon = icon;
         // Horizontal gap is divided equally to both sides of the key.
         mX = x + mHorizontalGap / 2;
@@ -290,6 +292,8 @@ public class Key {
         } else {
             mCode = Keyboard.CODE_DUMMY;
         }
+        mAltCode = style.getInt(keyAttr,
+                R.styleable.Keyboard_Key_altCode, Keyboard.CODE_DUMMY);
 
         keyAttr.recycle();
     }
@@ -334,8 +338,8 @@ public class Key {
         return (mActionFlags & ACTION_FLAGS_NO_KEY_PREVIEW) != 0;
     }
 
-    public boolean ignoreWhileTyping() {
-        return (mActionFlags & ACTION_FLAGS_IGNORE_WHILE_TYPING) != 0;
+    public boolean altCodeWhileTyping() {
+        return (mActionFlags & ACTION_FLAGS_ALT_CODE_WHILE_TYPING) != 0;
     }
 
     public Typeface selectTypeface(Typeface defaultTypeface) {
