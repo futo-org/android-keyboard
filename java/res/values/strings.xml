@@ -31,11 +31,11 @@
     <!-- Title for the spell checking service settings screen -->
     <string name="android_spell_checker_settings">Spell checking settings</string>
 
-    <!-- Title for the "use proximity" option for spell checking [CHAR LIMIT=25] -->
-    <string name="use_proximity_option_title">Use proximity data</string>
+    <!-- Title for the spell checker option to turn on/off contact names lookup [CHAR LIMIT=25] -->
+    <string name="use_contacts_for_spellchecking_option_title">Look up contact names</string>
 
-    <!-- Description for the "use proximity" option for spell checking [CHAR LIMIT=65] -->
-    <string name="use_proximity_option_summary">Use a keyboard-like proximity algorithm for spell checking</string>
+    <!-- Description for the spell checker option to turn on/off contact names lookup. [CHAR LIMIT=65] -->
+    <string name="use_contacts_for_spellchecking_option_summary">Spell checker uses entries from your contact list</string>
 
     <!-- Option to provide vibrate/haptic feedback on keypress -->
     <string name="vibrate_on_keypress">Vibrate on keypress</string>

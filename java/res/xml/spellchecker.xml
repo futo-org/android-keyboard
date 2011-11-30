@@ -21,7 +21,8 @@
 <!-- for the spell checker -->
 
 <spell-checker xmlns:android="http://schemas.android.com/apk/res/android"
-        android:label="@string/spell_checker_service_name">
+        android:label="@string/spell_checker_service_name"
+        android:settingsActivity="com.android.inputmethod.latin.spellcheck.SpellCheckerSettingsActivity">
     <subtype
             android:label="@string/subtype_generic"
             android:subtypeLocale="en"

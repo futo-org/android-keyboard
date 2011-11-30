@@ -18,6 +18,8 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 
+import android.util.Log;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Class for a collection of dictionaries that behave like one dictionary.
  */
 public class DictionaryCollection extends Dictionary {
-
+    private final String TAG = DictionaryCollection.class.getSimpleName();
     protected final List<Dictionary> mDictionaries;
 
     public DictionaryCollection() {
@@ -75,7 +77,21 @@ public class DictionaryCollection extends Dictionary {
             dict.close();
     }
 
-    public void addDictionary(Dictionary newDict) {
-        if (null != newDict) mDictionaries.add(newDict);
+    // Warning: this is not thread-safe. Take necessary precaution when calling.
+    public void addDictionary(final Dictionary newDict) {
+        if (null == newDict) return;
+        if (mDictionaries.contains(newDict)) {
+            Log.w(TAG, "This collection already contains this dictionary: " + newDict);
+        }
+        mDictionaries.add(newDict);
+    }
+
+    // Warning: this is not thread-safe. Take necessary precaution when calling.
+    public void removeDictionary(final Dictionary dict) {
+        if (mDictionaries.contains(dict)) {
+            mDictionaries.remove(dict);
+        } else {
+            Log.w(TAG, "This collection does not contain this dictionary: " + dict);
+        }
     }
 }
