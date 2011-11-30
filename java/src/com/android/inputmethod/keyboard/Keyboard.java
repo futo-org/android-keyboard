@@ -24,6 +24,7 @@ import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.KeyboardShiftState;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -64,7 +65,6 @@ public class Keyboard {
     public static final int CODE_CLOSING_ANGLE_BRACKET = '>';
     public static final int CODE_DIGIT0 = '0';
     public static final int CODE_PLUS = '+';
-
 
     /** Special keys code.  These should be aligned with values/keycodes.xml */
     public static final int CODE_DUMMY = 0;
@@ -111,6 +111,7 @@ public class Keyboard {
     public final Map<Key, Drawable> mUnshiftedIcons;
     public final KeyboardIconsSet mIconsSet;
 
+    private final Map<Integer, Key> mKeyCache = new HashMap<Integer, Key>();
     private final KeyboardShiftState mShiftState = new KeyboardShiftState();
 
     private final ProximityInfo mProximityInfo;
@@ -143,6 +144,22 @@ public class Keyboard {
 
     public ProximityInfo getProximityInfo() {
         return mProximityInfo;
+    }
+
+    public Key getKey(int code) {
+        final Integer keyCode = code;
+        if (mKeyCache.containsKey(keyCode)) {
+            return mKeyCache.get(keyCode);
+        }
+
+        for (final Key key : mKeys) {
+            if (key.mCode == code) {
+                mKeyCache.put(keyCode, key);
+                return key;
+            }
+        }
+        mKeyCache.put(keyCode, null);
+        return null;
     }
 
     public boolean hasShiftLockKey() {

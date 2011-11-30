@@ -185,6 +185,8 @@
     <declare-styleable name="Keyboard_Key">
         <!-- The unicode value that this key outputs. -->
         <attr name="code" format="integer" />
+        <!-- The alternate unicode value that this key outputs while typing. -->
+        <attr name="altCode" format="integer" />
         <!-- The keys to display in the more keys keyboard. -->
         <attr name="moreKeys" format="string" />
         <!-- Maximum column of more keys keyboard -->
@@ -201,7 +203,7 @@
             <!-- This should be aligned with Key.ACTION_FLAGS_* -->
             <flag name="isRepeatable" value="0x01" />
             <flag name="noKeyPreview" value="0x02" />
-            <flag name="ignoreWhileTyping" value="0x04" />
+            <flag name="altCodeWhileTyping" value="0x04" />
         </attr>
         <!-- The string of characters to output when this key is pressed. -->
         <attr name="keyOutputText" format="string" />

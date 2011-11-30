@@ -152,6 +152,7 @@ public class KeyStyles {
         private void parseKeyStyleAttributes(TypedArray keyAttr) {
             // TODO: Currently not all Key attributes can be declared as style.
             readInt(keyAttr, R.styleable.Keyboard_Key_code);
+            readInt(keyAttr, R.styleable.Keyboard_Key_altCode);
             readText(keyAttr, R.styleable.Keyboard_Key_keyLabel);
             readText(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
             readText(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
