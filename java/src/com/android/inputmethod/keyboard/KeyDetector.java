@@ -213,12 +213,31 @@ public class KeyDetector {
             getNearbyKeyCodes(allCodes);
             if (DEBUG) {
                 Log.d(TAG, "x=" + x + " y=" + y
-                        + " primary="
-                        + (primaryKey == null ? "none" : primaryKey.mCode)
-                        + " codes=" + Arrays.toString(allCodes));
+                        + " primary=" + printableCode(primaryKey)
+                        + " codes=" + printableCodes(allCodes));
             }
         }
 
         return primaryKey;
+    }
+
+    public static String printableCode(Key key) {
+        return key != null ? printableCode(key.mCode) : "none";
+    }
+
+    public static String printableCode(int primaryCode) {
+        if (primaryCode < 0) return String.format("%4d", primaryCode);
+        if (primaryCode < 0x100) return String.format("\\u%02x", primaryCode);
+        return String.format("\\u04x", primaryCode);
+    }
+
+    public static String printableCodes(int[] codes) {
+        final StringBuilder sb = new StringBuilder();
+        for (final int code : codes) {
+            if (code == NOT_A_CODE) break;
+            if (sb.length() > 0) sb.append(", ");
+            sb.append(code);
+        }
+        return "[" + sb + "]";
     }
 }
