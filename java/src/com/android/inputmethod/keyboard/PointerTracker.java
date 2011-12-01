@@ -28,7 +28,6 @@ import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class PointerTracker {
@@ -239,9 +238,11 @@ public class PointerTracker {
     // Returns true if keyboard has been changed by this callback.
     private boolean callListenerOnPressAndCheckKeyboardLayoutChange(Key key, boolean withSliding) {
         final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
-        if (DEBUG_LISTENER)
-            Log.d(TAG, "onPress    : " + keyCodePrintable(key.mCode) + " sliding=" + withSliding
-                    + " ignoreModifier=" + ignoreModifierKey);
+        if (DEBUG_LISTENER) {
+            Log.d(TAG, "onPress    : " + KeyDetector.printableCode(key.mCode)
+                    + " sliding=" + withSliding + " ignoreModifier=" + ignoreModifierKey
+                    + " enabled=" + key.isEnabled());
+        }
         if (ignoreModifierKey) {
             return false;
         }
@@ -263,9 +264,10 @@ public class PointerTracker {
         // If code is CODE_DUMMY here, this key will be ignored or generate text.
         final CharSequence text = (code != Keyboard.CODE_DUMMY) ? null : key.mOutputText;
         if (DEBUG_LISTENER) {
-            Log.d(TAG, "onCodeInput: " + keyCodePrintable(code) + " text=" + text
-                    + " codes="+ Arrays.toString(keyCodes) + " x=" + x + " y=" + y
-                    + " ignoreModifier=" + ignoreModifierKey + " alterCode=" + alterCode);
+            Log.d(TAG, "onCodeInput: " + KeyDetector.printableCode(code) + " text=" + text
+                    + " codes="+ KeyDetector.printableCodes(keyCodes) + " x=" + x + " y=" + y
+                    + " ignoreModifier=" + ignoreModifierKey + " alterCode=" + alterCode
+                    + " enabled=" + key.isEnabled());
         }
         if (ignoreModifierKey) {
             return;
@@ -286,9 +288,11 @@ public class PointerTracker {
     // primaryCode is different from {@link Key#mCode}.
     private void callListenerOnRelease(Key key, int primaryCode, boolean withSliding) {
         final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
-        if (DEBUG_LISTENER)
-            Log.d(TAG, "onRelease  : " + keyCodePrintable(primaryCode) + " sliding="
-                    + withSliding + " ignoreModifier=" + ignoreModifierKey);
+        if (DEBUG_LISTENER) {
+            Log.d(TAG, "onRelease  : " + KeyDetector.printableCode(primaryCode)
+                    + " sliding=" + withSliding + " ignoreModifier=" + ignoreModifierKey
+                    + " enabled="+ key.isEnabled());
+        }
         if (ignoreModifierKey) {
             return;
         }
@@ -762,16 +766,10 @@ public class PointerTracker {
 
     private void printTouchEvent(String title, int x, int y, long eventTime) {
         final Key key = mKeyDetector.getKeyAndNearbyCodes(x, y, null);
-        final String code = (key == null) ? "----" : keyCodePrintable(key.mCode);
+        final String code = KeyDetector.printableCode(key);
         final long delta = eventTime - mPreviousEventTime;
         Log.d(TAG, String.format("%s%s[%d] %4d %4d %5d %s", title,
                 (mKeyAlreadyProcessed ? "-" : " "), mPointerId, x, y, delta, code));
         mPreviousEventTime = eventTime;
-    }
-
-    private static String keyCodePrintable(int primaryCode) {
-        if (primaryCode < 0) return String.format("%4d", primaryCode);
-        if (primaryCode < 0x100) return String.format("\\u%02x", primaryCode);
-        return String.format("\\u04x", primaryCode);
     }
 }
