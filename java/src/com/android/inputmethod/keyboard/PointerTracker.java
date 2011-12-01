@@ -480,7 +480,8 @@ public class PointerTracker {
         Key key = onDownKey(x, y, eventTime);
         // Sliding key is allowed when 1) enabled by configuration, 2) this pointer starts sliding
         // from modifier key, or 3) this pointer's KeyDetector always allows sliding input.
-        mIsAllowedSlidingKeyInput = sConfigSlidingKeyInputEnabled || key.isModifier()
+        mIsAllowedSlidingKeyInput = sConfigSlidingKeyInputEnabled
+                || (key != null && key.isModifier())
                 || mKeyDetector.alwaysAllowsSlidingInput();
         mKeyboardLayoutHasBeenChanged = false;
         mKeyAlreadyProcessed = false;
