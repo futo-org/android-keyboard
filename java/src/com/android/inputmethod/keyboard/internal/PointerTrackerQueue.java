@@ -18,6 +18,7 @@ package com.android.inputmethod.keyboard.internal;
 
 import com.android.inputmethod.keyboard.PointerTracker;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class PointerTrackerQueue {
@@ -27,18 +28,23 @@ public class PointerTrackerQueue {
         mQueue.add(tracker);
     }
 
+    public synchronized void remove(PointerTracker tracker) {
+        mQueue.remove(tracker);
+    }
+
     public synchronized void releaseAllPointersOlderThan(PointerTracker tracker, long eventTime) {
-        if (mQueue.lastIndexOf(tracker) < 0) {
+        if (!mQueue.contains(tracker)) {
             return;
         }
-        final LinkedList<PointerTracker> queue = mQueue;
-        int oldestPos = 0;
-        for (PointerTracker t = queue.get(oldestPos); t != tracker; t = queue.get(oldestPos)) {
-            if (t.isModifier()) {
-                oldestPos++;
-            } else {
+        final Iterator<PointerTracker> it = mQueue.iterator();
+        while (it.hasNext()) {
+            final PointerTracker t = it.next();
+            if (t == tracker) {
+                break;
+            }
+            if (!t.isModifier()) {
                 t.onPhantomUpEvent(t.getLastX(), t.getLastY(), eventTime);
-                queue.remove(oldestPos);
+                it.remove();
             }
         }
     }
@@ -48,20 +54,14 @@ public class PointerTrackerQueue {
     }
 
     public synchronized void releaseAllPointersExcept(PointerTracker tracker, long eventTime) {
-        for (PointerTracker t : mQueue) {
-            if (t == tracker) {
-                continue;
+        final Iterator<PointerTracker> it = mQueue.iterator();
+        while (it.hasNext()) {
+            final PointerTracker t = it.next();
+            if (t != tracker) {
+                t.onPhantomUpEvent(t.getLastX(), t.getLastY(), eventTime);
+                it.remove();
             }
-            t.onPhantomUpEvent(t.getLastX(), t.getLastY(), eventTime);
         }
-        mQueue.clear();
-        if (tracker != null) {
-            mQueue.add(tracker);
-        }
-    }
-
-    public synchronized void remove(PointerTracker tracker) {
-        mQueue.remove(tracker);
     }
 
     public synchronized boolean isAnyInSlidingKeyInput() {
@@ -75,13 +75,12 @@ public class PointerTrackerQueue {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("[");
-        for (PointerTracker tracker : mQueue) {
-            if (sb.length() > 1)
+        final StringBuilder sb = new StringBuilder();
+        for (final PointerTracker tracker : mQueue) {
+            if (sb.length() > 0)
                 sb.append(" ");
-            sb.append(String.format("%d", tracker.mPointerId));
+            sb.append(tracker.mPointerId);
         }
-        sb.append("]");
-        return sb.toString();
+        return "[" + sb + "]";
     }
 }
