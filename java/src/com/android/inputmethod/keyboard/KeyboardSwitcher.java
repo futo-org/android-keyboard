@@ -69,6 +69,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private Resources mResources;
 
     private KeyboardState mState;
+    private static final int UNSHIFT = 0;
+    private static final int MANUAL_SHIFT = 1;
+    private static final int AUTOMATIC_SHIFT = 2;
 
     private KeyboardId mMainKeyboardId;
     private KeyboardId mSymbolsKeyboardId;
@@ -391,7 +394,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return false;
     }
 
-    public boolean isAutomaticTemporaryUpperCase() {
+    private boolean isAutomaticTemporaryUpperCase() {
         LatinKeyboard latinKeyboard = getLatinKeyboard();
         if (latinKeyboard != null)
             return latinKeyboard.isAutomaticTemporaryUpperCase();
@@ -412,27 +415,25 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return false;
     }
 
-    private void setManualTemporaryUpperCase(boolean shifted) {
+    private void setShift(int shiftMode) {
         LatinKeyboard latinKeyboard = getLatinKeyboard();
-        if (latinKeyboard != null) {
+        if (latinKeyboard == null)
+            return;
+        if (shiftMode == AUTOMATIC_SHIFT) {
+            latinKeyboard.setAutomaticTemporaryUpperCase();
+            mKeyboardView.invalidateAllKeys();
+        } else {
+            final boolean shifted = (shiftMode == MANUAL_SHIFT);
             // On non-distinct multi touch panel device, we should also turn off the shift locked
             // state when shift key is pressed to go to normal mode.
-            // On the other hand, on distinct multi touch panel device, turning off the shift locked
-            // state with shift key pressing is handled by onReleaseShift().
+            // On the other hand, on distinct multi touch panel device, turning off the shift
+            // locked state with shift key pressing is handled by onReleaseShift().
             if (!hasDistinctMultitouch() && !shifted && latinKeyboard.isShiftLocked()) {
                 latinKeyboard.setShiftLocked(false);
             }
             if (latinKeyboard.setShifted(shifted)) {
                 mKeyboardView.invalidateAllKeys();
             }
-        }
-    }
-
-    private void setAutomaticTemporaryUpperCase() {
-        LatinKeyboard latinKeyboard = getLatinKeyboard();
-        if (latinKeyboard != null) {
-            latinKeyboard.setAutomaticTemporaryUpperCase();
-            mKeyboardView.invalidateAllKeys();
         }
     }
 
@@ -454,7 +455,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                     + " state=" + mState);
         }
         if (isAlphabetMode()) {
-            setManualTemporaryUpperCase(!isShiftedOrShiftLocked());
+            setShift(isShiftedOrShiftLocked() ? UNSHIFT : MANUAL_SHIFT);
         } else {
             toggleShiftInSymbol();
         }
@@ -516,9 +517,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             if (!isShiftLocked && !mState.isShiftKeyIgnoring()) {
                 if (mState.isShiftKeyReleasing() && mInputMethodService.getCurrentAutoCapsState()) {
                     // Only when shift key is releasing, automatic temporary upper case will be set.
-                    setAutomaticTemporaryUpperCase();
+                    setShift(AUTOMATIC_SHIFT);
                 } else {
-                    setManualTemporaryUpperCase(mState.isShiftKeyMomentary());
+                    setShift(mState.isShiftKeyMomentary() ? MANUAL_SHIFT : UNSHIFT);
                 }
             }
         }
@@ -541,11 +542,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             if (isShiftLocked) {
                 // Shift key is pressed while caps lock state, we will treat this state as shifted
                 // caps lock state and mark as if shift key pressed while normal state.
-                setManualTemporaryUpperCase(true);
+                setShift(MANUAL_SHIFT);
             } else if (isAutomaticTemporaryUpperCase) {
                 // Shift key is pressed while automatic temporary upper case, we have to move to
                 // manual temporary upper case.
-                setManualTemporaryUpperCase(true);
+                setShift(MANUAL_SHIFT);
             } else if (isShiftedOrShiftLocked) {
                 // In manual upper case state, we just record shift key has been pressing while
                 // shifted state.
