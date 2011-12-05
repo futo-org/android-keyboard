@@ -415,10 +415,31 @@ public class AndroidSpellCheckerService extends SpellCheckerService
     }
 
     private static class AndroidSpellCheckerSession extends Session {
+        private static final int SCRIPT_LATIN = 0;
+        private static final int SCRIPT_CYRILLIC = 1;
+        private static final TreeMap<String, Integer> mLanguageToScript;
+        static {
+            // List of the supported languages and their associated script. We won't check
+            // words written in another script than the selected script, because we know we
+            // don't have those in our dictionary so we will underline everything and we
+            // will never have any suggestions, so it makes no sense checking them.
+            mLanguageToScript = new TreeMap<String, Integer>();
+            mLanguageToScript.put("en", SCRIPT_LATIN);
+            mLanguageToScript.put("fr", SCRIPT_LATIN);
+            mLanguageToScript.put("de", SCRIPT_LATIN);
+            mLanguageToScript.put("nl", SCRIPT_LATIN);
+            mLanguageToScript.put("cs", SCRIPT_LATIN);
+            mLanguageToScript.put("es", SCRIPT_LATIN);
+            mLanguageToScript.put("it", SCRIPT_LATIN);
+            mLanguageToScript.put("ru", SCRIPT_CYRILLIC);
+        }
+
         // Immutable, but need the locale which is not available in the constructor yet
         private DictionaryPool mDictionaryPool;
         // Likewise
         private Locale mLocale;
+        // Cache this for performance
+        private int mScript; // One of SCRIPT_LATIN or SCRIPT_CYRILLIC for now.
 
         private final AndroidSpellCheckerService mService;
 
@@ -431,38 +452,56 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             final String localeString = getLocale();
             mDictionaryPool = mService.getDictionaryPool(localeString);
             mLocale = LocaleUtils.constructLocaleFromString(localeString);
+            final Integer script = mLanguageToScript.get(mLocale.getLanguage());
+            if (null == script) {
+                throw new RuntimeException("We have been called with an unsupported language: \""
+                        + mLocale.getLanguage() + "\". Framework bug?");
+            }
+            mScript = script;
         }
 
         /*
          * Returns whether the code point is a letter that makes sense for the specified
          * locale for this spell checker.
          * The dictionaries supported by Latin IME are described in res/xml/spellchecker.xml
-         * and is limited to EFIGS language.
-         * Hence at the moment this explicitly excludes non-Latin scripts, including CJK
-         * characters, but also Cyrillic, Arabic or Hebrew characters.
-         * The locale should be used to rule out inappropriate characters when we support
-         * spellchecking other languages like Russian.
+         * and is limited to EFIGS languages and Russian.
+         * Hence at the moment this explicitly tests for Cyrillic characters or Latin characters
+         * as appropriate, and explicitly excludes CJK, Arabic and Hebrew characters.
          */
         private static boolean isLetterCheckableByLanguage(final int codePoint,
-                final Locale locale) {
-            // Our supported dictionaries (EFIGS) at the moment only includes characters
-            // in the C0, C1, Latin Extended A and B, IPA extensions unicode blocks.
-            // As it happens, those are back-to-back in the code range 0x40 to 0x2AF, so
-            // the below is a very efficient way to test for it. As for the 0-0x3F, it's
-            // excluded from isLetter anyway.
-            // TODO: change this to use locale when we support other scripts
-            return codePoint <= 0x2AF && Character.isLetter(codePoint);
+                final int script) {
+            switch (script) {
+            case SCRIPT_LATIN:
+                // Our supported latin script dictionaries (EFIGS) at the moment only include
+                // characters in the C0, C1, Latin Extended A and B, IPA extensions unicode
+                // blocks. As it happens, those are back-to-back in the code range 0x40 to 0x2AF,
+                // so the below is a very efficient way to test for it. As for the 0-0x3F, it's
+                // excluded from isLetter anyway.
+                return codePoint <= 0x2AF && Character.isLetter(codePoint);
+            case SCRIPT_CYRILLIC:
+                // All Cyrillic characters are in the 400~52F block. There are some in the upper
+                // Unicode range, but they are archaic characters that are not used in modern
+                // russian and are not used by our dictionary.
+                return codePoint >= 0x400 && codePoint <= 0x52F && Character.isLetter(codePoint);
+            default:
+                // Should never come here
+                throw new RuntimeException("Impossible value of script: " + script);
+            }
         }
 
         /**
          * Finds out whether a particular string should be filtered out of spell checking.
          *
-         * This will loosely match URLs, numbers, symbols.
+         * This will loosely match URLs, numbers, symbols. To avoid always underlining words that
+         * we know we will never recognize, this accepts a script identifier that should be one
+         * of the SCRIPT_* constants defined above, to rule out quickly characters from very
+         * different languages.
          *
          * @param text the string to evaluate.
+         * @param script the identifier for the script this spell checker recognizes
          * @return true if we should filter this text out, false otherwise
          */
-        private static boolean shouldFilterOut(final String text, final Locale locale) {
+        private static boolean shouldFilterOut(final String text, final int script) {
             if (TextUtils.isEmpty(text) || text.length() <= 1) return true;
 
             // TODO: check if an equivalent processing can't be done more quickly with a
@@ -470,7 +509,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             // Filter by first letter
             final int firstCodePoint = text.codePointAt(0);
             // Filter out words that don't start with a letter or an apostrophe
-            if (!isLetterCheckableByLanguage(firstCodePoint, locale)
+            if (!isLetterCheckableByLanguage(firstCodePoint, script)
                     && '\'' != firstCodePoint) return true;
 
             // Filter contents
@@ -483,7 +522,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 // words or a URI - in either case we don't want to spell check that
                 if ('@' == codePoint
                         || '/' == codePoint) return true;
-                if (isLetterCheckableByLanguage(codePoint, locale)) ++letterCount;
+                if (isLetterCheckableByLanguage(codePoint, script)) ++letterCount;
             }
             // Guestimate heuristic: perform spell checking if at least 3/4 of the characters
             // in this word are letters
@@ -502,7 +541,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             try {
                 final String text = textInfo.getText();
 
-                if (shouldFilterOut(text, mLocale)) {
+                if (shouldFilterOut(text, mScript)) {
                     DictAndProximity dictInfo = null;
                     try {
                         dictInfo = mDictionaryPool.takeOrGetNull();
