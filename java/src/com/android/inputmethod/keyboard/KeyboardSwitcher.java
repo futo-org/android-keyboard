@@ -450,7 +450,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mInputMethodService.mHandler.cancelUpdateShiftState();
         if (DEBUG_STATE) {
             Log.d(TAG, "toggleShift:"
-                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
+                    + " keyboard=" + getLatinKeyboard().mShiftState
                     + " state=" + mState);
         }
         if (isAlphabetMode()) {
@@ -464,7 +464,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mInputMethodService.mHandler.cancelUpdateShiftState();
         if (DEBUG_STATE) {
             Log.d(TAG, "toggleCapsLock:"
-                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
+                    + " keyboard=" + getLatinKeyboard().mShiftState
                     + " state=" + mState);
         }
         if (isAlphabetMode()) {
@@ -482,7 +482,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     public void changeKeyboardMode() {
         if (DEBUG_STATE) {
             Log.d(TAG, "changeKeyboardMode:"
-                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
+                    + " keyboard=" + getLatinKeyboard().mShiftState
                     + " state=" + mState);
         }
         toggleKeyboardMode();
@@ -507,7 +507,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         if (DEBUG_STATE) {
             Log.d(TAG, "updateShiftState:"
                     + " autoCaps=" + mInputMethodService.getCurrentAutoCapsState()
-                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
+                    + " keyboard=" + getLatinKeyboard().mShiftState
                     + " isAlphabetMode=" + isAlphabetMode
                     + " isShiftLocked=" + isShiftLocked
                     + " state=" + mState);
@@ -530,7 +530,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             return;
         if (DEBUG_STATE) {
             Log.d(TAG, "onPressShift:"
-                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
+                    + " keyboard=" + getLatinKeyboard().mShiftState
                     + " state=" + mState + " sliding=" + withSliding);
         }
         final boolean isAlphabetMode = isAlphabetMode();
@@ -567,7 +567,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             return;
         if (DEBUG_STATE) {
             Log.d(TAG, "onReleaseShift:"
-                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
+                    + " keyboard=" + getLatinKeyboard().mShiftState
                     + " state=" + mState + " sliding=" + withSliding);
         }
         final boolean isAlphabetMode = isAlphabetMode();
@@ -612,7 +612,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     public void onPressSymbol() {
         if (DEBUG_STATE) {
             Log.d(TAG, "onPressSymbol:"
-                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
+                    + " keyboard=" + getLatinKeyboard().mShiftState
                     + " state=" + mState);
         }
         changeKeyboardMode();
@@ -623,7 +623,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     public void onReleaseSymbol() {
         if (DEBUG_STATE) {
             Log.d(TAG, "onReleaseSymbol:"
-                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
+                    + " keyboard=" + getLatinKeyboard().mShiftState
                     + " state=" + mState);
         }
         // Snap back to the previous keyboard mode if the user chords the mode change key and
@@ -637,7 +637,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     public void onOtherKeyPressed() {
         if (DEBUG_STATE) {
             Log.d(TAG, "onOtherKeyPressed:"
-                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
+                    + " keyboard=" + getLatinKeyboard().mShiftState
                     + " state=" + mState);
         }
         mState.onOtherKeyPressed();

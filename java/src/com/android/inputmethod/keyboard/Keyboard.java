@@ -112,7 +112,8 @@ public class Keyboard {
     public final KeyboardIconsSet mIconsSet;
 
     private final Map<Integer, Key> mKeyCache = new HashMap<Integer, Key>();
-    private final KeyboardShiftState mShiftState = new KeyboardShiftState();
+    // TODO: Move this state to KeyboardSwitcher
+    /* package for debug */ final KeyboardShiftState mShiftState = new KeyboardShiftState();
 
     private final ProximityInfo mProximityInfo;
 
@@ -211,27 +212,15 @@ public class Keyboard {
     }
 
     public boolean isAutomaticTemporaryUpperCase() {
-        return isAlphaKeyboard() && mShiftState.isAutomaticTemporaryUpperCase();
+        return mId.isAlphabetKeyboard() && mShiftState.isAutomaticTemporaryUpperCase();
     }
 
     public boolean isManualTemporaryUpperCase() {
-        return isAlphaKeyboard() && mShiftState.isManualTemporaryUpperCase();
+        return mId.isAlphabetKeyboard() && mShiftState.isManualTemporaryUpperCase();
     }
 
     public boolean isManualTemporaryUpperCaseFromAuto() {
-        return isAlphaKeyboard() && mShiftState.isManualTemporaryUpperCaseFromAuto();
-    }
-
-    public KeyboardShiftState getKeyboardShiftState() {
-        return mShiftState;
-    }
-
-    public boolean isAlphaKeyboard() {
-        return mId.isAlphabetKeyboard();
-    }
-
-    public boolean isPhoneKeyboard() {
-        return mId.isPhoneKeyboard();
+        return mId.isAlphabetKeyboard() && mShiftState.isManualTemporaryUpperCaseFromAuto();
     }
 
     public CharSequence adjustLabelCase(CharSequence label) {

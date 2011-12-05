@@ -176,7 +176,7 @@ public class LatinKeyboard extends Keyboard {
 
     @Override
     public CharSequence adjustLabelCase(CharSequence label) {
-        if (isAlphaKeyboard() && isShiftedOrShiftLocked() && !TextUtils.isEmpty(label)
+        if (mId.isAlphabetKeyboard() && isShiftedOrShiftLocked() && !TextUtils.isEmpty(label)
                 && label.length() < 3 && Character.isLowerCase(label.charAt(0))) {
             return label.toString().toUpperCase(mId.mLocale);
         }
