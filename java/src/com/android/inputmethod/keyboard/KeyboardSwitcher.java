@@ -566,8 +566,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             if (shiftKeyState.isMomentary()) {
                 // After chording input while normal state.
                 toggleShift();
-            } else if (isShiftLocked() && !isShiftLockShifted() && shiftKeyState.isPressing()
-                    && !withSliding) {
+            } else if (isShiftLocked() && !isShiftLockShifted() && (shiftKeyState.isPressing()
+                    || shiftKeyState.isPressingOnShifted()) && !withSliding) {
                 // Shift has been long pressed, ignore this release.
             } else if (isShiftLocked() && !shiftKeyState.isIgnoring() && !withSliding) {
                 // Shift has been pressed without chording while caps lock state.
