@@ -51,7 +51,7 @@ public class SuggestionSpanUtils {
     public static final Field FIELD_FLAG_AUTO_CORRECTION
             = CompatUtils.getField(CLASS_SuggestionSpan, "FLAG_AUTO_CORRECTION");
     public static final Field FIELD_SUGGESTION_MAX_SIZE
-            = CompatUtils.getField(CLASS_SuggestionSpan, "SUGGESTION_MAX_SIZE");
+            = CompatUtils.getField(CLASS_SuggestionSpan, "SUGGESTIONS_MAX_SIZE");
     public static final Integer OBJ_FLAG_AUTO_CORRECTION = (Integer) CompatUtils
             .getFieldValue(null, null, FIELD_FLAG_AUTO_CORRECTION);;
     public static final Integer OBJ_SUGGESTION_MAX_SIZE = (Integer) CompatUtils
@@ -63,7 +63,7 @@ public class SuggestionSpanUtils {
         if (LatinImeLogger.sDBG) {
             if (SUGGESTION_SPAN_IS_SUPPORTED
                     && (OBJ_FLAG_AUTO_CORRECTION == null || OBJ_SUGGESTION_MAX_SIZE == null)) {
-                Log.e(TAG, "Field is accidentially null.");
+                throw new RuntimeException("Field is accidentially null.");
             }
         }
     }
@@ -71,7 +71,7 @@ public class SuggestionSpanUtils {
     public static CharSequence getTextWithAutoCorrectionIndicatorUnderline(
             Context context, CharSequence text) {
         if (TextUtils.isEmpty(text) || CONSTRUCTOR_SuggestionSpan == null
-                || OBJ_FLAG_AUTO_CORRECTION == null) {
+                || OBJ_FLAG_AUTO_CORRECTION == null || OBJ_SUGGESTION_MAX_SIZE == null) {
             return text;
         }
         final Spannable spannable = text instanceof Spannable
