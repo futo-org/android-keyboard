@@ -43,4 +43,16 @@
             android:label="@string/subtype_generic"
             android:subtypeLocale="es"
     />
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="ru"
+    />
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="cs"
+    />
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="nl"
+    />
 </spell-checker>
