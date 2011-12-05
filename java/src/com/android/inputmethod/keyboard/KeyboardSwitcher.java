@@ -428,6 +428,14 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
+    private void setAutomaticTemporaryUpperCase() {
+        LatinKeyboard latinKeyboard = getLatinKeyboard();
+        if (latinKeyboard != null) {
+            latinKeyboard.setAutomaticTemporaryUpperCase();
+            mKeyboardView.invalidateAllKeys();
+        }
+    }
+
     private void setShiftLocked(boolean shiftLocked) {
         LatinKeyboard latinKeyboard = getLatinKeyboard();
         if (latinKeyboard != null && latinKeyboard.setShiftLocked(shiftLocked)) {
@@ -471,12 +479,23 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
-    private void setAutomaticTemporaryUpperCase() {
-        if (mKeyboardView == null) return;
-        final Keyboard keyboard = mKeyboardView.getKeyboard();
-        if (keyboard == null) return;
-        keyboard.setAutomaticTemporaryUpperCase();
-        mKeyboardView.invalidateAllKeys();
+    public void changeKeyboardMode() {
+        if (DEBUG_STATE) {
+            Log.d(TAG, "changeKeyboardMode:"
+                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
+                    + " state=" + mState);
+        }
+        toggleKeyboardMode();
+        if (isShiftLocked() && isAlphabetMode()) {
+            setShiftLocked(true);
+        }
+        updateShiftState();
+    }
+
+    private void startIgnoringDoubleTap() {
+        if (mKeyboardView != null) {
+            mKeyboardView.startIgnoringDoubleTap();
+        }
     }
 
     /**
@@ -504,18 +523,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             }
         }
         mState.onUpdateShiftState(isAlphabetMode);
-    }
-
-    public void changeKeyboardMode() {
-        if (DEBUG_STATE) {
-            Log.d(TAG, "changeKeyboardMode:"
-                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
-                    + " state=" + mState);
-        }
-        toggleKeyboardMode();
-        if (isShiftLocked() && isAlphabetMode())
-            setShiftLocked(true);
-        updateShiftState();
     }
 
     public void onPressShift(boolean withSliding) {
@@ -581,7 +588,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 // To be able to turn off caps lock by "double tap" on shift key, we should ignore
                 // the second tap of the "double tap" from now for a while because we just have
                 // already turned off caps lock above.
-                mKeyboardView.startIgnoringDoubleTap();
+                startIgnoringDoubleTap();
             } else if (isShiftedOrShiftLocked && mState.isShiftKeyPressingOnShifted()
                     && !withSliding) {
                 // Shift has been pressed without chording while shifted state.
@@ -638,12 +645,25 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     public void onCancelInput() {
         // Snap back to the previous keyboard mode if the user cancels sliding input.
-        if (getPointerCount() == 1) {
+        if (isSinglePointer()) {
             if (mSwitchState == SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL) {
                 changeKeyboardMode();
             } else if (mSwitchState == SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE) {
                 toggleShift();
             }
+        }
+    }
+
+    private boolean mPrevMainKeyboardWasShiftLocked;
+
+    private void toggleKeyboardMode() {
+        if (mCurrentId.equals(mMainKeyboardId)) {
+            mPrevMainKeyboardWasShiftLocked = isShiftLocked();
+            setKeyboard(getKeyboard(mSymbolsKeyboardId));
+        } else {
+            setKeyboard(getKeyboard(mMainKeyboardId));
+            setShiftLocked(mPrevMainKeyboardWasShiftLocked);
+            mPrevMainKeyboardWasShiftLocked = false;
         }
     }
 
@@ -669,21 +689,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return mKeyboardView != null && !mKeyboardView.isInSlidingKeyInput();
     }
 
-    private int getPointerCount() {
-        return mKeyboardView == null ? 0 : mKeyboardView.getPointerCount();
-    }
-
-    private boolean mPrevMainKeyboardWasShiftLocked;
-
-    private void toggleKeyboardMode() {
-        if (mCurrentId.equals(mMainKeyboardId)) {
-            mPrevMainKeyboardWasShiftLocked = isShiftLocked();
-            setKeyboard(getKeyboard(mSymbolsKeyboardId));
-        } else {
-            setKeyboard(getKeyboard(mMainKeyboardId));
-            setShiftLocked(mPrevMainKeyboardWasShiftLocked);
-            mPrevMainKeyboardWasShiftLocked = false;
-        }
+    private boolean isSinglePointer() {
+        return mKeyboardView != null && mKeyboardView.getPointerCount() == 1;
     }
 
     public boolean hasDistinctMultitouch() {
@@ -704,9 +711,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
      * Updates state machine to figure out when to automatically snap back to the previous mode.
      */
     public void onKey(int code) {
-        if (DEBUG_STATE)
+        if (DEBUG_STATE) {
             Log.d(TAG, "onKey: code=" + code + " switchState=" + mSwitchState
-                    + " pointers=" + getPointerCount());
+                    + " isSinglePointer=" + isSinglePointer());
+        }
         switch (mSwitchState) {
         case SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL:
             // Only distinct multi touch devices can be in this state.
@@ -722,7 +730,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 } else {
                     mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
                 }
-            } else if (getPointerCount() == 1) {
+            } else if (isSinglePointer()) {
                 // Snap back to the previous keyboard mode if the user pressed the mode change key
                 // and slid to other key, then released the finger.
                 // If the user cancels the sliding input, snapping back to the previous keyboard
@@ -738,7 +746,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             if (code == Keyboard.CODE_SHIFT) {
                 // Detected only the shift key has been pressed on symbol layout, and then released.
                 mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
-            } else if (getPointerCount() == 1) {
+            } else if (isSinglePointer()) {
                 // Snap back to the previous keyboard mode if the user pressed the shift key on
                 // symbol mode and slid to other key, then released the finger.
                 toggleShift();
