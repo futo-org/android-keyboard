@@ -107,7 +107,7 @@ public class KeyboardState {
 
     @Override
     public String toString() {
-        return "shiftKeyState=" + mShiftKeyState
-                + " symbolKeyState=" + mSymbolKeyState;
+        return "[shift=" + mShiftKeyState
+                + " symbol=" + mSymbolKeyState + "]";
     }
 }
