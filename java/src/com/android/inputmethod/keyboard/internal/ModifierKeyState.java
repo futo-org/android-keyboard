@@ -20,7 +20,7 @@ import android.util.Log;
 
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 
-public class ModifierKeyState {
+class ModifierKeyState {
     protected static final String TAG = "ModifierKeyState";
     protected static final boolean DEBUG = KeyboardSwitcher.DEBUG_STATE;
 
