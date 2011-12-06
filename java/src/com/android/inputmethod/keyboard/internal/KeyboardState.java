@@ -91,7 +91,7 @@ public class KeyboardState {
         return mShiftKeyState.isPressingOnShifted();
     }
 
-    public void onToggleCapsLock() {
+    public void onReleaseCapsLock() {
         mShiftKeyState.onRelease();
     }
 

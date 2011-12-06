@@ -382,6 +382,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     private void setShifted(int shiftMode) {
+        mInputMethodService.mHandler.cancelUpdateShiftState();
         LatinKeyboard latinKeyboard = getLatinKeyboard();
         if (latinKeyboard == null)
             return;
@@ -405,19 +406,25 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     private void setShiftLocked(boolean shiftLocked) {
+        mInputMethodService.mHandler.cancelUpdateShiftState();
         LatinKeyboard latinKeyboard = getLatinKeyboard();
         if (latinKeyboard == null)
             return;
         mState.setShiftLocked(shiftLocked);
         latinKeyboard.setShiftLocked(shiftLocked);
         mKeyboardView.invalidateAllKeys();
+        if (!shiftLocked) {
+            // To be able to turn off caps lock by "double tap" on shift key, we should ignore
+            // the second tap of the "double tap" from now for a while because we just have
+            // already turned off caps lock above.
+            mKeyboardView.startIgnoringDoubleTap();
+        }
     }
 
     /**
      * Toggle keyboard shift state triggered by user touch event.
      */
     public void toggleShift() {
-        mInputMethodService.mHandler.cancelUpdateShiftState();
         if (DEBUG_STATE) {
             Log.d(TAG, "toggleShift: " + mState);
         }
@@ -429,16 +436,16 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public void toggleCapsLock() {
-        mInputMethodService.mHandler.cancelUpdateShiftState();
         if (DEBUG_STATE) {
             Log.d(TAG, "toggleCapsLock: " + mState);
         }
         if (isAlphabetMode()) {
             if (mState.isShiftLocked()) {
+                setShiftLocked(false);
+                // TODO: Remove this.
                 // Shift key is long pressed while caps lock state, we will toggle back to normal
                 // state. And mark as if shift key is released.
-                setShiftLocked(false);
-                mState.onToggleCapsLock();
+                mState.onReleaseCapsLock();
             } else {
                 setShiftLocked(true);
             }
@@ -450,12 +457,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             Log.d(TAG, "toggleKeyboard: " + mState);
         }
         toggleAlphabetAndSymbols();
-    }
-
-    private void startIgnoringDoubleTap() {
-        if (mKeyboardView != null) {
-            mKeyboardView.startIgnoringDoubleTap();
-        }
     }
 
     /**
@@ -505,7 +506,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 // shifted state.
             } else {
                 // In base layout, chording or manual temporary upper case mode is started.
-                toggleShift();
+                setShifted(MANUAL_SHIFT);
             }
         } else {
             // In symbol mode, just toggle symbol and symbol more keyboard.
@@ -531,26 +532,22 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         if (isAlphabetMode) {
             if (mState.isShiftKeyMomentary()) {
                 // After chording input while normal state.
-                toggleShift();
+                setShifted(UNSHIFT);
             } else if (isShiftLocked && !isShiftLockShifted && (mState.isShiftKeyPressing()
                     || mState.isShiftKeyPressingOnShifted()) && !withSliding) {
                 // Shift has been long pressed, ignore this release.
             } else if (isShiftLocked && !mState.isShiftKeyIgnoring() && !withSliding) {
                 // Shift has been pressed without chording while caps lock state.
-                toggleCapsLock();
-                // To be able to turn off caps lock by "double tap" on shift key, we should ignore
-                // the second tap of the "double tap" from now for a while because we just have
-                // already turned off caps lock above.
-                startIgnoringDoubleTap();
+                setShiftLocked(false);
             } else if (isShiftedOrShiftLocked && mState.isShiftKeyPressingOnShifted()
                     && !withSliding) {
                 // Shift has been pressed without chording while shifted state.
-                toggleShift();
+                setShifted(UNSHIFT);
             } else if (isManualTemporaryUpperCaseFromAuto && mState.isShiftKeyPressing()
                     && !withSliding) {
                 // Shift has been pressed without chording while manual temporary upper case
                 // transited from automatic temporary upper case.
-                toggleShift();
+                setShifted(UNSHIFT);
             }
         } else {
             // In symbol mode, snap back to the previous keyboard mode if the user chords the shift
