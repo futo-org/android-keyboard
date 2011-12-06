@@ -50,19 +50,19 @@ public class SuggestionSpanUtils {
             .getConstructor(CLASS_SuggestionSpan, INPUT_TYPE_SuggestionSpan);
     public static final Field FIELD_FLAG_AUTO_CORRECTION
             = CompatUtils.getField(CLASS_SuggestionSpan, "FLAG_AUTO_CORRECTION");
-    public static final Field FIELD_SUGGESTION_MAX_SIZE
+    public static final Field FIELD_SUGGESTIONS_MAX_SIZE
             = CompatUtils.getField(CLASS_SuggestionSpan, "SUGGESTIONS_MAX_SIZE");
     public static final Integer OBJ_FLAG_AUTO_CORRECTION = (Integer) CompatUtils
             .getFieldValue(null, null, FIELD_FLAG_AUTO_CORRECTION);;
-    public static final Integer OBJ_SUGGESTION_MAX_SIZE = (Integer) CompatUtils
-            .getFieldValue(null, null, FIELD_SUGGESTION_MAX_SIZE);;
+    public static final Integer OBJ_SUGGESTIONS_MAX_SIZE = (Integer) CompatUtils
+            .getFieldValue(null, null, FIELD_SUGGESTIONS_MAX_SIZE);;
 
     static {
         SUGGESTION_SPAN_IS_SUPPORTED =
                 CLASS_SuggestionSpan != null && CONSTRUCTOR_SuggestionSpan != null;
         if (LatinImeLogger.sDBG) {
             if (SUGGESTION_SPAN_IS_SUPPORTED
-                    && (OBJ_FLAG_AUTO_CORRECTION == null || OBJ_SUGGESTION_MAX_SIZE == null)) {
+                    && (OBJ_FLAG_AUTO_CORRECTION == null || OBJ_SUGGESTIONS_MAX_SIZE == null)) {
                 throw new RuntimeException("Field is accidentially null.");
             }
         }
@@ -71,7 +71,7 @@ public class SuggestionSpanUtils {
     public static CharSequence getTextWithAutoCorrectionIndicatorUnderline(
             Context context, CharSequence text) {
         if (TextUtils.isEmpty(text) || CONSTRUCTOR_SuggestionSpan == null
-                || OBJ_FLAG_AUTO_CORRECTION == null || OBJ_SUGGESTION_MAX_SIZE == null) {
+                || OBJ_FLAG_AUTO_CORRECTION == null || OBJ_SUGGESTIONS_MAX_SIZE == null) {
             return text;
         }
         final Spannable spannable = text instanceof Spannable
@@ -94,7 +94,7 @@ public class SuggestionSpanUtils {
         if (TextUtils.isEmpty(pickedWord) || CONSTRUCTOR_SuggestionSpan == null
                 || suggestedWords == null || suggestedWords.size() == 0
                 || suggestedWords.getInfo(0).isObsoleteSuggestedWord()
-                || OBJ_SUGGESTION_MAX_SIZE == null) {
+                || OBJ_SUGGESTIONS_MAX_SIZE == null) {
             return pickedWord;
         }
 
@@ -106,7 +106,7 @@ public class SuggestionSpanUtils {
         }
         final ArrayList<String> suggestionsList = new ArrayList<String>();
         for (int i = 0; i < suggestedWords.size(); ++i) {
-            if (suggestionsList.size() >= OBJ_SUGGESTION_MAX_SIZE) {
+            if (suggestionsList.size() >= OBJ_SUGGESTIONS_MAX_SIZE) {
                 break;
             }
             final CharSequence word = suggestedWords.getWord(i);
