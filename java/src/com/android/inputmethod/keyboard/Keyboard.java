@@ -21,7 +21,6 @@ import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
-import com.android.inputmethod.keyboard.internal.KeyboardShiftState;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -112,10 +111,16 @@ public class Keyboard {
     public final KeyboardIconsSet mIconsSet;
 
     private final Map<Integer, Key> mKeyCache = new HashMap<Integer, Key>();
-    // TODO: Move this state to KeyboardSwitcher
-    /* package for debug */ final KeyboardShiftState mShiftState = new KeyboardShiftState();
 
     private final ProximityInfo mProximityInfo;
+
+    // TODO: Remove these variables.
+    private static final int UNSHIFT = 0;
+    private static final int MANUAL_SHIFT = 1;
+    private static final int AUTOMATIC_SHIFT = 2;
+    private int mShiftMode;
+    private boolean mShifted;
+    private boolean mShiftLocked;
 
     public Keyboard(KeyboardParams params) {
         mId = params.mId;
@@ -163,10 +168,12 @@ public class Keyboard {
         return null;
     }
 
+    // TODO: Remove this method.
     public boolean hasShiftLockKey() {
         return !mShiftLockKeys.isEmpty();
     }
 
+    // TODO: Remove this method.
     public void setShiftLocked(boolean newShiftLockState) {
         for (final Key key : mShiftLockKeys) {
             // To represent "shift locked" state. The highlight is handled by background image that
@@ -174,47 +181,47 @@ public class Keyboard {
             key.setHighlightOn(newShiftLockState);
             key.setIcon(newShiftLockState ? mShiftedIcons.get(key) : mUnshiftedIcons.get(key));
         }
-        mShiftState.setShiftLocked(newShiftLockState);
+        mShiftLocked = newShiftLockState;
     }
 
+    // TODO: Move this method to KeyboardId.
     public boolean isShiftLocked() {
-        return mShiftState.isShiftLocked();
+        return mShiftLocked;
     }
 
-    public boolean isShiftLockShifted() {
-        return mShiftState.isShiftLockShifted();
-    }
-
+    // TODO: Remove this method.
     public void setShifted(boolean newShiftState) {
-        if (!mShiftState.isShiftLocked()) {
+        mShiftMode = (newShiftState ? MANUAL_SHIFT : UNSHIFT);
+        setShiftedInternal(newShiftState);
+    }
+
+    // TODO: Remove this method
+    private void setShiftedInternal(boolean newShiftState) {
+        if (!mShiftLocked) {
             for (final Key key : mShiftKeys) {
                 key.setIcon(newShiftState ? mShiftedIcons.get(key) : mUnshiftedIcons.get(key));
             }
         }
-        mShiftState.setShifted(newShiftState);
+        mShifted = newShiftState;
     }
 
+    // TODO: Move this method to KeyboardId.
     public boolean isShiftedOrShiftLocked() {
-        return mShiftState.isShiftedOrShiftLocked();
+        return mShifted || mShiftLocked;
     }
 
+    // TODO: Remove this method
     public void setAutomaticTemporaryUpperCase() {
-        setShifted(true);
-        mShiftState.setAutomaticTemporaryUpperCase();
+        mShiftMode = AUTOMATIC_SHIFT;
+        setShiftedInternal(true);
     }
 
-    public boolean isAutomaticTemporaryUpperCase() {
-        return mId.isAlphabetKeyboard() && mShiftState.isAutomaticTemporaryUpperCase();
-    }
-
+    // TODO: Move this method to KeyboardId.
     public boolean isManualTemporaryUpperCase() {
-        return mId.isAlphabetKeyboard() && mShiftState.isManualTemporaryUpperCase();
+        return mShiftMode == MANUAL_SHIFT;
     }
 
-    public boolean isManualTemporaryUpperCaseFromAuto() {
-        return mId.isAlphabetKeyboard() && mShiftState.isManualTemporaryUpperCaseFromAuto();
-    }
-
+    // TODO: Remove this method.
     public CharSequence adjustLabelCase(CharSequence label) {
         if (isShiftedOrShiftLocked() && !TextUtils.isEmpty(label) && label.length() < 3
                 && Character.isLowerCase(label.charAt(0))) {
