@@ -167,20 +167,14 @@ public class Keyboard {
         return !mShiftLockKeys.isEmpty();
     }
 
-    public boolean setShiftLocked(boolean newShiftLockState) {
+    public void setShiftLocked(boolean newShiftLockState) {
         for (final Key key : mShiftLockKeys) {
             // To represent "shift locked" state. The highlight is handled by background image that
             // might be a StateListDrawable.
             key.setHighlightOn(newShiftLockState);
-            // To represent "shifted" state. The key might have a shifted icon.
-            if (newShiftLockState && mShiftedIcons.containsKey(key)) {
-                key.setIcon(mShiftedIcons.get(key));
-            } else {
-                key.setIcon(mUnshiftedIcons.get(key));
-            }
+            key.setIcon(newShiftLockState ? mShiftedIcons.get(key) : mUnshiftedIcons.get(key));
         }
         mShiftState.setShiftLocked(newShiftLockState);
-        return true;
     }
 
     public boolean isShiftLocked() {
@@ -191,15 +185,13 @@ public class Keyboard {
         return mShiftState.isShiftLockShifted();
     }
 
-    public boolean setShifted(boolean newShiftState) {
-        for (final Key key : mShiftKeys) {
-            if (!newShiftState && !mShiftState.isShiftLocked()) {
-                key.setIcon(mUnshiftedIcons.get(key));
-            } else if (newShiftState && !mShiftState.isShiftedOrShiftLocked()) {
-                key.setIcon(mShiftedIcons.get(key));
+    public void setShifted(boolean newShiftState) {
+        if (!mShiftState.isShiftLocked()) {
+            for (final Key key : mShiftKeys) {
+                key.setIcon(newShiftState ? mShiftedIcons.get(key) : mUnshiftedIcons.get(key));
             }
         }
-        return mShiftState.setShifted(newShiftState);
+        mShiftState.setShifted(newShiftState);
     }
 
     public boolean isShiftedOrShiftLocked() {

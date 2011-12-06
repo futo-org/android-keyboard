@@ -421,7 +421,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             return;
         if (shiftMode == AUTOMATIC_SHIFT) {
             latinKeyboard.setAutomaticTemporaryUpperCase();
-            mKeyboardView.invalidateAllKeys();
         } else {
             final boolean shifted = (shiftMode == MANUAL_SHIFT);
             // On non-distinct multi touch panel device, we should also turn off the shift locked
@@ -431,15 +430,15 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             if (!hasDistinctMultitouch() && !shifted && latinKeyboard.isShiftLocked()) {
                 latinKeyboard.setShiftLocked(false);
             }
-            if (latinKeyboard.setShifted(shifted)) {
-                mKeyboardView.invalidateAllKeys();
-            }
+            latinKeyboard.setShifted(shifted);
         }
+        mKeyboardView.invalidateAllKeys();
     }
 
     private void setShiftLocked(boolean shiftLocked) {
         LatinKeyboard latinKeyboard = getLatinKeyboard();
-        if (latinKeyboard != null && latinKeyboard.setShiftLocked(shiftLocked)) {
+        if (latinKeyboard != null) {
+            latinKeyboard.setShiftLocked(shiftLocked);
             mKeyboardView.invalidateAllKeys();
         }
     }
