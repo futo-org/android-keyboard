@@ -18,11 +18,52 @@ package com.android.inputmethod.keyboard.internal;
 
 // TODO: Add unit tests
 public class KeyboardState {
+    private KeyboardShiftState mKeyboardShiftState = new KeyboardShiftState();
+
     // TODO: Combine these key state objects with auto mode switch state.
     private ShiftKeyState mShiftKeyState = new ShiftKeyState("Shift");
     private ModifierKeyState mSymbolKeyState = new ModifierKeyState("Symbol");
 
     public KeyboardState() {
+    }
+
+    public boolean isShiftLocked() {
+        return mKeyboardShiftState.isShiftLocked();
+    }
+
+    public boolean isShiftLockShifted() {
+        return mKeyboardShiftState.isShiftLockShifted();
+    }
+
+    public boolean isShiftedOrShiftLocked() {
+        return mKeyboardShiftState.isShiftedOrShiftLocked();
+    }
+
+    public boolean isAutomaticTemporaryUpperCase() {
+        return mKeyboardShiftState.isAutomaticTemporaryUpperCase();
+    }
+
+    public boolean isManualTemporaryUpperCase() {
+        return mKeyboardShiftState.isManualTemporaryUpperCase();
+    }
+
+    public boolean isManualTemporaryUpperCaseFromAuto() {
+        return mKeyboardShiftState.isManualTemporaryUpperCaseFromAuto();
+    }
+
+    // TODO: Get rid of this method
+    public void setShifted(boolean shifted) {
+        mKeyboardShiftState.setShifted(shifted);
+    }
+
+    // TODO: Get rid of this method
+    public void setShiftLocked(boolean shiftLocked) {
+        mKeyboardShiftState.setShiftLocked(shiftLocked);
+    }
+
+    // TODO: Get rid of this method
+    public void setAutomaticTemporaryUpperCase() {
+        mKeyboardShiftState.setAutomaticTemporaryUpperCase();
     }
 
     // TODO: Get rid of this method
@@ -107,7 +148,8 @@ public class KeyboardState {
 
     @Override
     public String toString() {
-        return "[shift=" + mShiftKeyState
+        return "[keyboard=" + mKeyboardShiftState
+                + " shift=" + mShiftKeyState
                 + " symbol=" + mSymbolKeyState + "]";
     }
 }
