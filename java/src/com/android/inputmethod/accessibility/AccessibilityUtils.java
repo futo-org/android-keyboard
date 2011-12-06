@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityEvent;
@@ -31,6 +32,7 @@ import com.android.inputmethod.compat.AccessibilityManagerCompatWrapper;
 import com.android.inputmethod.compat.AudioManagerCompatWrapper;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.MotionEventCompatUtils;
+import com.android.inputmethod.compat.SettingsSecureCompatUtils;
 import com.android.inputmethod.latin.R;
 
 public class AccessibilityUtils {
@@ -113,12 +115,22 @@ public class AccessibilityUtils {
     }
 
     /**
-     * @return {@code true} if the device should not speak text (eg.
-     *         non-control) characters
+     * Returns whether the device should obscure typed password characters.
+     * Typically this means speaking "dot" in place of non-control characters.
+     * 
+     * @return {@code true} if the device should obscure password characters.
      */
     public boolean shouldObscureInput(EditorInfo attribute) {
         if (attribute == null)
             return false;
+
+        // The user can optionally force speaking passwords.
+        if (SettingsSecureCompatUtils.ACCESSIBILITY_SPEAK_PASSWORD != null) {
+            final boolean speakPassword = Settings.Secure.getInt(mContext.getContentResolver(),
+                    SettingsSecureCompatUtils.ACCESSIBILITY_SPEAK_PASSWORD, 0) != 0;
+            if (speakPassword)
+                return false;
+        }
 
         // Always speak if the user is listening through headphones.
         if (mAudioManager.isWiredHeadsetOn() || mAudioManager.isBluetoothA2dpOn())
