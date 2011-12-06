@@ -33,7 +33,7 @@ public class KeyboardShiftState {
 
     private int mState = NORMAL;
 
-    public boolean setShifted(boolean newShiftState) {
+    public void setShifted(boolean newShiftState) {
         final int oldState = mState;
         if (newShiftState) {
             switch (oldState) {
@@ -61,7 +61,6 @@ public class KeyboardShiftState {
         }
         if (DEBUG)
             Log.d(TAG, "setShifted(" + newShiftState + "): " + toString(oldState) + " > " + this);
-        return mState != oldState;
     }
 
     public void setShiftLocked(boolean newShiftLockState) {
