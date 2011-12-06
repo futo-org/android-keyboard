@@ -21,6 +21,7 @@ import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
+import com.android.inputmethod.keyboard.internal.KeyboardShiftState;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -114,13 +115,8 @@ public class Keyboard {
 
     private final ProximityInfo mProximityInfo;
 
-    // TODO: Remove these variables.
-    private static final int UNSHIFT = 0;
-    private static final int MANUAL_SHIFT = 1;
-    private static final int AUTOMATIC_SHIFT = 2;
-    private int mShiftMode;
-    private boolean mShifted;
-    private boolean mShiftLocked;
+    // TODO: Remove this variable.
+    private final KeyboardShiftState mShiftState = new KeyboardShiftState();
 
     public Keyboard(KeyboardParams params) {
         mId = params.mId;
@@ -181,44 +177,37 @@ public class Keyboard {
             key.setHighlightOn(newShiftLockState);
             key.setIcon(newShiftLockState ? mShiftedIcons.get(key) : mUnshiftedIcons.get(key));
         }
-        mShiftLocked = newShiftLockState;
+        mShiftState.setShiftLocked(newShiftLockState);
     }
 
     // TODO: Move this method to KeyboardId.
     public boolean isShiftLocked() {
-        return mShiftLocked;
+        return mShiftState.isShiftLocked();
     }
 
     // TODO: Remove this method.
     public void setShifted(boolean newShiftState) {
-        mShiftMode = (newShiftState ? MANUAL_SHIFT : UNSHIFT);
-        setShiftedInternal(newShiftState);
-    }
-
-    // TODO: Remove this method
-    private void setShiftedInternal(boolean newShiftState) {
-        if (!mShiftLocked) {
+        if (!mShiftState.isShiftLocked()) {
             for (final Key key : mShiftKeys) {
                 key.setIcon(newShiftState ? mShiftedIcons.get(key) : mUnshiftedIcons.get(key));
             }
         }
-        mShifted = newShiftState;
+        mShiftState.setShifted(newShiftState);
     }
 
     // TODO: Move this method to KeyboardId.
     public boolean isShiftedOrShiftLocked() {
-        return mShifted || mShiftLocked;
+        return mShiftState.isShiftedOrShiftLocked();
     }
 
     // TODO: Remove this method
     public void setAutomaticTemporaryUpperCase() {
-        mShiftMode = AUTOMATIC_SHIFT;
-        setShiftedInternal(true);
+        mShiftState.setAutomaticTemporaryUpperCase();
     }
 
     // TODO: Move this method to KeyboardId.
     public boolean isManualTemporaryUpperCase() {
-        return mShiftMode == MANUAL_SHIFT;
+        return mShiftState.isManualTemporaryUpperCase();
     }
 
     // TODO: Remove this method.
