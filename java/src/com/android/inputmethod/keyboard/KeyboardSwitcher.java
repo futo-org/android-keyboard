@@ -99,7 +99,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private static final int SWITCH_STATE_CHORDING_SYMBOL = 6;
     private int mSwitchState = SWITCH_STATE_ALPHA;
 
-    private static String mLayoutSwitchBackSymbols;
+    private String mLayoutSwitchBackSymbols;
 
     private int mThemeIndex = -1;
     private Context mThemeContext;
@@ -231,7 +231,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mKeyboardView.setKeyboard(keyboard);
         mCurrentInputView.setKeyboardGeometry(keyboard.mTopPadding);
         mCurrentId = keyboard.mId;
-        mSwitchState = getSwitchState(mCurrentId);
+        mSwitchState = getSwitchState();
         updateShiftLockState(keyboard);
         mKeyboardView.setKeyPreviewPopupEnabled(
                 Settings.Values.isKeyPreviewPopupEnabled(mPrefs, mResources),
@@ -242,8 +242,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         updateShiftState();
     }
 
-    private int getSwitchState(KeyboardId id) {
-        return id.equals(mMainKeyboardId) ? SWITCH_STATE_ALPHA : SWITCH_STATE_SYMBOL_BEGIN;
+    private int getSwitchState() {
+        return isAlphabetMode() ? SWITCH_STATE_ALPHA : SWITCH_STATE_SYMBOL_BEGIN;
     }
 
     private void updateShiftLockState(Keyboard keyboard) {
@@ -252,12 +252,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             // sticky shift key). To show or dismiss the indicator, we need to call setShiftLocked()
             // that takes care of the current keyboard having such ALT key or not.
             keyboard.setShiftLocked(keyboard.hasShiftLockKey());
-            mState.setShiftLocked(keyboard.hasShiftLockKey());
         } else if (mCurrentId.equals(mSymbolsKeyboardId)) {
             // Symbol keyboard has an ALT key that has a caps lock style indicator. To disable the
             // indicator, we need to call setShiftLocked(false).
             keyboard.setShiftLocked(false);
-            mState.setShiftLocked(false);
         }
     }
 
@@ -426,7 +424,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         if (isAlphabetMode()) {
             setShifted(mState.isShiftedOrShiftLocked() ? UNSHIFT : MANUAL_SHIFT);
         } else {
-            toggleShiftInSymbol();
+            toggleShiftInSymbols();
         }
     }
 
@@ -447,15 +445,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
-    public void changeKeyboardMode() {
+    public void toggleKeyboardMode() {
         if (DEBUG_STATE) {
-            Log.d(TAG, "changeKeyboardMode: " + mState);
+            Log.d(TAG, "toggleKeyboard: " + mState);
         }
-        toggleKeyboardMode();
-        if (mState.isShiftLocked() && isAlphabetMode()) {
-            setShiftLocked(true);
-        }
-        updateShiftState();
+        toggleAlphabetAndSymbols();
     }
 
     private void startIgnoringDoubleTap() {
@@ -515,7 +509,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             }
         } else {
             // In symbol mode, just toggle symbol and symbol more keyboard.
-            toggleShift();
+            toggleShiftInSymbols();
             mSwitchState = SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE;
         }
         mState.onPressShift(isAlphabetMode, isShiftLocked, isAutomaticTemporaryUpperCase,
@@ -562,7 +556,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             // In symbol mode, snap back to the previous keyboard mode if the user chords the shift
             // key and another key, then releases the shift key.
             if (mSwitchState == SWITCH_STATE_CHORDING_SYMBOL) {
-                toggleShift();
+                toggleShiftInSymbols();
             }
         }
         mState.onReleaseShift();
@@ -572,7 +566,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         if (DEBUG_STATE) {
             Log.d(TAG, "onPressSymbol: " + mState);
         }
-        changeKeyboardMode();
+        toggleAlphabetAndSymbols();
         mState.onPressSymbol();
         mSwitchState = SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL;
     }
@@ -584,7 +578,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         // Snap back to the previous keyboard mode if the user chords the mode change key and
         // another key, then releases the mode change key.
         if (mSwitchState == SWITCH_STATE_CHORDING_ALPHA) {
-            changeKeyboardMode();
+            toggleAlphabetAndSymbols();
         }
         mState.onReleaseSymbol();
     }
@@ -600,37 +594,48 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         // Snap back to the previous keyboard mode if the user cancels sliding input.
         if (isSinglePointer()) {
             if (mSwitchState == SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL) {
-                changeKeyboardMode();
+                toggleAlphabetAndSymbols();
             } else if (mSwitchState == SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE) {
-                toggleShift();
+                toggleShiftInSymbols();
             }
         }
     }
 
     private boolean mPrevMainKeyboardWasShiftLocked;
 
-    private void toggleKeyboardMode() {
-        if (mCurrentId.equals(mMainKeyboardId)) {
-            mPrevMainKeyboardWasShiftLocked = mState.isShiftLocked();
-            setKeyboard(getKeyboard(mSymbolsKeyboardId));
+    private void setSymbolsKeyboard() {
+        mPrevMainKeyboardWasShiftLocked = mState.isShiftLocked();
+        setKeyboard(getKeyboard(mSymbolsKeyboardId));
+    }
+
+    private void setAlphabetKeyboard() {
+        setKeyboard(getKeyboard(mMainKeyboardId));
+        setShiftLocked(mPrevMainKeyboardWasShiftLocked);
+        mPrevMainKeyboardWasShiftLocked = false;
+    }
+
+    private void toggleAlphabetAndSymbols() {
+        if (isAlphabetMode()) {
+            setSymbolsKeyboard();
         } else {
-            setKeyboard(getKeyboard(mMainKeyboardId));
-            setShiftLocked(mPrevMainKeyboardWasShiftLocked);
-            mPrevMainKeyboardWasShiftLocked = false;
+            setAlphabetKeyboard();
         }
     }
 
-    private void toggleShiftInSymbol() {
-        if (isAlphabetMode())
-            return;
-        final LatinKeyboard keyboard;
-        if (mCurrentId.equals(mSymbolsKeyboardId)
-                || !mCurrentId.equals(mSymbolsShiftedKeyboardId)) {
-            keyboard = getKeyboard(mSymbolsShiftedKeyboardId);
+    private boolean isSymbolShifted() {
+        return mCurrentId != null && mCurrentId.equals(mSymbolsShiftedKeyboardId);
+    }
+
+    private void setSymbolsShiftedKeyboard() {
+        setKeyboard(getKeyboard(mSymbolsShiftedKeyboardId));
+    }
+
+    private void toggleShiftInSymbols() {
+        if (isSymbolShifted()) {
+            setSymbolsKeyboard();
         } else {
-            keyboard = getKeyboard(mSymbolsKeyboardId);
+            setSymbolsShiftedKeyboard();
         }
-        setKeyboard(keyboard);
     }
 
     public boolean isInMomentarySwitchState() {
@@ -654,7 +659,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return c == Keyboard.CODE_SPACE || c == Keyboard.CODE_ENTER;
     }
 
-    private static boolean isLayoutSwitchBackCharacter(int c) {
+    private boolean isLayoutSwitchBackCharacter(int c) {
         if (TextUtils.isEmpty(mLayoutSwitchBackSymbols)) return false;
         if (mLayoutSwitchBackSymbols.indexOf(c) >= 0) return true;
         return false;
@@ -688,7 +693,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 // and slid to other key, then released the finger.
                 // If the user cancels the sliding input, snapping back to the previous keyboard
                 // mode is handled by {@link #onCancelInput}.
-                changeKeyboardMode();
+                toggleAlphabetAndSymbols();
             } else {
                 // Chording input is being started. The keyboard mode will be snapped back to the
                 // previous mode in {@link onReleaseSymbol} when the mode change key is released.
@@ -702,7 +707,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             } else if (isSinglePointer()) {
                 // Snap back to the previous keyboard mode if the user pressed the shift key on
                 // symbol mode and slid to other key, then released the finger.
-                toggleShift();
+                toggleShiftInSymbols();
                 mSwitchState = SWITCH_STATE_SYMBOL;
             } else {
                 // Chording input is being started. The keyboard mode will be snapped back to the
@@ -716,7 +721,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             }
             // Snap back to alpha keyboard mode immediately if user types a quote character.
             if (isLayoutSwitchBackCharacter(code)) {
-                changeKeyboardMode();
+                setAlphabetKeyboard();
             }
             break;
         case SWITCH_STATE_SYMBOL:
@@ -724,7 +729,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             // Snap back to alpha keyboard mode if user types one or more non-space/enter
             // characters followed by a space/enter or a quote character.
             if (isSpaceCharacter(code) || isLayoutSwitchBackCharacter(code)) {
-                changeKeyboardMode();
+                setAlphabetKeyboard();
             }
             break;
         }
