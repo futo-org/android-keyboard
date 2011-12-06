@@ -177,7 +177,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         public boolean onDoubleTap(MotionEvent firstDown) {
             final Keyboard keyboard = getKeyboard();
             if (ENABLE_CAPSLOCK_BY_DOUBLETAP && keyboard instanceof LatinKeyboard
-                    && ((LatinKeyboard) keyboard).isAlphaKeyboard()) {
+                    && ((LatinKeyboard) keyboard).mId.isAlphabetKeyboard()) {
                 final int pointerIndex = firstDown.getActionIndex();
                 final int id = firstDown.getPointerId(pointerIndex);
                 final PointerTracker tracker = getPointerTracker(id);
@@ -396,14 +396,14 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         final Keyboard keyboard = getKeyboard();
         if (keyboard instanceof LatinKeyboard) {
             final LatinKeyboard latinKeyboard = (LatinKeyboard) keyboard;
-            if (primaryCode == Keyboard.CODE_DIGIT0 && latinKeyboard.isPhoneKeyboard()) {
+            if (primaryCode == Keyboard.CODE_DIGIT0 && latinKeyboard.mId.isPhoneKeyboard()) {
                 tracker.onLongPressed();
                 // Long pressing on 0 in phone number keypad gives you a '+'.
                 invokeCodeInput(Keyboard.CODE_PLUS);
                 invokeReleaseKey(primaryCode);
                 return true;
             }
-            if (primaryCode == Keyboard.CODE_SHIFT && latinKeyboard.isAlphaKeyboard()) {
+            if (primaryCode == Keyboard.CODE_SHIFT && latinKeyboard.mId.isAlphabetKeyboard()) {
                 tracker.onLongPressed();
                 invokeCodeInput(Keyboard.CODE_CAPSLOCK);
                 invokeReleaseKey(primaryCode);
