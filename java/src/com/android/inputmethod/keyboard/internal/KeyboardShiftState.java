@@ -20,7 +20,7 @@ import android.util.Log;
 
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 
-public class KeyboardShiftState {
+/* package */ class KeyboardShiftState {
     private static final String TAG = KeyboardShiftState.class.getSimpleName();
     private static final boolean DEBUG = KeyboardSwitcher.DEBUG_STATE;
 
