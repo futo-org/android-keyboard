@@ -62,6 +62,7 @@ import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
+import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.LatinKeyboard;
@@ -442,7 +443,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
 
         public void onStartInputView(EditorInfo editorInfo, boolean restarting) {
-            if (hasMessages(MSG_PENDING_IMS_CALLBACK) && editorInfo == mAppliedEditorInfo) {
+            if (hasMessages(MSG_PENDING_IMS_CALLBACK)
+                    && KeyboardId.equivalentEditorInfoForKeyboard(editorInfo, mAppliedEditorInfo)) {
                 // Typically this is the second onStartInputView after orientation changed.
                 resetPendingImsCallback();
             } else {

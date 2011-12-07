@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.text.TextUtils;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
@@ -175,6 +176,14 @@ public class KeyboardId {
                 (mShortcutKeyEnabled ? " shortcutKeyEnabled" : ""),
                 (mHasShortcutKey ? " hasShortcutKey" : "")
         );
+    }
+
+    public static boolean equivalentEditorInfoForKeyboard(EditorInfo a, EditorInfo b) {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+        return a.inputType == b.inputType
+                && a.imeOptions == b.imeOptions
+                && TextUtils.equals(a.privateImeOptions, b.privateImeOptions);
     }
 
     public static String modeName(int mode) {

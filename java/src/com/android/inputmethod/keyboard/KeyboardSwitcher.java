@@ -125,28 +125,24 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             mIsValid = true;
         }
 
-        public void restore(boolean forceRestore) {
-            if (!mIsValid) {
-                if (forceRestore) {
-                    setAlphabetKeyboard();
-                }
-                return;
-            }
-            mIsValid = false;
-
-            if (mIsAlphabetMode) {
+        public void restore() {
+            if (!mIsValid || mIsAlphabetMode) {
                 setAlphabetKeyboard();
-                if (mIsShiftLocked) {
-                    setShiftLocked(true);
-                }
-                if (mIsShifted) {
-                    setShifted(MANUAL_SHIFT);
-                }
             } else {
                 if (mIsShifted) {
                     setSymbolsShiftedKeyboard();
                 } else {
                     setSymbolsKeyboard();
+                }
+            }
+
+            if (!mIsValid) return;
+            mIsValid = false;
+
+            if (mIsAlphabetMode) {
+                setShiftLocked(mIsShiftLocked);
+                if (!mIsShiftLocked) {
+                    setShifted(mIsShifted ? MANUAL_SHIFT : UNSHIFT);
                 }
             }
         }
@@ -204,7 +200,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             mSymbolsShiftedKeyboardId = getKeyboardId(editorInfo, true, true, settingsValues);
             mState.onLoadKeyboard();
             mLayoutSwitchBackSymbols = mResources.getString(R.string.layout_switch_back_symbols);
-            mSavedKeyboardState.restore(mCurrentId == null);
+            mSavedKeyboardState.restore();
         } catch (RuntimeException e) {
             Log.w(TAG, "loading keyboard failed: " + mMainKeyboardId, e);
             LatinImeLogger.logOnException(mMainKeyboardId.toString(), e);
