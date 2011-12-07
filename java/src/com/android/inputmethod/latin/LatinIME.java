@@ -1374,7 +1374,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mExpectingUpdateSelection = true;
             break;
         }
-        switcher.onKey(primaryCode);
+        switcher.onCodeInput(primaryCode);
         // Reset after any single keystroke
         mEnteredText = null;
     }
@@ -1390,7 +1390,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         ic.commitText(text, 1);
         ic.endBatchEdit();
         mKeyboardSwitcher.updateShiftState();
-        mKeyboardSwitcher.onKey(Keyboard.CODE_DUMMY);
+        mKeyboardSwitcher.onCodeInput(Keyboard.CODE_DUMMY);
         mSpaceState = SPACE_STATE_NONE;
         mEnteredText = text;
     }
