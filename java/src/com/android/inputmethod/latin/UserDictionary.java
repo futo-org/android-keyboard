@@ -20,6 +20,7 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
@@ -38,11 +39,9 @@ public class UserDictionary extends ExpandableDictionary {
         Words.FREQUENCY,
     };
 
-    private static final String[] PROJECTION_ADD = {
-        Words._ID,
-        Words.FREQUENCY,
-        Words.LOCALE,
-    };
+    // This is not exported by the framework so we pretty much have to write it here verbatim
+    private static final String ACTION_USER_DICTIONARY_INSERT =
+            "com.android.settings.USER_DICTIONARY_INSERT";
 
     private ContentObserver mObserver;
     final private String mLocale;
@@ -164,54 +163,19 @@ public class UserDictionary extends ExpandableDictionary {
     public synchronized void addWord(final String word, final int frequency) {
         // Force load the dictionary here synchronously
         if (getRequiresReload()) loadDictionaryAsync();
+        // TODO: do something for the UI. With the following, any sufficiently long word will
+        // look like it will go to the user dictionary but it won't.
         // Safeguard against adding long words. Can cause stack overflow.
         if (word.length() >= getMaxWordLength()) return;
 
         super.addWord(word, frequency);
 
-        // Update the user dictionary provider
-        final ContentValues values = new ContentValues(5);
-        values.put(Words.WORD, word);
-        values.put(Words.FREQUENCY, frequency);
-        values.put(Words.LOCALE, mLocale);
-        values.put(Words.APP_ID, 0);
-
-        final ContentResolver contentResolver = getContext().getContentResolver();
-        final ContentProviderClient client =
-                contentResolver.acquireContentProviderClient(Words.CONTENT_URI);
-        if (null == client) return;
-        new Thread("addWord") {
-            @Override
-            public void run() {
-                Cursor cursor = null;
-                try {
-                    cursor = client.query(Words.CONTENT_URI, PROJECTION_ADD,
-                            "word=? and ((locale IS NULL) or (locale=?))",
-                                    new String[] { word, mLocale }, null);
-                    if (cursor != null && cursor.moveToFirst()) {
-                        final String locale = cursor.getString(cursor.getColumnIndex(Words.LOCALE));
-                        // If locale is null, we will not override the entry.
-                        if (locale != null && locale.equals(mLocale.toString())) {
-                            final long id = cursor.getLong(cursor.getColumnIndex(Words._ID));
-                            final Uri uri =
-                                    Uri.withAppendedPath(Words.CONTENT_URI, Long.toString(id));
-                            // Update the entry with new frequency value.
-                            client.update(uri, values, null, null);
-                        }
-                    } else {
-                        // Insert new entry.
-                        client.insert(Words.CONTENT_URI, values);
-                    }
-                } catch (RemoteException e) {
-                    // If we come here, the activity is already about to be killed, and we
-                    // have no means of contacting the content provider any more.
-                    // See ContentResolver#insert, inside the catch(){}
-                } finally {
-                    if (null != cursor) cursor.close();
-                    client.release();
-                }
-            }
-        }.start();
+        // TODO: Add an argument to the intent to specify the frequency.
+        Intent intent = new Intent(ACTION_USER_DICTIONARY_INSERT);
+        intent.putExtra(Words.WORD, word);
+        intent.putExtra(Words.LOCALE, mLocale);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getContext().startActivity(intent);
 
         // In case the above does a synchronous callback of the change observer
         setRequiresReload(false);
