@@ -106,6 +106,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     private static final KeyboardSwitcher sInstance = new KeyboardSwitcher();
 
+    // TODO: Move this to KeyboardState.
     private class KeyboardLayoutState {
         private boolean mIsValid;
         private boolean mIsAlphabetMode;
@@ -113,43 +114,39 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         private boolean mIsShifted;
 
         public void save() {
-            if (mCurrentId == null) {
-                return;
-            }
             mIsAlphabetMode = isAlphabetMode();
             if (mIsAlphabetMode) {
                 mIsShiftLocked = mState.isShiftLocked();
                 mIsShifted = !mIsShiftLocked && mState.isShiftedOrShiftLocked();
             } else {
                 mIsShiftLocked = false;
-                mIsShifted = mCurrentId.equals(mSymbolsShiftedKeyboardId);
+                mIsShifted = isSymbolShifted();
             }
             mIsValid = true;
         }
 
-        public KeyboardId getKeyboardId() {
-            if (!mIsValid) return mMainKeyboardId;
-
-            if (mIsAlphabetMode) {
-                return mMainKeyboardId;
-            } else {
-                return mIsShifted ? mSymbolsShiftedKeyboardId : mSymbolsKeyboardId;
+        public void restore(boolean forceRestore) {
+            if (!mIsValid) {
+                if (forceRestore) {
+                    setAlphabetKeyboard();
+                }
+                return;
             }
-        }
-
-        public void restore() {
-            if (!mIsValid) return;
             mIsValid = false;
 
             if (mIsAlphabetMode) {
-                final boolean isAlphabetMode = isAlphabetMode();
-                final boolean isShiftLocked = isAlphabetMode && mState.isShiftLocked();
-                final boolean isShifted = !isShiftLocked && mState.isShiftedOrShiftLocked();
-                if (mIsShiftLocked != isShiftLocked) {
-                    toggleCapsLock();
-                } else if (mIsShifted != isShifted) {
-                    onPressShift(false);
-                    onReleaseShift(false);
+                setAlphabetKeyboard();
+                if (mIsShiftLocked) {
+                    setShiftLocked(true);
+                }
+                if (mIsShifted) {
+                    setShifted(MANUAL_SHIFT);
+                }
+            } else {
+                if (mIsShifted) {
+                    setSymbolsShiftedKeyboard();
+                } else {
+                    setSymbolsKeyboard();
                 }
             }
         }
@@ -207,8 +204,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             mSymbolsShiftedKeyboardId = getKeyboardId(editorInfo, true, true, settingsValues);
             mState.onLoadKeyboard();
             mLayoutSwitchBackSymbols = mResources.getString(R.string.layout_switch_back_symbols);
-            setKeyboard(getKeyboard(mSavedKeyboardState.getKeyboardId()));
-            mSavedKeyboardState.restore();
+            mSavedKeyboardState.restore(mCurrentId == null);
         } catch (RuntimeException e) {
             Log.w(TAG, "loading keyboard failed: " + mMainKeyboardId, e);
             LatinImeLogger.logOnException(mMainKeyboardId.toString(), e);
@@ -216,7 +212,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public void saveKeyboardState() {
-        mSavedKeyboardState.save();
+        if (mCurrentId != null) {
+            mSavedKeyboardState.save();
+        }
     }
 
     public void onFinishInputView() {
