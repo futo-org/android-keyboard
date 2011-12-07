@@ -205,6 +205,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             mMainKeyboardId = getKeyboardId(editorInfo, false, false, settingsValues);
             mSymbolsKeyboardId = getKeyboardId(editorInfo, true, false, settingsValues);
             mSymbolsShiftedKeyboardId = getKeyboardId(editorInfo, true, true, settingsValues);
+            mState.onLoadKeyboard();
             mLayoutSwitchBackSymbols = mResources.getString(R.string.layout_switch_back_symbols);
             setKeyboard(getKeyboard(mSavedKeyboardState.getKeyboardId()));
             mSavedKeyboardState.restore();

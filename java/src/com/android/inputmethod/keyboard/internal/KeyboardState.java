@@ -27,6 +27,13 @@ public class KeyboardState {
     public KeyboardState() {
     }
 
+    public void onLoadKeyboard() {
+        mKeyboardShiftState.setShifted(false);
+        mKeyboardShiftState.setShiftLocked(false);
+        mShiftKeyState.onRelease();
+        mSymbolKeyState.onRelease();
+    }
+
     public boolean isShiftLocked() {
         return mKeyboardShiftState.isShiftLocked();
     }
