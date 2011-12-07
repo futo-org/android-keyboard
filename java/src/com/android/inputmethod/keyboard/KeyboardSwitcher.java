@@ -126,6 +126,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
 
         public void restore() {
+            mPrevMainKeyboardWasShiftLocked = false;
             if (!mIsValid || mIsAlphabetMode) {
                 setAlphabetKeyboard();
             } else {
@@ -593,6 +594,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
+    // TODO: Move this variable to KeyboardState.
     private boolean mPrevMainKeyboardWasShiftLocked;
 
     private void setSymbolsKeyboard() {
