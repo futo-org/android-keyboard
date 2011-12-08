@@ -78,6 +78,9 @@ public class KeyboardState {
     }
 
     public void onLoadKeyboard(String layoutSwitchBackSymbols, boolean hasDistinctMultitouch) {
+        if (DEBUG_STATE) {
+            Log.d(TAG, "onLoadKeyboard");
+        }
         mLayoutSwitchBackSymbols = layoutSwitchBackSymbols;
         mHasDistinctMultitouch = hasDistinctMultitouch;
         mKeyboardShiftState.setShifted(false);
@@ -101,7 +104,7 @@ public class KeyboardState {
         }
         state.mIsValid = true;
         if (DEBUG_STATE) {
-            Log.d(TAG, "save: alphabet=" + state.mIsAlphabetMode
+            Log.d(TAG, "onSaveKeyboardState: alphabet=" + state.mIsAlphabetMode
                     + " shiftLocked=" + state.mIsShiftLocked + " shift=" + state.mIsShifted);
         }
     }
@@ -109,7 +112,8 @@ public class KeyboardState {
     private void onRestoreKeyboardState() {
         final SavedKeyboardState state = mSavedKeyboardState;
         if (DEBUG_STATE) {
-            Log.d(TAG, "restore: valid=" + state.mIsValid + " alphabet=" + state.mIsAlphabetMode
+            Log.d(TAG, "onRestoreKeyboardState: valid=" + state.mIsValid
+                    + " alphabet=" + state.mIsAlphabetMode
                     + " shiftLocked=" + state.mIsShiftLocked + " shift=" + state.mIsShifted);
         }
         if (!state.mIsValid || state.mIsAlphabetMode) {
@@ -158,6 +162,9 @@ public class KeyboardState {
     }
 
     private void setShifted(int shiftMode) {
+        if (DEBUG_STATE) {
+            Log.d(TAG, "setShifted: shiftMode=" + shiftModeToString(shiftMode));
+        }
         if (shiftMode == SwitchActions.AUTOMATIC_SHIFT) {
             mKeyboardShiftState.setAutomaticTemporaryUpperCase();
         } else {
@@ -176,6 +183,9 @@ public class KeyboardState {
     }
 
     private void setShiftLocked(boolean shiftLocked) {
+        if (DEBUG_STATE) {
+            Log.d(TAG, "setShiftLocked: shiftLocked=" + shiftLocked);
+        }
         mKeyboardShiftState.setShiftLocked(shiftLocked);
         mSwitchActions.setShiftLocked(shiftLocked);
     }
@@ -197,6 +207,9 @@ public class KeyboardState {
     }
 
     private void setAlphabetKeyboard() {
+        if (DEBUG_STATE) {
+            Log.d(TAG, "setAlphabetKeyboard");
+        }
         mSwitchActions.setAlphabetKeyboard();
         mSwitchState = SWITCH_STATE_ALPHA;
         setShiftLocked(mPrevMainKeyboardWasShiftLocked);
@@ -204,18 +217,27 @@ public class KeyboardState {
     }
 
     private void setSymbolsKeyboard() {
+        if (DEBUG_STATE) {
+            Log.d(TAG, "setSymbolsKeyboard");
+        }
         mPrevMainKeyboardWasShiftLocked = isShiftLocked();
         mSwitchActions.setSymbolsKeyboard();
         mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
     }
 
     private void setSymbolsShiftedKeyboard() {
+        if (DEBUG_STATE) {
+            Log.d(TAG, "setSymbolsShiftedKeyboard");
+        }
         mSwitchActions.setSymbolsShiftedKeyboard();
         mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
     }
 
     // TODO: Get rid of isAlphabetMode argument.
     public void onPressSymbol(boolean isAlphabetMode) {
+        if (DEBUG_STATE) {
+            Log.d(TAG, "onPressSymbol: " + this);
+        }
         toggleAlphabetAndSymbols(isAlphabetMode);
         mSymbolKeyState.onPress();
         mSwitchState = SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL;
@@ -223,6 +245,9 @@ public class KeyboardState {
 
     // TODO: Get rid of isAlphabetMode argument.
     public void onReleaseSymbol(boolean isAlphabetMode) {
+        if (DEBUG_STATE) {
+            Log.d(TAG, "onReleaseSymbol: " + this);
+        }
         // Snap back to the previous keyboard mode if the user chords the mode change key and
         // another key, then releases the mode change key.
         if (mSwitchState == SWITCH_STATE_CHORDING_ALPHA) {
@@ -232,12 +257,18 @@ public class KeyboardState {
     }
 
     public void onOtherKeyPressed() {
+        if (DEBUG_STATE) {
+            Log.d(TAG, "onOtherKeyPressed: " + this);
+        }
         mShiftKeyState.onOtherKeyPressed();
         mSymbolKeyState.onOtherKeyPressed();
     }
 
     // TODO: Get rid of isAlphabetMode argument.
     public void onUpdateShiftState(boolean isAlphabetMode, boolean autoCaps) {
+        if (DEBUG_STATE) {
+            Log.d(TAG, "onUpdateShiftState: " + this + " autoCaps=" + autoCaps);
+        }
         if (isAlphabetMode) {
             if (!isShiftLocked() && !mShiftKeyState.isIgnoring()) {
                 if (mShiftKeyState.isReleasing() && autoCaps) {
@@ -256,7 +287,10 @@ public class KeyboardState {
     }
 
     // TODO: Get rid of isAlphabetMode and isSymbolShifted arguments.
-    public void onPressShift(boolean isAlphabetMode, boolean isSymbolShifted) {
+    public void onPressShift(boolean isAlphabetMode, boolean isSymbolShifted, boolean withSliding) {
+        if (DEBUG_STATE) {
+            Log.d(TAG, "onPressShift: " + this + " sliding=" + withSliding);
+        }
         if (isAlphabetMode) {
             if (isShiftLocked()) {
                 // Shift key is pressed while caps lock state, we will treat this state as shifted
@@ -288,6 +322,9 @@ public class KeyboardState {
     // TODO: Get rid of isAlphabetMode and isSymbolShifted arguments.
     public void onReleaseShift(boolean isAlphabetMode, boolean isSymbolShifted,
             boolean withSliding) {
+        if (DEBUG_STATE) {
+            Log.d(TAG, "onReleaseShift: " + this + " sliding=" + withSliding);
+        }
         if (isAlphabetMode) {
             final boolean isShiftLocked = isShiftLocked();
             if (mShiftKeyState.isMomentary()) {
@@ -322,6 +359,9 @@ public class KeyboardState {
     // TODO: Get rid of isAlphabetMode and isSymbolShifted arguments.
     public void onCancelInput(boolean isAlphabetMode, boolean isSymbolShifted,
             boolean isSinglePointer) {
+        if (DEBUG_STATE) {
+            Log.d(TAG, "onCancelInput: isSinglePointer=" + isSinglePointer + " " + this);
+        }
         // Snap back to the previous keyboard mode if the user cancels sliding input.
         if (isSinglePointer) {
             if (mSwitchState == SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL) {
@@ -350,6 +390,10 @@ public class KeyboardState {
     // TODO: Get rid of isAlphabetMode and isSymbolShifted arguments.
     public void onCodeInput(boolean isAlphabetMode, boolean isSymbolShifted, int code,
             boolean isSinglePointer) {
+        if (DEBUG_STATE) {
+            Log.d(TAG, "onCodeInput: code=" + code + " isSinglePointer=" + isSinglePointer
+                    + " " + this);
+        }
         switch (mSwitchState) {
         case SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL:
             // Only distinct multi touch devices can be in this state.
@@ -414,6 +458,9 @@ public class KeyboardState {
 
     // TODO: Get rid of isAlphabetMode and isSymbolShifted arguments.
     public void onToggleShift(boolean isAlphabetMode, boolean isSymbolShifted) {
+        if (DEBUG_STATE) {
+            Log.d(TAG, "onToggleShift: " + this);
+        }
         if (isAlphabetMode) {
             setShifted(isShiftedOrShiftLocked()
                     ? SwitchActions.UNSHIFT : SwitchActions.MANUAL_SHIFT);
@@ -424,6 +471,9 @@ public class KeyboardState {
 
     // TODO: Get rid of isAlphabetMode arguments.
     public void onToggleCapsLock(boolean isAlphabetMode) {
+        if (DEBUG_STATE) {
+            Log.d(TAG, "onToggleCapsLock: " + this);
+        }
         if (isAlphabetMode) {
             if (isShiftLocked()) {
                 setShiftLocked(false);
@@ -438,9 +488,20 @@ public class KeyboardState {
 
     // TODO: Get rid of isAlphabetMode arguments.
     public void onToggleAlphabetAndSymbols(boolean isAlphabetMode) {
+        if (DEBUG_STATE) {
+            Log.d(TAG, "onToggleAlphabetAndSymbols: " + this);
+        }
         toggleAlphabetAndSymbols(isAlphabetMode);
     }
 
+    private static String shiftModeToString(int shiftMode) {
+        switch (shiftMode) {
+        case SwitchActions.UNSHIFT: return "UNSHIFT";
+        case SwitchActions.MANUAL_SHIFT: return "MANUAL";
+        case SwitchActions.AUTOMATIC_SHIFT: return "AUTOMATIC";
+        default: return null;
+        }
+    }
     private static String switchStateToString(int switchState) {
         switch (switchState) {
         case SWITCH_STATE_ALPHA: return "ALPHA";

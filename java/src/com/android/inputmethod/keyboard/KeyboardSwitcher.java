@@ -47,7 +47,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();
     private static final boolean DEBUG_CACHE = LatinImeLogger.sDBG;
-    public static final boolean DEBUG_STATE = false;
 
     public static final String PREF_KEYBOARD_LAYOUT = "pref_keyboard_layout_20110916";
     private static final int[] KEYBOARD_THEMES = {
@@ -354,9 +353,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
      * Toggle keyboard shift state triggered by user touch event.
      */
     public void toggleShift() {
-        if (DEBUG_STATE) {
-            Log.d(TAG, "toggleShift: " + mState);
-        }
         mState.onToggleShift(isAlphabetMode(), isSymbolShifted());
     }
 
@@ -364,9 +360,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
      * Toggle caps lock state triggered by user touch event.
      */
     public void toggleCapsLock() {
-        if (DEBUG_STATE) {
-            Log.d(TAG, "toggleCapsLock: " + mState);
-        }
         mState.onToggleCapsLock(isAlphabetMode());
     }
 
@@ -374,9 +367,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
      * Toggle between alphabet and symbols modes triggered by user touch event.
      */
     public void toggleAlphabetAndSymbols() {
-        if (DEBUG_STATE) {
-            Log.d(TAG, "toggleAlphabetAndSymbols: " + mState);
-        }
         mState.onToggleAlphabetAndSymbols(isAlphabetMode());
     }
 
@@ -384,49 +374,26 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
      * Update keyboard shift state triggered by connected EditText status change.
      */
     public void updateShiftState() {
-        if (DEBUG_STATE) {
-            Log.d(TAG, "updateShiftState: " + mState
-                    + " autoCaps=" + mInputMethodService.getCurrentAutoCapsState());
-        }
         mState.onUpdateShiftState(isAlphabetMode(), mInputMethodService.getCurrentAutoCapsState());
     }
 
     public void onPressShift(boolean withSliding) {
-        if (!isKeyboardAvailable())
-            return;
-        if (DEBUG_STATE) {
-            Log.d(TAG, "onPressShift: " + mState + " sliding=" + withSliding);
-        }
-        mState.onPressShift(isAlphabetMode(), isSymbolShifted());
+        mState.onPressShift(isAlphabetMode(), isSymbolShifted(), withSliding);
     }
 
     public void onReleaseShift(boolean withSliding) {
-        if (!isKeyboardAvailable())
-            return;
-        if (DEBUG_STATE) {
-            Log.d(TAG, "onReleaseShift: " + mState + " sliding=" + withSliding);
-        }
         mState.onReleaseShift(isAlphabetMode(), isSymbolShifted(), withSliding);
     }
 
     public void onPressSymbol() {
-        if (DEBUG_STATE) {
-            Log.d(TAG, "onPressSymbol: " + mState);
-        }
         mState.onPressSymbol(isAlphabetMode());
     }
 
     public void onReleaseSymbol() {
-        if (DEBUG_STATE) {
-            Log.d(TAG, "onReleaseSymbol: " + mState);
-        }
         mState.onReleaseSymbol(isAlphabetMode());
     }
 
     public void onOtherKeyPressed() {
-        if (DEBUG_STATE) {
-            Log.d(TAG, "onOtherKeyPressed: " + mState);
-        }
         mState.onOtherKeyPressed();
     }
 
@@ -477,10 +444,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
      * Updates state machine to figure out when to automatically snap back to the previous mode.
      */
     public void onCodeInput(int code) {
-        if (DEBUG_STATE) {
-            Log.d(TAG, "onCodeInput: code=" + code + " isSinglePointer=" + isSinglePointer()
-                    + " " + mState);
-        }
         mState.onCodeInput(isAlphabetMode(), isSymbolShifted(), code, isSinglePointer());
     }
 
