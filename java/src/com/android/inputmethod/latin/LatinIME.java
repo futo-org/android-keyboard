@@ -1791,8 +1791,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             prevWord = EditingUtils.getPreviousWord(ic, mSettingsValues.mWordSeparators);
         }
         // getSuggestedWordBuilder handles gracefully a null value of prevWord
-        final SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(
-                wordComposer, prevWord, mKeyboardSwitcher.getLatinKeyboard().getProximityInfo());
+        final SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(wordComposer,
+                prevWord, mKeyboardSwitcher.getLatinKeyboard().getProximityInfo(), mCorrectionMode);
 
         boolean autoCorrectionAvailable = !mInputTypeNoAutoCorrect && mSuggest.hasAutoCorrection();
         final CharSequence typedWord = wordComposer.getTypedWord();
@@ -2035,7 +2035,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final CharSequence prevWord = EditingUtils.getThisWord(getCurrentInputConnection(),
                 mSettingsValues.mWordSeparators);
         SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(sEmptyWordComposer,
-                prevWord, mKeyboardSwitcher.getLatinKeyboard().getProximityInfo());
+                prevWord, mKeyboardSwitcher.getLatinKeyboard().getProximityInfo(), mCorrectionMode);
 
         if (builder.size() > 0) {
             // Explicitly supply an empty typed word (the no-second-arg version of
@@ -2399,9 +2399,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mCorrectionMode = shouldAutoCorrect ? Suggest.CORRECTION_FULL : Suggest.CORRECTION_NONE;
         mCorrectionMode = (mSettingsValues.mBigramSuggestionEnabled && shouldAutoCorrect)
                 ? Suggest.CORRECTION_FULL_BIGRAM : mCorrectionMode;
-        if (mSuggest != null) {
-            mSuggest.setCorrectionMode(mCorrectionMode);
-        }
     }
 
     private void updateSuggestionVisibility(final SharedPreferences prefs, final Resources res) {
