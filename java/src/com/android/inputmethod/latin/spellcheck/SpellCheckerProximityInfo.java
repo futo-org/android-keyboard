@@ -29,65 +29,150 @@ public class SpellCheckerProximityInfo {
     // as the size of the passed array afterwards so they can't be different.
     final public static int ROW_SIZE = ProximityInfo.MAX_PROXIMITY_CHARS_SIZE;
 
-    // This is a map from the code point to the index in the PROXIMITY array.
-    // At the time the native code to read the binary dictionary needs the proximity info be passed
-    // as a flat array spaced by MAX_PROXIMITY_CHARS_SIZE columns, one for each input character.
-    // Since we need to build such an array, we want to be able to search in our big proximity data
-    // quickly by character, and a map is probably the best way to do this.
-    final private static TreeMap<Integer, Integer> INDICES = new TreeMap<Integer, Integer>();
-
-    // The proximity here is the union of
-    // - the proximity for a QWERTY keyboard.
-    // - the proximity for an AZERTY keyboard.
-    // - the proximity for a QWERTZ keyboard.
-    // ...plus, add all characters in the ('a', 'e', 'i', 'o', 'u') set to each other.
-    //
-    // The reasoning behind this construction is, almost any alphabetic text we may want
-    // to spell check has been entered with one of the keyboards above. Also, specifically
-    // to English, many spelling errors consist of the last vowel of the word being wrong
-    // because in English vowels tend to merge with each other in pronunciation.
-    final public static int[] PROXIMITY = {
-        'q', 'w', 's', 'a', 'z', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        'w', 'q', 'a', 's', 'd', 'e', 'x', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        'e', 'w', 's', 'd', 'f', 'r', 'a', 'i', 'o', 'u', NUL, NUL, NUL, NUL, NUL, NUL,
-        'r', 'e', 'd', 'f', 'g', 't', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        't', 'r', 'f', 'g', 'h', 'y', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        'y', 't', 'g', 'h', 'j', 'u', 'a', 's', 'd', 'x', NUL, NUL, NUL, NUL, NUL, NUL,
-        'u', 'y', 'h', 'j', 'k', 'i', 'a', 'e', 'o', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        'i', 'u', 'j', 'k', 'l', 'o', 'a', 'e', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        'o', 'i', 'k', 'l', 'p', 'a', 'e', 'u', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        'p', 'o', 'l', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-
-        'a', 'z', 'x', 's', 'w', 'q', 'e', 'i', 'o', 'u', NUL, NUL, NUL, NUL, NUL, NUL,
-        's', 'q', 'a', 'z', 'x', 'c', 'd', 'e', 'w', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        'd', 'w', 's', 'x', 'c', 'v', 'f', 'r', 'e', 'w', NUL, NUL, NUL, NUL, NUL, NUL,
-        'f', 'e', 'd', 'c', 'v', 'b', 'g', 't', 'r', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        'g', 'r', 'f', 'v', 'b', 'n', 'h', 'y', 't', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        'h', 't', 'g', 'b', 'n', 'm', 'j', 'u', 'y', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        'j', 'y', 'h', 'n', 'm', 'k', 'i', 'u', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        'k', 'u', 'j', 'm', 'l', 'o', 'i', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        'l', 'i', 'k', 'p', 'o', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-
-        'z', 'a', 's', 'd', 'x', 't', 'g', 'h', 'j', 'u', 'q', 'e', NUL, NUL, NUL, NUL,
-        'x', 'z', 'a', 's', 'd', 'c', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        'c', 'x', 's', 'd', 'f', 'v', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        'v', 'c', 'd', 'f', 'g', 'b', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        'b', 'v', 'f', 'g', 'h', 'n', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        'n', 'b', 'g', 'h', 'j', 'm', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        'm', 'n', 'h', 'j', 'k', 'l', 'o', 'p', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-        NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-    };
-    static {
-        for (int i = 0; i < PROXIMITY.length; i += ROW_SIZE) {
-            if (NUL != PROXIMITY[i]) INDICES.put(PROXIMITY[i], i);
+    // Helper methods
+    final protected static void buildProximityIndices(final int[] proximity,
+            final TreeMap<Integer, Integer> indices) {
+        for (int i = 0; i < proximity.length; i += ROW_SIZE) {
+            if (NUL != proximity[i]) indices.put(proximity[i], i);
         }
     }
-    public static int getIndexOf(int characterCode) {
-        final Integer result = INDICES.get(characterCode);
+    final protected static int computeIndex(final int characterCode,
+            final TreeMap<Integer, Integer> indices) {
+        final Integer result = indices.get(characterCode);
         if (null == result) return -1;
         return result;
+    }
+
+    static class Latin {
+        // This is a map from the code point to the index in the PROXIMITY array.
+        // At the time the native code to read the binary dictionary needs the proximity info be
+        // passed as a flat array spaced by MAX_PROXIMITY_CHARS_SIZE columns, one for each input
+        // character.
+        // Since we need to build such an array, we want to be able to search in our big proximity
+        // data quickly by character, and a map is probably the best way to do this.
+        final private static TreeMap<Integer, Integer> INDICES = new TreeMap<Integer, Integer>();
+
+        // The proximity here is the union of
+        // - the proximity for a QWERTY keyboard.
+        // - the proximity for an AZERTY keyboard.
+        // - the proximity for a QWERTZ keyboard.
+        // ...plus, add all characters in the ('a', 'e', 'i', 'o', 'u') set to each other.
+        //
+        // The reasoning behind this construction is, almost any alphabetic text we may want
+        // to spell check has been entered with one of the keyboards above. Also, specifically
+        // to English, many spelling errors consist of the last vowel of the word being wrong
+        // because in English vowels tend to merge with each other in pronunciation.
+        final private static int[] PROXIMITY = {
+            'q', 'w', 's', 'a', 'z', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'w', 'q', 'a', 's', 'd', 'e', 'x', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'e', 'w', 's', 'd', 'f', 'r', 'a', 'i', 'o', 'u', NUL, NUL, NUL, NUL, NUL, NUL,
+            'r', 'e', 'd', 'f', 'g', 't', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            't', 'r', 'f', 'g', 'h', 'y', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'y', 't', 'g', 'h', 'j', 'u', 'a', 's', 'd', 'x', NUL, NUL, NUL, NUL, NUL, NUL,
+            'u', 'y', 'h', 'j', 'k', 'i', 'a', 'e', 'o', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'i', 'u', 'j', 'k', 'l', 'o', 'a', 'e', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'o', 'i', 'k', 'l', 'p', 'a', 'e', 'u', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'p', 'o', 'l', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+
+            'a', 'z', 'x', 's', 'w', 'q', 'e', 'i', 'o', 'u', NUL, NUL, NUL, NUL, NUL, NUL,
+            's', 'q', 'a', 'z', 'x', 'c', 'd', 'e', 'w', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'd', 'w', 's', 'x', 'c', 'v', 'f', 'r', 'e', 'w', NUL, NUL, NUL, NUL, NUL, NUL,
+            'f', 'e', 'd', 'c', 'v', 'b', 'g', 't', 'r', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'g', 'r', 'f', 'v', 'b', 'n', 'h', 'y', 't', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'h', 't', 'g', 'b', 'n', 'm', 'j', 'u', 'y', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'j', 'y', 'h', 'n', 'm', 'k', 'i', 'u', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'k', 'u', 'j', 'm', 'l', 'o', 'i', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'l', 'i', 'k', 'p', 'o', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+
+            'z', 'a', 's', 'd', 'x', 't', 'g', 'h', 'j', 'u', 'q', 'e', NUL, NUL, NUL, NUL,
+            'x', 'z', 'a', 's', 'd', 'c', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'c', 'x', 's', 'd', 'f', 'v', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'v', 'c', 'd', 'f', 'g', 'b', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'b', 'v', 'f', 'g', 'h', 'n', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'n', 'b', 'g', 'h', 'j', 'm', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'm', 'n', 'h', 'j', 'k', 'l', 'o', 'p', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+        };
+        static {
+            buildProximityIndices(PROXIMITY, INDICES);
+        }
+        private static int getIndexOf(int characterCode) {
+            return computeIndex(characterCode, INDICES);
+        }
+    }
+
+    static class Cyrillic {
+        final private static TreeMap<Integer, Integer> INDICES = new TreeMap<Integer, Integer>();
+        final private static int[] PROXIMITY = {
+            // TODO: This table is solely based on the keyboard layout. Consult with Russian
+            // speakers on commonly misspelled words/letters.
+            'й', 'ц', 'ф', 'ы', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'ц', 'й', 'ф', 'ы', 'в', 'у', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'у', 'ц', 'ы', 'в', 'а', 'к', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'к', 'у', 'в', 'а', 'п', 'е', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'е', 'к', 'а', 'п', 'р', 'н', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'н', 'е', 'п', 'р', 'о', 'г', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'г', 'н', 'р', 'о', 'л', 'ш', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'ш', 'г', 'о', 'л', 'д', 'щ', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'щ', 'ш', 'л', 'д', 'ж', 'з', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'з', 'щ', 'д', 'ж', 'э', 'х', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'х', 'з', 'ж', 'э', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+
+            'ф', 'й', 'ц', 'ы', 'я', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'ы', 'й', 'ц', 'у', 'ф', 'в', 'я', 'ч', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'в', 'ц', 'у', 'к', 'ы', 'а', 'я', 'ч', 'с', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'а', 'у', 'к', 'е', 'в', 'п', 'ч', 'с', 'м', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'п', 'к', 'е', 'н', 'а', 'р', 'с', 'м', 'и', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'р', 'е', 'н', 'г', 'п', 'о', 'м', 'и', 'т', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'о', 'н', 'г', 'ш', 'р', 'л', 'и', 'т', 'ь', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'л', 'г', 'ш', 'щ', 'о', 'д', 'т', 'ь', 'б', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'д', 'ш', 'щ', 'з', 'л', 'ж', 'ь', 'б', 'ю', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'ж', 'щ', 'з', 'х', 'д', 'э', 'б', 'ю', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'э', 'з', 'х', 'ю', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+
+            'я', 'ф', 'ы', 'в', 'ч', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'ч', 'ы', 'в', 'а', 'я', 'с', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'с', 'в', 'а', 'п', 'ч', 'м', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'м', 'а', 'п', 'р', 'с', 'и', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'и', 'п', 'р', 'о', 'м', 'т', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'т', 'р', 'о', 'л', 'и', 'ь', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'ь', 'о', 'л', 'д', 'т', 'б', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'б', 'л', 'д', 'ж', 'ь', 'ю', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            'ю', 'д', 'ж', 'э', 'б', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+            NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
+        };
+        static {
+            buildProximityIndices(PROXIMITY, INDICES);
+        }
+        private static int getIndexOf(int characterCode) {
+            return computeIndex(characterCode, INDICES);
+        }
+    }
+
+    public static int[] getProximityForScript(final int script) {
+        switch (script) {
+            case AndroidSpellCheckerService.SCRIPT_LATIN:
+                return Latin.PROXIMITY;
+            case AndroidSpellCheckerService.SCRIPT_CYRILLIC:
+                return Cyrillic.PROXIMITY;
+            default:
+                throw new RuntimeException("Wrong script supplied: " + script);
+        }
+    }
+    public static int getIndexOfCodeForScript(final int characterCode, final int script) {
+        switch (script) {
+            case AndroidSpellCheckerService.SCRIPT_LATIN:
+                return Latin.getIndexOf(characterCode);
+            case AndroidSpellCheckerService.SCRIPT_CYRILLIC:
+                return Cyrillic.getIndexOf(characterCode);
+            default:
+                throw new RuntimeException("Wrong script supplied: " + script);
+        }
     }
 }

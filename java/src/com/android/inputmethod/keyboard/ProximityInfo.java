@@ -65,12 +65,12 @@ public class ProximityInfo {
         return new ProximityInfo(1, 1, 1, 1, 1, 1, Collections.<Key>emptyList(), null);
     }
 
-    public static ProximityInfo createSpellCheckerProximityInfo() {
+    public static ProximityInfo createSpellCheckerProximityInfo(final int[] proximity) {
         final ProximityInfo spellCheckerProximityInfo = createDummyProximityInfo();
         spellCheckerProximityInfo.mNativeProximityInfo =
                 spellCheckerProximityInfo.setProximityInfoNative(
                         SpellCheckerProximityInfo.ROW_SIZE,
-                        480, 300, 10, 3, SpellCheckerProximityInfo.PROXIMITY,
+                        480, 300, 11, 3, proximity,
                         0, null, null, null, null, null, null, null, null);
         return spellCheckerProximityInfo;
     }
