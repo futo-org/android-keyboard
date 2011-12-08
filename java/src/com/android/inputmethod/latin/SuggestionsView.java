@@ -672,34 +672,8 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         mPreviewPopup.dismiss();
     }
 
-    private void showPreview(View view, CharSequence word) {
-        if (TextUtils.isEmpty(word))
-            return;
-
-        final TextView previewText = mPreviewText;
-        previewText.setTextColor(mParams.mColorTypedWord);
-        previewText.setText(word);
-        previewText.measure(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        final int[] offsetInWindow = new int[2];
-        view.getLocationInWindow(offsetInWindow);
-        final int posX = offsetInWindow[0];
-        final int posY = offsetInWindow[1] - previewText.getMeasuredHeight();
-        final PopupWindow previewPopup = mPreviewPopup;
-        if (previewPopup.isShowing()) {
-            previewPopup.update(posX, posY, previewPopup.getWidth(), previewPopup.getHeight());
-        } else {
-            previewPopup.showAtLocation(this, Gravity.NO_GRAVITY, posX, posY);
-        }
-        previewText.setVisibility(VISIBLE);
-        mHandler.postHidePreview();
-    }
-
     private void addToDictionary(CharSequence word) {
-        if (mListener.addWordToDictionary(word.toString())) {
-            final CharSequence message = getContext().getString(R.string.added_word, word);
-            showPreview(mParams.mWordToSaveView, message);
-        }
+        mListener.addWordToDictionary(word.toString());
     }
 
     private final KeyboardActionListener mMoreSuggestionsListener =
