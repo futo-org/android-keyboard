@@ -17,11 +17,9 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
@@ -776,38 +774,6 @@ public class Utils {
         // a single letter.
         // - It also does not work with unicode surrogate code points.
         return s.toUpperCase(locale).charAt(0) + s.substring(1);
-    }
-
-    public static int getCurrentVibrationDuration(SharedPreferences sp, Resources res) {
-        final int ms = sp.getInt(Settings.PREF_KEYPRESS_VIBRATION_DURATION_SETTINGS, -1);
-        if (ms >= 0) {
-            return ms;
-        }
-        final String[] durationPerHardwareList = res.getStringArray(
-                R.array.keypress_vibration_durations);
-        final String hardwarePrefix = Build.HARDWARE + ",";
-        for (final String element : durationPerHardwareList) {
-            if (element.startsWith(hardwarePrefix)) {
-                return (int)Long.parseLong(element.substring(element.lastIndexOf(',') + 1));
-            }
-        }
-        return -1;
-    }
-
-    public static float getCurrentKeypressSoundVolume(SharedPreferences sp, Resources res) {
-        final float volume = sp.getFloat(Settings.PREF_KEYPRESS_SOUND_VOLUME, -1.0f);
-        if (volume >= 0) {
-            return volume;
-        }
-
-        final String[] volumePerHardwareList = res.getStringArray(R.array.keypress_volumes);
-        final String hardwarePrefix = Build.HARDWARE + ",";
-        for (final String element : volumePerHardwareList) {
-            if (element.startsWith(hardwarePrefix)) {
-                return Float.parseFloat(element.substring(element.lastIndexOf(',') + 1));
-            }
-        }
-        return -1.0f;
     }
 
     public static boolean willAutoCorrect(SuggestedWords suggestions) {

@@ -447,7 +447,7 @@ public class Settings extends InputMethodSettingsActivity
             SharedPreferences sp, Resources res) {
         if (mKeypressVibrationDurationSettingsPref != null) {
             mKeypressVibrationDurationSettingsPref.setSummary(
-                    Utils.getCurrentVibrationDuration(sp, res)
+                    SettingsValues.getCurrentVibrationDuration(sp, res)
                             + res.getString(R.string.settings_ms));
         }
     }
@@ -475,7 +475,7 @@ public class Settings extends InputMethodSettingsActivity
         });
         final View v = context.getLayoutInflater().inflate(
                 R.layout.vibration_settings_dialog, null);
-        final int currentMs = Utils.getCurrentVibrationDuration(
+        final int currentMs = SettingsValues.getCurrentVibrationDuration(
                 getPreferenceManager().getSharedPreferences(), getResources());
         mKeypressVibrationDurationSettingsTextView = (TextView)v.findViewById(R.id.vibration_value);
         final SeekBar sb = (SeekBar)v.findViewById(R.id.vibration_settings);
@@ -504,8 +504,8 @@ public class Settings extends InputMethodSettingsActivity
 
     private void updateKeypressSoundVolumeSummary(SharedPreferences sp, Resources res) {
         if (mKeypressSoundVolumeSettingsPref != null) {
-            mKeypressSoundVolumeSettingsPref.setSummary(
-                    String.valueOf((int)(Utils.getCurrentKeypressSoundVolume(sp, res) * 100)));
+            mKeypressSoundVolumeSettingsPref.setSummary(String.valueOf(
+                    (int)(SettingsValues.getCurrentKeypressSoundVolume(sp, res) * 100)));
         }
     }
 
@@ -534,7 +534,7 @@ public class Settings extends InputMethodSettingsActivity
         });
         final View v = context.getLayoutInflater().inflate(
                 R.layout.sound_effect_volume_dialog, null);
-        final int currentVolumeInt = (int)(Utils.getCurrentKeypressSoundVolume(
+        final int currentVolumeInt = (int)(SettingsValues.getCurrentKeypressSoundVolume(
                 getPreferenceManager().getSharedPreferences(), getResources()) * 100);
         mKeypressSoundVolumeSettingsTextView =
                 (TextView)v.findViewById(R.id.sound_effect_volume_value);

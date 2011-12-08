@@ -2323,7 +2323,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     // update keypress sound volume
     private void updateSoundEffectVolume() {
-        mFxVolume = Utils.getCurrentKeypressSoundVolume(mPrefs, mResources);
+        mFxVolume = SettingsValues.getCurrentKeypressSoundVolume(mPrefs, mResources);
     }
 
     // update flags for silent mode
@@ -2336,7 +2336,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private void updateKeypressVibrationDuration() {
-        mKeypressVibrationDuration = Utils.getCurrentVibrationDuration(mPrefs, mResources);
+        mKeypressVibrationDuration = SettingsValues.getCurrentVibrationDuration(mPrefs, mResources);
     }
 
     private void playKeyClick(int primaryCode) {
