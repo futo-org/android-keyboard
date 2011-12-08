@@ -1335,7 +1335,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         case Keyboard.CODE_SWITCH_ALPHA_SYMBOL:
             // Symbol key is handled in onPress() when device has distinct multi-touch panel.
             if (!distinctMultiTouch) {
-                switcher.toggleKeyboardMode();
+                switcher.toggleAlphabetAndSymbols();
             }
             break;
         case Keyboard.CODE_CANCEL:
