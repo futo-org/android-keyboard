@@ -171,10 +171,6 @@ public class Suggest implements Dictionary.WordCallback {
         }.start();
     }
 
-    public int getCorrectionMode() {
-        return mCorrectionMode;
-    }
-
     public void setCorrectionMode(int mode) {
         mCorrectionMode = mode;
     }
