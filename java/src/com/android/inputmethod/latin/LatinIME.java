@@ -2396,11 +2396,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // TODO: cleanup messy flags
         final boolean shouldAutoCorrect = mSettingsValues.mAutoCorrectEnabled
                 && !mInputTypeNoAutoCorrect;
-        mCorrectionMode = (shouldAutoCorrect && mSettingsValues.mAutoCorrectEnabled)
-                ? Suggest.CORRECTION_FULL
-                : (shouldAutoCorrect ? Suggest.CORRECTION_BASIC : Suggest.CORRECTION_NONE);
-        mCorrectionMode = (mSettingsValues.mBigramSuggestionEnabled && shouldAutoCorrect
-                && mSettingsValues.mAutoCorrectEnabled)
+        mCorrectionMode = shouldAutoCorrect ? Suggest.CORRECTION_FULL : Suggest.CORRECTION_NONE;
+        mCorrectionMode = (mSettingsValues.mBigramSuggestionEnabled && shouldAutoCorrect)
                 ? Suggest.CORRECTION_FULL_BIGRAM : mCorrectionMode;
         if (mSuggest != null) {
             mSuggest.setCorrectionMode(mCorrectionMode);
