@@ -17,11 +17,15 @@
 package com.android.inputmethod.keyboard.internal;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.inputmethod.keyboard.Keyboard;
 
 // TODO: Add unit tests
 public class KeyboardState {
+    private static final String TAG = KeyboardState.class.getSimpleName();
+    private static final boolean DEBUG_STATE = false;
+
     public interface SwitchActions {
         public void setAlphabetKeyboard();
         public static final int UNSHIFT = 0;
@@ -52,6 +56,15 @@ public class KeyboardState {
 
     private final SwitchActions mSwitchActions;
 
+    private final SavedKeyboardState mSavedKeyboardState = new SavedKeyboardState();
+
+    private static class SavedKeyboardState {
+        public boolean mIsValid;
+        public boolean mIsAlphabetMode;
+        public boolean mIsShiftLocked;
+        public boolean mIsShifted;
+    }
+
     public KeyboardState(SwitchActions switchActions) {
         mSwitchActions = switchActions;
     }
@@ -62,6 +75,52 @@ public class KeyboardState {
         mKeyboardShiftState.setShiftLocked(false);
         mShiftKeyState.onRelease();
         mSymbolKeyState.onRelease();
+    }
+
+    // TODO: Get rid of isAlphabetMode and isSymbolShifted arguments.
+    public void onSaveKeyboardState(boolean isAlphabetMode, boolean isSymbolShifted) {
+        final SavedKeyboardState state = mSavedKeyboardState;
+        state.mIsAlphabetMode = isAlphabetMode;
+        if (isAlphabetMode) {
+            state.mIsShiftLocked = isShiftLocked();
+            state.mIsShifted = !state.mIsShiftLocked && isShiftedOrShiftLocked();
+        } else {
+            state.mIsShiftLocked = false;
+            state.mIsShifted = isSymbolShifted;
+        }
+        state.mIsValid = true;
+        if (DEBUG_STATE) {
+            Log.d(TAG, "save: alphabet=" + state.mIsAlphabetMode
+                    + " shiftLocked=" + state.mIsShiftLocked + " shift=" + state.mIsShifted);
+        }
+    }
+
+    public void onRestoreKeyboardState() {
+        final SavedKeyboardState state = mSavedKeyboardState;
+        if (DEBUG_STATE) {
+            Log.d(TAG, "restore: valid=" + state.mIsValid + " alphabet=" + state.mIsAlphabetMode
+                    + " shiftLocked=" + state.mIsShiftLocked + " shift=" + state.mIsShifted);
+        }
+        if (!state.mIsValid || state.mIsAlphabetMode) {
+            mSwitchActions.setAlphabetKeyboard();
+        } else {
+            if (state.mIsShifted) {
+                mSwitchActions.setSymbolsShiftedKeyboard();
+            } else {
+                mSwitchActions.setSymbolsKeyboard();
+            }
+        }
+
+        if (!state.mIsValid) return;
+        state.mIsValid = false;
+
+        if (state.mIsAlphabetMode) {
+            mSwitchActions.setShiftLocked(state.mIsShiftLocked);
+            if (!state.mIsShiftLocked) {
+                mSwitchActions.setShifted(
+                        state.mIsShifted ? SwitchActions.MANUAL_SHIFT : SwitchActions.UNSHIFT);
+            }
+        }
     }
 
     // TODO: Get rid of this method

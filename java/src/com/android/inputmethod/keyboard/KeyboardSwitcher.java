@@ -81,8 +81,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     private final HashMap<KeyboardId, SoftReference<LatinKeyboard>> mKeyboardCache =
             new HashMap<KeyboardId, SoftReference<LatinKeyboard>>();
 
-    private KeyboardLayoutState mSavedKeyboardState = new KeyboardLayoutState();
-
     /** mIsAutoCorrectionActive indicates that auto corrected word will be input instead of
      * what user actually typed. */
     private boolean mIsAutoCorrectionActive;
@@ -91,56 +89,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     private Context mThemeContext;
 
     private static final KeyboardSwitcher sInstance = new KeyboardSwitcher();
-
-    // TODO: Move this to KeyboardState.
-    private class KeyboardLayoutState {
-        private boolean mIsValid;
-        private boolean mIsAlphabetMode;
-        private boolean mIsShiftLocked;
-        private boolean mIsShifted;
-
-        public void save() {
-            mIsAlphabetMode = isAlphabetMode();
-            if (mIsAlphabetMode) {
-                mIsShiftLocked = mState.isShiftLocked();
-                mIsShifted = !mIsShiftLocked && mState.isShiftedOrShiftLocked();
-            } else {
-                mIsShiftLocked = false;
-                mIsShifted = isSymbolShifted();
-            }
-            mIsValid = true;
-            if (DEBUG_STATE) {
-                Log.d(TAG, "save: alphabet=" + mIsAlphabetMode + " shiftLocked=" + mIsShiftLocked
-                        + " shift=" + mIsShifted);
-            }
-        }
-
-        public void restore() {
-            if (DEBUG_STATE) {
-                Log.d(TAG, "restore: valid=" + mIsValid + " alphabet=" + mIsAlphabetMode
-                        + " shiftLocked=" + mIsShiftLocked + " shift=" + mIsShifted);
-            }
-            if (!mIsValid || mIsAlphabetMode) {
-                setAlphabetKeyboard();
-            } else {
-                if (mIsShifted) {
-                    setSymbolsShiftedKeyboard();
-                } else {
-                    setSymbolsKeyboard();
-                }
-            }
-
-            if (!mIsValid) return;
-            mIsValid = false;
-
-            if (mIsAlphabetMode) {
-                setShiftLocked(mIsShiftLocked);
-                if (!mIsShiftLocked) {
-                    setShifted(mIsShifted ? MANUAL_SHIFT : UNSHIFT);
-                }
-            }
-        }
-    }
 
     public static KeyboardSwitcher getInstance() {
         return sInstance;
@@ -194,7 +142,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
             mSymbolsShiftedKeyboardId = getKeyboardId(editorInfo, true, true, settingsValues);
             mState.onLoadKeyboard(mResources.getString(R.string.layout_switch_back_symbols));
             mPrevMainKeyboardWasShiftLocked = false;
-            mSavedKeyboardState.restore();
+            mState.onRestoreKeyboardState();
         } catch (RuntimeException e) {
             Log.w(TAG, "loading keyboard failed: " + mMainKeyboardId, e);
             LatinImeLogger.logOnException(mMainKeyboardId.toString(), e);
@@ -203,7 +151,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
 
     public void saveKeyboardState() {
         if (mCurrentId != null) {
-            mSavedKeyboardState.save();
+            mState.onSaveKeyboardState(isAlphabetMode(), isSymbolShifted());
         }
     }
 
