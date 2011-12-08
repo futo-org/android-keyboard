@@ -25,7 +25,6 @@ import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.VibratorCompatWrapper;
-import com.android.inputmethod.latin.R.array;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -61,6 +60,10 @@ public class SettingsValues {
     private final boolean mShowSettingsKey;
     private final boolean mVoiceKeyEnabled;
     private final boolean mVoiceKeyOnMain;
+
+    // Deduced settings
+    public final int mKeypressVibrationDuration;
+    public final float mFxVolume;
 
     public SettingsValues(final SharedPreferences prefs, final Context context,
             final String localeStr) {
@@ -121,6 +124,9 @@ public class SettingsValues {
         final String voiceMode = prefs.getString(Settings.PREF_VOICE_SETTINGS_KEY, voiceModeMain);
         mVoiceKeyEnabled = voiceMode != null && !voiceMode.equals(voiceModeOff);
         mVoiceKeyOnMain = voiceMode != null && voiceMode.equals(voiceModeMain);
+
+        mFxVolume = getCurrentKeypressSoundVolume(prefs, res);
+        mKeypressVibrationDuration = getCurrentVibrationDuration(prefs, res);
 
         LocaleUtils.setSystemLocale(res, savedLocale);
     }
@@ -244,7 +250,9 @@ public class SettingsValues {
         return mVoiceKeyOnMain;
     }
 
-    public static float getCurrentKeypressSoundVolume(SharedPreferences sp, Resources res) {
+    // Accessed from the settings interface, hence public
+    public static float getCurrentKeypressSoundVolume(final SharedPreferences sp,
+                final Resources res) {
         final float volume = sp.getFloat(Settings.PREF_KEYPRESS_SOUND_VOLUME, -1.0f);
         if (volume >= 0) {
             return volume;
@@ -260,7 +268,9 @@ public class SettingsValues {
         return -1.0f;
     }
 
-    public static int getCurrentVibrationDuration(SharedPreferences sp, Resources res) {
+    // Likewise
+    public static int getCurrentVibrationDuration(final SharedPreferences sp,
+                final Resources res) {
         final int ms = sp.getInt(Settings.PREF_KEYPRESS_VIBRATION_DURATION_SETTINGS, -1);
         if (ms >= 0) {
             return ms;
