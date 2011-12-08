@@ -69,9 +69,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     private Resources mResources;
 
     private KeyboardState mState;
-    private static final int UNSHIFT = 0;
-    private static final int MANUAL_SHIFT = 1;
-    private static final int AUTOMATIC_SHIFT = 2;
 
     private KeyboardId mMainKeyboardId;
     private KeyboardId mSymbolsKeyboardId;
@@ -141,8 +138,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
             mSymbolsKeyboardId = getKeyboardId(editorInfo, true, false, settingsValues);
             mSymbolsShiftedKeyboardId = getKeyboardId(editorInfo, true, true, settingsValues);
             mState.onLoadKeyboard(mResources.getString(R.string.layout_switch_back_symbols));
-            mPrevMainKeyboardWasShiftLocked = false;
-            mState.onRestoreKeyboardState();
         } catch (RuntimeException e) {
             Log.w(TAG, "loading keyboard failed: " + mMainKeyboardId, e);
             LatinImeLogger.logOnException(mMainKeyboardId.toString(), e);
@@ -283,6 +278,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         return mCurrentId != null ? mCurrentId.mMode : KeyboardId.MODE_TEXT;
     }
 
+    // TODO: Delegate to KeyboardState
     public boolean isAlphabetMode() {
         return mCurrentId != null && mCurrentId.isAlphabetKeyboard();
     }
@@ -368,10 +364,17 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         if (isAlphabetMode()) {
             setShifted(mState.isShiftedOrShiftLocked() ? UNSHIFT : MANUAL_SHIFT);
         } else {
-            toggleShiftInSymbols();
+            if (isSymbolShifted()) {
+                setSymbolsKeyboard();
+            } else {
+                setSymbolsShiftedKeyboard();
+            }
         }
     }
 
+    /**
+     * Toggle caps lock state triggered by user touch event.
+     */
     public void toggleCapsLock() {
         if (DEBUG_STATE) {
             Log.d(TAG, "toggleCapsLock: " + mState);
@@ -389,11 +392,18 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         }
     }
 
+    /**
+     * Toggle keyboard mode triggered by user touch event.
+     */
     public void toggleKeyboardMode() {
         if (DEBUG_STATE) {
-            Log.d(TAG, "toggleKeyboard: " + mState);
+            Log.d(TAG, "toggleKeyboardMode: " + mState);
         }
-        toggleAlphabetAndSymbols();
+        if (isAlphabetMode()) {
+            setSymbolsKeyboard();
+        } else {
+            setAlphabetKeyboard();
+        }
     }
 
     /**
@@ -450,13 +460,10 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         mState.onCancelInput(isAlphabetMode(), isSymbolShifted(), isSinglePointer());
     }
 
-    // TODO: Move this variable to KeyboardState.
-    private boolean mPrevMainKeyboardWasShiftLocked;
-
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setSymbolsKeyboard() {
-        mPrevMainKeyboardWasShiftLocked = mState.isShiftLocked();
+        mState.onSaveShiftLockState();
         setKeyboard(getKeyboard(mSymbolsKeyboardId));
     }
 
@@ -464,19 +471,10 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     @Override
     public void setAlphabetKeyboard() {
         setKeyboard(getKeyboard(mMainKeyboardId));
-        setShiftLocked(mPrevMainKeyboardWasShiftLocked);
-        mPrevMainKeyboardWasShiftLocked = false;
+        mState.onRestoreShiftLockState();
     }
 
-    // TODO: Remove this method and merge into toggleKeyboardMode().
-    private void toggleAlphabetAndSymbols() {
-        if (isAlphabetMode()) {
-            setSymbolsKeyboard();
-        } else {
-            setAlphabetKeyboard();
-        }
-    }
-
+    // TODO: Remove this method
     private boolean isSymbolShifted() {
         return mCurrentId != null && mCurrentId.equals(mSymbolsShiftedKeyboardId);
     }
@@ -485,15 +483,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     @Override
     public void setSymbolsShiftedKeyboard() {
         setKeyboard(getKeyboard(mSymbolsShiftedKeyboardId));
-    }
-
-    // TODO: Remove this method and merge into toggleShift().
-    private void toggleShiftInSymbols() {
-        if (isSymbolShifted()) {
-            setSymbolsKeyboard();
-        } else {
-            setSymbolsShiftedKeyboard();
-        }
     }
 
     public boolean isInMomentarySwitchState() {
