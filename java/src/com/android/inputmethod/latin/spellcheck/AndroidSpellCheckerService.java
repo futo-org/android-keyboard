@@ -99,6 +99,25 @@ public class AndroidSpellCheckerService extends SpellCheckerService
     private final HashSet<WeakReference<DictionaryCollection>> mDictionaryCollectionsList =
             new HashSet<WeakReference<DictionaryCollection>>();
 
+    public static final int SCRIPT_LATIN = 0;
+    public static final int SCRIPT_CYRILLIC = 1;
+    private static final TreeMap<String, Integer> mLanguageToScript;
+    static {
+        // List of the supported languages and their associated script. We won't check
+        // words written in another script than the selected script, because we know we
+        // don't have those in our dictionary so we will underline everything and we
+        // will never have any suggestions, so it makes no sense checking them.
+        mLanguageToScript = new TreeMap<String, Integer>();
+        mLanguageToScript.put("en", SCRIPT_LATIN);
+        mLanguageToScript.put("fr", SCRIPT_LATIN);
+        mLanguageToScript.put("de", SCRIPT_LATIN);
+        mLanguageToScript.put("nl", SCRIPT_LATIN);
+        mLanguageToScript.put("cs", SCRIPT_LATIN);
+        mLanguageToScript.put("es", SCRIPT_LATIN);
+        mLanguageToScript.put("it", SCRIPT_LATIN);
+        mLanguageToScript.put("ru", SCRIPT_CYRILLIC);
+    }
+
     @Override public void onCreate() {
         super.onCreate();
         mSuggestionThreshold =
@@ -108,6 +127,15 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.registerOnSharedPreferenceChangeListener(this);
         onSharedPreferenceChanged(prefs, PREF_USE_CONTACTS_KEY);
+    }
+
+    private static int getScriptFromLocale(final Locale locale) {
+        final Integer script = mLanguageToScript.get(locale.getLanguage());
+        if (null == script) {
+            throw new RuntimeException("We have been called with an unsupported language: \""
+                    + locale.getLanguage() + "\". Framework bug?");
+        }
+        return script;
     }
 
     @Override
@@ -363,7 +391,9 @@ public class AndroidSpellCheckerService extends SpellCheckerService
     }
 
     public DictAndProximity createDictAndProximity(final Locale locale) {
-        final ProximityInfo proximityInfo = ProximityInfo.createSpellCheckerProximityInfo();
+        final int script = getScriptFromLocale(locale);
+        final ProximityInfo proximityInfo = ProximityInfo.createSpellCheckerProximityInfo(
+                SpellCheckerProximityInfo.getProximityForScript(script));
         final Resources resources = getResources();
         final int fallbackResourceId = Utils.getMainDictionaryResourceId(resources);
         final DictionaryCollection dictionaryCollection =
@@ -415,25 +445,6 @@ public class AndroidSpellCheckerService extends SpellCheckerService
     }
 
     private static class AndroidSpellCheckerSession extends Session {
-        private static final int SCRIPT_LATIN = 0;
-        private static final int SCRIPT_CYRILLIC = 1;
-        private static final TreeMap<String, Integer> mLanguageToScript;
-        static {
-            // List of the supported languages and their associated script. We won't check
-            // words written in another script than the selected script, because we know we
-            // don't have those in our dictionary so we will underline everything and we
-            // will never have any suggestions, so it makes no sense checking them.
-            mLanguageToScript = new TreeMap<String, Integer>();
-            mLanguageToScript.put("en", SCRIPT_LATIN);
-            mLanguageToScript.put("fr", SCRIPT_LATIN);
-            mLanguageToScript.put("de", SCRIPT_LATIN);
-            mLanguageToScript.put("nl", SCRIPT_LATIN);
-            mLanguageToScript.put("cs", SCRIPT_LATIN);
-            mLanguageToScript.put("es", SCRIPT_LATIN);
-            mLanguageToScript.put("it", SCRIPT_LATIN);
-            mLanguageToScript.put("ru", SCRIPT_CYRILLIC);
-        }
-
         // Immutable, but need the locale which is not available in the constructor yet
         private DictionaryPool mDictionaryPool;
         // Likewise
@@ -452,12 +463,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             final String localeString = getLocale();
             mDictionaryPool = mService.getDictionaryPool(localeString);
             mLocale = LocaleUtils.constructLocaleFromString(localeString);
-            final Integer script = mLanguageToScript.get(mLocale.getLanguage());
-            if (null == script) {
-                throw new RuntimeException("We have been called with an unsupported language: \""
-                        + mLocale.getLanguage() + "\". Framework bug?");
-            }
-            mScript = script;
+            mScript = getScriptFromLocale(mLocale);
         }
 
         /*
@@ -565,12 +571,17 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 final int length = text.length();
                 for (int i = 0; i < length; ++i) {
                     final int character = text.codePointAt(i);
-                    final int proximityIndex = SpellCheckerProximityInfo.getIndexOf(character);
+                    final int proximityIndex =
+                            SpellCheckerProximityInfo.getIndexOfCodeForScript(character, mScript);
                     final int[] proximities;
                     if (-1 == proximityIndex) {
                         proximities = new int[] { character };
                     } else {
-                        proximities = Arrays.copyOfRange(SpellCheckerProximityInfo.PROXIMITY,
+                        // TODO: an initial examination seems to reveal this is actually used
+                        // read-only. It should be possible to compute the arrays statically once
+                        // and skip doing a copy each time here.
+                        proximities = Arrays.copyOfRange(
+                                SpellCheckerProximityInfo.getProximityForScript(mScript),
                                 proximityIndex,
                                 proximityIndex + SpellCheckerProximityInfo.ROW_SIZE);
                     }
