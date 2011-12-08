@@ -57,6 +57,7 @@ public class KeyboardState {
     private final SwitchActions mSwitchActions;
 
     private final SavedKeyboardState mSavedKeyboardState = new SavedKeyboardState();
+    private boolean mPrevMainKeyboardWasShiftLocked;
 
     private static class SavedKeyboardState {
         public boolean mIsValid;
@@ -75,6 +76,8 @@ public class KeyboardState {
         mKeyboardShiftState.setShiftLocked(false);
         mShiftKeyState.onRelease();
         mSymbolKeyState.onRelease();
+        mPrevMainKeyboardWasShiftLocked = false;
+        onRestoreKeyboardState();
     }
 
     // TODO: Get rid of isAlphabetMode and isSymbolShifted arguments.
@@ -95,7 +98,7 @@ public class KeyboardState {
         }
     }
 
-    public void onRestoreKeyboardState() {
+    private void onRestoreKeyboardState() {
         final SavedKeyboardState state = mSavedKeyboardState;
         if (DEBUG_STATE) {
             Log.d(TAG, "restore: valid=" + state.mIsValid + " alphabet=" + state.mIsAlphabetMode
@@ -183,6 +186,16 @@ public class KeyboardState {
         }
     }
 
+    public void onRestoreShiftLockState() {
+        mSwitchActions.setShiftLocked(mPrevMainKeyboardWasShiftLocked);
+        mPrevMainKeyboardWasShiftLocked = false;
+    }
+
+    public void onSaveShiftLockState() {
+        mPrevMainKeyboardWasShiftLocked = isShiftLocked();
+    }
+
+    // TODO: Remove this method.
     public void onReleaseCapsLock() {
         mShiftKeyState.onRelease();
     }
