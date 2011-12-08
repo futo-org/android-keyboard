@@ -137,7 +137,8 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
             mMainKeyboardId = getKeyboardId(editorInfo, false, false, settingsValues);
             mSymbolsKeyboardId = getKeyboardId(editorInfo, true, false, settingsValues);
             mSymbolsShiftedKeyboardId = getKeyboardId(editorInfo, true, true, settingsValues);
-            mState.onLoadKeyboard(mResources.getString(R.string.layout_switch_back_symbols));
+            mState.onLoadKeyboard(mResources.getString(R.string.layout_switch_back_symbols),
+                    hasDistinctMultitouch());
         } catch (RuntimeException e) {
             Log.w(TAG, "loading keyboard failed: " + mMainKeyboardId, e);
             LatinImeLogger.logOnException(mMainKeyboardId.toString(), e);
@@ -317,7 +318,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         if (latinKeyboard == null)
             return;
         if (shiftMode == AUTOMATIC_SHIFT) {
-            mState.setAutomaticTemporaryUpperCase();
             latinKeyboard.setAutomaticTemporaryUpperCase();
         } else {
             final boolean shifted = (shiftMode == MANUAL_SHIFT);
@@ -325,11 +325,9 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
             // state when shift key is pressed to go to normal mode.
             // On the other hand, on distinct multi touch panel device, turning off the shift
             // locked state with shift key pressing is handled by onReleaseShift().
-            if (!hasDistinctMultitouch() && !shifted && latinKeyboard.isShiftLocked()) {
-                mState.setShiftLocked(false);
+            if (!hasDistinctMultitouch() && !shifted && mState.isShiftLocked()) {
                 latinKeyboard.setShiftLocked(false);
             }
-            mState.setShifted(shifted);
             latinKeyboard.setShifted(shifted);
         }
         mKeyboardView.invalidateAllKeys();
@@ -342,7 +340,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         LatinKeyboard latinKeyboard = getLatinKeyboard();
         if (latinKeyboard == null)
             return;
-        mState.setShiftLocked(shiftLocked);
         latinKeyboard.setShiftLocked(shiftLocked);
         mKeyboardView.invalidateAllKeys();
         if (!shiftLocked) {
