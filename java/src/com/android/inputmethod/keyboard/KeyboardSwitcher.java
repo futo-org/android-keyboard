@@ -147,7 +147,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
 
     public void saveKeyboardState() {
         if (mCurrentId != null) {
-            mState.onSaveKeyboardState(isAlphabetMode(), isSymbolShifted());
+            mState.onSaveKeyboardState();
         }
     }
 
@@ -278,9 +278,8 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         return mCurrentId != null ? mCurrentId.mMode : KeyboardId.MODE_TEXT;
     }
 
-    // TODO: Delegate to KeyboardState
     public boolean isAlphabetMode() {
-        return mCurrentId != null && mCurrentId.isAlphabetKeyboard();
+        return mState.isAlphabetMode();
     }
 
     public boolean isInputViewShown() {
@@ -354,44 +353,44 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
      * Toggle keyboard shift state triggered by user touch event.
      */
     public void toggleShift() {
-        mState.onToggleShift(isAlphabetMode(), isSymbolShifted());
+        mState.onToggleShift();
     }
 
     /**
      * Toggle caps lock state triggered by user touch event.
      */
     public void toggleCapsLock() {
-        mState.onToggleCapsLock(isAlphabetMode());
+        mState.onToggleCapsLock();
     }
 
     /**
      * Toggle between alphabet and symbols modes triggered by user touch event.
      */
     public void toggleAlphabetAndSymbols() {
-        mState.onToggleAlphabetAndSymbols(isAlphabetMode());
+        mState.onToggleAlphabetAndSymbols();
     }
 
     /**
      * Update keyboard shift state triggered by connected EditText status change.
      */
     public void updateShiftState() {
-        mState.onUpdateShiftState(isAlphabetMode(), mInputMethodService.getCurrentAutoCapsState());
+        mState.onUpdateShiftState(mInputMethodService.getCurrentAutoCapsState());
     }
 
     public void onPressShift(boolean withSliding) {
-        mState.onPressShift(isAlphabetMode(), isSymbolShifted(), withSliding);
+        mState.onPressShift(withSliding);
     }
 
     public void onReleaseShift(boolean withSliding) {
-        mState.onReleaseShift(isAlphabetMode(), isSymbolShifted(), withSliding);
+        mState.onReleaseShift(withSliding);
     }
 
     public void onPressSymbol() {
-        mState.onPressSymbol(isAlphabetMode());
+        mState.onPressSymbol();
     }
 
     public void onReleaseSymbol() {
-        mState.onReleaseSymbol(isAlphabetMode());
+        mState.onReleaseSymbol();
     }
 
     public void onOtherKeyPressed() {
@@ -399,7 +398,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     }
 
     public void onCancelInput() {
-        mState.onCancelInput(isAlphabetMode(), isSymbolShifted(), isSinglePointer());
+        mState.onCancelInput(isSinglePointer());
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
@@ -412,11 +411,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     @Override
     public void setAlphabetKeyboard() {
         setKeyboard(getKeyboard(mMainKeyboardId));
-    }
-
-    // TODO: Remove this method
-    private boolean isSymbolShifted() {
-        return mCurrentId != null && mCurrentId.equals(mSymbolsShiftedKeyboardId);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
@@ -445,7 +439,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
      * Updates state machine to figure out when to automatically snap back to the previous mode.
      */
     public void onCodeInput(int code) {
-        mState.onCodeInput(isAlphabetMode(), isSymbolShifted(), code, isSinglePointer());
+        mState.onCodeInput(code, isSinglePointer());
     }
 
     public LatinKeyboardView getKeyboardView() {
@@ -495,13 +489,14 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     }
 
     private void postSetInputView(final View newInputView) {
-        mInputMethodService.mHandler.post(new Runnable() {
+        final LatinIME latinIme = mInputMethodService;
+        latinIme.mHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (newInputView != null) {
-                    mInputMethodService.setInputView(newInputView);
+                    latinIme.setInputView(newInputView);
                 }
-                mInputMethodService.updateInputViewShown();
+                latinIme.updateInputViewShown();
             }
         });
     }
