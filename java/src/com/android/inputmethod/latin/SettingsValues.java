@@ -59,8 +59,8 @@ public class SettingsValues {
     // Prediction: use bigrams to predict the next word when there is no input for it yet
     public final boolean mBigramPredictionEnabled;
     public final boolean mEnableSuggestionSpanInsertion;
-    // TODO: add a member for the raw "pref_vibration_duration_settings" setting
-    // TODO: add a member for the raw "pref_keypress_sound_volume" setting
+    private final int mVibrationDurationSettingsRawValue;
+    private final float mKeypressSoundVolumeRawValue;
 
     // Deduced settings
     public final int mKeypressVibrationDuration;
@@ -120,7 +120,10 @@ public class SettingsValues {
         mBigramPredictionEnabled = mBigramSuggestionEnabled
                 && isBigramPredictionEnabled(prefs, res);
         mEnableSuggestionSpanInsertion =
-            prefs.getBoolean(Settings.PREF_KEY_ENABLE_SPAN_INSERT, true);
+                prefs.getBoolean(Settings.PREF_KEY_ENABLE_SPAN_INSERT, true);
+        mVibrationDurationSettingsRawValue =
+                prefs.getInt(Settings.PREF_VIBRATION_DURATION_SETTINGS, -1);
+        mKeypressSoundVolumeRawValue = prefs.getFloat(Settings.PREF_KEYPRESS_SOUND_VOLUME, -1.0f);
 
         // Compute other readable settings
         mKeypressVibrationDuration = getCurrentVibrationDuration(prefs, res);
@@ -280,6 +283,7 @@ public class SettingsValues {
     // Accessed from the settings interface, hence public
     public static float getCurrentKeypressSoundVolume(final SharedPreferences sp,
                 final Resources res) {
+        // TODO: use mVibrationDurationSettingsRawValue instead of reading it again here
         final float volume = sp.getFloat(Settings.PREF_KEYPRESS_SOUND_VOLUME, -1.0f);
         if (volume >= 0) {
             return volume;
@@ -298,6 +302,7 @@ public class SettingsValues {
     // Likewise
     public static int getCurrentVibrationDuration(final SharedPreferences sp,
                 final Resources res) {
+        // TODO: use mKeypressVibrationDuration instead of reading it again here
         final int ms = sp.getInt(Settings.PREF_VIBRATION_DURATION_SETTINGS, -1);
         if (ms >= 0) {
             return ms;
@@ -316,6 +321,7 @@ public class SettingsValues {
     // Likewise
     public static boolean getUsabilityStudyMode(final SharedPreferences prefs,
             final Resources res) {
+        // TODO: use mUsabilityStudyMode instead of reading it again here
         return prefs.getBoolean(Settings.PREF_USABILITY_STUDY_MODE, true);
     }
 }
