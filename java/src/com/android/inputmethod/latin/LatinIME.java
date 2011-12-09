@@ -221,11 +221,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private long mLastKeyTime;
 
     private AudioManager mAudioManager;
-    private float mFxVolume = -1.0f; // default volume
     private boolean mSilentModeOn; // System-wide current configuration
 
     private VibratorCompatWrapper mVibrator;
-    private long mKeypressVibrationDuration = -1;
 
     // TODO: Move this flag to VoiceProxy
     private boolean mConfigurationChanging;
@@ -550,8 +548,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (null == mSubtypeSwitcher) mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mSettingsValues = new SettingsValues(mPrefs, this, mSubtypeSwitcher.getInputLocaleStr());
         resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
-        updateSoundEffectVolume();
-        updateKeypressVibrationDuration();
     }
 
     private void initSuggest() {
@@ -2321,11 +2317,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     };
 
-    // update keypress sound volume
-    private void updateSoundEffectVolume() {
-        mFxVolume = SettingsValues.getCurrentKeypressSoundVolume(mPrefs, mResources);
-    }
-
     // update flags for silent mode
     private void updateRingerMode() {
         if (mAudioManager == null) {
@@ -2333,10 +2324,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (mAudioManager == null) return;
         }
         mSilentModeOn = (mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_NORMAL);
-    }
-
-    private void updateKeypressVibrationDuration() {
-        mKeypressVibrationDuration = SettingsValues.getCurrentVibrationDuration(mPrefs, mResources);
     }
 
     private void playKeyClick(int primaryCode) {
@@ -2363,7 +2350,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 sound = AudioManager.FX_KEYPRESS_STANDARD;
                 break;
             }
-            mAudioManager.playSoundEffect(sound, mFxVolume);
+            mAudioManager.playSoundEffect(sound, mSettingsValues.mFxVolume);
         }
     }
 
@@ -2371,7 +2358,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (!mSettingsValues.mVibrateOn) {
             return;
         }
-        if (mKeypressVibrationDuration < 0) {
+        if (mSettingsValues.mKeypressVibrationDuration < 0) {
             // Go ahead with the system default
             LatinKeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
             if (inputView != null) {
@@ -2380,7 +2367,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                         HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
             }
         } else if (mVibrator != null) {
-            mVibrator.vibrate(mKeypressVibrationDuration);
+            mVibrator.vibrate(mSettingsValues.mKeypressVibrationDuration);
         }
     }
 

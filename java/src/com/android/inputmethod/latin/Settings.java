@@ -543,8 +543,8 @@ public class Settings extends InputMethodSettingsActivity
         });
         final View v = context.getLayoutInflater().inflate(
                 R.layout.sound_effect_volume_dialog, null);
-        final int currentVolumeInt = (int)(SettingsValues.getCurrentKeypressSoundVolume(
-                getPreferenceManager().getSharedPreferences(), getResources()) * 100);
+        final int currentVolumeInt =
+                (int)(SettingsValues.getCurrentKeypressSoundVolume(sp, res) * 100);
         mKeypressSoundVolumeSettingsTextView =
                 (TextView)v.findViewById(R.id.sound_effect_volume_value);
         final SeekBar sb = (SeekBar)v.findViewById(R.id.sound_effect_volume_bar);
