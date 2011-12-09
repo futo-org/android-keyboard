@@ -38,7 +38,7 @@ public class UserBigramSuggestHelper extends SuggestHelper {
                 Suggest.DIC_USER);
         mUserBigram.setDatabaseMax(userBigramMax);
         mUserBigram.setDatabaseDelete(userBigramDelete);
-        mSuggest.setCorrectionMode(Suggest.CORRECTION_FULL_BIGRAM);
+        setCorrectionMode(Suggest.CORRECTION_FULL_BIGRAM);
         mSuggest.setUserBigramDictionary(mUserBigram);
     }
 
@@ -59,7 +59,8 @@ public class UserBigramSuggestHelper extends SuggestHelper {
         flushUserBigrams();
         if (!TextUtils.isEmpty(previous) && !TextUtils.isEmpty(Character.toString(typed))) {
             WordComposer firstChar = createWordComposer(Character.toString(typed));
-            mSuggest.getSuggestions(firstChar, previous, mKeyboard.getProximityInfo());
+            mSuggest.getSuggestions(firstChar, previous, mKeyboard.getProximityInfo(),
+                    mCorrectionMode);
             boolean reloading = mUserBigram.reloadDictionaryIfRequired();
             if (reloading) mUserBigram.waitForDictionaryLoading();
             mUserBigram.getBigrams(firstChar, previous, mSuggest);

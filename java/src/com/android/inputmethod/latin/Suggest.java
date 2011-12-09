@@ -43,9 +43,8 @@ public class Suggest implements Dictionary.WordCallback {
     public static final int APPROX_MAX_WORD_LENGTH = 32;
 
     public static final int CORRECTION_NONE = 0;
-    public static final int CORRECTION_BASIC = 1;
-    public static final int CORRECTION_FULL = 2;
-    public static final int CORRECTION_FULL_BIGRAM = 3;
+    public static final int CORRECTION_FULL = 1;
+    public static final int CORRECTION_FULL_BIGRAM = 2;
 
     /**
      * Words that appear in both bigram and unigram data gets multiplier ranging from
@@ -109,8 +108,6 @@ public class Suggest implements Dictionary.WordCallback {
     private boolean mIsAllUpperCase;
     private int mTrailingSingleQuotesCount;
 
-    private int mCorrectionMode = CORRECTION_BASIC;
-
     public Suggest(final Context context, final int dictionaryResId, final Locale locale) {
         initAsynchronously(context, dictionaryResId, locale);
     }
@@ -169,10 +166,6 @@ public class Suggest implements Dictionary.WordCallback {
                 addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, newMainDict);
             }
         }.start();
-    }
-
-    public void setCorrectionMode(int mode) {
-        mCorrectionMode = mode;
     }
 
     // The main dictionary could have been loaded asynchronously.  Don't cache the return value
@@ -253,9 +246,10 @@ public class Suggest implements Dictionary.WordCallback {
      * @return suggested words object.
      */
     public SuggestedWords getSuggestions(final WordComposer wordComposer,
-            final CharSequence prevWordForBigram, final ProximityInfo proximityInfo) {
+            final CharSequence prevWordForBigram, final ProximityInfo proximityInfo,
+            final int correctionMode) {
         return getSuggestedWordBuilder(wordComposer, prevWordForBigram,
-                proximityInfo).build();
+                proximityInfo, correctionMode).build();
     }
 
     private CharSequence capitalizeWord(boolean all, boolean first, CharSequence word) {
@@ -288,7 +282,7 @@ public class Suggest implements Dictionary.WordCallback {
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
     public SuggestedWords.Builder getSuggestedWordBuilder(
             final WordComposer wordComposer, CharSequence prevWordForBigram,
-            final ProximityInfo proximityInfo) {
+            final ProximityInfo proximityInfo, final int correctionMode) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         mAutoCorrection.init();
         mIsFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
@@ -308,8 +302,7 @@ public class Suggest implements Dictionary.WordCallback {
         }
         mConsideredWord = consideredWord;
 
-        if (wordComposer.size() <= 1 && (mCorrectionMode == CORRECTION_FULL_BIGRAM
-                || mCorrectionMode == CORRECTION_BASIC)) {
+        if (wordComposer.size() <= 1 && (correctionMode == CORRECTION_FULL_BIGRAM)) {
             // At first character typed, search only the bigrams
             Arrays.fill(mBigramScores, 0);
             collectGarbage(mBigramSuggestions, PREF_MAX_BIGRAMS);
@@ -373,7 +366,7 @@ public class Suggest implements Dictionary.WordCallback {
                 mWhiteListDictionary.getWhitelistedWord(consideredWordString));
 
         mAutoCorrection.updateAutoCorrectionStatus(mUnigramDictionaries, wordComposer,
-                mSuggestions, mScores, consideredWord, mAutoCorrectionThreshold, mCorrectionMode,
+                mSuggestions, mScores, consideredWord, mAutoCorrectionThreshold, correctionMode,
                 whitelistedWord);
 
         if (whitelistedWord != null) {
