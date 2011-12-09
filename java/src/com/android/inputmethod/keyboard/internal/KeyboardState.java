@@ -26,7 +26,12 @@ import com.android.inputmethod.keyboard.Keyboard;
  * Keyboard state machine.
  *
  * This class contains all keyboard state transition logic.
- * TODO: List up input events and actions.
+ * The input events are {@link #onLoadKeyboard(String, boolean)}, {@link #onSaveKeyboardState()},
+ * {@link #onPressShift(boolean)}, {@link #onReleaseShift(boolean)}, {@link #onPressSymbol()},
+ * {@link #onReleaseSymbol()}, {@link #onOtherKeyPressed()}, {@link #onCodeInput(int, boolean)},
+ * {@link #onCancelInput(boolean)}, {@link #onUpdateShiftState(boolean)}, {@link #onToggleShift()},
+ * {@link #onToggleCapsLock()}, and {@link #onToggleAlphabetAndSymbols()}.
+ * The actions are {@link SwitchActions}'s methods.
  */
 public class KeyboardState {
     private static final String TAG = KeyboardState.class.getSimpleName();
@@ -63,10 +68,13 @@ public class KeyboardState {
 
     private final SwitchActions mSwitchActions;
 
+    private boolean mIsAlphabetMode;
+    private boolean mIsSymbolShifted;
+
     private final SavedKeyboardState mSavedKeyboardState = new SavedKeyboardState();
     private boolean mPrevMainKeyboardWasShiftLocked;
 
-    private static class SavedKeyboardState {
+    static class SavedKeyboardState {
         public boolean mIsValid;
         public boolean mIsAlphabetMode;
         public boolean mIsShiftLocked;
@@ -91,16 +99,15 @@ public class KeyboardState {
         onRestoreKeyboardState();
     }
 
-    // TODO: Get rid of isAlphabetMode and isSymbolShifted arguments.
-    public void onSaveKeyboardState(boolean isAlphabetMode, boolean isSymbolShifted) {
+    public void onSaveKeyboardState() {
         final SavedKeyboardState state = mSavedKeyboardState;
-        state.mIsAlphabetMode = isAlphabetMode;
-        if (isAlphabetMode) {
+        state.mIsAlphabetMode = mIsAlphabetMode;
+        if (mIsAlphabetMode) {
             state.mIsShiftLocked = isShiftLocked();
             state.mIsShifted = !state.mIsShiftLocked && isShiftedOrShiftLocked();
         } else {
             state.mIsShiftLocked = false;
-            state.mIsShifted = isSymbolShifted;
+            state.mIsShifted = mIsSymbolShifted;
         }
         state.mIsValid = true;
         if (DEBUG_STATE) {
@@ -135,6 +142,10 @@ public class KeyboardState {
                 setShifted(state.mIsShifted ? SwitchActions.MANUAL_SHIFT : SwitchActions.UNSHIFT);
             }
         }
+    }
+
+    public boolean isAlphabetMode() {
+        return mIsAlphabetMode;
     }
 
     public boolean isShiftLocked() {
@@ -190,16 +201,16 @@ public class KeyboardState {
         mSwitchActions.setShiftLocked(shiftLocked);
     }
 
-    private void toggleAlphabetAndSymbols(boolean isAlphabetMode) {
-        if (isAlphabetMode) {
+    private void toggleAlphabetAndSymbols() {
+        if (mIsAlphabetMode) {
             setSymbolsKeyboard();
         } else {
             setAlphabetKeyboard();
         }
     }
 
-    private void toggleShiftInSymbols(boolean isSymbolShifted) {
-        if (isSymbolShifted) {
+    private void toggleShiftInSymbols() {
+        if (mIsSymbolShifted) {
             setSymbolsKeyboard();
         } else {
             setSymbolsShiftedKeyboard();
@@ -211,6 +222,8 @@ public class KeyboardState {
             Log.d(TAG, "setAlphabetKeyboard");
         }
         mSwitchActions.setAlphabetKeyboard();
+        mIsAlphabetMode = true;
+        mIsSymbolShifted = false;
         mSwitchState = SWITCH_STATE_ALPHA;
         setShiftLocked(mPrevMainKeyboardWasShiftLocked);
         mPrevMainKeyboardWasShiftLocked = false;
@@ -222,6 +235,8 @@ public class KeyboardState {
         }
         mPrevMainKeyboardWasShiftLocked = isShiftLocked();
         mSwitchActions.setSymbolsKeyboard();
+        mIsAlphabetMode = false;
+        mIsSymbolShifted = false;
         mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
     }
 
@@ -230,28 +245,28 @@ public class KeyboardState {
             Log.d(TAG, "setSymbolsShiftedKeyboard");
         }
         mSwitchActions.setSymbolsShiftedKeyboard();
+        mIsAlphabetMode = false;
+        mIsSymbolShifted = true;
         mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
     }
 
-    // TODO: Get rid of isAlphabetMode argument.
-    public void onPressSymbol(boolean isAlphabetMode) {
+    public void onPressSymbol() {
         if (DEBUG_STATE) {
             Log.d(TAG, "onPressSymbol: " + this);
         }
-        toggleAlphabetAndSymbols(isAlphabetMode);
+        toggleAlphabetAndSymbols();
         mSymbolKeyState.onPress();
         mSwitchState = SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL;
     }
 
-    // TODO: Get rid of isAlphabetMode argument.
-    public void onReleaseSymbol(boolean isAlphabetMode) {
+    public void onReleaseSymbol() {
         if (DEBUG_STATE) {
             Log.d(TAG, "onReleaseSymbol: " + this);
         }
         // Snap back to the previous keyboard mode if the user chords the mode change key and
         // another key, then releases the mode change key.
         if (mSwitchState == SWITCH_STATE_CHORDING_ALPHA) {
-            toggleAlphabetAndSymbols(isAlphabetMode);
+            toggleAlphabetAndSymbols();
         }
         mSymbolKeyState.onRelease();
     }
@@ -264,12 +279,11 @@ public class KeyboardState {
         mSymbolKeyState.onOtherKeyPressed();
     }
 
-    // TODO: Get rid of isAlphabetMode argument.
-    public void onUpdateShiftState(boolean isAlphabetMode, boolean autoCaps) {
+    public void onUpdateShiftState(boolean autoCaps) {
         if (DEBUG_STATE) {
             Log.d(TAG, "onUpdateShiftState: " + this + " autoCaps=" + autoCaps);
         }
-        if (isAlphabetMode) {
+        if (mIsAlphabetMode) {
             if (!isShiftLocked() && !mShiftKeyState.isIgnoring()) {
                 if (mShiftKeyState.isReleasing() && autoCaps) {
                     // Only when shift key is releasing, automatic temporary upper case will be set.
@@ -286,12 +300,11 @@ public class KeyboardState {
         }
     }
 
-    // TODO: Get rid of isAlphabetMode and isSymbolShifted arguments.
-    public void onPressShift(boolean isAlphabetMode, boolean isSymbolShifted, boolean withSliding) {
+    public void onPressShift(boolean withSliding) {
         if (DEBUG_STATE) {
             Log.d(TAG, "onPressShift: " + this + " sliding=" + withSliding);
         }
-        if (isAlphabetMode) {
+        if (mIsAlphabetMode) {
             if (isShiftLocked()) {
                 // Shift key is pressed while caps lock state, we will treat this state as shifted
                 // caps lock state and mark as if shift key pressed while normal state.
@@ -313,19 +326,17 @@ public class KeyboardState {
             }
         } else {
             // In symbol mode, just toggle symbol and symbol more keyboard.
-            toggleShiftInSymbols(isSymbolShifted);
+            toggleShiftInSymbols();
             mSwitchState = SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE;
             mShiftKeyState.onPress();
         }
     }
 
-    // TODO: Get rid of isAlphabetMode and isSymbolShifted arguments.
-    public void onReleaseShift(boolean isAlphabetMode, boolean isSymbolShifted,
-            boolean withSliding) {
+    public void onReleaseShift(boolean withSliding) {
         if (DEBUG_STATE) {
             Log.d(TAG, "onReleaseShift: " + this + " sliding=" + withSliding);
         }
-        if (isAlphabetMode) {
+        if (mIsAlphabetMode) {
             final boolean isShiftLocked = isShiftLocked();
             if (mShiftKeyState.isMomentary()) {
                 // After chording input while normal state.
@@ -350,24 +361,22 @@ public class KeyboardState {
             // In symbol mode, snap back to the previous keyboard mode if the user chords the shift
             // key and another key, then releases the shift key.
             if (mSwitchState == SWITCH_STATE_CHORDING_SYMBOL) {
-                toggleShiftInSymbols(isSymbolShifted);
+                toggleShiftInSymbols();
             }
         }
         mShiftKeyState.onRelease();
     }
 
-    // TODO: Get rid of isAlphabetMode and isSymbolShifted arguments.
-    public void onCancelInput(boolean isAlphabetMode, boolean isSymbolShifted,
-            boolean isSinglePointer) {
+    public void onCancelInput(boolean isSinglePointer) {
         if (DEBUG_STATE) {
             Log.d(TAG, "onCancelInput: isSinglePointer=" + isSinglePointer + " " + this);
         }
         // Snap back to the previous keyboard mode if the user cancels sliding input.
         if (isSinglePointer) {
             if (mSwitchState == SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL) {
-                toggleAlphabetAndSymbols(isAlphabetMode);
+                toggleAlphabetAndSymbols();
             } else if (mSwitchState == SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE) {
-                toggleShiftInSymbols(isSymbolShifted);
+                toggleShiftInSymbols();
             }
         }
     }
@@ -387,9 +396,7 @@ public class KeyboardState {
         return false;
     }
 
-    // TODO: Get rid of isAlphabetMode and isSymbolShifted arguments.
-    public void onCodeInput(boolean isAlphabetMode, boolean isSymbolShifted, int code,
-            boolean isSinglePointer) {
+    public void onCodeInput(int code, boolean isSinglePointer) {
         if (DEBUG_STATE) {
             Log.d(TAG, "onCodeInput: code=" + code + " isSinglePointer=" + isSinglePointer
                     + " " + this);
@@ -404,7 +411,7 @@ public class KeyboardState {
             // {@link #SWITCH_STATE_MOMENTARY}.
             if (code == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
                 // Detected only the mode change key has been pressed, and then released.
-                if (isAlphabetMode) {
+                if (mIsAlphabetMode) {
                     mSwitchState = SWITCH_STATE_ALPHA;
                 } else {
                     mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
@@ -414,7 +421,7 @@ public class KeyboardState {
                 // and slid to other key, then released the finger.
                 // If the user cancels the sliding input, snapping back to the previous keyboard
                 // mode is handled by {@link #onCancelInput}.
-                toggleAlphabetAndSymbols(isAlphabetMode);
+                toggleAlphabetAndSymbols();
             } else {
                 // Chording input is being started. The keyboard mode will be snapped back to the
                 // previous mode in {@link onReleaseSymbol} when the mode change key is released.
@@ -428,7 +435,7 @@ public class KeyboardState {
             } else if (isSinglePointer) {
                 // Snap back to the previous keyboard mode if the user pressed the shift key on
                 // symbol mode and slid to other key, then released the finger.
-                toggleShiftInSymbols(isSymbolShifted);
+                toggleShiftInSymbols();
                 mSwitchState = SWITCH_STATE_SYMBOL;
             } else {
                 // Chording input is being started. The keyboard mode will be snapped back to the
@@ -456,25 +463,23 @@ public class KeyboardState {
         }
     }
 
-    // TODO: Get rid of isAlphabetMode and isSymbolShifted arguments.
-    public void onToggleShift(boolean isAlphabetMode, boolean isSymbolShifted) {
+    public void onToggleShift() {
         if (DEBUG_STATE) {
             Log.d(TAG, "onToggleShift: " + this);
         }
-        if (isAlphabetMode) {
+        if (mIsAlphabetMode) {
             setShifted(isShiftedOrShiftLocked()
                     ? SwitchActions.UNSHIFT : SwitchActions.MANUAL_SHIFT);
         } else {
-            toggleShiftInSymbols(isSymbolShifted);
+            toggleShiftInSymbols();
         }
     }
 
-    // TODO: Get rid of isAlphabetMode arguments.
-    public void onToggleCapsLock(boolean isAlphabetMode) {
+    public void onToggleCapsLock() {
         if (DEBUG_STATE) {
             Log.d(TAG, "onToggleCapsLock: " + this);
         }
-        if (isAlphabetMode) {
+        if (mIsAlphabetMode) {
             if (isShiftLocked()) {
                 setShiftLocked(false);
                 // Shift key is long pressed while caps lock state, we will toggle back to normal
@@ -486,12 +491,11 @@ public class KeyboardState {
         }
     }
 
-    // TODO: Get rid of isAlphabetMode arguments.
-    public void onToggleAlphabetAndSymbols(boolean isAlphabetMode) {
+    public void onToggleAlphabetAndSymbols() {
         if (DEBUG_STATE) {
             Log.d(TAG, "onToggleAlphabetAndSymbols: " + this);
         }
-        toggleAlphabetAndSymbols(isAlphabetMode);
+        toggleAlphabetAndSymbols();
     }
 
     private static String shiftModeToString(int shiftMode) {
