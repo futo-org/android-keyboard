@@ -36,6 +36,7 @@ import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.Settings;
+import com.android.inputmethod.latin.SettingsValues;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.Utils;
 
@@ -132,7 +133,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         }
     }
 
-    public void loadKeyboard(EditorInfo editorInfo, Settings.Values settingsValues) {
+    public void loadKeyboard(EditorInfo editorInfo, SettingsValues settingsValues) {
         try {
             mMainKeyboardId = getKeyboardId(editorInfo, false, false, settingsValues);
             mSymbolsKeyboardId = getKeyboardId(editorInfo, true, false, settingsValues);
@@ -166,8 +167,8 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         mState.onSetKeyboard(isAlphabetMode());
         updateShiftLockState(keyboard);
         mKeyboardView.setKeyPreviewPopupEnabled(
-                Settings.Values.isKeyPreviewPopupEnabled(mPrefs, mResources),
-                Settings.Values.getKeyPreviewPopupDismissDelay(mPrefs, mResources));
+                SettingsValues.isKeyPreviewPopupEnabled(mPrefs, mResources),
+                SettingsValues.getKeyPreviewPopupDismissDelay(mPrefs, mResources));
         final boolean localeChanged = (oldKeyboard == null)
                 || !keyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
         mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
@@ -226,7 +227,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     }
 
     private KeyboardId getKeyboardId(EditorInfo editorInfo, final boolean isSymbols,
-            final boolean isShift, Settings.Values settingsValues) {
+            final boolean isShift, SettingsValues settingsValues) {
         final int mode = Utils.getKeyboardMode(editorInfo);
         final int xmlId;
         switch (mode) {

@@ -174,7 +174,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // Current space state of the input method. This can be any of the above constants.
     private int mSpaceState;
 
-    private Settings.Values mSettingsValues;
+    private SettingsValues mSettingsValues;
 
     private View mExtractArea;
     private View mKeyPreviewBackingView;
@@ -548,7 +548,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     /* package */ void loadSettings() {
         if (null == mPrefs) mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (null == mSubtypeSwitcher) mSubtypeSwitcher = SubtypeSwitcher.getInstance();
-        mSettingsValues = new Settings.Values(mPrefs, this, mSubtypeSwitcher.getInputLocaleStr());
+        mSettingsValues = new SettingsValues(mPrefs, this, mSubtypeSwitcher.getInputLocaleStr());
         resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
         updateSoundEffectVolume();
         updateKeypressVibrationDuration();
