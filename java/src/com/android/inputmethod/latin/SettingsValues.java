@@ -42,28 +42,34 @@ public class SettingsValues {
     private final String mSymbolsExcludedFromWordSeparators;
     public final CharSequence mHintToSaveText;
 
-    // From preferences:
-    public final boolean mSoundOn; // Sound setting private to Latin IME (see mSilentModeOn)
-    public final boolean mVibrateOn;
-    public final boolean mKeyPreviewPopupOn;
-    public final int mKeyPreviewPopupDismissDelay;
+    // From preferences, in the same order as xml/prefs.xml:
     public final boolean mAutoCap;
-    public final boolean mAutoCorrectEnabled;
-    public final double mAutoCorrectionThreshold;
+    public final boolean mVibrateOn;
+    public final boolean mSoundOn;
+    public final boolean mKeyPreviewPopupOn;
+    private final boolean mShowSettingsKey;
+    // TODO: add a member for the raw "voice_mode" setting
+    // TODO: add a member for the raw "auto_correction_threshold" setting
+    // TODO: add a member for the raw "show_suggestions_setting" setting
+    // TODO: add a member for the raw "usability_study_mode" setting
+    // TODO: add a member for the raw "pref_key_preview_popup_dismiss_delay" setting
+    public final boolean mUseContactsDict;
     // Suggestion: use bigrams to adjust scores of suggestions obtained from unigram dictionary
     public final boolean mBigramSuggestionEnabled;
     // Prediction: use bigrams to predict the next word when there is no input for it yet
     public final boolean mBigramPredictionEnabled;
-    public final boolean mUseContactsDict;
     public final boolean mEnableSuggestionSpanInsertion;
-
-    private final boolean mShowSettingsKey;
-    private final boolean mVoiceKeyEnabled;
-    private final boolean mVoiceKeyOnMain;
+    // TODO: add a member for the raw "pref_vibration_duration_settings" setting
+    // TODO: add a member for the raw "pref_keypress_sound_volume" setting
 
     // Deduced settings
     public final int mKeypressVibrationDuration;
     public final float mFxVolume;
+    public final int mKeyPreviewPopupDismissDelay;
+    public final boolean mAutoCorrectEnabled;
+    public final double mAutoCorrectionThreshold;
+    private final boolean mVoiceKeyEnabled;
+    private final boolean mVoiceKeyOnMain;
 
     public SettingsValues(final SharedPreferences prefs, final Context context,
             final String localeStr) {
