@@ -34,12 +34,12 @@ public class SettingsValues {
 
     // From resources:
     public final int mDelayUpdateOldSuggestions;
-    public final String mWordSeparators;
     public final String mMagicSpaceStrippers;
     public final String mMagicSpaceSwappers;
     public final String mSuggestPuncs;
     public final SuggestedWords mSuggestPuncList;
     private final String mSymbolsExcludedFromWordSeparators;
+    public final String mWordSeparators;
     public final CharSequence mHintToSaveText;
 
     // From preferences, in the same order as xml/prefs.xml:
@@ -83,23 +83,16 @@ public class SettingsValues {
         }
 
         // Get the resources
-        mDelayUpdateOldSuggestions = res.getInteger(
-                R.integer.config_delay_update_old_suggestions);
+        mDelayUpdateOldSuggestions = res.getInteger(R.integer.config_delay_update_old_suggestions);
         mMagicSpaceStrippers = res.getString(R.string.magic_space_stripping_symbols);
         mMagicSpaceSwappers = res.getString(R.string.magic_space_swapping_symbols);
-        String wordSeparators = mMagicSpaceStrippers + mMagicSpaceSwappers
-                + res.getString(R.string.magic_space_promoting_symbols);
-        final String symbolsExcludedFromWordSeparators =
-                res.getString(R.string.symbols_excluded_from_word_separators);
-        for (int i = symbolsExcludedFromWordSeparators.length() - 1; i >= 0; --i) {
-            wordSeparators = wordSeparators.replace(
-                    symbolsExcludedFromWordSeparators.substring(i, i + 1), "");
-        }
-        mSymbolsExcludedFromWordSeparators = symbolsExcludedFromWordSeparators;
-        mWordSeparators = wordSeparators;
         mSuggestPuncs = res.getString(R.string.suggested_punctuations);
         // TODO: it would be nice not to recreate this each time we change the configuration
         mSuggestPuncList = createSuggestPuncList(mSuggestPuncs);
+        mSymbolsExcludedFromWordSeparators =
+                res.getString(R.string.symbols_excluded_from_word_separators);
+        mWordSeparators = createWordSeparators(mMagicSpaceStrippers, mMagicSpaceSwappers,
+                mSymbolsExcludedFromWordSeparators, res);
         mHintToSaveText = context.getText(R.string.hint_add_to_dictionary);
 
         // Get the settings preferences
@@ -135,6 +128,29 @@ public class SettingsValues {
         mKeypressVibrationDuration = getCurrentVibrationDuration(prefs, res);
 
         LocaleUtils.setSystemLocale(res, savedLocale);
+    }
+
+    // Helper functions to create member values.
+    private static SuggestedWords createSuggestPuncList(final String puncs) {
+        SuggestedWords.Builder builder = new SuggestedWords.Builder();
+        if (puncs != null) {
+            for (int i = 0; i < puncs.length(); i++) {
+                builder.addWord(puncs.subSequence(i, i + 1));
+            }
+        }
+        return builder.setIsPunctuationSuggestions().build();
+    }
+
+    private static String createWordSeparators(final String magicSpaceStrippers,
+            final String magicSpaceSwappers, final String symbolsExcludedFromWordSeparators,
+            final Resources res) {
+        String wordSeparators = magicSpaceStrippers + magicSpaceSwappers
+                + res.getString(R.string.magic_space_promoting_symbols);
+        for (int i = symbolsExcludedFromWordSeparators.length() - 1; i >= 0; --i) {
+            wordSeparators = wordSeparators.replace(
+                    symbolsExcludedFromWordSeparators.substring(i, i + 1), "");
+        }
+        return wordSeparators;
     }
 
     public boolean isSuggestedPunctuation(int code) {
@@ -224,16 +240,6 @@ public class SettingsValues {
                     + Arrays.toString(autoCorrectionThresholdValues));
         }
         return autoCorrectionThreshold;
-    }
-
-    private static SuggestedWords createSuggestPuncList(final String puncs) {
-        SuggestedWords.Builder builder = new SuggestedWords.Builder();
-        if (puncs != null) {
-            for (int i = 0; i < puncs.length(); i++) {
-                builder.addWord(puncs.subSequence(i, i + 1));
-            }
-        }
-        return builder.setIsPunctuationSuggestions().build();
     }
 
     public static boolean isShowSettingsKeyOption(final Resources resources) {
