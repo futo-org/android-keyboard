@@ -16,10 +16,21 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.compat.InputMethodInfoCompatWrapper;
+import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
+import com.android.inputmethod.compat.InputTypeCompatUtils;
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardId;
+
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
@@ -29,20 +40,15 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 
-import com.android.inputmethod.compat.InputMethodInfoCompatWrapper;
-import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
-import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
-import com.android.inputmethod.compat.InputTypeCompatUtils;
-import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardId;
-
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -502,32 +508,84 @@ public class Utils {
             });
         }
 
+        private synchronized String getBufferedLogs() {
+            mWriter.flush();
+            StringBuilder sb = new StringBuilder();
+            BufferedReader br = getBufferedReader();
+            String line;
+            try {
+                while ((line = br.readLine()) != null) {
+                    sb.append('\n');
+                    sb.append(line);
+                }
+            } catch (IOException e) {
+                Log.e(USABILITY_TAG, "Can't read log file.");
+            } finally {
+                if (LatinImeLogger.sDBG) {
+                    Log.d(USABILITY_TAG, "Got all buffered logs\n" + sb.toString());
+                }
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    // ignore.
+                }
+            }
+            return sb.toString();
+        }
+
+        public void emailResearcherLogsAll() {
+            mLoggingHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (mFile == null) {
+                        Log.w(TAG, "No internal log file found.");
+                        return;
+                    }
+                    if (mIms.checkCallingOrSelfPermission(
+                                android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                        != PackageManager.PERMISSION_GRANTED) {
+                        Log.w(TAG, "Doesn't have the permission WRITE_EXTERNAL_STORAGE");
+                        return;
+                    }
+                    mWriter.flush();
+                    final String destPath =
+                            Environment.getExternalStorageDirectory() + "/" + FILENAME;
+                    final File destFile = new File(destPath);
+                    try {
+                        final FileChannel src = (new FileInputStream(mFile)).getChannel();
+                        final FileChannel dest = (new FileOutputStream(destFile)).getChannel();
+                        src.transferTo(0, src.size(), dest);
+                        src.close();
+                        dest.close();
+                    } catch (FileNotFoundException e1) {
+                        Log.w(TAG, e1);
+                        return;
+                    } catch (IOException e2) {
+                        Log.w(TAG, e2);
+                        return;
+                    }
+                    if (destFile == null || !destFile.exists()) {
+                        Log.w(TAG, "Dest file doesn't exist.");
+                        return;
+                    }
+                    final Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    if (LatinImeLogger.sDBG) {
+                        Log.d(TAG, "Destination file URI is " + destFile.toURI());
+                    }
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + destPath));
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "[Research Logs]");
+                    mIms.startActivity(intent);
+                }
+            });
+        }
+
         public void printAll() {
             mLoggingHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mWriter.flush();
-                    StringBuilder sb = new StringBuilder();
-                    BufferedReader br = getBufferedReader();
-                    String line;
-                    try {
-                        while ((line = br.readLine()) != null) {
-                            sb.append('\n');
-                            sb.append(line);
-                        }
-                    } catch (IOException e) {
-                        Log.e(USABILITY_TAG, "Can't read log file.");
-                    } finally {
-                        if (LatinImeLogger.sDBG) {
-                            Log.d(USABILITY_TAG, "output all logs\n" + sb.toString());
-                        }
-                        mIms.getCurrentInputConnection().commitText(sb.toString(), 0);
-                        try {
-                            br.close();
-                        } catch (IOException e) {
-                            // ignore.
-                        }
-                    }
+                    mIms.getCurrentInputConnection().commitText(getBufferedLogs(), 0);
                 }
             });
         }
