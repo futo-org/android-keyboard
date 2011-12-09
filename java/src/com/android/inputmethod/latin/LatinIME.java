@@ -78,7 +78,6 @@ import java.util.Locale;
 public class LatinIME extends InputMethodServiceCompatWrapper implements KeyboardActionListener,
         SuggestionsView.Listener {
     private static final String TAG = LatinIME.class.getSimpleName();
-    private static final boolean PERF_DEBUG = false;
     private static final boolean TRACE = false;
     private static boolean DEBUG;
 
@@ -1576,7 +1575,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
 
         switcher.updateShiftState();
-        if (LatinIME.PERF_DEBUG) measureCps();
         TextEntryState.typedCharacter((char) code, mSettingsValues.isWordSeparator(code), x, y);
         if (null != ic) ic.endBatchEdit();
     }
@@ -2479,7 +2477,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         final Printer p = new PrintWriterPrinter(fout);
         p.println("LatinIME state :");
-        p.println("  Keyboard mode = " + mKeyboardSwitcher.getKeyboardMode());
+        final Keyboard keyboard = mKeyboardSwitcher.getLatinKeyboard();
+        final int keyboardMode = keyboard != null ? keyboard.mId.mMode : -1;
+        p.println("  Keyboard mode = " + keyboardMode);
         p.println("  mComposingStringBuilder=" + mComposingStringBuilder.toString());
         p.println("  mIsSuggestionsRequested=" + mIsSettingsSuggestionStripOn);
         p.println("  mCorrectionMode=" + mCorrectionMode);
@@ -2491,23 +2491,5 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         p.println("  mSoundOn=" + mSettingsValues.mSoundOn);
         p.println("  mVibrateOn=" + mSettingsValues.mVibrateOn);
         p.println("  mKeyPreviewPopupOn=" + mSettingsValues.mKeyPreviewPopupOn);
-    }
-
-    // Characters per second measurement
-
-    private long mLastCpsTime;
-    private static final int CPS_BUFFER_SIZE = 16;
-    private long[] mCpsIntervals = new long[CPS_BUFFER_SIZE];
-    private int mCpsIndex;
-
-    private void measureCps() {
-        long now = System.currentTimeMillis();
-        if (mLastCpsTime == 0) mLastCpsTime = now - 100; // Initial
-        mCpsIntervals[mCpsIndex] = now - mLastCpsTime;
-        mLastCpsTime = now;
-        mCpsIndex = (mCpsIndex + 1) % CPS_BUFFER_SIZE;
-        long total = 0;
-        for (int i = 0; i < CPS_BUFFER_SIZE; i++) total += mCpsIntervals[i];
-        System.out.println("CPS = " + ((CPS_BUFFER_SIZE * 1000f) / total));
     }
 }
