@@ -27,6 +27,7 @@ import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
 
 import com.android.inputmethod.compat.ArraysCompatUtils;
+import com.android.inputmethod.compat.SuggestionsInfoCompatUtils;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.Dictionary;
@@ -632,7 +633,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                         (isInDict ? SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY
                                 : SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO)
                         | (result.mHasRecommendedSuggestions
-                                ? SuggestionsInfo.RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS
+                                ? SuggestionsInfoCompatUtils
+                                        .getValueOf_RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS()
                                 : 0);
                 return new SuggestionsInfo(flags, result.mSuggestions);
             } catch (RuntimeException e) {
