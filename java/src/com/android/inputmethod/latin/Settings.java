@@ -178,7 +178,7 @@ public class Settings extends InputMethodSettingsActivity
         final PreferenceGroup miscSettings =
                 (PreferenceGroup) findPreference(PREF_MISC_SETTINGS);
 
-        if (!SettingsValues.isShowSettingsKeyOption(res)) {
+        if (!SettingsValues.isShowSettingsKeyOptionEnabled(res)) {
             generalSettings.removePreference(mShowSettingsKeyPreference);
         }
 
