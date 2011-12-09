@@ -274,16 +274,23 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
                 voiceKeyEnabled, hasShortcutKey);
     }
 
-    public int getKeyboardMode() {
-        return mCurrentId != null ? mCurrentId.mMode : KeyboardId.MODE_TEXT;
-    }
-
     public boolean isAlphabetMode() {
-        return mState.isAlphabetMode();
+        final Keyboard keyboard = getLatinKeyboard();
+        return keyboard != null && keyboard.mId.isAlphabetKeyboard();
     }
 
     public boolean isInputViewShown() {
         return mCurrentInputView != null && mCurrentInputView.isShown();
+    }
+
+    public boolean isShiftedOrShiftLocked() {
+        final Keyboard keyboard = getLatinKeyboard();
+        return keyboard != null && keyboard.isShiftedOrShiftLocked();
+    }
+
+    public boolean isManualTemporaryUpperCase() {
+        final Keyboard keyboard = getLatinKeyboard();
+        return keyboard != null && keyboard.isManualTemporaryUpperCase();
     }
 
     public boolean isKeyboardAvailable() {
@@ -299,14 +306,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
                 return (LatinKeyboard)keyboard;
         }
         return null;
-    }
-
-    public boolean isShiftedOrShiftLocked() {
-        return mState.isShiftedOrShiftLocked();
-    }
-
-    public boolean isManualTemporaryUpperCase() {
-        return mState.isManualTemporaryUpperCase();
     }
 
     // Implements {@link KeyboardState.SwitchActions}.

@@ -26,11 +26,13 @@ import com.android.inputmethod.keyboard.Keyboard;
  * Keyboard state machine.
  *
  * This class contains all keyboard state transition logic.
+ *
  * The input events are {@link #onLoadKeyboard(String, boolean)}, {@link #onSaveKeyboardState()},
  * {@link #onPressShift(boolean)}, {@link #onReleaseShift(boolean)}, {@link #onPressSymbol()},
  * {@link #onReleaseSymbol()}, {@link #onOtherKeyPressed()}, {@link #onCodeInput(int, boolean)},
  * {@link #onCancelInput(boolean)}, {@link #onUpdateShiftState(boolean)}, {@link #onToggleShift()},
  * {@link #onToggleCapsLock()}, and {@link #onToggleAlphabetAndSymbols()}.
+ *
  * The actions are {@link SwitchActions}'s methods.
  */
 public class KeyboardState {
@@ -39,12 +41,16 @@ public class KeyboardState {
 
     public interface SwitchActions {
         public void setAlphabetKeyboard();
+
         public static final int UNSHIFT = 0;
         public static final int MANUAL_SHIFT = 1;
         public static final int AUTOMATIC_SHIFT = 2;
         public void setShifted(int shiftMode);
+
         public void setShiftLocked(boolean shiftLocked);
+
         public void setSymbolsKeyboard();
+
         public void setSymbolsShiftedKeyboard();
     }
 
@@ -103,8 +109,9 @@ public class KeyboardState {
         final SavedKeyboardState state = mSavedKeyboardState;
         state.mIsAlphabetMode = mIsAlphabetMode;
         if (mIsAlphabetMode) {
-            state.mIsShiftLocked = isShiftLocked();
-            state.mIsShifted = !state.mIsShiftLocked && isShiftedOrShiftLocked();
+            state.mIsShiftLocked = mKeyboardShiftState.isShiftLocked();
+            state.mIsShifted = !state.mIsShiftLocked
+                    && mKeyboardShiftState.isShiftedOrShiftLocked();
         } else {
             state.mIsShiftLocked = false;
             state.mIsShifted = mIsSymbolShifted;
@@ -144,32 +151,9 @@ public class KeyboardState {
         }
     }
 
-    public boolean isAlphabetMode() {
-        return mIsAlphabetMode;
-    }
-
+    // TODO: Remove this method.
     public boolean isShiftLocked() {
         return mKeyboardShiftState.isShiftLocked();
-    }
-
-    public boolean isShiftLockShifted() {
-        return mKeyboardShiftState.isShiftLockShifted();
-    }
-
-    public boolean isShiftedOrShiftLocked() {
-        return mKeyboardShiftState.isShiftedOrShiftLocked();
-    }
-
-    public boolean isAutomaticTemporaryUpperCase() {
-        return mKeyboardShiftState.isAutomaticTemporaryUpperCase();
-    }
-
-    public boolean isManualTemporaryUpperCase() {
-        return mKeyboardShiftState.isManualTemporaryUpperCase();
-    }
-
-    public boolean isManualTemporaryUpperCaseFromAuto() {
-        return mKeyboardShiftState.isManualTemporaryUpperCaseFromAuto();
     }
 
     private void setShifted(int shiftMode) {
@@ -185,7 +169,7 @@ public class KeyboardState {
             // state when shift key is pressed to go to normal mode.
             // On the other hand, on distinct multi touch panel device, turning off the shift
             // locked state with shift key pressing is handled by onReleaseShift().
-            if (!mHasDistinctMultitouch && !shifted && isShiftLocked()) {
+            if (!mHasDistinctMultitouch && !shifted && mKeyboardShiftState.isShiftLocked()) {
                 mKeyboardShiftState.setShiftLocked(false);
             }
             mKeyboardShiftState.setShifted(shifted);
@@ -233,7 +217,7 @@ public class KeyboardState {
         if (DEBUG_STATE) {
             Log.d(TAG, "setSymbolsKeyboard");
         }
-        mPrevMainKeyboardWasShiftLocked = isShiftLocked();
+        mPrevMainKeyboardWasShiftLocked = mKeyboardShiftState.isShiftLocked();
         mSwitchActions.setSymbolsKeyboard();
         mIsAlphabetMode = false;
         mIsSymbolShifted = false;
@@ -284,7 +268,7 @@ public class KeyboardState {
             Log.d(TAG, "onUpdateShiftState: " + this + " autoCaps=" + autoCaps);
         }
         if (mIsAlphabetMode) {
-            if (!isShiftLocked() && !mShiftKeyState.isIgnoring()) {
+            if (!mKeyboardShiftState.isShiftLocked() && !mShiftKeyState.isIgnoring()) {
                 if (mShiftKeyState.isReleasing() && autoCaps) {
                     // Only when shift key is releasing, automatic temporary upper case will be set.
                     setShifted(SwitchActions.AUTOMATIC_SHIFT);
@@ -305,17 +289,17 @@ public class KeyboardState {
             Log.d(TAG, "onPressShift: " + this + " sliding=" + withSliding);
         }
         if (mIsAlphabetMode) {
-            if (isShiftLocked()) {
+            if (mKeyboardShiftState.isShiftLocked()) {
                 // Shift key is pressed while caps lock state, we will treat this state as shifted
                 // caps lock state and mark as if shift key pressed while normal state.
                 setShifted(SwitchActions.MANUAL_SHIFT);
                 mShiftKeyState.onPress();
-            } else if (isAutomaticTemporaryUpperCase()) {
+            } else if (mKeyboardShiftState.isAutomaticTemporaryUpperCase()) {
                 // Shift key is pressed while automatic temporary upper case, we have to move to
                 // manual temporary upper case.
                 setShifted(SwitchActions.MANUAL_SHIFT);
                 mShiftKeyState.onPress();
-            } else if (isShiftedOrShiftLocked()) {
+            } else if (mKeyboardShiftState.isShiftedOrShiftLocked()) {
                 // In manual upper case state, we just record shift key has been pressing while
                 // shifted state.
                 mShiftKeyState.onPressOnShifted();
@@ -337,22 +321,23 @@ public class KeyboardState {
             Log.d(TAG, "onReleaseShift: " + this + " sliding=" + withSliding);
         }
         if (mIsAlphabetMode) {
-            final boolean isShiftLocked = isShiftLocked();
+            final boolean isShiftLocked = mKeyboardShiftState.isShiftLocked();
             if (mShiftKeyState.isMomentary()) {
                 // After chording input while normal state.
                 setShifted(SwitchActions.UNSHIFT);
-            } else if (isShiftLocked && !isShiftLockShifted() && (mShiftKeyState.isPressing()
-                    || mShiftKeyState.isPressingOnShifted()) && !withSliding) {
+            } else if (isShiftLocked && !mKeyboardShiftState.isShiftLockShifted()
+                    && (mShiftKeyState.isPressing() || mShiftKeyState.isPressingOnShifted())
+                    && !withSliding) {
                 // Shift has been long pressed, ignore this release.
             } else if (isShiftLocked && !mShiftKeyState.isIgnoring() && !withSliding) {
                 // Shift has been pressed without chording while caps lock state.
                 setShiftLocked(false);
-            } else if (isShiftedOrShiftLocked() && mShiftKeyState.isPressingOnShifted()
-                    && !withSliding) {
+            } else if (mKeyboardShiftState.isShiftedOrShiftLocked()
+                    && mShiftKeyState.isPressingOnShifted() && !withSliding) {
                 // Shift has been pressed without chording while shifted state.
                 setShifted(SwitchActions.UNSHIFT);
-            } else if (isManualTemporaryUpperCaseFromAuto() && mShiftKeyState.isPressing()
-                    && !withSliding) {
+            } else if (mKeyboardShiftState.isManualTemporaryUpperCaseFromAuto()
+                    && mShiftKeyState.isPressing() && !withSliding) {
                 // Shift has been pressed without chording while manual temporary upper case
                 // transited from automatic temporary upper case.
                 setShifted(SwitchActions.UNSHIFT);
@@ -468,7 +453,7 @@ public class KeyboardState {
             Log.d(TAG, "onToggleShift: " + this);
         }
         if (mIsAlphabetMode) {
-            setShifted(isShiftedOrShiftLocked()
+            setShifted(mKeyboardShiftState.isShiftedOrShiftLocked()
                     ? SwitchActions.UNSHIFT : SwitchActions.MANUAL_SHIFT);
         } else {
             toggleShiftInSymbols();
@@ -480,7 +465,7 @@ public class KeyboardState {
             Log.d(TAG, "onToggleCapsLock: " + this);
         }
         if (mIsAlphabetMode) {
-            if (isShiftLocked()) {
+            if (mKeyboardShiftState.isShiftLocked()) {
                 setShiftLocked(false);
                 // Shift key is long pressed while caps lock state, we will toggle back to normal
                 // state. And mark as if shift key is released.
@@ -506,6 +491,7 @@ public class KeyboardState {
         default: return null;
         }
     }
+
     private static String switchStateToString(int switchState) {
         switch (switchState) {
         case SWITCH_STATE_ALPHA: return "ALPHA";
