@@ -537,6 +537,10 @@ public class Utils {
             mLoggingHandler.post(new Runnable() {
                 @Override
                 public void run() {
+                    final Date date = new Date();
+                    date.setTime(System.currentTimeMillis());
+                    final String currentDateTimeString =
+                            new SimpleDateFormat("yyyyMMdd-HHmmssZ").format(date);
                     if (mFile == null) {
                         Log.w(TAG, "No internal log file found.");
                         return;
@@ -548,8 +552,8 @@ public class Utils {
                         return;
                     }
                     mWriter.flush();
-                    final String destPath =
-                            Environment.getExternalStorageDirectory() + "/" + FILENAME;
+                    final String destPath = Environment.getExternalStorageDirectory()
+                            + "/research-" + currentDateTimeString + ".log";
                     final File destFile = new File(destPath);
                     try {
                         final FileChannel src = (new FileInputStream(mFile)).getChannel();
@@ -575,7 +579,8 @@ public class Utils {
                     }
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + destPath));
-                    intent.putExtra(Intent.EXTRA_SUBJECT, "[Research Logs]");
+                    intent.putExtra(Intent.EXTRA_SUBJECT,
+                            "[Research Logs] " + currentDateTimeString);
                     mIms.startActivity(intent);
                 }
             });
