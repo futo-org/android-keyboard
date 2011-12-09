@@ -18,11 +18,9 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.util.Log;
 
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
-
 public class KeyboardShiftState {
     private static final String TAG = KeyboardShiftState.class.getSimpleName();
-    private static final boolean DEBUG = KeyboardSwitcher.DEBUG_STATE;
+    private static final boolean DEBUG = false;
 
     private static final int NORMAL = 0;
     private static final int MANUAL_SHIFTED = 1;
