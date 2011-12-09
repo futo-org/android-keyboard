@@ -58,42 +58,37 @@ public class Settings extends InputMethodSettingsActivity
 
     public static final boolean ENABLE_EXPERIMENTAL_SETTINGS = false;
 
+    // In the same order as xml/prefs.xml
     public static final String PREF_GENERAL_SETTINGS_KEY = "general_settings";
+    public static final String PREF_SUBTYPES = "subtype_settings";
+    public static final String PREF_AUTO_CAP = "auto_cap";
     public static final String PREF_VIBRATE_ON = "vibrate_on";
     public static final String PREF_SOUND_ON = "sound_on";
     public static final String PREF_KEY_PREVIEW_POPUP_ON = "popup_on";
-    public static final String PREF_AUTO_CAP = "auto_cap";
     public static final String PREF_SHOW_SETTINGS_KEY = "show_settings_key";
     public static final String PREF_VOICE_SETTINGS_KEY = "voice_mode";
-    public static final String PREF_INPUT_LANGUAGE = "input_language";
-    public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
-    public static final String PREF_SUBTYPES = "subtype_settings";
-
-    public static final String PREF_CONFIGURE_DICTIONARIES_KEY = "configure_dictionaries_key";
     public static final String PREF_CORRECTION_SETTINGS_KEY = "correction_settings";
-    public static final String PREF_SHOW_SUGGESTIONS_SETTING = "show_suggestions_setting";
+    public static final String PREF_CONFIGURE_DICTIONARIES_KEY = "configure_dictionaries_key";
     public static final String PREF_AUTO_CORRECTION_THRESHOLD = "auto_correction_threshold";
-    public static final String PREF_DEBUG_SETTINGS = "debug_settings";
-
-    public static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
-    public static final String PREF_BIGRAM_PREDICTIONS = "bigram_prediction";
-
+    public static final String PREF_SHOW_SUGGESTIONS_SETTING = "show_suggestions_setting";
     public static final String PREF_MISC_SETTINGS_KEY = "misc_settings";
-
+    public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
+    public static final String PREF_ADVANCED_SETTINGS = "pref_advanced_settings";
     public static final String PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY =
             "pref_key_preview_popup_dismiss_delay";
-    public static final String PREF_KEY_USE_CONTACTS_DICT =
-            "pref_key_use_contacts_dict";
-    public static final String PREF_KEY_ENABLE_SPAN_INSERT =
-            "enable_span_insert";
-
-    public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
-
+    public static final String PREF_KEY_USE_CONTACTS_DICT = "pref_key_use_contacts_dict";
+    public static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
+    public static final String PREF_BIGRAM_PREDICTIONS = "bigram_prediction";
+    public static final String PREF_KEY_ENABLE_SPAN_INSERT = "enable_span_insert";
     public static final String PREF_KEYPRESS_VIBRATION_DURATION_SETTINGS =
             "pref_vibration_duration_settings";
-
     public static final String PREF_KEYPRESS_SOUND_VOLUME =
             "pref_keypress_sound_volume";
+
+    public static final String PREF_INPUT_LANGUAGE = "input_language";
+    public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
+    public static final String PREF_DEBUG_SETTINGS = "debug_settings";
+
     // Dialog ids
     private static final int VOICE_INPUT_CONFIRM_DIALOG = 0;
 
