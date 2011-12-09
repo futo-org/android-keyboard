@@ -144,6 +144,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
      */
     private static final String SCHEME_PACKAGE = "package";
 
+    // TODO: migrate this to SettingsValues
     private int mSuggestionVisibility;
     private static final int SUGGESTION_VISIBILILTY_SHOW_VALUE
             = R.string.prefs_suggestion_visibility_show_value;
@@ -2389,9 +2390,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private void updateSuggestionVisibility(final SharedPreferences prefs, final Resources res) {
-        final String suggestionVisiblityStr = prefs.getString(
-                Settings.PREF_SHOW_SUGGESTIONS_SETTING,
-                res.getString(R.string.prefs_suggestion_visibility_default_value));
+        final String suggestionVisiblityStr = mSettingsValues.mShowSuggestionsSetting;
         for (int visibility : SUGGESTION_VISIBILITY_VALUE_ARRAY) {
             if (suggestionVisiblityStr.equals(res.getString(visibility))) {
                 mSuggestionVisibility = visibility;

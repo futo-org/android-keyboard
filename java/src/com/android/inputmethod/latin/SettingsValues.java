@@ -50,9 +50,9 @@ public class SettingsValues {
     private final boolean mShowSettingsKey;
     private final String mVoiceMode;
     private final String mAutoCorrectionThresholdRawValue;
-    // TODO: add a member for the raw "show_suggestions_setting" setting
-    // TODO: add a member for the raw "usability_study_mode" setting
-    // TODO: add a member for the raw "pref_key_preview_popup_dismiss_delay" setting
+    public final String mShowSuggestionsSetting;
+    private final boolean mUsabilityStudyMode;
+    private final String mKeyPreviewPopupDismissDelayRawValue;
     public final boolean mUseContactsDict;
     // Suggestion: use bigrams to adjust scores of suggestions obtained from unigram dictionary
     public final boolean mBigramSuggestionEnabled;
@@ -107,8 +107,14 @@ public class SettingsValues {
         mVoiceMode = prefs.getString(Settings.PREF_VOICE_MODE, voiceModeMain);
         mAutoCorrectionThresholdRawValue = prefs.getString(Settings.PREF_AUTO_CORRECTION_THRESHOLD,
                 res.getString(R.string.auto_correction_threshold_mode_index_modest));
+        mShowSuggestionsSetting = prefs.getString(Settings.PREF_SHOW_SUGGESTIONS_SETTING,
+                res.getString(R.string.prefs_suggestion_visibility_default_value));
+        mUsabilityStudyMode = getUsabilityStudyMode(prefs, res);
+        mKeyPreviewPopupDismissDelayRawValue = prefs.getString(
+                Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
+                Integer.toString(res.getInteger(R.integer.config_delay_after_preview)));
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
-        mAutoCorrectEnabled = isAutoCorrectEnabled(prefs, res);
+        mAutoCorrectEnabled = isAutoCorrectEnabled(prefs, res, mAutoCorrectionThresholdRawValue);
         mBigramSuggestionEnabled = mAutoCorrectEnabled
                 && isBigramSuggestionEnabled(prefs, res, mAutoCorrectEnabled);
         mBigramPredictionEnabled = mBigramSuggestionEnabled
@@ -191,10 +197,8 @@ public class SettingsValues {
         return mMagicSpaceSwappers.contains(String.valueOf((char)code));
     }
 
-    private static boolean isAutoCorrectEnabled(SharedPreferences sp, Resources resources) {
-        final String currentAutoCorrectionSetting = sp.getString(
-                Settings.PREF_AUTO_CORRECTION_THRESHOLD,
-                resources.getString(R.string.auto_correction_threshold_mode_index_modest));
+    private static boolean isAutoCorrectEnabled(final SharedPreferences sp,
+            final Resources resources, final String currentAutoCorrectionSetting) {
         final String autoCorrectionOff = resources.getString(
                 R.string.auto_correction_threshold_mode_index_off);
         return !currentAutoCorrectionSetting.equals(autoCorrectionOff);
@@ -213,6 +217,7 @@ public class SettingsValues {
     // Likewise
     public static int getKeyPreviewPopupDismissDelay(SharedPreferences sp,
             Resources resources) {
+        // TODO: use mKeyPreviewPopupDismissDelayRawValue instead of reading it again here.
         return Integer.parseInt(sp.getString(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
                 Integer.toString(resources.getInteger(R.integer.config_delay_after_preview))));
     }
@@ -306,5 +311,11 @@ public class SettingsValues {
             }
         }
         return -1;
+    }
+
+    // Likewise
+    public static boolean getUsabilityStudyMode(final SharedPreferences prefs,
+            final Resources res) {
+        return prefs.getBoolean(Settings.PREF_USABILITY_STUDY_MODE, true);
     }
 }
