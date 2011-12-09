@@ -265,7 +265,7 @@ public class KeyboardState {
 
     public void onUpdateShiftState(boolean autoCaps) {
         if (DEBUG_STATE) {
-            Log.d(TAG, "onUpdateShiftState: " + this + " autoCaps=" + autoCaps);
+            Log.d(TAG, "onUpdateShiftState: autoCaps=" + autoCaps + " " + this);
         }
         if (mIsAlphabetMode) {
             if (!mKeyboardShiftState.isShiftLocked() && !mShiftKeyState.isIgnoring()) {
@@ -286,7 +286,7 @@ public class KeyboardState {
 
     public void onPressShift(boolean withSliding) {
         if (DEBUG_STATE) {
-            Log.d(TAG, "onPressShift: " + this + " sliding=" + withSliding);
+            Log.d(TAG, "onPressShift: sliding=" + withSliding + " " + this);
         }
         if (mIsAlphabetMode) {
             if (mKeyboardShiftState.isShiftLocked()) {
@@ -318,7 +318,7 @@ public class KeyboardState {
 
     public void onReleaseShift(boolean withSliding) {
         if (DEBUG_STATE) {
-            Log.d(TAG, "onReleaseShift: " + this + " sliding=" + withSliding);
+            Log.d(TAG, "onReleaseShift: sliding=" + withSliding + " " + this);
         }
         if (mIsAlphabetMode) {
             final boolean isShiftLocked = mKeyboardShiftState.isShiftLocked();
