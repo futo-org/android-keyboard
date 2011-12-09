@@ -19,11 +19,13 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Build;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.VibratorCompatWrapper;
+import com.android.inputmethod.latin.R.array;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -240,5 +242,37 @@ public class SettingsValues {
 
     public boolean isVoiceKeyOnMain() {
         return mVoiceKeyOnMain;
+    }
+
+    public static float getCurrentKeypressSoundVolume(SharedPreferences sp, Resources res) {
+        final float volume = sp.getFloat(Settings.PREF_KEYPRESS_SOUND_VOLUME, -1.0f);
+        if (volume >= 0) {
+            return volume;
+        }
+
+        final String[] volumePerHardwareList = res.getStringArray(R.array.keypress_volumes);
+        final String hardwarePrefix = Build.HARDWARE + ",";
+        for (final String element : volumePerHardwareList) {
+            if (element.startsWith(hardwarePrefix)) {
+                return Float.parseFloat(element.substring(element.lastIndexOf(',') + 1));
+            }
+        }
+        return -1.0f;
+    }
+
+    public static int getCurrentVibrationDuration(SharedPreferences sp, Resources res) {
+        final int ms = sp.getInt(Settings.PREF_KEYPRESS_VIBRATION_DURATION_SETTINGS, -1);
+        if (ms >= 0) {
+            return ms;
+        }
+        final String[] durationPerHardwareList = res.getStringArray(
+                R.array.keypress_vibration_durations);
+        final String hardwarePrefix = Build.HARDWARE + ",";
+        for (final String element : durationPerHardwareList) {
+            if (element.startsWith(hardwarePrefix)) {
+                return (int)Long.parseLong(element.substring(element.lastIndexOf(',') + 1));
+            }
+        }
+        return -1;
     }
 }
