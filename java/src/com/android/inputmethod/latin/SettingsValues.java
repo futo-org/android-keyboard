@@ -127,7 +127,7 @@ public class SettingsValues {
                 : defaultShowSettingsKey;
         final String voiceModeMain = res.getString(R.string.voice_mode_main);
         final String voiceModeOff = res.getString(R.string.voice_mode_off);
-        final String voiceMode = prefs.getString(Settings.PREF_VOICE_SETTINGS_KEY, voiceModeMain);
+        final String voiceMode = prefs.getString(Settings.PREF_VOICE_MODE, voiceModeMain);
         mVoiceKeyEnabled = voiceMode != null && !voiceMode.equals(voiceModeOff);
         mVoiceKeyOnMain = voiceMode != null && voiceMode.equals(voiceModeMain);
 
@@ -172,7 +172,7 @@ public class SettingsValues {
         final boolean showPopupOption = resources.getBoolean(
                 R.bool.config_enable_show_popup_on_keypress_option);
         if (!showPopupOption) return resources.getBoolean(R.bool.config_default_popup_preview);
-        return sp.getBoolean(Settings.PREF_KEY_PREVIEW_POPUP_ON,
+        return sp.getBoolean(Settings.PREF_POPUP_ON,
                 resources.getBoolean(R.bool.config_default_popup_preview));
     }
 
@@ -190,7 +190,7 @@ public class SettingsValues {
         if (!showBigramSuggestionsOption) {
             return autoCorrectEnabled;
         }
-        return sp.getBoolean(Settings.PREF_BIGRAM_SUGGESTIONS, resources.getBoolean(
+        return sp.getBoolean(Settings.PREF_BIGRAM_SUGGESTION, resources.getBoolean(
                 R.bool.config_default_bigram_suggestions));
     }
 
@@ -277,7 +277,7 @@ public class SettingsValues {
     // Likewise
     public static int getCurrentVibrationDuration(final SharedPreferences sp,
                 final Resources res) {
-        final int ms = sp.getInt(Settings.PREF_KEYPRESS_VIBRATION_DURATION_SETTINGS, -1);
+        final int ms = sp.getInt(Settings.PREF_VIBRATION_DURATION_SETTINGS, -1);
         if (ms >= 0) {
             return ms;
         }
