@@ -48,8 +48,8 @@ public class SettingsValues {
     public final boolean mSoundOn;
     public final boolean mKeyPreviewPopupOn;
     private final boolean mShowSettingsKey;
-    // TODO: add a member for the raw "voice_mode" setting
-    // TODO: add a member for the raw "auto_correction_threshold" setting
+    private final String mVoiceMode;
+    private final String mAutoCorrectionThresholdRawValue;
     // TODO: add a member for the raw "show_suggestions_setting" setting
     // TODO: add a member for the raw "usability_study_mode" setting
     // TODO: add a member for the raw "pref_key_preview_popup_dismiss_delay" setting
@@ -102,6 +102,11 @@ public class SettingsValues {
                 res.getBoolean(R.bool.config_default_sound_enabled));
         mKeyPreviewPopupOn = isKeyPreviewPopupEnabled(prefs, res);
         mShowSettingsKey = isSettingsKeyShown(prefs, res);
+        final String voiceModeMain = res.getString(R.string.voice_mode_main);
+        final String voiceModeOff = res.getString(R.string.voice_mode_off);
+        mVoiceMode = prefs.getString(Settings.PREF_VOICE_MODE, voiceModeMain);
+        mAutoCorrectionThresholdRawValue = prefs.getString(Settings.PREF_AUTO_CORRECTION_THRESHOLD,
+                res.getString(R.string.auto_correction_threshold_mode_index_modest));
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mAutoCorrectEnabled = isAutoCorrectEnabled(prefs, res);
         mBigramSuggestionEnabled = mAutoCorrectEnabled
@@ -115,12 +120,10 @@ public class SettingsValues {
         mKeypressVibrationDuration = getCurrentVibrationDuration(prefs, res);
         mFxVolume = getCurrentKeypressSoundVolume(prefs, res);
         mKeyPreviewPopupDismissDelay = getKeyPreviewPopupDismissDelay(prefs, res);
-        mAutoCorrectionThreshold = getAutoCorrectionThreshold(prefs, res);
-        final String voiceModeMain = res.getString(R.string.voice_mode_main);
-        final String voiceModeOff = res.getString(R.string.voice_mode_off);
-        final String voiceMode = prefs.getString(Settings.PREF_VOICE_MODE, voiceModeMain);
-        mVoiceKeyEnabled = voiceMode != null && !voiceMode.equals(voiceModeOff);
-        mVoiceKeyOnMain = voiceMode != null && voiceMode.equals(voiceModeMain);
+        mAutoCorrectionThreshold = getAutoCorrectionThreshold(prefs, res,
+                mAutoCorrectionThresholdRawValue);
+        mVoiceKeyEnabled = mVoiceMode != null && !mVoiceMode.equals(voiceModeOff);
+        mVoiceKeyOnMain = mVoiceMode != null && mVoiceMode.equals(voiceModeMain);
 
         LocaleUtils.setSystemLocale(res, savedLocale);
     }
@@ -214,8 +217,8 @@ public class SettingsValues {
                 Integer.toString(resources.getInteger(R.integer.config_delay_after_preview))));
     }
 
-    private static boolean isBigramSuggestionEnabled(SharedPreferences sp, Resources resources,
-            boolean autoCorrectEnabled) {
+    private static boolean isBigramSuggestionEnabled(final SharedPreferences sp,
+            final Resources resources, final boolean autoCorrectEnabled) {
         final boolean showBigramSuggestionsOption = resources.getBoolean(
                 R.bool.config_enable_bigram_suggestions_option);
         if (!showBigramSuggestionsOption) {
@@ -225,17 +228,14 @@ public class SettingsValues {
                 R.bool.config_default_bigram_suggestions));
     }
 
-    private static boolean isBigramPredictionEnabled(SharedPreferences sp,
-            Resources resources) {
+    private static boolean isBigramPredictionEnabled(final SharedPreferences sp,
+            final Resources resources) {
         return sp.getBoolean(Settings.PREF_BIGRAM_PREDICTIONS, resources.getBoolean(
                 R.bool.config_default_bigram_prediction));
     }
 
-    private static double getAutoCorrectionThreshold(SharedPreferences sp,
-            Resources resources) {
-        final String currentAutoCorrectionSetting = sp.getString(
-                Settings.PREF_AUTO_CORRECTION_THRESHOLD,
-                resources.getString(R.string.auto_correction_threshold_mode_index_modest));
+    private static double getAutoCorrectionThreshold(final SharedPreferences sp,
+            final Resources resources, final String currentAutoCorrectionSetting) {
         final String[] autoCorrectionThresholdValues = resources.getStringArray(
                 R.array.auto_correction_threshold_values);
         // When autoCorrectionThreshold is greater than 1.0, it's like auto correction is off.
