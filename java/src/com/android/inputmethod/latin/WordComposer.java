@@ -231,9 +231,6 @@ public class WordComposer {
      * @return the word that was typed so far
      */
     public String getTypedWord() {
-        if (size() == 0) {
-            return null;
-        }
         return mTypedWord.toString();
     }
 
