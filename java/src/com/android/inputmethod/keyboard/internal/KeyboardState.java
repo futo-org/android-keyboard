@@ -105,12 +105,12 @@ public class KeyboardState {
                     + " shiftLocked=" + state.mIsShiftLocked + " shift=" + state.mIsShifted);
         }
         if (!state.mIsValid || state.mIsAlphabetMode) {
-            mSwitchActions.setAlphabetKeyboard();
+            setAlphabetKeyboard();
         } else {
             if (state.mIsShifted) {
-                mSwitchActions.setSymbolsShiftedKeyboard();
+                setSymbolsShiftedKeyboard();
             } else {
-                mSwitchActions.setSymbolsKeyboard();
+                setSymbolsKeyboard();
             }
         }
 
@@ -124,11 +124,6 @@ public class KeyboardState {
                         state.mIsShifted ? SwitchActions.MANUAL_SHIFT : SwitchActions.UNSHIFT);
             }
         }
-    }
-
-    // TODO: Get rid of this method
-    public void onSetKeyboard(boolean isAlphabetMode) {
-        mSwitchState = isAlphabetMode ? SWITCH_STATE_ALPHA : SWITCH_STATE_SYMBOL_BEGIN;
     }
 
     public boolean isShiftLocked() {
@@ -172,32 +167,36 @@ public class KeyboardState {
 
     private void toggleAlphabetAndSymbols(boolean isAlphabetMode) {
         if (isAlphabetMode) {
-            mSwitchActions.setSymbolsKeyboard();
+            setSymbolsKeyboard();
         } else {
-            mSwitchActions.setAlphabetKeyboard();
+            setAlphabetKeyboard();
         }
     }
 
     private void toggleShiftInSymbols(boolean isSymbolShifted) {
         if (isSymbolShifted) {
-            mSwitchActions.setSymbolsKeyboard();
+            setSymbolsKeyboard();
         } else {
-            mSwitchActions.setSymbolsShiftedKeyboard();
+            setSymbolsShiftedKeyboard();
         }
     }
 
-    public void onRestoreShiftLockState() {
+    private void setAlphabetKeyboard() {
+        mSwitchActions.setAlphabetKeyboard();
+        mSwitchState = SWITCH_STATE_ALPHA;
         mSwitchActions.setShiftLocked(mPrevMainKeyboardWasShiftLocked);
         mPrevMainKeyboardWasShiftLocked = false;
     }
 
-    public void onSaveShiftLockState() {
+    private void setSymbolsKeyboard() {
         mPrevMainKeyboardWasShiftLocked = isShiftLocked();
+        mSwitchActions.setSymbolsKeyboard();
+        mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
     }
 
-    // TODO: Remove this method.
-    public void onReleaseCapsLock() {
-        mShiftKeyState.onRelease();
+    private void setSymbolsShiftedKeyboard() {
+        mSwitchActions.setSymbolsShiftedKeyboard();
+        mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
     }
 
     // TODO: Get rid of isAlphabetMode argument.
@@ -384,7 +383,7 @@ public class KeyboardState {
             }
             // Snap back to alpha keyboard mode immediately if user types a quote character.
             if (isLayoutSwitchBackCharacter(code)) {
-                mSwitchActions.setAlphabetKeyboard();
+                setAlphabetKeyboard();
             }
             break;
         case SWITCH_STATE_SYMBOL:
@@ -392,10 +391,39 @@ public class KeyboardState {
             // Snap back to alpha keyboard mode if user types one or more non-space/enter
             // characters followed by a space/enter or a quote character.
             if (isSpaceCharacter(code) || isLayoutSwitchBackCharacter(code)) {
-                mSwitchActions.setAlphabetKeyboard();
+                setAlphabetKeyboard();
             }
             break;
         }
+    }
+
+    // TODO: Get rid of isAlphabetMode and isSymbolShifted arguments.
+    public void onToggleShift(boolean isAlphabetMode, boolean isSymbolShifted) {
+        if (isAlphabetMode) {
+            mSwitchActions.setShifted(
+                    isShiftedOrShiftLocked() ? SwitchActions.UNSHIFT : SwitchActions.MANUAL_SHIFT);
+        } else {
+            toggleShiftInSymbols(isSymbolShifted);
+        }
+    }
+
+    // TODO: Get rid of isAlphabetMode arguments.
+    public void onToggleCapsLock(boolean isAlphabetMode) {
+        if (isAlphabetMode) {
+            if (isShiftLocked()) {
+                mSwitchActions.setShiftLocked(false);
+                // Shift key is long pressed while caps lock state, we will toggle back to normal
+                // state. And mark as if shift key is released.
+                mShiftKeyState.onRelease();
+            } else {
+                mSwitchActions.setShiftLocked(true);
+            }
+        }
+    }
+
+    // TODO: Get rid of isAlphabetMode arguments.
+    public void onToggleAlphabetAndSymbols(boolean isAlphabetMode) {
+        toggleAlphabetAndSymbols(isAlphabetMode);
     }
 
     private static String switchStateToString(int switchState) {

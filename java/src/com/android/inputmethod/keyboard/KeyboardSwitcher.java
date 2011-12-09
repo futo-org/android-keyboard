@@ -164,7 +164,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         mKeyboardView.setKeyboard(keyboard);
         mCurrentInputView.setKeyboardGeometry(keyboard.mTopPadding);
         mCurrentId = keyboard.mId;
-        mState.onSetKeyboard(isAlphabetMode());
         updateShiftLockState(keyboard);
         mKeyboardView.setKeyPreviewPopupEnabled(
                 SettingsValues.isKeyPreviewPopupEnabled(mPrefs, mResources),
@@ -362,15 +361,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         if (DEBUG_STATE) {
             Log.d(TAG, "toggleShift: " + mState);
         }
-        if (isAlphabetMode()) {
-            setShifted(mState.isShiftedOrShiftLocked() ? UNSHIFT : MANUAL_SHIFT);
-        } else {
-            if (isSymbolShifted()) {
-                setSymbolsKeyboard();
-            } else {
-                setSymbolsShiftedKeyboard();
-            }
-        }
+        mState.onToggleShift(isAlphabetMode(), isSymbolShifted());
     }
 
     /**
@@ -380,31 +371,17 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         if (DEBUG_STATE) {
             Log.d(TAG, "toggleCapsLock: " + mState);
         }
-        if (isAlphabetMode()) {
-            if (mState.isShiftLocked()) {
-                setShiftLocked(false);
-                // TODO: Remove this.
-                // Shift key is long pressed while caps lock state, we will toggle back to normal
-                // state. And mark as if shift key is released.
-                mState.onReleaseCapsLock();
-            } else {
-                setShiftLocked(true);
-            }
-        }
+        mState.onToggleCapsLock(isAlphabetMode());
     }
 
     /**
-     * Toggle keyboard mode triggered by user touch event.
+     * Toggle between alphabet and symbols modes triggered by user touch event.
      */
-    public void toggleKeyboardMode() {
+    public void toggleAlphabetAndSymbols() {
         if (DEBUG_STATE) {
-            Log.d(TAG, "toggleKeyboardMode: " + mState);
+            Log.d(TAG, "toggleAlphabetAndSymbols: " + mState);
         }
-        if (isAlphabetMode()) {
-            setSymbolsKeyboard();
-        } else {
-            setAlphabetKeyboard();
-        }
+        mState.onToggleAlphabetAndSymbols(isAlphabetMode());
     }
 
     /**
@@ -464,7 +441,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setSymbolsKeyboard() {
-        mState.onSaveShiftLockState();
         setKeyboard(getKeyboard(mSymbolsKeyboardId));
     }
 
@@ -472,7 +448,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     @Override
     public void setAlphabetKeyboard() {
         setKeyboard(getKeyboard(mMainKeyboardId));
-        mState.onRestoreShiftLockState();
     }
 
     // TODO: Remove this method
