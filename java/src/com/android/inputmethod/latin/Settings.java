@@ -242,12 +242,21 @@ public class Settings extends InputMethodSettingsActivity
             textCorrectionGroup.removePreference(dictionaryLink);
         }
 
-        final boolean showUsabilityModeStudyOption = res.getBoolean(
-                R.bool.config_enable_usability_study_mode_option);
-        if (!showUsabilityModeStudyOption || !ENABLE_EXPERIMENTAL_SETTINGS) {
-            final Preference pref = findPreference(PREF_USABILITY_STUDY_MODE);
-            if (pref != null) {
-                miscSettings.removePreference(pref);
+        final boolean isResearcherPackage = LatinImeLogger.isResearcherPackage();
+        final boolean showUsabilityStudyModeOption =
+                res.getBoolean(R.bool.config_enable_usability_study_mode_option)
+                        || isResearcherPackage || ENABLE_EXPERIMENTAL_SETTINGS;
+        final Preference usabilityStudyPref = findPreference(PREF_USABILITY_STUDY_MODE);
+        if (!showUsabilityStudyModeOption) {
+            if (usabilityStudyPref != null) {
+                miscSettings.removePreference(usabilityStudyPref);
+            }
+        }
+        if (isResearcherPackage) {
+            if (usabilityStudyPref instanceof CheckBoxPreference) {
+                CheckBoxPreference checkbox = (CheckBoxPreference)usabilityStudyPref;
+                checkbox.setChecked(prefs.getBoolean(PREF_USABILITY_STUDY_MODE, true));
+                checkbox.setSummary(R.string.settings_warning_researcher_mode);
             }
         }
 
