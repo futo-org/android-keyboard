@@ -18,11 +18,9 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.util.Log;
 
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
-
 /* package */ class ModifierKeyState {
     protected static final String TAG = "ModifierKeyState";
-    protected static final boolean DEBUG = KeyboardSwitcher.DEBUG_STATE;
+    protected static final boolean DEBUG = false;
 
     protected static final int RELEASING = 0;
     protected static final int PRESSING = 1;
