@@ -112,6 +112,8 @@ public class SettingsValues {
             prefs.getBoolean(Settings.PREF_KEY_ENABLE_SPAN_INSERT, true);
 
         // Compute other readable settings
+        mKeypressVibrationDuration = getCurrentVibrationDuration(prefs, res);
+        mFxVolume = getCurrentKeypressSoundVolume(prefs, res);
         mKeyPreviewPopupDismissDelay = getKeyPreviewPopupDismissDelay(prefs, res);
         mAutoCorrectionThreshold = getAutoCorrectionThreshold(prefs, res);
         final String voiceModeMain = res.getString(R.string.voice_mode_main);
@@ -119,9 +121,6 @@ public class SettingsValues {
         final String voiceMode = prefs.getString(Settings.PREF_VOICE_MODE, voiceModeMain);
         mVoiceKeyEnabled = voiceMode != null && !voiceMode.equals(voiceModeOff);
         mVoiceKeyOnMain = voiceMode != null && voiceMode.equals(voiceModeMain);
-
-        mFxVolume = getCurrentKeypressSoundVolume(prefs, res);
-        mKeypressVibrationDuration = getCurrentVibrationDuration(prefs, res);
 
         LocaleUtils.setSystemLocale(res, savedLocale);
     }
