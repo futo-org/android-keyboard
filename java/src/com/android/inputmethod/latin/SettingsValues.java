@@ -96,28 +96,24 @@ public class SettingsValues {
         mHintToSaveText = context.getText(R.string.hint_add_to_dictionary);
 
         // Get the settings preferences
-        final boolean hasVibrator = VibratorCompatWrapper.getInstance(context).hasVibrator();
-        mVibrateOn = hasVibrator && prefs.getBoolean(Settings.PREF_VIBRATE_ON,
-                res.getBoolean(R.bool.config_default_vibration_enabled));
+        mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);
+        mVibrateOn = isVibrateOn(context, prefs, res);
         mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON,
                 res.getBoolean(R.bool.config_default_sound_enabled));
         mKeyPreviewPopupOn = isKeyPreviewPopupEnabled(prefs, res);
-        mKeyPreviewPopupDismissDelay = getKeyPreviewPopupDismissDelay(prefs, res);
-        mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);
+        mShowSettingsKey = isSettingsKeyShown(prefs, res);
+        mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mAutoCorrectEnabled = isAutoCorrectEnabled(prefs, res);
         mBigramSuggestionEnabled = mAutoCorrectEnabled
                 && isBigramSuggestionEnabled(prefs, res, mAutoCorrectEnabled);
         mBigramPredictionEnabled = mBigramSuggestionEnabled
                 && isBigramPredictionEnabled(prefs, res);
-        mAutoCorrectionThreshold = getAutoCorrectionThreshold(prefs, res);
-        mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mEnableSuggestionSpanInsertion =
-                prefs.getBoolean(Settings.PREF_KEY_ENABLE_SPAN_INSERT, true);
-        final boolean defaultShowSettingsKey = res.getBoolean(
-                R.bool.config_default_show_settings_key);
-        mShowSettingsKey = isShowSettingsKeyOption(res)
-                ? prefs.getBoolean(Settings.PREF_SHOW_SETTINGS_KEY, defaultShowSettingsKey)
-                : defaultShowSettingsKey;
+            prefs.getBoolean(Settings.PREF_KEY_ENABLE_SPAN_INSERT, true);
+
+        // Compute other readable settings
+        mKeyPreviewPopupDismissDelay = getKeyPreviewPopupDismissDelay(prefs, res);
+        mAutoCorrectionThreshold = getAutoCorrectionThreshold(prefs, res);
         final String voiceModeMain = res.getString(R.string.voice_mode_main);
         final String voiceModeOff = res.getString(R.string.voice_mode_off);
         final String voiceMode = prefs.getString(Settings.PREF_VOICE_MODE, voiceModeMain);
@@ -151,6 +147,26 @@ public class SettingsValues {
                     symbolsExcludedFromWordSeparators.substring(i, i + 1), "");
         }
         return wordSeparators;
+    }
+
+    private static boolean isSettingsKeyShown(final SharedPreferences prefs, final Resources res) {
+        final boolean defaultShowSettingsKey = res.getBoolean(
+                R.bool.config_default_show_settings_key);
+        return isShowSettingsKeyOptionEnabled(res)
+                ? prefs.getBoolean(Settings.PREF_SHOW_SETTINGS_KEY, defaultShowSettingsKey)
+                : defaultShowSettingsKey;
+    }
+
+    public static boolean isShowSettingsKeyOptionEnabled(final Resources resources) {
+        // TODO: Read this once and for all into a public final member
+        return resources.getBoolean(R.bool.config_enable_show_settings_key_option);
+    }
+
+    private static boolean isVibrateOn(final Context context, final SharedPreferences prefs,
+            final Resources res) {
+        final boolean hasVibrator = VibratorCompatWrapper.getInstance(context).hasVibrator();
+        return hasVibrator && prefs.getBoolean(Settings.PREF_VIBRATE_ON,
+                res.getBoolean(R.bool.config_default_vibration_enabled));
     }
 
     public boolean isSuggestedPunctuation(int code) {
@@ -242,16 +258,11 @@ public class SettingsValues {
         return autoCorrectionThreshold;
     }
 
-    public static boolean isShowSettingsKeyOption(final Resources resources) {
-        return resources.getBoolean(R.bool.config_enable_show_settings_key_option);
-
-    }
-
     public boolean isSettingsKeyEnabled() {
         return mShowSettingsKey;
     }
 
-    public boolean isVoiceKeyEnabled(EditorInfo editorInfo) {
+    public boolean isVoiceKeyEnabled(final EditorInfo editorInfo) {
         final boolean shortcutImeEnabled = SubtypeSwitcher.getInstance().isShortcutImeEnabled();
         final int inputType = (editorInfo != null) ? editorInfo.inputType : 0;
         return shortcutImeEnabled && mVoiceKeyEnabled
