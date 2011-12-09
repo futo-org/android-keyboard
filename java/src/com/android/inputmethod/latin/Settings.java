@@ -237,8 +237,7 @@ public class Settings extends InputMethodSettingsActivity
             textCorrectionGroup.removePreference(dictionaryLink);
         }
 
-        // TODO: Following isResearcherPackage can be wrong until LatinImeLogger gets initialized.
-        final boolean isResearcherPackage = LatinImeLogger.isResearcherPackage();
+        final boolean isResearcherPackage = LatinImeLogger.isResearcherPackage(this);
         final boolean showUsabilityStudyModeOption =
                 res.getBoolean(R.bool.config_enable_usability_study_mode_option)
                         || isResearcherPackage || ENABLE_EXPERIMENTAL_SETTINGS;
