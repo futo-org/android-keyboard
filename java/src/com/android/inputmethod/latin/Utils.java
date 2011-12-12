@@ -843,4 +843,28 @@ public class Utils {
         return !suggestions.mTypedWordValid && suggestions.mHasAutoCorrectionCandidate
                 && !suggestions.shouldBlockAutoCorrection();
     }
+
+    public static class Stats {
+        public static void onNonSeparator(final char code, final int x,
+                final int y) {
+            RingCharBuffer.getInstance().push(code, x, y);
+            LatinImeLogger.logOnInputChar();
+        }
+
+        public static void onSeparator(final char code, final int x,
+                final int y) {
+            RingCharBuffer.getInstance().push(code, x, y);
+            LatinImeLogger.logOnInputSeparator();
+        }
+
+        public static void onAutoCorrection(final String typedWord, final String correctedWord,
+                final int separatorCode) {
+            if (TextUtils.isEmpty(typedWord)) return;
+            LatinImeLogger.logOnAutoCorrection(typedWord, correctedWord, separatorCode);
+        }
+
+        public static void onAutoCorrectionCancellation() {
+            LatinImeLogger.logOnAutoCorrectionCancelled();
+        }
+    }
 }

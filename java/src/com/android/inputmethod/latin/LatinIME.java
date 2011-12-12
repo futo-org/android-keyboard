@@ -1433,6 +1433,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // TODO: Merge space state with TextEntryState
         TextEntryState.backspace();
         if (null != mWordSavedForAutoCorrectCancellation) {
+            Utils.Stats.onAutoCorrectionCancellation();
             cancelAutoCorrect(ic);
             mWordSavedForAutoCorrectCancellation = null;
             ic.endBatchEdit();
@@ -1576,7 +1577,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
 
         switcher.updateShiftState();
-        TextEntryState.typedCharacter((char) code, mSettingsValues.isWordSeparator(code), x, y);
+        if (mSettingsValues.isWordSeparator(code)) {
+            TextEntryState.typedCharacter((char) code, true, x, y);
+            Utils.Stats.onSeparator((char)code, x, y);
+        } else {
+            TextEntryState.typedCharacter((char) code, false, x, y);
+            Utils.Stats.onNonSeparator((char)code, x, y);
+        }
         if (null != ic) ic.endBatchEdit();
     }
 
@@ -1659,6 +1666,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
 
         TextEntryState.typedCharacter((char) primaryCode, true, x, y);
+        Utils.Stats.onSeparator((char)primaryCode, x, y);
 
         if (pickedDefault) {
             CharSequence typedWord = mWordComposer.getTypedWord();
@@ -1870,7 +1878,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             updateSuggestions();
         }
         if (mBestWord != null && mBestWord.length() > 0) {
-            TextEntryState.acceptedDefault(mWordComposer.getTypedWord(), mBestWord, separatorCode);
+            Utils.Stats.onAutoCorrection(mWordComposer.getTypedWord(), mBestWord.toString(),
+                    separatorCode);
+            TextEntryState.acceptedDefault(mWordComposer.getTypedWord(), mBestWord,
+                    separatorCode);
             mExpectingUpdateSelection = true;
             commitBestWord(mBestWord);
             if (!mBestWord.equals(mWordComposer.getTypedWord())) {
@@ -1979,6 +1990,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // TextEntryState.State.PICKED_SUGGESTION state.
         TextEntryState.typedCharacter((char) Keyboard.CODE_SPACE, true,
                 WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
+        Utils.Stats.onSeparator((char)Keyboard.CODE_SPACE, WordComposer.NOT_A_COORDINATE,
+                WordComposer.NOT_A_COORDINATE);
         if (!showingAddToDictionaryHint) {
             // If we're not showing the "Touch again to save", then show corrections again.
             // In case the cursor position doesn't change, make sure we show the suggestions again.
@@ -2199,6 +2212,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         ic.commitText(separator, 1);
         TextEntryState.typedCharacter(separator.charAt(0), true,
                 WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
+        Utils.Stats.onSeparator(separator.charAt(0), WordComposer.NOT_A_COORDINATE,
+                WordComposer.NOT_A_COORDINATE);
         mHandler.cancelUpdateBigramPredictions();
         mHandler.postUpdateSuggestions();
     }
