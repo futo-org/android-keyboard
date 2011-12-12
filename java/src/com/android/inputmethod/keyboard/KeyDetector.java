@@ -222,13 +222,7 @@ public class KeyDetector {
     }
 
     public static String printableCode(Key key) {
-        return key != null ? printableCode(key.mCode) : "none";
-    }
-
-    public static String printableCode(int primaryCode) {
-        if (primaryCode < 0) return String.format("%4d", primaryCode);
-        if (primaryCode < 0x100) return String.format("\\u%02x", primaryCode);
-        return String.format("\\u04x", primaryCode);
+        return key != null ? Keyboard.printableCode(key.mCode) : "none";
     }
 
     public static String printableCodes(int[] codes) {
