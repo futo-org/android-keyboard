@@ -208,7 +208,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private boolean mHasUncommittedTypedChars;
 
     private int mCorrectionMode;
-    private int mCommittedLength;
     private String mWordSavedForAutoCorrectCancellation;
     // Keep track of the last selection range to decide if we need to show word alternatives
     private int mLastSelectionStart;
@@ -1151,7 +1150,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (ic != null) {
                 ic.commitText(typedWord, 1);
             }
-            mCommittedLength = typedWord.length();
             TextEntryState.acceptedTyped(typedWord);
             addToUserUnigramAndBigramDictionaries(typedWord,
                     UserUnigramDictionary.FREQUENCY_FOR_TYPED);
@@ -1901,7 +1899,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 final CompletionInfo completionInfo = mApplicationSpecifiedCompletions[index];
                 ic.commitCompletion(completionInfo);
             }
-            mCommittedLength = suggestion.length();
             if (mSuggestionsView != null) {
                 mSuggestionsView.clear();
             }
@@ -2019,7 +2016,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         }
         mHasUncommittedTypedChars = false;
-        mCommittedLength = bestWord.length();
     }
 
     private static final WordComposer sEmptyWordComposer = new WordComposer();
@@ -2206,7 +2202,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // "ic" must not be null
     private void restartSuggestionsOnManuallyPickedTypedWord(final InputConnection ic) {
         final CharSequence separator = ic.getTextBeforeCursor(1, 0);
-        final int restartLength = mCommittedLength;
+        final int restartLength = mWordComposer.size();
         if (DEBUG) {
             final String wordBeforeCursor =
                 ic.getTextBeforeCursor(restartLength + 1, 0).subSequence(0, restartLength)
