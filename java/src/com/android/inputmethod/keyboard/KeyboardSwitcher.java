@@ -139,6 +139,12 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
             mSymbolsShiftedKeyboardId = getKeyboardId(editorInfo, true, true, settingsValues);
             mState.onLoadKeyboard(mResources.getString(R.string.layout_switch_back_symbols),
                     hasDistinctMultitouch());
+            // TODO: Should get rid of this special case handling for Phone Number layouts once we
+            // have separate layouts with unique KeyboardIds for alphabet and alphabet-shifted
+            // respectively.
+            if (mMainKeyboardId.isPhoneKeyboard()) {
+                mState.onToggleAlphabetAndSymbols();
+            }
         } catch (RuntimeException e) {
             Log.w(TAG, "loading keyboard failed: " + mMainKeyboardId, e);
             LatinImeLogger.logOnException(mMainKeyboardId.toString(), e);
