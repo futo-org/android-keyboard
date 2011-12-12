@@ -186,7 +186,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private InputMethodManagerCompatWrapper mImm;
     private Resources mResources;
     private SharedPreferences mPrefs;
-    private String mInputMethodId;
     private KeyboardSwitcher mKeyboardSwitcher;
     private SubtypeSwitcher mSubtypeSwitcher;
     private VoiceProxy mVoiceProxy;
@@ -496,7 +495,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         super.onCreate();
 
         mImm = InputMethodManagerCompatWrapper.getInstance();
-        mInputMethodId = Utils.getInputMethodId(mImm, getPackageName());
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mVibrator = VibratorCompatWrapper.getInstance(this);
@@ -2439,7 +2437,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 switch (position) {
                 case 0:
                     Intent intent = CompatUtils.getInputLanguageSelectionIntent(
-                            mInputMethodId, Intent.FLAG_ACTIVITY_NEW_TASK
+                            Utils.getInputMethodId(mImm, getPackageName()),
+                            Intent.FLAG_ACTIVITY_NEW_TASK
                             | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                             | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
