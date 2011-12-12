@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.Utils.RingCharBuffer;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 public class TextEntryState {
@@ -45,7 +46,7 @@ public class TextEntryState {
 
     public static void acceptedDefault(CharSequence typedWord, CharSequence actualWord,
             int separatorCode) {
-        if (typedWord == null) return;
+        if (TextUtils.isEmpty(typedWord)) return;
         setState(ACCEPTED_DEFAULT);
         LatinImeLogger.logOnAutoCorrection(
                 typedWord.toString(), actualWord.toString(), separatorCode);
@@ -57,7 +58,7 @@ public class TextEntryState {
     // (see "case ACCEPTED_DEFAULT" in typedCharacter() below),
     // and should be restored back to State.ACCEPTED_DEFAULT after processing for each sub-state.
     public static void backToAcceptedDefault(CharSequence typedWord) {
-        if (typedWord == null) return;
+        if (TextUtils.isEmpty(typedWord)) return;
         switch (sState) {
         case SPACE_AFTER_ACCEPTED:
         case PUNCTUATION_AFTER_ACCEPTED:
