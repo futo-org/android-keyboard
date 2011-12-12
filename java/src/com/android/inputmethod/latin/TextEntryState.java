@@ -17,7 +17,6 @@
 package com.android.inputmethod.latin;
 
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.latin.Utils.RingCharBuffer;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -48,8 +47,6 @@ public class TextEntryState {
             int separatorCode) {
         if (TextUtils.isEmpty(typedWord)) return;
         setState(ACCEPTED_DEFAULT);
-        LatinImeLogger.logOnAutoCorrection(
-                typedWord.toString(), actualWord.toString(), separatorCode);
         if (DEBUG)
             displayState("acceptedDefault", "typedWord", typedWord, "actualWord", actualWord);
     }
@@ -131,19 +128,12 @@ public class TextEntryState {
             }
             break;
         }
-        RingCharBuffer.getInstance().push(c, x, y);
-        if (isSeparator) {
-            LatinImeLogger.logOnInputSeparator();
-        } else {
-            LatinImeLogger.logOnInputChar();
-        }
         if (DEBUG) displayState("typedCharacter", "char", c, "isSeparator", isSeparator);
     }
     
     public static void backspace() {
         if (sState == ACCEPTED_DEFAULT) {
             setState(UNDO_COMMIT);
-            LatinImeLogger.logOnAutoCorrectionCancelled();
         } else if (sState == UNDO_COMMIT) {
             setState(IN_WORD);
         }
