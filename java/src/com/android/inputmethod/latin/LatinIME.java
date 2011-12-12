@@ -2190,7 +2190,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     // "ic" must not be null
     private void restartSuggestionsOnManuallyPickedTypedWord(final InputConnection ic) {
-        final CharSequence separator = ic.getTextBeforeCursor(1, 0);
         final int restartLength = mWordComposer.size();
         if (DEBUG) {
             final String wordBeforeCursor =
