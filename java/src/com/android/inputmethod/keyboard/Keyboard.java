@@ -71,7 +71,6 @@ public class Keyboard {
     public static final int CODE_SHIFT = -1;
     public static final int CODE_SWITCH_ALPHA_SYMBOL = -2;
     public static final int CODE_CAPSLOCK = -3;
-    public static final int CODE_CANCEL = -4;
     public static final int CODE_DELETE = -5;
     public static final int CODE_SETTINGS = -6;
     public static final int CODE_SHORTCUT = -7;

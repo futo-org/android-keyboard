@@ -1334,11 +1334,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 switcher.toggleAlphabetAndSymbols();
             }
             break;
-        case Keyboard.CODE_CANCEL:
-            if (!isShowingOptionDialog()) {
-                handleClose();
-            }
-            break;
         case Keyboard.CODE_SETTINGS:
             onSettingsKeyPressed();
             break;
