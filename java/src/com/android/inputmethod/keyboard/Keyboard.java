@@ -18,6 +18,7 @@ package com.android.inputmethod.keyboard;
 
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
@@ -48,6 +49,8 @@ import java.util.Set;
  * </pre>
  */
 public class Keyboard {
+    private static final String TAG = Keyboard.class.getSimpleName();
+
     /** Some common keys code.  These should be aligned with values/keycodes.xml */
     public static final int CODE_ENTER = '\n';
     public static final int CODE_TAB = '\t';
@@ -239,6 +242,22 @@ public class Keyboard {
         case 7: return "StoneBold";
         case 8: return "GingerBread";
         default: return null;
+        }
+    }
+
+    public static String printableCode(int code) {
+        switch (code) {
+        case CODE_SHIFT: return "shift";
+        case CODE_SWITCH_ALPHA_SYMBOL: return "symbol";
+        case CODE_CAPSLOCK: return "capslock";
+        case CODE_DELETE: return "delete";
+        case CODE_SHORTCUT: return "shortcut";
+        case CODE_DUMMY: return "dummy";
+        case CODE_UNSPECIFIED: return "unspec";
+        default:
+            if (code < 0) Log.w(TAG, "Unknow negative key code=" + code);
+            if (code < 0x100) return String.format("\\u%02x", code);
+            return String.format("\\u04x", code);
         }
     }
 }

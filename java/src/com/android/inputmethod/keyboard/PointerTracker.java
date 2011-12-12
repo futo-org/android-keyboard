@@ -239,7 +239,7 @@ public class PointerTracker {
     private boolean callListenerOnPressAndCheckKeyboardLayoutChange(Key key, boolean withSliding) {
         final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
         if (DEBUG_LISTENER) {
-            Log.d(TAG, "onPress    : " + KeyDetector.printableCode(key.mCode)
+            Log.d(TAG, "onPress    : " + KeyDetector.printableCode(key)
                     + " sliding=" + withSliding + " ignoreModifier=" + ignoreModifierKey
                     + " enabled=" + key.isEnabled());
         }
@@ -264,7 +264,7 @@ public class PointerTracker {
         // If code is CODE_DUMMY here, this key will be ignored or generate text.
         final CharSequence text = (code != Keyboard.CODE_DUMMY) ? null : key.mOutputText;
         if (DEBUG_LISTENER) {
-            Log.d(TAG, "onCodeInput: " + KeyDetector.printableCode(code) + " text=" + text
+            Log.d(TAG, "onCodeInput: " + Keyboard.printableCode(code) + " text=" + text
                     + " codes="+ KeyDetector.printableCodes(keyCodes) + " x=" + x + " y=" + y
                     + " ignoreModifier=" + ignoreModifierKey + " alterCode=" + alterCode
                     + " enabled=" + key.isEnabled());
@@ -289,7 +289,7 @@ public class PointerTracker {
     private void callListenerOnRelease(Key key, int primaryCode, boolean withSliding) {
         final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
         if (DEBUG_LISTENER) {
-            Log.d(TAG, "onRelease  : " + KeyDetector.printableCode(primaryCode)
+            Log.d(TAG, "onRelease  : " + Keyboard.printableCode(primaryCode)
                     + " sliding=" + withSliding + " ignoreModifier=" + ignoreModifierKey
                     + " enabled="+ key.isEnabled());
         }
