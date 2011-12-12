@@ -1374,6 +1374,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mKeyboardSwitcher.updateShiftState();
         mKeyboardSwitcher.onCodeInput(Keyboard.CODE_DUMMY);
         mSpaceState = SPACE_STATE_NONE;
+        mWordSavedForAutoCorrectCancellation = null;
         mEnteredText = text;
     }
 
@@ -1391,6 +1392,18 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         ic.beginBatchEdit();
 
         mVoiceProxy.handleBackspace();
+
+        if (mEnteredText != null && sameAsTextBeforeCursor(ic, mEnteredText)) {
+            // Cancel multi-character input: remove the text we just entered.
+            // This is triggered on backspace after a key that inputs multiple characters,
+            // like the smiley key or the .com key.
+            ic.deleteSurroundingText(mEnteredText.length(), 0);
+            // If we have mEnteredText, then we know that mHasUncommittedTypedChars == false.
+            // In addition we know that spaceState is false, and that we should not be
+            // reverting any autocorrect at this point. So we can safely return.
+            ic.endBatchEdit();
+            return;
+        }
 
         final boolean deleteChar = !mHasUncommittedTypedChars;
         if (mHasUncommittedTypedChars) {
@@ -1417,6 +1430,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             } else {
                 ic.deleteSurroundingText(1, 0);
             }
+            // If we deleted the last remaining char of a word, we may have to put the keyboard
+            // in auto-shift state again.
+            mHandler.postUpdateShiftKeyState();
+            // If we had uncommitted chars then we know it's not time to revert any auto-correct
+            // and that spaceState is NONE.
+            ic.endBatchEdit();
+            return;
         }
         mHandler.postUpdateShiftKeyState();
 
@@ -1445,12 +1465,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         }
 
-        if (mEnteredText != null && sameAsTextBeforeCursor(ic, mEnteredText)) {
-            // Cancel multi-character input: remove the text we just entered.
-            // This is triggered on backspace after a key that inputs multiple characters,
-            // like the smiley key or the .com key.
-            ic.deleteSurroundingText(mEnteredText.length(), 0);
-        } else if (deleteChar) {
+        if (deleteChar) {
             if (mSuggestionsView != null && mSuggestionsView.dismissAddToDictionaryHint()) {
                 // Go back to the suggestion mode if the user canceled the
                 // "Touch again to save".
@@ -1590,6 +1605,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (ic != null) {
             ic.beginBatchEdit();
         }
+        // Reset the saved word in all cases. If this separator causes an autocorrection,
+        // it will overwrite this null with the actual word we need to save.
+        mWordSavedForAutoCorrectCancellation = null;
         if (mHasUncommittedTypedChars) {
             // In certain languages where single quote is a separator, it's better
             // not to auto correct, but accept the typed word. For instance,
@@ -1602,8 +1620,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             } else {
                 commitTyped(ic);
             }
-        } else {
-            mWordSavedForAutoCorrectCancellation = null;
         }
 
         final boolean swapMagicSpace;
