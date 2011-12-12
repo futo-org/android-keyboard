@@ -209,6 +209,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private int mCorrectionMode;
     private int mCommittedLength;
+    private String mWordSavedForAutoCorrectCancellation;
     // Keep track of the last selection range to decide if we need to show word alternatives
     private int mLastSelectionStart;
     private int mLastSelectionEnd;
@@ -1431,11 +1432,15 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         // TODO: Merge space state with TextEntryState
         TextEntryState.backspace();
-        if (TextEntryState.isUndoCommit()) {
-            revertLastWord(ic);
+        if (null != mWordSavedForAutoCorrectCancellation) {
+            cancelAutoCorrect(ic);
+            mWordSavedForAutoCorrectCancellation = null;
             ic.endBatchEdit();
             return;
+        } else {
+            mWordSavedForAutoCorrectCancellation = null;
         }
+
         if (SPACE_STATE_DOUBLE == spaceState) {
             if (revertDoubleSpace(ic)) {
                 ic.endBatchEdit();
@@ -1452,6 +1457,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
 
         if (mEnteredText != null && sameAsTextBeforeCursor(ic, mEnteredText)) {
+            // Cancel multi-character input: remove the text we just entered.
+            // This is triggered on backspace after a key that inputs multiple characters,
+            // like the smiley key or the .com key.
             ic.deleteSurroundingText(mEnteredText.length(), 0);
         } else if (deleteChar) {
             if (mSuggestionsView != null && mSuggestionsView.dismissAddToDictionaryHint()) {
@@ -1462,7 +1470,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 // different behavior only in the case of picking the first
                 // suggestion (typed word).  It's intentional to have made this
                 // inconsistent with backspacing after selecting other suggestions.
-                revertLastWord(ic);
+                restartSuggestionsOnManuallyPickedTypedWord(ic);
             } else {
                 ic.deleteSurroundingText(1, 0);
                 if (mDeleteCount > DELETE_ACCELERATE_AT) {
@@ -1601,6 +1609,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             } else {
                 commitTyped(ic);
             }
+        } else {
+            mWordSavedForAutoCorrectCancellation = null;
         }
 
         final boolean swapMagicSpace;
@@ -1863,6 +1873,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             TextEntryState.acceptedDefault(mWordComposer.getTypedWord(), mBestWord, separatorCode);
             mExpectingUpdateSelection = true;
             commitBestWord(mBestWord);
+            if (!mBestWord.equals(mWordComposer.getTypedWord())) {
+                mWordSavedForAutoCorrectCancellation = mBestWord.toString();
+            }
             // Add the word to the user unigram dictionary if it's not a known word
             addToUserUnigramAndBigramDictionaries(mBestWord,
                     UserUnigramDictionary.FREQUENCY_FOR_TYPED);
@@ -2160,37 +2173,61 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     // "ic" must not be null
-    private void revertLastWord(final InputConnection ic) {
-        if (mHasUncommittedTypedChars || mWordComposer.size() <= 0) {
-            sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
-            return;
-        }
-
+    private void cancelAutoCorrect(final InputConnection ic) {
+        final int cancelLength = mWordSavedForAutoCorrectCancellation.length();
         final CharSequence separator = ic.getTextBeforeCursor(1, 0);
-        ic.deleteSurroundingText(1, 0);
-        final CharSequence textToTheLeft = ic.getTextBeforeCursor(mCommittedLength, 0);
-        ic.deleteSurroundingText(mCommittedLength, 0);
-
-        // Re-insert "separator" only when the deleted character was word separator and the
-        // composing text wasn't equal to the auto-corrected text which can be found before
-        // the cursor.
-        if (!TextUtils.isEmpty(separator)
-                && mSettingsValues.isWordSeparator(separator.charAt(0))
-                && !TextUtils.equals(mWordComposer.getTypedWord(), textToTheLeft)) {
-            ic.commitText(mWordComposer.getTypedWord(), 1);
-            TextEntryState.acceptedTyped(mWordComposer.getTypedWord());
-            ic.commitText(separator, 1);
-            TextEntryState.typedCharacter(separator.charAt(0), true,
-                    WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
-        } else {
-            // Note: this relies on the last word still being held in the WordComposer
-            // Note: in the interest of code simplicity, we may want to just call
-            // restartSuggestionsOnWordBeforeCursorIfAtEndOfWord instead, but retrieving
-            // the old WordComposer allows to reuse the actual typed coordinates.
-            mHasUncommittedTypedChars = true;
-            ic.setComposingText(mWordComposer.getTypedWord(), 1);
-            TextEntryState.backspace();
+        if (DEBUG) {
+            final String wordBeforeCursor =
+                    ic.getTextBeforeCursor(cancelLength + 1, 0).subSequence(0, cancelLength)
+                    .toString();
+            if (!mWordSavedForAutoCorrectCancellation.equals(wordBeforeCursor)) {
+                throw new RuntimeException("cancelAutoCorrect check failed: we thought we were "
+                        + "reverting \"" + mWordSavedForAutoCorrectCancellation
+                        + "\", but before the cursor we found \"" + wordBeforeCursor + "\"");
+            }
+            if (mWordComposer.getTypedWord().equals(wordBeforeCursor)) {
+                throw new RuntimeException("cancelAutoCorrect check failed: we wanted to cancel "
+                        + "auto correction and revert to \"" + mWordComposer.getTypedWord()
+                        + "\" but we found this very string before the cursor");
+            }
         }
+        ic.deleteSurroundingText(cancelLength + 1, 0);
+
+        // Re-insert the separator
+        ic.commitText(mWordComposer.getTypedWord(), 1);
+        TextEntryState.acceptedTyped(mWordComposer.getTypedWord());
+        ic.commitText(separator, 1);
+        TextEntryState.typedCharacter(separator.charAt(0), true,
+                WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
+        mHandler.cancelUpdateBigramPredictions();
+        mHandler.postUpdateSuggestions();
+    }
+
+    // "ic" must not be null
+    private void restartSuggestionsOnManuallyPickedTypedWord(final InputConnection ic) {
+        final CharSequence separator = ic.getTextBeforeCursor(1, 0);
+        final int restartLength = mCommittedLength;
+        if (DEBUG) {
+            final String wordBeforeCursor =
+                ic.getTextBeforeCursor(restartLength + 1, 0).subSequence(0, restartLength)
+                .toString();
+            if (!mWordComposer.getTypedWord().equals(wordBeforeCursor)) {
+                throw new RuntimeException("restartSuggestionsOnManuallyPickedTypedWord "
+                        + "check failed: we thought we were reverting \""
+                        + mWordComposer.getTypedWord()
+                        + "\", but before the cursor we found \""
+                        + wordBeforeCursor + "\"");
+            }
+        }
+        ic.deleteSurroundingText(restartLength + 1, 0);
+
+        // Note: this relies on the last word still being held in the WordComposer
+        // Note: in the interest of code simplicity, we may want to just call
+        // restartSuggestionsOnWordBeforeCursorIfAtEndOfWord instead, but retrieving
+        // the old WordComposer allows to reuse the actual typed coordinates.
+        mHasUncommittedTypedChars = true;
+        ic.setComposingText(mWordComposer.getTypedWord(), 1);
+        TextEntryState.backspace();
         mHandler.cancelUpdateBigramPredictions();
         mHandler.postUpdateSuggestions();
     }
