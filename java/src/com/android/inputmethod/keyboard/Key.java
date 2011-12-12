@@ -22,6 +22,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Xml;
 
 import com.android.inputmethod.keyboard.internal.KeyStyles;
@@ -42,6 +43,8 @@ import java.util.Map;
  * Class for describing the position and characteristics of a single key in the keyboard.
  */
 public class Key {
+    private static final String TAG = Key.class.getSimpleName();
+
     /**
      * The key code (unicode or custom code) that this key generates.
      */
@@ -284,7 +287,11 @@ public class Key {
         // specified.
         final int code = style.getInt(keyAttr, R.styleable.Keyboard_Key_code,
                 Keyboard.CODE_UNSPECIFIED);
-        if (code == Keyboard.CODE_UNSPECIFIED && !TextUtils.isEmpty(mLabel)) {
+        if (code == Keyboard.CODE_UNSPECIFIED && mOutputText == null
+                && !TextUtils.isEmpty(mLabel)) {
+            if (mLabel.length() != 1) {
+                Log.w(TAG, "Label is not a single letter: label=" + mLabel);
+            }
             final int firstChar = mLabel.charAt(0);
             mCode = getRtlParenthesisCode(firstChar, params.mIsRtlKeyboard);
         } else if (code != Keyboard.CODE_UNSPECIFIED) {
