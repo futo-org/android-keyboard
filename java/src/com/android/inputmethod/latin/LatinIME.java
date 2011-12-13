@@ -1785,7 +1785,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             return;
         }
 
-        final WordComposer wordComposer = mWordComposer;
         // TODO: May need a better way of retrieving previous word
         final InputConnection ic = getCurrentInputConnection();
         final CharSequence prevWord;
@@ -1795,18 +1794,18 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             prevWord = EditingUtils.getPreviousWord(ic, mSettingsValues.mWordSeparators);
         }
         // getSuggestedWordBuilder handles gracefully a null value of prevWord
-        final SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(wordComposer,
+        final SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(mWordComposer,
                 prevWord, mKeyboardSwitcher.getLatinKeyboard().getProximityInfo(), mCorrectionMode);
 
         boolean autoCorrectionAvailable = !mInputTypeNoAutoCorrect && mSuggest.hasAutoCorrection();
-        final CharSequence typedWord = wordComposer.getTypedWord();
+        final CharSequence typedWord = mWordComposer.getTypedWord();
         // Here, we want to promote a whitelisted word if exists.
         // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
         // but still autocorrected from - in the case the whitelist only capitalizes the word.
         // The whitelist should be case-insensitive, so it's not possible to be consistent with
         // a boolean flag. Right now this is handled with a slight hack in
         // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
-        final int quotesCount = wordComposer.trailingSingleQuotesCount();
+        final int quotesCount = mWordComposer.trailingSingleQuotesCount();
         final boolean allowsToBeAutoCorrected = AutoCorrection.allowsToBeAutoCorrected(
                 mSuggest.getUnigramDictionaries(),
                 // If the typed string ends with a single quote, for dictionary lookup purposes
@@ -1822,7 +1821,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             autoCorrectionAvailable |= (!allowsToBeAutoCorrected);
         }
         // Don't auto-correct words with multiple capital letter
-        autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
+        autoCorrectionAvailable &= !mWordComposer.isMostlyCaps();
 
         // Basically, we update the suggestion strip only when suggestion count > 1.  However,
         // there is an exception: We update the suggestion strip whenever typed word's length
@@ -1959,6 +1958,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         } else {
             addToOnlyBigramDictionary(suggestion, 1);
         }
+        // TODO: the following is fishy, because if !mHasUncommittedTypedChars we are
+        // going to log an empty string
         LatinImeLogger.logOnManualSuggestion(mWordComposer.getTypedWord().toString(),
                 suggestion.toString(), index, suggestions.mWords);
         // Follow it with a space
@@ -2399,8 +2400,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
-    public WordComposer getCurrentWord() {
-        return mWordComposer;
+    public boolean isAutoCapitalized() {
+        return mWordComposer.isAutoCapitalized();
     }
 
     boolean isSoundOn() {
