@@ -49,10 +49,12 @@ UnigramDictionary::UnigramDictionary(const uint8_t* const streamStart, int typed
         LOGI("UnigramDictionary - constructor");
     }
     mCorrection = new Correction(typedLetterMultiplier, fullWordMultiplier);
+    mWordsPriorityQueue = new WordsPriorityQueue(maxWords, maxWordLength);
 }
 
 UnigramDictionary::~UnigramDictionary() {
     delete mCorrection;
+    delete mWordsPriorityQueue;
 }
 
 static inline unsigned int getCodesBufferSize(const int* codes, const int codesSize,
@@ -88,7 +90,7 @@ bool UnigramDictionary::isDigraph(const int* codes, const int i, const int codes
 void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int* ycoordinates, const int *codesBuffer,
         const int codesBufferSize, const int flags, const int* codesSrc, const int codesRemain,
-        const int currentDepth, int* codesDest, unsigned short* outWords, int* frequencies) {
+        const int currentDepth, int* codesDest) {
 
     if (currentDepth < MAX_UMLAUT_SEARCH_DEPTH) {
         for (int i = 0; i < codesRemain; ++i) {
@@ -105,8 +107,7 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
                 getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
                         codesBuffer, codesBufferSize, flags,
                         codesSrc + (i + 1) * MAX_PROXIMITY_CHARS, codesRemain - i - 1,
-                        currentDepth + 1, codesDest + i * MAX_PROXIMITY_CHARS, outWords,
-                        frequencies);
+                        currentDepth + 1, codesDest + i * MAX_PROXIMITY_CHARS);
 
                 // Copy the second char of the digraph in place, then continue processing on
                 // the remaining part of the word.
@@ -115,8 +116,7 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
                         BYTES_IN_ONE_CHAR);
                 getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
                         codesBuffer, codesBufferSize, flags, codesSrc + i * MAX_PROXIMITY_CHARS,
-                        codesRemain - i, currentDepth + 1, codesDest + i * MAX_PROXIMITY_CHARS,
-                        outWords, frequencies);
+                        codesRemain - i, currentDepth + 1, codesDest + i * MAX_PROXIMITY_CHARS);
                 return;
             }
         }
@@ -132,8 +132,7 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
         memcpy(codesDest, codesSrc, remainingBytes);
 
     getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
-            (codesDest - codesBuffer) / MAX_PROXIMITY_CHARS + codesRemain, outWords, frequencies,
-            flags);
+            (codesDest - codesBuffer) / MAX_PROXIMITY_CHARS + codesRemain, flags);
 }
 
 int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
@@ -144,28 +143,24 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, const int *x
     { // Incrementally tune the word and try all possibilities
         int codesBuffer[getCodesBufferSize(codes, codesSize, MAX_PROXIMITY_CHARS)];
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
-                codesSize, flags, codes, codesSize, 0, codesBuffer, outWords, frequencies);
+                codesSize, flags, codes, codesSize, 0, codesBuffer);
     } else { // Normal processing
-        getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, codesSize,
-                outWords, frequencies, flags);
+        getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, codesSize, flags);
     }
 
     PROF_START(20);
-    // Get the word count
-    int suggestedWordsCount = 0;
-    while (suggestedWordsCount < MAX_WORDS && mFrequencies[suggestedWordsCount] > 0) {
-        suggestedWordsCount++;
-    }
+    const int suggestedWordsCount =
+            mWordsPriorityQueue->outputSuggestions(frequencies, outWords);
 
     if (DEBUG_DICT) {
         LOGI("Returning %d words", suggestedWordsCount);
         /// Print the returned words
         for (int j = 0; j < suggestedWordsCount; ++j) {
 #ifdef FLAG_DBG
-            short unsigned int* w = mOutputChars + j * MAX_WORD_LENGTH;
+            short unsigned int* w = outWords + j * MAX_WORD_LENGTH;
             char s[MAX_WORD_LENGTH];
             for (int i = 0; i <= MAX_WORD_LENGTH; i++) s[i] = w[i];
-            LOGI("%s %i", s, mFrequencies[j]);
+            LOGI("%s %i", s, frequencies[j]);
 #endif
         }
     }
@@ -176,12 +171,12 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, const int *x
 
 void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codes, const int codesSize,
-        unsigned short *outWords, int *frequencies, const int flags) {
+        const int flags) {
 
     PROF_OPEN;
     PROF_START(0);
     initSuggestions(
-            proximityInfo, xcoordinates, ycoordinates, codes, codesSize, outWords, frequencies);
+            proximityInfo, xcoordinates, ycoordinates, codes, codesSize);
     if (DEBUG_DICT) assert(codesSize == mInputLength);
 
     const int maxDepth = min(mInputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
@@ -241,71 +236,19 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
 }
 
 void UnigramDictionary::initSuggestions(ProximityInfo *proximityInfo, const int *xCoordinates,
-        const int *yCoordinates, const int *codes, const int codesSize,
-        unsigned short *outWords, int *frequencies) {
+        const int *yCoordinates, const int *codes, const int codesSize) {
     if (DEBUG_DICT) {
         LOGI("initSuggest");
     }
-    mFrequencies = frequencies;
-    mOutputChars = outWords;
     mInputLength = codesSize;
     proximityInfo->setInputParams(codes, codesSize, xCoordinates, yCoordinates);
     mProximityInfo = proximityInfo;
+    mWordsPriorityQueue->clear();
 }
 
-// TODO: We need to optimize addWord by using STL or something
 // TODO: This needs to take an const unsigned short* and not tinker with its contents
-bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency) {
-    word[length] = 0;
-    if (DEBUG_DICT && DEBUG_SHOW_FOUND_WORD) {
-#ifdef FLAG_DBG
-        char s[length + 1];
-        for (int i = 0; i <= length; i++) s[i] = word[i];
-        LOGI("Found word = %s, freq = %d", s, frequency);
-#endif
-    }
-    if (length > MAX_WORD_LENGTH) {
-        if (DEBUG_DICT) {
-            LOGI("Exceeded max word length.");
-        }
-        return false;
-    }
-
-    // Find the right insertion point
-    int insertAt = 0;
-    while (insertAt < MAX_WORDS) {
-        // TODO: How should we sort words with the same frequency?
-        if (frequency > mFrequencies[insertAt]) {
-            break;
-        }
-        insertAt++;
-    }
-    if (insertAt < MAX_WORDS) {
-        if (DEBUG_DICT) {
-#ifdef FLAG_DBG
-            char s[length + 1];
-            for (int i = 0; i <= length; i++) s[i] = word[i];
-            LOGI("Added word = %s, freq = %d, %d", s, frequency, S_INT_MAX);
-#endif
-        }
-        memmove((char*) mFrequencies + (insertAt + 1) * sizeof(mFrequencies[0]),
-               (char*) mFrequencies + insertAt * sizeof(mFrequencies[0]),
-               (MAX_WORDS - insertAt - 1) * sizeof(mFrequencies[0]));
-        mFrequencies[insertAt] = frequency;
-        memmove((char*) mOutputChars + (insertAt + 1) * MAX_WORD_LENGTH * sizeof(short),
-               (char*) mOutputChars + insertAt * MAX_WORD_LENGTH * sizeof(short),
-               (MAX_WORDS - insertAt - 1) * sizeof(short) * MAX_WORD_LENGTH);
-        unsigned short *dest = mOutputChars + insertAt * MAX_WORD_LENGTH;
-        while (length--) {
-            *dest++ = *word++;
-        }
-        *dest = 0; // NULL terminate
-        if (DEBUG_DICT) {
-            LOGI("Added word at %d", insertAt);
-        }
-        return true;
-    }
-    return false;
+void UnigramDictionary::addWord(unsigned short *word, int length, int frequency) {
+    mWordsPriorityQueue->push(frequency, word, length);
 }
 
 static const char QUOTE = '\'';

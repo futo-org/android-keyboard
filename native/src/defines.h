@@ -101,6 +101,7 @@ static void prof_out(void) {
 #define DEBUG_PROXIMITY_INFO true
 #define DEBUG_CORRECTION false
 #define DEBUG_CORRECTION_FREQ true
+#define DEBUG_WORDS_PRIORITY_QUEUE true
 
 #define DUMP_WORD(word, length) do { dumpWord(word, length); } while(0)
 
@@ -125,6 +126,7 @@ static void dumpWord(const unsigned short* word, const int length) {
 #define DEBUG_PROXIMITY_INFO false
 #define DEBUG_CORRECTION false
 #define DEBUG_CORRECTION_FREQ false
+#define DEBUG_WORDS_PRIORITY_QUEUE false
 
 #define DUMP_WORD(word, length)
 
