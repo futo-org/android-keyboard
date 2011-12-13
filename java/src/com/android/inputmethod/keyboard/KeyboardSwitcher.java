@@ -168,7 +168,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         final Keyboard oldKeyboard = mKeyboardView.getKeyboard();
         mKeyboardView.setKeyboard(keyboard);
         mCurrentInputView.setKeyboardGeometry(keyboard.mTopPadding);
-        updateShiftLockState(keyboard);
         mKeyboardView.setKeyPreviewPopupEnabled(
                 SettingsValues.isKeyPreviewPopupEnabled(mPrefs, mResources),
                 SettingsValues.getKeyPreviewPopupDismissDelay(mPrefs, mResources));
@@ -176,19 +175,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
                 || !keyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
         mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
         updateShiftState();
-    }
-
-    private void updateShiftLockState(Keyboard keyboard) {
-        if (keyboard.mId.equals(mSymbolsShiftedKeyboardId)) {
-            // Symbol keyboard may have an ALT key that has a caps lock style indicator (a.k.a.
-            // sticky shift key). To show or dismiss the indicator, we need to call setShiftLocked()
-            // that takes care of the current keyboard having such ALT key or not.
-            keyboard.setShiftLocked(keyboard.hasShiftLockKey());
-        } else if (keyboard.mId.equals(mSymbolsKeyboardId)) {
-            // Symbol keyboard has an ALT key that has a caps lock style indicator. To disable the
-            // indicator, we need to call setShiftLocked(false).
-            keyboard.setShiftLocked(false);
-        }
     }
 
     private LatinKeyboard getKeyboard(KeyboardId id) {
@@ -419,7 +405,13 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setSymbolsShiftedKeyboard() {
-        setKeyboard(getKeyboard(mSymbolsShiftedKeyboardId));
+        final Keyboard keyboard = getKeyboard(mSymbolsShiftedKeyboardId);
+        setKeyboard(keyboard);
+        // TODO: Remove this logic once we introduce initial keyboard shift state attribute.
+        // Symbol shift keyboard may have a shift key that has a caps lock style indicator (a.k.a.
+        // sticky shift key). To show or dismiss the indicator, we need to call setShiftLocked()
+        // that takes care of the current keyboard having such shift key or not.
+        keyboard.setShiftLocked(keyboard.hasShiftLockKey());
     }
 
     public boolean isInMomentarySwitchState() {
