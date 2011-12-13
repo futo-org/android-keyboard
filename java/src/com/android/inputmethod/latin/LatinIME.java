@@ -1423,10 +1423,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 ic.setComposingText(textWithUnderline, 1);
                 if (mWordComposer.size() == 0) {
                     mHasUncommittedTypedChars = false;
-                }
-                if (1 == length) {
-                    // 1 == length means we are about to erase the last character of the word,
-                    // so we can show bigrams.
+                    // Remaining size equals zero means we just erased the last character of the
+                    // word, so we can show bigrams.
                     mHandler.postUpdateBigramPredictions();
                 } else {
                     // length > 1, so we still have letters to deduce a suggestion from.
