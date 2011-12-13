@@ -2225,8 +2225,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // Here we test whether we indeed have a period and a space before us. This should not
         // be needed, but it's there just in case something went wrong.
         final CharSequence textBeforeCursor = ic.getTextBeforeCursor(2, 0);
-        if (!". ".equals(textBeforeCursor))
-            return false;
+        if (!". ".equals(textBeforeCursor)) {
+            // We should not have come here if we aren't just after a ". ".
+            throw new RuntimeException("Tried to revert double-space combo but we didn't find "
+                    + "\". \" just before the cursor.");
+        }
         ic.beginBatchEdit();
         ic.deleteSurroundingText(2, 0);
         ic.commitText("  ", 1);
@@ -2240,8 +2243,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final CharSequence textBeforeCursor = ic.getTextBeforeCursor(2, 0);
         // NOTE: This does not work with surrogate pairs. Hopefully when the keyboard is able to
         // enter surrogate pairs this code will have been removed.
-        if (Keyboard.CODE_SPACE != textBeforeCursor.charAt(1))
-            return false;
+        if (Keyboard.CODE_SPACE != textBeforeCursor.charAt(1)) {
+            // We should not have come here if the text before the cursor is not a space.
+            throw new RuntimeException("Tried to revert a swap of punctiation but we didn't "
+                    + "find a space just before the cursor.");
+        }
         ic.beginBatchEdit();
         ic.deleteSurroundingText(2, 0);
         ic.commitText(" " + textBeforeCursor.subSequence(0, 1), 1);
