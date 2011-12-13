@@ -1496,12 +1496,19 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private void handleCharacter(final int primaryCode, final int[] keyCodes, final int x,
             final int y, final int spaceState) {
         mVoiceProxy.handleCharacter();
-
         final InputConnection ic = getCurrentInputConnection();
-        if (ic != null) ic.beginBatchEdit();
+        if (null != ic) ic.beginBatchEdit();
+        // TODO: if ic is null, does it make any sense to call this?
+        handleCharacterWhileInBatchEdit(primaryCode, keyCodes, x, y, spaceState, ic);
+        if (null != ic) ic.endBatchEdit();
+    }
+
+    // "ic" may be null without this crashing, but the behavior will be really strange
+    private void handleCharacterWhileInBatchEdit(final int primaryCode, final int[] keyCodes,
+            final int x, final int y, final int spaceState, final InputConnection ic) {
         if (SPACE_STATE_MAGIC == spaceState
                 && mSettingsValues.isMagicSpaceStripper(primaryCode)) {
-            removeTrailingSpaceWhileInBatchEdit(ic);
+            if (null != ic) removeTrailingSpaceWhileInBatchEdit(ic);
         }
 
         int code = primaryCode;
@@ -1520,7 +1527,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (switcher.isShiftedOrShiftLocked()) {
             if (keyCodes == null || keyCodes[0] < Character.MIN_CODE_POINT
                     || keyCodes[0] > Character.MAX_CODE_POINT) {
-                if (null != ic) ic.endBatchEdit();
                 return;
             }
             code = keyCodes[0];
@@ -1534,7 +1540,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 } else {
                     // Some keys, such as [eszett], have upper case as multi-characters.
                     onTextInput(upperCaseString);
-                    if (null != ic) ic.endBatchEdit();
                     return;
                 }
             }
@@ -1564,7 +1569,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         } else {
             Utils.Stats.onNonSeparator((char)code, x, y);
         }
-        if (null != ic) ic.endBatchEdit();
     }
 
     private void handleSeparator(final int primaryCode, final int x, final int y,
