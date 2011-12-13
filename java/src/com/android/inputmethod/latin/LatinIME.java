@@ -1411,7 +1411,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             return;
         }
 
-        final boolean deleteChar = !mHasUncommittedTypedChars;
         if (mHasUncommittedTypedChars) {
             final int length = mWordComposer.size();
             if (length > 0) {
@@ -1439,31 +1438,29 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // If we had uncommitted chars then we know it's not time to revert any auto-correct
             // and that spaceState is NONE.
             return;
-        }
-
-        if (null != mWordSavedForAutoCorrectCancellation) {
-            Utils.Stats.onAutoCorrectionCancellation();
-            cancelAutoCorrect(ic);
-            mWordSavedForAutoCorrectCancellation = null;
-            return;
         } else {
-            mWordSavedForAutoCorrectCancellation = null;
-        }
-
-        if (SPACE_STATE_DOUBLE == spaceState) {
-            if (revertDoubleSpace(ic)) {
-                // No need to reset mSpaceState, it has already be done (that's why we
-                // receive it as a parameter)
+            if (null != mWordSavedForAutoCorrectCancellation) {
+                Utils.Stats.onAutoCorrectionCancellation();
+                cancelAutoCorrect(ic);
+                mWordSavedForAutoCorrectCancellation = null;
                 return;
+            } else {
+                mWordSavedForAutoCorrectCancellation = null;
             }
-        } else if (SPACE_STATE_SWAP_PUNCTUATION == spaceState) {
-            if (revertSwapPunctuation(ic)) {
-                // Likewise
-                return;
-            }
-        }
 
-        if (deleteChar) {
+            if (SPACE_STATE_DOUBLE == spaceState) {
+                if (revertDoubleSpace(ic)) {
+                    // No need to reset mSpaceState, it has already be done (that's why we
+                    // receive it as a parameter)
+                    return;
+                }
+            } else if (SPACE_STATE_SWAP_PUNCTUATION == spaceState) {
+                if (revertSwapPunctuation(ic)) {
+                    // Likewise
+                    return;
+                }
+            }
+
             if (mSuggestionsView != null && mSuggestionsView.dismissAddToDictionaryHint()) {
                 // Go back to the suggestion mode if the user canceled the
                 // "Touch again to save".
