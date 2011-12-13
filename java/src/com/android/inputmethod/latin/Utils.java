@@ -22,6 +22,7 @@ import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.latin.define.JniLibName;
 
 import android.content.Context;
 import android.content.Intent;
@@ -691,9 +692,13 @@ public class Utils {
 
     public static void loadNativeLibrary() {
         try {
-            System.loadLibrary("jni_latinime");
+            System.loadLibrary(JniLibName.JNI_LIB_NAME);
         } catch (UnsatisfiedLinkError ule) {
-            Log.e(TAG, "Could not load native library jni_latinime");
+            Log.e(TAG, "Could not load native library " + JniLibName.JNI_LIB_NAME);
+            if (LatinImeLogger.sDBG) {
+                throw new RuntimeException(
+                        "Could not load native library " + JniLibName.JNI_LIB_NAME);
+            }
         }
     }
 
