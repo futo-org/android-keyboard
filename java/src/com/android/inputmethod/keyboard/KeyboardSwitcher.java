@@ -74,7 +74,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     private KeyboardId mSymbolsKeyboardId;
     private KeyboardId mSymbolsShiftedKeyboardId;
 
-    private KeyboardId mCurrentId;
     private final HashMap<KeyboardId, SoftReference<LatinKeyboard>> mKeyboardCache =
             new HashMap<KeyboardId, SoftReference<LatinKeyboard>>();
 
@@ -152,7 +151,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     }
 
     public void saveKeyboardState() {
-        if (mCurrentId != null) {
+        if (isKeyboardAvailable()) {
             mState.onSaveKeyboardState();
         }
     }
@@ -169,7 +168,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         final Keyboard oldKeyboard = mKeyboardView.getKeyboard();
         mKeyboardView.setKeyboard(keyboard);
         mCurrentInputView.setKeyboardGeometry(keyboard.mTopPadding);
-        mCurrentId = keyboard.mId;
         updateShiftLockState(keyboard);
         mKeyboardView.setKeyPreviewPopupEnabled(
                 SettingsValues.isKeyPreviewPopupEnabled(mPrefs, mResources),
@@ -181,12 +179,12 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     }
 
     private void updateShiftLockState(Keyboard keyboard) {
-        if (mCurrentId.equals(mSymbolsShiftedKeyboardId)) {
+        if (keyboard.mId.equals(mSymbolsShiftedKeyboardId)) {
             // Symbol keyboard may have an ALT key that has a caps lock style indicator (a.k.a.
             // sticky shift key). To show or dismiss the indicator, we need to call setShiftLocked()
             // that takes care of the current keyboard having such ALT key or not.
             keyboard.setShiftLocked(keyboard.hasShiftLockKey());
-        } else if (mCurrentId.equals(mSymbolsKeyboardId)) {
+        } else if (keyboard.mId.equals(mSymbolsKeyboardId)) {
             // Symbol keyboard has an ALT key that has a caps lock style indicator. To disable the
             // indicator, we need to call setShiftLocked(false).
             keyboard.setShiftLocked(false);
