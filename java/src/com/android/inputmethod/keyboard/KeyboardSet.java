@@ -19,15 +19,28 @@ package com.android.inputmethod.keyboard;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.content.res.XmlResourceParser;
 import android.util.DisplayMetrics;
+import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
 
+import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
+import com.android.inputmethod.keyboard.internal.KeyboardBuilder.IllegalEndTag;
+import com.android.inputmethod.keyboard.internal.KeyboardBuilder.IllegalStartTag;
+import com.android.inputmethod.keyboard.internal.KeyboardBuilder.ParseException;
 import com.android.inputmethod.latin.LatinIME;
+import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SettingsValues;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.Utils;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -37,6 +50,9 @@ import java.util.Locale;
  * A {@link KeyboardSet} needs to be created for each {@link android.view.inputmethod.EditorInfo}.
  */
 public class KeyboardSet {
+    private static final String TAG_KEYBOARD_SET = "KeyboardSet";
+    private static final String TAG_ELEMENT = "Element";
+
     // TODO: Make these KeyboardId private.
     public final KeyboardId mAlphabetId;
     public final KeyboardId mSymbolsId;
@@ -51,6 +67,9 @@ public class KeyboardSet {
     public static class Builder {
         private final Resources mResources;
         private final EditorInfo mEditorInfo;
+
+        private final HashMap<Integer, Integer> mElementKeyboards =
+                new HashMap<Integer, Integer>();
 
         private final int mMode;
         private final boolean mVoiceKeyEnabled;
@@ -91,31 +110,42 @@ public class KeyboardSet {
         }
 
         public KeyboardSet build() {
+            final Locale savedLocale = LocaleUtils.setSystemLocale(mResources, mLocale);
+            try {
+                parseKeyboardSet(mResources, R.xml.keyboard_set);
+            } catch (Exception e) {
+                //
+            } finally {
+                LocaleUtils.setSystemLocale(mResources, savedLocale);
+            }
             return new KeyboardSet(this);
         }
 
         KeyboardId getKeyboardId(boolean isSymbols, boolean isShift) {
-            final int xmlId = getXmlId(mMode, isSymbols, isShift);
-            final boolean hasShortCutKey = mVoiceKeyEnabled && (isSymbols != mVoiceKeyOnMain);
-            return new KeyboardId(mResources.getResourceEntryName(xmlId), xmlId, mLocale,
-                    mConf.orientation, mMetrics.widthPixels, mMode, mEditorInfo, mHasSettingsKey,
-                    mF2KeyMode, mNoSettingsKey, mVoiceKeyEnabled, hasShortCutKey);
+            final int elementState = getElementState(mMode, isSymbols, isShift);
+            final int xmlId = mElementKeyboards.get(elementState);
+            final boolean hasShortcutKey = mVoiceKeyEnabled && (isSymbols != mVoiceKeyOnMain);
+            return new KeyboardId(xmlId, elementState, mLocale, mConf.orientation,
+                    mMetrics.widthPixels, mMode, mEditorInfo, mHasSettingsKey, mF2KeyMode,
+                    mNoSettingsKey, mVoiceKeyEnabled, hasShortcutKey);
         }
 
-        private static int getXmlId(int mode, boolean isSymbols, boolean isShift) {
+        private static int getElementState(int mode, boolean isSymbols, boolean isShift) {
             switch (mode) {
             case KeyboardId.MODE_PHONE:
-                return (isSymbols && isShift) ? R.xml.kbd_phone_shift : R.xml.kbd_phone;
+                return (isSymbols && isShift)
+                        ? KeyboardId.ELEMENT_PHONE_SHIFT : KeyboardId.ELEMENT_PHONE;
             case KeyboardId.MODE_NUMBER:
-                return R.xml.kbd_number;
+                return KeyboardId.ELEMENT_NUMBER;
             default:
                 if (isSymbols) {
-                    return isShift ? R.xml.kbd_symbols_shift : R.xml.kbd_symbols;
+                    return isShift ? KeyboardId.ELEMENT_SYMBOLS_SHIFT : KeyboardId.ELEMENT_SYMBOLS;
                 }
-                return R.xml.kbd_qwerty;
+                return KeyboardId.ELEMENT_ALPHABET;
             }
         }
 
+        // TODO: Move to KeyboardId.
         private static int getF2KeyMode(boolean settingsKeyEnabled, boolean noSettingsKey) {
             if (noSettingsKey) {
                 // Never shows the Settings key
@@ -130,5 +160,95 @@ public class KeyboardSet {
                 return KeyboardId.F2KEY_MODE_SHORTCUT_IME_OR_SETTINGS;
             }
         }
+
+        private void parseKeyboardSet(Resources res, int resId) throws XmlPullParserException,
+                IOException {
+            final XmlResourceParser parser = res.getXml(resId);
+            try {
+                int event;
+                while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+                    if (event == XmlPullParser.START_TAG) {
+                        final String tag = parser.getName();
+                        if (TAG_KEYBOARD_SET.equals(tag)) {
+                            parseKeyboardSetContent(parser);
+                        } else {
+                            throw new IllegalStartTag(parser, TAG_KEYBOARD_SET);
+                        }
+                    }
+                }
+            } finally {
+                parser.close();
+            }
+        }
+
+        private void parseKeyboardSetContent(XmlPullParser parser) throws XmlPullParserException,
+                IOException {
+            int event;
+            while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+                if (event == XmlPullParser.START_TAG) {
+                    final String tag = parser.getName();
+                    if (TAG_ELEMENT.equals(tag)) {
+                        parseKeyboardSetElement(parser);
+                    } else {
+                        throw new IllegalStartTag(parser, TAG_KEYBOARD_SET);
+                    }
+                } else if (event == XmlPullParser.END_TAG) {
+                    final String tag = parser.getName();
+                    if (TAG_KEYBOARD_SET.equals(tag)) {
+                        break;
+                    } else {
+                        throw new IllegalEndTag(parser, TAG_KEYBOARD_SET);
+                    }
+                }
+            }
+        }
+
+        private void parseKeyboardSetElement(XmlPullParser parser) throws XmlPullParserException,
+                IOException {
+            final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
+                    R.styleable.KeyboardSet_Element);
+            try {
+                if (!a.hasValue(R.styleable.KeyboardSet_Element_elementName)) {
+                    throw new ParseException(
+                            "No elementName attribute in <" + TAG_ELEMENT + "/>", parser);
+                }
+                if (!a.hasValue(R.styleable.KeyboardSet_Element_elementKeyboard)) {
+                    throw new ParseException(
+                            "No elementKeyboard attribute in <" + TAG_ELEMENT + "/>", parser);
+                }
+                KeyboardBuilder.checkEndTag(TAG_ELEMENT, parser);
+
+                final int elementName = a.getInt(
+                        R.styleable.KeyboardSet_Element_elementName, 0);
+                final int elementKeyboard = a.getResourceId(
+                        R.styleable.KeyboardSet_Element_elementKeyboard, 0);
+                mElementKeyboards.put(elementName, elementKeyboard);
+            } finally {
+                a.recycle();
+            }
+        }
+    }
+
+    public static String parseKeyboardLocale(Resources res, int resId)
+            throws XmlPullParserException, IOException {
+        final XmlPullParser parser = res.getXml(resId);
+        if (parser == null) return "";
+        int event;
+        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+            if (event == XmlPullParser.START_TAG) {
+                final String tag = parser.getName();
+                if (TAG_KEYBOARD_SET.equals(tag)) {
+                    final TypedArray keyboardSetAttr = res.obtainAttributes(
+                            Xml.asAttributeSet(parser), R.styleable.KeyboardSet);
+                    final String locale = keyboardSetAttr.getString(
+                            R.styleable.KeyboardSet_keyboardLocale);
+                    keyboardSetAttr.recycle();
+                    return locale;
+                } else {
+                    throw new IllegalStartTag(parser, TAG_KEYBOARD_SET);
+                }
+            }
+        }
+        return "";
     }
 }
