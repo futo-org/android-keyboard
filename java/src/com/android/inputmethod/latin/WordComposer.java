@@ -301,7 +301,7 @@ public class WordComposer {
     }
 
     /**
-     * @return the auto-correction for this world, or null if none.
+     * @return the auto-correction for this word, or null if none.
      */
     public CharSequence getAutoCorrectionOrNull() {
         return mAutoCorrection;

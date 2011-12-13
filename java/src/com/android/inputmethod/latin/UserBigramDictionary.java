@@ -159,7 +159,7 @@ public class UserBigramDictionary extends ExpandableDictionary {
      */
     public int addBigrams(String word1, String word2) {
         // remove caps if second word is autocapitalized
-        if (mIme != null && mIme.getCurrentWord().isAutoCapitalized()) {
+        if (mIme != null && mIme.isAutoCapitalized()) {
             word2 = Character.toLowerCase(word2.charAt(0)) + word2.substring(1);
         }
         // Do not insert a word as a bigram of itself

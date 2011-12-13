@@ -149,7 +149,7 @@ public class UserUnigramDictionary extends ExpandableDictionary {
         final int length = word.length();
         // Don't add very short or very long words.
         if (length < 2 || length > getMaxWordLength()) return;
-        if (mIme.getCurrentWord().isAutoCapitalized()) {
+        if (mIme.isAutoCapitalized()) {
             // Remove caps before adding
             word = Character.toLowerCase(word.charAt(0)) + word.substring(1);
         }
