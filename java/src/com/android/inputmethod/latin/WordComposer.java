@@ -41,6 +41,8 @@ public class WordComposer {
     private int[] mYCoordinates;
 
     private StringBuilder mTypedWord;
+    // An auto-correction for this word out of the dictionary.
+    private CharSequence mAutoCorrection;
 
     private int mCapsCount;
 
@@ -60,6 +62,7 @@ public class WordComposer {
         mXCoordinates = new int[N];
         mYCoordinates = new int[N];
         mTrailingSingleQuotesCount = 0;
+        mAutoCorrection = null;
     }
 
     public WordComposer(WordComposer source) {
@@ -75,6 +78,7 @@ public class WordComposer {
         mIsFirstCharCapitalized = source.mIsFirstCharCapitalized;
         mAutoCapitalized = source.mAutoCapitalized;
         mTrailingSingleQuotesCount = source.mTrailingSingleQuotesCount;
+        mAutoCorrection = null;
     }
 
     /**
@@ -86,6 +90,7 @@ public class WordComposer {
         mCapsCount = 0;
         mIsFirstCharCapitalized = false;
         mTrailingSingleQuotesCount = 0;
+        mAutoCorrection = null;
     }
 
     /**
@@ -140,6 +145,7 @@ public class WordComposer {
         } else {
             mTrailingSingleQuotesCount = 0;
         }
+        mAutoCorrection = null;
     }
 
     /**
@@ -173,6 +179,7 @@ public class WordComposer {
             int codePoint = word.charAt(i);
             addKeyInfo(codePoint, keyboard, keyDetector);
         }
+        mAutoCorrection = null;
     }
 
     /**
@@ -224,11 +231,12 @@ public class WordComposer {
                 ++mTrailingSingleQuotesCount;
             }
         }
+        mAutoCorrection = null;
     }
 
     /**
      * Returns the word as it was typed, without any correction applied.
-     * @return the word that was typed so far
+     * @return the word that was typed so far. Never returns null.
      */
     public String getTypedWord() {
         return mTypedWord.toString();
@@ -276,5 +284,26 @@ public class WordComposer {
      */
     public boolean isAutoCapitalized() {
         return mAutoCapitalized;
+    }
+
+    /**
+     * Sets the auto-correction for this word.
+     */
+    public void setAutoCorrection(final CharSequence correction) {
+        mAutoCorrection = correction;
+    }
+
+    /**
+     * Remove any auto-correction that may have been set.
+     */
+    public void deleteAutoCorrection() {
+        mAutoCorrection = null;
+    }
+
+    /**
+     * @return the auto-correction for this world, or null if none.
+     */
+    public CharSequence getAutoCorrectionOrNull() {
+        return mAutoCorrection;
     }
 }
