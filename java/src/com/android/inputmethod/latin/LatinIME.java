@@ -1433,9 +1433,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             } else {
                 ic.deleteSurroundingText(1, 0);
             }
-            // If we had uncommitted chars then we know it's not time to revert any auto-correct
-            // and that spaceState is NONE.
-            return;
         } else {
             if (null != mWordSavedForAutoCorrectCancellation) {
                 Utils.Stats.onAutoCorrectionCancellation();
