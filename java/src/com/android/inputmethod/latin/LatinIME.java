@@ -1397,6 +1397,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private void handleBackspaceWhileInBatchEdit(final int spaceState, final InputConnection ic) {
         mVoiceProxy.handleBackspace();
 
+        // In many cases, we may have to put the keyboard in auto-shift state again.
+        mHandler.postUpdateShiftKeyState();
+
         if (mEnteredText != null && sameAsTextBeforeCursor(ic, mEnteredText)) {
             // Cancel multi-character input: remove the text we just entered.
             // This is triggered on backspace after a key that inputs multiple characters,
@@ -1433,14 +1436,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             } else {
                 ic.deleteSurroundingText(1, 0);
             }
-            // If we deleted the last remaining char of a word, we may have to put the keyboard
-            // in auto-shift state again.
-            mHandler.postUpdateShiftKeyState();
             // If we had uncommitted chars then we know it's not time to revert any auto-correct
             // and that spaceState is NONE.
             return;
         }
-        mHandler.postUpdateShiftKeyState();
 
         if (null != mWordSavedForAutoCorrectCancellation) {
             Utils.Stats.onAutoCorrectionCancellation();
