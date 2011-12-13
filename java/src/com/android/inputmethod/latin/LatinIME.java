@@ -1510,13 +1510,16 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (null != ic) removeTrailingSpaceWhileInBatchEdit(ic);
         }
 
+        boolean isComposingWord = mHasUncommittedTypedChars;
         int code = primaryCode;
         if ((isAlphabet(code) || mSettingsValues.isSymbolExcludedFromWordSeparators(code))
                 && isSuggestionsRequested() && !isCursorTouchingWord()) {
-            if (!mHasUncommittedTypedChars) {
+            if (!isComposingWord) {
                 // Reset entirely the composing state anyway, then start composing a new word unless
-                // the character is a single quote.
-                mHasUncommittedTypedChars = (Keyboard.CODE_SINGLE_QUOTE != code);
+                // the character is a single quote. The idea here is, single quote is not a
+                // separator and it should be treated as a normal character, except in the first
+                // position where it should not start composing a word.
+                isComposingWord = (Keyboard.CODE_SINGLE_QUOTE != code);
                 mWordComposer.reset();
                 clearSuggestions();
                 mComposingStateManager.onFinishComposingText();
@@ -1543,7 +1546,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 }
             }
         }
-        if (mHasUncommittedTypedChars) {
+        if (isComposingWord) {
+            mHasUncommittedTypedChars = true;
             mWordComposer.add(code, keyCodes, x, y);
             if (ic != null) {
                 // If it's the first letter, make note of auto-caps state
