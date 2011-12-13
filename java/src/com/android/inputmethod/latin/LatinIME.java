@@ -1386,11 +1386,15 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private void handleBackspace(final int spaceState) {
         if (mVoiceProxy.logAndRevertVoiceInput()) return;
-
         final InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
         ic.beginBatchEdit();
+        handleBackspaceWhileInBatchEdit(spaceState, ic);
+        ic.endBatchEdit();
+    }
 
+    // "ic" may not be null.
+    private void handleBackspaceWhileInBatchEdit(final int spaceState, final InputConnection ic) {
         mVoiceProxy.handleBackspace();
 
         if (mEnteredText != null && sameAsTextBeforeCursor(ic, mEnteredText)) {
@@ -1401,7 +1405,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // If we have mEnteredText, then we know that mHasUncommittedTypedChars == false.
             // In addition we know that spaceState is false, and that we should not be
             // reverting any autocorrect at this point. So we can safely return.
-            ic.endBatchEdit();
             return;
         }
 
@@ -1435,7 +1438,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mHandler.postUpdateShiftKeyState();
             // If we had uncommitted chars then we know it's not time to revert any auto-correct
             // and that spaceState is NONE.
-            ic.endBatchEdit();
             return;
         }
         mHandler.postUpdateShiftKeyState();
@@ -1444,7 +1446,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             Utils.Stats.onAutoCorrectionCancellation();
             cancelAutoCorrect(ic);
             mWordSavedForAutoCorrectCancellation = null;
-            ic.endBatchEdit();
             return;
         } else {
             mWordSavedForAutoCorrectCancellation = null;
@@ -1452,14 +1453,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         if (SPACE_STATE_DOUBLE == spaceState) {
             if (revertDoubleSpace(ic)) {
-                ic.endBatchEdit();
                 // No need to reset mSpaceState, it has already be done (that's why we
                 // receive it as a parameter)
                 return;
             }
         } else if (SPACE_STATE_SWAP_PUNCTUATION == spaceState) {
             if (revertSwapPunctuation(ic)) {
-                ic.endBatchEdit();
                 // Likewise
                 return;
             }
@@ -1483,7 +1482,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 restartSuggestionsOnWordBeforeCursorIfAtEndOfWord(ic);
             }
         }
-        ic.endBatchEdit();
     }
 
     private void handleTab() {
