@@ -22,6 +22,7 @@
 #include "correction_state.h"
 #include "defines.h"
 #include "proximity_info.h"
+#include "words_priority_queue.h"
 
 namespace latinime {
 
@@ -73,18 +74,16 @@ public:
 private:
 
     void getWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
-            const int *ycoordinates, const int *codes, const int codesSize,
-            unsigned short *outWords, int *frequencies, const int flags);
+            const int *ycoordinates, const int *codes, const int codesSize, const int flags);
     bool isDigraph(const int* codes, const int i, const int codesSize) const;
     void getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int* ycoordinates, const int *codesBuffer,
         const int codesBufferSize, const int flags, const int* codesSrc, const int codesRemain,
-        const int currentDepth, int* codesDest, unsigned short* outWords, int* frequencies);
+        const int currentDepth, int* codesDest);
     void initSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
-            const int *ycoordinates, const int *codes, const int codesSize,
-            unsigned short *outWords, int *frequencies);
+            const int *ycoordinates, const int *codes, const int codesSize);
     void getSuggestionCandidates(const bool useFullEditDistance);
-    bool addWord(unsigned short *word, int length, int frequency);
+    void addWord(unsigned short *word, int length, int frequency);
     void getSplitTwoWordsSuggestion(const int inputLength, Correction *correction);
     void getMissingSpaceWords(const int inputLength, const int missingSpacePos,
             Correction *correction, const bool useFullEditDistance);
@@ -123,8 +122,7 @@ private:
     };
     static const struct digraph_t { int first; int second; } GERMAN_UMLAUT_DIGRAPHS[];
 
-    int *mFrequencies;
-    unsigned short *mOutputChars;
+    WordsPriorityQueue *mWordsPriorityQueue;
     ProximityInfo *mProximityInfo;
     Correction *mCorrection;
     int mInputLength;

@@ -46,15 +46,19 @@ LOCAL_MODULE := libjni_latinime
 
 LOCAL_MODULE_TAGS := user
 
+# For STL
+LOCAL_C_INCLUDES += external/stlport/stlport bionic
+LOCAL_SHARED_LIBRARIES += libstlport
+
 ifeq ($(FLAG_DO_PROFILE), true)
     $(warning Making profiling version of native library)
     LOCAL_CFLAGS += -DFLAG_DO_PROFILE
-    LOCAL_SHARED_LIBRARIES := libcutils libutils
+    LOCAL_SHARED_LIBRARIES += libcutils libutils
 else # FLAG_DO_PROFILE
 ifeq ($(FLAG_DBG), true)
     $(warning Making debug version of native library)
     LOCAL_CFLAGS += -DFLAG_DBG
-    LOCAL_SHARED_LIBRARIES := libcutils libutils
+    LOCAL_SHARED_LIBRARIES += libcutils libutils
 endif # FLAG_DBG
 endif # FLAG_DO_PROFILE
 
