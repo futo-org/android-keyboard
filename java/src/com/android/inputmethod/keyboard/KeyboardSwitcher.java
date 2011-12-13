@@ -18,9 +18,7 @@ package com.android.inputmethod.keyboard;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.InflateException;
@@ -65,14 +63,11 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     private InputView mCurrentInputView;
     private LatinKeyboardView mKeyboardView;
     private LatinIME mInputMethodService;
-    private String mPackageName;
     private Resources mResources;
 
     private KeyboardState mState;
 
-    private KeyboardId mMainKeyboardId;
-    private KeyboardId mSymbolsKeyboardId;
-    private KeyboardId mSymbolsShiftedKeyboardId;
+    private KeyboardSet mKeyboardSet;
 
     private final HashMap<KeyboardId, SoftReference<LatinKeyboard>> mKeyboardCache =
             new HashMap<KeyboardId, SoftReference<LatinKeyboard>>();
@@ -100,7 +95,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
 
     private void initInternal(LatinIME ims, SharedPreferences prefs) {
         mInputMethodService = ims;
-        mPackageName = ims.getPackageName();
         mResources = ims.getResources();
         mPrefs = prefs;
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
@@ -133,20 +127,19 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
 
     public void loadKeyboard(EditorInfo editorInfo, SettingsValues settingsValues) {
         try {
-            mMainKeyboardId = getKeyboardId(editorInfo, false, false, settingsValues);
-            mSymbolsKeyboardId = getKeyboardId(editorInfo, true, false, settingsValues);
-            mSymbolsShiftedKeyboardId = getKeyboardId(editorInfo, true, true, settingsValues);
+            mKeyboardSet = new KeyboardSet.Builder(mInputMethodService, editorInfo, settingsValues)
+                    .build();
             mState.onLoadKeyboard(mResources.getString(R.string.layout_switch_back_symbols),
                     hasDistinctMultitouch());
             // TODO: Should get rid of this special case handling for Phone Number layouts once we
             // have separate layouts with unique KeyboardIds for alphabet and alphabet-shifted
             // respectively.
-            if (mMainKeyboardId.isPhoneKeyboard()) {
+            if (mKeyboardSet.mAlphabetId.isPhoneKeyboard()) {
                 mState.onToggleAlphabetAndSymbols();
             }
         } catch (RuntimeException e) {
-            Log.w(TAG, "loading keyboard failed: " + mMainKeyboardId, e);
-            LatinImeLogger.logOnException(mMainKeyboardId.toString(), e);
+            Log.w(TAG, "loading keyboard failed: " + mKeyboardSet.mAlphabetId, e);
+            LatinImeLogger.logOnException(mKeyboardSet.mAlphabetId.toString(), e);
         }
     }
 
@@ -177,6 +170,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         updateShiftState();
     }
 
+    // TODO: Move this method to KeyboardSet.
     private LatinKeyboard getKeyboard(KeyboardId id) {
         final SoftReference<LatinKeyboard> ref = mKeyboardCache.get(id);
         LatinKeyboard keyboard = (ref == null) ? null : ref.get();
@@ -213,55 +207,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         keyboard.setSpacebarTextFadeFactor(0.0f, null);
         keyboard.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady(), null);
         return keyboard;
-    }
-
-    private KeyboardId getKeyboardId(EditorInfo editorInfo, final boolean isSymbols,
-            final boolean isShift, SettingsValues settingsValues) {
-        final int mode = Utils.getKeyboardMode(editorInfo);
-        final int xmlId;
-        switch (mode) {
-        case KeyboardId.MODE_PHONE:
-            xmlId = (isSymbols && isShift) ? R.xml.kbd_phone_shift : R.xml.kbd_phone;
-            break;
-        case KeyboardId.MODE_NUMBER:
-            xmlId = R.xml.kbd_number;
-            break;
-        default:
-            if (isSymbols) {
-                xmlId = isShift ? R.xml.kbd_symbols_shift : R.xml.kbd_symbols;
-            } else {
-                xmlId = R.xml.kbd_qwerty;
-            }
-            break;
-        }
-
-        final boolean settingsKeyEnabled = settingsValues.isSettingsKeyEnabled();
-        @SuppressWarnings("deprecation")
-        final boolean noMicrophone = Utils.inPrivateImeOptions(
-                mPackageName, LatinIME.IME_OPTION_NO_MICROPHONE, editorInfo)
-                || Utils.inPrivateImeOptions(
-                        null, LatinIME.IME_OPTION_NO_MICROPHONE_COMPAT, editorInfo);
-        final boolean voiceKeyEnabled = settingsValues.isVoiceKeyEnabled(editorInfo)
-                && !noMicrophone;
-        final boolean voiceKeyOnMain = settingsValues.isVoiceKeyOnMain();
-        final boolean noSettingsKey = Utils.inPrivateImeOptions(
-                mPackageName, LatinIME.IME_OPTION_NO_SETTINGS_KEY, editorInfo);
-        final boolean hasSettingsKey = settingsKeyEnabled && !noSettingsKey;
-        final int f2KeyMode = getF2KeyMode(settingsKeyEnabled, noSettingsKey);
-        final boolean hasShortcutKey = voiceKeyEnabled && (isSymbols != voiceKeyOnMain);
-        final boolean forceAscii = Utils.inPrivateImeOptions(
-                mPackageName, LatinIME.IME_OPTION_FORCE_ASCII, editorInfo);
-        final boolean asciiCapable = mSubtypeSwitcher.currentSubtypeContainsExtraValueKey(
-                LatinIME.SUBTYPE_EXTRA_VALUE_ASCII_CAPABLE);
-        final Locale locale = (forceAscii && !asciiCapable)
-                ? Locale.US : mSubtypeSwitcher.getInputLocale();
-        final Configuration conf = mResources.getConfiguration();
-        final DisplayMetrics dm = mResources.getDisplayMetrics();
-
-        return new KeyboardId(
-                mResources.getResourceEntryName(xmlId), xmlId, locale, conf.orientation,
-                dm.widthPixels, mode, editorInfo, hasSettingsKey, f2KeyMode, noSettingsKey,
-                voiceKeyEnabled, hasShortcutKey);
     }
 
     public boolean isAlphabetMode() {
@@ -393,19 +338,19 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setSymbolsKeyboard() {
-        setKeyboard(getKeyboard(mSymbolsKeyboardId));
+        setKeyboard(getKeyboard(mKeyboardSet.mSymbolsId));
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetKeyboard() {
-        setKeyboard(getKeyboard(mMainKeyboardId));
+        setKeyboard(getKeyboard(mKeyboardSet.mAlphabetId));
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setSymbolsShiftedKeyboard() {
-        final Keyboard keyboard = getKeyboard(mSymbolsShiftedKeyboardId);
+        final Keyboard keyboard = getKeyboard(mKeyboardSet.mSymbolsShiftedId);
         setKeyboard(keyboard);
         // TODO: Remove this logic once we introduce initial keyboard shift state attribute.
         // Symbol shift keyboard may have a shift key that has a caps lock style indicator (a.k.a.
@@ -516,21 +461,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
                 if (keyboardView != null)
                     keyboardView.invalidateKey(invalidatedKey);
             }
-        }
-    }
-
-    private static int getF2KeyMode(boolean settingsKeyEnabled, boolean noSettingsKey) {
-        if (noSettingsKey) {
-            // Never shows the Settings key
-            return KeyboardId.F2KEY_MODE_SHORTCUT_IME;
-        }
-
-        if (settingsKeyEnabled) {
-            return KeyboardId.F2KEY_MODE_SETTINGS;
-        } else {
-            // It should be alright to fall back to the Settings key on 7-inch layouts
-            // even when the Settings key is not explicitly enabled.
-            return KeyboardId.F2KEY_MODE_SHORTCUT_IME_OR_SETTINGS;
         }
     }
 }
