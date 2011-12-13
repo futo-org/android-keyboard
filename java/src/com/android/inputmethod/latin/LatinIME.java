@@ -933,7 +933,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 // newly inserted punctuation.
                 mSpaceState = SPACE_STATE_NONE;
             }
-            if (((mWordComposer.size() > 0 && mHasUncommittedTypedChars)
+            if (((mWordComposer.isComposingWord())
                     || mVoiceProxy.isVoiceInputHighlighted())
                     && (selectionChanged || candidatesCleared)) {
                 mWordComposer.reset();
@@ -945,7 +945,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 }
                 mComposingStateManager.onFinishComposingText();
                 mVoiceProxy.setVoiceInputHighlighted(false);
-            } else if (!mHasUncommittedTypedChars) {
+            } else if (!mWordComposer.isComposingWord()) {
                 updateSuggestions();
             }
         }
@@ -1146,7 +1146,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     public void commitTyped(final InputConnection ic) {
-        if (!mHasUncommittedTypedChars) return;
+        if (!mWordComposer.isComposingWord()) return;
         mHasUncommittedTypedChars = false;
         final CharSequence typedWord = mWordComposer.getTypedWord();
         mWordComposer.onCommitWord();
@@ -1422,18 +1422,19 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             return;
         }
 
-        if (mHasUncommittedTypedChars) {
+        if (mWordComposer.isComposingWord()) {
             final int length = mWordComposer.size();
             if (length > 0) {
                 mWordComposer.deleteLast();
                 ic.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
-                if (mWordComposer.size() == 0) {
+                // If we have deleted the last remaining character of a word, then we are not
+                // isComposingWord() any more.
+                if (!mWordComposer.isComposingWord()) {
                     mHasUncommittedTypedChars = false;
-                    // Remaining size equals zero means we just erased the last character of the
-                    // word, so we can show bigrams.
+                    // Not composing word any more, so we can show bigrams.
                     mHandler.postUpdateBigramPredictions();
                 } else {
-                    // length > 1, so we still have letters to deduce a suggestion from.
+                    // Still composing a word, so we still have letters to deduce a suggestion from.
                     mHandler.postUpdateSuggestions();
                 }
             } else {
@@ -1522,7 +1523,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (null != ic) removeTrailingSpaceWhileInBatchEdit(ic);
         }
 
-        boolean isComposingWord = mHasUncommittedTypedChars;
+        boolean isComposingWord = mWordComposer.isComposingWord();
         int code = primaryCode;
         if ((isAlphabet(code) || mSettingsValues.isSymbolExcludedFromWordSeparators(code))
                 && isSuggestionsRequested() && !isCursorTouchingWord()) {
@@ -1605,7 +1606,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // Reset the saved word in all cases. If this separator causes an autocorrection,
         // it will overwrite this null with the actual word we need to save.
         mWordSavedForAutoCorrectCancellation = null;
-        if (mHasUncommittedTypedChars) {
+        if (mWordComposer.isComposingWord()) {
             // In certain languages where single quote is a separator, it's better
             // not to auto correct, but accept the typed word. For instance,
             // in Italian dov' should not be expanded to dove' because the elision
@@ -1780,7 +1781,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mHandler.cancelUpdateSuggestions();
         mHandler.cancelUpdateBigramPredictions();
 
-        if (!mHasUncommittedTypedChars) {
+        if (!mWordComposer.isComposingWord()) {
             setPunctuationSuggestions();
             return;
         }
@@ -1953,11 +1954,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             return;
         }
-        if (!mHasUncommittedTypedChars) {
-            // If we are not composing a word, then it was a suggestion inferred from
-            // context - no user input. We should reset the word composer.
-            mWordComposer.reset();
-        }
         mExpectingUpdateSelection = true;
         commitBestWord(suggestion);
         // Add the word to the auto dictionary if it's not a known word
@@ -1967,8 +1963,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         } else {
             addToOnlyBigramDictionary(suggestion, 1);
         }
-        // TODO: the following is fishy, because if !mHasUncommittedTypedChars we are
-        // going to log an empty string
+        // TODO: the following is fishy, because it seems there may be cases where we are not
+        // composing a word at all. Maybe throw an exception if !mWordComposer.isComposingWord() ?
         LatinImeLogger.logOnManualSuggestion(mWordComposer.getTypedWord().toString(),
                 suggestion.toString(), index, suggestions.mWords);
         // Follow it with a space
