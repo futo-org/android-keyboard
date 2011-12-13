@@ -1415,12 +1415,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             final int length = mWordComposer.size();
             if (length > 0) {
                 mWordComposer.deleteLast();
-                final CharSequence textWithUnderline =
-                        mComposingStateManager.isAutoCorrectionIndicatorOn()
-                                ? SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(
-                                            this, mWordComposer.getTypedWord())
-                                : mWordComposer.getTypedWord();
-                ic.setComposingText(textWithUnderline, 1);
+                ic.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
                 if (mWordComposer.size() == 0) {
                     mHasUncommittedTypedChars = false;
                     // Remaining size equals zero means we just erased the last character of the
@@ -1552,12 +1547,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     mWordComposer.setAutoCapitalized(getCurrentAutoCapsState());
                     mComposingStateManager.onStartComposingText();
                 }
-                final CharSequence textWithUnderline =
-                        mComposingStateManager.isAutoCorrectionIndicatorOn()
-                                ? SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(
-                                        this, mWordComposer.getTypedWord())
-                                : mWordComposer.getTypedWord();
-                ic.setComposingText(textWithUnderline, 1);
+                ic.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
             }
             mHandler.postUpdateSuggestions();
         } else {
@@ -1671,6 +1661,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
+    private CharSequence getTextWithUnderline(final CharSequence text) {
+        return mComposingStateManager.isAutoCorrectionIndicatorOn()
+                ? SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(this, text)
+                : mWordComposer.getTypedWord();
+    }
+
     private void handleClose() {
         commitTyped(getCurrentInputConnection());
         mVoiceProxy.handleClose();
@@ -1744,18 +1740,21 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     mComposingStateManager.isAutoCorrectionIndicatorOn();
             final boolean newAutoCorrectionIndicator = Utils.willAutoCorrect(words);
             if (oldAutoCorrectionIndicator != newAutoCorrectionIndicator) {
-                if (LatinImeLogger.sDBG) {
+                mComposingStateManager.setAutoCorrectionIndicatorOn(newAutoCorrectionIndicator);
+                if (DEBUG) {
                     Log.d(TAG, "Flip the indicator. " + oldAutoCorrectionIndicator
                             + " -> " + newAutoCorrectionIndicator);
+                    if (newAutoCorrectionIndicator
+                            != mComposingStateManager.isAutoCorrectionIndicatorOn()) {
+                        throw new RuntimeException("Couldn't flip the indicator! We are not "
+                                + "composing a word right now.");
+                    }
                 }
-                final CharSequence textWithUnderline = newAutoCorrectionIndicator
-                        ? SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(
-                                this, mWordComposer.getTypedWord())
-                        : mWordComposer.getTypedWord();
+                final CharSequence textWithUnderline =
+                        getTextWithUnderline(mWordComposer.getTypedWord());
                 if (!TextUtils.isEmpty(textWithUnderline)) {
                     ic.setComposingText(textWithUnderline, 1);
                 }
-                mComposingStateManager.setAutoCorrectionIndicatorOn(newAutoCorrectionIndicator);
             }
         }
     }
