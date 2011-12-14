@@ -145,7 +145,7 @@ void Correction::initCorrectionState(
 
 void Correction::setCorrectionParams(const int skipPos, const int excessivePos,
         const int transposedPos, const int spaceProximityPos, const int missingSpacePos,
-        const bool useFullEditDistance) {
+        const bool useFullEditDistance, const bool doAutoCompletion) {
     // TODO: remove
     mTransposedPos = transposedPos;
     mExcessivePos = excessivePos;
@@ -158,6 +158,7 @@ void Correction::setCorrectionParams(const int skipPos, const int excessivePos,
     mSpaceProximityPos = spaceProximityPos;
     mMissingSpacePos = missingSpacePos;
     mUseFullEditDistance = useFullEditDistance;
+    mDoAutoCompletion = doAutoCompletion;
 }
 
 void Correction::checkState() {
@@ -279,7 +280,9 @@ void Correction::startToTraverseAllNodes() {
 
 bool Correction::needsToPrune() const {
     // TODO: use edit distance here
-    return mOutputIndex - 1 >= mMaxDepth || mProximityCount > mMaxEditDistance;
+    return mOutputIndex - 1 >= mMaxDepth || mProximityCount > mMaxEditDistance
+            // Allow one char longer word for missing character
+            || (!mDoAutoCompletion && (mOutputIndex + 1 >= mInputLength));
 }
 
 void Correction::addCharToCurrentWord(const int32_t c) {
