@@ -613,9 +613,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             final boolean passwordInputMatched = matchBoolean(a,
                     R.styleable.Keyboard_Case_passwordInput, id.mPasswordInput);
             final boolean hasSettingsKeyMatched = matchBoolean(a,
-                    R.styleable.Keyboard_Case_hasSettingsKey, id.mHasSettingsKey);
+                    R.styleable.Keyboard_Case_hasSettingsKey, id.hasSettingsKey());
             final boolean f2KeyModeMatched = matchInteger(a,
-                    R.styleable.Keyboard_Case_f2KeyMode, id.mF2KeyMode);
+                    R.styleable.Keyboard_Case_f2KeyMode, id.f2KeyMode());
             final boolean clobberSettingsKeyMatched = matchBoolean(a,
                     R.styleable.Keyboard_Case_clobberSettingsKey, id.mClobberSettingsKey);
             final boolean shortcutKeyEnabledMatched = matchBoolean(a,

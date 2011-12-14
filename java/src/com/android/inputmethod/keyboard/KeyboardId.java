@@ -51,11 +51,10 @@ public class KeyboardId {
     public static final int ELEMENT_PHONE_SHIFT = 8;
     public static final int ELEMENT_NUMBER = 9;
 
-    // TODO: These constants could be private.
-    public static final int F2KEY_MODE_NONE = 0;
-    public static final int F2KEY_MODE_SETTINGS = 1;
-    public static final int F2KEY_MODE_SHORTCUT_IME = 2;
-    public static final int F2KEY_MODE_SHORTCUT_IME_OR_SETTINGS = 3;
+    private static final int F2KEY_MODE_NONE = 0;
+    private static final int F2KEY_MODE_SETTINGS = 1;
+    private static final int F2KEY_MODE_SHORTCUT_IME = 2;
+    private static final int F2KEY_MODE_SHORTCUT_IME_OR_SETTINGS = 3;
 
     public final Locale mLocale;
     public final int mOrientation;
@@ -66,9 +65,7 @@ public class KeyboardId {
     public final int mElementState;
     public final boolean mNavigateAction;
     public final boolean mPasswordInput;
-    // TODO: Clean up these booleans and modes.
-    public final boolean mHasSettingsKey;
-    public final int mF2KeyMode;
+    private final boolean mSettingsKeyEnabled;
     public final boolean mClobberSettingsKey;
     public final boolean mShortcutKeyEnabled;
     public final boolean mHasShortcutKey;
@@ -79,9 +76,8 @@ public class KeyboardId {
 
     private final int mHashCode;
 
-    // TODO: The hasSettings, f2KeyMode, and clobberSettingsKey arguments could be reduced.
     public KeyboardId(int xmlId, int elementState, Locale locale, int orientation, int width,
-            int mode, EditorInfo editorInfo, boolean hasSettingsKey, int f2KeyMode,
+            int mode, EditorInfo editorInfo, boolean settingsKeyEnabled,
             boolean clobberSettingsKey, boolean shortcutKeyEnabled, boolean hasShortcutKey) {
         final int inputType = (editorInfo != null) ? editorInfo.inputType : 0;
         final int imeOptions = (editorInfo != null) ? editorInfo.imeOptions : 0;
@@ -97,8 +93,7 @@ public class KeyboardId {
 //                || EditorInfoCompatUtils.hasFlagNavigatePrevious(imeOptions);
         this.mPasswordInput = InputTypeCompatUtils.isPasswordInputType(inputType)
                 || InputTypeCompatUtils.isVisiblePasswordInputType(inputType);
-        this.mHasSettingsKey = hasSettingsKey;
-        this.mF2KeyMode = f2KeyMode;
+        this.mSettingsKeyEnabled = settingsKeyEnabled;
         this.mClobberSettingsKey = clobberSettingsKey;
         this.mShortcutKeyEnabled = shortcutKeyEnabled;
         this.mHasShortcutKey = hasShortcutKey;
@@ -118,9 +113,8 @@ public class KeyboardId {
                 elementState,
                 mNavigateAction,
                 mPasswordInput,
-                hasSettingsKey,
-                f2KeyMode,
-                clobberSettingsKey,
+                mSettingsKeyEnabled,
+                mClobberSettingsKey,
                 shortcutKeyEnabled,
                 hasShortcutKey,
                 mImeAction,
@@ -128,9 +122,8 @@ public class KeyboardId {
     }
 
     public KeyboardId cloneWithNewXml(int xmlId) {
-        return new KeyboardId(xmlId, mElementState, mLocale,
-                mOrientation, mWidth, mMode, mEditorInfo, false, F2KEY_MODE_NONE, false, false,
-                false);
+        return new KeyboardId(xmlId, mElementState, mLocale, mOrientation, mWidth, mMode,
+                mEditorInfo, false, false, false, false);
     }
 
     // Remove this method.
@@ -154,6 +147,25 @@ public class KeyboardId {
         return mElementState == ELEMENT_PHONE_SHIFT;
     }
 
+    public boolean hasSettingsKey() {
+        return mSettingsKeyEnabled && !mClobberSettingsKey;
+    }
+
+    public int f2KeyMode() {
+        if (mClobberSettingsKey) {
+            // Never shows the Settings key
+            return KeyboardId.F2KEY_MODE_SHORTCUT_IME;
+        }
+
+        if (mSettingsKeyEnabled) {
+            return KeyboardId.F2KEY_MODE_SETTINGS;
+        } else {
+            // It should be alright to fall back to the Settings key on 7-inch layouts
+            // even when the Settings key is not explicitly enabled.
+            return KeyboardId.F2KEY_MODE_SHORTCUT_IME_OR_SETTINGS;
+        }
+    }
+
     @Override
     public boolean equals(Object other) {
         return other instanceof KeyboardId && equals((KeyboardId) other);
@@ -168,8 +180,7 @@ public class KeyboardId {
             && other.mElementState == this.mElementState
             && other.mNavigateAction == this.mNavigateAction
             && other.mPasswordInput == this.mPasswordInput
-            && other.mHasSettingsKey == this.mHasSettingsKey
-            && other.mF2KeyMode == this.mF2KeyMode
+            && other.mSettingsKeyEnabled == this.mSettingsKeyEnabled
             && other.mClobberSettingsKey == this.mClobberSettingsKey
             && other.mShortcutKeyEnabled == this.mShortcutKeyEnabled
             && other.mHasShortcutKey == this.mHasShortcutKey
@@ -189,11 +200,11 @@ public class KeyboardId {
                 (mOrientation == 1 ? "port" : "land"), mWidth,
                 modeName(mMode),
                 EditorInfoCompatUtils.imeOptionsName(mImeAction),
-                f2KeyModeName(mF2KeyMode),
+                f2KeyModeName(f2KeyMode()),
                 (mClobberSettingsKey ? " clobberSettingsKey" : ""),
                 (mNavigateAction ? " navigateAction" : ""),
                 (mPasswordInput ? " passwordInput" : ""),
-                (mHasSettingsKey ? " hasSettingsKey" : ""),
+                (hasSettingsKey() ? " hasSettingsKey" : ""),
                 (mShortcutKeyEnabled ? " shortcutKeyEnabled" : ""),
                 (mHasShortcutKey ? " hasShortcutKey" : "")
         );

@@ -72,11 +72,10 @@ public class KeyboardSet {
                 new HashMap<Integer, Integer>();
 
         private final int mMode;
+        private final boolean mSettingsKeyEnabled;
         private final boolean mVoiceKeyEnabled;
-        private final boolean mNoSettingsKey;
-        private final boolean mHasSettingsKey;
-        private final int mF2KeyMode;
         private final boolean mVoiceKeyOnMain;
+        private final boolean mNoSettingsKey;
         private final Locale mLocale;
         private final Configuration mConf;
         private final DisplayMetrics mMetrics;
@@ -88,7 +87,7 @@ public class KeyboardSet {
             final String packageName = context.getPackageName();
 
             mMode = Utils.getKeyboardMode(mEditorInfo);
-            final boolean settingsKeyEnabled = settingsValues.isSettingsKeyEnabled();
+            mSettingsKeyEnabled = settingsValues.isSettingsKeyEnabled();
             @SuppressWarnings("deprecation")
             final boolean noMicrophone = Utils.inPrivateImeOptions(
                     packageName, LatinIME.IME_OPTION_NO_MICROPHONE, editorInfo)
@@ -98,8 +97,6 @@ public class KeyboardSet {
             mVoiceKeyOnMain = settingsValues.isVoiceKeyOnMain();
             mNoSettingsKey = Utils.inPrivateImeOptions(
                     packageName, LatinIME.IME_OPTION_NO_SETTINGS_KEY, editorInfo);
-            mHasSettingsKey = settingsKeyEnabled && !mNoSettingsKey;
-            mF2KeyMode = getF2KeyMode(settingsKeyEnabled, mNoSettingsKey);
             final boolean forceAscii = Utils.inPrivateImeOptions(
                     packageName, LatinIME.IME_OPTION_FORCE_ASCII, editorInfo);
             final boolean asciiCapable = subtypeSwitcher.currentSubtypeContainsExtraValueKey(
@@ -126,8 +123,8 @@ public class KeyboardSet {
             final int xmlId = mElementKeyboards.get(elementState);
             final boolean hasShortcutKey = mVoiceKeyEnabled && (isSymbols != mVoiceKeyOnMain);
             return new KeyboardId(xmlId, elementState, mLocale, mConf.orientation,
-                    mMetrics.widthPixels, mMode, mEditorInfo, mHasSettingsKey, mF2KeyMode,
-                    mNoSettingsKey, mVoiceKeyEnabled, hasShortcutKey);
+                    mMetrics.widthPixels, mMode, mEditorInfo, mSettingsKeyEnabled, mNoSettingsKey,
+                    mVoiceKeyEnabled, hasShortcutKey);
         }
 
         private static int getElementState(int mode, boolean isSymbols, boolean isShift) {
@@ -142,22 +139,6 @@ public class KeyboardSet {
                     return isShift ? KeyboardId.ELEMENT_SYMBOLS_SHIFT : KeyboardId.ELEMENT_SYMBOLS;
                 }
                 return KeyboardId.ELEMENT_ALPHABET;
-            }
-        }
-
-        // TODO: Move to KeyboardId.
-        private static int getF2KeyMode(boolean settingsKeyEnabled, boolean noSettingsKey) {
-            if (noSettingsKey) {
-                // Never shows the Settings key
-                return KeyboardId.F2KEY_MODE_SHORTCUT_IME;
-            }
-
-            if (settingsKeyEnabled) {
-                return KeyboardId.F2KEY_MODE_SETTINGS;
-            } else {
-                // It should be alright to fall back to the Settings key on 7-inch layouts
-                // even when the Settings key is not explicitly enabled.
-                return KeyboardId.F2KEY_MODE_SHORTCUT_IME_OR_SETTINGS;
             }
         }
 
