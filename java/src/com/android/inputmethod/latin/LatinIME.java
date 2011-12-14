@@ -1604,6 +1604,21 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         }
 
+        if (pickedDefault) {
+            final CharSequence autoCorrection = mWordComposer.getAutoCorrectionOrNull();
+            final String typedWord = mWordComposer.getTypedWord();
+            if (TextUtils.isEmpty(typedWord)) {
+                throw new RuntimeException("We have non-committed chars but the typed word "
+                        + "is empty? Impossible! I must commit suicide.");
+            }
+            if (!typedWord.equals(autoCorrection)) {
+                // This will make the correction flash for a short while as a visual clue
+                // to the user that auto-correction happened.
+                InputConnectionCompatUtils.commitCorrection(
+                        ic, mLastSelectionEnd - typedWord.length(), typedWord, autoCorrection);
+            }
+        }
+
         final boolean swapMagicSpace;
         if (Keyboard.CODE_ENTER == primaryCode && (SPACE_STATE_MAGIC == spaceState
                 || SPACE_STATE_SWAP_PUNCTUATION == spaceState)) {
@@ -1651,21 +1666,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         Utils.Stats.onSeparator((char)primaryCode, x, y);
 
-        if (pickedDefault) {
-            final CharSequence autoCorrection = mWordComposer.getAutoCorrectionOrNull();
-            final String typedWord = mWordComposer.getTypedWord();
-            if (TextUtils.isEmpty(typedWord)) {
-                throw new RuntimeException("We have non-committed chars but the typed word "
-                        + "is empty? Impossible! I must commit suicide.");
-            }
-            if (!typedWord.equals(autoCorrection)) {
-                // TODO: if the commitCorrection method is not supported by the platform
-                // this will do nothing and the correction will not be committed at all. What
-                // happens on Froyo/Gingerbread, where this API is not present?
-                InputConnectionCompatUtils.commitCorrection(
-                        ic, mLastSelectionEnd - typedWord.length(), typedWord, autoCorrection);
-            }
-        }
         mKeyboardSwitcher.updateShiftState();
         if (ic != null) {
             ic.endBatchEdit();
