@@ -1602,17 +1602,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             final boolean shouldAutoCorrect = mSettingsValues.mAutoCorrectEnabled
                     && !mInputTypeNoAutoCorrect;
             if (shouldAutoCorrect && primaryCode != Keyboard.CODE_SINGLE_QUOTE) {
-                final boolean pickedDefaultSuggestion = pickDefaultSuggestion(primaryCode);
-                if (pickedDefaultSuggestion) {
-                    final CharSequence autoCorrection = mWordComposer.getAutoCorrectionOrNull();
-                    final String typedWord = mWordComposer.getTypedWord();
-                    if (!typedWord.equals(autoCorrection)) {
-                        // This will make the correction flash for a short while as a visual clue
-                        // to the user that auto-correction happened.
-                        InputConnectionCompatUtils.commitCorrection(ic,
-                                mLastSelectionEnd - typedWord.length(), typedWord, autoCorrection);
-                    }
-                }
+                final boolean didAutoCorrect = commitCurrentAutoCorrection(primaryCode, ic);
             } else {
                 commitTyped(ic);
             }
@@ -1869,7 +1859,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         setSuggestionStripShown(isSuggestionsStripVisible());
     }
 
-    private boolean pickDefaultSuggestion(int separatorCode) {
+    private boolean commitCurrentAutoCorrection(final int separatorCode, final InputConnection ic) {
         // Complete any pending suggestions query first
         if (mHandler.hasPendingUpdateSuggestions()) {
             mHandler.cancelUpdateSuggestions();
@@ -1891,6 +1881,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // Add the word to the user unigram dictionary if it's not a known word
             addToUserUnigramAndBigramDictionaries(autoCorrection,
                     UserUnigramDictionary.FREQUENCY_FOR_TYPED);
+            if (!typedWord.equals(autoCorrection)) {
+                // This will make the correction flash for a short while as a visual clue
+                // to the user that auto-correction happened.
+                InputConnectionCompatUtils.commitCorrection(ic,
+                        mLastSelectionEnd - typedWord.length(), typedWord, autoCorrection);
+            }
             return true;
         }
         return false;
