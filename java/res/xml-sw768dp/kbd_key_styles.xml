@@ -60,14 +60,14 @@
         latin:code="@integer/key_shortcut"
         latin:keyIcon="iconShortcutKey"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
-        latin:altCode="@integer/key_space"
+        latin:altCode="@integer/key_dummy"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="settingsKeyStyle"
         latin:code="@integer/key_settings"
         latin:keyIcon="iconSettingsKey"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
-        latin:altCode="@integer/key_space"
+        latin:altCode="@integer/key_dummy"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="tabKeyStyle"

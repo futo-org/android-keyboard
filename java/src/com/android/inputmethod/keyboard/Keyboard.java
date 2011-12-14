@@ -151,6 +151,9 @@ public class Keyboard {
     }
 
     public Key getKey(int code) {
+        if (code == CODE_DUMMY) {
+            return null;
+        }
         final Integer keyCode = code;
         if (mKeyCache.containsKey(keyCode)) {
             return mKeyCache.get(keyCode);
