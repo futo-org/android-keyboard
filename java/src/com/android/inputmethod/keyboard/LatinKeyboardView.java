@@ -409,19 +409,16 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 invokeReleaseKey(primaryCode);
                 return true;
             }
-        }
-        if (primaryCode == Keyboard.CODE_SETTINGS || primaryCode == Keyboard.CODE_SPACE) {
-            // Both long pressing settings key and space key invoke IME switcher dialog.
-            if (invokeCustomRequest(LatinIME.CODE_SHOW_INPUT_METHOD_PICKER)) {
-                tracker.onLongPressed();
-                invokeReleaseKey(primaryCode);
-                return true;
-            } else {
-                return openMoreKeysPanel(parentKey, tracker);
+            if (primaryCode == Keyboard.CODE_SPACE) {
+                // Long pressing the space key invokes IME switcher dialog.
+                if (invokeCustomRequest(LatinIME.CODE_SHOW_INPUT_METHOD_PICKER)) {
+                    tracker.onLongPressed();
+                    invokeReleaseKey(primaryCode);
+                    return true;
+                }
             }
-        } else {
-            return openMoreKeysPanel(parentKey, tracker);
         }
+        return openMoreKeysPanel(parentKey, tracker);
     }
 
     private boolean invokeCustomRequest(int code) {
