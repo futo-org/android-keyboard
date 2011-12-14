@@ -609,9 +609,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             final boolean modeMatched = matchTypedValue(a,
                     R.styleable.Keyboard_Case_mode, id.mMode, KeyboardId.modeName(id.mMode));
             final boolean navigateActionMatched = matchBoolean(a,
-                    R.styleable.Keyboard_Case_navigateAction, id.mNavigateAction);
+                    R.styleable.Keyboard_Case_navigateAction, id.navigateAction());
             final boolean passwordInputMatched = matchBoolean(a,
-                    R.styleable.Keyboard_Case_passwordInput, id.mPasswordInput);
+                    R.styleable.Keyboard_Case_passwordInput, id.passwordInput());
             final boolean hasSettingsKeyMatched = matchBoolean(a,
                     R.styleable.Keyboard_Case_hasSettingsKey, id.hasSettingsKey());
             final boolean f2KeyModeMatched = matchInteger(a,
@@ -627,7 +627,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             // {@link android.view.inputmethod.EditorInfo#IME_FLAG_NO_ENTER_ACTION}. So matching
             // this attribute with id.mImeOptions as integer value is enough for our purpose.
             final boolean imeActionMatched = matchInteger(a,
-                    R.styleable.Keyboard_Case_imeAction, id.mImeAction);
+                    R.styleable.Keyboard_Case_imeAction, id.imeAction());
             final boolean localeCodeMatched = matchString(a,
                     R.styleable.Keyboard_Case_localeCode, id.mLocale.toString());
             final boolean languageCodeMatched = matchString(a,
