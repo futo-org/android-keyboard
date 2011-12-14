@@ -21,11 +21,11 @@ import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
-import com.android.inputmethod.latin.R;
 
 import java.util.Arrays;
 import java.util.Locale;
 
+// TODO: Move to com.android.inputmethod.keyboard.internal package.
 /**
  * Represents the parameters necessary to construct a new LatinKeyboard,
  * which also serve as a unique identifier for each keyboard type.
@@ -38,6 +38,20 @@ public class KeyboardId {
     public static final int MODE_PHONE = 4;
     public static final int MODE_NUMBER = 5;
 
+    public static final int ELEMENT_ALPHABET = 0;
+    /* TODO: Implement alphabet variant shift keyboard.
+    public static final int ELEMENT_ALPHABET_MANUAL_TEMPORARY_SHIFT = 1;
+    public static final int ELEMENT_ALPHABET_AUTOMATIC_TEMPORARY_SHIFT = 2;
+    public static final int ELEMENT_ALPHABET_SHIFT_LOCK = 3;
+    public static final int ELEMENT_ALPHABET_SHIFT_LOCK_SHIFT = 4;
+    */
+    public static final int ELEMENT_SYMBOLS = 5;
+    public static final int ELEMENT_SYMBOLS_SHIFT = 6;
+    public static final int ELEMENT_PHONE = 7;
+    public static final int ELEMENT_PHONE_SHIFT = 8;
+    public static final int ELEMENT_NUMBER = 9;
+
+    // TODO: These constants could be private.
     public static final int F2KEY_MODE_NONE = 0;
     public static final int F2KEY_MODE_SETTINGS = 1;
     public static final int F2KEY_MODE_SHORTCUT_IME = 2;
@@ -47,7 +61,9 @@ public class KeyboardId {
     public final int mOrientation;
     public final int mWidth;
     public final int mMode;
-    public final int mXmlId;
+    // TODO: Remove this field.
+    private final int mXmlId;
+    public final int mElementState;
     public final boolean mNavigateAction;
     public final boolean mPasswordInput;
     // TODO: Clean up these booleans and modes.
@@ -58,16 +74,18 @@ public class KeyboardId {
     public final boolean mHasShortcutKey;
     public final int mImeAction;
 
-    public final String mXmlName;
-    public final EditorInfo mEditorInfo;
+    // TODO: Remove this field.
+    private final EditorInfo mEditorInfo;
 
     private final int mHashCode;
 
-    public KeyboardId(String xmlName, int xmlId, Locale locale, int orientation, int width,
+    // TODO: The hasSettings, f2KeyMode, and clobberSettingsKey arguments could be reduced.
+    public KeyboardId(int xmlId, int elementState, Locale locale, int orientation, int width,
             int mode, EditorInfo editorInfo, boolean hasSettingsKey, int f2KeyMode,
             boolean clobberSettingsKey, boolean shortcutKeyEnabled, boolean hasShortcutKey) {
         final int inputType = (editorInfo != null) ? editorInfo.inputType : 0;
         final int imeOptions = (editorInfo != null) ? editorInfo.imeOptions : 0;
+        this.mElementState = elementState;
         this.mLocale = locale;
         this.mOrientation = orientation;
         this.mWidth = width;
@@ -89,7 +107,6 @@ public class KeyboardId {
         this.mImeAction = imeOptions & (
                 EditorInfo.IME_MASK_ACTION | EditorInfo.IME_FLAG_NO_ENTER_ACTION);
 
-        this.mXmlName = xmlName;
         this.mEditorInfo = editorInfo;
 
         this.mHashCode = Arrays.hashCode(new Object[] {
@@ -98,6 +115,7 @@ public class KeyboardId {
                 width,
                 mode,
                 xmlId,
+                elementState,
                 mNavigateAction,
                 mPasswordInput,
                 hasSettingsKey,
@@ -109,29 +127,31 @@ public class KeyboardId {
         });
     }
 
-    public KeyboardId cloneWithNewXml(String xmlName, int xmlId) {
-        return new KeyboardId(xmlName, xmlId, mLocale, mOrientation, mWidth, mMode, mEditorInfo,
-                false, F2KEY_MODE_NONE, false, false, false);
+    public KeyboardId cloneWithNewXml(int xmlId) {
+        return new KeyboardId(xmlId, mElementState, mLocale,
+                mOrientation, mWidth, mMode, mEditorInfo, false, F2KEY_MODE_NONE, false, false,
+                false);
     }
 
+    // Remove this method.
     public int getXmlId() {
         return mXmlId;
     }
 
     public boolean isAlphabetKeyboard() {
-        return mXmlId == R.xml.kbd_qwerty;
+        return mElementState < ELEMENT_SYMBOLS;
     }
 
     public boolean isSymbolsKeyboard() {
-        return mXmlId == R.xml.kbd_symbols || mXmlId == R.xml.kbd_symbols_shift;
+        return mElementState == ELEMENT_SYMBOLS || mElementState == ELEMENT_SYMBOLS_SHIFT;
     }
 
     public boolean isPhoneKeyboard() {
-        return mMode == MODE_PHONE;
+        return mElementState == ELEMENT_PHONE || mElementState == ELEMENT_PHONE_SHIFT;
     }
 
     public boolean isPhoneShiftKeyboard() {
-        return mXmlId == R.xml.kbd_phone_shift;
+        return mElementState == ELEMENT_PHONE_SHIFT;
     }
 
     @Override
@@ -145,6 +165,7 @@ public class KeyboardId {
             && other.mWidth == this.mWidth
             && other.mMode == this.mMode
             && other.mXmlId == this.mXmlId
+            && other.mElementState == this.mElementState
             && other.mNavigateAction == this.mNavigateAction
             && other.mPasswordInput == this.mPasswordInput
             && other.mHasSettingsKey == this.mHasSettingsKey
@@ -162,8 +183,8 @@ public class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format("[%s.xml %s %s%d %s %s %s%s%s%s%s%s%s]",
-                mXmlName,
+        return String.format("[%s %s %s%d %s %s %s%s%s%s%s%s%s]",
+                elementStateToString(mElementState),
                 mLocale,
                 (mOrientation == 1 ? "port" : "land"), mWidth,
                 modeName(mMode),
@@ -184,6 +205,24 @@ public class KeyboardId {
         return a.inputType == b.inputType
                 && a.imeOptions == b.imeOptions
                 && TextUtils.equals(a.privateImeOptions, b.privateImeOptions);
+    }
+
+    public static String elementStateToString(int elementState) {
+        switch (elementState) {
+        case ELEMENT_ALPHABET: return "alphabet";
+        /* TODO: Implement alphabet variant shift keyboard.
+        case ELEMENT_ALPHABET_MANUAL_TEMPORARY_SHIFT: return "alphabetManualTemporaryShift";
+        case ELEMENT_ALPHABET_AUTOMATIC_TEMPORARY_SHIFT: return "alphabetAutomaticTemporaryShift";
+        case ELEMENT_ALPHABET_SHIFT_LOCK: return "alphabetShiftLock";
+        case ELEMENT_ALPHABET_SHIFT_LOCK_SHIFT: return "alphabetShiftLockShift";
+        */
+        case ELEMENT_SYMBOLS: return "symbols";
+        case ELEMENT_SYMBOLS_SHIFT: return "symbolsShift";
+        case ELEMENT_PHONE: return "phone";
+        case ELEMENT_PHONE_SHIFT: return "phoneShift";
+        case ELEMENT_NUMBER: return "number";
+        default: return null;
+        }
     }
 
     public static String modeName(int mode) {

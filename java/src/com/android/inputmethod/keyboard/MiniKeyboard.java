@@ -207,7 +207,7 @@ public class MiniKeyboard extends Keyboard {
 
         public Builder(KeyboardView view, int xmlId, Key parentKey, Keyboard parentKeyboard) {
             super(view.getContext(), new MiniKeyboardParams());
-            load(parentKeyboard.mId.cloneWithNewXml(mResources.getResourceEntryName(xmlId), xmlId));
+            load(parentKeyboard.mId.cloneWithNewXml(xmlId));
 
             // TODO: Mini keyboard's vertical gap is currently calculated heuristically.
             // Should revise the algorithm.
