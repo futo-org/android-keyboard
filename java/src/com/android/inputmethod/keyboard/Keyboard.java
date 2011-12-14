@@ -232,19 +232,6 @@ public class Keyboard {
         return mProximityInfo.getNearestKeys(x, y);
     }
 
-    public static String themeName(int themeId) {
-        // This should be aligned with theme-*.xml resource files' themeId attribute.
-        switch (themeId) {
-        case 0: return "Basic";
-        case 1: return "BasicHighContrast";
-        case 5: return "IceCreamSandwich";
-        case 6: return "Stone";
-        case 7: return "StoneBold";
-        case 8: return "GingerBread";
-        default: return null;
-        }
-    }
-
     public static String printableCode(int code) {
         switch (code) {
         case CODE_SHIFT: return "shift";
