@@ -48,21 +48,23 @@ UnigramDictionary::UnigramDictionary(const uint8_t* const streamStart, int typed
     if (DEBUG_DICT) {
         LOGI("UnigramDictionary - constructor");
     }
-    mCorrection = new Correction(typedLetterMultiplier, fullWordMultiplier);
-    mWordsPriorityQueue = new WordsPriorityQueue(maxWords, maxWordLength);
 }
 
 UnigramDictionary::~UnigramDictionary() {
-    delete mCorrection;
-    delete mWordsPriorityQueue;
 }
 
-static inline unsigned int getCodesBufferSize(const int* codes, const int codesSize,
+static inline unsigned int getCodesBufferSize(const int *codes, const int codesSize,
         const int MAX_PROXIMITY_CHARS) {
     return sizeof(*codes) * MAX_PROXIMITY_CHARS * codesSize;
 }
 
-bool UnigramDictionary::isDigraph(const int* codes, const int i, const int codesSize) const {
+// TODO: This needs to take an const unsigned short* and not tinker with its contents
+static inline void addWord(
+        unsigned short *word, int length, int frequency, WordsPriorityQueue *queue) {
+    queue->push(frequency, word, length);
+}
+
+bool UnigramDictionary::isDigraph(const int *codes, const int i, const int codesSize) const {
 
     // There can't be a digraph if we don't have at least 2 characters to examine
     if (i + 2 > codesSize) return false;
@@ -88,9 +90,10 @@ bool UnigramDictionary::isDigraph(const int* codes, const int i, const int codes
 // codesSrc is the current point in the user-input, original, content-unmodified buffer.
 // codesRemain is the remaining size in codesSrc.
 void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo,
-        const int *xcoordinates, const int* ycoordinates, const int *codesBuffer,
-        const int codesBufferSize, const int flags, const int* codesSrc, const int codesRemain,
-        const int currentDepth, int* codesDest) {
+        const int *xcoordinates, const int *ycoordinates, const int *codesBuffer,
+        const int codesBufferSize, const int flags, const int *codesSrc,
+        const int codesRemain, const int currentDepth, int *codesDest, Correction *correction,
+        WordsPriorityQueue *queue) {
 
     if (currentDepth < MAX_UMLAUT_SEARCH_DEPTH) {
         for (int i = 0; i < codesRemain; ++i) {
@@ -107,7 +110,7 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
                 getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
                         codesBuffer, codesBufferSize, flags,
                         codesSrc + (i + 1) * MAX_PROXIMITY_CHARS, codesRemain - i - 1,
-                        currentDepth + 1, codesDest + i * MAX_PROXIMITY_CHARS);
+                        currentDepth + 1, codesDest + i * MAX_PROXIMITY_CHARS, correction, queue);
 
                 // Copy the second char of the digraph in place, then continue processing on
                 // the remaining part of the word.
@@ -115,8 +118,9 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
                 memcpy(codesDest + i * MAX_PROXIMITY_CHARS, codesSrc + i * MAX_PROXIMITY_CHARS,
                         BYTES_IN_ONE_CHAR);
                 getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
-                        codesBuffer, codesBufferSize, flags, codesSrc + i * MAX_PROXIMITY_CHARS,
-                        codesRemain - i, currentDepth + 1, codesDest + i * MAX_PROXIMITY_CHARS);
+                        codesBuffer, codesBufferSize, flags,
+                        codesSrc + i * MAX_PROXIMITY_CHARS, codesRemain - i, currentDepth + 1,
+                        codesDest + i * MAX_PROXIMITY_CHARS, correction, queue);
                 return;
             }
         }
@@ -132,25 +136,28 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
         memcpy(codesDest, codesSrc, remainingBytes);
 
     getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
-            (codesDest - codesBuffer) / MAX_PROXIMITY_CHARS + codesRemain, flags);
+            (codesDest - codesBuffer) / MAX_PROXIMITY_CHARS + codesRemain, flags, correction,
+            queue);
 }
 
-int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
-        const int *ycoordinates, const int *codes, const int codesSize, const int flags,
-        unsigned short *outWords, int *frequencies) {
+int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, WordsPriorityQueue *queue,
+        Correction *correction, const int *xcoordinates, const int *ycoordinates, const int *codes,
+        const int codesSize, const int flags, unsigned short *outWords, int *frequencies) {
 
+    WordsPriorityQueue* masterQueue = queue;
+    Correction* masterCorrection = correction;
     if (REQUIRES_GERMAN_UMLAUT_PROCESSING & flags)
     { // Incrementally tune the word and try all possibilities
         int codesBuffer[getCodesBufferSize(codes, codesSize, MAX_PROXIMITY_CHARS)];
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
-                codesSize, flags, codes, codesSize, 0, codesBuffer);
+                codesSize, flags, codes, codesSize, 0, codesBuffer, masterCorrection, masterQueue);
     } else { // Normal processing
-        getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, codesSize, flags);
+        getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, codesSize, flags,
+                masterCorrection, masterQueue);
     }
 
     PROF_START(20);
-    const int suggestedWordsCount =
-            mWordsPriorityQueue->outputSuggestions(frequencies, outWords);
+    const int suggestedWordsCount = masterQueue->outputSuggestions(frequencies, outWords);
 
     if (DEBUG_DICT) {
         LOGI("Returning %d words", suggestedWordsCount);
@@ -170,23 +177,22 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, const int *x
 }
 
 void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
-        const int *xcoordinates, const int *ycoordinates, const int *codes, const int codesSize,
-        const int flags) {
+        const int *xcoordinates, const int *ycoordinates, const int *codes,
+        const int inputLength, const int flags, Correction *correction, WordsPriorityQueue *queue) {
 
     PROF_OPEN;
     PROF_START(0);
-    initSuggestions(
-            proximityInfo, xcoordinates, ycoordinates, codes, codesSize);
-    if (DEBUG_DICT) assert(codesSize == mInputLength);
+    initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, inputLength, queue);
+    if (DEBUG_DICT) assert(codesSize == inputLength);
 
-    const int maxDepth = min(mInputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
-    mCorrection->initCorrection(mProximityInfo, mInputLength, maxDepth);
+    const int maxDepth = min(inputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
+    correction->initCorrection(proximityInfo, inputLength, maxDepth);
     PROF_END(0);
 
     const bool useFullEditDistance = USE_FULL_EDIT_DISTANCE & flags;
     // TODO: remove
     PROF_START(1);
-    getSuggestionCandidates(useFullEditDistance);
+    getSuggestionCandidates(useFullEditDistance, inputLength, correction, queue);
     PROF_END(1);
 
     PROF_START(2);
@@ -204,12 +210,13 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
     PROF_START(5);
     // Suggestions with missing space
     if (SUGGEST_WORDS_WITH_MISSING_SPACE_CHARACTER
-            && mInputLength >= MIN_USER_TYPED_LENGTH_FOR_MISSING_SPACE_SUGGESTION) {
-        for (int i = 1; i < codesSize; ++i) {
+            && inputLength >= MIN_USER_TYPED_LENGTH_FOR_MISSING_SPACE_SUGGESTION) {
+        for (int i = 1; i < inputLength; ++i) {
             if (DEBUG_DICT) {
                 LOGI("--- Suggest missing space characters %d", i);
             }
-            getMissingSpaceWords(mInputLength, i, mCorrection, useFullEditDistance);
+            getMissingSpaceWords(
+                    inputLength, i, proximityInfo, correction, useFullEditDistance, queue);
         }
     }
     PROF_END(5);
@@ -217,7 +224,7 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
     PROF_START(6);
     if (SUGGEST_WORDS_WITH_SPACE_PROXIMITY && proximityInfo) {
         // The first and last "mistyped spaces" are taken care of by excessive character handling
-        for (int i = 1; i < codesSize - 1; ++i) {
+        for (int i = 1; i < inputLength - 1; ++i) {
             if (DEBUG_DICT) {
                 LOGI("--- Suggest words with proximity space %d", i);
             }
@@ -228,7 +235,8 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
                         i, x, y, proximityInfo->hasSpaceProximity(x, y));
             }
             if (proximityInfo->hasSpaceProximity(x, y)) {
-                getMistypedSpaceWords(mInputLength, i, mCorrection, useFullEditDistance);
+                getMistypedSpaceWords(
+                        inputLength, i, proximityInfo, correction, useFullEditDistance, queue);
             }
         }
     }
@@ -236,93 +244,83 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
 }
 
 void UnigramDictionary::initSuggestions(ProximityInfo *proximityInfo, const int *xCoordinates,
-        const int *yCoordinates, const int *codes, const int codesSize) {
+        const int *yCoordinates, const int *codes, const int codesSize,
+        WordsPriorityQueue *queue) {
     if (DEBUG_DICT) {
         LOGI("initSuggest");
     }
-    mInputLength = codesSize;
     proximityInfo->setInputParams(codes, codesSize, xCoordinates, yCoordinates);
-    mProximityInfo = proximityInfo;
-    mWordsPriorityQueue->clear();
-}
-
-// TODO: This needs to take an const unsigned short* and not tinker with its contents
-void UnigramDictionary::addWord(unsigned short *word, int length, int frequency) {
-    mWordsPriorityQueue->push(frequency, word, length);
+    queue->clear();
 }
 
 static const char QUOTE = '\'';
 static const char SPACE = ' ';
 
-void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance) {
+void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
+        const int inputLength, Correction *correction, WordsPriorityQueue *queue) {
     // TODO: Remove setCorrectionParams
-    mCorrection->setCorrectionParams(0, 0, 0,
+    correction->setCorrectionParams(0, 0, 0,
             -1 /* spaceProximityPos */, -1 /* missingSpacePos */, useFullEditDistance);
     int rootPosition = ROOT_POS;
     // Get the number of children of root, then increment the position
     int childCount = Dictionary::getCount(DICT_ROOT, &rootPosition);
     int outputIndex = 0;
 
-    mCorrection->initCorrectionState(rootPosition, childCount, (mInputLength <= 0));
+    correction->initCorrectionState(rootPosition, childCount, (inputLength <= 0));
 
     // Depth first search
     while (outputIndex >= 0) {
-        if (mCorrection->initProcessState(outputIndex)) {
-            int siblingPos = mCorrection->getTreeSiblingPos(outputIndex);
+        if (correction->initProcessState(outputIndex)) {
+            int siblingPos = correction->getTreeSiblingPos(outputIndex);
             int firstChildPos;
 
             const bool needsToTraverseChildrenNodes = processCurrentNode(siblingPos,
-                    mCorrection, &childCount, &firstChildPos, &siblingPos);
+                    correction, &childCount, &firstChildPos, &siblingPos, queue);
             // Update next sibling pos
-            mCorrection->setTreeSiblingPos(outputIndex, siblingPos);
+            correction->setTreeSiblingPos(outputIndex, siblingPos);
 
             if (needsToTraverseChildrenNodes) {
                 // Goes to child node
-                outputIndex = mCorrection->goDownTree(outputIndex, childCount, firstChildPos);
+                outputIndex = correction->goDownTree(outputIndex, childCount, firstChildPos);
             }
         } else {
             // Goes to parent sibling node
-            outputIndex = mCorrection->getTreeParentIndex(outputIndex);
+            outputIndex = correction->getTreeParentIndex(outputIndex);
         }
     }
 }
 
 void UnigramDictionary::getMissingSpaceWords(
-        const int inputLength, const int missingSpacePos, Correction *correction,
-        const bool useFullEditDistance) {
+        const int inputLength, const int missingSpacePos, ProximityInfo *proximityInfo,
+        Correction *correction, const bool useFullEditDistance, WordsPriorityQueue *queue) {
     correction->setCorrectionParams(-1 /* skipPos */, -1 /* excessivePos */,
             -1 /* transposedPos */, -1 /* spaceProximityPos */, missingSpacePos,
             useFullEditDistance);
-    getSplitTwoWordsSuggestion(inputLength, correction);
+    getSplitTwoWordsSuggestion(inputLength, proximityInfo, correction, queue);
 }
 
 void UnigramDictionary::getMistypedSpaceWords(
-        const int inputLength, const int spaceProximityPos, Correction *correction,
-        const bool useFullEditDistance) {
+        const int inputLength, const int spaceProximityPos, ProximityInfo *proximityInfo,
+        Correction *correction, const bool useFullEditDistance, WordsPriorityQueue *queue) {
     correction->setCorrectionParams(-1 /* skipPos */, -1 /* excessivePos */,
             -1 /* transposedPos */, spaceProximityPos, -1 /* missingSpacePos */,
             useFullEditDistance);
-    getSplitTwoWordsSuggestion(inputLength, correction);
+    getSplitTwoWordsSuggestion(inputLength, proximityInfo, correction, queue);
 }
 
-inline bool UnigramDictionary::needsToSkipCurrentNode(const unsigned short c,
-        const int inputIndex, const int skipPos, const int depth) {
-    const unsigned short userTypedChar = mProximityInfo->getPrimaryCharAt(inputIndex);
-    // Skip the ' or other letter and continue deeper
-    return (c == QUOTE && userTypedChar != QUOTE) || skipPos == depth;
-}
-
-inline void UnigramDictionary::onTerminal(const int freq, Correction *correction) {
+inline void UnigramDictionary::onTerminal(
+        const int freq, Correction *correction, WordsPriorityQueue *queue) {
     int wordLength;
     unsigned short* wordPointer;
     const int finalFreq = correction->getFinalFreq(freq, &wordPointer, &wordLength);
     if (finalFreq >= 0) {
-        addWord(wordPointer, wordLength, finalFreq);
+        addWord(wordPointer, wordLength, finalFreq, queue);
     }
 }
 
 void UnigramDictionary::getSplitTwoWordsSuggestion(
-        const int inputLength, Correction* correction) {
+        const int inputLength, ProximityInfo *proximityInfo, Correction *correction,
+        WordsPriorityQueue *queue) {
     const int spaceProximityPos = correction->getSpaceProximityPos();
     const int missingSpacePos = correction->getMissingSpacePos();
     if (DEBUG_DICT) {
@@ -347,7 +345,8 @@ void UnigramDictionary::getSplitTwoWordsSuggestion(
     const int newWordLength = firstWordLength + secondWordLength + 1;
     // Allocating variable length array on stack
     unsigned short word[newWordLength];
-    const int firstFreq = getMostFrequentWordLike(firstWordStartPos, firstWordLength, mWord);
+    const int firstFreq = getMostFrequentWordLike(
+            firstWordStartPos, firstWordLength, proximityInfo, mWord);
     if (DEBUG_DICT) {
         LOGI("First freq: %d", firstFreq);
     }
@@ -357,7 +356,8 @@ void UnigramDictionary::getSplitTwoWordsSuggestion(
         word[i] = mWord[i];
     }
 
-    const int secondFreq = getMostFrequentWordLike(secondWordStartPos, secondWordLength, mWord);
+    const int secondFreq = getMostFrequentWordLike(
+            secondWordStartPos, secondWordLength, proximityInfo, mWord);
     if (DEBUG_DICT) {
         LOGI("Second  freq:  %d", secondFreq);
     }
@@ -368,22 +368,22 @@ void UnigramDictionary::getSplitTwoWordsSuggestion(
         word[i] = mWord[i - firstWordLength - 1];
     }
 
-    const int pairFreq = mCorrection->getFreqForSplitTwoWords(firstFreq, secondFreq, word);
+    const int pairFreq = correction->getFreqForSplitTwoWords(firstFreq, secondFreq, word);
     if (DEBUG_DICT) {
         LOGI("Split two words:  %d, %d, %d, %d", firstFreq, secondFreq, pairFreq, inputLength);
     }
-    addWord(word, newWordLength, pairFreq);
+    addWord(word, newWordLength, pairFreq, queue);
     return;
 }
 
 // Wrapper for getMostFrequentWordLikeInner, which matches it to the previous
 // interface.
 inline int UnigramDictionary::getMostFrequentWordLike(const int startInputIndex,
-        const int inputLength, unsigned short *word) {
+        const int inputLength, ProximityInfo *proximityInfo, unsigned short *word) {
     uint16_t inWord[inputLength];
 
     for (int i = 0; i < inputLength; ++i) {
-        inWord[i] = (uint16_t)mProximityInfo->getPrimaryCharAt(startInputIndex + i);
+        inWord[i] = (uint16_t)proximityInfo->getPrimaryCharAt(startInputIndex + i);
     }
     return getMostFrequentWordLikeInner(inWord, inputLength, word);
 }
@@ -534,7 +534,7 @@ int UnigramDictionary::getBigramPosition(int pos, unsigned short *word, int offs
 // given level, as output into newCount when traversing this level's parent.
 inline bool UnigramDictionary::processCurrentNode(const int initialPos,
         Correction *correction, int *newCount,
-        int *newChildrenPosition, int *nextSiblingPosition) {
+        int *newChildrenPosition, int *nextSiblingPosition, WordsPriorityQueue *queue) {
     if (DEBUG_DICT) {
         correction->checkState();
     }
@@ -613,7 +613,7 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos,
             // The frequency should be here, because we come here only if this is actually
             // a terminal node, and we are on its last char.
             const int freq = BinaryFormat::readFrequencyWithoutMovingPointer(DICT_ROOT, pos);
-            onTerminal(freq, mCorrection);
+            onTerminal(freq, correction, queue);
         }
 
         // If there are more chars in this node, then this virtual node has children.

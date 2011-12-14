@@ -38,6 +38,8 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
             LOGI("IN NATIVE SUGGEST Version: %d", (mDict[0] & 0xFF));
         }
     }
+    mCorrection = new Correction(typedLetterMultiplier, fullWordMultiplier);
+    mWordsPriorityQueue = new WordsPriorityQueue(maxWords, maxWordLength);
     mUnigramDictionary = new UnigramDictionary(mDict, typedLetterMultiplier, fullWordMultiplier,
             maxWordLength, maxWords, maxAlternatives, IS_LATEST_DICT_VERSION);
     mBigramDictionary = new BigramDictionary(mDict, maxWordLength, maxAlternatives,
@@ -45,6 +47,8 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
 }
 
 Dictionary::~Dictionary() {
+    delete mCorrection;
+    delete mWordsPriorityQueue;
     delete mUnigramDictionary;
     delete mBigramDictionary;
 }
