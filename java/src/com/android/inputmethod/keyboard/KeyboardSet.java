@@ -25,10 +25,7 @@ import android.util.DisplayMetrics;
 import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
 
-import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
-import com.android.inputmethod.keyboard.internal.KeyboardBuilder.IllegalEndTag;
-import com.android.inputmethod.keyboard.internal.KeyboardBuilder.IllegalStartTag;
-import com.android.inputmethod.keyboard.internal.KeyboardBuilder.ParseException;
+import com.android.inputmethod.keyboard.internal.XmlParseUtils;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
@@ -172,7 +169,7 @@ public class KeyboardSet {
                         if (TAG_KEYBOARD_SET.equals(tag)) {
                             parseKeyboardSetContent(parser);
                         } else {
-                            throw new IllegalStartTag(parser, TAG_KEYBOARD_SET);
+                            throw new XmlParseUtils.IllegalStartTag(parser, TAG_KEYBOARD_SET);
                         }
                     }
                 }
@@ -190,14 +187,14 @@ public class KeyboardSet {
                     if (TAG_ELEMENT.equals(tag)) {
                         parseKeyboardSetElement(parser);
                     } else {
-                        throw new IllegalStartTag(parser, TAG_KEYBOARD_SET);
+                        throw new XmlParseUtils.IllegalStartTag(parser, TAG_KEYBOARD_SET);
                     }
                 } else if (event == XmlPullParser.END_TAG) {
                     final String tag = parser.getName();
                     if (TAG_KEYBOARD_SET.equals(tag)) {
                         break;
                     } else {
-                        throw new IllegalEndTag(parser, TAG_KEYBOARD_SET);
+                        throw new XmlParseUtils.IllegalEndTag(parser, TAG_KEYBOARD_SET);
                     }
                 }
             }
@@ -208,15 +205,13 @@ public class KeyboardSet {
             final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.KeyboardSet_Element);
             try {
-                if (!a.hasValue(R.styleable.KeyboardSet_Element_elementName)) {
-                    throw new ParseException(
-                            "No elementName attribute in <" + TAG_ELEMENT + "/>", parser);
-                }
-                if (!a.hasValue(R.styleable.KeyboardSet_Element_elementKeyboard)) {
-                    throw new ParseException(
-                            "No elementKeyboard attribute in <" + TAG_ELEMENT + "/>", parser);
-                }
-                KeyboardBuilder.checkEndTag(TAG_ELEMENT, parser);
+                XmlParseUtils.checkAttributeExists(a,
+                        R.styleable.KeyboardSet_Element_elementName, "elementName",
+                        TAG_ELEMENT, parser);
+                XmlParseUtils.checkAttributeExists(a,
+                        R.styleable.KeyboardSet_Element_elementKeyboard, "elementKeyboard",
+                        TAG_ELEMENT, parser);
+                XmlParseUtils.checkEndTag(TAG_ELEMENT, parser);
 
                 final int elementName = a.getInt(
                         R.styleable.KeyboardSet_Element_elementName, 0);
@@ -245,7 +240,7 @@ public class KeyboardSet {
                     keyboardSetAttr.recycle();
                     return locale;
                 } else {
-                    throw new IllegalStartTag(parser, TAG_KEYBOARD_SET);
+                    throw new XmlParseUtils.IllegalStartTag(parser, TAG_KEYBOARD_SET);
                 }
             }
         }

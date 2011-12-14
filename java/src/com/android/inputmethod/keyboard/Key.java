@@ -28,13 +28,14 @@ import android.util.Xml;
 import com.android.inputmethod.keyboard.internal.KeyStyles;
 import com.android.inputmethod.keyboard.internal.KeyStyles.KeyStyle;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
-import com.android.inputmethod.keyboard.internal.KeyboardBuilder.ParseException;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.MoreKeySpecParser;
+import com.android.inputmethod.keyboard.internal.XmlParseUtils;
 import com.android.inputmethod.latin.R;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -212,9 +213,10 @@ public class Key {
      *        this key.
      * @param parser the XML parser containing the attributes for this key
      * @param keyStyles active key styles set
+     * @throws XmlPullParserException
      */
     public Key(Resources res, KeyboardParams params, KeyboardBuilder.Row row,
-            XmlPullParser parser, KeyStyles keyStyles) {
+            XmlPullParser parser, KeyStyles keyStyles) throws XmlPullParserException {
         final float horizontalGap = isSpacer() ? 0 : params.mHorizontalGap;
         final int keyHeight = row.mRowHeight;
         mVerticalGap = params.mVerticalGap;
@@ -228,7 +230,8 @@ public class Key {
             String styleName = keyAttr.getString(R.styleable.Keyboard_Key_keyStyle);
             style = keyStyles.getKeyStyle(styleName);
             if (style == null)
-                throw new ParseException("Unknown key style: " + styleName, parser);
+                throw new XmlParseUtils.ParseException(
+                        "Unknown key style: " + styleName, parser);
         } else {
             style = KeyStyles.getEmptyKeyStyle();
         }
@@ -468,9 +471,9 @@ public class Key {
      * Detects if a point falls on this key.
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
-     * @return whether or not the point falls on the key. If the key is attached to an edge, it will
-     * assume that all points between the key and the edge are considered to be on the key.
-     * @see {@link #markAsLeftEdge(KeyboardParams)} etc.
+     * @return whether or not the point falls on the key. If the key is attached to an edge, it
+     * will assume that all points between the key and the edge are considered to be on the key.
+     * @see #markAsLeftEdge(KeyboardParams) etc.
      */
     public boolean isOnKey(int x, int y) {
         return mHitBox.contains(x, y);
@@ -569,7 +572,7 @@ public class Key {
 
     public static class Spacer extends Key {
         public Spacer(Resources res, KeyboardParams params, KeyboardBuilder.Row row,
-                XmlPullParser parser, KeyStyles keyStyles) {
+                XmlPullParser parser, KeyStyles keyStyles) throws XmlPullParserException {
             super(res, params, row, parser, keyStyles);
         }
 
