@@ -191,11 +191,11 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
             if (DEBUG_CACHE) {
                 Log.d(TAG, "keyboard cache size=" + mKeyboardCache.size() + ": "
                         + ((ref == null) ? "LOAD" : "GCed") + " id=" + id
-                        + " theme=" + Keyboard.themeName(keyboard.mThemeId));
+                        + " theme=" + themeName(keyboard.mThemeId));
             }
         } else if (DEBUG_CACHE) {
             Log.d(TAG, "keyboard cache size=" + mKeyboardCache.size() + ": HIT  id=" + id
-                    + " theme=" + Keyboard.themeName(keyboard.mThemeId));
+                    + " theme=" + themeName(keyboard.mThemeId));
         }
 
         keyboard.onAutoCorrectionStateChanged(mIsAutoCorrectionActive);
@@ -461,6 +461,19 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
                 if (keyboardView != null)
                     keyboardView.invalidateKey(invalidatedKey);
             }
+        }
+    }
+
+    private static String themeName(int themeId) {
+        // This should be aligned with theme-*.xml resource files' themeId attribute.
+        switch (themeId) {
+        case 0: return "Basic";
+        case 1: return "BasicHighContrast";
+        case 5: return "IceCreamSandwich";
+        case 6: return "Stone";
+        case 7: return "StoneBold";
+        case 8: return "GingerBread";
+        default: return null;
         }
     }
 }
