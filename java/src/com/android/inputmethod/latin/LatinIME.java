@@ -1606,10 +1606,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 if (pickedDefaultSuggestion) {
                     final CharSequence autoCorrection = mWordComposer.getAutoCorrectionOrNull();
                     final String typedWord = mWordComposer.getTypedWord();
-                    if (TextUtils.isEmpty(typedWord)) {
-                        throw new RuntimeException("We have non-committed chars but the typed word "
-                                + "is empty? Impossible! I must commit suicide.");
-                    }
                     if (!typedWord.equals(autoCorrection)) {
                         // This will make the correction flash for a short while as a visual clue
                         // to the user that auto-correction happened.
@@ -1882,6 +1878,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final CharSequence autoCorrection = mWordComposer.getAutoCorrectionOrNull();
         if (autoCorrection != null) {
             final String typedWord = mWordComposer.getTypedWord();
+            if (TextUtils.isEmpty(typedWord)) {
+                throw new RuntimeException("We have an auto-correction but the typed word "
+                        + "is empty? Impossible! I must commit suicide.");
+            }
             Utils.Stats.onAutoCorrection(typedWord, autoCorrection.toString(), separatorCode);
             mExpectingUpdateSelection = true;
             commitBestWord(autoCorrection);
