@@ -305,7 +305,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     parseKeyboardContent(parser, false);
                     break;
                 } else {
-                    throw new IllegalStartTag(parser, TAG_KEYBOARD);
+                    throw new XmlParseUtils.IllegalStartTag(parser, TAG_KEYBOARD);
                 }
             }
         }
@@ -393,7 +393,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 } else if (TAG_KEY_STYLE.equals(tag)) {
                     parseKeyStyle(parser, skip);
                 } else {
-                    throw new IllegalStartTag(parser, TAG_ROW);
+                    throw new XmlParseUtils.IllegalStartTag(parser, TAG_ROW);
                 }
             } else if (event == XmlPullParser.END_TAG) {
                 final String tag = parser.getName();
@@ -407,20 +407,20 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 } else if (TAG_KEY_STYLE.equals(tag)) {
                     continue;
                 } else {
-                    throw new IllegalEndTag(parser, TAG_ROW);
+                    throw new XmlParseUtils.IllegalEndTag(parser, TAG_ROW);
                 }
             }
         }
     }
 
-    private Row parseRowAttributes(XmlPullParser parser) {
+    private Row parseRowAttributes(XmlPullParser parser) throws XmlPullParserException {
         final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
         try {
             if (a.hasValue(R.styleable.Keyboard_horizontalGap))
-                throw new IllegalAttribute(parser, "horizontalGap");
+                throw new XmlParseUtils.IllegalAttribute(parser, "horizontalGap");
             if (a.hasValue(R.styleable.Keyboard_verticalGap))
-                throw new IllegalAttribute(parser, "verticalGap");
+                throw new XmlParseUtils.IllegalAttribute(parser, "verticalGap");
             return new Row(mResources, mParams, parser, mCurrentY);
         } finally {
             a.recycle();
@@ -444,7 +444,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 } else if (TAG_KEY_STYLE.equals(tag)) {
                     parseKeyStyle(parser, skip);
                 } else {
-                    throw new IllegalStartTag(parser, TAG_KEY);
+                    throw new XmlParseUtils.IllegalStartTag(parser, TAG_KEY);
                 }
             } else if (event == XmlPullParser.END_TAG) {
                 final String tag = parser.getName();
@@ -460,7 +460,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 } else if (TAG_KEY_STYLE.equals(tag)) {
                     continue;
                 } else {
-                    throw new IllegalEndTag(parser, TAG_KEY);
+                    throw new XmlParseUtils.IllegalEndTag(parser, TAG_KEY);
                 }
             }
         }
@@ -469,13 +469,13 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     private void parseKey(XmlPullParser parser, Row row, boolean skip)
             throws XmlPullParserException, IOException {
         if (skip) {
-            checkEndTag(TAG_KEY, parser);
+            XmlParseUtils.checkEndTag(TAG_KEY, parser);
         } else {
             final Key key = new Key(mResources, mParams, row, parser, mKeyStyles);
             if (DEBUG) Log.d(TAG, String.format("<%s%s keyLabel=%s code=%d moreKeys=%s />",
                     TAG_KEY, (key.isEnabled() ? "" : " disabled"), key.mLabel, key.mCode,
                     Arrays.toString(key.mMoreKeys)));
-            checkEndTag(TAG_KEY, parser);
+            XmlParseUtils.checkEndTag(TAG_KEY, parser);
             endKey(key);
         }
     }
@@ -483,11 +483,11 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     private void parseSpacer(XmlPullParser parser, Row row, boolean skip)
             throws XmlPullParserException, IOException {
         if (skip) {
-            checkEndTag(TAG_SPACER, parser);
+            XmlParseUtils.checkEndTag(TAG_SPACER, parser);
         } else {
             final Key.Spacer spacer = new Key.Spacer(mResources, mParams, row, parser, mKeyStyles);
             if (DEBUG) Log.d(TAG, String.format("<%s />", TAG_SPACER));
-            checkEndTag(TAG_SPACER, parser);
+            XmlParseUtils.checkEndTag(TAG_SPACER, parser);
             endKey(spacer);
         }
     }
@@ -505,17 +505,21 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     private void parseIncludeInternal(XmlPullParser parser, Row row, boolean skip)
             throws XmlPullParserException, IOException {
         if (skip) {
-            checkEndTag(TAG_INCLUDE, parser);
+            XmlParseUtils.checkEndTag(TAG_INCLUDE, parser);
         } else {
             final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.Keyboard_Include);
-            final int keyboardLayout = a.getResourceId(
-                    R.styleable.Keyboard_Include_keyboardLayout, 0);
-            a.recycle();
+            int keyboardLayout = 0;
+            try {
+                XmlParseUtils.checkAttributeExists(a,
+                        R.styleable.Keyboard_Include_keyboardLayout, "keyboardLayout",
+                        TAG_INCLUDE, parser);
+                keyboardLayout = a.getResourceId(R.styleable.Keyboard_Include_keyboardLayout, 0);
+            } finally {
+                a.recycle();
+            }
 
-            checkEndTag(TAG_INCLUDE, parser);
-            if (keyboardLayout == 0)
-                throw new ParseException("No keyboardLayout attribute in <include/>", parser);
+            XmlParseUtils.checkEndTag(TAG_INCLUDE, parser);
             if (DEBUG) Log.d(TAG, String.format("<%s keyboardLayout=%s />",
                     TAG_INCLUDE, mResources.getResourceEntryName(keyboardLayout)));
             final XmlResourceParser parserForInclude = mResources.getXml(keyboardLayout);
@@ -541,7 +545,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     }
                     break;
                 } else {
-                    throw new ParseException(
+                    throw new XmlParseUtils.ParseException(
                             "Included keyboard layout must have <merge> root element", parser);
                 }
             }
@@ -571,7 +575,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 } else if (TAG_DEFAULT.equals(tag)) {
                     selected |= parseDefault(parser, row, selected ? true : skip);
                 } else {
-                    throw new IllegalStartTag(parser, TAG_KEY);
+                    throw new XmlParseUtils.IllegalStartTag(parser, TAG_KEY);
                 }
             } else if (event == XmlPullParser.END_TAG) {
                 final String tag = parser.getName();
@@ -579,7 +583,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     if (DEBUG) Log.d(TAG, String.format("</%s>", TAG_SWITCH));
                     break;
                 } else {
-                    throw new IllegalEndTag(parser, TAG_KEY);
+                    throw new XmlParseUtils.IllegalEndTag(parser, TAG_KEY);
                 }
             }
         }
@@ -716,14 +720,15 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         return true;
     }
 
-    private void parseKeyStyle(XmlPullParser parser, boolean skip) {
+    private void parseKeyStyle(XmlPullParser parser, boolean skip)
+            throws XmlPullParserException {
         TypedArray keyStyleAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_KeyStyle);
         TypedArray keyAttrs = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_Key);
         try {
             if (!keyStyleAttr.hasValue(R.styleable.Keyboard_KeyStyle_styleName))
-                throw new ParseException("<" + TAG_KEY_STYLE
+                throw new XmlParseUtils.ParseException("<" + TAG_KEY_STYLE
                         + "/> needs styleName attribute", parser);
             if (!skip)
                 mKeyStyles.parseKeyStyleAttributes(keyStyleAttr, keyAttrs, parser);
@@ -731,13 +736,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             keyStyleAttr.recycle();
             keyAttrs.recycle();
         }
-    }
-
-    public static void checkEndTag(String tag, XmlPullParser parser)
-            throws XmlPullParserException, IOException {
-        if (parser.next() == XmlPullParser.END_TAG && tag.equals(parser.getName()))
-            return;
-        throw new NonEmptyTag(tag, parser);
     }
 
     private void startKeyboard() {
@@ -778,6 +776,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     }
 
     private void endKeyboard() {
+        // nothing to do here.
     }
 
     private void addEdgeSpace(float width, Row row) {
@@ -822,41 +821,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
     private static boolean isStringValue(TypedValue v) {
         return v.type == TypedValue.TYPE_STRING;
-    }
-
-    @SuppressWarnings("serial")
-    public static class ParseException extends InflateException {
-        public ParseException(String msg, XmlPullParser parser) {
-            super(msg + " at line " + parser.getLineNumber());
-        }
-    }
-
-    @SuppressWarnings("serial")
-    public static class IllegalStartTag extends ParseException {
-        public IllegalStartTag(XmlPullParser parser, String parent) {
-            super("Illegal start tag " + parser.getName() + " in " + parent, parser);
-        }
-    }
-
-    @SuppressWarnings("serial")
-    public static class IllegalEndTag extends ParseException {
-        public IllegalEndTag(XmlPullParser parser, String parent) {
-            super("Illegal end tag " + parser.getName() + " in " + parent, parser);
-        }
-    }
-
-    @SuppressWarnings("serial")
-    private static class IllegalAttribute extends ParseException {
-        public IllegalAttribute(XmlPullParser parser, String attribute) {
-            super("Tag " + parser.getName() + " has illegal attribute " + attribute, parser);
-        }
-    }
-
-    @SuppressWarnings("serial")
-    private static class NonEmptyTag extends ParseException {
-        public NonEmptyTag(String tag, XmlPullParser parser) {
-            super(tag + " must be empty tag", parser);
-        }
     }
 
     private static String textAttr(String value, String name) {

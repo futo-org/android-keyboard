@@ -19,10 +19,10 @@ package com.android.inputmethod.keyboard.internal;
 import android.content.res.TypedArray;
 import android.util.Log;
 
-import com.android.inputmethod.keyboard.internal.KeyboardBuilder.ParseException;
 import com.android.inputmethod.latin.R;
 
 import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +43,7 @@ public class KeyStyles {
     }
 
     /* package */ static class EmptyKeyStyle implements KeyStyle {
-        private EmptyKeyStyle() {
+        EmptyKeyStyle() {
             // Nothing to do.
         }
 
@@ -118,7 +118,7 @@ public class KeyStyles {
         }
     }
 
-    private static class DeclaredKeyStyle extends EmptyKeyStyle {
+    /* package */ static class DeclaredKeyStyle extends EmptyKeyStyle {
         private final HashMap<Integer, Object> mAttributes = new HashMap<Integer, Object>();
 
         @Override
@@ -145,11 +145,11 @@ public class KeyStyles {
             return super.getFlag(a, index, defaultValue) | (value != null ? value : 0);
         }
 
-        private DeclaredKeyStyle() {
+        DeclaredKeyStyle() {
             super();
         }
 
-        private void parseKeyStyleAttributes(TypedArray keyAttr) {
+        void parseKeyStyleAttributes(TypedArray keyAttr) {
             // TODO: Currently not all Key attributes can be declared as style.
             readInt(keyAttr, R.styleable.Keyboard_Key_code);
             readInt(keyAttr, R.styleable.Keyboard_Key_altCode);
@@ -188,18 +188,19 @@ public class KeyStyles {
                 mAttributes.put(index, value);
         }
 
-        private void addParent(DeclaredKeyStyle parentStyle) {
+        void addParent(DeclaredKeyStyle parentStyle) {
             mAttributes.putAll(parentStyle.mAttributes);
         }
     }
 
     public void parseKeyStyleAttributes(TypedArray keyStyleAttr, TypedArray keyAttrs,
-            XmlPullParser parser) {
+            XmlPullParser parser) throws XmlPullParserException {
         final String styleName = keyStyleAttr.getString(R.styleable.Keyboard_KeyStyle_styleName);
         if (DEBUG) Log.d(TAG, String.format("<%s styleName=%s />",
                 KeyboardBuilder.TAG_KEY_STYLE, styleName));
         if (mStyles.containsKey(styleName))
-            throw new ParseException("duplicate key style declared: " + styleName, parser);
+            throw new XmlParseUtils.ParseException(
+                    "duplicate key style declared: " + styleName, parser);
 
         final DeclaredKeyStyle style = new DeclaredKeyStyle();
         if (keyStyleAttr.hasValue(R.styleable.Keyboard_KeyStyle_parentStyle)) {
@@ -207,7 +208,8 @@ public class KeyStyles {
                     R.styleable.Keyboard_KeyStyle_parentStyle);
             final DeclaredKeyStyle parent = mStyles.get(parentStyle);
             if (parent == null)
-                throw new ParseException("Unknown parentStyle " + parentStyle, parser);
+                throw new XmlParseUtils.ParseException(
+                        "Unknown parentStyle " + parentStyle, parser);
             style.addParent(parent);
         }
         style.parseKeyStyleAttributes(keyAttrs);
