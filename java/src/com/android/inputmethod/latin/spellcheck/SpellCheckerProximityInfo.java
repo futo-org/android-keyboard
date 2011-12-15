@@ -43,7 +43,7 @@ public class SpellCheckerProximityInfo {
         return result;
     }
 
-    static class Latin {
+    private static class Latin {
         // This is a map from the code point to the index in the PROXIMITY array.
         // At the time the native code to read the binary dictionary needs the proximity info be
         // passed as a flat array spaced by MAX_PROXIMITY_CHARS_SIZE columns, one for each input
@@ -62,7 +62,7 @@ public class SpellCheckerProximityInfo {
         // to spell check has been entered with one of the keyboards above. Also, specifically
         // to English, many spelling errors consist of the last vowel of the word being wrong
         // because in English vowels tend to merge with each other in pronunciation.
-        final private static int[] PROXIMITY = {
+        final static int[] PROXIMITY = {
             'q', 'w', 's', 'a', 'z', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'w', 'q', 'a', 's', 'd', 'e', 'x', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'e', 'w', 's', 'd', 'f', 'r', 'a', 'i', 'o', 'u', NUL, NUL, NUL, NUL, NUL, NUL,
@@ -101,14 +101,14 @@ public class SpellCheckerProximityInfo {
         static {
             buildProximityIndices(PROXIMITY, INDICES);
         }
-        private static int getIndexOf(int characterCode) {
+        static int getIndexOf(int characterCode) {
             return computeIndex(characterCode, INDICES);
         }
     }
 
-    static class Cyrillic {
+    private static class Cyrillic {
         final private static TreeMap<Integer, Integer> INDICES = new TreeMap<Integer, Integer>();
-        final private static int[] PROXIMITY = {
+        final static int[] PROXIMITY = {
             // TODO: This table is solely based on the keyboard layout. Consult with Russian
             // speakers on commonly misspelled words/letters.
             'й', 'ц', 'ф', 'ы', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
@@ -150,7 +150,7 @@ public class SpellCheckerProximityInfo {
         static {
             buildProximityIndices(PROXIMITY, INDICES);
         }
-        private static int getIndexOf(int characterCode) {
+        static int getIndexOf(int characterCode) {
             return computeIndex(characterCode, INDICES);
         }
     }

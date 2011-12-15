@@ -18,13 +18,10 @@ package com.android.inputmethod.latin;
 
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.net.Uri;
-import android.os.RemoteException;
 import android.provider.UserDictionary.Words;
 import android.text.TextUtils;
 

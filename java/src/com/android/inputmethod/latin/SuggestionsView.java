@@ -468,6 +468,91 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             setLayoutWeight(
                     hintView, 1.0f - mCenterSuggestionWeight, ViewGroup.LayoutParams.MATCH_PARENT);
         }
+
+        private static CharSequence getDebugInfo(SuggestedWords suggestions, int pos) {
+            if (DBG && pos < suggestions.size()) {
+                final SuggestedWordInfo wordInfo = suggestions.getInfo(pos);
+                if (wordInfo != null) {
+                    final CharSequence debugInfo = wordInfo.getDebugString();
+                    if (!TextUtils.isEmpty(debugInfo)) {
+                        return debugInfo;
+                    }
+                }
+            }
+            return null;
+        }
+
+        private static void setLayoutWeight(View v, float weight, int height) {
+            final ViewGroup.LayoutParams lp = v.getLayoutParams();
+            if (lp instanceof LinearLayout.LayoutParams) {
+                final LinearLayout.LayoutParams llp = (LinearLayout.LayoutParams)lp;
+                llp.weight = weight;
+                llp.width = 0;
+                llp.height = height;
+            }
+        }
+
+        private static float getTextScaleX(CharSequence text, int maxWidth, TextPaint paint) {
+            paint.setTextScaleX(1.0f);
+            final int width = getTextWidth(text, paint);
+            if (width <= maxWidth) {
+                return 1.0f;
+            }
+            return maxWidth / (float)width;
+        }
+
+        private static CharSequence getEllipsizedText(CharSequence text, int maxWidth,
+                TextPaint paint) {
+            if (text == null) return null;
+            paint.setTextScaleX(1.0f);
+            final int width = getTextWidth(text, paint);
+            if (width <= maxWidth) {
+                return text;
+            }
+            final float scaleX = maxWidth / (float)width;
+            if (scaleX >= MIN_TEXT_XSCALE) {
+                paint.setTextScaleX(scaleX);
+                return text;
+            }
+
+            // Note that TextUtils.ellipsize() use text-x-scale as 1.0 if ellipsize is needed. To
+            // get squeezed and ellipsized text, passes enlarged width (maxWidth / MIN_TEXT_XSCALE).
+            final CharSequence ellipsized = TextUtils.ellipsize(
+                    text, paint, maxWidth / MIN_TEXT_XSCALE, TextUtils.TruncateAt.MIDDLE);
+            paint.setTextScaleX(MIN_TEXT_XSCALE);
+            return ellipsized;
+        }
+
+        private static int getTextWidth(CharSequence text, TextPaint paint) {
+            if (TextUtils.isEmpty(text)) return 0;
+            final Typeface savedTypeface = paint.getTypeface();
+            paint.setTypeface(getTextTypeface(text));
+            final int len = text.length();
+            final float[] widths = new float[len];
+            final int count = paint.getTextWidths(text, 0, len, widths);
+            int width = 0;
+            for (int i = 0; i < count; i++) {
+                width += Math.round(widths[i] + 0.5f);
+            }
+            paint.setTypeface(savedTypeface);
+            return width;
+        }
+
+        private static Typeface getTextTypeface(CharSequence text) {
+            if (!(text instanceof SpannableString))
+                return Typeface.DEFAULT;
+
+            final SpannableString ss = (SpannableString)text;
+            final StyleSpan[] styles = ss.getSpans(0, text.length(), StyleSpan.class);
+            if (styles.length == 0)
+                return Typeface.DEFAULT;
+
+            switch (styles[0].getStyle()) {
+            case Typeface.BOLD: return Typeface.DEFAULT_BOLD;
+            // TODO: BOLD_ITALIC, ITALIC case?
+            default: return Typeface.DEFAULT;
+            }
+        }
     }
 
     /**
@@ -554,90 +639,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         mParams.layout(mSuggestions, mSuggestionsStrip, this, getWidth());
     }
 
-    private static CharSequence getDebugInfo(SuggestedWords suggestions, int pos) {
-        if (DBG && pos < suggestions.size()) {
-            final SuggestedWordInfo wordInfo = suggestions.getInfo(pos);
-            if (wordInfo != null) {
-                final CharSequence debugInfo = wordInfo.getDebugString();
-                if (!TextUtils.isEmpty(debugInfo)) {
-                    return debugInfo;
-                }
-            }
-        }
-        return null;
-    }
-
-    private static void setLayoutWeight(View v, float weight, int height) {
-        final ViewGroup.LayoutParams lp = v.getLayoutParams();
-        if (lp instanceof LinearLayout.LayoutParams) {
-            final LinearLayout.LayoutParams llp = (LinearLayout.LayoutParams)lp;
-            llp.weight = weight;
-            llp.width = 0;
-            llp.height = height;
-        }
-    }
-
-    private static float getTextScaleX(CharSequence text, int maxWidth, TextPaint paint) {
-        paint.setTextScaleX(1.0f);
-        final int width = getTextWidth(text, paint);
-        if (width <= maxWidth) {
-            return 1.0f;
-        }
-        return maxWidth / (float)width;
-    }
-
-    private static CharSequence getEllipsizedText(CharSequence text, int maxWidth,
-            TextPaint paint) {
-        if (text == null) return null;
-        paint.setTextScaleX(1.0f);
-        final int width = getTextWidth(text, paint);
-        if (width <= maxWidth) {
-            return text;
-        }
-        final float scaleX = maxWidth / (float)width;
-        if (scaleX >= MIN_TEXT_XSCALE) {
-            paint.setTextScaleX(scaleX);
-            return text;
-        }
-
-        // Note that TextUtils.ellipsize() use text-x-scale as 1.0 if ellipsize is needed. To get
-        // squeezed and ellipsized text, passes enlarged width (maxWidth / MIN_TEXT_XSCALE).
-        final CharSequence ellipsized = TextUtils.ellipsize(
-                text, paint, maxWidth / MIN_TEXT_XSCALE, TextUtils.TruncateAt.MIDDLE);
-        paint.setTextScaleX(MIN_TEXT_XSCALE);
-        return ellipsized;
-    }
-
-    private static int getTextWidth(CharSequence text, TextPaint paint) {
-        if (TextUtils.isEmpty(text)) return 0;
-        final Typeface savedTypeface = paint.getTypeface();
-        paint.setTypeface(getTextTypeface(text));
-        final int len = text.length();
-        final float[] widths = new float[len];
-        final int count = paint.getTextWidths(text, 0, len, widths);
-        int width = 0;
-        for (int i = 0; i < count; i++) {
-            width += Math.round(widths[i] + 0.5f);
-        }
-        paint.setTypeface(savedTypeface);
-        return width;
-    }
-
-    private static Typeface getTextTypeface(CharSequence text) {
-        if (!(text instanceof SpannableString))
-            return Typeface.DEFAULT;
-
-        final SpannableString ss = (SpannableString)text;
-        final StyleSpan[] styles = ss.getSpans(0, text.length(), StyleSpan.class);
-        if (styles.length == 0)
-            return Typeface.DEFAULT;
-
-        switch (styles[0].getStyle()) {
-        case Typeface.BOLD: return Typeface.DEFAULT_BOLD;
-        // TODO: BOLD_ITALIC, ITALIC case?
-        default: return Typeface.DEFAULT;
-        }
-    }
 
     public boolean isShowingAddToDictionaryHint() {
         return mSuggestionsStrip.getChildCount() > 0
