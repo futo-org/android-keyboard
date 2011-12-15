@@ -100,9 +100,17 @@ inline int ProximityInfo::getStartIndexFromCoordinates(const int x, const int y)
 }
 
 bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
+    if (x < 0 || y < 0) {
+        if (DEBUG_DICT) {
+            LOGI("HasSpaceProximity: Illegal coordinates (%d, %d)", x, y);
+            assert(true);
+        }
+        return false;
+    }
+
     const int startIndex = getStartIndexFromCoordinates(x, y);
     if (DEBUG_PROXIMITY_INFO) {
-        LOGI("hasSpaceProximity: index %d", startIndex);
+        LOGI("hasSpaceProximity: index %d, %d, %d", startIndex, x, y);
     }
     for (int i = 0; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
         if (DEBUG_PROXIMITY_INFO) {

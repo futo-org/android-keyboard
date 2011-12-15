@@ -111,6 +111,10 @@ public:
         return size;
     }
 
+    int size() {
+        return mSuggestions.size();
+    }
+
     void clear() {
         while (!mSuggestions.empty()) {
             SuggestedWord* sw = mSuggestions.top();
