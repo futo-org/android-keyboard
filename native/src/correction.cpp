@@ -32,48 +32,6 @@ namespace latinime {
 // edit distance funcitons //
 /////////////////////////////
 
-#if 0 /* no longer used */
-inline static int editDistance(
-        int* editDistanceTable, const unsigned short* input,
-        const int inputLength, const unsigned short* output, const int outputLength) {
-    // dp[li][lo] dp[a][b] = dp[ a * lo + b]
-    int* dp = editDistanceTable;
-    const int li = inputLength + 1;
-    const int lo = outputLength + 1;
-    for (int i = 0; i < li; ++i) {
-        dp[lo * i] = i;
-    }
-    for (int i = 0; i < lo; ++i) {
-        dp[i] = i;
-    }
-
-    for (int i = 0; i < li - 1; ++i) {
-        for (int j = 0; j < lo - 1; ++j) {
-            const uint32_t ci = toBaseLowerCase(input[i]);
-            const uint32_t co = toBaseLowerCase(output[j]);
-            const uint16_t cost = (ci == co) ? 0 : 1;
-            dp[(i + 1) * lo + (j + 1)] = min(dp[i * lo + (j + 1)] + 1,
-                    min(dp[(i + 1) * lo + j] + 1, dp[i * lo + j] + cost));
-            if (i > 0 && j > 0 && ci == toBaseLowerCase(output[j - 1])
-                    && co == toBaseLowerCase(input[i - 1])) {
-                dp[(i + 1) * lo + (j + 1)] = min(
-                        dp[(i + 1) * lo + (j + 1)], dp[(i - 1) * lo + (j - 1)] + cost);
-            }
-        }
-    }
-
-    if (DEBUG_EDIT_DISTANCE) {
-        LOGI("IN = %d, OUT = %d", inputLength, outputLength);
-        for (int i = 0; i < li; ++i) {
-            for (int j = 0; j < lo; ++j) {
-                LOGI("EDIT[%d][%d], %d", i, j, dp[i * lo + j]);
-            }
-        }
-    }
-    return dp[li * lo - 1];
-}
-#endif
-
 inline static void initEditDistance(int *editDistanceTable) {
     for (int i = 0; i <= MAX_WORD_LENGTH_INTERNAL; ++i) {
         editDistanceTable[i] = i;
@@ -145,7 +103,7 @@ void Correction::initCorrectionState(
 
 void Correction::setCorrectionParams(const int skipPos, const int excessivePos,
         const int transposedPos, const int spaceProximityPos, const int missingSpacePos,
-        const bool useFullEditDistance, const bool doAutoCompletion) {
+        const bool useFullEditDistance, const bool doAutoCompletion, const int maxErrors) {
     // TODO: remove
     mTransposedPos = transposedPos;
     mExcessivePos = excessivePos;
@@ -159,6 +117,7 @@ void Correction::setCorrectionParams(const int skipPos, const int excessivePos,
     mMissingSpacePos = missingSpacePos;
     mUseFullEditDistance = useFullEditDistance;
     mDoAutoCompletion = doAutoCompletion;
+    mMaxErrors = maxErrors;
 }
 
 void Correction::checkState() {
@@ -314,12 +273,17 @@ inline bool isEquivalentChar(ProximityInfo::ProximityType type) {
 Correction::CorrectionType Correction::processCharAndCalcState(
         const int32_t c, const bool isTerminal) {
     const int correctionCount = (mSkippedCount + mExcessiveCount + mTransposedCount);
+    if (correctionCount > mMaxErrors) {
+        return UNRELATED;
+    }
+
     // TODO: Change the limit if we'll allow two or more corrections
     const bool noCorrectionsHappenedSoFar = correctionCount == 0;
     const bool canTryCorrection = noCorrectionsHappenedSoFar;
     int proximityIndex = 0;
     mDistances[mOutputIndex] = NOT_A_DISTANCE;
 
+    // Skip checking this node
     if (mNeedsToTraverseAllNodes || isQuote(c)) {
         bool incremented = false;
         if (mLastCharExceeded && mInputIndex == mInputLength - 1) {
@@ -344,6 +308,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         return processSkipChar(c, isTerminal, incremented);
     }
 
+    // Check possible corrections.
     if (mExcessivePos >= 0) {
         if (mExcessiveCount == 0 && mExcessivePos < mOutputIndex) {
             mExcessivePos = mOutputIndex;
@@ -394,7 +359,12 @@ Correction::CorrectionType Correction::processCharAndCalcState(
     }
 
     // TODO: Change the limit if we'll allow two or more proximity chars with corrections
-    const bool checkProximityChars = noCorrectionsHappenedSoFar ||  mProximityCount == 0;
+    // Work around: When the mMaxErrors is 1, we only allow just one error
+    // including proximity correction.
+    const bool checkProximityChars = (mMaxErrors > 1)
+            ? (noCorrectionsHappenedSoFar || mProximityCount == 0)
+            : (noCorrectionsHappenedSoFar && mProximityCount == 0);
+
     ProximityInfo::ProximityType matchedProximityCharId = secondTransposing
             ? ProximityInfo::EQUIVALENT_CHAR
             : mProximityInfo->getMatchedProximityId(
@@ -933,5 +903,47 @@ int Correction::RankingAlgorithm::calcFreqForSplitTwoWords(
 
     return totalFreq;
 }
+
+#if 0 /* no longer used. keep just for reference */
+inline static int editDistance(
+        int* editDistanceTable, const unsigned short* input,
+        const int inputLength, const unsigned short* output, const int outputLength) {
+    // dp[li][lo] dp[a][b] = dp[ a * lo + b]
+    int* dp = editDistanceTable;
+    const int li = inputLength + 1;
+    const int lo = outputLength + 1;
+    for (int i = 0; i < li; ++i) {
+        dp[lo * i] = i;
+    }
+    for (int i = 0; i < lo; ++i) {
+        dp[i] = i;
+    }
+
+    for (int i = 0; i < li - 1; ++i) {
+        for (int j = 0; j < lo - 1; ++j) {
+            const uint32_t ci = toBaseLowerCase(input[i]);
+            const uint32_t co = toBaseLowerCase(output[j]);
+            const uint16_t cost = (ci == co) ? 0 : 1;
+            dp[(i + 1) * lo + (j + 1)] = min(dp[i * lo + (j + 1)] + 1,
+                    min(dp[(i + 1) * lo + j] + 1, dp[i * lo + j] + cost));
+            if (i > 0 && j > 0 && ci == toBaseLowerCase(output[j - 1])
+                    && co == toBaseLowerCase(input[i - 1])) {
+                dp[(i + 1) * lo + (j + 1)] = min(
+                        dp[(i + 1) * lo + (j + 1)], dp[(i - 1) * lo + (j - 1)] + cost);
+            }
+        }
+    }
+
+    if (DEBUG_EDIT_DISTANCE) {
+        LOGI("IN = %d, OUT = %d", inputLength, outputLength);
+        for (int i = 0; i < li; ++i) {
+            for (int j = 0; j < lo; ++j) {
+                LOGI("EDIT[%d][%d], %d", i, j, dp[i * lo + j]);
+            }
+        }
+    }
+    return dp[li * lo - 1];
+}
+#endif
 
 } // namespace latinime

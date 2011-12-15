@@ -45,7 +45,7 @@ public:
     // TODO: remove
     void setCorrectionParams(const int skipPos, const int excessivePos, const int transposedPos,
             const int spaceProximityPos, const int missingSpacePos, const bool useFullEditDistance,
-            const bool doAutoCompletion);
+            const bool doAutoCompletion, const int maxErrors);
     void checkState();
     bool initProcessState(const int index);
 
@@ -118,6 +118,7 @@ private:
     int mMissingSpacePos;
     int mTerminalInputIndex;
     int mTerminalOutputIndex;
+    int mMaxErrors;
 
     // The following arrays are state buffer.
     unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];

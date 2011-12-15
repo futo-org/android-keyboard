@@ -261,7 +261,7 @@ void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
     // TODO: Remove setCorrectionParams
     correction->setCorrectionParams(0, 0, 0,
             -1 /* spaceProximityPos */, -1 /* missingSpacePos */, useFullEditDistance,
-            true /* doAutoCompletion */);
+            true /* doAutoCompletion */, DEFAULT_MAX_ERRORS);
     int rootPosition = ROOT_POS;
     // Get the number of children of root, then increment the position
     int childCount = Dictionary::getCount(DICT_ROOT, &rootPosition);
@@ -296,7 +296,7 @@ void UnigramDictionary::getMissingSpaceWords(
         Correction *correction, const bool useFullEditDistance, WordsPriorityQueue *queue) {
     correction->setCorrectionParams(-1 /* skipPos */, -1 /* excessivePos */,
             -1 /* transposedPos */, -1 /* spaceProximityPos */, missingSpacePos,
-            useFullEditDistance, true /* doAutoCompletion */);
+            useFullEditDistance, false /* doAutoCompletion */, MAX_ERRORS_FOR_TWO_WORDS);
     getSplitTwoWordsSuggestion(inputLength, proximityInfo, correction, queue);
 }
 
@@ -305,7 +305,7 @@ void UnigramDictionary::getMistypedSpaceWords(
         Correction *correction, const bool useFullEditDistance, WordsPriorityQueue *queue) {
     correction->setCorrectionParams(-1 /* skipPos */, -1 /* excessivePos */,
             -1 /* transposedPos */, spaceProximityPos, -1 /* missingSpacePos */,
-            useFullEditDistance, true /* doAutoCompletion */);
+            useFullEditDistance, false /* doAutoCompletion */, MAX_ERRORS_FOR_TWO_WORDS);
     getSplitTwoWordsSuggestion(inputLength, proximityInfo, correction, queue);
 }
 
