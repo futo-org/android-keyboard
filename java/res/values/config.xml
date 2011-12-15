@@ -38,7 +38,6 @@
     <bool name="config_default_bigram_prediction">false</bool>
     <bool name="config_default_sound_enabled">false</bool>
     <bool name="config_default_vibration_enabled">true</bool>
-    <bool name="config_auto_correction_spacebar_led_enabled">false</bool>
     <!-- Showing mini keyboard, just above the touched point if true, aligned to the key if false -->
     <bool name="config_show_mini_keyboard_at_touched_point">false</bool>
     <!-- The language is never displayed if == 0, always displayed if < 0 -->
