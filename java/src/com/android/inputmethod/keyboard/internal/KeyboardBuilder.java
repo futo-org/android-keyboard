@@ -292,7 +292,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         return new Keyboard(mParams);
     }
 
-    private void parseKeyboard(XmlResourceParser parser)
+    private void parseKeyboard(XmlPullParser parser)
             throws XmlPullParserException, IOException {
         if (DEBUG) Log.d(TAG, String.format("<%s> %s", TAG_KEYBOARD, mParams.mId));
         int event;
@@ -309,30 +309,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 }
             }
         }
-    }
-
-    public static String parseKeyboardLocale(
-            Context context, int resId) throws XmlPullParserException, IOException {
-        final Resources res = context.getResources();
-        final XmlPullParser parser = res.getXml(resId);
-        if (parser == null) return "";
-        int event;
-        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
-            if (event == XmlPullParser.START_TAG) {
-                final String tag = parser.getName();
-                if (TAG_KEYBOARD.equals(tag)) {
-                    final TypedArray keyboardAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
-                            R.styleable.Keyboard);
-                    final String locale = keyboardAttr.getString(
-                            R.styleable.Keyboard_keyboardLocale);
-                    keyboardAttr.recycle();
-                    return locale;
-                } else {
-                    throw new IllegalStartTag(parser, TAG_KEYBOARD);
-                }
-            }
-        }
-        return "";
     }
 
     private void parseKeyboardAttributes(XmlPullParser parser) {
@@ -757,7 +733,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         }
     }
 
-    private static void checkEndTag(String tag, XmlPullParser parser)
+    public static void checkEndTag(String tag, XmlPullParser parser)
             throws XmlPullParserException, IOException {
         if (parser.next() == XmlPullParser.END_TAG && tag.equals(parser.getName()))
             return;
@@ -856,14 +832,14 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     }
 
     @SuppressWarnings("serial")
-    private static class IllegalStartTag extends ParseException {
+    public static class IllegalStartTag extends ParseException {
         public IllegalStartTag(XmlPullParser parser, String parent) {
             super("Illegal start tag " + parser.getName() + " in " + parent, parser);
         }
     }
 
     @SuppressWarnings("serial")
-    private static class IllegalEndTag extends ParseException {
+    public static class IllegalEndTag extends ParseException {
         public IllegalEndTag(XmlPullParser parser, String parent) {
             super("Illegal end tag " + parser.getName() + " in " + parent, parser);
         }

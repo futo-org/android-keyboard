@@ -164,8 +164,6 @@
         <attr name="verticalGap" format="dimension|fraction" />
         <!-- More keys keyboard layout template -->
         <attr name="moreKeysTemplate" format="reference" />
-        <!-- Locale of the keyboard layout -->
-        <attr name="keyboardLocale" format="string" />
         <!-- True if the keyboard is Right-To-Left -->
         <attr name="isRtlKeyboard" format="boolean" />
         <!-- Icon set for key top and key preview. -->
@@ -327,5 +325,30 @@
         <attr name="disabledShortcutIcon" format="reference" />
         <attr name="spacebarTextColor" format="color" />
         <attr name="spacebarTextShadowColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="KeyboardSet">
+        <!-- Locale of the keyboard layouts -->
+        <attr name="keyboardLocale" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="KeyboardSet_Element">
+        <!-- This should be aligned with KeyboardId.ELEMENT_* -->
+        <attr name="elementName" format="enum">
+          <enum name="alphabet" value="0" />
+          <!--  TODO: Implement alphabet variant shift keyboards
+          <enum name="alphabetManualTemporaryShift" value="1" />
+          <enum name="alphabetAutomaticTemporaryShift" value="2" />
+          <enum name="alphabetShiftLock" value="3" />
+          <enum name="alphabetShiftLockShift" value="4" />
+          -->
+          <enum name="symbols" value="5" />
+          <enum name="symbolsShift" value="6"  />
+          <enum name="phone" value="7"  />
+          <enum name="phoneShift" value="8"  />
+          <enum name="number" value="9"  />
+        </attr>
+        <attr name="elementKeyboard" format="reference" />
+        <!-- TODO: Add setShifted and setShiftLocked attribute. -->
     </declare-styleable>
 </resources>
