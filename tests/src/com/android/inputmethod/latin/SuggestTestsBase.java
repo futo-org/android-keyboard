@@ -21,7 +21,6 @@ import android.content.res.Configuration;
 import android.test.AndroidTestCase;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.keyboard.KeyboardId;
 
@@ -52,7 +51,7 @@ public class SuggestTestsBase extends AndroidTestCase {
         }
         return new KeyboardId(com.android.inputmethod.latin.R.xml.kbd_qwerty,
                 KeyboardId.ELEMENT_ALPHABET, locale, orientation, width, KeyboardId.MODE_TEXT,
-                new EditorInfo(), false, false, false, false);
+                null, false, false, false, false);
     }
 
     protected InputStream openTestRawResource(int resIdInTest) {

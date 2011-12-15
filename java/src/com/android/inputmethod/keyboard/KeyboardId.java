@@ -63,46 +63,39 @@ public class KeyboardId {
     // TODO: Remove this field.
     private final int mXmlId;
     public final int mElementState;
-    public final boolean mNavigateAction;
-    public final boolean mPasswordInput;
+    private final int mInputType;
+    private final int mImeOptions;
     private final boolean mSettingsKeyEnabled;
     public final boolean mClobberSettingsKey;
     public final boolean mShortcutKeyEnabled;
     public final boolean mHasShortcutKey;
-    public final int mImeAction;
-
-    // TODO: Remove this field.
-    private final EditorInfo mEditorInfo;
 
     private final int mHashCode;
 
     public KeyboardId(int xmlId, int elementState, Locale locale, int orientation, int width,
             int mode, EditorInfo editorInfo, boolean settingsKeyEnabled,
             boolean clobberSettingsKey, boolean shortcutKeyEnabled, boolean hasShortcutKey) {
-        final int inputType = (editorInfo != null) ? editorInfo.inputType : 0;
-        final int imeOptions = (editorInfo != null) ? editorInfo.imeOptions : 0;
-        this.mElementState = elementState;
+        this(xmlId, elementState, locale, orientation, width, mode,
+                (editorInfo != null ? editorInfo.inputType : 0),
+                (editorInfo != null ? editorInfo.imeOptions : 0),
+                settingsKeyEnabled, clobberSettingsKey, shortcutKeyEnabled, hasShortcutKey);
+    }
+
+    private KeyboardId(int xmlId, int elementState, Locale locale, int orientation, int width,
+            int mode, int inputType, int imeOptions, boolean settingsKeyEnabled,
+            boolean clobberSettingsKey, boolean shortcutKeyEnabled, boolean hasShortcutKey) {
         this.mLocale = locale;
         this.mOrientation = orientation;
         this.mWidth = width;
         this.mMode = mode;
         this.mXmlId = xmlId;
-        // Note: Turn off checking navigation flag to show TAB key for now.
-        this.mNavigateAction = InputTypeCompatUtils.isWebInputType(inputType);
-//                || EditorInfoCompatUtils.hasFlagNavigateNext(imeOptions)
-//                || EditorInfoCompatUtils.hasFlagNavigatePrevious(imeOptions);
-        this.mPasswordInput = InputTypeCompatUtils.isPasswordInputType(inputType)
-                || InputTypeCompatUtils.isVisiblePasswordInputType(inputType);
+        this.mElementState = elementState;
+        this.mInputType = inputType;
+        this.mImeOptions = imeOptions;
         this.mSettingsKeyEnabled = settingsKeyEnabled;
         this.mClobberSettingsKey = clobberSettingsKey;
         this.mShortcutKeyEnabled = shortcutKeyEnabled;
         this.mHasShortcutKey = hasShortcutKey;
-        // We are interested only in {@link EditorInfo#IME_MASK_ACTION} enum value and
-        // {@link EditorInfo#IME_FLAG_NO_ENTER_ACTION}.
-        this.mImeAction = imeOptions & (
-                EditorInfo.IME_MASK_ACTION | EditorInfo.IME_FLAG_NO_ENTER_ACTION);
-
-        this.mEditorInfo = editorInfo;
 
         this.mHashCode = hashCode(this);
     }
@@ -114,14 +107,14 @@ public class KeyboardId {
                 id.mMode,
                 id.mWidth,
                 id.mXmlId,
-                id.mNavigateAction,
-                id.mPasswordInput,
+                id.navigateAction(),
+                id.passwordInput(),
                 id.mSettingsKeyEnabled,
                 id.mClobberSettingsKey,
                 id.mShortcutKeyEnabled,
                 id.mHasShortcutKey,
-                id.mImeAction,
-                id.mLocale,
+                id.imeAction(),
+                id.mLocale
         });
     }
 
@@ -133,19 +126,19 @@ public class KeyboardId {
                 && other.mMode == this.mMode
                 && other.mWidth == this.mWidth
                 && other.mXmlId == this.mXmlId
-                && other.mNavigateAction == this.mNavigateAction
-                && other.mPasswordInput == this.mPasswordInput
+                && other.navigateAction() == this.navigateAction()
+                && other.passwordInput() == this.passwordInput()
                 && other.mSettingsKeyEnabled == this.mSettingsKeyEnabled
                 && other.mClobberSettingsKey == this.mClobberSettingsKey
                 && other.mShortcutKeyEnabled == this.mShortcutKeyEnabled
                 && other.mHasShortcutKey == this.mHasShortcutKey
-                && other.mImeAction == this.mImeAction
+                && other.imeAction() == this.imeAction()
                 && other.mLocale.equals(this.mLocale);
     }
 
     public KeyboardId cloneWithNewXml(int xmlId) {
         return new KeyboardId(xmlId, mElementState, mLocale, mOrientation, mWidth, mMode,
-                mEditorInfo, false, false, false, false);
+                mInputType, mImeOptions, false, false, false, false);
     }
 
     // Remove this method.
@@ -167,6 +160,26 @@ public class KeyboardId {
 
     public boolean isPhoneShiftKeyboard() {
         return mElementState == ELEMENT_PHONE_SHIFT;
+    }
+
+    public boolean navigateAction() {
+        // Note: Turn off checking navigation flag to show TAB key for now.
+        boolean navigateAction = InputTypeCompatUtils.isWebInputType(mInputType);
+//                || EditorInfoCompatUtils.hasFlagNavigateNext(mImeOptions)
+//                || EditorInfoCompatUtils.hasFlagNavigatePrevious(mImeOptions);
+        return navigateAction;
+    }
+
+    public boolean passwordInput() {
+        return InputTypeCompatUtils.isPasswordInputType(mInputType)
+                || InputTypeCompatUtils.isVisiblePasswordInputType(mInputType);
+    }
+
+    public int imeAction() {
+        // We are interested only in {@link EditorInfo#IME_MASK_ACTION} enum value and
+        // {@link EditorInfo#IME_FLAG_NO_ENTER_ACTION}.
+        return mImeOptions & (
+                EditorInfo.IME_MASK_ACTION | EditorInfo.IME_FLAG_NO_ENTER_ACTION);
     }
 
     public boolean hasSettingsKey() {
@@ -205,11 +218,11 @@ public class KeyboardId {
                 mLocale,
                 (mOrientation == 1 ? "port" : "land"), mWidth,
                 modeName(mMode),
-                EditorInfoCompatUtils.imeOptionsName(mImeAction),
+                EditorInfoCompatUtils.imeOptionsName(imeAction()),
                 f2KeyModeName(f2KeyMode()),
                 (mClobberSettingsKey ? " clobberSettingsKey" : ""),
-                (mNavigateAction ? " navigateAction" : ""),
-                (mPasswordInput ? " passwordInput" : ""),
+                (navigateAction() ? " navigateAction" : ""),
+                (passwordInput() ? " passwordInput" : ""),
                 (hasSettingsKey() ? " hasSettingsKey" : ""),
                 (mShortcutKeyEnabled ? " shortcutKeyEnabled" : ""),
                 (mHasShortcutKey ? " hasShortcutKey" : "")
