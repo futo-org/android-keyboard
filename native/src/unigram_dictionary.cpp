@@ -260,7 +260,8 @@ void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
         const int inputLength, Correction *correction, WordsPriorityQueue *queue) {
     // TODO: Remove setCorrectionParams
     correction->setCorrectionParams(0, 0, 0,
-            -1 /* spaceProximityPos */, -1 /* missingSpacePos */, useFullEditDistance);
+            -1 /* spaceProximityPos */, -1 /* missingSpacePos */, useFullEditDistance,
+            true /* doAutoCompletion */);
     int rootPosition = ROOT_POS;
     // Get the number of children of root, then increment the position
     int childCount = Dictionary::getCount(DICT_ROOT, &rootPosition);
@@ -295,7 +296,7 @@ void UnigramDictionary::getMissingSpaceWords(
         Correction *correction, const bool useFullEditDistance, WordsPriorityQueue *queue) {
     correction->setCorrectionParams(-1 /* skipPos */, -1 /* excessivePos */,
             -1 /* transposedPos */, -1 /* spaceProximityPos */, missingSpacePos,
-            useFullEditDistance);
+            useFullEditDistance, true /* doAutoCompletion */);
     getSplitTwoWordsSuggestion(inputLength, proximityInfo, correction, queue);
 }
 
@@ -304,7 +305,7 @@ void UnigramDictionary::getMistypedSpaceWords(
         Correction *correction, const bool useFullEditDistance, WordsPriorityQueue *queue) {
     correction->setCorrectionParams(-1 /* skipPos */, -1 /* excessivePos */,
             -1 /* transposedPos */, spaceProximityPos, -1 /* missingSpacePos */,
-            useFullEditDistance);
+            useFullEditDistance, true /* doAutoCompletion */);
     getSplitTwoWordsSuggestion(inputLength, proximityInfo, correction, queue);
 }
 
@@ -585,7 +586,7 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos,
         if (stateType == Correction::TRAVERSE_ALL_ON_TERMINAL
                 || stateType == Correction::ON_TERMINAL) {
             needsToInvokeOnTerminal = true;
-        } else if (stateType == Correction::UNRELATED) {
+        } else if (stateType == Correction::UNRELATED || correction->needsToPrune()) {
             // We found that this is an unrelated character, so we should give up traversing
             // this node and its children entirely.
             // However we may not be on the last virtual node yet so we skip the remaining
