@@ -17,7 +17,6 @@
 package com.android.inputmethod.accessibility;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.inputmethodservice.InputMethodService;
@@ -43,8 +42,8 @@ public class AccessibleKeyboardViewProxy {
 
     private Key mLastHoverKey = null;
 
-    public static void init(InputMethodService inputMethod, SharedPreferences prefs) {
-        sInstance.initInternal(inputMethod, prefs);
+    public static void init(InputMethodService inputMethod) {
+        sInstance.initInternal(inputMethod);
         sInstance.mListener = AccessibleInputMethodServiceProxy.getInstance();
     }
 
@@ -60,7 +59,7 @@ public class AccessibleKeyboardViewProxy {
         // Not publicly instantiable.
     }
 
-    private void initInternal(InputMethodService inputMethod, SharedPreferences prefs) {
+    private void initInternal(InputMethodService inputMethod) {
         final Paint paint = new Paint();
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(14.0f);
@@ -71,8 +70,7 @@ public class AccessibleKeyboardViewProxy {
         mGestureDetector = new KeyboardFlickGestureDetector(inputMethod);
     }
 
-    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event,
-            PointerTracker tracker) {
+    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
         if (mView == null) {
             Log.e(TAG, "No keyboard view set!");
             return false;
@@ -132,9 +130,9 @@ public class AccessibleKeyboardViewProxy {
             final Key key = tracker.getKeyOn(x, y);
 
             if (key != mLastHoverKey) {
-                fireKeyHoverEvent(tracker, mLastHoverKey, false);
+                fireKeyHoverEvent(mLastHoverKey, false);
                 mLastHoverKey = key;
-                fireKeyHoverEvent(tracker, mLastHoverKey, true);
+                fireKeyHoverEvent(mLastHoverKey, true);
             }
 
             return true;
@@ -143,7 +141,7 @@ public class AccessibleKeyboardViewProxy {
         return false;
     }
 
-    private void fireKeyHoverEvent(PointerTracker tracker, Key key, boolean entering) {
+    private void fireKeyHoverEvent(Key key, boolean entering) {
         if (mListener == null) {
             Log.e(TAG, "No accessible keyboard action listener set!");
             return;

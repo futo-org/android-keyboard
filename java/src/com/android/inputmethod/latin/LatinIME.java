@@ -489,7 +489,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         InputMethodManagerCompatWrapper.init(this);
         SubtypeSwitcher.init(this);
         KeyboardSwitcher.init(this, prefs);
-        AccessibilityUtils.init(this, prefs);
+        AccessibilityUtils.init(this);
 
         super.onCreate();
 
@@ -758,7 +758,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         loadSettings();
         updateCorrectionMode();
-        updateSuggestionVisibility(mPrefs, mResources);
+        updateSuggestionVisibility(mResources);
 
         if (mSuggest != null && mSettingsValues.mAutoCorrectEnabled) {
             mSuggest.setAutoCorrectionThreshold(mSettingsValues.mAutoCorrectionThreshold);
@@ -2415,7 +2415,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 ? Suggest.CORRECTION_FULL_BIGRAM : mCorrectionMode;
     }
 
-    private void updateSuggestionVisibility(final SharedPreferences prefs, final Resources res) {
+    private void updateSuggestionVisibility(final Resources res) {
         final String suggestionVisiblityStr = mSettingsValues.mShowSuggestionsSetting;
         for (int visibility : SUGGESTION_VISIBILITY_VALUE_ARRAY) {
             if (suggestionVisiblityStr.equals(res.getString(visibility))) {

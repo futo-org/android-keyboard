@@ -17,7 +17,6 @@
 package com.android.inputmethod.accessibility;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.Key;
@@ -45,8 +44,8 @@ public class KeyCodeDescriptionMapper {
     // Map of shift-locked key codes to spoken description resource IDs
     private final HashMap<Integer, Integer> mShiftLockedKeyCodeMap;
 
-    public static void init(Context context, SharedPreferences prefs) {
-        sInstance.initInternal(context, prefs);
+    public static void init() {
+        sInstance.initInternal();
     }
 
     public static KeyCodeDescriptionMapper getInstance() {
@@ -60,7 +59,7 @@ public class KeyCodeDescriptionMapper {
         mShiftLockedKeyCodeMap = new HashMap<Integer, Integer>();
     }
 
-    private void initInternal(Context context, SharedPreferences prefs) {
+    private void initInternal() {
         // Manual label substitutions for key labels with no string resource
         mKeyLabelMap.put(":-)", R.string.spoken_description_smiley);
 
