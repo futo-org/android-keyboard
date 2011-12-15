@@ -104,21 +104,43 @@ public class KeyboardId {
 
         this.mEditorInfo = editorInfo;
 
-        this.mHashCode = Arrays.hashCode(new Object[] {
-                locale,
-                orientation,
-                width,
-                mode,
-                xmlId,
-                elementState,
-                mNavigateAction,
-                mPasswordInput,
-                mSettingsKeyEnabled,
-                mClobberSettingsKey,
-                shortcutKeyEnabled,
-                hasShortcutKey,
-                mImeAction,
+        this.mHashCode = hashCode(this);
+    }
+
+    private static int hashCode(KeyboardId id) {
+        return Arrays.hashCode(new Object[] {
+                id.mOrientation,
+                id.mElementState,
+                id.mMode,
+                id.mWidth,
+                id.mXmlId,
+                id.mNavigateAction,
+                id.mPasswordInput,
+                id.mSettingsKeyEnabled,
+                id.mClobberSettingsKey,
+                id.mShortcutKeyEnabled,
+                id.mHasShortcutKey,
+                id.mImeAction,
+                id.mLocale,
         });
+    }
+
+    private boolean equals(KeyboardId other) {
+        if (other == this)
+            return true;
+        return other.mOrientation == this.mOrientation
+                && other.mElementState == this.mElementState
+                && other.mMode == this.mMode
+                && other.mWidth == this.mWidth
+                && other.mXmlId == this.mXmlId
+                && other.mNavigateAction == this.mNavigateAction
+                && other.mPasswordInput == this.mPasswordInput
+                && other.mSettingsKeyEnabled == this.mSettingsKeyEnabled
+                && other.mClobberSettingsKey == this.mClobberSettingsKey
+                && other.mShortcutKeyEnabled == this.mShortcutKeyEnabled
+                && other.mHasShortcutKey == this.mHasShortcutKey
+                && other.mImeAction == this.mImeAction
+                && other.mLocale.equals(this.mLocale);
     }
 
     public KeyboardId cloneWithNewXml(int xmlId) {
@@ -169,22 +191,6 @@ public class KeyboardId {
     @Override
     public boolean equals(Object other) {
         return other instanceof KeyboardId && equals((KeyboardId) other);
-    }
-
-    private boolean equals(KeyboardId other) {
-        return other.mLocale.equals(this.mLocale)
-            && other.mOrientation == this.mOrientation
-            && other.mWidth == this.mWidth
-            && other.mMode == this.mMode
-            && other.mXmlId == this.mXmlId
-            && other.mElementState == this.mElementState
-            && other.mNavigateAction == this.mNavigateAction
-            && other.mPasswordInput == this.mPasswordInput
-            && other.mSettingsKeyEnabled == this.mSettingsKeyEnabled
-            && other.mClobberSettingsKey == this.mClobberSettingsKey
-            && other.mShortcutKeyEnabled == this.mShortcutKeyEnabled
-            && other.mHasShortcutKey == this.mHasShortcutKey
-            && other.mImeAction == this.mImeAction;
     }
 
     @Override
