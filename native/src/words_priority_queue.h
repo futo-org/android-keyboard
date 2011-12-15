@@ -24,7 +24,7 @@
 namespace latinime {
 
 class WordsPriorityQueue {
-private:
+public:
     class SuggestedWord {
     public:
         int mScore;
@@ -40,31 +40,6 @@ private:
         }
     };
 
-    struct wordComparator {
-        bool operator ()(SuggestedWord * left, SuggestedWord * right) {
-            return left->mScore > right->mScore;
-        }
-    };
-
-    SuggestedWord* getFreeSuggestedWord(int score, unsigned short* word,
-            int wordLength) {
-        for (unsigned int i = 0; i < MAX_WORD_LENGTH; ++i) {
-            if (!mSuggestedWords[i].mUsed) {
-                mSuggestedWords[i].setParams(score, word, wordLength);
-                return &mSuggestedWords[i];
-            }
-        }
-        return 0;
-    }
-
-    typedef std::priority_queue<SuggestedWord*, std::vector<SuggestedWord*>,
-            wordComparator> Suggestions;
-    Suggestions mSuggestions;
-    const unsigned int MAX_WORDS;
-    const unsigned int MAX_WORD_LENGTH;
-    SuggestedWord* mSuggestedWords;
-
-public:
     WordsPriorityQueue(int maxWords, int maxWordLength) :
             MAX_WORDS((unsigned int) maxWords), MAX_WORD_LENGTH(
                     (unsigned int) maxWordLength) {
@@ -105,6 +80,13 @@ public:
         mSuggestions.push(sw);
     }
 
+    SuggestedWord* topAndPop() {
+        if (mSuggestions.empty()) return 0;
+        SuggestedWord* sw = mSuggestions.top();
+        mSuggestions.pop();
+        return sw;
+    }
+
     int outputSuggestions(int *frequencies, unsigned short *outputChars) {
         const unsigned int size = min(MAX_WORDS, mSuggestions.size());
         int index = size - 1;
@@ -140,6 +122,30 @@ public:
             mSuggestions.pop();
         }
     }
+private:
+    struct wordComparator {
+        bool operator ()(SuggestedWord * left, SuggestedWord * right) {
+            return left->mScore > right->mScore;
+        }
+    };
+
+    SuggestedWord* getFreeSuggestedWord(int score, unsigned short* word,
+            int wordLength) {
+        for (unsigned int i = 0; i < MAX_WORD_LENGTH; ++i) {
+            if (!mSuggestedWords[i].mUsed) {
+                mSuggestedWords[i].setParams(score, word, wordLength);
+                return &mSuggestedWords[i];
+            }
+        }
+        return 0;
+    }
+
+    typedef std::priority_queue<SuggestedWord*, std::vector<SuggestedWord*>,
+            wordComparator> Suggestions;
+    Suggestions mSuggestions;
+    const unsigned int MAX_WORDS;
+    const unsigned int MAX_WORD_LENGTH;
+    SuggestedWord* mSuggestedWords;
 };
 }
 
