@@ -35,7 +35,6 @@ import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
 import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import com.android.inputmethod.keyboard.LatinKeyboard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -421,11 +420,7 @@ public class SubtypeSwitcher {
                 ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
         mIsNetworkConnected = !noConnection;
 
-        final KeyboardSwitcher switcher = KeyboardSwitcher.getInstance();
-        final LatinKeyboard keyboard = switcher.getLatinKeyboard();
-        if (keyboard != null) {
-            keyboard.updateShortcutKey(isShortcutImeReady(), switcher.getKeyboardView());
-        }
+        KeyboardSwitcher.getInstance().onNetworkStateChanged();
     }
 
     //////////////////////////////////

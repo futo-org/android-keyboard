@@ -32,8 +32,7 @@
         <item name="maxMoreKeysColumn">@integer/config_max_more_keys_column</item>
     </style>
     <style name="LatinKeyboard">
-        <item name="autoCorrectionSpacebarLedEnabled">@bool/config_auto_correction_spacebar_led_enabled
-        </item>
+        <item name="autoCorrectionSpacebarLedEnabled">true</item>
         <item name="spacebarTextColor">#FFC0C0C0</item>
         <item name="spacebarTextShadowColor">#80000000</item>
     </style>
@@ -242,6 +241,7 @@
         name="LatinKeyboard.IceCreamSandwich"
         parent="LatinKeyboard"
     >
+        <item name="autoCorrectionSpacebarLedEnabled">false</item>
         <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
     </style>
     <style

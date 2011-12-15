@@ -297,19 +297,15 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                         || (switcher.isAlphabetMode() && switcher.isShiftedOrShiftLocked()));
                 break;
             case MSG_FADEOUT_LANGUAGE_ON_SPACEBAR:
-                if (inputView != null) {
-                    inputView.setSpacebarTextFadeFactor(
-                            (1.0f + mFinalFadeoutFactorOfLanguageOnSpacebar) / 2,
-                            (LatinKeyboard)msg.obj);
-                }
+                setSpacebarTextFadeFactor(inputView,
+                        (1.0f + mFinalFadeoutFactorOfLanguageOnSpacebar) / 2,
+                        (LatinKeyboard)msg.obj);
                 sendMessageDelayed(obtainMessage(MSG_DISMISS_LANGUAGE_ON_SPACEBAR, msg.obj),
                         mDurationOfFadeoutLanguageOnSpacebar);
                 break;
             case MSG_DISMISS_LANGUAGE_ON_SPACEBAR:
-                if (inputView != null) {
-                    inputView.setSpacebarTextFadeFactor(mFinalFadeoutFactorOfLanguageOnSpacebar,
-                            (LatinKeyboard)msg.obj);
-                }
+                setSpacebarTextFadeFactor(inputView, mFinalFadeoutFactorOfLanguageOnSpacebar,
+                        (LatinKeyboard)msg.obj);
                 break;
             }
         }
@@ -349,6 +345,19 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             sendMessage(obtainMessage(MSG_VOICE_RESULTS));
         }
 
+        private static void setSpacebarTextFadeFactor(LatinKeyboardView inputView,
+                float fadeFactor, LatinKeyboard oldKeyboard) {
+            if (inputView == null) return;
+            final Keyboard keyboard = inputView.getKeyboard();
+            if (keyboard instanceof LatinKeyboard && keyboard == oldKeyboard) {
+                final Key updatedKey = ((LatinKeyboard)keyboard).updateSpacebarLanguage(
+                        fadeFactor,
+                        Utils.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */),
+                        SubtypeSwitcher.getInstance().needsToDisplayLanguage(keyboard.mId.mLocale));
+                inputView.invalidateKey(updatedKey);
+            }
+        }
+
         public void startDisplayLanguageOnSpacebar(boolean localeChanged) {
             final LatinIME latinIme = getOuterInstance();
             removeMessages(MSG_FADEOUT_LANGUAGE_ON_SPACEBAR);
@@ -361,9 +370,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                         || mDelayBeforeFadeoutLanguageOnSpacebar < 0;
                 // The language is never displayed when the delay is zero.
                 if (mDelayBeforeFadeoutLanguageOnSpacebar != 0) {
-                    inputView.setSpacebarTextFadeFactor(needsToDisplayLanguage ? 1.0f
-                            : mFinalFadeoutFactorOfLanguageOnSpacebar,
-                            keyboard);
+                    setSpacebarTextFadeFactor(inputView,
+                            needsToDisplayLanguage ? 1.0f : mFinalFadeoutFactorOfLanguageOnSpacebar,
+                                    keyboard);
                 }
                 // The fadeout animation will start when the delay is positive.
                 if (localeChanged && mDelayBeforeFadeoutLanguageOnSpacebar > 0) {
@@ -1229,7 +1238,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (isShowingOptionDialog()) return;
         if (InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED) {
             showSubtypeSelectorAndSettings();
-        } else if (Utils.hasMultipleEnabledIMEsOrSubtypes(mImm, false /* exclude aux subtypes */)) {
+        } else if (Utils.hasMultipleEnabledIMEsOrSubtypes(false /* exclude aux subtypes */)) {
             showOptionsMenu();
         } else {
             launchSettings();
@@ -1245,7 +1254,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (isShowingOptionDialog()) return false;
         switch (requestCode) {
         case CODE_SHOW_INPUT_METHOD_PICKER:
-            if (Utils.hasMultipleEnabledIMEsOrSubtypes(mImm, true /* include aux subtypes */)) {
+            if (Utils.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */)) {
                 mImm.showInputMethodPicker();
                 return true;
             }
