@@ -722,6 +722,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     : String.format("inputType=0x%08x imeOptions=0x%08x",
                             editorInfo.inputType, editorInfo.imeOptions)));
         }
+        LatinImeLogger.onStartInputView(editorInfo);
         // In landscape mode, this method gets called without the input view being created.
         if (inputView == null) {
             return;

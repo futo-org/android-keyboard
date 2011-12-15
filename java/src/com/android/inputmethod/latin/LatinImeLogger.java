@@ -16,11 +16,12 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.latin.Dictionary.DataType;
-
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.view.inputmethod.EditorInfo;
+
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.latin.Dictionary.DataType;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
 
     public static void logOnManualSuggestion(
             String before, String after, int position, List<CharSequence> suggestions) {
-   }
+    }
 
     public static void logOnAutoCorrection(String before, String after, int separatorCode) {
     }
@@ -65,6 +66,9 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public static void logOnWarning(String warning) {
+    }
+
+    public static void onStartInputView(EditorInfo editorInfo) {
     }
 
     public static void onStartSuggestion(CharSequence previousWords) {
