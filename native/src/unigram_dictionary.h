@@ -61,6 +61,10 @@ public:
     static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES = 0x20;
     static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES = 0x30;
 
+    // Error tolerances
+    static const int DEFAULT_MAX_ERRORS = 2;
+    static const int MAX_ERRORS_FOR_TWO_WORDS = 1;
+
     UnigramDictionary(const uint8_t* const streamStart, int typedLetterMultipler,
             int fullWordMultiplier, int maxWordLength, int maxWords, int maxProximityChars,
             const bool isLatestDictVersion);
