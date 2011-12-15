@@ -97,7 +97,8 @@
         name="SuggestionsViewStyle"
         parent="SuggestionsStripBackgroundStyle"
     >
-        <item name="suggestionStripOption">autoCorrectBold</item>
+        <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
+        <item name="colorValidTypedWord">#FFFCAE00</item>
         <item name="colorTypedWord">@android:color/white</item>
         <item name="colorAutoCorrect">#FFFCAE00</item>
         <item name="colorSuggested">#FFFCAE00</item>
@@ -296,11 +297,12 @@
     >
         <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
         <!-- android:color/holo_blue_light=#FF33B5E5 -->
+        <item name="colorValidTypedWord">@android:color/holo_blue_light</item>
         <item name="colorTypedWord">@android:color/holo_blue_light</item>
         <item name="colorAutoCorrect">@android:color/holo_blue_light</item>
         <item name="colorSuggested">@android:color/holo_blue_light</item>
+        <item name="alphaValidTypedWord">85</item>
         <item name="alphaTypedWord">85</item>
-        <item name="alphaAutoCorrect">100</item>
         <item name="alphaSuggested">70</item>
         <item name="alphaObsoleted">70</item>
         <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
