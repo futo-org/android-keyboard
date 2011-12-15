@@ -109,6 +109,8 @@ public class LatinKeyboard extends Keyboard {
         public Key mSpaceKey = null;
         public Key mShortcutKey = null;
 
+        LatinKeyboardParams() {}
+
         @Override
         public void onAddKey(Key key) {
             super.onAddKey(key);
@@ -130,8 +132,8 @@ public class LatinKeyboard extends Keyboard {
         }
 
         @Override
-        public Builder load(KeyboardId id) {
-            super.load(id);
+        public Builder load(int xmlId, KeyboardId id) {
+            super.load(xmlId, id);
             return this;
         }
 

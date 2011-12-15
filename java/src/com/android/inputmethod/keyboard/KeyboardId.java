@@ -60,8 +60,6 @@ public class KeyboardId {
     public final int mOrientation;
     public final int mWidth;
     public final int mMode;
-    // TODO: Remove this field.
-    private final int mXmlId;
     public final int mElementState;
     private final int mInputType;
     private final int mImeOptions;
@@ -72,14 +70,13 @@ public class KeyboardId {
 
     private final int mHashCode;
 
-    public KeyboardId(int xmlId, int elementState, Locale locale, int orientation, int width,
-            int mode, int inputType, int imeOptions, boolean settingsKeyEnabled,
-            boolean clobberSettingsKey, boolean shortcutKeyEnabled, boolean hasShortcutKey) {
+    public KeyboardId(int elementState, Locale locale, int orientation, int width, int mode,
+            int inputType, int imeOptions, boolean settingsKeyEnabled, boolean clobberSettingsKey,
+            boolean shortcutKeyEnabled, boolean hasShortcutKey) {
         this.mLocale = locale;
         this.mOrientation = orientation;
         this.mWidth = width;
         this.mMode = mode;
-        this.mXmlId = xmlId;
         this.mElementState = elementState;
         this.mInputType = inputType;
         this.mImeOptions = imeOptions;
@@ -97,7 +94,6 @@ public class KeyboardId {
                 id.mElementState,
                 id.mMode,
                 id.mWidth,
-                id.mXmlId,
                 id.navigateAction(),
                 id.passwordInput(),
                 id.mSettingsKeyEnabled,
@@ -116,7 +112,6 @@ public class KeyboardId {
                 && other.mElementState == this.mElementState
                 && other.mMode == this.mMode
                 && other.mWidth == this.mWidth
-                && other.mXmlId == this.mXmlId
                 && other.navigateAction() == this.navigateAction()
                 && other.passwordInput() == this.passwordInput()
                 && other.mSettingsKeyEnabled == this.mSettingsKeyEnabled
@@ -125,16 +120,6 @@ public class KeyboardId {
                 && other.mHasShortcutKey == this.mHasShortcutKey
                 && other.imeAction() == this.imeAction()
                 && other.mLocale.equals(this.mLocale);
-    }
-
-    public KeyboardId cloneWithNewXml(int xmlId) {
-        return new KeyboardId(xmlId, mElementState, mLocale, mOrientation, mWidth, mMode,
-                mInputType, mImeOptions, false, false, false, false);
-    }
-
-    // Remove this method.
-    public int getXmlId() {
-        return mXmlId;
     }
 
     public boolean isAlphabetKeyboard() {
