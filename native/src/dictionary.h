@@ -23,7 +23,7 @@
 #include "defines.h"
 #include "proximity_info.h"
 #include "unigram_dictionary.h"
-#include "words_priority_queue.h"
+#include "words_priority_queue_pool.h"
 
 namespace latinime {
 
@@ -34,7 +34,7 @@ public:
 
     int getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
             int *codes, int codesSize, int flags, unsigned short *outWords, int *frequencies) {
-        return mUnigramDictionary->getSuggestions(proximityInfo, mWordsPriorityQueue,
+        return mUnigramDictionary->getSuggestions(proximityInfo, mWordsPriorityQueuePool,
                 mCorrection, xcoordinates, ycoordinates, codes,
                 codesSize, flags, outWords, frequencies);
     }
@@ -81,7 +81,7 @@ private:
     const bool IS_LATEST_DICT_VERSION;
     UnigramDictionary *mUnigramDictionary;
     BigramDictionary *mBigramDictionary;
-    WordsPriorityQueue *mWordsPriorityQueue;
+    WordsPriorityQueuePool *mWordsPriorityQueuePool;
     Correction *mCorrection;
 };
 

@@ -39,7 +39,8 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
         }
     }
     mCorrection = new Correction(typedLetterMultiplier, fullWordMultiplier);
-    mWordsPriorityQueue = new WordsPriorityQueue(maxWords, maxWordLength);
+    mWordsPriorityQueuePool = new WordsPriorityQueuePool(
+            maxWords, SUB_QUEUE_MAX_WORDS, maxWordLength);
     mUnigramDictionary = new UnigramDictionary(mDict, typedLetterMultiplier, fullWordMultiplier,
             maxWordLength, maxWords, maxAlternatives, IS_LATEST_DICT_VERSION);
     mBigramDictionary = new BigramDictionary(mDict, maxWordLength, maxAlternatives,
@@ -48,7 +49,7 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
 
 Dictionary::~Dictionary() {
     delete mCorrection;
-    delete mWordsPriorityQueue;
+    delete mWordsPriorityQueuePool;
     delete mUnigramDictionary;
     delete mBigramDictionary;
 }

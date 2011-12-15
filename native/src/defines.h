@@ -202,6 +202,10 @@ static void dumpWord(const unsigned short* word, const int length) {
 // This is only used for the size of array. Not to be used in c functions.
 #define MAX_WORD_LENGTH_INTERNAL 48
 
+// Word limit for sub queues used in WordsPriorityQueuePool.  Sub queues are temporary queues used
+// for better performance.
+#define SUB_QUEUE_MAX_WORDS 5
+
 #define MAX_DEPTH_MULTIPLIER 3
 
 // TODO: Reduce this constant if possible; check the maximum number of umlauts in the same German

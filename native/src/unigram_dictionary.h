@@ -23,6 +23,7 @@
 #include "defines.h"
 #include "proximity_info.h"
 #include "words_priority_queue.h"
+#include "words_priority_queue_pool.h"
 
 namespace latinime {
 
@@ -70,7 +71,7 @@ public:
             const bool isLatestDictVersion);
     bool isValidWord(const uint16_t* const inWord, const int length) const;
     int getBigramPosition(int pos, unsigned short *word, int offset, int length) const;
-    int getSuggestions(ProximityInfo *proximityInfo, WordsPriorityQueue *queue,
+    int getSuggestions(ProximityInfo *proximityInfo, WordsPriorityQueuePool *queuePool,
             Correction *correction, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize, const int flags,
             unsigned short *outWords, int *frequencies);
@@ -80,13 +81,13 @@ private:
 
     void getWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int inputLength,
-            const int flags, Correction *correction, WordsPriorityQueue *queue);
+            const int flags, Correction *correction, WordsPriorityQueuePool *queuePool);
     bool isDigraph(const int *codes, const int i, const int codesSize) const;
     void getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int* ycoordinates, const int *codesBuffer,
         const int codesBufferSize, const int flags, const int* codesSrc,
         const int codesRemain, const int currentDepth, int* codesDest, Correction *correction,
-        WordsPriorityQueue* queue);
+        WordsPriorityQueuePool* queuePool);
     void initSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize,
             WordsPriorityQueue *queue);
@@ -94,13 +95,13 @@ private:
             const bool useFullEditDistance, const int inputLength, Correction *correction,
             WordsPriorityQueue* queue);
     void getSplitTwoWordsSuggestion(const int inputLength, ProximityInfo *proximityInfo,
-            Correction *correction, WordsPriorityQueue *queue);
+            Correction *correction, WordsPriorityQueuePool *queuePool);
     void getMissingSpaceWords(const int inputLength, const int missingSpacePos,
             ProximityInfo *proximityInfo, Correction *correction,
-            const bool useFullEditDistance, WordsPriorityQueue *queue);
+            const bool useFullEditDistance, WordsPriorityQueuePool *queuePool);
     void getMistypedSpaceWords(const int inputLength, const int spaceProximityPos,
             ProximityInfo *proximityInfo, Correction *correction,
-            const bool useFullEditDistance, WordsPriorityQueue *queue);
+            const bool useFullEditDistance, WordsPriorityQueuePool *queuePool);
     void onTerminal(const int freq, Correction *correction, WordsPriorityQueue *queue);
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);

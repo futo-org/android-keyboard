@@ -93,7 +93,7 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
         const int *xcoordinates, const int *ycoordinates, const int *codesBuffer,
         const int codesBufferSize, const int flags, const int *codesSrc,
         const int codesRemain, const int currentDepth, int *codesDest, Correction *correction,
-        WordsPriorityQueue *queue) {
+        WordsPriorityQueuePool *queuePool) {
 
     if (currentDepth < MAX_UMLAUT_SEARCH_DEPTH) {
         for (int i = 0; i < codesRemain; ++i) {
@@ -110,7 +110,8 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
                 getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
                         codesBuffer, codesBufferSize, flags,
                         codesSrc + (i + 1) * MAX_PROXIMITY_CHARS, codesRemain - i - 1,
-                        currentDepth + 1, codesDest + i * MAX_PROXIMITY_CHARS, correction, queue);
+                        currentDepth + 1, codesDest + i * MAX_PROXIMITY_CHARS, correction,
+                        queuePool);
 
                 // Copy the second char of the digraph in place, then continue processing on
                 // the remaining part of the word.
@@ -120,7 +121,7 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
                 getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
                         codesBuffer, codesBufferSize, flags,
                         codesSrc + i * MAX_PROXIMITY_CHARS, codesRemain - i, currentDepth + 1,
-                        codesDest + i * MAX_PROXIMITY_CHARS, correction, queue);
+                        codesDest + i * MAX_PROXIMITY_CHARS, correction, queuePool);
                 return;
             }
         }
@@ -137,27 +138,28 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
 
     getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
             (codesDest - codesBuffer) / MAX_PROXIMITY_CHARS + codesRemain, flags, correction,
-            queue);
+            queuePool);
 }
 
-int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, WordsPriorityQueue *queue,
-        Correction *correction, const int *xcoordinates, const int *ycoordinates, const int *codes,
-        const int codesSize, const int flags, unsigned short *outWords, int *frequencies) {
+int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
+        WordsPriorityQueuePool *queuePool, Correction *correction, const int *xcoordinates,
+        const int *ycoordinates, const int *codes, const int codesSize, const int flags,
+        unsigned short *outWords, int *frequencies) {
 
-    WordsPriorityQueue* masterQueue = queue;
     Correction* masterCorrection = correction;
     if (REQUIRES_GERMAN_UMLAUT_PROCESSING & flags)
     { // Incrementally tune the word and try all possibilities
         int codesBuffer[getCodesBufferSize(codes, codesSize, MAX_PROXIMITY_CHARS)];
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
-                codesSize, flags, codes, codesSize, 0, codesBuffer, masterCorrection, masterQueue);
+                codesSize, flags, codes, codesSize, 0, codesBuffer, masterCorrection, queuePool);
     } else { // Normal processing
         getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, codesSize, flags,
-                masterCorrection, masterQueue);
+                masterCorrection, queuePool);
     }
 
     PROF_START(20);
-    const int suggestedWordsCount = masterQueue->outputSuggestions(frequencies, outWords);
+    const int suggestedWordsCount =
+            queuePool->getMasterQueue()->outputSuggestions(frequencies, outWords);
 
     if (DEBUG_DICT) {
         LOGI("Returning %d words", suggestedWordsCount);
@@ -178,11 +180,13 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, WordsPriorit
 
 void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codes,
-        const int inputLength, const int flags, Correction *correction, WordsPriorityQueue *queue) {
+        const int inputLength, const int flags, Correction *correction,
+        WordsPriorityQueuePool *queuePool) {
+    WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
 
     PROF_OPEN;
     PROF_START(0);
-    initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, inputLength, queue);
+    initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, inputLength, masterQueue);
     if (DEBUG_DICT) assert(codesSize == inputLength);
 
     const int maxDepth = min(inputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
@@ -192,7 +196,7 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
     const bool useFullEditDistance = USE_FULL_EDIT_DISTANCE & flags;
     // TODO: remove
     PROF_START(1);
-    getSuggestionCandidates(useFullEditDistance, inputLength, correction, queue);
+    getSuggestionCandidates(useFullEditDistance, inputLength, correction, masterQueue);
     PROF_END(1);
 
     PROF_START(2);
@@ -216,7 +220,7 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
                 LOGI("--- Suggest missing space characters %d", i);
             }
             getMissingSpaceWords(
-                    inputLength, i, proximityInfo, correction, useFullEditDistance, queue);
+                    inputLength, i, proximityInfo, correction, useFullEditDistance, queuePool);
         }
     }
     PROF_END(5);
@@ -235,8 +239,8 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
                         i, x, y, proximityInfo->hasSpaceProximity(x, y));
             }
             if (proximityInfo->hasSpaceProximity(x, y)) {
-                getMistypedSpaceWords(
-                        inputLength, i, proximityInfo, correction, useFullEditDistance, queue);
+                getMistypedSpaceWords(inputLength, i, proximityInfo, correction,
+                        useFullEditDistance, queuePool);
             }
         }
     }
@@ -293,20 +297,20 @@ void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
 
 void UnigramDictionary::getMissingSpaceWords(
         const int inputLength, const int missingSpacePos, ProximityInfo *proximityInfo,
-        Correction *correction, const bool useFullEditDistance, WordsPriorityQueue *queue) {
+        Correction *correction, const bool useFullEditDistance, WordsPriorityQueuePool *queuePool) {
     correction->setCorrectionParams(-1 /* skipPos */, -1 /* excessivePos */,
             -1 /* transposedPos */, -1 /* spaceProximityPos */, missingSpacePos,
             useFullEditDistance, false /* doAutoCompletion */, MAX_ERRORS_FOR_TWO_WORDS);
-    getSplitTwoWordsSuggestion(inputLength, proximityInfo, correction, queue);
+    getSplitTwoWordsSuggestion(inputLength, proximityInfo, correction, queuePool);
 }
 
 void UnigramDictionary::getMistypedSpaceWords(
         const int inputLength, const int spaceProximityPos, ProximityInfo *proximityInfo,
-        Correction *correction, const bool useFullEditDistance, WordsPriorityQueue *queue) {
+        Correction *correction, const bool useFullEditDistance, WordsPriorityQueuePool *queuePool) {
     correction->setCorrectionParams(-1 /* skipPos */, -1 /* excessivePos */,
             -1 /* transposedPos */, spaceProximityPos, -1 /* missingSpacePos */,
             useFullEditDistance, false /* doAutoCompletion */, MAX_ERRORS_FOR_TWO_WORDS);
-    getSplitTwoWordsSuggestion(inputLength, proximityInfo, correction, queue);
+    getSplitTwoWordsSuggestion(inputLength, proximityInfo, correction, queuePool);
 }
 
 inline void UnigramDictionary::onTerminal(
@@ -321,7 +325,9 @@ inline void UnigramDictionary::onTerminal(
 
 void UnigramDictionary::getSplitTwoWordsSuggestion(
         const int inputLength, ProximityInfo *proximityInfo, Correction *correction,
-        WordsPriorityQueue *queue) {
+        WordsPriorityQueuePool *queuePool) {
+    WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
+
     const int spaceProximityPos = correction->getSpaceProximityPos();
     const int missingSpacePos = correction->getMissingSpacePos();
     if (DEBUG_DICT) {
@@ -373,7 +379,7 @@ void UnigramDictionary::getSplitTwoWordsSuggestion(
     if (DEBUG_DICT) {
         LOGI("Split two words:  %d, %d, %d, %d", firstFreq, secondFreq, pairFreq, inputLength);
     }
-    addWord(word, newWordLength, pairFreq, queue);
+    addWord(word, newWordLength, pairFreq, masterQueue);
     return;
 }
 
