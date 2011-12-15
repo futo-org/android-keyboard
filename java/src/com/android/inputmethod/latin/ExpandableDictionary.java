@@ -51,6 +51,7 @@ public class ExpandableDictionary extends Dictionary {
     private Object mUpdatingLock = new Object();
 
     private static class Node {
+        Node() {}
         char mCode;
         int mFrequency;
         boolean mTerminal;
@@ -547,6 +548,7 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     private class LoadDictionaryTask extends Thread {
+        LoadDictionaryTask() {}
         @Override
         public void run() {
             loadDictionaryAsync();

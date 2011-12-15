@@ -543,13 +543,13 @@ public class Utils {
                     final String currentDateTimeString =
                             new SimpleDateFormat("yyyyMMdd-HHmmssZ").format(date);
                     if (mFile == null) {
-                        Log.w(TAG, "No internal log file found.");
+                        Log.w(USABILITY_TAG, "No internal log file found.");
                         return;
                     }
                     if (mIms.checkCallingOrSelfPermission(
                                 android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                                         != PackageManager.PERMISSION_GRANTED) {
-                        Log.w(TAG, "Doesn't have the permission WRITE_EXTERNAL_STORAGE");
+                        Log.w(USABILITY_TAG, "Doesn't have the permission WRITE_EXTERNAL_STORAGE");
                         return;
                     }
                     mWriter.flush();
@@ -563,20 +563,20 @@ public class Utils {
                         src.close();
                         dest.close();
                     } catch (FileNotFoundException e1) {
-                        Log.w(TAG, e1);
+                        Log.w(USABILITY_TAG, e1);
                         return;
                     } catch (IOException e2) {
-                        Log.w(TAG, e2);
+                        Log.w(USABILITY_TAG, e2);
                         return;
                     }
                     if (destFile == null || !destFile.exists()) {
-                        Log.w(TAG, "Dest file doesn't exist.");
+                        Log.w(USABILITY_TAG, "Dest file doesn't exist.");
                         return;
                     }
                     final Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     if (LatinImeLogger.sDBG) {
-                        Log.d(TAG, "Destination file URI is " + destFile.toURI());
+                        Log.d(USABILITY_TAG, "Destination file URI is " + destFile.toURI());
                     }
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + destPath));
