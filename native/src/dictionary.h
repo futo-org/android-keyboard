@@ -19,9 +19,11 @@
 
 #include "bigram_dictionary.h"
 #include "char_utils.h"
+#include "correction.h"
 #include "defines.h"
 #include "proximity_info.h"
 #include "unigram_dictionary.h"
+#include "words_priority_queue.h"
 
 namespace latinime {
 
@@ -29,9 +31,11 @@ class Dictionary {
 public:
     Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int typedLetterMultipler,
             int fullWordMultiplier, int maxWordLength, int maxWords, int maxAlternatives);
+
     int getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
             int *codes, int codesSize, int flags, unsigned short *outWords, int *frequencies) {
-        return mUnigramDictionary->getSuggestions(proximityInfo, xcoordinates, ycoordinates, codes,
+        return mUnigramDictionary->getSuggestions(proximityInfo, mWordsPriorityQueue,
+                mCorrection, xcoordinates, ycoordinates, codes,
                 codesSize, flags, outWords, frequencies);
     }
 
@@ -77,6 +81,8 @@ private:
     const bool IS_LATEST_DICT_VERSION;
     UnigramDictionary *mUnigramDictionary;
     BigramDictionary *mBigramDictionary;
+    WordsPriorityQueue *mWordsPriorityQueue;
+    Correction *mCorrection;
 };
 
 // public static utility methods

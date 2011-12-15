@@ -66,7 +66,8 @@ public:
             const bool isLatestDictVersion);
     bool isValidWord(const uint16_t* const inWord, const int length) const;
     int getBigramPosition(int pos, unsigned short *word, int offset, int length) const;
-    int getSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
+    int getSuggestions(ProximityInfo *proximityInfo, WordsPriorityQueue *queue,
+            Correction *correction, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize, const int flags,
             unsigned short *outWords, int *frequencies);
     virtual ~UnigramDictionary();
@@ -74,32 +75,38 @@ public:
 private:
 
     void getWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
-            const int *ycoordinates, const int *codes, const int codesSize, const int flags);
-    bool isDigraph(const int* codes, const int i, const int codesSize) const;
+            const int *ycoordinates, const int *codes, const int inputLength,
+            const int flags, Correction *correction, WordsPriorityQueue *queue);
+    bool isDigraph(const int *codes, const int i, const int codesSize) const;
     void getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int* ycoordinates, const int *codesBuffer,
-        const int codesBufferSize, const int flags, const int* codesSrc, const int codesRemain,
-        const int currentDepth, int* codesDest);
+        const int codesBufferSize, const int flags, const int* codesSrc,
+        const int codesRemain, const int currentDepth, int* codesDest, Correction *correction,
+        WordsPriorityQueue* queue);
     void initSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
-            const int *ycoordinates, const int *codes, const int codesSize);
-    void getSuggestionCandidates(const bool useFullEditDistance);
-    void addWord(unsigned short *word, int length, int frequency);
-    void getSplitTwoWordsSuggestion(const int inputLength, Correction *correction);
+            const int *ycoordinates, const int *codes, const int codesSize,
+            WordsPriorityQueue *queue);
+    void getSuggestionCandidates(
+            const bool useFullEditDistance, const int inputLength, Correction *correction,
+            WordsPriorityQueue* queue);
+    void getSplitTwoWordsSuggestion(const int inputLength, ProximityInfo *proximityInfo,
+            Correction *correction, WordsPriorityQueue *queue);
     void getMissingSpaceWords(const int inputLength, const int missingSpacePos,
-            Correction *correction, const bool useFullEditDistance);
+            ProximityInfo *proximityInfo, Correction *correction,
+            const bool useFullEditDistance, WordsPriorityQueue *queue);
     void getMistypedSpaceWords(const int inputLength, const int spaceProximityPos,
-            Correction *correction, const bool useFullEditDistance);
-    void onTerminal(const int freq, Correction *correction);
+            ProximityInfo *proximityInfo, Correction *correction,
+            const bool useFullEditDistance, WordsPriorityQueue *queue);
+    void onTerminal(const int freq, Correction *correction, WordsPriorityQueue *queue);
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
     // Process a node by considering proximity, missing and excessive character
-    bool processCurrentNode(const int initialPos,
-            Correction *correction, int *newCount,
-            int *newChildPosition, int *nextSiblingPosition);
+    bool processCurrentNode(const int initialPos, Correction *correction, int *newCount,
+            int *newChildPosition, int *nextSiblingPosition, WordsPriorityQueue *queue);
     int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
-            unsigned short *word);
+            ProximityInfo *proximityInfo, unsigned short *word);
     int getMostFrequentWordLikeInner(const uint16_t* const inWord, const int length,
-            short unsigned int* outWord);
+            short unsigned int *outWord);
 
     const uint8_t* const DICT_ROOT;
     const int MAX_WORD_LENGTH;
@@ -122,13 +129,8 @@ private:
     };
     static const struct digraph_t { int first; int second; } GERMAN_UMLAUT_DIGRAPHS[];
 
-    WordsPriorityQueue *mWordsPriorityQueue;
-    ProximityInfo *mProximityInfo;
-    Correction *mCorrection;
-    int mInputLength;
-    // MAX_WORD_LENGTH_INTERNAL must be bigger than MAX_WORD_LENGTH
-    unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];
-
+    // Still bundled members
+    unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];// TODO: remove
     int mStackChildCount[MAX_WORD_LENGTH_INTERNAL];// TODO: remove
     int mStackInputIndex[MAX_WORD_LENGTH_INTERNAL];// TODO: remove
     int mStackSiblingPos[MAX_WORD_LENGTH_INTERNAL];// TODO: remove

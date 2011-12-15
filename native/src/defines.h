@@ -198,7 +198,7 @@ static void dumpWord(const unsigned short* word, const int length) {
 #define NEUTRAL_SCORE_SQUARED_RADIUS 8.0f
 #define HALF_SCORE_SQUARED_RADIUS 32.0f
 
-// This should be greater than or equal to MAX_WORD_LENGTH defined in BinaryDictionary.java
+// This must be greater than or equal to MAX_WORD_LENGTH defined in BinaryDictionary.java
 // This is only used for the size of array. Not to be used in c functions.
 #define MAX_WORD_LENGTH_INTERNAL 48
 
