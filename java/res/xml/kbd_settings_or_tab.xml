@@ -25,8 +25,11 @@
         <case
             latin:hasSettingsKey="true"
         >
+            <!-- Because this settings key is not adjacent to the space key, this key should be
+                 just ignored while typing (altCode=CODE_DUMMY). -->
             <Key
                 latin:keyStyle="settingsKeyStyle"
+                latin:altCode="@integer/key_dummy"
                 latin:keyWidth="9.2%p" />
         </case>
         <!-- hasSettingsKey="false" -->
