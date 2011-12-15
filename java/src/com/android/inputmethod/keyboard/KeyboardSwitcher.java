@@ -166,18 +166,29 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
                 SettingsValues.getKeyPreviewPopupDismissDelay(mPrefs, mResources));
         final boolean localeChanged = (oldKeyboard == null)
                 || !keyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
-        mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
+        if (keyboard instanceof LatinKeyboard) {
+            final LatinKeyboard latinKeyboard = (LatinKeyboard)keyboard;
+            latinKeyboard.updateAutoCorrectionState(mIsAutoCorrectionActive);
+            // If the cached keyboard had been switched to another keyboard while the language was
+            // displayed on its spacebar, it might have had arbitrary text fade factor. In such
+            // case, we should reset the text fade factor. It is also applicable to shortcut key.
+            latinKeyboard.updateSpacebarLanguage(0.0f,
+                    Utils.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */),
+                    mSubtypeSwitcher.needsToDisplayLanguage(latinKeyboard.mId.mLocale));
+            latinKeyboard.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
+        }
         updateShiftState();
+        mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
     }
 
     // TODO: Move this method to KeyboardSet.
-    private LatinKeyboard getKeyboard(KeyboardId id) {
+    private LatinKeyboard getKeyboard(Context context, KeyboardId id) {
         final SoftReference<LatinKeyboard> ref = mKeyboardCache.get(id);
         LatinKeyboard keyboard = (ref == null) ? null : ref.get();
         if (keyboard == null) {
             final Locale savedLocale = LocaleUtils.setSystemLocale(mResources, id.mLocale);
             try {
-                final LatinKeyboard.Builder builder = new LatinKeyboard.Builder(mThemeContext);
+                final LatinKeyboard.Builder builder = new LatinKeyboard.Builder(context);
                 builder.load(id);
                 builder.setTouchPositionCorrectionEnabled(
                         mSubtypeSwitcher.currentSubtypeContainsExtraValueKey(
@@ -198,14 +209,8 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
                     + " theme=" + themeName(keyboard.mThemeId));
         }
 
-        keyboard.onAutoCorrectionStateChanged(mIsAutoCorrectionActive);
         keyboard.setShiftLocked(false);
         keyboard.setShifted(false);
-        // If the cached keyboard had been switched to another keyboard while the language was
-        // displayed on its spacebar, it might have had arbitrary text fade factor. In such case,
-        // we should reset the text fade factor. It is also applicable to shortcut key.
-        keyboard.setSpacebarTextFadeFactor(0.0f, null);
-        keyboard.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady(), null);
         return keyboard;
     }
 
@@ -338,19 +343,19 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setSymbolsKeyboard() {
-        setKeyboard(getKeyboard(mKeyboardSet.mSymbolsId));
+        setKeyboard(getKeyboard(mThemeContext, mKeyboardSet.mSymbolsId));
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetKeyboard() {
-        setKeyboard(getKeyboard(mKeyboardSet.mAlphabetId));
+        setKeyboard(getKeyboard(mThemeContext, mKeyboardSet.mAlphabetId));
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setSymbolsShiftedKeyboard() {
-        final Keyboard keyboard = getKeyboard(mKeyboardSet.mSymbolsShiftedId);
+        final Keyboard keyboard = getKeyboard(mThemeContext, mKeyboardSet.mSymbolsShiftedId);
         setKeyboard(keyboard);
         // TODO: Remove this logic once we introduce initial keyboard shift state attribute.
         // Symbol shift keyboard may have a shift key that has a caps lock style indicator (a.k.a.
@@ -451,12 +456,22 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         }
     }
 
+    public void onNetworkStateChanged() {
+        final LatinKeyboard keyboard = getLatinKeyboard();
+        if (keyboard == null) return;
+        final Key updatedKey = keyboard.updateShortcutKey(
+                SubtypeSwitcher.getInstance().isShortcutImeReady());
+        if (updatedKey != null && mKeyboardView != null) {
+            mKeyboardView.invalidateKey(updatedKey);
+        }
+    }
+
     public void onAutoCorrectionStateChanged(boolean isAutoCorrection) {
         if (mIsAutoCorrectionActive != isAutoCorrection) {
             mIsAutoCorrectionActive = isAutoCorrection;
             final LatinKeyboard keyboard = getLatinKeyboard();
             if (keyboard != null && keyboard.needsAutoCorrectionSpacebarLed()) {
-                final Key invalidatedKey = keyboard.onAutoCorrectionStateChanged(isAutoCorrection);
+                final Key invalidatedKey = keyboard.updateAutoCorrectionState(isAutoCorrection);
                 final LatinKeyboardView keyboardView = getKeyboardView();
                 if (keyboardView != null)
                     keyboardView.invalidateKey(invalidatedKey);

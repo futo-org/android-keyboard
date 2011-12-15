@@ -31,11 +31,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
-import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.Utils;
 
 import java.util.Arrays;
@@ -48,7 +46,6 @@ public class LatinKeyboard extends Keyboard {
 
     private final Resources mRes;
     private final Theme mTheme;
-    private final SubtypeSwitcher mSubtypeSwitcher = SubtypeSwitcher.getInstance();
 
     /* Space key and its icons, drawables and colors. */
     private final Key mSpaceKey;
@@ -57,10 +54,14 @@ public class LatinKeyboard extends Keyboard {
     private final Drawable mAutoCorrectionSpacebarLedIcon;
     private final int mSpacebarTextColor;
     private final int mSpacebarTextShadowColor;
-    private float mSpacebarTextFadeFactor = 0.0f;
     private final HashMap<Integer, BitmapDrawable> mSpaceDrawableCache =
             new HashMap<Integer, BitmapDrawable>();
     private final boolean mIsSpacebarTriggeringPopupByLongPress;
+
+    private boolean mAutoCorrectionSpacebarLedOn;
+    private boolean mMultipleEnabledIMEsOrSubtypes;
+    private boolean mNeedsToDisplayLanguage;
+    private float mSpacebarTextFadeFactor = 0.0f;
 
     /* Shortcut key and its icons if available */
     private final Key mShortcutKey;
@@ -140,11 +141,13 @@ public class LatinKeyboard extends Keyboard {
         }
     }
 
-    public void setSpacebarTextFadeFactor(float fadeFactor, KeyboardView view) {
+    public Key updateSpacebarLanguage(float fadeFactor, boolean multipleEnabledIMEsOrSubtypes,
+            boolean needsToDisplayLanguage) {
         mSpacebarTextFadeFactor = fadeFactor;
-        updateSpacebarForLocale(false);
-        if (view != null)
-            view.invalidateKey(mSpaceKey);
+        mMultipleEnabledIMEsOrSubtypes = multipleEnabledIMEsOrSubtypes;
+        mNeedsToDisplayLanguage = needsToDisplayLanguage;
+        updateSpacebarIcon();
+        return mSpaceKey;
     }
 
     private static int getSpacebarTextColor(int color, float fadeFactor) {
@@ -153,13 +156,12 @@ public class LatinKeyboard extends Keyboard {
         return newColor;
     }
 
-    public void updateShortcutKey(boolean available, KeyboardView view) {
+    public Key updateShortcutKey(boolean available) {
         if (mShortcutKey == null)
-            return;
+            return null;
         mShortcutKey.setEnabled(available);
         mShortcutKey.setIcon(available ? mEnabledShortcutIcon : mDisabledShortcutIcon);
-        if (view != null)
-            view.invalidateKey(mShortcutKey);
+        return mShortcutKey;
     }
 
     public boolean needsAutoCorrectionSpacebarLed() {
@@ -169,8 +171,9 @@ public class LatinKeyboard extends Keyboard {
     /**
      * @return a key which should be invalidated.
      */
-    public Key onAutoCorrectionStateChanged(boolean isAutoCorrection) {
-        updateSpacebarForLocale(isAutoCorrection);
+    public Key updateAutoCorrectionState(boolean isAutoCorrection) {
+        mAutoCorrectionSpacebarLedOn = isAutoCorrection;
+        updateSpacebarIcon();
         return mSpaceKey;
     }
 
@@ -183,19 +186,15 @@ public class LatinKeyboard extends Keyboard {
         return label;
     }
 
-    private void updateSpacebarForLocale(boolean isAutoCorrection) {
+    private void updateSpacebarIcon() {
         if (mSpaceKey == null) return;
-        final InputMethodManagerCompatWrapper imm = InputMethodManagerCompatWrapper.getInstance();
-        if (imm == null) return;
-        // The "..." popup hint for triggering something by a long-pressing the spacebar
         final boolean shouldShowInputMethodPicker = mIsSpacebarTriggeringPopupByLongPress
-                && Utils.hasMultipleEnabledIMEsOrSubtypes(imm, true /* include aux subtypes */);
+                && mMultipleEnabledIMEsOrSubtypes;
         mSpaceKey.setNeedsSpecialPopupHint(shouldShowInputMethodPicker);
-        // If application locales are explicitly selected.
-        if (mSubtypeSwitcher.needsToDisplayLanguage(mId.mLocale)) {
-            mSpaceKey.setIcon(getSpaceDrawable(mId.mLocale, isAutoCorrection));
-        } else if (isAutoCorrection) {
-            mSpaceKey.setIcon(getSpaceDrawable(null, true));
+        if (mNeedsToDisplayLanguage) {
+            mSpaceKey.setIcon(getSpaceDrawable(mId.mLocale));
+        } else if (mAutoCorrectionSpacebarLedOn) {
+            mSpaceKey.setIcon(getSpaceDrawable(null));
         } else {
             mSpaceKey.setIcon(mSpaceIcon);
         }
@@ -245,15 +244,15 @@ public class LatinKeyboard extends Keyboard {
         return language;
     }
 
-    private BitmapDrawable getSpaceDrawable(Locale locale, boolean isAutoCorrection) {
+    private BitmapDrawable getSpaceDrawable(Locale locale) {
         final Integer hashCode = Arrays.hashCode(
-                new Object[] { locale, isAutoCorrection, mSpacebarTextFadeFactor });
+                new Object[] { locale, mAutoCorrectionSpacebarLedOn, mSpacebarTextFadeFactor });
         final BitmapDrawable cached = mSpaceDrawableCache.get(hashCode);
         if (cached != null) {
             return cached;
         }
         final BitmapDrawable drawable = new BitmapDrawable(mRes, drawSpacebar(
-                locale, isAutoCorrection, mSpacebarTextFadeFactor));
+                locale, mAutoCorrectionSpacebarLedOn, mSpacebarTextFadeFactor));
         mSpaceDrawableCache.put(hashCode, drawable);
         return drawable;
     }

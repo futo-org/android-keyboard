@@ -374,15 +374,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         return miniKeyboardView;
     }
 
-    public void setSpacebarTextFadeFactor(float fadeFactor, LatinKeyboard oldKeyboard) {
-        final Keyboard keyboard = getKeyboard();
-        // We should not set text fade factor to the keyboard which does not display the language on
-        // its spacebar.
-        if (keyboard instanceof LatinKeyboard && keyboard == oldKeyboard) {
-            ((LatinKeyboard)keyboard).setSpacebarTextFadeFactor(fadeFactor, this);
-        }
-    }
-
     /**
      * Called when a key is long pressed. By default this will open mini keyboard associated
      * with this key.
