@@ -1586,7 +1586,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mHandler.postUpdateSuggestions();
         }
 
-        boolean pickedDefault = false;
         // Handle separator
         final InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
@@ -1603,24 +1602,23 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             final boolean shouldAutoCorrect = mSettingsValues.mAutoCorrectEnabled
                     && !mInputTypeNoAutoCorrect;
             if (shouldAutoCorrect && primaryCode != Keyboard.CODE_SINGLE_QUOTE) {
-                pickedDefault = pickDefaultSuggestion(primaryCode);
+                final boolean pickedDefaultSuggestion = pickDefaultSuggestion(primaryCode);
+                if (pickedDefaultSuggestion) {
+                    final CharSequence autoCorrection = mWordComposer.getAutoCorrectionOrNull();
+                    final String typedWord = mWordComposer.getTypedWord();
+                    if (TextUtils.isEmpty(typedWord)) {
+                        throw new RuntimeException("We have non-committed chars but the typed word "
+                                + "is empty? Impossible! I must commit suicide.");
+                    }
+                    if (!typedWord.equals(autoCorrection)) {
+                        // This will make the correction flash for a short while as a visual clue
+                        // to the user that auto-correction happened.
+                        InputConnectionCompatUtils.commitCorrection(ic,
+                                mLastSelectionEnd - typedWord.length(), typedWord, autoCorrection);
+                    }
+                }
             } else {
                 commitTyped(ic);
-            }
-        }
-
-        if (pickedDefault) {
-            final CharSequence autoCorrection = mWordComposer.getAutoCorrectionOrNull();
-            final String typedWord = mWordComposer.getTypedWord();
-            if (TextUtils.isEmpty(typedWord)) {
-                throw new RuntimeException("We have non-committed chars but the typed word "
-                        + "is empty? Impossible! I must commit suicide.");
-            }
-            if (!typedWord.equals(autoCorrection)) {
-                // This will make the correction flash for a short while as a visual clue
-                // to the user that auto-correction happened.
-                InputConnectionCompatUtils.commitCorrection(
-                        ic, mLastSelectionEnd - typedWord.length(), typedWord, autoCorrection);
             }
         }
 
