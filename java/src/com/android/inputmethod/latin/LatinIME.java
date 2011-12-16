@@ -798,28 +798,30 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private void initializeInputAttributes(final EditorInfo editorInfo) {
         mInputAttributes = new InputAttributes(editorInfo);
 
-        boolean insertSpaceOnPickSuggestionManually = false;
+        final boolean insertSpaceOnPickSuggestionManually;
         boolean inputTypeNoAutoCorrect = false;
         boolean isSettingsSuggestionStripOn = false;
         boolean applicationSpecifiedCompletionOn = false;
 
-        if (editorInfo == null)
-            return;
-        final int inputType = editorInfo.inputType;
-        if (inputType == InputType.TYPE_NULL) {
-            // TODO: We should honor TYPE_NULL specification.
-            Log.i(TAG, "InputType.TYPE_NULL is specified");
-        }
-        final int inputClass = inputType & InputType.TYPE_MASK_CLASS;
-        final int variation = inputType & InputType.TYPE_MASK_VARIATION;
-        if (inputClass == 0) {
-            Log.w(TAG, String.format("Unexpected input class: inputType=0x%08x imeOptions=0x%08x",
-                    inputType, editorInfo.imeOptions));
-        }
+        if (editorInfo == null || editorInfo.inputType != InputType.TYPE_CLASS_TEXT) {
+            if (editorInfo.inputType == InputType.TYPE_NULL) {
+                // TODO: We should honor TYPE_NULL specification.
+                Log.i(TAG, "InputType.TYPE_NULL is specified");
+            }
+            mApplicationSpecifiedCompletions = null;
+            insertSpaceOnPickSuggestionManually = false;
+        } else {
+            final int inputType = editorInfo.inputType;
+            final int inputClass = inputType & InputType.TYPE_MASK_CLASS;
+            final int variation = inputType & InputType.TYPE_MASK_VARIATION;
+            if (inputClass == 0) {
+                Log.w(TAG, String.format("Unexpected input class: inputType=0x%08x"
+                        + " imeOptions=0x%08x",
+                        inputType, editorInfo.imeOptions));
+            }
 
-        mApplicationSpecifiedCompletions = null;
+            mApplicationSpecifiedCompletions = null;
 
-        if (inputClass == InputType.TYPE_CLASS_TEXT) {
             isSettingsSuggestionStripOn = true;
             // Make sure that passwords are not displayed in {@link SuggestionsView}.
             if (InputTypeCompatUtils.isPasswordInputType(inputType)
