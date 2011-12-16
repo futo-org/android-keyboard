@@ -755,6 +755,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // Note: This call should be done by InputMethodService?
         updateFullscreenMode();
         initializeInputAttributes(editorInfo);
+        mApplicationSpecifiedCompletions = null;
 
         inputView.closing();
         mEnteredText = null;
@@ -801,17 +802,17 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final boolean insertSpaceOnPickSuggestionManually;
         final boolean inputTypeNoAutoCorrect;
         final boolean isSettingsSuggestionStripOn;
-        boolean applicationSpecifiedCompletionOn = false;
+        final boolean applicationSpecifiedCompletionOn;
 
         if (editorInfo == null || editorInfo.inputType != InputType.TYPE_CLASS_TEXT) {
             if (editorInfo.inputType == InputType.TYPE_NULL) {
                 // TODO: We should honor TYPE_NULL specification.
                 Log.i(TAG, "InputType.TYPE_NULL is specified");
             }
-            mApplicationSpecifiedCompletions = null;
             insertSpaceOnPickSuggestionManually = false;
             isSettingsSuggestionStripOn = false;
             inputTypeNoAutoCorrect = false;
+            applicationSpecifiedCompletionOn = false;
         } else {
             final int inputType = editorInfo.inputType;
             final int inputClass = inputType & InputType.TYPE_MASK_CLASS;
@@ -829,8 +830,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     0 != (inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);
             final boolean flagAutoComplete =
                     0 != (inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
-
-            mApplicationSpecifiedCompletions = null;
 
             // Make sure that passwords are not displayed in {@link SuggestionsView}.
             if (InputTypeCompatUtils.isPasswordInputType(inputType)
@@ -865,8 +864,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             } else {
                 inputTypeNoAutoCorrect = false;
             }
+
             if (flagAutoComplete) {
                 applicationSpecifiedCompletionOn = isFullscreenMode();
+            } else {
+                applicationSpecifiedCompletionOn = false;
             }
         }
 
