@@ -198,7 +198,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private boolean mIsUserDictionaryAvailable;
 
     private WordComposer mWordComposer = new WordComposer();
-    private boolean mHasUncommittedTypedChars;
 
     private int mCorrectionMode;
     private String mWordSavedForAutoCorrectCancellation;
@@ -759,7 +758,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         inputView.closing();
         mEnteredText = null;
         mWordComposer.reset();
-        mHasUncommittedTypedChars = false;
         mDeleteCount = 0;
         mSpaceState = SPACE_STATE_NONE;
 
@@ -867,7 +865,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     || mVoiceProxy.isVoiceInputHighlighted())
                     && (selectionChanged || candidatesCleared)) {
                 mWordComposer.reset();
-                mHasUncommittedTypedChars = false;
                 updateSuggestions();
                 final InputConnection ic = getCurrentInputConnection();
                 if (ic != null) {
@@ -1077,7 +1074,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     public void commitTyped(final InputConnection ic) {
         if (!mWordComposer.isComposingWord()) return;
-        mHasUncommittedTypedChars = false;
         final CharSequence typedWord = mWordComposer.getTypedWord();
         mWordComposer.onCommitWord();
         if (typedWord.length() > 0) {
@@ -1360,7 +1356,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 // If we have deleted the last remaining character of a word, then we are not
                 // isComposingWord() any more.
                 if (!mWordComposer.isComposingWord()) {
-                    mHasUncommittedTypedChars = false;
                     // Not composing word any more, so we can show bigrams.
                     mHandler.postUpdateBigramPredictions();
                 } else {
@@ -1490,7 +1485,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         }
         if (isComposingWord) {
-            mHasUncommittedTypedChars = true;
             mWordComposer.add(code, keyCodes, x, y);
             if (ic != null) {
                 // If it's the first letter, make note of auto-caps state
@@ -1961,7 +1955,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 ic.commitText(bestWord, 1);
             }
         }
-        mHasUncommittedTypedChars = false;
         mWordComposer.onCommitWord();
     }
 
@@ -2105,7 +2098,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private void restartSuggestionsOnWordBeforeCursor(final InputConnection ic,
             final CharSequence word) {
         mWordComposer.setComposingWord(word, mKeyboardSwitcher.getLatinKeyboard());
-        mHasUncommittedTypedChars = true;
         mComposingStateManager.onStartComposingText();
         ic.deleteSurroundingText(word.length(), 0);
         ic.setComposingText(word, 1);
@@ -2164,7 +2156,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // Note: in the interest of code simplicity, we may want to just call
         // restartSuggestionsOnWordBeforeCursorIfAtEndOfWord instead, but retrieving
         // the old WordComposer allows to reuse the actual typed coordinates.
-        mHasUncommittedTypedChars = true;
         mWordComposer.resumeSuggestionOnKeptWord();
         ic.setComposingText(mWordComposer.getTypedWord(), 1);
         mHandler.cancelUpdateBigramPredictions();
@@ -2452,7 +2443,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         p.println("  Keyboard mode = " + keyboardMode);
         p.println("  mIsSuggestionsRequested=" + mInputAttributes.mIsSettingsSuggestionStripOn);
         p.println("  mCorrectionMode=" + mCorrectionMode);
-        p.println("  mHasUncommittedTypedChars=" + mHasUncommittedTypedChars);
+        p.println("  isComposingWord=" + mWordComposer.isComposingWord());
         p.println("  mAutoCorrectEnabled=" + mSettingsValues.mAutoCorrectEnabled);
         p.println("  mInsertSpaceOnPickSuggestionManually="
                 + mInputAttributes.mInsertSpaceOnPickSuggestionManually);
