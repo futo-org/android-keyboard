@@ -303,13 +303,13 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setSymbolsKeyboard() {
-        setKeyboard(mKeyboardSet.getMainKeyboard());
+        setKeyboard(mKeyboardSet.getSymbolsKeyboard());
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetKeyboard() {
-        setKeyboard(mKeyboardSet.getSymbolsKeyboard());
+        setKeyboard(mKeyboardSet.getMainKeyboard());
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
