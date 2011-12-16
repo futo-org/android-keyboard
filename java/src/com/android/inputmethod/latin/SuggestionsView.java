@@ -141,6 +141,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         private final List<View> mDividers;
         private final List<TextView> mInfos;
 
+        private final int mColorValidTypedWord;
         private final int mColorTypedWord;
         private final int mColorAutoCorrect;
         private final int mColorSuggested;
@@ -184,6 +185,8 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             final TypedArray a = context.obtainStyledAttributes(
                     attrs, R.styleable.SuggestionsView, defStyle, R.style.SuggestionsViewStyle);
             mSuggestionStripOption = a.getInt(R.styleable.SuggestionsView_suggestionStripOption, 0);
+            final float alphaValidTypedWord = getPercent(a,
+                    R.styleable.SuggestionsView_alphaValidTypedWord, 100);
             final float alphaTypedWord = getPercent(a,
                     R.styleable.SuggestionsView_alphaTypedWord, 100);
             final float alphaAutoCorrect = getPercent(a,
@@ -191,6 +194,9 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             final float alphaSuggested = getPercent(a,
                     R.styleable.SuggestionsView_alphaSuggested, 100);
             mAlphaObsoleted = getPercent(a, R.styleable.SuggestionsView_alphaSuggested, 100);
+            mColorValidTypedWord = applyAlpha(
+                    a.getColor(R.styleable.SuggestionsView_colorValidTypedWord, 0),
+                    alphaValidTypedWord);
             mColorTypedWord = applyAlpha(
                     a.getColor(R.styleable.SuggestionsView_colorTypedWord, 0), alphaTypedWord);
             mColorAutoCorrect = applyAlpha(
@@ -288,6 +294,8 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             final int color;
             if (index == mCenterSuggestionIndex && Utils.willAutoCorrect(suggestions)) {
                 color = mColorAutoCorrect;
+            } else if (index == mCenterSuggestionIndex && suggestions.mTypedWordValid) {
+                color = mColorValidTypedWord;
             } else if (isSuggested) {
                 color = mColorSuggested;
             } else {
@@ -423,7 +431,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
 
                 final TextView word = mWords.get(index);
                 word.setEnabled(true);
-                word.setTextColor(mColorTypedWord);
+                word.setTextColor(mColorAutoCorrect);
                 final CharSequence text = suggestions.getWord(index);
                 word.setText(text);
                 word.setTextScaleX(1.0f);
