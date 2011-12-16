@@ -797,6 +797,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private void initializeInputAttributes(final EditorInfo editorInfo) {
         mInputAttributes = new InputAttributes(editorInfo);
+
+        boolean insertSpaceOnPickSuggestionManually = false;
+        boolean inputTypeNoAutoCorrect = false;
+        boolean isSettingsSuggestionStripOn = false;
+        boolean applicationSpecifiedCompletionOn = false;
+
         if (editorInfo == null)
             return;
         final int inputType = editorInfo.inputType;
@@ -811,56 +817,57 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     inputType, editorInfo.imeOptions));
         }
 
-        mInputAttributes.mInsertSpaceOnPickSuggestionManually = false;
-        mInputAttributes.mInputTypeNoAutoCorrect = false;
-        mInputAttributes.mIsSettingsSuggestionStripOn = false;
-        mInputAttributes.mApplicationSpecifiedCompletionOn = false;
         mApplicationSpecifiedCompletions = null;
 
         if (inputClass == InputType.TYPE_CLASS_TEXT) {
-            mInputAttributes.mIsSettingsSuggestionStripOn = true;
+            isSettingsSuggestionStripOn = true;
             // Make sure that passwords are not displayed in {@link SuggestionsView}.
             if (InputTypeCompatUtils.isPasswordInputType(inputType)
                     || InputTypeCompatUtils.isVisiblePasswordInputType(inputType)) {
-                mInputAttributes.mIsSettingsSuggestionStripOn = false;
+                isSettingsSuggestionStripOn = false;
             }
             if (InputTypeCompatUtils.isEmailVariation(variation)
                     || variation == InputType.TYPE_TEXT_VARIATION_PERSON_NAME) {
                 // The point in turning this off is that we don't want to insert a space after
                 // a name when filling a form: we can't delete trailing spaces when changing fields
-                mInputAttributes.mInsertSpaceOnPickSuggestionManually = false;
+                insertSpaceOnPickSuggestionManually = false;
             } else {
-                mInputAttributes.mInsertSpaceOnPickSuggestionManually = true;
+                insertSpaceOnPickSuggestionManually = true;
             }
             if (InputTypeCompatUtils.isEmailVariation(variation)) {
-                mInputAttributes.mIsSettingsSuggestionStripOn = false;
+                isSettingsSuggestionStripOn = false;
             } else if (variation == InputType.TYPE_TEXT_VARIATION_URI) {
-                mInputAttributes.mIsSettingsSuggestionStripOn = false;
+                isSettingsSuggestionStripOn = false;
             } else if (variation == InputType.TYPE_TEXT_VARIATION_FILTER) {
-                mInputAttributes.mIsSettingsSuggestionStripOn = false;
+                isSettingsSuggestionStripOn = false;
             } else if (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT) {
                 // If it's a browser edit field and auto correct is not ON explicitly, then
                 // disable auto correction, but keep suggestions on.
                 if ((inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0) {
-                    mInputAttributes.mInputTypeNoAutoCorrect = true;
+                    inputTypeNoAutoCorrect = true;
                 }
             }
 
             // If NO_SUGGESTIONS is set, don't do prediction.
             if ((inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS) != 0) {
-                mInputAttributes.mIsSettingsSuggestionStripOn = false;
-                mInputAttributes.mInputTypeNoAutoCorrect = true;
+                isSettingsSuggestionStripOn = false;
+                inputTypeNoAutoCorrect = true;
             }
             // If it's not multiline and the autoCorrect flag is not set, then don't correct
             if ((inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0
                     && (inputType & InputType.TYPE_TEXT_FLAG_MULTI_LINE) == 0) {
-                mInputAttributes.mInputTypeNoAutoCorrect = true;
+                inputTypeNoAutoCorrect = true;
             }
             if ((inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE) != 0) {
-                mInputAttributes.mIsSettingsSuggestionStripOn = false;
-                mInputAttributes.mApplicationSpecifiedCompletionOn = isFullscreenMode();
+                isSettingsSuggestionStripOn = false;
+                applicationSpecifiedCompletionOn = isFullscreenMode();
             }
         }
+
+        mInputAttributes.mInsertSpaceOnPickSuggestionManually = insertSpaceOnPickSuggestionManually;
+        mInputAttributes.mInputTypeNoAutoCorrect = inputTypeNoAutoCorrect;
+        mInputAttributes.mIsSettingsSuggestionStripOn = isSettingsSuggestionStripOn;
+        mInputAttributes.mApplicationSpecifiedCompletionOn = applicationSpecifiedCompletionOn;
     }
 
     @Override
