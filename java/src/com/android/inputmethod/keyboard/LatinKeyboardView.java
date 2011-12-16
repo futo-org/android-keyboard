@@ -534,6 +534,9 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 case MotionEvent.ACTION_POINTER_DOWN:
                     eventTag = "[PointerDown]";
                     break;
+                case MotionEvent.ACTION_MOVE: // Skip this as being logged below
+                    eventTag = "";
+                    break;
                 default:
                     eventTag = "[Action" + action + "]";
                     break;
