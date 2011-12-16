@@ -799,7 +799,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mInputAttributes = new InputAttributes(editorInfo);
 
         final boolean insertSpaceOnPickSuggestionManually;
-        boolean inputTypeNoAutoCorrect = false;
+        final boolean inputTypeNoAutoCorrect;
         final boolean isSettingsSuggestionStripOn;
         boolean applicationSpecifiedCompletionOn = false;
 
@@ -811,6 +811,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mApplicationSpecifiedCompletions = null;
             insertSpaceOnPickSuggestionManually = false;
             isSettingsSuggestionStripOn = false;
+            inputTypeNoAutoCorrect = false;
         } else {
             final int inputType = editorInfo.inputType;
             final int inputClass = inputType & InputType.TYPE_MASK_CLASS;
@@ -852,21 +853,17 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             } else {
                 insertSpaceOnPickSuggestionManually = true;
             }
-            if (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT) {
-                // If it's a browser edit field and auto correct is not ON explicitly, then
-                // disable auto correction, but keep suggestions on.
-                if (!flagAutoCorrect) {
-                    inputTypeNoAutoCorrect = true;
-                }
-            }
 
+            // If it's a browser edit field and auto correct is not ON explicitly, then
+            // disable auto correction, but keep suggestions on.
             // If NO_SUGGESTIONS is set, don't do prediction.
-            if (flagNoSuggestions) {
-                inputTypeNoAutoCorrect = true;
-            }
             // If it's not multiline and the autoCorrect flag is not set, then don't correct
-            if (!flagAutoCorrect && !flagMultiLine) {
+            if ((variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT && !flagAutoCorrect)
+                    || flagNoSuggestions
+                    || (!flagAutoCorrect && !flagMultiLine)) {
                 inputTypeNoAutoCorrect = true;
+            } else {
+                inputTypeNoAutoCorrect = false;
             }
             if (flagAutoComplete) {
                 applicationSpecifiedCompletionOn = isFullscreenMode();
