@@ -182,21 +182,16 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codes,
         const int inputLength, const int flags, Correction *correction,
         WordsPriorityQueuePool *queuePool) {
-    WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
 
     PROF_OPEN;
     PROF_START(0);
-    initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, inputLength, masterQueue);
-    if (DEBUG_DICT) assert(codesSize == inputLength);
-
-    const int maxDepth = min(inputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
-    correction->initCorrection(proximityInfo, inputLength, maxDepth);
+    // Note: This line is intentionally left blank
     PROF_END(0);
 
-    const bool useFullEditDistance = USE_FULL_EDIT_DISTANCE & flags;
-    // TODO: remove
     PROF_START(1);
-    getSuggestionCandidates(useFullEditDistance, inputLength, correction, masterQueue);
+    const bool useFullEditDistance = USE_FULL_EDIT_DISTANCE & flags;
+    getOneWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, useFullEditDistance,
+            inputLength, correction, queuePool);
     PROF_END(1);
 
     PROF_START(2);
@@ -219,8 +214,8 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
             if (DEBUG_DICT) {
                 LOGI("--- Suggest missing space characters %d", i);
             }
-            getMissingSpaceWords(
-                    inputLength, i, proximityInfo, correction, useFullEditDistance, queuePool);
+            getMissingSpaceWords(proximityInfo, xcoordinates, ycoordinates, codes,
+                    useFullEditDistance, inputLength, i, correction, queuePool);
         }
     }
     PROF_END(5);
@@ -239,8 +234,8 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
                         i, x, y, proximityInfo->hasSpaceProximity(x, y));
             }
             if (proximityInfo->hasSpaceProximity(x, y)) {
-                getMistypedSpaceWords(inputLength, i, proximityInfo, correction,
-                        useFullEditDistance, queuePool);
+                getMistypedSpaceWords(proximityInfo, xcoordinates, ycoordinates, codes,
+                        useFullEditDistance, inputLength, i, correction, queuePool);
             }
         }
     }
@@ -259,6 +254,18 @@ void UnigramDictionary::initSuggestions(ProximityInfo *proximityInfo, const int 
 
 static const char QUOTE = '\'';
 static const char SPACE = ' ';
+
+void UnigramDictionary::getOneWordSuggestions(ProximityInfo *proximityInfo,
+        const int *xcoordinates, const int *ycoordinates, const int *codes,
+        const bool useFullEditDistance, const int inputLength, Correction *correction,
+        WordsPriorityQueuePool *queuePool) {
+    WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
+    initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, inputLength, masterQueue);
+    if (DEBUG_DICT) assert(codesSize == inputLength);
+    const int maxDepth = min(inputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
+    correction->initCorrection(proximityInfo, inputLength, maxDepth);
+    getSuggestionCandidates(useFullEditDistance, inputLength, correction, masterQueue);
+}
 
 void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
         const int inputLength, Correction *correction, WordsPriorityQueue *queue) {
@@ -295,22 +302,28 @@ void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
     }
 }
 
-void UnigramDictionary::getMissingSpaceWords(
-        const int inputLength, const int missingSpacePos, ProximityInfo *proximityInfo,
-        Correction *correction, const bool useFullEditDistance, WordsPriorityQueuePool *queuePool) {
+void UnigramDictionary::getMissingSpaceWords(ProximityInfo *proximityInfo, const int *xcoordinates,
+        const int *ycoordinates, const int *codes, const bool useFullEditDistance,
+        const int inputLength, const int missingSpacePos, Correction *correction,
+        WordsPriorityQueuePool* queuePool) {
     correction->setCorrectionParams(-1 /* skipPos */, -1 /* excessivePos */,
             -1 /* transposedPos */, -1 /* spaceProximityPos */, missingSpacePos,
             useFullEditDistance, false /* doAutoCompletion */, MAX_ERRORS_FOR_TWO_WORDS);
-    getSplitTwoWordsSuggestion(inputLength, proximityInfo, correction, queuePool);
+    getSplitTwoWordsSuggestions(proximityInfo, xcoordinates, ycoordinates, codes,
+            useFullEditDistance, inputLength, missingSpacePos, -1/* spaceProximityPos */,
+            correction, queuePool);
 }
 
-void UnigramDictionary::getMistypedSpaceWords(
-        const int inputLength, const int spaceProximityPos, ProximityInfo *proximityInfo,
-        Correction *correction, const bool useFullEditDistance, WordsPriorityQueuePool *queuePool) {
+void UnigramDictionary::getMistypedSpaceWords(ProximityInfo *proximityInfo, const int *xcoordinates,
+        const int *ycoordinates, const int *codes, const bool useFullEditDistance,
+        const int inputLength, const int spaceProximityPos, Correction *correction,
+        WordsPriorityQueuePool* queuePool) {
     correction->setCorrectionParams(-1 /* skipPos */, -1 /* excessivePos */,
             -1 /* transposedPos */, spaceProximityPos, -1 /* missingSpacePos */,
             useFullEditDistance, false /* doAutoCompletion */, MAX_ERRORS_FOR_TWO_WORDS);
-    getSplitTwoWordsSuggestion(inputLength, proximityInfo, correction, queuePool);
+    getSplitTwoWordsSuggestions(proximityInfo, xcoordinates, ycoordinates, codes,
+            useFullEditDistance, inputLength, -1 /* missingSpacePos */, spaceProximityPos,
+            correction, queuePool);
 }
 
 inline void UnigramDictionary::onTerminal(
@@ -323,13 +336,12 @@ inline void UnigramDictionary::onTerminal(
     }
 }
 
-void UnigramDictionary::getSplitTwoWordsSuggestion(
-        const int inputLength, ProximityInfo *proximityInfo, Correction *correction,
-        WordsPriorityQueuePool *queuePool) {
+void UnigramDictionary::getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo,
+        const int *xcoordinates, const int *ycoordinates, const int *codes,
+        const bool useFullEditDistance, const int inputLength, const int missingSpacePos,
+        const int  spaceProximityPos, Correction *correction, WordsPriorityQueuePool* queuePool) {
     WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
 
-    const int spaceProximityPos = correction->getSpaceProximityPos();
-    const int missingSpacePos = correction->getMissingSpacePos();
     if (DEBUG_DICT) {
         int inputCount = 0;
         if (spaceProximityPos >= 0) ++inputCount;

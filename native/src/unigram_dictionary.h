@@ -91,17 +91,24 @@ private:
     void initSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize,
             WordsPriorityQueue *queue);
+    void getOneWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
+            const int *ycoordinates, const int *codes, const bool useFullEditDistance,
+            const int inputLength, Correction *correction, WordsPriorityQueuePool* queuePool);
     void getSuggestionCandidates(
             const bool useFullEditDistance, const int inputLength, Correction *correction,
             WordsPriorityQueue* queue);
-    void getSplitTwoWordsSuggestion(const int inputLength, ProximityInfo *proximityInfo,
-            Correction *correction, WordsPriorityQueuePool *queuePool);
-    void getMissingSpaceWords(const int inputLength, const int missingSpacePos,
-            ProximityInfo *proximityInfo, Correction *correction,
-            const bool useFullEditDistance, WordsPriorityQueuePool *queuePool);
-    void getMistypedSpaceWords(const int inputLength, const int spaceProximityPos,
-            ProximityInfo *proximityInfo, Correction *correction,
-            const bool useFullEditDistance, WordsPriorityQueuePool *queuePool);
+    void getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo,
+            const int *xcoordinates, const int *ycoordinates, const int *codes,
+            const bool useFullEditDistance, const int inputLength, const int spaceProximityPos,
+            const int missingSpacePos, Correction *correction, WordsPriorityQueuePool* queuePool);
+    void getMissingSpaceWords(ProximityInfo *proximityInfo, const int *xcoordinates,
+            const int *ycoordinates, const int *codes, const bool useFullEditDistance,
+            const int inputLength, const int missingSpacePos, Correction *correction,
+            WordsPriorityQueuePool* queuePool);
+    void getMistypedSpaceWords(ProximityInfo *proximityInfo, const int *xcoordinates,
+            const int *ycoordinates, const int *codes, const bool useFullEditDistance,
+            const int inputLength, const int spaceProximityPos, Correction *correction,
+            WordsPriorityQueuePool* queuePool);
     void onTerminal(const int freq, Correction *correction, WordsPriorityQueue *queue);
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
