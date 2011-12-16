@@ -23,10 +23,8 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.latin.LatinImeLogger;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -59,8 +57,8 @@ public class KeyboardParams {
     public int GRID_WIDTH;
     public int GRID_HEIGHT;
 
-    public final List<Key> mKeys = new ArrayList<Key>();
-    public final List<Key> mShiftKeys = new ArrayList<Key>();
+    public final Set<Key> mKeys = new HashSet<Key>();
+    public final Set<Key> mShiftKeys = new HashSet<Key>();
     public final Set<Key> mShiftLockKeys = new HashSet<Key>();
     public final Map<Key, Drawable> mShiftedIcons = new HashMap<Key, Drawable>();
     public final Map<Key, Drawable> mUnshiftedIcons = new HashMap<Key, Drawable>();

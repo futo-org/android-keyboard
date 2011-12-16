@@ -29,6 +29,7 @@ import com.android.inputmethod.latin.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class PointerTracker {
     private static final String TAG = PointerTracker.class.getSimpleName();
@@ -118,7 +119,7 @@ public class PointerTracker {
     private KeyboardActionListener mListener = EMPTY_LISTENER;
 
     private Keyboard mKeyboard;
-    private List<Key> mKeys;
+    private Set<Key> mKeys;
     private int mKeyQuarterWidthSquared;
     private final TextView mKeyPreviewText;
 

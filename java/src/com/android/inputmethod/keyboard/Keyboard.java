@@ -26,7 +26,6 @@ import com.android.inputmethod.keyboard.internal.KeyboardShiftState;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -106,8 +105,8 @@ public class Keyboard {
     public final boolean mIsRtlKeyboard;
 
     /** List of keys and icons in this keyboard */
-    public final List<Key> mKeys;
-    public final List<Key> mShiftKeys;
+    public final Set<Key> mKeys;
+    public final Set<Key> mShiftKeys;
     public final Set<Key> mShiftLockKeys;
     public final Map<Key, Drawable> mShiftedIcons;
     public final Map<Key, Drawable> mUnshiftedIcons;
@@ -134,8 +133,8 @@ public class Keyboard {
         mTopPadding = params.mTopPadding;
         mVerticalGap = params.mVerticalGap;
 
-        mKeys = Collections.unmodifiableList(params.mKeys);
-        mShiftKeys = Collections.unmodifiableList(params.mShiftKeys);
+        mKeys = Collections.unmodifiableSet(params.mKeys);
+        mShiftKeys = Collections.unmodifiableSet(params.mShiftKeys);
         mShiftLockKeys = Collections.unmodifiableSet(params.mShiftLockKeys);
         mShiftedIcons = Collections.unmodifiableMap(params.mShiftedIcons);
         mUnshiftedIcons = Collections.unmodifiableMap(params.mUnshiftedIcons);
@@ -170,12 +169,12 @@ public class Keyboard {
     }
 
     // TODO: Remove this method.
-    public boolean hasShiftLockKey() {
+    boolean hasShiftLockKey() {
         return !mShiftLockKeys.isEmpty();
     }
 
     // TODO: Remove this method.
-    public void setShiftLocked(boolean newShiftLockState) {
+    void setShiftLocked(boolean newShiftLockState) {
         for (final Key key : mShiftLockKeys) {
             // To represent "shift locked" state. The highlight is handled by background image that
             // might be a StateListDrawable.
@@ -191,7 +190,7 @@ public class Keyboard {
     }
 
     // TODO: Remove this method.
-    public void setShifted(boolean newShiftState) {
+    void setShifted(boolean newShiftState) {
         if (!mShiftState.isShiftLocked()) {
             for (final Key key : mShiftKeys) {
                 key.setIcon(newShiftState ? mShiftedIcons.get(key) : mUnshiftedIcons.get(key));
@@ -206,7 +205,7 @@ public class Keyboard {
     }
 
     // TODO: Remove this method
-    public void setAutomaticTemporaryUpperCase() {
+    void setAutomaticTemporaryUpperCase() {
         mShiftState.setAutomaticTemporaryUpperCase();
     }
 
