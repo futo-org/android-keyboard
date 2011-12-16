@@ -31,21 +31,15 @@ import com.android.inputmethod.keyboard.internal.KeyboardState;
 import com.android.inputmethod.latin.InputView;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.Settings;
 import com.android.inputmethod.latin.SettingsValues;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.Utils;
 
-import java.lang.ref.SoftReference;
-import java.util.HashMap;
-import java.util.Locale;
-
 public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();
-    private static final boolean DEBUG_CACHE = LatinImeLogger.sDBG;
 
     public static final String PREF_KEYBOARD_LAYOUT = "pref_keyboard_layout_20110916";
     private static final int[] KEYBOARD_THEMES = {
@@ -68,9 +62,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     private KeyboardState mState;
 
     private KeyboardSet mKeyboardSet;
-
-    private final HashMap<KeyboardId, SoftReference<LatinKeyboard>> mKeyboardCache =
-            new HashMap<KeyboardId, SoftReference<LatinKeyboard>>();
 
     /** mIsAutoCorrectionActive indicates that auto corrected word will be input instead of
      * what user actually typed. */
@@ -121,25 +112,27 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         if (mThemeIndex != themeIndex) {
             mThemeIndex = themeIndex;
             mThemeContext = new ContextThemeWrapper(context, KEYBOARD_THEMES[themeIndex]);
-            mKeyboardCache.clear();
+            KeyboardSet.clearKeyboardCache();
         }
     }
 
     public void loadKeyboard(EditorInfo editorInfo, SettingsValues settingsValues) {
+        mKeyboardSet = new KeyboardSet.Builder(mThemeContext, editorInfo, settingsValues)
+                .build();
+        final KeyboardId mainKeyboardId = mKeyboardSet.getMainKeyboardId();
         try {
-            mKeyboardSet = new KeyboardSet.Builder(mInputMethodService, editorInfo, settingsValues)
-                    .build();
             mState.onLoadKeyboard(mResources.getString(R.string.layout_switch_back_symbols),
                     hasDistinctMultitouch());
-            // TODO: Should get rid of this special case handling for Phone Number layouts once we
-            // have separate layouts with unique KeyboardIds for alphabet and alphabet-shifted
-            // respectively.
-            if (mKeyboardSet.mAlphabetId.isPhoneKeyboard()) {
-                mState.onToggleAlphabetAndSymbols();
-            }
         } catch (RuntimeException e) {
-            Log.w(TAG, "loading keyboard failed: " + mKeyboardSet.mAlphabetId, e);
-            LatinImeLogger.logOnException(mKeyboardSet.mAlphabetId.toString(), e);
+            Log.w(TAG, "loading keyboard failed: " + mainKeyboardId, e);
+            LatinImeLogger.logOnException(mainKeyboardId.toString(), e);
+            return;
+        }
+        // TODO: Should get rid of this special case handling for Phone Number layouts once we
+        // have separate layouts with unique KeyboardIds for alphabet and alphabet-shifted
+        // respectively.
+        if (mainKeyboardId.isPhoneKeyboard()) {
+            mState.onToggleAlphabetAndSymbols();
         }
     }
 
@@ -179,39 +172,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         }
         updateShiftState();
         mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
-    }
-
-    // TODO: Move this method to KeyboardSet.
-    private LatinKeyboard getKeyboard(Context context, KeyboardId id) {
-        final SoftReference<LatinKeyboard> ref = mKeyboardCache.get(id);
-        LatinKeyboard keyboard = (ref == null) ? null : ref.get();
-        if (keyboard == null) {
-            final Locale savedLocale = LocaleUtils.setSystemLocale(mResources, id.mLocale);
-            try {
-                final LatinKeyboard.Builder builder = new LatinKeyboard.Builder(context);
-                builder.load(id);
-                builder.setTouchPositionCorrectionEnabled(
-                        mSubtypeSwitcher.currentSubtypeContainsExtraValueKey(
-                                LatinIME.SUBTYPE_EXTRA_VALUE_SUPPORT_TOUCH_POSITION_CORRECTION));
-                keyboard = builder.build();
-            } finally {
-                LocaleUtils.setSystemLocale(mResources, savedLocale);
-            }
-            mKeyboardCache.put(id, new SoftReference<LatinKeyboard>(keyboard));
-
-            if (DEBUG_CACHE) {
-                Log.d(TAG, "keyboard cache size=" + mKeyboardCache.size() + ": "
-                        + ((ref == null) ? "LOAD" : "GCed") + " id=" + id
-                        + " theme=" + themeName(keyboard.mThemeId));
-            }
-        } else if (DEBUG_CACHE) {
-            Log.d(TAG, "keyboard cache size=" + mKeyboardCache.size() + ": HIT  id=" + id
-                    + " theme=" + themeName(keyboard.mThemeId));
-        }
-
-        keyboard.setShiftLocked(false);
-        keyboard.setShifted(false);
-        return keyboard;
     }
 
     public boolean isAlphabetMode() {
@@ -343,25 +303,19 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setSymbolsKeyboard() {
-        setKeyboard(getKeyboard(mThemeContext, mKeyboardSet.mSymbolsId));
+        setKeyboard(mKeyboardSet.getMainKeyboard());
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetKeyboard() {
-        setKeyboard(getKeyboard(mThemeContext, mKeyboardSet.mAlphabetId));
+        setKeyboard(mKeyboardSet.getSymbolsKeyboard());
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setSymbolsShiftedKeyboard() {
-        final Keyboard keyboard = getKeyboard(mThemeContext, mKeyboardSet.mSymbolsShiftedId);
-        setKeyboard(keyboard);
-        // TODO: Remove this logic once we introduce initial keyboard shift state attribute.
-        // Symbol shift keyboard may have a shift key that has a caps lock style indicator (a.k.a.
-        // sticky shift key). To show or dismiss the indicator, we need to call setShiftLocked()
-        // that takes care of the current keyboard having such shift key or not.
-        keyboard.setShiftLocked(keyboard.hasShiftLockKey());
+        setKeyboard(mKeyboardSet.getSymbolsShiftedKeyboard());
     }
 
     public boolean isInMomentarySwitchState() {

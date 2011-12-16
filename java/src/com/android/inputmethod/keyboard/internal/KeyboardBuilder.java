@@ -267,9 +267,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         params.mTouchPositionCorrection.load(data);
     }
 
-    public KeyboardBuilder<KP> load(KeyboardId id) {
+    public KeyboardBuilder<KP> load(int xmlId, KeyboardId id) {
         mParams.mId = id;
-        final XmlResourceParser parser = mResources.getXml(id.getXmlId());
+        final XmlResourceParser parser = mResources.getXml(xmlId);
         try {
             parseKeyboard(parser);
         } catch (XmlPullParserException e) {

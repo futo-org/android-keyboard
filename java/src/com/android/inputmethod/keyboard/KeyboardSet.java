@@ -20,11 +20,13 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
+import android.util.Log;
 import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.keyboard.internal.XmlParseUtils;
 import com.android.inputmethod.latin.LatinIME;
+import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SettingsValues;
@@ -35,33 +37,29 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Locale;
 
 /**
- * This class has a set of {@link KeyboardId}s. Each of them represents a different keyboard
- * specific to a keyboard state, such as alphabet, symbols, and so on. Layouts in the same
- * {@link KeyboardSet} are related to each other. A {@link KeyboardSet} needs to be created for each
- * {@link android.view.inputmethod.EditorInfo}.
+ * This class represents a set of keyboards. Each of them represents a different keyboard
+ * specific to a keyboard state, such as alphabet, symbols, and so on.  Layouts in the same
+ * {@link KeyboardSet} are related to each other.
+ * A {@link KeyboardSet} needs to be created for each {@link android.view.inputmethod.EditorInfo}.
  */
 public class KeyboardSet {
-    private static final String TAG_KEYBOARD_SET = "KeyboardSet";
+    private static final String TAG = KeyboardSet.class.getSimpleName();
+    private static final boolean DEBUG_CACHE = LatinImeLogger.sDBG;
+
+    private static final String TAG_KEYBOARD_SET = TAG;
     private static final String TAG_ELEMENT = "Element";
 
-    // TODO: Make these KeyboardId private.
-    public final KeyboardId mAlphabetId;
-    public final KeyboardId mSymbolsId;
-    public final KeyboardId mSymbolsShiftedId;
-
-    KeyboardSet(Params params) {
-        mAlphabetId = Builder.getKeyboardId(false, false, params);
-        mSymbolsId = Builder.getKeyboardId(true, false, params);
-        mSymbolsShiftedId = Builder.getKeyboardId(true, true, params);
-    }
+    private final Context mContext;
+    private final Params mParams;
 
     private static class Params {
         int mMode;
-        int mInputTypes;
+        int mInputType;
         int mImeOptions;
         boolean mSettingsKeyEnabled;
         boolean mVoiceKeyEnabled;
@@ -70,18 +68,94 @@ public class KeyboardSet {
         Locale mLocale;
         int mOrientation;
         int mWidth;
-        final HashMap<Integer, Integer> mElementKeyboards =
-                new HashMap<Integer, Integer>();
-
+        final HashMap<Integer, Integer> mElementKeyboards = new HashMap<Integer, Integer>();
         Params() {}
     }
 
+    private static final HashMap<KeyboardId, SoftReference<LatinKeyboard>> sKeyboardCache =
+            new HashMap<KeyboardId, SoftReference<LatinKeyboard>>();
+
+    public static void clearKeyboardCache() {
+        sKeyboardCache.clear();
+    }
+
+    private KeyboardSet(Context context, Params params) {
+        mContext = context;
+        mParams = params;
+    }
+
+    public LatinKeyboard getMainKeyboard() {
+        return getKeyboard(false, false);
+    }
+
+    public LatinKeyboard getSymbolsKeyboard() {
+        return getKeyboard(true, false);
+    }
+
+    public LatinKeyboard getSymbolsShiftedKeyboard() {
+        final LatinKeyboard keyboard = getKeyboard(true, true);
+        // TODO: Remove this logic once we introduce initial keyboard shift state attribute.
+        // Symbol shift keyboard may have a shift key that has a caps lock style indicator (a.k.a.
+        // sticky shift key). To show or dismiss the indicator, we need to call setShiftLocked()
+        // that takes care of the current keyboard having such shift key or not.
+        keyboard.setShiftLocked(keyboard.hasShiftLockKey());
+        return keyboard;
+    }
+
+    private LatinKeyboard getKeyboard(boolean isSymbols, boolean isShift) {
+        final int elementState = Builder.getElementState(mParams.mMode, isSymbols, isShift);
+        final int xmlId = mParams.mElementKeyboards.get(elementState);
+        final KeyboardId id = Builder.getKeyboardId(elementState, isSymbols, mParams);
+        final LatinKeyboard keyboard = getKeyboard(mContext, xmlId, id);
+        return keyboard;
+    }
+
+    public KeyboardId getMainKeyboardId() {
+        final int elementState = Builder.getElementState(mParams.mMode, false, false);
+        return Builder.getKeyboardId(elementState, false, mParams);
+    }
+
+    private static LatinKeyboard getKeyboard(Context context, int xmlId, KeyboardId id) {
+        final Resources res = context.getResources();
+        final SubtypeSwitcher subtypeSwitcher = SubtypeSwitcher.getInstance();
+        final SoftReference<LatinKeyboard> ref = sKeyboardCache.get(id);
+        LatinKeyboard keyboard = (ref == null) ? null : ref.get();
+        if (keyboard == null) {
+            final Locale savedLocale = LocaleUtils.setSystemLocale(res, id.mLocale);
+            try {
+                final LatinKeyboard.Builder builder = new LatinKeyboard.Builder(context);
+                builder.load(xmlId, id);
+                builder.setTouchPositionCorrectionEnabled(
+                        subtypeSwitcher.currentSubtypeContainsExtraValueKey(
+                                LatinIME.SUBTYPE_EXTRA_VALUE_SUPPORT_TOUCH_POSITION_CORRECTION));
+                keyboard = builder.build();
+            } finally {
+                LocaleUtils.setSystemLocale(res, savedLocale);
+            }
+            sKeyboardCache.put(id, new SoftReference<LatinKeyboard>(keyboard));
+
+            if (DEBUG_CACHE) {
+                Log.d(TAG, "keyboard cache size=" + sKeyboardCache.size() + ": "
+                        + ((ref == null) ? "LOAD" : "GCed") + " id=" + id);
+            }
+        } else if (DEBUG_CACHE) {
+            Log.d(TAG, "keyboard cache size=" + sKeyboardCache.size() + ": HIT  id=" + id);
+        }
+
+        // TODO: Remove setShiftLocked and setShift calls.
+        keyboard.setShiftLocked(false);
+        keyboard.setShifted(false);
+        return keyboard;
+    }
+
     public static class Builder {
+        private final Context mContext;
         private final Resources mResources;
 
         private final Params mParams = new Params();
 
         public Builder(Context context, EditorInfo editorInfo, SettingsValues settingsValues) {
+            mContext = context;
             mResources = context.getResources();
             final SubtypeSwitcher subtypeSwitcher = SubtypeSwitcher.getInstance();
             final String packageName = context.getPackageName();
@@ -89,7 +163,7 @@ public class KeyboardSet {
 
             params.mMode = Utils.getKeyboardMode(editorInfo);
             if (editorInfo != null) {
-                params.mInputTypes = editorInfo.inputType;
+                params.mInputType = editorInfo.inputType;
                 params.mImeOptions = editorInfo.imeOptions;
             }
             params.mSettingsKeyEnabled = settingsValues.isSettingsKeyEnabled();
@@ -121,21 +195,20 @@ public class KeyboardSet {
             } finally {
                 LocaleUtils.setSystemLocale(mResources, savedLocale);
             }
-            return new KeyboardSet(mParams);
+            return new KeyboardSet(mContext, mParams);
         }
 
-        static KeyboardId getKeyboardId(boolean isSymbols, boolean isShift, Params params) {
-            final int elementState = getElementState(params.mMode, isSymbols, isShift);
-            final int xmlId = params.mElementKeyboards.get(elementState);
+        // TODO: Move this method to KeyboardSet
+        static KeyboardId getKeyboardId(int elementState, boolean isSymbols, Params params) {
             final boolean hasShortcutKey = params.mVoiceKeyEnabled
                     && (isSymbols != params.mVoiceKeyOnMain);
-            return new KeyboardId(xmlId, elementState, params.mLocale, params.mOrientation,
-                    params.mWidth, params.mMode, params.mInputTypes, params.mImeOptions,
-                    params.mSettingsKeyEnabled, params.mNoSettingsKey, params.mVoiceKeyEnabled,
-                    hasShortcutKey);
+            return new KeyboardId(elementState, params.mLocale, params.mOrientation, params.mWidth,
+                    params.mMode, params.mInputType, params.mImeOptions, params.mSettingsKeyEnabled,
+                    params.mNoSettingsKey, params.mVoiceKeyEnabled, hasShortcutKey);
         }
 
-        private static int getElementState(int mode, boolean isSymbols, boolean isShift) {
+        // TODO: Move this method to KeyboardSet
+        static int getElementState(int mode, boolean isSymbols, boolean isShift) {
             switch (mode) {
             case KeyboardId.MODE_PHONE:
                 return (isSymbols && isShift)
