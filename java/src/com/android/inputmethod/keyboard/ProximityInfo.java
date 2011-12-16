@@ -24,7 +24,7 @@ import com.android.inputmethod.latin.spellcheck.SpellCheckerProximityInfo;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 public class ProximityInfo {
     public static final int MAX_PROXIMITY_CHARS_SIZE = 16;
@@ -44,7 +44,7 @@ public class ProximityInfo {
     private final Key[][] mGridNeighbors;
 
     ProximityInfo(int gridWidth, int gridHeight, int minWidth, int height, int keyWidth,
-            int keyHeight, List<Key> keys, TouchPositionCorrection touchPositionCorrection) {
+            int keyHeight, Set<Key> keys, TouchPositionCorrection touchPositionCorrection) {
         mGridWidth = gridWidth;
         mGridHeight = gridHeight;
         mGridSize = mGridWidth * mGridHeight;
@@ -62,7 +62,7 @@ public class ProximityInfo {
     }
 
     public static ProximityInfo createDummyProximityInfo() {
-        return new ProximityInfo(1, 1, 1, 1, 1, 1, Collections.<Key>emptyList(), null);
+        return new ProximityInfo(1, 1, 1, 1, 1, 1, Collections.<Key>emptySet(), null);
     }
 
     public static ProximityInfo createSpellCheckerProximityInfo(final int[] proximity) {
@@ -87,9 +87,9 @@ public class ProximityInfo {
     private native void releaseProximityInfoNative(long nativeProximityInfo);
 
     private final void setProximityInfo(Key[][] gridNeighborKeys, int keyboardWidth,
-            int keyboardHeight, List<Key> keys,
+            int keyboardHeight, Set<Key> keys,
             TouchPositionCorrection touchPositionCorrection) {
-        int[] proximityCharsArray = new int[mGridSize * MAX_PROXIMITY_CHARS_SIZE];
+        final int[] proximityCharsArray = new int[mGridSize * MAX_PROXIMITY_CHARS_SIZE];
         Arrays.fill(proximityCharsArray, KeyDetector.NOT_A_CODE);
         for (int i = 0; i < mGridSize; ++i) {
             final int proximityCharsLength = gridNeighborKeys[i].length;
@@ -118,8 +118,8 @@ public class ProximityInfo {
             calculateSweetSpotParams = false;
         }
 
-        for (int i = 0; i < keyCount; ++i) {
-            final Key key = keys.get(i);
+        int i = 0;
+        for (final Key key : keys) {
             keyXCoordinates[i] = key.mX;
             keyYCoordinates[i] = key.mY;
             keyWidths[i] = key.mWidth;
@@ -142,6 +142,7 @@ public class ProximityInfo {
                             hitBoxWidth * hitBoxWidth + hitBoxHeight * hitBoxHeight);
                 }
             }
+            i++;
         }
 
         mNativeProximityInfo = setProximityInfoNative(MAX_PROXIMITY_CHARS_SIZE,
@@ -166,7 +167,7 @@ public class ProximityInfo {
         }
     }
 
-    private void computeNearestNeighbors(int defaultWidth, List<Key> keys,
+    private void computeNearestNeighbors(int defaultWidth, Set<Key> keys,
             TouchPositionCorrection touchPositionCorrection) {
         final int thresholdBase = (int) (defaultWidth * SEARCH_DISTANCE);
         final int threshold = thresholdBase * thresholdBase;

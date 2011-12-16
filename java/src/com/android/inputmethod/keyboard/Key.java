@@ -37,6 +37,7 @@ import com.android.inputmethod.latin.R;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -115,6 +116,8 @@ public class Key {
     private static final int ACTION_FLAGS_IS_REPEATABLE = 0x01;
     private static final int ACTION_FLAGS_NO_KEY_PREVIEW = 0x02;
     private static final int ACTION_FLAGS_ALT_CODE_WHILE_TYPING = 0x04;
+
+    private final int mHashCode;
 
     /** The current pressed state of this key */
     private boolean mPressed;
@@ -204,6 +207,8 @@ public class Key {
         mX = x + mHorizontalGap / 2;
         mY = y;
         mHitBox.set(x, y, x + width + 1, y + height);
+
+        mHashCode = hashCode(this);
     }
 
     /**
@@ -279,10 +284,6 @@ public class Key {
                 KeyboardIconsSet.ICON_UNDEFINED));
         final int shiftedIconId = style.getInt(keyAttr, R.styleable.Keyboard_Key_keyIconShifted,
                 KeyboardIconsSet.ICON_UNDEFINED);
-        if (shiftedIconId != KeyboardIconsSet.ICON_UNDEFINED) {
-            final Drawable shiftedIcon = iconsSet.getIcon(shiftedIconId);
-            params.addShiftedIcon(this, shiftedIcon);
-        }
         mHintLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
 
         mLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyLabel);
@@ -306,8 +307,61 @@ public class Key {
         }
         mAltCode = style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_altCode, Keyboard.CODE_DUMMY);
+        mHashCode = hashCode(this);
 
         keyAttr.recycle();
+
+        if (shiftedIconId != KeyboardIconsSet.ICON_UNDEFINED) {
+            final Drawable shiftedIcon = iconsSet.getIcon(shiftedIconId);
+            params.addShiftedIcon(this, shiftedIcon);
+        }
+    }
+
+    private static int hashCode(Key key) {
+        return Arrays.hashCode(new Object[] {
+                key.mX,
+                key.mY,
+                key.mWidth,
+                key.mHeight,
+                key.mCode,
+                key.mLabel,
+                key.mHintLabel,
+                // Key can be distinguishable without the following members.
+                // key.mAltCode,
+                // key.mOutputText,
+                // key.mActionFlags,
+                // key.mLabelFlags,
+                // key.mIcon,
+                // key.mPreviewIcon,
+                // key.mBackgroundType,
+                // key.mHorizontalGap,
+                // key.mVerticalGap,
+                // key.mVisualInsetLeft,
+                // key.mVisualInsetRight,
+                // Arrays.hashCode(key.mMoreKeys),
+                // key.mMaxMoreKeysColumn,
+        });
+    }
+
+    private boolean equals(Key o) {
+        if (this == o) return true;
+        return o.mX == mX
+                && o.mY == mY
+                && o.mWidth == mWidth
+                && o.mHeight == mHeight
+                && o.mCode == mCode
+                && TextUtils.equals(o.mLabel, mLabel)
+                && TextUtils.equals(o.mHintLabel, mHintLabel);
+    }
+
+    @Override
+    public int hashCode() {
+        return mHashCode;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Key && equals((Key)o);
     }
 
     public void markAsLeftEdge(KeyboardParams params) {
