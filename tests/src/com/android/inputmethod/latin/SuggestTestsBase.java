@@ -50,9 +50,8 @@ public class SuggestTestsBase extends AndroidTestCase {
                     + "orientation=" + orientation);
             return null;
         }
-        return new KeyboardId(com.android.inputmethod.latin.R.xml.kbd_qwerty,
-                KeyboardId.ELEMENT_ALPHABET, locale, orientation, width, KeyboardId.MODE_TEXT,
-                InputType.TYPE_CLASS_TEXT, 0, false, false, false, false);
+        return new KeyboardId(KeyboardId.ELEMENT_ALPHABET, locale, orientation, width,
+                KeyboardId.MODE_TEXT, InputType.TYPE_CLASS_TEXT, 0, false, false, false, false);
     }
 
     protected InputStream openTestRawResource(int resIdInTest) {

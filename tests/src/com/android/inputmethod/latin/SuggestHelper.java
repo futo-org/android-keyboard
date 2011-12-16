@@ -32,11 +32,13 @@ public class SuggestHelper {
     protected final LatinKeyboard mKeyboard;
     private final KeyDetector mKeyDetector;
 
+    public static final int ALPHABET_KEYBOARD = com.android.inputmethod.latin.R.xml.kbd_qwerty;
+
     public SuggestHelper(Context context, int dictionaryId, KeyboardId keyboardId) {
         // Use null as the locale for Suggest so as to force it to use the internal dictionary
         // (and not try to find a dictionary provider for a specified locale)
         mSuggest = new Suggest(context, dictionaryId, null);
-        mKeyboard = new LatinKeyboard.Builder(context).load(keyboardId).build();
+        mKeyboard = new LatinKeyboard.Builder(context).load(ALPHABET_KEYBOARD, keyboardId).build();
         mKeyDetector = new KeyDetector(0);
         init();
     }
@@ -45,7 +47,7 @@ public class SuggestHelper {
             final long startOffset, final long length, final KeyboardId keyboardId,
             final Locale locale) {
         mSuggest = new Suggest(context, dictionaryPath, startOffset, length, null, locale);
-        mKeyboard = new LatinKeyboard.Builder(context).load(keyboardId).build();
+        mKeyboard = new LatinKeyboard.Builder(context).load(ALPHABET_KEYBOARD, keyboardId).build();
         mKeyDetector = new KeyDetector(0);
         init();
     }

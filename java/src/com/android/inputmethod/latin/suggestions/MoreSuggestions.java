@@ -181,7 +181,7 @@ public class MoreSuggestions extends Keyboard {
                 int minWidth, int maxRow) {
             final Keyboard keyboard = KeyboardSwitcher.getInstance().getLatinKeyboard();
             final int xmlId = R.xml.kbd_suggestions_pane_template;
-            load(keyboard.mId.cloneWithNewXml(xmlId));
+            load(xmlId, keyboard.mId);
             mParams.mVerticalGap = mParams.mTopPadding = keyboard.mVerticalGap / 2;
 
             final int count = mParams.layout(suggestions, fromPos, maxWidth, minWidth, maxRow,
