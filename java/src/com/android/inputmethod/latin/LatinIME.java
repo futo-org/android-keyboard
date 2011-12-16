@@ -800,7 +800,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         final boolean insertSpaceOnPickSuggestionManually;
         boolean inputTypeNoAutoCorrect = false;
-        boolean isSettingsSuggestionStripOn = false;
+        final boolean isSettingsSuggestionStripOn;
         boolean applicationSpecifiedCompletionOn = false;
 
         if (editorInfo == null || editorInfo.inputType != InputType.TYPE_CLASS_TEXT) {
@@ -810,6 +810,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             mApplicationSpecifiedCompletions = null;
             insertSpaceOnPickSuggestionManually = false;
+            isSettingsSuggestionStripOn = false;
         } else {
             final int inputType = editorInfo.inputType;
             final int inputClass = inputType & InputType.TYPE_MASK_CLASS;
@@ -830,12 +831,19 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
             mApplicationSpecifiedCompletions = null;
 
-            isSettingsSuggestionStripOn = true;
             // Make sure that passwords are not displayed in {@link SuggestionsView}.
             if (InputTypeCompatUtils.isPasswordInputType(inputType)
-                    || InputTypeCompatUtils.isVisiblePasswordInputType(inputType)) {
+                    || InputTypeCompatUtils.isVisiblePasswordInputType(inputType)
+                    || InputTypeCompatUtils.isEmailVariation(variation)
+                    || InputType.TYPE_TEXT_VARIATION_URI == variation
+                    || InputType.TYPE_TEXT_VARIATION_FILTER == variation
+                    || flagNoSuggestions
+                    || flagAutoComplete) {
                 isSettingsSuggestionStripOn = false;
+            } else {
+                isSettingsSuggestionStripOn = true;
             }
+
             if (InputTypeCompatUtils.isEmailVariation(variation)
                     || variation == InputType.TYPE_TEXT_VARIATION_PERSON_NAME) {
                 // The point in turning this off is that we don't want to insert a space after
@@ -844,13 +852,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             } else {
                 insertSpaceOnPickSuggestionManually = true;
             }
-            if (InputTypeCompatUtils.isEmailVariation(variation)) {
-                isSettingsSuggestionStripOn = false;
-            } else if (variation == InputType.TYPE_TEXT_VARIATION_URI) {
-                isSettingsSuggestionStripOn = false;
-            } else if (variation == InputType.TYPE_TEXT_VARIATION_FILTER) {
-                isSettingsSuggestionStripOn = false;
-            } else if (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT) {
+            if (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT) {
                 // If it's a browser edit field and auto correct is not ON explicitly, then
                 // disable auto correction, but keep suggestions on.
                 if (!flagAutoCorrect) {
@@ -860,7 +862,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
             // If NO_SUGGESTIONS is set, don't do prediction.
             if (flagNoSuggestions) {
-                isSettingsSuggestionStripOn = false;
                 inputTypeNoAutoCorrect = true;
             }
             // If it's not multiline and the autoCorrect flag is not set, then don't correct
@@ -868,7 +869,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 inputTypeNoAutoCorrect = true;
             }
             if (flagAutoComplete) {
-                isSettingsSuggestionStripOn = false;
                 applicationSpecifiedCompletionOn = isFullscreenMode();
             }
         }
