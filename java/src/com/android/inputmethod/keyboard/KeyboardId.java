@@ -73,15 +73,6 @@ public class KeyboardId {
     private final int mHashCode;
 
     public KeyboardId(int xmlId, int elementState, Locale locale, int orientation, int width,
-            int mode, EditorInfo editorInfo, boolean settingsKeyEnabled,
-            boolean clobberSettingsKey, boolean shortcutKeyEnabled, boolean hasShortcutKey) {
-        this(xmlId, elementState, locale, orientation, width, mode,
-                (editorInfo != null ? editorInfo.inputType : 0),
-                (editorInfo != null ? editorInfo.imeOptions : 0),
-                settingsKeyEnabled, clobberSettingsKey, shortcutKeyEnabled, hasShortcutKey);
-    }
-
-    private KeyboardId(int xmlId, int elementState, Locale locale, int orientation, int width,
             int mode, int inputType, int imeOptions, boolean settingsKeyEnabled,
             boolean clobberSettingsKey, boolean shortcutKeyEnabled, boolean hasShortcutKey) {
         this.mLocale = locale;
