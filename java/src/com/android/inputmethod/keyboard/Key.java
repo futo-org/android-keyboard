@@ -73,10 +73,11 @@ public class Key {
     private static final int LABEL_FLAGS_WITH_ICON_RIGHT = 0x2000;
     private static final int LABEL_FLAGS_AUTO_X_SCALE = 0x4000;
 
+    // TODO: This should be public final
     /** Icon to display instead of a label. Icon takes precedence over a label */
     private Drawable mIcon;
     /** Preview version of the icon, for the preview popup */
-    private Drawable mPreviewIcon;
+    public final Drawable mPreviewIcon;
 
     /** Width of the key, not including the gap */
     public final int mWidth;
@@ -198,6 +199,7 @@ public class Key {
         mCode = code;
         mAltCode = Keyboard.CODE_DUMMY;
         mIcon = icon;
+        mPreviewIcon = null;
         // Horizontal gap is divided equally to both sides of the key.
         mX = x + mHorizontalGap / 2;
         mY = y;
@@ -425,16 +427,9 @@ public class Key {
         return mIcon;
     }
 
-    public Drawable getPreviewIcon() {
-        return mPreviewIcon;
-    }
-
+    // TODO: Get rid of this method.
     public void setIcon(Drawable icon) {
         mIcon = icon;
-    }
-
-    public void setPreviewIcon(Drawable icon) {
-        mPreviewIcon = icon;
     }
 
     /**
