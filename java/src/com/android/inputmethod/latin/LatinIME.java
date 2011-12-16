@@ -819,6 +819,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                         + " imeOptions=0x%08x",
                         inputType, editorInfo.imeOptions));
             }
+            final boolean flagNoSuggestions =
+                    0 != (inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+            final boolean flagMultiLine =
+                    0 != (inputType & InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+            final boolean flagAutoCorrect =
+                    0 != (inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);
+            final boolean flagAutoComplete =
+                    0 != (inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
 
             mApplicationSpecifiedCompletions = null;
 
@@ -845,22 +853,21 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             } else if (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT) {
                 // If it's a browser edit field and auto correct is not ON explicitly, then
                 // disable auto correction, but keep suggestions on.
-                if ((inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0) {
+                if (!flagAutoCorrect) {
                     inputTypeNoAutoCorrect = true;
                 }
             }
 
             // If NO_SUGGESTIONS is set, don't do prediction.
-            if ((inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS) != 0) {
+            if (flagNoSuggestions) {
                 isSettingsSuggestionStripOn = false;
                 inputTypeNoAutoCorrect = true;
             }
             // If it's not multiline and the autoCorrect flag is not set, then don't correct
-            if ((inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0
-                    && (inputType & InputType.TYPE_TEXT_FLAG_MULTI_LINE) == 0) {
+            if (!flagAutoCorrect && !flagMultiLine) {
                 inputTypeNoAutoCorrect = true;
             }
-            if ((inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE) != 0) {
+            if (flagAutoComplete) {
                 isSettingsSuggestionStripOn = false;
                 applicationSpecifiedCompletionOn = isFullscreenMode();
             }
