@@ -106,8 +106,8 @@ public class LatinKeyboard extends Keyboard {
     }
 
     private static class LatinKeyboardParams extends KeyboardParams {
-        public Key mSpaceKey = null;
-        public Key mShortcutKey = null;
+        Key mSpaceKey = null;
+        Key mShortcutKey = null;
 
         LatinKeyboardParams() {}
 
@@ -323,7 +323,7 @@ public class LatinKeyboard extends Keyboard {
     }
 
     @Override
-    public int[] getNearestKeys(int x, int y) {
+    public Key[] getNearestKeys(int x, int y) {
         // Avoid dead pixels at edges of the keyboard
         return super.getNearestKeys(Math.max(0, Math.min(x, mOccupiedWidth - 1)),
                 Math.max(0, Math.min(y, mOccupiedHeight - 1)));
