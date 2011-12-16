@@ -67,6 +67,7 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.LatinKeyboard;
 import com.android.inputmethod.keyboard.LatinKeyboardView;
+import com.android.inputmethod.latin.suggestions.SuggestionsView;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;

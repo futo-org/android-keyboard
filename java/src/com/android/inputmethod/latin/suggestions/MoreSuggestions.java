@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.suggestions;
 
 import android.content.res.Resources;
 import android.graphics.Paint;
@@ -27,11 +27,12 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
+import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 public class MoreSuggestions extends Keyboard {
-    private static final boolean DBG = LatinImeLogger.sDBG;
-
     public static final int SUGGESTION_CODE_BASE = 1024;
 
     private MoreSuggestions(Builder.MoreSuggestionsParam params) {
@@ -39,6 +40,8 @@ public class MoreSuggestions extends Keyboard {
     }
 
     public static class Builder extends KeyboardBuilder<Builder.MoreSuggestionsParam> {
+        private static final boolean DBG = LatinImeLogger.sDBG;
+
         private final MoreSuggestionsView mPaneView;
         private SuggestedWords mSuggestions;
         private int mFromPos;

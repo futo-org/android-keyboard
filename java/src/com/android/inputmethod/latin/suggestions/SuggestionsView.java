@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.suggestions;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -57,7 +57,12 @@ import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MoreKeysPanel;
 import com.android.inputmethod.keyboard.PointerTracker;
+import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
+import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +77,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
     // The maximum number of suggestions available. See {@link Suggest#mPrefMaxSuggestions}.
     public static final int MAX_SUGGESTIONS = 18;
 
-    private static final boolean DBG = LatinImeLogger.sDBG;
+    static final boolean DBG = LatinImeLogger.sDBG;
 
     private final ViewGroup mSuggestionsStrip;
     private KeyboardView mKeyboardView;
