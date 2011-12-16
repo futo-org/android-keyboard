@@ -17,7 +17,6 @@
 package com.android.inputmethod.accessibility;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.os.Looper;
@@ -82,8 +81,8 @@ public class AccessibleInputMethodServiceProxy implements AccessibleKeyboardActi
         }
     }
 
-    public static void init(InputMethodService inputMethod, SharedPreferences prefs) {
-        sInstance.initInternal(inputMethod, prefs);
+    public static void init(InputMethodService inputMethod) {
+        sInstance.initInternal(inputMethod);
     }
 
     public static AccessibleInputMethodServiceProxy getInstance() {
@@ -94,7 +93,7 @@ public class AccessibleInputMethodServiceProxy implements AccessibleKeyboardActi
         // Not publicly instantiable.
     }
 
-    private void initInternal(InputMethodService inputMethod, SharedPreferences prefs) {
+    private void initInternal(InputMethodService inputMethod) {
         mInputMethod = inputMethod;
         mVibrator = (Vibrator) inputMethod.getSystemService(Context.VIBRATOR_SERVICE);
         mAudioManager = (AudioManager) inputMethod.getSystemService(Context.AUDIO_SERVICE);
@@ -125,8 +124,6 @@ public class AccessibleInputMethodServiceProxy implements AccessibleKeyboardActi
      */
     @Override
     public void onFlickGesture(int direction) {
-        final int keyEventCode;
-
         switch (direction) {
         case FlickGestureDetector.FLICK_LEFT:
             sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_LEFT);

@@ -17,7 +17,6 @@
 package com.android.inputmethod.accessibility;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.os.SystemClock;
@@ -55,15 +54,15 @@ public class AccessibilityUtils {
      */
     private static final boolean ENABLE_ACCESSIBILITY = true;
 
-    public static void init(InputMethodService inputMethod, SharedPreferences prefs) {
+    public static void init(InputMethodService inputMethod) {
         if (!ENABLE_ACCESSIBILITY)
             return;
 
         // These only need to be initialized if the kill switch is off.
-        sInstance.initInternal(inputMethod, prefs);
-        KeyCodeDescriptionMapper.init(inputMethod, prefs);
-        AccessibleInputMethodServiceProxy.init(inputMethod, prefs);
-        AccessibleKeyboardViewProxy.init(inputMethod, prefs);
+        sInstance.initInternal(inputMethod);
+        KeyCodeDescriptionMapper.init();
+        AccessibleInputMethodServiceProxy.init(inputMethod);
+        AccessibleKeyboardViewProxy.init(inputMethod);
     }
 
     public static AccessibilityUtils getInstance() {
@@ -74,7 +73,7 @@ public class AccessibilityUtils {
         // This class is not publicly instantiable.
     }
 
-    private void initInternal(Context context, SharedPreferences prefs) {
+    private void initInternal(Context context) {
         mContext = context;
         mAccessibilityManager = (AccessibilityManager) context
                 .getSystemService(Context.ACCESSIBILITY_SERVICE);

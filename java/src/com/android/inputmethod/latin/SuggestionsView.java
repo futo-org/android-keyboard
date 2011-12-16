@@ -100,8 +100,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
     private static class UiHandler extends StaticInnerHandlerWrapper<SuggestionsView> {
         private static final int MSG_HIDE_PREVIEW = 0;
 
-        private static final long DELAY_HIDE_PREVIEW = 1300;
-
         public UiHandler(SuggestionsView outerInstance) {
             super(outerInstance);
         }
@@ -114,11 +112,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
                 suggestionsView.hidePreview();
                 break;
             }
-        }
-
-        public void postHidePreview() {
-            cancelHidePreview();
-            sendMessageDelayed(obtainMessage(MSG_HIDE_PREVIEW), DELAY_HIDE_PREVIEW);
         }
 
         public void cancelHidePreview() {

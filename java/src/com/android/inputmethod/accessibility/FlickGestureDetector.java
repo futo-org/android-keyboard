@@ -126,7 +126,6 @@ public abstract class FlickGestureDetector {
         }
 
         final float distanceSquare = calculateDistanceSquare(mCachedHoverEnter, event);
-        final long timeout = event.getEventTime() - mCachedHoverEnter.getEventTime();
 
         switch (event.getAction()) {
         case MotionEventCompatUtils.ACTION_HOVER_MOVE:
