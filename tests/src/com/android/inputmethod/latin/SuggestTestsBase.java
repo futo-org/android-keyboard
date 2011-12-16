@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Configuration;
 import android.test.AndroidTestCase;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 
@@ -51,7 +52,7 @@ public class SuggestTestsBase extends AndroidTestCase {
         }
         return new KeyboardId(com.android.inputmethod.latin.R.xml.kbd_qwerty,
                 KeyboardId.ELEMENT_ALPHABET, locale, orientation, width, KeyboardId.MODE_TEXT,
-                null, false, false, false, false);
+                InputType.TYPE_CLASS_TEXT, 0, false, false, false, false);
     }
 
     protected InputStream openTestRawResource(int resIdInTest) {
