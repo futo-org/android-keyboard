@@ -1149,6 +1149,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (!mHasUncommittedTypedChars) return;
         mHasUncommittedTypedChars = false;
         final CharSequence typedWord = mWordComposer.getTypedWord();
+        mWordComposer.onCommitWord();
         if (typedWord.length() > 0) {
             if (ic != null) {
                 ic.commitText(typedWord, 1);
@@ -2033,6 +2034,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         }
         mHasUncommittedTypedChars = false;
+        mWordComposer.onCommitWord();
     }
 
     private static final WordComposer sEmptyWordComposer = new WordComposer();
@@ -2202,10 +2204,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         }
         ic.deleteSurroundingText(cancelLength + 1, 0);
-
-        // Re-insert the separator
+        mWordComposer.resumeSuggestionOnKeptWord();
         ic.commitText(mWordComposer.getTypedWord(), 1);
+        // Re-insert the separator
         ic.commitText(separator, 1);
+        mWordComposer.onCommitWord();
         Utils.Stats.onSeparator(separator.charAt(0), WordComposer.NOT_A_COORDINATE,
                 WordComposer.NOT_A_COORDINATE);
         mHandler.cancelUpdateBigramPredictions();
@@ -2234,6 +2237,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // restartSuggestionsOnWordBeforeCursorIfAtEndOfWord instead, but retrieving
         // the old WordComposer allows to reuse the actual typed coordinates.
         mHasUncommittedTypedChars = true;
+        mWordComposer.resumeSuggestionOnKeptWord();
         ic.setComposingText(mWordComposer.getTypedWord(), 1);
         mHandler.cancelUpdateBigramPredictions();
         mHandler.postUpdateSuggestions();

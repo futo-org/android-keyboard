@@ -61,11 +61,10 @@ public class WordComposer {
         }
     }
 
-    // The currently typing word.
-    // NOTE: this is not reset as soon as the word is committed because it may be needed again
-    // to resume suggestion if backspaced. TODO: separate cleanly what is actually being
-    // composed and what is kept for possible resuming.
+    // The currently typing word. May not be null.
     private CharacterStore mCurrentWord;
+    // The information being kept for resuming suggestion. May be null if wiped.
+    private CharacterStore mWordKeptForSuggestionResuming;
     // An auto-correction for this word out of the dictionary.
     private CharSequence mAutoCorrection;
 
@@ -82,6 +81,7 @@ public class WordComposer {
 
     public WordComposer() {
         mCurrentWord = new CharacterStore();
+        mWordKeptForSuggestionResuming = null;
         mTrailingSingleQuotesCount = 0;
         mAutoCorrection = null;
     }
@@ -92,6 +92,7 @@ public class WordComposer {
 
     public void init(WordComposer source) {
         mCurrentWord = new CharacterStore(source.mCurrentWord);
+        mWordKeptForSuggestionResuming = source.mWordKeptForSuggestionResuming;
         mCapsCount = source.mCapsCount;
         mIsFirstCharCapitalized = source.mIsFirstCharCapitalized;
         mAutoCapitalized = source.mAutoCapitalized;
@@ -104,6 +105,7 @@ public class WordComposer {
      */
     public void reset() {
         mCurrentWord.reset();
+        mWordKeptForSuggestionResuming = null;
         mCapsCount = 0;
         mIsFirstCharCapitalized = false;
         mTrailingSingleQuotesCount = 0;
@@ -322,5 +324,22 @@ public class WordComposer {
      */
     public CharSequence getAutoCorrectionOrNull() {
         return mAutoCorrection;
+    }
+
+    // TODO: pass the information about what was committed and how. Was it an auto-correction?
+    // Was it a completion? Was is what the user typed?
+    public void onCommitWord() {
+        mWordKeptForSuggestionResuming = mCurrentWord;
+        // TODO: improve performance by swapping buffers instead of creating a new object.
+        mCurrentWord = new CharacterStore();
+    }
+
+    public boolean hasWordKeptForSuggestionResuming() {
+        return null != mWordKeptForSuggestionResuming;
+    }
+
+    public void resumeSuggestionOnKeptWord() {
+        mCurrentWord = mWordKeptForSuggestionResuming;
+        mWordKeptForSuggestionResuming = null;
     }
 }
