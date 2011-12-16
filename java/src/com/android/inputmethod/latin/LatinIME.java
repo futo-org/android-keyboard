@@ -511,7 +511,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         loadSettings();
 
         // TODO: remove the following when it's not needed by updateCorrectionMode() any more
-        mInputAttributes = new InputAttributes(null);
+        mInputAttributes = new InputAttributes(null, false /* isFullscreenMode */);
         Utils.GCUtils.getInstance().reset();
         boolean tryGC = true;
         for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
@@ -797,85 +797,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private void initializeInputAttributes(final EditorInfo editorInfo) {
-        mInputAttributes = new InputAttributes(editorInfo);
-
-        final boolean insertSpaceOnPickSuggestionManually;
-        final boolean inputTypeNoAutoCorrect;
-        final boolean isSettingsSuggestionStripOn;
-        final boolean applicationSpecifiedCompletionOn;
-
-        if (editorInfo == null || editorInfo.inputType != InputType.TYPE_CLASS_TEXT) {
-            if (editorInfo.inputType == InputType.TYPE_NULL) {
-                // TODO: We should honor TYPE_NULL specification.
-                Log.i(TAG, "InputType.TYPE_NULL is specified");
-            }
-            insertSpaceOnPickSuggestionManually = false;
-            isSettingsSuggestionStripOn = false;
-            inputTypeNoAutoCorrect = false;
-            applicationSpecifiedCompletionOn = false;
-        } else {
-            final int inputType = editorInfo.inputType;
-            final int inputClass = inputType & InputType.TYPE_MASK_CLASS;
-            final int variation = inputType & InputType.TYPE_MASK_VARIATION;
-            if (inputClass == 0) {
-                Log.w(TAG, String.format("Unexpected input class: inputType=0x%08x"
-                        + " imeOptions=0x%08x",
-                        inputType, editorInfo.imeOptions));
-            }
-            final boolean flagNoSuggestions =
-                    0 != (inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-            final boolean flagMultiLine =
-                    0 != (inputType & InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-            final boolean flagAutoCorrect =
-                    0 != (inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT);
-            final boolean flagAutoComplete =
-                    0 != (inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
-
-            // Make sure that passwords are not displayed in {@link SuggestionsView}.
-            if (InputTypeCompatUtils.isPasswordInputType(inputType)
-                    || InputTypeCompatUtils.isVisiblePasswordInputType(inputType)
-                    || InputTypeCompatUtils.isEmailVariation(variation)
-                    || InputType.TYPE_TEXT_VARIATION_URI == variation
-                    || InputType.TYPE_TEXT_VARIATION_FILTER == variation
-                    || flagNoSuggestions
-                    || flagAutoComplete) {
-                isSettingsSuggestionStripOn = false;
-            } else {
-                isSettingsSuggestionStripOn = true;
-            }
-
-            if (InputTypeCompatUtils.isEmailVariation(variation)
-                    || variation == InputType.TYPE_TEXT_VARIATION_PERSON_NAME) {
-                // The point in turning this off is that we don't want to insert a space after
-                // a name when filling a form: we can't delete trailing spaces when changing fields
-                insertSpaceOnPickSuggestionManually = false;
-            } else {
-                insertSpaceOnPickSuggestionManually = true;
-            }
-
-            // If it's a browser edit field and auto correct is not ON explicitly, then
-            // disable auto correction, but keep suggestions on.
-            // If NO_SUGGESTIONS is set, don't do prediction.
-            // If it's not multiline and the autoCorrect flag is not set, then don't correct
-            if ((variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT && !flagAutoCorrect)
-                    || flagNoSuggestions
-                    || (!flagAutoCorrect && !flagMultiLine)) {
-                inputTypeNoAutoCorrect = true;
-            } else {
-                inputTypeNoAutoCorrect = false;
-            }
-
-            if (flagAutoComplete) {
-                applicationSpecifiedCompletionOn = isFullscreenMode();
-            } else {
-                applicationSpecifiedCompletionOn = false;
-            }
-        }
-
-        mInputAttributes.mInsertSpaceOnPickSuggestionManually = insertSpaceOnPickSuggestionManually;
-        mInputAttributes.mInputTypeNoAutoCorrect = inputTypeNoAutoCorrect;
-        mInputAttributes.mIsSettingsSuggestionStripOn = isSettingsSuggestionStripOn;
-        mInputAttributes.mApplicationSpecifiedCompletionOn = applicationSpecifiedCompletionOn;
+        mInputAttributes = new InputAttributes(editorInfo, isFullscreenMode());
     }
 
     @Override
