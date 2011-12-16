@@ -24,7 +24,7 @@
         android:orientation="horizontal"
         style="?attr/miniKeyboardPanelStyle"
         >
-    <com.android.inputmethod.latin.MoreSuggestionsView
+    <com.android.inputmethod.latin.suggestions.MoreSuggestionsView
             xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
             android:id="@+id/more_suggestions_view"
             android:layout_alignParentBottom="true"

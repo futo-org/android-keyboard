@@ -43,7 +43,7 @@
             android:layout_width="@dimen/suggestions_strip_padding"
             android:layout_height="@dimen/suggestions_strip_height"
             style="?attr/suggestionsStripBackgroundStyle" />
-        <com.android.inputmethod.latin.SuggestionsView
+        <com.android.inputmethod.latin.suggestions.SuggestionsView
             android:id="@+id/suggestions_view"
             android:layout_weight="1.0"
             android:layout_width="0dp"
