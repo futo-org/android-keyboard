@@ -30,7 +30,7 @@ public class ProximityInfo {
     public static final int MAX_PROXIMITY_CHARS_SIZE = 16;
     /** Number of key widths from current touch point to search for nearest keys. */
     private static float SEARCH_DISTANCE = 1.2f;
-    private static final int[] EMPTY_INT_ARRAY = new int[0];
+    private static final Key[] EMPTY_KEY_ARRAY = new Key[0];
 
     private final int mKeyHeight;
     private final int mGridWidth;
@@ -41,7 +41,7 @@ public class ProximityInfo {
     // TODO: Find a proper name for mKeyboardMinWidth
     private final int mKeyboardMinWidth;
     private final int mKeyboardHeight;
-    private final int[][] mGridNeighbors;
+    private final Key[][] mGridNeighbors;
 
     ProximityInfo(int gridWidth, int gridHeight, int minWidth, int height, int keyWidth,
             int keyHeight, List<Key> keys, TouchPositionCorrection touchPositionCorrection) {
@@ -53,7 +53,7 @@ public class ProximityInfo {
         mKeyboardMinWidth = minWidth;
         mKeyboardHeight = height;
         mKeyHeight = keyHeight;
-        mGridNeighbors = new int[mGridSize][];
+        mGridNeighbors = new Key[mGridSize][];
         if (minWidth == 0 || height == 0) {
             // No proximity required. Keyboard might be mini keyboard.
             return;
@@ -86,16 +86,16 @@ public class ProximityInfo {
             float[] sweetSpotCenterX, float[] sweetSpotCenterY, float[] sweetSpotRadii);
     private native void releaseProximityInfoNative(long nativeProximityInfo);
 
-    private final void setProximityInfo(int[][] gridNeighborKeyIndexes, int keyboardWidth,
+    private final void setProximityInfo(Key[][] gridNeighborKeys, int keyboardWidth,
             int keyboardHeight, List<Key> keys,
             TouchPositionCorrection touchPositionCorrection) {
         int[] proximityCharsArray = new int[mGridSize * MAX_PROXIMITY_CHARS_SIZE];
         Arrays.fill(proximityCharsArray, KeyDetector.NOT_A_CODE);
         for (int i = 0; i < mGridSize; ++i) {
-            final int proximityCharsLength = gridNeighborKeyIndexes[i].length;
+            final int proximityCharsLength = gridNeighborKeys[i].length;
             for (int j = 0; j < proximityCharsLength; ++j) {
                 proximityCharsArray[i * MAX_PROXIMITY_CHARS_SIZE + j] =
-                        keys.get(gridNeighborKeyIndexes[i][j]).mCode;
+                        gridNeighborKeys[i][j].mCode;
             }
         }
         final int keyCount = keys.size();
@@ -171,7 +171,7 @@ public class ProximityInfo {
         final int thresholdBase = (int) (defaultWidth * SEARCH_DISTANCE);
         final int threshold = thresholdBase * thresholdBase;
         // Round-up so we don't have any pixels outside the grid
-        final int[] indices = new int[keys.size()];
+        final Key[] neighborKeys = new Key[keys.size()];
         final int gridWidth = mGridWidth * mCellWidth;
         final int gridHeight = mGridHeight * mCellHeight;
         for (int x = 0; x < gridWidth; x += mCellWidth) {
@@ -179,24 +179,23 @@ public class ProximityInfo {
                 final int centerX = x + mCellWidth / 2;
                 final int centerY = y + mCellHeight / 2;
                 int count = 0;
-                for (int i = 0; i < keys.size(); i++) {
-                    final Key key = keys.get(i);
+                for (final Key key : keys) {
                     if (key.isSpacer()) continue;
-                    if (key.squaredDistanceToEdge(centerX, centerY) < threshold)
-                        indices[count++] = i;
+                    if (key.squaredDistanceToEdge(centerX, centerY) < threshold) {
+                        neighborKeys[count++] = key;
+                    }
                 }
-                final int[] cell = new int[count];
-                System.arraycopy(indices, 0, cell, 0, count);
-                mGridNeighbors[(y / mCellHeight) * mGridWidth + (x / mCellWidth)] = cell;
+                mGridNeighbors[(y / mCellHeight) * mGridWidth + (x / mCellWidth)] =
+                        Arrays.copyOfRange(neighborKeys, 0, count);
             }
         }
         setProximityInfo(mGridNeighbors, mKeyboardMinWidth, mKeyboardHeight, keys,
                 touchPositionCorrection);
     }
 
-    public int[] getNearestKeys(int x, int y) {
+    public Key[] getNearestKeys(int x, int y) {
         if (mGridNeighbors == null) {
-            return EMPTY_INT_ARRAY;
+            return EMPTY_KEY_ARRAY;
         }
         if (x >= 0 && x < mKeyboardMinWidth && y >= 0 && y < mKeyboardHeight) {
             int index = (y /  mCellHeight) * mGridWidth + (x / mCellWidth);
@@ -204,6 +203,6 @@ public class ProximityInfo {
                 return mGridNeighbors[index];
             }
         }
-        return EMPTY_INT_ARRAY;
+        return EMPTY_KEY_ARRAY;
     }
 }

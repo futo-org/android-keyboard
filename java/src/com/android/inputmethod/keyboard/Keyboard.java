@@ -225,13 +225,13 @@ public class Keyboard {
     }
 
     /**
-     * Returns the indices of the keys that are closest to the given point.
+     * Returns the array of the keys that are closest to the given point.
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
-     * @return the array of integer indices for the nearest keys to the given point. If the given
+     * @return the array of the nearest keys to the given point. If the given
      * point is out of range, then an array of size zero is returned.
      */
-    public int[] getNearestKeys(int x, int y) {
+    public Key[] getNearestKeys(int x, int y) {
         return mProximityInfo.getNearestKeys(x, y);
     }
 
