@@ -16,10 +16,14 @@
 
 package com.android.inputmethod.compat;
 
+import android.util.Log;
+
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
 public class ArraysCompatUtils {
+    private static final String TAG = ArraysCompatUtils.class.getSimpleName();
+
     private static final Method METHOD_Arrays_binarySearch = CompatUtils
             .getMethod(Arrays.class, "binarySearch", int[].class, int.class, int.class, int.class);
 
@@ -33,8 +37,15 @@ public class ArraysCompatUtils {
         }
     }
 
-    /* package */ static int compatBinarySearch(int[] array, int startIndex, int endIndex,
-            int value) {
+    // TODO: Implement fast binary search
+    /* package for testing */
+    static int compatBinarySearch(int[] array, int startIndex, int endIndex, int value) {
+        // Output error log because this method has strict performance penalty.
+        // Note that this method has been called only from spell checker and spell checker exists
+        // only from IceCreamSandwich and after, so that there is no chance on pre-ICS device to
+        // invoke this method.
+        Log.e(TAG, "Invoked expensive binarySearch");
+
         if (startIndex > endIndex) throw new IllegalArgumentException();
         if (startIndex < 0 || endIndex > array.length) throw new ArrayIndexOutOfBoundsException();
 
