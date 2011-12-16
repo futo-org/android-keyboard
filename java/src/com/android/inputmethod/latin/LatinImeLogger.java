@@ -29,6 +29,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
 
     public static boolean sDBG = false;
     public static boolean sVISUALDEBUG = false;
+    public static boolean sUsabilityStudy = false;
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
