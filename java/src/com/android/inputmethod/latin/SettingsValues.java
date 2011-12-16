@@ -52,7 +52,9 @@ public class SettingsValues {
     private final String mVoiceMode;
     private final String mAutoCorrectionThresholdRawValue;
     public final String mShowSuggestionsSetting;
+    @SuppressWarnings("unused") // TODO: Use this
     private final boolean mUsabilityStudyMode;
+    @SuppressWarnings("unused") // TODO: Use this
     private final String mKeyPreviewPopupDismissDelayRawValue;
     public final boolean mUseContactsDict;
     // Suggestion: use bigrams to adjust scores of suggestions obtained from unigram dictionary
@@ -60,7 +62,9 @@ public class SettingsValues {
     // Prediction: use bigrams to predict the next word when there is no input for it yet
     public final boolean mBigramPredictionEnabled;
     public final boolean mEnableSuggestionSpanInsertion;
+    @SuppressWarnings("unused") // TODO: Use this
     private final int mVibrationDurationSettingsRawValue;
+    @SuppressWarnings("unused") // TODO: Use this
     private final float mKeypressSoundVolumeRawValue;
 
     // Deduced settings
@@ -111,12 +115,12 @@ public class SettingsValues {
                 res.getString(R.string.auto_correction_threshold_mode_index_modest));
         mShowSuggestionsSetting = prefs.getString(Settings.PREF_SHOW_SUGGESTIONS_SETTING,
                 res.getString(R.string.prefs_suggestion_visibility_default_value));
-        mUsabilityStudyMode = getUsabilityStudyMode(prefs, res);
+        mUsabilityStudyMode = getUsabilityStudyMode(prefs);
         mKeyPreviewPopupDismissDelayRawValue = prefs.getString(
                 Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
                 Integer.toString(res.getInteger(R.integer.config_delay_after_preview)));
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
-        mAutoCorrectEnabled = isAutoCorrectEnabled(prefs, res, mAutoCorrectionThresholdRawValue);
+        mAutoCorrectEnabled = isAutoCorrectEnabled(res, mAutoCorrectionThresholdRawValue);
         mBigramSuggestionEnabled = mAutoCorrectEnabled
                 && isBigramSuggestionEnabled(prefs, res, mAutoCorrectEnabled);
         mBigramPredictionEnabled = mBigramSuggestionEnabled
@@ -131,7 +135,7 @@ public class SettingsValues {
         mKeypressVibrationDuration = getCurrentVibrationDuration(prefs, res);
         mFxVolume = getCurrentKeypressSoundVolume(prefs, res);
         mKeyPreviewPopupDismissDelay = getKeyPreviewPopupDismissDelay(prefs, res);
-        mAutoCorrectionThreshold = getAutoCorrectionThreshold(prefs, res,
+        mAutoCorrectionThreshold = getAutoCorrectionThreshold(res,
                 mAutoCorrectionThresholdRawValue);
         mVoiceKeyEnabled = mVoiceMode != null && !mVoiceMode.equals(voiceModeOff);
         mVoiceKeyOnMain = mVoiceMode != null && mVoiceMode.equals(voiceModeMain);
@@ -202,8 +206,8 @@ public class SettingsValues {
         return mMagicSpaceSwappers.contains(String.valueOf((char)code));
     }
 
-    private static boolean isAutoCorrectEnabled(final SharedPreferences sp,
-            final Resources resources, final String currentAutoCorrectionSetting) {
+    private static boolean isAutoCorrectEnabled(final Resources resources,
+            final String currentAutoCorrectionSetting) {
         final String autoCorrectionOff = resources.getString(
                 R.string.auto_correction_threshold_mode_index_off);
         return !currentAutoCorrectionSetting.equals(autoCorrectionOff);
@@ -244,8 +248,8 @@ public class SettingsValues {
                 R.bool.config_default_bigram_prediction));
     }
 
-    private static double getAutoCorrectionThreshold(final SharedPreferences sp,
-            final Resources resources, final String currentAutoCorrectionSetting) {
+    private static double getAutoCorrectionThreshold(final Resources resources,
+            final String currentAutoCorrectionSetting) {
         final String[] autoCorrectionThresholdValues = resources.getStringArray(
                 R.array.auto_correction_threshold_values);
         // When autoCorrectionThreshold is greater than 1.0, it's like auto correction is off.
@@ -321,8 +325,7 @@ public class SettingsValues {
     }
 
     // Likewise
-    public static boolean getUsabilityStudyMode(final SharedPreferences prefs,
-            final Resources res) {
+    public static boolean getUsabilityStudyMode(final SharedPreferences prefs) {
         // TODO: use mUsabilityStudyMode instead of reading it again here
         return prefs.getBoolean(Settings.PREF_USABILITY_STUDY_MODE, true);
     }

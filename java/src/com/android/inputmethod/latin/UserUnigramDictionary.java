@@ -172,7 +172,7 @@ public class UserUnigramDictionary extends ExpandableDictionary {
             // Nothing pending? Return
             if (mPendingWrites.isEmpty()) return;
             // Create a background thread to write the pending entries
-            new UpdateDbTask(getContext(), sOpenHelper, mPendingWrites, mLocale).execute();
+            new UpdateDbTask(sOpenHelper, mPendingWrites, mLocale).execute();
             // Create a new map for writing new entries into while the old one is written to db
             mPendingWrites = new HashMap<String, Integer>();
         }
@@ -227,8 +227,8 @@ public class UserUnigramDictionary extends ExpandableDictionary {
         private final DatabaseHelper mDbHelper;
         private final String mLocale;
 
-        public UpdateDbTask(@SuppressWarnings("unused") Context context, DatabaseHelper openHelper,
-                HashMap<String, Integer> pendingWrites, String locale) {
+        public UpdateDbTask(DatabaseHelper openHelper, HashMap<String, Integer> pendingWrites,
+                String locale) {
             mMap = pendingWrites;
             mLocale = locale;
             mDbHelper = openHelper;
