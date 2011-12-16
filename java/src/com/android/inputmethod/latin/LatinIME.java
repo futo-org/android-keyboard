@@ -196,12 +196,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private UserUnigramDictionary mUserUnigramDictionary;
     private boolean mIsUserDictionaryAvailable;
 
-    // TODO: Create an inner class to group options and pseudo-options to improve readability.
-    // These variables are initialized according to the {@link EditorInfo#inputType}.
-    private boolean mInsertSpaceOnPickSuggestionManually;
-    private boolean mInputTypeNoAutoCorrect;
-    private boolean mIsSettingsSuggestionStripOn;
-    private boolean mApplicationSpecifiedCompletionOn;
+    private InputAttributes mInputAttributes;
 
     private WordComposer mWordComposer = new WordComposer();
     private boolean mHasUncommittedTypedChars;
@@ -515,6 +510,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         loadSettings();
 
+        // TODO: remove the following when it's not needed by updateCorrectionMode() any more
+        mInputAttributes = new InputAttributes(null);
         Utils.GCUtils.getInstance().reset();
         boolean tryGC = true;
         for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
@@ -798,7 +795,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
 
-    private void initializeInputAttributes(EditorInfo editorInfo) {
+    private void initializeInputAttributes(final EditorInfo editorInfo) {
+        mInputAttributes = new InputAttributes(editorInfo);
         if (editorInfo == null)
             return;
         final int inputType = editorInfo.inputType;
@@ -813,54 +811,54 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     inputType, editorInfo.imeOptions));
         }
 
-        mInsertSpaceOnPickSuggestionManually = false;
-        mInputTypeNoAutoCorrect = false;
-        mIsSettingsSuggestionStripOn = false;
-        mApplicationSpecifiedCompletionOn = false;
+        mInputAttributes.mInsertSpaceOnPickSuggestionManually = false;
+        mInputAttributes.mInputTypeNoAutoCorrect = false;
+        mInputAttributes.mIsSettingsSuggestionStripOn = false;
+        mInputAttributes.mApplicationSpecifiedCompletionOn = false;
         mApplicationSpecifiedCompletions = null;
 
         if (inputClass == InputType.TYPE_CLASS_TEXT) {
-            mIsSettingsSuggestionStripOn = true;
+            mInputAttributes.mIsSettingsSuggestionStripOn = true;
             // Make sure that passwords are not displayed in {@link SuggestionsView}.
             if (InputTypeCompatUtils.isPasswordInputType(inputType)
                     || InputTypeCompatUtils.isVisiblePasswordInputType(inputType)) {
-                mIsSettingsSuggestionStripOn = false;
+                mInputAttributes.mIsSettingsSuggestionStripOn = false;
             }
             if (InputTypeCompatUtils.isEmailVariation(variation)
                     || variation == InputType.TYPE_TEXT_VARIATION_PERSON_NAME) {
                 // The point in turning this off is that we don't want to insert a space after
                 // a name when filling a form: we can't delete trailing spaces when changing fields
-                mInsertSpaceOnPickSuggestionManually = false;
+                mInputAttributes.mInsertSpaceOnPickSuggestionManually = false;
             } else {
-                mInsertSpaceOnPickSuggestionManually = true;
+                mInputAttributes.mInsertSpaceOnPickSuggestionManually = true;
             }
             if (InputTypeCompatUtils.isEmailVariation(variation)) {
-                mIsSettingsSuggestionStripOn = false;
+                mInputAttributes.mIsSettingsSuggestionStripOn = false;
             } else if (variation == InputType.TYPE_TEXT_VARIATION_URI) {
-                mIsSettingsSuggestionStripOn = false;
+                mInputAttributes.mIsSettingsSuggestionStripOn = false;
             } else if (variation == InputType.TYPE_TEXT_VARIATION_FILTER) {
-                mIsSettingsSuggestionStripOn = false;
+                mInputAttributes.mIsSettingsSuggestionStripOn = false;
             } else if (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT) {
                 // If it's a browser edit field and auto correct is not ON explicitly, then
                 // disable auto correction, but keep suggestions on.
                 if ((inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0) {
-                    mInputTypeNoAutoCorrect = true;
+                    mInputAttributes.mInputTypeNoAutoCorrect = true;
                 }
             }
 
             // If NO_SUGGESTIONS is set, don't do prediction.
             if ((inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS) != 0) {
-                mIsSettingsSuggestionStripOn = false;
-                mInputTypeNoAutoCorrect = true;
+                mInputAttributes.mIsSettingsSuggestionStripOn = false;
+                mInputAttributes.mInputTypeNoAutoCorrect = true;
             }
             // If it's not multiline and the autoCorrect flag is not set, then don't correct
             if ((inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0
                     && (inputType & InputType.TYPE_TEXT_FLAG_MULTI_LINE) == 0) {
-                mInputTypeNoAutoCorrect = true;
+                mInputAttributes.mInputTypeNoAutoCorrect = true;
             }
             if ((inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE) != 0) {
-                mIsSettingsSuggestionStripOn = false;
-                mApplicationSpecifiedCompletionOn = isFullscreenMode();
+                mInputAttributes.mIsSettingsSuggestionStripOn = false;
+                mInputAttributes.mApplicationSpecifiedCompletionOn = isFullscreenMode();
             }
         }
     }
@@ -1016,7 +1014,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 }
             }
         }
-        if (mApplicationSpecifiedCompletionOn) {
+        if (mInputAttributes.mApplicationSpecifiedCompletionOn) {
             mApplicationSpecifiedCompletions = applicationSpecifiedCompletions;
             if (applicationSpecifiedCompletions == null) {
                 clearSuggestions();
@@ -1611,7 +1609,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // in Italian dov' should not be expanded to dove' because the elision
             // requires the last vowel to be removed.
             final boolean shouldAutoCorrect = mSettingsValues.mAutoCorrectEnabled
-                    && !mInputTypeNoAutoCorrect;
+                    && !mInputAttributes.mInputTypeNoAutoCorrect;
             if (shouldAutoCorrect && primaryCode != Keyboard.CODE_SINGLE_QUOTE) {
                 commitCurrentAutoCorrection(primaryCode, ic);
             } else {
@@ -1688,7 +1686,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     public boolean isSuggestionsRequested() {
-        return mIsSettingsSuggestionStripOn
+        return mInputAttributes.mIsSettingsSuggestionStripOn
                 && (mCorrectionMode > 0 || isShowingSuggestionsStrip());
     }
 
@@ -1710,7 +1708,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             return true;
         if (!isShowingSuggestionsStrip())
             return false;
-        if (mApplicationSpecifiedCompletionOn)
+        if (mInputAttributes.mApplicationSpecifiedCompletionOn)
             return true;
         return isSuggestionsRequested();
     }
@@ -1797,7 +1795,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(mWordComposer,
                 prevWord, mKeyboardSwitcher.getLatinKeyboard().getProximityInfo(), mCorrectionMode);
 
-        boolean autoCorrectionAvailable = !mInputTypeNoAutoCorrect && mSuggest.hasAutoCorrection();
+        boolean autoCorrectionAvailable = !mInputAttributes.mInputTypeNoAutoCorrect
+                && mSuggest.hasAutoCorrection();
         final CharSequence typedWord = mWordComposer.getTypedWord();
         // Here, we want to promote a whitelisted word if exists.
         // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
@@ -1913,7 +1912,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (ic != null) {
             ic.beginBatchEdit();
         }
-        if (mApplicationSpecifiedCompletionOn && mApplicationSpecifiedCompletions != null
+        if (mInputAttributes.mApplicationSpecifiedCompletionOn
+                && mApplicationSpecifiedCompletions != null
                 && index >= 0 && index < mApplicationSpecifiedCompletions.length) {
             if (ic != null) {
                 final CompletionInfo completionInfo = mApplicationSpecifiedCompletions[index];
@@ -1972,7 +1972,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         LatinImeLogger.logOnManualSuggestion(mWordComposer.getTypedWord().toString(),
                 suggestion.toString(), index, suggestions.mWords);
         // Follow it with a space
-        if (mInsertSpaceOnPickSuggestionManually) {
+        if (mInputAttributes.mInsertSpaceOnPickSuggestionManually) {
             sendMagicSpace();
         }
 
@@ -2423,7 +2423,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private void updateCorrectionMode() {
         // TODO: cleanup messy flags
         final boolean shouldAutoCorrect = mSettingsValues.mAutoCorrectEnabled
-                && !mInputTypeNoAutoCorrect;
+                && !mInputAttributes.mInputTypeNoAutoCorrect;
         mCorrectionMode = shouldAutoCorrect ? Suggest.CORRECTION_FULL : Suggest.CORRECTION_NONE;
         mCorrectionMode = (mSettingsValues.mBigramSuggestionEnabled && shouldAutoCorrect)
                 ? Suggest.CORRECTION_FULL_BIGRAM : mCorrectionMode;
@@ -2522,12 +2522,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final Keyboard keyboard = mKeyboardSwitcher.getLatinKeyboard();
         final int keyboardMode = keyboard != null ? keyboard.mId.mMode : -1;
         p.println("  Keyboard mode = " + keyboardMode);
-        p.println("  mIsSuggestionsRequested=" + mIsSettingsSuggestionStripOn);
+        p.println("  mIsSuggestionsRequested=" + mInputAttributes.mIsSettingsSuggestionStripOn);
         p.println("  mCorrectionMode=" + mCorrectionMode);
         p.println("  mHasUncommittedTypedChars=" + mHasUncommittedTypedChars);
         p.println("  mAutoCorrectEnabled=" + mSettingsValues.mAutoCorrectEnabled);
-        p.println("  mInsertSpaceOnPickSuggestionManually=" + mInsertSpaceOnPickSuggestionManually);
-        p.println("  mApplicationSpecifiedCompletionOn=" + mApplicationSpecifiedCompletionOn);
+        p.println("  mInsertSpaceOnPickSuggestionManually="
+                + mInputAttributes.mInsertSpaceOnPickSuggestionManually);
+        p.println("  mApplicationSpecifiedCompletionOn="
+                + mInputAttributes.mApplicationSpecifiedCompletionOn);
         p.println("  mSoundOn=" + mSettingsValues.mSoundOn);
         p.println("  mVibrateOn=" + mSettingsValues.mVibrateOn);
         p.println("  mKeyPreviewPopupOn=" + mSettingsValues.mKeyPreviewPopupOn);
