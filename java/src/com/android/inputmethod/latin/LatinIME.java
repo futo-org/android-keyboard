@@ -176,6 +176,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private int mSpaceState;
 
     private SettingsValues mSettingsValues;
+    private InputAttributes mInputAttributes;
 
     private View mExtractArea;
     private View mKeyPreviewBackingView;
@@ -195,8 +196,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private UserBigramDictionary mUserBigramDictionary;
     private UserUnigramDictionary mUserUnigramDictionary;
     private boolean mIsUserDictionaryAvailable;
-
-    private InputAttributes mInputAttributes;
 
     private WordComposer mWordComposer = new WordComposer();
     private boolean mHasUncommittedTypedChars;
@@ -754,7 +753,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // The EditorInfo might have a flag that affects fullscreen mode.
         // Note: This call should be done by InputMethodService?
         updateFullscreenMode();
-        initializeInputAttributes(editorInfo);
+        mInputAttributes = new InputAttributes(editorInfo, isFullscreenMode());
         mApplicationSpecifiedCompletions = null;
 
         inputView.closing();
@@ -794,10 +793,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         voiceIme.onStartInputView(inputView.getWindowToken());
 
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
-    }
-
-    private void initializeInputAttributes(final EditorInfo editorInfo) {
-        mInputAttributes = new InputAttributes(editorInfo, isFullscreenMode());
     }
 
     @Override

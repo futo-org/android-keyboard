@@ -34,16 +34,11 @@ public class InputAttributes {
     final public boolean mApplicationSpecifiedCompletionOn;
 
     public InputAttributes(final EditorInfo editorInfo, final boolean isFullscreenMode) {
-        final boolean insertSpaceOnPickSuggestionManually;
-        final boolean inputTypeNoAutoCorrect;
-        final boolean isSettingsSuggestionStripOn;
-        final boolean applicationSpecifiedCompletionOn;
-
         if (editorInfo == null || editorInfo.inputType == InputType.TYPE_CLASS_TEXT) {
-            insertSpaceOnPickSuggestionManually = false;
-            isSettingsSuggestionStripOn = false;
-            inputTypeNoAutoCorrect = false;
-            applicationSpecifiedCompletionOn = false;
+            mInsertSpaceOnPickSuggestionManually = false;
+            mIsSettingsSuggestionStripOn = false;
+            mInputTypeNoAutoCorrect = false;
+            mApplicationSpecifiedCompletionOn = false;
         } else {
             final int inputType = editorInfo.inputType;
             if (inputType == InputType.TYPE_NULL) {
@@ -53,6 +48,7 @@ public class InputAttributes {
             final int inputClass = inputType & InputType.TYPE_MASK_CLASS;
             final int variation = inputType & InputType.TYPE_MASK_VARIATION;
             if (inputClass == 0) {
+                // TODO: is this check still necessary?
                 Log.w(TAG, String.format("Unexpected input class: inputType=0x%08x"
                         + " imeOptions=0x%08x",
                         inputType, editorInfo.imeOptions));
@@ -74,18 +70,18 @@ public class InputAttributes {
                     || InputType.TYPE_TEXT_VARIATION_FILTER == variation
                     || flagNoSuggestions
                     || flagAutoComplete) {
-                isSettingsSuggestionStripOn = false;
+                mIsSettingsSuggestionStripOn = false;
             } else {
-                isSettingsSuggestionStripOn = true;
+                mIsSettingsSuggestionStripOn = true;
             }
 
             if (InputTypeCompatUtils.isEmailVariation(variation)
                     || variation == InputType.TYPE_TEXT_VARIATION_PERSON_NAME) {
                 // The point in turning this off is that we don't want to insert a space after
                 // a name when filling a form: we can't delete trailing spaces when changing fields
-                insertSpaceOnPickSuggestionManually = false;
+                mInsertSpaceOnPickSuggestionManually = false;
             } else {
-                insertSpaceOnPickSuggestionManually = true;
+                mInsertSpaceOnPickSuggestionManually = true;
             }
 
             // If it's a browser edit field and auto correct is not ON explicitly, then
@@ -96,17 +92,12 @@ public class InputAttributes {
                     && !flagAutoCorrect)
                     || flagNoSuggestions
                     || (!flagAutoCorrect && !flagMultiLine)) {
-                inputTypeNoAutoCorrect = true;
+                mInputTypeNoAutoCorrect = true;
             } else {
-                inputTypeNoAutoCorrect = false;
+                mInputTypeNoAutoCorrect = false;
             }
 
-            applicationSpecifiedCompletionOn = flagAutoComplete && isFullscreenMode;
+            mApplicationSpecifiedCompletionOn = flagAutoComplete && isFullscreenMode;
         }
-
-        mInsertSpaceOnPickSuggestionManually = insertSpaceOnPickSuggestionManually;
-        mInputTypeNoAutoCorrect = inputTypeNoAutoCorrect;
-        mIsSettingsSuggestionStripOn = isSettingsSuggestionStripOn;
-        mApplicationSpecifiedCompletionOn = applicationSpecifiedCompletionOn;
     }
 }
