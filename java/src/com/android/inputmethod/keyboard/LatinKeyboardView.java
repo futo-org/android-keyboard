@@ -21,6 +21,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -38,9 +39,11 @@ import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.latin.LatinIME;
+import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.Utils;
+import com.android.inputmethod.latin.Utils.UsabilityStudyLogUtils;
 
 import java.util.WeakHashMap;
 
@@ -61,6 +64,9 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
     // Timing constants
     private final int mKeyRepeatInterval;
+
+    // TODO: Kill process when the usability study mode was changed.
+    private static final boolean ENABLE_USABILITY_STUDY_LOG = LatinImeLogger.sUsabilityStudy;
 
     // Mini keyboard
     private PopupWindow mMoreKeysWindow;
@@ -513,6 +519,30 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             x = (int)me.getX(index);
             y = (int)me.getY(index);
         }
+        if (ENABLE_USABILITY_STUDY_LOG) {
+            final String eventTag;
+            switch (action) {
+                case MotionEvent.ACTION_UP:
+                    eventTag = "[Up]";
+                    break;
+                case MotionEvent.ACTION_DOWN:
+                    eventTag = "[Down]";
+                    break;
+                case MotionEvent.ACTION_POINTER_UP:
+                    eventTag = "[PointerUp]";
+                    break;
+                case MotionEvent.ACTION_POINTER_DOWN:
+                    eventTag = "[PointerDown]";
+                    break;
+                default:
+                    eventTag = "[Action" + action + "]";
+                    break;
+            }
+            if (!TextUtils.isEmpty(eventTag)) {
+                UsabilityStudyLogUtils.getInstance().write(
+                        eventTag + eventTime + "," + id + "," + x + "," + y + "\t\t");
+            }
+        }
 
         if (mKeyTimerHandler.isInKeyRepeat()) {
             final PointerTracker tracker = getPointerTracker(id);
@@ -569,6 +599,10 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                     py = (int)me.getY(i);
                 }
                 tracker.onMoveEvent(px, py, eventTime);
+                if (ENABLE_USABILITY_STUDY_LOG) {
+                    UsabilityStudyLogUtils.getInstance().write("[Move]"  + eventTime + ","
+                            + me.getPointerId(i) + "," + px + "," + py + "\t\t");
+                }
             }
         } else {
             getPointerTracker(id).processMotionEvent(action, x, y, eventTime, this);
