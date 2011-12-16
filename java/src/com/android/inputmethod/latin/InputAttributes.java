@@ -100,4 +100,13 @@ public class InputAttributes {
             mApplicationSpecifiedCompletionOn = flagAutoComplete && isFullscreenMode;
         }
     }
+
+    // Pretty print
+    @Override
+    public String toString() {
+        return "\n mInsertSpaceOnPickSuggestionManually = " + mInsertSpaceOnPickSuggestionManually
+                + "\n mInputTypeNoAutoCorrect = " + mInputTypeNoAutoCorrect
+                + "\n mIsSettingsSuggestionStripOn = " + mIsSettingsSuggestionStripOn
+                + "\n mApplicationSpecifiedCompletionOn = " + mApplicationSpecifiedCompletionOn;
+    }
 }

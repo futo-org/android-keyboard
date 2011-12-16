@@ -2445,12 +2445,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         p.println("  mCorrectionMode=" + mCorrectionMode);
         p.println("  isComposingWord=" + mWordComposer.isComposingWord());
         p.println("  mAutoCorrectEnabled=" + mSettingsValues.mAutoCorrectEnabled);
-        p.println("  mInsertSpaceOnPickSuggestionManually="
-                + mInputAttributes.mInsertSpaceOnPickSuggestionManually);
-        p.println("  mApplicationSpecifiedCompletionOn="
-                + mInputAttributes.mApplicationSpecifiedCompletionOn);
         p.println("  mSoundOn=" + mSettingsValues.mSoundOn);
         p.println("  mVibrateOn=" + mSettingsValues.mVibrateOn);
         p.println("  mKeyPreviewPopupOn=" + mSettingsValues.mKeyPreviewPopupOn);
+        p.println("  mInputAttributes=" + mInputAttributes.toString());
     }
 }
