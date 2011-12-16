@@ -889,7 +889,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             }
             previewText.setText(mKeyboard.adjustLabelCase(key.mLabel));
         } else {
-            final Drawable previewIcon = key.getPreviewIcon();
+            final Drawable previewIcon = key.mPreviewIcon;
             previewText.setCompoundDrawables(null, null, null,
                    previewIcon != null ? previewIcon : key.getIcon());
             previewText.setText(null);
