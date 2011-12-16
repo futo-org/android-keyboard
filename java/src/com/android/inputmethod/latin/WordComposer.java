@@ -120,6 +120,10 @@ public class WordComposer {
         return mCurrentWord.mTypedWord.length();
     }
 
+    public final boolean isComposingWord() {
+        return size() > 0;
+    }
+
     /**
      * Returns the codes at a particular position in the word.
      * @param index the position in the word
