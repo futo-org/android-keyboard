@@ -31,20 +31,22 @@
         <Key
             latin:keyLabel="ц" />
         <Key
-            latin:keyLabel="у" />
+            latin:keyLabel="у"
+            latin:moreKeys="@string/more_keys_for_slavic_u" />
         <Key
             latin:keyLabel="к" />
         <Key
             latin:keyLabel="е"
-            latin:moreKeys="@string/more_keys_for_cyrillic_e" />
+            latin:moreKeys="@string/more_keys_for_slavic_ye" />
         <Key
-            latin:keyLabel="н" />
+            latin:keyLabel="н"
+            latin:moreKeys="@string/more_keys_for_slavic_en" />
         <Key
             latin:keyLabel="г" />
         <Key
             latin:keyLabel="ш" />
         <Key
-            latin:keyLabel="щ" />
+            latin:keyLabel="@string/keylabel_for_slavic_shcha" />
         <Key
             latin:keyLabel="з" />
         <Key
@@ -63,7 +65,8 @@
             latin:keyLabel="ф"
             latin:keyXPos="2.25%p" />
         <Key
-            latin:keyLabel="ы" />
+            latin:keyLabel="@string/keylabel_for_slavic_yery"
+            latin:moreKeys="@string/more_keys_for_slavic_yery" />
         <Key
             latin:keyLabel="в" />
         <Key
@@ -73,7 +76,8 @@
         <Key
             latin:keyLabel="р" />
         <Key
-            latin:keyLabel="о" />
+            latin:keyLabel="о"
+            latin:moreKeys="@string/more_keys_for_slavic_o" />
         <Key
             latin:keyLabel="л" />
         <Key
@@ -101,7 +105,7 @@
         <Key
             latin:keyLabel="м" />
         <Key
-            latin:keyLabel="и" />
+            latin:keyLabel="@string/keylabel_for_slavic_i" />
         <Key
             latin:keyLabel="т" />
         <Key

@@ -37,7 +37,7 @@
         <Key
             latin:keyLabel="у"
             latin:keyHintLabel="3"
-            latin:moreKeys="3" />
+            latin:moreKeys="@string/more_keys_for_slavic_u" />
         <Key
             latin:keyLabel="к"
             latin:keyHintLabel="4"
@@ -45,11 +45,11 @@
         <Key
             latin:keyLabel="е"
             latin:keyHintLabel="5"
-            latin:moreKeys="@string/more_keys_for_cyrillic_e" />
+            latin:moreKeys="@string/more_keys_for_slavic_ye" />
         <Key
             latin:keyLabel="н"
             latin:keyHintLabel="6"
-            latin:moreKeys="6" />
+            latin:moreKeys="@string/more_keys_for_slavic_en" />
         <Key
             latin:keyLabel="г"
             latin:keyHintLabel="7"
@@ -59,7 +59,7 @@
             latin:keyHintLabel="8"
             latin:moreKeys="8" />
         <Key
-            latin:keyLabel="щ"
+            latin:keyLabel="@string/keylabel_for_slavic_shcha"
             latin:keyHintLabel="9"
             latin:moreKeys="9" />
         <Key
@@ -68,7 +68,7 @@
             latin:moreKeys="0" />
         <Key
             latin:keyLabel="х"
-            latin:moreKeys="@string/more_keys_for_cyrillic_ha"
+            latin:moreKeys="@string/more_keys_for_slavic_ha"
             latin:keyWidth="fillRight" />
     </Row>
     <Row
@@ -78,7 +78,8 @@
             latin:keyLabel="ф"
             latin:keyWidth="8.75%p" />
         <Key
-            latin:keyLabel="ы" />
+            latin:keyLabel="@string/keylabel_for_slavic_yery"
+            latin:moreKeys="@string/more_keys_for_slavic_yery" />
         <Key
             latin:keyLabel="в" />
         <Key
@@ -88,7 +89,8 @@
         <Key
             latin:keyLabel="р" />
         <Key
-            latin:keyLabel="о" />
+            latin:keyLabel="о"
+            latin:moreKeys="@string/more_keys_for_slavic_o" />
         <Key
             latin:keyLabel="л" />
         <Key
@@ -114,12 +116,12 @@
         <Key
             latin:keyLabel="м" />
         <Key
-            latin:keyLabel="и" />
+            latin:keyLabel="@string/keylabel_for_slavic_i" />
         <Key
             latin:keyLabel="т" />
         <Key
             latin:keyLabel="ь"
-            latin:moreKeys="@string/more_keys_for_cyrillic_soft_sign" />
+            latin:moreKeys="@string/more_keys_for_slavic_soft_sign" />
         <Key
             latin:keyLabel="б" />
         <Key
