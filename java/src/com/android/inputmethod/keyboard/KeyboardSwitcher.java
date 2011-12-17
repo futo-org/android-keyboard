@@ -157,6 +157,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         mKeyboardView.setKeyPreviewPopupEnabled(
                 SettingsValues.isKeyPreviewPopupEnabled(mPrefs, mResources),
                 SettingsValues.getKeyPreviewPopupDismissDelay(mPrefs, mResources));
+        mKeyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
         final boolean localeChanged = (oldKeyboard == null)
                 || !keyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
         if (keyboard instanceof LatinKeyboard) {
@@ -168,7 +169,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
             mKeyboardView.updateSpacebar();
             latinKeyboard.updateSpacebarLanguage(0.0f,
                     mSubtypeSwitcher.needsToDisplayLanguage(latinKeyboard.mId.mLocale));
-            latinKeyboard.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
         }
         updateShiftState();
         mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
@@ -411,12 +411,8 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     }
 
     public void onNetworkStateChanged() {
-        final LatinKeyboard keyboard = getLatinKeyboard();
-        if (keyboard == null) return;
-        final Key updatedKey = keyboard.updateShortcutKey(
-                SubtypeSwitcher.getInstance().isShortcutImeReady());
-        if (updatedKey != null && mKeyboardView != null) {
-            mKeyboardView.invalidateKey(updatedKey);
+        if (mKeyboardView != null) {
+            mKeyboardView.updateShortcutKey(SubtypeSwitcher.getInstance().isShortcutImeReady());
         }
     }
 

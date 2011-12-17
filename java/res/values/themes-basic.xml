@@ -19,6 +19,7 @@
         <item name="keyboardStyle">@style/Keyboard</item>
         <item name="latinKeyboardStyle">@style/LatinKeyboard</item>
         <item name="keyboardViewStyle">@style/KeyboardView</item>
+        <item name="latinKeyboardViewStyle">@style/LatinKeyboardView</item>
         <item name="miniKeyboardStyle">@style/MiniKeyboard</item>
         <item name="miniKeyboardViewStyle">@style/MiniKeyboardView</item>
         <item name="miniKeyboardPanelStyle">@style/MiniKeyboardPanelStyle</item>

@@ -72,6 +72,12 @@
         <item name="backgroundDimAmount">0.5</item>
     </style>
     <style
+        name="LatinKeyboardView"
+        parent="KeyboardView">
+        <!-- TODO: Needs non-holo disabled shortcut icon drawable -->
+        <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
+    </style>
+    <style
         name="MiniKeyboard"
         parent="Keyboard"
     >
@@ -134,6 +140,13 @@
         <item name="android:background">@android:color/black</item>
         <item name="keyBackground">@drawable/btn_keyboard_key3</item>
     </style>
+    <style
+        name="LatinKeyboardView.HighContrast"
+        parent="KeyboardView.HighContrast"
+    >
+        <!-- TODO: Needs non-holo disabled shortcut icon drawable -->
+        <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
+    </style>
     <!-- Theme "Stone" -->
     <style
         name="Keyboard.Stone"
@@ -167,6 +180,12 @@
         <item name="shadowColor">#FFFFFFFF</item>
     </style>
     <style
+        name="LatinKeyboardView.Stone"
+        parent="KeyboardView.Stone"
+    >
+        <item name="disabledShortcutIcon">@drawable/sym_bkeyboard_voice_off</item>
+    </style>
+    <style
         name="MiniKeyboard.Stone"
         parent="Keyboard.Stone"
     >
@@ -195,6 +214,12 @@
     >
         <item name="keyTextStyle">bold</item>
     </style>
+    <style
+        name="LatinKeyboardView.Stone.Bold"
+        parent="KeyboardView.Stone.Bold"
+    >
+        <item name="disabledShortcutIcon">@drawable/sym_bkeyboard_voice_off</item>
+    </style>
     <!-- Theme "Gingerbread" -->
     <style
         name="Keyboard.Gingerbread"
@@ -212,6 +237,13 @@
         <item name="android:background">@drawable/keyboard_dark_background</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_gingerbread</item>
         <item name="keyTextStyle">bold</item>
+    </style>
+    <style
+        name="LatinKeyboardView.Gingerbread"
+        parent="KeyboardView.Gingerbread"
+    >
+        <!-- TODO: Needs non-holo disabled shortcut icon drawable -->
+        <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
     </style>
     <style
         name="MiniKeyboard.Gingerbread"
@@ -244,7 +276,6 @@
         parent="LatinKeyboard"
     >
         <item name="autoCorrectionSpacebarLedEnabled">false</item>
-        <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
     </style>
     <style
         name="KeyboardView.IceCreamSandwich"
@@ -269,6 +300,12 @@
         <item name="shadowColor">#00000000</item>
         <item name="shadowRadius">0.0</item>
     </style>
+    <style
+        name="LatinKeyboardView.IceCreamSandwich"
+        parent="KeyboardView.IceCreamSandwich"
+    >
+        <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
+        </style>
     <style
         name="MiniKeyboard.IceCreamSandwich"
         parent="Keyboard.IceCreamSandwich"
