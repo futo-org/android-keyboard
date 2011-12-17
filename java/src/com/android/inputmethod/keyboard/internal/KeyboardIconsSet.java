@@ -28,22 +28,26 @@ public class KeyboardIconsSet {
 
     public static final int ICON_UNDEFINED = 0;
 
+    // TODO: Make all enums private
     // This should be aligned with Keyboard.keyIcon enum.
-    private static final int ICON_SHIFT_KEY = 1;
+    public static final int ICON_SHIFT_KEY = 1;
     private static final int ICON_DELETE_KEY = 2;
-    private static final int ICON_SETTINGS_KEY = 3; // This is also represented as "@icon/3" in XML.
-    private static final int ICON_SPACE_KEY = 4;
+    // This is also represented as "@icon/3" in keyboard layout XML.
+    private static final int ICON_SETTINGS_KEY = 3;
+    public static final int ICON_SPACE_KEY = 4;
     private static final int ICON_RETURN_KEY = 5;
     private static final int ICON_SEARCH_KEY = 6;
-    private static final int ICON_TAB_KEY = 7; // This is also represented as "@icon/7" in XML.
-    private static final int ICON_SHORTCUT_KEY = 8;
+    // This is also represented as "@icon/7" in keyboard layout XML.
+    private static final int ICON_TAB_KEY = 7;
+    public static final int ICON_SHORTCUT_KEY = 8;
     private static final int ICON_SHORTCUT_FOR_LABEL = 9;
-    // This should be aligned with Keyboard.keyIconShifted enum.
-    private static final int ICON_SHIFTED_SHIFT_KEY = 10;
+    public static final int ICON_SHORTCUT_KEY_DISABLED = 10;
+    private static final int ICON_SPACE_KEY_FOR_NUMBER_LAYOUT = 11;
+    public static final int ICON_SHIFT_KEY_SHIFTED = 12;
     // This should be aligned with Keyboard.keyIconPreview enum.
-    private static final int ICON_PREVIEW_TAB_KEY = 11;
+    private static final int ICON_PREVIEW_TAB_KEY = 13;
 
-    private static final int ICON_LAST = 11;
+    private static final int ICON_LAST = 13;
 
     private final Drawable mIcons[] = new Drawable[ICON_LAST + 1];
 
@@ -67,8 +71,12 @@ public class KeyboardIconsSet {
             return ICON_SHORTCUT_KEY;
         case R.styleable.Keyboard_iconShortcutForLabel:
             return ICON_SHORTCUT_FOR_LABEL;
-        case R.styleable.Keyboard_iconShiftedShiftKey:
-            return ICON_SHIFTED_SHIFT_KEY;
+        case R.styleable.Keyboard_iconShortcutKeyDisabled:
+            return ICON_SHORTCUT_KEY_DISABLED;
+        case R.styleable.Keyboard_iconSpaceKeyForNumberLayout:
+            return ICON_SPACE_KEY_FOR_NUMBER_LAYOUT;
+        case R.styleable.Keyboard_iconShiftKeyShifted:
+            return ICON_SHIFT_KEY_SHIFTED;
         case R.styleable.Keyboard_iconPreviewTabKey:
             return ICON_PREVIEW_TAB_KEY;
         default:

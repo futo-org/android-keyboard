@@ -26,10 +26,10 @@
         <item name="iconTabKey">@drawable/sym_keyboard_tab</item>
         <item name="iconShortcutKey">@drawable/sym_keyboard_mic</item>
         <item name="iconShortcutForLabel">@drawable/sym_keyboard_label_mic</item>
-        <item name="iconShiftedShiftKey">@drawable/sym_keyboard_shift_locked</item>
+        <!-- TODO: Needs non-holo disabled shortcut icon drawable -->
+        <item name="iconShortcutKeyDisabled">@drawable/sym_keyboard_voice_off_holo</item>
+        <item name="iconSpaceKeyForNumberLayout">@drawable/sym_keyboard_space</item>
+        <item name="iconShiftKeyShifted">@drawable/sym_keyboard_shift_locked</item>
         <item name="iconPreviewTabKey">@drawable/sym_keyboard_feedback_tab</item>
-        <!-- LatinKeyboard icons -->
-        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
-        <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
     </style>
 </resources>

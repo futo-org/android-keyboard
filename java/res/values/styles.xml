@@ -33,6 +33,7 @@
     </style>
     <style name="LatinKeyboard">
         <item name="autoCorrectionSpacebarLedEnabled">true</item>
+        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
         <item name="spacebarTextRatio">@fraction/spacebar_text_ratio</item>
         <item name="spacebarTextColor">#FFC0C0C0</item>
         <item name="spacebarTextShadowColor">#80000000</item>
@@ -74,8 +75,6 @@
     <style
         name="LatinKeyboardView"
         parent="KeyboardView">
-        <!-- TODO: Needs non-holo disabled shortcut icon drawable -->
-        <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
     </style>
     <style
         name="MiniKeyboard"
@@ -144,8 +143,6 @@
         name="LatinKeyboardView.HighContrast"
         parent="KeyboardView.HighContrast"
     >
-        <!-- TODO: Needs non-holo disabled shortcut icon drawable -->
-        <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
     </style>
     <!-- Theme "Stone" -->
     <style
@@ -183,7 +180,6 @@
         name="LatinKeyboardView.Stone"
         parent="KeyboardView.Stone"
     >
-        <item name="disabledShortcutIcon">@drawable/sym_bkeyboard_voice_off</item>
     </style>
     <style
         name="MiniKeyboard.Stone"
@@ -218,7 +214,6 @@
         name="LatinKeyboardView.Stone.Bold"
         parent="KeyboardView.Stone.Bold"
     >
-        <item name="disabledShortcutIcon">@drawable/sym_bkeyboard_voice_off</item>
     </style>
     <!-- Theme "Gingerbread" -->
     <style
@@ -242,8 +237,6 @@
         name="LatinKeyboardView.Gingerbread"
         parent="KeyboardView.Gingerbread"
     >
-        <!-- TODO: Needs non-holo disabled shortcut icon drawable -->
-        <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
     </style>
     <style
         name="MiniKeyboard.Gingerbread"
@@ -276,6 +269,7 @@
         parent="LatinKeyboard"
     >
         <item name="autoCorrectionSpacebarLedEnabled">false</item>
+        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_holo</item>
     </style>
     <style
         name="KeyboardView.IceCreamSandwich"
@@ -304,7 +298,6 @@
         name="LatinKeyboardView.IceCreamSandwich"
         parent="KeyboardView.IceCreamSandwich"
     >
-        <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
         </style>
     <style
         name="MiniKeyboard.IceCreamSandwich"
