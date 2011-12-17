@@ -18,7 +18,6 @@ package com.android.inputmethod.keyboard;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -45,13 +44,13 @@ public class LatinKeyboard extends Keyboard {
     private static final int SPACE_LED_LENGTH_PERCENT = 80;
 
     private final Resources mRes;
-    private final Theme mTheme;
 
     /* Space key and its icons, drawables and colors. */
     private final Key mSpaceKey;
     private final Drawable mSpaceIcon;
     private final boolean mAutoCorrectionSpacebarLedEnabled;
     private final Drawable mAutoCorrectionSpacebarLedIcon;
+    private final float mSpacebarTextSize;
     private final int mSpacebarTextColor;
     private final int mSpacebarTextShadowColor;
     private final HashMap<Integer, BitmapDrawable> mSpaceDrawableCache =
@@ -74,13 +73,9 @@ public class LatinKeyboard extends Keyboard {
     // its short language name will be used instead.
     private static final float MINIMUM_SCALE_OF_LANGUAGE_NAME = 0.8f;
 
-    private static final String SMALL_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR = "small";
-    private static final String MEDIUM_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR = "medium";
-
     private LatinKeyboard(Context context, KeyboardParams params) {
         super(params);
         mRes = context.getResources();
-        mTheme = context.getTheme();
 
         // The index of space key is available only after Keyboard constructor has finished.
         mSpaceKey = getKey(CODE_SPACE);
@@ -99,6 +94,10 @@ public class LatinKeyboard extends Keyboard {
         mAutoCorrectionSpacebarLedIcon = a.getDrawable(
                 R.styleable.LatinKeyboard_autoCorrectionSpacebarLedIcon);
         mDisabledShortcutIcon = a.getDrawable(R.styleable.LatinKeyboard_disabledShortcutIcon);
+        final float spacebarTextRatio = a.getFraction(R.styleable.LatinKeyboard_spacebarTextRatio,
+                1000, 1000, 1) / 1000.0f;
+        final int keyHeight = mMostCommonKeyHeight - mVerticalGap;
+        mSpacebarTextSize = keyHeight * spacebarTextRatio;
         mSpacebarTextColor = a.getColor(R.styleable.LatinKeyboard_spacebarTextColor, 0);
         mSpacebarTextShadowColor = a.getColor(
                 R.styleable.LatinKeyboard_spacebarTextShadowColor, 0);
@@ -116,6 +115,8 @@ public class LatinKeyboard extends Keyboard {
         }
     }
 
+    // TODO: Move this drawing method to LatinKeyboardView.
+    // TODO: Use Key.keyLabel to draw language name of spacebar.
     public Key updateSpacebarLanguage(float fadeFactor, boolean multipleEnabledIMEsOrSubtypes,
             boolean needsToDisplayLanguage) {
         mSpacebarTextFadeFactor = fadeFactor;
@@ -131,6 +132,7 @@ public class LatinKeyboard extends Keyboard {
         return newColor;
     }
 
+    // TODO: Move this drawing method to LatinKeyboardView.
     public Key updateShortcutKey(boolean available) {
         if (mShortcutKey == null)
             return null;
@@ -139,10 +141,12 @@ public class LatinKeyboard extends Keyboard {
         return mShortcutKey;
     }
 
+    // TODO: Get rid of this method
     public boolean needsAutoCorrectionSpacebarLed() {
         return mAutoCorrectionSpacebarLedEnabled;
     }
 
+    // TODO: Move this drawing method to LatinKeyboardView.
     /**
      * @return a key which should be invalidated.
      */
@@ -238,7 +242,6 @@ public class LatinKeyboard extends Keyboard {
         final int height = mSpaceIcon != null ? mSpaceIcon.getIntrinsicHeight() : mSpaceKey.mHeight;
         final Bitmap buffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         final Canvas canvas = new Canvas(buffer);
-        final Resources res = mRes;
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
         // If application locales are explicitly selected.
@@ -247,25 +250,7 @@ public class LatinKeyboard extends Keyboard {
             paint.setAntiAlias(true);
             paint.setTextAlign(Align.CENTER);
 
-            final String textSizeOfLanguageOnSpacebar = res.getString(
-                    R.string.config_text_size_of_language_on_spacebar,
-                    SMALL_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR);
-            final int textStyle;
-            final int defaultTextSize;
-            if (MEDIUM_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR.equals(textSizeOfLanguageOnSpacebar)) {
-                // TODO: TextAppearance_Medium depends on the current system wide font size
-                // settings.  Probably should stop using this.
-                textStyle = android.R.style.TextAppearance_Medium;
-                defaultTextSize = 18;
-            } else {
-                // TODO: TextAppearance_Small depends on the current system wide font size
-                // settings.  Probably should stop using this.
-                textStyle = android.R.style.TextAppearance_Small;
-                defaultTextSize = 14;
-            }
-
-            final String language = layoutSpacebar(paint, inputLocale, width, getTextSizeFromTheme(
-                    mTheme, textStyle, defaultTextSize));
+            final String language = layoutSpacebar(paint, inputLocale, width, mSpacebarTextSize);
 
             // Draw language text with shadow
             // In case there is no space icon, we will place the language text at the center of
@@ -304,16 +289,5 @@ public class LatinKeyboard extends Keyboard {
         // Avoid dead pixels at edges of the keyboard
         return super.getNearestKeys(Math.max(0, Math.min(x, mOccupiedWidth - 1)),
                 Math.max(0, Math.min(y, mOccupiedHeight - 1)));
-    }
-
-    private static final int[] ATTR_TEXT_SIZE = { android.R.attr.textSize };
-
-    private static int getTextSizeFromTheme(Theme theme, int style, int defValue) {
-        // TODO: This method should return text size that is independent from the current
-        // system wide font size settings.
-        final TypedArray a = theme.obtainStyledAttributes(style, ATTR_TEXT_SIZE);
-        final int textSize = a.getDimensionPixelSize(a.getResourceId(0, 0), defValue);
-        a.recycle();
-        return textSize;
     }
 }
