@@ -111,6 +111,12 @@ public class LatinKeyboard extends Keyboard {
         }
 
         @Override
+        public Builder load(int xmlId, KeyboardId id) {
+            super.load(xmlId, id);
+            return this;
+        }
+
+        @Override
         public LatinKeyboard build() {
             return new LatinKeyboard(mContext, mParams);
         }
