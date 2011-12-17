@@ -194,7 +194,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
     }
 
-    private static class KeyDrawParams {
+    /* package */ static class KeyDrawParams {
         // XML attributes
         public final int mKeyTextColor;
         public final int mKeyTextInactivatedColor;
@@ -283,7 +283,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
     }
 
-    protected static class KeyPreviewDrawParams {
+    /* package */ static class KeyPreviewDrawParams {
         // XML attributes.
         public final Drawable mPreviewBackground;
         public final Drawable mPreviewLeftBackground;
@@ -474,7 +474,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         if (mKeyboard == null) return;
 
-        final boolean isManualTemporaryUpperCase = mKeyboard.isManualTemporaryUpperCase();
         final KeyDrawParams params = mKeyDrawParams;
         if (mInvalidatedKey != null && mInvalidatedKeyRect.contains(mDirtyRect)) {
             // Draw a single key.
@@ -482,8 +481,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                     + getPaddingLeft();
             final int keyDrawY = mInvalidatedKey.mY + getPaddingTop();
             canvas.translate(keyDrawX, keyDrawY);
-            onBufferDrawKey(mInvalidatedKey, mKeyboard, canvas, mPaint, params,
-                    isManualTemporaryUpperCase);
+            onDrawKey(mInvalidatedKey, canvas, mPaint, params);
             canvas.translate(-keyDrawX, -keyDrawY);
         } else {
             // Draw all keys.
@@ -491,7 +489,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 final int keyDrawX = key.mX + key.mVisualInsetsLeft + getPaddingLeft();
                 final int keyDrawY = key.mY + getPaddingTop();
                 canvas.translate(keyDrawX, keyDrawY);
-                onBufferDrawKey(key, mKeyboard, canvas, mPaint, params, isManualTemporaryUpperCase);
+                onDrawKey(key, canvas, mPaint, params);
                 canvas.translate(-keyDrawX, -keyDrawY);
             }
         }
@@ -514,38 +512,43 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
     }
 
-    private static void onBufferDrawKey(final Key key, final Keyboard keyboard, final Canvas canvas,
-            Paint paint, KeyDrawParams params, boolean isManualTemporaryUpperCase) {
-        final boolean debugShowAlign = LatinImeLogger.sVISUALDEBUG;
-        // Draw key background.
-        if (!key.isSpacer()) {
-            final int bgWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight
-                    + params.mPadding.left + params.mPadding.right;
-            final int bgHeight = key.mHeight + params.mPadding.top + params.mPadding.bottom;
-            final int bgX = -params.mPadding.left;
-            final int bgY = -params.mPadding.top;
-            final int[] drawableState = key.getCurrentDrawableState();
-            final Drawable background = params.mKeyBackground;
-            background.setState(drawableState);
-            final Rect bounds = background.getBounds();
-            if (bgWidth != bounds.right || bgHeight != bounds.bottom) {
-                background.setBounds(0, 0, bgWidth, bgHeight);
-            }
-            canvas.translate(bgX, bgY);
-            background.draw(canvas);
-            if (debugShowAlign) {
-                drawRectangle(canvas, 0, 0, bgWidth, bgHeight, 0x80c00000, new Paint());
-            }
-            canvas.translate(-bgX, -bgY);
-        }
+    private void onDrawKey(Key key, Canvas canvas, Paint paint, KeyDrawParams params) {
+        if (key.isSpacer()) return;
+        onDrawKeyBackground(key, canvas, params);
+        onDrawKeyTopVisuals(key, canvas, paint, params);
+    }
 
-        // Draw key top visuals.
+    // Draw key background.
+    /* package */ void onDrawKeyBackground(Key key, Canvas canvas, KeyDrawParams params) {
+        final int bgWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight
+                + params.mPadding.left + params.mPadding.right;
+        final int bgHeight = key.mHeight + params.mPadding.top + params.mPadding.bottom;
+        final int bgX = -params.mPadding.left;
+        final int bgY = -params.mPadding.top;
+        final int[] drawableState = key.getCurrentDrawableState();
+        final Drawable background = params.mKeyBackground;
+        background.setState(drawableState);
+        final Rect bounds = background.getBounds();
+        if (bgWidth != bounds.right || bgHeight != bounds.bottom) {
+            background.setBounds(0, 0, bgWidth, bgHeight);
+        }
+        canvas.translate(bgX, bgY);
+        background.draw(canvas);
+        if (LatinImeLogger.sVISUALDEBUG) {
+            drawRectangle(canvas, 0, 0, bgWidth, bgHeight, 0x80c00000, new Paint());
+        }
+        canvas.translate(-bgX, -bgY);
+    }
+
+    // Draw key top visuals.
+    /* package */ void onDrawKeyTopVisuals(Key key, Canvas canvas, Paint paint,
+            KeyDrawParams params) {
         final int keyWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight;
         final int keyHeight = key.mHeight;
         final float centerX = keyWidth * 0.5f;
         final float centerY = keyHeight * 0.5f;
 
-        if (debugShowAlign) {
+        if (LatinImeLogger.sVISUALDEBUG) {
             drawRectangle(canvas, 0, 0, keyWidth, keyHeight, 0x800000c0, new Paint());
         }
 
@@ -554,7 +557,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         float positionX = centerX;
         if (key.mLabel != null) {
             // Switch the character to uppercase if shift is pressed
-            final CharSequence label = keyboard.adjustLabelCase(key.mLabel);
+            final CharSequence label = mKeyboard.adjustLabelCase(key.mLabel);
             // For characters, use large font. For labels like "Done", use smaller font.
             paint.setTypeface(key.selectTypeface(params.mKeyTextStyle));
             final int labelSize = key.selectTextSize(params.mKeyLetterSize,
@@ -597,7 +600,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                         Math.min(1.0f, (keyWidth * MAX_LABEL_RATIO) / getLabelWidth(label, paint)));
             }
 
-            if (key.hasUppercaseLetter() && isManualTemporaryUpperCase) {
+            if (key.hasUppercaseLetter() && mKeyboard.isManualTemporaryUpperCase()) {
                 paint.setColor(params.mKeyTextInactivatedColor);
             } else {
                 paint.setColor(params.mKeyTextColor);
@@ -627,7 +630,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 }
             }
 
-            if (debugShowAlign) {
+            if (LatinImeLogger.sVISUALDEBUG) {
                 final Paint line = new Paint();
                 drawHorizontalLine(canvas, baseline, keyWidth, 0xc0008000, line);
                 drawVerticalLine(canvas, positionX, keyHeight, 0xc0800080, line);
@@ -644,7 +647,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 hintSize = params.mKeyHintLabelSize;
                 paint.setTypeface(Typeface.DEFAULT);
             } else if (key.hasUppercaseLetter()) {
-                hintColor = isManualTemporaryUpperCase
+                hintColor = mKeyboard.isManualTemporaryUpperCase()
                         ? params.mKeyUppercaseLetterActivatedColor
                         : params.mKeyUppercaseLetterInactivatedColor;
                 hintSize = params.mKeyUppercaseLetterSize;
@@ -677,7 +680,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             }
             canvas.drawText(hint, 0, hint.length(), hintX, hintY, paint);
 
-            if (debugShowAlign) {
+            if (LatinImeLogger.sVISUALDEBUG) {
                 final Paint line = new Paint();
                 drawHorizontalLine(canvas, (int)hintY, keyWidth, 0xc0808000, line);
                 drawVerticalLine(canvas, (int)hintX, keyHeight, 0xc0808000, line);
@@ -702,29 +705,36 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             }
             drawIcon(canvas, icon, iconX, iconY, iconWidth, iconHeight);
 
-            if (debugShowAlign) {
+            if (LatinImeLogger.sVISUALDEBUG) {
                 final Paint line = new Paint();
                 drawVerticalLine(canvas, alignX, keyHeight, 0xc0800080, line);
                 drawRectangle(canvas, iconX, iconY, iconWidth, iconHeight, 0x80c00000, line);
             }
         }
 
-        // Draw popup hint "..." at the bottom right corner of the key.
         if ((key.hasPopupHint() && key.mMoreKeys != null && key.mMoreKeys.length > 0)
                 || key.needsSpecialPopupHint()) {
-            paint.setTextSize(params.mKeyHintLetterSize);
-            paint.setColor(params.mKeyHintLabelColor);
-            paint.setTextAlign(Align.CENTER);
-            final float hintX = keyWidth - params.mKeyHintLetterPadding
-                    - getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) / 2;
-            final float hintY = keyHeight - params.mKeyPopupHintLetterPadding;
-            canvas.drawText(POPUP_HINT_CHAR, hintX, hintY, paint);
+            drawKeyPopupHint(key, canvas, paint, params);
+        }
+    }
 
-            if (debugShowAlign) {
-                final Paint line = new Paint();
-                drawHorizontalLine(canvas, (int)hintY, keyWidth, 0xc0808000, line);
-                drawVerticalLine(canvas, (int)hintX, keyHeight, 0xc0808000, line);
-            }
+    // Draw popup hint "..." at the bottom right corner of the key.
+    /* package */ void drawKeyPopupHint(Key key, Canvas canvas, Paint paint, KeyDrawParams params) {
+        final int keyWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight;
+        final int keyHeight = key.mHeight;
+
+        paint.setTextSize(params.mKeyHintLetterSize);
+        paint.setColor(params.mKeyHintLabelColor);
+        paint.setTextAlign(Align.CENTER);
+        final float hintX = keyWidth - params.mKeyHintLetterPadding
+                - getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) / 2;
+        final float hintY = keyHeight - params.mKeyPopupHintLetterPadding;
+        canvas.drawText(POPUP_HINT_CHAR, hintX, hintY, paint);
+
+        if (LatinImeLogger.sVISUALDEBUG) {
+            final Paint line = new Paint();
+            drawHorizontalLine(canvas, (int)hintY, keyWidth, 0xc0808000, line);
+            drawVerticalLine(canvas, (int)hintX, keyHeight, 0xc0808000, line);
         }
     }
 
