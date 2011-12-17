@@ -20,8 +20,10 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.KeyDetector;
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
-import com.android.inputmethod.keyboard.LatinKeyboard;
+import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
+import com.android.inputmethod.keyboard.internal.KeyboardParams;
 
 import java.io.File;
 import java.util.Locale;
@@ -29,7 +31,7 @@ import java.util.Locale;
 public class SuggestHelper {
     protected final Suggest mSuggest;
     protected int mCorrectionMode;
-    protected final LatinKeyboard mKeyboard;
+    protected final Keyboard mKeyboard;
     private final KeyDetector mKeyDetector;
 
     public static final int ALPHABET_KEYBOARD = com.android.inputmethod.latin.R.xml.kbd_qwerty;
@@ -38,7 +40,8 @@ public class SuggestHelper {
         // Use null as the locale for Suggest so as to force it to use the internal dictionary
         // (and not try to find a dictionary provider for a specified locale)
         mSuggest = new Suggest(context, dictionaryId, null);
-        mKeyboard = new LatinKeyboard.Builder(context).load(ALPHABET_KEYBOARD, keyboardId).build();
+        mKeyboard = new KeyboardBuilder<KeyboardParams>(context, new KeyboardParams())
+                .load(ALPHABET_KEYBOARD, keyboardId).build();
         mKeyDetector = new KeyDetector(0);
         init();
     }
@@ -47,7 +50,8 @@ public class SuggestHelper {
             final long startOffset, final long length, final KeyboardId keyboardId,
             final Locale locale) {
         mSuggest = new Suggest(context, dictionaryPath, startOffset, length, null, locale);
-        mKeyboard = new LatinKeyboard.Builder(context).load(ALPHABET_KEYBOARD, keyboardId).build();
+        mKeyboard = new KeyboardBuilder<KeyboardParams>(context, new KeyboardParams())
+                .load(ALPHABET_KEYBOARD, keyboardId).build();
         mKeyDetector = new KeyDetector(0);
         init();
     }

@@ -220,8 +220,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         @Override
         public boolean onDoubleTap(MotionEvent firstDown) {
             final Keyboard keyboard = getKeyboard();
-            if (ENABLE_CAPSLOCK_BY_DOUBLETAP && keyboard instanceof LatinKeyboard
-                    && ((LatinKeyboard) keyboard).mId.isAlphabetKeyboard()) {
+            if (ENABLE_CAPSLOCK_BY_DOUBLETAP && keyboard.mId.isAlphabetKeyboard()) {
                 final int pointerIndex = firstDown.getActionIndex();
                 final int id = firstDown.getPointerId(pointerIndex);
                 final PointerTracker tracker = getPointerTracker(id);
@@ -452,28 +451,25 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     protected boolean onLongPress(Key parentKey, PointerTracker tracker) {
         final int primaryCode = parentKey.mCode;
         final Keyboard keyboard = getKeyboard();
-        if (keyboard instanceof LatinKeyboard) {
-            final LatinKeyboard latinKeyboard = (LatinKeyboard) keyboard;
-            if (primaryCode == Keyboard.CODE_DIGIT0 && latinKeyboard.mId.isPhoneKeyboard()) {
+        if (primaryCode == Keyboard.CODE_DIGIT0 && keyboard.mId.isPhoneKeyboard()) {
+            tracker.onLongPressed();
+            // Long pressing on 0 in phone number keypad gives you a '+'.
+            invokeCodeInput(Keyboard.CODE_PLUS);
+            invokeReleaseKey(primaryCode);
+            return true;
+        }
+        if (primaryCode == Keyboard.CODE_SHIFT && keyboard.mId.isAlphabetKeyboard()) {
+            tracker.onLongPressed();
+            invokeCodeInput(Keyboard.CODE_CAPSLOCK);
+            invokeReleaseKey(primaryCode);
+            return true;
+        }
+        if (primaryCode == Keyboard.CODE_SPACE) {
+            // Long pressing the space key invokes IME switcher dialog.
+            if (invokeCustomRequest(LatinIME.CODE_SHOW_INPUT_METHOD_PICKER)) {
                 tracker.onLongPressed();
-                // Long pressing on 0 in phone number keypad gives you a '+'.
-                invokeCodeInput(Keyboard.CODE_PLUS);
                 invokeReleaseKey(primaryCode);
                 return true;
-            }
-            if (primaryCode == Keyboard.CODE_SHIFT && latinKeyboard.mId.isAlphabetKeyboard()) {
-                tracker.onLongPressed();
-                invokeCodeInput(Keyboard.CODE_CAPSLOCK);
-                invokeReleaseKey(primaryCode);
-                return true;
-            }
-            if (primaryCode == Keyboard.CODE_SPACE) {
-                // Long pressing the space key invokes IME switcher dialog.
-                if (invokeCustomRequest(LatinIME.CODE_SHOW_INPUT_METHOD_PICKER)) {
-                    tracker.onLongPressed();
-                    invokeReleaseKey(primaryCode);
-                    return true;
-                }
             }
         }
         return openMoreKeysPanel(parentKey, tracker);

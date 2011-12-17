@@ -179,7 +179,7 @@ public class MoreSuggestions extends Keyboard {
 
         public Builder layout(SuggestedWords suggestions, int fromPos, int maxWidth,
                 int minWidth, int maxRow) {
-            final Keyboard keyboard = KeyboardSwitcher.getInstance().getLatinKeyboard();
+            final Keyboard keyboard = KeyboardSwitcher.getInstance().getKeyboard();
             final int xmlId = R.xml.kbd_suggestions_pane_template;
             load(xmlId, keyboard.mId);
             mParams.mVerticalGap = mParams.mTopPadding = keyboard.mVerticalGap / 2;

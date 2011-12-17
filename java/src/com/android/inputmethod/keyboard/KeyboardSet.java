@@ -24,6 +24,8 @@ import android.util.Log;
 import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
 
+import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
+import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.XmlParseUtils;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
@@ -72,8 +74,8 @@ public class KeyboardSet {
         Params() {}
     }
 
-    private static final HashMap<KeyboardId, SoftReference<LatinKeyboard>> sKeyboardCache =
-            new HashMap<KeyboardId, SoftReference<LatinKeyboard>>();
+    private static final HashMap<KeyboardId, SoftReference<Keyboard>> sKeyboardCache =
+            new HashMap<KeyboardId, SoftReference<Keyboard>>();
 
     public static void clearKeyboardCache() {
         sKeyboardCache.clear();
@@ -84,16 +86,16 @@ public class KeyboardSet {
         mParams = params;
     }
 
-    public LatinKeyboard getMainKeyboard() {
+    public Keyboard getMainKeyboard() {
         return getKeyboard(false, false);
     }
 
-    public LatinKeyboard getSymbolsKeyboard() {
+    public Keyboard getSymbolsKeyboard() {
         return getKeyboard(true, false);
     }
 
-    public LatinKeyboard getSymbolsShiftedKeyboard() {
-        final LatinKeyboard keyboard = getKeyboard(true, true);
+    public Keyboard getSymbolsShiftedKeyboard() {
+        final Keyboard keyboard = getKeyboard(true, true);
         // TODO: Remove this logic once we introduce initial keyboard shift state attribute.
         // Symbol shift keyboard may have a shift key that has a caps lock style indicator (a.k.a.
         // sticky shift key). To show or dismiss the indicator, we need to call setShiftLocked()
@@ -102,11 +104,11 @@ public class KeyboardSet {
         return keyboard;
     }
 
-    private LatinKeyboard getKeyboard(boolean isSymbols, boolean isShift) {
+    private Keyboard getKeyboard(boolean isSymbols, boolean isShift) {
         final int elementState = Builder.getElementState(mParams.mMode, isSymbols, isShift);
         final int xmlId = mParams.mElementKeyboards.get(elementState);
         final KeyboardId id = Builder.getKeyboardId(elementState, isSymbols, mParams);
-        final LatinKeyboard keyboard = getKeyboard(mContext, xmlId, id);
+        final Keyboard keyboard = getKeyboard(mContext, xmlId, id);
         return keyboard;
     }
 
@@ -115,15 +117,16 @@ public class KeyboardSet {
         return Builder.getKeyboardId(elementState, false, mParams);
     }
 
-    private static LatinKeyboard getKeyboard(Context context, int xmlId, KeyboardId id) {
+    private static Keyboard getKeyboard(Context context, int xmlId, KeyboardId id) {
         final Resources res = context.getResources();
         final SubtypeSwitcher subtypeSwitcher = SubtypeSwitcher.getInstance();
-        final SoftReference<LatinKeyboard> ref = sKeyboardCache.get(id);
-        LatinKeyboard keyboard = (ref == null) ? null : ref.get();
+        final SoftReference<Keyboard> ref = sKeyboardCache.get(id);
+        Keyboard keyboard = (ref == null) ? null : ref.get();
         if (keyboard == null) {
             final Locale savedLocale = LocaleUtils.setSystemLocale(res, id.mLocale);
             try {
-                final LatinKeyboard.Builder builder = new LatinKeyboard.Builder(context);
+                final KeyboardBuilder<KeyboardParams> builder =
+                        new KeyboardBuilder<KeyboardParams>(context, new KeyboardParams());
                 builder.load(xmlId, id);
                 builder.setTouchPositionCorrectionEnabled(
                         subtypeSwitcher.currentSubtypeContainsExtraValueKey(
@@ -132,7 +135,7 @@ public class KeyboardSet {
             } finally {
                 LocaleUtils.setSystemLocale(res, savedLocale);
             }
-            sKeyboardCache.put(id, new SoftReference<LatinKeyboard>(keyboard));
+            sKeyboardCache.put(id, new SoftReference<Keyboard>(keyboard));
 
             if (DEBUG_CACHE) {
                 Log.d(TAG, "keyboard cache size=" + sKeyboardCache.size() + ": "
