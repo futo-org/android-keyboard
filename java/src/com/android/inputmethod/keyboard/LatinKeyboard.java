@@ -280,9 +280,13 @@ public class LatinKeyboard extends Keyboard {
             final int textStyle;
             final int defaultTextSize;
             if (MEDIUM_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR.equals(textSizeOfLanguageOnSpacebar)) {
+                // TODO: TextAppearance_Medium depends on the current system wide font size
+                // settings.  Probably should stop using this.
                 textStyle = android.R.style.TextAppearance_Medium;
                 defaultTextSize = 18;
             } else {
+                // TODO: TextAppearance_Small depends on the current system wide font size
+                // settings.  Probably should stop using this.
                 textStyle = android.R.style.TextAppearance_Small;
                 defaultTextSize = 14;
             }
@@ -331,7 +335,9 @@ public class LatinKeyboard extends Keyboard {
 
     private static final int[] ATTR_TEXT_SIZE = { android.R.attr.textSize };
 
-    public static int getTextSizeFromTheme(Theme theme, int style, int defValue) {
+    private static int getTextSizeFromTheme(Theme theme, int style, int defValue) {
+        // TODO: This method should return text size that is independent from the current
+        // system wide font size settings.
         final TypedArray a = theme.obtainStyledAttributes(style, ATTR_TEXT_SIZE);
         final int textSize = a.getDimensionPixelSize(a.getResourceId(0, 0), defValue);
         a.recycle();
