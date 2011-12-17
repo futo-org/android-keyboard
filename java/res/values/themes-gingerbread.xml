@@ -17,7 +17,6 @@
 <resources>
     <style name="KeyboardTheme.Gingerbread" parent="KeyboardIcons">
         <item name="keyboardStyle">@style/Keyboard.Gingerbread</item>
-        <item name="latinKeyboardStyle">@style/LatinKeyboard</item>
         <item name="keyboardViewStyle">@style/KeyboardView.Gingerbread</item>
         <item name="latinKeyboardViewStyle">@style/LatinKeyboardView.Gingerbread</item>
         <item name="miniKeyboardStyle">@style/MiniKeyboard.Gingerbread</item>

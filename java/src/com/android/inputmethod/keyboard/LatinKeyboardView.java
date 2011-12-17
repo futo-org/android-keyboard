@@ -19,8 +19,16 @@ package com.android.inputmethod.keyboard;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
+import android.graphics.PorterDuff;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -47,6 +55,9 @@ import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.Utils.UsabilityStudyLogUtils;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.WeakHashMap;
 
 /**
@@ -62,9 +73,30 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
     private static final boolean ENABLE_CAPSLOCK_BY_DOUBLETAP = true;
 
-    // For drawing spacebar.
+    /* Space key and its icons, drawables and colors. */
+    private Key mSpaceKey;
+    private Drawable mSpaceIcon;
     private final boolean mIsSpacebarTriggeringPopupByLongPress;
-    private boolean mMultipleEnabledIMEsOrSubtypes;
+    private static final int SPACE_LED_LENGTH_PERCENT = 80;
+    private final boolean mAutoCorrectionSpacebarLedEnabled;
+    private final Drawable mAutoCorrectionSpacebarLedIcon;
+    private final float mSpacebarTextRatio;
+    private float mSpacebarTextSize;
+    private final int mSpacebarTextColor;
+    private final int mSpacebarTextShadowColor;
+    private final HashMap<Integer, BitmapDrawable> mSpacebarDrawableCache =
+            new HashMap<Integer, BitmapDrawable>();
+
+    private boolean mAutoCorrectionSpacebarLedOn;
+    private boolean mNeedsToDisplayLanguage;
+    private Locale mSpacebarLocale;
+    private float mSpacebarTextFadeFactor = 0.0f;
+
+    // Height in space key the language name will be drawn. (proportional to space key height)
+    public static final float SPACEBAR_LANGUAGE_BASELINE = 0.6f;
+    // If the full language name needs to be smaller than this value to be drawn on space key,
+    // its short language name will be used instead.
+    private static final float MINIMUM_SCALE_OF_LANGUAGE_NAME = 0.8f;
 
     private final SuddenJumpingTouchEventHandler mTouchScreenRegulator;
 
@@ -257,6 +289,19 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         final int longPressSpaceKeyTimeout =
                 res.getInteger(R.integer.config_long_press_space_key_timeout);
         mIsSpacebarTriggeringPopupByLongPress = (longPressSpaceKeyTimeout > 0);
+
+        final TypedArray a = context.obtainStyledAttributes(
+                attrs, R.styleable.LatinKeyboardView, defStyle, R.style.LatinKeyboardView);
+        mAutoCorrectionSpacebarLedEnabled = a.getBoolean(
+                R.styleable.LatinKeyboardView_autoCorrectionSpacebarLedEnabled, false);
+        mAutoCorrectionSpacebarLedIcon = a.getDrawable(
+                R.styleable.LatinKeyboardView_autoCorrectionSpacebarLedIcon);
+        mSpacebarTextRatio = a.getFraction(R.styleable.LatinKeyboardView_spacebarTextRatio,
+                1000, 1000, 1) / 1000.0f;
+        mSpacebarTextColor = a.getColor(R.styleable.LatinKeyboardView_spacebarTextColor, 0);
+        mSpacebarTextShadowColor = a.getColor(
+                R.styleable.LatinKeyboardView_spacebarTextShadowColor, 0);
+        a.recycle();
     }
 
     public void startIgnoringDoubleTap() {
@@ -311,6 +356,13 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         PointerTracker.setKeyDetector(mKeyDetector);
         mTouchScreenRegulator.setKeyboard(keyboard);
         mMoreKeysPanelCache.clear();
+
+        mSpaceKey = keyboard.getKey(Keyboard.CODE_SPACE);
+        mSpaceIcon = keyboard.mIconsSet.getIcon(KeyboardIconsSet.ICON_SPACE_KEY);
+        final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
+        mSpacebarTextSize = keyHeight * mSpacebarTextRatio;
+        mSpacebarLocale = keyboard.mId.mLocale;
+        clearSpacebarDrawableCache();
     }
 
     /**
@@ -708,9 +760,18 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         invalidateKey(shortcutKey);
     }
 
-    public void updateSpacebar() {
-        mMultipleEnabledIMEsOrSubtypes = Utils.hasMultipleEnabledIMEsOrSubtypes(
-                true /* include aux subtypes */);
+    public void updateSpacebar(float fadeFactor, boolean needsToDisplayLanguage) {
+        mSpacebarTextFadeFactor = fadeFactor;
+        mNeedsToDisplayLanguage = needsToDisplayLanguage;
+        updateSpacebarIcon();
+        invalidateKey(mSpaceKey);
+    }
+
+    public void updateAutoCorrectionState(boolean isAutoCorrection) {
+        if (!mAutoCorrectionSpacebarLedEnabled) return;
+        mAutoCorrectionSpacebarLedOn = isAutoCorrection;
+        updateSpacebarIcon();
+        invalidateKey(mSpaceKey);
     }
 
     @Override
@@ -718,10 +779,151 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             KeyDrawParams params) {
         super.onDrawKeyTopVisuals(key, canvas, paint, params);
 
-        // Whether space key needs to show the "..." popup hint for special purposes
-        if (key.mCode == Keyboard.CODE_SPACE && mIsSpacebarTriggeringPopupByLongPress
-                && mMultipleEnabledIMEsOrSubtypes) {
-            super.drawKeyPopupHint(key, canvas, paint, params);
+        if (key.mCode == Keyboard.CODE_SPACE) {
+            // Whether space key needs to show the "..." popup hint for special purposes
+            if (mIsSpacebarTriggeringPopupByLongPress
+                    && Utils.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */)) {
+                super.drawKeyPopupHint(key, canvas, paint, params);
+            }
         }
+    }
+
+    // TODO: Get rid of this method and draw spacebar locale and auto correction spacebar LED
+    // in onDrawKeyTopVisuals.
+    private void updateSpacebarIcon() {
+        if (mSpaceKey == null) return;
+        if (mNeedsToDisplayLanguage) {
+            mSpaceKey.setIcon(getSpaceDrawable(mSpacebarLocale));
+        } else if (mAutoCorrectionSpacebarLedOn) {
+            mSpaceKey.setIcon(getSpaceDrawable(null));
+        } else {
+            mSpaceKey.setIcon(mSpaceIcon);
+        }
+    }
+
+    private static int getSpacebarTextColor(int color, float fadeFactor) {
+        final int newColor = Color.argb((int)(Color.alpha(color) * fadeFactor),
+                Color.red(color), Color.green(color), Color.blue(color));
+        return newColor;
+    }
+
+    // Compute width of text with specified text size using paint.
+    private static int getTextWidth(Paint paint, String text, float textSize, Rect bounds) {
+        paint.setTextSize(textSize);
+        paint.getTextBounds(text, 0, text.length(), bounds);
+        return bounds.width();
+    }
+
+    // Layout local language name and left and right arrow on spacebar.
+    private static String layoutSpacebar(Paint paint, Locale locale, int width,
+            float origTextSize) {
+        final Rect bounds = new Rect();
+
+        // Estimate appropriate language name text size to fit in maxTextWidth.
+        String language = Utils.getFullDisplayName(locale, true);
+        int textWidth = getTextWidth(paint, language, origTextSize, bounds);
+        // Assuming text width and text size are proportional to each other.
+        float textSize = origTextSize * Math.min(width / textWidth, 1.0f);
+        // allow variable text size
+        textWidth = getTextWidth(paint, language, textSize, bounds);
+        // If text size goes too small or text does not fit, use middle or short name
+        final boolean useMiddleName = (textSize / origTextSize < MINIMUM_SCALE_OF_LANGUAGE_NAME)
+                || (textWidth > width);
+
+        final boolean useShortName;
+        if (useMiddleName) {
+            language = Utils.getMiddleDisplayLanguage(locale);
+            textWidth = getTextWidth(paint, language, origTextSize, bounds);
+            textSize = origTextSize * Math.min(width / textWidth, 1.0f);
+            useShortName = (textSize / origTextSize < MINIMUM_SCALE_OF_LANGUAGE_NAME)
+                    || (textWidth > width);
+        } else {
+            useShortName = false;
+        }
+
+        if (useShortName) {
+            language = Utils.getShortDisplayLanguage(locale);
+            textWidth = getTextWidth(paint, language, origTextSize, bounds);
+            textSize = origTextSize * Math.min(width / textWidth, 1.0f);
+        }
+        paint.setTextSize(textSize);
+
+        return language;
+    }
+
+    private Integer getSpaceDrawableKey(Locale locale) {
+        return Arrays.hashCode(new Object[] {
+                locale,
+                mAutoCorrectionSpacebarLedOn,
+                mSpacebarTextFadeFactor
+        });
+    }
+
+    private void clearSpacebarDrawableCache() {
+        for (final BitmapDrawable drawable : mSpacebarDrawableCache.values()) {
+            final Bitmap bitmap = drawable.getBitmap();
+            bitmap.recycle();
+        }
+        mSpacebarDrawableCache.clear();
+    }
+
+    private BitmapDrawable getSpaceDrawable(Locale locale) {
+        final Integer hashCode = getSpaceDrawableKey(locale);
+        final BitmapDrawable cached = mSpacebarDrawableCache.get(hashCode);
+        if (cached != null) {
+            return cached;
+        }
+        final BitmapDrawable drawable = new BitmapDrawable(getResources(), drawSpacebar(
+                locale, mAutoCorrectionSpacebarLedOn, mSpacebarTextFadeFactor));
+        mSpacebarDrawableCache.put(hashCode, drawable);
+        return drawable;
+    }
+
+    private Bitmap drawSpacebar(Locale inputLocale, boolean isAutoCorrection,
+            float textFadeFactor) {
+        final int width = mSpaceKey.mWidth;
+        final int height = mSpaceIcon != null ? mSpaceIcon.getIntrinsicHeight() : mSpaceKey.mHeight;
+        final Bitmap buffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(buffer);
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+
+        // If application locales are explicitly selected.
+        if (inputLocale != null) {
+            final Paint paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setTextAlign(Align.CENTER);
+
+            final String language = layoutSpacebar(paint, inputLocale, width, mSpacebarTextSize);
+
+            // Draw language text with shadow
+            // In case there is no space icon, we will place the language text at the center of
+            // spacebar.
+            final float descent = paint.descent();
+            final float textHeight = -paint.ascent() + descent;
+            final float baseline = (mSpaceIcon != null) ? height * SPACEBAR_LANGUAGE_BASELINE
+                    : height / 2 + textHeight / 2;
+            paint.setColor(getSpacebarTextColor(mSpacebarTextShadowColor, textFadeFactor));
+            canvas.drawText(language, width / 2, baseline - descent - 1, paint);
+            paint.setColor(getSpacebarTextColor(mSpacebarTextColor, textFadeFactor));
+            canvas.drawText(language, width / 2, baseline - descent, paint);
+        }
+
+        // Draw the spacebar icon at the bottom
+        if (isAutoCorrection) {
+            final int iconWidth = width * SPACE_LED_LENGTH_PERCENT / 100;
+            final int iconHeight = mAutoCorrectionSpacebarLedIcon.getIntrinsicHeight();
+            int x = (width - iconWidth) / 2;
+            int y = height - iconHeight;
+            mAutoCorrectionSpacebarLedIcon.setBounds(x, y, x + iconWidth, y + iconHeight);
+            mAutoCorrectionSpacebarLedIcon.draw(canvas);
+        } else if (mSpaceIcon != null) {
+            final int iconWidth = mSpaceIcon.getIntrinsicWidth();
+            final int iconHeight = mSpaceIcon.getIntrinsicHeight();
+            int x = (width - iconWidth) / 2;
+            int y = height - iconHeight;
+            mSpaceIcon.setBounds(x, y, x + iconWidth, y + iconHeight);
+            mSpaceIcon.draw(canvas);
+        }
+        return buffer;
     }
 }

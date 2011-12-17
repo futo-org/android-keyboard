@@ -124,6 +124,12 @@
     </declare-styleable>
 
     <declare-styleable name="LatinKeyboardView">
+        <attr name="autoCorrectionSpacebarLedEnabled" format="boolean" />
+        <attr name="autoCorrectionSpacebarLedIcon" format="reference" />
+        <!-- Size of the text for spacebar language label, in the proportion of key height. -->
+        <attr name="spacebarTextRatio" format="fraction" />
+        <attr name="spacebarTextColor" format="color" />
+        <attr name="spacebarTextShadowColor" format="color" />
     </declare-styleable>
 
     <declare-styleable name="SuggestionsView">
@@ -325,16 +331,6 @@
     <declare-styleable name="Keyboard_KeyStyle">
         <attr name="styleName" format="string" />
         <attr name="parentStyle" format="string" />
-    </declare-styleable>
-
-    <!-- TODO: Move these attributes to LatinKeyboardView -->
-    <declare-styleable name="LatinKeyboard">
-        <attr name="autoCorrectionSpacebarLedEnabled" format="boolean" />
-        <attr name="autoCorrectionSpacebarLedIcon" format="reference" />
-        <!-- Size of the text for spacebar language label, in the proportion of key height. -->
-        <attr name="spacebarTextRatio" format="fraction" />
-        <attr name="spacebarTextColor" format="color" />
-        <attr name="spacebarTextShadowColor" format="color" />
     </declare-styleable>
 
     <declare-styleable name="KeyboardSet">

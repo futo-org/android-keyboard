@@ -17,7 +17,6 @@
 <resources>
     <style name="KeyboardTheme.Stone" parent="KeyboardIcons.Black">
         <item name="keyboardStyle">@style/Keyboard.Stone</item>
-        <item name="latinKeyboardStyle">@style/LatinKeyboard.Stone</item>
         <item name="keyboardViewStyle">@style/KeyboardView.Stone</item>
         <item name="latinKeyboardViewStyle">@style/LatinKeyboardView.Stone</item>
         <item name="miniKeyboardStyle">@style/MiniKeyboard.Stone</item>

@@ -17,7 +17,6 @@
 <resources>
     <style name="KeyboardTheme.HighContrast" parent="KeyboardIcons">
         <item name="keyboardStyle">@style/Keyboard.HighContrast</item>
-        <item name="latinKeyboardStyle">@style/LatinKeyboard</item>
         <item name="keyboardViewStyle">@style/KeyboardView.HighContrast</item>
         <item name="latinKeyboardViewStyle">@style/LatinKeyboardView.HighContrast</item>
         <item name="miniKeyboardStyle">@style/MiniKeyboard</item>
