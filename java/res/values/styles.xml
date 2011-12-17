@@ -33,6 +33,7 @@
     </style>
     <style name="LatinKeyboard">
         <item name="autoCorrectionSpacebarLedEnabled">true</item>
+        <item name="spacebarTextRatio">@fraction/spacebar_text_ratio</item>
         <item name="spacebarTextColor">#FFC0C0C0</item>
         <item name="spacebarTextShadowColor">#80000000</item>
     </style>
