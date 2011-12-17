@@ -77,16 +77,16 @@ public class LatinKeyboard extends Keyboard {
     private static final String SMALL_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR = "small";
     private static final String MEDIUM_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR = "medium";
 
-    private LatinKeyboard(Context context, LatinKeyboardParams params) {
+    private LatinKeyboard(Context context, KeyboardParams params) {
         super(params);
         mRes = context.getResources();
         mTheme = context.getTheme();
 
         // The index of space key is available only after Keyboard constructor has finished.
-        mSpaceKey = params.mSpaceKey;
+        mSpaceKey = getKey(CODE_SPACE);
         mSpaceIcon = (mSpaceKey != null) ? mSpaceKey.getIcon() : null;
 
-        mShortcutKey = params.mShortcutKey;
+        mShortcutKey = getKey(CODE_SHORTCUT);
         mEnabledShortcutIcon = (mShortcutKey != null) ? mShortcutKey.getIcon() : null;
         final int longPressSpaceKeyTimeout =
                 mRes.getInteger(R.integer.config_long_press_space_key_timeout);
@@ -105,36 +105,9 @@ public class LatinKeyboard extends Keyboard {
         a.recycle();
     }
 
-    private static class LatinKeyboardParams extends KeyboardParams {
-        Key mSpaceKey = null;
-        Key mShortcutKey = null;
-
-        LatinKeyboardParams() {}
-
-        @Override
-        public void onAddKey(Key key) {
-            super.onAddKey(key);
-
-            switch (key.mCode) {
-            case Keyboard.CODE_SPACE:
-                mSpaceKey = key;
-                break;
-            case Keyboard.CODE_SHORTCUT:
-                mShortcutKey = key;
-                break;
-            }
-        }
-    }
-
-    public static class Builder extends KeyboardBuilder<LatinKeyboardParams> {
+    public static class Builder extends KeyboardBuilder<KeyboardParams> {
         public Builder(Context context) {
-            super(context, new LatinKeyboardParams());
-        }
-
-        @Override
-        public Builder load(int xmlId, KeyboardId id) {
-            super.load(xmlId, id);
-            return this;
+            super(context, new KeyboardParams());
         }
 
         @Override
