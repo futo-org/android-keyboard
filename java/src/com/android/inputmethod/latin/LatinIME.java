@@ -344,9 +344,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (inputView == null) return;
             final Keyboard keyboard = inputView.getKeyboard();
             if (keyboard instanceof LatinKeyboard && keyboard == oldKeyboard) {
+                inputView.updateSpacebar();
                 final Key updatedKey = ((LatinKeyboard)keyboard).updateSpacebarLanguage(
                         fadeFactor,
-                        Utils.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */),
                         SubtypeSwitcher.getInstance().needsToDisplayLanguage(keyboard.mId.mLocale));
                 inputView.invalidateKey(updatedKey);
             }
