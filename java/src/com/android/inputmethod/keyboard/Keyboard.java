@@ -216,8 +216,8 @@ public class Keyboard {
 
     // TODO: Remove this method.
     public CharSequence adjustLabelCase(CharSequence label) {
-        if (isShiftedOrShiftLocked() && !TextUtils.isEmpty(label) && label.length() < 3
-                && Character.isLowerCase(label.charAt(0))) {
+        if (mId.isAlphabetKeyboard() && isShiftedOrShiftLocked() && !TextUtils.isEmpty(label)
+                && label.length() < 3 && Character.isLowerCase(label.charAt(0))) {
             return label.toString().toUpperCase(mId.mLocale);
         }
         return label;
