@@ -18,10 +18,13 @@
     <declare-styleable name="KeyboardTheme">
         <!-- Keyboard style -->
         <attr name="keyboardStyle" format="reference" />
+        <!-- TODO: Get rid of latinKeyboardStyle -->
         <!-- LatinKeyboard style -->
         <attr name="latinKeyboardStyle" format="reference" />
         <!-- KeyboardView style -->
         <attr name="keyboardViewStyle" format="reference" />
+        <!-- LatinKeyboardView style -->
+        <attr name="latinKeyboardViewStyle" format="reference" />
         <!-- MiniKeyboard style -->
         <attr name="miniKeyboardStyle" format="reference" />
         <!-- MiniKeyboardView style -->
@@ -118,6 +121,10 @@
             <enum name="italic" value="2" />
             <enum name="boldItalic" value="3" />
         </attr>
+    </declare-styleable>
+
+    <declare-styleable name="LatinKeyboardView">
+        <attr name="disabledShortcutIcon" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="SuggestionsView">
@@ -321,11 +328,10 @@
         <attr name="parentStyle" format="string" />
     </declare-styleable>
 
-    <!-- Move these attributes to LatinKeyboardView -->
+    <!-- TODO: Move these attributes to LatinKeyboardView -->
     <declare-styleable name="LatinKeyboard">
         <attr name="autoCorrectionSpacebarLedEnabled" format="boolean" />
         <attr name="autoCorrectionSpacebarLedIcon" format="reference" />
-        <attr name="disabledShortcutIcon" format="reference" />
         <!-- Size of the text for spacebar language label, in the proportion of key height. -->
         <attr name="spacebarTextRatio" format="fraction" />
         <attr name="spacebarTextColor" format="color" />

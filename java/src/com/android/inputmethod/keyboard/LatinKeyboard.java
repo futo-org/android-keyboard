@@ -60,11 +60,6 @@ public class LatinKeyboard extends Keyboard {
     private boolean mNeedsToDisplayLanguage;
     private float mSpacebarTextFadeFactor = 0.0f;
 
-    /* Shortcut key and its icons if available */
-    private final Key mShortcutKey;
-    private final Drawable mEnabledShortcutIcon;
-    private final Drawable mDisabledShortcutIcon;
-
     // Height in space key the language name will be drawn. (proportional to space key height)
     public static final float SPACEBAR_LANGUAGE_BASELINE = 0.6f;
     // If the full language name needs to be smaller than this value to be drawn on space key,
@@ -79,16 +74,13 @@ public class LatinKeyboard extends Keyboard {
         mSpaceKey = getKey(CODE_SPACE);
         mSpaceIcon = (mSpaceKey != null) ? mSpaceKey.getIcon() : null;
 
-        mShortcutKey = getKey(CODE_SHORTCUT);
-        mEnabledShortcutIcon = (mShortcutKey != null) ? mShortcutKey.getIcon() : null;
-
+        // TODO: Move these to LatinKeyboardView attributes.
         final TypedArray a = context.obtainStyledAttributes(
                 null, R.styleable.LatinKeyboard, R.attr.latinKeyboardStyle, R.style.LatinKeyboard);
         mAutoCorrectionSpacebarLedEnabled = a.getBoolean(
                 R.styleable.LatinKeyboard_autoCorrectionSpacebarLedEnabled, false);
         mAutoCorrectionSpacebarLedIcon = a.getDrawable(
                 R.styleable.LatinKeyboard_autoCorrectionSpacebarLedIcon);
-        mDisabledShortcutIcon = a.getDrawable(R.styleable.LatinKeyboard_disabledShortcutIcon);
         final float spacebarTextRatio = a.getFraction(R.styleable.LatinKeyboard_spacebarTextRatio,
                 1000, 1000, 1) / 1000.0f;
         final int keyHeight = mMostCommonKeyHeight - mVerticalGap;
@@ -129,15 +121,6 @@ public class LatinKeyboard extends Keyboard {
         final int newColor = Color.argb((int)(Color.alpha(color) * fadeFactor),
                 Color.red(color), Color.green(color), Color.blue(color));
         return newColor;
-    }
-
-    // TODO: Move this drawing method to LatinKeyboardView.
-    public Key updateShortcutKey(boolean available) {
-        if (mShortcutKey == null)
-            return null;
-        mShortcutKey.setEnabled(available);
-        mShortcutKey.setIcon(available ? mEnabledShortcutIcon : mDisabledShortcutIcon);
-        return mShortcutKey;
     }
 
     // TODO: Get rid of this method
