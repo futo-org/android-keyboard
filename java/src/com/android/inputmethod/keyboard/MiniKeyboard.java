@@ -18,8 +18,6 @@ package com.android.inputmethod.keyboard;
 
 import android.graphics.Paint;
 
-import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
-import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.MoreKeySpecParser;
 import com.android.inputmethod.latin.R;
 
@@ -35,10 +33,10 @@ public class MiniKeyboard extends Keyboard {
         return mDefaultKeyCoordX;
     }
 
-    public static class Builder extends KeyboardBuilder<Builder.MiniKeyboardParams> {
+    public static class Builder extends Keyboard.Builder<Builder.MiniKeyboardParams> {
         private final CharSequence[] mMoreKeys;
 
-        public static class MiniKeyboardParams extends KeyboardParams {
+        public static class MiniKeyboardParams extends Keyboard.Params {
             /* package */int mTopRowAdjustment;
             public int mNumRows;
             public int mNumColumns;

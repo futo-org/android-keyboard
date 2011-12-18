@@ -19,7 +19,9 @@ package com.android.inputmethod.keyboard.internal;
 import android.content.res.TypedArray;
 import android.util.Log;
 
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.XmlParseUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -196,7 +198,7 @@ public class KeyStyles {
             XmlPullParser parser) throws XmlPullParserException {
         final String styleName = keyStyleAttr.getString(R.styleable.Keyboard_KeyStyle_styleName);
         if (DEBUG) Log.d(TAG, String.format("<%s styleName=%s />",
-                KeyboardBuilder.TAG_KEY_STYLE, styleName));
+                Keyboard.Builder.TAG_KEY_STYLE, styleName));
         if (mStyles.containsKey(styleName))
             throw new XmlParseUtils.ParseException(
                     "duplicate key style declared: " + styleName, parser);

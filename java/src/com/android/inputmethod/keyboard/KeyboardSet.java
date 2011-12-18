@@ -24,9 +24,6 @@ import android.util.Log;
 import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
 
-import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
-import com.android.inputmethod.keyboard.internal.KeyboardParams;
-import com.android.inputmethod.keyboard.internal.XmlParseUtils;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.LocaleUtils;
@@ -34,6 +31,7 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SettingsValues;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.Utils;
+import com.android.inputmethod.latin.XmlParseUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -125,8 +123,8 @@ public class KeyboardSet {
         if (keyboard == null) {
             final Locale savedLocale = LocaleUtils.setSystemLocale(res, id.mLocale);
             try {
-                final KeyboardBuilder<KeyboardParams> builder =
-                        new KeyboardBuilder<KeyboardParams>(context, new KeyboardParams());
+                final Keyboard.Builder<Keyboard.Params> builder =
+                        new Keyboard.Builder<Keyboard.Params>(context, new Keyboard.Params());
                 builder.load(xmlId, id);
                 builder.setTouchPositionCorrectionEnabled(
                         subtypeSwitcher.currentSubtypeContainsExtraValueKey(

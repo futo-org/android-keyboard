@@ -22,8 +22,6 @@ import android.text.TextUtils;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
-import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
-import com.android.inputmethod.keyboard.internal.KeyboardParams;
 
 import java.io.File;
 import java.util.Locale;
@@ -40,7 +38,7 @@ public class SuggestHelper {
         // Use null as the locale for Suggest so as to force it to use the internal dictionary
         // (and not try to find a dictionary provider for a specified locale)
         mSuggest = new Suggest(context, dictionaryId, null);
-        mKeyboard = new KeyboardBuilder<KeyboardParams>(context, new KeyboardParams())
+        mKeyboard = new Keyboard.Builder<Keyboard.Params>(context, new Keyboard.Params())
                 .load(ALPHABET_KEYBOARD, keyboardId).build();
         mKeyDetector = new KeyDetector(0);
         init();
@@ -50,7 +48,7 @@ public class SuggestHelper {
             final long startOffset, final long length, final KeyboardId keyboardId,
             final Locale locale) {
         mSuggest = new Suggest(context, dictionaryPath, startOffset, length, null, locale);
-        mKeyboard = new KeyboardBuilder<KeyboardParams>(context, new KeyboardParams())
+        mKeyboard = new Keyboard.Builder<Keyboard.Params>(context, new Keyboard.Params())
                 .load(ALPHABET_KEYBOARD, keyboardId).build();
         mKeyDetector = new KeyDetector(0);
         init();
