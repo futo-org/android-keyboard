@@ -25,8 +25,6 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
-import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
-import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
@@ -39,7 +37,7 @@ public class MoreSuggestions extends Keyboard {
         super(params);
     }
 
-    public static class Builder extends KeyboardBuilder<Builder.MoreSuggestionsParam> {
+    public static class Builder extends Keyboard.Builder<Builder.MoreSuggestionsParam> {
         private static final boolean DBG = LatinImeLogger.sDBG;
 
         private final MoreSuggestionsView mPaneView;
@@ -47,7 +45,7 @@ public class MoreSuggestions extends Keyboard {
         private int mFromPos;
         private int mToPos;
 
-        public static class MoreSuggestionsParam extends KeyboardParams {
+        public static class MoreSuggestionsParam extends Keyboard.Params {
             private final int[] mWidths = new int[SuggestionsView.MAX_SUGGESTIONS];
             private final int[] mRowNumbers = new int[SuggestionsView.MAX_SUGGESTIONS];
             private final int[] mColumnOrders = new int[SuggestionsView.MAX_SUGGESTIONS];

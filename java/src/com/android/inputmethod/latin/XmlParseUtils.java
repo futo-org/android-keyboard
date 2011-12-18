@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.android.inputmethod.keyboard.internal;
+package com.android.inputmethod.latin;
 
 import android.content.res.TypedArray;
 
@@ -47,14 +47,14 @@ public class XmlParseUtils {
     }
 
     @SuppressWarnings("serial")
-    static class IllegalAttribute extends ParseException {
+    public static class IllegalAttribute extends ParseException {
         public IllegalAttribute(XmlPullParser parser, String attribute) {
             super("Tag " + parser.getName() + " has illegal attribute " + attribute, parser);
         }
     }
 
     @SuppressWarnings("serial")
-    static class NonEmptyTag extends ParseException{
+    public static class NonEmptyTag extends ParseException{
         public NonEmptyTag(String tag, XmlPullParser parser) {
             super(tag + " must be empty tag", parser);
         }

@@ -27,12 +27,10 @@ import android.util.Xml;
 
 import com.android.inputmethod.keyboard.internal.KeyStyles;
 import com.android.inputmethod.keyboard.internal.KeyStyles.KeyStyle;
-import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
-import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.MoreKeySpecParser;
-import com.android.inputmethod.keyboard.internal.XmlParseUtils;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.XmlParseUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -160,19 +158,19 @@ public class Key {
         }
     }
 
-    private static int getCode(Resources res, KeyboardParams params, String moreKeySpec) {
+    private static int getCode(Resources res, Keyboard.Params params, String moreKeySpec) {
         return getRtlParenthesisCode(
                 MoreKeySpecParser.getCode(res, moreKeySpec), params.mIsRtlKeyboard);
     }
 
-    private static Drawable getIcon(KeyboardParams params, String moreKeySpec) {
+    private static Drawable getIcon(Keyboard.Params params, String moreKeySpec) {
         return params.mIconsSet.getIcon(MoreKeySpecParser.getIconId(moreKeySpec));
     }
 
     /**
      * This constructor is being used only for key in more keys keyboard.
      */
-    public Key(Resources res, KeyboardParams params, String moreKeySpec,
+    public Key(Resources res, Keyboard.Params params, String moreKeySpec,
             int x, int y, int width, int height) {
         this(params, MoreKeySpecParser.getLabel(moreKeySpec), null, getIcon(params, moreKeySpec),
                 getCode(res, params, moreKeySpec), MoreKeySpecParser.getOutputText(moreKeySpec),
@@ -182,7 +180,7 @@ public class Key {
     /**
      * This constructor is being used only for key in popup suggestions pane.
      */
-    public Key(KeyboardParams params, CharSequence label, CharSequence hintLabel, Drawable icon,
+    public Key(Keyboard.Params params, CharSequence label, CharSequence hintLabel, Drawable icon,
             int code, CharSequence outputText, int x, int y, int width, int height) {
         mHeight = height - params.mVerticalGap;
         mHorizontalGap = params.mHorizontalGap;
@@ -220,7 +218,7 @@ public class Key {
      * @param keyStyles active key styles set
      * @throws XmlPullParserException
      */
-    public Key(Resources res, KeyboardParams params, KeyboardBuilder.Row row,
+    public Key(Resources res, Keyboard.Params params, Keyboard.Builder.Row row,
             XmlPullParser parser, KeyStyles keyStyles) throws XmlPullParserException {
         final float horizontalGap = isSpacer() ? 0 : params.mHorizontalGap;
         final int keyHeight = row.mRowHeight;
@@ -272,9 +270,9 @@ public class Key {
         mActionFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyActionFlags, 0);
 
         final KeyboardIconsSet iconsSet = params.mIconsSet;
-        mVisualInsetsLeft = (int) KeyboardBuilder.getDimensionOrFraction(keyAttr,
+        mVisualInsetsLeft = (int) Keyboard.Builder.getDimensionOrFraction(keyAttr,
                 R.styleable.Keyboard_Key_visualInsetsLeft, params.mBaseWidth, 0);
-        mVisualInsetsRight = (int) KeyboardBuilder.getDimensionOrFraction(keyAttr,
+        mVisualInsetsRight = (int) Keyboard.Builder.getDimensionOrFraction(keyAttr,
                 R.styleable.Keyboard_Key_visualInsetsRight, params.mBaseWidth, 0);
         mPreviewIcon = iconsSet.getIcon(style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_keyIconPreview, KeyboardIconsSet.ICON_UNDEFINED));
@@ -355,19 +353,19 @@ public class Key {
         return o instanceof Key && equals((Key)o);
     }
 
-    public void markAsLeftEdge(KeyboardParams params) {
+    public void markAsLeftEdge(Keyboard.Params params) {
         mHitBox.left = params.mHorizontalEdgesPadding;
     }
 
-    public void markAsRightEdge(KeyboardParams params) {
+    public void markAsRightEdge(Keyboard.Params params) {
         mHitBox.right = params.mOccupiedWidth - params.mHorizontalEdgesPadding;
     }
 
-    public void markAsTopEdge(KeyboardParams params) {
+    public void markAsTopEdge(Keyboard.Params params) {
         mHitBox.top = params.mTopPadding;
     }
 
-    public void markAsBottomEdge(KeyboardParams params) {
+    public void markAsBottomEdge(Keyboard.Params params) {
         mHitBox.bottom = params.mOccupiedHeight + params.mBottomPadding;
     }
 
@@ -603,7 +601,7 @@ public class Key {
     }
 
     public static class Spacer extends Key {
-        public Spacer(Resources res, KeyboardParams params, KeyboardBuilder.Row row,
+        public Spacer(Resources res, Keyboard.Params params, Keyboard.Builder.Row row,
                 XmlPullParser parser, KeyStyles keyStyles) throws XmlPullParserException {
             super(res, params, row, parser, keyStyles);
         }
@@ -611,7 +609,7 @@ public class Key {
         /**
          * This constructor is being used only for divider in more keys keyboard.
          */
-        public Spacer(KeyboardParams params, Drawable icon, int x, int y, int width, int height) {
+        public Spacer(Keyboard.Params params, Drawable icon, int x, int y, int width, int height) {
             super(params, null, null, icon, Keyboard.CODE_DUMMY, null, x, y, width, height);
         }
 
