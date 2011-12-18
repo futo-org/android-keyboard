@@ -29,9 +29,9 @@
         <item name="iconTabKey">@drawable/sym_keyboard_tab_holo</item>
         <item name="iconShortcutKey">@drawable/sym_keyboard_voice_holo</item>
         <item name="iconShortcutForLabel">@drawable/sym_keyboard_label_mic_holo</item>
-        <item name="iconShortcutKeyDisabled">@drawable/sym_keyboard_voice_off_holo</item>
         <item name="iconSpaceKeyForNumberLayout">@drawable/sym_keyboard_space_holo</item>
         <item name="iconShiftKeyShifted">@drawable/sym_keyboard_shift_locked_holo</item>
+        <item name="iconDisabledShortcutKey">@drawable/sym_keyboard_voice_off_holo</item>
         <item name="iconPreviewTabKey">@drawable/sym_keyboard_feedback_tab</item>
     </style>
 </resources>

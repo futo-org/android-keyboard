@@ -191,8 +191,8 @@
         <attr name="iconShortcutKey" format="reference" />
         <attr name="iconShortcutForLabel" format="reference" />
         <attr name="iconSpaceKeyForNumberLayout" format="reference" />
-        <attr name="iconShortcutKeyDisabled" format="reference" />
         <attr name="iconShiftKeyShifted" format="reference" />
+        <attr name="iconDisabledShortcutKey" format="reference" />
         <attr name="iconPreviewTabKey" format="reference" />
     </declare-styleable>
 
@@ -245,23 +245,29 @@
         </attr>
         <!-- The icon to display on the key instead of the label. -->
         <attr name="keyIcon" format="enum">
-            <!-- This should be aligned with KeyboardIcons.ICON_* -->
+            <!-- This should be aligned with the KeyboardIcons.ICONS_TO_ATTRS_MAP -->
             <enum name="iconShiftKey" value="1" />
             <enum name="iconDeleteKey" value="2" />
+            <!-- This is also represented as "@icon/3" in keyboard layout XML. -->
             <enum name="iconSettingsKey" value="3" />
             <enum name="iconSpaceKey" value="4" />
             <enum name="iconReturnKey" value="5" />
             <enum name="iconSearchKey" value="6" />
+            <!-- This is also represented as "@icon/7" in keyboard layout XML. -->
             <enum name="iconTabKey" value="7" />
             <enum name="iconShortcutKey" value="8" />
             <enum name="iconShortcutForLabel" value="9" />
-            <enum name="iconShortcutKeyDisabled" value="10" />
-            <enum name="iconSpaceKeyForNumberLayout" value="11" />
-            <enum name="iconShiftKeyShifted" value="12" />
+            <enum name="iconSpaceKeyForNumberLayout" value="10" />
+            <enum name="iconShiftKeyShifted" value="11" />
+        </attr>
+        <!-- The icon for disabled key -->
+        <attr name="keyIconDisabled" format="enum">
+            <!-- This should be aligned with the KeyboardIcons.ICONS_TO_ATTRS_MAP -->
+            <enum name="iconDisabledShortcutKey" value="12" />
         </attr>
         <!-- The icon to show in the popup preview. -->
         <attr name="keyIconPreview" format="enum">
-            <!-- This should be aligned with KeyboardIcons.ICON_PREVIEW_* -->
+            <!-- This should be aligned with the KeyboardIcons.ICONS_TO_ATTRS_MAP -->
             <enum name="iconPreviewTabKey" value="13" />
         </attr>
         <!-- The key style to specify a set of key attributes defined by <key_style/> -->

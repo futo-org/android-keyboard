@@ -58,6 +58,7 @@
         latin:styleName="shortcutKeyStyle"
         latin:code="@integer/key_shortcut"
         latin:keyIcon="iconShortcutKey"
+        latin:keyIconDisabled="iconDisabledShortcutKey"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
         latin:altCode="@integer/key_dummy"
         latin:backgroundType="functional" />

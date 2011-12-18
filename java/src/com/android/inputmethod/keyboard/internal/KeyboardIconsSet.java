@@ -23,88 +23,75 @@ import android.util.Log;
 
 import com.android.inputmethod.latin.R;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 public class KeyboardIconsSet {
     private static final String TAG = KeyboardIconsSet.class.getSimpleName();
 
     public static final int ICON_UNDEFINED = 0;
 
-    // TODO: Make all enums private
-    // This should be aligned with Keyboard.keyIcon enum.
-    public static final int ICON_SHIFT_KEY = 1;
-    private static final int ICON_DELETE_KEY = 2;
-    // This is also represented as "@icon/3" in keyboard layout XML.
-    private static final int ICON_SETTINGS_KEY = 3;
-    public static final int ICON_SPACE_KEY = 4;
-    private static final int ICON_RETURN_KEY = 5;
-    private static final int ICON_SEARCH_KEY = 6;
-    // This is also represented as "@icon/7" in keyboard layout XML.
-    private static final int ICON_TAB_KEY = 7;
-    public static final int ICON_SHORTCUT_KEY = 8;
-    private static final int ICON_SHORTCUT_FOR_LABEL = 9;
-    public static final int ICON_SHORTCUT_KEY_DISABLED = 10;
-    private static final int ICON_SPACE_KEY_FOR_NUMBER_LAYOUT = 11;
-    public static final int ICON_SHIFT_KEY_SHIFTED = 12;
-    // This should be aligned with Keyboard.keyIconPreview enum.
-    private static final int ICON_PREVIEW_TAB_KEY = 13;
+    private final Map<Integer, Drawable> mIcons = new HashMap<Integer, Drawable>();
 
-    private static final int ICON_LAST = 13;
+    // The key value should be aligned with the enum value of Keyboard.icon*.
+    private static final Map<Integer, Integer> ICONS_TO_ATTRS_MAP = new HashMap<Integer, Integer>();
+    private static final Collection<Integer> VALID_ATTRS;
 
-    private final Drawable mIcons[] = new Drawable[ICON_LAST + 1];
+    static {
+        addIconIdMap(1, R.styleable.Keyboard_iconShiftKey);
+        addIconIdMap(2, R.styleable.Keyboard_iconDeleteKey);
+        // This is also represented as "@icon/3" in keyboard layout XML.
+        addIconIdMap(3, R.styleable.Keyboard_iconSettingsKey);
+        addIconIdMap(4, R.styleable.Keyboard_iconSpaceKey);
+        addIconIdMap(5, R.styleable.Keyboard_iconReturnKey);
+        addIconIdMap(6, R.styleable.Keyboard_iconSearchKey);
+        // This is also represented as "@icon/7" in keyboard layout XML.
+        addIconIdMap(7, R.styleable.Keyboard_iconTabKey);
+        addIconIdMap(8, R.styleable.Keyboard_iconShortcutKey);
+        addIconIdMap(9, R.styleable.Keyboard_iconShortcutForLabel);
+        addIconIdMap(10, R.styleable.Keyboard_iconSpaceKeyForNumberLayout);
+        addIconIdMap(11, R.styleable.Keyboard_iconShiftKeyShifted);
+        addIconIdMap(12, R.styleable.Keyboard_iconDisabledShortcutKey);
+        addIconIdMap(13, R.styleable.Keyboard_iconPreviewTabKey);
+        VALID_ATTRS = ICONS_TO_ATTRS_MAP.values();
+    }
 
-    private static final int getIconId(final int attrIndex) {
-        switch (attrIndex) {
-        case R.styleable.Keyboard_iconShiftKey:
-            return ICON_SHIFT_KEY;
-        case R.styleable.Keyboard_iconDeleteKey:
-            return ICON_DELETE_KEY;
-        case R.styleable.Keyboard_iconSettingsKey:
-            return ICON_SETTINGS_KEY;
-        case R.styleable.Keyboard_iconSpaceKey:
-            return ICON_SPACE_KEY;
-        case R.styleable.Keyboard_iconReturnKey:
-            return ICON_RETURN_KEY;
-        case R.styleable.Keyboard_iconSearchKey:
-            return ICON_SEARCH_KEY;
-        case R.styleable.Keyboard_iconTabKey:
-            return ICON_TAB_KEY;
-        case R.styleable.Keyboard_iconShortcutKey:
-            return ICON_SHORTCUT_KEY;
-        case R.styleable.Keyboard_iconShortcutForLabel:
-            return ICON_SHORTCUT_FOR_LABEL;
-        case R.styleable.Keyboard_iconShortcutKeyDisabled:
-            return ICON_SHORTCUT_KEY_DISABLED;
-        case R.styleable.Keyboard_iconSpaceKeyForNumberLayout:
-            return ICON_SPACE_KEY_FOR_NUMBER_LAYOUT;
-        case R.styleable.Keyboard_iconShiftKeyShifted:
-            return ICON_SHIFT_KEY_SHIFTED;
-        case R.styleable.Keyboard_iconPreviewTabKey:
-            return ICON_PREVIEW_TAB_KEY;
-        default:
-            return ICON_UNDEFINED;
-        }
+    private static void addIconIdMap(int iconId, int attrId) {
+        ICONS_TO_ATTRS_MAP.put(iconId, attrId);
     }
 
     public void loadIcons(final TypedArray keyboardAttrs) {
-        final int count = keyboardAttrs.getIndexCount();
-        for (int i = 0; i < count; i++) {
-            final int attrIndex = keyboardAttrs.getIndex(i);
-            final int iconId = getIconId(attrIndex);
-            if (iconId != ICON_UNDEFINED) {
-                try {
-                    mIcons[iconId] = setDefaultBounds(keyboardAttrs.getDrawable(attrIndex));
-                } catch (Resources.NotFoundException e) {
-                    Log.w(TAG, "Drawable resource for icon #" + iconId + " not found");
-                }
+        for (final Integer attrId : VALID_ATTRS) {
+            try {
+                final Drawable icon = keyboardAttrs.getDrawable(attrId);
+                if (icon == null) continue;
+                setDefaultBounds(icon);
+                mIcons.put(attrId, icon);
+            } catch (Resources.NotFoundException e) {
+                Log.w(TAG, "Drawable resource for icon #"
+                        + keyboardAttrs.getResources().getResourceEntryName(attrId)
+                        + " not found");
             }
         }
     }
 
-    public Drawable getIcon(final int iconId) {
-        if (iconId == ICON_UNDEFINED)
+    public Drawable getIconByIconId(final Integer iconId) {
+        if (iconId == ICON_UNDEFINED) {
             return null;
-        if (iconId < 0 || iconId >= mIcons.length)
+        }
+        final Integer attrId = ICONS_TO_ATTRS_MAP.get(iconId);
+        if (attrId == null) {
             throw new IllegalArgumentException("icon id is out of range: " + iconId);
-        return mIcons[iconId];
+        }
+        return getIconByAttrId(attrId);
+    }
+
+    public Drawable getIconByAttrId(final Integer attrId) {
+        if (!VALID_ATTRS.contains(attrId)) {
+            throw new IllegalArgumentException("unknown icon attribute id: " + attrId);
+        }
+        return mIcons.get(attrId);
     }
 
     private static Drawable setDefaultBounds(final Drawable icon)  {

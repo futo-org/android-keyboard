@@ -307,7 +307,7 @@
         <item name="spacebarTextRatio">@fraction/spacebar_text_ratio</item>
         <item name="spacebarTextColor">#FFC0C0C0</item>
         <item name="spacebarTextShadowColor">#80000000</item>
-        </style>
+    </style>
     <style
         name="MiniKeyboard.IceCreamSandwich"
         parent="Keyboard.IceCreamSandwich"

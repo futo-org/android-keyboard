@@ -192,9 +192,10 @@ public class Keyboard {
             // To represent "shift locked" state. The highlight is handled by background image that
             // might be a StateListDrawable.
             key.setHighlightOn(newShiftLockState);
-            final int iconId = newShiftLockState ? KeyboardIconsSet.ICON_SHIFT_KEY_SHIFTED
-                    : KeyboardIconsSet.ICON_SHIFT_KEY;
-            key.setIcon(mIconsSet.getIcon(iconId));
+            final int attrId = newShiftLockState
+                    ? R.styleable.Keyboard_iconShiftKeyShifted
+                    : R.styleable.Keyboard_iconShiftKey;
+            key.setIcon(mIconsSet.getIconByAttrId(attrId));
         }
         mShiftState.setShiftLocked(newShiftLockState);
     }
@@ -208,9 +209,10 @@ public class Keyboard {
     void setShifted(boolean newShiftState) {
         if (!mShiftState.isShiftLocked()) {
             for (final Key key : mShiftKeys) {
-                final int iconId = newShiftState ? KeyboardIconsSet.ICON_SHIFT_KEY_SHIFTED
-                        : KeyboardIconsSet.ICON_SHIFT_KEY;
-                key.setIcon(mIconsSet.getIcon(iconId));
+                final int attrId = newShiftState
+                        ? R.styleable.Keyboard_iconShiftKeyShifted
+                        : R.styleable.Keyboard_iconShiftKey;
+                key.setIcon(mIconsSet.getIconByAttrId(attrId));
             }
         }
         mShiftState.setShifted(newShiftState);

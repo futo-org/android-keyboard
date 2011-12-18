@@ -72,9 +72,11 @@ public class Key {
     private static final int LABEL_FLAGS_WITH_ICON_RIGHT = 0x2000;
     private static final int LABEL_FLAGS_AUTO_X_SCALE = 0x4000;
 
-    // TODO: This should be public final
+    // TODO: These icon references could be int (icon attribute id)
     /** Icon to display instead of a label. Icon takes precedence over a label */
     private Drawable mIcon;
+    /** Icon for disabled state */
+    private Drawable mDisabledIcon;
     /** Preview version of the icon, for the preview popup */
     public final Drawable mPreviewIcon;
 
@@ -164,7 +166,7 @@ public class Key {
     }
 
     private static Drawable getIcon(Keyboard.Params params, String moreKeySpec) {
-        return params.mIconsSet.getIcon(MoreKeySpecParser.getIconId(moreKeySpec));
+        return params.mIconsSet.getIconByIconId(MoreKeySpecParser.getIconId(moreKeySpec));
     }
 
     /**
@@ -198,6 +200,7 @@ public class Key {
         mCode = code;
         mAltCode = Keyboard.CODE_DUMMY;
         mIcon = icon;
+        mDisabledIcon = null;
         mPreviewIcon = null;
         // Horizontal gap is divided equally to both sides of the key.
         mX = x + mHorizontalGap / 2;
@@ -274,10 +277,12 @@ public class Key {
                 R.styleable.Keyboard_Key_visualInsetsLeft, params.mBaseWidth, 0);
         mVisualInsetsRight = (int) Keyboard.Builder.getDimensionOrFraction(keyAttr,
                 R.styleable.Keyboard_Key_visualInsetsRight, params.mBaseWidth, 0);
-        mPreviewIcon = iconsSet.getIcon(style.getInt(keyAttr,
+        mPreviewIcon = iconsSet.getIconByIconId(style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_keyIconPreview, KeyboardIconsSet.ICON_UNDEFINED));
-        mIcon = iconsSet.getIcon(style.getInt(keyAttr, R.styleable.Keyboard_Key_keyIcon,
-                KeyboardIconsSet.ICON_UNDEFINED));
+        mIcon = iconsSet.getIconByIconId(style.getInt(keyAttr,
+                R.styleable.Keyboard_Key_keyIcon, KeyboardIconsSet.ICON_UNDEFINED));
+        mDisabledIcon = iconsSet.getIconByIconId(style.getInt(keyAttr,
+                R.styleable.Keyboard_Key_keyIconDisabled, KeyboardIconsSet.ICON_UNDEFINED));
         mHintLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
 
         mLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyLabel);
@@ -459,7 +464,7 @@ public class Key {
     }
 
     public Drawable getIcon() {
-        return mIcon;
+        return mEnabled ? mIcon : mDisabledIcon;
     }
 
     // TODO: Get rid of this method.
