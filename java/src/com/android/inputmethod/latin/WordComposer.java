@@ -16,10 +16,9 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
-import com.android.inputmethod.keyboard.LatinKeyboard;
+import com.android.inputmethod.keyboard.Keyboard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -174,7 +173,7 @@ public class WordComposer {
     /**
      * Internal method to retrieve reasonable proximity info for a character.
      */
-    private void addKeyInfo(final int codePoint, final LatinKeyboard keyboard,
+    private void addKeyInfo(final int codePoint, final Keyboard keyboard,
             final KeyDetector keyDetector) {
         for (final Key key : keyboard.mKeys) {
             if (key.mCode == codePoint) {
@@ -194,7 +193,7 @@ public class WordComposer {
      * Set the currently composing word to the one passed as an argument.
      * This will register NOT_A_COORDINATE for X and Ys, and use the passed keyboard for proximity.
      */
-    public void setComposingWord(final CharSequence word, final LatinKeyboard keyboard,
+    public void setComposingWord(final CharSequence word, final Keyboard keyboard,
             final KeyDetector keyDetector) {
         reset();
         final int length = word.length();
@@ -208,7 +207,7 @@ public class WordComposer {
     /**
      * Shortcut for the above method, this will create a new KeyDetector for the passed keyboard.
      */
-    public void setComposingWord(final CharSequence word, final LatinKeyboard keyboard) {
+    public void setComposingWord(final CharSequence word, final Keyboard keyboard) {
         final KeyDetector keyDetector = new KeyDetector(0);
         keyDetector.setKeyboard(keyboard, 0, 0);
         keyDetector.setProximityCorrectionEnabled(true);

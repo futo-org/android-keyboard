@@ -65,7 +65,6 @@ import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
-import com.android.inputmethod.keyboard.LatinKeyboard;
 import com.android.inputmethod.keyboard.LatinKeyboardView;
 import com.android.inputmethod.latin.suggestions.SuggestionsView;
 
@@ -293,13 +292,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             case MSG_FADEOUT_LANGUAGE_ON_SPACEBAR:
                 setSpacebarTextFadeFactor(inputView,
                         (1.0f + mFinalFadeoutFactorOfLanguageOnSpacebar) / 2,
-                        (LatinKeyboard)msg.obj);
+                        (Keyboard)msg.obj);
                 sendMessageDelayed(obtainMessage(MSG_DISMISS_LANGUAGE_ON_SPACEBAR, msg.obj),
                         mDurationOfFadeoutLanguageOnSpacebar);
                 break;
             case MSG_DISMISS_LANGUAGE_ON_SPACEBAR:
                 setSpacebarTextFadeFactor(inputView, mFinalFadeoutFactorOfLanguageOnSpacebar,
-                        (LatinKeyboard)msg.obj);
+                        (Keyboard)msg.obj);
                 break;
             }
         }
@@ -340,10 +339,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
 
         private static void setSpacebarTextFadeFactor(LatinKeyboardView inputView,
-                float fadeFactor, LatinKeyboard oldKeyboard) {
+                float fadeFactor, Keyboard oldKeyboard) {
             if (inputView == null) return;
             final Keyboard keyboard = inputView.getKeyboard();
-            if (keyboard instanceof LatinKeyboard && keyboard == oldKeyboard) {
+            if (keyboard == oldKeyboard) {
                 inputView.updateSpacebar(fadeFactor,
                         SubtypeSwitcher.getInstance().needsToDisplayLanguage(
                                 keyboard.mId.mLocale));
@@ -356,7 +355,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             removeMessages(MSG_DISMISS_LANGUAGE_ON_SPACEBAR);
             final LatinKeyboardView inputView = latinIme.mKeyboardSwitcher.getKeyboardView();
             if (inputView != null) {
-                final LatinKeyboard keyboard = latinIme.mKeyboardSwitcher.getLatinKeyboard();
+                final Keyboard keyboard = latinIme.mKeyboardSwitcher.getKeyboard();
                 // The language is always displayed when the delay is negative.
                 final boolean needsToDisplayLanguage = localeChanged
                         || mDelayBeforeFadeoutLanguageOnSpacebar < 0;
@@ -1718,7 +1717,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         // getSuggestedWordBuilder handles gracefully a null value of prevWord
         final SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(mWordComposer,
-                prevWord, mKeyboardSwitcher.getLatinKeyboard().getProximityInfo(), mCorrectionMode);
+                prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(), mCorrectionMode);
 
         boolean autoCorrectionAvailable = !mInputAttributes.mInputTypeNoAutoCorrect
                 && mSuggest.hasAutoCorrection();
@@ -1867,7 +1866,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // pressed space on purpose of displaying the suggestion strip punctuation.
             final int rawPrimaryCode = suggestion.charAt(0);
             // Maybe apply the "bidi mirrored" conversions for parentheses
-            final LatinKeyboard keyboard = mKeyboardSwitcher.getLatinKeyboard();
+            final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
             final boolean isRtl = keyboard != null && keyboard.mIsRtlKeyboard;
             final int primaryCode = Key.getRtlParenthesisCode(rawPrimaryCode, isRtl);
 
@@ -1969,7 +1968,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final CharSequence prevWord = EditingUtils.getThisWord(getCurrentInputConnection(),
                 mSettingsValues.mWordSeparators);
         SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(sEmptyWordComposer,
-                prevWord, mKeyboardSwitcher.getLatinKeyboard().getProximityInfo(), mCorrectionMode);
+                prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(), mCorrectionMode);
 
         if (builder.size() > 0) {
             // Explicitly supply an empty typed word (the no-second-arg version of
@@ -2095,7 +2094,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // "ic" must not be null
     private void restartSuggestionsOnWordBeforeCursor(final InputConnection ic,
             final CharSequence word) {
-        mWordComposer.setComposingWord(word, mKeyboardSwitcher.getLatinKeyboard());
+        mWordComposer.setComposingWord(word, mKeyboardSwitcher.getKeyboard());
         mComposingStateManager.onStartComposingText();
         ic.deleteSurroundingText(word.length(), 0);
         ic.setComposingText(word, 1);
@@ -2436,7 +2435,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         final Printer p = new PrintWriterPrinter(fout);
         p.println("LatinIME state :");
-        final Keyboard keyboard = mKeyboardSwitcher.getLatinKeyboard();
+        final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
         final int keyboardMode = keyboard != null ? keyboard.mId.mMode : -1;
         p.println("  Keyboard mode = " + keyboardMode);
         p.println("  mIsSuggestionsRequested=" + mInputAttributes.mIsSettingsSuggestionStripOn);

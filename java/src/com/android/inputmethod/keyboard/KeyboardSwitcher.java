@@ -171,7 +171,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     }
 
     public boolean isAlphabetMode() {
-        final Keyboard keyboard = getLatinKeyboard();
+        final Keyboard keyboard = getKeyboard();
         return keyboard != null && keyboard.mId.isAlphabetKeyboard();
     }
 
@@ -180,12 +180,12 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     }
 
     public boolean isShiftedOrShiftLocked() {
-        final Keyboard keyboard = getLatinKeyboard();
+        final Keyboard keyboard = getKeyboard();
         return keyboard != null && keyboard.isShiftedOrShiftLocked();
     }
 
     public boolean isManualTemporaryUpperCase() {
-        final Keyboard keyboard = getLatinKeyboard();
+        final Keyboard keyboard = getKeyboard();
         return keyboard != null && keyboard.isManualTemporaryUpperCase();
     }
 
@@ -195,11 +195,9 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         return false;
     }
 
-    public LatinKeyboard getLatinKeyboard() {
+    public Keyboard getKeyboard() {
         if (mKeyboardView != null) {
-            final Keyboard keyboard = mKeyboardView.getKeyboard();
-            if (keyboard instanceof LatinKeyboard)
-                return (LatinKeyboard)keyboard;
+            return mKeyboardView.getKeyboard();
         }
         return null;
     }
@@ -208,11 +206,11 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     @Override
     public void setShifted(int shiftMode) {
         mInputMethodService.mHandler.cancelUpdateShiftState();
-        LatinKeyboard latinKeyboard = getLatinKeyboard();
-        if (latinKeyboard == null)
+        Keyboard keyboard = getKeyboard();
+        if (keyboard == null)
             return;
         if (shiftMode == AUTOMATIC_SHIFT) {
-            latinKeyboard.setAutomaticTemporaryUpperCase();
+            keyboard.setAutomaticTemporaryUpperCase();
         } else {
             final boolean shifted = (shiftMode == MANUAL_SHIFT);
             // On non-distinct multi touch panel device, we should also turn off the shift locked
@@ -220,9 +218,9 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
             // On the other hand, on distinct multi touch panel device, turning off the shift
             // locked state with shift key pressing is handled by onReleaseShift().
             if (!hasDistinctMultitouch() && !shifted && mState.isShiftLocked()) {
-                latinKeyboard.setShiftLocked(false);
+                keyboard.setShiftLocked(false);
             }
-            latinKeyboard.setShifted(shifted);
+            keyboard.setShifted(shifted);
         }
         mKeyboardView.invalidateAllKeys();
     }
@@ -231,10 +229,10 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     @Override
     public void setShiftLocked(boolean shiftLocked) {
         mInputMethodService.mHandler.cancelUpdateShiftState();
-        LatinKeyboard latinKeyboard = getLatinKeyboard();
-        if (latinKeyboard == null)
+        Keyboard keyboard = getKeyboard();
+        if (keyboard == null)
             return;
-        latinKeyboard.setShiftLocked(shiftLocked);
+        keyboard.setShiftLocked(shiftLocked);
         mKeyboardView.invalidateAllKeys();
         if (!shiftLocked) {
             // To be able to turn off caps lock by "double tap" on shift key, we should ignore
