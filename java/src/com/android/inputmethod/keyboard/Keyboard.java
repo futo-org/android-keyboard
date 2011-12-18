@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.keyboard;
 
-import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -108,8 +107,6 @@ public class Keyboard {
     public final Set<Key> mKeys;
     public final Set<Key> mShiftKeys;
     public final Set<Key> mShiftLockKeys;
-    public final Map<Key, Drawable> mShiftedIcons;
-    public final Map<Key, Drawable> mUnshiftedIcons;
     public final KeyboardIconsSet mIconsSet;
 
     private final Map<Integer, Key> mKeyCache = new HashMap<Integer, Key>();
@@ -136,8 +133,6 @@ public class Keyboard {
         mKeys = Collections.unmodifiableSet(params.mKeys);
         mShiftKeys = Collections.unmodifiableSet(params.mShiftKeys);
         mShiftLockKeys = Collections.unmodifiableSet(params.mShiftLockKeys);
-        mShiftedIcons = Collections.unmodifiableMap(params.mShiftedIcons);
-        mUnshiftedIcons = Collections.unmodifiableMap(params.mUnshiftedIcons);
         mIconsSet = params.mIconsSet;
 
         mProximityInfo = new ProximityInfo(
@@ -179,7 +174,9 @@ public class Keyboard {
             // To represent "shift locked" state. The highlight is handled by background image that
             // might be a StateListDrawable.
             key.setHighlightOn(newShiftLockState);
-            key.setIcon(newShiftLockState ? mShiftedIcons.get(key) : mUnshiftedIcons.get(key));
+            final int iconId = newShiftLockState ? KeyboardIconsSet.ICON_SHIFT_KEY_SHIFTED
+                    : KeyboardIconsSet.ICON_SHIFT_KEY;
+            key.setIcon(mIconsSet.getIcon(iconId));
         }
         mShiftState.setShiftLocked(newShiftLockState);
     }
@@ -193,7 +190,9 @@ public class Keyboard {
     void setShifted(boolean newShiftState) {
         if (!mShiftState.isShiftLocked()) {
             for (final Key key : mShiftKeys) {
-                key.setIcon(newShiftState ? mShiftedIcons.get(key) : mUnshiftedIcons.get(key));
+                final int iconId = newShiftState ? KeyboardIconsSet.ICON_SHIFT_KEY_SHIFTED
+                        : KeyboardIconsSet.ICON_SHIFT_KEY;
+                key.setIcon(mIconsSet.getIcon(iconId));
             }
         }
         mShiftState.setShifted(newShiftState);

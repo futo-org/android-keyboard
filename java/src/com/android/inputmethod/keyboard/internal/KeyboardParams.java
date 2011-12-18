@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import android.graphics.drawable.Drawable;
-
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
@@ -60,8 +58,6 @@ public class KeyboardParams {
     public final Set<Key> mKeys = new HashSet<Key>();
     public final Set<Key> mShiftKeys = new HashSet<Key>();
     public final Set<Key> mShiftLockKeys = new HashSet<Key>();
-    public final Map<Key, Drawable> mShiftedIcons = new HashMap<Key, Drawable>();
-    public final Map<Key, Drawable> mUnshiftedIcons = new HashMap<Key, Drawable>();
     public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
 
     public int mMostCommonKeyHeight = 0;
@@ -128,8 +124,6 @@ public class KeyboardParams {
         mKeys.clear();
         mShiftKeys.clear();
         mShiftLockKeys.clear();
-        mShiftedIcons.clear();
-        mUnshiftedIcons.clear();
         clearHistogram();
     }
 
@@ -142,11 +136,6 @@ public class KeyboardParams {
                 mShiftLockKeys.add(key);
             }
         }
-    }
-
-    public void addShiftedIcon(Key key, Drawable icon) {
-        mUnshiftedIcons.put(key, key.getIcon());
-        mShiftedIcons.put(key, icon);
     }
 
     private int mMaxHeightCount = 0;

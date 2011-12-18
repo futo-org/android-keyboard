@@ -23,16 +23,15 @@
         <item name="iconShiftKey">@drawable/sym_keyboard_shift_holo</item>
         <item name="iconDeleteKey">@drawable/sym_keyboard_delete_holo</item>
         <item name="iconSettingsKey">@drawable/sym_keyboard_settings_holo</item>
-        <item name="iconSpaceKey">@drawable/sym_keyboard_space_holo</item>
+        <item name="iconSpaceKey">@null</item>
         <item name="iconReturnKey">@drawable/sym_keyboard_return_holo</item>
         <item name="iconSearchKey">@drawable/sym_keyboard_search_holo</item>
         <item name="iconTabKey">@drawable/sym_keyboard_tab_holo</item>
         <item name="iconShortcutKey">@drawable/sym_keyboard_voice_holo</item>
         <item name="iconShortcutForLabel">@drawable/sym_keyboard_label_mic_holo</item>
-        <item name="iconShiftedShiftKey">@drawable/sym_keyboard_shift_locked_holo</item>
+        <item name="iconShortcutKeyDisabled">@drawable/sym_keyboard_voice_off_holo</item>
+        <item name="iconSpaceKeyForNumberLayout">@drawable/sym_keyboard_space_holo</item>
+        <item name="iconShiftKeyShifted">@drawable/sym_keyboard_shift_locked_holo</item>
         <item name="iconPreviewTabKey">@drawable/sym_keyboard_feedback_tab</item>
-        <!-- LatinKeyboard icons -->
-        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_holo</item>
-        <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
     </style>
 </resources>

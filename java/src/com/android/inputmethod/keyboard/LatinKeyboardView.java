@@ -19,10 +19,8 @@ package com.android.inputmethod.keyboard;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -41,6 +39,7 @@ import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
+import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -66,14 +65,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     // For drawing spacebar.
     private final boolean mIsSpacebarTriggeringPopupByLongPress;
     private boolean mMultipleEnabledIMEsOrSubtypes;
-
-    /* Shortcut key and its icons if available */
-    private Key mShortcutKey;
-    // TODO: Remove this variable, use KeyboardIconsSet instead.
-    private Drawable mEnabledShortcutIcon;
-    // TODO: Remove this variable and LatinKeyboardView.disabledShortcutIcon attribute.
-    // This should be moved to KeyboardIconsSet.
-    private final Drawable mDisabledShortcutIcon;
 
     private final SuddenJumpingTouchEventHandler mTouchScreenRegulator;
 
@@ -266,11 +257,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         final int longPressSpaceKeyTimeout =
                 res.getInteger(R.integer.config_long_press_space_key_timeout);
         mIsSpacebarTriggeringPopupByLongPress = (longPressSpaceKeyTimeout > 0);
-
-        final TypedArray a = context.obtainStyledAttributes(
-                attrs, R.styleable.LatinKeyboardView, defStyle, R.style.LatinKeyboardView);
-        mDisabledShortcutIcon = a.getDrawable(R.styleable.LatinKeyboardView_disabledShortcutIcon);
-        a.recycle();
     }
 
     public void startIgnoringDoubleTap() {
@@ -325,9 +311,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         PointerTracker.setKeyDetector(mKeyDetector);
         mTouchScreenRegulator.setKeyboard(keyboard);
         mMoreKeysPanelCache.clear();
-
-        mShortcutKey = keyboard.getKey(Keyboard.CODE_SHORTCUT);
-        mEnabledShortcutIcon = (mShortcutKey != null) ? mShortcutKey.getIcon() : null;
     }
 
     /**
@@ -714,10 +697,15 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     }
 
     public void updateShortcutKey(boolean available) {
-        if (mShortcutKey == null) return;
-        mShortcutKey.setEnabled(available);
-        mShortcutKey.setIcon(available ? mEnabledShortcutIcon : mDisabledShortcutIcon);
-        invalidateKey(mShortcutKey);
+        final Keyboard keyboard = getKeyboard();
+        if (keyboard == null) return;
+        final Key shortcutKey = keyboard.getKey(Keyboard.CODE_SHORTCUT);
+        if (shortcutKey == null) return;
+        shortcutKey.setEnabled(available);
+        final int iconId = available ? KeyboardIconsSet.ICON_SHORTCUT_KEY
+                : KeyboardIconsSet.ICON_SHORTCUT_KEY_DISABLED;
+        shortcutKey.setIcon(keyboard.mIconsSet.getIcon(iconId));
+        invalidateKey(shortcutKey);
     }
 
     public void updateSpacebar() {

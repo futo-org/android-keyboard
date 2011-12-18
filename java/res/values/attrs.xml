@@ -124,7 +124,6 @@
     </declare-styleable>
 
     <declare-styleable name="LatinKeyboardView">
-        <attr name="disabledShortcutIcon" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="SuggestionsView">
@@ -185,7 +184,9 @@
         <attr name="iconTabKey" format="reference" />
         <attr name="iconShortcutKey" format="reference" />
         <attr name="iconShortcutForLabel" format="reference" />
-        <attr name="iconShiftedShiftKey" format="reference" />
+        <attr name="iconSpaceKeyForNumberLayout" format="reference" />
+        <attr name="iconShortcutKeyDisabled" format="reference" />
+        <attr name="iconShiftKeyShifted" format="reference" />
         <attr name="iconPreviewTabKey" format="reference" />
     </declare-styleable>
 
@@ -248,16 +249,14 @@
             <enum name="iconTabKey" value="7" />
             <enum name="iconShortcutKey" value="8" />
             <enum name="iconShortcutForLabel" value="9" />
-        </attr>
-        <!-- Shift key icon for shifted state -->
-        <attr name="keyIconShifted" format="enum">
-            <!-- This should be aligned with KeyboardIcons.ICON_SHIFTED_* -->
-            <enum name="iconShiftedShiftKey" value="10" />
+            <enum name="iconShortcutKeyDisabled" value="10" />
+            <enum name="iconSpaceKeyForNumberLayout" value="11" />
+            <enum name="iconShiftKeyShifted" value="12" />
         </attr>
         <!-- The icon to show in the popup preview. -->
         <attr name="keyIconPreview" format="enum">
             <!-- This should be aligned with KeyboardIcons.ICON_PREVIEW_* -->
-            <enum name="iconPreviewTabKey" value="11" />
+            <enum name="iconPreviewTabKey" value="13" />
         </attr>
         <!-- The key style to specify a set of key attributes defined by <key_style/> -->
         <attr name="keyStyle" format="string" />

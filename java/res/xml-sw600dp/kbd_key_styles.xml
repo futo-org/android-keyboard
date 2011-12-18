@@ -43,7 +43,6 @@
         latin:styleName="shiftKeyStyle"
         latin:code="@integer/key_shift"
         latin:keyIcon="iconShiftKey"
-        latin:keyIconShifted="iconShiftedShiftKey"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="sticky" />
     <key-style

@@ -124,6 +124,6 @@
     <key-style
         latin:styleName="numSpaceKeyStyle"
         latin:code="@integer/key_space"
-        latin:keyIcon="iconSpaceKey"
+        latin:keyIcon="iconSpaceKeyForNumberLayout"
         latin:parentStyle="numKeyBaseStyle" />
 </merge>

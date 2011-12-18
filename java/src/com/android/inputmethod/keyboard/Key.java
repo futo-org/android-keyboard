@@ -280,8 +280,6 @@ public class Key {
                 R.styleable.Keyboard_Key_keyIconPreview, KeyboardIconsSet.ICON_UNDEFINED));
         mIcon = iconsSet.getIcon(style.getInt(keyAttr, R.styleable.Keyboard_Key_keyIcon,
                 KeyboardIconsSet.ICON_UNDEFINED));
-        final int shiftedIconId = style.getInt(keyAttr, R.styleable.Keyboard_Key_keyIconShifted,
-                KeyboardIconsSet.ICON_UNDEFINED);
         mHintLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
 
         mLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyLabel);
@@ -308,11 +306,6 @@ public class Key {
         mHashCode = hashCode(this);
 
         keyAttr.recycle();
-
-        if (shiftedIconId != KeyboardIconsSet.ICON_UNDEFINED) {
-            final Drawable shiftedIcon = iconsSet.getIcon(shiftedIconId);
-            params.addShiftedIcon(this, shiftedIcon);
-        }
     }
 
     private static int hashCode(Key key) {

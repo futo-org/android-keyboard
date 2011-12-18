@@ -30,10 +30,9 @@
         <item name="iconTabKey">@drawable/sym_bkeyboard_tab</item>
         <item name="iconShortcutKey">@drawable/sym_bkeyboard_mic</item>
         <item name="iconShortcutForLabel">@drawable/sym_bkeyboard_label_mic</item>
-        <item name="iconShiftedShiftKey">@drawable/sym_bkeyboard_shift_locked</item>
+        <item name="iconShortcutKeyDisabled">@drawable/sym_bkeyboard_voice_off</item>
+        <item name="iconSpaceKeyForNumberLayout">@drawable/sym_bkeyboard_space</item>
+        <item name="iconShiftKeyShifted">@drawable/sym_bkeyboard_shift_locked</item>
         <item name="iconPreviewTabKey">@drawable/sym_keyboard_feedback_tab</item>
-        <!-- LatinKeyboard icons -->
-        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
-        <item name="disabledShortcutIcon">@drawable/sym_bkeyboard_voice_off</item>
     </style>
 </resources>
