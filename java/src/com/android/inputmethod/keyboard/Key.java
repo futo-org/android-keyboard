@@ -125,8 +125,6 @@ public class Key {
     private boolean mHighlightOn;
     /** Key is enabled and responds on press */
     private boolean mEnabled = true;
-    /** Whether this key needs to show the "..." popup hint for special purposes */
-    private boolean mNeedsSpecialPopupHint;
 
     // RTL parenthesis character swapping map.
     private static final Map<Integer, Integer> sRtlParenthesisMap = new HashMap<Integer, Integer>();
@@ -447,14 +445,6 @@ public class Key {
 
     public boolean hasPopupHint() {
         return (mLabelFlags & LABEL_FLAGS_HAS_POPUP_HINT) != 0;
-    }
-
-    public void setNeedsSpecialPopupHint(boolean needsSpecialPopupHint) {
-        mNeedsSpecialPopupHint = needsSpecialPopupHint;
-    }
-
-    public boolean needsSpecialPopupHint() {
-        return mNeedsSpecialPopupHint;
     }
 
     public boolean hasUppercaseLetter() {

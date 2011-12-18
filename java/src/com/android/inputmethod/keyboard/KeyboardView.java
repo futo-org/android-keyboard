@@ -712,8 +712,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             }
         }
 
-        if ((key.hasPopupHint() && key.mMoreKeys != null && key.mMoreKeys.length > 0)
-                || key.needsSpecialPopupHint()) {
+        if (key.hasPopupHint() && key.mMoreKeys != null && key.mMoreKeys.length > 0) {
             drawKeyPopupHint(key, canvas, paint, params);
         }
     }

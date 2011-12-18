@@ -55,10 +55,8 @@ public class LatinKeyboard extends Keyboard {
     private final int mSpacebarTextShadowColor;
     private final HashMap<Integer, BitmapDrawable> mSpaceDrawableCache =
             new HashMap<Integer, BitmapDrawable>();
-    private final boolean mIsSpacebarTriggeringPopupByLongPress;
 
     private boolean mAutoCorrectionSpacebarLedOn;
-    private boolean mMultipleEnabledIMEsOrSubtypes;
     private boolean mNeedsToDisplayLanguage;
     private float mSpacebarTextFadeFactor = 0.0f;
 
@@ -83,9 +81,6 @@ public class LatinKeyboard extends Keyboard {
 
         mShortcutKey = getKey(CODE_SHORTCUT);
         mEnabledShortcutIcon = (mShortcutKey != null) ? mShortcutKey.getIcon() : null;
-        final int longPressSpaceKeyTimeout =
-                mRes.getInteger(R.integer.config_long_press_space_key_timeout);
-        mIsSpacebarTriggeringPopupByLongPress = (longPressSpaceKeyTimeout > 0);
 
         final TypedArray a = context.obtainStyledAttributes(
                 null, R.styleable.LatinKeyboard, R.attr.latinKeyboardStyle, R.style.LatinKeyboard);
@@ -123,10 +118,8 @@ public class LatinKeyboard extends Keyboard {
 
     // TODO: Move this drawing method to LatinKeyboardView.
     // TODO: Use Key.keyLabel to draw language name of spacebar.
-    public Key updateSpacebarLanguage(float fadeFactor, boolean multipleEnabledIMEsOrSubtypes,
-            boolean needsToDisplayLanguage) {
+    public Key updateSpacebarLanguage(float fadeFactor, boolean needsToDisplayLanguage) {
         mSpacebarTextFadeFactor = fadeFactor;
-        mMultipleEnabledIMEsOrSubtypes = multipleEnabledIMEsOrSubtypes;
         mNeedsToDisplayLanguage = needsToDisplayLanguage;
         updateSpacebarIcon();
         return mSpaceKey;
@@ -173,9 +166,6 @@ public class LatinKeyboard extends Keyboard {
 
     private void updateSpacebarIcon() {
         if (mSpaceKey == null) return;
-        final boolean shouldShowInputMethodPicker = mIsSpacebarTriggeringPopupByLongPress
-                && mMultipleEnabledIMEsOrSubtypes;
-        mSpaceKey.setNeedsSpecialPopupHint(shouldShowInputMethodPicker);
         if (mNeedsToDisplayLanguage) {
             mSpaceKey.setIcon(getSpaceDrawable(mId.mLocale));
         } else if (mAutoCorrectionSpacebarLedOn) {

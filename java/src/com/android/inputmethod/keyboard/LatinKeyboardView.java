@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -59,6 +60,10 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     private static final String TAG = LatinKeyboardView.class.getSimpleName();
 
     private static final boolean ENABLE_CAPSLOCK_BY_DOUBLETAP = true;
+
+    // For drawing spacebar.
+    private final boolean mIsSpacebarTriggeringPopupByLongPress;
+    private boolean mMultipleEnabledIMEsOrSubtypes;
 
     private final SuddenJumpingTouchEventHandler mTouchScreenRegulator;
 
@@ -247,6 +252,10 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         mKeyRepeatInterval = res.getInteger(R.integer.config_key_repeat_interval);
 
         PointerTracker.init(mHasDistinctMultitouch, getContext());
+
+        final int longPressSpaceKeyTimeout =
+                res.getInteger(R.integer.config_long_press_space_key_timeout);
+        mIsSpacebarTriggeringPopupByLongPress = (longPressSpaceKeyTimeout > 0);
     }
 
     public void startIgnoringDoubleTap() {
@@ -684,5 +693,22 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         // Reflection doesn't support calling superclass methods.
         return false;
+    }
+
+    public void updateSpacebar() {
+        mMultipleEnabledIMEsOrSubtypes = Utils.hasMultipleEnabledIMEsOrSubtypes(
+                true /* include aux subtypes */);
+    }
+
+    @Override
+    /* package */ void onDrawKeyTopVisuals(Key key, Canvas canvas, Paint paint,
+            KeyDrawParams params) {
+        super.onDrawKeyTopVisuals(key, canvas, paint, params);
+
+        // Whether space key needs to show the "..." popup hint for special purposes
+        if (key.mCode == Keyboard.CODE_SPACE && mIsSpacebarTriggeringPopupByLongPress
+                && mMultipleEnabledIMEsOrSubtypes) {
+            super.drawKeyPopupHint(key, canvas, paint, params);
+        }
     }
 }
