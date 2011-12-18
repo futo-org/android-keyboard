@@ -31,13 +31,6 @@
         <item name="verticalGap">@fraction/key_bottom_gap</item>
         <item name="maxMoreKeysColumn">@integer/config_max_more_keys_column</item>
     </style>
-    <style name="LatinKeyboard">
-        <item name="autoCorrectionSpacebarLedEnabled">true</item>
-        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
-        <item name="spacebarTextRatio">@fraction/spacebar_text_ratio</item>
-        <item name="spacebarTextColor">#FFC0C0C0</item>
-        <item name="spacebarTextShadowColor">#80000000</item>
-    </style>
     <style name="KeyboardView">
         <item name="android:background">@drawable/keyboard_background</item>
         <item name="keyBackground">@drawable/btn_keyboard_key</item>
@@ -75,6 +68,11 @@
     <style
         name="LatinKeyboardView"
         parent="KeyboardView">
+        <item name="autoCorrectionSpacebarLedEnabled">true</item>
+        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
+        <item name="spacebarTextRatio">@fraction/spacebar_text_ratio</item>
+        <item name="spacebarTextColor">#FFC0C0C0</item>
+        <item name="spacebarTextShadowColor">#80000000</item>
     </style>
     <style
         name="MiniKeyboard"
@@ -143,6 +141,11 @@
         name="LatinKeyboardView.HighContrast"
         parent="KeyboardView.HighContrast"
     >
+        <item name="autoCorrectionSpacebarLedEnabled">true</item>
+        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
+        <item name="spacebarTextRatio">@fraction/spacebar_text_ratio</item>
+        <item name="spacebarTextColor">#FFC0C0C0</item>
+        <item name="spacebarTextShadowColor">#80000000</item>
     </style>
     <!-- Theme "Stone" -->
     <style
@@ -155,13 +158,6 @@
         <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding_stone</item>
         <item name="horizontalGap">@fraction/key_horizontal_gap_stone</item>
         <item name="verticalGap">@fraction/key_bottom_gap_stone</item>
-    </style>
-    <style
-        name="LatinKeyboard.Stone"
-        parent="LatinKeyboard"
-    >
-        <item name="spacebarTextColor">#FF000000</item>
-        <item name="spacebarTextShadowColor">#D0FFFFFF</item>
     </style>
     <style
         name="KeyboardView.Stone"
@@ -180,6 +176,11 @@
         name="LatinKeyboardView.Stone"
         parent="KeyboardView.Stone"
     >
+        <item name="autoCorrectionSpacebarLedEnabled">true</item>
+        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
+        <item name="spacebarTextRatio">@fraction/spacebar_text_ratio</item>
+        <item name="spacebarTextColor">#FF000000</item>
+        <item name="spacebarTextShadowColor">#D0FFFFFF</item>
     </style>
     <style
         name="MiniKeyboard.Stone"
@@ -214,6 +215,11 @@
         name="LatinKeyboardView.Stone.Bold"
         parent="KeyboardView.Stone.Bold"
     >
+        <item name="autoCorrectionSpacebarLedEnabled">true</item>
+        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
+        <item name="spacebarTextRatio">@fraction/spacebar_text_ratio</item>
+        <item name="spacebarTextColor">#FF000000</item>
+        <item name="spacebarTextShadowColor">#D0FFFFFF</item>
     </style>
     <!-- Theme "Gingerbread" -->
     <style
@@ -237,6 +243,11 @@
         name="LatinKeyboardView.Gingerbread"
         parent="KeyboardView.Gingerbread"
     >
+        <item name="autoCorrectionSpacebarLedEnabled">true</item>
+        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
+        <item name="spacebarTextRatio">@fraction/spacebar_text_ratio</item>
+        <item name="spacebarTextColor">#FFC0C0C0</item>
+        <item name="spacebarTextShadowColor">#80000000</item>
     </style>
     <style
         name="MiniKeyboard.Gingerbread"
@@ -265,13 +276,6 @@
         <item name="touchPositionCorrectionData">@array/touch_position_correction_data_ice_cream_sandwich</item>
     </style>
     <style
-        name="LatinKeyboard.IceCreamSandwich"
-        parent="LatinKeyboard"
-    >
-        <item name="autoCorrectionSpacebarLedEnabled">false</item>
-        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_holo</item>
-    </style>
-    <style
         name="KeyboardView.IceCreamSandwich"
         parent="KeyboardView"
     >
@@ -298,6 +302,11 @@
         name="LatinKeyboardView.IceCreamSandwich"
         parent="KeyboardView.IceCreamSandwich"
     >
+        <item name="autoCorrectionSpacebarLedEnabled">false</item>
+        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_holo</item>
+        <item name="spacebarTextRatio">@fraction/spacebar_text_ratio</item>
+        <item name="spacebarTextColor">#FFC0C0C0</item>
+        <item name="spacebarTextShadowColor">#80000000</item>
         </style>
     <style
         name="MiniKeyboard.IceCreamSandwich"

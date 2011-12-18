@@ -157,20 +157,16 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         mKeyboardView.setKeyPreviewPopupEnabled(
                 SettingsValues.isKeyPreviewPopupEnabled(mPrefs, mResources),
                 SettingsValues.getKeyPreviewPopupDismissDelay(mPrefs, mResources));
+        mKeyboardView.updateAutoCorrectionState(mIsAutoCorrectionActive);
+        // If the cached keyboard had been switched to another keyboard while the language was
+        // displayed on its spacebar, it might have had arbitrary text fade factor. In such
+        // case, we should reset the text fade factor. It is also applicable to shortcut key.
+        mKeyboardView.updateSpacebar(0.0f,
+                mSubtypeSwitcher.needsToDisplayLanguage(keyboard.mId.mLocale));
         mKeyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
+        updateShiftState();
         final boolean localeChanged = (oldKeyboard == null)
                 || !keyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
-        if (keyboard instanceof LatinKeyboard) {
-            final LatinKeyboard latinKeyboard = (LatinKeyboard)keyboard;
-            latinKeyboard.updateAutoCorrectionState(mIsAutoCorrectionActive);
-            // If the cached keyboard had been switched to another keyboard while the language was
-            // displayed on its spacebar, it might have had arbitrary text fade factor. In such
-            // case, we should reset the text fade factor. It is also applicable to shortcut key.
-            mKeyboardView.updateSpacebar();
-            latinKeyboard.updateSpacebarLanguage(0.0f,
-                    mSubtypeSwitcher.needsToDisplayLanguage(latinKeyboard.mId.mLocale));
-        }
-        updateShiftState();
         mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
     }
 
@@ -419,12 +415,8 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     public void onAutoCorrectionStateChanged(boolean isAutoCorrection) {
         if (mIsAutoCorrectionActive != isAutoCorrection) {
             mIsAutoCorrectionActive = isAutoCorrection;
-            final LatinKeyboard keyboard = getLatinKeyboard();
-            if (keyboard != null && keyboard.needsAutoCorrectionSpacebarLed()) {
-                final Key invalidatedKey = keyboard.updateAutoCorrectionState(isAutoCorrection);
-                final LatinKeyboardView keyboardView = getKeyboardView();
-                if (keyboardView != null)
-                    keyboardView.invalidateKey(invalidatedKey);
+            if (mKeyboardView != null) {
+                mKeyboardView.updateAutoCorrectionState(isAutoCorrection);
             }
         }
     }
