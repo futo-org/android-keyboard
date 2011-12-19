@@ -403,7 +403,10 @@ public class Keyboard {
      * point is out of range, then an array of size zero is returned.
      */
     public Key[] getNearestKeys(int x, int y) {
-        return mProximityInfo.getNearestKeys(x, y);
+        // Avoid dead pixels at edges of the keyboard
+        final int adjustedX = Math.max(0, Math.min(x, mOccupiedWidth - 1));
+        final int adjustedY = Math.max(0, Math.min(y, mOccupiedHeight - 1));
+        return mProximityInfo.getNearestKeys(adjustedX, adjustedY);
     }
 
     public static String printableCode(int code) {
