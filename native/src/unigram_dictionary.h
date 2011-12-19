@@ -90,13 +90,13 @@ private:
         WordsPriorityQueuePool* queuePool);
     void initSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize,
-            WordsPriorityQueue *queue);
+            WordsPriorityQueue *queue, Correction *correction);
     void getOneWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const bool useFullEditDistance,
             const int inputLength, Correction *correction, WordsPriorityQueuePool* queuePool);
     void getSuggestionCandidates(
             const bool useFullEditDistance, const int inputLength, Correction *correction,
-            WordsPriorityQueue* queue);
+            WordsPriorityQueue* queue, const bool doAutoCompletion, const int maxErrors);
     void getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo,
             const int *xcoordinates, const int *ycoordinates, const int *codes,
             const bool useFullEditDistance, const int inputLength, const int spaceProximityPos,
