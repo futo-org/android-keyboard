@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import android.text.TextUtils;
+
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -40,12 +42,14 @@ public class WordComposer {
         int[] mXCoordinates;
         int[] mYCoordinates;
         StringBuilder mTypedWord;
+        CharSequence mAutoCorrection;
         CharacterStore() {
             final int N = BinaryDictionary.MAX_WORD_LENGTH;
             mCodes = new ArrayList<int[]>(N);
             mTypedWord = new StringBuilder(N);
             mXCoordinates = new int[N];
             mYCoordinates = new int[N];
+            mAutoCorrection = null;
         }
         CharacterStore(final CharacterStore that) {
             mCodes = new ArrayList<int[]>(that.mCodes);
@@ -57,15 +61,14 @@ public class WordComposer {
             // For better performance than creating a new character store.
             mCodes.clear();
             mTypedWord.setLength(0);
+            mAutoCorrection = null;
         }
     }
 
     // The currently typing word. May not be null.
     private CharacterStore mCurrentWord;
     // The information being kept for resuming suggestion. May be null if wiped.
-    private CharacterStore mWordKeptForSuggestionResuming;
-    // An auto-correction for this word out of the dictionary.
-    private CharSequence mAutoCorrection;
+    private CharacterStore mCommittedWordSavedForSuggestionResuming;
 
     private int mCapsCount;
 
@@ -80,9 +83,8 @@ public class WordComposer {
 
     public WordComposer() {
         mCurrentWord = new CharacterStore();
-        mWordKeptForSuggestionResuming = null;
+        mCommittedWordSavedForSuggestionResuming = null;
         mTrailingSingleQuotesCount = 0;
-        mAutoCorrection = null;
     }
 
     public WordComposer(WordComposer source) {
@@ -91,12 +93,11 @@ public class WordComposer {
 
     public void init(WordComposer source) {
         mCurrentWord = new CharacterStore(source.mCurrentWord);
-        mWordKeptForSuggestionResuming = source.mWordKeptForSuggestionResuming;
+        mCommittedWordSavedForSuggestionResuming = source.mCommittedWordSavedForSuggestionResuming;
         mCapsCount = source.mCapsCount;
         mIsFirstCharCapitalized = source.mIsFirstCharCapitalized;
         mAutoCapitalized = source.mAutoCapitalized;
         mTrailingSingleQuotesCount = source.mTrailingSingleQuotesCount;
-        mAutoCorrection = null;
     }
 
     /**
@@ -104,11 +105,10 @@ public class WordComposer {
      */
     public void reset() {
         mCurrentWord.reset();
-        mWordKeptForSuggestionResuming = null;
+        mCommittedWordSavedForSuggestionResuming = null;
         mCapsCount = 0;
         mIsFirstCharCapitalized = false;
         mTrailingSingleQuotesCount = 0;
-        mAutoCorrection = null;
     }
 
     /**
@@ -167,7 +167,7 @@ public class WordComposer {
         } else {
             mTrailingSingleQuotesCount = 0;
         }
-        mAutoCorrection = null;
+        mCurrentWord.mAutoCorrection = null;
     }
 
     /**
@@ -201,7 +201,7 @@ public class WordComposer {
             int codePoint = word.charAt(i);
             addKeyInfo(codePoint, keyboard, keyDetector);
         }
-        mAutoCorrection = null;
+        mCommittedWordSavedForSuggestionResuming = null;
     }
 
     /**
@@ -253,7 +253,7 @@ public class WordComposer {
                 ++mTrailingSingleQuotesCount;
             }
         }
-        mAutoCorrection = null;
+        mCurrentWord.mAutoCorrection = null;
     }
 
     /**
@@ -312,37 +312,44 @@ public class WordComposer {
      * Sets the auto-correction for this word.
      */
     public void setAutoCorrection(final CharSequence correction) {
-        mAutoCorrection = correction;
+        mCurrentWord.mAutoCorrection = correction;
     }
 
     /**
      * Remove any auto-correction that may have been set.
      */
     public void deleteAutoCorrection() {
-        mAutoCorrection = null;
+        mCurrentWord.mAutoCorrection = null;
     }
 
     /**
      * @return the auto-correction for this word, or null if none.
      */
     public CharSequence getAutoCorrectionOrNull() {
-        return mAutoCorrection;
+        return mCurrentWord.mAutoCorrection;
     }
 
     // TODO: pass the information about what was committed and how. Was it an auto-correction?
     // Was it a completion? Was is what the user typed?
     public void onCommitWord() {
-        mWordKeptForSuggestionResuming = mCurrentWord;
+        mCommittedWordSavedForSuggestionResuming = mCurrentWord;
         // TODO: improve performance by swapping buffers instead of creating a new object.
         mCurrentWord = new CharacterStore();
     }
 
     public boolean hasWordKeptForSuggestionResuming() {
-        return null != mWordKeptForSuggestionResuming;
+        return null != mCommittedWordSavedForSuggestionResuming;
     }
 
     public void resumeSuggestionOnKeptWord() {
-        mCurrentWord = mWordKeptForSuggestionResuming;
-        mWordKeptForSuggestionResuming = null;
+        mCurrentWord = mCommittedWordSavedForSuggestionResuming;
+        mCommittedWordSavedForSuggestionResuming = null;
+    }
+
+    public boolean didAutoCorrectToAnotherWord() {
+        return null != mCommittedWordSavedForSuggestionResuming
+                && !TextUtils.isEmpty(mCommittedWordSavedForSuggestionResuming.mAutoCorrection)
+                && !TextUtils.equals(mCommittedWordSavedForSuggestionResuming.mTypedWord,
+                        mCommittedWordSavedForSuggestionResuming.mAutoCorrection);
     }
 }

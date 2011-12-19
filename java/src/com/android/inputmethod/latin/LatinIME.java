@@ -199,7 +199,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private WordComposer mWordComposer = new WordComposer();
 
     private int mCorrectionMode;
-    private String mWordSavedForAutoCorrectCancellation;
     // Keep track of the last selection range to decide if we need to show word alternatives
     private int mLastSelectionStart;
     private int mLastSelectionEnd;
@@ -1308,8 +1307,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mKeyboardSwitcher.updateShiftState();
         mKeyboardSwitcher.onCodeInput(Keyboard.CODE_DUMMY);
         mSpaceState = SPACE_STATE_NONE;
-        mWordSavedForAutoCorrectCancellation = null;
         mEnteredText = text;
+        mWordComposer.reset();
     }
 
     @Override
@@ -1363,13 +1362,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 ic.deleteSurroundingText(1, 0);
             }
         } else {
-            if (null != mWordSavedForAutoCorrectCancellation) {
+            if (mWordComposer.didAutoCorrectToAnotherWord()) {
                 Utils.Stats.onAutoCorrectionCancellation();
                 cancelAutoCorrect(ic);
-                mWordSavedForAutoCorrectCancellation = null;
                 return;
-            } else {
-                mWordSavedForAutoCorrectCancellation = null;
             }
 
             if (SPACE_STATE_DOUBLE == spaceState) {
@@ -1524,9 +1520,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (ic != null) {
             ic.beginBatchEdit();
         }
-        // Reset the saved word in all cases. If this separator causes an autocorrection,
-        // it will overwrite this null with the actual word we need to save.
-        mWordSavedForAutoCorrectCancellation = null;
         if (mWordComposer.isComposingWord()) {
             // In certain languages where single quote is a separator, it's better
             // not to auto correct, but accept the typed word. For instance,
@@ -1810,9 +1803,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             Utils.Stats.onAutoCorrection(typedWord, autoCorrection.toString(), separatorCodePoint);
             mExpectingUpdateSelection = true;
             commitBestWord(autoCorrection);
-            if (!autoCorrection.equals(typedWord)) {
-                mWordSavedForAutoCorrectCancellation = autoCorrection.toString();
-            }
             // Add the word to the user unigram dictionary if it's not a known word
             addToUserUnigramAndBigramDictionaries(autoCorrection,
                     UserUnigramDictionary.FREQUENCY_FOR_TYPED);
@@ -2103,28 +2093,31 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     // "ic" must not be null
     private void cancelAutoCorrect(final InputConnection ic) {
-        final int cancelLength = mWordSavedForAutoCorrectCancellation.length();
+        mWordComposer.resumeSuggestionOnKeptWord();
+        final String originallyTypedWord = mWordComposer.getTypedWord();
+        final CharSequence autoCorrectedTo = mWordComposer.getAutoCorrectionOrNull();
+        final int cancelLength = autoCorrectedTo.length();
         final CharSequence separator = ic.getTextBeforeCursor(1, 0);
         if (DEBUG) {
             final String wordBeforeCursor =
                     ic.getTextBeforeCursor(cancelLength + 1, 0).subSequence(0, cancelLength)
                     .toString();
-            if (!mWordSavedForAutoCorrectCancellation.equals(wordBeforeCursor)) {
+            if (!autoCorrectedTo.equals(wordBeforeCursor)) {
                 throw new RuntimeException("cancelAutoCorrect check failed: we thought we were "
-                        + "reverting \"" + mWordSavedForAutoCorrectCancellation
+                        + "reverting \"" + autoCorrectedTo
                         + "\", but before the cursor we found \"" + wordBeforeCursor + "\"");
             }
-            if (mWordComposer.getTypedWord().equals(wordBeforeCursor)) {
+            if (originallyTypedWord.equals(wordBeforeCursor)) {
                 throw new RuntimeException("cancelAutoCorrect check failed: we wanted to cancel "
-                        + "auto correction and revert to \"" + mWordComposer.getTypedWord()
+                        + "auto correction and revert to \"" + originallyTypedWord
                         + "\" but we found this very string before the cursor");
             }
         }
         ic.deleteSurroundingText(cancelLength + 1, 0);
-        mWordComposer.resumeSuggestionOnKeptWord();
-        ic.commitText(mWordComposer.getTypedWord(), 1);
+        ic.commitText(originallyTypedWord, 1);
         // Re-insert the separator
         ic.commitText(separator, 1);
+        mWordComposer.deleteAutoCorrection();
         mWordComposer.onCommitWord();
         Utils.Stats.onSeparator(separator.charAt(0), WordComposer.NOT_A_COORDINATE,
                 WordComposer.NOT_A_COORDINATE);
