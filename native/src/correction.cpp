@@ -38,8 +38,28 @@ inline static void initEditDistance(int *editDistanceTable) {
     }
 }
 
+inline static void dumpEditDistance10ForDebug(int *editDistanceTable, const int inputLength,
+        const int outputLength) {
+    if (DEBUG_DICT) {
+        LOGI("EditDistanceTable");
+        for (int i = 0; i <= 10; ++i) {
+            int c[11];
+            for (int j = 0; j <= 10; ++j) {
+                if (j < inputLength + 1 && i < outputLength + 1) {
+                    c[j] = (editDistanceTable + i * (inputLength + 1))[j];
+                } else {
+                    c[j] = -1;
+                }
+            }
+            LOGI("[ %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d ]",
+                    c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8], c[9], c[10]);
+        }
+    }
+}
+
 inline static void calcEditDistanceOneStep(int *editDistanceTable, const unsigned short *input,
         const int inputLength, const unsigned short *output, const int outputLength) {
+    // TODO: Make sure that editDistance[0 ~ MAX_WORD_LENGTH_INTERNAL] is not touched.
     // Let dp[i][j] be editDistanceTable[i * (inputLength + 1) + j].
     // Assuming that dp[0][0] ... dp[outputLength - 1][inputLength] are already calculated,
     // and calculate dp[ouputLength][0] ... dp[outputLength][inputLength].
@@ -62,6 +82,9 @@ inline static void calcEditDistanceOneStep(int *editDistanceTable, const unsigne
 
 inline static int getCurrentEditDistance(
         int *editDistanceTable, const int inputLength, const int outputLength) {
+    if (DEBUG_DICT) {
+        LOGI("getCurrentEditDistance %d, %d", inputLength, outputLength);
+    }
     return editDistanceTable[(inputLength + 1) * (outputLength + 1) - 1];
 }
 
@@ -90,6 +113,9 @@ void Correction::initCorrection(const ProximityInfo *pi, const int inputLength,
     mInputLength = inputLength;
     mMaxDepth = maxDepth;
     mMaxEditDistance = mInputLength < 5 ? 2 : mInputLength / 2;
+    // TODO: This is not supposed to be required.  Check what's going wrong with
+    // editDistance[0 ~ MAX_WORD_LENGTH_INTERNAL]
+    initEditDistance(mEditDistanceTable);
 }
 
 void Correction::initCorrectionState(
@@ -620,6 +646,9 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
 
     // TODO: Calculate edit distance for transposed and excessive
     int ed = 0;
+    if (DEBUG_DICT_FULL) {
+        dumpEditDistance10ForDebug(editDistanceTable, inputLength, outputIndex + 1);
+    }
     int adjustedProximityMatchedCount = proximityMatchedCount;
 
     int finalFreq = freq;
