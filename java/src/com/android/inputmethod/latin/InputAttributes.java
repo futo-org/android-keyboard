@@ -34,25 +34,30 @@ public class InputAttributes {
     final public boolean mApplicationSpecifiedCompletionOn;
 
     public InputAttributes(final EditorInfo editorInfo, final boolean isFullscreenMode) {
-        if (editorInfo == null || editorInfo.inputType == InputType.TYPE_CLASS_TEXT) {
-            mInsertSpaceOnPickSuggestionManually = false;
-            mIsSettingsSuggestionStripOn = false;
-            mInputTypeNoAutoCorrect = false;
-            mApplicationSpecifiedCompletionOn = false;
-        } else {
-            final int inputType = editorInfo.inputType;
-            if (inputType == InputType.TYPE_NULL) {
+        final int inputType = null != editorInfo ? editorInfo.inputType : 0;
+        final int inputClass = inputType & InputType.TYPE_MASK_CLASS;
+        if (inputClass != InputType.TYPE_CLASS_TEXT) {
+            // If we are not looking at a TYPE_CLASS_TEXT field, the following strange
+            // cases may arise, so we do a couple sanity checks for them. If it's a
+            // TYPE_CLASS_TEXT field, these special cases cannot happen, by construction
+            // of the flags.
+            if (null == editorInfo) {
+                Log.w(TAG, "No editor info for this field. Bug?");
+            } else if (InputType.TYPE_NULL == inputType) {
                 // TODO: We should honor TYPE_NULL specification.
                 Log.i(TAG, "InputType.TYPE_NULL is specified");
-            }
-            final int inputClass = inputType & InputType.TYPE_MASK_CLASS;
-            final int variation = inputType & InputType.TYPE_MASK_VARIATION;
-            if (inputClass == 0) {
+            } else if (inputClass == 0) {
                 // TODO: is this check still necessary?
                 Log.w(TAG, String.format("Unexpected input class: inputType=0x%08x"
                         + " imeOptions=0x%08x",
                         inputType, editorInfo.imeOptions));
             }
+            mInsertSpaceOnPickSuggestionManually = false;
+            mIsSettingsSuggestionStripOn = false;
+            mInputTypeNoAutoCorrect = false;
+            mApplicationSpecifiedCompletionOn = false;
+        } else {
+            final int variation = inputType & InputType.TYPE_MASK_VARIATION;
             final boolean flagNoSuggestions =
                     0 != (inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
             final boolean flagMultiLine =
