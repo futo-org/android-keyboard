@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -32,6 +32,23 @@ public class WordComposer {
 
     public static final int NOT_A_CODE = KeyDetector.NOT_A_CODE;
     public static final int NOT_A_COORDINATE = -1;
+
+    // TODO: Straighten out commit behavior so that the flags here are more understandable,
+    // and possibly adjust their names.
+    // COMMIT_TYPE_USER_TYPED_WORD is used when the word committed is the exact typed word, with
+    // no hinting from the IME. It happens when some external event happens (rotating the device,
+    // for example) or when auto-correction is off by settings or editor attributes.
+    public static final int COMMIT_TYPE_USER_TYPED_WORD = 0;
+    // COMMIT_TYPE_MANUAL_PICK is used when the user pressed a field in the suggestion strip.
+    public static final int COMMIT_TYPE_MANUAL_PICK = 1;
+    // COMMIT_TYPE_DECIDED_WORD is used when the IME commits the word it decided was best
+    // for the current user input. It may be different from what the user typed (true auto-correct)
+    // or it may be exactly what the user typed if it's in the dictionary or the IME does not have
+    // enough confidence in any suggestion to auto-correct (auto-correct to typed word).
+    public static final int COMMIT_TYPE_DECIDED_WORD = 2;
+    // COMMIT_TYPE_CANCEL_AUTO_CORRECT is used upon committing back the old word upon cancelling
+    // an auto-correction.
+    public static final int COMMIT_TYPE_CANCEL_AUTO_CORRECT = 3;
 
     // Storage for all the info about the current input.
     private static class CharacterStore {
@@ -291,7 +308,7 @@ public class WordComposer {
         return mCapsCount > 1;
     }
 
-    /** 
+    /**
      * Saves the reason why the word is capitalized - whether it was automatic or
      * due to the user hitting shift in the middle of a sentence.
      * @param auto whether it was an automatic capitalization due to start of sentence
@@ -329,10 +346,23 @@ public class WordComposer {
         return mCurrentWord.mAutoCorrection;
     }
 
-    // TODO: pass the information about what was committed and how. Was it an auto-correction?
-    // Was it a completion? Was is what the user typed?
-    public void onCommitWord() {
+    // `type' should be one of the COMMIT_TYPE_* constants above.
+    public void onCommitWord(final int type) {
         mCommittedWordSavedForSuggestionResuming = mCurrentWord;
+        // Note: currently, we come here whenever we commit a word. If it's any *other* kind that
+        // DECIDED_WORD, we should reset mAutoCorrection so that we don't attempt to cancel later.
+        // If it's a DECIDED_WORD, it may be an actual auto-correction by the IME, or what the user
+        // typed because the IME decided *not* to auto-correct for whatever reason.
+        // Ideally we would also null it when it was a DECIDED_WORD that was not an auto-correct.
+        // As it happens these two cases should behave differently, because the former can be
+        // canceled while the latter can't. Currently, we figure this out in
+        // #didAutoCorrectToAnotherWord with #equals(). It would be marginally cleaner to do it
+        // here, but it would be slower (since we would #equals() for each commit, instead of
+        // only on cancel), and ultimately we want to figure it out even earlier anyway.
+        if (type != COMMIT_TYPE_DECIDED_WORD) {
+            // Only ever revert an auto-correct.
+            mCommittedWordSavedForSuggestionResuming.mAutoCorrection = null;
+        }
         // TODO: improve performance by swapping buffers instead of creating a new object.
         mCurrentWord = new CharacterStore();
     }
