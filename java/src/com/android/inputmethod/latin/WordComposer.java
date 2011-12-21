@@ -349,7 +349,7 @@ public class WordComposer {
     // `type' should be one of the COMMIT_TYPE_* constants above.
     public void onCommitWord(final int type) {
         mCommittedWordSavedForSuggestionResuming = mCurrentWord;
-        // Note: currently, we come here whenever we commit a word. If it's any *other* kind that
+        // Note: currently, we come here whenever we commit a word. If it's any *other* kind than
         // DECIDED_WORD, we should reset mAutoCorrection so that we don't attempt to cancel later.
         // If it's a DECIDED_WORD, it may be an actual auto-correction by the IME, or what the user
         // typed because the IME decided *not* to auto-correct for whatever reason.
