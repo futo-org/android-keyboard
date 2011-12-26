@@ -113,15 +113,12 @@ public class XmlDictInputOutput {
         }
     }
 
-    /**
-     * SAX handler for a bigram XML file.
-     */
-    static private class BigramHandler extends DefaultHandler {
-        private final static String BIGRAM_W1_TAG = "bi";
-        private final static String BIGRAM_W2_TAG = "w";
-        private final static String BIGRAM_W1_ATTRIBUTE = "w1";
-        private final static String BIGRAM_W2_ATTRIBUTE = "w2";
-        private final static String BIGRAM_FREQ_ATTRIBUTE = "p";
+    static private class AssociativeListHandler extends DefaultHandler {
+        private final String SRC_TAG;
+        private final String SRC_ATTRIBUTE;
+        private final String DST_TAG;
+        private final String DST_ATTRIBUTE;
+        private final String DST_FREQ;
 
         // In this version of the XML file, the bigram frequency is given as an int 0..XML_MAX
         private final static int XML_MAX = 256;
@@ -129,31 +126,57 @@ public class XmlDictInputOutput {
         private final static int MEMORY_MAX = 16;
         private final static int XML_TO_MEMORY_RATIO = XML_MAX / MEMORY_MAX;
 
-        String mW1;
-        final HashMap<String, ArrayList<WeightedString>> mBigramsMap;
+        private String mSrc;
+        private final HashMap<String, ArrayList<WeightedString>> mAssocMap;
 
-        public BigramHandler() {
-            mW1 = null;
-            mBigramsMap = new HashMap<String, ArrayList<WeightedString>>();
+        public AssociativeListHandler(final String srcTag, final String srcAttribute,
+                final String dstTag, final String dstAttribute, final String dstFreq) {
+            SRC_TAG = srcTag;
+            SRC_ATTRIBUTE = srcAttribute;
+            DST_TAG = dstTag;
+            DST_ATTRIBUTE = dstAttribute;
+            DST_FREQ = dstFreq;
+            mSrc = null;
+            mAssocMap = new HashMap<String, ArrayList<WeightedString>>();
         }
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attrs) {
-            if (BIGRAM_W1_TAG.equals(localName)) {
-                mW1 = attrs.getValue(uri, BIGRAM_W1_ATTRIBUTE);
-            } else if (BIGRAM_W2_TAG.equals(localName)) {
-                String w2 = attrs.getValue(uri, BIGRAM_W2_ATTRIBUTE);
-                int freq = Integer.parseInt(attrs.getValue(uri, BIGRAM_FREQ_ATTRIBUTE));
-                WeightedString bigram = new WeightedString(w2, freq / XML_TO_MEMORY_RATIO);
-                ArrayList<WeightedString> bigramList = mBigramsMap.get(mW1);
+            if (SRC_TAG.equals(localName)) {
+                mSrc = attrs.getValue(uri, SRC_ATTRIBUTE);
+            } else if (DST_TAG.equals(localName)) {
+                String dst = attrs.getValue(uri, DST_ATTRIBUTE);
+                int freq = Integer.parseInt(attrs.getValue(uri, DST_FREQ));
+                WeightedString bigram = new WeightedString(dst, freq / XML_TO_MEMORY_RATIO);
+                ArrayList<WeightedString> bigramList = mAssocMap.get(mSrc);
                 if (null == bigramList) bigramList = new ArrayList<WeightedString>();
                 bigramList.add(bigram);
-                mBigramsMap.put(mW1, bigramList);
+                mAssocMap.put(mSrc, bigramList);
             }
         }
 
+        public HashMap<String, ArrayList<WeightedString>> getAssocMap() {
+            return mAssocMap;
+        }
+    }
+
+    /**
+     * SAX handler for a bigram XML file.
+     */
+    static private class BigramHandler extends AssociativeListHandler {
+        private final static String BIGRAM_W1_TAG = "bi";
+        private final static String BIGRAM_W2_TAG = "w";
+        private final static String BIGRAM_W1_ATTRIBUTE = "w1";
+        private final static String BIGRAM_W2_ATTRIBUTE = "w2";
+        private final static String BIGRAM_FREQ_ATTRIBUTE = "p";
+
+        public BigramHandler() {
+            super(BIGRAM_W1_TAG, BIGRAM_W1_ATTRIBUTE, BIGRAM_W2_TAG, BIGRAM_W2_ATTRIBUTE,
+                    BIGRAM_FREQ_ATTRIBUTE);
+        }
+
         public HashMap<String, ArrayList<WeightedString>> getBigramMap() {
-            return mBigramsMap;
+            return getAssocMap();
         }
     }
 
