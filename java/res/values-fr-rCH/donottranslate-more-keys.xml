@@ -18,6 +18,9 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="more_keys_for_y">6</string>
-    <string name="more_keys_for_z"></string>
+    <string name="more_keys_for_a">à,â,æ,á,ä,ã,å,ā,ª</string>
+    <string name="more_keys_for_y">ÿ</string>
+    <string name="more_keys_for_q">1</string>
+    <string name="more_keys_for_w">2</string>
+    <string name="more_keys_for_z">6</string>
 </resources>
