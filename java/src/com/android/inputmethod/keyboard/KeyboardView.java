@@ -944,6 +944,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     public void invalidateAllKeys() {
         mDirtyRect.union(0, 0, getWidth(), getHeight());
         mBufferNeedsUpdate = true;
+        mInvalidatedKey = null;
         invalidate();
     }
 
