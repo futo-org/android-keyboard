@@ -61,6 +61,7 @@ public class XmlDictInputOutput {
         int mState; // the state of the parser
         int mFreq; // the currently read freq
         String mWord; // the current word
+        final HashMap<String, ArrayList<WeightedString>> mShortcutsMap;
         final HashMap<String, ArrayList<WeightedString>> mBigramsMap;
 
         /**
@@ -69,9 +70,11 @@ public class XmlDictInputOutput {
          * @param dict the dictionary to construct.
          * @param bigrams the bigrams as a map. This may be empty, but may not be null.
          */
-        public UnigramHandler(FusionDictionary dict,
-                HashMap<String, ArrayList<WeightedString>> bigrams) {
+        public UnigramHandler(final FusionDictionary dict,
+                final HashMap<String, ArrayList<WeightedString>> shortcuts,
+                final HashMap<String, ArrayList<WeightedString>> bigrams) {
             mDictionary = dict;
+            mShortcutsMap = shortcuts;
             mBigramsMap = bigrams;
             mWord = "";
             mState = START;
@@ -107,8 +110,7 @@ public class XmlDictInputOutput {
         @Override
         public void endElement(String uri, String localName, String qName) {
             if (WORD == mState) {
-                // TODO: pass the shortcut targets
-                mDictionary.add(mWord, mFreq, null, mBigramsMap.get(mWord));
+                mDictionary.add(mWord, mFreq, mShortcutsMap.get(mWord), mBigramsMap.get(mWord));
                 mState = START;
             }
         }
@@ -208,9 +210,12 @@ public class XmlDictInputOutput {
      * representation.
      *
      * @param unigrams the file to read the data from.
+     * @param shortcuts the file to read the shortcuts from, or null.
+     * @param bigrams the file to read the bigrams from, or null.
      * @return the in-memory representation of the dictionary.
      */
-    public static FusionDictionary readDictionaryXml(InputStream unigrams, InputStream bigrams)
+    public static FusionDictionary readDictionaryXml(final InputStream unigrams,
+            final InputStream shortcuts, final InputStream bigrams)
             throws SAXException, IOException, ParserConfigurationException {
         final SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
@@ -218,9 +223,13 @@ public class XmlDictInputOutput {
         final BigramHandler bigramHandler = new BigramHandler();
         if (null != bigrams) parser.parse(bigrams, bigramHandler);
 
+        final ShortcutHandler shortcutHandler = new ShortcutHandler();
+        if (null != shortcuts) parser.parse(shortcuts, shortcutHandler);
+
         final FusionDictionary dict = new FusionDictionary();
         final UnigramHandler unigramHandler =
-                new UnigramHandler(dict, bigramHandler.getBigramMap());
+                new UnigramHandler(dict, shortcutHandler.getShortcutMap(),
+                        bigramHandler.getBigramMap());
         parser.parse(unigrams, unigramHandler);
         return dict;
     }

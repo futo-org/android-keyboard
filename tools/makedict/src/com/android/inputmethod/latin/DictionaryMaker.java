@@ -39,11 +39,13 @@ public class DictionaryMaker {
         private final static String OPTION_VERSION_2 = "-2";
         private final static String OPTION_INPUT_SOURCE = "-s";
         private final static String OPTION_INPUT_BIGRAM_XML = "-b";
+        private final static String OPTION_INPUT_SHORTCUT_XML = "-c";
         private final static String OPTION_OUTPUT_BINARY = "-d";
         private final static String OPTION_OUTPUT_XML = "-x";
         private final static String OPTION_HELP = "-h";
         public final String mInputBinary;
         public final String mInputUnigramXml;
+        public final String mInputShortcutXml;
         public final String mInputBigramXml;
         public final String mOutputBinary;
         public final String mOutputXml;
@@ -72,8 +74,9 @@ public class DictionaryMaker {
 
         private void displayHelp() {
             MakedictLog.i("Usage: makedict "
-                    + "[-s <unigrams.xml> [-b <bigrams.xml>] | -s <binary input>] "
-                    + " [-d <binary output>] [-x <xml output>] [-2]\n"
+                    + "[-s <unigrams.xml> [-b <bigrams.xml>] [-c <shortcuts.xml>] "
+                    + "| -s <binary input>] "
+                    + "[-d <binary output>] [-x <xml output>] [-2]\n"
                     + "\n"
                     + "  Converts a source dictionary file to one or several outputs.\n"
                     + "  Source can be an XML file, with an optional XML bigrams file, or a\n"
@@ -90,6 +93,7 @@ public class DictionaryMaker {
             }
             String inputBinary = null;
             String inputUnigramXml = null;
+            String inputShortcutXml = null;
             String inputBigramXml = null;
             String outputBinary = null;
             String outputXml = null;
@@ -116,6 +120,8 @@ public class DictionaryMaker {
                             } else {
                                 inputUnigramXml = filename;
                             }
+                        } else if (OPTION_INPUT_SHORTCUT_XML.equals(arg)) {
+                            inputShortcutXml = filename;
                         } else if (OPTION_INPUT_BIGRAM_XML.equals(arg)) {
                             inputBigramXml = filename;
                         } else if (OPTION_OUTPUT_BINARY.equals(arg)) {
@@ -143,6 +149,7 @@ public class DictionaryMaker {
 
             mInputBinary = inputBinary;
             mInputUnigramXml = inputUnigramXml;
+            mInputShortcutXml = inputShortcutXml;
             mInputBigramXml = inputBigramXml;
             mOutputBinary = outputBinary;
             mOutputXml = outputXml;
@@ -170,7 +177,7 @@ public class DictionaryMaker {
         if (null != args.mInputBinary) {
             return readBinaryFile(args.mInputBinary);
         } else if (null != args.mInputUnigramXml) {
-            return readXmlFile(args.mInputUnigramXml, args.mInputBigramXml);
+            return readXmlFile(args.mInputUnigramXml, args.mInputShortcutXml, args.mInputBigramXml);
         } else {
             throw new RuntimeException("No input file specified");
         }
@@ -195,6 +202,7 @@ public class DictionaryMaker {
      * Read a dictionary from a unigram XML file, and optionally a bigram XML file.
      *
      * @param unigramXmlFilename the name of the unigram XML file. May not be null.
+     * @param shortcutXmlFilename the name of the shortcut XML file, or null if there is none.
      * @param bigramXmlFilename the name of the bigram XML file. Pass null if there are no bigrams.
      * @return the read dictionary.
      * @throws FileNotFoundException if one of the files can't be found
@@ -203,12 +211,14 @@ public class DictionaryMaker {
      * @throws ParserConfigurationException if the system can't create a SAX parser
      */
     private static FusionDictionary readXmlFile(final String unigramXmlFilename,
-            final String bigramXmlFilename) throws FileNotFoundException, SAXException,
-            IOException, ParserConfigurationException {
+            final String shortcutXmlFilename, final String bigramXmlFilename)
+            throws FileNotFoundException, SAXException, IOException, ParserConfigurationException {
         final FileInputStream unigrams = new FileInputStream(new File(unigramXmlFilename));
+        final FileInputStream shortcuts = null == shortcutXmlFilename ? null :
+                new FileInputStream(new File(shortcutXmlFilename));
         final FileInputStream bigrams = null == bigramXmlFilename ? null :
                 new FileInputStream(new File(bigramXmlFilename));
-        return XmlDictInputOutput.readDictionaryXml(unigrams, bigrams);
+        return XmlDictInputOutput.readDictionaryXml(unigrams, shortcuts, bigrams);
     }
 
     /**
