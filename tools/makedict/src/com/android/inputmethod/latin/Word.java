@@ -28,11 +28,15 @@ import java.util.ArrayList;
 public class Word implements Comparable<Word> {
     final String mWord;
     final int mFrequency;
+    final ArrayList<WeightedString> mShortcutTargets;
     final ArrayList<WeightedString> mBigrams;
 
-    public Word(String word, int frequency, ArrayList<WeightedString> bigrams) {
+    public Word(final String word, final int frequency,
+            final ArrayList<WeightedString> shortcutTargets,
+            final ArrayList<WeightedString> bigrams) {
         mWord = word;
         mFrequency = frequency;
+        mShortcutTargets = shortcutTargets;
         mBigrams = bigrams;
     }
 
@@ -60,6 +64,7 @@ public class Word implements Comparable<Word> {
         if (!(o instanceof Word)) return false;
         Word w = (Word)o;
         return mFrequency == w.mFrequency && mWord.equals(w.mWord)
+                && mShortcutTargets.equals(w.mShortcutTargets)
                 && mBigrams.equals(w.mBigrams);
     }
 }
