@@ -181,6 +181,26 @@ public class XmlDictInputOutput {
     }
 
     /**
+     * SAX handler for a shortcut XML file.
+     */
+    static private class ShortcutHandler extends AssociativeListHandler {
+        private final static String ENTRY_TAG = "entry";
+        private final static String ENTRY_ATTRIBUTE = "shortcut";
+        private final static String TARGET_TAG = "target";
+        private final static String REPLACEMENT_ATTRIBUTE = "replacement";
+        private final static String TARGET_PRIORITY_ATTRIBUTE = "priority";
+
+        public ShortcutHandler() {
+            super(ENTRY_TAG, ENTRY_ATTRIBUTE, TARGET_TAG, REPLACEMENT_ATTRIBUTE,
+                    TARGET_PRIORITY_ATTRIBUTE);
+        }
+
+        public HashMap<String, ArrayList<WeightedString>> getShortcutMap() {
+            return getAssocMap();
+        }
+    }
+
+    /**
      * Reads a dictionary from an XML file.
      *
      * This is the public method that will parse an XML file and return the corresponding memory
