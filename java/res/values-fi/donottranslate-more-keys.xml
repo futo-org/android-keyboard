@@ -23,6 +23,7 @@
     <string name="more_keys_for_u">7,ü</string>
     <string name="more_keys_for_s">š,ß,ś</string>
     <string name="more_keys_for_z">ž,ź,ż</string>
+    <string name="keylabel_for_scandinavia_row1_11">å</string>
     <string name="keylabel_for_scandinavia_row2_10">ö</string>
     <string name="keylabel_for_scandinavia_row2_11">ä</string>
     <string name="more_keys_for_scandinavia_row2_10">ø</string>
