@@ -134,6 +134,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         if (mainKeyboardId.isPhoneKeyboard()) {
             mState.onToggleAlphabetAndSymbols();
         }
+        updateShiftState();
     }
 
     public void saveKeyboardState() {
@@ -164,7 +165,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         mKeyboardView.updateSpacebar(0.0f,
                 mSubtypeSwitcher.needsToDisplayLanguage(keyboard.mId.mLocale));
         mKeyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
-        updateShiftState();
         final boolean localeChanged = (oldKeyboard == null)
                 || !keyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
         mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
