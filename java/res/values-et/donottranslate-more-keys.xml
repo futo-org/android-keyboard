@@ -34,4 +34,9 @@
     <string name="more_keys_for_k">ķ</string>
     <string name="more_keys_for_l">ļ,ł,ĺ,ľ</string>
     <string name="more_keys_for_g">ģ,ğ</string>
+    <string name="keylabel_for_scandinavia_row1_11">ü</string>
+    <string name="keylabel_for_scandinavia_row2_10">ö</string>
+    <string name="keylabel_for_scandinavia_row2_11">ä</string>
+    <string name="more_keys_for_scandinavia_row2_10">õ</string>
+    <string name="more_keys_for_scandinavia_row2_11"></string>
 </resources>

@@ -61,7 +61,7 @@
             latin:keyLabel="p"
             latin:moreKeys="@string/more_keys_for_p" />
         <Key
-            latin:keyLabel="å" />
+            latin:keyLabel="@string/keylabel_for_scandinavia_row1_11" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-11.500%p"
