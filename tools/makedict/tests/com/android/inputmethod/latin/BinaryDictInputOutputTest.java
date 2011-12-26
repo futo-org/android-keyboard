@@ -39,11 +39,11 @@ public class BinaryDictInputOutputTest extends TestCase {
     // that it does not contain any duplicates.
     public void testFlattenNodes() {
         final FusionDictionary dict = new FusionDictionary();
-        dict.add("foo", 1, null);
-        dict.add("fta", 1, null);
-        dict.add("ftb", 1, null);
-        dict.add("bar", 1, null);
-        dict.add("fool", 1, null);
+        dict.add("foo", 1, null, null);
+        dict.add("fta", 1, null, null);
+        dict.add("ftb", 1, null, null);
+        dict.add("bar", 1, null, null);
+        dict.add("fool", 1, null, null);
         final ArrayList<Node> result = BinaryDictInputOutput.flattenTree(dict.mRoot);
         assertEquals(4, result.size());
         while (!result.isEmpty()) {
