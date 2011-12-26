@@ -42,6 +42,7 @@ public class XmlDictInputOutput {
 
     private static final String WORD_TAG = "w";
     private static final String BIGRAM_TAG = "bigram";
+    private static final String SHORTCUT_TAG = "shortcut";
     private static final String FREQUENCY_ATTR = "f";
     private static final String WORD_ATTR = "word";
 
@@ -266,6 +267,15 @@ public class XmlDictInputOutput {
         for (Word word : set) {
             destination.write("  <" + WORD_TAG + " " + WORD_ATTR + "=\"" + word.mWord + "\" "
                     + FREQUENCY_ATTR + "=\"" + word.mFrequency + "\">");
+            if (null != word.mShortcutTargets) {
+                destination.write("\n");
+                for (WeightedString target : word.mShortcutTargets) {
+                    destination.write("    <" + SHORTCUT_TAG + " " + FREQUENCY_ATTR + "=\""
+                            + target.mFrequency + "\">" + target.mWord + "</" + SHORTCUT_TAG
+                            + ">\n");
+                }
+                destination.write("  ");
+            }
             if (null != word.mBigrams) {
                 destination.write("\n");
                 for (WeightedString bigram : word.mBigrams) {
