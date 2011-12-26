@@ -205,16 +205,21 @@ public class Keyboard {
         return mShiftState.isShiftLocked();
     }
 
+    private void setShiftKeyGraphics(boolean newShiftState) {
+        if (mShiftState.isShiftLocked()) {
+            return;
+        }
+        for (final Key key : mShiftKeys) {
+            final int attrId = newShiftState
+                    ? R.styleable.Keyboard_iconShiftKeyShifted
+                    : R.styleable.Keyboard_iconShiftKey;
+            key.setIcon(mIconsSet.getIconByAttrId(attrId));
+        }
+    }
+
     // TODO: Remove this method.
     void setShifted(boolean newShiftState) {
-        if (!mShiftState.isShiftLocked()) {
-            for (final Key key : mShiftKeys) {
-                final int attrId = newShiftState
-                        ? R.styleable.Keyboard_iconShiftKeyShifted
-                        : R.styleable.Keyboard_iconShiftKey;
-                key.setIcon(mIconsSet.getIconByAttrId(attrId));
-            }
-        }
+        setShiftKeyGraphics(newShiftState);
         mShiftState.setShifted(newShiftState);
     }
 
@@ -225,6 +230,7 @@ public class Keyboard {
 
     // TODO: Remove this method
     void setAutomaticTemporaryUpperCase() {
+        setShiftKeyGraphics(true);
         mShiftState.setAutomaticTemporaryUpperCase();
     }
 
