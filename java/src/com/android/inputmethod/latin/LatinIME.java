@@ -1496,7 +1496,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (null != ic) swapSwapperAndSpaceWhileInBatchEdit(ic);
         }
 
-        switcher.updateShiftState();
         if (mSettingsValues.isWordSeparator(code)) {
             Utils.Stats.onSeparator((char)code, x, y);
         } else {
@@ -1581,7 +1580,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         Utils.Stats.onSeparator((char)primaryCode, x, y);
 
-        mKeyboardSwitcher.updateShiftState();
         if (ic != null) {
             ic.endBatchEdit();
         }
