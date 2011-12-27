@@ -145,15 +145,15 @@ inline int BinaryFormat::skipFrequency(const uint8_t flags, const int pos) {
 
 inline int BinaryFormat::skipAllAttributes(const uint8_t* const dict, const uint8_t flags,
         const int pos) {
-    // This function skips all attributes. The format makes provision for future extension
-    // with other attributes (notably shortcuts) but for the time being, bigrams are the
-    // only attributes that may be found in a character group, so we only look at bigrams
-    // in this version.
-    if (UnigramDictionary::FLAG_HAS_BIGRAMS & flags) {
-        return skipAttributes(dict, pos);
-    } else {
-        return pos;
+    // This function skips all attributes: shortcuts and bigrams.
+    int newPos = pos;
+    if (UnigramDictionary::FLAG_HAS_SHORTCUT_TARGETS & flags) {
+        newPos = skipAttributes(dict, newPos);
     }
+    if (UnigramDictionary::FLAG_HAS_BIGRAMS & flags) {
+        newPos = skipAttributes(dict, newPos);
+    }
+    return newPos;
 }
 
 inline int BinaryFormat::skipChildrenPosAndAttributes(const uint8_t* const dict,
