@@ -123,6 +123,12 @@ public class XmlDictInputOutput {
         private final static String BIGRAM_W2_ATTRIBUTE = "w2";
         private final static String BIGRAM_FREQ_ATTRIBUTE = "p";
 
+        // In this version of the XML file, the bigram frequency is given as an int 0..XML_MAX
+        private final static int XML_MAX = 256;
+        // In memory and in the binary dictionary the bigram frequency is 0..MEMORY_MAX
+        private final static int MEMORY_MAX = 16;
+        private final static int XML_TO_MEMORY_RATIO = XML_MAX / MEMORY_MAX;
+
         String mW1;
         final HashMap<String, ArrayList<WeightedString>> mBigramsMap;
 
@@ -138,7 +144,7 @@ public class XmlDictInputOutput {
             } else if (BIGRAM_W2_TAG.equals(localName)) {
                 String w2 = attrs.getValue(uri, BIGRAM_W2_ATTRIBUTE);
                 int freq = Integer.parseInt(attrs.getValue(uri, BIGRAM_FREQ_ATTRIBUTE));
-                WeightedString bigram = new WeightedString(w2, freq / 8);
+                WeightedString bigram = new WeightedString(w2, freq / XML_TO_MEMORY_RATIO);
                 ArrayList<WeightedString> bigramList = mBigramsMap.get(mW1);
                 if (null == bigramList) bigramList = new ArrayList<WeightedString>();
                 bigramList.add(bigram);
