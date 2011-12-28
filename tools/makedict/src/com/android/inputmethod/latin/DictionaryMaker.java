@@ -105,7 +105,8 @@ public class DictionaryMaker {
                     } else {
                         // All these options need an argument
                         if (args.isEmpty()) {
-                            throw new RuntimeException("Option " + arg + " requires an argument");
+                            throw new IllegalArgumentException("Option " + arg + " is unknown or "
+                                    + "requires an argument");
                         }
                         String filename = args.get(0);
                         args.remove(0);
@@ -121,6 +122,8 @@ public class DictionaryMaker {
                             outputBinary = filename;
                         } else if (OPTION_OUTPUT_XML.equals(arg)) {
                             outputXml = filename;
+                        } else {
+                            throw new IllegalArgumentException("Unknown option : " + arg);
                         }
                     }
                 } else {
@@ -133,7 +136,7 @@ public class DictionaryMaker {
                     } else if (null == outputBinary) {
                         outputBinary = arg;
                     } else {
-                        throw new RuntimeException("Several output binary files specified");
+                        throw new IllegalArgumentException("Several output binary files specified");
                     }
                 }
             }
