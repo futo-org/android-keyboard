@@ -25,8 +25,8 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"Input options"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Android correction"</string>
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Spellchecking settings"</string>
-    <string name="use_proximity_option_title" msgid="7469233942295924620">"Use proximity data"</string>
-    <string name="use_proximity_option_summary" msgid="2857708859847261945">"Use a keyboard-like proximity algorithm for spellchecking"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Look up contact names"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Spell checker uses entries from your contact list"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrate on key-press"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sound on key-press"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up on key press"</string>

@@ -28,9 +28,9 @@
     <skip />
     <!-- no translation found for android_spell_checker_settings (5822324635435443689) -->
     <skip />
-    <!-- no translation found for use_proximity_option_title (7469233942295924620) -->
+    <!-- no translation found for use_contacts_for_spellchecking_option_title (5374120998125353898) -->
     <skip />
-    <!-- no translation found for use_proximity_option_summary (2857708859847261945) -->
+    <!-- no translation found for use_contacts_for_spellchecking_option_summary (8754413382543307713) -->
     <skip />
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar cun smatgar in buttun"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Tun cun smatgar in buttun"</string>
