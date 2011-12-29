@@ -25,8 +25,8 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"Параметры ввода"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Исправления Android"</string>
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Настройка проверки правописания"</string>
-    <string name="use_proximity_option_title" msgid="7469233942295924620">"Алгоритм близости клавиш"</string>
-    <string name="use_proximity_option_summary" msgid="2857708859847261945">"Использовать алгоритм близости клавиш для проверки правописания"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Поиск контактов"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Обращаться к списку контактов при проверке правописания"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Виброотклик клавиш"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Звук клавиш"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Увеличение нажатых"</string>
@@ -145,8 +145,8 @@
     <string name="prefs_description_log" msgid="5827825607258246003">"Помогите усовершенствовать редактор способа ввода, разрешив отправку статистики и отчетов о сбоях в Google."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Тема клавиатуры"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"Немецкая клавиатура QWERTY"</string>
-    <string name="subtype_en_GB" msgid="88170601942311355">"Английский (Великобритания)"</string>
-    <string name="subtype_en_US" msgid="6160452336634534239">"Английский (США)"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"английский (Великобритания)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"английский (США)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Режим проверки удобства использования"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Настройки вибросигнала при нажатии клавиш"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Настройки громкости звука при нажатии клавиш"</string>

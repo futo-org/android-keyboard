@@ -25,8 +25,8 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"Options de saisie"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Correcteur Android"</string>
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Paramètre du correcteur orthographique"</string>
-    <string name="use_proximity_option_title" msgid="7469233942295924620">"Utiliser données proximité"</string>
-    <string name="use_proximity_option_summary" msgid="2857708859847261945">"Utiliser algorithme de proximité clavier pour correcteur ortho"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Rechercher noms contacts"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Correcteur orthographique utilise entrées de liste de contacts."</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrer à chaque touche"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Son à chaque touche"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Agrandir les caractères"</string>
@@ -35,8 +35,8 @@
     <string name="misc_category" msgid="6894192814868233453">"Autres options"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Paramètres avancés"</string>
     <string name="advanced_settings_summary" msgid="5193513161106637254">"Options destinées aux utilisateurs expérimentés"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Délai masq. touche pop-up"</string>
-    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Aucun délai"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Masquer touche agrandie"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Sans délai"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Par défaut"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Proposer noms de contacts"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Utiliser des noms de contacts pour les suggestions et corrections"</string>
@@ -51,7 +51,7 @@
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Afficher en mode Portrait"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Toujours masquer"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Afficher touche param."</string>
-    <string name="auto_correction" msgid="4979925752001319458">"Correction auto."</string>
+    <string name="auto_correction" msgid="4979925752001319458">"Correction automatique"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Corriger autom. orthographe (pression sur barre espace/signes ponctuation)"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Désactiver"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Simple"</string>
@@ -132,7 +132,7 @@
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Sur clavier principal"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Sur clavier symboles"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Désactiver"</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Micro clavier principal"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Micro sur le clavier principal"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Micro sur clavier symboles"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Saisie vocale désactivée"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Sélectionner un mode de saisie."</string>
@@ -148,6 +148,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"Anglais (Royaume-Uni)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Anglais (États-Unis)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Mode d\'étude de l\'utilisabilité"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Paramètres de durée du vibreur à chaque pression de touche"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Paramètres de volume sonore à chaque pression de touche"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Durée de vibration à chaque pression"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Volume sonore à chaque pression"</string>
 </resources>

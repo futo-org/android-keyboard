@@ -25,8 +25,8 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opsi masukan"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Koreksi android"</string>
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Setelan pemeriksaan ejaan"</string>
-    <string name="use_proximity_option_title" msgid="7469233942295924620">"Gunakan data kedekatan"</string>
-    <string name="use_proximity_option_summary" msgid="2857708859847261945">"Gunakan algoritme kedekatan seperti keyboard untuk memeriksa ejaan"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Cari nama kenalan"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Pemeriksa ejaan menggunakan entri dari daftar kenalan Anda"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Getar jika tombol ditekan"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Berbunyi jika tombol ditekan"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Muncul saat tombol ditekan"</string>
