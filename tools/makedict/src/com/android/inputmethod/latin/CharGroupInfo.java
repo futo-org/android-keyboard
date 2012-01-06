@@ -29,10 +29,12 @@ public class CharGroupInfo {
     public final int[] mCharacters;
     public final int mFrequency;
     public final int mChildrenAddress;
+    public final ArrayList<PendingAttribute> mShortcutTargets;
     public final ArrayList<PendingAttribute> mBigrams;
 
     public CharGroupInfo(final int originalAddress, final int endAddress, final int flags,
             final int[] characters, final int frequency, final int childrenAddress,
+            final ArrayList<PendingAttribute> shortcutTargets,
             final ArrayList<PendingAttribute> bigrams) {
         mOriginalAddress = originalAddress;
         mEndAddress = endAddress;
@@ -40,6 +42,7 @@ public class CharGroupInfo {
         mCharacters = characters;
         mFrequency = frequency;
         mChildrenAddress = childrenAddress;
+        mShortcutTargets = shortcutTargets;
         mBigrams = bigrams;
     }
 }

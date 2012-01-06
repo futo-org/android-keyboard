@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -276,10 +277,13 @@ public class BinaryDictInputOutput {
         // If terminal, one byte for the frequency
         if (group.isTerminal()) size += GROUP_FREQUENCY_SIZE;
         size += GROUP_MAX_ADDRESS_SIZE; // For children address
+        if (null != group.mShortcutTargets) {
+            size += (GROUP_ATTRIBUTE_FLAGS_SIZE + GROUP_ATTRIBUTE_MAX_ADDRESS_SIZE)
+                    * group.mShortcutTargets.size();
+        }
         if (null != group.mBigrams) {
-            for (WeightedString bigram : group.mBigrams) {
-                size += GROUP_ATTRIBUTE_FLAGS_SIZE + GROUP_ATTRIBUTE_MAX_ADDRESS_SIZE;
-            }
+            size += (GROUP_ATTRIBUTE_FLAGS_SIZE + GROUP_ATTRIBUTE_MAX_ADDRESS_SIZE)
+                    * group.mBigrams.size();
         }
         return size;
     }
@@ -391,6 +395,15 @@ public class BinaryDictInputOutput {
                 final int offsetBasePoint= groupSize + node.mCachedAddress + size;
                 final int offset = group.mChildren.mCachedAddress - offsetBasePoint;
                 groupSize += getByteSize(offset);
+            }
+            if (null != group.mShortcutTargets) {
+                for (WeightedString target : group.mShortcutTargets) {
+                    final int offsetBasePoint = groupSize + node.mCachedAddress + size
+                            + GROUP_FLAGS_SIZE;
+                    final int addressOfTarget = findAddressOfWord(dict, target.mWord);
+                    final int offset = addressOfTarget - offsetBasePoint;
+                    groupSize += getByteSize(offset) + GROUP_FLAGS_SIZE;
+                }
             }
             if (null != group.mBigrams) {
                 for (WeightedString bigram : group.mBigrams) {
@@ -550,7 +563,19 @@ public class BinaryDictInputOutput {
                  throw new RuntimeException("Node with a strange address");
              }
         }
-        if (null != group.mBigrams) flags |= FLAG_HAS_BIGRAMS;
+        if (null != group.mShortcutTargets) {
+            if (0 == group.mShortcutTargets.size()) {
+                throw new RuntimeException("0-sized shortcut list must be null");
+            }
+            flags |= FLAG_HAS_SHORTCUT_TARGETS;
+        }
+        if (null != group.mBigrams) {
+            if (0 == group.mBigrams.size()) {
+                throw new RuntimeException("0-sized bigram list must be null");
+            }
+            flags |= FLAG_HAS_BIGRAMS;
+        }
+        // TODO: fill in the FLAG_IS_SHORTCUT_ONLY
         return flags;
     }
 
@@ -629,20 +654,36 @@ public class BinaryDictInputOutput {
             index += shift;
             groupAddress += shift;
 
+            // Write shortcuts
+            if (null != group.mShortcutTargets) {
+                final Iterator shortcutIterator = group.mShortcutTargets.iterator();
+                while (shortcutIterator.hasNext()) {
+                    final WeightedString target = (WeightedString)shortcutIterator.next();
+                    final int addressOfTarget = findAddressOfWord(dict, target.mWord);
+                    ++groupAddress;
+                    final int offset = addressOfTarget - groupAddress;
+                    int shortcutFlags = makeAttributeFlags(shortcutIterator.hasNext(), offset,
+                            target.mFrequency);
+                    buffer[index++] = (byte)shortcutFlags;
+                    final int shortcutShift = writeVariableAddress(buffer, index, Math.abs(offset));
+                    index += shortcutShift;
+                    groupAddress += shortcutShift;
+                }
+            }
             // Write bigrams
             if (null != group.mBigrams) {
-                int remainingBigrams = group.mBigrams.size();
-                for (WeightedString bigram : group.mBigrams) {
-                    boolean more = remainingBigrams > 1;
+                final Iterator bigramIterator = group.mBigrams.iterator();
+                while (bigramIterator.hasNext()) {
+                    final WeightedString bigram = (WeightedString)bigramIterator.next();
                     final int addressOfBigram = findAddressOfWord(dict, bigram.mWord);
                     ++groupAddress;
                     final int offset = addressOfBigram - groupAddress;
-                    int bigramFlags = makeAttributeFlags(more, offset, bigram.mFrequency);
+                    int bigramFlags = makeAttributeFlags(bigramIterator.hasNext(), offset,
+                            bigram.mFrequency);
                     buffer[index++] = (byte)bigramFlags;
                     final int bigramShift = writeVariableAddress(buffer, index, Math.abs(offset));
                     index += bigramShift;
                     groupAddress += bigramShift;
-                    --remainingBigrams;
                 }
             }
 
@@ -819,14 +860,43 @@ public class BinaryDictInputOutput {
             childrenAddress = NO_CHILDREN_ADDRESS;
             break;
         }
+        ArrayList<PendingAttribute> shortcutTargets = null;
+        if (0 != (flags & FLAG_HAS_SHORTCUT_TARGETS)) {
+            shortcutTargets = new ArrayList<PendingAttribute>();
+            while (true) {
+                final int targetFlags = source.readUnsignedByte();
+                ++addressPointer;
+                final int sign = 0 == (targetFlags & FLAG_ATTRIBUTE_OFFSET_NEGATIVE) ? 1 : -1;
+                int targetAddress = addressPointer;
+                switch (targetFlags & MASK_ATTRIBUTE_ADDRESS_TYPE) {
+                case FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE:
+                    targetAddress += sign * source.readUnsignedByte();
+                    addressPointer += 1;
+                    break;
+                case FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES:
+                    targetAddress += sign * source.readUnsignedShort();
+                    addressPointer += 2;
+                    break;
+                case FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES:
+                    final int offset = ((source.readUnsignedByte() << 16)
+                            + source.readUnsignedShort());
+                    targetAddress += sign * offset;
+                    addressPointer += 3;
+                    break;
+                default:
+                    throw new RuntimeException("Has attribute with no address");
+                }
+                shortcutTargets.add(new PendingAttribute(targetFlags & FLAG_ATTRIBUTE_FREQUENCY,
+                        targetAddress));
+                if (0 == (targetFlags & FLAG_ATTRIBUTE_HAS_NEXT)) break;
+            }
+        }
         ArrayList<PendingAttribute> bigrams = null;
         if (0 != (flags & FLAG_HAS_BIGRAMS)) {
             bigrams = new ArrayList<PendingAttribute>();
-            boolean more = true;
-            while (more) {
-                int bigramFlags = source.readUnsignedByte();
+            while (true) {
+                final int bigramFlags = source.readUnsignedByte();
                 ++addressPointer;
-                more = (0 != (bigramFlags & FLAG_ATTRIBUTE_HAS_NEXT));
                 final int sign = 0 == (bigramFlags & FLAG_ATTRIBUTE_OFFSET_NEGATIVE) ? 1 : -1;
                 int bigramAddress = addressPointer;
                 switch (bigramFlags & MASK_ATTRIBUTE_ADDRESS_TYPE) {
@@ -849,10 +919,11 @@ public class BinaryDictInputOutput {
                 }
                 bigrams.add(new PendingAttribute(bigramFlags & FLAG_ATTRIBUTE_FREQUENCY,
                         bigramAddress));
+                if (0 == (bigramFlags & FLAG_ATTRIBUTE_HAS_NEXT)) break;
             }
         }
         return new CharGroupInfo(originalGroupAddress, addressPointer, flags, characters, frequency,
-                childrenAddress, bigrams);
+                childrenAddress, shortcutTargets, bigrams);
     }
 
     /**
@@ -930,6 +1001,14 @@ public class BinaryDictInputOutput {
         int groupOffset = nodeOrigin + 1; // 1 byte for the group count
         for (int i = count; i > 0; --i) {
             CharGroupInfo info = readCharGroup(source, groupOffset);
+            ArrayList<WeightedString> shortcutTargets = null;
+            if (null != info.mShortcutTargets) {
+                shortcutTargets = new ArrayList<WeightedString>();
+                for (PendingAttribute target : info.mShortcutTargets) {
+                    final String word = getWordAtAddress(source, headerSize, target.mAddress);
+                    shortcutTargets.add(new WeightedString(word, target.mFrequency));
+                }
+            }
             ArrayList<WeightedString> bigrams = null;
             if (null != info.mBigrams) {
                 bigrams = new ArrayList<WeightedString>();
@@ -947,13 +1026,11 @@ public class BinaryDictInputOutput {
                     source.seek(currentPosition);
                 }
                 nodeContents.add(
-                        // TODO: read and pass the shortcut targets
-                        new CharGroup(info.mCharacters, null, bigrams, info.mFrequency,
+                        new CharGroup(info.mCharacters, shortcutTargets, bigrams, info.mFrequency,
                         children));
             } else {
-                // TODO: read and pass the shortcut targets
                 nodeContents.add(
-                        new CharGroup(info.mCharacters, null, bigrams, info.mFrequency));
+                        new CharGroup(info.mCharacters, shortcutTargets, bigrams, info.mFrequency));
             }
             groupOffset = info.mEndAddress;
         }
