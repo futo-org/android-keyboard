@@ -44,8 +44,9 @@ public class BinaryDictInputOutput {
      * a |                                     11 = 3 bytes     : FLAG_GROUP_ADDRESS_TYPE_THREEBYTES
      * g | has several chars ?         1 bit, 1 = yes, 0 = no   : FLAG_HAS_MULTIPLE_CHARS
      * s | has a terminal ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_TERMINAL
-     *   | reserved                    1 bit, 1 = yes, 0 = no
+     *   | has shortcut targets ?      1 bit, 1 = yes, 0 = no   : FLAG_HAS_SHORTCUT_TARGETS
      *   | has bigrams ?               1 bit, 1 = yes, 0 = no   : FLAG_HAS_BIGRAMS
+     *   | is shortcut only ?          1 bit, 1 = yes, 0 = no   : FLAG_IS_SHORTCUT_ONLY
      *
      * c | IF FLAG_HAS_MULTIPLE_CHARS
      * h |   char, char, char, char    n * (1 or 3 bytes) : use CharGroupInfo for i/o helpers
@@ -71,6 +72,8 @@ public class BinaryDictInputOutput {
      * d
      * dress
      *
+     *   | IF FLAG_IS_TERMINAL && FLAG_HAS_SHORTCUT_TARGETS
+     *   | shortcut targets address list
      *   | IF FLAG_IS_TERMINAL && FLAG_HAS_BIGRAMS
      *   | bigrams address list
      *
@@ -126,7 +129,9 @@ public class BinaryDictInputOutput {
     private static final int FLAG_HAS_MULTIPLE_CHARS = 0x20;
 
     private static final int FLAG_IS_TERMINAL = 0x10;
+    private static final int FLAG_HAS_SHORTCUT_TARGETS = 0x08;
     private static final int FLAG_HAS_BIGRAMS = 0x04;
+    private static final int FLAG_IS_SHORTCUT_ONLY = 0x02;
 
     private static final int FLAG_ATTRIBUTE_HAS_NEXT = 0x80;
     private static final int FLAG_ATTRIBUTE_OFFSET_NEGATIVE = 0x40;
@@ -942,11 +947,13 @@ public class BinaryDictInputOutput {
                     source.seek(currentPosition);
                 }
                 nodeContents.add(
-                        new CharGroup(info.mCharacters, bigrams, info.mFrequency,
+                        // TODO: read and pass the shortcut targets
+                        new CharGroup(info.mCharacters, null, bigrams, info.mFrequency,
                         children));
             } else {
+                // TODO: read and pass the shortcut targets
                 nodeContents.add(
-                        new CharGroup(info.mCharacters, bigrams, info.mFrequency));
+                        new CharGroup(info.mCharacters, null, bigrams, info.mFrequency));
             }
             groupOffset = info.mEndAddress;
         }
@@ -996,7 +1003,8 @@ public class BinaryDictInputOutput {
                 new FusionDictionary.DictionaryOptions());
         if (null != dict) {
             for (Word w : dict) {
-                newDict.add(w.mWord, w.mFrequency, w.mBigrams);
+                // TODO: pass the shortcut targets
+                newDict.add(w.mWord, w.mFrequency, null, w.mBigrams);
             }
         }
 

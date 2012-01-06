@@ -107,7 +107,8 @@ public class XmlDictInputOutput {
         @Override
         public void endElement(String uri, String localName, String qName) {
             if (WORD == mState) {
-                mDictionary.add(mWord, mFreq, mBigramsMap.get(mWord));
+                // TODO: pass the shortcut targets
+                mDictionary.add(mWord, mFreq, null, mBigramsMap.get(mWord));
                 mState = START;
             }
         }
