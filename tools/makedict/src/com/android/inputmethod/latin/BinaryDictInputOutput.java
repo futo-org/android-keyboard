@@ -1003,8 +1003,7 @@ public class BinaryDictInputOutput {
                 new FusionDictionary.DictionaryOptions());
         if (null != dict) {
             for (Word w : dict) {
-                // TODO: pass the shortcut targets
-                newDict.add(w.mWord, w.mFrequency, null, w.mBigrams);
+                newDict.add(w.mWord, w.mFrequency, w.mShortcutTargets, w.mBigrams);
             }
         }
 

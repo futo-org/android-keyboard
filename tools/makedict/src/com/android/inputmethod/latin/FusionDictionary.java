@@ -592,8 +592,7 @@ public class FusionDictionary implements Iterable<Word> {
                     }
                     if (currentGroup.mFrequency >= 0)
                         return new Word(mCurrentString.toString(), currentGroup.mFrequency,
-                                // TODO: pass the shortcut targets here
-                                currentGroup.mBigrams);
+                                currentGroup.mShortcutTargets, currentGroup.mBigrams);
                 } else {
                     mPositions.removeLast();
                     currentPos = mPositions.getLast();
