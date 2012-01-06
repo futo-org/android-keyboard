@@ -27,6 +27,7 @@
 
 namespace latinime {
 
+class TerminalAttributes;
 class UnigramDictionary {
 
 public:
@@ -115,7 +116,8 @@ private:
             const int *ycoordinates, const int *codes, const bool useFullEditDistance,
             const int inputLength, const int spaceProximityPos, Correction *correction,
             WordsPriorityQueuePool* queuePool);
-    void onTerminal(const int freq, Correction *correction, WordsPriorityQueue *queue);
+    void onTerminal(const int freq, const TerminalAttributes& terminalAttributes,
+            Correction *correction, WordsPriorityQueue *queue);
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
     // Process a node by considering proximity, missing and excessive character

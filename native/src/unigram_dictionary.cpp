@@ -25,6 +25,7 @@
 #include "unigram_dictionary.h"
 
 #include "binary_format.h"
+#include "terminal_attributes.h"
 
 namespace latinime {
 
@@ -324,13 +325,21 @@ void UnigramDictionary::getMistypedSpaceWords(ProximityInfo *proximityInfo, cons
             correction, queuePool);
 }
 
-inline void UnigramDictionary::onTerminal(
-        const int freq, Correction *correction, WordsPriorityQueue *queue) {
+inline void UnigramDictionary::onTerminal(const int freq,
+        const TerminalAttributes& terminalAttributes, Correction *correction,
+        WordsPriorityQueue *queue) {
     int wordLength;
     unsigned short* wordPointer;
     const int finalFreq = correction->getFinalFreq(freq, &wordPointer, &wordLength);
     if (finalFreq >= 0) {
-        addWord(wordPointer, wordLength, finalFreq, queue);
+        if (!terminalAttributes.isShortcutOnly()) {
+            addWord(wordPointer, wordLength, finalFreq, queue);
+        }
+        TerminalAttributes::ShortcutIterator iterator = terminalAttributes.getShortcutIterator();
+        while (iterator.hasNextShortcutTarget()) {
+            // TODO: add the shortcut to the list of suggestions using the
+            // iterator.getNextShortcutTarget(int, uint16_t*) method
+        }
     }
 }
 
@@ -646,7 +655,9 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos,
             // The frequency should be here, because we come here only if this is actually
             // a terminal node, and we are on its last char.
             const int freq = BinaryFormat::readFrequencyWithoutMovingPointer(DICT_ROOT, pos);
-            onTerminal(freq, correction, queue);
+            TerminalAttributes terminalAttributes(DICT_ROOT, flags,
+                    BinaryFormat::skipFrequency(flags, pos));
+            onTerminal(freq, terminalAttributes, correction, queue);
         }
 
         // If there are more chars in this node, then this virtual node has children.
