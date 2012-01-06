@@ -28,7 +28,7 @@
 namespace latinime {
 
 class Dictionary {
-public:
+ public:
     Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int typedLetterMultipler,
             int fullWordMultiplier, int maxWordLength, int maxWords, int maxAlternatives);
 
@@ -67,7 +67,7 @@ public:
             const int pos, unsigned short *c, int *childrenPosition,
             bool *terminal, int *freq);
 
-private:
+ private:
     bool hasBigram();
 
     const unsigned char *mDict;

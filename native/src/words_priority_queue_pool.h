@@ -22,7 +22,7 @@
 namespace latinime {
 
 class WordsPriorityQueuePool {
-public:
+ public:
     WordsPriorityQueuePool(int mainQueueMaxWords, int subQueueMaxWords, int maxWordLength) {
         mMasterQueue = new WordsPriorityQueue(mainQueueMaxWords, maxWordLength);
         mSubQueue1 = new WordsPriorityQueue(subQueueMaxWords, maxWordLength);
@@ -43,7 +43,8 @@ public:
     WordsPriorityQueue* getSubQueue2() {
         return mSubQueue2;
     }
-private:
+
+ private:
     WordsPriorityQueue *mMasterQueue;
     WordsPriorityQueue *mSubQueue1;
     WordsPriorityQueue *mSubQueue2;

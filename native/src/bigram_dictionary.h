@@ -21,14 +21,14 @@ namespace latinime {
 
 class Dictionary;
 class BigramDictionary {
-public:
+ public:
     BigramDictionary(const unsigned char *dict, int maxWordLength, int maxAlternatives,
             const bool isLatestDictVersion, const bool hasBigram, Dictionary *parentDictionary);
     int getBigrams(unsigned short *word, int length, int *codes, int codesSize,
             unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams,
             int maxAlternatives);
     ~BigramDictionary();
-private:
+ private:
     bool addWordBigram(unsigned short *word, int length, int frequency);
     int getBigramAddress(int *pos, bool advance);
     int getBigramFreq(int *pos);
