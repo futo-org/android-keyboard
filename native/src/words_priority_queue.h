@@ -24,7 +24,7 @@
 namespace latinime {
 
 class WordsPriorityQueue {
-public:
+ public:
     class SuggestedWord {
     public:
         int mScore;
@@ -126,7 +126,8 @@ public:
             mSuggestions.pop();
         }
     }
-private:
+
+ private:
     struct wordComparator {
         bool operator ()(SuggestedWord * left, SuggestedWord * right) {
             return left->mScore > right->mScore;

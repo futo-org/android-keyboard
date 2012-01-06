@@ -27,8 +27,7 @@ namespace latinime {
 class ProximityInfo;
 
 class Correction {
-
-public:
+ public:
     typedef enum {
         TRAVERSE_ALL_ON_TERMINAL,
         TRAVERSE_ALL_NOT_ON_TERMINAL,
@@ -95,7 +94,8 @@ public:
     inline int getTreeParentIndex(const int index) const {
         return mCorrectionStates[index].mParentIndex;
     }
-private:
+
+ private:
     inline void incrementInputIndex();
     inline void incrementOutputIndex();
     inline bool needsToTraverseAllNodes();
@@ -154,7 +154,7 @@ private:
     bool mSkipping;
 
     class RankingAlgorithm {
-    public:
+     public:
         static int calculateFinalFreq(const int inputIndex, const int depth,
                 const int freq, int *editDistanceTable, const Correction* correction);
         static int calcFreqForSplitTwoWords(const int firstFreq, const int secondFreq,
