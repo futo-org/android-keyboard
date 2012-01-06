@@ -337,8 +337,15 @@ inline void UnigramDictionary::onTerminal(const int freq,
         }
         TerminalAttributes::ShortcutIterator iterator = terminalAttributes.getShortcutIterator();
         while (iterator.hasNextShortcutTarget()) {
-            // TODO: add the shortcut to the list of suggestions using the
-            // iterator.getNextShortcutTarget(int, uint16_t*) method
+            // TODO: addWord only supports weak ordering, meaning we have no means to control the
+            // order of the shortcuts relative to one another or to the word. We need to either
+            // modulate the frequency of each shortcut according to its own shortcut frequency or
+            // to make the queue so that the insert order is protected inside the queue for words
+            // with the same score.
+            uint16_t shortcutTarget[MAX_WORD_LENGTH_INTERNAL];
+            const int shortcutTargetStringLength = iterator.getNextShortcutTarget(
+                    MAX_WORD_LENGTH_INTERNAL, shortcutTarget);
+            addWord(shortcutTarget, shortcutTargetStringLength, finalFreq, queue);
         }
     }
 }
