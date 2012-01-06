@@ -28,9 +28,7 @@
 namespace latinime {
 
 class UnigramDictionary {
-
-public:
-
+ public:
     // Mask and flags for children address type selection.
     static const int MASK_GROUP_ADDRESS_TYPE = 0xC0;
     static const int FLAG_GROUP_ADDRESS_TYPE_NOADDRESS = 0x00;
@@ -83,8 +81,7 @@ public:
             unsigned short *outWords, int *frequencies);
     virtual ~UnigramDictionary();
 
-private:
-
+ private:
     void getWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int inputLength,
             const int flags, Correction *correction, WordsPriorityQueuePool *queuePool);

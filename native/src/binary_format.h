@@ -22,12 +22,12 @@
 namespace latinime {
 
 class BinaryFormat {
-private:
+ private:
     const static int32_t MINIMAL_ONE_BYTE_CHARACTER_VALUE = 0x20;
     const static int32_t CHARACTER_ARRAY_TERMINATOR = 0x1F;
     const static int MULTIPLE_BYTE_CHARACTER_ADDITIONAL_SIZE = 2;
 
-public:
+ public:
     const static int UNKNOWN_FORMAT = -1;
     const static int FORMAT_VERSION_1 = 1;
     const static uint16_t FORMAT_VERSION_1_MAGIC_NUMBER = 0x78B1;

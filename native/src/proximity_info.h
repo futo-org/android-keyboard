@@ -26,7 +26,7 @@ namespace latinime {
 class Correction;
 
 class ProximityInfo {
-public:
+ public:
     static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2 = 10;
     static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR =
             1 << NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
@@ -68,7 +68,7 @@ public:
         return mTouchPositionCorrectionEnabled;
     }
 
-private:
+ private:
     // The max number of the keys in one keyboard layout
     static const int MAX_KEY_COUNT_IN_A_KEYBOARD = 64;
     // The upper limit of the char code in mCodeToKeyIndex
