@@ -30,20 +30,28 @@ class TerminalAttributes {
  public:
     class ShortcutIterator {
         const uint8_t* const mDict;
+        bool mHasNextShortcutTarget;
         int mPos;
 
      public:
-        ShortcutIterator(const uint8_t* const dict, const int pos) : mDict(dict), mPos(pos) {
+        ShortcutIterator(const uint8_t* dict, const int pos, const uint8_t flags) : mDict(dict),
+                mPos(pos) {
+            mHasNextShortcutTarget = (0 != (flags & UnigramDictionary::FLAG_HAS_SHORTCUT_TARGETS));
         }
 
         inline bool hasNextShortcutTarget() const {
-            // TODO: stub method. Fill this in.
-            return false;
+            return mHasNextShortcutTarget;
         }
 
+        // Gets the shortcut target itself as a uint16_t string. For parameters and return value
+        // see BinaryFormat::getWordAtAddress.
         inline int getNextShortcutTarget(const int maxDepth, uint16_t* outWord) {
-            // TODO: stub method. Fill this in.
-            return 0;
+            const int shortcutFlags = BinaryFormat::getFlagsAndForwardPointer(mDict, &mPos);
+            mHasNextShortcutTarget =
+                    0 != (shortcutFlags & UnigramDictionary::FLAG_ATTRIBUTE_HAS_NEXT);
+            int shortcutAddress =
+                    BinaryFormat::getAttributeAddressAndForwardPointer(mDict, shortcutFlags, &mPos);
+            return BinaryFormat::getWordAtAddress(mDict, shortcutAddress, maxDepth, outWord);
         }
     };
 
@@ -58,12 +66,11 @@ class TerminalAttributes {
     }
 
     inline bool isShortcutOnly() const {
-        // TODO: stub method. Fill this in.
-        return false;
+        return 0 != (mFlags & UnigramDictionary::FLAG_IS_SHORTCUT_ONLY);
     }
 
     inline ShortcutIterator getShortcutIterator() const {
-        return ShortcutIterator(mDict, mStartPos);
+        return ShortcutIterator(mDict, mStartPos, mFlags);
     }
 };
 } // namespace latinime
