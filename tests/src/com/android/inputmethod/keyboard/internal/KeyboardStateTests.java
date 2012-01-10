@@ -90,7 +90,8 @@ public class KeyboardStateTests extends AndroidTestCase {
     // Argument for KeyboardState.onCodeInput.
     private static final boolean SINGLE = true;
     private static final boolean MULTI = false;
-
+    private static final boolean NO_AUTO_CAPS = false;
+    private static final boolean AUTO_CAPS = true;
 
     private void assertAlphabetNormal() {
         assertEquals(ALPHABET_UNSHIFTED, mSwitcher.mLayout);
@@ -213,7 +214,7 @@ public class KeyboardStateTests extends AndroidTestCase {
         // Long press recognized in LatinKeyboardView.KeyTimerHandler.
         mState.onToggleCapsLock();
         assertAlphabetShiftLocked();
-        mState.onCodeInput(Keyboard.CODE_CAPSLOCK, SINGLE);
+        mState.onCodeInput(Keyboard.CODE_CAPSLOCK, SINGLE, NO_AUTO_CAPS);
         assertAlphabetShiftLocked();
         mState.onReleaseShift(NOT_SLIDING);
         assertAlphabetShiftLocked();
@@ -224,7 +225,7 @@ public class KeyboardStateTests extends AndroidTestCase {
         // Long press recognized in LatinKeyboardView.KeyTimerHandler.
         mState.onToggleCapsLock();
         assertAlphabetNormal();
-        mState.onCodeInput(Keyboard.CODE_CAPSLOCK, SINGLE);
+        mState.onCodeInput(Keyboard.CODE_CAPSLOCK, SINGLE, NO_AUTO_CAPS);
         assertAlphabetNormal();
         mState.onReleaseShift(NOT_SLIDING);
         assertAlphabetNormal();
@@ -236,7 +237,7 @@ public class KeyboardStateTests extends AndroidTestCase {
         // First shift key tap.
         mState.onPressShift(NOT_SLIDING);
         assertAlphabetManualShifted();
-        mState.onCodeInput(Keyboard.CODE_SHIFT, SINGLE);
+        mState.onCodeInput(Keyboard.CODE_SHIFT, SINGLE, NO_AUTO_CAPS);
         assertAlphabetManualShifted();
         mState.onReleaseShift(NOT_SLIDING);
         assertAlphabetManualShifted();
@@ -244,13 +245,13 @@ public class KeyboardStateTests extends AndroidTestCase {
         // Double tap recognized in LatinKeyboardView.KeyTimerHandler.
         mState.onToggleCapsLock();
         assertAlphabetShiftLocked();
-        mState.onCodeInput(Keyboard.CODE_SHIFT, SINGLE);
+        mState.onCodeInput(Keyboard.CODE_SHIFT, SINGLE, NO_AUTO_CAPS);
         assertAlphabetShiftLocked();
 
         // First shift key tap.
         mState.onPressShift(NOT_SLIDING);
         assertAlphabetManualShifted();
-        mState.onCodeInput(Keyboard.CODE_SHIFT, SINGLE);
+        mState.onCodeInput(Keyboard.CODE_SHIFT, SINGLE, NO_AUTO_CAPS);
         assertAlphabetManualShifted();
         mState.onReleaseShift(NOT_SLIDING);
         assertAlphabetNormal();

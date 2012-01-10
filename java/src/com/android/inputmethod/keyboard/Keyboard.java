@@ -67,7 +67,9 @@ import java.util.Set;
 public class Keyboard {
     private static final String TAG = Keyboard.class.getSimpleName();
 
-    /** Some common keys code.  These should be aligned with values/keycodes.xml */
+    /** Some common keys code. Must be positive.
+     * These should be aligned with values/keycodes.xml
+     */
     public static final int CODE_ENTER = '\n';
     public static final int CODE_TAB = '\t';
     public static final int CODE_SPACE = ' ';
@@ -85,7 +87,9 @@ public class Keyboard {
     public static final int CODE_DIGIT0 = '0';
     public static final int CODE_PLUS = '+';
 
-    /** Special keys code.  These should be aligned with values/keycodes.xml */
+    /** Special keys code. Must be non-positive.
+     * These should be aligned with values/keycodes.xml
+     */
     public static final int CODE_DUMMY = 0;
     public static final int CODE_SHIFT = -1;
     public static final int CODE_SWITCH_ALPHA_SYMBOL = -2;
@@ -246,6 +250,10 @@ public class Keyboard {
             return label.toString().toUpperCase(mId.mLocale);
         }
         return label;
+    }
+
+    public static boolean isLetterCode(int code) {
+        return code > CODE_DUMMY;
     }
 
     public static class Params {
