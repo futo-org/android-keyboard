@@ -148,12 +148,12 @@ public class MoreKeySpecParser {
             return code;
         }
         if (indexOfLabelEnd(moreKeySpec, 0) > 0)
-            return Keyboard.CODE_DUMMY;
+            return Keyboard.CODE_UNSPECIFIED;
         final String label = getLabel(moreKeySpec);
         // Code is automatically generated for one letter label.
         if (label != null && label.length() == 1)
             return label.charAt(0);
-        return Keyboard.CODE_DUMMY;
+        return Keyboard.CODE_UNSPECIFIED;
     }
 
     public static int getIconId(String moreKeySpec) {

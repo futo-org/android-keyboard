@@ -262,10 +262,8 @@ public class PointerTracker {
         final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
         final boolean alterCode = key.altCodeWhileTyping() && mTimerProxy.isTyping();
         final int code = alterCode ? key.mAltCode : primaryCode;
-        // If code is CODE_DUMMY here, this key will be ignored or generate text.
-        final CharSequence text = (code != Keyboard.CODE_DUMMY) ? null : key.mOutputText;
         if (DEBUG_LISTENER) {
-            Log.d(TAG, "onCodeInput: " + Keyboard.printableCode(code) + " text=" + text
+            Log.d(TAG, "onCodeInput: " + Keyboard.printableCode(code) + " text=" + key.mOutputText
                     + " codes="+ KeyDetector.printableCodes(keyCodes) + " x=" + x + " y=" + y
                     + " ignoreModifier=" + ignoreModifierKey + " alterCode=" + alterCode
                     + " enabled=" + key.isEnabled());
@@ -274,10 +272,10 @@ public class PointerTracker {
             return;
         }
         if (key.isEnabled()) {
-            if (code != Keyboard.CODE_DUMMY) {
+            if (code == Keyboard.CODE_OUTPUT_TEXT) {
+                mListener.onTextInput(key.mOutputText);
+            } else if (code != Keyboard.CODE_UNSPECIFIED) {
                 mListener.onCodeInput(code, keyCodes, x, y);
-            } else if (text != null) {
-                mListener.onTextInput(text);
             }
             if (!key.altCodeWhileTyping() && !key.isModifier()) {
                 mTimerProxy.startKeyTypedTimer(sIgnoreSpecialKeyTimeout);
