@@ -198,7 +198,7 @@ public class Key {
         mLabel = label;
         mOutputText = outputText;
         mCode = code;
-        mAltCode = Keyboard.CODE_DUMMY;
+        mAltCode = Keyboard.CODE_UNSPECIFIED;
         mIcon = icon;
         mDisabledIcon = null;
         mPreviewIcon = null;
@@ -299,13 +299,13 @@ public class Key {
             }
             final int firstChar = mLabel.charAt(0);
             mCode = getRtlParenthesisCode(firstChar, params.mIsRtlKeyboard);
-        } else if (code != Keyboard.CODE_UNSPECIFIED) {
-            mCode = code;
+        } else if (code == Keyboard.CODE_UNSPECIFIED && mOutputText != null) {
+            mCode = Keyboard.CODE_OUTPUT_TEXT;
         } else {
-            mCode = Keyboard.CODE_DUMMY;
+            mCode = code;
         }
         mAltCode = style.getInt(keyAttr,
-                R.styleable.Keyboard_Key_altCode, Keyboard.CODE_DUMMY);
+                R.styleable.Keyboard_Key_altCode, Keyboard.CODE_UNSPECIFIED);
         mHashCode = hashCode(this);
 
         keyAttr.recycle();
@@ -508,7 +508,7 @@ public class Key {
      * @param y the y-coordinate of the point
      * @return whether or not the point falls on the key. If the key is attached to an edge, it
      * will assume that all points between the key and the edge are considered to be on the key.
-     * @see #markAsLeftEdge(KeyboardParams) etc.
+     * @see #markAsLeftEdge(Keyboard.Params) etc.
      */
     public boolean isOnKey(int x, int y) {
         return mHitBox.contains(x, y);
@@ -615,7 +615,7 @@ public class Key {
          * This constructor is being used only for divider in more keys keyboard.
          */
         public Spacer(Keyboard.Params params, Drawable icon, int x, int y, int width, int height) {
-            super(params, null, null, icon, Keyboard.CODE_DUMMY, null, x, y, width, height);
+            super(params, null, null, icon, Keyboard.CODE_UNSPECIFIED, null, x, y, width, height);
         }
 
         @Override

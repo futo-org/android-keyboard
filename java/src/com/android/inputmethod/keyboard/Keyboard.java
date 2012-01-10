@@ -86,19 +86,20 @@ public class Keyboard {
     public static final int CODE_CLOSING_ANGLE_BRACKET = '>';
     public static final int CODE_DIGIT0 = '0';
     public static final int CODE_PLUS = '+';
+    private static final int MINIMUM_LETTER_CODE = CODE_TAB;
 
-    /** Special keys code. Must be non-positive.
+    /** Special keys code. Must be negative.
      * These should be aligned with values/keycodes.xml
      */
-    public static final int CODE_DUMMY = 0;
     public static final int CODE_SHIFT = -1;
     public static final int CODE_SWITCH_ALPHA_SYMBOL = -2;
     public static final int CODE_CAPSLOCK = -3;
+    public static final int CODE_OUTPUT_TEXT = -4;
     public static final int CODE_DELETE = -5;
     public static final int CODE_SETTINGS = -6;
     public static final int CODE_SHORTCUT = -7;
     // Code value representing the code is not specified.
-    public static final int CODE_UNSPECIFIED = -99;
+    public static final int CODE_UNSPECIFIED = -9;
 
     public final KeyboardId mId;
     public final int mThemeId;
@@ -167,7 +168,7 @@ public class Keyboard {
     }
 
     public Key getKey(int code) {
-        if (code == CODE_DUMMY) {
+        if (code == CODE_UNSPECIFIED) {
             return null;
         }
         final Integer keyCode = code;
@@ -253,7 +254,7 @@ public class Keyboard {
     }
 
     public static boolean isLetterCode(int code) {
-        return code > CODE_DUMMY;
+        return code >= MINIMUM_LETTER_CODE;
     }
 
     public static class Params {
@@ -428,9 +429,9 @@ public class Keyboard {
         case CODE_SHIFT: return "shift";
         case CODE_SWITCH_ALPHA_SYMBOL: return "symbol";
         case CODE_CAPSLOCK: return "capslock";
+        case CODE_OUTPUT_TEXT: return "text";
         case CODE_DELETE: return "delete";
         case CODE_SHORTCUT: return "shortcut";
-        case CODE_DUMMY: return "dummy";
         case CODE_UNSPECIFIED: return "unspec";
         default:
             if (code < 0) Log.w(TAG, "Unknow negative key code=" + code);

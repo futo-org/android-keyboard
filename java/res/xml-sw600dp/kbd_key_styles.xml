@@ -78,14 +78,12 @@
         latin:keyIcon="iconShortcutKey"
         latin:keyIconDisabled="iconDisabledShortcutKey"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
-        latin:altCode="@integer/key_dummy"
         latin:parentStyle="f2PopupStyle" />
     <key-style
         latin:styleName="settingsKeyStyle"
         latin:code="@integer/key_settings"
         latin:keyIcon="iconSettingsKey"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
-        latin:altCode="@integer/key_dummy"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="tabKeyStyle"

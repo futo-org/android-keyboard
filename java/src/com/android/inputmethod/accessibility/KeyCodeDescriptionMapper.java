@@ -142,7 +142,7 @@ public class KeyCodeDescriptionMapper {
         }
 
         // Just attempt to speak the description.
-        if (key.mCode != Keyboard.CODE_DUMMY) {
+        if (key.mCode != Keyboard.CODE_UNSPECIFIED) {
             return getDescriptionForKeyCode(context, keyboard, key, shouldObscure);
         }
 
