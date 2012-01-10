@@ -1305,7 +1305,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         ic.commitText(text, 1);
         ic.endBatchEdit();
         mKeyboardSwitcher.updateShiftState();
-        mKeyboardSwitcher.onCodeInput(Keyboard.CODE_DUMMY);
+        mKeyboardSwitcher.onCodeInput(Keyboard.CODE_OUTPUT_TEXT);
         mSpaceState = SPACE_STATE_NONE;
         mEnteredText = text;
         mWordComposer.reset();

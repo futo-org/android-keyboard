@@ -434,7 +434,8 @@ public class KeyboardState {
             }
             break;
         case SWITCH_STATE_SYMBOL_BEGIN:
-            if (!isSpaceCharacter(code) && code >= 0) {
+            if (!isSpaceCharacter(code) && (Keyboard.isLetterCode(code)
+                    || code == Keyboard.CODE_OUTPUT_TEXT)) {
                 mSwitchState = SWITCH_STATE_SYMBOL;
             }
             // Snap back to alpha keyboard mode immediately if user types a quote character.
