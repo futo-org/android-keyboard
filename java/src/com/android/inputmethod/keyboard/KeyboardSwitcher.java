@@ -332,7 +332,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
      * Updates state machine to figure out when to automatically snap back to the previous mode.
      */
     public void onCodeInput(int code) {
-        mState.onCodeInput(code, isSinglePointer());
+        mState.onCodeInput(code, isSinglePointer(), mInputMethodService.getCurrentAutoCapsState());
     }
 
     public LatinKeyboardView getKeyboardView() {

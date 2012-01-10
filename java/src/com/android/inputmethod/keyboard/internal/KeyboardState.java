@@ -29,9 +29,10 @@ import com.android.inputmethod.keyboard.Keyboard;
  *
  * The input events are {@link #onLoadKeyboard(String, boolean)}, {@link #onSaveKeyboardState()},
  * {@link #onPressShift(boolean)}, {@link #onReleaseShift(boolean)}, {@link #onPressSymbol()},
- * {@link #onReleaseSymbol()}, {@link #onOtherKeyPressed()}, {@link #onCodeInput(int, boolean)},
- * {@link #onCancelInput(boolean)}, {@link #onUpdateShiftState(boolean)}, {@link #onToggleShift()},
- * {@link #onToggleCapsLock()}, and {@link #onToggleAlphabetAndSymbols()}.
+ * {@link #onReleaseSymbol()}, {@link #onOtherKeyPressed()},
+ * {@link #onCodeInput(int, boolean, boolean)}, {@link #onCancelInput(boolean)},
+ * {@link #onUpdateShiftState(boolean)}, {@link #onToggleShift()}, {@link #onToggleCapsLock()},
+ * and {@link #onToggleAlphabetAndSymbols()}.
  *
  * The actions are {@link SwitchActions}'s methods.
  */
@@ -267,6 +268,10 @@ public class KeyboardState {
         if (DEBUG_STATE) {
             Log.d(TAG, "onUpdateShiftState: autoCaps=" + autoCaps + " " + this);
         }
+        onUpdateShiftStateInternal(autoCaps);
+    }
+
+    private void onUpdateShiftStateInternal(boolean autoCaps) {
         if (mIsAlphabetMode) {
             if (!mKeyboardShiftState.isShiftLocked() && !mShiftKeyState.isIgnoring()) {
                 if (mShiftKeyState.isReleasing() && autoCaps) {
@@ -381,10 +386,10 @@ public class KeyboardState {
         return false;
     }
 
-    public void onCodeInput(int code, boolean isSinglePointer) {
+    public void onCodeInput(int code, boolean isSinglePointer, boolean autoCaps) {
         if (DEBUG_STATE) {
             Log.d(TAG, "onCodeInput: code=" + code + " isSinglePointer=" + isSinglePointer
-                    + " " + this);
+                    + " autoCaps=" + autoCaps + " " + this);
         }
         switch (mSwitchState) {
         case SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL:
@@ -445,6 +450,11 @@ public class KeyboardState {
                 setAlphabetKeyboard();
             }
             break;
+        }
+
+        // If the code is a letter, update keyboard shift state.
+        if (Keyboard.isLetterCode(code)) {
+            onUpdateShiftStateInternal(autoCaps);
         }
     }
 
