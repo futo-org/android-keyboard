@@ -75,8 +75,7 @@
             latin:keyWidth="9.091%p"
     >
         <Key
-            latin:keyLabel="ф"
-            latin:keyWidth="8.75%p" />
+            latin:keyLabel="ф" />
         <Key
             latin:keyLabel="@string/keylabel_for_slavic_yery"
             latin:moreKeys="@string/more_keys_for_slavic_yery" />
