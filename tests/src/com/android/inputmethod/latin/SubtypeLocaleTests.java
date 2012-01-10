@@ -16,10 +16,7 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.latin.LocaleUtils;
-
 import android.content.Context;
-import android.content.res.Resources;
 import android.test.AndroidTestCase;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -30,24 +27,22 @@ import java.util.List;
 import java.util.Locale;
 
 public class SubtypeLocaleTests extends AndroidTestCase {
-    private static final String PACKAGE = LatinIME.class.getPackage().getName();
-
-    private Resources mRes;
-    private List<InputMethodSubtype> mKeyboardSubtypes = new ArrayList<InputMethodSubtype>();
+    private List<InputMethodSubtype> mKeyboardSubtypes;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
         final Context context = getContext();
-        mRes = context.getResources();
+        final String packageName = context.getApplicationInfo().packageName;
 
         SubtypeLocale.init(context);
 
         final InputMethodManager imm = (InputMethodManager) context.getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         for (final InputMethodInfo imi : imm.getInputMethodList()) {
-            if (imi.getPackageName().equals(PACKAGE)) {
+            if (imi.getPackageName().equals(packageName)) {
+                mKeyboardSubtypes = new ArrayList<InputMethodSubtype>();
                 final int subtypeCount = imi.getSubtypeCount();
                 for (int i = 0; i < subtypeCount; ++i) {
                     InputMethodSubtype subtype = imi.getSubtypeAt(i);
@@ -58,37 +53,29 @@ public class SubtypeLocaleTests extends AndroidTestCase {
                 break;
             }
         }
-        assertNotNull("Can not find input method " + PACKAGE, mKeyboardSubtypes);
+        assertNotNull("Can not find input method " + packageName, mKeyboardSubtypes);
         assertTrue("Can not find keyboard subtype", mKeyboardSubtypes.size() > 0);
-    }
-
-    private String getStringWithLocale(int resId, Locale locale) {
-        final Locale savedLocale = Locale.getDefault();
-        try {
-            Locale.setDefault(locale);
-            return mRes.getString(resId);
-        } finally {
-            Locale.setDefault(savedLocale);
-        }
     }
 
     public void testSubtypeLocale() {
         final StringBuilder messages = new StringBuilder();
         int failedCount = 0;
         for (final InputMethodSubtype subtype : mKeyboardSubtypes) {
-            final String localeCode = subtype.getLocale();
-            final Locale locale = LocaleUtils.constructLocaleFromString(localeCode);
-            // The locale name which will be displayed on spacebar.  For example 'English (US)' or
-            // 'Francais (Canada)'.  (c=\u008d)
-            final String displayName = SubtypeLocale.getFullDisplayName(locale);
-            // The subtype name in its locale.  For example 'English (US) Keyboard' or
-            // 'Clavier Francais (Canada)'.  (c=\u008d)
-            final String subtypeName = getStringWithLocale(subtype.getNameResId(), locale);
-            if (subtypeName.contains(displayName)) {
+            final Locale locale = LocaleUtils.constructLocaleFromString(subtype.getLocale());
+            final String subtypeLocaleString =
+                    subtype.containsExtraValueKey(LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LOCALE)
+                    ? subtype.getExtraValueOf(LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LOCALE)
+                    : subtype.getLocale();
+            final Locale subtypeLocale = LocaleUtils.constructLocaleFromString(subtypeLocaleString);
+            // The subtype name in its locale.  For example 'English (US)' or 'Deutsch (QWERTY)'.
+            final String subtypeName = SubtypeLocale.getFullDisplayName(subtypeLocale);
+            // The locale language name in its locale.
+            final String languageName = locale.getDisplayLanguage(locale);
+            if (!subtypeName.contains(languageName)) {
                 failedCount++;
                 messages.append(String.format(
-                        "subtype name is '%s' and should contain locale '%s' name '%s'\n",
-                        subtypeName, localeCode, displayName));
+                        "subtype name is '%s' and should contain locale '%s' language name '%s'\n",
+                        subtypeName, subtypeLocale, languageName));
             }
         }
         assertEquals(messages.toString(), 0, failedCount);
