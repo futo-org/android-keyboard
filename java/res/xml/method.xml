@@ -32,7 +32,7 @@
             android:label="@string/subtype_en_US"
             android:imeSubtypeLocale="en_US"
             android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection"
+            android:imeSubtypeExtraValue="TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection,EnabledWhenDefaultIsNotAsciiCapable"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_en_GB"
