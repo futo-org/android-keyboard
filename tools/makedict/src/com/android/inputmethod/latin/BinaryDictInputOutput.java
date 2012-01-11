@@ -312,6 +312,13 @@ public class BinaryDictInputOutput {
     }
 
     /**
+     * Helper method to find out if a character info is a shortcut only.
+     */
+    private static boolean isShortcutOnly(final CharGroupInfo info) {
+        return 0 != (info.mFlags & FLAG_IS_SHORTCUT_ONLY);
+    }
+
+    /**
      * Compute the size, in bytes, that an address will occupy.
      *
      * This can be used either for children addresses (which are always positive) or for
@@ -1027,10 +1034,11 @@ public class BinaryDictInputOutput {
                 }
                 nodeContents.add(
                         new CharGroup(info.mCharacters, shortcutTargets, bigrams, info.mFrequency,
-                        children));
+                                children, isShortcutOnly(info)));
             } else {
                 nodeContents.add(
-                        new CharGroup(info.mCharacters, shortcutTargets, bigrams, info.mFrequency));
+                        new CharGroup(info.mCharacters, shortcutTargets, bigrams, info.mFrequency,
+                                isShortcutOnly(info)));
             }
             groupOffset = info.mEndAddress;
         }
