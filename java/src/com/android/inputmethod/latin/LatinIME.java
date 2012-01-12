@@ -1202,7 +1202,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // swap it, and override the space state with SPACESTATE_SWAP_PUNCTUATION.
         // To swap it, we fool handleSeparator to think the previous space state was a
         // magic space.
-        if (Keyboard.CODE_SPACE == toLeft && mSpaceState == SPACE_STATE_WEAK) {
+        if (Keyboard.CODE_SPACE == toLeft && mSpaceState == SPACE_STATE_WEAK
+                && mSettingsValues.isMagicSpaceSwapper(code))) {
             mSpaceState = SPACE_STATE_MAGIC;
             shouldRegisterSwapPunctuation = true;
         } else {
@@ -2180,7 +2181,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // enter surrogate pairs this code will have been removed.
         if (Keyboard.CODE_SPACE != textBeforeCursor.charAt(1)) {
             // We should not have come here if the text before the cursor is not a space.
-            throw new RuntimeException("Tried to revert a swap of punctiation but we didn't "
+            throw new RuntimeException("Tried to revert a swap of punctuation but we didn't "
                     + "find a space just before the cursor.");
         }
         ic.beginBatchEdit();
