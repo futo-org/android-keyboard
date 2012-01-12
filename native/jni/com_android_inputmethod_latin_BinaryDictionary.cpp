@@ -18,6 +18,7 @@
 #define LOG_TAG "LatinIME: jni: BinaryDictionary"
 
 #include "binary_format.h"
+#include "correction.h"
 #include "com_android_inputmethod_latin_BinaryDictionary.h"
 #include "dictionary.h"
 #include "jni.h"
@@ -188,6 +189,29 @@ static jboolean latinime_BinaryDictionary_isValidWord(JNIEnv *env, jobject objec
     return result;
 }
 
+static jdouble latinime_BinaryDictionary_calcNormalizedScore(JNIEnv *env, jobject object,
+        jcharArray before, jint beforeLength, jcharArray after, jint afterLength, jint score) {
+    jchar *beforeChars = env->GetCharArrayElements(before, 0);
+    jchar *afterChars = env->GetCharArrayElements(after, 0);
+    jdouble result = Correction::RankingAlgorithm::calcNormalizedScore(
+            (unsigned short*)beforeChars, beforeLength, (unsigned short*)afterChars, afterLength,
+                    score);
+    env->ReleaseCharArrayElements(before, beforeChars, JNI_ABORT);
+    env->ReleaseCharArrayElements(after, afterChars, JNI_ABORT);
+    return result;
+}
+
+static jint latinime_BinaryDictionary_editDistance(JNIEnv *env, jobject object,
+        jcharArray before, jint beforeLength, jcharArray after, jint afterLength) {
+    jchar *beforeChars = env->GetCharArrayElements(before, 0);
+    jchar *afterChars = env->GetCharArrayElements(after, 0);
+    jint result = Correction::RankingAlgorithm::editDistance(
+            (unsigned short*)beforeChars, beforeLength, (unsigned short*)afterChars, afterLength);
+    env->ReleaseCharArrayElements(before, beforeChars, JNI_ABORT);
+    env->ReleaseCharArrayElements(after, afterChars, JNI_ABORT);
+    return result;
+}
+
 static void latinime_BinaryDictionary_close(JNIEnv *env, jobject object, jlong dict) {
     Dictionary *dictionary = (Dictionary*)dict;
     if (!dictionary) return;
@@ -222,7 +246,10 @@ static JNINativeMethod sMethods[] = {
     {"closeNative", "(J)V", (void*)latinime_BinaryDictionary_close},
     {"getSuggestionsNative", "(JJ[I[I[III[C[I)I", (void*)latinime_BinaryDictionary_getSuggestions},
     {"isValidWordNative", "(J[CI)Z", (void*)latinime_BinaryDictionary_isValidWord},
-    {"getBigramsNative", "(J[CI[II[C[IIII)I", (void*)latinime_BinaryDictionary_getBigrams}
+    {"getBigramsNative", "(J[CI[II[C[IIII)I", (void*)latinime_BinaryDictionary_getBigrams},
+    {"calcNormalizedScoreNative", "([CI[CII)D",
+            (void*)latinime_BinaryDictionary_calcNormalizedScore},
+    {"editDistanceNative", "([CI[CI)I", (void*)latinime_BinaryDictionary_editDistance}
 };
 
 int register_BinaryDictionary(JNIEnv *env) {

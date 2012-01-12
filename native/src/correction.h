@@ -95,6 +95,23 @@ class Correction {
         return mCorrectionStates[index].mParentIndex;
     }
 
+    class RankingAlgorithm {
+     public:
+        static int calculateFinalFreq(const int inputIndex, const int depth,
+                const int freq, int *editDistanceTable, const Correction* correction);
+        static int calcFreqForSplitTwoWords(const int firstFreq, const int secondFreq,
+                const Correction* correction, const unsigned short *word);
+        static double calcNormalizedScore(const unsigned short* before, const int beforeLength,
+                const unsigned short* after, const int afterLength, const int score);
+        static int editDistance(const unsigned short* before,
+                const int beforeLength, const unsigned short* after, const int afterLength);
+     private:
+        static const int CODE_SPACE = ' ';
+        static const int MAX_INITIAL_SCORE = 255;
+        static const int TYPED_LETTER_MULTIPLIER = 2;
+        static const int FULL_WORD_MULTIPLIER = 2;
+    };
+
  private:
     inline void incrementInputIndex();
     inline void incrementOutputIndex();
@@ -153,13 +170,6 @@ class Correction {
     bool mTransposing;
     bool mSkipping;
 
-    class RankingAlgorithm {
-     public:
-        static int calculateFinalFreq(const int inputIndex, const int depth,
-                const int freq, int *editDistanceTable, const Correction* correction);
-        static int calcFreqForSplitTwoWords(const int firstFreq, const int secondFreq,
-                const Correction* correction, const unsigned short *word);
-    };
 };
 } // namespace latinime
 #endif // LATINIME_CORRECTION_H

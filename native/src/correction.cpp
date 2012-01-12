@@ -16,6 +16,7 @@
 
 #include <assert.h>
 #include <ctype.h>
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -933,14 +934,14 @@ int Correction::RankingAlgorithm::calcFreqForSplitTwoWords(
     return totalFreq;
 }
 
-#if 0 /* no longer used. keep just for reference */
-inline static int editDistance(
-        int* editDistanceTable, const unsigned short* input,
-        const int inputLength, const unsigned short* output, const int outputLength) {
+/* Damerau-Levenshtein distance */
+inline static int editDistanceInternal(
+        int* editDistanceTable, const unsigned short* before,
+        const int beforeLength, const unsigned short* after, const int afterLength) {
     // dp[li][lo] dp[a][b] = dp[ a * lo + b]
     int* dp = editDistanceTable;
-    const int li = inputLength + 1;
-    const int lo = outputLength + 1;
+    const int li = beforeLength + 1;
+    const int lo = afterLength + 1;
     for (int i = 0; i < li; ++i) {
         dp[lo * i] = i;
     }
@@ -950,13 +951,13 @@ inline static int editDistance(
 
     for (int i = 0; i < li - 1; ++i) {
         for (int j = 0; j < lo - 1; ++j) {
-            const uint32_t ci = toBaseLowerCase(input[i]);
-            const uint32_t co = toBaseLowerCase(output[j]);
+            const uint32_t ci = toBaseLowerCase(before[i]);
+            const uint32_t co = toBaseLowerCase(after[j]);
             const uint16_t cost = (ci == co) ? 0 : 1;
             dp[(i + 1) * lo + (j + 1)] = min(dp[i * lo + (j + 1)] + 1,
                     min(dp[(i + 1) * lo + j] + 1, dp[i * lo + j] + cost));
-            if (i > 0 && j > 0 && ci == toBaseLowerCase(output[j - 1])
-                    && co == toBaseLowerCase(input[i - 1])) {
+            if (i > 0 && j > 0 && ci == toBaseLowerCase(after[j - 1])
+                    && co == toBaseLowerCase(before[i - 1])) {
                 dp[(i + 1) * lo + (j + 1)] = min(
                         dp[(i + 1) * lo + (j + 1)], dp[(i - 1) * lo + (j - 1)] + cost);
             }
@@ -964,7 +965,7 @@ inline static int editDistance(
     }
 
     if (DEBUG_EDIT_DISTANCE) {
-        LOGI("IN = %d, OUT = %d", inputLength, outputLength);
+        LOGI("IN = %d, OUT = %d", beforeLength, afterLength);
         for (int i = 0; i < li; ++i) {
             for (int j = 0; j < lo; ++j) {
                 LOGI("EDIT[%d][%d], %d", i, j, dp[i * lo + j]);
@@ -973,6 +974,63 @@ inline static int editDistance(
     }
     return dp[li * lo - 1];
 }
-#endif
+
+int Correction::RankingAlgorithm::editDistance(const unsigned short* before,
+        const int beforeLength, const unsigned short* after, const int afterLength) {
+    int table[(beforeLength + 1) * (afterLength + 1)];
+    return editDistanceInternal(table, before, beforeLength, after, afterLength);
+}
+
+
+// In dictionary.cpp, getSuggestion() method,
+// suggestion scores are computed using the below formula.
+// original score
+//  := pow(mTypedLetterMultiplier (this is defined 2),
+//         (the number of matched characters between typed word and suggested word))
+//     * (individual word's score which defined in the unigram dictionary,
+//         and this score is defined in range [0, 255].)
+// Then, the following processing is applied.
+//     - If the dictionary word is matched up to the point of the user entry
+//       (full match up to min(before.length(), after.length())
+//       => Then multiply by FULL_MATCHED_WORDS_PROMOTION_RATE (this is defined 1.2)
+//     - If the word is a true full match except for differences in accents or
+//       capitalization, then treat it as if the score was 255.
+//     - If before.length() == after.length()
+//       => multiply by mFullWordMultiplier (this is defined 2))
+// So, maximum original score is pow(2, min(before.length(), after.length())) * 255 * 2 * 1.2
+// For historical reasons we ignore the 1.2 modifier (because the measure for a good
+// autocorrection threshold was done at a time when it didn't exist). This doesn't change
+// the result.
+// So, we can normalize original score by dividing pow(2, min(b.l(),a.l())) * 255 * 2.
+
+/* static */
+double Correction::RankingAlgorithm::calcNormalizedScore(const unsigned short* before,
+        const int beforeLength, const unsigned short* after, const int afterLength,
+        const int score) {
+    if (0 == beforeLength || 0 == afterLength) {
+        return 0;
+    }
+    const int distance = editDistance(before, beforeLength, after, afterLength);
+    int spaceCount = 0;
+    for (int i = 0; i < afterLength; ++i) {
+        if (after[i] == CODE_SPACE) {
+            ++spaceCount;
+        }
+    }
+
+    if (spaceCount == afterLength) {
+        return 0;
+    }
+
+    const double maxScore = score >= S_INT_MAX ? S_INT_MAX : MAX_INITIAL_SCORE
+            * pow((double)TYPED_LETTER_MULTIPLIER,
+                    (double)min(beforeLength, afterLength - spaceCount)) * FULL_WORD_MULTIPLIER;
+
+    // add a weight based on edit distance.
+    // distance <= max(afterLength, beforeLength) == afterLength,
+    // so, 0 <= distance / afterLength <= 1
+    const double weight = 1.0 - (double) distance / afterLength;
+    return (score / maxScore) * weight;
+}
 
 } // namespace latinime
