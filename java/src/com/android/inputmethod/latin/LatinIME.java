@@ -850,6 +850,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 || newSelEnd != candidatesEnd) && mLastSelectionStart != newSelStart;
         final boolean candidatesCleared = candidatesStart == -1 && candidatesEnd == -1;
         if (!mExpectingUpdateSelection) {
+            // TAKE CARE: there is a race condition when we enter this test even when the user
+            // did not explicitly move the cursor. This happens when typing fast, where two keys
+            // turn this flag on in succession and both onUpdateSelection() calls arrive after
+            // the second one - the first call successfully avoids this test, but the second one
+            // enters. For the moment we rely on candidatesCleared to further reduce the impact.
             if (SPACE_STATE_WEAK == mSpaceState) {
                 // Test for no WEAK_SPACE action because there is a race condition that may end up
                 // in coming here on a normal key press. We set this to NONE because after
@@ -869,6 +874,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 mComposingStateManager.onFinishComposingText();
                 mVoiceProxy.setVoiceInputHighlighted(false);
             } else if (!mWordComposer.isComposingWord()) {
+                mWordComposer.reset();
                 updateSuggestions();
             }
         }
