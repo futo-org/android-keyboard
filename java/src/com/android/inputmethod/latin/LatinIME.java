@@ -1203,7 +1203,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // To swap it, we fool handleSeparator to think the previous space state was a
         // magic space.
         if (Keyboard.CODE_SPACE == toLeft && mSpaceState == SPACE_STATE_WEAK
-                && mSettingsValues.isMagicSpaceSwapper(code))) {
+                && mSettingsValues.isMagicSpaceSwapper(code)) {
             mSpaceState = SPACE_STATE_MAGIC;
             shouldRegisterSwapPunctuation = true;
         } else {
