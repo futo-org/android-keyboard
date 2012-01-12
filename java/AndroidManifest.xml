@@ -7,13 +7,13 @@
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
-    <application android:label="@string/english_ime_name"
+    <application android:label="@string/aosp_android_keyboard_ime_name"
             android:icon="@drawable/ic_ime_settings"
             android:backupAgent="BackupAgent"
             android:killAfterRestore="false">
 
         <service android:name="LatinIME"
-                android:label="@string/english_ime_name"
+                android:label="@string/aosp_android_keyboard_ime_name"
                 android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
