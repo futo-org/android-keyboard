@@ -91,6 +91,14 @@ public class SettingsValues {
         mDelayUpdateOldSuggestions = res.getInteger(R.integer.config_delay_update_old_suggestions);
         mMagicSpaceStrippers = res.getString(R.string.magic_space_stripping_symbols);
         mMagicSpaceSwappers = res.getString(R.string.magic_space_swapping_symbols);
+        if (LatinImeLogger.sDBG) {
+            for (int i = 0; i < mMagicSpaceStrippers.length(); ++i) {
+                if (isMagicSpaceSwapper(mMagicSpaceStrippers.codePointAt(i))) {
+                    throw new RuntimeException("Char code " + mMagicSpaceStrippers.codePointAt(i)
+                            + " is both a magic space swapper and stripper.");
+                }
+            }
+        }
         mSuggestPuncs = res.getString(R.string.suggested_punctuations);
         // TODO: it would be nice not to recreate this each time we change the configuration
         mSuggestPuncList = createSuggestPuncList(mSuggestPuncs);
