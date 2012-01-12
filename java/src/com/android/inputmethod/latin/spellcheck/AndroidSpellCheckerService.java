@@ -270,7 +270,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             // make the threshold.
             final String wordString = new String(word, wordOffset, wordLength);
             final double normalizedScore =
-                    Utils.calcNormalizedScore(mOriginalText, wordString, score);
+                    BinaryDictionary.calcNormalizedScore(mOriginalText, wordString, score);
             if (normalizedScore < mSuggestionThreshold) {
                 if (DBG) Log.i(TAG, wordString + " does not make the score threshold");
                 return true;
@@ -303,8 +303,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                     hasRecommendedSuggestions = false;
                 } else {
                     gatheredSuggestions = EMPTY_STRING_ARRAY;
-                    final double normalizedScore =
-                            Utils.calcNormalizedScore(mOriginalText, mBestSuggestion, mBestScore);
+                    final double normalizedScore = BinaryDictionary.calcNormalizedScore(
+                            mOriginalText, mBestSuggestion, mBestScore);
                     hasRecommendedSuggestions = (normalizedScore > mRecommendedThreshold);
                 }
             } else {
@@ -338,7 +338,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 final int bestScore = mScores[mLength - 1];
                 final CharSequence bestSuggestion = mSuggestions.get(0);
                 final double normalizedScore =
-                        Utils.calcNormalizedScore(mOriginalText, bestSuggestion, bestScore);
+                        BinaryDictionary.calcNormalizedScore(
+                                mOriginalText, bestSuggestion.toString(), bestScore);
                 hasRecommendedSuggestions = (normalizedScore > mRecommendedThreshold);
                 if (DBG) {
                     Log.i(TAG, "Best suggestion : " + bestSuggestion + ", score " + bestScore);

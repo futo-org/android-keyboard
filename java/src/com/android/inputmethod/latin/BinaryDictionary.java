@@ -118,6 +118,10 @@ public class BinaryDictionary extends Dictionary {
     private native int getBigramsNative(long dict, char[] prevWord, int prevWordLength,
             int[] inputCodes, int inputCodesLength, char[] outputChars, int[] scores,
             int maxWordLength, int maxBigrams, int maxAlternatives);
+    private static native double calcNormalizedScoreNative(
+            char[] before, int beforeLength, char[] after, int afterLength, int score);
+    private static native int editDistanceNative(
+            char[] before, int beforeLength, char[] after, int afterLength);
 
     private final void loadDictionary(String path, long startOffset, long length) {
         mNativeDict = openNative(path, startOffset, length,
@@ -209,6 +213,16 @@ public class BinaryDictionary extends Dictionary {
                 mNativeDict, proximityInfo.getNativeProximityInfo(),
                 codes.getXCoordinates(), codes.getYCoordinates(), mInputCodes, codesSize,
                 mFlags, outputChars, scores);
+    }
+
+    public static double calcNormalizedScore(String before, String after, int score) {
+        return calcNormalizedScoreNative(before.toCharArray(), before.length(),
+                after.toCharArray(), after.length(), score);
+    }
+
+    public static int editDistance(String before, String after) {
+        return editDistanceNative(
+                before.toCharArray(), before.length(), after.toCharArray(), after.length());
     }
 
     @Override
