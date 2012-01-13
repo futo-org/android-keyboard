@@ -71,11 +71,11 @@ class WordsPriorityQueue {
             sw->setParams(score, word, wordLength);
         }
         if (sw == 0) {
-            LOGE("SuggestedWord is accidentally null.");
+            AKLOGE("SuggestedWord is accidentally null.");
             return;
         }
         if (DEBUG_WORDS_PRIORITY_QUEUE) {
-            LOGI("Push word. %d, %d", score, wordLength);
+            AKLOGI("Push word. %d, %d", score, wordLength);
             DUMP_WORD(word, wordLength);
         }
         mSuggestions.push(sw);
@@ -94,7 +94,7 @@ class WordsPriorityQueue {
         while (!mSuggestions.empty() && index >= 0) {
             SuggestedWord* sw = mSuggestions.top();
             if (DEBUG_WORDS_PRIORITY_QUEUE) {
-                LOGI("dump word. %d", sw->mScore);
+                AKLOGI("dump word. %d", sw->mScore);
                 DUMP_WORD(sw->mWord, sw->mWordLength);
             }
             const unsigned int wordLength = sw->mWordLength;
@@ -120,7 +120,7 @@ class WordsPriorityQueue {
         while (!mSuggestions.empty()) {
             SuggestedWord* sw = mSuggestions.top();
             if (DEBUG_WORDS_PRIORITY_QUEUE) {
-                LOGI("Clear word. %d", sw->mScore);
+                AKLOGI("Clear word. %d", sw->mScore);
                 DUMP_WORD(sw->mWord, sw->mWordLength);
             }
             sw->mUsed = false;

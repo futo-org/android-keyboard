@@ -20,15 +20,18 @@
 
 #if defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
 #include <cutils/log.h>
+#define AKLOGE ALOGE
+#define AKLOGI ALOGI
 #else
-#define LOGE(fmt, ...)
-#define LOGI(fmt, ...)
+#define AKLOGE(fmt, ...)
+#define AKLOGI(fmt, ...)
 #endif
 
 #ifdef FLAG_DO_PROFILE
 // Profiler
 #include <cutils/log.h>
 #include <time.h>
+
 #define PROF_BUF_SIZE 100
 static double profile_buf[PROF_BUF_SIZE];
 static double profile_old[PROF_BUF_SIZE];
@@ -42,8 +45,8 @@ static unsigned int profile_counter[PROF_BUF_SIZE];
 #define PROF_CLOSE               do { PROF_END(PROF_BUF_SIZE - 1); PROF_OUTALL; } while(0)
 #define PROF_END(prof_buf_id)    profile_buf[prof_buf_id] += ((clock()) - profile_old[prof_buf_id])
 #define PROF_CLOCKOUT(prof_buf_id) \
-        LOGI("%s : clock is %f", __FUNCTION__, (clock() - profile_old[prof_buf_id]))
-#define PROF_OUTALL              do { LOGI("--- %s ---", __FUNCTION__); prof_out(); } while(0)
+        AKLOGI("%s : clock is %f", __FUNCTION__, (clock() - profile_old[prof_buf_id]))
+#define PROF_OUTALL              do { AKLOGI("--- %s ---", __FUNCTION__); prof_out(); } while(0)
 
 static void prof_reset(void) {
     for (int i = 0; i < PROF_BUF_SIZE; ++i) {
@@ -55,9 +58,9 @@ static void prof_reset(void) {
 
 static void prof_out(void) {
     if (profile_counter[PROF_BUF_SIZE - 1] != 1) {
-        LOGI("Error: You must call PROF_OPEN before PROF_CLOSE.");
+        AKLOGI("Error: You must call PROF_OPEN before PROF_CLOSE.");
     }
-    LOGI("Total time is %6.3f ms.",
+    AKLOGI("Total time is %6.3f ms.",
             profile_buf[PROF_BUF_SIZE - 1] * 1000 / (double)CLOCKS_PER_SEC);
     double all = 0;
     for (int i = 0; i < PROF_BUF_SIZE - 1; ++i) {
@@ -66,7 +69,7 @@ static void prof_out(void) {
     if (all == 0) all = 1;
     for (int i = 0; i < PROF_BUF_SIZE - 1; ++i) {
         if (profile_buf[i] != 0) {
-            LOGI("(%d): Used %4.2f%%, %8.4f ms. Called %d times.",
+            AKLOGI("(%d): Used %4.2f%%, %8.4f ms. Called %d times.",
                     i, (profile_buf[i] * 100 / all),
                     profile_buf[i] * 1000 / (double)CLOCKS_PER_SEC, profile_counter[i]);
         }
@@ -112,7 +115,7 @@ static void dumpWord(const unsigned short* word, const int length) {
         charBuf[i] = word[i];
     }
     charBuf[length] = 0;
-    LOGI("[ %s ]", charBuf);
+    AKLOGI("[ %s ]", charBuf);
 }
 
 #else // FLAG_DBG

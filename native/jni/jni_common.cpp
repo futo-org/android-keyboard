@@ -36,18 +36,18 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved) {
     jint result = -1;
 
     if (vm->GetEnv((void**) &env, JNI_VERSION_1_4) != JNI_OK) {
-        LOGE("ERROR: GetEnv failed");
+        AKLOGE("ERROR: GetEnv failed");
         goto bail;
     }
     assert(env != 0);
 
     if (!register_BinaryDictionary(env)) {
-        LOGE("ERROR: BinaryDictionary native registration failed");
+        AKLOGE("ERROR: BinaryDictionary native registration failed");
         goto bail;
     }
 
     if (!register_ProximityInfo(env)) {
-        LOGE("ERROR: ProximityInfo native registration failed");
+        AKLOGE("ERROR: ProximityInfo native registration failed");
         goto bail;
     }
 
@@ -64,11 +64,11 @@ int registerNativeMethods(JNIEnv* env, const char* className, JNINativeMethod* m
         int numMethods) {
     jclass clazz = env->FindClass(className);
     if (clazz == 0) {
-        LOGE("Native registration unable to find class '%s'", className);
+        AKLOGE("Native registration unable to find class '%s'", className);
         return JNI_FALSE;
     }
     if (env->RegisterNatives(clazz, methods, numMethods) < 0) {
-        LOGE("RegisterNatives failed for '%s'", className);
+        AKLOGE("RegisterNatives failed for '%s'", className);
         env->DeleteLocalRef(clazz);
         return JNI_FALSE;
     }

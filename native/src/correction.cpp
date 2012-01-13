@@ -42,7 +42,7 @@ inline static void initEditDistance(int *editDistanceTable) {
 inline static void dumpEditDistance10ForDebug(int *editDistanceTable, const int inputLength,
         const int outputLength) {
     if (DEBUG_DICT) {
-        LOGI("EditDistanceTable");
+        AKLOGI("EditDistanceTable");
         for (int i = 0; i <= 10; ++i) {
             int c[11];
             for (int j = 0; j <= 10; ++j) {
@@ -52,7 +52,7 @@ inline static void dumpEditDistance10ForDebug(int *editDistanceTable, const int 
                     c[j] = -1;
                 }
             }
-            LOGI("[ %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d ]",
+            AKLOGI("[ %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d ]",
                     c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8], c[9], c[10]);
         }
     }
@@ -84,7 +84,7 @@ inline static void calcEditDistanceOneStep(int *editDistanceTable, const unsigne
 inline static int getCurrentEditDistance(
         int *editDistanceTable, const int inputLength, const int outputLength) {
     if (DEBUG_DICT) {
-        LOGI("getCurrentEditDistance %d, %d", inputLength, outputLength);
+        AKLOGI("getCurrentEditDistance %d, %d", inputLength, outputLength);
     }
     return editDistanceTable[(inputLength + 1) * (outputLength + 1) - 1];
 }
@@ -378,7 +378,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
             --mTransposedCount;
             if (DEBUG_CORRECTION) {
                 DUMP_WORD(mWord, mOutputIndex);
-                LOGI("UNRELATED(0): %d, %d, %d, %d, %c", mProximityCount, mSkippedCount,
+                AKLOGI("UNRELATED(0): %d, %d, %d, %d, %c", mProximityCount, mSkippedCount,
                         mTransposedCount, mExcessiveCount, c);
             }
             return UNRELATED;
@@ -404,7 +404,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
                 && isEquivalentChar(mProximityInfo->getMatchedProximityId(
                         mInputIndex, mWord[mOutputIndex - 1], false))) {
             if (DEBUG_CORRECTION) {
-                LOGI("CONVERSION p->e %c", mWord[mOutputIndex - 1]);
+                AKLOGI("CONVERSION p->e %c", mWord[mOutputIndex - 1]);
             }
             // Conversion p->e
             // Example:
@@ -481,7 +481,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         } else {
             if (DEBUG_CORRECTION) {
                 DUMP_WORD(mWord, mOutputIndex);
-                LOGI("UNRELATED(1): %d, %d, %d, %d, %c", mProximityCount, mSkippedCount,
+                AKLOGI("UNRELATED(1): %d, %d, %d, %d, %c", mProximityCount, mSkippedCount,
                         mTransposedCount, mExcessiveCount, c);
             }
             return UNRELATED;
@@ -534,7 +534,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         mTerminalOutputIndex = mOutputIndex - 1;
         if (DEBUG_CORRECTION) {
             DUMP_WORD(mWord, mOutputIndex);
-            LOGI("ONTERMINAL(1): %d, %d, %d, %d, %c", mProximityCount, mSkippedCount,
+            AKLOGI("ONTERMINAL(1): %d, %d, %d, %d, %c", mProximityCount, mSkippedCount,
                     mTransposedCount, mExcessiveCount, c);
         }
         return ON_TERMINAL;
@@ -703,7 +703,7 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
                 / (10 * inputLength
                         - WORDS_WITH_MISSING_CHARACTER_DEMOTION_START_POS_10X + 10);
         if (DEBUG_DICT_FULL) {
-            LOGI("Demotion rate for missing character is %d.", demotionRate);
+            AKLOGI("Demotion rate for missing character is %d.", demotionRate);
         }
         multiplyRate(demotionRate, &finalFreq);
     }
@@ -717,7 +717,7 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
         multiplyRate(WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE, &finalFreq);
         if (!lastCharExceeded && !proximityInfo->existsAdjacentProximityChars(excessivePos)) {
             if (DEBUG_CORRECTION_FREQ) {
-                LOGI("Double excessive demotion");
+                AKLOGI("Double excessive demotion");
             }
             // If an excessive character is not adjacent to the left char or the right char,
             // we will demote this word.
@@ -767,7 +767,7 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
         for (int i = 0; i < adjustedProximityMatchedCount; ++i) {
             // A word with proximity corrections
             if (DEBUG_DICT_FULL) {
-                LOGI("Found a proximity correction.");
+                AKLOGI("Found a proximity correction.");
             }
             multiplyIntCapped(typedLetterMultiplier, &finalFreq);
             multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
@@ -828,12 +828,12 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
     }
 
     if (DEBUG_DICT_FULL) {
-        LOGI("calc: %d, %d", outputIndex, sameLength);
+        AKLOGI("calc: %d, %d", outputIndex, sameLength);
     }
 
     if (DEBUG_CORRECTION_FREQ) {
         DUMP_WORD(correction->mWord, outputIndex + 1);
-        LOGI("FinalFreq: [P%d, S%d, T%d, E%d] %d, %d, %d, %d, %d", proximityMatchedCount,
+        AKLOGI("FinalFreq: [P%d, S%d, T%d, E%d] %d, %d, %d, %d, %d", proximityMatchedCount,
                 skippedCount, transposedCount, excessiveCount, lastCharExceeded, sameLength,
                 quoteDiffCount, ed, finalFreq);
     }
@@ -874,7 +874,8 @@ int Correction::RankingAlgorithm::calcFreqForSplitTwoWords(
             firstCapitalizedWordDemotion ^ secondCapitalizedWordDemotion;
 
     if (DEBUG_DICT_FULL) {
-        LOGI("Two words: %c, %c, %d", word[0], word[firstWordLength + 1], capitalizedWordDemotion);
+        AKLOGI("Two words: %c, %c, %d",
+                word[0], word[firstWordLength + 1], capitalizedWordDemotion);
     }
 
     if (firstWordLength == 0 || secondWordLength == 0) {
@@ -919,7 +920,7 @@ int Correction::RankingAlgorithm::calcFreqForSplitTwoWords(
     if (isSpaceProximity) {
         // A word pair with one space proximity correction
         if (DEBUG_DICT) {
-            LOGI("Found a word pair with space proximity correction.");
+            AKLOGI("Found a word pair with space proximity correction.");
         }
         multiplyIntCapped(typedLetterMultiplier, &totalFreq);
         multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &totalFreq);
@@ -965,10 +966,10 @@ inline static int editDistanceInternal(
     }
 
     if (DEBUG_EDIT_DISTANCE) {
-        LOGI("IN = %d, OUT = %d", beforeLength, afterLength);
+        AKLOGI("IN = %d, OUT = %d", beforeLength, afterLength);
         for (int i = 0; i < li; ++i) {
             for (int j = 0; j < lo; ++j) {
-                LOGI("EDIT[%d][%d], %d", i, j, dp[i * lo + j]);
+                AKLOGI("EDIT[%d][%d], %d", i, j, dp[i * lo + j]);
             }
         }
     }

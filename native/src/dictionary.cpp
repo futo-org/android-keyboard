@@ -33,9 +33,9 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
     IS_LATEST_DICT_VERSION((((unsigned char*) dict)[0] & 0xFF) >= DICTIONARY_VERSION_MIN) {
     if (DEBUG_DICT) {
         if (MAX_WORD_LENGTH_INTERNAL < maxWordLength) {
-            LOGI("Max word length (%d) is greater than %d",
+            AKLOGI("Max word length (%d) is greater than %d",
                     maxWordLength, MAX_WORD_LENGTH_INTERNAL);
-            LOGI("IN NATIVE SUGGEST Version: %d", (mDict[0] & 0xFF));
+            AKLOGI("IN NATIVE SUGGEST Version: %d", (mDict[0] & 0xFF));
         }
     }
     mCorrection = new Correction(typedLetterMultiplier, fullWordMultiplier);

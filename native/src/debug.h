@@ -42,7 +42,7 @@ static inline unsigned char* convertToUnibyteStringAndReplaceLastChar(unsigned s
 static inline void LOGI_S16(unsigned short* string, const unsigned int length) {
     unsigned char tmp_buffer[length];
     convertToUnibyteString(string, tmp_buffer, length);
-    LOGI(">> %s", tmp_buffer);
+    AKLOGI(">> %s", tmp_buffer);
     // The log facility is throwing out log that comes too fast. The following
     // is a dirty way of slowing down processing so that we can see all log.
     // TODO : refactor this in a blocking log or something.
@@ -53,7 +53,7 @@ static inline void LOGI_S16_PLUS(unsigned short* string, const unsigned int leng
         unsigned char c) {
     unsigned char tmp_buffer[length+1];
     convertToUnibyteStringAndReplaceLastChar(string, tmp_buffer, length, c);
-    LOGI(">> %s", tmp_buffer);
+    AKLOGI(">> %s", tmp_buffer);
     // Likewise
     // usleep(10);
 }
@@ -64,7 +64,7 @@ static inline void printDebug(const char* tag, int* codes, int codesSize, int MA
     buf[codesSize] = 0;
     while (--codesSize >= 0)
         buf[codesSize] = (unsigned char)codes[codesSize * MAX_PROXIMITY_CHARS];
-    LOGI("%s, WORD = %s", tag, buf);
+    AKLOGI("%s, WORD = %s", tag, buf);
 
     free(buf);
 }
