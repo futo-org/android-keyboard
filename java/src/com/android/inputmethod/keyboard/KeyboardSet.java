@@ -17,6 +17,7 @@
 package com.android.inputmethod.keyboard;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
@@ -28,8 +29,6 @@ import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.SettingsValues;
-import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.XmlParseUtils;
 
@@ -61,6 +60,7 @@ public class KeyboardSet {
         int mMode;
         int mInputType;
         int mImeOptions;
+        boolean mTouchPositionCorrectionEnabled;
         boolean mSettingsKeyEnabled;
         boolean mVoiceKeyEnabled;
         boolean mVoiceKeyOnMain;
@@ -115,9 +115,8 @@ public class KeyboardSet {
         return Builder.getKeyboardId(elementState, false, mParams);
     }
 
-    private static Keyboard getKeyboard(Context context, int xmlId, KeyboardId id) {
+    private Keyboard getKeyboard(Context context, int xmlId, KeyboardId id) {
         final Resources res = context.getResources();
-        final SubtypeSwitcher subtypeSwitcher = SubtypeSwitcher.getInstance();
         final SoftReference<Keyboard> ref = sKeyboardCache.get(id);
         Keyboard keyboard = (ref == null) ? null : ref.get();
         if (keyboard == null) {
@@ -126,9 +125,7 @@ public class KeyboardSet {
                 final Keyboard.Builder<Keyboard.Params> builder =
                         new Keyboard.Builder<Keyboard.Params>(context, new Keyboard.Params());
                 builder.load(xmlId, id);
-                builder.setTouchPositionCorrectionEnabled(
-                        subtypeSwitcher.currentSubtypeContainsExtraValueKey(
-                                LatinIME.SUBTYPE_EXTRA_VALUE_SUPPORT_TOUCH_POSITION_CORRECTION));
+                builder.setTouchPositionCorrectionEnabled(mParams.mTouchPositionCorrectionEnabled);
                 keyboard = builder.build();
             } finally {
                 LocaleUtils.setSystemLocale(res, savedLocale);
@@ -151,15 +148,17 @@ public class KeyboardSet {
 
     public static class Builder {
         private final Context mContext;
+        private final String mPackageName;
         private final Resources mResources;
+        private final EditorInfo mEditorInfo;
 
         private final Params mParams = new Params();
 
-        public Builder(Context context, EditorInfo editorInfo, SettingsValues settingsValues) {
+        public Builder(Context context, EditorInfo editorInfo) {
             mContext = context;
+            mPackageName = context.getPackageName();
             mResources = context.getResources();
-            final SubtypeSwitcher subtypeSwitcher = SubtypeSwitcher.getInstance();
-            final String packageName = context.getPackageName();
+            mEditorInfo = editorInfo;
             final Params params = mParams;
 
             params.mMode = Utils.getKeyboardMode(editorInfo);
@@ -167,27 +166,45 @@ public class KeyboardSet {
                 params.mInputType = editorInfo.inputType;
                 params.mImeOptions = editorInfo.imeOptions;
             }
-            params.mSettingsKeyEnabled = settingsValues.isSettingsKeyEnabled();
+            params.mNoSettingsKey = Utils.inPrivateImeOptions(
+                    mPackageName, LatinIME.IME_OPTION_NO_SETTINGS_KEY, mEditorInfo);
+        }
+
+        public Builder setScreenGeometry(int orientation, int widthPixels) {
+            mParams.mOrientation = orientation;
+            mParams.mWidth = widthPixels;
+            return this;
+        }
+
+        // TODO: Use InputMethodSubtype object as argument.
+        public Builder setSubtype(Locale inputLocale, boolean asciiCapable,
+                boolean touchPositionCorrectionEnabled) {
+            final boolean forceAscii = Utils.inPrivateImeOptions(
+                    mPackageName, LatinIME.IME_OPTION_FORCE_ASCII, mEditorInfo);
+            mParams.mLocale = (forceAscii && !asciiCapable) ? Locale.US : inputLocale;
+            mParams.mTouchPositionCorrectionEnabled = touchPositionCorrectionEnabled;
+            return this;
+        }
+
+        public Builder setOptions(boolean settingsKeyEnabled, boolean voiceKeyEnabled,
+                boolean voiceKeyOnMain) {
+            mParams.mSettingsKeyEnabled = settingsKeyEnabled;
             @SuppressWarnings("deprecation")
             final boolean noMicrophone = Utils.inPrivateImeOptions(
-                    packageName, LatinIME.IME_OPTION_NO_MICROPHONE, editorInfo)
+                    mPackageName, LatinIME.IME_OPTION_NO_MICROPHONE, mEditorInfo)
                     || Utils.inPrivateImeOptions(
-                            null, LatinIME.IME_OPTION_NO_MICROPHONE_COMPAT, editorInfo);
-            params.mVoiceKeyEnabled = settingsValues.isVoiceKeyEnabled(editorInfo) && !noMicrophone;
-            params.mVoiceKeyOnMain = settingsValues.isVoiceKeyOnMain();
-            params.mNoSettingsKey = Utils.inPrivateImeOptions(
-                    packageName, LatinIME.IME_OPTION_NO_SETTINGS_KEY, editorInfo);
-            final boolean forceAscii = Utils.inPrivateImeOptions(
-                    packageName, LatinIME.IME_OPTION_FORCE_ASCII, editorInfo);
-            final boolean asciiCapable = subtypeSwitcher.currentSubtypeContainsExtraValueKey(
-                    LatinIME.SUBTYPE_EXTRA_VALUE_ASCII_CAPABLE);
-            params.mLocale = (forceAscii && !asciiCapable)
-                    ? Locale.US : subtypeSwitcher.getInputLocale();
-            params.mOrientation = mResources.getConfiguration().orientation;
-            params.mWidth = mResources.getDisplayMetrics().widthPixels;
+                            null, LatinIME.IME_OPTION_NO_MICROPHONE_COMPAT, mEditorInfo);
+            mParams.mVoiceKeyEnabled = voiceKeyEnabled && !noMicrophone;
+            mParams.mVoiceKeyOnMain = voiceKeyOnMain;
+            return this;
         }
 
         public KeyboardSet build() {
+            if (mParams.mOrientation == Configuration.ORIENTATION_UNDEFINED)
+                throw new RuntimeException("Screen geometry is not specified");
+            if (mParams.mLocale == null)
+                throw new RuntimeException("KeyboardSet subtype is not specified");
+
             final Locale savedLocale = LocaleUtils.setSystemLocale(mResources, mParams.mLocale);
             try {
                 parseKeyboardSet(mResources, R.xml.keyboard_set);
