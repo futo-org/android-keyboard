@@ -46,8 +46,8 @@ public class SubtypeSwitcher {
     private static boolean DBG = LatinImeLogger.sDBG;
     private static final String TAG = SubtypeSwitcher.class.getSimpleName();
 
+    public static final String KEYBOARD_MODE = "keyboard";
     private static final char LOCALE_SEPARATER = '_';
-    private static final String KEYBOARD_MODE = "keyboard";
     private static final String VOICE_MODE = "voice";
     private static final String SUBTYPE_EXTRAVALUE_REQUIRE_NETWORK_CONNECTIVITY =
             "requireNetworkConnectivity";
