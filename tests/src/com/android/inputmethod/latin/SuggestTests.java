@@ -33,7 +33,7 @@ public class SuggestTests extends SuggestTestsBase {
         final Locale locale = Locale.US;
         mHelper = new SuggestHelper(
                 getContext(), mTestPackageFile, dict.getStartOffset(), dict.getLength(),
-                createKeyboardId(locale, Configuration.ORIENTATION_PORTRAIT), locale);
+                createKeyboardSet(locale, Configuration.ORIENTATION_PORTRAIT), locale);
         mHelper.setCorrectionMode(Suggest.CORRECTION_FULL_BIGRAM);
     }
 
