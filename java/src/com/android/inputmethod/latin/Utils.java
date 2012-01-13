@@ -154,10 +154,21 @@ public class Utils {
             }
         }
 
-        return filteredImisCount > 1
-        // imm.getEnabledInputMethodSubtypeList(null, false) will return the current IME's enabled
-        // input method subtype (The current IME should be LatinIME.)
-                || imm.getEnabledInputMethodSubtypeList(null, false).size() > 1;
+        if (filteredImisCount > 1) {
+            return true;
+        }
+        final List<InputMethodSubtypeCompatWrapper> subtypes =
+                imm.getEnabledInputMethodSubtypeList(null, true);
+        int keyboardCount = 0;
+        // imm.getEnabledInputMethodSubtypeList(null, true) will return the current IME's
+        // both explicitly and implicitly enabled input method subtype.
+        // (The current IME should be LatinIME.)
+        for (InputMethodSubtypeCompatWrapper subtype : subtypes) {
+            if (SubtypeSwitcher.KEYBOARD_MODE.equals(subtype.getMode())) {
+                ++keyboardCount;
+            }
+        }
+        return keyboardCount > 1;
     }
 
     public static String getInputMethodId(InputMethodManagerCompatWrapper imm, String packageName) {
