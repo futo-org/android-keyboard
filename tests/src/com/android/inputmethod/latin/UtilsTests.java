@@ -18,8 +18,6 @@ package com.android.inputmethod.latin;
 
 import android.test.AndroidTestCase;
 
-import com.android.inputmethod.latin.tests.R;
-
 public class UtilsTests extends AndroidTestCase {
 
     // The following is meant to be a reasonable default for
