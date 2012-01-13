@@ -117,8 +117,20 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     }
 
     public void loadKeyboard(EditorInfo editorInfo, SettingsValues settingsValues) {
-        mKeyboardSet = new KeyboardSet.Builder(mThemeContext, editorInfo, settingsValues)
-                .build();
+        final KeyboardSet.Builder builder = new KeyboardSet.Builder(mThemeContext, editorInfo);
+        builder.setScreenGeometry(mThemeContext.getResources().getConfiguration().orientation,
+                mThemeContext.getResources().getDisplayMetrics().widthPixels);
+        builder.setSubtype(
+                mSubtypeSwitcher.getInputLocale(),
+                mSubtypeSwitcher.currentSubtypeContainsExtraValueKey(
+                        LatinIME.SUBTYPE_EXTRA_VALUE_ASCII_CAPABLE),
+                mSubtypeSwitcher.currentSubtypeContainsExtraValueKey(
+                        LatinIME.SUBTYPE_EXTRA_VALUE_SUPPORT_TOUCH_POSITION_CORRECTION));
+        builder.setOptions(
+                settingsValues.isSettingsKeyEnabled(),
+                settingsValues.isVoiceKeyEnabled(editorInfo),
+                settingsValues.isVoiceKeyOnMain());
+        mKeyboardSet = builder.build();
         final KeyboardId mainKeyboardId = mKeyboardSet.getMainKeyboardId();
         try {
             mState.onLoadKeyboard(mResources.getString(R.string.layout_switch_back_symbols),
@@ -416,19 +428,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
             if (mKeyboardView != null) {
                 mKeyboardView.updateAutoCorrectionState(isAutoCorrection);
             }
-        }
-    }
-
-    private static String themeName(int themeId) {
-        // This should be aligned with theme-*.xml resource files' themeId attribute.
-        switch (themeId) {
-        case 0: return "Basic";
-        case 1: return "BasicHighContrast";
-        case 5: return "IceCreamSandwich";
-        case 6: return "Stone";
-        case 7: return "StoneBold";
-        case 8: return "GingerBread";
-        default: return null;
         }
     }
 }
