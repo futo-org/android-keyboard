@@ -806,7 +806,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         return bounds.width();
     }
 
-    // Layout local language name and left and right arrow on spacebar.
+    // Layout locale language name on spacebar.
     private static String layoutSpacebar(Paint paint, Locale locale, int width,
             float origTextSize) {
         final Rect bounds = new Rect();
