@@ -51,7 +51,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
     PROF_START(66);
     const char *sourceDirChars = env->GetStringUTFChars(sourceDir, 0);
     if (sourceDirChars == 0) {
-        LOGE("DICT: Can't get sourceDir string");
+        AKLOGE("DICT: Can't get sourceDir string");
         return 0;
     }
     int fd = 0;
@@ -61,7 +61,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
     /* mmap version */
     fd = open(sourceDirChars, O_RDONLY);
     if (fd < 0) {
-        LOGE("DICT: Can't open sourceDir. sourceDirChars=%s errno=%d", sourceDirChars, errno);
+        AKLOGE("DICT: Can't open sourceDir. sourceDirChars=%s errno=%d", sourceDirChars, errno);
         return 0;
     }
     int pagesize = getpagesize();
@@ -70,7 +70,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
     int adjDictSize = dictSize + adjust;
     dictBuf = mmap(0, sizeof(char) * adjDictSize, PROT_READ, MAP_PRIVATE, fd, adjDictOffset);
     if (dictBuf == MAP_FAILED) {
-        LOGE("DICT: Can't mmap dictionary. errno=%d", errno);
+        AKLOGE("DICT: Can't mmap dictionary. errno=%d", errno);
         return 0;
     }
     dictBuf = (void *)((char *)dictBuf + adjust);
@@ -79,39 +79,39 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
     FILE *file = 0;
     file = fopen(sourceDirChars, "rb");
     if (file == 0) {
-        LOGE("DICT: Can't fopen sourceDir. sourceDirChars=%s errno=%d", sourceDirChars, errno);
+        AKLOGE("DICT: Can't fopen sourceDir. sourceDirChars=%s errno=%d", sourceDirChars, errno);
         return 0;
     }
     dictBuf = malloc(sizeof(char) * dictSize);
     if (!dictBuf) {
-        LOGE("DICT: Can't allocate memory region for dictionary. errno=%d", errno);
+        AKLOGE("DICT: Can't allocate memory region for dictionary. errno=%d", errno);
         return 0;
     }
     int ret = fseek(file, (long)dictOffset, SEEK_SET);
     if (ret != 0) {
-        LOGE("DICT: Failure in fseek. ret=%d errno=%d", ret, errno);
+        AKLOGE("DICT: Failure in fseek. ret=%d errno=%d", ret, errno);
         return 0;
     }
     ret = fread(dictBuf, sizeof(char) * dictSize, 1, file);
     if (ret != 1) {
-        LOGE("DICT: Failure in fread. ret=%d errno=%d", ret, errno);
+        AKLOGE("DICT: Failure in fread. ret=%d errno=%d", ret, errno);
         return 0;
     }
     ret = fclose(file);
     if (ret != 0) {
-        LOGE("DICT: Failure in fclose. ret=%d errno=%d", ret, errno);
+        AKLOGE("DICT: Failure in fclose. ret=%d errno=%d", ret, errno);
         return 0;
     }
 #endif // USE_MMAP_FOR_DICTIONARY
     env->ReleaseStringUTFChars(sourceDir, sourceDirChars);
 
     if (!dictBuf) {
-        LOGE("DICT: dictBuf is null");
+        AKLOGE("DICT: dictBuf is null");
         return 0;
     }
     Dictionary *dictionary = 0;
     if (BinaryFormat::UNKNOWN_FORMAT == BinaryFormat::detectFormat((uint8_t*)dictBuf)) {
-        LOGE("DICT: dictionary format is unknown, bad magic number");
+        AKLOGE("DICT: dictionary format is unknown, bad magic number");
 #ifdef USE_MMAP_FOR_DICTIONARY
         releaseDictBuf(((char*)dictBuf) - adjust, adjDictSize, fd);
 #else // USE_MMAP_FOR_DICTIONARY
@@ -230,11 +230,11 @@ void releaseDictBuf(void* dictBuf, const size_t length, int fd) {
 #ifdef USE_MMAP_FOR_DICTIONARY
     int ret = munmap(dictBuf, length);
     if (ret != 0) {
-        LOGE("DICT: Failure in munmap. ret=%d errno=%d", ret, errno);
+        AKLOGE("DICT: Failure in munmap. ret=%d errno=%d", ret, errno);
     }
     ret = close(fd);
     if (ret != 0) {
-        LOGE("DICT: Failure in close. ret=%d errno=%d", ret, errno);
+        AKLOGE("DICT: Failure in close. ret=%d errno=%d", ret, errno);
     }
 #else // USE_MMAP_FOR_DICTIONARY
     free(dictBuf);

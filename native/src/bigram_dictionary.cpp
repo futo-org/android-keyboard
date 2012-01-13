@@ -32,8 +32,8 @@ BigramDictionary::BigramDictionary(const unsigned char *dict, int maxWordLength,
     MAX_ALTERNATIVES(maxAlternatives), IS_LATEST_DICT_VERSION(isLatestDictVersion),
     HAS_BIGRAM(hasBigram), mParentDictionary(parentDictionary) {
     if (DEBUG_DICT) {
-        LOGI("BigramDictionary - constructor");
-        LOGI("Has Bigram : %d", hasBigram);
+        AKLOGI("BigramDictionary - constructor");
+        AKLOGI("Has Bigram : %d", hasBigram);
     }
 }
 
@@ -46,7 +46,7 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
 #ifdef FLAG_DBG
         char s[length + 1];
         for (int i = 0; i <= length; i++) s[i] = word[i];
-        LOGI("Bigram: Found word = %s, freq = %d :", s, frequency);
+        AKLOGI("Bigram: Found word = %s, freq = %d :", s, frequency);
 #endif
     }
 
@@ -60,7 +60,7 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
         insertAt++;
     }
     if (DEBUG_DICT) {
-        LOGI("Bigram: InsertAt -> %d maxBigrams: %d", insertAt, mMaxBigrams);
+        AKLOGI("Bigram: InsertAt -> %d maxBigrams: %d", insertAt, mMaxBigrams);
     }
     if (insertAt < mMaxBigrams) {
         memmove((char*) mBigramFreq + (insertAt + 1) * sizeof(mBigramFreq[0]),
@@ -76,7 +76,7 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
         }
         *dest = 0; // NULL terminate
         if (DEBUG_DICT) {
-            LOGI("Bigram: Added word at %d", insertAt);
+            AKLOGI("Bigram: Added word at %d", insertAt);
         }
         return true;
     }

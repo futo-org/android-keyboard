@@ -52,7 +52,7 @@ ProximityInfo::ProximityInfo(const int maxProximityCharsSize, const int keyboard
     const int proximityGridLength = GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE;
     mProximityCharsArray = new uint32_t[proximityGridLength];
     if (DEBUG_PROXIMITY_INFO) {
-        LOGI("Create proximity info array %d", proximityGridLength);
+        AKLOGI("Create proximity info array %d", proximityGridLength);
     }
     memcpy(mProximityCharsArray, proximityCharsArray,
             proximityGridLength * sizeof(mProximityCharsArray[0]));
@@ -102,7 +102,7 @@ inline int ProximityInfo::getStartIndexFromCoordinates(const int x, const int y)
 bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
     if (x < 0 || y < 0) {
         if (DEBUG_DICT) {
-            LOGI("HasSpaceProximity: Illegal coordinates (%d, %d)", x, y);
+            AKLOGI("HasSpaceProximity: Illegal coordinates (%d, %d)", x, y);
             assert(false);
         }
         return false;
@@ -110,11 +110,11 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
 
     const int startIndex = getStartIndexFromCoordinates(x, y);
     if (DEBUG_PROXIMITY_INFO) {
-        LOGI("hasSpaceProximity: index %d, %d, %d", startIndex, x, y);
+        AKLOGI("hasSpaceProximity: index %d, %d, %d", startIndex, x, y);
     }
     for (int i = 0; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
         if (DEBUG_PROXIMITY_INFO) {
-            LOGI("Index: %d", mProximityCharsArray[startIndex + i]);
+            AKLOGI("Index: %d", mProximityCharsArray[startIndex + i]);
         }
         if (mProximityCharsArray[startIndex + i] == KEYCODE_SPACE) {
             return true;

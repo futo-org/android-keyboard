@@ -47,7 +47,7 @@ UnigramDictionary::UnigramDictionary(const uint8_t* const streamStart, int typed
     BYTES_IN_ONE_CHAR(MAX_PROXIMITY_CHARS * sizeof(int)),
     MAX_UMLAUT_SEARCH_DEPTH(DEFAULT_MAX_UMLAUT_SEARCH_DEPTH) {
     if (DEBUG_DICT) {
-        LOGI("UnigramDictionary - constructor");
+        AKLOGI("UnigramDictionary - constructor");
     }
 }
 
@@ -163,14 +163,14 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
             queuePool->getMasterQueue()->outputSuggestions(frequencies, outWords);
 
     if (DEBUG_DICT) {
-        LOGI("Returning %d words", suggestedWordsCount);
+        AKLOGI("Returning %d words", suggestedWordsCount);
         /// Print the returned words
         for (int j = 0; j < suggestedWordsCount; ++j) {
 #ifdef FLAG_DBG
             short unsigned int* w = outWords + j * MAX_WORD_LENGTH;
             char s[MAX_WORD_LENGTH];
             for (int i = 0; i <= MAX_WORD_LENGTH; i++) s[i] = w[i];
-            LOGI("%s %i", s, frequencies[j]);
+            AKLOGI("%s %i", s, frequencies[j]);
 #endif
         }
     }
@@ -213,7 +213,7 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
             && inputLength >= MIN_USER_TYPED_LENGTH_FOR_MISSING_SPACE_SUGGESTION) {
         for (int i = 1; i < inputLength; ++i) {
             if (DEBUG_DICT) {
-                LOGI("--- Suggest missing space characters %d", i);
+                AKLOGI("--- Suggest missing space characters %d", i);
             }
             getMissingSpaceWords(proximityInfo, xcoordinates, ycoordinates, codes,
                     useFullEditDistance, inputLength, i, correction, queuePool);
@@ -226,12 +226,12 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
         // The first and last "mistyped spaces" are taken care of by excessive character handling
         for (int i = 1; i < inputLength - 1; ++i) {
             if (DEBUG_DICT) {
-                LOGI("--- Suggest words with proximity space %d", i);
+                AKLOGI("--- Suggest words with proximity space %d", i);
             }
             const int x = xcoordinates[i];
             const int y = ycoordinates[i];
             if (DEBUG_PROXIMITY_INFO) {
-                LOGI("Input[%d] x = %d, y = %d, has space proximity = %d",
+                AKLOGI("Input[%d] x = %d, y = %d, has space proximity = %d",
                         i, x, y, proximityInfo->hasSpaceProximity(x, y));
             }
             if (proximityInfo->hasSpaceProximity(x, y)) {
@@ -247,7 +247,7 @@ void UnigramDictionary::initSuggestions(ProximityInfo *proximityInfo, const int 
         const int *yCoordinates, const int *codes, const int inputLength,
         WordsPriorityQueue *queue, Correction *correction) {
     if (DEBUG_DICT) {
-        LOGI("initSuggest");
+        AKLOGI("initSuggest");
     }
     proximityInfo->setInputParams(codes, inputLength, xCoordinates, yCoordinates);
     if (queue) {
@@ -390,7 +390,7 @@ void UnigramDictionary::getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo
     const int firstFreq = getMostFrequentWordLike(
             firstWordStartPos, firstWordLength, proximityInfo, mWord);
     if (DEBUG_DICT) {
-        LOGI("First freq: %d", firstFreq);
+        AKLOGI("First freq: %d", firstFreq);
     }
     if (firstFreq <= 0) return;
 
@@ -401,7 +401,7 @@ void UnigramDictionary::getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo
     const int secondFreq = getMostFrequentWordLike(
             secondWordStartPos, secondWordLength, proximityInfo, mWord);
     if (DEBUG_DICT) {
-        LOGI("Second  freq:  %d", secondFreq);
+        AKLOGI("Second  freq:  %d", secondFreq);
     }
     if (secondFreq <= 0) return;
 
@@ -419,7 +419,7 @@ void UnigramDictionary::getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo
             useFullEditDistance, false /* doAutoCompletion */, MAX_ERRORS_FOR_TWO_WORDS);
     const int pairFreq = correction->getFreqForSplitTwoWords(firstFreq, secondFreq, word);
     if (DEBUG_DICT) {
-        LOGI("Split two words:  %d, %d, %d, %d", firstFreq, secondFreq, pairFreq, inputLength);
+        AKLOGI("Split two words:  %d, %d, %d, %d", firstFreq, secondFreq, pairFreq, inputLength);
     }
     addWord(word, newWordLength, pairFreq, masterQueue);
     return;
@@ -690,7 +690,7 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos,
             *nextSiblingPosition =
                     BinaryFormat::skipChildrenPosAndAttributes(DICT_ROOT, flags, pos);
             if (DEBUG_DICT_FULL) {
-                LOGI("Traversing was pruned.");
+                AKLOGI("Traversing was pruned.");
             }
             return false;
         }
