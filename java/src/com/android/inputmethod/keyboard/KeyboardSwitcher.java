@@ -324,6 +324,12 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         setKeyboard(mKeyboardSet.getSymbolsShiftedKeyboard());
     }
 
+    // Implements {@link KeyboardState.SwitchActions}.
+    @Override
+    public void requestUpdatingShiftState() {
+        mState.onUpdateShiftState(mInputMethodService.getCurrentAutoCapsState());
+    }
+
     public boolean isInMomentarySwitchState() {
         return mState.isInMomentarySwitchState();
     }

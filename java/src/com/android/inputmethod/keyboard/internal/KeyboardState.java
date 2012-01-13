@@ -53,6 +53,11 @@ public class KeyboardState {
         public void setSymbolsKeyboard();
 
         public void setSymbolsShiftedKeyboard();
+
+        /**
+         * Request to call back {@link KeyboardState#onUpdateShiftState(boolean)}.
+         */
+        public void requestUpdatingShiftState();
     }
 
     private KeyboardShiftState mKeyboardShiftState = new KeyboardShiftState();
@@ -212,6 +217,7 @@ public class KeyboardState {
         mSwitchState = SWITCH_STATE_ALPHA;
         setShiftLocked(mPrevMainKeyboardWasShiftLocked);
         mPrevMainKeyboardWasShiftLocked = false;
+        mSwitchActions.requestUpdatingShiftState();
     }
 
     private void setSymbolsKeyboard() {
