@@ -662,8 +662,9 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos,
             // The frequency should be here, because we come here only if this is actually
             // a terminal node, and we are on its last char.
             const int freq = BinaryFormat::readFrequencyWithoutMovingPointer(DICT_ROOT, pos);
-            TerminalAttributes terminalAttributes(DICT_ROOT, flags,
-                    BinaryFormat::skipFrequency(flags, pos));
+            const int childrenAddressPos = BinaryFormat::skipFrequency(flags, pos);
+            const int attributesPos = BinaryFormat::skipChildrenPosition(flags, childrenAddressPos);
+            TerminalAttributes terminalAttributes(DICT_ROOT, flags, attributesPos);
             onTerminal(freq, terminalAttributes, correction, queue);
         }
 
