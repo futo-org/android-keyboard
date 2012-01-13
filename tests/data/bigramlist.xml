@@ -25,7 +25,7 @@
     <bi w1="about" count="3">
         <w w2="part" p="117" />
         <w w2="business" p="100" />
-        <w w2="being" p="10" />
+        <w w2="being" p="90" />
     </bi>
     <bi w1="business" count="1">
         <w w2="people" p="100" />

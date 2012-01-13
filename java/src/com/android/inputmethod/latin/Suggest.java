@@ -115,7 +115,7 @@ public class Suggest implements Dictionary.WordCallback {
     /* package for test */ Suggest(final Context context, final File dictionary,
             final long startOffset, final long length, final Flag[] flagArray,
             final Locale locale) {
-        initSynchronously(null, DictionaryFactory.createDictionaryForTest(context, dictionary,
+        initSynchronously(context, DictionaryFactory.createDictionaryForTest(context, dictionary,
                 startOffset, length, flagArray), locale);
     }
 
