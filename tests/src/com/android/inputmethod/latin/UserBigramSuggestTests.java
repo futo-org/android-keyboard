@@ -37,7 +37,7 @@ public class UserBigramSuggestTests extends SuggestTestsBase {
         mHelper = new UserBigramSuggestHelper(
                 getContext(), mTestPackageFile, dict.getStartOffset(), dict.getLength(),
                 MAX_DATA, DELETE_DATA,
-                createKeyboardId(locale, Configuration.ORIENTATION_PORTRAIT), locale);
+                createKeyboardSet(locale, Configuration.ORIENTATION_PORTRAIT), locale);
     }
 
     /************************** Tests ************************/

@@ -22,8 +22,9 @@ import android.test.AndroidTestCase;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.view.inputmethod.EditorInfo;
 
-import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.keyboard.KeyboardSet;
 
 import java.io.File;
 import java.io.InputStream;
@@ -38,7 +39,12 @@ public class SuggestTestsBase extends AndroidTestCase {
         mTestPackageFile = new File(getTestContext().getApplicationInfo().sourceDir);
     }
 
-    protected KeyboardId createKeyboardId(Locale locale, int orientation) {
+    protected KeyboardSet createKeyboardSet(Locale locale, int orientation) {
+        return createKeyboardSet(locale, orientation, false);
+    }
+
+    protected KeyboardSet createKeyboardSet(Locale locale, int orientation,
+            boolean touchPositionCorrectionEnabled) {
         final DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
         final int width;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -50,8 +56,12 @@ public class SuggestTestsBase extends AndroidTestCase {
                     + "orientation=" + orientation);
             return null;
         }
-        return new KeyboardId(KeyboardId.ELEMENT_ALPHABET, locale, orientation, width,
-                KeyboardId.MODE_TEXT, InputType.TYPE_CLASS_TEXT, 0, false, false, false, false);
+        final EditorInfo editorInfo = new EditorInfo();
+        editorInfo.inputType = InputType.TYPE_CLASS_TEXT;
+        final KeyboardSet.Builder builder = new KeyboardSet.Builder(getContext(), editorInfo);
+        builder.setScreenGeometry(orientation, width);
+        builder.setSubtype(locale, true, touchPositionCorrectionEnabled);
+        return builder.build();
     }
 
     protected InputStream openTestRawResource(int resIdInTest) {

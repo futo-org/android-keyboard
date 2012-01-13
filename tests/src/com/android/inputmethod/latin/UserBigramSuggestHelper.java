@@ -16,10 +16,10 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.keyboard.KeyboardId;
-
 import android.content.Context;
 import android.text.TextUtils;
+
+import com.android.inputmethod.keyboard.KeyboardSet;
 
 import java.io.File;
 import java.util.Locale;
@@ -31,8 +31,8 @@ public class UserBigramSuggestHelper extends SuggestHelper {
 
     public UserBigramSuggestHelper(final Context context, final File dictionaryPath,
             final long startOffset, final long length, final int userBigramMax,
-            final int userBigramDelete, final KeyboardId keyboardId, final Locale locale) {
-        super(context, dictionaryPath, startOffset, length, keyboardId, locale);
+            final int userBigramDelete, final KeyboardSet keyboardSet, final Locale locale) {
+        super(context, dictionaryPath, startOffset, length, keyboardSet, locale);
         mContext = context;
         mUserBigram = new UserBigramDictionary(context, null, locale.toString(),
                 Suggest.DIC_USER);
