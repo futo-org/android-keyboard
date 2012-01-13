@@ -23,7 +23,7 @@ import com.android.inputmethod.latin.tests.R;
 import java.util.Locale;
 
 public class UserBigramSuggestTests extends SuggestTestsBase {
-    private static final int SUGGESTION_STARTS = 6;
+    private static final int SUGGESTION_STARTS = 1;
     private static final int MAX_DATA = 20;
     private static final int DELETE_DATA = 10;
 
