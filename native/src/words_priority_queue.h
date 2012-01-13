@@ -48,6 +48,7 @@ class WordsPriorityQueue {
             mSuggestedWords[i].mUsed = false;
         }
     }
+
     ~WordsPriorityQueue() {
         delete[] mSuggestedWords;
     }

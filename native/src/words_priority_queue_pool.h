@@ -17,6 +17,8 @@
 #ifndef LATINIME_WORDS_PRIORITY_QUEUE_POOL_H
 #define LATINIME_WORDS_PRIORITY_QUEUE_POOL_H
 
+#include <assert.h>
+#include <new>
 #include "words_priority_queue.h"
 
 namespace latinime {
@@ -24,30 +26,45 @@ namespace latinime {
 class WordsPriorityQueuePool {
  public:
     WordsPriorityQueuePool(int mainQueueMaxWords, int subQueueMaxWords, int maxWordLength) {
-        mMasterQueue = new WordsPriorityQueue(mainQueueMaxWords, maxWordLength);
-        mSubQueue1 = new WordsPriorityQueue(subQueueMaxWords, maxWordLength);
-        mSubQueue2 = new WordsPriorityQueue(subQueueMaxWords, maxWordLength);
+        mMasterQueue = new(mMasterQueueBuf) WordsPriorityQueue(mainQueueMaxWords, maxWordLength);
+        for (int i = 0, subQueueBufOffset = 0; i < SUB_QUEUE_MAX_COUNT;
+                ++i, subQueueBufOffset += sizeof(WordsPriorityQueue)) {
+            mSubQueues1[i] = new(mSubQueueBuf1 + subQueueBufOffset)
+                    WordsPriorityQueue(subQueueMaxWords, maxWordLength);
+            mSubQueues2[i] = new(mSubQueueBuf2 + subQueueBufOffset)
+                    WordsPriorityQueue(subQueueMaxWords, maxWordLength);
+        }
     }
 
-    ~WordsPriorityQueuePool() {
-        delete mMasterQueue;
+    virtual ~WordsPriorityQueuePool() {
     }
 
     WordsPriorityQueue* getMasterQueue() {
         return mMasterQueue;
     }
+
     // TODO: Come up with more generic pool
-    WordsPriorityQueue* getSubQueue1() {
-        return mSubQueue1;
+    WordsPriorityQueue* getSubQueue1(const int id) {
+        if (DEBUG_WORDS_PRIORITY_QUEUE) {
+            assert(id >= 0 && id < SUB_QUEUE_MAX_COUNT);
+        }
+        return mSubQueues1[id];
     }
-    WordsPriorityQueue* getSubQueue2() {
-        return mSubQueue2;
+
+    WordsPriorityQueue* getSubQueue2(const int id) {
+        if (DEBUG_WORDS_PRIORITY_QUEUE) {
+            assert(id >= 0 && id < SUB_QUEUE_MAX_COUNT);
+        }
+        return mSubQueues2[id];
     }
 
  private:
-    WordsPriorityQueue *mMasterQueue;
-    WordsPriorityQueue *mSubQueue1;
-    WordsPriorityQueue *mSubQueue2;
+    WordsPriorityQueue* mMasterQueue;
+    WordsPriorityQueue* mSubQueues1[SUB_QUEUE_MAX_COUNT];
+    WordsPriorityQueue* mSubQueues2[SUB_QUEUE_MAX_COUNT];
+    char mMasterQueueBuf[sizeof(WordsPriorityQueue)];
+    char mSubQueueBuf1[SUB_QUEUE_MAX_COUNT * sizeof(WordsPriorityQueue)];
+    char mSubQueueBuf2[SUB_QUEUE_MAX_COUNT * sizeof(WordsPriorityQueue)];
 };
 }
 
