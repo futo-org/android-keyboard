@@ -205,6 +205,7 @@ static void dumpWord(const unsigned short* word, const int length) {
 // Word limit for sub queues used in WordsPriorityQueuePool.  Sub queues are temporary queues used
 // for better performance.
 #define SUB_QUEUE_MAX_WORDS 5
+#define SUB_QUEUE_MAX_COUNT 10
 
 #define MAX_DEPTH_MULTIPLIER 3
 
