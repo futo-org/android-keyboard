@@ -41,7 +41,6 @@ public class SettingsValues {
     private final String mSymbolsExcludedFromWordSeparators;
     public final String mWordSeparators;
     public final CharSequence mHintToSaveText;
-    public final boolean mUseFullScreenMode;
 
     // From preferences, in the same order as xml/prefs.xml:
     public final boolean mAutoCap;
@@ -107,7 +106,6 @@ public class SettingsValues {
         mWordSeparators = createWordSeparators(mMagicSpaceStrippers, mMagicSpaceSwappers,
                 mSymbolsExcludedFromWordSeparators, res);
         mHintToSaveText = context.getText(R.string.hint_add_to_dictionary);
-        mUseFullScreenMode = res.getBoolean(R.bool.config_use_fullscreen_mode);
 
         // Get the settings preferences
         mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);
@@ -292,6 +290,10 @@ public class SettingsValues {
 
     public boolean isVoiceKeyOnMain() {
         return mVoiceKeyOnMain;
+    }
+
+    public boolean isFullscreenModeAllowed(Resources res) {
+        return res.getBoolean(R.bool.config_use_fullscreen_mode);
     }
 
     // Accessed from the settings interface, hence public
