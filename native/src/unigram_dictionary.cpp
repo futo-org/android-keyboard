@@ -280,7 +280,7 @@ void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
             doAutoCompletion, maxErrors);
     int rootPosition = ROOT_POS;
     // Get the number of children of root, then increment the position
-    int childCount = Dictionary::getCount(DICT_ROOT, &rootPosition);
+    int childCount = BinaryFormat::getGroupCountAndForwardPointer(DICT_ROOT, &rootPosition);
     int outputIndex = 0;
 
     correction->initCorrectionState(rootPosition, childCount, (inputLength <= 0));

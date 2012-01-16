@@ -56,16 +56,7 @@ class Dictionary {
 
     // public static utility methods
     // static inline methods should be defined in the header file
-    static unsigned short getChar(const unsigned char *dict, int *pos);
-    static int getCount(const unsigned char *dict, int *pos);
-    static bool getTerminal(const unsigned char *dict, int *pos);
-    static int getAddress(const unsigned char *dict, int *pos);
-    static int getFreq(const unsigned char *dict, const bool isLatestDictVersion, int *pos);
     static int wideStrLen(unsigned short *str);
-    // returns next sibling's position
-    static int setDictionaryValues(const unsigned char *dict, const bool isLatestDictVersion,
-            const int pos, unsigned short *c, int *childrenPosition,
-            bool *terminal, int *freq);
 
  private:
     bool hasBigram();
@@ -87,56 +78,6 @@ class Dictionary {
 
 // public static utility methods
 // static inline methods should be defined in the header file
-inline unsigned short Dictionary::getChar(const unsigned char *dict, int *pos) {
-    unsigned short ch = (unsigned short) (dict[(*pos)++] & 0xFF);
-    // If the code is 255, then actual 16 bit code follows (in big endian)
-    if (ch == 0xFF) {
-        ch = ((dict[*pos] & 0xFF) << 8) | (dict[*pos + 1] & 0xFF);
-        (*pos) += 2;
-    }
-    return ch;
-}
-
-inline int Dictionary::getCount(const unsigned char *dict, int *pos) {
-    return dict[(*pos)++] & 0xFF;
-}
-
-inline bool Dictionary::getTerminal(const unsigned char *dict, int *pos) {
-    return (dict[*pos] & FLAG_TERMINAL_MASK) > 0;
-}
-
-inline int Dictionary::getAddress(const unsigned char *dict, int *pos) {
-    int address = 0;
-    if ((dict[*pos] & FLAG_ADDRESS_MASK) == 0) {
-        *pos += 1;
-    } else {
-        address += (dict[*pos] & (ADDRESS_MASK >> 16)) << 16;
-        address += (dict[*pos + 1] & 0xFF) << 8;
-        address += (dict[*pos + 2] & 0xFF);
-        *pos += 3;
-    }
-    return address;
-}
-
-inline int Dictionary::getFreq(const unsigned char *dict,
-        const bool isLatestDictVersion, int *pos) {
-    int freq = dict[(*pos)++] & 0xFF;
-    if (isLatestDictVersion) {
-        // skipping bigram
-        int bigramExist = (dict[*pos] & FLAG_BIGRAM_READ);
-        if (bigramExist > 0) {
-            int nextBigramExist = 1;
-            while (nextBigramExist > 0) {
-                (*pos) += 3;
-                nextBigramExist = (dict[(*pos)++] & FLAG_BIGRAM_CONTINUED);
-            }
-        } else {
-            (*pos)++;
-        }
-    }
-    return freq;
-}
-
 inline int Dictionary::wideStrLen(unsigned short *str) {
     if (!str) return 0;
     unsigned short *end = str;
@@ -144,22 +85,6 @@ inline int Dictionary::wideStrLen(unsigned short *str) {
         end++;
     return end - str;
 }
-
-inline int Dictionary::setDictionaryValues(const unsigned char *dict,
-        const bool isLatestDictVersion, const int pos, unsigned short *c,int *childrenPosition,
-        bool *terminal, int *freq) {
-    int position = pos;
-    // -- at char
-    *c = Dictionary::getChar(dict, &position);
-    // -- at flag/add
-    *terminal = Dictionary::getTerminal(dict, &position);
-    *childrenPosition = Dictionary::getAddress(dict, &position);
-    // -- after address or flag
-    *freq = (*terminal) ? Dictionary::getFreq(dict, isLatestDictVersion, &position) : 1;
-    // returns next sibling's position
-    return position;
-}
-
 } // namespace latinime
 
 #endif // LATINIME_DICTIONARY_H
