@@ -171,6 +171,24 @@ public class FusionDictionary implements Iterable<Word> {
     }
 
     /**
+     * Helper method to add all words in a list as 0-frequency entries
+     *
+     * These words are added when shortcuts targets or bigrams are not found in the dictionary
+     * yet. The same words may be added later with an actual frequency - this is handled by
+     * the private version of add().
+     */
+    private void addNeutralWords(final ArrayList<WeightedString> words) {
+        if (null != words) {
+            for (WeightedString word : words) {
+                final CharGroup t = findWordInTree(mRoot, word.mWord);
+                if (null == t) {
+                    add(getCodePoints(word.mWord), 0, null, null, false /* isShortcutOnly */);
+                }
+            }
+        }
+    }
+
+    /**
      * Helper method to add a word as a string.
      *
      * This method adds a word to the dictionary with the given frequency. Optional
@@ -186,22 +204,12 @@ public class FusionDictionary implements Iterable<Word> {
             final ArrayList<WeightedString> shortcutTargets,
             final ArrayList<WeightedString> bigrams) {
         if (null != shortcutTargets) {
-            for (WeightedString target : shortcutTargets) {
-                final CharGroup t = findWordInTree(mRoot, target.mWord);
-                if (null == t) {
-                    add(getCodePoints(target.mWord), 0, null, null);
-                }
-            }
+            addNeutralWords(shortcutTargets);
         }
         if (null != bigrams) {
-            for (WeightedString bigram : bigrams) {
-                final CharGroup t = findWordInTree(mRoot, bigram.mWord);
-                if (null == t) {
-                    add(getCodePoints(bigram.mWord), 0, null, null);
-                }
-            }
+            addNeutralWords(bigrams);
         }
-        add(getCodePoints(word), frequency, shortcutTargets, bigrams);
+        add(getCodePoints(word), frequency, shortcutTargets, bigrams, false /* isShortcutOnly */);
     }
 
     /**
@@ -223,6 +231,22 @@ public class FusionDictionary implements Iterable<Word> {
     }
 
     /**
+     * Helper method to add a shortcut that should not be a dictionary word.
+     *
+     * @param word the word to add.
+     * @param frequency the frequency of the word, in the range [0..255].
+     * @param shortcutTargets a list of shortcut targets. May not be null.
+     */
+    public void addShortcutOnly(final String word, final int frequency,
+            final ArrayList<WeightedString> shortcutTargets) {
+        if (null == shortcutTargets) {
+            throw new RuntimeException("Can't add a shortcut without targets");
+        }
+        addNeutralWords(shortcutTargets);
+        add(getCodePoints(word), frequency, shortcutTargets, null, true /* isShortcutOnly */);
+    }
+
+    /**
      * Add a word to this dictionary.
      *
      * The shortcuts and bigrams, if any, have to be in the dictionary already. If they aren't,
@@ -232,10 +256,12 @@ public class FusionDictionary implements Iterable<Word> {
      * @param frequency the frequency of the word, in the range [0..255].
      * @param shortcutTargets an optional list of shortcut targets for this word (null if none).
      * @param bigrams an optional list of bigrams for this word (null if none).
+     * @param isShortcutOnly whether this should be a shortcut only.
      */
     private void add(final int[] word, final int frequency,
             final ArrayList<WeightedString> shortcutTargets,
-            final ArrayList<WeightedString> bigrams) {
+            final ArrayList<WeightedString> bigrams,
+            final boolean isShortcutOnly) {
         assert(frequency >= 0 && frequency <= 255);
         Node currentNode = mRoot;
         int charIndex = 0;
@@ -260,7 +286,7 @@ public class FusionDictionary implements Iterable<Word> {
             final int insertionIndex = findInsertionIndex(currentNode, word[charIndex]);
             final CharGroup newGroup = new CharGroup(
                     Arrays.copyOfRange(word, charIndex, word.length),
-                    shortcutTargets, bigrams, frequency, false /* isShortcutOnly */);
+                    shortcutTargets, bigrams, frequency, isShortcutOnly);
             currentNode.mData.add(insertionIndex, newGroup);
             checkStack(currentNode);
         } else {
@@ -275,7 +301,7 @@ public class FusionDictionary implements Iterable<Word> {
                     } else {
                         final CharGroup newNode = new CharGroup(currentGroup.mChars,
                                 shortcutTargets, bigrams, frequency, currentGroup.mChildren,
-                                false /* isShortcutOnly */);
+                                isShortcutOnly);
                         currentNode.mData.set(nodeIndex, newNode);
                         checkStack(currentNode);
                     }
@@ -284,8 +310,7 @@ public class FusionDictionary implements Iterable<Word> {
                     // We only have to create a new node and add it to the end of this.
                     final CharGroup newNode = new CharGroup(
                             Arrays.copyOfRange(word, charIndex + differentCharIndex, word.length),
-                                    shortcutTargets, bigrams, frequency,
-                                    false /* isShortcutOnly */);
+                                    shortcutTargets, bigrams, frequency, isShortcutOnly);
                     currentGroup.mChildren = new Node();
                     currentGroup.mChildren.mData.add(newNode);
                 }
@@ -300,7 +325,8 @@ public class FusionDictionary implements Iterable<Word> {
                         }
                         final CharGroup newGroup = new CharGroup(word,
                                 currentGroup.mShortcutTargets, currentGroup.mBigrams,
-                                frequency, currentGroup.mChildren, false /* isShortcutOnly */);
+                                frequency, currentGroup.mChildren,
+                                currentGroup.mIsShortcutOnly && isShortcutOnly);
                         currentNode.mData.set(nodeIndex, newGroup);
                     }
                 } else {
@@ -318,16 +344,18 @@ public class FusionDictionary implements Iterable<Word> {
                     if (charIndex + differentCharIndex >= word.length) {
                         newParent = new CharGroup(
                                 Arrays.copyOfRange(currentGroup.mChars, 0, differentCharIndex),
-                                shortcutTargets, bigrams, frequency, newChildren,
-                                false /* isShortcutOnly */);
+                                shortcutTargets, bigrams, frequency, newChildren, isShortcutOnly);
                     } else {
+                        // isShortcutOnly makes no sense for non-terminal nodes. The following node
+                        // is non-terminal (frequency 0 in FusionDictionary representation) so we
+                        // pass false for isShortcutOnly
                         newParent = new CharGroup(
                                 Arrays.copyOfRange(currentGroup.mChars, 0, differentCharIndex),
                                 null, null, -1, newChildren, false /* isShortcutOnly */);
                         final CharGroup newWord = new CharGroup(
                                 Arrays.copyOfRange(word, charIndex + differentCharIndex,
                                         word.length), shortcutTargets, bigrams, frequency,
-                                        false /* isShortcutOnly */);
+                                        isShortcutOnly);
                         final int addIndex = word[charIndex + differentCharIndex]
                                 > currentGroup.mChars[differentCharIndex] ? 1 : 0;
                         newChildren.mData.add(addIndex, newWord);
