@@ -144,7 +144,6 @@ public class BinaryDictInputOutput {
 
     private static final int GROUP_CHARACTERS_TERMINATOR = 0x1F;
 
-    private static final int GROUP_COUNT_SIZE = 1;
     private static final int GROUP_TERMINATOR_SIZE = 1;
     private static final int GROUP_FLAGS_SIZE = 1;
     private static final int GROUP_FREQUENCY_SIZE = 1;
@@ -155,9 +154,8 @@ public class BinaryDictInputOutput {
     private static final int NO_CHILDREN_ADDRESS = Integer.MIN_VALUE;
     private static final int INVALID_CHARACTER = -1;
 
-    // Limiting to 127 for upward compatibility
-    // TODO: implement a scheme to be able to shoot 256 chargroups in a node
-    private static final int MAX_CHARGROUPS_IN_A_NODE = 127;
+    private static final int MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT = 0x7F; // 127
+    private static final int MAX_CHARGROUPS_IN_A_NODE = 0x7FFF; // 32767
 
     private static final int MAX_TERMINAL_FREQUENCY = 255;
 
@@ -267,6 +265,22 @@ public class BinaryDictInputOutput {
     }
 
     /**
+     * Compute the binary size of the group count for a node
+     * @param node the node
+     * @return the size of the group count, either 1 or 2 bytes.
+     */
+    private static int getGroupCountSize(final Node node) {
+        if (MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT >= node.mData.size()) {
+            return 1;
+        } else if (MAX_CHARGROUPS_IN_A_NODE >= node.mData.size()) {
+            return 2;
+        } else {
+            throw new RuntimeException("Can't have more than " + MAX_CHARGROUPS_IN_A_NODE
+                    + " groups in a node (found " + node.mData.size() +")");
+        }
+    }
+
+    /**
      * Compute the maximum size of a CharGroup, assuming 3-byte addresses for everything.
      *
      * @param group the CharGroup to compute the size of.
@@ -295,7 +309,7 @@ public class BinaryDictInputOutput {
      * @param node the node to compute the maximum size of.
      */
     private static void setNodeMaximumSize(Node node) {
-        int size = GROUP_COUNT_SIZE;
+        int size = getGroupCountSize(node);
         for (CharGroup g : node.mData) {
             final int groupSize = getCharGroupMaximumSize(g);
             g.mCachedSize = groupSize;
@@ -394,7 +408,7 @@ public class BinaryDictInputOutput {
      * @param dict the dictionary in which the word/attributes are to be found.
      */
     private static void computeActualNodeSize(Node node, FusionDictionary dict) {
-        int size = GROUP_COUNT_SIZE;
+        int size = getGroupCountSize(node);
         for (CharGroup group : node.mData) {
             int groupSize = GROUP_FLAGS_SIZE + getGroupCharactersSize(group);
             if (group.isTerminal()) groupSize += GROUP_FREQUENCY_SIZE;
@@ -437,12 +451,13 @@ public class BinaryDictInputOutput {
         int nodeOffset = 0;
         for (Node n : flatNodes) {
             n.mCachedAddress = nodeOffset;
+            int groupCountSize = getGroupCountSize(n);
             int groupOffset = 0;
             for (CharGroup g : n.mData) {
-                g.mCachedAddress = GROUP_COUNT_SIZE + nodeOffset + groupOffset;
+                g.mCachedAddress = groupCountSize + nodeOffset + groupOffset;
                 groupOffset += g.mCachedSize;
             }
-            if (groupOffset + GROUP_COUNT_SIZE != n.mCachedSize) {
+            if (groupOffset + groupCountSize != n.mCachedSize) {
                 throw new RuntimeException("Bug : Stored and computed node size differ");
             }
             nodeOffset += n.mCachedSize;
@@ -629,13 +644,20 @@ public class BinaryDictInputOutput {
     private static int writePlacedNode(FusionDictionary dict, byte[] buffer, Node node) {
         int index = node.mCachedAddress;
 
-        final int size = node.mData.size();
-        if (size > MAX_CHARGROUPS_IN_A_NODE)
-            throw new RuntimeException("A node has a group count over 127 (" + size + ").");
-
-        buffer[index++] = (byte)size;
+        final int groupCount = node.mData.size();
+        final int countSize = getGroupCountSize(node);
+        if (1 == countSize) {
+            buffer[index++] = (byte)groupCount;
+        } else if (2 == countSize) {
+            // We need to signal 2-byte size by setting the top bit of the MSB to 1, so
+            // we | 0x80 to do this.
+            buffer[index++] = (byte)((groupCount >> 8) | 0x80);
+            buffer[index++] = (byte)(groupCount & 0xFF);
+        } else {
+            throw new RuntimeException("Strange size from getGroupCountSize : " + countSize);
+        }
         int groupAddress = index;
-        for (int i = 0; i < size; ++i) {
+        for (int i = 0; i < groupCount; ++i) {
             CharGroup group = node.mData.get(i);
             if (index != group.mCachedAddress) throw new RuntimeException("Bug: write index is not "
                     + "the same as the cached address of the group");
