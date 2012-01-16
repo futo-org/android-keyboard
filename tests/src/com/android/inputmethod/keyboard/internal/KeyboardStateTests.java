@@ -30,7 +30,6 @@ public class KeyboardStateTests extends AndroidTestCase {
         mSwitcher = new MockKeyboardSwitcher();
 
         final String layoutSwitchBackSymbols = "";
-        // TODO: Unit tests for non-distinct multi touch device.
         final boolean hasDistinctMultitouch = true;
         mSwitcher.loadKeyboard(layoutSwitchBackSymbols, hasDistinctMultitouch);
     }
