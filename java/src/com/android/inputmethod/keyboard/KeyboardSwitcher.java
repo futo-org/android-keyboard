@@ -225,12 +225,13 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
             keyboard.setAutomaticTemporaryUpperCase();
         } else {
             final boolean shifted = (shiftMode == MANUAL_SHIFT);
+            // TODO: Remove duplicated logic in KeyboardState#setShifted
             // On non-distinct multi touch panel device, we should also turn off the shift locked
             // state when shift key is pressed to go to normal mode.
             // On the other hand, on distinct multi touch panel device, turning off the shift
             // locked state with shift key pressing is handled by onReleaseShift().
             if (!hasDistinctMultitouch() && !shifted && mState.isShiftLocked()) {
-                keyboard.setShiftLocked(false);
+                setShiftLocked(false);
             }
             keyboard.setShifted(shifted);
         }
