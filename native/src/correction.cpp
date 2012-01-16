@@ -653,9 +653,10 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
     int finalFreq = freq;
 
     // TODO: Optimize this.
-    // TODO: Ignoring edit distance for transposed char, for now
-    if (transposedCount == 0 && (proximityMatchedCount > 0 || skipped || excessiveCount > 0)) {
-        ed = getCurrentEditDistance(editDistanceTable, inputLength, outputIndex + 1);
+    if (transposedCount > 0 || proximityMatchedCount > 0 || skipped || excessiveCount > 0) {
+        ed = getCurrentEditDistance(editDistanceTable, inputLength, outputIndex + 1)
+                - transposedCount;
+
         const int matchWeight = powerIntCapped(typedLetterMultiplier,
                 max(inputLength, outputIndex + 1) - ed);
         multiplyIntCapped(matchWeight, &finalFreq);
@@ -667,21 +668,22 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
 
         ed = max(0, ed - quoteDiffCount);
 
-        if (ed == 1 && (inputLength == outputIndex || inputLength == outputIndex + 2)) {
-            // Promote a word with just one skipped or excessive char
-            if (sameLength) {
-                multiplyRate(WORDS_WITH_JUST_ONE_CORRECTION_PROMOTION_RATE, &finalFreq);
-            } else {
+        if (transposedCount < 1) {
+            if (ed == 1 && (inputLength == outputIndex || inputLength == outputIndex + 2)) {
+                // Promote a word with just one skipped or excessive char
+                if (sameLength) {
+                    multiplyRate(WORDS_WITH_JUST_ONE_CORRECTION_PROMOTION_RATE, &finalFreq);
+                } else {
+                    multiplyIntCapped(typedLetterMultiplier, &finalFreq);
+                }
+            } else if (ed == 0) {
                 multiplyIntCapped(typedLetterMultiplier, &finalFreq);
+                sameLength = true;
             }
-        } else if (ed == 0) {
-            multiplyIntCapped(typedLetterMultiplier, &finalFreq);
-            sameLength = true;
         }
         adjustedProximityMatchedCount = min(max(0, ed - (outputIndex + 1 - inputLength)),
                 proximityMatchedCount);
     } else {
-        // TODO: Calculate the edit distance for transposed char
         const int matchWeight = powerIntCapped(typedLetterMultiplier, matchCount);
         multiplyIntCapped(matchWeight, &finalFreq);
     }
