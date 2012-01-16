@@ -507,9 +507,10 @@ int UnigramDictionary::getMostFrequentWordLikeInner(const uint16_t * const inWor
     int maxFreq = -1;
     const uint8_t* const root = DICT_ROOT;
 
-    mStackChildCount[0] = root[0];
+    int startPos = 0;
+    mStackChildCount[0] = BinaryFormat::getGroupCountAndForwardPointer(root, &startPos);
     mStackInputIndex[0] = 0;
-    mStackSiblingPos[0] = 1;
+    mStackSiblingPos[0] = startPos;
     while (depth >= 0) {
         const int charGroupCount = mStackChildCount[depth];
         int pos = mStackSiblingPos[depth];
