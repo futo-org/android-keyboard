@@ -19,6 +19,8 @@ package com.android.inputmethod.keyboard.internal;
 import com.android.inputmethod.keyboard.internal.KeyboardState.SwitchActions;
 
 public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
+    public static final String WORD_SEPARATORS = " ,.";
+
     private static final int ALPHABET_UNSHIFTED = 0;
     private static final int ALPHABET_MANUAL_SHIFTED = 1;
     private static final int ALPHABET_AUTOMATIC_SHIFTED = 2;
@@ -28,8 +30,9 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
 
     private int mLayout = ALPHABET_UNSHIFTED;
 
-    // TODO: Separate Auto Caps mode and Auto Caps state of input.
-    private boolean mAutoCaps = KeyboardStateTests.NO_AUTO_CAPS;
+    private boolean mAutoCapsMode = KeyboardStateTests.NO_AUTO_CAPS;
+    // Following InputConnection's behavior. Simulating InputType.TYPE_TEXT_FLAG_CAP_WORDS.
+    private boolean mAutoCapsState = true;
 
     private final KeyboardState mState = new KeyboardState(this);
 
@@ -58,7 +61,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void setAutoCapsMode(boolean autoCaps) {
-        mAutoCaps = autoCaps;
+        mAutoCapsMode = autoCaps;
     }
 
     @Override
@@ -98,7 +101,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
 
     @Override
     public void requestUpdatingShiftState() {
-        mState.onUpdateShiftState(mAutoCaps);
+        mState.onUpdateShiftState(mAutoCapsMode && mAutoCapsState);
     }
 
     public void toggleCapsLock() {
@@ -106,7 +109,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void updateShiftState() {
-        mState.onUpdateShiftState(mAutoCaps);
+        mState.onUpdateShiftState(mAutoCapsMode && mAutoCapsState);
     }
 
     public void loadKeyboard(String layoutSwitchBackSymbols,
@@ -135,7 +138,8 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void onCodeInput(int code, boolean isSinglePointer) {
-        mState.onCodeInput(code, isSinglePointer, mAutoCaps);
+        mAutoCapsState = (WORD_SEPARATORS.indexOf(code) >= 0);
+        mState.onCodeInput(code, isSinglePointer, mAutoCapsMode && mAutoCapsState);
     }
 
     public void onCancelInput(boolean isSinglePointer) {
