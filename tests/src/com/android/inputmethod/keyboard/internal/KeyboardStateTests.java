@@ -71,6 +71,11 @@ public class KeyboardStateTests extends AndroidTestCase {
             mLayout = SYMBOLS_SHIFTED;
         }
 
+        @Override
+        public void requestUpdatingShiftState() {
+            mState.onUpdateShiftState(mAutoCaps);
+        }
+
         public void toggleCapsLock() {
             mState.onToggleCapsLock();
         }
@@ -111,7 +116,6 @@ public class KeyboardStateTests extends AndroidTestCase {
         public void onCancelInput(boolean isSinglePointer) {
             mState.onCancelInput(isSinglePointer);
         }
-
     }
 
     private MockKeyboardSwitcher mSwitcher;
