@@ -172,6 +172,7 @@ static void prof_out(void) {
 #define EQUIVALENT_CHAR_WITHOUT_DISTANCE_INFO -2
 #define PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO -3
 #define NOT_A_INDEX -1
+#define NOT_A_FREQUENCY -1
 
 #define KEYCODE_SPACE ' '
 

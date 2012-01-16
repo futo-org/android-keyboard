@@ -168,8 +168,8 @@ int Correction::getFinalFreq(const int freq, unsigned short **word, int *wordLen
     const int outputIndex = mTerminalOutputIndex;
     const int inputIndex = mTerminalInputIndex;
     *wordLength = outputIndex + 1;
-    if (mProximityInfo->sameAsTyped(mWord, outputIndex + 1) || outputIndex < MIN_SUGGEST_DEPTH) {
-        return -1;
+    if (outputIndex < MIN_SUGGEST_DEPTH) {
+        return NOT_A_FREQUENCY;
     }
 
     *word = mWord;

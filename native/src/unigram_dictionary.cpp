@@ -335,7 +335,7 @@ inline void UnigramDictionary::onTerminal(const int freq,
     int wordLength;
     unsigned short* wordPointer;
     const int finalFreq = correction->getFinalFreq(freq, &wordPointer, &wordLength);
-    if (finalFreq >= 0) {
+    if (finalFreq != NOT_A_FREQUENCY) {
         if (!terminalAttributes.isShortcutOnly()) {
             if (addToMasterQueue) {
                 addWord(wordPointer, wordLength, finalFreq, masterQueue);
