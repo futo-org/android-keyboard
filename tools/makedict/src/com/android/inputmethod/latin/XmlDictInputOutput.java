@@ -46,6 +46,8 @@ public class XmlDictInputOutput {
     private static final String FREQUENCY_ATTR = "f";
     private static final String WORD_ATTR = "word";
 
+    private static final int SHORTCUT_ONLY_DEFAULT_FREQ = 1;
+
     /**
      * SAX handler for a unigram XML file.
      */
@@ -232,6 +234,15 @@ public class XmlDictInputOutput {
                 new UnigramHandler(dict, shortcutHandler.getShortcutMap(),
                         bigramHandler.getBigramMap());
         parser.parse(unigrams, unigramHandler);
+
+        final HashMap<String, ArrayList<WeightedString>> shortcutMap =
+                shortcutHandler.getShortcutMap();
+        for (final String shortcut : shortcutMap.keySet()) {
+            if (dict.hasWord(shortcut)) continue;
+            // TODO: list a frequency in the shortcut file and use it here, instead of
+            // a constant freq
+            dict.addShortcutOnly(shortcut, SHORTCUT_ONLY_DEFAULT_FREQ, shortcutMap.get(shortcut));
+        }
         return dict;
     }
 
