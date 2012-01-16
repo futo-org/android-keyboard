@@ -28,16 +28,18 @@ import java.util.ArrayList;
 public class Word implements Comparable<Word> {
     final String mWord;
     final int mFrequency;
+    final boolean mIsShortcutOnly;
     final ArrayList<WeightedString> mShortcutTargets;
     final ArrayList<WeightedString> mBigrams;
 
     public Word(final String word, final int frequency,
             final ArrayList<WeightedString> shortcutTargets,
-            final ArrayList<WeightedString> bigrams) {
+            final ArrayList<WeightedString> bigrams, final boolean isShortcutOnly) {
         mWord = word;
         mFrequency = frequency;
         mShortcutTargets = shortcutTargets;
         mBigrams = bigrams;
+        mIsShortcutOnly = isShortcutOnly;
     }
 
     /**
