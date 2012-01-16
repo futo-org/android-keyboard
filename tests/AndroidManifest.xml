@@ -22,8 +22,6 @@
     <application>
         <uses-library android:name="android.test.runner" />
         <!-- meta-data android:name="com.android.contacts.iconset" android:resource="@xml/iconset" /-->
-        <uses-permission android:name="android.permission.READ_CONTACTS" />
-
     </application>
 
     <instrumentation android:name="android.test.InstrumentationTestRunner"
