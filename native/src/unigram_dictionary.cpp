@@ -186,7 +186,7 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
 
     PROF_OPEN;
     PROF_START(0);
-    // Note: This line is intentionally left blank
+    queuePool->clearAll();
     PROF_END(0);
 
     PROF_START(1);
@@ -241,18 +241,17 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
         }
     }
     PROF_END(6);
+    if (DEBUG_WORDS_PRIORITY_QUEUE) {
+        queuePool->dumpSubQueue1TopSuggestions();
+    }
 }
 
 void UnigramDictionary::initSuggestions(ProximityInfo *proximityInfo, const int *xCoordinates,
-        const int *yCoordinates, const int *codes, const int inputLength,
-        WordsPriorityQueue *queue, Correction *correction) {
+        const int *yCoordinates, const int *codes, const int inputLength, Correction *correction) {
     if (DEBUG_DICT) {
         AKLOGI("initSuggest");
     }
     proximityInfo->setInputParams(codes, inputLength, xCoordinates, yCoordinates);
-    if (queue) {
-        queue->clear();
-    }
     const int maxDepth = min(inputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
     correction->initCorrection(proximityInfo, inputLength, maxDepth);
 }
@@ -264,15 +263,13 @@ void UnigramDictionary::getOneWordSuggestions(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codes,
         const bool useFullEditDistance, const int inputLength, Correction *correction,
         WordsPriorityQueuePool *queuePool) {
-    WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
-    initSuggestions(
-            proximityInfo, xcoordinates, ycoordinates, codes, inputLength, masterQueue, correction);
-    getSuggestionCandidates(useFullEditDistance, inputLength, correction, masterQueue,
+    initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, inputLength, correction);
+    getSuggestionCandidates(useFullEditDistance, inputLength, correction, queuePool,
             true /* doAutoCompletion */, DEFAULT_MAX_ERRORS);
 }
 
 void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
-        const int inputLength, Correction *correction, WordsPriorityQueue *queue,
+        const int inputLength, Correction *correction, WordsPriorityQueuePool *queuePool,
         const bool doAutoCompletion, const int maxErrors) {
     // TODO: Remove setCorrectionParams
     correction->setCorrectionParams(0, 0, 0,
@@ -292,7 +289,7 @@ void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
             int firstChildPos;
 
             const bool needsToTraverseChildrenNodes = processCurrentNode(siblingPos,
-                    correction, &childCount, &firstChildPos, &siblingPos, queue);
+                    correction, &childCount, &firstChildPos, &siblingPos, queuePool);
             // Update next sibling pos
             correction->setTreeSiblingPos(outputIndex, siblingPos);
 
@@ -327,14 +324,34 @@ void UnigramDictionary::getMistypedSpaceWords(ProximityInfo *proximityInfo, cons
 
 inline void UnigramDictionary::onTerminal(const int freq,
         const TerminalAttributes& terminalAttributes, Correction *correction,
-        WordsPriorityQueue *queue) {
+        WordsPriorityQueuePool *queuePool, const bool addToMasterQueue) {
+    const int inputIndex = correction->getInputIndex();
+    const bool addToSubQueue = inputIndex < SUB_QUEUE_MAX_COUNT;
+    if (!addToMasterQueue && !addToSubQueue) {
+        return;
+    }
+    WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
+    WordsPriorityQueue *subQueue = queuePool->getSubQueue1(inputIndex);
     int wordLength;
     unsigned short* wordPointer;
     const int finalFreq = correction->getFinalFreq(freq, &wordPointer, &wordLength);
     if (finalFreq >= 0) {
         if (!terminalAttributes.isShortcutOnly()) {
-            addWord(wordPointer, wordLength, finalFreq, queue);
+            if (addToMasterQueue) {
+                addWord(wordPointer, wordLength, finalFreq, masterQueue);
+            }
+            // TODO: Check the validity of "inputIndex == wordLength"
+            //if (addToSubQueue && inputIndex == wordLength) {
+            if (addToSubQueue) {
+                addWord(wordPointer, wordLength, finalFreq, subQueue);
+            }
         }
+        // Please note that the shortcut candidates will be added to the master queue only.
+        if (!addToMasterQueue) {
+            return;
+        }
+
+        // From here, below is the code to add shortcut candidates.
         TerminalAttributes::ShortcutIterator iterator = terminalAttributes.getShortcutIterator();
         while (iterator.hasNextShortcutTarget()) {
             // TODO: addWord only supports weak ordering, meaning we have no means to control the
@@ -345,7 +362,7 @@ inline void UnigramDictionary::onTerminal(const int freq,
             uint16_t shortcutTarget[MAX_WORD_LENGTH_INTERNAL];
             const int shortcutTargetStringLength = iterator.getNextShortcutTarget(
                     MAX_WORD_LENGTH_INTERNAL, shortcutTarget);
-            addWord(shortcutTarget, shortcutTargetStringLength, finalFreq, queue);
+            addWord(shortcutTarget, shortcutTargetStringLength, finalFreq, masterQueue);
         }
     }
 }
@@ -411,8 +428,7 @@ void UnigramDictionary::getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo
     }
 
     // TODO: Remove initSuggestions and correction->setCorrectionParams
-    initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, inputLength,
-            0 /* do not clear queue */, correction);
+    initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, inputLength, correction);
 
     correction->setCorrectionParams(-1 /* skipPos */, -1 /* excessivePos */,
             -1 /* transposedPos */, spaceProximityPos, missingSpacePos,
@@ -583,7 +599,7 @@ int UnigramDictionary::getBigramPosition(int pos, unsigned short *word, int offs
 // given level, as output into newCount when traversing this level's parent.
 inline bool UnigramDictionary::processCurrentNode(const int initialPos,
         Correction *correction, int *newCount,
-        int *newChildrenPosition, int *nextSiblingPosition, WordsPriorityQueue *queue) {
+        int *newChildrenPosition, int *nextSiblingPosition, WordsPriorityQueuePool *queuePool) {
     if (DEBUG_DICT) {
         correction->checkState();
     }
@@ -658,15 +674,13 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos,
     } while (NOT_A_CHARACTER != c);
 
     if (isTerminalNode) {
-        if (needsToInvokeOnTerminal) {
-            // The frequency should be here, because we come here only if this is actually
-            // a terminal node, and we are on its last char.
-            const int freq = BinaryFormat::readFrequencyWithoutMovingPointer(DICT_ROOT, pos);
-            const int childrenAddressPos = BinaryFormat::skipFrequency(flags, pos);
-            const int attributesPos = BinaryFormat::skipChildrenPosition(flags, childrenAddressPos);
-            TerminalAttributes terminalAttributes(DICT_ROOT, flags, attributesPos);
-            onTerminal(freq, terminalAttributes, correction, queue);
-        }
+        // The frequency should be here, because we come here only if this is actually
+        // a terminal node, and we are on its last char.
+        const int freq = BinaryFormat::readFrequencyWithoutMovingPointer(DICT_ROOT, pos);
+        const int childrenAddressPos = BinaryFormat::skipFrequency(flags, pos);
+        const int attributesPos = BinaryFormat::skipChildrenPosition(flags, childrenAddressPos);
+        TerminalAttributes terminalAttributes(DICT_ROOT, flags, attributesPos);
+        onTerminal(freq, terminalAttributes, correction, queuePool, needsToInvokeOnTerminal);
 
         // If there are more chars in this node, then this virtual node has children.
         // If we are on the last char, this virtual node has children if this node has.

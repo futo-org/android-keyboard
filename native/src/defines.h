@@ -22,9 +22,23 @@
 #include <cutils/log.h>
 #define AKLOGE ALOGE
 #define AKLOGI ALOGI
+
+#define DUMP_WORD(word, length) do { dumpWord(word, length); } while(0)
+
+static char charBuf[50];
+
+static void dumpWord(const unsigned short* word, const int length) {
+    for (int i = 0; i < length; ++i) {
+        charBuf[i] = word[i];
+    }
+    charBuf[length] = 0;
+    AKLOGI("[ %s ]", charBuf);
+}
+
 #else
 #define AKLOGE(fmt, ...)
 #define AKLOGI(fmt, ...)
+#define DUMP_WORD(word, length)
 #endif
 
 #ifdef FLAG_DO_PROFILE
@@ -106,18 +120,6 @@ static void prof_out(void) {
 #define DEBUG_CORRECTION_FREQ true
 #define DEBUG_WORDS_PRIORITY_QUEUE true
 
-#define DUMP_WORD(word, length) do { dumpWord(word, length); } while(0)
-
-static char charBuf[50];
-
-static void dumpWord(const unsigned short* word, const int length) {
-    for (int i = 0; i < length; ++i) {
-        charBuf[i] = word[i];
-    }
-    charBuf[length] = 0;
-    AKLOGI("[ %s ]", charBuf);
-}
-
 #else // FLAG_DBG
 
 #define DEBUG_DICT false
@@ -131,7 +133,6 @@ static void dumpWord(const unsigned short* word, const int length) {
 #define DEBUG_CORRECTION_FREQ false
 #define DEBUG_WORDS_PRIORITY_QUEUE false
 
-#define DUMP_WORD(word, length)
 
 #endif // FLAG_DBG
 
@@ -207,7 +208,8 @@ static void dumpWord(const unsigned short* word, const int length) {
 
 // Word limit for sub queues used in WordsPriorityQueuePool.  Sub queues are temporary queues used
 // for better performance.
-#define SUB_QUEUE_MAX_WORDS 5
+// Holds up to 1 candidate for each word
+#define SUB_QUEUE_MAX_WORDS 1
 #define SUB_QUEUE_MAX_COUNT 10
 
 #define MAX_DEPTH_MULTIPLIER 3
