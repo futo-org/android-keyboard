@@ -61,7 +61,9 @@ inline int BinaryFormat::detectFormat(const uint8_t* const dict) {
 }
 
 inline int BinaryFormat::getGroupCountAndForwardPointer(const uint8_t* const dict, int* pos) {
-    return dict[(*pos)++];
+    const int msb = dict[(*pos)++];
+    if (msb < 0x80) return msb;
+    return ((msb & 0x7F) << 8) | dict[(*pos)++];
 }
 
 inline uint8_t BinaryFormat::getFlagsAndForwardPointer(const uint8_t* const dict, int* pos) {
