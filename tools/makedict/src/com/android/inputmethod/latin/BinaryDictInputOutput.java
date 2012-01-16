@@ -606,7 +606,9 @@ public class BinaryDictInputOutput {
             }
             flags |= FLAG_HAS_BIGRAMS;
         }
-        // TODO: fill in the FLAG_IS_SHORTCUT_ONLY
+        if (group.mIsShortcutOnly) {
+            flags |= FLAG_IS_SHORTCUT_ONLY;
+        }
         return flags;
     }
 
