@@ -28,6 +28,7 @@ import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
+import com.android.inputmethod.latin.DebugSettings;
 import com.android.inputmethod.latin.InputView;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
@@ -53,6 +54,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
 
     private SubtypeSwitcher mSubtypeSwitcher;
     private SharedPreferences mPrefs;
+    private boolean mForceNonDistinctMultitouch;
 
     private InputView mCurrentInputView;
     private LatinKeyboardView mKeyboardView;
@@ -92,6 +94,8 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         mState = new KeyboardState(this);
         setContextThemeWrapper(ims, getKeyboardThemeIndex(ims, prefs));
         prefs.registerOnSharedPreferenceChangeListener(this);
+        mForceNonDistinctMultitouch = prefs.getBoolean(
+                DebugSettings.FORCE_NON_DISTINCT_MULTITOUCH_KEY, false);
     }
 
     private static int getKeyboardThemeIndex(Context context, SharedPreferences prefs) {
@@ -391,6 +395,9 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
 
         mKeyboardView = (LatinKeyboardView) mCurrentInputView.findViewById(R.id.keyboard_view);
         mKeyboardView.setKeyboardActionListener(mInputMethodService);
+        if (mForceNonDistinctMultitouch) {
+            mKeyboardView.setDistinctMultitouch(false);
+        }
 
         // This always needs to be set since the accessibility state can
         // potentially change without the input view being re-created.

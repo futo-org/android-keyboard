@@ -30,6 +30,7 @@ public class DebugSettings extends PreferenceActivity
 
     private static final String TAG = "DebugSettings";
     private static final String DEBUG_MODE_KEY = "debug_mode";
+    public static final String FORCE_NON_DISTINCT_MULTITOUCH_KEY = "force_non_distinct_multitouch";
 
     private boolean mServiceNeedsRestart = false;
     private CheckBoxPreference mDebugMode;
@@ -60,6 +61,8 @@ public class DebugSettings extends PreferenceActivity
                 updateDebugMode();
                 mServiceNeedsRestart = true;
             }
+        } else if (key.equals(FORCE_NON_DISTINCT_MULTITOUCH_KEY)) {
+            mServiceNeedsRestart = true;
         }
     }
 

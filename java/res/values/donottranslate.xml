@@ -120,6 +120,7 @@
     <!-- Title for Latin keyboard debug settings activity / dialog -->
     <string name="english_ime_debug_settings">Android keyboard Debug settings</string>
     <string name="prefs_debug_mode">Debug Mode</string>
+    <string name="prefs_force_non_distinct_multitouch">Force non-distinct multitouch</string>
 
     <!-- Keyboard theme names -->
     <string name="layout_basic">Basic</string>
