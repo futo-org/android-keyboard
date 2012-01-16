@@ -128,6 +128,13 @@ class WordsPriorityQueue {
         }
     }
 
+    void dumpTopWord() {
+        if (size() <= 0) {
+            return;
+        }
+        DUMP_WORD(mSuggestions.top()->mWord, mSuggestions.top()->mWordLength);
+    }
+
  private:
     struct wordComparator {
         bool operator ()(SuggestedWord * left, SuggestedWord * right) {

@@ -58,6 +58,21 @@ class WordsPriorityQueuePool {
         return mSubQueues2[id];
     }
 
+    inline void clearAll() {
+        mMasterQueue->clear();
+        for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
+            mSubQueues1[i]->clear();
+            mSubQueues2[i]->clear();
+        }
+    }
+
+    void dumpSubQueue1TopSuggestions() {
+        AKLOGI("DUMP SUBQUEUE1 TOP SUGGESTIONS");
+        for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
+            mSubQueues1[i]->dumpTopWord();
+        }
+    }
+
  private:
     WordsPriorityQueue* mMasterQueue;
     WordsPriorityQueue* mSubQueues1[SUB_QUEUE_MAX_COUNT];
