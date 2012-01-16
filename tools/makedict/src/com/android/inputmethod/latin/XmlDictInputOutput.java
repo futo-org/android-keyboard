@@ -45,6 +45,7 @@ public class XmlDictInputOutput {
     private static final String SHORTCUT_TAG = "shortcut";
     private static final String FREQUENCY_ATTR = "f";
     private static final String WORD_ATTR = "word";
+    private static final String SHORTCUT_ONLY_ATTR = "shortcutOnly";
 
     /**
      * SAX handler for a unigram XML file.
@@ -264,9 +265,11 @@ public class XmlDictInputOutput {
         }
         // TODO: use an XMLSerializer if this gets big
         destination.write("<wordlist format=\"2\">\n");
+        destination.write("<!-- Warning: there is no code to read this format yet. -->\n");
         for (Word word : set) {
             destination.write("  <" + WORD_TAG + " " + WORD_ATTR + "=\"" + word.mWord + "\" "
-                    + FREQUENCY_ATTR + "=\"" + word.mFrequency + "\">");
+                    + FREQUENCY_ATTR + "=\"" + word.mFrequency + "\" " + SHORTCUT_ONLY_ATTR
+                    + "=\"" + word.mIsShortcutOnly + "\">");
             if (null != word.mShortcutTargets) {
                 destination.write("\n");
                 for (WeightedString target : word.mShortcutTargets) {
