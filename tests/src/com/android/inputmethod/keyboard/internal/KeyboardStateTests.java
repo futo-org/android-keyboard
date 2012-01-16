@@ -29,8 +29,12 @@ public class KeyboardStateTests extends AndroidTestCase {
     private static final int SYMBOLS_UNSHIFTED = 4;
     private static final int SYMBOLS_SHIFTED = 5;
 
-    static class KeyboardSwitcher implements KeyboardState.SwitchActions {
+    static class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         public int mLayout = ALPHABET_UNSHIFTED;
+
+        public boolean mAutoCaps = NO_AUTO_CAPS;
+
+        final KeyboardState mState = new KeyboardState(this);
 
         @Override
         public void setAlphabetKeyboard() {
@@ -66,22 +70,62 @@ public class KeyboardStateTests extends AndroidTestCase {
         public void setSymbolsShiftedKeyboard() {
             mLayout = SYMBOLS_SHIFTED;
         }
+
+        public void toggleCapsLock() {
+            mState.onToggleCapsLock();
+        }
+
+        public void updateShiftState() {
+            mState.onUpdateShiftState(mAutoCaps);
+        }
+
+        public void loadKeyboard(String layoutSwitchBackSymbols,
+                boolean hasDistinctMultitouch) {
+            mState.onLoadKeyboard(layoutSwitchBackSymbols, hasDistinctMultitouch);
+        }
+
+        public void onPressShift(boolean withSliding) {
+            mState.onPressShift(withSliding);
+        }
+
+        public void onReleaseShift(boolean withSliding) {
+            mState.onReleaseShift(withSliding);
+        }
+
+        public void onPressSymbol() {
+            mState.onPressSymbol();
+        }
+
+        public void onReleaseSymbol() {
+            mState.onReleaseSymbol();
+        }
+
+        public void onOtherKeyPressed() {
+            mState.onOtherKeyPressed();
+        }
+
+        public void onCodeInput(int code, boolean isSinglePointer) {
+            mState.onCodeInput(code, isSinglePointer, mAutoCaps);
+        }
+
+        public void onCancelInput(boolean isSinglePointer) {
+            mState.onCancelInput(isSinglePointer);
+        }
+
     }
 
-    private KeyboardSwitcher mSwitcher;
-    private KeyboardState mState;
+    private MockKeyboardSwitcher mSwitcher;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
-        mSwitcher = new KeyboardSwitcher();
-        mState = new KeyboardState(mSwitcher);
+        mSwitcher = new MockKeyboardSwitcher();
 
-        final String layoutSwitchBackCharacter = "";
+        final String layoutSwitchBackSymbols = "";
         // TODO: Unit tests for non-distinct multi touch device.
         final boolean hasDistinctMultitouch = true;
-        mState.onLoadKeyboard(layoutSwitchBackCharacter, hasDistinctMultitouch);
+        mSwitcher.loadKeyboard(layoutSwitchBackSymbols, hasDistinctMultitouch);
     }
 
     // Argument for KeyboardState.onPressShift and onReleaseShift.
@@ -125,15 +169,15 @@ public class KeyboardStateTests extends AndroidTestCase {
     // Shift key in alphabet mode.
     public void testShift() {
         // Press/release shift key.
-        mState.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressShift(NOT_SLIDING);
         assertAlphabetManualShifted();
-        mState.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onReleaseShift(NOT_SLIDING);
         assertAlphabetManualShifted();
 
         // Press/release shift key.
-        mState.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressShift(NOT_SLIDING);
         assertAlphabetManualShifted();
-        mState.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onReleaseShift(NOT_SLIDING);
         assertAlphabetNormal();
 
         // TODO: Sliding test
@@ -142,15 +186,15 @@ public class KeyboardStateTests extends AndroidTestCase {
     // Switching between alphabet and symbols.
     public void testAlphabetAndSymbols() {
         // Press/release "?123" key.
-        mState.onPressSymbol();
+        mSwitcher.onPressSymbol();
         assertSymbolsNormal();
-        mState.onReleaseSymbol();
+        mSwitcher.onReleaseSymbol();
         assertSymbolsNormal();
 
         // Press/release "ABC" key.
-        mState.onPressSymbol();
+        mSwitcher.onPressSymbol();
         assertAlphabetNormal();
-        mState.onReleaseSymbol();
+        mSwitcher.onReleaseSymbol();
         assertAlphabetNormal();
 
         // TODO: Sliding test
@@ -160,21 +204,21 @@ public class KeyboardStateTests extends AndroidTestCase {
     // Switching between symbols and symbols shifted.
     public void testSymbolsAndSymbolsShifted() {
         // Press/release "?123" key.
-        mState.onPressSymbol();
+        mSwitcher.onPressSymbol();
         assertSymbolsNormal();
-        mState.onReleaseSymbol();
+        mSwitcher.onReleaseSymbol();
         assertSymbolsNormal();
 
         // Press/release "=\<" key.
-        mState.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressShift(NOT_SLIDING);
         assertSymbolsShifted();
-        mState.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onReleaseShift(NOT_SLIDING);
         assertSymbolsShifted();
 
         // Press/release "ABC" key.
-        mState.onPressSymbol();
+        mSwitcher.onPressSymbol();
         assertAlphabetNormal();
-        mState.onReleaseSymbol();
+        mSwitcher.onReleaseSymbol();
         assertAlphabetNormal();
 
         // TODO: Sliding test
@@ -183,15 +227,16 @@ public class KeyboardStateTests extends AndroidTestCase {
 
     // Automatic upper case test
     public void testAutomaticUpperCase() {
+        mSwitcher.mAutoCaps = AUTO_CAPS;
         // Update shift state with auto caps enabled.
-        mState.onUpdateShiftState(true);
+        mSwitcher.updateShiftState();
         assertAlphabetAutomaticShifted();
 
         // Press shift key.
-        mState.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressShift(NOT_SLIDING);
         assertAlphabetManualShifted();
         // Release shift key.
-        mState.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onReleaseShift(NOT_SLIDING);
         assertAlphabetNormal();
 
         // TODO: Chording test.
@@ -209,25 +254,25 @@ public class KeyboardStateTests extends AndroidTestCase {
     // TODO: Move long press recognizing timer/logic into KeyboardState.
     public void testLongPressShift() {
         // Long press shift key
-        mState.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressShift(NOT_SLIDING);
         assertAlphabetManualShifted();
         // Long press recognized in LatinKeyboardView.KeyTimerHandler.
-        mState.onToggleCapsLock();
+        mSwitcher.toggleCapsLock();
         assertAlphabetShiftLocked();
-        mState.onCodeInput(Keyboard.CODE_CAPSLOCK, SINGLE, NO_AUTO_CAPS);
+        mSwitcher.onCodeInput(Keyboard.CODE_CAPSLOCK, SINGLE);
         assertAlphabetShiftLocked();
-        mState.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onReleaseShift(NOT_SLIDING);
         assertAlphabetShiftLocked();
 
         // Long press shift key.
-        mState.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressShift(NOT_SLIDING);
         assertAlphabetManualShifted();
         // Long press recognized in LatinKeyboardView.KeyTimerHandler.
-        mState.onToggleCapsLock();
+        mSwitcher.toggleCapsLock();
         assertAlphabetNormal();
-        mState.onCodeInput(Keyboard.CODE_CAPSLOCK, SINGLE, NO_AUTO_CAPS);
+        mSwitcher.onCodeInput(Keyboard.CODE_CAPSLOCK, SINGLE);
         assertAlphabetNormal();
-        mState.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onReleaseShift(NOT_SLIDING);
         assertAlphabetNormal();
     }
 
@@ -235,25 +280,25 @@ public class KeyboardStateTests extends AndroidTestCase {
     // TODO: Move double tap recognizing timer/logic into KeyboardState.
     public void testDoubleTapShift() {
         // First shift key tap.
-        mState.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressShift(NOT_SLIDING);
         assertAlphabetManualShifted();
-        mState.onCodeInput(Keyboard.CODE_SHIFT, SINGLE, NO_AUTO_CAPS);
+        mSwitcher.onCodeInput(Keyboard.CODE_SHIFT, SINGLE);
         assertAlphabetManualShifted();
-        mState.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onReleaseShift(NOT_SLIDING);
         assertAlphabetManualShifted();
         // Second shift key tap.
         // Double tap recognized in LatinKeyboardView.KeyTimerHandler.
-        mState.onToggleCapsLock();
+        mSwitcher.toggleCapsLock();
         assertAlphabetShiftLocked();
-        mState.onCodeInput(Keyboard.CODE_SHIFT, SINGLE, NO_AUTO_CAPS);
+        mSwitcher.onCodeInput(Keyboard.CODE_SHIFT, SINGLE);
         assertAlphabetShiftLocked();
 
         // First shift key tap.
-        mState.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressShift(NOT_SLIDING);
         assertAlphabetManualShifted();
-        mState.onCodeInput(Keyboard.CODE_SHIFT, SINGLE, NO_AUTO_CAPS);
+        mSwitcher.onCodeInput(Keyboard.CODE_SHIFT, SINGLE);
         assertAlphabetManualShifted();
-        mState.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onReleaseShift(NOT_SLIDING);
         assertAlphabetNormal();
         // Second shift key tap.
         // Second tap is ignored in LatinKeyboardView.KeyTimerHandler.
