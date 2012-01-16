@@ -435,6 +435,16 @@ public class FusionDictionary implements Iterable<Word> {
     }
 
     /**
+     * Helper method to find out whether a word is in the dict or not.
+     */
+    public boolean hasWord(final String s) {
+        if (null == s || "".equals(s)) {
+            throw new RuntimeException("Can't search for a null or empty string");
+        }
+        return null != findWordInTree(mRoot, s);
+    }
+
+    /**
      * Recursively count the number of character groups in a given branch of the trie.
      *
      * @param node the parent node.
