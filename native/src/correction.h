@@ -48,7 +48,6 @@ class Correction {
     void checkState();
     bool initProcessState(const int index);
 
-    int getOutputIndex();
     int getInputIndex();
 
     virtual ~Correction();
@@ -115,11 +114,11 @@ class Correction {
  private:
     inline void incrementInputIndex();
     inline void incrementOutputIndex();
-    inline bool needsToTraverseAllNodes();
     inline void startToTraverseAllNodes();
     inline bool isQuote(const unsigned short c);
     inline CorrectionType processSkipChar(
             const int32_t c, const bool isTerminal, const bool inputIndexIncremented);
+    inline CorrectionType processUnrelatedCorrectionType();
     inline void addCharToCurrentWord(const int32_t c);
 
     const int TYPED_LETTER_MULTIPLIER;

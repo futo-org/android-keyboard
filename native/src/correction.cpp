@@ -215,18 +215,8 @@ int Correction::goDownTree(
 }
 
 // TODO: remove
-int Correction::getOutputIndex() {
-    return mOutputIndex;
-}
-
-// TODO: remove
 int Correction::getInputIndex() {
     return mInputIndex;
-}
-
-// TODO: remove
-bool Correction::needsToTraverseAllNodes() {
-    return mNeedsToTraverseAllNodes;
 }
 
 void Correction::incrementInputIndex() {
@@ -278,19 +268,25 @@ void Correction::addCharToCurrentWord(const int32_t c) {
             mWord, mOutputIndex + 1);
 }
 
-// TODO: inline?
 Correction::CorrectionType Correction::processSkipChar(
         const int32_t c, const bool isTerminal, const bool inputIndexIncremented) {
     addCharToCurrentWord(c);
-    if (needsToTraverseAllNodes() && isTerminal) {
-        mTerminalInputIndex = mInputIndex - (inputIndexIncremented ? 1 : 0);
-        mTerminalOutputIndex = mOutputIndex;
+    mTerminalInputIndex = mInputIndex - (inputIndexIncremented ? 1 : 0);
+    mTerminalOutputIndex = mOutputIndex;
+    if (mNeedsToTraverseAllNodes && isTerminal) {
         incrementOutputIndex();
         return TRAVERSE_ALL_ON_TERMINAL;
     } else {
         incrementOutputIndex();
         return TRAVERSE_ALL_NOT_ON_TERMINAL;
     }
+}
+
+Correction::CorrectionType Correction::processUnrelatedCorrectionType() {
+    // Needs to set mTerminalInputIndex and mTerminalOutputIndex before returning any CorrectionType
+    mTerminalInputIndex = mInputIndex;
+    mTerminalOutputIndex = mOutputIndex;
+    return UNRELATED;
 }
 
 inline bool isEquivalentChar(ProximityInfo::ProximityType type) {
@@ -301,7 +297,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         const int32_t c, const bool isTerminal) {
     const int correctionCount = (mSkippedCount + mExcessiveCount + mTransposedCount);
     if (correctionCount > mMaxErrors) {
-        return UNRELATED;
+        return processUnrelatedCorrectionType();
     }
 
     // TODO: Change the limit if we'll allow two or more corrections
@@ -381,7 +377,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
                 AKLOGI("UNRELATED(0): %d, %d, %d, %d, %c", mProximityCount, mSkippedCount,
                         mTransposedCount, mExcessiveCount, c);
             }
-            return UNRELATED;
+            return processUnrelatedCorrectionType();
         }
     }
 
@@ -484,7 +480,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
                 AKLOGI("UNRELATED(1): %d, %d, %d, %d, %c", mProximityCount, mSkippedCount,
                         mTransposedCount, mExcessiveCount, c);
             }
-            return UNRELATED;
+            return processUnrelatedCorrectionType();
         }
     } else if (secondTransposing) {
         // If inputIndex is greater than mInputLength, that means there is no
@@ -539,6 +535,8 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         }
         return ON_TERMINAL;
     } else {
+        mTerminalInputIndex = mInputIndex - 1;
+        mTerminalOutputIndex = mOutputIndex - 1;
         return NOT_ON_TERMINAL;
     }
 }

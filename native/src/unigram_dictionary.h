@@ -93,14 +93,13 @@ class UnigramDictionary {
         const int codesRemain, const int currentDepth, int* codesDest, Correction *correction,
         WordsPriorityQueuePool* queuePool);
     void initSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
-            const int *ycoordinates, const int *codes, const int codesSize,
-            WordsPriorityQueue *queue, Correction *correction);
+            const int *ycoordinates, const int *codes, const int codesSize, Correction *correction);
     void getOneWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const bool useFullEditDistance,
             const int inputLength, Correction *correction, WordsPriorityQueuePool* queuePool);
     void getSuggestionCandidates(
             const bool useFullEditDistance, const int inputLength, Correction *correction,
-            WordsPriorityQueue* queue, const bool doAutoCompletion, const int maxErrors);
+            WordsPriorityQueuePool* queuePool, const bool doAutoCompletion, const int maxErrors);
     void getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo,
             const int *xcoordinates, const int *ycoordinates, const int *codes,
             const bool useFullEditDistance, const int inputLength, const int spaceProximityPos,
@@ -114,12 +113,12 @@ class UnigramDictionary {
             const int inputLength, const int spaceProximityPos, Correction *correction,
             WordsPriorityQueuePool* queuePool);
     void onTerminal(const int freq, const TerminalAttributes& terminalAttributes,
-            Correction *correction, WordsPriorityQueue *queue);
+            Correction *correction, WordsPriorityQueuePool *queuePool, const bool addToMasterQueue);
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
     // Process a node by considering proximity, missing and excessive character
     bool processCurrentNode(const int initialPos, Correction *correction, int *newCount,
-            int *newChildPosition, int *nextSiblingPosition, WordsPriorityQueue *queue);
+            int *newChildPosition, int *nextSiblingPosition, WordsPriorityQueuePool *queuePool);
     int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
             ProximityInfo *proximityInfo, unsigned short *word);
     int getMostFrequentWordLikeInner(const uint16_t* const inWord, const int length,
