@@ -265,19 +265,28 @@ public class BinaryDictInputOutput {
     }
 
     /**
+     * Compute the binary size of the group count
+     * @param count the group count
+     * @return the size of the group count, either 1 or 2 bytes.
+     */
+    private static int getGroupCountSize(final int count) {
+        if (MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT >= count) {
+            return 1;
+        } else if (MAX_CHARGROUPS_IN_A_NODE >= count) {
+            return 2;
+        } else {
+            throw new RuntimeException("Can't have more than " + MAX_CHARGROUPS_IN_A_NODE
+                    + " groups in a node (found " + count +")");
+        }
+    }
+
+    /**
      * Compute the binary size of the group count for a node
      * @param node the node
      * @return the size of the group count, either 1 or 2 bytes.
      */
     private static int getGroupCountSize(final Node node) {
-        if (MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT >= node.mData.size()) {
-            return 1;
-        } else if (MAX_CHARGROUPS_IN_A_NODE >= node.mData.size()) {
-            return 2;
-        } else {
-            throw new RuntimeException("Can't have more than " + MAX_CHARGROUPS_IN_A_NODE
-                    + " groups in a node (found " + node.mData.size() +")");
-        }
+        return getGroupCountSize(node.mData.size());
     }
 
     /**
@@ -913,7 +922,7 @@ public class BinaryDictInputOutput {
                     addressPointer += 3;
                     break;
                 default:
-                    throw new RuntimeException("Has attribute with no address");
+                    throw new RuntimeException("Has shortcut targets with no address");
                 }
                 shortcutTargets.add(new PendingAttribute(targetFlags & FLAG_ATTRIBUTE_FREQUENCY,
                         targetAddress));
@@ -944,7 +953,7 @@ public class BinaryDictInputOutput {
                     addressPointer += 3;
                     break;
                 default:
-                    throw new RuntimeException("Has attribute with no address");
+                    throw new RuntimeException("Has bigrams with no address");
                 }
                 bigrams.add(new PendingAttribute(bigramFlags & FLAG_ATTRIBUTE_FREQUENCY,
                         bigramAddress));
@@ -953,6 +962,19 @@ public class BinaryDictInputOutput {
         }
         return new CharGroupInfo(originalGroupAddress, addressPointer, flags, characters, frequency,
                 childrenAddress, shortcutTargets, bigrams);
+    }
+
+    /**
+     * Reads and returns the char group count out of a file and forwards the pointer.
+     */
+    private static int readCharGroupCount(RandomAccessFile source) throws IOException {
+        final int msb = source.readUnsignedByte();
+        if (MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT >= msb) {
+            return msb;
+        } else {
+            return ((MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT & msb) << 8)
+                    + source.readUnsignedByte();
+        }
     }
 
     /**
@@ -968,8 +990,8 @@ public class BinaryDictInputOutput {
             int address) throws IOException {
         final long originalPointer = source.getFilePointer();
         source.seek(headerSize);
-        final int count = source.readUnsignedByte();
-        int groupOffset = 1; // 1 for the group count
+        final int count = readCharGroupCount(source);
+        int groupOffset = getGroupCountSize(count);
         final StringBuilder builder = new StringBuilder();
         String result = null;
 
@@ -1025,9 +1047,9 @@ public class BinaryDictInputOutput {
             Map<Integer, Node> reverseNodeMap, Map<Integer, CharGroup> reverseGroupMap)
             throws IOException {
         final int nodeOrigin = (int)(source.getFilePointer() - headerSize);
-        final int count = source.readUnsignedByte();
+        final int count = readCharGroupCount(source);
         final ArrayList<CharGroup> nodeContents = new ArrayList<CharGroup>();
-        int groupOffset = nodeOrigin + 1; // 1 byte for the group count
+        int groupOffset = nodeOrigin + getGroupCountSize(count);
         for (int i = count; i > 0; --i) {
             CharGroupInfo info = readCharGroup(source, groupOffset);
             ArrayList<WeightedString> shortcutTargets = null;
