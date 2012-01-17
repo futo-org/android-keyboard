@@ -257,13 +257,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     }
 
     /**
-     * Toggle caps lock state triggered by user touch event.
-     */
-    public void toggleCapsLock() {
-        mState.onToggleCapsLock();
-    }
-
-    /**
      * Update keyboard shift state triggered by connected EditText status change.
      */
     public void updateShiftState() {

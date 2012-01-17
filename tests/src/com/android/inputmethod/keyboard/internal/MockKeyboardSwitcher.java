@@ -121,10 +121,6 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onUpdateShiftState(mAutoCapsMode && mAutoCapsState);
     }
 
-    public void toggleCapsLock() {
-        mState.onToggleCapsLock();
-    }
-
     public void updateShiftState() {
         mState.onUpdateShiftState(mAutoCapsMode && mAutoCapsState);
     }

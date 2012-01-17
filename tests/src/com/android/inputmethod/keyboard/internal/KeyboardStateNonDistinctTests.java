@@ -342,8 +342,6 @@ public class KeyboardStateNonDistinctTests extends AndroidTestCase
         mSwitcher.onPressKey(CODE_SHIFT);
         assertAlphabetManualShifted();
         // Long press recognized in LatinKeyboardView.KeyTimerHandler.
-        mSwitcher.toggleCapsLock();
-        assertAlphabetShiftLocked();
         mSwitcher.onCodeInput(CODE_CAPSLOCK);
         assertAlphabetShiftLocked();
         mSwitcher.onReleaseKey(CODE_SHIFT);
@@ -355,8 +353,6 @@ public class KeyboardStateNonDistinctTests extends AndroidTestCase
         mSwitcher.onPressKey(CODE_SHIFT);
         assertAlphabetManualShifted();
         // Long press recognized in LatinKeyboardView.KeyTimerHandler.
-        mSwitcher.toggleCapsLock();
-        assertAlphabetNormal();
         mSwitcher.onCodeInput(CODE_CAPSLOCK);
         assertAlphabetNormal();
         mSwitcher.onReleaseKey(CODE_SHIFT);
@@ -396,8 +392,6 @@ public class KeyboardStateNonDistinctTests extends AndroidTestCase
         assertAlphabetManualShifted();
         // Second shift key tap.
         // Double tap recognized in LatinKeyboardView.KeyTimerHandler.
-        mSwitcher.toggleCapsLock();
-        assertAlphabetShiftLocked();
         mSwitcher.onCodeInput(CODE_CAPSLOCK);
         assertAlphabetShiftLocked();
 

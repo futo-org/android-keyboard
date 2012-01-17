@@ -29,7 +29,7 @@ import com.android.inputmethod.keyboard.Keyboard;
  * The input events are {@link #onLoadKeyboard(String, boolean)}, {@link #onSaveKeyboardState()},
  * {@link #onPressKey(int)}, {@link #onReleaseKey(int, boolean)},
  * {@link #onCodeInput(int, boolean, boolean)}, {@link #onCancelInput(boolean)},
- * {@link #onUpdateShiftState(boolean)}, and {@link #onToggleCapsLock()}.
+ * {@link #onUpdateShiftState(boolean)}.
  *
  * The actions are {@link SwitchActions}'s methods.
  */
@@ -403,6 +403,18 @@ public class KeyboardState {
                     + " single=" + isSinglePointer
                     + " autoCaps=" + autoCaps + " " + this);
         }
+
+        if (mIsAlphabetMode && code == Keyboard.CODE_CAPSLOCK) {
+            if (mKeyboardShiftState.isShiftLocked()) {
+                setShiftLocked(false);
+                // Shift key is long pressed or double tapped while caps lock state, we will
+                // toggle back to normal state. And mark as if shift key is released.
+                mShiftKeyState.onRelease();
+            } else {
+                setShiftLocked(true);
+            }
+        }
+
         switch (mSwitchState) {
         case SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL:
             // Only distinct multi touch devices can be in this state.
@@ -468,22 +480,6 @@ public class KeyboardState {
         // If the code is a letter, update keyboard shift state.
         if (Keyboard.isLetterCode(code)) {
             onUpdateShiftStateInternal(autoCaps);
-        }
-    }
-
-    public void onToggleCapsLock() {
-        if (DEBUG_EVENT) {
-            Log.d(TAG, "onToggleCapsLock: " + this);
-        }
-        if (mIsAlphabetMode) {
-            if (mKeyboardShiftState.isShiftLocked()) {
-                setShiftLocked(false);
-                // Shift key is long pressed while caps lock state, we will toggle back to normal
-                // state. And mark as if shift key is released.
-                mShiftKeyState.onRelease();
-            } else {
-                setShiftLocked(true);
-            }
         }
     }
 

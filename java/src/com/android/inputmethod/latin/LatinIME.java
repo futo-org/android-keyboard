@@ -1267,7 +1267,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             onSettingsKeyPressed();
             break;
         case Keyboard.CODE_CAPSLOCK:
-            switcher.toggleCapsLock();
+            // Caps lock code is handled in KeyboardSwitcher.onCodeInput() below.
             hapticAndAudioFeedback(primaryCode);
             break;
         case Keyboard.CODE_SHORTCUT:
