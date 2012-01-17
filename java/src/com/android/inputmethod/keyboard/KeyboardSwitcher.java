@@ -148,7 +148,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         // have separate layouts with unique KeyboardIds for alphabet and alphabet-shifted
         // respectively.
         if (mainKeyboardId.isPhoneKeyboard()) {
-            mState.onToggleAlphabetAndSymbols();
+            mState.setSymbolsKeyboard();
         }
         updateShiftState();
     }
@@ -257,24 +257,10 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     }
 
     /**
-     * Toggle keyboard shift state triggered by user touch event.
-     */
-    public void toggleShift() {
-        mState.onToggleShift();
-    }
-
-    /**
      * Toggle caps lock state triggered by user touch event.
      */
     public void toggleCapsLock() {
         mState.onToggleCapsLock();
-    }
-
-    /**
-     * Toggle between alphabet and symbols modes triggered by user touch event.
-     */
-    public void toggleAlphabetAndSymbols() {
-        mState.onToggleAlphabetAndSymbols();
     }
 
     /**

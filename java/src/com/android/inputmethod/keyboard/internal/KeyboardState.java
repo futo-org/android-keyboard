@@ -31,8 +31,7 @@ import com.android.inputmethod.keyboard.Keyboard;
  * {@link #onPressShift(boolean)}, {@link #onReleaseShift(boolean)}, {@link #onPressSymbol()},
  * {@link #onReleaseSymbol()}, {@link #onOtherKeyPressed()},
  * {@link #onCodeInput(int, boolean, boolean)}, {@link #onCancelInput(boolean)},
- * {@link #onUpdateShiftState(boolean)}, {@link #onToggleShift()}, {@link #onToggleCapsLock()},
- * and {@link #onToggleAlphabetAndSymbols()}.
+ * {@link #onUpdateShiftState(boolean)}, and {@link #onToggleCapsLock()}.
  *
  * The actions are {@link SwitchActions}'s methods.
  */
@@ -219,7 +218,8 @@ public class KeyboardState {
         mSwitchActions.requestUpdatingShiftState();
     }
 
-    private void setSymbolsKeyboard() {
+    // TODO: Make this method private
+    public void setSymbolsKeyboard() {
         if (DEBUG_STATE) {
             Log.d(TAG, "setSymbolsKeyboard");
         }
@@ -464,18 +464,6 @@ public class KeyboardState {
         }
     }
 
-    public void onToggleShift() {
-        if (DEBUG_STATE) {
-            Log.d(TAG, "onToggleShift: " + this);
-        }
-        if (mIsAlphabetMode) {
-            setShifted(mKeyboardShiftState.isShiftedOrShiftLocked()
-                    ? SwitchActions.UNSHIFT : SwitchActions.MANUAL_SHIFT);
-        } else {
-            toggleShiftInSymbols();
-        }
-    }
-
     public void onToggleCapsLock() {
         if (DEBUG_STATE) {
             Log.d(TAG, "onToggleCapsLock: " + this);
@@ -490,13 +478,6 @@ public class KeyboardState {
                 setShiftLocked(true);
             }
         }
-    }
-
-    public void onToggleAlphabetAndSymbols() {
-        if (DEBUG_STATE) {
-            Log.d(TAG, "onToggleAlphabetAndSymbols: " + this);
-        }
-        toggleAlphabetAndSymbols();
     }
 
     private static String shiftModeToString(int shiftMode) {
