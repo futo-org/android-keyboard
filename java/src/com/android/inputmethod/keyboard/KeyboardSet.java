@@ -25,6 +25,7 @@ import android.util.Log;
 import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
 
+import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.LocaleUtils;
@@ -179,8 +180,9 @@ public class KeyboardSet {
         // TODO: Use InputMethodSubtype object as argument.
         public Builder setSubtype(Locale inputLocale, boolean asciiCapable,
                 boolean touchPositionCorrectionEnabled) {
-            final boolean forceAscii = Utils.inPrivateImeOptions(
-                    mPackageName, LatinIME.IME_OPTION_FORCE_ASCII, mEditorInfo);
+            final boolean forceAscii = EditorInfoCompatUtils.hasFlagForceAscii(mParams.mImeOptions)
+                    || Utils.inPrivateImeOptions(
+                            mPackageName, LatinIME.IME_OPTION_FORCE_ASCII, mEditorInfo);
             mParams.mLocale = (forceAscii && !asciiCapable) ? Locale.US : inputLocale;
             mParams.mTouchPositionCorrectionEnabled = touchPositionCorrectionEnabled;
             return this;
