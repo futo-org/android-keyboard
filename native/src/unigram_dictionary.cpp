@@ -254,7 +254,7 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
                         proximityInfo->getPrimaryInputWord(), i, word, wordLength, score);
                 ns += 0;
                 AKLOGI("--- TOP SUB WORDS for %d --- %d %f [%d]", i, score, ns,
-                        (ns > TWO_WORDS_CORRECTION_THRESHOLD));
+                        (ns > TWO_WORDS_CORRECTION_WITH_OTHER_ERROR_THRESHOLD));
                 DUMP_WORD(proximityInfo->getPrimaryInputWord(), i);
                 DUMP_WORD(word, wordLength);
             }
@@ -343,43 +343,45 @@ inline void UnigramDictionary::onTerminal(const int freq,
         WordsPriorityQueuePool *queuePool, const bool addToMasterQueue) {
     const int inputIndex = correction->getInputIndex();
     const bool addToSubQueue = inputIndex < SUB_QUEUE_MAX_COUNT;
-    if (!addToMasterQueue && !addToSubQueue) {
-        return;
-    }
-    WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
-    WordsPriorityQueue *subQueue = queuePool->getSubQueue1(inputIndex);
+
     int wordLength;
     unsigned short* wordPointer;
-    const int finalFreq = correction->getFinalFreq(freq, &wordPointer, &wordLength);
-    if (finalFreq != NOT_A_FREQUENCY) {
-        if (!terminalAttributes.isShortcutOnly()) {
-            if (addToMasterQueue) {
+
+    if (addToMasterQueue) {
+        WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
+        const int finalFreq = correction->getFinalFreq(freq, &wordPointer, &wordLength);
+        if (finalFreq != NOT_A_FREQUENCY) {
+            if (!terminalAttributes.isShortcutOnly()) {
                 addWord(wordPointer, wordLength, finalFreq, masterQueue);
             }
-            // TODO: Check the validity of "inputIndex == wordLength"
-            //if (addToSubQueue && inputIndex == wordLength) {
-            if (addToSubQueue) {
-                addWord(wordPointer, wordLength, finalFreq, subQueue);
+
+            // Please note that the shortcut candidates will be added to the master queue only.
+            TerminalAttributes::ShortcutIterator iterator =
+                    terminalAttributes.getShortcutIterator();
+            while (iterator.hasNextShortcutTarget()) {
+                // TODO: addWord only supports weak ordering, meaning we have no means
+                // to control the order of the shortcuts relative to one another or to the word.
+                // We need to either modulate the frequency of each shortcut according
+                // to its own shortcut frequency or to make the queue
+                // so that the insert order is protected inside the queue for words
+                // with the same score.
+                uint16_t shortcutTarget[MAX_WORD_LENGTH_INTERNAL];
+                const int shortcutTargetStringLength = iterator.getNextShortcutTarget(
+                        MAX_WORD_LENGTH_INTERNAL, shortcutTarget);
+                addWord(shortcutTarget, shortcutTargetStringLength, finalFreq, masterQueue);
             }
         }
-        // Please note that the shortcut candidates will be added to the master queue only.
-        if (!addToMasterQueue) {
-            return;
-        }
+    }
 
-        // From here, below is the code to add shortcut candidates.
-        TerminalAttributes::ShortcutIterator iterator = terminalAttributes.getShortcutIterator();
-        while (iterator.hasNextShortcutTarget()) {
-            // TODO: addWord only supports weak ordering, meaning we have no means to control the
-            // order of the shortcuts relative to one another or to the word. We need to either
-            // modulate the frequency of each shortcut according to its own shortcut frequency or
-            // to make the queue so that the insert order is protected inside the queue for words
-            // with the same score.
-            uint16_t shortcutTarget[MAX_WORD_LENGTH_INTERNAL];
-            const int shortcutTargetStringLength = iterator.getNextShortcutTarget(
-                    MAX_WORD_LENGTH_INTERNAL, shortcutTarget);
-            addWord(shortcutTarget, shortcutTargetStringLength, finalFreq, masterQueue);
-        }
+    // We only allow two words + other error correction for words with SUB_QUEUE_MIN_WORD_LENGTH
+    // or more length.
+    if (inputIndex >= SUB_QUEUE_MIN_WORD_LENGTH && addToSubQueue) {
+        // TODO: Check the validity of "inputIndex == wordLength"
+        //if (addToSubQueue && inputIndex == wordLength) {
+        WordsPriorityQueue *subQueue = queuePool->getSubQueue1(inputIndex);
+        const int finalFreq = correction->getFinalFreqForSubQueue(freq, &wordPointer, &wordLength,
+                inputIndex);
+        addWord(wordPointer, wordLength, finalFreq, subQueue);
     }
 }
 
@@ -397,19 +399,56 @@ void UnigramDictionary::getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo
     }
     const bool isSpaceProximity = spaceProximityPos >= 0;
     const int firstWordStartPos = 0;
+
+    const int firstTypedWordLength = isSpaceProximity ? spaceProximityPos : missingSpacePos;
+    int firstFreq = getMostFrequentWordLike(0, firstTypedWordLength, proximityInfo, mWord);
+    unsigned short* firstWord = 0;
+    int firstWordLength = 0;
+    if (firstFreq > 0) {
+        firstWordLength = firstTypedWordLength;
+        firstWord = mWord;
+    } else {
+        if (masterQueue->size() > 0) {
+            double nsForMaster = masterQueue->getHighestNormalizedScore(
+                    proximityInfo->getPrimaryInputWord(), inputLength, 0, 0, 0);
+            if (nsForMaster > START_TWO_WORDS_CORRECTION_THRESHOLD) {
+                // Do nothing if the highest suggestion exceeds the threshold.
+                return;
+            }
+        }
+        WordsPriorityQueue* firstWordQueue = queuePool->getSubQueue1(firstTypedWordLength);
+        if (firstWordQueue->size() < 1) {
+            return;
+        }
+        int score = 0;
+        const double ns = firstWordQueue->getHighestNormalizedScore(
+                proximityInfo->getPrimaryInputWord(), firstTypedWordLength, &firstWord, &score,
+                &firstWordLength);
+        // Two words correction won't be done if the score of the first word doesn't exceed the
+        // threshold.
+        if (ns < TWO_WORDS_CORRECTION_WITH_OTHER_ERROR_THRESHOLD) {
+            return;
+        }
+        firstFreq = score >> (firstWordLength
+                + TWO_WORDS_PLUS_OTHER_ERROR_CORRECTION_DEMOTION_DIVIDER);
+    }
+
+    if (firstFreq <= 0) {
+        return;
+    }
+
     const int secondWordStartPos = isSpaceProximity ? (spaceProximityPos + 1) : missingSpacePos;
-    const int firstWordLength = isSpaceProximity ? spaceProximityPos : missingSpacePos;
     const int secondWordLength = isSpaceProximity
             ? (inputLength - spaceProximityPos - 1)
             : (inputLength - missingSpacePos);
 
     if (inputLength >= MAX_WORD_LENGTH) return;
+
     if (0 >= firstWordLength || 0 >= secondWordLength || firstWordStartPos >= secondWordStartPos
             || firstWordStartPos < 0 || secondWordStartPos + secondWordLength > inputLength)
         return;
 
     const int newWordLength = firstWordLength + secondWordLength + 1;
-
 
     // Space proximity preparation
     //WordsPriorityQueue *subQueue = queuePool->getSubQueue1();
@@ -420,15 +459,12 @@ void UnigramDictionary::getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo
 
     // Allocating variable length array on stack
     unsigned short word[newWordLength];
-    const int firstFreq = getMostFrequentWordLike(
-            firstWordStartPos, firstWordLength, proximityInfo, mWord);
     if (DEBUG_DICT) {
         AKLOGI("First freq: %d", firstFreq);
     }
-    if (firstFreq <= 0) return;
 
     for (int i = 0; i < firstWordLength; ++i) {
-        word[i] = mWord[i];
+        word[i] = firstWord[i];
     }
 
     const int secondFreq = getMostFrequentWordLike(
