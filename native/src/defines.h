@@ -117,8 +117,8 @@ static void prof_out(void) {
 #define DEBUG_TRACE DEBUG_DICT_FULL
 #define DEBUG_PROXIMITY_INFO false
 #define DEBUG_CORRECTION false
-#define DEBUG_CORRECTION_FREQ true
-#define DEBUG_WORDS_PRIORITY_QUEUE true
+#define DEBUG_CORRECTION_FREQ false
+#define DEBUG_WORDS_PRIORITY_QUEUE false
 
 #else // FLAG_DBG
 
@@ -212,6 +212,8 @@ static void prof_out(void) {
 // Holds up to 1 candidate for each word
 #define SUB_QUEUE_MAX_WORDS 1
 #define SUB_QUEUE_MAX_COUNT 10
+
+#define TWO_WORDS_CORRECTION_THRESHOLD 0.22f
 
 #define MAX_DEPTH_MULTIPLIER 3
 

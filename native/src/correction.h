@@ -100,6 +100,8 @@ class Correction {
                 const int freq, int *editDistanceTable, const Correction* correction);
         static int calcFreqForSplitTwoWords(const int firstFreq, const int secondFreq,
                 const Correction* correction, const unsigned short *word);
+        static int calcFreqForSplitTwoWordsOld(const int firstFreq, const int secondFreq,
+                const Correction* correction, const unsigned short *word);
         static double calcNormalizedScore(const unsigned short* before, const int beforeLength,
                 const unsigned short* after, const int afterLength, const int score);
         static int editDistance(const unsigned short* before,
