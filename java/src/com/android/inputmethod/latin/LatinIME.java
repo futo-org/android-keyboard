@@ -1414,7 +1414,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 if (mDeleteCount > DELETE_ACCELERATE_AT) {
                     ic.deleteSurroundingText(1, 0);
                 }
-                restartSuggestionsOnWordBeforeCursorIfAtEndOfWord(ic);
+                if (isSuggestionsRequested()) {
+                    restartSuggestionsOnWordBeforeCursorIfAtEndOfWord(ic);
+                }
             }
         }
     }
@@ -1706,6 +1708,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // Check if we have a suggestion engine attached.
         if ((mSuggest == null || !isSuggestionsRequested())
                 && !mVoiceProxy.isVoiceInputHighlighted()) {
+            if (mWordComposer.isComposingWord()) {
+                Log.w(TAG, "Called updateSuggestions but suggestions were not requested!");
+                mWordComposer.setAutoCorrection(mWordComposer.getTypedWord());
+            }
             return;
         }
 
