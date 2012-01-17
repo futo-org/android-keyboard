@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import com.android.inputmethod.keyboard.Keyboard;
-
 public class KeyboardStateTests extends KeyboardStateNonDistinctTests {
     @Override
     public boolean hasDistinctMultitouch() {
@@ -27,7 +25,7 @@ public class KeyboardStateTests extends KeyboardStateNonDistinctTests {
     // Shift key chording input.
     public void testShiftChording() {
         // Press shift key and hold, enter into choring shift state.
-        mSwitcher.onPressKey(Keyboard.CODE_SHIFT);
+        mSwitcher.onPressKey(CODE_SHIFT);
         assertAlphabetManualShifted();
 
         // Press/release letter keys.
@@ -114,4 +112,6 @@ public class KeyboardStateTests extends KeyboardStateNonDistinctTests {
     }
 
     // TODO: Multitouch test
+
+    // TODO: n-Keys roll over test
 }
