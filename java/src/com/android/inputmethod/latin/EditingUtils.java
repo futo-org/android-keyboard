@@ -87,23 +87,6 @@ public class EditingUtils {
     }
 
     /**
-     * Removes the word surrounding the cursor. Parameters are identical to
-     * getWordAtCursor.
-     */
-    public static void deleteWordAtCursor(InputConnection connection, String separators) {
-        // getWordRangeAtCursor returns null if the connection is null
-        Range range = getWordRangeAtCursor(connection, separators);
-        if (range == null) return;
-
-        connection.finishComposingText();
-        // Move cursor to beginning of word, to avoid crash when cursor is outside
-        // of valid range after deleting text.
-        int newCursor = getCursorPosition(connection) - range.mCharsBefore;
-        connection.setSelection(newCursor, newCursor);
-        connection.deleteSurroundingText(0, range.mCharsBefore + range.mCharsAfter);
-    }
-
-    /**
      * Represents a range of text, relative to the current cursor position.
      */
     public static class Range {

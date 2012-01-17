@@ -1399,7 +1399,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (mSuggestionsView != null && mSuggestionsView.dismissAddToDictionaryHint()) {
                 // Go back to the suggestion mode if the user canceled the
                 // "Touch again to save".
-                // NOTE: In gerenal, we don't revert the word when backspacing
+                // NOTE: In general, we don't revert the word when backspacing
                 // from a manual suggestion pick.  We deliberately chose a
                 // different behavior only in the case of picking the first
                 // suggestion (typed word).  It's intentional to have made this
