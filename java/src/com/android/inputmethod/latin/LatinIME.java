@@ -104,10 +104,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
      */
     public static final String IME_OPTION_NO_SETTINGS_KEY = "noSettingsKey";
 
+    // TODO: Remove this private option.
     /**
      * The private IME option used to indicate that the given text field needs
      * ASCII code points input.
+     *
+     * @deprecated Use {@link EditorInfo#IME_FLAG_FORCE_ASCII}.
      */
+    @SuppressWarnings("dep-ann")
     public static final String IME_OPTION_FORCE_ASCII = "forceAscii";
 
     /**
