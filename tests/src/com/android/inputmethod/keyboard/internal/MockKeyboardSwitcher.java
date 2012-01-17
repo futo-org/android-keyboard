@@ -16,9 +16,26 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.internal.KeyboardState.SwitchActions;
 
 public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
+    public interface Constants {
+        // Argument for KeyboardState.onPressKey and onReleaseKey.
+        public static final boolean NOT_SLIDING = false;
+        public static final boolean SLIDING = true;
+        // Argument for KeyboardState.onCodeInput.
+        public static final boolean SINGLE = true;
+        public static final boolean MULTI = false;
+        public static final boolean NO_AUTO_CAPS = false;
+        public static final boolean AUTO_CAPS = true;
+
+        public static final int CODE_SHIFT = Keyboard.CODE_SHIFT;
+        public static final int CODE_SYMBOL = Keyboard.CODE_SWITCH_ALPHA_SYMBOL;
+        public static final int CODE_CAPSLOCK = Keyboard.CODE_CAPSLOCK;
+        public static final int CODE_SPACE = Keyboard.CODE_SPACE;
+    }
+
     public static final String WORD_SEPARATORS = " ,.";
 
     private static final int ALPHABET_UNSHIFTED = 0;
@@ -30,7 +47,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
 
     private int mLayout = ALPHABET_UNSHIFTED;
 
-    private boolean mAutoCapsMode = KeyboardStateTests.NO_AUTO_CAPS;
+    private boolean mAutoCapsMode = Constants.NO_AUTO_CAPS;
     // Following InputConnection's behavior. Simulating InputType.TYPE_TEXT_FLAG_CAP_WORDS.
     private boolean mAutoCapsState = true;
 
@@ -117,24 +134,20 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onLoadKeyboard(layoutSwitchBackSymbols, hasDistinctMultitouch);
     }
 
-    public void onPressShift(boolean withSliding) {
-        mState.onPressShift(withSliding);
+    public void onPressKey(int code) {
+        mState.onPressKey(code);
     }
 
-    public void onReleaseShift(boolean withSliding) {
-        mState.onReleaseShift(withSliding);
+    public void onReleaseKey(int code) {
+        onReleaseKey(code, Constants.NOT_SLIDING);
     }
 
-    public void onPressSymbol() {
-        mState.onPressSymbol();
+    public void onReleaseKey(int code, boolean withSliding) {
+        mState.onReleaseKey(code, withSliding);
     }
 
-    public void onReleaseSymbol() {
-        mState.onReleaseSymbol();
-    }
-
-    public void onOtherKeyPressed() {
-        mState.onOtherKeyPressed();
+    public void onCodeInput(int code) {
+        onCodeInput(code, Constants.SINGLE);
     }
 
     public void onCodeInput(int code, boolean isSinglePointer) {

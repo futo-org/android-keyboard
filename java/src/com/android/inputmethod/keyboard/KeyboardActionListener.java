@@ -24,10 +24,8 @@ public interface KeyboardActionListener {
      *
      * @param primaryCode the unicode of the key being pressed. If the touch is not on a valid key,
      *            the value will be zero.
-     * @param withSliding true if pressing has occurred because the user slid finger from other key
-     *             to this key without releasing the finger.
      */
-    public void onPress(int primaryCode, boolean withSliding);
+    public void onPressKey(int primaryCode);
 
     /**
      * Called when the user releases a key. This is sent after the {@link #onCodeInput} is called.
@@ -37,7 +35,7 @@ public interface KeyboardActionListener {
      * @param withSliding true if releasing has occurred because the user slid finger from the key
      *             to other key without releasing the finger.
      */
-    public void onRelease(int primaryCode, boolean withSliding);
+    public void onReleaseKey(int primaryCode, boolean withSliding);
 
     /**
      * Send a key code to the listener.
@@ -79,9 +77,9 @@ public interface KeyboardActionListener {
 
     public static class Adapter implements KeyboardActionListener {
         @Override
-        public void onPress(int primaryCode, boolean withSliding) {}
+        public void onPressKey(int primaryCode) {}
         @Override
-        public void onRelease(int primaryCode, boolean withSliding) {}
+        public void onReleaseKey(int primaryCode, boolean withSliding) {}
         @Override
         public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {}
         @Override

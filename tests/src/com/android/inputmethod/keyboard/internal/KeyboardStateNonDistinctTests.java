@@ -18,9 +18,8 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.test.AndroidTestCase;
 
-import com.android.inputmethod.keyboard.Keyboard;
-
-public class KeyboardStateNonDistinctTests extends AndroidTestCase {
+public class KeyboardStateNonDistinctTests extends AndroidTestCase
+        implements MockKeyboardSwitcher.Constants {
     protected MockKeyboardSwitcher mSwitcher;
 
     public boolean hasDistinctMultitouch() {
@@ -36,15 +35,6 @@ public class KeyboardStateNonDistinctTests extends AndroidTestCase {
         final String layoutSwitchBackSymbols = "";
         mSwitcher.loadKeyboard(layoutSwitchBackSymbols, hasDistinctMultitouch());
     }
-
-    // Argument for KeyboardState.onPressShift and onReleaseShift.
-    public static final boolean NOT_SLIDING = false;
-    public static final boolean SLIDING = true;
-    // Argument for KeyboardState.onCodeInput.
-    public static final boolean SINGLE = true;
-    public static final boolean MULTI = false;
-    public static final boolean NO_AUTO_CAPS = false;
-    public static final boolean AUTO_CAPS = true;
 
     public void assertAlphabetNormal() {
         assertTrue(mSwitcher.assertAlphabetNormal());
@@ -78,58 +68,64 @@ public class KeyboardStateNonDistinctTests extends AndroidTestCase {
     // Shift key in alphabet mode.
     public void testShift() {
         // Press/release shift key, enter into shift state.
-        mSwitcher.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressKey(CODE_SHIFT);
         assertAlphabetManualShifted();
-        mSwitcher.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onCodeInput(CODE_SHIFT);
+        mSwitcher.onReleaseKey(CODE_SHIFT);
         assertAlphabetManualShifted();
         // Press/release shift key, back to normal state.
-        mSwitcher.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressKey(CODE_SHIFT);
         assertAlphabetManualShifted();
-        mSwitcher.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onCodeInput(CODE_SHIFT);
+        mSwitcher.onReleaseKey(CODE_SHIFT);
         assertAlphabetNormal();
 
         // Press/release shift key, enter into shift state.
-        mSwitcher.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressKey(CODE_SHIFT);
         assertAlphabetManualShifted();
-        mSwitcher.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onCodeInput(CODE_SHIFT);
+        mSwitcher.onReleaseKey(CODE_SHIFT);
         assertAlphabetManualShifted();
         // Press/release letter key, snap back to normal state.
-        mSwitcher.onOtherKeyPressed();
-        mSwitcher.onCodeInput('Z', SINGLE);
+        mSwitcher.onPressKey('Z');
+        mSwitcher.onCodeInput('Z');
+        mSwitcher.onReleaseKey('Z');
         assertAlphabetNormal();
     }
 
     // Shift key sliding input.
     public void testShiftSliding() {
         // Press shift key.
-        mSwitcher.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressKey(CODE_SHIFT);
         assertAlphabetManualShifted();
         // Slide out shift key.
-        mSwitcher.onReleaseShift(SLIDING);
+        mSwitcher.onReleaseKey(CODE_SHIFT, SLIDING);
         assertAlphabetManualShifted();
 
         // Enter into letter key.
-        mSwitcher.onOtherKeyPressed();
+        mSwitcher.onPressKey('Z');
         assertAlphabetManualShifted();
         // Release letter key, snap back to alphabet.
-        mSwitcher.onCodeInput('Z', SINGLE);
+        mSwitcher.onCodeInput('Z');
+        mSwitcher.onReleaseKey('Z');
         assertAlphabetNormal();
     }
 
     public void enterSymbolsMode() {
         // Press/release "?123" key.
-        mSwitcher.onPressSymbol();
+        mSwitcher.onPressKey(CODE_SYMBOL);
         assertSymbolsNormal();
-        mSwitcher.onCodeInput(Keyboard.CODE_SWITCH_ALPHA_SYMBOL, SINGLE);
-        mSwitcher.onReleaseSymbol();
+        mSwitcher.onCodeInput(CODE_SYMBOL);
+        mSwitcher.onReleaseKey(CODE_SYMBOL);
         assertSymbolsNormal();
     }
 
     public void leaveSymbolsMode() {
         // Press/release "ABC" key.
-        mSwitcher.onPressSymbol();
+        mSwitcher.onPressKey(CODE_SYMBOL);
         assertAlphabetNormal();
-        mSwitcher.onCodeInput(Keyboard.CODE_SWITCH_ALPHA_SYMBOL, SINGLE);
+        mSwitcher.onCodeInput(CODE_SYMBOL);
+        mSwitcher.onReleaseKey(CODE_SYMBOL);
         assertAlphabetNormal();
     }
 
@@ -145,27 +141,28 @@ public class KeyboardStateNonDistinctTests extends AndroidTestCase {
         enterSymbolsMode();
 
         // Press/release "ABC" key, switch back to shift locked mode.
-        mSwitcher.onPressSymbol();
+        mSwitcher.onPressKey(CODE_SYMBOL);
         assertAlphabetShiftLocked();
-        mSwitcher.onCodeInput(Keyboard.CODE_SWITCH_ALPHA_SYMBOL, SINGLE);
-        mSwitcher.onReleaseSymbol();
+        mSwitcher.onCodeInput(CODE_SYMBOL);
+        mSwitcher.onReleaseKey(CODE_SYMBOL);
         assertAlphabetShiftLocked();
     }
 
     // Symbols key sliding input.
     public void testSymbolsSliding() {
         // Press "123?" key.
-        mSwitcher.onPressSymbol();
+        mSwitcher.onPressKey(CODE_SYMBOL);
         assertSymbolsNormal();
         // Slide out from "123?" key.
-        mSwitcher.onReleaseSymbol();
+        mSwitcher.onReleaseKey(CODE_SYMBOL, SLIDING);
         assertSymbolsNormal();
 
         // Enter into letter key.
-        mSwitcher.onOtherKeyPressed();
+        mSwitcher.onPressKey('z');
         assertSymbolsNormal();
         // Release letter key, snap back to alphabet.
-        mSwitcher.onCodeInput('z', SINGLE);
+        mSwitcher.onCodeInput('z');
+        mSwitcher.onReleaseKey('z');
         assertAlphabetNormal();
     }
 
@@ -174,15 +171,17 @@ public class KeyboardStateNonDistinctTests extends AndroidTestCase {
         enterSymbolsMode();
 
         // Press/release "=\<" key.
-        mSwitcher.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressKey(CODE_SHIFT);
         assertSymbolsShifted();
-        mSwitcher.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onCodeInput(CODE_SHIFT);
+        mSwitcher.onReleaseKey(CODE_SHIFT);
         assertSymbolsShifted();
 
         // Press/release "?123" key.
-        mSwitcher.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressKey(CODE_SHIFT);
         assertSymbolsNormal();
-        mSwitcher.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onCodeInput(CODE_SHIFT);
+        mSwitcher.onReleaseKey(CODE_SHIFT);
         assertSymbolsNormal();
 
         leaveSymbolsMode();
@@ -193,17 +192,18 @@ public class KeyboardStateNonDistinctTests extends AndroidTestCase {
         enterSymbolsMode();
 
         // Press "=\<" key.
-        mSwitcher.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressKey(CODE_SHIFT);
         assertSymbolsShifted();
         // Slide out "=\<" key.
-        mSwitcher.onReleaseShift(SLIDING);
+        mSwitcher.onReleaseKey(CODE_SHIFT, SLIDING);
         assertSymbolsShifted();
 
         // Enter into symbol shifted letter key.
-        mSwitcher.onOtherKeyPressed();
+        mSwitcher.onPressKey('~');
         assertSymbolsShifted();
         // Release symbol shifted letter key, snap back to symbols.
-        mSwitcher.onCodeInput('~', SINGLE);
+        mSwitcher.onCodeInput('~');
+        mSwitcher.onReleaseKey('~');
         assertSymbolsNormal();
     }
 
@@ -212,23 +212,25 @@ public class KeyboardStateNonDistinctTests extends AndroidTestCase {
         enterSymbolsMode();
 
         // Press/release "=\<" key.
-        mSwitcher.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressKey(CODE_SHIFT);
         assertSymbolsShifted();
-        mSwitcher.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onCodeInput(CODE_SHIFT);
+        mSwitcher.onReleaseKey(CODE_SHIFT);
         assertSymbolsShifted();
 
         // Press "123?" key.
-        mSwitcher.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressKey(CODE_SHIFT);
         assertSymbolsNormal();
         // Slide out "123?" key.
-        mSwitcher.onReleaseShift(SLIDING);
+        mSwitcher.onReleaseKey(CODE_SHIFT, SLIDING);
         assertSymbolsNormal();
 
         // Enter into symbol letter key.
-        mSwitcher.onOtherKeyPressed();
+        mSwitcher.onPressKey('1');
         assertSymbolsNormal();
         // Release symbol letter key, snap back to symbols shift.
-        mSwitcher.onCodeInput('1', SINGLE);
+        mSwitcher.onCodeInput('1');
+        mSwitcher.onReleaseKey('1');
         assertSymbolsShifted();
     }
 
@@ -237,14 +239,16 @@ public class KeyboardStateNonDistinctTests extends AndroidTestCase {
         enterSymbolsMode();
 
         // Enter a symbol letter.
-        mSwitcher.onOtherKeyPressed();
+        mSwitcher.onPressKey('1');
         assertSymbolsNormal();
-        mSwitcher.onCodeInput('1', SINGLE);
+        mSwitcher.onCodeInput('1');
+        mSwitcher.onReleaseKey('1');
         assertSymbolsNormal();
         // Enter space, snap back to alphabet.
-        mSwitcher.onOtherKeyPressed();
+        mSwitcher.onPressKey(CODE_SPACE);
         assertSymbolsNormal();
-        mSwitcher.onCodeInput(Keyboard.CODE_SPACE, SINGLE);
+        mSwitcher.onCodeInput(CODE_SPACE);
+        mSwitcher.onReleaseKey(CODE_SPACE);
         assertAlphabetNormal();
     }
 
@@ -260,14 +264,16 @@ public class KeyboardStateNonDistinctTests extends AndroidTestCase {
         enterSymbolsMode();
 
         // Enter a symbol letter.
-        mSwitcher.onOtherKeyPressed();
+        mSwitcher.onPressKey('1');
         assertSymbolsNormal();
-        mSwitcher.onCodeInput('1', SINGLE);
+        mSwitcher.onCodeInput('1');
+        mSwitcher.onReleaseKey('1');
         assertSymbolsNormal();
         // Enter snap back letter, snap back to alphabet.
-        mSwitcher.onOtherKeyPressed();
+        mSwitcher.onPressKey(snapBackCode);
         assertSymbolsNormal();
-        mSwitcher.onCodeInput(snapBackCode, SINGLE);
+        mSwitcher.onCodeInput(snapBackCode);
+        mSwitcher.onReleaseKey(snapBackCode);
         assertAlphabetNormal();
     }
 
@@ -279,10 +285,11 @@ public class KeyboardStateNonDistinctTests extends AndroidTestCase {
         assertAlphabetAutomaticShifted();
 
         // Press shift key.
-        mSwitcher.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressKey(CODE_SHIFT);
         assertAlphabetManualShifted();
         // Release shift key.
-        mSwitcher.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onCodeInput(CODE_SHIFT);
+        mSwitcher.onReleaseKey(CODE_SHIFT);
         assertAlphabetNormal();
     }
 
@@ -294,16 +301,17 @@ public class KeyboardStateNonDistinctTests extends AndroidTestCase {
         assertAlphabetAutomaticShifted();
 
         // Press shift key.
-        mSwitcher.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressKey(CODE_SHIFT);
         assertAlphabetManualShifted();
         // Slide out shift key.
-        mSwitcher.onReleaseShift(SLIDING);
+        mSwitcher.onReleaseKey(CODE_SHIFT, SLIDING);
         assertAlphabetManualShifted();
         // Enter into letter key.
-        mSwitcher.onOtherKeyPressed();
+        mSwitcher.onPressKey('Z');
         assertAlphabetManualShifted();
         // Release letter key, snap back to alphabet.
-        mSwitcher.onCodeInput('Z', SINGLE);
+        mSwitcher.onCodeInput('Z');
+        mSwitcher.onReleaseKey('Z');
         assertAlphabetNormal();
     }
 
@@ -315,42 +323,43 @@ public class KeyboardStateNonDistinctTests extends AndroidTestCase {
         assertAlphabetAutomaticShifted();
 
         // Press "123?" key.
-        mSwitcher.onPressSymbol();
+        mSwitcher.onPressKey(CODE_SYMBOL);
         assertSymbolsNormal();
         // Slide out "123?" key.
-        mSwitcher.onReleaseSymbol();
+        mSwitcher.onReleaseKey(CODE_SYMBOL, SLIDING);
         assertSymbolsNormal();
         // Enter into symbol letter keys.
-        mSwitcher.onOtherKeyPressed();
+        mSwitcher.onPressKey('1');
         assertSymbolsNormal();
         // Release symbol letter key, snap back to alphabet.
-        mSwitcher.onCodeInput('1', SINGLE);
+        mSwitcher.onCodeInput('1');
+        mSwitcher.onReleaseKey('1');
         assertAlphabetNormal();
     }
 
     public void enterShiftLockWithLongPressShift() {
         // Long press shift key
-        mSwitcher.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressKey(CODE_SHIFT);
         assertAlphabetManualShifted();
         // Long press recognized in LatinKeyboardView.KeyTimerHandler.
         mSwitcher.toggleCapsLock();
         assertAlphabetShiftLocked();
-        mSwitcher.onCodeInput(Keyboard.CODE_CAPSLOCK, SINGLE);
+        mSwitcher.onCodeInput(CODE_CAPSLOCK);
         assertAlphabetShiftLocked();
-        mSwitcher.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onReleaseKey(CODE_SHIFT);
         assertAlphabetShiftLocked();
     }
 
     public void leaveShiftLockWithLongPressShift() {
         // Press shift key.
-        mSwitcher.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressKey(CODE_SHIFT);
         assertAlphabetManualShifted();
         // Long press recognized in LatinKeyboardView.KeyTimerHandler.
         mSwitcher.toggleCapsLock();
         assertAlphabetNormal();
-        mSwitcher.onCodeInput(Keyboard.CODE_CAPSLOCK, SINGLE);
+        mSwitcher.onCodeInput(CODE_CAPSLOCK);
         assertAlphabetNormal();
-        mSwitcher.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onReleaseKey(CODE_SHIFT);
         assertAlphabetNormal();
     }
 
@@ -367,11 +376,11 @@ public class KeyboardStateNonDistinctTests extends AndroidTestCase {
         assertAlphabetShiftLocked();
 
         // Tap shift key.
-        mSwitcher.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressKey(CODE_SHIFT);
         assertAlphabetManualShifted();
-        mSwitcher.onCodeInput(Keyboard.CODE_SHIFT, SINGLE);
+        mSwitcher.onCodeInput(CODE_SHIFT, SINGLE);
         assertAlphabetManualShifted();
-        mSwitcher.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onReleaseKey(CODE_SHIFT);
         assertAlphabetNormal();
     }
 
@@ -379,25 +388,25 @@ public class KeyboardStateNonDistinctTests extends AndroidTestCase {
     // TODO: Move double tap recognizing timer/logic into KeyboardState.
     public void testDoubleTapShift() {
         // First shift key tap.
-        mSwitcher.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressKey(CODE_SHIFT);
         assertAlphabetManualShifted();
-        mSwitcher.onCodeInput(Keyboard.CODE_SHIFT, SINGLE);
+        mSwitcher.onCodeInput(CODE_SHIFT);
         assertAlphabetManualShifted();
-        mSwitcher.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onReleaseKey(CODE_SHIFT);
         assertAlphabetManualShifted();
         // Second shift key tap.
         // Double tap recognized in LatinKeyboardView.KeyTimerHandler.
         mSwitcher.toggleCapsLock();
         assertAlphabetShiftLocked();
-        mSwitcher.onCodeInput(Keyboard.CODE_SHIFT, SINGLE);
+        mSwitcher.onCodeInput(CODE_CAPSLOCK);
         assertAlphabetShiftLocked();
 
         // First shift key tap.
-        mSwitcher.onPressShift(NOT_SLIDING);
+        mSwitcher.onPressKey(CODE_SHIFT);
         assertAlphabetManualShifted();
-        mSwitcher.onCodeInput(Keyboard.CODE_SHIFT, SINGLE);
+        mSwitcher.onCodeInput(CODE_SHIFT);
         assertAlphabetManualShifted();
-        mSwitcher.onReleaseShift(NOT_SLIDING);
+        mSwitcher.onReleaseKey(CODE_SHIFT);
         assertAlphabetNormal();
         // Second shift key tap.
         // Second tap is ignored in LatinKeyboardView.KeyTimerHandler.

@@ -1239,7 +1239,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         mLastKeyTime = when;
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
-        final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         // The space state depends only on the last character pressed and its own previous
         // state. Here, we revert the space state to neutral if the key is actually modifying
         // the input contents (any non-shift key), which is what we should do for
@@ -1262,7 +1261,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             break;
         case Keyboard.CODE_SHIFT:
         case Keyboard.CODE_SWITCH_ALPHA_SYMBOL:
-            // Shift and symbol key is handled in onPress() and onRelease().
+            // Shift and symbol key is handled in onPressKey() and onReleaseKey().
             break;
         case Keyboard.CODE_SETTINGS:
             onSettingsKeyPressed();
@@ -2258,28 +2257,17 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     @Override
-    public void onPress(int primaryCode, boolean withSliding) {
+    public void onPressKey(int primaryCode) {
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         if (switcher.isVibrateAndSoundFeedbackRequired()) {
             hapticAndAudioFeedback(primaryCode);
         }
-        if (primaryCode == Keyboard.CODE_SHIFT) {
-            switcher.onPressShift(withSliding);
-        } else if (primaryCode == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
-            switcher.onPressSymbol();
-        } else {
-            switcher.onOtherKeyPressed();
-        }
+        switcher.onPressKey(primaryCode);
     }
 
     @Override
-    public void onRelease(int primaryCode, boolean withSliding) {
-        KeyboardSwitcher switcher = mKeyboardSwitcher;
-        if (primaryCode == Keyboard.CODE_SHIFT) {
-            switcher.onReleaseShift(withSliding);
-        } else if (primaryCode == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
-            switcher.onReleaseSymbol();
-        }
+    public void onReleaseKey(int primaryCode, boolean withSliding) {
+        mKeyboardSwitcher.onReleaseKey(primaryCode, withSliding);
     }
 
 

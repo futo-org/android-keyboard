@@ -434,9 +434,10 @@ public class Keyboard {
         case CODE_SHORTCUT: return "shortcut";
         case CODE_UNSPECIFIED: return "unspec";
         default:
-            if (code < 0) Log.w(TAG, "Unknow negative key code=" + code);
-            if (code < 0x100) return String.format("\\u%02x", code);
-            return String.format("\\u04x", code);
+            if (code <= 0) Log.w(TAG, "Unknown non-positive key code=" + code);
+            if (code < CODE_SPACE) return String.format("'\\u%02x'", code);
+            if (code < 0x100) return String.format("'%c'", code);
+            return String.format("'\\u%04x'", code);
         }
     }
 

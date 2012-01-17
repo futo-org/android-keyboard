@@ -61,12 +61,13 @@ public class MiniKeyboardView extends KeyboardView implements MoreKeysPanel {
         }
 
         @Override
-        public void onPress(int primaryCode, boolean withSliding) {
-            mListener.onPress(primaryCode, withSliding);
+        public void onPressKey(int primaryCode) {
+            mListener.onPressKey(primaryCode);
         }
+
         @Override
-        public void onRelease(int primaryCode, boolean withSliding) {
-            mListener.onRelease(primaryCode, withSliding);
+        public void onReleaseKey(int primaryCode, boolean withSliding) {
+            mListener.onReleaseKey(primaryCode, withSliding);
         }
     };
 

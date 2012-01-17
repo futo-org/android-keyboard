@@ -237,18 +237,18 @@ public class PointerTracker {
     }
 
     // Returns true if keyboard has been changed by this callback.
-    private boolean callListenerOnPressAndCheckKeyboardLayoutChange(Key key, boolean withSliding) {
+    private boolean callListenerOnPressAndCheckKeyboardLayoutChange(Key key) {
         final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
         if (DEBUG_LISTENER) {
             Log.d(TAG, "onPress    : " + KeyDetector.printableCode(key)
-                    + " sliding=" + withSliding + " ignoreModifier=" + ignoreModifierKey
+                    + " ignoreModifier=" + ignoreModifierKey
                     + " enabled=" + key.isEnabled());
         }
         if (ignoreModifierKey) {
             return false;
         }
         if (key.isEnabled()) {
-            mListener.onPress(key.mCode, withSliding);
+            mListener.onPressKey(key.mCode);
             final boolean keyboardLayoutHasBeenChanged = mKeyboardLayoutHasBeenChanged;
             mKeyboardLayoutHasBeenChanged = false;
             return keyboardLayoutHasBeenChanged;
@@ -296,7 +296,7 @@ public class PointerTracker {
             return;
         }
         if (key.isEnabled()) {
-            mListener.onRelease(primaryCode, withSliding);
+            mListener.onReleaseKey(primaryCode, withSliding);
         }
     }
 
@@ -495,7 +495,7 @@ public class PointerTracker {
             // This onPress call may have changed keyboard layout. Those cases are detected at
             // {@link #setKeyboard}. In those cases, we should update key according to the new
             // keyboard layout.
-            if (callListenerOnPressAndCheckKeyboardLayoutChange(key, false)) {
+            if (callListenerOnPressAndCheckKeyboardLayoutChange(key)) {
                 key = onDownKey(x, y, eventTime);
             }
 
@@ -529,7 +529,7 @@ public class PointerTracker {
                 // This onPress call may have changed keyboard layout. Those cases are detected at
                 // {@link #setKeyboard}. In those cases, we should update key according to the
                 // new keyboard layout.
-                if (callListenerOnPressAndCheckKeyboardLayoutChange(key, true)) {
+                if (callListenerOnPressAndCheckKeyboardLayoutChange(key)) {
                     key = onMoveKey(x, y);
                 }
                 onMoveToNewKey(key, x, y);
@@ -548,7 +548,7 @@ public class PointerTracker {
                     // This onPress call may have changed keyboard layout. Those cases are detected
                     // at {@link #setKeyboard}. In those cases, we should update key according
                     // to the new keyboard layout.
-                    if (callListenerOnPressAndCheckKeyboardLayoutChange(key, true)) {
+                    if (callListenerOnPressAndCheckKeyboardLayoutChange(key)) {
                         key = onMoveKey(x, y);
                     }
                     onMoveToNewKey(key, x, y);
