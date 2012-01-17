@@ -115,7 +115,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     /** Listener for {@link KeyboardActionListener}. */
     private KeyboardActionListener mKeyboardActionListener;
 
-    private final boolean mHasDistinctMultitouch;
+    private boolean mHasDistinctMultitouch;
     private int mOldPointerCount = 1;
     private Key mOldKey;
 
@@ -369,6 +369,10 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
      */
     public boolean hasDistinctMultitouch() {
         return mHasDistinctMultitouch;
+    }
+
+    public void setDistinctMultitouch(boolean hasDistinctMultitouch) {
+        mHasDistinctMultitouch = hasDistinctMultitouch;
     }
 
     /**

@@ -42,4 +42,10 @@
             android:defaultValue="false"
             />
 
+    <CheckBoxPreference
+            android:key="force_non_distinct_multitouch"
+            android:title="@string/prefs_force_non_distinct_multitouch"
+            android:persistent="true"
+            android:defaultValue="false"
+            />
 </PreferenceScreen>
