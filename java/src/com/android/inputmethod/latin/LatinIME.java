@@ -2093,10 +2093,23 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 && !mSettingsValues.isWordSeparator(textAfterCursor.charAt(0))) return;
 
         // Bail out if word before cursor is 0-length or a single non letter (like an apostrophe)
-        // Example: " '|" gets rejected here but "I'|" and "I|" are okay
-        final CharSequence word = EditingUtils.getWordAtCursor(ic, mSettingsValues.mWordSeparators);
+        // Example: " -|" gets rejected here but "e-|" and "e|" are okay
+        CharSequence word = EditingUtils.getWordAtCursor(ic, mSettingsValues.mWordSeparators);
+        // We don't suggest on leading single quotes, so we have to remove them from the word if
+        // it starts with single quotes.
+        while (!TextUtils.isEmpty(word) && Keyboard.CODE_SINGLE_QUOTE == word.charAt(0)) {
+            word = word.subSequence(1, word.length());
+        }
         if (TextUtils.isEmpty(word)) return;
-        if (word.length() == 1 && !Character.isLetter(word.charAt(0))) return;
+        final char firstChar = word.charAt(0); // we just tested that word is not empty
+        if (word.length() == 1 && !Character.isLetter(firstChar)) return;
+
+        // We only suggest on words that start with a letter or a symbol that is excluded from
+        // word separators (see #handleCharacterWhileInBatchEdit).
+        if (!(isAlphabet(firstChar)
+                || mSettingsValues.isSymbolExcludedFromWordSeparators(firstChar))) {
+            return;
+        }
 
         // Okay, we are at the end of a word. Restart suggestions.
         restartSuggestionsOnWordBeforeCursor(ic, word);
