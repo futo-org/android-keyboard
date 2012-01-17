@@ -26,12 +26,16 @@ public class EditorInfoCompatUtils {
             EditorInfo.class, "IME_FLAG_NAVIGATE_NEXT");
     private static final Field FIELD_IME_FLAG_NAVIGATE_PREVIOUS = CompatUtils.getField(
             EditorInfo.class, "IME_FLAG_NAVIGATE_PREVIOUS");
+    private static final Field FIELD_IME_FLAG_FORCE_ASCII = CompatUtils.getField(
+            EditorInfo.class, "IME_FLAG_FORCE_ASCII");
     private static final Field FIELD_IME_ACTION_PREVIOUS = CompatUtils.getField(
             EditorInfo.class, "IME_ACTION_PREVIOUS");
     private static final Integer OBJ_IME_FLAG_NAVIGATE_NEXT = (Integer) CompatUtils
             .getFieldValue(null, null, FIELD_IME_FLAG_NAVIGATE_NEXT);
     private static final Integer OBJ_IME_FLAG_NAVIGATE_PREVIOUS = (Integer) CompatUtils
             .getFieldValue(null, null, FIELD_IME_FLAG_NAVIGATE_PREVIOUS);
+    private static final Integer OBJ_IME_FLAG_FORCE_ASCII = (Integer) CompatUtils
+            .getFieldValue(null, null, FIELD_IME_FLAG_FORCE_ASCII);
     private static final Integer OBJ_IME_ACTION_PREVIOUS = (Integer) CompatUtils
             .getFieldValue(null, null, FIELD_IME_ACTION_PREVIOUS);
 
@@ -45,6 +49,12 @@ public class EditorInfoCompatUtils {
         if (OBJ_IME_FLAG_NAVIGATE_PREVIOUS == null)
             return false;
         return (imeOptions & OBJ_IME_FLAG_NAVIGATE_PREVIOUS) != 0;
+    }
+
+    public static boolean hasFlagForceAscii(int imeOptions) {
+        if (OBJ_IME_FLAG_FORCE_ASCII == null)
+            return false;
+        return (imeOptions & OBJ_IME_FLAG_FORCE_ASCII) != 0;
     }
 
     public static void performEditorActionNext(InputConnection ic) {
@@ -93,10 +103,19 @@ public class EditorInfoCompatUtils {
                 break;
             }
         }
+        final StringBuilder flags = new StringBuilder();
         if ((imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
-            return "flagNoEnterAction|" + action;
-        } else {
-            return action;
+            flags.append("flagNoEnterAction|");
         }
+        if (hasFlagNavigateNext(imeOptions)) {
+            flags.append("flagNavigateNext|");
+        }
+        if (hasFlagNavigatePrevious(imeOptions)) {
+            flags.append("flagNavigatePrevious|");
+        }
+        if (hasFlagForceAscii(imeOptions)) {
+            flags.append("flagForceAscii|");
+        }
+        return flags + action;
     }
 }
