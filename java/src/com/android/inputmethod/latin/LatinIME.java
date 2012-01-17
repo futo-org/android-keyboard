@@ -1372,6 +1372,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 ic.deleteSurroundingText(1, 0);
             }
         } else {
+            // We should be very careful about auto-correction cancellation and suggestion
+            // resuming here. The behavior needs to be different according to text field types,
+            // and it would be much clearer to test for them explicitly here rather than
+            // relying on implicit values like "whether the suggestion strip is displayed".
             if (mWordComposer.didAutoCorrectToAnotherWord()) {
                 Utils.Stats.onAutoCorrectionCancellation();
                 cancelAutoCorrect(ic);
@@ -1391,6 +1395,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 }
             }
 
+            // See the comment above: must be careful about resuming auto-suggestion.
             if (mSuggestionsView != null && mSuggestionsView.dismissAddToDictionaryHint()) {
                 // Go back to the suggestion mode if the user canceled the
                 // "Touch again to save".
