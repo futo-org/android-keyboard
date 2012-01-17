@@ -166,29 +166,20 @@ public class KeyboardState {
         if (DEBUG_STATE) {
             Log.d(TAG, "setShifted: shiftMode=" + shiftModeToString(shiftMode));
         }
-        // TODO: Remove this hack in conjunction with duplicated logic below.
-        boolean needsToTurnOffShiftLockedLater = false;
         if (shiftMode == SwitchActions.AUTOMATIC_SHIFT) {
             mKeyboardShiftState.setAutomaticTemporaryUpperCase();
         } else {
-            // TODO: Remove duplicated logic in KeyboardSwitcher#setShifted()
             final boolean shifted = (shiftMode == SwitchActions.MANUAL_SHIFT);
             // On non-distinct multi touch panel device, we should also turn off the shift locked
             // state when shift key is pressed to go to normal mode.
             // On the other hand, on distinct multi touch panel device, turning off the shift
             // locked state with shift key pressing is handled by onReleaseShift().
             if (!mHasDistinctMultitouch && !shifted && mKeyboardShiftState.isShiftLocked()) {
-                // Setting shift lock state should be delayed after
-                // mSwitchActions.setShifted(shiftMode) is called, because in that call the state
-                // is referenced.
-                needsToTurnOffShiftLockedLater = true;
+                mSwitchActions.setShiftLocked(false);
             }
             mKeyboardShiftState.setShifted(shifted);
         }
         mSwitchActions.setShifted(shiftMode);
-        if (needsToTurnOffShiftLockedLater) {
-            mKeyboardShiftState.setShiftLocked(false);
-        }
     }
 
     private void setShiftLocked(boolean shiftLocked) {
