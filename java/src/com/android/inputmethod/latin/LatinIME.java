@@ -1261,16 +1261,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             LatinImeLogger.logOnDelete();
             break;
         case Keyboard.CODE_SHIFT:
-            // Shift key is handled in onPress() when device has distinct multi-touch panel.
-            if (!distinctMultiTouch) {
-                switcher.toggleShift();
-            }
-            break;
         case Keyboard.CODE_SWITCH_ALPHA_SYMBOL:
-            // Symbol key is handled in onPress() when device has distinct multi-touch panel.
-            if (!distinctMultiTouch) {
-                switcher.toggleAlphabetAndSymbols();
-            }
+            // Shift and symbol key is handled in onPress() and onRelease().
             break;
         case Keyboard.CODE_SETTINGS:
             onSettingsKeyPressed();
@@ -2271,10 +2263,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (switcher.isVibrateAndSoundFeedbackRequired()) {
             hapticAndAudioFeedback(primaryCode);
         }
-        final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
-        if (distinctMultiTouch && primaryCode == Keyboard.CODE_SHIFT) {
+        if (primaryCode == Keyboard.CODE_SHIFT) {
             switcher.onPressShift(withSliding);
-        } else if (distinctMultiTouch && primaryCode == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
+        } else if (primaryCode == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
             switcher.onPressSymbol();
         } else {
             switcher.onOtherKeyPressed();
@@ -2284,11 +2275,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     @Override
     public void onRelease(int primaryCode, boolean withSliding) {
         KeyboardSwitcher switcher = mKeyboardSwitcher;
-        // Reset any drag flags in the keyboard
-        final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
-        if (distinctMultiTouch && primaryCode == Keyboard.CODE_SHIFT) {
+        if (primaryCode == Keyboard.CODE_SHIFT) {
             switcher.onReleaseShift(withSliding);
-        } else if (distinctMultiTouch && primaryCode == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
+        } else if (primaryCode == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
             switcher.onReleaseSymbol();
         }
     }
