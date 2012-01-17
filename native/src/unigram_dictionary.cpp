@@ -241,8 +241,24 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
         }
     }
     PROF_END(6);
-    if (DEBUG_WORDS_PRIORITY_QUEUE) {
+    if (DEBUG_DICT) {
         queuePool->dumpSubQueue1TopSuggestions();
+        for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
+            WordsPriorityQueue* queue = queuePool->getSubQueue1(i);
+            if (queue->size() > 0) {
+                WordsPriorityQueue::SuggestedWord* sw = queue->top();
+                const int score = sw->mScore;
+                const unsigned short* word = sw->mWord;
+                const int wordLength = sw->mWordLength;
+                double ns = Correction::RankingAlgorithm::calcNormalizedScore(
+                        proximityInfo->getPrimaryInputWord(), i, word, wordLength, score);
+                ns += 0;
+                AKLOGI("--- TOP SUB WORDS for %d --- %d %f [%d]", i, score, ns,
+                        (ns > TWO_WORDS_CORRECTION_THRESHOLD));
+                DUMP_WORD(proximityInfo->getPrimaryInputWord(), i);
+                DUMP_WORD(word, wordLength);
+            }
+        }
     }
 }
 
@@ -368,6 +384,80 @@ inline void UnigramDictionary::onTerminal(const int freq,
 }
 
 void UnigramDictionary::getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo,
+        const int *xcoordinates, const int *ycoordinates, const int *codes,
+        const bool useFullEditDistance, const int inputLength, const int missingSpacePos,
+        const int  spaceProximityPos, Correction *correction, WordsPriorityQueuePool* queuePool) {
+    WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
+
+    if (DEBUG_DICT) {
+        int inputCount = 0;
+        if (spaceProximityPos >= 0) ++inputCount;
+        if (missingSpacePos >= 0) ++inputCount;
+        assert(inputCount <= 1);
+    }
+    const bool isSpaceProximity = spaceProximityPos >= 0;
+    const int firstWordStartPos = 0;
+    const int secondWordStartPos = isSpaceProximity ? (spaceProximityPos + 1) : missingSpacePos;
+    const int firstWordLength = isSpaceProximity ? spaceProximityPos : missingSpacePos;
+    const int secondWordLength = isSpaceProximity
+            ? (inputLength - spaceProximityPos - 1)
+            : (inputLength - missingSpacePos);
+
+    if (inputLength >= MAX_WORD_LENGTH) return;
+    if (0 >= firstWordLength || 0 >= secondWordLength || firstWordStartPos >= secondWordStartPos
+            || firstWordStartPos < 0 || secondWordStartPos + secondWordLength > inputLength)
+        return;
+
+    const int newWordLength = firstWordLength + secondWordLength + 1;
+
+
+    // Space proximity preparation
+    //WordsPriorityQueue *subQueue = queuePool->getSubQueue1();
+    //initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, firstWordLength, subQueue,
+    //correction);
+    //getSuggestionCandidates(useFullEditDistance, firstWordLength, correction, subQueue, false,
+    //MAX_ERRORS_FOR_TWO_WORDS);
+
+    // Allocating variable length array on stack
+    unsigned short word[newWordLength];
+    const int firstFreq = getMostFrequentWordLike(
+            firstWordStartPos, firstWordLength, proximityInfo, mWord);
+    if (DEBUG_DICT) {
+        AKLOGI("First freq: %d", firstFreq);
+    }
+    if (firstFreq <= 0) return;
+
+    for (int i = 0; i < firstWordLength; ++i) {
+        word[i] = mWord[i];
+    }
+
+    const int secondFreq = getMostFrequentWordLike(
+            secondWordStartPos, secondWordLength, proximityInfo, mWord);
+    if (DEBUG_DICT) {
+        AKLOGI("Second  freq:  %d", secondFreq);
+    }
+    if (secondFreq <= 0) return;
+
+    word[firstWordLength] = SPACE;
+    for (int i = (firstWordLength + 1); i < newWordLength; ++i) {
+        word[i] = mWord[i - firstWordLength - 1];
+    }
+
+    // TODO: Remove initSuggestions and correction->setCorrectionParams
+    initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, inputLength, correction);
+
+    correction->setCorrectionParams(-1 /* skipPos */, -1 /* excessivePos */,
+            -1 /* transposedPos */, spaceProximityPos, missingSpacePos,
+            useFullEditDistance, false /* doAutoCompletion */, MAX_ERRORS_FOR_TWO_WORDS);
+    const int pairFreq = correction->getFreqForSplitTwoWords(firstFreq, secondFreq, word);
+    if (DEBUG_DICT) {
+        AKLOGI("Split two words:  %d, %d, %d, %d", firstFreq, secondFreq, pairFreq, inputLength);
+    }
+    addWord(word, newWordLength, pairFreq, masterQueue);
+    return;
+}
+
+void UnigramDictionary::getSplitTwoWordsSuggestionsOld(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codes,
         const bool useFullEditDistance, const int inputLength, const int missingSpacePos,
         const int  spaceProximityPos, Correction *correction, WordsPriorityQueuePool* queuePool) {
