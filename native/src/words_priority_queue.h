@@ -81,10 +81,9 @@ class WordsPriorityQueue {
         mSuggestions.push(sw);
     }
 
-    SuggestedWord* topAndPop() {
+    SuggestedWord* top() {
         if (mSuggestions.empty()) return 0;
         SuggestedWord* sw = mSuggestions.top();
-        mSuggestions.pop();
         return sw;
     }
 
@@ -112,7 +111,7 @@ class WordsPriorityQueue {
         return size;
     }
 
-    int size() {
+    int size() const {
         return mSuggestions.size();
     }
 
