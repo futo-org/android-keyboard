@@ -417,9 +417,9 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         // the second tap is treated as this double tap event, so that we need not mark tracker
         // calling setAlreadyProcessed() nor remove the tracker from mPointerQueue.
         if (ignore) {
-            mKeyboardActionListener.onCustomRequest(LatinIME.CODE_HAPTIC_AND_AUDIO_FEEDBACK);
+            invokeCustomRequest(LatinIME.CODE_HAPTIC_AND_AUDIO_FEEDBACK);
         } else {
-            mKeyboardActionListener.onCodeInput(Keyboard.CODE_CAPSLOCK, null, 0, 0);
+            invokeCodeInput(Keyboard.CODE_CAPSLOCK);
         }
     }
 
@@ -479,17 +479,17 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     }
 
     private boolean invokeCustomRequest(int code) {
-        return getKeyboardActionListener().onCustomRequest(code);
+        return mKeyboardActionListener.onCustomRequest(code);
     }
 
     private void invokeCodeInput(int primaryCode) {
-        getKeyboardActionListener().onCodeInput(primaryCode, null,
+        mKeyboardActionListener.onCodeInput(primaryCode, null,
                 KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
                 KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
     }
 
     private void invokeReleaseKey(int primaryCode) {
-        getKeyboardActionListener().onRelease(primaryCode, false);
+        mKeyboardActionListener.onReleaseKey(primaryCode, false);
     }
 
     private boolean openMoreKeysPanel(Key parentKey, PointerTracker tracker) {
@@ -514,7 +514,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 : parentKey.mX + parentKey.mWidth / 2;
         final int pointY = parentKey.mY - keyboard.mVerticalGap;
         moreKeysPanel.showMoreKeysPanel(
-                this, this, pointX, pointY, mMoreKeysWindow, getKeyboardActionListener());
+                this, this, pointX, pointY, mMoreKeysWindow, mKeyboardActionListener);
         final int translatedX = moreKeysPanel.translateX(tracker.getLastX());
         final int translatedY = moreKeysPanel.translateY(tracker.getLastY());
         tracker.onShowMoreKeysPanel(translatedX, translatedY, moreKeysPanel);

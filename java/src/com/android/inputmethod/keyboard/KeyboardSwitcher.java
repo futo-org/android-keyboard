@@ -270,24 +270,12 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         mState.onUpdateShiftState(mInputMethodService.getCurrentAutoCapsState());
     }
 
-    public void onPressShift(boolean withSliding) {
-        mState.onPressShift(withSliding);
+    public void onPressKey(int code) {
+        mState.onPressKey(code);
     }
 
-    public void onReleaseShift(boolean withSliding) {
-        mState.onReleaseShift(withSliding);
-    }
-
-    public void onPressSymbol() {
-        mState.onPressSymbol();
-    }
-
-    public void onReleaseSymbol() {
-        mState.onReleaseSymbol();
-    }
-
-    public void onOtherKeyPressed() {
-        mState.onOtherKeyPressed();
+    public void onReleaseKey(int code, boolean withSliding) {
+        mState.onReleaseKey(code, withSliding);
     }
 
     public void onCancelInput() {
