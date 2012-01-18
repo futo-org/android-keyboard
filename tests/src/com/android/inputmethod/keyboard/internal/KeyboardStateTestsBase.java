@@ -22,8 +22,6 @@ public abstract class KeyboardStateTestsBase extends AndroidTestCase
         implements MockKeyboardSwitcher.Constants {
     protected MockKeyboardSwitcher mSwitcher;
 
-    public abstract boolean hasDistinctMultitouch();
-
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -45,7 +43,7 @@ public abstract class KeyboardStateTestsBase extends AndroidTestCase
     }
 
     public void loadKeyboard(String layoutSwitchBackSymbols, int afterLoad) {
-        mSwitcher.loadKeyboard(layoutSwitchBackSymbols, hasDistinctMultitouch());
+        mSwitcher.loadKeyboard(layoutSwitchBackSymbols);
         updateShiftState(afterLoad);
     }
 

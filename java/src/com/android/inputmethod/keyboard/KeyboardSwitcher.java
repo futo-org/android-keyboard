@@ -137,8 +137,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         mKeyboardSet = builder.build();
         final KeyboardId mainKeyboardId = mKeyboardSet.getMainKeyboardId();
         try {
-            mState.onLoadKeyboard(mResources.getString(R.string.layout_switch_back_symbols),
-                    hasDistinctMultitouch());
+            mState.onLoadKeyboard(mResources.getString(R.string.layout_switch_back_symbols));
         } catch (RuntimeException e) {
             Log.w(TAG, "loading keyboard failed: " + mainKeyboardId, e);
             LatinImeLogger.logOnException(mainKeyboardId.toString(), e);

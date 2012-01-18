@@ -26,7 +26,7 @@ import com.android.inputmethod.keyboard.Keyboard;
  *
  * This class contains all keyboard state transition logic.
  *
- * The input events are {@link #onLoadKeyboard(String, boolean)}, {@link #onSaveKeyboardState()},
+ * The input events are {@link #onLoadKeyboard(String)}, {@link #onSaveKeyboardState()},
  * {@link #onPressKey(int)}, {@link #onReleaseKey(int, boolean)},
  * {@link #onCodeInput(int, boolean, boolean)}, {@link #onCancelInput(boolean)},
  * {@link #onUpdateShiftState(boolean)}.
@@ -74,7 +74,6 @@ public class KeyboardState {
     private int mSwitchState = SWITCH_STATE_ALPHA;
 
     private String mLayoutSwitchBackSymbols;
-    private boolean mHasDistinctMultitouch;
 
     private final SwitchActions mSwitchActions;
 
@@ -95,12 +94,11 @@ public class KeyboardState {
         mSwitchActions = switchActions;
     }
 
-    public void onLoadKeyboard(String layoutSwitchBackSymbols, boolean hasDistinctMultitouch) {
+    public void onLoadKeyboard(String layoutSwitchBackSymbols) {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onLoadKeyboard");
         }
         mLayoutSwitchBackSymbols = layoutSwitchBackSymbols;
-        mHasDistinctMultitouch = hasDistinctMultitouch;
         mKeyboardShiftState.setShifted(false);
         mKeyboardShiftState.setShiftLocked(false);
         mShiftKeyState.onRelease();
@@ -164,18 +162,16 @@ public class KeyboardState {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setShifted: shiftMode=" + shiftModeToString(shiftMode));
         }
-        if (shiftMode == SwitchActions.AUTOMATIC_SHIFT) {
+        switch (shiftMode) {
+        case SwitchActions.AUTOMATIC_SHIFT:
             mKeyboardShiftState.setAutomaticTemporaryUpperCase();
-        } else {
-            final boolean shifted = (shiftMode == SwitchActions.MANUAL_SHIFT);
-            // On non-distinct multi touch panel device, we should also turn off the shift locked
-            // state when shift key is pressed to go to normal mode.
-            // On the other hand, on distinct multi touch panel device, turning off the shift
-            // locked state with shift key pressing is handled by onReleaseShift().
-            if (!mHasDistinctMultitouch && !shifted && mKeyboardShiftState.isShiftLocked()) {
-                mSwitchActions.setShiftLocked(false);
-            }
-            mKeyboardShiftState.setShifted(shifted);
+            break;
+        case SwitchActions.MANUAL_SHIFT:
+            mKeyboardShiftState.setShifted(true);
+            break;
+        case SwitchActions.UNSHIFT:
+            mKeyboardShiftState.setShifted(false);
+            break;
         }
         mSwitchActions.setShifted(shiftMode);
     }

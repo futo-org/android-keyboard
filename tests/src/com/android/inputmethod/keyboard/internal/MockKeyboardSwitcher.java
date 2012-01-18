@@ -104,9 +104,8 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onUpdateShiftState(mAutoCapsMode && mAutoCapsState);
     }
 
-    public void loadKeyboard(String layoutSwitchBackSymbols,
-            boolean hasDistinctMultitouch) {
-        mState.onLoadKeyboard(layoutSwitchBackSymbols, hasDistinctMultitouch);
+    public void loadKeyboard(String layoutSwitchBackSymbols) {
+        mState.onLoadKeyboard(layoutSwitchBackSymbols);
     }
 
     public void onPressKey(int code) {
