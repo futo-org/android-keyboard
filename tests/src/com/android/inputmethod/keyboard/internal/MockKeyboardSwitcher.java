@@ -21,10 +21,10 @@ import com.android.inputmethod.keyboard.internal.KeyboardState.SwitchActions;
 
 public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     public interface Constants {
-        // Argument for KeyboardState.onPressKey and onReleaseKey.
+        // Argument for {@link KeyboardState#onPressKey} and {@link KeyboardState#onReleaseKey}.
         public static final boolean NOT_SLIDING = false;
         public static final boolean SLIDING = true;
-        // Argument for KeyboardState.onCodeInput.
+        // Argument for {@link KeyboardState#onCodeInput}.
         public static final boolean SINGLE = true;
         public static final boolean MULTI = false;
         public static final boolean NO_AUTO_CAPS = false;
@@ -34,18 +34,17 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         public static final int CODE_SYMBOL = Keyboard.CODE_SWITCH_ALPHA_SYMBOL;
         public static final int CODE_CAPSLOCK = Keyboard.CODE_CAPSLOCK;
         public static final int CODE_SPACE = Keyboard.CODE_SPACE;
+        public static final int CODE_AUTO_CAPS_TRIGGER = Keyboard.CODE_SPACE;
+
+        public static final int ALPHABET_UNSHIFTED = 0;
+        public static final int ALPHABET_MANUAL_SHIFTED = 1;
+        public static final int ALPHABET_AUTOMATIC_SHIFTED = 2;
+        public static final int ALPHABET_SHIFT_LOCKED = 3;
+        public static final int SYMBOLS_UNSHIFTED = 4;
+        public static final int SYMBOLS_SHIFTED = 5;
     }
 
-    public static final String WORD_SEPARATORS = " ,.";
-
-    private static final int ALPHABET_UNSHIFTED = 0;
-    private static final int ALPHABET_MANUAL_SHIFTED = 1;
-    private static final int ALPHABET_AUTOMATIC_SHIFTED = 2;
-    private static final int ALPHABET_SHIFT_LOCKED = 3;
-    private static final int SYMBOLS_UNSHIFTED = 4;
-    private static final int SYMBOLS_SHIFTED = 5;
-
-    private int mLayout = ALPHABET_UNSHIFTED;
+    private int mLayout = Constants.ALPHABET_UNSHIFTED;
 
     private boolean mAutoCapsMode = Constants.NO_AUTO_CAPS;
     // Following InputConnection's behavior. Simulating InputType.TYPE_TEXT_FLAG_CAP_WORDS.
@@ -53,28 +52,8 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
 
     private final KeyboardState mState = new KeyboardState(this);
 
-    public boolean assertAlphabetNormal() {
-        return mLayout == ALPHABET_UNSHIFTED;
-    }
-
-    public boolean assertAlphabetManualShifted() {
-        return mLayout == ALPHABET_MANUAL_SHIFTED;
-    }
-
-    public boolean assertAlphabetAutomaticShifted() {
-        return mLayout == ALPHABET_AUTOMATIC_SHIFTED;
-    }
-
-    public boolean assertAlphabetShiftLocked() {
-        return mLayout == ALPHABET_SHIFT_LOCKED;
-    }
-
-    public boolean assertSymbolsNormal() {
-        return mLayout == SYMBOLS_UNSHIFTED;
-    }
-
-    public boolean assertSymbolsShifted() {
-        return mLayout == SYMBOLS_SHIFTED;
+    public int getLayoutId() {
+        return mLayout;
     }
 
     public void setAutoCapsMode(boolean autoCaps) {
@@ -83,37 +62,37 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
 
     @Override
     public void setAlphabetKeyboard() {
-        mLayout = ALPHABET_UNSHIFTED;
+        mLayout = Constants.ALPHABET_UNSHIFTED;
     }
 
     @Override
     public void setShifted(int shiftMode) {
         if (shiftMode == SwitchActions.UNSHIFT) {
-            mLayout = ALPHABET_UNSHIFTED;
+            mLayout = Constants.ALPHABET_UNSHIFTED;
         } else if (shiftMode == SwitchActions.MANUAL_SHIFT) {
-            mLayout = ALPHABET_MANUAL_SHIFTED;
+            mLayout = Constants.ALPHABET_MANUAL_SHIFTED;
         } else if (shiftMode == SwitchActions.AUTOMATIC_SHIFT) {
-            mLayout = ALPHABET_AUTOMATIC_SHIFTED;
+            mLayout = Constants.ALPHABET_AUTOMATIC_SHIFTED;
         }
     }
 
     @Override
     public void setShiftLocked(boolean shiftLocked) {
         if (shiftLocked) {
-            mLayout = ALPHABET_SHIFT_LOCKED;
+            mLayout = Constants.ALPHABET_SHIFT_LOCKED;
         } else {
-            mLayout = ALPHABET_UNSHIFTED;
+            mLayout = Constants.ALPHABET_UNSHIFTED;
         }
     }
 
     @Override
     public void setSymbolsKeyboard() {
-        mLayout = SYMBOLS_UNSHIFTED;
+        mLayout = Constants.SYMBOLS_UNSHIFTED;
     }
 
     @Override
     public void setSymbolsShiftedKeyboard() {
-        mLayout = SYMBOLS_SHIFTED;
+        mLayout = Constants.SYMBOLS_SHIFTED;
     }
 
     @Override
@@ -134,20 +113,14 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onPressKey(code);
     }
 
-    public void onReleaseKey(int code) {
-        onReleaseKey(code, Constants.NOT_SLIDING);
-    }
-
     public void onReleaseKey(int code, boolean withSliding) {
         mState.onReleaseKey(code, withSliding);
     }
 
-    public void onCodeInput(int code) {
-        onCodeInput(code, Constants.SINGLE);
-    }
-
     public void onCodeInput(int code, boolean isSinglePointer) {
-        mAutoCapsState = (WORD_SEPARATORS.indexOf(code) >= 0);
+        if (Keyboard.isLetterCode(code)) {
+            mAutoCapsState = (code == Constants.CODE_AUTO_CAPS_TRIGGER);
+        }
         mState.onCodeInput(code, isSinglePointer, mAutoCapsMode && mAutoCapsState);
     }
 
