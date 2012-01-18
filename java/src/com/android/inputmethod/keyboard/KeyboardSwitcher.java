@@ -315,7 +315,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     }
 
     /**
-     * Updates state machine to figure out when to automatically snap back to the previous mode.
+     * Updates state machine to figure out when to automatically switch back to the previous mode.
      */
     public void onCodeInput(int code) {
         mState.onCodeInput(code, isSinglePointer(), mInputMethodService.getCurrentAutoCapsState());

@@ -269,7 +269,7 @@ public class KeyboardState {
     }
 
     private void onReleaseSymbol() {
-        // Snap back to the previous keyboard mode if the user chords the mode change key and
+        // Switch back to the previous keyboard mode if the user chords the mode change key and
         // another key, then releases the mode change key.
         if (mSwitchState == SWITCH_STATE_CHORDING_ALPHA) {
             toggleAlphabetAndSymbols();
@@ -355,8 +355,8 @@ public class KeyboardState {
                 setShifted(SwitchActions.UNSHIFT);
             }
         } else {
-            // In symbol mode, snap back to the previous keyboard mode if the user chords the shift
-            // key and another key, then releases the shift key.
+            // In symbol mode, switch back to the previous keyboard mode if the user chords the
+            // shift key and another key, then releases the shift key.
             if (mSwitchState == SWITCH_STATE_CHORDING_SYMBOL) {
                 toggleShiftInSymbols();
             }
@@ -368,7 +368,7 @@ public class KeyboardState {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onCancelInput: single=" + isSinglePointer + " " + this);
         }
-        // Snap back to the previous keyboard mode if the user cancels sliding input.
+        // Switch back to the previous keyboard mode if the user cancels sliding input.
         if (isSinglePointer) {
             if (mSwitchState == SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL) {
                 toggleAlphabetAndSymbols();
@@ -427,13 +427,13 @@ public class KeyboardState {
                     mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
                 }
             } else if (isSinglePointer) {
-                // Snap back to the previous keyboard mode if the user pressed the mode change key
+                // Switch back to the previous keyboard mode if the user pressed the mode change key
                 // and slid to other key, then released the finger.
-                // If the user cancels the sliding input, snapping back to the previous keyboard
+                // If the user cancels the sliding input, switching back to the previous keyboard
                 // mode is handled by {@link #onCancelInput}.
                 toggleAlphabetAndSymbols();
             } else {
-                // Chording input is being started. The keyboard mode will be snapped back to the
+                // Chording input is being started. The keyboard mode will be switched back to the
                 // previous mode in {@link onReleaseSymbol} when the mode change key is released.
                 mSwitchState = SWITCH_STATE_CHORDING_ALPHA;
             }
@@ -443,12 +443,12 @@ public class KeyboardState {
                 // Detected only the shift key has been pressed on symbol layout, and then released.
                 mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
             } else if (isSinglePointer) {
-                // Snap back to the previous keyboard mode if the user pressed the shift key on
+                // Switch back to the previous keyboard mode if the user pressed the shift key on
                 // symbol mode and slid to other key, then released the finger.
                 toggleShiftInSymbols();
                 mSwitchState = SWITCH_STATE_SYMBOL;
             } else {
-                // Chording input is being started. The keyboard mode will be snapped back to the
+                // Chording input is being started. The keyboard mode will be switched back to the
                 // previous mode in {@link onReleaseShift} when the shift key is released.
                 mSwitchState = SWITCH_STATE_CHORDING_SYMBOL;
             }
@@ -458,14 +458,14 @@ public class KeyboardState {
                     || code == Keyboard.CODE_OUTPUT_TEXT)) {
                 mSwitchState = SWITCH_STATE_SYMBOL;
             }
-            // Snap back to alpha keyboard mode immediately if user types a quote character.
+            // Switch back to alpha keyboard mode immediately if user types a quote character.
             if (isLayoutSwitchBackCharacter(code)) {
                 setAlphabetKeyboard();
             }
             break;
         case SWITCH_STATE_SYMBOL:
         case SWITCH_STATE_CHORDING_SYMBOL:
-            // Snap back to alpha keyboard mode if user types one or more non-space/enter
+            // Switch back to alpha keyboard mode if user types one or more non-space/enter
             // characters followed by a space/enter or a quote character.
             if (isSpaceCharacter(code) || isLayoutSwitchBackCharacter(code)) {
                 setAlphabetKeyboard();

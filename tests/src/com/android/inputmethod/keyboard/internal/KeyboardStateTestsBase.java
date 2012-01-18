@@ -18,9 +18,11 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.test.AndroidTestCase;
 
-public abstract class KeyboardStateTestsBase extends AndroidTestCase
+public class KeyboardStateTestsBase extends AndroidTestCase
         implements MockKeyboardSwitcher.Constants {
     protected MockKeyboardSwitcher mSwitcher;
+
+    private String mLayoutSwitchBackSymbols = "";
 
     @Override
     protected void setUp() throws Exception {
@@ -29,12 +31,15 @@ public abstract class KeyboardStateTestsBase extends AndroidTestCase
         mSwitcher = new MockKeyboardSwitcher();
         mSwitcher.setAutoCapsMode(NO_AUTO_CAPS);
 
-        final String layoutSwitchBackSymbols = "";
-        loadKeyboard(layoutSwitchBackSymbols, ALPHABET_UNSHIFTED);
+        loadKeyboard(ALPHABET_UNSHIFTED);
     }
 
     public void setAutoCapsMode(boolean autoCaps) {
         mSwitcher.setAutoCapsMode(autoCaps);
+    }
+
+    public void setLayoutSwitchBackSymbols(String switchBackSymbols) {
+        mLayoutSwitchBackSymbols = switchBackSymbols;
     }
 
     public void updateShiftState(int afterUpdate) {
@@ -42,9 +47,15 @@ public abstract class KeyboardStateTestsBase extends AndroidTestCase
         assertEquals(afterUpdate, mSwitcher.getLayoutId());
     }
 
-    public void loadKeyboard(String layoutSwitchBackSymbols, int afterLoad) {
-        mSwitcher.loadKeyboard(layoutSwitchBackSymbols);
+    public void loadKeyboard(int afterLoad) {
+        mSwitcher.loadKeyboard(mLayoutSwitchBackSymbols);
         updateShiftState(afterLoad);
+    }
+
+    public void rotateDevice(int afterRotate) {
+        mSwitcher.saveKeyboardState();
+        mSwitcher.loadKeyboard(mLayoutSwitchBackSymbols);
+        assertEquals(afterRotate, mSwitcher.getLayoutId());
     }
 
     public void pressKey(int code, int afterPress) {

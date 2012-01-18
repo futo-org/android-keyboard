@@ -18,7 +18,7 @@ package com.android.inputmethod.keyboard.internal;
 
 public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
     // Shift key chording input.
-    public void testShiftChording() {
+    public void testChording() {
         // Press shift key and hold, enter into choring shift state.
         pressKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED);
 
@@ -26,21 +26,100 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         chordingPressAndReleaseKey('Z', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
         chordingPressAndReleaseKey('X', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
 
-        // Release shift key, snap back to normal state.
+        // Release shift key, switch back to alphabet.
         releaseKey(CODE_SHIFT, ALPHABET_UNSHIFTED);
-    }
 
-    // Symbols key chording input.
-    public void testSymbolsChording() {
-        // Press symbols key and hold, enter into choring shift state.
+        // Press symbols key and hold, enter into choring symbols state.
         pressKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED);
 
         // Press/release symbol letter keys.
         chordingPressAndReleaseKey('1', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
         chordingPressAndReleaseKey('2', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
 
-        // Release shift key, snap back to normal state.
+        // Release symbols key, switch back to alphabet.
         releaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED);
+    }
+
+    // Shift key chording input in shift locked.
+    public void testShiftChordingShiftLocked() {
+        // Long press shift key, enter alphabet shift locked.
+        longPressShiftKey(ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED);
+
+        // Press shift key and hold, enter into choring shift state.
+        pressKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED);
+
+        // Press/release letter keys.
+        chordingPressAndReleaseKey('Z', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        chordingPressAndReleaseKey('X', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+
+        // TODO: This test fails due to bug, though external behavior is correct.
+        // Release shift key, switch back to alphabet shift locked.
+//        releaseKey(CODE_SHIFT, ALPHABET_SHIFT_LOCKED);
+//
+//        // Press symbols key and hold, enter into choring symbols state.
+//        pressKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED);
+//
+//        // Press/release symbol letter keys.
+//        chordingPressAndReleaseKey('1', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+//        chordingPressAndReleaseKey('2', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+//
+//        // Release symbols key, switch back to alphabet shift locked.
+//        releaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED);
+    }
+
+    // Symbols key chording input.
+    public void testSymbolsChording() {
+        // Press/release symbols key, enter symbols.
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+
+        // Press shift key and hold, enter into choring symbols shifted state.
+        pressKey(CODE_SHIFT, SYMBOLS_SHIFTED);
+
+        // Press/release symbols keys.
+        chordingPressAndReleaseKey('1', SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
+        chordingPressAndReleaseKey('2', SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
+
+        // Release shift key, switch back to symbols.
+        releaseKey(CODE_SHIFT, SYMBOLS_UNSHIFTED);
+
+        // Press "ABC" key and hold, enter into choring alphabet state.
+        pressKey(CODE_SYMBOL, ALPHABET_UNSHIFTED);
+
+        // Press/release letter keys.
+        chordingPressAndReleaseKey('a', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
+        chordingPressAndReleaseKey('b', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
+
+        // Release "ABC" key, switch back to symbols.
+        releaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED);
+    }
+
+    // Symbols shifted key chording input in symbol.
+    public void testSymbolsShiftedChording() {
+        // Press/release symbols key, enter symbols.
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        // Press/release shift key, enter symbols shifted.
+        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
+
+        // Press shift key and hold, enter into chording symbols state.
+        pressKey(CODE_SHIFT, SYMBOLS_UNSHIFTED);
+
+        // Press/release symbol letter keys.
+        chordingPressAndReleaseKey('1', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        chordingPressAndReleaseKey('2', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+
+        // Release shift key, switch back to symbols shifted state.
+        releaseKey(CODE_SHIFT, SYMBOLS_SHIFTED);
+
+        // TODO: This test fails due to bug.
+//        // Press "ABC" key and hold, enter into choring alphabet state.
+//        pressKey(CODE_SYMBOL, ALPHABET_UNSHIFTED);
+//
+//        // Press/release letter keys.
+//        chordingPressAndReleaseKey('a', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
+//        chordingPressAndReleaseKey('b', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
+//
+//        // Release "ABC" key, switch back to symbols.
+//        releaseKey(CODE_SYMBOL, SYMBOLS_SHIFTED);
     }
 
     // Chording shift key in automatic upper case.
@@ -51,13 +130,13 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         // Update shift state with auto caps enabled.
         updateShiftState(ALPHABET_AUTOMATIC_SHIFTED);
 
-        // Press shift key.
+        // Press shift key and hold, enter into chording shift state.
         pressKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED);
 
         // Press/release letter keys.
         chordingPressAndReleaseKey('Z', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
 
-        // Release shift key, snap back to alphabet.
+        // Release shift key, switch back to alphabet.
         releaseKey(CODE_SHIFT, ALPHABET_UNSHIFTED);
     }
 
@@ -69,13 +148,13 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         // Update shift state with auto caps enabled.
         updateShiftState(ALPHABET_AUTOMATIC_SHIFTED);
 
-        // Press "123?" key.
+        // Press "123?" key and hold, enter into chording symbols state.
         pressKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED);
 
         // Press/release symbol letter keys.
         chordingPressAndReleaseKey('1', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
 
-        // Release "123?" key, snap back to alphabet.
+        // Release "123?" key, switch back to alphabet.
         releaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED);
     }
 
