@@ -25,90 +25,63 @@ public class KeyboardStateTests extends KeyboardStateNonDistinctTests {
     // Shift key chording input.
     public void testShiftChording() {
         // Press shift key and hold, enter into choring shift state.
-        mSwitcher.onPressKey(CODE_SHIFT);
-        assertAlphabetManualShifted();
+        pressKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED);
 
         // Press/release letter keys.
-        mSwitcher.onPressKey('Z');
-        mSwitcher.onCodeInput('Z', MULTI);
-        mSwitcher.onReleaseKey('Z');
-        assertAlphabetManualShifted();
-        mSwitcher.onPressKey('X');
-        mSwitcher.onCodeInput('X', MULTI);
-        mSwitcher.onReleaseKey('X');
-        assertAlphabetManualShifted();
+        chordingPressAndReleaseKey('Z', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        chordingPressAndReleaseKey('X', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
 
         // Release shift key, snap back to normal state.
-        mSwitcher.onCodeInput(CODE_SHIFT);
-        mSwitcher.onReleaseKey(CODE_SHIFT);
-        mSwitcher.updateShiftState();
-        assertAlphabetNormal();
+        releaseKey(CODE_SHIFT, ALPHABET_UNSHIFTED);
     }
 
     // Symbols key chording input.
     public void testSymbolsChording() {
         // Press symbols key and hold, enter into choring shift state.
-        mSwitcher.onPressKey(CODE_SYMBOL);
-        assertSymbolsNormal();
+        pressKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED);
 
         // Press/release symbol letter keys.
-        mSwitcher.onPressKey('1');
-        mSwitcher.onCodeInput('1', MULTI);
-        mSwitcher.onReleaseKey('1');
-        assertSymbolsNormal();
-        mSwitcher.onPressKey('2');
-        mSwitcher.onCodeInput('2', MULTI);
-        mSwitcher.onReleaseKey('2');
-        assertSymbolsNormal();
+        chordingPressAndReleaseKey('1', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        chordingPressAndReleaseKey('2', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
 
         // Release shift key, snap back to normal state.
-        mSwitcher.onCodeInput(CODE_SYMBOL);
-        mSwitcher.onReleaseKey(CODE_SYMBOL);
-        mSwitcher.updateShiftState();
-        assertAlphabetNormal();
+        releaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED);
     }
 
     // Chording shift key in automatic upper case.
     public void testAutomaticUpperCaseChording() {
-        mSwitcher.setAutoCapsMode(AUTO_CAPS);
+        // Set auto caps mode on.
+        setAutoCapsMode(AUTO_CAPS);
+
         // Update shift state with auto caps enabled.
-        mSwitcher.updateShiftState();
-        assertAlphabetAutomaticShifted();
+        updateShiftState(ALPHABET_AUTOMATIC_SHIFTED);
 
         // Press shift key.
-        mSwitcher.onPressKey(CODE_SHIFT);
-        assertAlphabetManualShifted();
+        pressKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED);
+
         // Press/release letter keys.
-        mSwitcher.onPressKey('Z');
-        mSwitcher.onCodeInput('Z', MULTI);
-        mSwitcher.onReleaseKey('Z');
-        assertAlphabetManualShifted();
+        chordingPressAndReleaseKey('Z', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+
         // Release shift key, snap back to alphabet.
-        mSwitcher.onCodeInput(CODE_SHIFT);
-        mSwitcher.onReleaseKey(CODE_SHIFT);
-        assertAlphabetNormal();
+        releaseKey(CODE_SHIFT, ALPHABET_UNSHIFTED);
     }
 
     // Chording symbol key in automatic upper case.
-    public void testAutomaticUpperCaseChrding2() {
-        mSwitcher.setAutoCapsMode(AUTO_CAPS);
+    public void testAutomaticUpperCaseChording2() {
+        // Set auto caps mode on.
+        setAutoCapsMode(AUTO_CAPS);
+
         // Update shift state with auto caps enabled.
-        mSwitcher.updateShiftState();
-        assertAlphabetAutomaticShifted();
+        updateShiftState(ALPHABET_AUTOMATIC_SHIFTED);
 
         // Press "123?" key.
-        mSwitcher.onPressKey(CODE_SYMBOL);
-        assertSymbolsNormal();
+        pressKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED);
+
         // Press/release symbol letter keys.
-        mSwitcher.onPressKey('1');
-        assertSymbolsNormal();
-        mSwitcher.onCodeInput('1', MULTI);
-        mSwitcher.onReleaseKey('1');
-        assertSymbolsNormal();
+        chordingPressAndReleaseKey('1', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+
         // Release "123?" key, snap back to alphabet.
-        mSwitcher.onCodeInput(CODE_SYMBOL);
-        mSwitcher.onReleaseKey(CODE_SYMBOL);
-        assertAlphabetNormal();
+        releaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED);
     }
 
     // TODO: Multitouch test
