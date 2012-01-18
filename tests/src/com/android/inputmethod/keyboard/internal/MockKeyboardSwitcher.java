@@ -108,6 +108,10 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onLoadKeyboard(layoutSwitchBackSymbols);
     }
 
+    public void saveKeyboardState() {
+        mState.onSaveKeyboardState();
+    }
+
     public void onPressKey(int code) {
         mState.onPressKey(code);
     }
