@@ -16,12 +16,7 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-public class KeyboardStateNonDistinctTests extends KeyboardStateTestsBase {
-    @Override
-    public boolean hasDistinctMultitouch() {
-        return false;
-    }
-
+public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
     // Shift key in alphabet mode.
     public void testShift() {
         // Press/release shift key, enter into shift state.

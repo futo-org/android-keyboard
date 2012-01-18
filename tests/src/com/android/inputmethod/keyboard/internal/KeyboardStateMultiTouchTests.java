@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,12 +16,7 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-public class KeyboardStateTests extends KeyboardStateNonDistinctTests {
-    @Override
-    public boolean hasDistinctMultitouch() {
-        return true;
-    }
-
+public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
     // Shift key chording input.
     public void testShiftChording() {
         // Press shift key and hold, enter into choring shift state.
