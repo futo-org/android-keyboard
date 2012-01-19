@@ -2158,6 +2158,16 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     // "ic" must not be null
     private void restartSuggestionsOnManuallyPickedTypedWord(final InputConnection ic) {
+        // Note: this relies on the last word still being held in the WordComposer, in
+        // the field for suggestion resuming.
+        // Note: in the interest of code simplicity, we may want to just call
+        // restartSuggestionsOnWordBeforeCursorIfAtEndOfWord instead, but retrieving
+        // the old WordComposer allows to reuse the actual typed coordinates.
+        mWordComposer.resumeSuggestionOnKeptWord();
+        // We resume suggestion, and then we want to set the composing text to the content
+        // of the word composer again. But since we just manually picked a word, there is
+        // no composing text at the moment, so we have to delete the word before we set a
+        // new composing text.
         final int restartLength = mWordComposer.size();
         if (DEBUG) {
             final String wordBeforeCursor =
@@ -2171,13 +2181,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                         + wordBeforeCursor + "\"");
             }
         }
+        // Warning: this +1 takes into account the extra space added by the manual pick process.
         ic.deleteSurroundingText(restartLength + 1, 0);
-
-        // Note: this relies on the last word still being held in the WordComposer
-        // Note: in the interest of code simplicity, we may want to just call
-        // restartSuggestionsOnWordBeforeCursorIfAtEndOfWord instead, but retrieving
-        // the old WordComposer allows to reuse the actual typed coordinates.
-        mWordComposer.resumeSuggestionOnKeptWord();
         ic.setComposingText(mWordComposer.getTypedWord(), 1);
         mHandler.cancelUpdateBigramPredictions();
         mHandler.postUpdateSuggestions();
