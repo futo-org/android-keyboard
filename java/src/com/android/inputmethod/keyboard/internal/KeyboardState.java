@@ -338,7 +338,11 @@ public class KeyboardState {
             final boolean isShiftLocked = mAlphabetShiftState.isShiftLocked();
             if (mShiftKeyState.isMomentary()) {
                 // After chording input while normal state.
-                setShifted(SwitchActions.UNSHIFT);
+                if (mAlphabetShiftState.isShiftLockShifted()) {
+                    setShiftLocked(true);
+                } else {
+                    setShifted(SwitchActions.UNSHIFT);
+                }
             } else if (isShiftLocked && !mAlphabetShiftState.isShiftLockShifted()
                     && (mShiftKeyState.isPressing() || mShiftKeyState.isPressingOnShifted())
                     && !withSliding) {
