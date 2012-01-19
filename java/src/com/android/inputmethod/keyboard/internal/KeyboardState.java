@@ -78,6 +78,7 @@ public class KeyboardState {
     private KeyboardShiftState mAlphabetShiftState = new KeyboardShiftState();
     private boolean mIsSymbolShifted;
     private boolean mPrevMainKeyboardWasShiftLocked;
+    private boolean mPrevSymbolsKeyboardWasShifted;
 
     private final SavedKeyboardState mSavedKeyboardState = new SavedKeyboardState();
 
@@ -100,6 +101,7 @@ public class KeyboardState {
         // Reset alphabet shift state.
         mAlphabetShiftState.setShiftLocked(false);
         mPrevMainKeyboardWasShiftLocked = false;
+        mPrevSymbolsKeyboardWasShifted = false;
         mShiftKeyState.onRelease();
         mSymbolKeyState.onRelease();
         onRestoreKeyboardState();
@@ -202,6 +204,7 @@ public class KeyboardState {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setAlphabetKeyboard");
         }
+        mPrevSymbolsKeyboardWasShifted = mIsSymbolShifted;
         mSwitchActions.setAlphabetKeyboard();
         mIsAlphabetMode = true;
         mIsSymbolShifted = false;
@@ -214,6 +217,11 @@ public class KeyboardState {
     // TODO: Make this method private
     public void setSymbolsKeyboard() {
         mPrevMainKeyboardWasShiftLocked = mAlphabetShiftState.isShiftLocked();
+        if (mPrevSymbolsKeyboardWasShifted) {
+            setSymbolsShiftedKeyboard();
+            return;
+        }
+
         if (DEBUG_ACTION) {
             Log.d(TAG, "setSymbolsKeyboard");
         }
@@ -222,6 +230,7 @@ public class KeyboardState {
         mIsSymbolShifted = false;
         // Reset alphabet shift state.
         mAlphabetShiftState.setShiftLocked(false);
+        mPrevSymbolsKeyboardWasShifted = false;
         mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
     }
 
@@ -234,6 +243,7 @@ public class KeyboardState {
         mIsSymbolShifted = true;
         // Reset alphabet shift state.
         mAlphabetShiftState.setShiftLocked(false);
+        mPrevSymbolsKeyboardWasShifted = false;
         mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
     }
 
