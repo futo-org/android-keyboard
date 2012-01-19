@@ -53,9 +53,11 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         chordingPressAndReleaseKey('X', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
 
         // TODO: This test fails due to bug, though external behavior is correct.
-        // Release shift key, switch back to alphabet shift locked.
+//        // Release shift key, switch back to alphabet shift locked.
 //        releaseKey(CODE_SHIFT, ALPHABET_SHIFT_LOCKED);
-//
+        releaseKey(CODE_SHIFT, ALPHABET_UNSHIFTED);
+
+        // TODO: This test fails due to bug, though external behavior is correct.
 //        // Press symbols key and hold, enter into choring symbols state.
 //        pressKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED);
 //
