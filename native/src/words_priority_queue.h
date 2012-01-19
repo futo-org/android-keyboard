@@ -47,6 +47,7 @@ class WordsPriorityQueue {
         for (int i = 0; i < maxWordLength; ++i) {
             mSuggestedWords[i].mUsed = false;
         }
+        mHighestSuggestedWord = 0;
     }
 
     ~WordsPriorityQueue() {
@@ -79,6 +80,9 @@ class WordsPriorityQueue {
             DUMP_WORD(word, wordLength);
         }
         mSuggestions.push(sw);
+        if (!mHighestSuggestedWord || mHighestSuggestedWord->mScore < sw->mScore) {
+            mHighestSuggestedWord = sw;
+        }
     }
 
     SuggestedWord* top() {
@@ -88,6 +92,7 @@ class WordsPriorityQueue {
     }
 
     int outputSuggestions(int *frequencies, unsigned short *outputChars) {
+        mHighestSuggestedWord = 0;
         const unsigned int size = min(MAX_WORDS, mSuggestions.size());
         int index = size - 1;
         while (!mSuggestions.empty() && index >= 0) {
@@ -116,6 +121,7 @@ class WordsPriorityQueue {
     }
 
     void clear() {
+        mHighestSuggestedWord = 0;
         while (!mSuggestions.empty()) {
             SuggestedWord* sw = mSuggestions.top();
             if (DEBUG_WORDS_PRIORITY_QUEUE) {
@@ -132,6 +138,28 @@ class WordsPriorityQueue {
             return;
         }
         DUMP_WORD(mSuggestions.top()->mWord, mSuggestions.top()->mWordLength);
+    }
+
+    double getHighestNormalizedScore(const unsigned short* before, const int beforeLength,
+            unsigned short** outWord, int *outScore, int *outLength) {
+        if (!mHighestSuggestedWord) {
+            return 0.0;
+        }
+        SuggestedWord* sw = mHighestSuggestedWord;
+        const int score = sw->mScore;
+        unsigned short* word = sw->mWord;
+        const int wordLength = sw->mWordLength;
+        if (outScore) {
+            *outScore = score;
+        }
+        if (outWord) {
+            *outWord = word;
+        }
+        if (outLength) {
+            *outLength = wordLength;
+        }
+        return Correction::RankingAlgorithm::calcNormalizedScore(
+                before, beforeLength, word, wordLength, score);
     }
 
  private:
@@ -158,6 +186,7 @@ class WordsPriorityQueue {
     const unsigned int MAX_WORDS;
     const unsigned int MAX_WORD_LENGTH;
     SuggestedWord* mSuggestedWords;
+    SuggestedWord* mHighestSuggestedWord;
 };
 }
 
