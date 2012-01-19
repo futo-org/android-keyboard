@@ -53,8 +53,9 @@ public class MoreKeySpecParser {
     private static boolean hasIcon(String moreKeySpec) {
         if (moreKeySpec.startsWith(PREFIX_ICON)) {
             final int end = indexOfLabelEnd(moreKeySpec, 0);
-            if (end > 0)
+            if (end > 0) {
                 return true;
+            }
             throw new MoreKeySpecParserError("outputText or code not specified: " + moreKeySpec);
         }
         return false;
@@ -70,8 +71,9 @@ public class MoreKeySpecParser {
     }
 
     private static String parseEscape(String text) {
-        if (text.indexOf(ESCAPE) < 0)
+        if (text.indexOf(ESCAPE) < 0) {
             return text;
+        }
         final int length = text.length();
         final StringBuilder sb = new StringBuilder();
         for (int pos = 0; pos < length; pos++) {
@@ -88,8 +90,9 @@ public class MoreKeySpecParser {
     private static int indexOfLabelEnd(String moreKeySpec, int start) {
         if (moreKeySpec.indexOf(ESCAPE, start) < 0) {
             final int end = moreKeySpec.indexOf(LABEL_END, start);
-            if (end == 0)
+            if (end == 0) {
                 throw new MoreKeySpecParserError(LABEL_END + " at " + start + ": " + moreKeySpec);
+            }
             return end;
         }
         final int length = moreKeySpec.length();
@@ -105,55 +108,62 @@ public class MoreKeySpecParser {
     }
 
     public static String getLabel(String moreKeySpec) {
-        if (hasIcon(moreKeySpec))
+        if (hasIcon(moreKeySpec)) {
             return null;
+        }
         final int end = indexOfLabelEnd(moreKeySpec, 0);
         final String label = (end > 0) ? parseEscape(moreKeySpec.substring(0, end))
                 : parseEscape(moreKeySpec);
-        if (TextUtils.isEmpty(label))
+        if (TextUtils.isEmpty(label)) {
             throw new MoreKeySpecParserError("Empty label: " + moreKeySpec);
+        }
         return label;
     }
 
     public static String getOutputText(String moreKeySpec) {
-        if (hasCode(moreKeySpec))
+        if (hasCode(moreKeySpec)) {
             return null;
+        }
         final int end = indexOfLabelEnd(moreKeySpec, 0);
         if (end > 0) {
-            if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0)
+            if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0) {
                     throw new MoreKeySpecParserError("Multiple " + LABEL_END + ": "
                             + moreKeySpec);
+            }
             final String outputText = parseEscape(moreKeySpec.substring(end + LABEL_END.length()));
-            if (!TextUtils.isEmpty(outputText))
+            if (!TextUtils.isEmpty(outputText)) {
                 return outputText;
+            }
             throw new MoreKeySpecParserError("Empty outputText: " + moreKeySpec);
         }
         final String label = getLabel(moreKeySpec);
-        if (label == null)
+        if (label == null) {
             throw new MoreKeySpecParserError("Empty label: " + moreKeySpec);
+        }
         // Code is automatically generated for one letter label. See {@link getCode()}.
-        if (label.length() == 1)
-            return null;
-        return label;
+        return (label.length() == 1) ? null : label;
     }
 
     public static int getCode(Resources res, String moreKeySpec) {
         if (hasCode(moreKeySpec)) {
             final int end = indexOfLabelEnd(moreKeySpec, 0);
-            if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0)
+            if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0) {
                 throw new MoreKeySpecParserError("Multiple " + LABEL_END + ": " + moreKeySpec);
+            }
             final int resId = getResourceId(res,
                     moreKeySpec.substring(end + LABEL_END.length() + PREFIX_AT.length()));
             final int code = res.getInteger(resId);
             return code;
         }
-        if (indexOfLabelEnd(moreKeySpec, 0) > 0)
-            return Keyboard.CODE_UNSPECIFIED;
+        if (indexOfLabelEnd(moreKeySpec, 0) > 0) {
+            return Keyboard.CODE_OUTPUT_TEXT;
+        }
         final String label = getLabel(moreKeySpec);
         // Code is automatically generated for one letter label.
-        if (label != null && label.length() == 1)
+        if (label != null && label.length() == 1) {
             return label.charAt(0);
-        return Keyboard.CODE_UNSPECIFIED;
+        }
+        return Keyboard.CODE_OUTPUT_TEXT;
     }
 
     public static int getIconId(String moreKeySpec) {
@@ -173,8 +183,9 @@ public class MoreKeySpecParser {
     private static int getResourceId(Resources res, String name) {
         String packageName = res.getResourcePackageName(R.string.english_ime_name);
         int resId = res.getIdentifier(name, null, packageName);
-        if (resId == 0)
+        if (resId == 0) {
             throw new MoreKeySpecParserError("Unknown resource: " + name);
+        }
         return resId;
     }
 
