@@ -1924,8 +1924,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // Updating the predictions right away may be slow and feel unresponsive on slower
             // terminals. On the other hand if we just postUpdateBigramPredictions() it will
             // take a noticeable delay to update them which may feel uneasy.
-        }
-        if (showingAddToDictionaryHint) {
+        } else {
             if (mIsUserDictionaryAvailable) {
                 mSuggestionsView.showAddToDictionaryHint(
                         suggestion, mSettingsValues.mHintToSaveText);
@@ -1942,9 +1941,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
      * Commits the chosen word to the text field and saves it for later retrieval.
      */
     private void commitChosenWord(final CharSequence bestWord, final int commitType) {
-        final KeyboardSwitcher switcher = mKeyboardSwitcher;
-        if (!switcher.isKeyboardAvailable())
-            return;
         final InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
             mVoiceProxy.rememberReplacedWord(bestWord, mSettingsValues.mWordSeparators);
