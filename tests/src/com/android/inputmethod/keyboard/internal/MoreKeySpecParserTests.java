@@ -89,78 +89,78 @@ public class MoreKeySpecParserTests extends AndroidTestCase {
         assertParser("Single escaped at", "\\@",
                 "@", null, ICON_UNDEFINED, '@');
         assertParser("Single letter with outputText", "a|abc",
-                "a", "abc", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a", "abc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Single letter with escaped outputText", "a|a\\|c",
-                "a", "a|c", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a", "a|c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Single letter with comma outputText", "a|a,b",
-                "a", "a,b", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a", "a,b", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Single letter with escaped comma outputText", "a|a\\,b",
-                "a", "a,b", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a", "a,b", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Single letter with outputText starts with at", "a|@bc",
-                "a", "@bc", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a", "@bc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Single letter with outputText contains at", "a|a@c",
-                "a", "a@c", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a", "a@c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Single letter with escaped at outputText", "a|\\@bc",
-                "a", "@bc", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a", "@bc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Single escaped escape with outputText", "\\\\|\\\\",
-                "\\", "\\", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "\\", "\\", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Single escaped bar with outputText", "\\||\\|",
-                "|", "|", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "|", "|", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Single letter with code", "a|" + CODE_SETTINGS,
                 "a", null, ICON_UNDEFINED, mCodeSettings);
     }
 
     public void testLabel() {
         assertParser("Simple label", "abc",
-                "abc", "abc", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "abc", "abc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with escaped bar", "a\\|c",
-                "a|c", "a|c", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a|c", "a|c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with escaped escape", "a\\\\c",
-                "a\\c", "a\\c", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a\\c", "a\\c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with comma", "a,c",
-                "a,c", "a,c", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a,c", "a,c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with escaped comma", "a\\,c",
-                "a,c", "a,c", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a,c", "a,c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label starts with at", "@bc",
-                "@bc", "@bc", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "@bc", "@bc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label contains at", "a@c",
-                "a@c", "a@c", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a@c", "a@c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with escaped at", "\\@bc",
-                "@bc", "@bc", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "@bc", "@bc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with escaped letter", "\\abc",
-                "abc", "abc", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "abc", "abc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with outputText", "abc|def",
-                "abc", "def", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "abc", "def", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with comma and outputText", "a,c|def",
-                "a,c", "def", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a,c", "def", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Escaped comma label with outputText", "a\\,c|def",
-                "a,c", "def", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a,c", "def", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Escaped label with outputText", "a\\|c|def",
-                "a|c", "def", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a|c", "def", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with escaped bar outputText", "abc|d\\|f",
-                "abc", "d|f", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "abc", "d|f", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Escaped escape label with outputText", "a\\\\|def",
-                "a\\", "def", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a\\", "def", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label starts with at and outputText", "@bc|def",
-                "@bc", "def", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "@bc", "def", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label contains at label and outputText", "a@c|def",
-                "a@c", "def", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a@c", "def", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Escaped at label with outputText", "\\@bc|def",
-                "@bc", "def", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "@bc", "def", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with comma outputText", "abc|a,b",
-                "abc", "a,b", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "abc", "a,b", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with escaped comma outputText", "abc|a\\,b",
-                "abc", "a,b", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "abc", "a,b", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with outputText starts with at", "abc|@bc",
-                "abc", "@bc", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "abc", "@bc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with outputText contains at", "abc|a@c",
-                "abc", "a@c", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "abc", "a@c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with escaped at outputText", "abc|\\@bc",
-                "abc", "@bc", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "abc", "@bc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with escaped bar outputText", "abc|d\\|f",
-                "abc", "d|f", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "abc", "d|f", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Escaped bar label with escaped bar outputText", "a\\|c|d\\|f",
-                "a|c", "d|f", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a|c", "d|f", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with code", "abc|" + CODE_SETTINGS,
                 "abc", null, ICON_UNDEFINED, mCodeSettings);
         assertParser("Escaped label with code", "a\\|c|" + CODE_SETTINGS,
@@ -169,13 +169,13 @@ public class MoreKeySpecParserTests extends AndroidTestCase {
 
     public void testIconAndCode() {
         assertParser("Icon with outputText", ICON_SETTINGS + "|abc",
-                null, "abc", ICON_SETTINGS_KEY, Keyboard.CODE_UNSPECIFIED);
+                null, "abc", ICON_SETTINGS_KEY, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Icon with outputText starts with at", ICON_SETTINGS + "|@bc",
-                null, "@bc", ICON_SETTINGS_KEY, Keyboard.CODE_UNSPECIFIED);
+                null, "@bc", ICON_SETTINGS_KEY, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Icon with outputText contains at", ICON_SETTINGS + "|a@c",
-                null, "a@c", ICON_SETTINGS_KEY, Keyboard.CODE_UNSPECIFIED);
+                null, "a@c", ICON_SETTINGS_KEY, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Icon with escaped at outputText", ICON_SETTINGS + "|\\@bc",
-                null, "@bc", ICON_SETTINGS_KEY, Keyboard.CODE_UNSPECIFIED);
+                null, "@bc", ICON_SETTINGS_KEY, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label starts with at and code", "@bc|" + CODE_SETTINGS,
                 "@bc", null, ICON_UNDEFINED, mCodeSettings);
         assertParser("Label contains at and code", "a@c|" + CODE_SETTINGS,
@@ -202,7 +202,7 @@ public class MoreKeySpecParserTests extends AndroidTestCase {
         assertParserError("Icon without code", ICON_SETTINGS,
                 null, null, ICON_SETTINGS_KEY, Keyboard.CODE_UNSPECIFIED);
         assertParser("Non existing icon", ICON_NON_EXISTING + "|abc",
-                null, "abc", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                null, "abc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParserError("Non existing code", "abc|" + CODE_NON_EXISTING,
                 "abc", null, ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
         assertParserError("Third bar at end", "a|b|",
