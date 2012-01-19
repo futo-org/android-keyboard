@@ -109,16 +109,15 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         // Release shift key, switch back to symbols shifted state.
         releaseKey(CODE_SHIFT, SYMBOLS_SHIFTED);
 
-        // TODO: This test fails due to bug.
-//        // Press "ABC" key and hold, enter into choring alphabet state.
-//        pressKey(CODE_SYMBOL, ALPHABET_UNSHIFTED);
-//
-//        // Press/release letter keys.
-//        chordingPressAndReleaseKey('a', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
-//        chordingPressAndReleaseKey('b', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
-//
-//        // Release "ABC" key, switch back to symbols.
-//        releaseKey(CODE_SYMBOL, SYMBOLS_SHIFTED);
+        // Press "ABC" key and hold, enter into choring alphabet state.
+        pressKey(CODE_SYMBOL, ALPHABET_UNSHIFTED);
+
+        // Press/release letter keys.
+        chordingPressAndReleaseKey('a', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
+        chordingPressAndReleaseKey('b', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
+
+        // Release "ABC" key, switch back to symbols.
+        releaseKey(CODE_SYMBOL, SYMBOLS_SHIFTED);
     }
 
     // Chording shift key in automatic upper case.
