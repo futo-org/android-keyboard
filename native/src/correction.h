@@ -75,6 +75,8 @@ class Correction {
     int getFreqForSplitTwoWords(
             const int firstFreq, const int secondFreq, const unsigned short *word);
     int getFinalFreq(const int freq, unsigned short **word, int* wordLength);
+    int getFinalFreqForSubQueue(const int freq, unsigned short **word, int* wordLength,
+            const int inputLength);
 
     CorrectionType processCharAndCalcState(const int32_t c, const bool isTerminal);
 
@@ -97,7 +99,8 @@ class Correction {
     class RankingAlgorithm {
      public:
         static int calculateFinalFreq(const int inputIndex, const int depth,
-                const int freq, int *editDistanceTable, const Correction* correction);
+                const int freq, int *editDistanceTable, const Correction* correction,
+                const int inputLength);
         static int calcFreqForSplitTwoWords(const int firstFreq, const int secondFreq,
                 const Correction* correction, const unsigned short *word);
         static int calcFreqForSplitTwoWordsOld(const int firstFreq, const int secondFreq,
@@ -122,6 +125,8 @@ class Correction {
             const int32_t c, const bool isTerminal, const bool inputIndexIncremented);
     inline CorrectionType processUnrelatedCorrectionType();
     inline void addCharToCurrentWord(const int32_t c);
+    inline int getFinalFreqInternal(const int freq, unsigned short **word, int* wordLength,
+            const int inputLength);
 
     const int TYPED_LETTER_MULTIPLIER;
     const int FULL_WORD_MULTIPLIER;

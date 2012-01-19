@@ -39,15 +39,15 @@ inline static void initEditDistance(int *editDistanceTable) {
     }
 }
 
-inline static void dumpEditDistance10ForDebug(int *editDistanceTable, const int inputLength,
-        const int outputLength) {
+inline static void dumpEditDistance10ForDebug(int *editDistanceTable,
+        const int editDistanceTableWidth, const int outputLength) {
     if (DEBUG_DICT) {
         AKLOGI("EditDistanceTable");
         for (int i = 0; i <= 10; ++i) {
             int c[11];
             for (int j = 0; j <= 10; ++j) {
-                if (j < inputLength + 1 && i < outputLength + 1) {
-                    c[j] = (editDistanceTable + i * (inputLength + 1))[j];
+                if (j < editDistanceTableWidth + 1 && i < outputLength + 1) {
+                    c[j] = (editDistanceTable + i * (editDistanceTableWidth + 1))[j];
                 } else {
                     c[j] = -1;
                 }
@@ -81,12 +81,12 @@ inline static void calcEditDistanceOneStep(int *editDistanceTable, const unsigne
     }
 }
 
-inline static int getCurrentEditDistance(
-        int *editDistanceTable, const int inputLength, const int outputLength) {
+inline static int getCurrentEditDistance(int *editDistanceTable, const int editDistanceTableWidth,
+        const int outputLength, const int inputLength) {
     if (DEBUG_EDIT_DISTANCE) {
         AKLOGI("getCurrentEditDistance %d, %d", inputLength, outputLength);
     }
-    return editDistanceTable[(inputLength + 1) * (outputLength + 1) - 1];
+    return editDistanceTable[(editDistanceTableWidth + 1) * (outputLength) + inputLength];
 }
 
 //////////////////////
@@ -165,6 +165,16 @@ int Correction::getFreqForSplitTwoWords(const int firstFreq, const int secondFre
 }
 
 int Correction::getFinalFreq(const int freq, unsigned short **word, int *wordLength) {
+    return getFinalFreqInternal(freq, word, wordLength, mInputLength);
+}
+
+int Correction::getFinalFreqForSubQueue(const int freq, unsigned short **word, int *wordLength,
+        const int inputLength) {
+    return getFinalFreqInternal(freq, word, wordLength, inputLength);
+}
+
+int Correction::getFinalFreqInternal(const int freq, unsigned short **word, int *wordLength,
+        const int inputLength) {
     const int outputIndex = mTerminalOutputIndex;
     const int inputIndex = mTerminalInputIndex;
     *wordLength = outputIndex + 1;
@@ -173,8 +183,9 @@ int Correction::getFinalFreq(const int freq, unsigned short **word, int *wordLen
     }
 
     *word = mWord;
-    return Correction::RankingAlgorithm::calculateFinalFreq(
-            inputIndex, outputIndex, freq, mEditDistanceTable, this);
+    int finalFreq = Correction::RankingAlgorithm::calculateFinalFreq(
+            inputIndex, outputIndex, freq, mEditDistanceTable, this, inputLength);
+    return finalFreq;
 }
 
 bool Correction::initProcessState(const int outputIndex) {
@@ -613,9 +624,9 @@ inline static bool isUpperCase(unsigned short c) {
 
 /* static */
 int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const int outputIndex,
-        const int freq, int* editDistanceTable, const Correction* correction) {
+        const int freq, int* editDistanceTable, const Correction* correction,
+        const int inputLength) {
     const int excessivePos = correction->getExcessivePos();
-    const int inputLength = correction->mInputLength;
     const int typedLetterMultiplier = correction->TYPED_LETTER_MULTIPLIER;
     const int fullWordMultiplier = correction->FULL_WORD_MULTIPLIER;
     const ProximityInfo *proximityInfo = correction->mProximityInfo;
@@ -640,13 +651,13 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
     const unsigned short* word = correction->mWord;
     const bool skipped = skippedCount > 0;
 
-    const int quoteDiffCount = max(0, getQuoteCount(word, outputIndex + 1)
+    const int quoteDiffCount = max(0, getQuoteCount(word, outputLength)
             - getQuoteCount(proximityInfo->getPrimaryInputWord(), inputLength));
 
     // TODO: Calculate edit distance for transposed and excessive
     int ed = 0;
     if (DEBUG_DICT_FULL) {
-        dumpEditDistance10ForDebug(editDistanceTable, inputLength, outputIndex + 1);
+        dumpEditDistance10ForDebug(editDistanceTable, correction->mInputLength, outputLength);
     }
     int adjustedProximityMatchedCount = proximityMatchedCount;
 
@@ -654,22 +665,22 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
 
     // TODO: Optimize this.
     if (transposedCount > 0 || proximityMatchedCount > 0 || skipped || excessiveCount > 0) {
-        ed = getCurrentEditDistance(editDistanceTable, inputLength, outputIndex + 1)
-                - transposedCount;
+        ed = getCurrentEditDistance(editDistanceTable, correction->mInputLength, outputLength,
+                inputLength) - transposedCount;
 
         const int matchWeight = powerIntCapped(typedLetterMultiplier,
-                max(inputLength, outputIndex + 1) - ed);
+                max(inputLength, outputLength) - ed);
         multiplyIntCapped(matchWeight, &finalFreq);
 
         // TODO: Demote further if there are two or more excessive chars with longer user input?
-        if (inputLength > outputIndex + 1) {
+        if (inputLength > outputLength) {
             multiplyRate(INPUT_EXCEEDS_OUTPUT_DEMOTION_RATE, &finalFreq);
         }
 
         ed = max(0, ed - quoteDiffCount);
 
         if (transposedCount < 1) {
-            if (ed == 1 && (inputLength == outputIndex || inputLength == outputIndex + 2)) {
+            if (ed == 1 && (inputLength == outputLength - 1 || inputLength == outputLength + 1)) {
                 // Promote a word with just one skipped or excessive char
                 if (sameLength) {
                     multiplyRate(WORDS_WITH_JUST_ONE_CORRECTION_PROMOTION_RATE, &finalFreq);
@@ -681,7 +692,7 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
                 sameLength = true;
             }
         }
-        adjustedProximityMatchedCount = min(max(0, ed - (outputIndex + 1 - inputLength)),
+        adjustedProximityMatchedCount = min(max(0, ed - (outputLength - inputLength)),
                 proximityMatchedCount);
     } else {
         const int matchWeight = powerIntCapped(typedLetterMultiplier, matchCount);
@@ -783,7 +794,8 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
     // Promotion for an exactly matched word
     if (ed == 0) {
         // Full exact match
-        if (sameLength && transposedCount == 0 && !skipped && excessiveCount == 0) {
+        if (sameLength && transposedCount == 0 && !skipped && excessiveCount == 0
+                && quoteDiffCount == 0) {
             finalFreq = capped255MultForFullMatchAccentsOrCapitalizationDifference(finalFreq);
         }
     }
@@ -828,14 +840,14 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
     }
 
     if (DEBUG_DICT_FULL) {
-        AKLOGI("calc: %d, %d", outputIndex, sameLength);
+        AKLOGI("calc: %d, %d", outputLength, sameLength);
     }
 
     if (DEBUG_CORRECTION_FREQ) {
-        DUMP_WORD(correction->mWord, outputIndex + 1);
-        AKLOGI("FinalFreq: [P%d, S%d, T%d, E%d] %d, %d, %d, %d, %d", proximityMatchedCount,
-                skippedCount, transposedCount, excessiveCount, lastCharExceeded, sameLength,
-                quoteDiffCount, ed, finalFreq);
+        DUMP_WORD(correction->mWord, outputLength);
+        AKLOGI("FinalFreq: [P%d, S%d, T%d, E%d] %d, %d, %d, %d, %d, %d", proximityMatchedCount,
+                skippedCount, transposedCount, excessiveCount, outputLength, lastCharExceeded,
+                sameLength, quoteDiffCount, ed, finalFreq);
     }
 
     return finalFreq;
@@ -881,11 +893,12 @@ int Correction::RankingAlgorithm::calcFreqForSplitTwoWords(
     if (firstWordLength == 0 || secondWordLength == 0) {
         return 0;
     }
-    const int firstDemotionRate = 100 - 100 / (firstWordLength + 1);
+    const int firstDemotionRate = 100 - TWO_WORDS_CORRECTION_DEMOTION_BASE / (firstWordLength + 1);
     int tempFirstFreq = firstFreq;
     multiplyRate(firstDemotionRate, &tempFirstFreq);
 
-    const int secondDemotionRate = 100 - 100 / (secondWordLength + 1);
+    const int secondDemotionRate = 100
+            - TWO_WORDS_CORRECTION_DEMOTION_BASE / (secondWordLength + 1);
     int tempSecondFreq = secondFreq;
     multiplyRate(secondDemotionRate, &tempSecondFreq);
 
