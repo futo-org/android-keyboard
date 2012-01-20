@@ -37,20 +37,22 @@ public class KeyStyles {
             new HashMap<String, DeclaredKeyStyle>();
     private static final KeyStyle EMPTY_KEY_STYLE = new EmptyKeyStyle();
 
+    private static final char ESCAPE_CHAR = '\\';
+
     public interface KeyStyle {
-        public CharSequence[] getTextArray(TypedArray a, int index);
+        public String[] getTextArray(TypedArray a, int index);
         public CharSequence getText(TypedArray a, int index);
         public int getInt(TypedArray a, int index, int defaultValue);
         public int getFlag(TypedArray a, int index, int defaultValue);
     }
 
-    /* package */ static class EmptyKeyStyle implements KeyStyle {
+    private static class EmptyKeyStyle implements KeyStyle {
         EmptyKeyStyle() {
             // Nothing to do.
         }
 
         @Override
-        public CharSequence[] getTextArray(TypedArray a, int index) {
+        public String[] getTextArray(TypedArray a, int index) {
             return parseTextArray(a, index);
         }
 
@@ -69,64 +71,66 @@ public class KeyStyles {
             return a.getInt(index, defaultValue);
         }
 
-        protected static CharSequence[] parseTextArray(TypedArray a, int index) {
+        protected static String[] parseTextArray(TypedArray a, int index) {
             if (!a.hasValue(index))
                 return null;
             final CharSequence text = a.getText(index);
-            return parseCsvText(text);
+            return parseCsvText(text.toString());
         }
 
-        /* package */ static CharSequence[] parseCsvText(CharSequence text) {
-            final int size = text.length();
-            if (size == 0) return null;
-            if (size == 1) return new CharSequence[] { text };
-            final StringBuilder sb = new StringBuilder();
-            ArrayList<CharSequence> list = null;
-            int start = 0;
-            for (int pos = 0; pos < size; pos++) {
-                final char c = text.charAt(pos);
-                if (c == ',') {
-                    if (list == null) list = new ArrayList<CharSequence>();
-                    if (sb.length() == 0) {
-                        list.add(text.subSequence(start, pos));
-                    } else {
-                        list.add(sb.toString());
-                        sb.setLength(0);
-                    }
-                    start = pos + 1;
-                    continue;
-                } else if (c == '\\') {
-                    if (start == pos) {
-                        // Skip escape character at the beginning of the value.
-                        start++;
-                        pos++;
-                    } else {
-                        if (start < pos && sb.length() == 0)
-                            sb.append(text.subSequence(start, pos));
-                        pos++;
-                        if (pos < size)
-                            sb.append(text.charAt(pos));
-                    }
-                } else if (sb.length() > 0) {
-                    sb.append(c);
+    }
+
+    /* package for test */
+    static String[] parseCsvText(String text) {
+        final int size = text.length();
+        if (size == 0) return null;
+        if (size == 1) return new String[] { text };
+        final StringBuilder sb = new StringBuilder();
+        ArrayList<String> list = null;
+        int start = 0;
+        for (int pos = 0; pos < size; pos++) {
+            final char c = text.charAt(pos);
+            if (c == ',') {
+                if (list == null) list = new ArrayList<String>();
+                if (sb.length() == 0) {
+                    list.add(text.substring(start, pos));
+                } else {
+                    list.add(sb.toString());
+                    sb.setLength(0);
                 }
+                start = pos + 1;
+                continue;
+            } else if (c == ESCAPE_CHAR) {
+                if (start == pos) {
+                    // Skip escape character at the beginning of the value.
+                    start++;
+                    pos++;
+                } else {
+                    if (start < pos && sb.length() == 0)
+                        sb.append(text.subSequence(start, pos));
+                    pos++;
+                    if (pos < size)
+                        sb.append(text.charAt(pos));
+                }
+            } else if (sb.length() > 0) {
+                sb.append(c);
             }
-            if (list == null) {
-                return new CharSequence[] { sb.length() > 0 ? sb : text.subSequence(start, size) };
-            } else {
-                list.add(sb.length() > 0 ? sb : text.subSequence(start, size));
-                return list.toArray(new CharSequence[list.size()]);
-            }
+        }
+        if (list == null) {
+            return new String[] { sb.length() > 0 ? sb.toString() : text.substring(start) };
+        } else {
+            list.add(sb.length() > 0 ? sb.toString() : text.substring(start));
+            return list.toArray(new String[list.size()]);
         }
     }
 
-    /* package */ static class DeclaredKeyStyle extends EmptyKeyStyle {
+    private static class DeclaredKeyStyle extends EmptyKeyStyle {
         private final HashMap<Integer, Object> mAttributes = new HashMap<Integer, Object>();
 
         @Override
-        public CharSequence[] getTextArray(TypedArray a, int index) {
+        public String[] getTextArray(TypedArray a, int index) {
             return a.hasValue(index)
-                    ? super.getTextArray(a, index) : (CharSequence[])mAttributes.get(index);
+                    ? super.getTextArray(a, index) : (String[])mAttributes.get(index);
         }
 
         @Override

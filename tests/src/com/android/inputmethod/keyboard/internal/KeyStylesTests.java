@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import com.android.inputmethod.keyboard.internal.KeyStyles.EmptyKeyStyle;
-
 import android.test.AndroidTestCase;
 import android.text.TextUtils;
 
@@ -26,9 +24,8 @@ public class KeyStylesTests extends AndroidTestCase {
         return message + " expected:<" + expected + "> but was:<" + actual + ">";
     }
 
-    private static void assertTextArray(String message, CharSequence value,
-            CharSequence ... expected) {
-        final CharSequence actual[] = EmptyKeyStyle.parseCsvText(value);
+    private static void assertTextArray(String message, String value, String ... expected) {
+        final String actual[] = KeyStyles.parseCsvText(value);
         if (expected.length == 0) {
             assertNull(message, actual);
             return;

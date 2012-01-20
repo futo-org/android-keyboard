@@ -40,7 +40,7 @@ import java.util.ArrayList;
 public class MoreKeySpecParser {
     private static final String TAG = MoreKeySpecParser.class.getSimpleName();
 
-    private static final char ESCAPE = '\\';
+    private static final char ESCAPE_CHAR = '\\';
     private static final String LABEL_END = "|";
     private static final String PREFIX_AT = "@";
     private static final String PREFIX_ICON = PREFIX_AT + "icon/";
@@ -71,14 +71,14 @@ public class MoreKeySpecParser {
     }
 
     private static String parseEscape(String text) {
-        if (text.indexOf(ESCAPE) < 0) {
+        if (text.indexOf(ESCAPE_CHAR) < 0) {
             return text;
         }
         final int length = text.length();
         final StringBuilder sb = new StringBuilder();
         for (int pos = 0; pos < length; pos++) {
             final char c = text.charAt(pos);
-            if (c == ESCAPE && pos + 1 < length) {
+            if (c == ESCAPE_CHAR && pos + 1 < length) {
                 sb.append(text.charAt(++pos));
             } else {
                 sb.append(c);
@@ -88,7 +88,7 @@ public class MoreKeySpecParser {
     }
 
     private static int indexOfLabelEnd(String moreKeySpec, int start) {
-        if (moreKeySpec.indexOf(ESCAPE, start) < 0) {
+        if (moreKeySpec.indexOf(ESCAPE_CHAR, start) < 0) {
             final int end = moreKeySpec.indexOf(LABEL_END, start);
             if (end == 0) {
                 throw new MoreKeySpecParserError(LABEL_END + " at " + start + ": " + moreKeySpec);
@@ -98,7 +98,7 @@ public class MoreKeySpecParser {
         final int length = moreKeySpec.length();
         for (int pos = start; pos < length; pos++) {
             final char c = moreKeySpec.charAt(pos);
-            if (c == ESCAPE && pos + 1 < length) {
+            if (c == ESCAPE_CHAR && pos + 1 < length) {
                 pos++;
             } else if (moreKeySpec.startsWith(LABEL_END, pos)) {
                 return pos;
@@ -207,21 +207,19 @@ public class MoreKeySpecParser {
         }
     };
 
-    public static CharSequence[] filterOut(Resources res, CharSequence[] moreKeys,
-            CodeFilter filter) {
+    public static String[] filterOut(Resources res, String[] moreKeys, CodeFilter filter) {
         if (moreKeys == null || moreKeys.length < 1) {
             return null;
         }
-        if (moreKeys.length == 1
-                && filter.shouldFilterOut(getCode(res, moreKeys[0].toString()))) {
+        if (moreKeys.length == 1 && filter.shouldFilterOut(getCode(res, moreKeys[0]))) {
             return null;
         }
-        ArrayList<CharSequence> filtered = null;
+        ArrayList<String> filtered = null;
         for (int i = 0; i < moreKeys.length; i++) {
-            final CharSequence moreKeySpec = moreKeys[i];
-            if (filter.shouldFilterOut(getCode(res, moreKeySpec.toString()))) {
+            final String moreKeySpec = moreKeys[i];
+            if (filter.shouldFilterOut(getCode(res, moreKeySpec))) {
                 if (filtered == null) {
-                    filtered = new ArrayList<CharSequence>();
+                    filtered = new ArrayList<String>();
                     for (int j = 0; j < i; j++) {
                         filtered.add(moreKeys[j]);
                     }
@@ -236,6 +234,6 @@ public class MoreKeySpecParser {
         if (filtered.size() == 0) {
             return null;
         }
-        return filtered.toArray(new CharSequence[filtered.size()]);
+        return filtered.toArray(new String[filtered.size()]);
     }
 }
