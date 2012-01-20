@@ -16,14 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.compat.InputMethodInfoCompatWrapper;
-import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
-import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
-import com.android.inputmethod.compat.InputTypeCompatUtils;
-import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardId;
-import com.android.inputmethod.latin.define.JniLibName;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -40,6 +32,14 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
+
+import com.android.inputmethod.compat.InputMethodInfoCompatWrapper;
+import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
+import com.android.inputmethod.compat.InputTypeCompatUtils;
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.latin.define.JniLibName;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -792,5 +792,14 @@ public class Utils {
         public static void onAutoCorrectionCancellation() {
             LatinImeLogger.logOnAutoCorrectionCancelled();
         }
+    }
+
+    public static int getResourceId(Resources res, String name, int packageNameResId) {
+        String packageName = res.getResourcePackageName(packageNameResId);
+        int resId = res.getIdentifier(name, null, packageName);
+        if (resId == 0) {
+            throw new RuntimeException("Unknown resource: " + name);
+        }
+        return resId;
     }
 }

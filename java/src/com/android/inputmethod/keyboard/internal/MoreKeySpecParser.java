@@ -22,6 +22,7 @@ import android.util.Log;
 
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.Utils;
 
 import java.util.ArrayList;
 
@@ -150,8 +151,9 @@ public class MoreKeySpecParser {
             if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0) {
                 throw new MoreKeySpecParserError("Multiple " + LABEL_END + ": " + moreKeySpec);
             }
-            final int resId = getResourceId(res,
-                    moreKeySpec.substring(end + LABEL_END.length() + PREFIX_AT.length()));
+            final int resId = Utils.getResourceId(res,
+                    moreKeySpec.substring(end + LABEL_END.length() + PREFIX_AT.length()),
+                    R.string.english_ime_name);
             final int code = res.getInteger(resId);
             return code;
         }
@@ -178,15 +180,6 @@ public class MoreKeySpecParser {
             }
         }
         return KeyboardIconsSet.ICON_UNDEFINED;
-    }
-
-    private static int getResourceId(Resources res, String name) {
-        String packageName = res.getResourcePackageName(R.string.english_ime_name);
-        int resId = res.getIdentifier(name, null, packageName);
-        if (resId == 0) {
-            throw new MoreKeySpecParserError("Unknown resource: " + name);
-        }
-        return resId;
     }
 
     @SuppressWarnings("serial")
