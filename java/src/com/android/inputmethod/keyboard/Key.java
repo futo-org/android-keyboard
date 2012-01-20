@@ -101,7 +101,7 @@ public class Key {
     /** Text to output when pressed. This can be multiple characters, like ".com" */
     public final CharSequence mOutputText;
     /** More keys */
-    public final CharSequence[] mMoreKeys;
+    public final String[] mMoreKeys;
     /** More keys maximum column number */
     public final int mMaxMoreKeysColumn;
 
@@ -255,7 +255,7 @@ public class Key {
         // Update row to have current x coordinate.
         row.setXPos(keyXPos + keyWidth);
 
-        final CharSequence[] moreKeys = style.getTextArray(keyAttr,
+        final String[] moreKeys = style.getTextArray(keyAttr,
                 R.styleable.Keyboard_Key_moreKeys);
         // In Arabic symbol layouts, we'd like to keep digits in more keys regardless of
         // config_digit_more_keys_enabled.
