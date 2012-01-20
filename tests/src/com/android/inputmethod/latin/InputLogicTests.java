@@ -18,6 +18,8 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.test.ServiceTestCase;
 import android.text.InputType;
 import android.util.Log;
@@ -35,11 +37,23 @@ import com.android.inputmethod.keyboard.KeyboardActionListener;
 
 public class InputLogicTests extends ServiceTestCase<LatinIME> {
 
+    private static final String PREF_DEBUG_MODE = "debug_mode";
+
     private LatinIME mLatinIME;
     private TextView mTextView;
 
     public InputLogicTests() {
         super(LatinIME.class);
+    }
+
+    // returns the previous setting value
+    private boolean setDebugMode(final boolean mode) {
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mLatinIME);
+        final boolean previousDebugSetting = prefs.getBoolean(PREF_DEBUG_MODE, false);
+        final SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(PREF_DEBUG_MODE, true);
+        editor.commit();
+        return previousDebugSetting;
     }
 
     @Override
@@ -54,7 +68,9 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         mTextView.setEnabled(true);
         setupService();
         mLatinIME = getService();
+        final boolean previousDebugSetting = setDebugMode(true);
         mLatinIME.onCreate();
+        setDebugMode(previousDebugSetting);
         final EditorInfo ei = new EditorInfo();
         final InputConnection ic = mTextView.onCreateInputConnection(ei);
         final LayoutInflater inflater =
