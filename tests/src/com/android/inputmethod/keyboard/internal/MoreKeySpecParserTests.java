@@ -66,7 +66,7 @@ public class MoreKeySpecParserTests extends AndroidTestCase {
             assertParser(message, moreKeySpec, expectedLabel, expectedOutputText, expectedIcon,
                     expectedCode);
             fail(message);
-        } catch (MoreKeySpecParser.MoreKeySpecParserError pcpe) {
+        } catch (Exception pcpe) {
             // success.
         }
     }
