@@ -25,11 +25,11 @@ import com.android.inputmethod.latin.R;
 public class MoreKeySpecParserTests extends AndroidTestCase {
     private Resources mRes;
 
-    private static final int ICON_SETTINGS_KEY = 5;
+    private static final int ICON_SETTINGS_KEY = R.styleable.Keyboard_iconSettingsKey;
     private static final int ICON_UNDEFINED = KeyboardIconsSet.ICON_UNDEFINED;
 
     private static final String CODE_SETTINGS = "@integer/key_settings";
-    private static final String ICON_SETTINGS = "@icon/" + ICON_SETTINGS_KEY;
+    private static final String ICON_SETTINGS = "@icon/settingsKey";
     private static final String CODE_NON_EXISTING = "@integer/non_existing";
     private static final String ICON_NON_EXISTING = "@icon/non_existing";
 
@@ -53,7 +53,7 @@ public class MoreKeySpecParserTests extends AndroidTestCase {
         String actualOutputText = MoreKeySpecParser.getOutputText(moreKeySpec);
         assertEquals(message + ": ouptputText:", expectedOutputText, actualOutputText);
 
-        int actualIcon = MoreKeySpecParser.getIconId(moreKeySpec);
+        int actualIcon = MoreKeySpecParser.getIconAttrId(moreKeySpec);
         assertEquals(message + ": icon:", expectedIcon, actualIcon);
 
         int actualCode = MoreKeySpecParser.getCode(mRes, moreKeySpec);
@@ -201,7 +201,7 @@ public class MoreKeySpecParserTests extends AndroidTestCase {
                 null, null, ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
         assertParserError("Icon without code", ICON_SETTINGS,
                 null, null, ICON_SETTINGS_KEY, Keyboard.CODE_UNSPECIFIED);
-        assertParser("Non existing icon", ICON_NON_EXISTING + "|abc",
+        assertParserError("Non existing icon", ICON_NON_EXISTING + "|abc",
                 null, "abc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParserError("Non existing code", "abc|" + CODE_NON_EXISTING,
                 "abc", null, ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);

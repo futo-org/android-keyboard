@@ -18,7 +18,6 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.content.res.Resources;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.R;
@@ -32,15 +31,13 @@ import java.util.ArrayList;
  * Each "more key" specification is one of the following:
  * - A single letter (Letter)
  * - Label optionally followed by keyOutputText or code (keyLabel|keyOutputText).
- * - Icon followed by keyOutputText or code (@icon/icon_number|@integer/key_code)
+ * - Icon followed by keyOutputText or code (@icon/icon_name|@integer/key_code)
  * Special character, comma ',' backslash '\', and bar '|' can be escaped by '\'
  * character.
  * Note that the character '@' and '\' are also parsed by XML parser and CSV parser as well.
  * See {@link KeyboardIconsSet} about icon_number.
  */
 public class MoreKeySpecParser {
-    private static final String TAG = MoreKeySpecParser.class.getSimpleName();
-
     private static final char LABEL_END = '|';
     private static final String PREFIX_ICON = Utils.PREFIX_AT + "icon" + Utils.SUFFIX_SLASH;
     private static final String PREFIX_CODE = Utils.PREFIX_AT + "integer" + Utils.SUFFIX_SLASH;
@@ -167,16 +164,11 @@ public class MoreKeySpecParser {
         return Keyboard.CODE_OUTPUT_TEXT;
     }
 
-    public static int getIconId(String moreKeySpec) {
+    public static int getIconAttrId(String moreKeySpec) {
         if (hasIcon(moreKeySpec)) {
-            final int end = moreKeySpec.indexOf(LABEL_END, PREFIX_ICON.length() + 1);
-            final String iconId = moreKeySpec.substring(PREFIX_ICON.length(), end);
-            try {
-                return Integer.valueOf(iconId);
-            } catch (NumberFormatException e) {
-                Log.w(TAG, "illegal icon id specified: " + iconId);
-                return KeyboardIconsSet.ICON_UNDEFINED;
-            }
+            final int end = moreKeySpec.indexOf(LABEL_END, PREFIX_ICON.length());
+            final String name = moreKeySpec.substring(PREFIX_ICON.length(), end);
+            return KeyboardIconsSet.getIconAttrId(name);
         }
         return KeyboardIconsSet.ICON_UNDEFINED;
     }
