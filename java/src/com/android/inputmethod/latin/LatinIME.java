@@ -2129,12 +2129,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             final String wordBeforeCursor =
                     ic.getTextBeforeCursor(cancelLength + 1, 0).subSequence(0, cancelLength)
                     .toString();
-            if (!autoCorrectedTo.equals(wordBeforeCursor)) {
+            if (!TextUtils.equals(autoCorrectedTo, wordBeforeCursor)) {
                 throw new RuntimeException("cancelAutoCorrect check failed: we thought we were "
                         + "reverting \"" + autoCorrectedTo
                         + "\", but before the cursor we found \"" + wordBeforeCursor + "\"");
             }
-            if (originallyTypedWord.equals(wordBeforeCursor)) {
+            if (TextUtils.equals(originallyTypedWord, wordBeforeCursor)) {
                 throw new RuntimeException("cancelAutoCorrect check failed: we wanted to cancel "
                         + "auto correction and revert to \"" + originallyTypedWord
                         + "\" but we found this very string before the cursor");
@@ -2169,7 +2169,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             final String wordBeforeCursor =
                 ic.getTextBeforeCursor(restartLength + 1, 0).subSequence(0, restartLength)
                 .toString();
-            if (!mWordComposer.getTypedWord().equals(wordBeforeCursor)) {
+            if (!TextUtils.equals(mWordComposer.getTypedWord(), wordBeforeCursor)) {
                 throw new RuntimeException("restartSuggestionsOnManuallyPickedTypedWord "
                         + "check failed: we thought we were reverting \""
                         + mWordComposer.getTypedWord()
