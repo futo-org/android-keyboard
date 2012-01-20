@@ -1881,6 +1881,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             return;
         }
+        // We need to log before we commit, because the word composer will store away the user
+        // typed word.
+        LatinImeLogger.logOnManualSuggestion(mWordComposer.getTypedWord().toString(),
+                suggestion.toString(), index, suggestions.mWords);
         mExpectingUpdateSelection = true;
         commitChosenWord(suggestion, WordComposer.COMMIT_TYPE_MANUAL_PICK);
         // Add the word to the auto dictionary if it's not a known word
@@ -1890,10 +1894,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         } else {
             addToOnlyBigramDictionary(suggestion, 1);
         }
-        // TODO: the following is fishy, because it seems there may be cases where we are not
-        // composing a word at all. Maybe throw an exception if !mWordComposer.isComposingWord() ?
-        LatinImeLogger.logOnManualSuggestion(mWordComposer.getTypedWord().toString(),
-                suggestion.toString(), index, suggestions.mWords);
         // Follow it with a space
         if (mInputAttributes.mInsertSpaceOnPickSuggestionManually) {
             sendMagicSpace();
