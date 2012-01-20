@@ -248,12 +248,10 @@
             <!-- This should be aligned with the KeyboardIcons.ICONS_TO_ATTRS_MAP -->
             <enum name="iconShiftKey" value="1" />
             <enum name="iconDeleteKey" value="2" />
-            <!-- This is also represented as "@icon/3" in keyboard layout XML. -->
             <enum name="iconSettingsKey" value="3" />
             <enum name="iconSpaceKey" value="4" />
             <enum name="iconReturnKey" value="5" />
             <enum name="iconSearchKey" value="6" />
-            <!-- This is also represented as "@icon/7" in keyboard layout XML. -->
             <enum name="iconTabKey" value="7" />
             <enum name="iconShortcutKey" value="8" />
             <enum name="iconShortcutForLabel" value="9" />

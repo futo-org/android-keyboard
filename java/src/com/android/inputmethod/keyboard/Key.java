@@ -166,7 +166,12 @@ public class Key {
     }
 
     private static Drawable getIcon(Keyboard.Params params, String moreKeySpec) {
-        return params.mIconsSet.getIconByIconId(MoreKeySpecParser.getIconId(moreKeySpec));
+        final int iconAttrId = MoreKeySpecParser.getIconAttrId(moreKeySpec);
+        if (iconAttrId == KeyboardIconsSet.ICON_UNDEFINED) {
+            return null;
+        } else {
+            return params.mIconsSet.getIconByAttrId(iconAttrId);
+        }
     }
 
     /**
@@ -277,12 +282,15 @@ public class Key {
                 R.styleable.Keyboard_Key_visualInsetsLeft, params.mBaseWidth, 0);
         mVisualInsetsRight = (int) Keyboard.Builder.getDimensionOrFraction(keyAttr,
                 R.styleable.Keyboard_Key_visualInsetsRight, params.mBaseWidth, 0);
-        mPreviewIcon = iconsSet.getIconByIconId(style.getInt(keyAttr,
+        final int previewIconAttrId = KeyboardIconsSet.getIconAttrId(style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_keyIconPreview, KeyboardIconsSet.ICON_UNDEFINED));
-        mIcon = iconsSet.getIconByIconId(style.getInt(keyAttr,
+        mPreviewIcon = iconsSet.getIconByAttrId(previewIconAttrId);
+        final int iconAttrId = KeyboardIconsSet.getIconAttrId(style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_keyIcon, KeyboardIconsSet.ICON_UNDEFINED));
-        mDisabledIcon = iconsSet.getIconByIconId(style.getInt(keyAttr,
+        mIcon = iconsSet.getIconByAttrId(iconAttrId);
+        final int disabledIconAttrId = KeyboardIconsSet.getIconAttrId(style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_keyIconDisabled, KeyboardIconsSet.ICON_UNDEFINED));
+        mDisabledIcon = iconsSet.getIconByAttrId(disabledIconAttrId);
         mHintLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
 
         mLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyLabel);

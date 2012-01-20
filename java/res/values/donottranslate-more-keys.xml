@@ -91,10 +91,8 @@
     <string name="keylabel_for_symbols_percent">%</string>
     <string name="more_keys_for_comma"></string>
     <string name="more_keys_for_f1"></string>
-    <!-- @icon/3 is iconSettingsKey -->
-    <string name="more_keys_for_f1_settings">\@icon/3|\@integer/key_settings</string>
-    <!-- @icon/7 is iconTabKey -->
-    <string name="more_keys_for_f1_navigate">\@icon/7|\@integer/key_tab</string>
+    <string name="more_keys_for_f1_settings">\@icon/settingsKey|\@integer/key_settings</string>
+    <string name="more_keys_for_f1_navigate">\@icon/tabKey|\@integer/key_tab</string>
     <string name="more_keys_for_symbols_question">¿</string>
     <string name="more_keys_for_symbols_semicolon"></string>
     <string name="more_keys_for_symbols_percent">‰</string>

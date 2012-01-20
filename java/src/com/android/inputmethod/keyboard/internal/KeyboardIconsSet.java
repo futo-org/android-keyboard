@@ -31,34 +31,36 @@ public class KeyboardIconsSet {
     private static final String TAG = KeyboardIconsSet.class.getSimpleName();
 
     public static final int ICON_UNDEFINED = 0;
+    private static final int ATTR_UNDEFINED = 0;
 
     private final Map<Integer, Drawable> mIcons = new HashMap<Integer, Drawable>();
 
     // The key value should be aligned with the enum value of Keyboard.icon*.
     private static final Map<Integer, Integer> ICONS_TO_ATTRS_MAP = new HashMap<Integer, Integer>();
+    private static final Map<String, Integer> NAME_TO_ATTRS_MAP = new HashMap<String, Integer>();
     private static final Collection<Integer> VALID_ATTRS;
 
     static {
-        addIconIdMap(1, R.styleable.Keyboard_iconShiftKey);
-        addIconIdMap(2, R.styleable.Keyboard_iconDeleteKey);
-        // This is also represented as "@icon/3" in keyboard layout XML.
-        addIconIdMap(3, R.styleable.Keyboard_iconSettingsKey);
-        addIconIdMap(4, R.styleable.Keyboard_iconSpaceKey);
-        addIconIdMap(5, R.styleable.Keyboard_iconReturnKey);
-        addIconIdMap(6, R.styleable.Keyboard_iconSearchKey);
-        // This is also represented as "@icon/7" in keyboard layout XML.
-        addIconIdMap(7, R.styleable.Keyboard_iconTabKey);
-        addIconIdMap(8, R.styleable.Keyboard_iconShortcutKey);
-        addIconIdMap(9, R.styleable.Keyboard_iconShortcutForLabel);
-        addIconIdMap(10, R.styleable.Keyboard_iconSpaceKeyForNumberLayout);
-        addIconIdMap(11, R.styleable.Keyboard_iconShiftKeyShifted);
-        addIconIdMap(12, R.styleable.Keyboard_iconDisabledShortcutKey);
-        addIconIdMap(13, R.styleable.Keyboard_iconPreviewTabKey);
+        addIconIdMap(1, "shiftKey", R.styleable.Keyboard_iconShiftKey);
+        addIconIdMap(2, "deleteKey", R.styleable.Keyboard_iconDeleteKey);
+        addIconIdMap(3, "settingsKey", R.styleable.Keyboard_iconSettingsKey);
+        addIconIdMap(4, "spaceKey", R.styleable.Keyboard_iconSpaceKey);
+        addIconIdMap(5, "returnKey", R.styleable.Keyboard_iconReturnKey);
+        addIconIdMap(6, "searchKey", R.styleable.Keyboard_iconSearchKey);
+        addIconIdMap(7, "tabKey", R.styleable.Keyboard_iconTabKey);
+        addIconIdMap(8, "shortcutKey", R.styleable.Keyboard_iconShortcutKey);
+        addIconIdMap(9, "shortcutForLabel", R.styleable.Keyboard_iconShortcutForLabel);
+        addIconIdMap(10, "spaceKeyForNumberLayout",
+                R.styleable.Keyboard_iconSpaceKeyForNumberLayout);
+        addIconIdMap(11, "shiftKeyShifted", R.styleable.Keyboard_iconShiftKeyShifted);
+        addIconIdMap(12, "disabledShortcurKey", R.styleable.Keyboard_iconDisabledShortcutKey);
+        addIconIdMap(13, "previewTabKey", R.styleable.Keyboard_iconPreviewTabKey);
         VALID_ATTRS = ICONS_TO_ATTRS_MAP.values();
     }
 
-    private static void addIconIdMap(int iconId, int attrId) {
+    private static void addIconIdMap(int iconId, String name, Integer attrId) {
         ICONS_TO_ATTRS_MAP.put(iconId, attrId);
+        NAME_TO_ATTRS_MAP.put(name, attrId);
     }
 
     public void loadIcons(final TypedArray keyboardAttrs) {
@@ -76,18 +78,29 @@ public class KeyboardIconsSet {
         }
     }
 
-    public Drawable getIconByIconId(final Integer iconId) {
+    public static int getIconAttrId(final Integer iconId) {
         if (iconId == ICON_UNDEFINED) {
-            return null;
+            return ATTR_UNDEFINED;
         }
         final Integer attrId = ICONS_TO_ATTRS_MAP.get(iconId);
         if (attrId == null) {
             throw new IllegalArgumentException("icon id is out of range: " + iconId);
         }
-        return getIconByAttrId(attrId);
+        return attrId;
+    }
+
+    public static int getIconAttrId(final String iconName) {
+        final Integer attrId = NAME_TO_ATTRS_MAP.get(iconName);
+        if (attrId == null) {
+            throw new IllegalArgumentException("unknown icon name: " + iconName);
+        }
+        return attrId;
     }
 
     public Drawable getIconByAttrId(final Integer attrId) {
+        if (attrId == ATTR_UNDEFINED) {
+            return null;
+        }
         if (!VALID_ATTRS.contains(attrId)) {
             throw new IllegalArgumentException("unknown icon attribute id: " + attrId);
         }
