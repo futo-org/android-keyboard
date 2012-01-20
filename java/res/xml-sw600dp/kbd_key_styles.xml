@@ -34,7 +34,7 @@
             <key-style
                 latin:styleName="f2PopupStyle"
                 latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="\@icon/3|\@integer/key_settings"
+                latin:moreKeys="\@icon/settingsKey|\@integer/key_settings"
                 latin:backgroundType="functional" />
         </default>
     </switch>
