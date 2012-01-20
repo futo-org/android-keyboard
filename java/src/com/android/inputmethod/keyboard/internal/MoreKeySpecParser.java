@@ -41,11 +41,9 @@ import java.util.ArrayList;
 public class MoreKeySpecParser {
     private static final String TAG = MoreKeySpecParser.class.getSimpleName();
 
-    private static final char ESCAPE_CHAR = '\\';
-    private static final String LABEL_END = "|";
-    private static final String PREFIX_AT = "@";
-    private static final String PREFIX_ICON = PREFIX_AT + "icon/";
-    private static final String PREFIX_CODE = PREFIX_AT + "integer/";
+    private static final char LABEL_END = '|';
+    private static final String PREFIX_ICON = Utils.PREFIX_AT + "icon" + Utils.SUFFIX_SLASH;
+    private static final String PREFIX_CODE = Utils.PREFIX_AT + "integer" + Utils.SUFFIX_SLASH;
 
     private MoreKeySpecParser() {
         // Intentional empty constructor for utility class.
@@ -72,14 +70,14 @@ public class MoreKeySpecParser {
     }
 
     private static String parseEscape(String text) {
-        if (text.indexOf(ESCAPE_CHAR) < 0) {
+        if (text.indexOf(Utils.ESCAPE_CHAR) < 0) {
             return text;
         }
         final int length = text.length();
         final StringBuilder sb = new StringBuilder();
         for (int pos = 0; pos < length; pos++) {
             final char c = text.charAt(pos);
-            if (c == ESCAPE_CHAR && pos + 1 < length) {
+            if (c == Utils.ESCAPE_CHAR && pos + 1 < length) {
                 sb.append(text.charAt(++pos));
             } else {
                 sb.append(c);
@@ -89,7 +87,7 @@ public class MoreKeySpecParser {
     }
 
     private static int indexOfLabelEnd(String moreKeySpec, int start) {
-        if (moreKeySpec.indexOf(ESCAPE_CHAR, start) < 0) {
+        if (moreKeySpec.indexOf(Utils.ESCAPE_CHAR, start) < 0) {
             final int end = moreKeySpec.indexOf(LABEL_END, start);
             if (end == 0) {
                 throw new MoreKeySpecParserError(LABEL_END + " at " + start + ": " + moreKeySpec);
@@ -99,9 +97,9 @@ public class MoreKeySpecParser {
         final int length = moreKeySpec.length();
         for (int pos = start; pos < length; pos++) {
             final char c = moreKeySpec.charAt(pos);
-            if (c == ESCAPE_CHAR && pos + 1 < length) {
+            if (c == Utils.ESCAPE_CHAR && pos + 1 < length) {
                 pos++;
-            } else if (moreKeySpec.startsWith(LABEL_END, pos)) {
+            } else if (c == LABEL_END) {
                 return pos;
             }
         }
@@ -131,7 +129,8 @@ public class MoreKeySpecParser {
                     throw new MoreKeySpecParserError("Multiple " + LABEL_END + ": "
                             + moreKeySpec);
             }
-            final String outputText = parseEscape(moreKeySpec.substring(end + LABEL_END.length()));
+            final String outputText = parseEscape(
+                    moreKeySpec.substring(end + /* LABEL_END */1));
             if (!TextUtils.isEmpty(outputText)) {
                 return outputText;
             }
@@ -152,7 +151,7 @@ public class MoreKeySpecParser {
                 throw new MoreKeySpecParserError("Multiple " + LABEL_END + ": " + moreKeySpec);
             }
             final int resId = Utils.getResourceId(res,
-                    moreKeySpec.substring(end + LABEL_END.length() + PREFIX_AT.length()),
+                    moreKeySpec.substring(end + /* LABEL_END */1 + /* PREFIX_AT */1),
                     R.string.english_ime_name);
             final int code = res.getInteger(resId);
             return code;
@@ -170,7 +169,7 @@ public class MoreKeySpecParser {
 
     public static int getIconId(String moreKeySpec) {
         if (hasIcon(moreKeySpec)) {
-            int end = moreKeySpec.indexOf(LABEL_END, PREFIX_ICON.length() + 1);
+            final int end = moreKeySpec.indexOf(LABEL_END, PREFIX_ICON.length() + 1);
             final String iconId = moreKeySpec.substring(PREFIX_ICON.length(), end);
             try {
                 return Integer.valueOf(iconId);
