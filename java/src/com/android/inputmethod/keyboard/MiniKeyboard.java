@@ -34,7 +34,7 @@ public class MiniKeyboard extends Keyboard {
     }
 
     public static class Builder extends Keyboard.Builder<Builder.MiniKeyboardParams> {
-        private final CharSequence[] mMoreKeys;
+        private final String[] mMoreKeys;
 
         public static class MiniKeyboardParams extends Keyboard.Params {
             /* package */int mTopRowAdjustment;
@@ -230,16 +230,14 @@ public class MiniKeyboard extends Keyboard {
                     parentKey.mX + (mParams.mDefaultKeyWidth - width) / 2, view.getMeasuredWidth());
         }
 
-        private static int getMaxKeyWidth(KeyboardView view, CharSequence[] moreKeys,
-                int minKeyWidth) {
+        private static int getMaxKeyWidth(KeyboardView view, String[] moreKeys, int minKeyWidth) {
             final int padding = (int) view.getContext().getResources()
                     .getDimension(R.dimen.mini_keyboard_key_horizontal_padding);
             Paint paint = null;
             int maxWidth = minKeyWidth;
-            for (CharSequence moreKeySpec : moreKeys) {
-                final CharSequence label = MoreKeySpecParser.getLabel(moreKeySpec.toString());
-                // If the label is single letter, minKeyWidth is enough to hold
-                // the label.
+            for (String moreKeySpec : moreKeys) {
+                final String label = MoreKeySpecParser.getLabel(moreKeySpec);
+                // If the label is single letter, minKeyWidth is enough to hold the label.
                 if (label != null && label.length() > 1) {
                     if (paint == null) {
                         paint = new Paint();
@@ -258,7 +256,7 @@ public class MiniKeyboard extends Keyboard {
         public MiniKeyboard build() {
             final MiniKeyboardParams params = mParams;
             for (int n = 0; n < mMoreKeys.length; n++) {
-                final String moreKeySpec = mMoreKeys[n].toString();
+                final String moreKeySpec = mMoreKeys[n];
                 final int row = n / params.mNumColumns;
                 final Key key = new Key(mResources, params, moreKeySpec, params.getX(n, row),
                         params.getY(row), params.mDefaultKeyWidth, params.mDefaultRowHeight);
