@@ -43,7 +43,7 @@ endif
 
 LOCAL_MODULE := libjni_latinime
 
-LOCAL_MODULE_TAGS := user
+LOCAL_MODULE_TAGS := optional
 
 ifeq ($(FLAG_DO_PROFILE), true)
     $(warning Making profiling version of native library)
