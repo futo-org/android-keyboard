@@ -16,11 +16,13 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.XmlParseUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -30,14 +32,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class KeyStyles {
-    private static final String TAG = "KeyStyles";
+    private static final String TAG = KeyStyles.class.getSimpleName();
     private static final boolean DEBUG = false;
 
     private final HashMap<String, DeclaredKeyStyle> mStyles =
             new HashMap<String, DeclaredKeyStyle>();
     private static final KeyStyle EMPTY_KEY_STYLE = new EmptyKeyStyle();
-
-    private static final char ESCAPE_CHAR = '\\';
 
     public interface KeyStyle {
         public String[] getTextArray(TypedArray a, int index);
@@ -75,23 +75,30 @@ public class KeyStyles {
             if (!a.hasValue(index))
                 return null;
             final CharSequence text = a.getText(index);
-            return parseCsvText(text.toString());
+            return parseCsvText(text.toString(), a.getResources(), R.string.english_ime_name);
         }
-
     }
 
     /* package for test */
-    static String[] parseCsvText(String text) {
+    static String[] parseCsvText(String rawText, Resources res, int packageNameResId) {
+        final String text = Utils.resolveStringResource(rawText, res, packageNameResId);
         final int size = text.length();
-        if (size == 0) return null;
-        if (size == 1) return new String[] { text };
+        if (size == 0) {
+            return null;
+        }
+        if (size == 1) {
+            return new String[] { text };
+        }
+
         final StringBuilder sb = new StringBuilder();
         ArrayList<String> list = null;
         int start = 0;
         for (int pos = 0; pos < size; pos++) {
             final char c = text.charAt(pos);
             if (c == ',') {
-                if (list == null) list = new ArrayList<String>();
+                if (list == null) {
+                    list = new ArrayList<String>();
+                }
                 if (sb.length() == 0) {
                     list.add(text.substring(start, pos));
                 } else {
@@ -100,24 +107,28 @@ public class KeyStyles {
                 }
                 start = pos + 1;
                 continue;
-            } else if (c == ESCAPE_CHAR) {
+            } else if (c == Utils.ESCAPE_CHAR) {
                 if (start == pos) {
                     // Skip escape character at the beginning of the value.
                     start++;
                     pos++;
                 } else {
-                    if (start < pos && sb.length() == 0)
+                    if (start < pos && sb.length() == 0) {
                         sb.append(text.subSequence(start, pos));
+                    }
                     pos++;
-                    if (pos < size)
+                    if (pos < size) {
                         sb.append(text.charAt(pos));
+                    }
                 }
             } else if (sb.length() > 0) {
                 sb.append(c);
             }
         }
         if (list == null) {
-            return new String[] { sb.length() > 0 ? sb.toString() : text.substring(start) };
+            return new String[] {
+                    sb.length() > 0 ? sb.toString() : text.substring(start)
+            };
         } else {
             list.add(sb.length() > 0 ? sb.toString() : text.substring(start));
             return list.toArray(new String[list.size()]);

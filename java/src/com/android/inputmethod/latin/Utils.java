@@ -62,6 +62,12 @@ public class Utils {
     private static boolean DBG = LatinImeLogger.sDBG;
     private static boolean DBG_EDIT_DISTANCE = false;
 
+    // Constants for resource name parsing.
+    public static final char ESCAPE_CHAR = '\\';
+    public static final char PREFIX_AT = '@';
+    public static final char SUFFIX_SLASH = '/';
+    private static final String PREFIX_STRING = PREFIX_AT + "string";
+
     private Utils() {
         // Intentional empty constructor for utility class.
     }
@@ -801,5 +807,54 @@ public class Utils {
             throw new RuntimeException("Unknown resource: " + name);
         }
         return resId;
+    }
+
+    public static String resolveStringResource(String text, Resources res, int packageNameResId) {
+        final int size = text.length();
+        if (size < PREFIX_STRING.length()) {
+            return text;
+        }
+
+        StringBuilder sb = null;
+        for (int pos = 0; pos < size; pos++) {
+            final char c = text.charAt(pos);
+            if (c == PREFIX_AT && text.startsWith(PREFIX_STRING, pos)) {
+                if (sb == null) {
+                    sb = new StringBuilder(text.substring(0, pos));
+                }
+                final int end = Utils.searchResourceNameEnd(text, pos + PREFIX_STRING.length());
+                final String resName = text.substring(pos + 1, end);
+                final int resId = getResourceId(res, resName, packageNameResId);
+                sb.append(res.getString(resId));
+                pos = end - 1;
+            } else if (c == ESCAPE_CHAR) {
+                pos++;
+                if (sb != null) {
+                    sb.append(c);
+                    if (pos < size) {
+                        sb.append(text.charAt(pos));
+                    }
+                }
+            } else if (sb != null) {
+                sb.append(c);
+            }
+        }
+        return (sb == null) ? text : sb.toString();
+    }
+
+    private static int searchResourceNameEnd(String text, int start) {
+        final int size = text.length();
+        if (start >= size || text.charAt(start) != SUFFIX_SLASH) {
+            throw new RuntimeException("Resource name not specified");
+        }
+        for (int pos = start + 1; pos < size; pos++) {
+            final char c = text.charAt(pos);
+            // String resource name should be consisted of [a-z_0-9].
+            if ((c >= 'a' && c <= 'z') || c == '_' || (c >= '0' && c <= '9')) {
+                continue;
+            }
+            return pos;
+        }
+        return size;
     }
 }
