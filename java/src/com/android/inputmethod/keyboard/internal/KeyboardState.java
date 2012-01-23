@@ -87,6 +87,16 @@ public class KeyboardState {
         public boolean mIsAlphabetMode;
         public boolean mIsShiftLocked;
         public boolean mIsShifted;
+
+        public String toString() {
+            if (!mIsValid) return "INVALID";
+            if (mIsAlphabetMode) {
+                if (mIsShiftLocked) return "ALPHABET_SHIFT_LOCKED";
+                return mIsShifted ? "ALPHABET_SHIFTED" : "ALPHABET";
+            } else {
+                return mIsShifted ? "SYMBOLS_SHIFTED" : "SYMBOLS";
+            }
+        }
     }
 
     public KeyboardState(SwitchActions switchActions) {
@@ -95,7 +105,7 @@ public class KeyboardState {
 
     public void onLoadKeyboard(String layoutSwitchBackSymbols) {
         if (DEBUG_EVENT) {
-            Log.d(TAG, "onLoadKeyboard");
+            Log.d(TAG, "onLoadKeyboard: " + this);
         }
         mLayoutSwitchBackSymbols = layoutSwitchBackSymbols;
         // Reset alphabet shift state.
@@ -120,17 +130,14 @@ public class KeyboardState {
         }
         state.mIsValid = true;
         if (DEBUG_EVENT) {
-            Log.d(TAG, "onSaveKeyboardState: alphabet=" + state.mIsAlphabetMode
-                    + " shiftLocked=" + state.mIsShiftLocked + " shift=" + state.mIsShifted);
+            Log.d(TAG, "onSaveKeyboardState: saved=" + state + " " + this);
         }
     }
 
     private void onRestoreKeyboardState() {
         final SavedKeyboardState state = mSavedKeyboardState;
         if (DEBUG_EVENT) {
-            Log.d(TAG, "onRestoreKeyboardState: valid=" + state.mIsValid
-                    + " alphabet=" + state.mIsAlphabetMode
-                    + " shiftLocked=" + state.mIsShiftLocked + " shift=" + state.mIsShifted);
+            Log.d(TAG, "onRestoreKeyboardState: saved=" + state + " " + this);
         }
         if (!state.mIsValid || state.mIsAlphabetMode) {
             setAlphabetKeyboard();
