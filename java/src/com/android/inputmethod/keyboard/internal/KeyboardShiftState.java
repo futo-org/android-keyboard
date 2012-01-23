@@ -73,12 +73,7 @@ public class KeyboardShiftState {
                 break;
             }
         } else {
-            switch (oldState) {
-            case SHIFT_LOCKED:
-            case SHIFT_LOCK_SHIFTED:
-                mState = NORMAL;
-                break;
-            }
+            mState = NORMAL;
         }
         if (DEBUG)
             Log.d(TAG, "setShiftLocked(" + newShiftLockState + "): " + toString(oldState)
