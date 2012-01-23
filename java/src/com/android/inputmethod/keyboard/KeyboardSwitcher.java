@@ -149,7 +149,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         if (mainKeyboardId.isPhoneKeyboard()) {
             mState.setSymbolsKeyboard();
         }
-        updateShiftState();
     }
 
     public void saveKeyboardState() {
