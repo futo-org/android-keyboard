@@ -74,6 +74,14 @@ public class AutoCorrection {
         for (final String key : dictionaries.keySet()) {
             if (key.equals(Suggest.DICT_KEY_WHITELIST)) continue;
             final Dictionary dictionary = dictionaries.get(key);
+            // It's unclear how realistically 'dictionary' can be null, but the monkey is somehow
+            // managing to get null in here. Presumably the language is changing to a language with
+            // no main dictionary and the monkey manages to type a whole word before the thread
+            // that reads the dictionary is started or something?
+            // Ideally the passed map would come out of a {@link java.util.concurrent.Future} and
+            // would be immutable once it's finished initializing, but concretely a null test is
+            // probably good enough for the time being.
+            if (null == dictionary) continue;
             if (dictionary.isValidWord(word)
                     || (ignoreCase && dictionary.isValidWord(lowerCasedWord))) {
                 return true;
