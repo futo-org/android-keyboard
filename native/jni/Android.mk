@@ -66,7 +66,7 @@ endif
 
 LOCAL_MODULE := libjni_latinime
 
-LOCAL_MODULE_TAGS := user
+LOCAL_MODULE_TAGS := optional
 
 # For STL
 LOCAL_C_INCLUDES += external/stlport/stlport bionic
