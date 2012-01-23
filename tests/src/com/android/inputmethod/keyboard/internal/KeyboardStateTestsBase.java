@@ -42,9 +42,15 @@ public class KeyboardStateTestsBase extends AndroidTestCase
         mLayoutSwitchBackSymbols = switchBackSymbols;
     }
 
+    private static void assertLayout(int expected, int actual) {
+        assertTrue("expected=" + MockKeyboardSwitcher.getLayoutName(expected)
+                + " actual=" + MockKeyboardSwitcher.getLayoutName(actual),
+                expected == actual);
+    }
+
     public void updateShiftState(int afterUpdate) {
         mSwitcher.updateShiftState();
-        assertEquals(afterUpdate, mSwitcher.getLayoutId());
+        assertLayout(afterUpdate, mSwitcher.getLayoutId());
     }
 
     public void loadKeyboard(int afterLoad) {
@@ -55,18 +61,18 @@ public class KeyboardStateTestsBase extends AndroidTestCase
     public void rotateDevice(int afterRotate) {
         mSwitcher.saveKeyboardState();
         mSwitcher.loadKeyboard(mLayoutSwitchBackSymbols);
-        assertEquals(afterRotate, mSwitcher.getLayoutId());
+        assertLayout(afterRotate, mSwitcher.getLayoutId());
     }
 
     public void pressKey(int code, int afterPress) {
         mSwitcher.onPressKey(code);
-        assertEquals(afterPress, mSwitcher.getLayoutId());
+        assertLayout(afterPress, mSwitcher.getLayoutId());
     }
 
     public void releaseKey(int code, int afterRelease) {
         mSwitcher.onCodeInput(code, SINGLE);
         mSwitcher.onReleaseKey(code, NOT_SLIDING);
-        assertEquals(afterRelease, mSwitcher.getLayoutId());
+        assertLayout(afterRelease, mSwitcher.getLayoutId());
     }
 
     public void pressAndReleaseKey(int code, int afterPress, int afterRelease) {
@@ -81,7 +87,7 @@ public class KeyboardStateTestsBase extends AndroidTestCase
     public void chordingReleaseKey(int code, int afterRelease) {
         mSwitcher.onCodeInput(code, MULTI);
         mSwitcher.onReleaseKey(code, NOT_SLIDING);
-        assertEquals(afterRelease, mSwitcher.getLayoutId());
+        assertLayout(afterRelease, mSwitcher.getLayoutId());
     }
 
     public void chordingPressAndReleaseKey(int code, int afterPress, int afterRelease) {
@@ -92,22 +98,22 @@ public class KeyboardStateTestsBase extends AndroidTestCase
     public void pressAndSlideFromKey(int code, int afterPress, int afterSlide) {
         pressKey(code, afterPress);
         mSwitcher.onReleaseKey(code, SLIDING);
-        assertEquals(afterSlide, mSwitcher.getLayoutId());
+        assertLayout(afterSlide, mSwitcher.getLayoutId());
     }
 
     public void longPressShiftKey(int afterPress, int afterLongPress) {
         // Long press shift key
         mSwitcher.onPressKey(CODE_SHIFT);
-        assertEquals(afterPress, mSwitcher.getLayoutId());
+        assertLayout(afterPress, mSwitcher.getLayoutId());
         // Long press recognized in LatinKeyboardView.KeyTimerHandler.
         mSwitcher.onCodeInput(CODE_CAPSLOCK, SINGLE);
-        assertEquals(afterLongPress, mSwitcher.getLayoutId());
+        assertLayout(afterLongPress, mSwitcher.getLayoutId());
         mSwitcher.onReleaseKey(CODE_SHIFT, NOT_SLIDING);
-        assertEquals(afterLongPress, mSwitcher.getLayoutId());
+        assertLayout(afterLongPress, mSwitcher.getLayoutId());
     }
 
     public void secondTapShiftKey(int afterTap) {
         mSwitcher.onCodeInput(CODE_CAPSLOCK, SINGLE);
-        assertEquals(afterTap, mSwitcher.getLayoutId());
+        assertLayout(afterTap, mSwitcher.getLayoutId());
     }
 }
