@@ -99,11 +99,13 @@ class UnigramDictionary {
             const int inputLength, Correction *correction, WordsPriorityQueuePool* queuePool);
     void getSuggestionCandidates(
             const bool useFullEditDistance, const int inputLength, Correction *correction,
-            WordsPriorityQueuePool* queuePool, const bool doAutoCompletion, const int maxErrors);
+            WordsPriorityQueuePool* queuePool, const bool doAutoCompletion, const int maxErrors,
+            const int currentWordIndex);
     void getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo,
             const int *xcoordinates, const int *ycoordinates, const int *codes,
             const bool useFullEditDistance, const int inputLength, const int spaceProximityPos,
-            const int missingSpacePos, Correction *correction, WordsPriorityQueuePool* queuePool);
+            const int missingSpacePos, Correction *correction, WordsPriorityQueuePool* queuePool,
+            const bool hasAutoCorrectionCandidate);
     void getSplitTwoWordsSuggestionsOld(ProximityInfo *proximityInfo,
             const int *xcoordinates, const int *ycoordinates, const int *codes,
             const bool useFullEditDistance, const int inputLength, const int spaceProximityPos,
@@ -111,18 +113,20 @@ class UnigramDictionary {
     void getMissingSpaceWords(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const bool useFullEditDistance,
             const int inputLength, const int missingSpacePos, Correction *correction,
-            WordsPriorityQueuePool* queuePool);
+            WordsPriorityQueuePool* queuePool, const bool hasAutoCorrectionCandidate);
     void getMistypedSpaceWords(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const bool useFullEditDistance,
             const int inputLength, const int spaceProximityPos, Correction *correction,
-            WordsPriorityQueuePool* queuePool);
+            WordsPriorityQueuePool* queuePool, const bool hasAutoCorrectionCandidate);
     void onTerminal(const int freq, const TerminalAttributes& terminalAttributes,
-            Correction *correction, WordsPriorityQueuePool *queuePool, const bool addToMasterQueue);
+            Correction *correction, WordsPriorityQueuePool *queuePool, const bool addToMasterQueue,
+            const int currentWordIndex);
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
     // Process a node by considering proximity, missing and excessive character
     bool processCurrentNode(const int initialPos, Correction *correction, int *newCount,
-            int *newChildPosition, int *nextSiblingPosition, WordsPriorityQueuePool *queuePool);
+            int *newChildPosition, int *nextSiblingPosition, WordsPriorityQueuePool *queuePool,
+            const int currentWordIndex);
     int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
             ProximityInfo *proximityInfo, unsigned short *word);
     int getMostFrequentWordLikeInner(const uint16_t* const inWord, const int length,

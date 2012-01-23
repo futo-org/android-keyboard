@@ -269,7 +269,7 @@ bool Correction::needsToPrune() const {
     // TODO: use edit distance here
     return mOutputIndex - 1 >= mMaxDepth || mProximityCount > mMaxEditDistance
             // Allow one char longer word for missing character
-            || (!mDoAutoCompletion && (mOutputIndex + 1 >= mInputLength));
+            || (!mDoAutoCompletion && (mOutputIndex > mInputLength));
 }
 
 void Correction::addCharToCurrentWord(const int32_t c) {
@@ -553,55 +553,6 @@ Correction::CorrectionType Correction::processCharAndCalcState(
 }
 
 Correction::~Correction() {
-}
-
-/////////////////////////
-// static inline utils //
-/////////////////////////
-
-static const int TWO_31ST_DIV_255 = S_INT_MAX / 255;
-static inline int capped255MultForFullMatchAccentsOrCapitalizationDifference(const int num) {
-    return (num < TWO_31ST_DIV_255 ? 255 * num : S_INT_MAX);
-}
-
-static const int TWO_31ST_DIV_2 = S_INT_MAX / 2;
-inline static void multiplyIntCapped(const int multiplier, int *base) {
-    const int temp = *base;
-    if (temp != S_INT_MAX) {
-        // Branch if multiplier == 2 for the optimization
-        if (multiplier == 2) {
-            *base = TWO_31ST_DIV_2 >= temp ? temp << 1 : S_INT_MAX;
-        } else {
-            // TODO: This overflow check gives a wrong answer when, for example,
-            //       temp = 2^16 + 1 and multiplier = 2^17 + 1.
-            //       Fix this behavior.
-            const int tempRetval = temp * multiplier;
-            *base = tempRetval >= temp ? tempRetval : S_INT_MAX;
-        }
-    }
-}
-
-inline static int powerIntCapped(const int base, const int n) {
-    if (n <= 0) return 1;
-    if (base == 2) {
-        return n < 31 ? 1 << n : S_INT_MAX;
-    } else {
-        int ret = base;
-        for (int i = 1; i < n; ++i) multiplyIntCapped(base, &ret);
-        return ret;
-    }
-}
-
-inline static void multiplyRate(const int rate, int *freq) {
-    if (*freq != S_INT_MAX) {
-        if (*freq > 1000000) {
-            *freq /= 100;
-            multiplyIntCapped(rate, freq);
-        } else {
-            multiplyIntCapped(rate, freq);
-            *freq /= 100;
-        }
-    }
 }
 
 inline static int getQuoteCount(const unsigned short* word, const int length) {
@@ -939,7 +890,11 @@ int Correction::RankingAlgorithm::calcFreqForSplitTwoWords(
         multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &totalFreq);
     }
 
-    multiplyRate(WORDS_WITH_MISSING_SPACE_CHARACTER_DEMOTION_RATE, &totalFreq);
+    if (isSpaceProximity) {
+        multiplyRate(WORDS_WITH_MISTYPED_SPACE_DEMOTION_RATE, &totalFreq);
+    } else {
+        multiplyRate(WORDS_WITH_MISSING_SPACE_CHARACTER_DEMOTION_RATE, &totalFreq);
+    }
 
     if (capitalizedWordDemotion) {
         multiplyRate(TWO_WORDS_CAPITALIZED_DEMOTION_RATE, &totalFreq);
