@@ -345,20 +345,21 @@
     <declare-styleable name="KeyboardSet_Element">
         <!-- This should be aligned with KeyboardId.ELEMENT_* -->
         <attr name="elementName" format="enum">
-          <enum name="alphabet" value="0" />
-          <!--  TODO: Implement alphabet variant shift keyboards
-          <enum name="alphabetManualTemporaryShift" value="1" />
-          <enum name="alphabetAutomaticTemporaryShift" value="2" />
-          <enum name="alphabetShiftLock" value="3" />
-          <enum name="alphabetShiftLockShift" value="4" />
-          -->
-          <enum name="symbols" value="5" />
-          <enum name="symbolsShift" value="6"  />
-          <enum name="phone" value="7"  />
-          <enum name="phoneShift" value="8"  />
-          <enum name="number" value="9"  />
+            <enum name="alphabet" value="0" />
+            <enum name="alphabetManualShifted" value="1" />
+            <enum name="alphabetAutomaticShifted" value="2" />
+            <enum name="alphabetShiftLocked" value="3" />
+            <enum name="alphabetShiftLockShifted" value="4" />
+            <enum name="symbols" value="5" />
+            <enum name="symbolsShifted" value="6"  />
+            <enum name="phone" value="7"  />
+            <enum name="phoneShifted" value="8"  />
+            <enum name="number" value="9"  />
         </attr>
-        <attr name="elementKeyboard" format="reference" />
+        <attr name="elementKeyboard" format="reference|enum">
+            <!-- This should be aligned with KeyboardSet.ELEMENT_KEYBOARD_* -->
+            <enum name="autoGenerateFromAlphabet" value="1"/>
+        </attr>
         <!-- TODO: Add setShifted and setShiftLocked attribute. -->
     </declare-styleable>
 </resources>
