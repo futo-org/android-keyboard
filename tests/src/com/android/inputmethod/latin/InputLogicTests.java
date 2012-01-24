@@ -41,6 +41,7 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
 
     private LatinIME mLatinIME;
     private TextView mTextView;
+    private InputConnection mInputConnection;
 
     public InputLogicTests() {
         super(LatinIME.class);
@@ -82,6 +83,7 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         mLatinIME.onCreateInputView();
         mLatinIME.onStartInputView(ei, false);
         mLatinIME.onCreateInputMethodInterface().startInput(ic, ei);
+        mInputConnection = ic;
     }
 
     // type(int) and type(String): helper methods to send a code point resp. a string to LatinIME.
@@ -106,17 +108,35 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
     }
 
     public void testTypeWord() {
-        final String wordToType = "abcd";
-        type(wordToType);
-        assertEquals("type word", wordToType, mTextView.getText().toString());
+        final String WORD_TO_TYPE = "abcd";
+        type(WORD_TO_TYPE);
+        assertEquals("type word", WORD_TO_TYPE, mTextView.getText().toString());
     }
 
     public void testPickSuggestionThenBackspace() {
-        final String wordToType = "tgis";
-        type(wordToType);
-        mLatinIME.pickSuggestionManually(0, wordToType);
+        final String WORD_TO_TYPE = "tgis";
+        type(WORD_TO_TYPE);
+        mLatinIME.pickSuggestionManually(0, WORD_TO_TYPE);
         type(Keyboard.CODE_DELETE);
-        assertEquals("press suggestion then backspace", wordToType, mTextView.getText().toString());
+        assertEquals("press suggestion then backspace", WORD_TO_TYPE,
+                mTextView.getText().toString());
     }
 
+    public void testDeleteSelection() {
+        final String STRING_TO_TYPE = "some text delete me some text";
+        final int SELECTION_START = 10;
+        final int SELECTION_END = 19;
+        final String EXPECTED_RESULT = "some text  some text";
+        type(STRING_TO_TYPE);
+        // There is no IMF to call onUpdateSelection for us so we must do it by hand.
+        // Send once to simulate the cursor actually responding to the move caused by typing.
+        // This is necessary because LatinIME is bookkeeping to avoid confusing a real cursor
+        // move with a move triggered by LatinIME inputting stuff.
+        mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
+        mInputConnection.setSelection(SELECTION_START, SELECTION_END);
+        // And now we simulate the user actually selecting some text.
+        mLatinIME.onUpdateSelection(0, 0, SELECTION_START, SELECTION_END, -1, -1);
+        type(Keyboard.CODE_DELETE);
+        assertEquals("delete selection", EXPECTED_RESULT, mTextView.getText().toString());
+    }
 }

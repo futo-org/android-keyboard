@@ -680,7 +680,7 @@ public class Keyboard {
             a.recycle();
             if (resourceId == 0) {
                 if (LatinImeLogger.sDBG)
-                    throw new RuntimeException("touchPositionCorrectionData is not defined");
+                    Log.e(TAG, "touchPositionCorrectionData is not defined");
                 return;
             }
 
