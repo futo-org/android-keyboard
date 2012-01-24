@@ -56,6 +56,18 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         return mLayout;
     }
 
+    public static String getLayoutName(int layoutId) {
+        switch (layoutId) {
+        case Constants.ALPHABET_UNSHIFTED: return "ALPHABET_UNSHIFTED";
+        case Constants.ALPHABET_MANUAL_SHIFTED: return "ALPHABET_MANUAL_SHIFTED";
+        case Constants.ALPHABET_AUTOMATIC_SHIFTED: return "ALPHABET_AUTOMATIC_SHIFTED";
+        case Constants.ALPHABET_SHIFT_LOCKED: return "ALPHABET_SHIFT_LOCKED";
+        case Constants.SYMBOLS_UNSHIFTED: return "SYMBOLS_UNSHIFTED";
+        case Constants.SYMBOLS_SHIFTED: return "SYMBOLS_SHIFTED";
+        default: return "UNKNOWN<" + layoutId + ">";
+        }
+    }
+
     public void setAutoCapsMode(boolean autoCaps) {
         mAutoCapsMode = autoCaps;
     }
