@@ -22,7 +22,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.util.Log;
-import android.util.TypedValue;
 import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
 
@@ -55,12 +54,10 @@ public class KeyboardSet {
     private static final String TAG_KEYBOARD_SET = TAG;
     private static final String TAG_ELEMENT = "Element";
 
-    private static final int ELEMENT_KEYBOARD_AUTO_GENERATE_FROM_ALPHABET = 1;
-
     private final Context mContext;
     private final Params mParams;
 
-    static class Params {
+    private static class Params {
         int mMode;
         int mInputType;
         int mImeOptions;
@@ -107,18 +104,16 @@ public class KeyboardSet {
     }
 
     private Keyboard getKeyboard(boolean isSymbols, boolean isShift) {
-        final int element = KeyboardSet.getElement(mParams.mMode, isSymbols, isShift);
-        // TODO: If xmlId is ELEMENT_KEYBOARD_AUTO_GENERATE_FROM_ALPHABET, auto generate the
-        // keyboard based on base main alphabet keyboard considering element.
-        final int xmlId = mParams.mElementKeyboards.get(element);
-        final KeyboardId id = KeyboardSet.getKeyboardId(element, isSymbols, mParams);
+        final int elementState = Builder.getElementState(mParams.mMode, isSymbols, isShift);
+        final int xmlId = mParams.mElementKeyboards.get(elementState);
+        final KeyboardId id = Builder.getKeyboardId(elementState, isSymbols, mParams);
         final Keyboard keyboard = getKeyboard(mContext, xmlId, id);
         return keyboard;
     }
 
     public KeyboardId getMainKeyboardId() {
-        final int element = KeyboardSet.getElement(mParams.mMode, false, false);
-        return KeyboardSet.getKeyboardId(element, false, mParams);
+        final int elementState = Builder.getElementState(mParams.mMode, false, false);
+        return Builder.getKeyboardId(elementState, false, mParams);
     }
 
     private Keyboard getKeyboard(Context context, int xmlId, KeyboardId id) {
@@ -150,30 +145,6 @@ public class KeyboardSet {
         keyboard.setShiftLocked(false);
         keyboard.setShifted(false);
         return keyboard;
-    }
-
-    private static int getElement(int mode, boolean isSymbols, boolean isShift) {
-        switch (mode) {
-        case KeyboardId.MODE_PHONE:
-            return (isSymbols && isShift)
-                    ? KeyboardId.ELEMENT_PHONE_SHIFTED : KeyboardId.ELEMENT_PHONE;
-        case KeyboardId.MODE_NUMBER:
-            return KeyboardId.ELEMENT_NUMBER;
-        default:
-            if (isSymbols) {
-                return isShift
-                        ? KeyboardId.ELEMENT_SYMBOLS_SHIFTED : KeyboardId.ELEMENT_SYMBOLS;
-            }
-            return KeyboardId.ELEMENT_ALPHABET;
-        }
-    }
-
-    private static KeyboardId getKeyboardId(int element, boolean isSymbols, Params params) {
-        final boolean hasShortcutKey = params.mVoiceKeyEnabled
-                && (isSymbols != params.mVoiceKeyOnMain);
-        return new KeyboardId(element, params.mLocale, params.mOrientation, params.mWidth,
-                params.mMode, params.mInputType, params.mImeOptions, params.mSettingsKeyEnabled,
-                params.mNoSettingsKey, params.mVoiceKeyEnabled, hasShortcutKey);
     }
 
     public static class Builder {
@@ -247,6 +218,31 @@ public class KeyboardSet {
             return new KeyboardSet(mContext, mParams);
         }
 
+        // TODO: Move this method to KeyboardSet
+        static KeyboardId getKeyboardId(int elementState, boolean isSymbols, Params params) {
+            final boolean hasShortcutKey = params.mVoiceKeyEnabled
+                    && (isSymbols != params.mVoiceKeyOnMain);
+            return new KeyboardId(elementState, params.mLocale, params.mOrientation, params.mWidth,
+                    params.mMode, params.mInputType, params.mImeOptions, params.mSettingsKeyEnabled,
+                    params.mNoSettingsKey, params.mVoiceKeyEnabled, hasShortcutKey);
+        }
+
+        // TODO: Move this method to KeyboardSet
+        static int getElementState(int mode, boolean isSymbols, boolean isShift) {
+            switch (mode) {
+            case KeyboardId.MODE_PHONE:
+                return (isSymbols && isShift)
+                        ? KeyboardId.ELEMENT_PHONE_SHIFT : KeyboardId.ELEMENT_PHONE;
+            case KeyboardId.MODE_NUMBER:
+                return KeyboardId.ELEMENT_NUMBER;
+            default:
+                if (isSymbols) {
+                    return isShift ? KeyboardId.ELEMENT_SYMBOLS_SHIFT : KeyboardId.ELEMENT_SYMBOLS;
+                }
+                return KeyboardId.ELEMENT_ALPHABET;
+            }
+        }
+
         private void parseKeyboardSet(Resources res, int resId) throws XmlPullParserException,
                 IOException {
             final XmlResourceParser parser = res.getXml(resId);
@@ -304,14 +300,8 @@ public class KeyboardSet {
 
                 final int elementName = a.getInt(
                         R.styleable.KeyboardSet_Element_elementName, 0);
-                final int index = R.styleable.KeyboardSet_Element_elementKeyboard;
-                final TypedValue v = a.peekValue(index);
-                final int elementKeyboard;
-                if (v.type == TypedValue.TYPE_REFERENCE) {
-                    elementKeyboard = a.getResourceId(index, 0);
-                } else {
-                    elementKeyboard = a.getInt(index, 0);
-                }
+                final int elementKeyboard = a.getResourceId(
+                        R.styleable.KeyboardSet_Element_elementKeyboard, 0);
                 mParams.mElementKeyboards.put(elementName, elementKeyboard);
             } finally {
                 a.recycle();
