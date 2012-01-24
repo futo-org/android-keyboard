@@ -39,14 +39,16 @@ public class KeyboardId {
     public static final int MODE_NUMBER = 5;
 
     public static final int ELEMENT_ALPHABET = 0;
-    public static final int ELEMENT_ALPHABET_MANUAL_SHIFTED = 1;
-    public static final int ELEMENT_ALPHABET_AUTOMATIC_SHIFTED = 2;
-    public static final int ELEMENT_ALPHABET_SHIFT_LOCKED = 3;
-    public static final int ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED = 4;
+    /* TODO: Implement alphabet variant shift keyboard.
+    public static final int ELEMENT_ALPHABET_MANUAL_TEMPORARY_SHIFT = 1;
+    public static final int ELEMENT_ALPHABET_AUTOMATIC_TEMPORARY_SHIFT = 2;
+    public static final int ELEMENT_ALPHABET_SHIFT_LOCK = 3;
+    public static final int ELEMENT_ALPHABET_SHIFT_LOCK_SHIFT = 4;
+    */
     public static final int ELEMENT_SYMBOLS = 5;
-    public static final int ELEMENT_SYMBOLS_SHIFTED = 6;
+    public static final int ELEMENT_SYMBOLS_SHIFT = 6;
     public static final int ELEMENT_PHONE = 7;
-    public static final int ELEMENT_PHONE_SHIFTED = 8;
+    public static final int ELEMENT_PHONE_SHIFT = 8;
     public static final int ELEMENT_NUMBER = 9;
 
     private static final int F2KEY_MODE_NONE = 0;
@@ -58,7 +60,7 @@ public class KeyboardId {
     public final int mOrientation;
     public final int mWidth;
     public final int mMode;
-    public final int mElement;
+    public final int mElementState;
     private final int mInputType;
     private final int mImeOptions;
     private final boolean mSettingsKeyEnabled;
@@ -68,14 +70,14 @@ public class KeyboardId {
 
     private final int mHashCode;
 
-    public KeyboardId(int element, Locale locale, int orientation, int width, int mode,
+    public KeyboardId(int elementState, Locale locale, int orientation, int width, int mode,
             int inputType, int imeOptions, boolean settingsKeyEnabled, boolean clobberSettingsKey,
             boolean shortcutKeyEnabled, boolean hasShortcutKey) {
         this.mLocale = locale;
         this.mOrientation = orientation;
         this.mWidth = width;
         this.mMode = mode;
-        this.mElement = element;
+        this.mElementState = elementState;
         this.mInputType = inputType;
         this.mImeOptions = imeOptions;
         this.mSettingsKeyEnabled = settingsKeyEnabled;
@@ -89,7 +91,7 @@ public class KeyboardId {
     private static int hashCode(KeyboardId id) {
         return Arrays.hashCode(new Object[] {
                 id.mOrientation,
-                id.mElement,
+                id.mElementState,
                 id.mMode,
                 id.mWidth,
                 id.navigateAction(),
@@ -107,7 +109,7 @@ public class KeyboardId {
         if (other == this)
             return true;
         return other.mOrientation == this.mOrientation
-                && other.mElement == this.mElement
+                && other.mElementState == this.mElementState
                 && other.mMode == this.mMode
                 && other.mWidth == this.mWidth
                 && other.navigateAction() == this.navigateAction()
@@ -121,19 +123,19 @@ public class KeyboardId {
     }
 
     public boolean isAlphabetKeyboard() {
-        return mElement < ELEMENT_SYMBOLS;
+        return mElementState < ELEMENT_SYMBOLS;
     }
 
     public boolean isSymbolsKeyboard() {
-        return mElement == ELEMENT_SYMBOLS || mElement == ELEMENT_SYMBOLS_SHIFTED;
+        return mElementState == ELEMENT_SYMBOLS || mElementState == ELEMENT_SYMBOLS_SHIFT;
     }
 
     public boolean isPhoneKeyboard() {
-        return mElement == ELEMENT_PHONE || mElement == ELEMENT_PHONE_SHIFTED;
+        return mElementState == ELEMENT_PHONE || mElementState == ELEMENT_PHONE_SHIFT;
     }
 
     public boolean isPhoneShiftKeyboard() {
-        return mElement == ELEMENT_PHONE_SHIFTED;
+        return mElementState == ELEMENT_PHONE_SHIFT;
     }
 
     public boolean navigateAction() {
@@ -188,7 +190,7 @@ public class KeyboardId {
     @Override
     public String toString() {
         return String.format("[%s %s %s%d %s %s %s%s%s%s%s%s%s]",
-                elementToString(mElement),
+                elementStateToString(mElementState),
                 mLocale,
                 (mOrientation == 1 ? "port" : "land"), mWidth,
                 modeName(mMode),
@@ -211,17 +213,19 @@ public class KeyboardId {
                 && TextUtils.equals(a.privateImeOptions, b.privateImeOptions);
     }
 
-    public static String elementToString(int element) {
-        switch (element) {
+    public static String elementStateToString(int elementState) {
+        switch (elementState) {
         case ELEMENT_ALPHABET: return "alphabet";
-        case ELEMENT_ALPHABET_MANUAL_SHIFTED: return "alphabetManualShifted";
-        case ELEMENT_ALPHABET_AUTOMATIC_SHIFTED: return "alphabetAutomaticShifted";
-        case ELEMENT_ALPHABET_SHIFT_LOCKED: return "alphabetShiftLocked";
-        case ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED: return "alphabetShiftLockShifted";
+        /* TODO: Implement alphabet variant shift keyboard.
+        case ELEMENT_ALPHABET_MANUAL_TEMPORARY_SHIFT: return "alphabetManualTemporaryShift";
+        case ELEMENT_ALPHABET_AUTOMATIC_TEMPORARY_SHIFT: return "alphabetAutomaticTemporaryShift";
+        case ELEMENT_ALPHABET_SHIFT_LOCK: return "alphabetShiftLock";
+        case ELEMENT_ALPHABET_SHIFT_LOCK_SHIFT: return "alphabetShiftLockShift";
+        */
         case ELEMENT_SYMBOLS: return "symbols";
-        case ELEMENT_SYMBOLS_SHIFTED: return "symbolsShifted";
+        case ELEMENT_SYMBOLS_SHIFT: return "symbolsShift";
         case ELEMENT_PHONE: return "phone";
-        case ELEMENT_PHONE_SHIFTED: return "phoneShifted";
+        case ELEMENT_PHONE_SHIFT: return "phoneShift";
         case ELEMENT_NUMBER: return "number";
         default: return null;
         }
