@@ -302,8 +302,7 @@ public class KeyboardState {
         if (code == Keyboard.CODE_SHIFT) {
             onReleaseShift(withSliding);
         } else if (code == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
-            // TODO: Make use of withSliding instead of relying on mSwitchState.
-            onReleaseSymbol();
+            onReleaseSymbol(withSliding);
         }
     }
 
@@ -313,11 +312,16 @@ public class KeyboardState {
         mSwitchState = SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL;
     }
 
-    private void onReleaseSymbol() {
-        // Switch back to the previous keyboard mode if the user chords the mode change key and
-        // another key, then releases the mode change key.
+    private void onReleaseSymbol(boolean withSliding) {
         if (mSwitchState == SWITCH_STATE_CHORDING_ALPHA) {
+            // Switch back to the previous keyboard mode if the user chords the mode change key and
+            // another key, then releases the mode change key.
             toggleAlphabetAndSymbols();
+        } else if (!withSliding) {
+            // If the mode change key is being released without sliding, we should forget the
+            // previous symbols keyboard shift state and simply switch back to symbols layout
+            // (never symbols shifted) next time the mode gets changed to symbols layout.
+            mPrevSymbolsKeyboardWasShifted = false;
         }
         mSymbolKeyState.onRelease();
     }
