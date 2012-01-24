@@ -78,23 +78,18 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     @Override
-    public void setShifted(int shiftMode) {
-        if (shiftMode == SwitchActions.UNSHIFT) {
-            mLayout = Constants.ALPHABET_UNSHIFTED;
-        } else if (shiftMode == SwitchActions.MANUAL_SHIFT) {
-            mLayout = Constants.ALPHABET_MANUAL_SHIFTED;
-        } else if (shiftMode == SwitchActions.AUTOMATIC_SHIFT) {
-            mLayout = Constants.ALPHABET_AUTOMATIC_SHIFTED;
-        }
+    public void setAlphabetManualShiftedKeyboard() {
+        mLayout = Constants.ALPHABET_MANUAL_SHIFTED;
     }
 
     @Override
-    public void setShiftLocked(boolean shiftLocked) {
-        if (shiftLocked) {
-            mLayout = Constants.ALPHABET_SHIFT_LOCKED;
-        } else {
-            mLayout = Constants.ALPHABET_UNSHIFTED;
-        }
+    public void setAlphabetAutomaticShiftedKeyboard() {
+        mLayout = Constants.ALPHABET_AUTOMATIC_SHIFTED;
+    }
+
+    @Override
+    public void setAlphabetShiftLockedKeyboard() {
+        mLayout = Constants.ALPHABET_SHIFT_LOCKED;
     }
 
     @Override

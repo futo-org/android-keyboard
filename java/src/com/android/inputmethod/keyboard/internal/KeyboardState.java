@@ -40,16 +40,10 @@ public class KeyboardState {
 
     public interface SwitchActions {
         public void setAlphabetKeyboard();
-
-        public static final int UNSHIFT = 0;
-        public static final int MANUAL_SHIFT = 1;
-        public static final int AUTOMATIC_SHIFT = 2;
-        public void setShifted(int shiftMode);
-
-        public void setShiftLocked(boolean shiftLocked);
-
+        public void setAlphabetManualShiftedKeyboard();
+        public void setAlphabetAutomaticShiftedKeyboard();
+        public void setAlphabetShiftLockedKeyboard();
         public void setSymbolsKeyboard();
-
         public void setSymbolsShiftedKeyboard();
 
         /**
@@ -63,6 +57,9 @@ public class KeyboardState {
     private ShiftKeyState mShiftKeyState = new ShiftKeyState("Shift");
     private ModifierKeyState mSymbolKeyState = new ModifierKeyState("Symbol");
 
+    // TODO: Merge {@link #mSwitchState}, {@link #mIsAlphabetMode}, {@link #mAlphabetShiftState},
+    // {@link #mIsSymbolShifted}, {@link #mPrevMainKeyboardWasShiftLocked}, and
+    // {@link #mPrevSymbolsKeyboardWasShifted} into single state variable.
     private static final int SWITCH_STATE_ALPHA = 0;
     private static final int SWITCH_STATE_SYMBOL_BEGIN = 1;
     private static final int SWITCH_STATE_SYMBOL = 2;
@@ -88,6 +85,7 @@ public class KeyboardState {
         public boolean mIsShiftLocked;
         public boolean mIsShifted;
 
+        @Override
         public String toString() {
             if (!mIsValid) return "INVALID";
             if (mIsAlphabetMode) {
@@ -155,7 +153,7 @@ public class KeyboardState {
         if (state.mIsAlphabetMode) {
             setShiftLocked(state.mIsShiftLocked);
             if (!state.mIsShiftLocked) {
-                setShifted(state.mIsShifted ? SwitchActions.MANUAL_SHIFT : SwitchActions.UNSHIFT);
+                setShifted(state.mIsShifted ? MANUAL_SHIFT : UNSHIFT);
             }
         }
     }
@@ -165,30 +163,58 @@ public class KeyboardState {
         return mAlphabetShiftState.isShiftLocked();
     }
 
+    private static final int UNSHIFT = 0;
+    private static final int MANUAL_SHIFT = 1;
+    private static final int AUTOMATIC_SHIFT = 2;
+
     private void setShifted(int shiftMode) {
         if (DEBUG_ACTION) {
-            Log.d(TAG, "setShifted: shiftMode=" + shiftModeToString(shiftMode));
+            Log.d(TAG, "setShifted: shiftMode=" + shiftModeToString(shiftMode) + " " + this);
+        }
+        if (!mIsAlphabetMode) return;
+        final int prevShiftMode;
+        if (mAlphabetShiftState.isAutomaticTemporaryUpperCase()) {
+            prevShiftMode = AUTOMATIC_SHIFT;
+        } else if (mAlphabetShiftState.isManualTemporaryUpperCase()) {
+            prevShiftMode = MANUAL_SHIFT;
+        } else {
+            prevShiftMode = UNSHIFT;
         }
         switch (shiftMode) {
-        case SwitchActions.AUTOMATIC_SHIFT:
+        case AUTOMATIC_SHIFT:
             mAlphabetShiftState.setAutomaticTemporaryUpperCase();
+            if (shiftMode != prevShiftMode) {
+                mSwitchActions.setAlphabetAutomaticShiftedKeyboard();
+            }
             break;
-        case SwitchActions.MANUAL_SHIFT:
+        case MANUAL_SHIFT:
             mAlphabetShiftState.setShifted(true);
+            if (shiftMode != prevShiftMode) {
+                mSwitchActions.setAlphabetManualShiftedKeyboard();
+            }
             break;
-        case SwitchActions.UNSHIFT:
+        case UNSHIFT:
             mAlphabetShiftState.setShifted(false);
+            if (shiftMode != prevShiftMode) {
+                mSwitchActions.setAlphabetKeyboard();
+            }
             break;
         }
-        mSwitchActions.setShifted(shiftMode);
     }
 
     private void setShiftLocked(boolean shiftLocked) {
         if (DEBUG_ACTION) {
-            Log.d(TAG, "setShiftLocked: shiftLocked=" + shiftLocked);
+            Log.d(TAG, "setShiftLocked: shiftLocked=" + shiftLocked + " " + this);
+        }
+        if (!mIsAlphabetMode) return;
+        if (shiftLocked && (!mAlphabetShiftState.isShiftLocked()
+                || mAlphabetShiftState.isShiftLockShifted())) {
+            mSwitchActions.setAlphabetShiftLockedKeyboard();
+        }
+        if (!shiftLocked && mAlphabetShiftState.isShiftLocked()) {
+            mSwitchActions.setAlphabetKeyboard();
         }
         mAlphabetShiftState.setShiftLocked(shiftLocked);
-        mSwitchActions.setShiftLocked(shiftLocked);
     }
 
     private void toggleAlphabetAndSymbols() {
@@ -308,10 +334,9 @@ public class KeyboardState {
             if (!mAlphabetShiftState.isShiftLocked() && !mShiftKeyState.isIgnoring()) {
                 if (mShiftKeyState.isReleasing() && autoCaps) {
                     // Only when shift key is releasing, automatic temporary upper case will be set.
-                    setShifted(SwitchActions.AUTOMATIC_SHIFT);
+                    setShifted(AUTOMATIC_SHIFT);
                 } else {
-                    setShifted(mShiftKeyState.isMomentary()
-                            ? SwitchActions.MANUAL_SHIFT : SwitchActions.UNSHIFT);
+                    setShifted(mShiftKeyState.isMomentary() ? MANUAL_SHIFT : UNSHIFT);
                 }
             }
         } else {
@@ -326,12 +351,12 @@ public class KeyboardState {
             if (mAlphabetShiftState.isShiftLocked()) {
                 // Shift key is pressed while caps lock state, we will treat this state as shifted
                 // caps lock state and mark as if shift key pressed while normal state.
-                setShifted(SwitchActions.MANUAL_SHIFT);
+                setShifted(MANUAL_SHIFT);
                 mShiftKeyState.onPress();
             } else if (mAlphabetShiftState.isAutomaticTemporaryUpperCase()) {
                 // Shift key is pressed while automatic temporary upper case, we have to move to
                 // manual temporary upper case.
-                setShifted(SwitchActions.MANUAL_SHIFT);
+                setShifted(MANUAL_SHIFT);
                 mShiftKeyState.onPress();
             } else if (mAlphabetShiftState.isShiftedOrShiftLocked()) {
                 // In manual upper case state, we just record shift key has been pressing while
@@ -339,7 +364,7 @@ public class KeyboardState {
                 mShiftKeyState.onPressOnShifted();
             } else {
                 // In base layout, chording or manual temporary upper case mode is started.
-                setShifted(SwitchActions.MANUAL_SHIFT);
+                setShifted(MANUAL_SHIFT);
                 mShiftKeyState.onPress();
             }
         } else {
@@ -358,7 +383,7 @@ public class KeyboardState {
                 if (mAlphabetShiftState.isShiftLockShifted()) {
                     setShiftLocked(true);
                 } else {
-                    setShifted(SwitchActions.UNSHIFT);
+                    setShifted(UNSHIFT);
                 }
             } else if (isShiftLocked && !mAlphabetShiftState.isShiftLockShifted()
                     && (mShiftKeyState.isPressing() || mShiftKeyState.isPressingOnShifted())
@@ -370,12 +395,12 @@ public class KeyboardState {
             } else if (mAlphabetShiftState.isShiftedOrShiftLocked()
                     && mShiftKeyState.isPressingOnShifted() && !withSliding) {
                 // Shift has been pressed without chording while shifted state.
-                setShifted(SwitchActions.UNSHIFT);
+                setShifted(UNSHIFT);
             } else if (mAlphabetShiftState.isManualTemporaryUpperCaseFromAuto()
                     && mShiftKeyState.isPressing() && !withSliding) {
                 // Shift has been pressed without chording while manual temporary upper case
                 // transited from automatic temporary upper case.
-                setShifted(SwitchActions.UNSHIFT);
+                setShifted(UNSHIFT);
             }
         } else {
             // In symbol mode, switch back to the previous keyboard mode if the user chords the
@@ -504,9 +529,9 @@ public class KeyboardState {
 
     private static String shiftModeToString(int shiftMode) {
         switch (shiftMode) {
-        case SwitchActions.UNSHIFT: return "UNSHIFT";
-        case SwitchActions.MANUAL_SHIFT: return "MANUAL";
-        case SwitchActions.AUTOMATIC_SHIFT: return "AUTOMATIC";
+        case UNSHIFT: return "UNSHIFT";
+        case MANUAL_SHIFT: return "MANUAL";
+        case AUTOMATIC_SHIFT: return "AUTOMATIC";
         default: return null;
         }
     }
