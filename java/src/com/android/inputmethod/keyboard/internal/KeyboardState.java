@@ -43,6 +43,8 @@ public class KeyboardState {
         public void setAlphabetManualShiftedKeyboard();
         public void setAlphabetAutomaticShiftedKeyboard();
         public void setAlphabetShiftLockedKeyboard();
+        // TODO: Add this.
+        //public void setAlphabetShiftLockShiftedKeyboard();
         public void setSymbolsKeyboard();
         public void setSymbolsShiftedKeyboard();
 
