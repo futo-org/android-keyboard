@@ -28,13 +28,13 @@
         latin:elementName="symbols"
         latin:elementKeyboard="@xml/kbd_symbols" />
     <Element
-        latin:elementName="symbolsShift"
+        latin:elementName="symbolsShifted"
         latin:elementKeyboard="@xml/kbd_symbols_shift" />
     <Element
         latin:elementName="phone"
         latin:elementKeyboard="@xml/kbd_phone" />
     <Element
-        latin:elementName="phoneShift"
+        latin:elementName="phoneShifted"
         latin:elementKeyboard="@xml/kbd_phone_shift" />
     <Element
         latin:elementName="number"
