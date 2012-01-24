@@ -391,7 +391,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         // Working variables for the following methods.
         private boolean mIsOrientationChanging;
-        private boolean mPendingSuccesiveImsCallback;
+        private boolean mPendingSuccessiveImsCallback;
         private boolean mHasPendingStartInput;
         private boolean mHasPendingFinishInputView;
         private boolean mHasPendingFinishInput;
@@ -432,7 +432,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 if (mIsOrientationChanging && restarting) {
                     // This is the first onStartInput after orientation changed.
                     mIsOrientationChanging = false;
-                    mPendingSuccesiveImsCallback = true;
+                    mPendingSuccessiveImsCallback = true;
                 }
                 final LatinIME latinIme = getOuterInstance();
                 executePendingImsCallback(latinIme, editorInfo, restarting);
@@ -446,9 +446,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 // Typically this is the second onStartInputView after orientation changed.
                 resetPendingImsCallback();
             } else {
-                if (mPendingSuccesiveImsCallback) {
+                if (mPendingSuccessiveImsCallback) {
                     // This is the first onStartInputView after orientation changed.
-                    mPendingSuccesiveImsCallback = false;
+                    mPendingSuccessiveImsCallback = false;
                     resetPendingImsCallback();
                     sendMessageDelayed(obtainMessage(MSG_PENDING_IMS_CALLBACK),
                             PENDING_IMS_CALLBACK_DURATION);
