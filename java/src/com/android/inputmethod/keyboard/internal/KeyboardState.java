@@ -63,11 +63,8 @@ public class KeyboardState {
     private static final int SWITCH_STATE_ALPHA = 0;
     private static final int SWITCH_STATE_SYMBOL_BEGIN = 1;
     private static final int SWITCH_STATE_SYMBOL = 2;
-    // The following states are used only on the distinct multi-touch panel devices.
     private static final int SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL = 3;
     private static final int SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE = 4;
-    private static final int SWITCH_STATE_CHORDING_ALPHA = 5;
-    private static final int SWITCH_STATE_CHORDING_SYMBOL = 6;
     private int mSwitchState = SWITCH_STATE_ALPHA;
     private String mLayoutSwitchBackSymbols;
 
@@ -313,7 +310,7 @@ public class KeyboardState {
     }
 
     private void onReleaseSymbol(boolean withSliding) {
-        if (mSwitchState == SWITCH_STATE_CHORDING_ALPHA) {
+        if (mSymbolKeyState.isChording()) {
             // Switch back to the previous keyboard mode if the user chords the mode change key and
             // another key, then releases the mode change key.
             toggleAlphabetAndSymbols();
@@ -330,23 +327,18 @@ public class KeyboardState {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onUpdateShiftState: autoCaps=" + autoCaps + " " + this);
         }
-        onUpdateShiftStateInternal(autoCaps);
+        updateAlphabetShiftState(autoCaps);
     }
 
-    private void onUpdateShiftStateInternal(boolean autoCaps) {
-        if (mIsAlphabetMode) {
-            if (!mAlphabetShiftState.isShiftLocked() && !mShiftKeyState.isIgnoring()) {
-                if (mShiftKeyState.isReleasing() && autoCaps) {
-                    // Only when shift key is releasing, automatic temporary upper case will be set.
-                    setShifted(AUTOMATIC_SHIFT);
-                } else {
-                    setShifted(mShiftKeyState.isMomentary() ? MANUAL_SHIFT : UNSHIFT);
-                }
+    private void updateAlphabetShiftState(boolean autoCaps) {
+        if (!mIsAlphabetMode) return;
+        if (!mAlphabetShiftState.isShiftLocked() && !mShiftKeyState.isIgnoring()) {
+            if (mShiftKeyState.isReleasing() && autoCaps) {
+                // Only when shift key is releasing, automatic temporary upper case will be set.
+                setShifted(AUTOMATIC_SHIFT);
+            } else {
+                setShifted(mShiftKeyState.isChording() ? MANUAL_SHIFT : UNSHIFT);
             }
-        } else {
-            // In symbol keyboard mode, we should clear shift key state because only alphabet
-            // keyboard has shift key.
-            mSymbolKeyState.onRelease();
         }
     }
 
@@ -382,7 +374,7 @@ public class KeyboardState {
     private void onReleaseShift(boolean withSliding) {
         if (mIsAlphabetMode) {
             final boolean isShiftLocked = mAlphabetShiftState.isShiftLocked();
-            if (mShiftKeyState.isMomentary()) {
+            if (mShiftKeyState.isChording()) {
                 if (mAlphabetShiftState.isShiftLockShifted()) {
                     // After chording input while caps lock state.
                     setShiftLocked(true);
@@ -413,7 +405,7 @@ public class KeyboardState {
         } else {
             // In symbol mode, switch back to the previous keyboard mode if the user chords the
             // shift key and another key, then releases the shift key.
-            if (mSwitchState == SWITCH_STATE_CHORDING_SYMBOL) {
+            if (mShiftKeyState.isChording()) {
                 toggleShiftInSymbols();
             }
         }
@@ -469,12 +461,6 @@ public class KeyboardState {
 
         switch (mSwitchState) {
         case SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL:
-            // Only distinct multi touch devices can be in this state.
-            // On non-distinct multi touch devices, mode change key is handled by
-            // {@link LatinIME#onCodeInput}, not by {@link LatinIME#onPress} and
-            // {@link LatinIME#onRelease}. So, on such devices, {@link #mSwitchState} starts
-            // from {@link #SWITCH_STATE_SYMBOL_BEGIN}, or {@link #SWITCH_STATE_ALPHA}, not from
-            // {@link #SWITCH_STATE_MOMENTARY}.
             if (code == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
                 // Detected only the mode change key has been pressed, and then released.
                 if (mIsAlphabetMode) {
@@ -488,10 +474,6 @@ public class KeyboardState {
                 // If the user cancels the sliding input, switching back to the previous keyboard
                 // mode is handled by {@link #onCancelInput}.
                 toggleAlphabetAndSymbols();
-            } else {
-                // Chording input is being started. The keyboard mode will be switched back to the
-                // previous mode in {@link onReleaseSymbol} when the mode change key is released.
-                mSwitchState = SWITCH_STATE_CHORDING_ALPHA;
             }
             break;
         case SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE:
@@ -503,10 +485,6 @@ public class KeyboardState {
                 // symbol mode and slid to other key, then released the finger.
                 toggleShiftInSymbols();
                 mSwitchState = SWITCH_STATE_SYMBOL;
-            } else {
-                // Chording input is being started. The keyboard mode will be switched back to the
-                // previous mode in {@link onReleaseShift} when the shift key is released.
-                mSwitchState = SWITCH_STATE_CHORDING_SYMBOL;
             }
             break;
         case SWITCH_STATE_SYMBOL_BEGIN:
@@ -520,7 +498,6 @@ public class KeyboardState {
             }
             break;
         case SWITCH_STATE_SYMBOL:
-        case SWITCH_STATE_CHORDING_SYMBOL:
             // Switch back to alpha keyboard mode if user types one or more non-space/enter
             // characters followed by a space/enter or a quote character.
             if (isSpaceCharacter(code) || isLayoutSwitchBackCharacter(code)) {
@@ -531,7 +508,7 @@ public class KeyboardState {
 
         // If the code is a letter, update keyboard shift state.
         if (Keyboard.isLetterCode(code)) {
-            onUpdateShiftStateInternal(autoCaps);
+            updateAlphabetShiftState(autoCaps);
         }
     }
 
@@ -551,8 +528,6 @@ public class KeyboardState {
         case SWITCH_STATE_SYMBOL: return "SYMBOL";
         case SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL: return "MOMENTARY-ALPHA-SYMBOL";
         case SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE: return "MOMENTARY-SYMBOL-MORE";
-        case SWITCH_STATE_CHORDING_ALPHA: return "CHORDING-ALPHA";
-        case SWITCH_STATE_CHORDING_SYMBOL: return "CHORDING-SYMBOL";
         default: return null;
         }
     }

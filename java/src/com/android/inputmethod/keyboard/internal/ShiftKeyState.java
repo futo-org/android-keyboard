@@ -30,7 +30,7 @@ import android.util.Log;
     public void onOtherKeyPressed() {
         int oldState = mState;
         if (oldState == PRESSING) {
-            mState = MOMENTARY;
+            mState = CHORDING;
         } else if (oldState == PRESSING_ON_SHIFTED) {
             mState = IGNORING;
         }
