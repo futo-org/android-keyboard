@@ -375,12 +375,9 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
 
         // Alphabet shift locked -> "?123" key + letter -> alphabet shift locked.
         // Press and slide from shift key, enter alphabet shifted.
-        pressAndSlideFromKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        pressAndSlideFromKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED);
         // Enter/release letter key, switch back to shift locked.
-        // TODO: This test fails due to bug, though the external behavior is correct.
-//        pressAndReleaseKey('Z', ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED);
-        // TODO: Replace this with the above line once the bug fixed.
-        pressAndReleaseKey('Z', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        pressAndReleaseKey('Z', ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
     }
 
     // Sliding input in symbols.

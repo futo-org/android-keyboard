@@ -383,12 +383,16 @@ public class KeyboardState {
         if (mIsAlphabetMode) {
             final boolean isShiftLocked = mAlphabetShiftState.isShiftLocked();
             if (mShiftKeyState.isMomentary()) {
-                // After chording input while normal state.
                 if (mAlphabetShiftState.isShiftLockShifted()) {
+                    // After chording input while caps lock state.
                     setShiftLocked(true);
                 } else {
+                    // After chording input while normal state.
                     setShifted(UNSHIFT);
                 }
+            } else if (mAlphabetShiftState.isShiftLockShifted() && withSliding) {
+                // In caps lock state, shift has been pressed and slid out to other key.
+                setShiftLocked(true);
             } else if (isShiftLocked && !mAlphabetShiftState.isShiftLockShifted()
                     && (mShiftKeyState.isPressing() || mShiftKeyState.isPressingOnShifted())
                     && !withSliding) {
