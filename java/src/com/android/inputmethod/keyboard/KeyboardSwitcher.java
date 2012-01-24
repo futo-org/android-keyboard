@@ -216,44 +216,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         return null;
     }
 
-    // Implements {@link KeyboardState.SwitchActions}.
-    @Override
-    public void setShifted(int shiftMode) {
-        mInputMethodService.mHandler.cancelUpdateShiftState();
-        Keyboard keyboard = getKeyboard();
-        if (keyboard == null)
-            return;
-        switch (shiftMode) {
-        case AUTOMATIC_SHIFT:
-            keyboard.setAutomaticTemporaryUpperCase();
-            break;
-        case MANUAL_SHIFT:
-            keyboard.setShifted(true);
-            break;
-        case UNSHIFT:
-            keyboard.setShifted(false);
-            break;
-        }
-        mKeyboardView.invalidateAllKeys();
-    }
-
-    // Implements {@link KeyboardState.SwitchActions}.
-    @Override
-    public void setShiftLocked(boolean shiftLocked) {
-        mInputMethodService.mHandler.cancelUpdateShiftState();
-        Keyboard keyboard = getKeyboard();
-        if (keyboard == null)
-            return;
-        keyboard.setShiftLocked(shiftLocked);
-        mKeyboardView.invalidateAllKeys();
-        if (!shiftLocked) {
-            // To be able to turn off caps lock by "double tap" on shift key, we should ignore
-            // the second tap of the "double tap" from now for a while because we just have
-            // already turned off caps lock above.
-            mKeyboardView.startIgnoringDoubleTap();
-        }
-    }
-
     /**
      * Update keyboard shift state triggered by connected EditText status change.
      */
@@ -273,16 +235,73 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         mState.onCancelInput(isSinglePointer());
     }
 
-    // Implements {@link KeyboardState.SwitchActions}.
-    @Override
-    public void setSymbolsKeyboard() {
-        setKeyboard(mKeyboardSet.getSymbolsKeyboard());
+    // TODO: Remove these constants.
+    private static final int ALPHABET_UNSHIFTED = 0;
+    private static final int ALPHABET_MANUAL_SHIFTED = 1;
+    private static final int ALPHABET_AUTOMATIC_SHIFTED = 2;
+    private static final int ALPHABET_SHIFT_LOCKED = 3;
+
+    // TODO: Remove this method.
+    private void updateAlphabetKeyboardShiftState(int shiftMode) {
+        mInputMethodService.mHandler.cancelUpdateShiftState();
+        Keyboard keyboard = getKeyboard();
+        if (keyboard == null)
+            return;
+        switch (shiftMode) {
+        case ALPHABET_UNSHIFTED:
+            keyboard.setShifted(false);
+            break;
+        case ALPHABET_MANUAL_SHIFTED:
+            keyboard.setShifted(true);
+            break;
+        case ALPHABET_AUTOMATIC_SHIFTED:
+            keyboard.setAutomaticTemporaryUpperCase();
+            break;
+        case ALPHABET_SHIFT_LOCKED:
+            keyboard.setShiftLocked(true);
+            break;
+        }
+        mKeyboardView.invalidateAllKeys();
+        if (shiftMode != ALPHABET_SHIFT_LOCKED) {
+            // To be able to turn off caps lock by "double tap" on shift key, we should ignore
+            // the second tap of the "double tap" from now for a while because we just have
+            // already turned off caps lock above.
+            mKeyboardView.startIgnoringDoubleTap();
+        }
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetKeyboard() {
         setKeyboard(mKeyboardSet.getMainKeyboard());
+        updateAlphabetKeyboardShiftState(ALPHABET_UNSHIFTED);
+    }
+
+    // Implements {@link KeyboardState.SwitchActions}.
+    @Override
+    public void setAlphabetManualShiftedKeyboard() {
+        setKeyboard(mKeyboardSet.getMainKeyboard());
+        updateAlphabetKeyboardShiftState(ALPHABET_MANUAL_SHIFTED);
+    }
+
+    // Implements {@link KeyboardState.SwitchActions}.
+    @Override
+    public void setAlphabetAutomaticShiftedKeyboard() {
+        setKeyboard(mKeyboardSet.getMainKeyboard());
+        updateAlphabetKeyboardShiftState(ALPHABET_AUTOMATIC_SHIFTED);
+    }
+
+    // Implements {@link KeyboardState.SwitchActions}.
+    @Override
+    public void setAlphabetShiftLockedKeyboard() {
+        setKeyboard(mKeyboardSet.getMainKeyboard());
+        updateAlphabetKeyboardShiftState(ALPHABET_SHIFT_LOCKED);
+    }
+
+    // Implements {@link KeyboardState.SwitchActions}.
+    @Override
+    public void setSymbolsKeyboard() {
+        setKeyboard(mKeyboardSet.getSymbolsKeyboard());
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
