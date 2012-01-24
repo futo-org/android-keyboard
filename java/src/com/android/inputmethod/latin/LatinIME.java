@@ -203,9 +203,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private WordComposer mWordComposer = new WordComposer();
 
     private int mCorrectionMode;
+
     // Keep track of the last selection range to decide if we need to show word alternatives
-    private int mLastSelectionStart;
-    private int mLastSelectionEnd;
+    private static final int NOT_A_CURSOR_POSITION = -1;
+    private int mLastSelectionStart = NOT_A_CURSOR_POSITION;
+    private int mLastSelectionEnd = NOT_A_CURSOR_POSITION;
 
     // Whether we are expecting an onUpdateSelection event to fire. If it does when we don't
     // "expect" it, it means the user actually moved the cursor.
@@ -1401,9 +1403,29 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 // inconsistent with backspacing after selecting other suggestions.
                 restartSuggestionsOnManuallyPickedTypedWord(ic);
             } else {
-                ic.deleteSurroundingText(1, 0);
-                if (mDeleteCount > DELETE_ACCELERATE_AT) {
-                    ic.deleteSurroundingText(1, 0);
+                // Here we must check whether there is a selection. If so we should remove the
+                // selected text, otherwise we should just delete the character before the cursor.
+                if (mLastSelectionStart != mLastSelectionEnd) {
+                    final int lengthToDelete = mLastSelectionEnd - mLastSelectionStart;
+                    ic.setSelection(mLastSelectionEnd, mLastSelectionEnd);
+                    ic.deleteSurroundingText(lengthToDelete, 0);
+                } else {
+                    if (NOT_A_CURSOR_POSITION == mLastSelectionEnd) {
+                        // We don't know whether there is a selection or not. We just send a false
+                        // hardware key event and let TextView sort it out for us. The problem
+                        // here is, this is asynchronous with respect to the input connection
+                        // batch edit, so it may flicker. But this only ever happens if backspace
+                        // is pressed just after the IME is invoked, and then again only once.
+                        // TODO: add an API call that gets the selection indices. This is available
+                        // to the IME in the general case via onUpdateSelection anyway, and would
+                        // allow us to remove this race condition.
+                        sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
+                    } else {
+                        ic.deleteSurroundingText(1, 0);
+                    }
+                    if (mDeleteCount > DELETE_ACCELERATE_AT) {
+                        ic.deleteSurroundingText(1, 0);
+                    }
                 }
                 if (isSuggestionsRequested()) {
                     restartSuggestionsOnWordBeforeCursorIfAtEndOfWord(ic);
