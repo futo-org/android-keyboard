@@ -25,16 +25,32 @@
         latin:elementName="alphabet"
         latin:elementKeyboard="@xml/kbd_qwerty" />
     <Element
+        latin:elementName="alphabetManualShifted"
+        latin:elementKeyboard="@xml/kbd_qwerty"
+        latin:elementAutoGenerate="true" />
+    <Element
+        latin:elementName="alphabetAutomaticShifted"
+        latin:elementKeyboard="@xml/kbd_qwerty"
+        latin:elementAutoGenerate="true" />
+    <Element
+        latin:elementName="alphabetShiftLocked"
+        latin:elementKeyboard="@xml/kbd_qwerty"
+        latin:elementAutoGenerate="true" />
+    <Element
+        latin:elementName="alphabetShiftLockShifted"
+        latin:elementKeyboard="@xml/kbd_qwerty"
+        latin:elementAutoGenerate="true" />
+    <Element
         latin:elementName="symbols"
         latin:elementKeyboard="@xml/kbd_symbols" />
     <Element
-        latin:elementName="symbolsShift"
+        latin:elementName="symbolsShifted"
         latin:elementKeyboard="@xml/kbd_symbols_shift" />
     <Element
         latin:elementName="phone"
         latin:elementKeyboard="@xml/kbd_phone" />
     <Element
-        latin:elementName="phoneShift"
+        latin:elementName="phoneShifted"
         latin:elementKeyboard="@xml/kbd_phone_shift" />
     <Element
         latin:elementName="number"

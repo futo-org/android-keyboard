@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * This class represents a set of keyboards. Each of them represents a different keyboard
@@ -57,7 +58,18 @@ public class KeyboardSet {
     private final Context mContext;
     private final Params mParams;
 
-    private static class Params {
+    static class KeyboardElement {
+        final int mElementId;
+        final int mLayoutId;
+        final boolean mAutoGenerate;
+        KeyboardElement(int elementId, int layoutId, boolean autoGenerate) {
+            mElementId = elementId;
+            mLayoutId = layoutId;
+            mAutoGenerate = autoGenerate;
+        }
+    }
+
+    static class Params {
         int mMode;
         int mInputType;
         int mImeOptions;
@@ -69,7 +81,8 @@ public class KeyboardSet {
         Locale mLocale;
         int mOrientation;
         int mWidth;
-        final HashMap<Integer, Integer> mElementKeyboards = new HashMap<Integer, Integer>();
+        final Map<Integer, KeyboardElement> mElementKeyboards =
+                new HashMap<Integer, KeyboardElement>();
         Params() {}
     }
 
@@ -104,16 +117,18 @@ public class KeyboardSet {
     }
 
     private Keyboard getKeyboard(boolean isSymbols, boolean isShift) {
-        final int elementState = Builder.getElementState(mParams.mMode, isSymbols, isShift);
-        final int xmlId = mParams.mElementKeyboards.get(elementState);
-        final KeyboardId id = Builder.getKeyboardId(elementState, isSymbols, mParams);
-        final Keyboard keyboard = getKeyboard(mContext, xmlId, id);
+        final int elementId = KeyboardSet.getElementId(mParams.mMode, isSymbols, isShift);
+        final KeyboardElement keyboardElement = mParams.mElementKeyboards.get(elementId);
+        // TODO: If keyboardElement.mAutoGenerate is true, the keyboard will be auto generated
+        // based on keyboardElement.mKayoutId Keyboard XML definition.
+        final KeyboardId id = KeyboardSet.getKeyboardId(elementId, isSymbols, mParams);
+        final Keyboard keyboard = getKeyboard(mContext, keyboardElement.mLayoutId, id);
         return keyboard;
     }
 
     public KeyboardId getMainKeyboardId() {
-        final int elementState = Builder.getElementState(mParams.mMode, false, false);
-        return Builder.getKeyboardId(elementState, false, mParams);
+        final int elementId = KeyboardSet.getElementId(mParams.mMode, false, false);
+        return KeyboardSet.getKeyboardId(elementId, false, mParams);
     }
 
     private Keyboard getKeyboard(Context context, int xmlId, KeyboardId id) {
@@ -145,6 +160,30 @@ public class KeyboardSet {
         keyboard.setShiftLocked(false);
         keyboard.setShifted(false);
         return keyboard;
+    }
+
+    private static int getElementId(int mode, boolean isSymbols, boolean isShift) {
+        switch (mode) {
+        case KeyboardId.MODE_PHONE:
+            return (isSymbols && isShift)
+                    ? KeyboardId.ELEMENT_PHONE_SHIFTED : KeyboardId.ELEMENT_PHONE;
+        case KeyboardId.MODE_NUMBER:
+            return KeyboardId.ELEMENT_NUMBER;
+        default:
+            if (isSymbols) {
+                return isShift
+                        ? KeyboardId.ELEMENT_SYMBOLS_SHIFTED : KeyboardId.ELEMENT_SYMBOLS;
+            }
+            return KeyboardId.ELEMENT_ALPHABET;
+        }
+    }
+
+    private static KeyboardId getKeyboardId(int elementId, boolean isSymbols, Params params) {
+        final boolean hasShortcutKey = params.mVoiceKeyEnabled
+                && (isSymbols != params.mVoiceKeyOnMain);
+        return new KeyboardId(elementId, params.mLocale, params.mOrientation, params.mWidth,
+                params.mMode, params.mInputType, params.mImeOptions, params.mSettingsKeyEnabled,
+                params.mNoSettingsKey, params.mVoiceKeyEnabled, hasShortcutKey);
     }
 
     public static class Builder {
@@ -211,36 +250,13 @@ public class KeyboardSet {
             try {
                 parseKeyboardSet(mResources, R.xml.keyboard_set);
             } catch (Exception e) {
-                //
+                throw new RuntimeException(e.getMessage() + " in "
+                        + mResources.getResourceName(R.xml.keyboard_set)
+                        + " of locale " + mParams.mLocale);
             } finally {
                 LocaleUtils.setSystemLocale(mResources, savedLocale);
             }
             return new KeyboardSet(mContext, mParams);
-        }
-
-        // TODO: Move this method to KeyboardSet
-        static KeyboardId getKeyboardId(int elementState, boolean isSymbols, Params params) {
-            final boolean hasShortcutKey = params.mVoiceKeyEnabled
-                    && (isSymbols != params.mVoiceKeyOnMain);
-            return new KeyboardId(elementState, params.mLocale, params.mOrientation, params.mWidth,
-                    params.mMode, params.mInputType, params.mImeOptions, params.mSettingsKeyEnabled,
-                    params.mNoSettingsKey, params.mVoiceKeyEnabled, hasShortcutKey);
-        }
-
-        // TODO: Move this method to KeyboardSet
-        static int getElementState(int mode, boolean isSymbols, boolean isShift) {
-            switch (mode) {
-            case KeyboardId.MODE_PHONE:
-                return (isSymbols && isShift)
-                        ? KeyboardId.ELEMENT_PHONE_SHIFT : KeyboardId.ELEMENT_PHONE;
-            case KeyboardId.MODE_NUMBER:
-                return KeyboardId.ELEMENT_NUMBER;
-            default:
-                if (isSymbols) {
-                    return isShift ? KeyboardId.ELEMENT_SYMBOLS_SHIFT : KeyboardId.ELEMENT_SYMBOLS;
-                }
-                return KeyboardId.ELEMENT_ALPHABET;
-            }
         }
 
         private void parseKeyboardSet(Resources res, int resId) throws XmlPullParserException,
@@ -302,7 +318,10 @@ public class KeyboardSet {
                         R.styleable.KeyboardSet_Element_elementName, 0);
                 final int elementKeyboard = a.getResourceId(
                         R.styleable.KeyboardSet_Element_elementKeyboard, 0);
-                mParams.mElementKeyboards.put(elementName, elementKeyboard);
+                final boolean elementAutoGenerate = a.getBoolean(
+                        R.styleable.KeyboardSet_Element_elementAutoGenerate, false);
+                mParams.mElementKeyboards.put(elementName, new KeyboardElement(
+                        elementName, elementKeyboard, elementAutoGenerate));
             } finally {
                 a.recycle();
             }
