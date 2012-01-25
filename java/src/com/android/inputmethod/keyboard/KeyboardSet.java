@@ -244,9 +244,10 @@ public class KeyboardSet {
         // TODO: Use InputMethodSubtype object as argument.
         public Builder setSubtype(Locale inputLocale, boolean asciiCapable,
                 boolean touchPositionCorrectionEnabled) {
+            final boolean deprecatedForceAscii = Utils.inPrivateImeOptions(
+                    mPackageName, LatinIME.IME_OPTION_FORCE_ASCII, mEditorInfo);
             final boolean forceAscii = EditorInfoCompatUtils.hasFlagForceAscii(mParams.mImeOptions)
-                    || Utils.inPrivateImeOptions(
-                            mPackageName, LatinIME.IME_OPTION_FORCE_ASCII, mEditorInfo);
+                    || deprecatedForceAscii;
             mParams.mLocale = (forceAscii && !asciiCapable) ? Locale.US : inputLocale;
             mParams.mTouchPositionCorrectionEnabled = touchPositionCorrectionEnabled;
             return this;
@@ -256,10 +257,11 @@ public class KeyboardSet {
                 boolean voiceKeyOnMain) {
             mParams.mSettingsKeyEnabled = settingsKeyEnabled;
             @SuppressWarnings("deprecation")
+            final boolean deprecatedNoMicrophone = Utils.inPrivateImeOptions(
+                    null, LatinIME.IME_OPTION_NO_MICROPHONE_COMPAT, mEditorInfo);
             final boolean noMicrophone = Utils.inPrivateImeOptions(
                     mPackageName, LatinIME.IME_OPTION_NO_MICROPHONE, mEditorInfo)
-                    || Utils.inPrivateImeOptions(
-                            null, LatinIME.IME_OPTION_NO_MICROPHONE_COMPAT, mEditorInfo);
+                    || deprecatedNoMicrophone;
             mParams.mVoiceKeyEnabled = voiceKeyEnabled && !noMicrophone;
             mParams.mVoiceKeyOnMain = voiceKeyOnMain;
             return this;

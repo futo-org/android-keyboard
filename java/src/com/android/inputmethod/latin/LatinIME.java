@@ -104,7 +104,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
      */
     public static final String IME_OPTION_NO_SETTINGS_KEY = "noSettingsKey";
 
-    // TODO: Remove this private option.
     /**
      * The private IME option used to indicate that the given text field needs
      * ASCII code points input.
@@ -729,6 +728,17 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     : String.format("inputType=0x%08x imeOptions=0x%08x",
                             editorInfo.inputType, editorInfo.imeOptions)));
         }
+        if (Utils.inPrivateImeOptions(null, IME_OPTION_NO_MICROPHONE_COMPAT, editorInfo)) {
+            Log.w(TAG, "Deprecated private IME option specified: "
+                    + editorInfo.privateImeOptions);
+            Log.w(TAG, "Use " + getPackageName() + "." + IME_OPTION_NO_MICROPHONE + " instead");
+        }
+        if (Utils.inPrivateImeOptions(getPackageName(), IME_OPTION_FORCE_ASCII, editorInfo)) {
+            Log.w(TAG, "Deprecated private IME option specified: "
+                    + editorInfo.privateImeOptions);
+            Log.w(TAG, "Use EditorInfo.IME_FLAG_FORCE_ASCII flag instead");
+        }
+
         LatinImeLogger.onStartInputView(editorInfo);
         // In landscape mode, this method gets called without the input view being created.
         if (inputView == null) {
