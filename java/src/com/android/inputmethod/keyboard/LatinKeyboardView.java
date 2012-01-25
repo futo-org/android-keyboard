@@ -771,8 +771,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     }
 
     @Override
-    /* package */ void onDrawKeyTopVisuals(Key key, Canvas canvas, Paint paint,
-            KeyDrawParams params) {
+    protected void onDrawKeyTopVisuals(Key key, Canvas canvas, Paint paint, KeyDrawParams params) {
         super.onDrawKeyTopVisuals(key, canvas, paint, params);
 
         if (key.mCode == Keyboard.CODE_SPACE) {

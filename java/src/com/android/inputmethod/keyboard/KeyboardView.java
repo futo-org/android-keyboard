@@ -373,7 +373,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     // Read fraction value in TypedArray as float.
-    private static float getRatio(TypedArray a, int index) {
+    /* package */ static float getRatio(TypedArray a, int index) {
         return a.getFraction(index, 1000, 1000, 1) / 1000.0f;
     }
 
@@ -519,7 +519,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     // Draw key background.
-    /* package */ void onDrawKeyBackground(Key key, Canvas canvas, KeyDrawParams params) {
+    protected void onDrawKeyBackground(Key key, Canvas canvas, KeyDrawParams params) {
         final int bgWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight
                 + params.mPadding.left + params.mPadding.right;
         final int bgHeight = key.mHeight + params.mPadding.top + params.mPadding.bottom;
@@ -541,8 +541,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     // Draw key top visuals.
-    /* package */ void onDrawKeyTopVisuals(Key key, Canvas canvas, Paint paint,
-            KeyDrawParams params) {
+    protected void onDrawKeyTopVisuals(Key key, Canvas canvas, Paint paint, KeyDrawParams params) {
         final int keyWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight;
         final int keyHeight = key.mHeight;
         final float centerX = keyWidth * 0.5f;
@@ -718,7 +717,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     // Draw popup hint "..." at the bottom right corner of the key.
-    /* package */ void drawKeyPopupHint(Key key, Canvas canvas, Paint paint, KeyDrawParams params) {
+    protected void drawKeyPopupHint(Key key, Canvas canvas, Paint paint, KeyDrawParams params) {
         final int keyWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight;
         final int keyHeight = key.mHeight;
 
@@ -737,8 +736,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
     }
 
-    private static final Rect sTextBounds = new Rect();
-
     private static int getCharGeometryCacheKey(char reference, Paint paint) {
         final int labelSize = (int)paint.getTextSize();
         final Typeface face = paint.getTypeface();
@@ -754,33 +751,36 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
     }
 
-    private static float getCharHeight(char[] character, Paint paint) {
+    // Working variable for the following methods.
+    private final Rect mTextBounds = new Rect();
+
+    private float getCharHeight(char[] character, Paint paint) {
         final Integer key = getCharGeometryCacheKey(character[0], paint);
         final Float cachedValue = sTextHeightCache.get(key);
         if (cachedValue != null)
             return cachedValue;
 
-        paint.getTextBounds(character, 0, 1, sTextBounds);
-        final float height = sTextBounds.height();
+        paint.getTextBounds(character, 0, 1, mTextBounds);
+        final float height = mTextBounds.height();
         sTextHeightCache.put(key, height);
         return height;
     }
 
-    private static float getCharWidth(char[] character, Paint paint) {
+    private float getCharWidth(char[] character, Paint paint) {
         final Integer key = getCharGeometryCacheKey(character[0], paint);
         final Float cachedValue = sTextWidthCache.get(key);
         if (cachedValue != null)
             return cachedValue;
 
-        paint.getTextBounds(character, 0, 1, sTextBounds);
-        final float width = sTextBounds.width();
+        paint.getTextBounds(character, 0, 1, mTextBounds);
+        final float width = mTextBounds.width();
         sTextWidthCache.put(key, width);
         return width;
     }
 
-    private static float getLabelWidth(String label, Paint paint) {
-        paint.getTextBounds(label.toString(), 0, label.length(), sTextBounds);
-        return sTextBounds.width();
+    protected float getLabelWidth(CharSequence label, Paint paint) {
+        paint.getTextBounds(label.toString(), 0, label.length(), mTextBounds);
+        return mTextBounds.width();
     }
 
     public float getDefaultLabelWidth(String label, Paint paint) {
@@ -789,7 +789,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         return getLabelWidth(label, paint);
     }
 
-    private static void drawIcon(Canvas canvas, Drawable icon, int x, int y, int width,
+    protected static void drawIcon(Canvas canvas, Drawable icon, int x, int y, int width,
             int height) {
         canvas.translate(x, y);
         icon.setBounds(0, 0, width, height);
