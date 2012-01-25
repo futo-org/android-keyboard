@@ -557,7 +557,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         float positionX = centerX;
         if (key.mLabel != null) {
             // Switch the character to uppercase if shift is pressed
-            final CharSequence label = mKeyboard.adjustLabelCase(key.mLabel);
+            final String label = mKeyboard.adjustLabelCase(key.mLabel);
             // For characters, use large font. For labels like "Done", use smaller font.
             paint.setTypeface(key.selectTypeface(params.mKeyTextStyle));
             final int labelSize = key.selectTextSize(params.mKeyLetterSize,
@@ -639,7 +639,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         // Draw hint label.
         if (key.mHintLabel != null) {
-            final CharSequence hint = key.mHintLabel;
+            final String hint = key.mHintLabel;
             final int hintColor;
             final int hintSize;
             if (key.hasHintLabel()) {
@@ -778,12 +778,12 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         return width;
     }
 
-    private static float getLabelWidth(CharSequence label, Paint paint) {
+    private static float getLabelWidth(String label, Paint paint) {
         paint.getTextBounds(label.toString(), 0, label.length(), sTextBounds);
         return sTextBounds.width();
     }
 
-    public float getDefaultLabelWidth(CharSequence label, Paint paint) {
+    public float getDefaultLabelWidth(String label, Paint paint) {
         paint.setTextSize(mKeyDrawParams.mKeyLabelSize);
         paint.setTypeface(mKeyDrawParams.mKeyTextStyle);
         return getLabelWidth(label, paint);

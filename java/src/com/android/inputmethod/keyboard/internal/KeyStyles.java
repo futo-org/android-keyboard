@@ -40,8 +40,8 @@ public class KeyStyles {
     private static final KeyStyle EMPTY_KEY_STYLE = new EmptyKeyStyle();
 
     public interface KeyStyle {
-        public String[] getTextArray(TypedArray a, int index);
-        public CharSequence getText(TypedArray a, int index);
+        public String[] getStringArray(TypedArray a, int index);
+        public String getString(TypedArray a, int index);
         public int getInt(TypedArray a, int index, int defaultValue);
         public int getFlag(TypedArray a, int index, int defaultValue);
     }
@@ -52,13 +52,13 @@ public class KeyStyles {
         }
 
         @Override
-        public String[] getTextArray(TypedArray a, int index) {
-            return parseTextArray(a, index);
+        public String[] getStringArray(TypedArray a, int index) {
+            return parseStringArray(a, index);
         }
 
         @Override
-        public CharSequence getText(TypedArray a, int index) {
-            return a.getText(index);
+        public String getString(TypedArray a, int index) {
+            return a.getString(index);
         }
 
         @Override
@@ -71,16 +71,15 @@ public class KeyStyles {
             return a.getInt(index, defaultValue);
         }
 
-        protected static String[] parseTextArray(TypedArray a, int index) {
+        protected static String[] parseStringArray(TypedArray a, int index) {
             if (!a.hasValue(index))
                 return null;
-            final CharSequence text = a.getText(index);
-            return parseCsvText(text.toString(), a.getResources(), R.string.english_ime_name);
+            return parseCsvString(a.getString(index), a.getResources(), R.string.english_ime_name);
         }
     }
 
     /* package for test */
-    static String[] parseCsvText(String rawText, Resources res, int packageNameResId) {
+    static String[] parseCsvString(String rawText, Resources res, int packageNameResId) {
         final String text = Utils.resolveStringResource(rawText, res, packageNameResId);
         final int size = text.length();
         if (size == 0) {
@@ -139,15 +138,15 @@ public class KeyStyles {
         private final HashMap<Integer, Object> mAttributes = new HashMap<Integer, Object>();
 
         @Override
-        public String[] getTextArray(TypedArray a, int index) {
+        public String[] getStringArray(TypedArray a, int index) {
             return a.hasValue(index)
-                    ? super.getTextArray(a, index) : (String[])mAttributes.get(index);
+                    ? super.getStringArray(a, index) : (String[])mAttributes.get(index);
         }
 
         @Override
-        public CharSequence getText(TypedArray a, int index) {
+        public String getString(TypedArray a, int index) {
             return a.hasValue(index)
-                    ? super.getText(a, index) : (CharSequence)mAttributes.get(index);
+                    ? super.getString(a, index) : (String)mAttributes.get(index);
         }
 
         @Override
@@ -170,10 +169,10 @@ public class KeyStyles {
             // TODO: Currently not all Key attributes can be declared as style.
             readInt(keyAttr, R.styleable.Keyboard_Key_code);
             readInt(keyAttr, R.styleable.Keyboard_Key_altCode);
-            readText(keyAttr, R.styleable.Keyboard_Key_keyLabel);
-            readText(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
-            readText(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
-            readTextArray(keyAttr, R.styleable.Keyboard_Key_moreKeys);
+            readString(keyAttr, R.styleable.Keyboard_Key_keyLabel);
+            readString(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
+            readString(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
+            readStringArray(keyAttr, R.styleable.Keyboard_Key_moreKeys);
             readFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags);
             readInt(keyAttr, R.styleable.Keyboard_Key_keyIcon);
             readInt(keyAttr, R.styleable.Keyboard_Key_keyIconDisabled);
@@ -183,9 +182,9 @@ public class KeyStyles {
             readFlag(keyAttr, R.styleable.Keyboard_Key_keyActionFlags);
         }
 
-        private void readText(TypedArray a, int index) {
+        private void readString(TypedArray a, int index) {
             if (a.hasValue(index))
-                mAttributes.put(index, a.getText(index));
+                mAttributes.put(index, a.getString(index));
         }
 
         private void readInt(TypedArray a, int index) {
@@ -199,8 +198,8 @@ public class KeyStyles {
                 mAttributes.put(index, a.getInt(index, 0) | (value != null ? value : 0));
         }
 
-        private void readTextArray(TypedArray a, int index) {
-            final CharSequence[] value = parseTextArray(a, index);
+        private void readStringArray(TypedArray a, int index) {
+            final String[] value = parseStringArray(a, index);
             if (value != null)
                 mAttributes.put(index, value);
         }

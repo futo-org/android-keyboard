@@ -72,7 +72,7 @@ public class MoreSuggestions extends Keyboard {
                 int pos = fromPos, rowStartPos = fromPos;
                 final int size = Math.min(suggestions.size(), SuggestionsView.MAX_SUGGESTIONS);
                 while (pos < size) {
-                    final CharSequence word = suggestions.getWord(pos);
+                    final String word = suggestions.getWord(pos).toString();
                     // TODO: Should take care of text x-scaling.
                     mWidths[pos] = (int)view.getDefaultLabelWidth(word, paint) + padding;
                     final int numColumn = pos - rowStartPos + 1;
