@@ -294,6 +294,19 @@
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Case">
+        <!-- This should be aligned with KeyboardSet_Element's elementName. -->
+        <attr name="keyboardSetElement" format="enum|string">
+            <enum name="alphabet" value="0" />
+            <enum name="alphabetManualShifted" value="1" />
+            <enum name="alphabetAutomaticShifted" value="2" />
+            <enum name="alphabetShiftLocked" value="3" />
+            <enum name="alphabetShiftLockShifted" value="4" />
+            <enum name="symbols" value="5" />
+            <enum name="symbolsShifted" value="6"  />
+            <enum name="phone" value="7"  />
+            <enum name="phoneShifted" value="8"  />
+            <enum name="number" value="9"  />
+        </attr>
         <!-- This should be aligned with KeyboardId.MODE_* -->
         <attr name="mode" format="enum|string">
             <enum name="text" value="0" />

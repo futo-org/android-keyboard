@@ -1034,6 +1034,9 @@ public class Keyboard {
             final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.Keyboard_Case);
             try {
+                final boolean keyboardSetElementMatched = matchTypedValue(a,
+                        R.styleable.Keyboard_Case_keyboardSetElement, id.mElementId,
+                        KeyboardId.elementIdToName(id.mElementId));
                 final boolean modeMatched = matchTypedValue(a,
                         R.styleable.Keyboard_Case_mode, id.mMode, KeyboardId.modeName(id.mMode));
                 final boolean navigateActionMatched = matchBoolean(a,
@@ -1062,13 +1065,15 @@ public class Keyboard {
                         R.styleable.Keyboard_Case_languageCode, id.mLocale.getLanguage());
                 final boolean countryCodeMatched = matchString(a,
                         R.styleable.Keyboard_Case_countryCode, id.mLocale.getCountry());
-                final boolean selected = modeMatched && navigateActionMatched
-                        && passwordInputMatched && hasSettingsKeyMatched && f2KeyModeMatched
-                        && clobberSettingsKeyMatched && shortcutKeyEnabledMatched
-                        && hasShortcutKeyMatched && imeActionMatched && localeCodeMatched
-                        && languageCodeMatched && countryCodeMatched;
+                final boolean selected = keyboardSetElementMatched && modeMatched
+                        && navigateActionMatched && passwordInputMatched && hasSettingsKeyMatched
+                        && f2KeyModeMatched && clobberSettingsKeyMatched
+                        && shortcutKeyEnabledMatched && hasShortcutKeyMatched && imeActionMatched
+                        && localeCodeMatched && languageCodeMatched && countryCodeMatched;
 
-                if (DEBUG) Log.d(TAG, String.format("<%s%s%s%s%s%s%s%s%s%s%s%s%s> %s", TAG_CASE,
+                if (DEBUG) Log.d(TAG, String.format("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s> %s", TAG_CASE,
+                        textAttr(a.getString(R.styleable.Keyboard_Case_keyboardSetElement),
+                                "keyboardSetElement"),
                         textAttr(a.getString(R.styleable.Keyboard_Case_mode), "mode"),
                         booleanAttr(a, R.styleable.Keyboard_Case_navigateAction, "navigateAction"),
                         booleanAttr(a, R.styleable.Keyboard_Case_passwordInput, "passwordInput"),
