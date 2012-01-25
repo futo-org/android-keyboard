@@ -18,7 +18,6 @@ package com.android.inputmethod.keyboard;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -103,6 +102,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             new WeakHashMap<Key, MoreKeysPanel>();
     private final boolean mConfigShowMiniKeyboardAtTouchedPoint;
 
+    private final PointerTrackerParams mPointerTrackerParams;
     private final boolean mIsSpacebarTriggeringPopupByLongPress;
     private final SuddenJumpingTouchEventHandler mTouchScreenRegulator;
 
@@ -114,7 +114,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     // To detect double tap.
     protected GestureDetector mGestureDetector;
 
-    private final KeyTimerHandler mKeyTimerHandler = new KeyTimerHandler(this);
+    private final KeyTimerHandler mKeyTimerHandler;
 
     private static class KeyTimerHandler extends StaticInnerHandlerWrapper<LatinKeyboardView>
             implements TimerProxy {
@@ -126,11 +126,9 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         private final int mKeyRepeatInterval;
         private boolean mInKeyRepeat;
 
-        public KeyTimerHandler(LatinKeyboardView outerInstance) {
+        public KeyTimerHandler(LatinKeyboardView outerInstance, int keyRepeatInterval) {
             super(outerInstance);
-            // TODO: This should be the attribute of LatinKeyboardView.
-            final Resources res = outerInstance.getContext().getResources();
-            mKeyRepeatInterval = res.getInteger(R.integer.config_key_repeat_interval);
+            mKeyRepeatInterval = keyRepeatInterval;
         }
 
         @Override
@@ -253,6 +251,49 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
     }
 
+    public static class PointerTrackerParams {
+        public final boolean mSlidingKeyInputEnabled;
+        public final int mKeyRepeatStartTimeout;
+        public final int mLongPressKeyTimeout;
+        public final int mLongPressShiftKeyTimeout;
+        public final int mLongPressSpaceKeyTimeout;
+        public final int mIgnoreSpecialKeyTimeout;
+        public final int mTouchNoiseThresholdTime;
+        public final float mTouchNoiseThresholdDistance;
+
+        public static final PointerTrackerParams DEFAULT = new PointerTrackerParams();
+
+        private PointerTrackerParams() {
+            mSlidingKeyInputEnabled = false;
+            mKeyRepeatStartTimeout = 0;
+            mLongPressKeyTimeout = 0;
+            mLongPressShiftKeyTimeout = 0;
+            mLongPressSpaceKeyTimeout = 0;
+            mIgnoreSpecialKeyTimeout = 0;
+            mTouchNoiseThresholdTime =0;
+            mTouchNoiseThresholdDistance = 0;
+        }
+
+        public PointerTrackerParams(TypedArray latinKeyboardViewAttr) {
+            mSlidingKeyInputEnabled = latinKeyboardViewAttr.getBoolean(
+                    R.styleable.LatinKeyboardView_slidingKeyInputEnable, false);
+            mKeyRepeatStartTimeout = latinKeyboardViewAttr.getInt(
+                    R.styleable.LatinKeyboardView_keyRepeatStartTimeout, 0);
+            mLongPressKeyTimeout = latinKeyboardViewAttr.getInt(
+                    R.styleable.LatinKeyboardView_longPressKeyTimeout, 0);
+            mLongPressShiftKeyTimeout = latinKeyboardViewAttr.getInt(
+                    R.styleable.LatinKeyboardView_longPressShiftKeyTimeout, 0);
+            mLongPressSpaceKeyTimeout = latinKeyboardViewAttr.getInt(
+                    R.styleable.LatinKeyboardView_longPressSpaceKeyTimeout, 0);
+            mIgnoreSpecialKeyTimeout = latinKeyboardViewAttr.getInt(
+                    R.styleable.LatinKeyboardView_ignoreSpecialKeyTimeout, 0);
+            mTouchNoiseThresholdTime = latinKeyboardViewAttr.getInt(
+                    R.styleable.LatinKeyboardView_touchNoiseThresholdTime, 0);
+            mTouchNoiseThresholdDistance = latinKeyboardViewAttr.getDimension(
+                    R.styleable.LatinKeyboardView_touchNoiseThresholdDistance, 0);
+        }
+    }
+
     public LatinKeyboardView(Context context, AttributeSet attrs) {
         this(context, attrs, R.attr.latinKeyboardViewStyle);
     }
@@ -261,14 +302,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         super(context, attrs, defStyle);
 
         mTouchScreenRegulator = new SuddenJumpingTouchEventHandler(getContext(), this);
-
-        final Resources res = getResources();
-        // TODO: This should be the attribute of LatinKeyboardView.
-        mConfigShowMiniKeyboardAtTouchedPoint = res.getBoolean(
-                R.bool.config_show_mini_keyboard_at_touched_point);
-        // TODO: This should be the attribute of LatinKeyboardView.
-        final float keyHysteresisDistance = res.getDimension(R.dimen.key_hysteresis_distance);
-        mKeyDetector = new KeyDetector(keyHysteresisDistance);
 
         final boolean ignoreMultitouch = true;
         mGestureDetector = new GestureDetector(
@@ -279,11 +312,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT);
 
         PointerTracker.init(mHasDistinctMultitouch, getContext());
-
-        // TODO: This should be the attribute of LatinKeyboardView.
-        final int longPressSpaceKeyTimeout =
-                res.getInteger(R.integer.config_long_press_space_key_timeout);
-        mIsSpacebarTriggeringPopupByLongPress = (longPressSpaceKeyTimeout > 0);
 
         final TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.LatinKeyboardView, defStyle, R.style.LatinKeyboardView);
@@ -296,7 +324,22 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         mSpacebarTextColor = a.getColor(R.styleable.LatinKeyboardView_spacebarTextColor, 0);
         mSpacebarTextShadowColor = a.getColor(
                 R.styleable.LatinKeyboardView_spacebarTextShadowColor, 0);
+
+        mPointerTrackerParams = new PointerTrackerParams(a);
+        mIsSpacebarTriggeringPopupByLongPress = (
+                mPointerTrackerParams.mLongPressSpaceKeyTimeout > 0);
+
+        final float keyHysteresisDistance = a.getDimension(
+                R.styleable.LatinKeyboardView_keyHysteresisDistance, 0);
+        mKeyDetector = new KeyDetector(keyHysteresisDistance);
+        final int keyRepeatInterval = a.getInt(
+                R.styleable.LatinKeyboardView_keyRepeatInterval, 0);
+        mKeyTimerHandler = new KeyTimerHandler(this, keyRepeatInterval);
+        mConfigShowMiniKeyboardAtTouchedPoint = a.getBoolean(
+                R.styleable.LatinKeyboardView_showMiniKeyboardAtTouchedPoint, false);
         a.recycle();
+
+        PointerTracker.setParameters(mPointerTrackerParams);
     }
 
     public void startIgnoringDoubleTap() {

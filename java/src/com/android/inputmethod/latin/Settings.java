@@ -218,7 +218,7 @@ public class Settings extends InputMethodSettingsActivity
                 res.getString(R.string.key_preview_popup_dismiss_default_delay),
         };
         final String popupDismissDelayDefaultValue = Integer.toString(res.getInteger(
-                R.integer.config_delay_after_preview));
+                R.integer.config_key_preview_linger_timeout));
         mKeyPreviewPopupDismissDelay.setEntries(entries);
         mKeyPreviewPopupDismissDelay.setEntryValues(
                 new String[] { "0", popupDismissDelayDefaultValue });

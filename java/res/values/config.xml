@@ -27,7 +27,6 @@
     <bool name="config_enable_bigram_suggestions_option">true</bool>
     <!-- TODO: Disable the following configuration for production. -->
     <bool name="config_enable_usability_study_mode_option">true</bool>
-    <bool name="config_sliding_key_input_enabled">true</bool>
     <bool name="config_digit_more_keys_enabled">true</bool>
     <!-- Whether or not Popup on key press is enabled by default -->
     <bool name="config_default_popup_preview">true</bool>
@@ -39,8 +38,6 @@
     <bool name="config_default_bigram_prediction">false</bool>
     <bool name="config_default_sound_enabled">false</bool>
     <bool name="config_default_vibration_enabled">true</bool>
-    <!-- Showing mini keyboard, just above the touched point if true, aligned to the key if false -->
-    <bool name="config_show_mini_keyboard_at_touched_point">false</bool>
     <!-- The language is never displayed if == 0, always displayed if < 0 -->
     <integer name="config_delay_before_fadeout_language_on_spacebar">1200</integer>
     <integer name="config_delay_update_suggestions">100</integer>
@@ -48,26 +45,38 @@
     <integer name="config_delay_update_shift_state">100</integer>
     <integer name="config_duration_of_fadeout_language_on_spacebar">50</integer>
     <integer name="config_final_fadeout_percentage_of_language_on_spacebar">50</integer>
-    <integer name="config_delay_before_preview">0</integer>
-    <integer name="config_delay_after_preview">70</integer>
     <integer name="config_mini_keyboard_fadein_anim_time">0</integer>
     <integer name="config_mini_keyboard_fadeout_anim_time">100</integer>
-    <integer name="config_delay_before_key_repeat_start">400</integer>
-    <integer name="config_key_repeat_interval">50</integer>
     <integer name="config_keyboard_grid_width">32</integer>
     <integer name="config_keyboard_grid_height">16</integer>
+    <integer name="config_double_spaces_turn_into_period_timeout">1100</integer>
+    <!-- This configuration is the index of the array {@link KeyboardSwitcher.KEYBOARD_THEMES}. -->
+    <string name="config_default_keyboard_theme_id" translatable="false">5</string>
+    <integer name="config_max_more_keys_column">5</integer>
+    <!--
+         Configuration for KeyboardView
+    -->
+    <integer name="config_key_preview_linger_timeout">70</integer>
+    <!--
+         Configuration for LatinKeyboardView
+    -->
+    <dimen name="config_key_hysteresis_distance">0.05in</dimen>
+    <integer name="config_touch_noise_threshold_time">40</integer>
+    <dimen name="config_touch_noise_threshold_distance">2.0mm</dimen>
+    <bool name="config_sliding_key_input_enabled">true</bool>
+    <integer name="config_key_repeat_start_timeout">400</integer>
+    <integer name="config_key_repeat_interval">50</integer>
     <integer name="config_long_press_key_timeout">400</integer>
     <!-- Long pressing shift will invoke caps-lock if > 0, never invoke caps-lock if == 0 -->
     <integer name="config_long_press_shift_key_timeout">1200</integer>
     <!-- Long pressing space will invoke IME switcher if > 0, never invoke IME switcher if == 0 -->
     <integer name="config_long_press_space_key_timeout">@integer/config_long_press_key_timeout</integer>
-    <integer name="config_touch_noise_threshold_millis">40</integer>
-    <integer name="config_double_spaces_turn_into_period_timeout">1100</integer>
     <integer name="config_ignore_special_key_timeout">700</integer>
-    <dimen name="config_touch_noise_threshold_distance">2.0mm</dimen>
-    <!-- This configuration is the index of the array {@link KeyboardSwitcher.KEYBOARD_THEMES}. -->
-    <string name="config_default_keyboard_theme_id" translatable="false">5</string>
-    <integer name="config_max_more_keys_column">5</integer>
+    <!-- Showing mini keyboard, just above the touched point if true, aligned to the key if false -->
+    <bool name="config_show_mini_keyboard_at_touched_point">false</bool>
+    <!--
+        Configuration for auto correction
+     -->
     <string-array name="auto_correction_threshold_values" translatable="false">
         <!-- Off, When auto correction setting is Off, this value is not used. -->
         <item></item>
