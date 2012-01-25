@@ -293,6 +293,8 @@ public class Keyboard {
         public final Set<Key> mShiftLockKeys = new HashSet<Key>();
         public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
 
+        public KeyboardSet.KeysCache mKeysCache;
+
         public int mMostCommonKeyHeight = 0;
         public int mMostCommonKeyWidth = 0;
 
@@ -361,7 +363,8 @@ public class Keyboard {
             clearHistogram();
         }
 
-        public void onAddKey(Key key) {
+        public void onAddKey(Key newKey) {
+            final Key key = (mKeysCache != null) ? mKeysCache.get(newKey) : newKey;
             mKeys.add(key);
             updateHistogram(key);
             if (key.mCode == Keyboard.CODE_SHIFT) {
@@ -686,6 +689,10 @@ public class Keyboard {
 
             final String[] data = context.getResources().getStringArray(resourceId);
             params.mTouchPositionCorrection.load(data);
+        }
+
+        public void setAutoGenerate(KeyboardSet.KeysCache keysCache) {
+            mParams.mKeysCache = keysCache;
         }
 
         public Builder<KP> load(int xmlId, KeyboardId id) {

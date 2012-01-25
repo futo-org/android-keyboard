@@ -71,6 +71,7 @@ public class Key {
     private static final int LABEL_FLAGS_WITH_ICON_LEFT = 0x1000;
     private static final int LABEL_FLAGS_WITH_ICON_RIGHT = 0x2000;
     private static final int LABEL_FLAGS_AUTO_X_SCALE = 0x4000;
+    private static final int LABEL_FLAGS_PRESERVE_CASE = 0x8000;
 
     /** Icon to display instead of a label. Icon takes precedence over a label */
     private final int mIconAttrId;
@@ -262,19 +263,6 @@ public class Key {
         // Update row to have current x coordinate.
         row.setXPos(keyXPos + keyWidth);
 
-        final String[] moreKeys = style.getStringArray(keyAttr,
-                R.styleable.Keyboard_Key_moreKeys);
-        // In Arabic symbol layouts, we'd like to keep digits in more keys regardless of
-        // config_digit_more_keys_enabled.
-        if (params.mId.isAlphabetKeyboard()
-                && !res.getBoolean(R.bool.config_digit_more_keys_enabled)) {
-            mMoreKeys = MoreKeySpecParser.filterOut(res, moreKeys, MoreKeySpecParser.DIGIT_FILTER);
-        } else {
-            mMoreKeys = moreKeys;
-        }
-        mMaxMoreKeysColumn = style.getInt(keyAttr,
-                R.styleable.Keyboard_Key_maxMoreKeysColumn, params.mMaxMiniKeyboardColumn);
-
         mBackgroundType = style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_backgroundType, BACKGROUND_TYPE_NORMAL);
         mActionFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyActionFlags, 0);
@@ -292,14 +280,39 @@ public class Key {
         mDisabledIconAttrId = KeyboardIconsSet.getIconAttrId(style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_keyIconDisabled, KeyboardIconsSet.ICON_UNDEFINED));
 
-        mLabel = style.getString(keyAttr, R.styleable.Keyboard_Key_keyLabel);
-        mHintLabel = style.getString(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
         mLabelFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags, 0);
-        mOutputText = style.getString(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
+        final boolean preserveCase = (mLabelFlags & LABEL_FLAGS_PRESERVE_CASE) != 0;
+
+        final String[] moreKeys = style.getStringArray(keyAttr, R.styleable.Keyboard_Key_moreKeys);
+        if (moreKeys != null) {
+            for (int i = 0; i < moreKeys.length; i++) {
+                moreKeys[i] = adjustCaseOfStringForKeyboardId(
+                        moreKeys[i], preserveCase, params.mId);
+            }
+        }
+        // TODO: Add new key label flag to control this.
+        // In Arabic symbol layouts, we'd like to keep digits in more keys regardless of
+        // config_digit_more_keys_enabled.
+        if (params.mId.isAlphabetKeyboard()
+                && !res.getBoolean(R.bool.config_digit_more_keys_enabled)) {
+            mMoreKeys = MoreKeySpecParser.filterOut(res, moreKeys, MoreKeySpecParser.DIGIT_FILTER);
+        } else {
+            mMoreKeys = moreKeys;
+        }
+        mMaxMoreKeysColumn = style.getInt(keyAttr,
+                R.styleable.Keyboard_Key_maxMoreKeysColumn, params.mMaxMiniKeyboardColumn);
+
+        mLabel = adjustCaseOfStringForKeyboardId(style.getString(
+                keyAttr, R.styleable.Keyboard_Key_keyLabel), preserveCase, params.mId);
+        mHintLabel = adjustCaseOfStringForKeyboardId(style.getString(
+                keyAttr, R.styleable.Keyboard_Key_keyHintLabel), preserveCase, params.mId);
+        mOutputText = adjustCaseOfStringForKeyboardId(style.getString(
+                keyAttr, R.styleable.Keyboard_Key_keyOutputText), preserveCase, params.mId);
         // Choose the first letter of the label as primary code if not
         // specified.
-        final int code = style.getInt(keyAttr, R.styleable.Keyboard_Key_code,
-                Keyboard.CODE_UNSPECIFIED);
+        final int code = adjustCaseOfCodeForKeyboardId(style.getInt(
+                keyAttr, R.styleable.Keyboard_Key_code, Keyboard.CODE_UNSPECIFIED), preserveCase,
+                params.mId);
         if (code == Keyboard.CODE_UNSPECIFIED && mOutputText == null
                 && !TextUtils.isEmpty(mLabel)) {
             if (mLabel.length() != 1) {
@@ -312,11 +325,34 @@ public class Key {
         } else {
             mCode = code;
         }
-        mAltCode = style.getInt(keyAttr,
-                R.styleable.Keyboard_Key_altCode, Keyboard.CODE_UNSPECIFIED);
+        mAltCode = adjustCaseOfCodeForKeyboardId(style.getInt(keyAttr,
+                R.styleable.Keyboard_Key_altCode, Keyboard.CODE_UNSPECIFIED), preserveCase,
+                params.mId);
         mHashCode = hashCode(this);
 
         keyAttr.recycle();
+    }
+
+    private static int adjustCaseOfCodeForKeyboardId(int code, boolean preserveCase,
+            KeyboardId id) {
+        if (!Keyboard.isLetterCode(code) || preserveCase) return code;
+        final String text = new String(new int[] { code } , 0, 1);
+        final String casedText = adjustCaseOfStringForKeyboardId(text, preserveCase, id);
+        return casedText.codePointAt(0);
+    }
+
+    private static String adjustCaseOfStringForKeyboardId(String text, boolean preserveCase,
+            KeyboardId id) {
+        if (text == null || preserveCase) return text;
+        switch (id.mElementId) {
+        case KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:
+        case KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED:
+        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED:
+        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED:
+            return text.toUpperCase(id.mLocale);
+        default:
+            return text;
+        }
     }
 
     private static int hashCode(Key key) {

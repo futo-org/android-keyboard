@@ -23,7 +23,8 @@
     latin:keyboardLocale="en_GB,en_US">
     <Element
         latin:elementName="alphabet"
-        latin:elementKeyboard="@xml/kbd_qwerty" />
+        latin:elementKeyboard="@xml/kbd_qwerty"
+        latin:elementAutoGenerate="true" />
     <Element
         latin:elementName="alphabetManualShifted"
         latin:elementKeyboard="@xml/kbd_qwerty"
