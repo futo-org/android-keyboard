@@ -20,14 +20,11 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
-import android.graphics.PorterDuff;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.text.TextUtils;
@@ -54,8 +51,6 @@ import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.Utils.UsabilityStudyLogUtils;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.WeakHashMap;
 
@@ -72,38 +67,33 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
     private static final boolean ENABLE_CAPSLOCK_BY_DOUBLETAP = true;
 
-    /* Space key and its icons, drawables and colors. */
+    // TODO: Kill process when the usability study mode was changed.
+    private static final boolean ENABLE_USABILITY_STUDY_LOG = LatinImeLogger.sUsabilityStudy;
+
+    /** Listener for {@link KeyboardActionListener}. */
+    private KeyboardActionListener mKeyboardActionListener;
+
+    /* Space key and its icons */
     private Key mSpaceKey;
     private Drawable mSpaceIcon;
-    private final boolean mIsSpacebarTriggeringPopupByLongPress;
-    private static final int SPACE_LED_LENGTH_PERCENT = 80;
-    private final boolean mAutoCorrectionSpacebarLedEnabled;
-    private final Drawable mAutoCorrectionSpacebarLedIcon;
+    // Stuff to draw language name on spacebar.
+    private boolean mNeedsToDisplayLanguage;
+    private Locale mSpacebarLocale;
+    private float mSpacebarTextFadeFactor = 0.0f;
     private final float mSpacebarTextRatio;
     private float mSpacebarTextSize;
     private final int mSpacebarTextColor;
     private final int mSpacebarTextShadowColor;
-    private final HashMap<Integer, BitmapDrawable> mSpacebarDrawableCache =
-            new HashMap<Integer, BitmapDrawable>();
-
-    private boolean mAutoCorrectionSpacebarLedOn;
-    private boolean mNeedsToDisplayLanguage;
-    private Locale mSpacebarLocale;
-    private float mSpacebarTextFadeFactor = 0.0f;
-
     // Height in space key the language name will be drawn. (proportional to space key height)
-    public static final float SPACEBAR_LANGUAGE_BASELINE = 0.6f;
+    private static final float SPACEBAR_LANGUAGE_BASELINE = 0.6f;
     // If the full language name needs to be smaller than this value to be drawn on space key,
     // its short language name will be used instead.
     private static final float MINIMUM_SCALE_OF_LANGUAGE_NAME = 0.8f;
-
-    private final SuddenJumpingTouchEventHandler mTouchScreenRegulator;
-
-    // Timing constants
-    private final int mKeyRepeatInterval;
-
-    // TODO: Kill process when the usability study mode was changed.
-    private static final boolean ENABLE_USABILITY_STUDY_LOG = LatinImeLogger.sUsabilityStudy;
+    // Stuff to draw auto correction LED on spacebar.
+    private boolean mAutoCorrectionSpacebarLedOn;
+    private final boolean mAutoCorrectionSpacebarLedEnabled;
+    private final Drawable mAutoCorrectionSpacebarLedIcon;
+    private static final int SPACE_LED_LENGTH_PERCENT = 80;
 
     // Mini keyboard
     private PopupWindow mMoreKeysWindow;
@@ -111,16 +101,15 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     private int mMoreKeysPanelPointerTrackerId;
     private final WeakHashMap<Key, MoreKeysPanel> mMoreKeysPanelCache =
             new WeakHashMap<Key, MoreKeysPanel>();
+    private final boolean mConfigShowMiniKeyboardAtTouchedPoint;
 
-    /** Listener for {@link KeyboardActionListener}. */
-    private KeyboardActionListener mKeyboardActionListener;
+    private final boolean mIsSpacebarTriggeringPopupByLongPress;
+    private final SuddenJumpingTouchEventHandler mTouchScreenRegulator;
 
+    protected KeyDetector mKeyDetector;
     private boolean mHasDistinctMultitouch;
     private int mOldPointerCount = 1;
     private Key mOldKey;
-
-    private final boolean mConfigShowMiniKeyboardAtTouchedPoint;
-    protected KeyDetector mKeyDetector;
 
     // To detect double tap.
     protected GestureDetector mGestureDetector;
@@ -134,10 +123,14 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         private static final int MSG_IGNORE_DOUBLE_TAP = 3;
         private static final int MSG_KEY_TYPED = 4;
 
+        private final int mKeyRepeatInterval;
         private boolean mInKeyRepeat;
 
         public KeyTimerHandler(LatinKeyboardView outerInstance) {
             super(outerInstance);
+            // TODO: This should be the attribute of LatinKeyboardView.
+            final Resources res = outerInstance.getContext().getResources();
+            mKeyRepeatInterval = res.getInteger(R.integer.config_key_repeat_interval);
         }
 
         @Override
@@ -147,7 +140,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             switch (msg.what) {
             case MSG_REPEAT_KEY:
                 tracker.onRepeatKey(tracker.getKey());
-                startKeyRepeatTimer(keyboardView.mKeyRepeatInterval, tracker);
+                startKeyRepeatTimer(mKeyRepeatInterval, tracker);
                 break;
             case MSG_LONGPRESS_KEY:
                 keyboardView.openMiniKeyboardIfRequired(tracker.getKey(), tracker);
@@ -213,7 +206,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
     }
 
-    private class DoubleTapListener extends GestureDetector.SimpleOnGestureListener {
+    class DoubleTapListener extends GestureDetector.SimpleOnGestureListener {
         private boolean mProcessingShiftDoubleTapEvent = false;
 
         @Override
@@ -270,8 +263,10 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         mTouchScreenRegulator = new SuddenJumpingTouchEventHandler(getContext(), this);
 
         final Resources res = getResources();
+        // TODO: This should be the attribute of LatinKeyboardView.
         mConfigShowMiniKeyboardAtTouchedPoint = res.getBoolean(
                 R.bool.config_show_mini_keyboard_at_touched_point);
+        // TODO: This should be the attribute of LatinKeyboardView.
         final float keyHysteresisDistance = res.getDimension(R.dimen.key_hysteresis_distance);
         mKeyDetector = new KeyDetector(keyHysteresisDistance);
 
@@ -282,10 +277,10 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         mHasDistinctMultitouch = context.getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT);
-        mKeyRepeatInterval = res.getInteger(R.integer.config_key_repeat_interval);
 
         PointerTracker.init(mHasDistinctMultitouch, getContext());
 
+        // TODO: This should be the attribute of LatinKeyboardView.
         final int longPressSpaceKeyTimeout =
                 res.getInteger(R.integer.config_long_press_space_key_timeout);
         mIsSpacebarTriggeringPopupByLongPress = (longPressSpaceKeyTimeout > 0);
@@ -362,7 +357,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mSpacebarTextSize = keyHeight * mSpacebarTextRatio;
         mSpacebarLocale = keyboard.mId.mLocale;
-        clearSpacebarDrawableCache();
     }
 
     /**
@@ -759,14 +753,12 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     public void updateSpacebar(float fadeFactor, boolean needsToDisplayLanguage) {
         mSpacebarTextFadeFactor = fadeFactor;
         mNeedsToDisplayLanguage = needsToDisplayLanguage;
-        updateSpacebarIcon();
         invalidateKey(mSpaceKey);
     }
 
     public void updateAutoCorrectionState(boolean isAutoCorrection) {
         if (!mAutoCorrectionSpacebarLedEnabled) return;
         mAutoCorrectionSpacebarLedOn = isAutoCorrection;
-        updateSpacebarIcon();
         invalidateKey(mSpaceKey);
     }
 
@@ -775,24 +767,13 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         super.onDrawKeyTopVisuals(key, canvas, paint, params);
 
         if (key.mCode == Keyboard.CODE_SPACE) {
+            drawSpacebar(key, canvas, paint);
+
             // Whether space key needs to show the "..." popup hint for special purposes
             if (mIsSpacebarTriggeringPopupByLongPress
                     && Utils.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */)) {
-                super.drawKeyPopupHint(key, canvas, paint, params);
+                drawKeyPopupHint(key, canvas, paint, params);
             }
-        }
-    }
-
-    // TODO: Get rid of this method and draw spacebar locale and auto correction spacebar LED
-    // in onDrawKeyTopVisuals.
-    private void updateSpacebarIcon() {
-        if (mSpaceKey == null) return;
-        if (mNeedsToDisplayLanguage) {
-            mSpaceKey.setIcon(getSpaceDrawable(mSpacebarLocale));
-        } else if (mAutoCorrectionSpacebarLedOn) {
-            mSpaceKey.setIcon(getSpaceDrawable(null));
-        } else {
-            mSpaceKey.setIcon(mSpaceIcon);
         }
     }
 
@@ -803,24 +784,23 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     }
 
     // Compute width of text with specified text size using paint.
-    private static int getTextWidth(Paint paint, String text, float textSize, Rect bounds) {
+    private int getTextWidth(Paint paint, String text, float textSize) {
         paint.setTextSize(textSize);
-        paint.getTextBounds(text, 0, text.length(), bounds);
-        return bounds.width();
+        return (int)getLabelWidth(text, paint);
     }
 
     // Layout locale language name on spacebar.
-    private static String layoutSpacebar(Paint paint, Locale locale, int width,
+    private String layoutLanguageOnSpacebar(Paint paint, Locale locale, int width,
             float origTextSize) {
-        final Rect bounds = new Rect();
-
+        paint.setTextAlign(Align.CENTER);
+        paint.setTypeface(Typeface.DEFAULT);
         // Estimate appropriate language name text size to fit in maxTextWidth.
         String language = Utils.getFullDisplayName(locale, true);
-        int textWidth = getTextWidth(paint, language, origTextSize, bounds);
+        int textWidth = getTextWidth(paint, language, origTextSize);
         // Assuming text width and text size are proportional to each other.
         float textSize = origTextSize * Math.min(width / textWidth, 1.0f);
         // allow variable text size
-        textWidth = getTextWidth(paint, language, textSize, bounds);
+        textWidth = getTextWidth(paint, language, textSize);
         // If text size goes too small or text does not fit, use middle or short name
         final boolean useMiddleName = (textSize / origTextSize < MINIMUM_SCALE_OF_LANGUAGE_NAME)
                 || (textWidth > width);
@@ -828,7 +808,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         final boolean useShortName;
         if (useMiddleName) {
             language = Utils.getMiddleDisplayLanguage(locale);
-            textWidth = getTextWidth(paint, language, origTextSize, bounds);
+            textWidth = getTextWidth(paint, language, origTextSize);
             textSize = origTextSize * Math.min(width / textWidth, 1.0f);
             useShortName = (textSize / origTextSize < MINIMUM_SCALE_OF_LANGUAGE_NAME)
                     || (textWidth > width);
@@ -838,7 +818,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         if (useShortName) {
             language = Utils.getShortDisplayLanguage(locale);
-            textWidth = getTextWidth(paint, language, origTextSize, bounds);
+            textWidth = getTextWidth(paint, language, origTextSize);
             textSize = origTextSize * Math.min(width / textWidth, 1.0f);
         }
         paint.setTextSize(textSize);
@@ -846,50 +826,14 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         return language;
     }
 
-    private Integer getSpaceDrawableKey(Locale locale) {
-        return Arrays.hashCode(new Object[] {
-                locale,
-                mAutoCorrectionSpacebarLedOn,
-                mSpacebarTextFadeFactor
-        });
-    }
-
-    private void clearSpacebarDrawableCache() {
-        for (final BitmapDrawable drawable : mSpacebarDrawableCache.values()) {
-            final Bitmap bitmap = drawable.getBitmap();
-            bitmap.recycle();
-        }
-        mSpacebarDrawableCache.clear();
-    }
-
-    private BitmapDrawable getSpaceDrawable(Locale locale) {
-        final Integer hashCode = getSpaceDrawableKey(locale);
-        final BitmapDrawable cached = mSpacebarDrawableCache.get(hashCode);
-        if (cached != null) {
-            return cached;
-        }
-        final BitmapDrawable drawable = new BitmapDrawable(getResources(), drawSpacebar(
-                locale, mAutoCorrectionSpacebarLedOn, mSpacebarTextFadeFactor));
-        mSpacebarDrawableCache.put(hashCode, drawable);
-        return drawable;
-    }
-
-    private Bitmap drawSpacebar(Locale inputLocale, boolean isAutoCorrection,
-            float textFadeFactor) {
-        final int width = mSpaceKey.mWidth;
-        final int height = mSpaceIcon != null ? mSpaceIcon.getIntrinsicHeight() : mSpaceKey.mHeight;
-        final Bitmap buffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        final Canvas canvas = new Canvas(buffer);
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+    private void drawSpacebar(Key key, Canvas canvas, Paint paint) {
+        final int width = key.mWidth;
+        final int height = mSpaceIcon != null ? mSpaceIcon.getIntrinsicHeight() : key.mHeight;
 
         // If application locales are explicitly selected.
-        if (inputLocale != null) {
-            final Paint paint = new Paint();
-            paint.setAntiAlias(true);
-            paint.setTextAlign(Align.CENTER);
-
-            final String language = layoutSpacebar(paint, inputLocale, width, mSpacebarTextSize);
-
+        if (mNeedsToDisplayLanguage) {
+            final String language = layoutLanguageOnSpacebar(paint, mSpacebarLocale, width,
+                    mSpacebarTextSize);
             // Draw language text with shadow
             // In case there is no space icon, we will place the language text at the center of
             // spacebar.
@@ -897,28 +841,25 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             final float textHeight = -paint.ascent() + descent;
             final float baseline = (mSpaceIcon != null) ? height * SPACEBAR_LANGUAGE_BASELINE
                     : height / 2 + textHeight / 2;
-            paint.setColor(getSpacebarTextColor(mSpacebarTextShadowColor, textFadeFactor));
+            paint.setColor(getSpacebarTextColor(mSpacebarTextShadowColor, mSpacebarTextFadeFactor));
             canvas.drawText(language, width / 2, baseline - descent - 1, paint);
-            paint.setColor(getSpacebarTextColor(mSpacebarTextColor, textFadeFactor));
+            paint.setColor(getSpacebarTextColor(mSpacebarTextColor, mSpacebarTextFadeFactor));
             canvas.drawText(language, width / 2, baseline - descent, paint);
         }
 
         // Draw the spacebar icon at the bottom
-        if (isAutoCorrection) {
+        if (mAutoCorrectionSpacebarLedOn) {
             final int iconWidth = width * SPACE_LED_LENGTH_PERCENT / 100;
             final int iconHeight = mAutoCorrectionSpacebarLedIcon.getIntrinsicHeight();
             int x = (width - iconWidth) / 2;
             int y = height - iconHeight;
-            mAutoCorrectionSpacebarLedIcon.setBounds(x, y, x + iconWidth, y + iconHeight);
-            mAutoCorrectionSpacebarLedIcon.draw(canvas);
+            drawIcon(canvas, mAutoCorrectionSpacebarLedIcon, x, y, iconWidth, iconHeight);
         } else if (mSpaceIcon != null) {
             final int iconWidth = mSpaceIcon.getIntrinsicWidth();
             final int iconHeight = mSpaceIcon.getIntrinsicHeight();
             int x = (width - iconWidth) / 2;
             int y = height - iconHeight;
-            mSpaceIcon.setBounds(x, y, x + iconWidth, y + iconHeight);
-            mSpaceIcon.draw(canvas);
+            drawIcon(canvas, mSpaceIcon, x, y, iconWidth, iconHeight);
         }
-        return buffer;
     }
 }
