@@ -165,6 +165,9 @@ float ProximityInfo::calculateNormalizedSquaredDistance(
     if (!hasSweetSpotData(keyIndex)) {
         return NOT_A_DISTANCE_FLOAT;
     }
+    if (NOT_A_COORDINATE == mInputXCoordinates[inputIndex]) {
+        return NOT_A_DISTANCE_FLOAT;
+    }
     const float squaredDistance = calculateSquaredDistanceFromSweetSpotCenter(keyIndex, inputIndex);
     const float squaredRadius = square(mSweetSpotRadii[keyIndex]);
     return squaredDistance / squaredRadius;

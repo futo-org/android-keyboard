@@ -1702,10 +1702,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 if (DEBUG) {
                     Log.d(TAG, "Flip the indicator. " + oldAutoCorrectionIndicator
                             + " -> " + newAutoCorrectionIndicator);
-                    if (newAutoCorrectionIndicator
+                    if (mComposingStateManager.isComposing() && newAutoCorrectionIndicator
                             != mComposingStateManager.isAutoCorrectionIndicatorOn()) {
-                        throw new RuntimeException("Couldn't flip the indicator! We are not "
-                                + "composing a word right now.");
+                        throw new RuntimeException("Couldn't flip the indicator!");
                     }
                 }
                 final CharSequence textWithUnderline =
