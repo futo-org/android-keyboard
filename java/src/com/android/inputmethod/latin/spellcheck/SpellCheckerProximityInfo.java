@@ -22,7 +22,8 @@ import com.android.inputmethod.keyboard.ProximityInfo;
 import java.util.TreeMap;
 
 public class SpellCheckerProximityInfo {
-    final private static int NUL = KeyDetector.NOT_A_CODE;
+    /* public for test */
+    final public static int NUL = KeyDetector.NOT_A_CODE;
 
     // This must be the same as MAX_PROXIMITY_CHARS_SIZE else it will not work inside
     // native code - this value is passed at creation of the binary object and reused
