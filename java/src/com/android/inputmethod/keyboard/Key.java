@@ -52,9 +52,9 @@ public class Key {
     public final int mAltCode;
 
     /** Label to display */
-    public final CharSequence mLabel;
+    public final String mLabel;
     /** Hint label to display on the key in conjunction with the label */
-    public final CharSequence mHintLabel;
+    public final String mHintLabel;
     /** Flags of the label */
     private final int mLabelFlags;
     private static final int LABEL_FLAGS_ALIGN_LEFT = 0x01;
@@ -187,7 +187,7 @@ public class Key {
     /**
      * This constructor is being used only for key in popup suggestions pane.
      */
-    public Key(Keyboard.Params params, CharSequence label, CharSequence hintLabel, Drawable icon,
+    public Key(Keyboard.Params params, String label, String hintLabel, Drawable icon,
             int code, CharSequence outputText, int x, int y, int width, int height) {
         mHeight = height - params.mVerticalGap;
         mHorizontalGap = params.mHorizontalGap;
@@ -260,7 +260,7 @@ public class Key {
         // Update row to have current x coordinate.
         row.setXPos(keyXPos + keyWidth);
 
-        final String[] moreKeys = style.getTextArray(keyAttr,
+        final String[] moreKeys = style.getStringArray(keyAttr,
                 R.styleable.Keyboard_Key_moreKeys);
         // In Arabic symbol layouts, we'd like to keep digits in more keys regardless of
         // config_digit_more_keys_enabled.
@@ -291,11 +291,11 @@ public class Key {
         final int disabledIconAttrId = KeyboardIconsSet.getIconAttrId(style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_keyIconDisabled, KeyboardIconsSet.ICON_UNDEFINED));
         mDisabledIcon = iconsSet.getIconByAttrId(disabledIconAttrId);
-        mHintLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
+        mHintLabel = style.getString(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
 
-        mLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyLabel);
+        mLabel = style.getString(keyAttr, R.styleable.Keyboard_Key_keyLabel);
         mLabelFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags, 0);
-        mOutputText = style.getText(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
+        mOutputText = style.getString(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
         // Choose the first letter of the label as primary code if not
         // specified.
         final int code = style.getInt(keyAttr, R.styleable.Keyboard_Key_code,

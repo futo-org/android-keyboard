@@ -39,7 +39,7 @@ public class KeyStylesTests extends AndroidTestCase {
     }
 
     private void assertTextArray(String message, String value, String ... expected) {
-        final String actual[] = KeyStyles.parseCsvText(value, mTestResources,
+        final String actual[] = KeyStyles.parseCsvString(value, mTestResources,
                 R.string.empty_string);
         if (expected.length == 0) {
             assertNull(message, actual);
