@@ -45,15 +45,21 @@ class WordsPriorityQueuePool {
 
     // TODO: Come up with more generic pool
     WordsPriorityQueue* getSubQueue1(const int id) {
-        if (DEBUG_WORDS_PRIORITY_QUEUE) {
-            assert(id >= 0 && id < SUB_QUEUE_MAX_COUNT);
+        if (id < 0 || id >= SUB_QUEUE_MAX_COUNT) {
+            if (DEBUG_WORDS_PRIORITY_QUEUE) {
+                assert(false);
+            }
+            return 0;
         }
         return mSubQueues1[id];
     }
 
     WordsPriorityQueue* getSubQueue2(const int id) {
-        if (DEBUG_WORDS_PRIORITY_QUEUE) {
-            assert(id >= 0 && id < SUB_QUEUE_MAX_COUNT);
+        if (id < 0 || id >= SUB_QUEUE_MAX_COUNT) {
+            if (DEBUG_WORDS_PRIORITY_QUEUE) {
+                assert(false);
+            }
+            return 0;
         }
         return mSubQueues2[id];
     }
@@ -62,6 +68,18 @@ class WordsPriorityQueuePool {
         mMasterQueue->clear();
         for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
             mSubQueues1[i]->clear();
+            mSubQueues2[i]->clear();
+        }
+    }
+
+    inline void clearSubQueue1() {
+        for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
+            mSubQueues1[i]->clear();
+        }
+    }
+
+    inline void clearSubQueue2() {
+        for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
             mSubQueues2[i]->clear();
         }
     }
