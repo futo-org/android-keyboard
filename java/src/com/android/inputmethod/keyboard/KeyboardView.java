@@ -39,6 +39,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.inputmethod.compat.FrameLayoutCompatUtils;
+import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
@@ -552,7 +553,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
 
         // Draw key label.
-        final Drawable icon = key.getIcon();
+        final Drawable icon = key.getIcon(mKeyboard.mIconsSet);
         float positionX = centerX;
         if (key.mLabel != null) {
             // Switch the character to uppercase if shift is pressed
@@ -898,9 +899,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             }
             previewText.setText(mKeyboard.adjustLabelCase(key.mLabel));
         } else {
-            final Drawable previewIcon = key.mPreviewIcon;
+            final Drawable previewIcon = mKeyboard.mIconsSet.getIconByAttrId(
+                    key.mPreviewIconAttrId);
             previewText.setCompoundDrawables(null, null, null,
-                   previewIcon != null ? previewIcon : key.getIcon());
+                    previewIcon != null ? previewIcon : key.getIcon(mKeyboard.mIconsSet));
             previewText.setText(null);
         }
         previewText.setBackgroundDrawable(params.mPreviewBackground);

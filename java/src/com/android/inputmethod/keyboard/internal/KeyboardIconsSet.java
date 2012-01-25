@@ -31,7 +31,7 @@ public class KeyboardIconsSet {
     private static final String TAG = KeyboardIconsSet.class.getSimpleName();
 
     public static final int ICON_UNDEFINED = 0;
-    private static final int ATTR_UNDEFINED = 0;
+    public static final int ATTR_UNDEFINED = 0;
 
     private final Map<Integer, Drawable> mIcons = new HashMap<Integer, Drawable>();
 

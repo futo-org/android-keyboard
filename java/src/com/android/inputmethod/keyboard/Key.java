@@ -72,13 +72,14 @@ public class Key {
     private static final int LABEL_FLAGS_WITH_ICON_RIGHT = 0x2000;
     private static final int LABEL_FLAGS_AUTO_X_SCALE = 0x4000;
 
-    // TODO: These icon references could be int (icon attribute id)
     /** Icon to display instead of a label. Icon takes precedence over a label */
+    private final int mIconAttrId;
+    // TODO: Remove this variable.
     private Drawable mIcon;
     /** Icon for disabled state */
-    private Drawable mDisabledIcon;
+    private final int mDisabledIconAttrId;
     /** Preview version of the icon, for the preview popup */
-    public final Drawable mPreviewIcon;
+    public final int mPreviewIconAttrId;
 
     /** Width of the key, not including the gap */
     public final int mWidth;
@@ -204,9 +205,10 @@ public class Key {
         mOutputText = outputText;
         mCode = code;
         mAltCode = Keyboard.CODE_UNSPECIFIED;
+        mIconAttrId = KeyboardIconsSet.ATTR_UNDEFINED;
         mIcon = icon;
-        mDisabledIcon = null;
-        mPreviewIcon = null;
+        mDisabledIconAttrId = KeyboardIconsSet.ATTR_UNDEFINED;
+        mPreviewIconAttrId = KeyboardIconsSet.ATTR_UNDEFINED;
         // Horizontal gap is divided equally to both sides of the key.
         mX = x + mHorizontalGap / 2;
         mY = y;
@@ -282,18 +284,16 @@ public class Key {
                 R.styleable.Keyboard_Key_visualInsetsLeft, params.mBaseWidth, 0);
         mVisualInsetsRight = (int) Keyboard.Builder.getDimensionOrFraction(keyAttr,
                 R.styleable.Keyboard_Key_visualInsetsRight, params.mBaseWidth, 0);
-        final int previewIconAttrId = KeyboardIconsSet.getIconAttrId(style.getInt(keyAttr,
+        mPreviewIconAttrId = KeyboardIconsSet.getIconAttrId(style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_keyIconPreview, KeyboardIconsSet.ICON_UNDEFINED));
-        mPreviewIcon = iconsSet.getIconByAttrId(previewIconAttrId);
-        final int iconAttrId = KeyboardIconsSet.getIconAttrId(style.getInt(keyAttr,
+        mIconAttrId = KeyboardIconsSet.getIconAttrId(style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_keyIcon, KeyboardIconsSet.ICON_UNDEFINED));
-        mIcon = iconsSet.getIconByAttrId(iconAttrId);
-        final int disabledIconAttrId = KeyboardIconsSet.getIconAttrId(style.getInt(keyAttr,
+        mIcon = iconsSet.getIconByAttrId(mIconAttrId);
+        mDisabledIconAttrId = KeyboardIconsSet.getIconAttrId(style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_keyIconDisabled, KeyboardIconsSet.ICON_UNDEFINED));
-        mDisabledIcon = iconsSet.getIconByAttrId(disabledIconAttrId);
-        mHintLabel = style.getString(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
 
         mLabel = style.getString(keyAttr, R.styleable.Keyboard_Key_keyLabel);
+        mHintLabel = style.getString(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
         mLabelFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags, 0);
         mOutputText = style.getString(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
         // Choose the first letter of the label as primary code if not
@@ -328,13 +328,15 @@ public class Key {
                 key.mCode,
                 key.mLabel,
                 key.mHintLabel,
+                key.mIconAttrId,
                 // Key can be distinguishable without the following members.
                 // key.mAltCode,
                 // key.mOutputText,
                 // key.mActionFlags,
                 // key.mLabelFlags,
                 // key.mIcon,
-                // key.mPreviewIcon,
+                // key.mDisabledIconAttrId,
+                // key.mPreviewIconAttrId,
                 // key.mBackgroundType,
                 // key.mHorizontalGap,
                 // key.mVerticalGap,
@@ -471,8 +473,9 @@ public class Key {
         return (mLabelFlags & LABEL_FLAGS_AUTO_X_SCALE) != 0;
     }
 
-    public Drawable getIcon() {
-        return mEnabled ? mIcon : mDisabledIcon;
+    // TODO: Get rid of this method.
+    public Drawable getIcon(KeyboardIconsSet iconSet) {
+        return mEnabled ? mIcon : iconSet.getIconByAttrId(mDisabledIconAttrId);
     }
 
     // TODO: Get rid of this method.
