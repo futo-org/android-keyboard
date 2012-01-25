@@ -137,7 +137,7 @@ class WordsPriorityQueue {
         if (size() <= 0) {
             return;
         }
-        DUMP_WORD(mSuggestions.top()->mWord, mSuggestions.top()->mWordLength);
+        DUMP_WORD(mHighestSuggestedWord->mWord, mHighestSuggestedWord->mWordLength);
     }
 
     double getHighestNormalizedScore(const unsigned short* before, const int beforeLength,

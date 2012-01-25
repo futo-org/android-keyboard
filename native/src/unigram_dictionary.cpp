@@ -159,19 +159,26 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
     }
 
     PROF_START(20);
+    if (DEBUG_DICT) {
+        double ns = queuePool->getMasterQueue()->getHighestNormalizedScore(
+                proximityInfo->getPrimaryInputWord(), codesSize, 0, 0, 0);
+        ns += 0;
+        AKLOGI("Max normalized score = %f", ns);
+    }
     const int suggestedWordsCount =
             queuePool->getMasterQueue()->outputSuggestions(frequencies, outWords);
 
     if (DEBUG_DICT) {
+        double ns = queuePool->getMasterQueue()->getHighestNormalizedScore(
+                proximityInfo->getPrimaryInputWord(), codesSize, 0, 0, 0);
+        ns += 0;
         AKLOGI("Returning %d words", suggestedWordsCount);
         /// Print the returned words
         for (int j = 0; j < suggestedWordsCount; ++j) {
-#ifdef FLAG_DBG
             short unsigned int* w = outWords + j * MAX_WORD_LENGTH;
             char s[MAX_WORD_LENGTH];
             for (int i = 0; i <= MAX_WORD_LENGTH; i++) s[i] = w[i];
             AKLOGI("%s %i", s, frequencies[j]);
-#endif
         }
     }
     PROF_END(20);
@@ -205,6 +212,13 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
 
     PROF_START(4);
     // Note: This line is intentionally left blank
+    bool hasAutoCorrectionCandidate = false;
+    WordsPriorityQueue* masterQueue = queuePool->getMasterQueue();
+    if (masterQueue->size() > 0) {
+        double nsForMaster = masterQueue->getHighestNormalizedScore(
+                proximityInfo->getPrimaryInputWord(), inputLength, 0, 0, 0);
+        hasAutoCorrectionCandidate = (nsForMaster > START_TWO_WORDS_CORRECTION_THRESHOLD);
+    }
     PROF_END(4);
 
     PROF_START(5);
@@ -216,7 +230,8 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
                 AKLOGI("--- Suggest missing space characters %d", i);
             }
             getMissingSpaceWords(proximityInfo, xcoordinates, ycoordinates, codes,
-                    useFullEditDistance, inputLength, i, correction, queuePool);
+                    useFullEditDistance, inputLength, i, correction, queuePool,
+                    hasAutoCorrectionCandidate);
         }
     }
     PROF_END(5);
@@ -236,7 +251,8 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
             }
             if (proximityInfo->hasSpaceProximity(x, y)) {
                 getMistypedSpaceWords(proximityInfo, xcoordinates, ycoordinates, codes,
-                        useFullEditDistance, inputLength, i, correction, queuePool);
+                        useFullEditDistance, inputLength, i, correction, queuePool,
+                        hasAutoCorrectionCandidate);
             }
         }
     }
@@ -281,12 +297,12 @@ void UnigramDictionary::getOneWordSuggestions(ProximityInfo *proximityInfo,
         WordsPriorityQueuePool *queuePool) {
     initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, inputLength, correction);
     getSuggestionCandidates(useFullEditDistance, inputLength, correction, queuePool,
-            true /* doAutoCompletion */, DEFAULT_MAX_ERRORS);
+            true /* doAutoCompletion */, DEFAULT_MAX_ERRORS, FIRST_WORD_INDEX);
 }
 
 void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
         const int inputLength, Correction *correction, WordsPriorityQueuePool *queuePool,
-        const bool doAutoCompletion, const int maxErrors) {
+        const bool doAutoCompletion, const int maxErrors, const int currentWordIndex) {
     // TODO: Remove setCorrectionParams
     correction->setCorrectionParams(0, 0, 0,
             -1 /* spaceProximityPos */, -1 /* missingSpacePos */, useFullEditDistance,
@@ -305,7 +321,8 @@ void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
             int firstChildPos;
 
             const bool needsToTraverseChildrenNodes = processCurrentNode(siblingPos,
-                    correction, &childCount, &firstChildPos, &siblingPos, queuePool);
+                    correction, &childCount, &firstChildPos, &siblingPos, queuePool,
+                    currentWordIndex);
             // Update next sibling pos
             correction->setTreeSiblingPos(outputIndex, siblingPos);
 
@@ -323,31 +340,32 @@ void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
 void UnigramDictionary::getMissingSpaceWords(ProximityInfo *proximityInfo, const int *xcoordinates,
         const int *ycoordinates, const int *codes, const bool useFullEditDistance,
         const int inputLength, const int missingSpacePos, Correction *correction,
-        WordsPriorityQueuePool* queuePool) {
+        WordsPriorityQueuePool* queuePool, const bool hasAutoCorrectionCandidate) {
     getSplitTwoWordsSuggestions(proximityInfo, xcoordinates, ycoordinates, codes,
             useFullEditDistance, inputLength, missingSpacePos, -1/* spaceProximityPos */,
-            correction, queuePool);
+            correction, queuePool, hasAutoCorrectionCandidate);
 }
 
 void UnigramDictionary::getMistypedSpaceWords(ProximityInfo *proximityInfo, const int *xcoordinates,
         const int *ycoordinates, const int *codes, const bool useFullEditDistance,
         const int inputLength, const int spaceProximityPos, Correction *correction,
-        WordsPriorityQueuePool* queuePool) {
+        WordsPriorityQueuePool* queuePool, const bool hasAutoCorrectionCandidate) {
     getSplitTwoWordsSuggestions(proximityInfo, xcoordinates, ycoordinates, codes,
             useFullEditDistance, inputLength, -1 /* missingSpacePos */, spaceProximityPos,
-            correction, queuePool);
+            correction, queuePool, hasAutoCorrectionCandidate);
 }
 
 inline void UnigramDictionary::onTerminal(const int freq,
         const TerminalAttributes& terminalAttributes, Correction *correction,
-        WordsPriorityQueuePool *queuePool, const bool addToMasterQueue) {
+        WordsPriorityQueuePool *queuePool, const bool addToMasterQueue,
+        const int currentWordIndex) {
     const int inputIndex = correction->getInputIndex();
     const bool addToSubQueue = inputIndex < SUB_QUEUE_MAX_COUNT;
 
     int wordLength;
     unsigned short* wordPointer;
 
-    if (addToMasterQueue) {
+    if ((currentWordIndex == 1) && addToMasterQueue) {
         WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
         const int finalFreq = correction->getFinalFreq(freq, &wordPointer, &wordLength);
         if (finalFreq != NOT_A_FREQUENCY) {
@@ -376,9 +394,14 @@ inline void UnigramDictionary::onTerminal(const int freq,
     // We only allow two words + other error correction for words with SUB_QUEUE_MIN_WORD_LENGTH
     // or more length.
     if (inputIndex >= SUB_QUEUE_MIN_WORD_LENGTH && addToSubQueue) {
-        // TODO: Check the validity of "inputIndex == wordLength"
-        //if (addToSubQueue && inputIndex == wordLength) {
-        WordsPriorityQueue *subQueue = queuePool->getSubQueue1(inputIndex);
+        WordsPriorityQueue *subQueue;
+        if (currentWordIndex == 1) {
+            subQueue = queuePool->getSubQueue1(inputIndex);
+        } else if (currentWordIndex == 2) {
+            subQueue = queuePool->getSubQueue2(inputIndex);
+        } else {
+            return;
+        }
         const int finalFreq = correction->getFinalFreqForSubQueue(freq, &wordPointer, &wordLength,
                 inputIndex);
         addWord(wordPointer, wordLength, finalFreq, subQueue);
@@ -388,17 +411,21 @@ inline void UnigramDictionary::onTerminal(const int freq,
 void UnigramDictionary::getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codes,
         const bool useFullEditDistance, const int inputLength, const int missingSpacePos,
-        const int  spaceProximityPos, Correction *correction, WordsPriorityQueuePool* queuePool) {
+        const int  spaceProximityPos, Correction *correction, WordsPriorityQueuePool* queuePool,
+        const bool hasAutoCorrectionCandidate) {
     if (inputLength >= MAX_WORD_LENGTH) return;
     if (DEBUG_DICT) {
         int inputCount = 0;
         if (spaceProximityPos >= 0) ++inputCount;
         if (missingSpacePos >= 0) ++inputCount;
         assert(inputCount <= 1);
+        // MAX_PROXIMITY_CHARS_SIZE in ProximityInfo.java should be 16
+        assert(MAX_PROXIMITY_CHARS == 16);
     }
 
+    initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes,
+            inputLength, correction);
     WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
-
     const bool isSpaceProximity = spaceProximityPos >= 0;
 
     // First word
@@ -411,26 +438,22 @@ void UnigramDictionary::getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo
     if (firstFreq > 0) {
         firstOutputWordLength = firstInputWordLength;
         firstOutputWord = mWord;
-    } else {
-        if (masterQueue->size() > 0) {
-            double nsForMaster = masterQueue->getHighestNormalizedScore(
-                    proximityInfo->getPrimaryInputWord(), inputLength, 0, 0, 0);
-            if (nsForMaster > START_TWO_WORDS_CORRECTION_THRESHOLD) {
-                // Do nothing if the highest suggestion exceeds the threshold.
-                return;
-            }
-        }
+    } else if (!hasAutoCorrectionCandidate) {
         WordsPriorityQueue* firstWordQueue = queuePool->getSubQueue1(firstInputWordLength);
-        if (firstWordQueue->size() < 1) {
+        if (!firstWordQueue || firstWordQueue->size() < 1) {
             return;
         }
         int score = 0;
         const double ns = firstWordQueue->getHighestNormalizedScore(
                 proximityInfo->getPrimaryInputWord(), firstInputWordLength,
                 &firstOutputWord, &score, &firstOutputWordLength);
+        if (DEBUG_DICT) {
+            AKLOGI("NS1 = %f, Score = %d", ns, score);
+        }
         // Two words correction won't be done if the score of the first word doesn't exceed the
         // threshold.
-        if (ns < TWO_WORDS_CORRECTION_WITH_OTHER_ERROR_THRESHOLD) {
+        if (ns < TWO_WORDS_CORRECTION_WITH_OTHER_ERROR_THRESHOLD
+                || firstOutputWordLength < SUB_QUEUE_MIN_WORD_LENGTH) {
             return;
         }
         firstFreq = score >> (firstOutputWordLength
@@ -456,14 +479,6 @@ void UnigramDictionary::getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo
     outputWord[firstOutputWordLength] = SPACE;
     outputWordLength = firstOutputWordLength + 1;
 
-    //const int outputWordLength = firstOutputWordLength + secondWordLength + 1;
-    // Space proximity preparation
-    //WordsPriorityQueue *subQueue = queuePool->getSubQueue1();
-    //initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, firstOutputWordLength,
-    //subQueue, correction);
-    //getSuggestionCandidates(useFullEditDistance, firstOutputWordLength, correction, subQueue,
-    //false, MAX_ERRORS_FOR_TWO_WORDS);
-
     // Second word
     const int secondInputWordLength = isSpaceProximity
             ? (inputLength - spaceProximityPos - 1)
@@ -478,9 +493,42 @@ void UnigramDictionary::getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo
     if (secondFreq > 0) {
         secondOutputWordLength = secondInputWordLength;
         secondOutputWord = mWord;
+    } else if (!hasAutoCorrectionCandidate) {
+        const int offset = secondInputWordStartPos;
+        initSuggestions(proximityInfo, &xcoordinates[offset], &ycoordinates[offset],
+                codes + offset * MAX_PROXIMITY_CHARS, secondInputWordLength, correction);
+        queuePool->clearSubQueue2();
+        getSuggestionCandidates(useFullEditDistance, secondInputWordLength, correction,
+                queuePool, false, MAX_ERRORS_FOR_TWO_WORDS, SECOND_WORD_INDEX);
+        if (DEBUG_DICT) {
+            AKLOGI("Dump second word candidates %d", secondInputWordLength);
+            for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
+                queuePool->getSubQueue2(i)->dumpTopWord();
+            }
+        }
+        WordsPriorityQueue* secondWordQueue = queuePool->getSubQueue2(secondInputWordLength);
+        if (!secondWordQueue || secondWordQueue->size() < 1) {
+            return;
+        }
+        int score = 0;
+        const double ns = secondWordQueue->getHighestNormalizedScore(
+                proximityInfo->getPrimaryInputWord(), secondInputWordLength,
+                &secondOutputWord, &score, &secondOutputWordLength);
+        if (DEBUG_DICT) {
+            AKLOGI("NS2 = %f, Score = %d", ns, score);
+        }
+        // Two words correction won't be done if the score of the first word doesn't exceed the
+        // threshold.
+        if (ns < TWO_WORDS_CORRECTION_WITH_OTHER_ERROR_THRESHOLD
+                || secondOutputWordLength < SUB_QUEUE_MIN_WORD_LENGTH) {
+            return;
+        }
+        secondFreq = score >> (secondOutputWordLength
+                + TWO_WORDS_PLUS_OTHER_ERROR_CORRECTION_DEMOTION_DIVIDER);
     }
 
     if (DEBUG_DICT) {
+        DUMP_WORD(secondOutputWord, secondOutputWordLength);
         AKLOGI("Second freq: %d", secondFreq);
     }
 
@@ -742,7 +790,8 @@ int UnigramDictionary::getBigramPosition(int pos, unsigned short *word, int offs
 // given level, as output into newCount when traversing this level's parent.
 inline bool UnigramDictionary::processCurrentNode(const int initialPos,
         Correction *correction, int *newCount,
-        int *newChildrenPosition, int *nextSiblingPosition, WordsPriorityQueuePool *queuePool) {
+        int *newChildrenPosition, int *nextSiblingPosition, WordsPriorityQueuePool *queuePool,
+        const int currentWordIndex) {
     if (DEBUG_DICT) {
         correction->checkState();
     }
@@ -823,7 +872,8 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos,
         const int childrenAddressPos = BinaryFormat::skipFrequency(flags, pos);
         const int attributesPos = BinaryFormat::skipChildrenPosition(flags, childrenAddressPos);
         TerminalAttributes terminalAttributes(DICT_ROOT, flags, attributesPos);
-        onTerminal(freq, terminalAttributes, correction, queuePool, needsToInvokeOnTerminal);
+        onTerminal(freq, terminalAttributes, correction, queuePool, needsToInvokeOnTerminal,
+                currentWordIndex);
 
         // If there are more chars in this node, then this virtual node has children.
         // If we are on the last char, this virtual node has children if this node has.
