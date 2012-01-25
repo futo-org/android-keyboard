@@ -222,7 +222,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             if (ENABLE_CAPSLOCK_BY_DOUBLETAP && keyboard.mId.isAlphabetKeyboard()) {
                 final int pointerIndex = firstDown.getActionIndex();
                 final int id = firstDown.getPointerId(pointerIndex);
-                final PointerTracker tracker = getPointerTracker(id);
+                final PointerTracker tracker = PointerTracker.getPointerTracker(
+                        id, LatinKeyboardView.this);
                 final Key key = tracker.getKeyOn((int)firstDown.getX(), (int)firstDown.getY());
                 // If the first down event is on shift key.
                 if (key != null && key.isShift()) {
@@ -241,7 +242,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 final MotionEvent secondDown = secondTap;
                 final int pointerIndex = secondDown.getActionIndex();
                 final int id = secondDown.getPointerId(pointerIndex);
-                final PointerTracker tracker = getPointerTracker(id);
+                final PointerTracker tracker = PointerTracker.getPointerTracker(
+                        id, LatinKeyboardView.this);
                 final Key key = tracker.getKeyOn((int)secondDown.getX(), (int)secondDown.getY());
                 // If the second down event is also on shift key.
                 if (key != null && key.isShift()) {
@@ -522,10 +524,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         return true;
     }
 
-    private PointerTracker getPointerTracker(final int id) {
-        return PointerTracker.getPointerTracker(id, this);
-    }
-
     public boolean isInSlidingKeyInput() {
         if (mMoreKeysPanel != null) {
             return true;
@@ -609,7 +607,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
 
         if (mKeyTimerHandler.isInKeyRepeat()) {
-            final PointerTracker tracker = getPointerTracker(id);
+            final PointerTracker tracker = PointerTracker.getPointerTracker(id, this);
             // Key repeating timer will be canceled if 2 or more keys are in action, and current
             // event (UP or DOWN) is non-modifier key.
             if (pointerCount > 1 && !tracker.isModifier()) {
@@ -623,7 +621,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         // multi-touch panel.
         if (nonDistinctMultitouch) {
             // Use only main (id=0) pointer tracker.
-            PointerTracker tracker = getPointerTracker(0);
+            final PointerTracker tracker = PointerTracker.getPointerTracker(0, this);
             if (pointerCount == 1 && oldPointerCount == 2) {
                 // Multi-touch to single touch transition.
                 // Send a down event for the latest pointer if the key is different from the
@@ -652,7 +650,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         if (action == MotionEvent.ACTION_MOVE) {
             for (int i = 0; i < pointerCount; i++) {
-                final PointerTracker tracker = getPointerTracker(me.getPointerId(i));
+                final PointerTracker tracker = PointerTracker.getPointerTracker(
+                        me.getPointerId(i), this);
                 final int px, py;
                 if (mMoreKeysPanel != null
                         && tracker.mPointerId == mMoreKeysPanelPointerTrackerId) {
@@ -669,7 +668,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 }
             }
         } else {
-            getPointerTracker(id).processMotionEvent(action, x, y, eventTime, this);
+            final PointerTracker tracker = PointerTracker.getPointerTracker(id, this);
+            tracker.processMotionEvent(action, x, y, eventTime, this);
         }
 
         return true;
@@ -739,7 +739,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
      */
     public boolean dispatchHoverEvent(MotionEvent event) {
         if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
-            final PointerTracker tracker = getPointerTracker(0);
+            final PointerTracker tracker = PointerTracker.getPointerTracker(0, this);
             return AccessibleKeyboardViewProxy.getInstance().dispatchHoverEvent(event, tracker);
         }
 
