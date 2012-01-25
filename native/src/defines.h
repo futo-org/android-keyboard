@@ -169,6 +169,7 @@ static void prof_out(void) {
 #define NOT_VALID_WORD -99
 #define NOT_A_CHARACTER -1
 #define NOT_A_DISTANCE -1
+#define NOT_A_COORDINATE -1
 #define EQUIVALENT_CHAR_WITHOUT_DISTANCE_INFO -2
 #define PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO -3
 #define NOT_A_INDEX -1

@@ -34,6 +34,11 @@ import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
+import com.android.inputmethod.latin.spellcheck.AndroidSpellCheckerService; // for proximity info
+import com.android.inputmethod.latin.spellcheck.SpellCheckerProximityInfo;
+
+import java.util.Arrays;
+import java.util.HashMap;
 
 public class InputLogicTests extends ServiceTestCase<LatinIME> {
 
@@ -42,9 +47,29 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
     private LatinIME mLatinIME;
     private TextView mTextView;
     private InputConnection mInputConnection;
+    private HashMap<Integer, int[]> mProximity;
 
     public InputLogicTests() {
         super(LatinIME.class);
+        mProximity = createProximity();
+    }
+
+    private static HashMap<Integer, int[]> createProximity() {
+        final HashMap<Integer, int[]> proximity = new HashMap<Integer, int[]>();
+        final int[] testProximity = SpellCheckerProximityInfo.getProximityForScript(
+                AndroidSpellCheckerService.SCRIPT_LATIN);
+        final int ROW_SIZE = SpellCheckerProximityInfo.ROW_SIZE;
+        final int NUL = SpellCheckerProximityInfo.NUL;
+        for (int row = 0; row * ROW_SIZE < testProximity.length; ++row) {
+            final int rowBase = row * ROW_SIZE;
+            int column;
+            for (column = 1; NUL != testProximity[rowBase + column]; ++column) {
+                // Do nothing, just search for a NUL element
+            }
+            proximity.put(testProximity[row * ROW_SIZE],
+                    Arrays.copyOfRange(testProximity, rowBase, rowBase + column));
+        }
+        return proximity;
     }
 
     // returns the previous setting value
@@ -73,7 +98,9 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         mLatinIME.onCreate();
         setDebugMode(previousDebugSetting);
         final EditorInfo ei = new EditorInfo();
+        ei.inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT;
         final InputConnection ic = mTextView.onCreateInputConnection(ei);
+        ei.inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT;
         final LayoutInflater inflater =
                 (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final ViewGroup vg = new FrameLayout(getContext());
@@ -95,7 +122,11 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         // to keep these tests as pinpoint as possible and avoid bringing it too many dependencies,
         // but keep them in mind if something breaks. Commenting them out as is should work.
         //mLatinIME.onPressKey(codePoint);
-        mLatinIME.onCodeInput(codePoint, new int[] { codePoint },
+        int[] proximityKeys = mProximity.get(codePoint);
+        if (null == proximityKeys) {
+            proximityKeys = new int[] { codePoint };
+        }
+        mLatinIME.onCodeInput(codePoint, proximityKeys,
                 KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
                 KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
         //mLatinIME.onReleaseKey(codePoint, false);
@@ -138,5 +169,12 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         mLatinIME.onUpdateSelection(0, 0, SELECTION_START, SELECTION_END, -1, -1);
         type(Keyboard.CODE_DELETE);
         assertEquals("delete selection", EXPECTED_RESULT, mTextView.getText().toString());
+    }
+
+    public void testAutoCorrect() {
+        final String STRING_TO_TYPE = "tgis ";
+        final String EXPECTED_RESULT = "this ";
+        type(STRING_TO_TYPE);
+        assertEquals("simple auto-correct", EXPECTED_RESULT, mTextView.getText().toString());
     }
 }
