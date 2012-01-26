@@ -309,7 +309,7 @@ public class WordComposer {
         // LastComposedWord#didAutoCorrectToAnotherWord with #equals(). It would be marginally
         // cleaner to do it here, but it would be slower (since we would #equals() for each commit,
         // instead of only on cancel), and ultimately we want to figure it out even earlier anyway.
-        final LastComposedWord lastComposedWord = new LastComposedWord(type, mCodes,
+        final LastComposedWord lastComposedWord = new LastComposedWord(mCodes,
                 mXCoordinates, mYCoordinates, mTypedWord.toString(),
                 (type != LastComposedWord.COMMIT_TYPE_DECIDED_WORD) || (null == mAutoCorrection)
                         ? null : mAutoCorrection.toString());
