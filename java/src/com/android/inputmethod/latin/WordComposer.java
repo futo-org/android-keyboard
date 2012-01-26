@@ -346,9 +346,12 @@ public class WordComposer {
             // Only ever revert an auto-correct.
             mCommittedWordSavedForSuggestionResuming.mAutoCorrection = null;
         }
+        final LastComposedWord lastComposedWord = new LastComposedWord(type, mCurrentWord.mCodes,
+                mCurrentWord.mXCoordinates, mCurrentWord.mYCoordinates,
+                mCurrentWord.mTypedWord.toString(), mCurrentWord.mAutoCorrection.toString());
         // TODO: improve performance by swapping buffers instead of creating a new object.
         mCurrentWord = new CharacterStore();
-        return new LastComposedWord(type);
+        return lastComposedWord;
     }
 
     public boolean hasWordKeptForSuggestionResuming() {

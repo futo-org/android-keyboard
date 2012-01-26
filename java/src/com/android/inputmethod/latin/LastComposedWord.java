@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import java.util.ArrayList;
+
 /**
  * This class encapsulates data about a word previously composed, but that has been
  * committed already. This is used for resuming suggestion, and cancel auto-correction.
@@ -37,8 +39,19 @@ public class LastComposedWord {
     public static final int COMMIT_TYPE_CANCEL_AUTO_CORRECT = 3;
 
     public final int mType;
+    public final ArrayList<int[]> mCodes;
+    public final int[] mXCoordinates;
+    public final int[] mYCoordinates;
+    public final String mTypedWord;
+    public final String mAutoCorrection;
 
-    public LastComposedWord(final int type) {
+    public LastComposedWord(final int type, final ArrayList<int[]> codes, final int[] xCoordinates,
+            final int[] yCoordinates, final String typedWord, final String autoCorrection) {
         mType = type;
+        mCodes = codes;
+        mXCoordinates = xCoordinates;
+        mYCoordinates = yCoordinates;
+        mTypedWord = typedWord;
+        mAutoCorrection = autoCorrection;
     }
 }
