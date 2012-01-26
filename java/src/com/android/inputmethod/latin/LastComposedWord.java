@@ -47,6 +47,8 @@ public class LastComposedWord {
     public final String mTypedWord;
     public final String mAutoCorrection;
 
+    private boolean mActive;
+
     public static final LastComposedWord NOT_A_COMPOSED_WORD =
             new LastComposedWord(COMMIT_TYPE_USER_TYPED_WORD, null, null, null, "", "");
 
@@ -58,10 +60,15 @@ public class LastComposedWord {
         mYCoordinates = yCoordinates;
         mTypedWord = typedWord;
         mAutoCorrection = autoCorrection;
+        mActive = true;
     }
 
-    public boolean didAutoCorrectToAnotherWord() {
-        return !TextUtils.isEmpty(mAutoCorrection)
+    public void deactivate() {
+        mActive = false;
+    }
+
+    public boolean canCancelAutoCorrect() {
+        return mActive && !TextUtils.isEmpty(mAutoCorrection)
                 && !TextUtils.equals(mTypedWord, mAutoCorrection);
     }
 }

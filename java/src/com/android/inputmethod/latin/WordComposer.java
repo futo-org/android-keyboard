@@ -310,13 +310,6 @@ public class WordComposer {
     }
 
     /**
-     * Remove any auto-correction that may have been set.
-     */
-    public void deleteAutoCorrection() {
-        mCurrentWord.mAutoCorrection = null;
-    }
-
-    /**
      * @return the auto-correction for this word, or null if none.
      */
     public CharSequence getAutoCorrectionOrNull() {
