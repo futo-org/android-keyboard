@@ -40,7 +40,6 @@ public class LastComposedWord {
     // an auto-correction.
     public static final int COMMIT_TYPE_CANCEL_AUTO_CORRECT = 3;
 
-    public final int mType;
     public final ArrayList<int[]> mCodes;
     public final int[] mXCoordinates;
     public final int[] mYCoordinates;
@@ -50,11 +49,10 @@ public class LastComposedWord {
     private boolean mActive;
 
     public static final LastComposedWord NOT_A_COMPOSED_WORD =
-            new LastComposedWord(COMMIT_TYPE_USER_TYPED_WORD, null, null, null, "", "");
+            new LastComposedWord(null, null, null, "", "");
 
-    public LastComposedWord(final int type, final ArrayList<int[]> codes, final int[] xCoordinates,
+    public LastComposedWord(final ArrayList<int[]> codes, final int[] xCoordinates,
             final int[] yCoordinates, final String typedWord, final String autoCorrection) {
-        mType = type;
         mCodes = codes;
         mXCoordinates = xCoordinates;
         mYCoordinates = yCoordinates;
