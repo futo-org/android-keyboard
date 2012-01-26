@@ -1096,7 +1096,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     public void commitTyped(final InputConnection ic) {
         if (!mWordComposer.isComposingWord()) return;
         final CharSequence typedWord = mWordComposer.getTypedWord();
-        mWordComposer.onCommitWord(WordComposer.COMMIT_TYPE_USER_TYPED_WORD);
+        mWordComposer.onCommitWord(LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD);
         if (typedWord.length() > 0) {
             if (ic != null) {
                 ic.commitText(typedWord, 1);
@@ -1847,7 +1847,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             Utils.Stats.onAutoCorrection(typedWord, autoCorrection.toString(), separatorCodePoint);
             mExpectingUpdateSelection = true;
-            commitChosenWord(autoCorrection, WordComposer.COMMIT_TYPE_DECIDED_WORD);
+            commitChosenWord(autoCorrection, LastComposedWord.COMMIT_TYPE_DECIDED_WORD);
             // Add the word to the user unigram dictionary if it's not a known word
             addToUserUnigramAndBigramDictionaries(autoCorrection,
                     UserUnigramDictionary.FREQUENCY_FOR_TYPED);
@@ -1917,7 +1917,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         LatinImeLogger.logOnManualSuggestion(mWordComposer.getTypedWord().toString(),
                 suggestion.toString(), index, suggestions.mWords);
         mExpectingUpdateSelection = true;
-        commitChosenWord(suggestion, WordComposer.COMMIT_TYPE_MANUAL_PICK);
+        commitChosenWord(suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK);
         // Add the word to the auto dictionary if it's not a known word
         if (index == 0) {
             addToUserUnigramAndBigramDictionaries(suggestion,
@@ -2176,7 +2176,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // Re-insert the separator
         ic.commitText(separator, 1);
         mWordComposer.deleteAutoCorrection();
-        mWordComposer.onCommitWord(WordComposer.COMMIT_TYPE_CANCEL_AUTO_CORRECT);
+        mWordComposer.onCommitWord(LastComposedWord.COMMIT_TYPE_CANCEL_AUTO_CORRECT);
         Utils.Stats.onSeparator(separator.charAt(0), WordComposer.NOT_A_COORDINATE,
                 WordComposer.NOT_A_COORDINATE);
         mHandler.cancelUpdateBigramPredictions();
