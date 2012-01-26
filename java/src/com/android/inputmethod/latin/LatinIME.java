@@ -1274,6 +1274,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mHandler.cancelDoubleSpacesTimer();
         }
 
+        boolean didAutoCorrect = false;
         switch (primaryCode) {
         case Keyboard.CODE_DELETE:
             mSpaceState = SPACE_STATE_NONE;
@@ -1310,7 +1311,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         default:
             mSpaceState = SPACE_STATE_NONE;
             if (mSettingsValues.isWordSeparator(primaryCode)) {
-                handleSeparator(primaryCode, x, y, spaceState);
+                didAutoCorrect = handleSeparator(primaryCode, x, y, spaceState);
             } else {
                 handleCharacter(primaryCode, keyCodes, x, y, spaceState);
             }
@@ -1319,6 +1320,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         switcher.onCodeInput(primaryCode);
         // Reset after any single keystroke
+        if (!didAutoCorrect)
+            mLastComposedWord.deactivate();
         mEnteredText = null;
     }
 
@@ -1562,7 +1565,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
-    private void handleSeparator(final int primaryCode, final int x, final int y,
+    // Returns true if we did an autocorrection, false otherwise.
+    private boolean handleSeparator(final int primaryCode, final int x, final int y,
             final int spaceState) {
         mVoiceProxy.handleSeparator();
         mComposingStateManager.onFinishComposingText();
@@ -1573,6 +1577,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mHandler.postUpdateSuggestions();
         }
 
+        boolean didAutoCorrect = false;
         // Handle separator
         final InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
@@ -1587,6 +1592,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     && !mInputAttributes.mInputTypeNoAutoCorrect;
             if (shouldAutoCorrect && primaryCode != Keyboard.CODE_SINGLE_QUOTE) {
                 commitCurrentAutoCorrection(primaryCode, ic);
+                didAutoCorrect = true;
             } else {
                 commitTyped(ic);
             }
@@ -1642,6 +1648,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (ic != null) {
             ic.endBatchEdit();
         }
+        return didAutoCorrect;
     }
 
     private CharSequence getTextWithUnderline(final CharSequence text) {
