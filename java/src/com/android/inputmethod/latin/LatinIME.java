@@ -2229,10 +2229,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final CharSequence textBeforeCursor = ic.getTextBeforeCursor(2, 0);
         // NOTE: This does not work with surrogate pairs. Hopefully when the keyboard is able to
         // enter surrogate pairs this code will have been removed.
-        if (Keyboard.CODE_SPACE != textBeforeCursor.charAt(1)) {
-            // We should not have come here if the text before the cursor is not a space.
-            throw new RuntimeException("Tried to revert a swap of punctuation but we didn't "
+        if (TextUtils.isEmpty(textBeforeCursor)
+                || (Keyboard.CODE_SPACE != textBeforeCursor.charAt(1))) {
+            // We may only come here if the application is changing the text while we are typing.
+            // This is quite a broken case, but not logically impossible, so we shouldn't crash,
+            // but some debugging log may be in order.
+            Log.d(TAG, "Tried to revert a swap of punctuation but we didn't "
                     + "find a space just before the cursor.");
+            return false;
         }
         ic.beginBatchEdit();
         ic.deleteSurroundingText(2, 0);
