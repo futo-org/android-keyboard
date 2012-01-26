@@ -77,17 +77,6 @@ public class KeyboardSet {
         }
     }
 
-    static class KeyboardElement {
-        final int mElementId;
-        final int mLayoutId;
-        final boolean mAutoGenerate;
-        KeyboardElement(int elementId, int layoutId, boolean autoGenerate) {
-            mElementId = elementId;
-            mLayoutId = layoutId;
-            mAutoGenerate = autoGenerate;
-        }
-    }
-
     static class Params {
         int mMode;
         int mInputType;
@@ -100,8 +89,9 @@ public class KeyboardSet {
         Locale mLocale;
         int mOrientation;
         int mWidth;
-        final Map<Integer, KeyboardElement> mElementKeyboards =
-                new HashMap<Integer, KeyboardElement>();
+        // KeyboardSet element id to keyboard layout XML id map.
+        final Map<Integer, Integer> mKeyboardSetElementIdToXmlIdMap =
+                new HashMap<Integer, Integer>();
         Params() {}
     }
 
@@ -117,41 +107,38 @@ public class KeyboardSet {
         mParams = params;
     }
 
+    // TODO: Remove this method, use {@link #getKeyboard} directly.
     public Keyboard getMainKeyboard() {
-        return getKeyboard(false, false, false);
+        return getKeyboard(KeyboardId.ELEMENT_ALPHABET);
     }
 
-    public Keyboard getSymbolsKeyboard() {
-        return getKeyboard(true, false, false);
-    }
+    public Keyboard getKeyboard(int baseKeyboardSetElementId) {
+        final int keyboardSetElementId;
+        switch (mParams.mMode) {
+        case KeyboardId.MODE_PHONE:
+            keyboardSetElementId =
+                    (baseKeyboardSetElementId == KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED)
+                    ? KeyboardId.ELEMENT_PHONE_SHIFTED : KeyboardId.ELEMENT_PHONE;
+            break;
+        case KeyboardId.MODE_NUMBER:
+            keyboardSetElementId = KeyboardId.ELEMENT_NUMBER;
+            break;
+        default:
+            keyboardSetElementId = baseKeyboardSetElementId;
+            break;
+        }
 
-    public Keyboard getSymbolsShiftedKeyboard() {
-        final Keyboard keyboard = getKeyboard(true, false, true);
-        // TODO: Remove this logic once we introduce initial keyboard shift state attribute.
-        // Symbol shift keyboard may have a shift key that has a caps lock style indicator (a.k.a.
-        // sticky shift key). To show or dismiss the indicator, we need to call setShiftLocked()
-        // that takes care of the current keyboard having such shift key or not.
-        keyboard.setShiftLocked(keyboard.hasShiftLockKey());
+        Integer keyboardXmlId = mParams.mKeyboardSetElementIdToXmlIdMap.get(keyboardSetElementId);
+        if (keyboardXmlId == null) {
+            keyboardXmlId = mParams.mKeyboardSetElementIdToXmlIdMap.get(
+                    KeyboardId.ELEMENT_ALPHABET);
+        }
+        final KeyboardId id = getKeyboardId(keyboardSetElementId);
+        final Keyboard keyboard = getKeyboard(mContext, keyboardXmlId, id);
         return keyboard;
     }
 
-    private Keyboard getKeyboard(boolean isSymbols, boolean isShiftLock, boolean isShift) {
-        final int elementId = KeyboardSet.getElementId(
-                mParams.mMode, isSymbols, isShiftLock, isShift);
-        final KeyboardElement keyboardElement = mParams.mElementKeyboards.get(elementId);
-        // TODO: If keyboardElement.mAutoGenerate is true, the keyboard will be auto generated
-        // based on keyboardElement.mKayoutId Keyboard XML definition.
-        final KeyboardId id = KeyboardSet.getKeyboardId(elementId, isSymbols, mParams);
-        final Keyboard keyboard = getKeyboard(mContext, keyboardElement, id);
-        return keyboard;
-    }
-
-    public KeyboardId getMainKeyboardId() {
-        final int elementId = KeyboardSet.getElementId(mParams.mMode, false, false, false);
-        return KeyboardSet.getKeyboardId(elementId, false, mParams);
-    }
-
-    private Keyboard getKeyboard(Context context, KeyboardElement element, KeyboardId id) {
+    private Keyboard getKeyboard(Context context, int keyboardXmlId, KeyboardId id) {
         final Resources res = context.getResources();
         final SoftReference<Keyboard> ref = sKeyboardCache.get(id);
         Keyboard keyboard = (ref == null) ? null : ref.get();
@@ -160,10 +147,10 @@ public class KeyboardSet {
             try {
                 final Keyboard.Builder<Keyboard.Params> builder =
                         new Keyboard.Builder<Keyboard.Params>(context, new Keyboard.Params());
-                if (element.mAutoGenerate) {
+                if (id.isAlphabetKeyboard()) {
                     builder.setAutoGenerate(mKeysCache);
                 }
-                builder.load(element.mLayoutId, id);
+                builder.load(keyboardXmlId, id);
                 builder.setTouchPositionCorrectionEnabled(mParams.mTouchPositionCorrectionEnabled);
                 keyboard = builder.build();
             } finally {
@@ -179,36 +166,23 @@ public class KeyboardSet {
             Log.d(TAG, "keyboard cache size=" + sKeyboardCache.size() + ": HIT  id=" + id);
         }
 
-        // TODO: Remove setShiftLocked and setShift calls.
-        keyboard.setShiftLocked(false);
-        keyboard.setShifted(false);
         return keyboard;
     }
 
-    private static int getElementId(int mode, boolean isSymbols, boolean isShiftLock,
-            boolean isShift) {
-        switch (mode) {
-        case KeyboardId.MODE_PHONE:
-            return (isSymbols && isShift)
-                    ? KeyboardId.ELEMENT_PHONE_SHIFTED : KeyboardId.ELEMENT_PHONE;
-        case KeyboardId.MODE_NUMBER:
-            return KeyboardId.ELEMENT_NUMBER;
-        default:
-            if (isSymbols) {
-                return isShift
-                        ? KeyboardId.ELEMENT_SYMBOLS_SHIFTED : KeyboardId.ELEMENT_SYMBOLS;
-            }
-            // TODO: Consult isShiftLock and isShift to determine the element.
-            return KeyboardId.ELEMENT_ALPHABET;
-        }
-    }
-
-    private static KeyboardId getKeyboardId(int elementId, boolean isSymbols, Params params) {
+    // TODO: Make this method private.
+    // Note: The keyboard for each locale, shift state, and mode are represented as KeyboardSet
+    // element id that is a key in keyboard_set.xml.  Also that file specifies which XML layout
+    // should be used for each keyboard.  The KeyboardId is an internal key for Keyboard object.
+    public KeyboardId getKeyboardId(int keyboardSetElementId) {
+        final Params params = mParams;
+        final boolean isSymbols = (keyboardSetElementId == KeyboardId.ELEMENT_SYMBOLS
+                || keyboardSetElementId == KeyboardId.ELEMENT_SYMBOLS_SHIFTED);
         final boolean hasShortcutKey = params.mVoiceKeyEnabled
                 && (isSymbols != params.mVoiceKeyOnMain);
-        return new KeyboardId(elementId, params.mLocale, params.mOrientation, params.mWidth,
-                params.mMode, params.mInputType, params.mImeOptions, params.mSettingsKeyEnabled,
-                params.mNoSettingsKey, params.mVoiceKeyEnabled, hasShortcutKey);
+        return new KeyboardId(keyboardSetElementId, params.mLocale, params.mOrientation,
+                params.mWidth, params.mMode, params.mInputType, params.mImeOptions,
+                params.mSettingsKeyEnabled, params.mNoSettingsKey, params.mVoiceKeyEnabled,
+                hasShortcutKey);
     }
 
     public static class Builder {
@@ -345,10 +319,7 @@ public class KeyboardSet {
                         R.styleable.KeyboardSet_Element_elementName, 0);
                 final int elementKeyboard = a.getResourceId(
                         R.styleable.KeyboardSet_Element_elementKeyboard, 0);
-                final boolean elementAutoGenerate = a.getBoolean(
-                        R.styleable.KeyboardSet_Element_elementAutoGenerate, false);
-                mParams.mElementKeyboards.put(elementName, new KeyboardElement(
-                        elementName, elementKeyboard, elementAutoGenerate));
+                mParams.mKeyboardSetElementIdToXmlIdMap.put(elementName, elementKeyboard);
             } finally {
                 a.recycle();
             }

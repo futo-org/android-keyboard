@@ -53,12 +53,12 @@ import java.util.HashMap;
  * @attr ref R.styleable#KeyboardView_keyLargeLetterRatio
  * @attr ref R.styleable#KeyboardView_keyLabelRatio
  * @attr ref R.styleable#KeyboardView_keyHintLetterRatio
- * @attr ref R.styleable#KeyboardView_keyUppercaseLetterRatio
+ * @attr ref R.styleable#KeyboardView_keyShiftedLetterHintRatio
  * @attr ref R.styleable#KeyboardView_keyHintLabelRatio
  * @attr ref R.styleable#KeyboardView_keyLabelHorizontalPadding
  * @attr ref R.styleable#KeyboardView_keyHintLetterPadding
  * @attr ref R.styleable#KeyboardView_keyPopupHintLetterPadding
- * @attr ref R.styleable#KeyboardView_keyUppercaseLetterPadding
+ * @attr ref R.styleable#KeyboardView_keyShiftedLetterHintPadding
  * @attr ref R.styleable#KeyboardView_keyTextStyle
  * @attr ref R.styleable#KeyboardView_keyPreviewLayout
  * @attr ref R.styleable#KeyboardView_keyPreviewTextRatio
@@ -68,8 +68,8 @@ import java.util.HashMap;
  * @attr ref R.styleable#KeyboardView_keyTextColorDisabled
  * @attr ref R.styleable#KeyboardView_keyHintLetterColor
  * @attr ref R.styleable#KeyboardView_keyHintLabelColor
- * @attr ref R.styleable#KeyboardView_keyUppercaseLetterInactivatedColor
- * @attr ref R.styleable#KeyboardView_keyUppercaseLetterActivatedColor
+ * @attr ref R.styleable#KeyboardView_keyShiftedLetterHintInactivatedColor
+ * @attr ref R.styleable#KeyboardView_keyShiftedLetterHintActivatedColor
  * @attr ref R.styleable#KeyboardView_shadowColor
  * @attr ref R.styleable#KeyboardView_shadowRadius
  */
@@ -175,20 +175,20 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         public final float mKeyLabelHorizontalPadding;
         public final float mKeyHintLetterPadding;
         public final float mKeyPopupHintLetterPadding;
-        public final float mKeyUppercaseLetterPadding;
+        public final float mKeyShiftedLetterHintPadding;
         public final int mShadowColor;
         public final float mShadowRadius;
         public final Drawable mKeyBackground;
         public final int mKeyHintLetterColor;
         public final int mKeyHintLabelColor;
-        public final int mKeyUppercaseLetterInactivatedColor;
-        public final int mKeyUppercaseLetterActivatedColor;
+        public final int mKeyShiftedLetterHintInactivatedColor;
+        public final int mKeyShiftedLetterHintActivatedColor;
 
         private final float mKeyLetterRatio;
         private final float mKeyLargeLetterRatio;
         private final float mKeyLabelRatio;
         private final float mKeyHintLetterRatio;
-        private final float mKeyUppercaseLetterRatio;
+        private final float mKeyShiftedLetterHintRatio;
         private final float mKeyHintLabelRatio;
         private static final float UNDEFINED_RATIO = -1.0f;
 
@@ -197,7 +197,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         public int mKeyLargeLetterSize;
         public int mKeyLabelSize;
         public int mKeyHintLetterSize;
-        public int mKeyUppercaseLetterSize;
+        public int mKeyShiftedLetterHintSize;
         public int mKeyHintLabelSize;
 
         public KeyDrawParams(TypedArray a) {
@@ -216,8 +216,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             }
             mKeyLargeLetterRatio = getRatio(a, R.styleable.KeyboardView_keyLargeLetterRatio);
             mKeyHintLetterRatio = getRatio(a, R.styleable.KeyboardView_keyHintLetterRatio);
-            mKeyUppercaseLetterRatio = getRatio(a,
-                    R.styleable.KeyboardView_keyUppercaseLetterRatio);
+            mKeyShiftedLetterHintRatio = getRatio(a,
+                    R.styleable.KeyboardView_keyShiftedLetterHintRatio);
             mKeyHintLabelRatio = getRatio(a, R.styleable.KeyboardView_keyHintLabelRatio);
             mKeyLabelHorizontalPadding = a.getDimension(
                     R.styleable.KeyboardView_keyLabelHorizontalPadding, 0);
@@ -225,17 +225,17 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                     R.styleable.KeyboardView_keyHintLetterPadding, 0);
             mKeyPopupHintLetterPadding = a.getDimension(
                     R.styleable.KeyboardView_keyPopupHintLetterPadding, 0);
-            mKeyUppercaseLetterPadding = a.getDimension(
-                    R.styleable.KeyboardView_keyUppercaseLetterPadding, 0);
+            mKeyShiftedLetterHintPadding = a.getDimension(
+                    R.styleable.KeyboardView_keyShiftedLetterHintPadding, 0);
             mKeyTextColor = a.getColor(R.styleable.KeyboardView_keyTextColor, 0xFF000000);
             mKeyTextInactivatedColor = a.getColor(
                     R.styleable.KeyboardView_keyTextInactivatedColor, 0xFF000000);
             mKeyHintLetterColor = a.getColor(R.styleable.KeyboardView_keyHintLetterColor, 0);
             mKeyHintLabelColor = a.getColor(R.styleable.KeyboardView_keyHintLabelColor, 0);
-            mKeyUppercaseLetterInactivatedColor = a.getColor(
-                    R.styleable.KeyboardView_keyUppercaseLetterInactivatedColor, 0);
-            mKeyUppercaseLetterActivatedColor = a.getColor(
-                    R.styleable.KeyboardView_keyUppercaseLetterActivatedColor, 0);
+            mKeyShiftedLetterHintInactivatedColor = a.getColor(
+                    R.styleable.KeyboardView_keyShiftedLetterHintInactivatedColor, 0);
+            mKeyShiftedLetterHintActivatedColor = a.getColor(
+                    R.styleable.KeyboardView_keyShiftedLetterHintActivatedColor, 0);
             mKeyTextStyle = Typeface.defaultFromStyle(
                     a.getInt(R.styleable.KeyboardView_keyTextStyle, Typeface.NORMAL));
             mShadowColor = a.getColor(R.styleable.KeyboardView_shadowColor, 0);
@@ -251,7 +251,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 mKeyLabelSize = (int)(keyHeight * mKeyLabelRatio);
             mKeyLargeLetterSize = (int)(keyHeight * mKeyLargeLetterRatio);
             mKeyHintLetterSize = (int)(keyHeight * mKeyHintLetterRatio);
-            mKeyUppercaseLetterSize = (int)(keyHeight * mKeyUppercaseLetterRatio);
+            mKeyShiftedLetterHintSize = (int)(keyHeight * mKeyShiftedLetterHintRatio);
             mKeyHintLabelSize = (int)(keyHeight * mKeyHintLabelRatio);
         }
     }
@@ -527,8 +527,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         final Drawable icon = key.getIcon(mKeyboard.mIconsSet);
         float positionX = centerX;
         if (key.mLabel != null) {
-            // Switch the character to uppercase if shift is pressed
-            final String label = mKeyboard.adjustLabelCase(key.mLabel);
+            final String label = key.mLabel;
             // For characters, use large font. For labels like "Done", use smaller font.
             paint.setTypeface(key.selectTypeface(params.mKeyTextStyle));
             final int labelSize = key.selectTextSize(params.mKeyLetterSize,
@@ -571,14 +570,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                         Math.min(1.0f, (keyWidth * MAX_LABEL_RATIO) / getLabelWidth(label, paint)));
             }
 
-            // TODO: Remove this first if-clause.
-            if (key.hasUppercaseLetter() && mKeyboard.isManualTemporaryUpperCase()) {
-                paint.setColor(params.mKeyTextInactivatedColor);
-            } else if (key.isInactivatedLabel()) {
-                paint.setColor(params.mKeyTextInactivatedColor);
-            } else {
-                paint.setColor(params.mKeyTextColor);
-            }
+            paint.setColor(key.isShiftedLetterActivated()
+                    ? params.mKeyTextInactivatedColor : params.mKeyTextColor);
             if (key.isEnabled()) {
                 // Set a drop shadow for the text
                 paint.setShadowLayer(params.mShadowRadius, 0, 0, params.mShadowColor);
@@ -620,16 +613,11 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 hintColor = params.mKeyHintLabelColor;
                 hintSize = params.mKeyHintLabelSize;
                 paint.setTypeface(Typeface.DEFAULT);
-            } else if (key.hasUppercaseLetter()) {
-                // TODO: Remove this first if-clause.
-                if (mKeyboard.isManualTemporaryUpperCase()) {
-                    hintColor = params.mKeyUppercaseLetterActivatedColor;
-                } else if (!key.isInactivatedUppercaseLetter()) {
-                    hintColor = params.mKeyUppercaseLetterActivatedColor;
-                } else {
-                    hintColor = params.mKeyUppercaseLetterInactivatedColor;
-                }
-                hintSize = params.mKeyUppercaseLetterSize;
+            } else if (key.hasShiftedLetterHint()) {
+                hintColor = key.isShiftedLetterActivated()
+                        ? params.mKeyShiftedLetterHintActivatedColor
+                        : params.mKeyShiftedLetterHintInactivatedColor;
+                hintSize = params.mKeyShiftedLetterHintSize;
             } else { // key.hasHintLetter()
                 hintColor = params.mKeyHintLetterColor;
                 hintSize = params.mKeyHintLetterSize;
@@ -644,9 +632,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 hintX = positionX + getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) * 2;
                 hintY = centerY + getCharHeight(KEY_LABEL_REFERENCE_CHAR, paint) / 2;
                 paint.setTextAlign(Align.LEFT);
-            } else if (key.hasUppercaseLetter()) {
+            } else if (key.hasShiftedLetterHint()) {
                 // The hint label is placed at top-right corner of the key. Used mainly on tablet.
-                hintX = keyWidth - params.mKeyUppercaseLetterPadding
+                hintX = keyWidth - params.mKeyShiftedLetterHintPadding
                         - getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) / 2;
                 hintY = -paint.ascent();
                 paint.setTextAlign(Align.CENTER);
@@ -870,7 +858,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, params.mPreviewTextSize);
                 previewText.setTypeface(params.mKeyTextStyle);
             }
-            previewText.setText(mKeyboard.adjustLabelCase(key.mLabel));
+            previewText.setText(key.mLabel);
         } else {
             final Drawable previewIcon = mKeyboard.mIconsSet.getIconByAttrId(
                     key.mPreviewIconAttrId);

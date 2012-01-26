@@ -705,7 +705,7 @@ public class PointerTracker {
             if (sParams.mLongPressSpaceKeyTimeout > 0) {
                 mTimerProxy.startLongPressTimer(sParams.mLongPressSpaceKeyTimeout, this);
             }
-        } else if (key.hasUppercaseLetter() && mKeyboard.isManualTemporaryUpperCase()) {
+        } else if (key.hasShiftedLetterHint() && mKeyboard.isManualShifted()) {
             // We need not start long press timer on the key which has manual temporary upper case
             // code defined and the keyboard is in manual temporary upper case mode.
             return;
@@ -726,13 +726,6 @@ public class PointerTracker {
         int code = key.mCode;
         final int[] codes = mKeyDetector.newCodeArray();
         mKeyDetector.getKeyAndNearbyCodes(x, y, codes);
-
-        // If keyboard is in manual temporary upper case state and key has manual temporary
-        // uppercase letter as key hint letter, alternate character code should be sent.
-        if (mKeyboard.isManualTemporaryUpperCase() && key.hasUppercaseLetter()) {
-            code = key.mHintLabel.charAt(0);
-            codes[0] = code;
-        }
 
         // Swap the first and second values in the codes array if the primary code is not the
         // first value but the second value in the array. This happens when key debouncing is

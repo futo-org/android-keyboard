@@ -33,18 +33,18 @@
         >
             <Key
                 latin:keyLabel="-"
-                latin:keyLabelFlags="hasUppercaseLetter"
                 latin:keyHintLabel="_"
-                latin:moreKeys="_" />
+                latin:moreKeys="_"
+                latin:keyStyle="hasShiftedLetterHintStyle" />
         </case>
         <case
             latin:imeAction="actionSearch"
         >
             <Key
                 latin:keyLabel=":"
-                latin:keyLabelFlags="hasUppercaseLetter"
                 latin:keyHintLabel="+"
-                latin:moreKeys="+" />
+                latin:moreKeys="+"
+                latin:keyStyle="hasShiftedLetterHintStyle" />
         </case>
         <default>
             <Key
