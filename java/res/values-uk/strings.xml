@@ -35,11 +35,10 @@
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Затримка клавіши закриття"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Без затримки"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"За умовчанням"</string>
-    <!-- no translation found for use_contacts_dict (4435317977804180815) -->
-    <skip />
-    <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
-    <skip />
+    <string name="use_contacts_dict" msgid="4435317977804180815">"Пропон. імена контактів"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Використ. імена зі списку контактів для пропозицій і виправлень"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Авто викор. вел. літер"</string>
+    <string name="configure_dictionaries_title" msgid="3758288002414557345">"Налаштувати словники"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Шв. виправлення"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Виправляє поширені помилки"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показувати пропозиції виправлень"</string>
@@ -47,7 +46,7 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Завжди показувати"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Показувати в книжковому режимі"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Завжди ховати"</string>
-    <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"Використ. зміну мови пробілом"</string>
+    <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"Зміна мови пробілом"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Показ. клав. налашт."</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Автоматично"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Завжди показ."</string>
@@ -57,6 +56,7 @@
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Вимк."</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Середнє"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Повне"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Повне виправлення"</string>
     <string name="bigram_suggestion" msgid="2636414079905220518">"Пропозиції з двох слів"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Викор. попер. слово для покращ. пропозиції"</string>
     <string name="bigram_prediction" msgid="8914273444762259739">"Передбачений запит  із двох слів"</string>
@@ -70,6 +70,42 @@
     <string name="label_more_key" msgid="3760239494604948502">"Більше"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Пауза"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Чек."</string>
+    <string name="spoken_current_text_is" msgid="2485723011272583845">"Поточний текст – %s."</string>
+    <string name="spoken_no_text_entered" msgid="7479685225597344496">"Текст не введено"</string>
+    <string name="spoken_description_unknown" msgid="3197434010402179157">"Код клавіші – %d"</string>
+    <string name="spoken_description_shift" msgid="244197883292549308">"Клавіша Shift"</string>
+    <string name="spoken_description_shift_shifted" msgid="954941524766465022">"Shift увімкнено"</string>
+    <string name="spoken_description_caps_lock" msgid="5660626444912131764">"Caps Lock увімкнено"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"Клавіша Delete"</string>
+    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Символи"</string>
+    <string name="spoken_description_to_alpha" msgid="23129338819771807">"Літери"</string>
+    <string name="spoken_description_to_numeric" msgid="591752092685161732">"Цифри"</string>
+    <string name="spoken_description_settings" msgid="4627462689603838099">"Налаштування"</string>
+    <string name="spoken_description_tab" msgid="2667716002663482248">"Вкладка"</string>
+    <string name="spoken_description_space" msgid="2582521050049860859">"Пробіл"</string>
+    <string name="spoken_description_mic" msgid="615536748882611950">"Голосовий ввід"</string>
+    <string name="spoken_description_smiley" msgid="2256309826200113918">"Смайлик"</string>
+    <string name="spoken_description_return" msgid="8178083177238315647">"Клавіша Return"</string>
+    <string name="spoken_description_comma" msgid="4970844442999724586">"Кома"</string>
+    <string name="spoken_description_period" msgid="5286614628077903945">"Крапка"</string>
+    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"Ліва дужка"</string>
+    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"Права дужка"</string>
+    <string name="spoken_description_colon" msgid="4312420908484277077">"Двокрапка"</string>
+    <string name="spoken_description_semicolon" msgid="37737920987155179">"Крапка з комою"</string>
+    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"Знак оклику"</string>
+    <string name="spoken_description_question_mark" msgid="7074097784255379666">"Знак питання"</string>
+    <string name="spoken_description_double_quote" msgid="5485320575389905967">"Подвійні лапки"</string>
+    <string name="spoken_description_single_quote" msgid="4451320362665463938">"Одинарні лапки"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"Крапка"</string>
+    <string name="spoken_description_square_root" msgid="190595160284757811">"Квадратний корінь"</string>
+    <string name="spoken_description_pi" msgid="4554418247799952239">"Пі"</string>
+    <string name="spoken_description_delta" msgid="3607948313655721579">"Дельта"</string>
+    <string name="spoken_description_trademark" msgid="475877774077871369">"Торговельна марка"</string>
+    <string name="spoken_description_care_of" msgid="7492800237237796530">"Через"</string>
+    <string name="spoken_description_star" msgid="1009742725387231977">"Зірочка"</string>
+    <string name="spoken_description_pound" msgid="5530577649206922631">"Решітка"</string>
+    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"Три крапки"</string>
+    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"Нижні подвійні лапки"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Голос. ввід"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Голос. ввід наразі не підтрим. для вашої мови, але можна користуватися англійською."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Голосовий ввід використовує розпізнавання мовлення Google. Застосовується "<a href="http://m.google.com/privacy">"Політика конфіденційності для мобільних пристроїв"</a>"."</string>
@@ -106,32 +142,31 @@
     <string name="prefs_description_log" msgid="5827825607258246003">"Допоможіть покращ. редактор методу введ., автомат. надсилаючи в Google статистику використ. та звіти про збої."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Торкн., щоб виправ. слова"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Торкніться введених слів, щоб виправити їх, лише коли ввімкнено пропозиції"</string>
-    <string name="keyboard_layout" msgid="437433231038683666">"Тема клавіатури"</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"Тема клавіатури"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Чеська розкладка"</string>
     <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Розкладка для арабської мови"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Данська розкладка"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Німецька розкладка"</string>
+    <string name="subtype_mode_de_qwerty_keyboard" msgid="54890770769303956">"Німецька клавіатура QWERTY"</string>
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Англ. розкладка (Великобританія)"</string>
     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Англійська розкладка (США)"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Іспанська розкладка"</string>
-    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
-    <skip />
+    <string name="subtype_mode_fi_keyboard" msgid="3198596464082614532">"Розкладка для фінської мови"</string>
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Французька розкладка"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Французька розкладка (Канада)"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Французька розкладка (Швейцарія)"</string>
-    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
-    <skip />
-    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
-    <skip />
+    <string name="subtype_mode_hr_keyboard" msgid="7177182405440070112">"Розкладка для хорватської мови"</string>
+    <string name="subtype_mode_hu_keyboard" msgid="8843338355732633647">"Розкладка для угорської мови"</string>
     <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Розкладка для івриту"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Італійська розкладка"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Норвезька розкладка"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Голланд. розклад."</string>
-    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"Польська розкладка"</string>
-    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"Португальська розкладка"</string>
+    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"Розкладка для польської мови"</string>
+    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"Розкладка для португальської мови"</string>
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Російська розкладка"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Сербська розкладка"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Шведська розкладка"</string>
+    <string name="subtype_mode_tr_keyboard" msgid="3155981874829226370">"Розкладка для турецької мови"</string>
     <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Voice мовою африкаанс"</string>
     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Голос чеською"</string>
     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Голос німецькою"</string>
@@ -149,5 +184,5 @@
     <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Voice китайською, юеською мовою"</string>
     <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Voice китайською, мандарин. мовою"</string>
     <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"Voice мовою ісізулу"</string>
-    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Режим вивчення зручності у використанні"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Режим вивчення зручності у використанні"</string>
 </resources>

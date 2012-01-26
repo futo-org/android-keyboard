@@ -35,11 +35,10 @@
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"關閉彈出式鍵盤的延遲時間"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"不延遲"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"預設"</string>
-    <!-- no translation found for use_contacts_dict (4435317977804180815) -->
-    <skip />
-    <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
-    <skip />
+    <string name="use_contacts_dict" msgid="4435317977804180815">"建議聯絡人名稱"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"根據「聯絡人」名稱提供建議與修正"</string>
     <string name="auto_cap" msgid="1719746674854628252">"自動大寫"</string>
+    <string name="configure_dictionaries_title" msgid="3758288002414557345">"設定字典"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"快速修正"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"修正一般打字錯誤"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"顯示修正建議"</string>
@@ -48,15 +47,16 @@
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"以垂直模式顯示"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"永遠隱藏"</string>
     <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"使用空白鍵切換語言"</string>
-    <string name="prefs_settings_key" msgid="4623341240804046498">"顯示設定金鑰"</string>
+    <string name="prefs_settings_key" msgid="4623341240804046498">"顯示設定鍵"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"自動"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"一律顯示"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"永遠隱藏"</string>
     <string name="auto_correction" msgid="4979925752001319458">"自動修正"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"自動插入空白鍵和標點符號鍵盤，以修正拼字錯誤"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"按空白鍵或標點符號時，自動修正前面的錯字"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"關閉"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"部分"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"全部"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"更正範圍極大"</string>
     <string name="bigram_suggestion" msgid="2636414079905220518">"雙連詞建議"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"根據前一個字詞自動找出更適合的建議"</string>
     <string name="bigram_prediction" msgid="8914273444762259739">"雙連詞預測"</string>
@@ -70,10 +70,46 @@
     <string name="label_more_key" msgid="3760239494604948502">"更多"</string>
     <string name="label_pause_key" msgid="181098308428035340">"暫停"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"等候"</string>
+    <string name="spoken_current_text_is" msgid="2485723011272583845">"目前文字為 %s"</string>
+    <string name="spoken_no_text_entered" msgid="7479685225597344496">"未輸入文字"</string>
+    <string name="spoken_description_unknown" msgid="3197434010402179157">"按鍵代碼 %d"</string>
+    <string name="spoken_description_shift" msgid="244197883292549308">"Shift 鍵"</string>
+    <string name="spoken_description_shift_shifted" msgid="954941524766465022">"Shift 鍵已啟用"</string>
+    <string name="spoken_description_caps_lock" msgid="5660626444912131764">"大寫鎖定已啟用"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"刪除"</string>
+    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"符號"</string>
+    <string name="spoken_description_to_alpha" msgid="23129338819771807">"字母"</string>
+    <string name="spoken_description_to_numeric" msgid="591752092685161732">"數字"</string>
+    <string name="spoken_description_settings" msgid="4627462689603838099">"設定"</string>
+    <string name="spoken_description_tab" msgid="2667716002663482248">"Tab 鍵"</string>
+    <string name="spoken_description_space" msgid="2582521050049860859">"空白鍵"</string>
+    <string name="spoken_description_mic" msgid="615536748882611950">"語音輸入"</string>
+    <string name="spoken_description_smiley" msgid="2256309826200113918">"笑臉"</string>
+    <string name="spoken_description_return" msgid="8178083177238315647">"返回"</string>
+    <string name="spoken_description_comma" msgid="4970844442999724586">"逗號"</string>
+    <string name="spoken_description_period" msgid="5286614628077903945">"句號"</string>
+    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"左括弧"</string>
+    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"右括弧"</string>
+    <string name="spoken_description_colon" msgid="4312420908484277077">"冒號"</string>
+    <string name="spoken_description_semicolon" msgid="37737920987155179">"分號"</string>
+    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"驚嘆號"</string>
+    <string name="spoken_description_question_mark" msgid="7074097784255379666">"問號"</string>
+    <string name="spoken_description_double_quote" msgid="5485320575389905967">"雙引號"</string>
+    <string name="spoken_description_single_quote" msgid="4451320362665463938">"單引號"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"點"</string>
+    <string name="spoken_description_square_root" msgid="190595160284757811">"平方根"</string>
+    <string name="spoken_description_pi" msgid="4554418247799952239">"圓周率"</string>
+    <string name="spoken_description_delta" msgid="3607948313655721579">"Delta"</string>
+    <string name="spoken_description_trademark" msgid="475877774077871369">"商標"</string>
+    <string name="spoken_description_care_of" msgid="7492800237237796530">"百分比"</string>
+    <string name="spoken_description_star" msgid="1009742725387231977">"星號"</string>
+    <string name="spoken_description_pound" msgid="5530577649206922631">"井字鍵"</string>
+    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"省略符號"</string>
+    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"下雙引號"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"語音輸入"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"語音輸入目前不支援您的語言，但是可以辨識英文。"</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"語音輸入使用 Google 的語音辨識功能，並遵循《"<a href="http://m.google.com/privacy">"行動服務隱私權政策"</a>"》。"</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"如要關閉語音輸入，請前往輸入方式設定。"</string>
+    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"如要關閉語音輸入，請前往輸入法設定。"</string>
     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"如要使用語音輸入，請按下麥克風按鈕。"</string>
     <string name="voice_listening" msgid="467518160751321844">"請說話"</string>
     <string name="voice_working" msgid="6666937792815731889">"辨識中"</string>
@@ -97,7 +133,7 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"主鍵盤上的麥克風"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"符號鍵盤上的麥克風"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"語音輸入已停用"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"選取輸入法"</string>
+    <string name="selectInputMethod" msgid="315076553378705821">"選擇輸入法"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"輸入語言"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"以手指在空白鍵上滑動可變更語言"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← 再次輕觸即可儲存"</string>
@@ -106,23 +142,21 @@
     <string name="prefs_description_log" msgid="5827825607258246003">"自動將使用統計資料和當機報告傳送給 Google，協助改善這個輸入法編輯器。"</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"輕觸此處可修正字詞"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"輕觸輸入的字詞即可加以修正 (出現建議時才適用)"</string>
-    <string name="keyboard_layout" msgid="437433231038683666">"鍵盤主題"</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"鍵盤主題"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"捷克文鍵盤"</string>
     <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"阿拉伯文鍵盤"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"丹麥文鍵盤"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"德文鍵盤"</string>
+    <string name="subtype_mode_de_qwerty_keyboard" msgid="54890770769303956">"德文 QWERTY 鍵盤"</string>
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"英文 (英國) 鍵盤"</string>
     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"英文 (美國) 鍵盤"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"西班牙文鍵盤"</string>
-    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
-    <skip />
+    <string name="subtype_mode_fi_keyboard" msgid="3198596464082614532">"芬蘭文鍵盤"</string>
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"法文鍵盤"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"法文 (加拿大) 鍵盤"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"法文 (瑞士) 鍵盤"</string>
-    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
-    <skip />
-    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
-    <skip />
+    <string name="subtype_mode_hr_keyboard" msgid="7177182405440070112">"克羅埃西亞文鍵盤"</string>
+    <string name="subtype_mode_hu_keyboard" msgid="8843338355732633647">"匈牙利文鍵盤"</string>
     <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"希伯來文鍵盤"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"義大利文鍵盤"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"挪威文鍵盤"</string>
@@ -132,6 +166,7 @@
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"俄文鍵盤"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"塞爾維亞文鍵盤"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"瑞典文語音"</string>
+    <string name="subtype_mode_tr_keyboard" msgid="3155981874829226370">"土耳其文鍵盤"</string>
     <string name="subtype_mode_af_voice" msgid="7542487489657902699">"南非荷蘭文語音"</string>
     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"捷克文語音"</string>
     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"德文語音"</string>
@@ -149,5 +184,5 @@
     <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"中文 (粵語) 語音"</string>
     <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"中文 (華語) 語音"</string>
     <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"祖魯文語音"</string>
-    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"使用習慣學習模式"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"使用性研究模式"</string>
 </resources>

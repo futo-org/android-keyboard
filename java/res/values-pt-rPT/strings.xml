@@ -35,11 +35,10 @@
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Atraso p/ ignorar pop-up"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Sem atraso"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Predefinido"</string>
-    <!-- no translation found for use_contacts_dict (4435317977804180815) -->
-    <skip />
-    <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
-    <skip />
+    <string name="use_contacts_dict" msgid="4435317977804180815">"Sugerir nomes de Contactos"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Utilizar nomes dos Contactos para sugestões e correções"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Letras maiúsculas automáticas"</string>
+    <string name="configure_dictionaries_title" msgid="3758288002414557345">"Configurar dicionários"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Correcções rápidas"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Corrige os erros de escrita comuns"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Mostrar sugestões de correcção"</string>
@@ -57,19 +56,56 @@
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Desligar"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderada"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agressiva"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Muito agressivo"</string>
     <string name="bigram_suggestion" msgid="2636414079905220518">"Sugestões Bigram"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Utilizar a palavra anterior para melhorar a sugestão"</string>
     <string name="bigram_prediction" msgid="8914273444762259739">"Predição Bigram"</string>
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"Utilizar a palavra anterior também para predição"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: guardada"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"Ir"</string>
-    <string name="label_next_key" msgid="362972844525672568">"Seguinte"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"OK"</string>
+    <string name="label_next_key" msgid="362972844525672568">"Avançar"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Feito"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Enviar"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_more_key" msgid="3760239494604948502">"Mais"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pausa"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Esp."</string>
+    <string name="spoken_current_text_is" msgid="2485723011272583845">"O texto atual é %s"</string>
+    <string name="spoken_no_text_entered" msgid="7479685225597344496">"Nenhum texto digitado"</string>
+    <string name="spoken_description_unknown" msgid="3197434010402179157">"Código da tecla %d"</string>
+    <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
+    <string name="spoken_description_shift_shifted" msgid="954941524766465022">"Shift ativado"</string>
+    <string name="spoken_description_caps_lock" msgid="5660626444912131764">"Caps lock ativado"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"Delete"</string>
+    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Símbolos"</string>
+    <string name="spoken_description_to_alpha" msgid="23129338819771807">"Letras"</string>
+    <string name="spoken_description_to_numeric" msgid="591752092685161732">"Números"</string>
+    <string name="spoken_description_settings" msgid="4627462689603838099">"Definições"</string>
+    <string name="spoken_description_tab" msgid="2667716002663482248">"Tab"</string>
+    <string name="spoken_description_space" msgid="2582521050049860859">"Espaço"</string>
+    <string name="spoken_description_mic" msgid="615536748882611950">"Entrada de voz"</string>
+    <string name="spoken_description_smiley" msgid="2256309826200113918">"Cara sorridente"</string>
+    <string name="spoken_description_return" msgid="8178083177238315647">"Enter"</string>
+    <string name="spoken_description_comma" msgid="4970844442999724586">"Vírgula"</string>
+    <string name="spoken_description_period" msgid="5286614628077903945">"Ponto final"</string>
+    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"Parêntese esquerdo"</string>
+    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"Parêntese direito"</string>
+    <string name="spoken_description_colon" msgid="4312420908484277077">"Dois pontos"</string>
+    <string name="spoken_description_semicolon" msgid="37737920987155179">"Ponto e vírgula"</string>
+    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"Ponto de exclamação"</string>
+    <string name="spoken_description_question_mark" msgid="7074097784255379666">"Ponto de interrogação"</string>
+    <string name="spoken_description_double_quote" msgid="5485320575389905967">"Aspas"</string>
+    <string name="spoken_description_single_quote" msgid="4451320362665463938">"Plica"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"Ponto"</string>
+    <string name="spoken_description_square_root" msgid="190595160284757811">"Raiz quadrada"</string>
+    <string name="spoken_description_pi" msgid="4554418247799952239">"Pi"</string>
+    <string name="spoken_description_delta" msgid="3607948313655721579">"Delta"</string>
+    <string name="spoken_description_trademark" msgid="475877774077871369">"Marca comercial"</string>
+    <string name="spoken_description_care_of" msgid="7492800237237796530">"Ao cuidado de"</string>
+    <string name="spoken_description_star" msgid="1009742725387231977">"Marcar com estrela"</string>
+    <string name="spoken_description_pound" msgid="5530577649206922631">"Cardinal"</string>
+    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"Reticências"</string>
+    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"Aspas duplas baixas"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Entrada de voz"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Actualmente, a entrada de voz não é suportada para o seu idioma, mas funciona em inglês."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"A entrada de voz utiliza o reconhecimento de voz da Google. É aplicável a "<a href="http://m.google.com/privacy">"Política de privacidade do Google Mobile"</a>"."</string>
@@ -97,33 +133,31 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mic. tecl. principal"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mic. tecl. símbolos"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Entr. voz desact."</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Seleccionar método de entrada"</string>
+    <string name="selectInputMethod" msgid="315076553378705821">"Selecionar método de entrada"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas de entrada"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Deslize o dedo pela barra de espaço para alterar o idioma"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Toque novamente para guardar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicionário disponível"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Activar comentários do utilizador"</string>
-    <string name="prefs_description_log" msgid="5827825607258246003">"Envie automaticamente estatísticas de utilização e relatórios de falhas para a Google e ajude-nos a melhor este editor de método de introdução."</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"Envie automaticamente estatísticas de utilização e relatórios de falhas para a Google e ajude-nos a melhorar este editor de método de introdução."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tocar para corrigir palavras"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Tocar nas palavras introduzidas para as corrigir, apenas quando as sugestões estiverem visíveis"</string>
-    <string name="keyboard_layout" msgid="437433231038683666">"Tema do teclado"</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"Tema do teclado"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Teclado checo"</string>
-    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Teclado árabe"</string>
+    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Teclado Árabe"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Teclado dinamarquês"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Teclado alemão"</string>
+    <string name="subtype_mode_de_qwerty_keyboard" msgid="54890770769303956">"Teclado QWERTY Alemão"</string>
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Teclado inglês (Reino Unido)"</string>
     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Teclado inglês (EUA)"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Teclado espanhol"</string>
-    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
-    <skip />
+    <string name="subtype_mode_fi_keyboard" msgid="3198596464082614532">"Teclado Finlandês"</string>
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Teclado francês"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Teclado francês (Canadá)"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Teclado francês (Suíça)"</string>
-    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
-    <skip />
-    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
-    <skip />
-    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Teclado hebraico"</string>
+    <string name="subtype_mode_hr_keyboard" msgid="7177182405440070112">"Teclado Croata"</string>
+    <string name="subtype_mode_hu_keyboard" msgid="8843338355732633647">"Teclado Húngaro"</string>
+    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Teclado Hebraico"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Teclado italiano"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Teclado norueguês"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Teclado holandês"</string>
@@ -132,6 +166,7 @@
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Teclado russo"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Teclado sérvio"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Teclado sueco"</string>
+    <string name="subtype_mode_tr_keyboard" msgid="3155981874829226370">"Teclado Turco"</string>
     <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Voz em africânder"</string>
     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Voz checa"</string>
     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Voz alemã"</string>
@@ -149,5 +184,5 @@
     <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Voz em yue, chinês"</string>
     <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Voz em mandarim, chinês"</string>
     <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"Voz em isiZulu"</string>
-    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Modo de estudo da capacidade de utilização"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modo de estudo da capacidade de utilização"</string>
 </resources>

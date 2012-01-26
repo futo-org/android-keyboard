@@ -35,11 +35,10 @@
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Gombeltüntetés késése"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Nincs késés"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Alapbeállítás"</string>
-    <!-- no translation found for use_contacts_dict (4435317977804180815) -->
-    <skip />
-    <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
-    <skip />
+    <string name="use_contacts_dict" msgid="4435317977804180815">"Javasolt névjegyek"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"A névjegyek használata a javaslatokhoz és javításokhoz"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Automatikusan nagy kezdőbetű"</string>
+    <string name="configure_dictionaries_title" msgid="3758288002414557345">"Szótárak konfigurálása"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Gyorsjavítások"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Kijavítja a gyakori gépelési hibákat"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Javítási ajánlások megjelenítése"</string>
@@ -47,7 +46,7 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Mindig látszik"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Megjelenítés álló tájolásban"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Mindig rejtve"</string>
-    <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"Nyelvváltó: szóköz"</string>
+    <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"Nyelvváltás: szóköz"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Beállítások billentyű megjelenítése"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatikus"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Mindig látszik"</string>
@@ -57,6 +56,7 @@
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Ki"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Mérsékelt"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agresszív"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Nagyon agresszív"</string>
     <string name="bigram_suggestion" msgid="2636414079905220518">"Bigram javaslatok"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Előző szó használata a javaslatok javításához"</string>
     <string name="bigram_prediction" msgid="8914273444762259739">"Bigram előrejelzés"</string>
@@ -70,6 +70,42 @@
     <string name="label_more_key" msgid="3760239494604948502">"Egyebek"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Szün."</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Vár"</string>
+    <string name="spoken_current_text_is" msgid="2485723011272583845">"A jelenlegi szöveg: %s"</string>
+    <string name="spoken_no_text_entered" msgid="7479685225597344496">"Szöveg nincs megadva"</string>
+    <string name="spoken_description_unknown" msgid="3197434010402179157">"Billentyűkód: %d"</string>
+    <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
+    <string name="spoken_description_shift_shifted" msgid="954941524766465022">"Shift engedélyezve"</string>
+    <string name="spoken_description_caps_lock" msgid="5660626444912131764">"Caps lock bekapcsolva"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"Törlés"</string>
+    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Szimbólumok"</string>
+    <string name="spoken_description_to_alpha" msgid="23129338819771807">"Betűk"</string>
+    <string name="spoken_description_to_numeric" msgid="591752092685161732">"Számok"</string>
+    <string name="spoken_description_settings" msgid="4627462689603838099">"Beállítások"</string>
+    <string name="spoken_description_tab" msgid="2667716002663482248">"Tab"</string>
+    <string name="spoken_description_space" msgid="2582521050049860859">"Szóköz"</string>
+    <string name="spoken_description_mic" msgid="615536748882611950">"Hangbevitel"</string>
+    <string name="spoken_description_smiley" msgid="2256309826200113918">"Mosolygós arc"</string>
+    <string name="spoken_description_return" msgid="8178083177238315647">"Enter"</string>
+    <string name="spoken_description_comma" msgid="4970844442999724586">"Vessző"</string>
+    <string name="spoken_description_period" msgid="5286614628077903945">"Pont"</string>
+    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"Nyitó zárójel"</string>
+    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"Berekesztő zárójel"</string>
+    <string name="spoken_description_colon" msgid="4312420908484277077">"Kettőspont"</string>
+    <string name="spoken_description_semicolon" msgid="37737920987155179">"Pontosvessző"</string>
+    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"Felkiáltójel"</string>
+    <string name="spoken_description_question_mark" msgid="7074097784255379666">"Kérdőjel"</string>
+    <string name="spoken_description_double_quote" msgid="5485320575389905967">"Dupla idézőjel"</string>
+    <string name="spoken_description_single_quote" msgid="4451320362665463938">"Szimpla idézőjel"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"Pont"</string>
+    <string name="spoken_description_square_root" msgid="190595160284757811">"Négyzetgyök"</string>
+    <string name="spoken_description_pi" msgid="4554418247799952239">"Pi"</string>
+    <string name="spoken_description_delta" msgid="3607948313655721579">"Delta"</string>
+    <string name="spoken_description_trademark" msgid="475877774077871369">"Védjegy"</string>
+    <string name="spoken_description_care_of" msgid="7492800237237796530">"Százalék"</string>
+    <string name="spoken_description_star" msgid="1009742725387231977">"Csillag"</string>
+    <string name="spoken_description_pound" msgid="5530577649206922631">"Kettős kereszt"</string>
+    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"Kihagyás"</string>
+    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"Alsó dupla idézőjel"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Hangbevitel"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"A hangbevitel szolgáltatás jelenleg nem támogatja az Ön nyelvét, ám angolul működik."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"A hangbevitel a Google beszédfelismerő technológiáját használja, amelyre a "<a href="http://m.google.com/privacy">"Mobil adatvédelmi irányelvek"</a>" érvényesek."</string>
@@ -106,32 +142,31 @@
     <string name="prefs_description_log" msgid="5827825607258246003">"Segíthet ennek a beviteli módszernek a javításában, ha engedélyezi a használati statisztikák és a hibajelentések elküldését a Google-nak."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Javítás a szavak megérintésével"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"A beírt szavakat csak akkor javíthatja ki megérintve, ha látszanak javaslatok"</string>
-    <string name="keyboard_layout" msgid="437433231038683666">"Billentyűzettéma"</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"Billentyűzettéma"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Cseh billentyűzet"</string>
-    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Arab billentyűzet"</string>
+    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"arab billentyűzetkiosztás"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Dán billentyűzet"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Német billentyűzet"</string>
+    <string name="subtype_mode_de_qwerty_keyboard" msgid="54890770769303956">"német billentyűzetkiosztás (QWERTY)"</string>
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Angol (UK) billentyűzet"</string>
     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Angol (US) billentyűzet"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Spanyol billentyűzet"</string>
-    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
-    <skip />
+    <string name="subtype_mode_fi_keyboard" msgid="3198596464082614532">"finn billentyűzetkiosztás"</string>
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Francia billentyűzet"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Francia (kanadai) billentyűzet"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Francia (svájci) billentyűzet"</string>
-    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
-    <skip />
-    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
-    <skip />
-    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Héber billentyűzet"</string>
+    <string name="subtype_mode_hr_keyboard" msgid="7177182405440070112">"horvát billentyűzetkiosztás"</string>
+    <string name="subtype_mode_hu_keyboard" msgid="8843338355732633647">"magyar billentyűzetkiosztás"</string>
+    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"héber billentyűzetkiosztás"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Olasz billentyűzet"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norvég billentyűzet"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Holland billentyűzet"</string>
-    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"Lengyel billentyűzet"</string>
-    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"Portugál billentyűzet"</string>
+    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"lengyel billentyűzetkiosztás"</string>
+    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"portugál billentyűzetkiosztás"</string>
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Orosz billentyűzet"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Szerb billentyűzet"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Svéd billentyűzet"</string>
+    <string name="subtype_mode_tr_keyboard" msgid="3155981874829226370">"török billentyűzetkiosztás"</string>
     <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Afrikaans hang"</string>
     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Cseh hang"</string>
     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Német hang"</string>
@@ -149,5 +184,5 @@
     <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Kínai (jüe) hang"</string>
     <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Kínai (mandarin) hang"</string>
     <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"isiZulu hang"</string>
-    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Használhatóság - tanulás mód"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Használhatósági teszt"</string>
 </resources>

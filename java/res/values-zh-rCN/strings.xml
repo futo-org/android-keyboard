@@ -31,15 +31,14 @@
     <string name="ngram_category" msgid="5337109164339320257">"根据前面的字词提供建议"</string>
     <string name="misc_category" msgid="6894192814868233453">"其他选项"</string>
     <string name="advanced_settings" msgid="362895144495591463">"高级设置"</string>
-    <string name="advanced_settings_summary" msgid="5193513161106637254">"适合专家级用户的选项"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"关闭弹出式键盘的延迟"</string>
+    <string name="advanced_settings_summary" msgid="5193513161106637254">"适合于资深用户的选项"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"关闭弹出键时的延迟"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"无延迟"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"默认"</string>
-    <!-- no translation found for use_contacts_dict (4435317977804180815) -->
-    <skip />
-    <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
-    <skip />
+    <string name="use_contacts_dict" msgid="4435317977804180815">"推荐联系人姓名"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"使用联系人中的姓名提供建议和更正"</string>
     <string name="auto_cap" msgid="1719746674854628252">"自动大写"</string>
+    <string name="configure_dictionaries_title" msgid="3758288002414557345">"配置字典"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"快速纠正"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"纠正常见的输入错误"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"显示更正建议"</string>
@@ -53,10 +52,11 @@
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"始终显示"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"始终隐藏"</string>
     <string name="auto_correction" msgid="4979925752001319458">"自动更正"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"空格键或标点自动更正拼写错误的字词"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"按空格键和标点可自动更正错别字"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"关闭"</string>
-    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"部分"</string>
-    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"全部"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"小改"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"大改"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"改动极大"</string>
     <string name="bigram_suggestion" msgid="2636414079905220518">"双连词建议"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"使用以前的字词改进建议"</string>
     <string name="bigram_prediction" msgid="8914273444762259739">"双连词预测"</string>
@@ -70,6 +70,42 @@
     <string name="label_more_key" msgid="3760239494604948502">"更多"</string>
     <string name="label_pause_key" msgid="181098308428035340">"暂停"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"等待"</string>
+    <string name="spoken_current_text_is" msgid="2485723011272583845">"当前文本为%s"</string>
+    <string name="spoken_no_text_entered" msgid="7479685225597344496">"未输入文字"</string>
+    <string name="spoken_description_unknown" msgid="3197434010402179157">"键码为 %d"</string>
+    <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
+    <string name="spoken_description_shift_shifted" msgid="954941524766465022">"Shift 已启用"</string>
+    <string name="spoken_description_caps_lock" msgid="5660626444912131764">"Caps lock 已启用"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"删除"</string>
+    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"符号"</string>
+    <string name="spoken_description_to_alpha" msgid="23129338819771807">"字母"</string>
+    <string name="spoken_description_to_numeric" msgid="591752092685161732">"数字"</string>
+    <string name="spoken_description_settings" msgid="4627462689603838099">"设置"</string>
+    <string name="spoken_description_tab" msgid="2667716002663482248">"Tab"</string>
+    <string name="spoken_description_space" msgid="2582521050049860859">"空格"</string>
+    <string name="spoken_description_mic" msgid="615536748882611950">"语音输入"</string>
+    <string name="spoken_description_smiley" msgid="2256309826200113918">"笑脸"</string>
+    <string name="spoken_description_return" msgid="8178083177238315647">"返回"</string>
+    <string name="spoken_description_comma" msgid="4970844442999724586">"逗号"</string>
+    <string name="spoken_description_period" msgid="5286614628077903945">"句号"</string>
+    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"左括号"</string>
+    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"右括号"</string>
+    <string name="spoken_description_colon" msgid="4312420908484277077">"冒号"</string>
+    <string name="spoken_description_semicolon" msgid="37737920987155179">"分号"</string>
+    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"感叹号"</string>
+    <string name="spoken_description_question_mark" msgid="7074097784255379666">"问号"</string>
+    <string name="spoken_description_double_quote" msgid="5485320575389905967">"双引号"</string>
+    <string name="spoken_description_single_quote" msgid="4451320362665463938">"单引号"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"点"</string>
+    <string name="spoken_description_square_root" msgid="190595160284757811">"平方根"</string>
+    <string name="spoken_description_pi" msgid="4554418247799952239">"圆周率"</string>
+    <string name="spoken_description_delta" msgid="3607948313655721579">"Delta"</string>
+    <string name="spoken_description_trademark" msgid="475877774077871369">"商标符号"</string>
+    <string name="spoken_description_care_of" msgid="7492800237237796530">"百分号"</string>
+    <string name="spoken_description_star" msgid="1009742725387231977">"星号"</string>
+    <string name="spoken_description_pound" msgid="5530577649206922631">"井号"</string>
+    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"省略号"</string>
+    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"低双引号"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"语音输入"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"语音输入功能当前还不支持您的语言，您只能输入英语语音。"</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"语音输入采用了 Google 的语音识别技术，因此请遵守"<a href="http://m.google.com/privacy">"“Google 移动”隐私权政策"</a>"。"</string>
@@ -106,23 +142,21 @@
     <string name="prefs_description_log" msgid="5827825607258246003">"自动向 Google 发送使用情况统计信息和崩溃报告，帮助改进该输入法编辑器。"</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"触摸以更正字词"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"仅在系统显示建议后，才触摸输入的字词进行更正"</string>
-    <string name="keyboard_layout" msgid="437433231038683666">"键盘主题"</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"键盘主题"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"捷克语键盘"</string>
     <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"阿拉伯语键盘"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"丹麦语键盘"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"德语键盘"</string>
+    <string name="subtype_mode_de_qwerty_keyboard" msgid="54890770769303956">"德语 QWERTY 键盘"</string>
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"英语（英国）键盘"</string>
     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"英语（美国）键盘"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"西班牙语键盘"</string>
-    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
-    <skip />
+    <string name="subtype_mode_fi_keyboard" msgid="3198596464082614532">"芬兰语键盘"</string>
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"法语键盘"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"法语（加拿大）键盘"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"法语（瑞士）键盘"</string>
-    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
-    <skip />
-    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
-    <skip />
+    <string name="subtype_mode_hr_keyboard" msgid="7177182405440070112">"克罗地亚语键盘"</string>
+    <string name="subtype_mode_hu_keyboard" msgid="8843338355732633647">"匈牙利语键盘"</string>
     <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"希伯来语键盘"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"意大利语键盘"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"挪威语键盘"</string>
@@ -132,6 +166,7 @@
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"俄语键盘"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"塞尔维亚语键盘"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"瑞典语键盘"</string>
+    <string name="subtype_mode_tr_keyboard" msgid="3155981874829226370">"土耳其语键盘"</string>
     <string name="subtype_mode_af_voice" msgid="7542487489657902699">"南非荷兰语语音"</string>
     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"捷克语语音"</string>
     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"德语语音"</string>
@@ -149,5 +184,5 @@
     <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"中文，粤语语音"</string>
     <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"中文，普通话语音"</string>
     <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"祖鲁语语音"</string>
-    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"可用性研究模式"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"可用性研究模式"</string>
 </resources>

@@ -23,7 +23,7 @@
     <string name="english_ime_name" msgid="7252517407088836577">"Android-Tastatur"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Android-Tastatureinstellungen"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Eingabeoptionen"</string>
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrieren b. Tastendruck"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Bei Tastendruck vibrieren"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Ton bei Tastendruck"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up bei Tastendruck"</string>
     <string name="general_category" msgid="1859088467017573195">"Allgemein"</string>
@@ -32,31 +32,31 @@
     <string name="misc_category" msgid="6894192814868233453">"Sonstige Optionen"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Erweiterte Einstellungen"</string>
     <string name="advanced_settings_summary" msgid="5193513161106637254">"Optionen für Experten"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Verzög. Schlüssel-Pop-up"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Tasten-Pop-up"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Keine Verzögerung"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Standard"</string>
-    <!-- no translation found for use_contacts_dict (4435317977804180815) -->
-    <skip />
-    <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
-    <skip />
+    <string name="use_contacts_dict" msgid="4435317977804180815">"Kontakte vorschlagen"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Namen aus \"Kontakte\" als Vorschläge und Korrekturmöglichkeiten anzeigen"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Autom. Groß-/Kleinschr."</string>
+    <string name="configure_dictionaries_title" msgid="3758288002414557345">"Wörterbücher konfigurieren"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Quick Fixes"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Korrigiert gängige Tippfehler"</string>
-    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Änderungsvorschläge anzeigen"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Änderungsvorschläge"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Vorgeschlagene Wörter während des Tippens anzeigen"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Immer anzeigen"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Im Hochformat anzeigen"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Immer ausblenden"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Nie anzeigen"</string>
     <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"Sprache mit Leertaste ändern"</string>
-    <string name="prefs_settings_key" msgid="4623341240804046498">"Einstellungstaste anz."</string>
+    <string name="prefs_settings_key" msgid="4623341240804046498">"Taste für Einstellungen"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatisch"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Immer anzeigen"</string>
-    <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Immer ausblenden"</string>
+    <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Nie anzeigen"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Autokorrektur"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Korrektur fehlerhafter Wörter durch Leertaste und Satzzeichen"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Aus"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Mäßig"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Stark"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Sehr stark"</string>
     <string name="bigram_suggestion" msgid="2636414079905220518">"Bigramm-Vorschläge"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Zur Verbesserung des Vorschlags vorheriges Wort verwenden"</string>
     <string name="bigram_prediction" msgid="8914273444762259739">"Bigramm-Vervollständigung"</string>
@@ -70,6 +70,42 @@
     <string name="label_more_key" msgid="3760239494604948502">"Mehr"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pause"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Warten"</string>
+    <string name="spoken_current_text_is" msgid="2485723011272583845">"Aktueller Text lautet %s"</string>
+    <string name="spoken_no_text_entered" msgid="7479685225597344496">"Kein Text eingegeben"</string>
+    <string name="spoken_description_unknown" msgid="3197434010402179157">"Tastencode %d"</string>
+    <string name="spoken_description_shift" msgid="244197883292549308">"Umschalttaste"</string>
+    <string name="spoken_description_shift_shifted" msgid="954941524766465022">"Umschalttaste aktiviert"</string>
+    <string name="spoken_description_caps_lock" msgid="5660626444912131764">"Feststelltaste aktiviert"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"Entf"</string>
+    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Symbole"</string>
+    <string name="spoken_description_to_alpha" msgid="23129338819771807">"Buchstaben"</string>
+    <string name="spoken_description_to_numeric" msgid="591752092685161732">"Zahlen"</string>
+    <string name="spoken_description_settings" msgid="4627462689603838099">"Einstellungen"</string>
+    <string name="spoken_description_tab" msgid="2667716002663482248">"Tabulator"</string>
+    <string name="spoken_description_space" msgid="2582521050049860859">"Leerzeichen"</string>
+    <string name="spoken_description_mic" msgid="615536748882611950">"Spracheingabe"</string>
+    <string name="spoken_description_smiley" msgid="2256309826200113918">"Smiley"</string>
+    <string name="spoken_description_return" msgid="8178083177238315647">"Eingabe"</string>
+    <string name="spoken_description_comma" msgid="4970844442999724586">"Komma"</string>
+    <string name="spoken_description_period" msgid="5286614628077903945">"Punkt"</string>
+    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"Öffnende Klammer"</string>
+    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"Schließende Klammer"</string>
+    <string name="spoken_description_colon" msgid="4312420908484277077">"Doppelpunkt"</string>
+    <string name="spoken_description_semicolon" msgid="37737920987155179">"Semikolon"</string>
+    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"Ausrufezeichen"</string>
+    <string name="spoken_description_question_mark" msgid="7074097784255379666">"Fragezeichen"</string>
+    <string name="spoken_description_double_quote" msgid="5485320575389905967">"Anführungszeichen"</string>
+    <string name="spoken_description_single_quote" msgid="4451320362665463938">"Einfaches Anführungszeichen"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"Aufzählungspunkt"</string>
+    <string name="spoken_description_square_root" msgid="190595160284757811">"Quadratwurzel"</string>
+    <string name="spoken_description_pi" msgid="4554418247799952239">"Pi"</string>
+    <string name="spoken_description_delta" msgid="3607948313655721579">"Delta"</string>
+    <string name="spoken_description_trademark" msgid="475877774077871369">"Trademark"</string>
+    <string name="spoken_description_care_of" msgid="7492800237237796530">"c/o"</string>
+    <string name="spoken_description_star" msgid="1009742725387231977">"Sternchen"</string>
+    <string name="spoken_description_pound" msgid="5530577649206922631">"Raute"</string>
+    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"Auslassungszeichen"</string>
+    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"Anführungszeichen unten"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Spracheingabe"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Spracheingaben werden zurzeit nicht für Ihre Sprache unterstützt, funktionieren jedoch in Englisch."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Die Spracheingabe verwendet die Spracherkennung von Google. Es gelten die "<a href="http://m.google.com/privacy">"Google Mobile-Datenschutzbestimmungen"</a>"."</string>
@@ -106,23 +142,21 @@
     <string name="prefs_description_log" msgid="5827825607258246003">"Tragen Sie zur Verbesserung dieses Eingabemethodeneditors bei, indem Sie automatisch Nutzungsstatistiken und Absturzberichte an Google senden."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Wortkorrektur"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Tippen Sie zum Korrigieren auf eingegebene Wörter (nur, wenn Vorschläge angezeigt werden)."</string>
-    <string name="keyboard_layout" msgid="437433231038683666">"Tastaturdesign"</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"Tastaturdesign"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Tschechische Tastatur"</string>
     <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Arabische Tastatur"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Dänische Tastatur"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Deutsche Tastatur"</string>
+    <string name="subtype_mode_de_qwerty_keyboard" msgid="54890770769303956">"Deutsche QWERTY-Tastatur"</string>
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Englische Tastatur (GB)"</string>
     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Englische Tastatur (USA)"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Spanische Tastatur"</string>
-    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
-    <skip />
+    <string name="subtype_mode_fi_keyboard" msgid="3198596464082614532">"Finnische Tastatur"</string>
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Französische Tastatur"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Französische Tastatur (Kanada)"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Französische Tastatur (Schweiz)"</string>
-    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
-    <skip />
-    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
-    <skip />
+    <string name="subtype_mode_hr_keyboard" msgid="7177182405440070112">"Kroatische Tastatur"</string>
+    <string name="subtype_mode_hu_keyboard" msgid="8843338355732633647">"Ungarische Tastatur"</string>
     <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Hebräische Tastatur"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Italienische Tastatur"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norwegische Tastatur"</string>
@@ -132,6 +166,7 @@
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Russische Tastatur"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Serbische Tastatur"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Schwedische Tastatur"</string>
+    <string name="subtype_mode_tr_keyboard" msgid="3155981874829226370">"Türkische Tastatur"</string>
     <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Stimme in Afrikaans"</string>
     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Tschechische Sprache"</string>
     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Deutsche Sprache"</string>
@@ -149,5 +184,5 @@
     <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Chinesische Stimme (Yue)"</string>
     <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Chinesische Stimme (Mandarin)"</string>
     <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"Stimme in isiZulu"</string>
-    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Modus der Studie zur Benutzerfreundlichkeit"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modus der Studie zur Benutzerfreundlichkeit"</string>
 </resources>
