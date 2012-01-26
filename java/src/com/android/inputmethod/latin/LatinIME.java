@@ -2165,7 +2165,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     // "ic" must not be null
     private void cancelAutoCorrect(final InputConnection ic) {
-        mWordComposer.resumeSuggestionOnKeptWord();
+        mWordComposer.resumeSuggestionOnLastComposedWord(mLastComposedWord);
         final String originallyTypedWord = mWordComposer.getTypedWord();
         final CharSequence autoCorrectedTo = mWordComposer.getAutoCorrectionOrNull();
         final int cancelLength = autoCorrectedTo.length();
@@ -2205,7 +2205,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // Note: in the interest of code simplicity, we may want to just call
         // restartSuggestionsOnWordBeforeCursorIfAtEndOfWord instead, but retrieving
         // the old WordComposer allows to reuse the actual typed coordinates.
-        mWordComposer.resumeSuggestionOnKeptWord();
+        mWordComposer.resumeSuggestionOnLastComposedWord(mLastComposedWord);
         // We resume suggestion, and then we want to set the composing text to the content
         // of the word composer again. But since we just manually picked a word, there is
         // no composing text at the moment, so we have to delete the word before we set a

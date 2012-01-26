@@ -67,8 +67,6 @@ public class WordComposer {
 
     // The currently typing word. May not be null.
     private CharacterStore mCurrentWord;
-    // The information being kept for resuming suggestion. May be null if wiped.
-    private CharacterStore mCommittedWordSavedForSuggestionResuming;
 
     private int mCapsCount;
 
@@ -83,7 +81,6 @@ public class WordComposer {
 
     public WordComposer() {
         mCurrentWord = new CharacterStore();
-        mCommittedWordSavedForSuggestionResuming = null;
         mTrailingSingleQuotesCount = 0;
     }
 
@@ -93,7 +90,6 @@ public class WordComposer {
 
     public void init(WordComposer source) {
         mCurrentWord = new CharacterStore(source.mCurrentWord);
-        mCommittedWordSavedForSuggestionResuming = source.mCommittedWordSavedForSuggestionResuming;
         mCapsCount = source.mCapsCount;
         mIsFirstCharCapitalized = source.mIsFirstCharCapitalized;
         mAutoCapitalized = source.mAutoCapitalized;
@@ -105,7 +101,6 @@ public class WordComposer {
      */
     public void reset() {
         mCurrentWord.reset();
-        mCommittedWordSavedForSuggestionResuming = null;
         mCapsCount = 0;
         mIsFirstCharCapitalized = false;
         mTrailingSingleQuotesCount = 0;
@@ -201,7 +196,6 @@ public class WordComposer {
             int codePoint = word.charAt(i);
             addKeyInfo(codePoint, keyboard, keyDetector);
         }
-        mCommittedWordSavedForSuggestionResuming = null;
     }
 
     /**
@@ -331,7 +325,6 @@ public class WordComposer {
 
     // `type' should be one of the LastComposedWord.COMMIT_TYPE_* constants above.
     public LastComposedWord commitWord(final int type) {
-        mCommittedWordSavedForSuggestionResuming = mCurrentWord;
         // Note: currently, we come here whenever we commit a word. If it's any *other* kind than
         // DECIDED_WORD, we should reset mAutoCorrection so that we don't attempt to cancel later.
         // If it's a DECIDED_WORD, it may be an actual auto-correction by the IME, or what the user
@@ -339,29 +332,26 @@ public class WordComposer {
         // Ideally we would also null it when it was a DECIDED_WORD that was not an auto-correct.
         // As it happens these two cases should behave differently, because the former can be
         // canceled while the latter can't. Currently, we figure this out in
-        // #didAutoCorrectToAnotherWord with #equals(). It would be marginally cleaner to do it
-        // here, but it would be slower (since we would #equals() for each commit, instead of
-        // only on cancel), and ultimately we want to figure it out even earlier anyway.
-        if (type != LastComposedWord.COMMIT_TYPE_DECIDED_WORD) {
-            // Only ever revert an auto-correct.
-            mCommittedWordSavedForSuggestionResuming.mAutoCorrection = null;
-        }
+        // LastComposedWord#didAutoCorrectToAnotherWord with #equals(). It would be marginally
+        // cleaner to do it here, but it would be slower (since we would #equals() for each commit,
+        // instead of only on cancel), and ultimately we want to figure it out even earlier anyway.
         final LastComposedWord lastComposedWord = new LastComposedWord(type, mCurrentWord.mCodes,
                 mCurrentWord.mXCoordinates, mCurrentWord.mYCoordinates,
                 mCurrentWord.mTypedWord.toString(),
-                null == mCurrentWord.mAutoCorrection
-                        ? null : mCurrentWord.mAutoCorrection.toString());
+                (type != LastComposedWord.COMMIT_TYPE_DECIDED_WORD)
+                        || (null == mCurrentWord.mAutoCorrection)
+                                ? null : mCurrentWord.mAutoCorrection.toString());
         // TODO: improve performance by swapping buffers instead of creating a new object.
         mCurrentWord = new CharacterStore();
         return lastComposedWord;
     }
 
-    public boolean hasWordKeptForSuggestionResuming() {
-        return null != mCommittedWordSavedForSuggestionResuming;
-    }
-
-    public void resumeSuggestionOnKeptWord() {
-        mCurrentWord = mCommittedWordSavedForSuggestionResuming;
-        mCommittedWordSavedForSuggestionResuming = null;
+    public void resumeSuggestionOnLastComposedWord(final LastComposedWord lastComposedWord) {
+        mCurrentWord.mCodes = lastComposedWord.mCodes;
+        mCurrentWord.mXCoordinates = lastComposedWord.mXCoordinates;
+        mCurrentWord.mYCoordinates = lastComposedWord.mYCoordinates;
+        mCurrentWord.mTypedWord.setLength(0);
+        mCurrentWord.mTypedWord.append(lastComposedWord.mTypedWord);
+        mCurrentWord.mAutoCorrection = lastComposedWord.mAutoCorrection;
     }
 }
