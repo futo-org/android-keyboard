@@ -40,9 +40,9 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         longPressShiftKey(ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED);
 
         // Press shift key and hold, enter into choring shift state.
-        pressKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED);
+        pressKey(CODE_SHIFT, ALPHABET_SHIFT_LOCK_SHIFTED);
         // Press/release letter key.
-        chordingPressAndReleaseKey('Z', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        chordingPressAndReleaseKey('Z', ALPHABET_SHIFT_LOCK_SHIFTED, ALPHABET_SHIFT_LOCK_SHIFTED);
         // Release shift key, switch back to alphabet shift locked.
         releaseKey(CODE_SHIFT, ALPHABET_SHIFT_LOCKED);
 

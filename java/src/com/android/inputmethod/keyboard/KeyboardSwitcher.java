@@ -240,6 +240,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     private static final int ALPHABET_MANUAL_SHIFTED = 1;
     private static final int ALPHABET_AUTOMATIC_SHIFTED = 2;
     private static final int ALPHABET_SHIFT_LOCKED = 3;
+    private static final int ALPHABET_SHIFT_LOCK_SHIFTED = 4;
 
     // TODO: Remove this method.
     private void updateAlphabetKeyboardShiftState(int shiftMode) {
@@ -259,6 +260,10 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
             break;
         case ALPHABET_SHIFT_LOCKED:
             keyboard.setShiftLocked(true);
+            break;
+        case ALPHABET_SHIFT_LOCK_SHIFTED:
+            keyboard.setShiftLocked(true);
+            keyboard.setShifted(true);
             break;
         }
         mKeyboardView.invalidateAllKeys();
@@ -296,6 +301,13 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     public void setAlphabetShiftLockedKeyboard() {
         setKeyboard(mKeyboardSet.getMainKeyboard());
         updateAlphabetKeyboardShiftState(ALPHABET_SHIFT_LOCKED);
+    }
+
+    // Implements {@link KeyboardState.SwitchActions}.
+    @Override
+    public void setAlphabetShiftLockShiftedKeyboard() {
+        setKeyboard(mKeyboardSet.getMainKeyboard());
+        updateAlphabetKeyboardShiftState(ALPHABET_SHIFT_LOCK_SHIFTED);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
