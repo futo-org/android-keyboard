@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import android.text.TextUtils;
+
 import java.util.ArrayList;
 
 /**
@@ -45,6 +47,9 @@ public class LastComposedWord {
     public final String mTypedWord;
     public final String mAutoCorrection;
 
+    public static final LastComposedWord NOT_A_COMPOSED_WORD =
+            new LastComposedWord(COMMIT_TYPE_USER_TYPED_WORD, null, null, null, "", "");
+
     public LastComposedWord(final int type, final ArrayList<int[]> codes, final int[] xCoordinates,
             final int[] yCoordinates, final String typedWord, final String autoCorrection) {
         mType = type;
@@ -53,5 +58,10 @@ public class LastComposedWord {
         mYCoordinates = yCoordinates;
         mTypedWord = typedWord;
         mAutoCorrection = autoCorrection;
+    }
+
+    public boolean didAutoCorrectToAnotherWord() {
+        return !TextUtils.isEmpty(mAutoCorrection)
+                && !TextUtils.equals(mTypedWord, mAutoCorrection);
     }
 }

@@ -330,7 +330,7 @@ public class WordComposer {
     }
 
     // `type' should be one of the LastComposedWord.COMMIT_TYPE_* constants above.
-    public LastComposedWord onCommitWord(final int type) {
+    public LastComposedWord commitWord(final int type) {
         mCommittedWordSavedForSuggestionResuming = mCurrentWord;
         // Note: currently, we come here whenever we commit a word. If it's any *other* kind than
         // DECIDED_WORD, we should reset mAutoCorrection so that we don't attempt to cancel later.
@@ -348,7 +348,9 @@ public class WordComposer {
         }
         final LastComposedWord lastComposedWord = new LastComposedWord(type, mCurrentWord.mCodes,
                 mCurrentWord.mXCoordinates, mCurrentWord.mYCoordinates,
-                mCurrentWord.mTypedWord.toString(), mCurrentWord.mAutoCorrection.toString());
+                mCurrentWord.mTypedWord.toString(),
+                null == mCurrentWord.mAutoCorrection
+                        ? null : mCurrentWord.mAutoCorrection.toString());
         // TODO: improve performance by swapping buffers instead of creating a new object.
         mCurrentWord = new CharacterStore();
         return lastComposedWord;
@@ -361,12 +363,5 @@ public class WordComposer {
     public void resumeSuggestionOnKeptWord() {
         mCurrentWord = mCommittedWordSavedForSuggestionResuming;
         mCommittedWordSavedForSuggestionResuming = null;
-    }
-
-    public boolean didAutoCorrectToAnotherWord() {
-        return null != mCommittedWordSavedForSuggestionResuming
-                && !TextUtils.isEmpty(mCommittedWordSavedForSuggestionResuming.mAutoCorrection)
-                && !TextUtils.equals(mCommittedWordSavedForSuggestionResuming.mTypedWord,
-                        mCommittedWordSavedForSuggestionResuming.mAutoCorrection);
     }
 }
