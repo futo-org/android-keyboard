@@ -216,10 +216,24 @@ public class KeyboardState {
     }
 
     private void toggleAlphabetAndSymbols() {
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "toggleAlphabetAndSymbols: " + this);
+        }
         if (mIsAlphabetMode) {
-            setSymbolsKeyboard();
+            mPrevMainKeyboardWasShiftLocked = mAlphabetShiftState.isShiftLocked();
+            if (mPrevSymbolsKeyboardWasShifted) {
+                setSymbolsShiftedKeyboard();
+            } else {
+                setSymbolsKeyboard();
+            }
+            mPrevSymbolsKeyboardWasShifted = false;
         } else {
+            mPrevSymbolsKeyboardWasShifted = mIsSymbolShifted;
             setAlphabetKeyboard();
+            if (mPrevMainKeyboardWasShiftLocked) {
+                setShiftLocked(true);
+            }
+            mPrevMainKeyboardWasShiftLocked = false;
         }
     }
 
@@ -235,24 +249,15 @@ public class KeyboardState {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setAlphabetKeyboard");
         }
-        mPrevSymbolsKeyboardWasShifted = mIsSymbolShifted;
         mSwitchActions.setAlphabetKeyboard();
         mIsAlphabetMode = true;
         mIsSymbolShifted = false;
         mSwitchState = SWITCH_STATE_ALPHA;
-        setShiftLocked(mPrevMainKeyboardWasShiftLocked);
-        mPrevMainKeyboardWasShiftLocked = false;
         mSwitchActions.requestUpdatingShiftState();
     }
 
     // TODO: Make this method private
     public void setSymbolsKeyboard() {
-        mPrevMainKeyboardWasShiftLocked = mAlphabetShiftState.isShiftLocked();
-        if (mPrevSymbolsKeyboardWasShifted) {
-            setSymbolsShiftedKeyboard();
-            return;
-        }
-
         if (DEBUG_ACTION) {
             Log.d(TAG, "setSymbolsKeyboard");
         }
@@ -261,7 +266,6 @@ public class KeyboardState {
         mIsSymbolShifted = false;
         // Reset alphabet shift state.
         mAlphabetShiftState.setShiftLocked(false);
-        mPrevSymbolsKeyboardWasShifted = false;
         mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
     }
 
@@ -274,7 +278,6 @@ public class KeyboardState {
         mIsSymbolShifted = true;
         // Reset alphabet shift state.
         mAlphabetShiftState.setShiftLocked(false);
-        mPrevSymbolsKeyboardWasShifted = false;
         mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
     }
 
@@ -495,14 +498,14 @@ public class KeyboardState {
             }
             // Switch back to alpha keyboard mode immediately if user types a quote character.
             if (isLayoutSwitchBackCharacter(code)) {
-                setAlphabetKeyboard();
+                toggleAlphabetAndSymbols();
             }
             break;
         case SWITCH_STATE_SYMBOL:
             // Switch back to alpha keyboard mode if user types one or more non-space/enter
             // characters followed by a space/enter or a quote character.
             if (isSpaceCharacter(code) || isLayoutSwitchBackCharacter(code)) {
-                setAlphabetKeyboard();
+                toggleAlphabetAndSymbols();
             }
             break;
         }
