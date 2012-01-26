@@ -1622,7 +1622,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private CharSequence getTextWithUnderline(final CharSequence text) {
         return mComposingStateManager.isAutoCorrectionIndicatorOn()
                 ? SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(this, text)
-                : mWordComposer.getTypedWord();
+                : text;
     }
 
     private void handleClose() {
