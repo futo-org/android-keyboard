@@ -40,8 +40,9 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         public static final int ALPHABET_MANUAL_SHIFTED = 1;
         public static final int ALPHABET_AUTOMATIC_SHIFTED = 2;
         public static final int ALPHABET_SHIFT_LOCKED = 3;
-        public static final int SYMBOLS_UNSHIFTED = 4;
-        public static final int SYMBOLS_SHIFTED = 5;
+        public static final int ALPHABET_SHIFT_LOCK_SHIFTED = 4;
+        public static final int SYMBOLS_UNSHIFTED = 5;
+        public static final int SYMBOLS_SHIFTED = 6;
     }
 
     private int mLayout = Constants.ALPHABET_UNSHIFTED;
@@ -62,6 +63,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         case Constants.ALPHABET_MANUAL_SHIFTED: return "ALPHABET_MANUAL_SHIFTED";
         case Constants.ALPHABET_AUTOMATIC_SHIFTED: return "ALPHABET_AUTOMATIC_SHIFTED";
         case Constants.ALPHABET_SHIFT_LOCKED: return "ALPHABET_SHIFT_LOCKED";
+        case Constants.ALPHABET_SHIFT_LOCK_SHIFTED: return "ALPHABET_SHIFT_LOCK_SHIFTED";
         case Constants.SYMBOLS_UNSHIFTED: return "SYMBOLS_UNSHIFTED";
         case Constants.SYMBOLS_SHIFTED: return "SYMBOLS_SHIFTED";
         default: return "UNKNOWN<" + layoutId + ">";
@@ -90,6 +92,11 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     @Override
     public void setAlphabetShiftLockedKeyboard() {
         mLayout = Constants.ALPHABET_SHIFT_LOCKED;
+    }
+
+    @Override
+    public void setAlphabetShiftLockShiftedKeyboard() {
+        mLayout = Constants.ALPHABET_SHIFT_LOCK_SHIFTED;
     }
 
     @Override
