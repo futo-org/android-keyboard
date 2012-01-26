@@ -96,6 +96,4 @@
     <dimen name="more_suggestions_hint_text_size">27dip</dimen>
     <integer name="suggestions_count_in_strip">3</integer>
     <integer name="center_suggestion_percentile">36</integer>
-
-    <dimen name="key_hysteresis_distance">0.05in</dimen>
 </resources>

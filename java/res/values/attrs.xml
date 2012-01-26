@@ -103,6 +103,8 @@
         <attr name="keyPreviewHeight" format="dimension" />
         <!-- Size of the text for key press feedback popup, int the proportion of key height -->
         <attr name="keyPreviewTextRatio" format="float" />
+        <!-- Delay after key releasing and key press feedback dismissing in millisecond -->
+        <attr name="keyPreviewLingerTimeout" format="integer" />
 
         <!-- Amount to offset the touch Y coordinate by, for bias correction. -->
         <attr name="verticalCorrection" format="dimension" />
@@ -130,6 +132,28 @@
         <attr name="spacebarTextRatio" format="fraction" />
         <attr name="spacebarTextColor" format="color" />
         <attr name="spacebarTextShadowColor" format="color" />
+        <!-- Key detection hysteresis distance. -->
+        <attr name="keyHysteresisDistance" format="dimension" />
+        <!-- Touch noise threshold time in millisecond -->
+        <attr name="touchNoiseThresholdTime" format="integer" />
+        <!-- Touch noise threshold distance in millimeter -->
+        <attr name="touchNoiseThresholdDistance" format="dimension" />
+        <!-- Sliding key input enable -->
+        <attr name="slidingKeyInputEnable" format="boolean" />
+        <!-- Key repeat start timeout -->
+        <attr name="keyRepeatStartTimeout" format="integer" />
+        <!-- Key repeat interval in millisecond. -->
+        <attr name="keyRepeatInterval" format="integer" />
+        <!-- Long press timeout of letter key in millisecond. -->
+        <attr name="longPressKeyTimeout" format="integer" />
+        <!-- Long press timeout of shift key in millisecond. -->
+        <attr name="longPressShiftKeyTimeout" format="integer" />
+        <!-- Long press timeout of space key in millisecond. -->
+        <attr name="longPressSpaceKeyTimeout" format="integer" />
+        <!-- Ignore special key timeout while typing in millisecond. -->
+        <attr name="ignoreSpecialKeyTimeout" format="integer" />
+        <!-- Mini-keyboard will shown at touched point. -->
+        <attr name="showMiniKeyboardAtTouchedPoint" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="SuggestionsView">
