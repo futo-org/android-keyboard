@@ -260,7 +260,7 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
     if (DEBUG_DICT) {
         queuePool->dumpSubQueue1TopSuggestions();
         for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
-            WordsPriorityQueue* queue = queuePool->getSubQueue1(i);
+            WordsPriorityQueue* queue = queuePool->getSubQueue(FIRST_WORD_INDEX, i);
             if (queue->size() > 0) {
                 WordsPriorityQueue::SuggestedWord* sw = queue->top();
                 const int score = sw->mScore;
@@ -395,17 +395,33 @@ inline void UnigramDictionary::onTerminal(const int freq,
     // or more length.
     if (inputIndex >= SUB_QUEUE_MIN_WORD_LENGTH && addToSubQueue) {
         WordsPriorityQueue *subQueue;
-        if (currentWordIndex == 1) {
-            subQueue = queuePool->getSubQueue1(inputIndex);
-        } else if (currentWordIndex == 2) {
-            subQueue = queuePool->getSubQueue2(inputIndex);
-        } else {
+        subQueue = queuePool->getSubQueue(currentWordIndex, inputIndex);
+        if (!subQueue) {
             return;
         }
         const int finalFreq = correction->getFinalFreqForSubQueue(freq, &wordPointer, &wordLength,
                 inputIndex);
         addWord(wordPointer, wordLength, finalFreq, subQueue);
     }
+}
+
+int UnigramDictionary::getSubStringSuggestion(
+        ProximityInfo *proximityInfo, const int *xcoordinates, const int *ycoordinates,
+        const int *codes, const bool useFullEditDistance, const Correction *correction,
+        WordsPriorityQueuePool* queuePool, const bool hasAutoCorrectionCandidate,
+        const int currentWordIndex, const int inputWordStartPos, const int inputWordLength,
+        const int outputWordStartPos, unsigned short* outputWord, int *outputWordLength) {
+//    under constructiong
+//    unsigned short* tempOutputWord = 0;
+//    int tempOutputWordLength = 0;
+//    int freq = getMostFrequentWordLike(
+//            inputWordStartPos, inputWordLength, proximityInfo, mWord);
+//    if (freq > 0) {
+//        tempOutputWordLength = inputWordLength;
+//        tempOutputWord = mWord;
+//    } else if (!hasAutoCorrectionCandidate) {
+//    }
+    return 0;
 }
 
 void UnigramDictionary::getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo,
@@ -439,7 +455,8 @@ void UnigramDictionary::getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo
         firstOutputWordLength = firstInputWordLength;
         firstOutputWord = mWord;
     } else if (!hasAutoCorrectionCandidate) {
-        WordsPriorityQueue* firstWordQueue = queuePool->getSubQueue1(firstInputWordLength);
+        WordsPriorityQueue* firstWordQueue = queuePool->getSubQueue(
+                FIRST_WORD_INDEX, firstInputWordLength);
         if (!firstWordQueue || firstWordQueue->size() < 1) {
             return;
         }
@@ -497,16 +514,17 @@ void UnigramDictionary::getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo
         const int offset = secondInputWordStartPos;
         initSuggestions(proximityInfo, &xcoordinates[offset], &ycoordinates[offset],
                 codes + offset * MAX_PROXIMITY_CHARS, secondInputWordLength, correction);
-        queuePool->clearSubQueue2();
+        queuePool->clearSubQueue(SECOND_WORD_INDEX);
         getSuggestionCandidates(useFullEditDistance, secondInputWordLength, correction,
                 queuePool, false, MAX_ERRORS_FOR_TWO_WORDS, SECOND_WORD_INDEX);
         if (DEBUG_DICT) {
             AKLOGI("Dump second word candidates %d", secondInputWordLength);
             for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
-                queuePool->getSubQueue2(i)->dumpTopWord();
+                queuePool->getSubQueue(SECOND_WORD_INDEX, i)->dumpTopWord();
             }
         }
-        WordsPriorityQueue* secondWordQueue = queuePool->getSubQueue2(secondInputWordLength);
+        WordsPriorityQueue* secondWordQueue = queuePool->getSubQueue(
+                SECOND_WORD_INDEX, secondInputWordLength);
         if (!secondWordQueue || secondWordQueue->size() < 1) {
             return;
         }

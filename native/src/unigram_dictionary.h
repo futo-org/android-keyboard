@@ -127,6 +127,12 @@ class UnigramDictionary {
             ProximityInfo *proximityInfo, unsigned short *word);
     int getMostFrequentWordLikeInner(const uint16_t* const inWord, const int length,
             short unsigned int *outWord);
+    int getSubStringSuggestion(
+            ProximityInfo *proximityInfo, const int *xcoordinates, const int *ycoordinates,
+            const int *codes, const bool useFullEditDistance, const Correction *correction,
+            WordsPriorityQueuePool* queuePool, const bool hasAutoCorrectionCandidate,
+            const int currentWordIndex, const int inputWordStartPos, const int inputWordLength,
+            const int outputWordStartPos, unsigned short* outputWord, int *outputWordLength);
 
     const uint8_t* const DICT_ROOT;
     const int MAX_WORD_LENGTH;
