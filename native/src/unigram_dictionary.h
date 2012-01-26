@@ -106,10 +106,6 @@ class UnigramDictionary {
             const bool useFullEditDistance, const int inputLength, const int spaceProximityPos,
             const int missingSpacePos, Correction *correction, WordsPriorityQueuePool* queuePool,
             const bool hasAutoCorrectionCandidate);
-    void getSplitTwoWordsSuggestionsOld(ProximityInfo *proximityInfo,
-            const int *xcoordinates, const int *ycoordinates, const int *codes,
-            const bool useFullEditDistance, const int inputLength, const int spaceProximityPos,
-            const int missingSpacePos, Correction *correction, WordsPriorityQueuePool* queuePool);
     void getMissingSpaceWords(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const bool useFullEditDistance,
             const int inputLength, const int missingSpacePos, Correction *correction,
