@@ -298,7 +298,7 @@ public class Suggest implements Dictionary.WordCallback {
         if (typedWord != null) {
             // Treating USER_TYPED as UNIGRAM suggestion for logging now.
             LatinImeLogger.onAddSuggestedWord(typedWord, Suggest.DIC_USER_TYPED,
-                    Dictionary.DataType.UNIGRAM);
+                    Dictionary.UNIGRAM);
         }
         mConsideredWord = consideredWord;
 
@@ -417,12 +417,12 @@ public class Suggest implements Dictionary.WordCallback {
 
     @Override
     public boolean addWord(final char[] word, final int offset, final int length, int score,
-            final int dicTypeId, final Dictionary.DataType dataType) {
-        Dictionary.DataType dataTypeForLog = dataType;
+            final int dicTypeId, final int dataType) {
+        int dataTypeForLog = dataType;
         final ArrayList<CharSequence> suggestions;
         final int[] sortedScores;
         final int prefMaxSuggestions;
-        if(dataType == Dictionary.DataType.BIGRAM) {
+        if (dataType == Dictionary.BIGRAM) {
             suggestions = mBigramSuggestions;
             sortedScores = mBigramScores;
             prefMaxSuggestions = PREF_MAX_BIGRAMS;
@@ -450,11 +450,11 @@ public class Suggest implements Dictionary.WordCallback {
                 }
             }
         } else {
-            if (dataType == Dictionary.DataType.UNIGRAM) {
+            if (dataType == Dictionary.UNIGRAM) {
                 // Check if the word was already added before (by bigram data)
                 int bigramSuggestion = searchBigramSuggestion(word,offset,length);
                 if(bigramSuggestion >= 0) {
-                    dataTypeForLog = Dictionary.DataType.BIGRAM;
+                    dataTypeForLog = Dictionary.BIGRAM;
                     // turn freq from bigram into multiplier specified above
                     double multiplier = (((double) mBigramScores[bigramSuggestion])
                             / MAXIMUM_BIGRAM_FREQUENCY)

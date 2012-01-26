@@ -162,7 +162,7 @@ public class BinaryDictionary extends Dictionary {
             }
             if (len > 0) {
                 callback.addWord(mOutputChars_bigrams, start, len, mBigramScores[j],
-                        mDicTypeId, DataType.BIGRAM);
+                        mDicTypeId, Dictionary.BIGRAM);
             }
         }
     }
@@ -182,7 +182,7 @@ public class BinaryDictionary extends Dictionary {
             }
             if (len > 0) {
                 callback.addWord(mOutputChars, start, len, mScores[j], mDicTypeId,
-                        DataType.UNIGRAM);
+                        Dictionary.UNIGRAM);
             }
         }
     }
