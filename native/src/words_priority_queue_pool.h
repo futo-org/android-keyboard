@@ -43,25 +43,24 @@ class WordsPriorityQueuePool {
         return mMasterQueue;
     }
 
-    // TODO: Come up with more generic pool
-    WordsPriorityQueue* getSubQueue1(const int id) {
-        if (id < 0 || id >= SUB_QUEUE_MAX_COUNT) {
+    WordsPriorityQueue* getSubQueue(const int wordIndex, const int inputWordLength) {
+        if (wordIndex > SUB_QUEUE_MAX_WORD_INDEX) {
+            return 0;
+        }
+        if (inputWordLength < 0 || inputWordLength >= SUB_QUEUE_MAX_COUNT) {
             if (DEBUG_WORDS_PRIORITY_QUEUE) {
                 assert(false);
             }
             return 0;
         }
-        return mSubQueues1[id];
-    }
-
-    WordsPriorityQueue* getSubQueue2(const int id) {
-        if (id < 0 || id >= SUB_QUEUE_MAX_COUNT) {
-            if (DEBUG_WORDS_PRIORITY_QUEUE) {
-                assert(false);
-            }
+        // TODO: Come up with more generic pool
+        if (wordIndex == 1) {
+            return mSubQueues1[inputWordLength];
+        } else if (wordIndex == 2) {
+            return mSubQueues2[inputWordLength];
+        } else {
             return 0;
         }
-        return mSubQueues2[id];
     }
 
     inline void clearAll() {
@@ -72,15 +71,13 @@ class WordsPriorityQueuePool {
         }
     }
 
-    inline void clearSubQueue1() {
+    inline void clearSubQueue(const int wordIndex) {
         for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
-            mSubQueues1[i]->clear();
-        }
-    }
-
-    inline void clearSubQueue2() {
-        for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
-            mSubQueues2[i]->clear();
+            if (wordIndex == 1) {
+                mSubQueues1[i]->clear();
+            } else if (wordIndex == 2) {
+                mSubQueues2[i]->clear();
+            }
         }
     }
 
