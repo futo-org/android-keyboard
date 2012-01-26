@@ -191,5 +191,17 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         type(STRING_TO_TYPE);
         type(Keyboard.CODE_DELETE);
         assertEquals("double space make a period", EXPECTED_RESULT, mTextView.getText().toString());
+
+    public void testBackspaceAtStartAfterAutocorrect() {
+        final String STRING_TO_TYPE = "tgis ";
+        final String EXPECTED_RESULT = "this ";
+        final int NEW_CURSOR_POSITION = 0;
+        type(STRING_TO_TYPE);
+        mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
+        mInputConnection.setSelection(NEW_CURSOR_POSITION, NEW_CURSOR_POSITION);
+        mLatinIME.onUpdateSelection(0, 0, NEW_CURSOR_POSITION, NEW_CURSOR_POSITION, -1, -1);
+        type(Keyboard.CODE_DELETE);
+        assertEquals("auto correct then move curor to start of line then backspace",
+                EXPECTED_RESULT, mTextView.getText().toString());
     }
 }
