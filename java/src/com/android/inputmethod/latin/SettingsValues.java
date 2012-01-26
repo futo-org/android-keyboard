@@ -124,7 +124,7 @@ public class SettingsValues {
         mUsabilityStudyMode = getUsabilityStudyMode(prefs);
         mKeyPreviewPopupDismissDelayRawValue = prefs.getString(
                 Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
-                Integer.toString(res.getInteger(R.integer.config_delay_after_preview)));
+                Integer.toString(res.getInteger(R.integer.config_key_preview_linger_timeout)));
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mAutoCorrectEnabled = isAutoCorrectEnabled(res, mAutoCorrectionThresholdRawValue);
         mBigramSuggestionEnabled = mAutoCorrectEnabled
@@ -234,7 +234,8 @@ public class SettingsValues {
             Resources resources) {
         // TODO: use mKeyPreviewPopupDismissDelayRawValue instead of reading it again here.
         return Integer.parseInt(sp.getString(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
-                Integer.toString(resources.getInteger(R.integer.config_delay_after_preview))));
+                Integer.toString(resources.getInteger(
+                        R.integer.config_key_preview_linger_timeout))));
     }
 
     private static boolean isBigramSuggestionEnabled(final SharedPreferences sp,

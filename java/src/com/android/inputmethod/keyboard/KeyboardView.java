@@ -17,7 +17,6 @@
 package com.android.inputmethod.keyboard;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -39,7 +38,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.inputmethod.compat.FrameLayoutCompatUtils;
-import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
@@ -103,7 +101,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private final int mKeyPreviewLayoutId;
     protected final KeyPreviewDrawParams mKeyPreviewDrawParams;
     private boolean mShowKeyPreviewPopup = true;
-    private final int mDelayBeforePreview;
     private int mDelayAfterPreview;
     private ViewGroup mPreviewPlacer;
 
@@ -135,8 +132,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private final DrawingHandler mDrawingHandler = new DrawingHandler(this);
 
     public static class DrawingHandler extends StaticInnerHandlerWrapper<KeyboardView> {
-        private static final int MSG_SHOW_KEY_PREVIEW = 1;
-        private static final int MSG_DISMISS_KEY_PREVIEW = 2;
+        private static final int MSG_DISMISS_KEY_PREVIEW = 1;
 
         public DrawingHandler(KeyboardView outerInstance) {
             super(outerInstance);
@@ -148,33 +144,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             if (keyboardView == null) return;
             final PointerTracker tracker = (PointerTracker) msg.obj;
             switch (msg.what) {
-            case MSG_SHOW_KEY_PREVIEW:
-                keyboardView.showKey(tracker);
-                break;
             case MSG_DISMISS_KEY_PREVIEW:
                 tracker.getKeyPreviewText().setVisibility(View.INVISIBLE);
                 break;
             }
-        }
-
-        public void showKeyPreview(long delay, PointerTracker tracker) {
-            removeMessages(MSG_SHOW_KEY_PREVIEW);
-            final KeyboardView keyboardView = getOuterInstance();
-            if (keyboardView == null) return;
-            if (tracker.getKeyPreviewText().getVisibility() == VISIBLE || delay == 0) {
-                // Show right away, if it's already visible and finger is moving around
-                keyboardView.showKey(tracker);
-            } else {
-                sendMessageDelayed(obtainMessage(MSG_SHOW_KEY_PREVIEW, tracker), delay);
-            }
-        }
-
-        public void cancelShowKeyPreview(PointerTracker tracker) {
-            removeMessages(MSG_SHOW_KEY_PREVIEW, tracker);
-        }
-
-        public void cancelAllShowKeyPreviews() {
-            removeMessages(MSG_SHOW_KEY_PREVIEW);
         }
 
         public void dismissKeyPreview(long delay, PointerTracker tracker) {
@@ -190,7 +163,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
 
         public void cancelAllMessages() {
-            cancelAllShowKeyPreviews();
             cancelAllDismissKeyPreviews();
         }
     }
@@ -295,6 +267,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         public final int mPreviewOffset;
         public final int mPreviewHeight;
         public final Typeface mKeyTextStyle;
+        public final int mLingerTimeout;
 
         private final float mPreviewTextRatio;
         private final float mKeyLetterRatio;
@@ -324,6 +297,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                     R.styleable.KeyboardView_keyPreviewHeight, 80);
             mPreviewTextRatio = getRatio(a, R.styleable.KeyboardView_keyPreviewTextRatio);
             mPreviewTextColor = a.getColor(R.styleable.KeyboardView_keyPreviewTextColor, 0);
+            mLingerTimeout = a.getInt(R.styleable.KeyboardView_keyPreviewLingerTimeout, 0);
 
             mKeyLetterRatio = keyDrawParams.mKeyLetterRatio;
             mKeyTextStyle = keyDrawParams.mKeyTextStyle;
@@ -363,10 +337,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mBackgroundDimAmount = a.getFloat(R.styleable.KeyboardView_backgroundDimAmount, 0.5f);
         a.recycle();
 
-        final Resources res = getResources();
-
-        mDelayBeforePreview = res.getInteger(R.integer.config_delay_before_preview);
-        mDelayAfterPreview = res.getInteger(R.integer.config_delay_after_preview);
+        mDelayAfterPreview = mKeyPreviewDrawParams.mLingerTimeout;
 
         mPaint.setAntiAlias(true);
         mPaint.setTextAlign(Align.CENTER);
@@ -386,8 +357,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
      * @param keyboard the keyboard to display in this view
      */
     public void setKeyboard(Keyboard keyboard) {
-        // Remove any pending dismissing preview
-        mDrawingHandler.cancelAllShowKeyPreviews();
+        // Remove any pending messages.
+        mDrawingHandler.cancelAllMessages();
         if (mKeyboard != null) {
             PointerTracker.dismissAllKeyPreviews();
         }
@@ -841,18 +812,12 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     @Override
     public void showKeyPreview(PointerTracker tracker) {
         if (mShowKeyPreviewPopup) {
-            mDrawingHandler.showKeyPreview(mDelayBeforePreview, tracker);
+            showKey(tracker);
         }
     }
 
     @Override
-    public void cancelShowKeyPreview(PointerTracker tracker) {
-        mDrawingHandler.cancelShowKeyPreview(tracker);
-    }
-
-    @Override
     public void dismissKeyPreview(PointerTracker tracker) {
-        mDrawingHandler.cancelShowKeyPreview(tracker);
         mDrawingHandler.dismissKeyPreview(mDelayAfterPreview, tracker);
     }
 

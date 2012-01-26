@@ -17,7 +17,6 @@
 package com.android.inputmethod.keyboard;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -25,7 +24,6 @@ import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +67,6 @@ public class PointerTracker {
         public void invalidateKey(Key key);
         public TextView inflateKeyPreviewText();
         public void showKeyPreview(PointerTracker tracker);
-        public void cancelShowKeyPreview(PointerTracker tracker);
         public void dismissKeyPreview(PointerTracker tracker);
     }
 
@@ -98,14 +95,8 @@ public class PointerTracker {
     }
 
     private static KeyboardSwitcher sKeyboardSwitcher;
-    private static boolean sConfigSlidingKeyInputEnabled;
-    // Timing constants
-    private static int sDelayBeforeKeyRepeatStart;
-    private static int sLongPressKeyTimeout;
-    private static int sLongPressShiftKeyTimeout;
-    private static int sLongPressSpaceKeyTimeout;
-    private static int sIgnoreSpecialKeyTimeout;
-    private static int sTouchNoiseThresholdMillis;
+    // Parameters for pointer handling.
+    private static LatinKeyboardView.PointerTrackerParams sParams;
     private static int sTouchNoiseThresholdDistanceSquared;
 
     private static final List<PointerTracker> sTrackers = new ArrayList<PointerTracker>();
@@ -169,20 +160,14 @@ public class PointerTracker {
             sPointerTrackerQueue = null;
         }
 
-        final Resources res = context.getResources();
-        sConfigSlidingKeyInputEnabled = res.getBoolean(R.bool.config_sliding_key_input_enabled);
-        sDelayBeforeKeyRepeatStart = res.getInteger(R.integer.config_delay_before_key_repeat_start);
-        sLongPressKeyTimeout = res.getInteger(R.integer.config_long_press_key_timeout);
-        sLongPressShiftKeyTimeout = res.getInteger(R.integer.config_long_press_shift_key_timeout);
-        sLongPressSpaceKeyTimeout = res.getInteger(R.integer.config_long_press_space_key_timeout);
-        sIgnoreSpecialKeyTimeout = res.getInteger(R.integer.config_ignore_special_key_timeout);
-        sTouchNoiseThresholdMillis = res.getInteger(R.integer.config_touch_noise_threshold_millis);
-
-        final float touchNoiseThresholdDistance = res.getDimension(
-                R.dimen.config_touch_noise_threshold_distance);
-        sTouchNoiseThresholdDistanceSquared = (int)(
-                touchNoiseThresholdDistance * touchNoiseThresholdDistance);
+        setParameters(LatinKeyboardView.PointerTrackerParams.DEFAULT);
         sKeyboardSwitcher = KeyboardSwitcher.getInstance();
+    }
+
+    public static void setParameters(LatinKeyboardView.PointerTrackerParams params) {
+        sParams = params;
+        sTouchNoiseThresholdDistanceSquared = (int)(
+                params.mTouchNoiseThresholdDistance * params.mTouchNoiseThresholdDistance);
     }
 
     public static PointerTracker getPointerTracker(final int id, KeyEventHandler handler) {
@@ -278,7 +263,7 @@ public class PointerTracker {
                 mListener.onCodeInput(code, keyCodes, x, y);
             }
             if (!key.altCodeWhileTyping() && !key.isModifier()) {
-                mTimerProxy.startKeyTypedTimer(sIgnoreSpecialKeyTimeout);
+                mTimerProxy.startKeyTypedTimer(sParams.mIgnoreSpecialKeyTimeout);
             }
         }
     }
@@ -453,7 +438,7 @@ public class PointerTracker {
         setKeyDetectorInner(handler.getKeyDetector());
         // Naive up-to-down noise filter.
         final long deltaT = eventTime - mUpTime;
-        if (deltaT < sTouchNoiseThresholdMillis) {
+        if (deltaT < sParams.mTouchNoiseThresholdTime) {
             final int dx = x - mLastX;
             final int dy = y - mLastY;
             final int distanceSquared = (dx * dx + dy * dy);
@@ -483,7 +468,7 @@ public class PointerTracker {
         Key key = onDownKey(x, y, eventTime);
         // Sliding key is allowed when 1) enabled by configuration, 2) this pointer starts sliding
         // from modifier key, or 3) this pointer's KeyDetector always allows sliding input.
-        mIsAllowedSlidingKeyInput = sConfigSlidingKeyInputEnabled
+        mIsAllowedSlidingKeyInput = sParams.mSlidingKeyInputEnabled
                 || (key != null && key.isModifier())
                 || mKeyDetector.alwaysAllowsSlidingInput();
         mKeyboardLayoutHasBeenChanged = false;
@@ -620,7 +605,6 @@ public class PointerTracker {
 
     private void onUpEventInternal(int x, int y, long eventTime) {
         mTimerProxy.cancelKeyTimers();
-        mDrawingProxy.cancelShowKeyPreview(this);
         mIsInSlidingKeyInput = false;
         final int keyX, keyY;
         if (isMajorEnoughMoveToBeOnNewKey(x, y, onMoveKey(x, y))) {
@@ -673,7 +657,6 @@ public class PointerTracker {
 
     private void onCancelEventInternal() {
         mTimerProxy.cancelKeyTimers();
-        mDrawingProxy.cancelShowKeyPreview(this);
         setReleasedKeyGraphics(mCurrentKey);
         mIsInSlidingKeyInput = false;
         if (mIsShowingMoreKeysPanel) {
@@ -685,7 +668,7 @@ public class PointerTracker {
     private void startRepeatKey(Key key) {
         if (key != null && key.isRepeatable()) {
             onRepeatKey(key);
-            mTimerProxy.startKeyRepeatTimer(sDelayBeforeKeyRepeatStart, this);
+            mTimerProxy.startKeyRepeatTimer(sParams.mKeyRepeatStartTimeout, this);
             mIsRepeatableKey = true;
         } else {
             mIsRepeatableKey = false;
@@ -715,12 +698,12 @@ public class PointerTracker {
     private void startLongPressTimer(Key key) {
         if (key == null) return;
         if (key.mCode == Keyboard.CODE_SHIFT) {
-            if (sLongPressShiftKeyTimeout > 0) {
-                mTimerProxy.startLongPressTimer(sLongPressShiftKeyTimeout, this);
+            if (sParams.mLongPressShiftKeyTimeout > 0) {
+                mTimerProxy.startLongPressTimer(sParams.mLongPressShiftKeyTimeout, this);
             }
         } else if (key.mCode == Keyboard.CODE_SPACE) {
-            if (sLongPressSpaceKeyTimeout > 0) {
-                mTimerProxy.startLongPressTimer(sLongPressSpaceKeyTimeout, this);
+            if (sParams.mLongPressSpaceKeyTimeout > 0) {
+                mTimerProxy.startLongPressTimer(sParams.mLongPressSpaceKeyTimeout, this);
             }
         } else if (key.hasUppercaseLetter() && mKeyboard.isManualTemporaryUpperCase()) {
             // We need not start long press timer on the key which has manual temporary upper case
@@ -728,9 +711,9 @@ public class PointerTracker {
             return;
         } else if (sKeyboardSwitcher.isInMomentarySwitchState()) {
             // We use longer timeout for sliding finger input started from the symbols mode key.
-            mTimerProxy.startLongPressTimer(sLongPressKeyTimeout * 3, this);
+            mTimerProxy.startLongPressTimer(sParams.mLongPressKeyTimeout * 3, this);
         } else {
-            mTimerProxy.startLongPressTimer(sLongPressKeyTimeout, this);
+            mTimerProxy.startLongPressTimer(sParams.mLongPressKeyTimeout, this);
         }
     }
 

@@ -24,19 +24,22 @@
     <bool name="config_enable_show_voice_key_option">false</bool>
     <bool name="config_enable_show_popup_on_keypress_option">false</bool>
     <bool name="config_enable_bigram_suggestions_option">false</bool>
-    <bool name="config_sliding_key_input_enabled">false</bool>
     <bool name="config_digit_more_keys_enabled">false</bool>
     <!-- Whether or not Popup on key press is enabled by default -->
     <bool name="config_default_popup_preview">false</bool>
     <bool name="config_default_sound_enabled">true</bool>
     <bool name="config_auto_correction_spacebar_led_enabled">false</bool>
-    <!-- Showing mini keyboard, just above the touched point if true, aligned to the key if false -->
-    <bool name="config_show_mini_keyboard_at_touched_point">true</bool>
     <!-- Long pressing space will invoke IME switcher if > 0, never invoke IME switcher if == 0 -->
     <integer name="config_long_press_space_key_timeout">0</integer>
     <!-- This configuration is the index of the array {@link KeyboardSwitcher.KEYBOARD_THEMES}. -->
     <string name="config_default_keyboard_theme_id" translatable="false">5</string>
     <integer name="config_max_more_keys_column">5</integer>
+    <!--
+        Configuration for LatinKeyboardView
+    -->
+    <bool name="config_sliding_key_input_enabled">false</bool>
+    <!-- Showing mini keyboard, just above the touched point if true, aligned to the key if false -->
+    <bool name="config_show_mini_keyboard_at_touched_point">true</bool>
     <!--  Screen metrics for logging.
             0 = "mdpi phone screen"
             1 = "hdpi phone screen"
