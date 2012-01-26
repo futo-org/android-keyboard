@@ -21,7 +21,6 @@ import android.content.SharedPreferences;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.latin.Dictionary.DataType;
 
 import java.util.List;
 
@@ -75,7 +74,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void onStartSuggestion(CharSequence previousWords) {
     }
 
-    public static void onAddSuggestedWord(String word, int typeId, DataType dataType) {
+    public static void onAddSuggestedWord(String word, int typeId, int dataType) {
     }
 
     public static void onSetKeyboard(Keyboard kb) {

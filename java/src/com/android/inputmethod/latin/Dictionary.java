@@ -33,9 +33,8 @@ public abstract class Dictionary {
      */
     protected static final int FULL_WORD_SCORE_MULTIPLIER = 2;
 
-    public static enum DataType {
-        UNIGRAM, BIGRAM
-    }
+    public static final int UNIGRAM = 0;
+    public static final int BIGRAM = 1;
 
     /**
      * Interface to be implemented by classes requesting words to be fetched from the dictionary.
@@ -51,11 +50,11 @@ public abstract class Dictionary {
          * @param score the score of occurrence. This is normalized between 1 and 255, but
          * can exceed those limits
          * @param dicTypeId of the dictionary where word was from
-         * @param dataType tells type of this data
+         * @param dataType tells type of this data, either UNIGRAM or BIGRAM
          * @return true if the word was added, false if no more words are required
          */
         boolean addWord(char[] word, int wordOffset, int wordLength, int score, int dicTypeId,
-                DataType dataType);
+                int dataType);
     }
 
     /**
@@ -64,7 +63,7 @@ public abstract class Dictionary {
      * @param composer the key sequence to match
      * @param callback the callback object to send matched words to as possible candidates
      * @param proximityInfo the object for key proximity. May be ignored by some implementations.
-     * @see WordCallback#addWord(char[], int, int, int, int, DataType)
+     * @see WordCallback#addWord(char[], int, int, int, int, int)
      */
     abstract public void getWords(final WordComposer composer, final WordCallback callback,
             final ProximityInfo proximityInfo);
