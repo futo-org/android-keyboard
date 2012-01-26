@@ -33,45 +33,17 @@ public class WordComposer {
     public static final int NOT_A_CODE = KeyDetector.NOT_A_CODE;
     public static final int NOT_A_COORDINATE = -1;
 
-    // Storage for all the info about the current input.
-    private static class CharacterStore {
-        /**
-         * The list of unicode values for each keystroke (including surrounding keys)
-         */
-        ArrayList<int[]> mCodes;
-        int[] mXCoordinates;
-        int[] mYCoordinates;
-        StringBuilder mTypedWord;
-        CharSequence mAutoCorrection;
-        CharacterStore() {
-            final int N = BinaryDictionary.MAX_WORD_LENGTH;
-            mCodes = new ArrayList<int[]>(N);
-            mTypedWord = new StringBuilder(N);
-            mXCoordinates = new int[N];
-            mYCoordinates = new int[N];
-            mAutoCorrection = null;
-        }
-        CharacterStore(final CharacterStore that) {
-            mCodes = new ArrayList<int[]>(that.mCodes);
-            mTypedWord = new StringBuilder(that.mTypedWord);
-            mXCoordinates = Arrays.copyOf(that.mXCoordinates, that.mXCoordinates.length);
-            mYCoordinates = Arrays.copyOf(that.mYCoordinates, that.mYCoordinates.length);
-        }
-        void reset() {
-            // For better performance than creating a new character store.
-            mCodes.clear();
-            mTypedWord.setLength(0);
-            mAutoCorrection = null;
-        }
-    }
+    final int N = BinaryDictionary.MAX_WORD_LENGTH;
 
-    // The currently typing word. May not be null.
-    private CharacterStore mCurrentWord;
+    private ArrayList<int[]> mCodes;
+    private int[] mXCoordinates;
+    private int[] mYCoordinates;
+    private StringBuilder mTypedWord;
+    private CharSequence mAutoCorrection;
 
+    // Cache these values for performance
     private int mCapsCount;
-
     private boolean mAutoCapitalized;
-    // Cache this value for performance
     private int mTrailingSingleQuotesCount;
 
     /**
@@ -80,7 +52,11 @@ public class WordComposer {
     private boolean mIsFirstCharCapitalized;
 
     public WordComposer() {
-        mCurrentWord = new CharacterStore();
+        mCodes = new ArrayList<int[]>(N);
+        mTypedWord = new StringBuilder(N);
+        mXCoordinates = new int[N];
+        mYCoordinates = new int[N];
+        mAutoCorrection = null;
         mTrailingSingleQuotesCount = 0;
     }
 
@@ -89,7 +65,10 @@ public class WordComposer {
     }
 
     public void init(WordComposer source) {
-        mCurrentWord = new CharacterStore(source.mCurrentWord);
+        mCodes = new ArrayList<int[]>(source.mCodes);
+        mTypedWord = new StringBuilder(source.mTypedWord);
+        mXCoordinates = Arrays.copyOf(source.mXCoordinates, source.mXCoordinates.length);
+        mYCoordinates = Arrays.copyOf(source.mYCoordinates, source.mYCoordinates.length);
         mCapsCount = source.mCapsCount;
         mIsFirstCharCapitalized = source.mIsFirstCharCapitalized;
         mAutoCapitalized = source.mAutoCapitalized;
@@ -100,7 +79,9 @@ public class WordComposer {
      * Clear out the keys registered so far.
      */
     public void reset() {
-        mCurrentWord.reset();
+        mCodes.clear();
+        mTypedWord.setLength(0);
+        mAutoCorrection = null;
         mCapsCount = 0;
         mIsFirstCharCapitalized = false;
         mTrailingSingleQuotesCount = 0;
@@ -111,7 +92,7 @@ public class WordComposer {
      * @return the number of keystrokes
      */
     public final int size() {
-        return mCurrentWord.mTypedWord.length();
+        return mTypedWord.length();
     }
 
     public final boolean isComposingWord() {
@@ -124,15 +105,15 @@ public class WordComposer {
      * @return the unicode for the pressed and surrounding keys
      */
     public int[] getCodesAt(int index) {
-        return mCurrentWord.mCodes.get(index);
+        return mCodes.get(index);
     }
 
     public int[] getXCoordinates() {
-        return mCurrentWord.mXCoordinates;
+        return mXCoordinates;
     }
 
     public int[] getYCoordinates() {
-        return mCurrentWord.mYCoordinates;
+        return mYCoordinates;
     }
 
     private static boolean isFirstCharCapitalized(int index, int codePoint, boolean previous) {
@@ -147,12 +128,12 @@ public class WordComposer {
      */
     public void add(int primaryCode, int[] codes, int x, int y) {
         final int newIndex = size();
-        mCurrentWord.mTypedWord.append((char) primaryCode);
+        mTypedWord.append((char) primaryCode);
         correctPrimaryJuxtapos(primaryCode, codes);
-        mCurrentWord.mCodes.add(codes);
+        mCodes.add(codes);
         if (newIndex < BinaryDictionary.MAX_WORD_LENGTH) {
-            mCurrentWord.mXCoordinates[newIndex] = x;
-            mCurrentWord.mYCoordinates[newIndex] = y;
+            mXCoordinates[newIndex] = x;
+            mYCoordinates[newIndex] = y;
         }
         mIsFirstCharCapitalized = isFirstCharCapitalized(
                 newIndex, primaryCode, mIsFirstCharCapitalized);
@@ -162,7 +143,7 @@ public class WordComposer {
         } else {
             mTrailingSingleQuotesCount = 0;
         }
-        mCurrentWord.mAutoCorrection = null;
+        mAutoCorrection = null;
     }
 
     /**
@@ -231,9 +212,9 @@ public class WordComposer {
         final int size = size();
         if (size > 0) {
             final int lastPos = size - 1;
-            char lastChar = mCurrentWord.mTypedWord.charAt(lastPos);
-            mCurrentWord.mCodes.remove(lastPos);
-            mCurrentWord.mTypedWord.deleteCharAt(lastPos);
+            char lastChar = mTypedWord.charAt(lastPos);
+            mCodes.remove(lastPos);
+            mTypedWord.deleteCharAt(lastPos);
             if (Character.isUpperCase(lastChar)) mCapsCount--;
         }
         if (size() == 0) {
@@ -242,12 +223,12 @@ public class WordComposer {
         if (mTrailingSingleQuotesCount > 0) {
             --mTrailingSingleQuotesCount;
         } else {
-            for (int i = mCurrentWord.mTypedWord.length() - 1; i >= 0; --i) {
-                if (Keyboard.CODE_SINGLE_QUOTE != mCurrentWord.mTypedWord.codePointAt(i)) break;
+            for (int i = mTypedWord.length() - 1; i >= 0; --i) {
+                if (Keyboard.CODE_SINGLE_QUOTE != mTypedWord.codePointAt(i)) break;
                 ++mTrailingSingleQuotesCount;
             }
         }
-        mCurrentWord.mAutoCorrection = null;
+        mAutoCorrection = null;
     }
 
     /**
@@ -255,7 +236,7 @@ public class WordComposer {
      * @return the word that was typed so far. Never returns null.
      */
     public String getTypedWord() {
-        return mCurrentWord.mTypedWord.toString();
+        return mTypedWord.toString();
     }
 
     /**
@@ -306,14 +287,14 @@ public class WordComposer {
      * Sets the auto-correction for this word.
      */
     public void setAutoCorrection(final CharSequence correction) {
-        mCurrentWord.mAutoCorrection = correction;
+        mAutoCorrection = correction;
     }
 
     /**
      * @return the auto-correction for this word, or null if none.
      */
     public CharSequence getAutoCorrectionOrNull() {
-        return mCurrentWord.mAutoCorrection;
+        return mAutoCorrection;
     }
 
     // `type' should be one of the LastComposedWord.COMMIT_TYPE_* constants above.
@@ -328,23 +309,22 @@ public class WordComposer {
         // LastComposedWord#didAutoCorrectToAnotherWord with #equals(). It would be marginally
         // cleaner to do it here, but it would be slower (since we would #equals() for each commit,
         // instead of only on cancel), and ultimately we want to figure it out even earlier anyway.
-        final LastComposedWord lastComposedWord = new LastComposedWord(type, mCurrentWord.mCodes,
-                mCurrentWord.mXCoordinates, mCurrentWord.mYCoordinates,
-                mCurrentWord.mTypedWord.toString(),
-                (type != LastComposedWord.COMMIT_TYPE_DECIDED_WORD)
-                        || (null == mCurrentWord.mAutoCorrection)
-                                ? null : mCurrentWord.mAutoCorrection.toString());
-        // TODO: improve performance by swapping buffers instead of creating a new object.
-        mCurrentWord = new CharacterStore();
+        final LastComposedWord lastComposedWord = new LastComposedWord(type, mCodes,
+                mXCoordinates, mYCoordinates, mTypedWord.toString(),
+                (type != LastComposedWord.COMMIT_TYPE_DECIDED_WORD) || (null == mAutoCorrection)
+                        ? null : mAutoCorrection.toString());
+        mCodes.clear();
+        mTypedWord.setLength(0);
+        mAutoCorrection = null;
         return lastComposedWord;
     }
 
     public void resumeSuggestionOnLastComposedWord(final LastComposedWord lastComposedWord) {
-        mCurrentWord.mCodes = lastComposedWord.mCodes;
-        mCurrentWord.mXCoordinates = lastComposedWord.mXCoordinates;
-        mCurrentWord.mYCoordinates = lastComposedWord.mYCoordinates;
-        mCurrentWord.mTypedWord.setLength(0);
-        mCurrentWord.mTypedWord.append(lastComposedWord.mTypedWord);
-        mCurrentWord.mAutoCorrection = lastComposedWord.mAutoCorrection;
+        mCodes = lastComposedWord.mCodes;
+        mXCoordinates = lastComposedWord.mXCoordinates;
+        mYCoordinates = lastComposedWord.mYCoordinates;
+        mTypedWord.setLength(0);
+        mTypedWord.append(lastComposedWord.mTypedWord);
+        mAutoCorrection = lastComposedWord.mAutoCorrection;
     }
 }
