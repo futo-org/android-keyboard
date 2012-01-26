@@ -301,7 +301,7 @@ public class ExpandableDictionary extends Dictionary {
                         finalFreq = computeSkippedWordFinalFreq(freq, snr, mInputLength);
                     }
                     if (!callback.addWord(word, 0, depth + 1, finalFreq, mDicTypeId,
-                            DataType.UNIGRAM)) {
+                            Dictionary.UNIGRAM)) {
                         return;
                     }
                 }
@@ -342,7 +342,7 @@ public class ExpandableDictionary extends Dictionary {
                                                 snr * addedAttenuation, mInputLength);
                                     }
                                     callback.addWord(word, 0, depth + 1, finalFreq, mDicTypeId,
-                                            DataType.UNIGRAM);
+                                            Dictionary.UNIGRAM);
                                 }
                             }
                             if (children != null) {
@@ -506,7 +506,7 @@ public class ExpandableDictionary extends Dictionary {
             } while (node != null);
 
             callback.addWord(mLookedUpString, index, MAX_WORD_LENGTH - index, freq, mDicTypeId,
-                    DataType.BIGRAM);
+                    Dictionary.BIGRAM);
         }
     }
 
