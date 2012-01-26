@@ -407,21 +407,74 @@ inline void UnigramDictionary::onTerminal(const int freq,
 
 int UnigramDictionary::getSubStringSuggestion(
         ProximityInfo *proximityInfo, const int *xcoordinates, const int *ycoordinates,
-        const int *codes, const bool useFullEditDistance, const Correction *correction,
-        WordsPriorityQueuePool* queuePool, const bool hasAutoCorrectionCandidate,
-        const int currentWordIndex, const int inputWordStartPos, const int inputWordLength,
+        const int *codes, const bool useFullEditDistance, Correction *correction,
+        WordsPriorityQueuePool* queuePool, const int inputLength,
+        const bool hasAutoCorrectionCandidate, const int currentWordIndex,
+        const int inputWordStartPos, const int inputWordLength,
         const int outputWordStartPos, unsigned short* outputWord, int *outputWordLength) {
-//    under constructiong
-//    unsigned short* tempOutputWord = 0;
-//    int tempOutputWordLength = 0;
-//    int freq = getMostFrequentWordLike(
-//            inputWordStartPos, inputWordLength, proximityInfo, mWord);
-//    if (freq > 0) {
-//        tempOutputWordLength = inputWordLength;
-//        tempOutputWord = mWord;
-//    } else if (!hasAutoCorrectionCandidate) {
-//    }
-    return 0;
+    unsigned short* tempOutputWord = 0;
+    int tempOutputWordLength = 0;
+    int freq = getMostFrequentWordLike(
+            inputWordStartPos, inputWordLength, proximityInfo, mWord);
+    if (freq > 0) {
+        tempOutputWordLength = inputWordLength;
+        tempOutputWord = mWord;
+    } else if (!hasAutoCorrectionCandidate) {
+        if (inputWordStartPos > 0) {
+            const int offset = inputWordStartPos;
+            initSuggestions(proximityInfo, &xcoordinates[offset], &ycoordinates[offset],
+                    codes + offset * MAX_PROXIMITY_CHARS, inputWordLength, correction);
+            queuePool->clearSubQueue(currentWordIndex);
+            getSuggestionCandidates(useFullEditDistance, inputWordLength, correction,
+                    queuePool, false, MAX_ERRORS_FOR_TWO_WORDS, currentWordIndex);
+            if (DEBUG_DICT) {
+                if (currentWordIndex <= SUB_QUEUE_MAX_WORD_INDEX) {
+                    AKLOGI("Dump word candidates(%d) %d", currentWordIndex, inputWordLength);
+                    for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
+                        queuePool->getSubQueue(currentWordIndex, i)->dumpTopWord();
+                    }
+                }
+            }
+        }
+        WordsPriorityQueue* queue = queuePool->getSubQueue(currentWordIndex, inputWordLength);
+        if (!queue || queue->size() < 1) {
+            return 0;
+        }
+        int score = 0;
+        const double ns = queue->getHighestNormalizedScore(
+                proximityInfo->getPrimaryInputWord(), inputWordLength,
+                &tempOutputWord, &score, &tempOutputWordLength);
+        if (DEBUG_DICT) {
+            AKLOGI("NS(%d) = %f, Score = %d", currentWordIndex, ns, score);
+        }
+        // Two words correction won't be done if the score of the first word doesn't exceed the
+        // threshold.
+        if (ns < TWO_WORDS_CORRECTION_WITH_OTHER_ERROR_THRESHOLD
+                || tempOutputWordLength < SUB_QUEUE_MIN_WORD_LENGTH) {
+            return 0;
+        }
+        freq = score >> (tempOutputWordLength
+                + TWO_WORDS_PLUS_OTHER_ERROR_CORRECTION_DEMOTION_DIVIDER);
+    }
+    if (DEBUG_DICT) {
+        AKLOGI("Freq(%d): %d", currentWordIndex, freq);
+    }
+    if (freq <= 0 || tempOutputWordLength <= 0
+            || MAX_WORD_LENGTH <= (outputWordStartPos + tempOutputWordLength)) {
+        return 0;
+    }
+    for (int i = 0; i < tempOutputWordLength; ++i) {
+        outputWord[outputWordStartPos + i] = tempOutputWord[i];
+    }
+    if ((inputWordStartPos + inputWordLength) < inputLength) {
+        if (outputWordStartPos + tempOutputWordLength >= MAX_WORD_LENGTH) {
+            return 0;
+        }
+        outputWord[outputWordStartPos + tempOutputWordLength] = SPACE;
+        ++tempOutputWordLength;
+    }
+    *outputWordLength = outputWordStartPos + tempOutputWordLength;
+    return freq;
 }
 
 void UnigramDictionary::getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo,
@@ -441,125 +494,35 @@ void UnigramDictionary::getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo
 
     initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes,
             inputLength, correction);
-    WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
-    const bool isSpaceProximity = spaceProximityPos >= 0;
-
-    // First word
-    const int firstInputWordStartPos = 0;
-    const int firstInputWordLength = isSpaceProximity ? spaceProximityPos : missingSpacePos;
-    int firstFreq = getMostFrequentWordLike(
-            firstInputWordStartPos, firstInputWordLength, proximityInfo, mWord);
-    unsigned short* firstOutputWord = 0;
-    int firstOutputWordLength = 0;
-    if (firstFreq > 0) {
-        firstOutputWordLength = firstInputWordLength;
-        firstOutputWord = mWord;
-    } else if (!hasAutoCorrectionCandidate) {
-        WordsPriorityQueue* firstWordQueue = queuePool->getSubQueue(
-                FIRST_WORD_INDEX, firstInputWordLength);
-        if (!firstWordQueue || firstWordQueue->size() < 1) {
-            return;
-        }
-        int score = 0;
-        const double ns = firstWordQueue->getHighestNormalizedScore(
-                proximityInfo->getPrimaryInputWord(), firstInputWordLength,
-                &firstOutputWord, &score, &firstOutputWordLength);
-        if (DEBUG_DICT) {
-            AKLOGI("NS1 = %f, Score = %d", ns, score);
-        }
-        // Two words correction won't be done if the score of the first word doesn't exceed the
-        // threshold.
-        if (ns < TWO_WORDS_CORRECTION_WITH_OTHER_ERROR_THRESHOLD
-                || firstOutputWordLength < SUB_QUEUE_MIN_WORD_LENGTH) {
-            return;
-        }
-        firstFreq = score >> (firstOutputWordLength
-                + TWO_WORDS_PLUS_OTHER_ERROR_CORRECTION_DEMOTION_DIVIDER);
-    }
-
-    if (DEBUG_DICT) {
-        AKLOGI("First freq: %d", firstFreq);
-    }
-
-    if (firstFreq <= 0 || firstOutputWordLength <= 0 || MAX_WORD_LENGTH <= firstOutputWordLength) {
-        return;
-    }
 
     // Allocating fixed length array on stack
     unsigned short outputWord[MAX_WORD_LENGTH];
     int outputWordLength = 0;
 
-    for (int i = 0; i < firstOutputWordLength; ++i) {
-        outputWord[i] = firstOutputWord[i];
-    }
+    WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
+    const bool isSpaceProximity = spaceProximityPos >= 0;
 
-    outputWord[firstOutputWordLength] = SPACE;
-    outputWordLength = firstOutputWordLength + 1;
-
-    // Second word
-    const int secondInputWordLength = isSpaceProximity
-            ? (inputLength - spaceProximityPos - 1)
-            : (inputLength - missingSpacePos);
-    const int secondInputWordStartPos =
-            isSpaceProximity ? (spaceProximityPos + 1) : missingSpacePos;
-    int secondFreq = getMostFrequentWordLike(
-            secondInputWordStartPos, secondInputWordLength, proximityInfo, mWord);
-    unsigned short* secondOutputWord = 0;
-    int secondOutputWordLength = 0;
-
-    if (secondFreq > 0) {
-        secondOutputWordLength = secondInputWordLength;
-        secondOutputWord = mWord;
-    } else if (!hasAutoCorrectionCandidate) {
-        const int offset = secondInputWordStartPos;
-        initSuggestions(proximityInfo, &xcoordinates[offset], &ycoordinates[offset],
-                codes + offset * MAX_PROXIMITY_CHARS, secondInputWordLength, correction);
-        queuePool->clearSubQueue(SECOND_WORD_INDEX);
-        getSuggestionCandidates(useFullEditDistance, secondInputWordLength, correction,
-                queuePool, false, MAX_ERRORS_FOR_TWO_WORDS, SECOND_WORD_INDEX);
-        if (DEBUG_DICT) {
-            AKLOGI("Dump second word candidates %d", secondInputWordLength);
-            for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
-                queuePool->getSubQueue(SECOND_WORD_INDEX, i)->dumpTopWord();
-            }
-        }
-        WordsPriorityQueue* secondWordQueue = queuePool->getSubQueue(
-                SECOND_WORD_INDEX, secondInputWordLength);
-        if (!secondWordQueue || secondWordQueue->size() < 1) {
-            return;
-        }
-        int score = 0;
-        const double ns = secondWordQueue->getHighestNormalizedScore(
-                proximityInfo->getPrimaryInputWord(), secondInputWordLength,
-                &secondOutputWord, &score, &secondOutputWordLength);
-        if (DEBUG_DICT) {
-            AKLOGI("NS2 = %f, Score = %d", ns, score);
-        }
-        // Two words correction won't be done if the score of the first word doesn't exceed the
-        // threshold.
-        if (ns < TWO_WORDS_CORRECTION_WITH_OTHER_ERROR_THRESHOLD
-                || secondOutputWordLength < SUB_QUEUE_MIN_WORD_LENGTH) {
-            return;
-        }
-        secondFreq = score >> (secondOutputWordLength
-                + TWO_WORDS_PLUS_OTHER_ERROR_CORRECTION_DEMOTION_DIVIDER);
-    }
-
-    if (DEBUG_DICT) {
-        DUMP_WORD(secondOutputWord, secondOutputWordLength);
-        AKLOGI("Second freq: %d", secondFreq);
-    }
-
-    if (secondFreq <= 0 || secondOutputWordLength <= 0
-            || MAX_WORD_LENGTH <= (firstOutputWordLength + 1 + secondOutputWordLength)) {
+    // First word
+    int inputWordStartPos = 0;
+    int inputWordLength = isSpaceProximity ? spaceProximityPos : missingSpacePos;
+    const int firstFreq = getSubStringSuggestion(proximityInfo, xcoordinates, ycoordinates, codes,
+            useFullEditDistance, correction, queuePool, inputLength, hasAutoCorrectionCandidate,
+            FIRST_WORD_INDEX, inputWordStartPos, inputWordLength, 0, outputWord, &outputWordLength);
+    if (firstFreq <= 0) {
         return;
     }
 
-    for (int i = 0; i < secondOutputWordLength; ++i) {
-        outputWord[firstOutputWordLength + 1 + i] = secondOutputWord[i];
+    // Second word
+    inputWordStartPos = isSpaceProximity ? (spaceProximityPos + 1) : missingSpacePos;
+    inputWordLength = isSpaceProximity ? (inputLength - spaceProximityPos - 1)
+            : (inputLength - missingSpacePos);
+    const int secondFreq = getSubStringSuggestion(proximityInfo, xcoordinates, ycoordinates, codes,
+            useFullEditDistance, correction, queuePool, inputLength, hasAutoCorrectionCandidate,
+            SECOND_WORD_INDEX, inputWordStartPos, inputWordLength, outputWordLength, outputWord,
+            &outputWordLength);
+    if (secondFreq <= 0) {
+        return;
     }
-
-    outputWordLength += secondOutputWordLength;
 
     // TODO: Remove initSuggestions and correction->setCorrectionParams
     initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, inputLength, correction);
