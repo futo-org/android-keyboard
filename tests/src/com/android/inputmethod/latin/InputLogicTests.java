@@ -191,6 +191,7 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         type(STRING_TO_TYPE);
         type(Keyboard.CODE_DELETE);
         assertEquals("double space make a period", EXPECTED_RESULT, mTextView.getText().toString());
+    }
 
     public void testBackspaceAtStartAfterAutocorrect() {
         final String STRING_TO_TYPE = "tgis ";
