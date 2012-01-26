@@ -177,4 +177,19 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         type(STRING_TO_TYPE);
         assertEquals("simple auto-correct", EXPECTED_RESULT, mTextView.getText().toString());
     }
+
+    public void testDoubleSpace() {
+        final String STRING_TO_TYPE = "this  ";
+        final String EXPECTED_RESULT = "this. ";
+        type(STRING_TO_TYPE);
+        assertEquals("double space make a period", EXPECTED_RESULT, mTextView.getText().toString());
+    }
+
+    public void testCancelDoubleSpace() {
+        final String STRING_TO_TYPE = "tgis  ";
+        final String EXPECTED_RESULT = "this  ";
+        type(STRING_TO_TYPE);
+        type(Keyboard.CODE_DELETE);
+        assertEquals("double space make a period", EXPECTED_RESULT, mTextView.getText().toString());
+    }
 }
