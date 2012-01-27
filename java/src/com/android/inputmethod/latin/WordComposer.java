@@ -311,8 +311,10 @@ public class WordComposer {
         // instead of only on cancel), and ultimately we want to figure it out even earlier anyway.
         final LastComposedWord lastComposedWord = new LastComposedWord(mCodes,
                 mXCoordinates, mYCoordinates, mTypedWord.toString(),
-                (type != LastComposedWord.COMMIT_TYPE_DECIDED_WORD) || (null == mAutoCorrection)
-                        ? null : mAutoCorrection.toString());
+                null == mAutoCorrection ? null : mAutoCorrection.toString());
+        if (type != LastComposedWord.COMMIT_TYPE_DECIDED_WORD) {
+            lastComposedWord.deactivate();
+        }
         mCodes.clear();
         mTypedWord.setLength(0);
         mAutoCorrection = null;
