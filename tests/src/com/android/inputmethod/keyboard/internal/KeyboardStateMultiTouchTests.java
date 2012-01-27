@@ -72,6 +72,57 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         chordingPressAndReleaseKey('a', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
         // Release "ABC" key, switch back to symbols.
         releaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED);
+
+        // Alphabet shifted -> symbols -> "ABC" key + letter -> symbols
+        // -> alphabet.
+        // Load keyboard
+        loadKeyboard(ALPHABET_UNSHIFTED);
+        // Press/release shift key, enter alphabet shifted.
+        pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Press/release "?123" key, enter into symbols.
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        // Press "ABC" key, enter into chording alphabet state.
+        pressKey(CODE_SYMBOL, ALPHABET_UNSHIFTED);
+        // Enter/release letter key.
+        chordingPressAndReleaseKey('a', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
+        // Release "ABC" key, switch back to symbols.
+        releaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED);
+        // Press/release "ABC" key, switch to alphabet (not alphabet shifted).
+        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
+
+        // Alphabet shift locked -> symbols -> "ABC" key + letter -> symbols ->
+        // alphabet shift locked.
+        // Load keyboard
+        loadKeyboard(ALPHABET_UNSHIFTED);
+        // Long press shift key, enter alphabet shift locked.
+        longPressShiftKey(ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED);
+        // Press/release "?123" key, enter into symbols.
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        // Press "ABC" key, enter into chording alphabet shift locked.
+        pressKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED);
+        // Enter/release letter key.
+        chordingPressAndReleaseKey('A', ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
+        // Release "ABC" key, switch back to symbols.
+        releaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED);
+        // Press/release "ABC" key, switch to alphabet shift locked.
+        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
+
+        // Alphabet shift locked -> symbols -> "=\<" key + letter -> symbols ->
+        // alphabet shift locked.
+        // Load keyboard
+        loadKeyboard(ALPHABET_UNSHIFTED);
+        // Long press shift key, enter alphabet shift locked.
+        longPressShiftKey(ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED);
+        // Press/release "?123" key, enter into symbols.
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        // Press "=\<" key, enter into symbols shifted chording state.
+        pressKey(CODE_SHIFT, SYMBOLS_SHIFTED);
+        // Enter/release symbols shift letter key.
+        chordingPressAndReleaseKey('~', SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
+        // Release "=\<" key, switch back to symbols.
+        releaseKey(CODE_SHIFT, SYMBOLS_UNSHIFTED);
+        // Press/release "ABC" key, switch to alphabet shift locked.
+        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
     }
 
     // Chording input in symbol shifted.
@@ -81,7 +132,7 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         // Press/release "=\<" key, enter symbols shifted.
         pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
 
-        // Press "=\<" key and hold, enter into chording symbols state.
+        // Press "?123" key and hold, enter into chording symbols state.
         pressKey(CODE_SHIFT, SYMBOLS_UNSHIFTED);
         // Press/release symbol letter key.
         chordingPressAndReleaseKey('1', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
@@ -94,6 +145,63 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         chordingPressAndReleaseKey('a', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
         // Release "ABC" key, switch back to symbols.
         releaseKey(CODE_SYMBOL, SYMBOLS_SHIFTED);
+
+        // Alphabet shifted -> symbols shifted -> "ABC" key + letter -> symbols shifted ->
+        // alphabet.
+        // Load keyboard
+        loadKeyboard(ALPHABET_UNSHIFTED);
+        // Press/release shift key, enter alphabet shifted.
+        pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Press/release "?123" key, enter into symbols.
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        // Press/release "=\<" key, enter symbols shifted.
+        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
+        // Press "ABC" key, enter into chording alphabet state.
+        pressKey(CODE_SYMBOL, ALPHABET_UNSHIFTED);
+        // Enter/release letter key.
+        chordingPressAndReleaseKey('a', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
+        // Release "ABC" key, switch back to symbols shifted.
+        releaseKey(CODE_SYMBOL, SYMBOLS_SHIFTED);
+        // Press/release "ABC" key, switch to alphabet (not alphabet shifted).
+        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
+
+        // Alphabet shift locked -> symbols shifted -> "ABC" key + letter -> symbols shifted
+        // -> alphabet shift locked.
+        // Load keyboard
+        loadKeyboard(ALPHABET_UNSHIFTED);
+        // Long press shift key, enter alphabet shift locked.
+        longPressShiftKey(ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED);
+        // Press/release "?123" key, enter into symbols.
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        // Press/release "=\<" key, enter symbols shifted.
+        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
+        // Press "ABC" key, enter into chording alphabet shift locked.
+        pressKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED);
+        // Enter/release letter key.
+        chordingPressAndReleaseKey('A', ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
+        // Release "ABC" key, switch back to symbols shifted.
+        releaseKey(CODE_SYMBOL, SYMBOLS_SHIFTED);
+        // Press/release "ABC" key, switch to alphabet shift locked.
+        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
+
+        // Alphabet shift locked -> symbols shifted -> "=\<" key + letter -> symbols shifted
+        // -> alphabet shift locked.
+        // Load keyboard
+        loadKeyboard(ALPHABET_UNSHIFTED);
+        // Long press shift key, enter alphabet shift locked.
+        longPressShiftKey(ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED);
+        // Press/release "?123" key, enter into symbols.
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        // Press/release "=\<" key, enter symbols shifted.
+        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
+        // Press "=\<" key, enter into symbols chording state.
+        pressKey(CODE_SHIFT, SYMBOLS_UNSHIFTED);
+        // Enter/release symbols letter key.
+        chordingPressAndReleaseKey('1', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        // Release "=\<" key, switch back to symbols shifted.
+        releaseKey(CODE_SHIFT, SYMBOLS_SHIFTED);
+        // Press/release "ABC" key, switch to alphabet shift locked.
+        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
     }
 
     // Chording input in automatic upper case.
