@@ -180,10 +180,9 @@ static void prof_out(void) {
 #define CALIBRATE_SCORE_BY_TOUCH_COORDINATES true
 
 #define SUGGEST_WORDS_WITH_MISSING_CHARACTER true
-#define SUGGEST_WORDS_WITH_MISSING_SPACE_CHARACTER true
 #define SUGGEST_WORDS_WITH_EXCESSIVE_CHARACTER true
 #define SUGGEST_WORDS_WITH_TRANSPOSED_CHARACTERS true
-#define SUGGEST_WORDS_WITH_SPACE_PROXIMITY true
+#define SUGGEST_MULTIPLE_WORDS true
 
 // The following "rate"s are used as a multiplier before dividing by 100, so they are in percent.
 #define WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE 80
@@ -233,7 +232,7 @@ static void prof_out(void) {
 
 // Minimum suggest depth for one word for all cases except for missing space suggestions.
 #define MIN_SUGGEST_DEPTH 1
-#define MIN_USER_TYPED_LENGTH_FOR_MISSING_SPACE_SUGGESTION 3
+#define MIN_USER_TYPED_LENGTH_FOR_MULTIPLE_WORD_SUGGESTION 3
 #define MIN_USER_TYPED_LENGTH_FOR_EXCESSIVE_CHARACTER_SUGGESTION 3
 
 #define min(a,b) ((a)<(b)?(a):(b))

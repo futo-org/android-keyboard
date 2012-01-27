@@ -122,7 +122,8 @@ class Correction {
     bool needsToPrune() const;
 
     int getFreqForSplitTwoWords(
-            const int firstFreq, const int secondFreq, const unsigned short *word);
+            const int *freqArray, const int *wordLengthArray, const bool isSpaceProximity,
+            const unsigned short *word);
     int getFinalFreq(const int freq, unsigned short **word, int* wordLength);
     int getFinalFreqForSubQueue(const int freq, unsigned short **word, int* wordLength,
             const int inputLength);
@@ -150,8 +151,9 @@ class Correction {
         static int calculateFinalFreq(const int inputIndex, const int depth,
                 const int freq, int *editDistanceTable, const Correction* correction,
                 const int inputLength);
-        static int calcFreqForSplitTwoWords(const int firstFreq, const int secondFreq,
-                const Correction* correction, const unsigned short *word);
+        static int calcFreqForSplitTwoWords(const int *freqArray, const int *wordLengthArray,
+                const Correction* correction, const bool isSpaceProximity,
+                const unsigned short *word);
         static double calcNormalizedScore(const unsigned short* before, const int beforeLength,
                 const unsigned short* after, const int afterLength, const int score);
         static int editDistance(const unsigned short* before,

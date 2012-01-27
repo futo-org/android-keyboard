@@ -158,10 +158,10 @@ void Correction::checkState() {
     }
 }
 
-int Correction::getFreqForSplitTwoWords(const int firstFreq, const int secondFreq,
-        const unsigned short *word) {
-    return Correction::RankingAlgorithm::calcFreqForSplitTwoWords(
-            firstFreq, secondFreq, this, word);
+int Correction::getFreqForSplitTwoWords(const int *freqArray, const int *wordLengthArray,
+        const bool isSpaceProximity, const unsigned short *word) {
+    return Correction::RankingAlgorithm::calcFreqForSplitTwoWords(freqArray, wordLengthArray, this,
+            isSpaceProximity, word);
 }
 
 int Correction::getFinalFreq(const int freq, unsigned short **word, int *wordLength) {
@@ -806,21 +806,12 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
 
 /* static */
 int Correction::RankingAlgorithm::calcFreqForSplitTwoWords(
-        const int firstFreq, const int secondFreq, const Correction* correction,
-        const unsigned short *word) {
-    const int spaceProximityPos = correction->mSpaceProximityPos;
-    const int missingSpacePos = correction->mMissingSpacePos;
-    if (DEBUG_DICT) {
-        int inputCount = 0;
-        if (spaceProximityPos >= 0) ++inputCount;
-        if (missingSpacePos >= 0) ++inputCount;
-        assert(inputCount <= 1);
-    }
-    const bool isSpaceProximity = spaceProximityPos >= 0;
-    const int inputLength = correction->mInputLength;
-    const int firstWordLength = isSpaceProximity ? spaceProximityPos : missingSpacePos;
-    const int secondWordLength = isSpaceProximity ? (inputLength - spaceProximityPos - 1)
-            : (inputLength - missingSpacePos);
+        const int *freqArray, const int *wordLengthArray, const Correction* correction,
+        const bool isSpaceProximity, const unsigned short *word) {
+    const int firstFreq = freqArray[0];
+    const int secondFreq = freqArray[1];
+    const int firstWordLength = wordLengthArray[0];
+    const int secondWordLength = wordLengthArray[1];
     const int typedLetterMultiplier = correction->TYPED_LETTER_MULTIPLIER;
 
     bool firstCapitalizedWordDemotion = false;
