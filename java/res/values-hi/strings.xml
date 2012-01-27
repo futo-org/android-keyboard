@@ -21,6 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Android कीबोर्ड"</string>
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Android कीबोर्ड (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Android कीबोर्ड सेटिंग"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"इनपुट विकल्‍प"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Android correction"</string>
@@ -144,7 +145,6 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"उपयोगकर्ता फ़ीडबैक सक्षम करें"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"उपयोग के आंकड़े और क्रैश रिपोर्ट Google को स्वचालित रूप से भेज कर इस इनपुट पद्धति संपादक को बेहतर बनाने में सहायता करें."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"कीबोर्ड थीम"</string>
-    <string name="subtype_de_qwerty" msgid="3358900499589259491">"जर्मन QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"अंग्रेज़ी (यूके)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"अंग्रेज़ी (यूएस)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"उपयोगिता अध्ययन मोड"</string>

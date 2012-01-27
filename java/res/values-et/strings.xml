@@ -21,12 +21,13 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Androidi klaviatuur"</string>
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Android-klaviatuur (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Androidi klaviatuuriseaded"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Sisestusvalikud"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Androidi parandus"</string>
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Õigekirjakontrolli seaded"</string>
-    <string name="use_proximity_option_title" msgid="7469233942295924620">"Kasuta lähedusandmeid"</string>
-    <string name="use_proximity_option_summary" msgid="2857708859847261945">"Kasuta õigekirjakontrollis klaviatuurisarnast lähedusalgoritmi"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Kontakti nimede kontroll."</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Õigekirjakontroll kasutab teie kontaktisikute loendi sissekandeid"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibreeri klahvivajutusel"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Heli klahvivajutusel"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Klahvivajutusel kuva hüpik"</string>
@@ -144,7 +145,6 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Luba kasutaja tagasiside"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Saatke Google\'ile automaatselt kasutusstatistikat ja krahhiaruandeid ning aidake seda sisestusmeetodi redigeerijat parandada."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Klaviatuuri teema"</string>
-    <string name="subtype_de_qwerty" msgid="3358900499589259491">"Saksa QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Inglise (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Inglise (USA)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Kasutatavuse uurimisrežiim"</string>

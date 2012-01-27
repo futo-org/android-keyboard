@@ -21,6 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Klávesnica Android"</string>
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Klávesnica Android (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Nastavenia klávesnice Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Možnosti zadávania textu a údajov"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Opravy pravopisu Android"</string>
@@ -144,7 +145,6 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Povoliť spätnú väzbu od používateľov"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Automatickým zasielaním štatistík o využívaní editora metódy vstupu a správ o jeho zlyhaní do služby Google môžete prispieť k vylepšeniu tohto nástroja."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Motív klávesnice"</string>
-    <string name="subtype_de_qwerty" msgid="3358900499589259491">"Nemecká klávesnica QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Anglická klávesnica (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Anglická klávesnica (US)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Režim štúdie použiteľnosti"</string>

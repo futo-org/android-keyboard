@@ -21,12 +21,13 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Клавіятура Android"</string>
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Клавіятура Android (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Налады клавіятуры Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Параметры ўводу"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Папраўкі Android"</string>
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Налады праверкі арфаграфіі"</string>
-    <string name="use_proximity_option_title" msgid="7469233942295924620">"Выкарыстоўвайць дадзеныя аб блізкасці"</string>
-    <string name="use_proximity_option_summary" msgid="2857708859847261945">"Для праверкі арфаграфіі выкарыстоўваць алгарытм блізкасці, падобны на клавіятуру"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Шукаць імёны кантактаў"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Модуль праверкі правапісу выкарыстоўвае запісы са спісу кантактаў"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Вібрацыя пры націску клавіш"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Гук пры націску"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Па націску на клавішы ўсплывае акно"</string>
@@ -144,7 +145,6 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Уключыць зваротную сувязь з карыстальнікамі"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Дапамажыце палепшыць гэты рэдактар ​​метаду ўводу, аўтаматычна адпраўляючы статыстыку выкарыстання і справаздачы аб збоях Google."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Тэма клавіятуры"</string>
-    <string name="subtype_de_qwerty" msgid="3358900499589259491">"Нямецкая QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Англійская (ЗК)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Англійская (ЗША)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Рэжым даследвання выкарыстальнасці"</string>

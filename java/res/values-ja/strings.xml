@@ -21,6 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Androidキーボード"</string>
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Androidキーボード（AOSP）"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Androidキーボードの設定"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"入力オプション"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Androidスペルチェッカー"</string>
@@ -144,7 +145,6 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"ユーザーフィードバックを有効にする"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"IMEの機能向上のため、使用統計状況やクラッシュレポートをGoogleに自動送信します。"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"キーボードのテーマ"</string>
-    <string name="subtype_de_qwerty" msgid="3358900499589259491">"ドイツ語QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"英語（英国）"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"英語（米国）"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"使いやすさの研究モード"</string>

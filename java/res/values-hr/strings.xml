@@ -21,6 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Android tipkovnica"</string>
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Android tipkovnica (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Postavke tipkovnice za Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opcije ulaza"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Ispravak za Android"</string>
@@ -144,7 +145,6 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Omogući korisničke povratne informacije"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Pomozite u poboljšanju ovog urednika ulazne metode automatskim slanjem statistike upotrebe i padova Googleu."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema tipkovnice"</string>
-    <string name="subtype_de_qwerty" msgid="3358900499589259491">"njemački QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Engleski (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Engleski (SAD)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Način studije upotrebljivosti"</string>

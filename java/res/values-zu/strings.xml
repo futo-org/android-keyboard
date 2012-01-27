@@ -21,6 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Ikhibhodi ye-Android"</string>
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Ikhibhodi ye-Android (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Izilungiselelo zekhibhodi ye-Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Okukhethwa kukho kokungenayo"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Ukulungisa kwe-Android"</string>
@@ -144,7 +145,6 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Vumela impendulo yomsebenzisi"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Siza ukuthuthukisa lo mhleli wendlela yokufakwa ngokusithumela ngokuzenzakalela izibalo zokusetshenziswa nokukhubeka ku-Google."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Indikimba yekhibhodi"</string>
-    <string name="subtype_de_qwerty" msgid="3358900499589259491">"i-QWERTY yesi-German"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"i-English(UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"i-English (US)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Imodi yesitadi yokusebenziseka"</string>

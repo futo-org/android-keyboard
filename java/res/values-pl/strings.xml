@@ -21,6 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Klawiatura Android"</string>
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Klawiatura Androida (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Ustawienia klawiatury Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opcje wprowadzania"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Korekta Android"</string>
@@ -110,7 +111,7 @@
     <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"Cudzysłów podwójny dolny"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Wprowadzanie głosowe"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Wprowadzanie głosowe obecnie nie jest obsługiwane w Twoim języku, ale działa w języku angielskim."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Funkcja wprowadzania głosowego wykorzystuje mechanizm rozpoznawania mowy. Obowiązuje "<a href="http://m.google.com/privacy">"Polityka prywatności Google Mobile"</a>"."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Funkcja wprowadzania głosowego wykorzystuje mechanizm rozpoznawania mowy. Obowiązuje "<a href="http://m.google.com/privacy">"Polityka prywatności w usługach mobilnych"</a>"."</string>
     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Aby wyłączyć rozpoznawanie mowy, przejdź do ustawień sposobu wprowadzania tekstu."</string>
     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Aby użyć wprowadzania głosowego, naciśnij przycisk mikrofonu."</string>
     <string name="voice_listening" msgid="467518160751321844">"Mów teraz"</string>
@@ -144,7 +145,6 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Włącz przesyłanie opinii użytkownika"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Pomóż ulepszyć edytor wprowadzania tekstu, automatycznie wysyłając do Google statystyki użycia i raporty o awariach."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Motyw klawiatury"</string>
-    <string name="subtype_de_qwerty" msgid="3358900499589259491">"Niemiecka QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Angielska (Wielka Brytania)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Angielska (Stany Zjednoczone)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Tryb badania przydatności"</string>
