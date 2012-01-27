@@ -72,6 +72,8 @@ public class Key {
     private static final int LABEL_FLAGS_WITH_ICON_RIGHT = 0x2000;
     private static final int LABEL_FLAGS_AUTO_X_SCALE = 0x4000;
     private static final int LABEL_FLAGS_PRESERVE_CASE = 0x8000;
+    private static final int LABEL_FLAGS_INACTIVATED_LABEL = 0x10000;
+    private static final int LABEL_FLAGS_INACTIVATED_UPPERCASE_LETTER = 0x20000;
 
     /** Icon to display instead of a label. Icon takes precedence over a label */
     private final int mIconAttrId;
@@ -507,6 +509,14 @@ public class Key {
 
     public boolean needsXScale() {
         return (mLabelFlags & LABEL_FLAGS_AUTO_X_SCALE) != 0;
+    }
+
+    public boolean isInactivatedLabel() {
+        return (mLabelFlags & LABEL_FLAGS_INACTIVATED_LABEL) != 0;
+    }
+
+    public boolean isInactivatedUppercaseLetter() {
+        return (mLabelFlags & LABEL_FLAGS_INACTIVATED_UPPERCASE_LETTER) != 0;
     }
 
     // TODO: Get rid of this method.

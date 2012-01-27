@@ -571,7 +571,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                         Math.min(1.0f, (keyWidth * MAX_LABEL_RATIO) / getLabelWidth(label, paint)));
             }
 
+            // TODO: Remove this first if-clause.
             if (key.hasUppercaseLetter() && mKeyboard.isManualTemporaryUpperCase()) {
+                paint.setColor(params.mKeyTextInactivatedColor);
+            } else if (key.isInactivatedLabel()) {
                 paint.setColor(params.mKeyTextInactivatedColor);
             } else {
                 paint.setColor(params.mKeyTextColor);
@@ -618,9 +621,14 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 hintSize = params.mKeyHintLabelSize;
                 paint.setTypeface(Typeface.DEFAULT);
             } else if (key.hasUppercaseLetter()) {
-                hintColor = mKeyboard.isManualTemporaryUpperCase()
-                        ? params.mKeyUppercaseLetterActivatedColor
-                        : params.mKeyUppercaseLetterInactivatedColor;
+                // TODO: Remove this first if-clause.
+                if (mKeyboard.isManualTemporaryUpperCase()) {
+                    hintColor = params.mKeyUppercaseLetterActivatedColor;
+                } else if (!key.isInactivatedUppercaseLetter()) {
+                    hintColor = params.mKeyUppercaseLetterActivatedColor;
+                } else {
+                    hintColor = params.mKeyUppercaseLetterInactivatedColor;
+                }
                 hintSize = params.mKeyUppercaseLetterSize;
             } else { // key.hasHintLetter()
                 hintColor = params.mKeyHintLetterColor;
