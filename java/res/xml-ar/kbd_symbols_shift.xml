@@ -23,5 +23,5 @@
     latin:isRtlKeyboard="true"
 >
     <include
-        latin:keyboardLayout="@xml/kbd_rows_symbols_shift" />
+        latin:keyboardLayout="@xml/rows_symbols_shift" />
 </Keyboard>

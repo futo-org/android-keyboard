@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2012, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+>
+    <include
+        latin:keyboardLayout="@xml/key_styles_common" />
+    <Row
+        latin:keyWidth="7.692%p"
+    >
+        <Key
+            latin:keyLabel="ч" />
+        <Key
+            latin:keyLabel="ш" />
+        <Key
+            latin:keyLabel="е" />
+        <Key
+            latin:keyLabel="р" />
+        <Key
+            latin:keyLabel="т" />
+        <Key
+            latin:keyLabel="ъ" />
+        <Key
+            latin:keyLabel="у" />
+        <Key
+            latin:keyLabel="и"
+            latin:moreKeys="ѝ" />
+        <Key
+            latin:keyLabel="о" />
+        <Key
+            latin:keyLabel="п" />
+        <Key
+            latin:keyLabel="я" />
+        <Key
+            latin:keyStyle="deleteKeyStyle"
+            latin:keyWidth="fillBoth" />
+    </Row>
+    <Row
+        latin:keyWidth="7.692%p"
+    >
+        <Key
+            latin:keyLabel="а"
+            latin:keyXPos="4.000%p" />
+        <Key
+            latin:keyLabel="с" />
+        <Key
+            latin:keyLabel="д" />
+        <Key
+            latin:keyLabel="ф" />
+        <Key
+            latin:keyLabel="г" />
+        <Key
+            latin:keyLabel="х" />
+        <Key
+            latin:keyLabel="й" />
+        <Key
+            latin:keyLabel="к" />
+        <Key
+            latin:keyLabel="л" />
+        <Key
+            latin:keyLabel="щ" />
+        <Key
+            latin:keyLabel="ь" />
+        <Key
+            latin:keyStyle="returnKeyStyle"
+            latin:keyWidth="fillBoth" />
+    </Row>
+    <Row
+        latin:keyWidth="7.692%p"
+    >
+        <Key
+            latin:keyStyle="shiftKeyStyle"
+            latin:keyWidth="10.000%p" />
+        <Key
+            latin:keyLabel="з" />
+        <Key
+            latin:keyLabel="ж" />
+        <Key
+            latin:keyLabel="ц" />
+        <Key
+            latin:keyLabel="в" />
+        <Key
+            latin:keyLabel="б" />
+        <Key
+            latin:keyLabel="н" />
+        <Key
+            latin:keyLabel="м" />
+        <Key
+            latin:keyLabel="ю" />
+        <include
+            latin:keyboardLayout="@xml/keys_comma_period" />
+        <include
+            latin:keyboardLayout="@xml/key_smiley"
+            latin:keyXPos="-8.9%p"
+            latin:keyWidth="fillRight" />
+    </Row>
+    <include
+        latin:keyboardLayout="@xml/row_qwerty4" />
+</merge>

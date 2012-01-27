@@ -24,5 +24,5 @@
     latin:keyWidth="26.67%p"
 >
     <include
-        latin:keyboardLayout="@xml/kbd_rows_phone_shift" />
+        latin:keyboardLayout="@xml/rows_phone_shift" />
 </Keyboard>
