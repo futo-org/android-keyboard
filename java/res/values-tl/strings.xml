@@ -21,6 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Android keyboard"</string>
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Android keyboard (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Mga setting ng Android keyboard"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Mga pagpipilian sa input"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Pagwawasto sa Android"</string>
@@ -144,7 +145,6 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Paganahin ang feedback ng user"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Tumulong na pahusayin ang editor ng paraan ng pag-input na ito sa pamamagitan ng awtomatikong pagpapadala ng mga istatistika ng paggamit at mga ulat ng crash sa Google."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema ng keyboard"</string>
-    <string name="subtype_de_qwerty" msgid="3358900499589259491">"German na QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Ingles (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Ingles (Estados Unidos)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Study mode ng pagiging kapaki-pakinabang"</string>

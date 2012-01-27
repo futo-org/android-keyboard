@@ -21,6 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Kibodi ya Android"</string>
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Kicharazio cha Android (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Mipangilio ya kibodi ya Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Chaguo za uingizaji"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Masahihisho ya Android"</string>
@@ -144,7 +145,6 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Wezesha maoni ya watumiaji"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Saidia kuimarisha mbinu ya uingizaji wa kihariri, kwa kutuma takwimu za matumizi na ripoti za kuvurugika kwa Google kiotomatiki."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Maandhari ya kibodi"</string>
-    <string name="subtype_de_qwerty" msgid="3358900499589259491">"QWERTY ya Kijerumani"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Kiingereza cha (Uingereza)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Kiingereza cha (Marekani)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modi ya uchunguzi wa utumizi"</string>

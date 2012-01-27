@@ -21,6 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Клавіатура Android"</string>
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Клавіатура Android (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Налашт-ня клавіат. Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Парам. введення"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Виправлення Android"</string>
@@ -144,7 +145,6 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Увімк. відгуки корист."</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Допоможіть покращ. редактор методу введ., автомат. надсилаючи в Google статистику використ. та звіти про збої."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Тема клавіатури"</string>
-    <string name="subtype_de_qwerty" msgid="3358900499589259491">"Німецька клавіатура QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Англійська (Великобританія)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Англійська (США)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Режим вивчення зручності у використанні"</string>
