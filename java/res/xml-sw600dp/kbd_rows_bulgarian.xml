@@ -105,28 +105,8 @@
             latin:keyLabel="м" />
         <Key
             latin:keyLabel="ю" />
-        <switch>
-            <case
-                latin:mode="email"
-            >
-                <Key
-                    latin:keyLabel="," />
-                <Key
-                    latin:keyLabel="." />
-            </case>
-            <default>
-                <Key
-                    latin:keyLabel=","
-                    latin:keyLabelFlags="hasUppercaseLetter"
-                    latin:keyHintLabel="!"
-                    latin:moreKeys="!" />
-                <Key
-                    latin:keyLabel="."
-                    latin:keyLabelFlags="hasUppercaseLetter"
-                    latin:keyHintLabel="\?"
-                    latin:moreKeys="\?" />
-            </default>
-        </switch>
+        <include
+            latin:keyboardLayout="@xml/kbd_row3_comma_period" />
         <Spacer
             latin:keyXPos="-10.000%p"
             latin:keyWidth="0%p" />
