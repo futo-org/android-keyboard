@@ -145,37 +145,8 @@
     <Row
         latin:keyWidth="8.0%p"
     >
-    <!-- kbd_row3_smiley -->
-        <switch>
-            <case
-                latin:mode="email"
-            >
-                <Key
-                    latin:keyLabel="\@" />
-            </case>
-            <case
-                latin:mode="url"
-            >
-                <Key
-                    latin:keyLabel="-"
-                    latin:keyLabelFlags="hasUppercaseLetter"
-                    latin:keyHintLabel="_"
-                    latin:moreKeys="_" />
-            </case>
-            <case
-                latin:imeAction="actionSearch"
-            >
-                <Key
-                    latin:keyLabel=":"
-                    latin:keyLabelFlags="hasUppercaseLetter"
-                    latin:keyHintLabel="+"
-                    latin:moreKeys="+" />
-            </case>
-            <default>
-                <Key
-                    latin:keyStyle="smileyKeyStyle" />
-            </default>
-        </switch>
+        <include
+            latin:keyboardLayout="@xml/kbd_row3_smiley" />
         <!-- \u0626: ARABIC LETTER YEH WITH HAMZA ABOVE -->
         <Key
             latin:keyLabel="ئ" />
