@@ -269,6 +269,10 @@
             <!-- If true, character case of code, altCode, moreKeys, keyOutputText, keyLabel,
                  or keyHintLabel will never be subject to change. -->
             <flag name="preserveCase" value="0x8000" />
+            <!-- If true, use keyTextInactivatedColor for the label -->
+            <flag name="inactivatedLabel" value="0x10000" />
+            <!-- If true, use keyUppercaseLetterInactivatedColor for the uppercase letter -->
+            <flag name="inactivatedUppercaseLetter" value="0x20000" />
         </attr>
         <!-- The icon to display on the key instead of the label. -->
         <attr name="keyIcon" format="enum">
