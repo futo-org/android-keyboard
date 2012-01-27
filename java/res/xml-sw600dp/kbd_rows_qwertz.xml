@@ -87,28 +87,8 @@
             latin:moreKeys="@string/more_keys_for_n" />
         <Key
             latin:keyLabel="m" />
-        <switch>
-            <case
-                latin:mode="email"
-            >
-                <Key
-                    latin:keyLabel="," />
-                <Key
-                    latin:keyLabel="." />
-            </case>
-            <default>
-                <Key
-                    latin:keyLabel=","
-                    latin:keyLabelFlags="hasUppercaseLetter"
-                    latin:keyHintLabel="!"
-                    latin:moreKeys="!" />
-                <Key
-                    latin:keyLabel="."
-                    latin:keyLabelFlags="hasUppercaseLetter"
-                    latin:keyHintLabel="\?"
-                    latin:moreKeys="\?" />
-            </default>
-        </switch>
+        <include
+            latin:keyboardLayout="@xml/kbd_row3_comma_period" />
         <include
             latin:keyboardLayout="@xml/kbd_row3_smiley" />
     </Row>
