@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -571,7 +572,7 @@ public class Keyboard {
 
             private final Params mParams;
             /** Default width of a key in this row. */
-            public final float mDefaultKeyWidth;
+            private float mDefaultKeyWidth;
             /** Default height of a key in this row. */
             public final int mRowHeight;
 
@@ -596,6 +597,14 @@ public class Keyboard {
 
                 mCurrentY = y;
                 mCurrentX = 0.0f;
+            }
+
+            public float getDefaultKeyWidth() {
+                return mDefaultKeyWidth;
+            }
+
+            public void setDefaultKeyWidth(float defaultKeyWidth) {
+                mDefaultKeyWidth = defaultKeyWidth;
             }
 
             public void setXPos(float keyXPos) {
@@ -636,6 +645,10 @@ public class Keyboard {
                     }
                 }
                 return mCurrentX;
+            }
+
+            public float getKeyWidth(TypedArray keyAttr) {
+                return getKeyWidth(keyAttr, mCurrentX);
             }
 
             public float getKeyWidth(TypedArray keyAttr, float keyXPos) {
@@ -937,17 +950,33 @@ public class Keyboard {
             if (skip) {
                 XmlParseUtils.checkEndTag(TAG_INCLUDE, parser);
             } else {
-                final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
+                final AttributeSet attr = Xml.asAttributeSet(parser);
+                final TypedArray keyboardAttr = mResources.obtainAttributes(attr,
                         R.styleable.Keyboard_Include);
+                final TypedArray keyAttr = mResources.obtainAttributes(attr,
+                        R.styleable.Keyboard_Key);
                 int keyboardLayout = 0;
+                float savedDefaultKeyWidth = 0;
                 try {
-                    XmlParseUtils.checkAttributeExists(a,
+                    XmlParseUtils.checkAttributeExists(keyboardAttr,
                             R.styleable.Keyboard_Include_keyboardLayout, "keyboardLayout",
                             TAG_INCLUDE, parser);
-                    keyboardLayout = a.getResourceId(
+                    keyboardLayout = keyboardAttr.getResourceId(
                             R.styleable.Keyboard_Include_keyboardLayout, 0);
+                    if (row != null) {
+                        savedDefaultKeyWidth = row.getDefaultKeyWidth();
+                        if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyXPos)) {
+                            // Override current x coordinate.
+                            row.setXPos(row.getKeyX(keyAttr));
+                        }
+                        if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyWidth)) {
+                            // Override default key width.
+                            row.setDefaultKeyWidth(row.getKeyWidth(keyAttr));
+                        }
+                    }
                 } finally {
-                    a.recycle();
+                    keyboardAttr.recycle();
+                    keyAttr.recycle();
                 }
 
                 XmlParseUtils.checkEndTag(TAG_INCLUDE, parser);
@@ -957,6 +986,10 @@ public class Keyboard {
                 try {
                     parseMerge(parserForInclude, row, skip);
                 } finally {
+                    if (row != null) {
+                        // Restore default key width.
+                        row.setDefaultKeyWidth(savedDefaultKeyWidth);
+                    }
                     parserForInclude.close();
                 }
             }
