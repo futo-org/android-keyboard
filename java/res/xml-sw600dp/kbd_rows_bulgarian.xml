@@ -107,11 +107,10 @@
             latin:keyLabel="ю" />
         <include
             latin:keyboardLayout="@xml/kbd_row3_comma_period" />
-        <Spacer
-            latin:keyXPos="-10.000%p"
-            latin:keyWidth="0%p" />
         <include
-            latin:keyboardLayout="@xml/kbd_row3_smiley" />
+            latin:keyboardLayout="@xml/kbd_row3_smiley"
+            latin:keyXPos="-8.9%p"
+            latin:keyWidth="fillRight" />
     </Row>
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_row4" />

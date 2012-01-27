@@ -26,9 +26,7 @@
             latin:mode="email"
         >
             <Key
-                latin:keyLabel="\@"
-                latin:keyXPos="-8.9%p"
-                latin:keyWidth="fillBoth" />
+                latin:keyLabel="\@" />
         </case>
         <case
             latin:mode="url"
@@ -37,9 +35,7 @@
                 latin:keyLabel="-"
                 latin:keyLabelFlags="hasUppercaseLetter"
                 latin:keyHintLabel="_"
-                latin:moreKeys="_"
-                latin:keyXPos="-8.9%p"
-                latin:keyWidth="fillBoth" />
+                latin:moreKeys="_" />
         </case>
         <case
             latin:imeAction="actionSearch"
@@ -48,15 +44,11 @@
                 latin:keyLabel=":"
                 latin:keyLabelFlags="hasUppercaseLetter"
                 latin:keyHintLabel="+"
-                latin:moreKeys="+"
-                latin:keyXPos="-8.9%p"
-                latin:keyWidth="fillBoth" />
+                latin:moreKeys="+" />
         </case>
         <default>
             <Key
-                latin:keyStyle="smileyKeyStyle"
-                latin:keyXPos="-8.9%p"
-                latin:keyWidth="fillBoth" />
+                latin:keyStyle="smileyKeyStyle" />
         </default>
     </switch>
 </merge>
