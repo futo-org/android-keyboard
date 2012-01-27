@@ -103,17 +103,9 @@ class UnigramDictionary {
             const int currentWordIndex);
     void getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo,
             const int *xcoordinates, const int *ycoordinates, const int *codes,
-            const bool useFullEditDistance, const int inputLength, const int spaceProximityPos,
-            const int missingSpacePos, Correction *correction, WordsPriorityQueuePool* queuePool,
+            const bool useFullEditDistance, const int inputLength, const int wordDivideIndex,
+            Correction *correction, WordsPriorityQueuePool* queuePool,
             const bool hasAutoCorrectionCandidate);
-    void getMissingSpaceWords(ProximityInfo *proximityInfo, const int *xcoordinates,
-            const int *ycoordinates, const int *codes, const bool useFullEditDistance,
-            const int inputLength, const int missingSpacePos, Correction *correction,
-            WordsPriorityQueuePool* queuePool, const bool hasAutoCorrectionCandidate);
-    void getMistypedSpaceWords(ProximityInfo *proximityInfo, const int *xcoordinates,
-            const int *ycoordinates, const int *codes, const bool useFullEditDistance,
-            const int inputLength, const int spaceProximityPos, Correction *correction,
-            WordsPriorityQueuePool* queuePool, const bool hasAutoCorrectionCandidate);
     void onTerminal(const int freq, const TerminalAttributes& terminalAttributes,
             Correction *correction, WordsPriorityQueuePool *queuePool, const bool addToMasterQueue,
             const int currentWordIndex);
@@ -127,13 +119,14 @@ class UnigramDictionary {
             ProximityInfo *proximityInfo, unsigned short *word);
     int getMostFrequentWordLikeInner(const uint16_t* const inWord, const int length,
             short unsigned int *outWord);
-    int getSubStringSuggestion(
+    bool getSubStringSuggestion(
             ProximityInfo *proximityInfo, const int *xcoordinates, const int *ycoordinates,
             const int *codes, const bool useFullEditDistance, Correction *correction,
             WordsPriorityQueuePool* queuePool, const int inputLength,
             const bool hasAutoCorrectionCandidate, const int currentWordIndex,
             const int inputWordStartPos, const int inputWordLength,
-            const int outputWordStartPos, unsigned short* outputWord, int *outputWordLength);
+            const int outputWordStartPos, const bool isSpaceProximity, int *freqArray,
+            int *wordLengthArray, unsigned short* outputWord, int *outputWordLength);
 
     const uint8_t* const DICT_ROOT;
     const int MAX_WORD_LENGTH;
