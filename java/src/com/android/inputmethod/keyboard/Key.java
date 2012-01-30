@@ -285,22 +285,17 @@ public class Key {
         mLabelFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags, 0);
         final boolean preserveCase = (mLabelFlags & LABEL_FLAGS_PRESERVE_CASE) != 0;
 
-        final String[] moreKeys = style.getStringArray(keyAttr, R.styleable.Keyboard_Key_moreKeys);
+        final String[] additionalMoreKeys = style.getStringArray(
+                keyAttr, R.styleable.Keyboard_Key_additionalMoreKeys);
+        final String[] moreKeys = MoreKeySpecParser.insertAddtionalMoreKeys(style.getStringArray(
+                keyAttr, R.styleable.Keyboard_Key_moreKeys), additionalMoreKeys);
         if (moreKeys != null) {
             for (int i = 0; i < moreKeys.length; i++) {
                 moreKeys[i] = adjustCaseOfStringForKeyboardId(
                         moreKeys[i], preserveCase, params.mId);
             }
         }
-        // TODO: Add new key label flag to control this.
-        // In Arabic symbol layouts, we'd like to keep digits in more keys regardless of
-        // config_digit_more_keys_enabled.
-        if (params.mId.isAlphabetKeyboard()
-                && !res.getBoolean(R.bool.config_digit_more_keys_enabled)) {
-            mMoreKeys = MoreKeySpecParser.filterOut(res, moreKeys, MoreKeySpecParser.DIGIT_FILTER);
-        } else {
-            mMoreKeys = moreKeys;
-        }
+        mMoreKeys = moreKeys;
         mMaxMoreKeysColumn = style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_maxMoreKeysColumn, params.mMaxMiniKeyboardColumn);
 

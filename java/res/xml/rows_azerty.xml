@@ -29,51 +29,59 @@
         <Key
             latin:keyLabel="a"
             latin:keyHintLabel="1"
+            latin:additionalMoreKeys="1"
             latin:moreKeys="@string/more_keys_for_a" />
         <Key
             latin:keyLabel="z"
             latin:keyHintLabel="2"
+            latin:additionalMoreKeys="2"
             latin:moreKeys="@string/more_keys_for_z" />
         <Key
             latin:keyLabel="e"
             latin:keyHintLabel="3"
+            latin:additionalMoreKeys="3"
             latin:moreKeys="@string/more_keys_for_e" />
         <Key
             latin:keyLabel="r"
             latin:keyHintLabel="4"
+            latin:additionalMoreKeys="4"
             latin:moreKeys="@string/more_keys_for_r" />
         <Key
             latin:keyLabel="t"
             latin:keyHintLabel="5"
+            latin:additionalMoreKeys="5"
             latin:moreKeys="@string/more_keys_for_t" />
         <Key
             latin:keyLabel="y"
             latin:keyHintLabel="6"
+            latin:additionalMoreKeys="6"
             latin:moreKeys="@string/more_keys_for_y" />
         <Key
             latin:keyLabel="u"
             latin:keyHintLabel="7"
+            latin:additionalMoreKeys="7"
             latin:moreKeys="@string/more_keys_for_u" />
         <Key
             latin:keyLabel="i"
             latin:keyHintLabel="8"
+            latin:additionalMoreKeys="8"
             latin:moreKeys="@string/more_keys_for_i" />
         <Key
             latin:keyLabel="o"
             latin:keyHintLabel="9"
+            latin:additionalMoreKeys="9"
             latin:moreKeys="@string/more_keys_for_o" />
         <Key
             latin:keyLabel="p"
             latin:keyHintLabel="0"
-            latin:moreKeys="@string/more_keys_for_p"
+            latin:additionalMoreKeys="0"
             latin:keyWidth="fillRight" />
     </Row>
     <Row
         latin:keyWidth="10%p"
     >
         <Key
-            latin:keyLabel="q"
-            latin:moreKeys="@string/more_keys_for_q" />
+            latin:keyLabel="q" />
         <Key
             latin:keyLabel="s"
             latin:moreKeys="@string/more_keys_for_s" />
@@ -107,8 +115,7 @@
             latin:keyWidth="15%p"
             latin:visualInsetsRight="1%p" />
         <Key
-            latin:keyLabel="w"
-            latin:moreKeys="@string/more_keys_for_w" />
+            latin:keyLabel="w" />
         <Key
             latin:keyLabel="x" />
         <Key

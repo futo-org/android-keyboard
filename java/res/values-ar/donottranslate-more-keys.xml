@@ -50,18 +50,18 @@
     <string name="keylabel_for_symbols_8">"٨"</string>
     <string name="keylabel_for_symbols_9">"٩"</string>
     <string name="keylabel_for_symbols_0">"٠"</string>
-    <string name="more_keys_for_symbols_1">1</string>
-    <string name="more_keys_for_symbols_2">2</string>
-    <string name="more_keys_for_symbols_3">3</string>
-    <string name="more_keys_for_symbols_4">4</string>
-    <string name="more_keys_for_symbols_5">5</string>
-    <string name="more_keys_for_symbols_6">6</string>
-    <string name="more_keys_for_symbols_7">7</string>
-    <string name="more_keys_for_symbols_8">8</string>
-    <string name="more_keys_for_symbols_9">9</string>
+    <string name="additional_more_keys_for_symbols_1">1</string>
+    <string name="additional_more_keys_for_symbols_2">2</string>
+    <string name="additional_more_keys_for_symbols_3">3</string>
+    <string name="additional_more_keys_for_symbols_4">4</string>
+    <string name="additional_more_keys_for_symbols_5">5</string>
+    <string name="additional_more_keys_for_symbols_6">6</string>
+    <string name="additional_more_keys_for_symbols_7">7</string>
+    <string name="additional_more_keys_for_symbols_8">8</string>
+    <string name="additional_more_keys_for_symbols_9">9</string>
     <!-- \u066b: ARABIC DECIMAL SEPARATOR
          \u066c: ARABIC THOUSANDS SEPARATOR -->
-    <string name="more_keys_for_symbols_0">0,\u066b,\u066c</string>
+    <string name="additional_more_keys_for_symbols_0">0,\u066b,\u066c</string>
     <string name="keylabel_for_comma">\u060c</string>
     <string name="keylabel_for_f1">\u060c</string>
     <string name="keylabel_for_symbols_question">\u061f</string>
