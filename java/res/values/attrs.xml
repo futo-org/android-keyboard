@@ -227,6 +227,12 @@
         <attr name="altCode" format="integer" />
         <!-- The keys to display in the more keys keyboard. -->
         <attr name="moreKeys" format="string" />
+        <!-- The keys to display in the more keys keyboard in addition to moreKeys.
+             The additional more keys are inserted at the '%' markers in the moreKeys if any.
+             They are inserted at the head of moreKeys if none.
+             If there are remaining entries of additionalMoreKeys even after all '%' markers have
+             been replaced, those remaining entries are appended at the end of moreKeys. -->
+        <attr name="additionalMoreKeys" format="string" />
         <!-- Maximum column of more keys keyboard -->
         <attr name="maxMoreKeysColumn" format="integer" />
         <attr name="backgroundType" format="enum">

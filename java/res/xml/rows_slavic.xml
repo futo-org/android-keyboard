@@ -29,43 +29,46 @@
         <Key
             latin:keyLabel="й"
             latin:keyHintLabel="1"
-            latin:moreKeys="1" />
+            latin:additionalMoreKeys="1" />
         <Key
             latin:keyLabel="ц"
             latin:keyHintLabel="2"
-            latin:moreKeys="2" />
+            latin:additionalMoreKeys="2" />
         <Key
             latin:keyLabel="у"
             latin:keyHintLabel="3"
+            latin:additionalMoreKeys="3"
             latin:moreKeys="@string/more_keys_for_slavic_u" />
         <Key
             latin:keyLabel="к"
             latin:keyHintLabel="4"
-            latin:moreKeys="4" />
+            latin:additionalMoreKeys="4" />
         <Key
             latin:keyLabel="е"
             latin:keyHintLabel="5"
+            latin:additionalMoreKeys="5"
             latin:moreKeys="@string/more_keys_for_slavic_ye" />
         <Key
             latin:keyLabel="н"
             latin:keyHintLabel="6"
+            latin:additionalMoreKeys="6"
             latin:moreKeys="@string/more_keys_for_slavic_en" />
         <Key
             latin:keyLabel="г"
             latin:keyHintLabel="7"
-            latin:moreKeys="7" />
+            latin:additionalMoreKeys="7" />
         <Key
             latin:keyLabel="ш"
             latin:keyHintLabel="8"
-            latin:moreKeys="8" />
+            latin:additionalMoreKeys="8" />
         <Key
             latin:keyLabel="@string/keylabel_for_slavic_shcha"
             latin:keyHintLabel="9"
-            latin:moreKeys="9" />
+            latin:additionalMoreKeys="9" />
         <Key
             latin:keyLabel="з"
             latin:keyHintLabel="0"
-            latin:moreKeys="0" />
+            latin:additionalMoreKeys="0" />
         <Key
             latin:keyLabel="х"
             latin:moreKeys="@string/more_keys_for_slavic_ha"

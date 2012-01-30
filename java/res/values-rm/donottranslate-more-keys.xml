@@ -18,5 +18,5 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="more_keys_for_o">9,ò,ó,ö,ô,õ,œ,ø</string>
+    <string name="more_keys_for_o">ò,ó,ö,ô,õ,œ,ø</string>
 </resources>

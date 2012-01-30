@@ -24,7 +24,6 @@
     <bool name="config_enable_show_voice_key_option">false</bool>
     <bool name="config_enable_show_popup_on_keypress_option">false</bool>
     <bool name="config_enable_bigram_suggestions_option">false</bool>
-    <bool name="config_digit_more_keys_enabled">false</bool>
     <!-- Whether or not Popup on key press is enabled by default -->
     <bool name="config_default_popup_preview">false</bool>
     <bool name="config_default_sound_enabled">true</bool>

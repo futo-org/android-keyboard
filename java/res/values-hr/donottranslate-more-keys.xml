@@ -21,7 +21,7 @@
     <string name="more_keys_for_s">š,ś,ß</string>
     <string name="more_keys_for_n">ñ,ń</string>
     <string name="more_keys_for_y"></string>
-    <string name="more_keys_for_z">6,ž,ź,ż</string>
+    <string name="more_keys_for_z">ž,ź,ż</string>
     <string name="more_keys_for_c">č,ć,ç</string>
     <string name="more_keys_for_d">đ</string>
 </resources>

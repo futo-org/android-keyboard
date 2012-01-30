@@ -19,8 +19,8 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="more_keys_for_a">à,á,â,ä,æ,ã,å,ā,ª</string>
-    <string name="more_keys_for_e">3,è,é,ê,ë,ę,ė,ē</string>
-    <string name="more_keys_for_i">8,ì,í,î,ï,į,ī</string>
-    <string name="more_keys_for_o">9,ò,ó,ô,ö,õ,œ,ø,ō,º</string>
-    <string name="more_keys_for_u">7,ù,ú,û,ü,ū</string>
+    <string name="more_keys_for_e">è,é,ê,ë,ę,ė,ē</string>
+    <string name="more_keys_for_i">ì,í,î,ï,į,ī</string>
+    <string name="more_keys_for_o">ò,ó,ô,ö,õ,œ,ø,ō,º</string>
+    <string name="more_keys_for_u">ù,ú,û,ü,ū</string>
 </resources>

@@ -18,5 +18,5 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="more_keys_for_slavic_ye">5,ё</string>
+    <string name="more_keys_for_slavic_ye">ё</string>
 </resources>

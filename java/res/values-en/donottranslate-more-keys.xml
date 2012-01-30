@@ -19,11 +19,11 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="more_keys_for_a">à,á,â,ä,æ,ã,å,ā</string>
-    <string name="more_keys_for_e">3,è,é,ê,ë,ē</string>
-    <string name="more_keys_for_i">8,î,ï,í,ī,ì</string>
-    <string name="more_keys_for_o">9,ô,ö,ò,ó,œ,ø,ō,õ</string>
+    <string name="more_keys_for_e">è,é,ê,ë,ē</string>
+    <string name="more_keys_for_i">î,ï,í,ī,ì</string>
+    <string name="more_keys_for_o">ô,ö,ò,ó,œ,ø,ō,õ</string>
     <string name="more_keys_for_s">ß</string>
-    <string name="more_keys_for_u">7,û,ü,ù,ú,ū</string>
+    <string name="more_keys_for_u">û,ü,ù,ú,ū</string>
     <string name="more_keys_for_n">ñ</string>
     <string name="more_keys_for_c">ç</string>
 </resources>

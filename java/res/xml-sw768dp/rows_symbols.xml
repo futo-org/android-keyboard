@@ -34,33 +34,43 @@
             latin:keyWidth="7.969%p" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_1"
+            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_1"
             latin:moreKeys="@string/more_keys_for_symbols_1" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_2"
+            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_2"
             latin:moreKeys="@string/more_keys_for_symbols_2" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_3"
+            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_3"
             latin:moreKeys="@string/more_keys_for_symbols_3" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_4"
+            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_4"
             latin:moreKeys="@string/more_keys_for_symbols_4" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_5"
+            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_5"
             latin:moreKeys="@string/more_keys_for_symbols_5" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_6"
+            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_6"
             latin:moreKeys="@string/more_keys_for_symbols_6" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_7"
+            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_7"
             latin:moreKeys="@string/more_keys_for_symbols_7" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_8"
+            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_8"
             latin:moreKeys="@string/more_keys_for_symbols_8" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_9"
+            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_9"
             latin:moreKeys="@string/more_keys_for_symbols_9" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_0"
+            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_0"
             latin:moreKeys="@string/more_keys_for_symbols_0" />
         <Key
             latin:keyStyle="deleteKeyStyle"

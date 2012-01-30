@@ -30,18 +30,19 @@
         <Key
             latin:keyLabel="ض"
             latin:keyHintLabel="1"
-            latin:moreKeys="1,١" />
+            latin:additionalMoreKeys="1,١" />
         <!-- \u0635: ARABIC LETTER SAD -->
         <Key
             latin:keyLabel="ص"
             latin:keyHintLabel="2"
-            latin:moreKeys="2,٢" />
+            latin:additionalMoreKeys="2,٢" />
         <!-- \u0642: ARABIC LETTER QAF
              \u06a8: ARABIC LETTER QAF WITH THREE DOTS ABOVE -->
         <Key
             latin:keyLabel="ق"
             latin:keyHintLabel="3"
-            latin:moreKeys="3,٣,\u06a8" />
+            latin:additionalMoreKeys="3,٣"
+            latin:moreKeys="\u06a8" />
         <!-- \u0641: ARABIC LETTER FEH
              \u06a4: ARABIC LETTER VEH
              \u06a2: ARABIC LETTER FEH WITH DOT MOVED BELOW
@@ -49,40 +50,43 @@
         <Key
             latin:keyLabel="ف"
             latin:keyHintLabel="4"
-            latin:moreKeys="4,٤,\u06a4,\u06a2,\u06a5" />
+            latin:additionalMoreKeys="4,٤"
+            latin:moreKeys="\u06a4,\u06a2,\u06a5" />
         <!-- \u063a: ARABIC LETTER GHAIN -->
         <Key
             latin:keyLabel="غ"
             latin:keyHintLabel="5"
-            latin:moreKeys="5,٥" />
+            latin:additionalMoreKeys="5,٥" />
         <!-- \u0639: ARABIC LETTER AIN -->
         <Key
             latin:keyLabel="ع"
             latin:keyHintLabel="6"
-            latin:moreKeys="6,٦" />
+            latin:additionalMoreKeys="6,٦" />
         <!-- \u0647: ARABIC LETTER HEH
              \ufeeb: ARABIC LETTER HEH INITIAL FORM
              \u0647\u0640: ARABIC LETTER HEH + Zero width joiner -->
         <Key
             latin:keyLabel="ه"
             latin:keyHintLabel="7"
-            latin:moreKeys="7,٧,\ufeeb|\u0647\u200D" />
+            latin:additionalMoreKeys="7,٧"
+            latin:moreKeys="\ufeeb|\u0647\u200D" />
         <!-- \u062e: ARABIC LETTER KHAH -->
         <Key
             latin:keyLabel="خ"
             latin:keyHintLabel="8"
-            latin:moreKeys="8,٨" />
+            latin:additionalMoreKeys="8,٨" />
         <!-- \u062d: ARABIC LETTER HAH -->
         <Key
             latin:keyLabel="ح"
             latin:keyHintLabel="9"
-            latin:moreKeys="9,٩" />
+            latin:additionalMoreKeys="9,٩" />
         <!-- \u062c: ARABIC LETTER JEEM
              \u0686: ARABIC LETTER TCHEH -->
         <Key
             latin:keyLabel="ج"
             latin:keyHintLabel="0"
-            latin:moreKeys="0,٠,\u0686"
+            latin:additionalMoreKeys="0,٠"
+            latin:moreKeys="\u0686"
             latin:keyWidth="fillRight" />
     </Row>
     <Row

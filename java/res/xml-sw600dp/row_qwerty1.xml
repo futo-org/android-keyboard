@@ -25,11 +25,9 @@
         latin:keyWidth="9.0%p"
     >
         <Key
-            latin:keyLabel="q"
-            latin:moreKeys="@string/more_keys_for_q" />
+            latin:keyLabel="q" />
         <Key
-            latin:keyLabel="w"
-            latin:moreKeys="@string/more_keys_for_w" />
+            latin:keyLabel="w" />
         <Key
             latin:keyLabel="e"
             latin:moreKeys="@string/more_keys_for_e" />
@@ -52,8 +50,7 @@
             latin:keyLabel="o"
             latin:moreKeys="@string/more_keys_for_o" />
         <Key
-            latin:keyLabel="p"
-            latin:moreKeys="@string/more_keys_for_p" />
+            latin:keyLabel="p" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-10.0%p"
