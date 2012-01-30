@@ -639,7 +639,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             }
             if (!TextUtils.isEmpty(eventTag)) {
                 UsabilityStudyLogUtils.getInstance().write(
-                        eventTag + eventTime + "," + id + "," + x + "," + y + "\t\t");
+                        eventTag + eventTime + "," + id + "," + x + "," + y + ","
+                        + me.getSize(index) + "," + me.getPressure(index));
             }
         }
 
@@ -701,7 +702,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 tracker.onMoveEvent(px, py, eventTime);
                 if (ENABLE_USABILITY_STUDY_LOG) {
                     UsabilityStudyLogUtils.getInstance().write("[Move]"  + eventTime + ","
-                            + me.getPointerId(i) + "," + px + "," + py + "\t\t");
+                            + me.getPointerId(i) + "," + px + "," + py + ","
+                            + me.getSize(i) + "," + me.getPressure(i));
                 }
             }
         } else {

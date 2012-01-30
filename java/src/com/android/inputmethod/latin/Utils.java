@@ -369,7 +369,7 @@ public class Utils {
 
         private UsabilityStudyLogUtils() {
             mDate = new Date();
-            mDateFormat = new SimpleDateFormat("dd MMM HH:mm:ss.SSS");
+            mDateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss.SSSZ");
 
             HandlerThread handlerThread = new HandlerThread("UsabilityStudyLogUtils logging task",
                     Process.THREAD_PRIORITY_BACKGROUND);
