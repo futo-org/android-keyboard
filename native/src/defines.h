@@ -216,15 +216,15 @@ static void prof_out(void) {
 #define SUB_QUEUE_MAX_WORDS 1
 #define SUB_QUEUE_MAX_COUNT 10
 #define SUB_QUEUE_MIN_WORD_LENGTH 4
-#define SUB_QUEUE_MAX_WORD_INDEX 2
+#define MULTIPLE_WORDS_SUGGESTION_MAX_WORDS 2
 
 #define TWO_WORDS_CORRECTION_WITH_OTHER_ERROR_THRESHOLD 0.39
 #define START_TWO_WORDS_CORRECTION_THRESHOLD 0.22
 
 #define MAX_DEPTH_MULTIPLIER 3
 
-#define FIRST_WORD_INDEX 1
-#define SECOND_WORD_INDEX 2
+#define FIRST_WORD_INDEX 0
+#define SECOND_WORD_INDEX 1
 
 // TODO: Reduce this constant if possible; check the maximum number of umlauts in the same German
 // word in the dictionary

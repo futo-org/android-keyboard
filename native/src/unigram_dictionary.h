@@ -103,7 +103,7 @@ class UnigramDictionary {
             const int currentWordIndex);
     void getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo,
             const int *xcoordinates, const int *ycoordinates, const int *codes,
-            const bool useFullEditDistance, const int inputLength, const int wordDivideIndex,
+            const bool useFullEditDistance, const int inputLength,
             Correction *correction, WordsPriorityQueuePool* queuePool,
             const bool hasAutoCorrectionCandidate);
     void onTerminal(const int freq, const TerminalAttributes& terminalAttributes,
@@ -127,6 +127,13 @@ class UnigramDictionary {
             const int inputWordStartPos, const int inputWordLength,
             const int outputWordStartPos, const bool isSpaceProximity, int *freqArray,
             int *wordLengthArray, unsigned short* outputWord, int *outputWordLength);
+    void getMultiWordsSuggestionRec(ProximityInfo *proximityInfo,
+            const int *xcoordinates, const int *ycoordinates, const int *codes,
+            const bool useFullEditDistance, const int inputLength,
+            Correction *correction, WordsPriorityQueuePool* queuePool,
+            const bool hasAutoCorrectionCandidate, const int startPos, const int startWordIndex,
+            const int outputWordLength, int *freqArray, int* wordLengthArray,
+            unsigned short* outputWord);
 
     const uint8_t* const DICT_ROOT;
     const int MAX_WORD_LENGTH;
