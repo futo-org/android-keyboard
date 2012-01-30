@@ -23,5 +23,5 @@
     latin:isRtlKeyboard="true"
 >
     <include
-        latin:keyboardLayout="@xml/kbd_rows_hebrew" />
+        latin:keyboardLayout="@xml/rows_hebrew" />
 </Keyboard>

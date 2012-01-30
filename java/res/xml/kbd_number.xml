@@ -23,5 +23,5 @@
     latin:keyWidth="26.67%p"
 >
     <include
-        latin:keyboardLayout="@xml/kbd_rows_number" />
+        latin:keyboardLayout="@xml/rows_number" />
 </Keyboard>

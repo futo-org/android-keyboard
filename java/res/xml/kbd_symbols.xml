@@ -22,5 +22,5 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <include
-        latin:keyboardLayout="@xml/kbd_rows_symbols" />
+        latin:keyboardLayout="@xml/rows_symbols" />
 </Keyboard>
