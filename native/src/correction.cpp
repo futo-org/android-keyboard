@@ -827,11 +827,6 @@ int Correction::RankingAlgorithm::calcFreqForSplitTwoWords(
     const bool capitalizedWordDemotion =
             firstCapitalizedWordDemotion ^ secondCapitalizedWordDemotion;
 
-    if (DEBUG_DICT_FULL) {
-        AKLOGI("Two words: %c, %c, %d",
-                word[0], word[firstWordLength + 1], capitalizedWordDemotion);
-    }
-
     if (firstWordLength == 0 || secondWordLength == 0) {
         return 0;
     }
@@ -889,6 +884,12 @@ int Correction::RankingAlgorithm::calcFreqForSplitTwoWords(
 
     if (capitalizedWordDemotion) {
         multiplyRate(TWO_WORDS_CAPITALIZED_DEMOTION_RATE, &totalFreq);
+    }
+
+    if (DEBUG_CORRECTION_FREQ) {
+        AKLOGI("Two words (%d, %d) (%d, %d) %d, %d", firstFreq, secondFreq, firstWordLength,
+                secondWordLength, capitalizedWordDemotion, totalFreq);
+        DUMP_WORD(word, firstWordLength);
     }
 
     return totalFreq;
