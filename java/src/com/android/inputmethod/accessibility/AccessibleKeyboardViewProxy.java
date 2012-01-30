@@ -156,10 +156,8 @@ public class AccessibleKeyboardViewProxy {
             return;
 
         if (entering) {
-            mListener.onHoverEnter(key.mCode);
             mView.sendAccessibilityEvent(AccessibilityEventCompatUtils.TYPE_VIEW_HOVER_ENTER);
         } else {
-            mListener.onHoverExit(key.mCode);
             mView.sendAccessibilityEvent(AccessibilityEventCompatUtils.TYPE_VIEW_HOVER_EXIT);
         }
     }

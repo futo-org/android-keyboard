@@ -18,24 +18,6 @@ package com.android.inputmethod.accessibility;
 
 public interface AccessibleKeyboardActionListener {
     /**
-     * Called when the user hovers inside a key. This is sent only when
-     * Accessibility is turned on. For keys that repeat, this is only called
-     * once.
-     *
-     * @param primaryCode the code of the key that was hovered over
-     */
-    public void onHoverEnter(int primaryCode);
-
-    /**
-     * Called when the user hovers outside a key. This is sent only when
-     * Accessibility is turned on. For keys that repeat, this is only called
-     * once.
-     *
-     * @param primaryCode the code of the key that was hovered over
-     */
-    public void onHoverExit(int primaryCode);
-
-    /**
      * @param direction the direction of the flick gesture, one of
      *            <ul>
      *              <li>{@link FlickGestureDetector#FLICK_UP}

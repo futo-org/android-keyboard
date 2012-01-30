@@ -19,27 +19,12 @@ package com.android.inputmethod.accessibility;
 import android.content.Context;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
-import android.os.Looper;
-import android.os.Message;
 import android.os.Vibrator;
-import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.inputmethod.ExtractedText;
-import android.view.inputmethod.ExtractedTextRequest;
-
-import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
 public class AccessibleInputMethodServiceProxy implements AccessibleKeyboardActionListener {
     private static final AccessibleInputMethodServiceProxy sInstance =
             new AccessibleInputMethodServiceProxy();
-
-    /*
-     * Delay for the handler event that's fired when Accessibility is on and the
-     * user hovers outside of any valid keys. This is used to let the user know
-     * that if they lift their finger, nothing will be typed.
-     */
-    private static final long DELAY_NO_HOVER_SELECTION = 250;
 
     /**
      * Duration of the key click vibration in milliseconds.
@@ -51,35 +36,6 @@ public class AccessibleInputMethodServiceProxy implements AccessibleKeyboardActi
     private InputMethodService mInputMethod;
     private Vibrator mVibrator;
     private AudioManager mAudioManager;
-    private AccessibilityHandler mAccessibilityHandler;
-
-    private static class AccessibilityHandler
-            extends StaticInnerHandlerWrapper<AccessibleInputMethodServiceProxy> {
-        private static final int MSG_NO_HOVER_SELECTION = 0;
-
-        public AccessibilityHandler(AccessibleInputMethodServiceProxy outerInstance,
-                Looper looper) {
-            super(outerInstance, looper);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-            case MSG_NO_HOVER_SELECTION:
-                getOuterInstance().notifyNoHoverSelection();
-                break;
-            }
-        }
-
-        public void postNoHoverSelection() {
-            removeMessages(MSG_NO_HOVER_SELECTION);
-            sendEmptyMessageDelayed(MSG_NO_HOVER_SELECTION, DELAY_NO_HOVER_SELECTION);
-        }
-
-        public void cancelNoHoverSelection() {
-            removeMessages(MSG_NO_HOVER_SELECTION);
-        }
-    }
 
     public static void init(InputMethodService inputMethod) {
         sInstance.initInternal(inputMethod);
@@ -97,26 +53,6 @@ public class AccessibleInputMethodServiceProxy implements AccessibleKeyboardActi
         mInputMethod = inputMethod;
         mVibrator = (Vibrator) inputMethod.getSystemService(Context.VIBRATOR_SERVICE);
         mAudioManager = (AudioManager) inputMethod.getSystemService(Context.AUDIO_SERVICE);
-        mAccessibilityHandler = new AccessibilityHandler(this, inputMethod.getMainLooper());
-    }
-
-    /**
-     * If touch exploration is enabled, cancels the event sent by
-     * {@link AccessibleInputMethodServiceProxy#onHoverExit(int)} because the
-     * user is currently hovering above a key.
-     */
-    @Override
-    public void onHoverEnter(int primaryCode) {
-        mAccessibilityHandler.cancelNoHoverSelection();
-    }
-
-    /**
-     * If touch exploration is enabled, sends a delayed event to notify the user
-     * that they are not currently hovering above a key.
-     */
-    @Override
-    public void onHoverExit(int primaryCode) {
-        mAccessibilityHandler.postNoHoverSelection();
     }
 
     /**
@@ -144,28 +80,5 @@ public class AccessibleInputMethodServiceProxy implements AccessibleKeyboardActi
         mVibrator.vibrate(VIBRATE_KEY_CLICK);
         mAudioManager.playSoundEffect(AudioManager.FX_KEYPRESS_STANDARD, FX_VOLUME);
         mInputMethod.sendDownUpKeyEvents(keyCode);
-    }
-
-    /**
-     * When Accessibility is turned on, notifies the user that they are not
-     * currently hovering above a key. By default this will speak the currently
-     * entered text.
-     */
-    private void notifyNoHoverSelection() {
-        final ExtractedText extracted = mInputMethod.getCurrentInputConnection().getExtractedText(
-                new ExtractedTextRequest(), 0);
-
-        if (extracted == null)
-            return;
-
-        final CharSequence text;
-
-        if (TextUtils.isEmpty(extracted.text)) {
-            text = mInputMethod.getString(R.string.spoken_no_text_entered);
-        } else {
-            text = mInputMethod.getString(R.string.spoken_current_text_is, extracted.text);
-        }
-
-        AccessibilityUtils.getInstance().speak(text);
     }
 }
