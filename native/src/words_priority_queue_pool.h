@@ -27,11 +27,10 @@ class WordsPriorityQueuePool {
  public:
     WordsPriorityQueuePool(int mainQueueMaxWords, int subQueueMaxWords, int maxWordLength) {
         mMasterQueue = new(mMasterQueueBuf) WordsPriorityQueue(mainQueueMaxWords, maxWordLength);
-        for (int i = 0, subQueueBufOffset = 0; i < SUB_QUEUE_MAX_COUNT;
+        for (int i = 0, subQueueBufOffset = 0;
+                i < MULTIPLE_WORDS_SUGGESTION_MAX_WORDS * SUB_QUEUE_MAX_COUNT;
                 ++i, subQueueBufOffset += sizeof(WordsPriorityQueue)) {
-            mSubQueues1[i] = new(mSubQueueBuf1 + subQueueBufOffset)
-                    WordsPriorityQueue(subQueueMaxWords, maxWordLength);
-            mSubQueues2[i] = new(mSubQueueBuf2 + subQueueBufOffset)
+            mSubQueues[i] = new(mSubQueueBuf + subQueueBufOffset)
                     WordsPriorityQueue(subQueueMaxWords, maxWordLength);
         }
     }
@@ -44,7 +43,7 @@ class WordsPriorityQueuePool {
     }
 
     WordsPriorityQueue* getSubQueue(const int wordIndex, const int inputWordLength) {
-        if (wordIndex > SUB_QUEUE_MAX_WORD_INDEX) {
+        if (wordIndex >= MULTIPLE_WORDS_SUGGESTION_MAX_WORDS) {
             return 0;
         }
         if (inputWordLength < 0 || inputWordLength >= SUB_QUEUE_MAX_COUNT) {
@@ -53,30 +52,21 @@ class WordsPriorityQueuePool {
             }
             return 0;
         }
-        // TODO: Come up with more generic pool
-        if (wordIndex == 1) {
-            return mSubQueues1[inputWordLength];
-        } else if (wordIndex == 2) {
-            return mSubQueues2[inputWordLength];
-        } else {
-            return 0;
-        }
+        return mSubQueues[wordIndex * SUB_QUEUE_MAX_COUNT + inputWordLength];
     }
 
     inline void clearAll() {
         mMasterQueue->clear();
-        for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
-            mSubQueues1[i]->clear();
-            mSubQueues2[i]->clear();
+        for (int i = 0; i < MULTIPLE_WORDS_SUGGESTION_MAX_WORDS; ++i) {
+            clearSubQueue(i);
         }
     }
 
     inline void clearSubQueue(const int wordIndex) {
         for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
-            if (wordIndex == 1) {
-                mSubQueues1[i]->clear();
-            } else if (wordIndex == 2) {
-                mSubQueues2[i]->clear();
+            WordsPriorityQueue* queue = getSubQueue(wordIndex, i);
+            if (queue) {
+                queue->clear();
             }
         }
     }
@@ -84,17 +74,16 @@ class WordsPriorityQueuePool {
     void dumpSubQueue1TopSuggestions() {
         AKLOGI("DUMP SUBQUEUE1 TOP SUGGESTIONS");
         for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
-            mSubQueues1[i]->dumpTopWord();
+            getSubQueue(0, i)->dumpTopWord();
         }
     }
 
  private:
     WordsPriorityQueue* mMasterQueue;
-    WordsPriorityQueue* mSubQueues1[SUB_QUEUE_MAX_COUNT];
-    WordsPriorityQueue* mSubQueues2[SUB_QUEUE_MAX_COUNT];
+    WordsPriorityQueue* mSubQueues[SUB_QUEUE_MAX_COUNT * MULTIPLE_WORDS_SUGGESTION_MAX_WORDS];
     char mMasterQueueBuf[sizeof(WordsPriorityQueue)];
-    char mSubQueueBuf1[SUB_QUEUE_MAX_COUNT * sizeof(WordsPriorityQueue)];
-    char mSubQueueBuf2[SUB_QUEUE_MAX_COUNT * sizeof(WordsPriorityQueue)];
+    char mSubQueueBuf[MULTIPLE_WORDS_SUGGESTION_MAX_WORDS
+                      * SUB_QUEUE_MAX_COUNT * sizeof(WordsPriorityQueue)];
 };
 }
 
