@@ -101,7 +101,7 @@ class UnigramDictionary {
             const bool useFullEditDistance, const int inputLength, Correction *correction,
             WordsPriorityQueuePool* queuePool, const bool doAutoCompletion, const int maxErrors,
             const int currentWordIndex);
-    void getSplitTwoWordsSuggestions(ProximityInfo *proximityInfo,
+    void getSplitMultipleWordsSuggestions(ProximityInfo *proximityInfo,
             const int *xcoordinates, const int *ycoordinates, const int *codes,
             const bool useFullEditDistance, const int inputLength,
             Correction *correction, WordsPriorityQueuePool* queuePool,
