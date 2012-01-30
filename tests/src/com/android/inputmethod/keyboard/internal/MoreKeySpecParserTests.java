@@ -22,6 +22,8 @@ import android.test.AndroidTestCase;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.R;
 
+import java.util.Arrays;
+
 public class MoreKeySpecParserTests extends AndroidTestCase {
     private Resources mRes;
 
@@ -216,5 +218,213 @@ public class MoreKeySpecParserTests extends AndroidTestCase {
         assertParserError("Multiple bar with icon and code",
                 ICON_SETTINGS + "|" + CODE_SETTINGS + "|c",
                 null, null, ICON_SETTINGS_KEY, mCodeSettings);
+    }
+
+    private void assertMoreKeys(String message, String[] moreKeys, String[] additionalMoreKeys,
+            String[] expected) {
+        final String[] actual = MoreKeySpecParser.insertAddtionalMoreKeys(
+                moreKeys, additionalMoreKeys);
+        if (expected == null && actual == null) {
+            return;
+        }
+        if (expected == null || actual == null) {
+            assertEquals(message, Arrays.toString(expected), Arrays.toString(actual));
+        } else {
+            if (expected.length != actual.length) {
+                assertEquals(message, Arrays.toString(expected), Arrays.toString(actual));
+            }
+            for (int i = 0; i < expected.length; i++) {
+                if (!actual[i].equals(expected[i])) {
+                    assertEquals(message, Arrays.toString(expected), Arrays.toString(actual));
+                }
+            }
+        }
+    }
+
+    public void testInsertAdditionalMoreKeys() {
+        // Escaped marker.
+        assertMoreKeys("escaped marker",
+                new String[] { "\\%", "%-)" },
+                new String[] { "1", "2" },
+                new String[] { "1", "2", "\\%", "%-)" });
+
+        // 0 more key.
+        assertMoreKeys("null & null", null, null, null);
+        assertMoreKeys("null & 1 additional",
+                null,
+                new String[] { "1" },
+                new String[] { "1" });
+        assertMoreKeys("null & 2 additionals",
+                null,
+                new String[] { "1", "2" },
+                new String[] { "1", "2" });
+
+        // 0 additional more key.
+        assertMoreKeys("1 more key & null",
+                new String[] { "A" },
+                null,
+                new String[] { "A" });
+        assertMoreKeys("2 more keys & null",
+                new String[] { "A", "B" },
+                null,
+                new String[] { "A", "B" });
+
+        // No marker.
+        assertMoreKeys("1 more key & 1 addtional & no marker",
+                new String[] { "A" },
+                new String[] { "1" },
+                new String[] { "1", "A" });
+        assertMoreKeys("1 more key & 2 addtionals & no marker",
+                new String[] { "A" },
+                new String[] { "1", "2" },
+                new String[] { "1", "2", "A" });
+        assertMoreKeys("2 more keys & 1 addtional & no marker",
+                new String[] { "A", "B" },
+                new String[] { "1" },
+                new String[] { "1", "A", "B" });
+        assertMoreKeys("2 more keys & 2 addtionals & no marker",
+                new String[] { "A", "B" },
+                new String[] { "1", "2" },
+                new String[] { "1", "2", "A", "B" });
+
+        // 1 marker.
+        assertMoreKeys("1 more key & 1 additional & marker at head",
+                new String[] { "%", "A" },
+                new String[] { "1" },
+                new String[] { "1", "A" });
+        assertMoreKeys("1 more key & 1 additional & marker at tail",
+                new String[] { "A", "%" },
+                new String[] { "1" },
+                new String[] { "A", "1" });
+        assertMoreKeys("2 more keys & 1 additional & marker at middle",
+                new String[] { "A", "%", "B" },
+                new String[] { "1" },
+                new String[] { "A", "1", "B" });
+
+        // 1 marker & excess additional more keys.
+        assertMoreKeys("1 more key & 2 additionals & marker at head",
+                new String[] { "%", "A", "B" },
+                new String[] { "1", "2" },
+                new String[] { "1", "A", "B", "2" });
+        assertMoreKeys("1 more key & 2 additionals & marker at tail",
+                new String[] { "A", "B", "%" },
+                new String[] { "1", "2" },
+                new String[] { "A", "B", "1", "2" });
+        assertMoreKeys("2 more keys & 2 additionals & marker at middle",
+                new String[] { "A", "%", "B" },
+                new String[] { "1", "2" },
+                new String[] { "A", "1", "B", "2" });
+
+        // 2 markers.
+        assertMoreKeys("0 more key & 2 addtional & 2 markers",
+                new String[] { "%", "%" },
+                new String[] { "1", "2" },
+                new String[] { "1", "2" });
+        assertMoreKeys("1 more key & 2 addtional & 2 markers at head",
+                new String[] { "%", "%", "A" },
+                new String[] { "1", "2" },
+                new String[] { "1", "2", "A" });
+        assertMoreKeys("1 more key & 2 addtional & 2 markers at tail",
+                new String[] { "A", "%", "%" },
+                new String[] { "1", "2" },
+                new String[] { "A", "1", "2" });
+        assertMoreKeys("2 more keys & 2 addtional & 2 markers at middle",
+                new String[] { "A", "%", "%", "B" },
+                new String[] { "1", "2" },
+                new String[] { "A", "1", "2", "B" });
+        assertMoreKeys("2 more keys & 2 addtional & 2 markers at head & middle",
+                new String[] { "%", "A", "%", "B" },
+                new String[] { "1", "2" },
+                new String[] { "1", "A", "2", "B" });
+        assertMoreKeys("2 more keys & 2 addtional & 2 markers at head & tail",
+                new String[] { "%", "A", "B", "%" },
+                new String[] { "1", "2" },
+                new String[] { "1", "A", "B", "2" });
+        assertMoreKeys("2 more keys & 2 addtional & 2 markers at middle & tail",
+                new String[] { "A", "%", "B", "%" },
+                new String[] { "1", "2" },
+                new String[] { "A", "1", "B", "2" });
+
+        // 2 markers & excess additional keys.
+        assertMoreKeys("0 more key & 2 addtional & 2 markers",
+                new String[] { "%", "%" },
+                new String[] { "1", "2", "3" },
+                new String[] { "1", "2", "3" });
+        assertMoreKeys("1 more key & 2 addtional & 2 markers at head",
+                new String[] { "%", "%", "A" },
+                new String[] { "1", "2", "3" },
+                new String[] { "1", "2", "A", "3" });
+        assertMoreKeys("1 more key & 2 addtional & 2 markers at tail",
+                new String[] { "A", "%", "%" },
+                new String[] { "1", "2", "3" },
+                new String[] { "A", "1", "2", "3" });
+        assertMoreKeys("2 more keys & 2 addtional & 2 markers at middle",
+                new String[] { "A", "%", "%", "B" },
+                new String[] { "1", "2", "3" },
+                new String[] { "A", "1", "2", "B", "3" });
+        assertMoreKeys("2 more keys & 2 addtional & 2 markers at head & middle",
+                new String[] { "%", "A", "%", "B" },
+                new String[] { "1", "2", "3" },
+                new String[] { "1", "A", "2", "B", "3" });
+        assertMoreKeys("2 more keys & 2 addtional & 2 markers at head & tail",
+                new String[] { "%", "A", "B", "%" },
+                new String[] { "1", "2", "3" },
+                new String[] { "1", "A", "B", "2", "3" });
+        assertMoreKeys("2 more keys & 2 addtional & 2 markers at middle & tail",
+                new String[] { "A", "%", "B", "%" },
+                new String[] { "1", "2", "3" },
+                new String[] { "A", "1", "B", "2", "3" });
+
+        // 0 addtional more key and excess markers.
+        assertMoreKeys("0 more key & null & excess marker",
+                new String[] { "%" },
+                null,
+                null);
+        assertMoreKeys("1 more key & null & excess marker at head",
+                new String[] { "%", "A" },
+                null,
+                new String[] { "A" });
+        assertMoreKeys("1 more key & null & excess marker at tail",
+                new String[] { "A", "%" },
+                null,
+                new String[] { "A" });
+        assertMoreKeys("2 more keys & null & excess marker at middle",
+                new String[] { "A", "%", "B" },
+                null,
+                new String[] { "A", "B" });
+        assertMoreKeys("2 more keys & null & excess markers",
+                new String[] { "%", "A", "%", "B", "%" },
+                null,
+                new String[] { "A", "B" });
+
+        // Excess markers.
+        assertMoreKeys("0 more key & 1 addtional & excess marker",
+                new String[] { "%", "%" },
+                new String[] { "1" },
+                new String[] { "1" });
+        assertMoreKeys("1 more key & 1 addtional & excess marker at head",
+                new String[] { "%", "%", "A" },
+                new String[] { "1" },
+                new String[] { "1", "A" });
+        assertMoreKeys("1 more key & 1 addtional & excess marker at tail",
+                new String[] { "A", "%", "%" },
+                new String[] { "1" },
+                new String[] { "A", "1" });
+        assertMoreKeys("2 more keys & 1 addtional & excess marker at middle",
+                new String[] { "A", "%", "%", "B" },
+                new String[] { "1" },
+                new String[] { "A", "1", "B" });
+        assertMoreKeys("2 more keys & 1 addtional & excess markers",
+                new String[] { "%", "A", "%", "B", "%" },
+                new String[] { "1" },
+                new String[] { "1", "A", "B" });
+        assertMoreKeys("2 more keys & 2 addtionals & excess markers",
+                new String[] { "%", "A", "%", "B", "%" },
+                new String[] { "1", "2" },
+                new String[] { "1", "A", "2", "B" });
+        assertMoreKeys("2 more keys & 3 addtionals & excess markers",
+                new String[] { "%", "A", "%", "%", "B", "%" },
+                new String[] { "1", "2", "3" },
+                new String[] { "1", "A", "2", "3", "B" });
     }
 }

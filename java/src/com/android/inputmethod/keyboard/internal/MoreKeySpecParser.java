@@ -20,10 +20,12 @@ import android.content.res.Resources;
 import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.Utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * String parser of moreKeys attribute of Key.
@@ -38,9 +40,11 @@ import java.util.ArrayList;
  * See {@link KeyboardIconsSet} about icon_number.
  */
 public class MoreKeySpecParser {
+    private static final boolean DEBUG = LatinImeLogger.sDBG;
     private static final char LABEL_END = '|';
     private static final String PREFIX_ICON = Utils.PREFIX_AT + "icon" + Utils.SUFFIX_SLASH;
     private static final String PREFIX_CODE = Utils.PREFIX_AT + "integer" + Utils.SUFFIX_SLASH;
+    private static final String ADDITIONAL_MORE_KEY_MARKER = "%";
 
     private MoreKeySpecParser() {
         // Intentional empty constructor for utility class.
@@ -173,51 +177,80 @@ public class MoreKeySpecParser {
         return KeyboardIconsSet.ICON_UNDEFINED;
     }
 
+    public static String[] insertAddtionalMoreKeys(String[] moreKeys, String[] additionalMoreKeys) {
+        final int moreKeysCount = (moreKeys != null) ? moreKeys.length : 0;
+        final int additionalCount = (additionalMoreKeys != null) ? additionalMoreKeys.length : 0;
+        ArrayList<String> out = null;
+        int additionalIndex = 0;
+        for (int moreKeyIndex = 0; moreKeyIndex < moreKeysCount; moreKeyIndex++) {
+            final String moreKeySpec = moreKeys[moreKeyIndex];
+            if (moreKeySpec.equals(ADDITIONAL_MORE_KEY_MARKER)) {
+                if (additionalIndex < additionalCount) {
+                    // Replace '%' marker with additional more key specification.
+                    final String additionalMoreKey = additionalMoreKeys[additionalIndex];
+                    if (out != null) {
+                        out.add(additionalMoreKey);
+                    } else {
+                        moreKeys[moreKeyIndex] = additionalMoreKey;
+                    }
+                    additionalIndex++;
+                } else {
+                    // Filter out excessive '%' marker.
+                    if (out == null) {
+                        out = new ArrayList<String>(moreKeyIndex);
+                        for (int i = 0; i < moreKeyIndex; i++) {
+                            out.add(moreKeys[i]);
+                        }
+                    }
+                }
+            } else {
+                if (out != null) {
+                    out.add(moreKeySpec);
+                }
+            }
+        }
+        if (additionalCount > 0 && additionalIndex == 0) {
+            // No '%' marker is found in more keys.
+            // Insert all additional more keys to the head of more keys.
+            if (DEBUG && out != null) {
+                throw new RuntimeException("Internal logic error:"
+                        + " moreKeys=" + Arrays.toString(moreKeys)
+                        + " additionalMoreKeys=" + Arrays.toString(additionalMoreKeys));
+            }
+            out = new ArrayList<String>(additionalCount + moreKeysCount);
+            for (int i = additionalIndex; i < additionalCount; i++) {
+                out.add(additionalMoreKeys[i]);
+            }
+            for (int i = 0; i < moreKeysCount; i++) {
+                out.add(moreKeys[i]);
+            }
+        } else if (additionalIndex < additionalCount) {
+            // The number of '%' markers are less than additional more keys.
+            // Append remained additional more keys to the tail of more keys.
+            if (DEBUG && out != null) {
+                throw new RuntimeException("Internal logic error:"
+                        + " moreKeys=" + Arrays.toString(moreKeys)
+                        + " additionalMoreKeys=" + Arrays.toString(additionalMoreKeys));
+            }
+            out = new ArrayList<String>(moreKeysCount);
+            for (int i = 0; i < moreKeysCount; i++) {
+                out.add(moreKeys[i]);
+            }
+            for (int i = additionalIndex; i < additionalCount; i++) {
+                out.add(additionalMoreKeys[additionalIndex]);
+            }
+        }
+        if (out != null) {
+            return out.size() > 0 ? out.toArray(new String[out.size()]) : null;
+        } else {
+            return moreKeys;
+        }
+    }
+
     @SuppressWarnings("serial")
     public static class MoreKeySpecParserError extends RuntimeException {
         public MoreKeySpecParserError(String message) {
             super(message);
         }
-    }
-
-    public interface CodeFilter {
-        public boolean shouldFilterOut(int code);
-    }
-
-    public static final CodeFilter DIGIT_FILTER = new CodeFilter() {
-        @Override
-        public boolean shouldFilterOut(int code) {
-            return Character.isDigit(code);
-        }
-    };
-
-    public static String[] filterOut(Resources res, String[] moreKeys, CodeFilter filter) {
-        if (moreKeys == null || moreKeys.length < 1) {
-            return null;
-        }
-        if (moreKeys.length == 1 && filter.shouldFilterOut(getCode(res, moreKeys[0]))) {
-            return null;
-        }
-        ArrayList<String> filtered = null;
-        for (int i = 0; i < moreKeys.length; i++) {
-            final String moreKeySpec = moreKeys[i];
-            if (filter.shouldFilterOut(getCode(res, moreKeySpec))) {
-                if (filtered == null) {
-                    filtered = new ArrayList<String>();
-                    for (int j = 0; j < i; j++) {
-                        filtered.add(moreKeys[j]);
-                    }
-                }
-            } else if (filtered != null) {
-                filtered.add(moreKeySpec);
-            }
-        }
-        if (filtered == null) {
-            return moreKeys;
-        }
-        if (filtered.size() == 0) {
-            return null;
-        }
-        return filtered.toArray(new String[filtered.size()]);
     }
 }

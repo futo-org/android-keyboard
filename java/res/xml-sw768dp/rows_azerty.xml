@@ -58,8 +58,7 @@
             latin:keyLabel="o"
             latin:moreKeys="@string/more_keys_for_o" />
         <Key
-            latin:keyLabel="p"
-            latin:moreKeys="@string/more_keys_for_p" />
+            latin:keyLabel="p" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-9.219%p"
@@ -73,8 +72,7 @@
             latin:keyLabelFlags="alignLeft"
             latin:keyWidth="10.167%p" />
         <Key
-            latin:keyLabel="q"
-            latin:moreKeys="@string/more_keys_for_q" />
+            latin:keyLabel="q" />
         <Key
             latin:keyLabel="s"
             latin:moreKeys="@string/more_keys_for_s" />
@@ -110,8 +108,7 @@
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="13.829%p" />
         <Key
-            latin:keyLabel="w"
-            latin:moreKeys="@string/more_keys_for_w" />
+            latin:keyLabel="w" />
         <Key
             latin:keyLabel="x" />
         <Key

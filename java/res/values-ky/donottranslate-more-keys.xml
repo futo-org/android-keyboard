@@ -18,7 +18,7 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="more_keys_for_slavic_u">3,ү</string>
-    <string name="more_keys_for_slavic_en">6,ң</string>
+    <string name="more_keys_for_slavic_u">ү</string>
+    <string name="more_keys_for_slavic_en">ң</string>
     <string name="more_keys_for_slavic_o">ө</string>
 </resources>

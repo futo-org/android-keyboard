@@ -19,7 +19,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="more_keys_for_a">â,ã,ă,à,á,ä,æ,å,ā</string>
-    <string name="more_keys_for_i">8,î,ï,ì,í,į,ī</string>
+    <string name="more_keys_for_i">î,ï,ì,í,į,ī</string>
     <string name="more_keys_for_s">ș,ß,ś,š</string>
-    <string name="more_keys_for_t">5,ț</string>
+    <string name="more_keys_for_t">ț</string>
 </resources>
