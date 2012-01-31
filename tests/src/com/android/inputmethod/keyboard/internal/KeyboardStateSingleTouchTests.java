@@ -576,24 +576,68 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
 
     // Change orientation.
     public void testChangeOrientation() {
-        // Press/release shift key.
+        // Alphabet -> rotate -> alphabet.
+        updateShiftState(ALPHABET_UNSHIFTED);
+        // Rotate device, remain in alphabet.
+        rotateDevice(ALPHABET_UNSHIFTED);
+
+        // Alphabet shifted -> rotate -> alphabet shifted.
+        // Press/release shift key, enter alphabet shifted.
         pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
-        // Rotate device.
+        // Rotate device, remain in alphabet shifted.
         rotateDevice(ALPHABET_MANUAL_SHIFTED);
 
+        // Alphabet shift locked -> rotate -> alphabet shift locked.
         // Long press shift key, enter alphabet shift locked.
         longPressShiftKey(ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED);
-        // Rotate device.
+        // Rotate device, remain in alphabet shift locked.
         rotateDevice(ALPHABET_SHIFT_LOCKED);
 
-        // Press/release "?123" key.
+        // Alphabet shift locked -> symbols -> rotate -> symbols ->
+        // Alphabet shift locked.
+        // Press/release "?123" key, enter symbols.
         pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
-        // Rotate device.
+        // Rotate device, remain in symbols,
         rotateDevice(SYMBOLS_UNSHIFTED);
+        // Press/release "ABC" key, alphabet shift locked state should be maintained.
+        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
 
-        // Press/release "=\<" key.
+        // Alphabet shift locked -> symbols shifted -> rotate -> symbols shifted ->
+        // Alphabet shift locked.
+        // Press/release "?123" key, enter symbols.
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        // Press/release "=\<" key, enter symbols shifted.
         pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
-        // Rotate device.
+        // Rotate device, remain in symbols shifted.
         rotateDevice(SYMBOLS_SHIFTED);
+        // Press/release "ABC" key, alphabet shift locked state should be maintained.
+        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
+
+        // Alphabet shift locked -> symbols shifted -> alphabet shift locked -> rotate ->
+        // Alphabet shift locked -> symbols.
+        // Press/release "?123" key, enter symbols.
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        // Press/release "=\<" key, enter symbols shifted.
+        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
+        // Press/release "ABC" key, enter alphabet shift locked.
+        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
+        // Rotate device, remain in alphabet shift locked.
+        rotateDevice(ALPHABET_SHIFT_LOCKED);
+        // Press/release "?123" key, enter symbols (not symbols shifted).
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+
+        // Alphabet -> symbols shifted -> alphabet -> rotate ->
+        // Alphabet -> symbols.
+        loadKeyboard(ALPHABET_UNSHIFTED);
+        // Press/release "?123" key, enter symbols.
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        // Press/release "=\<" key, enter symbols shifted.
+        pressAndReleaseKey(CODE_SHIFT, SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
+        // Press/release "ABC" key, enter alphabet.
+        pressAndReleaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
+        // Rotate device, remain in alphabet shift locked.
+        rotateDevice(ALPHABET_UNSHIFTED);
+        // Press/release "?123" key, enter symbols (not symbols shifted).
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
     }
 }
