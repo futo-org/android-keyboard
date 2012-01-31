@@ -51,6 +51,9 @@ public class KeyboardState {
          * Request to call back {@link KeyboardState#onUpdateShiftState(boolean)}.
          */
         public void requestUpdatingShiftState();
+
+        public void startDoubleTapTimer();
+        public boolean isInDoubleTapTimeout();
     }
 
     private final SwitchActions mSwitchActions;
@@ -74,6 +77,10 @@ public class KeyboardState {
     private boolean mIsSymbolShifted;
     private boolean mPrevMainKeyboardWasShiftLocked;
     private boolean mPrevSymbolsKeyboardWasShifted;
+
+    // For handling double tap.
+    private boolean mIsInAlphabetUnshiftedFromShifted;
+    private boolean mIsInDoubleTapShiftKey;
 
     private final SavedKeyboardState mSavedKeyboardState = new SavedKeyboardState();
 
@@ -256,8 +263,7 @@ public class KeyboardState {
         mSwitchActions.requestUpdatingShiftState();
     }
 
-    // TODO: Make this method private
-    public void setSymbolsKeyboard() {
+    private void setSymbolsKeyboard() {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setSymbolsKeyboard");
         }
@@ -348,22 +354,35 @@ public class KeyboardState {
 
     private void onPressShift() {
         if (mIsAlphabetMode) {
-            if (mAlphabetShiftState.isShiftLocked()) {
-                // Shift key is pressed while caps lock state, we will treat this state as shifted
-                // caps lock state and mark as if shift key pressed while normal state.
+            mIsInDoubleTapShiftKey = mSwitchActions.isInDoubleTapTimeout();
+            if (!mIsInDoubleTapShiftKey) {
+                // This is first tap.
+                mSwitchActions.startDoubleTapTimer();
+            }
+            if (mIsInDoubleTapShiftKey) {
+                if (mAlphabetShiftState.isManualShifted() || mIsInAlphabetUnshiftedFromShifted) {
+                    // Shift key has been double tapped while in manual shifted or automatic
+                    // shifted state.
+                    setShiftLocked(true);
+                } else {
+                    // Shift key has been double tapped while in normal state. This is the second
+                    // tap to disable shift locked state, so just ignore this.
+                }
+            } else if (mAlphabetShiftState.isShiftLocked()) {
+                // Shift key is pressed while shift locked state, we will treat this state as
+                // shift lock shifted state and mark as if shift key pressed while normal state.
                 setShifted(SHIFT_LOCK_SHIFTED);
                 mShiftKeyState.onPress();
             } else if (mAlphabetShiftState.isAutomaticShifted()) {
-                // Shift key is pressed while automatic temporary upper case, we have to move to
-                // manual temporary upper case.
+                // Shift key is pressed while automatic shifted, we have to move to manual shifted.
                 setShifted(MANUAL_SHIFT);
                 mShiftKeyState.onPress();
             } else if (mAlphabetShiftState.isShiftedOrShiftLocked()) {
-                // In manual upper case state, we just record shift key has been pressing while
+                // In manual shifted state, we just record shift key has been pressing while
                 // shifted state.
                 mShiftKeyState.onPressOnShifted();
             } else {
-                // In base layout, chording or manual temporary upper case mode is started.
+                // In base layout, chording or manual shifted mode is started.
                 setShifted(MANUAL_SHIFT);
                 mShiftKeyState.onPress();
             }
@@ -378,33 +397,40 @@ public class KeyboardState {
     private void onReleaseShift(boolean withSliding) {
         if (mIsAlphabetMode) {
             final boolean isShiftLocked = mAlphabetShiftState.isShiftLocked();
-            if (mShiftKeyState.isChording()) {
+            mIsInAlphabetUnshiftedFromShifted = false;
+            if (mIsInDoubleTapShiftKey) {
+                // Double tap shift key has been handled in {@link #onPressShift}, so that just
+                // ignore this release shift key here.
+                mIsInDoubleTapShiftKey = false;
+            } else if (mShiftKeyState.isChording()) {
                 if (mAlphabetShiftState.isShiftLockShifted()) {
-                    // After chording input while caps lock state.
+                    // After chording input while shift locked state.
                     setShiftLocked(true);
                 } else {
                     // After chording input while normal state.
                     setShifted(UNSHIFT);
                 }
             } else if (mAlphabetShiftState.isShiftLockShifted() && withSliding) {
-                // In caps lock state, shift has been pressed and slid out to other key.
+                // In shift locked state, shift has been pressed and slid out to other key.
                 setShiftLocked(true);
             } else if (isShiftLocked && !mAlphabetShiftState.isShiftLockShifted()
                     && (mShiftKeyState.isPressing() || mShiftKeyState.isPressingOnShifted())
                     && !withSliding) {
                 // Shift has been long pressed, ignore this release.
             } else if (isShiftLocked && !mShiftKeyState.isIgnoring() && !withSliding) {
-                // Shift has been pressed without chording while caps lock state.
+                // Shift has been pressed without chording while shift locked state.
                 setShiftLocked(false);
             } else if (mAlphabetShiftState.isShiftedOrShiftLocked()
                     && mShiftKeyState.isPressingOnShifted() && !withSliding) {
                 // Shift has been pressed without chording while shifted state.
                 setShifted(UNSHIFT);
+                mIsInAlphabetUnshiftedFromShifted = true;
             } else if (mAlphabetShiftState.isManualShiftedFromAutomaticShifted()
                     && mShiftKeyState.isPressing() && !withSliding) {
-                // Shift has been pressed without chording while manual temporary upper case
-                // transited from automatic temporary upper case.
+                // Shift has been pressed without chording while manual shifted transited from
+                // automatic shifted
                 setShifted(UNSHIFT);
+                mIsInAlphabetUnshiftedFromShifted = true;
             }
         } else {
             // In symbol mode, switch back to the previous keyboard mode if the user chords the
@@ -455,10 +481,11 @@ public class KeyboardState {
         if (mIsAlphabetMode && code == Keyboard.CODE_CAPSLOCK) {
             if (mAlphabetShiftState.isShiftLocked()) {
                 setShiftLocked(false);
-                // Shift key is long pressed or double tapped while caps lock state, we will
-                // toggle back to normal state. And mark as if shift key is released.
+                // Shift key is long pressed while shift locked state, we will toggle back to normal
+                // state. And mark as if shift key is released.
                 mShiftKeyState.onRelease();
             } else {
+                // Shift key is long pressed while shift unloked state.
                 setShiftLocked(true);
             }
         }

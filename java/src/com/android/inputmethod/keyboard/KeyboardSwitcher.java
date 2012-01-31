@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
+import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
 import com.android.inputmethod.latin.DebugSettings;
 import com.android.inputmethod.latin.InputView;
@@ -268,6 +269,24 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     @Override
     public void requestUpdatingShiftState() {
         mState.onUpdateShiftState(mInputMethodService.getCurrentAutoCapsState());
+    }
+
+    // Implements {@link KeyboardState.SwitchActions}.
+    @Override
+    public void startDoubleTapTimer() {
+        final LatinKeyboardView keyboardView = getKeyboardView();
+        if (keyboardView != null) {
+            final TimerProxy timer = keyboardView.getTimerProxy();
+            timer.startDoubleTapTimer();
+        }
+    }
+
+    // Implements {@link KeyboardState.SwitchActions}.
+    @Override
+    public boolean isInDoubleTapTimeout() {
+        final LatinKeyboardView keyboardView = getKeyboardView();
+        return (keyboardView != null)
+                ? keyboardView.getTimerProxy().isInDoubleTapTimeout() : false;
     }
 
     public boolean isInMomentarySwitchState() {

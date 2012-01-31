@@ -29,7 +29,6 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -63,8 +62,6 @@ import java.util.WeakHashMap;
 public class LatinKeyboardView extends KeyboardView implements PointerTracker.KeyEventHandler,
         SuddenJumpingTouchEventHandler.ProcessMotionEvent {
     private static final String TAG = LatinKeyboardView.class.getSimpleName();
-
-    private static final boolean ENABLE_CAPSLOCK_BY_DOUBLETAP = true;
 
     // TODO: Kill process when the usability study mode was changed.
     private static final boolean ENABLE_USABILITY_STUDY_LOG = LatinImeLogger.sUsabilityStudy;
@@ -111,16 +108,13 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     private int mOldPointerCount = 1;
     private Key mOldKey;
 
-    // To detect double tap.
-    protected GestureDetector mGestureDetector;
-
     private final KeyTimerHandler mKeyTimerHandler;
 
     private static class KeyTimerHandler extends StaticInnerHandlerWrapper<LatinKeyboardView>
             implements TimerProxy {
         private static final int MSG_REPEAT_KEY = 1;
         private static final int MSG_LONGPRESS_KEY = 2;
-        private static final int MSG_IGNORE_DOUBLE_TAP = 3;
+        private static final int MSG_DOUBLE_TAP = 3;
         private static final int MSG_KEY_TYPED = 4;
 
         private final int mKeyRepeatInterval;
@@ -184,70 +178,24 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
 
         @Override
-        public void cancelKeyTimers() {
-            cancelKeyRepeatTimer();
-            cancelLongPressTimer();
-            removeMessages(MSG_IGNORE_DOUBLE_TAP);
-        }
-
-        public void startIgnoringDoubleTap() {
-            sendMessageDelayed(obtainMessage(MSG_IGNORE_DOUBLE_TAP),
+        public void startDoubleTapTimer() {
+            sendMessageDelayed(obtainMessage(MSG_DOUBLE_TAP),
                     ViewConfiguration.getDoubleTapTimeout());
         }
 
-        public boolean isIgnoringDoubleTap() {
-            return hasMessages(MSG_IGNORE_DOUBLE_TAP);
+        @Override
+        public boolean isInDoubleTapTimeout() {
+            return hasMessages(MSG_DOUBLE_TAP);
+        }
+
+        @Override
+        public void cancelKeyTimers() {
+            cancelKeyRepeatTimer();
+            cancelLongPressTimer();
         }
 
         public void cancelAllMessages() {
             cancelKeyTimers();
-        }
-    }
-
-    class DoubleTapListener extends GestureDetector.SimpleOnGestureListener {
-        private boolean mProcessingShiftDoubleTapEvent = false;
-
-        @Override
-        public boolean onDoubleTap(MotionEvent firstDown) {
-            final Keyboard keyboard = getKeyboard();
-            if (ENABLE_CAPSLOCK_BY_DOUBLETAP && keyboard.mId.isAlphabetKeyboard()) {
-                final int pointerIndex = firstDown.getActionIndex();
-                final int id = firstDown.getPointerId(pointerIndex);
-                final PointerTracker tracker = PointerTracker.getPointerTracker(
-                        id, LatinKeyboardView.this);
-                final Key key = tracker.getKeyOn((int)firstDown.getX(), (int)firstDown.getY());
-                // If the first down event is on shift key.
-                if (key != null && key.isShift()) {
-                    mProcessingShiftDoubleTapEvent = true;
-                    return true;
-                }
-            }
-            mProcessingShiftDoubleTapEvent = false;
-            return false;
-        }
-
-        @Override
-        public boolean onDoubleTapEvent(MotionEvent secondTap) {
-            if (mProcessingShiftDoubleTapEvent
-                    && secondTap.getAction() == MotionEvent.ACTION_DOWN) {
-                final MotionEvent secondDown = secondTap;
-                final int pointerIndex = secondDown.getActionIndex();
-                final int id = secondDown.getPointerId(pointerIndex);
-                final PointerTracker tracker = PointerTracker.getPointerTracker(
-                        id, LatinKeyboardView.this);
-                final Key key = tracker.getKeyOn((int)secondDown.getX(), (int)secondDown.getY());
-                // If the second down event is also on shift key.
-                if (key != null && key.isShift()) {
-                    // Detected a double tap on shift key. If we are in the ignoring double tap
-                    // mode, it means we have already turned off caps lock in
-                    // {@link KeyboardSwitcher#onReleaseShift} .
-                    onDoubleTapShiftKey(mKeyTimerHandler.isIgnoringDoubleTap());
-                    return true;
-                }
-                // Otherwise these events should not be handled as double tap.
-                mProcessingShiftDoubleTapEvent = false;
-            }
-            return mProcessingShiftDoubleTapEvent;
         }
     }
 
@@ -303,11 +251,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         mTouchScreenRegulator = new SuddenJumpingTouchEventHandler(getContext(), this);
 
-        final boolean ignoreMultitouch = true;
-        mGestureDetector = new GestureDetector(
-                getContext(), new DoubleTapListener(), null, ignoreMultitouch);
-        mGestureDetector.setIsLongpressEnabled(false);
-
         mHasDistinctMultitouch = context.getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT);
 
@@ -340,11 +283,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         a.recycle();
 
         PointerTracker.setParameters(mPointerTrackerParams);
-    }
-
-    public void startIgnoringDoubleTap() {
-        if (ENABLE_CAPSLOCK_BY_DOUBLETAP)
-            mKeyTimerHandler.startIgnoringDoubleTap();
     }
 
     public void setKeyboardActionListener(KeyboardActionListener listener) {
@@ -449,17 +387,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         if (parentKey == null)
             return false;
         return onLongPress(parentKey, tracker);
-    }
-
-    private void onDoubleTapShiftKey(final boolean ignore) {
-        // When shift key is double tapped, the first tap is correctly processed as usual tap. And
-        // the second tap is treated as this double tap event, so that we need not mark tracker
-        // calling setAlreadyProcessed() nor remove the tracker from mPointerQueue.
-        if (ignore) {
-            invokeCustomRequest(LatinIME.CODE_HAPTIC_AND_AUDIO_FEEDBACK);
-        } else {
-            invokeCodeInput(Keyboard.CODE_CAPSLOCK);
-        }
     }
 
     // This default implementation returns a more keys panel.
@@ -592,14 +519,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         // If the device does not have distinct multi-touch support panel, ignore all multi-touch
         // events except a transition from/to single-touch.
         if (nonDistinctMultitouch && pointerCount > 1 && oldPointerCount > 1) {
-            return true;
-        }
-
-        // Gesture detector must be enabled only when mini-keyboard is not on the screen.
-        if (mMoreKeysPanel == null && mGestureDetector != null
-                && mGestureDetector.onTouchEvent(me)) {
-            PointerTracker.dismissAllKeyPreviews();
-            mKeyTimerHandler.cancelKeyTimers();
             return true;
         }
 
