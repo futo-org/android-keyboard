@@ -124,7 +124,7 @@
             latin:moreKeys="@string/more_keys_for_n" />
         <Key
             latin:keyLabel="\'"
-            latin:keyLabelFlags="hasUppercaseLetter"
+            latin:keyLabelFlags="hasShiftedLetterHint"
             latin:keyHintLabel=":"
             latin:moreKeys=":" />
         <include

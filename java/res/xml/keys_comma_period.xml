@@ -33,14 +33,14 @@
         <default>
             <Key
                 latin:keyLabel=","
-                latin:keyLabelFlags="hasUppercaseLetter"
                 latin:keyHintLabel="!"
-                latin:moreKeys="!" />
+                latin:moreKeys="!"
+                latin:keyStyle="hasShiftedLetterHintStyle" />
             <Key
                 latin:keyLabel="."
-                latin:keyLabelFlags="hasUppercaseLetter"
                 latin:keyHintLabel="\?"
-                latin:moreKeys="\?" />
+                latin:moreKeys="\?"
+                latin:keyStyle="hasShiftedLetterHintStyle" />
         </default>
     </switch>
 </merge>

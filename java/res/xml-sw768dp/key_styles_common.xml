@@ -21,12 +21,50 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <key-style
-        latin:styleName="shiftKeyStyle"
-        latin:code="@integer/key_shift"
-        latin:keyIcon="iconShiftKey"
-        latin:keyActionFlags="noKeyPreview"
-        latin:backgroundType="sticky" />
+    <switch>
+        <case
+            latin:keyboardSetElement="alphabetManualShifted|alphabetShiftLockShifted"
+        >
+            <key-style
+                latin:styleName="hasShiftedLetterHintStyle"
+                latin:keyLabelFlags="hasShiftedLetterHint|shiftedLetterActivated" />
+        </case>
+        <default>
+            <key-style
+                latin:styleName="hasShiftedLetterHintStyle"
+                latin:keyLabelFlags="hasShiftedLetterHint" />
+        </default>
+    </switch>
+    <switch>
+        <case
+            latin:keyboardSetElement="alphabetManualShifted|alphabetAutomaticShifted"
+        >
+            <key-style
+                latin:styleName="shiftKeyStyle"
+                latin:code="@integer/key_shift"
+                latin:keyIcon="iconShiftKeyShifted"
+                latin:keyActionFlags="noKeyPreview"
+                latin:backgroundType="stickyOff" />
+        </case>
+        <case
+            latin:keyboardSetElement="alphabetShiftLocked|alphabetShiftLockShifted"
+        >
+            <key-style
+                latin:styleName="shiftKeyStyle"
+                latin:code="@integer/key_shift"
+                latin:keyIcon="iconShiftKeyShifted"
+                latin:keyActionFlags="noKeyPreview"
+                latin:backgroundType="stickyOn" />
+        </case>
+        <default>
+            <key-style
+                latin:styleName="shiftKeyStyle"
+                latin:code="@integer/key_shift"
+                latin:keyIcon="iconShiftKey"
+                latin:keyActionFlags="noKeyPreview"
+                latin:backgroundType="stickyOff" />
+        </default>
+    </switch>
     <key-style
         latin:styleName="deleteKeyStyle"
         latin:code="@integer/key_delete"
@@ -51,7 +89,7 @@
         latin:styleName="smileyKeyStyle"
         latin:keyLabel=":-)"
         latin:keyOutputText=":-) "
-        latin:keyLabelFlags="hasPopupHint"
+        latin:keyLabelFlags="hasPopupHint|preserveCase"
         latin:moreKeys="@string/more_keys_for_smiley"
         latin:maxMoreKeysColumn="5" />
     <key-style
@@ -71,40 +109,40 @@
         latin:styleName="tabKeyStyle"
         latin:code="@integer/key_tab"
         latin:keyLabel="@string/label_tab_key"
-        latin:keyLabelFlags="fontNormal"
+        latin:keyLabelFlags="fontNormal|preserveCase"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="toSymbolKeyStyle"
         latin:code="@integer/key_switch_alpha_symbol"
         latin:keyLabel="@string/label_to_symbol_key"
-        latin:keyLabelFlags="fontNormal"
+        latin:keyLabelFlags="fontNormal|preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="toAlphaKeyStyle"
         latin:code="@integer/key_switch_alpha_symbol"
         latin:keyLabel="@string/label_to_alpha_key"
-        latin:keyLabelFlags="fontNormal"
+        latin:keyLabelFlags="fontNormal|preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="toMoreSymbolKeyStyle"
         latin:code="@integer/key_shift"
         latin:keyLabel="@string/label_to_more_symbol_for_tablet_key"
-        latin:keyLabelFlags="fontNormal"
+        latin:keyLabelFlags="fontNormal|preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="backFromMoreSymbolKeyStyle"
         latin:code="@integer/key_shift"
         latin:keyLabel="@string/label_to_symbol_key"
-        latin:keyLabelFlags="fontNormal"
+        latin:keyLabelFlags="fontNormal|preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="comKeyStyle"
         latin:keyLabel="@string/keylabel_for_popular_domain"
-        latin:keyLabelFlags="fontNormal|hasPopupHint"
+        latin:keyLabelFlags="fontNormal|hasPopupHint|preserveCase"
         latin:keyOutputText="@string/keylabel_for_popular_domain"
         latin:moreKeys="@string/more_keys_for_popular_domain" />
 </merge>

@@ -33,16 +33,16 @@
         >
             <Key
                 latin:keyLabel="/"
-                latin:keyLabelFlags="hasUppercaseLetter"
                 latin:keyHintLabel=":"
-                latin:moreKeys=":" />
+                latin:moreKeys=":"
+                latin:keyStyle="hasShiftedLetterHintStyle" />
         </case>
         <default>
             <Key
                 latin:keyLabel="@string/keylabel_for_apostrophe"
-                latin:keyLabelFlags="hasUppercaseLetter"
                 latin:keyHintLabel="@string/keyhintlabel_for_apostrophe"
-                latin:moreKeys="@string/more_keys_for_apostrophe" />
+                latin:moreKeys="@string/more_keys_for_apostrophe"
+                latin:keyStyle="hasShiftedLetterHintStyle" />
         </default>
     </switch>
     <switch>
@@ -55,9 +55,9 @@
         <default>
             <Key
                 latin:keyLabel="@string/keylabel_for_dash"
-                latin:keyLabelFlags="hasUppercaseLetter"
                 latin:keyHintLabel="@string/keyhintlabel_for_dash"
-                latin:moreKeys="@string/more_keys_for_dash" />
+                latin:moreKeys="@string/more_keys_for_dash"
+                latin:keyStyle="hasShiftedLetterHintStyle" />
         </default>
     </switch>
 </merge>

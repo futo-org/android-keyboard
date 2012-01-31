@@ -131,13 +131,6 @@ public class MiniKeyboardView extends KeyboardView implements MoreKeysPanel {
     }
 
     @Override
-    public void setShifted(boolean shifted) {
-        final Keyboard keyboard = getKeyboard();
-        keyboard.setShifted(shifted);
-        invalidateAllKeys();
-    }
-
-    @Override
     public void showMoreKeysPanel(View parentView, Controller controller, int pointX, int pointY,
             PopupWindow window, KeyboardActionListener listener) {
         mController = controller;

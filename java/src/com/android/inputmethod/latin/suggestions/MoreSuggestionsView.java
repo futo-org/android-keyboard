@@ -141,11 +141,6 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
     }
 
     @Override
-    public void setShifted(boolean shifted) {
-        // Nothing to do with.
-    }
-
-    @Override
     public void showMoreKeysPanel(View parentView, Controller controller, int pointX, int pointY,
             PopupWindow window, KeyboardActionListener listener) {
         mController = controller;

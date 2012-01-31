@@ -23,24 +23,7 @@
     latin:keyboardLocale="en_GB,en_US">
     <Element
         latin:elementName="alphabet"
-        latin:elementKeyboard="@xml/kbd_qwerty"
-        latin:elementAutoGenerate="true" />
-    <Element
-        latin:elementName="alphabetManualShifted"
-        latin:elementKeyboard="@xml/kbd_qwerty"
-        latin:elementAutoGenerate="true" />
-    <Element
-        latin:elementName="alphabetAutomaticShifted"
-        latin:elementKeyboard="@xml/kbd_qwerty"
-        latin:elementAutoGenerate="true" />
-    <Element
-        latin:elementName="alphabetShiftLocked"
-        latin:elementKeyboard="@xml/kbd_qwerty"
-        latin:elementAutoGenerate="true" />
-    <Element
-        latin:elementName="alphabetShiftLockShifted"
-        latin:elementKeyboard="@xml/kbd_qwerty"
-        latin:elementAutoGenerate="true" />
+        latin:elementKeyboard="@xml/kbd_qwerty" />
     <Element
         latin:elementName="symbols"
         latin:elementKeyboard="@xml/kbd_symbols" />
