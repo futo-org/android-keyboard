@@ -38,12 +38,6 @@ public class KeyCodeDescriptionMapper {
     // Map of key codes to spoken description resource IDs
     private final HashMap<Integer, Integer> mKeyCodeMap;
 
-    // Map of shifted key codes to spoken description resource IDs
-    private final HashMap<Integer, Integer> mShiftedKeyCodeMap;
-
-    // Map of shift-locked key codes to spoken description resource IDs
-    private final HashMap<Integer, Integer> mShiftLockedKeyCodeMap;
-
     public static void init() {
         sInstance.initInternal();
     }
@@ -55,8 +49,6 @@ public class KeyCodeDescriptionMapper {
     private KeyCodeDescriptionMapper() {
         mKeyLabelMap = new HashMap<CharSequence, Integer>();
         mKeyCodeMap = new HashMap<Integer, Integer>();
-        mShiftedKeyCodeMap = new HashMap<Integer, Integer>();
-        mShiftLockedKeyCodeMap = new HashMap<Integer, Integer>();
     }
 
     private void initInternal() {
@@ -94,15 +86,10 @@ public class KeyCodeDescriptionMapper {
         mKeyCodeMap.put(Keyboard.CODE_ENTER, R.string.spoken_description_return);
         mKeyCodeMap.put(Keyboard.CODE_SETTINGS, R.string.spoken_description_settings);
         mKeyCodeMap.put(Keyboard.CODE_SHIFT, R.string.spoken_description_shift);
+        mKeyCodeMap.put(Keyboard.CODE_CAPSLOCK, R.string.spoken_description_caps_lock);
         mKeyCodeMap.put(Keyboard.CODE_SHORTCUT, R.string.spoken_description_mic);
         mKeyCodeMap.put(Keyboard.CODE_SWITCH_ALPHA_SYMBOL, R.string.spoken_description_to_symbol);
         mKeyCodeMap.put(Keyboard.CODE_TAB, R.string.spoken_description_tab);
-
-        // Shifted versions of non-character codes defined in Keyboard
-        mShiftedKeyCodeMap.put(Keyboard.CODE_SHIFT, R.string.spoken_description_shift_shifted);
-
-        // Shift-locked versions of non-character codes defined in Keyboard
-        mShiftLockedKeyCodeMap.put(Keyboard.CODE_SHIFT, R.string.spoken_description_caps_lock);
     }
 
     /**
@@ -126,10 +113,16 @@ public class KeyCodeDescriptionMapper {
      */
     public CharSequence getDescriptionForKey(Context context, Keyboard keyboard, Key key,
             boolean shouldObscure) {
-        if (key.mCode == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
+        final int code = key.mCode;
+
+        if (code == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
             final CharSequence description = getDescriptionForSwitchAlphaSymbol(context, keyboard);
             if (description != null)
                 return description;
+        }
+
+        if (code == Keyboard.CODE_SHIFT) {
+            return getDescriptionForShiftKey(context, keyboard);
         }
 
         if (!TextUtils.isEmpty(key.mLabel)) {
@@ -176,6 +169,27 @@ public class KeyCodeDescriptionMapper {
     }
 
     /**
+     * Returns a context-sensitive description of the "Shift" key.
+     *
+     * @param context The package's context.
+     * @param keyboard The keyboard on which the key resides.
+     * @return A context-sensitive description of the "Shift" key.
+     */
+    private CharSequence getDescriptionForShiftKey(Context context, Keyboard keyboard) {
+        final int resId;
+
+        if (keyboard.isShiftLocked()) {
+            resId = R.string.spoken_description_caps_lock;
+        } else if (keyboard.isShiftedOrShiftLocked()) {
+            resId = R.string.spoken_description_shift_shifted;
+        } else {
+            resId = R.string.spoken_description_shift;
+        }
+
+        return context.getString(resId);
+    }
+
+    /**
      * Returns a localized character sequence describing what will happen when
      * the specified key is pressed based on its key code.
      * <p>
@@ -199,12 +213,6 @@ public class KeyCodeDescriptionMapper {
     private CharSequence getDescriptionForKeyCode(Context context, Keyboard keyboard, Key key,
             boolean shouldObscure) {
         final int code = key.mCode;
-
-        if (keyboard.isShiftLocked() && mShiftLockedKeyCodeMap.containsKey(code)) {
-            return context.getString(mShiftLockedKeyCodeMap.get(code));
-        } else if (keyboard.isShiftedOrShiftLocked() && mShiftedKeyCodeMap.containsKey(code)) {
-            return context.getString(mShiftedKeyCodeMap.get(code));
-        }
 
         // If the key description should be obscured, now is the time to do it.
         final boolean isDefinedNonCtrl = Character.isDefined(code) && !Character.isISOControl(code);
