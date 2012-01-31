@@ -59,6 +59,14 @@ public class KeyboardSet {
     private final Params mParams;
     private final KeysCache mKeysCache = new KeysCache();
 
+    public static class KeyboardSetException extends RuntimeException {
+        public final KeyboardId mKeyboardId;
+        public KeyboardSetException(Throwable cause, KeyboardId keyboardId) {
+            super(cause);
+            mKeyboardId = keyboardId;
+        }
+    }
+
     public static class KeysCache {
         private final Map<Key, Key> mMap;
 
@@ -107,11 +115,6 @@ public class KeyboardSet {
         mParams = params;
     }
 
-    // TODO: Remove this method, use {@link #getKeyboard} directly.
-    public Keyboard getMainKeyboard() {
-        return getKeyboard(KeyboardId.ELEMENT_ALPHABET);
-    }
-
     public Keyboard getKeyboard(int baseKeyboardSetElementId) {
         final int keyboardSetElementId;
         switch (mParams.mMode) {
@@ -134,8 +137,11 @@ public class KeyboardSet {
                     KeyboardId.ELEMENT_ALPHABET);
         }
         final KeyboardId id = getKeyboardId(keyboardSetElementId);
-        final Keyboard keyboard = getKeyboard(mContext, keyboardXmlId, id);
-        return keyboard;
+        try {
+            return getKeyboard(mContext, keyboardXmlId, id);
+        } catch (RuntimeException e) {
+            throw new KeyboardSetException(e, id);
+        }
     }
 
     private Keyboard getKeyboard(Context context, int keyboardXmlId, KeyboardId id) {
@@ -169,11 +175,10 @@ public class KeyboardSet {
         return keyboard;
     }
 
-    // TODO: Make this method private.
     // Note: The keyboard for each locale, shift state, and mode are represented as KeyboardSet
     // element id that is a key in keyboard_set.xml.  Also that file specifies which XML layout
     // should be used for each keyboard.  The KeyboardId is an internal key for Keyboard object.
-    public KeyboardId getKeyboardId(int keyboardSetElementId) {
+    private KeyboardId getKeyboardId(int keyboardSetElementId) {
         final Params params = mParams;
         final boolean isSymbols = (keyboardSetElementId == KeyboardId.ELEMENT_SYMBOLS
                 || keyboardSetElementId == KeyboardId.ELEMENT_SYMBOLS_SHIFTED);
