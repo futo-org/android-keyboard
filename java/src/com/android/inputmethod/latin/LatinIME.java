@@ -291,8 +291,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 latinIme.updateBigramPredictions();
                 break;
             case MSG_VOICE_RESULTS:
+                final Keyboard keyboard = switcher.getKeyboard();
                 latinIme.mVoiceProxy.handleVoiceResults(latinIme.preferCapitalization()
-                        || (switcher.isAlphabetMode() && switcher.isShiftedOrShiftLocked()));
+                        || (keyboard != null && keyboard.isShiftedOrShiftLocked()));
                 break;
             case MSG_FADEOUT_LANGUAGE_ON_SPACEBAR:
                 setSpacebarTextFadeFactor(inputView,
@@ -987,8 +988,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private void setSuggestionStripShownInternal(boolean shown, boolean needsInputViewShown) {
         // TODO: Modify this if we support suggestions with hard keyboard
         if (onEvaluateInputViewShown() && mSuggestionsContainer != null) {
+            final LatinKeyboardView keyboardView = mKeyboardSwitcher.getKeyboardView();
+            final boolean inputViewShown = (keyboardView != null) ? keyboardView.isShown() : false;
             final boolean shouldShowSuggestions = shown
-                    && (needsInputViewShown ? mKeyboardSwitcher.isInputViewShown() : true);
+                    && (needsInputViewShown ? inputViewShown : true);
             if (isFullscreenMode()) {
                 mSuggestionsContainer.setVisibility(
                         shouldShowSuggestions ? View.VISIBLE : View.GONE);
@@ -1020,7 +1023,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final int extraHeight = extractHeight + backingHeight + suggestionsHeight;
         int touchY = extraHeight;
         // Need to set touchable region only if input view is being shown
-        if (mKeyboardSwitcher.isInputViewShown()) {
+        final LatinKeyboardView keyboardView = mKeyboardSwitcher.getKeyboardView();
+        if (keyboardView != null && keyboardView.isShown()) {
             if (mSuggestionsContainer.getVisibility() == View.VISIBLE) {
                 touchY -= suggestionsHeight;
             }
@@ -1081,9 +1085,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         case KeyEvent.KEYCODE_DPAD_UP:
         case KeyEvent.KEYCODE_DPAD_LEFT:
         case KeyEvent.KEYCODE_DPAD_RIGHT:
+            final LatinKeyboardView keyboardView = mKeyboardSwitcher.getKeyboardView();
+            final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
             // Enable shift key and DPAD to do selections
-            if (mKeyboardSwitcher.isInputViewShown()
-                    && mKeyboardSwitcher.isShiftedOrShiftLocked()) {
+            if ((keyboardView != null && keyboardView.isShown())
+                    && (keyboard != null && keyboard.isShiftedOrShiftLocked())) {
                 KeyEvent newEvent = new KeyEvent(event.getDownTime(), event.getEventTime(),
                         event.getAction(), event.getKeyCode(), event.getRepeatCount(),
                         event.getDeviceId(), event.getScanCode(),

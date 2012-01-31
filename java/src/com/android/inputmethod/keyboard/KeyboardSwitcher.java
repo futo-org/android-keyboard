@@ -179,23 +179,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
     }
 
-    // TODO: Remove this method.
-    public boolean isAlphabetMode() {
-        final Keyboard keyboard = getKeyboard();
-        return keyboard != null && keyboard.mId.isAlphabetKeyboard();
-    }
-
-    // TODO: Remove this method.
-    public boolean isInputViewShown() {
-        return mCurrentInputView != null && mCurrentInputView.isShown();
-    }
-
-    // TODO: Remove this method.
-    public boolean isShiftedOrShiftLocked() {
-        final Keyboard keyboard = getKeyboard();
-        return keyboard != null && keyboard.isShiftedOrShiftLocked();
-    }
-
     public Keyboard getKeyboard() {
         if (mKeyboardView != null) {
             return mKeyboardView.getKeyboard();
