@@ -70,7 +70,7 @@ public class KeyboardState {
     private String mLayoutSwitchBackSymbols;
 
     private boolean mIsAlphabetMode;
-    private KeyboardShiftState mAlphabetShiftState = new KeyboardShiftState();
+    private AlphabetShiftState mAlphabetShiftState = new AlphabetShiftState();
     private boolean mIsSymbolShifted;
     private boolean mPrevMainKeyboardWasShiftLocked;
     private boolean mPrevSymbolsKeyboardWasShifted;
@@ -167,16 +167,16 @@ public class KeyboardState {
         }
         if (!mIsAlphabetMode) return;
         final int prevShiftMode;
-        if (mAlphabetShiftState.isAutomaticTemporaryUpperCase()) {
+        if (mAlphabetShiftState.isAutomaticShifted()) {
             prevShiftMode = AUTOMATIC_SHIFT;
-        } else if (mAlphabetShiftState.isManualTemporaryUpperCase()) {
+        } else if (mAlphabetShiftState.isManualShifted()) {
             prevShiftMode = MANUAL_SHIFT;
         } else {
             prevShiftMode = UNSHIFT;
         }
         switch (shiftMode) {
         case AUTOMATIC_SHIFT:
-            mAlphabetShiftState.setAutomaticTemporaryUpperCase();
+            mAlphabetShiftState.setAutomaticShifted();
             if (shiftMode != prevShiftMode) {
                 mSwitchActions.setAlphabetAutomaticShiftedKeyboard();
             }
@@ -353,7 +353,7 @@ public class KeyboardState {
                 // caps lock state and mark as if shift key pressed while normal state.
                 setShifted(SHIFT_LOCK_SHIFTED);
                 mShiftKeyState.onPress();
-            } else if (mAlphabetShiftState.isAutomaticTemporaryUpperCase()) {
+            } else if (mAlphabetShiftState.isAutomaticShifted()) {
                 // Shift key is pressed while automatic temporary upper case, we have to move to
                 // manual temporary upper case.
                 setShifted(MANUAL_SHIFT);
@@ -400,7 +400,7 @@ public class KeyboardState {
                     && mShiftKeyState.isPressingOnShifted() && !withSliding) {
                 // Shift has been pressed without chording while shifted state.
                 setShifted(UNSHIFT);
-            } else if (mAlphabetShiftState.isManualTemporaryUpperCaseFromAuto()
+            } else if (mAlphabetShiftState.isManualShiftedFromAutomaticShifted()
                     && mShiftKeyState.isPressing() && !withSliding) {
                 // Shift has been pressed without chording while manual temporary upper case
                 // transited from automatic temporary upper case.

@@ -18,27 +18,27 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.util.Log;
 
-public class KeyboardShiftState {
-    private static final String TAG = KeyboardShiftState.class.getSimpleName();
+public class AlphabetShiftState {
+    private static final String TAG = AlphabetShiftState.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    private static final int NORMAL = 0;
+    private static final int UNSHIFTED = 0;
     private static final int MANUAL_SHIFTED = 1;
     private static final int MANUAL_SHIFTED_FROM_AUTO = 2;
-    private static final int AUTO_SHIFTED = 3;
+    private static final int AUTOMATIC_SHIFTED = 3;
     private static final int SHIFT_LOCKED = 4;
     private static final int SHIFT_LOCK_SHIFTED = 5;
 
-    private int mState = NORMAL;
+    private int mState = UNSHIFTED;
 
     public void setShifted(boolean newShiftState) {
         final int oldState = mState;
         if (newShiftState) {
             switch (oldState) {
-            case NORMAL:
+            case UNSHIFTED:
                 mState = MANUAL_SHIFTED;
                 break;
-            case AUTO_SHIFTED:
+            case AUTOMATIC_SHIFTED:
                 mState = MANUAL_SHIFTED_FROM_AUTO;
                 break;
             case SHIFT_LOCKED:
@@ -49,8 +49,8 @@ public class KeyboardShiftState {
             switch (oldState) {
             case MANUAL_SHIFTED:
             case MANUAL_SHIFTED_FROM_AUTO:
-            case AUTO_SHIFTED:
-                mState = NORMAL;
+            case AUTOMATIC_SHIFTED:
+                mState = UNSHIFTED;
                 break;
             case SHIFT_LOCK_SHIFTED:
                 mState = SHIFT_LOCKED;
@@ -65,30 +65,30 @@ public class KeyboardShiftState {
         final int oldState = mState;
         if (newShiftLockState) {
             switch (oldState) {
-            case NORMAL:
+            case UNSHIFTED:
             case MANUAL_SHIFTED:
             case MANUAL_SHIFTED_FROM_AUTO:
-            case AUTO_SHIFTED:
+            case AUTOMATIC_SHIFTED:
                 mState = SHIFT_LOCKED;
                 break;
             }
         } else {
-            mState = NORMAL;
+            mState = UNSHIFTED;
         }
         if (DEBUG)
             Log.d(TAG, "setShiftLocked(" + newShiftLockState + "): " + toString(oldState)
                     + " > " + this);
     }
 
-    public void setAutomaticTemporaryUpperCase() {
+    public void setAutomaticShifted() {
         final int oldState = mState;
-        mState = AUTO_SHIFTED;
+        mState = AUTOMATIC_SHIFTED;
         if (DEBUG)
-            Log.d(TAG, "setAutomaticTemporaryUpperCase: " + toString(oldState) + " > " + this);
+            Log.d(TAG, "setAutomaticShifted: " + toString(oldState) + " > " + this);
     }
 
     public boolean isShiftedOrShiftLocked() {
-        return mState != NORMAL;
+        return mState != UNSHIFTED;
     }
 
     public boolean isShiftLocked() {
@@ -99,16 +99,16 @@ public class KeyboardShiftState {
         return mState == SHIFT_LOCK_SHIFTED;
     }
 
-    public boolean isAutomaticTemporaryUpperCase() {
-        return mState == AUTO_SHIFTED;
+    public boolean isAutomaticShifted() {
+        return mState == AUTOMATIC_SHIFTED;
     }
 
-    public boolean isManualTemporaryUpperCase() {
+    public boolean isManualShifted() {
         return mState == MANUAL_SHIFTED || mState == MANUAL_SHIFTED_FROM_AUTO
                 || mState == SHIFT_LOCK_SHIFTED;
     }
 
-    public boolean isManualTemporaryUpperCaseFromAuto() {
+    public boolean isManualShiftedFromAutomaticShifted() {
         return mState == MANUAL_SHIFTED_FROM_AUTO;
     }
 
@@ -119,13 +119,13 @@ public class KeyboardShiftState {
 
     private static String toString(int state) {
         switch (state) {
-        case NORMAL: return "NORMAL";
+        case UNSHIFTED: return "UNSHIFTED";
         case MANUAL_SHIFTED: return "MANUAL_SHIFTED";
         case MANUAL_SHIFTED_FROM_AUTO: return "MANUAL_SHIFTED_FROM_AUTO";
-        case AUTO_SHIFTED: return "AUTO_SHIFTED";
+        case AUTOMATIC_SHIFTED: return "AUTOMATIC_SHIFTED";
         case SHIFT_LOCKED: return "SHIFT_LOCKED";
         case SHIFT_LOCK_SHIFTED: return "SHIFT_LOCK_SHIFTED";
-        default: return "UKNOWN";
+        default: return "UNKNOWN";
         }
     }
 }

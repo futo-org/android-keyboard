@@ -176,25 +176,6 @@ public class KeyCodeDescriptionMapper {
     }
 
     /**
-     * Returns the keycode for the specified key given the current keyboard
-     * state.
-     *
-     * @param keyboard The keyboard on which the key resides.
-     * @param key The key from which to obtain a key code.
-     * @return the key code for the specified key
-     */
-    private int getCorrectKeyCode(Keyboard keyboard, Key key) {
-        // If keyboard is in manual temporary upper case state and key has
-        // manual temporary uppercase letter as key hint letter, alternate
-        // character code should be sent.
-        if (keyboard.isManualTemporaryUpperCase() && key.hasUppercaseLetter()
-                && !TextUtils.isEmpty(key.mHintLabel)) {
-            return key.mHintLabel.charAt(0);
-        }
-        return key.mCode;
-    }
-
-    /**
      * Returns a localized character sequence describing what will happen when
      * the specified key is pressed based on its key code.
      * <p>
@@ -217,7 +198,7 @@ public class KeyCodeDescriptionMapper {
      */
     private CharSequence getDescriptionForKeyCode(Context context, Keyboard keyboard, Key key,
             boolean shouldObscure) {
-        final int code = getCorrectKeyCode(keyboard, key);
+        final int code = key.mCode;
 
         if (keyboard.isShiftLocked() && mShiftLockedKeyCodeMap.containsKey(code)) {
             return context.getString(mShiftLockedKeyCodeMap.get(code));

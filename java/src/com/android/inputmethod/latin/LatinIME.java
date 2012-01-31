@@ -1470,13 +1470,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (ic == null)
             return;
 
-        // True if keyboard is in either chording shift or manual temporary upper case mode.
-        final boolean isManualTemporaryUpperCase = mKeyboardSwitcher.isManualTemporaryUpperCase();
-        if (EditorInfoCompatUtils.hasFlagNavigateNext(imeOptions)
-                && !isManualTemporaryUpperCase) {
+        final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
+        // True if keyboard is in either shift chording or manual shifted state.
+        final boolean isManualShifted = (keyboard != null  && keyboard.isManualShifted());
+        if (EditorInfoCompatUtils.hasFlagNavigateNext(imeOptions) && !isManualShifted) {
             EditorInfoCompatUtils.performEditorActionNext(ic);
-        } else if (EditorInfoCompatUtils.hasFlagNavigatePrevious(imeOptions)
-                && isManualTemporaryUpperCase) {
+        } else if (EditorInfoCompatUtils.hasFlagNavigatePrevious(imeOptions) && isManualShifted) {
             EditorInfoCompatUtils.performEditorActionPrevious(ic);
         }
     }
@@ -1516,27 +1515,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 resetComposingState(false /* alsoResetLastComposedWord */);
                 clearSuggestions();
                 mComposingStateManager.onFinishComposingText();
-            }
-        }
-        final KeyboardSwitcher switcher = mKeyboardSwitcher;
-        if (switcher.isShiftedOrShiftLocked()) {
-            if (keyCodes == null || keyCodes[0] < Character.MIN_CODE_POINT
-                    || keyCodes[0] > Character.MAX_CODE_POINT) {
-                return;
-            }
-            code = keyCodes[0];
-            if (switcher.isAlphabetMode() && Character.isLowerCase(code)) {
-                // In some locales, such as Turkish, Character.toUpperCase() may return a wrong
-                // character because it doesn't take care of locale.
-                final String upperCaseString = new String(new int[] {code}, 0, 1)
-                        .toUpperCase(mSubtypeSwitcher.getInputLocale());
-                if (upperCaseString.codePointCount(0, upperCaseString.length()) == 1) {
-                    code = upperCaseString.codePointAt(0);
-                } else {
-                    // Some keys, such as [eszett], have upper case as multi-characters.
-                    onTextInput(upperCaseString);
-                    return;
-                }
             }
         }
         if (isComposingWord) {

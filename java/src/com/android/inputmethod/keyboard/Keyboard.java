@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -31,7 +30,6 @@ import android.view.InflateException;
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.keyboard.internal.KeyStyles;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
-import com.android.inputmethod.keyboard.internal.KeyboardShiftState;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.XmlParseUtils;
@@ -130,15 +128,11 @@ public class Keyboard {
     /** List of keys and icons in this keyboard */
     public final Set<Key> mKeys;
     public final Set<Key> mShiftKeys;
-    public final Set<Key> mShiftLockKeys;
     public final KeyboardIconsSet mIconsSet;
 
     private final Map<Integer, Key> mKeyCache = new HashMap<Integer, Key>();
 
     private final ProximityInfo mProximityInfo;
-
-    // TODO: Remove this variable.
-    private final KeyboardShiftState mShiftState = new KeyboardShiftState();
 
     public Keyboard(Params params) {
         mId = params.mId;
@@ -156,7 +150,6 @@ public class Keyboard {
 
         mKeys = Collections.unmodifiableSet(params.mKeys);
         mShiftKeys = Collections.unmodifiableSet(params.mShiftKeys);
-        mShiftLockKeys = Collections.unmodifiableSet(params.mShiftLockKeys);
         mIconsSet = params.mIconsSet;
 
         mProximityInfo = new ProximityInfo(
@@ -188,70 +181,18 @@ public class Keyboard {
     }
 
     // TODO: Remove this method.
-    boolean hasShiftLockKey() {
-        return !mShiftLockKeys.isEmpty();
-    }
-
-    // TODO: Remove this method.
-    void setShiftLocked(boolean newShiftLockState) {
-        for (final Key key : mShiftLockKeys) {
-            // To represent "shift locked" state. The highlight is handled by background image that
-            // might be a StateListDrawable.
-            key.setHighlightOn(newShiftLockState);
-            final int attrId = newShiftLockState
-                    ? R.styleable.Keyboard_iconShiftKeyShifted
-                    : R.styleable.Keyboard_iconShiftKey;
-            key.setIcon(mIconsSet.getIconByAttrId(attrId));
-        }
-        mShiftState.setShiftLocked(newShiftLockState);
-    }
-
-    // TODO: Move this method to KeyboardId.
     public boolean isShiftLocked() {
-        return mShiftState.isShiftLocked();
-    }
-
-    private void setShiftKeyGraphics(boolean newShiftState) {
-        if (mShiftState.isShiftLocked()) {
-            return;
-        }
-        for (final Key key : mShiftKeys) {
-            final int attrId = newShiftState
-                    ? R.styleable.Keyboard_iconShiftKeyShifted
-                    : R.styleable.Keyboard_iconShiftKey;
-            key.setIcon(mIconsSet.getIconByAttrId(attrId));
-        }
+        return mId.isAlphabetShiftLockedKeyboard();
     }
 
     // TODO: Remove this method.
-    void setShifted(boolean newShiftState) {
-        setShiftKeyGraphics(newShiftState);
-        mShiftState.setShifted(newShiftState);
-    }
-
-    // TODO: Move this method to KeyboardId.
     public boolean isShiftedOrShiftLocked() {
-        return mShiftState.isShiftedOrShiftLocked();
-    }
-
-    // TODO: Remove this method
-    void setAutomaticTemporaryUpperCase() {
-        setShiftKeyGraphics(true);
-        mShiftState.setAutomaticTemporaryUpperCase();
-    }
-
-    // TODO: Move this method to KeyboardId.
-    public boolean isManualTemporaryUpperCase() {
-        return mShiftState.isManualTemporaryUpperCase();
+        return mId.isAlphabetShiftedOrShiftLockedKeyboard();
     }
 
     // TODO: Remove this method.
-    public String adjustLabelCase(String label) {
-        if (mId.isAlphabetKeyboard() && isShiftedOrShiftLocked() && !TextUtils.isEmpty(label)
-                && label.length() < 3 && Character.isLowerCase(label.charAt(0))) {
-            return label.toUpperCase(mId.mLocale);
-        }
-        return label;
+    public boolean isManualShifted() {
+        return mId.isAlphabetManualShiftedKeyboard();
     }
 
     public static boolean isLetterCode(int code) {
@@ -291,7 +232,6 @@ public class Keyboard {
 
         public final Set<Key> mKeys = new HashSet<Key>();
         public final Set<Key> mShiftKeys = new HashSet<Key>();
-        public final Set<Key> mShiftLockKeys = new HashSet<Key>();
         public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
 
         public KeyboardSet.KeysCache mKeysCache;
@@ -360,7 +300,6 @@ public class Keyboard {
         protected void clearKeys() {
             mKeys.clear();
             mShiftKeys.clear();
-            mShiftLockKeys.clear();
             clearHistogram();
         }
 
@@ -370,9 +309,6 @@ public class Keyboard {
             updateHistogram(key);
             if (key.mCode == Keyboard.CODE_SHIFT) {
                 mShiftKeys.add(key);
-                if (key.isSticky()) {
-                    mShiftLockKeys.add(key);
-                }
             }
         }
 
@@ -437,6 +373,8 @@ public class Keyboard {
         case CODE_DELETE: return "delete";
         case CODE_SHORTCUT: return "shortcut";
         case CODE_UNSPECIFIED: return "unspec";
+        case CODE_TAB: return "tab";
+        case CODE_ENTER: return "enter";
         default:
             if (code <= 0) Log.w(TAG, "Unknown non-positive key code=" + code);
             if (code < CODE_SPACE) return String.format("'\\u%02x'", code);

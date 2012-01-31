@@ -24,9 +24,6 @@ public interface MoreKeysPanel extends PointerTracker.KeyEventHandler {
         public boolean dismissMoreKeysPanel();
     }
 
-    // TODO: Remove this method.
-    public void setShifted(boolean shifted);
-
     /**
      * Show more keys panel.
      *

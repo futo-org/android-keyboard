@@ -57,9 +57,9 @@
                     >
                         <Key
                             latin:keyLabel=":"
-                            latin:keyLabelFlags="hasUppercaseLetter"
                             latin:keyHintLabel="+"
-                            latin:moreKeys="+" />
+                            latin:moreKeys="+"
+                            latin:keyStyle="hasShiftedLetterHintStyle" />
                     </case>
                     <default>
                         <Key
@@ -76,9 +76,9 @@
                     <default>
                         <Key
                             latin:keyLabel="/"
-                            latin:keyLabelFlags="hasUppercaseLetter"
                             latin:keyHintLabel="\@"
-                            latin:moreKeys="\@" />
+                            latin:moreKeys="\@"
+                            latin:keyStyle="hasShiftedLetterHintStyle" />
                     </default>
                 </switch>
             </default>

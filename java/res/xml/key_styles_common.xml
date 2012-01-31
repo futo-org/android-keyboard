@@ -62,12 +62,36 @@
         </default>
     </switch>
     <!-- Functional key styles -->
-    <key-style
-        latin:styleName="shiftKeyStyle"
-        latin:code="@integer/key_shift"
-        latin:keyIcon="iconShiftKey"
-        latin:keyActionFlags="noKeyPreview"
-        latin:backgroundType="sticky" />
+    <switch>
+        <case
+            latin:keyboardSetElement="alphabetManualShifted|alphabetAutomaticShifted"
+        >
+            <key-style
+                latin:styleName="shiftKeyStyle"
+                latin:code="@integer/key_shift"
+                latin:keyIcon="iconShiftKeyShifted"
+                latin:keyActionFlags="noKeyPreview"
+                latin:backgroundType="stickyOff" />
+        </case>
+        <case
+            latin:keyboardSetElement="alphabetShiftLocked|alphabetShiftLockShifted"
+        >
+            <key-style
+                latin:styleName="shiftKeyStyle"
+                latin:code="@integer/key_shift"
+                latin:keyIcon="iconShiftKeyShifted"
+                latin:keyActionFlags="noKeyPreview"
+                latin:backgroundType="stickyOn" />
+        </case>
+        <default>
+            <key-style
+                latin:styleName="shiftKeyStyle"
+                latin:code="@integer/key_shift"
+                latin:keyIcon="iconShiftKey"
+                latin:keyActionFlags="noKeyPreview"
+                latin:backgroundType="stickyOff" />
+        </default>
+    </switch>
     <key-style
         latin:styleName="deleteKeyStyle"
         latin:code="@integer/key_delete"
@@ -84,7 +108,7 @@
                 latin:styleName="returnKeyStyle"
                 latin:keyLabel=":-)"
                 latin:keyOutputText=":-) "
-                latin:keyLabelFlags="hasPopupHint"
+                latin:keyLabelFlags="hasPopupHint|preserveCase"
                 latin:moreKeys="@string/more_keys_for_smiley"
                 latin:maxMoreKeysColumn="5"
                 latin:backgroundType="functional" />
@@ -96,7 +120,7 @@
                 latin:styleName="returnKeyStyle"
                 latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_go_key"
-                latin:keyLabelFlags="autoXScale"
+                latin:keyLabelFlags="autoXScale|preserveCase"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="action" />
         </case>
@@ -107,7 +131,7 @@
                 latin:styleName="returnKeyStyle"
                 latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_next_key"
-                latin:keyLabelFlags="autoXScale"
+                latin:keyLabelFlags="autoXScale|preserveCase"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="action" />
         </case>
@@ -118,7 +142,7 @@
                 latin:styleName="returnKeyStyle"
                 latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_done_key"
-                latin:keyLabelFlags="autoXScale"
+                latin:keyLabelFlags="autoXScale|preserveCase"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="action" />
         </case>
@@ -129,7 +153,7 @@
                 latin:styleName="returnKeyStyle"
                 latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_send_key"
-                latin:keyLabelFlags="autoXScale"
+                latin:keyLabelFlags="autoXScale|preserveCase"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="action" />
         </case>
@@ -199,7 +223,7 @@
                 latin:code="@integer/key_switch_alpha_symbol"
                 latin:keyIcon="iconShortcutForLabel"
                 latin:keyLabel="@string/label_to_symbol_with_microphone_key"
-                latin:keyLabelFlags="withIconRight"
+                latin:keyLabelFlags="withIconRight|preserveCase"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="functional" />
         </case>
@@ -208,6 +232,7 @@
                 latin:styleName="toSymbolKeyStyle"
                 latin:code="@integer/key_switch_alpha_symbol"
                 latin:keyLabel="@string/label_to_symbol_key"
+                latin:keyLabelFlags="preserveCase"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="functional" />
         </default>
@@ -216,25 +241,28 @@
         latin:styleName="toAlphaKeyStyle"
         latin:code="@integer/key_switch_alpha_symbol"
         latin:keyLabel="@string/label_to_alpha_key"
+        latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="toMoreSymbolKeyStyle"
         latin:code="@integer/key_shift"
         latin:keyLabel="@string/label_to_more_symbol_key"
+        latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="backFromMoreSymbolKeyStyle"
         latin:code="@integer/key_shift"
         latin:keyLabel="@string/label_to_symbol_key"
+        latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="punctuationKeyStyle"
         latin:keyLabel="."
         latin:keyHintLabel="@string/keyhintlabel_for_punctuation"
-        latin:keyLabelFlags="hasPopupHint"
+        latin:keyLabelFlags="hasPopupHint|preserveCase"
         latin:moreKeys="@string/more_keys_for_punctuation"
         latin:maxMoreKeysColumn="@integer/mini_keyboard_column_for_punctuation"
         latin:backgroundType="functional" />

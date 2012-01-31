@@ -60,16 +60,16 @@
         <attr name="keyHintLetterRatio" format="float" />
         <!-- Size of the text for hint label, in the proportion of key height. -->
         <attr name="keyHintLabelRatio" format="float" />
-        <!-- Size of the text for upper case letter, in the proportion of key height. -->
-        <attr name="keyUppercaseLetterRatio" format="float" />
+        <!-- Size of the text for shifted letter hint, in the proportion of key height. -->
+        <attr name="keyShiftedLetterHintRatio" format="float" />
         <!-- Horizontal padding of left/right aligned key label to the edge of the key. -->
         <attr name="keyLabelHorizontalPadding" format="dimension" />
         <!-- Top and right padding of hint letter to the edge of the key.-->
         <attr name="keyHintLetterPadding" format="dimension" />
         <!-- Bottom padding of popup hint letter "..." to the edge of the key.-->
         <attr name="keyPopupHintLetterPadding" format="dimension" />
-        <!-- Top and right padding of upper case letter to the edge of the key.-->
-        <attr name="keyUppercaseLetterPadding" format="dimension" />
+        <!-- Top and right padding of shifted letter hint to the edge of the key.-->
+        <attr name="keyShiftedLetterHintPadding" format="dimension" />
 
         <!-- Color to use for the label in a key. -->
         <attr name="keyTextColor" format="color" />
@@ -79,9 +79,9 @@
         <attr name="keyHintLetterColor" format="color" />
         <!-- Key hint label color -->
         <attr name="keyHintLabelColor" format="color" />
-        <!-- Upper case letter colors -->
-        <attr name="keyUppercaseLetterInactivatedColor" format="color" />
-        <attr name="keyUppercaseLetterActivatedColor" format="color" />
+        <!-- Shifted letter hint colors -->
+        <attr name="keyShiftedLetterHintInactivatedColor" format="color" />
+        <attr name="keyShiftedLetterHintActivatedColor" format="color" />
 
         <!-- Layout resource for key press feedback.-->
         <attr name="keyPreviewLayout" format="reference" />
@@ -240,7 +240,8 @@
             <enum name="normal" value="0" />
             <enum name="functional" value="1" />
             <enum name="action" value="2" />
-            <enum name="sticky" value="3" />
+            <enum name="stickyOff" value="3" />
+            <enum name="stickyOn" value="4" />
         </attr>
         <!-- The key action flags. -->
         <attr name="keyActionFlags" format="integer">
@@ -267,7 +268,7 @@
             <flag name="followKeyLetterRatio" value="0x80" />
             <flag name="followKeyHintLabelRatio" value="0x100" />
             <flag name="hasPopupHint" value="0x200" />
-            <flag name="hasUppercaseLetter" value="0x400" />
+            <flag name="hasShiftedLetterHint" value="0x400" />
             <flag name="hasHintLabel" value="0x800" />
             <flag name="withIconLeft" value="0x1000" />
             <flag name="withIconRight" value="0x2000" />
@@ -275,10 +276,9 @@
             <!-- If true, character case of code, altCode, moreKeys, keyOutputText, keyLabel,
                  or keyHintLabel will never be subject to change. -->
             <flag name="preserveCase" value="0x8000" />
-            <!-- If true, use keyTextInactivatedColor for the label -->
-            <flag name="inactivatedLabel" value="0x10000" />
-            <!-- If true, use keyUppercaseLetterInactivatedColor for the uppercase letter -->
-            <flag name="inactivatedUppercaseLetter" value="0x20000" />
+            <!-- If true, use keyShiftedLetterHintActivatedColor for the shifted letter hint and
+                 keyTextInactivatedColor for the primary key top label. -->
+            <flag name="shiftedLetterActivated" value="0x10000" />
         </attr>
         <!-- The icon to display on the key instead of the label. -->
         <attr name="keyIcon" format="enum">
@@ -407,7 +407,5 @@
             <enum name="number" value="9"  />
         </attr>
         <attr name="elementKeyboard" format="reference"/>
-        <attr name="elementAutoGenerate" format="boolean" />
-        <!-- TODO: Add setShifted and setShiftLocked attribute. -->
     </declare-styleable>
 </resources>

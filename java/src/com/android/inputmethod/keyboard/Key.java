@@ -66,14 +66,13 @@ public class Key {
     private static final int LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO = 0x80;
     private static final int LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO = 0x100;
     private static final int LABEL_FLAGS_HAS_POPUP_HINT = 0x200;
-    private static final int LABEL_FLAGS_HAS_UPPERCASE_LETTER = 0x400;
+    private static final int LABEL_FLAGS_HAS_SHIFTED_LETTER_HINT = 0x400;
     private static final int LABEL_FLAGS_HAS_HINT_LABEL = 0x800;
     private static final int LABEL_FLAGS_WITH_ICON_LEFT = 0x1000;
     private static final int LABEL_FLAGS_WITH_ICON_RIGHT = 0x2000;
     private static final int LABEL_FLAGS_AUTO_X_SCALE = 0x4000;
     private static final int LABEL_FLAGS_PRESERVE_CASE = 0x8000;
-    private static final int LABEL_FLAGS_INACTIVATED_LABEL = 0x10000;
-    private static final int LABEL_FLAGS_INACTIVATED_UPPERCASE_LETTER = 0x20000;
+    private static final int LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED = 0x10000;
 
     /** Icon to display instead of a label. Icon takes precedence over a label */
     private final int mIconAttrId;
@@ -114,7 +113,8 @@ public class Key {
     public static final int BACKGROUND_TYPE_NORMAL = 0;
     public static final int BACKGROUND_TYPE_FUNCTIONAL = 1;
     public static final int BACKGROUND_TYPE_ACTION = 2;
-    public static final int BACKGROUND_TYPE_STICKY = 3;
+    public static final int BACKGROUND_TYPE_STICKY_OFF = 3;
+    public static final int BACKGROUND_TYPE_STICKY_ON = 4;
 
     private final int mActionFlags;
     private static final int ACTION_FLAGS_IS_REPEATABLE = 0x01;
@@ -125,8 +125,6 @@ public class Key {
 
     /** The current pressed state of this key */
     private boolean mPressed;
-    /** If this is a sticky key, is its highlight on? */
-    private boolean mHighlightOn;
     /** Key is enabled and responds on press */
     private boolean mEnabled = true;
 
@@ -303,31 +301,46 @@ public class Key {
                 keyAttr, R.styleable.Keyboard_Key_keyLabel), preserveCase, params.mId);
         mHintLabel = adjustCaseOfStringForKeyboardId(style.getString(
                 keyAttr, R.styleable.Keyboard_Key_keyHintLabel), preserveCase, params.mId);
-        mOutputText = adjustCaseOfStringForKeyboardId(style.getString(
+        String outputText = adjustCaseOfStringForKeyboardId(style.getString(
                 keyAttr, R.styleable.Keyboard_Key_keyOutputText), preserveCase, params.mId);
-        // Choose the first letter of the label as primary code if not
-        // specified.
-        final int code = adjustCaseOfCodeForKeyboardId(style.getInt(
-                keyAttr, R.styleable.Keyboard_Key_code, Keyboard.CODE_UNSPECIFIED), preserveCase,
-                params.mId);
-        if (code == Keyboard.CODE_UNSPECIFIED && mOutputText == null
+        final int code = style.getInt(
+                keyAttr, R.styleable.Keyboard_Key_code, Keyboard.CODE_UNSPECIFIED);
+        // Choose the first letter of the label as primary code if not specified.
+        if (code == Keyboard.CODE_UNSPECIFIED && TextUtils.isEmpty(outputText)
                 && !TextUtils.isEmpty(mLabel)) {
-            if (mLabel.length() != 1) {
-                Log.w(TAG, "Label is not a single letter: label=" + mLabel);
+            if (mLabel.codePointCount(0, mLabel.length()) == 1) {
+                final int activatedCode;
+                // Use the first letter of the hint label if shiftedLetterActivated flag is
+                // specified.
+                if (hasShiftedLetterHint() && isShiftedLetterActivated()
+                        && !TextUtils.isEmpty(mHintLabel)) {
+                    activatedCode = mHintLabel.codePointAt(0);
+                } else {
+                    activatedCode = mLabel.codePointAt(0);
+                }
+                mCode = getRtlParenthesisCode(activatedCode, params.mIsRtlKeyboard);
+            } else {
+                // In some locale and case, the character might be represented by multiple code
+                // points, such as upper case Eszett of German alphabet.
+                outputText = mLabel;
+                mCode = Keyboard.CODE_OUTPUT_TEXT;
             }
-            final int firstChar = mLabel.charAt(0);
-            mCode = getRtlParenthesisCode(firstChar, params.mIsRtlKeyboard);
-        } else if (code == Keyboard.CODE_UNSPECIFIED && mOutputText != null) {
+        } else if (code == Keyboard.CODE_UNSPECIFIED && outputText != null) {
             mCode = Keyboard.CODE_OUTPUT_TEXT;
         } else {
-            mCode = code;
+            mCode = adjustCaseOfCodeForKeyboardId(code, preserveCase, params.mId);
         }
+        mOutputText = outputText;
         mAltCode = adjustCaseOfCodeForKeyboardId(style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_altCode, Keyboard.CODE_UNSPECIFIED), preserveCase,
                 params.mId);
         mHashCode = hashCode(this);
 
         keyAttr.recycle();
+
+        if (hasShiftedLetterHint() && TextUtils.isEmpty(mHintLabel)) {
+            Log.w(TAG, "hasShiftedLetterHint specified without keyHintLabel: " + this);
+        }
     }
 
     private static int adjustCaseOfCodeForKeyboardId(int code, boolean preserveCase,
@@ -335,7 +348,8 @@ public class Key {
         if (!Keyboard.isLetterCode(code) || preserveCase) return code;
         final String text = new String(new int[] { code } , 0, 1);
         final String casedText = adjustCaseOfStringForKeyboardId(text, preserveCase, id);
-        return casedText.codePointAt(0);
+        return casedText.codePointCount(0, casedText.length()) == 1
+                ? casedText.codePointAt(0) : Keyboard.CODE_UNSPECIFIED;
     }
 
     private static String adjustCaseOfStringForKeyboardId(String text, boolean preserveCase,
@@ -362,6 +376,7 @@ public class Key {
                 key.mLabel,
                 key.mHintLabel,
                 key.mIconAttrId,
+                key.mBackgroundType,
                 // Key can be distinguishable without the following members.
                 // key.mAltCode,
                 // key.mOutputText,
@@ -370,7 +385,6 @@ public class Key {
                 // key.mIcon,
                 // key.mDisabledIconAttrId,
                 // key.mPreviewIconAttrId,
-                // key.mBackgroundType,
                 // key.mHorizontalGap,
                 // key.mVerticalGap,
                 // key.mVisualInsetLeft,
@@ -388,7 +402,9 @@ public class Key {
                 && o.mHeight == mHeight
                 && o.mCode == mCode
                 && TextUtils.equals(o.mLabel, mLabel)
-                && TextUtils.equals(o.mHintLabel, mHintLabel);
+                && TextUtils.equals(o.mHintLabel, mHintLabel)
+                && o.mIconAttrId != mIconAttrId
+                && o.mBackgroundType != mBackgroundType;
     }
 
     @Override
@@ -399,6 +415,15 @@ public class Key {
     @Override
     public boolean equals(Object o) {
         return o instanceof Key && equals((Key)o);
+    }
+
+    @Override
+    public String toString() {
+        String top = Keyboard.printableCode(mCode);
+        if (mLabel != null && mLabel.length() != 1) {
+            top += "/\"" + mLabel + '"';
+        }
+        return String.format("%s %d,%d", top, mX, mY);
     }
 
     public void markAsLeftEdge(Keyboard.Params params) {
@@ -415,10 +440,6 @@ public class Key {
 
     public void markAsBottomEdge(Keyboard.Params params) {
         mHitBox.bottom = params.mOccupiedHeight + params.mBottomPadding;
-    }
-
-    public boolean isSticky() {
-        return mBackgroundType == BACKGROUND_TYPE_STICKY;
     }
 
     public boolean isSpacer() {
@@ -486,8 +507,8 @@ public class Key {
         return (mLabelFlags & LABEL_FLAGS_HAS_POPUP_HINT) != 0;
     }
 
-    public boolean hasUppercaseLetter() {
-        return (mLabelFlags & LABEL_FLAGS_HAS_UPPERCASE_LETTER) != 0;
+    public boolean hasShiftedLetterHint() {
+        return (mLabelFlags & LABEL_FLAGS_HAS_SHIFTED_LETTER_HINT) != 0;
     }
 
     public boolean hasHintLabel() {
@@ -506,12 +527,8 @@ public class Key {
         return (mLabelFlags & LABEL_FLAGS_AUTO_X_SCALE) != 0;
     }
 
-    public boolean isInactivatedLabel() {
-        return (mLabelFlags & LABEL_FLAGS_INACTIVATED_LABEL) != 0;
-    }
-
-    public boolean isInactivatedUppercaseLetter() {
-        return (mLabelFlags & LABEL_FLAGS_INACTIVATED_UPPERCASE_LETTER) != 0;
+    public boolean isShiftedLetterActivated() {
+        return (mLabelFlags & LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED) != 0;
     }
 
     // TODO: Get rid of this method.
@@ -540,10 +557,6 @@ public class Key {
      */
     public void onReleased() {
         mPressed = false;
-    }
-
-    public void setHighlightOn(boolean highlightOn) {
-        mHighlightOn = highlightOn;
     }
 
     public boolean isEnabled() {
@@ -639,21 +652,17 @@ public class Key {
      * @see android.graphics.drawable.StateListDrawable#setState(int[])
      */
     public int[] getCurrentDrawableState() {
-        final boolean pressed = mPressed;
-
         switch (mBackgroundType) {
         case BACKGROUND_TYPE_FUNCTIONAL:
-            return pressed ? KEY_STATE_FUNCTIONAL_PRESSED : KEY_STATE_FUNCTIONAL_NORMAL;
+            return mPressed ? KEY_STATE_FUNCTIONAL_PRESSED : KEY_STATE_FUNCTIONAL_NORMAL;
         case BACKGROUND_TYPE_ACTION:
-            return pressed ? KEY_STATE_ACTIVE_PRESSED : KEY_STATE_ACTIVE_NORMAL;
-        case BACKGROUND_TYPE_STICKY:
-            if (mHighlightOn) {
-                return pressed ? KEY_STATE_PRESSED_HIGHLIGHT_ON : KEY_STATE_NORMAL_HIGHLIGHT_ON;
-            } else {
-                return pressed ? KEY_STATE_PRESSED_HIGHLIGHT_OFF : KEY_STATE_NORMAL_HIGHLIGHT_OFF;
-            }
+            return mPressed ? KEY_STATE_ACTIVE_PRESSED : KEY_STATE_ACTIVE_NORMAL;
+        case BACKGROUND_TYPE_STICKY_OFF:
+            return mPressed ? KEY_STATE_PRESSED_HIGHLIGHT_OFF : KEY_STATE_NORMAL_HIGHLIGHT_OFF;
+        case BACKGROUND_TYPE_STICKY_ON:
+            return mPressed ? KEY_STATE_PRESSED_HIGHLIGHT_ON : KEY_STATE_NORMAL_HIGHLIGHT_ON;
         default: /* BACKGROUND_TYPE_NORMAL */
-            return pressed ? KEY_STATE_PRESSED : KEY_STATE_NORMAL;
+            return mPressed ? KEY_STATE_PRESSED : KEY_STATE_NORMAL;
         }
     }
 
