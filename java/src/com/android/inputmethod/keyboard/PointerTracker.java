@@ -76,6 +76,8 @@ public class PointerTracker {
         public void startKeyRepeatTimer(long delay, PointerTracker tracker);
         public void startLongPressTimer(long delay, PointerTracker tracker);
         public void cancelLongPressTimer();
+        public void startDoubleTapTimer();
+        public boolean isInDoubleTapTimeout();
         public void cancelKeyTimers();
 
         public static class Adapter implements TimerProxy {
@@ -89,6 +91,10 @@ public class PointerTracker {
             public void startLongPressTimer(long delay, PointerTracker tracker) {}
             @Override
             public void cancelLongPressTimer() {}
+            @Override
+            public void startDoubleTapTimer() {}
+            @Override
+            public boolean isInDoubleTapTimeout() { return false; }
             @Override
             public void cancelKeyTimers() {}
         }

@@ -17,7 +17,6 @@
 package com.android.inputmethod.keyboard.internal;
 
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.internal.KeyboardState.SwitchActions;
 
 public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     public interface Constants {
@@ -51,6 +50,8 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     // Following InputConnection's behavior. Simulating InputType.TYPE_TEXT_FLAG_CAP_WORDS.
     private boolean mAutoCapsState = true;
 
+    private boolean mIsInDoubleTapTimeout;
+
     private final KeyboardState mState = new KeyboardState(this);
 
     public int getLayoutId() {
@@ -72,6 +73,10 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
 
     public void setAutoCapsMode(boolean autoCaps) {
         mAutoCapsMode = autoCaps;
+    }
+
+    public void expireDoubleTapTimeout() {
+        mIsInDoubleTapTimeout = false;
     }
 
     @Override
@@ -112,6 +117,16 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     @Override
     public void requestUpdatingShiftState() {
         mState.onUpdateShiftState(mAutoCapsMode && mAutoCapsState);
+    }
+
+    @Override
+    public void startDoubleTapTimer() {
+        mIsInDoubleTapTimeout = true;
+    }
+
+    @Override
+    public boolean isInDoubleTapTimeout() {
+        return mIsInDoubleTapTimeout;
     }
 
     public void updateShiftState() {

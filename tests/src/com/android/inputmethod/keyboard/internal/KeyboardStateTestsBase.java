@@ -64,9 +64,14 @@ public class KeyboardStateTestsBase extends AndroidTestCase
         assertLayout(afterRotate, mSwitcher.getLayoutId());
     }
 
-    public void pressKey(int code, int afterPress) {
+    private void pressKeyWithoutTimerExpire(int code, int afterPress) {
         mSwitcher.onPressKey(code);
         assertLayout(afterPress, mSwitcher.getLayoutId());
+    }
+
+    public void pressKey(int code, int afterPress) {
+        mSwitcher.expireDoubleTapTimeout();
+        pressKeyWithoutTimerExpire(code, afterPress);
     }
 
     public void releaseKey(int code, int afterRelease) {
@@ -112,8 +117,8 @@ public class KeyboardStateTestsBase extends AndroidTestCase
         assertLayout(afterLongPress, mSwitcher.getLayoutId());
     }
 
-    public void secondTapShiftKey(int afterTap) {
-        mSwitcher.onCodeInput(CODE_CAPSLOCK, SINGLE);
-        assertLayout(afterTap, mSwitcher.getLayoutId());
+    public void secondPressAndReleaseKey(int code, int afterPress, int afterRelease) {
+        pressKeyWithoutTimerExpire(code, afterPress);
+        releaseKey(code, afterRelease);
     }
 }

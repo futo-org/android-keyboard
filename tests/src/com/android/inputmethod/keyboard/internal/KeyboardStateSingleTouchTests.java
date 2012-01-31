@@ -256,18 +256,44 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
     }
 
     // Double tap shift key.
-    // TODO: Move double tap recognizing timer/logic into KeyboardState.
     public void testDoubleTapShift() {
         // First shift key tap.
         pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
         // Second shift key tap.
-        // Double tap recognized in LatinKeyboardView.KeyTimerHandler.
-        secondTapShiftKey(ALPHABET_SHIFT_LOCKED);
+        secondPressAndReleaseKey(CODE_SHIFT, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
 
         // First shift key tap.
         pressAndReleaseKey(CODE_SHIFT, ALPHABET_SHIFT_LOCK_SHIFTED, ALPHABET_UNSHIFTED);
         // Second shift key tap.
-        // Second tap is ignored in LatinKeyboardView.KeyTimerHandler.
+        secondPressAndReleaseKey(CODE_SHIFT, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
+
+        // Press/release shift key, enter alphabet manual shifted.
+        pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+
+        // First shift key tap.
+        pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_UNSHIFTED);
+        // Second shift key tap.
+        secondPressAndReleaseKey(CODE_SHIFT, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
+
+        // First shift key tap.
+        pressAndReleaseKey(CODE_SHIFT, ALPHABET_SHIFT_LOCK_SHIFTED, ALPHABET_UNSHIFTED);
+        // Second shift key tap.
+        secondPressAndReleaseKey(CODE_SHIFT, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
+
+        // Set auto caps mode on.
+        setAutoCapsMode(AUTO_CAPS);
+        // Load keyboard, should be in automatic shifted.
+        loadKeyboard(ALPHABET_AUTOMATIC_SHIFTED);
+
+        // First shift key tap.
+        pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_UNSHIFTED);
+        // Second shift key tap.
+        secondPressAndReleaseKey(CODE_SHIFT, ALPHABET_SHIFT_LOCKED, ALPHABET_SHIFT_LOCKED);
+
+        // First shift key tap.
+        pressAndReleaseKey(CODE_SHIFT, ALPHABET_SHIFT_LOCK_SHIFTED, ALPHABET_UNSHIFTED);
+        // Second shift key tap.
+        secondPressAndReleaseKey(CODE_SHIFT, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
     }
 
     // Update shift state.
