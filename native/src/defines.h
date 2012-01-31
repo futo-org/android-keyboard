@@ -172,6 +172,7 @@ static void prof_out(void) {
 #define NOT_A_COORDINATE -1
 #define EQUIVALENT_CHAR_WITHOUT_DISTANCE_INFO -2
 #define PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO -3
+#define ADDITIONAL_PROXIMITY_CHAR_DISTANCE_INFO -4
 #define NOT_A_INDEX -1
 #define NOT_A_FREQUENCY -1
 
@@ -194,6 +195,7 @@ static void prof_out(void) {
 #define WORDS_WITH_TRANSPOSED_CHARACTERS_DEMOTION_RATE 70
 #define FULL_MATCHED_WORDS_PROMOTION_RATE 120
 #define WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE 90
+#define WORDS_WITH_ADDITIONAL_PROXIMITY_CHARACTER_DEMOTION_RATE 30
 #define WORDS_WITH_MATCH_SKIP_PROMOTION_RATE 105
 #define WORDS_WITH_JUST_ONE_CORRECTION_PROMOTION_RATE 160
 #define CORRECTION_COUNT_RATE_DEMOTION_RATE_BASE 45
@@ -209,6 +211,9 @@ static void prof_out(void) {
 // This must be greater than or equal to MAX_WORD_LENGTH defined in BinaryDictionary.java
 // This is only used for the size of array. Not to be used in c functions.
 #define MAX_WORD_LENGTH_INTERNAL 48
+
+// This must be equal to ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE in KeyDetector.java
+#define ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE 2
 
 // Word limit for sub queues used in WordsPriorityQueuePool.  Sub queues are temporary queues used
 // for better performance.
@@ -240,5 +245,9 @@ static void prof_out(void) {
 
 // The ratio of neutral area radius to sweet spot radius.
 #define NEUTRAL_AREA_RADIUS_RATIO 1.3f
+
+// DEBUG
+#define INPUTLENGTH_FOR_DEBUG -1
+#define MIN_OUTPUT_INDEX_FOR_DEBUG -1
 
 #endif // LATINIME_DEFINES_H

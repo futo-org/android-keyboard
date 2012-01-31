@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import android.text.TextUtils;
-
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -33,7 +31,7 @@ public class WordComposer {
     public static final int NOT_A_CODE = KeyDetector.NOT_A_CODE;
     public static final int NOT_A_COORDINATE = -1;
 
-    final int N = BinaryDictionary.MAX_WORD_LENGTH;
+    final static int N = BinaryDictionary.MAX_WORD_LENGTH;
 
     private ArrayList<int[]> mCodes;
     private int[] mXCoordinates;

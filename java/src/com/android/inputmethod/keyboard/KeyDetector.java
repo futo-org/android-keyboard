@@ -19,12 +19,14 @@ package com.android.inputmethod.keyboard;
 import android.util.Log;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class KeyDetector {
     private static final String TAG = KeyDetector.class.getSimpleName();
     private static final boolean DEBUG = false;
 
     public static final int NOT_A_CODE = -1;
+    private static final int ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE = 2;
 
     private final int mKeyHysteresisDistanceSquared;
 
@@ -154,8 +156,9 @@ public class KeyDetector {
         return distances.length;
     }
 
-    private void getNearbyKeyCodes(final int[] allCodes) {
+    private void getNearbyKeyCodes(final int primaryCode, final int[] allCodes) {
         final Key[] neighborKeys = mNeighborKeys;
+        final int maxCodesSize = allCodes.length;
 
         // allCodes[0] should always have the key code even if it is a non-letter key.
         if (neighborKeys[0] == null) {
@@ -164,7 +167,7 @@ public class KeyDetector {
         }
 
         int numCodes = 0;
-        for (int j = 0; j < neighborKeys.length && numCodes < allCodes.length; j++) {
+        for (int j = 0; j < neighborKeys.length && numCodes < maxCodesSize; j++) {
             final Key key = neighborKeys[j];
             if (key == null)
                 break;
@@ -173,6 +176,38 @@ public class KeyDetector {
             if (code < Keyboard.CODE_SPACE)
                 continue;
             allCodes[numCodes++] = code;
+        }
+        if (maxCodesSize <= numCodes) {
+            return;
+        }
+        if (primaryCode != NOT_A_CODE) {
+            final List<Integer> additionalChars =
+                    mKeyboard.getAdditionalProximityChars().get(primaryCode);
+            if (additionalChars == null || additionalChars.size() == 0) {
+                return;
+            }
+            int currentCodesSize = numCodes;
+            allCodes[numCodes++] = ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE;
+            if (maxCodesSize <= numCodes) {
+                return;
+            }
+            // TODO: This is O(N^2). Assuming additionalChars.size() is up to 4 or 5.
+            for (int i = 0; i < additionalChars.size(); ++i) {
+                final int additionalChar = additionalChars.get(i);
+                boolean contains = false;
+                for (int j = 0; j < currentCodesSize; ++j) {
+                    if (additionalChar == allCodes[j]) {
+                        contains = true;
+                        break;
+                    }
+                }
+                if (!contains) {
+                    allCodes[numCodes++] = additionalChar;
+                    if (maxCodesSize <= numCodes) {
+                        return;
+                    }
+                }
+            }
         }
     }
 
@@ -205,7 +240,7 @@ public class KeyDetector {
         }
 
         if (allCodes != null && allCodes.length > 0) {
-            getNearbyKeyCodes(allCodes);
+            getNearbyKeyCodes(primaryKey != null ? primaryKey.mCode : NOT_A_CODE, allCodes);
             if (DEBUG) {
                 Log.d(TAG, "x=" + x + " y=" + y
                         + " primary=" + printableCode(primaryKey)
