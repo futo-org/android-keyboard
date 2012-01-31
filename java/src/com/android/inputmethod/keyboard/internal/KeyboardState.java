@@ -87,14 +87,14 @@ public class KeyboardState {
     static class SavedKeyboardState {
         public boolean mIsValid;
         public boolean mIsAlphabetMode;
-        public boolean mIsShiftLocked;
+        public boolean mIsAlphabetShiftLocked;
         public boolean mIsShifted;
 
         @Override
         public String toString() {
             if (!mIsValid) return "INVALID";
             if (mIsAlphabetMode) {
-                if (mIsShiftLocked) return "ALPHABET_SHIFT_LOCKED";
+                if (mIsAlphabetShiftLocked) return "ALPHABET_SHIFT_LOCKED";
                 return mIsShifted ? "ALPHABET_SHIFTED" : "ALPHABET";
             } else {
                 return mIsShifted ? "SYMBOLS_SHIFTED" : "SYMBOLS";
@@ -124,11 +124,11 @@ public class KeyboardState {
         final SavedKeyboardState state = mSavedKeyboardState;
         state.mIsAlphabetMode = mIsAlphabetMode;
         if (mIsAlphabetMode) {
-            state.mIsShiftLocked = mAlphabetShiftState.isShiftLocked();
-            state.mIsShifted = !state.mIsShiftLocked
+            state.mIsAlphabetShiftLocked = mAlphabetShiftState.isShiftLocked();
+            state.mIsShifted = !state.mIsAlphabetShiftLocked
                     && mAlphabetShiftState.isShiftedOrShiftLocked();
         } else {
-            state.mIsShiftLocked = false;
+            state.mIsAlphabetShiftLocked = mPrevMainKeyboardWasShiftLocked;
             state.mIsShifted = mIsSymbolShifted;
         }
         state.mIsValid = true;
@@ -156,10 +156,12 @@ public class KeyboardState {
         state.mIsValid = false;
 
         if (state.mIsAlphabetMode) {
-            setShiftLocked(state.mIsShiftLocked);
-            if (!state.mIsShiftLocked) {
+            setShiftLocked(state.mIsAlphabetShiftLocked);
+            if (!state.mIsAlphabetShiftLocked) {
                 setShifted(state.mIsShifted ? MANUAL_SHIFT : UNSHIFT);
             }
+        } else {
+            mPrevMainKeyboardWasShiftLocked = state.mIsAlphabetShiftLocked;
         }
     }
 
