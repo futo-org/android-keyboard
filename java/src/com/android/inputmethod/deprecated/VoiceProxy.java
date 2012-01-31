@@ -16,23 +16,6 @@
 
 package com.android.inputmethod.deprecated;
 
-import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
-import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
-import com.android.inputmethod.compat.SharedPreferencesCompat;
-import com.android.inputmethod.deprecated.voice.FieldContext;
-import com.android.inputmethod.deprecated.voice.Hints;
-import com.android.inputmethod.deprecated.voice.SettingsUtil;
-import com.android.inputmethod.deprecated.voice.VoiceInput;
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import com.android.inputmethod.latin.EditingUtils;
-import com.android.inputmethod.latin.LatinIME;
-import com.android.inputmethod.latin.LatinIME.UIHandler;
-import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.SubtypeSwitcher;
-import com.android.inputmethod.latin.SuggestedWords;
-import com.android.inputmethod.latin.Utils;
-
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -62,6 +45,24 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.widget.TextView;
+
+import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
+import com.android.inputmethod.compat.SharedPreferencesCompat;
+import com.android.inputmethod.deprecated.voice.FieldContext;
+import com.android.inputmethod.deprecated.voice.Hints;
+import com.android.inputmethod.deprecated.voice.SettingsUtil;
+import com.android.inputmethod.deprecated.voice.VoiceInput;
+import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.keyboard.LatinKeyboardView;
+import com.android.inputmethod.latin.EditingUtils;
+import com.android.inputmethod.latin.LatinIME;
+import com.android.inputmethod.latin.LatinIME.UIHandler;
+import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.SubtypeSwitcher;
+import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -747,8 +748,9 @@ public class VoiceProxy implements VoiceInput.UiListener {
         // keep showing the warning.
         if (mSubtypeSwitcher.isVoiceMode() && windowToken != null) {
             // Close keyboard view if it is been shown.
-            if (KeyboardSwitcher.getInstance().isInputViewShown())
-                KeyboardSwitcher.getInstance().getKeyboardView().purgeKeyboardAndClosing();
+            final LatinKeyboardView keyboardView = KeyboardSwitcher.getInstance().getKeyboardView();
+            if (keyboardView != null && keyboardView.isShown())
+                keyboardView.purgeKeyboardAndClosing();
             startListening(false, windowToken);
         }
         // If we have no token, onAttachedToWindow will take care of showing dialog and start
