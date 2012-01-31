@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
+import com.android.inputmethod.keyboard.KeyboardSet.KeyboardSetException;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
 import com.android.inputmethod.latin.DebugSettings;
@@ -138,11 +139,9 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         mKeyboardSet = builder.build();
         try {
             mState.onLoadKeyboard(mResources.getString(R.string.layout_switch_back_symbols));
-        } catch (RuntimeException e) {
-            Log.w(TAG, "loading keyboard failed: " + mKeyboardSet.getKeyboardId(
-                    KeyboardId.ELEMENT_ALPHABET), e);
-            LatinImeLogger.logOnException(mKeyboardSet.getKeyboardId(
-                    KeyboardId.ELEMENT_ALPHABET).toString(), e);
+        } catch (KeyboardSetException e) {
+            Log.w(TAG, "loading keyboard failed: " + e.mKeyboardId, e.getCause());
+            LatinImeLogger.logOnException(e.mKeyboardId.toString(), e.getCause());
             return;
         }
     }

@@ -21,6 +21,7 @@ import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSet;
 
 import java.io.File;
@@ -35,22 +36,20 @@ public class SuggestHelper {
     public SuggestHelper(Context context, int dictionaryId, KeyboardSet keyboardSet) {
         // Use null as the locale for Suggest so as to force it to use the internal dictionary
         // (and not try to find a dictionary provider for a specified locale)
-        mSuggest = new Suggest(context, dictionaryId, null);
-        mKeyboard = keyboardSet.getMainKeyboard();
-        mKeyDetector = new KeyDetector(0);
-        init();
+        this(new Suggest(context, dictionaryId, null), keyboardSet);
     }
 
     protected SuggestHelper(final Context context, final File dictionaryPath,
             final long startOffset, final long length, final KeyboardSet keyboardSet,
             final Locale locale) {
-        mSuggest = new Suggest(context, dictionaryPath, startOffset, length, null, locale);
-        mKeyboard = keyboardSet.getMainKeyboard();
-        mKeyDetector = new KeyDetector(0);
-        init();
+        this(new Suggest(context, dictionaryPath, startOffset, length, null, locale), keyboardSet);
     }
 
-    private void init() {
+    private SuggestHelper(final Suggest suggest, final KeyboardSet keyboardSet) {
+        mSuggest = suggest;
+        mKeyboard = keyboardSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET);
+        mKeyDetector = new KeyDetector(0);
+
         setCorrectionMode(Suggest.CORRECTION_FULL);
         mKeyDetector.setKeyboard(mKeyboard, 0, 0);
         mKeyDetector.setProximityCorrectionEnabled(true);
