@@ -46,7 +46,7 @@ public class KeyboardId {
     public static final int ELEMENT_SYMBOLS = 5;
     public static final int ELEMENT_SYMBOLS_SHIFTED = 6;
     public static final int ELEMENT_PHONE = 7;
-    public static final int ELEMENT_PHONE_SHIFTED = 8;
+    public static final int ELEMENT_PHONE_SYMBOLS = 8;
     public static final int ELEMENT_NUMBER = 9;
 
     private static final int F2KEY_MODE_NONE = 0;
@@ -145,11 +145,11 @@ public class KeyboardId {
     }
 
     public boolean isPhoneKeyboard() {
-        return mElementId == ELEMENT_PHONE || mElementId == ELEMENT_PHONE_SHIFTED;
+        return mElementId == ELEMENT_PHONE || mElementId == ELEMENT_PHONE_SYMBOLS;
     }
 
     public boolean isPhoneShiftKeyboard() {
-        return mElementId == ELEMENT_PHONE_SHIFTED;
+        return mElementId == ELEMENT_PHONE_SYMBOLS;
     }
 
     public boolean navigateAction() {
@@ -237,7 +237,7 @@ public class KeyboardId {
         case ELEMENT_SYMBOLS: return "symbols";
         case ELEMENT_SYMBOLS_SHIFTED: return "symbolsShifted";
         case ELEMENT_PHONE: return "phone";
-        case ELEMENT_PHONE_SHIFTED: return "phoneShifted";
+        case ELEMENT_PHONE_SYMBOLS: return "phoneSymbols";
         case ELEMENT_NUMBER: return "number";
         default: return null;
         }

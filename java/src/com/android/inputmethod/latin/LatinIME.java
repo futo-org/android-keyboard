@@ -1296,10 +1296,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         case Keyboard.CODE_SETTINGS:
             onSettingsKeyPressed();
             break;
-        case Keyboard.CODE_CAPSLOCK:
-            // Caps lock code is handled in KeyboardSwitcher.onCodeInput() below.
-            hapticAndAudioFeedback(primaryCode);
-            break;
         case Keyboard.CODE_SHORTCUT:
             mSubtypeSwitcher.switchToShortcutIME();
             break;
@@ -2294,25 +2290,20 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         loadSettings();
     }
 
-    private void hapticAndAudioFeedback(int primaryCode) {
+    public void hapticAndAudioFeedback(int primaryCode) {
         vibrate();
         playKeyClick(primaryCode);
     }
 
     @Override
     public void onPressKey(int primaryCode) {
-        final KeyboardSwitcher switcher = mKeyboardSwitcher;
-        if (switcher.isVibrateAndSoundFeedbackRequired()) {
-            hapticAndAudioFeedback(primaryCode);
-        }
-        switcher.onPressKey(primaryCode);
+        mKeyboardSwitcher.onPressKey(primaryCode);
     }
 
     @Override
     public void onReleaseKey(int primaryCode, boolean withSliding) {
         mKeyboardSwitcher.onReleaseKey(primaryCode, withSliding);
     }
-
 
     // receive ringer mode change and network state change.
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {

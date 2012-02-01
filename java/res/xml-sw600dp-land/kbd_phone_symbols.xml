@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2008, The Android Open Source Project
+** Copyright 2011, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -21,8 +21,9 @@
 <Keyboard
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
     latin:keyboardHorizontalEdgesPadding="10%p"
-    latin:keyWidth="26.67%p"
+    latin:keyWidth="15.00%p"
 >
+    <!-- Tablet doesn't have phone symbols keyboard -->
     <include
-        latin:keyboardLayout="@xml/rows_phone_shift" />
+        latin:keyboardLayout="@xml/rows_phone" />
 </Keyboard>

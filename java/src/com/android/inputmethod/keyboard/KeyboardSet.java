@@ -119,9 +119,11 @@ public class KeyboardSet {
         final int keyboardSetElementId;
         switch (mParams.mMode) {
         case KeyboardId.MODE_PHONE:
-            keyboardSetElementId =
-                    (baseKeyboardSetElementId == KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED)
-                    ? KeyboardId.ELEMENT_PHONE_SHIFTED : KeyboardId.ELEMENT_PHONE;
+            if (baseKeyboardSetElementId == KeyboardId.ELEMENT_SYMBOLS) {
+                keyboardSetElementId = KeyboardId.ELEMENT_PHONE_SYMBOLS;
+            } else {
+                keyboardSetElementId = KeyboardId.ELEMENT_PHONE;
+            }
             break;
         case KeyboardId.MODE_NUMBER:
             keyboardSetElementId = KeyboardId.ELEMENT_NUMBER;

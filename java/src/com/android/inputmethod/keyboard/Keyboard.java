@@ -92,7 +92,6 @@ public class Keyboard {
      */
     public static final int CODE_SHIFT = -1;
     public static final int CODE_SWITCH_ALPHA_SYMBOL = -2;
-    public static final int CODE_CAPSLOCK = -3;
     public static final int CODE_OUTPUT_TEXT = -4;
     public static final int CODE_DELETE = -5;
     public static final int CODE_SETTINGS = -6;
@@ -368,9 +367,9 @@ public class Keyboard {
         switch (code) {
         case CODE_SHIFT: return "shift";
         case CODE_SWITCH_ALPHA_SYMBOL: return "symbol";
-        case CODE_CAPSLOCK: return "capslock";
         case CODE_OUTPUT_TEXT: return "text";
         case CODE_DELETE: return "delete";
+        case CODE_SETTINGS: return "settings";
         case CODE_SHORTCUT: return "shortcut";
         case CODE_UNSPECIFIED: return "unspec";
         case CODE_TAB: return "tab";

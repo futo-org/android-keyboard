@@ -249,6 +249,7 @@
             <flag name="isRepeatable" value="0x01" />
             <flag name="noKeyPreview" value="0x02" />
             <flag name="altCodeWhileTyping" value="0x04" />
+            <flag name="enableLongPress" value="0x08" />
         </attr>
         <!-- The string of characters to output when this key is pressed. -->
         <attr name="keyOutputText" format="string" />
@@ -341,7 +342,7 @@
             <enum name="symbols" value="5" />
             <enum name="symbolsShifted" value="6"  />
             <enum name="phone" value="7"  />
-            <enum name="phoneShifted" value="8"  />
+            <enum name="phoneSymbols" value="8"  />
             <enum name="number" value="9"  />
         </attr>
         <!-- This should be aligned with KeyboardId.MODE_* -->
@@ -403,7 +404,7 @@
             <enum name="symbols" value="5" />
             <enum name="symbolsShifted" value="6"  />
             <enum name="phone" value="7"  />
-            <enum name="phoneShifted" value="8"  />
+            <enum name="phoneSymbols" value="8"  />
             <enum name="number" value="9"  />
         </attr>
         <attr name="elementKeyboard" format="reference"/>

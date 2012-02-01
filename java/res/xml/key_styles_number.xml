@@ -45,6 +45,7 @@
         latin:styleName="num0KeyStyle"
         latin:code="48"
         latin:keyLabel="0 +"
+        latin:keyActionFlags="enableLongPress"
         latin:parentStyle="numberKeyStyle" />
     <key-style
         latin:styleName="num1KeyStyle"
@@ -95,14 +96,15 @@
         latin:code="42"
         latin:keyLabel="\uff0a"
         latin:parentStyle="numKeyStyle" />
+    <!-- Only for non-tablet device -->
     <key-style
-        latin:styleName="numSwitchToAltKeyStyle"
-        latin:code="@integer/key_shift"
+        latin:styleName="numPhoneToSymbolKeyStyle"
+        latin:code="@integer/key_switch_alpha_symbol"
         latin:keyLabel="@string/label_to_phone_symbols_key"
         latin:parentStyle="numModeKeyStyle" />
     <key-style
-        latin:styleName="numSwitchToNumericKeyStyle"
-        latin:code="@integer/key_shift"
+        latin:styleName="numPhoneToNumericKeyStyle"
+        latin:code="@integer/key_switch_alpha_symbol"
         latin:keyLabel="@string/label_to_phone_numeric_key"
         latin:parentStyle="numModeKeyStyle" />
     <key-style
@@ -125,5 +127,6 @@
         latin:styleName="numSpaceKeyStyle"
         latin:code="@integer/key_space"
         latin:keyIcon="iconSpaceKeyForNumberLayout"
+        latin:keyActionFlags="enableLongPress"
         latin:parentStyle="numKeyBaseStyle" />
 </merge>

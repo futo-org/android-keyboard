@@ -62,7 +62,7 @@
     </Row>
     <Row>
         <Key
-            latin:keyStyle="numSwitchToAltKeyStyle" />
+            latin:keyStyle="numPhoneToSymbolKeyStyle" />
         <Key
             latin:keyStyle="num0KeyStyle" />
         <Key

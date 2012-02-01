@@ -117,12 +117,12 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         private static final int MSG_DOUBLE_TAP = 3;
         private static final int MSG_KEY_TYPED = 4;
 
-        private final int mKeyRepeatInterval;
+        private final KeyTimerParams mParams;
         private boolean mInKeyRepeat;
 
-        public KeyTimerHandler(LatinKeyboardView outerInstance, int keyRepeatInterval) {
+        public KeyTimerHandler(LatinKeyboardView outerInstance, KeyTimerParams params) {
             super(outerInstance);
-            mKeyRepeatInterval = keyRepeatInterval;
+            mParams = params;
         }
 
         @Override
@@ -132,18 +132,23 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             switch (msg.what) {
             case MSG_REPEAT_KEY:
                 tracker.onRepeatKey(tracker.getKey());
-                startKeyRepeatTimer(mKeyRepeatInterval, tracker);
+                startKeyRepeatTimer(tracker);
                 break;
             case MSG_LONGPRESS_KEY:
-                keyboardView.openMiniKeyboardIfRequired(tracker.getKey(), tracker);
+                if (tracker != null) {
+                    keyboardView.openMiniKeyboardIfRequired(tracker.getKey(), tracker);
+                } else {
+                    KeyboardSwitcher.getInstance().onLongPressTimeout(msg.arg1);
+                }
                 break;
             }
         }
 
         @Override
-        public void startKeyRepeatTimer(long delay, PointerTracker tracker) {
+        public void startKeyRepeatTimer(PointerTracker tracker) {
             mInKeyRepeat = true;
-            sendMessageDelayed(obtainMessage(MSG_REPEAT_KEY, tracker), delay);
+            sendMessageDelayed(obtainMessage(MSG_REPEAT_KEY, tracker),
+                    mParams.mKeyRepeatStartTimeout);
         }
 
         public void cancelKeyRepeatTimer() {
@@ -156,9 +161,49 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
 
         @Override
-        public void startLongPressTimer(long delay, PointerTracker tracker) {
+        public void startLongPressTimer(int code) {
             cancelLongPressTimer();
-            sendMessageDelayed(obtainMessage(MSG_LONGPRESS_KEY, tracker), delay);
+            final int delay;
+            switch (code) {
+            case Keyboard.CODE_SHIFT:
+                delay = mParams.mLongPressKeyTimeout;
+                break;
+            default:
+                delay = 0;
+                break;
+            }
+            if (delay > 0) {
+                sendMessageDelayed(obtainMessage(MSG_LONGPRESS_KEY, code, 0), delay);
+            }
+        }
+
+        @Override
+        public void startLongPressTimer(PointerTracker tracker) {
+            cancelLongPressTimer();
+            if (tracker != null) {
+                final Key key = tracker.getKey();
+                final int delay;
+                switch (key.mCode) {
+                case Keyboard.CODE_SHIFT:
+                    delay = mParams.mLongPressShiftKeyTimeout;
+                    break;
+                case Keyboard.CODE_SPACE:
+                    delay = mParams.mLongPressSpaceKeyTimeout;
+                    break;
+                default:
+                    if (KeyboardSwitcher.getInstance().isInMomentarySwitchState()) {
+                        // We use longer timeout for sliding finger input started from the symbols
+                        // mode key.
+                        delay = mParams.mLongPressKeyTimeout * 3;
+                    } else {
+                        delay = mParams.mLongPressKeyTimeout;
+                    }
+                    break;
+                }
+                if (delay > 0) {
+                    sendMessageDelayed(obtainMessage(MSG_LONGPRESS_KEY, tracker), delay);
+                }
+            }
         }
 
         @Override
@@ -167,9 +212,9 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
 
         @Override
-        public void startKeyTypedTimer(long delay) {
+        public void startKeyTypedTimer() {
             removeMessages(MSG_KEY_TYPED);
-            sendMessageDelayed(obtainMessage(MSG_KEY_TYPED), delay);
+            sendMessageDelayed(obtainMessage(MSG_KEY_TYPED), mParams.mIgnoreSpecialKeyTimeout);
         }
 
         @Override
@@ -201,11 +246,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
     public static class PointerTrackerParams {
         public final boolean mSlidingKeyInputEnabled;
-        public final int mKeyRepeatStartTimeout;
-        public final int mLongPressKeyTimeout;
-        public final int mLongPressShiftKeyTimeout;
-        public final int mLongPressSpaceKeyTimeout;
-        public final int mIgnoreSpecialKeyTimeout;
         public final int mTouchNoiseThresholdTime;
         public final float mTouchNoiseThresholdDistance;
 
@@ -213,11 +253,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         private PointerTrackerParams() {
             mSlidingKeyInputEnabled = false;
-            mKeyRepeatStartTimeout = 0;
-            mLongPressKeyTimeout = 0;
-            mLongPressShiftKeyTimeout = 0;
-            mLongPressSpaceKeyTimeout = 0;
-            mIgnoreSpecialKeyTimeout = 0;
             mTouchNoiseThresholdTime =0;
             mTouchNoiseThresholdDistance = 0;
         }
@@ -225,8 +260,35 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         public PointerTrackerParams(TypedArray latinKeyboardViewAttr) {
             mSlidingKeyInputEnabled = latinKeyboardViewAttr.getBoolean(
                     R.styleable.LatinKeyboardView_slidingKeyInputEnable, false);
+            mTouchNoiseThresholdTime = latinKeyboardViewAttr.getInt(
+                    R.styleable.LatinKeyboardView_touchNoiseThresholdTime, 0);
+            mTouchNoiseThresholdDistance = latinKeyboardViewAttr.getDimension(
+                    R.styleable.LatinKeyboardView_touchNoiseThresholdDistance, 0);
+        }
+    }
+
+    static class KeyTimerParams {
+        public final int mKeyRepeatStartTimeout;
+        public final int mKeyRepeatInterval;
+        public final int mLongPressKeyTimeout;
+        public final int mLongPressShiftKeyTimeout;
+        public final int mLongPressSpaceKeyTimeout;
+        public final int mIgnoreSpecialKeyTimeout;
+
+        KeyTimerParams() {
+            mKeyRepeatStartTimeout = 0;
+            mKeyRepeatInterval = 0;
+            mLongPressKeyTimeout = 0;
+            mLongPressShiftKeyTimeout = 0;
+            mLongPressSpaceKeyTimeout = 0;
+            mIgnoreSpecialKeyTimeout = 0;
+        }
+
+        public KeyTimerParams(TypedArray latinKeyboardViewAttr) {
             mKeyRepeatStartTimeout = latinKeyboardViewAttr.getInt(
                     R.styleable.LatinKeyboardView_keyRepeatStartTimeout, 0);
+            mKeyRepeatInterval = latinKeyboardViewAttr.getInt(
+                    R.styleable.LatinKeyboardView_keyRepeatInterval, 0);
             mLongPressKeyTimeout = latinKeyboardViewAttr.getInt(
                     R.styleable.LatinKeyboardView_longPressKeyTimeout, 0);
             mLongPressShiftKeyTimeout = latinKeyboardViewAttr.getInt(
@@ -235,10 +297,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                     R.styleable.LatinKeyboardView_longPressSpaceKeyTimeout, 0);
             mIgnoreSpecialKeyTimeout = latinKeyboardViewAttr.getInt(
                     R.styleable.LatinKeyboardView_ignoreSpecialKeyTimeout, 0);
-            mTouchNoiseThresholdTime = latinKeyboardViewAttr.getInt(
-                    R.styleable.LatinKeyboardView_touchNoiseThresholdTime, 0);
-            mTouchNoiseThresholdDistance = latinKeyboardViewAttr.getDimension(
-                    R.styleable.LatinKeyboardView_touchNoiseThresholdDistance, 0);
         }
     }
 
@@ -254,7 +312,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         mHasDistinctMultitouch = context.getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT);
 
-        PointerTracker.init(mHasDistinctMultitouch, getContext());
+        PointerTracker.init(mHasDistinctMultitouch);
 
         final TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.LatinKeyboardView, defStyle, R.style.LatinKeyboardView);
@@ -268,16 +326,14 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         mSpacebarTextShadowColor = a.getColor(
                 R.styleable.LatinKeyboardView_spacebarTextShadowColor, 0);
 
+        final KeyTimerParams keyTimerParams = new KeyTimerParams(a);
         mPointerTrackerParams = new PointerTrackerParams(a);
-        mIsSpacebarTriggeringPopupByLongPress = (
-                mPointerTrackerParams.mLongPressSpaceKeyTimeout > 0);
+        mIsSpacebarTriggeringPopupByLongPress = (keyTimerParams.mLongPressSpaceKeyTimeout > 0);
 
         final float keyHysteresisDistance = a.getDimension(
                 R.styleable.LatinKeyboardView_keyHysteresisDistance, 0);
         mKeyDetector = new KeyDetector(keyHysteresisDistance);
-        final int keyRepeatInterval = a.getInt(
-                R.styleable.LatinKeyboardView_keyRepeatInterval, 0);
-        mKeyTimerHandler = new KeyTimerHandler(this, keyRepeatInterval);
+        mKeyTimerHandler = new KeyTimerHandler(this, keyTimerParams);
         mConfigShowMiniKeyboardAtTouchedPoint = a.getBoolean(
                 R.styleable.LatinKeyboardView_showMiniKeyboardAtTouchedPoint, false);
         a.recycle();
@@ -425,12 +481,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             // Long pressing on 0 in phone number keypad gives you a '+'.
             invokeCodeInput(Keyboard.CODE_PLUS);
             invokeReleaseKey(primaryCode);
-            return true;
-        }
-        if (primaryCode == Keyboard.CODE_SHIFT && keyboard.mId.isAlphabetKeyboard()) {
-            tracker.onLongPressed();
-            invokeCodeInput(Keyboard.CODE_CAPSLOCK);
-            invokeReleaseKey(primaryCode);
+            KeyboardSwitcher.getInstance().hapticAndAudioFeedback(primaryCode);
             return true;
         }
         if (primaryCode == Keyboard.CODE_SPACE) {

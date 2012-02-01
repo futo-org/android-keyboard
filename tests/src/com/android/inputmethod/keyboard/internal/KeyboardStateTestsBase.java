@@ -106,15 +106,11 @@ public class KeyboardStateTestsBase extends AndroidTestCase
         assertLayout(afterSlide, mSwitcher.getLayoutId());
     }
 
-    public void longPressShiftKey(int afterPress, int afterLongPress) {
-        // Long press shift key
-        mSwitcher.onPressKey(CODE_SHIFT);
-        assertLayout(afterPress, mSwitcher.getLayoutId());
-        // Long press recognized in LatinKeyboardView.KeyTimerHandler.
-        mSwitcher.onCodeInput(CODE_CAPSLOCK, SINGLE);
+    public void longPressAndReleaseKey(int code, int afterPress, int afterLongPress) {
+        pressKey(code, afterPress);
+        mSwitcher.onLongPressTimeout(code);
         assertLayout(afterLongPress, mSwitcher.getLayoutId());
-        mSwitcher.onReleaseKey(CODE_SHIFT, NOT_SLIDING);
-        assertLayout(afterLongPress, mSwitcher.getLayoutId());
+        releaseKey(code, afterLongPress);
     }
 
     public void secondPressAndReleaseKey(int code, int afterPress, int afterRelease) {

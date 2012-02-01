@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.keyboard;
 
-import android.content.Context;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -71,10 +70,11 @@ public class PointerTracker {
     }
 
     public interface TimerProxy {
-        public void startKeyTypedTimer(long delay);
+        public void startKeyTypedTimer();
         public boolean isTyping();
-        public void startKeyRepeatTimer(long delay, PointerTracker tracker);
-        public void startLongPressTimer(long delay, PointerTracker tracker);
+        public void startKeyRepeatTimer(PointerTracker tracker);
+        public void startLongPressTimer(PointerTracker tracker);
+        public void startLongPressTimer(int code);
         public void cancelLongPressTimer();
         public void startDoubleTapTimer();
         public boolean isInDoubleTapTimeout();
@@ -82,13 +82,15 @@ public class PointerTracker {
 
         public static class Adapter implements TimerProxy {
             @Override
-            public void startKeyTypedTimer(long delay) {}
+            public void startKeyTypedTimer() {}
             @Override
             public boolean isTyping() { return false; }
             @Override
-            public void startKeyRepeatTimer(long delay, PointerTracker tracker) {}
+            public void startKeyRepeatTimer(PointerTracker tracker) {}
             @Override
-            public void startLongPressTimer(long delay, PointerTracker tracker) {}
+            public void startLongPressTimer(PointerTracker tracker) {}
+            @Override
+            public void startLongPressTimer(int code) {}
             @Override
             public void cancelLongPressTimer() {}
             @Override
@@ -159,7 +161,7 @@ public class PointerTracker {
     private static final KeyboardActionListener EMPTY_LISTENER =
             new KeyboardActionListener.Adapter();
 
-    public static void init(boolean hasDistinctMultitouch, Context context) {
+    public static void init(boolean hasDistinctMultitouch) {
         if (hasDistinctMultitouch) {
             sPointerTrackerQueue = new PointerTrackerQueue();
         } else {
@@ -269,7 +271,7 @@ public class PointerTracker {
                 mListener.onCodeInput(code, keyCodes, x, y);
             }
             if (!key.altCodeWhileTyping() && !key.isModifier()) {
-                mTimerProxy.startKeyTypedTimer(sParams.mIgnoreSpecialKeyTimeout);
+                mTimerProxy.startKeyTypedTimer();
             }
         }
     }
@@ -674,7 +676,7 @@ public class PointerTracker {
     private void startRepeatKey(Key key) {
         if (key != null && key.isRepeatable()) {
             onRepeatKey(key);
-            mTimerProxy.startKeyRepeatTimer(sParams.mKeyRepeatStartTimeout, this);
+            mTimerProxy.startKeyRepeatTimer(this);
             mIsRepeatableKey = true;
         } else {
             mIsRepeatableKey = false;
@@ -702,24 +704,8 @@ public class PointerTracker {
     }
 
     private void startLongPressTimer(Key key) {
-        if (key == null) return;
-        if (key.mCode == Keyboard.CODE_SHIFT) {
-            if (sParams.mLongPressShiftKeyTimeout > 0) {
-                mTimerProxy.startLongPressTimer(sParams.mLongPressShiftKeyTimeout, this);
-            }
-        } else if (key.mCode == Keyboard.CODE_SPACE) {
-            if (sParams.mLongPressSpaceKeyTimeout > 0) {
-                mTimerProxy.startLongPressTimer(sParams.mLongPressSpaceKeyTimeout, this);
-            }
-        } else if (key.hasShiftedLetterHint() && mKeyboard.isManualShifted()) {
-            // We need not start long press timer on the key which has manual temporary upper case
-            // code defined and the keyboard is in manual temporary upper case mode.
-            return;
-        } else if (sKeyboardSwitcher.isInMomentarySwitchState()) {
-            // We use longer timeout for sliding finger input started from the symbols mode key.
-            mTimerProxy.startLongPressTimer(sParams.mLongPressKeyTimeout * 3, this);
-        } else {
-            mTimerProxy.startLongPressTimer(sParams.mLongPressKeyTimeout, this);
+        if (key != null && key.isLongPressEnabled()) {
+            mTimerProxy.startLongPressTimer(this);
         }
     }
 
