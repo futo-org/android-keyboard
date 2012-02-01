@@ -63,7 +63,6 @@ public class KeyCodeDescriptionMapper {
         mKeyCodeMap.put(Keyboard.CODE_ENTER, R.string.spoken_description_return);
         mKeyCodeMap.put(Keyboard.CODE_SETTINGS, R.string.spoken_description_settings);
         mKeyCodeMap.put(Keyboard.CODE_SHIFT, R.string.spoken_description_shift);
-        mKeyCodeMap.put(Keyboard.CODE_CAPSLOCK, R.string.spoken_description_caps_lock);
         mKeyCodeMap.put(Keyboard.CODE_SHORTCUT, R.string.spoken_description_mic);
         mKeyCodeMap.put(Keyboard.CODE_SWITCH_ALPHA_SYMBOL, R.string.spoken_description_to_symbol);
         mKeyCodeMap.put(Keyboard.CODE_TAB, R.string.spoken_description_tab);
