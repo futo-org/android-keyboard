@@ -310,6 +310,14 @@
         <item>help</item>
 
         <item>255</item>
+        <item>hoe</item>
+        <item>how</item>
+
+        <item>255</item>
+        <item>hoes</item>
+        <item>how's</item>
+
+        <item>255</item>
         <item>howd</item>
         <item>how\'d</item>
 
@@ -402,6 +410,10 @@
         <item>ma\'am</item>
 
         <item>255</item>
+        <item>mire</item>
+        <item>more</item>
+
+        <item>255</item>
         <item>mkae</item>
         <item>make</item>
 
@@ -444,6 +456,10 @@
         <item>255</item>
         <item>oneof</item>
         <item>one of</item>
+
+        <item>255</item>
+        <item>os</item>
+        <item>is</item>
 
         <item>255</item>
         <item>otehr</item>
@@ -522,6 +538,10 @@
         <item>should\'ve</item>
 
         <item>255</item>
+        <item>sone</item>
+        <item>some</item>
+
+        <item>255</item>
         <item>sunday</item>
         <item>Sunday</item>
 
@@ -586,6 +606,10 @@
         <item>Thursday</item>
 
         <item>255</item>
+        <item>tine</item>
+        <item>time</item>
+
+        <item>255</item>
         <item>tothe</item>
         <item>to the</item>
 
@@ -593,6 +617,20 @@
         <item>tuesday</item>
         <item>Tuesday</item>
 
+        <!-- through additional proximity, 'uf' becomes 'of'. 'o' is not next to 'u' so anyone
+             typing 'uf' probably meant 'if', but 'of' is much more common and should be left
+             higher than 'if', hence the need for this entry. -->
+        <item>255</item>
+        <item>uf</item>
+        <item>if</item>
+
+        <!-- 'un' becomes 'UN' because of perfect match ; even if we remove 'UN', then 'un'
+             will become 'on' for the same reason as above. So list this here. -->
+        <item>255</item>
+        <item>un</item>
+        <item>in</item>
+
+        <!-- does it really make any sense to have the following here? -->
         <item>255</item>
         <item>UnitedStates</item>
         <item>United States</item>
