@@ -166,7 +166,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             final int delay;
             switch (code) {
             case Keyboard.CODE_SHIFT:
-                delay = mParams.mLongPressKeyTimeout;
+                delay = mParams.mLongPressShiftKeyTimeout;
                 break;
             default:
                 delay = 0;
