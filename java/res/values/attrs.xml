@@ -202,8 +202,6 @@
         <attr name="verticalGap" format="dimension|fraction" />
         <!-- More keys keyboard layout template -->
         <attr name="moreKeysTemplate" format="reference" />
-        <!-- True if the keyboard is Right-To-Left -->
-        <attr name="isRtlKeyboard" format="boolean" />
         <!-- Icon set for key top and key preview. -->
         <attr name="iconShiftKey" format="reference" />
         <attr name="iconDeleteKey" format="reference" />

@@ -124,9 +124,9 @@
             latin:moreKeys="@string/more_keys_for_n" />
         <Key
             latin:keyLabel="\'"
-            latin:keyLabelFlags="hasShiftedLetterHint"
             latin:keyHintLabel=":"
-            latin:moreKeys=":" />
+            latin:moreKeys=":"
+            latin:keyStyle="hasShiftedLetterHintStyle" />
         <include
             latin:keyboardLayout="@xml/keys_comma_period" />
         <Key

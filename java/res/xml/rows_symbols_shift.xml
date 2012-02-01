@@ -46,11 +46,8 @@
             latin:keyLabel="÷" />
         <Key
             latin:keyLabel="×" />
-        <Key
-            latin:keyLabel="{" />
-        <Key
-            latin:keyLabel="}"
-            latin:keyWidth="fillRight" />
+        <include
+            latin:keyboardLayout="@xml/keys_curly_brackets" />
     </Row>
     <Row
         latin:keyWidth="10%p"
@@ -74,11 +71,8 @@
         <Key
             latin:keyLabel="="
             latin:moreKeys="≠,≈,∞" />
-        <Key
-            latin:keyLabel="[" />
-        <Key
-            latin:keyLabel="]"
-            latin:keyWidth="fillRight" />
+        <include
+            latin:keyboardLayout="@xml/keys_square_brackets" />
     </Row>
     <Row
         latin:keyWidth="10%p"
@@ -98,12 +92,8 @@
             latin:moreKeys="§" />
         <Key
             latin:keyLabel="\\" />
-        <Key
-            latin:keyLabel="&lt;"
-            latin:moreKeys="≤,«,‹" />
-        <Key
-            latin:keyLabel="&gt;"
-            latin:moreKeys="≥,»,›" />
+        <include
+            latin:keyboardLayout="@xml/keys_less_greater" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight"

@@ -36,8 +36,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Class for describing the position and characteristics of a single key in the keyboard.
@@ -129,45 +127,6 @@ public class Key {
     /** Key is enabled and responds on press */
     private boolean mEnabled = true;
 
-    // RTL parenthesis character swapping map.
-    private static final Map<Integer, Integer> sRtlParenthesisMap = new HashMap<Integer, Integer>();
-
-    static {
-        // The all letters need to be mirrored are found at
-        // http://www.unicode.org/Public/6.0.0/ucd/extracted/DerivedBinaryProperties.txt
-        addRtlParenthesisPair('(', ')');
-        addRtlParenthesisPair('[', ']');
-        addRtlParenthesisPair('{', '}');
-        addRtlParenthesisPair('<', '>');
-        // \u00ab: LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
-        // \u00bb: RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
-        addRtlParenthesisPair('\u00ab', '\u00bb');
-        // \u2039: SINGLE LEFT-POINTING ANGLE QUOTATION MARK
-        // \u203a: SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
-        addRtlParenthesisPair('\u2039', '\u203a');
-        // \u2264: LESS-THAN OR EQUAL TO
-        // \u2265: GREATER-THAN OR EQUAL TO
-        addRtlParenthesisPair('\u2264', '\u2265');
-    }
-
-    private static void addRtlParenthesisPair(int left, int right) {
-        sRtlParenthesisMap.put(left, right);
-        sRtlParenthesisMap.put(right, left);
-    }
-
-    public static int getRtlParenthesisCode(int code, boolean isRtl) {
-        if (isRtl && sRtlParenthesisMap.containsKey(code)) {
-            return sRtlParenthesisMap.get(code);
-        } else {
-            return code;
-        }
-    }
-
-    private static int getCode(Resources res, Keyboard.Params params, String moreKeySpec) {
-        return getRtlParenthesisCode(
-                MoreKeySpecParser.getCode(res, moreKeySpec), params.mIsRtlKeyboard);
-    }
-
     private static Drawable getIcon(Keyboard.Params params, String moreKeySpec) {
         final int iconAttrId = MoreKeySpecParser.getIconAttrId(moreKeySpec);
         if (iconAttrId == KeyboardIconsSet.ICON_UNDEFINED) {
@@ -183,7 +142,8 @@ public class Key {
     public Key(Resources res, Keyboard.Params params, String moreKeySpec,
             int x, int y, int width, int height) {
         this(params, MoreKeySpecParser.getLabel(moreKeySpec), null, getIcon(params, moreKeySpec),
-                getCode(res, params, moreKeySpec), MoreKeySpecParser.getOutputText(moreKeySpec),
+                MoreKeySpecParser.getCode(res, moreKeySpec),
+                MoreKeySpecParser.getOutputText(moreKeySpec),
                 x, y, width, height);
     }
 
@@ -311,16 +271,14 @@ public class Key {
         if (code == Keyboard.CODE_UNSPECIFIED && TextUtils.isEmpty(outputText)
                 && !TextUtils.isEmpty(mLabel)) {
             if (mLabel.codePointCount(0, mLabel.length()) == 1) {
-                final int activatedCode;
                 // Use the first letter of the hint label if shiftedLetterActivated flag is
                 // specified.
                 if (hasShiftedLetterHint() && isShiftedLetterActivated()
                         && !TextUtils.isEmpty(mHintLabel)) {
-                    activatedCode = mHintLabel.codePointAt(0);
+                    mCode = mHintLabel.codePointAt(0);
                 } else {
-                    activatedCode = mLabel.codePointAt(0);
+                    mCode = mLabel.codePointAt(0);
                 }
-                mCode = getRtlParenthesisCode(activatedCode, params.mIsRtlKeyboard);
             } else {
                 // In some locale and case, the character might be represented by multiple code
                 // points, such as upper case Eszett of German alphabet.

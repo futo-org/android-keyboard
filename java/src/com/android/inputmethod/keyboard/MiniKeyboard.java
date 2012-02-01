@@ -210,7 +210,6 @@ public class MiniKeyboard extends Keyboard {
             // TODO: Mini keyboard's vertical gap is currently calculated heuristically.
             // Should revise the algorithm.
             mParams.mVerticalGap = parentKeyboard.mVerticalGap / 2;
-            mParams.mIsRtlKeyboard = parentKeyboard.mIsRtlKeyboard;
             mMoreKeys = parentKey.mMoreKeys;
 
             final int previewWidth = view.mKeyPreviewDrawParams.mPreviewBackgroundWidth;
