@@ -77,10 +77,8 @@
         <Key
             latin:keyLabel="±"
             latin:moreKeys="∞" />
-        <Key
-            latin:keyLabel="{" />
-        <Key
-            latin:keyLabel="}" />
+        <include
+            latin:keyboardLayout="@xml/keys_curly_brackets" />
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyXPos="-14.6%p"
@@ -102,10 +100,8 @@
             latin:keyLabel="™" />
         <Key
             latin:keyLabel="℅" />
-        <Key
-            latin:keyLabel="[" />
-        <Key
-            latin:keyLabel="]" />
+        <include
+            latin:keyboardLayout="@xml/keys_square_brackets" />
         <Key
             latin:keyLabel="¡" />
         <Key

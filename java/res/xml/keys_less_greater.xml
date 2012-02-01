@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2011, The Android Open Source Project
+** Copyright 2012, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -18,10 +18,15 @@
 */
 -->
 
-<Keyboard
+<merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-    latin:isRtlKeyboard="true"
 >
-    <include
-        latin:keyboardLayout="@xml/rows_symbols_shift" />
-</Keyboard>
+    <Key
+        latin:keyLabel="&lt;"
+        latin:keyOutputText="@string/output_text_for_less_than"
+        latin:moreKeys="@string/more_keys_for_less_than" />
+    <Key
+        latin:keyLabel="&gt;"
+        latin:keyOutputText="@string/output_text_for_greater_than"
+        latin:moreKeys="@string/more_keys_for_greater_than" />
+</merge>

@@ -130,9 +130,13 @@
         <Key
             latin:keyLabel="n"
             latin:moreKeys="@string/more_keys_for_n" />
+        <!-- TODO: Introduce a flag, such as strinctMoreKeysOrder, to control moreKeys display
+             order more precisely. -->
+        <!-- This key is close enough to right edge, so that the 4-more keys will be displayed in
+             order of "4,3,1,2". See @string/more_keys_for_single_quote -->
         <Key
             latin:keyLabel="\'"
-            latin:moreKeys="‘,’,‚,‛" />
+            latin:moreKeys="\u2018,\u2019,\u201b,\u201a" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight"

@@ -121,9 +121,6 @@ public class Keyboard {
     /** Maximum column for mini keyboard */
     public final int mMaxMiniKeyboardColumn;
 
-    /** True if Right-To-Left keyboard */
-    public final boolean mIsRtlKeyboard;
-
     /** List of keys and icons in this keyboard */
     public final Set<Key> mKeys;
     public final Set<Key> mShiftKeys;
@@ -140,7 +137,6 @@ public class Keyboard {
         mOccupiedWidth = params.mOccupiedWidth;
         mMostCommonKeyHeight = params.mMostCommonKeyHeight;
         mMostCommonKeyWidth = params.mMostCommonKeyWidth;
-        mIsRtlKeyboard = params.mIsRtlKeyboard;
         mMoreKeysTemplate = params.mMoreKeysTemplate;
         mMaxMiniKeyboardColumn = params.mMaxMiniKeyboardColumn;
 
@@ -222,7 +218,6 @@ public class Keyboard {
         public int mHorizontalGap;
         public int mVerticalGap;
 
-        public boolean mIsRtlKeyboard;
         public int mMoreKeysTemplate;
         public int mMaxMiniKeyboardColumn;
 
@@ -739,8 +734,6 @@ public class Keyboard {
                         R.styleable.Keyboard_rowHeight, params.mBaseHeight,
                         params.mBaseHeight / DEFAULT_KEYBOARD_ROWS);
 
-                params.mIsRtlKeyboard = keyboardAttr.getBoolean(
-                        R.styleable.Keyboard_isRtlKeyboard, false);
                 params.mMoreKeysTemplate = keyboardAttr.getResourceId(
                         R.styleable.Keyboard_moreKeysTemplate, 0);
                 params.mMaxMiniKeyboardColumn = keyAttr.getInt(

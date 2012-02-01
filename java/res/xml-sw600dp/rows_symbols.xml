@@ -95,12 +95,8 @@
         <Key
             latin:keyLabel="+"
             latin:moreKeys="@string/more_keys_for_plus" />
-        <Key
-            latin:keyLabel="("
-            latin:moreKeys="[,{,&lt;" />
-        <Key
-            latin:keyLabel=")"
-            latin:moreKeys="],},&gt;" />
+        <include
+            latin:keyboardLayout="@xml/keys_parentheses" />
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyXPos="-14.6%p"
@@ -112,12 +108,8 @@
         <Key
             latin:keyStyle="toMoreSymbolKeyStyle"
             latin:keyWidth="10.0%p" />
-        <Key
-            latin:keyLabel="&lt;"
-            latin:moreKeys="≤,«,‹" />
-        <Key
-            latin:keyLabel="&gt;"
-            latin:moreKeys="≥,»,›" />
+        <include
+            latin:keyboardLayout="@xml/keys_less_greater" />
         <Key
             latin:keyLabel="="
             latin:moreKeys="≠,≈" />
@@ -126,8 +118,7 @@
                 latin:mode="url"
             >
                 <Key
-                    latin:keyLabel="\'"
-                    latin:moreKeys="‘,’,‚,‛" />
+                    latin:keyLabel="\'" />
             </case>
             <default>
                 <Key
@@ -166,11 +157,10 @@
             latin:keyStyle="spaceKeyStyle"
             latin:keyXPos="30.750%p"
             latin:keyWidth="39.750%p" />
-        <!-- Note: DroidSans doesn't have double-high-reversed-quotation '\u201f' glyph. -->
-        <!-- latin:moreKeys="“,”,„,‟,«,»,‘,’,‚,‛" -->
         <Key
             latin:keyLabel="&quot;"
-            latin:moreKeys="“,”,«,»,‘,’,‚,‛" />
+            latin:moreKeys="@string/more_keys_for_tablet_double_quote"
+            latin:maxMoreKeysColumn="4" />
         <Key
             latin:keyLabel="_" />
         <Spacer
