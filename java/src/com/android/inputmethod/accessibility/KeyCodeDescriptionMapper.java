@@ -56,30 +56,7 @@ public class KeyCodeDescriptionMapper {
         mKeyLabelMap.put(":-)", R.string.spoken_description_smiley);
 
         // Symbols that most TTS engines can't speak
-        mKeyCodeMap.put((int) '.', R.string.spoken_description_period);
-        mKeyCodeMap.put((int) ',', R.string.spoken_description_comma);
-        mKeyCodeMap.put((int) '(', R.string.spoken_description_left_parenthesis);
-        mKeyCodeMap.put((int) ')', R.string.spoken_description_right_parenthesis);
-        mKeyCodeMap.put((int) ':', R.string.spoken_description_colon);
-        mKeyCodeMap.put((int) ';', R.string.spoken_description_semicolon);
-        mKeyCodeMap.put((int) '!', R.string.spoken_description_exclamation_mark);
-        mKeyCodeMap.put((int) '?', R.string.spoken_description_question_mark);
-        mKeyCodeMap.put((int) '\"', R.string.spoken_description_double_quote);
-        mKeyCodeMap.put((int) '\'', R.string.spoken_description_single_quote);
-        mKeyCodeMap.put((int) '*', R.string.spoken_description_star);
-        mKeyCodeMap.put((int) '#', R.string.spoken_description_pound);
         mKeyCodeMap.put((int) ' ', R.string.spoken_description_space);
-
-        // Non-ASCII symbols (must use escape codes!)
-        mKeyCodeMap.put((int) '\u2022', R.string.spoken_description_dot);
-        mKeyCodeMap.put((int) '\u221A', R.string.spoken_description_square_root);
-        mKeyCodeMap.put((int) '\u03C0', R.string.spoken_description_pi);
-        mKeyCodeMap.put((int) '\u0394', R.string.spoken_description_delta);
-        mKeyCodeMap.put((int) '\u2122', R.string.spoken_description_trademark);
-        mKeyCodeMap.put((int) '\u2105', R.string.spoken_description_care_of);
-        mKeyCodeMap.put((int) '\u2026', R.string.spoken_description_ellipsis);
-        mKeyCodeMap.put((int) '\u201E', R.string.spoken_description_low_double_quote);
-        mKeyCodeMap.put((int) '\uFF0A', R.string.spoken_description_star);
 
         // Special non-character codes defined in Keyboard
         mKeyCodeMap.put(Keyboard.CODE_DELETE, R.string.spoken_description_delete);
