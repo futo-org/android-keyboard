@@ -29,7 +29,7 @@ import com.android.inputmethod.keyboard.Keyboard;
  * The input events are {@link #onLoadKeyboard(String)}, {@link #onSaveKeyboardState()},
  * {@link #onPressKey(int)}, {@link #onReleaseKey(int, boolean)},
  * {@link #onCodeInput(int, boolean, boolean)}, {@link #onCancelInput(boolean)},
- * {@link #onUpdateShiftState(boolean)}.
+ * {@link #onUpdateShiftState(boolean)}, {@link #onLongPressTimeout(int)}.
  *
  * The actions are {@link SwitchActions}'s methods.
  */
@@ -54,6 +54,8 @@ public class KeyboardState {
 
         public void startDoubleTapTimer();
         public boolean isInDoubleTapTimeout();
+        public void startLongPressTimer(int code);
+        public void hapticAndAudioFeedback(int code);
     }
 
     private final SwitchActions mSwitchActions;
@@ -335,6 +337,24 @@ public class KeyboardState {
         mSymbolKeyState.onRelease();
     }
 
+    public void onLongPressTimeout(int code) {
+        if (DEBUG_EVENT) {
+            Log.d(TAG, "onLongPressTimeout: code=" + Keyboard.printableCode(code) + " " + this);
+        }
+        if (mIsAlphabetMode && code == Keyboard.CODE_SHIFT) {
+            if (mAlphabetShiftState.isShiftLocked()) {
+                setShiftLocked(false);
+                // Shift key is long pressed while shift locked state, we will toggle back to normal
+                // state. And mark as if shift key is released.
+                mShiftKeyState.onRelease();
+            } else {
+                // Shift key is long pressed while shift unloked state.
+                setShiftLocked(true);
+            }
+            mSwitchActions.hapticAndAudioFeedback(code);
+        }
+    }
+
     public void onUpdateShiftState(boolean autoCaps) {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onUpdateShiftState: autoCaps=" + autoCaps + " " + this);
@@ -370,23 +390,27 @@ public class KeyboardState {
                     // Shift key has been double tapped while in normal state. This is the second
                     // tap to disable shift locked state, so just ignore this.
                 }
-            } else if (mAlphabetShiftState.isShiftLocked()) {
-                // Shift key is pressed while shift locked state, we will treat this state as
-                // shift lock shifted state and mark as if shift key pressed while normal state.
-                setShifted(SHIFT_LOCK_SHIFTED);
-                mShiftKeyState.onPress();
-            } else if (mAlphabetShiftState.isAutomaticShifted()) {
-                // Shift key is pressed while automatic shifted, we have to move to manual shifted.
-                setShifted(MANUAL_SHIFT);
-                mShiftKeyState.onPress();
-            } else if (mAlphabetShiftState.isShiftedOrShiftLocked()) {
-                // In manual shifted state, we just record shift key has been pressing while
-                // shifted state.
-                mShiftKeyState.onPressOnShifted();
             } else {
-                // In base layout, chording or manual shifted mode is started.
-                setShifted(MANUAL_SHIFT);
-                mShiftKeyState.onPress();
+                if (mAlphabetShiftState.isShiftLocked()) {
+                    // Shift key is pressed while shift locked state, we will treat this state as
+                    // shift lock shifted state and mark as if shift key pressed while normal state.
+                    setShifted(SHIFT_LOCK_SHIFTED);
+                    mShiftKeyState.onPress();
+                } else if (mAlphabetShiftState.isAutomaticShifted()) {
+                    // Shift key is pressed while automatic shifted, we have to move to manual
+                    // shifted.
+                    setShifted(MANUAL_SHIFT);
+                    mShiftKeyState.onPress();
+                } else if (mAlphabetShiftState.isShiftedOrShiftLocked()) {
+                    // In manual shifted state, we just record shift key has been pressing while
+                    // shifted state.
+                    mShiftKeyState.onPressOnShifted();
+                } else {
+                    // In base layout, chording or manual shifted mode is started.
+                    setShifted(MANUAL_SHIFT);
+                    mShiftKeyState.onPress();
+                }
+                mSwitchActions.startLongPressTimer(Keyboard.CODE_SHIFT);
             }
         } else {
             // In symbol mode, just toggle symbol and symbol more keyboard.
@@ -478,18 +502,6 @@ public class KeyboardState {
             Log.d(TAG, "onCodeInput: code=" + Keyboard.printableCode(code)
                     + " single=" + isSinglePointer
                     + " autoCaps=" + autoCaps + " " + this);
-        }
-
-        if (mIsAlphabetMode && code == Keyboard.CODE_CAPSLOCK) {
-            if (mAlphabetShiftState.isShiftLocked()) {
-                setShiftLocked(false);
-                // Shift key is long pressed while shift locked state, we will toggle back to normal
-                // state. And mark as if shift key is released.
-                mShiftKeyState.onRelease();
-            } else {
-                // Shift key is long pressed while shift unloked state.
-                setShiftLocked(true);
-            }
         }
 
         switch (mSwitchState) {

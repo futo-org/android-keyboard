@@ -31,7 +31,6 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
 
         public static final int CODE_SHIFT = Keyboard.CODE_SHIFT;
         public static final int CODE_SYMBOL = Keyboard.CODE_SWITCH_ALPHA_SYMBOL;
-        public static final int CODE_CAPSLOCK = Keyboard.CODE_CAPSLOCK;
         public static final int CODE_SPACE = Keyboard.CODE_SPACE;
         public static final int CODE_AUTO_CAPS_TRIGGER = Keyboard.CODE_SPACE;
 
@@ -51,6 +50,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     private boolean mAutoCapsState = true;
 
     private boolean mIsInDoubleTapTimeout;
+    private int mLongPressTimeoutCode;
 
     private final KeyboardState mState = new KeyboardState(this);
 
@@ -129,6 +129,24 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         return mIsInDoubleTapTimeout;
     }
 
+    @Override
+    public void startLongPressTimer(int code) {
+        mLongPressTimeoutCode = code;
+    }
+
+    @Override
+    public void hapticAndAudioFeedback(int code) {
+        // Nothing to do.
+    }
+
+    public void onLongPressTimeout(int code) {
+        // TODO: Handle simultaneous long presses.
+        if (mLongPressTimeoutCode == code) {
+            mLongPressTimeoutCode = 0;
+            mState.onLongPressTimeout(code);
+        }
+    }
+
     public void updateShiftState() {
         mState.onUpdateShiftState(mAutoCapsMode && mAutoCapsState);
     }
@@ -147,6 +165,9 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
 
     public void onReleaseKey(int code, boolean withSliding) {
         mState.onReleaseKey(code, withSliding);
+        if (mLongPressTimeoutCode == code) {
+            mLongPressTimeoutCode = 0;
+        }
     }
 
     public void onCodeInput(int code, boolean isSinglePointer) {

@@ -120,6 +120,7 @@ public class Key {
     private static final int ACTION_FLAGS_IS_REPEATABLE = 0x01;
     private static final int ACTION_FLAGS_NO_KEY_PREVIEW = 0x02;
     private static final int ACTION_FLAGS_ALT_CODE_WHILE_TYPING = 0x04;
+    private static final int ACTION_FLAGS_ENABLE_LONG_PRESS = 0x08;
 
     private final int mHashCode;
 
@@ -265,7 +266,6 @@ public class Key {
 
         mBackgroundType = style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_backgroundType, BACKGROUND_TYPE_NORMAL);
-        mActionFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyActionFlags, 0);
 
         final KeyboardIconsSet iconsSet = params.mIconsSet;
         mVisualInsetsLeft = (int) Keyboard.Builder.getDimensionOrFraction(keyAttr,
@@ -282,17 +282,19 @@ public class Key {
 
         mLabelFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags, 0);
         final boolean preserveCase = (mLabelFlags & LABEL_FLAGS_PRESERVE_CASE) != 0;
-
+        int actionFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyActionFlags, 0);
         final String[] additionalMoreKeys = style.getStringArray(
                 keyAttr, R.styleable.Keyboard_Key_additionalMoreKeys);
         final String[] moreKeys = MoreKeySpecParser.insertAddtionalMoreKeys(style.getStringArray(
                 keyAttr, R.styleable.Keyboard_Key_moreKeys), additionalMoreKeys);
         if (moreKeys != null) {
+            actionFlags |= ACTION_FLAGS_ENABLE_LONG_PRESS;
             for (int i = 0; i < moreKeys.length; i++) {
                 moreKeys[i] = adjustCaseOfStringForKeyboardId(
                         moreKeys[i], preserveCase, params.mId);
             }
         }
+        mActionFlags = actionFlags;
         mMoreKeys = moreKeys;
         mMaxMoreKeysColumn = style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_maxMoreKeysColumn, params.mMaxMiniKeyboardColumn);
@@ -420,7 +422,7 @@ public class Key {
     @Override
     public String toString() {
         String top = Keyboard.printableCode(mCode);
-        if (mLabel != null && mLabel.length() != 1) {
+        if (mLabel != null && mLabel.codePointCount(0, mLabel.length()) != 1) {
             top += "/\"" + mLabel + '"';
         }
         return String.format("%s %d,%d", top, mX, mY);
@@ -464,6 +466,12 @@ public class Key {
 
     public boolean altCodeWhileTyping() {
         return (mActionFlags & ACTION_FLAGS_ALT_CODE_WHILE_TYPING) != 0;
+    }
+
+    public boolean isLongPressEnabled() {
+        // We need not start long press timer on the key which has activated shifted letter.
+        return (mActionFlags & ACTION_FLAGS_ENABLE_LONG_PRESS) != 0
+                && (mLabelFlags & LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED) == 0;
     }
 
     public Typeface selectTypeface(Typeface defaultTypeface) {

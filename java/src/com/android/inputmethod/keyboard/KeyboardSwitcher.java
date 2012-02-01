@@ -194,6 +194,9 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     }
 
     public void onPressKey(int code) {
+        if (isVibrateAndSoundFeedbackRequired()) {
+            mInputMethodService.hapticAndAudioFeedback(code);
+        }
         mState.onPressKey(code);
     }
 
@@ -271,11 +274,31 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
                 ? keyboardView.getTimerProxy().isInDoubleTapTimeout() : false;
     }
 
+    // Implements {@link KeyboardState.SwitchActions}.
+    @Override
+    public void startLongPressTimer(int code) {
+        final LatinKeyboardView keyboardView = getKeyboardView();
+        if (keyboardView != null) {
+            final TimerProxy timer = keyboardView.getTimerProxy();
+            timer.startLongPressTimer(code);
+        }
+    }
+
+    // Implements {@link KeyboardState.SwitchActions}.
+    @Override
+    public void hapticAndAudioFeedback(int code) {
+        mInputMethodService.hapticAndAudioFeedback(code);
+    }
+
+    public void onLongPressTimeout(int code) {
+        mState.onLongPressTimeout(code);
+    }
+
     public boolean isInMomentarySwitchState() {
         return mState.isInMomentarySwitchState();
     }
 
-    public boolean isVibrateAndSoundFeedbackRequired() {
+    private boolean isVibrateAndSoundFeedbackRequired() {
         return mKeyboardView != null && !mKeyboardView.isInSlidingKeyInput();
     }
 

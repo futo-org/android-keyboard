@@ -71,7 +71,7 @@
     </Row>
     <Row>
         <Key
-            latin:keyStyle="numSwitchToNumericKeyStyle" />
+            latin:keyStyle="numPhoneToNumericKeyStyle" />
         <Key
             latin:keyLabel="+"
             latin:keyStyle="numKeyStyle" />

@@ -180,7 +180,7 @@
     <key-style
         latin:styleName="spaceKeyStyle"
         latin:code="@integer/key_space"
-        latin:keyActionFlags="noKeyPreview"
+        latin:keyActionFlags="noKeyPreview|enableLongPress"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="shortcutKeyStyle"

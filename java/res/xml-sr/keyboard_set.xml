@@ -34,8 +34,8 @@
         latin:elementName="phone"
         latin:elementKeyboard="@xml/kbd_phone" />
     <Element
-        latin:elementName="phoneShifted"
-        latin:elementKeyboard="@xml/kbd_phone_shift" />
+        latin:elementName="phoneSymbols"
+        latin:elementKeyboard="@xml/kbd_phone_symbols" />
     <Element
         latin:elementName="number"
         latin:elementKeyboard="@xml/kbd_number" />

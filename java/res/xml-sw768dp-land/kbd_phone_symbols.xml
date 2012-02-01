@@ -23,6 +23,7 @@
     latin:keyboardHorizontalEdgesPadding="10%p"
     latin:keyWidth="13.250%p"
 >
+    <!-- Tablet doesn't have phone symbols keyboard -->
     <include
-        latin:keyboardLayout="@xml/rows_phone_shift" />
+        latin:keyboardLayout="@xml/rows_phone" />
 </Keyboard>
