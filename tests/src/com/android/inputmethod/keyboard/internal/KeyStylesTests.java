@@ -20,6 +20,7 @@ import android.content.res.Resources;
 import android.test.AndroidTestCase;
 import android.text.TextUtils;
 
+import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.tests.R;
 
 import java.util.Arrays;
@@ -39,7 +40,7 @@ public class KeyStylesTests extends AndroidTestCase {
     }
 
     private void assertTextArray(String message, String value, String ... expected) {
-        final String actual[] = KeyStyles.parseCsvString(value, mTestResources,
+        final String actual[] = Utils.parseCsvString(value, mTestResources,
                 R.string.empty_string);
         if (expected.length == 0) {
             assertNull(message, actual);

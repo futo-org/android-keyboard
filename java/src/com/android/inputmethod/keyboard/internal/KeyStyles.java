@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.util.Log;
 
@@ -28,7 +27,6 @@ import com.android.inputmethod.latin.XmlParseUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class KeyStyles {
@@ -74,63 +72,8 @@ public class KeyStyles {
         protected static String[] parseStringArray(TypedArray a, int index) {
             if (!a.hasValue(index))
                 return null;
-            return parseCsvString(a.getString(index), a.getResources(), R.string.english_ime_name);
-        }
-    }
-
-    /* package for test */
-    static String[] parseCsvString(String rawText, Resources res, int packageNameResId) {
-        final String text = Utils.resolveStringResource(rawText, res, packageNameResId);
-        final int size = text.length();
-        if (size == 0) {
-            return null;
-        }
-        if (size == 1) {
-            return new String[] { text };
-        }
-
-        final StringBuilder sb = new StringBuilder();
-        ArrayList<String> list = null;
-        int start = 0;
-        for (int pos = 0; pos < size; pos++) {
-            final char c = text.charAt(pos);
-            if (c == ',') {
-                if (list == null) {
-                    list = new ArrayList<String>();
-                }
-                if (sb.length() == 0) {
-                    list.add(text.substring(start, pos));
-                } else {
-                    list.add(sb.toString());
-                    sb.setLength(0);
-                }
-                start = pos + 1;
-                continue;
-            } else if (c == Utils.ESCAPE_CHAR) {
-                if (start == pos) {
-                    // Skip escape character at the beginning of the value.
-                    start++;
-                    pos++;
-                } else {
-                    if (start < pos && sb.length() == 0) {
-                        sb.append(text.subSequence(start, pos));
-                    }
-                    pos++;
-                    if (pos < size) {
-                        sb.append(text.charAt(pos));
-                    }
-                }
-            } else if (sb.length() > 0) {
-                sb.append(c);
-            }
-        }
-        if (list == null) {
-            return new String[] {
-                    sb.length() > 0 ? sb.toString() : text.substring(start)
-            };
-        } else {
-            list.add(sb.length() > 0 ? sb.toString() : text.substring(start));
-            return list.toArray(new String[list.size()]);
+            return Utils.parseCsvString(
+                    a.getString(index), a.getResources(), R.string.english_ime_name);
         }
     }
 
