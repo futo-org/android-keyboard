@@ -25,6 +25,7 @@ import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.VibratorCompatWrapper;
+import com.android.inputmethod.keyboard.internal.MoreKeySpecParser;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -36,8 +37,9 @@ public class SettingsValues {
     public final int mDelayUpdateOldSuggestions;
     public final String mMagicSpaceStrippers;
     public final String mMagicSpaceSwappers;
-    public final String mSuggestPuncs;
+    private final String mSuggestPuncs;
     public final SuggestedWords mSuggestPuncList;
+    public final SuggestedWords mSuggestPuncOutputTextList;
     private final String mSymbolsExcludedFromWordSeparators;
     public final String mWordSeparators;
     public final CharSequence mHintToSaveText;
@@ -98,9 +100,11 @@ public class SettingsValues {
                 }
             }
         }
-        mSuggestPuncs = res.getString(R.string.suggested_punctuations);
-        // TODO: it would be nice not to recreate this each time we change the configuration
-        mSuggestPuncList = createSuggestPuncList(mSuggestPuncs);
+        final String[] suggestPuncsSpec = Utils.parseCsvString(
+                res.getString(R.string.suggested_punctuations), res, R.string.english_ime_name);
+        mSuggestPuncs = createSuggestPuncs(suggestPuncsSpec);
+        mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
+        mSuggestPuncOutputTextList = createSuggestPuncOutputTextList(suggestPuncsSpec);
         mSymbolsExcludedFromWordSeparators =
                 res.getString(R.string.symbols_excluded_from_word_separators);
         mWordSeparators = createWordSeparators(mMagicSpaceStrippers, mMagicSpaceSwappers,
@@ -150,11 +154,36 @@ public class SettingsValues {
     }
 
     // Helper functions to create member values.
-    private static SuggestedWords createSuggestPuncList(final String puncs) {
-        SuggestedWords.Builder builder = new SuggestedWords.Builder();
+    private static String createSuggestPuncs(final String[] puncs) {
+        final StringBuilder sb = new StringBuilder();
         if (puncs != null) {
-            for (int i = 0; i < puncs.length(); i++) {
-                builder.addWord(puncs.subSequence(i, i + 1));
+            for (final String puncSpec : puncs) {
+                sb.append(MoreKeySpecParser.getLabel(puncSpec));
+            }
+        }
+        return sb.toString();
+    }
+
+    private static SuggestedWords createSuggestPuncList(final String[] puncs) {
+        final SuggestedWords.Builder builder = new SuggestedWords.Builder();
+        if (puncs != null) {
+            for (final String puncSpec : puncs) {
+                builder.addWord(MoreKeySpecParser.getLabel(puncSpec));
+            }
+        }
+        return builder.setIsPunctuationSuggestions().build();
+    }
+
+    private static SuggestedWords createSuggestPuncOutputTextList(final String[] puncs) {
+        final SuggestedWords.Builder builder = new SuggestedWords.Builder();
+        if (puncs != null) {
+            for (final String puncSpec : puncs) {
+                final String outputText = MoreKeySpecParser.getOutputText(puncSpec);
+                if (outputText != null) {
+                    builder.addWord(outputText);
+                } else {
+                    builder.addWord(MoreKeySpecParser.getLabel(puncSpec));
+                }
             }
         }
         return builder.setIsPunctuationSuggestions().build();

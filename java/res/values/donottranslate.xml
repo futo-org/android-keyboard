@@ -19,7 +19,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Symbols that are suggested between words -->
-    <string name="suggested_punctuations">!?,:;\u0022()\u0027-/@_</string>
+    <string name="suggested_punctuations">!,?,\\,,:,;,\u0022,(,),\u0027,-,/,@,_</string>
     <!-- Symbols that should be swapped with a magic space -->
     <string name="magic_space_swapping_symbols">.,;:!?)]}\u0022</string>
     <!-- Symbols that should strip a magic space -->

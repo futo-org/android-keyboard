@@ -857,4 +857,59 @@ public class Utils {
         }
         return size;
     }
+
+    public static String[] parseCsvString(String rawText, Resources res, int packageNameResId) {
+        final String text = resolveStringResource(rawText, res, packageNameResId);
+        final int size = text.length();
+        if (size == 0) {
+            return null;
+        }
+        if (size == 1) {
+            return new String[] { text };
+        }
+
+        final StringBuilder sb = new StringBuilder();
+        ArrayList<String> list = null;
+        int start = 0;
+        for (int pos = 0; pos < size; pos++) {
+            final char c = text.charAt(pos);
+            if (c == ',') {
+                if (list == null) {
+                    list = new ArrayList<String>();
+                }
+                if (sb.length() == 0) {
+                    list.add(text.substring(start, pos));
+                } else {
+                    list.add(sb.toString());
+                    sb.setLength(0);
+                }
+                start = pos + 1;
+                continue;
+            } else if (c == ESCAPE_CHAR) {
+                if (start == pos) {
+                    // Skip escape character at the beginning of the value.
+                    start++;
+                    pos++;
+                } else {
+                    if (start < pos && sb.length() == 0) {
+                        sb.append(text.subSequence(start, pos));
+                    }
+                    pos++;
+                    if (pos < size) {
+                        sb.append(text.charAt(pos));
+                    }
+                }
+            } else if (sb.length() > 0) {
+                sb.append(c);
+            }
+        }
+        if (list == null) {
+            return new String[] {
+                    sb.length() > 0 ? sb.toString() : text.substring(start)
+            };
+        } else {
+            list.add(sb.length() > 0 ? sb.toString() : text.substring(start));
+            return list.toArray(new String[list.size()]);
+        }
+    }
 }

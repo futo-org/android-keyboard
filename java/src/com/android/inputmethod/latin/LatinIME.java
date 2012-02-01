@@ -59,7 +59,6 @@ import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.compat.VibratorCompatWrapper;
 import com.android.inputmethod.deprecated.LanguageSwitcherProxy;
 import com.android.inputmethod.deprecated.VoiceProxy;
-import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
@@ -1897,16 +1896,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // So, LatinImeLogger logs "" as a user's input.
             LatinImeLogger.logOnManualSuggestion(
                     "", suggestion.toString(), index, suggestions.mWords);
+            final CharSequence outputText = mSettingsValues.mSuggestPuncOutputTextList
+                    .getWord(index);
+            final int primaryCode = outputText.charAt(0);
             // Find out whether the previous character is a space. If it is, as a special case
             // for punctuation entered through the suggestion strip, it should be swapped
             // if it was a magic or a weak space. This is meant to help in case the user
             // pressed space on purpose of displaying the suggestion strip punctuation.
-            final int rawPrimaryCode = suggestion.charAt(0);
-            // Maybe apply the "bidi mirrored" conversions for parentheses
-            final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
-            final boolean isRtl = keyboard != null && keyboard.mIsRtlKeyboard;
-            final int primaryCode = Key.getRtlParenthesisCode(rawPrimaryCode, isRtl);
-
             insertPunctuationFromSuggestionStrip(ic, primaryCode);
             // TODO: the following endBatchEdit seems useless, check
             if (ic != null) {
