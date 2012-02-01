@@ -181,47 +181,6 @@
     <!-- Spoken description for the "Return" keyboard key. -->
     <string name="spoken_description_return">Return</string>
 
-    <!-- Spoken description for the "," keyboard key. -->
-    <string name="spoken_description_comma">Comma</string>
-    <!-- Spoken description for the "." keyboard key. -->
-    <string name="spoken_description_period">Period</string>
-    <!-- Spoken description for the "(" keyboard key. -->
-    <string name="spoken_description_left_parenthesis">Left parenthesis</string>
-    <!-- Spoken description for the ")" keyboard key. -->
-    <string name="spoken_description_right_parenthesis">Right parenthesis</string>
-    <!-- Spoken description for the ":" keyboard key. -->
-    <string name="spoken_description_colon">Colon</string>
-    <!-- Spoken description for the ";" keyboard key. -->
-    <string name="spoken_description_semicolon">Semicolon</string>
-    <!-- Spoken description for the "!" keyboard key. -->
-    <string name="spoken_description_exclamation_mark">Exclamation mark</string>
-    <!-- Spoken description for the "?" keyboard key. -->
-    <string name="spoken_description_question_mark">Question mark</string>
-    <!-- Spoken description for the """ keyboard key. -->
-    <string name="spoken_description_double_quote">Double quote</string>
-    <!-- Spoken description for the "'" keyboard key. -->
-    <string name="spoken_description_single_quote">Single quote</string>
-    <!-- Spoken description for the "\u2022" (BULLET) keyboard key. -->
-    <string name="spoken_description_dot">Dot</string>
-    <!-- Spoken description for the "\u221a" (SQUARE ROOT) keyboard key. -->
-    <string name="spoken_description_square_root">Square root</string>
-    <!-- Spoken description for the "\u03C0" (GREEK SMALL LETTER PI) keyboard key. -->
-    <string name="spoken_description_pi">Pi</string>
-    <!-- Spoken description for the "\u0394" (GREEK CAPITAL LETTER DELTA) keyboard key. -->
-    <string name="spoken_description_delta">Delta</string>
-    <!-- Spoken description for the "\u2122" (TRADE MARK SIGN) keyboard key. -->
-    <string name="spoken_description_trademark">Trademark</string>
-    <!-- Spoken description for the "\u2105" (CARE OF) keyboard key. -->
-    <string name="spoken_description_care_of">Care of</string>
-    <!-- Spoken description for the "*" keyboard key. -->
-    <string name="spoken_description_star">Star</string>
-    <!-- Spoken description for the "#" keyboard key. -->
-    <string name="spoken_description_pound">Pound</string>
-    <!-- Spoken description for the "\u2026" (HORIZONTAL ELLIPSIS) keyboard key. -->
-    <string name="spoken_description_ellipsis">Ellipsis</string>
-    <!-- Spoken description for the "\u201E" (DOUBLE LOW-9 QUOTATION MARK) keyboard key. -->
-    <string name="spoken_description_low_double_quote">Low double quote</string>
-
     <!-- Voice related labels -->
 
     <!-- Title of the warning dialog that shows when a user initiates voice input for
