@@ -18,7 +18,7 @@ package com.android.inputmethod.keyboard;
 
 import android.graphics.Paint;
 
-import com.android.inputmethod.keyboard.internal.MoreKeySpecParser;
+import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.latin.R;
 
 public class MiniKeyboard extends Keyboard {
@@ -235,7 +235,7 @@ public class MiniKeyboard extends Keyboard {
             Paint paint = null;
             int maxWidth = minKeyWidth;
             for (String moreKeySpec : moreKeys) {
-                final String label = MoreKeySpecParser.getLabel(moreKeySpec);
+                final String label = KeySpecParser.getLabel(moreKeySpec);
                 // If the label is single letter, minKeyWidth is enough to hold the label.
                 if (label != null && label.length() > 1) {
                     if (paint == null) {
