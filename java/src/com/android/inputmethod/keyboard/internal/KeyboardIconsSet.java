@@ -36,8 +36,9 @@ public class KeyboardIconsSet {
     private final Map<Integer, Drawable> mIcons = new HashMap<Integer, Drawable>();
 
     // The key value should be aligned with the enum value of Keyboard.icon*.
-    private static final Map<Integer, Integer> ICONS_TO_ATTRS_MAP = new HashMap<Integer, Integer>();
-    private static final Map<String, Integer> NAME_TO_ATTRS_MAP = new HashMap<String, Integer>();
+    private static final Map<Integer, Integer> ID_TO_ATTR_MAP = new HashMap<Integer, Integer>();
+    private static final Map<String, Integer> NAME_TO_ATTR_MAP = new HashMap<String, Integer>();
+    private static final Map<Integer, String> ATTR_TO_NAME_MAP = new HashMap<Integer, String>();
     private static final Collection<Integer> VALID_ATTRS;
 
     static {
@@ -55,12 +56,13 @@ public class KeyboardIconsSet {
         addIconIdMap(11, "shiftKeyShifted", R.styleable.Keyboard_iconShiftKeyShifted);
         addIconIdMap(12, "disabledShortcurKey", R.styleable.Keyboard_iconDisabledShortcutKey);
         addIconIdMap(13, "previewTabKey", R.styleable.Keyboard_iconPreviewTabKey);
-        VALID_ATTRS = ICONS_TO_ATTRS_MAP.values();
+        VALID_ATTRS = ID_TO_ATTR_MAP.values();
     }
 
     private static void addIconIdMap(int iconId, String name, Integer attrId) {
-        ICONS_TO_ATTRS_MAP.put(iconId, attrId);
-        NAME_TO_ATTRS_MAP.put(name, attrId);
+        ID_TO_ATTR_MAP.put(iconId, attrId);
+        NAME_TO_ATTR_MAP.put(name, attrId);
+        ATTR_TO_NAME_MAP.put(attrId, name);
     }
 
     public void loadIcons(final TypedArray keyboardAttrs) {
@@ -82,7 +84,7 @@ public class KeyboardIconsSet {
         if (iconId == ICON_UNDEFINED) {
             return ATTR_UNDEFINED;
         }
-        final Integer attrId = ICONS_TO_ATTRS_MAP.get(iconId);
+        final Integer attrId = ID_TO_ATTR_MAP.get(iconId);
         if (attrId == null) {
             throw new IllegalArgumentException("icon id is out of range: " + iconId);
         }
@@ -90,11 +92,21 @@ public class KeyboardIconsSet {
     }
 
     public static int getIconAttrId(final String iconName) {
-        final Integer attrId = NAME_TO_ATTRS_MAP.get(iconName);
+        final Integer attrId = NAME_TO_ATTR_MAP.get(iconName);
         if (attrId == null) {
             throw new IllegalArgumentException("unknown icon name: " + iconName);
         }
         return attrId;
+    }
+
+    public static String getIconName(final int attrId) {
+        if (attrId == ATTR_UNDEFINED) {
+            return "null";
+        }
+        if (ATTR_TO_NAME_MAP.containsKey(attrId)) {
+            return ATTR_TO_NAME_MAP.get(attrId);
+        }
+        return String.format("unknown<0x%08x>", attrId);
     }
 
     public Drawable getIconByAttrId(final Integer attrId) {

@@ -57,7 +57,10 @@ public class KeyboardSet {
 
     private final Context mContext;
     private final Params mParams;
-    private final KeysCache mKeysCache = new KeysCache();
+
+    private static final HashMap<KeyboardId, SoftReference<Keyboard>> sKeyboardCache =
+            new HashMap<KeyboardId, SoftReference<Keyboard>>();
+    private static final KeysCache sKeysCache = new KeysCache();
 
     public static class KeyboardSetException extends RuntimeException {
         public final KeyboardId mKeyboardId;
@@ -72,6 +75,10 @@ public class KeyboardSet {
 
         public KeysCache() {
             mMap = new HashMap<Key, Key>();
+        }
+
+        public void clear() {
+            mMap.clear();
         }
 
         public Key get(Key key) {
@@ -103,11 +110,9 @@ public class KeyboardSet {
         Params() {}
     }
 
-    private static final HashMap<KeyboardId, SoftReference<Keyboard>> sKeyboardCache =
-            new HashMap<KeyboardId, SoftReference<Keyboard>>();
-
     public static void clearKeyboardCache() {
         sKeyboardCache.clear();
+        sKeysCache.clear();
     }
 
     private KeyboardSet(Context context, Params params) {
@@ -156,7 +161,7 @@ public class KeyboardSet {
                 final Keyboard.Builder<Keyboard.Params> builder =
                         new Keyboard.Builder<Keyboard.Params>(context, new Keyboard.Params());
                 if (id.isAlphabetKeyboard()) {
-                    builder.setAutoGenerate(mKeysCache);
+                    builder.setAutoGenerate(sKeysCache);
                 }
                 builder.load(keyboardXmlId, id);
                 builder.setTouchPositionCorrectionEnabled(mParams.mTouchPositionCorrectionEnabled);

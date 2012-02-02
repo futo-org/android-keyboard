@@ -364,8 +364,8 @@ public class Key {
                 && o.mCode == mCode
                 && TextUtils.equals(o.mLabel, mLabel)
                 && TextUtils.equals(o.mHintLabel, mHintLabel)
-                && o.mIconAttrId != mIconAttrId
-                && o.mBackgroundType != mBackgroundType;
+                && o.mIconAttrId == mIconAttrId
+                && o.mBackgroundType == mBackgroundType;
     }
 
     @Override
@@ -380,11 +380,20 @@ public class Key {
 
     @Override
     public String toString() {
-        String top = Keyboard.printableCode(mCode);
-        if (Utils.codePointCount(mLabel) != 1) {
-            top += "/\"" + mLabel + '"';
+        return String.format("%s/%s %d,%d %dx%d %s/%s/%s",
+                Keyboard.printableCode(mCode), mLabel, mX, mY, mWidth, mHeight, mHintLabel,
+                KeyboardIconsSet.getIconName(mIconAttrId), backgroundName(mBackgroundType));
+    }
+
+    private static String backgroundName(int backgroundType) {
+        switch (backgroundType) {
+        case BACKGROUND_TYPE_NORMAL: return "normal";
+        case BACKGROUND_TYPE_FUNCTIONAL: return "functional";
+        case BACKGROUND_TYPE_ACTION: return "action";
+        case BACKGROUND_TYPE_STICKY_OFF: return "stickyOff";
+        case BACKGROUND_TYPE_STICKY_ON: return "stickyOn";
+        default: return null;
         }
-        return String.format("%s %d,%d", top, mX, mY);
     }
 
     public void markAsLeftEdge(Keyboard.Params params) {
