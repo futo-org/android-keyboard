@@ -146,46 +146,6 @@
     <skip />
     <!-- no translation found for spoken_description_return (8178083177238315647) -->
     <skip />
-    <!-- no translation found for spoken_description_comma (4970844442999724586) -->
-    <skip />
-    <!-- no translation found for spoken_description_period (5286614628077903945) -->
-    <skip />
-    <!-- no translation found for spoken_description_left_parenthesis (8524822120595052415) -->
-    <skip />
-    <!-- no translation found for spoken_description_right_parenthesis (1085757995851933164) -->
-    <skip />
-    <!-- no translation found for spoken_description_colon (4312420908484277077) -->
-    <skip />
-    <!-- no translation found for spoken_description_semicolon (37737920987155179) -->
-    <skip />
-    <!-- no translation found for spoken_description_exclamation_mark (2625684427460737157) -->
-    <skip />
-    <!-- no translation found for spoken_description_question_mark (7074097784255379666) -->
-    <skip />
-    <!-- no translation found for spoken_description_double_quote (5485320575389905967) -->
-    <skip />
-    <!-- no translation found for spoken_description_single_quote (4451320362665463938) -->
-    <skip />
-    <!-- no translation found for spoken_description_dot (40711082435231673) -->
-    <skip />
-    <!-- no translation found for spoken_description_square_root (190595160284757811) -->
-    <skip />
-    <!-- no translation found for spoken_description_pi (4554418247799952239) -->
-    <skip />
-    <!-- no translation found for spoken_description_delta (3607948313655721579) -->
-    <skip />
-    <!-- no translation found for spoken_description_trademark (475877774077871369) -->
-    <skip />
-    <!-- no translation found for spoken_description_care_of (7492800237237796530) -->
-    <skip />
-    <!-- no translation found for spoken_description_star (1009742725387231977) -->
-    <skip />
-    <!-- no translation found for spoken_description_pound (5530577649206922631) -->
-    <skip />
-    <!-- no translation found for spoken_description_ellipsis (1687670869947652062) -->
-    <skip />
-    <!-- no translation found for spoken_description_low_double_quote (3551394572784840975) -->
-    <skip />
     <string name="voice_warning_title" msgid="4419354150908395008">"Cumonds vocals"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"\"Cumonds vocals en Vossa lingua na vegnan actualmain betg sustegnids, ma la funcziun è disponibla per englais.\""</string>
     <!-- no translation found for voice_warning_may_not_understand (5596289095878251072) -->

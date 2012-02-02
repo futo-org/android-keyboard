@@ -89,26 +89,6 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"Kõnesisend"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Naerunägu"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Tagasi"</string>
-    <string name="spoken_description_comma" msgid="4970844442999724586">"Koma"</string>
-    <string name="spoken_description_period" msgid="5286614628077903945">"Punkt"</string>
-    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"Vasaksulg"</string>
-    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"Paremsulg"</string>
-    <string name="spoken_description_colon" msgid="4312420908484277077">"Koolon"</string>
-    <string name="spoken_description_semicolon" msgid="37737920987155179">"Semikoolon"</string>
-    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"Hüüumärk"</string>
-    <string name="spoken_description_question_mark" msgid="7074097784255379666">"Küsimärk"</string>
-    <string name="spoken_description_double_quote" msgid="5485320575389905967">"Jutumärgid"</string>
-    <string name="spoken_description_single_quote" msgid="4451320362665463938">"Üksikjutumärgid"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"Punkt"</string>
-    <string name="spoken_description_square_root" msgid="190595160284757811">"Ruutjuur"</string>
-    <string name="spoken_description_pi" msgid="4554418247799952239">"Pii"</string>
-    <string name="spoken_description_delta" msgid="3607948313655721579">"Delta"</string>
-    <string name="spoken_description_trademark" msgid="475877774077871369">"Kaubamärk"</string>
-    <string name="spoken_description_care_of" msgid="7492800237237796530">"Vahendaja"</string>
-    <string name="spoken_description_star" msgid="1009742725387231977">"Tärn"</string>
-    <string name="spoken_description_pound" msgid="5530577649206922631">"Nael"</string>
-    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"Kolmikpunkt"</string>
-    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"Alumised jutumärgid"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Kõnesisend"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Kõnesisendit ei toetata praegu teie keeles, kuid see töötab inglise keeles."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Kõnesisend kasutab Google\'i kõnetuvastust. Kehtivad "<a href="http://m.google.com/privacy">"Mobile\'i privaatsuseeskirjad"</a>"."</string>

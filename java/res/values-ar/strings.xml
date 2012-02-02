@@ -89,26 +89,6 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"إدخال صوتي"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"وجه مبتسم"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"رجوع"</string>
-    <string name="spoken_description_comma" msgid="4970844442999724586">"فاصلة"</string>
-    <string name="spoken_description_period" msgid="5286614628077903945">"نقطة"</string>
-    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"قوس أيسر"</string>
-    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"قوس أيمن"</string>
-    <string name="spoken_description_colon" msgid="4312420908484277077">"نقطتان"</string>
-    <string name="spoken_description_semicolon" msgid="37737920987155179">"فاصلة منقوطة"</string>
-    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"علامة التعجب"</string>
-    <string name="spoken_description_question_mark" msgid="7074097784255379666">"علامة استفهام"</string>
-    <string name="spoken_description_double_quote" msgid="5485320575389905967">"علامة الاقتباس المزدوجة"</string>
-    <string name="spoken_description_single_quote" msgid="4451320362665463938">"علامة الاقتباس المفردة"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"نقطة"</string>
-    <string name="spoken_description_square_root" msgid="190595160284757811">"جذر تربيعي"</string>
-    <string name="spoken_description_pi" msgid="4554418247799952239">"باي"</string>
-    <string name="spoken_description_delta" msgid="3607948313655721579">"دلتا"</string>
-    <string name="spoken_description_trademark" msgid="475877774077871369">"علامة تجارية"</string>
-    <string name="spoken_description_care_of" msgid="7492800237237796530">"رعاية"</string>
-    <string name="spoken_description_star" msgid="1009742725387231977">"نجمة"</string>
-    <string name="spoken_description_pound" msgid="5530577649206922631">"جنيه"</string>
-    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"علامة حذف"</string>
-    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"علامة الاقتباس المزدوجة السفلية"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"الإدخال الصوتي"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"الإدخال الصوتي غير معتمد حاليًا للغتك، ولكنه يعمل باللغة الإنجليزية."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"يستخدم الإدخال الصوتي خاصية التعرف على الكلام من Google. تنطبق "<a href="http://m.google.com/privacy">"سياسة خصوصية الجوال"</a>"."</string>

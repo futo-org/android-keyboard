@@ -89,26 +89,6 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"Okungenayo kwezwi"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Ubuso-obumomothekayo"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Buyisela"</string>
-    <string name="spoken_description_comma" msgid="4970844442999724586">"Ikhefu"</string>
-    <string name="spoken_description_period" msgid="5286614628077903945">"Isikhathi"</string>
-    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"ama-parenthesis esobunxele"</string>
-    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"I-parenthesis yesokudla"</string>
-    <string name="spoken_description_colon" msgid="4312420908484277077">"Ikholoni"</string>
-    <string name="spoken_description_semicolon" msgid="37737920987155179">"Ikhefanangqi"</string>
-    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"Uphawu lokumemeza"</string>
-    <string name="spoken_description_question_mark" msgid="7074097784255379666">"Imaki yombuzo."</string>
-    <string name="spoken_description_double_quote" msgid="5485320575389905967">"Ukusho kabili"</string>
-    <string name="spoken_description_single_quote" msgid="4451320362665463938">"Isibizo esisodwa"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"Icashazi"</string>
-    <string name="spoken_description_square_root" msgid="190595160284757811">"Impande yesikwele"</string>
-    <string name="spoken_description_pi" msgid="4554418247799952239">"Pi"</string>
-    <string name="spoken_description_delta" msgid="3607948313655721579">"i-Delta"</string>
-    <string name="spoken_description_trademark" msgid="475877774077871369">"Uphawu lomkhiqizo"</string>
-    <string name="spoken_description_care_of" msgid="7492800237237796530">"Ukunakekela ko"</string>
-    <string name="spoken_description_star" msgid="1009742725387231977">"Inkanyezi"</string>
-    <string name="spoken_description_pound" msgid="5530577649206922631">"Iphawundi"</string>
-    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"Ellipsis"</string>
-    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"Isilinganiso esikabili esiphansi"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Okufakwa ngezwi"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Okufakwa ngezwi akusekelwa olimini lwakho, kodwa kuyasebenza nge-English."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Okufakwayo ngezwi kusebenzisa ukufanisa izwi kwe-Google. "<a href="http://m.google.com/privacy">"Inqubomgomo Yobumfihlo Yefoni"</a>" iyasebenza."</string>

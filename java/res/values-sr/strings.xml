@@ -89,26 +89,6 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"Гласовни унос"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Смајли"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Return"</string>
-    <string name="spoken_description_comma" msgid="4970844442999724586">"Зарез"</string>
-    <string name="spoken_description_period" msgid="5286614628077903945">"Тачка"</string>
-    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"Лева заграда"</string>
-    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"Десна заграда"</string>
-    <string name="spoken_description_colon" msgid="4312420908484277077">"Две тачке"</string>
-    <string name="spoken_description_semicolon" msgid="37737920987155179">"Тачка-зарез"</string>
-    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"Знак узвика"</string>
-    <string name="spoken_description_question_mark" msgid="7074097784255379666">"Знак питања"</string>
-    <string name="spoken_description_double_quote" msgid="5485320575389905967">"Дупли наводник"</string>
-    <string name="spoken_description_single_quote" msgid="4451320362665463938">"Полунаводник"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"Тачка"</string>
-    <string name="spoken_description_square_root" msgid="190595160284757811">"Квадратни корен"</string>
-    <string name="spoken_description_pi" msgid="4554418247799952239">"Пи"</string>
-    <string name="spoken_description_delta" msgid="3607948313655721579">"Делта"</string>
-    <string name="spoken_description_trademark" msgid="475877774077871369">"Жиг"</string>
-    <string name="spoken_description_care_of" msgid="7492800237237796530">"За"</string>
-    <string name="spoken_description_star" msgid="1009742725387231977">"Звездица"</string>
-    <string name="spoken_description_pound" msgid="5530577649206922631">"Фунта"</string>
-    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"Три тачке"</string>
-    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"Отворени доњи наводници"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Гласовни унос"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Гласовни унос тренутно није подржан за ваш језик, али функционише на енглеском."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Гласовни унос користи Google-ову функцију за препознавање гласа. Примењује се "<a href="http://m.google.com/privacy">"политика приватности за мобилне уређаје"</a>"."</string>

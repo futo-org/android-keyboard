@@ -93,26 +93,6 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"ورودی صدا"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"صورت متبسم"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Return"</string>
-    <string name="spoken_description_comma" msgid="4970844442999724586">"کاما"</string>
-    <string name="spoken_description_period" msgid="5286614628077903945">"نقطه"</string>
-    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"پرانتز چپ"</string>
-    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"پرانتز راست"</string>
-    <string name="spoken_description_colon" msgid="4312420908484277077">"دو نقطه"</string>
-    <string name="spoken_description_semicolon" msgid="37737920987155179">"نقطه ویرگول"</string>
-    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"علامت تعجب"</string>
-    <string name="spoken_description_question_mark" msgid="7074097784255379666">"علامت سؤال"</string>
-    <string name="spoken_description_double_quote" msgid="5485320575389905967">"علامت نقل قول"</string>
-    <string name="spoken_description_single_quote" msgid="4451320362665463938">"علامت نقل قول تکی"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"نقطه"</string>
-    <string name="spoken_description_square_root" msgid="190595160284757811">"ریشه دوم"</string>
-    <string name="spoken_description_pi" msgid="4554418247799952239">"پی"</string>
-    <string name="spoken_description_delta" msgid="3607948313655721579">"دلتا"</string>
-    <string name="spoken_description_trademark" msgid="475877774077871369">"علامت تجاری"</string>
-    <string name="spoken_description_care_of" msgid="7492800237237796530">"توسط"</string>
-    <string name="spoken_description_star" msgid="1009742725387231977">"ستاره"</string>
-    <string name="spoken_description_pound" msgid="5530577649206922631">"پوند"</string>
-    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"سه نقطه"</string>
-    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"علامت نقل قول پایین"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"ورودی صوتی"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"ورودی صوتی در حال حاضر برای زبان شما پشتیبانی نمی شود اما برای زبان انگلیسی فعال است."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"ورودی صوتی از تشخیص صدای Google استفاده می کند. "<a href="http://m.google.com/privacy">"خط مشی رازداری Mobile "</a>" اعمال می شود."</string>
