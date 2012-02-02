@@ -89,26 +89,6 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"ध्‍वनि इनपुट"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"मुस्कुराता चेहरा"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"रिटर्न"</string>
-    <string name="spoken_description_comma" msgid="4970844442999724586">"अल्पविराम"</string>
-    <string name="spoken_description_period" msgid="5286614628077903945">"पूर्णविराम"</string>
-    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"बायां कोष्ठक"</string>
-    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"दायां कोष्ठक"</string>
-    <string name="spoken_description_colon" msgid="4312420908484277077">"अपूर्ण विराम"</string>
-    <string name="spoken_description_semicolon" msgid="37737920987155179">"अर्द्धविराम"</string>
-    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"विस्मयादिबोधक चिह्न"</string>
-    <string name="spoken_description_question_mark" msgid="7074097784255379666">"प्रश्नचिह्न"</string>
-    <string name="spoken_description_double_quote" msgid="5485320575389905967">"दोहरा उद्धरण"</string>
-    <string name="spoken_description_single_quote" msgid="4451320362665463938">"एकल उद्धरण"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"बिंदु"</string>
-    <string name="spoken_description_square_root" msgid="190595160284757811">"वर्गमूल"</string>
-    <string name="spoken_description_pi" msgid="4554418247799952239">"पाइ"</string>
-    <string name="spoken_description_delta" msgid="3607948313655721579">"डेल्टा"</string>
-    <string name="spoken_description_trademark" msgid="475877774077871369">"ट्रेडमार्क"</string>
-    <string name="spoken_description_care_of" msgid="7492800237237796530">"संरक्षक"</string>
-    <string name="spoken_description_star" msgid="1009742725387231977">"तारा"</string>
-    <string name="spoken_description_pound" msgid="5530577649206922631">"पाउंड"</string>
-    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"पदलोप चिह्न"</string>
-    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"निम्न दोहरा उद्धरण"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"ध्‍वनि इनपुट"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"ध्‍वनि इनपुट आपकी भाषा के लिए अभी समर्थित नहीं है, पर अंग्रेज़ी में कार्य करता है."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"ध्‍वनि इनपुट Google की वाक् पहचान का उपयोग करता है. "<a href="http://m.google.com/privacy">"मोबाइल गोपनीयता नीति"</a>" लागू होती है."</string>

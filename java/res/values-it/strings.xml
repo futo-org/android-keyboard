@@ -89,26 +89,6 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"Input vocale"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Smile"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Invio"</string>
-    <string name="spoken_description_comma" msgid="4970844442999724586">"Virgola"</string>
-    <string name="spoken_description_period" msgid="5286614628077903945">"Punto"</string>
-    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"Parentesi aperta"</string>
-    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"Parentesi chiusa"</string>
-    <string name="spoken_description_colon" msgid="4312420908484277077">"Due punti"</string>
-    <string name="spoken_description_semicolon" msgid="37737920987155179">"Punto e virgola"</string>
-    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"Punto esclamativo"</string>
-    <string name="spoken_description_question_mark" msgid="7074097784255379666">"Punto interrogativo"</string>
-    <string name="spoken_description_double_quote" msgid="5485320575389905967">"Virgolette doppie"</string>
-    <string name="spoken_description_single_quote" msgid="4451320362665463938">"Virgolette semplici"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"Pallino"</string>
-    <string name="spoken_description_square_root" msgid="190595160284757811">"Radice quadrata"</string>
-    <string name="spoken_description_pi" msgid="4554418247799952239">"Pi greco"</string>
-    <string name="spoken_description_delta" msgid="3607948313655721579">"Delta"</string>
-    <string name="spoken_description_trademark" msgid="475877774077871369">"Marchio commerciale"</string>
-    <string name="spoken_description_care_of" msgid="7492800237237796530">"Presso"</string>
-    <string name="spoken_description_star" msgid="1009742725387231977">"Asterisco"</string>
-    <string name="spoken_description_pound" msgid="5530577649206922631">"Cancelletto"</string>
-    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"Ellissi"</string>
-    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"Virgolette doppie basse"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Comandi vocali"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"I comandi vocali non sono attualmente supportati per la tua lingua ma funzionano in inglese."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"L\'input vocale utilizza il riconoscimento vocale di Google. Sono valide le "<a href="http://m.google.com/privacy">"norme sulla privacy di Google Mobile"</a>"."</string>

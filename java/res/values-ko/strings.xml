@@ -89,26 +89,6 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"음성 입력"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"웃는 얼굴"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"리턴 키"</string>
-    <string name="spoken_description_comma" msgid="4970844442999724586">"쉼표"</string>
-    <string name="spoken_description_period" msgid="5286614628077903945">"마침표"</string>
-    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"왼쪽 괄호"</string>
-    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"오른쪽 괄호"</string>
-    <string name="spoken_description_colon" msgid="4312420908484277077">"콜론"</string>
-    <string name="spoken_description_semicolon" msgid="37737920987155179">"세미콜론"</string>
-    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"느낌표"</string>
-    <string name="spoken_description_question_mark" msgid="7074097784255379666">"물음표"</string>
-    <string name="spoken_description_double_quote" msgid="5485320575389905967">"큰따옴표"</string>
-    <string name="spoken_description_single_quote" msgid="4451320362665463938">"작은따옴표"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"점"</string>
-    <string name="spoken_description_square_root" msgid="190595160284757811">"제곱근"</string>
-    <string name="spoken_description_pi" msgid="4554418247799952239">"파이"</string>
-    <string name="spoken_description_delta" msgid="3607948313655721579">"델타"</string>
-    <string name="spoken_description_trademark" msgid="475877774077871369">"상표(™)"</string>
-    <string name="spoken_description_care_of" msgid="7492800237237796530">"퍼센트 키"</string>
-    <string name="spoken_description_star" msgid="1009742725387231977">"별표"</string>
-    <string name="spoken_description_pound" msgid="5530577649206922631">"파운드"</string>
-    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"생략 부호"</string>
-    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"아래쪽 큰따옴표"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"음성 입력"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"음성 입력은 현재 자국어로 지원되지 않으며 영어로 작동됩니다."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"음성 입력에서는 Google의 음성 인식 기능을 사용합니다. "<a href="http://m.google.com/privacy">"모바일 개인정보취급방침"</a>"이 적용됩니다."</string>

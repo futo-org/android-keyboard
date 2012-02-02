@@ -89,26 +89,6 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"Masukan suara"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Wajah tersenyum"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Kembali"</string>
-    <string name="spoken_description_comma" msgid="4970844442999724586">"Koma"</string>
-    <string name="spoken_description_period" msgid="5286614628077903945">"Titik"</string>
-    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"Kurung tutup"</string>
-    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"Kurung buka"</string>
-    <string name="spoken_description_colon" msgid="4312420908484277077">"Titik Dua"</string>
-    <string name="spoken_description_semicolon" msgid="37737920987155179">"Titik koma"</string>
-    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"Tanda seru"</string>
-    <string name="spoken_description_question_mark" msgid="7074097784255379666">"Tanda tanya"</string>
-    <string name="spoken_description_double_quote" msgid="5485320575389905967">"Tanda petik"</string>
-    <string name="spoken_description_single_quote" msgid="4451320362665463938">"Petik tunggal"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"Titik"</string>
-    <string name="spoken_description_square_root" msgid="190595160284757811">"Akar pangkat dua"</string>
-    <string name="spoken_description_pi" msgid="4554418247799952239">"Pi"</string>
-    <string name="spoken_description_delta" msgid="3607948313655721579">"Delta"</string>
-    <string name="spoken_description_trademark" msgid="475877774077871369">"Merek dagang"</string>
-    <string name="spoken_description_care_of" msgid="7492800237237796530">"Dengan alamat"</string>
-    <string name="spoken_description_star" msgid="1009742725387231977">"Bintang"</string>
-    <string name="spoken_description_pound" msgid="5530577649206922631">"Pon"</string>
-    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"Elipsis"</string>
-    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"Tanda petik bawah"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Masukan suara"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Masukan suara saat ini tidak didukung untuk bahasa Anda, tetapi bekerja dalam Bahasa Inggris."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Masukan suara menggunakan pengenalan ucapan Google. "<a href="http://m.google.com/privacy">"Kebijakan Privasi Seluler"</a>" berlaku."</string>

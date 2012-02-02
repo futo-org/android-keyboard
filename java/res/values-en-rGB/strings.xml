@@ -89,26 +89,6 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"Voice input"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Smiley face"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Return"</string>
-    <string name="spoken_description_comma" msgid="4970844442999724586">"Comma"</string>
-    <string name="spoken_description_period" msgid="5286614628077903945">"Full stop"</string>
-    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"Left parenthesis"</string>
-    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"Right parenthesis"</string>
-    <string name="spoken_description_colon" msgid="4312420908484277077">"Colon"</string>
-    <string name="spoken_description_semicolon" msgid="37737920987155179">"Semi-colon"</string>
-    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"Exclamation mark"</string>
-    <string name="spoken_description_question_mark" msgid="7074097784255379666">"Question mark"</string>
-    <string name="spoken_description_double_quote" msgid="5485320575389905967">"Double quote"</string>
-    <string name="spoken_description_single_quote" msgid="4451320362665463938">"Single quote"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"Dot"</string>
-    <string name="spoken_description_square_root" msgid="190595160284757811">"Square root"</string>
-    <string name="spoken_description_pi" msgid="4554418247799952239">"Pi"</string>
-    <string name="spoken_description_delta" msgid="3607948313655721579">"Delta"</string>
-    <string name="spoken_description_trademark" msgid="475877774077871369">"Trademark"</string>
-    <string name="spoken_description_care_of" msgid="7492800237237796530">"Care of"</string>
-    <string name="spoken_description_star" msgid="1009742725387231977">"Star"</string>
-    <string name="spoken_description_pound" msgid="5530577649206922631">"Pound"</string>
-    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"Ellipsis"</string>
-    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"Low double quote"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Voice input"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Voice input is not currently supported for your language, but does work in English."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Voice input uses Google\'s speech recognition. "<a href="http://m.google.com/privacy">"The Mobile Privacy Policy"</a>" applies."</string>

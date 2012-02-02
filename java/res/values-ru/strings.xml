@@ -89,26 +89,6 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"Голосовой ввод"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Смайлик"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Клавиша \"Ввод\""</string>
-    <string name="spoken_description_comma" msgid="4970844442999724586">"Запятая"</string>
-    <string name="spoken_description_period" msgid="5286614628077903945">"Точка"</string>
-    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"Открывающая скобка"</string>
-    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"Закрывающая скобка"</string>
-    <string name="spoken_description_colon" msgid="4312420908484277077">"Двоеточие"</string>
-    <string name="spoken_description_semicolon" msgid="37737920987155179">"Точка с запятой"</string>
-    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"Восклицательный знак"</string>
-    <string name="spoken_description_question_mark" msgid="7074097784255379666">"Вопросительный знак"</string>
-    <string name="spoken_description_double_quote" msgid="5485320575389905967">"Двойная кавычка"</string>
-    <string name="spoken_description_single_quote" msgid="4451320362665463938">"Одинарные кавычки"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"Точка"</string>
-    <string name="spoken_description_square_root" msgid="190595160284757811">"Квадратный корень"</string>
-    <string name="spoken_description_pi" msgid="4554418247799952239">"Число \"пи\""</string>
-    <string name="spoken_description_delta" msgid="3607948313655721579">"Дельта"</string>
-    <string name="spoken_description_trademark" msgid="475877774077871369">"Товарный знак"</string>
-    <string name="spoken_description_care_of" msgid="7492800237237796530">"Знак процента"</string>
-    <string name="spoken_description_star" msgid="1009742725387231977">"Пометить"</string>
-    <string name="spoken_description_pound" msgid="5530577649206922631">"Английский фунт"</string>
-    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"Многоточие"</string>
-    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"Нижние двойные кавычки"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Голосовой ввод"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"В настоящее время функция голосового ввода не поддерживает ваш язык, но вы можете пользоваться ей на английском."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Голосовой ввод использует алгоритмы распознавания речи Google. Действует "<a href="http://m.google.com/privacy">"политика конфиденциальности для мобильных устройств"</a>"."</string>

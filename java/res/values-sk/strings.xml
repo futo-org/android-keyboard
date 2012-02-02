@@ -89,26 +89,6 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"Hlasový vstup"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Usmiata tvár"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Enter"</string>
-    <string name="spoken_description_comma" msgid="4970844442999724586">"Čiarka"</string>
-    <string name="spoken_description_period" msgid="5286614628077903945">"Bodka"</string>
-    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"Ľavá zátvorka"</string>
-    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"Pravá zátvorka"</string>
-    <string name="spoken_description_colon" msgid="4312420908484277077">"Dvojbodka"</string>
-    <string name="spoken_description_semicolon" msgid="37737920987155179">"Bodkočiarka"</string>
-    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"Výkričník"</string>
-    <string name="spoken_description_question_mark" msgid="7074097784255379666">"Otáznik"</string>
-    <string name="spoken_description_double_quote" msgid="5485320575389905967">"Úvodzovky"</string>
-    <string name="spoken_description_single_quote" msgid="4451320362665463938">"Jednoduché úvodzovky"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"Bodka"</string>
-    <string name="spoken_description_square_root" msgid="190595160284757811">"Odmocnina"</string>
-    <string name="spoken_description_pi" msgid="4554418247799952239">"Pí"</string>
-    <string name="spoken_description_delta" msgid="3607948313655721579">"Delta"</string>
-    <string name="spoken_description_trademark" msgid="475877774077871369">"Trademark"</string>
-    <string name="spoken_description_care_of" msgid="7492800237237796530">"Percento"</string>
-    <string name="spoken_description_star" msgid="1009742725387231977">"Hviezdička"</string>
-    <string name="spoken_description_pound" msgid="5530577649206922631">"Libra"</string>
-    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"Tri bodky"</string>
-    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"Dolné úvodzovky"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Hlasový vstup"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Pre váš jazyk aktuálne nie je hlasový vstup podporovaný, ale funguje v angličtine."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Hlasový vstup používa rozpoznávanie hlasu Google. Na používanie hlasového vstupu sa vzťahujú "<a href="http://m.google.com/privacy">"Pravidlá ochrany osobných údajov pre mobilné služby"</a>"."</string>

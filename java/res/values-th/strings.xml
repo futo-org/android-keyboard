@@ -89,26 +89,6 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"การป้อนข้อมูลด้วยเสียง"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"หน้ายิ้ม"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Return"</string>
-    <string name="spoken_description_comma" msgid="4970844442999724586">"เครื่องหมายจุลภาค"</string>
-    <string name="spoken_description_period" msgid="5286614628077903945">"มหัพภาค"</string>
-    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"วงเล็บซ้าย"</string>
-    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"วงเล็บขวา"</string>
-    <string name="spoken_description_colon" msgid="4312420908484277077">"เครื่องหมายจุดคู่"</string>
-    <string name="spoken_description_semicolon" msgid="37737920987155179">"อัฒภาค"</string>
-    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"อัศเจรีย์"</string>
-    <string name="spoken_description_question_mark" msgid="7074097784255379666">"เครื่องหมายคำถาม"</string>
-    <string name="spoken_description_double_quote" msgid="5485320575389905967">"อัญประกาศ"</string>
-    <string name="spoken_description_single_quote" msgid="4451320362665463938">"เครื่องหมายคำพูดเดี่ยว"</string>
-    <string name="spoken_description_dot" msgid="40711082435231673">"เครื่องหมายจุด"</string>
-    <string name="spoken_description_square_root" msgid="190595160284757811">"รากที่สอง"</string>
-    <string name="spoken_description_pi" msgid="4554418247799952239">"Pi"</string>
-    <string name="spoken_description_delta" msgid="3607948313655721579">"เดลตา"</string>
-    <string name="spoken_description_trademark" msgid="475877774077871369">"เครื่องหมายการค้า"</string>
-    <string name="spoken_description_care_of" msgid="7492800237237796530">"Care of"</string>
-    <string name="spoken_description_star" msgid="1009742725387231977">"ติดดาว"</string>
-    <string name="spoken_description_pound" msgid="5530577649206922631">"ปอนด์"</string>
-    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"จุดไข่ปลา"</string>
-    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"อัญประกาศล่าง"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"การป้อนข้อมูลด้วยเสียง"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"ขณะนี้การป้อนข้อมูลด้วยเสียงยังไม่ได้รับการสนับสนุนในภาษาของคุณ แต่ใช้ได้ในภาษาอังกฤษ"</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"ป้อนข้อมูลด้วยเสียงใช้การจดจำคำพูดของ Google "<a href="http://m.google.com/privacy">" นโยบายส่วนบุคคลของมือถือ"</a>"มีผลบังคับใช้"</string>
