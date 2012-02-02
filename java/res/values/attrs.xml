@@ -281,7 +281,7 @@
         </attr>
         <!-- The icon to display on the key instead of the label. -->
         <attr name="keyIcon" format="enum">
-            <!-- This should be aligned with the KeyboardIcons.ICONS_TO_ATTRS_MAP -->
+            <!-- This should be aligned with the KeyboardIconsSet.ICON_* -->
             <enum name="iconShiftKey" value="1" />
             <enum name="iconDeleteKey" value="2" />
             <enum name="iconSettingsKey" value="3" />
@@ -296,12 +296,12 @@
         </attr>
         <!-- The icon for disabled key -->
         <attr name="keyIconDisabled" format="enum">
-            <!-- This should be aligned with the KeyboardIcons.ICONS_TO_ATTRS_MAP -->
+            <!-- This should be aligned with the KeyboardIconsSet.ICON_* -->
             <enum name="iconDisabledShortcutKey" value="12" />
         </attr>
         <!-- The icon to show in the popup preview. -->
         <attr name="keyIconPreview" format="enum">
-            <!-- This should be aligned with the KeyboardIcons.ICONS_TO_ATTRS_MAP -->
+            <!-- This should be aligned with the KeyboardIconsSet.ICON_* -->
             <enum name="iconPreviewTabKey" value="13" />
         </attr>
         <!-- The key style to specify a set of key attributes defined by <key_style/> -->

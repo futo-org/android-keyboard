@@ -25,6 +25,7 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
+import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
@@ -199,6 +200,21 @@ public class MoreSuggestions extends Keyboard {
             return info;
         }
 
+        private static class Divider extends Key.Spacer {
+            private final Drawable mIcon;
+
+            public Divider(Keyboard.Params params, Drawable icon, int x, int y, int width,
+                    int height) {
+                super(params, x, y, width, height);
+                mIcon = icon;
+            }
+
+            @Override
+            public Drawable getIcon(KeyboardIconsSet iconSet) {
+                return mIcon;
+            }
+        }
+
         @Override
         public MoreSuggestions build() {
             final MoreSuggestionsParam params = mParams;
@@ -210,16 +226,16 @@ public class MoreSuggestions extends Keyboard {
                 final String info = getDebugInfo(mSuggestions, pos);
                 final int index = pos + SUGGESTION_CODE_BASE;
                 final Key key = new Key(
-                        params, word, info, null, index, null, x, y, width,
-                        params.mDefaultRowHeight);
+                        params, word, info, KeyboardIconsSet.ICON_UNDEFINED, index, null, x, y,
+                        width, params.mDefaultRowHeight);
                 params.markAsEdgeKey(key, pos);
                 params.onAddKey(key);
                 final int columnNumber = params.getColumnNumber(pos);
                 final int numColumnInRow = params.getNumColumnInRow(pos);
                 if (columnNumber < numColumnInRow - 1) {
-                    final Key.Spacer spacer = new Key.Spacer(params, params.mDivider, x + width, y,
+                    final Divider divider = new Divider(params, params.mDivider, x + width, y,
                             params.mDividerWidth, params.mDefaultRowHeight);
-                    params.onAddKey(spacer);
+                    params.onAddKey(divider);
                 }
             }
             return new MoreSuggestions(params);
