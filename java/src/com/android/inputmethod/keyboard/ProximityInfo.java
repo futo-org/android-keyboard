@@ -24,6 +24,9 @@ import com.android.inputmethod.latin.spellcheck.SpellCheckerProximityInfo;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class ProximityInfo {
@@ -44,7 +47,8 @@ public class ProximityInfo {
     private final Key[][] mGridNeighbors;
 
     ProximityInfo(int gridWidth, int gridHeight, int minWidth, int height, int keyWidth,
-            int keyHeight, Set<Key> keys, TouchPositionCorrection touchPositionCorrection) {
+            int keyHeight, Set<Key> keys, TouchPositionCorrection touchPositionCorrection,
+            Map<Integer, List<Integer>> additionalProximityChars) {
         mGridWidth = gridWidth;
         mGridHeight = gridHeight;
         mGridSize = mGridWidth * mGridHeight;
@@ -58,20 +62,20 @@ public class ProximityInfo {
             // No proximity required. Keyboard might be mini keyboard.
             return;
         }
-        computeNearestNeighbors(keyWidth, keys, touchPositionCorrection);
+        computeNearestNeighbors(keyWidth, keys, touchPositionCorrection, additionalProximityChars);
     }
 
     public static ProximityInfo createDummyProximityInfo() {
-        return new ProximityInfo(1, 1, 1, 1, 1, 1, Collections.<Key>emptySet(), null);
+        return new ProximityInfo(1, 1, 1, 1, 1, 1, Collections.<Key> emptySet(),
+                null, Collections.<Integer, List<Integer>> emptyMap());
     }
 
     public static ProximityInfo createSpellCheckerProximityInfo(final int[] proximity) {
         final ProximityInfo spellCheckerProximityInfo = createDummyProximityInfo();
         spellCheckerProximityInfo.mNativeProximityInfo =
                 spellCheckerProximityInfo.setProximityInfoNative(
-                        SpellCheckerProximityInfo.ROW_SIZE,
-                        480, 300, 11, 3, proximity,
-                        0, null, null, null, null, null, null, null, null);
+                        SpellCheckerProximityInfo.ROW_SIZE, 480, 300, 11, 3, proximity, 0,
+                        null, null, null, null, null, null, null, null);
         return spellCheckerProximityInfo;
     }
 
@@ -79,11 +83,13 @@ public class ProximityInfo {
     static {
         Utils.loadNativeLibrary();
     }
+
     private native long setProximityInfoNative(int maxProximityCharsSize, int displayWidth,
             int displayHeight, int gridWidth, int gridHeight, int[] proximityCharsArray,
             int keyCount, int[] keyXCoordinates, int[] keyYCoordinates,
             int[] keyWidths, int[] keyHeights, int[] keyCharCodes,
             float[] sweetSpotCenterX, float[] sweetSpotCenterY, float[] sweetSpotRadii);
+
     private native void releaseProximityInfoNative(long nativeProximityInfo);
 
     private final void setProximityInfo(Key[][] gridNeighborKeys, int keyboardWidth,
@@ -138,7 +144,7 @@ public class ProximityInfo {
                     final float radius = touchPositionCorrection.mRadii[row];
                     sweetSpotCenterXs[i] = hitBoxCenterX + x * hitBoxWidth;
                     sweetSpotCenterYs[i] = hitBoxCenterY + y * hitBoxHeight;
-                    sweetSpotRadii[i] = radius * (float)Math.sqrt(
+                    sweetSpotRadii[i] = radius * (float) Math.sqrt(
                             hitBoxWidth * hitBoxWidth + hitBoxHeight * hitBoxHeight);
                 }
             }
@@ -168,7 +174,12 @@ public class ProximityInfo {
     }
 
     private void computeNearestNeighbors(int defaultWidth, Set<Key> keys,
-            TouchPositionCorrection touchPositionCorrection) {
+            TouchPositionCorrection touchPositionCorrection,
+            Map<Integer, List<Integer>> additionalProximityChars) {
+        final Map<Integer, Key> keyCodeMap = new HashMap<Integer, Key>();
+        for (final Key key : keys) {
+            keyCodeMap.put(key.mCode, key);
+        }
         final int thresholdBase = (int) (defaultWidth * SEARCH_DISTANCE);
         final int threshold = thresholdBase * thresholdBase;
         // Round-up so we don't have any pixels outside the grid
@@ -186,6 +197,27 @@ public class ProximityInfo {
                         neighborKeys[count++] = key;
                     }
                 }
+                int currentCodesSize = count;
+                for (int i = 0; i < currentCodesSize; ++i) {
+                    final int c = neighborKeys[i].mCode;
+                    final List<Integer> additionalChars = additionalProximityChars.get(c);
+                    if (additionalChars == null || additionalChars.size() == 0) {
+                        continue;
+                    }
+                    for (int j = 0; j < additionalChars.size(); ++j) {
+                        final int additionalChar = additionalChars.get(j);
+                        boolean contains = false;
+                        for (int k = 0; k < count; ++k) {
+                            if(additionalChar == neighborKeys[k].mCode) {
+                                contains = true;
+                                break;
+                            }
+                        }
+                        if (!contains) {
+                            neighborKeys[count++] = keyCodeMap.get(additionalChar);
+                        }
+                    }
+                }
                 mGridNeighbors[(y / mCellHeight) * mGridWidth + (x / mCellWidth)] =
                         Arrays.copyOfRange(neighborKeys, 0, count);
             }
@@ -199,7 +231,7 @@ public class ProximityInfo {
             return EMPTY_KEY_ARRAY;
         }
         if (x >= 0 && x < mKeyboardMinWidth && y >= 0 && y < mKeyboardHeight) {
-            int index = (y /  mCellHeight) * mGridWidth + (x / mCellWidth);
+            int index = (y / mCellHeight) * mGridWidth + (x / mCellWidth);
             if (index < mGridSize) {
                 return mGridNeighbors[index];
             }

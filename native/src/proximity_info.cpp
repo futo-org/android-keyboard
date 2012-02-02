@@ -261,7 +261,8 @@ ProximityInfo::ProximityType ProximityInfo::getMatchedProximityId(const int inde
 
     // Not an exact nor an accent-alike match: search the list of close keys
     int j = 1;
-    while (j < MAX_PROXIMITY_CHARS_SIZE && currentChars[j] > 0) {
+    while (j < MAX_PROXIMITY_CHARS_SIZE
+            && currentChars[j] > ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE) {
         const bool matched = (currentChars[j] == baseLowerC || currentChars[j] == c);
         if (matched) {
             if (proximityIndex) {
@@ -270,6 +271,21 @@ ProximityInfo::ProximityType ProximityInfo::getMatchedProximityId(const int inde
             return NEAR_PROXIMITY_CHAR;
         }
         ++j;
+    }
+    if (j < MAX_PROXIMITY_CHARS_SIZE
+            && currentChars[j] == ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE) {
+        ++j;
+        while (j < MAX_PROXIMITY_CHARS_SIZE
+                && currentChars[j] > ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE) {
+            const bool matched = (currentChars[j] == baseLowerC || currentChars[j] == c);
+            if (matched) {
+                if (proximityIndex) {
+                    *proximityIndex = j;
+                }
+                return ADDITIONAL_PROXIMITY_CHAR;
+            }
+            ++j;
+        }
     }
 
     // Was not included, signal this as an unrelated character.

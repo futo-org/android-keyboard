@@ -85,7 +85,7 @@ class Correction {
         }
     }
 
-    Correction(const int typedLetterMultiplier, const int fullWordMultiplier);
+            Correction(const int typedLetterMultiplier, const int fullWordMultiplier);
     void initCorrection(
             const ProximityInfo *pi, const int inputLength, const int maxWordLength);
     void initCorrectionState(const int rootPos, const int childCount, const bool traverseAll);

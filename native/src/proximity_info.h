@@ -38,7 +38,9 @@ class ProximityInfo {
         // It is a char located nearby on the keyboard
         NEAR_PROXIMITY_CHAR,
         // It is an unrelated char
-        UNRELATED_CHAR
+        UNRELATED_CHAR,
+        // Additional proximity char which can differ by language.
+        ADDITIONAL_PROXIMITY_CHAR
     } ProximityType;
 
     ProximityInfo(const int maxProximityCharsSize, const int keyboardWidth,
