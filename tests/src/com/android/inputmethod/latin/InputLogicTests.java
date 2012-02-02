@@ -218,4 +218,77 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         assertEquals("auto correct then move curor then backspace",
                 EXPECTED_RESULT, mTextView.getText().toString());
     }
+
+    public void testNoSpaceAfterManualPick() {
+        final String WORD_TO_TYPE = "this";
+        final String EXPECTED_RESULT = WORD_TO_TYPE;
+        type(WORD_TO_TYPE);
+        mLatinIME.pickSuggestionManually(0, WORD_TO_TYPE);
+        assertEquals("no space after manual pick", EXPECTED_RESULT,
+                mTextView.getText().toString());
+    }
+
+    public void testManualPickThenType() {
+        final String WORD1_TO_TYPE = "this";
+        final String WORD2_TO_TYPE = "is";
+        final String EXPECTED_RESULT = "this is";
+        type(WORD1_TO_TYPE);
+        mLatinIME.pickSuggestionManually(0, WORD1_TO_TYPE);
+        type(WORD2_TO_TYPE);
+        assertEquals("manual pick then type", EXPECTED_RESULT, mTextView.getText().toString());
+    }
+
+    public void testManualPickThenSeparator() {
+        final String WORD1_TO_TYPE = "this";
+        final String WORD2_TO_TYPE = "!";
+        final String EXPECTED_RESULT = "this!";
+        type(WORD1_TO_TYPE);
+        mLatinIME.pickSuggestionManually(0, WORD1_TO_TYPE);
+        type(WORD2_TO_TYPE);
+        assertEquals("manual pick then separator", EXPECTED_RESULT, mTextView.getText().toString());
+    }
+
+    public void testWordThenSpaceThenPunctuationFromStripTwice() {
+        final String WORD_TO_TYPE = "this ";
+        final String PUNCTUATION_FROM_STRIP = "!";
+        final String EXPECTED_RESULT = "this!! ";
+        type(WORD_TO_TYPE);
+        mLatinIME.pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
+        mLatinIME.pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
+        assertEquals("type word then type space then punctuation from strip twice", EXPECTED_RESULT,
+                mTextView.getText().toString());
+    }
+
+    public void testWordThenSpaceThenPunctuationFromKeyboardTwice() {
+        final String WORD_TO_TYPE = "this !!";
+        final String EXPECTED_RESULT = "this !!";
+        type(WORD_TO_TYPE);
+        assertEquals("manual pick then space then punctuation from keyboard twice", EXPECTED_RESULT,
+                mTextView.getText().toString());
+    }
+
+    public void testManualPickThenPunctuationFromStripTwiceThenType() {
+        final String WORD1_TO_TYPE = "this";
+        final String WORD2_TO_TYPE = "is";
+        final String PUNCTUATION_FROM_STRIP = "!";
+        final String EXPECTED_RESULT = "this!! is";
+        type(WORD1_TO_TYPE);
+        mLatinIME.pickSuggestionManually(0, WORD1_TO_TYPE);
+        mLatinIME.pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
+        mLatinIME.pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
+        type(WORD2_TO_TYPE);
+        assertEquals("pick word then pick punctuation twice then type", EXPECTED_RESULT,
+                mTextView.getText().toString());
+    }
+
+    public void testManualPickThenSpaceThenType() {
+        final String WORD1_TO_TYPE = "this";
+        final String WORD2_TO_TYPE = " is";
+        final String EXPECTED_RESULT = "this is";
+        type(WORD1_TO_TYPE);
+        mLatinIME.pickSuggestionManually(0, WORD1_TO_TYPE);
+        type(WORD2_TO_TYPE);
+        assertEquals("manual pick then space then type", WORD1_TO_TYPE + WORD2_TO_TYPE,
+                mTextView.getText().toString());
+    }
 }
