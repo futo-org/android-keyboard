@@ -28,7 +28,6 @@ import com.android.inputmethod.compat.InputTypeCompatUtils;
 public class InputAttributes {
     private final String TAG = InputAttributes.class.getSimpleName();
 
-    final public boolean mInsertSpaceOnPickSuggestionManually;
     final public boolean mInputTypeNoAutoCorrect;
     final public boolean mIsSettingsSuggestionStripOn;
     final public boolean mApplicationSpecifiedCompletionOn;
@@ -52,7 +51,6 @@ public class InputAttributes {
                         + " imeOptions=0x%08x",
                         inputType, editorInfo.imeOptions));
             }
-            mInsertSpaceOnPickSuggestionManually = false;
             mIsSettingsSuggestionStripOn = false;
             mInputTypeNoAutoCorrect = false;
             mApplicationSpecifiedCompletionOn = false;
@@ -80,15 +78,6 @@ public class InputAttributes {
                 mIsSettingsSuggestionStripOn = true;
             }
 
-            if (InputTypeCompatUtils.isEmailVariation(variation)
-                    || variation == InputType.TYPE_TEXT_VARIATION_PERSON_NAME) {
-                // The point in turning this off is that we don't want to insert a space after
-                // a name when filling a form: we can't delete trailing spaces when changing fields
-                mInsertSpaceOnPickSuggestionManually = false;
-            } else {
-                mInsertSpaceOnPickSuggestionManually = true;
-            }
-
             // If it's a browser edit field and auto correct is not ON explicitly, then
             // disable auto correction, but keep suggestions on.
             // If NO_SUGGESTIONS is set, don't do prediction.
@@ -109,8 +98,7 @@ public class InputAttributes {
     // Pretty print
     @Override
     public String toString() {
-        return "\n mInsertSpaceOnPickSuggestionManually = " + mInsertSpaceOnPickSuggestionManually
-                + "\n mInputTypeNoAutoCorrect = " + mInputTypeNoAutoCorrect
+        return "\n mInputTypeNoAutoCorrect = " + mInputTypeNoAutoCorrect
                 + "\n mIsSettingsSuggestionStripOn = " + mIsSettingsSuggestionStripOn
                 + "\n mApplicationSpecifiedCompletionOn = " + mApplicationSpecifiedCompletionOn;
     }

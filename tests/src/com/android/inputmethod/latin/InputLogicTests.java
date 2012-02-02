@@ -186,7 +186,7 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
     }
 
     public void testCancelDoubleSpace() {
-        final String STRING_TO_TYPE = "tgis  ";
+        final String STRING_TO_TYPE = "this  ";
         final String EXPECTED_RESULT = "this  ";
         type(STRING_TO_TYPE);
         type(Keyboard.CODE_DELETE);
@@ -202,7 +202,7 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         mInputConnection.setSelection(NEW_CURSOR_POSITION, NEW_CURSOR_POSITION);
         mLatinIME.onUpdateSelection(0, 0, NEW_CURSOR_POSITION, NEW_CURSOR_POSITION, -1, -1);
         type(Keyboard.CODE_DELETE);
-        assertEquals("auto correct then move curor to start of line then backspace",
+        assertEquals("auto correct then move cursor to start of line then backspace",
                 EXPECTED_RESULT, mTextView.getText().toString());
     }
 
@@ -215,7 +215,7 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         mInputConnection.setSelection(NEW_CURSOR_POSITION, NEW_CURSOR_POSITION);
         mLatinIME.onUpdateSelection(0, 0, NEW_CURSOR_POSITION, NEW_CURSOR_POSITION, -1, -1);
         type(Keyboard.CODE_DELETE);
-        assertEquals("auto correct then move curor then backspace",
+        assertEquals("auto correct then move cursor then backspace",
                 EXPECTED_RESULT, mTextView.getText().toString());
     }
 
