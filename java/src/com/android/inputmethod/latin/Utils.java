@@ -800,6 +800,13 @@ public class Utils {
         }
     }
 
+    public static int codePointCount(String text) {
+        if (TextUtils.isEmpty(text)) return 0;
+        return text.codePointCount(0, text.length());
+    }
+
+    // TODO: Move these methods to KeySpecParser.
+
     public static int getResourceId(Resources res, String name, int packageNameResId) {
         String packageName = res.getResourcePackageName(packageNameResId);
         int resId = res.getIdentifier(name, null, packageName);
@@ -858,13 +865,15 @@ public class Utils {
         return size;
     }
 
+    private static int COMMA = ',';
+
     public static String[] parseCsvString(String rawText, Resources res, int packageNameResId) {
         final String text = resolveStringResource(rawText, res, packageNameResId);
         final int size = text.length();
         if (size == 0) {
             return null;
         }
-        if (size == 1) {
+        if (codePointCount(text) == 1) {
             return new String[] { text };
         }
 
@@ -873,7 +882,7 @@ public class Utils {
         int start = 0;
         for (int pos = 0; pos < size; pos++) {
             final char c = text.charAt(pos);
-            if (c == ',') {
+            if (c == COMMA) {
                 if (list == null) {
                     list = new ArrayList<String>();
                 }
@@ -883,17 +892,21 @@ public class Utils {
                     list.add(sb.toString());
                     sb.setLength(0);
                 }
+                // Skip comma
                 start = pos + 1;
                 continue;
-            } else if (c == ESCAPE_CHAR) {
+            }
+            // Skip escaped sequence.
+            if (c == ESCAPE_CHAR) {
                 if (start == pos) {
-                    // Skip escape character at the beginning of the value.
+                    // Skip escaping comma at the beginning of the text.
                     start++;
                     pos++;
                 } else {
                     if (start < pos && sb.length() == 0) {
-                        sb.append(text.subSequence(start, pos));
+                        sb.append(text.substring(start, pos));
                     }
+                    // Skip comma
                     pos++;
                     if (pos < size) {
                         sb.append(text.charAt(pos));

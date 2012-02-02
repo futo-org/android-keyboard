@@ -28,8 +28,9 @@ import android.util.Xml;
 import com.android.inputmethod.keyboard.internal.KeyStyles;
 import com.android.inputmethod.keyboard.internal.KeyStyles.KeyStyle;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
-import com.android.inputmethod.keyboard.internal.MoreKeySpecParser;
+import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.XmlParseUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -128,7 +129,7 @@ public class Key {
     private boolean mEnabled = true;
 
     private static Drawable getIcon(Keyboard.Params params, String moreKeySpec) {
-        final int iconAttrId = MoreKeySpecParser.getIconAttrId(moreKeySpec);
+        final int iconAttrId = KeySpecParser.getIconAttrId(moreKeySpec);
         if (iconAttrId == KeyboardIconsSet.ICON_UNDEFINED) {
             return null;
         } else {
@@ -141,9 +142,9 @@ public class Key {
      */
     public Key(Resources res, Keyboard.Params params, String moreKeySpec,
             int x, int y, int width, int height) {
-        this(params, MoreKeySpecParser.getLabel(moreKeySpec), null, getIcon(params, moreKeySpec),
-                MoreKeySpecParser.getCode(res, moreKeySpec),
-                MoreKeySpecParser.getOutputText(moreKeySpec),
+        this(params, KeySpecParser.getLabel(moreKeySpec), null, getIcon(params, moreKeySpec),
+                KeySpecParser.getCode(res, moreKeySpec),
+                KeySpecParser.getOutputText(moreKeySpec),
                 x, y, width, height);
     }
 
@@ -245,7 +246,7 @@ public class Key {
         int actionFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyActionFlags, 0);
         final String[] additionalMoreKeys = style.getStringArray(
                 keyAttr, R.styleable.Keyboard_Key_additionalMoreKeys);
-        final String[] moreKeys = MoreKeySpecParser.insertAddtionalMoreKeys(style.getStringArray(
+        final String[] moreKeys = KeySpecParser.insertAddtionalMoreKeys(style.getStringArray(
                 keyAttr, R.styleable.Keyboard_Key_moreKeys), additionalMoreKeys);
         if (moreKeys != null) {
             actionFlags |= ACTION_FLAGS_ENABLE_LONG_PRESS;
@@ -270,7 +271,7 @@ public class Key {
         // Choose the first letter of the label as primary code if not specified.
         if (code == Keyboard.CODE_UNSPECIFIED && TextUtils.isEmpty(outputText)
                 && !TextUtils.isEmpty(mLabel)) {
-            if (mLabel.codePointCount(0, mLabel.length()) == 1) {
+            if (Utils.codePointCount(mLabel) == 1) {
                 // Use the first letter of the hint label if shiftedLetterActivated flag is
                 // specified.
                 if (hasShiftedLetterHint() && isShiftedLetterActivated()
@@ -308,7 +309,7 @@ public class Key {
         if (!Keyboard.isLetterCode(code) || preserveCase) return code;
         final String text = new String(new int[] { code } , 0, 1);
         final String casedText = adjustCaseOfStringForKeyboardId(text, preserveCase, id);
-        return casedText.codePointCount(0, casedText.length()) == 1
+        return Utils.codePointCount(casedText) == 1
                 ? casedText.codePointAt(0) : Keyboard.CODE_UNSPECIFIED;
     }
 
@@ -380,7 +381,7 @@ public class Key {
     @Override
     public String toString() {
         String top = Keyboard.printableCode(mCode);
-        if (mLabel != null && mLabel.codePointCount(0, mLabel.length()) != 1) {
+        if (Utils.codePointCount(mLabel) != 1) {
             top += "/\"" + mLabel + '"';
         }
         return String.format("%s %d,%d", top, mX, mY);
