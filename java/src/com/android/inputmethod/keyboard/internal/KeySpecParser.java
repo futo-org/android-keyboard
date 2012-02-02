@@ -30,20 +30,28 @@ import java.util.Arrays;
 /**
  * String parser of moreKeys attribute of Key.
  * The string is comma separated texts each of which represents one "more key".
+ * - String resource can be embedded into specification @string/name. This is done before parsing
+ *   comma.
  * Each "more key" specification is one of the following:
  * - A single letter (Letter)
  * - Label optionally followed by keyOutputText or code (keyLabel|keyOutputText).
  * - Icon followed by keyOutputText or code (@icon/icon_name|@integer/key_code)
- * Special character, comma ',' backslash '\', and bar '|' can be escaped by '\'
- * character.
+ * Special character, comma ',' backslash '\', and bar '|' can be escaped by '\' character.
  * Note that the character '@' and '\' are also parsed by XML parser and CSV parser as well.
- * See {@link KeyboardIconsSet} about icon_number.
+ * See {@link KeyboardIconsSet} about icon_name.
  */
 public class KeySpecParser {
     private static final boolean DEBUG = LatinImeLogger.sDBG;
+
+    // Constants for parsing.
+    private static int COMMA = ',';
+    private static final char ESCAPE_CHAR = '\\';
+    private static final char PREFIX_AT = '@';
+    private static final char SUFFIX_SLASH = '/';
+    private static final String PREFIX_STRING = PREFIX_AT + "string";
     private static final char LABEL_END = '|';
-    private static final String PREFIX_ICON = Utils.PREFIX_AT + "icon" + Utils.SUFFIX_SLASH;
-    private static final String PREFIX_CODE = Utils.PREFIX_AT + "integer" + Utils.SUFFIX_SLASH;
+    private static final String PREFIX_ICON = PREFIX_AT + "icon" + SUFFIX_SLASH;
+    private static final String PREFIX_CODE = PREFIX_AT + "integer" + SUFFIX_SLASH;
     private static final String ADDITIONAL_MORE_KEY_MARKER = "%";
 
     private KeySpecParser() {
@@ -56,7 +64,7 @@ public class KeySpecParser {
             if (end > 0) {
                 return true;
             }
-            throw new MoreKeySpecParserError("outputText or code not specified: " + moreKeySpec);
+            throw new KeySpecParserError("outputText or code not specified: " + moreKeySpec);
         }
         return false;
     }
@@ -71,14 +79,14 @@ public class KeySpecParser {
     }
 
     private static String parseEscape(String text) {
-        if (text.indexOf(Utils.ESCAPE_CHAR) < 0) {
+        if (text.indexOf(ESCAPE_CHAR) < 0) {
             return text;
         }
         final int length = text.length();
         final StringBuilder sb = new StringBuilder();
         for (int pos = 0; pos < length; pos++) {
             final char c = text.charAt(pos);
-            if (c == Utils.ESCAPE_CHAR && pos + 1 < length) {
+            if (c == ESCAPE_CHAR && pos + 1 < length) {
                 // Skip escape char
                 pos++;
                 sb.append(text.charAt(pos));
@@ -90,17 +98,17 @@ public class KeySpecParser {
     }
 
     private static int indexOfLabelEnd(String moreKeySpec, int start) {
-        if (moreKeySpec.indexOf(Utils.ESCAPE_CHAR, start) < 0) {
+        if (moreKeySpec.indexOf(ESCAPE_CHAR, start) < 0) {
             final int end = moreKeySpec.indexOf(LABEL_END, start);
             if (end == 0) {
-                throw new MoreKeySpecParserError(LABEL_END + " at " + start + ": " + moreKeySpec);
+                throw new KeySpecParserError(LABEL_END + " at " + start + ": " + moreKeySpec);
             }
             return end;
         }
         final int length = moreKeySpec.length();
         for (int pos = start; pos < length; pos++) {
             final char c = moreKeySpec.charAt(pos);
-            if (c == Utils.ESCAPE_CHAR && pos + 1 < length) {
+            if (c == ESCAPE_CHAR && pos + 1 < length) {
                 // Skip escape char
                 pos++;
             } else if (c == LABEL_END) {
@@ -118,7 +126,7 @@ public class KeySpecParser {
         final String label = (end > 0) ? parseEscape(moreKeySpec.substring(0, end))
                 : parseEscape(moreKeySpec);
         if (TextUtils.isEmpty(label)) {
-            throw new MoreKeySpecParserError("Empty label: " + moreKeySpec);
+            throw new KeySpecParserError("Empty label: " + moreKeySpec);
         }
         return label;
     }
@@ -130,7 +138,7 @@ public class KeySpecParser {
         final int end = indexOfLabelEnd(moreKeySpec, 0);
         if (end > 0) {
             if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0) {
-                    throw new MoreKeySpecParserError("Multiple " + LABEL_END + ": "
+                    throw new KeySpecParserError("Multiple " + LABEL_END + ": "
                             + moreKeySpec);
             }
             final String outputText = parseEscape(
@@ -138,11 +146,11 @@ public class KeySpecParser {
             if (!TextUtils.isEmpty(outputText)) {
                 return outputText;
             }
-            throw new MoreKeySpecParserError("Empty outputText: " + moreKeySpec);
+            throw new KeySpecParserError("Empty outputText: " + moreKeySpec);
         }
         final String label = getLabel(moreKeySpec);
         if (label == null) {
-            throw new MoreKeySpecParserError("Empty label: " + moreKeySpec);
+            throw new KeySpecParserError("Empty label: " + moreKeySpec);
         }
         // Code is automatically generated for one letter label. See {@link getCode()}.
         return (Utils.codePointCount(label) == 1) ? null : label;
@@ -152,9 +160,9 @@ public class KeySpecParser {
         if (hasCode(moreKeySpec)) {
             final int end = indexOfLabelEnd(moreKeySpec, 0);
             if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0) {
-                throw new MoreKeySpecParserError("Multiple " + LABEL_END + ": " + moreKeySpec);
+                throw new KeySpecParserError("Multiple " + LABEL_END + ": " + moreKeySpec);
             }
-            final int resId = Utils.getResourceId(res,
+            final int resId = getResourceId(res,
                     moreKeySpec.substring(end + /* LABEL_END */1 + /* PREFIX_AT */1),
                     R.string.english_ime_name);
             final int code = res.getInteger(resId);
@@ -251,9 +259,128 @@ public class KeySpecParser {
     }
 
     @SuppressWarnings("serial")
-    public static class MoreKeySpecParserError extends RuntimeException {
-        public MoreKeySpecParserError(String message) {
+    public static class KeySpecParserError extends RuntimeException {
+        public KeySpecParserError(String message) {
             super(message);
+        }
+    }
+
+    private static int getResourceId(Resources res, String name, int packageNameResId) {
+        String packageName = res.getResourcePackageName(packageNameResId);
+        int resId = res.getIdentifier(name, null, packageName);
+        if (resId == 0) {
+            throw new RuntimeException("Unknown resource: " + name);
+        }
+        return resId;
+    }
+
+    private static String resolveStringResource(String text, Resources res, int packageNameResId) {
+        final int size = text.length();
+        if (size < PREFIX_STRING.length()) {
+            return text;
+        }
+
+        StringBuilder sb = null;
+        for (int pos = 0; pos < size; pos++) {
+            final char c = text.charAt(pos);
+            if (c == PREFIX_AT && text.startsWith(PREFIX_STRING, pos)) {
+                if (sb == null) {
+                    sb = new StringBuilder(text.substring(0, pos));
+                }
+                final int end = searchResourceNameEnd(text, pos + PREFIX_STRING.length());
+                final String resName = text.substring(pos + 1, end);
+                final int resId = getResourceId(res, resName, packageNameResId);
+                sb.append(res.getString(resId));
+                pos = end - 1;
+            } else if (c == ESCAPE_CHAR) {
+                pos++;
+                if (sb != null) {
+                    sb.append(c);
+                    if (pos < size) {
+                        sb.append(text.charAt(pos));
+                    }
+                }
+            } else if (sb != null) {
+                sb.append(c);
+            }
+        }
+        return (sb == null) ? text : sb.toString();
+    }
+
+    private static int searchResourceNameEnd(String text, int start) {
+        final int size = text.length();
+        if (start >= size || text.charAt(start) != SUFFIX_SLASH) {
+            throw new RuntimeException("Resource name not specified");
+        }
+        for (int pos = start + 1; pos < size; pos++) {
+            final char c = text.charAt(pos);
+            // String resource name should be consisted of [a-z_0-9].
+            if ((c >= 'a' && c <= 'z') || c == '_' || (c >= '0' && c <= '9')) {
+                continue;
+            }
+            return pos;
+        }
+        return size;
+    }
+
+    public static String[] parseCsvString(String rawText, Resources res, int packageNameResId) {
+        final String text = resolveStringResource(rawText, res, packageNameResId);
+        final int size = text.length();
+        if (size == 0) {
+            return null;
+        }
+        if (Utils.codePointCount(text) == 1) {
+            return new String[] { text };
+        }
+
+        final StringBuilder sb = new StringBuilder();
+        ArrayList<String> list = null;
+        int start = 0;
+        for (int pos = 0; pos < size; pos++) {
+            final char c = text.charAt(pos);
+            if (c == COMMA) {
+                if (list == null) {
+                    list = new ArrayList<String>();
+                }
+                if (sb.length() == 0) {
+                    list.add(text.substring(start, pos));
+                } else {
+                    list.add(sb.toString());
+                    sb.setLength(0);
+                }
+                // Skip comma
+                start = pos + 1;
+                continue;
+            }
+            // TODO: Only parse escaped comma. Other escaped character should be passed through
+            // with escaped character prefixed.
+            // Skip escaped sequence.
+            if (c == ESCAPE_CHAR) {
+                if (start == pos) {
+                    // Skip escaping comma at the beginning of the text.
+                    start++;
+                    pos++;
+                } else {
+                    if (start < pos && sb.length() == 0) {
+                        sb.append(text.substring(start, pos));
+                    }
+                    // Skip comma
+                    pos++;
+                    if (pos < size) {
+                        sb.append(text.charAt(pos));
+                    }
+                }
+            } else if (sb.length() > 0) {
+                sb.append(c);
+            }
+        }
+        if (list == null) {
+            return new String[] {
+                    sb.length() > 0 ? sb.toString() : text.substring(start)
+            };
+        } else {
+            list.add(sb.length() > 0 ? sb.toString() : text.substring(start));
+            return list.toArray(new String[list.size()]);
         }
     }
 }

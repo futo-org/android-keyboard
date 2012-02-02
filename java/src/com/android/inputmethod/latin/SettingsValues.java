@@ -100,7 +100,7 @@ public class SettingsValues {
                 }
             }
         }
-        final String[] suggestPuncsSpec = Utils.parseCsvString(
+        final String[] suggestPuncsSpec = KeySpecParser.parseCsvString(
                 res.getString(R.string.suggested_punctuations), res, R.string.english_ime_name);
         mSuggestPuncs = createSuggestPuncs(suggestPuncsSpec);
         mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
