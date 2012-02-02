@@ -872,13 +872,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // turn this flag on in succession and both onUpdateSelection() calls arrive after
             // the second one - the first call successfully avoids this test, but the second one
             // enters. For the moment we rely on candidatesCleared to further reduce the impact.
-            if (SPACE_STATE_WEAK == mSpaceState) {
-                // Test for no WEAK_SPACE action because there is a race condition that may end up
-                // in coming here on a normal key press. We set this to NONE because after
-                // a cursor move, we don't want the suggestion strip to swap the space with the
-                // newly inserted punctuation.
-                mSpaceState = SPACE_STATE_NONE;
-            }
+
+            // We set this to NONE because after a cursor move, we don't want the space
+            // state-related special processing to kick in.
+            mSpaceState = SPACE_STATE_NONE;
+
             if (((mWordComposer.isComposingWord())
                     || mVoiceProxy.isVoiceInputHighlighted())
                     && (selectionChanged || candidatesCleared)) {
@@ -2221,9 +2219,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // be needed, but it's there just in case something went wrong.
         final CharSequence textBeforeCursor = ic.getTextBeforeCursor(2, 0);
         if (!". ".equals(textBeforeCursor)) {
-            // We should not have come here if we aren't just after a ". ".
-            throw new RuntimeException("Tried to revert double-space combo but we didn't find "
+            // Theoretically we should not be coming here if there isn't ". " before the
+            // cursor, but the application may be changing the text while we are typing, so
+            // anything goes. We should not crash.
+            Log.d(TAG, "Tried to revert double-space combo but we didn't find "
                     + "\". \" just before the cursor.");
+            return false;
         }
         ic.beginBatchEdit();
         ic.deleteSurroundingText(2, 0);
