@@ -25,7 +25,7 @@ import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.VibratorCompatWrapper;
-import com.android.inputmethod.keyboard.internal.MoreKeySpecParser;
+import com.android.inputmethod.keyboard.internal.KeySpecParser;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -158,7 +158,7 @@ public class SettingsValues {
         final StringBuilder sb = new StringBuilder();
         if (puncs != null) {
             for (final String puncSpec : puncs) {
-                sb.append(MoreKeySpecParser.getLabel(puncSpec));
+                sb.append(KeySpecParser.getLabel(puncSpec));
             }
         }
         return sb.toString();
@@ -168,7 +168,7 @@ public class SettingsValues {
         final SuggestedWords.Builder builder = new SuggestedWords.Builder();
         if (puncs != null) {
             for (final String puncSpec : puncs) {
-                builder.addWord(MoreKeySpecParser.getLabel(puncSpec));
+                builder.addWord(KeySpecParser.getLabel(puncSpec));
             }
         }
         return builder.setIsPunctuationSuggestions().build();
@@ -178,11 +178,11 @@ public class SettingsValues {
         final SuggestedWords.Builder builder = new SuggestedWords.Builder();
         if (puncs != null) {
             for (final String puncSpec : puncs) {
-                final String outputText = MoreKeySpecParser.getOutputText(puncSpec);
+                final String outputText = KeySpecParser.getOutputText(puncSpec);
                 if (outputText != null) {
                     builder.addWord(outputText);
                 } else {
-                    builder.addWord(MoreKeySpecParser.getLabel(puncSpec));
+                    builder.addWord(KeySpecParser.getLabel(puncSpec));
                 }
             }
         }

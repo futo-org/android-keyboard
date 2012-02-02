@@ -25,7 +25,7 @@ import com.android.inputmethod.latin.tests.R;
 
 import java.util.Arrays;
 
-public class KeyStylesTests extends AndroidTestCase {
+public class CsvParserTests extends AndroidTestCase {
     private Resources mTestResources;
 
     @Override
@@ -64,42 +64,77 @@ public class KeyStylesTests extends AndroidTestCase {
         }
     }
 
+    // \U001d11e: MUSICAL SYMBOL G CLEF
+    private static final String PAIR1 = "\ud834\udd1e";
+    // \U001d122: MUSICAL SYMBOL F CLEF
+    private static final String PAIR2 = "\ud834\udd22";
+    // \U002f8a6: CJK COMPATIBILITY IDEOGRAPH-2F8A6; variant character of \u6148.
+    private static final String PAIR3 = "\ud87e\udca6";
+    private static final String SURROGATE1 = PAIR1 + PAIR2;
+    private static final String SURROGATE2 = PAIR1 + PAIR2 + PAIR3;
+
     public void testParseCsvTextZero() {
         assertTextArray("Empty string", "");
     }
 
     public void testParseCsvTextSingle() {
         assertTextArray("Single char", "a", "a");
+        assertTextArray("Surrogate pair", PAIR1, PAIR1);
         assertTextArray("Space", " ", " ");
         assertTextArray("Single label", "abc", "abc");
+        assertTextArray("Single srrogate pairs label", SURROGATE2, SURROGATE2);
         assertTextArray("Spaces", "   ", "   ");
         assertTextArray("Spaces in label", "a b c", "a b c");
         assertTextArray("Spaces at beginning of label", " abc", " abc");
         assertTextArray("Spaces at end of label", "abc ", "abc ");
         assertTextArray("Label surrounded by spaces", " abc ", " abc ");
+        assertTextArray("Surrogate pair surrounded by space",
+                " " + PAIR1 + " ",
+                " " + PAIR1 + " ");
+        assertTextArray("Surrogate pair within characters",
+                "ab" + PAIR2 + "cd",
+                "ab" + PAIR2 + "cd");
+        assertTextArray("Surrogate pairs within characters",
+                "ab" + SURROGATE1 + "cd",
+                "ab" + SURROGATE1 + "cd");
 
         assertTextArray("Incomplete resource reference 1", "string", "string");
         assertTextArray("Incomplete resource reference 2", "@strin", "@strin");
+        assertTextArray("Incomplete resource reference 3", "@" + SURROGATE2, "@" + SURROGATE2);
     }
 
     public void testParseCsvTextSingleEscaped() {
         assertTextArray("Escaped char", "\\a", "a");
+        assertTextArray("Escaped surrogate pair", "\\" + PAIR1, PAIR1);
         assertTextArray("Escaped comma", "\\,", ",");
         assertTextArray("Escaped escape", "\\\\", "\\");
         assertTextArray("Escaped label", "a\\bc", "abc");
+        assertTextArray("Escaped surrogate", "a\\" + PAIR1 + "c", "a" + PAIR1 + "c");
         assertTextArray("Escaped label at beginning", "\\abc", "abc");
+        assertTextArray("Escaped surrogate at beginning", "\\" + SURROGATE2, SURROGATE2);
         assertTextArray("Escaped label with comma", "a\\,c", "a,c");
+        assertTextArray("Escaped surrogate with comma", PAIR1 + "\\," + PAIR2, PAIR1 + "," + PAIR2);
         assertTextArray("Escaped label with comma at beginning", "\\,bc", ",bc");
+        assertTextArray("Escaped surrogate with comma at beginning",
+                "\\," + SURROGATE1, "," + SURROGATE1);
         assertTextArray("Escaped label with successive", "\\,\\\\bc", ",\\bc");
+        assertTextArray("Escaped surrogate with successive",
+                "\\,\\\\" + SURROGATE1, ",\\" + SURROGATE1);
         assertTextArray("Escaped label with escape", "a\\\\c", "a\\c");
+        assertTextArray("Escaped surrogate with escape",
+                PAIR1 + "\\\\" + PAIR2, PAIR1 + "\\" + PAIR2);
 
         assertTextArray("Escaped @string", "\\@string/empty_string", "@string/empty_string");
     }
 
     public void testParseCsvTextMulti() {
         assertTextArray("Multiple chars", "a,b,c", "a", "b", "c");
+        assertTextArray("Multiple surrogates", PAIR1 + "," + PAIR2 + "," + PAIR3,
+                PAIR1, PAIR2, PAIR3);
         assertTextArray("Multiple chars surrounded by spaces", " a , b , c ", " a ", " b ", " c ");
         assertTextArray("Multiple labels", "abc,def,ghi", "abc", "def", "ghi");
+        assertTextArray("Multiple surrogated", SURROGATE1 + "," + SURROGATE2,
+                SURROGATE1, SURROGATE2);
         assertTextArray("Multiple labels surrounded by spaces", " abc , def , ghi ",
                 " abc ", " def ", " ghi ");
     }

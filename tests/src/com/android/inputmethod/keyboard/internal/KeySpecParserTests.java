@@ -24,7 +24,7 @@ import com.android.inputmethod.latin.R;
 
 import java.util.Arrays;
 
-public class MoreKeySpecParserTests extends AndroidTestCase {
+public class KeySpecParserTests extends AndroidTestCase {
     private Resources mRes;
 
     private static final int ICON_SETTINGS_KEY = R.styleable.Keyboard_iconSettingsKey;
@@ -49,16 +49,16 @@ public class MoreKeySpecParserTests extends AndroidTestCase {
 
     private void assertParser(String message, String moreKeySpec, String expectedLabel,
             String expectedOutputText, int expectedIcon, int expectedCode) {
-        String actualLabel = MoreKeySpecParser.getLabel(moreKeySpec);
+        String actualLabel = KeySpecParser.getLabel(moreKeySpec);
         assertEquals(message + ": label:", expectedLabel, actualLabel);
 
-        String actualOutputText = MoreKeySpecParser.getOutputText(moreKeySpec);
+        String actualOutputText = KeySpecParser.getOutputText(moreKeySpec);
         assertEquals(message + ": ouptputText:", expectedOutputText, actualOutputText);
 
-        int actualIcon = MoreKeySpecParser.getIconAttrId(moreKeySpec);
+        int actualIcon = KeySpecParser.getIconAttrId(moreKeySpec);
         assertEquals(message + ": icon:", expectedIcon, actualIcon);
 
-        int actualCode = MoreKeySpecParser.getCode(mRes, moreKeySpec);
+        int actualCode = KeySpecParser.getCode(mRes, moreKeySpec);
         assertEquals(message + ": codes value:", expectedCode, actualCode);
     }
 
@@ -73,9 +73,22 @@ public class MoreKeySpecParserTests extends AndroidTestCase {
         }
     }
 
+    // \U001d11e: MUSICAL SYMBOL G CLEF
+    private static final String PAIR1 = "\ud834\udd1e";
+    private static final int CODE1 = PAIR1.codePointAt(0);
+    // \U001d122: MUSICAL SYMBOL F CLEF
+    private static final String PAIR2 = "\ud834\udd22";
+    private static final int CODE2 = PAIR2.codePointAt(0);
+    // \U002f8a6: CJK COMPATIBILITY IDEOGRAPH-2F8A6; variant character of \u6148.
+    private static final String PAIR3 = "\ud87e\udca6";
+    private static final String SURROGATE1 = PAIR1 + PAIR2;
+    private static final String SURROGATE2 = PAIR1 + PAIR2 + PAIR3;
+
     public void testSingleLetter() {
         assertParser("Single letter", "a",
                 "a", null, ICON_UNDEFINED, 'a');
+        assertParser("Single surrogate", PAIR1,
+                PAIR1, null, ICON_UNDEFINED, CODE1);
         assertParser("Single escaped bar", "\\|",
                 "|", null, ICON_UNDEFINED, '|');
         assertParser("Single escaped escape", "\\\\",
@@ -86,20 +99,31 @@ public class MoreKeySpecParserTests extends AndroidTestCase {
                 ",", null, ICON_UNDEFINED, ',');
         assertParser("Single escaped letter", "\\a",
                 "a", null, ICON_UNDEFINED, 'a');
+        assertParser("Single escaped surrogate", "\\" + PAIR2,
+                PAIR2, null, ICON_UNDEFINED, CODE2);
         assertParser("Single at", "@",
                 "@", null, ICON_UNDEFINED, '@');
         assertParser("Single escaped at", "\\@",
                 "@", null, ICON_UNDEFINED, '@');
         assertParser("Single letter with outputText", "a|abc",
                 "a", "abc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+        assertParser("Single letter with surrogate outputText", "a|" + SURROGATE1,
+                "a", SURROGATE1, ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+        assertParser("Single surrogate with outputText", PAIR3 + "|abc",
+                PAIR3, "abc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Single letter with escaped outputText", "a|a\\|c",
                 "a", "a|c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+        assertParser("Single letter with escaped surrogate outputText",
+                "a|" + PAIR1 + "\\|" + PAIR2,
+                "a", PAIR1 + "|" + PAIR2, ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Single letter with comma outputText", "a|a,b",
                 "a", "a,b", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Single letter with escaped comma outputText", "a|a\\,b",
                 "a", "a,b", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Single letter with outputText starts with at", "a|@bc",
                 "a", "@bc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+        assertParser("Single letter with surrogate outputText starts with at", "a|@" + SURROGATE2,
+                "a", "@" + SURROGATE2, ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Single letter with outputText contains at", "a|a@c",
                 "a", "a@c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Single letter with escaped at outputText", "a|\\@bc",
@@ -115,8 +139,13 @@ public class MoreKeySpecParserTests extends AndroidTestCase {
     public void testLabel() {
         assertParser("Simple label", "abc",
                 "abc", "abc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+        assertParser("Simple surrogate label", SURROGATE1,
+                SURROGATE1, SURROGATE1, ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with escaped bar", "a\\|c",
                 "a|c", "a|c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+        assertParser("Surrogate label with escaped bar", PAIR1 + "\\|" + PAIR2,
+                PAIR1 + "|" + PAIR2, PAIR1 + "|" + PAIR2,
+                ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with escaped escape", "a\\\\c",
                 "a\\c", "a\\c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with comma", "a,c",
@@ -125,6 +154,8 @@ public class MoreKeySpecParserTests extends AndroidTestCase {
                 "a,c", "a,c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label starts with at", "@bc",
                 "@bc", "@bc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+        assertParser("Surrogate label starts with at", "@" + SURROGATE1,
+                "@" + SURROGATE1, "@" + SURROGATE1, ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label contains at", "a@c",
                 "a@c", "a@c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label with escaped at", "\\@bc",
@@ -220,9 +251,9 @@ public class MoreKeySpecParserTests extends AndroidTestCase {
                 null, null, ICON_SETTINGS_KEY, mCodeSettings);
     }
 
-    private void assertMoreKeys(String message, String[] moreKeys, String[] additionalMoreKeys,
-            String[] expected) {
-        final String[] actual = MoreKeySpecParser.insertAddtionalMoreKeys(
+    private static void assertMoreKeys(String message, String[] moreKeys,
+            String[] additionalMoreKeys, String[] expected) {
+        final String[] actual = KeySpecParser.insertAddtionalMoreKeys(
                 moreKeys, additionalMoreKeys);
         if (expected == null && actual == null) {
             return;

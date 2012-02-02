@@ -39,14 +39,14 @@ import java.util.Arrays;
  * Note that the character '@' and '\' are also parsed by XML parser and CSV parser as well.
  * See {@link KeyboardIconsSet} about icon_number.
  */
-public class MoreKeySpecParser {
+public class KeySpecParser {
     private static final boolean DEBUG = LatinImeLogger.sDBG;
     private static final char LABEL_END = '|';
     private static final String PREFIX_ICON = Utils.PREFIX_AT + "icon" + Utils.SUFFIX_SLASH;
     private static final String PREFIX_CODE = Utils.PREFIX_AT + "integer" + Utils.SUFFIX_SLASH;
     private static final String ADDITIONAL_MORE_KEY_MARKER = "%";
 
-    private MoreKeySpecParser() {
+    private KeySpecParser() {
         // Intentional empty constructor for utility class.
     }
 
@@ -79,7 +79,9 @@ public class MoreKeySpecParser {
         for (int pos = 0; pos < length; pos++) {
             final char c = text.charAt(pos);
             if (c == Utils.ESCAPE_CHAR && pos + 1 < length) {
-                sb.append(text.charAt(++pos));
+                // Skip escape char
+                pos++;
+                sb.append(text.charAt(pos));
             } else {
                 sb.append(c);
             }
@@ -99,6 +101,7 @@ public class MoreKeySpecParser {
         for (int pos = start; pos < length; pos++) {
             final char c = moreKeySpec.charAt(pos);
             if (c == Utils.ESCAPE_CHAR && pos + 1 < length) {
+                // Skip escape char
                 pos++;
             } else if (c == LABEL_END) {
                 return pos;
@@ -142,7 +145,7 @@ public class MoreKeySpecParser {
             throw new MoreKeySpecParserError("Empty label: " + moreKeySpec);
         }
         // Code is automatically generated for one letter label. See {@link getCode()}.
-        return (label.length() == 1) ? null : label;
+        return (Utils.codePointCount(label) == 1) ? null : label;
     }
 
     public static int getCode(Resources res, String moreKeySpec) {
@@ -162,8 +165,8 @@ public class MoreKeySpecParser {
         }
         final String label = getLabel(moreKeySpec);
         // Code is automatically generated for one letter label.
-        if (label != null && label.length() == 1) {
-            return label.charAt(0);
+        if (Utils.codePointCount(label) == 1) {
+            return label.codePointAt(0);
         }
         return Keyboard.CODE_OUTPUT_TEXT;
     }
