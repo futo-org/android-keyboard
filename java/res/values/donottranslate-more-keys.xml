@@ -54,7 +54,7 @@
     <string name="more_keys_for_currency_euro">¢,£,$,¥,₱</string>
     <string name="more_keys_for_currency_pound">¢,$,€,¥,₱</string>
     <string name="more_keys_for_currency_general">¢,$,€,£,¥,₱</string>
-    <string name="more_keys_for_smiley">":-)|:-) ,:-(|:-( ,;-)|;-) ,:-P|:-P ,=-O|=-O ,:-*|:-* ,:O|:O ,B-)|B-) ,:-$|:-$ ,:-!|:-! ,:-[|:-[ ,O:-)|O:-) ,:-\\\\\\\\|:-\\\\\\\\ ,:\'(|:\'( ,:-D|:-D "</string>
+    <string name="more_keys_for_smiley">":-)|:-) ,:-(|:-( ,;-)|;-) ,:-P|:-P ,=-O|=-O ,:-*|:-* ,:O|:O ,B-)|B-) ,:-$|:-$ ,:-!|:-! ,:-[|:-[ ,O:-)|O:-) ,:-\\\\|:-\\\\ ,:\'(|:\'( ,:-D|:-D "</string>
     <string name="more_keys_for_punctuation">"\\,,\?,!,:,-,\',\",(,),/,;,+,&amp;,\@"</string>
     <integer name="mini_keyboard_column_for_punctuation">7</integer>
     <string name="keyhintlabel_for_punctuation"></string>
