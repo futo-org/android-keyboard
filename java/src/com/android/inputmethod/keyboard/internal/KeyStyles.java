@@ -21,7 +21,6 @@ import android.util.Log;
 
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.XmlParseUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -72,7 +71,7 @@ public class KeyStyles {
         protected static String[] parseStringArray(TypedArray a, int index) {
             if (!a.hasValue(index))
                 return null;
-            return Utils.parseCsvString(
+            return KeySpecParser.parseCsvString(
                     a.getString(index), a.getResources(), R.string.english_ime_name);
         }
     }
