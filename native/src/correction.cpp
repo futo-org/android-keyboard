@@ -745,41 +745,61 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
     // Score calibration by touch coordinates is being done only for pure-fat finger typing error
     // cases.
     // TODO: Remove this constraint.
-    for (int i = 0; i < outputLength; ++i) {
-        const int squaredDistance = correction->mDistances[i];
-        if (i < adjustedProximityMatchedCount) {
-            multiplyIntCapped(typedLetterMultiplier, &finalFreq);
+    if (performTouchPositionCorrection) {
+        for (int i = 0; i < outputLength; ++i) {
+            const int squaredDistance = correction->mDistances[i];
+            if (i < adjustedProximityMatchedCount) {
+                multiplyIntCapped(typedLetterMultiplier, &finalFreq);
+            }
+            if (squaredDistance >= 0) {
+                // Promote or demote the score according to the distance from the sweet spot
+                static const float A = ZERO_DISTANCE_PROMOTION_RATE / 100.0f;
+                static const float B = 1.0f;
+                static const float C = 0.5f;
+                static const float MIN = 0.3f;
+                static const float R1 = NEUTRAL_SCORE_SQUARED_RADIUS;
+                static const float R2 = HALF_SCORE_SQUARED_RADIUS;
+                const float x = (float)squaredDistance
+                        / ProximityInfo::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
+                const float factor = max((x < R1)
+                    ? (A * (R1 - x) + B * x) / R1
+                    : (B * (R2 - x) + C * (x - R1)) / (R2 - R1), MIN);
+                // factor is piecewise linear function like:
+                // A -_                  .
+                //     ^-_               .
+                // B      \              .
+                //         \_            .
+                // C         ------------.
+                //                       .
+                // 0   R1 R2             .
+                multiplyRate((int)(factor * 100), &finalFreq);
+            } else if (squaredDistance == PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO) {
+                multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
+            } else if (squaredDistance == ADDITIONAL_PROXIMITY_CHAR_DISTANCE_INFO) {
+                multiplyRate(WORDS_WITH_ADDITIONAL_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
+            }
         }
-
-        if (performTouchPositionCorrection && squaredDistance >= 0) {
-            // Promote or demote the score according to the distance from the sweet spot
-            static const float A = ZERO_DISTANCE_PROMOTION_RATE / 100.0f;
-            static const float B = 1.0f;
-            static const float C = 0.5f;
-            static const float MIN = 0.3f;
-            static const float R1 = NEUTRAL_SCORE_SQUARED_RADIUS;
-            static const float R2 = HALF_SCORE_SQUARED_RADIUS;
-            const float x = (float)squaredDistance
-                    / ProximityInfo::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
-            const float factor = max((x < R1)
-                ? (A * (R1 - x) + B * x) / R1
-                : (B * (R2 - x) + C * (x - R1)) / (R2 - R1), MIN);
-            // factor is piecewise linear function like:
-            // A -_                  .
-            //     ^-_               .
-            // B      \              .
-            //         \_            .
-            // C         ------------.
-            //                       .
-            // 0   R1 R2             .
-            multiplyRate((int)(factor * 100), &finalFreq);
-        } else if (performTouchPositionCorrection
-                && squaredDistance == PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO) {
-            multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
-        } else if (squaredDistance == ADDITIONAL_PROXIMITY_CHAR_DISTANCE_INFO) {
-            multiplyRate(WORDS_WITH_ADDITIONAL_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
-        } else if (i < adjustedProximityMatchedCount) {
-            multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
+    } else {
+        // Demote additional proximity characters
+        int additionalProximityCount = 0;
+        for (int i = 0; i < outputLength; ++i) {
+            const int squaredDistance = correction->mDistances[i];
+            if (squaredDistance == ADDITIONAL_PROXIMITY_CHAR_DISTANCE_INFO) {
+                ++additionalProximityCount;
+            }
+        }
+        // Promotion for a word with proximity characters
+        for (int i = 0; i < adjustedProximityMatchedCount; ++i) {
+            // A word with proximity corrections
+            if (DEBUG_DICT_FULL) {
+                AKLOGI("Found a proximity correction.");
+            }
+            multiplyIntCapped(typedLetterMultiplier, &finalFreq);
+            if (i < additionalProximityCount) {
+                multiplyRate(WORDS_WITH_ADDITIONAL_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
+            } else {
+                multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
+            }
         }
     }
 
