@@ -30,11 +30,14 @@
     <string name="label_surrounded_by_spaces">" abc "</string>
     <string name="escaped_char">"\\a"</string>
     <string name="escaped_comma">"\\,"</string>
+    <string name="escaped_comma_escape">"a\\,\\"</string>
     <string name="escaped_escape">"\\\\"</string>
     <string name="escaped_label">"a\\bc"</string>
     <string name="escaped_label_at_beginning">"\\abc"</string>
+    <string name="escaped_label_at_end">"abc\\"</string>
     <string name="escaped_label_with_comma">"a\\,c"</string>
     <string name="escaped_label_with_comma_at_beginning">"\\,bc"</string>
+    <string name="escaped_label_with_comma_at_end">"ab\\,"</string>
     <string name="escaped_label_with_successive">"\\,\\\\bc"</string>
     <string name="escaped_label_with_escape">"a\\\\c"</string>
     <string name="multiple_chars">"a,b,c"</string>

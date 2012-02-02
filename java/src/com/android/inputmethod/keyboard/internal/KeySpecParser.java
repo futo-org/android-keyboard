@@ -48,7 +48,7 @@ public class KeySpecParser {
     private static final char ESCAPE_CHAR = '\\';
     private static final char PREFIX_AT = '@';
     private static final char SUFFIX_SLASH = '/';
-    private static final String PREFIX_STRING = PREFIX_AT + "string";
+    private static final String PREFIX_STRING = PREFIX_AT + "string" + SUFFIX_SLASH;
     private static final char LABEL_END = '|';
     private static final String PREFIX_ICON = PREFIX_AT + "icon" + SUFFIX_SLASH;
     private static final String PREFIX_CODE = PREFIX_AT + "integer" + SUFFIX_SLASH;
@@ -293,13 +293,11 @@ public class KeySpecParser {
                 sb.append(res.getString(resId));
                 pos = end - 1;
             } else if (c == ESCAPE_CHAR) {
-                pos++;
                 if (sb != null) {
-                    sb.append(c);
-                    if (pos < size) {
-                        sb.append(text.charAt(pos));
-                    }
+                    // Append both escape character and escaped character.
+                    sb.append(text.substring(pos, Math.min(pos + 2, size)));
                 }
+                pos++;
             } else if (sb != null) {
                 sb.append(c);
             }
@@ -309,10 +307,7 @@ public class KeySpecParser {
 
     private static int searchResourceNameEnd(String text, int start) {
         final int size = text.length();
-        if (start >= size || text.charAt(start) != SUFFIX_SLASH) {
-            throw new RuntimeException("Resource name not specified");
-        }
-        for (int pos = start + 1; pos < size; pos++) {
+        for (int pos = start; pos < size; pos++) {
             final char c = text.charAt(pos);
             // String resource name should be consisted of [a-z_0-9].
             if ((c >= 'a' && c <= 'z') || c == '_' || (c >= '0' && c <= '9')) {
@@ -333,7 +328,6 @@ public class KeySpecParser {
             return new String[] { text };
         }
 
-        final StringBuilder sb = new StringBuilder();
         ArrayList<String> list = null;
         int start = 0;
         for (int pos = 0; pos < size; pos++) {
@@ -342,44 +336,18 @@ public class KeySpecParser {
                 if (list == null) {
                     list = new ArrayList<String>();
                 }
-                if (sb.length() == 0) {
-                    list.add(text.substring(start, pos));
-                } else {
-                    list.add(sb.toString());
-                    sb.setLength(0);
-                }
+                list.add(text.substring(start, pos));
                 // Skip comma
                 start = pos + 1;
-                continue;
-            }
-            // TODO: Only parse escaped comma. Other escaped character should be passed through
-            // with escaped character prefixed.
-            // Skip escaped sequence.
-            if (c == ESCAPE_CHAR) {
-                if (start == pos) {
-                    // Skip escaping comma at the beginning of the text.
-                    start++;
-                    pos++;
-                } else {
-                    if (start < pos && sb.length() == 0) {
-                        sb.append(text.substring(start, pos));
-                    }
-                    // Skip comma
-                    pos++;
-                    if (pos < size) {
-                        sb.append(text.charAt(pos));
-                    }
-                }
-            } else if (sb.length() > 0) {
-                sb.append(c);
+            } else if (c == ESCAPE_CHAR) {
+                // Skip escape character and escaped character.
+                pos++;
             }
         }
         if (list == null) {
-            return new String[] {
-                    sb.length() > 0 ? sb.toString() : text.substring(start)
-            };
+            return new String[] { text.substring(start) };
         } else {
-            list.add(sb.length() > 0 ? sb.toString() : text.substring(start));
+            list.add(text.substring(start));
             return list.toArray(new String[list.size()]);
         }
     }
