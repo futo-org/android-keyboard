@@ -431,9 +431,9 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         // If the first char is not uppercase, then the word is either all lower case,
         // and in either case we return CAPITALIZE_NONE.
         if (!Character.isUpperCase(text.codePointAt(0))) return CAPITALIZE_NONE;
-        final int len = text.codePointCount(0, text.length());
+        final int len = text.length();
         int capsCount = 1;
-        for (int i = 1; i < len; ++i) {
+        for (int i = 1; i < len; i = text.offsetByCodePoints(i, 1)) {
             if (1 != capsCount && i != capsCount) break;
             if (Character.isUpperCase(text.codePointAt(i))) ++capsCount;
         }
@@ -522,13 +522,12 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             // Filter contents
             final int length = text.length();
             int letterCount = 0;
-            for (int i = 0; i < length; ++i) {
+            for (int i = 0; i < length; i = text.offsetByCodePoints(i, 1)) {
                 final int codePoint = text.codePointAt(i);
                 // Any word containing a '@' is probably an e-mail address
                 // Any word containing a '/' is probably either an ad-hoc combination of two
                 // words or a URI - in either case we don't want to spell check that
-                if ('@' == codePoint
-                        || '/' == codePoint) return true;
+                if ('@' == codePoint || '/' == codePoint) return true;
                 if (isLetterCheckableByLanguage(codePoint, script)) ++letterCount;
             }
             // Guestimate heuristic: perform spell checking if at least 3/4 of the characters
@@ -570,7 +569,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                         suggestionsLimit);
                 final WordComposer composer = new WordComposer();
                 final int length = text.length();
-                for (int i = 0; i < length; ++i) {
+                for (int i = 0; i < length; i = text.offsetByCodePoints(i, 1)) {
                     final int character = text.codePointAt(i);
                     final int proximityIndex =
                             SpellCheckerProximityInfo.getIndexOfCodeForScript(character, mScript);

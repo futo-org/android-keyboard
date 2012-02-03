@@ -133,7 +133,7 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
     }
 
     private void type(final String stringToType) {
-        for (int i = 0; i < stringToType.length(); ++i) {
+        for (int i = 0; i < stringToType.length(); i = stringToType.offsetByCodePoints(i, 1)) {
             type(stringToType.codePointAt(i));
         }
     }

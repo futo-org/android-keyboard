@@ -164,7 +164,7 @@ public class FusionDictionary implements Iterable<Word> {
     static private int[] getCodePoints(String word) {
         final int wordLength = word.length();
         int[] array = new int[word.codePointCount(0, wordLength)];
-        for (int i = 0; i < wordLength; ++i) {
+        for (int i = 0; i < wordLength; i = word.offsetByCodePoints(i, 1)) {
             array[i] = word.codePointAt(i);
         }
         return array;

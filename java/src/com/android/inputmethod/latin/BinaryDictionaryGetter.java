@@ -75,7 +75,8 @@ class BinaryDictionaryGetter {
         // This assumes '%' is fully available as a non-separator, normal
         // character in a file name. This is probably true for all file systems.
         final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < name.length(); ++i) {
+        final int nameLength = name.length();
+        for (int i = 0; i < nameLength; i = name.offsetByCodePoints(i, 1)) {
             final int codePoint = name.codePointAt(i);
             if (isFileNameCharacter(codePoint)) {
                 sb.appendCodePoint(codePoint);
@@ -92,7 +93,8 @@ class BinaryDictionaryGetter {
      */
     private static String getWordListIdFromFileName(final String fname) {
         final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < fname.length(); ++i) {
+        final int fnameLength = fname.length();
+        for (int i = 0; i < fnameLength; i = fname.offsetByCodePoints(i, 1)) {
             final int codePoint = fname.codePointAt(i);
             if ('%' != codePoint) {
                 sb.appendCodePoint(codePoint);
