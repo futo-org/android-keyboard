@@ -99,19 +99,36 @@
         latin:keyActionFlags="isRepeatable|noKeyPreview"
         latin:backgroundType="functional" />
     <!-- Return key style -->
+    <key-style
+        latin:styleName="defaultReturnKeyStyle"
+        latin:code="@integer/key_return"
+        latin:keyIcon="iconReturnKey"
+        latin:keyActionFlags="noKeyPreview"
+        latin:backgroundType="functional" />
     <switch>
         <case
             latin:mode="im"
         >
             <!-- Smiley key. -->
-            <key-style
-                latin:styleName="returnKeyStyle"
-                latin:keyLabel=":-)"
-                latin:keyOutputText=":-) "
-                latin:keyLabelFlags="hasPopupHint|preserveCase"
-                latin:moreKeys="@string/more_keys_for_smiley"
-                latin:maxMoreKeysColumn="5"
-                latin:backgroundType="functional" />
+            <switch>
+                <case
+                    latin:keyboardSetElement="alphabetManualShifted|alphabetShiftLockShifted"
+                >
+                    <key-style
+                        latin:styleName="returnKeyStyle"
+                        latin:parentStyle="defaultReturnKeyStyle" />
+                </case>
+                <default>
+                    <key-style
+                        latin:styleName="returnKeyStyle"
+                        latin:keyLabel=":-)"
+                        latin:keyOutputText=":-) "
+                        latin:keyLabelFlags="hasPopupHint|preserveCase"
+                        latin:moreKeys="@string/more_keys_for_smiley"
+                        latin:maxMoreKeysColumn="5"
+                        latin:backgroundType="functional" />
+                </default>
+            </switch>
         </case>
         <case
             latin:imeAction="actionGo"
@@ -171,10 +188,7 @@
         <default>
             <key-style
                 latin:styleName="returnKeyStyle"
-                latin:code="@integer/key_return"
-                latin:keyIcon="iconReturnKey"
-                latin:keyActionFlags="noKeyPreview"
-                latin:backgroundType="functional" />
+                latin:parentStyle="defaultReturnKeyStyle" />
         </default>
     </switch>
     <key-style
