@@ -185,7 +185,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         public final int mKeyShiftedLetterHintInactivatedColor;
         public final int mKeyShiftedLetterHintActivatedColor;
 
-        private final float mKeyLetterRatio;
+        /* package */ final float mKeyLetterRatio;
         private final float mKeyLargeLetterRatio;
         private final float mKeyLabelRatio;
         private final float mKeyHintLetterRatio;
@@ -486,8 +486,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     private void onDrawKey(Key key, Canvas canvas, Paint paint, KeyDrawParams params) {
-        if (key.isSpacer()) return;
-        onDrawKeyBackground(key, canvas, params);
+        if (!key.isSpacer()) {
+            onDrawKeyBackground(key, canvas, params);
+        }
         onDrawKeyTopVisuals(key, canvas, paint, params);
     }
 
@@ -861,10 +862,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             }
             previewText.setText(key.mLabel);
         } else {
-            final Drawable previewIcon = mKeyboard.mIconsSet.getIconByAttrId(
-                    key.mPreviewIconAttrId);
             previewText.setCompoundDrawables(null, null, null,
-                    previewIcon != null ? previewIcon : key.getIcon(mKeyboard.mIconsSet));
+                    key.getPreviewIcon(mKeyboard.mIconsSet));
             previewText.setText(null);
         }
         previewText.setBackgroundDrawable(params.mPreviewBackground);

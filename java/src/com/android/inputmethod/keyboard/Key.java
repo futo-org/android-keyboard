@@ -25,10 +25,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Xml;
 
+import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.keyboard.internal.KeyStyles;
 import com.android.inputmethod.keyboard.internal.KeyStyles.KeyStyle;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
-import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.XmlParseUtils;
@@ -74,13 +74,11 @@ public class Key {
     private static final int LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED = 0x10000;
 
     /** Icon to display instead of a label. Icon takes precedence over a label */
-    private final int mIconAttrId;
-    // TODO: Remove this variable.
-    private Drawable mIcon;
+    private final int mIconId;
     /** Icon for disabled state */
-    private final int mDisabledIconAttrId;
+    private final int mDisabledIconId;
     /** Preview version of the icon, for the preview popup */
-    public final int mPreviewIconAttrId;
+    private final int mPreviewIconId;
 
     /** Width of the key, not including the gap */
     public final int mWidth;
@@ -128,21 +126,13 @@ public class Key {
     /** Key is enabled and responds on press */
     private boolean mEnabled = true;
 
-    private static Drawable getIcon(Keyboard.Params params, String moreKeySpec) {
-        final int iconAttrId = KeySpecParser.getIconAttrId(moreKeySpec);
-        if (iconAttrId == KeyboardIconsSet.ICON_UNDEFINED) {
-            return null;
-        } else {
-            return params.mIconsSet.getIconByAttrId(iconAttrId);
-        }
-    }
-
     /**
      * This constructor is being used only for key in more keys keyboard.
      */
     public Key(Resources res, Keyboard.Params params, String moreKeySpec,
             int x, int y, int width, int height) {
-        this(params, KeySpecParser.getLabel(moreKeySpec), null, getIcon(params, moreKeySpec),
+        this(params, KeySpecParser.getLabel(moreKeySpec), null,
+                KeySpecParser.getIconId(moreKeySpec),
                 KeySpecParser.getCode(res, moreKeySpec),
                 KeySpecParser.getOutputText(moreKeySpec),
                 x, y, width, height);
@@ -151,7 +141,7 @@ public class Key {
     /**
      * This constructor is being used only for key in popup suggestions pane.
      */
-    public Key(Keyboard.Params params, String label, String hintLabel, Drawable icon,
+    public Key(Keyboard.Params params, String label, String hintLabel, int iconId,
             int code, CharSequence outputText, int x, int y, int width, int height) {
         mHeight = height - params.mVerticalGap;
         mHorizontalGap = params.mHorizontalGap;
@@ -168,10 +158,9 @@ public class Key {
         mOutputText = outputText;
         mCode = code;
         mAltCode = Keyboard.CODE_UNSPECIFIED;
-        mIconAttrId = KeyboardIconsSet.ATTR_UNDEFINED;
-        mIcon = icon;
-        mDisabledIconAttrId = KeyboardIconsSet.ATTR_UNDEFINED;
-        mPreviewIconAttrId = KeyboardIconsSet.ATTR_UNDEFINED;
+        mIconId = iconId;
+        mDisabledIconId = KeyboardIconsSet.ICON_UNDEFINED;
+        mPreviewIconId = KeyboardIconsSet.ICON_UNDEFINED;
         // Horizontal gap is divided equally to both sides of the key.
         mX = x + mHorizontalGap / 2;
         mY = y;
@@ -228,18 +217,16 @@ public class Key {
         mBackgroundType = style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_backgroundType, BACKGROUND_TYPE_NORMAL);
 
-        final KeyboardIconsSet iconsSet = params.mIconsSet;
         mVisualInsetsLeft = (int) Keyboard.Builder.getDimensionOrFraction(keyAttr,
                 R.styleable.Keyboard_Key_visualInsetsLeft, params.mBaseWidth, 0);
         mVisualInsetsRight = (int) Keyboard.Builder.getDimensionOrFraction(keyAttr,
                 R.styleable.Keyboard_Key_visualInsetsRight, params.mBaseWidth, 0);
-        mPreviewIconAttrId = KeyboardIconsSet.getIconAttrId(style.getInt(keyAttr,
-                R.styleable.Keyboard_Key_keyIconPreview, KeyboardIconsSet.ICON_UNDEFINED));
-        mIconAttrId = KeyboardIconsSet.getIconAttrId(style.getInt(keyAttr,
-                R.styleable.Keyboard_Key_keyIcon, KeyboardIconsSet.ICON_UNDEFINED));
-        mIcon = iconsSet.getIconByAttrId(mIconAttrId);
-        mDisabledIconAttrId = KeyboardIconsSet.getIconAttrId(style.getInt(keyAttr,
-                R.styleable.Keyboard_Key_keyIconDisabled, KeyboardIconsSet.ICON_UNDEFINED));
+        mPreviewIconId = style.getInt(keyAttr,
+                R.styleable.Keyboard_Key_keyIconPreview, KeyboardIconsSet.ICON_UNDEFINED);
+        mIconId = style.getInt(keyAttr,
+                R.styleable.Keyboard_Key_keyIcon, KeyboardIconsSet.ICON_UNDEFINED);
+        mDisabledIconId = style.getInt(keyAttr,
+                R.styleable.Keyboard_Key_keyIconDisabled, KeyboardIconsSet.ICON_UNDEFINED);
 
         mLabelFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags, 0);
         final boolean preserveCase = (mLabelFlags & LABEL_FLAGS_PRESERVE_CASE) != 0;
@@ -336,16 +323,15 @@ public class Key {
                 key.mCode,
                 key.mLabel,
                 key.mHintLabel,
-                key.mIconAttrId,
+                key.mIconId,
                 key.mBackgroundType,
                 // Key can be distinguishable without the following members.
                 // key.mAltCode,
                 // key.mOutputText,
                 // key.mActionFlags,
                 // key.mLabelFlags,
-                // key.mIcon,
-                // key.mDisabledIconAttrId,
-                // key.mPreviewIconAttrId,
+                // key.mDisabledIconId,
+                // key.mPreviewIconId,
                 // key.mHorizontalGap,
                 // key.mVerticalGap,
                 // key.mVisualInsetLeft,
@@ -364,7 +350,7 @@ public class Key {
                 && o.mCode == mCode
                 && TextUtils.equals(o.mLabel, mLabel)
                 && TextUtils.equals(o.mHintLabel, mHintLabel)
-                && o.mIconAttrId == mIconAttrId
+                && o.mIconId == mIconId
                 && o.mBackgroundType == mBackgroundType;
     }
 
@@ -382,7 +368,7 @@ public class Key {
     public String toString() {
         return String.format("%s/%s %d,%d %dx%d %s/%s/%s",
                 Keyboard.printableCode(mCode), mLabel, mX, mY, mWidth, mHeight, mHintLabel,
-                KeyboardIconsSet.getIconName(mIconAttrId), backgroundName(mBackgroundType));
+                KeyboardIconsSet.getIconName(mIconId), backgroundName(mBackgroundType));
     }
 
     private static String backgroundName(int backgroundType) {
@@ -412,8 +398,8 @@ public class Key {
         mHitBox.bottom = params.mOccupiedHeight + params.mBottomPadding;
     }
 
-    public boolean isSpacer() {
-        return false;
+    public final boolean isSpacer() {
+        return this instanceof Spacer;
     }
 
     public boolean isShift() {
@@ -507,14 +493,18 @@ public class Key {
         return (mLabelFlags & LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED) != 0;
     }
 
-    // TODO: Get rid of this method.
     public Drawable getIcon(KeyboardIconsSet iconSet) {
-        return mEnabled ? mIcon : iconSet.getIconByAttrId(mDisabledIconAttrId);
+        return iconSet.getIconDrawable(mIconId);
     }
 
-    // TODO: Get rid of this method.
-    public void setIcon(Drawable icon) {
-        mIcon = icon;
+    public Drawable getDisabledIcon(KeyboardIconsSet iconSet) {
+        return iconSet.getIconDrawable(mDisabledIconId);
+    }
+
+    public Drawable getPreviewIcon(KeyboardIconsSet iconSet) {
+        return mPreviewIconId != KeyboardIconsSet.ICON_UNDEFINED
+                ? iconSet.getIconDrawable(mPreviewIconId)
+                : iconSet.getIconDrawable(mIconId);
     }
 
     /**
@@ -651,13 +641,9 @@ public class Key {
         /**
          * This constructor is being used only for divider in more keys keyboard.
          */
-        public Spacer(Keyboard.Params params, Drawable icon, int x, int y, int width, int height) {
-            super(params, null, null, icon, Keyboard.CODE_UNSPECIFIED, null, x, y, width, height);
-        }
-
-        @Override
-        public boolean isSpacer() {
-            return true;
+        protected Spacer(Keyboard.Params params, int x, int y, int width, int height) {
+            super(params, null, null, KeyboardIconsSet.ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED,
+                    null, x, y, width, height);
         }
     }
 }

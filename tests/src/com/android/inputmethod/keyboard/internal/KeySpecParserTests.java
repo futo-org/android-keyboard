@@ -55,7 +55,7 @@ public class KeySpecParserTests extends AndroidTestCase {
         String actualOutputText = KeySpecParser.getOutputText(moreKeySpec);
         assertEquals(message + ": ouptputText:", expectedOutputText, actualOutputText);
 
-        int actualIcon = KeySpecParser.getIconAttrId(moreKeySpec);
+        int actualIcon = KeySpecParser.getIconId(moreKeySpec);
         assertEquals(message + ": icon:", expectedIcon, actualIcon);
 
         int actualCode = KeySpecParser.getCode(mRes, moreKeySpec);

@@ -42,6 +42,7 @@ import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
+import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -393,7 +394,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         mMoreKeysPanelCache.clear();
 
         mSpaceKey = keyboard.getKey(Keyboard.CODE_SPACE);
-        mSpaceIcon = keyboard.mIconsSet.getIconByAttrId(R.styleable.Keyboard_iconSpaceKey);
+        mSpaceIcon = keyboard.mIconsSet.getIconDrawable(KeyboardIconsSet.ICON_SPACE);
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mSpacebarTextSize = keyHeight * mSpacebarTextRatio;
         mSpacebarLocale = keyboard.mId.mLocale;
