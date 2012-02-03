@@ -212,6 +212,7 @@ public class WordComposer {
             final int lastPos = size - 1;
             char lastChar = mTypedWord.charAt(lastPos);
             mCodes.remove(lastPos);
+            // TODO: This crashes and catches fire if the code point doesn't fit a char
             mTypedWord.deleteCharAt(lastPos);
             if (Character.isUpperCase(lastChar)) mCapsCount--;
         }
@@ -221,8 +222,9 @@ public class WordComposer {
         if (mTrailingSingleQuotesCount > 0) {
             --mTrailingSingleQuotesCount;
         } else {
-            for (int i = mTypedWord.offsetByCodePoints(mTypedWord.length(), -1);
-                    i >= 0; i = mTypedWord.offsetByCodePoints(i, -1)) {
+            int i = mTypedWord.length();
+            while (i > 0) {
+                i = mTypedWord.offsetByCodePoints(i, -1);
                 if (Keyboard.CODE_SINGLE_QUOTE != mTypedWord.codePointAt(i)) break;
                 ++mTrailingSingleQuotesCount;
             }
