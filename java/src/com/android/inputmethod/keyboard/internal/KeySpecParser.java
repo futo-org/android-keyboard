@@ -325,7 +325,7 @@ public class KeySpecParser {
             return null;
         }
         if (Utils.codePointCount(text) == 1) {
-            return new String[] { text };
+            return text.codePointAt(0) == COMMA ? null : new String[] { text };
         }
 
         ArrayList<String> list = null;
@@ -333,10 +333,13 @@ public class KeySpecParser {
         for (int pos = 0; pos < size; pos++) {
             final char c = text.charAt(pos);
             if (c == COMMA) {
-                if (list == null) {
-                    list = new ArrayList<String>();
+                // Skip empty entry.
+                if (pos - start > 0) {
+                    if (list == null) {
+                        list = new ArrayList<String>();
+                    }
+                    list.add(text.substring(start, pos));
                 }
-                list.add(text.substring(start, pos));
                 // Skip comma
                 start = pos + 1;
             } else if (c == ESCAPE_CHAR) {
@@ -344,10 +347,13 @@ public class KeySpecParser {
                 pos++;
             }
         }
+        final String remain = (size - start > 0) ? text.substring(start) : null;
         if (list == null) {
-            return new String[] { text.substring(start) };
+            return remain != null ? new String[] { remain } : null;
         } else {
-            list.add(text.substring(start));
+            if (remain != null) {
+                list.add(remain);
+            }
             return list.toArray(new String[list.size()]);
         }
     }
