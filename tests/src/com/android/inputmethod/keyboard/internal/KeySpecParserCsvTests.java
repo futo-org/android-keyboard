@@ -42,7 +42,8 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
         final String actual[] = KeySpecParser.parseCsvString(value, mTestResources,
                 R.string.empty_string);
         if (expected.length == 0) {
-            assertNull(message, actual);
+            assertNull(message + ": expected=null actual=" + Arrays.toString(actual),
+                    actual);
             return;
         }
         assertEquals(message + ": expected=" + Arrays.toString(expected)
@@ -74,6 +75,11 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
 
     public void testParseCsvTextZero() {
         assertTextArray("Empty string", "");
+        assertTextArray("Empty entry", ",");
+        assertTextArray("Empty entry at beginning", ",a", "a");
+        assertTextArray("Empty entry at end", "a,", "a");
+        assertTextArray("Empty entry at middle", "a,,b", "a", "b");
+        assertTextArray("Empty entries with escape", ",a,b\\,c,,d,", "a", "b\\,c", "d");
     }
 
     public void testParseCsvTextSingle() {
@@ -82,7 +88,7 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
         assertTextArray("Single escape", "\\", "\\");
         assertTextArray("Space", " ", " ");
         assertTextArray("Single label", "abc", "abc");
-        assertTextArray("Single srrogate pairs label", SURROGATE2, SURROGATE2);
+        assertTextArray("Single surrogate pairs label", SURROGATE2, SURROGATE2);
         assertTextArray("Spaces", "   ", "   ");
         assertTextArray("Spaces in label", "a b c", "a b c");
         assertTextArray("Spaces at beginning of label", " abc", " abc");
