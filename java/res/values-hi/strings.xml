@@ -89,6 +89,7 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"ध्‍वनि इनपुट"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"मुस्कुराता चेहरा"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"रिटर्न"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"बिंदु"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"ध्‍वनि इनपुट"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"ध्‍वनि इनपुट आपकी भाषा के लिए अभी समर्थित नहीं है, पर अंग्रेज़ी में कार्य करता है."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"ध्‍वनि इनपुट Google की वाक् पहचान का उपयोग करता है. "<a href="http://m.google.com/privacy">"मोबाइल गोपनीयता नीति"</a>" लागू होती है."</string>

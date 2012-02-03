@@ -89,6 +89,7 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"Balss ievade"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Smaidoša seja"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Ievadīšanas taustiņš"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"Punkts"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Balss ievade"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Balss ievade jūsu valodā pašlaik netiek atbalstīta, taču tā ir pieejama angļu valodā."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Balss ievadei tiek izmantota Google runas atpazīšanas funkcija. Uz šīs funkcijas lietošanu attiecas "<a href="http://m.google.com/privacy">"mobilo sakaru ierīču lietošanas konfidencialitātes politika"</a>"."</string>

@@ -89,6 +89,7 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"音声入力"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"顔文字"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Enter"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"中点"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"音声入力"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"音声入力は現在英語には対応していますが、日本語には対応していません。"</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"音声入力ではGoogleの音声認識技術を利用します。"<a href="http://m.google.com/privacy">"モバイルプライバシーポリシー"</a>"が適用されます。"</string>

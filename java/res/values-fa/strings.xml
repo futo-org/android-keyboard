@@ -93,6 +93,7 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"ورودی صدا"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"صورت متبسم"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Return"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"نقطه"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"ورودی صوتی"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"ورودی صوتی در حال حاضر برای زبان شما پشتیبانی نمی شود اما برای زبان انگلیسی فعال است."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"ورودی صوتی از تشخیص صدای Google استفاده می کند. "<a href="http://m.google.com/privacy">"خط مشی رازداری Mobile "</a>" اعمال می شود."</string>

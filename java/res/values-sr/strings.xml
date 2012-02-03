@@ -89,6 +89,7 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"Гласовни унос"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Смајли"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Return"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"Тачка"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Гласовни унос"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Гласовни унос тренутно није подржан за ваш језик, али функционише на енглеском."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Гласовни унос користи Google-ову функцију за препознавање гласа. Примењује се "<a href="http://m.google.com/privacy">"политика приватности за мобилне уређаје"</a>"."</string>

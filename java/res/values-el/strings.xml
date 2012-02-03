@@ -89,6 +89,7 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"Μικρόφωνο"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Smiley"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Πλήκτρο Return"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"Κουκκίδα"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Φωνητική είσοδος"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Η φωνητική είσοδος δεν υποστηρίζεται αυτή τη στιγμή για τη γλώσσα σας, ωστόσο λειτουργεί στα Αγγλικά."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Οι φωνητικές εντολές χρησιμοποιούν την τεχνολογία αναγνώρισης φωνής της Google. Ισχύει "<a href="http://m.google.com/privacy">"η Πολιτική Απορρήτου για κινητά"</a>"."</string>

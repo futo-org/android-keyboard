@@ -89,6 +89,7 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"Entrada de voz"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Emoticono"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Tecla Intro"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"Punto"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Introducción de voz"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Actualmente la introducción de voz no está disponible en tu idioma, pero se puede utilizar en inglés."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"La entrada de voz utiliza el reconocimiento de voz de Google. Se aplica la "<a href="http://m.google.com/privacy">"Política de privacidad de Google para móviles"</a>"."</string>
