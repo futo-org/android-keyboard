@@ -221,7 +221,8 @@ public class WordComposer {
         if (mTrailingSingleQuotesCount > 0) {
             --mTrailingSingleQuotesCount;
         } else {
-            for (int i = mTypedWord.length() - 1; i >= 0; --i) {
+            for (int i = mTypedWord.offsetByCodePoints(mTypedWord.length(), -1);
+                    i >= 0; i = mTypedWord.offsetByCodePoints(i, -1)) {
                 if (Keyboard.CODE_SINGLE_QUOTE != mTypedWord.codePointAt(i)) break;
                 ++mTrailingSingleQuotesCount;
             }
