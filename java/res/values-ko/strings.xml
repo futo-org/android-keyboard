@@ -89,6 +89,7 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"음성 입력"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"웃는 얼굴"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"리턴 키"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"점"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"음성 입력"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"음성 입력은 현재 자국어로 지원되지 않으며 영어로 작동됩니다."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"음성 입력에서는 Google의 음성 인식 기능을 사용합니다. "<a href="http://m.google.com/privacy">"모바일 개인정보취급방침"</a>"이 적용됩니다."</string>

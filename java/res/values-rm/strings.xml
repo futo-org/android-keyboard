@@ -146,6 +146,8 @@
     <skip />
     <!-- no translation found for spoken_description_return (8178083177238315647) -->
     <skip />
+    <!-- no translation found for spoken_description_dot (40711082435231673) -->
+    <skip />
     <string name="voice_warning_title" msgid="4419354150908395008">"Cumonds vocals"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"\"Cumonds vocals en Vossa lingua na vegnan actualmain betg sustegnids, ma la funcziun è disponibla per englais.\""</string>
     <!-- no translation found for voice_warning_may_not_understand (5596289095878251072) -->

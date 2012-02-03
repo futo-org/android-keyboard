@@ -89,6 +89,7 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"Hlasový vstup"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Usmiata tvár"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Enter"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"Bodka"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Hlasový vstup"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Pre váš jazyk aktuálne nie je hlasový vstup podporovaný, ale funguje v angličtine."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Hlasový vstup používa rozpoznávanie hlasu Google. Na používanie hlasového vstupu sa vzťahujú "<a href="http://m.google.com/privacy">"Pravidlá ochrany osobných údajov pre mobilné služby"</a>"."</string>
