@@ -288,4 +288,16 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
                 "abc@string/multiple_labels",
                 "abcabc", "def", "ghi");
     }
+
+    public void testParseIndirectReference() {
+        assertTextArray("Indirect",
+                "@string/indirect_string", "a", "b", "c");
+        assertTextArray("Indirect with literal",
+                "1,@string/indirect_string_with_literal,2", "1", "x", "a", "b", "c", "y", "2");
+    }
+
+    public void testParseInfiniteIndirectReference() {
+        assertError("Infinite indirection",
+                "1,@string/infinite_indirection,2", "1", "infinite", "<infinite>", "loop", "2");
+    }
 }
