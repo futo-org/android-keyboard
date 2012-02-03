@@ -160,18 +160,21 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         SUGGESTION_VISIBILILTY_HIDE_VALUE
     };
 
-    // Magic space: a space that should disappear on space/apostrophe insertion, move after the
-    // punctuation on punctuation insertion, and become a real space on alpha char insertion.
-    // Weak space: a space that should be swapped only by suggestion strip punctuation.
+    private static final int SPACE_STATE_NONE = 0;
     // Double space: the state where the user pressed space twice quickly, which LatinIME
     // resolved as period-space. Undoing this converts the period to a space.
+    private static final int SPACE_STATE_DOUBLE = 1;
     // Swap punctuation: the state where a (weak or magic) space and a punctuation from the
     // suggestion strip have just been swapped. Undoing this swaps them back.
-    private static final int SPACE_STATE_NONE = 0;
-    private static final int SPACE_STATE_DOUBLE = 1;
     private static final int SPACE_STATE_SWAP_PUNCTUATION = 2;
-    private static final int SPACE_STATE_MAGIC = 3;
-    private static final int SPACE_STATE_WEAK = 4;
+    // Weak space: a space that should be swapped only by suggestion strip punctuation. Weak
+    // spaces happen when the user presses space, accepting the current suggestion (whether
+    // it's an auto-correction or not).
+    private static final int SPACE_STATE_WEAK = 3;
+    // Phantom space: a not-yet-inserted space that should get inserted on the next input,
+    // character provided it's not a separator. If it's a separator, the phantom space is dropped.
+    // Phantom spaces happen when a user chooses a word from the suggestion strip.
+    private static final int SPACE_STATE_PHANTOM = 4;
 
     // Current space state of the input method. This can be any of the above constants.
     private int mSpaceState;
@@ -1162,18 +1165,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return false;
     }
 
-    // "ic" must not be null
-    private static void maybeRemovePreviousPeriod(final InputConnection ic, CharSequence text) {
-        // When the text's first character is '.', remove the previous period
-        // if there is one.
-        final CharSequence lastOne = ic.getTextBeforeCursor(1, 0);
-        if (lastOne != null && lastOne.length() == 1
-                && lastOne.charAt(0) == Keyboard.CODE_PERIOD
-                && text.charAt(0) == Keyboard.CODE_PERIOD) {
-            ic.deleteSurroundingText(1, 0);
-        }
-    }
-
     // "ic" may be null
     private static void removeTrailingSpaceWhileInBatchEdit(final InputConnection ic) {
         if (ic == null) return;
@@ -1234,26 +1225,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private void insertPunctuationFromSuggestionStrip(final InputConnection ic, final int code) {
-        final CharSequence beforeText = ic != null ? ic.getTextBeforeCursor(1, 0) : null;
-        final int toLeft = TextUtils.isEmpty(beforeText) ? 0 : beforeText.charAt(0);
-        final boolean shouldRegisterSwapPunctuation;
-        // If we have a space left of the cursor and it's a weak or a magic space, then we should
-        // swap it, and override the space state with SPACESTATE_SWAP_PUNCTUATION.
-        // To swap it, we fool handleSeparator to think the previous space state was a
-        // magic space.
-        if (Keyboard.CODE_SPACE == toLeft && mSpaceState == SPACE_STATE_WEAK
-                && mSettingsValues.isMagicSpaceSwapper(code)) {
-            mSpaceState = SPACE_STATE_MAGIC;
-            shouldRegisterSwapPunctuation = true;
-        } else {
-            shouldRegisterSwapPunctuation = false;
-        }
         onCodeInput(code, new int[] { code },
-                KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
-                KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
-        if (shouldRegisterSwapPunctuation) {
-            mSpaceState = SPACE_STATE_SWAP_PUNCTUATION;
-        }
+                KeyboardActionListener.SUGGESTION_STRIP_COORDINATE,
+                KeyboardActionListener.SUGGESTION_STRIP_COORDINATE);
     }
 
     // Implementation of {@link KeyboardActionListener}.
@@ -1331,7 +1305,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (ic == null) return;
         ic.beginBatchEdit();
         commitTyped(ic);
-        maybeRemovePreviousPeriod(ic, text);
+        text = specificTldProcessingOnTextInput(ic, text);
+        if (SPACE_STATE_PHANTOM == mSpaceState) {
+            sendKeyChar((char)Keyboard.CODE_SPACE);
+        }
         ic.commitText(text, 1);
         ic.endBatchEdit();
         mKeyboardSwitcher.updateShiftState();
@@ -1339,6 +1316,24 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mSpaceState = SPACE_STATE_NONE;
         mEnteredText = text;
         resetComposingState(true /* alsoResetLastComposedWord */);
+    }
+
+    // ic may not be null
+    private CharSequence specificTldProcessingOnTextInput(final InputConnection ic,
+            final CharSequence text) {
+        if (text.length() <= 1 || text.charAt(0) != Keyboard.CODE_PERIOD
+                || !Character.isLetter(text.charAt(1))) {
+            // Not a tld: do nothing.
+            return text;
+        }
+        final CharSequence lastOne = ic.getTextBeforeCursor(1, 0);
+        if (lastOne != null && lastOne.length() == 1
+                && lastOne.charAt(0) == Keyboard.CODE_PERIOD) {
+            mSpaceState = SPACE_STATE_NONE;
+            return text.subSequence(1, text.length());
+        } else {
+            return text;
+        }
     }
 
     @Override
@@ -1492,13 +1487,18 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // "ic" may be null without this crashing, but the behavior will be really strange
     private void handleCharacterWhileInBatchEdit(final int primaryCode, final int[] keyCodes,
             final int x, final int y, final int spaceState, final InputConnection ic) {
-        if (SPACE_STATE_MAGIC == spaceState
-                && mSettingsValues.isMagicSpaceStripper(primaryCode)) {
-            if (null != ic) removeTrailingSpaceWhileInBatchEdit(ic);
-        }
-
         boolean isComposingWord = mWordComposer.isComposingWord();
         int code = primaryCode;
+
+        if (SPACE_STATE_PHANTOM == spaceState &&
+                !mSettingsValues.isSymbolExcludedFromWordSeparators(primaryCode)) {
+            if (isComposingWord) {
+                // Sanity check
+                throw new RuntimeException("Should not be composing here");
+            }
+            sendKeyChar((char)Keyboard.CODE_SPACE);
+        }
+
         if ((isAlphabet(code) || mSettingsValues.isSymbolExcludedFromWordSeparators(code))
                 && isSuggestionsRequested() && !isCursorTouchingWord()) {
             if (!isComposingWord) {
@@ -1529,10 +1529,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mHandler.postUpdateSuggestions();
         } else {
             sendKeyChar((char)code);
-        }
-        if (SPACE_STATE_MAGIC == spaceState
-                && mSettingsValues.isMagicSpaceSwapper(primaryCode)) {
-            if (null != ic) swapSwapperAndSpaceWhileInBatchEdit(ic);
         }
 
         if (mSettingsValues.isWordSeparator(code)) {
@@ -1575,24 +1571,28 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         }
 
-        final boolean swapMagicSpace;
-        if (Keyboard.CODE_ENTER == primaryCode && (SPACE_STATE_MAGIC == spaceState
-                || SPACE_STATE_SWAP_PUNCTUATION == spaceState)) {
+        final boolean swapWeakSpace;
+        if (Keyboard.CODE_ENTER == primaryCode && SPACE_STATE_SWAP_PUNCTUATION == spaceState) {
             removeTrailingSpaceWhileInBatchEdit(ic);
-            swapMagicSpace = false;
-        } else if (SPACE_STATE_MAGIC == spaceState) {
+            swapWeakSpace = false;
+        } else if ((SPACE_STATE_WEAK == spaceState || SPACE_STATE_SWAP_PUNCTUATION == spaceState)
+                && KeyboardActionListener.SUGGESTION_STRIP_COORDINATE == x) {
             if (mSettingsValues.isMagicSpaceSwapper(primaryCode)) {
-                swapMagicSpace = true;
+                swapWeakSpace = true;
             } else {
-                swapMagicSpace = false;
+                swapWeakSpace = false;
                 if (mSettingsValues.isMagicSpaceStripper(primaryCode)) {
                     removeTrailingSpaceWhileInBatchEdit(ic);
                 }
             }
         } else {
-            swapMagicSpace = false;
+            swapWeakSpace = false;
         }
 
+        // TODO: rethink interactions of sendKeyChar, commitText("\n") and actions. sendKeyChar
+        // with a CODE_ENTER parameter will have the default InputMethodService implementation
+        // possibly redirect on the keyboard action. That may be the right thing to do, but
+        // on Shift+Enter, it's generally not, so we may want to do the redirection right here.
         sendKeyChar((char)primaryCode);
 
         if (Keyboard.CODE_SPACE == primaryCode) {
@@ -1610,9 +1610,17 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 mHandler.postUpdateBigramPredictions();
             }
         } else {
-            if (swapMagicSpace) {
+            if (swapWeakSpace) {
                 swapSwapperAndSpaceWhileInBatchEdit(ic);
-                mSpaceState = SPACE_STATE_MAGIC;
+                mSpaceState = SPACE_STATE_WEAK;
+            } else if (SPACE_STATE_PHANTOM == spaceState) {
+                // If we are in phantom space state, and the user presses a separator, we want to
+                // stay in phantom space state so that the next keypress has a chance to add the
+                // space. For example, if I type "Good dat", pick "day" from the suggestion strip
+                // then insert a comma and go on to typing the next word, I want the space to be
+                // inserted automatically before the next word, the same way it is when I don't
+                // input the comma.
+                mSpaceState = SPACE_STATE_PHANTOM;
             }
 
             // Set punctuation right away. onUpdateSelection will fire but tests whether it is
@@ -1921,10 +1929,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         } else {
             addToOnlyBigramDictionary(suggestion, 1);
         }
-        // Follow it with a space
-        if (mInputAttributes.mInsertSpaceOnPickSuggestionManually) {
-            sendMagicSpace();
-        }
+        mSpaceState = SPACE_STATE_PHANTOM;
+        // TODO: is this necessary?
+        mKeyboardSwitcher.updateShiftState();
 
         // We should show the "Touch again to save" hint if the user pressed the first entry
         // AND either:
@@ -2257,12 +2264,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     public boolean isWordSeparator(int code) {
         return mSettingsValues.isWordSeparator(code);
-    }
-
-    private void sendMagicSpace() {
-        sendKeyChar((char)Keyboard.CODE_SPACE);
-        mSpaceState = SPACE_STATE_MAGIC;
-        mKeyboardSwitcher.updateShiftState();
     }
 
     public boolean preferCapitalization() {
