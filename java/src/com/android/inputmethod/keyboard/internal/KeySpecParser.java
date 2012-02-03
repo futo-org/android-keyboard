@@ -43,6 +43,8 @@ import java.util.Arrays;
 public class KeySpecParser {
     private static final boolean DEBUG = LatinImeLogger.sDBG;
 
+    private static final int MAX_STRING_REFERENCE_INDIRECTION = 10;
+
     // Constants for parsing.
     private static int COMMA = ',';
     private static final char ESCAPE_CHAR = '\\';
@@ -274,35 +276,51 @@ public class KeySpecParser {
         return resId;
     }
 
-    private static String resolveStringResource(String text, Resources res, int packageNameResId) {
-        final int size = text.length();
-        if (size < PREFIX_STRING.length()) {
-            return text;
-        }
-
-        StringBuilder sb = null;
-        for (int pos = 0; pos < size; pos++) {
-            final char c = text.charAt(pos);
-            if (c == PREFIX_AT && text.startsWith(PREFIX_STRING, pos)) {
-                if (sb == null) {
-                    sb = new StringBuilder(text.substring(0, pos));
-                }
-                final int end = searchResourceNameEnd(text, pos + PREFIX_STRING.length());
-                final String resName = text.substring(pos + 1, end);
-                final int resId = getResourceId(res, resName, packageNameResId);
-                sb.append(res.getString(resId));
-                pos = end - 1;
-            } else if (c == ESCAPE_CHAR) {
-                if (sb != null) {
-                    // Append both escape character and escaped character.
-                    sb.append(text.substring(pos, Math.min(pos + 2, size)));
-                }
-                pos++;
-            } else if (sb != null) {
-                sb.append(c);
+    private static String resolveStringResource(String rawText, Resources res,
+            int packageNameResId) {
+        int level = 0;
+        String text = rawText;
+        StringBuilder sb;
+        do {
+            level++;
+            if (level >= MAX_STRING_REFERENCE_INDIRECTION) {
+                throw new RuntimeException("too many @string/resource indirection: " + text);
             }
-        }
-        return (sb == null) ? text : sb.toString();
+
+            final int size = text.length();
+            if (size < PREFIX_STRING.length()) {
+                return text;
+            }
+
+            sb = null;
+            for (int pos = 0; pos < size; pos++) {
+                final char c = text.charAt(pos);
+                if (c == PREFIX_AT && text.startsWith(PREFIX_STRING, pos)) {
+                    if (sb == null) {
+                        sb = new StringBuilder(text.substring(0, pos));
+                    }
+                    final int end = searchResourceNameEnd(text, pos + PREFIX_STRING.length());
+                    final String resName = text.substring(pos + 1, end);
+                    final int resId = getResourceId(res, resName, packageNameResId);
+                    sb.append(res.getString(resId));
+                    pos = end - 1;
+                } else if (c == ESCAPE_CHAR) {
+                    if (sb != null) {
+                        // Append both escape character and escaped character.
+                        sb.append(text.substring(pos, Math.min(pos + 2, size)));
+                    }
+                    pos++;
+                } else if (sb != null) {
+                    sb.append(c);
+                }
+            }
+
+            if (sb != null) {
+                text = sb.toString();
+            }
+        } while (sb != null);
+
+        return text;
     }
 
     private static int searchResourceNameEnd(String text, int start) {
