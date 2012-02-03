@@ -48,14 +48,17 @@ public interface KeyboardActionListener {
      *            presses of a key adjacent to the intended key.
      * @param x x-coordinate pixel of touched event. If {@link #onCodeInput} is not called by
      *            {@link PointerTracker#onTouchEvent} or so, the value should be
-     *            {@link #NOT_A_TOUCH_COORDINATE}.
+     *            {@link #NOT_A_TOUCH_COORDINATE}. If it's called on insertion from the suggestion
+     *            strip, it should be {@link #SUGGESTION_STRIP_COORDINATE}.
      * @param y y-coordinate pixel of touched event. If {@link #onCodeInput} is not called by
      *            {@link PointerTracker#onTouchEvent} or so, the value should be
-     *            {@link #NOT_A_TOUCH_COORDINATE}.
+     *            {@link #NOT_A_TOUCH_COORDINATE}. If it's called on insertion from the suggestion
+     *            strip, it should be {@link #SUGGESTION_STRIP_COORDINATE}.
      */
     public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y);
 
     public static final int NOT_A_TOUCH_COORDINATE = -1;
+    public static final int SUGGESTION_STRIP_COORDINATE = -2;
 
     /**
      * Sends a sequence of characters to the listener.
