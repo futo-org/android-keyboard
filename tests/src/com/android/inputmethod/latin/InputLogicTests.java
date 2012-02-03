@@ -291,4 +291,13 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         assertEquals("manual pick then space then type", WORD1_TO_TYPE + WORD2_TO_TYPE,
                 mTextView.getText().toString());
     }
+
+    public void testDeleteWholeComposingWord() {
+        final String WORD_TO_TYPE = "this";
+        type(WORD_TO_TYPE);
+        for (int i = 0; i < WORD_TO_TYPE.length(); ++i) {
+            type(Keyboard.CODE_DELETE);
+        }
+        assertEquals("delete whole composing word", "", mTextView.getText().toString());
+    }
 }
