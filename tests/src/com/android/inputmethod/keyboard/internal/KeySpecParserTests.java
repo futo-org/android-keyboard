@@ -27,15 +27,18 @@ import java.util.Arrays;
 public class KeySpecParserTests extends AndroidTestCase {
     private Resources mRes;
 
-    private static final int ICON_SETTINGS_KEY = R.styleable.Keyboard_iconSettingsKey;
     private static final int ICON_UNDEFINED = KeyboardIconsSet.ICON_UNDEFINED;
 
-    private static final String CODE_SETTINGS = "@integer/key_settings";
-    private static final String ICON_SETTINGS = "@icon/settingsKey";
+    private static final String CODE_SETTINGS_RES = "integer/key_settings";
+    private static final String ICON_SETTINGS_NAME = "settingsKey";
+
+    private static final String CODE_SETTINGS = "@" + CODE_SETTINGS_RES;
+    private static final String ICON_SETTINGS = "@icon/" + ICON_SETTINGS_NAME;
     private static final String CODE_NON_EXISTING = "@integer/non_existing";
     private static final String ICON_NON_EXISTING = "@icon/non_existing";
 
     private int mCodeSettings;
+    private int mSettingsIconId;
 
     @Override
     protected void setUp() {
@@ -43,8 +46,9 @@ public class KeySpecParserTests extends AndroidTestCase {
         mRes = res;
 
         final String packageName = res.getResourcePackageName(R.string.english_ime_name);
-        final int codeId = res.getIdentifier(CODE_SETTINGS.substring(1), null, packageName);
+        final int codeId = res.getIdentifier(CODE_SETTINGS_RES, null, packageName);
         mCodeSettings = res.getInteger(codeId);
+        mSettingsIconId = KeyboardIconsSet.getIconId(ICON_SETTINGS_NAME);
     }
 
     private void assertParser(String message, String moreKeySpec, String expectedLabel,
@@ -202,13 +206,13 @@ public class KeySpecParserTests extends AndroidTestCase {
 
     public void testIconAndCode() {
         assertParser("Icon with outputText", ICON_SETTINGS + "|abc",
-                null, "abc", ICON_SETTINGS_KEY, Keyboard.CODE_OUTPUT_TEXT);
+                null, "abc", mSettingsIconId, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Icon with outputText starts with at", ICON_SETTINGS + "|@bc",
-                null, "@bc", ICON_SETTINGS_KEY, Keyboard.CODE_OUTPUT_TEXT);
+                null, "@bc", mSettingsIconId, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Icon with outputText contains at", ICON_SETTINGS + "|a@c",
-                null, "a@c", ICON_SETTINGS_KEY, Keyboard.CODE_OUTPUT_TEXT);
+                null, "a@c", mSettingsIconId, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Icon with escaped at outputText", ICON_SETTINGS + "|\\@bc",
-                null, "@bc", ICON_SETTINGS_KEY, Keyboard.CODE_OUTPUT_TEXT);
+                null, "@bc", mSettingsIconId, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Label starts with at and code", "@bc|" + CODE_SETTINGS,
                 "@bc", null, ICON_UNDEFINED, mCodeSettings);
         assertParser("Label contains at and code", "a@c|" + CODE_SETTINGS,
@@ -216,7 +220,7 @@ public class KeySpecParserTests extends AndroidTestCase {
         assertParser("Escaped at label with code", "\\@bc|" + CODE_SETTINGS,
                 "@bc", null, ICON_UNDEFINED, mCodeSettings);
         assertParser("Icon with code", ICON_SETTINGS + "|" + CODE_SETTINGS,
-                null, null, ICON_SETTINGS_KEY, mCodeSettings);
+                null, null, mSettingsIconId, mCodeSettings);
     }
 
     public void testFormatError() {
@@ -229,11 +233,11 @@ public class KeySpecParserTests extends AndroidTestCase {
         assertParserError("Empty outputText with label", "a|",
                 "a", null, ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
         assertParserError("Empty outputText with icon", ICON_SETTINGS + "|",
-                null, null, ICON_SETTINGS_KEY, Keyboard.CODE_UNSPECIFIED);
+                null, null, mSettingsIconId, Keyboard.CODE_UNSPECIFIED);
         assertParserError("Empty icon and code", "|",
                 null, null, ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
         assertParserError("Icon without code", ICON_SETTINGS,
-                null, null, ICON_SETTINGS_KEY, Keyboard.CODE_UNSPECIFIED);
+                null, null, mSettingsIconId, Keyboard.CODE_UNSPECIFIED);
         assertParserError("Non existing icon", ICON_NON_EXISTING + "|abc",
                 null, "abc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParserError("Non existing code", "abc|" + CODE_NON_EXISTING,
@@ -245,10 +249,10 @@ public class KeySpecParserTests extends AndroidTestCase {
         assertParserError("Multiple bar with label and code", "a|" + CODE_SETTINGS + "|c",
                 "a", null, ICON_UNDEFINED, mCodeSettings);
         assertParserError("Multiple bar with icon and outputText", ICON_SETTINGS + "|b|c",
-                null, null, ICON_SETTINGS_KEY, Keyboard.CODE_UNSPECIFIED);
+                null, null, mSettingsIconId, Keyboard.CODE_UNSPECIFIED);
         assertParserError("Multiple bar with icon and code",
                 ICON_SETTINGS + "|" + CODE_SETTINGS + "|c",
-                null, null, ICON_SETTINGS_KEY, mCodeSettings);
+                null, null, mSettingsIconId, mCodeSettings);
     }
 
     private static void assertMoreKeys(String message, String[] moreKeys,
