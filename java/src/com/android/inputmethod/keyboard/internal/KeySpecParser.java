@@ -179,11 +179,11 @@ public class KeySpecParser {
         return Keyboard.CODE_OUTPUT_TEXT;
     }
 
-    public static int getIconAttrId(String moreKeySpec) {
+    public static int getIconId(String moreKeySpec) {
         if (hasIcon(moreKeySpec)) {
             final int end = moreKeySpec.indexOf(LABEL_END, PREFIX_ICON.length());
             final String name = moreKeySpec.substring(PREFIX_ICON.length(), end);
-            return KeyboardIconsSet.getIconAttrId(name);
+            return KeyboardIconsSet.getIconId(name);
         }
         return KeyboardIconsSet.ICON_UNDEFINED;
     }
