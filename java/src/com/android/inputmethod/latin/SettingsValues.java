@@ -93,7 +93,8 @@ public class SettingsValues {
         mMagicSpaceStrippers = res.getString(R.string.magic_space_stripping_symbols);
         mMagicSpaceSwappers = res.getString(R.string.magic_space_swapping_symbols);
         if (LatinImeLogger.sDBG) {
-            for (int i = 0; i < mMagicSpaceStrippers.length(); ++i) {
+            final int length = mMagicSpaceStrippers.length();
+            for (int i = 0; i < length; i = mMagicSpaceStrippers.offsetByCodePoints(i, 1)) {
                 if (isMagicSpaceSwapper(mMagicSpaceStrippers.codePointAt(i))) {
                     throw new RuntimeException("Char code " + mMagicSpaceStrippers.codePointAt(i)
                             + " is both a magic space swapper and stripper.");
@@ -234,10 +235,12 @@ public class SettingsValues {
     }
 
     public boolean isMagicSpaceStripper(int code) {
+        // TODO: this does not work if the code does not fit in a char
         return mMagicSpaceStrippers.contains(String.valueOf((char)code));
     }
 
     public boolean isMagicSpaceSwapper(int code) {
+        // TODO: this does not work if the code does not fit in a char
         return mMagicSpaceSwappers.contains(String.valueOf((char)code));
     }
 
