@@ -221,6 +221,7 @@ class Correction {
 
     bool mMatching;
     bool mProximityMatching;
+    bool mAdditionalProximityMatching;
     bool mExceeding;
     bool mTransposing;
     bool mSkipping;

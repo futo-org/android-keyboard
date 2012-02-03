@@ -47,9 +47,9 @@ struct CorrectionState {
     bool mExceeding;
     bool mSkipping;
     bool mProximityMatching;
+    bool mAdditionalProximityMatching;
 
     bool mNeedsToTraverseAllNodes;
-
 };
 
 inline static void initCorrectionState(CorrectionState *state, const int rootPos,
@@ -77,7 +77,7 @@ inline static void initCorrectionState(CorrectionState *state, const int rootPos
     state->mTransposing = false;
     state->mExceeding = false;
     state->mSkipping = false;
-
+    state->mAdditionalProximityMatching = false;
 }
 
 } // namespace latinime
