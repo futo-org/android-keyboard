@@ -132,7 +132,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             switch (msg.what) {
             case MSG_REPEAT_KEY:
                 tracker.onRepeatKey(tracker.getKey());
-                startKeyRepeatTimer(tracker);
+                startKeyRepeatTimer(tracker, mParams.mKeyRepeatInterval);
                 break;
             case MSG_LONGPRESS_KEY:
                 if (tracker != null) {
@@ -144,11 +144,14 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             }
         }
 
+        private void startKeyRepeatTimer(PointerTracker tracker, long delay) {
+            sendMessageDelayed(obtainMessage(MSG_REPEAT_KEY, tracker), delay);
+        }
+
         @Override
         public void startKeyRepeatTimer(PointerTracker tracker) {
             mInKeyRepeat = true;
-            sendMessageDelayed(obtainMessage(MSG_REPEAT_KEY, tracker),
-                    mParams.mKeyRepeatStartTimeout);
+            startKeyRepeatTimer(tracker, mParams.mKeyRepeatStartTimeout);
         }
 
         public void cancelKeyRepeatTimer() {
