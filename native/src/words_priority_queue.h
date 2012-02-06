@@ -17,6 +17,7 @@
 #ifndef LATINIME_WORDS_PRIORITY_QUEUE_H
 #define LATINIME_WORDS_PRIORITY_QUEUE_H
 
+#include <cstring> // for memcpy()
 #include <iostream>
 #include <queue>
 #include "defines.h"
@@ -93,7 +94,8 @@ class WordsPriorityQueue {
 
     int outputSuggestions(int *frequencies, unsigned short *outputChars) {
         mHighestSuggestedWord = 0;
-        const unsigned int size = min(MAX_WORDS, mSuggestions.size());
+        const unsigned int size = min(
+              MAX_WORDS, static_cast<unsigned int>(mSuggestions.size()));
         int index = size - 1;
         while (!mSuggestions.empty() && index >= 0) {
             SuggestedWord* sw = mSuggestions.top();
