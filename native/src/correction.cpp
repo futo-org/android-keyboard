@@ -24,6 +24,7 @@
 
 #include "char_utils.h"
 #include "correction.h"
+#include "defines.h"
 #include "dictionary.h"
 #include "proximity_info.h"
 

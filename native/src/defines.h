@@ -241,8 +241,8 @@ static void prof_out(void) {
 #define MIN_USER_TYPED_LENGTH_FOR_MULTIPLE_WORD_SUGGESTION 3
 #define MIN_USER_TYPED_LENGTH_FOR_EXCESSIVE_CHARACTER_SUGGESTION 3
 
-#define min(a,b) ((a)<(b)?(a):(b))
-#define max(a,b) ((a)>(b)?(a):(b))
+template<typename T> inline T min(T a, T b) { return a < b ? a : b; }
+template<typename T> inline T max(T a, T b) { return a > b ? a : b; }
 
 // The ratio of neutral area radius to sweet spot radius.
 #define NEUTRAL_AREA_RADIUS_RATIO 1.3f
