@@ -2201,9 +2201,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // new composing text.
         final int restartLength = mWordComposer.size();
         if (DEBUG) {
-            final String wordBeforeCursor =
-                ic.getTextBeforeCursor(restartLength + 1, 0).subSequence(0, restartLength)
-                .toString();
+            final String wordBeforeCursor = ic.getTextBeforeCursor(restartLength, 0).toString();
             if (!TextUtils.equals(mWordComposer.getTypedWord(), wordBeforeCursor)) {
                 throw new RuntimeException("restartSuggestionsOnManuallyPickedTypedWord "
                         + "check failed: we thought we were reverting \""
@@ -2212,8 +2210,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                         + wordBeforeCursor + "\"");
             }
         }
-        // Warning: this +1 takes into account the extra space added by the manual pick process.
-        ic.deleteSurroundingText(restartLength + 1, 0);
+        ic.deleteSurroundingText(restartLength, 0);
         ic.setComposingText(mWordComposer.getTypedWord(), 1);
         mHandler.cancelUpdateBigramPredictions();
         mHandler.postUpdateSuggestions();
