@@ -51,6 +51,8 @@ public class LastComposedWord {
     public static final LastComposedWord NOT_A_COMPOSED_WORD =
             new LastComposedWord(null, null, null, "", "");
 
+    // Warning: this is using the passed objects as is and fully expects them to be
+    // immutable. Do not fiddle with their contents after you passed them to this constructor.
     public LastComposedWord(final ArrayList<int[]> codes, final int[] xCoordinates,
             final int[] yCoordinates, final String typedWord, final String autoCorrection) {
         mCodes = codes;
