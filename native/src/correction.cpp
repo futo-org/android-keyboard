@@ -641,7 +641,7 @@ inline static int getQuoteCount(const unsigned short* word, const int length) {
 }
 
 inline static bool isUpperCase(unsigned short c) {
-     return isAsciiUpper(toBaseChar(c));
+    return isAsciiUpper(toBaseChar(c));
 }
 
 //////////////////////
