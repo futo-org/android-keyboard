@@ -23,8 +23,8 @@
 >
     <Key
         latin:keyLabel="{"
-        latin:keyOutputText="@string/output_text_for_left_curly_bracket" />
+        latin:code="@integer/keycode_for_left_curly_bracket" />
     <Key
         latin:keyLabel="}"
-        latin:keyOutputText="@string/output_text_for_right_curly_bracket" />
+        latin:code="@integer/keycode_for_right_curly_bracket" />
 </merge>

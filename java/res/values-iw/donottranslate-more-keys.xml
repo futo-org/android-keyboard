@@ -22,12 +22,12 @@
     <string name="more_keys_for_plus">±,﬩</string>
     <!-- The all letters need to be mirrored are found at
          http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt -->
-    <string name="output_text_for_left_parenthesis">)</string>
-    <string name="output_text_for_right_parenthesis">(</string>
+    <integer name="keycode_for_left_parenthesis">0x0029</integer>
+    <integer name="keycode_for_right_parenthesis">0x0028</integer>
     <string name="more_keys_for_left_parenthesis">[|],{|},&lt;|&gt;</string>
     <string name="more_keys_for_right_parenthesis">]|[,}|{,&gt;|&lt;</string>
-    <string name="output_text_for_less_than">&gt;</string>
-    <string name="output_text_for_greater_than">&lt;</string>
+    <integer name="keycode_for_less_than">0x003e</integer>
+    <integer name="keycode_for_greater_than">0x003c</integer>
     <!-- \u2264: LESS-THAN OR EQUAL TO
          \u2265: GREATER-THAN EQUAL TO
          \u00ab: LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
@@ -45,10 +45,10 @@
          \u201f: DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
     <string name="more_keys_for_less_than">\u2264|\u2265,\u00ab|\u00bb,\u2039|\u203a</string>
     <string name="more_keys_for_greater_than">\u2265|\u2264,\u00bb|\u00ab,\u203a|\u2039</string>
-    <string name="output_text_for_left_square_bracket">]</string>
-    <string name="output_text_for_right_square_bracket">[</string>
-    <string name="output_text_for_left_curly_bracket">}</string>
-    <string name="output_text_for_right_curly_bracket">{</string>
+    <integer name="keycode_for_left_square_bracket">0x005d</integer>
+    <integer name="keycode_for_right_square_bracket">0x005b</integer>
+    <integer name="keycode_for_left_curly_bracket">0x007d</integer>
+    <integer name="keycode_for_right_curly_bracket">0x007b</integer>
     <!-- Note: Neither DroidSans nor Roboto have a glyph for DOUBLE HIGH-REVERSED-9 QUOTATION MARK. -->
     <!-- <string name="more_keys_for_double_quote">\u201c,\u201d,\u201e,\u201f,\u00ab,\u00bb</string> -->
     <!-- The 4-more keys will be displayed in order of "3,1,2,4". -->

@@ -247,14 +247,14 @@ public class Key {
         mMaxMoreKeysColumn = style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_maxMoreKeysColumn, params.mMaxMiniKeyboardColumn);
 
-        mLabel = adjustCaseOfStringForKeyboardId(style.getString(
-                keyAttr, R.styleable.Keyboard_Key_keyLabel), preserveCase, params.mId);
-        mHintLabel = adjustCaseOfStringForKeyboardId(style.getString(
-                keyAttr, R.styleable.Keyboard_Key_keyHintLabel), preserveCase, params.mId);
-        String outputText = adjustCaseOfStringForKeyboardId(style.getString(
-                keyAttr, R.styleable.Keyboard_Key_keyOutputText), preserveCase, params.mId);
-        final int code = style.getInt(
-                keyAttr, R.styleable.Keyboard_Key_code, Keyboard.CODE_UNSPECIFIED);
+        mLabel = adjustCaseOfStringForKeyboardId(style.getString(keyAttr,
+                R.styleable.Keyboard_Key_keyLabel), preserveCase, params.mId);
+        mHintLabel = adjustCaseOfStringForKeyboardId(style.getString(keyAttr,
+                R.styleable.Keyboard_Key_keyHintLabel), preserveCase, params.mId);
+        String outputText = adjustCaseOfStringForKeyboardId(style.getString(keyAttr,
+                R.styleable.Keyboard_Key_keyOutputText), preserveCase, params.mId);
+        final int code = style.getInt(keyAttr,
+                R.styleable.Keyboard_Key_code, Keyboard.CODE_UNSPECIFIED);
         // Choose the first letter of the label as primary code if not specified.
         if (code == Keyboard.CODE_UNSPECIFIED && TextUtils.isEmpty(outputText)
                 && !TextUtils.isEmpty(mLabel)) {
@@ -274,7 +274,12 @@ public class Key {
                 mCode = Keyboard.CODE_OUTPUT_TEXT;
             }
         } else if (code == Keyboard.CODE_UNSPECIFIED && outputText != null) {
-            mCode = Keyboard.CODE_OUTPUT_TEXT;
+            if (Utils.codePointCount(outputText) == 1) {
+                mCode = outputText.codePointAt(0);
+                outputText = null;
+            } else {
+                mCode = Keyboard.CODE_OUTPUT_TEXT;
+            }
         } else {
             mCode = adjustCaseOfCodeForKeyboardId(code, preserveCase, params.mId);
         }
