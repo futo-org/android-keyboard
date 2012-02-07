@@ -154,12 +154,12 @@
 
     <!-- Spoken description for unknown keyboard keys. -->
     <string name="spoken_description_unknown">Key code %d</string>
-    <!-- Spoken description for the "Shift" keyboard key. -->
+    <!-- Spoken description for the "Shift" keyboard key when "Shift" is off. -->
     <string name="spoken_description_shift">Shift</string>
-    <!-- Spoken description for the "Shift" keyboard key's pressed state. -->
-    <string name="spoken_description_shift_shifted">Shift enabled</string>
-    <!-- Spoken description for the "Shift" keyboard key's pressed state. -->
-    <string name="spoken_description_caps_lock">Caps lock enabled</string>
+    <!-- Spoken description for the "Shift" keyboard key when "Shift" is on. -->
+    <string name="spoken_description_shift_shifted">Shift on (tap to disable)</string>
+    <!-- Spoken description for the "Shift" keyboard key when "Caps lock" is on. -->
+    <string name="spoken_description_caps_lock">Caps lock on (tap to disable)</string>
     <!-- Spoken description for the "Delete" keyboard key. -->
     <string name="spoken_description_delete">Delete</string>
     <!-- Spoken description for the "To Symbol" keyboard key. -->
@@ -182,6 +182,22 @@
     <string name="spoken_description_return">Return</string>
     <!-- Spoken description for the "\u2022" (BULLET) keyboard key. -->
     <string name="spoken_description_dot">Dot</string>
+
+    <!-- Spoken feedback after turning "Shift" mode on. -->
+    <string name="spoken_description_shiftmode_on">Shift enabled</string>
+    <!-- Spoken feedback after turning "Caps lock" mode on. -->
+    <string name="spoken_description_shiftmode_locked">Caps lock enabled</string>
+    <!-- Spoken feedback after turning "Shift" mode off. -->
+    <string name="spoken_description_shiftmode_off">Shift disabled</string>
+
+    <!-- Spoken feedback after changing to the symbols keyboard. -->
+    <string name="spoken_description_mode_symbol">Symbols mode</string>
+    <!-- Spoken feedback after changing to the alphanumeric keyboard. -->
+    <string name="spoken_description_mode_alpha">Letters mode</string>
+    <!-- Spoken feedback after changing to the phone dialer keyboard. -->
+    <string name="spoken_description_mode_phone">Phone mode</string>
+    <!-- Spoken feedback after changing to the shifted phone dialer (symbols) keyboard. -->
+    <string name="spoken_description_mode_phone_shift">Phone symbols mode</string>
 
     <!-- Voice related labels -->
 
