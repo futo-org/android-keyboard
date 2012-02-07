@@ -186,7 +186,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private View mKeyPreviewBackingView;
     private View mSuggestionsContainer;
     private SuggestionsView mSuggestionsView;
-    private Suggest mSuggest;
+    /* package for tests */ Suggest mSuggest;
     private CompletionInfo[] mApplicationSpecifiedCompletions;
 
     private InputMethodManagerCompatWrapper mImm;
