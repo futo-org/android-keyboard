@@ -111,6 +111,20 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         mLatinIME.onStartInputView(ei, false);
         mLatinIME.onCreateInputMethodInterface().startInput(ic, ei);
         mInputConnection = ic;
+        // Wait for the main dictionary to be loaded (we need it for auto-correction tests)
+        int remainingAttempts = 10;
+        while (remainingAttempts > 0 && !mLatinIME.mSuggest.hasMainDictionary()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // Don't do much
+            } finally {
+                --remainingAttempts;
+            }
+        }
+        if (!mLatinIME.mSuggest.hasMainDictionary()) {
+            throw new RuntimeException("Can't initialize the main dictionary");
+        }
     }
 
     // type(int) and type(String): helper methods to send a code point resp. a string to LatinIME.
