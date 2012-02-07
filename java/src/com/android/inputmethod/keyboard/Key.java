@@ -228,9 +228,9 @@ public class Key {
         mDisabledIconId = style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_keyIconDisabled, KeyboardIconsSet.ICON_UNDEFINED);
 
-        mLabelFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags, 0);
+        mLabelFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags);
         final boolean preserveCase = (mLabelFlags & LABEL_FLAGS_PRESERVE_CASE) != 0;
-        int actionFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyActionFlags, 0);
+        int actionFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyActionFlags);
         final String[] additionalMoreKeys = style.getStringArray(
                 keyAttr, R.styleable.Keyboard_Key_additionalMoreKeys);
         final String[] moreKeys = KeySpecParser.insertAddtionalMoreKeys(style.getStringArray(
