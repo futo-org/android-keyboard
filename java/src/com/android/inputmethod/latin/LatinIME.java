@@ -2211,6 +2211,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         }
         ic.deleteSurroundingText(restartLength, 0);
+        mComposingStateManager.onStartComposingText();
         ic.setComposingText(mWordComposer.getTypedWord(), 1);
         mHandler.cancelUpdateBigramPredictions();
         mHandler.postUpdateSuggestions();
