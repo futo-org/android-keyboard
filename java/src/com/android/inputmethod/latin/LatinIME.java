@@ -1224,7 +1224,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return mOptionsDialog != null && mOptionsDialog.isShowing();
     }
 
-    private void insertPunctuationFromSuggestionStrip(final InputConnection ic, final int code) {
+    private void insertPunctuationFromSuggestionStrip(final int code) {
         onCodeInput(code, new int[] { code },
                 KeyboardActionListener.SUGGESTION_STRIP_COORDINATE,
                 KeyboardActionListener.SUGGESTION_STRIP_COORDINATE);
@@ -1909,7 +1909,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // for punctuation entered through the suggestion strip, it should be swapped
             // if it was a magic or a weak space. This is meant to help in case the user
             // pressed space on purpose of displaying the suggestion strip punctuation.
-            insertPunctuationFromSuggestionStrip(ic, primaryCode);
+            insertPunctuationFromSuggestionStrip(primaryCode);
             // TODO: the following endBatchEdit seems useless, check
             if (ic != null) {
                 ic.endBatchEdit();
