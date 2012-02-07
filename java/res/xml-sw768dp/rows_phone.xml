@@ -78,7 +78,7 @@
         <Key
             latin:keyStyle="num6KeyStyle" />
         <Key
-            latin:keyStyle="returnKeyStyle"
+            latin:keyStyle="enterKeyStyle"
             latin:keyXPos="-11.172%p"
             latin:keyWidth="fillRight" />
     </Row>

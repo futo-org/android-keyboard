@@ -68,7 +68,7 @@
         <Key
             latin:keyStyle="numSpaceKeyStyle" />
         <Key
-            latin:keyStyle="returnKeyStyle"
+            latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillRight" />
     </Row>
 </merge>

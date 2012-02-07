@@ -106,7 +106,7 @@
             latin:keyLabel="ץ"
             latin:moreKeys="ץ׳" />
         <Key
-            latin:keyStyle="returnKeyStyle"
+            latin:keyStyle="enterKeyStyle"
             latin:keyXPos="-10.400%p"
             latin:keyWidth="fillBoth" />
     </Row>

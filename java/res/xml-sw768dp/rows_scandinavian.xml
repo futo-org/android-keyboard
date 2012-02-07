@@ -102,7 +102,7 @@
             latin:keyLabel="@string/keylabel_for_scandinavia_row2_11"
             latin:moreKeys="@string/more_keys_for_scandinavia_row2_11" />
         <Key
-            latin:keyStyle="returnKeyStyle"
+            latin:keyStyle="enterKeyStyle"
             latin:keyXPos="-9.375%p"
             latin:keyWidth="fillBoth" />
     </Row>

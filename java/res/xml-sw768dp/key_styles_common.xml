@@ -71,12 +71,8 @@
         latin:keyIcon="iconDeleteKey"
         latin:keyActionFlags="isRepeatable|noKeyPreview"
         latin:backgroundType="functional" />
-    <key-style
-        latin:styleName="returnKeyStyle"
-        latin:code="@integer/key_return"
-        latin:keyIcon="iconReturnKey"
-        latin:keyActionFlags="noKeyPreview"
-        latin:backgroundType="functional" />
+    <include
+        latin:keyboardLayout="@xml/key_styles_enter_tablet" />
     <key-style
         latin:styleName="spaceKeyStyle"
         latin:code="@integer/key_space"

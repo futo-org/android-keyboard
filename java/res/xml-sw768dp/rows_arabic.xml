@@ -144,7 +144,7 @@
         <Key
             latin:keyLabel="ط" />
         <Key
-            latin:keyStyle="returnKeyStyle"
+            latin:keyStyle="enterKeyStyle"
             latin:keyXPos="-9.375%p"
             latin:keyWidth="fillBoth" />
     </Row>

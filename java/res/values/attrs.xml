@@ -232,10 +232,7 @@
              been replaced, those remaining entries are appended at the end of moreKeys. -->
         <attr name="additionalMoreKeys" format="string" />
         <!-- Maximum column of more keys keyboard -->
-        <attr name="maxMoreKeysColumn" format="integer">
-            <!-- This should be aligned with  -->
-            <flag name="fixedWidthMoreKeysColumn" value="0x8000000" />
-        </attr>
+        <attr name="maxMoreKeysColumn" format="integer" />
         <attr name="backgroundType" format="enum">
             <!-- This should be aligned with Key.BACKGROUND_TYPE_* -->
             <enum name="normal" value="0" />
@@ -281,10 +278,13 @@
             <!-- If true, use keyShiftedLetterHintActivatedColor for the shifted letter hint and
                  keyTextInactivatedColor for the primary key top label. -->
             <flag name="shiftedLetterActivated" value="0x10000" />
+            <!-- If true, use EditorInfo.actionLabel for the key label. -->
+            <flag name="fromCustomActionLabel" value="0x20000" />
         </attr>
         <!-- The icon to display on the key instead of the label. -->
         <attr name="keyIcon" format="enum">
             <!-- This should be aligned with the KeyboardIconsSet.ICON_* -->
+            <enum name="iconUndefined" value="0" />
             <enum name="iconShiftKey" value="1" />
             <enum name="iconDeleteKey" value="2" />
             <enum name="iconSettingsKey" value="3" />
@@ -368,6 +368,7 @@
         <attr name="clobberSettingsKey" format="boolean" />
         <attr name="shortcutKeyEnabled" format="boolean" />
         <attr name="hasShortcutKey" format="boolean" />
+        <attr name="isMultiLine" format="boolean" />
         <attr name="imeAction" format="enum">
             <!-- This should be aligned with EditorInfo.IME_ACTION_* -->
             <enum name="actionUnspecified" value="0" />
@@ -378,6 +379,8 @@
             <enum name="actionNext" value="5" />
             <enum name="actionDone" value="6" />
             <enum name="actionPrevious" value="7" />
+            <!--  This should be aligned with KeyboardId.IME_ACTION_* -->
+            <enum name="actionCustomLabel" value="0x100" />
         </attr>
         <attr name="localeCode" format="string" />
         <attr name="languageCode" format="string" />

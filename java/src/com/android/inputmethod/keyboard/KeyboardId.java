@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.inputmethod.EditorInfo;
 
@@ -25,10 +26,8 @@ import com.android.inputmethod.compat.InputTypeCompatUtils;
 import java.util.Arrays;
 import java.util.Locale;
 
-// TODO: Move to com.android.inputmethod.keyboard.internal package.
 /**
- * Represents the parameters necessary to construct a new LatinKeyboard,
- * which also serve as a unique identifier for each keyboard type.
+ * Unique identifier for each keyboard type.
  */
 public class KeyboardId {
     public static final int MODE_TEXT = 0;
@@ -54,34 +53,37 @@ public class KeyboardId {
     private static final int F2KEY_MODE_SHORTCUT_IME = 2;
     private static final int F2KEY_MODE_SHORTCUT_IME_OR_SETTINGS = 3;
 
+    private static final int IME_ACTION_CUSTOM_LABEL = EditorInfo.IME_MASK_ACTION + 1;
+
     public final Locale mLocale;
     public final int mOrientation;
     public final int mWidth;
     public final int mMode;
     public final int mElementId;
-    private final int mInputType;
-    private final int mImeOptions;
+    private final EditorInfo mEditorInfo;
     private final boolean mSettingsKeyEnabled;
     public final boolean mClobberSettingsKey;
     public final boolean mShortcutKeyEnabled;
     public final boolean mHasShortcutKey;
+    public final String mCustomActionLabel;
 
     private final int mHashCode;
 
     public KeyboardId(int elementId, Locale locale, int orientation, int width, int mode,
-            int inputType, int imeOptions, boolean settingsKeyEnabled, boolean clobberSettingsKey,
+            EditorInfo editorInfo, boolean settingsKeyEnabled, boolean clobberSettingsKey,
             boolean shortcutKeyEnabled, boolean hasShortcutKey) {
         this.mLocale = locale;
         this.mOrientation = orientation;
         this.mWidth = width;
         this.mMode = mode;
         this.mElementId = elementId;
-        this.mInputType = inputType;
-        this.mImeOptions = imeOptions;
+        this.mEditorInfo = editorInfo;
         this.mSettingsKeyEnabled = settingsKeyEnabled;
         this.mClobberSettingsKey = clobberSettingsKey;
         this.mShortcutKeyEnabled = shortcutKeyEnabled;
         this.mHasShortcutKey = hasShortcutKey;
+        this.mCustomActionLabel = (editorInfo.actionLabel != null)
+                ? editorInfo.actionLabel.toString() : null;
 
         this.mHashCode = hashCode(this);
     }
@@ -98,6 +100,7 @@ public class KeyboardId {
                 id.mClobberSettingsKey,
                 id.mShortcutKeyEnabled,
                 id.mHasShortcutKey,
+                id.isMultiLine(),
                 id.imeAction(),
                 id.mLocale
         });
@@ -116,6 +119,7 @@ public class KeyboardId {
                 && other.mClobberSettingsKey == this.mClobberSettingsKey
                 && other.mShortcutKeyEnabled == this.mShortcutKeyEnabled
                 && other.mHasShortcutKey == this.mHasShortcutKey
+                && other.isMultiLine() == this.isMultiLine()
                 && other.imeAction() == this.imeAction()
                 && other.mLocale.equals(this.mLocale);
     }
@@ -151,22 +155,30 @@ public class KeyboardId {
 
     public boolean navigateAction() {
         // Note: Turn off checking navigation flag to show TAB key for now.
-        boolean navigateAction = InputTypeCompatUtils.isWebInputType(mInputType);
+        boolean navigateAction = InputTypeCompatUtils.isWebInputType(mEditorInfo.inputType);
 //                || EditorInfoCompatUtils.hasFlagNavigateNext(mImeOptions)
 //                || EditorInfoCompatUtils.hasFlagNavigatePrevious(mImeOptions);
         return navigateAction;
     }
 
     public boolean passwordInput() {
-        return InputTypeCompatUtils.isPasswordInputType(mInputType)
-                || InputTypeCompatUtils.isVisiblePasswordInputType(mInputType);
+        final int inputType = mEditorInfo.inputType;
+        return InputTypeCompatUtils.isPasswordInputType(inputType)
+                || InputTypeCompatUtils.isVisiblePasswordInputType(inputType);
+    }
+
+    public boolean isMultiLine() {
+        return (mEditorInfo.inputType & InputType.TYPE_TEXT_FLAG_MULTI_LINE) != 0;
     }
 
     public int imeAction() {
-        // We are interested only in {@link EditorInfo#IME_MASK_ACTION} enum value and
-        // {@link EditorInfo#IME_FLAG_NO_ENTER_ACTION}.
-        return mImeOptions & (
-                EditorInfo.IME_MASK_ACTION | EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+        if ((mEditorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
+            return EditorInfo.IME_ACTION_NONE;
+        } else if (mEditorInfo.actionLabel != null) {
+            return IME_ACTION_CUSTOM_LABEL;
+        } else {
+            return mEditorInfo.imeOptions & EditorInfo.IME_MASK_ACTION;
+        }
     }
 
     public boolean hasSettingsKey() {
@@ -205,7 +217,7 @@ public class KeyboardId {
                 mLocale,
                 (mOrientation == 1 ? "port" : "land"), mWidth,
                 modeName(mMode),
-                EditorInfoCompatUtils.imeOptionsName(imeAction()),
+                imeAction(),
                 f2KeyModeName(f2KeyMode()),
                 (mClobberSettingsKey ? " clobberSettingsKey" : ""),
                 (navigateAction() ? " navigateAction" : ""),
@@ -250,6 +262,11 @@ public class KeyboardId {
         case MODE_NUMBER: return "number";
         default: return null;
         }
+    }
+
+    public static String actionName(int actionId) {
+        return (actionId == IME_ACTION_CUSTOM_LABEL) ? "actionCustomLabel"
+                : EditorInfoCompatUtils.imeActionName(actionId);
     }
 
     public static String f2KeyModeName(int f2KeyMode) {

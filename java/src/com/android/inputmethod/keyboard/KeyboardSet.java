@@ -62,6 +62,8 @@ public class KeyboardSet {
             new HashMap<KeyboardId, SoftReference<Keyboard>>();
     private static final KeysCache sKeysCache = new KeysCache();
 
+    private static final EditorInfo EMPTY_EDITOR_INFO = new EditorInfo();
+
     public static class KeyboardSetException extends RuntimeException {
         public final KeyboardId mKeyboardId;
         public KeyboardSetException(Throwable cause, KeyboardId keyboardId) {
@@ -94,8 +96,7 @@ public class KeyboardSet {
 
     static class Params {
         int mMode;
-        int mInputType;
-        int mImeOptions;
+        EditorInfo mEditorInfo;
         boolean mTouchPositionCorrectionEnabled;
         boolean mSettingsKeyEnabled;
         boolean mVoiceKeyEnabled;
@@ -192,9 +193,8 @@ public class KeyboardSet {
         final boolean hasShortcutKey = params.mVoiceKeyEnabled
                 && (isSymbols != params.mVoiceKeyOnMain);
         return new KeyboardId(keyboardSetElementId, params.mLocale, params.mOrientation,
-                params.mWidth, params.mMode, params.mInputType, params.mImeOptions,
-                params.mSettingsKeyEnabled, params.mNoSettingsKey, params.mVoiceKeyEnabled,
-                hasShortcutKey);
+                params.mWidth, params.mMode, params.mEditorInfo, params.mSettingsKeyEnabled,
+                params.mNoSettingsKey, params.mVoiceKeyEnabled, hasShortcutKey);
     }
 
     public static class Builder {
@@ -213,10 +213,7 @@ public class KeyboardSet {
             final Params params = mParams;
 
             params.mMode = Utils.getKeyboardMode(editorInfo);
-            if (editorInfo != null) {
-                params.mInputType = editorInfo.inputType;
-                params.mImeOptions = editorInfo.imeOptions;
-            }
+            params.mEditorInfo = (editorInfo != null) ? editorInfo : EMPTY_EDITOR_INFO;
             params.mNoSettingsKey = Utils.inPrivateImeOptions(
                     mPackageName, LatinIME.IME_OPTION_NO_SETTINGS_KEY, mEditorInfo);
         }
@@ -232,7 +229,8 @@ public class KeyboardSet {
                 boolean touchPositionCorrectionEnabled) {
             final boolean deprecatedForceAscii = Utils.inPrivateImeOptions(
                     mPackageName, LatinIME.IME_OPTION_FORCE_ASCII, mEditorInfo);
-            final boolean forceAscii = EditorInfoCompatUtils.hasFlagForceAscii(mParams.mImeOptions)
+            final boolean forceAscii = EditorInfoCompatUtils.hasFlagForceAscii(
+                    mParams.mEditorInfo.imeOptions)
                     || deprecatedForceAscii;
             mParams.mLocale = (forceAscii && !asciiCapable) ? Locale.US : inputLocale;
             mParams.mTouchPositionCorrectionEnabled = touchPositionCorrectionEnabled;

@@ -86,7 +86,7 @@
         <Key
             latin:keyLabel="ь" />
         <Key
-            latin:keyStyle="returnKeyStyle"
+            latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillBoth" />
     </Row>
     <Row
