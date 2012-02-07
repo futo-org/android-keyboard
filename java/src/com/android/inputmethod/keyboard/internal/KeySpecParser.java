@@ -133,18 +133,28 @@ public class KeySpecParser {
         return label;
     }
 
+    private static String getOutputTextInternal(String moreKeySpec) {
+        final int end = indexOfLabelEnd(moreKeySpec, 0);
+        if (end <= 0) {
+            return null;
+        }
+        if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0) {
+            throw new KeySpecParserError("Multiple " + LABEL_END + ": " + moreKeySpec);
+        }
+        return parseEscape(moreKeySpec.substring(end + /* LABEL_END */1));
+    }
+
     public static String getOutputText(String moreKeySpec) {
         if (hasCode(moreKeySpec)) {
             return null;
         }
-        final int end = indexOfLabelEnd(moreKeySpec, 0);
-        if (end > 0) {
-            if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0) {
-                    throw new KeySpecParserError("Multiple " + LABEL_END + ": "
-                            + moreKeySpec);
+        final String outputText = getOutputTextInternal(moreKeySpec);
+        if (outputText != null) {
+            if (Utils.codePointCount(outputText) == 1) {
+                // If output text is one code point, it should be treated as a code.
+                // See {@link #getCode(Resources, String)}.
+                return null;
             }
-            final String outputText = parseEscape(
-                    moreKeySpec.substring(end + /* LABEL_END */1));
             if (!TextUtils.isEmpty(outputText)) {
                 return outputText;
             }
@@ -170,7 +180,13 @@ public class KeySpecParser {
             final int code = res.getInteger(resId);
             return code;
         }
-        if (indexOfLabelEnd(moreKeySpec, 0) > 0) {
+        final String outputText = getOutputTextInternal(moreKeySpec);
+        if (outputText != null) {
+            // If output text is one code point, it should be treated as a code.
+            // See {@link #getOutputText(String)}.
+            if (Utils.codePointCount(outputText) == 1) {
+                return outputText.codePointAt(0);
+            }
             return Keyboard.CODE_OUTPUT_TEXT;
         }
         final String label = getLabel(moreKeySpec);

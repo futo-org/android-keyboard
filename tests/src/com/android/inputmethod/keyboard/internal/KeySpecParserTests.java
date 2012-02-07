@@ -109,6 +109,10 @@ public class KeySpecParserTests extends AndroidTestCase {
                 "@", null, ICON_UNDEFINED, '@');
         assertParser("Single escaped at", "\\@",
                 "@", null, ICON_UNDEFINED, '@');
+        assertParser("Single output text letter", "a|a",
+                "a", null, ICON_UNDEFINED, 'a');
+        assertParser("Single surrogate pair outputText", "G Clef|" + PAIR1,
+                "G Clef", null, ICON_UNDEFINED, CODE1);
         assertParser("Single letter with outputText", "a|abc",
                 "a", "abc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Single letter with surrogate outputText", "a|" + SURROGATE1,
@@ -132,10 +136,10 @@ public class KeySpecParserTests extends AndroidTestCase {
                 "a", "a@c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
         assertParser("Single letter with escaped at outputText", "a|\\@bc",
                 "a", "@bc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
-        assertParser("Single escaped escape with outputText", "\\\\|\\\\",
-                "\\", "\\", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
-        assertParser("Single escaped bar with outputText", "\\||\\|",
-                "|", "|", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+        assertParser("Single escaped escape with single outputText", "\\\\|\\\\",
+                "\\", null, ICON_UNDEFINED, '\\');
+        assertParser("Single escaped bar with single outputText", "\\||\\|",
+                "|", null, ICON_UNDEFINED, '|');
         assertParser("Single letter with code", "a|" + CODE_SETTINGS,
                 "a", null, ICON_UNDEFINED, mCodeSettings);
     }
