@@ -23,7 +23,7 @@
         <item name="keyboardHeight">@dimen/keyboardHeight</item>
         <item name="maxKeyboardHeight">@fraction/maxKeyboardHeight</item>
         <item name="minKeyboardHeight">@fraction/minKeyboardHeight</item>
-        <item name="moreKeysTemplate">@xml/kbd_mini_keyboard_template</item>
+        <item name="moreKeysTemplate">@xml/kbd_more_keys_keyboard_template</item>
         <item name="keyboardTopPadding">@fraction/keyboard_top_padding</item>
         <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding</item>
         <item name="keyboardHorizontalEdgesPadding">@fraction/keyboard_horizontal_edges_padding</item>
@@ -60,7 +60,7 @@
         <item name="keyPreviewHeight">@dimen/key_preview_height</item>
         <item name="keyPreviewTextRatio">@fraction/key_preview_text_ratio</item>
         <item name="keyPreviewLingerTimeout">@integer/config_key_preview_linger_timeout</item>
-        <item name="moreKeysLayout">@layout/mini_keyboard</item>
+        <item name="moreKeysLayout">@layout/more_keys_keyboard</item>
         <item name="verticalCorrection">@dimen/keyboard_vertical_correction</item>
         <item name="shadowColor">#BB000000</item>
         <item name="shadowRadius">2.75</item>
@@ -76,7 +76,7 @@
         <item name="longPressShiftKeyTimeout">@integer/config_long_press_shift_key_timeout</item>
         <item name="longPressSpaceKeyTimeout">@integer/config_long_press_space_key_timeout</item>
         <item name="ignoreSpecialKeyTimeout">@integer/config_ignore_special_key_timeout</item>
-        <item name="showMiniKeyboardAtTouchedPoint">@bool/config_show_mini_keyboard_at_touched_point</item>
+        <item name="showMoreKeysKeyboardAtTouchedPoint">@bool/config_show_more_keys_keyboard_at_touched_point</item>
     </style>
     <style
         name="LatinKeyboardView"
@@ -88,7 +88,7 @@
         <item name="spacebarTextShadowColor">#80000000</item>
     </style>
     <style
-        name="MiniKeyboard"
+        name="MoreKeysKeyboard"
         parent="Keyboard"
     >
         <item name="keyboardTopPadding">0dip</item>
@@ -96,16 +96,16 @@
         <item name="horizontalGap">0dip</item>
     </style>
     <style
-        name="MiniKeyboardView"
+        name="MoreKeysKeyboardView"
         parent="KeyboardView"
     >
         <item name="keyBackground">@drawable/btn_keyboard_key_popup</item>
-        <item name="verticalCorrection">@dimen/mini_keyboard_vertical_correction</item>
+        <item name="verticalCorrection">@dimen/more_keys_keyboard_vertical_correction</item>
     </style>
-    <style name="MiniKeyboardPanelStyle">
+    <style name="MoreKeysKeyboardPanelStyle">
         <item name="android:background">@drawable/keyboard_popup_panel_background</item>
-        <item name="android:paddingLeft">@dimen/mini_keyboard_horizontal_edges_padding</item>
-        <item name="android:paddingRight">@dimen/mini_keyboard_horizontal_edges_padding</item>
+        <item name="android:paddingLeft">@dimen/more_keys_keyboard_horizontal_edges_padding</item>
+        <item name="android:paddingRight">@dimen/more_keys_keyboard_horizontal_edges_padding</item>
     </style>
     <style name="SuggestionsStripBackgroundStyle">
         <item name="android:background">@drawable/keyboard_suggest_strip</item>
@@ -127,7 +127,7 @@
     </style>
     <style
         name="MoreSuggestionsViewStyle"
-        parent="MiniKeyboardView"
+        parent="MoreKeysKeyboardView"
     >
     </style>
     <style name="SuggestionBackgroundStyle">
@@ -196,7 +196,7 @@
         <item name="spacebarTextShadowColor">#D0FFFFFF</item>
     </style>
     <style
-        name="MiniKeyboard.Stone"
+        name="MoreKeysKeyboard.Stone"
         parent="Keyboard.Stone"
     >
         <item name="keyboardTopPadding">0dip</item>
@@ -204,8 +204,8 @@
         <item name="horizontalGap">0dip</item>
     </style>
     <style
-        name="MiniKeyboardView.Stone"
-        parent="MiniKeyboardView"
+        name="MoreKeysKeyboardView.Stone"
+        parent="MoreKeysKeyboardView"
     >
         <item name="keyBackground">@drawable/btn_keyboard_key_stone</item>
         <item name="keyTextColor">#FF000000</item>
@@ -263,7 +263,7 @@
         <item name="spacebarTextShadowColor">#80000000</item>
     </style>
     <style
-        name="MiniKeyboard.Gingerbread"
+        name="MoreKeysKeyboard.Gingerbread"
         parent="Keyboard.Gingerbread"
     >
         <item name="keyboardTopPadding">0dip</item>
@@ -271,8 +271,8 @@
         <item name="horizontalGap">0dip</item>
     </style>
     <style
-        name="MiniKeyboardView.Gingerbread"
-        parent="MiniKeyboardView"
+        name="MoreKeysKeyboardView.Gingerbread"
+        parent="MoreKeysKeyboardView"
     >
         <item name="android:background">@null</item>
     </style>
@@ -322,7 +322,7 @@
         <item name="spacebarTextShadowColor">#80000000</item>
     </style>
     <style
-        name="MiniKeyboard.IceCreamSandwich"
+        name="MoreKeysKeyboard.IceCreamSandwich"
         parent="Keyboard.IceCreamSandwich"
     >
         <item name="keyboardTopPadding">0dip</item>
@@ -330,16 +330,16 @@
         <item name="horizontalGap">0dip</item>
     </style>
     <style
-        name="MiniKeyboardView.IceCreamSandwich"
-        parent="MiniKeyboardView"
+        name="MoreKeysKeyboardView.IceCreamSandwich"
+        parent="MoreKeysKeyboardView"
     >
         <item name="android:background">@null</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_popup_ics</item>
     </style>
-    <style name="MiniKeyboardPanelStyle.IceCreamSandwich">
+    <style name="MoreKeysKeyboardPanelStyle.IceCreamSandwich">
         <item name="android:background">@drawable/keyboard_popup_panel_background_holo</item>
-        <item name="android:paddingLeft">@dimen/mini_keyboard_horizontal_edges_padding_ics</item>
-        <item name="android:paddingRight">@dimen/mini_keyboard_horizontal_edges_padding_ics</item>
+        <item name="android:paddingLeft">@dimen/more_keys_keyboard_horizontal_edges_padding_ics</item>
+        <item name="android:paddingRight">@dimen/more_keys_keyboard_horizontal_edges_padding_ics</item>
     </style>
     <style name="SuggestionsStripBackgroundStyle.IceCreamSandwich">
         <item name="android:background">@drawable/keyboard_suggest_strip_holo</item>
@@ -365,7 +365,7 @@
     </style>
     <style
         name="MoreSuggestionsViewStyle.IceCreamSandwich"
-        parent="MiniKeyboardView.IceCreamSandwich"
+        parent="MoreKeysKeyboardView.IceCreamSandwich"
     >
     </style>
     <style name="SuggestionBackgroundStyle.IceCreamSandwich">
@@ -373,11 +373,11 @@
     </style>
     <style
         name="SuggestionPreviewBackgroundStyle.IceCreamSandwich"
-        parent="MiniKeyboardPanelStyle.IceCreamSandwich"
+        parent="MoreKeysKeyboardPanelStyle.IceCreamSandwich"
     >
     </style>
-    <style name="MiniKeyboardAnimation">
-        <item name="android:windowEnterAnimation">@anim/mini_keyboard_fadein</item>
-        <item name="android:windowExitAnimation">@anim/mini_keyboard_fadeout</item>
+    <style name="MoreKeysKeyboardAnimation">
+        <item name="android:windowEnterAnimation">@anim/more_keys_keyboard_fadein</item>
+        <item name="android:windowExitAnimation">@anim/more_keys_keyboard_fadeout</item>
     </style>
 </resources>

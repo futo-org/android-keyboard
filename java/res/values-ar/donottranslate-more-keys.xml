@@ -38,7 +38,7 @@
     <!-- In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label. -->
     <!-- TODO: Will introduce "grouping marks" to the more characters specification. -->
     <string name="more_keys_for_punctuation">"\u060c,\u061b,\u061f,!,:,-,/,\',\",\u0640\u0640\u0640|\u0640,\u064e,\u0650,\u064b,\u064d,\u0670,\u0656,\u0655,\u0654,\u0653,\u0652,\u0651,\u064c,\u064f"</string>
-    <integer name="mini_keyboard_column_for_punctuation">9</integer>
+    <integer name="more_keys_keyboard_column_for_punctuation">9</integer>
     <string name="keyhintlabel_for_punctuation">\u064b</string>
     <string name="keylabel_for_symbols_1">"١"</string>
     <string name="keylabel_for_symbols_2">"٢"</string>

@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        style="?attr/miniKeyboardPanelStyle"
+        style="?attr/moreKeysKeyboardPanelStyle"
         >
     <com.android.inputmethod.latin.suggestions.MoreSuggestionsView
             xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"

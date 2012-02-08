@@ -19,9 +19,9 @@
         <item name="keyboardStyle">@style/Keyboard.Stone.Bold</item>
         <item name="keyboardViewStyle">@style/KeyboardView.Stone.Bold</item>
         <item name="latinKeyboardViewStyle">@style/LatinKeyboardView.Stone.Bold</item>
-        <item name="miniKeyboardStyle">@style/MiniKeyboard.Stone</item>
-        <item name="miniKeyboardViewStyle">@style/MiniKeyboardView.Stone</item>
-        <item name="miniKeyboardPanelStyle">@style/MiniKeyboardPanelStyle</item>
+        <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.Stone</item>
+        <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.Stone</item>
+        <item name="moreKeysKeyboardPanelStyle">@style/MoreKeysKeyboardPanelStyle</item>
         <item name="suggestionsStripBackgroundStyle">@style/SuggestionsStripBackgroundStyle</item>
         <item name="suggestionsViewStyle">@style/SuggestionsViewStyle</item>
         <item name="moreSuggestionsViewStyle">@style/MoreSuggestionsViewStyle</item>

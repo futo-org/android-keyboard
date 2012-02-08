@@ -16,11 +16,11 @@
 
 package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.keyboard.MiniKeyboard.Builder.MiniKeyboardParams;
-
 import android.test.AndroidTestCase;
 
-public class MiniKeyboardBuilderTests extends AndroidTestCase {
+import com.android.inputmethod.keyboard.MoreKeysKeyboard.Builder.MoreKeysKeyboardParams;
+
+public class MoreKeysKeyboardBuilderTests extends AndroidTestCase {
     private static final int MAX_COLUMNS = 5;
     private static final int WIDTH = 10;
     private static final int HEIGHT = 10;
@@ -41,24 +41,24 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     }
 
     public void testLayoutError() {
-        MiniKeyboardParams params = null;
+        MoreKeysKeyboardParams params = null;
         try {
-            params = new MiniKeyboardParams(10, MAX_COLUMNS + 1, WIDTH, HEIGHT, WIDTH * 2,
+            params = new MoreKeysKeyboardParams(10, MAX_COLUMNS + 1, WIDTH, HEIGHT, WIDTH * 2,
                     WIDTH * MAX_COLUMNS);
             fail("Should throw IllegalArgumentException");
         } catch (IllegalArgumentException e) {
-            // Too small keyboard to hold mini keyboard.
+            // Too small keyboard to hold more keys keyboard.
         }
-        assertNull("Too small keyboard to hold mini keyboard", params);
+        assertNull("Too small keyboard to hold more keys keyboard", params);
     }
 
-    // Mini keyboard layout test.
-    // "[n]" represents n-th key position in mini keyboard.
+    // More keys keyboard layout test.
+    // "[n]" represents n-th key position in more keys keyboard.
     // "[1]" is the default key.
 
     // [1]
     public void testLayout1KeyM0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(1, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(1, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_M0, KEYBOARD_WIDTH);
         assertEquals("1 key M0 columns", 1, params.mNumColumns);
         assertEquals("1 key M0 rows", 1, params.mNumRows);
@@ -71,7 +71,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // |[1]
     public void testLayout1KeyL0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(1, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(1, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L0, KEYBOARD_WIDTH);
         assertEquals("1 key L0 columns", 1, params.mNumColumns);
         assertEquals("1 key L0 rows", 1, params.mNumRows);
@@ -84,7 +84,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // |___ [1]
     public void testLayout1KeyL1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(1, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(1, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L1, KEYBOARD_WIDTH);
         assertEquals("1 key L1 columns", 1, params.mNumColumns);
         assertEquals("1 key L1 rows", 1, params.mNumRows);
@@ -97,7 +97,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // |___ ___ [1]
     public void testLayout1KeyL2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(1, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(1, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L2, KEYBOARD_WIDTH);
         assertEquals("1 key L2 columns", 1, params.mNumColumns);
         assertEquals("1 key L2 rows", 1, params.mNumRows);
@@ -110,7 +110,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [1]|
     public void testLayout1KeyR0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(1, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(1, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R0, KEYBOARD_WIDTH);
         assertEquals("1 key R0 columns", 1, params.mNumColumns);
         assertEquals("1 key R0 rows", 1, params.mNumRows);
@@ -123,7 +123,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [1] ___|
     public void testLayout1KeyR1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(1, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(1, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R1, KEYBOARD_WIDTH);
         assertEquals("1 key R1 columns", 1, params.mNumColumns);
         assertEquals("1 key R1 rows", 1, params.mNumRows);
@@ -136,7 +136,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [1] ___ ___|
     public void testLayout1KeyR2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(1, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(1, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R2, KEYBOARD_WIDTH);
         assertEquals("1 key R2 columns", 1, params.mNumColumns);
         assertEquals("1 key R2 rows", 1, params.mNumRows);
@@ -149,7 +149,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [1] [2]
     public void testLayout2KeyM0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(2, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(2, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_M0, KEYBOARD_WIDTH);
         assertEquals("2 key M0 columns", 2, params.mNumColumns);
         assertEquals("2 key M0 rows", 1, params.mNumRows);
@@ -163,7 +163,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // |[1] [2]
     public void testLayout2KeyL0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(2, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(2, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L0, KEYBOARD_WIDTH);
         assertEquals("2 key L0 columns", 2, params.mNumColumns);
         assertEquals("2 key L0 rows", 1, params.mNumRows);
@@ -177,7 +177,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // |___ [1] [2]
     public void testLayout2KeyL1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(2, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(2, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L1, KEYBOARD_WIDTH);
         assertEquals("2 key L1 columns", 2, params.mNumColumns);
         assertEquals("2 key L1 rows", 1, params.mNumRows);
@@ -191,7 +191,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // |___ ___ [1] [2]
     public void testLayout2KeyL2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(2, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(2, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L2, KEYBOARD_WIDTH);
         assertEquals("2 key L2 columns", 2, params.mNumColumns);
         assertEquals("2 key L2 rows", 1, params.mNumRows);
@@ -205,7 +205,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [2] [1]|
     public void testLayout2KeyR0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(2, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(2, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R0, KEYBOARD_WIDTH);
         assertEquals("2 key R0 columns", 2, params.mNumColumns);
         assertEquals("2 key R0 rows", 1, params.mNumRows);
@@ -219,7 +219,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [2] [1] ___|
     public void testLayout2KeyR1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(2, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(2, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R1, KEYBOARD_WIDTH);
         assertEquals("2 key R1 columns", 2, params.mNumColumns);
         assertEquals("2 key R1 rows", 1, params.mNumRows);
@@ -233,7 +233,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [1] [2] ___ ___|
     public void testLayout2KeyR2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(2, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(2, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R2, KEYBOARD_WIDTH);
         assertEquals("2 key R2 columns", 2, params.mNumColumns);
         assertEquals("2 key R2 rows", 1, params.mNumRows);
@@ -247,7 +247,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [3] [1] [2]
     public void testLayout3KeyM0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(3, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(3, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_M0, KEYBOARD_WIDTH);
         assertEquals("3 key columns", 3, params.mNumColumns);
         assertEquals("3 key rows", 1, params.mNumRows);
@@ -262,7 +262,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // |[1] [2] [3]
     public void testLayout3KeyL0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(3, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(3, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L0, KEYBOARD_WIDTH);
         assertEquals("3 key L0 columns", 3, params.mNumColumns);
         assertEquals("3 key L0 rows", 1, params.mNumRows);
@@ -277,7 +277,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // |___ [1] [2] [3]
     public void testLayout3KeyL1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(3, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(3, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L1, KEYBOARD_WIDTH);
         assertEquals("3 key L1 columns", 3, params.mNumColumns);
         assertEquals("3 key L1 rows", 1, params.mNumRows);
@@ -292,7 +292,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // |___ ___ [3] [1] [2]
     public void testLayout3KeyL2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(3, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(3, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L2, KEYBOARD_WIDTH);
         assertEquals("3 key L2 columns", 3, params.mNumColumns);
         assertEquals("3 key L2 rows", 1, params.mNumRows);
@@ -307,7 +307,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [3] [2] [1]|
     public void testLayout3KeyR0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(3, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(3, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R0, KEYBOARD_WIDTH);
         assertEquals("3 key R0 columns", 3, params.mNumColumns);
         assertEquals("3 key R0 rows", 1, params.mNumRows);
@@ -322,7 +322,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [3] [2] [1] ___|
     public void testLayout3KeyR1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(3, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(3, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R1, KEYBOARD_WIDTH);
         assertEquals("3 key R1 columns", 3, params.mNumColumns);
         assertEquals("3 key R1 rows", 1, params.mNumRows);
@@ -337,7 +337,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [3] [1] [2] ___ ___|
     public void testLayout3KeyR2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(3, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(3, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R2, KEYBOARD_WIDTH);
         assertEquals("3 key R2 columns", 3, params.mNumColumns);
         assertEquals("3 key R2 rows", 1, params.mNumRows);
@@ -352,7 +352,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [3] [1] [2] [4]
     public void testLayout4KeyM0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(4, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(4, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_M0, KEYBOARD_WIDTH);
         assertEquals("4 key columns", 4, params.mNumColumns);
         assertEquals("4 key rows", 1, params.mNumRows);
@@ -368,7 +368,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // |[1] [2] [3] [4]
     public void testLayout4KeyL0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(4, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(4, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L0, KEYBOARD_WIDTH);
         assertEquals("4 key L0 columns", 4, params.mNumColumns);
         assertEquals("4 key L0 rows", 1, params.mNumRows);
@@ -384,7 +384,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // |___ [1] [2] [3] [4]
     public void testLayout4KeyL1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(4, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(4, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L1, KEYBOARD_WIDTH);
         assertEquals("4 key L1 columns", 4, params.mNumColumns);
         assertEquals("4 key L1 rows", 1, params.mNumRows);
@@ -400,7 +400,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // |___ ___ [3] [1] [2] [4]
     public void testLayout4KeyL2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(4, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(4, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L2, KEYBOARD_WIDTH);
         assertEquals("4 key L2 columns", 4, params.mNumColumns);
         assertEquals("4 key L2 rows", 1, params.mNumRows);
@@ -416,7 +416,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [4] [3] [2] [1]|
     public void testLayout4KeyR0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(4, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(4, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R0, KEYBOARD_WIDTH);
         assertEquals("4 key R0 columns", 4, params.mNumColumns);
         assertEquals("4 key R0 rows", 1, params.mNumRows);
@@ -432,7 +432,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [4] [3] [2] [1] ___|
     public void testLayout4KeyR1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(4, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(4, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R1, KEYBOARD_WIDTH);
         assertEquals("4 key R1 columns", 4, params.mNumColumns);
         assertEquals("4 key R1 rows", 1, params.mNumRows);
@@ -448,7 +448,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [4] [3] [1] [2] ___ ___|
     public void testLayout4KeyR2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(4, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(4, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R2, KEYBOARD_WIDTH);
         assertEquals("4 key R2 columns", 4, params.mNumColumns);
         assertEquals("4 key R2 rows", 1, params.mNumRows);
@@ -464,7 +464,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [5] [3] [1] [2] [4]
     public void testLayout5KeyM0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(5, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(5, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_M0, KEYBOARD_WIDTH);
         assertEquals("5 key columns", 5, params.mNumColumns);
         assertEquals("5 key rows", 1, params.mNumRows);
@@ -481,7 +481,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // |[1] [2] [3] [4] [5]
     public void testLayout5KeyL0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(5, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(5, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L0, KEYBOARD_WIDTH);
         assertEquals("5 key L0 columns", 5, params.mNumColumns);
         assertEquals("5 key L0 rows", 1, params.mNumRows);
@@ -498,7 +498,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // |___ [1] [2] [3] [4] [5]
     public void testLayout5KeyL1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(5, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(5, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L1, KEYBOARD_WIDTH);
         assertEquals("5 key L1 columns", 5, params.mNumColumns);
         assertEquals("5 key L1 rows", 1, params.mNumRows);
@@ -515,7 +515,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // |___ ___ [3] [1] [2] [4] [5]
     public void testLayout5KeyL2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(5, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(5, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L2, KEYBOARD_WIDTH);
         assertEquals("5 key L2 columns", 5, params.mNumColumns);
         assertEquals("5 key L2 rows", 1, params.mNumRows);
@@ -532,7 +532,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [5] [4] [3] [2] [1]|
     public void testLayout5KeyR0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(5, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(5, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R0, KEYBOARD_WIDTH);
         assertEquals("5 key R0 columns", 5, params.mNumColumns);
         assertEquals("5 key R0 rows", 1, params.mNumRows);
@@ -549,7 +549,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [5] [4] [3] [2] [1] ___|
     public void testLayout5KeyR1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(5, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(5, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R1, KEYBOARD_WIDTH);
         assertEquals("5 key R1 columns", 5, params.mNumColumns);
         assertEquals("5 key R1 rows", 1, params.mNumRows);
@@ -566,7 +566,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [5] [4] [3] [1] [2] ___ ___|
     public void testLayout5KeyR2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(5, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(5, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R2, KEYBOARD_WIDTH);
         assertEquals("5 key R2 columns", 5, params.mNumColumns);
         assertEquals("5 key R2 rows", 1, params.mNumRows);
@@ -584,7 +584,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // [6] [4] [5]
     // [3] [1] [2]
     public void testLayout6KeyM0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(6, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(6, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_M0, KEYBOARD_WIDTH);
         assertEquals("6 key columns", 3, params.mNumColumns);
         assertEquals("6 key rows", 2, params.mNumRows);
@@ -603,7 +603,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // |[4] [5] [6]
     // |[1] [2] [3]
     public void testLayout6KeyL0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(6, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(6, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L0, KEYBOARD_WIDTH);
         assertEquals("6 key L0 columns", 3, params.mNumColumns);
         assertEquals("6 key L0 rows", 2, params.mNumRows);
@@ -622,7 +622,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // |___ [4] [5] [6]
     // |___ [1] [2] [3]
     public void testLayout6KeyL1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(6, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(6, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L1, KEYBOARD_WIDTH);
         assertEquals("6 key L1 columns", 3, params.mNumColumns);
         assertEquals("6 key L1 rows", 2, params.mNumRows);
@@ -641,7 +641,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // |___ ___ [6] [4] [5]
     // |___ ___ [3] [1] [2]
     public void testLayout6KeyL2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(6, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(6, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L2, KEYBOARD_WIDTH);
         assertEquals("6 key L2 columns", 3, params.mNumColumns);
         assertEquals("6 key L2 rows", 2, params.mNumRows);
@@ -660,7 +660,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // [6] [5] [4]|
     // [3] [2] [1]|
     public void testLayout6KeyR0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(6, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(6, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R0, KEYBOARD_WIDTH);
         assertEquals("6 key R0 columns", 3, params.mNumColumns);
         assertEquals("6 key R0 rows", 2, params.mNumRows);
@@ -679,7 +679,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // [6] [5] [4] ___|
     // [3] [2] [1] ___|
     public void testLayout6KeyR1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(6, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(6, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R1, KEYBOARD_WIDTH);
         assertEquals("6 key R1 columns", 3, params.mNumColumns);
         assertEquals("6 key R1 rows", 2, params.mNumRows);
@@ -698,7 +698,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // [6] [4] [5] ___ ___|
     // [3] [1] [2] ___ ___|
     public void testLayout6KeyR2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(6, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(6, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R2, KEYBOARD_WIDTH);
         assertEquals("6 key R2 columns", 3, params.mNumColumns);
         assertEquals("6 key R2 rows", 2, params.mNumRows);
@@ -717,7 +717,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     //   [7] [5] [6]
     // [3] [1] [2] [4]
     public void testLayout7KeyM0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(7, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(7, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_M0, KEYBOARD_WIDTH);
         assertEquals("7 key columns", 4, params.mNumColumns);
         assertEquals("7 key rows", 2, params.mNumRows);
@@ -737,7 +737,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // |[5] [6] [7]
     // |[1] [2] [3] [4]
     public void testLayout7KeyL0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(7, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(7, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L0, KEYBOARD_WIDTH);
         assertEquals("7 key L0 columns", 4, params.mNumColumns);
         assertEquals("7 key L0 rows", 2, params.mNumRows);
@@ -757,7 +757,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // |___ [5] [6] [7]
     // |___ [1] [2] [3] [4]
     public void testLayout7KeyL1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(7, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(7, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L1, KEYBOARD_WIDTH);
         assertEquals("7 key L1 columns", 4, params.mNumColumns);
         assertEquals("7 key L1 rows", 2, params.mNumRows);
@@ -777,7 +777,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // |___ ___   [7] [5] [6]
     // |___ ___ [3] [1] [2] [4]
     public void testLayout7KeyL2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(7, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(7, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L2, KEYBOARD_WIDTH);
         assertEquals("7 key L2 columns", 4, params.mNumColumns);
         assertEquals("7 key L2 rows", 2, params.mNumRows);
@@ -797,7 +797,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     //     [7] [6] [5]|
     // [4] [3] [2] [1]|
     public void testLayout7KeyR0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(7, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(7, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R0, KEYBOARD_WIDTH);
         assertEquals("7 key R0 columns", 4, params.mNumColumns);
         assertEquals("7 key R0 rows", 2, params.mNumRows);
@@ -817,7 +817,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     //     [7] [6] [5] ___|
     // [4] [3] [2] [1] ___|
     public void testLayout7KeyR1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(7, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(7, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R1, KEYBOARD_WIDTH);
         assertEquals("7 key R1 columns", 4, params.mNumColumns);
         assertEquals("7 key R1 rows", 2, params.mNumRows);
@@ -837,7 +837,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     //   [7] [5] [6]   ___ ___|
     // [4] [3] [1] [2] ___ ___|
     public void testLayout7KeyR2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(7, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(7, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R2, KEYBOARD_WIDTH);
         assertEquals("7 key R2 columns", 4, params.mNumColumns);
         assertEquals("7 key R2 rows", 2, params.mNumRows);
@@ -856,7 +856,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
 
     // [7] [6] [5] [3] [1] [2] [4] ___|
     public void testLayout7KeyR3Max7() {
-        MiniKeyboardParams params = new MiniKeyboardParams(7, 7, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(7, 7, WIDTH,
                 HEIGHT, XPOS_R3, KEYBOARD_WIDTH);
         assertEquals("7 key R2 columns", 7, params.mNumColumns);
         assertEquals("7 key R2 rows", 1, params.mNumRows);
@@ -876,7 +876,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // [7] [5] [6] [8]
     // [3] [1] [2] [4]
     public void testLayout8KeyM0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(8, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(8, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_M0, KEYBOARD_WIDTH);
         assertEquals("8 key M0 columns", 4, params.mNumColumns);
         assertEquals("8 key M0 rows", 2, params.mNumRows);
@@ -897,7 +897,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // |[5] [6] [7] [8]
     // |[1] [2] [3] [4]
     public void testLayout8KeyL0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(8, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(8, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L0, KEYBOARD_WIDTH);
         assertEquals("8 key L0 columns", 4, params.mNumColumns);
         assertEquals("8 key L0 rows", 2, params.mNumRows);
@@ -918,7 +918,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // |___ [5] [6] [7] [8]
     // |___ [1] [2] [3] [4]
     public void testLayout8KeyL1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(8, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(8, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L1, KEYBOARD_WIDTH);
         assertEquals("8 key L1 columns", 4, params.mNumColumns);
         assertEquals("8 key L1 rows", 2, params.mNumRows);
@@ -939,7 +939,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // |___ ___ [7] [5] [6] [8]
     // |___ ___ [3] [1] [2] [4]
     public void testLayout8KeyL2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(8, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(8, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L2, KEYBOARD_WIDTH);
         assertEquals("8 key L2 columns", 4, params.mNumColumns);
         assertEquals("8 key L2 rows", 2, params.mNumRows);
@@ -960,7 +960,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // [8] [7] [6] [5]|
     // [4] [3] [2] [1]|
     public void testLayout8KeyR0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(8, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(8, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R0, KEYBOARD_WIDTH);
         assertEquals("8 key R0 columns", 4, params.mNumColumns);
         assertEquals("8 key R0 rows", 2, params.mNumRows);
@@ -981,7 +981,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // [8] [7] [6] [5] ___|
     // [4] [3] [2] [1] ___|
     public void testLayout8KeyR1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(8, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(8, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R1, KEYBOARD_WIDTH);
         assertEquals("8 key R1 columns", 4, params.mNumColumns);
         assertEquals("8 key R1 rows", 2, params.mNumRows);
@@ -1002,7 +1002,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // [8] [7] [5] [6] ___ ___|
     // [4] [3] [1] [2] ___ ___|
     public void testLayout8KeyR2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(8, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(8, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R2, KEYBOARD_WIDTH);
         assertEquals("8 key R2 columns", 4, params.mNumColumns);
         assertEquals("8 key R2 rows", 2, params.mNumRows);
@@ -1023,7 +1023,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     //   [8] [6] [7] [9]
     // [5] [3] [1] [2] [4]
     public void testLayout9KeyM0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(9, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(9, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_M0, KEYBOARD_WIDTH);
         assertEquals("9 key M0 columns", 5, params.mNumColumns);
         assertEquals("9 key M0 rows", 2, params.mNumRows);
@@ -1045,7 +1045,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // |[6] [7] [8] [9]
     // |[1] [2] [3] [4] [5]
     public void testLayout9KeyL0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(9, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(9, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L0, KEYBOARD_WIDTH);
         assertEquals("9 key L0 columns", 5, params.mNumColumns);
         assertEquals("9 key L0 rows", 2, params.mNumRows);
@@ -1067,7 +1067,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // |___ [6] [7] [8] [9]
     // |___ [1] [2] [3] [4] [5]
     public void testLayout9KeyL1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(9, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(9, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L1, KEYBOARD_WIDTH);
         assertEquals("9 key L1 columns", 5, params.mNumColumns);
         assertEquals("9 key L1 rows", 2, params.mNumRows);
@@ -1089,7 +1089,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // |___ ___   [8] [6] [7] [9]
     // |___ ___ [3] [1] [2] [4] [5]
     public void testLayout9KeyL2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(9, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(9, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L2, KEYBOARD_WIDTH);
         assertEquals("9 key L2 columns", 5, params.mNumColumns);
         assertEquals("9 key L2 rows", 2, params.mNumRows);
@@ -1111,7 +1111,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     //     [9] [8] [7] [6]|
     // [5] [4] [3] [2] [1]|
     public void testLayout9KeyR0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(9, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(9, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R0, KEYBOARD_WIDTH);
         assertEquals("9 key R0 columns", 5, params.mNumColumns);
         assertEquals("9 key R0 rows", 2, params.mNumRows);
@@ -1133,7 +1133,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     //     [9] [8] [7] [6] ___|
     // [5] [4] [3] [2] [1] ___|
     public void testLayout9KeyR1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(9, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(9, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R1, KEYBOARD_WIDTH);
         assertEquals("9 key R1 columns", 5, params.mNumColumns);
         assertEquals("9 key R1 rows", 2, params.mNumRows);
@@ -1155,7 +1155,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     //   [9] [8] [6] [7]   ___ ___|
     // [5] [4] [3] [1] [2] ___ ___|
     public void testLayout9KeyR2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(9, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(9, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R2, KEYBOARD_WIDTH);
         assertEquals("9 key R2 columns", 5, params.mNumColumns);
         assertEquals("9 key R2 rows", 2, params.mNumRows);
@@ -1177,7 +1177,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // [A] [8] [6] [7] [9]
     // [5] [3] [1] [2] [4]
     public void testLayout10KeyM0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(10, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(10, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_M0, KEYBOARD_WIDTH);
         assertEquals("10 key M0 columns", 5, params.mNumColumns);
         assertEquals("10 key M0 rows", 2, params.mNumRows);
@@ -1200,7 +1200,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // |[6] [7] [8] [9] [A]
     // |[1] [2] [3] [4] [5]
     public void testLayout10KeyL0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(10, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(10, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L0, KEYBOARD_WIDTH);
         assertEquals("10 key L0 columns", 5, params.mNumColumns);
         assertEquals("10 key L0 rows", 2, params.mNumRows);
@@ -1223,7 +1223,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // |___ [6] [7] [8] [9] [A]
     // |___ [1] [2] [3] [4] [5]
     public void testLayout10KeyL1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(10, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(10, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L1, KEYBOARD_WIDTH);
         assertEquals("10 key L1 columns", 5, params.mNumColumns);
         assertEquals("10 key L1 rows", 2, params.mNumRows);
@@ -1246,7 +1246,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // |___ ___ [8] [6] [7] [9] [A]
     // |___ ___ [3] [1] [2] [4] [5]
     public void testLayout10KeyL2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(10, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(10, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_L2, KEYBOARD_WIDTH);
         assertEquals("10 key L2 columns", 5, params.mNumColumns);
         assertEquals("10 key L2 rows", 2, params.mNumRows);
@@ -1269,7 +1269,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // [A] [9] [8] [7] [6]|
     // [5] [4] [3] [2] [1]|
     public void testLayout10KeyR0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(10, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(10, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R0, KEYBOARD_WIDTH);
         assertEquals("10 key R0 columns", 5, params.mNumColumns);
         assertEquals("10 key R0 rows", 2, params.mNumRows);
@@ -1292,7 +1292,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // [A] [9] [8] [7] [6] ___|
     // [5] [4] [3] [2] [1] ___|
     public void testLayout10KeyR1() {
-        MiniKeyboardParams params = new MiniKeyboardParams(10, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(10, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R1, KEYBOARD_WIDTH);
         assertEquals("10 key R1 columns", 5, params.mNumColumns);
         assertEquals("10 key R1 rows", 2, params.mNumRows);
@@ -1315,7 +1315,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // [A] [9] [8] [6] [7] ___ ___|
     // [5] [4] [3] [1] [2] ___ ___|
     public void testLayout10KeyR2() {
-        MiniKeyboardParams params = new MiniKeyboardParams(10, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(10, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_R2, KEYBOARD_WIDTH);
         assertEquals("10 key R2 columns", 5, params.mNumColumns);
         assertEquals("10 key R2 rows", 2, params.mNumRows);
@@ -1339,7 +1339,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // [7] [5] [6] [8]
     // [3] [1] [2] [4]
     public void testLayout11KeyM0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(11, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(11, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_M0, KEYBOARD_WIDTH);
         assertEquals("11 key M0 columns", 4, params.mNumColumns);
         assertEquals("11 key M0 rows", 3, params.mNumRows);
@@ -1364,7 +1364,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // [7] [5] [6] [8]
     // [3] [1] [2] [4]
     public void testLayout12KeyM0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(12, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(12, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_M0, KEYBOARD_WIDTH);
         assertEquals("12 key M0 columns", 4, params.mNumColumns);
         assertEquals("12 key M0 rows", 3, params.mNumRows);
@@ -1391,7 +1391,7 @@ public class MiniKeyboardBuilderTests extends AndroidTestCase {
     // [A] [8] [6] [7] [9]
     // [5] [3] [1] [2] [4]
     public void testLayout13KeyM0() {
-        MiniKeyboardParams params = new MiniKeyboardParams(13, MAX_COLUMNS, WIDTH,
+        MoreKeysKeyboardParams params = new MoreKeysKeyboardParams(13, MAX_COLUMNS, WIDTH,
                 HEIGHT, XPOS_M0, KEYBOARD_WIDTH);
         assertEquals("13 key M0 columns", 5, params.mNumColumns);
         assertEquals("13 key M0 rows", 3, params.mNumRows);

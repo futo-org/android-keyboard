@@ -35,6 +35,6 @@
   *;
 }
 
--keep class com.android.inputmethod.keyboard.MiniKeyboard$Builder$MiniKeyboardParams {
+-keep class com.android.inputmethod.keyboard.MoreKeysKeyboard$Builder$MoreKeysKeyboardParams {
   <init>(...);
 }

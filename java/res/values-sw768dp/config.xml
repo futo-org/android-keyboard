@@ -37,8 +37,9 @@
         Configuration for LatinKeyboardView
     -->
     <bool name="config_sliding_key_input_enabled">false</bool>
-    <!-- Showing mini keyboard, just above the touched point if true, aligned to the key if false -->
-    <bool name="config_show_mini_keyboard_at_touched_point">true</bool>
+    <!-- Showing more keys keyboard, just above the touched point if true, aligned to the key if
+         false -->
+    <bool name="config_show_more_keys_keyboard_at_touched_point">true</bool>
     <!--  Screen metrics for logging.
             0 = "mdpi phone screen"
             1 = "hdpi phone screen"

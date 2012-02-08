@@ -17,18 +17,13 @@
 ** limitations under the License.
 */
 -->
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        style="?attr/miniKeyboardPanelStyle"
-        >
-    <com.android.inputmethod.keyboard.MiniKeyboardView
-            xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-            android:id="@+id/mini_keyboard_view"
-            android:layout_alignParentBottom="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
-</LinearLayout>
+
+<set
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/decelerate_interpolator"
+>
+    <alpha
+        android:fromAlpha="0.5"
+        android:toAlpha="1.0"
+        android:duration="@integer/config_more_keys_keyboard_fadein_anim_time" />
+</set>

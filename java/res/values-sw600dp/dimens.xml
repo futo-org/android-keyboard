@@ -40,12 +40,12 @@
 
     <fraction name="keyboard_bottom_padding_ics">0.0%p</fraction>
 
-    <dimen name="mini_keyboard_key_horizontal_padding">6dip</dimen>
+    <dimen name="more_keys_keyboard_key_horizontal_padding">6dip</dimen>
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- popup_key_height x 1.2 -->
-    <dimen name="mini_keyboard_slide_allowance">15.6mm</dimen>
+    <dimen name="more_keys_keyboard_slide_allowance">15.6mm</dimen>
     <!-- popup_key_height x -1.0 -->
-    <dimen name="mini_keyboard_vertical_correction">-13.0mm</dimen>
+    <dimen name="more_keys_keyboard_vertical_correction">-13.0mm</dimen>
 
     <!-- left or right padding of label alignment -->
     <dimen name="key_label_horizontal_padding">6dip</dimen>

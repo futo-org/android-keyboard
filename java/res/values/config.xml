@@ -44,8 +44,8 @@
     <integer name="config_delay_update_shift_state">100</integer>
     <integer name="config_duration_of_fadeout_language_on_spacebar">50</integer>
     <integer name="config_final_fadeout_percentage_of_language_on_spacebar">50</integer>
-    <integer name="config_mini_keyboard_fadein_anim_time">0</integer>
-    <integer name="config_mini_keyboard_fadeout_anim_time">100</integer>
+    <integer name="config_more_keys_keyboard_fadein_anim_time">0</integer>
+    <integer name="config_more_keys_keyboard_fadeout_anim_time">100</integer>
     <integer name="config_keyboard_grid_width">32</integer>
     <integer name="config_keyboard_grid_height">16</integer>
     <integer name="config_double_spaces_turn_into_period_timeout">1100</integer>
@@ -69,10 +69,12 @@
     <!-- Long pressing shift will invoke caps-lock if > 0, never invoke caps-lock if == 0 -->
     <integer name="config_long_press_shift_key_timeout">1200</integer>
     <!-- Long pressing space will invoke IME switcher if > 0, never invoke IME switcher if == 0 -->
-    <integer name="config_long_press_space_key_timeout">@integer/config_long_press_key_timeout</integer>
+    <integer name="config_long_press_space_key_timeout">
+            @integer/config_long_press_key_timeout</integer>
     <integer name="config_ignore_special_key_timeout">700</integer>
-    <!-- Showing mini keyboard, just above the touched point if true, aligned to the key if false -->
-    <bool name="config_show_mini_keyboard_at_touched_point">false</bool>
+    <!-- Showing more keys keyboard, just above the touched point if true, aligned to the key if
+         false -->
+    <bool name="config_show_more_keys_keyboard_at_touched_point">false</bool>
     <!--
         Configuration for auto correction
      -->
@@ -88,9 +90,11 @@
              will be subject to auto-correction. -->
         <item>0</item>
     </string-array>
-    <!-- Threshold of the normalized score of the best suggestion for the spell checker to declare a word to be "recommended" -->
+    <!-- Threshold of the normalized score of the best suggestion for the spell checker to declare
+         a word to be "recommended" -->
     <string name="spellchecker_recommended_threshold_value" translatable="false">0.11</string>
-    <!-- Threshold of the normalized score of any dictionary lookup to be offered as a suggestion by the spell checker -->
+    <!-- Threshold of the normalized score of any dictionary lookup to be offered as a suggestion
+         by the spell checker -->
     <string name="spellchecker_suggestion_threshold_value" translatable="false">0.03</string>
     <!--  Screen metrics for logging.
             0 = "mdpi phone screen"
