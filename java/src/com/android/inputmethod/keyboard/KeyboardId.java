@@ -124,20 +124,17 @@ public class KeyboardId {
         return mElementId < ELEMENT_SYMBOLS;
     }
 
-    // This should be aligned with {@link KeyboardShiftState#isShiftLocked}.
     public boolean isAlphabetShiftLockedKeyboard() {
         return mElementId == ELEMENT_ALPHABET_SHIFT_LOCKED
                 || mElementId == ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED;
     }
 
-    // This should be aligned with {@link KeyboardShiftState#isShiftedOrShiftLocked}.
     public boolean isAlphabetShiftedOrShiftLockedKeyboard() {
         return isAlphabetKeyboard() && mElementId != ELEMENT_ALPHABET;
     }
 
-    // This should be aligned with {@link KeyboardShiftState#isManualShifted}.
     public boolean isAlphabetManualShiftedKeyboard() {
-        return mElementId != ELEMENT_ALPHABET_MANUAL_SHIFTED;
+        return mElementId == ELEMENT_ALPHABET_MANUAL_SHIFTED;
     }
 
     public boolean isSymbolsKeyboard() {
