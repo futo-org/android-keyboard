@@ -159,10 +159,10 @@ void Correction::checkState() {
     }
 }
 
-int Correction::getFreqForSplitTwoWords(const int *freqArray, const int *wordLengthArray,
-        const bool isSpaceProximity, const unsigned short *word) {
-    return Correction::RankingAlgorithm::calcFreqForSplitTwoWords(freqArray, wordLengthArray, this,
-            isSpaceProximity, word);
+int Correction::getFreqForSplitMultipleWords(const int *freqArray, const int *wordLengthArray,
+        const int wordCount, const bool isSpaceProximity, const unsigned short *word) {
+    return Correction::RankingAlgorithm::calcFreqForSplitMultipleWords(freqArray, wordLengthArray,
+            wordCount, this, isSpaceProximity, word);
 }
 
 int Correction::getFinalFreq(const int freq, unsigned short **word, int *wordLength) {
@@ -911,45 +911,85 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
 }
 
 /* static */
-int Correction::RankingAlgorithm::calcFreqForSplitTwoWords(
-        const int *freqArray, const int *wordLengthArray, const Correction* correction,
-        const bool isSpaceProximity, const unsigned short *word) {
-    const int firstFreq = freqArray[0];
-    const int secondFreq = freqArray[1];
-    const int firstWordLength = wordLengthArray[0];
-    const int secondWordLength = wordLengthArray[1];
+int Correction::RankingAlgorithm::calcFreqForSplitMultipleWords(
+        const int *freqArray, const int *wordLengthArray, const int wordCount,
+        const Correction* correction, const bool isSpaceProximity, const unsigned short *word) {
     const int typedLetterMultiplier = correction->TYPED_LETTER_MULTIPLIER;
 
     bool firstCapitalizedWordDemotion = false;
-    if (firstWordLength >= 2) {
-        firstCapitalizedWordDemotion = isUpperCase(word[0]);
+    bool secondCapitalizedWordDemotion = false;
+
+    {
+        // TODO: Handle multiple capitalized word demotion properly
+        const int firstWordLength = wordLengthArray[0];
+        const int secondWordLength = wordLengthArray[1];
+        if (firstWordLength >= 2) {
+            firstCapitalizedWordDemotion = isUpperCase(word[0]);
+        }
+
+        if (secondWordLength >= 2) {
+            // FIXME: word[firstWordLength + 1] is incorrect.
+            secondCapitalizedWordDemotion = isUpperCase(word[firstWordLength + 1]);
+        }
     }
 
-    bool secondCapitalizedWordDemotion = false;
-    if (secondWordLength >= 2) {
-        secondCapitalizedWordDemotion = isUpperCase(word[firstWordLength + 1]);
-    }
 
     const bool capitalizedWordDemotion =
             firstCapitalizedWordDemotion ^ secondCapitalizedWordDemotion;
 
-    if (firstWordLength == 0 || secondWordLength == 0) {
+    int totalLength = 0;
+    int totalFreq = 0;
+    for (int i = 0; i < wordCount; ++i){
+        const int wordLength = wordLengthArray[i];
+        if (wordLength <= 0) {
+            return 0;
+        }
+        totalLength += wordLength;
+        const int demotionRate = 100 - TWO_WORDS_CORRECTION_DEMOTION_BASE / (wordLength + 1);
+        int tempFirstFreq = freqArray[i];
+        multiplyRate(demotionRate, &tempFirstFreq);
+        totalFreq += tempFirstFreq;
+    }
+
+    if (totalLength <= 0 || totalFreq <= 0) {
         return 0;
     }
-    const int firstDemotionRate = 100 - TWO_WORDS_CORRECTION_DEMOTION_BASE / (firstWordLength + 1);
-    int tempFirstFreq = firstFreq;
-    multiplyRate(firstDemotionRate, &tempFirstFreq);
 
-    const int secondDemotionRate = 100
-            - TWO_WORDS_CORRECTION_DEMOTION_BASE / (secondWordLength + 1);
-    int tempSecondFreq = secondFreq;
-    multiplyRate(secondDemotionRate, &tempSecondFreq);
-
-    const int totalLength = firstWordLength + secondWordLength;
-
+    // TODO: Currently totalFreq is adjusted to two word metrix.
     // Promote pairFreq with multiplying by 2, because the word length is the same as the typed
     // length.
-    int totalFreq = tempFirstFreq + tempSecondFreq;
+    totalFreq = totalFreq * 2 / wordCount;
+    if (wordCount > 2) {
+        // Safety net for 3+ words -- Caveats: many heuristics and workarounds here.
+        int oneLengthCounter = 0;
+        int twoLengthCounter = 0;
+        for (int i = 0; i < wordCount; ++i) {
+            const int wordLength = wordLengthArray[i];
+            // TODO: Use bigram instead of this safety net
+            if (i < wordCount - 1) {
+                const int nextWordLength = wordLengthArray[i + 1];
+                if (wordLength == 1 && nextWordLength == 2) {
+                    // Safety net to filter 1 length and 2 length sequential words
+                    return 0;
+                }
+            }
+            const int freq = freqArray[i];
+            // Demote too short weak words
+            if (wordLength <= 4 && freq <= MAX_FREQ * 2 / 3 /* heuristic... */) {
+                multiplyRate(100 * freq / MAX_FREQ, &totalFreq);
+            }
+            if (wordLength == 1) {
+                ++oneLengthCounter;
+            } else if (wordLength == 2) {
+                ++twoLengthCounter;
+            }
+            if (oneLengthCounter >= 2 || (oneLengthCounter + twoLengthCounter) >= 4) {
+                // Safety net to filter too many short words
+                return 0;
+            }
+        }
+        multiplyRate(MULTIPLE_WORDS_DEMOTION_RATE, &totalFreq);
+    }
 
     // This is a workaround to try offsetting the not-enough-demotion which will be done in
     // calcNormalizedScore in Utils.java.
@@ -993,9 +1033,9 @@ int Correction::RankingAlgorithm::calcFreqForSplitTwoWords(
     }
 
     if (DEBUG_CORRECTION_FREQ) {
-        AKLOGI("Two words (%d, %d) (%d, %d) %d, %d", firstFreq, secondFreq, firstWordLength,
-                secondWordLength, capitalizedWordDemotion, totalFreq);
-        DUMP_WORD(word, firstWordLength);
+        AKLOGI("Multiple words (%d, %d) (%d, %d) %d, %d", freqArray[0], freqArray[1],
+                wordLengthArray[0], wordLengthArray[1], capitalizedWordDemotion, totalFreq);
+        DUMP_WORD(word, wordLengthArray[0]);
     }
 
     return totalFreq;

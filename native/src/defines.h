@@ -208,6 +208,7 @@ static void prof_out(void) {
 #define ZERO_DISTANCE_PROMOTION_RATE 110
 #define NEUTRAL_SCORE_SQUARED_RADIUS 8.0f
 #define HALF_SCORE_SQUARED_RADIUS 32.0f
+#define MAX_FREQ 255
 
 // This must be greater than or equal to MAX_WORD_LENGTH defined in BinaryDictionary.java
 // This is only used for the size of array. Not to be used in c functions.
@@ -222,7 +223,9 @@ static void prof_out(void) {
 #define SUB_QUEUE_MAX_WORDS 1
 #define SUB_QUEUE_MAX_COUNT 10
 #define SUB_QUEUE_MIN_WORD_LENGTH 4
-#define MULTIPLE_WORDS_SUGGESTION_MAX_WORDS 2
+#define MULTIPLE_WORDS_SUGGESTION_MAX_WORDS 10
+#define MULTIPLE_WORDS_DEMOTION_RATE 80
+#define MIN_INPUT_LENGTH_FOR_THREE_OR_MORE_WORDS_CORRECTION 6
 
 #define TWO_WORDS_CORRECTION_WITH_OTHER_ERROR_THRESHOLD 0.39
 #define START_TWO_WORDS_CORRECTION_THRESHOLD 0.22
@@ -230,7 +233,6 @@ static void prof_out(void) {
 #define MAX_DEPTH_MULTIPLIER 3
 
 #define FIRST_WORD_INDEX 0
-#define SECOND_WORD_INDEX 1
 
 // TODO: Reduce this constant if possible; check the maximum number of umlauts in the same German
 // word in the dictionary
@@ -248,7 +250,7 @@ template<typename T> inline T max(T a, T b) { return a > b ? a : b; }
 #define NEUTRAL_AREA_RADIUS_RATIO 1.3f
 
 // DEBUG
-#define INPUTLENGTH_FOR_DEBUG 10
+#define INPUTLENGTH_FOR_DEBUG -1
 #define MIN_OUTPUT_INDEX_FOR_DEBUG -1
 
 #endif // LATINIME_DEFINES_H
