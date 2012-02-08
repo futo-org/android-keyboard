@@ -100,6 +100,8 @@
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Memorisà"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Dai"</string>
     <string name="label_next_key" msgid="362972844525672568">"Vinavant"</string>
+    <!-- no translation found for label_previous_key (1211868118071386787) -->
+    <skip />
     <string name="label_done_key" msgid="2441578748772529288">"Finì"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Trametter"</string>
     <!-- no translation found for label_to_alpha_key (4793983863798817523) -->
