@@ -1400,7 +1400,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
 
             if (SPACE_STATE_DOUBLE == spaceState) {
-                if (revertDoubleSpace(ic)) {
+                if (revertDoubleSpaceWhileInBatchEdit(ic)) {
                     // No need to reset mSpaceState, it has already be done (that's why we
                     // receive it as a parameter)
                     return;
@@ -2220,7 +2220,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     // "ic" must not be null
-    private boolean revertDoubleSpace(final InputConnection ic) {
+    private boolean revertDoubleSpaceWhileInBatchEdit(final InputConnection ic) {
         mHandler.cancelDoubleSpacesTimer();
         // Here we test whether we indeed have a period and a space before us. This should not
         // be needed, but it's there just in case something went wrong.
@@ -2233,10 +2233,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     + "\". \" just before the cursor.");
             return false;
         }
-        ic.beginBatchEdit();
         ic.deleteSurroundingText(2, 0);
         ic.commitText("  ", 1);
-        ic.endBatchEdit();
         return true;
     }
 
