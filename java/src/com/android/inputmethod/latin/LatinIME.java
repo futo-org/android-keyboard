@@ -2107,13 +2107,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         CharSequence toLeft = ic.getTextBeforeCursor(1, 0);
         CharSequence toRight = ic.getTextAfterCursor(1, 0);
         if (!TextUtils.isEmpty(toLeft)
-                && !mSettingsValues.isWordSeparator(toLeft.charAt(0))
-                && !mSettingsValues.isSuggestedPunctuation(toLeft.charAt(0))) {
+                && !mSettingsValues.isWordSeparator(toLeft.charAt(0))) {
             return true;
         }
         if (!TextUtils.isEmpty(toRight)
-                && !mSettingsValues.isWordSeparator(toRight.charAt(0))
-                && !mSettingsValues.isSuggestedPunctuation(toRight.charAt(0))) {
+                && !mSettingsValues.isWordSeparator(toRight.charAt(0))) {
             return true;
         }
         return false;

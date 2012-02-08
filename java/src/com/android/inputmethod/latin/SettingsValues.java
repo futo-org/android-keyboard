@@ -222,10 +222,6 @@ public class SettingsValues {
                 res.getBoolean(R.bool.config_default_vibration_enabled));
     }
 
-    public boolean isSuggestedPunctuation(int code) {
-        return mSuggestPuncs.contains(String.valueOf((char)code));
-    }
-
     public boolean isWordSeparator(int code) {
         return mWordSeparators.contains(String.valueOf((char)code));
     }
