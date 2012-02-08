@@ -53,7 +53,7 @@
             latin:keyLabel="l"
             latin:moreKeys="@string/more_keys_for_l" />
         <Key
-            latin:keyStyle="returnKeyStyle"
+            latin:keyStyle="enterKeyStyle"
             latin:keyXPos="-15.704%p"
             latin:keyWidth="fillBoth" />
     </Row>

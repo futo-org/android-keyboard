@@ -25,9 +25,10 @@
     <integer name="key_space">32</integer>
     <integer name="key_shift">-1</integer>
     <integer name="key_switch_alpha_symbol">-2</integer>
-    <integer name="key_output_text">-4</integer>
-    <integer name="key_delete">-5</integer>
-    <integer name="key_settings">-6</integer>
-    <integer name="key_shortcut">-7</integer>
+    <integer name="key_output_text">-3</integer>
+    <integer name="key_delete">-4</integer>
+    <integer name="key_settings">-5</integer>
+    <integer name="key_shortcut">-6</integer>
+    <integer name="key_action_enter">-7</integer>
     <integer name="key_unspecified">-9</integer>
 </resources>

@@ -56,7 +56,7 @@
         <Key
             latin:keyLabel="ñ" />
         <Key
-            latin:keyStyle="returnKeyStyle"
+            latin:keyStyle="enterKeyStyle"
             latin:keyXPos="-14.6%p"
             latin:keyWidth="fillBoth" />
     </Row>

@@ -90,7 +90,7 @@
         <Key
             latin:keyLabel="m" />
         <Key
-            latin:keyStyle="returnKeyStyle"
+            latin:keyStyle="enterKeyStyle"
             latin:keyXPos="-14.6%p"
             latin:keyWidth="fillBoth" />
     </Row>

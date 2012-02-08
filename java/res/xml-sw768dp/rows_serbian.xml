@@ -114,7 +114,7 @@
         <include
             latin:keyboardLayout="@xml/keys_comma_period" />
         <Key
-            latin:keyStyle="returnKeyStyle"
+            latin:keyStyle="enterKeyStyle"
             latin:keyXPos="-13.750%p"
             latin:keyWidth="fillRight" />
     </Row>

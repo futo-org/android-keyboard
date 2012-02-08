@@ -67,42 +67,34 @@ public class EditorInfoCompatUtils {
         ic.performEditorAction(OBJ_IME_ACTION_PREVIOUS);
     }
 
-    public static String imeOptionsName(int imeOptions) {
-        if (imeOptions == -1)
-            return null;
+    public static String imeActionName(int imeOptions) {
         final int actionId = imeOptions & EditorInfo.IME_MASK_ACTION;
-        final String action;
         switch (actionId) {
-            case EditorInfo.IME_ACTION_UNSPECIFIED:
-                action = "actionUnspecified";
-                break;
-            case EditorInfo.IME_ACTION_NONE:
-                action = "actionNone";
-                break;
-            case EditorInfo.IME_ACTION_GO:
-                action = "actionGo";
-                break;
-            case EditorInfo.IME_ACTION_SEARCH:
-                action = "actionSearch";
-                break;
-            case EditorInfo.IME_ACTION_SEND:
-                action = "actionSend";
-                break;
-            case EditorInfo.IME_ACTION_NEXT:
-                action = "actionNext";
-                break;
-            case EditorInfo.IME_ACTION_DONE:
-                action = "actionDone";
-                break;
-            default: {
-                if (OBJ_IME_ACTION_PREVIOUS != null && actionId == OBJ_IME_ACTION_PREVIOUS) {
-                    action = "actionPrevious";
-                } else {
-                    action = "actionUnknown(" + actionId + ")";
-                }
-                break;
+        case EditorInfo.IME_ACTION_UNSPECIFIED:
+            return "actionUnspecified";
+        case EditorInfo.IME_ACTION_NONE:
+            return "actionNone";
+        case EditorInfo.IME_ACTION_GO:
+            return "actionGo";
+        case EditorInfo.IME_ACTION_SEARCH:
+            return "actionSearch";
+        case EditorInfo.IME_ACTION_SEND:
+            return "actionSend";
+        case EditorInfo.IME_ACTION_NEXT:
+            return "actionNext";
+        case EditorInfo.IME_ACTION_DONE:
+            return "actionDone";
+        default:
+            if (OBJ_IME_ACTION_PREVIOUS != null && actionId == OBJ_IME_ACTION_PREVIOUS) {
+                return "actionPrevious";
+            } else {
+                return "actionUnknown(" + actionId + ")";
             }
         }
+    }
+
+    public static String imeOptionsName(int imeOptions) {
+        final String action = imeActionName(imeOptions);
         final StringBuilder flags = new StringBuilder();
         if ((imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
             flags.append("flagNoEnterAction|");
@@ -116,6 +108,6 @@ public class EditorInfoCompatUtils {
         if (hasFlagForceAscii(imeOptions)) {
             flags.append("flagForceAscii|");
         }
-        return flags + action;
+        return (action != null) ? flags + action : flags.toString();
     }
 }

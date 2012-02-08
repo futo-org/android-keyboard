@@ -45,7 +45,7 @@
                     latin:keyLabel="…"
                     latin:backgroundType="functional" />
                 <Key
-                    latin:keyStyle="returnKeyStyle"
+                    latin:keyStyle="enterKeyStyle"
                     latin:keyWidth="fillRight" />
             </case>
             <!-- hasSettingsKey="true" or navigateAction="true" -->
@@ -70,7 +70,7 @@
                     latin:keyWidth="9.2%p"
                     latin:backgroundType="functional" />
                 <Key
-                    latin:keyStyle="returnKeyStyle"
+                    latin:keyStyle="enterKeyStyle"
                     latin:keyWidth="fillRight" />
             </default>
         </switch>

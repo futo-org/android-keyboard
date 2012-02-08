@@ -105,7 +105,7 @@
         <include
             latin:keyboardLayout="@xml/keys_parentheses" />
         <Key
-            latin:keyStyle="returnKeyStyle"
+            latin:keyStyle="enterKeyStyle"
             latin:keyXPos="-15.704%p"
             latin:keyWidth="fillBoth" />
     </Row>

@@ -1224,6 +1224,41 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return mOptionsDialog != null && mOptionsDialog.isShowing();
     }
 
+    private void insertPunctuationFromSuggestionStrip(final int code) {
+        onCodeInput(code, new int[] { code },
+                KeyboardActionListener.SUGGESTION_STRIP_COORDINATE,
+                KeyboardActionListener.SUGGESTION_STRIP_COORDINATE);
+    }
+
+    private static int getEditorActionId(EditorInfo editorInfo) {
+        if (editorInfo == null) return 0;
+        return (editorInfo.actionLabel != null)
+                ? editorInfo.actionId
+                : (editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION);
+    }
+
+    private void performeEditorAction(int actionId) {
+        final InputConnection ic = getCurrentInputConnection();
+        if (ic != null) {
+            ic.performEditorAction(actionId);
+        }
+    }
+
+    private void sendKeyCodePoint(int code) {
+        // TODO: Remove this special handling of digit letters.
+        // For backward compatibility. See {@link InputMethodService#sendKeyChar(char)}.
+        if (code >= '0' && code <= '9') {
+            super.sendKeyChar((char)code);
+            return;
+        }
+
+        final InputConnection ic = getCurrentInputConnection();
+        if (ic != null) {
+            final String text = new String(new int[] { code }, 0, 1);
+            ic.commitText(text, text.length());
+        }
+    }
+
     // Implementation of {@link KeyboardActionListener}.
     @Override
     public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
@@ -1264,6 +1299,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         case Keyboard.CODE_SHORTCUT:
             mSubtypeSwitcher.switchToShortcutIME();
             break;
+        case Keyboard.CODE_ACTION_ENTER:
+            performeEditorAction(getEditorActionId(getCurrentInputEditorInfo()));
+            break;
         case Keyboard.CODE_TAB:
             handleTab();
             // There are two cases for tab. Either we send a "next" event, that may change the
@@ -1301,7 +1339,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         commitTyped(ic);
         text = specificTldProcessingOnTextInput(ic, text);
         if (SPACE_STATE_PHANTOM == mSpaceState) {
-            sendKeyChar((char)Keyboard.CODE_SPACE);
+            sendKeyCodePoint(Keyboard.CODE_SPACE);
         }
         ic.commitText(text, 1);
         ic.endBatchEdit();
@@ -1448,10 +1486,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
+    // TODO: Implement next and previous actions using other key code than tab's code.
     private void handleTab() {
         final int imeOptions = getCurrentInputEditorInfo().imeOptions;
         if (!EditorInfoCompatUtils.hasFlagNavigateNext(imeOptions)
                 && !EditorInfoCompatUtils.hasFlagNavigatePrevious(imeOptions)) {
+            // TODO: This should be {@link #sendKeyCodePoint(int)}.
             sendDownUpKeyEvents(KeyEvent.KEYCODE_TAB);
             return;
         }
@@ -1513,7 +1553,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 // Sanity check
                 throw new RuntimeException("Should not be composing here");
             }
-            sendKeyChar((char)Keyboard.CODE_SPACE);
+            sendKeyCodePoint(Keyboard.CODE_SPACE);
         }
 
         if ((isAlphabet(primaryCode)
@@ -1549,7 +1589,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             final boolean swapWeakSpace = maybeStripSpaceWhileInBatchEdit(ic, primaryCode,
                     spaceState, KeyboardActionListener.SUGGESTION_STRIP_COORDINATE == x);
 
-            sendKeyChar((char)primaryCode);
+            sendKeyCodePoint(primaryCode);
 
             if (swapWeakSpace) {
                 swapSwapperAndSpaceWhileInBatchEdit(ic);
@@ -1595,11 +1635,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final boolean swapWeakSpace = maybeStripSpaceWhileInBatchEdit(ic, primaryCode, spaceState,
                 KeyboardActionListener.SUGGESTION_STRIP_COORDINATE == x);
 
-        // TODO: rethink interactions of sendKeyChar, commitText("\n") and actions. sendKeyChar
-        // with a CODE_ENTER parameter will have the default InputMethodService implementation
-        // possibly redirect on the keyboard action. That may be the right thing to do, but
-        // on Shift+Enter, it's generally not, so we may want to do the redirection right here.
-        sendKeyChar((char)primaryCode);
+        sendKeyCodePoint(primaryCode);
 
         if (Keyboard.CODE_SPACE == primaryCode) {
             if (isSuggestionsRequested()) {

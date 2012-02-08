@@ -40,7 +40,7 @@
                 <Key
                     latin:keyStyle="punctuationKeyStyle" />
                 <Key
-                    latin:keyStyle="returnKeyStyle"
+                    latin:keyStyle="enterKeyStyle"
                     latin:keyWidth="fillRight" />
             </case>
             <!-- hasSettingsKey="true" or navigateAction="true" -->
@@ -59,7 +59,7 @@
                     latin:keyStyle="punctuationKeyStyle"
                     latin:keyWidth="9.2%p" />
                 <Key
-                    latin:keyStyle="returnKeyStyle"
+                    latin:keyStyle="enterKeyStyle"
                     latin:keyWidth="fillRight" />
             </default>
         </switch>

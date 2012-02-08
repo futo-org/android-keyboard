@@ -75,7 +75,7 @@
             latin:keyLabel="."
             latin:keyStyle="numKeyStyle" />
         <Key
-            latin:keyStyle="returnKeyStyle"
+            latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillRight" />
     </Row>
 </merge>

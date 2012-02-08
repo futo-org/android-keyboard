@@ -128,6 +128,8 @@
     <string name="label_go_key">Go</string>
     <!-- Label for soft enter key when it performs NEXT action.  Must be short to fit on key! [CHAR LIMIT=5] -->
     <string name="label_next_key">Next</string>
+    <!-- Label for soft enter key when it performs PREVIOUS action.  Must be short to fit on key! [CHAR LIMIT=5] -->
+    <string name="label_previous_key">Prev</string>
     <!-- Label for soft enter key when it performs DONE action.  Must be short to fit on key! [CHAR LIMIT=5] -->
     <string name="label_done_key">Done</string>
     <!-- Label for soft enter key when it performs SEND action.  Must be short to fit on key! [CHAR LIMIT=5] -->

@@ -72,6 +72,7 @@ public class Key {
     private static final int LABEL_FLAGS_AUTO_X_SCALE = 0x4000;
     private static final int LABEL_FLAGS_PRESERVE_CASE = 0x8000;
     private static final int LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED = 0x10000;
+    private static final int LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL = 0x20000;
 
     /** Icon to display instead of a label. Icon takes precedence over a label */
     private final int mIconId;
@@ -247,14 +248,18 @@ public class Key {
         mMaxMoreKeysColumn = style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_maxMoreKeysColumn, params.mMaxMoreKeysKeyboardColumn);
 
-        mLabel = adjustCaseOfStringForKeyboardId(style.getString(keyAttr,
-                R.styleable.Keyboard_Key_keyLabel), preserveCase, params.mId);
-        mHintLabel = adjustCaseOfStringForKeyboardId(style.getString(keyAttr,
-                R.styleable.Keyboard_Key_keyHintLabel), preserveCase, params.mId);
-        String outputText = adjustCaseOfStringForKeyboardId(style.getString(keyAttr,
-                R.styleable.Keyboard_Key_keyOutputText), preserveCase, params.mId);
-        final int code = style.getInt(keyAttr,
-                R.styleable.Keyboard_Key_code, Keyboard.CODE_UNSPECIFIED);
+        if ((mLabelFlags & LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL) != 0) {
+            mLabel = params.mId.mCustomActionLabel;
+        } else {
+            mLabel = adjustCaseOfStringForKeyboardId(style.getString(
+                    keyAttr, R.styleable.Keyboard_Key_keyLabel), preserveCase, params.mId);
+        }
+        mHintLabel = adjustCaseOfStringForKeyboardId(style.getString(
+                keyAttr, R.styleable.Keyboard_Key_keyHintLabel), preserveCase, params.mId);
+        String outputText = adjustCaseOfStringForKeyboardId(style.getString(
+                keyAttr, R.styleable.Keyboard_Key_keyOutputText), preserveCase, params.mId);
+        final int code = style.getInt(
+                keyAttr, R.styleable.Keyboard_Key_code, Keyboard.CODE_UNSPECIFIED);
         // Choose the first letter of the label as primary code if not specified.
         if (code == Keyboard.CODE_UNSPECIFIED && TextUtils.isEmpty(outputText)
                 && !TextUtils.isEmpty(mLabel)) {
