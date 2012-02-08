@@ -102,6 +102,7 @@ public class KeyboardId {
                 id.mHasShortcutKey,
                 id.isMultiLine(),
                 id.imeAction(),
+                id.mCustomActionLabel,
                 id.mLocale
         });
     }
@@ -121,6 +122,7 @@ public class KeyboardId {
                 && other.mHasShortcutKey == this.mHasShortcutKey
                 && other.isMultiLine() == this.isMultiLine()
                 && other.imeAction() == this.imeAction()
+                && TextUtils.equals(other.mCustomActionLabel, this.mCustomActionLabel)
                 && other.mLocale.equals(this.mLocale);
     }
 

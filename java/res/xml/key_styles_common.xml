@@ -110,6 +110,7 @@
         latin:code="@integer/key_shortcut"
         latin:keyIcon="iconShortcutKey"
         latin:keyIconDisabled="iconDisabledShortcutKey"
+        latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
         latin:altCode="@integer/key_space"
         latin:parentStyle="f1PopupStyle" />

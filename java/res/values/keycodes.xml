@@ -21,7 +21,7 @@
 <resources>
     <!-- These code should be aligned with Keyboard.CODE_*. -->
     <integer name="key_tab">9</integer>
-    <integer name="key_return">10</integer>
+    <integer name="key_enter">10</integer>
     <integer name="key_space">32</integer>
     <integer name="key_shift">-1</integer>
     <integer name="key_switch_alpha_symbol">-2</integer>
