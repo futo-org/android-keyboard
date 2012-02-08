@@ -90,11 +90,11 @@ public class WordComposer {
      * @return the number of keystrokes
      */
     public final int size() {
-        return mTypedWord.length();
+        return mCodes.size();
     }
 
     public final boolean isComposingWord() {
-        return size() > 0;
+        return mCodes.size() > 0;
     }
 
     /**
@@ -125,8 +125,8 @@ public class WordComposer {
      * @param codes the array of unicode values
      */
     public void add(int primaryCode, int[] codes, int x, int y) {
-        final int newIndex = size();
-        mTypedWord.append((char) primaryCode);
+        final int newIndex = mCodes.size();
+        mTypedWord.appendCodePoint(primaryCode);
         correctPrimaryJuxtapos(primaryCode, codes);
         mCodes.add(codes);
         if (newIndex < BinaryDictionary.MAX_WORD_LENGTH) {
@@ -171,8 +171,8 @@ public class WordComposer {
             final KeyDetector keyDetector) {
         reset();
         final int length = word.length();
-        for (int i = 0; i < length; ++i) {
-            int codePoint = word.charAt(i);
+        for (int i = 0; i < length; i = Character.offsetByCodePoints(word, i, 1)) {
+            int codePoint = Character.codePointAt(word, i);
             addKeyInfo(codePoint, keyboard, keyDetector);
         }
     }
@@ -207,16 +207,25 @@ public class WordComposer {
      * Delete the last keystroke as a result of hitting backspace.
      */
     public void deleteLast() {
-        final int size = size();
+        final int size = mCodes.size();
         if (size > 0) {
-            final int lastPos = size - 1;
-            char lastChar = mTypedWord.charAt(lastPos);
-            mCodes.remove(lastPos);
-            // TODO: This crashes and catches fire if the code point doesn't fit a char
-            mTypedWord.deleteCharAt(lastPos);
+            mCodes.remove(size - 1);
+            // Note: mTypedWord.length() and mCodes.length differ when there are surrogate pairs
+            final int stringBuilderLength = mTypedWord.length();
+            if (stringBuilderLength < size) {
+                throw new RuntimeException(
+                        "In WordComposer: mCodes and mTypedWords have non-matching lengths");
+            }
+            final int lastChar = mTypedWord.codePointBefore(stringBuilderLength);
+            if (Character.isSupplementaryCodePoint(lastChar)) {
+                mTypedWord.delete(stringBuilderLength - 2, stringBuilderLength);
+            } else {
+                mTypedWord.deleteCharAt(stringBuilderLength - 1);
+            }
             if (Character.isUpperCase(lastChar)) mCapsCount--;
         }
-        if (size() == 0) {
+        // We may have deleted the last one.
+        if (0 == mCodes.size()) {
             mIsFirstCharCapitalized = false;
         }
         if (mTrailingSingleQuotesCount > 0) {
