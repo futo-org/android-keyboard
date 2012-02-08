@@ -2118,8 +2118,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     // "ic" must not be null
-    private static boolean sameAsTextBeforeCursor(final InputConnection ic, CharSequence text) {
-        CharSequence beforeText = ic.getTextBeforeCursor(text.length(), 0);
+    private static boolean sameAsTextBeforeCursor(final InputConnection ic,
+            final CharSequence text) {
+        final CharSequence beforeText = ic.getTextBeforeCursor(text.length(), 0);
         return TextUtils.equals(text, beforeText);
     }
 
