@@ -1870,20 +1870,18 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     @Override
-    public void pickSuggestionManually(int index, CharSequence suggestion) {
+    public void pickSuggestionManually(final int index, final CharSequence suggestion) {
         mComposingStateManager.onFinishComposingText();
-        SuggestedWords suggestions = mSuggestionsView.getSuggestions();
+        final SuggestedWords suggestions = mSuggestionsView.getSuggestions();
         mVoiceProxy.flushAndLogAllTextModificationCounters(index, suggestion,
                 mSettingsValues.mWordSeparators);
 
-        final InputConnection ic = getCurrentInputConnection();
-        if (ic != null) {
-            ic.beginBatchEdit();
-        }
         if (mInputAttributes.mApplicationSpecifiedCompletionOn
                 && mApplicationSpecifiedCompletions != null
                 && index >= 0 && index < mApplicationSpecifiedCompletions.length) {
+            final InputConnection ic = getCurrentInputConnection();
             if (ic != null) {
+                ic.beginBatchEdit();
                 final CompletionInfo completionInfo = mApplicationSpecifiedCompletions[index];
                 ic.commitCompletion(completionInfo);
             }
@@ -1904,18 +1902,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // So, LatinImeLogger logs "" as a user's input.
             LatinImeLogger.logOnManualSuggestion(
                     "", suggestion.toString(), index, suggestions.mWords);
-            final CharSequence outputText = mSettingsValues.mSuggestPuncOutputTextList
-                    .getWord(index);
-            final int primaryCode = outputText.charAt(0);
+            final int primaryCode = suggestion.charAt(0);
             // Find out whether the previous character is a space. If it is, as a special case
             // for punctuation entered through the suggestion strip, it should be swapped
             // if it was a magic or a weak space. This is meant to help in case the user
             // pressed space on purpose of displaying the suggestion strip punctuation.
             insertPunctuationFromSuggestionStrip(primaryCode);
-            // TODO: the following endBatchEdit seems useless, check
-            if (ic != null) {
-                ic.endBatchEdit();
-            }
             return;
         }
         // We need to log before we commit, because the word composer will store away the user
@@ -1967,9 +1959,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             } else {
                 mHandler.postUpdateSuggestions();
             }
-        }
-        if (ic != null) {
-            ic.endBatchEdit();
         }
     }
 
