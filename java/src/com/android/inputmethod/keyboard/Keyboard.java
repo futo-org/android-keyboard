@@ -121,8 +121,8 @@ public class Keyboard {
     /** More keys keyboard template */
     public final int mMoreKeysTemplate;
 
-    /** Maximum column for mini keyboard */
-    public final int mMaxMiniKeyboardColumn;
+    /** Maximum column for more keys keyboard */
+    public final int mMaxMoreKeysKeyboardColumn;
 
     /** List of keys and icons in this keyboard */
     public final Set<Key> mKeys;
@@ -143,7 +143,7 @@ public class Keyboard {
         mMostCommonKeyHeight = params.mMostCommonKeyHeight;
         mMostCommonKeyWidth = params.mMostCommonKeyWidth;
         mMoreKeysTemplate = params.mMoreKeysTemplate;
-        mMaxMiniKeyboardColumn = params.mMaxMiniKeyboardColumn;
+        mMaxMoreKeysKeyboardColumn = params.mMaxMoreKeysKeyboardColumn;
 
         mTopPadding = params.mTopPadding;
         mVerticalGap = params.mVerticalGap;
@@ -226,7 +226,7 @@ public class Keyboard {
         public int mVerticalGap;
 
         public int mMoreKeysTemplate;
-        public int mMaxMiniKeyboardColumn;
+        public int mMaxMoreKeysKeyboardColumn;
 
         public int GRID_WIDTH;
         public int GRID_HEIGHT;
@@ -770,7 +770,7 @@ public class Keyboard {
 
                 params.mMoreKeysTemplate = keyboardAttr.getResourceId(
                         R.styleable.Keyboard_moreKeysTemplate, 0);
-                params.mMaxMiniKeyboardColumn = keyAttr.getInt(
+                params.mMaxMoreKeysKeyboardColumn = keyAttr.getInt(
                         R.styleable.Keyboard_Key_maxMoreKeysColumn, 5);
 
                 params.mIconsSet.loadIcons(keyboardAttr);

@@ -25,11 +25,11 @@
         <attr name="keyboardViewStyle" format="reference" />
         <!-- LatinKeyboardView style -->
         <attr name="latinKeyboardViewStyle" format="reference" />
-        <!-- MiniKeyboard style -->
-        <attr name="miniKeyboardStyle" format="reference" />
-        <!-- MiniKeyboardView style -->
-        <attr name="miniKeyboardViewStyle" format="reference" />
-        <attr name="miniKeyboardPanelStyle" format="reference" />
+        <!-- MoreKeysKeyboard style -->
+        <attr name="moreKeysKeyboardStyle" format="reference" />
+        <!-- MoreKeysKeyboardView style -->
+        <attr name="moreKeysKeyboardViewStyle" format="reference" />
+        <attr name="moreKeysKeyboardPanelStyle" format="reference" />
         <!-- Suggestions strip style -->
         <attr name="suggestionsStripBackgroundStyle" format="reference" />
         <attr name="suggestionsViewStyle" format="reference" />
@@ -152,8 +152,8 @@
         <attr name="longPressSpaceKeyTimeout" format="integer" />
         <!-- Ignore special key timeout while typing in millisecond. -->
         <attr name="ignoreSpecialKeyTimeout" format="integer" />
-        <!-- Mini-keyboard will shown at touched point. -->
-        <attr name="showMiniKeyboardAtTouchedPoint" format="boolean" />
+        <!-- More keys keyboard will shown at touched point. -->
+        <attr name="showMoreKeysKeyboardAtTouchedPoint" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="SuggestionsView">
@@ -232,7 +232,10 @@
              been replaced, those remaining entries are appended at the end of moreKeys. -->
         <attr name="additionalMoreKeys" format="string" />
         <!-- Maximum column of more keys keyboard -->
-        <attr name="maxMoreKeysColumn" format="integer" />
+        <attr name="maxMoreKeysColumn" format="integer">
+            <!-- This should be aligned with  -->
+            <flag name="fixedWidthMoreKeysColumn" value="0x8000000" />
+        </attr>
         <attr name="backgroundType" format="enum">
             <!-- This should be aligned with Key.BACKGROUND_TYPE_* -->
             <enum name="normal" value="0" />

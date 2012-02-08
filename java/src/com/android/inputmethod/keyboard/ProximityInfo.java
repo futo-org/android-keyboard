@@ -59,7 +59,7 @@ public class ProximityInfo {
         mKeyHeight = keyHeight;
         mGridNeighbors = new Key[mGridSize][];
         if (minWidth == 0 || height == 0) {
-            // No proximity required. Keyboard might be mini keyboard.
+            // No proximity required. Keyboard might be more keys keyboard.
             return;
         }
         computeNearestNeighbors(keyWidth, keys, touchPositionCorrection, additionalProximityChars);

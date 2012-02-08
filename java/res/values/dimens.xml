@@ -26,8 +26,8 @@
 
     <dimen name="popup_key_height">0.330in</dimen>
 
-    <dimen name="mini_keyboard_horizontal_edges_padding">16dip</dimen>
-    <dimen name="mini_keyboard_key_horizontal_padding">8dip</dimen>
+    <dimen name="more_keys_keyboard_horizontal_edges_padding">16dip</dimen>
+    <dimen name="more_keys_keyboard_key_horizontal_padding">8dip</dimen>
 
     <fraction name="keyboard_top_padding">1.556%p</fraction>
     <fraction name="keyboard_bottom_padding">4.669%p</fraction>
@@ -48,13 +48,13 @@
     <fraction name="keyboard_bottom_padding_ics">4.669%p</fraction>
     <fraction name="key_bottom_gap_ics">6.127%p</fraction>
     <fraction name="key_horizontal_gap_ics">1.739%p</fraction>
-    <dimen name="mini_keyboard_horizontal_edges_padding_ics">4dip</dimen>
+    <dimen name="more_keys_keyboard_horizontal_edges_padding_ics">4dip</dimen>
 
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- popup_key_height x 1.2 -->
-    <dimen name="mini_keyboard_slide_allowance">0.396in</dimen>
+    <dimen name="more_keys_keyboard_slide_allowance">0.396in</dimen>
     <!-- popup_key_height x -1.0 -->
-    <dimen name="mini_keyboard_vertical_correction">-0.330in</dimen>
+    <dimen name="more_keys_keyboard_vertical_correction">-0.330in</dimen>
     <!-- We use "inch", not "dip" because this value tries dealing with physical distance related
          to user's finger. -->
     <dimen name="keyboard_vertical_correction">0.0in</dimen>

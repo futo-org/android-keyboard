@@ -66,7 +66,7 @@
     <dimen name="key_preview_backing_height">72dip</dimen>
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- popup_key_height x 1.2 -->
-    <dimen name="mini_keyboard_slide_allowance">0.336in</dimen>
+    <dimen name="more_keys_keyboard_slide_allowance">0.336in</dimen>
     <!-- popup_key_height x -1.0 -->
-    <dimen name="mini_keyboard_vertical_correction">-0.280in</dimen>
+    <dimen name="more_keys_keyboard_vertical_correction">-0.280in</dimen>
 </resources>

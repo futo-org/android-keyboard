@@ -92,13 +92,13 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     private final Drawable mAutoCorrectionSpacebarLedIcon;
     private static final int SPACE_LED_LENGTH_PERCENT = 80;
 
-    // Mini keyboard
+    // More keys keyboard
     private PopupWindow mMoreKeysWindow;
     private MoreKeysPanel mMoreKeysPanel;
     private int mMoreKeysPanelPointerTrackerId;
     private final WeakHashMap<Key, MoreKeysPanel> mMoreKeysPanelCache =
             new WeakHashMap<Key, MoreKeysPanel>();
-    private final boolean mConfigShowMiniKeyboardAtTouchedPoint;
+    private final boolean mConfigShowMoreKeysKeyboardAtTouchedPoint;
 
     private final PointerTrackerParams mPointerTrackerParams;
     private final boolean mIsSpacebarTriggeringPopupByLongPress;
@@ -137,7 +137,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 break;
             case MSG_LONGPRESS_KEY:
                 if (tracker != null) {
-                    keyboardView.openMiniKeyboardIfRequired(tracker.getKey(), tracker);
+                    keyboardView.openMoreKeysKeyboardIfRequired(tracker.getKey(), tracker);
                 } else {
                     KeyboardSwitcher.getInstance().onLongPressTimeout(msg.arg1);
                 }
@@ -338,8 +338,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 R.styleable.LatinKeyboardView_keyHysteresisDistance, 0);
         mKeyDetector = new KeyDetector(keyHysteresisDistance);
         mKeyTimerHandler = new KeyTimerHandler(this, keyTimerParams);
-        mConfigShowMiniKeyboardAtTouchedPoint = a.getBoolean(
-                R.styleable.LatinKeyboardView_showMiniKeyboardAtTouchedPoint, false);
+        mConfigShowMoreKeysKeyboardAtTouchedPoint = a.getBoolean(
+                R.styleable.LatinKeyboardView_showMoreKeysKeyboardAtTouchedPoint, false);
         a.recycle();
 
         PointerTracker.setParameters(mPointerTrackerParams);
@@ -435,7 +435,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         super.cancelAllMessages();
     }
 
-    private boolean openMiniKeyboardIfRequired(Key parentKey, PointerTracker tracker) {
+    private boolean openMoreKeysKeyboardIfRequired(Key parentKey, PointerTracker tracker) {
         // Check if we have a popup layout specified first.
         if (mMoreKeysLayout == 0) {
             return false;
@@ -458,19 +458,19 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         if (container == null)
             throw new NullPointerException();
 
-        final MiniKeyboardView miniKeyboardView =
-                (MiniKeyboardView)container.findViewById(R.id.mini_keyboard_view);
+        final MoreKeysKeyboardView moreKeysKeyboardView =
+                (MoreKeysKeyboardView)container.findViewById(R.id.more_keys_keyboard_view);
         final Keyboard parentKeyboard = getKeyboard();
-        final Keyboard miniKeyboard = new MiniKeyboard.Builder(
+        final Keyboard moreKeysKeyboard = new MoreKeysKeyboard.Builder(
                 this, parentKeyboard.mMoreKeysTemplate, parentKey, parentKeyboard).build();
-        miniKeyboardView.setKeyboard(miniKeyboard);
+        moreKeysKeyboardView.setKeyboard(moreKeysKeyboard);
         container.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        return miniKeyboardView;
+        return moreKeysKeyboardView;
     }
 
     /**
-     * Called when a key is long pressed. By default this will open mini keyboard associated
+     * Called when a key is long pressed. By default this will open more keys keyboard associated
      * with this key.
      * @param parentKey the key that was long pressed
      * @param tracker the pointer tracker which pressed the parent key
@@ -524,13 +524,13 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         if (mMoreKeysWindow == null) {
             mMoreKeysWindow = new PopupWindow(getContext());
             mMoreKeysWindow.setBackgroundDrawable(null);
-            mMoreKeysWindow.setAnimationStyle(R.style.MiniKeyboardAnimation);
+            mMoreKeysWindow.setAnimationStyle(R.style.MoreKeysKeyboardAnimation);
         }
         mMoreKeysPanel = moreKeysPanel;
         mMoreKeysPanelPointerTrackerId = tracker.mPointerId;
 
         final Keyboard keyboard = getKeyboard();
-        final int pointX = (mConfigShowMiniKeyboardAtTouchedPoint) ? tracker.getLastX()
+        final int pointX = (mConfigShowMoreKeysKeyboardAtTouchedPoint) ? tracker.getLastX()
                 : parentKey.mX + parentKey.mWidth / 2;
         final int pointY = parentKey.mY - keyboard.mVerticalGap;
         moreKeysPanel.showMoreKeysPanel(
