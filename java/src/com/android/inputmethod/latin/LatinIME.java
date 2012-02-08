@@ -1533,11 +1533,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             sendKeyChar((char)code);
         }
 
-        if (mSettingsValues.isWordSeparator(code)) {
-            Utils.Stats.onSeparator((char)code, x, y);
-        } else {
-            Utils.Stats.onNonSeparator((char)code, x, y);
-        }
+        Utils.Stats.onNonSeparator((char)code, x, y);
     }
 
     // Returns true if we did an autocorrection, false otherwise.
