@@ -1224,12 +1224,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return mOptionsDialog != null && mOptionsDialog.isShowing();
     }
 
-    private void insertPunctuationFromSuggestionStrip(final int code) {
-        onCodeInput(code, new int[] { code },
-                KeyboardActionListener.SUGGESTION_STRIP_COORDINATE,
-                KeyboardActionListener.SUGGESTION_STRIP_COORDINATE);
-    }
-
     // Implementation of {@link KeyboardActionListener}.
     @Override
     public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
@@ -1476,6 +1470,28 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
+    // ic may be null
+    private boolean maybeStripSpaceWhileInBatchEdit(final InputConnection ic, final int code,
+            final int spaceState, final boolean isFromSuggestionStrip) {
+        if (Keyboard.CODE_ENTER == code && SPACE_STATE_SWAP_PUNCTUATION == spaceState) {
+            removeTrailingSpaceWhileInBatchEdit(ic);
+            return false;
+        } else if ((SPACE_STATE_WEAK == spaceState
+                || SPACE_STATE_SWAP_PUNCTUATION == spaceState)
+                && isFromSuggestionStrip) {
+            if (mSettingsValues.isMagicSpaceSwapper(code)) {
+                return true;
+            } else {
+                if (mSettingsValues.isMagicSpaceStripper(code)) {
+                    removeTrailingSpaceWhileInBatchEdit(ic);
+                }
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
     private void handleCharacter(final int primaryCode, final int[] keyCodes, final int x,
             final int y, final int spaceState) {
         mVoiceProxy.handleCharacter();
@@ -1490,7 +1506,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private void handleCharacterWhileInBatchEdit(final int primaryCode, final int[] keyCodes,
             final int x, final int y, final int spaceState, final InputConnection ic) {
         boolean isComposingWord = mWordComposer.isComposingWord();
-        int code = primaryCode;
 
         if (SPACE_STATE_PHANTOM == spaceState &&
                 !mSettingsValues.isSymbolExcludedFromWordSeparators(primaryCode)) {
@@ -1501,14 +1516,15 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             sendKeyChar((char)Keyboard.CODE_SPACE);
         }
 
-        if ((isAlphabet(code) || mSettingsValues.isSymbolExcludedFromWordSeparators(code))
+        if ((isAlphabet(primaryCode)
+                || mSettingsValues.isSymbolExcludedFromWordSeparators(primaryCode))
                 && isSuggestionsRequested() && !isCursorTouchingWord()) {
             if (!isComposingWord) {
                 // Reset entirely the composing state anyway, then start composing a new word unless
                 // the character is a single quote. The idea here is, single quote is not a
                 // separator and it should be treated as a normal character, except in the first
                 // position where it should not start composing a word.
-                isComposingWord = (Keyboard.CODE_SINGLE_QUOTE != code);
+                isComposingWord = (Keyboard.CODE_SINGLE_QUOTE != primaryCode);
                 // Here we don't need to reset the last composed word. It will be reset
                 // when we commit this one, if we ever do; if on the other hand we backspace
                 // it entirely and resume suggestions on the previous word, we'd like to still
@@ -1519,7 +1535,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         }
         if (isComposingWord) {
-            mWordComposer.add(code, keyCodes, x, y);
+            mWordComposer.add(primaryCode, keyCodes, x, y);
             if (ic != null) {
                 // If it's the first letter, make note of auto-caps state
                 if (mWordComposer.size() == 1) {
@@ -1530,10 +1546,17 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             mHandler.postUpdateSuggestions();
         } else {
-            sendKeyChar((char)code);
-        }
+            final boolean swapWeakSpace = maybeStripSpaceWhileInBatchEdit(ic, primaryCode,
+                    spaceState, KeyboardActionListener.SUGGESTION_STRIP_COORDINATE == x);
 
-        Utils.Stats.onNonSeparator((char)code, x, y);
+            sendKeyChar((char)primaryCode);
+
+            if (swapWeakSpace) {
+                swapSwapperAndSpaceWhileInBatchEdit(ic);
+                mSpaceState = SPACE_STATE_WEAK;
+            }
+        }
+        Utils.Stats.onNonSeparator((char)primaryCode, x, y);
     }
 
     // Returns true if we did an autocorrection, false otherwise.
@@ -1569,23 +1592,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         }
 
-        final boolean swapWeakSpace;
-        if (Keyboard.CODE_ENTER == primaryCode && SPACE_STATE_SWAP_PUNCTUATION == spaceState) {
-            removeTrailingSpaceWhileInBatchEdit(ic);
-            swapWeakSpace = false;
-        } else if ((SPACE_STATE_WEAK == spaceState || SPACE_STATE_SWAP_PUNCTUATION == spaceState)
-                && KeyboardActionListener.SUGGESTION_STRIP_COORDINATE == x) {
-            if (mSettingsValues.isMagicSpaceSwapper(primaryCode)) {
-                swapWeakSpace = true;
-            } else {
-                swapWeakSpace = false;
-                if (mSettingsValues.isMagicSpaceStripper(primaryCode)) {
-                    removeTrailingSpaceWhileInBatchEdit(ic);
-                }
-            }
-        } else {
-            swapWeakSpace = false;
-        }
+        final boolean swapWeakSpace = maybeStripSpaceWhileInBatchEdit(ic, primaryCode, spaceState,
+                KeyboardActionListener.SUGGESTION_STRIP_COORDINATE == x);
 
         // TODO: rethink interactions of sendKeyChar, commitText("\n") and actions. sendKeyChar
         // with a CODE_ENTER parameter will have the default InputMethodService implementation
@@ -1875,35 +1883,31 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (mInputAttributes.mApplicationSpecifiedCompletionOn
                 && mApplicationSpecifiedCompletions != null
                 && index >= 0 && index < mApplicationSpecifiedCompletions.length) {
+            if (mSuggestionsView != null) {
+                mSuggestionsView.clear();
+            }
+            mKeyboardSwitcher.updateShiftState();
             final InputConnection ic = getCurrentInputConnection();
             if (ic != null) {
                 ic.beginBatchEdit();
                 final CompletionInfo completionInfo = mApplicationSpecifiedCompletions[index];
                 ic.commitCompletion(completionInfo);
-            }
-            if (mSuggestionsView != null) {
-                mSuggestionsView.clear();
-            }
-            mKeyboardSwitcher.updateShiftState();
-            if (ic != null) {
                 ic.endBatchEdit();
             }
             return;
         }
 
-        // If this is a punctuation, apply it through the normal key press
-        if (suggestion.length() == 1 && (mSettingsValues.isWordSeparator(suggestion.charAt(0))
-                || mSettingsValues.isSuggestedPunctuation(suggestion.charAt(0)))) {
+        // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
+        if (suggestion.length() == 1 && isShowingPunctuationList()) {
             // Word separators are suggested before the user inputs something.
             // So, LatinImeLogger logs "" as a user's input.
             LatinImeLogger.logOnManualSuggestion(
                     "", suggestion.toString(), index, suggestions.mWords);
+            // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
             final int primaryCode = suggestion.charAt(0);
-            // Find out whether the previous character is a space. If it is, as a special case
-            // for punctuation entered through the suggestion strip, it should be swapped
-            // if it was a magic or a weak space. This is meant to help in case the user
-            // pressed space on purpose of displaying the suggestion strip punctuation.
-            insertPunctuationFromSuggestionStrip(primaryCode);
+            onCodeInput(primaryCode, new int[] { primaryCode },
+                    KeyboardActionListener.SUGGESTION_STRIP_COORDINATE,
+                    KeyboardActionListener.SUGGESTION_STRIP_COORDINATE);
             return;
         }
         // We need to log before we commit, because the word composer will store away the user
