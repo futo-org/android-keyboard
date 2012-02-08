@@ -314,4 +314,69 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         }
         assertEquals("delete whole composing word", "", mTextView.getText().toString());
     }
+
+    public void testManuallyPickedWordThenColon() {
+        final String WORD_TO_TYPE = "this";
+        final String PUNCTUATION = ":";
+        final String EXPECTED_RESULT = "this:";
+        type(WORD_TO_TYPE);
+        mLatinIME.pickSuggestionManually(0, WORD_TO_TYPE);
+        type(PUNCTUATION);
+        assertEquals("manually pick word then colon",
+                EXPECTED_RESULT, mTextView.getText().toString());
+    }
+
+    public void testManuallyPickedWordThenOpenParen() {
+        final String WORD_TO_TYPE = "this";
+        final String PUNCTUATION = "(";
+        final String EXPECTED_RESULT = "this (";
+        type(WORD_TO_TYPE);
+        mLatinIME.pickSuggestionManually(0, WORD_TO_TYPE);
+        type(PUNCTUATION);
+        assertEquals("manually pick word then open paren",
+                EXPECTED_RESULT, mTextView.getText().toString());
+    }
+
+    public void testManuallyPickedWordThenCloseParen() {
+        final String WORD_TO_TYPE = "this";
+        final String PUNCTUATION = ")";
+        final String EXPECTED_RESULT = "this)";
+        type(WORD_TO_TYPE);
+        mLatinIME.pickSuggestionManually(0, WORD_TO_TYPE);
+        type(PUNCTUATION);
+        assertEquals("manually pick word then close paren",
+                EXPECTED_RESULT, mTextView.getText().toString());
+    }
+
+    public void testManuallyPickedWordThenSmiley() {
+        final String WORD_TO_TYPE = "this";
+        final String SPECIAL_KEY = ":-)";
+        final String EXPECTED_RESULT = "this :-)";
+        type(WORD_TO_TYPE);
+        mLatinIME.pickSuggestionManually(0, WORD_TO_TYPE);
+        mLatinIME.onTextInput(SPECIAL_KEY);
+        assertEquals("manually pick word then press the smiley key",
+                EXPECTED_RESULT, mTextView.getText().toString());
+    }
+
+    public void testManuallyPickedWordThenDotCom() {
+        final String WORD_TO_TYPE = "this";
+        final String SPECIAL_KEY = ".com";
+        final String EXPECTED_RESULT = "this.com";
+        type(WORD_TO_TYPE);
+        mLatinIME.pickSuggestionManually(0, WORD_TO_TYPE);
+        mLatinIME.onTextInput(SPECIAL_KEY);
+        assertEquals("manually pick word then press the .com key",
+                EXPECTED_RESULT, mTextView.getText().toString());
+    }
+
+    public void testTypeWordTypeDotThenPressDotCom() {
+        final String WORD_TO_TYPE = "this.";
+        final String SPECIAL_KEY = ".com";
+        final String EXPECTED_RESULT = "this.com";
+        type(WORD_TO_TYPE);
+        mLatinIME.onTextInput(SPECIAL_KEY);
+        assertEquals("type word type dot then press the .com key",
+                EXPECTED_RESULT, mTextView.getText().toString());
+    }
 }
