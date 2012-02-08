@@ -159,11 +159,26 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
     }
 
     public void testPickSuggestionThenBackspace() {
-        final String WORD_TO_TYPE = "tgis";
+        final String WORD_TO_TYPE = "this";
+        final String EXPECTED_RESULT = "this";
         type(WORD_TO_TYPE);
         mLatinIME.pickSuggestionManually(0, WORD_TO_TYPE);
+        mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
         type(Keyboard.CODE_DELETE);
-        assertEquals("press suggestion then backspace", WORD_TO_TYPE,
+        assertEquals("press suggestion then backspace", EXPECTED_RESULT,
+                mTextView.getText().toString());
+    }
+
+    public void testPickTypedWordOverAutoCorrectionThenBackspace() {
+        final String WORD_TO_TYPE = "tgis";
+        final String EXPECTED_RESULT = "tgis";
+        type(WORD_TO_TYPE);
+        // Choose the typed word, which should be in position 1 (because position 0 should
+        // be occupied by the "this" auto-correction, as checked by testAutoCorrect())
+        mLatinIME.pickSuggestionManually(1, WORD_TO_TYPE);
+        mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
+        type(Keyboard.CODE_DELETE);
+        assertEquals("pick typed word over auto-correction then backspace", EXPECTED_RESULT,
                 mTextView.getText().toString());
     }
 
@@ -379,4 +394,6 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         assertEquals("type word type dot then press the .com key",
                 EXPECTED_RESULT, mTextView.getText().toString());
     }
+
+    // TODO: Add some tests for non-BMP characters
 }
