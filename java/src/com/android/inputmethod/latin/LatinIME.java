@@ -1326,10 +1326,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // Not a tld: do nothing.
             return text;
         }
+        // We have a TLD (or something that looks like this): make sure we don't add
+        // a space even if currently in phantom mode.
+        mSpaceState = SPACE_STATE_NONE;
         final CharSequence lastOne = ic.getTextBeforeCursor(1, 0);
         if (lastOne != null && lastOne.length() == 1
                 && lastOne.charAt(0) == Keyboard.CODE_PERIOD) {
-            mSpaceState = SPACE_STATE_NONE;
             return text.subSequence(1, text.length());
         } else {
             return text;
