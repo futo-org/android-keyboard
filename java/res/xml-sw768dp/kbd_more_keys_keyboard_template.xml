@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2010, The Android Open Source Project
+** Copyright 2008, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -18,12 +18,9 @@
 */
 -->
 
-<set
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:interpolator="@android:anim/decelerate_interpolator"
->
-    <alpha
-        android:fromAlpha="0.5"
-        android:toAlpha="1.0"
-        android:duration="@integer/config_mini_keyboard_fadein_anim_time" />
-</set>
+<Keyboard xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    latin:keyWidth="5.0%p"
+    latin:rowHeight="@dimen/popup_key_height"
+    style="?attr/moreKeysKeyboardStyle"
+    >
+</Keyboard>

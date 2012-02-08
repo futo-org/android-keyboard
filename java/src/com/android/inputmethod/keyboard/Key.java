@@ -245,7 +245,7 @@ public class Key {
         mActionFlags = actionFlags;
         mMoreKeys = moreKeys;
         mMaxMoreKeysColumn = style.getInt(keyAttr,
-                R.styleable.Keyboard_Key_maxMoreKeysColumn, params.mMaxMiniKeyboardColumn);
+                R.styleable.Keyboard_Key_maxMoreKeysColumn, params.mMaxMoreKeysKeyboardColumn);
 
         mLabel = adjustCaseOfStringForKeyboardId(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_keyLabel), preserveCase, params.mId);

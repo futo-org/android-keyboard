@@ -19,9 +19,9 @@
         <item name="keyboardStyle">@style/Keyboard.HighContrast</item>
         <item name="keyboardViewStyle">@style/KeyboardView.HighContrast</item>
         <item name="latinKeyboardViewStyle">@style/LatinKeyboardView.HighContrast</item>
-        <item name="miniKeyboardStyle">@style/MiniKeyboard</item>
-        <item name="miniKeyboardViewStyle">@style/MiniKeyboardView</item>
-        <item name="miniKeyboardPanelStyle">@style/MiniKeyboardPanelStyle</item>
+        <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard</item>
+        <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView</item>
+        <item name="moreKeysKeyboardPanelStyle">@style/MoreKeysKeyboardPanelStyle</item>
         <item name="suggestionsStripBackgroundStyle">@style/SuggestionsStripBackgroundStyle</item>
         <item name="suggestionsViewStyle">@style/SuggestionsViewStyle</item>
         <item name="moreSuggestionsViewStyle">@style/MoreSuggestionsViewStyle</item>

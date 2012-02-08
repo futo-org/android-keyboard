@@ -28,10 +28,10 @@ import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.latin.R;
 
 /**
- * A view that renders a virtual {@link MiniKeyboard}. It handles rendering of keys and detecting
- * key presses and touch movements.
+ * A view that renders a virtual {@link MoreKeysKeyboard}. It handles rendering of keys and
+ * detecting key presses and touch movements.
  */
-public class MiniKeyboardView extends KeyboardView implements MoreKeysPanel {
+public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel {
     private final int[] mCoordinates = new int[2];
 
     private final KeyDetector mKeyDetector;
@@ -43,7 +43,7 @@ public class MiniKeyboardView extends KeyboardView implements MoreKeysPanel {
 
     private static final TimerProxy EMPTY_TIMER_PROXY = new TimerProxy.Adapter();
 
-    private final KeyboardActionListener mMiniKeyboardListener =
+    private final KeyboardActionListener mMoreKeysKeyboardListener =
             new KeyboardActionListener.Adapter() {
         @Override
         public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
@@ -71,16 +71,16 @@ public class MiniKeyboardView extends KeyboardView implements MoreKeysPanel {
         }
     };
 
-    public MiniKeyboardView(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.miniKeyboardViewStyle);
+    public MoreKeysKeyboardView(Context context, AttributeSet attrs) {
+        this(context, attrs, R.attr.moreKeysKeyboardViewStyle);
     }
 
-    public MiniKeyboardView(Context context, AttributeSet attrs, int defStyle) {
+    public MoreKeysKeyboardView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         final Resources res = context.getResources();
         mKeyDetector = new MoreKeysDetector(
-                res.getDimension(R.dimen.mini_keyboard_slide_allowance));
+                res.getDimension(R.dimen.more_keys_keyboard_slide_allowance));
         setKeyPreviewPopupEnabled(false, 0);
     }
 
@@ -110,7 +110,7 @@ public class MiniKeyboardView extends KeyboardView implements MoreKeysPanel {
 
     @Override
     public KeyboardActionListener getKeyboardActionListener() {
-        return mMiniKeyboardListener;
+        return mMoreKeysKeyboardListener;
     }
 
     @Override
@@ -125,7 +125,7 @@ public class MiniKeyboardView extends KeyboardView implements MoreKeysPanel {
 
     @Override
     public void setKeyPreviewPopupEnabled(boolean previewEnabled, int delay) {
-        // Mini keyboard needs no pop-up key preview displayed, so we pass always false with a
+        // More keys keyboard needs no pop-up key preview displayed, so we pass always false with a
         // delay of 0. The delay does not matter actually since the popup is not shown anyway.
         super.setKeyPreviewPopupEnabled(false, 0);
     }
@@ -136,13 +136,13 @@ public class MiniKeyboardView extends KeyboardView implements MoreKeysPanel {
         mController = controller;
         mListener = listener;
         final View container = (View)getParent();
-        final MiniKeyboard miniKeyboard = (MiniKeyboard)getKeyboard();
+        final MoreKeysKeyboard moreKeysKeyboard = (MoreKeysKeyboard)getKeyboard();
 
         parentView.getLocationInWindow(mCoordinates);
-        final int miniKeyboardLeft = pointX - miniKeyboard.getDefaultCoordX()
+        final int moreKeysKeyboardLeft = pointX - moreKeysKeyboard.getDefaultCoordX()
                 + parentView.getPaddingLeft();
-        final int x = wrapUp(Math.max(0, Math.min(miniKeyboardLeft,
-                parentView.getWidth() - miniKeyboard.mOccupiedWidth))
+        final int x = wrapUp(Math.max(0, Math.min(moreKeysKeyboardLeft,
+                parentView.getWidth() - moreKeysKeyboard.mOccupiedWidth))
                 - container.getPaddingLeft() + mCoordinates[0],
                 container.getMeasuredWidth(), 0, parentView.getWidth());
         final int y = pointY

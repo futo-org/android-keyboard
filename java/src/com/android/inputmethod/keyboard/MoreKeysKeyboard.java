@@ -21,10 +21,10 @@ import android.graphics.Paint;
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.latin.R;
 
-public class MiniKeyboard extends Keyboard {
+public class MoreKeysKeyboard extends Keyboard {
     private final int mDefaultKeyCoordX;
 
-    private MiniKeyboard(Builder.MiniKeyboardParams params) {
+    private MoreKeysKeyboard(Builder.MoreKeysKeyboardParams params) {
         super(params);
         mDefaultKeyCoordX = params.getDefaultKeyCoordX() + params.mDefaultKeyWidth / 2;
     }
@@ -33,21 +33,21 @@ public class MiniKeyboard extends Keyboard {
         return mDefaultKeyCoordX;
     }
 
-    public static class Builder extends Keyboard.Builder<Builder.MiniKeyboardParams> {
+    public static class Builder extends Keyboard.Builder<Builder.MoreKeysKeyboardParams> {
         private final String[] mMoreKeys;
 
-        public static class MiniKeyboardParams extends Keyboard.Params {
+        public static class MoreKeysKeyboardParams extends Keyboard.Params {
             /* package */int mTopRowAdjustment;
             public int mNumRows;
             public int mNumColumns;
             public int mLeftKeys;
             public int mRightKeys; // includes default key.
 
-            public MiniKeyboardParams() {
+            public MoreKeysKeyboardParams() {
                 super();
             }
 
-            /* package for test */MiniKeyboardParams(int numKeys, int maxColumns, int keyWidth,
+            /* package for test */MoreKeysKeyboardParams(int numKeys, int maxColumns, int keyWidth,
                     int rowHeight, int coordXInParent, int parentKeyboardWidth) {
                 super();
                 setParameters(numKeys, maxColumns, keyWidth, rowHeight, coordXInParent,
@@ -55,21 +55,21 @@ public class MiniKeyboard extends Keyboard {
             }
 
             /**
-             * Set keyboard parameters of mini keyboard.
+             * Set keyboard parameters of more keys keyboard.
              *
-             * @param numKeys number of keys in this mini keyboard.
-             * @param maxColumns number of maximum columns of this mini keyboard.
-             * @param keyWidth mini keyboard key width in pixel, including horizontal gap.
-             * @param rowHeight mini keyboard row height in pixel, including vertical gap.
-             * @param coordXInParent coordinate x of the popup key in parent keyboard.
+             * @param numKeys number of keys in this more keys keyboard.
+             * @param maxColumns number of maximum columns of this more keys keyboard.
+             * @param keyWidth more keys keyboard key width in pixel, including horizontal gap.
+             * @param rowHeight more keys keyboard row height in pixel, including vertical gap.
+             * @param coordXInParent coordinate x of the key preview in parent keyboard.
              * @param parentKeyboardWidth parent keyboard width in pixel.
              */
             public void setParameters(int numKeys, int maxColumns, int keyWidth, int rowHeight,
                     int coordXInParent, int parentKeyboardWidth) {
                 if (parentKeyboardWidth / keyWidth < maxColumns) {
                     throw new IllegalArgumentException(
-                            "Keyboard is too small to hold mini keyboard: " + parentKeyboardWidth
-                                    + " " + keyWidth + " " + maxColumns);
+                            "Keyboard is too small to hold more keys keyboard: "
+                                    + parentKeyboardWidth + " " + keyWidth + " " + maxColumns);
                 }
                 mDefaultKeyWidth = keyWidth;
                 mDefaultRowHeight = rowHeight;
@@ -95,14 +95,14 @@ public class MiniKeyboard extends Keyboard {
                     leftKeys = numLeftKeys;
                     rightKeys = numRightKeys;
                 }
-                // Shift right if the left edge of mini keyboard is on the edge of parent keyboard
-                // unless the parent key is on the left edge.
+                // Shift right if the left edge of more keys keyboard is on the edge of parent
+                // keyboard unless the parent key is on the left edge.
                 if (leftKeys * keyWidth >= coordXInParent && leftKeys > 0) {
                     leftKeys--;
                     rightKeys++;
                 }
-                // Shift left if the right edge of mini keyboard is on the edge of parent keyboard
-                // unless the parent key is on the right edge.
+                // Shift left if the right edge of more keys keyboard is on the edge of parent
+                // keyboard unless the parent key is on the right edge.
                 if (rightKeys * keyWidth + coordXInParent >= parentKeyboardWidth && rightKeys > 1) {
                     leftKeys++;
                     rightKeys--;
@@ -204,10 +204,10 @@ public class MiniKeyboard extends Keyboard {
         }
 
         public Builder(KeyboardView view, int xmlId, Key parentKey, Keyboard parentKeyboard) {
-            super(view.getContext(), new MiniKeyboardParams());
+            super(view.getContext(), new MoreKeysKeyboardParams());
             load(xmlId, parentKeyboard.mId);
 
-            // TODO: Mini keyboard's vertical gap is currently calculated heuristically.
+            // TODO: More keys keyboard's vertical gap is currently calculated heuristically.
             // Should revise the algorithm.
             mParams.mVerticalGap = parentKeyboard.mVerticalGap / 2;
             mMoreKeys = parentKey.mMoreKeys;
@@ -215,8 +215,9 @@ public class MiniKeyboard extends Keyboard {
             final int previewWidth = view.mKeyPreviewDrawParams.mPreviewBackgroundWidth;
             final int previewHeight = view.mKeyPreviewDrawParams.mPreviewBackgroundHeight;
             final int width, height;
-            // Use pre-computed width and height if these values are available and mini keyboard
-            // has only one key to mitigate visual flicker between key preview and mini keyboard.
+            // Use pre-computed width and height if these values are available and more keys
+            // keyboard has only one key to mitigate visual flicker between key preview and more
+            // keys keyboard.
             if (view.isKeyPreviewPopupEnabled() && mMoreKeys.length == 1 && previewWidth > 0
                     && previewHeight > 0) {
                 width = previewWidth;
@@ -231,7 +232,7 @@ public class MiniKeyboard extends Keyboard {
 
         private static int getMaxKeyWidth(KeyboardView view, String[] moreKeys, int minKeyWidth) {
             final int padding = (int) view.getContext().getResources()
-                    .getDimension(R.dimen.mini_keyboard_key_horizontal_padding);
+                    .getDimension(R.dimen.more_keys_keyboard_key_horizontal_padding);
             Paint paint = null;
             int maxWidth = minKeyWidth;
             for (String moreKeySpec : moreKeys) {
@@ -252,8 +253,8 @@ public class MiniKeyboard extends Keyboard {
         }
 
         @Override
-        public MiniKeyboard build() {
-            final MiniKeyboardParams params = mParams;
+        public MoreKeysKeyboard build() {
+            final MoreKeysKeyboardParams params = mParams;
             for (int n = 0; n < mMoreKeys.length; n++) {
                 final String moreKeySpec = mMoreKeys[n];
                 final int row = n / params.mNumColumns;
@@ -262,7 +263,7 @@ public class MiniKeyboard extends Keyboard {
                 params.markAsEdgeKey(key, row);
                 params.onAddKey(key);
             }
-            return new MiniKeyboard(params);
+            return new MoreKeysKeyboard(params);
         }
     }
 }
