@@ -129,19 +129,37 @@ public class KeyCodeDescriptionMapper {
      *         the key
      */
     private CharSequence getDescriptionForSwitchAlphaSymbol(Context context, Keyboard keyboard) {
-        final KeyboardId id = keyboard.mId;
+        final KeyboardId keyboardId = keyboard.mId;
+        final int elementId = keyboardId.mElementId;
+        final int resId;
 
-        if (id.isAlphabetKeyboard()) {
-            return context.getString(R.string.spoken_description_to_symbol);
-        } else if (id.isSymbolsKeyboard()) {
-            return context.getString(R.string.spoken_description_to_alpha);
-        } else if (id.isPhoneShiftKeyboard()) {
-            return context.getString(R.string.spoken_description_to_numeric);
-        } else if (id.isPhoneKeyboard()) {
-            return context.getString(R.string.spoken_description_to_symbol);
-        } else {
+        switch (elementId) {
+        case KeyboardId.ELEMENT_ALPHABET:
+        case KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED:
+        case KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:
+        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED:
+        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED:
+            resId = R.string.spoken_description_to_symbol;
+            break;
+        case KeyboardId.ELEMENT_SYMBOLS:
+        case KeyboardId.ELEMENT_SYMBOLS_SHIFTED:
+            resId = R.string.spoken_description_to_alpha;
+            break;
+        case KeyboardId.ELEMENT_PHONE:
+            resId = R.string.spoken_description_to_symbol;
+            break;
+        case KeyboardId.ELEMENT_PHONE_SYMBOLS:
+            resId = R.string.spoken_description_to_numeric;
+            break;
+        default:
+            resId = -1;
+        }
+
+        if (resId < 0) {
             return null;
         }
+
+        return context.getString(resId);
     }
 
     /**
@@ -152,13 +170,21 @@ public class KeyCodeDescriptionMapper {
      * @return A context-sensitive description of the "Shift" key.
      */
     private CharSequence getDescriptionForShiftKey(Context context, Keyboard keyboard) {
+        final KeyboardId keyboardId = keyboard.mId;
+        final int elementId = keyboardId.mElementId;
         final int resId;
 
-        if (keyboard.isShiftLocked()) {
+        switch (elementId) {
+        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED:
+        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED:
             resId = R.string.spoken_description_caps_lock;
-        } else if (keyboard.isShiftedOrShiftLocked()) {
+            break;
+        case KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED:
+        case KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:
+        case KeyboardId.ELEMENT_SYMBOLS_SHIFTED:
             resId = R.string.spoken_description_shift_shifted;
-        } else {
+            break;
+        default:
             resId = R.string.spoken_description_shift;
         }
 
