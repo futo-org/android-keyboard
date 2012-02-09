@@ -24,7 +24,7 @@ import com.android.inputmethod.latin.R;
 public class MoreKeysKeyboard extends Keyboard {
     private final int mDefaultKeyCoordX;
 
-    private MoreKeysKeyboard(Builder.MoreKeysKeyboardParams params) {
+    MoreKeysKeyboard(Builder.MoreKeysKeyboardParams params) {
         super(params);
         mDefaultKeyCoordX = params.getDefaultKeyCoordX() + params.mDefaultKeyWidth / 2;
     }
@@ -81,29 +81,29 @@ public class MoreKeysKeyboard extends Keyboard {
 
                 final int numLeftKeys = (numColumns - 1) / 2;
                 final int numRightKeys = numColumns - numLeftKeys; // including default key.
+                // Maximum number of keys we can layout both side of the parent key
                 final int maxLeftKeys = coordXInParent / keyWidth;
-                final int maxRightKeys = Math.max(1, (parentKeyboardWidth - coordXInParent)
-                        / keyWidth);
+                final int maxRightKeys = (parentKeyboardWidth - coordXInParent) / keyWidth;
                 int leftKeys, rightKeys;
                 if (numLeftKeys > maxLeftKeys) {
                     leftKeys = maxLeftKeys;
-                    rightKeys = numColumns - maxLeftKeys;
-                } else if (numRightKeys > maxRightKeys) {
-                    leftKeys = numColumns - maxRightKeys;
-                    rightKeys = maxRightKeys;
+                    rightKeys = numColumns - leftKeys;
+                } else if (numRightKeys > maxRightKeys + 1) {
+                    rightKeys = maxRightKeys + 1; // include default key
+                    leftKeys = numColumns - rightKeys;
                 } else {
                     leftKeys = numLeftKeys;
                     rightKeys = numRightKeys;
                 }
-                // Shift right if the left edge of more keys keyboard is on the edge of parent
-                // keyboard unless the parent key is on the left edge.
-                if (leftKeys * keyWidth >= coordXInParent && leftKeys > 0) {
+                // If the left keys fill the left side of the parent key, entire more keys keyboard
+                // should be shifted to the right unless the parent key is on the left edge.
+                if (maxLeftKeys == leftKeys && leftKeys > 0) {
                     leftKeys--;
                     rightKeys++;
                 }
-                // Shift left if the right edge of more keys keyboard is on the edge of parent
-                // keyboard unless the parent key is on the right edge.
-                if (rightKeys * keyWidth + coordXInParent >= parentKeyboardWidth && rightKeys > 1) {
+                // If the right keys fill the right side of the parent key, entire more keys
+                // should be shifted to the left unless the parent key is on the right edge.
+                if (maxRightKeys == rightKeys - 1 && rightKeys > 1) {
                     leftKeys++;
                     rightKeys--;
                 }
@@ -111,8 +111,7 @@ public class MoreKeysKeyboard extends Keyboard {
                 mRightKeys = rightKeys;
 
                 // Centering of the top row.
-                final boolean onEdge = (leftKeys == 0 || rightKeys == 1);
-                if (numRows < 2 || onEdge || getTopRowEmptySlots(numKeys, numColumns) % 2 == 0) {
+                if (numRows < 2 || getTopRowEmptySlots(numKeys, numColumns) % 2 == 0) {
                     mTopRowAdjustment = 0;
                 } else if (mLeftKeys < mRightKeys - 1) {
                     mTopRowAdjustment = 1;
@@ -227,7 +226,7 @@ public class MoreKeysKeyboard extends Keyboard {
                 height = parentKeyboard.mMostCommonKeyHeight;
             }
             mParams.setParameters(mMoreKeys.length, parentKey.mMaxMoreKeysColumn, width, height,
-                    parentKey.mX + (mParams.mDefaultKeyWidth - width) / 2, view.getMeasuredWidth());
+                    parentKey.mX + parentKey.mWidth / 2, view.getMeasuredWidth());
         }
 
         private static int getMaxKeyWidth(KeyboardView view, String[] moreKeys, int minKeyWidth) {
