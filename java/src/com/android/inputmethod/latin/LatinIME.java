@@ -1654,7 +1654,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         } else {
             if (swapWeakSpace) {
                 swapSwapperAndSpaceWhileInBatchEdit(ic);
-                mSpaceState = SPACE_STATE_WEAK;
+                mSpaceState = SPACE_STATE_SWAP_PUNCTUATION;
             } else if (SPACE_STATE_PHANTOM == spaceState) {
                 // If we are in phantom space state, and the user presses a separator, we want to
                 // stay in phantom space state so that the next keypress has a chance to add the
