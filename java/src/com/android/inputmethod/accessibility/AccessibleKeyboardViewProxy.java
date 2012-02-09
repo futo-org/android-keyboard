@@ -28,8 +28,11 @@ import android.view.inputmethod.EditorInfo;
 import com.android.inputmethod.compat.AccessibilityEventCompatUtils;
 import com.android.inputmethod.compat.MotionEventCompatUtils;
 import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.LatinKeyboardView;
 import com.android.inputmethod.keyboard.PointerTracker;
+import com.android.inputmethod.latin.R;
 
 public class AccessibleKeyboardViewProxy {
     private static final String TAG = AccessibleKeyboardViewProxy.class.getSimpleName();
@@ -174,5 +177,72 @@ public class AccessibleKeyboardViewProxy {
             }
             return true;
         }
+    }
+
+    /**
+     * Notifies the user of changes in the keyboard shift state.
+     */
+    public void notifyShiftState() {
+        final Keyboard keyboard = mView.getKeyboard();
+        final KeyboardId keyboardId = keyboard.mId;
+        final int elementId = keyboardId.mElementId;
+        final Context context = mView.getContext();
+        final CharSequence text;
+
+        switch (elementId) {
+        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED:
+        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED:
+            text = context.getText(R.string.spoken_description_shiftmode_locked);
+            break;
+        case KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED:
+        case KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:
+        case KeyboardId.ELEMENT_SYMBOLS_SHIFTED:
+            text = context.getText(R.string.spoken_description_shiftmode_on);
+            break;
+        default:
+            text = context.getText(R.string.spoken_description_shiftmode_off);
+        }
+
+        AccessibilityUtils.getInstance().speak(text);
+    }
+
+    /**
+     * Notifies the user of changes in the keyboard symbols state.
+     */
+    public void notifySymbolsState() {
+        final Keyboard keyboard = mView.getKeyboard();
+        final Context context = mView.getContext();
+        final KeyboardId keyboardId = keyboard.mId;
+        final int elementId = keyboardId.mElementId;
+        final int resId;
+
+        switch (elementId) {
+        case KeyboardId.ELEMENT_ALPHABET:
+        case KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED:
+        case KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:
+        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED:
+        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED:
+            resId = R.string.spoken_description_mode_alpha;
+            break;
+        case KeyboardId.ELEMENT_SYMBOLS:
+        case KeyboardId.ELEMENT_SYMBOLS_SHIFTED:
+            resId = R.string.spoken_description_mode_symbol;
+            break;
+        case KeyboardId.ELEMENT_PHONE:
+            resId = R.string.spoken_description_mode_phone;
+            break;
+        case KeyboardId.ELEMENT_PHONE_SYMBOLS:
+            resId = R.string.spoken_description_mode_phone_shift;
+            break;
+        default:
+            resId = -1;
+        }
+
+        if (resId < 0) {
+            return;
+        }
+
+        final String text = context.getString(resId);
+        AccessibilityUtils.getInstance().speak(text);
     }
 }

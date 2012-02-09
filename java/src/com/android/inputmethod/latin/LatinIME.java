@@ -49,6 +49,7 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.InputConnection;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
+import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputConnectionCompatUtils;
@@ -2323,6 +2324,18 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     @Override
     public void onReleaseKey(int primaryCode, boolean withSliding) {
         mKeyboardSwitcher.onReleaseKey(primaryCode, withSliding);
+
+        // If accessibility is on, ensure the user receives keyboard state updates.
+        if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
+            switch (primaryCode) {
+            case Keyboard.CODE_SHIFT:
+                AccessibleKeyboardViewProxy.getInstance().notifyShiftState();
+                break;
+            case Keyboard.CODE_SWITCH_ALPHA_SYMBOL:
+                AccessibleKeyboardViewProxy.getInstance().notifySymbolsState();
+                break;
+            }
+        }
     }
 
     // receive ringer mode change and network state change.
