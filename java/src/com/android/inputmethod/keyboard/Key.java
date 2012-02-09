@@ -335,18 +335,18 @@ public class Key {
                 key.mHintLabel,
                 key.mIconId,
                 key.mBackgroundType,
+                Arrays.hashCode(key.mMoreKeys),
+                key.mOutputText,
+                key.mActionFlags,
+                key.mLabelFlags,
                 // Key can be distinguishable without the following members.
                 // key.mAltCode,
-                // key.mOutputText,
-                // key.mActionFlags,
-                // key.mLabelFlags,
                 // key.mDisabledIconId,
                 // key.mPreviewIconId,
                 // key.mHorizontalGap,
                 // key.mVerticalGap,
                 // key.mVisualInsetLeft,
                 // key.mVisualInsetRight,
-                // Arrays.hashCode(key.mMoreKeys),
                 // key.mMaxMoreKeysColumn,
         });
     }
@@ -361,7 +361,11 @@ public class Key {
                 && TextUtils.equals(o.mLabel, mLabel)
                 && TextUtils.equals(o.mHintLabel, mHintLabel)
                 && o.mIconId == mIconId
-                && o.mBackgroundType == mBackgroundType;
+                && o.mBackgroundType == mBackgroundType
+                && Arrays.equals(o.mMoreKeys, mMoreKeys)
+                && TextUtils.equals(o.mOutputText, mOutputText)
+                && o.mActionFlags == mActionFlags
+                && o.mLabelFlags == mLabelFlags;
     }
 
     @Override
