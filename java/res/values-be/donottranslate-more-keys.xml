@@ -18,6 +18,8 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="keylabel_for_slavic_shcha">ў</string>
-    <string name="keylabel_for_slavic_i">i</string>
+    <!-- \u045e: "ў" CYRILLIC SMALL LETTER SHORT U -->
+    <string name="keylabel_for_slavic_shcha">\u045e</string>
+    <!-- \u0456: "і" CYRILLIC SMALL LETTER BYELORUSSIAN-UKRAINIAN I -->
+    <string name="keylabel_for_slavic_i">\u0456</string>
 </resources>

@@ -52,8 +52,9 @@
         <Key
             latin:keyLabel="l"
             latin:moreKeys="@string/more_keys_for_l" />
+        <!-- \u00f1: "ñ" LATIN SMALL LETTER N WITH TILDE -->
         <Key
-            latin:keyLabel="ñ" />
+            latin:keyLabel="\u00f1" />
     </Row>
     <include
         latin:keyboardLayout="@xml/row_qwerty3" />

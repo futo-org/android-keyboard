@@ -18,12 +18,48 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="more_keys_for_a">ą,á,à,â,ä,æ,ã,å,ā</string>
-    <string name="more_keys_for_e">ę,è,é,ê,ë,ė,ē</string>
-    <string name="more_keys_for_o">ó,ö,ô,ò,õ,œ,ø,ō</string>
-    <string name="more_keys_for_s">ś,ß,š</string>
-    <string name="more_keys_for_n">ń,ñ</string>
-    <string name="more_keys_for_c">ć,ç,č</string>
-    <string name="more_keys_for_z">ż,ź,ž</string>
-    <string name="more_keys_for_l">ł</string>
+    <!-- \u0105: "ą" LATIN SMALL LETTER A WITH OGONEK
+         \u00e1: "á" LATIN SMALL LETTER A WITH ACUTE
+         \u00e0: "à" LATIN SMALL LETTER A WITH GRAVE
+         \u00e2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
+         \u00e4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
+         \u00e6: "æ" LATIN SMALL LETTER AE
+         \u00e3: "ã" LATIN SMALL LETTER A WITH TILDE
+         \u00e5: "å" LATIN SMALL LETTER A WITH RING ABOVE
+         \u0101: "ā" LATIN SMALL LETTER A WITH MACRON -->
+    <string name="more_keys_for_a">\u0105,\u00e1,\u00e0,\u00e2,\u00e4,\u00e6,\u00e3,\u00e5,\u0101</string>
+    <!-- \u0119: "ę" LATIN SMALL LETTER E WITH OGONEK
+         \u00e8: "è" LATIN SMALL LETTER E WITH GRAVE
+         \u00e9: "é" LATIN SMALL LETTER E WITH ACUTE
+         \u00ea: "ê" LATIN SMALL LETTER E WITH CIRCUMFLEX
+         \u00eb: "ë" LATIN SMALL LETTER E WITH DIAERESIS
+         \u0117: "ė" LATIN SMALL LETTER E WITH DOT ABOVE
+         \u0113: "ē" LATIN SMALL LETTER E WITH MACRON -->
+    <string name="more_keys_for_e">\u0119,\u00e8,\u00e9,\u00ea,\u00eb,\u0117,\u0113</string>
+    <!-- \u00f3: "ó" LATIN SMALL LETTER O WITH ACUTE
+         \u00f6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
+         \u00f4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
+         \u00f2: "ò" LATIN SMALL LETTER O WITH GRAVE
+         \u00f5: "õ" LATIN SMALL LETTER O WITH TILDE
+         \u0153: "œ" LATIN SMALL LIGATURE OE
+         \u00f8: "ø" LATIN SMALL LETTER O WITH STROKE
+         \u014d: "ō" LATIN SMALL LETTER O WITH MACRON -->
+    <string name="more_keys_for_o">\u00f3,\u00f6,\u00f4,\u00f2,\u00f5,\u0153,\u00f8,\u014d</string>
+    <!-- \u015b: "ś" LATIN SMALL LETTER S WITH ACUTE
+         \u00df: "ß" LATIN SMALL LETTER SHARP S
+         \u0161: "š" LATIN SMALL LETTER S WITH CARON -->
+    <string name="more_keys_for_s">\u015b,\u00df,\u0161</string>
+    <!-- \u0144: "ń" LATIN SMALL LETTER N WITH ACUTE
+         \u00f1: "ñ" LATIN SMALL LETTER N WITH TILDE -->
+    <string name="more_keys_for_n">\u0144,\u00f1</string>
+    <!-- \u0107: "ć" LATIN SMALL LETTER C WITH ACUTE
+         \u00e7: "ç" LATIN SMALL LETTER C WITH CEDILLA
+         \u010d: "č" LATIN SMALL LETTER C WITH CARON -->
+    <string name="more_keys_for_c">\u0107,\u00e7,\u010d</string>
+    <!-- \u017c: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE
+         \u017a: "ź" LATIN SMALL LETTER Z WITH ACUTE
+         \u017e: "ž" LATIN SMALL LETTER Z WITH CARON -->
+    <string name="more_keys_for_z">\u017c,\u017a,\u017e</string>
+    <!-- \u0142: "ł" LATIN SMALL LETTER L WITH STROKE -->
+    <string name="more_keys_for_l">\u0142</string>
 </resources>

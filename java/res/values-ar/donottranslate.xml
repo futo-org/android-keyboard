@@ -21,5 +21,7 @@
     <!-- The all letters need to be mirrored are found at
          http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt -->
     <!-- Symbols that are suggested between words -->
+    <!-- \u0022: """ QUOTATION MARK (double quotation mark)
+         \u0027: "'" APOSTROPHE (single quotation mark) -->
     <string name="suggested_punctuations">!,?,\\,,:,;,\u0022,(|),)|(,\u0027,-,/,@,_</string>
 </resources>

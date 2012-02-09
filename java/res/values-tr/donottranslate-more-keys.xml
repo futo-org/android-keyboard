@@ -18,11 +18,40 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="more_keys_for_a">â</string>
-    <string name="more_keys_for_i">ı,î,ï,ì,í,į,ī</string>
-    <string name="more_keys_for_o">ö,ô,œ,ò,ó,õ,ø,ō</string>
-    <string name="more_keys_for_u">ü,û,ù,ú,ū</string>
-    <string name="more_keys_for_s">ş,ß,ś,š</string>
-    <string name="more_keys_for_g">ğ</string>
-    <string name="more_keys_for_c">ç,ć,č</string>
+    <!-- \u00e2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX -->
+    <string name="more_keys_for_a">\u00e2</string>
+    <!-- \u0131: "ı" LATIN SMALL LETTER DOTLESS I
+         \u00ee: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
+         \u00ef: "ï" LATIN SMALL LETTER I WITH DIAERESIS
+         \u00ec: "ì" LATIN SMALL LETTER I WITH GRAVE
+         \u00ed: "í" LATIN SMALL LETTER I WITH ACUTE
+         \u012f: "į" LATIN SMALL LETTER I WITH OGONEK
+         \u012b: "ī" LATIN SMALL LETTER I WITH MACRON -->
+    <string name="more_keys_for_i">\u0131,\u00ee,\u00ef,\u00ec,\u00ed,\u012f,\u012b</string>
+    <!-- \u00f6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
+         \u00f4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
+         \u0153: "œ" LATIN SMALL LIGATURE OE
+         \u00f2: "ò" LATIN SMALL LETTER O WITH GRAVE
+         \u00f3: "ó" LATIN SMALL LETTER O WITH ACUTE
+         \u00f5: "õ" LATIN SMALL LETTER O WITH TILDE
+         \u00f8: "ø" LATIN SMALL LETTER O WITH STROKE
+         \u014d: "ō" LATIN SMALL LETTER O WITH MACRON -->
+    <string name="more_keys_for_o">\u00f6,\u00f4,\u0153,\u00f2,\u00f3,\u00f5,\u00f8,\u014d</string>
+    <!-- \u00fc: "ü" LATIN SMALL LETTER U WITH DIAERESIS
+         \u00fb: "û" LATIN SMALL LETTER U WITH CIRCUMFLEX
+         \u00f9: "ù" LATIN SMALL LETTER U WITH GRAVE
+         \u00fa: "ú" LATIN SMALL LETTER U WITH ACUTE
+         \u016b: "ū" LATIN SMALL LETTER U WITH MACRON -->
+    <string name="more_keys_for_u">\u00fc,\u00fb,\u00f9,\u00fa,\u016b</string>
+    <!-- \u015f: "ş" LATIN SMALL LETTER S WITH CEDILLA
+         \u00df: "ß" LATIN SMALL LETTER SHARP S
+         \u015b: "ś" LATIN SMALL LETTER S WITH ACUTE
+         \u0161: "š" LATIN SMALL LETTER S WITH CARON -->
+    <string name="more_keys_for_s">\u015f,\u00df,\u015b,\u0161</string>
+    <!-- \u011f: "ğ" LATIN SMALL LETTER G WITH BREVE -->
+    <string name="more_keys_for_g">\u011f</string>
+    <!-- \u00e7: "ç" LATIN SMALL LETTER C WITH CEDILLA
+         \u0107: "ć" LATIN SMALL LETTER C WITH ACUTE
+         \u010d: "č" LATIN SMALL LETTER C WITH CARON -->
+    <string name="more_keys_for_c">\u00e7,\u0107,\u010d</string>
 </resources>

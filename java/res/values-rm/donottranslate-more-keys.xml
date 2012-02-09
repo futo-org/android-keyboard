@@ -18,5 +18,12 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="more_keys_for_o">ò,ó,ö,ô,õ,œ,ø</string>
+    <!-- \u00f2: "ò" LATIN SMALL LETTER O WITH GRAVE
+         \u00f3: "ó" LATIN SMALL LETTER O WITH ACUTE
+         \u00f6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
+         \u00f4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
+         \u00f5: "õ" LATIN SMALL LETTER O WITH TILDE
+         \u0153: "œ" LATIN SMALL LIGATURE OE
+         \u00f8: "ø" LATIN SMALL LETTER O WITH STROKE -->
+    <string name="more_keys_for_o">\u00f2,\u00f3,\u00f6,\u00f4,\u00f5,\u0153,\u00f8</string>
 </resources>

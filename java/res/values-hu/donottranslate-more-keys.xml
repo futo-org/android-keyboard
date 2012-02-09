@@ -18,9 +18,45 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="more_keys_for_a">á,à,â,ä,æ,ã,å,ā</string>
-    <string name="more_keys_for_e">é,è,ê,ë,ę,ė,ē</string>
-    <string name="more_keys_for_i">í,î,ï,ì,į,ī</string>
-    <string name="more_keys_for_o">ó,ö,ő,ô,ò,õ,œ,ø,ō</string>
-    <string name="more_keys_for_u">ú,ü,ű,û,ù,ū</string>
+    <!-- \u00e1: "á" LATIN SMALL LETTER A WITH ACUTE
+         \u00e0: "à" LATIN SMALL LETTER A WITH GRAVE
+         \u00e2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
+         \u00e4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
+         \u00e6: "æ" LATIN SMALL LETTER AE
+         \u00e3: "ã" LATIN SMALL LETTER A WITH TILDE
+         \u00e5: "å" LATIN SMALL LETTER A WITH RING ABOVE
+         \u0101: "ā" LATIN SMALL LETTER A WITH MACRON -->
+    <string name="more_keys_for_a">\u00e1,\u00e0,\u00e2,\u00e4,\u00e6,\u00e3,\u00e5,\u0101</string>
+    <!-- \u00e9: "é" LATIN SMALL LETTER E WITH ACUTE
+         \u00e8: "è" LATIN SMALL LETTER E WITH GRAVE
+         \u00ea: "ê" LATIN SMALL LETTER E WITH CIRCUMFLEX
+         \u00eb: "ë" LATIN SMALL LETTER E WITH DIAERESIS
+         \u0119: "ę" LATIN SMALL LETTER E WITH OGONEK
+         \u0117: "ė" LATIN SMALL LETTER E WITH DOT ABOVE
+         \u0113: "ē" LATIN SMALL LETTER E WITH MACRON -->
+    <string name="more_keys_for_e">\u00e9,\u00e8,\u00ea,\u00eb,\u0119,\u0117,\u0113</string>
+    <!-- \u00ed: "í" LATIN SMALL LETTER I WITH ACUTE
+         \u00ee: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
+         \u00ef: "ï" LATIN SMALL LETTER I WITH DIAERESIS
+         \u00ec: "ì" LATIN SMALL LETTER I WITH GRAVE
+         \u012f: "į" LATIN SMALL LETTER I WITH OGONEK
+         \u012b: "ī" LATIN SMALL LETTER I WITH MACRON -->
+    <string name="more_keys_for_i">\u00ed,\u00ee,\u00ef,\u00ec,\u012f,\u012b</string>
+    <!-- \u00f3: "ó" LATIN SMALL LETTER O WITH ACUTE
+         \u00f6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
+         \u0151: "ő" LATIN SMALL LETTER O WITH DOUBLE ACUTE
+         \u00f4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
+         \u00f2: "ò" LATIN SMALL LETTER O WITH GRAVE
+         \u00f5: "õ" LATIN SMALL LETTER O WITH TILDE
+         \u0153: "œ" LATIN SMALL LIGATURE OE
+         \u00f8: "ø" LATIN SMALL LETTER O WITH STROKE
+         \u014d: "ō" LATIN SMALL LETTER O WITH MACRON -->
+    <string name="more_keys_for_o">\u00f3,\u00f6,\u0151,\u00f4,\u00f2,\u00f5,\u0153,\u00f8,\u014d</string>
+    <!-- \u00fa: "ú" LATIN SMALL LETTER U WITH ACUTE
+         \u00fc: "ü" LATIN SMALL LETTER U WITH DIAERESIS
+         \u0171: "ű" LATIN SMALL LETTER U WITH DOUBLE ACUTE
+         \u00fb: "û" LATIN SMALL LETTER U WITH CIRCUMFLEX
+         \u00f9: "ù" LATIN SMALL LETTER U WITH GRAVE
+         \u016b: "ū" LATIN SMALL LETTER U WITH MACRON -->
+    <string name="more_keys_for_u">\u00fa,\u00fc,\u0171,\u00fb,\u00f9,\u016b</string>
 </resources>

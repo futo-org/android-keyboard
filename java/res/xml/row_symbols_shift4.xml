@@ -35,14 +35,16 @@
                 <!-- Note: Neither DroidSans nor Roboto have a glyph for ‟ Double high-reversed-9 quotation mark U+201F. -->
                     <!-- latin:keyLabelFlags="hasPopupHint" -->
                     <!-- latin:moreKeys="‟" -->
+                <!-- \u201e: "„" DOUBLE LOW-9 QUOTATION MARK -->
                 <Key
-                    latin:keyLabel="„"
+                    latin:keyLabel="\u201e"
                     latin:backgroundType="functional" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
                     latin:keyWidth="50%p" />
+                <!-- \u2026: "…" HORIZONTAL ELLIPSIS -->
                 <Key
-                    latin:keyLabel="…"
+                    latin:keyLabel="\u2026"
                     latin:backgroundType="functional" />
                 <Key
                     latin:keyStyle="enterKeyStyle"
@@ -58,15 +60,17 @@
                 <!-- Note: Neither DroidSans nor Roboto have a glyph for ‟ Double high-reversed-9 quotation mark U+201F. -->
                     <!-- latin:keyLabelFlags="hasPopupHint" -->
                     <!-- latin:moreKeys="‟" -->
+                <!-- \u201e: "„" DOUBLE LOW-9 QUOTATION MARK -->
                 <Key
-                    latin:keyLabel="„"
+                    latin:keyLabel="\u201e"
                     latin:keyWidth="9.2%p"
                     latin:backgroundType="functional" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
                     latin:keyWidth="35.83%p" />
+                <!-- \u2026: "…" HORIZONTAL ELLIPSIS -->
                 <Key
-                    latin:keyLabel="…"
+                    latin:keyLabel="\u2026"
                     latin:keyWidth="9.2%p"
                     latin:backgroundType="functional" />
                 <Key

@@ -32,18 +32,18 @@
     magic_space_swapping_symbols | magic_space_stripping_symbols |
             magic_space_neutral_symbols \ symbols_excluded_from_word_separators -->
     <!-- Symbol characters list that should switch back to the main layout -->
-    <!--  \u0022: Quotation mark (double quotation mark)
-          \u0027: Apostrophe (single quotation mark)
-          \u2018: Left single quotation mark
-          \u2019: Right single quotation mark
-          \u201a: Single low-9 quotation mark
-          \u201b: Single high-reversed-9 quotation mark
-          \u201c: Left double quotation mark
-          \u201d: Right double quotation mark
-          \u201e: Double low-9 quotation mark
-          \u201f: Double high-reversed-9 quotation mark
-          \u00ab: Left-pointing double angle quotation mark
-          \u00bb: Right-pointing double angle quotation mark  -->
+    <!-- \u0022: """ QUOTATION MARK (double quotation mark)
+         \u0027: "'" APOSTROPHE (single quotation mark)
+         \u2018: "‘" LEFT SINGLE QUOTATION MARK
+         \u2019: "’" RIGHT SINGLE QUOTATION MARK
+         \u201a: "‚" SINGLE LOW-9 QUOTATION MARK
+         \u201b: "‛" SINGLE HIGH-REVERSED-9 QUOTATION MARK
+         \u201c: "“" LEFT DOUBLE QUOTATION MARK
+         \u201d: "”" RIGHT DOUBLE QUOTATION MARK
+         \u201e: "„" DOUBLE LOW-9 QUOTATION MARK
+         \u201f: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+         \u00ab: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+         \u00bb: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK -->
     <!-- string name="layout_switch_back_symbols">\u0022\u0027\u2018\u2019\u201a\u201b\u201c\u201d\u201e\u201f\u00ab\u00bb</string> -->
     <string name="layout_switch_back_symbols"></string>
 
