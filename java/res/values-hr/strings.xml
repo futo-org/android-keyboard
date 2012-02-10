@@ -35,7 +35,7 @@
     <string name="misc_category" msgid="6894192814868233453">"Ostale opcije"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Napredne postavke"</string>
     <string name="advanced_settings_summary" msgid="5193513161106637254">"Opcije za stručne korisnike"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Bez odgode klj. skočnih"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Odgoda prikaza tipki"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Bez odgode"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Zadano"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Predlaži imena kontakata"</string>
@@ -52,7 +52,7 @@
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Uvijek sakrij"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Prikaži tipku postavki"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Samoispravak"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"Razm. i intrp. aut. ispr. kr. rči."</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Razmak i interpunkcija automatski ispravljaju krive riječi"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Isključeno"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Skromno"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agresivno"</string>
@@ -132,7 +132,7 @@
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Na glavnoj tipkovnici"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Na tipkovnici simb."</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Isključeno"</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mik. na gl. tipk."</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikrofon na gl. tipkovnici"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mik. na tipk. simb."</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Glas. unos onemog."</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Odabir ulazne metode"</string>

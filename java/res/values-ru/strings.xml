@@ -21,8 +21,8 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Клавиатура Android"</string>
-    <string name="english_ime_settings" msgid="6661589557206947774">"Настройки клавиатуры Android"</string>
-    <string name="english_ime_input_options" msgid="3909945612939668554">"Параметры ввода"</string>
+    <string name="english_ime_settings" msgid="6661589557206947774">"Клавиатура Android"</string>
+    <string name="english_ime_input_options" msgid="3909945612939668554">"Настройки"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Исправления Android"</string>
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Настройка проверки правописания"</string>
     <string name="use_proximity_option_title" msgid="7469233942295924620">"Алгоритм близости клавиш"</string>
@@ -145,8 +145,8 @@
     <string name="prefs_description_log" msgid="5827825607258246003">"Помогите усовершенствовать редактор способа ввода, разрешив отправку статистики и отчетов о сбоях в Google."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Тема клавиатуры"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"Немецкая клавиатура QWERTY"</string>
-    <string name="subtype_en_GB" msgid="88170601942311355">"Английский (Великобритания)"</string>
-    <string name="subtype_en_US" msgid="6160452336634534239">"Английский (США)"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"английский (Великобритания)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"английский (США)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Режим проверки удобства использования"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Настройки вибросигнала при нажатии клавиш"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Настройки громкости звука при нажатии клавиш"</string>

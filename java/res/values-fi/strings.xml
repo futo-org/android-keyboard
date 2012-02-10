@@ -123,7 +123,7 @@
     <string name="voice_server_error" msgid="7807129913977261644">"Palvelinvirhe"</string>
     <string name="voice_speech_timeout" msgid="8461817525075498795">"Puhetta ei kuulu"</string>
     <string name="voice_no_match" msgid="4285117547030179174">"Ei vastineita"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Äänihakua ei asennettu"</string>
+    <string name="voice_not_installed" msgid="5552450909753842415">"Puhehakua ei asennettu"</string>
     <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Vihje:"</b>" liu\'uta sormea näppäimistöllä ja puhu"</string>
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Vihje:"</b>" kokeile seuraavalla kerralla puhua välimerkit, kuten \"period\" (piste), \"comma\" (pilkku) tai \"question mark\" (kysymysmerkki)."</string>
     <string name="cancel" msgid="6830980399865683324">"Peruuta"</string>
