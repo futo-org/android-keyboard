@@ -65,8 +65,7 @@
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: gespeichert"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Los"</string>
     <string name="label_next_key" msgid="362972844525672568">"Weiter"</string>
-    <!-- no translation found for label_previous_key (1211868118071386787) -->
-    <skip />
+    <string name="label_previous_key" msgid="1211868118071386787">"Vorh."</string>
     <string name="label_done_key" msgid="2441578748772529288">"Fertig"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Senden"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
@@ -79,8 +78,10 @@
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Kein Text eingegeben"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Tastencode %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Umschalttaste"</string>
-    <string name="spoken_description_shift_shifted" msgid="954941524766465022">"Umschalttaste aktiviert"</string>
-    <string name="spoken_description_caps_lock" msgid="5660626444912131764">"Feststelltaste aktiviert"</string>
+    <!-- no translation found for spoken_description_shift_shifted (1681877323344195035) -->
+    <skip />
+    <!-- no translation found for spoken_description_caps_lock (3276478269526304432) -->
+    <skip />
     <string name="spoken_description_delete" msgid="8740376944276199801">"Entf"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Symbole"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"Buchstaben"</string>
@@ -92,6 +93,20 @@
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Smiley"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Eingabe"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"Aufzählungspunkt"</string>
+    <!-- no translation found for spoken_description_shiftmode_on (5700440798609574589) -->
+    <skip />
+    <!-- no translation found for spoken_description_shiftmode_locked (593175803181701830) -->
+    <skip />
+    <!-- no translation found for spoken_description_shiftmode_off (657219998449174808) -->
+    <skip />
+    <!-- no translation found for spoken_description_mode_symbol (7183343879909747642) -->
+    <skip />
+    <!-- no translation found for spoken_description_mode_alpha (3528307674390156956) -->
+    <skip />
+    <!-- no translation found for spoken_description_mode_phone (6520207943132026264) -->
+    <skip />
+    <!-- no translation found for spoken_description_mode_phone_shift (5499629753962641227) -->
+    <skip />
     <string name="voice_warning_title" msgid="4419354150908395008">"Spracheingabe"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Spracheingaben werden zurzeit nicht für Ihre Sprache unterstützt, funktionieren jedoch in Englisch."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Die Spracheingabe verwendet die Spracherkennung von Google. Es gelten die "<a href="http://m.google.com/privacy">"Google Mobile-Datenschutzbestimmungen"</a>"."</string>

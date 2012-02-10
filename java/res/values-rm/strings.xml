@@ -124,9 +124,9 @@
     <skip />
     <!-- no translation found for spoken_description_shift (244197883292549308) -->
     <skip />
-    <!-- no translation found for spoken_description_shift_shifted (954941524766465022) -->
+    <!-- no translation found for spoken_description_shift_shifted (1681877323344195035) -->
     <skip />
-    <!-- no translation found for spoken_description_caps_lock (5660626444912131764) -->
+    <!-- no translation found for spoken_description_caps_lock (3276478269526304432) -->
     <skip />
     <!-- no translation found for spoken_description_delete (8740376944276199801) -->
     <skip />
@@ -149,6 +149,20 @@
     <!-- no translation found for spoken_description_return (8178083177238315647) -->
     <skip />
     <!-- no translation found for spoken_description_dot (40711082435231673) -->
+    <skip />
+    <!-- no translation found for spoken_description_shiftmode_on (5700440798609574589) -->
+    <skip />
+    <!-- no translation found for spoken_description_shiftmode_locked (593175803181701830) -->
+    <skip />
+    <!-- no translation found for spoken_description_shiftmode_off (657219998449174808) -->
+    <skip />
+    <!-- no translation found for spoken_description_mode_symbol (7183343879909747642) -->
+    <skip />
+    <!-- no translation found for spoken_description_mode_alpha (3528307674390156956) -->
+    <skip />
+    <!-- no translation found for spoken_description_mode_phone (6520207943132026264) -->
+    <skip />
+    <!-- no translation found for spoken_description_mode_phone_shift (5499629753962641227) -->
     <skip />
     <string name="voice_warning_title" msgid="4419354150908395008">"Cumonds vocals"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"\"Cumonds vocals en Vossa lingua na vegnan actualmain betg sustegnids, ma la funcziun è disponibla per englais.\""</string>

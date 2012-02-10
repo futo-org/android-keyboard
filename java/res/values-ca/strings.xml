@@ -65,8 +65,7 @@
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: desada"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Vés"</string>
     <string name="label_next_key" msgid="362972844525672568">"Següent"</string>
-    <!-- no translation found for label_previous_key (1211868118071386787) -->
-    <skip />
+    <string name="label_previous_key" msgid="1211868118071386787">"Ant."</string>
     <string name="label_done_key" msgid="2441578748772529288">"Fet"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Envia"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
@@ -79,8 +78,10 @@
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"No s\'ha introduït cap text"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Clau de codi %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Maj"</string>
-    <string name="spoken_description_shift_shifted" msgid="954941524766465022">"Maj activat"</string>
-    <string name="spoken_description_caps_lock" msgid="5660626444912131764">"Bloq Maj activat"</string>
+    <!-- no translation found for spoken_description_shift_shifted (1681877323344195035) -->
+    <skip />
+    <!-- no translation found for spoken_description_caps_lock (3276478269526304432) -->
+    <skip />
     <string name="spoken_description_delete" msgid="8740376944276199801">"Supr"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Símbols"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"Lletres"</string>
@@ -92,6 +93,20 @@
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Cara somrient"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Retorn"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"Punt"</string>
+    <!-- no translation found for spoken_description_shiftmode_on (5700440798609574589) -->
+    <skip />
+    <!-- no translation found for spoken_description_shiftmode_locked (593175803181701830) -->
+    <skip />
+    <!-- no translation found for spoken_description_shiftmode_off (657219998449174808) -->
+    <skip />
+    <!-- no translation found for spoken_description_mode_symbol (7183343879909747642) -->
+    <skip />
+    <!-- no translation found for spoken_description_mode_alpha (3528307674390156956) -->
+    <skip />
+    <!-- no translation found for spoken_description_mode_phone (6520207943132026264) -->
+    <skip />
+    <!-- no translation found for spoken_description_mode_phone_shift (5499629753962641227) -->
+    <skip />
     <string name="voice_warning_title" msgid="4419354150908395008">"Entrada de veu"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Actualment, l\'entrada de veu no és compatible amb el vostre idioma, però funciona en anglès."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"L\'entrada de veu utilitza el reconeixement de veu de Google. S\'hi aplica la "<a href="http://m.google.com/privacy">"Política de privadesa de Google per a mòbils"</a>"."</string>
