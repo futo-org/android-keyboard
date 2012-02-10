@@ -110,7 +110,7 @@
     <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"Cudzysłów podwójny dolny"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Wprowadzanie głosowe"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Wprowadzanie głosowe obecnie nie jest obsługiwane w Twoim języku, ale działa w języku angielskim."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Funkcja wprowadzania głosowego wykorzystuje mechanizm rozpoznawania mowy. Obowiązuje "<a href="http://m.google.com/privacy">"Polityka prywatności Google Mobile"</a>"."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Funkcja wprowadzania głosowego wykorzystuje mechanizm rozpoznawania mowy. Obowiązuje "<a href="http://m.google.com/privacy">"Polityka prywatności w usługach mobilnych"</a>"."</string>
     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Aby wyłączyć rozpoznawanie mowy, przejdź do ustawień sposobu wprowadzania tekstu."</string>
     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Aby użyć wprowadzania głosowego, naciśnij przycisk mikrofonu."</string>
     <string name="voice_listening" msgid="467518160751321844">"Mów teraz"</string>

@@ -148,6 +148,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"Engels (VK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Engels (VS)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Bruikbaarheidstudie-modus"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Vibrasie-tydsduur met sleuteldruk"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Volume met sleuteldruk"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Sleuteldruk se vibrasie-tydsduurinstellings"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Sleuteldruk se klankvolume-instellings"</string>
 </resources>
