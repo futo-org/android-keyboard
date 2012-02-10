@@ -35,12 +35,12 @@
     <string name="misc_category" msgid="6894192814868233453">"Otras opciones"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Configuración avanzada"</string>
     <string name="advanced_settings_summary" msgid="5193513161106637254">"Opciones para usuarios expertos"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Demora en rechazo de ventana emergente de clave"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Retraso en rechazo de alerta de tecla"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Sin demora"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Predeterminada"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Sugerir nombres de contacto"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Usar nombres de los contactos para sugerencias y correcciones"</string>
-    <string name="enable_span_insert" msgid="7204653105667167620">"Habilitar correcciones"</string>
+    <string name="enable_span_insert" msgid="7204653105667167620">"Activar correcciones"</string>
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"Establecer sugerencias para realizar correcciones"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Mayúsculas automáticas"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Diccionarios complementarios"</string>
@@ -52,7 +52,7 @@
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Ocultar siempre"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Mostrar tecla de configuración"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Corrección automática"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"La barra espaciadora y puntuación insertan automáticamente las palabras corregidas"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"La barra espaciadora y las teclas de puntuación insertan automáticamente la palabra corregida"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Desactivado"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderado"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Total"</string>
@@ -128,7 +128,7 @@
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Sugerencia:"</b>" La próxima vez intenta decir la puntuación como \"punto\", \"coma\" o \"signo de pregunta\"."</string>
     <string name="cancel" msgid="6830980399865683324">"Cancelar"</string>
     <string name="ok" msgid="7898366843681727667">"Aceptar"</string>
-    <string name="voice_input" msgid="3583258583521397548">"Clave de entrada de voz"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Tecla de entrada por voz"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"En el teclado principal"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"En el teclado de símbolos"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Desactivado"</string>
@@ -141,7 +141,7 @@
     <string name="select_language" msgid="3693815588777926848">"Idiomas de entrada"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Tocar de nuevo para guardar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Diccionario disponible"</string>
-    <string name="prefs_enable_log" msgid="6620424505072963557">"Habilitar los comentarios del usuario"</string>
+    <string name="prefs_enable_log" msgid="6620424505072963557">"Activar los comentarios del usuario"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Ayuda a mejorar este editor de método de introducción de texto al enviar las estadísticas de uso y los informes de error a Google."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema del teclado"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"QWERTY alemán"</string>

@@ -76,8 +76,10 @@
     <skip />
     <!-- no translation found for prefs_settings_key (4623341240804046498) -->
     <skip />
-    <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"Propostas da pleds"</string>
-    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="5625751551134658006">"Curreger automaticamain il pled precedent"</string>
+    <!-- no translation found for auto_correction (4979925752001319458) -->
+    <skip />
+    <!-- no translation found for auto_correction_summary (5625751551134658006) -->
+    <skip />
     <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
     <skip />
     <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
@@ -86,7 +88,8 @@
     <skip />
     <!-- no translation found for auto_correction_threshold_mode_very_aggeressive (3386782235540547678) -->
     <skip />
-    <!-- outdated translation 1323347224043514969 -->     <string name="bigram_suggestion" msgid="2636414079905220518">"Propostas da tip bigram"</string>
+    <!-- no translation found for bigram_suggestion (2636414079905220518) -->
+    <skip />
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Meglierar la proposta cun agid dal pled precedent"</string>
     <!-- no translation found for bigram_prediction (8914273444762259739) -->
     <skip />
@@ -183,9 +186,12 @@
     <skip />
     <string name="voice_warning_title" msgid="4419354150908395008">"Cumonds vocals"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"\"Cumonds vocals en Vossa lingua na vegnan actualmain betg sustegnids, ma la funcziun è disponibla per englais.\""</string>
-    <!-- outdated translation 4611518823070986445 -->     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Ils cumonds vocals èn ina funcziunalitad experimentala che utilisescha la renconuschientscha vocala da rait da Google."</string>
-    <!-- outdated translation 5652369578498701761 -->     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"\"Per deactivar ils cumonds vocals, avri ils parameters da tastatura.\""</string>
-    <!-- outdated translation 6892342981545727994 -->     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"\"Per utilisar ils cumonds vocals, smatgai il buttun dal microfon u stritgai cun il det sur la tastatura dal visur.\""</string>
+    <!-- no translation found for voice_warning_may_not_understand (5596289095878251072) -->
+    <skip />
+    <!-- no translation found for voice_warning_how_to_turn_off (3190378129944934856) -->
+    <skip />
+    <!-- no translation found for voice_hint_dialog_message (1420686286820661548) -->
+    <skip />
     <string name="voice_listening" msgid="467518160751321844">"Ussa discurrer"</string>
     <string name="voice_working" msgid="6666937792815731889">"Operaziun en progress"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
@@ -201,7 +207,8 @@
     <string name="voice_punctuation_hint" msgid="1611389463237317754">"\""<b>"Commentari:"</b>" Empruvai la proxima giada d\'agiuntar segns d\'interpuncziun sco \"\"punct\"\", \"\"comma\"\" u \"\"segn da dumonda\"\" cun cumonds vocals.\""</string>
     <string name="cancel" msgid="6830980399865683324">"Interrumper"</string>
     <string name="ok" msgid="7898366843681727667">"OK"</string>
-    <!-- outdated translation 2466640768843347841 -->     <string name="voice_input" msgid="3583258583521397548">"Cumonds vocals"</string>
+    <!-- no translation found for voice_input (3583258583521397548) -->
+    <skip />
     <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
     <skip />
     <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
@@ -221,11 +228,13 @@
     <string name="language_selection_title" msgid="1651299598555326750">"Linguas da cumonds vocals"</string>
     <!-- no translation found for select_language (3693815588777926848) -->
     <skip />
-    <!-- outdated translation 8058519710062071085 -->     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Tippar danovamain per memorisar"</string>
+    <!-- no translation found for hint_add_to_dictionary (9006292060636342317) -->
+    <skip />
     <string name="has_dictionary" msgid="6071847973466625007">"Dicziunari disponibel"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Activar il feedback da l\'utilisader"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Gidai a meglierar quest editur da la metoda d\'endataziun cun trametter automaticamain datas statisticas davart l\'utilisaziun e rapports da collaps a Google."</string>
-    <!-- outdated translation 437433231038683666 -->     <string name="keyboard_layout" msgid="8451164783510487501">"Design da la tastatura"</string>
+    <!-- no translation found for keyboard_layout (8451164783510487501) -->
+    <skip />
     <!-- no translation found for subtype_de_qwerty (3358900499589259491) -->
     <skip />
     <!-- no translation found for subtype_en_GB (88170601942311355) -->
