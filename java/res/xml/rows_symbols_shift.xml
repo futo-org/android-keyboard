@@ -34,18 +34,23 @@
             latin:keyLabel="`" />
         <Key
             latin:keyLabel="|" />
+        <!-- \u2022: "•" BULLET -->
         <Key
-            latin:keyLabel="•"
+            latin:keyLabel="\u2022"
             latin:moreKeys="@string/more_keys_for_bullet" />
+        <!-- \u221a: "√" SQUARE ROOT -->
         <Key
-            latin:keyLabel="√" />
+            latin:keyLabel="\u221a" />
+        <!-- \u03c0: "π" GREEK SMALL LETTER PI -->
         <Key
-            latin:keyLabel="π"
+            latin:keyLabel="\u03c0"
             latin:moreKeys="Π" />
+        <!-- \u00f7: "÷" DIVISION SIGN -->
         <Key
-            latin:keyLabel="÷" />
+            latin:keyLabel="\u00f7" />
+        <!-- \u00d7: "×" MULTIPLICATION SIGN -->
         <Key
-            latin:keyLabel="×" />
+            latin:keyLabel="\u00d7" />
         <include
             latin:keyboardLayout="@xml/keys_curly_brackets" />
     </Row>
@@ -60,17 +65,27 @@
             latin:keyStyle="moreCurrency2KeyStyle" />
         <Key
             latin:keyStyle="moreCurrency3KeyStyle" />
+        <!-- \u00b0: "°" DEGREE SIGN
+             \u2032: "′" PRIME
+             \u2033: "″" DOUBLE PRIME -->
         <Key
-            latin:keyLabel="°"
-            latin:moreKeys="′,″" />
+            latin:keyLabel="\u00b0"
+            latin:moreKeys="\u2032,\u2033" />
+        <!-- \u2191: "↑" UPWARDS ARROW
+             \u2193: "↓" DOWNWARDS ARROW
+             \u2190: "←" LEFTWARDS ARROW
+             \u2192: "→" RIGHTWARDS ARROW -->
         <Key
             latin:keyLabel="^"
-            latin:moreKeys="↑,↓,←,→" />
+            latin:moreKeys="\u2191,\u2193,\u2190,\u2192" />
         <Key
             latin:keyLabel="_" />
+        <!-- \u2260: "≠" NOT EQUAL TO
+             \u2248: "≈" ALMOST EQUAL TO
+             \u221e: "∞" INFINITY -->
         <Key
             latin:keyLabel="="
-            latin:moreKeys="≠,≈,∞" />
+            latin:moreKeys="\u2260,\u2248,\u221e" />
         <include
             latin:keyboardLayout="@xml/keys_square_brackets" />
     </Row>
@@ -81,15 +96,20 @@
             latin:keyStyle="backFromMoreSymbolKeyStyle"
             latin:keyWidth="15%p"
             latin:visualInsetsRight="1%p" />
+        <!-- \u2122: "™" TRADE MARK SIGN -->
         <Key
-            latin:keyLabel="™" />
+            latin:keyLabel="\u2122" />
+        <!-- \u00ae: "®" REGISTERED SIGN -->
         <Key
-            latin:keyLabel="®" />
+            latin:keyLabel="\u00ae" />
+        <!-- \u00a9: "©" COPYRIGHT SIGN -->
         <Key
-            latin:keyLabel="©" />
+            latin:keyLabel="\u00a9" />
+        <!-- \u00b6: "¶" PILCROW SIGN
+             \u00a7: "§" SECTION SIGN -->
         <Key
-            latin:keyLabel="¶"
-            latin:moreKeys="§" />
+            latin:keyLabel="\u00b6"
+            latin:moreKeys="\u00a7" />
         <Key
             latin:keyLabel="\\" />
         <include

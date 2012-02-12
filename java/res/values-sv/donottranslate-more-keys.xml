@@ -18,13 +18,37 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="more_keys_for_e">é,è,ê,ë,ę</string>
-    <string name="more_keys_for_o">œ,ô,ò,ó,õ,ō</string>
-    <string name="more_keys_for_u">ü,û,ù,ú,ū</string>
-    <string name="more_keys_for_s">ß,ś,š</string>
-    <string name="keylabel_for_scandinavia_row1_11">å</string>
-    <string name="keylabel_for_scandinavia_row2_10">ö</string>
-    <string name="keylabel_for_scandinavia_row2_11">ä</string>
-    <string name="more_keys_for_scandinavia_row2_10">ø</string>
-    <string name="more_keys_for_scandinavia_row2_11">æ</string>
+    <!-- \u00e9: "é" LATIN SMALL LETTER E WITH ACUTE
+         \u00e8: "è" LATIN SMALL LETTER E WITH GRAVE
+         \u00ea: "ê" LATIN SMALL LETTER E WITH CIRCUMFLEX
+         \u00eb: "ë" LATIN SMALL LETTER E WITH DIAERESIS
+         \u0119: "ę" LATIN SMALL LETTER E WITH OGONEK -->
+    <string name="more_keys_for_e">\u00e9,\u00e8,\u00ea,\u00eb,\u0119</string>
+    <!-- \u0153: "œ" LATIN SMALL LIGATURE OE
+         \u00f4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
+         \u00f2: "ò" LATIN SMALL LETTER O WITH GRAVE
+         \u00f3: "ó" LATIN SMALL LETTER O WITH ACUTE
+         \u00f5: "õ" LATIN SMALL LETTER O WITH TILDE
+         \u014d: "ō" LATIN SMALL LETTER O WITH MACRON -->
+    <string name="more_keys_for_o">\u0153,\u00f4,\u00f2,\u00f3,\u00f5,\u014d</string>
+    <!-- \u00fc: "ü" LATIN SMALL LETTER U WITH DIAERESIS
+         \u00fb: "û" LATIN SMALL LETTER U WITH CIRCUMFLEX
+         \u00f9: "ù" LATIN SMALL LETTER U WITH GRAVE
+         \u00fa: "ú" LATIN SMALL LETTER U WITH ACUTE
+         \u016b: "ū" LATIN SMALL LETTER U WITH MACRON -->
+    <string name="more_keys_for_u">\u00fc,\u00fb,\u00f9,\u00fa,\u016b</string>
+    <!-- \u00df: "ß" LATIN SMALL LETTER SHARP S
+         \u015b: "ś" LATIN SMALL LETTER S WITH ACUTE
+         \u0161: "š" LATIN SMALL LETTER S WITH CARON -->
+    <string name="more_keys_for_s">\u00df,\u015b,\u0161</string>
+    <!-- \u00e5: "å" LATIN SMALL LETTER A WITH RING ABOVE -->
+    <string name="keylabel_for_scandinavia_row1_11">\u00e5</string>
+    <!-- \u00f6: "ö" LATIN SMALL LETTER O WITH DIAERESIS -->
+    <string name="keylabel_for_scandinavia_row2_10">\u00f6</string>
+    <!-- \u00e4: "ä" LATIN SMALL LETTER A WITH DIAERESIS -->
+    <string name="keylabel_for_scandinavia_row2_11">\u00e4</string>
+    <!-- \u00f8: "ø" LATIN SMALL LETTER O WITH STROKE -->
+    <string name="more_keys_for_scandinavia_row2_10">\u00f8</string>
+    <!-- \u00e6: "æ" LATIN SMALL LETTER AE -->
+    <string name="more_keys_for_scandinavia_row2_11">\u00e6</string>
 </resources>

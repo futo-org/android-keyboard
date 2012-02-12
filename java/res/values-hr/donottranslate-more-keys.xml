@@ -18,10 +18,22 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="more_keys_for_s">š,ś,ß</string>
-    <string name="more_keys_for_n">ñ,ń</string>
+    <!-- \u0161: "š" LATIN SMALL LETTER S WITH CARON
+         \u015b: "ś" LATIN SMALL LETTER S WITH ACUTE
+         \u00df: "ß" LATIN SMALL LETTER SHARP S -->
+    <string name="more_keys_for_s">\u0161,\u015b,\u00df</string>
+    <!-- \u00f1: "ñ" LATIN SMALL LETTER N WITH TILDE
+         \u0144: "ń" LATIN SMALL LETTER N WITH ACUTE -->
+    <string name="more_keys_for_n">\u00f1,\u0144</string>
     <string name="more_keys_for_y"></string>
-    <string name="more_keys_for_z">ž,ź,ż</string>
-    <string name="more_keys_for_c">č,ć,ç</string>
-    <string name="more_keys_for_d">đ</string>
+    <!-- \u017e: "ž" LATIN SMALL LETTER Z WITH CARON
+         \u017a: "ź" LATIN SMALL LETTER Z WITH ACUTE
+         \u017c: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE -->
+    <string name="more_keys_for_z">\u017e,\u017a,\u017c</string>
+    <!-- \u010d: "č" LATIN SMALL LETTER C WITH CARON
+         \u0107: "ć" LATIN SMALL LETTER C WITH ACUTE
+         \u00e7: "ç" LATIN SMALL LETTER C WITH CEDILLA -->
+    <string name="more_keys_for_c">\u010d,\u0107,\u00e7</string>
+    <!-- \u0111: "đ" LATIN SMALL LETTER D WITH STROKE -->
+    <string name="more_keys_for_d">\u0111</string>
 </resources>

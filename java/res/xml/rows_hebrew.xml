@@ -26,23 +26,31 @@
     <Row
         latin:keyWidth="10%p"
     >
+        <!-- \u05e7: "ק" HEBREW LETTER QOF -->
         <Key
-            latin:keyLabel="ק"
+            latin:keyLabel="\u05e7"
             latin:keyXPos="5%p" />
+        <!-- \u05e8: "ר" HEBREW LETTER RESH -->
         <Key
-            latin:keyLabel="ר" />
+            latin:keyLabel="\u05e8" />
+        <!-- \u05d0: "א" HEBREW LETTER ALEF -->
         <Key
-            latin:keyLabel="א" />
+            latin:keyLabel="\u05d0" />
+        <!-- \u05d8: "ט" HEBREW LETTER TET -->
         <Key
-            latin:keyLabel="ט" />
+            latin:keyLabel="\u05d8" />
+        <!-- \u05d5: "ו" HEBREW LETTER VAV -->
         <Key
-            latin:keyLabel="ו" />
+            latin:keyLabel="\u05d5" />
+        <!-- \u05df: "ן" HEBREW LETTER FINAL NUN -->
         <Key
-            latin:keyLabel="ן" />
+            latin:keyLabel="\u05df" />
+        <!-- \u05dd: "ם" HEBREW LETTER FINAL MEM -->
         <Key
-            latin:keyLabel="ם" />
+            latin:keyLabel="\u05dd" />
+        <!-- \u05e4: "פ" HEBREW LETTER PE -->
         <Key
-            latin:keyLabel="פ" />
+            latin:keyLabel="\u05e4" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight"
@@ -51,57 +59,83 @@
     <Row
         latin:keyWidth="10%p"
     >
+        <!-- \u05e9: "ש" HEBREW LETTER SHIN -->
         <Key
-            latin:keyLabel="ש" />
+            latin:keyLabel="\u05e9" />
+        <!-- \u05d3: "ד" HEBREW LETTER DALET -->
         <Key
-            latin:keyLabel="ד" />
+            latin:keyLabel="\u05d3" />
+        <!-- \u05d2: "ג" HEBREW LETTER GIMEL
+             \u05d2\u05f3: "ג׳" HEBREW LETTER GIMEL + HEBREW PUNCTUATION GERESH -->
         <Key
-            latin:keyLabel="ג"
-            latin:moreKeys="ג׳" />
+            latin:keyLabel="\u05d2"
+            latin:moreKeys="\u05d2\u05f3" />
+        <!-- \u05db: "כ" HEBREW LETTER KAF -->
         <Key
-            latin:keyLabel="כ" />
+            latin:keyLabel="\u05db" />
+        <!-- \u05e2: "ע" HEBREW LETTER AYIN -->
         <Key
-            latin:keyLabel="ע" />
+            latin:keyLabel="\u05e2" />
+        <!-- \u05d9: "י" HEBREW LETTER YOD
+             \u05f2\u05b7: "ײַ" HEBREW LIGATURE YIDDISH DOUBLE YOD + HEBREW POINT PATAH -->
         <Key
-            latin:keyLabel="י"
-            latin:moreKeys="ײַ" />
+            latin:keyLabel="\u05d9"
+            latin:moreKeys="\u05f2\u05b7" />
+        <!-- \u05d7: "ח" HEBREW LETTER HET
+             \u05d7\u05f3: "ח׳" HEBREW LETTER HET + HEBREW PUNCTUATION GERESH -->
         <Key
-            latin:keyLabel="ח"
-            latin:moreKeys="ח׳" />
+            latin:keyLabel="\u05d7"
+            latin:moreKeys="\u05d7\u05f3" />
+        <!-- \u05dc: "ל" HEBREW LETTER LAMED -->
         <Key
-            latin:keyLabel="ל" />
+            latin:keyLabel="\u05dc" />
+        <!-- \u05da: "ך" HEBREW LETTER FINAL KAF -->
         <Key
-            latin:keyLabel="ך" />
+            latin:keyLabel="\u05da" />
+        <!-- \u05e3: "ף" HEBREW LETTER FINAL PE -->
         <Key
-            latin:keyLabel="ף"
+            latin:keyLabel="\u05e3"
             latin:keyWidth="fillRight" />
     </Row>
     <Row
         latin:keyWidth="10%p"
     >
+        <!-- \u05d6: "ז" HEBREW LETTER ZAYIN
+             \u05d6\u05f3: "ז׳" HEBREW LETTER ZAYIN + HEBREW PUNCTUATION GERESH -->
         <Key
-            latin:keyLabel="ז"
-            latin:moreKeys="ז׳"
+            latin:keyLabel="\u05d6"
+            latin:moreKeys="\u05d6\u05f3"
             latin:keyXPos="5%p" />
+        <!-- \u05e1: "ס" HEBREW LETTER SAMEKH -->
         <Key
-            latin:keyLabel="ס" />
+            latin:keyLabel="\u05e1" />
+        <!-- \u05d1: "ב" HEBREW LETTER BET -->
         <Key
-            latin:keyLabel="ב" />
+            latin:keyLabel="\u05d1" />
+        <!-- \u05d4: "ה" HEBREW LETTER HE -->
         <Key
-            latin:keyLabel="ה" />
+            latin:keyLabel="\u05d4" />
+        <!-- \u05e0: "נ" HEBREW LETTER NUN -->
         <Key
-            latin:keyLabel="נ" />
+            latin:keyLabel="\u05e0" />
+        <!-- \u05de: "מ" HEBREW LETTER MEM -->
         <Key
-            latin:keyLabel="מ" />
+            latin:keyLabel="\u05de" />
+        <!-- \u05e6: "צ" HEBREW LETTER TSADI
+             \u05e6\u05f3: "צ׳" HEBREW LETTER TSADI + HEBREW PUNCTUATION GERESH -->
         <Key
-            latin:keyLabel="צ"
-            latin:moreKeys="צ׳" />
+            latin:keyLabel="\u05e6"
+            latin:moreKeys="\u05e6\u05f3" />
+        <!-- \u05ea: "ת" HEBREW LETTER TAV
+             \u05ea\u05f3: "ת׳" HEBREW LETTER TAV + HEBREW PUNCTUATION GERESH -->
         <Key
-            latin:keyLabel="ת"
-            latin:moreKeys="ת׳" />
+            latin:keyLabel="\u05ea"
+            latin:moreKeys="\u05ea\u05f3" />
+        <!-- \u05e5: "ץ" HEBREW LETTER FINAL TSADI
+             \u05e5\u05f3: "ץ׳" HEBREW LETTER FINAL TSADI + HEBREW PUNCTUATION GERESH -->
         <Key
-            latin:keyLabel="ץ"
-            latin:moreKeys="ץ׳" />
+            latin:keyLabel="\u05e5"
+            latin:moreKeys="\u05e5\u05f3" />
         <!-- Here is 5%p space -->
     </Row>
     <include
