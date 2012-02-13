@@ -35,7 +35,8 @@
     <string name="correction_category" msgid="2236750915056607613">"Metin düzeltme"</string>
     <string name="misc_category" msgid="6894192814868233453">"Diğer seçenekler"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Gelişmiş ayarlar"</string>
-    <string name="advanced_settings_summary" msgid="5193513161106637254">"Uzman kullanıcılar için seçenekler"</string>
+    <!-- no translation found for advanced_settings_summary (4487980456152830271) -->
+    <skip />
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Tuş popup içn kaptm ertlm"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Gecikme yok"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Varsayılan"</string>
@@ -65,8 +66,7 @@
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Kaydedildi"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Git"</string>
     <string name="label_next_key" msgid="362972844525672568">"İleri"</string>
-    <!-- no translation found for label_previous_key (1211868118071386787) -->
-    <skip />
+    <string name="label_previous_key" msgid="1211868118071386787">"Önceki"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Bitti"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Gönder"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
@@ -79,10 +79,8 @@
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Hiç metin girilmedi"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Tuş kodu: %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Üst Karakter"</string>
-    <!-- no translation found for spoken_description_shift_shifted (1681877323344195035) -->
-    <skip />
-    <!-- no translation found for spoken_description_caps_lock (3276478269526304432) -->
-    <skip />
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Üst karakter açık (devre dışı bırakmak için hafifçe vurun)"</string>
+    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Büyük harf kilidi açık (devre dışı bırakmak içinn hafifçe vurun)"</string>
     <string name="spoken_description_delete" msgid="8740376944276199801">"Delete"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Simgeler"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"Harfler"</string>
@@ -94,20 +92,13 @@
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Gülen yüz"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Enter"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"Nokta"</string>
-    <!-- no translation found for spoken_description_shiftmode_on (5700440798609574589) -->
-    <skip />
-    <!-- no translation found for spoken_description_shiftmode_locked (593175803181701830) -->
-    <skip />
-    <!-- no translation found for spoken_description_shiftmode_off (657219998449174808) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_symbol (7183343879909747642) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_alpha (3528307674390156956) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_phone (6520207943132026264) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_phone_shift (5499629753962641227) -->
-    <skip />
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Üst karakter etkin"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Büyük harf kilidi etkin"</string>
+    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Üst karakter devre dışı"</string>
+    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"Sembol modu"</string>
+    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Harf modu"</string>
+    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Telefon modu"</string>
+    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Telefon sembolleri modu"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Ses girişi"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Ses girişi, şu anda sizin diliniz için desteklenmiyor ama İngilizce dilinde kullanılabilir."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Ses girişi Google\'ın konuşma tanıma işlevini kullanır. "<a href="http://m.google.com/privacy">" Mobil Gizlilik Politikası"</a>" geçerlidir."</string>
