@@ -55,7 +55,6 @@
                 latin:keyOutputText=":-) "
                 latin:keyLabelFlags="hasPopupHint"
                 latin:moreKeys="@string/more_keys_for_smiley"
-                latin:maxMoreKeysColumn="5"
                 latin:backgroundType="functional" />
         </case>
         <case

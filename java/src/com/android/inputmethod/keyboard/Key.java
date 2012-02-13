@@ -105,6 +105,9 @@ public class Key {
     public final String[] mMoreKeys;
     /** More keys maximum column number */
     public final int mMaxMoreKeysColumn;
+    public static final int MORE_KEYS_FIXED_COLUMN_ORDER = 0x80000000;
+    private static final String AUTO_COLUMN_ORDER = "!autoColumnOrder!";
+    private static final String FIXED_COLUMN_ORDER = "!fixedColumnOrder!";
 
     /** Background type that represents different key background visual than normal one. */
     public final int mBackgroundType;
@@ -232,10 +235,19 @@ public class Key {
         mLabelFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags);
         final boolean preserveCase = (mLabelFlags & LABEL_FLAGS_PRESERVE_CASE) != 0;
         int actionFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyActionFlags);
+        String[] moreKeys = style.getStringArray(keyAttr, R.styleable.Keyboard_Key_moreKeys);
+        int column;
+        if ((column = parseMoreKeysColumnOrder(moreKeys, AUTO_COLUMN_ORDER)) > 0) {
+            mMaxMoreKeysColumn = column;
+        } else if ((column = parseMoreKeysColumnOrder(moreKeys, FIXED_COLUMN_ORDER)) > 0) {
+            mMaxMoreKeysColumn = column | MORE_KEYS_FIXED_COLUMN_ORDER;
+        } else {
+            mMaxMoreKeysColumn = style.getInt(keyAttr,
+                    R.styleable.Keyboard_Key_maxMoreKeysColumn, params.mMaxMoreKeysKeyboardColumn);
+        }
         final String[] additionalMoreKeys = style.getStringArray(
                 keyAttr, R.styleable.Keyboard_Key_additionalMoreKeys);
-        final String[] moreKeys = KeySpecParser.insertAddtionalMoreKeys(style.getStringArray(
-                keyAttr, R.styleable.Keyboard_Key_moreKeys), additionalMoreKeys);
+        moreKeys = KeySpecParser.insertAddtionalMoreKeys(moreKeys, additionalMoreKeys);
         if (moreKeys != null) {
             actionFlags |= ACTION_FLAGS_ENABLE_LONG_PRESS;
             for (int i = 0; i < moreKeys.length; i++) {
@@ -245,8 +257,6 @@ public class Key {
         }
         mActionFlags = actionFlags;
         mMoreKeys = moreKeys;
-        mMaxMoreKeysColumn = style.getInt(keyAttr,
-                R.styleable.Keyboard_Key_maxMoreKeysColumn, params.mMaxMoreKeysKeyboardColumn);
 
         if ((mLabelFlags & LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL) != 0) {
             mLabel = params.mId.mCustomActionLabel;
@@ -298,6 +308,21 @@ public class Key {
 
         if (hasShiftedLetterHint() && TextUtils.isEmpty(mHintLabel)) {
             Log.w(TAG, "hasShiftedLetterHint specified without keyHintLabel: " + this);
+        }
+    }
+
+    private static int parseMoreKeysColumnOrder(String[] moreKeys, String key) {
+        if (moreKeys == null || moreKeys.length == 0 || moreKeys[0] == null
+                || !moreKeys[0].startsWith(key)) {
+            return -1;
+        }
+        try {
+            final int column = Integer.parseInt(moreKeys[0].substring(key.length()));
+            moreKeys[0] = null;
+            return column;
+        } catch (NumberFormatException e) {
+            Log.w(TAG, "column number should follow after " + key);
+            return 0;
         }
     }
 

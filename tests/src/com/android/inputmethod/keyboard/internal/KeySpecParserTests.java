@@ -280,6 +280,34 @@ public class KeySpecParserTests extends AndroidTestCase {
         }
     }
 
+    public void testEmptyEntry() {
+        assertMoreKeys("null more keys and null additons",
+                null,
+                null,
+                null);
+        assertMoreKeys("null more keys and empty additons",
+                null,
+                new String[0],
+                null);
+        assertMoreKeys("empty more keys and null additons",
+                new String[0],
+                null,
+                null);
+        assertMoreKeys("empty more keys and empty additons",
+                new String[0],
+                new String[0],
+                null);
+
+        assertMoreKeys("filter out empty more keys",
+                new String[] { null, "a", "", "b", null },
+                null,
+                new String[] { "a", "b" });
+        assertMoreKeys("filter out empty additons",
+                new String[] { "a", "%", "b", "%", "c", "%", "d" },
+                new String[] { null, "A", "", "B", null },
+                new String[] { "a", "A", "b", "B", "c", "d" });
+    }
+
     public void testInsertAdditionalMoreKeys() {
         // Escaped marker.
         assertMoreKeys("escaped marker",
@@ -289,11 +317,11 @@ public class KeySpecParserTests extends AndroidTestCase {
 
         // 0 more key.
         assertMoreKeys("null & null", null, null, null);
-        assertMoreKeys("null & 1 additional",
+        assertMoreKeys("null & 1 additon",
                 null,
                 new String[] { "1" },
                 new String[] { "1" });
-        assertMoreKeys("null & 2 additionals",
+        assertMoreKeys("null & 2 additons",
                 null,
                 new String[] { "1", "2" },
                 new String[] { "1", "2" });
@@ -327,29 +355,29 @@ public class KeySpecParserTests extends AndroidTestCase {
                 new String[] { "1", "2", "A", "B" });
 
         // 1 marker.
-        assertMoreKeys("1 more key & 1 additional & marker at head",
+        assertMoreKeys("1 more key & 1 additon & marker at head",
                 new String[] { "%", "A" },
                 new String[] { "1" },
                 new String[] { "1", "A" });
-        assertMoreKeys("1 more key & 1 additional & marker at tail",
+        assertMoreKeys("1 more key & 1 additon & marker at tail",
                 new String[] { "A", "%" },
                 new String[] { "1" },
                 new String[] { "A", "1" });
-        assertMoreKeys("2 more keys & 1 additional & marker at middle",
+        assertMoreKeys("2 more keys & 1 additon & marker at middle",
                 new String[] { "A", "%", "B" },
                 new String[] { "1" },
                 new String[] { "A", "1", "B" });
 
         // 1 marker & excess additional more keys.
-        assertMoreKeys("1 more key & 2 additionals & marker at head",
+        assertMoreKeys("1 more key & 2 additons & marker at head",
                 new String[] { "%", "A", "B" },
                 new String[] { "1", "2" },
                 new String[] { "1", "A", "B", "2" });
-        assertMoreKeys("1 more key & 2 additionals & marker at tail",
+        assertMoreKeys("1 more key & 2 additons & marker at tail",
                 new String[] { "A", "B", "%" },
                 new String[] { "1", "2" },
                 new String[] { "A", "B", "1", "2" });
-        assertMoreKeys("2 more keys & 2 additionals & marker at middle",
+        assertMoreKeys("2 more keys & 2 additons & marker at middle",
                 new String[] { "A", "%", "B" },
                 new String[] { "1", "2" },
                 new String[] { "A", "1", "B", "2" });
@@ -384,32 +412,32 @@ public class KeySpecParserTests extends AndroidTestCase {
                 new String[] { "1", "2" },
                 new String[] { "A", "1", "B", "2" });
 
-        // 2 markers & excess additional keys.
-        assertMoreKeys("0 more key & 2 addtional & 2 markers",
+        // 2 markers & excess additional more keys.
+        assertMoreKeys("0 more key & 2 additons & 2 markers",
                 new String[] { "%", "%" },
                 new String[] { "1", "2", "3" },
                 new String[] { "1", "2", "3" });
-        assertMoreKeys("1 more key & 2 addtional & 2 markers at head",
+        assertMoreKeys("1 more key & 2 additons & 2 markers at head",
                 new String[] { "%", "%", "A" },
                 new String[] { "1", "2", "3" },
                 new String[] { "1", "2", "A", "3" });
-        assertMoreKeys("1 more key & 2 addtional & 2 markers at tail",
+        assertMoreKeys("1 more key & 2 additons & 2 markers at tail",
                 new String[] { "A", "%", "%" },
                 new String[] { "1", "2", "3" },
                 new String[] { "A", "1", "2", "3" });
-        assertMoreKeys("2 more keys & 2 addtional & 2 markers at middle",
+        assertMoreKeys("2 more keys & 2 additons & 2 markers at middle",
                 new String[] { "A", "%", "%", "B" },
                 new String[] { "1", "2", "3" },
                 new String[] { "A", "1", "2", "B", "3" });
-        assertMoreKeys("2 more keys & 2 addtional & 2 markers at head & middle",
+        assertMoreKeys("2 more keys & 2 additons & 2 markers at head & middle",
                 new String[] { "%", "A", "%", "B" },
                 new String[] { "1", "2", "3" },
                 new String[] { "1", "A", "2", "B", "3" });
-        assertMoreKeys("2 more keys & 2 addtional & 2 markers at head & tail",
+        assertMoreKeys("2 more keys & 2 additons & 2 markers at head & tail",
                 new String[] { "%", "A", "B", "%" },
                 new String[] { "1", "2", "3" },
                 new String[] { "1", "A", "B", "2", "3" });
-        assertMoreKeys("2 more keys & 2 addtional & 2 markers at middle & tail",
+        assertMoreKeys("2 more keys & 2 additons & 2 markers at middle & tail",
                 new String[] { "A", "%", "B", "%" },
                 new String[] { "1", "2", "3" },
                 new String[] { "A", "1", "B", "2", "3" });
@@ -437,31 +465,31 @@ public class KeySpecParserTests extends AndroidTestCase {
                 new String[] { "A", "B" });
 
         // Excess markers.
-        assertMoreKeys("0 more key & 1 addtional & excess marker",
+        assertMoreKeys("0 more key & 1 additon & excess marker",
                 new String[] { "%", "%" },
                 new String[] { "1" },
                 new String[] { "1" });
-        assertMoreKeys("1 more key & 1 addtional & excess marker at head",
+        assertMoreKeys("1 more key & 1 additon & excess marker at head",
                 new String[] { "%", "%", "A" },
                 new String[] { "1" },
                 new String[] { "1", "A" });
-        assertMoreKeys("1 more key & 1 addtional & excess marker at tail",
+        assertMoreKeys("1 more key & 1 additon & excess marker at tail",
                 new String[] { "A", "%", "%" },
                 new String[] { "1" },
                 new String[] { "A", "1" });
-        assertMoreKeys("2 more keys & 1 addtional & excess marker at middle",
+        assertMoreKeys("2 more keys & 1 additon & excess marker at middle",
                 new String[] { "A", "%", "%", "B" },
                 new String[] { "1" },
                 new String[] { "A", "1", "B" });
-        assertMoreKeys("2 more keys & 1 addtional & excess markers",
+        assertMoreKeys("2 more keys & 1 additon & excess markers",
                 new String[] { "%", "A", "%", "B", "%" },
                 new String[] { "1" },
                 new String[] { "1", "A", "B" });
-        assertMoreKeys("2 more keys & 2 addtionals & excess markers",
+        assertMoreKeys("2 more keys & 2 additons & excess markers",
                 new String[] { "%", "A", "%", "B", "%" },
                 new String[] { "1", "2" },
                 new String[] { "1", "A", "2", "B" });
-        assertMoreKeys("2 more keys & 3 addtionals & excess markers",
+        assertMoreKeys("2 more keys & 3 additons & excess markers",
                 new String[] { "%", "A", "%", "%", "B", "%" },
                 new String[] { "1", "2", "3" },
                 new String[] { "1", "A", "2", "3", "B" });

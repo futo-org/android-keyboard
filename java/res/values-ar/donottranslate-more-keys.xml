@@ -18,27 +18,25 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- U+060C: "،" ARABIC COMMA
-         U+061B: "؛" ARABIC SEMICOLON
-         U+061F: "؟" ARABIC QUESTION MARK -->
+    <!-- U+061F: "؟" ARABIC QUESTION MARK
+         U+060C: "،" ARABIC COMMA
+         U+061B: "؛" ARABIC SEMICOLON -->
     <!-- U+0650: "ِ" ARABIC KASRA
          U+064E: "َ" ARABIC FATHA
-         U+064B: "ً" ARABIC FATHATAN
-         U+0640: "ـ" ARABIC TATWEEL
          U+064D: "ٍ" ARABIC KASRATAN
-         U+0670: "ٰ" ARABIC LETTER SUPERSCRIPT ALEF
+         U+064B: "ً" ARABIC FATHATAN
          U+0656: "ٖ" ARABIC SUBSCRIPT ALEF
-         U+0654: "ٔ" ARABIC HAMZA ABOVE
-         U+0655: "ٕ" ARABIC HAMZA BELOW -->
-    <!-- U+0651: "ّ" ARABIC SHADDA
-         U+0652: "ْ" ARABIC SUKUN
+         U+0670: "ٰ" ARABIC LETTER SUPERSCRIPT ALEF
+         U+0655: "ٕ" ARABIC HAMZA BELOW
+         U+0654: "ٔ" ARABIC HAMZA ABOVE -->
+    <!-- U+064F: "ُ" ARABIC DAMMA
          U+064C: "ٌ" ARABIC DAMMATAN
+         U+0651: "ّ" ARABIC SHADDA
+         U+0652: "ْ" ARABIC SUKUN
          U+0653: "ٓ" ARABIC MADDAH ABOVE
-         U+064F: "ُ" ARABIC DAMMA -->
+         U+0640: "ـ" ARABIC TATWEEL -->
     <!-- In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label. -->
-    <!-- TODO: Will introduce "grouping marks" to the more characters specification. -->
-    <string name="more_keys_for_punctuation">"&#x060C;,&#x061B;,&#x061F;,!,:,-,/,\',\",&#x0640;&#x0640;&#x0640;|&#x0640;,&#x064E;,&#x0650;,&#x064B;,&#x064D;,&#x0670;,&#x0656;,&#x0655;,&#x0654;,&#x0653;,&#x0652;,&#x0651;,&#x064C;,&#x064F;"</string>
-    <integer name="more_keys_keyboard_column_for_punctuation">9</integer>
+    <string name="more_keys_for_punctuation">"!fixedColumnOrder!8,\",\',-,:,!,&#x061F;,&#x060C;,&#x061B;,&#x0650;,&#x064E;,&#x064D;,&#x064B;,&#x0656;,&#x0670;,&#x0655;,&#x0654;,&#x064F;,&#x064C;,&#x0651;,&#x0652;,&#x0653;,&#x0640;&#x0640;&#x0640;|&#x0640;,/"</string>
     <string name="keyhintlabel_for_punctuation">&#x064B;</string>
     <!-- U+0661: "١" ARABIC-INDIC DIGIT ONE -->
     <string name="keylabel_for_symbols_1">&#x0661;</string>
@@ -79,7 +77,8 @@
     <!-- U+066A: "٪" ARABIC PERCENT SIGN -->
     <string name="keylabel_for_symbols_percent">&#x066A;</string>
     <string name="more_keys_for_comma">,</string>
-    <string name="more_keys_for_f1">,</string>
+    <!-- U+060C: "،" ARABIC COMMA -->
+    <string name="more_keys_for_f1">&#x060C;</string>
     <string name="more_keys_for_f1_settings">\\,,\@icon/settingsKey|\@integer/key_settings</string>
     <string name="more_keys_for_f1_navigate">\\,,\@icon/tabKey|\@integer/key_tab</string>
     <string name="more_keys_for_symbols_question">\?</string>
@@ -125,8 +124,8 @@
          U+FD3F: "﴿" ORNATE RIGHT PARENTHESIS -->
     <!-- TODO: DroidSansArabic lacks the glyph of U+FD3E ORNATE LEFT PARENTHESIS -->
     <!-- TODO: DroidSansArabic lacks the glyph of U+FD3F ORNATE RIGHT PARENTHESIS -->
-    <string name="more_keys_for_left_parenthesis">[|],{|},&lt;|&gt;,&#xFD3E;|&#xFD3F;</string>
-    <string name="more_keys_for_right_parenthesis">]|[,}|{,&gt;|&lt;,&#xFD3F;|&#xFD3E;</string>
+    <string name="more_keys_for_left_parenthesis">!fixedColumnOrder!4,&#xFD3E;|&#xFD3F;,&lt;|&gt;,{|},[|]</string>
+    <string name="more_keys_for_right_parenthesis">!fixedColumnOrder!4,&#xFD3F;|&#xFD3E;,&gt;|&lt;,}|{,]|[</string>
     <!-- U+003E: ">" GREATER-THAN SIGN -->
     <integer name="keycode_for_less_than">0x003E</integer>
     <!-- U+003C: "<" LESS-THAN SIGN -->
@@ -146,8 +145,8 @@
          U+201D: "”" RIGHT DOUBLE QUOTATION MARK
          U+201E: "„" DOUBLE LOW-9 QUOTATION MARK
          U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
-    <string name="more_keys_for_less_than">&#x2264;|&#x2265;,&#x00AB;|&#x00BB;,&#x2039;|&#x203A;</string>
-    <string name="more_keys_for_greater_than">&#x2265;|&#x2264;,&#x00BB;|&#x00AB;,&#x203A;|&#x2039;</string>
+    <string name="more_keys_for_less_than">!fixedColumnOrder!3,&#x2039;|&#x203A;,&#x2264;|&#x2265;,&#x00AB;|&#x00BB;</string>
+    <string name="more_keys_for_greater_than">!fixedColumnOrder!3,&#x203A;|&#x2039;,&#x2265;|&#x2264;,&#x00BB;|&#x00AB;</string>
     <!-- U+005D: "]" RIGHT SQUARE BRACKET -->
     <integer name="keycode_for_left_square_bracket">0x005D</integer>
     <!-- U+005B: "[" LEFT SQUARE BRACKET -->
@@ -157,11 +156,9 @@
     <!-- U+007B: "{" LEFT CURLY BRACKET -->
     <integer name="keycode_for_right_curly_bracket">0x007B</integer>
     <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
-    <!-- <string name="more_keys_for_double_quote">&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;,&#x00BB;</string> -->
-    <!-- The 4-more keys will be displayed in order of "3,1,2,4". -->
-    <string name="more_keys_for_double_quote">&#x201D;,&#x00AB;|&#x00BB;,&#x201C;,&#x00BB;|&#x00AB;</string>
+    <!-- <string name="more_keys_for_double_quote">&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;</string> -->
+    <string name="more_keys_for_double_quote">!fixedColumnOrder!4,&#x201C;,&#x201D;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;</string>
     <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
-    <!-- <string name="more_keys_for_tablet_double_quote">&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;,&#x00BB;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string> -->
-    <!-- The 8-more keys with maxMoreKeysColumn=4 will be displayed in order of "3,1,2,4|7,5,6,8". -->
-    <string name="more_keys_for_tablet_double_quote">&#x201D;,&#x00AB;|&#x00BB;,&#x201C;,&#x00BB;|&#x00AB;,&#x2019;,&#x201A;,&#x2018;,&#x201B;</string>
+    <!-- <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB|&#x00AB;;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string> -->
+    <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!4,&#x201C;,&#x201D;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
 </resources>

@@ -109,8 +109,7 @@
             latin:moreKeys="&#x00A1;" />
         <Key
             latin:keyLabel="&quot;"
-            latin:moreKeys="@string/more_keys_for_double_quote"
-            latin:maxMoreKeysColumn="4" />
+            latin:moreKeys="@string/more_keys_for_double_quote" />
         <Key
             latin:keyLabel="\'"
             latin:moreKeys="@string/more_keys_for_single_quote" />
