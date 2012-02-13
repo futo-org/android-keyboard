@@ -35,7 +35,8 @@
     <string name="correction_category" msgid="2236750915056607613">"Correção de texto"</string>
     <string name="misc_category" msgid="6894192814868233453">"Outras opções"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Definições avançadas"</string>
-    <string name="advanced_settings_summary" msgid="5193513161106637254">"Opções para utilizadores experientes"</string>
+    <!-- no translation found for advanced_settings_summary (4487980456152830271) -->
+    <skip />
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Atraso p/ ignorar pop-up"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Sem atraso"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Predefinido"</string>
@@ -78,10 +79,8 @@
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Nenhum texto digitado"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Código da tecla %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
-    <!-- no translation found for spoken_description_shift_shifted (1681877323344195035) -->
-    <skip />
-    <!-- no translation found for spoken_description_caps_lock (3276478269526304432) -->
-    <skip />
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift ativado (tocar para desativar)"</string>
+    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps lock ativado (tocar para desativar)"</string>
     <string name="spoken_description_delete" msgid="8740376944276199801">"Delete"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Símbolos"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"Letras"</string>
@@ -93,20 +92,13 @@
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Cara sorridente"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Enter"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"Ponto"</string>
-    <!-- no translation found for spoken_description_shiftmode_on (5700440798609574589) -->
-    <skip />
-    <!-- no translation found for spoken_description_shiftmode_locked (593175803181701830) -->
-    <skip />
-    <!-- no translation found for spoken_description_shiftmode_off (657219998449174808) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_symbol (7183343879909747642) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_alpha (3528307674390156956) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_phone (6520207943132026264) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_phone_shift (5499629753962641227) -->
-    <skip />
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift ativado"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps lock ativado"</string>
+    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Shift desativado"</string>
+    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"Modo de símbolos"</string>
+    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Modo de letras"</string>
+    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Modo de telemóvel"</string>
+    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Modo de símbolos de telemóvel"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Entrada de voz"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Actualmente, a entrada de voz não é suportada para o seu idioma, mas funciona em inglês."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"A entrada de voz utiliza o reconhecimento de voz da Google. É aplicável a "<a href="http://m.google.com/privacy">"Política de privacidade do Google Mobile"</a>"."</string>

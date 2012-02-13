@@ -35,7 +35,8 @@
     <string name="correction_category" msgid="2236750915056607613">"Koreksi teks"</string>
     <string name="misc_category" msgid="6894192814868233453">"Opsi lain"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Setelan lanjutan"</string>
-    <string name="advanced_settings_summary" msgid="5193513161106637254">"Pilihan untuk pengguna ahli"</string>
+    <!-- no translation found for advanced_settings_summary (4487980456152830271) -->
+    <skip />
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Tundaan singkir munculan kunci"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Tanpa penundaan"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Bawaan"</string>
@@ -78,10 +79,8 @@
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Tidak ada teks yang dimasukkan"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Kode tombol %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
-    <!-- no translation found for spoken_description_shift_shifted (1681877323344195035) -->
-    <skip />
-    <!-- no translation found for spoken_description_caps_lock (3276478269526304432) -->
-    <skip />
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift aktif (ketuk untuk menonaktifkan)"</string>
+    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps lock aktif (ketuk untuk menonaktifkan)"</string>
     <string name="spoken_description_delete" msgid="8740376944276199801">"Hapus"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Simbol"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"Huruf"</string>
@@ -93,20 +92,13 @@
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Wajah tersenyum"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Kembali"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"Titik"</string>
-    <!-- no translation found for spoken_description_shiftmode_on (5700440798609574589) -->
-    <skip />
-    <!-- no translation found for spoken_description_shiftmode_locked (593175803181701830) -->
-    <skip />
-    <!-- no translation found for spoken_description_shiftmode_off (657219998449174808) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_symbol (7183343879909747642) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_alpha (3528307674390156956) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_phone (6520207943132026264) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_phone_shift (5499629753962641227) -->
-    <skip />
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift diaktifkan"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps lock diaktifkan"</string>
+    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Shift dinonaktifkan"</string>
+    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"Mode simbol"</string>
+    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Mode huruf"</string>
+    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Mode ponsel"</string>
+    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Mode simbol ponsel"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Masukan suara"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Masukan suara saat ini tidak didukung untuk bahasa Anda, tetapi bekerja dalam Bahasa Inggris."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Masukan suara menggunakan pengenalan ucapan Google. "<a href="http://m.google.com/privacy">"Kebijakan Privasi Seluler"</a>" berlaku."</string>

@@ -35,7 +35,8 @@
     <string name="correction_category" msgid="2236750915056607613">"Oprava textu"</string>
     <string name="misc_category" msgid="6894192814868233453">"Další možnosti"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Pokročilá nastavení"</string>
-    <string name="advanced_settings_summary" msgid="5193513161106637254">"Možnosti pro zkušené uživatele"</string>
+    <!-- no translation found for advanced_settings_summary (4487980456152830271) -->
+    <skip />
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Prodleva vysk. okna kláv."</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Bez prodlevy"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Výchozí"</string>
@@ -65,8 +66,7 @@
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: Uloženo"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Přejít"</string>
     <string name="label_next_key" msgid="362972844525672568">"Další"</string>
-    <!-- no translation found for label_previous_key (1211868118071386787) -->
-    <skip />
+    <string name="label_previous_key" msgid="1211868118071386787">"Před."</string>
     <string name="label_done_key" msgid="2441578748772529288">"Hotovo"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Odeslat"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>

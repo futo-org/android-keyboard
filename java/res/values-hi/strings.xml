@@ -35,7 +35,8 @@
     <string name="correction_category" msgid="2236750915056607613">"पाठ सुधार"</string>
     <string name="misc_category" msgid="6894192814868233453">"अन्य विकल्प"</string>
     <string name="advanced_settings" msgid="362895144495591463">"उन्नत सेटिंग"</string>
-    <string name="advanced_settings_summary" msgid="5193513161106637254">"विशेषज्ञ उपयोगकर्ताओं के लिए विकल्‍प"</string>
+    <!-- no translation found for advanced_settings_summary (4487980456152830271) -->
+    <skip />
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"कुंजी पॉपअप खारिज़ विलंब"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"कोई विलंब नहीं"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"डिफ़ॉल्ट"</string>
@@ -78,10 +79,8 @@
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"कोई पाठ दर्ज नहीं किया गया"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"कुंजी कोड %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"शिफ़्ट"</string>
-    <!-- no translation found for spoken_description_shift_shifted (1681877323344195035) -->
-    <skip />
-    <!-- no translation found for spoken_description_caps_lock (3276478269526304432) -->
-    <skip />
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift चालू (अक्षम करने के लिए टैप करें)"</string>
+    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps lock चालू (अक्षम करने के लिए टैप करें)"</string>
     <string name="spoken_description_delete" msgid="8740376944276199801">"डिलीट"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"प्रतीक"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"अक्षर"</string>
@@ -93,20 +92,13 @@
     <string name="spoken_description_smiley" msgid="2256309826200113918">"मुस्कुराता चेहरा"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"रिटर्न"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"बिंदु"</string>
-    <!-- no translation found for spoken_description_shiftmode_on (5700440798609574589) -->
-    <skip />
-    <!-- no translation found for spoken_description_shiftmode_locked (593175803181701830) -->
-    <skip />
-    <!-- no translation found for spoken_description_shiftmode_off (657219998449174808) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_symbol (7183343879909747642) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_alpha (3528307674390156956) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_phone (6520207943132026264) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_phone_shift (5499629753962641227) -->
-    <skip />
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift सक्षम किया गया है"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps lock सक्षम किया गया है"</string>
+    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Shift अक्षम किया गया है"</string>
+    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"प्रतीक मोड"</string>
+    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"अक्षर मोड"</string>
+    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"फ़ोन मोड"</string>
+    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"फ़ोन प्रतीक मोड"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"ध्‍वनि इनपुट"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"ध्‍वनि इनपुट आपकी भाषा के लिए अभी समर्थित नहीं है, पर अंग्रेज़ी में कार्य करता है."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"ध्‍वनि इनपुट Google की वाक् पहचान का उपयोग करता है. "<a href="http://m.google.com/privacy">"मोबाइल गोपनीयता नीति"</a>" लागू होती है."</string>

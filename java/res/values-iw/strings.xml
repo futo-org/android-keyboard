@@ -35,7 +35,8 @@
     <string name="correction_category" msgid="2236750915056607613">"תיקון טקסט"</string>
     <string name="misc_category" msgid="6894192814868233453">"אפשרויות אחרות"</string>
     <string name="advanced_settings" msgid="362895144495591463">"הגדרות מתקדמות"</string>
-    <string name="advanced_settings_summary" msgid="5193513161106637254">"אפשרויות עבור משתמשים מתקדמים"</string>
+    <!-- no translation found for advanced_settings_summary (4487980456152830271) -->
+    <skip />
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"עיכוב סגירת חלון קופץ של מקש"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"ללא עיכוב"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"ברירת מחדל"</string>
@@ -65,8 +66,7 @@
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : נשמרה"</string>
     <string name="label_go_key" msgid="1635148082137219148">"בצע"</string>
     <string name="label_next_key" msgid="362972844525672568">"הבא"</string>
-    <!-- no translation found for label_previous_key (1211868118071386787) -->
-    <skip />
+    <string name="label_previous_key" msgid="1211868118071386787">"הקודם"</string>
     <string name="label_done_key" msgid="2441578748772529288">"סיום"</string>
     <string name="label_send_key" msgid="2815056534433717444">"שלח"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"אבג"</string>
@@ -79,10 +79,8 @@
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"לא הוזן טקסט"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"קוד מקש %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
-    <!-- no translation found for spoken_description_shift_shifted (1681877323344195035) -->
-    <skip />
-    <!-- no translation found for spoken_description_caps_lock (3276478269526304432) -->
-    <skip />
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift פועל (הקש כדי להשבית)"</string>
+    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps Lock פועל (הקש כדי להשבית)"</string>
     <string name="spoken_description_delete" msgid="8740376944276199801">"מחק"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"סמלים"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"אותיות"</string>
@@ -94,20 +92,13 @@
     <string name="spoken_description_smiley" msgid="2256309826200113918">"פרצוף סמיילי"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"חזור"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"נקודה"</string>
-    <!-- no translation found for spoken_description_shiftmode_on (5700440798609574589) -->
-    <skip />
-    <!-- no translation found for spoken_description_shiftmode_locked (593175803181701830) -->
-    <skip />
-    <!-- no translation found for spoken_description_shiftmode_off (657219998449174808) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_symbol (7183343879909747642) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_alpha (3528307674390156956) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_phone (6520207943132026264) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_phone_shift (5499629753962641227) -->
-    <skip />
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift מופעל"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps Lock מופעל"</string>
+    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Shift מושבת"</string>
+    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"מצב סמלים"</string>
+    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"מצב אותיות"</string>
+    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"מצב טלפון"</string>
+    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"מצב סמלי טלפון"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"קלט קולי"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"קלט קולי אינו נתמך בשלב זה בשפתך, אך הוא פועל באנגלית."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"קלט קולי משתמש בזיהוי דיבור של Google.‏ "<a href="http://m.google.com/privacy">"מדיניות הפרטיות של \'Google לנייד\'"</a>" חלה במקרה זה."</string>
