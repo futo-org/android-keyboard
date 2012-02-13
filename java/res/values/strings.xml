@@ -60,7 +60,7 @@
     <!-- Option name for advanced settings screen [CHAR LIMIT=25] -->
     <string name="advanced_settings">Advanced settings</string>
     <!-- Option summary for advanced settings screen [CHAR LIMIT=65 (two lines) or 30 (fits on one line, preferable)] -->
-    <string name="advanced_settings_summary">Options for expert users</string>
+    <string name="advanced_settings_summary">Options for experts</string>
 
     <!-- Option for the dismiss delay of the key popup [CHAR LIMIT=25] -->
     <string name="key_preview_popup_dismiss_delay">Key popup dismiss delay</string>
