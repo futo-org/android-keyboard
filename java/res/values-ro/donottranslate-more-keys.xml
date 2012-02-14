@@ -18,28 +18,28 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- \u00e2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
-         \u00e3: "ã" LATIN SMALL LETTER A WITH TILDE
-         \u0103: "ă" LATIN SMALL LETTER A WITH BREVE
-         \u00e0: "à" LATIN SMALL LETTER A WITH GRAVE
-         \u00e1: "á" LATIN SMALL LETTER A WITH ACUTE
-         \u00e4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
-         \u00e6: "æ" LATIN SMALL LETTER AE
-         \u00e5: "å" LATIN SMALL LETTER A WITH RING ABOVE
-         \u0101: "ā" LATIN SMALL LETTER A WITH MACRON -->
-    <string name="more_keys_for_a">\u00e2,\u00e3,\u0103,\u00e0,\u00e1,\u00e4,\u00e6,\u00e5,\u0101</string>
-    <!-- \u00ee: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
-         \u00ef: "ï" LATIN SMALL LETTER I WITH DIAERESIS
-         \u00ec: "ì" LATIN SMALL LETTER I WITH GRAVE
-         \u00ed: "í" LATIN SMALL LETTER I WITH ACUTE
-         \u012f: "į" LATIN SMALL LETTER I WITH OGONEK
-         \u012b: "ī" LATIN SMALL LETTER I WITH MACRON -->
-    <string name="more_keys_for_i">\u00ee,\u00ef,\u00ec,\u00ed,\u012f,\u012b</string>
-    <!-- \u0219: "ș" LATIN SMALL LETTER S WITH COMMA BELOW
-         \u00df: "ß" LATIN SMALL LETTER SHARP S
-         \u015b: "ś" LATIN SMALL LETTER S WITH ACUTE
-         \u0161: "š" LATIN SMALL LETTER S WITH CARON -->
-    <string name="more_keys_for_s">\u0219,\u00df,\u015b,\u0161</string>
-    <!-- \u021b: "ț" LATIN SMALL LETTER T WITH COMMA BELOW -->
-    <string name="more_keys_for_t">\u021b</string>
+    <!-- U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
+         U+00E3: "ã" LATIN SMALL LETTER A WITH TILDE
+         U+0103: "ă" LATIN SMALL LETTER A WITH BREVE
+         U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
+         U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
+         U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
+         U+00E6: "æ" LATIN SMALL LETTER AE
+         U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
+         U+0101: "ā" LATIN SMALL LETTER A WITH MACRON -->
+    <string name="more_keys_for_a">&#x00E2;,&#x00E3;,&#x0103;,&#x00E0;,&#x00E1;,&#x00E4;,&#x00E6;,&#x00E5;,&#x0101;</string>
+    <!-- U+00EE: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
+         U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
+         U+00EC: "ì" LATIN SMALL LETTER I WITH GRAVE
+         U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE
+         U+012F: "į" LATIN SMALL LETTER I WITH OGONEK
+         U+012B: "ī" LATIN SMALL LETTER I WITH MACRON -->
+    <string name="more_keys_for_i">&#x00EE;,&#x00EF;,&#x00EC;,&#x00ED;,&#x012F;,&#x012B;</string>
+    <!-- U+0219: "ș" LATIN SMALL LETTER S WITH COMMA BELOW
+         U+00DF: "ß" LATIN SMALL LETTER SHARP S
+         U+015B: "ś" LATIN SMALL LETTER S WITH ACUTE
+         U+0161: "š" LATIN SMALL LETTER S WITH CARON -->
+    <string name="more_keys_for_s">&#x0219;,&#x00DF;,&#x015B;,&#x0161;</string>
+    <!-- U+021B: "ț" LATIN SMALL LETTER T WITH COMMA BELOW -->
+    <string name="more_keys_for_t">&#x021B;</string>
 </resources>

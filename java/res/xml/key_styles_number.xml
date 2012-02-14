@@ -91,10 +91,11 @@
         latin:keyLabel="9"
         latin:keyHintLabel="WXYZ"
         latin:parentStyle="numberKeyStyle" />
+    <!-- U+FF0A: "＊" FULLWIDTH ASTERISK -->
     <key-style
         latin:styleName="numStarKeyStyle"
         latin:code="42"
-        latin:keyLabel="\uff0a"
+        latin:keyLabel="&#xFF0A;"
         latin:parentStyle="numKeyStyle" />
     <!-- Only for non-tablet device -->
     <key-style

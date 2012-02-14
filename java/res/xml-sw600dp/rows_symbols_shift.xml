@@ -34,32 +34,32 @@
             latin:keyLabel="`" />
         <Key
             latin:keyLabel="|" />
-        <!-- \u2022: "•" BULLET -->
+        <!-- U+2022: "•" BULLET -->
         <Key
-            latin:keyLabel="\u2022"
+            latin:keyLabel="&#x2022;"
             latin:moreKeys="@string/more_keys_for_bullet" />
-        <!-- \u221a: "√" SQUARE ROOT -->
+        <!-- U+221A: "√" SQUARE ROOT -->
         <Key
-            latin:keyLabel="\u221a" />
-        <!-- \u03c0: "π" GREEK SMALL LETTER PI
-             \u03a0: "Π" GREEK CAPITAL LETTER PI -->
+            latin:keyLabel="&#x221A;" />
+        <!-- U+03C0: "π" GREEK SMALL LETTER PI
+             U+03A0: "Π" GREEK CAPITAL LETTER PI -->
         <Key
-            latin:keyLabel="\u03c0"
-            latin:moreKeys="\u03a0" />
-        <!-- \u00f7: "÷" DIVISION SIGN -->
+            latin:keyLabel="&#x03C0;"
+            latin:moreKeys="&#x03A0;" />
+        <!-- U+00F7: "÷" DIVISION SIGN -->
         <Key
-            latin:keyLabel="\u00f7" />
-        <!-- \u00d7: "×" MULTIPLICATION SIGN -->
+            latin:keyLabel="&#x00F7;" />
+        <!-- U+00D7: "×" MULTIPLICATION SIGN -->
         <Key
-            latin:keyLabel="\u00d7" />
-        <!-- \u00a7: "§" SECTION SIGN
-             \u00b6: "¶" PILCROW SIGN -->
+            latin:keyLabel="&#x00D7;" />
+        <!-- U+00A7: "§" SECTION SIGN
+             U+00B6: "¶" PILCROW SIGN -->
         <Key
-            latin:keyLabel="\u00a7"
-            latin:moreKeys="\u00b6" />
-        <!-- \u0394: "Δ" GREEK CAPITAL LETTER DELTA -->
+            latin:keyLabel="&#x00A7;"
+            latin:moreKeys="&#x00B6;" />
+        <!-- U+0394: "Δ" GREEK CAPITAL LETTER DELTA -->
         <Key
-            latin:keyLabel="\u0394" />
+            latin:keyLabel="&#x0394;" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-10.0%p"
@@ -68,9 +68,9 @@
     <Row
         latin:keyWidth="9.0%p"
     >
-        <!-- \u00a3: "£" POUND SIGN -->
+        <!-- U+00A3: "£" POUND SIGN -->
         <Key
-            latin:keyLabel="\u00a3"
+            latin:keyLabel="&#x00A3;"
             latin:keyXPos="4.5%p" />
         <Key
             latin:keyStyle="moreCurrency1KeyStyle" />
@@ -78,24 +78,24 @@
             latin:keyStyle="moreCurrency2KeyStyle" />
         <Key
             latin:keyStyle="moreCurrency3KeyStyle" />
-        <!-- \u2191: "↑" UPWARDS ARROW
-             \u2193: "↓" DOWNWARDS ARROW
-             \u2190: "←" LEFTWARDS ARROW
-             \u2192: "→" RIGHTWARDS ARROW -->
+        <!-- U+2191: "↑" UPWARDS ARROW
+             U+2193: "↓" DOWNWARDS ARROW
+             U+2190: "←" LEFTWARDS ARROW
+             U+2192: "→" RIGHTWARDS ARROW -->
         <Key
             latin:keyLabel="^"
-            latin:moreKeys="\u2191,\u2193,\u2190,\u2192" />
-        <!-- \u00b0: "°" DEGREE SIGN
-             \u2032: "′" PRIME
-             \u2033: "″" DOUBLE PRIME -->
+            latin:moreKeys="&#x2191;,&#x2193;,&#x2190;,&#x2192;" />
+        <!-- U+00B0: "°" DEGREE SIGN
+             U+2032: "′" PRIME
+             U+2033: "″" DOUBLE PRIME -->
         <Key
-            latin:keyLabel="\u00b0"
-            latin:moreKeys="\u2032,\u2033" />
-        <!-- \u00b1: "±" PLUS-MINUS SIGN
-             \u221e: "∞" INFINITY -->
+            latin:keyLabel="&#x00B0;"
+            latin:moreKeys="&#x2032;,&#x2033;" />
+        <!-- U+00B1: "±" PLUS-MINUS SIGN
+             U+221E: "∞" INFINITY -->
         <Key
-            latin:keyLabel="\u00b1"
-            latin:moreKeys="\u221e" />
+            latin:keyLabel="&#x00B1;"
+            latin:moreKeys="&#x221E;" />
         <include
             latin:keyboardLayout="@xml/keys_curly_brackets" />
         <Key
@@ -111,26 +111,26 @@
             latin:keyWidth="10.0%p" />
         <Key
             latin:keyLabel="\\" />
-        <!-- \u00a9: "©" COPYRIGHT SIGN -->
+        <!-- U+00A9: "©" COPYRIGHT SIGN -->
         <Key
-            latin:keyLabel="\u00a9" />
-        <!-- \u00ae: "®" REGISTERED SIGN -->
+            latin:keyLabel="&#x00A9;" />
+        <!-- U+00AE: "®" REGISTERED SIGN -->
         <Key
-            latin:keyLabel="\u00ae" />
-        <!-- \u2122: "™" TRADE MARK SIGN -->
+            latin:keyLabel="&#x00AE;" />
+        <!-- U+2122: "™" TRADE MARK SIGN -->
         <Key
-            latin:keyLabel="\u2122" />
-        <!-- \u2105: "℅" CARE OF -->
+            latin:keyLabel="&#x2122;" />
+        <!-- U+2105: "℅" CARE OF -->
         <Key
-            latin:keyLabel="\u2105" />
+            latin:keyLabel="&#x2105;" />
         <include
             latin:keyboardLayout="@xml/keys_square_brackets" />
-        <!-- \u00a1: "¡" INVERTED EXCLAMATION MARK -->
+        <!-- U+00A1: "¡" INVERTED EXCLAMATION MARK -->
         <Key
-            latin:keyLabel="\u00a1" />
-        <!-- \u00bf: "¿" INVERTED QUESTION MARK -->
+            latin:keyLabel="&#x00A1;" />
+        <!-- U+00BF: "¿" INVERTED QUESTION MARK -->
         <Key
-            latin:keyLabel="\u00bf" />
+            latin:keyLabel="&#x00BF;" />
     </Row>
     <Row
         latin:keyWidth="8.9%p"

@@ -133,9 +133,10 @@
             latin:moreKeys="@string/more_keys_for_comma" />
         <Key
             latin:keyLabel="." />
+        <!-- U+00A1: "¡" INVERTED EXCLAMATION MARK -->
         <Key
             latin:keyLabel="!"
-            latin:moreKeys="¡" />
+            latin:moreKeys="&#x00A1;" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_question"
             latin:moreKeys="@string/more_keys_for_symbols_question" />

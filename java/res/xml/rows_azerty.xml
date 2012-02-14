@@ -136,7 +136,7 @@
              order of "4,3,1,2". See @string/more_keys_for_single_quote -->
         <Key
             latin:keyLabel="\'"
-            latin:moreKeys="\u2018,\u2019,\u201b,\u201a" />
+            latin:moreKeys="&#x2018;,&#x2019;,&#x201B;,&#x201A;" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight"

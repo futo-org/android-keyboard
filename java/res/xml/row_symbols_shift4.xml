@@ -32,19 +32,20 @@
                 <Key
                     latin:keyStyle="toAlphaKeyStyle"
                     latin:keyWidth="15%p" />
-                <!-- Note: Neither DroidSans nor Roboto have a glyph for ‟ Double high-reversed-9 quotation mark U+201F. -->
+                <!-- U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
+                <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK. -->
                     <!-- latin:keyLabelFlags="hasPopupHint" -->
-                    <!-- latin:moreKeys="‟" -->
-                <!-- \u201e: "„" DOUBLE LOW-9 QUOTATION MARK -->
+                    <!-- latin:moreKeys="&#x201F;" -->
+                <!-- U+201E: "„" DOUBLE LOW-9 QUOTATION MARK -->
                 <Key
-                    latin:keyLabel="\u201e"
+                    latin:keyLabel="&#x201E;"
                     latin:backgroundType="functional" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
                     latin:keyWidth="50%p" />
-                <!-- \u2026: "…" HORIZONTAL ELLIPSIS -->
+                <!-- U+2026: "…" HORIZONTAL ELLIPSIS -->
                 <Key
-                    latin:keyLabel="\u2026"
+                    latin:keyLabel="&#x2026;"
                     latin:backgroundType="functional" />
                 <Key
                     latin:keyStyle="enterKeyStyle"
@@ -57,20 +58,21 @@
                     latin:keyWidth="13.75%p" />
                 <include
                     latin:keyboardLayout="@xml/key_settings_or_tab" />
-                <!-- Note: Neither DroidSans nor Roboto have a glyph for ‟ Double high-reversed-9 quotation mark U+201F. -->
+                <!-- U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
+                <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK. -->
                     <!-- latin:keyLabelFlags="hasPopupHint" -->
-                    <!-- latin:moreKeys="‟" -->
-                <!-- \u201e: "„" DOUBLE LOW-9 QUOTATION MARK -->
+                    <!-- latin:moreKeys="&#x201F;" -->
+                <!-- U+201E: "„" DOUBLE LOW-9 QUOTATION MARK -->
                 <Key
-                    latin:keyLabel="\u201e"
+                    latin:keyLabel="&#x201E;"
                     latin:keyWidth="9.2%p"
                     latin:backgroundType="functional" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
                     latin:keyWidth="35.83%p" />
-                <!-- \u2026: "…" HORIZONTAL ELLIPSIS -->
+                <!-- U+2026: "…" HORIZONTAL ELLIPSIS -->
                 <Key
-                    latin:keyLabel="\u2026"
+                    latin:keyLabel="&#x2026;"
                     latin:keyWidth="9.2%p"
                     latin:backgroundType="functional" />
                 <Key

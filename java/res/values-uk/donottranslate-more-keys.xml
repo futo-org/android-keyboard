@@ -18,8 +18,8 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- \u0456: "і" CYRILLIC SMALL LETTER BYELORUSSIAN-UKRAINIAN I -->
-    <string name="keylabel_for_slavic_yery">\u0456</string>
-    <!-- \u0457: "ї" CYRILLIC SMALL LETTER YI -->
-    <string name="more_keys_for_slavic_yery">\u0457</string>
+    <!-- U+0456: "і" CYRILLIC SMALL LETTER BYELORUSSIAN-UKRAINIAN I -->
+    <string name="keylabel_for_slavic_yery">&#x0456;</string>
+    <!-- U+0457: "ї" CYRILLIC SMALL LETTER YI -->
+    <string name="more_keys_for_slavic_yery">&#x0457;</string>
 </resources>
