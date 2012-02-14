@@ -19,32 +19,30 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Symbols that are suggested between words -->
-    <string name="suggested_punctuations">!,?,\\,,:,;,\u0022,(,),\u0027,-,/,@,_</string>
+    <string name="suggested_punctuations">!,?,\\,,:,;,\",(,),\',-,/,@,_</string>
     <!-- Symbols that should be swapped with a magic space -->
-    <string name="magic_space_swapping_symbols">.,;:!?)]}\u0022</string>
+    <string name="magic_space_swapping_symbols">.,;:!?)]}\"</string>
     <!-- Symbols that should strip a magic space -->
-    <string name="magic_space_stripping_symbols">\u0009\u0020\n/_\u0027-</string>
+    <string name="magic_space_stripping_symbols">&#x0009;&#x0020;\n/_\'-</string>
     <!-- Symbols that should convert magic spaces into real space -->
     <string name="magic_space_promoting_symbols">([*&amp;@{&lt;&gt;+=|</string>
     <!-- Symbols that do NOT separate words -->
-    <string name="symbols_excluded_from_word_separators">\u0027-</string>
+    <string name="symbols_excluded_from_word_separators">\'-</string>
     <!-- Word separator list is the union of all symbols except those that are not separators:
     magic_space_swapping_symbols | magic_space_stripping_symbols |
             magic_space_neutral_symbols \ symbols_excluded_from_word_separators -->
     <!-- Symbol characters list that should switch back to the main layout -->
-    <!-- \u0022: """ QUOTATION MARK (double quotation mark)
-         \u0027: "'" APOSTROPHE (single quotation mark)
-         \u2018: "‘" LEFT SINGLE QUOTATION MARK
-         \u2019: "’" RIGHT SINGLE QUOTATION MARK
-         \u201a: "‚" SINGLE LOW-9 QUOTATION MARK
-         \u201b: "‛" SINGLE HIGH-REVERSED-9 QUOTATION MARK
-         \u201c: "“" LEFT DOUBLE QUOTATION MARK
-         \u201d: "”" RIGHT DOUBLE QUOTATION MARK
-         \u201e: "„" DOUBLE LOW-9 QUOTATION MARK
-         \u201f: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK
-         \u00ab: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
-         \u00bb: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK -->
-    <!-- string name="layout_switch_back_symbols">\u0022\u0027\u2018\u2019\u201a\u201b\u201c\u201d\u201e\u201f\u00ab\u00bb</string> -->
+    <!-- U+2018: "‘" LEFT SINGLE QUOTATION MARK
+         U+2019: "’" RIGHT SINGLE QUOTATION MARK
+         U+201A: "‚" SINGLE LOW-9 QUOTATION MARK
+         U+201B: "‛" SINGLE HIGH-REVERSED-9 QUOTATION MARK
+         U+201C: "“" LEFT DOUBLE QUOTATION MARK
+         U+201D: "”" RIGHT DOUBLE QUOTATION MARK
+         U+201E: "„" DOUBLE LOW-9 QUOTATION MARK
+         U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+         U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+         U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK -->
+    <!-- <string name="layout_switch_back_symbols">\"\'&#x2018;&#x2019;&#x201A;&#x201B;&#x201C;&#x201D;&#x201E;&#x201F;&#x00AB;&#x00BB;</string> -->
     <string name="layout_switch_back_symbols"></string>
 
     <!-- Label for "switch to more symbol" modifier key.  Must be short to fit on key! -->
@@ -57,7 +55,9 @@
     <!-- Label for "switch to phone numeric" key.  Must be short to fit on key! -->
     <string name="label_to_phone_numeric_key">123</string>
     <!-- Label for "switch to phone symbols" key.  Must be short to fit on key! -->
-    <string name="label_to_phone_symbols_key">\uff0a\uff03</string>
+    <!-- U+FF0A: "＊" FULLWIDTH ASTERISK
+         U+FF03: "＃" FULLWIDTH NUMBER SIGN -->
+    <string name="label_to_phone_symbols_key">&#xFF0A;&#xFF03;</string>
 
     <!--  Always show the suggestion strip -->
     <string name="prefs_suggestion_visibility_show_value">0</string>

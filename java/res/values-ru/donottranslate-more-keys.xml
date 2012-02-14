@@ -18,6 +18,6 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- \u0451: "ё" CYRILLIC SMALL LETTER IO -->
-    <string name="more_keys_for_slavic_ye">\u0451</string>
+    <!-- U+0451: "ё" CYRILLIC SMALL LETTER IO -->
+    <string name="more_keys_for_slavic_ye">&#x0451;</string>
 </resources>

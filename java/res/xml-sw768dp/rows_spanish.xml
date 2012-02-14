@@ -56,9 +56,9 @@
         <Key
             latin:keyLabel="l"
             latin:moreKeys="@string/more_keys_for_l" />
-        <!-- \u00f1: "ñ" LATIN SMALL LETTER N WITH TILDE -->
+        <!-- U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE -->
         <Key
-            latin:keyLabel="\u00f1" />
+            latin:keyLabel="&#x00F1;" />
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyXPos="-15.704%p"

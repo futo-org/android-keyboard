@@ -26,177 +26,177 @@
     <Row
         latin:keyWidth="10%p"
     >
-        <!-- \u0636: "ض" ARABIC LETTER DAD
-             \u0661: "١" ARABIC-INDIC DIGIT ONE -->
+        <!-- U+0636: "ض" ARABIC LETTER DAD
+             U+0661: "١" ARABIC-INDIC DIGIT ONE -->
         <Key
-            latin:keyLabel="\u0636"
+            latin:keyLabel="&#x0636;"
             latin:keyHintLabel="1"
-            latin:additionalMoreKeys="1,\u0661" />
-        <!-- \u0635: "ص" ARABIC LETTER SAD
-             \u0662: "٢" ARABIC-INDIC DIGIT TWO -->
+            latin:additionalMoreKeys="1,&#x0661;" />
+        <!-- U+0635: "ص" ARABIC LETTER SAD
+             U+0662: "٢" ARABIC-INDIC DIGIT TWO -->
         <Key
-            latin:keyLabel="\u0635"
+            latin:keyLabel="&#x0635;"
             latin:keyHintLabel="2"
-            latin:additionalMoreKeys="2,\u0662" />
-        <!-- \u0642: "ق" ARABIC LETTER QAF
-             \u06a8: "ڨ" ARABIC LETTER QAF WITH THREE DOTS ABOVE
-             \u0663: "٣" ARABIC-INDIC DIGIT THREE -->
-        <!-- TODO: DroidSansArabic lacks the glyph of \u06a8 ARABIC LETTER QAF WITH THREE DOTS ABOVE -->
+            latin:additionalMoreKeys="2,&#x0662;" />
+        <!-- U+0642: "ق" ARABIC LETTER QAF
+             U+06A8: "ڨ" ARABIC LETTER QAF WITH THREE DOTS ABOVE
+             U+0663: "٣" ARABIC-INDIC DIGIT THREE -->
+        <!-- TODO: DroidSansArabic lacks the glyph of U+06A8 ARABIC LETTER QAF WITH THREE DOTS ABOVE -->
         <Key
-            latin:keyLabel="\u0642"
+            latin:keyLabel="&#x0642;"
             latin:keyHintLabel="3"
-            latin:additionalMoreKeys="3,\u0663"
-            latin:moreKeys="\u06a8" />
-        <!-- \u0641: "ف" ARABIC LETTER FEH
-             \u06a4: "ڤ" ARABIC LETTER VEH
-             \u06a2: "ڢ" ARABIC LETTER FEH WITH DOT MOVED BELOW
-             \u06a5: "ڥ" ARABIC LETTER FEH WITH THREE DOTS BELOW
-             \u0664: "٤" ARABIC-INDIC DIGIT FOUR -->
-        <!-- TODO: DroidSansArabic lacks the glyph of \u06a2 ARABIC LETTER FEH WITH DOT MOVED BELOW -->
-        <!-- TODO: DroidSansArabic lacks the glyph of \u06a5 ARABIC LETTER FEH WITH THREE DOTS BELOW -->
+            latin:additionalMoreKeys="3,&#x0663;"
+            latin:moreKeys="&#x06A8;" />
+        <!-- U+0641: "ف" ARABIC LETTER FEH
+             U+06A4: "ڤ" ARABIC LETTER VEH
+             U+06A2: "ڢ" ARABIC LETTER FEH WITH DOT MOVED BELOW
+             U+06A5: "ڥ" ARABIC LETTER FEH WITH THREE DOTS BELOW
+             U+0664: "٤" ARABIC-INDIC DIGIT FOUR -->
+        <!-- TODO: DroidSansArabic lacks the glyph of U+06A2 ARABIC LETTER FEH WITH DOT MOVED BELOW -->
+        <!-- TODO: DroidSansArabic lacks the glyph of U+06A5 ARABIC LETTER FEH WITH THREE DOTS BELOW -->
         <Key
-            latin:keyLabel="\u0641"
+            latin:keyLabel="&#x0641;"
             latin:keyHintLabel="4"
-            latin:additionalMoreKeys="4,\u0664"
-            latin:moreKeys="\u06a4,\u06a2,\u06a5" />
-        <!-- \u063a: "غ" ARABIC LETTER GHAIN
-             \u0665: "٥" ARABIC-INDIC DIGIT FIVE -->
+            latin:additionalMoreKeys="4,&#x0664;"
+            latin:moreKeys="&#x06A4;,&#x06A2;,&#x06A5;" />
+        <!-- U+063A: "غ" ARABIC LETTER GHAIN
+             U+0665: "٥" ARABIC-INDIC DIGIT FIVE -->
         <Key
-            latin:keyLabel="\u063a"
+            latin:keyLabel="&#x063A;"
             latin:keyHintLabel="5"
-            latin:additionalMoreKeys="5,\u0665" />
-        <!-- \u0639: "ع" ARABIC LETTER AIN
-             \u0666: "٦" ARABIC-INDIC DIGIT SIX -->
+            latin:additionalMoreKeys="5,&#x0665;" />
+        <!-- U+0639: "ع" ARABIC LETTER AIN
+             U+0666: "٦" ARABIC-INDIC DIGIT SIX -->
         <Key
-            latin:keyLabel="\u0639"
+            latin:keyLabel="&#x0639;"
             latin:keyHintLabel="6"
-            latin:additionalMoreKeys="6,\u0666" />
-        <!-- \u0647: "ه" ARABIC LETTER HEH
-             \ufeeb: "ﻫ" ARABIC LETTER HEH INITIAL FORM
-             \u0647\u200d: ARABIC LETTER HEH + ZERO WIDTH JOINER
-             \u0667: "٧" ARABIC-INDIC DIGIT SEVEN -->
+            latin:additionalMoreKeys="6,&#x0666;" />
+        <!-- U+0647: "ه" ARABIC LETTER HEH
+             U+FEEB: "ﻫ" ARABIC LETTER HEH INITIAL FORM
+             U+0647 U+200D: ARABIC LETTER HEH + ZERO WIDTH JOINER
+             U+0667: "٧" ARABIC-INDIC DIGIT SEVEN -->
         <Key
-            latin:keyLabel="\u0647"
+            latin:keyLabel="&#x0647;"
             latin:keyHintLabel="7"
-            latin:additionalMoreKeys="7,\u0667"
-            latin:moreKeys="\ufeeb|\u0647\u200d" />
-        <!-- \u062e: "خ" ARABIC LETTER KHAH
-             \u0668: "٨" ARABIC-INDIC DIGIT EIGHT -->
+            latin:additionalMoreKeys="7,&#x0667;"
+            latin:moreKeys="&#xFEEB;|&#x0647;&#x200D;" />
+        <!-- U+062E: "خ" ARABIC LETTER KHAH
+             U+0668: "٨" ARABIC-INDIC DIGIT EIGHT -->
         <Key
-            latin:keyLabel="\u062e"
+            latin:keyLabel="&#x062E;"
             latin:keyHintLabel="8"
-            latin:additionalMoreKeys="8,\u0668" />
-        <!-- \u062d: "ح" ARABIC LETTER HAH
-             \u0669: "٩" ARABIC-INDIC DIGIT NINE -->
+            latin:additionalMoreKeys="8,&#x0668;" />
+        <!-- U+062D: "ح" ARABIC LETTER HAH
+             U+0669: "٩" ARABIC-INDIC DIGIT NINE -->
         <Key
-            latin:keyLabel="\u062d"
+            latin:keyLabel="&#x062D;"
             latin:keyHintLabel="9"
-            latin:additionalMoreKeys="9,\u0669" />
-        <!-- \u062c: "ج" ARABIC LETTER JEEM
-             \u0686: "چ" ARABIC LETTER TCHEH
-             \u0660: "٠" ARABIC-INDIC DIGIT ZERO -->
+            latin:additionalMoreKeys="9,&#x0669;" />
+        <!-- U+062C: "ج" ARABIC LETTER JEEM
+             U+0686: "چ" ARABIC LETTER TCHEH
+             U+0660: "٠" ARABIC-INDIC DIGIT ZERO -->
         <Key
-            latin:keyLabel="\u062c"
+            latin:keyLabel="&#x062C;"
             latin:keyHintLabel="0"
-            latin:additionalMoreKeys="0,\u0660"
-            latin:moreKeys="\u0686"
+            latin:additionalMoreKeys="0,&#x0660;"
+            latin:moreKeys="&#x0686;"
             latin:keyWidth="fillRight" />
     </Row>
     <Row
         latin:keyWidth="10%p"
     >
-        <!-- \u0634: "ش" ARABIC LETTER SHEEN
-             \u069c: "ڜ" ARABIC LETTER SEEN WITH THREE DOTS BELOW AND THREE DOTS ABOVE -->
-        <!-- TODO: DroidSansArabic lacks the glyph of \u069c ARABIC LETTER SEEN WITH THREE DOTS BELOW AND THREE DOTS ABOVE -->
+        <!-- U+0634: "ش" ARABIC LETTER SHEEN
+             U+069C: "ڜ" ARABIC LETTER SEEN WITH THREE DOTS BELOW AND THREE DOTS ABOVE -->
+        <!-- TODO: DroidSansArabic lacks the glyph of U+069C ARABIC LETTER SEEN WITH THREE DOTS BELOW AND THREE DOTS ABOVE -->
         <Key
-            latin:keyLabel="\u0634"
-            latin:moreKeys="\u069c" />
-        <!-- \u0633: "س" ARABIC LETTER SEEN -->
+            latin:keyLabel="&#x0634;"
+            latin:moreKeys="&#x069C;" />
+        <!-- U+0633: "س" ARABIC LETTER SEEN -->
         <Key
-            latin:keyLabel="\u0633" />
-        <!-- \u064a: "ي" ARABIC LETTER YEH
-             \u0626: "ئ" ARABIC LETTER YEH WITH HAMZA ABOVE
-             \u0649: "ى" ARABIC LETTER ALEF MAKSURA -->
+            latin:keyLabel="&#x0633;" />
+        <!-- U+064A: "ي" ARABIC LETTER YEH
+             U+0626: "ئ" ARABIC LETTER YEH WITH HAMZA ABOVE
+             U+0649: "ى" ARABIC LETTER ALEF MAKSURA -->
         <Key
-            latin:keyLabel="\u064a"
-            latin:moreKeys="\u0626,\u0649" />
-        <!-- \u0628: "ب" ARABIC LETTER BEH
-             \u067e: "پ" ARABIC LETTER PEH -->
+            latin:keyLabel="&#x064A;"
+            latin:moreKeys="&#x0626;,&#x0649;" />
+        <!-- U+0628: "ب" ARABIC LETTER BEH
+             U+067E: "پ" ARABIC LETTER PEH -->
         <Key
-            latin:keyLabel="\u0628"
-            latin:moreKeys="\u067e" />
-        <!-- \u0644: "ل" ARABIC LETTER LAM
-             \ufefb: "ﻻ" ARABIC LIGATURE LAM WITH ALEF ISOLATED FORM
-             \u0627: "ا" ARABIC LETTER ALEF
-             \ufef7: "ﻷ" ARABIC LIGATURE LAM WITH ALEF WITH HAMZA ABOVE ISOLATED FORM
-             \u0623: "أ" ARABIC LETTER ALEF WITH HAMZA ABOVE
-             \ufef9: "ﻹ" ARABIC LIGATURE LAM WITH ALEF WITH HAMZA BELOW ISOLATED FORM
-             \u0625: "إ" ARABIC LETTER ALEF WITH HAMZA BELOW
-             \ufef5: "ﻵ" ARABIC LIGATURE LAM WITH ALEF WITH MADDA ABOVE ISOLATED FORM
-             \u0622: "آ" ARABIC LETTER ALEF WITH MADDA ABOVE -->
+            latin:keyLabel="&#x0628;"
+            latin:moreKeys="&#x067E;" />
+        <!-- U+0644: "ل" ARABIC LETTER LAM
+             U+FEFB: "ﻻ" ARABIC LIGATURE LAM WITH ALEF ISOLATED FORM
+             U+0627: "ا" ARABIC LETTER ALEF
+             U+FEF7: "ﻷ" ARABIC LIGATURE LAM WITH ALEF WITH HAMZA ABOVE ISOLATED FORM
+             U+0623: "أ" ARABIC LETTER ALEF WITH HAMZA ABOVE
+             U+FEF9: "ﻹ" ARABIC LIGATURE LAM WITH ALEF WITH HAMZA BELOW ISOLATED FORM
+             U+0625: "إ" ARABIC LETTER ALEF WITH HAMZA BELOW
+             U+FEF5: "ﻵ" ARABIC LIGATURE LAM WITH ALEF WITH MADDA ABOVE ISOLATED FORM
+             U+0622: "آ" ARABIC LETTER ALEF WITH MADDA ABOVE -->
         <Key
-            latin:keyLabel="\u0644"
-            latin:moreKeys="\ufefb|\u0644\u0627,\ufef7|\u0644\u0623,\ufef9|\u0644\u0625,\ufef5|\u0644\u0622" />
-        <!-- \u0627: "ا" ARABIC LETTER ALEF
-             \u0621: "ء" ARABIC LETTER HAMZA
-             \u0671: "ٱ" ARABIC LETTER ALEF WASLA
-             \u0623: "أ" ARABIC LETTER ALEF WITH HAMZA ABOVE
-             \u0625: "إ" ARABIC LETTER ALEF WITH HAMZA BELOW
-             \u0622: "آ" ARABIC LETTER ALEF WITH MADDA ABOVE -->
+            latin:keyLabel="&#x0644;"
+            latin:moreKeys="&#xFEFB;|&#x0644;&#x0627;,&#xFEF7;|&#x0644;&#x0623;,&#xFEF9;|&#x0644;&#x0625;,&#xFEF5;|&#x0644;&#x0622;" />
+        <!-- U+0627: "ا" ARABIC LETTER ALEF
+             U+0621: "ء" ARABIC LETTER HAMZA
+             U+0671: "ٱ" ARABIC LETTER ALEF WASLA
+             U+0623: "أ" ARABIC LETTER ALEF WITH HAMZA ABOVE
+             U+0625: "إ" ARABIC LETTER ALEF WITH HAMZA BELOW
+             U+0622: "آ" ARABIC LETTER ALEF WITH MADDA ABOVE -->
         <Key
-            latin:keyLabel="\u0627"
-            latin:moreKeys="\u0621,\u0671,\u0623,\u0625,\u0622" />
-        <!-- \u062a: "ت" ARABIC LETTER TEH
-             \u062b: "ﺙ" ARABIC LETTER THEH -->
+            latin:keyLabel="&#x0627;"
+            latin:moreKeys="&#x0621;,&#x0671;,&#x0623;,&#x0625;,&#x0622;" />
+        <!-- U+062A: "ت" ARABIC LETTER TEH
+             U+062B: "ﺙ" ARABIC LETTER THEH -->
         <Key
-            latin:keyLabel="\u062a"
-            latin:moreKeys="\u062b" />
-        <!-- \u0646: "ن" ARABIC LETTER NOON -->
+            latin:keyLabel="&#x062A;"
+            latin:moreKeys="&#x062B;" />
+        <!-- U+0646: "ن" ARABIC LETTER NOON -->
         <Key
-            latin:keyLabel="\u0646" />
-        <!-- \u0645: "م" ARABIC LETTER MEEM -->
+            latin:keyLabel="&#x0646;" />
+        <!-- U+0645: "م" ARABIC LETTER MEEM -->
         <Key
-            latin:keyLabel="\u0645" />
-        <!-- \u0643: "ك" ARABIC LETTER KAF
-             \u06af: "گ" ARABIC LETTER GAF
-             \u06a9: "ک" ARABIC LETTER KEHEH -->
+            latin:keyLabel="&#x0645;" />
+        <!-- U+0643: "ك" ARABIC LETTER KAF
+             U+06AF: "گ" ARABIC LETTER GAF
+             U+06A9: "ک" ARABIC LETTER KEHEH -->
         <Key
-            latin:keyLabel="\u0643"
-            latin:moreKeys="\u06af,\u06a9"
+            latin:keyLabel="&#x0643;"
+            latin:moreKeys="&#x06AF;,&#x06A9;"
             latin:keyWidth="fillRight" />
     </Row>
     <Row
         latin:keyWidth="10%p"
     >
-        <!-- \u0638: "ظ" ARABIC LETTER ZAH -->
+        <!-- U+0638: "ظ" ARABIC LETTER ZAH -->
         <Key
-            latin:keyLabel="\u0638"
+            latin:keyLabel="&#x0638;"
             latin:keyXPos="5.0%p" />
-        <!-- \u0637: "ط" ARABIC LETTER TAH -->
+        <!-- U+0637: "ط" ARABIC LETTER TAH -->
         <Key
-            latin:keyLabel="\u0637" />
-        <!-- \u0630: "ذ" ARABIC LETTER THAL -->
+            latin:keyLabel="&#x0637;" />
+        <!-- U+0630: "ذ" ARABIC LETTER THAL -->
         <Key
-            latin:keyLabel="\u0630" />
-        <!-- \u062f: "د" ARABIC LETTER DAL -->
+            latin:keyLabel="&#x0630;" />
+        <!-- U+062F: "د" ARABIC LETTER DAL -->
         <Key
-            latin:keyLabel="\u062f" />
-        <!-- \u0632: "ز" ARABIC LETTER ZAIN
-             \u0698: "ژ" ARABIC LETTER JEH -->
+            latin:keyLabel="&#x062F;" />
+        <!-- U+0632: "ز" ARABIC LETTER ZAIN
+             U+0698: "ژ" ARABIC LETTER JEH -->
         <Key
-            latin:keyLabel="\u0632"
-            latin:moreKeys="\u0698" />
-        <!-- \u0631: "ر" ARABIC LETTER REH -->
+            latin:keyLabel="&#x0632;"
+            latin:moreKeys="&#x0698;" />
+        <!-- U+0631: "ر" ARABIC LETTER REH -->
         <Key
-            latin:keyLabel="\u0631" />
-        <!-- \u0629: "ة" ARABIC LETTER TEH MARBUTA -->
+            latin:keyLabel="&#x0631;" />
+        <!-- U+0629: "ة" ARABIC LETTER TEH MARBUTA -->
         <Key
-            latin:keyLabel="\u0629" />
-        <!-- \u0648: "و" ARABIC LETTER WAW
-             \u0624: "ﺅ" ARABIC LETTER WAW WITH HAMZA ABOVE -->
+            latin:keyLabel="&#x0629;" />
+        <!-- U+0648: "و" ARABIC LETTER WAW
+             U+0624: "ﺅ" ARABIC LETTER WAW WITH HAMZA ABOVE -->
         <Key
-            latin:keyLabel="\u0648"
-            latin:moreKeys="\u0624" />
+            latin:keyLabel="&#x0648;"
+            latin:moreKeys="&#x0624;" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight"

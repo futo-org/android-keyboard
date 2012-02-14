@@ -18,10 +18,10 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- \u04af: "ү" CYRILLIC SMALL LETTER STRAIGHT U -->
-    <string name="more_keys_for_slavic_u">\u04af</string>
-    <!-- \u04a3: "ң" CYRILLIC SMALL LETTER EN WITH DESCENDER -->
-    <string name="more_keys_for_slavic_en">\u04a3</string>
-    <!-- \u04e9: "ө" CYRILLIC SMALL LETTER BARRED O -->
-    <string name="more_keys_for_slavic_o">\u04e9</string>
+    <!-- U+04AF: "ү" CYRILLIC SMALL LETTER STRAIGHT U -->
+    <string name="more_keys_for_slavic_u">&#x04AF;</string>
+    <!-- U+04A3: "ң" CYRILLIC SMALL LETTER EN WITH DESCENDER -->
+    <string name="more_keys_for_slavic_en">&#x04A3;</string>
+    <!-- U+04E9: "ө" CYRILLIC SMALL LETTER BARRED O -->
+    <string name="more_keys_for_slavic_o">&#x04E9;</string>
 </resources>
