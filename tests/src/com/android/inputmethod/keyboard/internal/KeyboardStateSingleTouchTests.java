@@ -687,4 +687,67 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         // Press/release "?123" key, enter symbols (not symbols shifted).
         pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
     }
+
+    // Rapidly type shift key.
+    public void testRapidShiftTyping() {
+        // Press/release shift key
+        pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Rapidly press/release letter key.
+        secondPressAndReleaseKey('J', ALPHABET_MANUAL_SHIFTED, ALPHABET_UNSHIFTED);
+        // Rapidly press/release shift key.
+        secondPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Rapidly press/release letter key.
+        secondPressAndReleaseKey('J', ALPHABET_MANUAL_SHIFTED, ALPHABET_UNSHIFTED);
+        // Rapidly press/release shift key.
+        secondPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Rapidly press/release letter key.
+        secondPressAndReleaseKey('J', ALPHABET_MANUAL_SHIFTED, ALPHABET_UNSHIFTED);
+
+        // Press/release shift key to enter alphabet manual shifted.
+        pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Press/release shift key
+        pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_UNSHIFTED);
+        // Rapidly press/release letter key.
+        secondPressAndReleaseKey('j', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
+        // Rapidly press/release shift key.
+        secondPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Rapidly press/release letter key.
+        secondPressAndReleaseKey('J', ALPHABET_MANUAL_SHIFTED, ALPHABET_UNSHIFTED);
+        // Rapidly press/release shift key.
+        secondPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Rapidly press/release letter key.
+        secondPressAndReleaseKey('J', ALPHABET_MANUAL_SHIFTED, ALPHABET_UNSHIFTED);
+
+        // Long press shift key to enter alphabet shift locked.
+        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED);
+        // Press/release shift key
+        pressAndReleaseKey(CODE_SHIFT, ALPHABET_SHIFT_LOCK_SHIFTED, ALPHABET_UNSHIFTED);
+        // Rapidly press/release letter key.
+        secondPressAndReleaseKey('j', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
+        // Rapidly press/release shift key.
+        secondPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Rapidly press/release letter key.
+        secondPressAndReleaseKey('J', ALPHABET_MANUAL_SHIFTED, ALPHABET_UNSHIFTED);
+        // Rapidly press/release shift key.
+        secondPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Rapidly press/release letter key.
+        secondPressAndReleaseKey('J', ALPHABET_MANUAL_SHIFTED, ALPHABET_UNSHIFTED);
+
+        // Set auto caps mode on.
+        setAutoCapsMode(AUTO_CAPS);
+        // Press/release auto caps trigger letter to enter alphabet automatic shifted.
+        pressAndReleaseKey(CODE_AUTO_CAPS_TRIGGER, ALPHABET_UNSHIFTED, ALPHABET_AUTOMATIC_SHIFTED);
+        // Press/release shift key
+        pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_UNSHIFTED);
+        // Rapidly press/release letter key.
+        secondPressAndReleaseKey('j', ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
+        // Rapidly press/release shift key.
+        secondPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Rapidly press/release letter key.
+        secondPressAndReleaseKey('J', ALPHABET_MANUAL_SHIFTED, ALPHABET_UNSHIFTED);
+        // Rapidly press/release shift key.
+        secondPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Rapidly press/release letter key.
+        secondPressAndReleaseKey('J', ALPHABET_MANUAL_SHIFTED, ALPHABET_UNSHIFTED);
+    }
 }

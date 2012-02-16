@@ -233,6 +233,11 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
 
         @Override
+        public void cancelDoubleTapTimer() {
+            removeMessages(MSG_DOUBLE_TAP);
+        }
+
+        @Override
         public boolean isInDoubleTapTimeout() {
             return hasMessages(MSG_DOUBLE_TAP);
         }

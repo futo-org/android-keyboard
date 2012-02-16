@@ -325,7 +325,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             return hasMessages(MSG_UPDATE_SUGGESTIONS);
         }
 
-        public void postUpdateShiftKeyState() {
+        public void postUpdateShiftState() {
             removeMessages(MSG_UPDATE_SHIFT_STATE);
             sendMessageDelayed(obtainMessage(MSG_UPDATE_SHIFT_STATE), mDelayUpdateShiftState);
         }
@@ -898,9 +898,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 resetComposingState(true /* alsoResetLastComposedWord */);
                 updateSuggestions();
             }
+
+            mHandler.postUpdateShiftState();
         }
         mExpectingUpdateSelection = false;
-        mHandler.postUpdateShiftKeyState();
         // TODO: Decide to call restartSuggestionsOnWordBeforeCursorIfAtEndOfWord() or not
         // here. It would probably be too expensive to call directly here but we may want to post a
         // message to delay it. The point would be to unify behavior between backspace to the
@@ -1391,7 +1392,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mVoiceProxy.handleBackspace();
 
         // In many cases, we may have to put the keyboard in auto-shift state again.
-        mHandler.postUpdateShiftKeyState();
+        mHandler.postUpdateShiftState();
 
         if (mEnteredText != null && sameAsTextBeforeCursor(ic, mEnteredText)) {
             // Cancel multi-character input: remove the text we just entered.

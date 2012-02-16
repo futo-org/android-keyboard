@@ -16,12 +16,18 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import android.util.Log;
+
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.PointerTracker;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 
 public class PointerTrackerQueue {
+    private static final String TAG = PointerTrackerQueue.class.getSimpleName();
+    private static final boolean DEBUG = false;
+
     private final LinkedList<PointerTracker> mQueue = new LinkedList<PointerTracker>();
 
     public synchronized void add(PointerTracker tracker) {
@@ -32,7 +38,11 @@ public class PointerTrackerQueue {
         mQueue.remove(tracker);
     }
 
-    public synchronized void releaseAllPointersOlderThan(PointerTracker tracker, long eventTime) {
+    public synchronized void releaseAllPointersOlderThan(PointerTracker tracker,
+            long eventTime) {
+        if (DEBUG) {
+            Log.d(TAG, "releaseAllPoniterOlderThan: [" + tracker.mPointerId + "] " + this);
+        }
         if (!mQueue.contains(tracker)) {
             return;
         }
@@ -54,6 +64,13 @@ public class PointerTrackerQueue {
     }
 
     public synchronized void releaseAllPointersExcept(PointerTracker tracker, long eventTime) {
+        if (DEBUG) {
+            if (tracker == null) {
+                Log.d(TAG, "releaseAllPoniters: " + this);
+            } else {
+                Log.d(TAG, "releaseAllPoniterExcept: [" + tracker.mPointerId + "] " + this);
+            }
+        }
         final Iterator<PointerTracker> it = mQueue.iterator();
         while (it.hasNext()) {
             final PointerTracker t = it.next();
@@ -79,8 +96,9 @@ public class PointerTrackerQueue {
         for (final PointerTracker tracker : mQueue) {
             if (sb.length() > 0)
                 sb.append(" ");
-            sb.append(tracker.mPointerId);
+            sb.append("[" + tracker.mPointerId + " "
+                + Keyboard.printableCode(tracker.getKey().mCode) + "]");
         }
-        return "[" + sb + "]";
+        return sb.toString();
     }
 }
