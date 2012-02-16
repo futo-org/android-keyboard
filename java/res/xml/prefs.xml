@@ -114,6 +114,13 @@
                 android:persistent="true"
                 android:defaultValue="true" />
             <CheckBoxPreference
+                android:key="bigram_prediction"
+                android:dependency="bigram_suggestion"
+                android:title="@string/bigram_prediction"
+                android:summary="@string/bigram_prediction_summary"
+                android:persistent="true"
+                android:defaultValue="false" />
+            <CheckBoxPreference
                 android:key="enable_span_insert"
                 android:title="@string/enable_span_insert"
                 android:summary="@string/enable_span_insert_summary"
@@ -125,15 +132,6 @@
             <PreferenceScreen
                 android:key="pref_keypress_sound_volume"
                 android:title="@string/prefs_keypress_sound_volume_settings" />
-            <!-- TODO: evaluate results and revive this option. The code
-                already supports it. -->
-            <!-- <CheckBoxPreference -->
-            <!-- android:key="bigram_prediction" -->
-            <!-- android:dependency="bigram_suggestion" -->
-            <!-- android:title="@string/bigram_prediction" -->
-            <!-- android:summary="@string/bigram_prediction_summary" -->
-            <!-- android:persistent="true" -->
-            <!-- android:defaultValue="false" /> -->
         </PreferenceScreen>
     </PreferenceCategory>
 </PreferenceScreen>
