@@ -35,8 +35,7 @@
     <string name="correction_category" msgid="2236750915056607613">"文本更正"</string>
     <string name="misc_category" msgid="6894192814868233453">"其他选项"</string>
     <string name="advanced_settings" msgid="362895144495591463">"高级设置"</string>
-    <!-- no translation found for advanced_settings_summary (4487980456152830271) -->
-    <skip />
+    <string name="advanced_settings_summary" msgid="4487980456152830271">"高级选项"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"关闭弹出键时的延迟"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"无延迟"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"默认"</string>
