@@ -134,7 +134,8 @@ int BigramDictionary::getBigrams(unsigned short *prevWord, int prevWordLength, i
         const int length = BinaryFormat::getWordAtAddress(root, bigramPos, MAX_WORD_LENGTH,
                 bigramBuffer);
 
-        if (checkFirstCharacter(bigramBuffer)) {
+        // codesSize == 0 means we are trying to find bigram predictions.
+        if (codesSize < 1 || checkFirstCharacter(bigramBuffer)) {
             const int frequency = UnigramDictionary::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
             addWordBigram(bigramBuffer, length, frequency);
         }
