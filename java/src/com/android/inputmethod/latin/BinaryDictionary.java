@@ -139,22 +139,19 @@ public class BinaryDictionary extends Dictionary {
         Arrays.fill(mBigramScores, 0);
 
         int codesSize = codes.size();
-        if (codesSize <= 0) {
-            // Do not return bigrams from BinaryDictionary when nothing was typed.
-            // Only use user-history bigrams (or whatever other bigram dictionaries decide).
-            return;
-        }
         Arrays.fill(mInputCodes, -1);
-        int[] alternatives = codes.getCodesAt(0);
-        System.arraycopy(alternatives, 0, mInputCodes, 0,
-                Math.min(alternatives.length, MAX_PROXIMITY_CHARS_SIZE));
+        if (codesSize > 0) {
+            int[] alternatives = codes.getCodesAt(0);
+            System.arraycopy(alternatives, 0, mInputCodes, 0,
+                    Math.min(alternatives.length, MAX_PROXIMITY_CHARS_SIZE));
+        }
 
         int count = getBigramsNative(mNativeDict, chars, chars.length, mInputCodes, codesSize,
                 mOutputChars_bigrams, mBigramScores, MAX_WORD_LENGTH, MAX_BIGRAMS,
                 MAX_PROXIMITY_CHARS_SIZE);
 
         for (int j = 0; j < count; ++j) {
-            if (mBigramScores[j] < 1) break;
+            if (codesSize > 0 && mBigramScores[j] < 1) break;
             final int start = j * MAX_WORD_LENGTH;
             int len = 0;
             while (len <  MAX_WORD_LENGTH && mOutputChars_bigrams[start + len] != 0) {
