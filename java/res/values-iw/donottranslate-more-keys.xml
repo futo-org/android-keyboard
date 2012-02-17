@@ -29,8 +29,8 @@
     <integer name="keycode_for_left_parenthesis">0x0029</integer>
     <!-- U+0028: "(" LEFT PARENTHESIS -->
     <integer name="keycode_for_right_parenthesis">0x0028</integer>
-    <string name="more_keys_for_left_parenthesis">[|],{|},&lt;|&gt;</string>
-    <string name="more_keys_for_right_parenthesis">]|[,}|{,&gt;|&lt;</string>
+    <string name="more_keys_for_left_parenthesis">!fixedColumnOrder!3,&lt;|&gt;,{|},[|]</string>
+    <string name="more_keys_for_right_parenthesis">!fixedColumnOrder!3,&gt;|&lt;,}|{,]|[</string>
     <!-- U+003E: ">" GREATER-THAN SIGN -->
     <integer name="keycode_for_less_than">0x003E</integer>
     <!-- U+003C: "<" LESS-THAN SIGN -->
@@ -50,8 +50,8 @@
          U+201D: "”" RIGHT DOUBLE QUOTATION MARK
          U+201E: "„" DOUBLE LOW-9 QUOTATION MARK
          U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
-    <string name="more_keys_for_less_than">&#x2264;|&#x2265;,&#x00AB;|&#x00BB;,&#x2039;|&#x203A;</string>
-    <string name="more_keys_for_greater_than">&#x2265;|&#x2264;,&#x00BB;|&#x00AB;,&#x203A;|&#x2039;</string>
+    <string name="more_keys_for_less_than">!fixedColumnOrder!3,&#x2039;|&#x203A;,&#x2264;|&#x2265;,&#x00AB;|&#x00BB;</string>
+    <string name="more_keys_for_greater_than">!fixedColumnOrder!3,&#x203A;|&#x2039;,&#x2265;|&#x2264;,&#x00BB;|&#x00AB;</string>
     <!-- U+005D: "]" RIGHT SQUARE BRACKET -->
     <integer name="keycode_for_left_square_bracket">0x005D</integer>
     <!-- U+005B: "[" LEFT SQUARE BRACKET -->
@@ -60,12 +60,10 @@
     <integer name="keycode_for_left_curly_bracket">0x007D</integer>
     <!-- U+007B: "{" LEFT CURLY BRACKET -->
     <integer name="keycode_for_right_curly_bracket">0x007B</integer>
-    <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK. -->
-    <!-- <string name="more_keys_for_double_quote">&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;,&#x00BB;</string> -->
-    <!-- The 4-more keys will be displayed in order of "3,1,2,4". -->
-    <string name="more_keys_for_double_quote">&#x201D;,&#x00AB;|&#x00BB;,&#x201C;,&#x00BB;|&#x00AB;</string>
-    <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK. -->
-    <!-- <string name="more_keys_for_tablet_double_quote">&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;,&#x00BB;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string> -->
-    <!-- The 8-more keys with maxMoreKeysColumn=4 will be displayed in order of "3,1,2,4|7,5,6,8". -->
-    <string name="more_keys_for_tablet_double_quote">&#x201D;,&#x00AB;|&#x00BB;,&#x201C;,&#x00BB;|&#x00AB;,&#x2019;,&#x201A;,&#x2018;,&#x201B;</string>
+    <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
+    <!-- <string name="more_keys_for_double_quote">&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;</string> -->
+    <string name="more_keys_for_double_quote">!fixedColumnOrder!4,&#x201C;,&#x201D;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;</string>
+    <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
+    <!-- <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB|&#x00AB;;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string> -->
+    <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!4,&#x201C;,&#x201D;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
 </resources>

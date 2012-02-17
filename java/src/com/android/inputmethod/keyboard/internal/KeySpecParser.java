@@ -206,9 +206,51 @@ public class KeySpecParser {
         return KeyboardIconsSet.ICON_UNDEFINED;
     }
 
-    public static String[] insertAddtionalMoreKeys(String[] moreKeys, String[] additionalMoreKeys) {
-        final int moreKeysCount = (moreKeys != null) ? moreKeys.length : 0;
-        final int additionalCount = (additionalMoreKeys != null) ? additionalMoreKeys.length : 0;
+    private static <T> ArrayList<T> arrayAsList(T[] array, int start, int end) {
+        if (array == null) {
+            throw new NullPointerException();
+        }
+        if (start < 0 || start > end || end > array.length) {
+            throw new IllegalArgumentException();
+        }
+
+        final ArrayList<T> list = new ArrayList<T>(end - start);
+        for (int i = start; i < end; i++) {
+            list.add(array[i]);
+        }
+        return list;
+    }
+
+    private static final String[] EMPTY_STRING_ARRAY = new String[0];
+
+    private static String[] filterOutEmptyString(String[] array) {
+        if (array == null) {
+            return EMPTY_STRING_ARRAY;
+        }
+        ArrayList<String> out = null;
+        for (int i = 0; i < array.length; i++) {
+            final String entry = array[i];
+            if (TextUtils.isEmpty(entry)) {
+                if (out == null) {
+                    out = arrayAsList(array, 0, i);
+                }
+            } else if (out != null) {
+                out.add(entry);
+            }
+        }
+        if (out == null) {
+            return array;
+        } else {
+            return out.toArray(new String[out.size()]);
+        }
+    }
+
+    public static String[] insertAddtionalMoreKeys(String[] moreKeySpecs,
+            String[] additionalMoreKeySpecs) {
+        final String[] moreKeys = filterOutEmptyString(moreKeySpecs);
+        final String[] additionalMoreKeys = filterOutEmptyString(additionalMoreKeySpecs);
+        final int moreKeysCount = moreKeys.length;
+        final int additionalCount = additionalMoreKeys.length;
         ArrayList<String> out = null;
         int additionalIndex = 0;
         for (int moreKeyIndex = 0; moreKeyIndex < moreKeysCount; moreKeyIndex++) {
@@ -226,10 +268,7 @@ public class KeySpecParser {
                 } else {
                     // Filter out excessive '%' marker.
                     if (out == null) {
-                        out = new ArrayList<String>(moreKeyIndex);
-                        for (int i = 0; i < moreKeyIndex; i++) {
-                            out.add(moreKeys[i]);
-                        }
+                        out = arrayAsList(moreKeys, 0, moreKeyIndex);
                     }
                 }
             } else {
@@ -246,10 +285,7 @@ public class KeySpecParser {
                         + " moreKeys=" + Arrays.toString(moreKeys)
                         + " additionalMoreKeys=" + Arrays.toString(additionalMoreKeys));
             }
-            out = new ArrayList<String>(additionalCount + moreKeysCount);
-            for (int i = additionalIndex; i < additionalCount; i++) {
-                out.add(additionalMoreKeys[i]);
-            }
+            out = arrayAsList(additionalMoreKeys, additionalIndex, additionalCount);
             for (int i = 0; i < moreKeysCount; i++) {
                 out.add(moreKeys[i]);
             }
@@ -261,18 +297,17 @@ public class KeySpecParser {
                         + " moreKeys=" + Arrays.toString(moreKeys)
                         + " additionalMoreKeys=" + Arrays.toString(additionalMoreKeys));
             }
-            out = new ArrayList<String>(moreKeysCount);
-            for (int i = 0; i < moreKeysCount; i++) {
-                out.add(moreKeys[i]);
-            }
+            out = arrayAsList(moreKeys, 0, moreKeysCount);
             for (int i = additionalIndex; i < additionalCount; i++) {
                 out.add(additionalMoreKeys[additionalIndex]);
             }
         }
-        if (out != null) {
-            return out.size() > 0 ? out.toArray(new String[out.size()]) : null;
-        } else {
+        if (out == null && moreKeysCount > 0) {
             return moreKeys;
+        } else if (out != null && out.size() > 0) {
+            return out.toArray(new String[out.size()]);
+        } else {
+            return null;
         }
     }
 

@@ -188,6 +188,5 @@
         latin:keyHintLabel="@string/keyhintlabel_for_punctuation"
         latin:keyLabelFlags="hasPopupHint|preserveCase"
         latin:moreKeys="@string/more_keys_for_punctuation"
-        latin:maxMoreKeysColumn="@integer/more_keys_keyboard_column_for_punctuation"
         latin:backgroundType="functional" />
 </merge>
