@@ -98,7 +98,6 @@ public class KeyboardSet {
         int mMode;
         EditorInfo mEditorInfo;
         boolean mTouchPositionCorrectionEnabled;
-        boolean mSettingsKeyEnabled;
         boolean mVoiceKeyEnabled;
         boolean mVoiceKeyOnMain;
         boolean mNoSettingsKey;
@@ -193,8 +192,8 @@ public class KeyboardSet {
         final boolean hasShortcutKey = params.mVoiceKeyEnabled
                 && (isSymbols != params.mVoiceKeyOnMain);
         return new KeyboardId(keyboardSetElementId, params.mLocale, params.mOrientation,
-                params.mWidth, params.mMode, params.mEditorInfo, params.mSettingsKeyEnabled,
-                params.mNoSettingsKey, params.mVoiceKeyEnabled, hasShortcutKey);
+                params.mWidth, params.mMode, params.mEditorInfo, params.mNoSettingsKey,
+                params.mVoiceKeyEnabled, hasShortcutKey);
     }
 
     public static class Builder {
@@ -237,9 +236,7 @@ public class KeyboardSet {
             return this;
         }
 
-        public Builder setOptions(boolean settingsKeyEnabled, boolean voiceKeyEnabled,
-                boolean voiceKeyOnMain) {
-            mParams.mSettingsKeyEnabled = settingsKeyEnabled;
+        public Builder setOptions(boolean voiceKeyEnabled, boolean voiceKeyOnMain) {
             @SuppressWarnings("deprecation")
             final boolean deprecatedNoMicrophone = Utils.inPrivateImeOptions(
                     null, LatinIME.IME_OPTION_NO_MICROPHONE_COMPAT, mEditorInfo);

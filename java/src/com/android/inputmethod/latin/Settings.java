@@ -65,7 +65,6 @@ public class Settings extends InputMethodSettingsActivity
     public static final String PREF_VIBRATE_ON = "vibrate_on";
     public static final String PREF_SOUND_ON = "sound_on";
     public static final String PREF_POPUP_ON = "popup_on";
-    public static final String PREF_SHOW_SETTINGS_KEY = "show_settings_key";
     public static final String PREF_VOICE_MODE = "voice_mode";
     public static final String PREF_CORRECTION_SETTINGS = "correction_settings";
     public static final String PREF_CONFIGURE_DICTIONARIES_KEY = "configure_dictionaries_key";
@@ -96,7 +95,6 @@ public class Settings extends InputMethodSettingsActivity
     private PreferenceScreen mKeypressVibrationDurationSettingsPref;
     private PreferenceScreen mKeypressSoundVolumeSettingsPref;
     private ListPreference mVoicePreference;
-    private CheckBoxPreference mShowSettingsKeyPreference;
     private ListPreference mShowCorrectionSuggestionsPreference;
     private ListPreference mAutoCorrectionThresholdPreference;
     private ListPreference mKeyPreviewPopupDismissDelay;
@@ -147,7 +145,6 @@ public class Settings extends InputMethodSettingsActivity
         mInputLanguageSelection = (PreferenceScreen) findPreference(PREF_SUBTYPES_SETTINGS);
         mInputLanguageSelection.setOnPreferenceClickListener(this);
         mVoicePreference = (ListPreference) findPreference(PREF_VOICE_MODE);
-        mShowSettingsKeyPreference = (CheckBoxPreference) findPreference(PREF_SHOW_SETTINGS_KEY);
         mShowCorrectionSuggestionsPreference =
                 (ListPreference) findPreference(PREF_SHOW_SUGGESTIONS_SETTING);
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
@@ -177,10 +174,6 @@ public class Settings extends InputMethodSettingsActivity
                 (PreferenceGroup) findPreference(PREF_CORRECTION_SETTINGS);
         final PreferenceGroup miscSettings =
                 (PreferenceGroup) findPreference(PREF_MISC_SETTINGS);
-
-        if (!SettingsValues.isShowSettingsKeyOptionEnabled(res)) {
-            generalSettings.removePreference(mShowSettingsKeyPreference);
-        }
 
         final boolean showVoiceKeyOption = res.getBoolean(
                 R.bool.config_enable_show_voice_key_option);

@@ -49,7 +49,6 @@ public class SettingsValues {
     public final boolean mVibrateOn;
     public final boolean mSoundOn;
     public final boolean mKeyPreviewPopupOn;
-    private final boolean mShowSettingsKey;
     private final String mVoiceMode;
     private final String mAutoCorrectionThresholdRawValue;
     public final String mShowSuggestionsSetting;
@@ -118,7 +117,6 @@ public class SettingsValues {
         mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON,
                 res.getBoolean(R.bool.config_default_sound_enabled));
         mKeyPreviewPopupOn = isKeyPreviewPopupEnabled(prefs, res);
-        mShowSettingsKey = isSettingsKeyShown(prefs, res);
         final String voiceModeMain = res.getString(R.string.voice_mode_main);
         final String voiceModeOff = res.getString(R.string.voice_mode_off);
         mVoiceMode = prefs.getString(Settings.PREF_VOICE_MODE, voiceModeMain);
@@ -200,19 +198,6 @@ public class SettingsValues {
                     symbolsExcludedFromWordSeparators.substring(i, i + 1), "");
         }
         return wordSeparators;
-    }
-
-    private static boolean isSettingsKeyShown(final SharedPreferences prefs, final Resources res) {
-        final boolean defaultShowSettingsKey = res.getBoolean(
-                R.bool.config_default_show_settings_key);
-        return isShowSettingsKeyOptionEnabled(res)
-                ? prefs.getBoolean(Settings.PREF_SHOW_SETTINGS_KEY, defaultShowSettingsKey)
-                : defaultShowSettingsKey;
-    }
-
-    public static boolean isShowSettingsKeyOptionEnabled(final Resources resources) {
-        // TODO: Read this once and for all into a public final member
-        return resources.getBoolean(R.bool.config_enable_show_settings_key_option);
     }
 
     private static boolean isVibrateOn(final Context context, final SharedPreferences prefs,
@@ -304,10 +289,6 @@ public class SettingsValues {
                     + Arrays.toString(autoCorrectionThresholdValues));
         }
         return autoCorrectionThreshold;
-    }
-
-    public boolean isSettingsKeyEnabled() {
-        return mShowSettingsKey;
     }
 
     public boolean isVoiceKeyEnabled(final EditorInfo editorInfo) {

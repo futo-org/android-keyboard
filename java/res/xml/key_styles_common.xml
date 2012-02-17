@@ -28,36 +28,14 @@
         >
             <key-style
                 latin:styleName="f1PopupStyle"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="@string/more_keys_for_f1"
                 latin:backgroundType="functional" />
         </case>
-        <!-- clobberSettingsKey="false -->
-        <case
-            latin:hasSettingsKey="false"
-        >
-            <key-style
-                latin:styleName="f1PopupStyle"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="@string/more_keys_for_f1_settings"
-                latin:backgroundType="functional" />
-        </case>
-        <!-- clobberSettingsKey="false" hasSettingsKey="true" -->
-        <case
-            latin:navigateAction="true"
-        >
-            <key-style
-                latin:styleName="f1PopupStyle"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="@string/more_keys_for_f1_navigate"
-                latin:backgroundType="functional" />
-        </case>
-        <!-- clobberSettingsKey="false" and hasSettingsKey="true" navigateAction="false" -->
+        <!-- clobberSettingsKey="false" -->
         <default>
             <key-style
                 latin:styleName="f1PopupStyle"
                 latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="@string/more_keys_for_f1"
+                latin:moreKeys="@string/settings_as_more_key"
                 latin:backgroundType="functional" />
         </default>
     </switch>

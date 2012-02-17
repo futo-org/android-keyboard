@@ -26,7 +26,6 @@
     >
         <switch>
             <case
-                latin:hasSettingsKey="false"
                 latin:navigateAction="false"
             >
                 <Key
@@ -51,13 +50,14 @@
                     latin:keyStyle="enterKeyStyle"
                     latin:keyWidth="fillRight" />
             </case>
-            <!-- hasSettingsKey="true" or navigateAction="true" -->
+            <!-- TODO: Remove dedicated navigation tab key. -->
+            <!-- navigateAction="true" -->
             <default>
                 <Key
                     latin:keyStyle="toAlphaKeyStyle"
                     latin:keyWidth="13.75%p" />
                 <include
-                    latin:keyboardLayout="@xml/key_settings_or_tab" />
+                    latin:keyboardLayout="@xml/key_navigation_tab" />
                 <!-- U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
                 <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK. -->
                     <!-- latin:keyLabelFlags="hasPopupHint" -->

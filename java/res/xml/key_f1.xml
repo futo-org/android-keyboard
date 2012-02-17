@@ -23,7 +23,6 @@
 >
     <switch>
         <case
-            latin:hasSettingsKey="false"
             latin:navigateAction="false"
         >
             <switch>
@@ -51,11 +50,14 @@
                 <default>
                     <Key
                         latin:keyLabel="@string/keylabel_for_comma"
+                        latin:keyLabelFlags="hasPopupHint"
+                        latin:additionalMoreKeys="@string/more_keys_for_comma"
                         latin:keyStyle="f1PopupStyle" />
                 </default>
             </switch>
         </case>
-        <!-- hasSettingsKey="true" or navigateAction="true" -->
+        <!-- TODO: Remove dedicated navigation tab key. -->
+        <!-- navigateAction="true" -->
         <default>
             <switch>
                 <case
@@ -85,9 +87,10 @@
                 <default>
                     <Key
                         latin:keyLabel="@string/keylabel_for_comma"
-                        latin:keyWidth="9.2%p"
-                        latin:keyStyle="f1PopupStyle" />
-                </default>
+                        latin:additionalMoreKeys="@string/more_keys_for_comma"
+                        latin:keyStyle="f1PopupStyle"
+                        latin:keyWidth="9.2%p" />
+                    </default>
             </switch>
         </default>
     </switch>

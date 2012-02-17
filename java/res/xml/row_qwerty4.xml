@@ -26,7 +26,6 @@
     >
         <switch>
             <case
-                latin:hasSettingsKey="false"
                 latin:navigateAction="false"
             >
                 <Key
@@ -43,13 +42,14 @@
                     latin:keyStyle="enterKeyStyle"
                     latin:keyWidth="fillRight" />
             </case>
-            <!-- hasSettingsKey="true" or navigateAction="true" -->
+            <!-- TODO: Remove dedicated navigation tab key. -->
+            <!-- navigateAction="true" -->
             <default>
                 <Key
                     latin:keyStyle="toSymbolKeyStyle"
                     latin:keyWidth="13.75%p" />
                 <include
-                    latin:keyboardLayout="@xml/key_settings_or_tab" />
+                    latin:keyboardLayout="@xml/key_navigation_tab" />
                 <include
                     latin:keyboardLayout="@xml/key_f1" />
                 <Key

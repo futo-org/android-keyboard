@@ -23,7 +23,6 @@
 >
     <switch>
         <case
-            latin:hasSettingsKey="false"
             latin:navigateAction="false"
         >
             <switch>
@@ -36,12 +35,14 @@
                 <!-- latin:hasShortcutKey="false" -->
                 <default>
                     <Key
-                        latin:keyLabel="@string/keylabel_for_f1"
+                        latin:keyLabel="@string/keylabel_for_comma"
+                        latin:keyLabelFlags="hasPopupHint"
+                        latin:additionalMoreKeys="@string/more_keys_for_comma"
                         latin:keyStyle="f1PopupStyle" />
                 </default>
             </switch>
         </case>
-        <!-- hasSettingsKey="true" or navigateAction="true" -->
+        <!-- navigateAction="true" -->
         <default>
             <switch>
                 <case
@@ -54,10 +55,12 @@
                 <!-- latin:hasShortcutKey="false" -->
                 <default>
                     <Key
-                        latin:keyLabel="@string/keylabel_for_f1"
-                        latin:keyWidth="9.2%p"
-                        latin:keyStyle="f1PopupStyle" />
-                </default>
+                        latin:keyLabel="@string/keylabel_for_comma"
+                        latin:keyLabelFlags="hasPopupHint"
+                        latin:additionalMoreKeys="@string/more_keys_for_comma"
+                        latin:keyStyle="f1PopupStyle"
+                        latin:keyWidth="9.2%p" />
+                    </default>
             </switch>
         </default>
     </switch>

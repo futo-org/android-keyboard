@@ -21,23 +21,6 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <!-- Base key style for the key which may have settings key as popup key -->
-    <switch>
-        <case
-            latin:clobberSettingsKey="true"
-        >
-            <key-style
-                latin:styleName="f2PopupStyle"
-                latin:backgroundType="functional" />
-        </case>
-        <default>
-            <key-style
-                latin:styleName="f2PopupStyle"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="\@icon/settingsKey|\@integer/key_settings"
-                latin:backgroundType="functional" />
-        </default>
-    </switch>
     <switch>
         <case
             latin:keyboardSetElement="alphabetManualShifted|alphabetShiftLockShifted"
@@ -112,7 +95,7 @@
         latin:keyIconDisabled="iconDisabledShortcutKey"
         latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
-        latin:parentStyle="f2PopupStyle" />
+        latin:backgroundType="functional" />
     <key-style
         latin:styleName="settingsKeyStyle"
         latin:code="@integer/key_settings"

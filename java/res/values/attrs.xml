@@ -357,14 +357,6 @@
         </attr>
         <attr name="navigateAction" format="boolean" />
         <attr name="passwordInput" format="boolean" />
-        <attr name="hasSettingsKey" format="boolean" />
-        <!-- This should be aligned with KeyboardID.F2KEY_MODE_* -->
-        <attr name="f2KeyMode" format="enum">
-            <enum name="none" value="0" />
-            <enum name="settings" value="1" />
-            <enum name="shortcutIme" value="2" />
-            <enum name="shortcutImeOrSettings" value="3" />
-        </attr>
         <attr name="clobberSettingsKey" format="boolean" />
         <attr name="shortcutKeyEnabled" format="boolean" />
         <attr name="hasShortcutKey" format="boolean" />

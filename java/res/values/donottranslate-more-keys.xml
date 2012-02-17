@@ -115,15 +115,12 @@
     <!-- U+207F: "ⁿ" SUPERSCRIPT LATIN SMALL LETTER N
          U+2205: "∅" EMPTY SET -->
     <string name="more_keys_for_symbols_0">&#x207F;,&#x2205;</string>
+    <string name="settings_as_more_key">\@icon/settingsKey|\@integer/key_settings</string>
     <string name="keylabel_for_comma">,</string>
-    <string name="keylabel_for_f1">,</string>
+    <string name="more_keys_for_comma"></string>
     <string name="keylabel_for_symbols_question">\?</string>
     <string name="keylabel_for_symbols_semicolon">;</string>
     <string name="keylabel_for_symbols_percent">%</string>
-    <string name="more_keys_for_comma"></string>
-    <string name="more_keys_for_f1"></string>
-    <string name="more_keys_for_f1_settings">\@icon/settingsKey|\@integer/key_settings</string>
-    <string name="more_keys_for_f1_navigate">\@icon/tabKey|\@integer/key_tab</string>
     <!-- U+00BF: "¿" INVERTED QUESTION MARK -->
     <string name="more_keys_for_symbols_question">&#x00BF;</string>
     <string name="more_keys_for_symbols_semicolon"></string>

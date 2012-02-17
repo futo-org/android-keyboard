@@ -145,13 +145,8 @@
     <Row
         latin:keyWidth="8.047%p"
     >
-        <switch>
-            <case latin:hasSettingsKey="true">
-                <Key
-                    latin:keyStyle="settingsKeyStyle"
-                    latin:keyWidth="8.047%p" />
-            </case>
-        </switch>
+        <include
+            latin:keyboardLayout="@xml/key_settings" />
         <Key
             latin:keyStyle="spaceKeyStyle"
             latin:keyXPos="31.250%p"

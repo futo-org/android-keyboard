@@ -70,17 +70,13 @@
     <!-- U+066B: "٫" ARABIC DECIMAL SEPARATOR
          U+066C: "٬" ARABIC THOUSANDS SEPARATOR -->
     <string name="additional_more_keys_for_symbols_0">0,&#x066B;,&#x066C;</string>
+    <!-- U+060C: "،" ARABIC COMMA -->
     <string name="keylabel_for_comma">&#x060C;</string>
-    <string name="keylabel_for_f1">&#x060C;</string>
+    <string name="more_keys_for_comma">"\\,"</string>
     <string name="keylabel_for_symbols_question">&#x061F;</string>
     <string name="keylabel_for_symbols_semicolon">&#x061B;</string>
     <!-- U+066A: "٪" ARABIC PERCENT SIGN -->
     <string name="keylabel_for_symbols_percent">&#x066A;</string>
-    <string name="more_keys_for_comma">,</string>
-    <!-- U+060C: "،" ARABIC COMMA -->
-    <string name="more_keys_for_f1">&#x060C;</string>
-    <string name="more_keys_for_f1_settings">\\,,\@icon/settingsKey|\@integer/key_settings</string>
-    <string name="more_keys_for_f1_navigate">\\,,\@icon/tabKey|\@integer/key_tab</string>
     <string name="more_keys_for_symbols_question">\?</string>
     <string name="more_keys_for_symbols_semicolon">;</string>
     <!-- U+2030: "‰" PER MILLE SIGN -->

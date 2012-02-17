@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2011, The Android Open Source Project
+** Copyright 2012, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -23,26 +23,13 @@
 >
     <switch>
         <case
-            latin:hasSettingsKey="true"
-        >
-            <!-- Because this settings key is not adjacent to the space key, this key should be
-                 just ignored while typing (altCode=CODE_UNSPECIFIED). -->
-            <Key
-                latin:keyStyle="settingsKeyStyle"
-                latin:altCode="@integer/key_unspecified"
-                latin:keyWidth="9.2%p" />
-        </case>
-        <!-- hasSettingsKey="false" -->
-        <case
-            latin:navigateAction="true"
+            latin:clobberSettingsKey="false"
         >
             <Key
-                latin:keyStyle="tabKeyStyle"
-                latin:keyWidth="9.2%p" />
+                latin:keyStyle="settingsKeyStyle" />
         </case>
-        <!-- hasSettingsKey="false" and navigateAction="false" -->
         <default>
-            <!-- No key. -->
+            <Spacer />
         </default>
     </switch>
-</merge>
+ </merge>

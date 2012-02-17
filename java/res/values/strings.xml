@@ -95,9 +95,6 @@
     <string name="prefs_suggestion_visibility_show_only_portrait_name">Show on portrait mode</string>
     <string name="prefs_suggestion_visibility_hide_name">Always hide</string>
 
-    <!-- Option to show/hide the settings key -->
-    <string name="prefs_settings_key">Show settings key</string>
-
     <!-- Option to decide the auto correction threshold score -->
     <!-- Option to enable auto correction [CHAR LIMIT=20]-->
     <string name="auto_correction">Auto correction</string>

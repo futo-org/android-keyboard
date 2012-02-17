@@ -1073,10 +1073,6 @@ public class Keyboard {
                         R.styleable.Keyboard_Case_navigateAction, id.navigateAction());
                 final boolean passwordInputMatched = matchBoolean(a,
                         R.styleable.Keyboard_Case_passwordInput, id.passwordInput());
-                final boolean hasSettingsKeyMatched = matchBoolean(a,
-                        R.styleable.Keyboard_Case_hasSettingsKey, id.hasSettingsKey());
-                final boolean f2KeyModeMatched = matchInteger(a,
-                        R.styleable.Keyboard_Case_f2KeyMode, id.f2KeyMode());
                 final boolean clobberSettingsKeyMatched = matchBoolean(a,
                         R.styleable.Keyboard_Case_clobberSettingsKey, id.mClobberSettingsKey);
                 final boolean shortcutKeyEnabledMatched = matchBoolean(a,
@@ -1094,14 +1090,13 @@ public class Keyboard {
                 final boolean countryCodeMatched = matchString(a,
                         R.styleable.Keyboard_Case_countryCode, id.mLocale.getCountry());
                 final boolean selected = keyboardSetElementMatched && modeMatched
-                        && navigateActionMatched && passwordInputMatched && hasSettingsKeyMatched
-                        && f2KeyModeMatched && clobberSettingsKeyMatched
-                        && shortcutKeyEnabledMatched && hasShortcutKeyMatched && isMultiLineMatched
-                        && imeActionMatched && localeCodeMatched && languageCodeMatched
-                        && countryCodeMatched;
+                        && navigateActionMatched && passwordInputMatched
+                        && clobberSettingsKeyMatched && shortcutKeyEnabledMatched
+                        && hasShortcutKeyMatched && isMultiLineMatched && imeActionMatched
+                        && localeCodeMatched && languageCodeMatched && countryCodeMatched;
 
                 if (DEBUG) {
-                    startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
+                    startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
                             textAttr(a.getString(R.styleable.Keyboard_Case_keyboardSetElement),
                                     "keyboardSetElement"),
                             textAttr(a.getString(R.styleable.Keyboard_Case_mode), "mode"),
@@ -1109,11 +1104,6 @@ public class Keyboard {
                                     "navigateAction"),
                             booleanAttr(a, R.styleable.Keyboard_Case_passwordInput,
                                     "passwordInput"),
-                            booleanAttr(a, R.styleable.Keyboard_Case_hasSettingsKey,
-                                    "hasSettingsKey"),
-                            textAttr(KeyboardId.f2KeyModeName(
-                                    a.getInt(R.styleable.Keyboard_Case_f2KeyMode, -1)),
-                                    "f2KeyMode"),
                             booleanAttr(a, R.styleable.Keyboard_Case_clobberSettingsKey,
                                     "clobberSettingsKey"),
                             booleanAttr(a, R.styleable.Keyboard_Case_shortcutKeyEnabled,

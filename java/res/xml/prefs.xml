@@ -44,11 +44,6 @@
             android:title="@string/popup_on_keypress"
             android:persistent="true"
             android:defaultValue="@bool/config_default_popup_preview" />
-        <CheckBoxPreference
-            android:key="show_settings_key"
-            android:title="@string/prefs_settings_key"
-            android:persistent="true"
-            android:defaultValue="@bool/config_default_show_settings_key" />
         <ListPreference
             android:key="voice_mode"
             android:title="@string/voice_input"

@@ -167,6 +167,6 @@
             latin:keyXPos="-10.00%p"
             latin:keyWidth="0%p" />
         <include
-            latin:keyboardLayout="@xml/key_f2" />
+            latin:keyboardLayout="@xml/key_shortcut" />
     </Row>
 </merge>

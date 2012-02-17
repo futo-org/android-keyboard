@@ -35,7 +35,6 @@ import com.android.inputmethod.latin.InputView;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.Settings;
 import com.android.inputmethod.latin.SettingsValues;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.Utils;
@@ -133,7 +132,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
                 mSubtypeSwitcher.currentSubtypeContainsExtraValueKey(
                         LatinIME.SUBTYPE_EXTRA_VALUE_SUPPORT_TOUCH_POSITION_CORRECTION));
         builder.setOptions(
-                settingsValues.isSettingsKeyEnabled(),
                 settingsValues.isVoiceKeyEnabled(editorInfo),
                 settingsValues.isVoiceKeyOnMain());
         mKeyboardSet = builder.build();
@@ -404,8 +402,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         if (PREF_KEYBOARD_LAYOUT.equals(key)) {
             final int themeIndex = getKeyboardThemeIndex(mInputMethodService, sharedPreferences);
             postSetInputView(createInputView(themeIndex, false));
-        } else if (Settings.PREF_SHOW_SETTINGS_KEY.equals(key)) {
-            postSetInputView(createInputView(mThemeIndex, true));
         }
     }
 

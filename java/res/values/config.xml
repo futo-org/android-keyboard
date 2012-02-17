@@ -20,8 +20,6 @@
 
 <resources>
     <bool name="config_use_fullscreen_mode">false</bool>
-    <bool name="config_enable_show_settings_key_option">true</bool>
-    <bool name="config_default_show_settings_key">false</bool>
     <bool name="config_enable_show_voice_key_option">true</bool>
     <bool name="config_enable_show_popup_on_keypress_option">true</bool>
     <bool name="config_enable_bigram_suggestions_option">true</bool>
