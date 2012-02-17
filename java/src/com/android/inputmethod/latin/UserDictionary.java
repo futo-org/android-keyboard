@@ -165,17 +165,12 @@ public class UserDictionary extends ExpandableDictionary {
         // Safeguard against adding long words. Can cause stack overflow.
         if (word.length() >= getMaxWordLength()) return;
 
-        super.addWord(word, frequency);
-
         // TODO: Add an argument to the intent to specify the frequency.
         Intent intent = new Intent(ACTION_USER_DICTIONARY_INSERT);
         intent.putExtra(Words.WORD, word);
         intent.putExtra(Words.LOCALE, mLocale);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getContext().startActivity(intent);
-
-        // In case the above does a synchronous callback of the change observer
-        setRequiresReload(false);
     }
 
     @Override
