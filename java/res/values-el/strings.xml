@@ -35,8 +35,7 @@
     <string name="correction_category" msgid="2236750915056607613">"Διόρθωση κειμένου"</string>
     <string name="misc_category" msgid="6894192814868233453">"Άλλες επιλογές"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Σύνθετες ρυθμίσεις"</string>
-    <!-- no translation found for advanced_settings_summary (4487980456152830271) -->
-    <skip />
+    <string name="advanced_settings_summary" msgid="4487980456152830271">"Επιλογές για έμπειρους χρήστες"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Χρόνος εξαφ. αναδ. παραθ."</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Χωρίς καθυστέρ."</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Προεπιλογή"</string>
@@ -79,10 +78,8 @@
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Δεν υπάρχει κείμενο"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Κωδικός πλήκτρου %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
-    <!-- no translation found for spoken_description_shift_shifted (1681877323344195035) -->
-    <skip />
-    <!-- no translation found for spoken_description_caps_lock (3276478269526304432) -->
-    <skip />
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Το Shift είναι ενεργοποιημένο (πατήστε για απενεργοποίηση)"</string>
+    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Το Caps lock είναι ενεργοποιημένο (πατήστε για απενεργοποίηση)"</string>
     <string name="spoken_description_delete" msgid="8740376944276199801">"Πλήκτρο Delete"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Σύμβολα"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"Γράμματα:"</string>
@@ -94,20 +91,13 @@
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Smiley"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Πλήκτρο Return"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"Κουκκίδα"</string>
-    <!-- no translation found for spoken_description_shiftmode_on (5700440798609574589) -->
-    <skip />
-    <!-- no translation found for spoken_description_shiftmode_locked (593175803181701830) -->
-    <skip />
-    <!-- no translation found for spoken_description_shiftmode_off (657219998449174808) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_symbol (7183343879909747642) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_alpha (3528307674390156956) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_phone (6520207943132026264) -->
-    <skip />
-    <!-- no translation found for spoken_description_mode_phone_shift (5499629753962641227) -->
-    <skip />
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Το Shift ενεργοποιημένο"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Το Caps lock είναι ενεργοποιημένο"</string>
+    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Το Shift είναι απενεργοποιημένο"</string>
+    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"Λειτουργία συμβόλων"</string>
+    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Λειτουργία γραμμάτων"</string>
+    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Λειτουργία τηλεφώνου"</string>
+    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Λειτουργία συμβόλων τηλεφώνου"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Φωνητική είσοδος"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Η φωνητική είσοδος δεν υποστηρίζεται αυτή τη στιγμή για τη γλώσσα σας, ωστόσο λειτουργεί στα Αγγλικά."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Οι φωνητικές εντολές χρησιμοποιούν την τεχνολογία αναγνώρισης φωνής της Google. Ισχύει "<a href="http://m.google.com/privacy">"η Πολιτική Απορρήτου για κινητά"</a>"."</string>

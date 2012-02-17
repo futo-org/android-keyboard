@@ -35,8 +35,7 @@
     <string name="correction_category" msgid="2236750915056607613">"पाठ सुधार"</string>
     <string name="misc_category" msgid="6894192814868233453">"अन्य विकल्प"</string>
     <string name="advanced_settings" msgid="362895144495591463">"उन्नत सेटिंग"</string>
-    <!-- no translation found for advanced_settings_summary (4487980456152830271) -->
-    <skip />
+    <string name="advanced_settings_summary" msgid="4487980456152830271">"विशेषज्ञों के लिए विकल्‍प"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"कुंजी पॉपअप खारिज़ विलंब"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"कोई विलंब नहीं"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"डिफ़ॉल्ट"</string>
@@ -92,9 +91,9 @@
     <string name="spoken_description_smiley" msgid="2256309826200113918">"मुस्कुराता चेहरा"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"रिटर्न"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"बिंदु"</string>
-    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift सक्षम किया गया है"</string>
-    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps lock सक्षम किया गया है"</string>
-    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Shift अक्षम किया गया है"</string>
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift सक्षम किया गया"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps lock सक्षम किया गया"</string>
+    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Shift अक्षम किया गया"</string>
     <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"प्रतीक मोड"</string>
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"अक्षर मोड"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"फ़ोन मोड"</string>

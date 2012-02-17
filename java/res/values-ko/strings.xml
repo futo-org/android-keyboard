@@ -35,8 +35,7 @@
     <string name="correction_category" msgid="2236750915056607613">"텍스트 수정"</string>
     <string name="misc_category" msgid="6894192814868233453">"기타 옵션"</string>
     <string name="advanced_settings" msgid="362895144495591463">"고급 설정"</string>
-    <!-- no translation found for advanced_settings_summary (4487980456152830271) -->
-    <skip />
+    <string name="advanced_settings_summary" msgid="4487980456152830271">"전문가용 옵션"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"키 팝업 해제 지연"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"지연 없음"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"기본값"</string>
@@ -97,7 +96,7 @@
     <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Shift 사용중지"</string>
     <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"기호 모드"</string>
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"문자 모드"</string>
-    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"전화 모드"</string>
+    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"다이얼 모드"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"전화 기호 모드"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"음성 입력"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"음성 입력은 현재 자국어로 지원되지 않으며 영어로 작동됩니다."</string>

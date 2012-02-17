@@ -94,10 +94,10 @@
     <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift ingeschakeld"</string>
     <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps Lock ingeschakeld"</string>
     <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Shift uitgeschakeld"</string>
-    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"Symbolenmodus"</string>
-    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Brievenmodus"</string>
-    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Telefoonmodus"</string>
-    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Telefoonsymbolenmodus"</string>
+    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"Symbolen"</string>
+    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Alfanumeriek toetsenbord"</string>
+    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Toetsenbord telefoon"</string>
+    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Telefoonsymbolen"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Spraakinvoer"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Spraakinvoer wordt momenteel niet ondersteund in uw taal, maar is wel beschikbaar in het Engels."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Spraakinvoer maakt gebruik van de spraakherkenning van Google. Het "<a href="http://m.google.com/privacy">"Privacybeleid van Google Mobile"</a>" is van toepassing."</string>

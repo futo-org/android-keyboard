@@ -35,8 +35,7 @@
     <string name="correction_category" msgid="2236750915056607613">"Corectare text"</string>
     <string name="misc_category" msgid="6894192814868233453">"Alte opţiuni"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Setări avansate"</string>
-    <!-- no translation found for advanced_settings_summary (4487980456152830271) -->
-    <skip />
+    <string name="advanced_settings_summary" msgid="4487980456152830271">"Opţiuni pentru experţi"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Înt. înch. pop-up esenţ."</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Fără întârziere"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Prestabilit"</string>
@@ -79,8 +78,8 @@
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Nu a fost introdus text"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Tasta cu codul %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
-    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Tasta Shift este activată (apăsaţi pentru a dezactiva)"</string>
-    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Tasta Caps Lock este activată (apăsaţi pentru a dezactiva)"</string>
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Tasta Shift este activată (apăsaţi pentru a o dezactiva)"</string>
+    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Tasta Caps Lock este activată (apăsaţi pentru a o dezactiva)"</string>
     <string name="spoken_description_delete" msgid="8740376944276199801">"Delete"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Simboluri"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"Litere"</string>

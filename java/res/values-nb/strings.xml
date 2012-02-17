@@ -79,8 +79,8 @@
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Ingen tekst er skrevet inn"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Tastaturkode %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
-    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift er slått på (trykk for å deaktivere)"</string>
-    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps Lock er slått på (trykk for å deaktivere)"</string>
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift er på (trykk for å deaktivere)"</string>
+    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps Lock er på (trykk for å deaktivere)"</string>
     <string name="spoken_description_delete" msgid="8740376944276199801">"Slett"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Symboler"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"Bokstaver"</string>
