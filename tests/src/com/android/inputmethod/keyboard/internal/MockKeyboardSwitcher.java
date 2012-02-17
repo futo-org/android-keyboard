@@ -125,6 +125,11 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     @Override
+    public void cancelDoubleTapTimer() {
+        mIsInDoubleTapTimeout = false;
+    }
+
+    @Override
     public boolean isInDoubleTapTimeout() {
         return mIsInDoubleTapTimeout;
     }
@@ -132,6 +137,11 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     @Override
     public void startLongPressTimer(int code) {
         mLongPressTimeoutCode = code;
+    }
+
+    @Override
+    public void cancelLongPressTimer() {
+        mLongPressTimeoutCode = 0;
     }
 
     @Override

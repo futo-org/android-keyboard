@@ -268,6 +268,16 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
+    public void cancelDoubleTapTimer() {
+        final LatinKeyboardView keyboardView = getKeyboardView();
+        if (keyboardView != null) {
+            final TimerProxy timer = keyboardView.getTimerProxy();
+            timer.cancelDoubleTapTimer();
+        }
+    }
+
+    // Implements {@link KeyboardState.SwitchActions}.
+    @Override
     public boolean isInDoubleTapTimeout() {
         final LatinKeyboardView keyboardView = getKeyboardView();
         return (keyboardView != null)
@@ -281,6 +291,16 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         if (keyboardView != null) {
             final TimerProxy timer = keyboardView.getTimerProxy();
             timer.startLongPressTimer(code);
+        }
+    }
+
+    // Implements {@link KeyboardState.SwitchActions}.
+    @Override
+    public void cancelLongPressTimer() {
+        final LatinKeyboardView keyboardView = getKeyboardView();
+        if (keyboardView != null) {
+            final TimerProxy timer = keyboardView.getTimerProxy();
+            timer.cancelLongPressTimer();
         }
     }
 

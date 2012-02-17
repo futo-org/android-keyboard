@@ -77,6 +77,7 @@ public class PointerTracker {
         public void startLongPressTimer(int code);
         public void cancelLongPressTimer();
         public void startDoubleTapTimer();
+        public void cancelDoubleTapTimer();
         public boolean isInDoubleTapTimeout();
         public void cancelKeyTimers();
 
@@ -95,6 +96,8 @@ public class PointerTracker {
             public void cancelLongPressTimer() {}
             @Override
             public void startDoubleTapTimer() {}
+            @Override
+            public void cancelDoubleTapTimer() {}
             @Override
             public boolean isInDoubleTapTimeout() { return false; }
             @Override

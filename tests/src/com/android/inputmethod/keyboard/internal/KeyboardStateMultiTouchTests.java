@@ -227,4 +227,17 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         // Release "123?" key, switch back to alphabet.
         releaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED);
     }
+
+    // Chording letter key with shift key.
+    public void testChordingLetterAndShiftKey() {
+        // Press letter key and hold.
+        pressKey('z', ALPHABET_UNSHIFTED);
+        // Press shift key, {@link PointerTracker} will fire a phantom release letter key.
+        chordingReleaseKey('z', ALPHABET_UNSHIFTED);
+        chordingPressKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED);
+        // Press another letter key and hold.
+        chordingPressAndReleaseKey('J', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Release shift key
+        releaseKey(CODE_SHIFT, ALPHABET_UNSHIFTED);
+    }
 }

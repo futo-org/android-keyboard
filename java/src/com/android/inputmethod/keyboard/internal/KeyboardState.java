@@ -54,7 +54,9 @@ public class KeyboardState {
 
         public void startDoubleTapTimer();
         public boolean isInDoubleTapTimeout();
+        public void cancelDoubleTapTimer();
         public void startLongPressTimer(int code);
+        public void cancelLongPressTimer();
         public void hapticAndAudioFeedback(int code);
     }
 
@@ -300,6 +302,8 @@ public class KeyboardState {
         } else if (code == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
             onPressSymbol();
         } else {
+            mSwitchActions.cancelDoubleTapTimer();
+            mSwitchActions.cancelLongPressTimer();
             mShiftKeyState.onOtherKeyPressed();
             mSymbolKeyState.onOtherKeyPressed();
         }
@@ -348,7 +352,7 @@ public class KeyboardState {
                 // state. And mark as if shift key is released.
                 mShiftKeyState.onRelease();
             } else {
-                // Shift key is long pressed while shift unloked state.
+                // Shift key is long pressed while shift unlocked state.
                 setShiftLocked(true);
             }
             mSwitchActions.hapticAndAudioFeedback(code);
@@ -364,6 +368,11 @@ public class KeyboardState {
 
     private void updateAlphabetShiftState(boolean autoCaps) {
         if (!mIsAlphabetMode) return;
+        if (!mShiftKeyState.isReleasing()) {
+            // Ignore update shift state event while the shift key is being pressed (including
+            // chording).
+            return;
+        }
         if (!mAlphabetShiftState.isShiftLocked() && !mShiftKeyState.isIgnoring()) {
             if (mShiftKeyState.isReleasing() && autoCaps) {
                 // Only when shift key is releasing, automatic temporary upper case will be set.
