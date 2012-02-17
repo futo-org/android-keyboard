@@ -180,32 +180,34 @@ public class KeyDetector {
         if (maxCodesSize <= numCodes) {
             return;
         }
-        if (primaryCode != NOT_A_CODE) {
-            final List<Integer> additionalChars =
-                    mKeyboard.getAdditionalProximityChars().get(primaryCode);
-            if (additionalChars == null || additionalChars.size() == 0) {
-                return;
-            }
-            int currentCodesSize = numCodes;
-            allCodes[numCodes++] = ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE;
-            if (maxCodesSize <= numCodes) {
-                return;
-            }
-            // TODO: This is O(N^2). Assuming additionalChars.size() is up to 4 or 5.
-            for (int i = 0; i < additionalChars.size(); ++i) {
-                final int additionalChar = additionalChars.get(i);
-                boolean contains = false;
-                for (int j = 0; j < currentCodesSize; ++j) {
-                    if (additionalChar == allCodes[j]) {
-                        contains = true;
-                        break;
-                    }
+
+        final int code = (primaryCode == NOT_A_CODE) ? allCodes[0] : primaryCode;
+        if (code == NOT_A_CODE) {
+            return;
+        }
+        final List<Integer> additionalChars = mKeyboard.getAdditionalProximityChars().get(code);
+        if (additionalChars == null || additionalChars.size() == 0) {
+            return;
+        }
+        int currentCodesSize = numCodes;
+        allCodes[numCodes++] = ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE;
+        if (maxCodesSize <= numCodes) {
+            return;
+        }
+        // TODO: This is O(N^2). Assuming additionalChars.size() is up to 4 or 5.
+        for (int i = 0; i < additionalChars.size(); ++i) {
+            final int additionalChar = additionalChars.get(i);
+            boolean contains = false;
+            for (int j = 0; j < currentCodesSize; ++j) {
+                if (additionalChar == allCodes[j]) {
+                    contains = true;
+                    break;
                 }
-                if (!contains) {
-                    allCodes[numCodes++] = additionalChar;
-                    if (maxCodesSize <= numCodes) {
-                        return;
-                    }
+            }
+            if (!contains) {
+                allCodes[numCodes++] = additionalChar;
+                if (maxCodesSize <= numCodes) {
+                    return;
                 }
             }
         }
@@ -257,10 +259,17 @@ public class KeyDetector {
 
     public static String printableCodes(int[] codes) {
         final StringBuilder sb = new StringBuilder();
+        boolean addDelimiter = false;
         for (final int code : codes) {
             if (code == NOT_A_CODE) break;
-            if (sb.length() > 0) sb.append(", ");
-            sb.append(code);
+            if (code == ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE) {
+                sb.append(" | ");
+                addDelimiter = false;
+            } else {
+                if (addDelimiter) sb.append(", ");
+                sb.append(code);
+                addDelimiter = true;
+            }
         }
         return "[" + sb + "]";
     }
