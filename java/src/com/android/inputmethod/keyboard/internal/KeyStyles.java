@@ -163,10 +163,10 @@ public class KeyStyles {
         if (DEBUG) {
             Log.d(TAG, String.format("<%s styleName=%s />",
                     Keyboard.Builder.TAG_KEY_STYLE, styleName));
-        }
-        if (mStyles.containsKey(styleName)) {
-            throw new XmlParseUtils.ParseException(
-                    "duplicate key style declared: " + styleName, parser);
+            if (mStyles.containsKey(styleName)) {
+                Log.d(TAG, "key-style " + styleName + " is overridden at "
+                        + parser.getPositionDescription());
+            }
         }
 
         final DeclaredKeyStyle style = new DeclaredKeyStyle();

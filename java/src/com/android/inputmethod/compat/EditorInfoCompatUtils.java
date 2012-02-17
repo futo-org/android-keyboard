@@ -39,30 +39,30 @@ public class EditorInfoCompatUtils {
     private static final Integer OBJ_IME_ACTION_PREVIOUS = (Integer) CompatUtils
             .getFieldValue(null, null, FIELD_IME_ACTION_PREVIOUS);
 
+    // EditorInfo.IME_FLAG_NAVIGATE_NEXT has been introduced since API#11 (Honeycomb).
     public static boolean hasFlagNavigateNext(int imeOptions) {
         if (OBJ_IME_FLAG_NAVIGATE_NEXT == null)
             return false;
         return (imeOptions & OBJ_IME_FLAG_NAVIGATE_NEXT) != 0;
     }
 
+    // EditorInfo.IME_FLAG_NAVIGATE_PREVIOUS has been introduced since API#11 (Honeycomb).
     public static boolean hasFlagNavigatePrevious(int imeOptions) {
         if (OBJ_IME_FLAG_NAVIGATE_PREVIOUS == null)
             return false;
         return (imeOptions & OBJ_IME_FLAG_NAVIGATE_PREVIOUS) != 0;
     }
 
+    // EditorInfo.IME_FLAG_FORCE_ASCII has been introduced since API#16 (JellyBean).
     public static boolean hasFlagForceAscii(int imeOptions) {
         if (OBJ_IME_FLAG_FORCE_ASCII == null)
             return false;
         return (imeOptions & OBJ_IME_FLAG_FORCE_ASCII) != 0;
     }
 
-    public static void performEditorActionNext(InputConnection ic) {
-        ic.performEditorAction(EditorInfo.IME_ACTION_NEXT);
-    }
-
+    // EditorInfo.IME_ACTION_PREVIOUS has been introduced since API#11 (Honeycomb).
     public static void performEditorActionPrevious(InputConnection ic) {
-        if (OBJ_IME_ACTION_PREVIOUS == null)
+        if (OBJ_IME_ACTION_PREVIOUS == null || ic == null)
             return;
         ic.performEditorAction(OBJ_IME_ACTION_PREVIOUS);
     }

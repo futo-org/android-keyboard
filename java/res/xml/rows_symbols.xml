@@ -128,6 +128,35 @@
             latin:keyWidth="fillRight"
             latin:visualInsetsLeft="1%p" />
     </Row>
-    <include
-        latin:keyboardLayout="@xml/row_symbols4" />
+    <Row
+        latin:keyWidth="10%p"
+    >
+        <Key
+            latin:keyStyle="toAlphaKeyStyle"
+            latin:keyWidth="15%p" />
+        <switch>
+            <case
+                latin:hasShortcutKey="true"
+            >
+                <Key
+                    latin:keyStyle="shortcutKeyStyle" />
+            </case>
+            <!-- latin:hasShortcutKey="false" -->
+            <default>
+                <Key
+                    latin:keyLabel="@string/keylabel_for_comma"
+                    latin:keyLabelFlags="hasPopupHint"
+                    latin:additionalMoreKeys="@string/more_keys_for_comma"
+                    latin:keyStyle="f1MoreKeysStyle" />
+            </default>
+        </switch>
+        <Key
+            latin:keyStyle="spaceKeyStyle"
+            latin:keyWidth="50%p" />
+        <Key
+            latin:keyStyle="punctuationKeyStyle" />
+        <Key
+            latin:keyStyle="enterKeyStyle"
+            latin:keyWidth="fillRight" />
+    </Row>
 </merge>

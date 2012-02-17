@@ -24,44 +24,46 @@
     <Row
         latin:keyWidth="10%p"
     >
+        <Key
+            latin:keyStyle="toSymbolKeyStyle"
+            latin:keyWidth="15%p" />
         <switch>
             <case
-                latin:navigateAction="false"
+                latin:mode="url"
             >
                 <Key
-                    latin:keyStyle="toSymbolKeyStyle"
-                    latin:keyWidth="15%p" />
-                <include
-                    latin:keyboardLayout="@xml/key_f1" />
-                <Key
-                    latin:keyStyle="spaceKeyStyle"
-                    latin:keyWidth="50%p" />
-                <Key
-                    latin:keyStyle="punctuationKeyStyle" />
-                <Key
-                    latin:keyStyle="enterKeyStyle"
-                    latin:keyWidth="fillRight" />
+                    latin:keyLabel="/"
+                    latin:keyStyle="f1MoreKeysStyle" />
             </case>
-            <!-- TODO: Remove dedicated navigation tab key. -->
-            <!-- navigateAction="true" -->
+            <case
+                latin:mode="email"
+            >
+                <Key
+                    latin:keyLabel="\@"
+                    latin:keyStyle="f1MoreKeysStyle" />
+            </case>
+            <case
+                latin:hasShortcutKey="true"
+            >
+                <Key
+                    latin:keyStyle="shortcutKeyStyle" />
+            </case>
+            <!-- latin:hasShortcutKey="false" -->
             <default>
                 <Key
-                    latin:keyStyle="toSymbolKeyStyle"
-                    latin:keyWidth="13.75%p" />
-                <include
-                    latin:keyboardLayout="@xml/key_navigation_tab" />
-                <include
-                    latin:keyboardLayout="@xml/key_f1" />
-                <Key
-                    latin:keyStyle="spaceKeyStyle"
-                    latin:keyWidth="35.83%p" />
-                <Key
-                    latin:keyStyle="punctuationKeyStyle"
-                    latin:keyWidth="9.2%p" />
-                <Key
-                    latin:keyStyle="enterKeyStyle"
-                    latin:keyWidth="fillRight" />
+                    latin:keyLabel="@string/keylabel_for_comma"
+                    latin:keyLabelFlags="hasPopupHint"
+                    latin:additionalMoreKeys="@string/more_keys_for_comma"
+                    latin:keyStyle="f1MoreKeysStyle" />
             </default>
         </switch>
+        <Key
+            latin:keyStyle="spaceKeyStyle"
+            latin:keyWidth="50%p" />
+        <Key
+            latin:keyStyle="punctuationKeyStyle" />
+        <Key
+            latin:keyStyle="enterKeyStyle"
+            latin:keyWidth="fillRight" />
     </Row>
 </merge>

@@ -72,7 +72,7 @@
         latin:keyActionFlags="isRepeatable|noKeyPreview"
         latin:backgroundType="functional" />
     <include
-        latin:keyboardLayout="@xml/key_styles_enter_tablet" />
+        latin:keyboardLayout="@xml/key_styles_enter" />
     <key-style
         latin:styleName="spaceKeyStyle"
         latin:code="@integer/key_space"
@@ -101,12 +101,27 @@
         latin:keyIcon="iconSettingsKey"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
         latin:backgroundType="functional" />
-    <key-style
-        latin:styleName="tabKeyStyle"
-        latin:code="@integer/key_tab"
-        latin:keyLabel="@string/label_tab_key"
-        latin:keyLabelFlags="fontNormal|preserveCase"
-        latin:backgroundType="functional" />
+    <switch>
+        <case
+            latin:keyboardSetElement="alphabetManualShifted|alphabetShiftLockShifted"
+            latin:navigatePrevious="true"
+        >
+            <key-style
+                latin:styleName="tabKeyStyle"
+                latin:code="@integer/key_action_previous"
+                latin:keyLabel="@string/label_tab_key"
+                latin:keyLabelFlags="fontNormal|preserveCase"
+                latin:backgroundType="functional" />
+        </case>
+        <default>
+            <key-style
+                latin:styleName="tabKeyStyle"
+                latin:code="@integer/key_tab"
+                latin:keyLabel="@string/label_tab_key"
+                latin:keyLabelFlags="fontNormal|preserveCase"
+                latin:backgroundType="functional" />
+        </default>
+    </switch>
     <key-style
         latin:styleName="toSymbolKeyStyle"
         latin:code="@integer/key_switch_alpha_symbol"

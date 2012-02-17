@@ -1232,11 +1232,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 KeyboardActionListener.SUGGESTION_STRIP_COORDINATE);
     }
 
-    private static int getEditorActionId(EditorInfo editorInfo) {
-        if (editorInfo == null) return 0;
-        return (editorInfo.actionLabel != null)
-                ? editorInfo.actionId
-                : (editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION);
+    private static int getActionId(Keyboard keyboard) {
+        return keyboard != null ? keyboard.mId.imeActionId() : EditorInfo.IME_ACTION_NONE;
     }
 
     private void performeEditorAction(int actionId) {
@@ -1302,18 +1299,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mSubtypeSwitcher.switchToShortcutIME();
             break;
         case Keyboard.CODE_ACTION_ENTER:
-            performeEditorAction(getEditorActionId(getCurrentInputEditorInfo()));
+            performeEditorAction(getActionId(switcher.getKeyboard()));
             break;
-        case Keyboard.CODE_TAB:
-            handleTab();
-            // There are two cases for tab. Either we send a "next" event, that may change the
-            // focus but will never move the cursor. Or, we send a real tab keycode, which some
-            // applications may accept or ignore, and we don't know whether this will move the
-            // cursor or not. So actually, we don't really know.
-            // So to go with the safer option, we'd rather behave as if the user moved the
-            // cursor when they didn't than the opposite. We also expect that most applications
-            // will actually use tab only for focus movement.
-            // To sum it up: do not update mExpectingUpdateSelection here.
+        case Keyboard.CODE_ACTION_NEXT:
+            performeEditorAction(EditorInfo.IME_ACTION_NEXT);
+            break;
+        case Keyboard.CODE_ACTION_PREVIOUS:
+            EditorInfoCompatUtils.performEditorActionPrevious(getCurrentInputConnection());
             break;
         default:
             mSpaceState = SPACE_STATE_NONE;
@@ -1485,30 +1477,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     restartSuggestionsOnWordBeforeCursorIfAtEndOfWord(ic);
                 }
             }
-        }
-    }
-
-    // TODO: Implement next and previous actions using other key code than tab's code.
-    private void handleTab() {
-        final int imeOptions = getCurrentInputEditorInfo().imeOptions;
-        if (!EditorInfoCompatUtils.hasFlagNavigateNext(imeOptions)
-                && !EditorInfoCompatUtils.hasFlagNavigatePrevious(imeOptions)) {
-            // TODO: This should be {@link #sendKeyCodePoint(int)}.
-            sendDownUpKeyEvents(KeyEvent.KEYCODE_TAB);
-            return;
-        }
-
-        final InputConnection ic = getCurrentInputConnection();
-        if (ic == null)
-            return;
-
-        final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
-        // True if keyboard is in either shift chording or manual shifted state.
-        final boolean isManualShifted = (keyboard != null  && keyboard.isManualShifted());
-        if (EditorInfoCompatUtils.hasFlagNavigateNext(imeOptions) && !isManualShifted) {
-            EditorInfoCompatUtils.performEditorActionNext(ic);
-        } else if (EditorInfoCompatUtils.hasFlagNavigatePrevious(imeOptions) && isManualShifted) {
-            EditorInfoCompatUtils.performEditorActionPrevious(ic);
         }
     }
 
