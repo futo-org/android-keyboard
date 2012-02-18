@@ -216,6 +216,7 @@
         <attr name="iconShiftKeyShifted" format="reference" />
         <attr name="iconDisabledShortcutKey" format="reference" />
         <attr name="iconPreviewTabKey" format="reference" />
+        <attr name="iconLanguageSwitchKey" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Key">
@@ -296,6 +297,7 @@
             <enum name="iconShortcutForLabel" value="9" />
             <enum name="iconSpaceKeyForNumberLayout" value="10" />
             <enum name="iconShiftKeyShifted" value="11" />
+            <enum name="iconLanguageSwitchKey" value="14" />
         </attr>
         <!-- The icon for disabled key -->
         <attr name="keyIconDisabled" format="enum">
@@ -361,6 +363,7 @@
         <attr name="clobberSettingsKey" format="boolean" />
         <attr name="shortcutKeyEnabled" format="boolean" />
         <attr name="hasShortcutKey" format="boolean" />
+        <attr name="languageSwitchKeyEnabled" format="boolean" />
         <attr name="isMultiLine" format="boolean" />
         <attr name="imeAction" format="enum">
             <!-- This should be aligned with EditorInfo.IME_ACTION_* -->

@@ -62,13 +62,14 @@ public class KeyboardId {
     public final boolean mClobberSettingsKey;
     public final boolean mShortcutKeyEnabled;
     public final boolean mHasShortcutKey;
+    public final boolean mLanguageSwitchKeyEnabled;
     public final String mCustomActionLabel;
 
     private final int mHashCode;
 
     public KeyboardId(int elementId, Locale locale, int orientation, int width, int mode,
             EditorInfo editorInfo, boolean clobberSettingsKey, boolean shortcutKeyEnabled,
-            boolean hasShortcutKey) {
+            boolean hasShortcutKey, boolean languageSwitchKeyEnabled) {
         this.mLocale = locale;
         this.mOrientation = orientation;
         this.mWidth = width;
@@ -78,6 +79,7 @@ public class KeyboardId {
         this.mClobberSettingsKey = clobberSettingsKey;
         this.mShortcutKeyEnabled = shortcutKeyEnabled;
         this.mHasShortcutKey = hasShortcutKey;
+        this.mLanguageSwitchKeyEnabled = languageSwitchKeyEnabled;
         this.mCustomActionLabel = (editorInfo.actionLabel != null)
                 ? editorInfo.actionLabel.toString() : null;
 
@@ -94,6 +96,7 @@ public class KeyboardId {
                 id.mClobberSettingsKey,
                 id.mShortcutKeyEnabled,
                 id.mHasShortcutKey,
+                id.mLanguageSwitchKeyEnabled,
                 id.isMultiLine(),
                 id.imeAction(),
                 id.mCustomActionLabel,
@@ -114,6 +117,7 @@ public class KeyboardId {
                 && other.mClobberSettingsKey == this.mClobberSettingsKey
                 && other.mShortcutKeyEnabled == this.mShortcutKeyEnabled
                 && other.mHasShortcutKey == this.mHasShortcutKey
+                && other.mLanguageSwitchKeyEnabled == this.mLanguageSwitchKeyEnabled
                 && other.isMultiLine() == this.isMultiLine()
                 && other.imeAction() == this.imeAction()
                 && TextUtils.equals(other.mCustomActionLabel, this.mCustomActionLabel)
@@ -172,7 +176,7 @@ public class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format("[%s %s %s%d %s %s %s%s%s%s%s%s%s]",
+        return String.format("[%s %s %s%d %s %s %s%s%s%s%s%s%s%s]",
                 elementIdToName(mElementId),
                 mLocale,
                 (mOrientation == 1 ? "port" : "land"), mWidth,
@@ -184,6 +188,7 @@ public class KeyboardId {
                 (passwordInput() ? " passwordInput" : ""),
                 (mShortcutKeyEnabled ? " shortcutKeyEnabled" : ""),
                 (mHasShortcutKey ? " hasShortcutKey" : ""),
+                (mLanguageSwitchKeyEnabled ? " languageSwitchKeyEnabled" : ""),
                 (isMultiLine() ? "isMultiLine" : "")
         );
     }

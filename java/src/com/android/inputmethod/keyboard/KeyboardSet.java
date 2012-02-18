@@ -101,6 +101,7 @@ public class KeyboardSet {
         boolean mVoiceKeyEnabled;
         boolean mVoiceKeyOnMain;
         boolean mNoSettingsKey;
+        boolean mLanguageSwitchKeyEnabled;
         Locale mLocale;
         int mOrientation;
         int mWidth;
@@ -196,7 +197,7 @@ public class KeyboardSet {
                 && (isSymbols != params.mVoiceKeyOnMain);
         return new KeyboardId(keyboardSetElementId, params.mLocale, params.mOrientation,
                 params.mWidth, params.mMode, params.mEditorInfo, params.mNoSettingsKey,
-                params.mVoiceKeyEnabled, hasShortcutKey);
+                params.mVoiceKeyEnabled, hasShortcutKey, params.mLanguageSwitchKeyEnabled);
     }
 
     public static class Builder {
@@ -239,7 +240,8 @@ public class KeyboardSet {
             return this;
         }
 
-        public Builder setOptions(boolean voiceKeyEnabled, boolean voiceKeyOnMain) {
+        public Builder setOptions(boolean voiceKeyEnabled, boolean voiceKeyOnMain,
+                boolean languageSwitchKeyEnabled) {
             @SuppressWarnings("deprecation")
             final boolean deprecatedNoMicrophone = Utils.inPrivateImeOptions(
                     null, LatinIME.IME_OPTION_NO_MICROPHONE_COMPAT, mEditorInfo);
@@ -248,6 +250,7 @@ public class KeyboardSet {
                     || deprecatedNoMicrophone;
             mParams.mVoiceKeyEnabled = voiceKeyEnabled && !noMicrophone;
             mParams.mVoiceKeyOnMain = voiceKeyOnMain;
+            mParams.mLanguageSwitchKeyEnabled = languageSwitchKeyEnabled;
             return this;
         }
 

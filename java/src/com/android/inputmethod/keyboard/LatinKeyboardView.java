@@ -489,7 +489,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             KeyboardSwitcher.getInstance().hapticAndAudioFeedback(primaryCode);
             return true;
         }
-        if (primaryCode == Keyboard.CODE_SPACE) {
+        if (primaryCode == Keyboard.CODE_SPACE || primaryCode == Keyboard.CODE_LANGUAGE_SWITCH) {
             // Long pressing the space key invokes IME switcher dialog.
             if (invokeCustomRequest(LatinIME.CODE_SHOW_INPUT_METHOD_PICKER)) {
                 tracker.onLongPressed();
@@ -780,6 +780,11 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             // Whether space key needs to show the "..." popup hint for special purposes
             if (mIsSpacebarTriggeringPopupByLongPress
                     && Utils.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */)) {
+                drawKeyPopupHint(key, canvas, paint, params);
+            }
+        } else if (key.mCode == Keyboard.CODE_LANGUAGE_SWITCH) {
+            super.onDrawKeyTopVisuals(key, canvas, paint, params);
+            if (Utils.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */)) {
                 drawKeyPopupHint(key, canvas, paint, params);
             }
         } else {

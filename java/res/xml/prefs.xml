@@ -92,6 +92,17 @@
             android:key="pref_advanced_settings"
             android:title="@string/advanced_settings"
             android:summary="@string/advanced_settings_summary">
+            <CheckBoxPreference
+                android:key="pref_suppress_language_switch_key"
+                android:title="@string/suppress_language_switch_key"
+                android:persistent="true"
+                android:defaultValue="false" />
+            <CheckBoxPreference
+                android:key="pref_include_other_imes_in_language_switch_list"
+                android:title="@string/include_other_imes_in_language_switch_list"
+                android:summary="@string/include_other_imes_in_language_switch_list_summary"
+                android:persistent="true"
+                android:defaultValue="false" />
             <!-- Values for popup dismiss delay are added programatically -->
             <ListPreference
                 android:key="pref_key_preview_popup_dismiss_delay"

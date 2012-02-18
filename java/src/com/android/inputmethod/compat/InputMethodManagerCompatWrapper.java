@@ -49,6 +49,8 @@ public class InputMethodManagerCompatWrapper {
     private static final String TAG = InputMethodManagerCompatWrapper.class.getSimpleName();
     private static final Method METHOD_getCurrentInputMethodSubtype =
             CompatUtils.getMethod(InputMethodManager.class, "getCurrentInputMethodSubtype");
+    private static final Method METHOD_getLastInputMethodSubtype =
+            CompatUtils.getMethod(InputMethodManager.class, "getLastInputMethodSubtype");
     private static final Method METHOD_getEnabledInputMethodSubtypeList =
             CompatUtils.getMethod(InputMethodManager.class, "getEnabledInputMethodSubtypeList",
                     InputMethodInfo.class, boolean.class);
@@ -60,6 +62,8 @@ public class InputMethodManagerCompatWrapper {
                     String.class, InputMethodSubtypeCompatWrapper.CLASS_InputMethodSubtype);
     private static final Method METHOD_switchToLastInputMethod = CompatUtils.getMethod(
             InputMethodManager.class, "switchToLastInputMethod", IBinder.class);
+    private static final Method METHOD_switchToNextInputMethod = CompatUtils.getMethod(
+            InputMethodManager.class, "switchToNextInputMethod", IBinder.class, Boolean.TYPE);
 
     private static final InputMethodManagerCompatWrapper sInstance =
             new InputMethodManagerCompatWrapper();
@@ -108,6 +112,15 @@ public class InputMethodManagerCompatWrapper {
                     0, 0, mLanguageSwitcherProxy.getInputLocale().toString(), KEYBOARD_MODE, "");
         }
         Object o = CompatUtils.invoke(mImm, null, METHOD_getCurrentInputMethodSubtype);
+        return new InputMethodSubtypeCompatWrapper(o);
+    }
+
+    public InputMethodSubtypeCompatWrapper getLastInputMethodSubtype() {
+        if (!SUBTYPE_SUPPORTED) {
+            return new InputMethodSubtypeCompatWrapper(
+                    0, 0, mLanguageSwitcherProxy.getInputLocale().toString(), KEYBOARD_MODE, "");
+        }
+        Object o = CompatUtils.invoke(mImm, null, METHOD_getLastInputMethodSubtype);
         return new InputMethodSubtypeCompatWrapper(o);
     }
 
@@ -219,6 +232,14 @@ public class InputMethodManagerCompatWrapper {
             return true;
         }
         return (Boolean)CompatUtils.invoke(mImm, false, METHOD_switchToLastInputMethod, token);
+    }
+
+    public boolean switchToNextInputMethod(IBinder token, boolean onlyCurrentIme) {
+        if (SubtypeSwitcher.getInstance().isDummyVoiceMode()) {
+            return true;
+        }
+        return (Boolean)CompatUtils.invoke(mImm, false, METHOD_switchToNextInputMethod, token,
+                onlyCurrentIme);
     }
 
     public List<InputMethodInfoCompatWrapper> getEnabledInputMethodList() {

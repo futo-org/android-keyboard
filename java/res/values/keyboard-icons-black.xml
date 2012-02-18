@@ -34,5 +34,7 @@
         <item name="iconShiftKeyShifted">@drawable/sym_bkeyboard_shift_locked</item>
         <item name="iconDisabledShortcutKey">@drawable/sym_bkeyboard_voice_off</item>
         <item name="iconPreviewTabKey">@drawable/sym_keyboard_feedback_tab</item>
+        <!-- TODO: Needs dedicated black theme globe icon -->
+        <item name="iconLanguageSwitchKey">@drawable/sym_keyboard_language_switch</item>
     </style>
 </resources>

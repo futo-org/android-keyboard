@@ -117,10 +117,10 @@
         latin:altCode="@integer/key_space"
         latin:parentStyle="f1MoreKeysStyle" />
     <key-style
-        latin:styleName="settingsKeyStyle"
-        latin:code="@integer/key_settings"
-        latin:keyIcon="iconSettingsKey"
-        latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
+        latin:styleName="languageSwitchKeyStyle"
+        latin:code="@integer/key_language_switch"
+        latin:keyIcon="iconLanguageSwitchKey"
+        latin:keyActionFlags="noKeyPreview|altCodeWhileTyping|enableLongPress"
         latin:altCode="@integer/key_space"
         latin:backgroundType="functional" />
     <key-style

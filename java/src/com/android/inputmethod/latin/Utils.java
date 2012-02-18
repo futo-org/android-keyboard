@@ -52,6 +52,7 @@ import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -117,16 +118,51 @@ public class Utils {
         }
     }
 
+    // TODO: Move InputMethodSubtype related utility methods to its own utility class.
+    // TODO: Cache my InputMethodInfo and/or InputMethodSubtype list.
+    public static boolean checkIfSubtypeBelongsToThisIme(Context context,
+            InputMethodSubtypeCompatWrapper ims) {
+        final InputMethodManagerCompatWrapper imm = InputMethodManagerCompatWrapper.getInstance();
+        if (imm == null) return false;
+
+        final InputMethodInfoCompatWrapper myImi = Utils.getInputMethodInfo(
+                context.getPackageName());
+        final List<InputMethodSubtypeCompatWrapper> subtypes =
+                imm.getEnabledInputMethodSubtypeList(myImi, true);
+        for (final InputMethodSubtypeCompatWrapper subtype : subtypes) {
+            if (subtype.equals(ims)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static boolean hasMultipleEnabledIMEsOrSubtypes(
             final boolean shouldIncludeAuxiliarySubtypes) {
         final InputMethodManagerCompatWrapper imm = InputMethodManagerCompatWrapper.getInstance();
         if (imm == null) return false;
+
         final List<InputMethodInfoCompatWrapper> enabledImis = imm.getEnabledInputMethodList();
+        return hasMultipleEnabledSubtypes(shouldIncludeAuxiliarySubtypes, enabledImis);
+    }
+
+    public static boolean hasMultipleEnabledSubtypesInThisIme(Context context,
+            final boolean shouldIncludeAuxiliarySubtypes) {
+        final InputMethodInfoCompatWrapper myImi = Utils.getInputMethodInfo(
+                context.getPackageName());
+        final List<InputMethodInfoCompatWrapper> imiList = Collections.singletonList(myImi);
+        return Utils.hasMultipleEnabledSubtypes(shouldIncludeAuxiliarySubtypes, imiList);
+    }
+
+    private static boolean hasMultipleEnabledSubtypes(final boolean shouldIncludeAuxiliarySubtypes,
+            List<InputMethodInfoCompatWrapper> imiList) {
+        final InputMethodManagerCompatWrapper imm = InputMethodManagerCompatWrapper.getInstance();
+        if (imm == null) return false;
 
         // Number of the filtered IMEs
         int filteredImisCount = 0;
 
-        for (InputMethodInfoCompatWrapper imi : enabledImis) {
+        for (InputMethodInfoCompatWrapper imi : imiList) {
             // We can return true immediately after we find two or more filtered IMEs.
             if (filteredImisCount > 1) return true;
             final List<InputMethodSubtypeCompatWrapper> subtypes =
@@ -564,6 +600,7 @@ public class Utils {
         }
     }
 
+    // TODO: Move this method to KeyboardSet class.
     public static int getKeyboardMode(EditorInfo editorInfo) {
         if (editorInfo == null)
             return KeyboardId.MODE_TEXT;

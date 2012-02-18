@@ -133,7 +133,8 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
                         LatinIME.SUBTYPE_EXTRA_VALUE_SUPPORT_TOUCH_POSITION_CORRECTION));
         builder.setOptions(
                 settingsValues.isVoiceKeyEnabled(editorInfo),
-                settingsValues.isVoiceKeyOnMain());
+                settingsValues.isVoiceKeyOnMain(),
+                settingsValues.isLanguageSwitchKeyEnabled(mThemeContext));
         mKeyboardSet = builder.build();
         try {
             mState.onLoadKeyboard(mResources.getString(R.string.layout_switch_back_symbols));

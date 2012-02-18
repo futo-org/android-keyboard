@@ -23,11 +23,14 @@ import android.os.Build;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 
+import com.android.inputmethod.compat.InputMethodInfoCompatWrapper;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.VibratorCompatWrapper;
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 public class SettingsValues {
@@ -55,6 +58,8 @@ public class SettingsValues {
     public final String mShowSuggestionsSetting;
     @SuppressWarnings("unused") // TODO: Use this
     private final boolean mUsabilityStudyMode;
+    public final boolean mIncludesOtherImesInLanguageSwitchList;
+    public final boolean mIsLanguageSwitchKeySuppressed;
     @SuppressWarnings("unused") // TODO: Use this
     private final String mKeyPreviewPopupDismissDelayRawValue;
     public final boolean mUseContactsDict;
@@ -127,6 +132,9 @@ public class SettingsValues {
         mShowSuggestionsSetting = prefs.getString(Settings.PREF_SHOW_SUGGESTIONS_SETTING,
                 res.getString(R.string.prefs_suggestion_visibility_default_value));
         mUsabilityStudyMode = getUsabilityStudyMode(prefs);
+        mIncludesOtherImesInLanguageSwitchList = prefs.getBoolean(
+                Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST, false);
+        mIsLanguageSwitchKeySuppressed = isLanguageSwitchKeySupressed(prefs);
         mKeyPreviewPopupDismissDelayRawValue = prefs.getString(
                 Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
                 Integer.toString(res.getInteger(R.integer.config_key_preview_linger_timeout)));
@@ -307,6 +315,22 @@ public class SettingsValues {
 
     public boolean isVoiceKeyOnMain() {
         return mVoiceKeyOnMain;
+    }
+
+    public static boolean isLanguageSwitchKeySupressed(SharedPreferences sp) {
+        return sp.getBoolean(Settings.PREF_SUPPRESS_LANGUAGE_SWITCH_KEY, false);
+    }
+
+    public boolean isLanguageSwitchKeyEnabled(Context context) {
+        if (mIsLanguageSwitchKeySuppressed) {
+            return false;
+        }
+        if (mIncludesOtherImesInLanguageSwitchList) {
+            return Utils.hasMultipleEnabledIMEsOrSubtypes(/* include aux subtypes */false);
+        } else {
+            return Utils.hasMultipleEnabledSubtypesInThisIme(
+                    context, /* include aux subtypes */false);
+        }
     }
 
     public boolean isFullscreenModeAllowed(Resources res) {
