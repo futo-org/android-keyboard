@@ -51,7 +51,6 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Luôn hiển thị"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Hiển thị trên chế độ khổ đứng"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Luôn ẩn"</string>
-    <string name="prefs_settings_key" msgid="4623341240804046498">"Hiển thị phím cài đặt"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Tự động sửa"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Phím cách và dấu câu tự động sửa từ nhập sai"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Tắt"</string>

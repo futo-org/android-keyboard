@@ -51,7 +51,6 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"همیشه نمایش داده شود"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"نمایش در حالت عمودی"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"همیشه پنهان شود"</string>
-    <string name="prefs_settings_key" msgid="4623341240804046498">"نمایش کلید تنظیمات"</string>
     <string name="auto_correction" msgid="4979925752001319458">"تصحیح خودکار"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"کلید فاصله و علائم نگارشی به صورت خودکار کلماتی را که غلط تایپ شده اند تصحیح می کنند"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"خاموش"</string>

@@ -51,7 +51,6 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Visa alltid"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Visa stående"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Dölj alltid"</string>
-    <string name="prefs_settings_key" msgid="4623341240804046498">"Visa inställningsknapp"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Autokorrigering"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Blanksteg/skiljetecken rättar felstavning"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Av"</string>
