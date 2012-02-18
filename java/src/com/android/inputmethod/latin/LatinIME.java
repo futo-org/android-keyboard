@@ -769,6 +769,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // The EditorInfo might have a flag that affects fullscreen mode.
         // Note: This call should be done by InputMethodService?
         updateFullscreenMode();
+        mLastSelectionStart = editorInfo.initialSelStart;
+        mLastSelectionEnd = editorInfo.initialSelEnd;
         mInputAttributes = new InputAttributes(editorInfo, isFullscreenMode());
         mApplicationSpecifiedCompletions = null;
 
@@ -1465,18 +1467,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     ic.deleteSurroundingText(lengthToDelete, 0);
                 } else {
                     if (NOT_A_CURSOR_POSITION == mLastSelectionEnd) {
-                        // We don't know whether there is a selection or not. We just send a false
-                        // hardware key event and let TextView sort it out for us. The problem
-                        // here is, this is asynchronous with respect to the input connection
-                        // batch edit, so it may flicker. But this only ever happens if backspace
-                        // is pressed just after the IME is invoked, and then again only once.
-                        // TODO: add an API call that gets the selection indices. This is available
-                        // to the IME in the general case via onUpdateSelection anyway, and would
-                        // allow us to remove this race condition.
-                        sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
-                    } else {
-                        ic.deleteSurroundingText(1, 0);
+                        // This should never happen.
+                        Log.e(TAG, "Backspace when we don't know the selection position");
                     }
+                    ic.deleteSurroundingText(1, 0);
                     if (mDeleteCount > DELETE_ACCELERATE_AT) {
                         ic.deleteSurroundingText(1, 0);
                     }
