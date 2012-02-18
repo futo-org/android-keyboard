@@ -51,7 +51,6 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"항상 표시"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"세로 화면일 때만 표시"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"항상 숨기기"</string>
-    <string name="prefs_settings_key" msgid="4623341240804046498">"설정 키 표시"</string>
     <string name="auto_correction" msgid="4979925752001319458">"자동 수정"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"스페이스바와 문장부호 키를 사용하면 오타가 자동으로 교정됩니다."</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"사용 안함"</string>

@@ -51,7 +51,6 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Mostra sempre"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Mostra en mode vertical"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Amaga sempre"</string>
-    <string name="prefs_settings_key" msgid="4623341240804046498">"Mostra la tecla de configuració"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Correcció automàtica"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Barra espaiadora i punt. correg. autom. paraules mal escrites"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Desactiva"</string>
