@@ -894,29 +894,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (((mWordComposer.isComposingWord())
                     || mVoiceProxy.isVoiceInputHighlighted())
                     && (selectionChanged || noComposingSpan)) {
-                resetComposingState(true /* alsoResetLastComposedWord */);
-                updateSuggestions();
-                final InputConnection ic = getCurrentInputConnection();
-                if (ic != null) {
-                    ic.finishComposingText();
-                }
-                mComposingStateManager.onFinishComposingText();
-                mVoiceProxy.setVoiceInputHighlighted(false);
+                resetEntireInputState();
             } else if (!mWordComposer.isComposingWord()) {
-                // We need to do this to clear the last composed word.
-                resetComposingState(true /* alsoResetLastComposedWord */);
-                updateSuggestions();
-                // Calling finishComposingText() here is harmless because there
-                // is no composing word, so it's a no-op.
-                final InputConnection ic = getCurrentInputConnection();
-                if (ic != null) {
-                    ic.finishComposingText();
-                }
-                // Likewise, this is a no-op since we are not composing text
-                mComposingStateManager.onFinishComposingText();
-                // The cursor moved so it's safe to assume that the voice input
-                // is not highlighted
-                mVoiceProxy.setVoiceInputHighlighted(false);
+                resetEntireInputState();
             }
 
             mHandler.postUpdateShiftState();
@@ -1124,6 +1104,20 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             break;
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    // This will reset the whole input state to the starting state. It will clear
+    // the composing word, reset the last composed word, tell the inputconnection
+    // and the composingStateManager about it.
+    private void resetEntireInputState() {
+        resetComposingState(true /* alsoResetLastComposedWord */);
+        updateSuggestions();
+        final InputConnection ic = getCurrentInputConnection();
+        if (ic != null) {
+            ic.finishComposingText();
+        }
+        mComposingStateManager.onFinishComposingText();
+        mVoiceProxy.setVoiceInputHighlighted(false);
     }
 
     private void resetComposingState(final boolean alsoResetLastComposedWord) {
