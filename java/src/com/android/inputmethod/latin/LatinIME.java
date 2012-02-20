@@ -887,15 +887,15 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // the second one - the first call successfully avoids this test, but the second one
             // enters. For the moment we rely on noComposingSpan to further reduce the impact.
 
+            // TODO: the following is probably better done in resetEntireInputState().
+            // it should only happen when the cursor moved, and the very purpose of the
+            // test below is to narrow down whether this happened or not. Likewise with
+            // the call to postUpdateShiftState.
             // We set this to NONE because after a cursor move, we don't want the space
             // state-related special processing to kick in.
             mSpaceState = SPACE_STATE_NONE;
 
-            if (((mWordComposer.isComposingWord())
-                    || mVoiceProxy.isVoiceInputHighlighted())
-                    && (selectionChanged || noComposingSpan)) {
-                resetEntireInputState();
-            } else if (!mWordComposer.isComposingWord()) {
+            if ((!mWordComposer.isComposingWord()) || selectionChanged || noComposingSpan)) {
                 resetEntireInputState();
             }
 
