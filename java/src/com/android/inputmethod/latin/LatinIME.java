@@ -903,10 +903,20 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 mComposingStateManager.onFinishComposingText();
                 mVoiceProxy.setVoiceInputHighlighted(false);
             } else if (!mWordComposer.isComposingWord()) {
-                // TODO: is the following reset still needed, given that we are not composing
-                // a word?
+                // We need to do this to clear the last composed word.
                 resetComposingState(true /* alsoResetLastComposedWord */);
                 updateSuggestions();
+                // Calling finishComposingText() here is harmless because there
+                // is no composing word, so it's a no-op.
+                final InputConnection ic = getCurrentInputConnection();
+                if (ic != null) {
+                    ic.finishComposingText();
+                }
+                // Likewise, this is a no-op since we are not composing text
+                mComposingStateManager.onFinishComposingText();
+                // The cursor moved so it's safe to assume that the voice input
+                // is not highlighted
+                mVoiceProxy.setVoiceInputHighlighted(false);
             }
 
             mHandler.postUpdateShiftState();
