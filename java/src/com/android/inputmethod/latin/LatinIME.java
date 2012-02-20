@@ -761,9 +761,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // Most such things we decide below in initializeInputAttributesAndGetMode, but we need to
         // know now whether this is a password text field, because we need to know now whether we
         // want to enable the voice button.
-        final VoiceProxy voiceIme = mVoiceProxy;
         final int inputType = (editorInfo != null) ? editorInfo.inputType : 0;
-        voiceIme.resetVoiceStates(InputTypeCompatUtils.isPasswordInputType(inputType)
+        mVoiceProxy.resetVoiceStates(InputTypeCompatUtils.isPasswordInputType(inputType)
                 || InputTypeCompatUtils.isVisiblePasswordInputType(inputType));
 
         // The EditorInfo might have a flag that affects fullscreen mode.
@@ -807,7 +806,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 mSettingsValues.mKeyPreviewPopupDismissDelay);
         inputView.setProximityCorrectionEnabled(true);
 
-        voiceIme.onStartInputView(inputView.getWindowToken());
+        mVoiceProxy.onStartInputView(inputView.getWindowToken());
 
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
@@ -850,9 +849,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     @Override
     public void onUpdateSelection(int oldSelStart, int oldSelEnd,
             int newSelStart, int newSelEnd,
-            int candidatesStart, int candidatesEnd) {
+            int composingSpanStart, int composingSpanEnd) {
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd,
-                candidatesStart, candidatesEnd);
+                composingSpanStart, composingSpanEnd);
 
         if (DEBUG) {
             Log.i(TAG, "onUpdateSelection: oss=" + oldSelStart
@@ -861,23 +860,32 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     + ", lse=" + mLastSelectionEnd
                     + ", nss=" + newSelStart
                     + ", nse=" + newSelEnd
-                    + ", cs=" + candidatesStart
-                    + ", ce=" + candidatesEnd);
+                    + ", cs=" + composingSpanStart
+                    + ", ce=" + composingSpanEnd);
         }
 
         mVoiceProxy.setCursorAndSelection(newSelEnd, newSelStart);
 
-        // If the current selection in the text view changes, we should
-        // clear whatever candidate text we have.
-        final boolean selectionChanged = (newSelStart != candidatesEnd
-                || newSelEnd != candidatesEnd) && mLastSelectionStart != newSelStart;
-        final boolean candidatesCleared = candidatesStart == -1 && candidatesEnd == -1;
+        // TODO: refactor the following code to be less contrived.
+        // "newSelStart != composingSpanEnd" || "newSelEnd != composingSpanEnd" means
+        // that the cursor is not at the end of the composing span, or there is a selection.
+        // "mLastSelectionStart != newSelStart" means that the cursor is not in the same place
+        // as last time we were called (if there is a selection, it means the start hasn't
+        // changed, so it's the end that did).
+        final boolean selectionChanged = (newSelStart != composingSpanEnd
+                || newSelEnd != composingSpanEnd) && mLastSelectionStart != newSelStart;
+        // if composingSpanStart and composingSpanEnd are -1, it means there is no composing
+        // span in the view - we can use that to narrow down whether the cursor was moved
+        // by us or not. If we are composing a word but there is no composing span, then
+        // we know for sure the cursor moved while we were composing and we should reset
+        // the state.
+        final boolean noComposingSpan = composingSpanStart == -1 && composingSpanEnd == -1;
         if (!mExpectingUpdateSelection) {
             // TAKE CARE: there is a race condition when we enter this test even when the user
             // did not explicitly move the cursor. This happens when typing fast, where two keys
             // turn this flag on in succession and both onUpdateSelection() calls arrive after
             // the second one - the first call successfully avoids this test, but the second one
-            // enters. For the moment we rely on candidatesCleared to further reduce the impact.
+            // enters. For the moment we rely on noComposingSpan to further reduce the impact.
 
             // We set this to NONE because after a cursor move, we don't want the space
             // state-related special processing to kick in.
@@ -885,7 +893,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
             if (((mWordComposer.isComposingWord())
                     || mVoiceProxy.isVoiceInputHighlighted())
-                    && (selectionChanged || candidatesCleared)) {
+                    && (selectionChanged || noComposingSpan)) {
                 resetComposingState(true /* alsoResetLastComposedWord */);
                 updateSuggestions();
                 final InputConnection ic = getCurrentInputConnection();
