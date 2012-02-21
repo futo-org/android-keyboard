@@ -49,10 +49,6 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
         return names.toArray(new String[names.size()]);
     }
 
-    private static String format(String message, Object expected, Object actual) {
-        return message + " expected:<" + expected + "> but was:<" + actual + ">";
-    }
-
     private void assertTextArray(String message, String value, String ... expected) {
         final String actual[] = KeySpecParser.parseCsvString(value, mLabelsSet);
         if (expected.length == 0) {
