@@ -308,9 +308,10 @@ public class WordComposer {
     }
 
     // `type' should be one of the LastComposedWord.COMMIT_TYPE_* constants above.
-    public LastComposedWord commitWord(final int type) {
+    public LastComposedWord commitWord(final int type, final String committedWord) {
         // Note: currently, we come here whenever we commit a word. If it's any *other* kind than
-        // DECIDED_WORD, we should reset mAutoCorrection so that we don't attempt to cancel later.
+        // DECIDED_WORD, we should deactivate the last composed word so that we don't attempt to
+        // cancel later.
         // If it's a DECIDED_WORD, it may be an actual auto-correction by the IME, or what the user
         // typed because the IME decided *not* to auto-correct for whatever reason.
         // Ideally we would also null it when it was a DECIDED_WORD that was not an auto-correct.
@@ -326,8 +327,7 @@ public class WordComposer {
         mXCoordinates = new int[N];
         mYCoordinates = new int[N];
         final LastComposedWord lastComposedWord = new LastComposedWord(codes,
-                xCoordinates, yCoordinates, mTypedWord.toString(),
-                null == mAutoCorrection ? null : mAutoCorrection.toString());
+                xCoordinates, yCoordinates, mTypedWord.toString(), committedWord);
         if (type != LastComposedWord.COMMIT_TYPE_DECIDED_WORD) {
             lastComposedWord.deactivate();
         }
@@ -342,6 +342,6 @@ public class WordComposer {
         mYCoordinates = lastComposedWord.mYCoordinates;
         mTypedWord.setLength(0);
         mTypedWord.append(lastComposedWord.mTypedWord);
-        mAutoCorrection = lastComposedWord.mAutoCorrection;
+        mAutoCorrection = null; // This will be filled by the next call to updateSuggestion.
     }
 }

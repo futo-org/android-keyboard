@@ -1129,8 +1129,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     public void commitTyped(final InputConnection ic) {
         if (!mWordComposer.isComposingWord()) return;
         final CharSequence typedWord = mWordComposer.getTypedWord();
-        mLastComposedWord = mWordComposer.commitWord(LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD);
         if (typedWord.length() > 0) {
+            mLastComposedWord = mWordComposer.commitWord(
+                    LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, typedWord.toString());
             if (ic != null) {
                 ic.commitText(typedWord, 1);
             }
@@ -2002,7 +2003,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // what user typed. Note: currently this is done much later in
         // LastComposedWord#canCancelAutoCorrect by string equality of the remembered
         // strings.
-        mLastComposedWord = mWordComposer.commitWord(commitType);
+        mLastComposedWord = mWordComposer.commitWord(commitType, bestWord.toString());
     }
 
     private static final WordComposer sEmptyWordComposer = new WordComposer();
@@ -2166,8 +2167,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // "ic" must not be null
     private void cancelAutoCorrect(final InputConnection ic) {
         final String originallyTypedWord = mLastComposedWord.mTypedWord;
-        final CharSequence autoCorrectedTo = mLastComposedWord.mAutoCorrection;
-        final int cancelLength = autoCorrectedTo.length();
+        final CharSequence committedWord = mLastComposedWord.mCommittedWord;
+        final int cancelLength = committedWord.length();
         final CharSequence separator = ic.getTextBeforeCursor(1, 0);
         if (DEBUG) {
             if (mWordComposer.isComposingWord()) {
@@ -2176,9 +2177,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             final String wordBeforeCursor =
                     ic.getTextBeforeCursor(cancelLength + 1, 0).subSequence(0, cancelLength)
                     .toString();
-            if (!TextUtils.equals(autoCorrectedTo, wordBeforeCursor)) {
+            if (!TextUtils.equals(committedWord, wordBeforeCursor)) {
                 throw new RuntimeException("cancelAutoCorrect check failed: we thought we were "
-                        + "reverting \"" + autoCorrectedTo
+                        + "reverting \"" + committedWord
                         + "\", but before the cursor we found \"" + wordBeforeCursor + "\"");
             }
             if (TextUtils.equals(originallyTypedWord, wordBeforeCursor)) {

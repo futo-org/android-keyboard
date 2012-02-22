@@ -44,7 +44,7 @@ public class LastComposedWord {
     public final int[] mXCoordinates;
     public final int[] mYCoordinates;
     public final String mTypedWord;
-    public final String mAutoCorrection;
+    public final String mCommittedWord;
 
     private boolean mActive;
 
@@ -54,12 +54,12 @@ public class LastComposedWord {
     // Warning: this is using the passed objects as is and fully expects them to be
     // immutable. Do not fiddle with their contents after you passed them to this constructor.
     public LastComposedWord(final ArrayList<int[]> codes, final int[] xCoordinates,
-            final int[] yCoordinates, final String typedWord, final String autoCorrection) {
+            final int[] yCoordinates, final String typedWord, final String committedWord) {
         mCodes = codes;
         mXCoordinates = xCoordinates;
         mYCoordinates = yCoordinates;
         mTypedWord = typedWord;
-        mAutoCorrection = autoCorrection;
+        mCommittedWord = committedWord;
         mActive = true;
     }
 
@@ -68,7 +68,7 @@ public class LastComposedWord {
     }
 
     public boolean canCancelAutoCorrect() {
-        return mActive && !TextUtils.isEmpty(mAutoCorrection)
-                && !TextUtils.equals(mTypedWord, mAutoCorrection);
+        return mActive && !TextUtils.isEmpty(mCommittedWord)
+                && !TextUtils.equals(mTypedWord, mCommittedWord);
     }
 }
