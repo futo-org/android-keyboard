@@ -1431,9 +1431,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 ic.deleteSurroundingText(1, 0);
             }
         } else {
-            if (mLastComposedWord.canCancelCommit()) {
+            if (mLastComposedWord.canRevertCommit()) {
                 Utils.Stats.onAutoCorrectionCancellation();
-                cancelCommit(ic);
+                revertCommit(ic);
                 return;
             }
             if (SPACE_STATE_DOUBLE == spaceState) {
@@ -2155,7 +2155,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     // "ic" must not be null
-    private void cancelCommit(final InputConnection ic) {
+    private void revertCommit(final InputConnection ic) {
         final String originallyTypedWord = mLastComposedWord.mTypedWord;
         final CharSequence committedWord = mLastComposedWord.mCommittedWord;
         final int cancelLength = committedWord.length();
@@ -2164,13 +2164,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // TODO: should we check our saved separator against the actual contents of the text view?
         if (DEBUG) {
             if (mWordComposer.isComposingWord()) {
-                throw new RuntimeException("cancelCommit, but we are composing a word");
+                throw new RuntimeException("revertCommit, but we are composing a word");
             }
             final String wordBeforeCursor =
                     ic.getTextBeforeCursor(cancelLength + separatorLength, 0)
                             .subSequence(0, cancelLength).toString();
             if (!TextUtils.equals(committedWord, wordBeforeCursor)) {
-                throw new RuntimeException("cancelCommit check failed: we thought we were "
+                throw new RuntimeException("revertCommit check failed: we thought we were "
                         + "reverting \"" + committedWord
                         + "\", but before the cursor we found \"" + wordBeforeCursor + "\"");
             }

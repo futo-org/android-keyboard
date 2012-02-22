@@ -72,7 +72,7 @@ public class LastComposedWord {
         mActive = false;
     }
 
-    public boolean canCancelCommit() {
+    public boolean canRevertCommit() {
         return mActive && !TextUtils.isEmpty(mCommittedWord);
     }
 
