@@ -2198,8 +2198,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         ic.deleteSurroundingText(cancelLength + separatorLength, 0);
         if (0 == separatorLength || mLastComposedWord.didCommitTypedWord()) {
             // This is the case when we cancel a manual pick.
-            // TODO: implement this
             // We should restart suggestion on the word right away.
+            mWordComposer.resumeSuggestionOnLastComposedWord(mLastComposedWord);
+            mComposingStateManager.onStartComposingText();
+            ic.setComposingText(originallyTypedWord, 1);
         } else {
             ic.commitText(originallyTypedWord, 1);
             // Re-insert the separator
