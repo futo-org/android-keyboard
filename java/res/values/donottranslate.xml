@@ -20,17 +20,17 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Symbols that are suggested between words -->
     <string name="suggested_punctuations">!,?,\\,,:,;,\",(,),\',-,/,@,_</string>
-    <!-- Symbols that should be swapped with a magic space -->
-    <string name="magic_space_swapping_symbols">.,;:!?)]}\"</string>
-    <!-- Symbols that should strip a magic space -->
-    <string name="magic_space_stripping_symbols">"&#x0009;&#x0020;\n/_\'-"</string>
-    <!-- Symbols that should convert magic spaces into real space -->
-    <string name="magic_space_promoting_symbols">([*&amp;@{&lt;&gt;+=|</string>
+    <!-- Symbols that should be swapped with a weak space -->
+    <string name="weak_space_swapping_symbols">.,;:!?)]}\"</string>
+    <!-- Symbols that should strip a weak space -->
+    <string name="weak_space_stripping_symbols">"&#x0009;&#x0020;\n/_\'-"</string>
+    <!-- Symbols that should convert weak spaces into real space -->
+    <string name="weak_space_promoting_symbols">([*&amp;@{&lt;&gt;+=|</string>
     <!-- Symbols that do NOT separate words -->
     <string name="symbols_excluded_from_word_separators">\'-</string>
     <!-- Word separator list is the union of all symbols except those that are not separators:
-    magic_space_swapping_symbols | magic_space_stripping_symbols |
-            magic_space_neutral_symbols \ symbols_excluded_from_word_separators -->
+    weak_space_swapping_symbols | weak_space_stripping_symbols
+            \ symbols_excluded_from_word_separators -->
     <!-- Symbol characters list that should switch back to the main layout -->
     <!-- U+2018: "‘" LEFT SINGLE QUOTATION MARK
          U+2019: "’" RIGHT SINGLE QUOTATION MARK

@@ -35,8 +35,8 @@ public class SettingsValues {
 
     // From resources:
     public final int mDelayUpdateOldSuggestions;
-    public final String mMagicSpaceStrippers;
-    public final String mMagicSpaceSwappers;
+    public final String mWeakSpaceStrippers;
+    public final String mWeakSpaceSwappers;
     private final String mSuggestPuncs;
     public final SuggestedWords mSuggestPuncList;
     public final SuggestedWords mSuggestPuncOutputTextList;
@@ -89,14 +89,14 @@ public class SettingsValues {
 
         // Get the resources
         mDelayUpdateOldSuggestions = res.getInteger(R.integer.config_delay_update_old_suggestions);
-        mMagicSpaceStrippers = res.getString(R.string.magic_space_stripping_symbols);
-        mMagicSpaceSwappers = res.getString(R.string.magic_space_swapping_symbols);
+        mWeakSpaceStrippers = res.getString(R.string.weak_space_stripping_symbols);
+        mWeakSpaceSwappers = res.getString(R.string.weak_space_swapping_symbols);
         if (LatinImeLogger.sDBG) {
-            final int length = mMagicSpaceStrippers.length();
-            for (int i = 0; i < length; i = mMagicSpaceStrippers.offsetByCodePoints(i, 1)) {
-                if (isMagicSpaceSwapper(mMagicSpaceStrippers.codePointAt(i))) {
-                    throw new RuntimeException("Char code " + mMagicSpaceStrippers.codePointAt(i)
-                            + " is both a magic space swapper and stripper.");
+            final int length = mWeakSpaceStrippers.length();
+            for (int i = 0; i < length; i = mWeakSpaceStrippers.offsetByCodePoints(i, 1)) {
+                if (isWeakSpaceSwapper(mWeakSpaceStrippers.codePointAt(i))) {
+                    throw new RuntimeException("Char code " + mWeakSpaceStrippers.codePointAt(i)
+                            + " is both a weak space swapper and stripper.");
                 }
             }
         }
@@ -107,7 +107,7 @@ public class SettingsValues {
         mSuggestPuncOutputTextList = createSuggestPuncOutputTextList(suggestPuncsSpec);
         mSymbolsExcludedFromWordSeparators =
                 res.getString(R.string.symbols_excluded_from_word_separators);
-        mWordSeparators = createWordSeparators(mMagicSpaceStrippers, mMagicSpaceSwappers,
+        mWordSeparators = createWordSeparators(mWeakSpaceStrippers, mWeakSpaceSwappers,
                 mSymbolsExcludedFromWordSeparators, res);
         mHintToSaveText = context.getText(R.string.hint_add_to_dictionary);
 
@@ -188,11 +188,11 @@ public class SettingsValues {
         return builder.setIsPunctuationSuggestions().build();
     }
 
-    private static String createWordSeparators(final String magicSpaceStrippers,
-            final String magicSpaceSwappers, final String symbolsExcludedFromWordSeparators,
+    private static String createWordSeparators(final String weakSpaceStrippers,
+            final String weakSpaceSwappers, final String symbolsExcludedFromWordSeparators,
             final Resources res) {
-        String wordSeparators = magicSpaceStrippers + magicSpaceSwappers
-                + res.getString(R.string.magic_space_promoting_symbols);
+        String wordSeparators = weakSpaceStrippers + weakSpaceSwappers
+                + res.getString(R.string.weak_space_promoting_symbols);
         for (int i = symbolsExcludedFromWordSeparators.length() - 1; i >= 0; --i) {
             wordSeparators = wordSeparators.replace(
                     symbolsExcludedFromWordSeparators.substring(i, i + 1), "");
@@ -215,14 +215,14 @@ public class SettingsValues {
         return mSymbolsExcludedFromWordSeparators.contains(String.valueOf((char)code));
     }
 
-    public boolean isMagicSpaceStripper(int code) {
+    public boolean isWeakSpaceStripper(int code) {
         // TODO: this does not work if the code does not fit in a char
-        return mMagicSpaceStrippers.contains(String.valueOf((char)code));
+        return mWeakSpaceStrippers.contains(String.valueOf((char)code));
     }
 
-    public boolean isMagicSpaceSwapper(int code) {
+    public boolean isWeakSpaceSwapper(int code) {
         // TODO: this does not work if the code does not fit in a char
-        return mMagicSpaceSwappers.contains(String.valueOf((char)code));
+        return mWeakSpaceSwappers.contains(String.valueOf((char)code));
     }
 
     private static boolean isAutoCorrectEnabled(final Resources resources,

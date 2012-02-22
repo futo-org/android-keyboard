@@ -165,8 +165,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // Double space: the state where the user pressed space twice quickly, which LatinIME
     // resolved as period-space. Undoing this converts the period to a space.
     private static final int SPACE_STATE_DOUBLE = 1;
-    // Swap punctuation: the state where a (weak or magic) space and a punctuation from the
-    // suggestion strip have just been swapped. Undoing this swaps them back.
+    // Swap punctuation: the state where a weak space and a punctuation from the suggestion strip
+    // have just been swapped. Undoing this swaps them back; the space is still considered weak.
     private static final int SPACE_STATE_SWAP_PUNCTUATION = 2;
     // Weak space: a space that should be swapped only by suggestion strip punctuation. Weak
     // spaces happen when the user presses space, accepting the current suggestion (whether
@@ -1527,10 +1527,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         } else if ((SPACE_STATE_WEAK == spaceState
                 || SPACE_STATE_SWAP_PUNCTUATION == spaceState)
                 && isFromSuggestionStrip) {
-            if (mSettingsValues.isMagicSpaceSwapper(code)) {
+            if (mSettingsValues.isWeakSpaceSwapper(code)) {
                 return true;
             } else {
-                if (mSettingsValues.isMagicSpaceStripper(code)) {
+                if (mSettingsValues.isWeakSpaceStripper(code)) {
                     removeTrailingSpaceWhileInBatchEdit(ic);
                 }
                 return false;
