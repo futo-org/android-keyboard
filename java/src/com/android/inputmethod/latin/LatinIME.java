@@ -1458,11 +1458,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (mSuggestionsView != null && mSuggestionsView.dismissAddToDictionaryHint()) {
                 // Go back to the suggestion mode if the user canceled the
                 // "Touch again to save".
-                // NOTE: In general, we don't revert the word when backspacing
-                // from a manual suggestion pick.  We deliberately chose a
-                // different behavior only in the case of picking the first
-                // suggestion (typed word).  It's intentional to have made this
-                // inconsistent with backspacing after selecting other suggestions.
+                // TODO: this code path is not used any more. Verify & delete.
                 restartSuggestionsOnManuallyPickedTypedWord(ic);
             } else {
                 // Here we must check whether there is a selection. If so we should remove the
@@ -2170,6 +2166,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     // "ic" must not be null
+    // TODO: rename this method to cancelCommit.
     private void cancelAutoCorrect(final InputConnection ic) {
         final String originallyTypedWord = mLastComposedWord.mTypedWord;
         final CharSequence committedWord = mLastComposedWord.mCommittedWord;
