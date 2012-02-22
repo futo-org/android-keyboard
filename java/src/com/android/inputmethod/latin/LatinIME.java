@@ -895,7 +895,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // state-related special processing to kick in.
             mSpaceState = SPACE_STATE_NONE;
 
-            if ((!mWordComposer.isComposingWord()) || selectionChanged || noComposingSpan)) {
+            if ((!mWordComposer.isComposingWord()) || selectionChanged || noComposingSpan) {
                 resetEntireInputState();
             }
 
