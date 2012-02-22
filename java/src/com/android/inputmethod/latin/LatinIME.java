@@ -658,7 +658,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mDisplayOrientation = conf.orientation;
             mHandler.startOrientationChanging();
             final InputConnection ic = getCurrentInputConnection();
-            commitTyped(ic);
+            commitTyped(ic, LastComposedWord.NOT_A_SEPARATOR);
             if (ic != null) ic.finishComposingText(); // For voice input
             if (isShowingOptionDialog())
                 mOptionsDialog.dismiss();
@@ -1126,12 +1126,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
     }
 
-    public void commitTyped(final InputConnection ic) {
+    public void commitTyped(final InputConnection ic, final int separatorCode) {
         if (!mWordComposer.isComposingWord()) return;
         final CharSequence typedWord = mWordComposer.getTypedWord();
         if (typedWord.length() > 0) {
             mLastComposedWord = mWordComposer.commitWord(
-                    LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, typedWord.toString());
+                    LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, typedWord.toString(),
+                    separatorCode);
             if (ic != null) {
                 ic.commitText(typedWord, 1);
             }
@@ -1353,7 +1354,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
         ic.beginBatchEdit();
-        commitTyped(ic);
+        commitTyped(ic, LastComposedWord.NOT_A_SEPARATOR);
         text = specificTldProcessingOnTextInput(ic, text);
         if (SPACE_STATE_PHANTOM == mSpaceState) {
             sendKeyCodePoint(Keyboard.CODE_SPACE);
@@ -1646,7 +1647,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 commitCurrentAutoCorrection(primaryCode, ic);
                 didAutoCorrect = true;
             } else {
-                commitTyped(ic);
+                commitTyped(ic, primaryCode);
             }
         }
 
@@ -1703,7 +1704,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private void handleClose() {
-        commitTyped(getCurrentInputConnection());
+        commitTyped(getCurrentInputConnection(), LastComposedWord.NOT_A_SEPARATOR);
         mVoiceProxy.handleClose();
         requestHideSelf(0);
         LatinKeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
@@ -1914,7 +1915,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             Utils.Stats.onAutoCorrection(typedWord, autoCorrection.toString(), separatorCodePoint);
             mExpectingUpdateSelection = true;
-            commitChosenWord(autoCorrection, LastComposedWord.COMMIT_TYPE_DECIDED_WORD);
+            commitChosenWord(autoCorrection, LastComposedWord.COMMIT_TYPE_DECIDED_WORD,
+                    separatorCodePoint);
             // Add the word to the user unigram dictionary if it's not a known word
             addToUserUnigramAndBigramDictionaries(autoCorrection,
                     UserUnigramDictionary.FREQUENCY_FOR_TYPED);
@@ -1969,7 +1971,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         LatinImeLogger.logOnManualSuggestion(mWordComposer.getTypedWord().toString(),
                 suggestion.toString(), index, suggestions.mWords);
         mExpectingUpdateSelection = true;
-        commitChosenWord(suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK);
+        commitChosenWord(suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,
+                LastComposedWord.NOT_A_SEPARATOR);
         // Add the word to the auto dictionary if it's not a known word
         if (index == 0) {
             addToUserUnigramAndBigramDictionaries(suggestion,
@@ -2019,7 +2022,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     /**
      * Commits the chosen word to the text field and saves it for later retrieval.
      */
-    private void commitChosenWord(final CharSequence bestWord, final int commitType) {
+    private void commitChosenWord(final CharSequence bestWord, final int commitType,
+            final int separatorCode) {
         final InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
             mVoiceProxy.rememberReplacedWord(bestWord, mSettingsValues.mWordSeparators);
@@ -2035,7 +2039,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // what user typed. Note: currently this is done much later in
         // LastComposedWord#canCancelAutoCorrect by string equality of the remembered
         // strings.
-        mLastComposedWord = mWordComposer.commitWord(commitType, bestWord.toString());
+        mLastComposedWord = mWordComposer.commitWord(commitType, bestWord.toString(),
+                separatorCode);
     }
 
     private static final WordComposer sEmptyWordComposer = new WordComposer();
