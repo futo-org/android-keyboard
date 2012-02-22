@@ -73,8 +73,7 @@ public class LastComposedWord {
     }
 
     public boolean canCancelAutoCorrect() {
-        return mActive && !TextUtils.isEmpty(mCommittedWord)
-                && !TextUtils.equals(mTypedWord, mCommittedWord);
+        return mActive && !TextUtils.isEmpty(mCommittedWord);
     }
 
     public boolean didCommitTypedWord() {

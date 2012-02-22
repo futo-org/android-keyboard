@@ -310,17 +310,9 @@ public class WordComposer {
     // `type' should be one of the LastComposedWord.COMMIT_TYPE_* constants above.
     public LastComposedWord commitWord(final int type, final String committedWord,
             final int separatorCode) {
-        // Note: currently, we come here whenever we commit a word. If it's any *other* kind than
-        // DECIDED_WORD, we should deactivate the last composed word so that we don't attempt to
-        // cancel later.
-        // If it's a DECIDED_WORD, it may be an actual auto-correction by the IME, or what the user
-        // typed because the IME decided *not* to auto-correct for whatever reason.
-        // Ideally we would also null it when it was a DECIDED_WORD that was not an auto-correct.
-        // As it happens these two cases should behave differently, because the former can be
-        // canceled while the latter can't. Currently, we figure this out in
-        // LastComposedWord#didAutoCorrectToAnotherWord with #equals(). It would be marginally
-        // cleaner to do it here, but it would be slower (since we would #equals() for each commit,
-        // instead of only on cancel), and ultimately we want to figure it out even earlier anyway.
+        // Note: currently, we come here whenever we commit a word. If it's a MANUAL_PICK
+        // or a DECIDED_WORD we may cancel the commit later; otherwise, we should deactivate
+        // the last composed word to ensure this does not happen.
         final ArrayList<int[]> codes = mCodes;
         final int[] xCoordinates = mXCoordinates;
         final int[] yCoordinates = mYCoordinates;
@@ -329,7 +321,8 @@ public class WordComposer {
         mYCoordinates = new int[N];
         final LastComposedWord lastComposedWord = new LastComposedWord(codes,
                 xCoordinates, yCoordinates, mTypedWord.toString(), committedWord, separatorCode);
-        if (type != LastComposedWord.COMMIT_TYPE_DECIDED_WORD) {
+        if (type != LastComposedWord.COMMIT_TYPE_DECIDED_WORD
+                && type != LastComposedWord.COMMIT_TYPE_MANUAL_PICK) {
             lastComposedWord.deactivate();
         }
         mTypedWord.setLength(0);
