@@ -169,6 +169,22 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
                 mTextView.getText().toString());
     }
 
+    public void testPickAutoCorrectionThenBackspace() {
+        final String WORD_TO_TYPE = "tgis";
+        final String WORD_TO_PICK = "this";
+        final String EXPECTED_RESULT = "tgis";
+        type(WORD_TO_TYPE);
+        // Choose the auto-correction, which is always in position 0. For "tgis", the
+        // auto-correction should be "this".
+        mLatinIME.pickSuggestionManually(0, WORD_TO_PICK);
+        mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
+        assertEquals("pick typed word over auto-correction then backspace", WORD_TO_PICK,
+                mTextView.getText().toString());
+        type(Keyboard.CODE_DELETE);
+        assertEquals("pick typed word over auto-correction then backspace", EXPECTED_RESULT,
+                mTextView.getText().toString());
+    }
+
     public void testPickTypedWordOverAutoCorrectionThenBackspace() {
         final String WORD_TO_TYPE = "tgis";
         final String EXPECTED_RESULT = "tgis";
@@ -177,8 +193,26 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         // be occupied by the "this" auto-correction, as checked by testAutoCorrect())
         mLatinIME.pickSuggestionManually(1, WORD_TO_TYPE);
         mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
+        assertEquals("pick typed word over auto-correction then backspace", WORD_TO_TYPE,
+                mTextView.getText().toString());
         type(Keyboard.CODE_DELETE);
         assertEquals("pick typed word over auto-correction then backspace", EXPECTED_RESULT,
+                mTextView.getText().toString());
+    }
+
+    public void testPickDifferentSuggestionThenBackspace() {
+        final String WORD_TO_TYPE = "tgis";
+        final String WORD_TO_PICK = "thus";
+        final String EXPECTED_RESULT = "tgis";
+        type(WORD_TO_TYPE);
+        // Choose the second suggestion, which should be in position 2 and should be "thus"
+        // when "tgis is typed.
+        mLatinIME.pickSuggestionManually(2, WORD_TO_PICK);
+        mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
+        assertEquals("pick different suggestion then backspace", WORD_TO_PICK,
+                mTextView.getText().toString());
+        type(Keyboard.CODE_DELETE);
+        assertEquals("pick different suggestion then backspace", EXPECTED_RESULT,
                 mTextView.getText().toString());
     }
 
@@ -205,6 +239,23 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         final String EXPECTED_RESULT = "this ";
         type(STRING_TO_TYPE);
         assertEquals("simple auto-correct", EXPECTED_RESULT, mTextView.getText().toString());
+    }
+
+    public void testAutoCorrectWithPeriod() {
+        final String STRING_TO_TYPE = "tgis.";
+        final String EXPECTED_RESULT = "this.";
+        type(STRING_TO_TYPE);
+        assertEquals("auto-correct with period", EXPECTED_RESULT, mTextView.getText().toString());
+    }
+
+    public void testAutoCorrectWithPeriodThenRevert() {
+        final String STRING_TO_TYPE = "tgis.";
+        final String EXPECTED_RESULT = "tgis.";
+        type(STRING_TO_TYPE);
+        mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
+        type(Keyboard.CODE_DELETE);
+        assertEquals("auto-correct with period then revert", EXPECTED_RESULT,
+                mTextView.getText().toString());
     }
 
     public void testDoubleSpace() {
