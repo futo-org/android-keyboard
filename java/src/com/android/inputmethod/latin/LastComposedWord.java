@@ -76,4 +76,12 @@ public class LastComposedWord {
         return mActive && !TextUtils.isEmpty(mCommittedWord)
                 && !TextUtils.equals(mTypedWord, mCommittedWord);
     }
+
+    public boolean didCommitTypedWord() {
+        return TextUtils.equals(mTypedWord, mCommittedWord);
+    }
+
+    public static int getSeparatorLength(final int separatorCode) {
+        return NOT_A_SEPARATOR == separatorCode ? 0 : 1;
+    }
 }
