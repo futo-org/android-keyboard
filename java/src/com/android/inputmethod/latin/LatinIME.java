@@ -1431,16 +1431,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 ic.deleteSurroundingText(1, 0);
             }
         } else {
-            // We should be very careful about auto-correction cancellation and suggestion
-            // resuming here. The behavior needs to be different according to text field types,
-            // and it would be much clearer to test for them explicitly here rather than
-            // relying on implicit values like "whether the suggestion strip is displayed".
-            if (mLastComposedWord.canCancelAutoCorrect()) {
+            if (mLastComposedWord.canCancelCommit()) {
                 Utils.Stats.onAutoCorrectionCancellation();
-                cancelAutoCorrect(ic);
+                cancelCommit(ic);
                 return;
             }
-
             if (SPACE_STATE_DOUBLE == spaceState) {
                 if (revertDoubleSpaceWhileInBatchEdit(ic)) {
                     // No need to reset mSpaceState, it has already be done (that's why we
@@ -2001,7 +1996,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         // TODO: figure out here if this is an auto-correct or if the best word is actually
         // what user typed. Note: currently this is done much later in
-        // LastComposedWord#canCancelAutoCorrect by string equality of the remembered
+        // LastComposedWord#didCommitTypedWord by string equality of the remembered
         // strings.
         mLastComposedWord = mWordComposer.commitWord(commitType, bestWord.toString(),
                 separatorCode);
@@ -2166,8 +2161,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     // "ic" must not be null
-    // TODO: rename this method to cancelCommit.
-    private void cancelAutoCorrect(final InputConnection ic) {
+    private void cancelCommit(final InputConnection ic) {
         final String originallyTypedWord = mLastComposedWord.mTypedWord;
         final CharSequence committedWord = mLastComposedWord.mCommittedWord;
         final int cancelLength = committedWord.length();
@@ -2176,20 +2170,15 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // TODO: should we check our saved separator against the actual contents of the text view?
         if (DEBUG) {
             if (mWordComposer.isComposingWord()) {
-                throw new RuntimeException("cancelAutoCorrect, but we are composing a word");
+                throw new RuntimeException("cancelCommit, but we are composing a word");
             }
             final String wordBeforeCursor =
                     ic.getTextBeforeCursor(cancelLength + separatorLength, 0)
                             .subSequence(0, cancelLength).toString();
             if (!TextUtils.equals(committedWord, wordBeforeCursor)) {
-                throw new RuntimeException("cancelAutoCorrect check failed: we thought we were "
+                throw new RuntimeException("cancelCommit check failed: we thought we were "
                         + "reverting \"" + committedWord
                         + "\", but before the cursor we found \"" + wordBeforeCursor + "\"");
-            }
-            if (TextUtils.equals(originallyTypedWord, wordBeforeCursor)) {
-                throw new RuntimeException("cancelAutoCorrect check failed: we wanted to cancel "
-                        + "auto correction and revert to \"" + originallyTypedWord
-                        + "\" but we found this very string before the cursor");
             }
         }
         ic.deleteSurroundingText(cancelLength + separatorLength, 0);

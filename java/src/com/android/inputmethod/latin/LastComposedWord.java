@@ -72,7 +72,7 @@ public class LastComposedWord {
         mActive = false;
     }
 
-    public boolean canCancelAutoCorrect() {
+    public boolean canCancelCommit() {
         return mActive && !TextUtils.isEmpty(mCommittedWord);
     }
 
