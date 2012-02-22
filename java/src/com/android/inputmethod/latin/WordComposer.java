@@ -308,7 +308,8 @@ public class WordComposer {
     }
 
     // `type' should be one of the LastComposedWord.COMMIT_TYPE_* constants above.
-    public LastComposedWord commitWord(final int type, final String committedWord) {
+    public LastComposedWord commitWord(final int type, final String committedWord,
+            final int separatorCode) {
         // Note: currently, we come here whenever we commit a word. If it's any *other* kind than
         // DECIDED_WORD, we should deactivate the last composed word so that we don't attempt to
         // cancel later.
@@ -327,7 +328,7 @@ public class WordComposer {
         mXCoordinates = new int[N];
         mYCoordinates = new int[N];
         final LastComposedWord lastComposedWord = new LastComposedWord(codes,
-                xCoordinates, yCoordinates, mTypedWord.toString(), committedWord);
+                xCoordinates, yCoordinates, mTypedWord.toString(), committedWord, separatorCode);
         if (type != LastComposedWord.COMMIT_TYPE_DECIDED_WORD) {
             lastComposedWord.deactivate();
         }

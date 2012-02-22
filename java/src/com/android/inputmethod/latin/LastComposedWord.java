@@ -40,26 +40,31 @@ public class LastComposedWord {
     // an auto-correction.
     public static final int COMMIT_TYPE_CANCEL_AUTO_CORRECT = 3;
 
+    public static final int NOT_A_SEPARATOR = -1;
+
     public final ArrayList<int[]> mCodes;
     public final int[] mXCoordinates;
     public final int[] mYCoordinates;
     public final String mTypedWord;
     public final String mCommittedWord;
+    public final int mSeparatorCode;
 
     private boolean mActive;
 
     public static final LastComposedWord NOT_A_COMPOSED_WORD =
-            new LastComposedWord(null, null, null, "", "");
+            new LastComposedWord(null, null, null, "", "", NOT_A_SEPARATOR);
 
     // Warning: this is using the passed objects as is and fully expects them to be
     // immutable. Do not fiddle with their contents after you passed them to this constructor.
     public LastComposedWord(final ArrayList<int[]> codes, final int[] xCoordinates,
-            final int[] yCoordinates, final String typedWord, final String committedWord) {
+            final int[] yCoordinates, final String typedWord, final String committedWord,
+            final int separatorCode) {
         mCodes = codes;
         mXCoordinates = xCoordinates;
         mYCoordinates = yCoordinates;
         mTypedWord = typedWord;
         mCommittedWord = committedWord;
+        mSeparatorCode = separatorCode;
         mActive = true;
     }
 

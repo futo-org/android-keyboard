@@ -56,6 +56,7 @@ import com.android.inputmethod.deprecated.voice.VoiceInput;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.LatinKeyboardView;
 import com.android.inputmethod.latin.EditingUtils;
+import com.android.inputmethod.latin.LastComposedWord;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinIME.UIHandler;
 import com.android.inputmethod.latin.LatinImeLogger;
@@ -553,7 +554,7 @@ public class VoiceProxy implements VoiceInput.UiListener {
         mHints.registerVoiceResult(bestResult);
 
         if (ic != null) ic.beginBatchEdit(); // To avoid extra updates on committing older text
-        mService.commitTyped(ic);
+        mService.commitTyped(ic, LastComposedWord.NOT_A_SEPARATOR);
         EditingUtils.appendText(ic, bestResult);
         if (ic != null) ic.endBatchEdit();
 

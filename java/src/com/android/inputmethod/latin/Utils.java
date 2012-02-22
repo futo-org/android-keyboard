@@ -264,6 +264,7 @@ public class Utils {
             int ret = in % BUFSIZE;
             return ret < 0 ? ret + BUFSIZE : ret;
         }
+        // TODO: accept code points
         public void push(char c, int x, int y) {
             if (!mEnabled) return;
             if (mUsabilityStudy) {
@@ -777,9 +778,10 @@ public class Utils {
             LatinImeLogger.logOnInputChar();
         }
 
-        public static void onSeparator(final char code, final int x,
+        public static void onSeparator(final int code, final int x,
                 final int y) {
-            RingCharBuffer.getInstance().push(code, x, y);
+            // TODO: accept code points
+            RingCharBuffer.getInstance().push((char)code, x, y);
             LatinImeLogger.logOnInputSeparator();
         }
 
