@@ -30,5 +30,7 @@
     <integer name="key_settings">-5</integer>
     <integer name="key_shortcut">-6</integer>
     <integer name="key_action_enter">-7</integer>
-    <integer name="key_unspecified">-9</integer>
+    <integer name="key_action_next">-8</integer>
+    <integer name="key_action_previous">-9</integer>
+    <integer name="key_unspecified">-10</integer>
 </resources>

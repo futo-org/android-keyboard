@@ -87,7 +87,6 @@ public class KeyboardId {
                 id.mElementId,
                 id.mMode,
                 id.mWidth,
-                id.navigateAction(),
                 id.passwordInput(),
                 id.mClobberSettingsKey,
                 id.mShortcutKeyEnabled,
@@ -95,6 +94,8 @@ public class KeyboardId {
                 id.isMultiLine(),
                 id.imeAction(),
                 id.mCustomActionLabel,
+                id.navigateNext(),
+                id.navigatePrevious(),
                 id.mLocale
         });
     }
@@ -106,7 +107,6 @@ public class KeyboardId {
                 && other.mElementId == this.mElementId
                 && other.mMode == this.mMode
                 && other.mWidth == this.mWidth
-                && other.navigateAction() == this.navigateAction()
                 && other.passwordInput() == this.passwordInput()
                 && other.mClobberSettingsKey == this.mClobberSettingsKey
                 && other.mShortcutKeyEnabled == this.mShortcutKeyEnabled
@@ -114,6 +114,8 @@ public class KeyboardId {
                 && other.isMultiLine() == this.isMultiLine()
                 && other.imeAction() == this.imeAction()
                 && TextUtils.equals(other.mCustomActionLabel, this.mCustomActionLabel)
+                && other.navigateNext() == this.navigateNext()
+                && other.navigatePrevious() == this.navigatePrevious()
                 && other.mLocale.equals(this.mLocale);
     }
 
@@ -146,12 +148,12 @@ public class KeyboardId {
         return mElementId == ELEMENT_PHONE_SYMBOLS;
     }
 
-    public boolean navigateAction() {
-        // Note: Turn off checking navigation flag to show TAB key for now.
-        boolean navigateAction = InputTypeCompatUtils.isWebInputType(mEditorInfo.inputType);
-//                || EditorInfoCompatUtils.hasFlagNavigateNext(mImeOptions)
-//                || EditorInfoCompatUtils.hasFlagNavigatePrevious(mImeOptions);
-        return navigateAction;
+    public boolean navigateNext() {
+        return EditorInfoCompatUtils.hasFlagNavigateNext(mEditorInfo.imeOptions);
+    }
+
+    public boolean navigatePrevious() {
+        return EditorInfoCompatUtils.hasFlagNavigatePrevious(mEditorInfo.imeOptions);
     }
 
     public boolean passwordInput() {
@@ -165,13 +167,19 @@ public class KeyboardId {
     }
 
     public int imeAction() {
+        final int actionId = mEditorInfo.imeOptions & EditorInfo.IME_MASK_ACTION;
         if ((mEditorInfo.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
             return EditorInfo.IME_ACTION_NONE;
         } else if (mEditorInfo.actionLabel != null) {
             return IME_ACTION_CUSTOM_LABEL;
         } else {
-            return mEditorInfo.imeOptions & EditorInfo.IME_MASK_ACTION;
+            return actionId;
         }
+    }
+
+    public int imeActionId() {
+        final int actionId = imeAction();
+        return actionId == IME_ACTION_CUSTOM_LABEL ? mEditorInfo.actionId : actionId;
     }
 
     @Override
@@ -186,17 +194,19 @@ public class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format("[%s %s %s%d %s %s %s%s%s%s%s]",
+        return String.format("[%s %s %s%d %s %s %s%s%s%s%s%s%s]",
                 elementIdToName(mElementId),
                 mLocale,
                 (mOrientation == 1 ? "port" : "land"), mWidth,
                 modeName(mMode),
                 imeAction(),
+                (navigateNext() ? "navigateNext" : ""),
+                (navigatePrevious() ? "navigatePrevious" : ""),
                 (mClobberSettingsKey ? " clobberSettingsKey" : ""),
-                (navigateAction() ? " navigateAction" : ""),
                 (passwordInput() ? " passwordInput" : ""),
                 (mShortcutKeyEnabled ? " shortcutKeyEnabled" : ""),
-                (mHasShortcutKey ? " hasShortcutKey" : "")
+                (mHasShortcutKey ? " hasShortcutKey" : ""),
+                (isMultiLine() ? "isMultiLine" : "")
         );
     }
 

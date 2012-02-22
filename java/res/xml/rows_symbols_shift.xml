@@ -119,6 +119,29 @@
             latin:keyWidth="fillRight"
             latin:visualInsetsLeft="1%p" />
     </Row>
-    <include
-        latin:keyboardLayout="@xml/row_symbols_shift4" />
+    <Row
+        latin:keyWidth="10%p"
+    >
+        <Key
+            latin:keyStyle="toAlphaKeyStyle"
+            latin:keyWidth="15%p" />
+        <!-- U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
+        <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK. -->
+        <!-- latin:keyLabelFlags="hasPopupHint" -->
+        <!-- latin:moreKeys="&#x201F;" -->
+        <!-- U+201E: "„" DOUBLE LOW-9 QUOTATION MARK -->
+        <Key
+            latin:keyLabel="&#x201E;"
+            latin:backgroundType="functional" />
+        <Key
+            latin:keyStyle="spaceKeyStyle"
+            latin:keyWidth="50%p" />
+        <!-- U+2026: "…" HORIZONTAL ELLIPSIS -->
+        <Key
+            latin:keyLabel="&#x2026;"
+            latin:backgroundType="functional" />
+        <Key
+            latin:keyStyle="enterKeyStyle"
+            latin:keyWidth="fillRight" />
+    </Row>
 </merge>

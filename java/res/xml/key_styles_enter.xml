@@ -21,6 +21,60 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
+    <!-- Navigate more keys style -->
+    <switch>
+        <case
+            latin:imeAction="actionNext"
+            latin:navigatePrevious="true"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle"
+                latin:keyLabelFlags="hasPopupHint|preserveCase"
+                latin:moreKeys="@string/action_previous_as_more_key" />
+        </case>
+        <case
+            latin:imeAction="actionPrevious"
+            latin:navigateNext="true"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle"
+                latin:keyLabelFlags="hasPopupHint|preserveCase"
+                latin:moreKeys="@string/action_next_as_more_key" />
+        </case>
+        <!-- imeAction!="actionNext" and imeAction!="actionPrevious" -->
+        <case
+            latin:navigateNext="true"
+            latin:navigatePrevious="true"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle"
+                latin:keyLabelFlags="hasPopupHint|preserveCase"
+                latin:moreKeys="!fixedColumnOrder!2,\@string/action_previous_as_more_key,\@string/action_next_as_more_key" />
+        </case>
+        <case
+            latin:navigateNext="true"
+            latin:navigatePrevious="false"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle"
+                latin:keyLabelFlags="hasPopupHint|preserveCase"
+                latin:moreKeys="@string/action_next_as_more_key" />
+        </case>
+        <case
+            latin:navigateNext="false"
+            latin:navigatePrevious="true"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle"
+                latin:keyLabelFlags="hasPopupHint|preserveCase"
+                latin:moreKeys="@string/action_previous_as_more_key" />
+        </case>
+        <!-- naviagteNext="false" and navigatePrevious="false" -->
+        <default>
+            <key-style
+                latin:styleName="navigateMoreKeysStyle" />
+        </default>
+    </switch>
     <!-- Enter key style -->
     <key-style
         latin:styleName="defaultEnterKeyStyle"
@@ -28,7 +82,8 @@
         latin:keyIcon="iconReturnKey"
         latin:keyLabelFlags="autoXScale|preserveCase"
         latin:keyActionFlags="noKeyPreview"
-        latin:backgroundType="functional" />
+        latin:backgroundType="functional"
+        latin:parentStyle="navigateMoreKeysStyle" />
     <key-style
         latin:styleName="defaultActionKeyStyle"
         latin:code="@integer/key_action_enter"

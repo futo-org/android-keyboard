@@ -118,6 +118,8 @@
     <string name="settings_as_more_key">\@icon/settingsKey|\@integer/key_settings</string>
     <string name="keylabel_for_comma">,</string>
     <string name="more_keys_for_comma"></string>
+    <string name="action_next_as_more_key">\@string/label_next_key|\@integer/key_action_next</string>
+    <string name="action_previous_as_more_key">\@string/label_previous_key|\@integer/key_action_previous</string>
     <string name="keylabel_for_symbols_question">\?</string>
     <string name="keylabel_for_symbols_semicolon">;</string>
     <string name="keylabel_for_symbols_percent">%</string>

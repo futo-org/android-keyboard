@@ -27,13 +27,13 @@
             latin:clobberSettingsKey="true"
         >
             <key-style
-                latin:styleName="f1PopupStyle"
+                latin:styleName="f1MoreKeysStyle"
                 latin:backgroundType="functional" />
         </case>
         <!-- clobberSettingsKey="false" -->
         <default>
             <key-style
-                latin:styleName="f1PopupStyle"
+                latin:styleName="f1MoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint"
                 latin:moreKeys="@string/settings_as_more_key"
                 latin:backgroundType="functional" />
@@ -77,7 +77,22 @@
         latin:keyActionFlags="isRepeatable|noKeyPreview"
         latin:backgroundType="functional" />
     <include
-        latin:keyboardLayout="@xml/key_styles_enter_phone" />
+        latin:keyboardLayout="@xml/key_styles_enter" />
+    <switch>
+        <!-- Smiley in textShortMessage field.
+             Overrides common enter key style. -->
+        <case
+            latin:mode="im"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keyLabel=":-)"
+                latin:keyOutputText=":-) "
+                latin:keyLabelFlags="hasPopupHint"
+                latin:moreKeys="@string/more_keys_for_smiley"
+                latin:backgroundType="functional" />
+        </case>
+    </switch>
     <key-style
         latin:styleName="spaceKeyStyle"
         latin:code="@integer/key_space"
@@ -91,7 +106,7 @@
         latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
         latin:altCode="@integer/key_space"
-        latin:parentStyle="f1PopupStyle" />
+        latin:parentStyle="f1MoreKeysStyle" />
     <key-style
         latin:styleName="settingsKeyStyle"
         latin:code="@integer/key_settings"

@@ -27,8 +27,7 @@ public class XmlParseUtils {
     @SuppressWarnings("serial")
     public static class ParseException extends XmlPullParserException {
         public ParseException(String msg, XmlPullParser parser) {
-            super(msg + " at line " + parser.getLineNumber()
-                    + ", column " + parser.getColumnNumber());
+            super(msg + " at " + parser.getPositionDescription());
         }
     }
 

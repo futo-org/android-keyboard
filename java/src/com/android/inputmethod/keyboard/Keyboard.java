@@ -99,8 +99,10 @@ public class Keyboard {
     public static final int CODE_SETTINGS = -5;
     public static final int CODE_SHORTCUT = -6;
     public static final int CODE_ACTION_ENTER = -7;
+    public static final int CODE_ACTION_NEXT = -8;
+    public static final int CODE_ACTION_PREVIOUS = -9;
     // Code value representing the code is not specified.
-    public static final int CODE_UNSPECIFIED = -9;
+    public static final int CODE_UNSPECIFIED = -10;
 
     public final KeyboardId mId;
     public final int mThemeId;
@@ -381,6 +383,8 @@ public class Keyboard {
         case CODE_SETTINGS: return "settings";
         case CODE_SHORTCUT: return "shortcut";
         case CODE_ACTION_ENTER: return "actionEnter";
+        case CODE_ACTION_NEXT: return "actionNext";
+        case CODE_ACTION_PREVIOUS: return "actionPrevious";
         case CODE_UNSPECIFIED: return "unspec";
         case CODE_TAB: return "tab";
         case CODE_ENTER: return "enter";
@@ -1069,8 +1073,10 @@ public class Keyboard {
                         KeyboardId.elementIdToName(id.mElementId));
                 final boolean modeMatched = matchTypedValue(a,
                         R.styleable.Keyboard_Case_mode, id.mMode, KeyboardId.modeName(id.mMode));
-                final boolean navigateActionMatched = matchBoolean(a,
-                        R.styleable.Keyboard_Case_navigateAction, id.navigateAction());
+                final boolean navigateNextMatched = matchBoolean(a,
+                        R.styleable.Keyboard_Case_navigateNext, id.navigateNext());
+                final boolean navigatePreviousMatched = matchBoolean(a,
+                        R.styleable.Keyboard_Case_navigatePrevious, id.navigatePrevious());
                 final boolean passwordInputMatched = matchBoolean(a,
                         R.styleable.Keyboard_Case_passwordInput, id.passwordInput());
                 final boolean clobberSettingsKeyMatched = matchBoolean(a,
@@ -1090,30 +1096,32 @@ public class Keyboard {
                 final boolean countryCodeMatched = matchString(a,
                         R.styleable.Keyboard_Case_countryCode, id.mLocale.getCountry());
                 final boolean selected = keyboardSetElementMatched && modeMatched
-                        && navigateActionMatched && passwordInputMatched
+                        && navigateNextMatched && navigatePreviousMatched && passwordInputMatched
                         && clobberSettingsKeyMatched && shortcutKeyEnabledMatched
                         && hasShortcutKeyMatched && isMultiLineMatched && imeActionMatched
                         && localeCodeMatched && languageCodeMatched && countryCodeMatched;
 
                 if (DEBUG) {
-                    startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
+                    startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
                             textAttr(a.getString(R.styleable.Keyboard_Case_keyboardSetElement),
                                     "keyboardSetElement"),
                             textAttr(a.getString(R.styleable.Keyboard_Case_mode), "mode"),
-                            booleanAttr(a, R.styleable.Keyboard_Case_navigateAction,
-                                    "navigateAction"),
-                            booleanAttr(a, R.styleable.Keyboard_Case_passwordInput,
-                                    "passwordInput"),
+                            textAttr(a.getString(R.styleable.Keyboard_Case_imeAction),
+                                    "imeAction"),
+                            booleanAttr(a, R.styleable.Keyboard_Case_navigateNext,
+                                    "navigateNext"),
+                            booleanAttr(a, R.styleable.Keyboard_Case_navigatePrevious,
+                                    "navigatePrevious"),
                             booleanAttr(a, R.styleable.Keyboard_Case_clobberSettingsKey,
                                     "clobberSettingsKey"),
+                            booleanAttr(a, R.styleable.Keyboard_Case_passwordInput,
+                                    "passwordInput"),
                             booleanAttr(a, R.styleable.Keyboard_Case_shortcutKeyEnabled,
                                     "shortcutKeyEnabled"),
                             booleanAttr(a, R.styleable.Keyboard_Case_hasShortcutKey,
                                     "hasShortcutKey"),
                             booleanAttr(a, R.styleable.Keyboard_Case_isMultiLine,
                                     "isMultiLine"),
-                            textAttr(a.getString(R.styleable.Keyboard_Case_imeAction),
-                                    "imeAction"),
                             textAttr(a.getString(R.styleable.Keyboard_Case_localeCode),
                                     "localeCode"),
                             textAttr(a.getString(R.styleable.Keyboard_Case_languageCode),
