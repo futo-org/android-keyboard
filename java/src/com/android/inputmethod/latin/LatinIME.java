@@ -1449,32 +1449,26 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 }
             }
 
-            // See the comment above: must be careful about resuming auto-suggestion.
-            if (mSuggestionsView != null && mSuggestionsView.dismissAddToDictionaryHint()) {
-                // Go back to the suggestion mode if the user canceled the
-                // "Touch again to save".
-                // TODO: this code path is not used any more. Verify & delete.
-                restartSuggestionsOnManuallyPickedTypedWord(ic);
+            // No cancelling of commit/double space/swap: we have a regular backspace.
+            // We should backspace one char and restart suggestion if at the end of a word.
+            if (mLastSelectionStart != mLastSelectionEnd) {
+                // If there is a selection, remove it.
+                final int lengthToDelete = mLastSelectionEnd - mLastSelectionStart;
+                ic.setSelection(mLastSelectionEnd, mLastSelectionEnd);
+                ic.deleteSurroundingText(lengthToDelete, 0);
             } else {
-                // Here we must check whether there is a selection. If so we should remove the
-                // selected text, otherwise we should just delete the character before the cursor.
-                if (mLastSelectionStart != mLastSelectionEnd) {
-                    final int lengthToDelete = mLastSelectionEnd - mLastSelectionStart;
-                    ic.setSelection(mLastSelectionEnd, mLastSelectionEnd);
-                    ic.deleteSurroundingText(lengthToDelete, 0);
-                } else {
-                    if (NOT_A_CURSOR_POSITION == mLastSelectionEnd) {
-                        // This should never happen.
-                        Log.e(TAG, "Backspace when we don't know the selection position");
-                    }
+                // There is no selection, just delete one character.
+                if (NOT_A_CURSOR_POSITION == mLastSelectionEnd) {
+                    // This should never happen.
+                    Log.e(TAG, "Backspace when we don't know the selection position");
+                }
+                ic.deleteSurroundingText(1, 0);
+                if (mDeleteCount > DELETE_ACCELERATE_AT) {
                     ic.deleteSurroundingText(1, 0);
-                    if (mDeleteCount > DELETE_ACCELERATE_AT) {
-                        ic.deleteSurroundingText(1, 0);
-                    }
                 }
-                if (isSuggestionsRequested()) {
-                    restartSuggestionsOnWordBeforeCursorIfAtEndOfWord(ic);
-                }
+            }
+            if (isSuggestionsRequested()) {
+                restartSuggestionsOnWordBeforeCursorIfAtEndOfWord(ic);
             }
         }
     }
@@ -2198,36 +2192,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // separator.
         }
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
-        mHandler.cancelUpdateBigramPredictions();
-        mHandler.postUpdateSuggestions();
-    }
-
-    // "ic" must not be null
-    private void restartSuggestionsOnManuallyPickedTypedWord(final InputConnection ic) {
-        // Note: this relies on the last word still being held in the WordComposer, in
-        // the field for suggestion resuming.
-        // Note: in the interest of code simplicity, we may want to just call
-        // restartSuggestionsOnWordBeforeCursorIfAtEndOfWord instead, but retrieving
-        // the old WordComposer allows to reuse the actual typed coordinates.
-        mWordComposer.resumeSuggestionOnLastComposedWord(mLastComposedWord);
-        // We resume suggestion, and then we want to set the composing text to the content
-        // of the word composer again. But since we just manually picked a word, there is
-        // no composing text at the moment, so we have to delete the word before we set a
-        // new composing text.
-        final int restartLength = mWordComposer.size();
-        if (DEBUG) {
-            final String wordBeforeCursor = ic.getTextBeforeCursor(restartLength, 0).toString();
-            if (!TextUtils.equals(mWordComposer.getTypedWord(), wordBeforeCursor)) {
-                throw new RuntimeException("restartSuggestionsOnManuallyPickedTypedWord "
-                        + "check failed: we thought we were reverting \""
-                        + mWordComposer.getTypedWord()
-                        + "\", but before the cursor we found \""
-                        + wordBeforeCursor + "\"");
-            }
-        }
-        ic.deleteSurroundingText(restartLength, 0);
-        mComposingStateManager.onStartComposingText();
-        ic.setComposingText(mWordComposer.getTypedWord(), 1);
         mHandler.cancelUpdateBigramPredictions();
         mHandler.postUpdateSuggestions();
     }
