@@ -2174,14 +2174,16 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final String originallyTypedWord = mLastComposedWord.mTypedWord;
         final CharSequence committedWord = mLastComposedWord.mCommittedWord;
         final int cancelLength = committedWord.length();
-        final CharSequence separator = ic.getTextBeforeCursor(1, 0);
+        final int separatorLength = mLastComposedWord.getSeparatorLength(
+                mLastComposedWord.mSeparatorCode);
+        // TODO: should we check our saved separator against the actual contents of the text view?
         if (DEBUG) {
             if (mWordComposer.isComposingWord()) {
                 throw new RuntimeException("cancelAutoCorrect, but we are composing a word");
             }
             final String wordBeforeCursor =
-                    ic.getTextBeforeCursor(cancelLength + 1, 0).subSequence(0, cancelLength)
-                    .toString();
+                    ic.getTextBeforeCursor(cancelLength + separatorLength, 0)
+                            .subSequence(0, cancelLength).toString();
             if (!TextUtils.equals(committedWord, wordBeforeCursor)) {
                 throw new RuntimeException("cancelAutoCorrect check failed: we thought we were "
                         + "reverting \"" + committedWord
@@ -2193,13 +2195,21 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                         + "\" but we found this very string before the cursor");
             }
         }
-        ic.deleteSurroundingText(cancelLength + 1, 0);
-        ic.commitText(originallyTypedWord, 1);
-        // Re-insert the separator
-        ic.commitText(separator, 1);
+        ic.deleteSurroundingText(cancelLength + separatorLength, 0);
+        if (0 == separatorLength || mLastComposedWord.didCommitTypedWord()) {
+            // This is the case when we cancel a manual pick.
+            // TODO: implement this
+            // We should restart suggestion on the word right away.
+        } else {
+            ic.commitText(originallyTypedWord, 1);
+            // Re-insert the separator
+            sendKeyCodePoint(mLastComposedWord.mSeparatorCode);
+            Utils.Stats.onSeparator(mLastComposedWord.mSeparatorCode, WordComposer.NOT_A_COORDINATE,
+                    WordComposer.NOT_A_COORDINATE);
+            // Don't restart suggestion yet. We'll restart if the user deletes the
+            // separator.
+        }
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
-        Utils.Stats.onSeparator(separator.charAt(0), WordComposer.NOT_A_COORDINATE,
-                WordComposer.NOT_A_COORDINATE);
         mHandler.cancelUpdateBigramPredictions();
         mHandler.postUpdateSuggestions();
     }
