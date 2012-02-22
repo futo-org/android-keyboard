@@ -21,7 +21,7 @@
 <!-- for the Input Method Manager. -->
 
 <!-- Keyboard: en_US, en_GB, ar, be, bg, cs, da, de, de(QWERTY), es, es_US, et, fi, fr, fr_CA,
-     fr_CH, hr, hu, it, iw, ky, lt, lv, nb, nl, pl, pt, ro, ru, sk, sl, sr, sv, tr, uk, vi -->
+     fr_CH, hr, hu, it, iw, ka, ky, lt, lv, nb, nl, pl, pt, ro, ru, sk, sl, sr, sv, tr, uk, vi -->
 <!-- TODO: use <lang>_keyboard icon instead of a common keyboard icon. -->
 <!-- If IME doesn't have an applicable subtype, the first subtype will be used as a default
      subtype.-->
@@ -140,6 +140,12 @@
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
             android:imeSubtypeLocale="iw"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="SupportTouchPositionCorrection"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:imeSubtypeLocale="ka"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="SupportTouchPositionCorrection"
     />
