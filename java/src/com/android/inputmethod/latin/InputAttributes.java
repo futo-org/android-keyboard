@@ -55,7 +55,6 @@ public class InputAttributes {
             mInputTypeNoAutoCorrect = false;
             mApplicationSpecifiedCompletionOn = false;
         } else {
-            dumpFlags(inputType);
             final int variation = inputType & InputType.TYPE_MASK_VARIATION;
             final boolean flagNoSuggestions =
                     0 != (inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
