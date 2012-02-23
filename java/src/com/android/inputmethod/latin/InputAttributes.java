@@ -55,6 +55,7 @@ public class InputAttributes {
             mInputTypeNoAutoCorrect = false;
             mApplicationSpecifiedCompletionOn = false;
         } else {
+            dumpFlags(inputType);
             final int variation = inputType & InputType.TYPE_MASK_VARIATION;
             final boolean flagNoSuggestions =
                     0 != (inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
@@ -93,6 +94,67 @@ public class InputAttributes {
 
             mApplicationSpecifiedCompletionOn = flagAutoComplete && isFullscreenMode;
         }
+    }
+
+    private void dumpFlags(final int inputType) {
+        Log.i(TAG, "Input class:");
+        final int inputClass = inputType & InputType.TYPE_MASK_CLASS;
+        if (inputClass == InputType.TYPE_CLASS_TEXT)
+            Log.i(TAG, "  TYPE_CLASS_TEXT");
+        if (inputClass == InputType.TYPE_CLASS_PHONE)
+            Log.i(TAG, "  TYPE_CLASS_PHONE");
+        if (inputClass == InputType.TYPE_CLASS_NUMBER)
+            Log.i(TAG, "  TYPE_CLASS_NUMBER");
+        if (inputClass == InputType.TYPE_CLASS_DATETIME)
+            Log.i(TAG, "  TYPE_CLASS_DATETIME");
+        Log.i(TAG, "Variation:");
+        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS))
+            Log.i(TAG, "  TYPE_TEXT_VARIATION_EMAIL_ADDRESS");
+        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_EMAIL_SUBJECT))
+            Log.i(TAG, "  TYPE_TEXT_VARIATION_EMAIL_SUBJECT");
+        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_FILTER))
+            Log.i(TAG, "  TYPE_TEXT_VARIATION_FILTER");
+        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_LONG_MESSAGE))
+            Log.i(TAG, "  TYPE_TEXT_VARIATION_LONG_MESSAGE");
+        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_NORMAL))
+            Log.i(TAG, "  TYPE_TEXT_VARIATION_NORMAL");
+        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_PASSWORD))
+            Log.i(TAG, "  TYPE_TEXT_VARIATION_PASSWORD");
+        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_PERSON_NAME))
+            Log.i(TAG, "  TYPE_TEXT_VARIATION_PERSON_NAME");
+        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_PHONETIC))
+            Log.i(TAG, "  TYPE_TEXT_VARIATION_PHONETIC");
+        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS))
+            Log.i(TAG, "  TYPE_TEXT_VARIATION_POSTAL_ADDRESS");
+        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE))
+            Log.i(TAG, "  TYPE_TEXT_VARIATION_SHORT_MESSAGE");
+        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_URI))
+            Log.i(TAG, "  TYPE_TEXT_VARIATION_URI");
+        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD))
+            Log.i(TAG, "  TYPE_TEXT_VARIATION_VISIBLE_PASSWORD");
+        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT))
+            Log.i(TAG, "  TYPE_TEXT_VARIATION_WEB_EDIT_TEXT");
+        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS))
+            Log.i(TAG, "  TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS");
+        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD))
+            Log.i(TAG, "  TYPE_TEXT_VARIATION_WEB_PASSWORD");
+        Log.i(TAG, "Flags:");
+        if (0 != (inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS))
+            Log.i(TAG, "  TYPE_TEXT_FLAG_NO_SUGGESTIONS");
+        if (0 != (inputType & InputType.TYPE_TEXT_FLAG_MULTI_LINE))
+            Log.i(TAG, "  TYPE_TEXT_FLAG_MULTI_LINE");
+        if (0 != (inputType & InputType.TYPE_TEXT_FLAG_IME_MULTI_LINE))
+            Log.i(TAG, "  TYPE_TEXT_FLAG_IME_MULTI_LINE");
+        if (0 != (inputType & InputType.TYPE_TEXT_FLAG_CAP_WORDS))
+            Log.i(TAG, "  TYPE_TEXT_FLAG_CAP_WORDS");
+        if (0 != (inputType & InputType.TYPE_TEXT_FLAG_CAP_SENTENCES))
+            Log.i(TAG, "  TYPE_TEXT_FLAG_CAP_SENTENCES");
+        if (0 != (inputType & InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS))
+            Log.i(TAG, "  TYPE_TEXT_FLAG_CAP_CHARACTERS");
+        if (0 != (inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT))
+            Log.i(TAG, "  TYPE_TEXT_FLAG_AUTO_CORRECT");
+        if (0 != (inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE))
+            Log.i(TAG, "  TYPE_TEXT_FLAG_AUTO_COMPLETE");
     }
 
     // Pretty print
