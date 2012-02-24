@@ -19,6 +19,8 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Looper;
+import android.os.MessageQueue;
 import android.preference.PreferenceManager;
 import android.test.ServiceTestCase;
 import android.text.InputType;
@@ -124,6 +126,51 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         }
         if (!mLatinIME.mSuggest.hasMainDictionary()) {
             throw new RuntimeException("Can't initialize the main dictionary");
+        }
+    }
+
+    // We need to run the messages added to the handler from LatinIME. The only way to do
+    // that is to call Looper#loop() on the right looper, so we're going to get the looper
+    // object and call #loop() here. The messages in the handler actually run on the UI
+    // thread of the keyboard by design of the handler, so we want to call it synchronously
+    // on the same thread that the tests are running on to mimic the actual environment as
+    // closely as possible.
+    // Now, Looper#loop() never exits in normal operation unless the Looper#quit() method
+    // is called, so we need to do that at the right time so that #loop() returns at some
+    // point and we don't end up in an infinite loop.
+    // After we quit, the looper is still technically ready to process more messages but
+    // the handler will refuse to enqueue any because #quit() has been called and it
+    // explicitly tests for it on message enqueuing, so we'll have to reset it so that
+    // it lets us continue normal operation.
+    private void runMessages() {
+        // Here begins deep magic.
+        final Looper looper = mLatinIME.mHandler.getLooper();
+        mLatinIME.mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    looper.quit();
+                }
+            });
+        // The only way to get out of Looper#loop() is to call #quit() on it (or on its queue).
+        // Once #quit() is called remaining messages are not processed, which is why we post
+        // a message that calls it instead of calling it directly.
+        looper.loop();
+
+        // Once #quit() has been called, the message queue has an "mQuiting" field that prevents
+        // any subsequent post in this queue. However the queue itself is still fully functional!
+        // If we have a way of resetting "queue.mQuiting" then we can continue using it as normal,
+        // coming back to this method to run the messages.
+        MessageQueue queue = looper.getQueue();
+        try {
+            // However there is no way of doing it externally, and mQuiting is private.
+            // So... get out the big guns.
+            java.lang.reflect.Field f = MessageQueue.class.getDeclaredField("mQuiting");
+            f.setAccessible(true); // What do you mean "private"?
+            f.setBoolean(queue, false);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 
