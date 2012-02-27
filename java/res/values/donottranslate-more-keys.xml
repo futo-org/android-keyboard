@@ -41,20 +41,30 @@
     <string name="more_keys_for_scandinavia_row2_10"></string>
     <string name="more_keys_for_scandinavia_row2_11"></string>
     <!-- U+0449: "щ" CYRILLIC SMALL LETTER SHCHA -->
-    <string name="keylabel_for_slavic_shcha">&#x0449;</string>
+    <string name="keylabel_for_cyrillic_shcha">&#x0449;</string>
     <!-- U+044B: "ы" CYRILLIC SMALL LETTER YERU -->
-    <string name="keylabel_for_slavic_yery">&#x044B;</string>
+    <string name="keylabel_for_cyrillic_yery">&#x044B;</string>
     <!-- U+0438: "и" CYRILLIC SMALL LETTER I -->
-    <string name="keylabel_for_slavic_i">&#x0438;</string>
-    <string name="more_keys_for_slavic_u"></string>
-    <string name="more_keys_for_slavic_ye"></string>
-    <string name="more_keys_for_slavic_en"></string>
+    <string name="keylabel_for_cyrillic_i">&#x0438;</string>
+    <!-- U+0437: "з" CYRILLIC SMALL LETTER ZE -->
+    <string name="keylabel_for_cyrillic_ze">&#x0437;</string>
+    <!-- U+045B: "ћ" CYRILLIC SMALL LETTER TSHE -->
+    <string name="keylabel_for_cyrillic_tshe">&#x045B;</string>
+    <!-- U+0455: "ѕ" CYRILLIC SMALL LETTER DZE -->
+    <string name="keylabel_for_cyrillic_dze">&#x0455;</string>
+    <!-- U+0452: "ђ" CYRILLIC SMALL LETTER DJE -->
+    <string name="keylabel_for_cyrillic_dje">&#x0452;</string>
+    <string name="more_keys_for_cyrillic_u"></string>
+    <string name="more_keys_for_cyrillic_ye"></string>
+    <string name="more_keys_for_cyrillic_en"></string>
     <!-- U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN -->
-    <string name="more_keys_for_slavic_ha">&#x044A;</string>
-    <string name="more_keys_for_slavic_yery"></string>
-    <string name="more_keys_for_slavic_o"></string>
+    <string name="more_keys_for_cyrillic_ha">&#x044A;</string>
+    <string name="more_keys_for_cyrillic_yery"></string>
+    <string name="more_keys_for_cyrillic_o"></string>
     <!-- U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN -->
-    <string name="more_keys_for_slavic_soft_sign">&#x044A;</string>
+    <string name="more_keys_for_cyrillic_soft_sign">&#x044A;</string>
+    <string name="more_keys_for_cyrillic_ie"></string>
+    <string name="more_keys_for_cyrillic_i"></string>
     <!-- U+00A2: "¢" CENT SIGN
          U+00A3: "£" POUND SIGN
          U+20AC: "€" EURO SIGN
