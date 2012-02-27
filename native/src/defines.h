@@ -162,9 +162,6 @@ static inline void prof_out(void) {
 #define FLAG_BIGRAM_FREQ 0x7F
 
 #define DICTIONARY_VERSION_MIN 200
-// TODO: remove this constant when the switch to the new dict format is over
-#define DICTIONARY_HEADER_SIZE 2
-#define NEW_DICTIONARY_HEADER_SIZE 5
 #define NOT_VALID_WORD -99
 #define NOT_A_CHARACTER -1
 #define NOT_A_DISTANCE -1

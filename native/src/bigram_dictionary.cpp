@@ -28,7 +28,7 @@ namespace latinime {
 BigramDictionary::BigramDictionary(const unsigned char *dict, int maxWordLength,
         int maxAlternatives, const bool isLatestDictVersion, const bool hasBigram,
         Dictionary *parentDictionary)
-    : DICT(dict + NEW_DICTIONARY_HEADER_SIZE), MAX_WORD_LENGTH(maxWordLength),
+    : DICT(dict), MAX_WORD_LENGTH(maxWordLength),
     MAX_ALTERNATIVES(maxAlternatives), IS_LATEST_DICT_VERSION(isLatestDictVersion),
     HAS_BIGRAM(hasBigram), mParentDictionary(parentDictionary) {
     if (DEBUG_DICT) {

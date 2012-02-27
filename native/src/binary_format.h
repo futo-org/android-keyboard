@@ -17,6 +17,7 @@
 #ifndef LATINIME_BINARY_FORMAT_H
 #define LATINIME_BINARY_FORMAT_H
 
+#include <limits>
 #include "unigram_dictionary.h"
 
 namespace latinime {
@@ -29,10 +30,18 @@ class BinaryFormat {
 
  public:
     const static int UNKNOWN_FORMAT = -1;
-    const static int FORMAT_VERSION_1 = 1;
-    const static uint16_t FORMAT_VERSION_1_MAGIC_NUMBER = 0x78B1;
+    // Originally, format version 1 had a 16-bit magic number, then the version number `01'
+    // then options that must be 0. Hence the first 32-bits of the format are always as follow
+    // and it's okay to consider them a magic number as a whole.
+    const static uint32_t FORMAT_VERSION_1_MAGIC_NUMBER = 0x78B10100;
+    const static unsigned int FORMAT_VERSION_1_HEADER_SIZE = 5;
+    // The versions of Latin IME that only handle format version 1 only test for the magic
+    // number, so we had to change it so that version 2 files would be rejected by older
+    // implementations. On this occasion, we made the magic number 32 bits long.
+    const static uint32_t FORMAT_VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
 
     static int detectFormat(const uint8_t* const dict);
+    static unsigned int getHeaderSize(const uint8_t* const dict);
     static int getGroupCountAndForwardPointer(const uint8_t* const dict, int* pos);
     static uint8_t getFlagsAndForwardPointer(const uint8_t* const dict, int* pos);
     static int32_t getCharCodeAndForwardPointer(const uint8_t* const dict, int* pos);
@@ -55,9 +64,37 @@ class BinaryFormat {
 };
 
 inline int BinaryFormat::detectFormat(const uint8_t* const dict) {
-    const uint16_t magicNumber = (dict[0] << 8) + dict[1]; // big endian
-    if (FORMAT_VERSION_1_MAGIC_NUMBER == magicNumber) return FORMAT_VERSION_1;
-    return UNKNOWN_FORMAT;
+    // The magic number is stored big-endian.
+    const uint32_t magicNumber = (dict[0] << 24) + (dict[1] << 16) + (dict[2] << 8) + dict[3];
+    switch (magicNumber) {
+    case FORMAT_VERSION_1_MAGIC_NUMBER:
+        // Format 1 header is exactly 5 bytes long and looks like:
+        // Magic number (2 bytes) 0x78 0xB1
+        // Version number (1 byte) 0x01
+        // Options (2 bytes) must be 0x00 0x00
+        return 1;
+    case FORMAT_VERSION_2_MAGIC_NUMBER:
+        // Format 2 header is as follows:
+        // Magic number (4 bytes) 0x9B 0xC1 0x3A 0xFE
+        // Version number (2 bytes) 0x00 0x02
+        // Options (2 bytes) must be 0x00 0x00
+        // Header size (4 bytes) : integer, big endian
+        return (dict[4] << 8) + dict[5];
+    default:
+        return UNKNOWN_FORMAT;
+    }
+}
+
+inline unsigned int BinaryFormat::getHeaderSize(const uint8_t* const dict) {
+    switch (detectFormat(dict)) {
+    case 1:
+        return FORMAT_VERSION_1_HEADER_SIZE;
+    case 2:
+        // See the format of the header in the comment in detectFormat() above
+        return (dict[8] << 24) + (dict[9] << 16) + (dict[10] << 8) + dict[11];
+    default:
+        return std::numeric_limits<unsigned int>::max();
+    }
 }
 
 inline int BinaryFormat::getGroupCountAndForwardPointer(const uint8_t* const dict, int* pos) {

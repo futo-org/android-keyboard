@@ -19,6 +19,7 @@
 
 #define LOG_TAG "LatinIME: dictionary.cpp"
 
+#include "binary_format.h"
 #include "dictionary.h"
 
 namespace latinime {
@@ -41,10 +42,11 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
     mCorrection = new Correction(typedLetterMultiplier, fullWordMultiplier);
     mWordsPriorityQueuePool = new WordsPriorityQueuePool(
             maxWords, SUB_QUEUE_MAX_WORDS, maxWordLength);
-    mUnigramDictionary = new UnigramDictionary(mDict, typedLetterMultiplier, fullWordMultiplier,
-            maxWordLength, maxWords, maxAlternatives, IS_LATEST_DICT_VERSION);
-    mBigramDictionary = new BigramDictionary(mDict, maxWordLength, maxAlternatives,
-            IS_LATEST_DICT_VERSION, hasBigram(), this);
+    const unsigned int headerSize = BinaryFormat::getHeaderSize(mDict);
+    mUnigramDictionary = new UnigramDictionary(mDict + headerSize, typedLetterMultiplier,
+            fullWordMultiplier, maxWordLength, maxWords, maxAlternatives, IS_LATEST_DICT_VERSION);
+    mBigramDictionary = new BigramDictionary(mDict + headerSize, maxWordLength, maxAlternatives,
+            IS_LATEST_DICT_VERSION, true /* hasBigram */, this);
 }
 
 Dictionary::~Dictionary() {
@@ -52,10 +54,6 @@ Dictionary::~Dictionary() {
     delete mWordsPriorityQueuePool;
     delete mUnigramDictionary;
     delete mBigramDictionary;
-}
-
-bool Dictionary::hasBigram() {
-    return ((mDict[1] & 0xFF) == 1);
 }
 
 bool Dictionary::isValidWord(unsigned short *word, int length) {
