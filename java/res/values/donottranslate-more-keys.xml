@@ -115,6 +115,7 @@
     <!-- U+207F: "ⁿ" SUPERSCRIPT LATIN SMALL LETTER N
          U+2205: "∅" EMPTY SET -->
     <string name="more_keys_for_symbols_0">&#x207F;,&#x2205;</string>
+    <string name="more_keys_for_am_pm">!fixedColumnOrder!2,!hasLabels!,\@string/label_time_am,\@string/label_time_pm</string>
     <string name="settings_as_more_key">\@icon/settingsKey|\@integer/key_settings</string>
     <string name="keylabel_for_comma">,</string>
     <string name="more_keys_for_comma"></string>

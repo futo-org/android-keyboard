@@ -46,10 +46,32 @@
         <Key
             latin:keyLabel="6"
             latin:keyStyle="numKeyStyle" />
-        <Key
-            latin:keyLabel=","
-            latin:keyStyle="numFunctionalKeyStyle"
-            latin:keyWidth="fillRight" />
+        <switch>
+            <case
+                latin:mode="date"
+            >
+                <Key
+                    latin:keyLabel="."
+                    latin:keyStyle="numFunctionalKeyStyle"
+                    latin:keyWidth="fillRight" />
+            </case>
+            <case
+                latin:mode="time|datetime"
+            >
+                <Key
+                    latin:keyLabel="."
+                    latin:keyLabelFlags="hasPopupHint"
+                    latin:moreKeys="@string/more_keys_for_am_pm"
+                    latin:keyStyle="numFunctionalKeyStyle"
+                    latin:keyWidth="fillRight" />
+            </case>
+            <default>
+                <Key
+                    latin:keyLabel=","
+                    latin:keyStyle="numFunctionalKeyStyle"
+                    latin:keyWidth="fillRight" />
+            </default>
+        </switch>
     </Row>
     <Row>
         <Key
@@ -71,9 +93,39 @@
         <Key
             latin:keyLabel="0"
             latin:keyStyle="numKeyStyle" />
-        <Key
-            latin:keyLabel="."
-            latin:keyStyle="numKeyStyle" />
+        <switch>
+            <case
+                latin:mode="date"
+            >
+                <Key
+                    latin:keyLabel="/"
+                    latin:keyStyle="numKeyStyle" />
+            </case>
+            <case
+                latin:mode="time"
+            >
+                <Key
+                    latin:keyLabel=":"
+                    latin:keyStyle="numKeyStyle" />
+            </case>
+            <case
+                latin:mode="datetime"
+            >
+                <!-- U+002F: "/" SOLIDUS
+                     U+003A: ":" COLON -->
+                <Key
+                    latin:code="0x002F"
+                    latin:altCode="0x003A"
+                    latin:keyLabel="/ :"
+                    latin:keyActionFlags="enableLongPress"
+                    latin:keyStyle="numKeyStyle" />
+            </case>
+            <default>
+                <Key
+                    latin:keyLabel="."
+                    latin:keyStyle="numKeyStyle" />
+            </default>
+        </switch>
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillRight" />

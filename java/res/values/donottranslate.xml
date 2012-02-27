@@ -58,6 +58,10 @@
     <!-- U+FF0A: "＊" FULLWIDTH ASTERISK
          U+FF03: "＃" FULLWIDTH NUMBER SIGN -->
     <string name="label_to_phone_symbols_key">&#xFF0A;&#xFF03;</string>
+    <!-- Key label for "ante meridiem" -->
+    <string name="label_time_am">"AM"</string>
+    <!-- Key label for "post meridiem" -->
+    <string name="label_time_pm">"PM"</string>
 
     <!--  Always show the suggestion strip -->
     <string name="prefs_suggestion_visibility_show_value">0</string>

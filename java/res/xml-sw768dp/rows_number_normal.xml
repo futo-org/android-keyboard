@@ -65,10 +65,24 @@
             latin:keyLabel="/"
             latin:keyStyle="numKeyStyle"
             latin:keyWidth="8.047%p" />
-        <Key
-            latin:keyLabel=","
-            latin:keyStyle="numKeyStyle"
-            latin:keyWidth="8.047%p" />
+        <switch>
+            <case
+                latin:mode="time|datetime"
+            >
+                <Key
+                    latin:keyLabel=","
+                    latin:keyLabelFlags="hasPopupHint"
+                    latin:moreKeys="@string/more_keys_for_am_pm"
+                    latin:keyStyle="numKeyStyle"
+                    latin:keyWidth="8.047%p" />
+            </case>
+            <default>
+                <Key
+                    latin:keyLabel=","
+                    latin:keyStyle="numKeyStyle"
+                    latin:keyWidth="8.047%p" />
+            </default>
+        </switch>
         <Key
             latin:keyLabel="4"
             latin:keyStyle="numKeyStyle"
@@ -96,10 +110,22 @@
             latin:keyLabel=")"
             latin:keyStyle="numKeyStyle"
             latin:keyWidth="8.047%p" />
-        <Key
-            latin:keyLabel="="
-            latin:keyStyle="numKeyStyle"
-            latin:keyWidth="8.047%p" />
+        <switch>
+            <case
+                latin:mode="time|datetime"
+            >
+                <Key
+                    latin:keyLabel=":"
+                    latin:keyStyle="numKeyStyle"
+                    latin:keyWidth="8.047%p" />
+            </case>
+            <default>
+                <Key
+                    latin:keyLabel="="
+                    latin:keyStyle="numKeyStyle"
+                    latin:keyWidth="8.047%p" />
+            </default>
+        </switch>
         <Key
             latin:keyLabel="7"
             latin:keyStyle="numKeyStyle"

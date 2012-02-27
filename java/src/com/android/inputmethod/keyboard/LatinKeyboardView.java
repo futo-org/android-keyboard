@@ -481,11 +481,10 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
      */
     protected boolean onLongPress(Key parentKey, PointerTracker tracker) {
         final int primaryCode = parentKey.mCode;
-        final Keyboard keyboard = getKeyboard();
-        if (primaryCode == Keyboard.CODE_DIGIT0 && keyboard.mId.isPhoneKeyboard()) {
+        if (parentKey.mAltCode != Keyboard.CODE_UNSPECIFIED) {
+            // Long press on a key that has altCode defined.
             tracker.onLongPressed();
-            // Long pressing on 0 in phone number keypad gives you a '+'.
-            invokeCodeInput(Keyboard.CODE_PLUS);
+            invokeCodeInput(parentKey.mAltCode);
             invokeReleaseKey(primaryCode);
             KeyboardSwitcher.getInstance().hapticAndAudioFeedback(primaryCode);
             return true;
