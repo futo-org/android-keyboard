@@ -41,6 +41,7 @@ public class DictionaryMaker {
         private final static String OPTION_INPUT_BIGRAM_XML = "-b";
         private final static String OPTION_INPUT_SHORTCUT_XML = "-c";
         private final static String OPTION_OUTPUT_BINARY = "-d";
+        private final static String OPTION_OUTPUT_BINARY_FORMAT_VERSION_1 = "-d1";
         private final static String OPTION_OUTPUT_XML = "-x";
         private final static String OPTION_HELP = "-h";
         public final String mInputBinary;
@@ -48,11 +49,27 @@ public class DictionaryMaker {
         public final String mInputShortcutXml;
         public final String mInputBigramXml;
         public final String mOutputBinary;
+        public final String mOutputBinaryFormat1;
         public final String mOutputXml;
 
-        private void checkIntegrity() {
+        private void checkIntegrity() throws IOException {
             checkHasExactlyOneInput();
             checkHasAtLeastOneOutput();
+            checkNotSameFile(mInputBinary, mOutputBinary);
+            checkNotSameFile(mInputBinary, mOutputBinaryFormat1);
+            checkNotSameFile(mInputBinary, mOutputXml);
+            checkNotSameFile(mInputUnigramXml, mOutputBinary);
+            checkNotSameFile(mInputUnigramXml, mOutputBinaryFormat1);
+            checkNotSameFile(mInputUnigramXml, mOutputXml);
+            checkNotSameFile(mInputShortcutXml, mOutputBinary);
+            checkNotSameFile(mInputShortcutXml, mOutputBinaryFormat1);
+            checkNotSameFile(mInputShortcutXml, mOutputXml);
+            checkNotSameFile(mInputBigramXml, mOutputBinary);
+            checkNotSameFile(mInputBigramXml, mOutputBinaryFormat1);
+            checkNotSameFile(mInputBigramXml, mOutputXml);
+            checkNotSameFile(mOutputBinary, mOutputBinaryFormat1);
+            checkNotSameFile(mOutputBinary, mOutputXml);
+            checkNotSameFile(mOutputBinaryFormat1, mOutputXml);
         }
 
         private void checkHasExactlyOneInput() {
@@ -67,26 +84,40 @@ public class DictionaryMaker {
         }
 
         private void checkHasAtLeastOneOutput() {
-            if (null == mOutputBinary && null == mOutputXml) {
+            if (null == mOutputBinary && null == mOutputBinaryFormat1 && null == mOutputXml) {
                 throw new RuntimeException("No output specified");
+            }
+        }
+
+        /**
+         * Utility method that throws an exception if path1 and path2 point to the same file.
+         */
+        private static void checkNotSameFile(final String path1, final String path2)
+                throws IOException {
+            if (null == path1 || null == path2) return;
+            if (new File(path1).getCanonicalPath().equals(new File(path2).getCanonicalPath())) {
+                throw new RuntimeException(path1 + " and " + path2 + " are the same file: "
+                        + " refusing to process.");
             }
         }
 
         private void displayHelp() {
             MakedictLog.i("Usage: makedict "
                     + "[-s <unigrams.xml> [-b <bigrams.xml>] [-c <shortcuts.xml>] "
-                    + "| -s <binary input>] "
-                    + "[-d <binary output>] [-x <xml output>] [-2]\n"
+                    + "| -s <binary input>] [-d <binary output format version 2>] "
+                    + "[-d1 <binary output format version 1>] [-x <xml output>] [-2]\n"
                     + "\n"
                     + "  Converts a source dictionary file to one or several outputs.\n"
                     + "  Source can be an XML file, with an optional XML bigrams file, or a\n"
                     + "  binary dictionary file.\n"
-                    + "  Both binary and XML outputs are supported. Both can be output at\n"
-                    + "  the same time but outputting several files of the same type is not\n"
-                    + "  supported.");
+                    + "  Binary version 1 (Ice Cream Sandwich), 2 (Jelly Bean) and XML outputs\n"
+                    + "  are supported. All three can be output at the same time, but the same\n"
+                    + "  output format cannot be specified several times. The behavior is\n"
+                    + "  unspecified if the same file is specified for input and output, or for\n"
+                    + "  several outputs.");
         }
 
-        public Arguments(String[] argsArray) {
+        public Arguments(String[] argsArray) throws IOException {
             final LinkedList<String> args = new LinkedList<String>(Arrays.asList(argsArray));
             if (args.isEmpty()) {
                 displayHelp();
@@ -96,6 +127,7 @@ public class DictionaryMaker {
             String inputShortcutXml = null;
             String inputBigramXml = null;
             String outputBinary = null;
+            String outputBinaryFormat1 = null;
             String outputXml = null;
 
             while (!args.isEmpty()) {
@@ -126,6 +158,8 @@ public class DictionaryMaker {
                             inputBigramXml = filename;
                         } else if (OPTION_OUTPUT_BINARY.equals(arg)) {
                             outputBinary = filename;
+                        } else if (OPTION_OUTPUT_BINARY_FORMAT_VERSION_1.equals(arg)) {
+                            outputBinaryFormat1 = filename;
                         } else if (OPTION_OUTPUT_XML.equals(arg)) {
                             outputXml = filename;
                         } else {
@@ -152,6 +186,7 @@ public class DictionaryMaker {
             mInputShortcutXml = inputShortcutXml;
             mInputBigramXml = inputBigramXml;
             mOutputBinary = outputBinary;
+            mOutputBinaryFormat1 = outputBinaryFormat1;
             mOutputXml = outputXml;
             checkIntegrity();
         }
@@ -231,9 +266,13 @@ public class DictionaryMaker {
      * @throws IOException if one of the output files can't be written to.
      */
     private static void writeOutputToParsedArgs(final Arguments args, final FusionDictionary dict)
-            throws FileNotFoundException, IOException {
+            throws FileNotFoundException, IOException, UnsupportedFormatException,
+            IllegalArgumentException {
         if (null != args.mOutputBinary) {
-            writeBinaryDictionary(args.mOutputBinary, dict);
+            writeBinaryDictionary(args.mOutputBinary, dict, 2);
+        }
+        if (null != args.mOutputBinaryFormat1) {
+            writeBinaryDictionary(args.mOutputBinaryFormat1, dict, 1);
         }
         if (null != args.mOutputXml) {
             writeXmlDictionary(args.mOutputXml, dict);
@@ -245,13 +284,16 @@ public class DictionaryMaker {
      *
      * @param outputFilename the name of the file to write to.
      * @param dict the dictionary to write.
+     * @param version the binary format version to use.
      * @throws FileNotFoundException if the output file can't be created.
      * @throws IOException if the output file can't be written to.
      */
     private static void writeBinaryDictionary(final String outputFilename,
-            final FusionDictionary dict) throws FileNotFoundException, IOException {
+            final FusionDictionary dict, final int version)
+            throws FileNotFoundException, IOException, UnsupportedFormatException {
         final File outputFile = new File(outputFilename);
-        BinaryDictInputOutput.writeDictionaryBinary(new FileOutputStream(outputFilename), dict);
+        BinaryDictInputOutput.writeDictionaryBinary(new FileOutputStream(outputFilename), dict,
+                version);
     }
 
     /**
