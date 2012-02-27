@@ -546,16 +546,19 @@ public class KeyboardState {
                     || code == Keyboard.CODE_OUTPUT_TEXT)) {
                 mSwitchState = SWITCH_STATE_SYMBOL;
             }
-            // Switch back to alpha keyboard mode immediately if user types a quote character.
+            // Switch back to alpha keyboard mode immediately if user types one of the switch back
+            // characters.
             if (isLayoutSwitchBackCharacter(code)) {
                 toggleAlphabetAndSymbols();
+                mPrevSymbolsKeyboardWasShifted = false;
             }
             break;
         case SWITCH_STATE_SYMBOL:
             // Switch back to alpha keyboard mode if user types one or more non-space/enter
-            // characters followed by a space/enter or a quote character.
+            // characters followed by a space/enter or one of the switch back characters.
             if (isSpaceCharacter(code) || isLayoutSwitchBackCharacter(code)) {
                 toggleAlphabetAndSymbols();
+                mPrevSymbolsKeyboardWasShifted = false;
             }
             break;
         }

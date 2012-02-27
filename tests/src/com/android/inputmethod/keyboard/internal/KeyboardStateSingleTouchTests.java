@@ -122,6 +122,8 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         pressAndReleaseKey('~', SYMBOLS_SHIFTED, SYMBOLS_SHIFTED);
         // Enter space, switch back to alphabet.
         pressAndReleaseKey(CODE_SPACE, SYMBOLS_SHIFTED, ALPHABET_UNSHIFTED);
+        // Press/release "?123" key, enter into symbols (not symbols shifted).
+        pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
     }
 
     // Automatic switch back to alphabet shift locked test by space key.
