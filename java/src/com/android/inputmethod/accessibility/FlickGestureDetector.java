@@ -18,6 +18,7 @@ package com.android.inputmethod.accessibility;
 
 import android.content.Context;
 import android.os.Message;
+import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
@@ -32,7 +33,7 @@ import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
  * properties:
  * <ul>
  *   <li>Begins with a {@link MotionEventCompatUtils#ACTION_HOVER_ENTER} event
- *   <li>Contains any number of {@link MotionEventCompatUtils#ACTION_HOVER_MOVE}
+ *   <li>Contains any number of {@link MotionEventCompat#ACTION_HOVER_MOVE}
  *       events
  *   <li>Ends with a {@link MotionEventCompatUtils#ACTION_HOVER_EXIT} event
  *   <li>Maximum duration of 250 milliseconds
@@ -128,7 +129,7 @@ public abstract class FlickGestureDetector {
         final float distanceSquare = calculateDistanceSquare(mCachedHoverEnter, event);
 
         switch (event.getAction()) {
-        case MotionEventCompatUtils.ACTION_HOVER_MOVE:
+        case MotionEventCompat.ACTION_HOVER_MOVE:
             // Consume all valid move events before timeout.
             return true;
         case MotionEventCompatUtils.ACTION_HOVER_EXIT:

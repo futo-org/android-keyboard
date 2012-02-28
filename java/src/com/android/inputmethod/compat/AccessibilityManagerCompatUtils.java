@@ -16,7 +16,19 @@
 
 package com.android.inputmethod.compat;
 
-public class AccessibilityEventCompatUtils {
-    public static final int TYPE_VIEW_HOVER_ENTER = 0x80;
-    public static final int TYPE_VIEW_HOVER_EXIT = 0x100;
+import android.view.accessibility.AccessibilityManager;
+
+import java.lang.reflect.Method;
+
+public class AccessibilityManagerCompatUtils {
+    private static final Method METHOD_isTouchExplorationEnabled = CompatUtils.getMethod(
+            AccessibilityManager.class, "isTouchExplorationEnabled");
+
+    private AccessibilityManagerCompatUtils() {
+        // This class is non-instantiable.
+    }
+
+    public static boolean isTouchExplorationEnabled(AccessibilityManager receiver) {
+        return (Boolean) CompatUtils.invoke(receiver, false, METHOD_isTouchExplorationEnabled);
+    }
 }

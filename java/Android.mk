@@ -30,6 +30,7 @@ LOCAL_REQUIRED_MODULES := libjni_latinime
 
 LOCAL_STATIC_JAVA_LIBRARIES := android-common
 LOCAL_STATIC_JAVA_LIBRARIES += inputmethod-common
+LOCAL_STATIC_JAVA_LIBRARIES += android-support-v4
 
 # Do not compress dictionary files to mmap dict data runtime
 LOCAL_AAPT_FLAGS := -0 .dict

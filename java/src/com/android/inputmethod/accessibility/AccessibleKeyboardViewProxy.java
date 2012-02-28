@@ -20,13 +20,16 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.inputmethodservice.InputMethodService;
-import android.util.Log;
+import android.support.v4.view.AccessibilityDelegateCompat;
+import android.support.v4.view.MotionEventCompat;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.inputmethod.EditorInfo;
 
-import com.android.inputmethod.compat.AccessibilityEventCompatUtils;
 import com.android.inputmethod.compat.MotionEventCompatUtils;
+import com.android.inputmethod.compat.ViewParentCompatUtils;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
@@ -34,14 +37,14 @@ import com.android.inputmethod.keyboard.LatinKeyboardView;
 import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.latin.R;
 
-public class AccessibleKeyboardViewProxy {
-    private static final String TAG = AccessibleKeyboardViewProxy.class.getSimpleName();
+public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
     private static final AccessibleKeyboardViewProxy sInstance = new AccessibleKeyboardViewProxy();
 
     private InputMethodService mInputMethod;
     private FlickGestureDetector mGestureDetector;
     private LatinKeyboardView mView;
     private AccessibleKeyboardActionListener mListener;
+    private AccessibilityEntityProvider mAccessibilityNodeProvider;
 
     private Key mLastHoverKey = null;
 
@@ -52,10 +55,6 @@ public class AccessibleKeyboardViewProxy {
 
     public static AccessibleKeyboardViewProxy getInstance() {
         return sInstance;
-    }
-
-    public static void setView(LatinKeyboardView view) {
-        sInstance.mView = view;
     }
 
     private AccessibleKeyboardViewProxy() {
@@ -73,34 +72,39 @@ public class AccessibleKeyboardViewProxy {
         mGestureDetector = new KeyboardFlickGestureDetector(inputMethod);
     }
 
-    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
-        if (mView == null) {
-            Log.e(TAG, "No keyboard view set!");
-            return false;
+    /**
+     * Sets the view wrapped by this proxy.
+     *
+     * @param view The view to wrap.
+     */
+    public void setView(LatinKeyboardView view) {
+        if (view == null) {
+            // Ignore null views.
+            return;
         }
 
-        switch (event.getEventType()) {
-        case AccessibilityEventCompatUtils.TYPE_VIEW_HOVER_ENTER:
-            final Key key = mLastHoverKey;
+        mView = view;
 
-            if (key == null)
-                break;
+        // Ensure that the view has an accessibility delegate.
+        ViewCompat.setAccessibilityDelegate(view, this);
+    }
 
-            final EditorInfo info = mInputMethod.getCurrentInputEditorInfo();
-            final boolean shouldObscure = AccessibilityUtils.getInstance().shouldObscureInput(info);
-            final CharSequence description = KeyCodeDescriptionMapper.getInstance()
-                    .getDescriptionForKey(mView.getContext(), mView.getKeyboard(), key,
-                            shouldObscure);
-
-            if (description == null)
-                return false;
-
-            event.getText().add(description);
-
-            break;
+    /**
+     * Proxy method for View.getAccessibilityNodeProvider(). This method is
+     * called in SDK version 15 and higher to obtain the virtual node hierarchy
+     * provider.
+     *
+     * @return The accessibility node provider for the current keyboard.
+     */
+    @Override
+    public AccessibilityEntityProvider getAccessibilityNodeProvider(View host) {
+        // Instantiate the provide only when requested. Since the system
+        // will call this method multiple times it is a good practice to
+        // cache the provider instance.
+        if (mAccessibilityNodeProvider == null) {
+            mAccessibilityNodeProvider = new AccessibilityEntityProvider(mView, mInputMethod);
         }
-
-        return true;
+        return mAccessibilityNodeProvider;
     }
 
     /**
@@ -123,46 +127,94 @@ public class AccessibleKeyboardViewProxy {
      * @param event The touch exploration hover event.
      * @return {@code true} if the event was handled
      */
-    /*package*/ boolean onHoverEventInternal(MotionEvent event, PointerTracker tracker) {
+    /* package */boolean onHoverEventInternal(MotionEvent event, PointerTracker tracker) {
         final int x = (int) event.getX();
         final int y = (int) event.getY();
+        final Key key = tracker.getKeyOn(x, y);
+        final Key previousKey = mLastHoverKey;
+
+        mLastHoverKey = key;
 
         switch (event.getAction()) {
         case MotionEventCompatUtils.ACTION_HOVER_ENTER:
-        case MotionEventCompatUtils.ACTION_HOVER_MOVE:
-            final Key key = tracker.getKeyOn(x, y);
-
-            if (key != mLastHoverKey) {
-                fireKeyHoverEvent(mLastHoverKey, false);
-                mLastHoverKey = key;
-                fireKeyHoverEvent(mLastHoverKey, true);
+        case MotionEventCompatUtils.ACTION_HOVER_EXIT:
+            return onHoverKey(key, event);
+        case MotionEventCompat.ACTION_HOVER_MOVE:
+            if (key != previousKey) {
+                return onTransitionKey(key, previousKey, event);
+            } else {
+                return onHoverKey(key, event);
             }
-
-            return true;
         }
 
         return false;
     }
 
-    private void fireKeyHoverEvent(Key key, boolean entering) {
-        if (mListener == null) {
-            Log.e(TAG, "No accessible keyboard action listener set!");
-            return;
+    /**
+     * Simulates a transition between two {@link Key}s by sending a HOVER_EXIT
+     * on the previous key, a HOVER_ENTER on the current key, and a HOVER_MOVE
+     * on the current key.
+     *
+     * @param currentKey The currently hovered key.
+     * @param previousKey The previously hovered key.
+     * @param event The event that triggered the transition.
+     * @return {@code true} if the event was handled.
+     */
+    private boolean onTransitionKey(Key currentKey, Key previousKey, MotionEvent event) {
+        final int savedAction = event.getAction();
+
+        event.setAction(MotionEventCompatUtils.ACTION_HOVER_EXIT);
+        onHoverKey(previousKey, event);
+
+        event.setAction(MotionEventCompatUtils.ACTION_HOVER_ENTER);
+        onHoverKey(currentKey, event);
+
+        event.setAction(MotionEventCompat.ACTION_HOVER_MOVE);
+        final boolean handled = onHoverKey(currentKey, event);
+
+        event.setAction(savedAction);
+
+        return handled;
+    }
+
+    /**
+     * Handles a hover event on a key. If {@link Key} extended View, this would
+     * be analogous to calling View.onHoverEvent(MotionEvent).
+     *
+     * @param key The currently hovered key.
+     * @param event The hover event.
+     * @return {@code true} if the event was handled.
+     */
+    private boolean onHoverKey(Key key, MotionEvent event) {
+        // Null keys can't receive events.
+        if (key == null) {
+            return false;
         }
 
-        if (mView == null) {
-            Log.e(TAG, "No keyboard view set!");
-            return;
+        switch (event.getAction()) {
+        case MotionEventCompatUtils.ACTION_HOVER_ENTER:
+            sendAccessibilityEventForKey(key, AccessibilityEventCompat.TYPE_VIEW_HOVER_ENTER);
+            break;
+        case MotionEventCompatUtils.ACTION_HOVER_EXIT:
+            sendAccessibilityEventForKey(key, AccessibilityEventCompat.TYPE_VIEW_HOVER_EXIT);
+            break;
         }
 
-        if (key == null)
-            return;
+        return true;
+    }
 
-        if (entering) {
-            mView.sendAccessibilityEvent(AccessibilityEventCompatUtils.TYPE_VIEW_HOVER_ENTER);
-        } else {
-            mView.sendAccessibilityEvent(AccessibilityEventCompatUtils.TYPE_VIEW_HOVER_EXIT);
-        }
+    /**
+     * Populates and sends an {@link AccessibilityEvent} for the specified key.
+     *
+     * @param key The key to send an event for.
+     * @param eventType The type of event to send.
+     */
+    private void sendAccessibilityEventForKey(Key key, int eventType) {
+        final AccessibilityEntityProvider nodeProvider = getAccessibilityNodeProvider(null);
+        final AccessibilityEvent event = nodeProvider.createAccessibilityEvent(key, eventType);
+
+        // Propagates the event up the view hierarchy.
+        ViewParentCompatUtils.requestSendAccessibilityEvent(mView.getParent(), mView, event);
     }
 
     private class KeyboardFlickGestureDetector extends FlickGestureDetector {

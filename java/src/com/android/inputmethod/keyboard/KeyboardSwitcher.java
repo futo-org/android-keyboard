@@ -379,7 +379,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
 
         // This always needs to be set since the accessibility state can
         // potentially change without the input view being re-created.
-        AccessibleKeyboardViewProxy.setView(mKeyboardView);
+        AccessibleKeyboardViewProxy.getInstance().setView(mKeyboardView);
 
         return mCurrentInputView;
     }

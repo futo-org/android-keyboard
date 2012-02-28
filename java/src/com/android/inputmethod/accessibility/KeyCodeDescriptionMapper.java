@@ -18,6 +18,7 @@ package com.android.inputmethod.accessibility;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -27,6 +28,8 @@ import com.android.inputmethod.latin.R;
 import java.util.HashMap;
 
 public class KeyCodeDescriptionMapper {
+    private static final String TAG = KeyCodeDescriptionMapper.class.getSimpleName();
+
     // The resource ID of the string spoken for obscured keys
     private static final int OBSCURED_KEY_RES_ID = R.string.spoken_description_dot;
 
@@ -87,12 +90,12 @@ public class KeyCodeDescriptionMapper {
      * @return a character sequence describing the action performed by pressing
      *         the key
      */
-    public CharSequence getDescriptionForKey(Context context, Keyboard keyboard, Key key,
+    public String getDescriptionForKey(Context context, Keyboard keyboard, Key key,
             boolean shouldObscure) {
         final int code = key.mCode;
 
         if (code == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
-            final CharSequence description = getDescriptionForSwitchAlphaSymbol(context, keyboard);
+            final String description = getDescriptionForSwitchAlphaSymbol(context, keyboard);
             if (description != null)
                 return description;
         }
@@ -128,7 +131,7 @@ public class KeyCodeDescriptionMapper {
      * @return a character sequence describing the action performed by pressing
      *         the key
      */
-    private CharSequence getDescriptionForSwitchAlphaSymbol(Context context, Keyboard keyboard) {
+    private String getDescriptionForSwitchAlphaSymbol(Context context, Keyboard keyboard) {
         final KeyboardId keyboardId = keyboard.mId;
         final int elementId = keyboardId.mElementId;
         final int resId;
@@ -152,10 +155,7 @@ public class KeyCodeDescriptionMapper {
             resId = R.string.spoken_description_to_numeric;
             break;
         default:
-            resId = -1;
-        }
-
-        if (resId < 0) {
+            Log.e(TAG, "Missing description for keyboard element ID:" + elementId);
             return null;
         }
 
@@ -169,7 +169,7 @@ public class KeyCodeDescriptionMapper {
      * @param keyboard The keyboard on which the key resides.
      * @return A context-sensitive description of the "Shift" key.
      */
-    private CharSequence getDescriptionForShiftKey(Context context, Keyboard keyboard) {
+    private String getDescriptionForShiftKey(Context context, Keyboard keyboard) {
         final KeyboardId keyboardId = keyboard.mId;
         final int elementId = keyboardId.mElementId;
         final int resId;
@@ -212,7 +212,7 @@ public class KeyCodeDescriptionMapper {
      * @return a character sequence describing the action performed by pressing
      *         the key
      */
-    private CharSequence getDescriptionForKeyCode(Context context, Keyboard keyboard, Key key,
+    private String getDescriptionForKeyCode(Context context, Keyboard keyboard, Key key,
             boolean shouldObscure) {
         final int code = key.mCode;
 
