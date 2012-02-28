@@ -33,6 +33,7 @@
     en_GB: English Great Britain/qwerty
     es: Spanish/spanish
     et: Estonian/nordic
+    fa: Persian/arabic
     fi: Finnish/nordic
     fr: French/azerty
     fr_CA: French Canada/qwerty
@@ -137,6 +138,12 @@
             android:imeSubtypeLocale="et"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:imeSubtypeLocale="fa"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="SupportTouchPositionCorrection"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"

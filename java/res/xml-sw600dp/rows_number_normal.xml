@@ -143,7 +143,7 @@
             latin:keyStyle="numTabKeyStyle"
             latin:keyWidth="11.00%p" />
         <Key
-            latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"
+            latin:keyStyle="spaceKeyStyle"
             latin:keyWidth="27.75%p"
             latin:keyXPos="12.75%p" />
         <Key

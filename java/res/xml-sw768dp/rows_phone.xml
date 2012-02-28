@@ -114,7 +114,7 @@
             latin:keyboardLayout="@xml/key_settings"
             latin:keyWidth="8.047%p" />
         <Key
-            latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"
+            latin:keyStyle="spaceKeyStyle"
             latin:keyXPos="13.829%p"
             latin:keyWidth="24.140%p" />
         <Key
