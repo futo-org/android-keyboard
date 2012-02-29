@@ -450,4 +450,20 @@ public class KeySpecParser {
         }
         return value;
     }
+
+    public static boolean getBooleanValue(String[] moreKeys, String key) {
+        if (moreKeys == null) {
+            return false;
+        }
+        boolean value = false;
+        for (int i = 0; i < moreKeys.length; i++) {
+            final String moreKeySpec = moreKeys[i];
+            if (moreKeySpec == null || !moreKeySpec.equals(key)) {
+                continue;
+            }
+            moreKeys[i] = null;
+            value = true;
+        }
+        return value;
+    }
 }

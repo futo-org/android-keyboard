@@ -20,6 +20,7 @@ import android.graphics.Paint;
 
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.Utils;
 
 public class MoreKeysKeyboard extends Keyboard {
     private final int mDefaultKeyCoordX;
@@ -35,6 +36,8 @@ public class MoreKeysKeyboard extends Keyboard {
 
     public static class Builder extends Keyboard.Builder<Builder.MoreKeysKeyboardParams> {
         private final Key mParentKey;
+
+        private static final float LABEL_PADDING_RATIO = 0.2f;
 
         public static class MoreKeysKeyboardParams extends Keyboard.Params {
             public boolean mIsFixedOrder;
@@ -253,15 +256,15 @@ public class MoreKeysKeyboard extends Keyboard {
             // Use pre-computed width and height if these values are available and more keys
             // keyboard has only one key to mitigate visual flicker between key preview and more
             // keys keyboard.
-            final boolean validKeyPreview = view.isKeyPreviewPopupEnabled() && (previewWidth > 0)
-                    && (previewHeight > 0);
+            final boolean validKeyPreview = view.isKeyPreviewPopupEnabled()
+                    && !parentKey.noKeyPreview() && (previewWidth > 0) && (previewHeight > 0);
             final boolean singleMoreKeyWithPreview = validKeyPreview
                     && parentKey.mMoreKeys.length == 1;
             if (singleMoreKeyWithPreview) {
                 width = previewWidth;
                 height = previewHeight + mParams.mVerticalGap;
             } else {
-                width = getMaxKeyWidth(view, parentKey.mMoreKeys, mParams.mDefaultKeyWidth);
+                width = getMaxKeyWidth(view, parentKey, mParams.mDefaultKeyWidth);
                 height = parentKeyboard.mMostCommonKeyHeight;
             }
             mParams.setParameters(parentKey.mMoreKeys.length, parentKey.getMoreKeysColumn(),
@@ -269,15 +272,16 @@ public class MoreKeysKeyboard extends Keyboard {
                     parentKey.isFixedColumnOrderMoreKeys());
         }
 
-        private static int getMaxKeyWidth(KeyboardView view, String[] moreKeys, int minKeyWidth) {
-            final int padding = (int) view.getResources()
-                    .getDimension(R.dimen.more_keys_keyboard_key_horizontal_padding);
+        private static int getMaxKeyWidth(KeyboardView view, Key parentKey, int minKeyWidth) {
+            final int padding = (int)(view.getResources()
+                    .getDimension(R.dimen.more_keys_keyboard_key_horizontal_padding)
+                    + (parentKey.hasLabelsInMoreKeys() ? minKeyWidth * LABEL_PADDING_RATIO : 0));
             Paint paint = null;
             int maxWidth = minKeyWidth;
-            for (String moreKeySpec : moreKeys) {
+            for (String moreKeySpec : parentKey.mMoreKeys) {
                 final String label = KeySpecParser.getLabel(moreKeySpec);
                 // If the label is single letter, minKeyWidth is enough to hold the label.
-                if (label != null && label.length() > 1) {
+                if (label != null && Utils.codePointCount(label) > 1) {
                     if (paint == null) {
                         paint = new Paint();
                         paint.setAntiAlias(true);
@@ -294,12 +298,17 @@ public class MoreKeysKeyboard extends Keyboard {
         @Override
         public MoreKeysKeyboard build() {
             final MoreKeysKeyboardParams params = mParams;
+            // moreKeyFlags == 0 means that the rendered text size will be determined by its
+            // label's code point count.
+            final int moreKeyFlags = mParentKey.hasLabelsInMoreKeys() ? 0
+                    : Key.LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO;
             final String[] moreKeys = mParentKey.mMoreKeys;
             for (int n = 0; n < moreKeys.length; n++) {
                 final String moreKeySpec = moreKeys[n];
                 final int row = n / params.mNumColumns;
                 final Key key = new Key(mResources, params, moreKeySpec, params.getX(n, row),
-                        params.getY(row), params.mDefaultKeyWidth, params.mDefaultRowHeight);
+                        params.getY(row), params.mDefaultKeyWidth, params.mDefaultRowHeight,
+                        moreKeyFlags);
                 params.markAsEdgeKey(key, row);
                 params.onAddKey(key);
             }
