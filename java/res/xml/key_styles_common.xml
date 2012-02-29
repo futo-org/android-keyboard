@@ -79,6 +79,15 @@
     <include
         latin:keyboardLayout="@xml/key_styles_enter" />
     <switch>
+        <!-- Shift + Enter in textMultiLine field. -->
+        <case
+            latin:isMultiLine="true"
+            latin:keyboardSetElement="alphabetManualShifted|alphabetShiftLockShifted"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:parentStyle="defaultEnterKeyStyle" />
+        </case>
         <!-- Smiley in textShortMessage field.
              Overrides common enter key style. -->
         <case
