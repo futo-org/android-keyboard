@@ -29,9 +29,8 @@ import java.util.Map;
 public class KeyboardIconsSet {
     private static final String TAG = KeyboardIconsSet.class.getSimpleName();
 
-    public static final int ICON_UNDEFINED = 0;
     // The value should be aligned with the enum value of Key.keyIcon.
-    public static final int ICON_SPACE = 4;
+    public static final int ICON_UNDEFINED = 0;
     private static final int NUM_ICONS = 13;
 
     private final Drawable[] mIcons = new Drawable[NUM_ICONS + 1];

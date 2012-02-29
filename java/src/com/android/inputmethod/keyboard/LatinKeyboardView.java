@@ -42,7 +42,6 @@ import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
-import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -81,8 +80,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     private float mSpacebarTextSize;
     private final int mSpacebarTextColor;
     private final int mSpacebarTextShadowColor;
-    // Height in space key the language name will be drawn. (proportional to space key height)
-    private static final float SPACEBAR_LANGUAGE_BASELINE = 0.6f;
     // If the full language name needs to be smaller than this value to be drawn on space key,
     // its short language name will be used instead.
     private static final float MINIMUM_SCALE_OF_LANGUAGE_NAME = 0.8f;
@@ -399,7 +396,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         mMoreKeysPanelCache.clear();
 
         mSpaceKey = keyboard.getKey(Keyboard.CODE_SPACE);
-        mSpaceIcon = keyboard.mIconsSet.getIconDrawable(KeyboardIconsSet.ICON_SPACE);
+        mSpaceIcon = (mSpaceKey != null) ? mSpaceKey.getIcon(keyboard.mIconsSet) : null;
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mSpacebarTextSize = keyHeight * mSpacebarTextRatio;
         mSpacebarLocale = keyboard.mId.mLocale;
@@ -787,8 +784,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
     @Override
     protected void onDrawKeyTopVisuals(Key key, Canvas canvas, Paint paint, KeyDrawParams params) {
-        super.onDrawKeyTopVisuals(key, canvas, paint, params);
-
         if (key.mCode == Keyboard.CODE_SPACE) {
             drawSpacebar(key, canvas, paint);
 
@@ -797,6 +792,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                     && Utils.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */)) {
                 drawKeyPopupHint(key, canvas, paint, params);
             }
+        } else {
+            super.onDrawKeyTopVisuals(key, canvas, paint, params);
         }
     }
 
@@ -851,7 +848,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
     private void drawSpacebar(Key key, Canvas canvas, Paint paint) {
         final int width = key.mWidth;
-        final int height = mSpaceIcon != null ? mSpaceIcon.getIntrinsicHeight() : key.mHeight;
+        final int height = key.mHeight;
 
         // If application locales are explicitly selected.
         if (mNeedsToDisplayLanguage) {
@@ -862,8 +859,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             // spacebar.
             final float descent = paint.descent();
             final float textHeight = -paint.ascent() + descent;
-            final float baseline = (mSpaceIcon != null) ? height * SPACEBAR_LANGUAGE_BASELINE
-                    : height / 2 + textHeight / 2;
+            final float baseline = height / 2 + textHeight / 2;
             paint.setColor(getSpacebarTextColor(mSpacebarTextShadowColor, mSpacebarTextFadeFactor));
             canvas.drawText(language, width / 2, baseline - descent - 1, paint);
             paint.setColor(getSpacebarTextColor(mSpacebarTextColor, mSpacebarTextFadeFactor));
