@@ -121,7 +121,8 @@ public class UserUnigramDictionary extends ExpandableDictionary {
     public void loadDictionaryAsync() {
         if (!ENABLE_USER_UNIGRAM_DICTIONARY) return;
         // Load the words that correspond to the current input locale
-        Cursor cursor = query(COLUMN_LOCALE + "=?", new String[] { mLocale });
+        final Cursor cursor = query(COLUMN_LOCALE + "=?", new String[] { mLocale });
+        if (null == cursor) return;
         try {
             if (cursor.moveToFirst()) {
                 int wordIndex = cursor.getColumnIndex(COLUMN_WORD);
@@ -212,10 +213,16 @@ public class UserUnigramDictionary extends ExpandableDictionary {
         qb.setProjectionMap(sDictProjectionMap);
 
         // Get the database and run the query
-        SQLiteDatabase db = sOpenHelper.getReadableDatabase();
-        Cursor c = qb.query(db, null, selection, selectionArgs, null, null,
-                DEFAULT_SORT_ORDER);
-        return c;
+        try {
+            SQLiteDatabase db = sOpenHelper.getReadableDatabase();
+            Cursor c = qb.query(db, null, selection, selectionArgs, null, null,
+                    DEFAULT_SORT_ORDER);
+            return c;
+        } catch (android.database.sqlite.SQLiteCantOpenDatabaseException e) {
+            // Can't open the database : presumably we can't access storage. That may happen
+            // when the device is wedged; do a best effort to still start the keyboard.
+            return null;
+        }
     }
 
     /**
@@ -236,7 +243,14 @@ public class UserUnigramDictionary extends ExpandableDictionary {
 
         @Override
         protected Void doInBackground(Void... v) {
-            SQLiteDatabase db = mDbHelper.getWritableDatabase();
+            SQLiteDatabase db = null;
+            try {
+                db = mDbHelper.getWritableDatabase();
+            } catch (android.database.sqlite.SQLiteCantOpenDatabaseException e) {
+                // With no access to the DB, this is moot. Do nothing: we'll exit through the
+                // test for null == db.
+            }
+            if (null == db) return null;
             // Write all the entries to the db
             Set<Entry<String,Integer>> mEntries = mMap.entrySet();
             for (Entry<String,Integer> entry : mEntries) {

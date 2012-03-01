@@ -212,7 +212,8 @@ public class UserBigramDictionary extends ExpandableDictionary {
     @Override
     public void loadDictionaryAsync() {
         // Load the words that correspond to the current input locale
-        Cursor cursor = query(MAIN_COLUMN_LOCALE + "=?", new String[] { mLocale });
+        final Cursor cursor = query(MAIN_COLUMN_LOCALE + "=?", new String[] { mLocale });
+        if (null == cursor) return;
         try {
             if (cursor.moveToFirst()) {
                 int word1Index = cursor.getColumnIndex(MAIN_COLUMN_WORD1);
@@ -249,11 +250,17 @@ public class UserBigramDictionary extends ExpandableDictionary {
         qb.setProjectionMap(sDictProjectionMap);
 
         // Get the database and run the query
-        SQLiteDatabase db = sOpenHelper.getReadableDatabase();
-        Cursor c = qb.query(db,
-                new String[] { MAIN_COLUMN_WORD1, MAIN_COLUMN_WORD2, FREQ_COLUMN_FREQUENCY },
-                selection, selectionArgs, null, null, null);
-        return c;
+        try {
+            SQLiteDatabase db = sOpenHelper.getReadableDatabase();
+            Cursor c = qb.query(db,
+                    new String[] { MAIN_COLUMN_WORD1, MAIN_COLUMN_WORD2, FREQ_COLUMN_FREQUENCY },
+                    selection, selectionArgs, null, null, null);
+            return c;
+        } catch (android.database.sqlite.SQLiteCantOpenDatabaseException e) {
+            // Can't open the database : presumably we can't access storage. That may happen
+            // when the device is wedged; do a best effort to still start the keyboard.
+            return null;
+        }
     }
 
     /**
@@ -344,7 +351,18 @@ public class UserBigramDictionary extends ExpandableDictionary {
 
         @Override
         protected Void doInBackground(Void... v) {
-            SQLiteDatabase db = mDbHelper.getWritableDatabase();
+            SQLiteDatabase db = null;
+            try {
+                db = mDbHelper.getWritableDatabase();
+            } catch (android.database.sqlite.SQLiteCantOpenDatabaseException e) {
+                // If we can't open the db, don't do anything. Exit through the next test
+                // for non-nullity of the db variable.
+            }
+            if (null == db) {
+                // Not much we can do. Just exit.
+                sUpdatingDB = false;
+                return null;
+            }
             db.execSQL("PRAGMA foreign_keys = ON;");
             // Write all the entries to the db
             Iterator<Bigram> iterator = mMap.iterator();
