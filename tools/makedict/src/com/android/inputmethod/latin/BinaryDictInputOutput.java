@@ -112,8 +112,10 @@ public class BinaryDictInputOutput {
      */
 
     private static final int MAGIC_NUMBER = 0x78B1;
-    private static final int VERSION = 1;
-    private static final int MAXIMUM_SUPPORTED_VERSION = VERSION;
+    private static final int MINIMUM_SUPPORTED_VERSION = 1;
+    private static final int MAXIMUM_SUPPORTED_VERSION = 2;
+    private static final int FIRST_VERSION_WITH_HEADER_SIZE = 2;
+
     // No options yet, reserved for future use.
     private static final int OPTIONS = 0;
 
@@ -797,9 +799,10 @@ public class BinaryDictInputOutput {
      *
      * @param destination the stream to write the binary data to.
      * @param dict the dictionary to write.
+     * @param version the version of the format to write, currently either 1 or 2.
      */
-    public static void writeDictionaryBinary(OutputStream destination, FusionDictionary dict)
-            throws IOException {
+    public static void writeDictionaryBinary(OutputStream destination, FusionDictionary dict,
+            final int version) throws IOException, UnsupportedFormatException {
 
         // Addresses are limited to 3 bytes, so we'll just make a 16MB buffer. Since addresses
         // can be relative to each node, the structure itself is not limited to 16MB at all, but
@@ -811,16 +814,30 @@ public class BinaryDictInputOutput {
         final byte[] buffer = new byte[1 << 24];
         int index = 0;
 
+        if (version < MINIMUM_SUPPORTED_VERSION || version > MAXIMUM_SUPPORTED_VERSION) {
+            throw new UnsupportedFormatException("Requested file format version " + version
+                    + ", but this implementation only supports versions "
+                    + MINIMUM_SUPPORTED_VERSION + " through " + MAXIMUM_SUPPORTED_VERSION);
+        }
+
         // Magic number in big-endian order.
         buffer[index++] = (byte) (0xFF & (MAGIC_NUMBER >> 8));
         buffer[index++] = (byte) (0xFF & MAGIC_NUMBER);
         // Dictionary version.
-        buffer[index++] = (byte) (0xFF & VERSION);
+        buffer[index++] = (byte) (0xFF & version);
         // Options flags
         buffer[index++] = (byte) (0xFF & (OPTIONS >> 8));
         buffer[index++] = (byte) (0xFF & OPTIONS);
+        if (version >= FIRST_VERSION_WITH_HEADER_SIZE) {
+            final int headerSizeOffset = index;
+            index += 3; // Size of the header size
 
-        // Should we include the locale and title of the dictionary ?
+            // Write out the header contents here.
+
+            buffer[headerSizeOffset] = (byte) (0xFF & (index >> 16));
+            buffer[headerSizeOffset + 1] = (byte) (0xFF & (index >> 8));
+            buffer[headerSizeOffset + 2] = (byte) (0xFF & (index >> 0));
+        }
 
         destination.write(buffer, 0, index);
         index = 0;
@@ -1125,7 +1142,16 @@ public class BinaryDictInputOutput {
         // Read options
         source.readUnsignedShort();
 
-        long headerSize = source.getFilePointer();
+        final long headerSize;
+        if (version < FIRST_VERSION_WITH_HEADER_SIZE) {
+            headerSize = source.getFilePointer();
+        } else {
+            headerSize = source.readUnsignedByte() << 16 + source.readUnsignedByte() << 8
+                    + source.readUnsignedByte();
+            // read the header body
+            source.seek(headerSize);
+        }
+
         Map<Integer, Node> reverseNodeMapping = new TreeMap<Integer, Node>();
         Map<Integer, CharGroup> reverseGroupMapping = new TreeMap<Integer, CharGroup>();
         final Node root = readNode(source, headerSize, reverseNodeMapping, reverseGroupMapping);
