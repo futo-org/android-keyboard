@@ -34,7 +34,7 @@ public class MoreKeysKeyboard extends Keyboard {
     }
 
     public static class Builder extends Keyboard.Builder<Builder.MoreKeysKeyboardParams> {
-        private final String[] mMoreKeys;
+        private final Key mParentKey;
 
         public static class MoreKeysKeyboardParams extends Keyboard.Params {
             public boolean mIsFixedOrder;
@@ -49,28 +49,20 @@ public class MoreKeysKeyboard extends Keyboard {
                 super();
             }
 
-            /* package for test */MoreKeysKeyboardParams(int numKeys, int maxColumns, int keyWidth,
-                    int rowHeight, int coordXInParent, int parentKeyboardWidth) {
-                super();
-                setParameters(numKeys, maxColumns, keyWidth, rowHeight, coordXInParent,
-                        parentKeyboardWidth);
-            }
-
             /**
              * Set keyboard parameters of more keys keyboard.
              *
              * @param numKeys number of keys in this more keys keyboard.
-             * @param maxColumnsAndFlags number of maximum columns of this more keys keyboard.
-             * This might have {@link Key#MORE_KEYS_FIXED_COLUMN_ORDER} flag.
+             * @param maxColumns number of maximum columns of this more keys keyboard.
              * @param keyWidth more keys keyboard key width in pixel, including horizontal gap.
              * @param rowHeight more keys keyboard row height in pixel, including vertical gap.
              * @param coordXInParent coordinate x of the key preview in parent keyboard.
              * @param parentKeyboardWidth parent keyboard width in pixel.
+             * @param isFixedColumnOrder if true, more keys should be laid out in fixed order.
              */
-            public void setParameters(int numKeys, int maxColumnsAndFlags, int keyWidth,
-                    int rowHeight, int coordXInParent, int parentKeyboardWidth) {
-                mIsFixedOrder = (maxColumnsAndFlags & Key.MORE_KEYS_FIXED_COLUMN_ORDER) != 0;
-                final int maxColumns = maxColumnsAndFlags & ~Key.MORE_KEYS_FIXED_COLUMN_ORDER;
+            public void setParameters(int numKeys, int maxColumns, int keyWidth, int rowHeight,
+                    int coordXInParent, int parentKeyboardWidth, boolean isFixedColumnOrder) {
+                mIsFixedOrder = isFixedColumnOrder;
                 if (parentKeyboardWidth / keyWidth < maxColumns) {
                     throw new IllegalArgumentException(
                             "Keyboard is too small to hold more keys keyboard: "
@@ -253,7 +245,7 @@ public class MoreKeysKeyboard extends Keyboard {
             // TODO: More keys keyboard's vertical gap is currently calculated heuristically.
             // Should revise the algorithm.
             mParams.mVerticalGap = parentKeyboard.mVerticalGap / 2;
-            mMoreKeys = parentKey.mMoreKeys;
+            mParentKey = parentKey;
 
             final int previewWidth = view.mKeyPreviewDrawParams.mPreviewBackgroundWidth;
             final int previewHeight = view.mKeyPreviewDrawParams.mPreviewBackgroundHeight;
@@ -261,20 +253,24 @@ public class MoreKeysKeyboard extends Keyboard {
             // Use pre-computed width and height if these values are available and more keys
             // keyboard has only one key to mitigate visual flicker between key preview and more
             // keys keyboard.
-            if (view.isKeyPreviewPopupEnabled() && mMoreKeys.length == 1 && previewWidth > 0
-                    && previewHeight > 0) {
+            final boolean validKeyPreview = view.isKeyPreviewPopupEnabled() && (previewWidth > 0)
+                    && (previewHeight > 0);
+            final boolean singleMoreKeyWithPreview = validKeyPreview
+                    && parentKey.mMoreKeys.length == 1;
+            if (singleMoreKeyWithPreview) {
                 width = previewWidth;
                 height = previewHeight + mParams.mVerticalGap;
             } else {
                 width = getMaxKeyWidth(view, parentKey.mMoreKeys, mParams.mDefaultKeyWidth);
                 height = parentKeyboard.mMostCommonKeyHeight;
             }
-            mParams.setParameters(mMoreKeys.length, parentKey.mMaxMoreKeysColumn, width, height,
-                    parentKey.mX + parentKey.mWidth / 2, view.getMeasuredWidth());
+            mParams.setParameters(parentKey.mMoreKeys.length, parentKey.getMoreKeysColumn(),
+                    width, height, parentKey.mX + parentKey.mWidth / 2, view.getMeasuredWidth(),
+                    parentKey.isFixedColumnOrderMoreKeys());
         }
 
         private static int getMaxKeyWidth(KeyboardView view, String[] moreKeys, int minKeyWidth) {
-            final int padding = (int) view.getContext().getResources()
+            final int padding = (int) view.getResources()
                     .getDimension(R.dimen.more_keys_keyboard_key_horizontal_padding);
             Paint paint = null;
             int maxWidth = minKeyWidth;
@@ -298,8 +294,9 @@ public class MoreKeysKeyboard extends Keyboard {
         @Override
         public MoreKeysKeyboard build() {
             final MoreKeysKeyboardParams params = mParams;
-            for (int n = 0; n < mMoreKeys.length; n++) {
-                final String moreKeySpec = mMoreKeys[n];
+            final String[] moreKeys = mParentKey.mMoreKeys;
+            for (int n = 0; n < moreKeys.length; n++) {
+                final String moreKeySpec = moreKeys[n];
                 final int row = n / params.mNumColumns;
                 final Key key = new Key(mResources, params, moreKeySpec, params.getX(n, row),
                         params.getY(row), params.mDefaultKeyWidth, params.mDefaultRowHeight);

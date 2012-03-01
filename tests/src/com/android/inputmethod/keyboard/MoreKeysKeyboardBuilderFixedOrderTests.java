@@ -41,10 +41,12 @@ public class MoreKeysKeyboardBuilderFixedOrderTests extends AndroidTestCase {
         super.setUp();
     }
 
-    private static MoreKeysKeyboardParams createParams(int numKeys, int fixColumns,
+    private static MoreKeysKeyboardParams createParams(int numKeys, int columnNum,
             int coordXInParnet) {
-        return new MoreKeysKeyboardParams(numKeys, fixColumns | Key.MORE_KEYS_FIXED_COLUMN_ORDER,
-                WIDTH, HEIGHT, coordXInParnet, KEYBOARD_WIDTH);
+        final MoreKeysKeyboardParams params = new MoreKeysKeyboardParams();
+        params.setParameters(numKeys, columnNum, WIDTH, HEIGHT, coordXInParnet, KEYBOARD_WIDTH,
+                /* isFixedOrderColumn */true);
+        return params;
     }
 
     public void testLayoutError() {

@@ -103,11 +103,12 @@ public class Key {
     public final CharSequence mOutputText;
     /** More keys */
     public final String[] mMoreKeys;
-    /** More keys maximum column number */
-    public final int mMaxMoreKeysColumn;
-    public static final int MORE_KEYS_FIXED_COLUMN_ORDER = 0x80000000;
-    private static final String AUTO_COLUMN_ORDER = "!autoColumnOrder!";
-    private static final String FIXED_COLUMN_ORDER = "!fixedColumnOrder!";
+    /** More keys column number and flags */
+    private final int mMoreKeysColumnAndFlags;
+    private static final int MORE_KEYS_COLUMN_MASK = 0x000000ff;
+    private static final int MORE_KEYS_FLAGS_FIXED_COLUMN_ORDER = 0x80000000;
+    private static final String MORE_KEYS_AUTO_COLUMN_ORDER = "!autoColumnOrder!";
+    private static final String MORE_KEYS_FIXED_COLUMN_ORDER = "!fixedColumnOrder!";
 
     /** Background type that represents different key background visual than normal one. */
     public final int mBackgroundType;
@@ -146,7 +147,7 @@ public class Key {
      * This constructor is being used only for key in popup suggestions pane.
      */
     public Key(Keyboard.Params params, String label, String hintLabel, int iconId,
-            int code, CharSequence outputText, int x, int y, int width, int height) {
+            int code, String outputText, int x, int y, int width, int height) {
         mHeight = height - params.mVerticalGap;
         mHorizontalGap = params.mHorizontalGap;
         mVerticalGap = params.mVerticalGap;
@@ -157,7 +158,7 @@ public class Key {
         mBackgroundType = BACKGROUND_TYPE_NORMAL;
         mActionFlags = 0;
         mMoreKeys = null;
-        mMaxMoreKeysColumn = 0;
+        mMoreKeysColumnAndFlags = 0;
         mLabel = label;
         mOutputText = outputText;
         mCode = code;
@@ -236,15 +237,18 @@ public class Key {
         final boolean preserveCase = (mLabelFlags & LABEL_FLAGS_PRESERVE_CASE) != 0;
         int actionFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyActionFlags);
         String[] moreKeys = style.getStringArray(keyAttr, R.styleable.Keyboard_Key_moreKeys);
-        int column;
-        if ((column = parseMoreKeysColumnOrder(moreKeys, AUTO_COLUMN_ORDER)) > 0) {
-            mMaxMoreKeysColumn = column;
-        } else if ((column = parseMoreKeysColumnOrder(moreKeys, FIXED_COLUMN_ORDER)) > 0) {
-            mMaxMoreKeysColumn = column | MORE_KEYS_FIXED_COLUMN_ORDER;
-        } else {
-            mMaxMoreKeysColumn = style.getInt(keyAttr,
+
+        int moreKeysColumn = style.getInt(keyAttr,
                     R.styleable.Keyboard_Key_maxMoreKeysColumn, params.mMaxMoreKeysKeyboardColumn);
+        int value;
+        if ((value = KeySpecParser.getIntValue(moreKeys, MORE_KEYS_AUTO_COLUMN_ORDER, -1)) > 0) {
+            moreKeysColumn = value & MORE_KEYS_COLUMN_MASK;
         }
+        if ((value = KeySpecParser.getIntValue(moreKeys, MORE_KEYS_FIXED_COLUMN_ORDER, -1)) > 0) {
+            moreKeysColumn = MORE_KEYS_FLAGS_FIXED_COLUMN_ORDER | (value & MORE_KEYS_COLUMN_MASK);
+        }
+        mMoreKeysColumnAndFlags = moreKeysColumn;
+
         final String[] additionalMoreKeys = style.getStringArray(
                 keyAttr, R.styleable.Keyboard_Key_additionalMoreKeys);
         moreKeys = KeySpecParser.insertAddtionalMoreKeys(moreKeys, additionalMoreKeys);
@@ -308,21 +312,6 @@ public class Key {
 
         if (hasShiftedLetterHint() && TextUtils.isEmpty(mHintLabel)) {
             Log.w(TAG, "hasShiftedLetterHint specified without keyHintLabel: " + this);
-        }
-    }
-
-    private static int parseMoreKeysColumnOrder(String[] moreKeys, String key) {
-        if (moreKeys == null || moreKeys.length == 0 || moreKeys[0] == null
-                || !moreKeys[0].startsWith(key)) {
-            return -1;
-        }
-        try {
-            final int column = Integer.parseInt(moreKeys[0].substring(key.length()));
-            moreKeys[0] = null;
-            return column;
-        } catch (NumberFormatException e) {
-            Log.w(TAG, "column number should follow after " + key);
-            return 0;
         }
     }
 
@@ -530,6 +519,14 @@ public class Key {
 
     public boolean isShiftedLetterActivated() {
         return (mLabelFlags & LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED) != 0;
+    }
+
+    public int getMoreKeysColumn() {
+        return mMoreKeysColumnAndFlags & MORE_KEYS_COLUMN_MASK;
+    }
+
+    public boolean isFixedColumnOrderMoreKeys() {
+        return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_FIXED_COLUMN_ORDER) != 0;
     }
 
     public Drawable getIcon(KeyboardIconsSet iconSet) {

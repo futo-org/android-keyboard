@@ -426,4 +426,28 @@ public class KeySpecParser {
             return list.toArray(new String[list.size()]);
         }
     }
+
+    public static int getIntValue(String[] moreKeys, String key, int defaultValue) {
+        if (moreKeys == null) {
+            return defaultValue;
+        }
+        boolean foundValue = false;
+        int value = defaultValue;
+        for (int i = 0; i < moreKeys.length; i++) {
+            final String moreKeySpec = moreKeys[i];
+            if (moreKeySpec == null || !moreKeySpec.startsWith(key)) {
+                continue;
+            }
+            moreKeys[i] = null;
+            try {
+                if (!foundValue) {
+                    value = Integer.parseInt(moreKeySpec.substring(key.length()));
+                }
+            } catch (NumberFormatException e) {
+                throw new RuntimeException(
+                        "integer should follow after " + key + ": " + moreKeySpec);
+            }
+        }
+        return value;
+    }
 }

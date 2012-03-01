@@ -43,8 +43,10 @@ public class MoreKeysKeyboardBuilderTests extends AndroidTestCase {
 
     private static MoreKeysKeyboardParams createParams(int numKeys, int maxColumns,
             int coordXInParnet) {
-        return new MoreKeysKeyboardParams(numKeys, maxColumns, WIDTH, HEIGHT, coordXInParnet,
-                KEYBOARD_WIDTH);
+        final MoreKeysKeyboardParams params = new MoreKeysKeyboardParams();
+        params.setParameters(numKeys, maxColumns, WIDTH, HEIGHT, coordXInParnet, KEYBOARD_WIDTH,
+                /* isFixedOrderColumn */false);
+        return params;
     }
 
     public void testLayoutError() {
