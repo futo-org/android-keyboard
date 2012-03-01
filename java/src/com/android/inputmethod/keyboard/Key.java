@@ -62,7 +62,7 @@ public class Key {
     private static final int LABEL_FLAGS_LARGE_LETTER = 0x10;
     private static final int LABEL_FLAGS_FONT_NORMAL = 0x20;
     private static final int LABEL_FLAGS_FONT_MONO_SPACE = 0x40;
-    private static final int LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO = 0x80;
+    public static final int LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO = 0x80;
     private static final int LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO = 0x100;
     private static final int LABEL_FLAGS_HAS_POPUP_HINT = 0x200;
     private static final int LABEL_FLAGS_HAS_SHIFTED_LETTER_HINT = 0x400;
@@ -107,8 +107,10 @@ public class Key {
     private final int mMoreKeysColumnAndFlags;
     private static final int MORE_KEYS_COLUMN_MASK = 0x000000ff;
     private static final int MORE_KEYS_FLAGS_FIXED_COLUMN_ORDER = 0x80000000;
+    private static final int MORE_KEYS_FLAGS_HAS_LABELS = 0x40000000;
     private static final String MORE_KEYS_AUTO_COLUMN_ORDER = "!autoColumnOrder!";
     private static final String MORE_KEYS_FIXED_COLUMN_ORDER = "!fixedColumnOrder!";
+    private static final String MORE_KEYS_HAS_LABELS = "!hasLabels!";
 
     /** Background type that represents different key background visual than normal one. */
     public final int mBackgroundType;
@@ -135,26 +137,26 @@ public class Key {
      * This constructor is being used only for key in more keys keyboard.
      */
     public Key(Resources res, Keyboard.Params params, String moreKeySpec,
-            int x, int y, int width, int height) {
+            int x, int y, int width, int height, int labelFlags) {
         this(params, KeySpecParser.getLabel(moreKeySpec), null,
                 KeySpecParser.getIconId(moreKeySpec),
                 KeySpecParser.getCode(res, moreKeySpec),
                 KeySpecParser.getOutputText(moreKeySpec),
-                x, y, width, height);
+                x, y, width, height, labelFlags);
     }
 
     /**
      * This constructor is being used only for key in popup suggestions pane.
      */
     public Key(Keyboard.Params params, String label, String hintLabel, int iconId,
-            int code, String outputText, int x, int y, int width, int height) {
+            int code, String outputText, int x, int y, int width, int height, int labelFlags) {
         mHeight = height - params.mVerticalGap;
         mHorizontalGap = params.mHorizontalGap;
         mVerticalGap = params.mVerticalGap;
         mVisualInsetsLeft = mVisualInsetsRight = 0;
         mWidth = width - mHorizontalGap;
         mHintLabel = hintLabel;
-        mLabelFlags = 0;
+        mLabelFlags = labelFlags;
         mBackgroundType = BACKGROUND_TYPE_NORMAL;
         mActionFlags = 0;
         mMoreKeys = null;
@@ -162,6 +164,7 @@ public class Key {
         mLabel = label;
         mOutputText = outputText;
         mCode = code;
+        mEnabled = (code != Keyboard.CODE_UNSPECIFIED);
         mAltCode = Keyboard.CODE_UNSPECIFIED;
         mIconId = iconId;
         mDisabledIconId = KeyboardIconsSet.ICON_UNDEFINED;
@@ -239,13 +242,16 @@ public class Key {
         String[] moreKeys = style.getStringArray(keyAttr, R.styleable.Keyboard_Key_moreKeys);
 
         int moreKeysColumn = style.getInt(keyAttr,
-                    R.styleable.Keyboard_Key_maxMoreKeysColumn, params.mMaxMoreKeysKeyboardColumn);
+                R.styleable.Keyboard_Key_maxMoreKeysColumn, params.mMaxMoreKeysKeyboardColumn);
         int value;
         if ((value = KeySpecParser.getIntValue(moreKeys, MORE_KEYS_AUTO_COLUMN_ORDER, -1)) > 0) {
             moreKeysColumn = value & MORE_KEYS_COLUMN_MASK;
         }
         if ((value = KeySpecParser.getIntValue(moreKeys, MORE_KEYS_FIXED_COLUMN_ORDER, -1)) > 0) {
             moreKeysColumn = MORE_KEYS_FLAGS_FIXED_COLUMN_ORDER | (value & MORE_KEYS_COLUMN_MASK);
+        }
+        if (KeySpecParser.getBooleanValue(moreKeys, MORE_KEYS_HAS_LABELS)) {
+            moreKeysColumn |= MORE_KEYS_FLAGS_HAS_LABELS;
         }
         mMoreKeysColumnAndFlags = moreKeysColumn;
 
@@ -468,7 +474,7 @@ public class Key {
     }
 
     public int selectTextSize(int letter, int largeLetter, int label, int hintLabel) {
-        if (mLabel.length() > 1
+        if (Utils.codePointCount(mLabel) > 1
                 && (mLabelFlags & (LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO
                         | LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO)) == 0) {
             return label;
@@ -527,6 +533,10 @@ public class Key {
 
     public boolean isFixedColumnOrderMoreKeys() {
         return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_FIXED_COLUMN_ORDER) != 0;
+    }
+
+    public boolean hasLabelsInMoreKeys() {
+        return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_HAS_LABELS) != 0;
     }
 
     public Drawable getIcon(KeyboardIconsSet iconSet) {
@@ -679,7 +689,7 @@ public class Key {
          */
         protected Spacer(Keyboard.Params params, int x, int y, int width, int height) {
             super(params, null, null, KeyboardIconsSet.ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED,
-                    null, x, y, width, height);
+                    null, x, y, width, height, 0);
         }
     }
 }

@@ -227,7 +227,7 @@ public class MoreSuggestions extends Keyboard {
                 final int index = pos + SUGGESTION_CODE_BASE;
                 final Key key = new Key(
                         params, word, info, KeyboardIconsSet.ICON_UNDEFINED, index, null, x, y,
-                        width, params.mDefaultRowHeight);
+                        width, params.mDefaultRowHeight, 0);
                 params.markAsEdgeKey(key, pos);
                 params.onAddKey(key);
                 final int columnNumber = params.getColumnNumber(pos);
