@@ -242,7 +242,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     public final UIHandler mHandler = new UIHandler(this);
 
     public static class UIHandler extends StaticInnerHandlerWrapper<LatinIME> {
-        private static final int MSG_UPDATE_SUGGESTIONS = 0;
         private static final int MSG_UPDATE_SHIFT_STATE = 1;
         private static final int MSG_VOICE_RESULTS = 2;
         private static final int MSG_FADEOUT_LANGUAGE_ON_SPACEBAR = 3;
@@ -250,6 +249,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         private static final int MSG_SPACE_TYPED = 5;
         private static final int MSG_SET_BIGRAM_PREDICTIONS = 6;
         private static final int MSG_PENDING_IMS_CALLBACK = 7;
+        private static final int MSG_UPDATE_SUGGESTIONS = 8;
 
         private int mDelayBeforeFadeoutLanguageOnSpacebar;
         private int mDelayUpdateSuggestions;
