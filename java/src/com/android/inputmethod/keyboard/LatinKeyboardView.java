@@ -481,8 +481,11 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
      */
     protected boolean onLongPress(Key parentKey, PointerTracker tracker) {
         final int primaryCode = parentKey.mCode;
-        if (parentKey.mAltCode != Keyboard.CODE_UNSPECIFIED) {
-            // Long press on a key that has altCode defined.
+        if (parentKey.mMoreKeys == null && !parentKey.altCodeWhileTyping()
+                && parentKey.mAltCode != Keyboard.CODE_UNSPECIFIED) {
+            // Long press on a key that has no more keys and not altCodeWhileTyping but altCode
+            // defined, such as "0 +" key on phone layout and "/ :" key on datetime
+            // layout.
             tracker.onLongPressed();
             invokeCodeInput(parentKey.mAltCode);
             invokeReleaseKey(primaryCode);
