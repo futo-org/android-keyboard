@@ -776,7 +776,7 @@ public class Utils {
 
     public static boolean willAutoCorrect(SuggestedWords suggestions) {
         return !suggestions.mTypedWordValid && suggestions.mHasAutoCorrectionCandidate
-                && !suggestions.shouldBlockAutoCorrection();
+                && !suggestions.shouldBlockAutoCorrectionBySafetyNet();
     }
 
     public static class Stats {

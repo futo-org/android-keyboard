@@ -32,7 +32,7 @@ public class SuggestedWords {
     public final boolean mHasAutoCorrectionCandidate;
     public final boolean mIsPunctuationSuggestions;
     private final List<SuggestedWordInfo> mSuggestedWordInfoList;
-    private boolean mShouldBlockAutoCorrection;
+    private boolean mShouldBlockAutoCorrectionBySafetyNet;
 
     private SuggestedWords(List<CharSequence> words, boolean typedWordValid,
             boolean hasAutoCorrectionCandidate, boolean isPunctuationSuggestions,
@@ -46,7 +46,7 @@ public class SuggestedWords {
         mHasAutoCorrectionCandidate = hasAutoCorrectionCandidate;
         mIsPunctuationSuggestions = isPunctuationSuggestions;
         mSuggestedWordInfoList = suggestedWordInfoList;
-        mShouldBlockAutoCorrection = false;
+        mShouldBlockAutoCorrectionBySafetyNet = false;
     }
 
     public int size() {
@@ -69,12 +69,12 @@ public class SuggestedWords {
         return mIsPunctuationSuggestions;
     }
 
-    public void setShouldBlockAutoCorrection() {
-        mShouldBlockAutoCorrection = true;
+    public void setShouldBlockAutoCorrectionBySatefyNet() {
+        mShouldBlockAutoCorrectionBySafetyNet = true;
     }
 
-    public boolean shouldBlockAutoCorrection() {
-        return mShouldBlockAutoCorrection;
+    public boolean shouldBlockAutoCorrectionBySafetyNet() {
+        return mShouldBlockAutoCorrectionBySafetyNet;
     }
 
     public static class Builder {
