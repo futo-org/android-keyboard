@@ -21,13 +21,14 @@ import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.os.SystemClock;
 import android.provider.Settings;
+import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.inputmethod.EditorInfo;
 
-import com.android.inputmethod.compat.AccessibilityManagerCompatWrapper;
+import com.android.inputmethod.compat.AccessibilityManagerCompatUtils;
 import com.android.inputmethod.compat.AudioManagerCompatWrapper;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.MotionEventCompatUtils;
@@ -44,7 +45,6 @@ public class AccessibilityUtils {
 
     private Context mContext;
     private AccessibilityManager mAccessibilityManager;
-    private AccessibilityManagerCompatWrapper mCompatManager;
     private AudioManagerCompatWrapper mAudioManager;
 
     /*
@@ -77,7 +77,6 @@ public class AccessibilityUtils {
         mContext = context;
         mAccessibilityManager = (AccessibilityManager) context
                 .getSystemService(Context.ACCESSIBILITY_SERVICE);
-        mCompatManager = new AccessibilityManagerCompatWrapper(mAccessibilityManager);
 
         final AudioManager audioManager = (AudioManager) context
                 .getSystemService(Context.AUDIO_SERVICE);
@@ -94,7 +93,7 @@ public class AccessibilityUtils {
     public boolean isTouchExplorationEnabled() {
         return ENABLE_ACCESSIBILITY
                 && mAccessibilityManager.isEnabled()
-                && mCompatManager.isTouchExplorationEnabled();
+                && AccessibilityManagerCompatUtils.isTouchExplorationEnabled(mAccessibilityManager);
     }
 
     /**
@@ -110,13 +109,13 @@ public class AccessibilityUtils {
 
         return action == MotionEventCompatUtils.ACTION_HOVER_ENTER
                 || action == MotionEventCompatUtils.ACTION_HOVER_EXIT
-                || action == MotionEventCompatUtils.ACTION_HOVER_MOVE;
+                || action == MotionEventCompat.ACTION_HOVER_MOVE;
     }
 
     /**
      * Returns whether the device should obscure typed password characters.
      * Typically this means speaking "dot" in place of non-control characters.
-     * 
+     *
      * @return {@code true} if the device should obscure password characters.
      */
     public boolean shouldObscureInput(EditorInfo editorInfo) {

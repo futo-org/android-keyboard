@@ -34,7 +34,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.accessibility.AccessibilityEvent;
 import android.widget.PopupWindow;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
@@ -732,16 +731,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     protected void onAttachedToWindow() {
         // Token is available from here.
         VoiceProxy.getInstance().onAttachedToWindow();
-    }
-
-    @Override
-    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
-        if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
-            return AccessibleKeyboardViewProxy.getInstance().dispatchPopulateAccessibilityEvent(
-                    event) || super.dispatchPopulateAccessibilityEvent(event);
-        }
-
-        return super.dispatchPopulateAccessibilityEvent(event);
     }
 
     /**

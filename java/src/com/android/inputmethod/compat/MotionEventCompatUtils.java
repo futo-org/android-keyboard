@@ -17,7 +17,7 @@
 package com.android.inputmethod.compat;
 
 public class MotionEventCompatUtils {
-    public static final int ACTION_HOVER_MOVE = 0x7;
+    // TODO(alanv): Remove after these are added to MotionEventCompat.
     public static final int ACTION_HOVER_ENTER = 0x9;
     public static final int ACTION_HOVER_EXIT = 0xA;
 }
