@@ -131,6 +131,9 @@ public class KeyboardSet {
             }
             break;
         case KeyboardId.MODE_NUMBER:
+        case KeyboardId.MODE_DATE:
+        case KeyboardId.MODE_TIME:
+        case KeyboardId.MODE_DATETIME:
             keyboardSetElementId = KeyboardId.ELEMENT_NUMBER;
             break;
         default:

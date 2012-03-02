@@ -36,6 +36,9 @@ public class KeyboardId {
     public static final int MODE_IM = 3;
     public static final int MODE_PHONE = 4;
     public static final int MODE_NUMBER = 5;
+    public static final int MODE_DATE = 6;
+    public static final int MODE_TIME = 7;
+    public static final int MODE_DATETIME = 8;
 
     public static final int ELEMENT_ALPHABET = 0;
     public static final int ELEMENT_ALPHABET_MANUAL_SHIFTED = 1;
@@ -121,31 +124,6 @@ public class KeyboardId {
 
     public boolean isAlphabetKeyboard() {
         return mElementId < ELEMENT_SYMBOLS;
-    }
-
-    public boolean isAlphabetShiftLockedKeyboard() {
-        return mElementId == ELEMENT_ALPHABET_SHIFT_LOCKED
-                || mElementId == ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED;
-    }
-
-    public boolean isAlphabetShiftedOrShiftLockedKeyboard() {
-        return isAlphabetKeyboard() && mElementId != ELEMENT_ALPHABET;
-    }
-
-    public boolean isAlphabetManualShiftedKeyboard() {
-        return mElementId == ELEMENT_ALPHABET_MANUAL_SHIFTED;
-    }
-
-    public boolean isSymbolsKeyboard() {
-        return mElementId == ELEMENT_SYMBOLS || mElementId == ELEMENT_SYMBOLS_SHIFTED;
-    }
-
-    public boolean isPhoneKeyboard() {
-        return mElementId == ELEMENT_PHONE || mElementId == ELEMENT_PHONE_SYMBOLS;
-    }
-
-    public boolean isPhoneShiftKeyboard() {
-        return mElementId == ELEMENT_PHONE_SYMBOLS;
     }
 
     public boolean navigateNext() {
@@ -242,6 +220,9 @@ public class KeyboardId {
         case MODE_IM: return "im";
         case MODE_PHONE: return "phone";
         case MODE_NUMBER: return "number";
+        case MODE_DATE: return "date";
+        case MODE_TIME: return "time";
+        case MODE_DATETIME: return "datetime";
         default: return null;
         }
     }

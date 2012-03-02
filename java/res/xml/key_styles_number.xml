@@ -41,9 +41,12 @@
         latin:styleName="numberKeyStyle"
         latin:keyLabelFlags="alignLeftOfCenter|hasHintLabel"
         latin:parentStyle="numKeyStyle" />
+    <!-- U+0030: "0" DIGIT ZERO
+         U+002B: "+" PLUS SIGN -->
     <key-style
         latin:styleName="num0KeyStyle"
-        latin:code="48"
+        latin:code="0x0030"
+        latin:altCode="0x002B"
         latin:keyLabel="0 +"
         latin:keyActionFlags="enableLongPress"
         latin:parentStyle="numberKeyStyle" />
@@ -91,10 +94,11 @@
         latin:keyLabel="9"
         latin:keyHintLabel="WXYZ"
         latin:parentStyle="numberKeyStyle" />
-    <!-- U+FF0A: "＊" FULLWIDTH ASTERISK -->
+    <!-- U+002A: "*" ASTERISK
+         U+FF0A: "＊" FULLWIDTH ASTERISK -->
     <key-style
         latin:styleName="numStarKeyStyle"
-        latin:code="42"
+        latin:code="0x002A"
         latin:keyLabel="&#xFF0A;"
         latin:parentStyle="numKeyStyle" />
     <!-- Only for non-tablet device -->
@@ -108,15 +112,17 @@
         latin:code="@integer/key_switch_alpha_symbol"
         latin:keyLabel="@string/label_to_phone_numeric_key"
         latin:parentStyle="numModeKeyStyle" />
+    <!-- U+002C: "," COMMA -->
     <key-style
         latin:styleName="numPauseKeyStyle"
-        latin:code="44"
+        latin:code="0x002C"
         latin:keyLabel="@string/label_pause_key"
         latin:keyLabelFlags="followKeyHintLabelRatio|autoXScale"
         latin:parentStyle="numKeyBaseStyle" />
+    <!-- U+003B: ";" SEMICOLON -->
     <key-style
         latin:styleName="numWaitKeyStyle"
-        latin:code="59"
+        latin:code="0x003B"
         latin:keyLabel="@string/label_wait_key"
         latin:keyLabelFlags="followKeyHintLabelRatio|autoXScale"
         latin:parentStyle="numKeyBaseStyle" />

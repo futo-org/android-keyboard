@@ -85,8 +85,6 @@ public class Keyboard {
     public static final int CODE_CLOSING_SQUARE_BRACKET = ']';
     public static final int CODE_CLOSING_CURLY_BRACKET = '}';
     public static final int CODE_CLOSING_ANGLE_BRACKET = '>';
-    public static final int CODE_DIGIT0 = '0';
-    public static final int CODE_PLUS = '+';
     private static final int MINIMUM_LETTER_CODE = CODE_TAB;
 
     /** Special keys code. Must be negative.
@@ -185,18 +183,11 @@ public class Keyboard {
     }
 
     // TODO: Remove this method.
-    public boolean isShiftLocked() {
-        return mId.isAlphabetShiftLockedKeyboard();
-    }
-
-    // TODO: Remove this method.
     public boolean isShiftedOrShiftLocked() {
-        return mId.isAlphabetShiftedOrShiftLockedKeyboard();
-    }
-
-    // TODO: Remove this method.
-    public boolean isManualShifted() {
-        return mId.isAlphabetManualShiftedKeyboard();
+        // Alphabet mode have unshifted, manual shifted, automatic shifted, shift locked, and
+        // shift lock shifted element. So that unshifed element is the only one that is NOT in
+        // shifted or shift locked state.
+        return mId.isAlphabetKeyboard() && mId.mElementId != KeyboardId.ELEMENT_ALPHABET;
     }
 
     public static boolean isLetterCode(int code) {

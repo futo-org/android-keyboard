@@ -563,8 +563,16 @@ public class Utils {
 
         switch (inputType & InputType.TYPE_MASK_CLASS) {
         case InputType.TYPE_CLASS_NUMBER:
-        case InputType.TYPE_CLASS_DATETIME:
             return KeyboardId.MODE_NUMBER;
+        case InputType.TYPE_CLASS_DATETIME:
+            switch (variation) {
+            case InputType.TYPE_DATETIME_VARIATION_DATE:
+                return KeyboardId.MODE_DATE;
+            case InputType.TYPE_DATETIME_VARIATION_TIME:
+                return KeyboardId.MODE_TIME;
+            default: // InputType.TYPE_DATETIME_VARIATION_NORMAL
+                return KeyboardId.MODE_DATETIME;
+            }
         case InputType.TYPE_CLASS_PHONE:
             return KeyboardId.MODE_PHONE;
         case InputType.TYPE_CLASS_TEXT:
