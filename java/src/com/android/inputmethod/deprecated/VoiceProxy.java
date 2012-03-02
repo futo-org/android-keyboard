@@ -435,44 +435,6 @@ public class VoiceProxy implements VoiceInput.UiListener {
         }
     }
 
-    /**
-     * Tries to apply any voice alternatives for the word if this was a spoken word and
-     * there are voice alternatives.
-     * @param touching The word that the cursor is touching, with position information
-     * @return true if an alternative was found, false otherwise.
-     */
-    public boolean applyVoiceAlternatives(EditingUtils.SelectedWord touching) {
-        if (!VOICE_INSTALLED) {
-            return false;
-        }
-        // Search for result in spoken word alternatives
-        String selectedWord = touching.mWord.toString().trim();
-        if (!mWordToSuggestions.containsKey(selectedWord)) {
-            selectedWord = selectedWord.toLowerCase();
-        }
-        if (mWordToSuggestions.containsKey(selectedWord)) {
-            mShowingVoiceSuggestions = true;
-            List<CharSequence> suggestions = mWordToSuggestions.get(selectedWord);
-            SuggestedWords.Builder builder = new SuggestedWords.Builder();
-            // If the first letter of touching is capitalized, make all the suggestions
-            // start with a capital letter.
-            if (Character.isUpperCase(touching.mWord.charAt(0))) {
-                for (CharSequence word : suggestions) {
-                    String str = word.toString();
-                    word = Character.toUpperCase(str.charAt(0)) + str.substring(1);
-                    builder.addWord(word);
-                }
-            } else {
-                builder.addWords(suggestions, null);
-            }
-            builder.setTypedWordValid(true).setHasMinimalSuggestion(true);
-            mService.setSuggestions(builder.build());
-//            mService.setCandidatesViewShown(true);
-            return true;
-        }
-        return false;
-    }
-
     public void handleBackspace() {
         if (!VOICE_INSTALLED) {
             return;
