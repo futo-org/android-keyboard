@@ -150,7 +150,7 @@ public class InputMethodManagerCompatWrapper {
     private InputMethodInfoCompatWrapper getLatinImeInputMethodInfo() {
         if (TextUtils.isEmpty(mLatinImePackageName))
             return null;
-        return Utils.getInputMethodInfo(this, mLatinImePackageName);
+        return Utils.getInputMethodInfo(mLatinImePackageName);
     }
 
     private static InputMethodSubtypeCompatWrapper getLastResortSubtype(String mode) {
@@ -239,8 +239,7 @@ public class InputMethodManagerCompatWrapper {
 
         // The code below are based on {@link InputMethodManager#showInputMethodMenuInternal}.
 
-        final InputMethodInfoCompatWrapper myImi = Utils.getInputMethodInfo(
-                this, mLatinImePackageName);
+        final InputMethodInfoCompatWrapper myImi = Utils.getInputMethodInfo(mLatinImePackageName);
         final List<InputMethodSubtypeCompatWrapper> myImsList = getEnabledInputMethodSubtypeList(
                 myImi, true);
         final InputMethodSubtypeCompatWrapper currentIms = getCurrentInputMethodSubtype();

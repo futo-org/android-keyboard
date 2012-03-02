@@ -329,10 +329,9 @@ public class Settings extends InputMethodSettingsActivity
     @Override
     public boolean onPreferenceClick(Preference pref) {
         if (pref == mInputLanguageSelection) {
-            startActivity(CompatUtils.getInputLanguageSelectionIntent(
-                    Utils.getInputMethodId(
-                            InputMethodManagerCompatWrapper.getInstance(),
-                            getActivityInternal().getApplicationInfo().packageName), 0));
+            final String imeId = Utils.getInputMethodId(
+                    getActivityInternal().getApplicationInfo().packageName);
+            startActivity(CompatUtils.getInputLanguageSelectionIntent(imeId, 0));
             return true;
         }
         return false;

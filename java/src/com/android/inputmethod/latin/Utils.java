@@ -171,12 +171,16 @@ public class Utils {
         return keyboardCount > 1;
     }
 
-    public static String getInputMethodId(InputMethodManagerCompatWrapper imm, String packageName) {
-        return getInputMethodInfo(imm, packageName).getId();
+    public static String getInputMethodId(String packageName) {
+        return getInputMethodInfo(packageName).getId();
     }
 
-    public static InputMethodInfoCompatWrapper getInputMethodInfo(
-            InputMethodManagerCompatWrapper imm, String packageName) {
+    public static InputMethodInfoCompatWrapper getInputMethodInfo(String packageName) {
+        final InputMethodManagerCompatWrapper imm = InputMethodManagerCompatWrapper.getInstance();
+        if (imm == null) {
+            throw new RuntimeException("Input method manager not found");
+        }
+
         for (final InputMethodInfoCompatWrapper imi : imm.getEnabledInputMethodList()) {
             if (imi.getPackageName().equals(packageName))
                 return imi;
