@@ -49,7 +49,7 @@
             <key-style
                 latin:styleName="navigateMoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint|preserveCase"
-                latin:moreKeys="!fixedColumnOrder!2,@string/action_previous_as_more_key,@string/action_next_as_more_key" />
+                latin:moreKeys="!fixedColumnOrder!2,!needsDividers!,@string/action_previous_as_more_key,@string/action_next_as_more_key" />
         </case>
         <case
             latin:navigateNext="true"

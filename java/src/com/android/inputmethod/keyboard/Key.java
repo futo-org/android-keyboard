@@ -108,9 +108,11 @@ public class Key {
     private static final int MORE_KEYS_COLUMN_MASK = 0x000000ff;
     private static final int MORE_KEYS_FLAGS_FIXED_COLUMN_ORDER = 0x80000000;
     private static final int MORE_KEYS_FLAGS_HAS_LABELS = 0x40000000;
+    private static final int MORE_KEYS_FLAGS_NEEDS_DIVIDERS = 0x40000000;
     private static final String MORE_KEYS_AUTO_COLUMN_ORDER = "!autoColumnOrder!";
     private static final String MORE_KEYS_FIXED_COLUMN_ORDER = "!fixedColumnOrder!";
     private static final String MORE_KEYS_HAS_LABELS = "!hasLabels!";
+    private static final String MORE_KEYS_NEEDS_DIVIDERS = "!needsDividers!";
 
     /** Background type that represents different key background visual than normal one. */
     public final int mBackgroundType;
@@ -252,6 +254,9 @@ public class Key {
         }
         if (KeySpecParser.getBooleanValue(moreKeys, MORE_KEYS_HAS_LABELS)) {
             moreKeysColumn |= MORE_KEYS_FLAGS_HAS_LABELS;
+        }
+        if (KeySpecParser.getBooleanValue(moreKeys, MORE_KEYS_NEEDS_DIVIDERS)) {
+            moreKeysColumn |= MORE_KEYS_FLAGS_NEEDS_DIVIDERS;
         }
         mMoreKeysColumnAndFlags = moreKeysColumn;
 
@@ -537,6 +542,10 @@ public class Key {
 
     public boolean hasLabelsInMoreKeys() {
         return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_HAS_LABELS) != 0;
+    }
+
+    public boolean needsDividersInMoreKeys() {
+        return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_NEEDS_DIVIDERS) != 0;
     }
 
     public Drawable getIcon(KeyboardIconsSet iconSet) {

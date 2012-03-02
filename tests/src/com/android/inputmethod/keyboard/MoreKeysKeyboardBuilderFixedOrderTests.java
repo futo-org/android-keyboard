@@ -45,7 +45,7 @@ public class MoreKeysKeyboardBuilderFixedOrderTests extends AndroidTestCase {
             int coordXInParnet) {
         final MoreKeysKeyboardParams params = new MoreKeysKeyboardParams();
         params.setParameters(numKeys, columnNum, WIDTH, HEIGHT, coordXInParnet, KEYBOARD_WIDTH,
-                /* isFixedOrderColumn */true);
+                /* isFixedOrderColumn */true, /* dividerWidth */0);
         return params;
     }
 

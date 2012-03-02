@@ -34,7 +34,7 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 public class MoreSuggestions extends Keyboard {
     public static final int SUGGESTION_CODE_BASE = 1024;
 
-    private MoreSuggestions(Builder.MoreSuggestionsParam params) {
+    MoreSuggestions(Builder.MoreSuggestionsParam params) {
         super(params);
     }
 
@@ -63,7 +63,7 @@ public class MoreSuggestions extends Keyboard {
                 paint.setAntiAlias(true);
                 final Resources res = view.getContext().getResources();
                 mDivider = res.getDrawable(R.drawable.more_suggestions_divider);
-                // TODO: Drawable itself should has an alpha value.
+                // TODO: Drawable itself should have an alpha value.
                 mDivider.setAlpha(128);
                 mDividerWidth = mDivider.getIntrinsicWidth();
                 final int padding = (int) res.getDimension(

@@ -17,8 +17,10 @@
 package com.android.inputmethod.keyboard;
 
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
+import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.Utils;
 
@@ -36,8 +38,10 @@ public class MoreKeysKeyboard extends Keyboard {
 
     public static class Builder extends Keyboard.Builder<Builder.MoreKeysKeyboardParams> {
         private final Key mParentKey;
+        private final Drawable mDivider;
 
         private static final float LABEL_PADDING_RATIO = 0.2f;
+        private static final float DIVIDER_RATIO = 0.2f;
 
         public static class MoreKeysKeyboardParams extends Keyboard.Params {
             public boolean mIsFixedOrder;
@@ -47,6 +51,8 @@ public class MoreKeysKeyboard extends Keyboard {
             public int mTopKeys;
             public int mLeftKeys;
             public int mRightKeys; // includes default key.
+            public int mDividerWidth;
+            public int mColumnWidth;
 
             public MoreKeysKeyboardParams() {
                 super();
@@ -62,9 +68,11 @@ public class MoreKeysKeyboard extends Keyboard {
              * @param coordXInParent coordinate x of the key preview in parent keyboard.
              * @param parentKeyboardWidth parent keyboard width in pixel.
              * @param isFixedColumnOrder if true, more keys should be laid out in fixed order.
+             * @param dividerWidth width of divider, zero for no dividers.
              */
             public void setParameters(int numKeys, int maxColumns, int keyWidth, int rowHeight,
-                    int coordXInParent, int parentKeyboardWidth, boolean isFixedColumnOrder) {
+                    int coordXInParent, int parentKeyboardWidth, boolean isFixedColumnOrder,
+                    int dividerWidth) {
                 mIsFixedOrder = isFixedColumnOrder;
                 if (parentKeyboardWidth / keyWidth < maxColumns) {
                     throw new IllegalArgumentException(
@@ -116,7 +124,9 @@ public class MoreKeysKeyboard extends Keyboard {
                 // Adjustment of the top row.
                 mTopRowAdjustment = mIsFixedOrder ? getFixedOrderTopRowAdjustment()
                         : getAutoOrderTopRowAdjustment();
-                mBaseWidth = mOccupiedWidth = mNumColumns * mDefaultKeyWidth;
+                mDividerWidth = dividerWidth;
+                mColumnWidth = mDefaultKeyWidth + mDividerWidth;
+                mBaseWidth = mOccupiedWidth = mNumColumns * mColumnWidth - mDividerWidth;
                 // Need to subtract the bottom row's gutter only.
                 mBaseHeight = mOccupiedHeight = mNumRows * mDefaultRowHeight - mVerticalGap
                         + mTopPadding + mBottomPadding;
@@ -214,13 +224,13 @@ public class MoreKeysKeyboard extends Keyboard {
             }
 
             public int getDefaultKeyCoordX() {
-                return mLeftKeys * mDefaultKeyWidth;
+                return mLeftKeys * mColumnWidth;
             }
 
             public int getX(int n, int row) {
-                final int x = getColumnPos(n) * mDefaultKeyWidth + getDefaultKeyCoordX();
+                final int x = getColumnPos(n) * mColumnWidth + getDefaultKeyCoordX();
                 if (isTopRow(row)) {
-                    return x + mTopRowAdjustment * (mDefaultKeyWidth / 2);
+                    return x + mTopRowAdjustment * (mColumnWidth / 2);
                 }
                 return x;
             }
@@ -267,9 +277,19 @@ public class MoreKeysKeyboard extends Keyboard {
                 width = getMaxKeyWidth(view, parentKey, mParams.mDefaultKeyWidth);
                 height = parentKeyboard.mMostCommonKeyHeight;
             }
+            final int dividerWidth;
+            if (parentKey.needsDividersInMoreKeys()) {
+                mDivider = mResources.getDrawable(R.drawable.more_keys_divider);
+                // TODO: Drawable itself should have an alpha value.
+                mDivider.setAlpha(128);
+                dividerWidth = (int)(width * DIVIDER_RATIO);
+            } else {
+                mDivider = null;
+                dividerWidth = 0;
+            }
             mParams.setParameters(parentKey.mMoreKeys.length, parentKey.getMoreKeysColumn(),
                     width, height, parentKey.mX + parentKey.mWidth / 2, view.getMeasuredWidth(),
-                    parentKey.isFixedColumnOrderMoreKeys());
+                    parentKey.isFixedColumnOrderMoreKeys(), dividerWidth);
         }
 
         private static int getMaxKeyWidth(KeyboardView view, Key parentKey, int minKeyWidth) {
@@ -295,6 +315,21 @@ public class MoreKeysKeyboard extends Keyboard {
             return maxWidth;
         }
 
+        private static class MoreKeyDivider extends Key.Spacer {
+            private final Drawable mIcon;
+
+            public MoreKeyDivider(MoreKeysKeyboardParams params, Drawable icon, int x, int y) {
+                super(params, x, y, params.mDividerWidth, params.mDefaultRowHeight);
+                mIcon = icon;
+            }
+
+            @Override
+            public Drawable getIcon(KeyboardIconsSet iconSet) {
+                // KeyboardIconsSet is unused. Use the icon that has been passed to the constructor.
+                return mIcon;
+            }
+        }
+
         @Override
         public MoreKeysKeyboard build() {
             final MoreKeysKeyboardParams params = mParams;
@@ -306,11 +341,22 @@ public class MoreKeysKeyboard extends Keyboard {
             for (int n = 0; n < moreKeys.length; n++) {
                 final String moreKeySpec = moreKeys[n];
                 final int row = n / params.mNumColumns;
-                final Key key = new Key(mResources, params, moreKeySpec, params.getX(n, row),
-                        params.getY(row), params.mDefaultKeyWidth, params.mDefaultRowHeight,
-                        moreKeyFlags);
+                final int x = params.getX(n, row);
+                final int y = params.getY(row);
+                final Key key = new Key(mResources, params, moreKeySpec, x, y,
+                        params.mDefaultKeyWidth, params.mDefaultRowHeight, moreKeyFlags);
                 params.markAsEdgeKey(key, row);
                 params.onAddKey(key);
+
+                final int pos = params.getColumnPos(n);
+                // The "pos" value represents the offset from the default position. Negative means
+                // left of the default position.
+                if (params.mDividerWidth > 0 && pos != 0) {
+                    final int dividerX = (pos > 0) ? x - params.mDividerWidth
+                            : x + params.mDefaultKeyWidth;
+                    final Key divider = new MoreKeyDivider(params, mDivider, dividerX, y);
+                    params.onAddKey(divider);
+                }
             }
             return new MoreKeysKeyboard(params);
         }
