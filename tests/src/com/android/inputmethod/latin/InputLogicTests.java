@@ -24,6 +24,8 @@ import android.os.MessageQueue;
 import android.preference.PreferenceManager;
 import android.test.ServiceTestCase;
 import android.text.InputType;
+import android.text.SpannableStringBuilder;
+import android.text.style.SuggestionSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -197,6 +199,13 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         for (int i = 0; i < stringToType.length(); i = stringToType.offsetByCodePoints(i, 1)) {
             type(stringToType.codePointAt(i));
         }
+    }
+
+    // Helper to avoid writing the try{}catch block each time
+    private static void sleep(final int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (InterruptedException e) {}
     }
 
     public void testTypeWord() {
@@ -493,5 +502,115 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
                 EXPECTED_RESULT, mTextView.getText().toString());
     }
 
+    // A helper class to ease span tests
+    private static class Span {
+        final SpannableStringBuilder mInputText;
+        final SuggestionSpan mSpan;
+        final int mStart;
+        final int mEnd;
+        // The supplied CharSequence should be an instance of SpannableStringBuilder,
+        // and it should contain exactly zero or one SuggestionSpan. Otherwise, an exception
+        // is thrown.
+        public Span(final CharSequence inputText) {
+            mInputText = (SpannableStringBuilder)inputText;
+            final SuggestionSpan[] spans =
+                    mInputText.getSpans(0, mInputText.length(), SuggestionSpan.class);
+            if (0 == spans.length) {
+                mSpan = null;
+                mStart = -1;
+                mEnd = -1;
+            } else if (1 == spans.length) {
+                mSpan = spans[0];
+                mStart = mInputText.getSpanStart(mSpan);
+                mEnd = mInputText.getSpanEnd(mSpan);
+            } else {
+                throw new RuntimeException("Expected one SuggestionSpan, found " + spans.length);
+            }
+        }
+        public boolean isAutoCorrectionIndicator() {
+            return 0 != (SuggestionSpan.FLAG_AUTO_CORRECTION & mSpan.getFlags());
+        }
+    }
+
+    static final int DELAY_TO_WAIT_FOR_UNDERLINE = 200; // The message is posted with a 100 ms delay
+    public void testBlueUnderline() {
+        final String STRING_TO_TYPE = "tgis";
+        final int EXPECTED_SPAN_START = 0;
+        final int EXPECTED_SPAN_END = 4;
+        type(STRING_TO_TYPE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        runMessages();
+        final Span span = new Span(mTextView.getText());
+        assertEquals("show blue underline, span start", EXPECTED_SPAN_START, span.mStart);
+        assertEquals("show blue underline, span end", EXPECTED_SPAN_END, span.mEnd);
+        assertEquals("show blue underline, span color", true, span.isAutoCorrectionIndicator());
+    }
+
+    public void testBlueUnderlineDisappears() {
+        final String STRING_1_TO_TYPE = "tgis";
+        final String STRING_2_TO_TYPE = "q";
+        final int EXPECTED_SPAN_START = 0;
+        final int EXPECTED_SPAN_END = 5;
+        type(STRING_1_TO_TYPE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        runMessages();
+        type(STRING_2_TO_TYPE);
+        // We haven't have time to look into the dictionary yet, so the line should still be
+        // blue to avoid any flicker.
+        final Span spanBefore = new Span(mTextView.getText());
+        assertEquals("extend blue underline, span start", EXPECTED_SPAN_START, spanBefore.mStart);
+        assertEquals("extend blue underline, span end", EXPECTED_SPAN_END, spanBefore.mEnd);
+        assertEquals("extend blue underline, span color", true,
+                spanBefore.isAutoCorrectionIndicator());
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        runMessages();
+        // Now we have been able to re-evaluate the word, there shouldn't be an auto-correction span
+        final Span spanAfter = new Span(mTextView.getText());
+        assertNull("hide blue underline", spanAfter.mSpan);
+    }
+
+    public void testBlueUnderlineOnBackspace() {
+        final String STRING_TO_TYPE = "tgis";
+        final int EXPECTED_SPAN_START = 0;
+        final int EXPECTED_SPAN_END = 4;
+        type(STRING_TO_TYPE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        runMessages();
+        type(Keyboard.CODE_SPACE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        runMessages();
+        type(Keyboard.CODE_DELETE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        runMessages();
+        type(Keyboard.CODE_DELETE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        runMessages();
+        final Span span = new Span(mTextView.getText());
+        assertEquals("show blue underline after backspace, span start",
+                EXPECTED_SPAN_START, span.mStart);
+        assertEquals("show blue underline after backspace, span end",
+                EXPECTED_SPAN_END, span.mEnd);
+        assertEquals("show blue underline after backspace, span color", true,
+                span.isAutoCorrectionIndicator());
+    }
+
+    public void testBlueUnderlineDisappearsWhenCursorMoved() {
+        final String STRING_TO_TYPE = "tgis";
+        final int NEW_CURSOR_POSITION = 0;
+        type(STRING_TO_TYPE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        // Simulate the onUpdateSelection() event
+        mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
+        runMessages();
+        // Here the blue underline has been set. testBlueUnderline() is testing for this already,
+        // so let's not test it here again.
+        // Now simulate the user moving the cursor.
+        mInputConnection.setSelection(NEW_CURSOR_POSITION, NEW_CURSOR_POSITION);
+        mLatinIME.onUpdateSelection(0, 0, NEW_CURSOR_POSITION, NEW_CURSOR_POSITION, -1, -1);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        runMessages();
+        final Span span = new Span(mTextView.getText());
+        assertNull("blue underline removed when cursor is moved", span.mSpan);
+    }
     // TODO: Add some tests for non-BMP characters
 }
