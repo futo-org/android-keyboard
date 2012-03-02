@@ -267,7 +267,7 @@ public class KeyDetector {
                 addDelimiter = false;
             } else {
                 if (addDelimiter) sb.append(", ");
-                sb.append(code);
+                sb.append(Keyboard.printableCode(code));
                 addDelimiter = true;
             }
         }
