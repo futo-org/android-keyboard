@@ -40,7 +40,8 @@
         <Key
             latin:keyLabel="&#x0435;"
             latin:keyHintLabel="3"
-            latin:additionalMoreKeys="3" />
+            latin:additionalMoreKeys="3"
+            latin:moreKeys="@string/more_keys_for_cyrillic_ie" />
         <!-- U+0440: "р" CYRILLIC SMALL LETTER ER -->
         <Key
             latin:keyLabel="&#x0440;"
@@ -51,9 +52,8 @@
             latin:keyLabel="&#x0442;"
             latin:keyHintLabel="5"
             latin:additionalMoreKeys="5" />
-        <!-- U+0437: "з" CYRILLIC SMALL LETTER ZE -->
         <Key
-            latin:keyLabel="&#x0437;"
+            latin:keyLabel="@string/keylabel_for_cyrillic_ze"
             latin:keyHintLabel="6"
             latin:additionalMoreKeys="6" />
         <!-- U+0443: "у" CYRILLIC SMALL LETTER U -->
@@ -65,7 +65,8 @@
         <Key
             latin:keyLabel="&#x0438;"
             latin:keyHintLabel="8"
-            latin:additionalMoreKeys="8" />
+            latin:additionalMoreKeys="8"
+            latin:moreKeys="@string/more_keys_for_cyrillic_i" />
         <!-- U+043E: "о" CYRILLIC SMALL LETTER O -->
         <Key
             latin:keyLabel="&#x043E;"
@@ -114,9 +115,8 @@
         <!-- U+0447: "ч" CYRILLIC SMALL LETTER CHE -->
         <Key
             latin:keyLabel="&#x0447;" />
-        <!-- U+045B: "ћ" CYRILLIC SMALL LETTER TSHE -->
         <Key
-            latin:keyLabel="&#x045B;"
+            latin:keyLabel="@string/keylabel_for_cyrillic_tshe"
             latin:keyWidth="fillRight" />
     </Row>
     <Row
@@ -125,9 +125,8 @@
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="11.75%p" />
-        <!-- U+0455: "ѕ" CYRILLIC SMALL LETTER DZE -->
         <Key
-            latin:keyLabel="&#x0455;" />
+            latin:keyLabel="@string/keylabel_for_cyrillic_dze" />
         <!-- U+045F: "џ" CYRILLIC SMALL LETTER DZHE -->
         <Key
             latin:keyLabel="&#x045F;" />
@@ -146,9 +145,8 @@
         <!-- U+043C: "м" CYRILLIC SMALL LETTER EM -->
         <Key
             latin:keyLabel="&#x043C;" />
-        <!-- U+0452: "ђ" CYRILLIC SMALL LETTER DJE -->
         <Key
-            latin:keyLabel="&#x0452;" />
+            latin:keyLabel="@string/keylabel_for_cyrillic_dje" />
         <!-- U+0436: "ж" CYRILLIC SMALL LETTER ZHE -->
         <Key
             latin:keyLabel="&#x0436;" />

@@ -38,18 +38,18 @@
         <!-- U+0443: "у" CYRILLIC SMALL LETTER U -->
         <Key
             latin:keyLabel="&#x0443;"
-            latin:moreKeys="@string/more_keys_for_slavic_u" />
+            latin:moreKeys="@string/more_keys_for_cyrillic_u" />
         <!-- U+043A: "к" CYRILLIC SMALL LETTER KA -->
         <Key
             latin:keyLabel="&#x043A;" />
         <!-- U+0435: "е" CYRILLIC SMALL LETTER IE -->
         <Key
             latin:keyLabel="&#x0435;"
-            latin:moreKeys="@string/more_keys_for_slavic_ye" />
+            latin:moreKeys="@string/more_keys_for_cyrillic_ye" />
         <!-- U+043D: "н" CYRILLIC SMALL LETTER EN -->
         <Key
             latin:keyLabel="&#x043D;"
-            latin:moreKeys="@string/more_keys_for_slavic_en" />
+            latin:moreKeys="@string/more_keys_for_cyrillic_en" />
         <!-- U+0433: "г" CYRILLIC SMALL LETTER GHE -->
         <Key
             latin:keyLabel="&#x0433;" />
@@ -57,7 +57,7 @@
         <Key
             latin:keyLabel="&#x0448;" />
         <Key
-            latin:keyLabel="@string/keylabel_for_slavic_shcha" />
+            latin:keyLabel="@string/keylabel_for_cyrillic_shcha" />
         <!-- U+0437: "з" CYRILLIC SMALL LETTER ZE -->
         <Key
             latin:keyLabel="&#x0437;" />
@@ -82,8 +82,8 @@
         <Key
             latin:keyLabel="&#x0444;" />
         <Key
-            latin:keyLabel="@string/keylabel_for_slavic_yery"
-            latin:moreKeys="@string/more_keys_for_slavic_yery" />
+            latin:keyLabel="@string/keylabel_for_cyrillic_yery"
+            latin:moreKeys="@string/more_keys_for_cyrillic_yery" />
         <!-- U+0432: "в" CYRILLIC SMALL LETTER VE -->
         <Key
             latin:keyLabel="&#x0432;" />
@@ -99,7 +99,7 @@
         <!-- U+043E: "о" CYRILLIC SMALL LETTER O -->
         <Key
             latin:keyLabel="&#x043E;"
-            latin:moreKeys="@string/more_keys_for_slavic_o" />
+            latin:moreKeys="@string/more_keys_for_cyrillic_o" />
         <!-- U+043B: "л" CYRILLIC SMALL LETTER EL -->
         <Key
             latin:keyLabel="&#x043B;" />
@@ -136,7 +136,7 @@
         <Key
             latin:keyLabel="&#x043C;" />
         <Key
-            latin:keyLabel="@string/keylabel_for_slavic_i" />
+            latin:keyLabel="@string/keylabel_for_cyrillic_i" />
         <!-- U+0442: "т" CYRILLIC SMALL LETTER TE -->
         <Key
             latin:keyLabel="&#x0442;" />

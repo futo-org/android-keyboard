@@ -37,22 +37,23 @@
             latin:keyLabel="&#x045A;" />
         <!-- U+0435: "е" CYRILLIC SMALL LETTER IE -->
         <Key
-            latin:keyLabel="&#x0435;" />
+            latin:keyLabel="&#x0435;"
+            latin:moreKeys="@string/more_keys_for_cyrillic_ie" />
         <!-- U+0440: "р" CYRILLIC SMALL LETTER ER -->
         <Key
             latin:keyLabel="&#x0440;" />
         <!-- U+0442: "т" CYRILLIC SMALL LETTER TE -->
         <Key
             latin:keyLabel="&#x0442;" />
-        <!-- U+0437: "з" CYRILLIC SMALL LETTER ZE -->
         <Key
-            latin:keyLabel="&#x0437;" />
+            latin:keyLabel="@string/keylabel_for_cyrillic_ze" />
         <!-- U+0443: "у" CYRILLIC SMALL LETTER U -->
         <Key
             latin:keyLabel="&#x0443;" />
         <!-- U+0438: "и" CYRILLIC SMALL LETTER I -->
         <Key
-            latin:keyLabel="&#x0438;" />
+            latin:keyLabel="&#x0438;"
+            latin:moreKeys="@string/more_keys_for_cyrillic_i" />
         <!-- U+043E: "о" CYRILLIC SMALL LETTER O -->
         <Key
             latin:keyLabel="&#x043E;" />
@@ -107,9 +108,8 @@
         <!-- U+0447: "ч" CYRILLIC SMALL LETTER CHE -->
         <Key
             latin:keyLabel="&#x0447;" />
-        <!-- U+045B: "ћ" CYRILLIC SMALL LETTER TSHE -->
         <Key
-            latin:keyLabel="&#x045B;" />
+            latin:keyLabel="@string/keylabel_for_cyrillic_tshe" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-9.219%p"
@@ -121,9 +121,8 @@
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="13.829%p" />
-        <!-- U+0455: "ѕ" CYRILLIC SMALL LETTER DZE -->
         <Key
-            latin:keyLabel="&#x0455;" />
+            latin:keyLabel="@string/keylabel_for_cyrillic_dze" />
         <!-- U+045F: "џ" CYRILLIC SMALL LETTER DZHE -->
         <Key
             latin:keyLabel="&#x045F;" />
@@ -142,6 +141,8 @@
         <!-- U+043C: "м" CYRILLIC SMALL LETTER EM -->
         <Key
             latin:keyLabel="&#x043C;" />
+        <Key
+            latin:keyLabel="@string/keylabel_for_cyrillic_dje" />
         <include
             latin:keyboardLayout="@xml/keys_comma_period" />
         <Key
