@@ -1742,9 +1742,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                         throw new RuntimeException("Couldn't flip the indicator!");
                     }
                 }
-                final CharSequence textWithUnderline =
-                        getTextWithUnderline(mWordComposer.getTypedWord());
-                if (!TextUtils.isEmpty(textWithUnderline)) {
+                if (mWordComposer.isComposingWord()) {
+                    final CharSequence textWithUnderline =
+                            getTextWithUnderline(mWordComposer.getTypedWord());
                     ic.setComposingText(textWithUnderline, 1);
                 }
             }
