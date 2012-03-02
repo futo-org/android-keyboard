@@ -65,10 +65,6 @@ public class SuggestedWords {
         return mHasAutoCorrectionCandidate && size() > 1 && !mTypedWordValid;
     }
 
-    public boolean hasWordAboveAutoCorrectionScoreThreshold() {
-        return mHasAutoCorrectionCandidate && ((size() > 1 && !mTypedWordValid) || mTypedWordValid);
-    }
-
     public boolean isPunctuationSuggestions() {
         return mIsPunctuationSuggestions;
     }
