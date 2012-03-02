@@ -1715,7 +1715,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         setSuggestions(SuggestedWords.EMPTY);
     }
 
-    public void setSuggestions(SuggestedWords words) {
+    public void setSuggestions(final SuggestedWords words) {
         if (mSuggestionsView != null) {
             mSuggestionsView.setSuggestions(words);
             mKeyboardSwitcher.onAutoCorrectionStateChanged(
@@ -1830,25 +1830,24 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         showSuggestions(builder.build(), typedWord);
     }
 
-    public void showSuggestions(SuggestedWords suggestedWords, CharSequence typedWord) {
+    public void showSuggestions(final SuggestedWords suggestedWords, final CharSequence typedWord) {
         final boolean shouldBlockAutoCorrectionBySafetyNet =
                 Utils.shouldBlockAutoCorrectionBySafetyNet(suggestedWords, mSuggest);
         if (shouldBlockAutoCorrectionBySafetyNet) {
             suggestedWords.setShouldBlockAutoCorrection();
         }
-        setSuggestions(suggestedWords);
+        final CharSequence autoCorrection;
         if (suggestedWords.size() > 0) {
-            if (shouldBlockAutoCorrectionBySafetyNet) {
-                mWordComposer.setAutoCorrection(typedWord);
-            } else if (suggestedWords.hasAutoCorrectionWord()) {
-                mWordComposer.setAutoCorrection(suggestedWords.getWord(1));
+            if (!shouldBlockAutoCorrectionBySafetyNet && suggestedWords.hasAutoCorrectionWord()) {
+                autoCorrection = suggestedWords.getWord(1);
             } else {
-                mWordComposer.setAutoCorrection(typedWord);
+                autoCorrection = typedWord;
             }
         } else {
-            // TODO: replace with mWordComposer.deleteAutoCorrection()?
-            mWordComposer.setAutoCorrection(null);
+            autoCorrection = null;
         }
+        mWordComposer.setAutoCorrection(autoCorrection);
+        setSuggestions(suggestedWords);
         setSuggestionStripShown(isSuggestionsStripVisible());
     }
 
