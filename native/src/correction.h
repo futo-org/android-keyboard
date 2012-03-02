@@ -17,6 +17,7 @@
 #ifndef LATINIME_CORRECTION_H
 #define LATINIME_CORRECTION_H
 
+#include <assert.h>
 #include <stdint.h>
 #include "correction_state.h"
 
@@ -50,7 +51,14 @@ class Correction {
         const int temp = *base;
         if (temp != S_INT_MAX) {
             // Branch if multiplier == 2 for the optimization
-            if (multiplier == 2) {
+            if (multiplier < 0) {
+                if (DEBUG_DICT) {
+                    assert(false);
+                }
+                AKLOGI("--- Invalid multiplier: %d", multiplier);
+            } else if (multiplier == 0) {
+                *base = 0;
+            } else if (multiplier == 2) {
                 *base = TWO_31ST_DIV_2 >= temp ? temp << 1 : S_INT_MAX;
             } else {
                 // TODO: This overflow check gives a wrong answer when, for example,
