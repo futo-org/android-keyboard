@@ -1715,7 +1715,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     public void clearSuggestions() {
         setSuggestions(SuggestedWords.EMPTY);
-        setAutoCorrectionIndicator(Utils.willAutoCorrect(SuggestedWords.EMPTY));
+        setAutoCorrectionIndicator(false);
     }
 
     public void setSuggestions(final SuggestedWords words) {
@@ -2026,7 +2026,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     public void setPunctuationSuggestions() {
         setSuggestions(mSettingsValues.mSuggestPuncList);
-        setAutoCorrectionIndicator(Utils.willAutoCorrect(mSettingsValues.mSuggestPuncList));
+        setAutoCorrectionIndicator(false);
         setSuggestionStripShown(isSuggestionsStripVisible());
     }
 
