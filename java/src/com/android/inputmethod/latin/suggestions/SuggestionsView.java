@@ -307,7 +307,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
                 color = mColorTypedWord;
             }
             if (LatinImeLogger.sDBG) {
-                if (index == mCenterSuggestionIndex && suggestions.mHasAutoCorrectionCandidate
+                if (index == mCenterSuggestionIndex && suggestions.hasAutoCorrectionCandidate()
                         && suggestions.shouldBlockAutoCorrection()) {
                     return 0xFFFF0000;
                 }
