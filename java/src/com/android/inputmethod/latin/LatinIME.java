@@ -2420,7 +2420,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 switch (position) {
                 case 0:
                     Intent intent = CompatUtils.getInputLanguageSelectionIntent(
-                            Utils.getInputMethodId(mImm, getPackageName()),
+                            Utils.getInputMethodId(getPackageName()),
                             Intent.FLAG_ACTIVITY_NEW_TASK
                             | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                             | Intent.FLAG_ACTIVITY_CLEAR_TOP);
