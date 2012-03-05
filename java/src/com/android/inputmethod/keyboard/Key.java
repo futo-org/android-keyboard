@@ -558,11 +558,8 @@ public class Key {
     }
 
     public Drawable getIcon(KeyboardIconsSet iconSet) {
-        return iconSet.getIconDrawable(mIconId);
-    }
-
-    public Drawable getDisabledIcon(KeyboardIconsSet iconSet) {
-        return iconSet.getIconDrawable(mDisabledIconId);
+        final int iconId = mEnabled ? mIconId : mDisabledIconId;
+        return iconSet.getIconDrawable(iconId);
     }
 
     public Drawable getPreviewIcon(KeyboardIconsSet iconSet) {
