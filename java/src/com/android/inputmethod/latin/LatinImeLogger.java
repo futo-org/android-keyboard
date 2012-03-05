@@ -22,6 +22,8 @@ import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.keyboard.Keyboard;
 
+import java.util.List;
+
 public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     public static boolean sDBG = false;
@@ -42,7 +44,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public static void logOnManualSuggestion(
-            String before, String after, int position, SuggestedWords suggestions) {
+            String before, String after, int position, List<CharSequence> suggestions) {
     }
 
     public static void logOnAutoCorrection(String before, String after, int separatorCode) {

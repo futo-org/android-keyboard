@@ -190,11 +190,11 @@ public class Utils {
 
     // TODO: Resolve the inconsistencies between the native auto correction algorithms and
     // this safety net
-    public static boolean shouldBlockAutoCorrectionBySafetyNet(SuggestedWords.Builder suggestions,
+    public static boolean shouldBlockAutoCorrectionBySafetyNet(SuggestedWords suggestions,
             Suggest suggest) {
         // Safety net for auto correction.
         // Actually if we hit this safety net, it's actually a bug.
-        if (suggestions.size() <= 1 || suggestions.isTypedWordValid()) return false;
+        if (suggestions.size() <= 1 || suggestions.mTypedWordValid) return false;
         // If user selected aggressive auto correction mode, there is no need to use the safety
         // net.
         if (suggest.isAggressiveAutoCorrectionMode()) return false;
