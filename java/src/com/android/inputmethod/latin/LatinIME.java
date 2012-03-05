@@ -1827,9 +1827,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 builder.addTypedWordAndPreviousSuggestions(typedWord, previousSuggestions);
             }
         }
-        final SuggestedWords suggestedWords = builder.build();
-        if (Utils.shouldBlockAutoCorrectionBySafetyNet(suggestedWords, mSuggest)) {
-            suggestedWords.setShouldBlockAutoCorrectionBySatefyNet();
+        if (Utils.shouldBlockAutoCorrectionBySafetyNet(builder, mSuggest)) {
+            builder.setShouldBlockAutoCorrectionBySafetyNet();
         }
         showSuggestions(builder.build(), typedWord);
     }
@@ -1837,7 +1836,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     public void showSuggestions(final SuggestedWords suggestedWords, final CharSequence typedWord) {
         final CharSequence autoCorrection;
         if (suggestedWords.size() > 0) {
-            if (!suggestedWords.shouldBlockAutoCorrectionBySafetyNet()
+            if (!suggestedWords.mShouldBlockAutoCorrectionBySafetyNet
                     && suggestedWords.hasAutoCorrectionWord()) {
                 autoCorrection = suggestedWords.getWord(1);
             } else {
@@ -1911,8 +1910,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (suggestion.length() == 1 && isShowingPunctuationList()) {
             // Word separators are suggested before the user inputs something.
             // So, LatinImeLogger logs "" as a user's input.
-            LatinImeLogger.logOnManualSuggestion(
-                    "", suggestion.toString(), index, suggestions.mWords);
+            LatinImeLogger.logOnManualSuggestion("", suggestion.toString(), index, suggestions);
             // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
             final int primaryCode = suggestion.charAt(0);
             onCodeInput(primaryCode, new int[] { primaryCode },
@@ -1923,7 +1921,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // We need to log before we commit, because the word composer will store away the user
         // typed word.
         LatinImeLogger.logOnManualSuggestion(mWordComposer.getTypedWord().toString(),
-                suggestion.toString(), index, suggestions.mWords);
+                suggestion.toString(), index, suggestions);
         mExpectingUpdateSelection = true;
         commitChosenWord(suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,
                 LastComposedWord.NOT_A_SEPARATOR);
