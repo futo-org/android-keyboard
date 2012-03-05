@@ -111,13 +111,11 @@
             <case
                 latin:mode="datetime"
             >
-                <!-- U+002F: "/" SOLIDUS
-                     U+003A: ":" COLON -->
+                <!-- U+002F: "/" SOLIDUS -->
                 <Key
                     latin:code="0x002F"
-                    latin:altCode="0x003A"
                     latin:keyLabel="/ :"
-                    latin:keyActionFlags="enableLongPress"
+                    latin:moreKeys="!embeddedMoreKey!,:"
                     latin:keyStyle="numKeyStyle" />
             </case>
             <default>

@@ -41,14 +41,9 @@
         latin:styleName="numberKeyStyle"
         latin:keyLabelFlags="alignLeftOfCenter|hasHintLabel"
         latin:parentStyle="numKeyStyle" />
-    <!-- U+0030: "0" DIGIT ZERO
-         U+002B: "+" PLUS SIGN -->
     <key-style
         latin:styleName="num0KeyStyle"
-        latin:code="0x0030"
-        latin:altCode="0x002B"
-        latin:keyLabel="0 +"
-        latin:keyActionFlags="enableLongPress"
+        latin:keyLabel="0"
         latin:parentStyle="numberKeyStyle" />
     <key-style
         latin:styleName="num1KeyStyle"

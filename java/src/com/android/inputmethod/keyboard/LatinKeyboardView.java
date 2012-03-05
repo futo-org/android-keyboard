@@ -41,6 +41,7 @@ import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
+import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -480,13 +481,10 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
      */
     protected boolean onLongPress(Key parentKey, PointerTracker tracker) {
         final int primaryCode = parentKey.mCode;
-        if (parentKey.mMoreKeys == null && !parentKey.altCodeWhileTyping()
-                && parentKey.mAltCode != Keyboard.CODE_UNSPECIFIED) {
-            // Long press on a key that has no more keys and is not altCodeWhileTyping, but altCode
-            // is defined, such as the "0 +" key on the phone layout and the "/ :" key on the
-            // datetime layout.
+        if (parentKey.hasEmbeddedMoreKey()) {
+            final int embeddedCode = KeySpecParser.getCode(getResources(), parentKey.mMoreKeys[0]);
             tracker.onLongPressed();
-            invokeCodeInput(parentKey.mAltCode);
+            invokeCodeInput(embeddedCode);
             invokeReleaseKey(primaryCode);
             KeyboardSwitcher.getInstance().hapticAndAudioFeedback(primaryCode);
             return true;
