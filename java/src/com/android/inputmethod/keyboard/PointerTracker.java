@@ -722,13 +722,6 @@ public class PointerTracker {
         final int[] codes = mKeyDetector.newCodeArray();
         mKeyDetector.getKeyAndNearbyCodes(x, y, codes);
 
-        // Swap the first and second values in the codes array if the primary code is not the
-        // first value but the second value in the array. This happens when key debouncing is
-        // in effect.
-        if (codes.length >= 2 && codes[0] != code && codes[1] == code) {
-            codes[1] = codes[0];
-            codes[0] = code;
-        }
         callListenerOnCodeInput(key, code, codes, x, y);
         callListenerOnRelease(key, code, false);
     }
