@@ -62,7 +62,6 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -261,7 +260,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
 
         private CharSequence getStyledSuggestionWord(SuggestedWords suggestions, int pos) {
             final CharSequence word = suggestions.getWord(pos);
-            final boolean isAutoCorrect = pos == 1 && Utils.willAutoCorrect(suggestions);
+            final boolean isAutoCorrect = pos == 1 && suggestions.willAutoCorrect();
             final boolean isTypedWordValid = pos == 0 && suggestions.mTypedWordValid;
             if (!isAutoCorrect && !isTypedWordValid)
                 return word;
@@ -282,7 +281,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         private int getWordPosition(int index, SuggestedWords suggestions) {
             // TODO: This works for 3 suggestions. Revisit this algorithm when there are 5 or more
             // suggestions.
-            final int centerPos = Utils.willAutoCorrect(suggestions) ? 1 : 0;
+            final int centerPos = suggestions.willAutoCorrect() ? 1 : 0;
             if (index == mCenterSuggestionIndex) {
                 return centerPos;
             } else if (index == centerPos) {
@@ -297,7 +296,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             final boolean isSuggested = (pos != 0);
 
             final int color;
-            if (index == mCenterSuggestionIndex && Utils.willAutoCorrect(suggestions)) {
+            if (index == mCenterSuggestionIndex && suggestions.willAutoCorrect()) {
                 color = mColorAutoCorrect;
             } else if (index == mCenterSuggestionIndex && suggestions.mTypedWordValid) {
                 color = mColorValidTypedWord;

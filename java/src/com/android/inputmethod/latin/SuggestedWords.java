@@ -77,6 +77,11 @@ public class SuggestedWords {
         return mShouldBlockAutoCorrectionBySafetyNet;
     }
 
+    public boolean willAutoCorrect() {
+        return !mTypedWordValid && mHasAutoCorrectionCandidate
+                && !shouldBlockAutoCorrectionBySafetyNet();
+    }
+
     public static class Builder {
         private List<CharSequence> mWords = new ArrayList<CharSequence>();
         private boolean mTypedWordValid;

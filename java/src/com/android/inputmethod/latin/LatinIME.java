@@ -1847,7 +1847,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             autoCorrection = null;
         }
         mWordComposer.setAutoCorrection(autoCorrection);
-        final boolean isAutoCorrection = Utils.willAutoCorrect(suggestedWords);
+        final boolean isAutoCorrection = suggestedWords.willAutoCorrect();
         setSuggestions(suggestedWords, isAutoCorrection);
         setAutoCorrectionIndicator(isAutoCorrection);
         setSuggestionStripShown(isSuggestionsStripVisible());

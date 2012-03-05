@@ -778,11 +778,6 @@ public class Utils {
         return s.toUpperCase(locale).charAt(0) + s.substring(1);
     }
 
-    public static boolean willAutoCorrect(SuggestedWords suggestions) {
-        return !suggestions.mTypedWordValid && suggestions.mHasAutoCorrectionCandidate
-                && !suggestions.shouldBlockAutoCorrectionBySafetyNet();
-    }
-
     public static class Stats {
         public static void onNonSeparator(final char code, final int x,
                 final int y) {
