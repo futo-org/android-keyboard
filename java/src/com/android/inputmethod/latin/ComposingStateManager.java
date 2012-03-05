@@ -53,13 +53,6 @@ public class ComposingStateManager {
         }
     }
 
-    public synchronized boolean isComposing() {
-        // TODO: use the composing flag in WordComposer instead of maintaining it
-        // here separately. Even better, do away with this class and manage the auto
-        // correction indicator in the same place as the suggestions.
-        return mIsComposing;
-    }
-
     public synchronized boolean isAutoCorrectionIndicatorOn() {
         return mAutoCorrectionIndicatorOn;
     }
