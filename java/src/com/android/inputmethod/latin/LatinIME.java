@@ -1114,12 +1114,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // and the composingStateManager about it.
     private void resetEntireInputState() {
         resetComposingState(true /* alsoResetLastComposedWord */);
+        mComposingStateManager.onFinishComposingText();
         updateSuggestions();
         final InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
             ic.finishComposingText();
         }
-        mComposingStateManager.onFinishComposingText();
         mVoiceProxy.setVoiceInputHighlighted(false);
     }
 
@@ -1536,8 +1536,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 // it entirely and resume suggestions on the previous word, we'd like to still
                 // have touch coordinates for it.
                 resetComposingState(false /* alsoResetLastComposedWord */);
-                clearSuggestions();
                 mComposingStateManager.onFinishComposingText();
+                clearSuggestions();
             }
         }
         if (isComposingWord) {
@@ -1897,12 +1897,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 mSuggestionsView.clear();
             }
             mKeyboardSwitcher.updateShiftState();
+            resetComposingState(true /* alsoResetLastComposedWord */);
             final InputConnection ic = getCurrentInputConnection();
             if (ic != null) {
-                ic.beginBatchEdit();
                 final CompletionInfo completionInfo = mApplicationSpecifiedCompletions[index];
                 ic.commitCompletion(completionInfo);
-                ic.endBatchEdit();
             }
             return;
         }
