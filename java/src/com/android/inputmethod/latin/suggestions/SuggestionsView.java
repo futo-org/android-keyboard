@@ -94,7 +94,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
     private final TextView mPreviewText;
 
     private Listener mListener;
-    private SuggestedWords mSuggestions = SuggestedWords.EMPTY;
+    private SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
 
     private final SuggestionsViewParams mParams;
     private static final float MIN_TEXT_XSCALE = 0.70f;
@@ -258,10 +258,10 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             return a.getFraction(index, 1000, 1000, 1) / 1000.0f;
         }
 
-        private CharSequence getStyledSuggestionWord(SuggestedWords suggestions, int pos) {
-            final CharSequence word = suggestions.getWord(pos);
-            final boolean isAutoCorrect = pos == 1 && suggestions.willAutoCorrect();
-            final boolean isTypedWordValid = pos == 0 && suggestions.mTypedWordValid;
+        private CharSequence getStyledSuggestionWord(SuggestedWords suggestedWords, int pos) {
+            final CharSequence word = suggestedWords.getWord(pos);
+            final boolean isAutoCorrect = pos == 1 && suggestedWords.willAutoCorrect();
+            final boolean isTypedWordValid = pos == 0 && suggestedWords.mTypedWordValid;
             if (!isAutoCorrect && !isTypedWordValid)
                 return word;
 
@@ -278,10 +278,10 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             return spannedWord;
         }
 
-        private int getWordPosition(int index, SuggestedWords suggestions) {
+        private int getWordPosition(int index, SuggestedWords suggestedWords) {
             // TODO: This works for 3 suggestions. Revisit this algorithm when there are 5 or more
             // suggestions.
-            final int centerPos = suggestions.willAutoCorrect() ? 1 : 0;
+            final int centerPos = suggestedWords.willAutoCorrect() ? 1 : 0;
             if (index == mCenterSuggestionIndex) {
                 return centerPos;
             } else if (index == centerPos) {
@@ -291,14 +291,14 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             }
         }
 
-        private int getSuggestionTextColor(int index, SuggestedWords suggestions, int pos) {
+        private int getSuggestionTextColor(int index, SuggestedWords suggestedWords, int pos) {
             // TODO: Need to revisit this logic with bigram suggestions
             final boolean isSuggested = (pos != 0);
 
             final int color;
-            if (index == mCenterSuggestionIndex && suggestions.willAutoCorrect()) {
+            if (index == mCenterSuggestionIndex && suggestedWords.willAutoCorrect()) {
                 color = mColorAutoCorrect;
-            } else if (index == mCenterSuggestionIndex && suggestions.mTypedWordValid) {
+            } else if (index == mCenterSuggestionIndex && suggestedWords.mTypedWordValid) {
                 color = mColorValidTypedWord;
             } else if (isSuggested) {
                 color = mColorSuggested;
@@ -306,14 +306,14 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
                 color = mColorTypedWord;
             }
             if (LatinImeLogger.sDBG) {
-                if (index == mCenterSuggestionIndex && suggestions.mHasAutoCorrectionCandidate
-                        && suggestions.shouldBlockAutoCorrectionBySafetyNet()) {
+                if (index == mCenterSuggestionIndex && suggestedWords.mHasAutoCorrectionCandidate
+                        && suggestedWords.mShouldBlockAutoCorrectionBySafetyNet) {
                     return 0xFFFF0000;
                 }
             }
 
-            final SuggestedWordInfo info = (pos < suggestions.size())
-                    ? suggestions.getInfo(pos) : null;
+            final SuggestedWordInfo info = (pos < suggestedWords.size())
+                    ? suggestedWords.getInfo(pos) : null;
             if (info != null && info.isObsoleteSuggestedWord()) {
                 return applyAlpha(color, mAlphaObsoleted);
             } else {
@@ -333,19 +333,19 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             params.gravity = Gravity.CENTER;
         }
 
-        public void layout(SuggestedWords suggestions, ViewGroup stripView, ViewGroup placer,
+        public void layout(SuggestedWords suggestedWords, ViewGroup stripView, ViewGroup placer,
                 int stripWidth) {
-            if (suggestions.mIsPunctuationSuggestions) {
-                layoutPunctuationSuggestions(suggestions, stripView);
+            if (suggestedWords.mIsPunctuationSuggestions) {
+                layoutPunctuationSuggestions(suggestedWords, stripView);
                 return;
             }
 
             final int countInStrip = mSuggestionsCountInStrip;
-            setupTexts(suggestions, countInStrip);
-            mMoreSuggestionsAvailable = (suggestions.size() > countInStrip);
+            setupTexts(suggestedWords, countInStrip);
+            mMoreSuggestionsAvailable = (suggestedWords.size() > countInStrip);
             int x = 0;
             for (int index = 0; index < countInStrip; index++) {
-                final int pos = getWordPosition(index, suggestions);
+                final int pos = getWordPosition(index, suggestedWords);
 
                 if (index != 0) {
                     final View divider = mDividers.get(pos);
@@ -368,7 +368,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
 
                 // Disable this suggestion if the suggestion is null or empty.
                 word.setEnabled(!TextUtils.isEmpty(styled));
-                word.setTextColor(getSuggestionTextColor(index, suggestions, pos));
+                word.setTextColor(getSuggestionTextColor(index, suggestedWords, pos));
                 final int width = getSuggestionWidth(index, stripWidth);
                 final CharSequence text = getEllipsizedText(styled, width, word.getPaint());
                 final float scaleX = word.getTextScaleX();
@@ -380,7 +380,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
                 x += word.getMeasuredWidth();
 
                 if (DBG) {
-                    final CharSequence debugInfo = getDebugInfo(suggestions, pos);
+                    final CharSequence debugInfo = getDebugInfo(suggestedWords, pos);
                     if (debugInfo != null) {
                         final TextView info = mInfos.get(pos);
                         info.setText(debugInfo);
@@ -412,11 +412,11 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             }
         }
 
-        private void setupTexts(SuggestedWords suggestions, int countInStrip) {
+        private void setupTexts(SuggestedWords suggestedWords, int countInStrip) {
             mTexts.clear();
-            final int count = Math.min(suggestions.size(), countInStrip);
+            final int count = Math.min(suggestedWords.size(), countInStrip);
             for (int pos = 0; pos < count; pos++) {
-                final CharSequence styled = getStyledSuggestionWord(suggestions, pos);
+                final CharSequence styled = getStyledSuggestionWord(suggestedWords, pos);
                 mTexts.add(styled);
             }
             for (int pos = count; pos < countInStrip; pos++) {
@@ -425,8 +425,9 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             }
         }
 
-        private void layoutPunctuationSuggestions(SuggestedWords suggestions, ViewGroup stripView) {
-            final int countInStrip = Math.min(suggestions.size(), PUNCTUATIONS_IN_STRIP);
+        private void layoutPunctuationSuggestions(SuggestedWords suggestedWords,
+                ViewGroup stripView) {
+            final int countInStrip = Math.min(suggestedWords.size(), PUNCTUATIONS_IN_STRIP);
             for (int index = 0; index < countInStrip; index++) {
                 if (index != 0) {
                     // Add divider if this isn't the left most suggestion in suggestions strip.
@@ -436,7 +437,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
                 final TextView word = mWords.get(index);
                 word.setEnabled(true);
                 word.setTextColor(mColorAutoCorrect);
-                final CharSequence text = suggestions.getWord(index);
+                final CharSequence text = suggestedWords.getWord(index);
                 word.setText(text);
                 word.setTextScaleX(1.0f);
                 word.setCompoundDrawables(null, null, null, null);
@@ -635,13 +636,13 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         mKeyboardView = (KeyboardView)inputView.findViewById(R.id.keyboard_view);
     }
 
-    public void setSuggestions(SuggestedWords suggestions) {
-        if (suggestions == null || suggestions.size() == 0)
+    public void setSuggestions(SuggestedWords suggestedWords) {
+        if (suggestedWords == null || suggestedWords.size() == 0)
             return;
 
         clear();
-        mSuggestions = suggestions;
-        mParams.layout(mSuggestions, mSuggestionsStrip, this, getWidth());
+        mSuggestedWords = suggestedWords;
+        mParams.layout(mSuggestedWords, mSuggestionsStrip, this, getWidth());
     }
 
 
@@ -664,7 +665,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
     }
 
     public SuggestedWords getSuggestions() {
-        return mSuggestions;
+        return mSuggestedWords;
     }
 
     public void clear() {
@@ -687,7 +688,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         @Override
         public boolean onCustomRequest(int requestCode) {
             final int index = requestCode;
-            final CharSequence word = mSuggestions.getWord(index);
+            final CharSequence word = mSuggestedWords.getWord(index);
             mListener.pickSuggestionManually(index, word);
             dismissMoreSuggestions();
             return true;
@@ -732,7 +733,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             final int maxWidth = stripWidth - container.getPaddingLeft()
                     - container.getPaddingRight();
             final MoreSuggestions.Builder builder = mMoreSuggestionsBuilder;
-            builder.layout(mSuggestions, params.mSuggestionsCountInStrip, maxWidth,
+            builder.layout(mSuggestedWords, params.mSuggestionsCountInStrip, maxWidth,
                     (int)(maxWidth * params.mMinMoreSuggestionsWidth),
                     params.mMaxMoreSuggestionsRow);
             mMoreSuggestionsView.setKeyboard(builder.build());
@@ -834,10 +835,10 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         if (!(tag instanceof Integer))
             return;
         final int index = (Integer) tag;
-        if (index >= mSuggestions.size())
+        if (index >= mSuggestedWords.size())
             return;
 
-        final CharSequence word = mSuggestions.getWord(index);
+        final CharSequence word = mSuggestedWords.getWord(index);
         mListener.pickSuggestionManually(index, word);
     }
 

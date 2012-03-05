@@ -1827,9 +1827,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 builder.addTypedWordAndPreviousSuggestions(typedWord, previousSuggestions);
             }
         }
-        final SuggestedWords suggestedWords = builder.build();
-        if (Utils.shouldBlockAutoCorrectionBySafetyNet(suggestedWords, mSuggest)) {
-            suggestedWords.setShouldBlockAutoCorrectionBySafetyNet();
+        if (Utils.shouldBlockAutoCorrectionBySafetyNet(builder, mSuggest)) {
+            builder.setShouldBlockAutoCorrectionBySafetyNet();
         }
         showSuggestions(builder.build(), typedWord);
     }
@@ -1837,7 +1836,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     public void showSuggestions(final SuggestedWords suggestedWords, final CharSequence typedWord) {
         final CharSequence autoCorrection;
         if (suggestedWords.size() > 0) {
-            if (!suggestedWords.shouldBlockAutoCorrectionBySafetyNet()
+            if (!suggestedWords.mShouldBlockAutoCorrectionBySafetyNet
                     && suggestedWords.hasAutoCorrectionWord()) {
                 autoCorrection = suggestedWords.getWord(1);
             } else {

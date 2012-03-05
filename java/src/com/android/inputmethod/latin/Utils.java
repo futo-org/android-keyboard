@@ -190,19 +190,25 @@ public class Utils {
 
     // TODO: Resolve the inconsistencies between the native auto correction algorithms and
     // this safety net
-    public static boolean shouldBlockAutoCorrectionBySafetyNet(SuggestedWords suggestions,
-            Suggest suggest) {
+    public static boolean shouldBlockAutoCorrectionBySafetyNet(
+            SuggestedWords.Builder suggestedWordsBuilder, Suggest suggest) {
         // Safety net for auto correction.
         // Actually if we hit this safety net, it's actually a bug.
-        if (suggestions.size() <= 1 || suggestions.mTypedWordValid) return false;
+        if (suggestedWordsBuilder.size() <= 1 || suggestedWordsBuilder.isTypedWordValid()) {
+            return false;
+        }
         // If user selected aggressive auto correction mode, there is no need to use the safety
         // net.
-        if (suggest.isAggressiveAutoCorrectionMode()) return false;
-        final CharSequence typedWord = suggestions.getWord(0);
+        if (suggest.isAggressiveAutoCorrectionMode()) {
+            return false;
+        }
+        final CharSequence typedWord = suggestedWordsBuilder.getWord(0);
         // If the length of typed word is less than MINIMUM_SAFETY_NET_CHAR_LENGTH,
         // we should not use net because relatively edit distance can be big.
-        if (typedWord.length() < MINIMUM_SAFETY_NET_CHAR_LENGTH) return false;
-        final CharSequence suggestionWord = suggestions.getWord(1);
+        if (typedWord.length() < MINIMUM_SAFETY_NET_CHAR_LENGTH) {
+            return false;
+        }
+        final CharSequence suggestionWord = suggestedWordsBuilder.getWord(1);
         final int typedWordLength = typedWord.length();
         final int maxEditDistanceOfNativeDictionary =
                 (typedWordLength < 5 ? 2 : typedWordLength / 2) + 1;

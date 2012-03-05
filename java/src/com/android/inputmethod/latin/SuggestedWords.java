@@ -26,18 +26,19 @@ import java.util.HashSet;
 import java.util.List;
 
 public class SuggestedWords {
-    public static final SuggestedWords EMPTY = new SuggestedWords(null, false, false, false, null);
+    public static final SuggestedWords EMPTY = new SuggestedWords(null, false, false, false, false,
+            null);
 
     private final List<CharSequence> mWords;
     public final boolean mTypedWordValid;
     public final boolean mHasAutoCorrectionCandidate;
     public final boolean mIsPunctuationSuggestions;
+    public final boolean mShouldBlockAutoCorrectionBySafetyNet;
     private final List<SuggestedWordInfo> mSuggestedWordInfoList;
-    // TODO: Make the following member final.
-    private boolean mShouldBlockAutoCorrectionBySafetyNet;
 
     SuggestedWords(List<CharSequence> words, boolean typedWordValid,
             boolean hasAutoCorrectionCandidate, boolean isPunctuationSuggestions,
+            boolean shouldBlockAutoCorrectionBySafetyNet,
             List<SuggestedWordInfo> suggestedWordInfoList) {
         if (words != null) {
             mWords = words;
@@ -47,8 +48,8 @@ public class SuggestedWords {
         mTypedWordValid = typedWordValid;
         mHasAutoCorrectionCandidate = hasAutoCorrectionCandidate;
         mIsPunctuationSuggestions = isPunctuationSuggestions;
+        mShouldBlockAutoCorrectionBySafetyNet = shouldBlockAutoCorrectionBySafetyNet;
         mSuggestedWordInfoList = suggestedWordInfoList;
-        mShouldBlockAutoCorrectionBySafetyNet = false;
     }
 
     public int size() {
@@ -67,18 +68,20 @@ public class SuggestedWords {
         return mHasAutoCorrectionCandidate && size() > 1 && !mTypedWordValid;
     }
 
-    // TODO: Remove this method.
-    public void setShouldBlockAutoCorrectionBySafetyNet() {
-        mShouldBlockAutoCorrectionBySafetyNet = true;
-    }
-
-    public boolean shouldBlockAutoCorrectionBySafetyNet() {
-        return mShouldBlockAutoCorrectionBySafetyNet;
-    }
-
     public boolean willAutoCorrect() {
         return !mTypedWordValid && mHasAutoCorrectionCandidate
-                && !shouldBlockAutoCorrectionBySafetyNet();
+                && !mShouldBlockAutoCorrectionBySafetyNet;
+    }
+
+    @Override
+    public String toString() {
+        // Pretty-print method to help debug
+        return "SuggestedWords:"
+                + " mTypedWordValid=" + mTypedWordValid
+                + " mHasAutoCorrectionCandidate=" + mHasAutoCorrectionCandidate
+                + " mIsPunctuationSuggestions=" + mIsPunctuationSuggestions
+                + " mShouldBlockAutoCorrectionBySafetyNet=" + mShouldBlockAutoCorrectionBySafetyNet
+                + " mWords=" + Arrays.toString(mWords.toArray());
     }
 
     public static class Builder {
@@ -86,6 +89,7 @@ public class SuggestedWords {
         private boolean mTypedWordValid;
         private boolean mHasMinimalSuggestion;
         private boolean mIsPunctuationSuggestions;
+        private boolean mShouldBlockAutoCorrectionBySafetyNet;
         private List<SuggestedWordInfo> mSuggestedWordInfoList =
                 new ArrayList<SuggestedWordInfo>();
 
@@ -150,6 +154,11 @@ public class SuggestedWords {
             return this;
         }
 
+        public Builder setShouldBlockAutoCorrectionBySafetyNet() {
+            mShouldBlockAutoCorrectionBySafetyNet = true;
+            return this;
+        }
+
         // Should get rid of the first one (what the user typed previously) from suggestions
         // and replace it with what the user currently typed.
         public Builder addTypedWordAndPreviousSuggestions(CharSequence typedWord,
@@ -175,7 +184,8 @@ public class SuggestedWords {
 
         public SuggestedWords build() {
             return new SuggestedWords(mWords, mTypedWordValid, mHasMinimalSuggestion,
-                    mIsPunctuationSuggestions, mSuggestedWordInfoList);
+                    mIsPunctuationSuggestions, mShouldBlockAutoCorrectionBySafetyNet,
+                    mSuggestedWordInfoList);
         }
 
         public int size() {
@@ -186,13 +196,19 @@ public class SuggestedWords {
             return mWords.get(pos);
         }
 
+        public boolean isTypedWordValid() {
+            return mTypedWordValid;
+        }
+
         @Override
         public String toString() {
             // Pretty-print method to help debug
             return "SuggestedWords.Builder:"
-                    + " mTypedWordValid = " + mTypedWordValid
-                    + " mHasMinimalSuggestion = " + mHasMinimalSuggestion
-                    + " mIsPunctuationSuggestions = " + mIsPunctuationSuggestions
+                    + " mTypedWordValid=" + mTypedWordValid
+                    + " mHasMinimalSuggestion=" + mHasMinimalSuggestion
+                    + " mIsPunctuationSuggestions=" + mIsPunctuationSuggestions
+                    + " mShouldBlockAutoCorrectionBySafetyNet="
+                    + mShouldBlockAutoCorrectionBySafetyNet
                     + " mWords=" + Arrays.toString(mWords.toArray());
         }
     }
