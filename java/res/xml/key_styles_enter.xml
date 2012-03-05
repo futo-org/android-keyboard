@@ -33,6 +33,13 @@
                 latin:moreKeys="@string/action_previous_as_more_key" />
         </case>
         <case
+            latin:imeAction="actionNext"
+            latin:navigatePrevious="false"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle" />
+        </case>
+        <case
             latin:imeAction="actionPrevious"
             latin:navigateNext="true"
         >
@@ -40,6 +47,13 @@
                 latin:styleName="navigateMoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint|preserveCase"
                 latin:moreKeys="@string/action_next_as_more_key" />
+        </case>
+        <case
+            latin:imeAction="actionPrevious"
+            latin:navigateNext="false"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle" />
         </case>
         <!-- imeAction!="actionNext" and imeAction!="actionPrevious" -->
         <case
