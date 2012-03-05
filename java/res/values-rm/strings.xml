@@ -26,7 +26,9 @@
     <string name="english_ime_settings" msgid="6661589557206947774">"Parameters da la tastatura Android"</string>
     <!-- no translation found for english_ime_input_options (3909945612939668554) -->
     <skip />
-    <!-- no translation found for spell_checker_service_name (2003013122022285508) -->
+    <!-- no translation found for spell_checker_service_name (7338064335159755926) -->
+    <skip />
+    <!-- no translation found for aosp_spell_checker_service_name (6985142605330377819) -->
     <skip />
     <!-- no translation found for android_spell_checker_settings (5822324635435443689) -->
     <skip />

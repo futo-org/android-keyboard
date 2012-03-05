@@ -24,7 +24,10 @@
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Android-tastatur (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Innstillinger for skjermtastatur"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Inndataalternativer"</string>
-    <string name="spell_checker_service_name" msgid="2003013122022285508">"Android-stavekontroll"</string>
+    <!-- no translation found for spell_checker_service_name (7338064335159755926) -->
+    <skip />
+    <!-- no translation found for aosp_spell_checker_service_name (6985142605330377819) -->
+    <skip />
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Innstillinger for stavekontroll"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Slå opp kontaktnavn"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Stavekontrollen bruker oppføringer fra kontaktlisten din"</string>
@@ -62,7 +65,7 @@
     <string name="bigram_prediction" msgid="8914273444762259739">"Bigram-prediksjon"</string>
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"Bruk forrige ord også for forslag"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: Lagret"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"Gå"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"Utfør"</string>
     <string name="label_next_key" msgid="362972844525672568">"Neste"</string>
     <string name="label_previous_key" msgid="1211868118071386787">"Forr."</string>
     <string name="label_done_key" msgid="2441578748772529288">"Utfør"</string>

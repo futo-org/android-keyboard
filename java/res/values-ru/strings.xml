@@ -24,7 +24,10 @@
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Клавиатура Android (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Клавиатура Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Настройки"</string>
-    <string name="spell_checker_service_name" msgid="2003013122022285508">"Исправления Android"</string>
+    <!-- no translation found for spell_checker_service_name (7338064335159755926) -->
+    <skip />
+    <!-- no translation found for aosp_spell_checker_service_name (6985142605330377819) -->
+    <skip />
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Настройка проверки правописания"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Поиск контактов"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Обращаться к списку контактов при проверке правописания"</string>
