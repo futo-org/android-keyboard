@@ -27,8 +27,10 @@
     <!-- Title for Latin keyboard input options dialog [CHAR LIMIT=25] -->
     <string name="english_ime_input_options">Input options</string>
 
-    <!-- Title for Latin Keyboard spell checker service -->
-    <string name="spell_checker_service_name">Android correction</string>
+    <!-- Name of Android spell checker service -->
+    <string name="spell_checker_service_name">Android spell checker</string>
+    <!-- Name of Android spell checker service. AOSP(Android Open Source Project) should not be translated. -->
+    <string name="aosp_spell_checker_service_name">Android spell checker (AOSP)</string>
 
     <!-- Title for the spell checking service settings screen -->
     <string name="android_spell_checker_settings">Spell checking settings</string>
