@@ -335,7 +335,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
 
         public void layout(SuggestedWords suggestions, ViewGroup stripView, ViewGroup placer,
                 int stripWidth) {
-            if (suggestions.isPunctuationSuggestions()) {
+            if (suggestions.mIsPunctuationSuggestions) {
                 layoutPunctuationSuggestions(suggestions, stripView);
                 return;
             }

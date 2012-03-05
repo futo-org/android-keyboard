@@ -20,6 +20,7 @@ import android.text.TextUtils;
 import android.view.inputmethod.CompletionInfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -27,14 +28,15 @@ import java.util.List;
 public class SuggestedWords {
     public static final SuggestedWords EMPTY = new SuggestedWords(null, false, false, false, null);
 
-    public final List<CharSequence> mWords;
+    private final List<CharSequence> mWords;
     public final boolean mTypedWordValid;
     public final boolean mHasAutoCorrectionCandidate;
     public final boolean mIsPunctuationSuggestions;
     private final List<SuggestedWordInfo> mSuggestedWordInfoList;
+    // TODO: Make the following member final.
     private boolean mShouldBlockAutoCorrectionBySafetyNet;
 
-    private SuggestedWords(List<CharSequence> words, boolean typedWordValid,
+    SuggestedWords(List<CharSequence> words, boolean typedWordValid,
             boolean hasAutoCorrectionCandidate, boolean isPunctuationSuggestions,
             List<SuggestedWordInfo> suggestedWordInfoList) {
         if (words != null) {
@@ -65,11 +67,8 @@ public class SuggestedWords {
         return mHasAutoCorrectionCandidate && size() > 1 && !mTypedWordValid;
     }
 
-    public boolean isPunctuationSuggestions() {
-        return mIsPunctuationSuggestions;
-    }
-
-    public void setShouldBlockAutoCorrectionBySatefyNet() {
+    // TODO: Remove this method.
+    public void setShouldBlockAutoCorrectionBySafetyNet() {
         mShouldBlockAutoCorrectionBySafetyNet = true;
     }
 
@@ -190,15 +189,11 @@ public class SuggestedWords {
         @Override
         public String toString() {
             // Pretty-print method to help debug
-            final StringBuilder sb = new StringBuilder("StringBuilder: mTypedWordValid = "
-                    + mTypedWordValid + " ; mHasMinimalSuggestion = " + mHasMinimalSuggestion
-                    + " ; mIsPunctuationSuggestions = " + mIsPunctuationSuggestions
-                    + " --- ");
-            for (CharSequence s : mWords) {
-                sb.append(s);
-                sb.append(" ; ");
-            }
-            return sb.toString();
+            return "SuggestedWords.Builder:"
+                    + " mTypedWordValid = " + mTypedWordValid
+                    + " mHasMinimalSuggestion = " + mHasMinimalSuggestion
+                    + " mIsPunctuationSuggestions = " + mIsPunctuationSuggestions
+                    + " mWords=" + Arrays.toString(mWords.toArray());
         }
     }
 
