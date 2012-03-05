@@ -63,8 +63,12 @@
     <Row>
         <Key
             latin:keyStyle="numPhoneToSymbolKeyStyle" />
+        <!-- U+0030: "0" DIGIT ZERO -->
         <Key
-            latin:keyStyle="num0KeyStyle" />
+            latin:keyStyle="num0KeyStyle"
+            latin:code="0x0030"
+            latin:keyLabel="0 +"
+            latin:moreKeys="!embeddedMoreKey!,+" />
         <Key
             latin:keyStyle="numSpaceKeyStyle" />
         <Key
