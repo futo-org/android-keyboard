@@ -44,7 +44,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public static void logOnManualSuggestion(
-            String before, String after, int position, List<CharSequence> suggestions) {
+            String before, String after, int position, SuggestedWords suggestedWords) {
     }
 
     public static void logOnAutoCorrection(String before, String after, int separatorCode) {
