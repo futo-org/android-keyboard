@@ -25,9 +25,9 @@
 
 #define DUMP_WORD(word, length) do { dumpWord(word, length); } while(0)
 
-static char charBuf[50];
+static inline void dumpWord(const unsigned short* word, const int length) {
+    static char charBuf[50];
 
-static void dumpWord(const unsigned short* word, const int length) {
     for (int i = 0; i < length; ++i) {
         charBuf[i] = word[i];
     }
@@ -43,7 +43,6 @@ static void dumpWord(const unsigned short* word, const int length) {
 
 #ifdef FLAG_DO_PROFILE
 // Profiler
-#include <cutils/log.h>
 #include <time.h>
 
 #define PROF_BUF_SIZE 100
@@ -62,7 +61,7 @@ static unsigned int profile_counter[PROF_BUF_SIZE];
         AKLOGI("%s : clock is %f", __FUNCTION__, (clock() - profile_old[prof_buf_id]))
 #define PROF_OUTALL              do { AKLOGI("--- %s ---", __FUNCTION__); prof_out(); } while(0)
 
-static void prof_reset(void) {
+static inline void prof_reset(void) {
     for (int i = 0; i < PROF_BUF_SIZE; ++i) {
         profile_buf[i] = 0;
         profile_old[i] = 0;
@@ -70,7 +69,7 @@ static void prof_reset(void) {
     }
 }
 
-static void prof_out(void) {
+static inline void prof_out(void) {
     if (profile_counter[PROF_BUF_SIZE - 1] != 1) {
         AKLOGI("Error: You must call PROF_OPEN before PROF_CLOSE.");
     }
