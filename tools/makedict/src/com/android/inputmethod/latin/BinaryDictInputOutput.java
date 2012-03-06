@@ -115,6 +115,7 @@ public class BinaryDictInputOutput {
     private static final int VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
     private static final int MINIMUM_SUPPORTED_VERSION = 1;
     private static final int MAXIMUM_SUPPORTED_VERSION = 2;
+    private static final int NOT_A_VERSION_NUMBER = -1;
     private static final int FIRST_VERSION_WITH_HEADER_SIZE = 2;
 
     // No options yet, reserved for future use.
@@ -829,24 +830,28 @@ public class BinaryDictInputOutput {
             buffer[index++] = (byte) (0xFF & (VERSION_2_MAGIC_NUMBER >> 16));
             buffer[index++] = (byte) (0xFF & (VERSION_2_MAGIC_NUMBER >> 8));
             buffer[index++] = (byte) (0xFF & VERSION_2_MAGIC_NUMBER);
+            // Dictionary version.
+            buffer[index++] = (byte) (0xFF & (version >> 8));
+            buffer[index++] = (byte) (0xFF & version);
         } else {
             // Magic number for version 1.
             buffer[index++] = (byte) (0xFF & (VERSION_1_MAGIC_NUMBER >> 8));
             buffer[index++] = (byte) (0xFF & VERSION_1_MAGIC_NUMBER);
+            // Dictionary version.
+            buffer[index++] = (byte) (0xFF & version);
         }
-        // Dictionary version.
-        buffer[index++] = (byte) (0xFF & version);
         // Options flags
         buffer[index++] = (byte) (0xFF & (OPTIONS >> 8));
         buffer[index++] = (byte) (0xFF & OPTIONS);
         if (version >= FIRST_VERSION_WITH_HEADER_SIZE) {
             final int headerSizeOffset = index;
-            index += 3; // Size of the header size
+            index += 4; // Size of the header size
             // TODO: Write out the header contents here.
             // Write out the header size.
-            buffer[headerSizeOffset] = (byte) (0xFF & (index >> 16));
-            buffer[headerSizeOffset + 1] = (byte) (0xFF & (index >> 8));
-            buffer[headerSizeOffset + 2] = (byte) (0xFF & (index >> 0));
+            buffer[headerSizeOffset] = (byte) (0xFF & (index >> 24));
+            buffer[headerSizeOffset + 1] = (byte) (0xFF & (index >> 16));
+            buffer[headerSizeOffset + 2] = (byte) (0xFF & (index >> 8));
+            buffer[headerSizeOffset + 3] = (byte) (0xFF & (index >> 0));
         }
 
         destination.write(buffer, 0, index);
@@ -1122,14 +1127,14 @@ public class BinaryDictInputOutput {
     }
 
     /**
-     * Helper function to test the magic number of the file.
+     * Helper function to get the binary format version from the header.
      */
-    private static boolean isExpectedMagicNumber(final RandomAccessFile source) throws IOException {
+    private static int getFormatVersion(final RandomAccessFile source) throws IOException {
         final int magic_v1 = source.readUnsignedShort();
-        if (VERSION_1_MAGIC_NUMBER == magic_v1) return true;
+        if (VERSION_1_MAGIC_NUMBER == magic_v1) return source.readUnsignedByte();
         final int magic_v2 = (magic_v1 << 16) + source.readUnsignedShort();
-        if (VERSION_2_MAGIC_NUMBER == magic_v2) return true;
-        return false;
+        if (VERSION_2_MAGIC_NUMBER == magic_v2) return source.readUnsignedShort();
+        return NOT_A_VERSION_NUMBER;
     }
 
     /**
@@ -1145,15 +1150,9 @@ public class BinaryDictInputOutput {
      */
     public static FusionDictionary readDictionaryBinary(final RandomAccessFile source,
             final FusionDictionary dict) throws IOException, UnsupportedFormatException {
-        // Check magic number
-        if (!isExpectedMagicNumber(source)) {
-            throw new UnsupportedFormatException("The magic number in this file does not match "
-                    + "the expected value");
-        }
-
         // Check file version
-        final int version = source.readUnsignedByte();
-        if (version > MAXIMUM_SUPPORTED_VERSION) {
+        final int version = getFormatVersion(source);
+        if (version < MINIMUM_SUPPORTED_VERSION || version > MAXIMUM_SUPPORTED_VERSION ) {
             throw new UnsupportedFormatException("This file has version " + version
                     + ", but this implementation does not support versions above "
                     + MAXIMUM_SUPPORTED_VERSION);
@@ -1166,8 +1165,8 @@ public class BinaryDictInputOutput {
         if (version < FIRST_VERSION_WITH_HEADER_SIZE) {
             headerSize = source.getFilePointer();
         } else {
-            headerSize = (source.readUnsignedByte() << 16) + (source.readUnsignedByte() << 8)
-                    + source.readUnsignedByte();
+            headerSize = (source.readUnsignedByte() << 24) + (source.readUnsignedByte() << 16)
+                    + (source.readUnsignedByte() << 8) + source.readUnsignedByte();
             // read the header body
             source.seek(headerSize);
         }
@@ -1198,7 +1197,8 @@ public class BinaryDictInputOutput {
     public static boolean isBinaryDictionary(final String filename) {
         try {
             RandomAccessFile f = new RandomAccessFile(filename, "r");
-            return isExpectedMagicNumber(f);
+            final int version = getFormatVersion(f);
+            return (version >= MINIMUM_SUPPORTED_VERSION && version <= MAXIMUM_SUPPORTED_VERSION);
         } catch (FileNotFoundException e) {
             return false;
         } catch (IOException e) {
