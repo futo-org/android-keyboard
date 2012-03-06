@@ -223,10 +223,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private int mDeleteCount;
     private long mLastKeyTime;
 
-    private AudioManager mAudioManager;
-    private boolean mSilentModeOn; // System-wide current configuration
-
-    private VibratorCompatWrapper mVibrator;
+    private AudioAndHapticFeedbackManager mFeedbackManager;
 
     // Member variables for remembering the current device orientation.
     private int mDisplayOrientation;
@@ -510,7 +507,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         super.onCreate();
 
         mImm = InputMethodManagerCompatWrapper.getInstance();
-        mVibrator = VibratorCompatWrapper.getInstance(this);
         mHandler.onCreate();
         DEBUG = LatinImeLogger.sDBG;
 
@@ -537,10 +533,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // Register to receive ringer mode change and network state change.
         // Also receive installation and removal of a dictionary pack.
         final IntentFilter filter = new IntentFilter();
-        filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mReceiver, filter);
         mVoiceProxy = VoiceProxy.init(this, prefs, mHandler);
+
+        final IntentFilter ringerModeFilter = new IntentFilter();
+        ringerModeFilter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
+        registerReceiver(mFeedbackManager, ringerModeFilter);
 
         final IntentFilter packageFilter = new IntentFilter();
         packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
@@ -558,6 +557,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     /* package */ void loadSettings() {
         if (null == mPrefs) mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSettingsValues = new SettingsValues(mPrefs, this, mSubtypeSwitcher.getInputLocaleStr());
+        mFeedbackManager = new AudioAndHapticFeedbackManager(this, mSettingsValues,
+                mKeyboardSwitcher);
         resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
     }
 
@@ -646,6 +647,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mSuggest = null;
         }
         unregisterReceiver(mReceiver);
+        unregisterReceiver(mFeedbackManager);
         unregisterReceiver(mDictionaryPackInstallReceiver);
         mVoiceProxy.destroy();
         LatinImeLogger.commit();
@@ -2321,9 +2323,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
-    public void hapticAndAudioFeedback(int primaryCode) {
-        vibrate();
-        playKeyClick(primaryCode);
+    public void hapticAndAudioFeedback(final int primaryCode) {
+        mFeedbackManager.hapticAndAudioFeedback(primaryCode);
     }
 
     @Override
@@ -2353,74 +2354,19 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
-            if (action.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
-                updateRingerMode();
-            } else if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+            if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
                 mSubtypeSwitcher.onNetworkStateChanged(intent);
             }
         }
     };
 
-    // update flags for silent mode
-    private void updateRingerMode() {
-        if (mAudioManager == null) {
-            mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            if (mAudioManager == null) return;
-        }
-        mSilentModeOn = (mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_NORMAL);
-    }
-
-    private void playKeyClick(int primaryCode) {
-        // if mAudioManager is null, we don't have the ringer state yet
-        // mAudioManager will be set by updateRingerMode
-        if (mAudioManager == null) {
-            if (mKeyboardSwitcher.getKeyboardView() != null) {
-                updateRingerMode();
-            }
-        }
-        if (isSoundOn()) {
-            final int sound;
-            switch (primaryCode) {
-            case Keyboard.CODE_DELETE:
-                sound = AudioManager.FX_KEYPRESS_DELETE;
-                break;
-            case Keyboard.CODE_ENTER:
-                sound = AudioManager.FX_KEYPRESS_RETURN;
-                break;
-            case Keyboard.CODE_SPACE:
-                sound = AudioManager.FX_KEYPRESS_SPACEBAR;
-                break;
-            default:
-                sound = AudioManager.FX_KEYPRESS_STANDARD;
-                break;
-            }
-            mAudioManager.playSoundEffect(sound, mSettingsValues.mFxVolume);
-        }
-    }
-
+    // TODO: remove this method when VoiceProxy has been removed
     public void vibrate() {
-        if (!mSettingsValues.mVibrateOn) {
-            return;
-        }
-        if (mSettingsValues.mKeypressVibrationDuration < 0) {
-            // Go ahead with the system default
-            LatinKeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
-            if (inputView != null) {
-                inputView.performHapticFeedback(
-                        HapticFeedbackConstants.KEYBOARD_TAP,
-                        HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
-            }
-        } else if (mVibrator != null) {
-            mVibrator.vibrate(mSettingsValues.mKeypressVibrationDuration);
-        }
+        mFeedbackManager.vibrate();
     }
 
     public boolean isAutoCapitalized() {
         return mWordComposer.isAutoCapitalized();
-    }
-
-    boolean isSoundOn() {
-        return mSettingsValues.mSoundOn && !mSilentModeOn;
     }
 
     private void updateCorrectionMode() {
