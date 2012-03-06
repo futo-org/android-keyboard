@@ -223,9 +223,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private VibratorCompatWrapper mVibrator;
 
-    // TODO: Move this flag to VoiceProxy
-    private boolean mConfigurationChanging;
-
     // Member variables for remembering the current device orientation.
     private int mDisplayOrientation;
 
@@ -664,10 +661,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 mOptionsDialog.dismiss();
         }
 
-        mConfigurationChanging = true;
+        mVoiceProxy.startChangingConfiguration();
         super.onConfigurationChanged(conf);
         mVoiceProxy.onConfigurationChanged(conf);
-        mConfigurationChanging = false;
+        mVoiceProxy.finishChangingConfiguration();
 
         // This will work only when the subtype is not supported.
         LanguageSwitcherProxy.onConfigurationChanged(conf);
@@ -830,7 +827,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         LatinImeLogger.commit();
 
-        mVoiceProxy.flushVoiceInputLogs(mConfigurationChanging);
+        mVoiceProxy.flushVoiceInputLogs();
 
         KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null) inputView.closing();
@@ -960,7 +957,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mOptionsDialog.dismiss();
             mOptionsDialog = null;
         }
-        mVoiceProxy.hideVoiceWindow(mConfigurationChanging);
+        mVoiceProxy.hideVoiceWindow();
         super.hideWindow();
     }
 

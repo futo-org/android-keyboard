@@ -92,6 +92,7 @@ public class VoiceProxy implements VoiceInput.UiListener {
     private static final boolean DEBUG = LatinImeLogger.sDBG;
 
     private boolean mAfterVoiceInput;
+    private boolean mConfigurationChanging;
     private boolean mHasUsedVoiceInput;
     private boolean mHasUsedVoiceInputUnsupportedLocale;
     private boolean mImmediatelyAfterVoiceInput;
@@ -159,11 +160,11 @@ public class VoiceProxy implements VoiceInput.UiListener {
         mPasswordText = isPasswordText;
     }
 
-    public void flushVoiceInputLogs(boolean configurationChanged) {
+    public void flushVoiceInputLogs() {
         if (!VOICE_INSTALLED) {
             return;
         }
-        if (!configurationChanged) {
+        if (!mConfigurationChanging) {
             if (mAfterVoiceInput) {
                 mVoiceInput.flushAllTextModificationCounters();
                 mVoiceInput.logInputEnded();
@@ -318,11 +319,11 @@ public class VoiceProxy implements VoiceInput.UiListener {
         mImmediatelyAfterVoiceInput = false;
     }
 
-    public void hideVoiceWindow(boolean configurationChanging) {
+    public void hideVoiceWindow() {
         if (!VOICE_INSTALLED) {
             return;
         }
-        if (!configurationChanging) {
+        if (!mConfigurationChanging) {
             if (mAfterVoiceInput)
                 mVoiceInput.logInputEnded();
             if (mVoiceWarningDialog != null && mVoiceWarningDialog.isShowing()) {
@@ -841,5 +842,13 @@ public class VoiceProxy implements VoiceInput.UiListener {
                 resolver,
                 SettingsUtil.LATIN_IME_VOICE_INPUT_SUPPORTED_LOCALES,
                 DEFAULT_VOICE_INPUT_SUPPORTED_LOCALES);
+    }
+
+    public void startChangingConfiguration() {
+        mConfigurationChanging = true;
+    }
+
+    public void finishChangingConfiguration() {
+        mConfigurationChanging = false;
     }
 }
