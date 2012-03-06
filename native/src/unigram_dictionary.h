@@ -29,6 +29,8 @@ namespace latinime {
 
 class TerminalAttributes;
 class UnigramDictionary {
+    typedef struct { int first; int second; } digraph_t;
+
  public:
     // Mask and flags for children address type selection.
     static const int MASK_GROUP_ADDRESS_TYPE = 0xC0;
@@ -86,13 +88,15 @@ class UnigramDictionary {
     void getWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int inputLength,
             const int flags, Correction *correction, WordsPriorityQueuePool *queuePool);
-    bool isDigraph(const int *codes, const int i, const int codesSize) const;
+    bool isDigraph(const int *codes, const int i, const int codesSize,
+            const digraph_t* const digraphs, const unsigned int digraphsSize) const;
     void getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int* ycoordinates, const int *codesBuffer,
         int *xCoordinatesBuffer, int *yCoordinatesBuffer,
         const int codesBufferSize, const int flags, const int* codesSrc,
         const int codesRemain, const int currentDepth, int* codesDest, Correction *correction,
-        WordsPriorityQueuePool* queuePool);
+        WordsPriorityQueuePool* queuePool, const digraph_t* const digraphs,
+        const unsigned int digraphsSize);
     void initSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize, Correction *correction);
     void getOneWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
@@ -145,7 +149,7 @@ class UnigramDictionary {
     const int FULL_WORD_MULTIPLIER;
     const int ROOT_POS;
     const unsigned int BYTES_IN_ONE_CHAR;
-    const int MAX_UMLAUT_SEARCH_DEPTH;
+    const int MAX_DIGRAPH_SEARCH_DEPTH;
 
     // Flags for special processing
     // Those *must* match the flags in BinaryDictionary.Flags.ALL_FLAGS in BinaryDictionary.java
@@ -155,7 +159,7 @@ class UnigramDictionary {
         REQUIRES_GERMAN_UMLAUT_PROCESSING = 0x1,
         USE_FULL_EDIT_DISTANCE = 0x2
     };
-    static const struct digraph_t { int first; int second; } GERMAN_UMLAUT_DIGRAPHS[];
+    static const digraph_t GERMAN_UMLAUT_DIGRAPHS[];
 
     // Still bundled members
     unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];// TODO: remove

@@ -232,9 +232,9 @@ static inline void prof_out(void) {
 
 #define FIRST_WORD_INDEX 0
 
-// TODO: Reduce this constant if possible; check the maximum number of umlauts in the same German
-// word in the dictionary
-#define DEFAULT_MAX_UMLAUT_SEARCH_DEPTH 5
+// TODO: Reduce this constant if possible; check the maximum number of digraphs in the same
+// word in the dictionary for languages with digraphs, like German and French
+#define DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH 5
 
 // Minimum suggest depth for one word for all cases except for missing space suggestions.
 #define MIN_SUGGEST_DEPTH 1
