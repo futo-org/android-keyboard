@@ -193,8 +193,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private InputMethodManagerCompatWrapper mImm;
     private Resources mResources;
     private SharedPreferences mPrefs;
-    private KeyboardSwitcher mKeyboardSwitcher;
-    private SubtypeSwitcher mSubtypeSwitcher;
+    private final KeyboardSwitcher mKeyboardSwitcher;
+    private final SubtypeSwitcher mSubtypeSwitcher;
     private VoiceProxy mVoiceProxy;
 
     private UserDictionary mUserDictionary;
@@ -486,6 +486,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
+    public LatinIME() {
+        super();
+        mSubtypeSwitcher = SubtypeSwitcher.getInstance();
+        mKeyboardSwitcher = KeyboardSwitcher.getInstance();
+    }
+
     @Override
     public void onCreate() {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -500,8 +506,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         super.onCreate();
 
         mImm = InputMethodManagerCompatWrapper.getInstance();
-        mSubtypeSwitcher = SubtypeSwitcher.getInstance();
-        mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mVibrator = VibratorCompatWrapper.getInstance(this);
         mHandler.onCreate();
         DEBUG = LatinImeLogger.sDBG;
@@ -549,7 +553,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // Has to be package-visible for unit tests
     /* package */ void loadSettings() {
         if (null == mPrefs) mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if (null == mSubtypeSwitcher) mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mSettingsValues = new SettingsValues(mPrefs, this, mSubtypeSwitcher.getInputLocaleStr());
         resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
     }
