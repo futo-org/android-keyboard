@@ -111,7 +111,8 @@ public class BinaryDictInputOutput {
      *
      */
 
-    private static final int MAGIC_NUMBER = 0x78B1;
+    private static final int VERSION_1_MAGIC_NUMBER = 0x78B1;
+    private static final int VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
     private static final int MINIMUM_SUPPORTED_VERSION = 1;
     private static final int MAXIMUM_SUPPORTED_VERSION = 2;
     private static final int FIRST_VERSION_WITH_HEADER_SIZE = 2;
@@ -801,8 +802,9 @@ public class BinaryDictInputOutput {
      * @param dict the dictionary to write.
      * @param version the version of the format to write, currently either 1 or 2.
      */
-    public static void writeDictionaryBinary(OutputStream destination, FusionDictionary dict,
-            final int version) throws IOException, UnsupportedFormatException {
+    public static void writeDictionaryBinary(final OutputStream destination,
+            final FusionDictionary dict, final int version)
+            throws IOException, UnsupportedFormatException {
 
         // Addresses are limited to 3 bytes, so we'll just make a 16MB buffer. Since addresses
         // can be relative to each node, the structure itself is not limited to 16MB at all, but
@@ -820,9 +822,18 @@ public class BinaryDictInputOutput {
                     + MINIMUM_SUPPORTED_VERSION + " through " + MAXIMUM_SUPPORTED_VERSION);
         }
 
-        // Magic number in big-endian order.
-        buffer[index++] = (byte) (0xFF & (MAGIC_NUMBER >> 8));
-        buffer[index++] = (byte) (0xFF & MAGIC_NUMBER);
+        // The magic number in big-endian order.
+        if (version >= FIRST_VERSION_WITH_HEADER_SIZE) {
+            // Magic number for version 2+.
+            buffer[index++] = (byte) (0xFF & (VERSION_2_MAGIC_NUMBER >> 24));
+            buffer[index++] = (byte) (0xFF & (VERSION_2_MAGIC_NUMBER >> 16));
+            buffer[index++] = (byte) (0xFF & (VERSION_2_MAGIC_NUMBER >> 8));
+            buffer[index++] = (byte) (0xFF & VERSION_2_MAGIC_NUMBER);
+        } else {
+            // Magic number for version 1.
+            buffer[index++] = (byte) (0xFF & (VERSION_1_MAGIC_NUMBER >> 8));
+            buffer[index++] = (byte) (0xFF & VERSION_1_MAGIC_NUMBER);
+        }
         // Dictionary version.
         buffer[index++] = (byte) (0xFF & version);
         // Options flags
@@ -831,9 +842,8 @@ public class BinaryDictInputOutput {
         if (version >= FIRST_VERSION_WITH_HEADER_SIZE) {
             final int headerSizeOffset = index;
             index += 3; // Size of the header size
-
-            // Write out the header contents here.
-
+            // TODO: Write out the header contents here.
+            // Write out the header size.
             buffer[headerSizeOffset] = (byte) (0xFF & (index >> 16));
             buffer[headerSizeOffset + 1] = (byte) (0xFF & (index >> 8));
             buffer[headerSizeOffset + 2] = (byte) (0xFF & (index >> 0));
@@ -1112,6 +1122,17 @@ public class BinaryDictInputOutput {
     }
 
     /**
+     * Helper function to test the magic number of the file.
+     */
+    private static boolean isExpectedMagicNumber(final RandomAccessFile source) throws IOException {
+        final int magic_v1 = source.readUnsignedShort();
+        if (VERSION_1_MAGIC_NUMBER == magic_v1) return true;
+        final int magic_v2 = (magic_v1 << 16) + source.readUnsignedShort();
+        if (VERSION_2_MAGIC_NUMBER == magic_v2) return true;
+        return false;
+    }
+
+    /**
      * Reads a random access file and returns the memory representation of the dictionary.
      *
      * This high-level method takes a binary file and reads its contents, populating a
@@ -1122,11 +1143,10 @@ public class BinaryDictInputOutput {
      * @param dict an optional dictionary to add words to, or null.
      * @return the created (or merged) dictionary.
      */
-    public static FusionDictionary readDictionaryBinary(RandomAccessFile source,
-            FusionDictionary dict) throws IOException, UnsupportedFormatException {
+    public static FusionDictionary readDictionaryBinary(final RandomAccessFile source,
+            final FusionDictionary dict) throws IOException, UnsupportedFormatException {
         // Check magic number
-        final int magic = source.readUnsignedShort();
-        if (MAGIC_NUMBER != magic) {
+        if (!isExpectedMagicNumber(source)) {
             throw new UnsupportedFormatException("The magic number in this file does not match "
                     + "the expected value");
         }
@@ -1146,7 +1166,7 @@ public class BinaryDictInputOutput {
         if (version < FIRST_VERSION_WITH_HEADER_SIZE) {
             headerSize = source.getFilePointer();
         } else {
-            headerSize = source.readUnsignedByte() << 16 + source.readUnsignedByte() << 8
+            headerSize = (source.readUnsignedByte() << 16) + (source.readUnsignedByte() << 8)
                     + source.readUnsignedByte();
             // read the header body
             source.seek(headerSize);
@@ -1175,10 +1195,10 @@ public class BinaryDictInputOutput {
      * @param filename The name of the file to test.
      * @return true if it's a binary dictionary, false otherwise
      */
-    public static boolean isBinaryDictionary(String filename) {
+    public static boolean isBinaryDictionary(final String filename) {
         try {
             RandomAccessFile f = new RandomAccessFile(filename, "r");
-            return MAGIC_NUMBER == f.readUnsignedShort();
+            return isExpectedMagicNumber(f);
         } catch (FileNotFoundException e) {
             return false;
         } catch (IOException e) {
