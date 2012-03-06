@@ -65,11 +65,11 @@ public class KeyDetector {
         return mKeyHysteresisDistanceSquared;
     }
 
-    protected int getTouchX(int x) {
+    public int getTouchX(int x) {
         return x + mCorrectionX;
     }
 
-    protected int getTouchY(int y) {
+    public int getTouchY(int y) {
         return y + mCorrectionY;
     }
 

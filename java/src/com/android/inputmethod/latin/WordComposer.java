@@ -123,21 +123,27 @@ public class WordComposer {
     }
 
     // TODO: remove input keyDetector
-    public void add(int primaryCode, int keyX, int keyY, KeyDetector keyDetector) {
+    public void add(int primaryCode, int x, int y, KeyDetector keyDetector) {
         final int[] codes;
-        if (keyX == KeyboardActionListener.SPELL_CHECKER_COORDINATE
-                || keyY == KeyboardActionListener.SPELL_CHECKER_COORDINATE) {
+        final int keyX;
+        final int keyY;
+        if (x == KeyboardActionListener.SPELL_CHECKER_COORDINATE
+                || y == KeyboardActionListener.SPELL_CHECKER_COORDINATE) {
             // only used for tests in InputLogicTests
             addKeyForSpellChecker(primaryCode, AndroidSpellCheckerService.SCRIPT_LATIN);
             return;
-        } else if (keyX == KeyboardActionListener.SUGGESTION_STRIP_COORDINATE
-                || keyY == KeyboardActionListener.SUGGESTION_STRIP_COORDINATE
-                || keyX == KeyboardActionListener.NOT_A_TOUCH_COORDINATE
-                || keyY == KeyboardActionListener.NOT_A_TOUCH_COORDINATE) {
+        } else if (x == KeyboardActionListener.SUGGESTION_STRIP_COORDINATE
+                || y == KeyboardActionListener.SUGGESTION_STRIP_COORDINATE
+                || x == KeyboardActionListener.NOT_A_TOUCH_COORDINATE
+                || y == KeyboardActionListener.NOT_A_TOUCH_COORDINATE) {
             codes = new int[] { primaryCode };
+            keyX = x;
+            keyY = y;
         } else {
             codes = keyDetector.newCodeArray();
-            keyDetector.getKeyAndNearbyCodes(keyX, keyY, codes);
+            keyDetector.getKeyAndNearbyCodes(x, y, codes);
+            keyX = keyDetector.getTouchX(x);
+            keyY = keyDetector.getTouchX(y);
         }
         add(primaryCode, codes, keyX, keyY);
     }
