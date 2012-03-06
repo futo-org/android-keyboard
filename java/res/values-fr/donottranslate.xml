@@ -19,11 +19,11 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Symbols that should be swapped with a magic space -->
-    <string name="magic_space_swapping_symbols">.,\")]}</string>
+    <string name="weak_space_swapping_symbols">.,\")]}</string>
     <!-- Symbols that should strip a magic space -->
-    <string name="magic_space_stripping_symbols">"&#x0009;&#x0020;\'\n-/_"</string>
+    <string name="weak_space_stripping_symbols">"&#x0009;&#x0020;\'\n-/_"</string>
     <!-- Symbols that should promote magic spaces into real space -->
-    <string name="magic_space_promoting_symbols">;:!?([*&amp;@{&lt;&gt;+=|</string>
+    <string name="phantom_space_promoting_symbols">;:!?([*&amp;@{&lt;&gt;+=|</string>
     <!-- Symbols that do NOT separate words -->
     <string name="symbols_excluded_from_word_separators">\'</string>
 </resources>

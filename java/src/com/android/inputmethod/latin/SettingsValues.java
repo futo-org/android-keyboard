@@ -37,6 +37,7 @@ public class SettingsValues {
     public final int mDelayUpdateOldSuggestions;
     public final String mWeakSpaceStrippers;
     public final String mWeakSpaceSwappers;
+    private final String mPhantomSpacePromotingSymbols;
     private final String mSuggestPuncs;
     public final SuggestedWords mSuggestPuncList;
     public final SuggestedWords mSuggestPuncOutputTextList;
@@ -91,6 +92,7 @@ public class SettingsValues {
         mDelayUpdateOldSuggestions = res.getInteger(R.integer.config_delay_update_old_suggestions);
         mWeakSpaceStrippers = res.getString(R.string.weak_space_stripping_symbols);
         mWeakSpaceSwappers = res.getString(R.string.weak_space_swapping_symbols);
+        mPhantomSpacePromotingSymbols = res.getString(R.string.phantom_space_promoting_symbols);
         if (LatinImeLogger.sDBG) {
             final int length = mWeakSpaceStrippers.length();
             for (int i = 0; i < length; i = mWeakSpaceStrippers.offsetByCodePoints(i, 1)) {
@@ -192,7 +194,7 @@ public class SettingsValues {
             final String weakSpaceSwappers, final String symbolsExcludedFromWordSeparators,
             final Resources res) {
         String wordSeparators = weakSpaceStrippers + weakSpaceSwappers
-                + res.getString(R.string.weak_space_promoting_symbols);
+                + res.getString(R.string.phantom_space_promoting_symbols);
         for (int i = symbolsExcludedFromWordSeparators.length() - 1; i >= 0; --i) {
             wordSeparators = wordSeparators.replace(
                     symbolsExcludedFromWordSeparators.substring(i, i + 1), "");
@@ -223,6 +225,11 @@ public class SettingsValues {
     public boolean isWeakSpaceSwapper(int code) {
         // TODO: this does not work if the code does not fit in a char
         return mWeakSpaceSwappers.contains(String.valueOf((char)code));
+    }
+
+    public boolean isPhantomSpacePromotingSymbol(int code) {
+        // TODO: this does not work if the code does not fit in a char
+        return mPhantomSpacePromotingSymbols.contains(String.valueOf((char)code));
     }
 
     private static boolean isAutoCorrectEnabled(final Resources resources,
