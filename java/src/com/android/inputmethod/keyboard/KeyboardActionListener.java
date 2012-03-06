@@ -41,11 +41,6 @@ public interface KeyboardActionListener {
      * Send a key code to the listener.
      *
      * @param primaryCode this is the code of the key that was pressed
-     * @param keyCodes the codes for all the possible alternative keys with the primary code being
-     *            the first. If the primary key code is a single character such as an alphabet or
-     *            number or symbol, the alternatives will include other characters that may be on
-     *            the same key or adjacent keys. These codes are useful to correct for accidental
-     *            presses of a key adjacent to the intended key.
      * @param x x-coordinate pixel of touched event. If {@link #onCodeInput} is not called by
      *            {@link PointerTracker#onTouchEvent} or so, the value should be
      *            {@link #NOT_A_TOUCH_COORDINATE}. If it's called on insertion from the suggestion
@@ -55,10 +50,11 @@ public interface KeyboardActionListener {
      *            {@link #NOT_A_TOUCH_COORDINATE}. If it's called on insertion from the suggestion
      *            strip, it should be {@link #SUGGESTION_STRIP_COORDINATE}.
      */
-    public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y);
+    public void onCodeInput(int primaryCode, int x, int y);
 
     public static final int NOT_A_TOUCH_COORDINATE = -1;
     public static final int SUGGESTION_STRIP_COORDINATE = -2;
+    public static final int SPELL_CHECKER_COORDINATE = -3;
 
     /**
      * Sends a sequence of characters to the listener.
@@ -84,7 +80,7 @@ public interface KeyboardActionListener {
         @Override
         public void onReleaseKey(int primaryCode, boolean withSliding) {}
         @Override
-        public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {}
+        public void onCodeInput(int primaryCode, int x, int y) {}
         @Override
         public void onTextInput(CharSequence text) {}
         @Override

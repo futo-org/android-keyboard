@@ -46,8 +46,8 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     private final KeyboardActionListener mMoreKeysKeyboardListener =
             new KeyboardActionListener.Adapter() {
         @Override
-        public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
-            mListener.onCodeInput(primaryCode, keyCodes, x, y);
+        public void onCodeInput(int primaryCode, int x, int y) {
+            mListener.onCodeInput(primaryCode, x, y);
         }
 
         @Override

@@ -728,10 +728,17 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         LatinKeyboardView inputView = switcher.getKeyboardView();
 
+        if (editorInfo == null) {
+            Log.e(TAG, "Null EditorInfo in onStartInputView()");
+            if (LatinImeLogger.sDBG) {
+                throw new NullPointerException("Null EditorInfo in onStartInputView()");
+            }
+            return;
+        }
         if (DEBUG) {
-            Log.d(TAG, "onStartInputView: editorInfo:" + ((editorInfo == null) ? "none"
-                    : String.format("inputType=0x%08x imeOptions=0x%08x",
-                            editorInfo.inputType, editorInfo.imeOptions)));
+            Log.d(TAG, "onStartInputView: editorInfo:"
+                    + String.format("inputType=0x%08x imeOptions=0x%08x",
+                            editorInfo.inputType, editorInfo.imeOptions));
         }
         if (Utils.inPrivateImeOptions(null, IME_OPTION_NO_MICROPHONE_COMPAT, editorInfo)) {
             Log.w(TAG, "Deprecated private IME option specified: "
@@ -761,7 +768,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // Most such things we decide below in initializeInputAttributesAndGetMode, but we need to
         // know now whether this is a password text field, because we need to know now whether we
         // want to enable the voice button.
-        final int inputType = (editorInfo != null) ? editorInfo.inputType : 0;
+        final int inputType = editorInfo.inputType;
         mVoiceProxy.resetVoiceStates(InputTypeCompatUtils.isPasswordInputType(inputType)
                 || InputTypeCompatUtils.isVisiblePasswordInputType(inputType));
 
@@ -1245,12 +1252,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return mOptionsDialog != null && mOptionsDialog.isShowing();
     }
 
-    private void insertPunctuationFromSuggestionStrip(final int code) {
-        onCodeInput(code, new int[] { code },
-                KeyboardActionListener.SUGGESTION_STRIP_COORDINATE,
-                KeyboardActionListener.SUGGESTION_STRIP_COORDINATE);
-    }
-
     private static int getActionId(Keyboard keyboard) {
         return keyboard != null ? keyboard.mId.imeActionId() : EditorInfo.IME_ACTION_NONE;
     }
@@ -1279,7 +1280,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     // Implementation of {@link KeyboardActionListener}.
     @Override
-    public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
+    public void onCodeInput(int primaryCode, int x, int y) {
         final long when = SystemClock.uptimeMillis();
         if (primaryCode != Keyboard.CODE_DELETE || when > mLastKeyTime + QUICK_PRESS) {
             mDeleteCount = 0;
@@ -1331,7 +1332,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (mSettingsValues.isWordSeparator(primaryCode)) {
                 didAutoCorrect = handleSeparator(primaryCode, x, y, spaceState);
             } else {
-                handleCharacter(primaryCode, keyCodes, x, y, spaceState);
+                handleCharacter(primaryCode, x, y, spaceState);
             }
             mExpectingUpdateSelection = true;
             break;
@@ -1498,18 +1499,18 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
-    private void handleCharacter(final int primaryCode, final int[] keyCodes, final int x,
+    private void handleCharacter(final int primaryCode, final int x,
             final int y, final int spaceState) {
         mVoiceProxy.handleCharacter();
         final InputConnection ic = getCurrentInputConnection();
         if (null != ic) ic.beginBatchEdit();
         // TODO: if ic is null, does it make any sense to call this?
-        handleCharacterWhileInBatchEdit(primaryCode, keyCodes, x, y, spaceState, ic);
+        handleCharacterWhileInBatchEdit(primaryCode, x, y, spaceState, ic);
         if (null != ic) ic.endBatchEdit();
     }
 
     // "ic" may be null without this crashing, but the behavior will be really strange
-    private void handleCharacterWhileInBatchEdit(final int primaryCode, final int[] keyCodes,
+    private void handleCharacterWhileInBatchEdit(final int primaryCode,
             final int x, final int y, final int spaceState, final InputConnection ic) {
         boolean isComposingWord = mWordComposer.isComposingWord();
 
@@ -1541,7 +1542,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         }
         if (isComposingWord) {
-            mWordComposer.add(primaryCode, keyCodes, x, y);
+            mWordComposer.add(
+                    primaryCode, x, y, mKeyboardSwitcher.getKeyboardView().getKeyDetector());
             if (ic != null) {
                 // If it's the first letter, make note of auto-caps state
                 if (mWordComposer.size() == 1) {
@@ -1916,7 +1918,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             LatinImeLogger.logOnManualSuggestion("", suggestion.toString(), index, suggestedWords);
             // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
             final int primaryCode = suggestion.charAt(0);
-            onCodeInput(primaryCode, new int[] { primaryCode },
+            onCodeInput(primaryCode,
                     KeyboardActionListener.SUGGESTION_STRIP_COORDINATE,
                     KeyboardActionListener.SUGGESTION_STRIP_COORDINATE);
             return;
@@ -2162,7 +2164,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final String originallyTypedWord = mLastComposedWord.mTypedWord;
         final CharSequence committedWord = mLastComposedWord.mCommittedWord;
         final int cancelLength = committedWord.length();
-        final int separatorLength = mLastComposedWord.getSeparatorLength(
+        final int separatorLength = LastComposedWord.getSeparatorLength(
                 mLastComposedWord.mSeparatorCode);
         // TODO: should we check our saved separator against the actual contents of the text view?
         if (DEBUG) {

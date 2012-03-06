@@ -105,7 +105,6 @@ public class PointerTracker {
         }
     }
 
-    private static KeyboardSwitcher sKeyboardSwitcher;
     // Parameters for pointer handling.
     private static LatinKeyboardView.PointerTrackerParams sParams;
     private static int sTouchNoiseThresholdDistanceSquared;
@@ -172,7 +171,6 @@ public class PointerTracker {
         }
 
         setParameters(LatinKeyboardView.PointerTrackerParams.DEFAULT);
-        sKeyboardSwitcher = KeyboardSwitcher.getInstance();
     }
 
     public static void setParameters(LatinKeyboardView.PointerTrackerParams params) {
@@ -254,13 +252,13 @@ public class PointerTracker {
 
     // Note that we need primaryCode argument because the keyboard may in shifted state and the
     // primaryCode is different from {@link Key#mCode}.
-    private void callListenerOnCodeInput(Key key, int primaryCode, int[] keyCodes, int x, int y) {
+    private void callListenerOnCodeInput(Key key, int primaryCode, int x, int y) {
         final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
         final boolean alterCode = key.altCodeWhileTyping() && mTimerProxy.isTyping();
         final int code = alterCode ? key.mAltCode : primaryCode;
         if (DEBUG_LISTENER) {
             Log.d(TAG, "onCodeInput: " + Keyboard.printableCode(code) + " text=" + key.mOutputText
-                    + " codes="+ KeyDetector.printableCodes(keyCodes) + " x=" + x + " y=" + y
+                    + " x=" + x + " y=" + y
                     + " ignoreModifier=" + ignoreModifierKey + " alterCode=" + alterCode
                     + " enabled=" + key.isEnabled());
         }
@@ -271,7 +269,7 @@ public class PointerTracker {
             if (code == Keyboard.CODE_OUTPUT_TEXT) {
                 mListener.onTextInput(key.mOutputText);
             } else if (code != Keyboard.CODE_UNSPECIFIED) {
-                mListener.onCodeInput(code, keyCodes, x, y);
+                mListener.onCodeInput(code, x, y);
             }
             if (!key.altCodeWhileTyping() && !key.isModifier()) {
                 mTimerProxy.startKeyTypedTimer();
@@ -719,10 +717,7 @@ public class PointerTracker {
         }
 
         int code = key.mCode;
-        final int[] codes = mKeyDetector.newCodeArray();
-        mKeyDetector.getKeyAndNearbyCodes(x, y, codes);
-
-        callListenerOnCodeInput(key, code, codes, x, y);
+        callListenerOnCodeInput(key, code, x, y);
         callListenerOnRelease(key, code, false);
     }
 
