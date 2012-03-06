@@ -1610,6 +1610,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final boolean swapWeakSpace = maybeStripSpaceWhileInBatchEdit(ic, primaryCode, spaceState,
                 KeyboardActionListener.SUGGESTION_STRIP_COORDINATE == x);
 
+        if (SPACE_STATE_PHANTOM == spaceState &&
+                mSettingsValues.isPhantomSpacePromotingSymbol(primaryCode)) {
+            sendKeyCodePoint(Keyboard.CODE_SPACE);
+        }
         sendKeyCodePoint(primaryCode);
 
         if (Keyboard.CODE_SPACE == primaryCode) {
