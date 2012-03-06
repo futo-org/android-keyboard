@@ -570,23 +570,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 final WordComposer composer = new WordComposer();
                 final int length = text.length();
                 for (int i = 0; i < length; i = text.offsetByCodePoints(i, 1)) {
-                    final int character = text.codePointAt(i);
-                    final int proximityIndex =
-                            SpellCheckerProximityInfo.getIndexOfCodeForScript(character, mScript);
-                    final int[] proximities;
-                    if (-1 == proximityIndex) {
-                        proximities = new int[] { character };
-                    } else {
-                        // TODO: an initial examination seems to reveal this is actually used
-                        // read-only. It should be possible to compute the arrays statically once
-                        // and skip doing a copy each time here.
-                        proximities = Arrays.copyOfRange(
-                                SpellCheckerProximityInfo.getProximityForScript(mScript),
-                                proximityIndex,
-                                proximityIndex + SpellCheckerProximityInfo.ROW_SIZE);
-                    }
-                    composer.add(character, proximities,
-                            WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
+                    composer.addKeyForSpellChecker(text.codePointAt(i), mScript);
                 }
 
                 final int capitalizeType = getCapitalizationType(text);

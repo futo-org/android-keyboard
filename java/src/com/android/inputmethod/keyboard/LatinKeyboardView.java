@@ -505,7 +505,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     }
 
     private void invokeCodeInput(int primaryCode) {
-        mKeyboardActionListener.onCodeInput(primaryCode, null,
+        mKeyboardActionListener.onCodeInput(primaryCode,
                 KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
                 KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
     }
@@ -740,6 +740,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
      * @return {@code true} if the event was handled by the view, {@code false}
      *         otherwise
      */
+    //Should not annotate @override
     public boolean dispatchHoverEvent(MotionEvent event) {
         if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
             final PointerTracker tracker = PointerTracker.getPointerTracker(0, this);

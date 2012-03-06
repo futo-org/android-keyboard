@@ -323,7 +323,6 @@ public class Suggest implements Dictionary.WordCallback {
                     }
                 } else {
                     // Word entered: return only bigrams that match the first char of the typed word
-                    @SuppressWarnings("null")
                     final char currentChar = consideredWord.charAt(0);
                     // TODO: Must pay attention to locale when changing case.
                     final char currentCharUpper = Character.toUpperCase(currentChar);

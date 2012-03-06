@@ -19,6 +19,9 @@ package com.android.inputmethod.latin;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardActionListener;
+import com.android.inputmethod.latin.spellcheck.AndroidSpellCheckerService;
+import com.android.inputmethod.latin.spellcheck.SpellCheckerProximityInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -119,19 +122,60 @@ public class WordComposer {
         return previous && !Character.isUpperCase(codePoint);
     }
 
+    // TODO: remove input keyDetector
+    public void add(int primaryCode, int keyX, int keyY, KeyDetector keyDetector) {
+        final int[] codes;
+        if (keyX == KeyboardActionListener.SPELL_CHECKER_COORDINATE
+                || keyY == KeyboardActionListener.SPELL_CHECKER_COORDINATE) {
+            // only used for tests in InputLogicTests
+            addKeyForSpellChecker(primaryCode, AndroidSpellCheckerService.SCRIPT_LATIN);
+            return;
+        } else if (keyX == KeyboardActionListener.SUGGESTION_STRIP_COORDINATE
+                || keyY == KeyboardActionListener.SUGGESTION_STRIP_COORDINATE
+                || keyX == KeyboardActionListener.NOT_A_TOUCH_COORDINATE
+                || keyY == KeyboardActionListener.NOT_A_TOUCH_COORDINATE) {
+            codes = new int[] { primaryCode };
+        } else {
+            codes = keyDetector.newCodeArray();
+            keyDetector.getKeyAndNearbyCodes(keyX, keyY, codes);
+        }
+        add(primaryCode, codes, keyX, keyY);
+    }
+
+    // TODO: remove this function
+    public void addKeyForSpellChecker(int primaryCode, int script) {
+        final int[] proximities;
+        final int proximityIndex =
+                SpellCheckerProximityInfo.getIndexOfCodeForScript(primaryCode, script);
+        if (-1 == proximityIndex) {
+            proximities = new int[] { primaryCode };
+        } else {
+            // TODO: an initial examination seems to reveal this is actually used
+            // read-only. It should be possible to compute the arrays statically once
+            // and skip doing a copy each time here.
+            proximities = Arrays.copyOfRange(
+                    SpellCheckerProximityInfo.getProximityForScript(script),
+                    proximityIndex,
+                    proximityIndex + SpellCheckerProximityInfo.ROW_SIZE);
+        }
+        add(primaryCode, proximities,
+                KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
+                KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
+    }
+
     /**
      * Add a new keystroke, with codes[0] containing the pressed key's unicode and the rest of
      * the array containing unicode for adjacent keys, sorted by reducing probability/proximity.
      * @param codes the array of unicode values
      */
-    public void add(int primaryCode, int[] codes, int x, int y) {
+    private void add(int primaryCode, int[] codes, int keyX, int keyY) {
         final int newIndex = mCodes.size();
         mTypedWord.appendCodePoint(primaryCode);
         correctPrimaryJuxtapos(primaryCode, codes);
         mCodes.add(codes);
         if (newIndex < BinaryDictionary.MAX_WORD_LENGTH) {
-            mXCoordinates[newIndex] = x;
-            mYCoordinates[newIndex] = y;
+            mXCoordinates[newIndex] = keyX;
+            mYCoordinates[newIndex] = keyY;
         }
         mIsFirstCharCapitalized = isFirstCharCapitalized(
                 newIndex, primaryCode, mIsFirstCharCapitalized);
