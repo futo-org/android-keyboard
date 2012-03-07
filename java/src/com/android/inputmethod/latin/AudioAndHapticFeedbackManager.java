@@ -37,7 +37,7 @@ public class AudioAndHapticFeedbackManager extends BroadcastReceiver {
     final private LatinIME mLatinIme;
     final private SettingsValues mSettingsValues;
     final private KeyboardSwitcher mKeyboardSwitcher;
-    private AudioManager mAudioManager;
+    final private AudioManager mAudioManager;
     final private VibratorCompatWrapper mVibrator;
     private boolean mSilentModeOn;
 
@@ -48,6 +48,8 @@ public class AudioAndHapticFeedbackManager extends BroadcastReceiver {
         mKeyboardSwitcher = keyboardSwitcher;
         mSilentModeOn = true;
         mVibrator = VibratorCompatWrapper.getInstance(mLatinIme);
+        mAudioManager = (AudioManager) mLatinIme.getSystemService(Context.AUDIO_SERVICE);
+        updateRingerMode();
     }
 
     public void hapticAndAudioFeedback(final int primaryCode) {
@@ -61,21 +63,16 @@ public class AudioAndHapticFeedbackManager extends BroadcastReceiver {
 
     // update flags for silent mode
     private void updateRingerMode() {
-        if (mAudioManager == null) {
-            mAudioManager = (AudioManager) mLatinIme.getSystemService(Context.AUDIO_SERVICE);
-            if (mAudioManager == null) return;
+        if (!mSettingsValues.mSoundOn || mAudioManager == null) {
+            mSilentModeOn = true;
+        } else {
+            mSilentModeOn = (mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_NORMAL);
         }
-        mSilentModeOn = (mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_NORMAL);
     }
 
     private void playKeyClick(int primaryCode) {
-        // if mAudioManager is null, we don't have the ringer state yet
-        // mAudioManager will be set by updateRingerMode
-        if (mAudioManager == null) {
-            if (mKeyboardSwitcher.getKeyboardView() != null) {
-                updateRingerMode();
-            }
-        }
+        // if mAudioManager is null, we can't play a sound anyway, so return
+        if (mAudioManager == null) return;
         if (isSoundOn()) {
             final int sound;
             switch (primaryCode) {
