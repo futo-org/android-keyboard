@@ -141,7 +141,8 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         public final int mDividerWidth;
         public final int mSuggestionsStripHeight;
         public final int mSuggestionsCountInStrip;
-        public final int mMaxMoreSuggestionsRow;
+        public final int mMoreSuggestionsRowHeight;
+        private int mMaxMoreSuggestionsRow;
         public final float mMinMoreSuggestionsWidth;
         public final int mMoreSuggestionsBottomGap;
 
@@ -224,11 +225,33 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             mCenterSuggestionIndex = mSuggestionsCountInStrip / 2;
             mMoreSuggestionsBottomGap = res.getDimensionPixelOffset(
                     R.dimen.more_suggestions_bottom_gap);
+            mMoreSuggestionsRowHeight = res.getDimensionPixelSize(
+                    R.dimen.more_suggestions_row_height);
 
             final LayoutInflater inflater = LayoutInflater.from(context);
             mWordToSaveView = (TextView)inflater.inflate(R.layout.suggestion_word, null);
             mHintToSaveView = (TextView)inflater.inflate(R.layout.suggestion_word, null);
             mHintToSaveText = context.getText(R.string.hint_add_to_dictionary);
+        }
+
+        public int getMaxMoreSuggestionsRow() {
+            return mMaxMoreSuggestionsRow;
+        }
+
+        private int getMoreSuggestionsHeight() {
+            return mMaxMoreSuggestionsRow * mMoreSuggestionsRowHeight + mMoreSuggestionsBottomGap;
+        }
+
+        public int setMoreSuggestionsHeight(int remainingHeight) {
+            final int currentHeight = getMoreSuggestionsHeight();
+            if (currentHeight <= remainingHeight) {
+                return currentHeight;
+            }
+
+            mMaxMoreSuggestionsRow = (remainingHeight - mMoreSuggestionsBottomGap)
+                    / mMoreSuggestionsRowHeight;
+            final int newHeight = getMoreSuggestionsHeight();
+            return newHeight;
         }
 
         private static Drawable getMoreSuggestionsHint(Resources res, float textSize, int color) {
@@ -642,6 +665,10 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         }
     }
 
+    public int setMoreSuggestionsHeight(int remainingHeight) {
+        return mParams.setMoreSuggestionsHeight(remainingHeight);
+    }
+
     public boolean isShowingAddToDictionaryHint() {
         return mSuggestionsStrip.getChildCount() > 0
                 && mSuggestionsStrip.getChildAt(0) == mParams.mWordToSaveView;
@@ -757,7 +784,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             final MoreSuggestions.Builder builder = mMoreSuggestionsBuilder;
             builder.layout(mSuggestions, params.mSuggestionsCountInStrip, maxWidth,
                     (int)(maxWidth * params.mMinMoreSuggestionsWidth),
-                    params.mMaxMoreSuggestionsRow);
+                    params.getMaxMoreSuggestionsRow());
             mMoreSuggestionsView.setKeyboard(builder.build());
             container.measure(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
