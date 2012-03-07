@@ -2293,6 +2293,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         initSuggest();
         loadSettings();
+        // Since we just changed languages, we should re-evaluate suggestions with whatever word
+        // we are currently composing. If we are not composing anything, we may want to display
+        // predictions or punctuation signs (which is done by updateBigramPredictions anyway).
+        if (isCursorTouchingWord()) {
+            mHandler.postUpdateSuggestions();
+        } else {
+            mHandler.postUpdateBigramPredictions();
+        }
     }
 
     public void hapticAndAudioFeedback(int primaryCode) {
