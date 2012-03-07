@@ -35,12 +35,14 @@ inline void copyOrFillZero(void *to, const void *from, size_t size) {
 
 ProximityInfo::ProximityInfo(const int maxProximityCharsSize, const int keyboardWidth,
         const int keyboardHeight, const int gridWidth, const int gridHeight,
+        const int mostCommonKeyWidth,
         const uint32_t *proximityCharsArray, const int keyCount, const int32_t *keyXCoordinates,
         const int32_t *keyYCoordinates, const int32_t *keyWidths, const int32_t *keyHeights,
         const int32_t *keyCharCodes, const float *sweetSpotCenterXs, const float *sweetSpotCenterYs,
         const float *sweetSpotRadii)
         : MAX_PROXIMITY_CHARS_SIZE(maxProximityCharsSize), KEYBOARD_WIDTH(keyboardWidth),
           KEYBOARD_HEIGHT(keyboardHeight), GRID_WIDTH(gridWidth), GRID_HEIGHT(gridHeight),
+          MOST_COMMON_KEY_WIDTH_SQUARE(mostCommonKeyWidth * mostCommonKeyWidth),
           CELL_WIDTH((keyboardWidth + gridWidth - 1) / gridWidth),
           CELL_HEIGHT((keyboardHeight + gridHeight - 1) / gridHeight),
           KEY_COUNT(min(keyCount, MAX_KEY_COUNT_IN_A_KEYBOARD)),
@@ -121,6 +123,47 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
         }
     }
     return false;
+}
+
+bool ProximityInfo::isOnKey(const int keyId, const int x, const int y) {
+    const int left = mKeyXCoordinates[keyId];
+    const int top = mKeyYCoordinates[keyId];
+    const int right = left + mKeyWidths[keyId] + 1;
+    const int bottom = top + mKeyHeights[keyId];
+    return left < right && top < bottom && x >= left && x < right && y >= top && y < bottom;
+}
+
+int ProximityInfo::squaredDistanceToEdge(const int keyId, const int x, const int y) {
+    const int left = mKeyXCoordinates[keyId];
+    const int top = mKeyYCoordinates[keyId];
+    const int right = left + mKeyWidths[keyId] + 1;
+    const int bottom = top + mKeyHeights[keyId];
+    const int edgeX = x < left ? left : (x > right ? right : x);
+    const int edgeY = y < top ? top : (y > bottom ? bottom : y);
+    const int dx = x - edgeX;
+    const int dy = y - edgeY;
+    return dx * dx + dy * dy;
+}
+
+void ProximityInfo::calculateNearbyKeyCodes(
+        const int x, const int y, const uint32_t primaryKey, int *inputCodes) {
+    int insertPos = 0;
+    inputCodes[insertPos++] = primaryKey;
+    const int startIndex = getStartIndexFromCoordinates(x, y);
+    for (int i = 0; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
+        const uint32_t c = mProximityCharsArray[startIndex + i];
+        if (c < KEYCODE_SPACE || c == primaryKey) {
+            continue;
+        }
+        for (int j = 0; j < KEY_COUNT; ++j) {
+            const bool onKey = isOnKey(j, x, y);
+            const int distance = squaredDistanceToEdge(j, x, y);
+            if (onKey || distance < MOST_COMMON_KEY_WIDTH_SQUARE) {
+                inputCodes[insertPos++] = c;
+            }
+        }
+    }
+    // TODO: calculate additional chars
 }
 
 // TODO: Calculate nearby codes here.

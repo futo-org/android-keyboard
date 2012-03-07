@@ -44,10 +44,11 @@ public class ProximityInfo {
     // TODO: Find a proper name for mKeyboardMinWidth
     private final int mKeyboardMinWidth;
     private final int mKeyboardHeight;
+    private final int mMostCommonKeyWidth;
     private final Key[][] mGridNeighbors;
 
-    ProximityInfo(int gridWidth, int gridHeight, int minWidth, int height, int keyWidth,
-            int keyHeight, Set<Key> keys, TouchPositionCorrection touchPositionCorrection,
+    ProximityInfo(int gridWidth, int gridHeight, int minWidth, int height, int mostCommonKeyWidth,
+            int mostCommonKeyHeight, Set<Key> keys, TouchPositionCorrection touchPositionCorrection,
             Map<Integer, List<Integer>> additionalProximityChars) {
         mGridWidth = gridWidth;
         mGridHeight = gridHeight;
@@ -56,13 +57,15 @@ public class ProximityInfo {
         mCellHeight = (height + mGridHeight - 1) / mGridHeight;
         mKeyboardMinWidth = minWidth;
         mKeyboardHeight = height;
-        mKeyHeight = keyHeight;
+        mKeyHeight = mostCommonKeyHeight;
+        mMostCommonKeyWidth = mostCommonKeyWidth;
         mGridNeighbors = new Key[mGridSize][];
         if (minWidth == 0 || height == 0) {
             // No proximity required. Keyboard might be more keys keyboard.
             return;
         }
-        computeNearestNeighbors(keyWidth, keys, touchPositionCorrection, additionalProximityChars);
+        computeNearestNeighbors(
+                mostCommonKeyWidth, keys, touchPositionCorrection, additionalProximityChars);
     }
 
     public static ProximityInfo createDummyProximityInfo() {
@@ -74,8 +77,8 @@ public class ProximityInfo {
         final ProximityInfo spellCheckerProximityInfo = createDummyProximityInfo();
         spellCheckerProximityInfo.mNativeProximityInfo =
                 spellCheckerProximityInfo.setProximityInfoNative(
-                        SpellCheckerProximityInfo.ROW_SIZE, 480, 300, 11, 3, proximity, 0,
-                        null, null, null, null, null, null, null, null);
+                        SpellCheckerProximityInfo.ROW_SIZE, 480, 300, 11, 3, (480 / 10), proximity,
+                        0, null, null, null, null, null, null, null, null);
         return spellCheckerProximityInfo;
     }
 
@@ -85,7 +88,8 @@ public class ProximityInfo {
     }
 
     private native long setProximityInfoNative(int maxProximityCharsSize, int displayWidth,
-            int displayHeight, int gridWidth, int gridHeight, int[] proximityCharsArray,
+            int displayHeight, int gridWidth, int gridHeight,
+            int mostCommonKeyWidth, int[] proximityCharsArray,
             int keyCount, int[] keyXCoordinates, int[] keyYCoordinates,
             int[] keyWidths, int[] keyHeights, int[] keyCharCodes,
             float[] sweetSpotCenterX, float[] sweetSpotCenterY, float[] sweetSpotRadii);
@@ -151,7 +155,8 @@ public class ProximityInfo {
         }
 
         mNativeProximityInfo = setProximityInfoNative(MAX_PROXIMITY_CHARS_SIZE,
-                keyboardWidth, keyboardHeight, mGridWidth, mGridHeight, proximityCharsArray,
+                keyboardWidth, keyboardHeight, mGridWidth, mGridHeight, mMostCommonKeyWidth,
+                proximityCharsArray,
                 keyCount, keyXCoordinates, keyYCoordinates, keyWidths, keyHeights, keyCharCodes,
                 sweetSpotCenterXs, sweetSpotCenterYs, sweetSpotRadii);
     }

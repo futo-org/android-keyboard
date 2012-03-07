@@ -30,7 +30,7 @@ namespace latinime {
 
 static jlong latinime_Keyboard_setProximityInfo(JNIEnv *env, jobject object,
         jint maxProximityCharsSize, jint displayWidth, jint displayHeight, jint gridWidth,
-        jint gridHeight, jintArray proximityCharsArray, jint keyCount,
+        jint gridHeight, jint mostCommonkeyWidth, jintArray proximityCharsArray, jint keyCount,
         jintArray keyXCoordinateArray, jintArray keyYCoordinateArray, jintArray keyWidthArray,
         jintArray keyHeightArray, jintArray keyCharCodeArray,
         jfloatArray sweetSpotCenterXArray, jfloatArray sweetSpotCenterYArray,
@@ -45,7 +45,8 @@ static jlong latinime_Keyboard_setProximityInfo(JNIEnv *env, jobject object,
     jfloat *sweetSpotCenterYs = safeGetFloatArrayElements(env, sweetSpotCenterYArray);
     jfloat *sweetSpotRadii = safeGetFloatArrayElements(env, sweetSpotRadiusArray);
     ProximityInfo *proximityInfo = new ProximityInfo(maxProximityCharsSize, displayWidth,
-            displayHeight, gridWidth, gridHeight, (const uint32_t*)proximityChars,
+            displayHeight, gridWidth, gridHeight, mostCommonkeyWidth,
+            (const uint32_t*)proximityChars,
             keyCount, (const int32_t*)keyXCoordinates, (const int32_t*)keyYCoordinates,
             (const int32_t*)keyWidths, (const int32_t*)keyHeights, (const int32_t*)keyCharCodes,
             (const float*)sweetSpotCenterXs, (const float*)sweetSpotCenterYs,
@@ -69,7 +70,7 @@ static void latinime_Keyboard_release(JNIEnv *env, jobject object, jlong proximi
 }
 
 static JNINativeMethod sKeyboardMethods[] = {
-    {"setProximityInfoNative", "(IIIII[II[I[I[I[I[I[F[F[F)J",
+    {"setProximityInfoNative", "(IIIIII[II[I[I[I[I[I[F[F[F)J",
             (void*)latinime_Keyboard_setProximityInfo},
     {"releaseProximityInfoNative", "(J)V", (void*)latinime_Keyboard_release}
 };
