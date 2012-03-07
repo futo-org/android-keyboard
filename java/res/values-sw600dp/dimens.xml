@@ -70,8 +70,6 @@
     <dimen name="more_suggestions_row_height">44dip</dimen>
     <integer name="max_more_suggestions_row">6</integer>
     <fraction name="min_more_suggestions_width">90%</fraction>
-    <!-- key_preview_backing_height = more_suggestions_row_height * max_more_suggestions_row -->
-    <dimen name="key_preview_backing_height">264dip</dimen>
     <dimen name="suggestions_strip_padding">15.0mm</dimen>
     <dimen name="suggestion_min_width">0.3in</dimen>
     <dimen name="suggestion_padding">12dip</dimen>
