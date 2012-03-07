@@ -1738,14 +1738,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // Put a blue underline to a word in TextView which will be auto-corrected.
         final InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
-            final boolean oldAutoCorrectionIndicator =
-                    mComposingStateManager.isAutoCorrectionIndicatorOn();
             if (mIsAutoCorrectionIndicatorOn != newAutoCorrectionIndicator) {
-                mComposingStateManager.setAutoCorrectionIndicatorOn(newAutoCorrectionIndicator);
-                if (DEBUG) {
-                    Log.d(TAG, "Flip the indicator. " + oldAutoCorrectionIndicator
-                            + " -> " + newAutoCorrectionIndicator);
-                }
                 if (mWordComposer.isComposingWord()) {
                     mIsAutoCorrectionIndicatorOn = newAutoCorrectionIndicator;
                     final CharSequence textWithUnderline =
