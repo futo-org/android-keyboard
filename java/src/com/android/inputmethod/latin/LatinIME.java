@@ -233,8 +233,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // Keeps track of most recently inserted text (multi-character key) for reverting
     private CharSequence mEnteredText;
 
-    private final ComposingStateManager mComposingStateManager =
-            ComposingStateManager.getInstance();
     private boolean mIsAutoCorrectionIndicatorOn;
 
     public final UIHandler mHandler = new UIHandler(this);
@@ -653,7 +651,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     @Override
     public void onConfigurationChanged(Configuration conf) {
         mSubtypeSwitcher.onConfigurationChanged(conf);
-        mComposingStateManager.onFinishComposingText();
         // If orientation changed while predicting, commit the change
         if (mDisplayOrientation != conf.orientation) {
             mDisplayOrientation = conf.orientation;
@@ -1122,7 +1119,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // and the composingStateManager about it.
     private void resetEntireInputState() {
         resetComposingState(true /* alsoResetLastComposedWord */);
-        mComposingStateManager.onFinishComposingText();
         updateSuggestions();
         final InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
@@ -1539,7 +1535,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 // it entirely and resume suggestions on the previous word, we'd like to still
                 // have touch coordinates for it.
                 resetComposingState(false /* alsoResetLastComposedWord */);
-                mComposingStateManager.onFinishComposingText();
                 clearSuggestions();
             }
         }
@@ -1550,7 +1545,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 // If it's the first letter, make note of auto-caps state
                 if (mWordComposer.size() == 1) {
                     mWordComposer.setAutoCapitalized(getCurrentAutoCapsState());
-                    mComposingStateManager.onStartComposingText();
                 }
                 ic.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
             }
@@ -1582,7 +1576,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private boolean handleSeparator(final int primaryCode, final int x, final int y,
             final int spaceState) {
         mVoiceProxy.handleSeparator();
-        mComposingStateManager.onFinishComposingText();
 
         // Should dismiss the "Touch again to save" message when handling separator
         if (mSuggestionsView != null && mSuggestionsView.dismissAddToDictionaryHint()) {
@@ -1886,7 +1879,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     @Override
     public void pickSuggestionManually(final int index, final CharSequence suggestion) {
-        mComposingStateManager.onFinishComposingText();
         final SuggestedWords suggestedWords = mSuggestionsView.getSuggestions();
         mVoiceProxy.flushAndLogAllTextModificationCounters(index, suggestion,
                 mSettingsValues.mWordSeparators);
@@ -2149,7 +2141,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private void restartSuggestionsOnWordBeforeCursor(final InputConnection ic,
             final CharSequence word) {
         mWordComposer.setComposingWord(word, mKeyboardSwitcher.getKeyboard());
-        mComposingStateManager.onStartComposingText();
         ic.deleteSurroundingText(word.length(), 0);
         ic.setComposingText(word, 1);
         mHandler.postUpdateSuggestions();
@@ -2181,7 +2172,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // This is the case when we cancel a manual pick.
             // We should restart suggestion on the word right away.
             mWordComposer.resumeSuggestionOnLastComposedWord(mLastComposedWord);
-            mComposingStateManager.onStartComposingText();
             ic.setComposingText(originallyTypedWord, 1);
         } else {
             ic.commitText(originallyTypedWord, 1);
