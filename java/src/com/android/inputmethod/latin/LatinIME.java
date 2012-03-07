@@ -235,6 +235,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private final ComposingStateManager mComposingStateManager =
             ComposingStateManager.getInstance();
+    private boolean mIsAutoCorrectionIndicatorOn;
 
     public final UIHandler mHandler = new UIHandler(this);
 
@@ -1293,6 +1294,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // all inputs that do not result in a special state. Each character handling is then
         // free to override the state as they see fit.
         final int spaceState = mSpaceState;
+        if (!mWordComposer.isComposingWord()) mIsAutoCorrectionIndicatorOn = false;
 
         // TODO: Consolidate the double space timer, mLastKeyTime, and the space state.
         if (primaryCode != Keyboard.CODE_SPACE) {
@@ -1745,6 +1747,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                             + " -> " + newAutoCorrectionIndicator);
                 }
                 if (mWordComposer.isComposingWord()) {
+                    mIsAutoCorrectionIndicatorOn = newAutoCorrectionIndicator;
                     final CharSequence textWithUnderline =
                             getTextWithUnderline(mWordComposer.getTypedWord());
                     ic.setComposingText(textWithUnderline, 1);
