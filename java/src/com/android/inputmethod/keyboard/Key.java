@@ -108,8 +108,8 @@ public class Key {
     private static final int MORE_KEYS_COLUMN_MASK = 0x000000ff;
     private static final int MORE_KEYS_FLAGS_FIXED_COLUMN_ORDER = 0x80000000;
     private static final int MORE_KEYS_FLAGS_HAS_LABELS = 0x40000000;
-    private static final int MORE_KEYS_FLAGS_NEEDS_DIVIDERS = 0x40000000;
-    private static final int MORE_KEYS_FLAGS_EMBEDDED_MORE_KEY = 0x20000000;
+    private static final int MORE_KEYS_FLAGS_NEEDS_DIVIDERS = 0x20000000;
+    private static final int MORE_KEYS_FLAGS_EMBEDDED_MORE_KEY = 0x10000000;
     private static final String MORE_KEYS_AUTO_COLUMN_ORDER = "!autoColumnOrder!";
     private static final String MORE_KEYS_FIXED_COLUMN_ORDER = "!fixedColumnOrder!";
     private static final String MORE_KEYS_HAS_LABELS = "!hasLabels!";
