@@ -25,6 +25,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Rect;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
@@ -44,6 +45,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
@@ -1021,12 +1023,34 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         setSuggestionStripShownInternal(shown, /* needsInputViewShown */true);
     }
 
+    private void adjustInputViewHeight() {
+        if (mKeyPreviewBackingView.getHeight() > 0) {
+            return;
+        }
+
+        final KeyboardView keyboardView = mKeyboardSwitcher.getKeyboardView();
+        if (keyboardView == null) return;
+        final int keyboardHeight = keyboardView.getHeight();
+        final int suggestionsHeight = mSuggestionsContainer.getHeight();
+        final int displayHeight = mResources.getDisplayMetrics().heightPixels;
+        final Rect rect = new Rect();
+        mKeyPreviewBackingView.getWindowVisibleDisplayFrame(rect);
+        final int notificationBarHeight = rect.top;
+        final int remainingHeight = displayHeight - notificationBarHeight - suggestionsHeight
+                - keyboardHeight;
+
+        final LayoutParams params = mKeyPreviewBackingView.getLayoutParams();
+        params.height = mSuggestionsView.setMoreSuggestionsHeight(remainingHeight);
+        mKeyPreviewBackingView.setLayoutParams(params);
+    }
+
     @Override
     public void onComputeInsets(InputMethodService.Insets outInsets) {
         super.onComputeInsets(outInsets);
         final KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView == null || mSuggestionsContainer == null)
             return;
+        adjustInputViewHeight();
         // In fullscreen mode, the height of the extract area managed by InputMethodService should
         // be considered.
         // See {@link android.inputmethodservice.InputMethodService#onComputeInsets}.

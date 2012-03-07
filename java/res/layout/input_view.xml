@@ -20,15 +20,15 @@
 
 <com.android.inputmethod.latin.InputView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 >
+    <!-- The height of key_preview_backing view will automatically be determined by code. -->
     <View
         android:id="@+id/key_preview_backing"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/key_preview_backing_height" />
+        android:layout_height="0dip" />
 
     <!-- On tablets, the suggestions strip is centered with horizontal paddings on both sides
          because width of the landscape mode is too long for the suggestions strip. This
