@@ -57,9 +57,23 @@
                     latin:keyStyle="f1MoreKeysStyle" />
             </default>
         </switch>
-        <Key
-            latin:keyStyle="spaceKeyStyle"
-            latin:keyWidth="50%p" />
+        <switch>
+            <case
+                latin:languageSwitchKeyEnabled="true"
+            >
+                <Key
+                    latin:keyStyle="languageSwitchKeyStyle" />
+                <Key
+                    latin:keyStyle="spaceKeyStyle"
+                    latin:keyWidth="40%p" />
+            </case>
+            <!-- languageSwitchKeyEnabled="false" -->
+            <default>
+                <Key
+                    latin:keyStyle="spaceKeyStyle"
+                    latin:keyWidth="50%p" />
+            </default>
+        </switch>
         <Key
             latin:keyStyle="punctuationKeyStyle" />
         <Key

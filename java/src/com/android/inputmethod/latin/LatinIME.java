@@ -29,6 +29,7 @@ import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.os.Debug;
+import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
 import android.preference.PreferenceActivity;
@@ -55,6 +56,7 @@ import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputConnectionCompatUtils;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
+import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.compat.VibratorCompatWrapper;
@@ -196,6 +198,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private final KeyboardSwitcher mKeyboardSwitcher;
     private final SubtypeSwitcher mSubtypeSwitcher;
     private VoiceProxy mVoiceProxy;
+    private boolean mShouldSwitchToLastSubtype = true;
 
     private UserDictionary mUserDictionary;
     private UserBigramDictionary mUserBigramDictionary;
@@ -1263,6 +1266,25 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
+    private void handleLanguageSwitchKey() {
+        final boolean includesOtherImes = !mSettingsValues.mIncludesOtherImesInLanguageSwitchList;
+        final IBinder token = getWindow().getWindow().getAttributes().token;
+        if (mShouldSwitchToLastSubtype) {
+            final InputMethodSubtypeCompatWrapper lastSubtype = mImm.getLastInputMethodSubtype();
+            final boolean lastSubtypeBelongsToThisIme = Utils.checkIfSubtypeBelongsToThisIme(
+                    this, lastSubtype);
+            if ((includesOtherImes || lastSubtypeBelongsToThisIme)
+                    && mImm.switchToLastInputMethod(token)) {
+                mShouldSwitchToLastSubtype = false;
+            } else {
+                mImm.switchToNextInputMethod(token, !includesOtherImes);
+                mShouldSwitchToLastSubtype = true;
+            }
+        } else {
+            mImm.switchToNextInputMethod(token, !includesOtherImes);
+        }
+    }
+
     private void sendKeyCodePoint(int code) {
         // TODO: Remove this special handling of digit letters.
         // For backward compatibility. See {@link InputMethodService#sendKeyChar(char)}.
@@ -1306,6 +1328,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             handleBackspace(spaceState);
             mDeleteCount++;
             mExpectingUpdateSelection = true;
+            mShouldSwitchToLastSubtype = true;
             LatinImeLogger.logOnDelete();
             break;
         case Keyboard.CODE_SHIFT:
@@ -1327,6 +1350,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         case Keyboard.CODE_ACTION_PREVIOUS:
             EditorInfoCompatUtils.performEditorActionPrevious(getCurrentInputConnection());
             break;
+        case Keyboard.CODE_LANGUAGE_SWITCH:
+            handleLanguageSwitchKey();
+            break;
         default:
             mSpaceState = SPACE_STATE_NONE;
             if (mSettingsValues.isWordSeparator(primaryCode)) {
@@ -1335,6 +1361,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 handleCharacter(primaryCode, x, y, spaceState);
             }
             mExpectingUpdateSelection = true;
+            mShouldSwitchToLastSubtype = true;
             break;
         }
         switcher.onCodeInput(primaryCode);

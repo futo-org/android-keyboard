@@ -32,5 +32,6 @@
     <integer name="key_action_enter">-7</integer>
     <integer name="key_action_next">-8</integer>
     <integer name="key_action_previous">-9</integer>
-    <integer name="key_unspecified">-10</integer>
+    <integer name="key_language_switch">-10</integer>
+    <integer name="key_unspecified">-11</integer>
 </resources>
