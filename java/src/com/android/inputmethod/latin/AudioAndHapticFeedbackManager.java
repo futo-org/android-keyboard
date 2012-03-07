@@ -21,11 +21,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.view.HapticFeedbackConstants;
+import android.view.View;
 
 import com.android.inputmethod.compat.VibratorCompatWrapper;
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import com.android.inputmethod.keyboard.LatinKeyboardView;
 
 /**
  * This class gathers audio feedback and haptic feedback functions.
@@ -35,22 +34,21 @@ import com.android.inputmethod.keyboard.LatinKeyboardView;
  */
 public class AudioAndHapticFeedbackManager extends BroadcastReceiver {
     final private SettingsValues mSettingsValues;
-    final private KeyboardSwitcher mKeyboardSwitcher;
     final private AudioManager mAudioManager;
     final private VibratorCompatWrapper mVibrator;
     private boolean mSoundOn;
 
     public AudioAndHapticFeedbackManager(final LatinIME latinIme,
-            final SettingsValues settingsValues, final KeyboardSwitcher keyboardSwitcher) {
+            final SettingsValues settingsValues) {
         mSettingsValues = settingsValues;
-        mKeyboardSwitcher = keyboardSwitcher;
         mVibrator = VibratorCompatWrapper.getInstance(latinIme);
         mAudioManager = (AudioManager) latinIme.getSystemService(Context.AUDIO_SERVICE);
         mSoundOn = reevaluateIfSoundIsOn();
     }
 
-    public void hapticAndAudioFeedback(final int primaryCode) {
-        vibrate();
+    public void hapticAndAudioFeedback(final int primaryCode,
+            final View viewToPerformHapticFeedbackOn) {
+        vibrate(viewToPerformHapticFeedbackOn);
         playKeyClick(primaryCode);
     }
 
@@ -86,15 +84,14 @@ public class AudioAndHapticFeedbackManager extends BroadcastReceiver {
     }
 
     // TODO: make this private when LatinIME does not call it any more
-    public void vibrate() {
+    public void vibrate(final View viewToPerformHapticFeedbackOn) {
         if (!mSettingsValues.mVibrateOn) {
             return;
         }
         if (mSettingsValues.mKeypressVibrationDuration < 0) {
             // Go ahead with the system default
-            LatinKeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
-            if (inputView != null) {
-                inputView.performHapticFeedback(
+            if (viewToPerformHapticFeedbackOn != null) {
+                viewToPerformHapticFeedbackOn.performHapticFeedback(
                         HapticFeedbackConstants.KEYBOARD_TAP,
                         HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
             }

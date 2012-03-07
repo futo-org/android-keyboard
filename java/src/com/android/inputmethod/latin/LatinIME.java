@@ -557,8 +557,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     /* package */ void loadSettings() {
         if (null == mPrefs) mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSettingsValues = new SettingsValues(mPrefs, this, mSubtypeSwitcher.getInputLocaleStr());
-        mFeedbackManager = new AudioAndHapticFeedbackManager(this, mSettingsValues,
-                mKeyboardSwitcher);
+        mFeedbackManager = new AudioAndHapticFeedbackManager(this, mSettingsValues);
         resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
     }
 
@@ -2324,7 +2323,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     public void hapticAndAudioFeedback(final int primaryCode) {
-        mFeedbackManager.hapticAndAudioFeedback(primaryCode);
+        mFeedbackManager.hapticAndAudioFeedback(primaryCode, mKeyboardSwitcher.getKeyboardView());
     }
 
     @Override
@@ -2362,7 +2361,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     // TODO: remove this method when VoiceProxy has been removed
     public void vibrate() {
-        mFeedbackManager.vibrate();
+        mFeedbackManager.vibrate(mKeyboardSwitcher.getKeyboardView());
     }
 
     public boolean isAutoCapitalized() {
