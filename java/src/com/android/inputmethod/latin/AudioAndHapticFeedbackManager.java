@@ -46,10 +46,9 @@ public class AudioAndHapticFeedbackManager extends BroadcastReceiver {
         mLatinIme = latinIme;
         mSettingsValues = settingsValues;
         mKeyboardSwitcher = keyboardSwitcher;
-        mSoundOn = false;
         mVibrator = VibratorCompatWrapper.getInstance(mLatinIme);
         mAudioManager = (AudioManager) mLatinIme.getSystemService(Context.AUDIO_SERVICE);
-        updateRingerMode();
+        mSoundOn = reevaluateIfSoundIsOn();
     }
 
     public void hapticAndAudioFeedback(final int primaryCode) {
@@ -57,23 +56,18 @@ public class AudioAndHapticFeedbackManager extends BroadcastReceiver {
         playKeyClick(primaryCode);
     }
 
-    private boolean isSoundOn() {
-        return mSettingsValues.mSoundOn && mSoundOn;
-    }
-
-    // update flags for silent mode
-    private void updateRingerMode() {
+    private boolean reevaluateIfSoundIsOn() {
         if (!mSettingsValues.mSoundOn || mAudioManager == null) {
-            mSoundOn = false;
+            return false;
         } else {
-            mSoundOn = (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL);
+            return mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL;
         }
     }
 
     private void playKeyClick(int primaryCode) {
         // if mAudioManager is null, we can't play a sound anyway, so return
         if (mAudioManager == null) return;
-        if (isSoundOn()) {
+        if (mSoundOn) {
             final int sound;
             switch (primaryCode) {
             case Keyboard.CODE_DELETE:
@@ -114,8 +108,10 @@ public class AudioAndHapticFeedbackManager extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         final String action = intent.getAction();
+        // The following test is supposedly useless since we only listen for the ringer event.
+        // Still, it's a good safety measure.
         if (action.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
-            updateRingerMode();
+            mSoundOn = reevaluateIfSoundIsOn();
         }
     }
 }
