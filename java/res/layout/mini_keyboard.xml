@@ -27,7 +27,6 @@
     <com.android.inputmethod.keyboard.MiniKeyboardView
             xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
             android:id="@+id/mini_keyboard_view"
-            android:layout_alignParentBottom="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
