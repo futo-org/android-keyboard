@@ -57,6 +57,8 @@
     <dimen name="key_preview_offset">0.08in</dimen>
 
     <dimen name="key_preview_offset_ics">0.01in</dimen>
+    <!-- popup_key_height x -0.5 -->
+    <dimen name="more_keys_keyboard_vertical_correction_ics">-0.140in</dimen>
 
     <dimen name="suggestions_strip_height">36dip</dimen>
     <dimen name="more_suggestions_row_height">36dip</dimen>
