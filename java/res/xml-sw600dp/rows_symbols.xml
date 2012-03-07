@@ -89,9 +89,11 @@
         <Key
             latin:keyLabel="*"
             latin:moreKeys="@string/more_keys_for_star" />
+        <!-- U+2013: "–" EN DASH
+             U+2014: "—" EM DASH -->
         <Key
             latin:keyLabel="-"
-            latin:moreKeys="_,–,—" />
+            latin:moreKeys="_,&#x2013;,&#x2014;" />
         <Key
             latin:keyLabel="+"
             latin:moreKeys="@string/more_keys_for_plus" />
@@ -110,9 +112,11 @@
             latin:keyWidth="10.0%p" />
         <include
             latin:keyboardLayout="@xml/keys_less_greater" />
+        <!-- U+2260: "≠" NOT EQUAL TO
+             U+2248: "≈" ALMOST EQUAL TO -->
         <Key
             latin:keyLabel="="
-            latin:moreKeys="≠,≈" />
+            latin:moreKeys="&#x2260;,&#x2248;" />
         <switch>
             <case
                 latin:mode="url"

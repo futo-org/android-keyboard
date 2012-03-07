@@ -87,9 +87,11 @@
         <Key
             latin:keyLabel="*"
             latin:moreKeys="@string/more_keys_for_star" />
+        <!-- U+2013: "–" EN DASH
+             U+2014: "—" EM DASH -->
         <Key
             latin:keyLabel="-"
-            latin:moreKeys="_,–,—" />
+            latin:moreKeys="_,&#x2013;,&#x2014;" />
         <Key
             latin:keyLabel="+"
             latin:moreKeys="@string/more_keys_for_plus" />
