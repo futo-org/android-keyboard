@@ -1662,7 +1662,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private CharSequence getTextWithUnderline(final CharSequence text) {
-        return mComposingStateManager.isAutoCorrectionIndicatorOn()
+        return mIsAutoCorrectionIndicatorOn
                 ? SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(this, text)
                 : text;
     }
@@ -1740,7 +1740,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (ic != null) {
             final boolean oldAutoCorrectionIndicator =
                     mComposingStateManager.isAutoCorrectionIndicatorOn();
-            if (oldAutoCorrectionIndicator != newAutoCorrectionIndicator) {
+            if (mIsAutoCorrectionIndicatorOn != newAutoCorrectionIndicator) {
                 mComposingStateManager.setAutoCorrectionIndicatorOn(newAutoCorrectionIndicator);
                 if (DEBUG) {
                     Log.d(TAG, "Flip the indicator. " + oldAutoCorrectionIndicator
