@@ -24,10 +24,8 @@
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Android keyboard (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Android keyboard settings"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Input options"</string>
-    <!-- no translation found for spell_checker_service_name (7338064335159755926) -->
-    <skip />
-    <!-- no translation found for aosp_spell_checker_service_name (6985142605330377819) -->
-    <skip />
+    <string name="spell_checker_service_name" msgid="7338064335159755926">"Android spell checker"</string>
+    <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Android spell checker (AOSP)"</string>
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Spellchecking settings"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Look up contact names"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Spell checker uses entries from your contact list"</string>
@@ -39,6 +37,12 @@
     <string name="misc_category" msgid="6894192814868233453">"Other Options"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Advanced settings"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Options for experts"</string>
+    <!-- no translation found for include_other_imes_in_language_switch_list (4533689960308565519) -->
+    <skip />
+    <!-- no translation found for include_other_imes_in_language_switch_list_summary (840637129103317635) -->
+    <skip />
+    <!-- no translation found for suppress_language_switch_key (8003788410354806368) -->
+    <skip />
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Key pop-up dismiss delay"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"No delay"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Default"</string>
