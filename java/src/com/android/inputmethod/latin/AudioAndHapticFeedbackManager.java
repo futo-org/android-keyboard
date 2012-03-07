@@ -39,14 +39,14 @@ public class AudioAndHapticFeedbackManager extends BroadcastReceiver {
     final private KeyboardSwitcher mKeyboardSwitcher;
     final private AudioManager mAudioManager;
     final private VibratorCompatWrapper mVibrator;
-    private boolean mSilentModeOn;
+    private boolean mSoundOn;
 
     public AudioAndHapticFeedbackManager(final LatinIME latinIme,
             final SettingsValues settingsValues, final KeyboardSwitcher keyboardSwitcher) {
         mLatinIme = latinIme;
         mSettingsValues = settingsValues;
         mKeyboardSwitcher = keyboardSwitcher;
-        mSilentModeOn = true;
+        mSoundOn = false;
         mVibrator = VibratorCompatWrapper.getInstance(mLatinIme);
         mAudioManager = (AudioManager) mLatinIme.getSystemService(Context.AUDIO_SERVICE);
         updateRingerMode();
@@ -58,15 +58,15 @@ public class AudioAndHapticFeedbackManager extends BroadcastReceiver {
     }
 
     private boolean isSoundOn() {
-        return mSettingsValues.mSoundOn && !mSilentModeOn;
+        return mSettingsValues.mSoundOn && mSoundOn;
     }
 
     // update flags for silent mode
     private void updateRingerMode() {
         if (!mSettingsValues.mSoundOn || mAudioManager == null) {
-            mSilentModeOn = true;
+            mSoundOn = false;
         } else {
-            mSilentModeOn = (mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_NORMAL);
+            mSoundOn = (mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_NORMAL);
         }
     }
 
