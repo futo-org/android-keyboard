@@ -404,7 +404,32 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         type(WORD1_TO_TYPE);
         mLatinIME.pickSuggestionManually(0, WORD1_TO_TYPE);
         type(WORD2_TO_TYPE);
-        assertEquals("manual pick then space then type", WORD1_TO_TYPE + WORD2_TO_TYPE,
+        assertEquals("manual pick then space then type", EXPECTED_RESULT,
+                mTextView.getText().toString());
+    }
+
+    public void testManualPickThenManualPick() {
+        final String WORD1_TO_TYPE = "this";
+        final String WORD2_TO_PICK = "is";
+        final String EXPECTED_RESULT = "this is";
+        type(WORD1_TO_TYPE);
+        mLatinIME.pickSuggestionManually(0, WORD1_TO_TYPE);
+        // Here we fake picking a word through bigram prediction. This test is taking
+        // advantage of the fact that Latin IME blindly trusts the caller of #pickSuggestionManually
+        // to actually pass the right string.
+        mLatinIME.pickSuggestionManually(1, WORD2_TO_PICK);
+        assertEquals("manual pick then manual pick", EXPECTED_RESULT,
+                mTextView.getText().toString());
+    }
+
+    public void testManualPickThenManualPickWithPunctAtStart() {
+        final String WORD1_TO_TYPE = "this";
+        final String WORD2_TO_PICK = "!is";
+        final String EXPECTED_RESULT = "this!is";
+        type(WORD1_TO_TYPE);
+        mLatinIME.pickSuggestionManually(0, WORD1_TO_TYPE);
+        mLatinIME.pickSuggestionManually(1, WORD2_TO_PICK);
+        assertEquals("manual pick then manual pick a word with punct at start", EXPECTED_RESULT,
                 mTextView.getText().toString());
     }
 

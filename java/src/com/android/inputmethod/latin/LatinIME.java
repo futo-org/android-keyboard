@@ -1895,6 +1895,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mVoiceProxy.flushAndLogAllTextModificationCounters(index, suggestion,
                 mSettingsValues.mWordSeparators);
 
+        if (SPACE_STATE_PHANTOM == mSpaceState && suggestion.length() > 0) {
+            int firstChar = Character.codePointAt(suggestion, 0);
+            if ((!mSettingsValues.isWeakSpaceStripper(firstChar))
+                    && (!mSettingsValues.isWeakSpaceSwapper(firstChar))) {
+                sendKeyCodePoint(Keyboard.CODE_SPACE);
+            }
+        }
+
         if (mInputAttributes.mApplicationSpecifiedCompletionOn
                 && mApplicationSpecifiedCompletions != null
                 && index >= 0 && index < mApplicationSpecifiedCompletions.length) {
