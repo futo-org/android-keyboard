@@ -24,7 +24,7 @@ public abstract class AbstractCompatWrapper {
 
     public AbstractCompatWrapper(Object obj) {
         if (obj == null) {
-            Log.e(TAG, "Invalid input to AbstructCompatWrapper");
+            Log.e(TAG, "Invalid input to AbstractCompatWrapper");
         }
         mObj = obj;
     }

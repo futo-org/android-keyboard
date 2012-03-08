@@ -95,20 +95,7 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         mLatinIME.onStartInputView(ei, false);
         mLatinIME.onCreateInputMethodInterface().startInput(ic, ei);
         mInputConnection = ic;
-        // Wait for the main dictionary to be loaded (we need it for auto-correction tests)
-        int remainingAttempts = 10;
-        while (remainingAttempts > 0 && !mLatinIME.mSuggest.hasMainDictionary()) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                // Don't do much
-            } finally {
-                --remainingAttempts;
-            }
-        }
-        if (!mLatinIME.mSuggest.hasMainDictionary()) {
-            throw new RuntimeException("Can't initialize the main dictionary");
-        }
+        changeLanguage("en_US");
     }
 
     // We need to run the messages added to the handler from LatinIME. The only way to do
@@ -176,6 +163,29 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
             type(stringToType.codePointAt(i));
         }
     }
+
+    private void waitForDictionaryToBeLoaded() {
+        int remainingAttempts = 10;
+        while (remainingAttempts > 0 && !mLatinIME.mSuggest.hasMainDictionary()) {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                // Don't do much
+            } finally {
+                --remainingAttempts;
+            }
+        }
+        if (!mLatinIME.mSuggest.hasMainDictionary()) {
+            throw new RuntimeException("Can't initialize the main dictionary");
+        }
+    }
+
+    private void changeLanguage(final String locale) {
+        SubtypeSwitcher.getInstance().updateSubtype(
+                new ArbitrarySubtype(locale, LatinIME.SUBTYPE_EXTRA_VALUE_ASCII_CAPABLE));
+        waitForDictionaryToBeLoaded();
+    }
+
 
     // Helper to avoid writing the try{}catch block each time
     private static void sleep(final int milliseconds) {
@@ -271,6 +281,15 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         final String EXPECTED_RESULT = "this ";
         type(STRING_TO_TYPE);
         assertEquals("simple auto-correct", EXPECTED_RESULT, mTextView.getText().toString());
+    }
+
+    public void testAutoCorrectForFrench() {
+        final String STRING_TO_TYPE = "irq ";
+        final String EXPECTED_RESULT = "ira ";
+        changeLanguage("fr");
+        type(STRING_TO_TYPE);
+        assertEquals("simple auto-correct for French", EXPECTED_RESULT,
+                mTextView.getText().toString());
     }
 
     public void testAutoCorrectWithPeriod() {
@@ -373,6 +392,34 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         mLatinIME.pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
         assertEquals("type word then type space then punctuation from strip twice", EXPECTED_RESULT,
                 mTextView.getText().toString());
+    }
+
+    public void testManualPickThenSeparatorForFrench() {
+        final String WORD1_TO_TYPE = "test";
+        final String WORD2_TO_TYPE = "!";
+        final String EXPECTED_RESULT = "test !";
+        changeLanguage("fr");
+        type(WORD1_TO_TYPE);
+        mLatinIME.pickSuggestionManually(0, WORD1_TO_TYPE);
+        type(WORD2_TO_TYPE);
+        assertEquals("manual pick then separator for French", EXPECTED_RESULT,
+                mTextView.getText().toString());
+    }
+
+    public void testWordThenSpaceThenPunctuationFromStripTwiceForFrench() {
+        final String WORD_TO_TYPE = "test ";
+        final String PUNCTUATION_FROM_STRIP = "!";
+        final String EXPECTED_RESULT = "test !!";
+        changeLanguage("fr");
+        type(WORD_TO_TYPE);
+        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+        runMessages();
+        assertTrue("type word then type space should display punctuation strip",
+                mLatinIME.isShowingPunctuationList());
+        mLatinIME.pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
+        mLatinIME.pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
+        assertEquals("type word then type space then punctuation from strip twice for French",
+                EXPECTED_RESULT, mTextView.getText().toString());
     }
 
     public void testWordThenSpaceThenPunctuationFromKeyboardTwice() {
