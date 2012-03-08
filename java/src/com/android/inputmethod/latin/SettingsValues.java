@@ -326,9 +326,9 @@ public class SettingsValues {
             return false;
         }
         if (mIncludesOtherImesInLanguageSwitchList) {
-            return Utils.hasMultipleEnabledIMEsOrSubtypes(/* include aux subtypes */false);
+            return SubtypeUtils.hasMultipleEnabledIMEsOrSubtypes(/* include aux subtypes */false);
         } else {
-            return Utils.hasMultipleEnabledSubtypesInThisIme(
+            return SubtypeUtils.hasMultipleEnabledSubtypesInThisIme(
                     context, /* include aux subtypes */false);
         }
     }

@@ -16,10 +16,6 @@
 
 package com.android.inputmethod.deprecated.voice;
 
-import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.SubtypeSwitcher;
-import com.android.inputmethod.latin.Utils;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -38,6 +34,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.StringUtils;
+import com.android.inputmethod.latin.SubtypeSwitcher;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
@@ -222,7 +222,7 @@ public class RecognitionView {
                 Locale locale = SubtypeSwitcher.getInstance().getInputLocale();
 
                 mLanguage.setVisibility(View.VISIBLE);
-                mLanguage.setText(Utils.getFullDisplayName(locale, true));
+                mLanguage.setText(StringUtils.getFullDisplayName(locale, true));
 
                 mPopupLayout.setBackgroundDrawable(mListeningBorder);
                 break;

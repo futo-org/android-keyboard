@@ -41,7 +41,7 @@ import com.android.inputmethod.compat.FrameLayoutCompatUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
-import com.android.inputmethod.latin.Utils;
+import com.android.inputmethod.latin.StringUtils;
 
 import java.util.HashMap;
 
@@ -853,7 +853,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         if (key.mLabel != null) {
             // TODO Should take care of temporaryShiftLabel here.
             previewText.setCompoundDrawables(null, null, null, null);
-            if (Utils.codePointCount(key.mLabel) > 1) {
+            if (StringUtils.codePointCount(key.mLabel) > 1) {
                 previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, params.mKeyLetterSize);
                 previewText.setTypeface(Typeface.DEFAULT_BOLD);
             } else {

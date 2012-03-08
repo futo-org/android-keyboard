@@ -32,7 +32,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.android.inputmethod.deprecated.LanguageSwitcherProxy;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
-import com.android.inputmethod.latin.Utils;
+import com.android.inputmethod.latin.SubtypeUtils;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -163,7 +163,7 @@ public class InputMethodManagerCompatWrapper {
     private InputMethodInfoCompatWrapper getLatinImeInputMethodInfo() {
         if (TextUtils.isEmpty(mLatinImePackageName))
             return null;
-        return Utils.getInputMethodInfo(mLatinImePackageName);
+        return SubtypeUtils.getInputMethodInfo(mLatinImePackageName);
     }
 
     private static InputMethodSubtypeCompatWrapper getLastResortSubtype(String mode) {
@@ -260,7 +260,8 @@ public class InputMethodManagerCompatWrapper {
 
         // The code below are based on {@link InputMethodManager#showInputMethodMenuInternal}.
 
-        final InputMethodInfoCompatWrapper myImi = Utils.getInputMethodInfo(mLatinImePackageName);
+        final InputMethodInfoCompatWrapper myImi = SubtypeUtils.getInputMethodInfo(
+                mLatinImePackageName);
         final List<InputMethodSubtypeCompatWrapper> myImsList = getEnabledInputMethodSubtypeList(
                 myImi, true);
         final InputMethodSubtypeCompatWrapper currentIms = getCurrentInputMethodSubtype();

@@ -19,7 +19,7 @@ package com.android.inputmethod.keyboard;
 import android.graphics.Rect;
 
 import com.android.inputmethod.keyboard.Keyboard.Params.TouchPositionCorrection;
-import com.android.inputmethod.latin.Utils;
+import com.android.inputmethod.latin.JniUtils;
 import com.android.inputmethod.latin.spellcheck.SpellCheckerProximityInfo;
 
 import java.util.Arrays;
@@ -84,7 +84,7 @@ public class ProximityInfo {
 
     private long mNativeProximityInfo;
     static {
-        Utils.loadNativeLibrary();
+        JniUtils.loadNativeLibrary();
     }
 
     private native long setProximityInfoNative(int maxProximityCharsSize, int displayWidth,

@@ -16,16 +16,6 @@
 
 package com.android.inputmethod.deprecated.languageswitcher;
 
-import com.android.inputmethod.compat.SharedPreferencesCompat;
-import com.android.inputmethod.keyboard.KeyboardSet;
-import com.android.inputmethod.latin.DictionaryFactory;
-import com.android.inputmethod.latin.LocaleUtils;
-import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.Settings;
-import com.android.inputmethod.latin.Utils;
-
-import org.xmlpull.v1.XmlPullParserException;
-
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
@@ -36,6 +26,16 @@ import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Pair;
+
+import com.android.inputmethod.compat.SharedPreferencesCompat;
+import com.android.inputmethod.keyboard.KeyboardSet;
+import com.android.inputmethod.latin.DictionaryFactory;
+import com.android.inputmethod.latin.LocaleUtils;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.Settings;
+import com.android.inputmethod.latin.StringUtils;
+
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.text.Collator;
@@ -237,12 +237,12 @@ public class InputLanguageSelection extends PreferenceActivity {
 
             if (finalSize == 0) {
                 preprocess[finalSize++] =
-                        new LocaleEntry(Utils.getFullDisplayName(l, false), l);
+                        new LocaleEntry(StringUtils.getFullDisplayName(l, false), l);
             } else {
                 if (s.equals("zz_ZZ")) {
                     // ignore this locale
                 } else {
-                    final String displayName = Utils.getFullDisplayName(l, false);
+                    final String displayName = StringUtils.getFullDisplayName(l, false);
                     preprocess[finalSize++] = new LocaleEntry(displayName, l);
                 }
             }

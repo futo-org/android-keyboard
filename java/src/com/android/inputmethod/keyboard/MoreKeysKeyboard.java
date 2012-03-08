@@ -22,7 +22,7 @@ import android.graphics.drawable.Drawable;
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.Utils;
+import com.android.inputmethod.latin.StringUtils;
 
 public class MoreKeysKeyboard extends Keyboard {
     private final int mDefaultKeyCoordX;
@@ -301,7 +301,7 @@ public class MoreKeysKeyboard extends Keyboard {
             for (String moreKeySpec : parentKey.mMoreKeys) {
                 final String label = KeySpecParser.getLabel(moreKeySpec);
                 // If the label is single letter, minKeyWidth is enough to hold the label.
-                if (label != null && Utils.codePointCount(label) > 1) {
+                if (label != null && StringUtils.codePointCount(label) > 1) {
                     if (paint == null) {
                         paint = new Paint();
                         paint.setAntiAlias(true);

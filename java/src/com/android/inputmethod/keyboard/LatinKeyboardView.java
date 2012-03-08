@@ -46,6 +46,8 @@ import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
+import com.android.inputmethod.latin.StringUtils;
+import com.android.inputmethod.latin.SubtypeUtils;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.Utils.UsabilityStudyLogUtils;
 
@@ -779,12 +781,13 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
             // Whether space key needs to show the "..." popup hint for special purposes
             if (mIsSpacebarTriggeringPopupByLongPress
-                    && Utils.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */)) {
+                    && SubtypeUtils.hasMultipleEnabledIMEsOrSubtypes(
+                            true /* include aux subtypes */)) {
                 drawKeyPopupHint(key, canvas, paint, params);
             }
         } else if (key.mCode == Keyboard.CODE_LANGUAGE_SWITCH) {
             super.onDrawKeyTopVisuals(key, canvas, paint, params);
-            if (Utils.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */)) {
+            if (SubtypeUtils.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */)) {
                 drawKeyPopupHint(key, canvas, paint, params);
             }
         } else {
@@ -810,7 +813,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         paint.setTextAlign(Align.CENTER);
         paint.setTypeface(Typeface.DEFAULT);
         // Estimate appropriate language name text size to fit in maxTextWidth.
-        String language = Utils.getFullDisplayName(locale, true);
+        String language = StringUtils.getFullDisplayName(locale, true);
         int textWidth = getTextWidth(paint, language, origTextSize);
         // Assuming text width and text size are proportional to each other.
         float textSize = origTextSize * Math.min(width / textWidth, 1.0f);
@@ -822,7 +825,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         final boolean useShortName;
         if (useMiddleName) {
-            language = Utils.getMiddleDisplayLanguage(locale);
+            language = StringUtils.getMiddleDisplayLanguage(locale);
             textWidth = getTextWidth(paint, language, origTextSize);
             textSize = origTextSize * Math.min(width / textWidth, 1.0f);
             useShortName = (textSize / origTextSize < MINIMUM_SCALE_OF_LANGUAGE_NAME)
@@ -832,7 +835,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
 
         if (useShortName) {
-            language = Utils.getShortDisplayLanguage(locale);
+            language = StringUtils.getShortDisplayLanguage(locale);
             textWidth = getTextWidth(paint, language, origTextSize);
             textSize = origTextSize * Math.min(width / textWidth, 1.0f);
         }

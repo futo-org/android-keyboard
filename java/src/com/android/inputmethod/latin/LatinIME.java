@@ -43,8 +43,8 @@ import android.util.Printer;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.ViewGroup.LayoutParams;
+import android.view.ViewParent;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
@@ -573,7 +573,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             oldContactsDictionary = null;
         }
 
-        int mainDicResId = Utils.getMainDictionaryResourceId(res);
+        int mainDicResId = DictionaryFactory.getMainDictionaryResourceId(res);
         mSuggest = new Suggest(this, mainDicResId, keyboardLocale);
         if (mSettingsValues.mAutoCorrectEnabled) {
             mSuggest.setAutoCorrectionThreshold(mSettingsValues.mAutoCorrectionThreshold);
@@ -633,7 +633,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     /* package private */ void resetSuggestMainDict() {
         final String localeStr = mSubtypeSwitcher.getInputLocaleStr();
         final Locale keyboardLocale = LocaleUtils.constructLocaleFromString(localeStr);
-        int mainDicResId = Utils.getMainDictionaryResourceId(mResources);
+        int mainDicResId = DictionaryFactory.getMainDictionaryResourceId(mResources);
         mSuggest.resetMainDict(this, mainDicResId, keyboardLocale);
     }
 
@@ -742,12 +742,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     + String.format("inputType=0x%08x imeOptions=0x%08x",
                             editorInfo.inputType, editorInfo.imeOptions));
         }
-        if (Utils.inPrivateImeOptions(null, IME_OPTION_NO_MICROPHONE_COMPAT, editorInfo)) {
+        if (StringUtils.inPrivateImeOptions(null, IME_OPTION_NO_MICROPHONE_COMPAT, editorInfo)) {
             Log.w(TAG, "Deprecated private IME option specified: "
                     + editorInfo.privateImeOptions);
             Log.w(TAG, "Use " + getPackageName() + "." + IME_OPTION_NO_MICROPHONE + " instead");
         }
-        if (Utils.inPrivateImeOptions(getPackageName(), IME_OPTION_FORCE_ASCII, editorInfo)) {
+        if (StringUtils.inPrivateImeOptions(getPackageName(), IME_OPTION_FORCE_ASCII, editorInfo)) {
             Log.w(TAG, "Deprecated private IME option specified: "
                     + editorInfo.privateImeOptions);
             Log.w(TAG, "Use EditorInfo.IME_FLAG_FORCE_ASCII flag instead");
@@ -1203,7 +1203,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (ic == null) return false;
         final CharSequence lastThree = ic.getTextBeforeCursor(3, 0);
         if (lastThree != null && lastThree.length() == 3
-                && Utils.canBeFollowedByPeriod(lastThree.charAt(0))
+                && StringUtils.canBeFollowedByPeriod(lastThree.charAt(0))
                 && lastThree.charAt(1) == Keyboard.CODE_SPACE
                 && lastThree.charAt(2) == Keyboard.CODE_SPACE
                 && mHandler.isAcceptingDoubleSpaces()) {
@@ -1243,7 +1243,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (isShowingOptionDialog()) return;
         if (InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED) {
             showSubtypeSelectorAndSettings();
-        } else if (Utils.hasMultipleEnabledIMEsOrSubtypes(false /* exclude aux subtypes */)) {
+        } else if (SubtypeUtils.hasMultipleEnabledIMEsOrSubtypes(
+                false /* exclude aux subtypes */)) {
             showOptionsMenu();
         } else {
             launchSettings();
@@ -1259,7 +1260,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (isShowingOptionDialog()) return false;
         switch (requestCode) {
         case CODE_SHOW_INPUT_METHOD_PICKER:
-            if (Utils.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */)) {
+            if (SubtypeUtils.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */)) {
                 mImm.showInputMethodPicker();
                 return true;
             }
@@ -1291,7 +1292,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final IBinder token = getWindow().getWindow().getAttributes().token;
         if (mShouldSwitchToLastSubtype) {
             final InputMethodSubtypeCompatWrapper lastSubtype = mImm.getLastInputMethodSubtype();
-            final boolean lastSubtypeBelongsToThisIme = Utils.checkIfSubtypeBelongsToThisIme(
+            final boolean lastSubtypeBelongsToThisIme = SubtypeUtils.checkIfSubtypeBelongsToThisIme(
                     this, lastSubtype);
             if ((includesOtherImes || lastSubtypeBelongsToThisIme)
                     && mImm.switchToLastInputMethod(token)) {
@@ -1872,7 +1873,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 builder.addTypedWordAndPreviousSuggestions(typedWord, previousSuggestions);
             }
         }
-        if (Utils.shouldBlockAutoCorrectionBySafetyNet(builder, mSuggest)) {
+        if (Suggest.shouldBlockAutoCorrectionBySafetyNet(builder, mSuggest)) {
             builder.setShouldBlockAutoCorrectionBySafetyNet();
         }
         showSuggestions(builder.build(), typedWord);
@@ -2413,7 +2414,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 switch (position) {
                 case 0:
                     Intent intent = CompatUtils.getInputLanguageSelectionIntent(
-                            Utils.getInputMethodId(getPackageName()),
+                            SubtypeUtils.getInputMethodId(getPackageName()),
                             Intent.FLAG_ACTIVITY_NEW_TASK
                             | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                             | Intent.FLAG_ACTIVITY_CLEAR_TOP);

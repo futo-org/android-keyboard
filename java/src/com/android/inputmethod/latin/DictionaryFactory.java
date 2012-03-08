@@ -164,7 +164,7 @@ public class DictionaryFactory {
         final Resources res = context.getResources();
         final Locale saveLocale = LocaleUtils.setSystemLocale(res, locale);
 
-        final int resourceId = Utils.getMainDictionaryResourceId(res);
+        final int resourceId = getMainDictionaryResourceId(res);
         final AssetFileDescriptor afd = res.openRawResourceFd(resourceId);
         final boolean hasDictionary = isFullDictionary(afd);
         try {
@@ -182,7 +182,7 @@ public class DictionaryFactory {
         final Resources res = context.getResources();
         final Locale saveLocale = LocaleUtils.setSystemLocale(res, locale);
 
-        final int resourceId = Utils.getMainDictionaryResourceId(res);
+        final int resourceId = getMainDictionaryResourceId(res);
         final AssetFileDescriptor afd = res.openRawResourceFd(resourceId);
         final Long size = (afd != null && afd.getLength() > PLACEHOLDER_LENGTH)
                 ? afd.getLength()
@@ -208,5 +208,15 @@ public class DictionaryFactory {
      */
     protected static boolean isFullDictionary(final AssetFileDescriptor afd) {
         return (afd != null && afd.getLength() > PLACEHOLDER_LENGTH);
+    }
+
+    /**
+     * Returns a main dictionary resource id
+     * @return main dictionary resource id
+     */
+    public static int getMainDictionaryResourceId(Resources res) {
+        final String MAIN_DIC_NAME = "main";
+        String packageName = LatinIME.class.getPackage().getName();
+        return res.getIdentifier(MAIN_DIC_NAME, "raw", packageName);
     }
 }
