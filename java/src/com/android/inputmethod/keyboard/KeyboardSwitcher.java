@@ -43,13 +43,26 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();
 
     public static final String PREF_KEYBOARD_LAYOUT = "pref_keyboard_layout_20110916";
-    private static final int[] KEYBOARD_THEMES = {
-        R.style.KeyboardTheme,
-        R.style.KeyboardTheme_HighContrast,
-        R.style.KeyboardTheme_Stone,
-        R.style.KeyboardTheme_Stone_Bold,
-        R.style.KeyboardTheme_Gingerbread,
-        R.style.KeyboardTheme_IceCreamSandwich,
+
+    static class KeyboardTheme {
+        public final String mName;
+        public final int mThemeId;
+        public final int mStyleId;
+
+        public KeyboardTheme(String name, int themeId, int styleId) {
+            mName = name;
+            mThemeId = themeId;
+            mStyleId = styleId;
+        }
+    }
+
+    private static final KeyboardTheme[] KEYBOARD_THEMES = {
+        new KeyboardTheme("Basic",            0, R.style.KeyboardTheme),
+        new KeyboardTheme("HighContrast",     1, R.style.KeyboardTheme_HighContrast),
+        new KeyboardTheme("Stone",            6, R.style.KeyboardTheme_Stone),
+        new KeyboardTheme("Stne.Bold",        7, R.style.KeyboardTheme_Stone_Bold),
+        new KeyboardTheme("GingerBread",      8, R.style.KeyboardTheme_Gingerbread),
+        new KeyboardTheme("IceCreamSandwich", 5, R.style.KeyboardTheme_IceCreamSandwich),
     };
 
     private SubtypeSwitcher mSubtypeSwitcher;
@@ -69,7 +82,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
      * what user actually typed. */
     private boolean mIsAutoCorrectionActive;
 
-    private int mThemeIndex = -1;
+    private KeyboardTheme mKeyboardTheme = KEYBOARD_THEMES[0];
     private Context mThemeContext;
 
     private static final KeyboardSwitcher sInstance = new KeyboardSwitcher();
@@ -92,29 +105,30 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mPrefs = prefs;
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mState = new KeyboardState(this);
-        setContextThemeWrapper(ims, getKeyboardThemeIndex(ims, prefs));
+        setContextThemeWrapper(ims, getKeyboardTheme(ims, prefs));
         mForceNonDistinctMultitouch = prefs.getBoolean(
                 DebugSettings.FORCE_NON_DISTINCT_MULTITOUCH_KEY, false);
     }
 
-    private static int getKeyboardThemeIndex(Context context, SharedPreferences prefs) {
-        final String defaultThemeId = context.getString(R.string.config_default_keyboard_theme_id);
-        final String themeId = prefs.getString(PREF_KEYBOARD_LAYOUT, defaultThemeId);
+    private static KeyboardTheme getKeyboardTheme(Context context, SharedPreferences prefs) {
+        final String defaultIndex = context.getString(R.string.config_default_keyboard_theme_index);
+        final String themeIndex = prefs.getString(PREF_KEYBOARD_LAYOUT, defaultIndex);
         try {
-            final int themeIndex = Integer.valueOf(themeId);
-            if (themeIndex >= 0 && themeIndex < KEYBOARD_THEMES.length)
-                return themeIndex;
+            final int index = Integer.valueOf(themeIndex);
+            if (index >= 0 && index < KEYBOARD_THEMES.length) {
+                return KEYBOARD_THEMES[index];
+            }
         } catch (NumberFormatException e) {
             // Format error, keyboard theme is default to 0.
         }
-        Log.w(TAG, "Illegal keyboard theme in preference: " + themeId + ", default to 0");
-        return 0;
+        Log.w(TAG, "Illegal keyboard theme in preference: " + themeIndex + ", default to 0");
+        return KEYBOARD_THEMES[0];
     }
 
-    private void setContextThemeWrapper(Context context, int themeIndex) {
-        if (mThemeIndex != themeIndex) {
-            mThemeIndex = themeIndex;
-            mThemeContext = new ContextThemeWrapper(context, KEYBOARD_THEMES[themeIndex]);
+    private void setContextThemeWrapper(Context context, KeyboardTheme keyboardTheme) {
+        if (mKeyboardTheme.mThemeId != keyboardTheme.mThemeId) {
+            mKeyboardTheme = keyboardTheme;
+            mThemeContext = new ContextThemeWrapper(context, keyboardTheme.mStyleId);
             KeyboardSet.clearKeyboardCache();
         }
     }
@@ -347,18 +361,16 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
         boolean tryGC = true;
         for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
             try {
-                setContextThemeWrapper(mInputMethodService, mThemeIndex);
+                setContextThemeWrapper(mInputMethodService, mKeyboardTheme);
                 mCurrentInputView = (InputView)LayoutInflater.from(mThemeContext).inflate(
                         R.layout.input_view, null);
                 tryGC = false;
             } catch (OutOfMemoryError e) {
                 Log.w(TAG, "load keyboard failed: " + e);
-                tryGC = Utils.GCUtils.getInstance().tryGCOrWait(
-                        Keyboard.toThemeName(mThemeIndex), e);
+                tryGC = Utils.GCUtils.getInstance().tryGCOrWait(mKeyboardTheme.mName, e);
             } catch (InflateException e) {
                 Log.w(TAG, "load keyboard failed: " + e);
-                tryGC = Utils.GCUtils.getInstance().tryGCOrWait(
-                        Keyboard.toThemeName(mThemeIndex), e);
+                tryGC = Utils.GCUtils.getInstance().tryGCOrWait(mKeyboardTheme.mName, e);
             }
         }
 
