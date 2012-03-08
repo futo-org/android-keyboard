@@ -37,10 +37,6 @@ public class AutoCorrection {
         return null != mAutoCorrectionWord;
     }
 
-    public CharSequence getAutoCorrectionWord() {
-        return mAutoCorrectionWord;
-    }
-
     public double getNormalizedScore() {
         return mNormalizedScore;
     }
@@ -106,8 +102,8 @@ public class AutoCorrection {
             WordComposer wordComposer, ArrayList<CharSequence> suggestions, CharSequence typedWord,
             int correctionMode) {
         if (TextUtils.isEmpty(typedWord)) return false;
-        boolean allowsAutoCorrect = allowsToBeAutoCorrected(dictionaries, typedWord, false);
-        return wordComposer.size() > 1 && suggestions.size() > 0 && !allowsAutoCorrect
+        return wordComposer.size() > 1 && suggestions.size() > 0
+                && !allowsToBeAutoCorrected(dictionaries, typedWord, false)
                 && (correctionMode == Suggest.CORRECTION_FULL
                 || correctionMode == Suggest.CORRECTION_FULL_BIGRAM);
     }
