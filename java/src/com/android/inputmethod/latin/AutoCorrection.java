@@ -26,7 +26,11 @@ public class AutoCorrection {
     private static final boolean DBG = LatinImeLogger.sDBG;
     private static final String TAG = AutoCorrection.class.getSimpleName();
 
-    public static CharSequence updateAutoCorrectionStatus(Map<String, Dictionary> dictionaries,
+    private AutoCorrection() {
+        // Purely static class: can't instantiate.
+    }
+
+    public static CharSequence computeAutoCorrectionWord(Map<String, Dictionary> dictionaries,
             WordComposer wordComposer, ArrayList<CharSequence> suggestions, int[] sortedScores,
             CharSequence typedWord, double autoCorrectionThreshold, int correctionMode,
             CharSequence whitelistedWord) {
