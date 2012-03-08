@@ -32,7 +32,7 @@
             android:persistent="true"
             android:entryValues="@array/keyboard_layout_modes_values"
             android:entries="@array/keyboard_layout_modes"
-            android:defaultValue="@string/config_default_keyboard_theme_id"
+            android:defaultValue="@string/config_default_keyboard_theme_index"
             />
 
     <CheckBoxPreference
