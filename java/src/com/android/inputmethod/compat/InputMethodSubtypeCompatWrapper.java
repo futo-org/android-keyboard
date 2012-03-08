@@ -29,7 +29,7 @@ import java.util.Locale;
 
 // TODO: Override this class with the concrete implementation if we need to take care of the
 // performance.
-public final class InputMethodSubtypeCompatWrapper extends AbstractCompatWrapper {
+public class InputMethodSubtypeCompatWrapper extends AbstractCompatWrapper {
     private static final boolean DBG = LatinImeLogger.sDBG;
     private static final String TAG = InputMethodSubtypeCompatWrapper.class.getSimpleName();
     private static final String DEFAULT_LOCALE = "en_US";
@@ -65,7 +65,7 @@ public final class InputMethodSubtypeCompatWrapper extends AbstractCompatWrapper
 
     public InputMethodSubtypeCompatWrapper(Object subtype) {
         super((CLASS_InputMethodSubtype != null && CLASS_InputMethodSubtype.isInstance(subtype))
-                ? subtype : null);
+                ? subtype : new Object());
         mDummyNameResId = 0;
         mDummyIconResId = 0;
         mDummyLocale = DEFAULT_LOCALE;
@@ -76,7 +76,7 @@ public final class InputMethodSubtypeCompatWrapper extends AbstractCompatWrapper
     // Constructor for creating a dummy subtype.
     public InputMethodSubtypeCompatWrapper(int nameResId, int iconResId, String locale,
             String mode, String extraValues) {
-        super(null);
+        super(new Object());
         if (DBG) {
             Log.d(TAG, "CreateInputMethodSubtypeCompatWrapper");
         }
