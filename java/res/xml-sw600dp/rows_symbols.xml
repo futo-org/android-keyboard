@@ -28,46 +28,8 @@
     <Row
         latin:keyWidth="9.0%p"
     >
-        <Key
-            latin:keyLabel="@string/keylabel_for_symbols_1"
-            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_1"
-            latin:moreKeys="@string/more_keys_for_symbols_1" />
-        <Key
-            latin:keyLabel="@string/keylabel_for_symbols_2"
-            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_2"
-            latin:moreKeys="@string/more_keys_for_symbols_2" />
-        <Key
-            latin:keyLabel="@string/keylabel_for_symbols_3"
-            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_3"
-            latin:moreKeys="@string/more_keys_for_symbols_3" />
-        <Key
-            latin:keyLabel="@string/keylabel_for_symbols_4"
-            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_4"
-            latin:moreKeys="@string/more_keys_for_symbols_4" />
-        <Key
-            latin:keyLabel="@string/keylabel_for_symbols_5"
-            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_5"
-            latin:moreKeys="@string/more_keys_for_symbols_5" />
-        <Key
-            latin:keyLabel="@string/keylabel_for_symbols_6"
-            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_6"
-            latin:moreKeys="@string/more_keys_for_symbols_6" />
-        <Key
-            latin:keyLabel="@string/keylabel_for_symbols_7"
-            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_7"
-            latin:moreKeys="@string/more_keys_for_symbols_7" />
-        <Key
-            latin:keyLabel="@string/keylabel_for_symbols_8"
-            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_8"
-            latin:moreKeys="@string/more_keys_for_symbols_8" />
-        <Key
-            latin:keyLabel="@string/keylabel_for_symbols_9"
-            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_9"
-            latin:moreKeys="@string/more_keys_for_symbols_9" />
-        <Key
-            latin:keyLabel="@string/keylabel_for_symbols_0"
-            latin:additionalMoreKeys="@string/additional_more_keys_for_symbols_0"
-            latin:moreKeys="@string/more_keys_for_symbols_0" />
+        <include
+            latin:keyboardLayout="@xml/rowkeys_symbols1" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-10.0%p"
@@ -76,101 +38,25 @@
     <Row
         latin:keyWidth="9.0%p"
     >
-        <Key
-            latin:keyLabel="#"
-            latin:keyXPos="4.5%p" />
-        <Key
-            latin:keyStyle="currencyKeyStyle" />
-        <Key
-            latin:keyLabel="@string/keylabel_for_symbols_percent"
-            latin:moreKeys="@string/more_keys_for_symbols_percent" />
-        <Key
-            latin:keyLabel="&amp;" />
-        <Key
-            latin:keyLabel="*"
-            latin:moreKeys="@string/more_keys_for_star" />
-        <!-- U+2013: "–" EN DASH
-             U+2014: "—" EM DASH -->
-        <Key
-            latin:keyLabel="-"
-            latin:moreKeys="_,&#x2013;,&#x2014;" />
-        <Key
-            latin:keyLabel="+"
-            latin:moreKeys="@string/more_keys_for_plus" />
         <include
-            latin:keyboardLayout="@xml/keys_parentheses" />
+            latin:keyboardLayout="@xml/rowkeys_symbols2"
+            latin:keyXPos="4.5%p" />
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyXPos="-14.6%p"
             latin:keyWidth="fillBoth" />
     </Row>
-    <Row
+        <Row
         latin:keyWidth="8.9%p"
     >
         <Key
             latin:keyStyle="toMoreSymbolKeyStyle"
             latin:keyWidth="10.0%p" />
         <include
-            latin:keyboardLayout="@xml/keys_less_greater" />
-        <!-- U+2260: "≠" NOT EQUAL TO
-             U+2248: "≈" ALMOST EQUAL TO -->
+            latin:keyboardLayout="@xml/rowkeys_symbols3" />
         <Key
-            latin:keyLabel="="
-            latin:moreKeys="&#x2260;,&#x2248;" />
-        <switch>
-            <case
-                latin:mode="url"
-            >
-                <Key
-                    latin:keyLabel="\'" />
-            </case>
-            <default>
-                <Key
-                    latin:keyLabel=":" />
-            </default>
-        </switch>
-        <Key
-            latin:keyLabel="@string/keylabel_for_symbols_semicolon"
-            latin:moreKeys="@string/more_keys_for_symbols_semicolon" />
-        <Key
-            latin:keyLabel="@string/keylabel_for_comma"
-            latin:moreKeys="@string/more_keys_for_comma" />
-        <Key
-            latin:keyLabel="." />
-        <!-- U+00A1: "¡" INVERTED EXCLAMATION MARK -->
-        <Key
-            latin:keyLabel="!"
-            latin:moreKeys="&#x00A1;" />
-        <Key
-            latin:keyLabel="@string/keylabel_for_symbols_question"
-            latin:moreKeys="@string/more_keys_for_symbols_question" />
-        <Key
-            latin:keyLabel="/"
-            latin:keyWidth="fillRight" />
+            latin:keyLabel="/" />
     </Row>
-    <Row
-        latin:keyWidth="8.9%p"
-    >
-        <Key
-            latin:keyStyle="toAlphaKeyStyle"
-            latin:keyWidth="13.0%p" />
-        <Key
-            latin:keyStyle="tabKeyStyle" />
-        <Key
-            latin:keyLabel="\@" />
-        <Key
-            latin:keyStyle="spaceKeyStyle"
-            latin:keyXPos="30.750%p"
-            latin:keyWidth="39.750%p" />
-        <Key
-            latin:keyLabel="&quot;"
-            latin:moreKeys="@string/more_keys_for_tablet_double_quote" />
-        <Key
-            latin:keyLabel="_" />
-        <Spacer
-            latin:keyXPos="-10.00%p"
-            latin:keyWidth="0%p" />
-        <include
-            latin:keyboardLayout="@xml/key_shortcut" />
-    </Row>
+    <include
+        latin:keyboardLayout="@xml/rows_symbols4" />
 </merge>
