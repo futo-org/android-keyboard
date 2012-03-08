@@ -45,7 +45,7 @@ public class AutoCorrection {
         return mNormalizedScore;
     }
 
-    public void updateAutoCorrectionStatus(Map<String, Dictionary> dictionaries,
+    public CharSequence updateAutoCorrectionStatus(Map<String, Dictionary> dictionaries,
             WordComposer wordComposer, ArrayList<CharSequence> suggestions, int[] sortedScores,
             CharSequence typedWord, double autoCorrectionThreshold, int correctionMode,
             CharSequence whitelistedWord) {
@@ -58,6 +58,7 @@ public class AutoCorrection {
                 sortedScores, typedWord, autoCorrectionThreshold)) {
             mAutoCorrectionWord = suggestions.get(0);
         }
+        return mAutoCorrectionWord;
     }
 
     public static boolean isValidWord(
