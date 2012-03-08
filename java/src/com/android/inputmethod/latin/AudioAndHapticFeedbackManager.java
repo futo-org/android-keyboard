@@ -34,7 +34,6 @@ import com.android.inputmethod.keyboard.LatinKeyboardView;
  * complexity of settings and the like.
  */
 public class AudioAndHapticFeedbackManager extends BroadcastReceiver {
-    final private LatinIME mLatinIme;
     final private SettingsValues mSettingsValues;
     final private KeyboardSwitcher mKeyboardSwitcher;
     final private AudioManager mAudioManager;
@@ -43,11 +42,10 @@ public class AudioAndHapticFeedbackManager extends BroadcastReceiver {
 
     public AudioAndHapticFeedbackManager(final LatinIME latinIme,
             final SettingsValues settingsValues, final KeyboardSwitcher keyboardSwitcher) {
-        mLatinIme = latinIme;
         mSettingsValues = settingsValues;
         mKeyboardSwitcher = keyboardSwitcher;
-        mVibrator = VibratorCompatWrapper.getInstance(mLatinIme);
-        mAudioManager = (AudioManager) mLatinIme.getSystemService(Context.AUDIO_SERVICE);
+        mVibrator = VibratorCompatWrapper.getInstance(latinIme);
+        mAudioManager = (AudioManager) latinIme.getSystemService(Context.AUDIO_SERVICE);
         mSoundOn = reevaluateIfSoundIsOn();
     }
 
