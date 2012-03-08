@@ -45,13 +45,14 @@ class ProximityInfo {
 
     ProximityInfo(const int maxProximityCharsSize, const int keyboardWidth,
             const int keybaordHeight, const int gridWidth, const int gridHeight,
+            const int mostCommonkeyWidth,
             const uint32_t *proximityCharsArray, const int keyCount, const int32_t *keyXCoordinates,
             const int32_t *keyYCoordinates, const int32_t *keyWidths, const int32_t *keyHeights,
             const int32_t *keyCharCodes, const float *sweetSpotCenterXs,
             const float *sweetSpotCenterYs, const float *sweetSpotRadii);
     ~ProximityInfo();
     bool hasSpaceProximity(const int x, const int y) const;
-    void setInputParams(const int* inputCodes, const int inputLength,
+    void setInputParams(const int *inputCodes, const int inputLength,
             const int *xCoordinates, const int *yCoordinates);
     const int* getProximityCharsAt(const int index) const;
     unsigned short getPrimaryCharAt(const int index) const;
@@ -87,12 +88,17 @@ class ProximityInfo {
         // the radius of the key is assigned to zero.
         return mSweetSpotRadii[keyIndex] > 0.0;
     }
+    bool isOnKey(const int keyId, const int x, const int y);
+    int squaredDistanceToEdge(const int keyId, const int x, const int y);
+    void calculateNearbyKeyCodes(
+            const int x, const int y, const uint32_t primaryKey, int *inputCodes);
 
     const int MAX_PROXIMITY_CHARS_SIZE;
     const int KEYBOARD_WIDTH;
     const int KEYBOARD_HEIGHT;
     const int GRID_WIDTH;
     const int GRID_HEIGHT;
+    const int MOST_COMMON_KEY_WIDTH_SQUARE;
     const int CELL_WIDTH;
     const int CELL_HEIGHT;
     const int KEY_COUNT;
