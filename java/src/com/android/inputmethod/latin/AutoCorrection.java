@@ -26,19 +26,13 @@ public class AutoCorrection {
     private static final boolean DBG = LatinImeLogger.sDBG;
     private static final String TAG = AutoCorrection.class.getSimpleName();
     private CharSequence mAutoCorrectionWord;
-    private double mNormalizedScore;
 
     public void init() {
         mAutoCorrectionWord = null;
-        mNormalizedScore = Integer.MIN_VALUE;
     }
 
     public boolean hasAutoCorrection() {
         return null != mAutoCorrectionWord;
-    }
-
-    public double getNormalizedScore() {
-        return mNormalizedScore;
     }
 
     public CharSequence updateAutoCorrectionStatus(Map<String, Dictionary> dictionaries,
@@ -108,7 +102,7 @@ public class AutoCorrection {
                 || correctionMode == Suggest.CORRECTION_FULL_BIGRAM);
     }
 
-    private boolean hasAutoCorrectionForBinaryDictionary(WordComposer wordComposer,
+    private static boolean hasAutoCorrectionForBinaryDictionary(WordComposer wordComposer,
             ArrayList<CharSequence> suggestions, int correctionMode, int[] sortedScores,
             CharSequence typedWord, double autoCorrectionThreshold) {
         if (wordComposer.size() > 1 && (correctionMode == Suggest.CORRECTION_FULL
