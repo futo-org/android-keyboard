@@ -388,21 +388,7 @@ public class Keyboard {
         }
     }
 
-    // TODO: Move this method to KeyboardSwitcher.
-    public static String toThemeName(int themeId) {
-        // This should be aligned with theme-*.xml resource files' themeId attribute.
-        switch (themeId) {
-        case 0: return "Basic";
-        case 1: return "BasicHighContrast";
-        case 5: return "IceCreamSandwich";
-        case 6: return "Stone";
-        case 7: return "StoneBold";
-        case 8: return "GingerBread";
-        default: return null;
-        }
-    }
-
-    /**
+   /**
      * Keyboard Building helper.
      *
      * This class parses Keyboard XML file and eventually build a Keyboard.

@@ -17,6 +17,7 @@
 <resources>
     <!-- Theme "Basic" -->
     <style name="Keyboard">
+        <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
         <item name="themeId">0</item>
         <item name="touchPositionCorrectionData">@array/touch_position_correction_data_empty</item>
         <item name="rowHeight">25%p</item>
@@ -141,6 +142,7 @@
         name="Keyboard.HighContrast"
         parent="Keyboard"
     >
+        <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
         <item name="themeId">1</item>
     </style>
     <style
@@ -165,6 +167,7 @@
         name="Keyboard.Stone"
         parent="Keyboard"
     >
+        <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
         <item name="themeId">6</item>
         <item name="keyboardHeight">@dimen/keyboardHeight_stone</item>
         <item name="keyboardTopPadding">@fraction/keyboard_top_padding_stone</item>
@@ -216,6 +219,7 @@
         name="Keyboard.Stone.Bold"
         parent="Keyboard.Stone"
     >
+        <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
         <item name="themeId">7</item>
     </style>
     <style
@@ -239,6 +243,7 @@
         name="Keyboard.Gingerbread"
         parent="Keyboard"
     >
+        <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
         <item name="themeId">8</item>
         <item name="touchPositionCorrectionData">@array/touch_position_correction_data_gingerbread</item>
         <item name="horizontalGap">@fraction/key_horizontal_gap_gb</item>
@@ -281,6 +286,7 @@
         name="Keyboard.IceCreamSandwich"
         parent="Keyboard"
     >
+        <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
         <item name="themeId">5</item>
         <item name="keyboardTopPadding">@fraction/keyboard_top_padding_ics</item>
         <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding_ics</item>
