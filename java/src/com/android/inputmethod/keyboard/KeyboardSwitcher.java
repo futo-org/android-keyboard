@@ -39,8 +39,7 @@ import com.android.inputmethod.latin.SettingsValues;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.Utils;
 
-public class KeyboardSwitcher implements KeyboardState.SwitchActions,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();
 
     public static final String PREF_KEYBOARD_LAYOUT = "pref_keyboard_layout_20110916";
@@ -94,7 +93,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mState = new KeyboardState(this);
         setContextThemeWrapper(ims, getKeyboardThemeIndex(ims, prefs));
-        prefs.registerOnSharedPreferenceChangeListener(this);
         mForceNonDistinctMultitouch = prefs.getBoolean(
                 DebugSettings.FORCE_NON_DISTINCT_MULTITOUCH_KEY, false);
     }
@@ -341,34 +339,26 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
     }
 
     public View onCreateInputView() {
-        return createInputView(mThemeIndex, true);
-    }
-
-    private View createInputView(final int newThemeIndex, final boolean forceRecreate) {
-        if (mCurrentInputView != null && mThemeIndex == newThemeIndex && !forceRecreate)
-            return mCurrentInputView;
-
         if (mKeyboardView != null) {
             mKeyboardView.closing();
         }
 
-        final int oldThemeIndex = mThemeIndex;
         Utils.GCUtils.getInstance().reset();
         boolean tryGC = true;
         for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
             try {
-                setContextThemeWrapper(mInputMethodService, newThemeIndex);
+                setContextThemeWrapper(mInputMethodService, mThemeIndex);
                 mCurrentInputView = (InputView)LayoutInflater.from(mThemeContext).inflate(
                         R.layout.input_view, null);
                 tryGC = false;
             } catch (OutOfMemoryError e) {
                 Log.w(TAG, "load keyboard failed: " + e);
                 tryGC = Utils.GCUtils.getInstance().tryGCOrWait(
-                        oldThemeIndex + "," + newThemeIndex, e);
+                        Keyboard.toThemeName(mThemeIndex), e);
             } catch (InflateException e) {
                 Log.w(TAG, "load keyboard failed: " + e);
                 tryGC = Utils.GCUtils.getInstance().tryGCOrWait(
-                        oldThemeIndex + "," + newThemeIndex, e);
+                        Keyboard.toThemeName(mThemeIndex), e);
             }
         }
 
@@ -383,27 +373,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions,
         AccessibleKeyboardViewProxy.getInstance().setView(mKeyboardView);
 
         return mCurrentInputView;
-    }
-
-    private void postSetInputView(final View newInputView) {
-        final LatinIME latinIme = mInputMethodService;
-        latinIme.mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (newInputView != null) {
-                    latinIme.setInputView(newInputView);
-                }
-                latinIme.updateInputViewShown();
-            }
-        });
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (PREF_KEYBOARD_LAYOUT.equals(key)) {
-            final int themeIndex = getKeyboardThemeIndex(mInputMethodService, sharedPreferences);
-            postSetInputView(createInputView(themeIndex, false));
-        }
     }
 
     public void onNetworkStateChanged() {

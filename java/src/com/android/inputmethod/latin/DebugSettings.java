@@ -25,6 +25,8 @@ import android.preference.CheckBoxPreference;
 import android.preference.PreferenceActivity;
 import android.util.Log;
 
+import com.android.inputmethod.keyboard.KeyboardSwitcher;
+
 public class DebugSettings extends PreferenceActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -61,7 +63,8 @@ public class DebugSettings extends PreferenceActivity
                 updateDebugMode();
                 mServiceNeedsRestart = true;
             }
-        } else if (key.equals(FORCE_NON_DISTINCT_MULTITOUCH_KEY)) {
+        } else if (key.equals(FORCE_NON_DISTINCT_MULTITOUCH_KEY)
+                || key.equals(KeyboardSwitcher.PREF_KEYBOARD_LAYOUT)) {
             mServiceNeedsRestart = true;
         }
     }

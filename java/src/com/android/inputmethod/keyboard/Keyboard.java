@@ -388,6 +388,7 @@ public class Keyboard {
         }
     }
 
+    // TODO: Move this method to KeyboardSwitcher.
     public static String toThemeName(int themeId) {
         // This should be aligned with theme-*.xml resource files' themeId attribute.
         switch (themeId) {
