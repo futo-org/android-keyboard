@@ -25,18 +25,16 @@ import java.util.Map;
 public class AutoCorrection {
     private static final boolean DBG = LatinImeLogger.sDBG;
     private static final String TAG = AutoCorrection.class.getSimpleName();
-    private boolean mHasAutoCorrection;
     private CharSequence mAutoCorrectionWord;
     private double mNormalizedScore;
 
     public void init() {
-        mHasAutoCorrection = false;
         mAutoCorrectionWord = null;
         mNormalizedScore = Integer.MIN_VALUE;
     }
 
     public boolean hasAutoCorrection() {
-        return mHasAutoCorrection;
+        return null != mAutoCorrectionWord;
     }
 
     public CharSequence getAutoCorrectionWord() {
@@ -52,15 +50,12 @@ public class AutoCorrection {
             CharSequence typedWord, double autoCorrectionThreshold, int correctionMode,
             CharSequence whitelistedWord) {
         if (hasAutoCorrectionForWhitelistedWord(whitelistedWord)) {
-            mHasAutoCorrection = true;
             mAutoCorrectionWord = whitelistedWord;
         } else if (hasAutoCorrectionForTypedWord(
                 dictionaries, wordComposer, suggestions, typedWord, correctionMode)) {
-            mHasAutoCorrection = true;
             mAutoCorrectionWord = typedWord;
         } else if (hasAutoCorrectionForBinaryDictionary(wordComposer, suggestions, correctionMode,
                 sortedScores, typedWord, autoCorrectionThreshold)) {
-            mHasAutoCorrection = true;
             mAutoCorrectionWord = suggestions.get(0);
         }
     }
