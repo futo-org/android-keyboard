@@ -108,6 +108,8 @@ public class Suggest implements Dictionary.WordCallback {
     private boolean mIsAllUpperCase;
     private int mTrailingSingleQuotesCount;
 
+    private static final int MINIMUM_SAFETY_NET_CHAR_LENGTH = 4;
+
     public Suggest(final Context context, final int dictionaryResId, final Locale locale) {
         initAsynchronously(context, dictionaryResId, locale);
     }
@@ -383,7 +385,7 @@ public class Suggest implements Dictionary.WordCallback {
         if (typedWord != null) {
             mSuggestions.add(0, typedWord.toString());
         }
-        Utils.removeDupes(mSuggestions);
+        StringUtils.removeDupes(mSuggestions);
 
         if (DBG) {
             double normalizedScore = mAutoCorrection.getNormalizedScore();
@@ -434,7 +436,7 @@ public class Suggest implements Dictionary.WordCallback {
         int pos = 0;
 
         // Check if it's the same word, only caps are different
-        if (Utils.equalsIgnoreCase(mConsideredWord, word, offset, length)) {
+        if (StringUtils.equalsIgnoreCase(mConsideredWord, word, offset, length)) {
             // TODO: remove this surrounding if clause and move this logic to
             // getSuggestedWordBuilder.
             if (suggestions.size() > 0) {
@@ -443,7 +445,7 @@ public class Suggest implements Dictionary.WordCallback {
                 // frequency to determine the insertion position. This does not ensure strictly
                 // correct ordering, but ensures the top score is on top which is enough for
                 // removing duplicates correctly.
-                if (Utils.equalsIgnoreCase(currentHighestWord, word, offset, length)
+                if (StringUtils.equalsIgnoreCase(currentHighestWord, word, offset, length)
                         && score <= sortedScores[0]) {
                     pos = 1;
                 }
@@ -557,5 +559,47 @@ public class Suggest implements Dictionary.WordCallback {
             dictionary.close();
         }
         mMainDict = null;
+    }
+
+    // TODO: Resolve the inconsistencies between the native auto correction algorithms and
+    // this safety net
+    public static boolean shouldBlockAutoCorrectionBySafetyNet(
+            SuggestedWords.Builder suggestedWordsBuilder, Suggest suggest) {
+        // Safety net for auto correction.
+        // Actually if we hit this safety net, it's actually a bug.
+        if (suggestedWordsBuilder.size() <= 1 || suggestedWordsBuilder.isTypedWordValid()) {
+            return false;
+        }
+        // If user selected aggressive auto correction mode, there is no need to use the safety
+        // net.
+        if (suggest.isAggressiveAutoCorrectionMode()) {
+            return false;
+        }
+        final CharSequence typedWord = suggestedWordsBuilder.getWord(0);
+        // If the length of typed word is less than MINIMUM_SAFETY_NET_CHAR_LENGTH,
+        // we should not use net because relatively edit distance can be big.
+        if (typedWord.length() < Suggest.MINIMUM_SAFETY_NET_CHAR_LENGTH) {
+            return false;
+        }
+        final CharSequence suggestionWord = suggestedWordsBuilder.getWord(1);
+        final int typedWordLength = typedWord.length();
+        final int maxEditDistanceOfNativeDictionary =
+                (typedWordLength < 5 ? 2 : typedWordLength / 2) + 1;
+        final int distance = BinaryDictionary.editDistance(
+                typedWord.toString(), suggestionWord.toString());
+        if (DBG) {
+            Log.d(TAG, "Autocorrected edit distance = " + distance
+                    + ", " + maxEditDistanceOfNativeDictionary);
+        }
+        if (distance > maxEditDistanceOfNativeDictionary) {
+            if (DBG) {
+                Log.e(TAG, "Safety net: before = " + typedWord + ", after = " + suggestionWord);
+                Log.e(TAG, "(Error) The edit distance of this correction exceeds limit. "
+                        + "Turning off auto-correction.");
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 }

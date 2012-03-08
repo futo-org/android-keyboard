@@ -37,9 +37,9 @@ import com.android.inputmethod.latin.DictionaryFactory;
 import com.android.inputmethod.latin.Flag;
 import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SynchronouslyLoadedContactsDictionary;
 import com.android.inputmethod.latin.SynchronouslyLoadedUserDictionary;
-import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.WhitelistDictionary;
 import com.android.inputmethod.latin.WordComposer;
 
@@ -47,11 +47,11 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.HashSet;
 
 /**
  * Service for spell checking, using LatinIME's dictionaries and mechanisms.
@@ -316,7 +316,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                     }
                 }
                 Collections.reverse(mSuggestions);
-                Utils.removeDupes(mSuggestions);
+                StringUtils.removeDupes(mSuggestions);
                 if (CAPITALIZE_ALL == capitalizeType) {
                     for (int i = 0; i < mSuggestions.size(); ++i) {
                         // get(i) returns a CharSequence which is actually a String so .toString()
@@ -326,7 +326,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 } else if (CAPITALIZE_FIRST == capitalizeType) {
                     for (int i = 0; i < mSuggestions.size(); ++i) {
                         // Likewise
-                        mSuggestions.set(i, Utils.toTitleCase(mSuggestions.get(i).toString(),
+                        mSuggestions.set(i, StringUtils.toTitleCase(mSuggestions.get(i).toString(),
                                 locale));
                     }
                 }
@@ -396,7 +396,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         final ProximityInfo proximityInfo = ProximityInfo.createSpellCheckerProximityInfo(
                 SpellCheckerProximityInfo.getProximityForScript(script));
         final Resources resources = getResources();
-        final int fallbackResourceId = Utils.getMainDictionaryResourceId(resources);
+        final int fallbackResourceId = DictionaryFactory.getMainDictionaryResourceId(resources);
         final DictionaryCollection dictionaryCollection =
                 DictionaryFactory.createDictionaryFromManager(this, locale, fallbackResourceId,
                         USE_FULL_EDIT_DISTANCE_FLAG_ARRAY);

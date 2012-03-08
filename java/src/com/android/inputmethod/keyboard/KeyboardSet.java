@@ -21,16 +21,18 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
+import android.text.InputType;
 import android.util.Log;
 import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
+import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.Utils;
+import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.XmlParseUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -215,9 +217,9 @@ public class KeyboardSet {
             mEditorInfo = editorInfo;
             final Params params = mParams;
 
-            params.mMode = Utils.getKeyboardMode(editorInfo);
+            params.mMode = getKeyboardMode(editorInfo);
             params.mEditorInfo = (editorInfo != null) ? editorInfo : EMPTY_EDITOR_INFO;
-            params.mNoSettingsKey = Utils.inPrivateImeOptions(
+            params.mNoSettingsKey = StringUtils.inPrivateImeOptions(
                     mPackageName, LatinIME.IME_OPTION_NO_SETTINGS_KEY, mEditorInfo);
         }
 
@@ -230,7 +232,7 @@ public class KeyboardSet {
         // TODO: Use InputMethodSubtype object as argument.
         public Builder setSubtype(Locale inputLocale, boolean asciiCapable,
                 boolean touchPositionCorrectionEnabled) {
-            final boolean deprecatedForceAscii = Utils.inPrivateImeOptions(
+            final boolean deprecatedForceAscii = StringUtils.inPrivateImeOptions(
                     mPackageName, LatinIME.IME_OPTION_FORCE_ASCII, mEditorInfo);
             final boolean forceAscii = EditorInfoCompatUtils.hasFlagForceAscii(
                     mParams.mEditorInfo.imeOptions)
@@ -243,9 +245,9 @@ public class KeyboardSet {
         public Builder setOptions(boolean voiceKeyEnabled, boolean voiceKeyOnMain,
                 boolean languageSwitchKeyEnabled) {
             @SuppressWarnings("deprecation")
-            final boolean deprecatedNoMicrophone = Utils.inPrivateImeOptions(
+            final boolean deprecatedNoMicrophone = StringUtils.inPrivateImeOptions(
                     null, LatinIME.IME_OPTION_NO_MICROPHONE_COMPAT, mEditorInfo);
-            final boolean noMicrophone = Utils.inPrivateImeOptions(
+            final boolean noMicrophone = StringUtils.inPrivateImeOptions(
                     mPackageName, LatinIME.IME_OPTION_NO_MICROPHONE, mEditorInfo)
                     || deprecatedNoMicrophone;
             mParams.mVoiceKeyEnabled = voiceKeyEnabled && !noMicrophone;
@@ -335,6 +337,44 @@ public class KeyboardSet {
                 mParams.mKeyboardSetElementIdToXmlIdMap.put(elementName, elementKeyboard);
             } finally {
                 a.recycle();
+            }
+        }
+
+        private static int getKeyboardMode(EditorInfo editorInfo) {
+            if (editorInfo == null)
+                return KeyboardId.MODE_TEXT;
+
+            final int inputType = editorInfo.inputType;
+            final int variation = inputType & InputType.TYPE_MASK_VARIATION;
+
+            switch (inputType & InputType.TYPE_MASK_CLASS) {
+            case InputType.TYPE_CLASS_NUMBER:
+                return KeyboardId.MODE_NUMBER;
+            case InputType.TYPE_CLASS_DATETIME:
+                switch (variation) {
+                case InputType.TYPE_DATETIME_VARIATION_DATE:
+                    return KeyboardId.MODE_DATE;
+                case InputType.TYPE_DATETIME_VARIATION_TIME:
+                    return KeyboardId.MODE_TIME;
+                default: // InputType.TYPE_DATETIME_VARIATION_NORMAL
+                    return KeyboardId.MODE_DATETIME;
+                }
+            case InputType.TYPE_CLASS_PHONE:
+                return KeyboardId.MODE_PHONE;
+            case InputType.TYPE_CLASS_TEXT:
+                if (InputTypeCompatUtils.isEmailVariation(variation)) {
+                    return KeyboardId.MODE_EMAIL;
+                } else if (variation == InputType.TYPE_TEXT_VARIATION_URI) {
+                    return KeyboardId.MODE_URL;
+                } else if (variation == InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE) {
+                    return KeyboardId.MODE_IM;
+                } else if (variation == InputType.TYPE_TEXT_VARIATION_FILTER) {
+                    return KeyboardId.MODE_TEXT;
+                } else {
+                    return KeyboardId.MODE_TEXT;
+                }
+            default:
+                return KeyboardId.MODE_TEXT;
             }
         }
     }

@@ -104,7 +104,7 @@ public class BinaryDictionary extends Dictionary {
     }
 
     static {
-        Utils.loadNativeLibrary();
+        JniUtils.loadNativeLibrary();
     }
 
     private native long openNative(String sourceDir, long dictOffset, long dictSize,

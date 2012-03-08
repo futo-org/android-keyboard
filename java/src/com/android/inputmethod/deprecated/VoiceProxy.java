@@ -61,8 +61,8 @@ import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinIME.UIHandler;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SubtypeSwitcher;
-import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.Utils;
 
 import java.util.ArrayList;
@@ -662,9 +662,9 @@ public class VoiceProxy implements VoiceInput.UiListener {
 
     private boolean shouldShowVoiceButton(FieldContext fieldContext, EditorInfo editorInfo) {
         @SuppressWarnings("deprecation")
-        final boolean noMic = Utils.inPrivateImeOptions(null,
+        final boolean noMic = StringUtils.inPrivateImeOptions(null,
                 LatinIME.IME_OPTION_NO_MICROPHONE_COMPAT, editorInfo)
-                || Utils.inPrivateImeOptions(mService.getPackageName(),
+                || StringUtils.inPrivateImeOptions(mService.getPackageName(),
                         LatinIME.IME_OPTION_NO_MICROPHONE, editorInfo);
         return ENABLE_VOICE_BUTTON && fieldCanDoVoice(fieldContext) && !noMic
                 && SpeechRecognizer.isRecognitionAvailable(mService);

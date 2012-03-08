@@ -22,7 +22,7 @@ import android.text.TextUtils;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.Utils;
+import com.android.inputmethod.latin.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -150,7 +150,7 @@ public class KeySpecParser {
         }
         final String outputText = getOutputTextInternal(moreKeySpec);
         if (outputText != null) {
-            if (Utils.codePointCount(outputText) == 1) {
+            if (StringUtils.codePointCount(outputText) == 1) {
                 // If output text is one code point, it should be treated as a code.
                 // See {@link #getCode(Resources, String)}.
                 return null;
@@ -165,7 +165,7 @@ public class KeySpecParser {
             throw new KeySpecParserError("Empty label: " + moreKeySpec);
         }
         // Code is automatically generated for one letter label. See {@link getCode()}.
-        return (Utils.codePointCount(label) == 1) ? null : label;
+        return (StringUtils.codePointCount(label) == 1) ? null : label;
     }
 
     public static int getCode(Resources res, String moreKeySpec) {
@@ -184,14 +184,14 @@ public class KeySpecParser {
         if (outputText != null) {
             // If output text is one code point, it should be treated as a code.
             // See {@link #getOutputText(String)}.
-            if (Utils.codePointCount(outputText) == 1) {
+            if (StringUtils.codePointCount(outputText) == 1) {
                 return outputText.codePointAt(0);
             }
             return Keyboard.CODE_OUTPUT_TEXT;
         }
         final String label = getLabel(moreKeySpec);
         // Code is automatically generated for one letter label.
-        if (Utils.codePointCount(label) == 1) {
+        if (StringUtils.codePointCount(label) == 1) {
             return label.codePointAt(0);
         }
         return Keyboard.CODE_OUTPUT_TEXT;
@@ -393,7 +393,7 @@ public class KeySpecParser {
         if (size == 0) {
             return null;
         }
-        if (Utils.codePointCount(text) == 1) {
+        if (StringUtils.codePointCount(text) == 1) {
             return text.codePointAt(0) == COMMA ? null : new String[] { text };
         }
 

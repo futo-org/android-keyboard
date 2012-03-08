@@ -30,7 +30,7 @@ import com.android.inputmethod.keyboard.internal.KeyStyles;
 import com.android.inputmethod.keyboard.internal.KeyStyles.KeyStyle;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.Utils;
+import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.XmlParseUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -293,7 +293,7 @@ public class Key {
         // Choose the first letter of the label as primary code if not specified.
         if (code == Keyboard.CODE_UNSPECIFIED && TextUtils.isEmpty(outputText)
                 && !TextUtils.isEmpty(mLabel)) {
-            if (Utils.codePointCount(mLabel) == 1) {
+            if (StringUtils.codePointCount(mLabel) == 1) {
                 // Use the first letter of the hint label if shiftedLetterActivated flag is
                 // specified.
                 if (hasShiftedLetterHint() && isShiftedLetterActivated()
@@ -309,7 +309,7 @@ public class Key {
                 mCode = Keyboard.CODE_OUTPUT_TEXT;
             }
         } else if (code == Keyboard.CODE_UNSPECIFIED && outputText != null) {
-            if (Utils.codePointCount(outputText) == 1) {
+            if (StringUtils.codePointCount(outputText) == 1) {
                 mCode = outputText.codePointAt(0);
                 outputText = null;
             } else {
@@ -336,7 +336,7 @@ public class Key {
         if (!Keyboard.isLetterCode(code) || preserveCase) return code;
         final String text = new String(new int[] { code } , 0, 1);
         final String casedText = adjustCaseOfStringForKeyboardId(text, preserveCase, id);
-        return Utils.codePointCount(casedText) == 1
+        return StringUtils.codePointCount(casedText) == 1
                 ? casedText.codePointAt(0) : Keyboard.CODE_UNSPECIFIED;
     }
 
@@ -484,7 +484,7 @@ public class Key {
     }
 
     public int selectTextSize(int letter, int largeLetter, int label, int hintLabel) {
-        if (Utils.codePointCount(mLabel) > 1
+        if (StringUtils.codePointCount(mLabel) > 1
                 && (mLabelFlags & (LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO
                         | LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO)) == 0) {
             return label;

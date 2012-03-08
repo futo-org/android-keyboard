@@ -512,7 +512,7 @@ public class SubtypeSwitcher {
     }
 
     public String getInputLanguageName() {
-        return Utils.getDisplayLanguage(getInputLocale());
+        return StringUtils.getDisplayLanguage(getInputLocale());
     }
 
     /////////////////////////////
