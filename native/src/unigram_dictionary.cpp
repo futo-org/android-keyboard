@@ -91,12 +91,16 @@ bool UnigramDictionary::isDigraph(const int *codes, const int i, const int codes
 // codesRemain is the remaining size in codesSrc.
 void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codesBuffer,
+        int *xCoordinatesBuffer, int *yCoordinatesBuffer,
         const int codesBufferSize, const int flags, const int *codesSrc,
         const int codesRemain, const int currentDepth, int *codesDest, Correction *correction,
         WordsPriorityQueuePool *queuePool) {
 
+    const int startIndex = (codesDest - codesBuffer) / MAX_PROXIMITY_CHARS;
     if (currentDepth < MAX_UMLAUT_SEARCH_DEPTH) {
         for (int i = 0; i < codesRemain; ++i) {
+            xCoordinatesBuffer[startIndex + i] = xcoordinates[codesBufferSize - codesRemain + i];
+            yCoordinatesBuffer[startIndex + i] = ycoordinates[codesBufferSize - codesRemain + i];
             if (isDigraph(codesSrc, i, codesRemain)) {
                 // Found a digraph. We will try both spellings. eg. the word is "pruefen"
 
@@ -108,7 +112,7 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
                 ++i;
                 memcpy(codesDest, codesSrc, i * BYTES_IN_ONE_CHAR);
                 getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
-                        codesBuffer, codesBufferSize, flags,
+                        codesBuffer, xCoordinatesBuffer, yCoordinatesBuffer, codesBufferSize, flags,
                         codesSrc + (i + 1) * MAX_PROXIMITY_CHARS, codesRemain - i - 1,
                         currentDepth + 1, codesDest + i * MAX_PROXIMITY_CHARS, correction,
                         queuePool);
@@ -119,7 +123,7 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
                 memcpy(codesDest + i * MAX_PROXIMITY_CHARS, codesSrc + i * MAX_PROXIMITY_CHARS,
                         BYTES_IN_ONE_CHAR);
                 getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
-                        codesBuffer, codesBufferSize, flags,
+                        codesBuffer, xCoordinatesBuffer, yCoordinatesBuffer, codesBufferSize, flags,
                         codesSrc + i * MAX_PROXIMITY_CHARS, codesRemain - i, currentDepth + 1,
                         codesDest + i * MAX_PROXIMITY_CHARS, correction, queuePool);
                 return;
@@ -133,11 +137,16 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
     // eg. if the word is "ueberpruefen" we'll test, in order, against
     // "uberprufen", "uberpruefen", "ueberprufen", "ueberpruefen".
     const unsigned int remainingBytes = BYTES_IN_ONE_CHAR * codesRemain;
-    if (0 != remainingBytes)
+    if (0 != remainingBytes) {
         memcpy(codesDest, codesSrc, remainingBytes);
+        memcpy(&xCoordinatesBuffer[startIndex], &xcoordinates[codesBufferSize - codesRemain],
+                sizeof(int) * codesRemain);
+        memcpy(&yCoordinatesBuffer[startIndex], &ycoordinates[codesBufferSize - codesRemain],
+                sizeof(int) * codesRemain);
+    }
 
-    getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
-            (codesDest - codesBuffer) / MAX_PROXIMITY_CHARS + codesRemain, flags, correction,
+    getWordSuggestions(proximityInfo, xCoordinatesBuffer, yCoordinatesBuffer, codesBuffer,
+            startIndex + codesRemain, flags, correction,
             queuePool);
 }
 
@@ -146,11 +155,15 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
         const int *ycoordinates, const int *codes, const int codesSize, const int flags,
         unsigned short *outWords, int *frequencies) {
 
+    queuePool->clearAll();
     Correction* masterCorrection = correction;
     if (REQUIRES_GERMAN_UMLAUT_PROCESSING & flags)
     { // Incrementally tune the word and try all possibilities
         int codesBuffer[getCodesBufferSize(codes, codesSize, MAX_PROXIMITY_CHARS)];
+        int xCoordinatesBuffer[codesSize];
+        int yCoordinatesBuffer[codesSize];
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
+                xCoordinatesBuffer, yCoordinatesBuffer,
                 codesSize, flags, codes, codesSize, 0, codesBuffer, masterCorrection, queuePool);
     } else { // Normal processing
         getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, codesSize, flags,
@@ -192,7 +205,6 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
 
     PROF_OPEN;
     PROF_START(0);
-    queuePool->clearAll();
     PROF_END(0);
 
     PROF_START(1);

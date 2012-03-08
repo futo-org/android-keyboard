@@ -89,6 +89,7 @@ class UnigramDictionary {
     bool isDigraph(const int *codes, const int i, const int codesSize) const;
     void getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int* ycoordinates, const int *codesBuffer,
+        int *xCoordinatesBuffer, int *yCoordinatesBuffer,
         const int codesBufferSize, const int flags, const int* codesSrc,
         const int codesRemain, const int currentDepth, int* codesDest, Correction *correction,
         WordsPriorityQueuePool* queuePool);
