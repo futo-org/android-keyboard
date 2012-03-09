@@ -1818,7 +1818,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
 
         final CharSequence typedWord = mWordComposer.getTypedWord();
-        final int quotesCount = mWordComposer.trailingSingleQuotesCount();
         // getSuggestedWordBuilder handles gracefully a null value of prevWord
         final SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(), mCorrectionMode);
