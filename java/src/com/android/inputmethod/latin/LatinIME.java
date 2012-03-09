@@ -2047,7 +2047,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             builder = null;
         }
 
-        if (null == builder || builder.size() > 0) {
+        if (null != builder && builder.size() > 0) {
             // Explicitly supply an empty typed word (the no-second-arg version of
             // showSuggestions will retrieve the word near the cursor, we don't want that here)
             showSuggestions(builder.build(), "");
