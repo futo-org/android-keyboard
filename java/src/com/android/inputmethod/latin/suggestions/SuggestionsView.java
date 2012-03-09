@@ -60,6 +60,7 @@ import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
+import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
@@ -329,8 +330,11 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
                 color = mColorTypedWord;
             }
             if (LatinImeLogger.sDBG) {
+                // If we auto-correct, then the autocorrection is in slot 0 and the typed word
+                // is in slot 1.
                 if (index == mCenterSuggestionIndex && suggestedWords.mHasAutoCorrectionCandidate
-                        && suggestedWords.mShouldBlockAutoCorrectionBySafetyNet) {
+                        && Suggest.shouldBlockAutoCorrectionBySafetyNet(
+                                suggestedWords.getWord(1).toString(), suggestedWords.getWord(0))) {
                     return 0xFFFF0000;
                 }
             }
