@@ -300,33 +300,14 @@ public class Suggest implements Dictionary.WordCallback {
                 for (final Dictionary dictionary : mBigramDictionaries.values()) {
                     dictionary.getBigrams(wordComposer, prevWordForBigram, this);
                 }
-                if (true) {
-                    // Nothing entered: return all bigrams for the previous word
-                    int insertCount = Math.min(mBigramSuggestions.size(), mPrefMaxSuggestions);
-                    for (int i = 0; i < insertCount; ++i) {
-                        addBigramToSuggestions(mBigramSuggestions.get(i));
-                    }
-                } else {
-                    // Word entered: return only bigrams that match the first char of the typed word
-                    final char currentChar = consideredWord.charAt(0);
-                    // TODO: Must pay attention to locale when changing case.
-                    final char currentCharUpper = Character.toUpperCase(currentChar);
-                    int count = 0;
-                    final int bigramSuggestionSize = mBigramSuggestions.size();
-                    for (int i = 0; i < bigramSuggestionSize; i++) {
-                        final CharSequence bigramSuggestion = mBigramSuggestions.get(i);
-                        final char bigramSuggestionFirstChar = bigramSuggestion.charAt(0);
-                        if (bigramSuggestionFirstChar == currentChar
-                                || bigramSuggestionFirstChar == currentCharUpper) {
-                            addBigramToSuggestions(bigramSuggestion);
-                            if (++count > mPrefMaxSuggestions) break;
-                        }
-                    }
+                // Nothing entered: return all bigrams for the previous word
+                int insertCount = Math.min(mBigramSuggestions.size(), mPrefMaxSuggestions);
+                for (int i = 0; i < insertCount; ++i) {
+                    addBigramToSuggestions(mBigramSuggestions.get(i));
                 }
             }
         }
-        CharSequence whitelistedWord = capitalizeWord(mIsAllUpperCase, mIsFirstCharCapitalized,
-                null);
+        CharSequence whitelistedWord = null;
 
         final boolean hasAutoCorrection;
         if (CORRECTION_FULL == correctionMode
@@ -337,18 +318,8 @@ public class Suggest implements Dictionary.WordCallback {
             hasAutoCorrection = false;
         }
 
-        if (whitelistedWord != null) {
-            if (mTrailingSingleQuotesCount > 0) {
-                final StringBuilder sb = new StringBuilder(whitelistedWord);
-                for (int i = mTrailingSingleQuotesCount - 1; i >= 0; --i) {
-                    sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
-                }
-                mSuggestions.add(0, sb.toString());
-            } else {
-                mSuggestions.add(0, whitelistedWord);
-            }
-        }
-
+        // TODO: SuggestedWords.Builder#addWord will not insert any isEmpty() word, so the
+        // following is useless
         mSuggestions.add(0, typedWord);
         StringUtils.removeDupes(mSuggestions);
 
