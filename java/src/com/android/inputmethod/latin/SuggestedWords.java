@@ -90,6 +90,7 @@ public class SuggestedWords {
         private boolean mHasMinimalSuggestion;
         private boolean mIsPunctuationSuggestions;
         private boolean mShouldBlockAutoCorrectionBySafetyNet;
+        private boolean mAllowsToBeAutoCorrected;
         private List<SuggestedWordInfo> mSuggestedWordInfoList =
                 new ArrayList<SuggestedWordInfo>();
 
@@ -159,6 +160,11 @@ public class SuggestedWords {
             return this;
         }
 
+        public Builder setAllowsToBeAutoCorrected(final boolean allowsToBeAutoCorrected) {
+            mAllowsToBeAutoCorrected = allowsToBeAutoCorrected;
+            return this;
+        }
+
         // Should get rid of the first one (what the user typed previously) from suggestions
         // and replace it with what the user currently typed.
         public Builder addTypedWordAndPreviousSuggestions(CharSequence typedWord,
@@ -198,6 +204,10 @@ public class SuggestedWords {
 
         public boolean isTypedWordValid() {
             return mTypedWordValid;
+        }
+
+        public boolean allowsToBeAutoCorrected() {
+            return mAllowsToBeAutoCorrected;
         }
 
         @Override

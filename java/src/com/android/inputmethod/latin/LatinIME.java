@@ -1823,39 +1823,22 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(), mCorrectionMode);
 
-        // Here, we want to promote a whitelisted word if exists.
-        // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
-        // but still autocorrected from - in the case the whitelist only capitalizes the word.
-        // The whitelist should be case-insensitive, so it's not possible to be consistent with
-        // a boolean flag. Right now this is handled with a slight hack in
-        // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
-        final boolean allowsToBeAutoCorrected = AutoCorrection.allowsToBeAutoCorrected(
-                mSuggest.getUnigramDictionaries(),
-                // If the typed string ends with a single quote, for dictionary lookup purposes
-                // we behave as if the single quote was not here. Here, we are looking up the
-                // typed string in the dictionary (to avoid autocorrecting from an existing
-                // word, so for consistency this lookup should be made WITHOUT the trailing
-                // single quote.
-                quotesCount > 0
-                        ? typedWord.subSequence(0, typedWord.length() - quotesCount) : typedWord,
-                preferCapitalization());
-
         // Basically, we update the suggestion strip only when suggestion count > 1.  However,
         // there is an exception: We update the suggestion strip whenever typed word's length
         // is 1 or typed word is found in dictionary, regardless of suggestion count.  Actually,
         // in most cases, suggestion count is 1 when typed word's length is 1, but we do always
         // need to clear the previous state when the user starts typing a word (i.e. typed word's
         // length == 1).
-        if (builder.size() > 1 || typedWord.length() == 1 || (!allowsToBeAutoCorrected)
+        if (builder.size() > 1 || typedWord.length() == 1 || !builder.allowsToBeAutoCorrected()
                 || mSuggestionsView.isShowingAddToDictionaryHint()) {
             boolean autoCorrectionAvailable = mSuggest.hasAutoCorrection();
             if (mCorrectionMode == Suggest.CORRECTION_FULL
                     || mCorrectionMode == Suggest.CORRECTION_FULL_BIGRAM) {
-                autoCorrectionAvailable |= (!allowsToBeAutoCorrected);
+                autoCorrectionAvailable |= !builder.allowsToBeAutoCorrected();
             }
             // Don't auto-correct words with multiple capital letter
             autoCorrectionAvailable &= !mWordComposer.isMostlyCaps();
-            builder.setTypedWordValid(!allowsToBeAutoCorrected).setHasMinimalSuggestion(
+            builder.setTypedWordValid(!builder.allowsToBeAutoCorrected()).setHasMinimalSuggestion(
                     autoCorrectionAvailable);
             if (Suggest.shouldBlockAutoCorrectionBySafetyNet(builder, mSuggest,
                     mSettingsValues.mAutoCorrectionThreshold)) {
