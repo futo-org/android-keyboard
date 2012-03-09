@@ -1830,19 +1830,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // length == 1).
         if (builder.size() > 1 || typedWord.length() == 1 || !builder.allowsToBeAutoCorrected()
                 || mSuggestionsView.isShowingAddToDictionaryHint()) {
-            boolean autoCorrectionAvailable = builder.hasAutoCorrection();
-            if (mCorrectionMode == Suggest.CORRECTION_FULL
-                    || mCorrectionMode == Suggest.CORRECTION_FULL_BIGRAM) {
-                autoCorrectionAvailable |= !builder.allowsToBeAutoCorrected();
-            }
-            // Don't auto-correct words with multiple capital letter
-            autoCorrectionAvailable &= !mWordComposer.isMostlyCaps();
-            builder.setTypedWordValid(!builder.allowsToBeAutoCorrected()).setHasMinimalSuggestion(
-                    autoCorrectionAvailable);
-            if (Suggest.shouldBlockAutoCorrectionBySafetyNet(builder, mSuggest,
-                    mSettingsValues.mAutoCorrectionThreshold)) {
-                builder.setShouldBlockAutoCorrectionBySafetyNet();
-            }
             showSuggestions(builder.build(), typedWord);
         } else {
             SuggestedWords previousSuggestions = mSuggestionsView.getSuggestions();

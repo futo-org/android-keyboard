@@ -411,6 +411,7 @@ public class Suggest implements Dictionary.WordCallback {
         mSuggestions.add(0, typedWord);
         StringUtils.removeDupes(mSuggestions);
 
+        final SuggestedWords.Builder builder;
         if (DBG) {
             final CharSequence autoCorrectionSuggestion = mSuggestions.get(0);
             final int autoCorrectionSuggestionScore = mScores[0];
@@ -435,13 +436,28 @@ public class Suggest implements Dictionary.WordCallback {
             for (int i = mScores.length; i < mSuggestions.size(); ++i) {
                 scoreInfoList.add(new SuggestedWords.SuggestedWordInfo("--", false));
             }
-            return new SuggestedWords.Builder().addWords(mSuggestions, scoreInfoList)
+            builder = new SuggestedWords.Builder().addWords(mSuggestions, scoreInfoList)
+                    .setAllowsToBeAutoCorrected(allowsToBeAutoCorrected)
+                    .setHasAutoCorrection(hasAutoCorrection);
+        } else {
+            builder = new SuggestedWords.Builder().addWords(mSuggestions, null)
                     .setAllowsToBeAutoCorrected(allowsToBeAutoCorrected)
                     .setHasAutoCorrection(hasAutoCorrection);
         }
-        return new SuggestedWords.Builder().addWords(mSuggestions, null)
-                .setAllowsToBeAutoCorrected(allowsToBeAutoCorrected)
-                .setHasAutoCorrection(hasAutoCorrection);
+
+        boolean autoCorrectionAvailable = hasAutoCorrection;
+        if (correctionMode == Suggest.CORRECTION_FULL
+                || correctionMode == Suggest.CORRECTION_FULL_BIGRAM) {
+            autoCorrectionAvailable |= !allowsToBeAutoCorrected;
+        }
+        // Don't auto-correct words with multiple capital letter
+        autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
+        builder.setTypedWordValid(!allowsToBeAutoCorrected).setHasMinimalSuggestion(
+                autoCorrectionAvailable);
+        if (Suggest.shouldBlockAutoCorrectionBySafetyNet(builder, this, mAutoCorrectionThreshold)) {
+            builder.setShouldBlockAutoCorrectionBySafetyNet();
+        }
+        return builder;
     }
 
     @Override
