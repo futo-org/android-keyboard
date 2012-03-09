@@ -32,15 +32,15 @@ public class AutoCorrection {
 
     public static CharSequence computeAutoCorrectionWord(Map<String, Dictionary> dictionaries,
             WordComposer wordComposer, ArrayList<CharSequence> suggestions, int[] sortedScores,
-            CharSequence typedWord, double autoCorrectionThreshold,
+            CharSequence consideredWord, double autoCorrectionThreshold,
             CharSequence whitelistedWord) {
         if (hasAutoCorrectionForWhitelistedWord(whitelistedWord)) {
             return whitelistedWord;
-        } else if (hasAutoCorrectionForTypedWord(
-                dictionaries, wordComposer, suggestions, typedWord)) {
-            return typedWord;
+        } else if (hasAutoCorrectionForConsideredWord(
+                dictionaries, wordComposer, suggestions, consideredWord)) {
+            return consideredWord;
         } else if (hasAutoCorrectionForBinaryDictionary(wordComposer, suggestions,
-                sortedScores, typedWord, autoCorrectionThreshold)) {
+                sortedScores, consideredWord, autoCorrectionThreshold)) {
             return suggestions.get(0);
         }
         return null;
@@ -87,28 +87,28 @@ public class AutoCorrection {
         return whiteListedWord != null;
     }
 
-    private static boolean hasAutoCorrectionForTypedWord(Map<String, Dictionary> dictionaries,
+    private static boolean hasAutoCorrectionForConsideredWord(Map<String, Dictionary> dictionaries,
             WordComposer wordComposer, ArrayList<CharSequence> suggestions,
-            CharSequence typedWord) {
-        if (TextUtils.isEmpty(typedWord)) return false;
+            CharSequence consideredWord) {
+        if (TextUtils.isEmpty(consideredWord)) return false;
         return wordComposer.size() > 1 && suggestions.size() > 0
-                && !allowsToBeAutoCorrected(dictionaries, typedWord, false);
+                && !allowsToBeAutoCorrected(dictionaries, consideredWord, false);
     }
 
     private static boolean hasAutoCorrectionForBinaryDictionary(WordComposer wordComposer,
             ArrayList<CharSequence> suggestions, int[] sortedScores,
-            CharSequence typedWord, double autoCorrectionThreshold) {
+            CharSequence consideredWord, double autoCorrectionThreshold) {
         if (wordComposer.size() > 1
-                && typedWord != null && suggestions.size() > 0 && sortedScores.length > 0) {
+                && consideredWord != null && suggestions.size() > 0 && sortedScores.length > 0) {
             final CharSequence autoCorrectionSuggestion = suggestions.get(0);
             final int autoCorrectionSuggestionScore = sortedScores[0];
             // TODO: when the normalized score of the first suggestion is nearly equals to
             //       the normalized score of the second suggestion, behave less aggressive.
             final double normalizedScore = BinaryDictionary.calcNormalizedScore(
-                    typedWord.toString(), autoCorrectionSuggestion.toString(),
+                    consideredWord.toString(), autoCorrectionSuggestion.toString(),
                     autoCorrectionSuggestionScore);
             if (DBG) {
-                Log.d(TAG, "Normalized " + typedWord + "," + autoCorrectionSuggestion + ","
+                Log.d(TAG, "Normalized " + consideredWord + "," + autoCorrectionSuggestion + ","
                         + autoCorrectionSuggestionScore + ", " + normalizedScore
                         + "(" + autoCorrectionThreshold + ")");
             }
