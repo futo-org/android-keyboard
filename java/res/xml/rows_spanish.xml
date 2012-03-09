@@ -23,41 +23,32 @@
 >
     <include
         latin:keyboardLayout="@xml/key_styles_common" />
-    <include
-        latin:keyboardLayout="@xml/row_qwerty1" />
+    <Row
+        latin:keyWidth="10%p"
+    >
+        <include
+            latin:keyboardLayout="@xml/rowkeys_qwerty1" />
+    </Row>
+    <Row
+        latin:keyWidth="10%p"
+    >
+        <include
+            latin:keyboardLayout="@xml/rowkeys_spanish2" />
+    </Row>
     <Row
         latin:keyWidth="10%p"
     >
         <Key
-            latin:keyLabel="a"
-            latin:moreKeys="@string/more_keys_for_a" />
+            latin:keyStyle="shiftKeyStyle"
+            latin:keyWidth="15%p"
+            latin:visualInsetsRight="1%p" />
+        <include
+            latin:keyboardLayout="@xml/rowkeys_qwerty3" />
         <Key
-            latin:keyLabel="s"
-            latin:moreKeys="@string/more_keys_for_s" />
-        <Key
-            latin:keyLabel="d"
-            latin:moreKeys="@string/more_keys_for_d" />
-        <Key
-            latin:keyLabel="f" />
-        <Key
-            latin:keyLabel="g"
-            latin:moreKeys="@string/more_keys_for_g" />
-        <Key
-            latin:keyLabel="h" />
-        <Key
-            latin:keyLabel="j" />
-        <Key
-            latin:keyLabel="k"
-            latin:moreKeys="@string/more_keys_for_k" />
-        <Key
-            latin:keyLabel="l"
-            latin:moreKeys="@string/more_keys_for_l" />
-        <!-- U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE -->
-        <Key
-            latin:keyLabel="&#x00F1;" />
+            latin:keyStyle="deleteKeyStyle"
+            latin:keyWidth="fillBoth"
+            latin:visualInsetsLeft="1%p" />
     </Row>
-    <include
-        latin:keyboardLayout="@xml/row_qwerty3" />
     <include
         latin:keyboardLayout="@xml/row_qwerty4" />
 </merge>

@@ -30,35 +30,8 @@
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelFlags="alignLeft"
             latin:keyWidth="7.500%p" />
-        <Key
-            latin:keyLabel="q" />
-        <Key
-            latin:keyLabel="w" />
-        <Key
-            latin:keyLabel="e"
-            latin:moreKeys="@string/more_keys_for_e" />
-        <Key
-            latin:keyLabel="r"
-            latin:moreKeys="@string/more_keys_for_r" />
-        <Key
-            latin:keyLabel="t"
-            latin:moreKeys="@string/more_keys_for_t" />
-        <Key
-            latin:keyLabel="y"
-            latin:moreKeys="@string/more_keys_for_y" />
-        <Key
-            latin:keyLabel="u"
-            latin:moreKeys="@string/more_keys_for_u" />
-        <Key
-            latin:keyLabel="i"
-            latin:moreKeys="@string/more_keys_for_i" />
-        <Key
-            latin:keyLabel="o"
-            latin:moreKeys="@string/more_keys_for_o" />
-        <Key
-            latin:keyLabel="p" />
-        <Key
-            latin:keyLabel="@string/keylabel_for_scandinavia_row1_11" />
+        <include
+            latin:keyboardLayout="@xml/rowkeys_scandinavian1" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-11.500%p"
@@ -71,36 +44,8 @@
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelFlags="alignLeft"
             latin:keyWidth="9.375%p" />
-        <Key
-            latin:keyLabel="a"
-            latin:moreKeys="@string/more_keys_for_a" />
-        <Key
-            latin:keyLabel="s"
-            latin:moreKeys="@string/more_keys_for_s" />
-        <Key
-            latin:keyLabel="d"
-            latin:moreKeys="@string/more_keys_for_d" />
-        <Key
-            latin:keyLabel="f" />
-        <Key
-            latin:keyLabel="g"
-            latin:moreKeys="@string/more_keys_for_g" />
-        <Key
-            latin:keyLabel="h" />
-        <Key
-            latin:keyLabel="j" />
-        <Key
-            latin:keyLabel="k"
-            latin:moreKeys="@string/more_keys_for_k" />
-        <Key
-            latin:keyLabel="l"
-            latin:moreKeys="@string/more_keys_for_l" />
-        <Key
-            latin:keyLabel="@string/keylabel_for_scandinavia_row2_10"
-            latin:moreKeys="@string/more_keys_for_scandinavia_row2_10" />
-        <Key
-            latin:keyLabel="@string/keylabel_for_scandinavia_row2_11"
-            latin:moreKeys="@string/more_keys_for_scandinavia_row2_11" />
+        <include
+            latin:keyboardLayout="@xml/rowkeys_scandinavian2" />
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyXPos="-9.375%p"
@@ -112,24 +57,8 @@
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="12.750%p" />
-        <Key
-            latin:keyLabel="z"
-            latin:moreKeys="@string/more_keys_for_z" />
-        <Key
-            latin:keyLabel="x" />
-        <Key
-            latin:keyLabel="c"
-            latin:moreKeys="@string/more_keys_for_c" />
-        <Key
-            latin:keyLabel="v"
-            latin:moreKeys="@string/more_keys_for_v" />
-        <Key
-            latin:keyLabel="b" />
-        <Key
-            latin:keyLabel="n"
-            latin:moreKeys="@string/more_keys_for_n" />
-        <Key
-            latin:keyLabel="m" />
+        <include
+            latin:keyboardLayout="@xml/rowkeys_qwerty3" />
         <include
             latin:keyboardLayout="@xml/keys_comma_period" />
         <Key
