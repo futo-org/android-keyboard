@@ -277,15 +277,9 @@ public class Suggest implements Dictionary.WordCallback {
         // Treating USER_TYPED as UNIGRAM suggestion for logging now.
         LatinImeLogger.onAddSuggestedWord(typedWord, Suggest.DIC_USER_TYPED,
                 Dictionary.UNIGRAM);
-        mConsideredWord = consideredWord;
+        mConsideredWord = "";
 
-        // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
-        // but still autocorrected from - in the case the whitelist only capitalizes the word.
-        // The whitelist should be case-insensitive, so it's not possible to be consistent with
-        // a boolean flag. Right now this is handled with a slight hack in
-        // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
-        final boolean allowsToBeAutoCorrected = AutoCorrection.allowsToBeAutoCorrected(
-                getUnigramDictionaries(), consideredWord, false);
+        final boolean allowsToBeAutoCorrected = false;
 
         if (correctionMode == CORRECTION_FULL_BIGRAM) {
             // At first character typed, search only the bigrams
@@ -309,23 +303,11 @@ public class Suggest implements Dictionary.WordCallback {
         }
         CharSequence whitelistedWord = null;
 
-        final boolean hasAutoCorrection;
-        if (CORRECTION_FULL == correctionMode
-                || CORRECTION_FULL_BIGRAM == correctionMode) {
-            final CharSequence autoCorrection = null;
-            hasAutoCorrection = (null != autoCorrection);
-        } else {
-            hasAutoCorrection = false;
-        }
-
-        // TODO: SuggestedWords.Builder#addWord will not insert any isEmpty() word, so the
-        // following is useless
-        mSuggestions.add(0, typedWord);
         StringUtils.removeDupes(mSuggestions);
 
         return new SuggestedWords.Builder().addWords(mSuggestions, null)
                 .setAllowsToBeAutoCorrected(allowsToBeAutoCorrected)
-                .setHasAutoCorrection(hasAutoCorrection);
+                .setHasAutoCorrection(false);
     }
 
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
