@@ -1853,21 +1853,19 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // in most cases, suggestion count is 1 when typed word's length is 1, but we do always
         // need to clear the previous state when the user starts typing a word (i.e. typed word's
         // length == 1).
-        if (typedWord != null) {
-            if (builder.size() > 1 || typedWord.length() == 1 || (!allowsToBeAutoCorrected)
-                    || mSuggestionsView.isShowingAddToDictionaryHint()) {
-                builder.setTypedWordValid(!allowsToBeAutoCorrected).setHasMinimalSuggestion(
-                        autoCorrectionAvailable);
-            } else {
-                SuggestedWords previousSuggestions = mSuggestionsView.getSuggestions();
-                if (previousSuggestions == mSettingsValues.mSuggestPuncList) {
-                    if (builder.size() == 0) {
-                        return;
-                    }
-                    previousSuggestions = SuggestedWords.EMPTY;
+        if (builder.size() > 1 || typedWord.length() == 1 || (!allowsToBeAutoCorrected)
+                || mSuggestionsView.isShowingAddToDictionaryHint()) {
+            builder.setTypedWordValid(!allowsToBeAutoCorrected).setHasMinimalSuggestion(
+                    autoCorrectionAvailable);
+        } else {
+            SuggestedWords previousSuggestions = mSuggestionsView.getSuggestions();
+            if (previousSuggestions == mSettingsValues.mSuggestPuncList) {
+                if (builder.size() == 0) {
+                    return;
                 }
-                builder.addTypedWordAndPreviousSuggestions(typedWord, previousSuggestions);
+                previousSuggestions = SuggestedWords.EMPTY;
             }
+            builder.addTypedWordAndPreviousSuggestions(typedWord, previousSuggestions);
         }
         if (Suggest.shouldBlockAutoCorrectionBySafetyNet(builder, mSuggest,
                 mSettingsValues.mAutoCorrectionThreshold)) {
