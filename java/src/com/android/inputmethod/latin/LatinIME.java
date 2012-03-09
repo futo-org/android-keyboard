@@ -535,10 +535,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         registerReceiver(mReceiver, filter);
         mVoiceProxy = VoiceProxy.init(this, prefs, mHandler);
 
-        final IntentFilter ringerModeFilter = new IntentFilter();
-        ringerModeFilter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
-        registerReceiver(mFeedbackManager, ringerModeFilter);
-
         final IntentFilter packageFilter = new IntentFilter();
         packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
         packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
@@ -551,11 +547,19 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         registerReceiver(mDictionaryPackInstallReceiver, newDictFilter);
     }
 
+    private void renewFeedbackReceiver() {
+        if (null != mFeedbackManager) unregisterReceiver(mFeedbackManager);
+        mFeedbackManager = new AudioAndHapticFeedbackManager(this, mSettingsValues);
+        final IntentFilter ringerModeFilter = new IntentFilter();
+        ringerModeFilter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
+        registerReceiver(mFeedbackManager, ringerModeFilter);
+    }
+
     // Has to be package-visible for unit tests
     /* package */ void loadSettings() {
         if (null == mPrefs) mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSettingsValues = new SettingsValues(mPrefs, this, mSubtypeSwitcher.getInputLocaleStr());
-        mFeedbackManager = new AudioAndHapticFeedbackManager(this, mSettingsValues);
+        renewFeedbackReceiver();
         resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
     }
 
