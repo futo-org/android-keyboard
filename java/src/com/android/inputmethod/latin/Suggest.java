@@ -454,8 +454,8 @@ public class Suggest implements Dictionary.WordCallback {
         autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
         builder.setTypedWordValid(!allowsToBeAutoCorrected).setHasMinimalSuggestion(
                 autoCorrectionAvailable);
-        if (Suggest.shouldBlockAutoCorrectionBySafetyNet(builder, mAutoCorrectionThreshold,
-                !allowsToBeAutoCorrected)) {
+        if (allowsToBeAutoCorrected && builder.size() > 1 && mAutoCorrectionThreshold > 0
+                && Suggest.shouldBlockAutoCorrectionBySafetyNet(builder)) {
             builder.setShouldBlockAutoCorrectionBySafetyNet();
         }
         return builder;
@@ -609,18 +609,11 @@ public class Suggest implements Dictionary.WordCallback {
     // TODO: Resolve the inconsistencies between the native auto correction algorithms and
     // this safety net
     public static boolean shouldBlockAutoCorrectionBySafetyNet(
-            final SuggestedWords.Builder suggestedWordsBuilder,
-            final double autoCorrectionThreshold, final boolean isTypedWordValid) {
+            final SuggestedWords.Builder suggestedWordsBuilder) {
         // Safety net for auto correction.
-        // Actually if we hit this safety net, it's actually a bug.
-        if (suggestedWordsBuilder.size() <= 1 || isTypedWordValid) {
-            return false;
-        }
+        // Actually if we hit this safety net, it's a bug.
         // If user selected aggressive auto correction mode, there is no need to use the safety
         // net.
-        if (0 == autoCorrectionThreshold) {
-            return false;
-        }
         final CharSequence typedWord = suggestedWordsBuilder.getWord(0);
         // If the length of typed word is less than MINIMUM_SAFETY_NET_CHAR_LENGTH,
         // we should not use net because relatively edit distance can be big.
