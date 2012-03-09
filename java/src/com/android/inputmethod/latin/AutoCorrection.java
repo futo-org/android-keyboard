@@ -32,14 +32,14 @@ public class AutoCorrection {
 
     public static CharSequence computeAutoCorrectionWord(Map<String, Dictionary> dictionaries,
             WordComposer wordComposer, ArrayList<CharSequence> suggestions, int[] sortedScores,
-            CharSequence typedWord, double autoCorrectionThreshold, int correctionMode,
+            CharSequence typedWord, double autoCorrectionThreshold,
             CharSequence whitelistedWord) {
         if (hasAutoCorrectionForWhitelistedWord(whitelistedWord)) {
             return whitelistedWord;
         } else if (hasAutoCorrectionForTypedWord(
-                dictionaries, wordComposer, suggestions, typedWord, correctionMode)) {
+                dictionaries, wordComposer, suggestions, typedWord)) {
             return typedWord;
-        } else if (hasAutoCorrectionForBinaryDictionary(wordComposer, suggestions, correctionMode,
+        } else if (hasAutoCorrectionForBinaryDictionary(wordComposer, suggestions,
                 sortedScores, typedWord, autoCorrectionThreshold)) {
             return suggestions.get(0);
         }
@@ -88,20 +88,17 @@ public class AutoCorrection {
     }
 
     private static boolean hasAutoCorrectionForTypedWord(Map<String, Dictionary> dictionaries,
-            WordComposer wordComposer, ArrayList<CharSequence> suggestions, CharSequence typedWord,
-            int correctionMode) {
+            WordComposer wordComposer, ArrayList<CharSequence> suggestions,
+            CharSequence typedWord) {
         if (TextUtils.isEmpty(typedWord)) return false;
         return wordComposer.size() > 1 && suggestions.size() > 0
-                && !allowsToBeAutoCorrected(dictionaries, typedWord, false)
-                && (correctionMode == Suggest.CORRECTION_FULL
-                || correctionMode == Suggest.CORRECTION_FULL_BIGRAM);
+                && !allowsToBeAutoCorrected(dictionaries, typedWord, false);
     }
 
     private static boolean hasAutoCorrectionForBinaryDictionary(WordComposer wordComposer,
-            ArrayList<CharSequence> suggestions, int correctionMode, int[] sortedScores,
+            ArrayList<CharSequence> suggestions, int[] sortedScores,
             CharSequence typedWord, double autoCorrectionThreshold) {
-        if (wordComposer.size() > 1 && (correctionMode == Suggest.CORRECTION_FULL
-                || correctionMode == Suggest.CORRECTION_FULL_BIGRAM)
+        if (wordComposer.size() > 1
                 && typedWord != null && suggestions.size() > 0 && sortedScores.length > 0) {
             final CharSequence autoCorrectionSuggestion = suggestions.get(0);
             final int autoCorrectionSuggestionScore = sortedScores[0];
