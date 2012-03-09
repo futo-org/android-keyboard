@@ -276,21 +276,17 @@ public class Suggest implements Dictionary.WordCallback {
         Arrays.fill(mBigramScores, 0);
         collectGarbage(mBigramSuggestions, PREF_MAX_BIGRAMS);
 
-        // Note that if prevWordForBigram is empty, we'll always return the same empty
-        // SuggestedWords.Builder
-        if (!TextUtils.isEmpty(prevWordForBigram)) {
-            CharSequence lowerPrevWord = prevWordForBigram.toString().toLowerCase();
-            if (mMainDict != null && mMainDict.isValidWord(lowerPrevWord)) {
-                prevWordForBigram = lowerPrevWord;
-            }
-            for (final Dictionary dictionary : mBigramDictionaries.values()) {
-                dictionary.getBigrams(sEmptyWordComposer, prevWordForBigram, this);
-            }
-            // Nothing entered: return all bigrams for the previous word
-            int insertCount = Math.min(mBigramSuggestions.size(), mPrefMaxSuggestions);
-            for (int i = 0; i < insertCount; ++i) {
-                addBigramToSuggestions(mBigramSuggestions.get(i));
-            }
+        CharSequence lowerPrevWord = prevWordForBigram.toString().toLowerCase();
+        if (mMainDict != null && mMainDict.isValidWord(lowerPrevWord)) {
+            prevWordForBigram = lowerPrevWord;
+        }
+        for (final Dictionary dictionary : mBigramDictionaries.values()) {
+            dictionary.getBigrams(sEmptyWordComposer, prevWordForBigram, this);
+        }
+        // Nothing entered: return all bigrams for the previous word
+        int insertCount = Math.min(mBigramSuggestions.size(), mPrefMaxSuggestions);
+        for (int i = 0; i < insertCount; ++i) {
+            addBigramToSuggestions(mBigramSuggestions.get(i));
         }
 
         StringUtils.removeDupes(mSuggestions);

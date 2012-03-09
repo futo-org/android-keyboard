@@ -2038,7 +2038,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (mCorrectionMode == Suggest.CORRECTION_FULL_BIGRAM) {
             final CharSequence prevWord = EditingUtils.getThisWord(getCurrentInputConnection(),
                     mSettingsValues.mWordSeparators);
-            builder = mSuggest.getBigramPredictionWordBuilder(prevWord);
+            if (!TextUtils.isEmpty(prevWord)) {
+                builder = mSuggest.getBigramPredictionWordBuilder(prevWord);
+            } else {
+                builder = null;
+            }
         } else {
             builder = null;
         }
