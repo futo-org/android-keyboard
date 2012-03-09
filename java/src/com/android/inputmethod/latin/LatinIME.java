@@ -1823,8 +1823,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(), mCorrectionMode);
 
-        boolean autoCorrectionAvailable = !mInputAttributes.mInputTypeNoAutoCorrect
-                && mSuggest.hasAutoCorrection();
+        boolean autoCorrectionAvailable = mSuggest.hasAutoCorrection();
         // Here, we want to promote a whitelisted word if exists.
         // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
         // but still autocorrected from - in the case the whitelist only capitalizes the word.
