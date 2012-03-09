@@ -83,7 +83,6 @@ public class Suggest implements Dictionary.WordCallback {
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 
-    private AutoCorrection mAutoCorrection;
     private boolean mHasAutoCorrection;
 
     private Dictionary mMainDict;
@@ -125,7 +124,6 @@ public class Suggest implements Dictionary.WordCallback {
     private void initWhitelistAndAutocorrectAndPool(final Context context, final Locale locale) {
         mWhiteListDictionary = new WhitelistDictionary(context, locale);
         addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_WHITELIST, mWhiteListDictionary);
-        mAutoCorrection = new AutoCorrection();
         StringBuilderPool.ensureCapacity(mPrefMaxSuggestions, getApproxMaxWordLength());
     }
 
@@ -273,7 +271,6 @@ public class Suggest implements Dictionary.WordCallback {
             final WordComposer wordComposer, CharSequence prevWordForBigram,
             final ProximityInfo proximityInfo, final int correctionMode) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
-        mAutoCorrection.init();
         mIsFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
         mIsAllUpperCase = wordComposer.isAllUpperCase();
         mTrailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
@@ -354,7 +351,7 @@ public class Suggest implements Dictionary.WordCallback {
                 mWhiteListDictionary.getWhitelistedWord(consideredWordString));
 
         final CharSequence autoCorrection =
-                mAutoCorrection.updateAutoCorrectionStatus(mUnigramDictionaries, wordComposer,
+                AutoCorrection.computeAutoCorrectionWord(mUnigramDictionaries, wordComposer,
                 mSuggestions, mScores, consideredWord, mAutoCorrectionThreshold, correctionMode,
                 whitelistedWord);
         mHasAutoCorrection = (null != autoCorrection);
