@@ -454,7 +454,7 @@ public class Suggest implements Dictionary.WordCallback {
         autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
         builder.setTypedWordValid(!allowsToBeAutoCorrected).setHasMinimalSuggestion(
                 autoCorrectionAvailable);
-        if (Suggest.shouldBlockAutoCorrectionBySafetyNet(builder, this, mAutoCorrectionThreshold,
+        if (Suggest.shouldBlockAutoCorrectionBySafetyNet(builder, mAutoCorrectionThreshold,
                 !allowsToBeAutoCorrected)) {
             builder.setShouldBlockAutoCorrectionBySafetyNet();
         }
@@ -609,7 +609,7 @@ public class Suggest implements Dictionary.WordCallback {
     // TODO: Resolve the inconsistencies between the native auto correction algorithms and
     // this safety net
     public static boolean shouldBlockAutoCorrectionBySafetyNet(
-            final SuggestedWords.Builder suggestedWordsBuilder, final Suggest suggest,
+            final SuggestedWords.Builder suggestedWordsBuilder,
             final double autoCorrectionThreshold, final boolean isTypedWordValid) {
         // Safety net for auto correction.
         // Actually if we hit this safety net, it's actually a bug.
