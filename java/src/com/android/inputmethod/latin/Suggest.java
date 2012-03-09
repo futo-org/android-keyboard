@@ -262,7 +262,7 @@ public class Suggest implements Dictionary.WordCallback {
 
     private static final WordComposer sEmptyWordComposer = new WordComposer();
     public SuggestedWords.Builder getBigramPredictionWordBuilder(CharSequence prevWordForBigram,
-            final ProximityInfo proximityInfo, final int correctionMode) {
+            final int correctionMode) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         mIsFirstCharCapitalized = false;
         mIsAllUpperCase = false;
@@ -274,6 +274,8 @@ public class Suggest implements Dictionary.WordCallback {
         LatinImeLogger.onAddSuggestedWord("", Suggest.DIC_USER_TYPED, Dictionary.UNIGRAM);
         mConsideredWord = "";
 
+        // Note that if correctionMode != CORRECTION_FULL_BIGRAM, we'll always return the
+        // same empty SuggestedWords.Builder, which has size() == 0
         if (correctionMode == CORRECTION_FULL_BIGRAM) {
             // At first character typed, search only the bigrams
             Arrays.fill(mBigramScores, 0);
