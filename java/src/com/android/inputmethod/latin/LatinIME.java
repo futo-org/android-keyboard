@@ -1845,8 +1845,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     public void showSuggestions(final SuggestedWords suggestedWords, final CharSequence typedWord) {
         final CharSequence autoCorrection;
         if (suggestedWords.size() > 0) {
-            if (!suggestedWords.mShouldBlockAutoCorrectionBySafetyNet
-                    && suggestedWords.hasAutoCorrectionWord()) {
+            if (suggestedWords.hasAutoCorrectionWord()) {
                 autoCorrection = suggestedWords.getWord(1);
             } else {
                 autoCorrection = typedWord;

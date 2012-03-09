@@ -33,7 +33,7 @@ public class SuggestedWords {
     public final boolean mTypedWordValid;
     public final boolean mHasAutoCorrectionCandidate;
     public final boolean mIsPunctuationSuggestions;
-    public final boolean mShouldBlockAutoCorrectionBySafetyNet;
+    private final boolean mShouldBlockAutoCorrectionBySafetyNet;
     private final List<SuggestedWordInfo> mSuggestedWordInfoList;
 
     SuggestedWords(List<CharSequence> words, boolean typedWordValid,
@@ -65,7 +65,8 @@ public class SuggestedWords {
     }
 
     public boolean hasAutoCorrectionWord() {
-        return mHasAutoCorrectionCandidate && size() > 1 && !mTypedWordValid;
+        return !mShouldBlockAutoCorrectionBySafetyNet
+                && mHasAutoCorrectionCandidate && size() > 1 && !mTypedWordValid;
     }
 
     public boolean willAutoCorrect() {
