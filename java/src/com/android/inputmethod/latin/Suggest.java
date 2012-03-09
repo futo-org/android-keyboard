@@ -350,11 +350,16 @@ public class Suggest implements Dictionary.WordCallback {
         CharSequence whitelistedWord = capitalizeWord(mIsAllUpperCase, mIsFirstCharCapitalized,
                 mWhiteListDictionary.getWhitelistedWord(consideredWordString));
 
-        final CharSequence autoCorrection =
-                AutoCorrection.computeAutoCorrectionWord(mUnigramDictionaries, wordComposer,
-                mSuggestions, mScores, consideredWord, mAutoCorrectionThreshold, correctionMode,
-                whitelistedWord);
-        mHasAutoCorrection = (null != autoCorrection);
+        if (CORRECTION_FULL == correctionMode
+                || CORRECTION_FULL_BIGRAM == correctionMode) {
+            final CharSequence autoCorrection =
+                    AutoCorrection.computeAutoCorrectionWord(mUnigramDictionaries, wordComposer,
+                            mSuggestions, mScores, consideredWord, mAutoCorrectionThreshold,
+                            whitelistedWord);
+            mHasAutoCorrection = (null != autoCorrection);
+        } else {
+            mHasAutoCorrection = false;
+        }
 
         if (whitelistedWord != null) {
             if (mTrailingSingleQuotesCount > 0) {
