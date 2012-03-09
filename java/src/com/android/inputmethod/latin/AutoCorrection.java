@@ -98,8 +98,7 @@ public class AutoCorrection {
     private static boolean hasAutoCorrectionForBinaryDictionary(WordComposer wordComposer,
             ArrayList<CharSequence> suggestions, int[] sortedScores,
             CharSequence consideredWord, double autoCorrectionThreshold) {
-        if (wordComposer.size() > 1
-                && consideredWord != null && suggestions.size() > 0 && sortedScores.length > 0) {
+        if (wordComposer.size() > 1 && suggestions.size() > 0 && sortedScores.length > 0) {
             final CharSequence autoCorrectionSuggestion = suggestions.get(0);
             final int autoCorrectionSuggestionScore = sortedScores[0];
             // TODO: when the normalized score of the first suggestion is nearly equals to
