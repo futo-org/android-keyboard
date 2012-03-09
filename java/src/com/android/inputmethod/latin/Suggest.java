@@ -455,7 +455,7 @@ public class Suggest implements Dictionary.WordCallback {
         builder.setTypedWordValid(!allowsToBeAutoCorrected).setHasMinimalSuggestion(
                 autoCorrectionAvailable);
         if (allowsToBeAutoCorrected && builder.size() > 1 && mAutoCorrectionThreshold > 0
-                && Suggest.shouldBlockAutoCorrectionBySafetyNet(builder)) {
+                && Suggest.shouldBlockAutoCorrectionBySafetyNet(typedWord, builder.getWord(1))) {
             builder.setShouldBlockAutoCorrectionBySafetyNet();
         }
         return builder;
@@ -608,31 +608,28 @@ public class Suggest implements Dictionary.WordCallback {
 
     // TODO: Resolve the inconsistencies between the native auto correction algorithms and
     // this safety net
-    public static boolean shouldBlockAutoCorrectionBySafetyNet(
-            final SuggestedWords.Builder suggestedWordsBuilder) {
+    public static boolean shouldBlockAutoCorrectionBySafetyNet(final String typedWord,
+            final CharSequence suggestion) {
         // Safety net for auto correction.
         // Actually if we hit this safety net, it's a bug.
         // If user selected aggressive auto correction mode, there is no need to use the safety
         // net.
-        final CharSequence typedWord = suggestedWordsBuilder.getWord(0);
         // If the length of typed word is less than MINIMUM_SAFETY_NET_CHAR_LENGTH,
         // we should not use net because relatively edit distance can be big.
-        if (typedWord.length() < Suggest.MINIMUM_SAFETY_NET_CHAR_LENGTH) {
+        final int typedWordLength = typedWord.length();
+        if (typedWordLength < Suggest.MINIMUM_SAFETY_NET_CHAR_LENGTH) {
             return false;
         }
-        final CharSequence suggestionWord = suggestedWordsBuilder.getWord(1);
-        final int typedWordLength = typedWord.length();
         final int maxEditDistanceOfNativeDictionary =
                 (typedWordLength < 5 ? 2 : typedWordLength / 2) + 1;
-        final int distance = BinaryDictionary.editDistance(
-                typedWord.toString(), suggestionWord.toString());
+        final int distance = BinaryDictionary.editDistance(typedWord, suggestion.toString());
         if (DBG) {
             Log.d(TAG, "Autocorrected edit distance = " + distance
                     + ", " + maxEditDistanceOfNativeDictionary);
         }
         if (distance > maxEditDistanceOfNativeDictionary) {
             if (DBG) {
-                Log.e(TAG, "Safety net: before = " + typedWord + ", after = " + suggestionWord);
+                Log.e(TAG, "Safety net: before = " + typedWord + ", after = " + suggestion);
                 Log.e(TAG, "(Error) The edit distance of this correction exceeds limit. "
                         + "Turning off auto-correction.");
             }
