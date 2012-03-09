@@ -58,7 +58,7 @@ static inline unsigned int getCodesBufferSize(const int *codes, const int codesS
     return sizeof(*codes) * MAX_PROXIMITY_CHARS * codesSize;
 }
 
-// TODO: This needs to take an const unsigned short* and not tinker with its contents
+// TODO: This needs to take a const unsigned short* and not tinker with its contents
 static inline void addWord(
         unsigned short *word, int length, int frequency, WordsPriorityQueue *queue) {
     queue->push(frequency, word, length);
