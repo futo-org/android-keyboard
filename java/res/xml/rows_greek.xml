@@ -26,10 +26,24 @@
     <Row
         latin:keyWidth="10%p"
     >
-        <Key
-            latin:keyLabel=";"
-            latin:keyHintLabel="1"
-            latin:additionalMoreKeys="1" />
+        <switch>
+            <case
+                latin:keyboardSetElement="alphabetManualShifted|alphabetShiftLockShifted"
+            >
+                <Key
+                    latin:keyLabel=":"
+                    latin:keyHintLabel="1"
+                    latin:moreKeys=";"
+                    latin:additionalMoreKeys="1" />
+            </case>
+            <default>
+                <Key
+                    latin:keyLabel=";"
+                    latin:keyHintLabel="1"
+                    latin:moreKeys=":"
+                    latin:additionalMoreKeys="1" />
+            </default>
+        </switch>
         <!-- TODO: Should find a way to compound Greek dialytika tonos and other Greek letters. -->
         <!--
         <switch>
