@@ -19,7 +19,7 @@ package com.android.inputmethod.latin;
 /**
  * A not-yet-resolved attribute.
  *
- * An attribute is either a bigram or an shortcut.
+ * An attribute is either a bigram or a shortcut.
  * All instances of this class are always immutable.
  */
 public class PendingAttribute {
