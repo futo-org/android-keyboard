@@ -27,7 +27,10 @@
         latin:keyWidth="9.0%p"
     >
         <Key
-            latin:keyLabel=";" />
+            latin:keyLabel=";"
+            latin:keyHintLabel=":"
+            latin:moreKeys=":"
+            latin:keyStyle="hasShiftedLetterHintStyle" />
         <!-- TODO: Should find a way to compound Greek dialytika tonos and other Greek letters. -->
         <!--
         <switch>
