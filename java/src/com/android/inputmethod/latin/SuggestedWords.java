@@ -33,7 +33,6 @@ public class SuggestedWords {
     public final boolean mTypedWordValid;
     public final boolean mHasAutoCorrectionCandidate;
     public final boolean mIsPunctuationSuggestions;
-    private final boolean mShouldBlockAutoCorrectionBySafetyNet;
     private final List<SuggestedWordInfo> mSuggestedWordInfoList;
 
     SuggestedWords(List<CharSequence> words, boolean typedWordValid,
@@ -46,9 +45,9 @@ public class SuggestedWords {
             mWords = Collections.emptyList();
         }
         mTypedWordValid = typedWordValid;
-        mHasAutoCorrectionCandidate = hasAutoCorrectionCandidate;
+        mHasAutoCorrectionCandidate = hasAutoCorrectionCandidate
+                && !shouldBlockAutoCorrectionBySafetyNet;
         mIsPunctuationSuggestions = isPunctuationSuggestions;
-        mShouldBlockAutoCorrectionBySafetyNet = shouldBlockAutoCorrectionBySafetyNet;
         mSuggestedWordInfoList = suggestedWordInfoList;
     }
 
@@ -65,13 +64,11 @@ public class SuggestedWords {
     }
 
     public boolean hasAutoCorrectionWord() {
-        return !mShouldBlockAutoCorrectionBySafetyNet
-                && mHasAutoCorrectionCandidate && size() > 1 && !mTypedWordValid;
+        return mHasAutoCorrectionCandidate && size() > 1 && !mTypedWordValid;
     }
 
     public boolean willAutoCorrect() {
-        return !mTypedWordValid && mHasAutoCorrectionCandidate
-                && !mShouldBlockAutoCorrectionBySafetyNet;
+        return !mTypedWordValid && mHasAutoCorrectionCandidate;
     }
 
     @Override
@@ -81,7 +78,6 @@ public class SuggestedWords {
                 + " mTypedWordValid=" + mTypedWordValid
                 + " mHasAutoCorrectionCandidate=" + mHasAutoCorrectionCandidate
                 + " mIsPunctuationSuggestions=" + mIsPunctuationSuggestions
-                + " mShouldBlockAutoCorrectionBySafetyNet=" + mShouldBlockAutoCorrectionBySafetyNet
                 + " mWords=" + Arrays.toString(mWords.toArray());
     }
 
