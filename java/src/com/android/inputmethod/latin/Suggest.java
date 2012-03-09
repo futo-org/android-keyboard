@@ -218,10 +218,6 @@ public class Suggest implements Dictionary.WordCallback {
         mAutoCorrectionThreshold = threshold;
     }
 
-    public boolean isAggressiveAutoCorrectionMode() {
-        return (mAutoCorrectionThreshold == 0);
-    }
-
     /**
      * Number of suggestions to generate from the input key sequence. This has
      * to be a number between 1 and 100 (inclusive).
@@ -554,7 +550,8 @@ public class Suggest implements Dictionary.WordCallback {
     // TODO: Resolve the inconsistencies between the native auto correction algorithms and
     // this safety net
     public static boolean shouldBlockAutoCorrectionBySafetyNet(
-            SuggestedWords.Builder suggestedWordsBuilder, Suggest suggest) {
+            final SuggestedWords.Builder suggestedWordsBuilder, final Suggest suggest,
+            final double autoCorrectionThreshold) {
         // Safety net for auto correction.
         // Actually if we hit this safety net, it's actually a bug.
         if (suggestedWordsBuilder.size() <= 1 || suggestedWordsBuilder.isTypedWordValid()) {
@@ -562,7 +559,7 @@ public class Suggest implements Dictionary.WordCallback {
         }
         // If user selected aggressive auto correction mode, there is no need to use the safety
         // net.
-        if (suggest.isAggressiveAutoCorrectionMode()) {
+        if (0 == autoCorrectionThreshold) {
             return false;
         }
         final CharSequence typedWord = suggestedWordsBuilder.getWord(0);

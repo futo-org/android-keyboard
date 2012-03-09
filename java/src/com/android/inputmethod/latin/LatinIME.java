@@ -1869,7 +1869,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 builder.addTypedWordAndPreviousSuggestions(typedWord, previousSuggestions);
             }
         }
-        if (Suggest.shouldBlockAutoCorrectionBySafetyNet(builder, mSuggest)) {
+        if (Suggest.shouldBlockAutoCorrectionBySafetyNet(builder, mSuggest,
+                mSettingsValues.mAutoCorrectionThreshold)) {
             builder.setShouldBlockAutoCorrectionBySafetyNet();
         }
         showSuggestions(builder.build(), typedWord);
