@@ -24,10 +24,8 @@
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Android keyboard (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"การตั้งค่าแป้นพิมพ์ Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"ตัวเลือกการป้อนข้อมูล"</string>
-    <!-- no translation found for spell_checker_service_name (7338064335159755926) -->
-    <skip />
-    <!-- no translation found for aosp_spell_checker_service_name (6985142605330377819) -->
-    <skip />
+    <string name="spell_checker_service_name" msgid="7338064335159755926">"แอนดรอยด์ตรวจสอบการสะกด"</string>
+    <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"แอนดรอยด์ตรวจสอบการสะกด (AOSP)"</string>
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"การตั้งค่าการตรวจสอบการสะกด"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"ค้นหารายชื่อติดต่อ"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"เครื่องมือตรวจการสะกดใช้รายการจากรายชื่อติดต่อของคุณ"</string>
