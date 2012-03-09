@@ -1831,7 +1831,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // length == 1).
         if (builder.size() > 1 || typedWord.length() == 1 || !builder.allowsToBeAutoCorrected()
                 || mSuggestionsView.isShowingAddToDictionaryHint()) {
-            boolean autoCorrectionAvailable = mSuggest.hasAutoCorrection();
+            boolean autoCorrectionAvailable = builder.hasAutoCorrection();
             if (mCorrectionMode == Suggest.CORRECTION_FULL
                     || mCorrectionMode == Suggest.CORRECTION_FULL_BIGRAM) {
                 autoCorrectionAvailable |= !builder.allowsToBeAutoCorrected();

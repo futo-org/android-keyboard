@@ -83,8 +83,6 @@ public class Suggest implements Dictionary.WordCallback {
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 
-    private boolean mHasAutoCorrection;
-
     private Dictionary mMainDict;
     private ContactsDictionary mContactsDict;
     private WhitelistDictionary mWhiteListDictionary;
@@ -351,15 +349,16 @@ public class Suggest implements Dictionary.WordCallback {
         CharSequence whitelistedWord = capitalizeWord(mIsAllUpperCase, mIsFirstCharCapitalized,
                 mWhiteListDictionary.getWhitelistedWord(consideredWordString));
 
+        final boolean hasAutoCorrection;
         if (CORRECTION_FULL == correctionMode
                 || CORRECTION_FULL_BIGRAM == correctionMode) {
             final CharSequence autoCorrection =
                     AutoCorrection.computeAutoCorrectionWord(mUnigramDictionaries, wordComposer,
                             mSuggestions, mScores, consideredWord, mAutoCorrectionThreshold,
                             whitelistedWord);
-            mHasAutoCorrection = (null != autoCorrection);
+            hasAutoCorrection = (null != autoCorrection);
         } else {
-            mHasAutoCorrection = false;
+            hasAutoCorrection = false;
         }
 
         if (whitelistedWord != null) {
@@ -402,14 +401,12 @@ public class Suggest implements Dictionary.WordCallback {
                 scoreInfoList.add(new SuggestedWords.SuggestedWordInfo("--", false));
             }
             return new SuggestedWords.Builder().addWords(mSuggestions, scoreInfoList)
-                    .setAllowsToBeAutoCorrected(allowsToBeAutoCorrected);
+                    .setAllowsToBeAutoCorrected(allowsToBeAutoCorrected)
+                    .setHasAutoCorrection(hasAutoCorrection);
         }
         return new SuggestedWords.Builder().addWords(mSuggestions, null)
-                .setAllowsToBeAutoCorrected(allowsToBeAutoCorrected);
-    }
-
-    public boolean hasAutoCorrection() {
-        return mHasAutoCorrection;
+                .setAllowsToBeAutoCorrected(allowsToBeAutoCorrected)
+                .setHasAutoCorrection(hasAutoCorrection);
     }
 
     @Override
