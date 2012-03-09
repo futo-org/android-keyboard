@@ -261,8 +261,7 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     private static final WordComposer sEmptyWordComposer = new WordComposer();
-    public SuggestedWords.Builder getBigramPredictionWordBuilder(CharSequence prevWordForBigram,
-            final int correctionMode) {
+    public SuggestedWords.Builder getBigramPredictionWordBuilder(CharSequence prevWordForBigram) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         mIsFirstCharCapitalized = false;
         mIsAllUpperCase = false;
@@ -274,26 +273,23 @@ public class Suggest implements Dictionary.WordCallback {
         LatinImeLogger.onAddSuggestedWord("", Suggest.DIC_USER_TYPED, Dictionary.UNIGRAM);
         mConsideredWord = "";
 
-        // Note that if correctionMode != CORRECTION_FULL_BIGRAM, we'll always return the
-        // same empty SuggestedWords.Builder, which has size() == 0
-        if (correctionMode == CORRECTION_FULL_BIGRAM) {
-            // At first character typed, search only the bigrams
-            Arrays.fill(mBigramScores, 0);
-            collectGarbage(mBigramSuggestions, PREF_MAX_BIGRAMS);
+        Arrays.fill(mBigramScores, 0);
+        collectGarbage(mBigramSuggestions, PREF_MAX_BIGRAMS);
 
-            if (!TextUtils.isEmpty(prevWordForBigram)) {
-                CharSequence lowerPrevWord = prevWordForBigram.toString().toLowerCase();
-                if (mMainDict != null && mMainDict.isValidWord(lowerPrevWord)) {
-                    prevWordForBigram = lowerPrevWord;
-                }
-                for (final Dictionary dictionary : mBigramDictionaries.values()) {
-                    dictionary.getBigrams(sEmptyWordComposer, prevWordForBigram, this);
-                }
-                // Nothing entered: return all bigrams for the previous word
-                int insertCount = Math.min(mBigramSuggestions.size(), mPrefMaxSuggestions);
-                for (int i = 0; i < insertCount; ++i) {
-                    addBigramToSuggestions(mBigramSuggestions.get(i));
-                }
+        // Note that if prevWordForBigram is empty, we'll always return the same empty
+        // SuggestedWords.Builder
+        if (!TextUtils.isEmpty(prevWordForBigram)) {
+            CharSequence lowerPrevWord = prevWordForBigram.toString().toLowerCase();
+            if (mMainDict != null && mMainDict.isValidWord(lowerPrevWord)) {
+                prevWordForBigram = lowerPrevWord;
+            }
+            for (final Dictionary dictionary : mBigramDictionaries.values()) {
+                dictionary.getBigrams(sEmptyWordComposer, prevWordForBigram, this);
+            }
+            // Nothing entered: return all bigrams for the previous word
+            int insertCount = Math.min(mBigramSuggestions.size(), mPrefMaxSuggestions);
+            for (int i = 0; i < insertCount; ++i) {
+                addBigramToSuggestions(mBigramSuggestions.get(i));
             }
         }
 

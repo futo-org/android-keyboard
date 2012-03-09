@@ -2034,12 +2034,16 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             return;
         }
 
-        final CharSequence prevWord = EditingUtils.getThisWord(getCurrentInputConnection(),
-                mSettingsValues.mWordSeparators);
-        SuggestedWords.Builder builder = mSuggest.getBigramPredictionWordBuilder(prevWord,
-                mCorrectionMode);
+        final SuggestedWords.Builder builder;
+        if (mCorrectionMode == Suggest.CORRECTION_FULL_BIGRAM) {
+            final CharSequence prevWord = EditingUtils.getThisWord(getCurrentInputConnection(),
+                    mSettingsValues.mWordSeparators);
+            builder = mSuggest.getBigramPredictionWordBuilder(prevWord);
+        } else {
+            builder = null;
+        }
 
-        if (builder.size() > 0) {
+        if (null == builder || builder.size() > 0) {
             // Explicitly supply an empty typed word (the no-second-arg version of
             // showSuggestions will retrieve the word near the cursor, we don't want that here)
             showSuggestions(builder.build(), "");
