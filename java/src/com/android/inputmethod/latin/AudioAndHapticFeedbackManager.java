@@ -16,9 +16,7 @@
 
 package com.android.inputmethod.latin;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.media.AudioManager;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
@@ -32,7 +30,7 @@ import com.android.inputmethod.keyboard.Keyboard;
  * It offers a consistent and simple interface that allows LatinIME to forget about the
  * complexity of settings and the like.
  */
-public class AudioAndHapticFeedbackManager extends BroadcastReceiver {
+public class AudioAndHapticFeedbackManager {
     final private SettingsValues mSettingsValues;
     final private AudioManager mAudioManager;
     final private VibratorCompatWrapper mVibrator;
@@ -100,13 +98,7 @@ public class AudioAndHapticFeedbackManager extends BroadcastReceiver {
         }
     }
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        final String action = intent.getAction();
-        // The following test is supposedly useless since we only listen for the ringer event.
-        // Still, it's a good safety measure.
-        if (action.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
-            mSoundOn = reevaluateIfSoundIsOn();
-        }
+    public void onRingerModeChanged() {
+        mSoundOn = reevaluateIfSoundIsOn();
     }
 }

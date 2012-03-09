@@ -532,6 +532,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // Also receive installation and removal of a dictionary pack.
         final IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
         registerReceiver(mReceiver, filter);
         mVoiceProxy = VoiceProxy.init(this, prefs, mHandler);
 
@@ -547,19 +548,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         registerReceiver(mDictionaryPackInstallReceiver, newDictFilter);
     }
 
-    private void renewFeedbackReceiver() {
-        if (null != mFeedbackManager) unregisterReceiver(mFeedbackManager);
-        mFeedbackManager = new AudioAndHapticFeedbackManager(this, mSettingsValues);
-        final IntentFilter ringerModeFilter = new IntentFilter();
-        ringerModeFilter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
-        registerReceiver(mFeedbackManager, ringerModeFilter);
-    }
-
     // Has to be package-visible for unit tests
     /* package */ void loadSettings() {
         if (null == mPrefs) mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSettingsValues = new SettingsValues(mPrefs, this, mSubtypeSwitcher.getInputLocaleStr());
-        renewFeedbackReceiver();
+        mFeedbackManager = new AudioAndHapticFeedbackManager(this, mSettingsValues);
         resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
     }
 
@@ -648,7 +641,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mSuggest = null;
         }
         unregisterReceiver(mReceiver);
-        unregisterReceiver(mFeedbackManager);
         unregisterReceiver(mDictionaryPackInstallReceiver);
         mVoiceProxy.destroy();
         LatinImeLogger.commit();
@@ -2356,6 +2348,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             final String action = intent.getAction();
             if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
                 mSubtypeSwitcher.onNetworkStateChanged(intent);
+            } else if (action.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
+                mFeedbackManager.onRingerModeChanged();
             }
         }
     };
