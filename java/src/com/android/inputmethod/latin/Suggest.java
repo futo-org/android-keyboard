@@ -266,13 +266,13 @@ public class Suggest implements Dictionary.WordCallback {
         final WordComposer wordComposer = sEmptyWordComposer;
 
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
-        mIsFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
-        mIsAllUpperCase = wordComposer.isAllUpperCase();
-        mTrailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
+        mIsFirstCharCapitalized = false;
+        mIsAllUpperCase = false;
+        mTrailingSingleQuotesCount = 0;
         collectGarbage(mSuggestions, mPrefMaxSuggestions);
         Arrays.fill(mScores, 0);
 
-        final String typedWord = wordComposer.getTypedWord();
+        final String typedWord = "";
         final String consideredWord = mTrailingSingleQuotesCount > 0
                 ? typedWord.substring(0, typedWord.length() - mTrailingSingleQuotesCount)
                 : typedWord;
@@ -287,9 +287,9 @@ public class Suggest implements Dictionary.WordCallback {
         // a boolean flag. Right now this is handled with a slight hack in
         // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
         final boolean allowsToBeAutoCorrected = AutoCorrection.allowsToBeAutoCorrected(
-                getUnigramDictionaries(), consideredWord, wordComposer.isFirstCharCapitalized());
+                getUnigramDictionaries(), consideredWord, false);
 
-        if (wordComposer.size() <= 1 && (correctionMode == CORRECTION_FULL_BIGRAM)) {
+        if (0 <= 1 && (correctionMode == CORRECTION_FULL_BIGRAM)) {
             // At first character typed, search only the bigrams
             Arrays.fill(mBigramScores, 0);
             collectGarbage(mBigramSuggestions, PREF_MAX_BIGRAMS);
@@ -327,7 +327,7 @@ public class Suggest implements Dictionary.WordCallback {
                 }
             }
 
-        } else if (wordComposer.size() > 1) {
+        } else if (0 > 1) {
             // At second character typed, search the unigrams (scores being affected by bigrams)
             for (final String key : mUnigramDictionaries.keySet()) {
                 // Skip UserUnigramDictionary and WhitelistDictionary to lookup
