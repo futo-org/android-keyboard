@@ -23,46 +23,42 @@
 >
     <include
         latin:keyboardLayout="@xml/key_styles_common" />
-    <include
-        latin:keyboardLayout="@xml/row_qwerty1" />
+    <Row
+        latin:keyWidth="9.0%p"
+    >
+        <include
+            latin:keyboardLayout="@xml/rowkeys_qwerty1" />
+        <Key
+            latin:keyStyle="deleteKeyStyle"
+            latin:keyXPos="-10.0%p"
+            latin:keyWidth="fillBoth" />
+    </Row>
     <Row
         latin:keyWidth="8.5%p"
     >
-        <Key
-            latin:keyLabel="a"
-            latin:moreKeys="@string/more_keys_for_a"
+        <include
+            latin:keyboardLayout="@xml/rowkeys_spanish2"
             latin:keyXPos="5.0%p" />
-        <Key
-            latin:keyLabel="s"
-            latin:moreKeys="@string/more_keys_for_s" />
-        <Key
-            latin:keyLabel="d"
-            latin:moreKeys="@string/more_keys_for_d" />
-        <Key
-            latin:keyLabel="f" />
-        <Key
-            latin:keyLabel="g"
-            latin:moreKeys="@string/more_keys_for_g" />
-        <Key
-            latin:keyLabel="h" />
-        <Key
-            latin:keyLabel="j" />
-        <Key
-            latin:keyLabel="k"
-            latin:moreKeys="@string/more_keys_for_k" />
-        <Key
-            latin:keyLabel="l"
-            latin:moreKeys="@string/more_keys_for_l" />
-        <!-- U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE -->
-        <Key
-            latin:keyLabel="&#x00F1;" />
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyXPos="-14.6%p"
             latin:keyWidth="fillBoth" />
     </Row>
-    <include
-        latin:keyboardLayout="@xml/row_qwerty3" />
+    <Row
+        latin:keyWidth="8.9%p"
+    >
+        <Key
+            latin:keyStyle="shiftKeyStyle"
+            latin:keyWidth="10.0%p" />
+        <include
+            latin:keyboardLayout="@xml/rowkeys_qwerty3" />
+        <include
+            latin:keyboardLayout="@xml/keys_comma_period" />
+        <include
+            latin:keyboardLayout="@xml/key_smiley"
+            latin:keyXPos="-8.9%p"
+            latin:keyWidth="fillBoth" />
+    </Row>
     <include
         latin:keyboardLayout="@xml/row_qwerty4" />
 </merge>

@@ -26,57 +26,16 @@
     <Row
         latin:keyWidth="10%p"
     >
-        <Key
-            latin:keyLabel="q"
-            latin:keyHintLabel="1"
-            latin:additionalMoreKeys="1" />
-        <Key
-            latin:keyLabel="w"
-            latin:keyHintLabel="2"
-            latin:additionalMoreKeys="2" />
-        <Key
-            latin:keyLabel="e"
-            latin:keyHintLabel="3"
-            latin:additionalMoreKeys="3"
-            latin:moreKeys="@string/more_keys_for_e" />
-        <Key
-            latin:keyLabel="r"
-            latin:keyHintLabel="4"
-            latin:additionalMoreKeys="4"
-            latin:moreKeys="@string/more_keys_for_r" />
-        <Key
-            latin:keyLabel="t"
-            latin:keyHintLabel="5"
-            latin:additionalMoreKeys="5"
-            latin:moreKeys="@string/more_keys_for_t" />
-        <Key
-            latin:keyLabel="z"
-            latin:keyHintLabel="6"
-            latin:additionalMoreKeys="6"
-            latin:moreKeys="@string/more_keys_for_z" />
-        <Key
-            latin:keyLabel="u"
-            latin:keyHintLabel="7"
-            latin:additionalMoreKeys="7"
-            latin:moreKeys="@string/more_keys_for_u" />
-        <Key
-            latin:keyLabel="i"
-            latin:keyHintLabel="8"
-            latin:additionalMoreKeys="8"
-            latin:moreKeys="@string/more_keys_for_i" />
-        <Key
-            latin:keyLabel="o"
-            latin:keyHintLabel="9"
-            latin:additionalMoreKeys="9"
-            latin:moreKeys="@string/more_keys_for_o" />
-        <Key
-            latin:keyLabel="p"
-            latin:keyHintLabel="0"
-            latin:additionalMoreKeys="0"
-            latin:keyWidth="fillRight" />
+        <include
+            latin:keyboardLayout="@xml/rowkeys_qwertz1" />
     </Row>
-    <include
-        latin:keyboardLayout="@xml/row_qwerty2" />
+    <Row
+        latin:keyWidth="10%p"
+    >
+        <include
+            latin:keyboardLayout="@xml/rowkeys_qwerty2"
+            latin:keyXPos="5%p" />
+    </Row>
     <Row
         latin:keyWidth="10%p"
     >
@@ -84,24 +43,8 @@
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="15%p"
             latin:visualInsetsRight="1%p" />
-        <Key
-            latin:keyLabel="y"
-            latin:moreKeys="@string/more_keys_for_y" />
-        <Key
-            latin:keyLabel="x" />
-        <Key
-            latin:keyLabel="c"
-            latin:moreKeys="@string/more_keys_for_c" />
-        <Key
-            latin:keyLabel="v"
-            latin:moreKeys="@string/more_keys_for_v" />
-        <Key
-            latin:keyLabel="b" />
-        <Key
-            latin:keyLabel="n"
-            latin:moreKeys="@string/more_keys_for_n" />
-        <Key
-            latin:keyLabel="m" />
+        <include
+            latin:keyboardLayout="@xml/rowkeys_qwertz3" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight"
