@@ -32,38 +32,8 @@
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelFlags="alignLeft"
             latin:keyWidth="7.969%p" />
-        <Key
-            latin:keyLabel="~" />
-        <Key
-            latin:keyLabel="`" />
-        <Key
-            latin:keyLabel="|" />
-        <!-- U+2022: "•" BULLET -->
-        <Key
-            latin:keyLabel="&#x2022;"
-            latin:moreKeys="@string/more_keys_for_bullet" />
-        <!-- U+221A: "√" SQUARE ROOT -->
-        <Key
-            latin:keyLabel="&#x221A;" />
-        <!-- U+03C0: "π" GREEK SMALL LETTER PI
-             U+03A0: "Π" GREEK CAPITAL LETTER PI -->
-        <Key
-            latin:keyLabel="&#x03C0;"
-            latin:moreKeys="&#x03A0;" />
-        <!-- U+00F7: "÷" DIVISION SIGN -->
-        <Key
-            latin:keyLabel="&#x00F7;" />
-        <!-- U+00D7: "×" MULTIPLICATION SIGN -->
-        <Key
-            latin:keyLabel="&#x00D7;" />
-        <!-- U+00A7: "§" SECTION SIGN
-             U+00B6: "¶" PILCROW SIGN -->
-        <Key
-            latin:keyLabel="&#x00A7;"
-            latin:moreKeys="&#x00B6;" />
-        <!-- U+0394: "Δ" GREEK CAPITAL LETTER DELTA -->
-        <Key
-            latin:keyLabel="&#x0394;" />
+        <include
+            latin:keyboardLayout="@xml/rowkeys_symbols_shift1" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-9.219%p"
@@ -76,34 +46,8 @@
             latin:keyStyle="toAlphaKeyStyle"
             latin:keyLabelFlags="alignLeft"
             latin:keyWidth="11.172%p" />
-        <Key
-            latin:keyStyle="moreCurrency1KeyStyle" />
-        <Key
-            latin:keyStyle="moreCurrency2KeyStyle" />
-        <Key
-            latin:keyStyle="moreCurrency3KeyStyle" />
-        <Key
-            latin:keyStyle="moreCurrency4KeyStyle" />
-        <!-- U+2191: "↑" UPWARDS ARROW
-             U+2193: "↓" DOWNWARDS ARROW
-             U+2190: "←" LEFTWARDS ARROW
-             U+2192: "→" RIGHTWARDS ARROW -->
-        <Key
-            latin:keyLabel="^"
-            latin:moreKeys="&#x2191;,&#x2193;,&#x2190;,&#x2192;" />
-        <!-- U+00B0: "°" DEGREE SIGN
-             U+2032: "′" PRIME
-             U+2033: "″" DOUBLE PRIME -->
-        <Key
-            latin:keyLabel="&#x00B0;"
-            latin:moreKeys="&#x2032;,&#x2033;" />
-        <!-- U+00B1: "±" PLUS-MINUS SIGN
-             U+221E: "∞" INFINITY -->
-        <Key
-            latin:keyLabel="&#x00B1;"
-            latin:moreKeys="&#x221E;" />
         <include
-            latin:keyboardLayout="@xml/keys_curly_brackets" />
+            latin:keyboardLayout="@xml/rowkeys_symbols_shift2" />
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyXPos="-15.704%p"
@@ -115,51 +59,13 @@
         <Key
             latin:keyStyle="backFromMoreSymbolKeyStyle"
             latin:keyWidth="13.829%p" />
-        <Key
-            latin:keyLabel="\\" />
-        <!-- U+00A9: "©" COPYRIGHT SIGN -->
-        <Key
-            latin:keyLabel="&#x00A9;" />
-        <!-- U+00AE: "®" REGISTERED SIGN -->
-        <Key
-            latin:keyLabel="&#x00AE;" />
-        <!-- U+2122: "™" TRADE MARK SIGN -->
-        <Key
-            latin:keyLabel="&#x2122;" />
-        <!-- U+2105: "℅" CARE OF -->
-        <Key
-            latin:keyLabel="&#x2105;" />
         <include
-            latin:keyboardLayout="@xml/keys_square_brackets" />
-        <!-- U+00A1: "¡" INVERTED EXCLAMATION MARK -->
-        <Key
-            latin:keyLabel="&#x00A1;" />
-        <!-- U+00BF: "¿" INVERTED QUESTION MARK -->
-        <Key
-            latin:keyLabel="&#x00BF;" />
+            latin:keyboardLayout="@xml/rowkeys_symbols_shift3" />
         <Key
             latin:keyStyle="backFromMoreSymbolKeyStyle"
             latin:keyXPos="-13.750%p"
             latin:keyWidth="fillBoth" />
     </Row>
-    <Row
-        latin:keyWidth="8.047%p"
-    >
-        <include
-            latin:keyboardLayout="@xml/key_settings" />
-        <Key
-            latin:keyStyle="spaceKeyStyle"
-            latin:keyXPos="31.250%p"
-            latin:keyWidth="37.500%p" />
-        <switch>
-            <case
-                latin:shortcutKeyEnabled="true"
-            >
-                <Key
-                    latin:keyStyle="shortcutKeyStyle"
-                    latin:keyXPos="-8.047%p"
-                    latin:keyWidth="fillRight" />
-            </case>
-        </switch>
-    </Row>
+    <include
+        latin:keyboardLayout="@xml/rows_symbols_shift4" />
 </merge>
