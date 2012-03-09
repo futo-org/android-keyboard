@@ -240,20 +240,6 @@ public class Suggest implements Dictionary.WordCallback {
         StringBuilderPool.ensureCapacity(mPrefMaxSuggestions, getApproxMaxWordLength());
     }
 
-    /**
-     * Returns a object which represents suggested words that match the list of character codes
-     * passed in. This object contents will be overwritten the next time this function is called.
-     * @param wordComposer contains what is currently being typed
-     * @param prevWordForBigram previous word (used only for bigram)
-     * @return suggested words object.
-     */
-    public SuggestedWords getSuggestions(final WordComposer wordComposer,
-            final CharSequence prevWordForBigram, final ProximityInfo proximityInfo,
-            final int correctionMode) {
-        return getSuggestedWordBuilder(wordComposer, prevWordForBigram,
-                proximityInfo, correctionMode).build();
-    }
-
     private CharSequence capitalizeWord(boolean all, boolean first, CharSequence word) {
         if (TextUtils.isEmpty(word) || !(all || first)) return word;
         final int wordLength = word.length();
