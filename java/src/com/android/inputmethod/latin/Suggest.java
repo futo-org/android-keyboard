@@ -273,9 +273,7 @@ public class Suggest implements Dictionary.WordCallback {
         Arrays.fill(mScores, 0);
 
         final String typedWord = "";
-        final String consideredWord = mTrailingSingleQuotesCount > 0
-                ? typedWord.substring(0, typedWord.length() - mTrailingSingleQuotesCount)
-                : typedWord;
+        final String consideredWord = "";
         // Treating USER_TYPED as UNIGRAM suggestion for logging now.
         LatinImeLogger.onAddSuggestedWord(typedWord, Suggest.DIC_USER_TYPED,
                 Dictionary.UNIGRAM);
@@ -289,7 +287,7 @@ public class Suggest implements Dictionary.WordCallback {
         final boolean allowsToBeAutoCorrected = AutoCorrection.allowsToBeAutoCorrected(
                 getUnigramDictionaries(), consideredWord, false);
 
-        if (0 <= 1 && (correctionMode == CORRECTION_FULL_BIGRAM)) {
+        if (correctionMode == CORRECTION_FULL_BIGRAM) {
             // At first character typed, search only the bigrams
             Arrays.fill(mBigramScores, 0);
             collectGarbage(mBigramSuggestions, PREF_MAX_BIGRAMS);
@@ -302,7 +300,7 @@ public class Suggest implements Dictionary.WordCallback {
                 for (final Dictionary dictionary : mBigramDictionaries.values()) {
                     dictionary.getBigrams(wordComposer, prevWordForBigram, this);
                 }
-                if (TextUtils.isEmpty(consideredWord)) {
+                if (true) {
                     // Nothing entered: return all bigrams for the previous word
                     int insertCount = Math.min(mBigramSuggestions.size(), mPrefMaxSuggestions);
                     for (int i = 0; i < insertCount; ++i) {
@@ -326,37 +324,14 @@ public class Suggest implements Dictionary.WordCallback {
                     }
                 }
             }
-
-        } else if (0 > 1) {
-            // At second character typed, search the unigrams (scores being affected by bigrams)
-            for (final String key : mUnigramDictionaries.keySet()) {
-                // Skip UserUnigramDictionary and WhitelistDictionary to lookup
-                if (key.equals(DICT_KEY_USER_UNIGRAM) || key.equals(DICT_KEY_WHITELIST))
-                    continue;
-                final Dictionary dictionary = mUnigramDictionaries.get(key);
-                if (mTrailingSingleQuotesCount > 0) {
-                    final WordComposer tmpWordComposer = new WordComposer(wordComposer);
-                    for (int i = mTrailingSingleQuotesCount - 1; i >= 0; --i) {
-                        tmpWordComposer.deleteLast();
-                    }
-                    dictionary.getWords(tmpWordComposer, this, proximityInfo);
-                } else {
-                    dictionary.getWords(wordComposer, this, proximityInfo);
-                }
-            }
         }
-        final String consideredWordString = consideredWord.toString();
-
         CharSequence whitelistedWord = capitalizeWord(mIsAllUpperCase, mIsFirstCharCapitalized,
-                mWhiteListDictionary.getWhitelistedWord(consideredWordString));
+                null);
 
         final boolean hasAutoCorrection;
         if (CORRECTION_FULL == correctionMode
                 || CORRECTION_FULL_BIGRAM == correctionMode) {
-            final CharSequence autoCorrection =
-                    AutoCorrection.computeAutoCorrectionWord(mUnigramDictionaries, wordComposer,
-                            mSuggestions, mScores, consideredWord, mAutoCorrectionThreshold,
-                            whitelistedWord);
+            final CharSequence autoCorrection = null;
             hasAutoCorrection = (null != autoCorrection);
         } else {
             hasAutoCorrection = false;
@@ -374,37 +349,9 @@ public class Suggest implements Dictionary.WordCallback {
             }
         }
 
-        mSuggestions.add(0, typedWord.toString());
+        mSuggestions.add(0, typedWord);
         StringUtils.removeDupes(mSuggestions);
 
-        if (DBG) {
-            final CharSequence autoCorrectionSuggestion = mSuggestions.get(0);
-            final int autoCorrectionSuggestionScore = mScores[0];
-            double normalizedScore = BinaryDictionary.calcNormalizedScore(
-                    typedWord.toString(), autoCorrectionSuggestion.toString(),
-                    autoCorrectionSuggestionScore);
-            ArrayList<SuggestedWords.SuggestedWordInfo> scoreInfoList =
-                    new ArrayList<SuggestedWords.SuggestedWordInfo>();
-            scoreInfoList.add(new SuggestedWords.SuggestedWordInfo("+", false));
-            for (int i = 0; i < mScores.length; ++i) {
-                if (normalizedScore > 0) {
-                    final String scoreThreshold = String.format("%d (%4.2f)", mScores[i],
-                            normalizedScore);
-                    scoreInfoList.add(
-                            new SuggestedWords.SuggestedWordInfo(scoreThreshold, false));
-                    normalizedScore = 0.0;
-                } else {
-                    final String score = Integer.toString(mScores[i]);
-                    scoreInfoList.add(new SuggestedWords.SuggestedWordInfo(score, false));
-                }
-            }
-            for (int i = mScores.length; i < mSuggestions.size(); ++i) {
-                scoreInfoList.add(new SuggestedWords.SuggestedWordInfo("--", false));
-            }
-            return new SuggestedWords.Builder().addWords(mSuggestions, scoreInfoList)
-                    .setAllowsToBeAutoCorrected(allowsToBeAutoCorrected)
-                    .setHasAutoCorrection(hasAutoCorrection);
-        }
         return new SuggestedWords.Builder().addWords(mSuggestions, null)
                 .setAllowsToBeAutoCorrected(allowsToBeAutoCorrected)
                 .setHasAutoCorrection(hasAutoCorrection);
@@ -494,10 +441,9 @@ public class Suggest implements Dictionary.WordCallback {
                 }
             }
         }
-        final String consideredWordString = consideredWord.toString();
 
         CharSequence whitelistedWord = capitalizeWord(mIsAllUpperCase, mIsFirstCharCapitalized,
-                mWhiteListDictionary.getWhitelistedWord(consideredWordString));
+                mWhiteListDictionary.getWhitelistedWord(consideredWord));
 
         final boolean hasAutoCorrection;
         if (CORRECTION_FULL == correctionMode
@@ -523,14 +469,14 @@ public class Suggest implements Dictionary.WordCallback {
             }
         }
 
-        mSuggestions.add(0, typedWord.toString());
+        mSuggestions.add(0, typedWord);
         StringUtils.removeDupes(mSuggestions);
 
         if (DBG) {
             final CharSequence autoCorrectionSuggestion = mSuggestions.get(0);
             final int autoCorrectionSuggestionScore = mScores[0];
             double normalizedScore = BinaryDictionary.calcNormalizedScore(
-                    typedWord.toString(), autoCorrectionSuggestion.toString(),
+                    typedWord, autoCorrectionSuggestion.toString(),
                     autoCorrectionSuggestionScore);
             ArrayList<SuggestedWords.SuggestedWordInfo> scoreInfoList =
                     new ArrayList<SuggestedWords.SuggestedWordInfo>();
