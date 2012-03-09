@@ -25,30 +25,21 @@ import java.util.Map;
 public class AutoCorrection {
     private static final boolean DBG = LatinImeLogger.sDBG;
     private static final String TAG = AutoCorrection.class.getSimpleName();
-    private CharSequence mAutoCorrectionWord;
 
-    public void init() {
-        mAutoCorrectionWord = null;
-    }
-
-    public boolean hasAutoCorrection() {
-        return null != mAutoCorrectionWord;
-    }
-
-    public CharSequence updateAutoCorrectionStatus(Map<String, Dictionary> dictionaries,
+    public static CharSequence updateAutoCorrectionStatus(Map<String, Dictionary> dictionaries,
             WordComposer wordComposer, ArrayList<CharSequence> suggestions, int[] sortedScores,
             CharSequence typedWord, double autoCorrectionThreshold, int correctionMode,
             CharSequence whitelistedWord) {
         if (hasAutoCorrectionForWhitelistedWord(whitelistedWord)) {
-            mAutoCorrectionWord = whitelistedWord;
+            return whitelistedWord;
         } else if (hasAutoCorrectionForTypedWord(
                 dictionaries, wordComposer, suggestions, typedWord, correctionMode)) {
-            mAutoCorrectionWord = typedWord;
+            return typedWord;
         } else if (hasAutoCorrectionForBinaryDictionary(wordComposer, suggestions, correctionMode,
                 sortedScores, typedWord, autoCorrectionThreshold)) {
-            mAutoCorrectionWord = suggestions.get(0);
+            return suggestions.get(0);
         }
-        return mAutoCorrectionWord;
+        return null;
     }
 
     public static boolean isValidWord(

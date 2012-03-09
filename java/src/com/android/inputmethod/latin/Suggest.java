@@ -84,6 +84,7 @@ public class Suggest implements Dictionary.WordCallback {
     private static final boolean DBG = LatinImeLogger.sDBG;
 
     private AutoCorrection mAutoCorrection;
+    private boolean mHasAutoCorrection;
 
     private Dictionary mMainDict;
     private ContactsDictionary mContactsDict;
@@ -352,9 +353,11 @@ public class Suggest implements Dictionary.WordCallback {
         CharSequence whitelistedWord = capitalizeWord(mIsAllUpperCase, mIsFirstCharCapitalized,
                 mWhiteListDictionary.getWhitelistedWord(consideredWordString));
 
-        mAutoCorrection.updateAutoCorrectionStatus(mUnigramDictionaries, wordComposer,
+        final CharSequence autoCorrection =
+                mAutoCorrection.updateAutoCorrectionStatus(mUnigramDictionaries, wordComposer,
                 mSuggestions, mScores, consideredWord, mAutoCorrectionThreshold, correctionMode,
                 whitelistedWord);
+        mHasAutoCorrection = (null != autoCorrection);
 
         if (whitelistedWord != null) {
             if (mTrailingSingleQuotesCount > 0) {
@@ -403,7 +406,7 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     public boolean hasAutoCorrection() {
-        return mAutoCorrection.hasAutoCorrection();
+        return mHasAutoCorrection;
     }
 
     @Override
