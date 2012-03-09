@@ -263,8 +263,6 @@ public class Suggest implements Dictionary.WordCallback {
     private static final WordComposer sEmptyWordComposer = new WordComposer();
     public SuggestedWords.Builder getBigramPredictionWordBuilder(CharSequence prevWordForBigram,
             final ProximityInfo proximityInfo, final int correctionMode) {
-        final WordComposer wordComposer = sEmptyWordComposer;
-
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         mIsFirstCharCapitalized = false;
         mIsAllUpperCase = false;
@@ -272,14 +270,9 @@ public class Suggest implements Dictionary.WordCallback {
         collectGarbage(mSuggestions, mPrefMaxSuggestions);
         Arrays.fill(mScores, 0);
 
-        final String typedWord = "";
-        final String consideredWord = "";
         // Treating USER_TYPED as UNIGRAM suggestion for logging now.
-        LatinImeLogger.onAddSuggestedWord(typedWord, Suggest.DIC_USER_TYPED,
-                Dictionary.UNIGRAM);
+        LatinImeLogger.onAddSuggestedWord("", Suggest.DIC_USER_TYPED, Dictionary.UNIGRAM);
         mConsideredWord = "";
-
-        final boolean allowsToBeAutoCorrected = false;
 
         if (correctionMode == CORRECTION_FULL_BIGRAM) {
             // At first character typed, search only the bigrams
@@ -292,7 +285,7 @@ public class Suggest implements Dictionary.WordCallback {
                     prevWordForBigram = lowerPrevWord;
                 }
                 for (final Dictionary dictionary : mBigramDictionaries.values()) {
-                    dictionary.getBigrams(wordComposer, prevWordForBigram, this);
+                    dictionary.getBigrams(sEmptyWordComposer, prevWordForBigram, this);
                 }
                 // Nothing entered: return all bigrams for the previous word
                 int insertCount = Math.min(mBigramSuggestions.size(), mPrefMaxSuggestions);
@@ -301,12 +294,11 @@ public class Suggest implements Dictionary.WordCallback {
                 }
             }
         }
-        CharSequence whitelistedWord = null;
 
         StringUtils.removeDupes(mSuggestions);
 
         return new SuggestedWords.Builder().addWords(mSuggestions, null)
-                .setAllowsToBeAutoCorrected(allowsToBeAutoCorrected)
+                .setAllowsToBeAutoCorrected(false)
                 .setHasAutoCorrection(false);
     }
 
