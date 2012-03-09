@@ -281,11 +281,9 @@ public class Suggest implements Dictionary.WordCallback {
         final String consideredWord = mTrailingSingleQuotesCount > 0
                 ? typedWord.substring(0, typedWord.length() - mTrailingSingleQuotesCount)
                 : typedWord;
-        if (typedWord != null) {
-            // Treating USER_TYPED as UNIGRAM suggestion for logging now.
-            LatinImeLogger.onAddSuggestedWord(typedWord, Suggest.DIC_USER_TYPED,
-                    Dictionary.UNIGRAM);
-        }
+        // Treating USER_TYPED as UNIGRAM suggestion for logging now.
+        LatinImeLogger.onAddSuggestedWord(typedWord, Suggest.DIC_USER_TYPED,
+                Dictionary.UNIGRAM);
         mConsideredWord = consideredWord;
 
         if (wordComposer.size() <= 1 && (correctionMode == CORRECTION_FULL_BIGRAM)) {
@@ -344,8 +342,7 @@ public class Suggest implements Dictionary.WordCallback {
                 }
             }
         }
-        final String consideredWordString =
-                consideredWord == null ? null : consideredWord.toString();
+        final String consideredWordString = consideredWord.toString();
 
         CharSequence whitelistedWord = capitalizeWord(mIsAllUpperCase, mIsFirstCharCapitalized,
                 mWhiteListDictionary.getWhitelistedWord(consideredWordString));
@@ -373,9 +370,7 @@ public class Suggest implements Dictionary.WordCallback {
             }
         }
 
-        if (typedWord != null) {
-            mSuggestions.add(0, typedWord.toString());
-        }
+        mSuggestions.add(0, typedWord.toString());
         StringUtils.removeDupes(mSuggestions);
 
         if (DBG) {
