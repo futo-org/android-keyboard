@@ -1816,20 +1816,21 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         } else {
             prevWord = EditingUtils.getPreviousWord(ic, mSettingsValues.mWordSeparators);
         }
+
+        final CharSequence typedWord = mWordComposer.getTypedWord();
+        final int quotesCount = mWordComposer.trailingSingleQuotesCount();
         // getSuggestedWordBuilder handles gracefully a null value of prevWord
         final SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(), mCorrectionMode);
 
         boolean autoCorrectionAvailable = !mInputAttributes.mInputTypeNoAutoCorrect
                 && mSuggest.hasAutoCorrection();
-        final CharSequence typedWord = mWordComposer.getTypedWord();
         // Here, we want to promote a whitelisted word if exists.
         // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
         // but still autocorrected from - in the case the whitelist only capitalizes the word.
         // The whitelist should be case-insensitive, so it's not possible to be consistent with
         // a boolean flag. Right now this is handled with a slight hack in
         // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
-        final int quotesCount = mWordComposer.trailingSingleQuotesCount();
         final boolean allowsToBeAutoCorrected = AutoCorrection.allowsToBeAutoCorrected(
                 mSuggest.getUnigramDictionaries(),
                 // If the typed string ends with a single quote, for dictionary lookup purposes
