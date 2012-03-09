@@ -454,7 +454,8 @@ public class Suggest implements Dictionary.WordCallback {
         autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
         builder.setTypedWordValid(!allowsToBeAutoCorrected).setHasMinimalSuggestion(
                 autoCorrectionAvailable);
-        if (Suggest.shouldBlockAutoCorrectionBySafetyNet(builder, this, mAutoCorrectionThreshold)) {
+        if (Suggest.shouldBlockAutoCorrectionBySafetyNet(builder, this, mAutoCorrectionThreshold,
+                !allowsToBeAutoCorrected)) {
             builder.setShouldBlockAutoCorrectionBySafetyNet();
         }
         return builder;
@@ -609,10 +610,10 @@ public class Suggest implements Dictionary.WordCallback {
     // this safety net
     public static boolean shouldBlockAutoCorrectionBySafetyNet(
             final SuggestedWords.Builder suggestedWordsBuilder, final Suggest suggest,
-            final double autoCorrectionThreshold) {
+            final double autoCorrectionThreshold, final boolean isTypedWordValid) {
         // Safety net for auto correction.
         // Actually if we hit this safety net, it's actually a bug.
-        if (suggestedWordsBuilder.size() <= 1 || suggestedWordsBuilder.isTypedWordValid()) {
+        if (suggestedWordsBuilder.size() <= 1 || isTypedWordValid) {
             return false;
         }
         // If user selected aggressive auto correction mode, there is no need to use the safety

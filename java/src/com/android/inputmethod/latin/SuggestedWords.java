@@ -208,10 +208,6 @@ public class SuggestedWords {
             return mWords.get(pos);
         }
 
-        public boolean isTypedWordValid() {
-            return mTypedWordValid;
-        }
-
         public boolean allowsToBeAutoCorrected() {
             return mAllowsToBeAutoCorrected;
         }
