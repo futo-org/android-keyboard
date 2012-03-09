@@ -1834,13 +1834,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         } else {
             SuggestedWords previousSuggestions = mSuggestionsView.getSuggestions();
             if (previousSuggestions == mSettingsValues.mSuggestPuncList) {
-                if (builder.size() == 0) {
+                if (!mWordComposer.isComposingWord()) {
                     return;
                 }
                 previousSuggestions = SuggestedWords.EMPTY;
             }
-            builder.addTypedWordAndPreviousSuggestions(typedWord, previousSuggestions);
-            showSuggestions(builder.build(), typedWord);
+            final SuggestedWords.Builder obsoleteSuggestionsBuilder = new SuggestedWords.Builder()
+                    .addTypedWordAndPreviousSuggestions(typedWord, previousSuggestions);
+            showSuggestions(obsoleteSuggestionsBuilder.build(), typedWord);
         }
     }
 
