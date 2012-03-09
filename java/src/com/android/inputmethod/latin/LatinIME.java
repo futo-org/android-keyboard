@@ -1857,6 +1857,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 || mSuggestionsView.isShowingAddToDictionaryHint()) {
             builder.setTypedWordValid(!allowsToBeAutoCorrected).setHasMinimalSuggestion(
                     autoCorrectionAvailable);
+            if (Suggest.shouldBlockAutoCorrectionBySafetyNet(builder, mSuggest,
+                    mSettingsValues.mAutoCorrectionThreshold)) {
+                builder.setShouldBlockAutoCorrectionBySafetyNet();
+            }
+            showSuggestions(builder.build(), typedWord);
         } else {
             SuggestedWords previousSuggestions = mSuggestionsView.getSuggestions();
             if (previousSuggestions == mSettingsValues.mSuggestPuncList) {
@@ -1866,12 +1871,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 previousSuggestions = SuggestedWords.EMPTY;
             }
             builder.addTypedWordAndPreviousSuggestions(typedWord, previousSuggestions);
+            showSuggestions(builder.build(), typedWord);
         }
-        if (Suggest.shouldBlockAutoCorrectionBySafetyNet(builder, mSuggest,
-                mSettingsValues.mAutoCorrectionThreshold)) {
-            builder.setShouldBlockAutoCorrectionBySafetyNet();
-        }
-        showSuggestions(builder.build(), typedWord);
     }
 
     public void showSuggestions(final SuggestedWords suggestedWords, final CharSequence typedWord) {
