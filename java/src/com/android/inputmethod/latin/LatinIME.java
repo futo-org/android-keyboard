@@ -2025,7 +2025,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 separatorCode);
     }
 
-    private static final WordComposer sEmptyWordComposer = new WordComposer();
     public void updateBigramPredictions() {
         if (mSuggest == null || !isSuggestionsRequested())
             return;
@@ -2037,8 +2036,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         final CharSequence prevWord = EditingUtils.getThisWord(getCurrentInputConnection(),
                 mSettingsValues.mWordSeparators);
-        SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(sEmptyWordComposer,
-                prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(), mCorrectionMode);
+        SuggestedWords.Builder builder = mSuggest.getBigramPredictionWordBuilder(prevWord,
+                mKeyboardSwitcher.getKeyboard().getProximityInfo(), mCorrectionMode);
 
         if (builder.size() > 0) {
             // Explicitly supply an empty typed word (the no-second-arg version of
