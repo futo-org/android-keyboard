@@ -26,100 +26,14 @@
     <Row
         latin:keyWidth="9.091%p"
     >
-        <!-- U+0447: "ч" CYRILLIC SMALL LETTER CHE -->
-        <Key
-            latin:keyLabel="&#x0447;"
-            latin:keyHintLabel="1"
-            latin:additionalMoreKeys="1" />
-        <!-- U+0448: "ш" CYRILLIC SMALL LETTER SHA -->
-        <Key
-            latin:keyLabel="&#x0448;"
-            latin:keyHintLabel="2"
-            latin:additionalMoreKeys="2" />
-        <!-- U+0435: "е" CYRILLIC SMALL LETTER IE -->
-        <Key
-            latin:keyLabel="&#x0435;"
-            latin:keyHintLabel="3"
-            latin:additionalMoreKeys="3" />
-        <!-- U+0440: "р" CYRILLIC SMALL LETTER ER -->
-        <Key
-            latin:keyLabel="&#x0440;"
-            latin:keyHintLabel="4"
-            latin:additionalMoreKeys="4" />
-        <!-- U+0442: "т" CYRILLIC SMALL LETTER TE -->
-        <Key
-            latin:keyLabel="&#x0442;"
-            latin:keyHintLabel="5"
-            latin:additionalMoreKeys="5" />
-        <!-- U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN -->
-        <Key
-            latin:keyLabel="&#x044A;"
-            latin:keyHintLabel="6"
-            latin:additionalMoreKeys="6" />
-        <!-- U+0443: "у" CYRILLIC SMALL LETTER U -->
-        <Key
-            latin:keyLabel="&#x0443;"
-            latin:keyHintLabel="7"
-            latin:additionalMoreKeys="7" />
-        <!-- U+0438: "и" CYRILLIC SMALL LETTER I
-             U+045D: "ѝ" CYRILLIC SMALL LETTER I WITH GRAVE -->
-        <Key
-            latin:keyLabel="&#x0438;"
-            latin:keyHintLabel="8"
-            latin:additionalMoreKeys="8"
-            latin:moreKeys="&#x045D;" />
-        <!-- U+043E: "о" CYRILLIC SMALL LETTER O -->
-        <Key
-            latin:keyLabel="&#x043E;"
-            latin:keyHintLabel="9"
-            latin:additionalMoreKeys="9" />
-        <!-- U+043F: "п" CYRILLIC SMALL LETTER PE -->
-        <Key
-            latin:keyLabel="&#x043F;"
-            latin:keyHintLabel="0"
-            latin:additionalMoreKeys="0" />
-        <!-- U+044F: "я" CYRILLIC SMALL LETTER YA -->
-        <Key
-            latin:keyLabel="&#x044F;"
-            latin:keyWidth="fillRight" />
+        <include
+            latin:keyboardLayout="@xml/rowkeys_bulgarian1" />
     </Row>
     <Row
             latin:keyWidth="9.091%p"
     >
-        <!-- U+0430: "а" CYRILLIC SMALL LETTER A -->
-        <Key
-            latin:keyLabel="&#x0430;" />
-        <!-- U+0441: "с" CYRILLIC SMALL LETTER ES -->
-        <Key
-            latin:keyLabel="&#x0441;" />
-        <!-- U+0434: "д" CYRILLIC SMALL LETTER DE -->
-        <Key
-            latin:keyLabel="&#x0434;" />
-        <!-- U+0444: "ф" CYRILLIC SMALL LETTER EF -->
-        <Key
-            latin:keyLabel="&#x0444;" />
-        <!-- U+0433: "г" CYRILLIC SMALL LETTER GHE -->
-        <Key
-            latin:keyLabel="&#x0433;" />
-        <!-- U+0445: "х" CYRILLIC SMALL LETTER HA -->
-        <Key
-            latin:keyLabel="&#x0445;" />
-        <!-- U+0439: "й" CYRILLIC SMALL LETTER SHORT I -->
-        <Key
-            latin:keyLabel="&#x0439;" />
-        <!-- U+043A: "к" CYRILLIC SMALL LETTER KA -->
-        <Key
-            latin:keyLabel="&#x043A;" />
-        <!-- U+043B: "л" CYRILLIC SMALL LETTER EL -->
-        <Key
-            latin:keyLabel="&#x043B;" />
-        <!-- U+0449: "щ" CYRILLIC SMALL LETTER SHCHA -->
-        <Key
-            latin:keyLabel="&#x0449;" />
-        <!-- U+044C: "ь" CYRILLIC SMALL LETTER SOFT SIGN -->
-        <Key
-            latin:keyLabel="&#x044C;"
-            latin:keyWidth="fillRight" />
+        <include
+            latin:keyboardLayout="@xml/rowkeys_bulgarian2" />
     </Row>
     <Row
         latin:keyWidth="9.091%p"
@@ -127,30 +41,8 @@
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="13.636%p" />
-        <!-- U+0437: "з" CYRILLIC SMALL LETTER ZE -->
-        <Key
-            latin:keyLabel="&#x0437;" />
-        <!-- U+0436: "ж" CYRILLIC SMALL LETTER ZHE -->
-        <Key
-            latin:keyLabel="&#x0436;" />
-        <!-- U+0446: "ц" CYRILLIC SMALL LETTER TSE -->
-        <Key
-            latin:keyLabel="&#x0446;" />
-        <!-- U+0432: "в" CYRILLIC SMALL LETTER VE -->
-        <Key
-            latin:keyLabel="&#x0432;" />
-        <!-- U+0431: "б" CYRILLIC SMALL LETTER BE -->
-        <Key
-            latin:keyLabel="&#x0431;" />
-        <!-- U+043D: "н" CYRILLIC SMALL LETTER EN -->
-        <Key
-            latin:keyLabel="&#x043D;" />
-        <!-- U+043C: "м" CYRILLIC SMALL LETTER EM -->
-        <Key
-            latin:keyLabel="&#x043C;" />
-        <!-- U+044E: "ю" CYRILLIC SMALL LETTER YU -->
-        <Key
-            latin:keyLabel="&#x044E;" />
+        <include
+            latin:keyboardLayout="@xml/rowkeys_bulgarian3" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight" />
