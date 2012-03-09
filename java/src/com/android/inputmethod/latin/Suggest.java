@@ -388,7 +388,11 @@ public class Suggest implements Dictionary.WordCallback {
         StringUtils.removeDupes(mSuggestions);
 
         if (DBG) {
-            double normalizedScore = mAutoCorrection.getNormalizedScore();
+            final CharSequence autoCorrectionSuggestion = mSuggestions.get(0);
+            final int autoCorrectionSuggestionScore = mScores[0];
+            double normalizedScore = BinaryDictionary.calcNormalizedScore(
+                    typedWord.toString(), autoCorrectionSuggestion.toString(),
+                    autoCorrectionSuggestionScore);
             ArrayList<SuggestedWords.SuggestedWordInfo> scoreInfoList =
                     new ArrayList<SuggestedWords.SuggestedWordInfo>();
             scoreInfoList.add(new SuggestedWords.SuggestedWordInfo("+", false));

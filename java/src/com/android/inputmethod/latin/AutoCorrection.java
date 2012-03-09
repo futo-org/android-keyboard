@@ -118,15 +118,15 @@ public class AutoCorrection {
             final int autoCorrectionSuggestionScore = sortedScores[0];
             // TODO: when the normalized score of the first suggestion is nearly equals to
             //       the normalized score of the second suggestion, behave less aggressive.
-            mNormalizedScore = BinaryDictionary.calcNormalizedScore(
+            final double normalizedScore = BinaryDictionary.calcNormalizedScore(
                     typedWord.toString(), autoCorrectionSuggestion.toString(),
                     autoCorrectionSuggestionScore);
             if (DBG) {
                 Log.d(TAG, "Normalized " + typedWord + "," + autoCorrectionSuggestion + ","
-                        + autoCorrectionSuggestionScore + ", " + mNormalizedScore
+                        + autoCorrectionSuggestionScore + ", " + normalizedScore
                         + "(" + autoCorrectionThreshold + ")");
             }
-            if (mNormalizedScore >= autoCorrectionThreshold) {
+            if (normalizedScore >= autoCorrectionThreshold) {
                 if (DBG) {
                     Log.d(TAG, "Auto corrected by S-threshold.");
                 }
