@@ -1284,7 +1284,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private void handleLanguageSwitchKey() {
-        final boolean includesOtherImes = !mSettingsValues.mIncludesOtherImesInLanguageSwitchList;
+        final boolean includesOtherImes = mSettingsValues.mIncludesOtherImesInLanguageSwitchList;
         final IBinder token = getWindow().getWindow().getAttributes().token;
         if (mShouldSwitchToLastSubtype) {
             final InputMethodSubtypeCompatWrapper lastSubtype = mImm.getLastInputMethodSubtype();
