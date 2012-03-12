@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2011, The Android Open Source Project
+** Copyright 2012, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -23,43 +23,49 @@
 >
     <include
         latin:keyboardLayout="@xml/key_styles_common" />
+    <include
+        latin:keyboardLayout="@xml/key_styles_currency" />
     <Row
-        latin:keyWidth="8.5%p"
+        latin:keyWidth="8.282%p"
     >
+        <Key
+            latin:keyStyle="tabKeyStyle"
+            latin:keyLabelFlags="alignLeft"
+            latin:keyWidth="7.969%p" />
         <include
-            latin:keyboardLayout="@xml/rowkeys_qwerty1"
-            latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
+            latin:keyboardLayout="@xml/rowkeys_symbols_shift1" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyXPos="-10.0%p"
+            latin:keyXPos="-9.219%p"
             latin:keyWidth="fillBoth" />
     </Row>
     <Row
-        latin:keyWidth="8.5%p"
+        latin:keyWidth="8.125%p"
     >
+        <Key
+            latin:keyStyle="toAlphaKeyStyle"
+            latin:keyLabelFlags="alignLeft"
+            latin:keyWidth="10.167%p" />
         <include
-            latin:keyboardLayout="@xml/rowkeys_spanish2"
-            latin:keyXPos="4.5%p" />
+            latin:keyboardLayout="@xml/rowkeys_symbols_shift2" />
         <Key
             latin:keyStyle="enterKeyStyle"
-            latin:keyXPos="-14.6%p"
+            latin:keyXPos="-15.704%p"
             latin:keyWidth="fillBoth" />
     </Row>
     <Row
-        latin:keyWidth="8.5%p"
+        latin:keyWidth="8.047%p"
     >
         <Key
-            latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="10.0%p" />
+            latin:keyStyle="backFromMoreSymbolKeyStyle"
+            latin:keyWidth="13.829%p" />
         <include
-            latin:keyboardLayout="@xml/rowkeys_qwerty3" />
-        <include
-            latin:keyboardLayout="@xml/keys_comma_period" />
-        <include
-            latin:keyboardLayout="@xml/key_smiley"
-            latin:keyXPos="-8.5%p"
-            latin:keyWidth="fillRight" />
+            latin:keyboardLayout="@xml/rowkeys_symbols_shift3" />
+        <Key
+            latin:keyStyle="backFromMoreSymbolKeyStyle"
+            latin:keyXPos="-13.750%p"
+            latin:keyWidth="fillBoth" />
     </Row>
     <include
-        latin:keyboardLayout="@xml/row_qwerty4" />
+        latin:keyboardLayout="@xml/rows_symbols_shift4" />
 </merge>

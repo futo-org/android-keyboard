@@ -26,10 +26,10 @@
         latin:elementKeyboard="@xml/kbd_azerty" />
     <Element
         latin:elementName="symbols"
-        latin:elementKeyboard="@xml/kbd_symbols" />
+        latin:elementKeyboard="@xml/kbd_azerty_symbols" />
     <Element
         latin:elementName="symbolsShifted"
-        latin:elementKeyboard="@xml/kbd_symbols_shift" />
+        latin:elementKeyboard="@xml/kbd_azerty_symbols_shift" />
     <Element
         latin:elementName="phone"
         latin:elementKeyboard="@xml/kbd_phone" />

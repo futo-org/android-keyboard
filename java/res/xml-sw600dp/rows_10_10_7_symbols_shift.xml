@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2011, The Android Open Source Project
+** Copyright 2012, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -23,12 +23,13 @@
 >
     <include
         latin:keyboardLayout="@xml/key_styles_common" />
+    <include
+        latin:keyboardLayout="@xml/key_styles_currency" />
     <Row
         latin:keyWidth="8.5%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_qwerty1"
-            latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
+            latin:keyboardLayout="@xml/rowkeys_symbols_shift1" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-10.0%p"
@@ -38,7 +39,7 @@
         latin:keyWidth="8.5%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_spanish2"
+            latin:keyboardLayout="@xml/rowkeys_symbols_shift2"
             latin:keyXPos="4.5%p" />
         <Key
             latin:keyStyle="enterKeyStyle"
@@ -49,17 +50,11 @@
         latin:keyWidth="8.5%p"
     >
         <Key
-            latin:keyStyle="shiftKeyStyle"
+            latin:keyStyle="backFromMoreSymbolKeyStyle"
             latin:keyWidth="10.0%p" />
         <include
-            latin:keyboardLayout="@xml/rowkeys_qwerty3" />
-        <include
-            latin:keyboardLayout="@xml/keys_comma_period" />
-        <include
-            latin:keyboardLayout="@xml/key_smiley"
-            latin:keyXPos="-8.5%p"
-            latin:keyWidth="fillRight" />
+            latin:keyboardLayout="@xml/rowkeys_symbols_shift3" />
     </Row>
     <include
-        latin:keyboardLayout="@xml/row_qwerty4" />
+        latin:keyboardLayout="@xml/rows_symbols_shift4" />
 </merge>
