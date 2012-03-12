@@ -131,11 +131,13 @@ public class SuggestedWords {
             return this;
         }
 
-        public Builder setApplicationSpecifiedCompletions(CompletionInfo[] infos) {
+        public static List<CharSequence> getFromApplicationSpecifiedCompletions(
+                final CompletionInfo[] infos) {
+            final ArrayList<CharSequence> result = new ArrayList<CharSequence>();
             for (CompletionInfo info : infos) {
-                if (null != info) addWord(info.getText());
+                if (null != info) result.add(info.getText());
             }
-            return this;
+            return result;
         }
 
         public Builder setTypedWordValid(boolean typedWordValid) {
