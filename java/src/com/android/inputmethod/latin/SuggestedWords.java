@@ -122,7 +122,8 @@ public class SuggestedWords {
             return addWord(word, info);
         }
 
-        private Builder addWord(CharSequence word, SuggestedWordInfo suggestedWordInfo) {
+        /* package for tests */
+        Builder addWord(CharSequence word, SuggestedWordInfo suggestedWordInfo) {
             if (!TextUtils.isEmpty(word)) {
                 mWords.add(word);
                 // It's okay if suggestedWordInfo is null since it's checked where it's used.
