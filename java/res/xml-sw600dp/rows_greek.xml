@@ -29,7 +29,8 @@
         <include
             latin:keyboardLayout="@xml/key_greek_semicolon" />
         <include
-            latin:keyboardLayout="@xml/rowkeys_greek1" />
+            latin:keyboardLayout="@xml/rowkeys_greek1"
+            latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-10.0%p"

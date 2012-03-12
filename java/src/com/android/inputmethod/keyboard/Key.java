@@ -73,6 +73,8 @@ public class Key {
     private static final int LABEL_FLAGS_PRESERVE_CASE = 0x8000;
     private static final int LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED = 0x10000;
     private static final int LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL = 0x20000;
+    private static final int LABEL_FLAGS_DISABLE_HINT_LABEL = 0x40000000;
+    private static final int LABEL_FLAGS_DISABLE_ADDITIONAL_MORE_KEYS = 0x80000000;
 
     /** Icon to display instead of a label. Icon takes precedence over a label */
     private final int mIconId;
@@ -240,7 +242,8 @@ public class Key {
         mDisabledIconId = style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_keyIconDisabled, KeyboardIconsSet.ICON_UNDEFINED);
 
-        mLabelFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags);
+        mLabelFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags)
+                | row.getDefaultKeyLabelFlags();
         final boolean preserveCase = (mLabelFlags & LABEL_FLAGS_PRESERVE_CASE) != 0;
         int actionFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyActionFlags);
         String[] moreKeys = style.getStringArray(keyAttr, R.styleable.Keyboard_Key_moreKeys);
@@ -265,8 +268,13 @@ public class Key {
         }
         mMoreKeysColumnAndFlags = moreKeysColumn;
 
-        final String[] additionalMoreKeys = style.getStringArray(
-                keyAttr, R.styleable.Keyboard_Key_additionalMoreKeys);
+        final String[] additionalMoreKeys;
+        if ((mLabelFlags & LABEL_FLAGS_DISABLE_ADDITIONAL_MORE_KEYS) != 0) {
+            additionalMoreKeys = null;
+        } else {
+            additionalMoreKeys = style.getStringArray(
+                    keyAttr, R.styleable.Keyboard_Key_additionalMoreKeys);
+        }
         moreKeys = KeySpecParser.insertAddtionalMoreKeys(moreKeys, additionalMoreKeys);
         if (moreKeys != null) {
             actionFlags |= ACTION_FLAGS_ENABLE_LONG_PRESS;
@@ -284,8 +292,12 @@ public class Key {
             mLabel = adjustCaseOfStringForKeyboardId(style.getString(
                     keyAttr, R.styleable.Keyboard_Key_keyLabel), preserveCase, params.mId);
         }
-        mHintLabel = adjustCaseOfStringForKeyboardId(style.getString(
-                keyAttr, R.styleable.Keyboard_Key_keyHintLabel), preserveCase, params.mId);
+        if ((mLabelFlags & LABEL_FLAGS_DISABLE_HINT_LABEL) != 0) {
+            mHintLabel = null;
+        } else {
+            mHintLabel = adjustCaseOfStringForKeyboardId(style.getString(
+                    keyAttr, R.styleable.Keyboard_Key_keyHintLabel), preserveCase, params.mId);
+        }
         String outputText = adjustCaseOfStringForKeyboardId(style.getString(
                 keyAttr, R.styleable.Keyboard_Key_keyOutputText), preserveCase, params.mId);
         final int code = style.getInt(

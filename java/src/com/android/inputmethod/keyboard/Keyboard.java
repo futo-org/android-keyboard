@@ -505,6 +505,8 @@ public class Keyboard {
             private float mDefaultKeyWidth;
             /** Default height of a key in this row. */
             public final int mRowHeight;
+            /** Default keyLabelFlags in this row. */
+            private int mDefaultKeyLabelFlags;
 
             private final int mCurrentY;
             // Will be updated by {@link Key}'s constructor.
@@ -525,6 +527,7 @@ public class Keyboard {
                         params.mBaseWidth, params.mDefaultKeyWidth);
                 keyAttr.recycle();
 
+                mDefaultKeyLabelFlags = 0;
                 mCurrentY = y;
                 mCurrentX = 0.0f;
             }
@@ -535,6 +538,14 @@ public class Keyboard {
 
             public void setDefaultKeyWidth(float defaultKeyWidth) {
                 mDefaultKeyWidth = defaultKeyWidth;
+            }
+
+            public int getDefaultKeyLabelFlags() {
+                return mDefaultKeyLabelFlags;
+            }
+
+            public void setDefaultKeyLabelFlags(int keyLabelFlags) {
+                mDefaultKeyLabelFlags = keyLabelFlags;
             }
 
             public void setXPos(float keyXPos) {
@@ -927,6 +938,7 @@ public class Keyboard {
                         R.styleable.Keyboard_Key);
                 int keyboardLayout = 0;
                 float savedDefaultKeyWidth = 0;
+                int savedDefaultKeyLabelFlags = 0;
                 try {
                     XmlParseUtils.checkAttributeExists(keyboardAttr,
                             R.styleable.Keyboard_Include_keyboardLayout, "keyboardLayout",
@@ -935,6 +947,7 @@ public class Keyboard {
                             R.styleable.Keyboard_Include_keyboardLayout, 0);
                     if (row != null) {
                         savedDefaultKeyWidth = row.getDefaultKeyWidth();
+                        savedDefaultKeyLabelFlags = row.getDefaultKeyLabelFlags();
                         if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyXPos)) {
                             // Override current x coordinate.
                             row.setXPos(row.getKeyX(keyAttr));
@@ -942,6 +955,12 @@ public class Keyboard {
                         if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyWidth)) {
                             // Override default key width.
                             row.setDefaultKeyWidth(row.getKeyWidth(keyAttr));
+                        }
+                        if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyLabelFlags)) {
+                            // Override default key label flags.
+                            row.setDefaultKeyLabelFlags(
+                                    keyAttr.getInt(R.styleable.Keyboard_Key_keyLabelFlags, 0)
+                                    | savedDefaultKeyLabelFlags);
                         }
                     }
                 } finally {
@@ -959,8 +978,9 @@ public class Keyboard {
                     parseMerge(parserForInclude, row, skip);
                 } finally {
                     if (row != null) {
-                        // Restore default key width.
+                        // Restore default key width and key label flags.
                         row.setDefaultKeyWidth(savedDefaultKeyWidth);
+                        row.setDefaultKeyLabelFlags(savedDefaultKeyLabelFlags);
                     }
                     parserForInclude.close();
                 }
