@@ -31,6 +31,8 @@
             latin:keyLabelFlags="alignLeft"
             latin:keyWidth="7.969%p" />
         <include
+            latin:keyboardLayout="@xml/key_greek_semicolon" />
+        <include
             latin:keyboardLayout="@xml/rowkeys_greek1" />
     </Row>
     <Row

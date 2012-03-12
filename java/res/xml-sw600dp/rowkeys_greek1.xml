@@ -21,12 +21,7 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <Key
-        latin:keyLabel=";"
-        latin:keyHintLabel=":"
-        latin:moreKeys=":"
-        latin:keyStyle="hasShiftedLetterHintStyle" />
-    <!-- TODO: Should find a way to compound Greek dialytika tonos and other Greek letters. -->
+   <!-- TODO: Should find a way to compound Greek dialytika tonos and other Greek letters. -->
     <!--
     <switch>
         <case
