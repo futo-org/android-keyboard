@@ -23,7 +23,7 @@
     latin:keyboardLocale="uk">
     <Element
         latin:elementName="alphabet"
-        latin:elementKeyboard="@xml/kbd_slavic" />
+        latin:elementKeyboard="@xml/kbd_east_slavic" />
     <Element
         latin:elementName="symbols"
         latin:elementKeyboard="@xml/kbd_symbols" />

@@ -18,25 +18,9 @@
 */
 -->
 
-<KeyboardSet
+<Keyboard
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-    latin:keyboardLocale="nb">
-    <Element
-        latin:elementName="alphabet"
-        latin:elementKeyboard="@xml/kbd_nordic" />
-    <Element
-        latin:elementName="symbols"
-        latin:elementKeyboard="@xml/kbd_symbols" />
-    <Element
-        latin:elementName="symbolsShifted"
-        latin:elementKeyboard="@xml/kbd_symbols_shift" />
-    <Element
-        latin:elementName="phone"
-        latin:elementKeyboard="@xml/kbd_phone" />
-    <Element
-        latin:elementName="phoneSymbols"
-        latin:elementKeyboard="@xml/kbd_phone_symbols" />
-    <Element
-        latin:elementName="number"
-        latin:elementKeyboard="@xml/kbd_number" />
-</KeyboardSet>
+>
+    <include
+        latin:keyboardLayout="@xml/rows_south_slavic" />
+</Keyboard>

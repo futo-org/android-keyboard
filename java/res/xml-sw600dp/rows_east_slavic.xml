@@ -27,7 +27,7 @@
         latin:keyWidth="7.60%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_slavic1" />
+            latin:keyboardLayout="@xml/rowkeys_east_slavic1" />
         <!-- U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN -->
         <Key
             latin:keyLabel="&#x044A;" />
@@ -40,7 +40,7 @@
         latin:keyWidth="7.60%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_slavic2"
+            latin:keyboardLayout="@xml/rowkeys_east_slavic2"
             latin:keyXPos="2.25%p" />
         <Key
             latin:keyStyle="enterKeyStyle"
@@ -53,7 +53,7 @@
         <Key
             latin:keyStyle="shiftKeyStyle" />
         <include
-            latin:keyboardLayout="@xml/rowkeys_slavic3" />
+            latin:keyboardLayout="@xml/rowkeys_east_slavic3" />
         <include
             latin:keyboardLayout="@xml/keys_comma_period" />
         <include

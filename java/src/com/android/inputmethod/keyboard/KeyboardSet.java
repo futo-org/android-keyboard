@@ -379,6 +379,8 @@ public class KeyboardSet {
         }
     }
 
+    // TODO: Should be removed. This is no longer required if {@link InputMethodSubtype} is
+    // supported.
     public static String parseKeyboardLocale(Resources res, int resId)
             throws XmlPullParserException, IOException {
         final XmlPullParser parser = res.getXml(resId);
