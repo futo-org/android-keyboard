@@ -31,7 +31,6 @@
             latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyXPos="-10.0%p"
             latin:keyWidth="fillBoth" />
     </Row>
     <Row
@@ -42,7 +41,6 @@
             latin:keyXPos="4.5%p" />
         <Key
             latin:keyStyle="enterKeyStyle"
-            latin:keyXPos="-14.6%p"
             latin:keyWidth="fillBoth" />
     </Row>
     <Row

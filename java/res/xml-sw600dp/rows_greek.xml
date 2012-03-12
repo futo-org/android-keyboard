@@ -33,7 +33,6 @@
             latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyXPos="-10.0%p"
             latin:keyWidth="fillBoth" />
     </Row>
     <Row
@@ -44,11 +43,10 @@
             latin:keyXPos="4.5%p" />
         <Key
             latin:keyStyle="enterKeyStyle"
-            latin:keyXPos="-14.6%p"
             latin:keyWidth="fillBoth" />
     </Row>
     <Row
-        latin:keyWidth="8.9%p"
+        latin:keyWidth="9.0%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
@@ -59,8 +57,8 @@
             latin:keyboardLayout="@xml/keys_comma_period" />
         <include
             latin:keyboardLayout="@xml/key_smiley"
-            latin:keyXPos="-8.9%p"
-            latin:keyWidth="fillBoth" />
+            latin:keyXPos="-9.0%p"
+            latin:keyWidth="fillRight" />
     </Row>
     <include
         latin:keyboardLayout="@xml/row_qwerty4" />
