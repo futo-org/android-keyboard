@@ -329,7 +329,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             } else {
                 color = mColorTypedWord;
             }
-            if (LatinImeLogger.sDBG) {
+            if (LatinImeLogger.sDBG && suggestedWords.size() > 1) {
                 // If we auto-correct, then the autocorrection is in slot 0 and the typed word
                 // is in slot 1.
                 if (index == mCenterSuggestionIndex && suggestedWords.mHasAutoCorrectionCandidate
