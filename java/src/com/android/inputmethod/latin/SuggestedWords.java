@@ -20,30 +20,23 @@ import android.text.TextUtils;
 import android.view.inputmethod.CompletionInfo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
 public class SuggestedWords {
-    public static final SuggestedWords EMPTY = new SuggestedWords(null, false, false, false, false,
-            null);
+    public static final SuggestedWords EMPTY = new SuggestedWords(false, false, false, false,
+            Collections.<SuggestedWordInfo>emptyList());
 
-    private final List<CharSequence> mWords;
     public final boolean mTypedWordValid;
     public final boolean mHasAutoCorrectionCandidate;
     public final boolean mIsPunctuationSuggestions;
     private final List<SuggestedWordInfo> mSuggestedWordInfoList;
 
-    SuggestedWords(List<CharSequence> words, boolean typedWordValid,
+    SuggestedWords(boolean typedWordValid,
             boolean hasAutoCorrectionCandidate, boolean isPunctuationSuggestions,
             boolean shouldBlockAutoCorrectionBySafetyNet,
             List<SuggestedWordInfo> suggestedWordInfoList) {
-        if (words != null) {
-            mWords = words;
-        } else {
-            mWords = Collections.emptyList();
-        }
         mTypedWordValid = typedWordValid;
         mHasAutoCorrectionCandidate = hasAutoCorrectionCandidate
                 && !shouldBlockAutoCorrectionBySafetyNet;
@@ -52,11 +45,11 @@ public class SuggestedWords {
     }
 
     public int size() {
-        return mWords.size();
+        return mSuggestedWordInfoList.size();
     }
 
     public CharSequence getWord(int pos) {
-        return mWords.get(pos);
+        return mSuggestedWordInfoList.get(pos).mWord;
     }
 
     public SuggestedWordInfo getInfo(int pos) {
@@ -77,12 +70,10 @@ public class SuggestedWords {
         return "SuggestedWords:"
                 + " mTypedWordValid=" + mTypedWordValid
                 + " mHasAutoCorrectionCandidate=" + mHasAutoCorrectionCandidate
-                + " mIsPunctuationSuggestions=" + mIsPunctuationSuggestions
-                + " mWords=" + Arrays.toString(mWords.toArray());
+                + " mIsPunctuationSuggestions=" + mIsPunctuationSuggestions;
     }
 
     public static class Builder {
-        private List<CharSequence> mWords = new ArrayList<CharSequence>();
         private boolean mTypedWordValid;
         private boolean mHasMinimalSuggestion;
         private boolean mIsPunctuationSuggestions;
@@ -100,14 +91,15 @@ public class SuggestedWords {
                 List<SuggestedWordInfo> suggestedWordInfoList) {
             final int N = words.size();
             for (int i = 0; i < N; ++i) {
+                final CharSequence word = words.get(i);
                 SuggestedWordInfo suggestedWordInfo = null;
                 if (suggestedWordInfoList != null) {
                     suggestedWordInfo = suggestedWordInfoList.get(i);
                 }
                 if (suggestedWordInfo == null) {
-                    suggestedWordInfo = new SuggestedWordInfo();
+                    suggestedWordInfo = new SuggestedWordInfo(word);
                 }
-                addWord(words.get(i), suggestedWordInfo);
+                addWord(word, suggestedWordInfo);
             }
             return this;
         }
@@ -118,14 +110,14 @@ public class SuggestedWords {
 
         public Builder addWord(CharSequence word, CharSequence debugString,
                 boolean isPreviousSuggestedWord) {
-            SuggestedWordInfo info = new SuggestedWordInfo(debugString, isPreviousSuggestedWord);
+            SuggestedWordInfo info = new SuggestedWordInfo(word, debugString,
+                    isPreviousSuggestedWord);
             return addWord(word, info);
         }
 
         /* package for tests */
         Builder addWord(CharSequence word, SuggestedWordInfo suggestedWordInfo) {
-            if (!TextUtils.isEmpty(word)) {
-                mWords.add(word);
+            if (!TextUtils.isEmpty(suggestedWordInfo.mWord)) {
                 // It's okay if suggestedWordInfo is null since it's checked where it's used.
                 mSuggestedWordInfoList.add(suggestedWordInfo);
             }
@@ -175,7 +167,6 @@ public class SuggestedWords {
         // and replace it with what the user currently typed.
         public Builder addTypedWordAndPreviousSuggestions(CharSequence typedWord,
                 SuggestedWords previousSuggestions) {
-            mWords.clear();
             mSuggestedWordInfoList.clear();
             final HashSet<String> alreadySeen = new HashSet<String>();
             addWord(typedWord, null, false);
@@ -195,17 +186,17 @@ public class SuggestedWords {
         }
 
         public SuggestedWords build() {
-            return new SuggestedWords(mWords, mTypedWordValid, mHasMinimalSuggestion,
+            return new SuggestedWords(mTypedWordValid, mHasMinimalSuggestion,
                     mIsPunctuationSuggestions, mShouldBlockAutoCorrectionBySafetyNet,
                     mSuggestedWordInfoList);
         }
 
         public int size() {
-            return mWords.size();
+            return mSuggestedWordInfoList.size();
         }
 
         public CharSequence getWord(int pos) {
-            return mWords.get(pos);
+            return mSuggestedWordInfoList.get(pos).mWord;
         }
 
         public boolean allowsToBeAutoCorrected() {
@@ -224,21 +215,24 @@ public class SuggestedWords {
                     + " mHasMinimalSuggestion=" + mHasMinimalSuggestion
                     + " mIsPunctuationSuggestions=" + mIsPunctuationSuggestions
                     + " mShouldBlockAutoCorrectionBySafetyNet="
-                    + mShouldBlockAutoCorrectionBySafetyNet
-                    + " mWords=" + Arrays.toString(mWords.toArray());
+                    + mShouldBlockAutoCorrectionBySafetyNet;
         }
     }
 
     public static class SuggestedWordInfo {
+        private final CharSequence mWord;
         private final CharSequence mDebugString;
         private final boolean mPreviousSuggestedWord;
 
-        public SuggestedWordInfo() {
+        public SuggestedWordInfo(final CharSequence word) {
+            mWord = word;
             mDebugString = "";
             mPreviousSuggestedWord = false;
         }
 
-        public SuggestedWordInfo(CharSequence debugString, boolean previousSuggestedWord) {
+        public SuggestedWordInfo(final CharSequence word, final CharSequence debugString,
+                final boolean previousSuggestedWord) {
+            mWord = word;
             mDebugString = debugString;
             mPreviousSuggestedWord = previousSuggestedWord;
         }
