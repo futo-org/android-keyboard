@@ -27,7 +27,8 @@
         latin:keyWidth="7.60%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_east_slavic1" />
+            latin:keyboardLayout="@xml/rowkeys_east_slavic1"
+            latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
         <!-- U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN -->
         <Key
             latin:keyLabel="&#x044A;" />

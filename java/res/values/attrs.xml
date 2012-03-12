@@ -281,6 +281,10 @@
             <flag name="shiftedLetterActivated" value="0x10000" />
             <!-- If true, use EditorInfo.actionLabel for the key label. -->
             <flag name="fromCustomActionLabel" value="0x20000" />
+            <!-- If true, disable keyHintLabel. -->
+            <flag name="disableKeyHintLabel" value="0x40000000" />
+            <!-- If true, disable additionalMoreKeys. -->
+            <flag name="disableAdditionalMoreKeys" value="0x80000000" />
         </attr>
         <!-- The icon to display on the key instead of the label. -->
         <attr name="keyIcon" format="enum">

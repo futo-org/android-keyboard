@@ -30,7 +30,8 @@
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelFlags="alignLeft" />
         <include
-            latin:keyboardLayout="@xml/rowkeys_bulgarian1" />
+            latin:keyboardLayout="@xml/rowkeys_bulgarian1"
+            latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillBoth" />

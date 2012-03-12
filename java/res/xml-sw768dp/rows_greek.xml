@@ -33,7 +33,8 @@
         <include
             latin:keyboardLayout="@xml/key_greek_semicolon" />
         <include
-            latin:keyboardLayout="@xml/rowkeys_greek1" />
+            latin:keyboardLayout="@xml/rowkeys_greek1"
+            latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
     </Row>
     <Row
         latin:keyWidth="8.125%p"
