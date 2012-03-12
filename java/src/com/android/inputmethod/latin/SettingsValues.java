@@ -28,6 +28,7 @@ import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.VibratorCompatWrapper;
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -174,28 +175,34 @@ public class SettingsValues {
     }
 
     private static SuggestedWords createSuggestPuncList(final String[] puncs) {
-        final SuggestedWords.Builder builder = new SuggestedWords.Builder();
+        final ArrayList<CharSequence> puncList = new ArrayList<CharSequence>();
         if (puncs != null) {
             for (final String puncSpec : puncs) {
-                builder.addWord(KeySpecParser.getLabel(puncSpec));
+                puncList.add(KeySpecParser.getLabel(puncSpec));
             }
         }
-        return builder.setIsPunctuationSuggestions().build();
+        final SuggestedWords.Builder builder = new SuggestedWords.Builder()
+                .addWords(puncList, null)
+                .setIsPunctuationSuggestions();
+        return builder.build();
     }
 
     private static SuggestedWords createSuggestPuncOutputTextList(final String[] puncs) {
-        final SuggestedWords.Builder builder = new SuggestedWords.Builder();
+        final ArrayList<CharSequence> puncOutputTextList = new ArrayList<CharSequence>();
         if (puncs != null) {
             for (final String puncSpec : puncs) {
                 final String outputText = KeySpecParser.getOutputText(puncSpec);
                 if (outputText != null) {
-                    builder.addWord(outputText);
+                    puncOutputTextList.add(outputText);
                 } else {
-                    builder.addWord(KeySpecParser.getLabel(puncSpec));
+                    puncOutputTextList.add(KeySpecParser.getLabel(puncSpec));
                 }
             }
         }
-        return builder.setIsPunctuationSuggestions().build();
+        final SuggestedWords.Builder builder = new SuggestedWords.Builder()
+                .addWords(puncOutputTextList, null)
+                .setIsPunctuationSuggestions();
+        return builder.build();
     }
 
     private static String createWordSeparators(final String weakSpaceStrippers,
