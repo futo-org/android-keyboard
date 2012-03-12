@@ -413,6 +413,8 @@ public class Suggest implements Dictionary.WordCallback {
 
         final SuggestedWords.Builder builder;
         if (DBG) {
+            // TODO: this doesn't take into account the fact that removing dupes from mSuggestions
+            // may have made mScores[] and mSuggestions out of sync.
             final CharSequence autoCorrectionSuggestion = mSuggestions.get(0);
             final int autoCorrectionSuggestionScore = mScores[0];
             double normalizedScore = BinaryDictionary.calcNormalizedScore(
@@ -420,21 +422,28 @@ public class Suggest implements Dictionary.WordCallback {
                     autoCorrectionSuggestionScore);
             ArrayList<SuggestedWords.SuggestedWordInfo> scoreInfoList =
                     new ArrayList<SuggestedWords.SuggestedWordInfo>();
-            scoreInfoList.add(new SuggestedWords.SuggestedWordInfo("+", false));
-            for (int i = 0; i < mScores.length; ++i) {
+            scoreInfoList.add(new SuggestedWords.SuggestedWordInfo(autoCorrectionSuggestion, "+",
+                    false));
+            final int suggestionsSize = mSuggestions.size();
+            // Note: i here is the index in mScores[], but the index in mSuggestions is one more
+            // than i because we added the typed word to mSuggestions without touching mScores.
+            for (int i = 0; i < mScores.length && i < suggestionsSize - 1; ++i) {
                 if (normalizedScore > 0) {
                     final String scoreThreshold = String.format("%d (%4.2f)", mScores[i],
                             normalizedScore);
                     scoreInfoList.add(
-                            new SuggestedWords.SuggestedWordInfo(scoreThreshold, false));
+                            new SuggestedWords.SuggestedWordInfo(mSuggestions.get(i + 1),
+                                    scoreThreshold, false));
                     normalizedScore = 0.0;
                 } else {
                     final String score = Integer.toString(mScores[i]);
-                    scoreInfoList.add(new SuggestedWords.SuggestedWordInfo(score, false));
+                    scoreInfoList.add(new SuggestedWords.SuggestedWordInfo(mSuggestions.get(i + 1),
+                            score, false));
                 }
             }
-            for (int i = mScores.length; i < mSuggestions.size(); ++i) {
-                scoreInfoList.add(new SuggestedWords.SuggestedWordInfo("--", false));
+            for (int i = mScores.length; i < suggestionsSize; ++i) {
+                scoreInfoList.add(new SuggestedWords.SuggestedWordInfo(mSuggestions.get(i),
+                        "--", false));
             }
             builder = new SuggestedWords.Builder().addWords(mSuggestions, scoreInfoList)
                     .setAllowsToBeAutoCorrected(allowsToBeAutoCorrected)
