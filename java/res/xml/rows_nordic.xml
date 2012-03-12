@@ -27,13 +27,13 @@
         latin:keyWidth="9.091%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_scandinavian1" />
+            latin:keyboardLayout="@xml/rowkeys_nordic1" />
     </Row>
     <Row
         latin:keyWidth="9.091%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_scandinavian2" />
+            latin:keyboardLayout="@xml/rowkeys_nordic2" />
     </Row>
     <Row
         latin:keyWidth="10%p"

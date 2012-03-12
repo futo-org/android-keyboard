@@ -27,13 +27,13 @@
         latin:keyWidth="9.091%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_slavic1" />
+            latin:keyboardLayout="@xml/rowkeys_south_slavic1" />
     </Row>
     <Row
-            latin:keyWidth="9.091%p"
+        latin:keyWidth="9.091%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_slavic2" />
+            latin:keyboardLayout="@xml/rowkeys_south_slavic2" />
     </Row>
     <Row
         latin:keyWidth="8.5%p"
@@ -42,7 +42,7 @@
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="11.75%p" />
         <include
-            latin:keyboardLayout="@xml/rowkeys_slavic3" />
+            latin:keyboardLayout="@xml/rowkeys_south_slavic3" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight" />
