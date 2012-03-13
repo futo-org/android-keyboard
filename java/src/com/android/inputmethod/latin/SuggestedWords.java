@@ -170,7 +170,7 @@ public class SuggestedWords {
     }
 
     public static class SuggestedWordInfo {
-        private final CharSequence mWord;
+        public final CharSequence mWord;
         private final CharSequence mDebugString;
         private final boolean mPreviousSuggestedWord;
 
