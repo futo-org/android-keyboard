@@ -179,15 +179,12 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 SettingsValues.isKeyPreviewPopupEnabled(mPrefs, mResources),
                 SettingsValues.getKeyPreviewPopupDismissDelay(mPrefs, mResources));
         mKeyboardView.updateAutoCorrectionState(mIsAutoCorrectionActive);
-        // If the cached keyboard had been switched to another keyboard while the language was
-        // displayed on its spacebar, it might have had arbitrary text fade factor. In such
-        // case, we should reset the text fade factor. It is also applicable to shortcut key.
-        mKeyboardView.updateSpacebar(0.0f,
-                mSubtypeSwitcher.needsToDisplayLanguage(keyboard.mId.mLocale));
         mKeyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
+        final boolean needsToDisplayLanguage = mSubtypeSwitcher.needsToDisplayLanguage(
+                keyboard.mId.mLocale);
         final boolean localeChanged = (oldKeyboard == null)
                 || !keyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
-        mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
+        mKeyboardView.startDisplayLanguageOnSpacebar(localeChanged, needsToDisplayLanguage);
     }
 
     public Keyboard getKeyboard() {
