@@ -1769,6 +1769,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // getSuggestedWordBuilder handles gracefully a null value of prevWord
         final SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(), mCorrectionMode);
+        final SuggestedWords suggestions = builder.build();
 
         // Basically, we update the suggestion strip only when suggestion count > 1.  However,
         // there is an exception: We update the suggestion strip whenever typed word's length
@@ -1776,9 +1777,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // in most cases, suggestion count is 1 when typed word's length is 1, but we do always
         // need to clear the previous state when the user starts typing a word (i.e. typed word's
         // length == 1).
-        if (builder.size() > 1 || typedWord.length() == 1 || !builder.allowsToBeAutoCorrected()
+        if (suggestions.size() > 1 || typedWord.length() == 1
+                || !suggestions.mAllowsToBeAutoCorrected
                 || mSuggestionsView.isShowingAddToDictionaryHint()) {
-            showSuggestions(builder.build(), typedWord);
+            showSuggestions(suggestions, typedWord);
         } else {
             SuggestedWords previousSuggestions = mSuggestionsView.getSuggestions();
             if (previousSuggestions == mSettingsValues.mSuggestPuncList) {
