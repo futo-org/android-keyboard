@@ -924,7 +924,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
 
             final List<SuggestedWords.SuggestedWordInfo> applicationSuggestedWords =
-                    SuggestedWords.Builder.getFromApplicationSpecifiedCompletions(
+                    SuggestedWords.getFromApplicationSpecifiedCompletions(
                             applicationSpecifiedCompletions);
             SuggestedWords.Builder builder = new SuggestedWords.Builder(applicationSuggestedWords,
                     false /* typedWordValid */,
@@ -1788,7 +1788,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 previousSuggestions = SuggestedWords.EMPTY;
             }
             final ArrayList<SuggestedWords.SuggestedWordInfo> typedWordAndPreviousSuggestions =
-                    SuggestedWords.Builder.getTypedWordAndPreviousSuggestions(
+                    SuggestedWords.getTypedWordAndPreviousSuggestions(
                             typedWord, previousSuggestions);
             final SuggestedWords.Builder obsoleteSuggestionsBuilder =
                     new SuggestedWords.Builder(typedWordAndPreviousSuggestions,

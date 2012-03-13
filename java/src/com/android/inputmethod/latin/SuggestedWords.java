@@ -98,49 +98,49 @@ public class SuggestedWords {
             mShouldBlockAutoCorrectionBySafetyNet = shouldBlockAutoCorrectionBySafetyNet;
         }
 
-        public static ArrayList<SuggestedWordInfo> getFromCharSequenceList(
-                final List<CharSequence> wordList) {
-            final ArrayList<SuggestedWordInfo> result = new ArrayList<SuggestedWordInfo>();
-            for (CharSequence word : wordList) {
-                if (null != word) result.add(new SuggestedWordInfo(word, null, false));
-            }
-            return result;
-        }
-
-        public static List<SuggestedWordInfo> getFromApplicationSpecifiedCompletions(
-                final CompletionInfo[] infos) {
-            final ArrayList<SuggestedWordInfo> result = new ArrayList<SuggestedWordInfo>();
-            for (CompletionInfo info : infos) {
-                if (null != info) result.add(new SuggestedWordInfo(info.getText(), null, false));
-            }
-            return result;
-        }
-
-        // Should get rid of the first one (what the user typed previously) from suggestions
-        // and replace it with what the user currently typed.
-        public static ArrayList<SuggestedWordInfo> getTypedWordAndPreviousSuggestions(
-                final CharSequence typedWord, final SuggestedWords previousSuggestions) {
-            final ArrayList<SuggestedWordInfo> suggestionsList = new ArrayList<SuggestedWordInfo>();
-            final HashSet<String> alreadySeen = new HashSet<String>();
-            suggestionsList.add(new SuggestedWordInfo(typedWord, null, false));
-            alreadySeen.add(typedWord.toString());
-            final int previousSize = previousSuggestions.size();
-            for (int pos = 1; pos < previousSize; pos++) {
-                final String prevWord = previousSuggestions.getWord(pos).toString();
-                // Filter out duplicate suggestion.
-                if (!alreadySeen.contains(prevWord)) {
-                    suggestionsList.add(new SuggestedWordInfo(prevWord, null, true));
-                    alreadySeen.add(prevWord);
-                }
-            }
-            return suggestionsList;
-        }
-
         public SuggestedWords build() {
             return new SuggestedWords(mTypedWordValid, mHasMinimalSuggestion,
                     mIsPunctuationSuggestions, mShouldBlockAutoCorrectionBySafetyNet,
                     mAllowsToBeAutoCorrected, mSuggestedWordInfoList);
         }
+    }
+
+    public static ArrayList<SuggestedWordInfo> getFromCharSequenceList(
+            final List<CharSequence> wordList) {
+        final ArrayList<SuggestedWordInfo> result = new ArrayList<SuggestedWordInfo>();
+        for (CharSequence word : wordList) {
+            if (null != word) result.add(new SuggestedWordInfo(word, null, false));
+        }
+        return result;
+    }
+
+    public static List<SuggestedWordInfo> getFromApplicationSpecifiedCompletions(
+            final CompletionInfo[] infos) {
+        final ArrayList<SuggestedWordInfo> result = new ArrayList<SuggestedWordInfo>();
+        for (CompletionInfo info : infos) {
+            if (null != info) result.add(new SuggestedWordInfo(info.getText(), null, false));
+        }
+        return result;
+    }
+
+    // Should get rid of the first one (what the user typed previously) from suggestions
+    // and replace it with what the user currently typed.
+    public static ArrayList<SuggestedWordInfo> getTypedWordAndPreviousSuggestions(
+            final CharSequence typedWord, final SuggestedWords previousSuggestions) {
+        final ArrayList<SuggestedWordInfo> suggestionsList = new ArrayList<SuggestedWordInfo>();
+        final HashSet<String> alreadySeen = new HashSet<String>();
+        suggestionsList.add(new SuggestedWordInfo(typedWord, null, false));
+        alreadySeen.add(typedWord.toString());
+        final int previousSize = previousSuggestions.size();
+        for (int pos = 1; pos < previousSize; pos++) {
+            final String prevWord = previousSuggestions.getWord(pos).toString();
+            // Filter out duplicate suggestion.
+            if (!alreadySeen.contains(prevWord)) {
+                suggestionsList.add(new SuggestedWordInfo(prevWord, null, true));
+                alreadySeen.add(prevWord);
+            }
+        }
+        return suggestionsList;
     }
 
     public static class SuggestedWordInfo {
