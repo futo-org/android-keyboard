@@ -1977,23 +1977,23 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             return;
         }
 
-        final SuggestedWords.Builder builder;
+        final SuggestedWords suggestedWords;
         if (mCorrectionMode == Suggest.CORRECTION_FULL_BIGRAM) {
             final CharSequence prevWord = EditingUtils.getThisWord(getCurrentInputConnection(),
                     mSettingsValues.mWordSeparators);
             if (!TextUtils.isEmpty(prevWord)) {
-                builder = mSuggest.getBigramPredictionWordBuilder(prevWord);
+                suggestedWords = mSuggest.getBigramPredictionWordBuilder(prevWord).build();
             } else {
-                builder = null;
+                suggestedWords = null;
             }
         } else {
-            builder = null;
+            suggestedWords = null;
         }
 
-        if (null != builder && builder.size() > 0) {
+        if (null != suggestedWords && suggestedWords.size() > 0) {
             // Explicitly supply an empty typed word (the no-second-arg version of
             // showSuggestions will retrieve the word near the cursor, we don't want that here)
-            showSuggestions(builder.build(), "");
+            showSuggestions(suggestedWords, "");
         } else {
             if (!isShowingPunctuationList()) setPunctuationSuggestions();
         }
