@@ -25,8 +25,6 @@ import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.LatinImeLogger;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 public class PointerTracker {
     private static final String TAG = PointerTracker.class.getSimpleName();
@@ -109,7 +107,7 @@ public class PointerTracker {
     private static LatinKeyboardView.PointerTrackerParams sParams;
     private static int sTouchNoiseThresholdDistanceSquared;
 
-    private static final List<PointerTracker> sTrackers = new ArrayList<PointerTracker>();
+    private static final ArrayList<PointerTracker> sTrackers = new ArrayList<PointerTracker>();
     private static PointerTrackerQueue sPointerTrackerQueue;
 
     public final int mPointerId;
@@ -120,7 +118,6 @@ public class PointerTracker {
     private KeyboardActionListener mListener = EMPTY_LISTENER;
 
     private Keyboard mKeyboard;
-    private Set<Key> mKeys;
     private int mKeyQuarterWidthSquared;
     private final TextView mKeyPreviewText;
 
@@ -180,7 +177,7 @@ public class PointerTracker {
     }
 
     public static PointerTracker getPointerTracker(final int id, KeyEventHandler handler) {
-        final List<PointerTracker> trackers = sTrackers;
+        final ArrayList<PointerTracker> trackers = sTrackers;
 
         // Create pointer trackers until we can get 'id+1'-th tracker, if needed.
         for (int i = trackers.size(); i <= id; i++) {
@@ -303,7 +300,6 @@ public class PointerTracker {
     private void setKeyDetectorInner(KeyDetector keyDetector) {
         mKeyDetector = keyDetector;
         mKeyboard = keyDetector.getKeyboard();
-        mKeys = mKeyboard.mKeys;
         final int keyQuarterWidth = mKeyboard.mMostCommonKeyWidth / 4;
         mKeyQuarterWidthSquared = keyQuarterWidth * keyQuarterWidth;
     }
@@ -691,7 +687,7 @@ public class PointerTracker {
     }
 
     private boolean isMajorEnoughMoveToBeOnNewKey(int x, int y, Key newKey) {
-        if (mKeys == null || mKeyDetector == null)
+        if (mKeyDetector == null)
             throw new NullPointerException("keyboard and/or key detector not set");
         Key curKey = mCurrentKey;
         if (newKey == curKey) {

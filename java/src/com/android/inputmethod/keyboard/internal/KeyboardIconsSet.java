@@ -24,7 +24,6 @@ import android.util.Log;
 import com.android.inputmethod.latin.R;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class KeyboardIconsSet {
     private static final String TAG = KeyboardIconsSet.class.getSimpleName();
@@ -35,8 +34,9 @@ public class KeyboardIconsSet {
 
     private final Drawable[] mIcons = new Drawable[NUM_ICONS + 1];
 
-    private static final Map<Integer, Integer> ATTR_ID_TO_ICON_ID = new HashMap<Integer, Integer>();
-    private static final Map<String, Integer> NAME_TO_ICON_ID = new HashMap<String, Integer>();
+    private static final HashMap<Integer, Integer> ATTR_ID_TO_ICON_ID
+            = new HashMap<Integer, Integer>();
+    private static final HashMap<String, Integer> NAME_TO_ICON_ID = new HashMap<String, Integer>();
     private static final String[] ICON_NAMES = new String[NUM_ICONS + 1];
 
     private static final int ATTR_UNDEFINED = 0;
