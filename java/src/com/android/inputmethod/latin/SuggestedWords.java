@@ -87,12 +87,6 @@ public class SuggestedWords {
             // Nothing to do here.
         }
 
-        // TODO: the following method is a wrapper to satisfy tests. Update tests and remove it.
-        public Builder addWords(final List<CharSequence> words,
-                final List<SuggestedWordInfo> suggestedWordInfoList) {
-            return addWords(suggestedWordInfoList);
-        }
-
         public Builder addWords(List<SuggestedWordInfo> suggestedWordInfoList) {
             final int N = suggestedWordInfoList.size();
             for (int i = 0; i < N; ++i) {
@@ -161,24 +155,22 @@ public class SuggestedWords {
 
         // Should get rid of the first one (what the user typed previously) from suggestions
         // and replace it with what the user currently typed.
-        public Builder addTypedWordAndPreviousSuggestions(CharSequence typedWord,
-                SuggestedWords previousSuggestions) {
-            mSuggestedWordInfoList.clear();
+        public static ArrayList<SuggestedWordInfo> getTypedWordAndPreviousSuggestions(
+                final CharSequence typedWord, final SuggestedWords previousSuggestions) {
+            final ArrayList<SuggestedWordInfo> suggestionsList = new ArrayList<SuggestedWordInfo>();
             final HashSet<String> alreadySeen = new HashSet<String>();
-            addWord(typedWord, new SuggestedWordInfo(typedWord, null, false));
+            suggestionsList.add(new SuggestedWordInfo(typedWord, null, false));
             alreadySeen.add(typedWord.toString());
             final int previousSize = previousSuggestions.size();
             for (int pos = 1; pos < previousSize; pos++) {
                 final String prevWord = previousSuggestions.getWord(pos).toString();
                 // Filter out duplicate suggestion.
                 if (!alreadySeen.contains(prevWord)) {
-                    addWord(prevWord, new SuggestedWordInfo(prevWord, null, true));
+                    suggestionsList.add(new SuggestedWordInfo(prevWord, null, true));
                     alreadySeen.add(prevWord);
                 }
             }
-            mTypedWordValid = false;
-            mHasMinimalSuggestion = false;
-            return this;
+            return suggestionsList;
         }
 
         public SuggestedWords build() {

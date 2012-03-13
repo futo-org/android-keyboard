@@ -72,6 +72,7 @@ import com.android.inputmethod.latin.suggestions.SuggestionsView;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -1782,8 +1783,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (previousSuggestions == mSettingsValues.mSuggestPuncList) {
                 previousSuggestions = SuggestedWords.EMPTY;
             }
+            final ArrayList<SuggestedWords.SuggestedWordInfo> typedWordAndPreviousSuggestions =
+                    SuggestedWords.Builder.getTypedWordAndPreviousSuggestions(
+                            typedWord, previousSuggestions);
             final SuggestedWords.Builder obsoleteSuggestionsBuilder = new SuggestedWords.Builder()
-                    .addTypedWordAndPreviousSuggestions(typedWord, previousSuggestions);
+                    .addWords(typedWordAndPreviousSuggestions)
+                    .setTypedWordValid(false)
+                    .setHasMinimalSuggestion(false);
+
             showSuggestions(obsoleteSuggestionsBuilder.build(), typedWord);
         }
     }
