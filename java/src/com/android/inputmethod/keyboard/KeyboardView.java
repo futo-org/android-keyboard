@@ -44,11 +44,12 @@ import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.StringUtils;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * A view that renders a virtual {@link Keyboard}.
  *
- * @attr ref R.styleable#KeyboardView_backgroundDimAmount
+ * @attr ref R.styleable#KeyboardView_backgroundDimAlpha
  * @attr ref R.styleable#KeyboardView_keyBackground
  * @attr ref R.styleable#KeyboardView_keyLetterRatio
  * @attr ref R.styleable#KeyboardView_keyLargeLetterRatio
@@ -81,7 +82,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     // XML attributes
     protected final float mVerticalCorrection;
     protected final int mMoreKeysLayout;
-    private final float mBackgroundDimAmount;
+    private final int mBackgroundDimAlpha;
 
     // HORIZONTAL ELLIPSIS "...", character for popup hint.
     private static final String POPUP_HINT_CHAR = "\u2026";
@@ -110,12 +111,12 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private boolean mNeedsToDimBackground;
     /** Whether the keyboard bitmap buffer needs to be redrawn before it's blitted. **/
     private boolean mBufferNeedsUpdate;
-    /** The dirty region in the keyboard bitmap */
-    private final Rect mDirtyRect = new Rect();
-    /** The key to invalidate. */
-    private Key mInvalidatedKey;
-    /** The dirty region for single key drawing */
-    private final Rect mInvalidatedKeyRect = new Rect();
+    /** True if all keys should be drawn */
+    private boolean mInvalidateAllKeys;
+    /** The keys that should be drawn */
+    private final HashSet<Key> mInvalidatedKeys = new HashSet<Key>();
+    /** The region of invalidated keys */
+    private final Rect mInvalidatedKeysRect = new Rect();
     /** The keyboard bitmap buffer for faster updates */
     private Bitmap mBuffer;
     /** The canvas for the above mutable keyboard bitmap */
@@ -335,7 +336,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mVerticalCorrection = a.getDimensionPixelOffset(
                 R.styleable.KeyboardView_verticalCorrection, 0);
         mMoreKeysLayout = a.getResourceId(R.styleable.KeyboardView_moreKeysLayout, 0);
-        mBackgroundDimAmount = a.getFloat(R.styleable.KeyboardView_backgroundDimAmount, 0.5f);
+        mBackgroundDimAlpha = a.getInt(R.styleable.KeyboardView_backgroundDimAlpha, 0);
         a.recycle();
 
         mDelayAfterPreview = mKeyPreviewDrawParams.mLingerTimeout;
@@ -366,8 +367,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mKeyboard = keyboard;
         LatinImeLogger.onSetKeyboard(keyboard);
         requestLayout();
-        mDirtyRect.set(0, 0, getWidth(), getHeight());
-        mBufferNeedsUpdate = true;
         invalidateAllKeys();
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mKeyDrawParams.updateKeyHeight(keyHeight);
@@ -434,47 +433,50 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             if (mBuffer != null)
                 mBuffer.recycle();
             mBuffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            mDirtyRect.union(0, 0, width, height);
+            mInvalidateAllKeys = true;
             if (mCanvas != null) {
                 mCanvas.setBitmap(mBuffer);
             } else {
                 mCanvas = new Canvas(mBuffer);
             }
         }
-        final Canvas canvas = mCanvas;
-        canvas.clipRect(mDirtyRect, Op.REPLACE);
-        canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
 
         if (mKeyboard == null) return;
 
+        final Canvas canvas = mCanvas;
+        final Paint paint = mPaint;
         final KeyDrawParams params = mKeyDrawParams;
-        if (mInvalidatedKey != null && mInvalidatedKeyRect.contains(mDirtyRect)) {
-            // Draw a single key.
-            final int keyDrawX = mInvalidatedKey.mX + mInvalidatedKey.mVisualInsetsLeft
-                    + getPaddingLeft();
-            final int keyDrawY = mInvalidatedKey.mY + getPaddingTop();
-            canvas.translate(keyDrawX, keyDrawY);
-            onDrawKey(mInvalidatedKey, canvas, mPaint, params);
-            canvas.translate(-keyDrawX, -keyDrawY);
-        } else {
+
+        if (mInvalidateAllKeys || mInvalidatedKeys.isEmpty()) {
+            mInvalidatedKeysRect.set(0, 0, getWidth(), getHeight());
+            canvas.clipRect(mInvalidatedKeysRect, Op.REPLACE);
+            canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
             // Draw all keys.
             for (final Key key : mKeyboard.mKeys) {
-                final int keyDrawX = key.mX + key.mVisualInsetsLeft + getPaddingLeft();
-                final int keyDrawY = key.mY + getPaddingTop();
-                canvas.translate(keyDrawX, keyDrawY);
-                onDrawKey(key, canvas, mPaint, params);
-                canvas.translate(-keyDrawX, -keyDrawY);
+                onDrawKey(key, canvas, paint, params);
+            }
+        } else {
+            // Draw invalidated keys.
+            for (final Key key : mInvalidatedKeys) {
+                final int x = key.mX + getPaddingLeft();
+                final int y = key.mY + getPaddingTop();
+                mInvalidatedKeysRect.set(x, y, x + key.mWidth, y + key.mHeight);
+                canvas.clipRect(mInvalidatedKeysRect, Op.REPLACE);
+                canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
+                onDrawKey(key, canvas, paint, params);
             }
         }
 
         // Overlay a dark rectangle to dim the entire keyboard
         if (mNeedsToDimBackground) {
-            mPaint.setColor((int) (mBackgroundDimAmount * 0xFF) << 24);
-            canvas.drawRect(0, 0, width, height, mPaint);
+            paint.setColor(Color.BLACK);
+            paint.setAlpha(mBackgroundDimAlpha);
+            canvas.drawRect(0, 0, width, height, paint);
         }
 
-        mInvalidatedKey = null;
-        mDirtyRect.setEmpty();
+        mInvalidatedKeys.clear();
+        mInvalidatedKeysRect.setEmpty();
+        mInvalidateAllKeys = false;
     }
 
     public void dimEntireKeyboard(boolean dimmed) {
@@ -486,10 +488,16 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     private void onDrawKey(Key key, Canvas canvas, Paint paint, KeyDrawParams params) {
+        final int keyDrawX = key.mX + key.mVisualInsetsLeft + getPaddingLeft();
+        final int keyDrawY = key.mY + getPaddingTop();
+        canvas.translate(keyDrawX, keyDrawY);
+
         if (!key.isSpacer()) {
             onDrawKeyBackground(key, canvas, params);
         }
         onDrawKeyTopVisuals(key, canvas, paint, params);
+
+        canvas.translate(-keyDrawX, -keyDrawY);
     }
 
     // Draw key background.
@@ -905,9 +913,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
      * @see #invalidateKey(Key)
      */
     public void invalidateAllKeys() {
-        mDirtyRect.union(0, 0, getWidth(), getHeight());
+        mInvalidatedKeys.clear();
+        mInvalidateAllKeys = true;
         mBufferNeedsUpdate = true;
-        mInvalidatedKey = null;
         invalidate();
     }
 
@@ -920,22 +928,21 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
      */
     @Override
     public void invalidateKey(Key key) {
-        if (key == null)
-            return;
-        mInvalidatedKey = key;
+        if (mInvalidateAllKeys) return;
+        if (key == null) return;
+        mInvalidatedKeys.add(key);
         final int x = key.mX + getPaddingLeft();
         final int y = key.mY + getPaddingTop();
-        mInvalidatedKeyRect.set(x, y, x + key.mWidth, y + key.mHeight);
-        mDirtyRect.union(mInvalidatedKeyRect);
+        mInvalidatedKeysRect.union(x, y, x + key.mWidth, y + key.mHeight);
         mBufferNeedsUpdate = true;
-        invalidate(mInvalidatedKeyRect);
+        invalidate(mInvalidatedKeysRect);
     }
 
     public void closing() {
         PointerTracker.dismissAllKeyPreviews();
         cancelAllMessages();
 
-        mDirtyRect.union(0, 0, getWidth(), getHeight());
+        mInvalidateAllKeys = true;
         requestLayout();
     }
 

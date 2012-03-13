@@ -65,7 +65,7 @@
         <item name="verticalCorrection">@dimen/keyboard_vertical_correction</item>
         <item name="shadowColor">#BB000000</item>
         <item name="shadowRadius">2.75</item>
-        <item name="backgroundDimAmount">0.5</item>
+        <item name="backgroundDimAlpha">128</item>
         <!-- Common attributes of LatinKeyboardView -->
         <item name="keyHysteresisDistance">@dimen/config_key_hysteresis_distance</item>
         <item name="touchNoiseThresholdTime">@integer/config_touch_noise_threshold_time</item>
