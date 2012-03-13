@@ -87,19 +87,17 @@ public class SuggestedWords {
             // Nothing to do here.
         }
 
-        public Builder addWords(List<CharSequence> words,
-                List<SuggestedWordInfo> suggestedWordInfoList) {
-            final int N = words.size();
+        // TODO: the following method is a wrapper to satisfy tests. Update tests and remove it.
+        public Builder addWords(final List<CharSequence> words,
+                final List<SuggestedWordInfo> suggestedWordInfoList) {
+            return addWords(suggestedWordInfoList);
+        }
+
+        public Builder addWords(List<SuggestedWordInfo> suggestedWordInfoList) {
+            final int N = suggestedWordInfoList.size();
             for (int i = 0; i < N; ++i) {
-                final CharSequence word = words.get(i);
-                SuggestedWordInfo suggestedWordInfo = null;
-                if (suggestedWordInfoList != null) {
-                    suggestedWordInfo = suggestedWordInfoList.get(i);
-                }
-                if (suggestedWordInfo == null) {
-                    suggestedWordInfo = new SuggestedWordInfo(word);
-                }
-                addWord(word, suggestedWordInfo);
+                SuggestedWordInfo suggestedWordInfo = suggestedWordInfoList.get(i);
+                addWord(suggestedWordInfo.mWord, suggestedWordInfo);
             }
             return this;
         }
@@ -113,11 +111,20 @@ public class SuggestedWords {
             return this;
         }
 
-        public static List<CharSequence> getFromApplicationSpecifiedCompletions(
+        public static List<SuggestedWordInfo> getFromCharSequenceList(
+                final List<CharSequence> wordList) {
+            final ArrayList<SuggestedWordInfo> result = new ArrayList<SuggestedWordInfo>();
+            for (CharSequence word : wordList) {
+                if (null != word) result.add(new SuggestedWordInfo(word, null, false));
+            }
+            return result;
+        }
+
+        public static List<SuggestedWordInfo> getFromApplicationSpecifiedCompletions(
                 final CompletionInfo[] infos) {
-            final ArrayList<CharSequence> result = new ArrayList<CharSequence>();
+            final ArrayList<SuggestedWordInfo> result = new ArrayList<SuggestedWordInfo>();
             for (CompletionInfo info : infos) {
-                if (null != info) result.add(info.getText());
+                if (null != info) result.add(new SuggestedWordInfo(info.getText(), null, false));
             }
             return result;
         }
