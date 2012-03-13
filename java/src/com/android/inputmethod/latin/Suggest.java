@@ -270,8 +270,9 @@ public class Suggest implements Dictionary.WordCallback {
         StringUtils.removeDupes(mSuggestions);
 
         return new SuggestedWords.Builder(
-                SuggestedWords.Builder.getFromCharSequenceList(mSuggestions))
-                .setAllowsToBeAutoCorrected(false);
+                SuggestedWords.Builder.getFromCharSequenceList(mSuggestions),
+                false /* allowsToBeAutoCorrected */,
+                false /* isPunctuationSuggestions */);
     }
 
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
@@ -423,12 +424,13 @@ public class Suggest implements Dictionary.WordCallback {
                 scoreInfoList.add(new SuggestedWords.SuggestedWordInfo(mSuggestions.get(i),
                         "--", false));
             }
-            builder = new SuggestedWords.Builder(scoreInfoList)
-                    .setAllowsToBeAutoCorrected(allowsToBeAutoCorrected);
+            builder = new SuggestedWords.Builder(scoreInfoList, allowsToBeAutoCorrected,
+                    false /* isPunctuationSuggestions */);
         } else {
             builder = new SuggestedWords.Builder(
-                    SuggestedWords.Builder.getFromCharSequenceList(mSuggestions))
-                    .setAllowsToBeAutoCorrected(allowsToBeAutoCorrected);
+                    SuggestedWords.Builder.getFromCharSequenceList(mSuggestions),
+                    allowsToBeAutoCorrected,
+                    false /* isPunctuationSuggestions */);
         }
 
         boolean autoCorrectionAvailable = hasAutoCorrection;

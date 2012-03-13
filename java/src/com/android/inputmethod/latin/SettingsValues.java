@@ -183,8 +183,9 @@ public class SettingsValues {
                         KeySpecParser.getLabel(puncSpec)));
             }
         }
-        final SuggestedWords.Builder builder = new SuggestedWords.Builder(puncList)
-                .setIsPunctuationSuggestions();
+        final SuggestedWords.Builder builder = new SuggestedWords.Builder(puncList,
+                false /* allowsToBeAutoCorrected */,
+                true /* isPunctuationSuggestions */);
         return builder.build();
     }
 
@@ -202,8 +203,9 @@ public class SettingsValues {
                 }
             }
         }
-        final SuggestedWords.Builder builder = new SuggestedWords.Builder(puncOutputTextList)
-                .setIsPunctuationSuggestions();
+        final SuggestedWords.Builder builder = new SuggestedWords.Builder(puncOutputTextList,
+                false /* allowsToBeAutoCorrected */,
+                true /* isPunctuationSuggestions */);
         return builder.build();
     }
 

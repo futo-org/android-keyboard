@@ -75,13 +75,17 @@ public class SuggestedWords {
     public static class Builder {
         private boolean mTypedWordValid;
         private boolean mHasMinimalSuggestion;
-        private boolean mIsPunctuationSuggestions;
+        private final boolean mIsPunctuationSuggestions;
         private boolean mShouldBlockAutoCorrectionBySafetyNet;
-        private boolean mAllowsToBeAutoCorrected;
+        private final boolean mAllowsToBeAutoCorrected;
         private final List<SuggestedWordInfo> mSuggestedWordInfoList;
 
-        public Builder(final List<SuggestedWordInfo> suggestedWordInfoList) {
+        public Builder(final List<SuggestedWordInfo> suggestedWordInfoList,
+                final boolean allowsToBeAutoCorrected,
+                final boolean isPunctuationSuggestions) {
             mSuggestedWordInfoList = suggestedWordInfoList;
+            mAllowsToBeAutoCorrected = allowsToBeAutoCorrected;
+            mIsPunctuationSuggestions = isPunctuationSuggestions;
         }
 
         public static List<SuggestedWordInfo> getFromCharSequenceList(
@@ -112,18 +116,8 @@ public class SuggestedWords {
             return this;
         }
 
-        public Builder setIsPunctuationSuggestions() {
-            mIsPunctuationSuggestions = true;
-            return this;
-        }
-
         public Builder setShouldBlockAutoCorrectionBySafetyNet() {
             mShouldBlockAutoCorrectionBySafetyNet = true;
-            return this;
-        }
-
-        public Builder setAllowsToBeAutoCorrected(final boolean allowsToBeAutoCorrected) {
-            mAllowsToBeAutoCorrected = allowsToBeAutoCorrected;
             return this;
         }
 
