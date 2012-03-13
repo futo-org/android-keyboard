@@ -79,7 +79,6 @@ public class SuggestedWords {
         private boolean mIsPunctuationSuggestions;
         private boolean mShouldBlockAutoCorrectionBySafetyNet;
         private boolean mAllowsToBeAutoCorrected;
-        private boolean mHasAutoCorrection;
         private List<SuggestedWordInfo> mSuggestedWordInfoList =
                 new ArrayList<SuggestedWordInfo>();
 
@@ -87,22 +86,8 @@ public class SuggestedWords {
             // Nothing to do here.
         }
 
-        // TODO: compatibility for tests. Remove this once tests are okay.
-        public Builder addWords(List<SuggestedWordInfo> suggestedWordInfoList) {
-            return setWords(suggestedWordInfoList);
-        }
-
         public Builder setWords(List<SuggestedWordInfo> suggestedWordInfoList) {
             mSuggestedWordInfoList = suggestedWordInfoList;
-            return this;
-        }
-
-        /* package for tests */
-        Builder addWord(CharSequence word, SuggestedWordInfo suggestedWordInfo) {
-            if (!TextUtils.isEmpty(suggestedWordInfo.mWord)) {
-                // It's okay if suggestedWordInfo is null since it's checked where it's used.
-                mSuggestedWordInfoList.add(suggestedWordInfo);
-            }
             return this;
         }
 
@@ -146,11 +131,6 @@ public class SuggestedWords {
 
         public Builder setAllowsToBeAutoCorrected(final boolean allowsToBeAutoCorrected) {
             mAllowsToBeAutoCorrected = allowsToBeAutoCorrected;
-            return this;
-        }
-
-        public Builder setHasAutoCorrection(final boolean hasAutoCorrection) {
-            mHasAutoCorrection = hasAutoCorrection;
             return this;
         }
 

@@ -271,8 +271,7 @@ public class Suggest implements Dictionary.WordCallback {
 
         return new SuggestedWords.Builder()
                 .setWords(SuggestedWords.Builder.getFromCharSequenceList(mSuggestions))
-                .setAllowsToBeAutoCorrected(false)
-                .setHasAutoCorrection(false);
+                .setAllowsToBeAutoCorrected(false);
     }
 
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
@@ -425,13 +424,11 @@ public class Suggest implements Dictionary.WordCallback {
                         "--", false));
             }
             builder = new SuggestedWords.Builder().setWords(scoreInfoList)
-                    .setAllowsToBeAutoCorrected(allowsToBeAutoCorrected)
-                    .setHasAutoCorrection(hasAutoCorrection);
+                    .setAllowsToBeAutoCorrected(allowsToBeAutoCorrected);
         } else {
             builder = new SuggestedWords.Builder()
                     .setWords(SuggestedWords.Builder.getFromCharSequenceList(mSuggestions))
-                    .setAllowsToBeAutoCorrected(allowsToBeAutoCorrected)
-                    .setHasAutoCorrection(hasAutoCorrection);
+                    .setAllowsToBeAutoCorrected(allowsToBeAutoCorrected);
         }
 
         boolean autoCorrectionAvailable = hasAutoCorrection;
