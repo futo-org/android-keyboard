@@ -175,32 +175,36 @@ public class SettingsValues {
     }
 
     private static SuggestedWords createSuggestPuncList(final String[] puncs) {
-        final ArrayList<CharSequence> puncList = new ArrayList<CharSequence>();
+        final ArrayList<SuggestedWords.SuggestedWordInfo> puncList =
+                new ArrayList<SuggestedWords.SuggestedWordInfo>();
         if (puncs != null) {
             for (final String puncSpec : puncs) {
-                puncList.add(KeySpecParser.getLabel(puncSpec));
+                puncList.add(new SuggestedWords.SuggestedWordInfo(
+                        KeySpecParser.getLabel(puncSpec)));
             }
         }
         final SuggestedWords.Builder builder = new SuggestedWords.Builder()
-                .addWords(puncList, null)
+                .addWords(puncList)
                 .setIsPunctuationSuggestions();
         return builder.build();
     }
 
     private static SuggestedWords createSuggestPuncOutputTextList(final String[] puncs) {
-        final ArrayList<CharSequence> puncOutputTextList = new ArrayList<CharSequence>();
+        final ArrayList<SuggestedWords.SuggestedWordInfo> puncOutputTextList =
+                new ArrayList<SuggestedWords.SuggestedWordInfo>();
         if (puncs != null) {
             for (final String puncSpec : puncs) {
                 final String outputText = KeySpecParser.getOutputText(puncSpec);
                 if (outputText != null) {
-                    puncOutputTextList.add(outputText);
+                    puncOutputTextList.add(new SuggestedWords.SuggestedWordInfo(outputText));
                 } else {
-                    puncOutputTextList.add(KeySpecParser.getLabel(puncSpec));
+                    puncOutputTextList.add(new SuggestedWords.SuggestedWordInfo(
+                            KeySpecParser.getLabel(puncSpec)));
                 }
             }
         }
         final SuggestedWords.Builder builder = new SuggestedWords.Builder()
-                .addWords(puncOutputTextList, null)
+                .addWords(puncOutputTextList)
                 .setIsPunctuationSuggestions();
         return builder.build();
     }
