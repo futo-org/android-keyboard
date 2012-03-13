@@ -191,10 +191,6 @@ public class SuggestedWords {
             return mAllowsToBeAutoCorrected;
         }
 
-        public boolean hasAutoCorrection() {
-            return mHasAutoCorrection;
-        }
-
         @Override
         public String toString() {
             // Pretty-print method to help debug

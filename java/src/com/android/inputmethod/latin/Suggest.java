@@ -180,7 +180,7 @@ public class Suggest implements Dictionary.WordCallback {
         return mUnigramDictionaries;
     }
 
-    public int getApproxMaxWordLength() {
+    public static int getApproxMaxWordLength() {
         return APPROX_MAX_WORD_LENGTH;
     }
 
@@ -215,23 +215,8 @@ public class Suggest implements Dictionary.WordCallback {
         mAutoCorrectionThreshold = threshold;
     }
 
-    /**
-     * Number of suggestions to generate from the input key sequence. This has
-     * to be a number between 1 and 100 (inclusive).
-     * @param maxSuggestions
-     * @throws IllegalArgumentException if the number is out of range
-     */
-    public void setMaxSuggestions(int maxSuggestions) {
-        if (maxSuggestions < 1 || maxSuggestions > 100) {
-            throw new IllegalArgumentException("maxSuggestions must be between 1 and 100");
-        }
-        mPrefMaxSuggestions = maxSuggestions;
-        mScores = new int[mPrefMaxSuggestions];
-        mBigramScores = new int[PREF_MAX_BIGRAMS];
-        mSuggestions = new ArrayList<CharSequence>(mPrefMaxSuggestions);
-    }
-
-    private CharSequence capitalizeWord(boolean all, boolean first, CharSequence word) {
+    private static CharSequence capitalizeWord(final boolean all, final boolean first,
+            final CharSequence word) {
         if (TextUtils.isEmpty(word) || !(all || first)) return word;
         final int wordLength = word.length();
         final StringBuilder sb = new StringBuilder(getApproxMaxWordLength());
@@ -563,16 +548,16 @@ public class Suggest implements Dictionary.WordCallback {
         // TODO This is almost O(n^2). Might need fix.
         // search whether the word appeared in bigram data
         int bigramSuggestSize = mBigramSuggestions.size();
-        for(int i = 0; i < bigramSuggestSize; i++) {
-            if(mBigramSuggestions.get(i).length() == length) {
+        for (int i = 0; i < bigramSuggestSize; i++) {
+            if (mBigramSuggestions.get(i).length() == length) {
                 boolean chk = true;
-                for(int j = 0; j < length; j++) {
-                    if(mBigramSuggestions.get(i).charAt(j) != word[offset+j]) {
+                for (int j = 0; j < length; j++) {
+                    if (mBigramSuggestions.get(i).charAt(j) != word[offset+j]) {
                         chk = false;
                         break;
                     }
                 }
-                if(chk) return i;
+                if (chk) return i;
             }
         }
 
