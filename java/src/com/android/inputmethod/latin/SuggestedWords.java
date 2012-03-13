@@ -88,7 +88,7 @@ public class SuggestedWords {
             mIsPunctuationSuggestions = isPunctuationSuggestions;
         }
 
-        public static List<SuggestedWordInfo> getFromCharSequenceList(
+        public static ArrayList<SuggestedWordInfo> getFromCharSequenceList(
                 final List<CharSequence> wordList) {
             final ArrayList<SuggestedWordInfo> result = new ArrayList<SuggestedWordInfo>();
             for (CharSequence word : wordList) {

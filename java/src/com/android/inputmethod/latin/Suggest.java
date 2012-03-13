@@ -391,6 +391,7 @@ public class Suggest implements Dictionary.WordCallback {
         StringUtils.removeDupes(mSuggestions);
 
         final SuggestedWords.Builder builder;
+        final ArrayList<SuggestedWords.SuggestedWordInfo> scoreInfoList;
         if (DBG) {
             // TODO: this doesn't take into account the fact that removing dupes from mSuggestions
             // may have made mScores[] and mSuggestions out of sync.
@@ -399,8 +400,7 @@ public class Suggest implements Dictionary.WordCallback {
             double normalizedScore = BinaryDictionary.calcNormalizedScore(
                     typedWord, autoCorrectionSuggestion.toString(),
                     autoCorrectionSuggestionScore);
-            ArrayList<SuggestedWords.SuggestedWordInfo> scoreInfoList =
-                    new ArrayList<SuggestedWords.SuggestedWordInfo>();
+            scoreInfoList = new ArrayList<SuggestedWords.SuggestedWordInfo>();
             scoreInfoList.add(new SuggestedWords.SuggestedWordInfo(autoCorrectionSuggestion, "+",
                     false));
             final int suggestionsSize = mSuggestions.size();
@@ -424,13 +424,8 @@ public class Suggest implements Dictionary.WordCallback {
                 scoreInfoList.add(new SuggestedWords.SuggestedWordInfo(mSuggestions.get(i),
                         "--", false));
             }
-            builder = new SuggestedWords.Builder(scoreInfoList, allowsToBeAutoCorrected,
-                    false /* isPunctuationSuggestions */);
         } else {
-            builder = new SuggestedWords.Builder(
-                    SuggestedWords.Builder.getFromCharSequenceList(mSuggestions),
-                    allowsToBeAutoCorrected,
-                    false /* isPunctuationSuggestions */);
+            scoreInfoList = SuggestedWords.Builder.getFromCharSequenceList(mSuggestions);
         }
 
         boolean autoCorrectionAvailable = hasAutoCorrection;
@@ -440,6 +435,8 @@ public class Suggest implements Dictionary.WordCallback {
         }
         // Don't auto-correct words with multiple capital letter
         autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
+        builder = new SuggestedWords.Builder(scoreInfoList, allowsToBeAutoCorrected,
+                false /* isPunctuationSuggestions */);
         builder.setTypedWordValid(!allowsToBeAutoCorrected).setHasMinimalSuggestion(
                 autoCorrectionAvailable);
         if (allowsToBeAutoCorrected && builder.size() > 1 && mAutoCorrectionThreshold > 0
