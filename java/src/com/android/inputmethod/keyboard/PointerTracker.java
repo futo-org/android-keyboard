@@ -322,55 +322,74 @@ public class PointerTracker {
 
     private void setReleasedKeyGraphics(Key key) {
         mDrawingProxy.dismissKeyPreview(this);
-        if (key != null && key.isEnabled()) {
-            key.onReleased();
-            mDrawingProxy.invalidateKey(key);
+        if (key == null || !key.isEnabled()) {
+            return;
+        }
 
-            if (key.isShift()) {
-                for (final Key shiftKey : mKeyboard.mShiftKeys) {
-                    if (shiftKey != key) {
-                        shiftKey.onReleased();
-                        mDrawingProxy.invalidateKey(shiftKey);
-                    }
+        updateReleaseKeyGraphics(key);
+
+        if (key.isShift()) {
+            for (final Key shiftKey : mKeyboard.mShiftKeys) {
+                if (shiftKey != key) {
+                    updateReleaseKeyGraphics(shiftKey);
                 }
             }
+        }
 
-            if (key.altCodeWhileTyping()) {
-                final Key altKey = mKeyboard.getKey(key.mAltCode);
-                if (altKey != null) {
-                    altKey.onReleased();
-                    mDrawingProxy.invalidateKey(altKey);
+        if (key.altCodeWhileTyping()) {
+            final int altCode = key.mAltCode;
+            final Key altKey = mKeyboard.getKey(altCode);
+            if (altKey != null) {
+                updateReleaseKeyGraphics(altKey);
+            }
+            for (final Key k : mKeyboard.mAltCodeKeysWhileTyping) {
+                if (k != key && k.mAltCode == altCode) {
+                    updateReleaseKeyGraphics(k);
                 }
             }
         }
     }
 
     private void setPressedKeyGraphics(Key key) {
-        if (key != null && key.isEnabled()) {
-            if (!key.noKeyPreview()) {
-                mDrawingProxy.showKeyPreview(this);
-            }
-            key.onPressed();
-            mDrawingProxy.invalidateKey(key);
+        if (key == null || !key.isEnabled()) {
+            return;
+        }
 
-            if (key.isShift()) {
-                for (final Key shiftKey : mKeyboard.mShiftKeys) {
-                    if (shiftKey != key) {
-                        shiftKey.onPressed();
-                        mDrawingProxy.invalidateKey(shiftKey);
-                    }
-                }
-            }
+        if (!key.noKeyPreview()) {
+            mDrawingProxy.showKeyPreview(this);
+        }
+        updatePressKeyGraphics(key);
 
-            if (key.altCodeWhileTyping() && mTimerProxy.isTyping()) {
-                final Key altKey = mKeyboard.getKey(key.mAltCode);
-                if (altKey != null) {
-                    // TODO: Show altKey's preview.
-                    altKey.onPressed();
-                    mDrawingProxy.invalidateKey(altKey);
+        if (key.isShift()) {
+            for (final Key shiftKey : mKeyboard.mShiftKeys) {
+                if (shiftKey != key) {
+                    updatePressKeyGraphics(shiftKey);
                 }
             }
         }
+
+        if (key.altCodeWhileTyping() && mTimerProxy.isTyping()) {
+            final int altCode = key.mAltCode;
+            final Key altKey = mKeyboard.getKey(altCode);
+            if (altKey != null) {
+                updatePressKeyGraphics(altKey);
+            }
+            for (final Key k : mKeyboard.mAltCodeKeysWhileTyping) {
+                if (k != key && k.mAltCode == altCode) {
+                    updatePressKeyGraphics(k);
+                }
+            }
+        }
+    }
+
+    private void updateReleaseKeyGraphics(Key key) {
+        key.onReleased();
+        mDrawingProxy.invalidateKey(key);
+    }
+
+    private void updatePressKeyGraphics(Key key) {
+        key.onPressed();
+        mDrawingProxy.invalidateKey(key);
     }
 
     public int getLastX() {
