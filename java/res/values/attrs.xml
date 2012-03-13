@@ -139,7 +139,7 @@
             <enum name="alwaysDisplay" value="-1" />
         </attr>
         <attr name="delayBeforeFadeoutLangageOnSpacebar" format="integer" />
-        <attr name="finalFadeoutFactorOfLanguageOnSpacebar" format="float" />
+        <attr name="finalAlphaOfLanguageOnSpacebar" format="integer" />
         <!-- Key detection hysteresis distance. -->
         <attr name="keyHysteresisDistance" format="dimension" />
         <!-- Touch noise threshold time in millisecond -->

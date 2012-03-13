@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Typeface;
@@ -77,13 +76,14 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     private Drawable mSpaceIcon;
     // Stuff to draw language name on spacebar.
     private ValueAnimator mLanguageOnSpacebarAnimator;
-    private float mFinalFadeoutFactorOfLanguageOnSpacebar;
+    private int mFinalAlphaOfLanguageOnSpacebar;
     private int mDurationOfFadeoutLanguageOnSpacebar;
+    private static final int ALPHA_OPAQUE = 255;
     private static final int LANGUAGE_ON_SPACEBAR_NEVER_DISPLAY = 0;
     private static final int LANGUAGE_ON_SPACEBAR_ALWAYS_DISPLAY = -1;
     private boolean mNeedsToDisplayLanguage;
     private Locale mSpacebarLocale;
-    private float mSpacebarTextFadeFactor = 0.0f;
+    private int mSpacebarTextAlpha;
     private final float mSpacebarTextRatio;
     private float mSpacebarTextSize;
     private final int mSpacebarTextColor;
@@ -344,8 +344,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 LANGUAGE_ON_SPACEBAR_NEVER_DISPLAY);
         final int delayBeforeFadeoutLanguageOnSpacebar = a.getInt(
                 R.styleable.LatinKeyboardView_delayBeforeFadeoutLangageOnSpacebar, 0);
-        mFinalFadeoutFactorOfLanguageOnSpacebar = a.getFloat(
-                R.styleable.LatinKeyboardView_finalFadeoutFactorOfLanguageOnSpacebar, 0.0f);
+        mFinalAlphaOfLanguageOnSpacebar = a.getInt(
+                R.styleable.LatinKeyboardView_finalAlphaOfLanguageOnSpacebar, 0);
 
         final KeyTimerParams keyTimerParams = new KeyTimerParams(a);
         mPointerTrackerParams = new PointerTrackerParams(a);
@@ -361,8 +361,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         PointerTracker.setParameters(mPointerTrackerParams);
 
-        mLanguageOnSpacebarAnimator = ValueAnimator.ofFloat(
-                1.0f, mFinalFadeoutFactorOfLanguageOnSpacebar);
+        mLanguageOnSpacebarAnimator = ValueAnimator.ofInt(
+                ALPHA_OPAQUE, mFinalAlphaOfLanguageOnSpacebar);
         mLanguageOnSpacebarAnimator.setStartDelay(delayBeforeFadeoutLanguageOnSpacebar);
         if (mDurationOfFadeoutLanguageOnSpacebar > 0) {
             mLanguageOnSpacebarAnimator.setDuration(mDurationOfFadeoutLanguageOnSpacebar);
@@ -370,7 +370,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         mLanguageOnSpacebarAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                mSpacebarTextFadeFactor = (Float)animation.getAnimatedValue();
+                mSpacebarTextAlpha = (Integer)animation.getAnimatedValue();
                 invalidateKey(mSpaceKey);
             }
         });
@@ -794,15 +794,15 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         mLanguageOnSpacebarAnimator.cancel();
         mNeedsToDisplayLanguage = needsToDisplayLanguage;
         if (mDurationOfFadeoutLanguageOnSpacebar == LANGUAGE_ON_SPACEBAR_NEVER_DISPLAY) {
-            mSpacebarTextFadeFactor = 0.0f;
+            mNeedsToDisplayLanguage = false;
         } else if (mDurationOfFadeoutLanguageOnSpacebar == LANGUAGE_ON_SPACEBAR_ALWAYS_DISPLAY) {
-            mSpacebarTextFadeFactor = 1.0f;
+            mSpacebarTextAlpha = ALPHA_OPAQUE;
         } else {
             if (subtypeChanged && needsToDisplayLanguage) {
-                mSpacebarTextFadeFactor = 1.0f;
+                mSpacebarTextAlpha = ALPHA_OPAQUE;
                 mLanguageOnSpacebarAnimator.start();
             } else {
-                mSpacebarTextFadeFactor = mFinalFadeoutFactorOfLanguageOnSpacebar;
+                mSpacebarTextAlpha = mFinalAlphaOfLanguageOnSpacebar;
             }
         }
         invalidateKey(mSpaceKey);
@@ -833,12 +833,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         } else {
             super.onDrawKeyTopVisuals(key, canvas, paint, params);
         }
-    }
-
-    private static int getSpacebarTextColor(int color, float fadeFactor) {
-        final int newColor = Color.argb((int)(Color.alpha(color) * fadeFactor),
-                Color.red(color), Color.green(color), Color.blue(color));
-        return newColor;
     }
 
     // Compute width of text with specified text size using paint.
@@ -888,7 +882,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         final int width = key.mWidth;
         final int height = key.mHeight;
 
-        // If application locales are explicitly selected.
+        // If input subtypes are explicitly selected.
         if (mNeedsToDisplayLanguage) {
             final String language = layoutLanguageOnSpacebar(paint, mSpacebarLocale, width,
                     mSpacebarTextSize);
@@ -898,9 +892,11 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             final float descent = paint.descent();
             final float textHeight = -paint.ascent() + descent;
             final float baseline = height / 2 + textHeight / 2;
-            paint.setColor(getSpacebarTextColor(mSpacebarTextShadowColor, mSpacebarTextFadeFactor));
+            paint.setColor(mSpacebarTextShadowColor);
+            paint.setAlpha(mSpacebarTextAlpha);
             canvas.drawText(language, width / 2, baseline - descent - 1, paint);
-            paint.setColor(getSpacebarTextColor(mSpacebarTextColor, mSpacebarTextFadeFactor));
+            paint.setColor(mSpacebarTextColor);
+            paint.setAlpha(mSpacebarTextAlpha);
             canvas.drawText(language, width / 2, baseline - descent, paint);
         }
 

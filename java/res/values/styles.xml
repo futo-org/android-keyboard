@@ -80,7 +80,7 @@
         <item name="showMoreKeysKeyboardAtTouchedPoint">@bool/config_show_more_keys_keyboard_at_touched_point</item>
         <item name="durationOfFadeoutLanguageOnSpacebar">200</item>
         <item name="delayBeforeFadeoutLangageOnSpacebar">1200</item>
-        <item name="finalFadeoutFactorOfLanguageOnSpacebar">0.5</item>
+        <item name="finalAlphaOfLanguageOnSpacebar">128</item>
     </style>
     <style
         name="LatinKeyboardView"
