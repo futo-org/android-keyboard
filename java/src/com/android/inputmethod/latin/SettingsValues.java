@@ -184,6 +184,8 @@ public class SettingsValues {
             }
         }
         final SuggestedWords.Builder builder = new SuggestedWords.Builder(puncList,
+                false /* typedWordValid */,
+                false /* hasMinimalSuggestion */,
                 false /* allowsToBeAutoCorrected */,
                 true /* isPunctuationSuggestions */);
         return builder.build();
@@ -204,6 +206,8 @@ public class SettingsValues {
             }
         }
         final SuggestedWords.Builder builder = new SuggestedWords.Builder(puncOutputTextList,
+                false /* typedWordValid */,
+                false /* hasMinimalSuggestion */,
                 false /* allowsToBeAutoCorrected */,
                 true /* isPunctuationSuggestions */);
         return builder.build();

@@ -73,17 +73,21 @@ public class SuggestedWords {
     }
 
     public static class Builder {
-        private boolean mTypedWordValid;
-        private boolean mHasMinimalSuggestion;
+        private final boolean mTypedWordValid;
+        private final boolean mHasMinimalSuggestion;
         private final boolean mIsPunctuationSuggestions;
         private boolean mShouldBlockAutoCorrectionBySafetyNet;
         private final boolean mAllowsToBeAutoCorrected;
         private final List<SuggestedWordInfo> mSuggestedWordInfoList;
 
         public Builder(final List<SuggestedWordInfo> suggestedWordInfoList,
+                final boolean typedWordValid,
+                final boolean hasMinimalSuggestion,
                 final boolean allowsToBeAutoCorrected,
                 final boolean isPunctuationSuggestions) {
             mSuggestedWordInfoList = suggestedWordInfoList;
+            mTypedWordValid = typedWordValid;
+            mHasMinimalSuggestion = hasMinimalSuggestion;
             mAllowsToBeAutoCorrected = allowsToBeAutoCorrected;
             mIsPunctuationSuggestions = isPunctuationSuggestions;
         }
@@ -104,16 +108,6 @@ public class SuggestedWords {
                 if (null != info) result.add(new SuggestedWordInfo(info.getText(), null, false));
             }
             return result;
-        }
-
-        public Builder setTypedWordValid(boolean typedWordValid) {
-            mTypedWordValid = typedWordValid;
-            return this;
-        }
-
-        public Builder setHasMinimalSuggestion(boolean hasMinimalSuggestion) {
-            mHasMinimalSuggestion = hasMinimalSuggestion;
-            return this;
         }
 
         public Builder setShouldBlockAutoCorrectionBySafetyNet() {

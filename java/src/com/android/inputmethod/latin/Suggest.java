@@ -271,6 +271,8 @@ public class Suggest implements Dictionary.WordCallback {
 
         return new SuggestedWords.Builder(
                 SuggestedWords.Builder.getFromCharSequenceList(mSuggestions),
+                false /* typedWordValid */,
+                false /* hasMinimalSuggestion */,
                 false /* allowsToBeAutoCorrected */,
                 false /* isPunctuationSuggestions */);
     }
@@ -435,10 +437,11 @@ public class Suggest implements Dictionary.WordCallback {
         }
         // Don't auto-correct words with multiple capital letter
         autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
-        builder = new SuggestedWords.Builder(scoreInfoList, allowsToBeAutoCorrected,
+        builder = new SuggestedWords.Builder(scoreInfoList,
+                !allowsToBeAutoCorrected /* typedWordValid */,
+                autoCorrectionAvailable /* hasMinimalSuggestion */,
+                allowsToBeAutoCorrected /* allowsToBeAutoCorrected */,
                 false /* isPunctuationSuggestions */);
-        builder.setTypedWordValid(!allowsToBeAutoCorrected).setHasMinimalSuggestion(
-                autoCorrectionAvailable);
         if (allowsToBeAutoCorrected && builder.size() > 1 && mAutoCorrectionThreshold > 0
                 && Suggest.shouldBlockAutoCorrectionBySafetyNet(typedWord, builder.getWord(1))) {
             builder.setShouldBlockAutoCorrectionBySafetyNet();
