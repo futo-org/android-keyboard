@@ -28,7 +28,6 @@ import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.VibratorCompatWrapper;
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -175,34 +174,28 @@ public class SettingsValues {
     }
 
     private static SuggestedWords createSuggestPuncList(final String[] puncs) {
-        final ArrayList<CharSequence> puncList = new ArrayList<CharSequence>();
+        final SuggestedWords.Builder builder = new SuggestedWords.Builder();
         if (puncs != null) {
             for (final String puncSpec : puncs) {
-                puncList.add(KeySpecParser.getLabel(puncSpec));
+                builder.addWord(KeySpecParser.getLabel(puncSpec));
             }
         }
-        final SuggestedWords.Builder builder = new SuggestedWords.Builder()
-                .addWords(puncList, null)
-                .setIsPunctuationSuggestions();
-        return builder.build();
+        return builder.setIsPunctuationSuggestions().build();
     }
 
     private static SuggestedWords createSuggestPuncOutputTextList(final String[] puncs) {
-        final ArrayList<CharSequence> puncOutputTextList = new ArrayList<CharSequence>();
+        final SuggestedWords.Builder builder = new SuggestedWords.Builder();
         if (puncs != null) {
             for (final String puncSpec : puncs) {
                 final String outputText = KeySpecParser.getOutputText(puncSpec);
                 if (outputText != null) {
-                    puncOutputTextList.add(outputText);
+                    builder.addWord(outputText);
                 } else {
-                    puncOutputTextList.add(KeySpecParser.getLabel(puncSpec));
+                    builder.addWord(KeySpecParser.getLabel(puncSpec));
                 }
             }
         }
-        final SuggestedWords.Builder builder = new SuggestedWords.Builder()
-                .addWords(puncOutputTextList, null)
-                .setIsPunctuationSuggestions();
-        return builder.build();
+        return builder.setIsPunctuationSuggestions().build();
     }
 
     private static String createWordSeparators(final String weakSpaceStrippers,
