@@ -104,6 +104,17 @@ public class SuggestedWords {
             return this;
         }
 
+        public Builder addWord(CharSequence word) {
+            return addWord(word, null, false);
+        }
+
+        public Builder addWord(CharSequence word, CharSequence debugString,
+                boolean isPreviousSuggestedWord) {
+            SuggestedWordInfo info = new SuggestedWordInfo(word, debugString,
+                    isPreviousSuggestedWord);
+            return addWord(word, info);
+        }
+
         /* package for tests */
         Builder addWord(CharSequence word, SuggestedWordInfo suggestedWordInfo) {
             if (!TextUtils.isEmpty(suggestedWordInfo.mWord)) {
