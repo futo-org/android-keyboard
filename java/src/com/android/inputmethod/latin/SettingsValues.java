@@ -187,7 +187,8 @@ public class SettingsValues {
                 false /* typedWordValid */,
                 false /* hasMinimalSuggestion */,
                 false /* allowsToBeAutoCorrected */,
-                true /* isPunctuationSuggestions */);
+                true /* isPunctuationSuggestions */,
+                false /* shouldBlockAutoCorrectionBySafetyNet */);
         return builder.build();
     }
 
@@ -209,7 +210,8 @@ public class SettingsValues {
                 false /* typedWordValid */,
                 false /* hasMinimalSuggestion */,
                 false /* allowsToBeAutoCorrected */,
-                true /* isPunctuationSuggestions */);
+                true /* isPunctuationSuggestions */,
+                false /* shouldBlockAutoCorrectionBySafetyNet */);
         return builder.build();
     }
 
