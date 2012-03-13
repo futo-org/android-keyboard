@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import android.text.TextUtils;
 import android.view.inputmethod.CompletionInfo;
 
 import java.util.ArrayList;
@@ -79,16 +78,10 @@ public class SuggestedWords {
         private boolean mIsPunctuationSuggestions;
         private boolean mShouldBlockAutoCorrectionBySafetyNet;
         private boolean mAllowsToBeAutoCorrected;
-        private List<SuggestedWordInfo> mSuggestedWordInfoList =
-                new ArrayList<SuggestedWordInfo>();
+        private final List<SuggestedWordInfo> mSuggestedWordInfoList;
 
-        public Builder() {
-            // Nothing to do here.
-        }
-
-        public Builder setWords(List<SuggestedWordInfo> suggestedWordInfoList) {
+        public Builder(final List<SuggestedWordInfo> suggestedWordInfoList) {
             mSuggestedWordInfoList = suggestedWordInfoList;
-            return this;
         }
 
         public static List<SuggestedWordInfo> getFromCharSequenceList(

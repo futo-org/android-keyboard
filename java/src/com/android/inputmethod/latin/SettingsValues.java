@@ -183,8 +183,7 @@ public class SettingsValues {
                         KeySpecParser.getLabel(puncSpec)));
             }
         }
-        final SuggestedWords.Builder builder = new SuggestedWords.Builder()
-                .setWords(puncList)
+        final SuggestedWords.Builder builder = new SuggestedWords.Builder(puncList)
                 .setIsPunctuationSuggestions();
         return builder.build();
     }
@@ -203,8 +202,7 @@ public class SettingsValues {
                 }
             }
         }
-        final SuggestedWords.Builder builder = new SuggestedWords.Builder()
-                .setWords(puncOutputTextList)
+        final SuggestedWords.Builder builder = new SuggestedWords.Builder(puncOutputTextList)
                 .setIsPunctuationSuggestions();
         return builder.build();
     }
