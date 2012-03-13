@@ -16,8 +16,10 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -75,6 +77,9 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     private Key mSpaceKey;
     private Drawable mSpaceIcon;
     // Stuff to draw language name on spacebar.
+    private ValueAnimator mLanguageOnSpacebarAnimator;
+    private float mFinalFadeoutFactorOfLanguageOnSpacebar;
+    private int mDelayBeforeFadeoutLanguageOnSpacebar;
     private boolean mNeedsToDisplayLanguage;
     private Locale mSpacebarLocale;
     private float mSpacebarTextFadeFactor = 0.0f;
@@ -347,6 +352,26 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         a.recycle();
 
         PointerTracker.setParameters(mPointerTrackerParams);
+
+        // TODO: These resources should be attributes of LatinKeyboardView.
+        final Resources res = getResources();
+        mFinalFadeoutFactorOfLanguageOnSpacebar = res.getInteger(
+                R.integer.config_final_fadeout_percentage_of_language_on_spacebar) / 100.0f;
+        mDelayBeforeFadeoutLanguageOnSpacebar = res.getInteger(
+                R.integer.config_delay_before_fadeout_language_on_spacebar);
+        final int durationOfFadeoutLanguageOnSpacebar = res.getInteger(
+                R.integer.config_duration_of_fadeout_language_on_spacebar);
+        mLanguageOnSpacebarAnimator = ValueAnimator.ofFloat(
+                1.0f, mFinalFadeoutFactorOfLanguageOnSpacebar);
+        mLanguageOnSpacebarAnimator.setStartDelay(mDelayBeforeFadeoutLanguageOnSpacebar);
+        mLanguageOnSpacebarAnimator.setDuration(durationOfFadeoutLanguageOnSpacebar);
+        mLanguageOnSpacebarAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mSpacebarTextFadeFactor = (Float)animation.getAnimatedValue();
+                invalidateKey(mSpaceKey);
+            }
+        });
     }
 
     public void setKeyboardActionListener(KeyboardActionListener listener) {
@@ -762,9 +787,23 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         invalidateKey(shortcutKey);
     }
 
-    public void updateSpacebar(float fadeFactor, boolean needsToDisplayLanguage) {
-        mSpacebarTextFadeFactor = fadeFactor;
+    public void startDisplayLanguageOnSpacebar(boolean localeChanged,
+            boolean needsToDisplayLanguage) {
+        mLanguageOnSpacebarAnimator.cancel();
         mNeedsToDisplayLanguage = needsToDisplayLanguage;
+        if (mDelayBeforeFadeoutLanguageOnSpacebar == 0) {
+            // The language is never displayed when the delay is zero.
+            mSpacebarTextFadeFactor = 0.0f;
+        } else if (localeChanged || mDelayBeforeFadeoutLanguageOnSpacebar < 0) {
+            // The language is always displayed when the delay is negative.
+            mSpacebarTextFadeFactor = 1.0f;
+        } else {
+            mSpacebarTextFadeFactor = mFinalFadeoutFactorOfLanguageOnSpacebar;
+        }
+        if (localeChanged && mDelayBeforeFadeoutLanguageOnSpacebar > 0 && mNeedsToDisplayLanguage) {
+            // The fadeout animation will start when the delay is positive.
+            mLanguageOnSpacebarAnimator.start();
+        }
         invalidateKey(mSpaceKey);
     }
 
