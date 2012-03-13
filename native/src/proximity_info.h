@@ -104,6 +104,7 @@ class ProximityInfo {
     const int CELL_HEIGHT;
     const int KEY_COUNT;
     const bool HAS_TOUCH_POSITION_CORRECTION_DATA;
+    const std::string mLocaleStr;
     const int *mInputCodes;
     const int *mInputXCoordinates;
     const int *mInputYCoordinates;

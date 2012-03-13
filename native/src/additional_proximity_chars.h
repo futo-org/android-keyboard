@@ -26,23 +26,23 @@ class AdditionalProximityChars {
  private:
     static const std::string LOCALE_EN_US;
     static const int EN_US_ADDITIONAL_A_SIZE = 4;
-    static const uint16_t EN_US_ADDITIONAL_A[];
+    static const uint32_t EN_US_ADDITIONAL_A[];
     static const int EN_US_ADDITIONAL_E_SIZE = 4;
-    static const uint16_t EN_US_ADDITIONAL_E[];
+    static const uint32_t EN_US_ADDITIONAL_E[];
     static const int EN_US_ADDITIONAL_I_SIZE = 4;
-    static const uint16_t EN_US_ADDITIONAL_I[];
+    static const uint32_t EN_US_ADDITIONAL_I[];
     static const int EN_US_ADDITIONAL_O_SIZE = 4;
-    static const uint16_t EN_US_ADDITIONAL_O[];
+    static const uint32_t EN_US_ADDITIONAL_O[];
     static const int EN_US_ADDITIONAL_U_SIZE = 4;
-    static const uint16_t EN_US_ADDITIONAL_U[];
+    static const uint32_t EN_US_ADDITIONAL_U[];
 
-    static bool isEnLocale(std::string* locale_str) {
+    static bool isEnLocale(const std::string* locale_str) {
         return locale_str && locale_str->size() >= LOCALE_EN_US.size()
                 && locale_str->compare(0, LOCALE_EN_US.size(), LOCALE_EN_US);
     }
 
  public:
-    static int getAdditionalCharsSize(std::string* locale_str, uint16_t c) {
+    static int getAdditionalCharsSize(const std::string* locale_str, const uint16_t c) {
         if (!isEnLocale(locale_str)) {
             return 0;
         }
@@ -62,7 +62,7 @@ class AdditionalProximityChars {
         }
     }
 
-    static const uint16_t* getAdditionalChars(std::string* locale_str, uint16_t c) {
+    static const uint32_t* getAdditionalChars(const std::string* locale_str, const uint32_t c) {
         if (!isEnLocale(locale_str)) {
             return 0;
         }
@@ -82,7 +82,7 @@ class AdditionalProximityChars {
         }
     }
 
-    static bool hasAdditionalChars(std::string* locale_str, uint16_t c) {
+    static bool hasAdditionalChars(const std::string* locale_str, const uint32_t c) {
         return getAdditionalCharsSize(locale_str, c) > 0;
     }
 };
