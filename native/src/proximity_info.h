@@ -18,6 +18,7 @@
 #define LATINIME_PROXIMITY_INFO_H
 
 #include <stdint.h>
+#include <string>
 
 #include "defines.h"
 
@@ -43,9 +44,9 @@ class ProximityInfo {
         ADDITIONAL_PROXIMITY_CHAR
     } ProximityType;
 
-    ProximityInfo(const int maxProximityCharsSize, const int keyboardWidth,
-            const int keybaordHeight, const int gridWidth, const int gridHeight,
-            const int mostCommonkeyWidth,
+    ProximityInfo(const std::string localeStr, const int maxProximityCharsSize,
+            const int keyboardWidth, const int keybaordHeight, const int gridWidth,
+            const int gridHeight, const int mostCommonkeyWidth,
             const uint32_t *proximityCharsArray, const int keyCount, const int32_t *keyXCoordinates,
             const int32_t *keyYCoordinates, const int32_t *keyWidths, const int32_t *keyHeights,
             const int32_t *keyCharCodes, const float *sweetSpotCenterXs,

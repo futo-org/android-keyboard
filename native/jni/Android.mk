@@ -30,6 +30,7 @@ LATIN_IME_JNI_SRC_FILES := \
     jni_common.cpp
 
 LATIN_IME_CORE_SRC_FILES := \
+    additional_proximity_chars.cpp \
     basechars.cpp \
     bigram_dictionary.cpp \
     char_utils.cpp \

@@ -16,10 +16,11 @@
 
 #include <assert.h>
 #include <stdio.h>
-#include <string.h>
+#include <string>
 
 #define LOG_TAG "LatinIME: proximity_info.cpp"
 
+#include "additional_proximity_chars.h"
 #include "dictionary.h"
 #include "proximity_info.h"
 
@@ -33,9 +34,9 @@ inline void copyOrFillZero(void *to, const void *from, size_t size) {
     }
 }
 
-ProximityInfo::ProximityInfo(const int maxProximityCharsSize, const int keyboardWidth,
-        const int keyboardHeight, const int gridWidth, const int gridHeight,
-        const int mostCommonKeyWidth,
+ProximityInfo::ProximityInfo(const std::string localeStr, const int maxProximityCharsSize,
+        const int keyboardWidth, const int keyboardHeight, const int gridWidth,
+        const int gridHeight, const int mostCommonKeyWidth,
         const uint32_t *proximityCharsArray, const int keyCount, const int32_t *keyXCoordinates,
         const int32_t *keyYCoordinates, const int32_t *keyWidths, const int32_t *keyHeights,
         const int32_t *keyCharCodes, const float *sweetSpotCenterXs, const float *sweetSpotCenterYs,
