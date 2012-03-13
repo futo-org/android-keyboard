@@ -125,6 +125,7 @@ public class Keyboard {
     /** Array of keys and icons in this keyboard */
     public final Key[] mKeys;
     public final Key[] mShiftKeys;
+    public final Key[] mAltCodeKeysWhileTyping;
     public final KeyboardIconsSet mIconsSet;
 
     private final HashMap<Integer, Key> mKeyCache = new HashMap<Integer, Key>();
@@ -148,6 +149,8 @@ public class Keyboard {
 
         mKeys = params.mKeys.toArray(new Key[params.mKeys.size()]);
         mShiftKeys = params.mShiftKeys.toArray(new Key[params.mShiftKeys.size()]);
+        mAltCodeKeysWhileTyping = params.mAltCodeKeysWhileTyping.toArray(
+                new Key[params.mAltCodeKeysWhileTyping.size()]);
         mIconsSet = params.mIconsSet;
         mAdditionalProximityChars = params.mAdditionalProximityChars;
 
@@ -224,6 +227,7 @@ public class Keyboard {
 
         public final ArrayList<Key> mKeys = new ArrayList<Key>();
         public final ArrayList<Key> mShiftKeys = new ArrayList<Key>();
+        public final ArrayList<Key> mAltCodeKeysWhileTyping = new ArrayList<Key>();
         public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
         // TODO: Should be in Key instead of Keyboard.Params?
         public final Map<Integer, List<Integer>> mAdditionalProximityChars =
@@ -304,6 +308,9 @@ public class Keyboard {
             updateHistogram(key);
             if (key.mCode == Keyboard.CODE_SHIFT) {
                 mShiftKeys.add(key);
+            }
+            if (key.altCodeWhileTyping()) {
+                mAltCodeKeysWhileTyping.add(key);
             }
         }
 
