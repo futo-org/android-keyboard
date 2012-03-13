@@ -142,20 +142,12 @@ public class StringUtils {
             for (int j = 0; j < i; j++) {
                 CharSequence previous = suggestions.get(j);
                 if (TextUtils.equals(cur, previous)) {
-                    removeFromSuggestions(suggestions, i);
+                    suggestions.remove(i);
                     i--;
                     break;
                 }
             }
             i++;
-        }
-    }
-
-    private static void removeFromSuggestions(final ArrayList<CharSequence> suggestions,
-            final int index) {
-        final CharSequence garbage = suggestions.remove(index);
-        if (garbage instanceof StringBuilder) {
-            StringBuilderPool.recycle((StringBuilder)garbage);
         }
     }
 
