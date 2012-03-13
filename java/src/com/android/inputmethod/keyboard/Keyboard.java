@@ -154,7 +154,7 @@ public class Keyboard {
         mIconsSet = params.mIconsSet;
         mAdditionalProximityChars = params.mAdditionalProximityChars;
 
-        mProximityInfo = new ProximityInfo(
+        mProximityInfo = new ProximityInfo(params.mId.mLocale.toString(),
                 params.GRID_WIDTH, params.GRID_HEIGHT, mOccupiedWidth, mOccupiedHeight,
                 mMostCommonKeyWidth, mMostCommonKeyHeight, mKeys, params.mTouchPositionCorrection,
                 params.mAdditionalProximityChars);
