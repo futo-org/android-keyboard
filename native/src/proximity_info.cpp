@@ -50,6 +50,7 @@ ProximityInfo::ProximityInfo(const std::string localeStr, const int maxProximity
           HAS_TOUCH_POSITION_CORRECTION_DATA(keyCount > 0 && keyXCoordinates && keyYCoordinates
                   && keyWidths && keyHeights && keyCharCodes && sweetSpotCenterXs
                   && sweetSpotCenterYs && sweetSpotRadii),
+          mLocaleStr(localeStr),
           mInputXCoordinates(0), mInputYCoordinates(0),
           mTouchPositionCorrectionEnabled(false) {
     const int proximityGridLength = GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE;
@@ -162,6 +163,30 @@ void ProximityInfo::calculateNearbyKeyCodes(
             if (onKey || distance < MOST_COMMON_KEY_WIDTH_SQUARE) {
                 inputCodes[insertPos++] = c;
             }
+        }
+    }
+    const int existingProximitySize = insertPos;
+    for (int i = 0; i < existingProximitySize; ++i) {
+        const uint32_t c = inputCodes[i];
+        const int additionalProximitySize =
+                AdditionalProximityChars::hasAdditionalChars(&mLocaleStr, c);
+        if (additionalProximitySize <= 0) {
+            continue;
+        }
+        const uint32_t* additionalProximityChars =
+                AdditionalProximityChars::getAdditionalChars(&mLocaleStr, c);
+        for (int j = 0; j < additionalProximitySize; ++j) {
+            const uint32_t ac = additionalProximityChars[j];
+            int k = 0;
+            for (; k < insertPos; ++k) {
+                if ((int)ac == inputCodes[k]) {
+                    break;
+                }
+            }
+            if (k < insertPos) {
+                continue;
+            }
+            inputCodes[insertPos++] = ac;
         }
     }
     // TODO: calculate additional chars

@@ -19,23 +19,23 @@
 namespace latinime {
 const std::string AdditionalProximityChars::LOCALE_EN_US("en");
 
-const uint16_t AdditionalProximityChars::EN_US_ADDITIONAL_A[EN_US_ADDITIONAL_A_SIZE] = {
+const uint32_t AdditionalProximityChars::EN_US_ADDITIONAL_A[EN_US_ADDITIONAL_A_SIZE] = {
     'e', 'i', 'o', 'u'
 };
 
-const uint16_t AdditionalProximityChars::EN_US_ADDITIONAL_E[EN_US_ADDITIONAL_E_SIZE] = {
+const uint32_t AdditionalProximityChars::EN_US_ADDITIONAL_E[EN_US_ADDITIONAL_E_SIZE] = {
     'a', 'i', 'o', 'u'
 };
 
-const uint16_t AdditionalProximityChars::EN_US_ADDITIONAL_I[EN_US_ADDITIONAL_I_SIZE] = {
+const uint32_t AdditionalProximityChars::EN_US_ADDITIONAL_I[EN_US_ADDITIONAL_I_SIZE] = {
     'a', 'e', 'o', 'u'
 };
 
-const uint16_t AdditionalProximityChars::EN_US_ADDITIONAL_O[EN_US_ADDITIONAL_O_SIZE] = {
+const uint32_t AdditionalProximityChars::EN_US_ADDITIONAL_O[EN_US_ADDITIONAL_O_SIZE] = {
     'a', 'e', 'i', 'u'
 };
 
-const uint16_t AdditionalProximityChars::EN_US_ADDITIONAL_U[EN_US_ADDITIONAL_U_SIZE] = {
+const uint32_t AdditionalProximityChars::EN_US_ADDITIONAL_U[EN_US_ADDITIONAL_U_SIZE] = {
     'a', 'e', 'i', 'o'
 };
 }

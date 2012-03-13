@@ -47,7 +47,8 @@ static jlong latinime_Keyboard_setProximityInfo(JNIEnv *env, jobject object,
     jfloat *sweetSpotCenterXs = safeGetFloatArrayElements(env, sweetSpotCenterXArray);
     jfloat *sweetSpotCenterYs = safeGetFloatArrayElements(env, sweetSpotCenterYArray);
     jfloat *sweetSpotRadii = safeGetFloatArrayElements(env, sweetSpotRadiusArray);
-    ProximityInfo *proximityInfo = new ProximityInfo(localeStr, maxProximityCharsSize, displayWidth,
+    ProximityInfo *proximityInfo = new ProximityInfo(
+            localeStr, maxProximityCharsSize, displayWidth,
             displayHeight, gridWidth, gridHeight, mostCommonkeyWidth,
             (const uint32_t*)proximityChars,
             keyCount, (const int32_t*)keyXCoordinates, (const int32_t*)keyYCoordinates,
