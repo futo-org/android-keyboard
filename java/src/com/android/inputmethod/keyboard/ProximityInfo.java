@@ -28,7 +28,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class ProximityInfo {
     public static final int MAX_PROXIMITY_CHARS_SIZE = 16;
@@ -50,8 +49,8 @@ public class ProximityInfo {
     private final String mLocaleStr;
 
     ProximityInfo(String localeStr, int gridWidth, int gridHeight, int minWidth, int height,
-            int mostCommonKeyWidth,
-            int mostCommonKeyHeight, Set<Key> keys, TouchPositionCorrection touchPositionCorrection,
+            int mostCommonKeyWidth, int mostCommonKeyHeight, final Key[] keys,
+            TouchPositionCorrection touchPositionCorrection,
             Map<Integer, List<Integer>> additionalProximityChars) {
         if (TextUtils.isEmpty(localeStr)) {
             mLocaleStr = "";
@@ -77,8 +76,8 @@ public class ProximityInfo {
     }
 
     public static ProximityInfo createDummyProximityInfo() {
-        return new ProximityInfo("", 1, 1, 1, 1, 1, 1, Collections.<Key> emptySet(),
-                null, Collections.<Integer, List<Integer>> emptyMap());
+        return new ProximityInfo("", 1, 1, 1, 1, 1, 1, EMPTY_KEY_ARRAY, null,
+                Collections.<Integer, List<Integer>> emptyMap());
     }
 
     public static ProximityInfo createSpellCheckerProximityInfo(final int[] proximity) {
@@ -106,8 +105,7 @@ public class ProximityInfo {
     private native void releaseProximityInfoNative(long nativeProximityInfo);
 
     private final void setProximityInfo(Key[][] gridNeighborKeys, int keyboardWidth,
-            int keyboardHeight, Set<Key> keys,
-            TouchPositionCorrection touchPositionCorrection) {
+            int keyboardHeight, final Key[] keys, TouchPositionCorrection touchPositionCorrection) {
         final int[] proximityCharsArray = new int[mGridSize * MAX_PROXIMITY_CHARS_SIZE];
         Arrays.fill(proximityCharsArray, KeyDetector.NOT_A_CODE);
         for (int i = 0; i < mGridSize; ++i) {
@@ -117,7 +115,7 @@ public class ProximityInfo {
                         gridNeighborKeys[i][j].mCode;
             }
         }
-        final int keyCount = keys.size();
+        final int keyCount = keys.length;
         final int[] keyXCoordinates = new int[keyCount];
         final int[] keyYCoordinates = new int[keyCount];
         final int[] keyWidths = new int[keyCount];
@@ -132,8 +130,8 @@ public class ProximityInfo {
             sweetSpotCenterYs = new float[keyCount];
             sweetSpotRadii = new float[keyCount];
             calculateSweetSpotParams = true;
-            int i = 0;
-            for (final Key key : keys) {
+            for (int i = 0; i < keyCount; i++) {
+                final Key key = keys[i];
                 keyXCoordinates[i] = key.mX;
                 keyYCoordinates[i] = key.mY;
                 keyWidths[i] = key.mWidth;
@@ -156,7 +154,6 @@ public class ProximityInfo {
                                 hitBoxWidth * hitBoxWidth + hitBoxHeight * hitBoxHeight);
                     }
                 }
-                i++;
             }
         } else {
             sweetSpotCenterXs = sweetSpotCenterYs = sweetSpotRadii = null;
@@ -186,17 +183,17 @@ public class ProximityInfo {
         }
     }
 
-    private void computeNearestNeighbors(int defaultWidth, Set<Key> keys,
+    private void computeNearestNeighbors(int defaultWidth, final Key[] keys,
             TouchPositionCorrection touchPositionCorrection,
             Map<Integer, List<Integer>> additionalProximityChars) {
-        final Map<Integer, Key> keyCodeMap = new HashMap<Integer, Key>();
+        final HashMap<Integer, Key> keyCodeMap = new HashMap<Integer, Key>();
         for (final Key key : keys) {
             keyCodeMap.put(key.mCode, key);
         }
         final int thresholdBase = (int) (defaultWidth * SEARCH_DISTANCE);
         final int threshold = thresholdBase * thresholdBase;
         // Round-up so we don't have any pixels outside the grid
-        final Key[] neighborKeys = new Key[keys.size()];
+        final Key[] neighborKeys = new Key[keys.length];
         final int gridWidth = mGridWidth * mCellWidth;
         final int gridHeight = mGridHeight * mCellHeight;
         for (int x = 0; x < gridWidth; x += mCellWidth) {

@@ -40,12 +40,9 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Loads an XML description of a keyboard and stores the attributes of the keys. A keyboard
@@ -125,16 +122,16 @@ public class Keyboard {
     /** Maximum column for more keys keyboard */
     public final int mMaxMoreKeysKeyboardColumn;
 
-    /** List of keys and icons in this keyboard */
-    public final Set<Key> mKeys;
-    public final Set<Key> mShiftKeys;
+    /** Array of keys and icons in this keyboard */
+    public final Key[] mKeys;
+    public final Key[] mShiftKeys;
     public final KeyboardIconsSet mIconsSet;
 
-    private final Map<Integer, Key> mKeyCache = new HashMap<Integer, Key>();
+    private final HashMap<Integer, Key> mKeyCache = new HashMap<Integer, Key>();
 
     private final ProximityInfo mProximityInfo;
 
-    public final Map<Integer, List<Integer>> mAdditionalProximityChars;
+    private final Map<Integer, List<Integer>> mAdditionalProximityChars;
 
     public Keyboard(Params params) {
         mId = params.mId;
@@ -149,8 +146,8 @@ public class Keyboard {
         mTopPadding = params.mTopPadding;
         mVerticalGap = params.mVerticalGap;
 
-        mKeys = Collections.unmodifiableSet(params.mKeys);
-        mShiftKeys = Collections.unmodifiableSet(params.mShiftKeys);
+        mKeys = params.mKeys.toArray(new Key[params.mKeys.size()]);
+        mShiftKeys = params.mShiftKeys.toArray(new Key[params.mShiftKeys.size()]);
         mIconsSet = params.mIconsSet;
         mAdditionalProximityChars = params.mAdditionalProximityChars;
 
@@ -225,8 +222,8 @@ public class Keyboard {
         public int GRID_WIDTH;
         public int GRID_HEIGHT;
 
-        public final Set<Key> mKeys = new HashSet<Key>();
-        public final Set<Key> mShiftKeys = new HashSet<Key>();
+        public final ArrayList<Key> mKeys = new ArrayList<Key>();
+        public final ArrayList<Key> mShiftKeys = new ArrayList<Key>();
         public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
         // TODO: Should be in Key instead of Keyboard.Params?
         public final Map<Integer, List<Integer>> mAdditionalProximityChars =

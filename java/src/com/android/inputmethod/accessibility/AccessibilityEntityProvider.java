@@ -36,7 +36,6 @@ import com.android.inputmethod.keyboard.KeyboardView;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Exposes a virtual view sub-tree for {@link KeyboardView} and generates
@@ -135,9 +134,9 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
             ViewCompat.onInitializeAccessibilityNodeInfo(mKeyboardView, info);
 
             // Add the virtual children of the root View.
-            // TODO(alanv): Need to assign a unique ID to each key.
+            // TODO: Need to assign a unique ID to each key.
             final Keyboard keyboard = mKeyboardView.getKeyboard();
-            final Set<Key> keys = keyboard.mKeys;
+            final Key[] keys = keyboard.mKeys;
             for (Key key : keys) {
                 final int childVirtualViewId = generateVirtualViewIdForKey(key);
                 info.addChild(mKeyboardView, childVirtualViewId);
@@ -342,8 +341,8 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
 
         mVirtualViewIdToKey.clear();
 
-        final Set<Key> keySet = keyboard.mKeys;
-        for (Key key : keySet) {
+        final Key[] keys = keyboard.mKeys;
+        for (Key key : keys) {
             final int virtualViewId = generateVirtualViewIdForKey(key);
             mVirtualViewIdToKey.put(virtualViewId, key);
         }
