@@ -87,12 +87,13 @@ public class SuggestedWords {
             // Nothing to do here.
         }
 
+        // TODO: compatibility for tests. Remove this once tests are okay.
         public Builder addWords(List<SuggestedWordInfo> suggestedWordInfoList) {
-            final int N = suggestedWordInfoList.size();
-            for (int i = 0; i < N; ++i) {
-                SuggestedWordInfo suggestedWordInfo = suggestedWordInfoList.get(i);
-                addWord(suggestedWordInfo.mWord, suggestedWordInfo);
-            }
+            return setWords(suggestedWordInfoList);
+        }
+
+        public Builder setWords(List<SuggestedWordInfo> suggestedWordInfoList) {
+            mSuggestedWordInfoList = suggestedWordInfoList;
             return this;
         }
 

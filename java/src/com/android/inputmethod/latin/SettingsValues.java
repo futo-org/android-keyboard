@@ -184,7 +184,7 @@ public class SettingsValues {
             }
         }
         final SuggestedWords.Builder builder = new SuggestedWords.Builder()
-                .addWords(puncList)
+                .setWords(puncList)
                 .setIsPunctuationSuggestions();
         return builder.build();
     }
@@ -204,7 +204,7 @@ public class SettingsValues {
             }
         }
         final SuggestedWords.Builder builder = new SuggestedWords.Builder()
-                .addWords(puncOutputTextList)
+                .setWords(puncOutputTextList)
                 .setIsPunctuationSuggestions();
         return builder.build();
     }
