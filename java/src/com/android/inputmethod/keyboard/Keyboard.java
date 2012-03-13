@@ -309,8 +309,8 @@ public class Keyboard {
 
         private int mMaxHeightCount = 0;
         private int mMaxWidthCount = 0;
-        private final Map<Integer, Integer> mHeightHistogram = new HashMap<Integer, Integer>();
-        private final Map<Integer, Integer> mWidthHistogram = new HashMap<Integer, Integer>();
+        private final HashMap<Integer, Integer> mHeightHistogram = new HashMap<Integer, Integer>();
+        private final HashMap<Integer, Integer> mWidthHistogram = new HashMap<Integer, Integer>();
 
         private void clearHistogram() {
             mMostCommonKeyHeight = 0;
@@ -322,7 +322,8 @@ public class Keyboard {
             mWidthHistogram.clear();
         }
 
-        private static int updateHistogramCounter(Map<Integer, Integer> histogram, Integer key) {
+        private static int updateHistogramCounter(HashMap<Integer, Integer> histogram,
+                Integer key) {
             final int count = (histogram.containsKey(key) ? histogram.get(key) : 0) + 1;
             histogram.put(key, count);
             return count;
