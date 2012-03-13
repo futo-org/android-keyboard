@@ -17,6 +17,7 @@
 package com.android.inputmethod.keyboard;
 
 import android.graphics.Rect;
+import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.Keyboard.Params.TouchPositionCorrection;
 import com.android.inputmethod.latin.JniUtils;
@@ -46,10 +47,17 @@ public class ProximityInfo {
     private final int mKeyboardHeight;
     private final int mMostCommonKeyWidth;
     private final Key[][] mGridNeighbors;
+    private final String mLocaleStr;
 
-    ProximityInfo(int gridWidth, int gridHeight, int minWidth, int height, int mostCommonKeyWidth,
+    ProximityInfo(String localeStr, int gridWidth, int gridHeight, int minWidth, int height,
+            int mostCommonKeyWidth,
             int mostCommonKeyHeight, Set<Key> keys, TouchPositionCorrection touchPositionCorrection,
             Map<Integer, List<Integer>> additionalProximityChars) {
+        if (TextUtils.isEmpty(localeStr)) {
+            mLocaleStr = "";
+        } else {
+            mLocaleStr = localeStr;
+        }
         mGridWidth = gridWidth;
         mGridHeight = gridHeight;
         mGridSize = mGridWidth * mGridHeight;
@@ -69,7 +77,7 @@ public class ProximityInfo {
     }
 
     public static ProximityInfo createDummyProximityInfo() {
-        return new ProximityInfo(1, 1, 1, 1, 1, 1, Collections.<Key> emptySet(),
+        return new ProximityInfo("", 1, 1, 1, 1, 1, 1, Collections.<Key> emptySet(),
                 null, Collections.<Integer, List<Integer>> emptyMap());
     }
 
@@ -155,7 +163,7 @@ public class ProximityInfo {
             calculateSweetSpotParams = false;
         }
 
-        mNativeProximityInfo = setProximityInfoNative("", MAX_PROXIMITY_CHARS_SIZE,
+        mNativeProximityInfo = setProximityInfoNative(mLocaleStr, MAX_PROXIMITY_CHARS_SIZE,
                 keyboardWidth, keyboardHeight, mGridWidth, mGridHeight, mMostCommonKeyWidth,
                 proximityCharsArray,
                 keyCount, keyXCoordinates, keyYCoordinates, keyWidths, keyHeights, keyCharCodes,
