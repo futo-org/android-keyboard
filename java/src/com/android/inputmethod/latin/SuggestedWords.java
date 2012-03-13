@@ -104,17 +104,6 @@ public class SuggestedWords {
             return this;
         }
 
-        public Builder addWord(CharSequence word) {
-            return addWord(word, null, false);
-        }
-
-        public Builder addWord(CharSequence word, CharSequence debugString,
-                boolean isPreviousSuggestedWord) {
-            SuggestedWordInfo info = new SuggestedWordInfo(word, debugString,
-                    isPreviousSuggestedWord);
-            return addWord(word, info);
-        }
-
         /* package for tests */
         Builder addWord(CharSequence word, SuggestedWordInfo suggestedWordInfo) {
             if (!TextUtils.isEmpty(suggestedWordInfo.mWord)) {
@@ -169,14 +158,14 @@ public class SuggestedWords {
                 SuggestedWords previousSuggestions) {
             mSuggestedWordInfoList.clear();
             final HashSet<String> alreadySeen = new HashSet<String>();
-            addWord(typedWord, null, false);
+            addWord(typedWord, new SuggestedWordInfo(typedWord, null, false));
             alreadySeen.add(typedWord.toString());
             final int previousSize = previousSuggestions.size();
             for (int pos = 1; pos < previousSize; pos++) {
                 final String prevWord = previousSuggestions.getWord(pos).toString();
                 // Filter out duplicate suggestion.
                 if (!alreadySeen.contains(prevWord)) {
-                    addWord(prevWord, null, true);
+                    addWord(prevWord, new SuggestedWordInfo(prevWord, null, true));
                     alreadySeen.add(prevWord);
                 }
             }
