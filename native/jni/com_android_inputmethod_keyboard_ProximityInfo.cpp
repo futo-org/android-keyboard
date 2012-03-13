@@ -50,7 +50,7 @@ static jlong latinime_Keyboard_setProximityInfo(JNIEnv *env, jobject object,
     ProximityInfo *proximityInfo = new ProximityInfo(
             localeStr, maxProximityCharsSize, displayWidth,
             displayHeight, gridWidth, gridHeight, mostCommonkeyWidth,
-            (const uint32_t*)proximityChars,
+            (const int32_t*)proximityChars,
             keyCount, (const int32_t*)keyXCoordinates, (const int32_t*)keyYCoordinates,
             (const int32_t*)keyWidths, (const int32_t*)keyHeights, (const int32_t*)keyCharCodes,
             (const float*)sweetSpotCenterXs, (const float*)sweetSpotCenterYs,
