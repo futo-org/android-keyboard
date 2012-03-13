@@ -76,7 +76,7 @@ public class ProximityInfo {
     public static ProximityInfo createSpellCheckerProximityInfo(final int[] proximity) {
         final ProximityInfo spellCheckerProximityInfo = createDummyProximityInfo();
         spellCheckerProximityInfo.mNativeProximityInfo =
-                spellCheckerProximityInfo.setProximityInfoNative(
+                spellCheckerProximityInfo.setProximityInfoNative("",
                         SpellCheckerProximityInfo.ROW_SIZE, 480, 300, 11, 3, (480 / 10), proximity,
                         0, null, null, null, null, null, null, null, null);
         return spellCheckerProximityInfo;
@@ -87,7 +87,8 @@ public class ProximityInfo {
         JniUtils.loadNativeLibrary();
     }
 
-    private native long setProximityInfoNative(int maxProximityCharsSize, int displayWidth,
+    private native long setProximityInfoNative(
+            String locale, int maxProximityCharsSize, int displayWidth,
             int displayHeight, int gridWidth, int gridHeight,
             int mostCommonKeyWidth, int[] proximityCharsArray,
             int keyCount, int[] keyXCoordinates, int[] keyYCoordinates,
@@ -154,7 +155,7 @@ public class ProximityInfo {
             calculateSweetSpotParams = false;
         }
 
-        mNativeProximityInfo = setProximityInfoNative(MAX_PROXIMITY_CHARS_SIZE,
+        mNativeProximityInfo = setProximityInfoNative("", MAX_PROXIMITY_CHARS_SIZE,
                 keyboardWidth, keyboardHeight, mGridWidth, mGridHeight, mMostCommonKeyWidth,
                 proximityCharsArray,
                 keyCount, keyXCoordinates, keyYCoordinates, keyWidths, keyHeights, keyCharCodes,
