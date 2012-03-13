@@ -180,11 +180,11 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 SettingsValues.getKeyPreviewPopupDismissDelay(mPrefs, mResources));
         mKeyboardView.updateAutoCorrectionState(mIsAutoCorrectionActive);
         mKeyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
+        final boolean subtypeChanged = (oldKeyboard == null)
+                || !keyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
         final boolean needsToDisplayLanguage = mSubtypeSwitcher.needsToDisplayLanguage(
                 keyboard.mId.mLocale);
-        final boolean localeChanged = (oldKeyboard == null)
-                || !keyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
-        mKeyboardView.startDisplayLanguageOnSpacebar(localeChanged, needsToDisplayLanguage);
+        mKeyboardView.startDisplayLanguageOnSpacebar(subtypeChanged, needsToDisplayLanguage);
     }
 
     public Keyboard getKeyboard() {

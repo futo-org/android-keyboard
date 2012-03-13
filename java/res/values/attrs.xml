@@ -132,6 +132,14 @@
         <attr name="spacebarTextRatio" format="fraction" />
         <attr name="spacebarTextColor" format="color" />
         <attr name="spacebarTextShadowColor" format="color" />
+        <!-- Animation parameters for spacebar language label. -->
+        <attr name="durationOfFadeoutLanguageOnSpacebar" format="integer|enum">
+            <!-- This should be aligned with LatinKeyboardView.LANGUAGE_ON_SPACEBAR_* -->
+            <enum name="neverDisplay" value="0" />
+            <enum name="alwaysDisplay" value="-1" />
+        </attr>
+        <attr name="delayBeforeFadeoutLangageOnSpacebar" format="integer" />
+        <attr name="finalFadeoutFactorOfLanguageOnSpacebar" format="float" />
         <!-- Key detection hysteresis distance. -->
         <attr name="keyHysteresisDistance" format="dimension" />
         <!-- Touch noise threshold time in millisecond -->

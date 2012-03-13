@@ -19,7 +19,6 @@ package com.android.inputmethod.keyboard;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -79,7 +78,9 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     // Stuff to draw language name on spacebar.
     private ValueAnimator mLanguageOnSpacebarAnimator;
     private float mFinalFadeoutFactorOfLanguageOnSpacebar;
-    private int mDelayBeforeFadeoutLanguageOnSpacebar;
+    private int mDurationOfFadeoutLanguageOnSpacebar;
+    private static final int LANGUAGE_ON_SPACEBAR_NEVER_DISPLAY = 0;
+    private static final int LANGUAGE_ON_SPACEBAR_ALWAYS_DISPLAY = -1;
     private boolean mNeedsToDisplayLanguage;
     private Locale mSpacebarLocale;
     private float mSpacebarTextFadeFactor = 0.0f;
@@ -338,6 +339,13 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         mSpacebarTextColor = a.getColor(R.styleable.LatinKeyboardView_spacebarTextColor, 0);
         mSpacebarTextShadowColor = a.getColor(
                 R.styleable.LatinKeyboardView_spacebarTextShadowColor, 0);
+        mDurationOfFadeoutLanguageOnSpacebar = a.getInt(
+                R.styleable.LatinKeyboardView_durationOfFadeoutLanguageOnSpacebar,
+                LANGUAGE_ON_SPACEBAR_NEVER_DISPLAY);
+        final int delayBeforeFadeoutLanguageOnSpacebar = a.getInt(
+                R.styleable.LatinKeyboardView_delayBeforeFadeoutLangageOnSpacebar, 0);
+        mFinalFadeoutFactorOfLanguageOnSpacebar = a.getFloat(
+                R.styleable.LatinKeyboardView_finalFadeoutFactorOfLanguageOnSpacebar, 0.0f);
 
         final KeyTimerParams keyTimerParams = new KeyTimerParams(a);
         mPointerTrackerParams = new PointerTrackerParams(a);
@@ -353,18 +361,12 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         PointerTracker.setParameters(mPointerTrackerParams);
 
-        // TODO: These resources should be attributes of LatinKeyboardView.
-        final Resources res = getResources();
-        mFinalFadeoutFactorOfLanguageOnSpacebar = res.getInteger(
-                R.integer.config_final_fadeout_percentage_of_language_on_spacebar) / 100.0f;
-        mDelayBeforeFadeoutLanguageOnSpacebar = res.getInteger(
-                R.integer.config_delay_before_fadeout_language_on_spacebar);
-        final int durationOfFadeoutLanguageOnSpacebar = res.getInteger(
-                R.integer.config_duration_of_fadeout_language_on_spacebar);
         mLanguageOnSpacebarAnimator = ValueAnimator.ofFloat(
                 1.0f, mFinalFadeoutFactorOfLanguageOnSpacebar);
-        mLanguageOnSpacebarAnimator.setStartDelay(mDelayBeforeFadeoutLanguageOnSpacebar);
-        mLanguageOnSpacebarAnimator.setDuration(durationOfFadeoutLanguageOnSpacebar);
+        mLanguageOnSpacebarAnimator.setStartDelay(delayBeforeFadeoutLanguageOnSpacebar);
+        if (mDurationOfFadeoutLanguageOnSpacebar > 0) {
+            mLanguageOnSpacebarAnimator.setDuration(mDurationOfFadeoutLanguageOnSpacebar);
+        }
         mLanguageOnSpacebarAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -747,7 +749,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 super.draw(c);
                 tryGC = false;
             } catch (OutOfMemoryError e) {
-                tryGC = Utils.GCUtils.getInstance().tryGCOrWait("LatinKeyboardView", e);
+                tryGC = Utils.GCUtils.getInstance().tryGCOrWait(TAG, e);
             }
         }
     }
@@ -787,22 +789,21 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         invalidateKey(shortcutKey);
     }
 
-    public void startDisplayLanguageOnSpacebar(boolean localeChanged,
+    public void startDisplayLanguageOnSpacebar(boolean subtypeChanged,
             boolean needsToDisplayLanguage) {
         mLanguageOnSpacebarAnimator.cancel();
         mNeedsToDisplayLanguage = needsToDisplayLanguage;
-        if (mDelayBeforeFadeoutLanguageOnSpacebar == 0) {
-            // The language is never displayed when the delay is zero.
+        if (mDurationOfFadeoutLanguageOnSpacebar == LANGUAGE_ON_SPACEBAR_NEVER_DISPLAY) {
             mSpacebarTextFadeFactor = 0.0f;
-        } else if (localeChanged || mDelayBeforeFadeoutLanguageOnSpacebar < 0) {
-            // The language is always displayed when the delay is negative.
+        } else if (mDurationOfFadeoutLanguageOnSpacebar == LANGUAGE_ON_SPACEBAR_ALWAYS_DISPLAY) {
             mSpacebarTextFadeFactor = 1.0f;
         } else {
-            mSpacebarTextFadeFactor = mFinalFadeoutFactorOfLanguageOnSpacebar;
-        }
-        if (localeChanged && mDelayBeforeFadeoutLanguageOnSpacebar > 0 && mNeedsToDisplayLanguage) {
-            // The fadeout animation will start when the delay is positive.
-            mLanguageOnSpacebarAnimator.start();
+            if (subtypeChanged && needsToDisplayLanguage) {
+                mSpacebarTextFadeFactor = 1.0f;
+                mLanguageOnSpacebarAnimator.start();
+            } else {
+                mSpacebarTextFadeFactor = mFinalFadeoutFactorOfLanguageOnSpacebar;
+            }
         }
         invalidateKey(mSpaceKey);
     }
