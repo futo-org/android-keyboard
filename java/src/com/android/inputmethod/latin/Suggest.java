@@ -269,10 +269,9 @@ public class Suggest implements Dictionary.WordCallback {
 
         StringUtils.removeDupes(mSuggestions);
 
-        return SuggestedWords.getSuggestedWords(
-                SuggestedWords.getFromCharSequenceList(mSuggestions),
+        return new SuggestedWords(SuggestedWords.getFromCharSequenceList(mSuggestions),
                 false /* typedWordValid */,
-                false /* hasMinimalSuggestion */,
+                false /* hasAutoCorrectionCandidate */,
                 false /* allowsToBeAutoCorrected */,
                 false /* isPunctuationSuggestions */,
                 false /* shouldBlockAutoCorrectionBySafetyNet */);
@@ -445,9 +444,9 @@ public class Suggest implements Dictionary.WordCallback {
         } else {
             shouldBlockAutoCorrectionBySatefyNet = false;
         }
-        return SuggestedWords.getSuggestedWords(scoreInfoList,
+        return new SuggestedWords(scoreInfoList,
                 !allowsToBeAutoCorrected /* typedWordValid */,
-                autoCorrectionAvailable /* hasMinimalSuggestion */,
+                autoCorrectionAvailable /* hasAutoCorrectionCandidate */,
                 allowsToBeAutoCorrected /* allowsToBeAutoCorrected */,
                 false /* isPunctuationSuggestions */,
                 shouldBlockAutoCorrectionBySatefyNet);

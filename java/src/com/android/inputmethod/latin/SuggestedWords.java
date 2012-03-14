@@ -33,7 +33,7 @@ public class SuggestedWords {
     public final boolean mAllowsToBeAutoCorrected;
     private final List<SuggestedWordInfo> mSuggestedWordInfoList;
 
-    private SuggestedWords(final List<SuggestedWordInfo> suggestedWordInfoList,
+    public SuggestedWords(final List<SuggestedWordInfo> suggestedWordInfoList,
             final boolean typedWordValid,
             final boolean hasAutoCorrectionCandidate,
             final boolean allowsToBeAutoCorrected,
@@ -74,21 +74,6 @@ public class SuggestedWords {
                 + " mTypedWordValid=" + mTypedWordValid
                 + " mHasAutoCorrectionCandidate=" + mHasAutoCorrectionCandidate
                 + " mIsPunctuationSuggestions=" + mIsPunctuationSuggestions;
-    }
-
-    public static SuggestedWords getSuggestedWords(
-            final List<SuggestedWordInfo> suggestedWordInfoList,
-            final boolean typedWordValid,
-            final boolean hasMinimalSuggestion,
-            final boolean allowsToBeAutoCorrected,
-            final boolean isPunctuationSuggestions,
-            final boolean shouldBlockAutoCorrectionBySafetyNet) {
-        return new SuggestedWords(suggestedWordInfoList,
-                typedWordValid,
-                hasMinimalSuggestion,
-                allowsToBeAutoCorrected,
-                isPunctuationSuggestions,
-                shouldBlockAutoCorrectionBySafetyNet);
     }
 
     public static ArrayList<SuggestedWordInfo> getFromCharSequenceList(

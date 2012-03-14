@@ -183,9 +183,9 @@ public class SettingsValues {
                         KeySpecParser.getLabel(puncSpec)));
             }
         }
-        return SuggestedWords.getSuggestedWords(puncList,
+        return new SuggestedWords(puncList,
                 false /* typedWordValid */,
-                false /* hasMinimalSuggestion */,
+                false /* hasAutoCorrectionCandidate */,
                 false /* allowsToBeAutoCorrected */,
                 true /* isPunctuationSuggestions */,
                 false /* shouldBlockAutoCorrectionBySafetyNet */);
@@ -205,9 +205,9 @@ public class SettingsValues {
                 }
             }
         }
-        return SuggestedWords.getSuggestedWords(puncOutputTextList,
+        return new SuggestedWords(puncOutputTextList,
                 false /* typedWordValid */,
-                false /* hasMinimalSuggestion */,
+                false /* hasAutoCorrectionCandidate */,
                 false /* allowsToBeAutoCorrected */,
                 true /* isPunctuationSuggestions */,
                 false /* shouldBlockAutoCorrectionBySafetyNet */);

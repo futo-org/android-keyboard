@@ -926,10 +926,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             final List<SuggestedWords.SuggestedWordInfo> applicationSuggestedWords =
                     SuggestedWords.getFromApplicationSpecifiedCompletions(
                             applicationSpecifiedCompletions);
-            final SuggestedWords suggestedWords = SuggestedWords.getSuggestedWords(
+            final SuggestedWords suggestedWords = new SuggestedWords(
                     applicationSuggestedWords,
                     false /* typedWordValid */,
-                    false /* hasMinimalSuggestion */,
+                    false /* hasAutoCorrectionCandidate */,
                     false /* allowsToBeAutoCorrected */,
                     false /* isPunctuationSuggestions */,
                     false /* shouldBlockAutoCorrectionBySafetyNet */);
@@ -1790,9 +1790,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     SuggestedWords.getTypedWordAndPreviousSuggestions(
                             typedWord, previousSuggestions);
             final SuggestedWords obsoleteSuggestedWords =
-                    SuggestedWords.getSuggestedWords(typedWordAndPreviousSuggestions,
+                    new SuggestedWords(typedWordAndPreviousSuggestions,
                             false /* typedWordValid */,
-                            false /* hasMinimalSuggestion */,
+                            false /* hasAutoCorrectionCandidate */,
                             false /* allowsToBeAutoCorrected */,
                             false /* isPunctuationSuggestions */,
                             false /* shouldBlockAutoCorrectionBySafetyNet */);
