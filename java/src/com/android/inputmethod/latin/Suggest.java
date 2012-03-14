@@ -269,13 +269,13 @@ public class Suggest implements Dictionary.WordCallback {
 
         StringUtils.removeDupes(mSuggestions);
 
-        return new SuggestedWords.Builder(
+        return SuggestedWords.getSuggestedWords(
                 SuggestedWords.getFromCharSequenceList(mSuggestions),
                 false /* typedWordValid */,
                 false /* hasMinimalSuggestion */,
                 false /* allowsToBeAutoCorrected */,
                 false /* isPunctuationSuggestions */,
-                false /* shouldBlockAutoCorrectionBySafetyNet */).build();
+                false /* shouldBlockAutoCorrectionBySafetyNet */);
     }
 
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
@@ -445,12 +445,12 @@ public class Suggest implements Dictionary.WordCallback {
         } else {
             shouldBlockAutoCorrectionBySatefyNet = false;
         }
-        return new SuggestedWords.Builder(scoreInfoList,
+        return SuggestedWords.getSuggestedWords(scoreInfoList,
                 !allowsToBeAutoCorrected /* typedWordValid */,
                 autoCorrectionAvailable /* hasMinimalSuggestion */,
                 allowsToBeAutoCorrected /* allowsToBeAutoCorrected */,
                 false /* isPunctuationSuggestions */,
-                shouldBlockAutoCorrectionBySatefyNet).build();
+                shouldBlockAutoCorrectionBySatefyNet);
     }
 
     @Override

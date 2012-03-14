@@ -33,7 +33,7 @@ public class SuggestedWords {
     public final boolean mAllowsToBeAutoCorrected;
     private final List<SuggestedWordInfo> mSuggestedWordInfoList;
 
-    SuggestedWords(final boolean typedWordValid,
+    private SuggestedWords(final boolean typedWordValid,
             final boolean hasAutoCorrectionCandidate,
             final boolean isPunctuationSuggestions,
             final boolean shouldBlockAutoCorrectionBySafetyNet,
@@ -76,7 +76,7 @@ public class SuggestedWords {
                 + " mIsPunctuationSuggestions=" + mIsPunctuationSuggestions;
     }
 
-    public static class Builder {
+    private static class Builder {
         private final boolean mTypedWordValid;
         private final boolean mHasMinimalSuggestion;
         private final boolean mIsPunctuationSuggestions;
@@ -84,7 +84,7 @@ public class SuggestedWords {
         private final boolean mAllowsToBeAutoCorrected;
         private final List<SuggestedWordInfo> mSuggestedWordInfoList;
 
-        public Builder(final List<SuggestedWordInfo> suggestedWordInfoList,
+        private Builder(final List<SuggestedWordInfo> suggestedWordInfoList,
                 final boolean typedWordValid,
                 final boolean hasMinimalSuggestion,
                 final boolean allowsToBeAutoCorrected,
@@ -103,6 +103,21 @@ public class SuggestedWords {
                     mIsPunctuationSuggestions, mShouldBlockAutoCorrectionBySafetyNet,
                     mAllowsToBeAutoCorrected, mSuggestedWordInfoList);
         }
+    }
+
+    public static SuggestedWords getSuggestedWords(
+            final List<SuggestedWordInfo> suggestedWordInfoList,
+            final boolean typedWordValid,
+            final boolean hasMinimalSuggestion,
+            final boolean allowsToBeAutoCorrected,
+            final boolean isPunctuationSuggestions,
+            final boolean shouldBlockAutoCorrectionBySafetyNet) {
+        return new Builder(suggestedWordInfoList,
+                typedWordValid,
+                hasMinimalSuggestion,
+                allowsToBeAutoCorrected,
+                isPunctuationSuggestions,
+                shouldBlockAutoCorrectionBySafetyNet).build();
     }
 
     public static ArrayList<SuggestedWordInfo> getFromCharSequenceList(

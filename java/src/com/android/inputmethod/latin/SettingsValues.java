@@ -183,13 +183,12 @@ public class SettingsValues {
                         KeySpecParser.getLabel(puncSpec)));
             }
         }
-        final SuggestedWords.Builder builder = new SuggestedWords.Builder(puncList,
+        return SuggestedWords.getSuggestedWords(puncList,
                 false /* typedWordValid */,
                 false /* hasMinimalSuggestion */,
                 false /* allowsToBeAutoCorrected */,
                 true /* isPunctuationSuggestions */,
                 false /* shouldBlockAutoCorrectionBySafetyNet */);
-        return builder.build();
     }
 
     private static SuggestedWords createSuggestPuncOutputTextList(final String[] puncs) {
@@ -206,13 +205,12 @@ public class SettingsValues {
                 }
             }
         }
-        final SuggestedWords.Builder builder = new SuggestedWords.Builder(puncOutputTextList,
+        return SuggestedWords.getSuggestedWords(puncOutputTextList,
                 false /* typedWordValid */,
                 false /* hasMinimalSuggestion */,
                 false /* allowsToBeAutoCorrected */,
                 true /* isPunctuationSuggestions */,
                 false /* shouldBlockAutoCorrectionBySafetyNet */);
-        return builder.build();
     }
 
     private static String createWordSeparators(final String weakSpaceStrippers,
