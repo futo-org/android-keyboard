@@ -273,8 +273,7 @@ public class Suggest implements Dictionary.WordCallback {
                 false /* typedWordValid */,
                 false /* hasAutoCorrectionCandidate */,
                 false /* allowsToBeAutoCorrected */,
-                false /* isPunctuationSuggestions */,
-                false /* shouldBlockAutoCorrectionBySafetyNet */);
+                false /* isPunctuationSuggestions */);
     }
 
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
@@ -446,10 +445,10 @@ public class Suggest implements Dictionary.WordCallback {
         }
         return new SuggestedWords(scoreInfoList,
                 !allowsToBeAutoCorrected /* typedWordValid */,
-                autoCorrectionAvailable /* hasAutoCorrectionCandidate */,
+                autoCorrectionAvailable & !shouldBlockAutoCorrectionBySatefyNet
+                        /* hasAutoCorrectionCandidate */,
                 allowsToBeAutoCorrected /* allowsToBeAutoCorrected */,
-                false /* isPunctuationSuggestions */,
-                shouldBlockAutoCorrectionBySatefyNet);
+                false /* isPunctuationSuggestions */);
     }
 
     @Override

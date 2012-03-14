@@ -25,7 +25,7 @@ import java.util.List;
 
 public class SuggestedWords {
     public static final SuggestedWords EMPTY = new SuggestedWords(
-            Collections.<SuggestedWordInfo>emptyList(), false, false, false, false, false);
+            Collections.<SuggestedWordInfo>emptyList(), false, false, false, false);
 
     public final boolean mTypedWordValid;
     public final boolean mHasAutoCorrectionCandidate;
@@ -37,12 +37,10 @@ public class SuggestedWords {
             final boolean typedWordValid,
             final boolean hasAutoCorrectionCandidate,
             final boolean allowsToBeAutoCorrected,
-            final boolean isPunctuationSuggestions,
-            final boolean shouldBlockAutoCorrectionBySafetyNet) {
+            final boolean isPunctuationSuggestions) {
         mSuggestedWordInfoList = suggestedWordInfoList;
         mTypedWordValid = typedWordValid;
-        mHasAutoCorrectionCandidate = hasAutoCorrectionCandidate
-                && !shouldBlockAutoCorrectionBySafetyNet;
+        mHasAutoCorrectionCandidate = hasAutoCorrectionCandidate;
         mAllowsToBeAutoCorrected = allowsToBeAutoCorrected;
         mIsPunctuationSuggestions = isPunctuationSuggestions;
     }

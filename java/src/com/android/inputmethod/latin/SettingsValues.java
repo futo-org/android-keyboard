@@ -187,8 +187,7 @@ public class SettingsValues {
                 false /* typedWordValid */,
                 false /* hasAutoCorrectionCandidate */,
                 false /* allowsToBeAutoCorrected */,
-                true /* isPunctuationSuggestions */,
-                false /* shouldBlockAutoCorrectionBySafetyNet */);
+                true /* isPunctuationSuggestions */);
     }
 
     private static SuggestedWords createSuggestPuncOutputTextList(final String[] puncs) {
@@ -209,8 +208,7 @@ public class SettingsValues {
                 false /* typedWordValid */,
                 false /* hasAutoCorrectionCandidate */,
                 false /* allowsToBeAutoCorrected */,
-                true /* isPunctuationSuggestions */,
-                false /* shouldBlockAutoCorrectionBySafetyNet */);
+                true /* isPunctuationSuggestions */);
     }
 
     private static String createWordSeparators(final String weakSpaceStrippers,
