@@ -112,8 +112,6 @@
         latin:keyLabel="&#x200C;"
         latin:moreKeys="&#x200D;"
         latin:keyLabelFlags="hasPopupHint"
-        latin:altCode="@integer/key_space"
-        latin:keyActionFlags="altCodeWhileTyping"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="shortcutKeyStyle"
