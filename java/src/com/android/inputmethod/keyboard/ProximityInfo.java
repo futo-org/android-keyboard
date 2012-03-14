@@ -124,40 +124,40 @@ public class ProximityInfo {
         final float[] sweetSpotCenterXs;
         final float[] sweetSpotCenterYs;
         final float[] sweetSpotRadii;
-        final boolean calculateSweetSpotParams;
+
+        for (int i = 0; i < keyCount; ++i) {
+            final Key key = keys[i];
+            keyXCoordinates[i] = key.mX;
+            keyYCoordinates[i] = key.mY;
+            keyWidths[i] = key.mWidth;
+            keyHeights[i] = key.mHeight;
+            keyCharCodes[i] = key.mCode;
+        }
+
         if (touchPositionCorrection != null && touchPositionCorrection.isValid()) {
             sweetSpotCenterXs = new float[keyCount];
             sweetSpotCenterYs = new float[keyCount];
             sweetSpotRadii = new float[keyCount];
-            calculateSweetSpotParams = true;
             for (int i = 0; i < keyCount; i++) {
                 final Key key = keys[i];
-                keyXCoordinates[i] = key.mX;
-                keyYCoordinates[i] = key.mY;
-                keyWidths[i] = key.mWidth;
-                keyHeights[i] = key.mHeight;
-                keyCharCodes[i] = key.mCode;
-                if (calculateSweetSpotParams) {
-                    final Rect hitBox = key.mHitBox;
-                    final int row = hitBox.top / mKeyHeight;
-                    if (row < touchPositionCorrection.mRadii.length) {
-                        final float hitBoxCenterX = (hitBox.left + hitBox.right) * 0.5f;
-                        final float hitBoxCenterY = (hitBox.top + hitBox.bottom) * 0.5f;
-                        final float hitBoxWidth = hitBox.right - hitBox.left;
-                        final float hitBoxHeight = hitBox.bottom - hitBox.top;
-                        final float x = touchPositionCorrection.mXs[row];
-                        final float y = touchPositionCorrection.mYs[row];
-                        final float radius = touchPositionCorrection.mRadii[row];
-                        sweetSpotCenterXs[i] = hitBoxCenterX + x * hitBoxWidth;
-                        sweetSpotCenterYs[i] = hitBoxCenterY + y * hitBoxHeight;
-                        sweetSpotRadii[i] = radius * (float) Math.sqrt(
-                                hitBoxWidth * hitBoxWidth + hitBoxHeight * hitBoxHeight);
-                    }
+                final Rect hitBox = key.mHitBox;
+                final int row = hitBox.top / mKeyHeight;
+                if (row < touchPositionCorrection.mRadii.length) {
+                    final float hitBoxCenterX = (hitBox.left + hitBox.right) * 0.5f;
+                    final float hitBoxCenterY = (hitBox.top + hitBox.bottom) * 0.5f;
+                    final float hitBoxWidth = hitBox.right - hitBox.left;
+                    final float hitBoxHeight = hitBox.bottom - hitBox.top;
+                    final float x = touchPositionCorrection.mXs[row];
+                    final float y = touchPositionCorrection.mYs[row];
+                    final float radius = touchPositionCorrection.mRadii[row];
+                    sweetSpotCenterXs[i] = hitBoxCenterX + x * hitBoxWidth;
+                    sweetSpotCenterYs[i] = hitBoxCenterY + y * hitBoxHeight;
+                    sweetSpotRadii[i] = radius * (float) Math.sqrt(
+                            hitBoxWidth * hitBoxWidth + hitBoxHeight * hitBoxHeight);
                 }
             }
         } else {
             sweetSpotCenterXs = sweetSpotCenterYs = sweetSpotRadii = null;
-            calculateSweetSpotParams = false;
         }
 
         mNativeProximityInfo = setProximityInfoNative(mLocaleStr, MAX_PROXIMITY_CHARS_SIZE,
