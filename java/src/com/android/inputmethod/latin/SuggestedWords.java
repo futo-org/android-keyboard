@@ -76,35 +76,6 @@ public class SuggestedWords {
                 + " mIsPunctuationSuggestions=" + mIsPunctuationSuggestions;
     }
 
-    private static class Builder {
-        private final boolean mTypedWordValid;
-        private final boolean mHasMinimalSuggestion;
-        private final boolean mIsPunctuationSuggestions;
-        private final boolean mShouldBlockAutoCorrectionBySafetyNet;
-        private final boolean mAllowsToBeAutoCorrected;
-        private final List<SuggestedWordInfo> mSuggestedWordInfoList;
-
-        private Builder(final List<SuggestedWordInfo> suggestedWordInfoList,
-                final boolean typedWordValid,
-                final boolean hasMinimalSuggestion,
-                final boolean allowsToBeAutoCorrected,
-                final boolean isPunctuationSuggestions,
-                final boolean shouldBlockAutoCorrectionBySafetyNet) {
-            mSuggestedWordInfoList = suggestedWordInfoList;
-            mTypedWordValid = typedWordValid;
-            mHasMinimalSuggestion = hasMinimalSuggestion;
-            mAllowsToBeAutoCorrected = allowsToBeAutoCorrected;
-            mIsPunctuationSuggestions = isPunctuationSuggestions;
-            mShouldBlockAutoCorrectionBySafetyNet = shouldBlockAutoCorrectionBySafetyNet;
-        }
-
-        public SuggestedWords build() {
-            return new SuggestedWords(mSuggestedWordInfoList, mTypedWordValid,
-                    mHasMinimalSuggestion, mAllowsToBeAutoCorrected,
-                    mIsPunctuationSuggestions, mShouldBlockAutoCorrectionBySafetyNet);
-        }
-    }
-
     public static SuggestedWords getSuggestedWords(
             final List<SuggestedWordInfo> suggestedWordInfoList,
             final boolean typedWordValid,
@@ -112,12 +83,12 @@ public class SuggestedWords {
             final boolean allowsToBeAutoCorrected,
             final boolean isPunctuationSuggestions,
             final boolean shouldBlockAutoCorrectionBySafetyNet) {
-        return new Builder(suggestedWordInfoList,
+        return new SuggestedWords(suggestedWordInfoList,
                 typedWordValid,
                 hasMinimalSuggestion,
                 allowsToBeAutoCorrected,
                 isPunctuationSuggestions,
-                shouldBlockAutoCorrectionBySafetyNet).build();
+                shouldBlockAutoCorrectionBySafetyNet);
     }
 
     public static ArrayList<SuggestedWordInfo> getFromCharSequenceList(
