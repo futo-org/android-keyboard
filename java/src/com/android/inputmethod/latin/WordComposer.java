@@ -143,7 +143,7 @@ public class WordComposer {
             codes = keyDetector.newCodeArray();
             keyDetector.getKeyAndNearbyCodes(x, y, codes);
             keyX = keyDetector.getTouchX(x);
-            keyY = keyDetector.getTouchX(y);
+            keyY = keyDetector.getTouchY(y);
         }
         add(primaryCode, codes, keyX, keyY);
     }
