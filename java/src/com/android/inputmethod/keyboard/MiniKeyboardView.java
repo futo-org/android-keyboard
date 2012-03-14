@@ -143,34 +143,23 @@ public class MiniKeyboardView extends KeyboardView implements MoreKeysPanel {
         mController = controller;
         mListener = listener;
         final View container = (View)getParent();
-        final MiniKeyboard miniKeyboard = (MiniKeyboard)getKeyboard();
-
-        parentView.getLocationInWindow(mCoordinates);
-        final int miniKeyboardLeft = pointX - miniKeyboard.getDefaultCoordX()
+        final MiniKeyboard pane = (MiniKeyboard)getKeyboard();
+        final int defaultCoordX = pane.getDefaultCoordX();
+        // The coordinates of panel's left-top corner in parentView's coordinate system.
+        final int x = pointX - defaultCoordX - container.getPaddingLeft()
                 + parentView.getPaddingLeft();
-        final int x = wrapUp(Math.max(0, Math.min(miniKeyboardLeft,
-                parentView.getWidth() - miniKeyboard.mOccupiedWidth))
-                - container.getPaddingLeft() + mCoordinates[0],
-                container.getMeasuredWidth(), 0, parentView.getWidth());
-        final int y = pointY
-                - (container.getMeasuredHeight() - container.getPaddingBottom())
-                + parentView.getPaddingTop() + mCoordinates[1];
+        final int y = pointY - container.getMeasuredHeight() + container.getPaddingBottom()
+                + parentView.getPaddingTop();
 
         window.setContentView(container);
         window.setWidth(container.getMeasuredWidth());
         window.setHeight(container.getMeasuredHeight());
-        window.showAtLocation(parentView, Gravity.NO_GRAVITY, x, y);
+        parentView.getLocationInWindow(mCoordinates);
+        window.showAtLocation(parentView, Gravity.NO_GRAVITY,
+                x + mCoordinates[0], y + mCoordinates[1]);
 
-        mOriginX = x + container.getPaddingLeft() - mCoordinates[0];
-        mOriginY = y + container.getPaddingTop() - mCoordinates[1];
-    }
-
-    private static int wrapUp(int x, int width, int left, int right) {
-        if (x < left)
-            return left;
-        if (x + width > right)
-            return right - width;
-        return x;
+        mOriginX = x + container.getPaddingLeft();
+        mOriginY = y + container.getPaddingTop();
     }
 
     private boolean mIsDismissing;
