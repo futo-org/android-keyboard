@@ -47,7 +47,7 @@ class ProximityInfo {
     ProximityInfo(const std::string localeStr, const int maxProximityCharsSize,
             const int keyboardWidth, const int keybaordHeight, const int gridWidth,
             const int gridHeight, const int mostCommonkeyWidth,
-            const uint32_t *proximityCharsArray, const int keyCount, const int32_t *keyXCoordinates,
+            const int32_t *proximityCharsArray, const int keyCount, const int32_t *keyXCoordinates,
             const int32_t *keyYCoordinates, const int32_t *keyWidths, const int32_t *keyHeights,
             const int32_t *keyCharCodes, const float *sweetSpotCenterXs,
             const float *sweetSpotCenterYs, const float *sweetSpotRadii);
@@ -92,7 +92,7 @@ class ProximityInfo {
     bool isOnKey(const int keyId, const int x, const int y);
     int squaredDistanceToEdge(const int keyId, const int x, const int y);
     void calculateNearbyKeyCodes(
-            const int x, const int y, const uint32_t primaryKey, int *inputCodes);
+            const int x, const int y, const int32_t primaryKey, int *inputCodes);
 
     const int MAX_PROXIMITY_CHARS_SIZE;
     const int KEYBOARD_WIDTH;
@@ -109,7 +109,7 @@ class ProximityInfo {
     const int *mInputXCoordinates;
     const int *mInputYCoordinates;
     bool mTouchPositionCorrectionEnabled;
-    uint32_t *mProximityCharsArray;
+    int32_t *mProximityCharsArray;
     int *mNormalizedSquaredDistances;
     int32_t mKeyXCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int32_t mKeyYCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];

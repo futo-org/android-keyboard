@@ -115,6 +115,7 @@ static inline void prof_out(void) {
 #define DEBUG_NODE DEBUG_DICT_FULL
 #define DEBUG_TRACE DEBUG_DICT_FULL
 #define DEBUG_PROXIMITY_INFO false
+#define DEBUG_PROXIMITY_CHARS false
 #define DEBUG_CORRECTION false
 #define DEBUG_CORRECTION_FREQ false
 #define DEBUG_WORDS_PRIORITY_QUEUE false
@@ -128,6 +129,7 @@ static inline void prof_out(void) {
 #define DEBUG_NODE false
 #define DEBUG_TRACE false
 #define DEBUG_PROXIMITY_INFO false
+#define DEBUG_PROXIMITY_CHARS false
 #define DEBUG_CORRECTION false
 #define DEBUG_CORRECTION_FREQ false
 #define DEBUG_WORDS_PRIORITY_QUEUE false
