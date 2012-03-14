@@ -68,8 +68,8 @@ public class PointerTracker {
     }
 
     public interface TimerProxy {
-        public void startKeyTypedTimer();
-        public boolean isTyping();
+        public void startTypingStateTimer();
+        public boolean isTypingState();
         public void startKeyRepeatTimer(PointerTracker tracker);
         public void startLongPressTimer(PointerTracker tracker);
         public void startLongPressTimer(int code);
@@ -81,9 +81,9 @@ public class PointerTracker {
 
         public static class Adapter implements TimerProxy {
             @Override
-            public void startKeyTypedTimer() {}
+            public void startTypingStateTimer() {}
             @Override
-            public boolean isTyping() { return false; }
+            public boolean isTypingState() { return false; }
             @Override
             public void startKeyRepeatTimer(PointerTracker tracker) {}
             @Override
@@ -251,7 +251,7 @@ public class PointerTracker {
     // primaryCode is different from {@link Key#mCode}.
     private void callListenerOnCodeInput(Key key, int primaryCode, int x, int y) {
         final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
-        final boolean alterCode = key.altCodeWhileTyping() && mTimerProxy.isTyping();
+        final boolean alterCode = key.altCodeWhileTyping() && mTimerProxy.isTypingState();
         final int code = alterCode ? key.mAltCode : primaryCode;
         if (DEBUG_LISTENER) {
             Log.d(TAG, "onCodeInput: " + Keyboard.printableCode(code) + " text=" + key.mOutputText
@@ -269,7 +269,7 @@ public class PointerTracker {
                 mListener.onCodeInput(code, x, y);
             }
             if (!key.altCodeWhileTyping() && !key.isModifier()) {
-                mTimerProxy.startKeyTypedTimer();
+                mTimerProxy.startTypingStateTimer();
             }
         }
     }
@@ -368,7 +368,7 @@ public class PointerTracker {
             }
         }
 
-        if (key.altCodeWhileTyping() && mTimerProxy.isTyping()) {
+        if (key.altCodeWhileTyping() && mTimerProxy.isTypingState()) {
             final int altCode = key.mAltCode;
             final Key altKey = mKeyboard.getKey(altCode);
             if (altKey != null) {

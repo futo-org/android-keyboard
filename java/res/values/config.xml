@@ -65,7 +65,7 @@
     <!-- Long pressing space will invoke IME switcher if > 0, never invoke IME switcher if == 0 -->
     <integer name="config_long_press_space_key_timeout">
             @integer/config_long_press_key_timeout</integer>
-    <integer name="config_ignore_special_key_timeout">700</integer>
+    <integer name="config_ignore_alt_code_key_timeout">700</integer>
     <!-- Showing more keys keyboard, just above the touched point if true, aligned to the key if
          false -->
     <bool name="config_show_more_keys_keyboard_at_touched_point">false</bool>

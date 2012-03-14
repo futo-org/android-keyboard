@@ -98,6 +98,11 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     private final Drawable mAutoCorrectionSpacebarLedIcon;
     private static final int SPACE_LED_LENGTH_PERCENT = 80;
 
+    // Stuff to draw altCodeWhileTyping keys.
+    private ValueAnimator mAltCodeKeyWhileTypingFadeoutAnimator;
+    private ValueAnimator mAltCodeKeyWhileTypingFadeinAnimator;
+    private int mAltCodeKeyWhileTypingAnimAlpha;
+
     // More keys keyboard
     private PopupWindow mMoreKeysWindow;
     private MoreKeysPanel mMoreKeysPanel;
@@ -122,7 +127,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         private static final int MSG_REPEAT_KEY = 1;
         private static final int MSG_LONGPRESS_KEY = 2;
         private static final int MSG_DOUBLE_TAP = 3;
-        private static final int MSG_KEY_TYPED = 4;
+        private static final int MSG_TYPING_STATE_EXPIRED = 4;
 
         private final KeyTimerParams mParams;
         private boolean mInKeyRepeat;
@@ -146,6 +151,18 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                     keyboardView.openMoreKeysKeyboardIfRequired(tracker.getKey(), tracker);
                 } else {
                     KeyboardSwitcher.getInstance().onLongPressTimeout(msg.arg1);
+                }
+                break;
+            case MSG_TYPING_STATE_EXPIRED:
+                final ValueAnimator fadeout = keyboardView.mAltCodeKeyWhileTypingFadeoutAnimator;
+                if (fadeout != null && fadeout.isStarted()) {
+                    fadeout.cancel();
+                }
+                // TODO: Start the fade in animation with an initial value that is the same as the
+                // final value when the above fade out animation gets cancelled.
+                final ValueAnimator fadein = keyboardView.mAltCodeKeyWhileTypingFadeinAnimator;
+                if (fadein != null && !fadein.isStarted()) {
+                    fadein.start();
                 }
                 break;
             }
@@ -222,14 +239,30 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
 
         @Override
-        public void startKeyTypedTimer() {
-            removeMessages(MSG_KEY_TYPED);
-            sendMessageDelayed(obtainMessage(MSG_KEY_TYPED), mParams.mIgnoreSpecialKeyTimeout);
+        public void startTypingStateTimer() {
+            final boolean isTyping = isTypingState();
+            removeMessages(MSG_TYPING_STATE_EXPIRED);
+            sendMessageDelayed(
+                    obtainMessage(MSG_TYPING_STATE_EXPIRED), mParams.mIgnoreAltCodeKeyTimeout);
+            final LatinKeyboardView keyboardView = getOuterInstance();
+            if (isTyping) {
+                return;
+            }
+            final ValueAnimator fadein = keyboardView.mAltCodeKeyWhileTypingFadeinAnimator;
+            if (fadein != null && fadein.isStarted()) {
+                fadein.cancel();
+            }
+            // TODO: Start the fade out animation with an initial value that is the same as the
+            // final value when the above fade in animation gets cancelled.
+            final ValueAnimator fadeout = keyboardView.mAltCodeKeyWhileTypingFadeoutAnimator;
+            if (fadeout != null && !fadeout.isStarted()) {
+                fadeout.start();
+            }
         }
 
         @Override
-        public boolean isTyping() {
-            return hasMessages(MSG_KEY_TYPED);
+        public boolean isTypingState() {
+            return hasMessages(MSG_TYPING_STATE_EXPIRED);
         }
 
         @Override
@@ -288,7 +321,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         public final int mLongPressKeyTimeout;
         public final int mLongPressShiftKeyTimeout;
         public final int mLongPressSpaceKeyTimeout;
-        public final int mIgnoreSpecialKeyTimeout;
+        public final int mIgnoreAltCodeKeyTimeout;
 
         KeyTimerParams() {
             mKeyRepeatStartTimeout = 0;
@@ -296,7 +329,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             mLongPressKeyTimeout = 0;
             mLongPressShiftKeyTimeout = 0;
             mLongPressSpaceKeyTimeout = 0;
-            mIgnoreSpecialKeyTimeout = 0;
+            mIgnoreAltCodeKeyTimeout = 0;
         }
 
         public KeyTimerParams(TypedArray latinKeyboardViewAttr) {
@@ -310,8 +343,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                     R.styleable.LatinKeyboardView_longPressShiftKeyTimeout, 0);
             mLongPressSpaceKeyTimeout = latinKeyboardViewAttr.getInt(
                     R.styleable.LatinKeyboardView_longPressSpaceKeyTimeout, 0);
-            mIgnoreSpecialKeyTimeout = latinKeyboardViewAttr.getInt(
-                    R.styleable.LatinKeyboardView_ignoreSpecialKeyTimeout, 0);
+            mIgnoreAltCodeKeyTimeout = latinKeyboardViewAttr.getInt(
+                    R.styleable.LatinKeyboardView_ignoreAltCodeKeyTimeout, 0);
         }
     }
 
@@ -342,6 +375,10 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 R.styleable.LatinKeyboardView_spacebarTextShadowColor, 0);
         final int languageOnSpacebarFadeoutAnimatorResId = a.getResourceId(
                 R.styleable.LatinKeyboardView_languageOnSpacebarFadeoutAnimator, 0);
+        final int altCodeKeyWhileTypingFadeoutAnimatorResId = a.getResourceId(
+                R.styleable.LatinKeyboardView_altCodeKeyWhileTypingFadeoutAnimator, 0);
+        final int altCodeKeyWhileTypingFadeinAnimatorResId = a.getResourceId(
+                R.styleable.LatinKeyboardView_altCodeKeyWhileTypingFadeinAnimator, 0);
 
         final KeyTimerParams keyTimerParams = new KeyTimerParams(a);
         mPointerTrackerParams = new PointerTrackerParams(a);
@@ -357,7 +394,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         PointerTracker.setParameters(mPointerTrackerParams);
 
-        ValueAnimator animator = loadValueAnimator(context, languageOnSpacebarFadeoutAnimatorResId);
+        final ValueAnimator animator = loadValueAnimator(languageOnSpacebarFadeoutAnimatorResId);
         if (animator != null) {
             animator.addUpdateListener(new AnimatorUpdateListener() {
                 @Override
@@ -377,11 +414,47 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             animator.end();
         }
         mLanguageOnSpacebarFadeoutAnimator = animator;
+
+        final ValueAnimator fadeout = loadValueAnimator(altCodeKeyWhileTypingFadeoutAnimatorResId);
+        if (fadeout != null) {
+            fadeout.addUpdateListener(new AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    mAltCodeKeyWhileTypingAnimAlpha = (Integer)animation.getAnimatedValue();
+                    updateAltCodeKeyWhileTyping();
+                }
+            });
+            fadeout.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator a) {
+                    final ValueAnimator valueAnimator = (ValueAnimator)a;
+                }
+            });
+        }
+        mAltCodeKeyWhileTypingFadeoutAnimator = fadeout;
+
+        final ValueAnimator fadein = loadValueAnimator(altCodeKeyWhileTypingFadeinAnimatorResId);
+        if (fadein != null) {
+            fadein.addUpdateListener(new AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    mAltCodeKeyWhileTypingAnimAlpha = (Integer)animation.getAnimatedValue();
+                    updateAltCodeKeyWhileTyping();
+                }
+            });
+            fadein.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator a) {
+                    final ValueAnimator valueAnimator = (ValueAnimator)a;
+                }
+            });
+        }
+        mAltCodeKeyWhileTypingFadeinAnimator = fadein;
     }
 
-    private static ValueAnimator loadValueAnimator(Context context, int resId) {
+    private ValueAnimator loadValueAnimator(int resId) {
         if (resId == 0) return null;
-        return (ValueAnimator)AnimatorInflater.loadAnimator(context, resId);
+        return (ValueAnimator)AnimatorInflater.loadAnimator(getContext(), resId);
     }
 
     public void setKeyboardActionListener(KeyboardActionListener listener) {
@@ -437,6 +510,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mSpacebarTextSize = keyHeight * mSpacebarTextRatio;
         mSpacebarLocale = keyboard.mId.mLocale;
+        mSpacebarTextAlpha = ALPHA_OPAQUE;
+        mAltCodeKeyWhileTypingAnimAlpha = ALPHA_OPAQUE;
     }
 
     /**
@@ -797,6 +872,14 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         invalidateKey(shortcutKey);
     }
 
+    private void updateAltCodeKeyWhileTyping() {
+        final Keyboard keyboard = getKeyboard();
+        if (keyboard == null) return;
+        for (final Key key : keyboard.mAltCodeKeysWhileTyping) {
+            invalidateKey(key);
+        }
+    }
+
     public void startDisplayLanguageOnSpacebar(boolean subtypeChanged,
             boolean needsToDisplayLanguage) {
         final ValueAnimator animator = mLanguageOnSpacebarFadeoutAnimator;
@@ -825,6 +908,9 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
     @Override
     protected void onDrawKeyTopVisuals(Key key, Canvas canvas, Paint paint, KeyDrawParams params) {
+        if (key.altCodeWhileTyping()) {
+            params.mAnimAlpha = mAltCodeKeyWhileTypingAnimAlpha;
+        }
         if (key.mCode == Keyboard.CODE_SPACE) {
             drawSpacebar(key, canvas, paint);
 
