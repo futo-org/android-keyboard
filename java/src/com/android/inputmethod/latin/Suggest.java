@@ -400,10 +400,9 @@ public class Suggest implements Dictionary.WordCallback {
             final CharSequence autoCorrectionSuggestion = mSuggestions.get(0);
             double normalizedScore = BinaryDictionary.calcNormalizedScore(
                     typedWord, autoCorrectionSuggestion.toString(), mScores[0]);
-            suggestionsList = new ArrayList<SuggestedWordInfo>();
-            suggestionsList.add(new SuggestedWordInfo(autoCorrectionSuggestion, "+",
-                    false));
             final int suggestionsSize = mSuggestions.size();
+            suggestionsList = new ArrayList<SuggestedWordInfo>(suggestionsSize);
+            suggestionsList.add(new SuggestedWordInfo(autoCorrectionSuggestion, "+", false));
             // Note: i here is the index in mScores[], but the index in mSuggestions is one more
             // than i because we added the typed word to mSuggestions without touching mScores.
             for (int i = 0; i < mScores.length && i < suggestionsSize - 1; ++i) {
