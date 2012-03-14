@@ -81,9 +81,7 @@
         latin:styleName="zwnjKeyStyle"
         latin:keyLabel="&#x200C;"
         latin:moreKeys="&#x200D;"
-        latin:keyLabelFlags="hasPopupHint"
-        latin:altCode="@integer/key_space"
-        latin:keyActionFlags="altCodeWhileTyping" />
+        latin:keyLabelFlags="hasPopupHint" />
     <key-style
         latin:styleName="smileyKeyStyle"
         latin:keyLabel=":-)"
