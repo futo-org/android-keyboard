@@ -141,29 +141,6 @@ public class SuggestedWords {
                     mIsPunctuationSuggestions, mShouldBlockAutoCorrectionBySafetyNet,
                     mAllowsToBeAutoCorrected, mSuggestedWordInfoList);
         }
-
-        public int size() {
-            return mSuggestedWordInfoList.size();
-        }
-
-        public CharSequence getWord(int pos) {
-            return mSuggestedWordInfoList.get(pos).mWord;
-        }
-
-        public boolean allowsToBeAutoCorrected() {
-            return mAllowsToBeAutoCorrected;
-        }
-
-        @Override
-        public String toString() {
-            // Pretty-print method to help debug
-            return "SuggestedWords.Builder:"
-                    + " mTypedWordValid=" + mTypedWordValid
-                    + " mHasMinimalSuggestion=" + mHasMinimalSuggestion
-                    + " mIsPunctuationSuggestions=" + mIsPunctuationSuggestions
-                    + " mShouldBlockAutoCorrectionBySafetyNet="
-                    + mShouldBlockAutoCorrectionBySafetyNet;
-        }
     }
 
     public static class SuggestedWordInfo {
