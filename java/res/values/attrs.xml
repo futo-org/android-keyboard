@@ -134,6 +134,9 @@
         <attr name="spacebarTextShadowColor" format="color" />
         <!-- Fadeout animator for spacebar language label. -->
         <attr name="languageOnSpacebarFadeoutAnimator" format="reference" />
+        <!-- Fadeout and fadein animator for altCodeWhileTyping keys. -->
+        <attr name="altCodeKeyWhileTypingFadeoutAnimator" format="reference" />
+        <attr name="altCodeKeyWhileTypingFadeinAnimator" format="reference" />
         <!-- Key detection hysteresis distance. -->
         <attr name="keyHysteresisDistance" format="dimension" />
         <!-- Touch noise threshold time in millisecond -->
@@ -153,7 +156,7 @@
         <!-- Long press timeout of space key in millisecond. -->
         <attr name="longPressSpaceKeyTimeout" format="integer" />
         <!-- Ignore special key timeout while typing in millisecond. -->
-        <attr name="ignoreSpecialKeyTimeout" format="integer" />
+        <attr name="ignoreAltCodeKeyTimeout" format="integer" />
         <!-- More keys keyboard will shown at touched point. -->
         <attr name="showMoreKeysKeyboardAtTouchedPoint" format="boolean" />
     </declare-styleable>

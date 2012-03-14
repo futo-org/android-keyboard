@@ -95,6 +95,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     // The maximum key label width in the proportion to the key width.
     private static final float MAX_LABEL_RATIO = 0.90f;
 
+    private final static int ALPHA_OPAQUE = 255;
+
     // Main keyboard
     private Keyboard mKeyboard;
     private final KeyDrawParams mKeyDrawParams;
@@ -201,6 +203,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         public int mKeyHintLetterSize;
         public int mKeyShiftedLetterHintSize;
         public int mKeyHintLabelSize;
+        public int mAnimAlpha;
 
         public KeyDrawParams(TypedArray a) {
             mKeyBackground = a.getDrawable(R.styleable.KeyboardView_keyBackground);
@@ -255,6 +258,12 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             mKeyHintLetterSize = (int)(keyHeight * mKeyHintLetterRatio);
             mKeyShiftedLetterHintSize = (int)(keyHeight * mKeyShiftedLetterHintRatio);
             mKeyHintLabelSize = (int)(keyHeight * mKeyHintLabelRatio);
+        }
+
+        public void brendAlpha(Paint paint) {
+            final int color = paint.getColor();
+            paint.setARGB((paint.getAlpha() * mAnimAlpha) / ALPHA_OPAQUE,
+                    Color.red(color), Color.green(color), Color.blue(color));
         }
     }
 
@@ -343,7 +352,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         mPaint.setAntiAlias(true);
         mPaint.setTextAlign(Align.CENTER);
-        mPaint.setAlpha(255);
     }
 
     // Read fraction value in TypedArray as float.
@@ -492,6 +500,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         final int keyDrawY = key.mY + getPaddingTop();
         canvas.translate(keyDrawX, keyDrawY);
 
+        params.mAnimAlpha = ALPHA_OPAQUE;
         if (!key.isSpacer()) {
             onDrawKeyBackground(key, canvas, params);
         }
@@ -535,6 +544,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         // Draw key label.
         final Drawable icon = key.getIcon(mKeyboard.mIconsSet);
+        if (icon != null) {
+            icon.setAlpha(params.mAnimAlpha);
+        }
         float positionX = centerX;
         if (key.mLabel != null) {
             final String label = key.mLabel;
@@ -589,6 +601,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 // Make label invisible
                 paint.setColor(Color.TRANSPARENT);
             }
+            params.brendAlpha(paint);
             canvas.drawText(label, 0, label.length(), positionX, baseline, paint);
             // Turn off drop shadow and reset x-scale.
             paint.setShadowLayer(0, 0, 0, 0);
@@ -633,6 +646,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 hintSize = params.mKeyHintLetterSize;
             }
             paint.setColor(hintColor);
+            params.brendAlpha(paint);
             paint.setTextSize(hintSize);
             final float hintX, hintY;
             if (key.hasHintLabel()) {
@@ -701,6 +715,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         paint.setTextSize(params.mKeyHintLetterSize);
         paint.setColor(params.mKeyHintLabelColor);
+        params.brendAlpha(paint);
         paint.setTextAlign(Align.CENTER);
         final float hintX = keyWidth - params.mKeyHintLetterPadding
                 - getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) / 2;
