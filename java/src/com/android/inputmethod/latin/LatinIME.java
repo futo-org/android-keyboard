@@ -1768,9 +1768,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         final CharSequence typedWord = mWordComposer.getTypedWord();
         // getSuggestedWordBuilder handles gracefully a null value of prevWord
-        final SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(mWordComposer,
+        final SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(), mCorrectionMode);
-        final SuggestedWords suggestions = builder.build();
 
         // Basically, we update the suggestion strip only when suggestion count > 1.  However,
         // there is an exception: We update the suggestion strip whenever typed word's length
@@ -1778,10 +1777,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // in most cases, suggestion count is 1 when typed word's length is 1, but we do always
         // need to clear the previous state when the user starts typing a word (i.e. typed word's
         // length == 1).
-        if (suggestions.size() > 1 || typedWord.length() == 1
-                || !suggestions.mAllowsToBeAutoCorrected
+        if (suggestedWords.size() > 1 || typedWord.length() == 1
+                || !suggestedWords.mAllowsToBeAutoCorrected
                 || mSuggestionsView.isShowingAddToDictionaryHint()) {
-            showSuggestions(suggestions, typedWord);
+            showSuggestions(suggestedWords, typedWord);
         } else {
             SuggestedWords previousSuggestions = mSuggestionsView.getSuggestions();
             if (previousSuggestions == mSettingsValues.mSuggestPuncList) {
@@ -1982,7 +1981,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             final CharSequence prevWord = EditingUtils.getThisWord(getCurrentInputConnection(),
                     mSettingsValues.mWordSeparators);
             if (!TextUtils.isEmpty(prevWord)) {
-                suggestedWords = mSuggest.getBigramPredictionWordBuilder(prevWord).build();
+                suggestedWords = mSuggest.getBigramPredictions(prevWord);
             } else {
                 suggestedWords = null;
             }

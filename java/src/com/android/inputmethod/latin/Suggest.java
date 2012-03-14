@@ -239,7 +239,7 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     private static final WordComposer sEmptyWordComposer = new WordComposer();
-    public SuggestedWords.Builder getBigramPredictionWordBuilder(CharSequence prevWordForBigram) {
+    public SuggestedWords getBigramPredictions(CharSequence prevWordForBigram) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         mIsFirstCharCapitalized = false;
         mIsAllUpperCase = false;
@@ -275,11 +275,11 @@ public class Suggest implements Dictionary.WordCallback {
                 false /* hasMinimalSuggestion */,
                 false /* allowsToBeAutoCorrected */,
                 false /* isPunctuationSuggestions */,
-                false /* shouldBlockAutoCorrectionBySafetyNet */);
+                false /* shouldBlockAutoCorrectionBySafetyNet */).build();
     }
 
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
-    public SuggestedWords.Builder getSuggestedWordBuilder(
+    public SuggestedWords getSuggestedWords(
             final WordComposer wordComposer, CharSequence prevWordForBigram,
             final ProximityInfo proximityInfo, final int correctionMode) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
@@ -393,7 +393,6 @@ public class Suggest implements Dictionary.WordCallback {
         mSuggestions.add(0, typedWord);
         StringUtils.removeDupes(mSuggestions);
 
-        final SuggestedWords.Builder builder;
         final ArrayList<SuggestedWords.SuggestedWordInfo> scoreInfoList;
         if (DBG) {
             // TODO: this doesn't take into account the fact that removing dupes from mSuggestions
@@ -446,13 +445,12 @@ public class Suggest implements Dictionary.WordCallback {
         } else {
             shouldBlockAutoCorrectionBySatefyNet = false;
         }
-        builder = new SuggestedWords.Builder(scoreInfoList,
+        return new SuggestedWords.Builder(scoreInfoList,
                 !allowsToBeAutoCorrected /* typedWordValid */,
                 autoCorrectionAvailable /* hasMinimalSuggestion */,
                 allowsToBeAutoCorrected /* allowsToBeAutoCorrected */,
                 false /* isPunctuationSuggestions */,
-                shouldBlockAutoCorrectionBySatefyNet);
-        return builder;
+                shouldBlockAutoCorrectionBySatefyNet).build();
     }
 
     @Override
