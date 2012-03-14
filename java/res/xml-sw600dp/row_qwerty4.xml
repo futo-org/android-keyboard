@@ -50,10 +50,24 @@
                     latin:keyStyle="hasShiftedLetterHintStyle" />
             </default>
         </switch>
-        <Key
-            latin:keyStyle="spaceKeyStyle"
-            latin:keyXPos="30.750%p"
-            latin:keyWidth="39.750%p" />
+        <switch>
+            <case
+                latin:languageCode="fa"
+            >
+                <Key
+                    latin:keyStyle="spaceKeyStyle"
+                    latin:keyXPos="30.750%p"
+                    latin:keyWidth="30.850%p" />
+                <Key
+                    latin:keyStyle="zwnjKeyStyle" />
+            </case>
+            <default>
+                <Key
+                    latin:keyStyle="spaceKeyStyle"
+                    latin:keyXPos="30.750%p"
+                    latin:keyWidth="39.750%p" />
+            </default>
+        </switch>
         <switch>
             <case
                 latin:languageCode="iw"

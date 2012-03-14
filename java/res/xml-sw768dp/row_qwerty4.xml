@@ -76,10 +76,30 @@
                 </switch>
             </default>
         </switch>
-        <Key
-            latin:keyStyle="spaceKeyStyle"
-            latin:keyXPos="31.250%p"
-            latin:keyWidth="37.500%p" />
+        <switch>
+            <case
+                latin:languageCode="fa"
+            >
+                <Key
+                    latin:keyStyle="spaceKeyStyle"
+                    latin:keyXPos="31.250%p"
+                    latin:keyWidth="29.453%p" />
+                <!-- U+200C: "" ZERO WIDTH NON-JOINER
+                     U+200D: "" ZERO WIDTH JOINER -->
+                <Key
+                    latin:keyLabel="&#x200C;"
+                    latin:moreKeys="&#x200D;"
+                    latin:keyLabelFlags="hasPopupHint"
+                    latin:altCode="@integer/key_space"
+                    latin:keyActionFlags="altCodeWhileTyping" />
+            </case>
+            <default>
+                <Key
+                    latin:keyStyle="spaceKeyStyle"
+                    latin:keyXPos="31.250%p"
+                    latin:keyWidth="37.500%p" />
+            </default>
+        </switch>
         <switch>
             <case
                 latin:languageCode="iw"
