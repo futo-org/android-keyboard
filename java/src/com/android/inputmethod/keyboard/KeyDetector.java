@@ -260,12 +260,19 @@ public class KeyDetector {
         final int touchX = getTouchX(x);
         final int touchY = getTouchY(y);
 
-        for (final Key key : mKeyboard.getNearestKeys(touchX, touchY)) {
-            if (key.isOnKey(touchX, touchY)) {
-                return key;
+        int minDistance = Integer.MAX_VALUE;
+        Key primaryKey = null;
+        for (final Key key: mKeyboard.getNearestKeys(touchX, touchY)) {
+            final boolean isOnKey = key.isOnKey(touchX, touchY);
+            final int distance = key.squaredDistanceToEdge(touchX, touchY);
+            // TODO: need to take care of hitbox overlaps
+            if (primaryKey == null || distance < minDistance
+                    || (distance == minDistance && isOnKey)) {
+                minDistance = distance;
+                primaryKey = key;
             }
         }
-        return null;
+        return primaryKey;
     }
 
     public static String printableCode(Key key) {
