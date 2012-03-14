@@ -21,6 +21,6 @@
 <animator
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:valueType="intType"
-    android:duration="400"
+    android:duration="70"
     android:valueFrom="255"
     android:valueTo="128" />

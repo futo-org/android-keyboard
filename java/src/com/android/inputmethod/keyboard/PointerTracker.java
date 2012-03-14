@@ -251,18 +251,19 @@ public class PointerTracker {
     // primaryCode is different from {@link Key#mCode}.
     private void callListenerOnCodeInput(Key key, int primaryCode, int x, int y) {
         final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
-        final boolean alterCode = key.altCodeWhileTyping() && mTimerProxy.isTypingState();
-        final int code = alterCode ? key.mAltCode : primaryCode;
+        final boolean altersCode = key.altCodeWhileTyping() && mTimerProxy.isTypingState();
+        final int code = altersCode ? key.mAltCode : primaryCode;
         if (DEBUG_LISTENER) {
             Log.d(TAG, "onCodeInput: " + Keyboard.printableCode(code) + " text=" + key.mOutputText
                     + " x=" + x + " y=" + y
-                    + " ignoreModifier=" + ignoreModifierKey + " alterCode=" + alterCode
+                    + " ignoreModifier=" + ignoreModifierKey + " altersCode=" + altersCode
                     + " enabled=" + key.isEnabled());
         }
         if (ignoreModifierKey) {
             return;
         }
-        if (key.isEnabled()) {
+        // Even if the key is disabled, it should respond if it is in the altCodeWhileTyping state.
+        if (key.isEnabled() || altersCode) {
             if (code == Keyboard.CODE_OUTPUT_TEXT) {
                 mListener.onTextInput(key.mOutputText);
             } else if (code != Keyboard.CODE_UNSPECIFIED) {
@@ -322,10 +323,11 @@ public class PointerTracker {
 
     private void setReleasedKeyGraphics(Key key) {
         mDrawingProxy.dismissKeyPreview(this);
-        if (key == null || !key.isEnabled()) {
+        if (key == null) {
             return;
         }
 
+        // Even if the key is disabled, update the key release graphics just in case.
         updateReleaseKeyGraphics(key);
 
         if (key.isShift()) {
@@ -351,7 +353,14 @@ public class PointerTracker {
     }
 
     private void setPressedKeyGraphics(Key key) {
-        if (key == null || !key.isEnabled()) {
+        if (key == null) {
+            return;
+        }
+
+        // Even if the key is disabled, it should respond if it is in the altCodeWhileTyping state.
+        final boolean altersCode = key.altCodeWhileTyping() && mTimerProxy.isTypingState();
+        final boolean needsToUpdateGraphics = key.isEnabled() || altersCode;
+        if (!needsToUpdateGraphics) {
             return;
         }
 

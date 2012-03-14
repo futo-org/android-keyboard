@@ -908,7 +908,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
     @Override
     protected void onDrawKeyTopVisuals(Key key, Canvas canvas, Paint paint, KeyDrawParams params) {
-        if (key.altCodeWhileTyping()) {
+        if (key.altCodeWhileTyping() && key.isEnabled()) {
             params.mAnimAlpha = mAltCodeKeyWhileTypingAnimAlpha;
         }
         if (key.mCode == Keyboard.CODE_SPACE) {
