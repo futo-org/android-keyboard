@@ -25,21 +25,25 @@ import java.util.List;
 
 public class SuggestedWords {
     public static final SuggestedWords EMPTY = new SuggestedWords(false, false, false, false,
-            Collections.<SuggestedWordInfo>emptyList());
+            false, Collections.<SuggestedWordInfo>emptyList());
 
     public final boolean mTypedWordValid;
     public final boolean mHasAutoCorrectionCandidate;
     public final boolean mIsPunctuationSuggestions;
+    public final boolean mAllowsToBeAutoCorrected;
     private final List<SuggestedWordInfo> mSuggestedWordInfoList;
 
-    SuggestedWords(boolean typedWordValid,
-            boolean hasAutoCorrectionCandidate, boolean isPunctuationSuggestions,
-            boolean shouldBlockAutoCorrectionBySafetyNet,
-            List<SuggestedWordInfo> suggestedWordInfoList) {
+    SuggestedWords(final boolean typedWordValid,
+            final boolean hasAutoCorrectionCandidate,
+            final boolean isPunctuationSuggestions,
+            final boolean shouldBlockAutoCorrectionBySafetyNet,
+            final boolean allowsToBeAutoCorrected,
+            final List<SuggestedWordInfo> suggestedWordInfoList) {
         mTypedWordValid = typedWordValid;
         mHasAutoCorrectionCandidate = hasAutoCorrectionCandidate
                 && !shouldBlockAutoCorrectionBySafetyNet;
         mIsPunctuationSuggestions = isPunctuationSuggestions;
+        mAllowsToBeAutoCorrected = allowsToBeAutoCorrected;
         mSuggestedWordInfoList = suggestedWordInfoList;
     }
 
@@ -138,7 +142,7 @@ public class SuggestedWords {
         public SuggestedWords build() {
             return new SuggestedWords(mTypedWordValid, mHasMinimalSuggestion,
                     mIsPunctuationSuggestions, mShouldBlockAutoCorrectionBySafetyNet,
-                    mSuggestedWordInfoList);
+                    mAllowsToBeAutoCorrected, mSuggestedWordInfoList);
         }
 
         public int size() {
