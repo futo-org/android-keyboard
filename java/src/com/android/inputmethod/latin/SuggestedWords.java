@@ -80,7 +80,7 @@ public class SuggestedWords {
         private final boolean mTypedWordValid;
         private final boolean mHasMinimalSuggestion;
         private final boolean mIsPunctuationSuggestions;
-        private boolean mShouldBlockAutoCorrectionBySafetyNet;
+        private final boolean mShouldBlockAutoCorrectionBySafetyNet;
         private final boolean mAllowsToBeAutoCorrected;
         private final List<SuggestedWordInfo> mSuggestedWordInfoList;
 
@@ -88,12 +88,14 @@ public class SuggestedWords {
                 final boolean typedWordValid,
                 final boolean hasMinimalSuggestion,
                 final boolean allowsToBeAutoCorrected,
-                final boolean isPunctuationSuggestions) {
+                final boolean isPunctuationSuggestions,
+                final boolean shouldBlockAutoCorrectionBySafetyNet) {
             mSuggestedWordInfoList = suggestedWordInfoList;
             mTypedWordValid = typedWordValid;
             mHasMinimalSuggestion = hasMinimalSuggestion;
             mAllowsToBeAutoCorrected = allowsToBeAutoCorrected;
             mIsPunctuationSuggestions = isPunctuationSuggestions;
+            mShouldBlockAutoCorrectionBySafetyNet = shouldBlockAutoCorrectionBySafetyNet;
         }
 
         public static ArrayList<SuggestedWordInfo> getFromCharSequenceList(
@@ -112,11 +114,6 @@ public class SuggestedWords {
                 if (null != info) result.add(new SuggestedWordInfo(info.getText(), null, false));
             }
             return result;
-        }
-
-        public Builder setShouldBlockAutoCorrectionBySafetyNet() {
-            mShouldBlockAutoCorrectionBySafetyNet = true;
-            return this;
         }
 
         // Should get rid of the first one (what the user typed previously) from suggestions

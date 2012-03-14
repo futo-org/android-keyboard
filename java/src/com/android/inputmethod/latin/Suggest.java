@@ -274,7 +274,8 @@ public class Suggest implements Dictionary.WordCallback {
                 false /* typedWordValid */,
                 false /* hasMinimalSuggestion */,
                 false /* allowsToBeAutoCorrected */,
-                false /* isPunctuationSuggestions */);
+                false /* isPunctuationSuggestions */,
+                false /* shouldBlockAutoCorrectionBySafetyNet */);
     }
 
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
@@ -449,10 +450,8 @@ public class Suggest implements Dictionary.WordCallback {
                 !allowsToBeAutoCorrected /* typedWordValid */,
                 autoCorrectionAvailable /* hasMinimalSuggestion */,
                 allowsToBeAutoCorrected /* allowsToBeAutoCorrected */,
-                false /* isPunctuationSuggestions */);
-        if (shouldBlockAutoCorrectionBySatefyNet) {
-            builder.setShouldBlockAutoCorrectionBySafetyNet();
-        }
+                false /* isPunctuationSuggestions */,
+                shouldBlockAutoCorrectionBySatefyNet);
         return builder;
     }
 
