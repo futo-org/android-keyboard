@@ -16,9 +16,11 @@
 
 package com.android.inputmethod.latin;
 
+import android.text.TextUtils;
 import android.view.inputmethod.CompletionInfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -71,7 +73,9 @@ public class SuggestedWords {
         return "SuggestedWords:"
                 + " mTypedWordValid=" + mTypedWordValid
                 + " mHasAutoCorrectionCandidate=" + mHasAutoCorrectionCandidate
-                + " mIsPunctuationSuggestions=" + mIsPunctuationSuggestions;
+                + " mAllowsToBeAutoCorrected=" + mAllowsToBeAutoCorrected
+                + " mIsPunctuationSuggestions=" + mIsPunctuationSuggestions
+                + " words=" + Arrays.toString(mSuggestedWordInfoList.toArray());
     }
 
     public static ArrayList<SuggestedWordInfo> getFromCharSequenceList(
@@ -140,6 +144,15 @@ public class SuggestedWords {
 
         public boolean isObsoleteSuggestedWord () {
             return mPreviousSuggestedWord;
+        }
+
+        @Override
+        public String toString() {
+            if (TextUtils.isEmpty(mDebugString)) {
+                return mWord.toString();
+            } else {
+                return mWord.toString() + " (" + mDebugString.toString() + ")";
+            }
         }
     }
 }
