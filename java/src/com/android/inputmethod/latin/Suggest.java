@@ -437,13 +437,20 @@ public class Suggest implements Dictionary.WordCallback {
         }
         // Don't auto-correct words with multiple capital letter
         autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
+        final boolean shouldBlockAutoCorrectionBySatefyNet;
+        if (allowsToBeAutoCorrected && scoreInfoList.size() > 1 && mAutoCorrectionThreshold > 0
+                && Suggest.shouldBlockAutoCorrectionBySafetyNet(typedWord,
+                        scoreInfoList.get(1).mWord)) {
+            shouldBlockAutoCorrectionBySatefyNet = true;
+        } else {
+            shouldBlockAutoCorrectionBySatefyNet = false;
+        }
         builder = new SuggestedWords.Builder(scoreInfoList,
                 !allowsToBeAutoCorrected /* typedWordValid */,
                 autoCorrectionAvailable /* hasMinimalSuggestion */,
                 allowsToBeAutoCorrected /* allowsToBeAutoCorrected */,
                 false /* isPunctuationSuggestions */);
-        if (allowsToBeAutoCorrected && builder.size() > 1 && mAutoCorrectionThreshold > 0
-                && Suggest.shouldBlockAutoCorrectionBySafetyNet(typedWord, builder.getWord(1))) {
+        if (shouldBlockAutoCorrectionBySatefyNet) {
             builder.setShouldBlockAutoCorrectionBySafetyNet();
         }
         return builder;
