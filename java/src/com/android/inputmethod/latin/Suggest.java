@@ -22,6 +22,7 @@ import android.util.Log;
 
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -392,15 +393,15 @@ public class Suggest implements Dictionary.WordCallback {
         mSuggestions.add(0, typedWord);
         StringUtils.removeDupes(mSuggestions);
 
-        final ArrayList<SuggestedWords.SuggestedWordInfo> suggestionsList;
+        final ArrayList<SuggestedWordInfo> suggestionsList;
         if (DBG) {
             // TODO: this doesn't take into account the fact that removing dupes from mSuggestions
             // may have made mScores[] and mSuggestions out of sync.
             final CharSequence autoCorrectionSuggestion = mSuggestions.get(0);
             double normalizedScore = BinaryDictionary.calcNormalizedScore(
                     typedWord, autoCorrectionSuggestion.toString(), mScores[0]);
-            suggestionsList = new ArrayList<SuggestedWords.SuggestedWordInfo>();
-            suggestionsList.add(new SuggestedWords.SuggestedWordInfo(autoCorrectionSuggestion, "+",
+            suggestionsList = new ArrayList<SuggestedWordInfo>();
+            suggestionsList.add(new SuggestedWordInfo(autoCorrectionSuggestion, "+",
                     false));
             final int suggestionsSize = mSuggestions.size();
             // Note: i here is the index in mScores[], but the index in mSuggestions is one more
@@ -413,12 +414,11 @@ public class Suggest implements Dictionary.WordCallback {
                 } else {
                     scoreInfoString = Integer.toString(mScores[i]);
                 }
-                suggestionsList.add(new SuggestedWords.SuggestedWordInfo(mSuggestions.get(i + 1),
+                suggestionsList.add(new SuggestedWordInfo(mSuggestions.get(i + 1),
                         scoreInfoString, false));
             }
             for (int i = mScores.length; i < suggestionsSize; ++i) {
-                suggestionsList.add(new SuggestedWords.SuggestedWordInfo(mSuggestions.get(i),
-                        "--", false));
+                suggestionsList.add(new SuggestedWordInfo(mSuggestions.get(i), "--", false));
             }
         } else {
             suggestionsList = SuggestedWords.getFromCharSequenceList(mSuggestions);
