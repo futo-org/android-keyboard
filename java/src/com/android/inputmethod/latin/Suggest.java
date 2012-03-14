@@ -343,21 +343,22 @@ public class Suggest implements Dictionary.WordCallback {
             }
 
         } else if (wordComposer.size() > 1) {
+            final WordComposer wordComposerForLookup;
+            if (mTrailingSingleQuotesCount > 0) {
+                wordComposerForLookup = new WordComposer(wordComposer);
+                for (int i = mTrailingSingleQuotesCount - 1; i >= 0; --i) {
+                    wordComposerForLookup.deleteLast();
+                }
+            } else {
+                wordComposerForLookup = wordComposer;
+            }
             // At second character typed, search the unigrams (scores being affected by bigrams)
             for (final String key : mUnigramDictionaries.keySet()) {
                 // Skip UserUnigramDictionary and WhitelistDictionary to lookup
                 if (key.equals(DICT_KEY_USER_UNIGRAM) || key.equals(DICT_KEY_WHITELIST))
                     continue;
                 final Dictionary dictionary = mUnigramDictionaries.get(key);
-                if (mTrailingSingleQuotesCount > 0) {
-                    final WordComposer tmpWordComposer = new WordComposer(wordComposer);
-                    for (int i = mTrailingSingleQuotesCount - 1; i >= 0; --i) {
-                        tmpWordComposer.deleteLast();
-                    }
-                    dictionary.getWords(tmpWordComposer, this, proximityInfo);
-                } else {
-                    dictionary.getWords(wordComposer, this, proximityInfo);
-                }
+                dictionary.getWords(wordComposerForLookup, this, proximityInfo);
             }
         }
 
@@ -391,41 +392,36 @@ public class Suggest implements Dictionary.WordCallback {
         mSuggestions.add(0, typedWord);
         StringUtils.removeDupes(mSuggestions);
 
-        final ArrayList<SuggestedWords.SuggestedWordInfo> scoreInfoList;
+        final ArrayList<SuggestedWords.SuggestedWordInfo> suggestionsList;
         if (DBG) {
             // TODO: this doesn't take into account the fact that removing dupes from mSuggestions
             // may have made mScores[] and mSuggestions out of sync.
             final CharSequence autoCorrectionSuggestion = mSuggestions.get(0);
-            final int autoCorrectionSuggestionScore = mScores[0];
             double normalizedScore = BinaryDictionary.calcNormalizedScore(
-                    typedWord, autoCorrectionSuggestion.toString(),
-                    autoCorrectionSuggestionScore);
-            scoreInfoList = new ArrayList<SuggestedWords.SuggestedWordInfo>();
-            scoreInfoList.add(new SuggestedWords.SuggestedWordInfo(autoCorrectionSuggestion, "+",
+                    typedWord, autoCorrectionSuggestion.toString(), mScores[0]);
+            suggestionsList = new ArrayList<SuggestedWords.SuggestedWordInfo>();
+            suggestionsList.add(new SuggestedWords.SuggestedWordInfo(autoCorrectionSuggestion, "+",
                     false));
             final int suggestionsSize = mSuggestions.size();
             // Note: i here is the index in mScores[], but the index in mSuggestions is one more
             // than i because we added the typed word to mSuggestions without touching mScores.
             for (int i = 0; i < mScores.length && i < suggestionsSize - 1; ++i) {
+                final String scoreInfoString;
                 if (normalizedScore > 0) {
-                    final String scoreThreshold = String.format("%d (%4.2f)", mScores[i],
-                            normalizedScore);
-                    scoreInfoList.add(
-                            new SuggestedWords.SuggestedWordInfo(mSuggestions.get(i + 1),
-                                    scoreThreshold, false));
+                    scoreInfoString = String.format("%d (%4.2f)", mScores[i], normalizedScore);
                     normalizedScore = 0.0;
                 } else {
-                    final String score = Integer.toString(mScores[i]);
-                    scoreInfoList.add(new SuggestedWords.SuggestedWordInfo(mSuggestions.get(i + 1),
-                            score, false));
+                    scoreInfoString = Integer.toString(mScores[i]);
                 }
+                suggestionsList.add(new SuggestedWords.SuggestedWordInfo(mSuggestions.get(i + 1),
+                        scoreInfoString, false));
             }
             for (int i = mScores.length; i < suggestionsSize; ++i) {
-                scoreInfoList.add(new SuggestedWords.SuggestedWordInfo(mSuggestions.get(i),
+                suggestionsList.add(new SuggestedWords.SuggestedWordInfo(mSuggestions.get(i),
                         "--", false));
             }
         } else {
-            scoreInfoList = SuggestedWords.getFromCharSequenceList(mSuggestions);
+            suggestionsList = SuggestedWords.getFromCharSequenceList(mSuggestions);
         }
 
         boolean autoCorrectionAvailable = hasAutoCorrection;
@@ -436,14 +432,14 @@ public class Suggest implements Dictionary.WordCallback {
         // Don't auto-correct words with multiple capital letter
         autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
         final boolean shouldBlockAutoCorrectionBySatefyNet;
-        if (allowsToBeAutoCorrected && scoreInfoList.size() > 1 && mAutoCorrectionThreshold > 0
+        if (allowsToBeAutoCorrected && suggestionsList.size() > 1 && mAutoCorrectionThreshold > 0
                 && Suggest.shouldBlockAutoCorrectionBySafetyNet(typedWord,
-                        scoreInfoList.get(1).mWord)) {
+                        suggestionsList.get(1).mWord)) {
             shouldBlockAutoCorrectionBySatefyNet = true;
         } else {
             shouldBlockAutoCorrectionBySatefyNet = false;
         }
-        return new SuggestedWords(scoreInfoList,
+        return new SuggestedWords(suggestionsList,
                 !allowsToBeAutoCorrected /* typedWordValid */,
                 autoCorrectionAvailable & !shouldBlockAutoCorrectionBySatefyNet
                         /* hasAutoCorrectionCandidate */,
