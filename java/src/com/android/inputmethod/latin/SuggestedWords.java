@@ -24,8 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 
 public class SuggestedWords {
-    public static final SuggestedWords EMPTY = new SuggestedWords(false, false, false, false,
-            false, Collections.<SuggestedWordInfo>emptyList());
+    public static final SuggestedWords EMPTY = new SuggestedWords(
+            Collections.<SuggestedWordInfo>emptyList(), false, false, false, false, false);
 
     public final boolean mTypedWordValid;
     public final boolean mHasAutoCorrectionCandidate;
@@ -33,18 +33,18 @@ public class SuggestedWords {
     public final boolean mAllowsToBeAutoCorrected;
     private final List<SuggestedWordInfo> mSuggestedWordInfoList;
 
-    private SuggestedWords(final boolean typedWordValid,
+    private SuggestedWords(final List<SuggestedWordInfo> suggestedWordInfoList,
+            final boolean typedWordValid,
             final boolean hasAutoCorrectionCandidate,
-            final boolean isPunctuationSuggestions,
-            final boolean shouldBlockAutoCorrectionBySafetyNet,
             final boolean allowsToBeAutoCorrected,
-            final List<SuggestedWordInfo> suggestedWordInfoList) {
+            final boolean isPunctuationSuggestions,
+            final boolean shouldBlockAutoCorrectionBySafetyNet) {
+        mSuggestedWordInfoList = suggestedWordInfoList;
         mTypedWordValid = typedWordValid;
         mHasAutoCorrectionCandidate = hasAutoCorrectionCandidate
                 && !shouldBlockAutoCorrectionBySafetyNet;
-        mIsPunctuationSuggestions = isPunctuationSuggestions;
         mAllowsToBeAutoCorrected = allowsToBeAutoCorrected;
-        mSuggestedWordInfoList = suggestedWordInfoList;
+        mIsPunctuationSuggestions = isPunctuationSuggestions;
     }
 
     public int size() {
@@ -99,9 +99,9 @@ public class SuggestedWords {
         }
 
         public SuggestedWords build() {
-            return new SuggestedWords(mTypedWordValid, mHasMinimalSuggestion,
-                    mIsPunctuationSuggestions, mShouldBlockAutoCorrectionBySafetyNet,
-                    mAllowsToBeAutoCorrected, mSuggestedWordInfoList);
+            return new SuggestedWords(mSuggestedWordInfoList, mTypedWordValid,
+                    mHasMinimalSuggestion, mAllowsToBeAutoCorrected,
+                    mIsPunctuationSuggestions, mShouldBlockAutoCorrectionBySafetyNet);
         }
     }
 
