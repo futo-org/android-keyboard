@@ -63,6 +63,7 @@ import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -404,8 +405,8 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
                         word, getSuggestionWeight(index), ViewGroup.LayoutParams.MATCH_PARENT);
                 x += word.getMeasuredWidth();
 
-                if (DBG) {
-                    final CharSequence debugInfo = getDebugInfo(suggestedWords, pos);
+                if (DBG && pos < suggestedWords.size()) {
+                    final CharSequence debugInfo = Utils.getDebugInfo(suggestedWords, pos);
                     if (debugInfo != null) {
                         final TextView info = mInfos.get(pos);
                         info.setText(debugInfo);
@@ -498,19 +499,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             stripView.addView(hintView);
             setLayoutWeight(
                     hintView, 1.0f - mCenterSuggestionWeight, ViewGroup.LayoutParams.MATCH_PARENT);
-        }
-
-        private static String getDebugInfo(SuggestedWords suggestions, int pos) {
-            if (DBG && pos < suggestions.size()) {
-                final SuggestedWordInfo wordInfo = suggestions.getInfo(pos);
-                if (wordInfo != null) {
-                    final String debugInfo = wordInfo.getDebugString();
-                    if (!TextUtils.isEmpty(debugInfo)) {
-                        return debugInfo;
-                    }
-                }
-            }
-            return null;
         }
 
         private static void setLayoutWeight(View v, float weight, int height) {

@@ -19,7 +19,6 @@ package com.android.inputmethod.latin.suggestions;
 import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -29,7 +28,7 @@ import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
-import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.Utils;
 
 public class MoreSuggestions extends Keyboard {
     public static final int SUGGESTION_CODE_BASE = 1024;
@@ -191,15 +190,6 @@ public class MoreSuggestions extends Keyboard {
             return this;
         }
 
-        private static String getDebugInfo(SuggestedWords suggestions, int pos) {
-            if (!DBG) return null;
-            final SuggestedWordInfo wordInfo = suggestions.getInfo(pos);
-            if (wordInfo == null) return null;
-            final String info = wordInfo.getDebugString();
-            if (TextUtils.isEmpty(info)) return null;
-            return info;
-        }
-
         private static class Divider extends Key.Spacer {
             private final Drawable mIcon;
 
@@ -223,7 +213,7 @@ public class MoreSuggestions extends Keyboard {
                 final int y = params.getY(pos);
                 final int width = params.getWidth(pos);
                 final String word = mSuggestions.getWord(pos).toString();
-                final String info = getDebugInfo(mSuggestions, pos);
+                final String info = Utils.getDebugInfo(mSuggestions, pos);
                 final int index = pos + SUGGESTION_CODE_BASE;
                 final Key key = new Key(
                         params, word, info, KeyboardIconsSet.ICON_UNDEFINED, index, null, x, y,

@@ -30,6 +30,8 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -453,5 +455,14 @@ public class Utils {
         public static void onAutoCorrectionCancellation() {
             LatinImeLogger.logOnAutoCorrectionCancelled();
         }
+    }
+
+    public static String getDebugInfo(final SuggestedWords suggestions, final int pos) {
+        if (!LatinImeLogger.sDBG) return null;
+        final SuggestedWordInfo wordInfo = suggestions.getInfo(pos);
+        if (wordInfo == null) return null;
+        final String info = wordInfo.getDebugString();
+        if (TextUtils.isEmpty(info)) return null;
+        return info;
     }
 }
