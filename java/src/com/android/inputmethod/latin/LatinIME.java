@@ -1716,7 +1716,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         setAutoCorrectionIndicator(false);
     }
 
-    public void setSuggestions(final SuggestedWords words, final boolean isAutoCorrection) {
+    private void setSuggestions(final SuggestedWords words, final boolean isAutoCorrection) {
         if (mSuggestionsView != null) {
             mSuggestionsView.setSuggestions(words);
             mKeyboardSwitcher.onAutoCorrectionStateChanged(isAutoCorrection);
@@ -1726,15 +1726,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private void setAutoCorrectionIndicator(final boolean newAutoCorrectionIndicator) {
         // Put a blue underline to a word in TextView which will be auto-corrected.
         final InputConnection ic = getCurrentInputConnection();
-        if (ic != null) {
-            if (mIsAutoCorrectionIndicatorOn != newAutoCorrectionIndicator) {
-                if (mWordComposer.isComposingWord()) {
-                    mIsAutoCorrectionIndicatorOn = newAutoCorrectionIndicator;
-                    final CharSequence textWithUnderline =
-                            getTextWithUnderline(mWordComposer.getTypedWord());
-                    ic.setComposingText(textWithUnderline, 1);
-                }
-            }
+        if (ic == null) return;
+        if (mIsAutoCorrectionIndicatorOn != newAutoCorrectionIndicator
+                && mWordComposer.isComposingWord()) {
+            mIsAutoCorrectionIndicatorOn = newAutoCorrectionIndicator;
+            final CharSequence textWithUnderline =
+                    getTextWithUnderline(mWordComposer.getTypedWord());
+            ic.setComposingText(textWithUnderline, 1);
         }
     }
 
@@ -1767,7 +1765,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
 
         final CharSequence typedWord = mWordComposer.getTypedWord();
-        // getSuggestedWordBuilder handles gracefully a null value of prevWord
+        // getSuggestedWords handles gracefully a null value of prevWord
         final SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(), mCorrectionMode);
 
