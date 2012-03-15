@@ -42,9 +42,7 @@ public class SettingsValues {
     public final String mWeakSpaceStrippers;
     public final String mWeakSpaceSwappers;
     private final String mPhantomSpacePromotingSymbols;
-    private final String mSuggestPuncs;
     public final SuggestedWords mSuggestPuncList;
-    public final SuggestedWords mSuggestPuncOutputTextList;
     private final String mSymbolsExcludedFromWordSeparators;
     public final String mWordSeparators;
     public final CharSequence mHintToSaveText;
@@ -110,9 +108,7 @@ public class SettingsValues {
         }
         final String[] suggestPuncsSpec = KeySpecParser.parseCsvString(
                 res.getString(R.string.suggested_punctuations), res, R.string.english_ime_name);
-        mSuggestPuncs = createSuggestPuncs(suggestPuncsSpec);
         mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
-        mSuggestPuncOutputTextList = createSuggestPuncOutputTextList(suggestPuncsSpec);
         mSymbolsExcludedFromWordSeparators =
                 res.getString(R.string.symbols_excluded_from_word_separators);
         mWordSeparators = createWordSeparators(mWeakSpaceStrippers, mWeakSpaceSwappers,
@@ -164,16 +160,6 @@ public class SettingsValues {
     }
 
     // Helper functions to create member values.
-    private static String createSuggestPuncs(final String[] puncs) {
-        final StringBuilder sb = new StringBuilder();
-        if (puncs != null) {
-            for (final String puncSpec : puncs) {
-                sb.append(KeySpecParser.getLabel(puncSpec));
-            }
-        }
-        return sb.toString();
-    }
-
     private static SuggestedWords createSuggestPuncList(final String[] puncs) {
         final ArrayList<SuggestedWords.SuggestedWordInfo> puncList =
                 new ArrayList<SuggestedWords.SuggestedWordInfo>();
@@ -184,27 +170,6 @@ public class SettingsValues {
             }
         }
         return new SuggestedWords(puncList,
-                false /* typedWordValid */,
-                false /* hasAutoCorrectionCandidate */,
-                false /* allowsToBeAutoCorrected */,
-                true /* isPunctuationSuggestions */);
-    }
-
-    private static SuggestedWords createSuggestPuncOutputTextList(final String[] puncs) {
-        final ArrayList<SuggestedWords.SuggestedWordInfo> puncOutputTextList =
-                new ArrayList<SuggestedWords.SuggestedWordInfo>();
-        if (puncs != null) {
-            for (final String puncSpec : puncs) {
-                final String outputText = KeySpecParser.getOutputText(puncSpec);
-                if (outputText != null) {
-                    puncOutputTextList.add(new SuggestedWords.SuggestedWordInfo(outputText));
-                } else {
-                    puncOutputTextList.add(new SuggestedWords.SuggestedWordInfo(
-                            KeySpecParser.getLabel(puncSpec)));
-                }
-            }
-        }
-        return new SuggestedWords(puncOutputTextList,
                 false /* typedWordValid */,
                 false /* hasAutoCorrectionCandidate */,
                 false /* allowsToBeAutoCorrected */,
