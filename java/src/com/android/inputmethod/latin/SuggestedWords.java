@@ -85,7 +85,7 @@ public class SuggestedWords {
             final List<CharSequence> wordList) {
         final ArrayList<SuggestedWordInfo> result = new ArrayList<SuggestedWordInfo>();
         for (CharSequence word : wordList) {
-            if (null != word) result.add(new SuggestedWordInfo(word, null));
+            if (null != word) result.add(new SuggestedWordInfo(word));
         }
         return result;
     }
@@ -94,7 +94,7 @@ public class SuggestedWords {
             final CompletionInfo[] infos) {
         final ArrayList<SuggestedWordInfo> result = new ArrayList<SuggestedWordInfo>();
         for (CompletionInfo info : infos) {
-            if (null != info) result.add(new SuggestedWordInfo(info.getText(), null));
+            if (null != info) result.add(new SuggestedWordInfo(info.getText()));
         }
         return result;
     }
@@ -105,14 +105,14 @@ public class SuggestedWords {
             final CharSequence typedWord, final SuggestedWords previousSuggestions) {
         final ArrayList<SuggestedWordInfo> suggestionsList = new ArrayList<SuggestedWordInfo>();
         final HashSet<String> alreadySeen = new HashSet<String>();
-        suggestionsList.add(new SuggestedWordInfo(typedWord, null));
+        suggestionsList.add(new SuggestedWordInfo(typedWord));
         alreadySeen.add(typedWord.toString());
         final int previousSize = previousSuggestions.size();
         for (int pos = 1; pos < previousSize; pos++) {
             final String prevWord = previousSuggestions.getWord(pos).toString();
             // Filter out duplicate suggestion.
             if (!alreadySeen.contains(prevWord)) {
-                suggestionsList.add(new SuggestedWordInfo(prevWord, null));
+                suggestionsList.add(new SuggestedWordInfo(prevWord));
                 alreadySeen.add(prevWord);
             }
         }
@@ -130,15 +130,12 @@ public class SuggestedWords {
 
         public SuggestedWordInfo(final CharSequence word, final CharSequence debugString) {
             mWord = word;
+            if (null == debugString) throw new NullPointerException("");
             mDebugString = debugString;
         }
 
         public String getDebugString() {
-            if (mDebugString == null) {
-                return "";
-            } else {
-                return mDebugString.toString();
-            }
+            return mDebugString.toString();
         }
 
         @Override
