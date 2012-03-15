@@ -1114,8 +1114,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (ic != null) {
                 ic.commitText(typedWord, 1);
             }
-            addToUserUnigramAndBigramDictionaries(typedWord,
-                    UserUnigramDictionary.FREQUENCY_FOR_TYPED);
+            addToUserHistoryDictionary(typedWord);
         }
         updateSuggestions();
     }
@@ -1834,9 +1833,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mExpectingUpdateSelection = true;
             commitChosenWord(autoCorrection, LastComposedWord.COMMIT_TYPE_DECIDED_WORD,
                     separatorCodePoint);
-            // Add the word to the user unigram dictionary if it's not a known word
-            addToUserUnigramAndBigramDictionaries(autoCorrection,
-                    UserUnigramDictionary.FREQUENCY_FOR_TYPED);
+            // Add the word to the user history dictionary
+            addToUserHistoryDictionary(autoCorrection);
             if (!typedWord.equals(autoCorrection) && null != ic) {
                 // This will make the correction flash for a short while as a visual clue
                 // to the user that auto-correction happened.
@@ -1895,13 +1893,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mExpectingUpdateSelection = true;
         commitChosenWord(suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,
                 LastComposedWord.NOT_A_SEPARATOR);
-        // Add the word to the auto dictionary if it's not a known word
-        if (index == 0) {
-            addToUserUnigramAndBigramDictionaries(suggestion,
-                    UserUnigramDictionary.FREQUENCY_FOR_PICKED);
-        } else {
-            addToOnlyBigramDictionary(suggestion, 1);
-        }
+        // Add the word to the user history dictionary
+        addToUserHistoryDictionary(suggestion);
         mSpaceState = SPACE_STATE_PHANTOM;
         // TODO: is this necessary?
         mKeyboardSwitcher.updateShiftState();
@@ -2002,21 +1995,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         setSuggestionStripShown(isSuggestionsStripVisible());
     }
 
-    private void addToUserUnigramAndBigramDictionaries(CharSequence suggestion,
-            int frequencyDelta) {
-        checkAddToDictionary(suggestion, frequencyDelta, false);
-    }
-
-    private void addToOnlyBigramDictionary(CharSequence suggestion, int frequencyDelta) {
-        checkAddToDictionary(suggestion, frequencyDelta, true);
-    }
-
     /**
      * Adds to the UserBigramDictionary and/or UserUnigramDictionary
-     * @param selectedANotTypedWord true if it should be added to bigram dictionary if possible
      */
-    private void checkAddToDictionary(CharSequence suggestion, int frequencyDelta,
-            boolean selectedANotTypedWord) {
+    private void addToUserHistoryDictionary(final CharSequence suggestion) {
         if (suggestion == null || suggestion.length() < 1) return;
 
         // Only auto-add to dictionary if auto-correct is ON. Otherwise we'll be
@@ -2027,28 +2009,17 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             return;
         }
 
-        if (null != mSuggest && null != mUserUnigramDictionary) {
-            final boolean selectedATypedWordAndItsInUserUnigramDic =
-                    !selectedANotTypedWord && mUserUnigramDictionary.isValidWord(suggestion);
-            final boolean isValidWord = AutoCorrection.isValidWord(
-                    mSuggest.getUnigramDictionaries(), suggestion, true);
-            final boolean needsToAddToUserUnigramDictionary =
-                    selectedATypedWordAndItsInUserUnigramDic || !isValidWord;
-            if (needsToAddToUserUnigramDictionary) {
-                mUserUnigramDictionary.addWord(suggestion.toString(), frequencyDelta);
-            }
+        if (null != mUserUnigramDictionary) {
+            mUserUnigramDictionary.addUnigram(suggestion.toString());
         }
 
         if (mUserBigramDictionary != null) {
-            // We don't want to register as bigrams words separated by a separator.
-            // For example "I will, and you too" : we don't want the pair ("will" "and") to be
-            // a bigram.
             final InputConnection ic = getCurrentInputConnection();
             if (null != ic) {
                 final CharSequence prevWord =
                         EditingUtils.getPreviousWord(ic, mSettingsValues.mWordSeparators);
-                if (!TextUtils.isEmpty(prevWord)) {
-                    mUserBigramDictionary.addBigrams(prevWord.toString(), suggestion.toString());
+                if (null != prevWord) {
+                    mUserBigramDictionary.addBigramPair(prevWord.toString(), suggestion.toString());
                 }
             }
         }

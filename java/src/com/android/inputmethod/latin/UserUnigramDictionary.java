@@ -143,9 +143,9 @@ public class UserUnigramDictionary extends ExpandableDictionary {
         }
     }
 
-    @Override
-    public void addWord(String newWord, int addFrequency) {
+    public void addUnigram(String newWord) {
         if (!ENABLE_USER_UNIGRAM_DICTIONARY) return;
+        final int addFrequency = FREQUENCY_FOR_TYPED;
         String word = newWord;
         final int length = word.length();
         // Don't add very short or very long words.
