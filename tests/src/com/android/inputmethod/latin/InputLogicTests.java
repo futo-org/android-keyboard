@@ -554,6 +554,22 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
                 EXPECTED_RESULT, mTextView.getText().toString());
     }
 
+    public void testAutoCorrectionWithSingleQuoteInside() {
+        final String WORD_TO_TYPE = "you'f ";
+        final String EXPECTED_RESULT = "you'd ";
+        type(WORD_TO_TYPE);
+        assertEquals("auto-correction with single quote inside",
+                EXPECTED_RESULT, mTextView.getText().toString());
+    }
+
+    public void testAutoCorrectionWithSingleQuotesAround() {
+        final String WORD_TO_TYPE = "'tgis' ";
+        final String EXPECTED_RESULT = "'this' ";
+        type(WORD_TO_TYPE);
+        assertEquals("auto-correction with single quotes around",
+                EXPECTED_RESULT, mTextView.getText().toString());
+    }
+
     // A helper class to ease span tests
     private static class Span {
         final SpannableStringBuilder mInputText;

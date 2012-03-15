@@ -2059,10 +2059,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (ic == null) return false;
         CharSequence before = ic.getTextBeforeCursor(1, 0);
         CharSequence after = ic.getTextAfterCursor(1, 0);
-        if (!TextUtils.isEmpty(before) && !mSettingsValues.isWordSeparator(before.charAt(0))) {
+        if (!TextUtils.isEmpty(before) && !mSettingsValues.isWordSeparator(before.charAt(0))
+                && !mSettingsValues.isSymbolExcludedFromWordSeparators(before.charAt(0))) {
             return true;
         }
-        if (!TextUtils.isEmpty(after) && !mSettingsValues.isWordSeparator(after.charAt(0))) {
+        if (!TextUtils.isEmpty(after) && !mSettingsValues.isWordSeparator(after.charAt(0))
+                && !mSettingsValues.isSymbolExcludedFromWordSeparators(after.charAt(0))) {
             return true;
         }
         return false;
