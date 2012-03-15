@@ -429,7 +429,7 @@ public class Suggest implements Dictionary.WordCallback {
         final int suggestionsSize = suggestions.size();
         final ArrayList<SuggestedWordInfo> suggestionsList =
                 new ArrayList<SuggestedWordInfo>(suggestionsSize);
-        suggestionsList.add(new SuggestedWordInfo(autoCorrectionSuggestion, "+", false));
+        suggestionsList.add(new SuggestedWordInfo(autoCorrectionSuggestion, "+"));
         // Note: i here is the index in mScores[], but the index in mSuggestions is one more
         // than i because we added the typed word to mSuggestions without touching mScores.
         for (int i = 0; i < scores.length && i < suggestionsSize - 1; ++i) {
@@ -440,11 +440,10 @@ public class Suggest implements Dictionary.WordCallback {
             } else {
                 scoreInfoString = Integer.toString(scores[i]);
             }
-            suggestionsList.add(new SuggestedWordInfo(suggestions.get(i + 1),
-                    scoreInfoString, false));
+            suggestionsList.add(new SuggestedWordInfo(suggestions.get(i + 1), scoreInfoString));
         }
         for (int i = scores.length; i < suggestionsSize; ++i) {
-            suggestionsList.add(new SuggestedWordInfo(suggestions.get(i), "--", false));
+            suggestionsList.add(new SuggestedWordInfo(suggestions.get(i), "--"));
         }
         return suggestionsList;
     }

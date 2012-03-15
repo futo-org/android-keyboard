@@ -85,7 +85,7 @@ public class SuggestedWords {
             final List<CharSequence> wordList) {
         final ArrayList<SuggestedWordInfo> result = new ArrayList<SuggestedWordInfo>();
         for (CharSequence word : wordList) {
-            if (null != word) result.add(new SuggestedWordInfo(word, null, false));
+            if (null != word) result.add(new SuggestedWordInfo(word, null));
         }
         return result;
     }
@@ -94,7 +94,7 @@ public class SuggestedWords {
             final CompletionInfo[] infos) {
         final ArrayList<SuggestedWordInfo> result = new ArrayList<SuggestedWordInfo>();
         for (CompletionInfo info : infos) {
-            if (null != info) result.add(new SuggestedWordInfo(info.getText(), null, false));
+            if (null != info) result.add(new SuggestedWordInfo(info.getText(), null));
         }
         return result;
     }
@@ -105,14 +105,14 @@ public class SuggestedWords {
             final CharSequence typedWord, final SuggestedWords previousSuggestions) {
         final ArrayList<SuggestedWordInfo> suggestionsList = new ArrayList<SuggestedWordInfo>();
         final HashSet<String> alreadySeen = new HashSet<String>();
-        suggestionsList.add(new SuggestedWordInfo(typedWord, null, false));
+        suggestionsList.add(new SuggestedWordInfo(typedWord, null));
         alreadySeen.add(typedWord.toString());
         final int previousSize = previousSuggestions.size();
         for (int pos = 1; pos < previousSize; pos++) {
             final String prevWord = previousSuggestions.getWord(pos).toString();
             // Filter out duplicate suggestion.
             if (!alreadySeen.contains(prevWord)) {
-                suggestionsList.add(new SuggestedWordInfo(prevWord, null, true));
+                suggestionsList.add(new SuggestedWordInfo(prevWord, null));
                 alreadySeen.add(prevWord);
             }
         }
@@ -122,19 +122,15 @@ public class SuggestedWords {
     public static class SuggestedWordInfo {
         public final CharSequence mWord;
         private final CharSequence mDebugString;
-        private final boolean mPreviousSuggestedWord;
 
         public SuggestedWordInfo(final CharSequence word) {
             mWord = word;
             mDebugString = "";
-            mPreviousSuggestedWord = false;
         }
 
-        public SuggestedWordInfo(final CharSequence word, final CharSequence debugString,
-                final boolean previousSuggestedWord) {
+        public SuggestedWordInfo(final CharSequence word, final CharSequence debugString) {
             mWord = word;
             mDebugString = debugString;
-            mPreviousSuggestedWord = previousSuggestedWord;
         }
 
         public String getDebugString() {
@@ -143,10 +139,6 @@ public class SuggestedWords {
             } else {
                 return mDebugString.toString();
             }
-        }
-
-        public boolean isObsoleteSuggestedWord () {
-            return mPreviousSuggestedWord;
         }
 
         @Override
