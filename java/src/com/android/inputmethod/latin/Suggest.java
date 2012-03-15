@@ -395,30 +395,7 @@ public class Suggest implements Dictionary.WordCallback {
 
         final ArrayList<SuggestedWordInfo> suggestionsList;
         if (DBG) {
-            // TODO: this doesn't take into account the fact that removing dupes from mSuggestions
-            // may have made mScores[] and mSuggestions out of sync.
-            final CharSequence autoCorrectionSuggestion = mSuggestions.get(0);
-            double normalizedScore = BinaryDictionary.calcNormalizedScore(
-                    typedWord, autoCorrectionSuggestion.toString(), mScores[0]);
-            final int suggestionsSize = mSuggestions.size();
-            suggestionsList = new ArrayList<SuggestedWordInfo>(suggestionsSize);
-            suggestionsList.add(new SuggestedWordInfo(autoCorrectionSuggestion, "+", false));
-            // Note: i here is the index in mScores[], but the index in mSuggestions is one more
-            // than i because we added the typed word to mSuggestions without touching mScores.
-            for (int i = 0; i < mScores.length && i < suggestionsSize - 1; ++i) {
-                final String scoreInfoString;
-                if (normalizedScore > 0) {
-                    scoreInfoString = String.format("%d (%4.2f)", mScores[i], normalizedScore);
-                    normalizedScore = 0.0;
-                } else {
-                    scoreInfoString = Integer.toString(mScores[i]);
-                }
-                suggestionsList.add(new SuggestedWordInfo(mSuggestions.get(i + 1),
-                        scoreInfoString, false));
-            }
-            for (int i = mScores.length; i < suggestionsSize; ++i) {
-                suggestionsList.add(new SuggestedWordInfo(mSuggestions.get(i), "--", false));
-            }
+            suggestionsList = getSuggestionsInfoListWithDebugInfo(typedWord, mSuggestions, mScores);
         } else {
             suggestionsList = SuggestedWords.getFromCharSequenceList(mSuggestions);
         }
@@ -444,6 +421,37 @@ public class Suggest implements Dictionary.WordCallback {
                         /* hasAutoCorrectionCandidate */,
                 allowsToBeAutoCorrected /* allowsToBeAutoCorrected */,
                 false /* isPunctuationSuggestions */);
+    }
+
+    // This assumes the scores[] array is at least as long as suggestions.size() - 1.
+    private static ArrayList<SuggestedWordInfo> getSuggestionsInfoListWithDebugInfo(
+            final String typedWord, final ArrayList<CharSequence> suggestions, final int[] scores) {
+        // TODO: this doesn't take into account the fact that removing dupes from mSuggestions
+        // may have made mScores[] and mSuggestions out of sync.
+        final CharSequence autoCorrectionSuggestion = suggestions.get(0);
+        double normalizedScore = BinaryDictionary.calcNormalizedScore(
+                typedWord, autoCorrectionSuggestion.toString(), scores[0]);
+        final int suggestionsSize = suggestions.size();
+        final ArrayList<SuggestedWordInfo> suggestionsList =
+                new ArrayList<SuggestedWordInfo>(suggestionsSize);
+        suggestionsList.add(new SuggestedWordInfo(autoCorrectionSuggestion, "+", false));
+        // Note: i here is the index in mScores[], but the index in mSuggestions is one more
+        // than i because we added the typed word to mSuggestions without touching mScores.
+        for (int i = 0; i < scores.length && i < suggestionsSize - 1; ++i) {
+            final String scoreInfoString;
+            if (normalizedScore > 0) {
+                scoreInfoString = String.format("%d (%4.2f)", scores[i], normalizedScore);
+                normalizedScore = 0.0;
+            } else {
+                scoreInfoString = Integer.toString(scores[i]);
+            }
+            suggestionsList.add(new SuggestedWordInfo(suggestions.get(i + 1),
+                    scoreInfoString, false));
+        }
+        for (int i = scores.length; i < suggestionsSize; ++i) {
+            suggestionsList.add(new SuggestedWordInfo(suggestions.get(i), "--", false));
+        }
+        return suggestionsList;
     }
 
     @Override
