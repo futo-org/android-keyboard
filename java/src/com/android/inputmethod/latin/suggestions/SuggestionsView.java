@@ -339,8 +339,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
                 }
             }
 
-            final SuggestedWordInfo info = (pos < suggestedWords.size())
-                    ? suggestedWords.getInfo(pos) : null;
             if (suggestedWords.mIsObsoleteSuggestions && isSuggested) {
                 return applyAlpha(color, mAlphaObsoleted);
             } else {
