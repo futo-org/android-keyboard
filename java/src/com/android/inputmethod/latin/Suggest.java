@@ -296,14 +296,6 @@ public class Suggest implements Dictionary.WordCallback {
         LatinImeLogger.onAddSuggestedWord(typedWord, Suggest.DIC_USER_TYPED, Dictionary.UNIGRAM);
         mConsideredWord = consideredWord;
 
-        // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
-        // but still autocorrected from - in the case the whitelist only capitalizes the word.
-        // The whitelist should be case-insensitive, so it's not possible to be consistent with
-        // a boolean flag. Right now this is handled with a slight hack in
-        // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
-        final boolean allowsToBeAutoCorrected = AutoCorrection.allowsToBeAutoCorrected(
-                getUnigramDictionaries(), consideredWord, wordComposer.isFirstCharCapitalized());
-
         if (wordComposer.size() <= 1 && (correctionMode == CORRECTION_FULL_BIGRAM)) {
             // At first character typed, search only the bigrams
             Arrays.fill(mBigramScores, 0);
@@ -397,6 +389,14 @@ public class Suggest implements Dictionary.WordCallback {
         } else {
             suggestionsList = SuggestedWords.getFromCharSequenceList(mSuggestions);
         }
+
+        // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
+        // but still autocorrected from - in the case the whitelist only capitalizes the word.
+        // The whitelist should be case-insensitive, so it's not possible to be consistent with
+        // a boolean flag. Right now this is handled with a slight hack in
+        // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
+        final boolean allowsToBeAutoCorrected = AutoCorrection.allowsToBeAutoCorrected(
+                getUnigramDictionaries(), consideredWord, wordComposer.isFirstCharCapitalized());
 
         boolean autoCorrectionAvailable = hasAutoCorrection;
         if (correctionMode == CORRECTION_FULL || correctionMode == CORRECTION_FULL_BIGRAM) {
