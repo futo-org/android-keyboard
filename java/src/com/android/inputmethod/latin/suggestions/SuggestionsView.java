@@ -502,11 +502,11 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
                     hintView, 1.0f - mCenterSuggestionWeight, ViewGroup.LayoutParams.MATCH_PARENT);
         }
 
-        private static CharSequence getDebugInfo(SuggestedWords suggestions, int pos) {
+        private static String getDebugInfo(SuggestedWords suggestions, int pos) {
             if (DBG && pos < suggestions.size()) {
                 final SuggestedWordInfo wordInfo = suggestions.getInfo(pos);
                 if (wordInfo != null) {
-                    final CharSequence debugInfo = wordInfo.getDebugString();
+                    final String debugInfo = wordInfo.getDebugString();
                     if (!TextUtils.isEmpty(debugInfo)) {
                         return debugInfo;
                     }

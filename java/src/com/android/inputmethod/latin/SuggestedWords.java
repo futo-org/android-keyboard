@@ -121,21 +121,21 @@ public class SuggestedWords {
 
     public static class SuggestedWordInfo {
         public final CharSequence mWord;
-        private final CharSequence mDebugString;
+        private final String mDebugString;
 
         public SuggestedWordInfo(final CharSequence word) {
             mWord = word;
             mDebugString = "";
         }
 
-        public SuggestedWordInfo(final CharSequence word, final CharSequence debugString) {
+        public SuggestedWordInfo(final CharSequence word, final String debugString) {
             mWord = word;
             if (null == debugString) throw new NullPointerException("");
             mDebugString = debugString;
         }
 
         public String getDebugString() {
-            return mDebugString.toString();
+            return mDebugString;
         }
 
         @Override
