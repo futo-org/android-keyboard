@@ -293,8 +293,7 @@ public class Suggest implements Dictionary.WordCallback {
                 ? typedWord.substring(0, typedWord.length() - mTrailingSingleQuotesCount)
                 : typedWord;
         // Treating USER_TYPED as UNIGRAM suggestion for logging now.
-        LatinImeLogger.onAddSuggestedWord(typedWord, Suggest.DIC_USER_TYPED,
-                Dictionary.UNIGRAM);
+        LatinImeLogger.onAddSuggestedWord(typedWord, Suggest.DIC_USER_TYPED, Dictionary.UNIGRAM);
         mConsideredWord = consideredWord;
 
         // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
@@ -363,12 +362,11 @@ public class Suggest implements Dictionary.WordCallback {
             }
         }
 
-        CharSequence whitelistedWord = capitalizeWord(mIsAllUpperCase, mIsFirstCharCapitalized,
-                mWhiteListDictionary.getWhitelistedWord(consideredWord));
+        final CharSequence whitelistedWord = capitalizeWord(mIsAllUpperCase,
+                mIsFirstCharCapitalized, mWhiteListDictionary.getWhitelistedWord(consideredWord));
 
         final boolean hasAutoCorrection;
-        if (CORRECTION_FULL == correctionMode
-                || CORRECTION_FULL_BIGRAM == correctionMode) {
+        if (CORRECTION_FULL == correctionMode || CORRECTION_FULL_BIGRAM == correctionMode) {
             final CharSequence autoCorrection =
                     AutoCorrection.computeAutoCorrectionWord(mUnigramDictionaries, wordComposer,
                             mSuggestions, mScores, consideredWord, mAutoCorrectionThreshold,
@@ -401,24 +399,19 @@ public class Suggest implements Dictionary.WordCallback {
         }
 
         boolean autoCorrectionAvailable = hasAutoCorrection;
-        if (correctionMode == Suggest.CORRECTION_FULL
-                || correctionMode == Suggest.CORRECTION_FULL_BIGRAM) {
+        if (correctionMode == CORRECTION_FULL || correctionMode == CORRECTION_FULL_BIGRAM) {
             autoCorrectionAvailable |= !allowsToBeAutoCorrected;
         }
         // Don't auto-correct words with multiple capital letter
         autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
-        final boolean shouldBlockAutoCorrectionBySatefyNet;
         if (allowsToBeAutoCorrected && suggestionsList.size() > 1 && mAutoCorrectionThreshold > 0
                 && Suggest.shouldBlockAutoCorrectionBySafetyNet(typedWord,
                         suggestionsList.get(1).mWord)) {
-            shouldBlockAutoCorrectionBySatefyNet = true;
-        } else {
-            shouldBlockAutoCorrectionBySatefyNet = false;
+            autoCorrectionAvailable = false;
         }
         return new SuggestedWords(suggestionsList,
                 !allowsToBeAutoCorrected /* typedWordValid */,
-                autoCorrectionAvailable & !shouldBlockAutoCorrectionBySatefyNet
-                        /* hasAutoCorrectionCandidate */,
+                autoCorrectionAvailable /* hasAutoCorrectionCandidate */,
                 allowsToBeAutoCorrected /* allowsToBeAutoCorrected */,
                 false /* isPunctuationSuggestions */);
     }
