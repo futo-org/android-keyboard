@@ -39,7 +39,7 @@ public class MoreKeysDetector extends KeyDetector {
     }
 
     @Override
-    public Key getKeyAndNearbyCodes(int x, int y, final int[] allCodes) {
+    public void getNearbyCodes(int x, int y, final int[] allCodes) {
         final int touchX = getTouchX(x);
         final int touchY = getTouchY(y);
 
@@ -53,8 +53,26 @@ public class MoreKeysDetector extends KeyDetector {
             }
         }
 
-        if (allCodes != null && nearestKey != null) {
+        if (nearestKey != null) {
             allCodes[0] = nearestKey.mCode;
+        } else {
+            allCodes[0] = NOT_A_CODE;
+        }
+    }
+
+    @Override
+    public Key detectHitKey(int x, int y) {
+        final int touchX = getTouchX(x);
+        final int touchY = getTouchY(y);
+
+        Key nearestKey = null;
+        int nearestDist = (y < 0) ? mSlideAllowanceSquareTop : mSlideAllowanceSquare;
+        for (final Key key : getKeyboard().mKeys) {
+            final int dist = key.squaredDistanceToEdge(touchX, touchY);
+            if (dist < nearestDist) {
+                nearestKey = key;
+                nearestDist = dist;
+            }
         }
         return nearestKey;
     }

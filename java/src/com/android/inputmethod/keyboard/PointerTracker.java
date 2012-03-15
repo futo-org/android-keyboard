@@ -318,7 +318,7 @@ public class PointerTracker {
     }
 
     public Key getKeyOn(int x, int y) {
-        return mKeyDetector.getKeyAndNearbyCodes(x, y, null);
+        return mKeyDetector.detectHitKey(x, y);
     }
 
     private void setReleasedKeyGraphics(Key key) {
@@ -421,7 +421,7 @@ public class PointerTracker {
     private Key onMoveKeyInternal(int x, int y) {
         mLastX = x;
         mLastY = y;
-        return mKeyDetector.getKeyAndNearbyCodes(x, y, null);
+        return mKeyDetector.detectHitKey(x, y);
     }
 
     private Key onMoveKey(int x, int y) {
@@ -748,7 +748,7 @@ public class PointerTracker {
     private long mPreviousEventTime;
 
     private void printTouchEvent(String title, int x, int y, long eventTime) {
-        final Key key = mKeyDetector.getKeyAndNearbyCodes(x, y, null);
+        final Key key = mKeyDetector.detectHitKey(x, y);
         final String code = KeyDetector.printableCode(key);
         final long delta = eventTime - mPreviousEventTime;
         Log.d(TAG, String.format("%s%s[%d] %4d %4d %5d %s", title,

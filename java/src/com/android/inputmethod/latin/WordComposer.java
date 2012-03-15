@@ -141,7 +141,7 @@ public class WordComposer {
             keyY = y;
         } else {
             codes = keyDetector.newCodeArray();
-            keyDetector.getKeyAndNearbyCodes(x, y, codes);
+            keyDetector.getNearbyCodes(x, y, codes);
             keyX = keyDetector.getTouchX(x);
             keyY = keyDetector.getTouchY(y);
         }
@@ -204,7 +204,7 @@ public class WordComposer {
                 final int x = key.mX + key.mWidth / 2;
                 final int y = key.mY + key.mHeight / 2;
                 final int[] codes = keyDetector.newCodeArray();
-                keyDetector.getKeyAndNearbyCodes(x, y, codes);
+                keyDetector.getNearbyCodes(x, y, codes);
                 add(codePoint, codes, x, y);
                 return;
             }

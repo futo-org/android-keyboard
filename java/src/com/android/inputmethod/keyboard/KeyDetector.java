@@ -97,21 +97,21 @@ public class KeyDetector {
 
     /**
      * Computes maximum size of the array that can contain all nearby key codes returned by
-     * {@link #getKeyAndNearbyCodes}.
+     * {@link #getNearbyCodes}.
      *
      * @return Returns maximum size of the array that can contain all nearby key codes returned
-     *         by {@link #getKeyAndNearbyCodes}.
+     *         by {@link #getNearbyCodes}.
      */
     protected int getMaxNearbyKeys() {
         return MAX_NEARBY_KEYS;
     }
 
     /**
-     * Allocates array that can hold all key codes returned by {@link #getKeyAndNearbyCodes}
+     * Allocates array that can hold all key codes returned by {@link #getNearbyCodes}
      * method. The maximum size of the array should be computed by {@link #getMaxNearbyKeys}.
      *
      * @return Allocates and returns an array that can hold all key codes returned by
-     *         {@link #getKeyAndNearbyCodes} method. All elements in the returned array are
+     *         {@link #getNearbyCodes} method. All elements in the returned array are
      *         initialized by {@link #NOT_A_CODE} value.
      */
     public int[] newCodeArray() {
@@ -222,15 +222,15 @@ public class KeyDetector {
      * @param x The x-coordinate of a touch point
      * @param y The y-coordinate of a touch point
      * @param allCodes All nearby key codes except functional key are returned in this array
-     * @return The nearest key
      */
-    public Key getKeyAndNearbyCodes(int x, int y, final int[] allCodes) {
+    // TODO: Move this method to native code.
+    public void getNearbyCodes(int x, int y, final int[] allCodes) {
         final int touchX = getTouchX(x);
         final int touchY = getTouchY(y);
 
         initializeNearbyKeys();
         Key primaryKey = null;
-        for (final Key key: mKeyboard.getNearestKeys(touchX, touchY)) {
+        for (final Key key : mKeyboard.getNearestKeys(touchX, touchY)) {
             final boolean isOnKey = key.isOnKey(touchX, touchY);
             final int distance = key.squaredDistanceToEdge(touchX, touchY);
             if (isOnKey || (mProximityCorrectOn && distance < mProximityThresholdSquare)) {
@@ -241,16 +241,31 @@ public class KeyDetector {
             }
         }
 
-        if (allCodes != null && allCodes.length > 0) {
-            getNearbyKeyCodes(primaryKey != null ? primaryKey.mCode : NOT_A_CODE, allCodes);
-            if (DEBUG) {
-                Log.d(TAG, "x=" + x + " y=" + y
-                        + " primary=" + printableCode(primaryKey)
-                        + " codes=" + printableCodes(allCodes));
+        getNearbyKeyCodes(primaryKey != null ? primaryKey.mCode : NOT_A_CODE, allCodes);
+        if (DEBUG) {
+            Log.d(TAG, "x=" + x + " y=" + y
+                    + " primary=" + printableCode(primaryKey)
+                    + " codes=" + printableCodes(allCodes));
+        }
+    }
+
+    /**
+     * Detect the key whose hitbox the touch point is in.
+     *
+     * @param x The x-coordinate of a touch point
+     * @param y The y-coordinate of a touch point
+     * @return the key that the touch point hits.
+     */
+    public Key detectHitKey(int x, int y) {
+        final int touchX = getTouchX(x);
+        final int touchY = getTouchY(y);
+
+        for (final Key key : mKeyboard.getNearestKeys(touchX, touchY)) {
+            if (key.isOnKey(touchX, touchY)) {
+                return key;
             }
         }
-
-        return primaryKey;
+        return null;
     }
 
     public static String printableCode(Key key) {
