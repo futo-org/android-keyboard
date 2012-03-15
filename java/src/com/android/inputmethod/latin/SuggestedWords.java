@@ -27,24 +27,27 @@ import java.util.List;
 
 public class SuggestedWords {
     public static final SuggestedWords EMPTY = new SuggestedWords(
-            Collections.<SuggestedWordInfo>emptyList(), false, false, false, false);
+            Collections.<SuggestedWordInfo>emptyList(), false, false, false, false, false);
 
     public final boolean mTypedWordValid;
     public final boolean mHasAutoCorrectionCandidate;
     public final boolean mIsPunctuationSuggestions;
     public final boolean mAllowsToBeAutoCorrected;
+    public final boolean mIsObsoleteSuggestions;
     private final List<SuggestedWordInfo> mSuggestedWordInfoList;
 
     public SuggestedWords(final List<SuggestedWordInfo> suggestedWordInfoList,
             final boolean typedWordValid,
             final boolean hasAutoCorrectionCandidate,
             final boolean allowsToBeAutoCorrected,
-            final boolean isPunctuationSuggestions) {
+            final boolean isPunctuationSuggestions,
+            final boolean isObsoleteSuggestions) {
         mSuggestedWordInfoList = suggestedWordInfoList;
         mTypedWordValid = typedWordValid;
         mHasAutoCorrectionCandidate = hasAutoCorrectionCandidate;
         mAllowsToBeAutoCorrected = allowsToBeAutoCorrected;
         mIsPunctuationSuggestions = isPunctuationSuggestions;
+        mIsObsoleteSuggestions = isObsoleteSuggestions;
     }
 
     public int size() {

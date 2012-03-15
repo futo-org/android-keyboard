@@ -173,7 +173,8 @@ public class SettingsValues {
                 false /* typedWordValid */,
                 false /* hasAutoCorrectionCandidate */,
                 false /* allowsToBeAutoCorrected */,
-                true /* isPunctuationSuggestions */);
+                true /* isPunctuationSuggestions */,
+                false /* isObsoleteSuggestions */);
     }
 
     private static String createWordSeparators(final String weakSpaceStrippers,
