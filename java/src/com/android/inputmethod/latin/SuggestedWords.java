@@ -59,7 +59,7 @@ public class SuggestedWords {
     }
 
     public SuggestedWordInfo getInfo(int pos) {
-        return mSuggestedWordInfoList != null ? mSuggestedWordInfoList.get(pos) : null;
+        return mSuggestedWordInfoList.get(pos);
     }
 
     public boolean hasAutoCorrectionWord() {
