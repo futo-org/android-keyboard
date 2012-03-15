@@ -93,7 +93,6 @@ public class SuggestionSpanUtils {
             CharSequence pickedWord, SuggestedWords suggestedWords) {
         if (TextUtils.isEmpty(pickedWord) || CONSTRUCTOR_SuggestionSpan == null
                 || suggestedWords == null || suggestedWords.size() == 0
-                || suggestedWords.getInfo(0).isObsoleteSuggestedWord()
                 || OBJ_SUGGESTIONS_MAX_SIZE == null) {
             return pickedWord;
         }
