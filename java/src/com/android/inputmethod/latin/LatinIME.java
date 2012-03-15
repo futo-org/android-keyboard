@@ -459,6 +459,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         // TODO: remove the following when it's not needed by updateCorrectionMode() any more
         mInputAttributes = new InputAttributes(null, false /* isFullscreenMode */);
+        updateCorrectionMode();
+
         Utils.GCUtils.getInstance().reset();
         boolean tryGC = true;
         for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
@@ -533,8 +535,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mUserBigramDictionary
                 = new UserBigramDictionary(this, this, localeStr, Suggest.DIC_USER_BIGRAM);
         mSuggest.setUserBigramDictionary(mUserBigramDictionary);
-
-        updateCorrectionMode();
 
         LocaleUtils.setSystemLocale(res, savedLocale);
     }
@@ -2235,6 +2235,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(), mSettingsValues);
         }
         initSuggest();
+        updateCorrectionMode();
         loadSettings();
         // Since we just changed languages, we should re-evaluate suggestions with whatever word
         // we are currently composing. If we are not composing anything, we may want to display
