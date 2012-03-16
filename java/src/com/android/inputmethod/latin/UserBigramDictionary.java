@@ -115,8 +115,16 @@ public class UserBigramDictionary extends ExpandableDictionary {
 
         @Override
         public boolean equals(Object bigram) {
-            Bigram bigram2 = (Bigram) bigram;
-            return (mWord1.equals(bigram2.mWord1) && mWord2.equals(bigram2.mWord2));
+            if (!(bigram instanceof Bigram)) {
+                return false;
+            }
+            final Bigram bigram2 = (Bigram) bigram;
+            final boolean eq1 =
+                    mWord1 == null ? bigram2.mWord1 == null : mWord1.equals(bigram2.mWord1);
+            if (!eq1) {
+                return false;
+            }
+            return mWord2 == null ? bigram2.mWord2 == null : mWord2.equals(bigram2.mWord2);
         }
 
         @Override
