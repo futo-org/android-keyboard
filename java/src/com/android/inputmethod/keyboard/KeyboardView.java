@@ -99,7 +99,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
     // Main keyboard
     private Keyboard mKeyboard;
-    private final KeyDrawParams mKeyDrawParams;
+    protected final KeyDrawParams mKeyDrawParams;
 
     // Key preview
     private final int mKeyPreviewLayoutId;
@@ -171,7 +171,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
     }
 
-    /* package */ static class KeyDrawParams {
+    protected static class KeyDrawParams {
         // XML attributes
         public final int mKeyTextColor;
         public final int mKeyTextInactivatedColor;
@@ -351,7 +351,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mDelayAfterPreview = mKeyPreviewDrawParams.mLingerTimeout;
 
         mPaint.setAntiAlias(true);
-        mPaint.setTextAlign(Align.CENTER);
     }
 
     // Read fraction value in TypedArray as float.
@@ -729,10 +728,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
     }
 
-    private static int getCharGeometryCacheKey(char reference, Paint paint) {
+    private static int getCharGeometryCacheKey(char referenceChar, Paint paint) {
         final int labelSize = (int)paint.getTextSize();
         final Typeface face = paint.getTypeface();
-        final int codePointOffset = reference << 15;
+        final int codePointOffset = referenceChar << 15;
         if (face == Typeface.DEFAULT) {
             return codePointOffset + labelSize;
         } else if (face == Typeface.DEFAULT_BOLD) {
@@ -747,39 +746,33 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     // Working variable for the following methods.
     private final Rect mTextBounds = new Rect();
 
-    private float getCharHeight(char[] character, Paint paint) {
-        final Integer key = getCharGeometryCacheKey(character[0], paint);
+    private float getCharHeight(char[] referenceChar, Paint paint) {
+        final Integer key = getCharGeometryCacheKey(referenceChar[0], paint);
         final Float cachedValue = sTextHeightCache.get(key);
         if (cachedValue != null)
             return cachedValue;
 
-        paint.getTextBounds(character, 0, 1, mTextBounds);
+        paint.getTextBounds(referenceChar, 0, 1, mTextBounds);
         final float height = mTextBounds.height();
         sTextHeightCache.put(key, height);
         return height;
     }
 
-    private float getCharWidth(char[] character, Paint paint) {
-        final Integer key = getCharGeometryCacheKey(character[0], paint);
+    private float getCharWidth(char[] referenceChar, Paint paint) {
+        final Integer key = getCharGeometryCacheKey(referenceChar[0], paint);
         final Float cachedValue = sTextWidthCache.get(key);
         if (cachedValue != null)
             return cachedValue;
 
-        paint.getTextBounds(character, 0, 1, mTextBounds);
+        paint.getTextBounds(referenceChar, 0, 1, mTextBounds);
         final float width = mTextBounds.width();
         sTextWidthCache.put(key, width);
         return width;
     }
 
-    protected float getLabelWidth(CharSequence label, Paint paint) {
+    public float getLabelWidth(String label, Paint paint) {
         paint.getTextBounds(label.toString(), 0, label.length(), mTextBounds);
         return mTextBounds.width();
-    }
-
-    public float getDefaultLabelWidth(String label, Paint paint) {
-        paint.setTextSize(mKeyDrawParams.mKeyLabelSize);
-        paint.setTypeface(mKeyDrawParams.mKeyTextStyle);
-        return getLabelWidth(label, paint);
     }
 
     protected static void drawIcon(Canvas canvas, Drawable icon, int x, int y, int width,
@@ -813,6 +806,14 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         canvas.translate(x, y);
         canvas.drawRect(0, 0, w, h, paint);
         canvas.translate(-x, -y);
+    }
+
+    public Paint newDefaultLabelPaint() {
+        final Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setTypeface(mKeyDrawParams.mKeyTextStyle);
+        paint.setTextSize(mKeyDrawParams.mKeyLabelSize);
+        return paint;
     }
 
     public void cancelAllMessages() {

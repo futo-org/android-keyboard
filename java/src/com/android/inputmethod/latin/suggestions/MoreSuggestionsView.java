@@ -43,17 +43,17 @@ import com.android.inputmethod.latin.R;
 public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
     private final int[] mCoordinates = new int[2];
 
-    private final KeyDetector mModalPanelKeyDetector;
+    final KeyDetector mModalPanelKeyDetector;
     private final KeyDetector mSlidingPanelKeyDetector;
 
     private Controller mController;
-    private KeyboardActionListener mListener;
+    KeyboardActionListener mListener;
     private int mOriginX;
     private int mOriginY;
 
-    private static final TimerProxy EMPTY_TIMER_PROXY = new TimerProxy.Adapter();
+    static final TimerProxy EMPTY_TIMER_PROXY = new TimerProxy.Adapter();
 
-    private final KeyboardActionListener mSuggestionsPaneListener =
+    final KeyboardActionListener mSuggestionsPaneListener =
             new KeyboardActionListener.Adapter() {
         @Override
         public void onPressKey(int primaryCode) {

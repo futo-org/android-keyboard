@@ -23,9 +23,7 @@ import android.graphics.drawable.Drawable;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
-import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.Utils;
@@ -38,8 +36,6 @@ public class MoreSuggestions extends Keyboard {
     }
 
     public static class Builder extends Keyboard.Builder<Builder.MoreSuggestionsParam> {
-        private static final boolean DBG = LatinImeLogger.sDBG;
-
         private final MoreSuggestionsView mPaneView;
         private SuggestedWords mSuggestions;
         private int mFromPos;
@@ -56,10 +52,8 @@ public class MoreSuggestions extends Keyboard {
             public int mDividerWidth;
 
             public int layout(SuggestedWords suggestions, int fromPos, int maxWidth, int minWidth,
-                    int maxRow, KeyboardView view) {
+                    int maxRow, MoreSuggestionsView view) {
                 clearKeys();
-                final Paint paint = new Paint();
-                paint.setAntiAlias(true);
                 final Resources res = view.getContext().getResources();
                 mDivider = res.getDrawable(R.drawable.more_suggestions_divider);
                 // TODO: Drawable itself should have an alpha value.
@@ -67,6 +61,7 @@ public class MoreSuggestions extends Keyboard {
                 mDividerWidth = mDivider.getIntrinsicWidth();
                 final int padding = (int) res.getDimension(
                         R.dimen.more_suggestions_key_horizontal_padding);
+                final Paint paint = view.newDefaultLabelPaint();
 
                 int row = 0;
                 int pos = fromPos, rowStartPos = fromPos;
@@ -74,7 +69,7 @@ public class MoreSuggestions extends Keyboard {
                 while (pos < size) {
                     final String word = suggestions.getWord(pos).toString();
                     // TODO: Should take care of text x-scaling.
-                    mWidths[pos] = (int)view.getDefaultLabelWidth(word, paint) + padding;
+                    mWidths[pos] = (int)view.getLabelWidth(word, paint) + padding;
                     final int numColumn = pos - rowStartPos + 1;
                     final int columnWidth =
                             (maxWidth - mDividerWidth * (numColumn - 1)) / numColumn;
