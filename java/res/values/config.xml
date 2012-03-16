@@ -98,5 +98,4 @@
             4 = ?
     -->
     <integer name="log_screen_metrics">0</integer>
-    <bool name="config_require_umlaut_processing">false</bool>
 </resources>
