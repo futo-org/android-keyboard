@@ -177,7 +177,6 @@ public class WordComposer {
     private void add(int primaryCode, int[] codes, int keyX, int keyY) {
         final int newIndex = mCodes.size();
         mTypedWord.appendCodePoint(primaryCode);
-        correctPrimaryJuxtapos(primaryCode, codes);
         mCodes.add(codes);
         if (newIndex < BinaryDictionary.MAX_WORD_LENGTH) {
             mXCoordinates[newIndex] = keyX;
@@ -236,21 +235,6 @@ public class WordComposer {
         keyDetector.setProximityCorrectionEnabled(true);
         keyDetector.setProximityThreshold(keyboard.mMostCommonKeyWidth);
         setComposingWord(word, keyboard, keyDetector);
-    }
-
-    /**
-     * Swaps the first and second values in the codes array if the primary code is not the first
-     * value in the array but the second. This happens when the preferred key is not the key that
-     * the user released the finger on.
-     * @param primaryCode the preferred character
-     * @param codes array of codes based on distance from touch point
-     */
-    private static void correctPrimaryJuxtapos(int primaryCode, int[] codes) {
-        if (codes.length < 2) return;
-        if (codes[0] > 0 && codes[1] > 0 && codes[0] != primaryCode && codes[1] == primaryCode) {
-            codes[1] = codes[0];
-            codes[0] = primaryCode;
-        }
     }
 
     /**
