@@ -204,7 +204,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private UserDictionary mUserDictionary;
     private UserBigramDictionary mUserBigramDictionary;
-    private UserUnigramDictionary mUserUnigramDictionary;
     private boolean mIsUserDictionaryAvailable;
 
     private LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
@@ -528,12 +527,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         resetContactsDictionary(oldContactsDictionary);
 
-        mUserUnigramDictionary
-                = new UserUnigramDictionary(this, this, localeStr, Suggest.DIC_USER_UNIGRAM);
-        mSuggest.setUserUnigramDictionary(mUserUnigramDictionary);
-
+        // TODO: rename UserBigramDictionary into UserHistoryDictionary
         mUserBigramDictionary
                 = new UserBigramDictionary(this, this, localeStr, Suggest.DIC_USER_BIGRAM);
+        mSuggest.setUserUnigramDictionary(mUserBigramDictionary);
         mSuggest.setUserBigramDictionary(mUserBigramDictionary);
 
         LocaleUtils.setSystemLocale(res, savedLocale);
@@ -776,7 +773,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null) inputView.closing();
-        if (mUserUnigramDictionary != null) mUserUnigramDictionary.flushPendingWrites();
         if (mUserBigramDictionary != null) mUserBigramDictionary.flushPendingWrites();
     }
 
@@ -2009,11 +2005,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             return;
         }
 
-        if (null != mUserUnigramDictionary) {
-            mUserUnigramDictionary.addUnigram(suggestion.toString());
-        }
-
         if (mUserBigramDictionary != null) {
+            mUserBigramDictionary.addUnigram(suggestion.toString());
             final InputConnection ic = getCurrentInputConnection();
             if (null != ic) {
                 final CharSequence prevWord =

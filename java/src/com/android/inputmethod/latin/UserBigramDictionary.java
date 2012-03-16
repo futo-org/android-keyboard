@@ -24,6 +24,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.AsyncTask;
 import android.provider.BaseColumns;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.HashMap;
@@ -155,19 +156,49 @@ public class UserBigramDictionary extends ExpandableDictionary {
     }
 
     /**
-     * Pair will be added to the userbigram database.
+     * Return whether the passed charsequence is in the dictionary.
      */
-    public int addBigramPair(String word1, String word2) {
+    @Override
+    public boolean isValidWord(final CharSequence word) {
+        // TODO: figure out what is the correct thing to do here.
+        return false;
+    }
+
+    /**
+     * Add a single word without context.
+     *
+     * This is a temporary method to match the interface to UserUnigramDictionary. In the end
+     * this should be merged with addBigramPair.
+     */
+    public void addUnigram(final String newWord) {
+        addBigramPair(null, newWord);
+    }
+
+    /**
+     * Pair will be added to the user history dictionary.
+     *
+     * The first word may be null. That means we don't know the context, in other words,
+     * it's only a unigram. The first word may also be an empty string : this means start
+     * context, as in beginning of a sentence for example.
+     * The second word may not be null (a NullPointerException would be thrown).
+     */
+    public int addBigramPair(final String word1, String word2) {
         // remove caps if second word is autocapitalized
         if (mIme != null && mIme.isAutoCapitalized()) {
             word2 = Character.toLowerCase(word2.charAt(0)) + word2.substring(1);
         }
         // Do not insert a word as a bigram of itself
-        if (word1.equals(word2)) {
+        if (word2.equals(word1)) {
             return 0;
         }
 
-        int freq = super.addBigram(word1, word2, FREQUENCY_FOR_TYPED);
+        int freq;
+        if (null == word1) {
+            freq = FREQUENCY_FOR_TYPED;
+            super.addWord(word2, FREQUENCY_FOR_TYPED);
+        } else {
+            freq = super.addBigram(word1, word2, FREQUENCY_FOR_TYPED);
+        }
         if (freq > FREQUENCY_MAX) freq = FREQUENCY_MAX;
         synchronized (mPendingWritesLock) {
             if (freq == FREQUENCY_FOR_TYPED || mPendingWrites.isEmpty()) {
@@ -225,7 +256,10 @@ public class UserBigramDictionary extends ExpandableDictionary {
                     int frequency = cursor.getInt(frequencyIndex);
                     // Safeguard against adding really long words. Stack may overflow due
                     // to recursive lookup
-                    if (word1.length() < MAX_WORD_LENGTH && word2.length() < MAX_WORD_LENGTH) {
+                    if (null == word1) {
+                        super.addWord(word2, frequency);
+                    } else if (word1.length() < MAX_WORD_LENGTH
+                            && word2.length() < MAX_WORD_LENGTH) {
                         super.setBigram(word1, word2, frequency);
                     }
                     cursor.moveToNext();
@@ -367,13 +401,23 @@ public class UserBigramDictionary extends ExpandableDictionary {
             // Write all the entries to the db
             Iterator<Bigram> iterator = mMap.iterator();
             while (iterator.hasNext()) {
+                // TODO: this process of making a text search for each pair each time
+                // is terribly inefficient. Optimize this.
                 Bigram bi = iterator.next();
 
                 // find pair id
-                Cursor c = db.query(MAIN_TABLE_NAME, new String[] { MAIN_COLUMN_ID },
-                        MAIN_COLUMN_WORD1 + "=? AND " + MAIN_COLUMN_WORD2 + "=? AND "
-                        + MAIN_COLUMN_LOCALE + "=?",
-                        new String[] { bi.mWord1, bi.mWord2, mLocale }, null, null, null);
+                final Cursor c;
+                if (null != bi.mWord1) {
+                    c = db.query(MAIN_TABLE_NAME, new String[] { MAIN_COLUMN_ID },
+                            MAIN_COLUMN_WORD1 + "=? AND " + MAIN_COLUMN_WORD2 + "=? AND "
+                            + MAIN_COLUMN_LOCALE + "=?",
+                            new String[] { bi.mWord1, bi.mWord2, mLocale }, null, null, null);
+                } else {
+                    c = db.query(MAIN_TABLE_NAME, new String[] { MAIN_COLUMN_ID },
+                            MAIN_COLUMN_WORD1 + " IS NULL AND " + MAIN_COLUMN_WORD2 + "=? AND "
+                            + MAIN_COLUMN_LOCALE + "=?",
+                            new String[] { bi.mWord2, mLocale }, null, null, null);
+                }
 
                 int pairId;
                 if (c.moveToFirst()) {
