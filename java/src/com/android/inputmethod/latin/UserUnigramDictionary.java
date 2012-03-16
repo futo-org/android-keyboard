@@ -35,7 +35,7 @@ import java.util.Set;
  * based dictionary. It stores words that the user typed to supply a provision
  * for suggesting and re-ordering of candidates.
  */
-public class UserUnigramDictionary extends ExpandableDictionary {
+class UserUnigramDictionary extends ExpandableDictionary {
     static final boolean ENABLE_USER_UNIGRAM_DICTIONARY = false;
 
     // Weight added to a user picking a new word from the suggestion strip
