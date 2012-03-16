@@ -53,7 +53,7 @@ class ProximityInfo {
             const float *sweetSpotCenterYs, const float *sweetSpotRadii);
     ~ProximityInfo();
     bool hasSpaceProximity(const int x, const int y) const;
-    void setInputParams(const int *inputCodes, const int inputLength,
+    void setInputParams(const int32_t *inputCodes, const int inputLength,
             const int *xCoordinates, const int *yCoordinates);
     const int* getProximityCharsAt(const int index) const;
     unsigned short getPrimaryCharAt(const int index) const;
@@ -77,12 +77,15 @@ class ProximityInfo {
     static const int MAX_KEY_COUNT_IN_A_KEYBOARD = 64;
     // The upper limit of the char code in mCodeToKeyIndex
     static const int MAX_CHAR_CODE = 127;
+    static const float NOT_A_DISTANCE_FLOAT = -1.0f;
+    static const int NOT_A_CODE = -1;
 
     int getStartIndexFromCoordinates(const int x, const int y) const;
     void initializeCodeToKeyIndex();
     float calculateNormalizedSquaredDistance(const int keyIndex, const int inputIndex) const;
     float calculateSquaredDistanceFromSweetSpotCenter(
             const int keyIndex, const int inputIndex) const;
+    bool hasInputCoordinates() const;
     int getKeyIndex(const int c) const;
     bool hasSweetSpotData(const int keyIndex) const {
         // When there are no calibration data for a key,
@@ -105,7 +108,9 @@ class ProximityInfo {
     const int KEY_COUNT;
     const bool HAS_TOUCH_POSITION_CORRECTION_DATA;
     const std::string mLocaleStr;
-    const int *mInputCodes;
+    // TODO: remove this
+    const int *mInputCodesFromJava;
+    int32_t *mInputCodes;
     const int *mInputXCoordinates;
     const int *mInputYCoordinates;
     bool mTouchPositionCorrectionEnabled;

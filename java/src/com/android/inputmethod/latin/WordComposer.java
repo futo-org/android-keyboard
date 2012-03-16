@@ -140,8 +140,8 @@ public class WordComposer {
             keyX = x;
             keyY = y;
         } else {
-            codes = keyDetector.newCodeArray();
-            keyDetector.getNearbyCodes(x, y, codes);
+            final Key key = keyDetector.detectHitKey(x, y);
+            codes = new int[] { key != null ? key.mCode : NOT_A_CODE };
             keyX = keyDetector.getTouchX(x);
             keyY = keyDetector.getTouchY(y);
         }
