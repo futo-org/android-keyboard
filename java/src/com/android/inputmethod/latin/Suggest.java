@@ -62,9 +62,8 @@ public class Suggest implements Dictionary.WordCallback {
     public static final int DIC_USER_TYPED = 0;
     public static final int DIC_MAIN = 1;
     public static final int DIC_USER = 2;
-    public static final int DIC_USER_UNIGRAM = 3;
+    public static final int DIC_USER_HISTORY = 3;
     public static final int DIC_CONTACTS = 4;
-    public static final int DIC_USER_BIGRAM = 5;
     public static final int DIC_WHITELIST = 6;
     // If you add a type of dictionary, increment DIC_TYPE_LAST_ID
     // TODO: this value seems unused. Remove it?
@@ -73,10 +72,10 @@ public class Suggest implements Dictionary.WordCallback {
     public static final String DICT_KEY_CONTACTS = "contacts";
     // User dictionary, the system-managed one.
     public static final String DICT_KEY_USER = "user";
-    // User unigram dictionary, internal to LatinIME
-    public static final String DICT_KEY_USER_UNIGRAM = "user_unigram";
-    // User bigram dictionary, internal to LatinIME
-    public static final String DICT_KEY_USER_BIGRAM = "user_bigram";
+    // User history dictionary for the unigram map, internal to LatinIME
+    public static final String DICT_KEY_USER_HISTORY_UNIGRAM = "history_unigram";
+    // User history dictionary for the bigram map, internal to LatinIME
+    public static final String DICT_KEY_USER_HISTORY_BIGRAM = "history_bigram";
     public static final String DICT_KEY_WHITELIST ="whitelist";
 
     private static final boolean DBG = LatinImeLogger.sDBG;
@@ -203,12 +202,11 @@ public class Suggest implements Dictionary.WordCallback {
         addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_CONTACTS, contactsDictionary);
     }
 
-    public void setUserUnigramDictionary(Dictionary userUnigramDictionary) {
-        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_USER_UNIGRAM, userUnigramDictionary);
-    }
-
-    public void setUserBigramDictionary(Dictionary userBigramDictionary) {
-        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_USER_BIGRAM, userBigramDictionary);
+    public void setUserHistoryDictionary(Dictionary userHistoryDictionary) {
+        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_USER_HISTORY_UNIGRAM,
+                userHistoryDictionary);
+        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_USER_HISTORY_BIGRAM,
+                userHistoryDictionary);
     }
 
     public void setAutoCorrectionThreshold(double threshold) {
@@ -347,7 +345,7 @@ public class Suggest implements Dictionary.WordCallback {
             // At second character typed, search the unigrams (scores being affected by bigrams)
             for (final String key : mUnigramDictionaries.keySet()) {
                 // Skip UserUnigramDictionary and WhitelistDictionary to lookup
-                if (key.equals(DICT_KEY_USER_UNIGRAM) || key.equals(DICT_KEY_WHITELIST))
+                if (key.equals(DICT_KEY_USER_HISTORY_UNIGRAM) || key.equals(DICT_KEY_WHITELIST))
                     continue;
                 final Dictionary dictionary = mUnigramDictionaries.get(key);
                 dictionary.getWords(wordComposerForLookup, this, proximityInfo);

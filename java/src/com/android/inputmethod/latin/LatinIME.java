@@ -202,7 +202,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private boolean mShouldSwitchToLastSubtype = true;
 
     private UserDictionary mUserDictionary;
-    private UserBigramDictionary mUserBigramDictionary;
+    private UserHistoryDictionary mUserHistoryDictionary;
     private boolean mIsUserDictionaryAvailable;
 
     private LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
@@ -526,11 +526,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         resetContactsDictionary(oldContactsDictionary);
 
-        // TODO: rename UserBigramDictionary into UserHistoryDictionary
-        mUserBigramDictionary
-                = new UserBigramDictionary(this, this, localeStr, Suggest.DIC_USER_BIGRAM);
-        mSuggest.setUserUnigramDictionary(mUserBigramDictionary);
-        mSuggest.setUserBigramDictionary(mUserBigramDictionary);
+        mUserHistoryDictionary
+                = new UserHistoryDictionary(this, this, localeStr, Suggest.DIC_USER_HISTORY);
+        mSuggest.setUserHistoryDictionary(mUserHistoryDictionary);
 
         LocaleUtils.setSystemLocale(res, savedLocale);
     }
@@ -772,7 +770,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null) inputView.closing();
-        if (mUserBigramDictionary != null) mUserBigramDictionary.flushPendingWrites();
+        if (mUserHistoryDictionary != null) mUserHistoryDictionary.flushPendingWrites();
     }
 
     private void onFinishInputViewInternal(boolean finishingInput) {
@@ -1990,9 +1988,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         setSuggestionStripShown(isSuggestionsStripVisible());
     }
 
-    /**
-     * Adds to the UserBigramDictionary and/or UserUnigramDictionary
-     */
     private void addToUserHistoryDictionary(final CharSequence suggestion) {
         if (suggestion == null || suggestion.length() < 1) return;
 
@@ -2004,16 +1999,16 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             return;
         }
 
-        if (mUserBigramDictionary != null) {
-            mUserBigramDictionary.addUnigram(suggestion.toString());
+        if (mUserHistoryDictionary != null) {
             final InputConnection ic = getCurrentInputConnection();
+            final CharSequence prevWord;
             if (null != ic) {
-                final CharSequence prevWord =
-                        EditingUtils.getPreviousWord(ic, mSettingsValues.mWordSeparators);
-                if (null != prevWord) {
-                    mUserBigramDictionary.addBigramPair(prevWord.toString(), suggestion.toString());
-                }
+                prevWord = EditingUtils.getPreviousWord(ic, mSettingsValues.mWordSeparators);
+            } else {
+                prevWord = null;
             }
+            mUserHistoryDictionary.addToUserHistory(null == prevWord ? null : prevWord.toString(),
+                    suggestion.toString());
         }
     }
 

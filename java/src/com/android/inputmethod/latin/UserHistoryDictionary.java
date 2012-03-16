@@ -24,7 +24,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.AsyncTask;
 import android.provider.BaseColumns;
-import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.HashMap;
@@ -32,12 +31,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 /**
- * Stores all the pairs user types in databases. Prune the database if the size
- * gets too big. Unlike AutoDictionary, it even stores the pairs that are already
- * in the dictionary.
+ * Locally gathers stats about the words user types and various other signals like auto-correction
+ * cancellation or manual picks. This allows the keyboard to adapt to the typist over time.
  */
-public class UserBigramDictionary extends ExpandableDictionary {
-    private static final String TAG = "UserBigramDictionary";
+public class UserHistoryDictionary extends ExpandableDictionary {
+    private static final String TAG = "UserHistoryDictionary";
 
     /** Any pair being typed or picked */
     private static final int FREQUENCY_FOR_TYPED = 2;
@@ -46,14 +44,14 @@ public class UserBigramDictionary extends ExpandableDictionary {
     private static final int FREQUENCY_MAX = 127;
 
     /** Maximum number of pairs. Pruning will start when databases goes above this number. */
-    private static int sMaxUserBigrams = 10000;
+    private static int sMaxHistoryBigrams = 10000;
 
     /**
      * When it hits maximum bigram pair, it will delete until you are left with
-     * only (sMaxUserBigrams - sDeleteUserBigrams) pairs.
+     * only (sMaxHistoryBigrams - sDeleteHistoryBigrams) pairs.
      * Do not keep this number small to avoid deleting too often.
      */
-    private static int sDeleteUserBigrams = 1000;
+    private static int sDeleteHistoryBigrams = 1000;
 
     /**
      * Database version should increase if the database structure changes
@@ -65,7 +63,7 @@ public class UserBigramDictionary extends ExpandableDictionary {
     /** Name of the words table in the database */
     private static final String MAIN_TABLE_NAME = "main";
     // TODO: Consume less space by using a unique id for locale instead of the whole
-    // 2-5 character string. (Same TODO from AutoDictionary)
+    // 2-5 character string.
     private static final String MAIN_COLUMN_ID = BaseColumns._ID;
     private static final String MAIN_COLUMN_WORD1 = "word1";
     private static final String MAIN_COLUMN_WORD2 = "word2";
@@ -133,15 +131,15 @@ public class UserBigramDictionary extends ExpandableDictionary {
         }
     }
 
-    public void setDatabaseMax(int maxUserBigram) {
-        sMaxUserBigrams = maxUserBigram;
+    public void setDatabaseMax(int maxHistoryBigram) {
+        sMaxHistoryBigrams = maxHistoryBigram;
     }
 
-    public void setDatabaseDelete(int deleteUserBigram) {
-        sDeleteUserBigrams = deleteUserBigram;
+    public void setDatabaseDelete(int deleteHistoryBigram) {
+        sDeleteHistoryBigrams = deleteHistoryBigram;
     }
 
-    public UserBigramDictionary(Context context, LatinIME ime, String locale, int dicTypeId) {
+    public UserHistoryDictionary(Context context, LatinIME ime, String locale, int dicTypeId) {
         super(context, dicTypeId);
         mIme = ime;
         mLocale = locale;
@@ -173,16 +171,6 @@ public class UserBigramDictionary extends ExpandableDictionary {
     }
 
     /**
-     * Add a single word without context.
-     *
-     * This is a temporary method to match the interface to UserUnigramDictionary. In the end
-     * this should be merged with addBigramPair.
-     */
-    public void addUnigram(final String newWord) {
-        addBigramPair(null, newWord);
-    }
-
-    /**
      * Pair will be added to the user history dictionary.
      *
      * The first word may be null. That means we don't know the context, in other words,
@@ -190,11 +178,12 @@ public class UserBigramDictionary extends ExpandableDictionary {
      * context, as in beginning of a sentence for example.
      * The second word may not be null (a NullPointerException would be thrown).
      */
-    public int addBigramPair(final String word1, String word2) {
+    public int addToUserHistory(final String word1, String word2) {
         // remove caps if second word is autocapitalized
         if (mIme != null && mIme.isAutoCapitalized()) {
             word2 = Character.toLowerCase(word2.charAt(0)) + word2.substring(1);
         }
+        super.addWord(word2, FREQUENCY_FOR_TYPED);
         // Do not insert a word as a bigram of itself
         if (word2.equals(word1)) {
             return 0;
@@ -203,7 +192,6 @@ public class UserBigramDictionary extends ExpandableDictionary {
         int freq;
         if (null == word1) {
             freq = FREQUENCY_FOR_TYPED;
-            super.addWord(word2, FREQUENCY_FOR_TYPED);
         } else {
             freq = super.addBigram(word1, word2, FREQUENCY_FOR_TYPED);
         }
@@ -366,8 +354,8 @@ public class UserBigramDictionary extends ExpandableDictionary {
             try {
                 int totalRowCount = c.getCount();
                 // prune out old data if we have too much data
-                if (totalRowCount > sMaxUserBigrams) {
-                    int numDeleteRows = (totalRowCount - sMaxUserBigrams) + sDeleteUserBigrams;
+                if (totalRowCount > sMaxHistoryBigrams) {
+                    int numDeleteRows = (totalRowCount - sMaxHistoryBigrams) + sDeleteHistoryBigrams;
                     int pairIdColumnId = c.getColumnIndex(FREQ_COLUMN_PAIR_ID);
                     c.moveToFirst();
                     int count = 0;
