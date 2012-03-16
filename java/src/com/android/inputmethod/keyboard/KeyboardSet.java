@@ -42,7 +42,6 @@ import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * This class represents a set of keyboards. Each of them represents a different keyboard
@@ -75,7 +74,7 @@ public class KeyboardSet {
     }
 
     public static class KeysCache {
-        private final Map<Key, Key> mMap;
+        private final HashMap<Key, Key> mMap;
 
         public KeysCache() {
             mMap = new HashMap<Key, Key>();
@@ -108,7 +107,7 @@ public class KeyboardSet {
         int mOrientation;
         int mWidth;
         // KeyboardSet element id to keyboard layout XML id map.
-        final Map<Integer, Integer> mKeyboardSetElementIdToXmlIdMap =
+        final HashMap<Integer, Integer> mKeyboardSetElementIdToXmlIdMap =
                 new HashMap<Integer, Integer>();
         Params() {}
     }

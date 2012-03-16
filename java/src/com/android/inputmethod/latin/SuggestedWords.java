@@ -21,22 +21,20 @@ import android.view.inputmethod.CompletionInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 
 public class SuggestedWords {
     public static final SuggestedWords EMPTY = new SuggestedWords(
-            Collections.<SuggestedWordInfo>emptyList(), false, false, false, false, false);
+            new ArrayList<SuggestedWordInfo>(0), false, false, false, false, false);
 
     public final boolean mTypedWordValid;
     public final boolean mHasAutoCorrectionCandidate;
     public final boolean mIsPunctuationSuggestions;
     public final boolean mAllowsToBeAutoCorrected;
     public final boolean mIsObsoleteSuggestions;
-    private final List<SuggestedWordInfo> mSuggestedWordInfoList;
+    private final ArrayList<SuggestedWordInfo> mSuggestedWordInfoList;
 
-    public SuggestedWords(final List<SuggestedWordInfo> suggestedWordInfoList,
+    public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
             final boolean typedWordValid,
             final boolean hasAutoCorrectionCandidate,
             final boolean allowsToBeAutoCorrected,
@@ -82,7 +80,7 @@ public class SuggestedWords {
     }
 
     public static ArrayList<SuggestedWordInfo> getFromCharSequenceList(
-            final List<CharSequence> wordList) {
+            final ArrayList<CharSequence> wordList) {
         final ArrayList<SuggestedWordInfo> result = new ArrayList<SuggestedWordInfo>();
         for (CharSequence word : wordList) {
             if (null != word) result.add(new SuggestedWordInfo(word));
@@ -90,7 +88,7 @@ public class SuggestedWords {
         return result;
     }
 
-    public static List<SuggestedWordInfo> getFromApplicationSpecifiedCompletions(
+    public static ArrayList<SuggestedWordInfo> getFromApplicationSpecifiedCompletions(
             final CompletionInfo[] infos) {
         final ArrayList<SuggestedWordInfo> result = new ArrayList<SuggestedWordInfo>();
         for (CompletionInfo info : infos) {

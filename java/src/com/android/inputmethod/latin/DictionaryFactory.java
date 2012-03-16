@@ -22,8 +22,8 @@ import android.content.res.Resources;
 import android.util.Log;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -52,8 +52,8 @@ public class DictionaryFactory {
             return new DictionaryCollection(createBinaryDictionary(context, fallbackResId, locale));
         }
 
-        final List<Dictionary> dictList = new LinkedList<Dictionary>();
-        final List<AssetFileAddress> assetFileList =
+        final LinkedList<Dictionary> dictList = new LinkedList<Dictionary>();
+        final ArrayList<AssetFileAddress> assetFileList =
                 BinaryDictionaryGetter.getDictionaryFiles(locale, context, fallbackResId);
         if (null != assetFileList) {
             for (final AssetFileAddress f : assetFileList) {

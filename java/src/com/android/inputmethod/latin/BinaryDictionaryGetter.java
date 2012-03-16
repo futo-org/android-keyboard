@@ -25,7 +25,6 @@ import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -264,9 +263,9 @@ class BinaryDictionaryGetter {
      * - Gets a file name from the fallback resource passed as an argument.
      * If that fails:
      * - Returns null.
-     * @return The address of a valid file, or null.
+     * @return The list of addresses of valid dictionary files, or null.
      */
-    public static List<AssetFileAddress> getDictionaryFiles(final Locale locale,
+    public static ArrayList<AssetFileAddress> getDictionaryFiles(final Locale locale,
             final Context context, final int fallbackResId) {
 
         // cacheWordListsFromContentProvider returns the list of files it copied to local

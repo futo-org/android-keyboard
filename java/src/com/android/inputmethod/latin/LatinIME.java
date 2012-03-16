@@ -73,7 +73,6 @@ import com.android.inputmethod.latin.suggestions.SuggestionsView;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -919,7 +918,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 return;
             }
 
-            final List<SuggestedWords.SuggestedWordInfo> applicationSuggestedWords =
+            final ArrayList<SuggestedWords.SuggestedWordInfo> applicationSuggestedWords =
                     SuggestedWords.getFromApplicationSpecifiedCompletions(
                             applicationSpecifiedCompletions);
             final SuggestedWords suggestedWords = new SuggestedWords(

@@ -30,15 +30,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * This class loads a dictionary and provides a list of suggestions for a given sequence of
  * characters. This includes corrections and completions.
  */
 public class Suggest implements Dictionary.WordCallback {
-
     public static final String TAG = Suggest.class.getSimpleName();
 
     public static final int APPROX_MAX_WORD_LENGTH = 32;
@@ -87,8 +84,10 @@ public class Suggest implements Dictionary.WordCallback {
     private Dictionary mMainDict;
     private ContactsDictionary mContactsDict;
     private WhitelistDictionary mWhiteListDictionary;
-    private final Map<String, Dictionary> mUnigramDictionaries = new HashMap<String, Dictionary>();
-    private final Map<String, Dictionary> mBigramDictionaries = new HashMap<String, Dictionary>();
+    private final HashMap<String, Dictionary> mUnigramDictionaries =
+            new HashMap<String, Dictionary>();
+    private final HashMap<String, Dictionary> mBigramDictionaries =
+            new HashMap<String, Dictionary>();
 
     private int mPrefMaxSuggestions = 18;
 
@@ -142,7 +141,7 @@ public class Suggest implements Dictionary.WordCallback {
         initWhitelistAndAutocorrectAndPool(context, locale);
     }
 
-    private static void addOrReplaceDictionary(Map<String, Dictionary> dictionaries, String key,
+    private static void addOrReplaceDictionary(HashMap<String, Dictionary> dictionaries, String key,
             Dictionary dict) {
         final Dictionary oldDict = (dict == null)
                 ? dictionaries.remove(key)
@@ -177,7 +176,7 @@ public class Suggest implements Dictionary.WordCallback {
         return mContactsDict;
     }
 
-    public Map<String, Dictionary> getUnigramDictionaries() {
+    public HashMap<String, Dictionary> getUnigramDictionaries() {
         return mUnigramDictionaries;
     }
 
@@ -563,7 +562,7 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     public void close() {
-        final Set<Dictionary> dictionaries = new HashSet<Dictionary>();
+        final HashSet<Dictionary> dictionaries = new HashSet<Dictionary>();
         dictionaries.addAll(mUnigramDictionaries.values());
         dictionaries.addAll(mBigramDictionaries.values());
         for (final Dictionary dictionary : dictionaries) {

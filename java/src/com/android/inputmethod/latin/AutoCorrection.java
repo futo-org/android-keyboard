@@ -20,7 +20,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.HashMap;
 
 public class AutoCorrection {
     private static final boolean DBG = LatinImeLogger.sDBG;
@@ -30,7 +30,7 @@ public class AutoCorrection {
         // Purely static class: can't instantiate.
     }
 
-    public static CharSequence computeAutoCorrectionWord(Map<String, Dictionary> dictionaries,
+    public static CharSequence computeAutoCorrectionWord(HashMap<String, Dictionary> dictionaries,
             WordComposer wordComposer, ArrayList<CharSequence> suggestions, int[] sortedScores,
             CharSequence consideredWord, double autoCorrectionThreshold,
             CharSequence whitelistedWord) {
@@ -47,7 +47,7 @@ public class AutoCorrection {
     }
 
     public static boolean isValidWord(
-            Map<String, Dictionary> dictionaries, CharSequence word, boolean ignoreCase) {
+            HashMap<String, Dictionary> dictionaries, CharSequence word, boolean ignoreCase) {
         if (TextUtils.isEmpty(word)) {
             return false;
         }
@@ -72,7 +72,7 @@ public class AutoCorrection {
     }
 
     public static boolean allowsToBeAutoCorrected(
-            Map<String, Dictionary> dictionaries, CharSequence word, boolean ignoreCase) {
+            HashMap<String, Dictionary> dictionaries, CharSequence word, boolean ignoreCase) {
         final WhitelistDictionary whitelistDictionary =
                 (WhitelistDictionary)dictionaries.get(Suggest.DICT_KEY_WHITELIST);
         // If "word" is in the whitelist dictionary, it should not be auto corrected.
@@ -87,9 +87,9 @@ public class AutoCorrection {
         return whiteListedWord != null;
     }
 
-    private static boolean hasAutoCorrectionForConsideredWord(Map<String, Dictionary> dictionaries,
-            WordComposer wordComposer, ArrayList<CharSequence> suggestions,
-            CharSequence consideredWord) {
+    private static boolean hasAutoCorrectionForConsideredWord(
+            HashMap<String, Dictionary> dictionaries, WordComposer wordComposer,
+            ArrayList<CharSequence> suggestions, CharSequence consideredWord) {
         if (TextUtils.isEmpty(consideredWord)) return false;
         return wordComposer.size() > 1 && suggestions.size() > 0
                 && !allowsToBeAutoCorrected(dictionaries, consideredWord, false);

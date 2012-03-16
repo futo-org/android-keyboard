@@ -66,7 +66,6 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.Utils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SuggestionsView extends RelativeLayout implements OnClickListener,
         OnLongClickListener {
@@ -144,9 +143,9 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         public final float mMinMoreSuggestionsWidth;
         public final int mMoreSuggestionsBottomGap;
 
-        private final List<TextView> mWords;
-        private final List<View> mDividers;
-        private final List<TextView> mInfos;
+        private final ArrayList<TextView> mWords;
+        private final ArrayList<View> mDividers;
+        private final ArrayList<TextView> mInfos;
 
         private final int mColorValidTypedWord;
         private final int mColorTypedWord;
@@ -174,7 +173,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         private final TextView mHintToSaveView;
 
         public SuggestionsViewParams(Context context, AttributeSet attrs, int defStyle,
-                List<TextView> words, List<View> dividers, List<TextView> infos) {
+                ArrayList<TextView> words, ArrayList<View> dividers, ArrayList<TextView> infos) {
             mWords = words;
             mDividers = dividers;
             mInfos = infos;

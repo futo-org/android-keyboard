@@ -22,7 +22,6 @@ import android.util.Log;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -30,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class DictionaryCollection extends Dictionary {
     private final String TAG = DictionaryCollection.class.getSimpleName();
-    protected final List<Dictionary> mDictionaries;
+    protected final CopyOnWriteArrayList<Dictionary> mDictionaries;
 
     public DictionaryCollection() {
         mDictionaries = new CopyOnWriteArrayList<Dictionary>();
