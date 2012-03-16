@@ -133,6 +133,7 @@
         <attr name="spacebarTextColor" format="color" />
         <attr name="spacebarTextShadowColor" format="color" />
         <!-- Fadeout animator for spacebar language label. -->
+        <attr name="languageOnSpacebarFinalAlpha" format="integer" />
         <attr name="languageOnSpacebarFadeoutAnimator" format="reference" />
         <!-- Fadeout and fadein animator for altCodeWhileTyping keys. -->
         <attr name="altCodeKeyWhileTypingFadeoutAnimator" format="reference" />

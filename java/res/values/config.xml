@@ -38,6 +38,7 @@
     <integer name="config_delay_update_suggestions">100</integer>
     <integer name="config_delay_update_old_suggestions">300</integer>
     <integer name="config_delay_update_shift_state">100</integer>
+    <integer name="config_language_on_spacebar_final_alpha">128</integer>
     <integer name="config_more_keys_keyboard_fadein_anim_time">0</integer>
     <integer name="config_more_keys_keyboard_fadeout_anim_time">100</integer>
     <integer name="config_keyboard_grid_width">32</integer>
