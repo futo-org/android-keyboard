@@ -383,6 +383,7 @@ public class Keyboard {
         case CODE_ACTION_ENTER: return "actionEnter";
         case CODE_ACTION_NEXT: return "actionNext";
         case CODE_ACTION_PREVIOUS: return "actionPrevious";
+        case CODE_LANGUAGE_SWITCH: return "languageSwitch";
         case CODE_UNSPECIFIED: return "unspec";
         case CODE_TAB: return "tab";
         case CODE_ENTER: return "enter";
