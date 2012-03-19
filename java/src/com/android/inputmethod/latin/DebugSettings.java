@@ -30,7 +30,7 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 public class DebugSettings extends PreferenceActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final String TAG = "DebugSettings";
+    private static final String TAG = DebugSettings.class.getSimpleName();
     private static final String DEBUG_MODE_KEY = "debug_mode";
     public static final String FORCE_NON_DISTINCT_MULTITOUCH_KEY = "force_non_distinct_multitouch";
 
