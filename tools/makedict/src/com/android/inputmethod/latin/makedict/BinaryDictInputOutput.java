@@ -14,11 +14,11 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.makedict;
 
-import com.android.inputmethod.latin.FusionDictionary.CharGroup;
-import com.android.inputmethod.latin.FusionDictionary.Node;
-import com.android.inputmethod.latin.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
+import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
+import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

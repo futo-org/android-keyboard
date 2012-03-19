@@ -14,19 +14,27 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.makedict;
 
 /**
- * A not-yet-resolved attribute.
- *
- * An attribute is either a bigram or a shortcut.
- * All instances of this class are always immutable.
+ * Wrapper to redirect log events to the right output medium.
  */
-public class PendingAttribute {
-    public final int mFrequency;
-    public final int mAddress;
-    public PendingAttribute(final int frequency, final int address) {
-        mFrequency = frequency;
-        mAddress = address;
+public class MakedictLog {
+
+    private static void print(String message) {
+        System.out.println(message);
+    }
+
+    public static void d(String message) {
+        print(message);
+    }
+    public static void e(String message) {
+        print(message);
+    }
+    public static void i(String message) {
+        print(message);
+    }
+    public static void w(String message) {
+        print(message);
     }
 }

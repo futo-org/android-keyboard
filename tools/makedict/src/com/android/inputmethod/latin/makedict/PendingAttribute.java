@@ -14,13 +14,19 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.makedict;
 
 /**
- * Simple exception thrown when a file format is not recognized.
+ * A not-yet-resolved attribute.
+ *
+ * An attribute is either a bigram or a shortcut.
+ * All instances of this class are always immutable.
  */
-public class UnsupportedFormatException extends Exception {
-    public UnsupportedFormatException(String description) {
-        super(description);
+public class PendingAttribute {
+    public final int mFrequency;
+    public final int mAddress;
+    public PendingAttribute(final int frequency, final int address) {
+        mFrequency = frequency;
+        mAddress = address;
     }
 }
