@@ -23,7 +23,6 @@ import android.os.Build;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 
-import com.android.inputmethod.compat.InputMethodInfoCompatWrapper;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.VibratorCompatWrapper;
 import com.android.inputmethod.keyboard.internal.KeySpecParser;

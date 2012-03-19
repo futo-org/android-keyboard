@@ -480,7 +480,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(
                 keyboard, -getPaddingLeft(), -getPaddingTop() + mVerticalCorrection);
-        mKeyDetector.setProximityThreshold(keyboard.mMostCommonKeyWidth);
         PointerTracker.setKeyDetector(mKeyDetector);
         mTouchScreenRegulator.setKeyboard(keyboard);
         mMoreKeysPanelCache.clear();

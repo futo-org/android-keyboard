@@ -141,6 +141,7 @@ public class WordComposer {
             keyY = y;
         } else {
             final Key key = keyDetector.detectHitKey(x, y);
+            // TODO: Pass an integer instead of an integer array
             codes = new int[] { key != null ? key.mCode : NOT_A_CODE };
             keyX = keyDetector.getTouchX(x);
             keyY = keyDetector.getTouchY(y);
@@ -202,9 +203,8 @@ public class WordComposer {
             if (key.mCode == codePoint) {
                 final int x = key.mX + key.mWidth / 2;
                 final int y = key.mY + key.mHeight / 2;
-                final int[] codes = keyDetector.newCodeArray();
-                keyDetector.getNearbyCodes(x, y, codes);
-                add(codePoint, codes, x, y);
+                // TODO: Pass an integer instead of an integer array
+                add(codePoint, new int[] { key.mCode }, x, y);
                 return;
             }
         }
@@ -216,7 +216,7 @@ public class WordComposer {
      * Set the currently composing word to the one passed as an argument.
      * This will register NOT_A_COORDINATE for X and Ys, and use the passed keyboard for proximity.
      */
-    public void setComposingWord(final CharSequence word, final Keyboard keyboard,
+    private void setComposingWord(final CharSequence word, final Keyboard keyboard,
             final KeyDetector keyDetector) {
         reset();
         final int length = word.length();
@@ -233,7 +233,6 @@ public class WordComposer {
         final KeyDetector keyDetector = new KeyDetector(0);
         keyDetector.setKeyboard(keyboard, 0, 0);
         keyDetector.setProximityCorrectionEnabled(true);
-        keyDetector.setProximityThreshold(keyboard.mMostCommonKeyWidth);
         setComposingWord(word, keyboard, keyDetector);
     }
 

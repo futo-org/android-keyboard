@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -42,8 +41,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Loads an XML description of a keyboard and stores the attributes of the keys. A keyboard
@@ -133,8 +130,6 @@ public class Keyboard {
 
     private final ProximityInfo mProximityInfo;
 
-    private final Map<Integer, List<Integer>> mAdditionalProximityChars;
-
     public Keyboard(Params params) {
         mId = params.mId;
         mThemeId = params.mThemeId;
@@ -153,12 +148,10 @@ public class Keyboard {
         mAltCodeKeysWhileTyping = params.mAltCodeKeysWhileTyping.toArray(
                 new Key[params.mAltCodeKeysWhileTyping.size()]);
         mIconsSet = params.mIconsSet;
-        mAdditionalProximityChars = params.mAdditionalProximityChars;
 
         mProximityInfo = new ProximityInfo(params.mId.mLocale.toString(),
                 params.GRID_WIDTH, params.GRID_HEIGHT, mOccupiedWidth, mOccupiedHeight,
-                mMostCommonKeyWidth, mMostCommonKeyHeight, mKeys, params.mTouchPositionCorrection,
-                params.mAdditionalProximityChars);
+                mMostCommonKeyWidth, mMostCommonKeyHeight, mKeys, params.mTouchPositionCorrection);
     }
 
     public ProximityInfo getProximityInfo() {
@@ -230,9 +223,6 @@ public class Keyboard {
         public final ArrayList<Key> mShiftKeys = new ArrayList<Key>();
         public final ArrayList<Key> mAltCodeKeysWhileTyping = new ArrayList<Key>();
         public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
-        // TODO: Should be in Key instead of Keyboard.Params?
-        public final Map<Integer, List<Integer>> mAdditionalProximityChars =
-                new HashMap<Integer, List<Integer>>();
 
         public KeyboardSet.KeysCache mKeysCache;
 
@@ -366,10 +356,6 @@ public class Keyboard {
         final int adjustedX = Math.max(0, Math.min(x, mOccupiedWidth - 1));
         final int adjustedY = Math.max(0, Math.min(y, mOccupiedHeight - 1));
         return mProximityInfo.getNearestKeys(adjustedX, adjustedY);
-    }
-
-    public Map<Integer, List<Integer>> getAdditionalProximityChars() {
-        return mAdditionalProximityChars;
     }
 
     public static String printableCode(int code) {
@@ -630,7 +616,6 @@ public class Keyboard {
             mParams = params;
 
             setTouchPositionCorrectionData(context, params);
-            setAdditionalProximityChars(context, params);
 
             params.GRID_WIDTH = res.getInteger(R.integer.config_keyboard_grid_width);
             params.GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
@@ -651,25 +636,6 @@ public class Keyboard {
 
             final String[] data = context.getResources().getStringArray(resourceId);
             params.mTouchPositionCorrection.load(data);
-        }
-
-        private static void setAdditionalProximityChars(Context context, Params params) {
-            final String[] additionalChars =
-                    context.getResources().getStringArray(R.array.additional_proximitychars);
-            int currentPrimaryIndex = 0;
-            for (int i = 0; i < additionalChars.length; ++i) {
-                final String additionalChar = additionalChars[i];
-                if (TextUtils.isEmpty(additionalChar)) {
-                    currentPrimaryIndex = 0;
-                } else if (currentPrimaryIndex == 0) {
-                    currentPrimaryIndex = additionalChar.charAt(0);
-                    params.mAdditionalProximityChars.put(
-                            currentPrimaryIndex, new ArrayList<Integer>());
-                } else if (currentPrimaryIndex != 0) {
-                    final int c = additionalChar.charAt(0);
-                    params.mAdditionalProximityChars.get(currentPrimaryIndex).add(c);
-                }
-            }
         }
 
         public void setAutoGenerate(KeyboardSet.KeysCache keysCache) {
