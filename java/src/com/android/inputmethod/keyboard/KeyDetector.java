@@ -265,9 +265,9 @@ public class KeyDetector {
         for (final Key key: mKeyboard.getNearestKeys(touchX, touchY)) {
             final boolean isOnKey = key.isOnKey(touchX, touchY);
             final int distance = key.squaredDistanceToEdge(touchX, touchY);
-            // TODO: need to take care of hitbox overlaps
+            // To take care of hitbox overlaps, we compare mCode here too.
             if (primaryKey == null || distance < minDistance
-                    || (distance == minDistance && isOnKey)) {
+                    || (distance == minDistance && isOnKey && key.mCode > primaryKey.mCode)) {
                 minDistance = distance;
                 primaryKey = key;
             }
