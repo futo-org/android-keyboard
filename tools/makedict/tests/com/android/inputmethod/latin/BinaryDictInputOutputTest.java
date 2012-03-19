@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.makedict;
 
-import com.android.inputmethod.latin.FusionDictionary.Node;
+import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 
 import java.util.ArrayList;
 

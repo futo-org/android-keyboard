@@ -14,27 +14,13 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.makedict;
 
 /**
- * Wrapper to redirect log events to the right output medium.
+ * Simple exception thrown when a file format is not recognized.
  */
-public class MakedictLog {
-
-    private static void print(String message) {
-        System.out.println(message);
-    }
-
-    public static void d(String message) {
-        print(message);
-    }
-    public static void e(String message) {
-        print(message);
-    }
-    public static void i(String message) {
-        print(message);
-    }
-    public static void w(String message) {
-        print(message);
+public class UnsupportedFormatException extends Exception {
+    public UnsupportedFormatException(String description) {
+        super(description);
     }
 }

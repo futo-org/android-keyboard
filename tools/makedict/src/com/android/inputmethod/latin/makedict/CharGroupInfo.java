@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.makedict;
 
 import java.util.ArrayList;
 

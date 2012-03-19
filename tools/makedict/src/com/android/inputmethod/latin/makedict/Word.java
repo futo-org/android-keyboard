@@ -14,9 +14,9 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.latin.makedict;
 
-import com.android.inputmethod.latin.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
 import java.util.ArrayList;
 
