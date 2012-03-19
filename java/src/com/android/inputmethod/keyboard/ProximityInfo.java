@@ -24,10 +24,7 @@ import com.android.inputmethod.latin.JniUtils;
 import com.android.inputmethod.latin.spellcheck.SpellCheckerProximityInfo;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ProximityInfo {
     public static final int MAX_PROXIMITY_CHARS_SIZE = 16;
@@ -50,8 +47,7 @@ public class ProximityInfo {
 
     ProximityInfo(String localeStr, int gridWidth, int gridHeight, int minWidth, int height,
             int mostCommonKeyWidth, int mostCommonKeyHeight, final Key[] keys,
-            TouchPositionCorrection touchPositionCorrection,
-            Map<Integer, List<Integer>> additionalProximityChars) {
+            TouchPositionCorrection touchPositionCorrection) {
         if (TextUtils.isEmpty(localeStr)) {
             mLocaleStr = "";
         } else {
@@ -72,12 +68,11 @@ public class ProximityInfo {
             return;
         }
         computeNearestNeighbors(
-                mostCommonKeyWidth, keys, touchPositionCorrection, additionalProximityChars);
+                mostCommonKeyWidth, keys, touchPositionCorrection);
     }
 
     public static ProximityInfo createDummyProximityInfo() {
-        return new ProximityInfo("", 1, 1, 1, 1, 1, 1, EMPTY_KEY_ARRAY, null,
-                Collections.<Integer, List<Integer>> emptyMap());
+        return new ProximityInfo("", 1, 1, 1, 1, 1, 1, EMPTY_KEY_ARRAY, null);
     }
 
     public static ProximityInfo createSpellCheckerProximityInfo(final int[] proximity) {
@@ -184,8 +179,7 @@ public class ProximityInfo {
     }
 
     private void computeNearestNeighbors(int defaultWidth, final Key[] keys,
-            TouchPositionCorrection touchPositionCorrection,
-            Map<Integer, List<Integer>> additionalProximityChars) {
+            TouchPositionCorrection touchPositionCorrection) {
         final HashMap<Integer, Key> keyCodeMap = new HashMap<Integer, Key>();
         for (final Key key : keys) {
             keyCodeMap.put(key.mCode, key);
@@ -205,27 +199,6 @@ public class ProximityInfo {
                     if (key.isSpacer()) continue;
                     if (key.squaredDistanceToEdge(centerX, centerY) < threshold) {
                         neighborKeys[count++] = key;
-                    }
-                }
-                int currentCodesSize = count;
-                for (int i = 0; i < currentCodesSize; ++i) {
-                    final int c = neighborKeys[i].mCode;
-                    final List<Integer> additionalChars = additionalProximityChars.get(c);
-                    if (additionalChars == null || additionalChars.size() == 0) {
-                        continue;
-                    }
-                    for (int j = 0; j < additionalChars.size(); ++j) {
-                        final int additionalChar = additionalChars.get(j);
-                        boolean contains = false;
-                        for (int k = 0; k < count; ++k) {
-                            if(additionalChar == neighborKeys[k].mCode) {
-                                contains = true;
-                                break;
-                            }
-                        }
-                        if (!contains) {
-                            neighborKeys[count++] = keyCodeMap.get(additionalChar);
-                        }
                     }
                 }
                 mGridNeighbors[(y / mCellHeight) * mGridWidth + (x / mCellWidth)] =

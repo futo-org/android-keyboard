@@ -25,7 +25,6 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
-import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.Utils;
@@ -38,8 +37,6 @@ public class MoreSuggestions extends Keyboard {
     }
 
     public static class Builder extends Keyboard.Builder<Builder.MoreSuggestionsParam> {
-        private static final boolean DBG = LatinImeLogger.sDBG;
-
         private final MoreSuggestionsView mPaneView;
         private SuggestedWords mSuggestions;
         private int mFromPos;

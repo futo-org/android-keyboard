@@ -95,6 +95,7 @@ public class InputAttributes {
         }
     }
 
+    @SuppressWarnings("unused")
     private void dumpFlags(final int inputType) {
         Log.i(TAG, "Input class:");
         final int inputClass = inputType & InputType.TYPE_MASK_CLASS;

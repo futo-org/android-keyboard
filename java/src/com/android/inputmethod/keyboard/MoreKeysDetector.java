@@ -33,34 +33,6 @@ public class MoreKeysDetector extends KeyDetector {
     }
 
     @Override
-    protected int getMaxNearbyKeys() {
-        // No nearby key will be returned.
-        return 1;
-    }
-
-    @Override
-    public void getNearbyCodes(int x, int y, final int[] allCodes) {
-        final int touchX = getTouchX(x);
-        final int touchY = getTouchY(y);
-
-        Key nearestKey = null;
-        int nearestDist = (y < 0) ? mSlideAllowanceSquareTop : mSlideAllowanceSquare;
-        for (final Key key : getKeyboard().mKeys) {
-            final int dist = key.squaredDistanceToEdge(touchX, touchY);
-            if (dist < nearestDist) {
-                nearestKey = key;
-                nearestDist = dist;
-            }
-        }
-
-        if (nearestKey != null) {
-            allCodes[0] = nearestKey.mCode;
-        } else {
-            allCodes[0] = NOT_A_CODE;
-        }
-    }
-
-    @Override
     public Key detectHitKey(int x, int y) {
         final int touchX = getTouchX(x);
         final int touchY = getTouchY(y);
