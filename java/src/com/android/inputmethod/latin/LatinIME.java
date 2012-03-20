@@ -1288,7 +1288,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mDeleteCount++;
             mExpectingUpdateSelection = true;
             mShouldSwitchToLastSubtype = true;
-            LatinImeLogger.logOnDelete();
+            LatinImeLogger.logOnDelete(x, y);
             break;
         case Keyboard.CODE_SHIFT:
         case Keyboard.CODE_SWITCH_ALPHA_SYMBOL:

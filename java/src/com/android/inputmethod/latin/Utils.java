@@ -260,8 +260,8 @@ public class Utils {
             }
         }
 
-        public static void writeBackSpace() {
-            UsabilityStudyLogUtils.getInstance().write("<backspace>\t0\t0");
+        public static void writeBackSpace(int x, int y) {
+            UsabilityStudyLogUtils.getInstance().write("<backspace>\t" + x + "\t" + y);
         }
 
         public void writeChar(char c, int x, int y) {

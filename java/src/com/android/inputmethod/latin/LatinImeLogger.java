@@ -51,7 +51,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void logOnAutoCorrectionCancelled() {
     }
 
-    public static void logOnDelete() {
+    public static void logOnDelete(int x, int y) {
     }
 
     public static void logOnInputChar() {
