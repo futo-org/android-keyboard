@@ -44,7 +44,7 @@
     <dimen name="popup_key_height">13.0mm</dimen>
 
     <!-- left or right padding of label alignment -->
-    <dimen name="key_label_horizontal_padding">18dip</dimen>
+    <dimen name="key_label_horizontal_padding">18dp</dimen>
 
     <fraction name="key_letter_ratio">43%</fraction>
     <fraction name="key_large_letter_ratio">42%</fraction>

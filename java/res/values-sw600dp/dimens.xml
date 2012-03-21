@@ -40,7 +40,7 @@
 
     <fraction name="keyboard_bottom_padding_ics">0.0%p</fraction>
 
-    <dimen name="more_keys_keyboard_key_horizontal_padding">6dip</dimen>
+    <dimen name="more_keys_keyboard_key_horizontal_padding">6dp</dimen>
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- popup_key_height x 1.2 -->
     <dimen name="more_keys_keyboard_slide_allowance">15.6mm</dimen>
@@ -48,7 +48,7 @@
     <dimen name="more_keys_keyboard_vertical_correction">-13.0mm</dimen>
 
     <!-- left or right padding of label alignment -->
-    <dimen name="key_label_horizontal_padding">6dip</dimen>
+    <dimen name="key_label_horizontal_padding">6dp</dimen>
     <dimen name="key_hint_letter_padding">3dp</dimen>
     <dimen name="key_uppercase_letter_padding">3dp</dimen>
 
@@ -67,13 +67,13 @@
     <!-- popup_key_height x -0.5 -->
     <dimen name="more_keys_keyboard_vertical_correction_ics">-5mm</dimen>
 
-    <dimen name="suggestions_strip_height">44dip</dimen>
-    <dimen name="more_suggestions_row_height">44dip</dimen>
+    <dimen name="suggestions_strip_height">44dp</dimen>
+    <dimen name="more_suggestions_row_height">44dp</dimen>
     <integer name="max_more_suggestions_row">6</integer>
     <fraction name="min_more_suggestions_width">90%</fraction>
     <dimen name="suggestions_strip_padding">15.0mm</dimen>
     <dimen name="suggestion_min_width">0.3in</dimen>
-    <dimen name="suggestion_padding">12dip</dimen>
-    <dimen name="suggestion_text_size">22dip</dimen>
-    <dimen name="more_suggestions_hint_text_size">33dip</dimen>
+    <dimen name="suggestion_padding">12dp</dimen>
+    <dimen name="suggestion_text_size">22dp</dimen>
+    <dimen name="more_suggestions_hint_text_size">33dp</dimen>
 </resources>

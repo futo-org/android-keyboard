@@ -23,22 +23,22 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dip">
+        android:layout_margin="10dp">
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:layout_margin="10dip">
+        android:layout_margin="10dp">
         <TextView android:id="@+id/sound_effect_volume_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20dip"/>
+            android:textSize="20dp"/>
     </LinearLayout>
     <SeekBar
         android:id="@+id/sound_effect_volume_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:max="100"
-        android:layout_margin="10dip"/>
+        android:layout_margin="10dp"/>
 </LinearLayout>

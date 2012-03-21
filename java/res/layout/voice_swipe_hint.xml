@@ -25,14 +25,14 @@
         android:layout_height="wrap_content"
         android:background="@drawable/keyboard_suggest_strip"
         android:gravity="center_horizontal"
-        android:paddingTop="2dip">
+        android:paddingTop="2dp">
 
     <TextView android:id="@+id/text"
             android:text="@string/voice_swipe_hint"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:paddingTop="10dip"
-            android:paddingRight="6dip"
+            android:paddingTop="10dp"
+            android:paddingRight="6dp"
             android:textSize="13sp"
             android:textColor="#888888"
             android:layout_gravity="center_horizontal"
