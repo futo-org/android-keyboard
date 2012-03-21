@@ -59,7 +59,7 @@ public class FusionDictionary implements Iterable<Word> {
      */
     public static class WeightedString {
         final String mWord;
-        final int mFrequency;
+        int mFrequency;
         public WeightedString(String word, int frequency) {
             mWord = word;
             mFrequency = frequency;
@@ -81,10 +81,10 @@ public class FusionDictionary implements Iterable<Word> {
     public static class CharGroup {
         public static final int NOT_A_TERMINAL = -1;
         final int mChars[];
-        final ArrayList<WeightedString> mShortcutTargets;
-        final ArrayList<WeightedString> mBigrams;
-        final int mFrequency; // NOT_A_TERMINAL == mFrequency indicates this is not a terminal.
-        final boolean mIsShortcutOnly; // Only valid if this is a terminal.
+        ArrayList<WeightedString> mShortcutTargets;
+        ArrayList<WeightedString> mBigrams;
+        int mFrequency; // NOT_A_TERMINAL == mFrequency indicates this is not a terminal.
+        boolean mIsShortcutOnly; // Only valid if this is a terminal.
         Node mChildren;
         // The two following members to help with binary generation
         int mCachedSize;
@@ -132,6 +132,102 @@ public class FusionDictionary implements Iterable<Word> {
         public boolean hasSeveralChars() {
             assert(mChars.length > 0);
             return 1 < mChars.length;
+        }
+
+        /**
+         * Adds a word to the bigram list. Updates the frequency if the word already
+         * exists.
+         */
+        public void addBigram(final String word, final int frequency) {
+            if (mBigrams == null) {
+                mBigrams = new ArrayList<WeightedString>();
+            }
+            WeightedString bigram = getBigram(word);
+            if (bigram != null) {
+                bigram.mFrequency = frequency;
+            } else {
+                bigram = new WeightedString(word, frequency);
+                mBigrams.add(bigram);
+            }
+        }
+
+        /**
+         * Gets the shortcut target for the given word. Returns null if the word is not in the
+         * shortcut list.
+         */
+        public WeightedString getShortcut(final String word) {
+            if (mShortcutTargets != null) {
+                final int size = mShortcutTargets.size();
+                for (int i = 0; i < size; ++i) {
+                    WeightedString shortcut = mShortcutTargets.get(i);
+                    if (shortcut.mWord.equals(word)) {
+                        return shortcut;
+                    }
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Gets the bigram for the given word.
+         * Returns null if the word is not in the bigrams list.
+         */
+        public WeightedString getBigram(final String word) {
+            if (mBigrams != null) {
+                final int size = mBigrams.size();
+                for (int i = 0; i < size; ++i) {
+                    WeightedString bigram = mBigrams.get(i);
+                    if (bigram.mWord.equals(word)) {
+                        return bigram;
+                    }
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Updates the CharGroup with the given properties. Adds the shortcut and bigram lists to
+         * the existing ones if any. Note: unigram, bigram, and shortcut frequencies are only
+         * updated if they are higher than the existing ones.
+         */
+        public void update(int frequency, ArrayList<WeightedString> shortcutTargets,
+                ArrayList<WeightedString> bigrams, boolean isShortcutOnly) {
+            if (frequency > mFrequency) {
+                mFrequency = frequency;
+            }
+            if (shortcutTargets != null) {
+                if (mShortcutTargets == null) {
+                    mShortcutTargets = shortcutTargets;
+                } else {
+                    final int size = shortcutTargets.size();
+                    for (int i = 0; i < size; ++i) {
+                        final WeightedString shortcut = shortcutTargets.get(i);
+                        final WeightedString existingShortcut = getShortcut(shortcut.mWord);
+                        if (existingShortcut == null) {
+                            mShortcutTargets.add(shortcut);
+                        } else if (existingShortcut.mFrequency < shortcut.mFrequency) {
+                            existingShortcut.mFrequency = shortcut.mFrequency;
+                        }
+                    }
+                }
+            }
+            if (bigrams != null) {
+                if (mBigrams == null) {
+                    mBigrams = bigrams;
+                } else {
+                    final int size = bigrams.size();
+                    for (int i = 0; i < size; ++i) {
+                        final WeightedString bigram = bigrams.get(i);
+                        final WeightedString existingBigram = getBigram(bigram.mWord);
+                        if (existingBigram == null) {
+                            mBigrams.add(bigram);
+                        } else if (existingBigram.mFrequency < bigram.mFrequency) {
+                            existingBigram.mFrequency = bigram.mFrequency;
+                        }
+                    }
+                }
+            }
+            mIsShortcutOnly = isShortcutOnly;
         }
     }
 
@@ -246,6 +342,27 @@ public class FusionDictionary implements Iterable<Word> {
     }
 
     /**
+     * Helper method to add a new bigram to the dictionary.
+     *
+     * @param word1 the previous word of the context
+     * @param word2 the next word of the context
+     * @param frequency the bigram frequency
+     */
+    public void setBigram(final String word1, final String word2, final int frequency) {
+        CharGroup charGroup = findWordInTree(mRoot, word1);
+        if (charGroup != null) {
+            final CharGroup charGroup2 = findWordInTree(mRoot, word2);
+            if (charGroup2 == null) {
+                // TODO: refactor with the identical code in addNeutralWords
+                add(getCodePoints(word2), 0, null, null, false /* isShortcutOnly */);
+            }
+            charGroup.addBigram(word2, frequency);
+        } else {
+            throw new RuntimeException("First word of bigram not found");
+        }
+    }
+
+    /**
      * Add a word to this dictionary.
      *
      * The shortcuts and bigrams, if any, have to be in the dictionary already. If they aren't,
@@ -293,17 +410,9 @@ public class FusionDictionary implements Iterable<Word> {
             if (differentCharIndex == currentGroup.mChars.length) {
                 if (charIndex + differentCharIndex >= word.length) {
                     // The new word is a prefix of an existing word, but the node on which it
-                    // should end already exists as is.
-                    if (currentGroup.mFrequency > 0) {
-                        throw new RuntimeException("Such a word already exists in the dictionary : "
-                                + new String(word, 0, word.length));
-                    } else {
-                        final CharGroup newNode = new CharGroup(currentGroup.mChars,
-                                shortcutTargets, bigrams, frequency, currentGroup.mChildren,
-                                isShortcutOnly);
-                        currentNode.mData.set(nodeIndex, newNode);
-                        checkStack(currentNode);
-                    }
+                    // should end already exists as is. Since the old CharNode was not a terminal, 
+                    // make it one by filling in its frequency and other attributes
+                    currentGroup.update(frequency, shortcutTargets, bigrams, isShortcutOnly);
                 } else {
                     // The new word matches the full old word and extends past it.
                     // We only have to create a new node and add it to the end of this.
@@ -315,19 +424,9 @@ public class FusionDictionary implements Iterable<Word> {
                 }
             } else {
                 if (0 == differentCharIndex) {
-                    // Exact same word. Check the frequency is 0 or NOT_A_TERMINAL, and update.
-                    if (0 != frequency) {
-                        if (0 < currentGroup.mFrequency) {
-                            throw new RuntimeException("This word already exists with frequency "
-                                    + currentGroup.mFrequency + " : "
-                                    + new String(word, 0, word.length));
-                        }
-                        final CharGroup newGroup = new CharGroup(word,
-                                currentGroup.mShortcutTargets, currentGroup.mBigrams,
-                                frequency, currentGroup.mChildren,
-                                currentGroup.mIsShortcutOnly && isShortcutOnly);
-                        currentNode.mData.set(nodeIndex, newGroup);
-                    }
+                    // Exact same word. Update the frequency if higher. This will also add the
+                    // new bigrams to the existing bigram list if it already exists.
+                    currentGroup.update(frequency, shortcutTargets, bigrams, isShortcutOnly);
                 } else {
                     // Partial prefix match only. We have to replace the current node with a node
                     // containing the current prefix and create two new ones for the tails.
