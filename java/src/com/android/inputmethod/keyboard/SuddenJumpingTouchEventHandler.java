@@ -17,12 +17,12 @@
 package com.android.inputmethod.keyboard;
 
 import android.content.Context;
-import android.os.Build;
 import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.Utils;
 
 public class SuddenJumpingTouchEventHandler {
     private static final String TAG = SuddenJumpingTouchEventHandler.class.getSimpleName();
@@ -49,18 +49,8 @@ public class SuddenJumpingTouchEventHandler {
 
     public SuddenJumpingTouchEventHandler(Context context, ProcessMotionEvent view) {
         mView = view;
-        final String[] deviceList = context.getResources().getStringArray(
-                R.array.sudden_jumping_touch_event_device_list);
-        mNeedsSuddenJumpingHack = needsSuddenJumpingHack(Build.HARDWARE, deviceList);
-    }
-
-    private static boolean needsSuddenJumpingHack(String deviceName, String[] deviceList) {
-        for (String device : deviceList) {
-            if (device.equalsIgnoreCase(deviceName)) {
-                return true;
-            }
-        }
-        return false;
+        mNeedsSuddenJumpingHack = Boolean.parseBoolean(Utils.getDeviceOverrideValue(
+                context.getResources(), R.array.sudden_jumping_touch_event_device_list, "false"));
     }
 
     public void setKeyboard(Keyboard newKeyboard) {
