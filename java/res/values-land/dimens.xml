@@ -44,7 +44,7 @@
     <fraction name="key_horizontal_gap_ics">1.020%p</fraction>
 
     <!-- left or right padding of label alignment -->
-    <dimen name="key_label_horizontal_padding">8dip</dimen>
+    <dimen name="key_label_horizontal_padding">8dp</dimen>
 
     <fraction name="key_letter_ratio">65%</fraction>
     <fraction name="key_large_letter_ratio">74%</fraction>
@@ -60,8 +60,8 @@
     <!-- popup_key_height x -0.5 -->
     <dimen name="more_keys_keyboard_vertical_correction_ics">-0.140in</dimen>
 
-    <dimen name="suggestions_strip_height">36dip</dimen>
-    <dimen name="more_suggestions_row_height">36dip</dimen>
+    <dimen name="suggestions_strip_height">36dp</dimen>
+    <dimen name="more_suggestions_row_height">36dp</dimen>
     <integer name="max_more_suggestions_row">2</integer>
     <fraction name="min_more_suggestions_width">60%</fraction>
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
