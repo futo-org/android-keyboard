@@ -296,17 +296,16 @@ public class MoreKeysKeyboard extends Keyboard {
             final int padding = (int)(view.getResources()
                     .getDimension(R.dimen.more_keys_keyboard_key_horizontal_padding)
                     + (parentKey.hasLabelsInMoreKeys() ? minKeyWidth * LABEL_PADDING_RATIO : 0));
-            Paint paint = null;
+            final Paint paint = view.newDefaultLabelPaint();
+            paint.setTextSize(parentKey.hasLabelsInMoreKeys()
+                    ? view.mKeyDrawParams.mKeyLabelSize
+                    : view.mKeyDrawParams.mKeyLetterSize);
             int maxWidth = minKeyWidth;
             for (String moreKeySpec : parentKey.mMoreKeys) {
                 final String label = KeySpecParser.getLabel(moreKeySpec);
                 // If the label is single letter, minKeyWidth is enough to hold the label.
                 if (label != null && StringUtils.codePointCount(label) > 1) {
-                    if (paint == null) {
-                        paint = new Paint();
-                        paint.setAntiAlias(true);
-                    }
-                    final int width = (int)view.getDefaultLabelWidth(label, paint) + padding;
+                    final int width = (int)view.getLabelWidth(label, paint) + padding;
                     if (maxWidth < width) {
                         maxWidth = width;
                     }
