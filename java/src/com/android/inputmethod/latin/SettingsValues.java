@@ -19,7 +19,6 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.os.Build;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 
@@ -322,14 +321,8 @@ public class SettingsValues {
             return volume;
         }
 
-        final String[] volumePerHardwareList = res.getStringArray(R.array.keypress_volumes);
-        final String hardwarePrefix = Build.HARDWARE + ",";
-        for (final String element : volumePerHardwareList) {
-            if (element.startsWith(hardwarePrefix)) {
-                return Float.parseFloat(element.substring(element.lastIndexOf(',') + 1));
-            }
-        }
-        return -1.0f;
+        return Float.parseFloat(
+                Utils.getDeviceOverrideValue(res, R.array.keypress_volumes, "-1.0f"));
     }
 
     // Likewise
@@ -340,15 +333,9 @@ public class SettingsValues {
         if (ms >= 0) {
             return ms;
         }
-        final String[] durationPerHardwareList = res.getStringArray(
-                R.array.keypress_vibration_durations);
-        final String hardwarePrefix = Build.HARDWARE + ",";
-        for (final String element : durationPerHardwareList) {
-            if (element.startsWith(hardwarePrefix)) {
-                return (int)Long.parseLong(element.substring(element.lastIndexOf(',') + 1));
-            }
-        }
-        return -1;
+
+        return Integer.parseInt(
+                Utils.getDeviceOverrideValue(res, R.array.keypress_vibration_durations, "-1"));
     }
 
     // Likewise

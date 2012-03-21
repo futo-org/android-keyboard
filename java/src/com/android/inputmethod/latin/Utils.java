@@ -19,9 +19,11 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -43,6 +45,7 @@ import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 public class Utils {
     private Utils() {
@@ -464,5 +467,24 @@ public class Utils {
         final String info = wordInfo.getDebugString();
         if (TextUtils.isEmpty(info)) return null;
         return info;
+    }
+
+    private static final String HARDWARE_PREFIX = Build.HARDWARE + ",";
+    private static final HashMap<Integer, String> sDeviceOverrideValueMap =
+            new HashMap<Integer, String>();
+
+    public static String getDeviceOverrideValue(Resources res, int overrideResId, String defValue) {
+        final Integer key = overrideResId;
+        if (!sDeviceOverrideValueMap.containsKey(key)) {
+            String overrideValue = defValue;
+            for (final String element : res.getStringArray(overrideResId)) {
+                if (element.startsWith(HARDWARE_PREFIX)) {
+                    overrideValue = element.substring(HARDWARE_PREFIX.length());
+                    break;
+                }
+            }
+            sDeviceOverrideValueMap.put(key, overrideValue);
+        }
+        return sDeviceOverrideValueMap.get(key);
     }
 }
