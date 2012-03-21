@@ -196,8 +196,8 @@ public class BinaryDictionaryFileDumper {
             } finally {
                 // Ignore exceptions while closing files.
                 try {
-                    // afd.close() will close inputStream, we should not call inputStream.close().
-                    if (null != afd) afd.close();
+                    // inputStream.close() will close afd, we should not call afd.close().
+                    if (null != inputStream) inputStream.close();
                 } catch (Exception e) {
                     Log.e(TAG, "Exception while closing a cross-process file descriptor : " + e);
                 }
