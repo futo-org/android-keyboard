@@ -149,6 +149,9 @@ public class BinaryDictionary extends Dictionary {
         int count = getBigramsNative(mNativeDict, chars, chars.length, mInputCodes, codesSize,
                 mOutputChars_bigrams, mBigramScores, MAX_WORD_LENGTH, MAX_BIGRAMS,
                 MAX_PROXIMITY_CHARS_SIZE);
+        if (count > MAX_BIGRAMS) {
+            count = MAX_BIGRAMS;
+        }
 
         for (int j = 0; j < count; ++j) {
             if (codesSize > 0 && mBigramScores[j] < 1) break;
