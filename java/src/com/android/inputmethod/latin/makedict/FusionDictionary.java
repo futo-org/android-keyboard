@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * A dictionary that can fusion heads and tails of words for more compression.
@@ -400,15 +399,10 @@ public class FusionDictionary implements Iterable<Word> {
      * is ignored.
      * This comparator imposes orderings that are inconsistent with equals.
      */
-    static private class CharGroupComparator implements java.util.Comparator {
-        public int compare(Object o1, Object o2) {
-            final CharGroup c1 = (CharGroup)o1;
-            final CharGroup c2 = (CharGroup)o2;
+    static private class CharGroupComparator implements java.util.Comparator<CharGroup> {
+        public int compare(CharGroup c1, CharGroup c2) {
             if (c1.mChars[0] == c2.mChars[0]) return 0;
             return c1.mChars[0] < c2.mChars[0] ? -1 : 1;
-        }
-        public boolean equals(Object o) {
-            return o instanceof CharGroupComparator;
         }
     }
     final static private CharGroupComparator CHARGROUP_COMPARATOR = new CharGroupComparator();
@@ -417,7 +411,7 @@ public class FusionDictionary implements Iterable<Word> {
      * Finds the insertion index of a character within a node.
      */
     private static int findInsertionIndex(final Node node, int character) {
-        final List data = node.mData;
+        final ArrayList<CharGroup> data = node.mData;
         final CharGroup reference = new CharGroup(new int[] { character }, null, null, 0,
                 false /* isShortcutOnly */);
         int result = Collections.binarySearch(data, reference, CHARGROUP_COMPARATOR);
