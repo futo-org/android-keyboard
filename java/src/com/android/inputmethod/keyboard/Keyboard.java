@@ -394,7 +394,7 @@ public class Keyboard {
      *     &gt;Row row_attributes*&lt;
      *       &gt;!-- Row Content --&lt;
      *       &gt;Key key_attributes* /&lt;
-     *       &gt;Spacer horizontalGap="0.2in" /&lt;
+     *       &gt;Spacer horizontalGap="32.0dp" /&lt;
      *       &gt;include keyboardLayout="@xml/other_keys"&lt;
      *       ...
      *     &gt;/Row&lt;

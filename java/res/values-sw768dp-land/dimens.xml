@@ -41,7 +41,7 @@
     <fraction name="key_bottom_gap_ics">3.690%p</fraction>
     <fraction name="key_horizontal_gap_ics">1.030%p</fraction>
 
-    <dimen name="popup_key_height">13.0mm</dimen>
+    <dimen name="popup_key_height">81.9dp</dimen>
 
     <!-- left or right padding of label alignment -->
     <dimen name="key_label_horizontal_padding">18dp</dimen>
@@ -53,10 +53,10 @@
     <fraction name="key_hint_label_ratio">28%</fraction>
     <fraction name="key_uppercase_letter_ratio">24%</fraction>
     <fraction name="spacebar_text_ratio">24.00%</fraction>
-    <dimen name="key_preview_height">17.0mm</dimen>
+    <dimen name="key_preview_height">107.1dp</dimen>
 
-    <dimen name="key_preview_offset_ics">0.05in</dimen>
+    <dimen name="key_preview_offset_ics">8.0dp</dimen>
 
-    <dimen name="suggestions_strip_padding">40.0mm</dimen>
+    <dimen name="suggestions_strip_padding">252.0dp</dimen>
     <fraction name="min_more_suggestions_width">50%</fraction>
 </resources>

@@ -25,7 +25,7 @@
     <fraction name="maxKeyboardHeight">50%p</fraction>
     <fraction name="minKeyboardHeight">-61.8%p</fraction>
 
-    <dimen name="popup_key_height">0.330in</dimen>
+    <dimen name="popup_key_height">52.8dp</dimen>
 
     <dimen name="more_keys_keyboard_horizontal_edges_padding">16dp</dimen>
     <dimen name="more_keys_keyboard_key_horizontal_padding">8dp</dimen>
@@ -52,12 +52,10 @@
 
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- popup_key_height x 1.2 -->
-    <dimen name="more_keys_keyboard_slide_allowance">0.396in</dimen>
+    <dimen name="more_keys_keyboard_slide_allowance">63.36dp</dimen>
     <!-- popup_key_height x -1.0 -->
-    <dimen name="more_keys_keyboard_vertical_correction">-0.330in</dimen>
-    <!-- We use "inch", not "dip" because this value tries dealing with physical distance related
-         to user's finger. -->
-    <dimen name="keyboard_vertical_correction">0.0in</dimen>
+    <dimen name="more_keys_keyboard_vertical_correction">-52.8dp</dimen>
+    <dimen name="keyboard_vertical_correction">0.0dp</dimen>
 
     <fraction name="key_letter_ratio">55%</fraction>
     <fraction name="key_large_letter_ratio">65%</fraction>
@@ -68,23 +66,23 @@
     <fraction name="key_preview_text_ratio">82%</fraction>
     <fraction name="spacebar_text_ratio">33.735%</fraction>
     <dimen name="key_preview_height">80dp</dimen>
-    <dimen name="key_preview_offset">0.1in</dimen>
+    <dimen name="key_preview_offset">16.0dp</dimen>
 
     <dimen name="key_label_horizontal_padding">4dp</dimen>
     <dimen name="key_hint_letter_padding">1dp</dimen>
     <dimen name="key_popup_hint_letter_padding">2dp</dimen>
     <dimen name="key_uppercase_letter_padding">2dp</dimen>
 
-    <dimen name="key_preview_offset_ics">0.05in</dimen>
+    <dimen name="key_preview_offset_ics">8.0dp</dimen>
     <!-- popup_key_height x -0.5 -->
-    <dimen name="more_keys_keyboard_vertical_correction_ics">-0.165in</dimen>
+    <dimen name="more_keys_keyboard_vertical_correction_ics">-26.4dp</dimen>
 
     <dimen name="suggestions_strip_height">40dp</dimen>
     <dimen name="more_suggestions_key_horizontal_padding">12dp</dimen>
     <dimen name="more_suggestions_row_height">40dp</dimen>
     <dimen name="more_suggestions_bottom_gap">6dp</dimen>
-    <dimen name="more_suggestions_modal_tolerance">0.2in</dimen>
-    <dimen name="more_suggestions_slide_allowance">0.1in</dimen>
+    <dimen name="more_suggestions_modal_tolerance">32.0dp</dimen>
+    <dimen name="more_suggestions_slide_allowance">16.0dp</dimen>
     <integer name="max_more_suggestions_row">6</integer>
     <fraction name="min_more_suggestions_width">90%</fraction>
     <fraction name="more_suggestions_info_ratio">18%</fraction>

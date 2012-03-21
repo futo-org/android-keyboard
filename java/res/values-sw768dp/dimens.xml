@@ -41,14 +41,14 @@
     <fraction name="key_bottom_gap_ics">3.312%p</fraction>
     <fraction name="key_horizontal_gap_ics">1.066%p</fraction>
 
-    <dimen name="popup_key_height">10.0mm</dimen>
+    <dimen name="popup_key_height">63.0dp</dimen>
 
     <dimen name="more_keys_keyboard_key_horizontal_padding">12dp</dimen>
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- popup_key_height x 1.2 -->
-    <dimen name="more_keys_keyboard_slide_allowance">15.6mm</dimen>
+    <dimen name="more_keys_keyboard_slide_allowance">98.3dp</dimen>
     <!-- popup_key_height x -1.0 -->
-    <dimen name="more_keys_keyboard_vertical_correction">-13.0mm</dimen>
+    <dimen name="more_keys_keyboard_vertical_correction">-81.9dp</dimen>
 
     <!-- left or right padding of label alignment -->
     <dimen name="key_label_horizontal_padding">6dp</dimen>
@@ -63,18 +63,18 @@
     <fraction name="key_uppercase_letter_ratio">26%</fraction>
     <fraction name="key_preview_text_ratio">50%</fraction>
     <fraction name="spacebar_text_ratio">29.03%</fraction>
-    <dimen name="key_preview_height">15.0mm</dimen>
-    <dimen name="key_preview_offset">0.1in</dimen>
+    <dimen name="key_preview_height">94.5dp</dimen>
+    <dimen name="key_preview_offset">16.0dp</dimen>
 
-    <dimen name="key_preview_offset_ics">0.05in</dimen>
+    <dimen name="key_preview_offset_ics">8.0dp</dimen>
     <!-- popup_key_height x -0.5 -->
-    <dimen name="more_keys_keyboard_vertical_correction_ics">-5mm</dimen>
+    <dimen name="more_keys_keyboard_vertical_correction_ics">-31.5dp</dimen>
 
     <dimen name="suggestions_strip_height">44dp</dimen>
     <dimen name="more_suggestions_row_height">44dp</dimen>
     <integer name="max_more_suggestions_row">6</integer>
     <fraction name="min_more_suggestions_width">90%</fraction>
-    <dimen name="suggestions_strip_padding">15.0mm</dimen>
+    <dimen name="suggestions_strip_padding">94.5dp</dimen>
     <dimen name="suggestion_min_width">46dp</dimen>
     <dimen name="suggestion_padding">8dp</dimen>
     <dimen name="suggestion_text_size">22dp</dimen>
