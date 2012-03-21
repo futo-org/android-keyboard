@@ -137,9 +137,10 @@ int BigramDictionary::getBigrams(unsigned short *prevWord, int prevWordLength, i
         // codesSize == 0 means we are trying to find bigram predictions.
         if (codesSize < 1 || checkFirstCharacter(bigramBuffer)) {
             const int frequency = UnigramDictionary::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
-            addWordBigram(bigramBuffer, length, frequency);
+            if (addWordBigram(bigramBuffer, length, frequency)) {
+                ++bigramCount;
+            }
         }
-        ++bigramCount;
     } while (0 != (UnigramDictionary::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags));
     return bigramCount;
 }
