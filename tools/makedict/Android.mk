@@ -13,15 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-LOCAL_PATH := $(call my-dir)
-include $(CLEAR_VARS)
-
-LOCAL_SRC_FILES := $(call all-java-files-under,src)
-LOCAL_SRC_FILES += $(call all-java-files-under,tests)
-LOCAL_JAR_MANIFEST := etc/manifest.txt
-LOCAL_MODULE_TAGS := eng
-LOCAL_MODULE := makedict
-LOCAL_JAVA_LIBRARIES := junit
-
-include $(BUILD_HOST_JAVA_LIBRARY)
-include $(LOCAL_PATH)/etc/Android.mk
+#LOCAL_PATH := $(call my-dir)
+#include $(CLEAR_VARS)
+#
+#LOCAL_SRC_FILES := $(call all-java-files-under,src)
+#LOCAL_SRC_FILES += $(call all-java-files-under,tests)
+#LOCAL_JAR_MANIFEST := etc/manifest.txt
+#LOCAL_MODULE_TAGS := eng
+#LOCAL_MODULE := makedict
+#LOCAL_JAVA_LIBRARIES := junit
+#
+#include $(BUILD_HOST_JAVA_LIBRARY)
+#include $(LOCAL_PATH)/etc/Android.mk
