@@ -54,6 +54,7 @@ import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SubtypeUtils;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.Utils.UsabilityStudyLogUtils;
+import com.android.inputmethod.latin.Utils.UsabilityStudyLogUtils.LogGroup;
 
 import java.util.Locale;
 import java.util.WeakHashMap;
@@ -701,7 +702,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                     break;
             }
             if (!TextUtils.isEmpty(eventTag)) {
-                UsabilityStudyLogUtils.getInstance().write(
+                UsabilityStudyLogUtils.getInstance().write(LogGroup.MOTION_EVENT,
                         eventTag + eventTime + "," + id + "," + x + "," + y + ","
                         + me.getSize(index) + "," + me.getPressure(index));
             }
@@ -764,9 +765,10 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 }
                 tracker.onMoveEvent(px, py, eventTime);
                 if (ENABLE_USABILITY_STUDY_LOG) {
-                    UsabilityStudyLogUtils.getInstance().write("[Move]"  + eventTime + ","
-                            + me.getPointerId(i) + "," + px + "," + py + ","
-                            + me.getSize(i) + "," + me.getPressure(i));
+                    UsabilityStudyLogUtils.getInstance().write(
+                            LogGroup.MOTION_EVENT,
+                            "[Move]" + eventTime + "," + me.getPointerId(i) + "," + px + "," + py
+                                    + "," + me.getSize(i) + "," + me.getPressure(i));
                 }
             }
         } else {

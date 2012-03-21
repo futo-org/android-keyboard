@@ -260,8 +260,25 @@ public class Utils {
             }
         }
 
+        /**
+         * Represents a category of logging events that share the same subfield structure.
+         */
+        public static enum LogGroup {
+            MOTION_EVENT("m"),
+            KEY("k"),
+            CORRECTION("c"),
+            STATE_CHANGE("s");
+
+            private final String mLogString;
+
+            private LogGroup(String logString) {
+                mLogString = logString;
+            }
+        }
+
         public static void writeBackSpace(int x, int y) {
-            UsabilityStudyLogUtils.getInstance().write("<backspace>\t" + x + "\t" + y);
+            UsabilityStudyLogUtils.getInstance().write(
+                    LogGroup.KEY, "<backspace>\t" + x + "\t" + y);
         }
 
         public void writeChar(char c, int x, int y) {
@@ -277,11 +294,12 @@ public class Utils {
                     inputChar = "<space>";
                     break;
             }
-            UsabilityStudyLogUtils.getInstance().write(inputChar + "\t" + x + "\t" + y);
+            UsabilityStudyLogUtils.getInstance().write(LogGroup.KEY,
+                    inputChar + "\t" + x + "\t" + y);
             LatinImeLogger.onPrintAllUsabilityStudyLogs();
         }
 
-        public void write(final String log) {
+        public void write(final LogGroup logGroup, final String log) {
             mLoggingHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -289,8 +307,8 @@ public class Utils {
                     final long currentTime = System.currentTimeMillis();
                     mDate.setTime(currentTime);
 
-                    final String printString = String.format("%s\t%d\t%s\n",
-                            mDateFormat.format(mDate), currentTime, log);
+                    final String printString = String.format("%s\t%d\t%s\t%s\n",
+                            mDateFormat.format(mDate), currentTime, logGroup.mLogString, log);
                     if (LatinImeLogger.sDBG) {
                         Log.d(USABILITY_TAG, "Write: " + log);
                     }
