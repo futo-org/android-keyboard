@@ -30,9 +30,9 @@
 namespace latinime {
 
 const UnigramDictionary::digraph_t UnigramDictionary::GERMAN_UMLAUT_DIGRAPHS[] =
-        { { 'a', 'e' },
-        { 'o', 'e' },
-        { 'u', 'e' } };
+        { { 'a', 'e', 0x00E4 }, // U+00E4 : LATIN SMALL LETTER A WITH DIAERESIS
+        { 'o', 'e', 0x00F6 }, // U+00F6 : LATIN SMALL LETTER O WITH DIAERESIS
+        { 'u', 'e', 0x00FC } }; // U+00FC : LATIN SMALL LETTER U WITH DIAERESIS
 
 // TODO: check the header
 UnigramDictionary::UnigramDictionary(const uint8_t* const streamStart, int typedLetterMultiplier,
@@ -64,7 +64,8 @@ static inline void addWord(
     queue->push(frequency, word, length);
 }
 
-bool UnigramDictionary::isDigraph(const int *codes, const int i, const int codesSize,
+// Return the replacement code point for a digraph, or 0 if none.
+int UnigramDictionary::getDigraphReplacement(const int *codes, const int i, const int codesSize,
         const digraph_t* const digraphs, const unsigned int digraphsSize) const {
 
     // There can't be a digraph if we don't have at least 2 characters to examine
@@ -77,10 +78,14 @@ bool UnigramDictionary::isDigraph(const int *codes, const int i, const int codes
         if (thisChar == digraphs[lastDigraphIndex].first) break;
     }
     // No match: return early
-    if (lastDigraphIndex < 0) return false;
+    if (lastDigraphIndex < 0) return 0;
 
     // It's an interesting digraph if the second char matches too.
-    return digraphs[lastDigraphIndex].second == codes[(i + 1) * MAX_PROXIMITY_CHARS];
+    if (digraphs[lastDigraphIndex].second == codes[(i + 1) * MAX_PROXIMITY_CHARS]) {
+        return digraphs[lastDigraphIndex].replacement;
+    } else {
+        return 0;
+    }
 }
 
 // Mostly the same arguments as the non-recursive version, except:
@@ -102,16 +107,23 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
         for (int i = 0; i < codesRemain; ++i) {
             xCoordinatesBuffer[startIndex + i] = xcoordinates[codesBufferSize - codesRemain + i];
             yCoordinatesBuffer[startIndex + i] = ycoordinates[codesBufferSize - codesRemain + i];
-            if (isDigraph(codesSrc, i, codesRemain, digraphs, digraphsSize)) {
+            const int replacementCodePoint =
+                    getDigraphReplacement(codesSrc, i, codesRemain, digraphs, digraphsSize);
+            if (0 != replacementCodePoint) {
                 // Found a digraph. We will try both spellings. eg. the word is "pruefen"
 
-                // Copy the word up to the first char of the digraph, then continue processing
-                // on the remaining part of the word, skipping the second char of the digraph.
-                // In our example, copy "pru" and continue running on "fen"
+                // Copy the word up to the first char of the digraph, including proximity chars,
+                // and overwrite the primary code with the replacement code point. Then, continue
+                // processing on the remaining part of the word, skipping the second char of the
+                // digraph.
+                // In our example, copy "pru", replace "u" with the version with the diaeresis and
+                // continue running on "fen".
                 // Make i the index of the second char of the digraph for simplicity. Forgetting
                 // to do that results in an infinite recursion so take care!
                 ++i;
                 memcpy(codesDest, codesSrc, i * BYTES_IN_ONE_CHAR);
+                codesDest[(i - 1) * (BYTES_IN_ONE_CHAR / sizeof(codesDest[0]))] =
+                        replacementCodePoint;
                 getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
                         codesBuffer, xCoordinatesBuffer, yCoordinatesBuffer, codesBufferSize, flags,
                         codesSrc + (i + 1) * MAX_PROXIMITY_CHARS, codesRemain - i - 1,
