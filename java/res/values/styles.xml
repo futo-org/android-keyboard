@@ -315,7 +315,6 @@
         <item name="keyPreviewBackgroundWidth">@dimen/keyboard_key_feedback_background_holo_width</item>
         <item name="keyPreviewBackgroundHeight">@dimen/keyboard_key_feedback_background_holo_height</item>
         <item name="keyPreviewTextColor">#FFFFFFFF</item>
-        <item name="keyPreviewHeight">@dimen/key_preview_height_ics</item>
         <item name="keyPreviewOffset">@dimen/key_preview_offset_ics</item>
         <item name="shadowColor">#00000000</item>
         <item name="shadowRadius">0.0</item>
