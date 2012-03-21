@@ -66,7 +66,6 @@
     <dimen name="key_preview_height">15.0mm</dimen>
     <dimen name="key_preview_offset">0.1in</dimen>
 
-    <dimen name="key_preview_height_ics">15.0mm</dimen>
     <dimen name="key_preview_offset_ics">0.05in</dimen>
     <!-- popup_key_height x -0.5 -->
     <dimen name="more_keys_keyboard_vertical_correction_ics">-5mm</dimen>
