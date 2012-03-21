@@ -37,12 +37,9 @@
     <string name="misc_category" msgid="6894192814868233453">"Iba pang mga pagpipilian"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Mga advanced na setting"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Mga pagpipilian para sa mga dalubhasa"</string>
-    <!-- no translation found for include_other_imes_in_language_switch_list (4533689960308565519) -->
-    <skip />
-    <!-- no translation found for include_other_imes_in_language_switch_list_summary (840637129103317635) -->
-    <skip />
-    <!-- no translation found for suppress_language_switch_key (8003788410354806368) -->
-    <skip />
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Lipat iba paraan ng input"</string>
+    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Saklaw din ng key ng pagpalit ng wika ang ibang paraan ng input"</string>
+    <string name="suppress_language_switch_key" msgid="8003788410354806368">"Pigilan key pagpalit wika"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Balewala antala key popup"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Walang antala"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Default"</string>
