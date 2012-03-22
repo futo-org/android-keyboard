@@ -29,7 +29,7 @@ namespace latinime {
 
 class TerminalAttributes;
 class UnigramDictionary {
-    typedef struct { int first; int second; } digraph_t;
+    typedef struct { int first; int second; int replacement; } digraph_t;
 
  public:
     // Mask and flags for children address type selection.
@@ -88,7 +88,7 @@ class UnigramDictionary {
     void getWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int inputLength,
             const int flags, Correction *correction, WordsPriorityQueuePool *queuePool);
-    bool isDigraph(const int *codes, const int i, const int codesSize,
+    int getDigraphReplacement(const int *codes, const int i, const int codesSize,
             const digraph_t* const digraphs, const unsigned int digraphsSize) const;
     void getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int* ycoordinates, const int *codesBuffer,
