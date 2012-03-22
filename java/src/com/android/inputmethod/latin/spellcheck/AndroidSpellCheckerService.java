@@ -570,7 +570,11 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 final WordComposer composer = new WordComposer();
                 final int length = text.length();
                 for (int i = 0; i < length; i = text.offsetByCodePoints(i, 1)) {
-                    composer.addKeyForSpellChecker(text.codePointAt(i), mScript);
+                    final int codePoint = text.codePointAt(i);
+                    // The getXYForCodePointAndScript method returns (Y << 16) + X
+                    final int xy = SpellCheckerProximityInfo.getXYForCodePointAndScript(
+                            codePoint, mScript);
+                    composer.add(codePoint, xy & 0xFFFF, xy >> 16, null);
                 }
 
                 final int capitalizeType = getCapitalizationType(text);

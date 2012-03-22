@@ -130,6 +130,7 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
 }
 
 bool ProximityInfo::isOnKey(const int keyId, const int x, const int y) {
+    if (keyId < 0) return true; // NOT_A_ID is -1, but return whenever < 0 just in case
     const int left = mKeyXCoordinates[keyId];
     const int top = mKeyYCoordinates[keyId];
     const int right = left + mKeyWidths[keyId] + 1;
@@ -138,6 +139,7 @@ bool ProximityInfo::isOnKey(const int keyId, const int x, const int y) {
 }
 
 int ProximityInfo::squaredDistanceToEdge(const int keyId, const int x, const int y) {
+    if (keyId < 0) return true; // NOT_A_ID is -1, but return whenever < 0 just in case
     const int left = mKeyXCoordinates[keyId];
     const int top = mKeyYCoordinates[keyId];
     const int right = left + mKeyWidths[keyId];
@@ -162,7 +164,7 @@ void ProximityInfo::calculateNearbyKeyCodes(
         const int keyIndex = getKeyIndex(c);
         const bool onKey = isOnKey(keyIndex, x, y);
         const int distance = squaredDistanceToEdge(keyIndex, x, y);
-        if (c >= KEYCODE_SPACE && (onKey || distance < MOST_COMMON_KEY_WIDTH_SQUARE)) {
+        if (onKey || distance < MOST_COMMON_KEY_WIDTH_SQUARE) {
             inputCodes[insertPos++] = c;
             if (insertPos >= MAX_PROXIMITY_CHARS_SIZE) {
                 if (DEBUG_DICT) {
@@ -211,7 +213,6 @@ void ProximityInfo::calculateNearbyKeyCodes(
     }
 }
 
-// TODO: Calculate nearby codes here.
 void ProximityInfo::setInputParams(const int32_t* inputCodes, const int inputLength,
         const int* xCoordinates, const int* yCoordinates) {
     memset(mInputCodes, 0,

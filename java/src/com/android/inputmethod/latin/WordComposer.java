@@ -127,12 +127,8 @@ public class WordComposer {
         final int[] codes;
         final int keyX;
         final int keyY;
-        if (x == KeyboardActionListener.SPELL_CHECKER_COORDINATE
-                || y == KeyboardActionListener.SPELL_CHECKER_COORDINATE) {
-            // only used for tests in InputLogicTests
-            addKeyForSpellChecker(primaryCode, AndroidSpellCheckerService.SCRIPT_LATIN);
-            return;
-        } else if (x == KeyboardActionListener.SUGGESTION_STRIP_COORDINATE
+        if (null == keyDetector
+                || x == KeyboardActionListener.SUGGESTION_STRIP_COORDINATE
                 || y == KeyboardActionListener.SUGGESTION_STRIP_COORDINATE
                 || x == KeyboardActionListener.NOT_A_TOUCH_COORDINATE
                 || y == KeyboardActionListener.NOT_A_TOUCH_COORDINATE) {
@@ -147,27 +143,6 @@ public class WordComposer {
             keyY = keyDetector.getTouchY(y);
         }
         add(primaryCode, codes, keyX, keyY);
-    }
-
-    // TODO: remove this function
-    public void addKeyForSpellChecker(int primaryCode, int script) {
-        final int[] proximities;
-        final int proximityIndex =
-                SpellCheckerProximityInfo.getIndexOfCodeForScript(primaryCode, script);
-        if (-1 == proximityIndex) {
-            proximities = new int[] { primaryCode };
-        } else {
-            // TODO: an initial examination seems to reveal this is actually used
-            // read-only. It should be possible to compute the arrays statically once
-            // and skip doing a copy each time here.
-            proximities = Arrays.copyOfRange(
-                    SpellCheckerProximityInfo.getProximityForScript(script),
-                    proximityIndex,
-                    proximityIndex + SpellCheckerProximityInfo.ROW_SIZE);
-        }
-        add(primaryCode, proximities,
-                KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
-                KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
     }
 
     /**

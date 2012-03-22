@@ -87,7 +87,7 @@ public class SpellCheckerProximityInfo {
             // Proximity for row 2. See comment above about size.
             'a', 'z', 'x', 's', 'w', 'q', 'e', 'i', 'o', 'u', NUL, NUL, NUL, NUL, NUL, NUL,
             's', 'q', 'a', 'z', 'x', 'c', 'd', 'e', 'w', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
-            'd', 'w', 's', 'x', 'c', 'v', 'f', 'r', 'e', 'w', NUL, NUL, NUL, NUL, NUL, NUL,
+            'd', 'w', 's', 'x', 'c', 'v', 'f', 'r', 'e', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'f', 'e', 'd', 'c', 'v', 'b', 'g', 't', 'r', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'g', 'r', 'f', 'v', 'b', 'n', 'h', 'y', 't', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'h', 't', 'g', 'b', 'n', 'm', 'j', 'u', 'y', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
@@ -181,14 +181,30 @@ public class SpellCheckerProximityInfo {
                 throw new RuntimeException("Wrong script supplied: " + script);
         }
     }
-    public static int getIndexOfCodeForScript(final int characterCode, final int script) {
+
+    private static int getIndexOfCodeForScript(final int codePoint, final int script) {
         switch (script) {
             case AndroidSpellCheckerService.SCRIPT_LATIN:
-                return Latin.getIndexOf(characterCode);
+                return Latin.getIndexOf(codePoint);
             case AndroidSpellCheckerService.SCRIPT_CYRILLIC:
-                return Cyrillic.getIndexOf(characterCode);
+                return Cyrillic.getIndexOf(codePoint);
             default:
                 throw new RuntimeException("Wrong script supplied: " + script);
         }
+    }
+
+    // Returns (Y << 16) + X to avoid creating a temporary object. This is okay because
+    // X and Y are limited to PROXIMITY_GRID_WIDTH resp. PROXIMITY_GRID_HEIGHT which is very
+    // inferior to 1 << 16
+    public static int getXYForCodePointAndScript(final int codePoint, final int script) {
+        final int index = getIndexOfCodeForScript(codePoint, script);
+        // TODO: precompute index / ROW_SIZE
+        final int y = index / (PROXIMITY_GRID_WIDTH * ROW_SIZE);
+        final int x = (index / ROW_SIZE) % PROXIMITY_GRID_WIDTH;
+        if (y > PROXIMITY_GRID_HEIGHT) {
+            // Safety check, should be entirely useless
+            throw new RuntimeException("Wrong y coordinate in spell checker proximity");
+        }
+        return (y << 16) + x;
     }
 }
