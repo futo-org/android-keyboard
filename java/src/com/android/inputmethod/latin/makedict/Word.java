@@ -19,6 +19,7 @@ package com.android.inputmethod.latin.makedict;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Utility class for a word with a frequency.
@@ -32,6 +33,8 @@ public class Word implements Comparable<Word> {
     final ArrayList<WeightedString> mShortcutTargets;
     final ArrayList<WeightedString> mBigrams;
 
+    private int mHashCode = 0;
+
     public Word(final String word, final int frequency,
             final ArrayList<WeightedString> shortcutTargets,
             final ArrayList<WeightedString> bigrams, final boolean isShortcutOnly) {
@@ -40,6 +43,16 @@ public class Word implements Comparable<Word> {
         mShortcutTargets = shortcutTargets;
         mBigrams = bigrams;
         mIsShortcutOnly = isShortcutOnly;
+    }
+
+    private static int computeHashCode(Word word) {
+        return Arrays.hashCode(new Object[] {
+                word.mWord,
+                word.mFrequency,
+                word.mIsShortcutOnly,
+                word.mShortcutTargets.hashCode(),
+                word.mBigrams.hashCode()
+        });
     }
 
     /**
@@ -63,10 +76,19 @@ public class Word implements Comparable<Word> {
      */
     @Override
     public boolean equals(Object o) {
+        if (o == this) return true;
         if (!(o instanceof Word)) return false;
         Word w = (Word)o;
         return mFrequency == w.mFrequency && mWord.equals(w.mWord)
                 && mShortcutTargets.equals(w.mShortcutTargets)
                 && mBigrams.equals(w.mBigrams);
+    }
+
+    @Override
+    public int hashCode() {
+        if (mHashCode == 0) {
+            mHashCode = computeHashCode(this);
+        }
+        return mHashCode;
     }
 }

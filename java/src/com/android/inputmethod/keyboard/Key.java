@@ -180,7 +180,7 @@ public class Key {
         mY = y;
         mHitBox.set(x, y, x + width + 1, y + height);
 
-        mHashCode = hashCode(this);
+        mHashCode = computeHashCode(this);
     }
 
     /**
@@ -334,7 +334,7 @@ public class Key {
         mAltCode = adjustCaseOfCodeForKeyboardId(style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_altCode, Keyboard.CODE_UNSPECIFIED), preserveCase,
                 params.mId);
-        mHashCode = hashCode(this);
+        mHashCode = computeHashCode(this);
 
         keyAttr.recycle();
 
@@ -366,7 +366,7 @@ public class Key {
         }
     }
 
-    private static int hashCode(Key key) {
+    private static int computeHashCode(Key key) {
         return Arrays.hashCode(new Object[] {
                 key.mX,
                 key.mY,
