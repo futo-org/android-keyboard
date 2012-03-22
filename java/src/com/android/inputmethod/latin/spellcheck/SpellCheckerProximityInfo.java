@@ -30,6 +30,11 @@ public class SpellCheckerProximityInfo {
     // as the size of the passed array afterwards so they can't be different.
     final public static int ROW_SIZE = ProximityInfo.MAX_PROXIMITY_CHARS_SIZE;
 
+    // The number of keys in a row of the grid used by the spell checker.
+    final public static int PROXIMITY_GRID_WIDTH = 11;
+    // The number of rows in the grid used by the spell checker.
+    final public static int PROXIMITY_GRID_HEIGHT = 3;
+
     // Helper methods
     final protected static void buildProximityIndices(final int[] proximity,
             final TreeMap<Integer, Integer> indices) {
@@ -64,6 +69,9 @@ public class SpellCheckerProximityInfo {
         // to English, many spelling errors consist of the last vowel of the word being wrong
         // because in English vowels tend to merge with each other in pronunciation.
         final static int[] PROXIMITY = {
+            // Proximity for row 1. This must have exactly ROW_SIZE entries for each letter,
+            // and exactly PROXIMITY_GRID_WIDTH letters for a row. Pad with NUL's.
+            // The number of rows must be exactly PROXIMITY_GRID_HEIGHT.
             'q', 'w', 's', 'a', 'z', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'w', 'q', 'a', 's', 'd', 'e', 'x', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'e', 'w', 's', 'd', 'f', 'r', 'a', 'i', 'o', 'u', NUL, NUL, NUL, NUL, NUL, NUL,
@@ -76,6 +84,7 @@ public class SpellCheckerProximityInfo {
             'p', 'o', 'l', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
 
+            // Proximity for row 2. See comment above about size.
             'a', 'z', 'x', 's', 'w', 'q', 'e', 'i', 'o', 'u', NUL, NUL, NUL, NUL, NUL, NUL,
             's', 'q', 'a', 'z', 'x', 'c', 'd', 'e', 'w', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'd', 'w', 's', 'x', 'c', 'v', 'f', 'r', 'e', 'w', NUL, NUL, NUL, NUL, NUL, NUL,
@@ -88,6 +97,7 @@ public class SpellCheckerProximityInfo {
             NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
 
+            // Proximity for row 3. See comment above about size.
             'z', 'a', 's', 'd', 'x', 't', 'g', 'h', 'j', 'u', 'q', 'e', NUL, NUL, NUL, NUL,
             'x', 'z', 'a', 's', 'd', 'c', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'c', 'x', 's', 'd', 'f', 'v', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
@@ -109,9 +119,12 @@ public class SpellCheckerProximityInfo {
 
     private static class Cyrillic {
         final private static TreeMap<Integer, Integer> INDICES = new TreeMap<Integer, Integer>();
+        // TODO: The following table is solely based on the keyboard layout. Consult with Russian
+        // speakers on commonly misspelled words/letters.
         final static int[] PROXIMITY = {
-            // TODO: This table is solely based on the keyboard layout. Consult with Russian
-            // speakers on commonly misspelled words/letters.
+            // Proximity for row 1. This must have exactly ROW_SIZE entries for each letter,
+            // and exactly PROXIMITY_GRID_WIDTH letters for a row. Pad with NUL's.
+            // The number of rows must be exactly PROXIMITY_GRID_HEIGHT.
             'й', 'ц', 'ф', 'ы', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'ц', 'й', 'ф', 'ы', 'в', 'у', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'у', 'ц', 'ы', 'в', 'а', 'к', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
@@ -124,6 +137,7 @@ public class SpellCheckerProximityInfo {
             'з', 'щ', 'д', 'ж', 'э', 'х', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'х', 'з', 'ж', 'э', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
 
+            // Proximity for row 2. See comment above about size.
             'ф', 'й', 'ц', 'ы', 'я', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'ы', 'й', 'ц', 'у', 'ф', 'в', 'я', 'ч', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'в', 'ц', 'у', 'к', 'ы', 'а', 'я', 'ч', 'с', NUL, NUL, NUL, NUL, NUL, NUL, NUL,
@@ -136,6 +150,7 @@ public class SpellCheckerProximityInfo {
             'ж', 'щ', 'з', 'х', 'д', 'э', 'б', 'ю', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'э', 'з', 'х', 'ю', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
 
+            // Proximity for row 3. See comment above about size.
             'я', 'ф', 'ы', 'в', 'ч', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'ч', 'ы', 'в', 'а', 'я', 'с', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,
             'с', 'в', 'а', 'п', 'ч', 'м', NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL, NUL,

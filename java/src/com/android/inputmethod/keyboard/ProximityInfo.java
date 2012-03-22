@@ -79,8 +79,10 @@ public class ProximityInfo {
         final ProximityInfo spellCheckerProximityInfo = createDummyProximityInfo();
         spellCheckerProximityInfo.mNativeProximityInfo =
                 spellCheckerProximityInfo.setProximityInfoNative("",
-                        SpellCheckerProximityInfo.ROW_SIZE, 480, 300, 11, 3, (480 / 10), proximity,
-                        0, null, null, null, null, null, null, null, null);
+                        SpellCheckerProximityInfo.ROW_SIZE, 480, 300,
+                        SpellCheckerProximityInfo.PROXIMITY_GRID_WIDTH,
+                        SpellCheckerProximityInfo.PROXIMITY_GRID_HEIGHT,
+                        (480 / 10), proximity, 0, null, null, null, null, null, null, null, null);
         return spellCheckerProximityInfo;
     }
 
