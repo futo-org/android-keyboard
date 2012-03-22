@@ -36,6 +36,7 @@ import android.view.inputmethod.InputConnection;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.latin.spellcheck.AndroidSpellCheckerService; // for proximity info
@@ -49,6 +50,7 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
     private static final String PREF_DEBUG_MODE = "debug_mode";
 
     private LatinIME mLatinIME;
+    private Keyboard mKeyboard;
     private TextView mTextView;
     private InputConnection mInputConnection;
 
@@ -95,6 +97,7 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         mLatinIME.onStartInputView(ei, false);
         mLatinIME.onCreateInputMethodInterface().startInput(ic, ei);
         mInputConnection = ic;
+        mKeyboard = mLatinIME.mKeyboardSwitcher.getKeyboard();
         changeLanguage("en_US");
     }
 
@@ -152,6 +155,14 @@ public class InputLogicTests extends ServiceTestCase<LatinIME> {
         // to keep these tests as pinpoint as possible and avoid bringing it too many dependencies,
         // but keep them in mind if something breaks. Commenting them out as is should work.
         //mLatinIME.onPressKey(codePoint);
+        for (final Key key : mKeyboard.mKeys) {
+            if (key.mCode == codePoint) {
+                final int x = key.mX + key.mWidth / 2;
+                final int y = key.mY + key.mHeight / 2;
+                mLatinIME.onCodeInput(codePoint, x, y);
+                return;
+            }
+        }
         mLatinIME.onCodeInput(codePoint,
                 KeyboardActionListener.SPELL_CHECKER_COORDINATE,
                 KeyboardActionListener.SPELL_CHECKER_COORDINATE);
