@@ -439,6 +439,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mPrefs = prefs;
         LatinImeLogger.init(this, prefs);
+        ResearchLogger.init(this, prefs);
         LanguageSwitcherProxy.init(this, prefs);
         InputMethodManagerCompatWrapper.init(this);
         SubtypeSwitcher.init(this);
@@ -1263,8 +1264,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         mLastKeyTime = when;
 
-        if (LatinImeLogger.sUsabilityStudy) {
-            UsabilityStudyLogUtils.getInstance().writeKeyEvent(primaryCode, x, y);
+        if (ResearchLogger.sIsLogging) {
+            ResearchLogger.getInstance().logKeyEvent(primaryCode, x, y);
         }
 
         final KeyboardSwitcher switcher = mKeyboardSwitcher;

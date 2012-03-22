@@ -220,6 +220,7 @@ public class Utils {
     }
 
     public static class UsabilityStudyLogUtils {
+        // TODO: remove code duplication with ResearchLog class
         private static final String USABILITY_TAG = UsabilityStudyLogUtils.class.getSimpleName();
         private static final String FILENAME = "log.txt";
         private static final UsabilityStudyLogUtils sInstance =
@@ -262,73 +263,28 @@ public class Utils {
             }
         }
 
-        /**
-         * Represents a category of logging events that share the same subfield structure.
-         */
-        public static enum LogGroup {
-            MOTION_EVENT("m"),
-            KEY("k"),
-            CORRECTION("c"),
-            STATE_CHANGE("s");
-
-            private final String mLogString;
-
-            private LogGroup(String logString) {
-                mLogString = logString;
-            }
+        public static void writeBackSpace(int x, int y) {
+            UsabilityStudyLogUtils.getInstance().write("<backspace>\t" + x + "\t" + y);
         }
 
-        public void writeMotionEvent(final int action, final long eventTime, final int id,
-                final int x, final int y, final float size, final float pressure) {
-            final String eventTag;
-            switch (action) {
-                case MotionEvent.ACTION_CANCEL: eventTag = "[Cancel]"; break;
-                case MotionEvent.ACTION_UP: eventTag = "[Up]"; break;
-                case MotionEvent.ACTION_DOWN: eventTag = "[Down]"; break;
-                case MotionEvent.ACTION_POINTER_UP: eventTag = "[PointerUp]"; break;
-                case MotionEvent.ACTION_POINTER_DOWN: eventTag = "[PointerDown]"; break;
-                case MotionEvent.ACTION_MOVE: eventTag = "[Move]"; break;
-                case MotionEvent.ACTION_OUTSIDE: eventTag = "[Outside]"; break;
-                default: eventTag = "[Action" + action + "]"; break;
+        public void writeChar(char c, int x, int y) {
+            String inputChar = String.valueOf(c);
+            switch (c) {
+                case '\n':
+                    inputChar = "<enter>";
+                    break;
+                case '\t':
+                    inputChar = "<tab>";
+                    break;
+                case ' ':
+                    inputChar = "<space>";
+                    break;
             }
-            if (!TextUtils.isEmpty(eventTag)) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(eventTag);
-                sb.append('\t'); sb.append(eventTime);
-                sb.append('\t'); sb.append(id);
-                sb.append('\t'); sb.append(x);
-                sb.append('\t'); sb.append(y);
-                sb.append('\t'); sb.append(size);
-                sb.append('\t'); sb.append(pressure);
-                write(LogGroup.MOTION_EVENT, sb.toString());
-            }
-        }
-
-        public void writeKeyEvent(int code, int x, int y) {
-            final StringBuilder sb = new StringBuilder();
-            sb.append(Keyboard.printableCode(code));
-            sb.append('\t'); sb.append(x);
-            sb.append('\t'); sb.append(y);
-            write(LogGroup.KEY, sb.toString());
-
-            // TODO: replace with a cleaner flush+retrieve mechanism
+            UsabilityStudyLogUtils.getInstance().write(inputChar + "\t" + x + "\t" + y);
             LatinImeLogger.onPrintAllUsabilityStudyLogs();
         }
 
-        public void writeCorrection(String subgroup, String before, String after, int position) {
-            final StringBuilder sb = new StringBuilder();
-            sb.append(subgroup);
-            sb.append('\t'); sb.append(before);
-            sb.append('\t'); sb.append(after);
-            sb.append('\t'); sb.append(position);
-            write(LogGroup.CORRECTION, sb.toString());
-        }
-
-        public void writeStateChange(String subgroup, String details) {
-            write(LogGroup.STATE_CHANGE, subgroup + "\t" + details);
-        }
-
-        private void write(final LogGroup logGroup, final String log) {
+        public void write(final String log) {
             mLoggingHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -336,8 +292,8 @@ public class Utils {
                     final long currentTime = System.currentTimeMillis();
                     mDate.setTime(currentTime);
 
-                    final String printString = String.format("%s\t%d\t%s\t%s\n",
-                            mDateFormat.format(mDate), currentTime, logGroup.mLogString, log);
+                    final String printString = String.format("%s\t%d\t%s\n",
+                            mDateFormat.format(mDate), currentTime, log);
                     if (LatinImeLogger.sDBG) {
                         Log.d(USABILITY_TAG, "Write: " + log);
                     }
