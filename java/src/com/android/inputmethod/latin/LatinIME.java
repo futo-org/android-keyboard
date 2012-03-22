@@ -68,6 +68,7 @@ import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.LatinKeyboardView;
+import com.android.inputmethod.latin.Utils.UsabilityStudyLogUtils;
 import com.android.inputmethod.latin.suggestions.SuggestionsView;
 
 import java.io.FileDescriptor;
@@ -1266,6 +1267,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mDeleteCount = 0;
         }
         mLastKeyTime = when;
+
+        if (LatinImeLogger.sUsabilityStudy) {
+            UsabilityStudyLogUtils.getInstance().writeKeyEvent(primaryCode, x, y);
+        }
+
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         // The space state depends only on the last character pressed and its own previous
         // state. Here, we revert the space state to neutral if the key is actually modifying

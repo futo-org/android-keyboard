@@ -54,7 +54,6 @@ import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SubtypeUtils;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.Utils.UsabilityStudyLogUtils;
-import com.android.inputmethod.latin.Utils.UsabilityStudyLogUtils.LogGroup;
 
 import java.util.Locale;
 import java.util.WeakHashMap;
@@ -69,9 +68,6 @@ import java.util.WeakHashMap;
 public class LatinKeyboardView extends KeyboardView implements PointerTracker.KeyEventHandler,
         SuddenJumpingTouchEventHandler.ProcessMotionEvent {
     private static final String TAG = LatinKeyboardView.class.getSimpleName();
-
-    // TODO: Kill process when the usability study mode was changed.
-    private static final boolean ENABLE_USABILITY_STUDY_LOG = LatinImeLogger.sUsabilityStudy;
 
     /** Listener for {@link KeyboardActionListener}. */
     private KeyboardActionListener mKeyboardActionListener;
@@ -672,6 +668,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         final int index = me.getActionIndex();
         final int id = me.getPointerId(index);
         final int x, y;
+        final float size = me.getSize(index);
+        final float pressure = me.getPressure(index);
         if (mMoreKeysPanel != null && id == mMoreKeysPanelPointerTrackerId) {
             x = mMoreKeysPanel.translateX((int)me.getX(index));
             y = mMoreKeysPanel.translateY((int)me.getY(index));
@@ -679,32 +677,11 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             x = (int)me.getX(index);
             y = (int)me.getY(index);
         }
-        if (ENABLE_USABILITY_STUDY_LOG) {
-            final String eventTag;
-            switch (action) {
-                case MotionEvent.ACTION_UP:
-                    eventTag = "[Up]";
-                    break;
-                case MotionEvent.ACTION_DOWN:
-                    eventTag = "[Down]";
-                    break;
-                case MotionEvent.ACTION_POINTER_UP:
-                    eventTag = "[PointerUp]";
-                    break;
-                case MotionEvent.ACTION_POINTER_DOWN:
-                    eventTag = "[PointerDown]";
-                    break;
-                case MotionEvent.ACTION_MOVE: // Skip this as being logged below
-                    eventTag = "";
-                    break;
-                default:
-                    eventTag = "[Action" + action + "]";
-                    break;
-            }
-            if (!TextUtils.isEmpty(eventTag)) {
-                UsabilityStudyLogUtils.getInstance().write(LogGroup.MOTION_EVENT,
-                        eventTag + eventTime + "," + id + "," + x + "," + y + ","
-                        + me.getSize(index) + "," + me.getPressure(index));
+        if (LatinImeLogger.sUsabilityStudy) {
+            if (action != MotionEvent.ACTION_MOVE) {
+                // Skip ACTION_MOVE events as they are logged below
+                UsabilityStudyLogUtils.getInstance().writeMotionEvent(action, eventTime, id, x,
+                        y, size, pressure);
             }
         }
 
@@ -764,11 +741,9 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                     py = (int)me.getY(i);
                 }
                 tracker.onMoveEvent(px, py, eventTime);
-                if (ENABLE_USABILITY_STUDY_LOG) {
-                    UsabilityStudyLogUtils.getInstance().write(
-                            LogGroup.MOTION_EVENT,
-                            "[Move]" + eventTime + "," + me.getPointerId(i) + "," + px + "," + py
-                                    + "," + me.getSize(i) + "," + me.getPressure(i));
+                if (LatinImeLogger.sUsabilityStudy) {
+                    UsabilityStudyLogUtils.getInstance().writeMotionEvent(action, eventTime, id,
+                            px, py, size, pressure);
                 }
             }
         } else {
