@@ -18,8 +18,9 @@
 */
 -->
 
-<animator
+<objectAnimator
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:propertyName="altCodeKeyWhileTypingAnimAlpha"
     android:valueType="intType"
     android:duration="100"
     android:valueFrom="128"

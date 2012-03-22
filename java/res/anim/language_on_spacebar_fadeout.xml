@@ -18,10 +18,11 @@
 */
 -->
 
-<animator
+<objectAnimator
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:propertyName="languageOnSpacebarAnimAlpha"
     android:valueType="intType"
     android:startOffset="1200"
     android:duration="200"
     android:valueFrom="255"
-    android:valueTo="128" />
+    android:valueTo="@integer/config_language_on_spacebar_final_alpha" />

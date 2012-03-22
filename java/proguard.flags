@@ -35,6 +35,14 @@
   *;
 }
 
+-keep class com.android.inputmethod.keyboard.LatinKeyboardView {
+  # Keep getter/setter methods for ObjectAnimator
+  int getLanguageOnSpacebarAnimAlpha();
+  void setLanguageOnSpacebarAnimAlpha(int);
+  int getAltCodeKeyWhileTypingAnimAlhpa();
+  void setAltCodeKeyWhileTypingAnimAlpha(int);
+}
+
 -keep class com.android.inputmethod.keyboard.MoreKeysKeyboard$Builder$MoreKeysKeyboardParams {
   <init>(...);
 }

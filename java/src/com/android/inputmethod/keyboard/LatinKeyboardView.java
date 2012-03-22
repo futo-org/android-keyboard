@@ -16,11 +16,8 @@
 
 package com.android.inputmethod.keyboard;
 
-import android.animation.Animator;
 import android.animation.AnimatorInflater;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
@@ -76,12 +73,12 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     private Key mSpaceKey;
     private Drawable mSpaceIcon;
     // Stuff to draw language name on spacebar.
-    private ValueAnimator mLanguageOnSpacebarFadeoutAnimator;
-    private int mFinalAlphaOfLanguageOnSpacebar;
+    private final int mLanguageOnSpacebarFinalAlpha;
+    private ObjectAnimator mLanguageOnSpacebarFadeoutAnimator;
     private static final int ALPHA_OPAQUE = 255;
     private boolean mNeedsToDisplayLanguage;
     private Locale mSpacebarLocale;
-    private int mSpacebarTextAlpha = ALPHA_OPAQUE;
+    private int mLanguageOnSpacebarAnimAlpha = ALPHA_OPAQUE;
     private final float mSpacebarTextRatio;
     private float mSpacebarTextSize;
     private final int mSpacebarTextColor;
@@ -96,8 +93,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     private static final int SPACE_LED_LENGTH_PERCENT = 80;
 
     // Stuff to draw altCodeWhileTyping keys.
-    private ValueAnimator mAltCodeKeyWhileTypingFadeoutAnimator;
-    private ValueAnimator mAltCodeKeyWhileTypingFadeinAnimator;
+    private ObjectAnimator mAltCodeKeyWhileTypingFadeoutAnimator;
+    private ObjectAnimator mAltCodeKeyWhileTypingFadeinAnimator;
     private int mAltCodeKeyWhileTypingAnimAlpha = ALPHA_OPAQUE;
 
     // More keys keyboard
@@ -227,8 +224,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             removeMessages(MSG_LONGPRESS_KEY);
         }
 
-        private static void cancelAndStartAnimators(ValueAnimator animatorToCancel,
-                ValueAnimator animatorToStart) {
+        public static void cancelAndStartAnimators(ObjectAnimator animatorToCancel,
+                ObjectAnimator animatorToStart) {
             if (animatorToCancel != null && animatorToCancel.isStarted()) {
                 animatorToCancel.cancel();
             }
@@ -362,6 +359,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         mSpacebarTextColor = a.getColor(R.styleable.LatinKeyboardView_spacebarTextColor, 0);
         mSpacebarTextShadowColor = a.getColor(
                 R.styleable.LatinKeyboardView_spacebarTextShadowColor, 0);
+        mLanguageOnSpacebarFinalAlpha = a.getInt(
+                R.styleable.LatinKeyboardView_languageOnSpacebarFinalAlpha, ALPHA_OPAQUE);
         final int languageOnSpacebarFadeoutAnimatorResId = a.getResourceId(
                 R.styleable.LatinKeyboardView_languageOnSpacebarFadeoutAnimator, 0);
         final int altCodeKeyWhileTypingFadeoutAnimatorResId = a.getResourceId(
@@ -383,55 +382,41 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         PointerTracker.setParameters(mPointerTrackerParams);
 
-        final ValueAnimator animator = loadValueAnimator(languageOnSpacebarFadeoutAnimatorResId);
-        if (animator != null) {
-            animator.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    mSpacebarTextAlpha = (Integer)animation.getAnimatedValue();
-                    invalidateKey(mSpaceKey);
-                }
-            });
-            animator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator a) {
-                    final ValueAnimator valueAnimator = (ValueAnimator)a;
-                    mFinalAlphaOfLanguageOnSpacebar = (Integer)valueAnimator.getAnimatedValue();
-                }
-            });
-            // In order to get the final value of animator.
-            animator.end();
-        }
-        mLanguageOnSpacebarFadeoutAnimator = animator;
-
-        final ValueAnimator fadeout = loadValueAnimator(altCodeKeyWhileTypingFadeoutAnimatorResId);
-        if (fadeout != null) {
-            fadeout.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    mAltCodeKeyWhileTypingAnimAlpha = (Integer)animation.getAnimatedValue();
-                    updateAltCodeKeyWhileTyping();
-                }
-            });
-        }
-        mAltCodeKeyWhileTypingFadeoutAnimator = fadeout;
-
-        final ValueAnimator fadein = loadValueAnimator(altCodeKeyWhileTypingFadeinAnimatorResId);
-        if (fadein != null) {
-            fadein.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    mAltCodeKeyWhileTypingAnimAlpha = (Integer)animation.getAnimatedValue();
-                    updateAltCodeKeyWhileTyping();
-                }
-            });
-        }
-        mAltCodeKeyWhileTypingFadeinAnimator = fadein;
+        mLanguageOnSpacebarFadeoutAnimator = loadObjectAnimator(
+                languageOnSpacebarFadeoutAnimatorResId, this);
+        mAltCodeKeyWhileTypingFadeoutAnimator = loadObjectAnimator(
+                altCodeKeyWhileTypingFadeoutAnimatorResId, this);
+        mAltCodeKeyWhileTypingFadeinAnimator = loadObjectAnimator(
+                altCodeKeyWhileTypingFadeinAnimatorResId, this);
     }
 
-    private ValueAnimator loadValueAnimator(int resId) {
+    private ObjectAnimator loadObjectAnimator(int resId, Object target) {
         if (resId == 0) return null;
-        return (ValueAnimator)AnimatorInflater.loadAnimator(getContext(), resId);
+        final ObjectAnimator animator = (ObjectAnimator)AnimatorInflater.loadAnimator(
+                getContext(), resId);
+        if (animator != null) {
+            animator.setTarget(target);
+        }
+        return animator;
+    }
+
+    // Getter/setter methods for {@link ObjectAnimator}.
+    public int getLanguageOnSpacebarAnimAlpha() {
+        return mLanguageOnSpacebarAnimAlpha;
+    }
+
+    public void setLanguageOnSpacebarAnimAlpha(int alpha) {
+        mLanguageOnSpacebarAnimAlpha = alpha;
+        invalidateKey(mSpaceKey);
+    }
+
+    public int getAltCodeKeyWhileTypingAnimAlpha() {
+        return mAltCodeKeyWhileTypingAnimAlpha;
+    }
+
+    public void setAltCodeKeyWhileTypingAnimAlpha(int alpha) {
+        mAltCodeKeyWhileTypingAnimAlpha = alpha;
+        updateAltCodeKeyWhileTyping();
     }
 
     public void setKeyboardActionListener(KeyboardActionListener listener) {
@@ -836,19 +821,21 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
     public void startDisplayLanguageOnSpacebar(boolean subtypeChanged,
             boolean needsToDisplayLanguage) {
-        final ValueAnimator animator = mLanguageOnSpacebarFadeoutAnimator;
-        if (animator != null) {
-           animator.cancel();
-        }
+        final ObjectAnimator animator = mLanguageOnSpacebarFadeoutAnimator;
         mNeedsToDisplayLanguage = needsToDisplayLanguage;
         if (animator == null) {
             mNeedsToDisplayLanguage = false;
         } else {
             if (subtypeChanged && needsToDisplayLanguage) {
-                mSpacebarTextAlpha = ALPHA_OPAQUE;
+                setLanguageOnSpacebarAnimAlpha(ALPHA_OPAQUE);
+                if (animator.isStarted()) {
+                    animator.cancel();
+                }
                 animator.start();
             } else {
-                mSpacebarTextAlpha = mFinalAlphaOfLanguageOnSpacebar;
+                if (!animator.isStarted()) {
+                    mLanguageOnSpacebarAnimAlpha = mLanguageOnSpacebarFinalAlpha;
+                }
             }
         }
         invalidateKey(mSpaceKey);
@@ -942,10 +929,10 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             final float textHeight = -paint.ascent() + descent;
             final float baseline = height / 2 + textHeight / 2;
             paint.setColor(mSpacebarTextShadowColor);
-            paint.setAlpha(mSpacebarTextAlpha);
+            paint.setAlpha(mLanguageOnSpacebarAnimAlpha);
             canvas.drawText(language, width / 2, baseline - descent - 1, paint);
             paint.setColor(mSpacebarTextColor);
-            paint.setAlpha(mSpacebarTextAlpha);
+            paint.setAlpha(mLanguageOnSpacebarAnimAlpha);
             canvas.drawText(language, width / 2, baseline - descent, paint);
         }
 
