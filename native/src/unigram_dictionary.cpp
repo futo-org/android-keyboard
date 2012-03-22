@@ -44,7 +44,7 @@ UnigramDictionary::UnigramDictionary(const uint8_t* const streamStart, int typed
       // TODO : remove this variable.
     ROOT_POS(0),
     BYTES_IN_ONE_CHAR(MAX_PROXIMITY_CHARS * sizeof(int)),
-    MAX_UMLAUT_SEARCH_DEPTH(DEFAULT_MAX_UMLAUT_SEARCH_DEPTH) {
+    MAX_DIGRAPH_SEARCH_DEPTH(DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH) {
     if (DEBUG_DICT) {
         AKLOGI("UnigramDictionary - constructor");
     }
@@ -64,7 +64,8 @@ static inline void addWord(
     queue->push(frequency, word, length);
 }
 
-bool UnigramDictionary::isDigraph(const int *codes, const int i, const int codesSize) const {
+bool UnigramDictionary::isDigraph(const int *codes, const int i, const int codesSize,
+        const digraph_t* const digraphs, const unsigned int digraphsSize) const {
 
     // There can't be a digraph if we don't have at least 2 characters to examine
     if (i + 2 > codesSize) return false;
@@ -72,15 +73,14 @@ bool UnigramDictionary::isDigraph(const int *codes, const int i, const int codes
     // Search for the first char of some digraph
     int lastDigraphIndex = -1;
     const int thisChar = codes[i * MAX_PROXIMITY_CHARS];
-    for (lastDigraphIndex = sizeof(GERMAN_UMLAUT_DIGRAPHS) / sizeof(GERMAN_UMLAUT_DIGRAPHS[0]) - 1;
-            lastDigraphIndex >= 0; --lastDigraphIndex) {
-        if (thisChar == GERMAN_UMLAUT_DIGRAPHS[lastDigraphIndex].first) break;
+    for (lastDigraphIndex = digraphsSize - 1; lastDigraphIndex >= 0; --lastDigraphIndex) {
+        if (thisChar == digraphs[lastDigraphIndex].first) break;
     }
     // No match: return early
     if (lastDigraphIndex < 0) return false;
 
     // It's an interesting digraph if the second char matches too.
-    return GERMAN_UMLAUT_DIGRAPHS[lastDigraphIndex].second == codes[(i + 1) * MAX_PROXIMITY_CHARS];
+    return digraphs[lastDigraphIndex].second == codes[(i + 1) * MAX_PROXIMITY_CHARS];
 }
 
 // Mostly the same arguments as the non-recursive version, except:
@@ -94,14 +94,15 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
         int *xCoordinatesBuffer, int *yCoordinatesBuffer,
         const int codesBufferSize, const int flags, const int *codesSrc,
         const int codesRemain, const int currentDepth, int *codesDest, Correction *correction,
-        WordsPriorityQueuePool *queuePool) {
+        WordsPriorityQueuePool *queuePool,
+        const digraph_t* const digraphs, const unsigned int digraphsSize) {
 
     const int startIndex = (codesDest - codesBuffer) / MAX_PROXIMITY_CHARS;
-    if (currentDepth < MAX_UMLAUT_SEARCH_DEPTH) {
+    if (currentDepth < MAX_DIGRAPH_SEARCH_DEPTH) {
         for (int i = 0; i < codesRemain; ++i) {
             xCoordinatesBuffer[startIndex + i] = xcoordinates[codesBufferSize - codesRemain + i];
             yCoordinatesBuffer[startIndex + i] = ycoordinates[codesBufferSize - codesRemain + i];
-            if (isDigraph(codesSrc, i, codesRemain)) {
+            if (isDigraph(codesSrc, i, codesRemain, digraphs, digraphsSize)) {
                 // Found a digraph. We will try both spellings. eg. the word is "pruefen"
 
                 // Copy the word up to the first char of the digraph, then continue processing
@@ -115,7 +116,7 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
                         codesBuffer, xCoordinatesBuffer, yCoordinatesBuffer, codesBufferSize, flags,
                         codesSrc + (i + 1) * MAX_PROXIMITY_CHARS, codesRemain - i - 1,
                         currentDepth + 1, codesDest + i * MAX_PROXIMITY_CHARS, correction,
-                        queuePool);
+                        queuePool, digraphs, digraphsSize);
 
                 // Copy the second char of the digraph in place, then continue processing on
                 // the remaining part of the word.
@@ -125,7 +126,8 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
                 getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
                         codesBuffer, xCoordinatesBuffer, yCoordinatesBuffer, codesBufferSize, flags,
                         codesSrc + i * MAX_PROXIMITY_CHARS, codesRemain - i, currentDepth + 1,
-                        codesDest + i * MAX_PROXIMITY_CHARS, correction, queuePool);
+                        codesDest + i * MAX_PROXIMITY_CHARS, correction, queuePool,
+                        digraphs, digraphsSize);
                 return;
             }
         }
@@ -164,7 +166,9 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
         int yCoordinatesBuffer[codesSize];
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
                 xCoordinatesBuffer, yCoordinatesBuffer,
-                codesSize, flags, codes, codesSize, 0, codesBuffer, masterCorrection, queuePool);
+                codesSize, flags, codes, codesSize, 0, codesBuffer, masterCorrection, queuePool,
+                GERMAN_UMLAUT_DIGRAPHS,
+                sizeof(GERMAN_UMLAUT_DIGRAPHS) / sizeof(GERMAN_UMLAUT_DIGRAPHS[0]));
     } else { // Normal processing
         getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, codesSize, flags,
                 masterCorrection, queuePool);
