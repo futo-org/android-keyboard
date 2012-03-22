@@ -58,6 +58,7 @@
     sl: Slovenian/qwerty
     sr: Serbian/south_slavic
     sv: Swedish/nordic
+    th: Thai/thai
     tr: Turkish/qwerty
     uk: Ukrainian/east_slavic
     vi: Vietnamese/qwerty
@@ -296,6 +297,12 @@
             android:imeSubtypeLocale="tr"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:imeSubtypeLocale="th"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue=""
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
