@@ -196,7 +196,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private InputMethodManagerCompatWrapper mImm;
     private Resources mResources;
     private SharedPreferences mPrefs;
-    private final KeyboardSwitcher mKeyboardSwitcher;
+    /* package for tests */ final KeyboardSwitcher mKeyboardSwitcher;
     private final SubtypeSwitcher mSubtypeSwitcher;
     private VoiceProxy mVoiceProxy;
     private boolean mShouldSwitchToLastSubtype = true;
