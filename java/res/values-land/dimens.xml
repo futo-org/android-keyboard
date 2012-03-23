@@ -19,8 +19,9 @@
 -->
 
 <resources>
-    <!-- keyboardHeight = key_height*4 + key_bottom_gap*3, key_height=0.260in -->
-    <dimen name="keyboardHeight">1.100in</dimen>
+    <!-- Preferable keyboard height in absolute scale: 1.100in -->
+    <!-- This keyboardHeight value should match with keyboard-heights.xml -->
+    <dimen name="keyboardHeight">176.0dp</dimen>
     <fraction name="minKeyboardHeight">45%p</fraction>
     <!-- key_height + key_bottom_gap = popup_key_height -->
 <!--    <dimen name="key_height">0.260in</dimen>-->
@@ -31,7 +32,6 @@
     <fraction name="key_bottom_gap">4.330%p</fraction>
     <fraction name="key_horizontal_gap">0.405%p</fraction>
 
-    <dimen name="keyboardHeight_stone">0.984in</dimen>
     <fraction name="key_bottom_gap_stone">5.010%p</fraction>
     <fraction name="key_horizontal_gap_stone">1.159%p</fraction>
 

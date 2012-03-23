@@ -173,7 +173,6 @@
     >
         <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
         <item name="themeId">6</item>
-        <item name="keyboardHeight">@dimen/keyboardHeight_stone</item>
         <item name="keyboardTopPadding">@fraction/keyboard_top_padding_stone</item>
         <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding_stone</item>
         <item name="horizontalGap">@fraction/key_horizontal_gap_stone</item>

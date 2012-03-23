@@ -31,6 +31,7 @@ import com.android.inputmethod.keyboard.internal.KeyStyles;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.XmlParseUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -715,22 +716,30 @@ public class Keyboard {
                     R.styleable.Keyboard_Key);
             try {
                 final int displayHeight = mDisplayMetrics.heightPixels;
-                final int keyboardHeight = (int)keyboardAttr.getDimension(
-                        R.styleable.Keyboard_keyboardHeight, displayHeight / 2);
-                final int maxKeyboardHeight = (int)getDimensionOrFraction(keyboardAttr,
+                final String keyboardHeightString = Utils.getDeviceOverrideValue(
+                        mResources, R.array.keyboard_heights, null);
+                final float keyboardHeight;
+                if (keyboardHeightString != null) {
+                    keyboardHeight = Float.parseFloat(keyboardHeightString)
+                            * mDisplayMetrics.density;
+                } else {
+                    keyboardHeight = keyboardAttr.getDimension(
+                            R.styleable.Keyboard_keyboardHeight, displayHeight / 2);
+                }
+                final float maxKeyboardHeight = getDimensionOrFraction(keyboardAttr,
                         R.styleable.Keyboard_maxKeyboardHeight, displayHeight, displayHeight / 2);
-                int minKeyboardHeight = (int)getDimensionOrFraction(keyboardAttr,
+                float minKeyboardHeight = getDimensionOrFraction(keyboardAttr,
                         R.styleable.Keyboard_minKeyboardHeight, displayHeight, displayHeight / 2);
                 if (minKeyboardHeight < 0) {
                     // Specified fraction was negative, so it should be calculated against display
                     // width.
-                    minKeyboardHeight = -(int)getDimensionOrFraction(keyboardAttr,
+                    minKeyboardHeight = -getDimensionOrFraction(keyboardAttr,
                             R.styleable.Keyboard_minKeyboardHeight, displayWidth, displayWidth / 2);
                 }
                 final Params params = mParams;
                 // Keyboard height will not exceed maxKeyboardHeight and will not be less than
                 // minKeyboardHeight.
-                params.mOccupiedHeight = Math.max(
+                params.mOccupiedHeight = (int)Math.max(
                         Math.min(keyboardHeight, maxKeyboardHeight), minKeyboardHeight);
                 params.mOccupiedWidth = params.mId.mWidth;
                 params.mTopPadding = (int)getDimensionOrFraction(keyboardAttr,
