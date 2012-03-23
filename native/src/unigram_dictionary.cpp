@@ -34,6 +34,10 @@ const UnigramDictionary::digraph_t UnigramDictionary::GERMAN_UMLAUT_DIGRAPHS[] =
         { 'o', 'e', 0x00F6 }, // U+00F6 : LATIN SMALL LETTER O WITH DIAERESIS
         { 'u', 'e', 0x00FC } }; // U+00FC : LATIN SMALL LETTER U WITH DIAERESIS
 
+const UnigramDictionary::digraph_t UnigramDictionary::FRENCH_LIGATURES_DIGRAPHS[] =
+        { { 'a', 'e', 0x00E6 }, // U+00E6 : LATIN SMALL LETTER AE
+        { 'o', 'e', 0x0153 } }; // U+0153 : LATIN SMALL LIGATURE OE
+
 // TODO: check the header
 UnigramDictionary::UnigramDictionary(const uint8_t* const streamStart, int typedLetterMultiplier,
         int fullWordMultiplier, int maxWordLength, int maxWords, int maxProximityChars,
@@ -181,6 +185,15 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
                 codesSize, flags, codes, codesSize, 0, codesBuffer, masterCorrection, queuePool,
                 GERMAN_UMLAUT_DIGRAPHS,
                 sizeof(GERMAN_UMLAUT_DIGRAPHS) / sizeof(GERMAN_UMLAUT_DIGRAPHS[0]));
+    } else if (REQUIRES_FRENCH_LIGATURES_PROCESSING & flags) {
+        int codesBuffer[getCodesBufferSize(codes, codesSize, MAX_PROXIMITY_CHARS)];
+        int xCoordinatesBuffer[codesSize];
+        int yCoordinatesBuffer[codesSize];
+        getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
+                xCoordinatesBuffer, yCoordinatesBuffer,
+                codesSize, flags, codes, codesSize, 0, codesBuffer, masterCorrection, queuePool,
+                FRENCH_LIGATURES_DIGRAPHS,
+                sizeof(FRENCH_LIGATURES_DIGRAPHS) / sizeof(FRENCH_LIGATURES_DIGRAPHS[0]));
     } else { // Normal processing
         getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, codesSize, flags,
                 masterCorrection, queuePool);

@@ -55,6 +55,8 @@ public class BinaryDictionary extends Dictionary {
 
     public static final Flag FLAG_REQUIRES_GERMAN_UMLAUT_PROCESSING =
             new Flag(R.bool.config_require_umlaut_processing, 0x1);
+    public static final Flag FLAG_REQUIRES_FRENCH_LIGATURES_PROCESSING =
+            new Flag(R.bool.config_require_ligatures_processing, 0x4);
 
     // FULL_EDIT_DISTANCE is a flag that forces the dictionary to use full words
     // when computing edit distance, instead of the default behavior of stopping
@@ -77,6 +79,7 @@ public class BinaryDictionary extends Dictionary {
         // actual value will be read from the configuration/extra value at run time for
         // the configuration at dictionary creation time.
         FLAG_REQUIRES_GERMAN_UMLAUT_PROCESSING,
+        FLAG_REQUIRES_FRENCH_LIGATURES_PROCESSING,
     };
 
     private int mFlags = 0;

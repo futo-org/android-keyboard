@@ -19,6 +19,5 @@
 -->
 
 <resources>
-    <bool name="config_require_umlaut_processing">false</bool>
-    <bool name="config_require_ligatures_processing">false</bool>
+    <bool name="config_require_ligatures_processing">true</bool>
 </resources>
