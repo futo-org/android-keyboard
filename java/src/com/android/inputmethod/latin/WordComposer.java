@@ -172,8 +172,7 @@ public class WordComposer {
     /**
      * Internal method to retrieve reasonable proximity info for a character.
      */
-    private void addKeyInfo(final int codePoint, final Keyboard keyboard,
-            final KeyDetector keyDetector) {
+    private void addKeyInfo(final int codePoint, final Keyboard keyboard) {
         for (final Key key : keyboard.mKeys) {
             if (key.mCode == codePoint) {
                 final int x = key.mX + key.mWidth / 2;
@@ -191,24 +190,13 @@ public class WordComposer {
      * Set the currently composing word to the one passed as an argument.
      * This will register NOT_A_COORDINATE for X and Ys, and use the passed keyboard for proximity.
      */
-    private void setComposingWord(final CharSequence word, final Keyboard keyboard,
-            final KeyDetector keyDetector) {
+    public void setComposingWord(final CharSequence word, final Keyboard keyboard) {
         reset();
         final int length = word.length();
         for (int i = 0; i < length; i = Character.offsetByCodePoints(word, i, 1)) {
             int codePoint = Character.codePointAt(word, i);
-            addKeyInfo(codePoint, keyboard, keyDetector);
+            addKeyInfo(codePoint, keyboard);
         }
-    }
-
-    /**
-     * Shortcut for the above method, this will create a new KeyDetector for the passed keyboard.
-     */
-    public void setComposingWord(final CharSequence word, final Keyboard keyboard) {
-        final KeyDetector keyDetector = new KeyDetector(0);
-        keyDetector.setKeyboard(keyboard, 0, 0);
-        keyDetector.setProximityCorrectionEnabled(true);
-        setComposingWord(word, keyboard, keyDetector);
     }
 
     /**
