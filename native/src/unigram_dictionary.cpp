@@ -39,11 +39,11 @@ UnigramDictionary::UnigramDictionary(const uint8_t* const streamStart, int typed
         int fullWordMultiplier, int maxWordLength, int maxWords, int maxProximityChars,
         const bool isLatestDictVersion)
     : DICT_ROOT(streamStart), MAX_WORD_LENGTH(maxWordLength), MAX_WORDS(maxWords),
-    MAX_PROXIMITY_CHARS(maxProximityChars), IS_LATEST_DICT_VERSION(isLatestDictVersion),
+    IS_LATEST_DICT_VERSION(isLatestDictVersion),
     TYPED_LETTER_MULTIPLIER(typedLetterMultiplier), FULL_WORD_MULTIPLIER(fullWordMultiplier),
       // TODO : remove this variable.
     ROOT_POS(0),
-    BYTES_IN_ONE_CHAR(MAX_PROXIMITY_CHARS * sizeof(int)),
+    BYTES_IN_ONE_CHAR(sizeof(int)),
     MAX_DIGRAPH_SEARCH_DEPTH(DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH) {
     if (DEBUG_DICT) {
         AKLOGI("UnigramDictionary - constructor");
@@ -53,9 +53,8 @@ UnigramDictionary::UnigramDictionary(const uint8_t* const streamStart, int typed
 UnigramDictionary::~UnigramDictionary() {
 }
 
-static inline unsigned int getCodesBufferSize(const int *codes, const int codesSize,
-        const int MAX_PROXIMITY_CHARS) {
-    return sizeof(*codes) * MAX_PROXIMITY_CHARS * codesSize;
+static inline unsigned int getCodesBufferSize(const int *codes, const int codesSize) {
+    return sizeof(*codes) * codesSize;
 }
 
 // TODO: This needs to take a const unsigned short* and not tinker with its contents
@@ -73,7 +72,7 @@ int UnigramDictionary::getDigraphReplacement(const int *codes, const int i, cons
 
     // Search for the first char of some digraph
     int lastDigraphIndex = -1;
-    const int thisChar = codes[i * MAX_PROXIMITY_CHARS];
+    const int thisChar = codes[i];
     for (lastDigraphIndex = digraphsSize - 1; lastDigraphIndex >= 0; --lastDigraphIndex) {
         if (thisChar == digraphs[lastDigraphIndex].first) break;
     }
@@ -81,7 +80,7 @@ int UnigramDictionary::getDigraphReplacement(const int *codes, const int i, cons
     if (lastDigraphIndex < 0) return 0;
 
     // It's an interesting digraph if the second char matches too.
-    if (digraphs[lastDigraphIndex].second == codes[(i + 1) * MAX_PROXIMITY_CHARS]) {
+    if (digraphs[lastDigraphIndex].second == codes[i + 1]) {
         return digraphs[lastDigraphIndex].replacement;
     } else {
         return 0;
@@ -102,7 +101,7 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
         WordsPriorityQueuePool *queuePool,
         const digraph_t* const digraphs, const unsigned int digraphsSize) {
 
-    const int startIndex = (codesDest - codesBuffer) / MAX_PROXIMITY_CHARS;
+    const int startIndex = codesDest - codesBuffer;
     if (currentDepth < MAX_DIGRAPH_SEARCH_DEPTH) {
         for (int i = 0; i < codesRemain; ++i) {
             xCoordinatesBuffer[startIndex + i] = xcoordinates[codesBufferSize - codesRemain + i];
@@ -126,19 +125,18 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
                         replacementCodePoint;
                 getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
                         codesBuffer, xCoordinatesBuffer, yCoordinatesBuffer, codesBufferSize, flags,
-                        codesSrc + (i + 1) * MAX_PROXIMITY_CHARS, codesRemain - i - 1,
-                        currentDepth + 1, codesDest + i * MAX_PROXIMITY_CHARS, correction,
+                        codesSrc + i + 1, codesRemain - i - 1,
+                        currentDepth + 1, codesDest + i, correction,
                         queuePool, digraphs, digraphsSize);
 
                 // Copy the second char of the digraph in place, then continue processing on
                 // the remaining part of the word.
                 // In our example, after "pru" in the buffer copy the "e", and continue on "fen"
-                memcpy(codesDest + i * MAX_PROXIMITY_CHARS, codesSrc + i * MAX_PROXIMITY_CHARS,
-                        BYTES_IN_ONE_CHAR);
+                memcpy(codesDest + i, codesSrc + i, BYTES_IN_ONE_CHAR);
                 getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
                         codesBuffer, xCoordinatesBuffer, yCoordinatesBuffer, codesBufferSize, flags,
-                        codesSrc + i * MAX_PROXIMITY_CHARS, codesRemain - i, currentDepth + 1,
-                        codesDest + i * MAX_PROXIMITY_CHARS, correction, queuePool,
+                        codesSrc + i, codesRemain - i, currentDepth + 1,
+                        codesDest + i, correction, queuePool,
                         digraphs, digraphsSize);
                 return;
             }
@@ -173,7 +171,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
     Correction* masterCorrection = correction;
     if (REQUIRES_GERMAN_UMLAUT_PROCESSING & flags)
     { // Incrementally tune the word and try all possibilities
-        int codesBuffer[getCodesBufferSize(codes, codesSize, MAX_PROXIMITY_CHARS)];
+        int codesBuffer[getCodesBufferSize(codes, codesSize)];
         int xCoordinatesBuffer[codesSize];
         int yCoordinatesBuffer[codesSize];
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
@@ -414,7 +412,7 @@ bool UnigramDictionary::getSubStringSuggestion(
         if (inputWordStartPos > 0) {
             const int offset = inputWordStartPos;
             initSuggestions(proximityInfo, &xcoordinates[offset], &ycoordinates[offset],
-                    codes + offset * MAX_PROXIMITY_CHARS, inputWordLength, correction);
+                    codes + offset, inputWordLength, correction);
             queuePool->clearSubQueue(currentWordIndex);
             getSuggestionCandidates(useFullEditDistance, inputWordLength, correction,
                     queuePool, false, MAX_ERRORS_FOR_TWO_WORDS, currentWordIndex);
@@ -572,10 +570,6 @@ void UnigramDictionary::getSplitMultipleWordsSuggestions(ProximityInfo *proximit
         Correction *correction, WordsPriorityQueuePool* queuePool,
         const bool hasAutoCorrectionCandidate) {
     if (inputLength >= MAX_WORD_LENGTH) return;
-    if (DEBUG_DICT) {
-        // MAX_PROXIMITY_CHARS_SIZE in ProximityInfo.java should be 16
-        assert(MAX_PROXIMITY_CHARS == 16);
-    }
     if (DEBUG_DICT) {
         AKLOGI("--- Suggest multiple words");
     }
