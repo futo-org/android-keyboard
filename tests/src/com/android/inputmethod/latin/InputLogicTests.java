@@ -109,15 +109,6 @@ public class InputLogicTests extends InputTestsBase {
         assertEquals("simple auto-correct", EXPECTED_RESULT, mTextView.getText().toString());
     }
 
-    public void testAutoCorrectForFrench() {
-        final String STRING_TO_TYPE = "irq ";
-        final String EXPECTED_RESULT = "ira ";
-        changeLanguage("fr");
-        type(STRING_TO_TYPE);
-        assertEquals("simple auto-correct for French", EXPECTED_RESULT,
-                mTextView.getText().toString());
-    }
-
     public void testAutoCorrectWithPeriod() {
         final String STRING_TO_TYPE = "tgis.";
         final String EXPECTED_RESULT = "this.";
@@ -205,71 +196,6 @@ public class InputLogicTests extends InputTestsBase {
         assertEquals("manual pick then separator", EXPECTED_RESULT, mTextView.getText().toString());
     }
 
-    public void testWordThenSpaceThenPunctuationFromStripTwice() {
-        final String WORD_TO_TYPE = "this ";
-        final String PUNCTUATION_FROM_STRIP = "!";
-        final String EXPECTED_RESULT = "this!! ";
-        type(WORD_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
-        runMessages();
-        assertTrue("type word then type space should display punctuation strip",
-                mLatinIME.isShowingPunctuationList());
-        mLatinIME.pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
-        mLatinIME.pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
-        assertEquals("type word then type space then punctuation from strip twice", EXPECTED_RESULT,
-                mTextView.getText().toString());
-    }
-
-    public void testManualPickThenSeparatorForFrench() {
-        final String WORD1_TO_TYPE = "test";
-        final String WORD2_TO_TYPE = "!";
-        final String EXPECTED_RESULT = "test !";
-        changeLanguage("fr");
-        type(WORD1_TO_TYPE);
-        mLatinIME.pickSuggestionManually(0, WORD1_TO_TYPE);
-        type(WORD2_TO_TYPE);
-        assertEquals("manual pick then separator for French", EXPECTED_RESULT,
-                mTextView.getText().toString());
-    }
-
-    public void testWordThenSpaceThenPunctuationFromStripTwiceForFrench() {
-        final String WORD_TO_TYPE = "test ";
-        final String PUNCTUATION_FROM_STRIP = "!";
-        final String EXPECTED_RESULT = "test !!";
-        changeLanguage("fr");
-        type(WORD_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
-        runMessages();
-        assertTrue("type word then type space should display punctuation strip",
-                mLatinIME.isShowingPunctuationList());
-        mLatinIME.pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
-        mLatinIME.pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
-        assertEquals("type word then type space then punctuation from strip twice for French",
-                EXPECTED_RESULT, mTextView.getText().toString());
-    }
-
-    public void testWordThenSpaceThenPunctuationFromKeyboardTwice() {
-        final String WORD_TO_TYPE = "this !!";
-        final String EXPECTED_RESULT = "this !!";
-        type(WORD_TO_TYPE);
-        assertEquals("manual pick then space then punctuation from keyboard twice", EXPECTED_RESULT,
-                mTextView.getText().toString());
-    }
-
-    public void testManualPickThenPunctuationFromStripTwiceThenType() {
-        final String WORD1_TO_TYPE = "this";
-        final String WORD2_TO_TYPE = "is";
-        final String PUNCTUATION_FROM_STRIP = "!";
-        final String EXPECTED_RESULT = "this!! is";
-        type(WORD1_TO_TYPE);
-        mLatinIME.pickSuggestionManually(0, WORD1_TO_TYPE);
-        mLatinIME.pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
-        mLatinIME.pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
-        type(WORD2_TO_TYPE);
-        assertEquals("pick word then pick punctuation twice then type", EXPECTED_RESULT,
-                mTextView.getText().toString());
-    }
-
     public void testManualPickThenSpaceThenType() {
         final String WORD1_TO_TYPE = "this";
         final String WORD2_TO_TYPE = " is";
@@ -295,17 +221,6 @@ public class InputLogicTests extends InputTestsBase {
                 mTextView.getText().toString());
     }
 
-    public void testManualPickThenManualPickWithPunctAtStart() {
-        final String WORD1_TO_TYPE = "this";
-        final String WORD2_TO_PICK = "!is";
-        final String EXPECTED_RESULT = "this!is";
-        type(WORD1_TO_TYPE);
-        mLatinIME.pickSuggestionManually(0, WORD1_TO_TYPE);
-        mLatinIME.pickSuggestionManually(1, WORD2_TO_PICK);
-        assertEquals("manual pick then manual pick a word with punct at start", EXPECTED_RESULT,
-                mTextView.getText().toString());
-    }
-
     public void testDeleteWholeComposingWord() {
         final String WORD_TO_TYPE = "this";
         type(WORD_TO_TYPE);
@@ -313,167 +228,6 @@ public class InputLogicTests extends InputTestsBase {
             type(Keyboard.CODE_DELETE);
         }
         assertEquals("delete whole composing word", "", mTextView.getText().toString());
-    }
-
-    public void testManuallyPickedWordThenColon() {
-        final String WORD_TO_TYPE = "this";
-        final String PUNCTUATION = ":";
-        final String EXPECTED_RESULT = "this:";
-        type(WORD_TO_TYPE);
-        mLatinIME.pickSuggestionManually(0, WORD_TO_TYPE);
-        type(PUNCTUATION);
-        assertEquals("manually pick word then colon",
-                EXPECTED_RESULT, mTextView.getText().toString());
-    }
-
-    public void testManuallyPickedWordThenOpenParen() {
-        final String WORD_TO_TYPE = "this";
-        final String PUNCTUATION = "(";
-        final String EXPECTED_RESULT = "this (";
-        type(WORD_TO_TYPE);
-        mLatinIME.pickSuggestionManually(0, WORD_TO_TYPE);
-        type(PUNCTUATION);
-        assertEquals("manually pick word then open paren",
-                EXPECTED_RESULT, mTextView.getText().toString());
-    }
-
-    public void testManuallyPickedWordThenCloseParen() {
-        final String WORD_TO_TYPE = "this";
-        final String PUNCTUATION = ")";
-        final String EXPECTED_RESULT = "this)";
-        type(WORD_TO_TYPE);
-        mLatinIME.pickSuggestionManually(0, WORD_TO_TYPE);
-        type(PUNCTUATION);
-        assertEquals("manually pick word then close paren",
-                EXPECTED_RESULT, mTextView.getText().toString());
-    }
-
-    public void testManuallyPickedWordThenSmiley() {
-        final String WORD_TO_TYPE = "this";
-        final String SPECIAL_KEY = ":-)";
-        final String EXPECTED_RESULT = "this :-)";
-        type(WORD_TO_TYPE);
-        mLatinIME.pickSuggestionManually(0, WORD_TO_TYPE);
-        mLatinIME.onTextInput(SPECIAL_KEY);
-        assertEquals("manually pick word then press the smiley key",
-                EXPECTED_RESULT, mTextView.getText().toString());
-    }
-
-    public void testManuallyPickedWordThenDotCom() {
-        final String WORD_TO_TYPE = "this";
-        final String SPECIAL_KEY = ".com";
-        final String EXPECTED_RESULT = "this.com";
-        type(WORD_TO_TYPE);
-        mLatinIME.pickSuggestionManually(0, WORD_TO_TYPE);
-        mLatinIME.onTextInput(SPECIAL_KEY);
-        assertEquals("manually pick word then press the .com key",
-                EXPECTED_RESULT, mTextView.getText().toString());
-    }
-
-    public void testTypeWordTypeDotThenPressDotCom() {
-        final String WORD_TO_TYPE = "this.";
-        final String SPECIAL_KEY = ".com";
-        final String EXPECTED_RESULT = "this.com";
-        type(WORD_TO_TYPE);
-        mLatinIME.onTextInput(SPECIAL_KEY);
-        assertEquals("type word type dot then press the .com key",
-                EXPECTED_RESULT, mTextView.getText().toString());
-    }
-
-    public void testAutoCorrectionWithSingleQuoteInside() {
-        final String WORD_TO_TYPE = "you'f ";
-        final String EXPECTED_RESULT = "you'd ";
-        type(WORD_TO_TYPE);
-        assertEquals("auto-correction with single quote inside",
-                EXPECTED_RESULT, mTextView.getText().toString());
-    }
-
-    public void testAutoCorrectionWithSingleQuotesAround() {
-        final String WORD_TO_TYPE = "'tgis' ";
-        final String EXPECTED_RESULT = "'this' ";
-        type(WORD_TO_TYPE);
-        assertEquals("auto-correction with single quotes around",
-                EXPECTED_RESULT, mTextView.getText().toString());
-    }
-
-    public void testBlueUnderline() {
-        final String STRING_TO_TYPE = "tgis";
-        final int EXPECTED_SPAN_START = 0;
-        final int EXPECTED_SPAN_END = 4;
-        type(STRING_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
-        runMessages();
-        final Span span = new Span(mTextView.getText());
-        assertEquals("show blue underline, span start", EXPECTED_SPAN_START, span.mStart);
-        assertEquals("show blue underline, span end", EXPECTED_SPAN_END, span.mEnd);
-        assertEquals("show blue underline, span color", true, span.isAutoCorrectionIndicator());
-    }
-
-    public void testBlueUnderlineDisappears() {
-        final String STRING_1_TO_TYPE = "tgis";
-        final String STRING_2_TO_TYPE = "q";
-        final int EXPECTED_SPAN_START = 0;
-        final int EXPECTED_SPAN_END = 5;
-        type(STRING_1_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
-        runMessages();
-        type(STRING_2_TO_TYPE);
-        // We haven't have time to look into the dictionary yet, so the line should still be
-        // blue to avoid any flicker.
-        final Span spanBefore = new Span(mTextView.getText());
-        assertEquals("extend blue underline, span start", EXPECTED_SPAN_START, spanBefore.mStart);
-        assertEquals("extend blue underline, span end", EXPECTED_SPAN_END, spanBefore.mEnd);
-        assertEquals("extend blue underline, span color", true,
-                spanBefore.isAutoCorrectionIndicator());
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
-        runMessages();
-        // Now we have been able to re-evaluate the word, there shouldn't be an auto-correction span
-        final Span spanAfter = new Span(mTextView.getText());
-        assertNull("hide blue underline", spanAfter.mSpan);
-    }
-
-    public void testBlueUnderlineOnBackspace() {
-        final String STRING_TO_TYPE = "tgis";
-        final int EXPECTED_SPAN_START = 0;
-        final int EXPECTED_SPAN_END = 4;
-        type(STRING_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
-        runMessages();
-        type(Keyboard.CODE_SPACE);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
-        runMessages();
-        type(Keyboard.CODE_DELETE);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
-        runMessages();
-        type(Keyboard.CODE_DELETE);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
-        runMessages();
-        final Span span = new Span(mTextView.getText());
-        assertEquals("show blue underline after backspace, span start",
-                EXPECTED_SPAN_START, span.mStart);
-        assertEquals("show blue underline after backspace, span end",
-                EXPECTED_SPAN_END, span.mEnd);
-        assertEquals("show blue underline after backspace, span color", true,
-                span.isAutoCorrectionIndicator());
-    }
-
-    public void testBlueUnderlineDisappearsWhenCursorMoved() {
-        final String STRING_TO_TYPE = "tgis";
-        final int NEW_CURSOR_POSITION = 0;
-        type(STRING_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
-        // Simulate the onUpdateSelection() event
-        mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
-        runMessages();
-        // Here the blue underline has been set. testBlueUnderline() is testing for this already,
-        // so let's not test it here again.
-        // Now simulate the user moving the cursor.
-        mInputConnection.setSelection(NEW_CURSOR_POSITION, NEW_CURSOR_POSITION);
-        mLatinIME.onUpdateSelection(0, 0, NEW_CURSOR_POSITION, NEW_CURSOR_POSITION, -1, -1);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
-        runMessages();
-        final Span span = new Span(mTextView.getText());
-        assertNull("blue underline removed when cursor is moved", span.mSpan);
     }
     // TODO: Add some tests for non-BMP characters
 }
