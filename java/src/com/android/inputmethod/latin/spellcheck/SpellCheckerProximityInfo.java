@@ -35,6 +35,9 @@ public class SpellCheckerProximityInfo {
     // The number of rows in the grid used by the spell checker.
     final public static int PROXIMITY_GRID_HEIGHT = 3;
 
+    final private static int NOT_AN_INDEX = -1;
+    final public static int NOT_A_COORDINATE_PAIR = -1;
+
     // Helper methods
     final protected static void buildProximityIndices(final int[] proximity,
             final TreeMap<Integer, Integer> indices) {
@@ -45,7 +48,7 @@ public class SpellCheckerProximityInfo {
     final protected static int computeIndex(final int characterCode,
             final TreeMap<Integer, Integer> indices) {
         final Integer result = indices.get(characterCode);
-        if (null == result) return -1;
+        if (null == result) return NOT_AN_INDEX;
         return result;
     }
 
@@ -196,8 +199,10 @@ public class SpellCheckerProximityInfo {
     // Returns (Y << 16) + X to avoid creating a temporary object. This is okay because
     // X and Y are limited to PROXIMITY_GRID_WIDTH resp. PROXIMITY_GRID_HEIGHT which is very
     // inferior to 1 << 16
+    // As an exception, this returns NOT_A_COORDINATE_PAIR if the key is not on the grid
     public static int getXYForCodePointAndScript(final int codePoint, final int script) {
         final int index = getIndexOfCodeForScript(codePoint, script);
+        if (NOT_AN_INDEX == index) return NOT_A_COORDINATE_PAIR;
         final int y = index / PROXIMITY_GRID_WIDTH;
         final int x = index % PROXIMITY_GRID_WIDTH;
         if (y > PROXIMITY_GRID_HEIGHT) {

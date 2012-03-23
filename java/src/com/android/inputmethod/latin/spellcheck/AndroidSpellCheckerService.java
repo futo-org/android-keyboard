@@ -574,7 +574,12 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                     // The getXYForCodePointAndScript method returns (Y << 16) + X
                     final int xy = SpellCheckerProximityInfo.getXYForCodePointAndScript(
                             codePoint, mScript);
-                    composer.add(codePoint, xy & 0xFFFF, xy >> 16, null);
+                    if (SpellCheckerProximityInfo.NOT_A_COORDINATE_PAIR == xy) {
+                        composer.add(codePoint, WordComposer.NOT_A_COORDINATE,
+                                WordComposer.NOT_A_COORDINATE, null);
+                    } else {
+                        composer.add(codePoint, xy & 0xFFFF, xy >> 16, null);
+                    }
                 }
 
                 final int capitalizeType = getCapitalizationType(text);
