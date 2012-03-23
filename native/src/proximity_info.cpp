@@ -180,11 +180,11 @@ void ProximityInfo::calculateNearbyKeyCodes(
         if (additionalProximitySize > 0) {
             inputCodes[insertPos++] = ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE;
             if (insertPos >= MAX_PROXIMITY_CHARS_SIZE) {
-            if (DEBUG_DICT) {
-                assert(false);
+                if (DEBUG_DICT) {
+                    assert(false);
+                }
+                return;
             }
-            return;
-        }
 
             const int32_t* additionalProximityChars =
                     AdditionalProximityChars::getAdditionalChars(&mLocaleStr, primaryKey);
@@ -205,9 +205,9 @@ void ProximityInfo::calculateNearbyKeyCodes(
                         assert(false);
                     }
                     return;
+                }
             }
         }
-    }
 
     // Add a delimiter for the proximity characters
     for (int i = insertPos; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
