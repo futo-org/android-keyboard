@@ -1006,10 +1006,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             final int touchHeight = inputView.getHeight() + extraHeight
                     // Extend touchable region below the keyboard.
                     + EXTENDED_TOUCHABLE_REGION_HEIGHT;
-            if (DEBUG) {
-                Log.d(TAG, "Touchable region: y=" + touchY + " width=" + touchWidth
-                        + " height=" + touchHeight);
-            }
             setTouchableRegionCompat(outInsets, 0, touchY, touchWidth, touchHeight);
         }
         outInsets.contentTopInsets = touchY;
