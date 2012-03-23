@@ -47,13 +47,13 @@ public class SubtypeSwitcher {
     private static final String TAG = SubtypeSwitcher.class.getSimpleName();
 
     public static final String KEYBOARD_MODE = "keyboard";
-    private static final char LOCALE_SEPARATER = '_';
+    private static final char LOCALE_SEPARATOR = '_';
     private static final String VOICE_MODE = "voice";
     private static final String SUBTYPE_EXTRAVALUE_REQUIRE_NETWORK_CONNECTIVITY =
             "requireNetworkConnectivity";
 
     private final TextUtils.SimpleStringSplitter mLocaleSplitter =
-            new TextUtils.SimpleStringSplitter(LOCALE_SEPARATER);
+            new TextUtils.SimpleStringSplitter(LOCALE_SEPARATOR);
 
     private static final SubtypeSwitcher sInstance = new SubtypeSwitcher();
     private /* final */ LatinIME mService;

@@ -503,7 +503,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private void initSuggest() {
         final String localeStr = mSubtypeSwitcher.getInputLocaleStr();
-        final Locale keyboardLocale = LocaleUtils.constructLocaleFromString(localeStr);
+        final Locale keyboardLocale = mSubtypeSwitcher.getInputLocale();
 
         final Resources res = mResources;
         final Locale savedLocale = LocaleUtils.setSystemLocale(res, keyboardLocale);
@@ -567,8 +567,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     /* package private */ void resetSuggestMainDict() {
-        final String localeStr = mSubtypeSwitcher.getInputLocaleStr();
-        final Locale keyboardLocale = LocaleUtils.constructLocaleFromString(localeStr);
+        final Locale keyboardLocale = mSubtypeSwitcher.getInputLocale();
         int mainDicResId = DictionaryFactory.getMainDictionaryResourceId(mResources);
         mSuggest.resetMainDict(this, mainDicResId, keyboardLocale);
     }
@@ -1995,7 +1994,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private void addToUserHistoryDictionary(final CharSequence suggestion) {
-        if (suggestion == null || suggestion.length() < 1) return;
+        if (TextUtils.isEmpty(suggestion)) return;
 
         // Only auto-add to dictionary if auto-correct is ON. Otherwise we'll be
         // adding words in situations where the user or application really didn't
