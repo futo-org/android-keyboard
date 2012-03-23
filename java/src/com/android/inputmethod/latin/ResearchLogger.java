@@ -21,6 +21,7 @@ import android.inputmethodservice.InputMethodService;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -263,9 +264,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             public void run() {
                 final long currentTime = System.currentTimeMillis();
                 mDate.setTime(currentTime);
+                final long upTime = SystemClock.uptimeMillis();
 
                 final String printString = String.format("%s\t%d\t%s\t%s\n",
-                        mDateFormat.format(mDate), currentTime, logGroup.mLogString, log);
+                        mDateFormat.format(mDate), upTime, logGroup.mLogString, log);
                 if (LatinImeLogger.sDBG) {
                     Log.d(TAG, "Write: " + '[' + logGroup.mLogString + ']' + log);
                 }
