@@ -39,7 +39,7 @@ public class SpellCheckerProximityInfo {
     final protected static void buildProximityIndices(final int[] proximity,
             final TreeMap<Integer, Integer> indices) {
         for (int i = 0; i < proximity.length; i += ROW_SIZE) {
-            if (NUL != proximity[i]) indices.put(proximity[i], i);
+            if (NUL != proximity[i]) indices.put(proximity[i], i / ROW_SIZE);
         }
     }
     final protected static int computeIndex(final int characterCode,
@@ -198,9 +198,8 @@ public class SpellCheckerProximityInfo {
     // inferior to 1 << 16
     public static int getXYForCodePointAndScript(final int codePoint, final int script) {
         final int index = getIndexOfCodeForScript(codePoint, script);
-        // TODO: precompute index / ROW_SIZE
-        final int y = index / (PROXIMITY_GRID_WIDTH * ROW_SIZE);
-        final int x = (index / ROW_SIZE) % PROXIMITY_GRID_WIDTH;
+        final int y = index / PROXIMITY_GRID_WIDTH;
+        final int x = index % PROXIMITY_GRID_WIDTH;
         if (y > PROXIMITY_GRID_HEIGHT) {
             // Safety check, should be entirely useless
             throw new RuntimeException("Wrong y coordinate in spell checker proximity");
