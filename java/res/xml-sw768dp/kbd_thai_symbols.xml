@@ -21,6 +21,7 @@
 <Keyboard
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
     latin:rowHeight="20%p"
+    latin:verticalGap="2.95%p"
 >
     <include
         latin:keyboardLayout="@xml/rows_thai_symbols" />

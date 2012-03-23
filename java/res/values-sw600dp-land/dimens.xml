@@ -35,6 +35,7 @@
     <fraction name="key_bottom_gap_gb">5.200%p</fraction>
     <fraction name="key_horizontal_gap_gb">1.447%p</fraction>
 
+    <fraction name="key_bottom_gap_ics">4.0%p</fraction>
     <fraction name="keyboard_bottom_padding_ics">0.0%p</fraction>
 
     <dimen name="popup_key_height">13.0mm</dimen>

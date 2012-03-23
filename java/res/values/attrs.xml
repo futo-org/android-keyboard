@@ -202,9 +202,10 @@
         <!-- Default height of a row (key height + vertical gap), in pixels or percentage of
              keyboard height. -->
         <attr name="rowHeight" format="dimension|fraction" />
-        <!-- Default horizontal gap between keys. -->
+        <!-- Default horizontal gap between keys, in pixels or percentage of keyboard width. -->
         <attr name="horizontalGap" format="dimension|fraction" />
-        <!-- Default vertical gap between rows of keys. -->
+        <!-- Default vertical gap between rows of keys, in pixels or percentage of keyboard
+             height. -->
         <attr name="verticalGap" format="dimension|fraction" />
         <!-- More keys keyboard layout template -->
         <attr name="moreKeysTemplate" format="reference" />
