@@ -78,11 +78,14 @@
         latin:styleName="spaceKeyStyle"
         latin:code="@integer/key_space"
         latin:keyActionFlags="noKeyPreview" />
+    <!-- U+200C: ZERO WIDTH NON-JOINER
+         U+200D: ZERO WIDTH JOINER -->
     <key-style
         latin:styleName="zwnjKeyStyle"
-        latin:keyLabel="&#x200C;"
-        latin:moreKeys="&#x200D;"
-        latin:keyLabelFlags="hasPopupHint" />
+        latin:code="0x200C"
+        latin:moreKeys="\@icon/zwjKey|&#x200D;"
+        latin:keyLabelFlags="hasPopupHint"
+        latin:keyActionFlags="noKeyPreview" />
     <key-style
         latin:styleName="smileyKeyStyle"
         latin:keyLabel=":-)"

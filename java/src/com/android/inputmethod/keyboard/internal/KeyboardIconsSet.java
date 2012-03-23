@@ -30,7 +30,7 @@ public class KeyboardIconsSet {
 
     // The value should be aligned with the enum value of Key.keyIcon.
     public static final int ICON_UNDEFINED = 0;
-    private static final int NUM_ICONS = 14;
+    private static final int NUM_ICONS = 16;
 
     private final Drawable[] mIcons = new Drawable[NUM_ICONS + 1];
 
@@ -58,6 +58,8 @@ public class KeyboardIconsSet {
         addIconIdMap(12, "disabledShortcurKey", R.styleable.Keyboard_iconDisabledShortcutKey);
         addIconIdMap(13, "previewTabKey", R.styleable.Keyboard_iconPreviewTabKey);
         addIconIdMap(14, "languageSwitchKey", R.styleable.Keyboard_iconLanguageSwitchKey);
+        addIconIdMap(15, "zwnjKey", R.styleable.Keyboard_iconZwnjKey);
+        addIconIdMap(16, "zwjKey", R.styleable.Keyboard_iconZwjKey);
     }
 
     private static void addIconIdMap(int iconId, String name, int attrId) {

@@ -224,6 +224,8 @@
         <attr name="iconDisabledShortcutKey" format="reference" />
         <attr name="iconPreviewTabKey" format="reference" />
         <attr name="iconLanguageSwitchKey" format="reference" />
+        <attr name="iconZwnjKey" format="reference" />
+        <attr name="iconZwjKey" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Key">
@@ -309,6 +311,8 @@
             <enum name="iconSpaceKeyForNumberLayout" value="10" />
             <enum name="iconShiftKeyShifted" value="11" />
             <enum name="iconLanguageSwitchKey" value="14" />
+            <enum name="iconZwnjKey" value="15" />
+            <enum name="iconZwjKey" value="16" />
         </attr>
         <!-- The icon for disabled key -->
         <attr name="keyIconDisabled" format="enum">
