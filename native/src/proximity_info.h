@@ -92,10 +92,10 @@ class ProximityInfo {
         // the radius of the key is assigned to zero.
         return mSweetSpotRadii[keyIndex] > 0.0;
     }
-    bool isOnKey(const int keyId, const int x, const int y);
-    int squaredDistanceToEdge(const int keyId, const int x, const int y);
+    bool isOnKey(const int keyId, const int x, const int y) const;
+    int squaredDistanceToEdge(const int keyId, const int x, const int y) const;
     void calculateNearbyKeyCodes(
-            const int x, const int y, const int32_t primaryKey, int *inputCodes);
+            const int x, const int y, const int32_t primaryKey, int *inputCodes) const;
 
     const int MAX_PROXIMITY_CHARS_SIZE;
     const int KEYBOARD_WIDTH;

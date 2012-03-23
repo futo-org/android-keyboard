@@ -205,9 +205,11 @@ public class BinaryDictionary extends Dictionary {
 
         Arrays.fill(mInputCodes, WordComposer.NOT_A_CODE);
         for (int i = 0; i < codesSize; i++) {
-            int[] alternatives = codes.getCodesAt(i);
-            System.arraycopy(alternatives, 0, mInputCodes, i * MAX_PROXIMITY_CHARS_SIZE,
-                    Math.min(alternatives.length, MAX_PROXIMITY_CHARS_SIZE));
+            final int[] alternatives = codes.getCodesAt(i);
+            if (alternatives == null || alternatives.length < 1) {
+                continue;
+            }
+            mInputCodes[i] = alternatives[0];
         }
         Arrays.fill(outputChars, (char) 0);
         Arrays.fill(scores, 0);

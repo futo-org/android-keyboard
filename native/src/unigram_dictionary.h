@@ -143,7 +143,6 @@ class UnigramDictionary {
     const uint8_t* const DICT_ROOT;
     const int MAX_WORD_LENGTH;
     const int MAX_WORDS;
-    const int MAX_PROXIMITY_CHARS;
     const bool IS_LATEST_DICT_VERSION;
     const int TYPED_LETTER_MULTIPLIER;
     const int FULL_WORD_MULTIPLIER;

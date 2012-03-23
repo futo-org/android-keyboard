@@ -20,8 +20,6 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
-import com.android.inputmethod.latin.spellcheck.AndroidSpellCheckerService;
-import com.android.inputmethod.latin.spellcheck.SpellCheckerProximityInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
