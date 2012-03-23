@@ -80,6 +80,7 @@ public class Word implements Comparable<Word> {
         if (!(o instanceof Word)) return false;
         Word w = (Word)o;
         return mFrequency == w.mFrequency && mWord.equals(w.mWord)
+                && mIsShortcutOnly == w.mIsShortcutOnly
                 && mShortcutTargets.equals(w.mShortcutTargets)
                 && mBigrams.equals(w.mBigrams);
     }
