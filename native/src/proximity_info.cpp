@@ -156,7 +156,7 @@ void ProximityInfo::calculateNearbyKeyCodes(
     int insertPos = 0;
     inputCodes[insertPos++] = primaryKey;
     const int startIndex = getStartIndexFromCoordinates(x, y);
-
+    if (startIndex >= 0) {
         for (int i = 0; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
             const int32_t c = mProximityCharsArray[startIndex + i];
             if (c < KEYCODE_SPACE || c == primaryKey) {
@@ -208,7 +208,7 @@ void ProximityInfo::calculateNearbyKeyCodes(
                 }
             }
         }
-
+    }
     // Add a delimiter for the proximity characters
     for (int i = insertPos; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
         inputCodes[i] = NOT_A_CODE;
