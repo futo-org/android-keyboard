@@ -21,6 +21,7 @@ import android.inputmethodservice.InputMethodService;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -48,7 +49,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
     private static final ResearchLogger sInstance = new ResearchLogger(new LogFileManager());
     public static boolean sIsLogging = false;
-    private final Handler mLoggingHandler;
+    /* package */ final Handler mLoggingHandler;
     private InputMethodService mIms;
     private final Date mDate;
     private final SimpleDateFormat mDateFormat;
@@ -182,11 +183,13 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     /**
-     * Change to a different logFileManager.  Will not allow it to be set to null.
+     * Change to a different logFileManager.
+     *
+     * @throws IllegalArgumentException if logFileManager is null
      */
-    /* package */ void setLogFileManager(ResearchLogger.LogFileManager manager) {
+    void setLogFileManager(LogFileManager manager) {
         if (manager == null) {
-            Log.w(TAG, "warning: trying to set null logFileManager.  ignoring.");
+            throw new IllegalArgumentException("warning: trying to set null logFileManager");
         } else {
             mLogFileManager = manager;
         }
@@ -240,8 +243,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         sb.append('\t'); sb.append(x);
         sb.append('\t'); sb.append(y);
         write(LogGroup.KEY, sb.toString());
-
-        LatinImeLogger.onPrintAllUsabilityStudyLogs();
     }
 
     public void logCorrection(String subgroup, String before, String after, int position) {
@@ -263,9 +264,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             public void run() {
                 final long currentTime = System.currentTimeMillis();
                 mDate.setTime(currentTime);
+                final long upTime = SystemClock.uptimeMillis();
 
                 final String printString = String.format("%s\t%d\t%s\t%s\n",
-                        mDateFormat.format(mDate), currentTime, logGroup.mLogString, log);
+                        mDateFormat.format(mDate), upTime, logGroup.mLogString, log);
                 if (LatinImeLogger.sDBG) {
                     Log.d(TAG, "Write: " + '[' + logGroup.mLogString + ']' + log);
                 }
