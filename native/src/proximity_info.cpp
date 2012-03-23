@@ -304,7 +304,7 @@ inline float square(const float x) { return x * x; }
 
 float ProximityInfo::calculateNormalizedSquaredDistance(
         const int keyIndex, const int inputIndex) const {
-    if (keyIndex == NOT_A_INDEX) {
+    if (keyIndex == NOT_AN_INDEX) {
         return NOT_A_DISTANCE_FLOAT;
     }
     if (!hasSweetSpotData(keyIndex)) {
@@ -325,11 +325,11 @@ bool ProximityInfo::hasInputCoordinates() const {
 int ProximityInfo::getKeyIndex(const int c) const {
     if (KEY_COUNT == 0) {
         // We do not have the coordinate data
-        return NOT_A_INDEX;
+        return NOT_AN_INDEX;
     }
     const unsigned short baseLowerC = toBaseLowerCase(c);
     if (baseLowerC > MAX_CHAR_CODE) {
-        return NOT_A_INDEX;
+        return NOT_AN_INDEX;
     }
     return mCodeToKeyIndex[baseLowerC];
 }
