@@ -184,7 +184,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
                 GERMAN_UMLAUT_DIGRAPHS,
                 sizeof(GERMAN_UMLAUT_DIGRAPHS) / sizeof(GERMAN_UMLAUT_DIGRAPHS[0]));
     } else if (REQUIRES_FRENCH_LIGATURES_PROCESSING & flags) {
-        int codesBuffer[getCodesBufferSize(codes, codesSize, MAX_PROXIMITY_CHARS)];
+        int codesBuffer[getCodesBufferSize(codes, codesSize)];
         int xCoordinatesBuffer[codesSize];
         int yCoordinatesBuffer[codesSize];
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
