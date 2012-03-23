@@ -75,8 +75,6 @@ public class UserHistoryDictionary extends ExpandableDictionary {
     private static final String FREQ_COLUMN_PAIR_ID = "pair_id";
     private static final String FREQ_COLUMN_FREQUENCY = "freq";
 
-    private final LatinIME mIme;
-
     /** Locale for which this auto dictionary is storing words */
     private String mLocale;
 
@@ -139,9 +137,8 @@ public class UserHistoryDictionary extends ExpandableDictionary {
         sDeleteHistoryBigrams = deleteHistoryBigram;
     }
 
-    public UserHistoryDictionary(Context context, LatinIME ime, String locale, int dicTypeId) {
+    public UserHistoryDictionary(final Context context, final String locale, final int dicTypeId) {
         super(context, dicTypeId);
-        mIme = ime;
         mLocale = locale;
         if (sOpenHelper == null) {
             sOpenHelper = new DatabaseHelper(getContext());
@@ -179,10 +176,6 @@ public class UserHistoryDictionary extends ExpandableDictionary {
      * The second word may not be null (a NullPointerException would be thrown).
      */
     public int addToUserHistory(final String word1, String word2) {
-        // remove caps if second word is autocapitalized
-        if (mIme != null && mIme.isAutoCapitalized()) {
-            word2 = Character.toLowerCase(word2.charAt(0)) + word2.substring(1);
-        }
         super.addWord(word2, FREQUENCY_FOR_TYPED);
         // Do not insert a word as a bigram of itself
         if (word2.equals(word1)) {

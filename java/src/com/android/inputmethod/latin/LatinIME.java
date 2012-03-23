@@ -528,7 +528,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         resetContactsDictionary(oldContactsDictionary);
 
         mUserHistoryDictionary
-                = new UserHistoryDictionary(this, this, localeStr, Suggest.DIC_USER_HISTORY);
+                = new UserHistoryDictionary(this, localeStr, Suggest.DIC_USER_HISTORY);
         mSuggest.setUserHistoryDictionary(mUserHistoryDictionary);
 
         LocaleUtils.setSystemLocale(res, savedLocale);
@@ -2012,8 +2012,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             } else {
                 prevWord = null;
             }
+            final String secondWord;
+            if (mWordComposer.isAutoCapitalized() && !mWordComposer.isMostlyCaps()) {
+                secondWord = suggestion.toString().toLowerCase(mSubtypeSwitcher.getInputLocale());
+            } else {
+                secondWord = suggestion.toString();
+            }
             mUserHistoryDictionary.addToUserHistory(null == prevWord ? null : prevWord.toString(),
-                    suggestion.toString());
+                    secondWord);
         }
     }
 
@@ -2252,10 +2258,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // TODO: remove this method when VoiceProxy has been removed
     public void vibrate() {
         mFeedbackManager.vibrate(mKeyboardSwitcher.getKeyboardView());
-    }
-
-    public boolean isAutoCapitalized() {
-        return mWordComposer.isAutoCapitalized();
     }
 
     private void updateCorrectionMode() {
