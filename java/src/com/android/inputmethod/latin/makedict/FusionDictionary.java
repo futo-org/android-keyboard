@@ -64,6 +64,19 @@ public class FusionDictionary implements Iterable<Word> {
             mWord = word;
             mFrequency = frequency;
         }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(new Object[] { mWord, mFrequency });
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof WeightedString)) return false;
+            WeightedString w = (WeightedString)o;
+            return mWord.equals(w.mWord) && mFrequency == w.mFrequency;
+        }
     }
 
     /**

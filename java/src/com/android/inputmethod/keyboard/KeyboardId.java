@@ -70,23 +70,23 @@ public class KeyboardId {
     public KeyboardId(int elementId, Locale locale, int orientation, int width, int mode,
             EditorInfo editorInfo, boolean clobberSettingsKey, boolean shortcutKeyEnabled,
             boolean hasShortcutKey, boolean languageSwitchKeyEnabled) {
-        this.mLocale = locale;
-        this.mOrientation = orientation;
-        this.mWidth = width;
-        this.mMode = mode;
-        this.mElementId = elementId;
-        this.mEditorInfo = editorInfo;
-        this.mClobberSettingsKey = clobberSettingsKey;
-        this.mShortcutKeyEnabled = shortcutKeyEnabled;
-        this.mHasShortcutKey = hasShortcutKey;
-        this.mLanguageSwitchKeyEnabled = languageSwitchKeyEnabled;
-        this.mCustomActionLabel = (editorInfo.actionLabel != null)
+        mLocale = locale;
+        mOrientation = orientation;
+        mWidth = width;
+        mMode = mode;
+        mElementId = elementId;
+        mEditorInfo = editorInfo;
+        mClobberSettingsKey = clobberSettingsKey;
+        mShortcutKeyEnabled = shortcutKeyEnabled;
+        mHasShortcutKey = hasShortcutKey;
+        mLanguageSwitchKeyEnabled = languageSwitchKeyEnabled;
+        mCustomActionLabel = (editorInfo.actionLabel != null)
                 ? editorInfo.actionLabel.toString() : null;
 
-        this.mHashCode = hashCode(this);
+        mHashCode = computeHashCode(this);
     }
 
-    private static int hashCode(KeyboardId id) {
+    private static int computeHashCode(KeyboardId id) {
         return Arrays.hashCode(new Object[] {
                 id.mOrientation,
                 id.mElementId,
@@ -109,21 +109,21 @@ public class KeyboardId {
     private boolean equals(KeyboardId other) {
         if (other == this)
             return true;
-        return other.mOrientation == this.mOrientation
-                && other.mElementId == this.mElementId
-                && other.mMode == this.mMode
-                && other.mWidth == this.mWidth
-                && other.passwordInput() == this.passwordInput()
-                && other.mClobberSettingsKey == this.mClobberSettingsKey
-                && other.mShortcutKeyEnabled == this.mShortcutKeyEnabled
-                && other.mHasShortcutKey == this.mHasShortcutKey
-                && other.mLanguageSwitchKeyEnabled == this.mLanguageSwitchKeyEnabled
-                && other.isMultiLine() == this.isMultiLine()
-                && other.imeAction() == this.imeAction()
-                && TextUtils.equals(other.mCustomActionLabel, this.mCustomActionLabel)
-                && other.navigateNext() == this.navigateNext()
-                && other.navigatePrevious() == this.navigatePrevious()
-                && other.mLocale.equals(this.mLocale);
+        return other.mOrientation == mOrientation
+                && other.mElementId == mElementId
+                && other.mMode == mMode
+                && other.mWidth == mWidth
+                && other.passwordInput() == passwordInput()
+                && other.mClobberSettingsKey == mClobberSettingsKey
+                && other.mShortcutKeyEnabled == mShortcutKeyEnabled
+                && other.mHasShortcutKey == mHasShortcutKey
+                && other.mLanguageSwitchKeyEnabled == mLanguageSwitchKeyEnabled
+                && other.isMultiLine() == isMultiLine()
+                && other.imeAction() == imeAction()
+                && TextUtils.equals(other.mCustomActionLabel, mCustomActionLabel)
+                && other.navigateNext() == navigateNext()
+                && other.navigatePrevious() == navigatePrevious()
+                && other.mLocale.equals(mLocale);
     }
 
     public boolean isAlphabetKeyboard() {
