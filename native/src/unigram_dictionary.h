@@ -157,9 +157,11 @@ class UnigramDictionary {
     // Please update both at the same time.
     enum {
         REQUIRES_GERMAN_UMLAUT_PROCESSING = 0x1,
-        USE_FULL_EDIT_DISTANCE = 0x2
+        USE_FULL_EDIT_DISTANCE = 0x2,
+        REQUIRES_FRENCH_LIGATURES_PROCESSING = 0x4
     };
     static const digraph_t GERMAN_UMLAUT_DIGRAPHS[];
+    static const digraph_t FRENCH_LIGATURES_DIGRAPHS[];
 
     // Still bundled members
     unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];// TODO: remove
