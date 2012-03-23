@@ -156,57 +156,59 @@ void ProximityInfo::calculateNearbyKeyCodes(
     int insertPos = 0;
     inputCodes[insertPos++] = primaryKey;
     const int startIndex = getStartIndexFromCoordinates(x, y);
-    for (int i = 0; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
-        const int32_t c = mProximityCharsArray[startIndex + i];
-        if (c < KEYCODE_SPACE || c == primaryKey) {
-            continue;
-        }
-        const int keyIndex = getKeyIndex(c);
-        const bool onKey = isOnKey(keyIndex, x, y);
-        const int distance = squaredDistanceToEdge(keyIndex, x, y);
-        if (onKey || distance < MOST_COMMON_KEY_WIDTH_SQUARE) {
-            inputCodes[insertPos++] = c;
-            if (insertPos >= MAX_PROXIMITY_CHARS_SIZE) {
-                if (DEBUG_DICT) {
-                    assert(false);
+
+        for (int i = 0; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
+            const int32_t c = mProximityCharsArray[startIndex + i];
+            if (c < KEYCODE_SPACE || c == primaryKey) {
+                continue;
+            }
+            const int keyIndex = getKeyIndex(c);
+            const bool onKey = isOnKey(keyIndex, x, y);
+            const int distance = squaredDistanceToEdge(keyIndex, x, y);
+            if (onKey || distance < MOST_COMMON_KEY_WIDTH_SQUARE) {
+                inputCodes[insertPos++] = c;
+                if (insertPos >= MAX_PROXIMITY_CHARS_SIZE) {
+                    if (DEBUG_DICT) {
+                        assert(false);
+                    }
+                    return;
                 }
-                return;
             }
         }
-    }
-    const int additionalProximitySize =
-            AdditionalProximityChars::getAdditionalCharsSize(&mLocaleStr, primaryKey);
-    if (additionalProximitySize > 0) {
-        inputCodes[insertPos++] = ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE;
-        if (insertPos >= MAX_PROXIMITY_CHARS_SIZE) {
+        const int additionalProximitySize =
+                AdditionalProximityChars::getAdditionalCharsSize(&mLocaleStr, primaryKey);
+        if (additionalProximitySize > 0) {
+            inputCodes[insertPos++] = ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE;
+            if (insertPos >= MAX_PROXIMITY_CHARS_SIZE) {
             if (DEBUG_DICT) {
                 assert(false);
             }
             return;
         }
 
-        const int32_t* additionalProximityChars =
-                AdditionalProximityChars::getAdditionalChars(&mLocaleStr, primaryKey);
-        for (int j = 0; j < additionalProximitySize; ++j) {
-            const int32_t ac = additionalProximityChars[j];
-            int k = 0;
-            for (; k < insertPos; ++k) {
-                if ((int)ac == inputCodes[k]) {
-                    break;
+            const int32_t* additionalProximityChars =
+                    AdditionalProximityChars::getAdditionalChars(&mLocaleStr, primaryKey);
+            for (int j = 0; j < additionalProximitySize; ++j) {
+                const int32_t ac = additionalProximityChars[j];
+                int k = 0;
+                for (; k < insertPos; ++k) {
+                    if ((int)ac == inputCodes[k]) {
+                        break;
+                    }
                 }
-            }
-            if (k < insertPos) {
-                continue;
-            }
-            inputCodes[insertPos++] = ac;
-            if (insertPos >= MAX_PROXIMITY_CHARS_SIZE) {
-                if (DEBUG_DICT) {
-                    assert(false);
+                if (k < insertPos) {
+                    continue;
                 }
-                return;
+                inputCodes[insertPos++] = ac;
+                if (insertPos >= MAX_PROXIMITY_CHARS_SIZE) {
+                    if (DEBUG_DICT) {
+                        assert(false);
+                    }
+                    return;
             }
         }
     }
+
     // Add a delimiter for the proximity characters
     for (int i = insertPos; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
         inputCodes[i] = NOT_A_CODE;
