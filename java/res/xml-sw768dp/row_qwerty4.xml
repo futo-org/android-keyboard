@@ -87,11 +87,7 @@
                 <!-- U+200C: "" ZERO WIDTH NON-JOINER
                      U+200D: "" ZERO WIDTH JOINER -->
                 <Key
-                    latin:keyLabel="&#x200C;"
-                    latin:moreKeys="&#x200D;"
-                    latin:keyLabelFlags="hasPopupHint"
-                    latin:altCode="@integer/key_space"
-                    latin:keyActionFlags="altCodeWhileTyping" />
+                    latin:keyStyle="zwnjKeyStyle" />
             </case>
             <default>
                 <Key

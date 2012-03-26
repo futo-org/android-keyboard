@@ -101,6 +101,32 @@
                 latin:styleName="moreCurrency4KeyStyle"
                 latin:keyLabel="&#x00A2;" />
         </case>
+        <case
+            latin:languageCode="fa"
+        >
+            <!-- U+FDFC: "﷼" RIAL SIGN
+                 U+00A3: "£" POUND SIGN
+                 U+20AC: "€" EURO SIGN
+                 U+00A2: "¢" CENT SIGN -->
+            <!-- TODO: DroidSansArabic lacks the glyph of U+FCDC: RIAL SIGN -->
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="&#xFDFC;"
+                latin:moreKeys="@string/more_keys_for_currency_general" />
+            <key-style
+                latin:styleName="moreCurrency1KeyStyle"
+                latin:keyLabel="£" />
+            <key-style
+                latin:styleName="moreCurrency2KeyStyle"
+                latin:keyLabel="€" />
+            <key-style
+                latin:styleName="moreCurrency3KeyStyle"
+                latin:keyLabel="$"
+                latin:moreKeys="¢" />
+            <key-style
+                latin:styleName="moreCurrency4KeyStyle"
+                latin:keyLabel="¢" />
+        </case>
         <!-- United Kingdom -->
         <case
             latin:countryCode="GB"

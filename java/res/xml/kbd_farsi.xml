@@ -18,29 +18,9 @@
 */
 -->
 
-<merge
+<Keyboard
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <switch>
-        <case
-            latin:mode="email"
-        >
-            <Key
-                latin:keyLabel="," />
-            <Key
-                latin:keyLabel="." />
-        </case>
-        <default>
-            <Key
-                latin:keyLabel=","
-                latin:keyHintLabel="!"
-                latin:moreKeys="!"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
-            <Key
-                latin:keyLabel="."
-                latin:keyHintLabel="\?"
-                latin:moreKeys="\?"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
-        </default>
-    </switch>
-</merge>
+    <include
+        latin:keyboardLayout="@xml/rows_farsi" />
+</Keyboard>

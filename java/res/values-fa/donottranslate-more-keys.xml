@@ -38,26 +38,26 @@
     <!-- In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label. -->
     <string name="more_keys_for_punctuation">"!fixedColumnOrder!8,\",\',-,:,!,&#x061F;,&#x060C;,&#x061B;,&#x0650;,&#x064E;,&#x064D;,&#x064B;,&#x0656;,&#x0670;,&#x0655;,&#x0654;,&#x064F;,&#x064C;,&#x0651;,&#x0652;,&#x0653;,&#x0640;&#x0640;&#x0640;|&#x0640;,/"</string>
     <string name="keyhintlabel_for_punctuation">&#x064B;</string>
-    <!-- U+0661: "١" ARABIC-INDIC DIGIT ONE -->
-    <string name="keylabel_for_symbols_1">&#x0661;</string>
-    <!-- U+0662: "٢" ARABIC-INDIC DIGIT TWO -->
-    <string name="keylabel_for_symbols_2">&#x0662;</string>
-    <!-- U+0663: "٣" ARABIC-INDIC DIGIT THREE -->
-    <string name="keylabel_for_symbols_3">&#x0663;</string>
-    <!-- U+0664: "٤" ARABIC-INDIC DIGIT FOUR -->
-    <string name="keylabel_for_symbols_4">&#x0664;</string>
-    <!-- U+0665: "٥" ARABIC-INDIC DIGIT FIVE -->
-    <string name="keylabel_for_symbols_5">&#x0665;</string>
-    <!-- U+0666: "٦" ARABIC-INDIC DIGIT SIX -->
-    <string name="keylabel_for_symbols_6">&#x0666;</string>
-    <!-- U+0667: "٧" ARABIC-INDIC DIGIT SEVEN -->
-    <string name="keylabel_for_symbols_7">&#x0667;</string>
-    <!-- U+0668: "٨" ARABIC-INDIC DIGIT EIGHT -->
-    <string name="keylabel_for_symbols_8">&#x0668;</string>
-    <!-- U+0669: "٩" ARABIC-INDIC DIGIT NINE -->
-    <string name="keylabel_for_symbols_9">&#x0669;</string>
-    <!-- U+0660: "٠" ARABIC-INDIC DIGIT ZERO -->
-    <string name="keylabel_for_symbols_0">&#x0660;</string>
+    <!-- U+06F1: "۱" EXTENDED ARABIC-INDIC DIGIT ONE -->
+    <string name="keylabel_for_symbols_1">&#x06F1;</string>
+    <!-- U+06F2: "۲" EXTENDED ARABIC-INDIC DIGIT TWO -->
+    <string name="keylabel_for_symbols_2">&#x06F2;</string>
+    <!-- U+06F3: "۳" EXTENDED ARABIC-INDIC DIGIT THREE -->
+    <string name="keylabel_for_symbols_3">&#x06F3;</string>
+    <!-- U+06F4: "۴" EXTENDED ARABIC-INDIC DIGIT FOUR -->
+    <string name="keylabel_for_symbols_4">&#x06F4;</string>
+    <!-- U+06F5: "۵" EXTENDED ARABIC-INDIC DIGIT FIVE -->
+    <string name="keylabel_for_symbols_5">&#x06F5;</string>
+    <!-- U+06F6: "۶" EXTENDED ARABIC-INDIC DIGIT SIX -->
+    <string name="keylabel_for_symbols_6">&#x06F6;</string>
+    <!-- U+06F7: "۷" EXTENDED ARABIC-INDIC DIGIT SEVEN -->
+    <string name="keylabel_for_symbols_7">&#x06F7;</string>
+    <!-- U+06F8: "۸" EXTENDED ARABIC-INDIC DIGIT EIGHT -->
+    <string name="keylabel_for_symbols_8">&#x06F8;</string>
+    <!-- U+06F9: "۹" EXTENDED ARABIC-INDIC DIGIT NINE -->
+    <string name="keylabel_for_symbols_9">&#x06F9;</string>
+    <!-- U+06F0: "۰" EXTENDED ARABIC-INDIC DIGIT ZERO -->
+    <string name="keylabel_for_symbols_0">&#x06F0;</string>
     <string name="additional_more_keys_for_symbols_1">1</string>
     <string name="additional_more_keys_for_symbols_2">2</string>
     <string name="additional_more_keys_for_symbols_3">3</string>
@@ -84,9 +84,11 @@
     <!-- U+060C: "،" ARABIC COMMA
          U+061B: "؛" ARABIC SEMICOLON
          U+061F: "؟" ARABIC QUESTION MARK -->
-    <string name="keylabel_for_apostrophe">&#x060C;</string>
-    <string name="keylabel_for_dash">"."</string>
-    <string name="keyhintlabel_for_apostrophe">&#x061F;</string>
+    <string name="keylabel_for_tablet_comma">"&#x060C;"</string>
+    <string name="keyhintlabel_for_tablet_comma">"!"</string>
+    <string name="more_keys_for_tablet_comma">"!,\\,"</string>
+    <string name="keyhintlabel_for_tablet_period">"&#x061F;"</string>
+    <string name="more_keys_for_tablet_period">"&#x061F;,\?"</string>
     <string name="keyhintlabel_for_dash">&#x064B;</string>
     <string name="more_keys_for_apostrophe">"&#x061F;,&#x061B;,!,:,-,/,\',\""</string>
     <!-- U+0651: "ّ" ARABIC SHADDA
@@ -104,7 +106,7 @@
          U+0654: "ٔ" ARABIC HAMZA ABOVE
          U+0655: "ٕ" ARABIC HAMZA BELOW -->
     <!-- In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label. -->
-    <string name="more_keys_for_dash">"&#x0651;,&#x0652;,&#x064C;,&#x0653;,&#x064F;,&#x0650;,&#x064E;,&#x064B;,&#x0640;&#x0640;&#x0640;|&#x0640;,&#x064D;,&#x0654;,&#x0656;,&#x0655;,&#x0670;"</string>
+    <string name="more_keys_for_dash">"&#x0651;,&#x0652;,&#x064C;,&#x0653;,&#x064F;,&#x0650;,&#x064E;,&#x064B;,&#x0640;&#x0640;&#x0640;|&#x0640;,&#x064D;,&#x0654;,&#x0656;,&#x0655;,_,&#x0670;"</string>
     <!-- U+266A: "♪" EIGHTH NOTE -->
     <string name="more_keys_for_bullet">&#x266A;</string>
     <!-- U+2605: "★" BLACK STAR

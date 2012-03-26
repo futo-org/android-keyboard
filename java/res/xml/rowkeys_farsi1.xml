@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2012, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+>
+    <!-- U+0635: "ص" ARABIC LETTER SAD
+         U+06F1: "۱" EXTENDED ARABIC-INDIC DIGIT ONE -->
+    <Key
+        latin:keyLabel="&#x0635;"
+        latin:keyHintLabel="1"
+        latin:additionalMoreKeys="1,&#x06F1;" />
+    <!-- U+0642: "ق" ARABIC LETTER QAF
+         U+06F2: "۲" EXTENDED ARABIC-INDIC DIGIT TWO -->
+    <Key
+        latin:keyLabel="&#x0642;"
+        latin:keyHintLabel="2"
+        latin:additionalMoreKeys="2,&#x06F2;" />
+    <!-- U+0641: "ف" ARABIC LETTER FEH
+         U+06F3: "۳" EXTENDED ARABIC-INDIC DIGIT THREE -->
+    <Key
+        latin:keyLabel="&#x0641;"
+        latin:keyHintLabel="3"
+        latin:additionalMoreKeys="3,&#x06F3;" />
+    <!-- U+063A: "غ" ARABIC LETTER GHAIN
+         U+06F4: "۴" EXTENDED ARABIC-INDIC DIGIT FOUR -->
+    <Key
+        latin:keyLabel="&#x063A;"
+        latin:keyHintLabel="4"
+        latin:additionalMoreKeys="4,&#x06F4;" />
+    <!-- U+0639: "ع" ARABIC LETTER AIN
+         U+06F5: "۵" EXTENDED ARABIC-INDIC DIGIT FIVE -->
+    <Key
+        latin:keyLabel="&#x0639;"
+        latin:keyHintLabel="5"
+        latin:additionalMoreKeys="5,&#x06F5;" />
+    <!-- U+0647: "ه" ARABIC LETTER HEH
+         U+FEEB: "ﻫ" ARABIC LETTER HEH INITIAL FORM
+         U+0647/U+200D: ARABIC LETTER HEH + ZERO WIDTH JOINER
+         U+06C0: "ۀ" ARABIC LETTER HEH WITH YEH ABOVE
+         U+0629: "ة" ARABIC LETTER TEH MARBUTA
+         U+06F6: "۶" EXTENDED ARABIC-INDIC DIGIT SIX -->
+    <!-- TODO: DroidSansArabic lacks the glyph of U+06C0 ARABIC LETTER HEH WITH YEH ABOVE -->
+    <Key
+        latin:keyLabel="&#x0647;"
+        latin:moreKeys="&#xFEEB;|&#x0647;&#x200D;,&#x06C0;,&#x0629;,%"
+        latin:keyHintLabel="6"
+        latin:additionalMoreKeys="6,&#x06F6;" />
+    <!-- U+062E: "خ" ARABIC LETTER KHAH
+         U+06F7: "۷" EXTENDED ARABIC-INDIC DIGIT SEVEN -->
+    <Key
+        latin:keyLabel="&#x062E;"
+        latin:keyHintLabel="7"
+        latin:additionalMoreKeys="7,&#x06F7;" />
+    <!-- U+062D: "ح" ARABIC LETTER HAH
+         U+06F8: "۸" EXTENDED ARABIC-INDIC DIGIT EIGHT -->
+    <Key
+        latin:keyLabel="&#x062D;"
+        latin:keyHintLabel="8"
+        latin:additionalMoreKeys="8,&#x06F8;" />
+    <!-- U+062C: "ج" ARABIC LETTER JEEM
+         U+06F9: "۹" EXTENDED ARABIC-INDIC DIGIT NINE -->
+    <Key
+        latin:keyLabel="&#x062C;"
+        latin:keyHintLabel="9"
+        latin:additionalMoreKeys="9,&#x06F9;" />
+    <!-- U+0686: "چ" ARABIC LETTER TCHEH
+         U+06F0: "۰" EXTENDED ARABIC-INDIC DIGIT ZERO -->
+    <Key
+        latin:keyLabel="&#x0686;"
+        latin:keyHintLabel="0"
+        latin:additionalMoreKeys="0,&#x06F0;" />
+</merge>
