@@ -151,8 +151,9 @@ bool BigramDictionary::checkFirstCharacter(unsigned short *word) {
 
     int *inputCodes = mInputCodes;
     int maxAlt = MAX_ALTERNATIVES;
+    const unsigned short firstBaseChar = toBaseLowerCase(*word);
     while (maxAlt > 0) {
-        if ((unsigned int) *inputCodes == (unsigned int) *word) {
+        if (toBaseLowerCase(*inputCodes) == firstBaseChar) {
             return true;
         }
         inputCodes++;
