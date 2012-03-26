@@ -82,13 +82,13 @@
                 latin:keyLabel="&#x0E48;" />
             <!-- U+0E32: "า" THAI CHARACTER SARA AA -->
             <Key
-                latin:keyLabel="&#x0E46;" />
+                latin:keyLabel="&#x0E32;" />
             <!-- U+0E2A: "ส" THAI CHARACTER SO SUA -->
             <Key
-                latin:keyLabel="&#x0E46;" />
+                latin:keyLabel="&#x0E2A;" />
             <!-- U+0E27: "ว" THAI CHARACTER WO WAEN -->
             <Key
-                latin:keyLabel="&#x0E2F;" />
+                latin:keyLabel="&#x0E27;" />
             <!-- U+0E07: "ง" THAI CHARACTER NGO NGU -->
             <Key
                 latin:keyLabel="&#x0E07;" />
