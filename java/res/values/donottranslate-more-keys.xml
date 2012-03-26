@@ -139,6 +139,11 @@
     <string name="more_keys_for_symbols_semicolon"></string>
     <!-- U+2030: "‰" PER MILLE SIGN -->
     <string name="more_keys_for_symbols_percent">&#x2030;</string>
+    <string name="keylabel_for_tablet_comma">,</string>
+    <string name="keyhintlabel_for_tablet_comma">!</string>
+    <string name="more_keys_for_tablet_comma">!</string>
+    <string name="keyhintlabel_for_tablet_period">\?</string>
+    <string name="more_keys_for_tablet_period">\?</string>
     <string name="keylabel_for_apostrophe">\'</string>
     <string name="keylabel_for_dash">-</string>
     <string name="keyhintlabel_for_apostrophe">\"</string>
