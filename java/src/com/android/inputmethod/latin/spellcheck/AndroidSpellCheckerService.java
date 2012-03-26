@@ -353,6 +353,11 @@ public class AndroidSpellCheckerService extends SpellCheckerService
 
     @Override
     public boolean onUnbind(final Intent intent) {
+        closeAllDictionaries();
+        return false;
+    }
+
+    private void closeAllDictionaries() {
         final Map<String, DictionaryPool> oldPools = mDictionaryPools;
         mDictionaryPools = Collections.synchronizedMap(new TreeMap<String, DictionaryPool>());
         final Map<String, Dictionary> oldUserDictionaries = mUserDictionaries;
@@ -378,7 +383,6 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 dictToClose.close();
             }
         }
-        return false;
     }
 
     private DictionaryPool getDictionaryPool(final String locale) {
