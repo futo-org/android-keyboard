@@ -80,7 +80,7 @@ public class Suggest implements Dictionary.WordCallback {
     private static final boolean DBG = LatinImeLogger.sDBG;
 
     private Dictionary mMainDict;
-    private ContactsDictionary mContactsDict;
+    private Dictionary mContactsDict;
     private WhitelistDictionary mWhiteListDictionary;
     private final HashMap<String, Dictionary> mUnigramDictionaries =
             new HashMap<String, Dictionary>();
@@ -165,7 +165,7 @@ public class Suggest implements Dictionary.WordCallback {
         return mMainDict != null;
     }
 
-    public ContactsDictionary getContactsDictionary() {
+    public Dictionary getContactsDictionary() {
         return mContactsDict;
     }
 
@@ -190,7 +190,7 @@ public class Suggest implements Dictionary.WordCallback {
      * the contacts dictionary by passing null to this method. In this case no contacts dictionary
      * won't be used.
      */
-    public void setContactsDictionary(ContactsDictionary contactsDictionary) {
+    public void setContactsDictionary(Dictionary contactsDictionary) {
         mContactsDict = contactsDictionary;
         addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_CONTACTS, contactsDictionary);
         addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_CONTACTS, contactsDictionary);

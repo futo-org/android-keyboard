@@ -140,6 +140,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     private static final String SCHEME_PACKAGE = "package";
 
+    /** Whether to use the binary version of the contacts dictionary */
+    public static final boolean USE_BINARY_CONTACTS_DICTIONARY = true;
+
     // TODO: migrate this to SettingsValues
     private int mSuggestionVisibility;
     private static final int SUGGESTION_VISIBILILTY_SHOW_VALUE
@@ -493,14 +496,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final String localeStr = mSubtypeSwitcher.getInputLocaleStr();
         final Locale keyboardLocale = mSubtypeSwitcher.getInputLocale();
 
-        final ContactsDictionary oldContactsDictionary;
+        final Dictionary oldContactsDictionary;
         if (mSuggest != null) {
             oldContactsDictionary = mSuggest.getContactsDictionary();
             mSuggest.close();
         } else {
             oldContactsDictionary = null;
         }
-
         mSuggest = new Suggest(this, keyboardLocale);
         if (mSettingsValues.mAutoCorrectEnabled) {
             mSuggest.setAutoCorrectionThreshold(mSettingsValues.mAutoCorrectionThreshold);
@@ -526,10 +528,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      *
      * @param oldContactsDictionary an optional dictionary to use, or null
      */
-    private void resetContactsDictionary(final ContactsDictionary oldContactsDictionary) {
+    private void resetContactsDictionary(final Dictionary oldContactsDictionary) {
         final boolean shouldSetDictionary = (null != mSuggest && mSettingsValues.mUseContactsDict);
 
-        final ContactsDictionary dictionaryToUse;
+        final Dictionary dictionaryToUse;
         if (!shouldSetDictionary) {
             // Make sure the dictionary is closed. If it is already closed, this is a no-op,
             // so it's safe to call it anyways.
@@ -538,10 +540,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else if (null != oldContactsDictionary) {
             // Make sure the old contacts dictionary is opened. If it is already open, this is a
             // no-op, so it's safe to call it anyways.
-            oldContactsDictionary.reopen(this);
+            if (USE_BINARY_CONTACTS_DICTIONARY) {
+                ((ContactsBinaryDictionary)oldContactsDictionary).reopen(this);
+            } else {
+                ((ContactsDictionary)oldContactsDictionary).reopen(this);
+            }
             dictionaryToUse = oldContactsDictionary;
         } else {
-            dictionaryToUse = new ContactsDictionary(this, Suggest.DIC_CONTACTS);
+            if (USE_BINARY_CONTACTS_DICTIONARY) {
+                dictionaryToUse = new ContactsBinaryDictionary(this, Suggest.DIC_CONTACTS,
+                        mSubtypeSwitcher.getInputLocale());
+            } else {
+                dictionaryToUse = new ContactsDictionary(this, Suggest.DIC_CONTACTS);
+            }
         }
 
         if (null != mSuggest) {
