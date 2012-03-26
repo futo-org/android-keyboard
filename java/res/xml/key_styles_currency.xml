@@ -79,45 +79,53 @@
         <case
             latin:languageCode="iw"
         >
+            <!-- U+20AA: "₪" NEW SHEQEL SIGN
+                 U+00A3: "£" POUND SIGN
+                 U+20AC: "€" EURO SIGN
+                 U+00A2: "¢" CENT SIGN -->
             <key-style
                 latin:styleName="currencyKeyStyle"
-                latin:keyLabel="₪"
+                latin:keyLabel="&#x20AA;"
                 latin:moreKeys="@string/more_keys_for_currency_general" />
             <key-style
                 latin:styleName="moreCurrency1KeyStyle"
-                latin:keyLabel="£" />
+                latin:keyLabel="&#x00A3;" />
             <key-style
                 latin:styleName="moreCurrency2KeyStyle"
-                latin:keyLabel="€" />
+                latin:keyLabel="&#x20AC;" />
             <key-style
                 latin:styleName="moreCurrency3KeyStyle"
                 latin:keyLabel="$"
-                latin:moreKeys="¢" />
+                latin:moreKeys="&#x00A2;" />
             <key-style
                 latin:styleName="moreCurrency4KeyStyle"
-                latin:keyLabel="¢" />
+                latin:keyLabel="&#x00A2;" />
         </case>
         <!-- United Kingdom -->
         <case
             latin:countryCode="GB"
         >
+            <!-- U+00A3: "£" POUND SIGN
+                 U+20AC: "€" EURO SIGN
+                 U+00A5: "¥" YEN SIGN
+                 U+00A2: "¢" CENT SIGN -->
             <key-style
                 latin:styleName="currencyKeyStyle"
-                latin:keyLabel="£"
+                latin:keyLabel="&#x00A3;"
                 latin:moreKeys="@string/more_keys_for_currency_pound" />
             <key-style
                 latin:styleName="moreCurrency1KeyStyle"
-                latin:keyLabel="€" />
+                latin:keyLabel="&#x20AC;" />
             <key-style
                 latin:styleName="moreCurrency2KeyStyle"
-                latin:keyLabel="¥" />
+                latin:keyLabel="&#x00A5;" />
             <key-style
                 latin:styleName="moreCurrency3KeyStyle"
                 latin:keyLabel="$"
-                latin:moreKeys="¢" />
+                latin:moreKeys="&#x00A2;" />
             <key-style
                 latin:styleName="moreCurrency4KeyStyle"
-                latin:keyLabel="¢" />
+                latin:keyLabel="&#x00A2;" />
         </case>
         <default>
             <include
