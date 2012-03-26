@@ -107,11 +107,15 @@
         latin:code="@integer/key_space"
         latin:keyActionFlags="noKeyPreview|enableLongPress"
         latin:backgroundType="functional" />
+    <!-- U+200C: ZERO WIDTH NON-JOINER
+         U+200D: ZERO WIDTH JOINER -->
     <key-style
         latin:styleName="zwnjKeyStyle"
-        latin:keyLabel="&#x200C;"
-        latin:moreKeys="&#x200D;"
+        latin:code="0x200C"
+        latin:keyIcon="iconZwnjKey"
+        latin:moreKeys="\@icon/zwjKey|&#x200D;"
         latin:keyLabelFlags="hasPopupHint"
+        latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="shortcutKeyStyle"
@@ -129,8 +133,6 @@
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping|enableLongPress"
         latin:altCode="@integer/key_space"
         latin:backgroundType="functional" />
-    <!-- U+200C: "" ZERO WIDTH NON-JOINER
-         U+200D: "" ZERO WIDTH JOINER -->
     <key-style
         latin:styleName="tabKeyStyle"
         latin:code="@integer/key_tab"
