@@ -54,9 +54,9 @@
     <!--
          Configuration for LatinKeyboardView
     -->
-    <dimen name="config_key_hysteresis_distance">0.05in</dimen>
+    <dimen name="config_key_hysteresis_distance">8.0dp</dimen>
     <integer name="config_touch_noise_threshold_time">40</integer>
-    <dimen name="config_touch_noise_threshold_distance">2.0mm</dimen>
+    <dimen name="config_touch_noise_threshold_distance">12.6dp</dimen>
     <bool name="config_sliding_key_input_enabled">true</bool>
     <integer name="config_key_repeat_start_timeout">400</integer>
     <integer name="config_key_repeat_interval">50</integer>

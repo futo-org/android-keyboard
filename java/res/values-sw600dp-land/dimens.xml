@@ -38,7 +38,7 @@
     <fraction name="key_bottom_gap_ics">4.0%p</fraction>
     <fraction name="keyboard_bottom_padding_ics">0.0%p</fraction>
 
-    <dimen name="popup_key_height">13.0mm</dimen>
+    <dimen name="popup_key_height">81.9dp</dimen>
 
     <!-- left or right padding of label alignment -->
     <dimen name="key_label_horizontal_padding">18dp</dimen>
@@ -51,7 +51,7 @@
     <fraction name="key_uppercase_letter_ratio">29%</fraction>
     <fraction name="spacebar_text_ratio">33.33%</fraction>
 
-    <dimen name="suggestions_strip_padding">40.0mm</dimen>
+    <dimen name="suggestions_strip_padding">252.0dp</dimen>
     <integer name="max_more_suggestions_row">5</integer>
     <fraction name="min_more_suggestions_width">50%</fraction>
 </resources>
