@@ -46,9 +46,11 @@
             <!-- U+0E0B: "ซ" THAI CHARACTER SO SO -->
             <Key
                 latin:keyLabel="&#x0E0B;" />
-            <!-- U+0E3F: "฿" THAI CURRENCY SYMBOL BAHT -->
+            <!-- U+0E3F: "฿" THAI CURRENCY SYMBOL BAHT
+                 U+0E45: "ๅ" THAI CHARACTER LAKKHANGYAO -->
             <Key
-                latin:keyLabel="&#x0E3F;" />
+                latin:keyLabel="&#x0E3F;"
+                latin:moreKeys="&#x0E45;" />
             <!-- U+0E46: "ๆ" THAI CHARACTER MAIYAMOK
                  U+0E2F: "ฯ" THAI CHARACTER PAIYANNOI -->
             <Key
