@@ -269,6 +269,19 @@ public class BinaryDictInputOutput {
         }
 
         /**
+         * Reads a string from a RandomAccessFile. This is the converse of the above method.
+         */
+        private static String readString(final RandomAccessFile source) throws IOException {
+            final StringBuilder s = new StringBuilder();
+            int character = readChar(source);
+            while (character != INVALID_CHARACTER) {
+                s.appendCodePoint(character);
+                character = readChar(source);
+            }
+            return s.toString();
+        }
+
+        /**
          * Reads a character from the file.
          *
          * This follows the character format documented earlier in this source file.
@@ -995,36 +1008,19 @@ public class BinaryDictInputOutput {
             childrenAddress = NO_CHILDREN_ADDRESS;
             break;
         }
-        ArrayList<PendingAttribute> shortcutTargets = null;
+        ArrayList<WeightedString> shortcutTargets = null;
         if (0 != (flags & FLAG_HAS_SHORTCUT_TARGETS)) {
-            shortcutTargets = new ArrayList<PendingAttribute>();
+            final long pointerBefore = source.getFilePointer();
+            shortcutTargets = new ArrayList<WeightedString>();
+            source.readUnsignedShort(); // Skip the size
             while (true) {
                 final int targetFlags = source.readUnsignedByte();
-                ++addressPointer;
-                final int sign = 0 == (targetFlags & FLAG_ATTRIBUTE_OFFSET_NEGATIVE) ? 1 : -1;
-                int targetAddress = addressPointer;
-                switch (targetFlags & MASK_ATTRIBUTE_ADDRESS_TYPE) {
-                case FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE:
-                    targetAddress += sign * source.readUnsignedByte();
-                    addressPointer += 1;
-                    break;
-                case FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES:
-                    targetAddress += sign * source.readUnsignedShort();
-                    addressPointer += 2;
-                    break;
-                case FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES:
-                    final int offset = ((source.readUnsignedByte() << 16)
-                            + source.readUnsignedShort());
-                    targetAddress += sign * offset;
-                    addressPointer += 3;
-                    break;
-                default:
-                    throw new RuntimeException("Has shortcut targets with no address");
-                }
-                shortcutTargets.add(new PendingAttribute(targetFlags & FLAG_ATTRIBUTE_FREQUENCY,
-                        targetAddress));
+                final String word = CharEncoding.readString(source);
+                shortcutTargets.add(new WeightedString(word,
+                        targetFlags & FLAG_ATTRIBUTE_FREQUENCY));
                 if (0 == (targetFlags & FLAG_ATTRIBUTE_HAS_NEXT)) break;
             }
+            addressPointer += (source.getFilePointer() - pointerBefore);
         }
         ArrayList<PendingAttribute> bigrams = null;
         if (0 != (flags & FLAG_HAS_BIGRAMS)) {
@@ -1149,14 +1145,7 @@ public class BinaryDictInputOutput {
         int groupOffset = nodeOrigin + getGroupCountSize(count);
         for (int i = count; i > 0; --i) {
             CharGroupInfo info = readCharGroup(source, groupOffset);
-            ArrayList<WeightedString> shortcutTargets = null;
-            if (null != info.mShortcutTargets) {
-                shortcutTargets = new ArrayList<WeightedString>();
-                for (PendingAttribute target : info.mShortcutTargets) {
-                    final String word = getWordAtAddress(source, headerSize, target.mAddress);
-                    shortcutTargets.add(new WeightedString(word, target.mFrequency));
-                }
-            }
+            ArrayList<WeightedString> shortcutTargets = info.mShortcutTargets;
             ArrayList<WeightedString> bigrams = null;
             if (null != info.mBigrams) {
                 bigrams = new ArrayList<WeightedString>();
