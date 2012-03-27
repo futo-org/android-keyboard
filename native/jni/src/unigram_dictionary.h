@@ -49,10 +49,6 @@ class UnigramDictionary {
     static const int FLAG_HAS_SHORTCUT_TARGETS = 0x08;
     // Flag for bigram presence
     static const int FLAG_HAS_BIGRAMS = 0x04;
-    // Flag for shortcut-only words. Some words are shortcut-only, which means they match when
-    // the user types them but they don't pop in the suggestion strip, only the words they are
-    // shortcuts for do.
-    static const int FLAG_IS_SHORTCUT_ONLY = 0x02;
 
     // Attribute (bigram/shortcut) related flags:
     // Flag for presence of more attributes

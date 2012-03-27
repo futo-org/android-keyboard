@@ -45,13 +45,19 @@ class TerminalAttributes {
 
         // Gets the shortcut target itself as a uint16_t string. For parameters and return value
         // see BinaryFormat::getWordAtAddress.
+        // TODO: make the output an uint32_t* to handle the whole unicode range.
         inline int getNextShortcutTarget(const int maxDepth, uint16_t* outWord) {
             const int shortcutFlags = BinaryFormat::getFlagsAndForwardPointer(mDict, &mPos);
             mHasNextShortcutTarget =
                     0 != (shortcutFlags & UnigramDictionary::FLAG_ATTRIBUTE_HAS_NEXT);
-            int shortcutAddress =
-                    BinaryFormat::getAttributeAddressAndForwardPointer(mDict, shortcutFlags, &mPos);
-            return BinaryFormat::getWordAtAddress(mDict, shortcutAddress, maxDepth, outWord);
+            unsigned int i;
+            for (i = 0; i < MAX_WORD_LENGTH_INTERNAL; ++i) {
+                const int charCode = BinaryFormat::getCharCodeAndForwardPointer(mDict, &mPos);
+                if (NOT_A_CHARACTER == charCode) break;
+                outWord[i] = (uint16_t)charCode;
+            }
+            mPos += BinaryFormat::CHARACTER_ARRAY_TERMINATOR_SIZE;
+            return i;
         }
     };
 
@@ -65,12 +71,10 @@ class TerminalAttributes {
             mDict(dict), mFlags(flags), mStartPos(pos) {
     }
 
-    inline bool isShortcutOnly() const {
-        return 0 != (mFlags & UnigramDictionary::FLAG_IS_SHORTCUT_ONLY);
-    }
-
     inline ShortcutIterator getShortcutIterator() const {
-        return ShortcutIterator(mDict, mStartPos, mFlags);
+        // The size of the shortcuts is stored here so that the whole shortcut chunk can be
+        // skipped quickly, so we ignore it.
+        return ShortcutIterator(mDict, mStartPos + BinaryFormat::SHORTCUT_LIST_SIZE_SIZE, mFlags);
     }
 };
 } // namespace latinime

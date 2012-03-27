@@ -366,10 +366,9 @@ inline void UnigramDictionary::onTerminal(const int freq,
         WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
         const int finalFreq = correction->getFinalFreq(freq, &wordPointer, &wordLength);
         if (finalFreq != NOT_A_FREQUENCY) {
-            if (!terminalAttributes.isShortcutOnly()) {
-                addWord(wordPointer, wordLength, finalFreq, masterQueue);
-            }
+            addWord(wordPointer, wordLength, finalFreq, masterQueue);
 
+            const int shortcutFreq = finalFreq > 0 ? finalFreq - 1 : 0;
             // Please note that the shortcut candidates will be added to the master queue only.
             TerminalAttributes::ShortcutIterator iterator =
                     terminalAttributes.getShortcutIterator();
@@ -379,11 +378,12 @@ inline void UnigramDictionary::onTerminal(const int freq,
                 // We need to either modulate the frequency of each shortcut according
                 // to its own shortcut frequency or to make the queue
                 // so that the insert order is protected inside the queue for words
-                // with the same score.
+                // with the same score. For the moment we use -1 to make sure the shortcut will
+                // never be in front of the word.
                 uint16_t shortcutTarget[MAX_WORD_LENGTH_INTERNAL];
                 const int shortcutTargetStringLength = iterator.getNextShortcutTarget(
                         MAX_WORD_LENGTH_INTERNAL, shortcutTarget);
-                addWord(shortcutTarget, shortcutTargetStringLength, finalFreq, masterQueue);
+                addWord(shortcutTarget, shortcutTargetStringLength, shortcutFreq, masterQueue);
             }
         }
     }
