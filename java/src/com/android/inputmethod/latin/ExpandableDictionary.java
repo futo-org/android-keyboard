@@ -210,7 +210,11 @@ public class ExpandableDictionary extends Dictionary {
         if (mCodes.length < mInputLength) mCodes = new int[mInputLength][];
         // Cache the codes so that we don't have to lookup an array list
         for (int i = 0; i < mInputLength; i++) {
-            mCodes[i] = codes.getCodesAt(i);
+            // TODO: Calculate proximity info here.
+            if (mCodes[i] == null || mCodes[i].length < 1) {
+                mCodes[i] = new int[1];
+            }
+            mCodes[i][0] = codes.getCodeAt(i);
         }
         mMaxDepth = mInputLength * 3;
         getWordsRec(mRoots, codes, mWordBuilder, 0, false, 1, 0, -1, callback);
@@ -319,7 +323,7 @@ public class ExpandableDictionary extends Dictionary {
                 }
             } else {
                 // Don't use alternatives if we're looking for missing characters
-                final int alternativesSize = skipPos >= 0? 1 : currentChars.length;
+                final int alternativesSize = skipPos >= 0 ? 1 : currentChars.length;
                 for (int j = 0; j < alternativesSize; j++) {
                     final int addedAttenuation = (j > 0 ? 1 : 2);
                     final int currentChar = currentChars[j];

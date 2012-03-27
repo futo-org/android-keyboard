@@ -144,9 +144,7 @@ public class BinaryDictionary extends Dictionary {
         int codesSize = codes.size();
         Arrays.fill(mInputCodes, -1);
         if (codesSize > 0) {
-            int[] alternatives = codes.getCodesAt(0);
-            System.arraycopy(alternatives, 0, mInputCodes, 0,
-                    Math.min(alternatives.length, MAX_PROXIMITY_CHARS_SIZE));
+            mInputCodes[0] = codes.getCodeAt(0);
         }
 
         int count = getBigramsNative(mNativeDict, chars, chars.length, mInputCodes, codesSize,
@@ -205,11 +203,7 @@ public class BinaryDictionary extends Dictionary {
 
         Arrays.fill(mInputCodes, WordComposer.NOT_A_CODE);
         for (int i = 0; i < codesSize; i++) {
-            final int[] alternatives = codes.getCodesAt(i);
-            if (alternatives == null || alternatives.length < 1) {
-                continue;
-            }
-            mInputCodes[i] = alternatives[0];
+            mInputCodes[i] = codes.getCodeAt(i);
         }
         Arrays.fill(outputChars, (char) 0);
         Arrays.fill(scores, 0);
