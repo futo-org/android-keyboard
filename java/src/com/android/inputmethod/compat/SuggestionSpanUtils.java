@@ -48,21 +48,30 @@ public class SuggestionSpanUtils {
             Context.class, Locale.class, String[].class, int.class, Class.class };
     private static final Constructor<?> CONSTRUCTOR_SuggestionSpan = CompatUtils
             .getConstructor(CLASS_SuggestionSpan, INPUT_TYPE_SuggestionSpan);
-    public static final Field FIELD_FLAG_AUTO_CORRECTION
-            = CompatUtils.getField(CLASS_SuggestionSpan, "FLAG_AUTO_CORRECTION");
+    public static final Field FIELD_FLAG_EASY_CORRECT =
+            CompatUtils.getField(CLASS_SuggestionSpan, "FLAG_EASY_CORRECT");
+    public static final Field FIELD_FLAG_MISSPELLED =
+            CompatUtils.getField(CLASS_SuggestionSpan, "FLAG_MISSPELLED");
+    public static final Field FIELD_FLAG_AUTO_CORRECTION =
+            CompatUtils.getField(CLASS_SuggestionSpan, "FLAG_AUTO_CORRECTION");
     public static final Field FIELD_SUGGESTIONS_MAX_SIZE
             = CompatUtils.getField(CLASS_SuggestionSpan, "SUGGESTIONS_MAX_SIZE");
+    public static final Integer OBJ_FLAG_EASY_CORRECT = (Integer) CompatUtils
+            .getFieldValue(null, null, FIELD_FLAG_EASY_CORRECT);
+    public static final Integer OBJ_FLAG_MISSPELLED = (Integer) CompatUtils
+            .getFieldValue(null, null, FIELD_FLAG_MISSPELLED);
     public static final Integer OBJ_FLAG_AUTO_CORRECTION = (Integer) CompatUtils
-            .getFieldValue(null, null, FIELD_FLAG_AUTO_CORRECTION);;
+            .getFieldValue(null, null, FIELD_FLAG_AUTO_CORRECTION);
     public static final Integer OBJ_SUGGESTIONS_MAX_SIZE = (Integer) CompatUtils
-            .getFieldValue(null, null, FIELD_SUGGESTIONS_MAX_SIZE);;
+            .getFieldValue(null, null, FIELD_SUGGESTIONS_MAX_SIZE);
 
     static {
         SUGGESTION_SPAN_IS_SUPPORTED =
                 CLASS_SuggestionSpan != null && CONSTRUCTOR_SuggestionSpan != null;
         if (LatinImeLogger.sDBG) {
             if (SUGGESTION_SPAN_IS_SUPPORTED
-                    && (OBJ_FLAG_AUTO_CORRECTION == null || OBJ_SUGGESTIONS_MAX_SIZE == null)) {
+                    && (OBJ_FLAG_AUTO_CORRECTION == null || OBJ_SUGGESTIONS_MAX_SIZE == null
+                            || OBJ_FLAG_MISSPELLED == null || OBJ_FLAG_EASY_CORRECT == null)) {
                 throw new RuntimeException("Field is accidentially null.");
             }
         }
@@ -71,7 +80,8 @@ public class SuggestionSpanUtils {
     public static CharSequence getTextWithAutoCorrectionIndicatorUnderline(
             Context context, CharSequence text) {
         if (TextUtils.isEmpty(text) || CONSTRUCTOR_SuggestionSpan == null
-                || OBJ_FLAG_AUTO_CORRECTION == null || OBJ_SUGGESTIONS_MAX_SIZE == null) {
+                || OBJ_FLAG_AUTO_CORRECTION == null || OBJ_SUGGESTIONS_MAX_SIZE == null
+                || OBJ_FLAG_MISSPELLED == null || OBJ_FLAG_EASY_CORRECT == null) {
             return text;
         }
         final Spannable spannable = text instanceof Spannable
@@ -104,6 +114,7 @@ public class SuggestionSpanUtils {
             spannable = new SpannableString(pickedWord);
         }
         final ArrayList<String> suggestionsList = new ArrayList<String>();
+        boolean sameAsTyped = false;
         for (int i = 0; i < suggestedWords.size(); ++i) {
             if (suggestionsList.size() >= OBJ_SUGGESTIONS_MAX_SIZE) {
                 break;
@@ -111,11 +122,18 @@ public class SuggestionSpanUtils {
             final CharSequence word = suggestedWords.getWord(i);
             if (!TextUtils.equals(pickedWord, word)) {
                 suggestionsList.add(word.toString());
+            } else if (i == 0) {
+                sameAsTyped = true;
             }
         }
+        // TODO: Share the implementation for checking typed word validity between the IME
+        // and the spell checker.
+        final int flag = (sameAsTyped && !suggestedWords.mTypedWordValid)
+                ? ((int)OBJ_FLAG_EASY_CORRECT | (int)OBJ_FLAG_MISSPELLED)
+                : 0;
 
         final Object[] args =
-                { context, null, suggestionsList.toArray(new String[suggestionsList.size()]), 0,
+                { context, null, suggestionsList.toArray(new String[suggestionsList.size()]), flag,
                         (Class<?>) SuggestionSpanPickedNotificationReceiver.class };
         final Object ss = CompatUtils.newInstance(CONSTRUCTOR_SuggestionSpan, args);
         if (ss == null) {

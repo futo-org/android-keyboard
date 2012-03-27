@@ -31,9 +31,7 @@ import android.os.Process;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.view.MotionEvent;
 
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.io.BufferedReader;
@@ -112,7 +110,6 @@ public class Utils {
         /* package */ static final int BUFSIZE = 20;
         private InputMethodService mContext;
         private boolean mEnabled = false;
-        private boolean mUsabilityStudy = false;
         private int mEnd = 0;
         /* package */ int mLength = 0;
         private char[] mCharBuf = new char[BUFSIZE];
@@ -129,7 +126,6 @@ public class Utils {
                 boolean usabilityStudy) {
             sRingCharBuffer.mContext = context;
             sRingCharBuffer.mEnabled = enabled || usabilityStudy;
-            sRingCharBuffer.mUsabilityStudy = usabilityStudy;
             UsabilityStudyLogUtils.getInstance().init(context);
             return sRingCharBuffer;
         }
