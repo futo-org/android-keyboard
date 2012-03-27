@@ -1172,11 +1172,10 @@ public class BinaryDictInputOutput {
                 }
                 nodeContents.add(
                         new CharGroup(info.mCharacters, shortcutTargets, bigrams, info.mFrequency,
-                                children, false));
+                                children));
             } else {
                 nodeContents.add(
-                        new CharGroup(info.mCharacters, shortcutTargets, bigrams, info.mFrequency,
-                                false));
+                        new CharGroup(info.mCharacters, shortcutTargets, bigrams, info.mFrequency));
             }
             groupOffset = info.mEndAddress;
         }
