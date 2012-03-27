@@ -21,7 +21,6 @@ import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -32,9 +31,9 @@ public class WordComposer {
     public static final int NOT_A_CODE = KeyDetector.NOT_A_CODE;
     public static final int NOT_A_COORDINATE = -1;
 
-    final static int N = BinaryDictionary.MAX_WORD_LENGTH;
+    private static final int N = BinaryDictionary.MAX_WORD_LENGTH;
 
-    private ArrayList<int[]> mCodes;
+    private int[] mPrimaryKeyCodes;
     private int[] mXCoordinates;
     private int[] mYCoordinates;
     private StringBuilder mTypedWord;
@@ -44,6 +43,7 @@ public class WordComposer {
     private int mCapsCount;
     private boolean mAutoCapitalized;
     private int mTrailingSingleQuotesCount;
+    private int mCodePointSize;
 
     /**
      * Whether the user chose to capitalize the first char of the word.
@@ -51,12 +51,13 @@ public class WordComposer {
     private boolean mIsFirstCharCapitalized;
 
     public WordComposer() {
-        mCodes = new ArrayList<int[]>(N);
+        mPrimaryKeyCodes = new int[N];
         mTypedWord = new StringBuilder(N);
         mXCoordinates = new int[N];
         mYCoordinates = new int[N];
         mAutoCorrection = null;
         mTrailingSingleQuotesCount = 0;
+        refreshSize();
     }
 
     public WordComposer(WordComposer source) {
@@ -64,7 +65,7 @@ public class WordComposer {
     }
 
     public void init(WordComposer source) {
-        mCodes = new ArrayList<int[]>(source.mCodes);
+        mPrimaryKeyCodes = Arrays.copyOf(source.mPrimaryKeyCodes, source.mPrimaryKeyCodes.length);
         mTypedWord = new StringBuilder(source.mTypedWord);
         mXCoordinates = Arrays.copyOf(source.mXCoordinates, source.mXCoordinates.length);
         mYCoordinates = Arrays.copyOf(source.mYCoordinates, source.mYCoordinates.length);
@@ -72,18 +73,23 @@ public class WordComposer {
         mIsFirstCharCapitalized = source.mIsFirstCharCapitalized;
         mAutoCapitalized = source.mAutoCapitalized;
         mTrailingSingleQuotesCount = source.mTrailingSingleQuotesCount;
+        refreshSize();
     }
 
     /**
      * Clear out the keys registered so far.
      */
     public void reset() {
-        mCodes.clear();
         mTypedWord.setLength(0);
         mAutoCorrection = null;
         mCapsCount = 0;
         mIsFirstCharCapitalized = false;
         mTrailingSingleQuotesCount = 0;
+        refreshSize();
+    }
+
+    public final void refreshSize() {
+        mCodePointSize = mTypedWord.codePointCount(0, mTypedWord.length());
     }
 
     /**
@@ -91,20 +97,15 @@ public class WordComposer {
      * @return the number of keystrokes
      */
     public final int size() {
-        return mCodes.size();
+        return mCodePointSize;
     }
 
     public final boolean isComposingWord() {
-        return mCodes.size() > 0;
+        return size() > 0;
     }
 
-    /**
-     * Returns the codes at a particular position in the word.
-     * @param index the position in the word
-     * @return the unicode for the pressed and surrounding keys
-     */
-    public int[] getCodesAt(int index) {
-        return mCodes.get(index);
+    public int getCodeAt(int index) {
+        return mPrimaryKeyCodes[index];
     }
 
     public int[] getXCoordinates() {
@@ -149,9 +150,10 @@ public class WordComposer {
      * @param codes the array of unicode values
      */
     private void add(int primaryCode, int[] codes, int keyX, int keyY) {
-        final int newIndex = mCodes.size();
+        final int newIndex = size();
         mTypedWord.appendCodePoint(primaryCode);
-        mCodes.add(codes);
+        refreshSize();
+        mPrimaryKeyCodes[newIndex] = codes[0];
         if (newIndex < BinaryDictionary.MAX_WORD_LENGTH) {
             mXCoordinates[newIndex] = keyX;
             mYCoordinates[newIndex] = keyY;
@@ -201,9 +203,8 @@ public class WordComposer {
      * Delete the last keystroke as a result of hitting backspace.
      */
     public void deleteLast() {
-        final int size = mCodes.size();
+        final int size = size();
         if (size > 0) {
-            mCodes.remove(size - 1);
             // Note: mTypedWord.length() and mCodes.length differ when there are surrogate pairs
             final int stringBuilderLength = mTypedWord.length();
             if (stringBuilderLength < size) {
@@ -217,9 +218,10 @@ public class WordComposer {
                 mTypedWord.deleteCharAt(stringBuilderLength - 1);
             }
             if (Character.isUpperCase(lastChar)) mCapsCount--;
+            refreshSize();
         }
         // We may have deleted the last one.
-        if (0 == mCodes.size()) {
+        if (0 == size()) {
             mIsFirstCharCapitalized = false;
         }
         if (mTrailingSingleQuotesCount > 0) {
@@ -307,29 +309,31 @@ public class WordComposer {
         // Note: currently, we come here whenever we commit a word. If it's a MANUAL_PICK
         // or a DECIDED_WORD we may cancel the commit later; otherwise, we should deactivate
         // the last composed word to ensure this does not happen.
-        final ArrayList<int[]> codes = mCodes;
+        final int[] primaryKeyCodes = mPrimaryKeyCodes;
         final int[] xCoordinates = mXCoordinates;
         final int[] yCoordinates = mYCoordinates;
-        mCodes = new ArrayList<int[]>(N);
+        mPrimaryKeyCodes = new int[N];
         mXCoordinates = new int[N];
         mYCoordinates = new int[N];
-        final LastComposedWord lastComposedWord = new LastComposedWord(codes,
+        final LastComposedWord lastComposedWord = new LastComposedWord(primaryKeyCodes,
                 xCoordinates, yCoordinates, mTypedWord.toString(), committedWord, separatorCode);
         if (type != LastComposedWord.COMMIT_TYPE_DECIDED_WORD
                 && type != LastComposedWord.COMMIT_TYPE_MANUAL_PICK) {
             lastComposedWord.deactivate();
         }
         mTypedWord.setLength(0);
+        refreshSize();
         mAutoCorrection = null;
         return lastComposedWord;
     }
 
     public void resumeSuggestionOnLastComposedWord(final LastComposedWord lastComposedWord) {
-        mCodes = lastComposedWord.mCodes;
+        mPrimaryKeyCodes = lastComposedWord.mPrimaryKeyCodes;
         mXCoordinates = lastComposedWord.mXCoordinates;
         mYCoordinates = lastComposedWord.mYCoordinates;
         mTypedWord.setLength(0);
         mTypedWord.append(lastComposedWord.mTypedWord);
+        refreshSize();
         mAutoCorrection = null; // This will be filled by the next call to updateSuggestion.
     }
 }

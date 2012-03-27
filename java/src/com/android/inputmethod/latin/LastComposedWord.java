@@ -18,8 +18,6 @@ package com.android.inputmethod.latin;
 
 import android.text.TextUtils;
 
-import java.util.ArrayList;
-
 /**
  * This class encapsulates data about a word previously composed, but that has been
  * committed already. This is used for resuming suggestion, and cancel auto-correction.
@@ -42,7 +40,7 @@ public class LastComposedWord {
 
     public static final int NOT_A_SEPARATOR = -1;
 
-    public final ArrayList<int[]> mCodes;
+    public final int[] mPrimaryKeyCodes;
     public final int[] mXCoordinates;
     public final int[] mYCoordinates;
     public final String mTypedWord;
@@ -56,10 +54,10 @@ public class LastComposedWord {
 
     // Warning: this is using the passed objects as is and fully expects them to be
     // immutable. Do not fiddle with their contents after you passed them to this constructor.
-    public LastComposedWord(final ArrayList<int[]> codes, final int[] xCoordinates,
+    public LastComposedWord(final int[] primaryKeyCodes, final int[] xCoordinates,
             final int[] yCoordinates, final String typedWord, final String committedWord,
             final int separatorCode) {
-        mCodes = codes;
+        mPrimaryKeyCodes = primaryKeyCodes;
         mXCoordinates = xCoordinates;
         mYCoordinates = yCoordinates;
         mTypedWord = typedWord;
