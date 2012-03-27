@@ -41,6 +41,7 @@
     hi: Hindi/hindi
     hr: Croatian/qwertz
     hu: Hungarian/qwertz
+    is: Icelandic/qwerty
     it: Italian/qwerty
     iw: Hebrew/hebrew
     ka: Georgian/georgian
@@ -186,6 +187,12 @@
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
             android:imeSubtypeLocale="hu"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:imeSubtypeLocale="is"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection"
     />
