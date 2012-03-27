@@ -124,6 +124,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     /** The canvas for the above mutable keyboard bitmap */
     private Canvas mCanvas;
     private final Paint mPaint = new Paint();
+    private final Paint.FontMetrics mFontMetrics = new Paint.FontMetrics();
     // This map caches key label text height in pixel as value and key label text size as map key.
     private static final HashMap<Integer, Float> sTextHeightCache =
             new HashMap<Integer, Float>();
@@ -659,13 +660,14 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 // The hint label is placed at top-right corner of the key. Used mainly on tablet.
                 hintX = keyWidth - params.mKeyShiftedLetterHintPadding
                         - getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) / 2;
-                hintY = -paint.ascent();
+                paint.getFontMetrics(mFontMetrics);
+                hintY = -mFontMetrics.top + params.mKeyShiftedLetterHintPadding;
                 paint.setTextAlign(Align.CENTER);
             } else { // key.hasHintLetter()
                 // The hint label is placed at top-right corner of the key. Used mainly on phone.
                 hintX = keyWidth - params.mKeyHintLetterPadding
                         - getCharWidth(KEY_NUMERIC_HINT_LABEL_REFERENCE_CHAR, paint) / 2;
-                hintY = -paint.ascent();
+                hintY = -paint.ascent() + params.mKeyHintLetterPadding;
                 paint.setTextAlign(Align.CENTER);
             }
             canvas.drawText(hint, 0, hint.length(), hintX, hintY, paint);
