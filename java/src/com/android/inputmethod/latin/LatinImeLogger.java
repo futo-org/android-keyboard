@@ -80,8 +80,4 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
 
     public static void onPrintAllUsabilityStudyLogs() {
     }
-
-    public static boolean isResearcherPackage(Context context) {
-        return false;
-    }
 }

@@ -69,6 +69,7 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.LatinKeyboardView;
 import com.android.inputmethod.latin.Utils.UsabilityStudyLogUtils;
+import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.suggestions.SuggestionsView;
 
 import java.io.FileDescriptor;
@@ -439,7 +440,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mPrefs = prefs;
         LatinImeLogger.init(this, prefs);
-        ResearchLogger.init(this, prefs);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.init(this, prefs);
+        }
         LanguageSwitcherProxy.init(this, prefs);
         InputMethodManagerCompatWrapper.init(this);
         SubtypeSwitcher.init(this);
@@ -1264,8 +1267,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         mLastKeyTime = when;
 
-        if (ResearchLogger.sIsLogging) {
-            ResearchLogger.getInstance().logKeyEvent(primaryCode, x, y);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            if (ResearchLogger.sIsLogging) {
+                ResearchLogger.getInstance().logKeyEvent(primaryCode, x, y);
+            }
         }
 
         final KeyboardSwitcher switcher = mKeyboardSwitcher;

@@ -41,7 +41,7 @@ import java.util.Date;
  * This class logs operations on the IME keyboard, including what the user has typed.
  * Data is stored locally in a file in app-specific storage.
  *
- * This functionality is off by default.
+ * This functionality is off by default. See {@link ProductionFlag.IS_EXPERIMENTAL}.
  */
 public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = ResearchLogger.class.getSimpleName();

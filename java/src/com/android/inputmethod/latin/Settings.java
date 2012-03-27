@@ -46,6 +46,7 @@ import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
 import com.android.inputmethod.compat.VibratorCompatWrapper;
 import com.android.inputmethod.deprecated.VoiceProxy;
+import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethodcommon.InputMethodSettingsActivity;
 
 import java.util.Locale;
@@ -238,17 +239,16 @@ public class Settings extends InputMethodSettingsActivity
             textCorrectionGroup.removePreference(dictionaryLink);
         }
 
-        final boolean isResearcherPackage = LatinImeLogger.isResearcherPackage(this);
         final boolean showUsabilityStudyModeOption =
                 res.getBoolean(R.bool.config_enable_usability_study_mode_option)
-                        || isResearcherPackage || ENABLE_EXPERIMENTAL_SETTINGS;
+                        || ProductionFlag.IS_EXPERIMENTAL || ENABLE_EXPERIMENTAL_SETTINGS;
         final Preference usabilityStudyPref = findPreference(PREF_USABILITY_STUDY_MODE);
         if (!showUsabilityStudyModeOption) {
             if (usabilityStudyPref != null) {
                 miscSettings.removePreference(usabilityStudyPref);
             }
         }
-        if (isResearcherPackage) {
+        if (ProductionFlag.IS_EXPERIMENTAL) {
             if (usabilityStudyPref instanceof CheckBoxPreference) {
                 CheckBoxPreference checkbox = (CheckBoxPreference)usabilityStudyPref;
                 checkbox.setChecked(prefs.getBoolean(PREF_USABILITY_STUDY_MODE, true));
