@@ -109,11 +109,11 @@
     <string name="voice_listening" msgid="467518160751321844">"Ucapkan sekarang"</string>
     <string name="voice_working" msgid="6666937792815731889">"Bekerja"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Galat: Coba lagi."</string>
+    <string name="voice_error" msgid="5140896300312186162">"Kesalahan: Coba lagi."</string>
     <string name="voice_network_error" msgid="6649556447401862563">"Tidak dapat menyambung"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Galat, terlalu banyak ucapan."</string>
+    <string name="voice_too_much_speech" msgid="5746973620134227376">"Kesalahan, terlalu banyak ucapan."</string>
     <string name="voice_audio_error" msgid="5072707727016414454">"Masalah audio"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Galat server"</string>
+    <string name="voice_server_error" msgid="7807129913977261644">"Kesalahan server"</string>
     <string name="voice_speech_timeout" msgid="8461817525075498795">"Tidak terdengar ucapan"</string>
     <string name="voice_no_match" msgid="4285117547030179174">"Tak ditemukan yang cocok"</string>
     <string name="voice_not_installed" msgid="5552450909753842415">"Penelusuran suara tidak terpasang"</string>
