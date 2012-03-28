@@ -311,9 +311,6 @@ public class FusionDictionary implements Iterable<Word> {
     public void add(final String word, final int frequency,
             final ArrayList<WeightedString> shortcutTargets,
             final ArrayList<WeightedString> bigrams) {
-        if (null != shortcutTargets) {
-            addNeutralWords(shortcutTargets);
-        }
         if (null != bigrams) {
             addNeutralWords(bigrams);
         }
@@ -350,7 +347,6 @@ public class FusionDictionary implements Iterable<Word> {
         if (null == shortcutTargets) {
             throw new RuntimeException("Can't add a shortcut without targets");
         }
-        addNeutralWords(shortcutTargets);
         add(getCodePoints(word), frequency, shortcutTargets, null, true /* isShortcutOnly */);
     }
 
