@@ -40,14 +40,13 @@ public class BinaryDictionary extends Dictionary {
     public static final int MAX_WORDS = 18;
 
     private static final String TAG = "BinaryDictionary";
-    private static final int MAX_PROXIMITY_CHARS_SIZE = ProximityInfo.MAX_PROXIMITY_CHARS_SIZE;
     private static final int MAX_BIGRAMS = 60;
 
     private static final int TYPED_LETTER_MULTIPLIER = 2;
 
     private int mDicTypeId;
     private long mNativeDict;
-    private final int[] mInputCodes = new int[MAX_WORD_LENGTH * MAX_PROXIMITY_CHARS_SIZE];
+    private final int[] mInputCodes = new int[MAX_WORD_LENGTH];
     private final char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_WORDS];
     private final char[] mOutputChars_bigrams = new char[MAX_WORD_LENGTH * MAX_BIGRAMS];
     private final int[] mScores = new int[MAX_WORDS];
@@ -111,8 +110,7 @@ public class BinaryDictionary extends Dictionary {
     }
 
     private native long openNative(String sourceDir, long dictOffset, long dictSize,
-            int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength,
-            int maxWords, int maxAlternatives);
+            int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength, int maxWords);
     private native void closeNative(long dict);
     private native boolean isValidWordNative(long dict, char[] word, int wordLength);
     private native int getSuggestionsNative(long dict, long proximityInfo, int[] xCoordinates,
@@ -120,7 +118,7 @@ public class BinaryDictionary extends Dictionary {
             int[] scores);
     private native int getBigramsNative(long dict, char[] prevWord, int prevWordLength,
             int[] inputCodes, int inputCodesLength, char[] outputChars, int[] scores,
-            int maxWordLength, int maxBigrams, int maxAlternatives);
+            int maxWordLength, int maxBigrams);
     private static native double calcNormalizedScoreNative(
             char[] before, int beforeLength, char[] after, int afterLength, int score);
     private static native int editDistanceNative(
@@ -128,8 +126,7 @@ public class BinaryDictionary extends Dictionary {
 
     private final void loadDictionary(String path, long startOffset, long length) {
         mNativeDict = openNative(path, startOffset, length,
-                    TYPED_LETTER_MULTIPLIER, FULL_WORD_SCORE_MULTIPLIER,
-                    MAX_WORD_LENGTH, MAX_WORDS, MAX_PROXIMITY_CHARS_SIZE);
+                TYPED_LETTER_MULTIPLIER, FULL_WORD_SCORE_MULTIPLIER, MAX_WORD_LENGTH, MAX_WORDS);
     }
 
     @Override
@@ -148,8 +145,7 @@ public class BinaryDictionary extends Dictionary {
         }
 
         int count = getBigramsNative(mNativeDict, chars, chars.length, mInputCodes, codesSize,
-                mOutputChars_bigrams, mBigramScores, MAX_WORD_LENGTH, MAX_BIGRAMS,
-                MAX_PROXIMITY_CHARS_SIZE);
+                mOutputChars_bigrams, mBigramScores, MAX_WORD_LENGTH, MAX_BIGRAMS);
         if (count > MAX_BIGRAMS) {
             count = MAX_BIGRAMS;
         }

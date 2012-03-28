@@ -27,7 +27,7 @@ namespace latinime {
 // TODO: Change the type of all keyCodes to uint32_t
 Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
         int typedLetterMultiplier, int fullWordMultiplier,
-        int maxWordLength, int maxWords, int maxAlternatives)
+        int maxWordLength, int maxWords)
     : mDict((unsigned char*) dict), mDictSize(dictSize),
     mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust),
     // Checks whether it has the latest dictionary or the old dictionary
@@ -44,8 +44,8 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
             maxWords, SUB_QUEUE_MAX_WORDS, maxWordLength);
     const unsigned int headerSize = BinaryFormat::getHeaderSize(mDict);
     mUnigramDictionary = new UnigramDictionary(mDict + headerSize, typedLetterMultiplier,
-            fullWordMultiplier, maxWordLength, maxWords, maxAlternatives, IS_LATEST_DICT_VERSION);
-    mBigramDictionary = new BigramDictionary(mDict + headerSize, maxWordLength, maxAlternatives,
+            fullWordMultiplier, maxWordLength, maxWords, IS_LATEST_DICT_VERSION);
+    mBigramDictionary = new BigramDictionary(mDict + headerSize, maxWordLength,
             IS_LATEST_DICT_VERSION, true /* hasBigram */, this);
 }
 

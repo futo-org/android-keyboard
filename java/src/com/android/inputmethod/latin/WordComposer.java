@@ -127,7 +127,6 @@ public class WordComposer {
 
     // TODO: remove input keyDetector
     public void add(int primaryCode, int x, int y, KeyDetector keyDetector) {
-        final int[] codes;
         final int keyX;
         final int keyY;
         if (null == keyDetector
@@ -135,16 +134,13 @@ public class WordComposer {
                 || y == KeyboardActionListener.SUGGESTION_STRIP_COORDINATE
                 || x == KeyboardActionListener.NOT_A_TOUCH_COORDINATE
                 || y == KeyboardActionListener.NOT_A_TOUCH_COORDINATE) {
-            codes = new int[] { primaryCode };
             keyX = x;
             keyY = y;
         } else {
-            // TODO: Pass an integer instead of an integer array
-            codes = new int[] { primaryCode };
             keyX = keyDetector.getTouchX(x);
             keyY = keyDetector.getTouchY(y);
         }
-        add(primaryCode, codes, keyX, keyY);
+        add(primaryCode, keyX, keyY);
     }
 
     /**
@@ -152,7 +148,7 @@ public class WordComposer {
      * the array containing unicode for adjacent keys, sorted by reducing probability/proximity.
      * @param codes the array of unicode values
      */
-    private void add(int primaryCode, int[] codes, int keyX, int keyY) {
+    private void add(int primaryCode, int keyX, int keyY) {
         final int newIndex = size();
         mTypedWord.appendCodePoint(primaryCode);
         refreshSize();
@@ -181,13 +177,11 @@ public class WordComposer {
             if (key.mCode == codePoint) {
                 final int x = key.mX + key.mWidth / 2;
                 final int y = key.mY + key.mHeight / 2;
-                // TODO: Pass an integer instead of an integer array
-                add(codePoint, new int[] { key.mCode }, x, y);
+                add(codePoint, x, y);
                 return;
             }
         }
-        add(codePoint, new int[] { codePoint },
-                WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
+        add(codePoint, WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
     }
 
     /**

@@ -22,11 +22,10 @@ namespace latinime {
 class Dictionary;
 class BigramDictionary {
  public:
-    BigramDictionary(const unsigned char *dict, int maxWordLength, int maxAlternatives,
+    BigramDictionary(const unsigned char *dict, int maxWordLength,
             const bool isLatestDictVersion, const bool hasBigram, Dictionary *parentDictionary);
     int getBigrams(unsigned short *word, int length, int *codes, int codesSize,
-            unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams,
-            int maxAlternatives);
+            unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams);
     ~BigramDictionary();
  private:
     bool addWordBigram(unsigned short *word, int length, int frequency);
@@ -39,7 +38,8 @@ class BigramDictionary {
 
     const unsigned char *DICT;
     const int MAX_WORD_LENGTH;
-    const int MAX_ALTERNATIVES;
+    // TODO: Re-implement proximity correction for bigram correction
+    static const int MAX_ALTERNATIVES = 1;
     const bool IS_LATEST_DICT_VERSION;
     const bool HAS_BIGRAM;
 

@@ -30,7 +30,7 @@ namespace latinime {
 class Dictionary {
  public:
     Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int typedLetterMultipler,
-            int fullWordMultiplier, int maxWordLength, int maxWords, int maxAlternatives);
+            int fullWordMultiplier, int maxWordLength, int maxWords);
 
     int getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
             int *codes, int codesSize, int flags, unsigned short *outWords, int *frequencies) {
@@ -41,10 +41,9 @@ class Dictionary {
 
     // TODO: Call mBigramDictionary instead of mUnigramDictionary
     int getBigrams(unsigned short *word, int length, int *codes, int codesSize,
-            unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams,
-            int maxAlternatives) {
+            unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams) {
         return mBigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies,
-                maxWordLength, maxBigrams, maxAlternatives);
+                maxWordLength, maxBigrams);
     }
 
     bool isValidWord(unsigned short *word, int length);

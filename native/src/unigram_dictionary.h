@@ -74,7 +74,7 @@ class UnigramDictionary {
     static const int MAX_ERRORS_FOR_TWO_WORDS = 1;
 
     UnigramDictionary(const uint8_t* const streamStart, int typedLetterMultipler,
-            int fullWordMultiplier, int maxWordLength, int maxWords, int maxProximityChars,
+            int fullWordMultiplier, int maxWordLength, int maxWords,
             const bool isLatestDictVersion);
     bool isValidWord(const uint16_t* const inWord, const int length) const;
     int getBigramPosition(int pos, unsigned short *word, int offset, int length) const;

@@ -26,10 +26,10 @@
 namespace latinime {
 
 BigramDictionary::BigramDictionary(const unsigned char *dict, int maxWordLength,
-        int maxAlternatives, const bool isLatestDictVersion, const bool hasBigram,
+        const bool isLatestDictVersion, const bool hasBigram,
         Dictionary *parentDictionary)
     : DICT(dict), MAX_WORD_LENGTH(maxWordLength),
-    MAX_ALTERNATIVES(maxAlternatives), IS_LATEST_DICT_VERSION(isLatestDictVersion),
+    IS_LATEST_DICT_VERSION(isLatestDictVersion),
     HAS_BIGRAM(hasBigram), mParentDictionary(parentDictionary) {
     if (DEBUG_DICT) {
         AKLOGI("BigramDictionary - constructor");
@@ -92,7 +92,6 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
  * bigramFreq: an array to output frequencies.
  * maxWordLength: the maximum size of a word.
  * maxBigrams: the maximum number of bigrams fitting in the bigramChars array.
- * maxAlteratives: unused.
  * This method returns the number of bigrams this word has, for backward compatibility.
  * Note: this is not the number of bigrams output in the array, which is the number of
  * bigrams this word has WHOSE first letter also matches the letter the user typed.
@@ -103,7 +102,7 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
  */
 int BigramDictionary::getBigrams(unsigned short *prevWord, int prevWordLength, int *codes,
         int codesSize, unsigned short *bigramChars, int *bigramFreq, int maxWordLength,
-        int maxBigrams, int maxAlternatives) {
+        int maxBigrams) {
     // TODO: remove unused arguments, and refrain from storing stuff in members of this class
     // TODO: have "in" arguments before "out" ones, and make out args explicit in the name
     mBigramFreq = bigramFreq;
