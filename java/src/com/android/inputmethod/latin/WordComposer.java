@@ -139,9 +139,8 @@ public class WordComposer {
             keyX = x;
             keyY = y;
         } else {
-            final Key key = keyDetector.detectHitKey(x, y);
             // TODO: Pass an integer instead of an integer array
-            codes = new int[] { key != null ? key.mCode : NOT_A_CODE };
+            codes = new int[] { primaryCode };
             keyX = keyDetector.getTouchX(x);
             keyY = keyDetector.getTouchY(y);
         }
@@ -158,7 +157,8 @@ public class WordComposer {
         mTypedWord.appendCodePoint(primaryCode);
         refreshSize();
         if (newIndex < BinaryDictionary.MAX_WORD_LENGTH) {
-            mPrimaryKeyCodes[newIndex] = codes[0];
+            mPrimaryKeyCodes[newIndex] = primaryCode >= Keyboard.CODE_SPACE
+                    ? Character.toLowerCase(primaryCode) : primaryCode;
             mXCoordinates[newIndex] = keyX;
             mYCoordinates[newIndex] = keyY;
         }
