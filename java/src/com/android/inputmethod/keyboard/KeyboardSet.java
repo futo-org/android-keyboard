@@ -63,8 +63,6 @@ public class KeyboardSet {
             new HashMap<KeyboardId, SoftReference<Keyboard>>();
     private static final KeysCache sKeysCache = new KeysCache();
 
-    private static final EditorInfo EMPTY_EDITOR_INFO = new EditorInfo();
-
     public static class KeyboardSetException extends RuntimeException {
         public final KeyboardId mKeyboardId;
         public KeyboardSetException(Throwable cause, KeyboardId keyboardId) {
@@ -209,6 +207,8 @@ public class KeyboardSet {
 
         private final Params mParams = new Params();
 
+        private static final EditorInfo EMPTY_EDITOR_INFO = new EditorInfo();
+
         public Builder(Context context, EditorInfo editorInfo) {
             mContext = context;
             mPackageName = context.getPackageName();
@@ -229,15 +229,13 @@ public class KeyboardSet {
         }
 
         // TODO: Use InputMethodSubtype object as argument.
-        public Builder setSubtype(Locale inputLocale, boolean asciiCapable,
-                boolean touchPositionCorrectionEnabled) {
+        public Builder setSubtype(Locale inputLocale, boolean asciiCapable) {
             final boolean deprecatedForceAscii = StringUtils.inPrivateImeOptions(
                     mPackageName, LatinIME.IME_OPTION_FORCE_ASCII, mEditorInfo);
             final boolean forceAscii = EditorInfoCompatUtils.hasFlagForceAscii(
                     mParams.mEditorInfo.imeOptions)
                     || deprecatedForceAscii;
             mParams.mLocale = (forceAscii && !asciiCapable) ? Locale.US : inputLocale;
-            mParams.mTouchPositionCorrectionEnabled = touchPositionCorrectionEnabled;
             return this;
         }
 
@@ -253,6 +251,10 @@ public class KeyboardSet {
             mParams.mVoiceKeyOnMain = voiceKeyOnMain;
             mParams.mLanguageSwitchKeyEnabled = languageSwitchKeyEnabled;
             return this;
+        }
+
+        public void setTouchPositionCorrectionEnabled(boolean enabled) {
+            mParams.mTouchPositionCorrectionEnabled = enabled;
         }
 
         public KeyboardSet build() {

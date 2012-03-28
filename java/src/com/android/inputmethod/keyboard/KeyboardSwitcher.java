@@ -140,9 +140,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
         builder.setSubtype(
                 mSubtypeSwitcher.getInputLocale(),
                 mSubtypeSwitcher.currentSubtypeContainsExtraValueKey(
-                        LatinIME.SUBTYPE_EXTRA_VALUE_ASCII_CAPABLE),
-                mSubtypeSwitcher.currentSubtypeContainsExtraValueKey(
-                        LatinIME.SUBTYPE_EXTRA_VALUE_SUPPORT_TOUCH_POSITION_CORRECTION));
+                        LatinIME.SUBTYPE_EXTRA_VALUE_ASCII_CAPABLE));
         builder.setOptions(
                 settingsValues.isVoiceKeyEnabled(editorInfo),
                 settingsValues.isVoiceKeyOnMain(),

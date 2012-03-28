@@ -278,6 +278,7 @@ public class Keyboard {
                 }
             }
 
+            // TODO: Remove this method.
             public void setEnabled(boolean enabled) {
                 mEnabled = enabled;
             }
@@ -616,27 +617,8 @@ public class Keyboard {
 
             mParams = params;
 
-            setTouchPositionCorrectionData(context, params);
-
             params.GRID_WIDTH = res.getInteger(R.integer.config_keyboard_grid_width);
             params.GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
-        }
-
-        private static void setTouchPositionCorrectionData(Context context, Params params) {
-            final TypedArray a = context.obtainStyledAttributes(
-                    null, R.styleable.Keyboard, R.attr.keyboardStyle, 0);
-            params.mThemeId = a.getInt(R.styleable.Keyboard_themeId, 0);
-            final int resourceId = a.getResourceId(
-                    R.styleable.Keyboard_touchPositionCorrectionData, 0);
-            a.recycle();
-            if (resourceId == 0) {
-                if (LatinImeLogger.sDBG)
-                    Log.e(BUILDER_TAG, "touchPositionCorrectionData is not defined");
-                return;
-            }
-
-            final String[] data = context.getResources().getStringArray(resourceId);
-            params.mTouchPositionCorrection.load(data);
         }
 
         public void setAutoGenerate(KeyboardSet.KeysCache keysCache) {
@@ -660,6 +642,7 @@ public class Keyboard {
             return this;
         }
 
+        // TODO: Remove this method.
         public void setTouchPositionCorrectionEnabled(boolean enabled) {
             mParams.mTouchPositionCorrection.setEnabled(enabled);
         }
@@ -771,6 +754,15 @@ public class Keyboard {
                         R.styleable.Keyboard_Key_maxMoreKeysColumn, 5);
 
                 params.mIconsSet.loadIcons(keyboardAttr);
+
+                params.mThemeId = keyboardAttr.getInt(R.styleable.Keyboard_themeId, 0);
+                final int resourceId = keyboardAttr.getResourceId(
+                        R.styleable.Keyboard_touchPositionCorrectionData, 0);
+                params.mTouchPositionCorrection.setEnabled(resourceId != 0);
+                if (resourceId != 0) {
+                    final String[] data = mResources.getStringArray(resourceId);
+                    params.mTouchPositionCorrection.load(data);
+                }
             } finally {
                 keyAttr.recycle();
                 keyboardAttr.recycle();
