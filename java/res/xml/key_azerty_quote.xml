@@ -26,7 +26,7 @@
             latin:keyboardSetElement="alphabetManualShifted|alphabetShiftLockShifted"
         >
             <Key
-                latin:keyLabel=":" />
+                latin:keyLabel="\?" />
         </case>
         <default>
             <Key
