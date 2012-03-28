@@ -125,12 +125,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     public static final String SUBTYPE_EXTRA_VALUE_ASCII_CAPABLE = "AsciiCapable";
 
     /**
-     * The subtype extra value used to indicate that the subtype keyboard layout supports touch
-     * position correction.
-     */
-    public static final String SUBTYPE_EXTRA_VALUE_SUPPORT_TOUCH_POSITION_CORRECTION =
-            "SupportTouchPositionCorrection";
-    /**
      * The subtype extra value used to indicate that the subtype keyboard layout should be loaded
      * from the specified locale.
      */

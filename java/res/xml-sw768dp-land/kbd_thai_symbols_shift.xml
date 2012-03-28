@@ -22,6 +22,7 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
     latin:rowHeight="20%p"
     latin:verticalGap="2.65%p"
+    latin:touchPositionCorrectionData="@null"
 >
     <include
         latin:keyboardLayout="@xml/rows_thai_symbols_shift" />
