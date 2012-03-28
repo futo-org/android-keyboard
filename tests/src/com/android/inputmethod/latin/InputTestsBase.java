@@ -26,8 +26,8 @@ import android.text.InputType;
 import android.text.SpannableStringBuilder;
 import android.text.style.SuggestionSpan;
 import android.view.LayoutInflater;
-import android.view.ViewGroup;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.widget.FrameLayout;
@@ -36,9 +36,6 @@ import android.widget.TextView;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
-
-import java.util.Arrays;
-import java.util.HashMap;
 
 public class InputTestsBase extends ServiceTestCase<LatinIME> {
 
@@ -192,8 +189,8 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
             }
         }
         mLatinIME.onCodeInput(codePoint,
-                KeyboardActionListener.SPELL_CHECKER_COORDINATE,
-                KeyboardActionListener.SPELL_CHECKER_COORDINATE);
+                KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
+                KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
         //mLatinIME.onReleaseKey(codePoint, false);
     }
 

@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.keyboard.Keyboard;
-
 public class PunctuationTests extends InputTestsBase {
 
     public void testWordThenSpaceThenPunctuationFromStripTwice() {
