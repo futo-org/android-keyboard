@@ -23,6 +23,23 @@
     latin:keyboardLocale="ka">
     <Element
         latin:elementName="alphabet"
+        latin:elementKeyboard="@xml/kbd_georgian"
+        latin:enableProximityCharsCorrection="true" />
+    <Element
+        latin:elementName="alphabetAutomaticShifted"
+        latin:elementKeyboard="@xml/kbd_georgian"
+        latin:enableProximityCharsCorrection="true" />
+    <!-- On these shifted alphabet layouts the proximity characters correction should be disabled
+         because the letters on these layouts aren't the ones in different case of the above
+         unshifted layouts. -->
+    <Element
+        latin:elementName="alphabetManualShifted"
+        latin:elementKeyboard="@xml/kbd_georgian" />
+    <Element
+        latin:elementName="alphabetShiftLocked"
+        latin:elementKeyboard="@xml/kbd_georgian" />
+    <Element
+        latin:elementName="alphabetShiftLockShifted"
         latin:elementKeyboard="@xml/kbd_georgian" />
     <Element
         latin:elementName="symbols"

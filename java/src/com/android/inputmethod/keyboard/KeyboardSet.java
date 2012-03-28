@@ -28,6 +28,7 @@ import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
+import com.android.inputmethod.keyboard.KeyboardSet.Params.ElementParams;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.LocaleUtils;
@@ -53,7 +54,7 @@ public class KeyboardSet {
     private static final String TAG = KeyboardSet.class.getSimpleName();
     private static final boolean DEBUG_CACHE = LatinImeLogger.sDBG;
 
-    private static final String TAG_KEYBOARD_SET = TAG;
+    private static final String TAG_KEYBOARD_SET = "KeyboardSet";
     private static final String TAG_ELEMENT = "Element";
 
     private final Context mContext;
@@ -104,10 +105,14 @@ public class KeyboardSet {
         Locale mLocale;
         int mOrientation;
         int mWidth;
-        // KeyboardSet element id to keyboard layout XML id map.
-        final HashMap<Integer, Integer> mKeyboardSetElementIdToXmlIdMap =
-                new HashMap<Integer, Integer>();
-        Params() {}
+        // KeyboardSet element id to element's parameters map.
+        final HashMap<Integer, ElementParams> mKeyboardSetElementIdToParamsMap =
+                new HashMap<Integer, ElementParams>();
+
+        static class ElementParams {
+            int mKeyboardXmlId;
+            boolean mProximityCharsCorrectionEnabled;
+        }
     }
 
     public static void clearKeyboardCache() {
@@ -141,20 +146,21 @@ public class KeyboardSet {
             break;
         }
 
-        Integer keyboardXmlId = mParams.mKeyboardSetElementIdToXmlIdMap.get(keyboardSetElementId);
-        if (keyboardXmlId == null) {
-            keyboardXmlId = mParams.mKeyboardSetElementIdToXmlIdMap.get(
+        ElementParams elementParams = mParams.mKeyboardSetElementIdToParamsMap.get(
+                keyboardSetElementId);
+        if (elementParams == null) {
+            elementParams = mParams.mKeyboardSetElementIdToParamsMap.get(
                     KeyboardId.ELEMENT_ALPHABET);
         }
         final KeyboardId id = getKeyboardId(keyboardSetElementId);
         try {
-            return getKeyboard(mContext, keyboardXmlId, id);
+            return getKeyboard(mContext, elementParams, id);
         } catch (RuntimeException e) {
             throw new KeyboardSetException(e, id);
         }
     }
 
-    private Keyboard getKeyboard(Context context, int keyboardXmlId, KeyboardId id) {
+    private Keyboard getKeyboard(Context context, ElementParams elementParams, KeyboardId id) {
         final Resources res = context.getResources();
         final SoftReference<Keyboard> ref = sKeyboardCache.get(id);
         Keyboard keyboard = (ref == null) ? null : ref.get();
@@ -166,8 +172,10 @@ public class KeyboardSet {
                 if (id.isAlphabetKeyboard()) {
                     builder.setAutoGenerate(sKeysCache);
                 }
-                builder.load(keyboardXmlId, id);
+                builder.load(elementParams.mKeyboardXmlId, id);
                 builder.setTouchPositionCorrectionEnabled(mParams.mTouchPositionCorrectionEnabled);
+                builder.setProximityCharsCorrectionEnabled(
+                        elementParams.mProximityCharsCorrectionEnabled);
                 keyboard = builder.build();
             } finally {
                 LocaleUtils.setSystemLocale(res, savedLocale);
@@ -331,11 +339,14 @@ public class KeyboardSet {
                         TAG_ELEMENT, parser);
                 XmlParseUtils.checkEndTag(TAG_ELEMENT, parser);
 
+                final ElementParams elementParams = new ElementParams();
                 final int elementName = a.getInt(
                         R.styleable.KeyboardSet_Element_elementName, 0);
-                final int elementKeyboard = a.getResourceId(
+                elementParams.mKeyboardXmlId = a.getResourceId(
                         R.styleable.KeyboardSet_Element_elementKeyboard, 0);
-                mParams.mKeyboardSetElementIdToXmlIdMap.put(elementName, elementKeyboard);
+                elementParams.mProximityCharsCorrectionEnabled = a.getBoolean(
+                        R.styleable.KeyboardSet_Element_enableProximityCharsCorrection, false);
+                mParams.mKeyboardSetElementIdToParamsMap.put(elementName, elementParams);
             } finally {
                 a.recycle();
             }

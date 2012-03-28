@@ -23,7 +23,8 @@
     latin:keyboardLocale="es,es_US">
     <Element
         latin:elementName="alphabet"
-        latin:elementKeyboard="@xml/kbd_spanish" />
+        latin:elementKeyboard="@xml/kbd_spanish"
+        latin:enableProximityCharsCorrection="true" />
     <Element
         latin:elementName="symbols"
         latin:elementKeyboard="@xml/kbd_spanish_symbols" />
