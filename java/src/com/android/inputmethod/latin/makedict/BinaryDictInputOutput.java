@@ -47,7 +47,6 @@ public class BinaryDictInputOutput {
      * s | has a terminal ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_TERMINAL
      *   | has shortcut targets ?      1 bit, 1 = yes, 0 = no   : FLAG_HAS_SHORTCUT_TARGETS
      *   | has bigrams ?               1 bit, 1 = yes, 0 = no   : FLAG_HAS_BIGRAMS
-     *   | is shortcut only ?          1 bit, 1 = yes, 0 = no   : FLAG_IS_SHORTCUT_ONLY
      *
      * c | IF FLAG_HAS_MULTIPLE_CHARS
      * h |   char, char, char, char    n * (1 or 3 bytes) : use CharGroupInfo for i/o helpers
@@ -74,7 +73,7 @@ public class BinaryDictInputOutput {
      * dress
      *
      *   | IF FLAG_IS_TERMINAL && FLAG_HAS_SHORTCUT_TARGETS
-     *   | shortcut targets address list
+     *   | shortcut string list
      *   | IF FLAG_IS_TERMINAL && FLAG_HAS_BIGRAMS
      *   | bigrams address list
      *
@@ -89,7 +88,7 @@ public class BinaryDictInputOutput {
      * the BMP. Also everything in the iso-latin-1 charset is only 1 byte, except control
      * characters which should never happen anyway (and still work, but take 3 bytes).
      *
-     * bigram and shortcut address list is:
+     * bigram address list is:
      * <flags> = | hasNext = 1 bit, 1 = yes, 0 = no     : FLAG_ATTRIBUTE_HAS_NEXT
      *           | addressSign = 1 bit,                 : FLAG_ATTRIBUTE_OFFSET_NEGATIVE
      *           |                      1 = must take -address, 0 = must take +address
@@ -107,8 +106,16 @@ public class BinaryDictInputOutput {
      *           |   read 3 bytes, add top 4 bits
      *           | END
      *           | if (FLAG_ATTRIBUTE_OFFSET_NEGATIVE) then address = -address
-     * if (FLAG_ATTRIBUTE_HAS_NET) goto bigram_and_shortcut_address_list_is
+     * if (FLAG_ATTRIBUTE_HAS_NEXT) goto bigram_and_shortcut_address_list_is
      *
+     * shortcut string list is:
+     * <byte size> = GROUP_SHORTCUT_LIST_SIZE_SIZE bytes, big-endian: size of the list, in bytes.
+     * <flags>     = | hasNext = 1 bit, 1 = yes, 0 = no : FLAG_ATTRIBUTE_HAS_NEXT
+     *               | reserved = 3 bits, must be 0
+     *               | 4 bits : frequency : mask with FLAG_ATTRIBUTE_FREQUENCY
+     * <shortcut>  = | string of characters at the char format described above, with the terminator
+     *               | used to signal the end of the string.
+     * if (FLAG_ATTRIBUTE_HAS_NEXT goto flags
      */
 
     private static final int VERSION_1_MAGIC_NUMBER = 0x78B1;
@@ -136,7 +143,6 @@ public class BinaryDictInputOutput {
     private static final int FLAG_IS_TERMINAL = 0x10;
     private static final int FLAG_HAS_SHORTCUT_TARGETS = 0x08;
     private static final int FLAG_HAS_BIGRAMS = 0x04;
-    private static final int FLAG_IS_SHORTCUT_ONLY = 0x02;
 
     private static final int FLAG_ATTRIBUTE_HAS_NEXT = 0x80;
     private static final int FLAG_ATTRIBUTE_OFFSET_NEGATIVE = 0x40;
@@ -154,6 +160,7 @@ public class BinaryDictInputOutput {
     private static final int GROUP_MAX_ADDRESS_SIZE = 3;
     private static final int GROUP_ATTRIBUTE_FLAGS_SIZE = 1;
     private static final int GROUP_ATTRIBUTE_MAX_ADDRESS_SIZE = 3;
+    private static final int GROUP_SHORTCUT_LIST_SIZE_SIZE = 2;
 
     private static final int NO_CHILDREN_ADDRESS = Integer.MIN_VALUE;
     private static final int INVALID_CHARACTER = -1;
@@ -215,22 +222,50 @@ public class BinaryDictInputOutput {
         /**
          * Writes a char array to a byte buffer.
          *
-         * @param characters the character array to write.
+         * @param codePoints the code point array to write.
          * @param buffer the byte buffer to write to.
          * @param index the index in buffer to write the character array to.
          * @return the index after the last character.
          */
-        private static int writeCharArray(int[] characters, byte[] buffer, int index) {
-            for (int character : characters) {
-                if (1 == getCharSize(character)) {
-                    buffer[index++] = (byte)character;
+        private static int writeCharArray(final int[] codePoints, final byte[] buffer, int index) {
+            for (int codePoint : codePoints) {
+                if (1 == getCharSize(codePoint)) {
+                    buffer[index++] = (byte)codePoint;
                 } else {
-                    buffer[index++] = (byte)(0xFF & (character >> 16));
-                    buffer[index++] = (byte)(0xFF & (character >> 8));
-                    buffer[index++] = (byte)(0xFF & character);
+                    buffer[index++] = (byte)(0xFF & (codePoint >> 16));
+                    buffer[index++] = (byte)(0xFF & (codePoint >> 8));
+                    buffer[index++] = (byte)(0xFF & codePoint);
                 }
             }
             return index;
+        }
+
+        /**
+         * Writes a string with our character format to a byte buffer.
+         *
+         * This will also write the terminator byte.
+         *
+         * @param buffer the byte buffer to write to.
+         * @param origin the offset to write from.
+         * @param word the string to write.
+         * @return the size written, in bytes.
+         */
+        private static int writeString(final byte[] buffer, final int origin,
+                final String word) {
+            final int length = word.length();
+            int index = origin;
+            for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
+                final int codePoint = word.codePointAt(i);
+                if (1 == getCharSize(codePoint)) {
+                    buffer[index++] = (byte)codePoint;
+                } else {
+                    buffer[index++] = (byte)(0xFF & (codePoint >> 16));
+                    buffer[index++] = (byte)(0xFF & (codePoint >> 8));
+                    buffer[index++] = (byte)(0xFF & codePoint);
+                }
+            }
+            buffer[index++] = GROUP_CHARACTERS_TERMINATOR;
+            return index - origin;
         }
 
         /**
@@ -294,6 +329,36 @@ public class BinaryDictInputOutput {
     }
 
     /**
+     * Compute the size of a shortcut in bytes.
+     */
+    private static int getShortcutSize(final WeightedString shortcut) {
+        int size = GROUP_ATTRIBUTE_FLAGS_SIZE;
+        final String word = shortcut.mWord;
+        final int length = word.length();
+        for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
+            final int codePoint = word.codePointAt(i);
+            size += CharEncoding.getCharSize(codePoint);
+        }
+        size += GROUP_TERMINATOR_SIZE;
+        return size;
+    }
+
+    /**
+     * Compute the size of a shortcut list in bytes.
+     *
+     * This is known in advance and does not change according to position in the file
+     * like address lists do.
+     */
+    private static int getShortcutListSize(final ArrayList<WeightedString> shortcutList) {
+        if (null == shortcutList) return 0;
+        int size = GROUP_SHORTCUT_LIST_SIZE_SIZE;
+        for (final WeightedString shortcut : shortcutList) {
+            size += getShortcutSize(shortcut);
+        }
+        return size;
+    }
+
+    /**
      * Compute the maximum size of a CharGroup, assuming 3-byte addresses for everything.
      *
      * @param group the CharGroup to compute the size of.
@@ -304,10 +369,7 @@ public class BinaryDictInputOutput {
         // If terminal, one byte for the frequency
         if (group.isTerminal()) size += GROUP_FREQUENCY_SIZE;
         size += GROUP_MAX_ADDRESS_SIZE; // For children address
-        if (null != group.mShortcutTargets) {
-            size += (GROUP_ATTRIBUTE_FLAGS_SIZE + GROUP_ATTRIBUTE_MAX_ADDRESS_SIZE)
-                    * group.mShortcutTargets.size();
-        }
+        size += getShortcutListSize(group.mShortcutTargets);
         if (null != group.mBigrams) {
             size += (GROUP_ATTRIBUTE_FLAGS_SIZE + GROUP_ATTRIBUTE_MAX_ADDRESS_SIZE)
                     * group.mBigrams.size();
@@ -336,13 +398,6 @@ public class BinaryDictInputOutput {
      */
     private static boolean hasChildrenAddress(int address) {
         return NO_CHILDREN_ADDRESS != address;
-    }
-
-    /**
-     * Helper method to find out if a character info is a shortcut only.
-     */
-    private static boolean isShortcutOnly(final CharGroupInfo info) {
-        return 0 != (info.mFlags & FLAG_IS_SHORTCUT_ONLY);
     }
 
     /**
@@ -430,15 +485,7 @@ public class BinaryDictInputOutput {
                 final int offset = group.mChildren.mCachedAddress - offsetBasePoint;
                 groupSize += getByteSize(offset);
             }
-            if (null != group.mShortcutTargets) {
-                for (WeightedString target : group.mShortcutTargets) {
-                    final int offsetBasePoint = groupSize + node.mCachedAddress + size
-                            + GROUP_FLAGS_SIZE;
-                    final int addressOfTarget = findAddressOfWord(dict, target.mWord);
-                    final int offset = addressOfTarget - offsetBasePoint;
-                    groupSize += getByteSize(offset) + GROUP_FLAGS_SIZE;
-                }
-            }
+            groupSize += getShortcutListSize(group.mShortcutTargets);
             if (null != group.mBigrams) {
                 for (WeightedString bigram : group.mBigrams) {
                     final int offsetBasePoint = groupSize + node.mCachedAddress + size
@@ -555,7 +602,7 @@ public class BinaryDictInputOutput {
      * @param address the address to write.
      * @return the size in bytes the address actually took.
      */
-    private static int writeVariableAddress(byte[] buffer, int index, int address) {
+    private static int writeVariableAddress(final byte[] buffer, int index, final int address) {
         switch (getByteSize(address)) {
         case 1:
             buffer[index++] = (byte)address;
@@ -610,9 +657,6 @@ public class BinaryDictInputOutput {
             }
             flags |= FLAG_HAS_BIGRAMS;
         }
-        if (group.mIsShortcutOnly) {
-            flags |= FLAG_IS_SHORTCUT_ONLY;
-        }
         return flags;
     }
 
@@ -646,6 +690,17 @@ public class BinaryDictInputOutput {
     }
 
     /**
+     * Makes the flag value for a shortcut.
+     *
+     * @param more whether there are more attributes after this one.
+     * @param frequency the frequency of the attribute, 0..15
+     * @return the flags
+     */
+    private static final int makeShortcutFlags(final boolean more, final int frequency) {
+        return (more ? FLAG_ATTRIBUTE_HAS_NEXT : 0) + (frequency & FLAG_ATTRIBUTE_FREQUENCY);
+    }
+
+    /**
      * Write a node to memory. The node is expected to have its final position cached.
      *
      * This can be an empty map, but the more is inside the faster the lookups will be. It can
@@ -675,7 +730,8 @@ public class BinaryDictInputOutput {
         for (int i = 0; i < groupCount; ++i) {
             CharGroup group = node.mData.get(i);
             if (index != group.mCachedAddress) throw new RuntimeException("Bug: write index is not "
-                    + "the same as the cached address of the group");
+                    + "the same as the cached address of the group : "
+                    + index + " <> " + group.mCachedAddress);
             groupAddress += GROUP_FLAGS_SIZE + getGroupCharactersSize(group);
             // Sanity checks.
             if (group.mFrequency > MAX_TERMINAL_FREQUENCY) {
@@ -700,19 +756,26 @@ public class BinaryDictInputOutput {
 
             // Write shortcuts
             if (null != group.mShortcutTargets) {
+                final int indexOfShortcutByteSize = index;
+                index += GROUP_SHORTCUT_LIST_SIZE_SIZE;
+                groupAddress += GROUP_SHORTCUT_LIST_SIZE_SIZE;
                 final Iterator shortcutIterator = group.mShortcutTargets.iterator();
                 while (shortcutIterator.hasNext()) {
                     final WeightedString target = (WeightedString)shortcutIterator.next();
-                    final int addressOfTarget = findAddressOfWord(dict, target.mWord);
                     ++groupAddress;
-                    final int offset = addressOfTarget - groupAddress;
-                    int shortcutFlags = makeAttributeFlags(shortcutIterator.hasNext(), offset,
+                    int shortcutFlags = makeShortcutFlags(shortcutIterator.hasNext(),
                             target.mFrequency);
                     buffer[index++] = (byte)shortcutFlags;
-                    final int shortcutShift = writeVariableAddress(buffer, index, Math.abs(offset));
+                    final int shortcutShift = CharEncoding.writeString(buffer, index, target.mWord);
                     index += shortcutShift;
                     groupAddress += shortcutShift;
                 }
+                final int shortcutByteSize = index - indexOfShortcutByteSize;
+                if (shortcutByteSize > 0xFFFF) {
+                    throw new RuntimeException("Shortcut list too large");
+                }
+                buffer[indexOfShortcutByteSize] = (byte)(shortcutByteSize >> 8);
+                buffer[indexOfShortcutByteSize + 1] = (byte)(shortcutByteSize & 0xFF);
             }
             // Write bigrams
             if (null != group.mBigrams) {
@@ -1112,11 +1175,11 @@ public class BinaryDictInputOutput {
                 }
                 nodeContents.add(
                         new CharGroup(info.mCharacters, shortcutTargets, bigrams, info.mFrequency,
-                                children, isShortcutOnly(info)));
+                                children, false));
             } else {
                 nodeContents.add(
                         new CharGroup(info.mCharacters, shortcutTargets, bigrams, info.mFrequency,
-                                isShortcutOnly(info)));
+                                false));
             }
             groupOffset = info.mEndAddress;
         }
