@@ -28,17 +28,12 @@ import java.util.LinkedList;
  * be searched for suggestions and valid words.
  */
 public class ExpandableDictionary extends Dictionary {
-    /**
-     * There is difference between what java and native code can handle.
-     * It uses 32 because Java stack overflows when greater value is used.
-     */
-    protected static final int MAX_WORD_LENGTH = 32;
 
     // Bigram frequency is a fixed point number with 1 meaning 1.2 and 255 meaning 1.8.
     protected static final int BIGRAM_MAX_FREQUENCY = 255;
 
     private Context mContext;
-    private char[] mWordBuilder = new char[MAX_WORD_LENGTH];
+    private char[] mWordBuilder = new char[BinaryDictionary.MAX_WORD_LENGTH];
     private int mDicTypeId;
     private int mMaxDepth;
     private int mInputLength;
@@ -113,7 +108,7 @@ public class ExpandableDictionary extends Dictionary {
     public ExpandableDictionary(Context context, int dicTypeId) {
         mContext = context;
         clearDictionary();
-        mCodes = new int[MAX_WORD_LENGTH][];
+        mCodes = new int[BinaryDictionary.MAX_WORD_LENGTH][];
         mDicTypeId = dicTypeId;
     }
 
@@ -151,10 +146,13 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     public int getMaxWordLength() {
-        return MAX_WORD_LENGTH;
+        return BinaryDictionary.MAX_WORD_LENGTH;
     }
 
     public void addWord(String word, int frequency) {
+        if (word.length() >= BinaryDictionary.MAX_WORD_LENGTH) {
+            return;
+        }
         addWordRec(mRoots, word, 0, frequency, null);
     }
 
@@ -200,6 +198,9 @@ public class ExpandableDictionary extends Dictionary {
             if (mRequiresReload) startDictionaryLoadingTaskLocked();
             // Currently updating contacts, don't return any results.
             if (mUpdatingDictionary) return;
+        }
+        if (codes.size() >= BinaryDictionary.MAX_WORD_LENGTH) {
+            return;
         }
         getWordsInner(codes, callback, proximityInfo);
     }
@@ -488,7 +489,7 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     // Local to reverseLookUp, but do not allocate each time.
-    private final char[] mLookedUpString = new char[MAX_WORD_LENGTH];
+    private final char[] mLookedUpString = new char[BinaryDictionary.MAX_WORD_LENGTH];
 
     /**
      * reverseLookUp retrieves the full word given a list of terminal nodes and adds those words
@@ -502,15 +503,15 @@ public class ExpandableDictionary extends Dictionary {
         for (NextWord nextWord : terminalNodes) {
             node = nextWord.mWord;
             freq = nextWord.getFrequency();
-            int index = MAX_WORD_LENGTH;
+            int index = BinaryDictionary.MAX_WORD_LENGTH;
             do {
                 --index;
                 mLookedUpString[index] = node.mCode;
                 node = node.mParent;
             } while (node != null);
 
-            callback.addWord(mLookedUpString, index, MAX_WORD_LENGTH - index, freq, mDicTypeId,
-                    Dictionary.BIGRAM);
+            callback.addWord(mLookedUpString, index, BinaryDictionary.MAX_WORD_LENGTH - index,
+                    freq, mDicTypeId, Dictionary.BIGRAM);
         }
     }
 

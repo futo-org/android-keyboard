@@ -247,8 +247,8 @@ public class UserHistoryDictionary extends ExpandableDictionary {
                     // to recursive lookup
                     if (null == word1) {
                         super.addWord(word2, frequency);
-                    } else if (word1.length() < MAX_WORD_LENGTH
-                            && word2.length() < MAX_WORD_LENGTH) {
+                    } else if (word1.length() < BinaryDictionary.MAX_WORD_LENGTH
+                            && word2.length() < BinaryDictionary.MAX_WORD_LENGTH) {
                         super.setBigram(word1, word2, frequency);
                     }
                     cursor.moveToNext();
