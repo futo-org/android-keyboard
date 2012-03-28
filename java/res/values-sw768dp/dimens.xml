@@ -22,7 +22,7 @@
     <!-- Preferable keyboard height in absolute scale: 48.0mm -->
     <!-- This keyboardHeight value should match with keyboard-heights.xml -->
     <dimen name="keyboardHeight">302.4dp</dimen>
-    <fraction name="maxKeyboardHeight">50%p</fraction>
+    <fraction name="maxKeyboardHeight">46%p</fraction>
     <fraction name="minKeyboardHeight">-35.0%p</fraction>
 
     <fraction name="keyboard_top_padding">2.291%p</fraction>
