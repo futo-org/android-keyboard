@@ -104,7 +104,11 @@ public class WordComposer {
         return size() > 0;
     }
 
+    // TODO: make sure that the index should not exceed MAX_WORD_LENGTH
     public int getCodeAt(int index) {
+        if (index >= BinaryDictionary.MAX_WORD_LENGTH) {
+            return -1;
+        }
         return mPrimaryKeyCodes[index];
     }
 
@@ -153,8 +157,8 @@ public class WordComposer {
         final int newIndex = size();
         mTypedWord.appendCodePoint(primaryCode);
         refreshSize();
-        mPrimaryKeyCodes[newIndex] = codes[0];
         if (newIndex < BinaryDictionary.MAX_WORD_LENGTH) {
+            mPrimaryKeyCodes[newIndex] = codes[0];
             mXCoordinates[newIndex] = keyX;
             mYCoordinates[newIndex] = keyY;
         }
