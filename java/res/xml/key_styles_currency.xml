@@ -53,13 +53,13 @@
              22. Spain (es_ES, ca_ES)
              23. Vatican City (it_VA)
         -->
-        <!-- Though Denmark and Turkey don't using Euro as their currencies, but having Euro sign on
-             the symbol keyboard might be useful.  Especially Danish krone (kr) and Turkish lira
-             (TL) can be represented by usual alphabet letters. -->
+        <!-- Though Denmark, Sweden and Turkey don't use Euro as their currency, having the Euro
+             sign on the symbol keyboard might be useful.  Especially Danish krone (kr), Swedish
+             krona (kr) and Turkish lira (TL) can be represented by usual alphabet letters. -->
         <!-- Note: Some locales may not have country code, and it it supposed to indicate the
              country where the language originally/mainly spoken. -->
         <case
-            latin:localeCode="da|de|es|el|fi|fr|it|nl|sk|sl|pt_PT|tr"
+            latin:localeCode="da|de|es|el|fi|fr|it|nl|sk|sl|sv|pt_PT|tr"
         >
             <include
                 latin:keyboardLayout="@xml/key_styles_currency_euro" />
