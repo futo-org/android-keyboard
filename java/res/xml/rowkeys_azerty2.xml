@@ -35,9 +35,11 @@
         latin:keyLabel="g"
         latin:moreKeys="@string/more_keys_for_g" />
     <Key
-        latin:keyLabel="h" />
+        latin:keyLabel="h"
+        latin:moreKeys="@string/more_keys_for_h" />
     <Key
-        latin:keyLabel="j" />
+        latin:keyLabel="j"
+        latin:moreKeys="@string/more_keys_for_j" />
     <Key
         latin:keyLabel="k"
         latin:moreKeys="@string/more_keys_for_k" />

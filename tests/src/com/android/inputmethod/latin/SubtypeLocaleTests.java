@@ -62,6 +62,10 @@ public class SubtypeLocaleTests extends AndroidTestCase {
         int failedCount = 0;
         for (final InputMethodSubtype subtype : mKeyboardSubtypes) {
             final Locale locale = LocaleUtils.constructLocaleFromString(subtype.getLocale());
+            if (locale.getLanguage().equals("zz")) {
+                // This is special language name for language agnostic usage.
+                continue;
+            }
             final String subtypeLocaleString =
                     subtype.containsExtraValueKey(LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LOCALE)
                     ? subtype.getExtraValueOf(LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LOCALE)

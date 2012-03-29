@@ -28,7 +28,8 @@
     <Key
         latin:keyLabel="w"
         latin:keyHintLabel="2"
-        latin:additionalMoreKeys="2" />
+        latin:additionalMoreKeys="2"
+        latin:moreKeys="@string/more_keys_for_w" />
     <Key
         latin:keyLabel="e"
         latin:keyHintLabel="3"

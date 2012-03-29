@@ -98,6 +98,7 @@ public class KeyboardSet {
         int mMode;
         EditorInfo mEditorInfo;
         boolean mTouchPositionCorrectionEnabled;
+        boolean mDisableShortcutKey;
         boolean mVoiceKeyEnabled;
         boolean mVoiceKeyOnMain;
         boolean mNoSettingsKey;
@@ -200,11 +201,11 @@ public class KeyboardSet {
         final Params params = mParams;
         final boolean isSymbols = (keyboardSetElementId == KeyboardId.ELEMENT_SYMBOLS
                 || keyboardSetElementId == KeyboardId.ELEMENT_SYMBOLS_SHIFTED);
-        final boolean hasShortcutKey = params.mVoiceKeyEnabled
-                && (isSymbols != params.mVoiceKeyOnMain);
+        final boolean voiceKeyEnabled = params.mVoiceKeyEnabled && !params.mDisableShortcutKey;
+        final boolean hasShortcutKey = voiceKeyEnabled && (isSymbols != params.mVoiceKeyOnMain);
         return new KeyboardId(keyboardSetElementId, params.mLocale, params.mOrientation,
                 params.mWidth, params.mMode, params.mEditorInfo, params.mNoSettingsKey,
-                params.mVoiceKeyEnabled, hasShortcutKey, params.mLanguageSwitchKeyEnabled);
+                voiceKeyEnabled, hasShortcutKey, params.mLanguageSwitchKeyEnabled);
     }
 
     public static class Builder {
@@ -293,6 +294,11 @@ public class KeyboardSet {
                     if (event == XmlPullParser.START_TAG) {
                         final String tag = parser.getName();
                         if (TAG_KEYBOARD_SET.equals(tag)) {
+                            final TypedArray a = mResources.obtainAttributes(
+                                    Xml.asAttributeSet(parser), R.styleable.KeyboardSet);
+                            mParams.mDisableShortcutKey = a.getBoolean(
+                                    R.styleable.KeyboardSet_disableShortcutKey, false);
+                            a.recycle();
                             parseKeyboardSetContent(parser);
                         } else {
                             throw new XmlParseUtils.IllegalStartTag(parser, TAG_KEYBOARD_SET);

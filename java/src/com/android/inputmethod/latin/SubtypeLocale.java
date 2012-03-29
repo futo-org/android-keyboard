@@ -36,10 +36,16 @@ public class SubtypeLocale {
     }
 
     public static String getFullDisplayName(Locale locale) {
-        String localeCode = locale.toString();
+        final String localeCode = locale.toString();
         for (int index = 0; index < sExceptionKeys.length; index++) {
-            if (sExceptionKeys[index].equals(localeCode))
-                return sExceptionValues[index];
+            if (sExceptionKeys[index].equals(localeCode)) {
+                final String value = sExceptionValues[index];
+                if (value.indexOf("%s") >= 0) {
+                    final String languageName = locale.getDisplayLanguage(locale);
+                    return String.format(value, languageName);
+                }
+                return value;
+            }
         }
         return locale.getDisplayName(locale);
     }
