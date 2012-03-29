@@ -259,20 +259,33 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         write(LogGroup.STATE_CHANGE, subgroup + "\t" + details);
     }
 
+    public static enum UnsLogGroup {
+        // TODO: expand to include one flag per log point
+        // TODO: support selective enabling of flags
+        ON_UPDATE_SELECTION;
+
+        public boolean isEnabled = true;
+    }
+
+    public static void logUnstructured(UnsLogGroup logGroup, String details) {
+    }
+
     private void write(final LogGroup logGroup, final String log) {
+        // TODO: rewrite in native for better performance
         mLoggingHandler.post(new Runnable() {
             @Override
             public void run() {
                 final long currentTime = System.currentTimeMillis();
-                mDate.setTime(currentTime);
                 final long upTime = SystemClock.uptimeMillis();
-
-                final String printString = String.format("%s\t%d\t%s\t%s\n",
-                        mDateFormat.format(mDate), upTime, logGroup.mLogString, log);
+                final StringBuilder builder = new StringBuilder();
+                builder.append(currentTime);
+                builder.append('\t'); builder.append(upTime);
+                builder.append('\t'); builder.append(logGroup.mLogString);
+                builder.append('\t'); builder.append(log);
                 if (LatinImeLogger.sDBG) {
                     Log.d(TAG, "Write: " + '[' + logGroup.mLogString + ']' + log);
                 }
-                if (mLogFileManager.append(printString)) {
+                if (mLogFileManager.append(builder.toString())) {
                     // success
                 } else {
                     if (LatinImeLogger.sDBG) {
