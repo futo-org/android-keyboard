@@ -155,6 +155,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         private final int mCenterSuggestionIndex;
         private final Drawable mMoreSuggestionsHint;
         private static final String MORE_SUGGESTIONS_HINT = "\u2026";
+        private static final String LEFTWARDS_ARROW = "\u2190";
 
         private static final CharacterStyle BOLD_SPAN = new StyleSpan(Typeface.BOLD);
         private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
@@ -169,6 +170,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         public boolean mMoreSuggestionsAvailable;
 
         public final TextView mWordToSaveView;
+        private final TextView mLeftwardsArrowView;
         private final TextView mHintToSaveView;
 
         public SuggestionsViewParams(Context context, AttributeSet attrs, int defStyle,
@@ -231,7 +233,8 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
 
             final LayoutInflater inflater = LayoutInflater.from(context);
             mWordToSaveView = (TextView)inflater.inflate(R.layout.suggestion_word, null);
-            mHintToSaveView = (TextView)inflater.inflate(R.layout.suggestion_word, null);
+            mLeftwardsArrowView = (TextView)inflater.inflate(R.layout.hint_add_to_dictionary, null);
+            mHintToSaveView = (TextView)inflater.inflate(R.layout.hint_add_to_dictionary, null);
         }
 
         public int getMaxMoreSuggestionsRow() {
@@ -488,9 +491,15 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
 
             stripView.addView(mDividers.get(0));
 
+            final TextView leftArrowView = mLeftwardsArrowView;
+            leftArrowView.setTextColor(mColorAutoCorrect);
+            leftArrowView.setText(LEFTWARDS_ARROW);
+            stripView.addView(leftArrowView);
+
             final TextView hintView = mHintToSaveView;
+            hintView.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
             hintView.setTextColor(mColorAutoCorrect);
-            final int hintWidth = width - wordWidth;
+            final int hintWidth = width - wordWidth - leftArrowView.getWidth();
             final float hintScaleX = getTextScaleX(hintText, hintWidth, hintView.getPaint());
             hintView.setText(hintText);
             hintView.setTextScaleX(hintScaleX);
