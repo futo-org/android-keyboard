@@ -307,7 +307,7 @@
     <string name="select_language">Input languages</string>
 
     <!-- Add to dictionary hint -->
-    <string name="hint_add_to_dictionary">&#x2190; Touch again to save</string>
+    <string name="hint_add_to_dictionary">Touch again to save</string>
 
     <!-- Inform the user that a particular language has an available dictionary -->
     <string name="has_dictionary">Dictionary available</string>
