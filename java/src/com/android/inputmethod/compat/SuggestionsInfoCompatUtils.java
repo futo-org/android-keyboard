@@ -24,7 +24,7 @@ public class SuggestionsInfoCompatUtils {
     private static final Field FIELD_RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS = CompatUtils.getField(
             SuggestionsInfo.class, "RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS");
     private static final Integer OBJ_RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS = (Integer) CompatUtils
-            .getFieldValue(null, null, FIELD_RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS);;
+            .getFieldValue(null, null, FIELD_RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS);
     private static final int RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS =
             OBJ_RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS != null
                     ? OBJ_RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS : 0;
@@ -34,7 +34,7 @@ public class SuggestionsInfoCompatUtils {
 
     /**
      * Returns the flag value of the attributes of the suggestions that can be obtained by
-     * {@link #getSuggestionsAttributes}: this tells that the text service thinks
+     * {@link SuggestionsInfo#getSuggestionsAttributes()}: this tells that the text service thinks
      * the result suggestions include highly recommended ones.
      */
     public static int getValueOf_RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS() {

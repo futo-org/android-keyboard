@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.inputmethod.EditorInfo;
 

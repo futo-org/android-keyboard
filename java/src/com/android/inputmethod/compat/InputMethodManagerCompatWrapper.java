@@ -267,12 +267,13 @@ public class InputMethodManagerCompatWrapper {
         final InputMethodSubtypeCompatWrapper currentIms = getCurrentInputMethodSubtype();
         final List<InputMethodInfoCompatWrapper> imiList = getEnabledInputMethodList();
         imiList.remove(myImi);
+        final PackageManager pm = mPackageManager;
         Collections.sort(imiList, new Comparator<InputMethodInfoCompatWrapper>() {
             @Override
             public int compare(InputMethodInfoCompatWrapper imi1,
                     InputMethodInfoCompatWrapper imi2) {
-                final CharSequence imiId1 = imi1.loadLabel(mPackageManager) + "/" + imi1.getId();
-                final CharSequence imiId2 = imi2.loadLabel(mPackageManager) + "/" + imi2.getId();
+                final CharSequence imiId1 = imi1.loadLabel(pm) + "/" + imi1.getId();
+                final CharSequence imiId2 = imi2.loadLabel(pm) + "/" + imi2.getId();
                 return imiId1.toString().compareTo(imiId2.toString());
             }
         });
@@ -302,6 +303,7 @@ public class InputMethodManagerCompatWrapper {
             index++;
         }
 
+        final InputMethodServiceCompatWrapper service = mService;
         final OnClickListener buttonListener = new OnClickListener() {
             @Override
             public void onClick(DialogInterface di, int whichButton) {
@@ -309,10 +311,9 @@ public class InputMethodManagerCompatWrapper {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                mService.startActivity(intent);
+                service.startActivity(intent);
             }
         };
-        final InputMethodServiceCompatWrapper service = mService;
         final IBinder token = service.getWindow().getWindow().getAttributes().token;
         final OnClickListener selectionListener = new OnClickListener() {
             @Override

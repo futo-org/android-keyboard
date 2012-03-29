@@ -144,9 +144,7 @@ public class WordComposer {
     }
 
     /**
-     * Add a new keystroke, with codes[0] containing the pressed key's unicode and the rest of
-     * the array containing unicode for adjacent keys, sorted by reducing probability/proximity.
-     * @param codes the array of unicode values
+     * Add a new keystroke, with the pressed key's code point with the touch point coordinates.
      */
     private void add(int primaryCode, int keyX, int keyY) {
         final int newIndex = size();

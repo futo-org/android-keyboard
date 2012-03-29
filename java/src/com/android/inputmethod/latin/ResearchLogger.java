@@ -178,8 +178,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         if (prefs != null) {
             sIsLogging = prefs.getBoolean(PREF_USABILITY_STUDY_MODE, false);
+            prefs.registerOnSharedPreferenceChangeListener(this);
         }
-        prefs.registerOnSharedPreferenceChangeListener(this);
     }
 
     /**
