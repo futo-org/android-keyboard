@@ -792,6 +792,19 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd,
                 composingSpanStart, composingSpanEnd);
 
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            if (ResearchLogger.UnsLogGroup.ON_UPDATE_SELECTION.isEnabled) {
+                final String s = "onUpdateSelection: oss=" + oldSelStart
+                    + ", ose=" + oldSelEnd
+                    + ", lss=" + mLastSelectionStart
+                    + ", lse=" + mLastSelectionEnd
+                    + ", nss=" + newSelStart
+                    + ", nse=" + newSelEnd
+                    + ", cs=" + composingSpanStart
+                    + ", ce=" + composingSpanEnd;
+                ResearchLogger.logUnstructured(ResearchLogger.UnsLogGroup.ON_UPDATE_SELECTION, s);
+            }
+        }
         if (DEBUG) {
             Log.i(TAG, "onUpdateSelection: oss=" + oldSelStart
                     + ", ose=" + oldSelEnd
