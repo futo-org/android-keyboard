@@ -132,7 +132,8 @@
     <string name="configure_input_method" msgid="373356270290742459">"กำหนดค่าวิธีการป้อนข้อมูล"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"ภาษาในการป้อนข้อมูล"</string>
     <string name="select_language" msgid="3693815588777926848">"ภาษาสำหรับการป้อนข้อมูล"</string>
-    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← แตะอีกครั้งเพื่อบันทึก"</string>
+    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
+    <skip />
     <string name="has_dictionary" msgid="6071847973466625007">"มีพจนานุกรมให้ใช้งาน"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"เปิดใช้งานการแสดงความคิดเห็นจากผู้ใช้"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"ช่วยปรับปรุงตัวแก้ไขวิธีการป้อนข้อมูลนี้โดยการส่งสถิติการใช้งานและรายงานการขัดข้องถึง Google โดยอัตโนมัติ"</string>

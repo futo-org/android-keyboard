@@ -132,7 +132,8 @@
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurer inndatametoder"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Inndataspråk"</string>
     <string name="select_language" msgid="3693815588777926848">"Inndataspråk"</string>
-    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"Trykk på nytt for å lagre"</string>
+    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
+    <skip />
     <string name="has_dictionary" msgid="6071847973466625007">"Ordbok tilgjengelig"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Aktiver brukertilbakemelding"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Ved å sende bruksstatistikk og programstopprapporter til Google automatisk, hjelper du oss med å gjøre redigeringsfunksjonen for denne inndatametoden enda bedre."</string>

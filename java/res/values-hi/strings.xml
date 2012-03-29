@@ -132,7 +132,8 @@
     <string name="configure_input_method" msgid="373356270290742459">"इनपुट पद्धति कॉन्‍फ़िगर करें"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"इनपुट भाषा"</string>
     <string name="select_language" msgid="3693815588777926848">"इनपुट भाषाएं"</string>
-    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← सहेजने के लिए फिर से स्‍पर्श करें"</string>
+    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
+    <skip />
     <string name="has_dictionary" msgid="6071847973466625007">"शब्‍दकोश उपलब्‍ध है"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"उपयोगकर्ता फ़ीडबैक सक्षम करें"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"उपयोग के आंकड़े और क्रैश रिपोर्ट Google को स्वचालित रूप से भेज कर इस इनपुट पद्धति संपादक को बेहतर बनाने में सहायता करें."</string>

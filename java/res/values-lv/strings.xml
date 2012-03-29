@@ -132,7 +132,8 @@
     <string name="configure_input_method" msgid="373356270290742459">"Ievades metožu konfigurēšana"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Ievades valodas"</string>
     <string name="select_language" msgid="3693815588777926848">"Ievades valodas"</string>
-    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Pieskarieties vēlreiz, lai saglabātu"</string>
+    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
+    <skip />
     <string name="has_dictionary" msgid="6071847973466625007">"Ir pieejama vārdnīca."</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Iespējot lietotāju atsauksmes"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Palīdziet uzlabot šo ievades metodes redaktoru, automātiski nosūtot lietojuma statistiku un pārskatus par avārijām uzņēmumam Google."</string>

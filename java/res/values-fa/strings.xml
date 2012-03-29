@@ -136,7 +136,8 @@
     <string name="configure_input_method" msgid="373356270290742459">"پیکربندی روش های ورودی"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"زبان های ورودی"</string>
     <string name="select_language" msgid="3693815588777926848">"زبان‌های ورودی"</string>
-    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← جهت ذخیره دوباره لمس کنید"</string>
+    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
+    <skip />
     <string name="has_dictionary" msgid="6071847973466625007">"دیکشنری موجود است"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"فعال کردن بازخورد کاربر"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"با ارسال خودکار آمارهای کاربرد و گزارش های خرابی به Google، به بهبود این ویرایشگر روش ورودی کمک کنید."</string>

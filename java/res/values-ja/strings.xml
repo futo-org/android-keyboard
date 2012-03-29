@@ -132,7 +132,8 @@
     <string name="configure_input_method" msgid="373356270290742459">"入力方法を設定"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"入力言語"</string>
     <string name="select_language" msgid="3693815588777926848">"入力言語"</string>
-    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"←保存するにはもう一度タップ"</string>
+    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
+    <skip />
     <string name="has_dictionary" msgid="6071847973466625007">"辞書を利用できます"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"ユーザーフィードバックを有効にする"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"IMEの機能向上のため、使用統計状況やクラッシュレポートをGoogleに自動送信します。"</string>

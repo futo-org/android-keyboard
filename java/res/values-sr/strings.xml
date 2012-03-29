@@ -132,7 +132,8 @@
     <string name="configure_input_method" msgid="373356270290742459">"Конфигурисање метода уноса"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Језици за унос"</string>
     <string name="select_language" msgid="3693815588777926848">"Језици уноса"</string>
-    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Поново додирните да бисте сачували"</string>
+    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
+    <skip />
     <string name="has_dictionary" msgid="6071847973466625007">"Речник је доступан"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Омогући повратну информацију корисника"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Помозите да се побољша овај уређивач режима уноса тако што ће се аутоматски послати статистика о коришћењу и извештаји о грешкама компанији Google."</string>

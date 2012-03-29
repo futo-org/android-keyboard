@@ -132,7 +132,8 @@
     <string name="configure_input_method" msgid="373356270290742459">"Configura mètodes d\'entrada"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomes d\'entrada"</string>
     <string name="select_language" msgid="3693815588777926848">"Idiomes d\'entrada"</string>
-    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Torna a tocar per desar"</string>
+    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
+    <skip />
     <string name="has_dictionary" msgid="6071847973466625007">"Diccionari disponible"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Activa els comentaris de l\'usuari"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Ajuda a millorar aquest editor de mètodes d\'entrada enviant automàticament estadístiques d\'ús i informes de bloqueigs a Google."</string>

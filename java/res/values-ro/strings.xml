@@ -132,7 +132,8 @@
     <string name="configure_input_method" msgid="373356270290742459">"Configuraţi metodele de intrare"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Selectaţi limba"</string>
     <string name="select_language" msgid="3693815588777926848">"Limbi de intrare"</string>
-    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Atingeţi din nou pentru a salva"</string>
+    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
+    <skip />
     <string name="has_dictionary" msgid="6071847973466625007">"Dicţionar disponibil"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Activaţi feedback de la utilizatori"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Ajutaţi la îmbunătăţirea acestui instrument de editare a metodelor de introducere a textului trimiţând în mod automat la Google statistici de utilizare şi rapoarte de blocare."</string>

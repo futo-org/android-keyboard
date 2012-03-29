@@ -132,7 +132,8 @@
     <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de introducción"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas"</string>
     <string name="select_language" msgid="3693815588777926848">"Idiomas de entrada"</string>
-    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Volver a tocar para guardar"</string>
+    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
+    <skip />
     <string name="has_dictionary" msgid="6071847973466625007">"Hay un diccionario disponible"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Habilitar comentarios de usuarios"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Ayuda a mejorar este editor de método de introducción de texto enviando estadísticas de uso e informes de error a Google."</string>
