@@ -113,6 +113,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
             close();
             mFile = new File(directory, filename);
+            mFile.setReadable(false, false);
             boolean append = true;
             if (mFile.exists() && mFile.lastModified() + LOGFILE_PURGE_INTERVAL <
                     System.currentTimeMillis()) {
