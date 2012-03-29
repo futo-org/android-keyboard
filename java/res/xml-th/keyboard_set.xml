@@ -23,6 +23,23 @@
     latin:keyboardLocale="th">
     <Element
         latin:elementName="alphabet"
+        latin:elementKeyboard="@xml/kbd_thai"
+        latin:enableProximityCharsCorrection="true" />
+    <Element
+        latin:elementName="alphabetAutomaticShifted"
+        latin:elementKeyboard="@xml/kbd_thai"
+        latin:enableProximityCharsCorrection="true" />
+    <!-- On these shifted alphabet layouts the proximity characters correction should be disabled
+         because the letters on these layouts aren't the ones in different case of the above
+         unshifted layouts. -->
+    <Element
+        latin:elementName="alphabetManualShifted"
+        latin:elementKeyboard="@xml/kbd_thai" />
+    <Element
+        latin:elementName="alphabetShiftLocked"
+        latin:elementKeyboard="@xml/kbd_thai" />
+    <Element
+        latin:elementName="alphabetShiftLockShifted"
         latin:elementKeyboard="@xml/kbd_thai" />
     <Element
         latin:elementName="symbols"

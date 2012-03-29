@@ -130,6 +130,7 @@ public class Keyboard {
     private final HashMap<Integer, Key> mKeyCache = new HashMap<Integer, Key>();
 
     private final ProximityInfo mProximityInfo;
+    private final boolean mProximityCharsCorrectionEnabled;
 
     public Keyboard(Params params) {
         mId = params.mId;
@@ -153,6 +154,19 @@ public class Keyboard {
         mProximityInfo = new ProximityInfo(params.mId.mLocale.toString(),
                 params.GRID_WIDTH, params.GRID_HEIGHT, mOccupiedWidth, mOccupiedHeight,
                 mMostCommonKeyWidth, mMostCommonKeyHeight, mKeys, params.mTouchPositionCorrection);
+        mProximityCharsCorrectionEnabled = params.mProximityCharsCorrectionEnabled;
+    }
+
+    public boolean hasProximityCharsCorrection(int code) {
+        if (!mProximityCharsCorrectionEnabled) {
+            return false;
+        }
+        // Note: The native code has the main keyboard layout only at this moment.
+        // TODO: Figure out how to handle proximity characters information of all layouts.
+        final boolean canAssumeNativeHasProximityCharsInfoOfAllKeys = (
+                mId.mElementId == KeyboardId.ELEMENT_ALPHABET
+                || mId.mElementId == KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED);
+        return canAssumeNativeHasProximityCharsInfoOfAllKeys || Character.isLetter(code);
     }
 
     public ProximityInfo getProximityInfo() {
@@ -229,6 +243,8 @@ public class Keyboard {
 
         public int mMostCommonKeyHeight = 0;
         public int mMostCommonKeyWidth = 0;
+
+        public boolean mProximityCharsCorrectionEnabled;
 
         public final TouchPositionCorrection mTouchPositionCorrection =
                 new TouchPositionCorrection();
@@ -647,6 +663,10 @@ public class Keyboard {
             mParams.mTouchPositionCorrection.setEnabled(enabled);
         }
 
+        public void setProximityCharsCorrectionEnabled(boolean enabled) {
+            mParams.mProximityCharsCorrectionEnabled = enabled;
+        }
+
         public Keyboard build() {
             return new Keyboard(mParams);
         }
@@ -753,9 +773,9 @@ public class Keyboard {
                 params.mMaxMoreKeysKeyboardColumn = keyAttr.getInt(
                         R.styleable.Keyboard_Key_maxMoreKeysColumn, 5);
 
+                params.mThemeId = keyboardAttr.getInt(R.styleable.Keyboard_themeId, 0);
                 params.mIconsSet.loadIcons(keyboardAttr);
 
-                params.mThemeId = keyboardAttr.getInt(R.styleable.Keyboard_themeId, 0);
                 final int resourceId = keyboardAttr.getResourceId(
                         R.styleable.Keyboard_touchPositionCorrectionData, 0);
                 params.mTouchPositionCorrection.setEnabled(resourceId != 0);

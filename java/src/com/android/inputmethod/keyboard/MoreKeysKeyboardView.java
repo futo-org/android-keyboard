@@ -47,7 +47,9 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
             new KeyboardActionListener.Adapter() {
         @Override
         public void onCodeInput(int primaryCode, int x, int y) {
-            mListener.onCodeInput(primaryCode, x, y);
+            // Because a more keys keyboard doesn't need proximity characters correction, we don't
+            // send touch event coordinates.
+            mListener.onCodeInput(primaryCode, NOT_A_TOUCH_COORDINATE, NOT_A_TOUCH_COORDINATE);
         }
 
         @Override

@@ -1318,7 +1318,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (mSettingsValues.isWordSeparator(primaryCode)) {
                 didAutoCorrect = handleSeparator(primaryCode, x, y, spaceState);
             } else {
-                handleCharacter(primaryCode, x, y, spaceState);
+                final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
+                if (keyboard != null && keyboard.hasProximityCharsCorrection(primaryCode)) {
+                    handleCharacter(primaryCode, x, y, spaceState);
+                } else {
+                    handleCharacter(primaryCode, NOT_A_TOUCH_COORDINATE, NOT_A_TOUCH_COORDINATE,
+                            spaceState);
+                }
             }
             mExpectingUpdateSelection = true;
             mShouldSwitchToLastSubtype = true;

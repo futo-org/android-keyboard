@@ -424,5 +424,7 @@
             <enum name="number" value="9"  />
         </attr>
         <attr name="elementKeyboard" format="reference"/>
+        <!-- Enable proximity characters correction. Disabled by default. -->
+        <attr name="enableProximityCharsCorrection" format="boolean" />
     </declare-styleable>
 </resources>

@@ -23,7 +23,8 @@
     latin:keyboardLocale="sk">
     <Element
         latin:elementName="alphabet"
-        latin:elementKeyboard="@xml/kbd_qwerty" />
+        latin:elementKeyboard="@xml/kbd_qwerty"
+        latin:enableProximityCharsCorrection="true" />
     <Element
         latin:elementName="symbols"
         latin:elementKeyboard="@xml/kbd_symbols" />
