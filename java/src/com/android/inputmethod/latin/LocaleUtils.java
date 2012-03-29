@@ -168,12 +168,14 @@ public class LocaleUtils {
      * @param newLocale the locale to change to.
      * @return the old locale.
      */
-    public static Locale setSystemLocale(final Resources res, final Locale newLocale) {
+    public static synchronized Locale setSystemLocale(final Resources res, final Locale newLocale) {
         final Configuration conf = res.getConfiguration();
-        final Locale saveLocale = conf.locale;
-        conf.locale = newLocale;
-        res.updateConfiguration(conf, res.getDisplayMetrics());
-        return saveLocale;
+        final Locale oldLocale = conf.locale;
+        if (newLocale != null && !newLocale.equals(oldLocale)) {
+            conf.locale = newLocale;
+            res.updateConfiguration(conf, res.getDisplayMetrics());
+        }
+        return oldLocale;
     }
 
     private static final HashMap<String, Locale> sLocaleCache = new HashMap<String, Locale>();
