@@ -13,6 +13,32 @@
 # limitations under the License.
 
 LOCAL_PATH := $(call my-dir)
+
+############ some local flags
+# If you change any of those flags, you need to rebuild both libjni_latinime_static
+# and the shared library.
+#FLAG_DBG := true
+#FLAG_DO_PROFILE := true
+
+TARGETING_UNBUNDLED_FROYO := true
+
+ifeq ($(TARGET_ARCH), x86)
+    TARGETING_UNBUNDLED_FROYO := false
+endif
+
+ifeq ($(TARGET_ARCH), mips)
+    TARGETING_UNBUNDLED_FROYO := false
+endif
+
+ifeq ($(FLAG_DBG), true)
+    TARGETING_UNBUNDLED_FROYO := false
+endif
+
+ifeq ($(FLAG_DO_PROFILE), true)
+    TARGETING_UNBUNDLED_FROYO := false
+endif
+
+######################################
 include $(CLEAR_VARS)
 
 LATIN_IME_SRC_DIR := src
@@ -43,26 +69,43 @@ LOCAL_SRC_FILES := \
     $(LATIN_IME_JNI_SRC_FILES) \
     $(addprefix $(LATIN_IME_SRC_DIR)/,$(LATIN_IME_CORE_SRC_FILES))
 
-#FLAG_DBG := true
-#FLAG_DO_PROFILE := true
-
-TARGETING_UNBUNDLED_FROYO := true
-
-ifeq ($(TARGET_ARCH), x86)
-    TARGETING_UNBUNDLED_FROYO := false
-endif
-
-ifeq ($(TARGET_ARCH), mips)
-    TARGETING_UNBUNDLED_FROYO := false
-endif
-
-ifeq ($(FLAG_DBG), true)
-    TARGETING_UNBUNDLED_FROYO := false
+ifeq ($(TARGETING_UNBUNDLED_FROYO), true)
+    LOCAL_NDK_VERSION := 4
+    LOCAL_SDK_VERSION := 8
 endif
 
 ifeq ($(FLAG_DO_PROFILE), true)
-    TARGETING_UNBUNDLED_FROYO := false
-endif
+    $(warning Making profiling version of native library)
+    LOCAL_CFLAGS += -DFLAG_DO_PROFILE
+else # FLAG_DO_PROFILE
+ifeq ($(FLAG_DBG), true)
+    $(warning Making debug version of native library)
+    LOCAL_CFLAGS += -DFLAG_DBG
+endif # FLAG_DBG
+endif # FLAG_DO_PROFILE
+
+LOCAL_MODULE := libjni_latinime_static
+LOCAL_MODULE_TAGS := optional
+
+include external/stlport/libstlport.mk
+include $(BUILD_STATIC_LIBRARY)
+
+######################################
+include $(CLEAR_VARS)
+
+# All code in LOCAL_WHOLE_STATIC_LIBRARIES will be built into this shared library.
+LOCAL_WHOLE_STATIC_LIBRARIES := libjni_latinime_static
+LOCAL_SHARED_LIBRARIES := libstlport
+
+ifeq ($(FLAG_DO_PROFILE), true)
+    $(warning Making profiling version of native library)
+    LOCAL_SHARED_LIBRARIES += libcutils libutils
+else # FLAG_DO_PROFILE
+ifeq ($(FLAG_DBG), true)
+    $(warning Making debug version of native library)
+    LOCAL_SHARED_LIBRARIES += libcutils libutils
+endif # FLAG_DBG
+endif # FLAG_DO_PROFILE
 
 ifeq ($(TARGETING_UNBUNDLED_FROYO), true)
     LOCAL_NDK_VERSION := 4
@@ -70,23 +113,13 @@ ifeq ($(TARGETING_UNBUNDLED_FROYO), true)
 endif
 
 LOCAL_MODULE := libjni_latinime
-
 LOCAL_MODULE_TAGS := optional
 
-# For STL
-LOCAL_C_INCLUDES += external/stlport/stlport bionic
-LOCAL_SHARED_LIBRARIES += libstlport
-
-ifeq ($(FLAG_DO_PROFILE), true)
-    $(warning Making profiling version of native library)
-    LOCAL_CFLAGS += -DFLAG_DO_PROFILE
-    LOCAL_SHARED_LIBRARIES += libcutils libutils
-else # FLAG_DO_PROFILE
-ifeq ($(FLAG_DBG), true)
-    $(warning Making debug version of native library)
-    LOCAL_CFLAGS += -DFLAG_DBG
-    LOCAL_SHARED_LIBRARIES += libcutils libutils
-endif # FLAG_DBG
-endif # FLAG_DO_PROFILE
-
+include external/stlport/libstlport.mk
 include $(BUILD_SHARED_LIBRARY)
+
+#################### Clean up the tmp vars
+LATIN_IME_CORE_SRC_FILES :=
+LATIN_IME_JNI_SRC_FILES :=
+LATIN_IME_SRC_DIR :=
+TARGETING_UNBUNDLED_FROYO :=
