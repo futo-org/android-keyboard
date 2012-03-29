@@ -129,7 +129,7 @@ public class SuggestionSpanUtils {
         // TODO: Share the implementation for checking typed word validity between the IME
         // and the spell checker.
         final int flag = (sameAsTyped && !suggestedWords.mTypedWordValid)
-                ? ((int)OBJ_FLAG_EASY_CORRECT | (int)OBJ_FLAG_MISSPELLED)
+                ? (OBJ_FLAG_EASY_CORRECT | OBJ_FLAG_MISSPELLED)
                 : 0;
 
         final Object[] args =

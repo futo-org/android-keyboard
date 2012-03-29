@@ -38,7 +38,7 @@ public abstract class Dictionary {
 
     /**
      * Interface to be implemented by classes requesting words to be fetched from the dictionary.
-     * @see #getWords(WordComposer, WordCallback)
+     * @see #getWords(WordComposer, WordCallback, ProximityInfo)
      */
     public interface WordCallback {
         /**

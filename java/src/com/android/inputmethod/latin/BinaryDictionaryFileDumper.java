@@ -252,7 +252,7 @@ public class BinaryDictionaryFileDumper {
      * also apply.
      *
      * @param input the stream to be copied.
-     * @param outputFile an outputstream to copy the data to.
+     * @param output an output stream to copy the data to.
      */
     private static void checkMagicAndCopyFileTo(final BufferedInputStream input,
             final FileOutputStream output) throws FileNotFoundException, IOException {
