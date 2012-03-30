@@ -87,7 +87,12 @@ endif # FLAG_DO_PROFILE
 LOCAL_MODULE := libjni_latinime_static
 LOCAL_MODULE_TAGS := optional
 
+ifdef HISTORICAL_NDK_VERSIONS_ROOT # In the platform build system
 include external/stlport/libstlport.mk
+else # In the NDK build system
+LOCAL_C_INCLUDES += external/stlport/stlport bionic
+endif
+
 include $(BUILD_STATIC_LIBRARY)
 
 ######################################
@@ -95,7 +100,12 @@ include $(CLEAR_VARS)
 
 # All code in LOCAL_WHOLE_STATIC_LIBRARIES will be built into this shared library.
 LOCAL_WHOLE_STATIC_LIBRARIES := libjni_latinime_static
+
+ifdef HISTORICAL_NDK_VERSIONS_ROOT # In the platform build system
 LOCAL_SHARED_LIBRARIES := libstlport
+else # In the NDK build system
+LOCAL_SHARED_LIBRARIES := libstlport_static
+endif
 
 ifeq ($(FLAG_DO_PROFILE), true)
     $(warning Making profiling version of native library)
@@ -115,7 +125,10 @@ endif
 LOCAL_MODULE := libjni_latinime
 LOCAL_MODULE_TAGS := optional
 
+ifdef HISTORICAL_NDK_VERSIONS_ROOT # In the platform build system
 include external/stlport/libstlport.mk
+endif
+
 include $(BUILD_SHARED_LIBRARY)
 
 #################### Clean up the tmp vars
