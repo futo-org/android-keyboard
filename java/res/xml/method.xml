@@ -27,7 +27,7 @@
     cs: Czech/qwertz
     da: Danish/nordic
     de: German/qwertz
-    de_ZZ: German (QWERTY)/qwerty
+    de_QY: German (QWERTY)/qwerty
     el: Greek/greek
     en_US: English United States/qwerty
     en_GB: English Great Britain/qwerty
@@ -63,6 +63,7 @@
     tr: Turkish/qwerty
     uk: Ukrainian/east_slavic
     vi: Vietnamese/qwerty
+    zz_QY: QWERTY/qwerty
     -->
 <!-- TODO: use <lang>_keyboard icon instead of a common keyboard icon. -->
 <!-- If IME doesn't have an applicable subtype, the first subtype will be used as a default
@@ -74,7 +75,7 @@
             android:label="@string/subtype_en_US"
             android:imeSubtypeLocale="en_US"
             android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="TrySuppressingImeSwitcher,AsciiCapable,EnabledWhenDefaultIsNotAsciiCapable"
+            android:imeSubtypeExtraValue="TrySuppressingImeSwitcher,AsciiCapable"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_en_GB"
@@ -119,7 +120,7 @@
             android:label="@string/subtype_generic_qwerty"
             android:imeSubtypeLocale="de"
             android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="AsciiCapable,KeyboardLocale=de_ZZ"
+            android:imeSubtypeExtraValue="AsciiCapable,KeyboardLocale=de_QY"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
@@ -309,5 +310,11 @@
             android:imeSubtypeLocale="vi"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_qwerty"
+            android:imeSubtypeLocale="zz_QY"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="AsciiCapable,EnabledWhenDefaultIsNotAsciiCapable"
     />
 </input-method>
