@@ -15,7 +15,7 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
-LATIN_IME_SRC_DIR := ../src
+LATIN_IME_SRC_DIR := src
 
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
 
