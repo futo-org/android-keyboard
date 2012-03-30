@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Chế độ chữ cái"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Chế độ điện thoại"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Chế độ biểu tượng điện thoại"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Nhập liệu bằng giọng nói"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Nhập liệu bằng giọng nói hiện không được hỗ trợ cho ngôn ngữ của bạn nhưng hoạt động với ngôn ngữ tiếng Anh."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Nhập liệu bằng giọng nói sử dụng nhận dạng giọng nói của Google. Áp dụng "<a href="http://m.google.com/privacy">"Chính sách bảo mật dành cho điện thoại di động"</a>"."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Để tắt nhập liệu bằng giọng nói, đi tới cài đặt phương pháp nhập liệu."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Để sử dụng nhập liệu bằng giọng nói, hãy nhấn nút micrô."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Nói ngay"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Đang hoạt động"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Lỗi. Vui lòng thử lại."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Không thể kết nối"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Lỗi, quá nhiều câu thoại."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Sự cố âm thanh"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Lỗi máy chủ"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Không nghe thấy tiếng nói nào"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Không tìm thấy kết quả phù hợp"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Tìm kiếm bằng giọng nói chưa được cài đặt"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Gợi ý:"</b>" Trượt qua bàn phím để nói"</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Gợi ý:"</b>" Lần tới, thử nói dấu câu như \"dấu chấm\", \"dấu phẩy\" hoặc \"dấu hỏi\"."</string>
-    <string name="cancel" msgid="6830980399865683324">"Hủy"</string>
-    <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="3583258583521397548">"Khóa nhập giọng nói"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Trên bàn phím chính"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Trên bàn phím biểu tượng"</string>
@@ -128,7 +108,6 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Micrô trên bàn phím chính"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Micrô trên bàn phím biểu tượng"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Nhập liệu bằng giọng nói đã bị tắt"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Chọn phương thức nhập"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Định cấu hình phương thức nhập"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Ngôn ngữ nhập"</string>
     <string name="select_language" msgid="3693815588777926848">"Ngôn ngữ nhập"</string>

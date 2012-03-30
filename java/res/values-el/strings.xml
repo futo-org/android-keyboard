@@ -39,7 +39,7 @@
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Επιλογές για έμπειρους χρήστες"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Άλλη μέθοδος εισόδου"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Το κλειδί αλλαγής γλώσσας καλύπτει και άλλες μεθόδους εισόδου"</string>
-    <string name="suppress_language_switch_key" msgid="8003788410354806368">"Κατάργ.κλειδ.αλλαγ.γλωσσ."</string>
+    <string name="suppress_language_switch_key" msgid="8003788410354806368">"Κατάργ. κλειδιού γλώσσας"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Χρόνος εξαφ. αναδ. παραθ."</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Χωρίς καθυστέρ."</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Προεπιλογή"</string>
@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Λειτουργία γραμμάτων"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Λειτουργία τηλεφώνου"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Λειτουργία συμβόλων τηλεφώνου"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Φωνητική είσοδος"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Η φωνητική είσοδος δεν υποστηρίζεται αυτή τη στιγμή για τη γλώσσα σας, ωστόσο λειτουργεί στα Αγγλικά."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Οι φωνητικές εντολές χρησιμοποιούν την τεχνολογία αναγνώρισης φωνής της Google. Ισχύει "<a href="http://m.google.com/privacy">"η Πολιτική Απορρήτου για κινητά"</a>"."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Για να απενεργοποιήσετε τις φωνητικές εντολές, μεταβείτε στις ρυθμίσεις της μεθόδου εισαγωγής."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Για τη χρήση φωνητικών εντολών, πατήστε το κουμπί του μικροφώνου."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Μιλήστε τώρα"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Σε λειτουργία"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Σφάλμα. Δοκιμάστε ξανά."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Δεν ήταν δυνατή η σύνδεση"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Σφάλμα, πολλές λέξεις."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Πρόβλημα ήχου"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Σφάλμα διακομιστή"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Δεν ακούγεται ομιλία"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Δεν βρέθηκε καμία αντιστοίχιση"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Η Φωνητική αναζήτηση δεν εγκαταστάθηκε"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Υπόδειξη:"</b>" Σύρετε κατά μήκος του πληκτρολογίου για να μιλήσετε"</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Υπόδειξη:"</b>" Την επόμενη φορά, προσπαθήστε να προφέρετε σημεία στίξης, όπως \"τελεία\", \"κόμμα\" ή \"ερωτηματικό\"."</string>
-    <string name="cancel" msgid="6830980399865683324">"Ακύρωση"</string>
-    <string name="ok" msgid="7898366843681727667">"ΟΚ"</string>
     <string name="voice_input" msgid="3583258583521397548">"Κλειδί φωνητικής εξόδου"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Στο κύριο πληκτρολ."</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Πληκτρ. συμβ. ενερ."</string>
@@ -128,12 +108,10 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Μικ. στο κύριο πληκ."</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Μικ. στο πληκ. συμβ."</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Απεν. φωνητ. είσοδος"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Επιλογή μεθόδου εισόδου"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Διαμόρφωση μεθόδων εισαγωγής"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Γλώσσες εισόδου"</string>
     <string name="select_language" msgid="3693815588777926848">"Γλώσσες εισόδου"</string>
-    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Αγγίξτε ξανά για αποθήκευση"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Λεξικό διαθέσιμο"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Ενεργοποίηση σχολίων χρηστών"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Βοηθήστε μας να βελτιώσουμε αυτό το πρόγραμμα επεξεργασίας μεθόδου εισόδου στέλνοντας αυτόματα στατιστικά στοιχεία και αναφορές σφαλμάτων στην Google."</string>

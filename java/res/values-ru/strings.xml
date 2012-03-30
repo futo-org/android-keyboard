@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Режим ввода текста"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Режим набора номера"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Режим телефонных символов"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Голосовой ввод"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"В настоящее время функция голосового ввода не поддерживает ваш язык, но вы можете пользоваться ей на английском."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Голосовой ввод использует алгоритмы распознавания речи Google. Действует "<a href="http://m.google.com/privacy">"политика конфиденциальности для мобильных устройств"</a>"."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Функция голосового ввода отключается в настройках способа ввода."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Чтобы использовать голосовой ввод, нажмите кнопку микрофона."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Говорите"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Обработка запроса"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Ошибка. Повторите попытку."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Ошибка подключения"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Слишком длинная фраза"</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Неполадка со звуком"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Ошибка сервера"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Речи не слышно"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Ничего не найдено"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Голосовой поиск не установлен"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Совет"</b>". Проведите пальцем по клавиатуре для голосового ввода."</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Совет"</b>". В следующий раз проговаривайте знаки препинания, например \"точка\", \"запятая\", \"вопросительный знак\"."</string>
-    <string name="cancel" msgid="6830980399865683324">"Отмена"</string>
-    <string name="ok" msgid="7898366843681727667">"ОК"</string>
     <string name="voice_input" msgid="3583258583521397548">"Ключ голосового ввода"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Значок на основной клавиатуре"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Значок на клавиатуре символов"</string>
@@ -128,7 +108,6 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Значок на основной клавиатуре"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Значок на клавиатуре символов"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Голосовой ввод откл."</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Выбрать способ ввода"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Настройка способов ввода"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Языки ввода"</string>
     <string name="select_language" msgid="3693815588777926848">"Языки ввода"</string>

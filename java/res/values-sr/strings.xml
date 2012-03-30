@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Режим слова"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Режим телефона"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Режим симбола телефона"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Гласовни унос"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Гласовни унос тренутно није подржан за ваш језик, али функционише на енглеском."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Гласовни унос користи Google-ову функцију за препознавање гласа. Примењује се "<a href="http://m.google.com/privacy">"политика приватности за мобилне уређаје"</a>"."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Да бисте искључили гласовни унос, идите на подешавања за начин уноса."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Да бисте користили гласовни унос, притисните дугме за микрофон."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Говорите сада"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Обрада"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Грешка. Покушајте поново."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Повезивање није могуће"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Грешка, говорите предуго."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Проблем са звуком"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Грешка сервера"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Не чује се говор"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Нема подударања"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Гласовна претрага није инсталирана"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Савет:"</b>" Превуците прстом преко тастатуре за гласовни унос"</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Савет:"</b>" Следећи пут покушајте да изговорите знакове интерпункције као што су „тачка“, „зарез“ или „знак питања“."</string>
-    <string name="cancel" msgid="6830980399865683324">"Откажи"</string>
-    <string name="ok" msgid="7898366843681727667">"Потврди"</string>
     <string name="voice_input" msgid="3583258583521397548">"Тастер за гласовни унос"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"На главној тастатури"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"На тастатури са симболима"</string>
@@ -128,7 +108,6 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Микрофон на главној тастатури"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Микрофон на тастатури са симболима"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Гласовни унос је онемогућен"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Изаберите метод уноса"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Конфигурисање метода уноса"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Језици за унос"</string>
     <string name="select_language" msgid="3693815588777926848">"Језици уноса"</string>

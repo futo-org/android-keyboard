@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Letters mode"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Phone mode"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Phone symbols mode"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Voice input"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Voice input is not currently supported for your language, but does work in English."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Voice input uses Google\'s speech recognition. "<a href="http://m.google.com/privacy">"The Mobile Privacy Policy"</a>" applies."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"To turn off voice input, go to input method settings."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"To use voice input, press the microphone button."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Speak now"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Working"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Error: Please try again."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Couldn\'t connect"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Error, too much speech."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Audio problem"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Server error"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"No speech heard"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"No matches found"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Voice search not installed"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Hint:"</b>" Swipe across keyboard to speak"</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Hint:"</b>" Next time, try speaking punctuation marks, like \"full stop\", \"comma\" or \"question mark\"."</string>
-    <string name="cancel" msgid="6830980399865683324">"Cancel"</string>
-    <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="3583258583521397548">"Voice input key"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"On main keyboard"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"On symbols keyboard"</string>
@@ -128,7 +108,6 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mic on main keyboard"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mic on symbols keyboard"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Voice input is disabled"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Select input method"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configure input methods"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Input languages"</string>
     <string name="select_language" msgid="3693815588777926848">"Input languages"</string>

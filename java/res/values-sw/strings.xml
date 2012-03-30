@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Hali ya barua"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Hali ya simu"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Hali ya alama za simu"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Uingizaji wa sauti"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Uingizaji wa sauti hauhimiliwi kwa lugha yako kwa sasa, lakini inafanya kazi kwa Kiingereza."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Uingizaji wa sauti hutumia utambuaji wa usemi wa Google. "<a href="http://m.google.com/privacy">"Sera ya Faragha ya Simu za mkononi "</a>" hutumika."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Ili kuzima uingizaji sauti, nenda kwa mipangilio ya mbinu ya uingizaji."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Ili kutumia uingizaji wa sauti, bonyeza kitufe cha maikrofoni."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Ongea sasa"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Inafanya kazi"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Hitilafu. Tafadhali jaribu tena."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Haiwezi kuunganisha"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Hitilafu, usemi ni zaidi."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Tatizo la sauti"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Hitilafu ya Seva"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Hakuna matamshi yaliyosikizwa"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Hakuna zinazolingana zilizopatikana."</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Utafutaji wa sauti haujawekwa"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Kidokezo:"</b>" Telezesha kidole kwenye kibodi ili utamke"</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Kidokezo:"</b>" Wakati mwingine, jaribu kutamka uakifishaji kama vile \"kituo\", \"koma\", au \"kiulizio cha swali\"."</string>
-    <string name="cancel" msgid="6830980399865683324">"Ghairi"</string>
-    <string name="ok" msgid="7898366843681727667">"Sawa"</string>
     <string name="voice_input" msgid="3583258583521397548">"Kibao cha kuingizia sauti"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Kwenye kibodi kuu"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Kwenye kibodi ya ishara"</string>
@@ -128,12 +108,10 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Maikrofoni kwenye kibodi kuu"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Maikrofoni kwenye kibodi ya ishara"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Uingizaji sauti umelemazwa"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Chagua mtindo wa uingizaji"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Sanidi mbinu za uingizaji"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Lugha za uingizaji"</string>
     <string name="select_language" msgid="3693815588777926848">"Lugha zinazoruhusiwa"</string>
-    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Gusa tena ili kuhifadhi"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Kamusi inapatikana"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Wezesha maoni ya watumiaji"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Saidia kuimarisha mbinu ya uingizaji wa kihariri, kwa kutuma takwimu za matumizi na ripoti za kuvurugika kwa Google kiotomatiki."</string>

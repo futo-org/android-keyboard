@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Bogstavtilstand"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Telefontilstand"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Telefonsymboltilstand"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Stemmeinput"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Stemmeinput understøttes i øjeblikket ikke for dit sprog, men fungerer på engelsk."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Stemmeinput anvender Googles stemmegenkendelse. "<a href="http://m.google.com/privacy">"Fortrolighedspolitikken for mobilenheder"</a>" gælder."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Slå stemmeinput fra i indstillingerne for inputmetode."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Brug stemmeinput ved at trykke på mikrofonknappen."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Tal nu"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Arbejder"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Fejl. Prøv igen."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Kunne ikke oprette forbindelse"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Fejl. For meget tale."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Lydproblem"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Serverfejl"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Der høres ingen tale"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Der blev ikke fundet nogen matches"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Stemmesøgning er ikke installeret"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Tip:"</b>" Glid hen over tastaturet for at tale"</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Tip:"</b>" Næste gang kan du forsøge at sige tegnsætning, f.eks. \"punktum\", \"komma\" eller \"spørgsmålstegn\"."</string>
-    <string name="cancel" msgid="6830980399865683324">"Annuller"</string>
-    <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="3583258583521397548">"Nøgle til stemmeinput"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"På hovedtastatur"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"På symboltastatur"</string>
@@ -128,12 +108,10 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mik. på hovedtastatur"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mik. på symboltastatur"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Stemmeinput deaktiveret"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Vælg inputmetode"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurer inputmetoder"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Inputsprog"</string>
     <string name="select_language" msgid="3693815588777926848">"Inputsprog"</string>
-    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Tryk igen for at gemme"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Ordbog er tilgængelig"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Aktiver brugerfeedback"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Vær med til at forbedre denne inputmetode ved at sende anvendelsesstatistikker og rapporter om nedbrud til Google."</string>

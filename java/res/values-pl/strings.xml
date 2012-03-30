@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Tryb liter"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Tryb telefonu"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Tryb symboli telefonu"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Wprowadzanie głosowe"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Wprowadzanie głosowe obecnie nie jest obsługiwane w Twoim języku, ale działa w języku angielskim."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Funkcja wprowadzania głosowego wykorzystuje mechanizm rozpoznawania mowy. Obowiązuje "<a href="http://m.google.com/privacy">"Polityka prywatności w usługach mobilnych"</a>"."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Aby wyłączyć rozpoznawanie mowy, przejdź do ustawień sposobu wprowadzania tekstu."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Aby użyć wprowadzania głosowego, naciśnij przycisk mikrofonu."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Mów teraz"</string>
-    <string name="voice_working" msgid="6666937792815731889">"W toku"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Błąd. Spróbuj ponownie."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Nie można nawiązać połączenia"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Błąd, zbyt długa wypowiedź."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Problem z dźwiękiem"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Błąd serwera"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Nie wykryto mowy"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Brak wyników"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Wyszukiwanie głosowe nie jest zainstalowane"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Wskazówka:"</b>" przesuń palcem po klawiaturze, aby mówić."</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Wskazówka:"</b>" następnym razem spróbuj wypowiadać nazwy znaków interpunkcyjnych: „kropka”, „przecinek” lub „pytajnik”."</string>
-    <string name="cancel" msgid="6830980399865683324">"Anuluj"</string>
-    <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="3583258583521397548">"Klawisz rozpoznawania mowy"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Na klawiaturze głównej"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Na klawiaturze z symbolami"</string>
@@ -128,7 +108,6 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikrofon na klawiaturze głównej"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikrofon na klawiaturze z symbolami"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Wprowadzanie głosowe jest wyłączone"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Wybierz sposób wprowadzania tekstu"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfiguruj metody wprowadzania"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Języki wprowadzania"</string>
     <string name="select_language" msgid="3693815588777926848">"Języki wprowadzania"</string>

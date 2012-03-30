@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Buchstabenmodus"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Telefonmodus"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Telefon-Symbolmodus"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Spracheingabe"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Spracheingaben werden zurzeit nicht für Ihre Sprache unterstützt, funktionieren jedoch in Englisch."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Die Spracheingabe verwendet die Spracherkennung von Google. Es gelten die "<a href="http://m.google.com/privacy">"Google Mobile-Datenschutzbestimmungen"</a>"."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Rufen Sie zum Deaktivieren der Spracheingabe die Einstellungen für die Eingabemethode auf."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Drücken Sie zur Verwendung der Spracheingabe die Mikrofonschaltfläche."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Jetzt sprechen"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Vorgang läuft"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Fehler. Versuchen Sie es erneut.."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Keine Verbindung"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Fehler – Text zu lang"</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Audio-Problem"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Serverfehler"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Keine Sprache zu hören"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Keine Treffer gefunden"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Sprachsuche nicht installiert"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Hinweis:"</b>" Ziehen Sie zum Sprechen den Finger über die Tastatur."</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Hinweis:"</b>" Versuchen Sie beim nächsten Mal, Satzzeichen wie \"Punkt\", \"Komma\" oder \"Fragezeichen\" per Sprachbefehl einzugeben."</string>
-    <string name="cancel" msgid="6830980399865683324">"Abbrechen"</string>
-    <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="3583258583521397548">"Taste für Spracheingabe"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Auf Haupttastatur"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Auf Symboltastatur"</string>
@@ -128,12 +108,10 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikro auf Haupttastatur"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikro auf Symboltastatur"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Spracheingabe deaktiviert"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Eingabemethode auswählen"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Eingabemethoden konfigurieren"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Eingabesprachen"</string>
     <string name="select_language" msgid="3693815588777926848">"Eingabesprachen"</string>
-    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Zum Speichern erneut berühren"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Wörterbuch verfügbar"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Nutzer-Feedback aktivieren"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Tragen Sie zur Verbesserung dieses Eingabemethodeneditors bei, indem Sie automatisch Nutzungsstatistiken und Absturzberichte an Google senden."</string>

@@ -38,8 +38,8 @@
     <string name="advanced_settings" msgid="362895144495591463">"Avanserte innstillinger"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Alternativer for eksperter"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Bytt inndatametode"</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Nøkkelen for språkbytte dekker også andre inndatametoder"</string>
-    <string name="suppress_language_switch_key" msgid="8003788410354806368">"Skjul språkbyttenøkkelen"</string>
+    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tasten for språkbytte dekker også andre inndatametoder"</string>
+    <string name="suppress_language_switch_key" msgid="8003788410354806368">"Skjul språkbyttetasten"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Tregt tastevindu"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"U/ forsinkelse"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Standard"</string>
@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Bokstavmodus"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Ringemodus"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Ringemodus med symboler"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Stemmedata"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Stemmedata håndteres foreløpig ikke på ditt språk, men fungerer på engelsk."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Google Voice bruker Googles talegjenkjenning. "<a href="http://m.google.com/privacy">"Personvernreglene for mobil"</a>" gjelder."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Gå til innstillinger for inndatametode for å slå av stemmedata."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Trykk på mikrofonknappen for å aktivere stemmedata."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Snakk nå"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Arbeider"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Feil. Prøv på nytt."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Kunne ikke koble til"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Feil – for mye tale"</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Lydproblem"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Tjenerfeil"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Ingen tale høres"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Ingen treff"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Talesøk ikke installert"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021">"Hint:"<b>" Sveip over tastaturet for å snakke"</b></string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Hint:"</b>" Neste gang kan du prøve å tale inn tegnsettingen ved for eksempel å si «punktum», «komma» eller «spørsmålstegn»."</string>
-    <string name="cancel" msgid="6830980399865683324">"Avbryt"</string>
-    <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tast for taleinndata"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"På hovedtastatur"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"På talltastatur"</string>
@@ -128,7 +108,6 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikrofon på hovedtast."</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikrofon på talltastatur"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Taleinndata er deaktiv."</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Velg inndatametode"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurer inndatametoder"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Inndataspråk"</string>
     <string name="select_language" msgid="3693815588777926848">"Inndataspråk"</string>

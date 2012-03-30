@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Modo de letras"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Modo de teléfono"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Modo de símbolos de teléfono"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Introducción de voz"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Actualmente la introducción de voz no está disponible en tu idioma, pero se puede utilizar en inglés."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"La entrada de voz utiliza el reconocimiento de voz de Google. Se aplica la "<a href="http://m.google.com/privacy">"Política de privacidad de Google para móviles"</a>"."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Para desactivar la función de entrada de voz, accede a los ajustes del método de introducción de texto."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Para utilizar la entrada de voz, pulsa el botón de micrófono."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Habla ahora"</string>
-    <string name="voice_working" msgid="6666937792815731889">"En curso"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Se ha producido un error. Inténtalo de nuevo."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"No se ha podido establecer conexión."</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Se ha producido un error debido a un exceso de introducción de datos de voz."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Problema de audio"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Error del servidor"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Ninguna conversación escuchada"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"No se ha encontrado ninguna coincidencia."</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"La búsqueda por voz no está instalada."</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Sugerencia:"</b>" muévete por el teclado para hablar."</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Sugerencia:"</b>" la próxima vez, prueba a indicar signos de puntuación como, por ejemplo, \"punto\", \"coma\" o \"signo de interrogación\"."</string>
-    <string name="cancel" msgid="6830980399865683324">"Cancelar"</string>
-    <string name="ok" msgid="7898366843681727667">"Aceptar"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tecla de entrada de voz"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"En teclado principal"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"En teclado de símbolos"</string>
@@ -128,12 +108,10 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Micrófono en teclado principal"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Micro en teclado de símbolos"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Entrada de voz inhabilitada"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Selecciona un método de introducción de texto"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de introducción"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas"</string>
     <string name="select_language" msgid="3693815588777926848">"Idiomas de entrada"</string>
-    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Toca otra vez para guardar."</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Hay un diccionario disponible"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Habilitar comentarios de usuarios"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Ayuda a mejorar este editor de método de introducción de texto enviando estadísticas de uso e informes de error a Google."</string>

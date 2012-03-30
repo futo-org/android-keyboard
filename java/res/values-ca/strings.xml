@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Mode de lletres"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Mode de telèfon"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Mode de símbols de telèfon"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Entrada de veu"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Actualment, l\'entrada de veu no és compatible amb el vostre idioma, però funciona en anglès."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"L\'entrada de veu utilitza el reconeixement de veu de Google. S\'hi aplica la "<a href="http://m.google.com/privacy">"Política de privadesa de Google per a mòbils"</a>"."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Per desactivar l\'entada de veu, vés a la configuració del mètode d\'entrada."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Per utilitzar l\'entrada de veu, prem el botó del micròfon."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Parleu ara"</string>
-    <string name="voice_working" msgid="6666937792815731889">"S\'està treballant"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Error. Torneu-ho a provar."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"No s\'ha pogut connectar"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Error; s\'ha parlat massa."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Problema d\'àudio"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Error del servidor"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"No s\'escolten paraules"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"No hi ha resultats"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Cerca per veu no instal·lada"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Consell:"</b>" Feu lliscar el dit pel teclat per parlar"</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Suggeriment:"</b>" La propera vegada, proveu de dir la puntuació, com ara \"punt\", \"coma\" o \"interrogant\"."</string>
-    <string name="cancel" msgid="6830980399865683324">"Cancel·la"</string>
-    <string name="ok" msgid="7898366843681727667">"D\'acord"</string>
     <string name="voice_input" msgid="3583258583521397548">"Clau de l\'entrada de veu"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Al teclat principal"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Al tecl. de símb."</string>
@@ -128,12 +108,10 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Micro en tecl. princ."</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Micro en tecl. símb."</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Entr. veu desactiv."</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Selecciona el mètode d\'entrada"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configura mètodes d\'entrada"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomes d\'entrada"</string>
     <string name="select_language" msgid="3693815588777926848">"Idiomes d\'entrada"</string>
-    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Torna a tocar per desar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Diccionari disponible"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Activa els comentaris de l\'usuari"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Ajuda a millorar aquest editor de mètodes d\'entrada enviant automàticament estadístiques d\'ús i informes de bloqueigs a Google."</string>

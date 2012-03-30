@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Režim písmen"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Režim telefonu"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Režim telefonních symbolů"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Hlasový vstup"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Pro váš jazyk aktuálně není hlasový vstup podporován, ale funguje v angličtině."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Hlasový vstup používá rozpoznávání hlasu Google a vztahují se na něj "<a href="http://m.google.com/privacy">"Zásady ochrany osobních údajů pro mobilní služby"</a>"."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Chcete-li vypnout hlasový vstup, přejděte do nastavení metod vstupu."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Chcete-li použít hlasový vstup, stiskněte tlačítko mikrofonu."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Mluvte"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Probíhá zpracování"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Chyba. Zkuste to prosím znovu."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Připojení se nezdařilo."</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Chyba, řeč je příliš dlouhá."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Problém se zvukem"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Chyba serveru"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Nebyla detekována žádná řeč."</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Nebyly nalezeny žádné shody"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Hlasové vyhledávání není nainstalováno"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Nápověda:"</b>" Chcete-li aktivovat hlasový vstup, přejeďte prstem přes klávesnici."</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Nápověda:"</b>" Příště zkuste vyslovit interpunkci, například „tečka“, „čárka“ nebo „otazník“."</string>
-    <string name="cancel" msgid="6830980399865683324">"Zrušit"</string>
-    <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="3583258583521397548">"Klíč hlasového vstupu"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Na hlavní klávesnici"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Na klávesnici se symb."</string>
@@ -128,7 +108,6 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikr. na hlav. kláv."</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikr. na kláv. se symb."</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Hlasový vstup vypnut"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Výběr metody zadávání dat"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurace metod vstupu"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Vstupní jazyky"</string>
     <string name="select_language" msgid="3693815588777926848">"Jazyky vstupu"</string>

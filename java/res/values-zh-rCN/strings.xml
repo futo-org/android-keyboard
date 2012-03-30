@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"字母模式"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"电话模式"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"电话符号模式"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"语音输入"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"语音输入功能当前还不支持您的语言，您只能输入英语语音。"</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"语音输入采用了 Google 的语音识别技术，因此请遵守"<a href="http://m.google.com/privacy">"“Google 移动”隐私权政策"</a>"。"</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"要关闭语音输入功能，请转至输入法设置。"</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"要使用语音输入功能，请按“麦克风”按钮。"</string>
-    <string name="voice_listening" msgid="467518160751321844">"请开始说话"</string>
-    <string name="voice_working" msgid="6666937792815731889">"正在处理"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"出错，请重试。"</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"无法连接"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"出错，语音过长。"</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"音频问题"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"服务器出错"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"未听到语音"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"未找到匹配项"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"未安装语音搜索"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"提示："</b>"在键盘上滑动手指可激活语音功能"</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"提示："</b>"稍后，请尝试使用语音输入标点符号，如“句号”、“逗号”或“问号”。"</string>
-    <string name="cancel" msgid="6830980399865683324">"取消"</string>
-    <string name="ok" msgid="7898366843681727667">"确定"</string>
     <string name="voice_input" msgid="3583258583521397548">"语音输入键"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"主键盘上"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"符号键盘上"</string>
@@ -128,7 +108,6 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"主键盘上的麦克风"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"符号键盘上的麦克风"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"语音输入功能已停用"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"选择输入法"</string>
     <string name="configure_input_method" msgid="373356270290742459">"配置输入法"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"输入语言"</string>
     <string name="select_language" msgid="3693815588777926848">"输入语言"</string>
