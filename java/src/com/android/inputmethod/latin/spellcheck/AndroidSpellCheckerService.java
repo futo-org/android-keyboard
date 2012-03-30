@@ -26,7 +26,6 @@ import android.util.Log;
 import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
 
-import com.android.inputmethod.compat.ArraysCompatUtils;
 import com.android.inputmethod.compat.SuggestionsInfoCompatUtils;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.BinaryDictionary;
@@ -237,7 +236,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         @Override
         synchronized public boolean addWord(char[] word, int wordOffset, int wordLength, int score,
                 int dicTypeId, int dataType) {
-            final int positionIndex = ArraysCompatUtils.binarySearch(mScores, 0, mLength, score);
+            final int positionIndex = Arrays.binarySearch(mScores, 0, mLength, score);
             // binarySearch returns the index if the element exists, and -<insertion index> - 1
             // if it doesn't. See documentation for binarySearch.
             final int insertIndex = positionIndex >= 0 ? positionIndex : -positionIndex - 1;
