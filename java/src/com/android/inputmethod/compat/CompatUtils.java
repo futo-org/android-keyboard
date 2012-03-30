@@ -32,8 +32,6 @@ public class CompatUtils {
     // TODO: Can these be constants instead of literal String constants?
     private static final String INPUT_METHOD_SUBTYPE_SETTINGS =
             "android.settings.INPUT_METHOD_SUBTYPE_SETTINGS";
-    private static final String INPUT_LANGUAGE_SELECTION =
-            "com.android.inputmethod.latin.INPUT_LANGUAGE_SELECTION";
 
     public static Intent getInputLanguageSelectionIntent(String inputMethodId,
             int flagsForSubtypeSettings) {
@@ -51,11 +49,9 @@ public class CompatUtils {
             if (flagsForSubtypeSettings > 0) {
                 intent.setFlags(flagsForSubtypeSettings);
             }
-        } else {
-            action = INPUT_LANGUAGE_SELECTION;
-            intent = new Intent(action);
+            return intent;
         }
-        return intent;
+        throw new RuntimeException("Language selection doesn't supported on this platform");
     }
 
     public static Class<?> getClass(String className) {
