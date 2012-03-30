@@ -39,7 +39,7 @@
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Pilihan untuk pakar"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Tukar ke kaedah input lain"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Kunci pertukaran bahasa meliputi kaedah masukan lain juga"</string>
-    <string name="suppress_language_switch_key" msgid="8003788410354806368">"Tekan kunci ptukaran bhs"</string>
+    <string name="suppress_language_switch_key" msgid="8003788410354806368">"Tekan kunci alih bahasa"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Pop tmbl knci ketpkn lengah"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Tiada lengah"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Lalai"</string>
@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Mod huruf"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Mod telefon"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Mod simbol telefon"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Input suara"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Input suara tidak disokong untuk bahasa anda pada masa ini tetapi ia berfungsi dalam bahasa Inggeris."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Input suara menggunakan pengecaman pertuturan Google. "<a href="http://m.google.com/privacy">"Dasar Privasi Mudah Alih"</a>" digunakan."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Untuk mematikan input suara, pergi ke tetapan kaedah input."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Untuk menggunakan input suara, tekan butang mikrofon."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Sebutkan sekarang"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Berfungsi"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Ralat. Sila cuba lagi."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Tidak boleh disambungkan"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Ralat, terlalu banyak pertuturan."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Masalah audio"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Ralat pelayan"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Tiada pertuturan didengari"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Tiada padanan ditemui"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Carian suara tidak dipasang"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021">"Petunjuk"<b>":"</b>" Leret merentasi papan kekunci untuk bercakap"</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Petunjuk:"</b>" Lain kali, cuba ucapkan tanda baca seperti \"titik\", \"koma\" atau \"tanda soal\"."</string>
-    <string name="cancel" msgid="6830980399865683324">"Batal"</string>
-    <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="3583258583521397548">"Kunci input suara"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Hidpkn kekunci utama"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Pd ppn k’unci simbol"</string>
@@ -128,7 +108,6 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mik. pd kekunci utma"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mik. pd kekunci smbl"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Input suara dilmphkn"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Pilih kaedah input"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurasikan kaedah input"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Bahasa input"</string>
     <string name="select_language" msgid="3693815588777926848">"Bahasa input"</string>

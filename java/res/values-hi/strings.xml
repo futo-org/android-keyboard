@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"अक्षर मोड"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"फ़ोन मोड"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"फ़ोन प्रतीक मोड"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"ध्‍वनि इनपुट"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"ध्‍वनि इनपुट आपकी भाषा के लिए अभी समर्थित नहीं है, पर अंग्रेज़ी में कार्य करता है."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"ध्‍वनि इनपुट Google की वाक् पहचान का उपयोग करता है. "<a href="http://m.google.com/privacy">"मोबाइल गोपनीयता नीति"</a>" लागू होती है."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"ध्‍वनि इनपुट बंद करने के लिए, इनपुट पद्धति सेटिंग पर जाएं."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"ध्‍वनि इनपुट का उपयोग करने के लिए, माइक्रोफ़ोन बटन दबाएं."</string>
-    <string name="voice_listening" msgid="467518160751321844">"अब बोलें"</string>
-    <string name="voice_working" msgid="6666937792815731889">"कार्य कर रहा है"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"त्रुटि. कृपया पुन: प्रयास करें."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"कनेक्‍ट नहीं कर सका"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"त्रुटि, बहुत अधिक बातचीत."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"ऑडियो समस्या"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"सर्वर त्रुटि"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"कोई बातचीत नहीं सुनाई दी"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"कोई मिलान नहीं मिले"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"ध्‍वनि खोज इंस्टॉल नहीं है"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"संकेत:"</b>" बोलने के लिए कीबोर्ड पर स्‍वाइप करें"</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"संकेत:"</b>" अगली बार, विरामचिन्‍ह बोलने का प्रयास करें जैसे \"पूर्णविराम\", \"अल्‍पविराम\", या \"प्रश्‍नचिह्न\"."</string>
-    <string name="cancel" msgid="6830980399865683324">"रद्द करें"</string>
-    <string name="ok" msgid="7898366843681727667">"ठीक"</string>
     <string name="voice_input" msgid="3583258583521397548">"ध्‍वनि‍ इनपुट कुंजी"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"मुख्‍य कीबोर्ड पर"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"प्रतीक कीबोर्ड पर"</string>
@@ -128,7 +108,6 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"मुख्‍य कीबोर्ड पर माइक"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"प्रतीक कीबोर्ड पर माइक"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"ध्‍वनि इनपुट अक्षम है"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"इनपुट विधि का चयन करें"</string>
     <string name="configure_input_method" msgid="373356270290742459">"इनपुट पद्धति कॉन्‍फ़िगर करें"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"इनपुट भाषा"</string>
     <string name="select_language" msgid="3693815588777926848">"इनपुट भाषाएं"</string>

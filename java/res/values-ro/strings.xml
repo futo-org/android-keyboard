@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Modul Alfanumeric"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Modul Telefon"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Modul Telefon cu simboluri"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Intrare voce"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Intrarea vocală nu este acceptată în prezent pentru limba dvs., însă funcţionează în limba engleză."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Intrarea vocală utilizează funcţia Google de recunoaştere vocală. Se aplică "<a href="http://m.google.com/privacy">"Politica de confidenţialitate Google Mobil"</a>"."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Pentru a dezactiva intrarea vocală, accesaţi setările metodei de intrare."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Pentru a utiliza intrarea vocală, apăsaţi pe butonul Microfon."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Vorbiţi acum"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Se analizează"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Eroare. Încercaţi din nou."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Conectare imposibilă"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Eroare, discurs prea lung."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Problemă audio"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Eroare de server"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Nu s-a auzit vorbirea"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Nicio potrivire"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Căutarea vocală nu este instalată"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Indiciu:"</b>" glisaţi de-a lungul tastaturii pentru a vorbi"</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Indiciu:"</b>" data viitoare, încercaţi să rostiţi şi punctuaţia, cum ar fi „punct”, „virgulă”, sau „semn de întrebare”."</string>
-    <string name="cancel" msgid="6830980399865683324">"Anulaţi"</string>
-    <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tastă pentru intrarea vocală"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Pe tastat. princip."</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Pe tastat. simbol."</string>
@@ -128,7 +108,6 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mic. pe tast. princ."</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Micr. pe tast. simb."</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Intr. vocală dezact."</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Selectaţi metoda de introducere a textului"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configuraţi metodele de intrare"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Selectaţi limba"</string>
     <string name="select_language" msgid="3693815588777926848">"Limbi de intrare"</string>

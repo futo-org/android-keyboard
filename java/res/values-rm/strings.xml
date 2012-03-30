@@ -170,29 +170,6 @@
     <skip />
     <!-- no translation found for spoken_description_mode_phone_shift (5499629753962641227) -->
     <skip />
-    <string name="voice_warning_title" msgid="4419354150908395008">"Cumonds vocals"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"\"Cumonds vocals en Vossa lingua na vegnan actualmain betg sustegnids, ma la funcziun è disponibla per englais.\""</string>
-    <!-- no translation found for voice_warning_may_not_understand (5596289095878251072) -->
-    <skip />
-    <!-- no translation found for voice_warning_how_to_turn_off (3190378129944934856) -->
-    <skip />
-    <!-- no translation found for voice_hint_dialog_message (1420686286820661548) -->
-    <skip />
-    <string name="voice_listening" msgid="467518160751321844">"Ussa discurrer"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Operaziun en progress"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Errur. Empruvai anc ina giada."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Impussibel da connectar."</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Errur - discurrì memia ditg."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Problem audio"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Errur dal server"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Betg udì ina frasa vocala"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Betg chattà correspundenzas"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Betg installà la tschertga vocala"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Commentari:"</b>" Stritgai cun il det sur la tastatura per discurrer."</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754">"\""<b>"Commentari:"</b>" Empruvai la proxima giada d\'agiuntar segns d\'interpuncziun sco \"\"punct\"\", \"\"comma\"\" u \"\"segn da dumonda\"\" cun cumonds vocals.\""</string>
-    <string name="cancel" msgid="6830980399865683324">"Interrumper"</string>
-    <string name="ok" msgid="7898366843681727667">"OK"</string>
     <!-- no translation found for voice_input (3583258583521397548) -->
     <skip />
     <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
@@ -206,8 +183,6 @@
     <!-- no translation found for voice_input_modes_summary_symbols_keyboard (5233725927281932391) -->
     <skip />
     <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
-    <skip />
-    <!-- no translation found for selectInputMethod (315076553378705821) -->
     <skip />
     <!-- no translation found for configure_input_method (373356270290742459) -->
     <skip />

@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Modo de cartas"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Modo de telefone"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Modo de símbolos de telefone"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Entrada de voz"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"A entrada de voz não é suportada no momento para o seu idioma, mas funciona em inglês."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"A entrada de texto por voz usa o reconhecimento de voz do Google. "<a href="http://m.google.com/privacy">"A política de privacidade para celulares"</a>" é aplicada."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Para desativar a entrada de texto por voz, vá para configurações do método de entrada."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Para usar a entrada de texto por voz, pressione o botão do microfone."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Fale agora"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Trabalhando"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Erro. Tente novamente."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Não foi possível conectar"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Erro, fala muito longa."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Problema com o áudio"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Erro do servidor"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Nenhuma fala ouvida"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Não há resultados compatíveis"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"A pesquisa por voz não está instalada"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Dica:"</b>" Deslize sobre o teclado para falar"</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Dica:"</b>" Da próxima vez, tente falar o nome da pontuação como \"ponto\", \"vírgula\" ou \"ponto de interrogação\"."</string>
-    <string name="cancel" msgid="6830980399865683324">"Cancelar"</string>
-    <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="3583258583521397548">"Chave de entrada de texto por voz"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"No teclado principal"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"No teclado de símb."</string>
@@ -128,12 +108,10 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mic. no teclado"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mic. no teclado"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Texto por voz desat."</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Selecionar método de entrada"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de entrada"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas de entrada"</string>
     <string name="select_language" msgid="3693815588777926848">"Idiomas de entrada"</string>
-    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Toque novamente para salvar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicionário disponível"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Ativar comentário do usuário"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Ajude a melhorar este editor de método de entrada enviando automaticamente ao Google estatísticas de uso e relatórios de falhas."</string>

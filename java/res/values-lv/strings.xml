@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Burtu režīms"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Tālruņa režīms"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Tālruņa simbolu režīms"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Balss ievade"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Balss ievade jūsu valodā pašlaik netiek atbalstīta, taču tā ir pieejama angļu valodā."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Balss ievadei tiek izmantota Google runas atpazīšanas funkcija. Uz šīs funkcijas lietošanu attiecas "<a href="http://m.google.com/privacy">"mobilo sakaru ierīču lietošanas konfidencialitātes politika"</a>"."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Lai izslēgtu balss ievadi, atveriet ievades metodes iestatījumus."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Lai izmantotu balss ievadi, nospiediet mikrofona taustiņu."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Runājiet!"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Notiek apstrāde"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Kļūda. Lūdzu, mēģiniet vēlreiz."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Nevar izveidot savienojumu."</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Kļūda, pārāk ilga balss ievade."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Audio problēma"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Servera kļūda"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Nekas nav dzirdams."</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Nav atrasta neviena atbilstība."</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Balss meklēšana nav instalēta."</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Ieteikums:"</b>" slidiniet pirkstu pār tastatūru, lai veiktu balss ievadi."</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Ieteikums:"</b>" nākamreiz mēģiniet izrunāt pieturzīmes, piemēram, “punkts”, “komats” vai “jautājuma zīme”."</string>
-    <string name="cancel" msgid="6830980399865683324">"Atcelt"</string>
-    <string name="ok" msgid="7898366843681727667">"Labi"</string>
     <string name="voice_input" msgid="3583258583521397548">"Balss ievades atslēga"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Uz galv. tastatūras"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Uz simbolu tastat."</string>
@@ -128,12 +108,10 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikr.uz galv.tastat."</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikr.uz simb.tastat."</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Balss iev. atspējota"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Atlasīt ievades metodi"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Ievades metožu konfigurēšana"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Ievades valodas"</string>
     <string name="select_language" msgid="3693815588777926848">"Ievades valodas"</string>
-    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Pieskarieties vēlreiz, lai saglabātu."</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Ir pieejama vārdnīca."</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Iespējot lietotāju atsauksmes"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Palīdziet uzlabot šo ievades metodes redaktoru, automātiski nosūtot lietojuma statistiku un pārskatus par avārijām uzņēmumam Google."</string>

@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"\"Betű\" mód"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"\"Telefon\" mód"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"\"Telefonos szimbólumok\" mód"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Hangbevitel"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"A hangbevitel szolgáltatás jelenleg nem támogatja az Ön nyelvét, ám angolul működik."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"A hangbevitel a Google beszédfelismerő technológiáját használja, amelyre a "<a href="http://m.google.com/privacy">"Mobil adatvédelmi irányelvek"</a>" érvényesek."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"A hangbevitelt a beviteli mód beállításai között lehet kikapcsolni."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"A hangbevitel használatához nyomja meg a mikrofon gombot."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Most beszéljen"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Feldolgozás"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Hiba történt. Kérjük, próbálja újra."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Nem sikerült kapcsolódni"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Hiba történt; túl sokat beszélt."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Hangprobléma"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Szerverhiba"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Nem hallatszott beszéd"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Nem található egyezés"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"A hangalapú keresés nincs telepítve"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Tipp:"</b>" húzza végig az ujját a billentyűzeten a beszédhez"</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Tipp:"</b>" következő alkalommal próbálja ki az írásjelek kimondását is, pl. \"period\", \"comma\" vagy \"question mark\"."</string>
-    <string name="cancel" msgid="6830980399865683324">"Mégse"</string>
-    <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="3583258583521397548">"Hangbeviteli gomb"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"A fő billentyűzeten"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Szimbólumoknál"</string>
@@ -128,7 +108,6 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikr. a billentyűzeten"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikr. a szimbólumoknál"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Hangbevivel KI"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Beviteli mód kiválasztása"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Beviteli módok beállítása"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Beviteli nyelvek"</string>
     <string name="select_language" msgid="3693815588777926848">"Beviteli nyelvek"</string>

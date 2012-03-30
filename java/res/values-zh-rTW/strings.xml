@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"字母模式"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"撥號模式"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"撥號符號模式"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"語音輸入"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"語音輸入目前不支援您的語言，但是可以辨識英文。"</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"語音輸入使用 Google 的語音辨識功能，並遵循《"<a href="http://m.google.com/privacy">"行動服務隱私權政策"</a>"》。"</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"如要關閉語音輸入，請前往輸入法設定。"</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"如要使用語音輸入，請按下麥克風按鈕。"</string>
-    <string name="voice_listening" msgid="467518160751321844">"請說話"</string>
-    <string name="voice_working" msgid="6666937792815731889">"辨識中"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"發生錯誤，請再試一次。"</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"無法連線"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"錯誤：語音內容過長。"</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"音訊問題"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"伺服器錯誤"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"沒有聽到任何聲音"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"找不到相符的項目"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"未安裝語音搜尋"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"提示："</b>"滑過鍵盤即可說話"</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"提示："</b>"下次可嘗試說出標點符號，例如「句號」、「逗號」或「問號」。"</string>
-    <string name="cancel" msgid="6830980399865683324">"取消"</string>
-    <string name="ok" msgid="7898366843681727667">"確定"</string>
     <string name="voice_input" msgid="3583258583521397548">"語音輸入按鍵"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"主鍵盤上"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"符號鍵盤上"</string>
@@ -128,7 +108,6 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"主鍵盤上的麥克風"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"符號鍵盤上的麥克風"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"語音輸入已停用"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"選擇輸入法"</string>
     <string name="configure_input_method" msgid="373356270290742459">"設定輸入法"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"輸入語言"</string>
     <string name="select_language" msgid="3693815588777926848">"輸入語言"</string>

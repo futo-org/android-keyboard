@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"โหมดตัวอักษร"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"โหมดโทรศัพท์"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"โหมดสัญลักษณ์โทรศัพท์"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"การป้อนข้อมูลด้วยเสียง"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"ขณะนี้การป้อนข้อมูลด้วยเสียงยังไม่ได้รับการสนับสนุนในภาษาของคุณ แต่ใช้ได้ในภาษาอังกฤษ"</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"ป้อนข้อมูลด้วยเสียงใช้การจดจำคำพูดของ Google "<a href="http://m.google.com/privacy">" นโยบายส่วนบุคคลของมือถือ"</a>"มีผลบังคับใช้"</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"หากต้องการปิดการป้อนข้อมูลด้วยเสียง ไปที่การตั้งค่าวิธีการป้อนข้อมูล"</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"หากต้องการใช้การป้อนข้อมูลด้วยเสียง ให้กดปุ่มไมโครโฟน"</string>
-    <string name="voice_listening" msgid="467518160751321844">"พูดได้เลย"</string>
-    <string name="voice_working" msgid="6666937792815731889">"กำลังทำงาน"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"ข้อผิดพลาด โปรดลองอีกครั้ง"</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"ไม่สามารถเชื่อมต่อได้"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"ข้อผิดพลาด คำพูดยาวเกินไป"</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"ปัญหาด้านเสียง"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"ข้อผิดพลาดของเซิร์ฟเวอร์"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"ไม่ได้ยินเสียง"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"ไม่พบรายการที่ตรงกัน"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"ไม่ได้ติดตั้ง Voice Search"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"คำแนะนำ:"</b>" กวาดผ่านแป้นพิมพ์เพื่อพูด"</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"คำแนะนำ:"</b>" ครั้งต่อไป ให้ลองเอ่ยถึงเครื่องหมายวรรคตอน เช่น \"มหัพภาค\" \"จุลภาค\" หรือ \"เครื่องหมายคำถาม\""</string>
-    <string name="cancel" msgid="6830980399865683324">"ยกเลิก"</string>
-    <string name="ok" msgid="7898366843681727667">"ตกลง"</string>
     <string name="voice_input" msgid="3583258583521397548">"แป้นการป้อนข้อมูลด้วยเสียง"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"บนแป้นพิมพ์หลัก"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"บนแป้นพิมพ์สัญลักษณ์"</string>
@@ -128,7 +108,6 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"ไมค์บนแป้นพิมพ์หลัก"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"ไมค์บนแป้นพิมพ์สัญลักษณ์"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"ปิดใช้งานป้อนข้อมูลด้วยเสียง"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"เลือกวิธีการป้อนข้อมูล"</string>
     <string name="configure_input_method" msgid="373356270290742459">"กำหนดค่าวิธีการป้อนข้อมูล"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"ภาษาในการป้อนข้อมูล"</string>
     <string name="select_language" msgid="3693815588777926848">"ภาษาสำหรับการป้อนข้อมูล"</string>

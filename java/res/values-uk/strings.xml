@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Режим букв і цифр"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Режим набору номера"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Режим набору символів"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Голос. ввід"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Голос. ввід наразі не підтрим. для вашої мови, але можна користуватися англійською."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Голосовий ввід використовує розпізнавання мовлення Google. Застосовується "<a href="http://m.google.com/privacy">"Політика конфіденційності для мобільних пристроїв"</a>"."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Щоб вимкнути голосовий ввід, перейдіть до налаштувань методів введення."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Щоб використовувати голосовий ввід, натисніть кнопку мікрофона."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Диктуйте"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Працює"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Помилка. Спробуйте ще раз."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Неможл. під\'єднатися"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Помилка. Забагато продикт."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Проблема з аудіо"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Помилка сервера"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Не чути диктув."</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Збігів не знайдено"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Голос. пошук не встановлено"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Підк:"</b>" горт. на клавіат., щоб продикт."</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Підказка:"</b>" наступного разу продикт. знаки пункт. такі як \"крапка\", \"кома\" чи \"знак пит\"."</string>
-    <string name="cancel" msgid="6830980399865683324">"Скасувати"</string>
-    <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="3583258583521397548">"Ключ голосового вводу"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"На основ. клавіатурі"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Символьна клавіатура"</string>
@@ -128,12 +108,10 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Miкр. на осн. клав."</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Miкр. на симв. клавіат."</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Голос. ввід вимкнено"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Вибрати метод введення"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Налаштування методів введення"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Мови вводу"</string>
     <string name="select_language" msgid="3693815588777926848">"Мови введення"</string>
-    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Торкніться знову, щоб зберегти"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Словник доступний"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Увімк. відгуки корист."</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Допоможіть покращ. редактор методу введ., автомат. надсилаючи в Google статистику використ. та звіти про збої."</string>

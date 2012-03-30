@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"የደብዳቤዎች ሁኔታ ላይ"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"የስልክ ሁኔታ ላይ"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"የስልክ ምልክቶች ሁኔታ ላይ"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"የድምፅ ግቤ ት"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"የድምፅ ግቤት በአሁኑ ጊዜ ለእርስዎን ቋንቋ አይደግፍም፣ ግን በእንግሊዘኛ ይሰራል።"</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"የድምፅ ግቤት የGoogleን ንግግር ለይቶ ማወቂያ ይጠቀማል።"<a href="http://m.google.com/privacy">"የተንቀሳቃሽ ስልክ ግላዊ ፖሊሲ"</a>" ይተገበራል።"</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"የድምፅ ግቤት ለማጥፋት፣ወደ ግቤት ሜተድ ቅንብሮች ሂድ።"</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"የድምፅግቤት ለመጠቀም፣ የማይክራፎንየድምፅ ማጉያ አዝራር ተጫን።"</string>
-    <string name="voice_listening" msgid="467518160751321844">"አሁን ተናገር"</string>
-    <string name="voice_working" msgid="6666937792815731889">"ሥራ ላይ"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"ስህተት፣ እባክዎ እንደገና ይሞክሩ።"</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"ማያያዝ አልተቻለም"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"ስህተት፣ በጣም ብዙ ንግግር።"</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"የድምፅ ችግር"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"የአገልጋይ ስህተት"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"ምንም ንግግር አልተሰማም"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"ምንም ተመሳሳይ አልተገኘም።"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"የድምፅ ፍለጋአልተጫነም"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"ምክር፡"</b>" ለመናገር በቁልፍሰሌዳ ላይ አንሸራት"</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"ምክር፡"</b>" ሌላ ጊዜ፣  እንደ \"period\", \"comma\", ወይም \"question mark\" ያሉ ስርዓተ ነጥቦችን ለመናገር ሞክር።"</string>
-    <string name="cancel" msgid="6830980399865683324">"ይቅር"</string>
-    <string name="ok" msgid="7898366843681727667">"እሺ"</string>
     <string name="voice_input" msgid="3583258583521397548">"የድምፅ ግቤት ቁልፍ"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"በዋናቁልፍ ሰሌዳ ላይ"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"በምልክቶች ቁልፍ ሰሌዳ ላይ"</string>
@@ -128,12 +108,10 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"ድምፅ ማጉያ በዋናው ቁልፍሰሌዳው ላይ"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"የድምፅ ማጉያ ምልክትበቁልፍ ሰሌዳላይ"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"የድምፅ ግቤት ቦዝኗል"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"የግቤት ሜተድ ምረጥ"</string>
     <string name="configure_input_method" msgid="373356270290742459">"ግቤት ሜተዶችን አዋቀር"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"ቋንቋዎች አግቤት"</string>
     <string name="select_language" msgid="3693815588777926848">"ቋንቋዎች አግቤት"</string>
-    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"ለማስቀመጥ እንደገና ንካ"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"መዝገበ ቃላት አለ"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"የተጠቃሚ ግብረ ምላሽ አንቃ"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"ወደ Google የተሰናከለ ሪፖርቶች እና አጠቃቀም ስታስቲክስ በራስ ሰር በመላክ ይህን ግቤት ሜተድ አርትኢ እገዛ ያሻሽላል።"</string>

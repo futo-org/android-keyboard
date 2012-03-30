@@ -37,7 +37,7 @@
     <string name="misc_category" msgid="6894192814868233453">"Opsi lain"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Setelan lanjutan"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Opsi untuk ahli"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Alihkn k mtode msukn lain"</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Beralih ke metode masukan lain"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tombol beralih bahasa juga mencakup metode masukan lain"</string>
     <string name="suppress_language_switch_key" msgid="8003788410354806368">"Redam tombol alih bahasa"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Tundaan singkir munculan kunci"</string>
@@ -101,26 +101,6 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Mode huruf"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Mode telepon"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Mode simbol telepon"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Masukan suara"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Masukan suara saat ini tidak didukung untuk bahasa Anda, tetapi bekerja dalam Bahasa Inggris."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Masukan suara menggunakan pengenalan ucapan Google. "<a href="http://m.google.com/privacy">"Kebijakan Privasi Seluler"</a>" berlaku."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Untuk mematikan masukan suara, buka setelan metode masukan."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Untuk menggunakan masukan suara, tekan tombol mikrofon."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Ucapkan sekarang"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Bekerja"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Kesalahan: Coba lagi."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Tidak dapat menyambung"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Kesalahan, terlalu banyak ucapan."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Masalah audio"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Kesalahan server"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Tidak terdengar ucapan"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Tak ditemukan yang cocok"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Penelusuran suara tidak terpasang"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Petunjuk:"</b>" Gesek keyboard untuk berbicara"</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Petunjuk:"</b>" Selanjutnya, coba ucapkan tanda baca seperti \"titik\", \"koma\", atau \"tanda tanya\"."</string>
-    <string name="cancel" msgid="6830980399865683324">"Batal"</string>
-    <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="3583258583521397548">"Tombol masukan suara"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Pada keyboard utama"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Pada keyboard simbol"</string>
@@ -128,7 +108,6 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mik pada keyboard utama"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mik pada keyboard simbol"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Masukan suara dinonaktifkan"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Pilih metode masukan"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurasikan metode masukan"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Bahasa masukan"</string>
     <string name="select_language" msgid="3693815588777926848">"Bahasa masukan"</string>
