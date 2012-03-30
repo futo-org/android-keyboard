@@ -21,8 +21,8 @@ import android.media.AudioManager;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 
-import com.android.inputmethod.compat.VibratorCompatWrapper;
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.latin.VibratorUtils;
 
 /**
  * This class gathers audio feedback and haptic feedback functions.
@@ -33,13 +33,13 @@ import com.android.inputmethod.keyboard.Keyboard;
 public class AudioAndHapticFeedbackManager {
     final private SettingsValues mSettingsValues;
     final private AudioManager mAudioManager;
-    final private VibratorCompatWrapper mVibrator;
+    final private VibratorUtils mVibratorUtils;
     private boolean mSoundOn;
 
     public AudioAndHapticFeedbackManager(final LatinIME latinIme,
             final SettingsValues settingsValues) {
         mSettingsValues = settingsValues;
-        mVibrator = VibratorCompatWrapper.getInstance(latinIme);
+        mVibratorUtils = VibratorUtils.getInstance(latinIme);
         mAudioManager = (AudioManager) latinIme.getSystemService(Context.AUDIO_SERVICE);
         mSoundOn = reevaluateIfSoundIsOn();
     }
@@ -93,8 +93,8 @@ public class AudioAndHapticFeedbackManager {
                         HapticFeedbackConstants.KEYBOARD_TAP,
                         HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
             }
-        } else if (mVibrator != null) {
-            mVibrator.vibrate(mSettingsValues.mKeypressVibrationDuration);
+        } else if (mVibratorUtils != null) {
+            mVibratorUtils.vibrate(mSettingsValues.mKeypressVibrationDuration);
         }
     }
 

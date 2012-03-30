@@ -23,8 +23,8 @@ import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.InputTypeCompatUtils;
-import com.android.inputmethod.compat.VibratorCompatWrapper;
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
+import com.android.inputmethod.latin.VibratorUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -187,7 +187,7 @@ public class SettingsValues {
 
     private static boolean isVibrateOn(final Context context, final SharedPreferences prefs,
             final Resources res) {
-        final boolean hasVibrator = VibratorCompatWrapper.getInstance(context).hasVibrator();
+        final boolean hasVibrator = VibratorUtils.getInstance(context).hasVibrator();
         return hasVibrator && prefs.getBoolean(Settings.PREF_VIBRATE_ON,
                 res.getBoolean(R.bool.config_default_vibration_enabled));
     }

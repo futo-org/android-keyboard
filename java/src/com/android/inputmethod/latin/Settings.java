@@ -44,7 +44,7 @@ import android.widget.TextView;
 
 import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
-import com.android.inputmethod.compat.VibratorCompatWrapper;
+import com.android.inputmethod.latin.VibratorUtils;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethodcommon.InputMethodSettingsActivity;
 
@@ -179,7 +179,7 @@ public class Settings extends InputMethodSettingsActivity
             generalSettings.removePreference(mVoicePreference);
         }
 
-        if (!VibratorCompatWrapper.getInstance(context).hasVibrator()) {
+        if (!VibratorUtils.getInstance(context).hasVibrator()) {
             generalSettings.removePreference(findPreference(PREF_VIBRATE_ON));
         }
 
@@ -358,7 +358,7 @@ public class Settings extends InputMethodSettingsActivity
     private void refreshEnablingsOfKeypressSoundAndVibrationSettings(
             SharedPreferences sp, Resources res) {
         if (mKeypressVibrationDurationSettingsPref != null) {
-            final boolean hasVibrator = VibratorCompatWrapper.getInstance(this).hasVibrator();
+            final boolean hasVibrator = VibratorUtils.getInstance(this).hasVibrator();
             final boolean vibrateOn = hasVibrator && sp.getBoolean(Settings.PREF_VIBRATE_ON,
                     res.getBoolean(R.bool.config_default_vibration_enabled));
             mKeypressVibrationDurationSettingsPref.setEnabled(vibrateOn);
@@ -421,7 +421,7 @@ public class Settings extends InputMethodSettingsActivity
             @Override
             public void onStopTrackingTouch(SeekBar arg0) {
                 final int tempMs = arg0.getProgress();
-                VibratorCompatWrapper.getInstance(context).vibrate(tempMs);
+                VibratorUtils.getInstance(context).vibrate(tempMs);
             }
         });
         sb.setProgress(currentMs);

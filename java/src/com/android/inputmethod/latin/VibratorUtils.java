@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,38 +14,37 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.compat;
+package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.os.Vibrator;
 
-import java.lang.reflect.Method;
-
-public class VibratorCompatWrapper {
-    private static final Method METHOD_hasVibrator = CompatUtils.getMethod(Vibrator.class,
-            "hasVibrator");
-
-    private static final VibratorCompatWrapper sInstance = new VibratorCompatWrapper();
+public class VibratorUtils {
+    private static final VibratorUtils sInstance = new VibratorUtils();
     private Vibrator mVibrator;
 
-    private VibratorCompatWrapper() {
+    private VibratorUtils() {
+        // This utility class is not publicly instantiable.
     }
 
-    public static VibratorCompatWrapper getInstance(Context context) {
+    public static VibratorUtils getInstance(Context context) {
         if (sInstance.mVibrator == null) {
-            sInstance.mVibrator =
-                    (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            sInstance.mVibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         }
         return sInstance;
     }
 
     public boolean hasVibrator() {
-        if (mVibrator == null)
+        if (mVibrator == null) {
             return false;
-        return (Boolean) CompatUtils.invoke(mVibrator, true, METHOD_hasVibrator);
+        }
+        return mVibrator.hasVibrator();
     }
 
     public void vibrate(long milliseconds) {
+        if (mVibrator == null) {
+            return;
+        }
         mVibrator.vibrate(milliseconds);
     }
 }
