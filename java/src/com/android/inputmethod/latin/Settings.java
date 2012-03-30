@@ -45,15 +45,13 @@ import android.widget.TextView;
 import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
 import com.android.inputmethod.compat.VibratorCompatWrapper;
-import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethodcommon.InputMethodSettingsActivity;
 
 import java.util.Locale;
 
 public class Settings extends InputMethodSettingsActivity
-        implements SharedPreferences.OnSharedPreferenceChangeListener,
-        DialogInterface.OnDismissListener, OnPreferenceClickListener {
+        implements SharedPreferences.OnSharedPreferenceChangeListener, OnPreferenceClickListener {
     private static final String TAG = Settings.class.getSimpleName();
 
     public static final boolean ENABLE_EXPERIMENTAL_SETTINGS = false;
@@ -92,9 +90,6 @@ public class Settings extends InputMethodSettingsActivity
     public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
     public static final String PREF_DEBUG_SETTINGS = "debug_settings";
 
-    // Dialog ids
-    private static final int VOICE_INPUT_CONFIRM_DIALOG = 0;
-
     private PreferenceScreen mInputLanguageSelection;
     private PreferenceScreen mKeypressVibrationDurationSettingsPref;
     private PreferenceScreen mKeypressSoundVolumeSettingsPref;
@@ -113,7 +108,6 @@ public class Settings extends InputMethodSettingsActivity
     private TextView mKeypressVibrationDurationSettingsTextView;
     private TextView mKeypressSoundVolumeSettingsTextView;
 
-    private boolean mOkClicked = false;
     private String mVoiceModeOff;
 
     private void ensureConsistencyOfAutoCorrectionSettings() {
@@ -291,9 +285,7 @@ public class Settings extends InputMethodSettingsActivity
     public void onResume() {
         super.onResume();
         final boolean isShortcutImeEnabled = SubtypeSwitcher.getInstance().isShortcutImeEnabled();
-        if (isShortcutImeEnabled
-                || (VoiceProxy.VOICE_INSTALLED
-                        && VoiceProxy.isRecognitionAvailable(getActivityInternal()))) {
+        if (isShortcutImeEnabled) {
             updateVoiceModeSummary();
         } else {
             getPreferenceScreen().removePreference(mVoicePreference);
@@ -312,13 +304,7 @@ public class Settings extends InputMethodSettingsActivity
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         (new BackupManager(getActivityInternal())).dataChanged();
-        // If turning on voice input, show dialog
-        if (key.equals(PREF_VOICE_MODE) && !mVoiceOn) {
-            if (!prefs.getString(PREF_VOICE_MODE, mVoiceModeOff)
-                    .equals(mVoiceModeOff)) {
-                showVoiceConfirmation();
-            }
-        } else if (key.equals(PREF_POPUP_ON)) {
+        if (key.equals(PREF_POPUP_ON)) {
             final ListPreference popupDismissDelay =
                 (ListPreference)findPreference(PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
             if (null != popupDismissDelay) {
@@ -363,78 +349,10 @@ public class Settings extends InputMethodSettingsActivity
         lp.setSummary(lp.getEntries()[lp.findIndexOfValue(lp.getValue())]);
     }
 
-    private void showVoiceConfirmation() {
-        mOkClicked = false;
-        getActivityInternal().showDialog(VOICE_INPUT_CONFIRM_DIALOG);
-        // Make URL in the dialog message clickable
-        if (mDialog != null) {
-            TextView textView = (TextView) mDialog.findViewById(android.R.id.message);
-            if (textView != null) {
-                textView.setMovementMethod(LinkMovementMethod.getInstance());
-            }
-        }
-    }
-
     private void updateVoiceModeSummary() {
         mVoicePreference.setSummary(
                 getResources().getStringArray(R.array.voice_input_modes_summary)
                 [mVoicePreference.findIndexOfValue(mVoicePreference.getValue())]);
-    }
-
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
-            case VOICE_INPUT_CONFIRM_DIALOG:
-                DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        if (whichButton == DialogInterface.BUTTON_NEGATIVE) {
-                            mVoicePreference.setValue(mVoiceModeOff);
-                        } else if (whichButton == DialogInterface.BUTTON_POSITIVE) {
-                            mOkClicked = true;
-                        }
-                    }
-                };
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivityInternal())
-                        .setTitle(R.string.voice_warning_title)
-                        .setPositiveButton(android.R.string.ok, listener)
-                        .setNegativeButton(android.R.string.cancel, listener);
-
-                // Get the current list of supported locales and check the current locale against
-                // that list, to decide whether to put a warning that voice input will not work in
-                // the current language as part of the pop-up confirmation dialog.
-                boolean localeSupported = SubtypeSwitcher.isVoiceSupported(
-                        this, Locale.getDefault().toString());
-
-                final CharSequence message;
-                if (localeSupported) {
-                    message = TextUtils.concat(
-                            getText(R.string.voice_warning_may_not_understand), "\n\n",
-                                    getText(R.string.voice_hint_dialog_message));
-                } else {
-                    message = TextUtils.concat(
-                            getText(R.string.voice_warning_locale_not_supported), "\n\n",
-                                    getText(R.string.voice_warning_may_not_understand), "\n\n",
-                                            getText(R.string.voice_hint_dialog_message));
-                }
-                builder.setMessage(message);
-                AlertDialog dialog = builder.create();
-                mDialog = dialog;
-                dialog.setOnDismissListener(this);
-                return dialog;
-            default:
-                Log.e(TAG, "unknown dialog " + id);
-                return null;
-        }
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        if (!mOkClicked) {
-            // This assumes that onPreferenceClick gets called first, and this if the user
-            // agreed after the warning, we set the mOkClicked value to true.
-            mVoicePreference.setValue(mVoiceModeOff);
-        }
     }
 
     private void refreshEnablingsOfKeypressSoundAndVibrationSettings(

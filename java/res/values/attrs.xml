@@ -403,12 +403,6 @@
         <attr name="parentStyle" format="string" />
     </declare-styleable>
 
-    <!-- TODO: Should be removed. This is no longer required if InputMethodSubtype is supported. -->
-    <declare-styleable name="KeyboardSet">
-        <!-- Locale of the keyboard layouts -->
-        <attr name="keyboardLocale" format="string" />
-    </declare-styleable>
-
     <declare-styleable name="KeyboardSet_Element">
         <!-- This should be aligned with KeyboardId.ELEMENT_* -->
         <attr name="elementName" format="enum">

@@ -39,7 +39,6 @@ import android.widget.PopupWindow;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
-import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
@@ -826,12 +825,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 tryGC = Utils.GCUtils.getInstance().tryGCOrWait(TAG, e);
             }
         }
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        // Token is available from here.
-        VoiceProxy.getInstance().onAttachedToWindow();
     }
 
     /**

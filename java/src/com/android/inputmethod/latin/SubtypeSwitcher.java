@@ -33,7 +33,6 @@ import android.util.Log;
 import com.android.inputmethod.compat.InputMethodInfoCompatWrapper;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
-import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 
 import java.util.ArrayList;
@@ -76,7 +75,6 @@ public class SubtypeSwitcher {
     private Locale mSystemLocale;
     private Locale mInputLocale;
     private String mInputLocaleStr;
-    private VoiceProxy.VoiceInputWrapper mVoiceInputWrapper;
     /*-----------------------------------------------------------*/
 
     private boolean mIsNetworkConnected;
@@ -108,7 +106,6 @@ public class SubtypeSwitcher {
         mInputLocaleStr = null;
         mCurrentSubtype = null;
         mAllEnabledSubtypesOfCurrentInputMethod = null;
-        mVoiceInputWrapper = null;
 
         final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
         mIsNetworkConnected = (info != null && info.isConnected());
@@ -234,34 +231,12 @@ public class SubtypeSwitcher {
         }
         mCurrentSubtype = newSubtype;
 
-        // If the old mode is voice input, we need to reset or cancel its status.
-        // We cancel its status when we change mode, while we reset otherwise.
         if (isKeyboardMode()) {
-            if (modeChanged) {
-                if (VOICE_MODE.equals(oldMode) && mVoiceInputWrapper != null) {
-                    mVoiceInputWrapper.cancel();
-                }
-            }
             if (modeChanged || languageChanged) {
                 updateShortcutIME();
                 mService.onRefreshKeyboard();
             }
-        } else if (isVoiceMode() && mVoiceInputWrapper != null) {
-            if (VOICE_MODE.equals(oldMode)) {
-                mVoiceInputWrapper.reset();
-            }
-            // If needsToShowWarningDialog is true, voice input need to show warning before
-            // show recognition view.
-            if (languageChanged || modeChanged
-                    || VoiceProxy.getInstance().needsToShowWarningDialog()) {
-                triggerVoiceIME();
-            }
         } else {
-            if (VOICE_MODE.equals(oldMode) && mVoiceInputWrapper != null) {
-                // We need to reset the voice input to release the resources and to reset its status
-                // as it is not the current input mode.
-                mVoiceInputWrapper.reset();
-            }
             final String packageName = mService.getPackageName();
             int version = -1;
             try {
@@ -270,7 +245,7 @@ public class SubtypeSwitcher {
             } catch (NameNotFoundException e) {
             }
             Log.w(TAG, "Unknown subtype mode: " + newMode + "," + version + ", " + packageName
-                    + ", " + mVoiceInputWrapper + ". IME is already changed to other IME.");
+                    + ". IME is already changed to other IME.");
             if (newSubtype != null) {
                 Log.w(TAG, "Subtype mode:" + newSubtype.getMode());
                 Log.w(TAG, "Subtype locale:" + newSubtype.getLocale());
@@ -477,40 +452,6 @@ public class SubtypeSwitcher {
         return KEYBOARD_MODE.equals(getCurrentSubtypeMode());
     }
 
-
-    ///////////////////////////
-    // Voice Input functions //
-    ///////////////////////////
-
-    public boolean setVoiceInputWrapper(VoiceProxy.VoiceInputWrapper vi) {
-        if (mVoiceInputWrapper == null && vi != null) {
-            mVoiceInputWrapper = vi;
-            if (isVoiceMode()) {
-                if (DBG) {
-                    Log.d(TAG, "Set and call voice input.: " + getInputLocaleStr());
-                }
-                triggerVoiceIME();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isVoiceMode() {
-        return null == mCurrentSubtype ? false : VOICE_MODE.equals(getCurrentSubtypeMode());
-    }
-
-    public boolean isDummyVoiceMode() {
-        return mCurrentSubtype != null && mCurrentSubtype.getOriginalObject() == null
-                && VOICE_MODE.equals(getCurrentSubtypeMode());
-    }
-
-    private void triggerVoiceIME() {
-        if (!mService.isInputViewShown()) return;
-        VoiceProxy.getInstance().startListening(false,
-                KeyboardSwitcher.getInstance().getKeyboardView().getWindowToken());
-    }
-
     public String getInputLanguageName() {
         return StringUtils.getDisplayLanguage(getInputLocale());
     }
@@ -536,19 +477,5 @@ public class SubtypeSwitcher {
 
     public String getCurrentSubtypeMode() {
         return null != mCurrentSubtype ? mCurrentSubtype.getMode() : KEYBOARD_MODE;
-    }
-
-
-    public static boolean isVoiceSupported(Context context, String locale) {
-        // Get the current list of supported locales and check the current locale against that
-        // list. We cache this value so as not to check it every time the user starts a voice
-        // input. Because this method is called by onStartInputView, this should mean that as
-        // long as the locale doesn't change while the user is keeping the IME open, the
-        // value should never be stale.
-        String supportedLocalesString = VoiceProxy.getSupportedLocalesString(
-                context.getContentResolver());
-        List<String> voiceInputSupportedLocales = Arrays.asList(
-                supportedLocalesString.split("\\s+"));
-        return voiceInputSupportedLocales.contains(locale);
     }
 }
