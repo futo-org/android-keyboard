@@ -104,11 +104,11 @@
          U+011F: "ğ" LATIN SMALL LETTER G WITH BREVE -->
     <string name="more_keys_for_g">&#x0123;,&#x011F;</string>
     <!-- U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS -->
-    <string name="keylabel_for_scandinavia_row1_11">&#x00FC;</string>
+    <string name="keylabel_for_nordic_row1_11">&#x00FC;</string>
     <!-- U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS -->
-    <string name="keylabel_for_scandinavia_row2_10">&#x00F6;</string>
+    <string name="keylabel_for_nordic_row2_10">&#x00F6;</string>
     <!-- U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS -->
-    <string name="keylabel_for_scandinavia_row2_11">&#x00E4;</string>
+    <string name="keylabel_for_nordic_row2_11">&#x00E4;</string>
     <!-- U+00F5: "õ" LATIN SMALL LETTER O WITH TILDE -->
-    <string name="more_keys_for_scandinavia_row2_10">&#x00F5;</string>
+    <string name="more_keys_for_nordic_row2_10">&#x00F5;</string>
 </resources>

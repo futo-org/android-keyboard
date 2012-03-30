@@ -25,8 +25,8 @@
     <Key
         latin:keyLabel="&#x0444;" />
     <Key
-        latin:keyLabel="@string/keylabel_for_cyrillic_yery"
-        latin:moreKeys="@string/more_keys_for_cyrillic_yery" />
+        latin:keyLabel="@string/keylabel_for_east_slavic_row2_1"
+        latin:moreKeys="@string/more_keys_for_east_slavic_row2_1" />
     <!-- U+0432: "в" CYRILLIC SMALL LETTER VE -->
     <Key
         latin:keyLabel="&#x0432;" />

@@ -18,6 +18,16 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- U+0449: "щ" CYRILLIC SMALL LETTER SHCHA -->
+    <string name="keylabel_for_east_slavic_row1_9">&#x0449;</string>
+    <!-- U+044B: "ы" CYRILLIC SMALL LETTER YERU -->
+    <string name="keylabel_for_east_slavic_row2_1">&#x044B;</string>
+    <!-- U+0438: "и" CYRILLIC SMALL LETTER I -->
+    <string name="keylabel_for_east_slavic_row3_5">&#x0438;</string>
     <!-- U+0451: "ё" CYRILLIC SMALL LETTER IO -->
     <string name="more_keys_for_cyrillic_ye">&#x0451;</string>
+    <!-- U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN -->
+    <string name="more_keys_for_cyrillic_ha">&#x044A;</string>
+    <!-- U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN -->
+    <string name="more_keys_for_cyrillic_soft_sign">&#x044A;</string>
 </resources>

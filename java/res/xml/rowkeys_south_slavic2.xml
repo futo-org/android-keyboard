@@ -52,5 +52,5 @@
     <Key
         latin:keyLabel="&#x0447;" />
     <Key
-        latin:keyLabel="@string/keylabel_for_cyrillic_tshe" />
+        latin:keyLabel="@string/keylabel_for_south_slavic_row2_11" />
 </merge>

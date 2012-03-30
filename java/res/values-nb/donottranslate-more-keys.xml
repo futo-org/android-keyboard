@@ -48,13 +48,13 @@
          U+016B: "ū" LATIN SMALL LETTER U WITH MACRON -->
     <string name="more_keys_for_u">&#x00FC;,&#x00FB;,&#x00F9;,&#x00FA;,&#x016B;</string>
     <!-- U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE -->
-    <string name="keylabel_for_scandinavia_row1_11">&#x00E5;</string>
+    <string name="keylabel_for_nordic_row1_11">&#x00E5;</string>
     <!-- U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE -->
-    <string name="keylabel_for_scandinavia_row2_10">&#x00F8;</string>
+    <string name="keylabel_for_nordic_row2_10">&#x00F8;</string>
     <!-- U+00E6: "æ" LATIN SMALL LETTER AE -->
-    <string name="keylabel_for_scandinavia_row2_11">&#x00E6;</string>
+    <string name="keylabel_for_nordic_row2_11">&#x00E6;</string>
     <!-- U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS -->
-    <string name="more_keys_for_scandinavia_row2_10">&#x00F6;</string>
+    <string name="more_keys_for_nordic_row2_10">&#x00F6;</string>
     <!-- U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS -->
-    <string name="more_keys_for_scandinavia_row2_11">&#x00E4;</string>
+    <string name="more_keys_for_nordic_row2_11">&#x00E4;</string>
 </resources>

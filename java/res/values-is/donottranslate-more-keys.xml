@@ -65,9 +65,9 @@
     <!-- U+00FE: "þ" LATIN SMALL LETTER THORN -->
     <string name="more_keys_for_t">&#x00FE;</string>
     <!-- U+00F0: "ð" LATIN SMALL LETTER ETH -->
-    <string name="keylabel_for_scandinavia_row1_11">&#x00F0;</string>
+    <string name="keylabel_for_nordic_row1_11">&#x00F0;</string>
     <!-- U+00E6: "æ" LATIN SMALL LETTER AE -->
-    <string name="keylabel_for_scandinavia_row2_10">&#x00E6;</string>
+    <string name="keylabel_for_nordic_row2_10">&#x00E6;</string>
     <!-- U+00FE: "þ" LATIN SMALL LETTER THORN -->
-    <string name="keylabel_for_scandinavia_row2_11">&#x00FE;</string>
+    <string name="keylabel_for_nordic_row2_11">&#x00FE;</string>
 </resources>
