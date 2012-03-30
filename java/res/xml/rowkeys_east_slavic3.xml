@@ -34,7 +34,7 @@
     <Key
         latin:keyLabel="&#x043C;" />
     <Key
-        latin:keyLabel="@string/keylabel_for_cyrillic_i" />
+        latin:keyLabel="@string/keylabel_for_east_slavic_row3_5" />
     <!-- U+0442: "т" CYRILLIC SMALL LETTER TE -->
     <Key
         latin:keyLabel="&#x0442;" />

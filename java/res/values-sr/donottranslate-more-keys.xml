@@ -18,14 +18,14 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- U+0455: "ѕ" CYRILLIC SMALL LETTER DZE -->
-    <string name="keylabel_for_south_slavic_row1_6">&#x0455;</string>
-    <!-- U+045C: "ќ" CYRILLIC SMALL LETTER KJE -->
-    <string name="keylabel_for_south_slavic_row2_11">&#x045C;</string>
     <!-- U+0437: "з" CYRILLIC SMALL LETTER ZE -->
-    <string name="keylabel_for_south_slavic_row3_1">&#x0437;</string>
-    <!-- U+0453: "ѓ" CYRILLIC SMALL LETTER GJE -->
-    <string name="keylabel_for_south_slavic_row3_8">&#x0453;</string>
+    <string name="keylabel_for_south_slavic_row1_6">&#x0437;</string>
+    <!-- U+045B: "ћ" CYRILLIC SMALL LETTER TSHE -->
+    <string name="keylabel_for_south_slavic_row2_11">&#x045B;</string>
+    <!-- U+0455: "ѕ" CYRILLIC SMALL LETTER DZE -->
+    <string name="keylabel_for_south_slavic_row3_1">&#x0455;</string>
+    <!-- U+0452: "ђ" CYRILLIC SMALL LETTER DJE -->
+    <string name="keylabel_for_south_slavic_row3_8">&#x0452;</string>
     <!-- U+0450: "ѐ" CYRILLIC SMALL LETTER IE WITH GRAVE -->
     <string name="more_keys_for_cyrillic_ie">&#x0450;</string>
     <!-- U+045D: "ѝ" CYRILLIC SMALL LETTER I WITH GRAVE -->

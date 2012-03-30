@@ -65,7 +65,7 @@
         latin:keyHintLabel="8"
         latin:additionalMoreKeys="8" />
     <Key
-        latin:keyLabel="@string/keylabel_for_cyrillic_shcha"
+        latin:keyLabel="@string/keylabel_for_east_slavic_row1_9"
         latin:keyHintLabel="9"
         latin:additionalMoreKeys="9" />
     <!-- U+0437: "з" CYRILLIC SMALL LETTER ZE -->

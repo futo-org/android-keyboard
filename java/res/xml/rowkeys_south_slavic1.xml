@@ -48,7 +48,7 @@
         latin:keyHintLabel="5"
         latin:additionalMoreKeys="5" />
     <Key
-        latin:keyLabel="@string/keylabel_for_cyrillic_ze"
+        latin:keyLabel="@string/keylabel_for_south_slavic_row1_6"
         latin:keyHintLabel="6"
         latin:additionalMoreKeys="6" />
     <!-- U+0443: "у" CYRILLIC SMALL LETTER U -->
