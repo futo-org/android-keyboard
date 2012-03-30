@@ -390,30 +390,4 @@ public class KeyboardSet {
             }
         }
     }
-
-    // TODO: Should be removed. This is no longer required if {@link InputMethodSubtype} is
-    // supported.
-    public static String parseKeyboardLocale(Resources res, int resId)
-            throws XmlPullParserException, IOException {
-        final XmlPullParser parser = res.getXml(resId);
-        if (parser == null)
-            return "";
-        int event;
-        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
-            if (event == XmlPullParser.START_TAG) {
-                final String tag = parser.getName();
-                if (TAG_KEYBOARD_SET.equals(tag)) {
-                    final TypedArray keyboardSetAttr = res.obtainAttributes(
-                            Xml.asAttributeSet(parser), R.styleable.KeyboardSet);
-                    final String locale = keyboardSetAttr.getString(
-                            R.styleable.KeyboardSet_keyboardLocale);
-                    keyboardSetAttr.recycle();
-                    return locale;
-                } else {
-                    throw new XmlParseUtils.IllegalStartTag(parser, TAG_KEYBOARD_SET);
-                }
-            }
-        }
-        return "";
-    }
 }

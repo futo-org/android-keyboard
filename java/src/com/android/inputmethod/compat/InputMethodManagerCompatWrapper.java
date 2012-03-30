@@ -29,7 +29,6 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 
-import com.android.inputmethod.deprecated.LanguageSwitcherProxy;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.SubtypeUtils;
@@ -68,14 +67,6 @@ public class InputMethodManagerCompatWrapper {
     private static final InputMethodManagerCompatWrapper sInstance =
             new InputMethodManagerCompatWrapper();
 
-    public static final boolean SUBTYPE_SUPPORTED;
-
-    static {
-        // This static initializer guarantees that METHOD_getShortcutInputMethodsAndSubtypes is
-        // already instantiated.
-        SUBTYPE_SUPPORTED = METHOD_getShortcutInputMethodsAndSubtypes != null;
-    }
-
     // For the compatibility, IMM will create dummy subtypes if subtypes are not found.
     // This is required to be false if the current behavior is broken. For now, it's ok to be true.
     public static final boolean FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES =
@@ -87,7 +78,6 @@ public class InputMethodManagerCompatWrapper {
     private InputMethodManager mImm;
     private PackageManager mPackageManager;
     private ApplicationInfo mApplicationInfo;
-    private LanguageSwitcherProxy mLanguageSwitcherProxy;
     private String mLatinImePackageName;
 
     public static InputMethodManagerCompatWrapper getInstance() {
@@ -103,39 +93,20 @@ public class InputMethodManagerCompatWrapper {
         sInstance.mLatinImePackageName = service.getPackageName();
         sInstance.mPackageManager = service.getPackageManager();
         sInstance.mApplicationInfo = service.getApplicationInfo();
-        sInstance.mLanguageSwitcherProxy = LanguageSwitcherProxy.getInstance();
     }
 
     public InputMethodSubtypeCompatWrapper getCurrentInputMethodSubtype() {
-        if (!SUBTYPE_SUPPORTED) {
-            return new InputMethodSubtypeCompatWrapper(
-                    0, 0, mLanguageSwitcherProxy.getInputLocale().toString(), KEYBOARD_MODE, "");
-        }
         Object o = CompatUtils.invoke(mImm, null, METHOD_getCurrentInputMethodSubtype);
         return new InputMethodSubtypeCompatWrapper(o);
     }
 
     public InputMethodSubtypeCompatWrapper getLastInputMethodSubtype() {
-        if (!SUBTYPE_SUPPORTED) {
-            return new InputMethodSubtypeCompatWrapper(
-                    0, 0, mLanguageSwitcherProxy.getInputLocale().toString(), KEYBOARD_MODE, "");
-        }
         Object o = CompatUtils.invoke(mImm, null, METHOD_getLastInputMethodSubtype);
         return new InputMethodSubtypeCompatWrapper(o);
     }
 
     public List<InputMethodSubtypeCompatWrapper> getEnabledInputMethodSubtypeList(
             InputMethodInfoCompatWrapper imi, boolean allowsImplicitlySelectedSubtypes) {
-        if (!SUBTYPE_SUPPORTED) {
-            String[] languages = mLanguageSwitcherProxy.getEnabledLanguages(
-                    allowsImplicitlySelectedSubtypes);
-            List<InputMethodSubtypeCompatWrapper> subtypeList =
-                    new ArrayList<InputMethodSubtypeCompatWrapper>();
-            for (String lang: languages) {
-                subtypeList.add(new InputMethodSubtypeCompatWrapper(0, 0, lang, KEYBOARD_MODE, ""));
-            }
-            return subtypeList;
-        }
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getEnabledInputMethodSubtypeList,
                 (imi != null ? imi.getInputMethodInfo() : null), allowsImplicitlySelectedSubtypes);
         if (retval == null || !(retval instanceof List<?>) || ((List<?>)retval).isEmpty()) {
@@ -228,16 +199,10 @@ public class InputMethodManagerCompatWrapper {
     }
 
     public boolean switchToLastInputMethod(IBinder token) {
-        if (SubtypeSwitcher.getInstance().isDummyVoiceMode()) {
-            return true;
-        }
         return (Boolean)CompatUtils.invoke(mImm, false, METHOD_switchToLastInputMethod, token);
     }
 
     public boolean switchToNextInputMethod(IBinder token, boolean onlyCurrentIme) {
-        if (SubtypeSwitcher.getInstance().isDummyVoiceMode()) {
-            return true;
-        }
         return (Boolean)CompatUtils.invoke(mImm, false, METHOD_switchToNextInputMethod, token,
                 onlyCurrentIme);
     }
@@ -253,88 +218,6 @@ public class InputMethodManagerCompatWrapper {
 
     public void showInputMethodPicker() {
         if (mImm == null) return;
-        if (SUBTYPE_SUPPORTED) {
-            mImm.showInputMethodPicker();
-            return;
-        }
-
-        // The code below are based on {@link InputMethodManager#showInputMethodMenuInternal}.
-
-        final InputMethodInfoCompatWrapper myImi = SubtypeUtils.getInputMethodInfo(
-                mLatinImePackageName);
-        final List<InputMethodSubtypeCompatWrapper> myImsList = getEnabledInputMethodSubtypeList(
-                myImi, true);
-        final InputMethodSubtypeCompatWrapper currentIms = getCurrentInputMethodSubtype();
-        final List<InputMethodInfoCompatWrapper> imiList = getEnabledInputMethodList();
-        imiList.remove(myImi);
-        final PackageManager pm = mPackageManager;
-        Collections.sort(imiList, new Comparator<InputMethodInfoCompatWrapper>() {
-            @Override
-            public int compare(InputMethodInfoCompatWrapper imi1,
-                    InputMethodInfoCompatWrapper imi2) {
-                final CharSequence imiId1 = imi1.loadLabel(pm) + "/" + imi1.getId();
-                final CharSequence imiId2 = imi2.loadLabel(pm) + "/" + imi2.getId();
-                return imiId1.toString().compareTo(imiId2.toString());
-            }
-        });
-
-        final int myImsCount = myImsList.size();
-        final int imiCount = imiList.size();
-        final CharSequence[] items = new CharSequence[myImsCount + imiCount];
-
-        int checkedItem = 0;
-        int index = 0;
-        final CharSequence myImiLabel = myImi.loadLabel(mPackageManager);
-        for (int i = 0; i < myImsCount; i++) {
-            InputMethodSubtypeCompatWrapper ims = myImsList.get(i);
-            if (currentIms.equals(ims))
-                checkedItem = index;
-            final CharSequence title = TextUtils.concat(
-                    ims.getDisplayName(mService, mLatinImePackageName, mApplicationInfo),
-                    " (" + myImiLabel, ")");
-            items[index] = title;
-            index++;
-        }
-
-        for (int i = 0; i < imiCount; i++) {
-            final InputMethodInfoCompatWrapper imi = imiList.get(i);
-            final CharSequence title = imi.loadLabel(mPackageManager);
-            items[index] = title;
-            index++;
-        }
-
-        final InputMethodServiceCompatWrapper service = mService;
-        final OnClickListener buttonListener = new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface di, int whichButton) {
-                final Intent intent = new Intent("android.settings.INPUT_METHOD_SETTINGS");
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
-                        | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                service.startActivity(intent);
-            }
-        };
-        final IBinder token = service.getWindow().getWindow().getAttributes().token;
-        final OnClickListener selectionListener = new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface di, int which) {
-                di.dismiss();
-                if (which < myImsCount) {
-                    final int imsIndex = which;
-                    final InputMethodSubtypeCompatWrapper ims = myImsList.get(imsIndex);
-                    service.notifyOnCurrentInputMethodSubtypeChanged(ims);
-                } else {
-                    final int imiIndex = which - myImsCount;
-                    final InputMethodInfoCompatWrapper imi = imiList.get(imiIndex);
-                    setInputMethodAndSubtype(token, imi.getId(), null);
-                }
-            }
-        };
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(mService)
-                .setTitle(mService.getString(R.string.selectInputMethod))
-                .setNeutralButton(R.string.configure_input_method, buttonListener)
-                .setSingleChoiceItems(items, checkedItem, selectionListener);
-        mService.showOptionDialogInternal(builder.create());
+        mImm.showInputMethodPicker();
     }
 }

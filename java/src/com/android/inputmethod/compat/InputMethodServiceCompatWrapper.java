@@ -23,7 +23,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.deprecated.LanguageSwitcherProxy;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 
@@ -87,9 +86,6 @@ public class InputMethodServiceCompatWrapper extends InputMethodService {
         if (subtype != null) {
             if (!InputMethodManagerCompatWrapper.FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES
                     && !subtype.isDummy()) return;
-            if (!InputMethodManagerCompatWrapper.SUBTYPE_SUPPORTED) {
-                LanguageSwitcherProxy.getInstance().setLocale(subtype.getLocale());
-            }
             SubtypeSwitcher.getInstance().updateSubtype(subtype);
         }
     }
