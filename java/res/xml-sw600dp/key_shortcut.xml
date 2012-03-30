@@ -28,7 +28,7 @@
         >
             <Key
                 latin:keyStyle="shortcutKeyStyle"
-                latin:keyLabelFlags="hasPopupHint"
+                latin:keyLabelFlags="hasPopupHint|preserveCase"
                 latin:moreKeys="@string/settings_as_more_key"
                 latin:keyWidth="fillBoth" />
         </case>

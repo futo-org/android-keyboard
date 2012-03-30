@@ -34,7 +34,7 @@
         <default>
             <key-style
                 latin:styleName="f1MoreKeysStyle"
-                latin:keyLabelFlags="hasPopupHint"
+                latin:keyLabelFlags="hasPopupHint|preserveCase"
                 latin:moreKeys="@string/settings_as_more_key"
                 latin:backgroundType="functional" />
         </default>
