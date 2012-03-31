@@ -46,6 +46,7 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewParent;
 import android.view.inputmethod.CompletionInfo;
+import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.InputConnection;
@@ -54,7 +55,6 @@ import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
-import com.android.inputmethod.compat.InputConnectionCompatUtils;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
 import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
@@ -1787,8 +1787,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (!typedWord.equals(autoCorrection) && null != ic) {
                 // This will make the correction flash for a short while as a visual clue
                 // to the user that auto-correction happened.
-                InputConnectionCompatUtils.commitCorrection(ic,
-                        mLastSelectionEnd - typedWord.length(), typedWord, autoCorrection);
+                ic.commitCorrection(new CorrectionInfo(mLastSelectionEnd - typedWord.length(),
+                        typedWord, autoCorrection));
             }
         }
     }

@@ -1,18 +1,15 @@
 -keep class com.android.inputmethod.latin.BinaryDictionary {
   int mDictLength;
-  <init>(...); 
+  <init>(...);
+}
+
+-keep class com.android.inputmethod.latin.Flag {
+  *;
 }
 
 -keep class com.android.inputmethod.latin.Suggest {
   <init>(...);
   com.android.inputmethod.latin.SuggestedWords getSuggestions(...);
-}
-
--keep class com.android.inputmethod.latin.UserBigramDictionary {
-  void setDatabaseMax(int);
-  void setDatabaseDelete(int);
-  void waitUntilUpdateDBDone();
-  void waitForDictionaryLoading();
 }
 
 -keep class com.android.inputmethod.latin.AutoCorrection {
@@ -23,15 +20,7 @@
   boolean equalsIgnoreCase(...);
 }
 
--keep class com.android.inputmethod.latin.spellcheck.SpellChecker {
-  *;
-}
-
 -keep class com.android.inputmethod.latin.spellcheck.SpellCheckerSettingsFragment {
-  *;
-}
-
--keep class com.android.inputmethod.latin.SettingsActivity {
   *;
 }
 

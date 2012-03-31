@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2009 The Android Open Source Project
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,8 +15,6 @@
  */
 
 package com.android.inputmethod.latin;
-
-import com.android.inputmethod.compat.InputConnectionCompatUtils;
 
 import android.text.TextUtils;
 import android.view.inputmethod.ExtractedText;
@@ -246,7 +244,7 @@ public class EditingUtils {
         if (selStart == selEnd) {
             // There is just a cursor, so get the word at the cursor
             // getWordRangeAtCursor returns null if the connection is null
-            EditingUtils.Range range = getWordRangeAtCursor(ic, wordSeparators);
+            final EditingUtils.Range range = getWordRangeAtCursor(ic, wordSeparators);
             if (range != null && !TextUtils.isEmpty(range.mWord)) {
                 return new SelectedWord(selStart - range.mCharsBefore, selEnd + range.mCharsAfter,
                         range.mWord);
@@ -254,20 +252,19 @@ public class EditingUtils {
         } else {
             if (null == ic) return null;
             // Is the previous character empty or a word separator? If not, return null.
-            CharSequence charsBefore = ic.getTextBeforeCursor(1, 0);
+            final CharSequence charsBefore = ic.getTextBeforeCursor(1, 0);
             if (!isWordBoundary(charsBefore, wordSeparators)) {
                 return null;
             }
 
             // Is the next character empty or a word separator? If not, return null.
-            CharSequence charsAfter = ic.getTextAfterCursor(1, 0);
+            final CharSequence charsAfter = ic.getTextAfterCursor(1, 0);
             if (!isWordBoundary(charsAfter, wordSeparators)) {
                 return null;
             }
 
             // Extract the selection alone
-            CharSequence touching = InputConnectionCompatUtils.getSelectedText(
-                    ic, selStart, selEnd);
+            final CharSequence touching = ic.getSelectedText(0);
             if (TextUtils.isEmpty(touching)) return null;
             // Is any part of the selection a separator? If so, return null.
             final int length = touching.length();
