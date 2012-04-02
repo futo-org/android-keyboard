@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -30,8 +32,9 @@ public class AutoCorrection {
         // Purely static class: can't instantiate.
     }
 
-    public static CharSequence computeAutoCorrectionWord(HashMap<String, Dictionary> dictionaries,
-            WordComposer wordComposer, ArrayList<CharSequence> suggestions, int[] sortedScores,
+    public static CharSequence computeAutoCorrectionWord(
+            HashMap<String, Dictionary> dictionaries,
+            WordComposer wordComposer, ArrayList<SuggestedWordInfo> suggestions,
             CharSequence consideredWord, double autoCorrectionThreshold,
             CharSequence whitelistedWord) {
         if (hasAutoCorrectionForWhitelistedWord(whitelistedWord)) {
@@ -40,8 +43,8 @@ public class AutoCorrection {
                 dictionaries, wordComposer, suggestions, consideredWord)) {
             return consideredWord;
         } else if (hasAutoCorrectionForBinaryDictionary(wordComposer, suggestions,
-                sortedScores, consideredWord, autoCorrectionThreshold)) {
-            return suggestions.get(0);
+                consideredWord, autoCorrectionThreshold)) {
+            return suggestions.get(0).mWord;
         }
         return null;
     }
@@ -89,22 +92,23 @@ public class AutoCorrection {
 
     private static boolean hasAutoCorrectionForConsideredWord(
             HashMap<String, Dictionary> dictionaries, WordComposer wordComposer,
-            ArrayList<CharSequence> suggestions, CharSequence consideredWord) {
+            ArrayList<SuggestedWordInfo> suggestions, CharSequence consideredWord) {
         if (TextUtils.isEmpty(consideredWord)) return false;
         return wordComposer.size() > 1 && suggestions.size() > 0
                 && !allowsToBeAutoCorrected(dictionaries, consideredWord, false);
     }
 
     private static boolean hasAutoCorrectionForBinaryDictionary(WordComposer wordComposer,
-            ArrayList<CharSequence> suggestions, int[] sortedScores,
+            ArrayList<SuggestedWordInfo> suggestions,
             CharSequence consideredWord, double autoCorrectionThreshold) {
-        if (wordComposer.size() > 1 && suggestions.size() > 0 && sortedScores.length > 0) {
-            final CharSequence autoCorrectionSuggestion = suggestions.get(0);
-            final int autoCorrectionSuggestionScore = sortedScores[0];
+        if (wordComposer.size() > 1 && suggestions.size() > 0) {
+            final SuggestedWordInfo autoCorrectionSuggestion = suggestions.get(0);
+            //final int autoCorrectionSuggestionScore = sortedScores[0];
+            final int autoCorrectionSuggestionScore = autoCorrectionSuggestion.mScore;
             // TODO: when the normalized score of the first suggestion is nearly equals to
             //       the normalized score of the second suggestion, behave less aggressive.
             final double normalizedScore = BinaryDictionary.calcNormalizedScore(
-                    consideredWord.toString(), autoCorrectionSuggestion.toString(),
+                    consideredWord.toString(), autoCorrectionSuggestion.mWord.toString(),
                     autoCorrectionSuggestionScore);
             if (DBG) {
                 Log.d(TAG, "Normalized " + consideredWord + "," + autoCorrectionSuggestion + ","

@@ -24,6 +24,7 @@ import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.VibratorUtils;
 
 import java.util.ArrayList;
@@ -162,7 +163,7 @@ public class SettingsValues {
         if (puncs != null) {
             for (final String puncSpec : puncs) {
                 puncList.add(new SuggestedWords.SuggestedWordInfo(
-                        KeySpecParser.getLabel(puncSpec)));
+                        KeySpecParser.getLabel(puncSpec), SuggestedWordInfo.MAX_SCORE));
             }
         }
         return new SuggestedWords(puncList,

@@ -48,7 +48,6 @@ import android.view.ViewParent;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.InputConnection;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
@@ -58,7 +57,6 @@ import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
 import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
-import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;

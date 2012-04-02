@@ -56,6 +56,10 @@ public class SuggestedWords {
         return mSuggestedWordInfoList.get(pos).mWord;
     }
 
+    public SuggestedWordInfo getWordInfo(int pos) {
+        return mSuggestedWordInfoList.get(pos);
+    }
+
     public SuggestedWordInfo getInfo(int pos) {
         return mSuggestedWordInfoList.get(pos);
     }
@@ -79,20 +83,12 @@ public class SuggestedWords {
                 + " words=" + Arrays.toString(mSuggestedWordInfoList.toArray());
     }
 
-    public static ArrayList<SuggestedWordInfo> getFromCharSequenceList(
-            final ArrayList<CharSequence> wordList) {
-        final ArrayList<SuggestedWordInfo> result = new ArrayList<SuggestedWordInfo>();
-        for (CharSequence word : wordList) {
-            if (null != word) result.add(new SuggestedWordInfo(word));
-        }
-        return result;
-    }
-
     public static ArrayList<SuggestedWordInfo> getFromApplicationSpecifiedCompletions(
             final CompletionInfo[] infos) {
         final ArrayList<SuggestedWordInfo> result = new ArrayList<SuggestedWordInfo>();
         for (CompletionInfo info : infos) {
-            if (null != info) result.add(new SuggestedWordInfo(info.getText()));
+            if (null != info) result.add(new SuggestedWordInfo(info.getText(),
+                    SuggestedWordInfo.MAX_SCORE));
         }
         return result;
     }
@@ -103,14 +99,15 @@ public class SuggestedWords {
             final CharSequence typedWord, final SuggestedWords previousSuggestions) {
         final ArrayList<SuggestedWordInfo> suggestionsList = new ArrayList<SuggestedWordInfo>();
         final HashSet<String> alreadySeen = new HashSet<String>();
-        suggestionsList.add(new SuggestedWordInfo(typedWord));
+        suggestionsList.add(new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE));
         alreadySeen.add(typedWord.toString());
         final int previousSize = previousSuggestions.size();
         for (int pos = 1; pos < previousSize; pos++) {
-            final String prevWord = previousSuggestions.getWord(pos).toString();
+            final SuggestedWordInfo prevWordInfo = previousSuggestions.getWordInfo(pos);
+            final String prevWord = prevWordInfo.mWord.toString();
             // Filter out duplicate suggestion.
             if (!alreadySeen.contains(prevWord)) {
-                suggestionsList.add(new SuggestedWordInfo(prevWord));
+                suggestionsList.add(prevWordInfo);
                 alreadySeen.add(prevWord);
             }
         }
@@ -118,30 +115,64 @@ public class SuggestedWords {
     }
 
     public static class SuggestedWordInfo {
+        public static final int MAX_SCORE = Integer.MAX_VALUE;
+        private final String mWordStr;
         public final CharSequence mWord;
-        private final String mDebugString;
+        public final int mScore;
+        public final int mCodePointCount;
+        private String mDebugString = "";
 
-        public SuggestedWordInfo(final CharSequence word) {
+        public SuggestedWordInfo(final CharSequence word, final int score) {
+            mWordStr = word.toString();
             mWord = word;
-            mDebugString = "";
+            mScore = score;
+            mCodePointCount = mWordStr.codePointCount(0, mWordStr.length());
         }
 
-        public SuggestedWordInfo(final CharSequence word, final String debugString) {
-            mWord = word;
-            if (null == debugString) throw new NullPointerException("");
-            mDebugString = debugString;
+
+        public void setDebugString(String str) {
+            if (null == str) throw new NullPointerException("Debug info is null");
+            mDebugString = str;
         }
 
         public String getDebugString() {
             return mDebugString;
         }
 
+        public int codePointCount() {
+            return mCodePointCount;
+        }
+
+        public int codePointAt(int i) {
+            return mWordStr.codePointAt(i);
+        }
+
         @Override
         public String toString() {
             if (TextUtils.isEmpty(mDebugString)) {
-                return mWord.toString();
+                return mWordStr;
             } else {
-                return mWord.toString() + " (" + mDebugString.toString() + ")";
+                return mWordStr + " (" + mDebugString.toString() + ")";
+            }
+        }
+
+        // TODO: Consolidate this method and StringUtils.removeDupes() in the future.
+        public static void removeDups(ArrayList<SuggestedWordInfo> candidates) {
+            if (candidates.size() <= 1) {
+                return;
+            }
+            int i = 1;
+            while(i < candidates.size()) {
+                final SuggestedWordInfo cur = candidates.get(i);
+                for (int j = 0; j < i; ++j) {
+                    final SuggestedWordInfo previous = candidates.get(j);
+                    if (TextUtils.equals(cur.mWord, previous.mWord)) {
+                        candidates.remove(cur.mScore < previous.mScore ? i : j);
+                        --i;
+                        break;
+                    }
+                }
+                ++i;
             }
         }
     }
