@@ -29,12 +29,11 @@
         <Key
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelFlags="alignLeft"
-            latin:keyWidth="7.500%p" />
+            latin:keyWidth="7.969%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_arabic1" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyXPos="-11.500%p"
             latin:keyWidth="fillBoth" />
     </Row>
     <Row
@@ -43,12 +42,11 @@
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelFlags="alignLeft"
-            latin:keyWidth="9.375%p" />
+            latin:keyWidth="11.172%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_arabic2" />
         <Key
             latin:keyStyle="enterKeyStyle"
-            latin:keyXPos="-9.375%p"
             latin:keyWidth="fillBoth" />
     </Row>
     <Row
@@ -56,7 +54,7 @@
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_arabic3"
-            latin:keyXPos="12.750%p" />
+            latin:keyXPos="13.829%p" />
     </Row>
     <include
         latin:keyboardLayout="@xml/row_qwerty4" />

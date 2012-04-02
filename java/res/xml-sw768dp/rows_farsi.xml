@@ -24,11 +24,12 @@
     <include
         latin:keyboardLayout="@xml/key_styles_common" />
     <Row
-        latin:keyWidth="7.125%p"
+        latin:keyWidth="7.000%p"
     >
         <Key
             latin:keyStyle="tabKeyStyle"
-            latin:keyLabelFlags="alignLeft" />
+            latin:keyLabelFlags="alignLeft"
+            latin:keyWidth="7.969%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_farsi1" />
         <Key
@@ -46,7 +47,6 @@
             latin:keyboardLayout="@xml/rowkeys_farsi2" />
         <Key
             latin:keyStyle="enterKeyStyle"
-            latin:keyXPos="-9.375%p"
             latin:keyWidth="fillBoth" />
     </Row>
     <Row

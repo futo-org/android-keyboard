@@ -35,7 +35,6 @@
             latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyXPos="-9.219%p"
             latin:keyWidth="fillBoth"/>
     </Row>
     <Row
@@ -49,7 +48,6 @@
             latin:keyboardLayout="@xml/rowkeys_spanish2" />
         <Key
             latin:keyStyle="enterKeyStyle"
-            latin:keyXPos="-15.704%p"
             latin:keyWidth="fillBoth" />
     </Row>
     <Row
