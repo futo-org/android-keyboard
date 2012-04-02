@@ -28,9 +28,6 @@
             <!-- U+0911: "ऑ" DEVANAGARI LETTER CANDRA O -->
             <Key
                 latin:keyLabel="&#x0911;" />
-            <!-- U+090E: "ऎ" DEVANAGARI LETTER SHORT E -->
-            <Key
-                latin:keyLabel="&#x090E;" />
             <!-- U+0901: "ँ" DEVANAGARI SIGN CANDRABINDU
                  U+0945: "ॅ" DEVANAGARI VOWEL SIGN CANDRA E-->
             <Key
@@ -66,9 +63,6 @@
             <!-- U+0949: "ॉ" DEVANAGARI VOWEL SIGN CANDRA O -->
             <Key
                 latin:keyLabel="&#x0949;" />
-            <!-- U+0946: "ॆ" DEVANAGARI VOWEL SIGN SHORT E -->
-            <Key
-                latin:keyLabel="&#x0946;" />
             <!-- U+0902: "ं" DEVANAGARI SIGN ANUSVARA -->
             <Key
                 latin:keyLabel="&#x0902;" />

@@ -26,80 +26,50 @@
             latin:keyboardSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
         >
             <!-- U+0914: "औ" DEVANAGARI LETTER AU
-                 U+0912/U+0902: "ऒं" DEVANAGARI LETTER SHORT O//DEVANAGARI SIGN ANUSVARA
-                 U+0967: "१" DEVANAGARI DIGIT ONE -->
+                 U+0912/U+0902: "ऒं" DEVANAGARI LETTER SHORT O//DEVANAGARI SIGN ANUSVARA -->
             <Key
                 latin:keyLabel="&#x0914;"
-                latin:moreKeys="&#x0912;&#x0902;,%"
-                latin:keyHintLabel="1"
-                latin:additionalMoreKeys="&#x0967;,1" />
+                latin:moreKeys="&#x0912;&#x0902;" />
             <!-- U+0910: "ऐ" DEVANAGARI LETTER AI
-                 U+0910/U+0902: "ऐं" DEVANAGARI LETTER AI/DEVANAGARI SIGN ANUSVARA
-                 U+0968: "२" DEVANAGARI DIGIT TWO -->
+                 U+0910/U+0902: "ऐं" DEVANAGARI LETTER AI/DEVANAGARI SIGN ANUSVARA -->
             <Key
                 latin:keyLabel="&#x0910;"
-                latin:moreKeys="&#x0910;&#x0902;,%"
-                latin:keyHintLabel="2"
-                latin:additionalMoreKeys="&#x0968;,2" />
+                latin:moreKeys="&#x0910;&#x0902;" />
             <!-- U+0906: "आ" DEVANAGARI LETTER AA
                  U+0906/U+0902: "आं" DEVANAGARI LETTER AA/DEVANAGARI SIGN ANUSVARA
-                 U+0906/U+0901: "आँ" DEVANAGARI LETTER AA/DEVANAGARI SIGN CANDRABINDU
-                 U+0969: "३" DEVANAGARI DIGIT THREE -->
+                 U+0906/U+0901: "आँ" DEVANAGARI LETTER AA/DEVANAGARI SIGN CANDRABINDU -->
             <Key
                 latin:keyLabel="&#x0906;"
-                latin:moreKeys="&#x0906;&#x0902;,&#x0906;&#x0901;,%"
-                latin:keyHintLabel="3"
-                latin:additionalMoreKeys="&#x0969;,3" />
+                latin:moreKeys="&#x0906;&#x0902;,&#x0906;&#x0901;" />
             <!-- U+0908: "ई" DEVANAGARI LETTER II
-                 U+0908/U+0902: "ईं" DEVANAGARI LETTER II/DEVANAGARI SIGN ANUSVARA
-                 U+096A: "४" DEVANAGARI DIGIT FOUR -->
+                 U+0908/U+0902: "ईं" DEVANAGARI LETTER II/DEVANAGARI SIGN ANUSVARA -->
             <Key
                 latin:keyLabel="&#x0908;"
-                latin:moreKeys="&#x0908;&#x0902;,%"
-                latin:keyHintLabel="4"
-                latin:additionalMoreKeys="&#x096A;,4" />
+                latin:moreKeys="&#x0908;&#x0902;" />
             <!-- U+090A: "ऊ" DEVANAGARI LETTER UU
                  U+090A/U+0902: "ऊं" DEVANAGARI LETTER UU/DEVANAGARI SIGN ANUSVARA
-                 U+090A/U+0901: "ऊँ" DEVANAGARI LETTER UU/DEVANAGARI SIGN CANDRABINDU
-                 U+096B: "५" DEVANAGARI DIGIT FIVE -->
+                 U+090A/U+0901: "ऊँ" DEVANAGARI LETTER UU/DEVANAGARI SIGN CANDRABINDU -->
             <Key
                 latin:keyLabel="&#x090A;"
-                latin:moreKeys="&#x090A;&#x0902;,&#x090A;&#x0901;,%"
-                latin:keyHintLabel="5"
-                latin:additionalMoreKeys="&#x096B;,5" />
-            <!-- U+092D: "भ" DEVANAGARI LETTER BHA
-                 U+096C: "६" DEVANAGARI DIGIT SIX -->
+                latin:moreKeys="&#x090A;&#x0902;,&#x090A;&#x0901;" />
+            <!-- U+092D: "भ" DEVANAGARI LETTER BHA -->
             <Key
-                latin:keyLabel="&#x092D;"
-                latin:keyHintLabel="6"
-                latin:additionalMoreKeys="&#x096C;,6" />
-            <!-- U+0903: "ः" DEVANAGARI SIGN VISARGA
-                 U+096D: "७" DEVANAGARI DIGIT SEVEN -->
+                latin:keyLabel="&#x092D;" />
+            <!-- U+0903: "ः" DEVANAGARI SIGN VISARGA -->
             <Key
-                latin:keyLabel="&#x0903;"
-                latin:keyHintLabel="7"
-                latin:additionalMoreKeys="&#x096D;,7" />
-            <!-- U+0918: "घ" DEVANAGARI LETTER GHA
-                 U+096E: "८" DEVANAGARI DIGIT EIGHT -->
+                latin:keyLabel="&#x0903;" />
+            <!-- U+0918: "घ" DEVANAGARI LETTER GHA -->
             <Key
-                latin:keyLabel="&#x0918;"
-                latin:keyHintLabel="8"
-                latin:additionalMoreKeys="&#x096E;,8" />
+                latin:keyLabel="&#x0918;" />
             <!-- U+0927: "ध" DEVANAGARI LETTER DHA
                  U+0915/U+094D/U+0937: "क्ष" DEVANAGARI LETTER KA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER SSA
-                 U+0936/U+094D/U+0930: "श्र" DEVANAGARI LETTER SHA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER RA
-                 U+096F: "९" DEVANAGARI DIGIT NINE -->
+                 U+0936/U+094D/U+0930: "श्र" DEVANAGARI LETTER SHA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER RA -->
             <Key
                 latin:keyLabel="&#x0927;"
-                latin:moreKeys="&#x0915;&#x094D;&#x0937;,&#x0936;&#x094D;&#x0930;,%"
-                latin:keyHintLabel="9"
-                latin:additionalMoreKeys="9" />
-            <!-- U+091D: "झ" DEVANAGARI LETTER JHA
-                 U+0966: "०" DEVANAGARI DIGIT ZERO -->
+                latin:moreKeys="&#x0915;&#x094D;&#x0937;,&#x0936;&#x094D;&#x0930;" />
+            <!-- U+091D: "झ" DEVANAGARI LETTER JHA -->
             <Key
-                latin:keyLabel="&#x091D;"
-                latin:keyHintLabel="0"
-                latin:additionalMoreKeys="&#x0966;,0" />
+                latin:keyLabel="&#x091D;" />
             <!-- U+0922: "ढ" DEVANAGARI LETTER DDHA -->
             <Key
                 latin:keyLabel="&#x0922;" />

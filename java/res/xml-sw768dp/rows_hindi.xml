@@ -28,7 +28,8 @@
     >
         <Key
             latin:keyStyle="tabKeyStyle"
-            latin:keyLabelFlags="alignLeft" />
+            latin:keyLabelFlags="alignLeft"
+            latin:keyWidth="7.969%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_hindi1"
             latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
@@ -37,12 +38,12 @@
             latin:keyWidth="fillBoth" />
     </Row>
     <Row
-        latin:keyWidth="7.194%p"
+        latin:keyWidth="7.186%p"
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelFlags="alignLeft"
-            latin:keyWidth="9.375%p" />
+            latin:keyWidth="11.172%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_hindi2" />
         <Key
@@ -50,15 +51,18 @@
             latin:keyWidth="fillBoth" />
     </Row>
     <Row
-        latin:keyWidth="7.135%p"
+        latin:keyWidth="7.040%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="14.375%p" />
+            latin:keyWidth="13.829%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_hindi3" />
         <include
             latin:keyboardLayout="@xml/keys_comma_period" />
+        <Key
+            latin:keyStyle="shiftKeyStyle"
+            latin:keyWidth="fillBoth" />
     </Row>
     <include
         latin:keyboardLayout="@xml/row_qwerty4" />

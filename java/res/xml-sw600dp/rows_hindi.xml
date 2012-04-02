@@ -44,7 +44,7 @@
             latin:keyWidth="fillBoth" />
     </Row>
     <Row
-        latin:keyWidth="6.923%p"
+        latin:keyWidth="7.5%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
