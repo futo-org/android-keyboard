@@ -37,7 +37,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.inputmethod.compat.FrameLayoutCompatUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
@@ -853,7 +852,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             windowContentView.addView(mPreviewPlacer);
         }
         mPreviewPlacer.addView(
-                keyPreview, FrameLayoutCompatUtils.newLayoutParam(mPreviewPlacer, 0, 0));
+                keyPreview, ViewLayoutUtils.newLayoutParam(mPreviewPlacer, 0, 0));
     }
 
     private void showKey(PointerTracker tracker) {
@@ -919,7 +918,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         previewText.getBackground().setState(
                 key.mMoreKeys != null ? LONG_PRESSABLE_STATE_SET : EMPTY_STATE_SET);
         previewText.setTextColor(params.mPreviewTextColor);
-        FrameLayoutCompatUtils.placeViewAt(
+        ViewLayoutUtils.placeViewAt(
                 previewText, previewX, previewY, previewWidth, previewHeight);
         previewText.setVisibility(VISIBLE);
     }

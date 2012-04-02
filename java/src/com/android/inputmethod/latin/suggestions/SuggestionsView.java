@@ -52,11 +52,11 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.inputmethod.compat.FrameLayoutCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MoreKeysPanel;
 import com.android.inputmethod.keyboard.PointerTracker;
+import com.android.inputmethod.keyboard.ViewLayoutUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
@@ -416,7 +416,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
                                 ViewGroup.LayoutParams.WRAP_CONTENT);
                         final int infoWidth = info.getMeasuredWidth();
                         final int y = info.getMeasuredHeight();
-                        FrameLayoutCompatUtils.placeViewAt(
+                        ViewLayoutUtils.placeViewAt(
                                 info, x - infoWidth, y, infoWidth, info.getMeasuredHeight());
                     }
                 }
