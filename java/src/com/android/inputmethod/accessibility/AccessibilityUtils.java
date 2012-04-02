@@ -28,8 +28,8 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.AudioManagerCompatWrapper;
-import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.SettingsSecureCompatUtils;
+import com.android.inputmethod.latin.InputTypeUtils;
 import com.android.inputmethod.latin.R;
 
 public class AccessibilityUtils {
@@ -132,7 +132,7 @@ public class AccessibilityUtils {
             return false;
 
         // Don't speak if the IME is connected to a password field.
-        return InputTypeCompatUtils.isPasswordInputType(editorInfo.inputType);
+        return InputTypeUtils.isPasswordInputType(editorInfo.inputType);
     }
 
     /**

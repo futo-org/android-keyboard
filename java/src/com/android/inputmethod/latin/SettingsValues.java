@@ -22,10 +22,8 @@ import android.content.res.Resources;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 
-import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-import com.android.inputmethod.latin.VibratorUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -286,7 +284,7 @@ public class SettingsValues {
         final boolean shortcutImeEnabled = SubtypeSwitcher.getInstance().isShortcutImeEnabled();
         final int inputType = (editorInfo != null) ? editorInfo.inputType : 0;
         return shortcutImeEnabled && mVoiceKeyEnabled
-                && !InputTypeCompatUtils.isPasswordInputType(inputType);
+                && !InputTypeUtils.isPasswordInputType(inputType);
     }
 
     public boolean isVoiceKeyOnMain() {

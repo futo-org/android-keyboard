@@ -27,8 +27,8 @@ import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
-import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardSet.Params.ElementParams;
+import com.android.inputmethod.latin.InputTypeUtils;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.LocaleUtils;
@@ -379,7 +379,7 @@ public class KeyboardSet {
             case InputType.TYPE_CLASS_PHONE:
                 return KeyboardId.MODE_PHONE;
             case InputType.TYPE_CLASS_TEXT:
-                if (InputTypeCompatUtils.isEmailVariation(variation)) {
+                if (InputTypeUtils.isEmailVariation(variation)) {
                     return KeyboardId.MODE_EMAIL;
                 } else if (variation == InputType.TYPE_TEXT_VARIATION_URI) {
                     return KeyboardId.MODE_URL;
