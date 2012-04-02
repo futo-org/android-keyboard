@@ -18,11 +18,9 @@ package com.android.inputmethod.accessibility;
 
 import android.content.Context;
 import android.os.Message;
-import android.support.v4.view.MotionEventCompat;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
-import com.android.inputmethod.compat.MotionEventCompatUtils;
 import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
@@ -32,10 +30,10 @@ import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
  * A flick gesture is defined as a stream of hover events with the following
  * properties:
  * <ul>
- *   <li>Begins with a {@link MotionEventCompatUtils#ACTION_HOVER_ENTER} event
- *   <li>Contains any number of {@link MotionEventCompat#ACTION_HOVER_MOVE}
+ *   <li>Begins with a {@link MotionEvent#ACTION_HOVER_ENTER} event
+ *   <li>Contains any number of {@link MotionEvent#ACTION_HOVER_MOVE}
  *       events
- *   <li>Ends with a {@link MotionEventCompatUtils#ACTION_HOVER_EXIT} event
+ *   <li>Ends with a {@link MotionEvent#ACTION_HOVER_EXIT} event
  *   <li>Maximum duration of 250 milliseconds
  *   <li>Minimum distance between enter and exit points must be at least equal to
  *       scaled double tap slop (see
@@ -113,7 +111,7 @@ public abstract class FlickGestureDetector {
     public boolean onHoverEvent(MotionEvent event, AccessibleKeyboardViewProxy view,
             PointerTracker tracker) {
         // Always cache and consume the first hover event.
-        if (event.getAction() == MotionEventCompatUtils.ACTION_HOVER_ENTER) {
+        if (event.getAction() == MotionEvent.ACTION_HOVER_ENTER) {
             mCachedView = view;
             mCachedTracker = tracker;
             mCachedHoverEnter = MotionEvent.obtain(event);
@@ -129,10 +127,10 @@ public abstract class FlickGestureDetector {
         final float distanceSquare = calculateDistanceSquare(mCachedHoverEnter, event);
 
         switch (event.getAction()) {
-        case MotionEventCompat.ACTION_HOVER_MOVE:
+        case MotionEvent.ACTION_HOVER_MOVE:
             // Consume all valid move events before timeout.
             return true;
-        case MotionEventCompatUtils.ACTION_HOVER_EXIT:
+        case MotionEvent.ACTION_HOVER_EXIT:
             // Ignore exit events outside the flick radius.
             if (distanceSquare < mFlickRadiusSquare) {
                 clearFlick(true);
@@ -171,10 +169,8 @@ public abstract class FlickGestureDetector {
      * Computes the direction of a flick gesture and forwards it to
      * {@link #onFlick(MotionEvent, MotionEvent, int)} for handling.
      *
-     * @param e1 The {@link MotionEventCompatUtils#ACTION_HOVER_ENTER} event
-     *            where the flick started.
-     * @param e2 The {@link MotionEventCompatUtils#ACTION_HOVER_EXIT} event
-     *            where the flick ended.
+     * @param e1 The {@link MotionEvent#ACTION_HOVER_ENTER} event where the flick started.
+     * @param e2 The {@link MotionEvent#ACTION_HOVER_EXIT} event where the flick ended.
      * @return {@code true} if the flick event was handled.
      */
     private boolean dispatchFlick(MotionEvent e1, MotionEvent e2) {

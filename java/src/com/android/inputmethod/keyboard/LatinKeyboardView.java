@@ -828,15 +828,13 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     }
 
     /**
-     * Receives hover events from the input framework. This method overrides
-     * View.dispatchHoverEvent(MotionEvent) on SDK version ICS or higher. On
-     * lower SDK versions, this method is never called.
+     * Receives hover events from the input framework.
      *
      * @param event The motion event to be dispatched.
      * @return {@code true} if the event was handled by the view, {@code false}
      *         otherwise
      */
-    //Should not annotate @override
+    @Override
     public boolean dispatchHoverEvent(MotionEvent event) {
         if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
             final PointerTracker tracker = PointerTracker.getPointerTracker(0, this);

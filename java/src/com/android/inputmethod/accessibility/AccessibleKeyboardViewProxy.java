@@ -21,14 +21,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.inputmethodservice.InputMethodService;
 import android.support.v4.view.AccessibilityDelegateCompat;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
-import com.android.inputmethod.compat.MotionEventCompatUtils;
 import com.android.inputmethod.compat.ViewParentCompatUtils;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -136,10 +134,10 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
         mLastHoverKey = key;
 
         switch (event.getAction()) {
-        case MotionEventCompatUtils.ACTION_HOVER_ENTER:
-        case MotionEventCompatUtils.ACTION_HOVER_EXIT:
+        case MotionEvent.ACTION_HOVER_ENTER:
+        case MotionEvent.ACTION_HOVER_EXIT:
             return onHoverKey(key, event);
-        case MotionEventCompat.ACTION_HOVER_MOVE:
+        case MotionEvent.ACTION_HOVER_MOVE:
             if (key != previousKey) {
                 return onTransitionKey(key, previousKey, event);
             } else {
@@ -163,13 +161,13 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
     private boolean onTransitionKey(Key currentKey, Key previousKey, MotionEvent event) {
         final int savedAction = event.getAction();
 
-        event.setAction(MotionEventCompatUtils.ACTION_HOVER_EXIT);
+        event.setAction(MotionEvent.ACTION_HOVER_EXIT);
         onHoverKey(previousKey, event);
 
-        event.setAction(MotionEventCompatUtils.ACTION_HOVER_ENTER);
+        event.setAction(MotionEvent.ACTION_HOVER_ENTER);
         onHoverKey(currentKey, event);
 
-        event.setAction(MotionEventCompat.ACTION_HOVER_MOVE);
+        event.setAction(MotionEvent.ACTION_HOVER_MOVE);
         final boolean handled = onHoverKey(currentKey, event);
 
         event.setAction(savedAction);
@@ -192,10 +190,10 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
         }
 
         switch (event.getAction()) {
-        case MotionEventCompatUtils.ACTION_HOVER_ENTER:
+        case MotionEvent.ACTION_HOVER_ENTER:
             sendAccessibilityEventForKey(key, AccessibilityEventCompat.TYPE_VIEW_HOVER_ENTER);
             break;
-        case MotionEventCompatUtils.ACTION_HOVER_EXIT:
+        case MotionEvent.ACTION_HOVER_EXIT:
             sendAccessibilityEventForKey(key, AccessibilityEventCompat.TYPE_VIEW_HOVER_EXIT);
             break;
         }
