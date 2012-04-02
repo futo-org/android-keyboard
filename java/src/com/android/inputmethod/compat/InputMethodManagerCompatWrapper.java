@@ -16,11 +16,7 @@
 
 package com.android.inputmethod.compat;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.IBinder;
@@ -29,14 +25,12 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 
-import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.SubtypeUtils;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -106,9 +100,9 @@ public class InputMethodManagerCompatWrapper {
     }
 
     public List<InputMethodSubtypeCompatWrapper> getEnabledInputMethodSubtypeList(
-            InputMethodInfoCompatWrapper imi, boolean allowsImplicitlySelectedSubtypes) {
+            InputMethodInfo imi, boolean allowsImplicitlySelectedSubtypes) {
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getEnabledInputMethodSubtypeList,
-                (imi != null ? imi.getInputMethodInfo() : null), allowsImplicitlySelectedSubtypes);
+                imi, allowsImplicitlySelectedSubtypes);
         if (retval == null || !(retval instanceof List<?>) || ((List<?>)retval).isEmpty()) {
             if (!FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES) {
                 // Returns an empty list
@@ -131,7 +125,7 @@ public class InputMethodManagerCompatWrapper {
         return CompatUtils.copyInputMethodSubtypeListToWrapper(retval);
     }
 
-    private InputMethodInfoCompatWrapper getLatinImeInputMethodInfo() {
+    private InputMethodInfo getLatinImeInputMethodInfo() {
         if (TextUtils.isEmpty(mLatinImePackageName))
             return null;
         return SubtypeUtils.getInputMethodInfo(mLatinImePackageName);
@@ -146,7 +140,7 @@ public class InputMethodManagerCompatWrapper {
         return new InputMethodSubtypeCompatWrapper(0, 0, inputLocale.toString(), mode, "");
     }
 
-    public Map<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>>
+    public Map<InputMethodInfo, List<InputMethodSubtypeCompatWrapper>>
             getShortcutInputMethodsAndSubtypes() {
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getShortcutInputMethodsAndSubtypes);
         if (retval == null || !(retval instanceof Map<?, ?>) || ((Map<?, ?>)retval).isEmpty()) {
@@ -156,12 +150,12 @@ public class InputMethodManagerCompatWrapper {
             }
             // Creates dummy subtypes
             @SuppressWarnings("unused")
-            InputMethodInfoCompatWrapper imi = getLatinImeInputMethodInfo();
+            InputMethodInfo imi = getLatinImeInputMethodInfo();
             InputMethodSubtypeCompatWrapper voiceSubtype = getLastResortSubtype(VOICE_MODE);
             if (imi != null && voiceSubtype != null) {
-                Map<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>>
+                Map<InputMethodInfo, List<InputMethodSubtypeCompatWrapper>>
                         shortcutMap =
-                                new HashMap<InputMethodInfoCompatWrapper,
+                                new HashMap<InputMethodInfo,
                                         List<InputMethodSubtypeCompatWrapper>>();
                 List<InputMethodSubtypeCompatWrapper> subtypeList =
                         new ArrayList<InputMethodSubtypeCompatWrapper>();
@@ -172,15 +166,15 @@ public class InputMethodManagerCompatWrapper {
                 return Collections.emptyMap();
             }
         }
-        Map<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>> shortcutMap =
-                new HashMap<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>>();
+        Map<InputMethodInfo, List<InputMethodSubtypeCompatWrapper>> shortcutMap =
+                new HashMap<InputMethodInfo, List<InputMethodSubtypeCompatWrapper>>();
         final Map<?, ?> retvalMap = (Map<?, ?>)retval;
         for (Object key : retvalMap.keySet()) {
             if (!(key instanceof InputMethodInfo)) {
                 Log.e(TAG, "Class type error.");
                 return null;
             }
-            shortcutMap.put(new InputMethodInfoCompatWrapper((InputMethodInfo)key),
+            shortcutMap.put((InputMethodInfo)key,
                     CompatUtils.copyInputMethodSubtypeListToWrapper(retvalMap.get(key)));
         }
         return shortcutMap;
@@ -207,13 +201,9 @@ public class InputMethodManagerCompatWrapper {
                 onlyCurrentIme);
     }
 
-    public List<InputMethodInfoCompatWrapper> getEnabledInputMethodList() {
+    public List<InputMethodInfo> getEnabledInputMethodList() {
         if (mImm == null) return null;
-        List<InputMethodInfoCompatWrapper> imis = new ArrayList<InputMethodInfoCompatWrapper>();
-        for (InputMethodInfo imi : mImm.getEnabledInputMethodList()) {
-            imis.add(new InputMethodInfoCompatWrapper(imi));
-        }
-        return imis;
+        return mImm.getEnabledInputMethodList();
     }
 
     public void showInputMethodPicker() {
