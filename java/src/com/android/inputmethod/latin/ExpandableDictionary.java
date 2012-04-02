@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 
+import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.ProximityInfo;
 
@@ -209,13 +210,19 @@ public class ExpandableDictionary extends Dictionary {
             @SuppressWarnings("unused") final ProximityInfo proximityInfo) {
         mInputLength = codes.size();
         if (mCodes.length < mInputLength) mCodes = new int[mInputLength][];
+        final int[] xCoordinates = codes.getXCoordinates();
+        final int[] yCoordinates = codes.getYCoordinates();
         // Cache the codes so that we don't have to lookup an array list
         for (int i = 0; i < mInputLength; i++) {
             // TODO: Calculate proximity info here.
             if (mCodes[i] == null || mCodes[i].length < 1) {
-                mCodes[i] = new int[1];
+                mCodes[i] = new int[ProximityInfo.MAX_PROXIMITY_CHARS_SIZE];
             }
-            mCodes[i][0] = codes.getCodeAt(i);
+            final int x = xCoordinates != null && i < xCoordinates.length ?
+                    xCoordinates[i] : WordComposer.NOT_A_COORDINATE;
+            final int y = xCoordinates != null && i < yCoordinates.length ?
+                    yCoordinates[i] : WordComposer.NOT_A_COORDINATE;
+            proximityInfo.fillArrayWithNearestKeyCodes(x, y, codes.getCodeAt(i), mCodes[i]);
         }
         mMaxDepth = mInputLength * 3;
         getWordsRec(mRoots, codes, mWordBuilder, 0, false, 1, 0, -1, callback);
@@ -328,7 +335,7 @@ public class ExpandableDictionary extends Dictionary {
                 for (int j = 0; j < alternativesSize; j++) {
                     final int addedAttenuation = (j > 0 ? 1 : 2);
                     final int currentChar = currentChars[j];
-                    if (currentChar == -1) {
+                    if (currentChar == KeyDetector.NOT_A_CODE) {
                         break;
                     }
                     if (currentChar == lowerC || currentChar == c) {
