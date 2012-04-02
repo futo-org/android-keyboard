@@ -213,6 +213,31 @@ public class ProximityInfo {
                 touchPositionCorrection);
     }
 
+    public void fillArrayWithNearestKeyCodes(int x, int y, int primaryKeyCode, int[] dest) {
+        final int destLength = dest.length;
+        if (destLength < 1) {
+            return;
+        }
+        int index = 0;
+        if (primaryKeyCode > Keyboard.CODE_SPACE) {
+            dest[index++] = primaryKeyCode;
+        }
+        final Key[] nearestKeys = getNearestKeys(x, y);
+        for (Key key : nearestKeys) {
+            if (index >= destLength) {
+                break;
+            }
+            final int code = key.mCode;
+            if (code <= Keyboard.CODE_SPACE) {
+                break;
+            }
+            dest[index++] = code;
+        }
+        if (index < destLength) {
+            dest[index] = KeyDetector.NOT_A_CODE;
+        }
+    }
+
     public Key[] getNearestKeys(int x, int y) {
         if (mGridNeighbors == null) {
             return EMPTY_KEY_ARRAY;
