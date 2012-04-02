@@ -27,7 +27,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
-import com.android.inputmethod.compat.ViewParentCompatUtils;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
@@ -212,7 +211,7 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
         final AccessibilityEvent event = nodeProvider.createAccessibilityEvent(key, eventType);
 
         // Propagates the event up the view hierarchy.
-        ViewParentCompatUtils.requestSendAccessibilityEvent(mView.getParent(), mView, event);
+        mView.getParent().requestSendAccessibilityEvent(mView, event);
     }
 
     private class KeyboardFlickGestureDetector extends FlickGestureDetector {
