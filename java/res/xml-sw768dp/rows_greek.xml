@@ -47,7 +47,6 @@
             latin:keyboardLayout="@xml/rowkeys_greek2" />
         <Key
             latin:keyStyle="enterKeyStyle"
-            latin:keyXPos="-15.704%p"
             latin:keyWidth="fillBoth" />
     </Row>
     <Row
@@ -62,7 +61,6 @@
             latin:keyboardLayout="@xml/keys_comma_period" />
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyXPos="-13.750%p"
             latin:keyWidth="fillBoth" />
     </Row>
    <include

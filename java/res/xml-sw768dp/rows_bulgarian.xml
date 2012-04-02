@@ -24,11 +24,12 @@
     <include
         latin:keyboardLayout="@xml/key_styles_common" />
     <Row
-        latin:keyWidth="7.333%p"
+        latin:keyWidth="7.186%p"
     >
         <Key
             latin:keyStyle="tabKeyStyle"
-            latin:keyLabelFlags="alignLeft" />
+            latin:keyLabelFlags="alignLeft"
+            latin:keyWidth="7.969%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_bulgarian1"
             latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
@@ -37,12 +38,12 @@
             latin:keyWidth="fillBoth" />
     </Row>
     <Row
-        latin:keyWidth="7.194%p"
+        latin:keyWidth="7.186%p"
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelFlags="alignLeft"
-            latin:keyWidth="9.375%p" />
+            latin:keyWidth="11.172%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_bulgarian2" />
         <Key
@@ -54,7 +55,7 @@
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="14.375%p" />
+            latin:keyWidth="13.829%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_bulgarian3" />
         <include

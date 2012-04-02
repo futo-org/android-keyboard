@@ -36,7 +36,6 @@
             latin:keyboardLayout="@xml/rowkeys_symbols1" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyXPos="-9.219%p"
             latin:keyWidth="fillRight" />
     </Row>
     <Row
@@ -50,7 +49,6 @@
             latin:keyboardLayout="@xml/rowkeys_symbols2" />
         <Key
             latin:keyStyle="enterKeyStyle"
-            latin:keyXPos="-15.704%p"
             latin:keyWidth="fillBoth" />
     </Row>
     <Row

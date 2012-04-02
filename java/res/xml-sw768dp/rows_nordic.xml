@@ -29,42 +29,40 @@
         <Key
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelFlags="alignLeft"
-            latin:keyWidth="7.500%p" />
+            latin:keyWidth="7.969%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_nordic1"
             latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyXPos="-11.500%p"
             latin:keyWidth="fillBoth" />
     </Row>
     <Row
-        latin:keyWidth="7.375%p"
+        latin:keyWidth="7.227%p"
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelFlags="alignLeft"
-            latin:keyWidth="9.375%p" />
+            latin:keyWidth="11.172%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_nordic2" />
         <Key
             latin:keyStyle="enterKeyStyle"
-            latin:keyXPos="-9.375%p"
             latin:keyWidth="fillBoth" />
     </Row>
     <Row
-        latin:keyWidth="7.375%p"
+        latin:keyWidth="7.227%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="12.750%p" />
+            latin:keyWidth="13.829%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_qwerty3" />
         <include
             latin:keyboardLayout="@xml/keys_comma_period" />
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyXPos="-12.750%p"
+            latin:keyXPos="-13.750%p"
             latin:keyWidth="fillRight" />
     </Row>
     <include

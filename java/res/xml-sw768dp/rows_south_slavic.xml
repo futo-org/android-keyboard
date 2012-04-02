@@ -24,21 +24,21 @@
     <include
         latin:keyboardLayout="@xml/key_styles_common" />
     <Row
-        latin:keyWidth="7.125%p"
+        latin:keyWidth="7.000%p"
     >
         <Key
             latin:keyStyle="tabKeyStyle"
-            latin:keyLabelFlags="alignLeft" />
+            latin:keyLabelFlags="alignLeft"
+            latin:keyWidth="7.969%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_south_slavic1"
             latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyXPos="-9.219%p"
             latin:keyWidth="fillBoth" />
     </Row>
     <Row
-        latin:keyWidth="7.250%p"
+        latin:keyWidth="7.000%p"
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
@@ -48,11 +48,10 @@
             latin:keyboardLayout="@xml/rowkeys_south_slavic2" />
         <Key
             latin:keyStyle="enterKeyStyle"
-            latin:keyXPos="-15.704%p"
             latin:keyWidth="fillBoth" />
     </Row>
     <Row
-        latin:keyWidth="7.250%p"
+        latin:keyWidth="7.000%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
@@ -61,6 +60,9 @@
             latin:keyboardLayout="@xml/rowkeys_south_slavic3" />
         <include
             latin:keyboardLayout="@xml/keys_comma_period" />
+        <Key
+            latin:keyStyle="shiftKeyStyle"
+            latin:keyWidth="fillBoth" />
     </Row>
     <include
         latin:keyboardLayout="@xml/row_qwerty4" />
