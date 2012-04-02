@@ -30,12 +30,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputMethodInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.view.inputmethod.InputMethodSubtype;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
+
+import java.util.HashMap;
 
 public class InputTestsBase extends ServiceTestCase<LatinIME> {
 
@@ -48,6 +53,8 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
     protected Keyboard mKeyboard;
     protected TextView mTextView;
     protected InputConnection mInputConnection;
+    private final HashMap<String, InputMethodSubtype> mSubtypeMap =
+            new HashMap<String, InputMethodSubtype>();
 
     // A helper class to ease span tests
     public static class Span {
@@ -108,6 +115,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         final boolean previousDebugSetting = setDebugMode(true);
         mLatinIME.onCreate();
         setDebugMode(previousDebugSetting);
+        initSubtypeMap();
         final EditorInfo ei = new EditorInfo();
         ei.inputType = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_AUTO_CORRECT;
         final InputConnection ic = mTextView.onCreateInputConnection(ei);
@@ -124,6 +132,23 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         mInputConnection = ic;
         mKeyboard = mLatinIME.mKeyboardSwitcher.getKeyboard();
         changeLanguage("en_US");
+    }
+
+    private void initSubtypeMap() {
+        final InputMethodManager imm = (InputMethodManager)mLatinIME.getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        final String packageName = mLatinIME.getPackageName();
+        for (final InputMethodInfo imi : imm.getEnabledInputMethodList()) {
+            if (imi.getPackageName().equals(packageName)) {
+                for (final InputMethodSubtype ims :
+                    imm.getEnabledInputMethodSubtypeList(imi, true)) {
+                    final String locale = ims.getLocale();
+                    mSubtypeMap.put(locale, ims);
+                }
+                return;
+            }
+        }
+        fail("LatinIME is disabled");
     }
 
     // We need to run the messages added to the handler from LatinIME. The only way to do
@@ -217,8 +242,11 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
     }
 
     protected void changeLanguage(final String locale) {
-        SubtypeSwitcher.getInstance().updateSubtype(
-                new ArbitrarySubtype(locale, LatinIME.SUBTYPE_EXTRA_VALUE_ASCII_CAPABLE));
+        final InputMethodSubtype subtype = mSubtypeMap.get(locale);
+        if (subtype == null) {
+            fail("InputMethodSubtype for locale " + locale + " is not enabled");
+        }
+        SubtypeSwitcher.getInstance().updateSubtype(subtype);
         waitForDictionaryToBeLoaded();
     }
 

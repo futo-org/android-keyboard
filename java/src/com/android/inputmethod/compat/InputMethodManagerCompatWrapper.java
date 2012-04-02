@@ -21,10 +21,9 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.view.inputmethod.InputMethodSubtype;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,21 +31,6 @@ import java.util.Map;
 // performance.
 public class InputMethodManagerCompatWrapper {
     private static final String TAG = InputMethodManagerCompatWrapper.class.getSimpleName();
-    private static final Method METHOD_getCurrentInputMethodSubtype =
-            CompatUtils.getMethod(InputMethodManager.class, "getCurrentInputMethodSubtype");
-    private static final Method METHOD_getLastInputMethodSubtype =
-            CompatUtils.getMethod(InputMethodManager.class, "getLastInputMethodSubtype");
-    private static final Method METHOD_getEnabledInputMethodSubtypeList =
-            CompatUtils.getMethod(InputMethodManager.class, "getEnabledInputMethodSubtypeList",
-                    InputMethodInfo.class, boolean.class);
-    private static final Method METHOD_getShortcutInputMethodsAndSubtypes =
-            CompatUtils.getMethod(InputMethodManager.class, "getShortcutInputMethodsAndSubtypes");
-    private static final Method METHOD_setInputMethodAndSubtype =
-            CompatUtils.getMethod(
-                    InputMethodManager.class, "setInputMethodAndSubtype", IBinder.class,
-                    String.class, InputMethodSubtypeCompatWrapper.CLASS_InputMethodSubtype);
-    private static final Method METHOD_switchToLastInputMethod = CompatUtils.getMethod(
-            InputMethodManager.class, "switchToLastInputMethod", IBinder.class);
     private static final Method METHOD_switchToNextInputMethod = CompatUtils.getMethod(
             InputMethodManager.class, "switchToNextInputMethod", IBinder.class, Boolean.TYPE);
 
@@ -66,62 +50,30 @@ public class InputMethodManagerCompatWrapper {
                 Context.INPUT_METHOD_SERVICE);
     }
 
-    public InputMethodSubtypeCompatWrapper getCurrentInputMethodSubtype() {
-        Object o = CompatUtils.invoke(mImm, null, METHOD_getCurrentInputMethodSubtype);
-        return new InputMethodSubtypeCompatWrapper(o);
+    public InputMethodSubtype getCurrentInputMethodSubtype() {
+        return mImm.getCurrentInputMethodSubtype();
     }
 
-    public InputMethodSubtypeCompatWrapper getLastInputMethodSubtype() {
-        Object o = CompatUtils.invoke(mImm, null, METHOD_getLastInputMethodSubtype);
-        return new InputMethodSubtypeCompatWrapper(o);
+    public InputMethodSubtype getLastInputMethodSubtype() {
+        return mImm.getLastInputMethodSubtype();
     }
 
-    public List<InputMethodSubtypeCompatWrapper> getEnabledInputMethodSubtypeList(
+    public List<InputMethodSubtype> getEnabledInputMethodSubtypeList(
             InputMethodInfo imi, boolean allowsImplicitlySelectedSubtypes) {
-        Object retval = CompatUtils.invoke(mImm, null, METHOD_getEnabledInputMethodSubtypeList,
-                imi, allowsImplicitlySelectedSubtypes);
-        if (retval == null || !(retval instanceof List<?>) || ((List<?>)retval).isEmpty()) {
-            // Returns an empty list
-            return Collections.emptyList();
-        }
-        return CompatUtils.copyInputMethodSubtypeListToWrapper(retval);
+        return mImm.getEnabledInputMethodSubtypeList(imi, allowsImplicitlySelectedSubtypes);
     }
 
-    public Map<InputMethodInfo, List<InputMethodSubtypeCompatWrapper>>
-            getShortcutInputMethodsAndSubtypes() {
-        Object retval = CompatUtils.invoke(mImm, null, METHOD_getShortcutInputMethodsAndSubtypes);
-        if (retval == null || !(retval instanceof Map<?, ?>) || ((Map<?, ?>)retval).isEmpty()) {
-            // Returns an empty map
-            return Collections.emptyMap();
-        }
-        Map<InputMethodInfo, List<InputMethodSubtypeCompatWrapper>> shortcutMap =
-                new HashMap<InputMethodInfo, List<InputMethodSubtypeCompatWrapper>>();
-        final Map<?, ?> retvalMap = (Map<?, ?>)retval;
-        for (Object key : retvalMap.keySet()) {
-            if (!(key instanceof InputMethodInfo)) {
-                Log.e(TAG, "Class type error.");
-                return null;
-            }
-            shortcutMap.put((InputMethodInfo)key,
-                    CompatUtils.copyInputMethodSubtypeListToWrapper(retvalMap.get(key)));
-        }
-        return shortcutMap;
+    public Map<InputMethodInfo, List<InputMethodSubtype>> getShortcutInputMethodsAndSubtypes() {
+        return mImm.getShortcutInputMethodsAndSubtypes();
     }
 
     // We don't call this method when we switch between subtypes within this IME.
-    public void setInputMethodAndSubtype(
-            IBinder token, String id, InputMethodSubtypeCompatWrapper subtype) {
-        // TODO: Support subtype change on non-subtype-supported platform.
-        if (subtype != null && subtype.hasOriginalObject()) {
-            CompatUtils.invoke(mImm, null, METHOD_setInputMethodAndSubtype,
-                    token, id, subtype.getOriginalObject());
-        } else {
-            mImm.setInputMethod(token, id);
-        }
+    public void setInputMethodAndSubtype(IBinder token, String id, InputMethodSubtype subtype) {
+        mImm.setInputMethodAndSubtype(token, id, subtype);
     }
 
     public boolean switchToLastInputMethod(IBinder token) {
-        return (Boolean)CompatUtils.invoke(mImm, false, METHOD_switchToLastInputMethod, token);
+        return mImm.switchToLastInputMethod(token);
     }
 
     public boolean switchToNextInputMethod(IBinder token, boolean onlyCurrentIme) {
