@@ -56,7 +56,6 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.compat.CompatUtils;
-import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -1273,7 +1272,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             performeEditorAction(EditorInfo.IME_ACTION_NEXT);
             break;
         case Keyboard.CODE_ACTION_PREVIOUS:
-            EditorInfoCompatUtils.performEditorActionPrevious(getCurrentInputConnection());
+            performeEditorAction(EditorInfo.IME_ACTION_PREVIOUS);
             break;
         case Keyboard.CODE_LANGUAGE_SWITCH:
             handleLanguageSwitchKey();

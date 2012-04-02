@@ -131,11 +131,11 @@ public class KeyboardId {
     }
 
     public boolean navigateNext() {
-        return EditorInfoCompatUtils.hasFlagNavigateNext(mEditorInfo.imeOptions);
+        return (mEditorInfo.imeOptions & EditorInfo.IME_FLAG_NAVIGATE_NEXT) != 0;
     }
 
     public boolean navigatePrevious() {
-        return EditorInfoCompatUtils.hasFlagNavigatePrevious(mEditorInfo.imeOptions);
+        return (mEditorInfo.imeOptions & EditorInfo.IME_FLAG_NAVIGATE_PREVIOUS) != 0;
     }
 
     public boolean passwordInput() {
