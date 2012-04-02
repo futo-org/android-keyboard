@@ -300,17 +300,6 @@ public class SubtypeSwitcher {
                 mImm.setInputMethodAndSubtype(token, imiId, subtype);
                 return null;
             }
-
-            @Override
-            protected void onPostExecute(Void result) {
-                // Calls in this method need to be done in the same thread as the thread which
-                // called switchToShortcutIME().
-
-                // Notify an event that the current subtype was changed. This event will be
-                // handled if "onCurrentInputMethodSubtypeChanged" can't be implemented
-                // when the API level is 10 or previous.
-                mService.notifyOnCurrentInputMethodSubtypeChanged(subtype);
-            }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 

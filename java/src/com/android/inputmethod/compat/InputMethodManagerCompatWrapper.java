@@ -17,23 +17,15 @@
 package com.android.inputmethod.compat;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.os.IBinder;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 
-import com.android.inputmethod.latin.SubtypeSwitcher;
-import com.android.inputmethod.latin.SubtypeUtils;
-
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 // TODO: Override this class with the concrete implementation if we need to take care of the
@@ -61,18 +53,7 @@ public class InputMethodManagerCompatWrapper {
     private static final InputMethodManagerCompatWrapper sInstance =
             new InputMethodManagerCompatWrapper();
 
-    // For the compatibility, IMM will create dummy subtypes if subtypes are not found.
-    // This is required to be false if the current behavior is broken. For now, it's ok to be true.
-    public static final boolean FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES =
-            !InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED;
-    private static final String VOICE_MODE = "voice";
-    private static final String KEYBOARD_MODE = "keyboard";
-
-    private InputMethodServiceCompatWrapper mService;
     private InputMethodManager mImm;
-    private PackageManager mPackageManager;
-    private ApplicationInfo mApplicationInfo;
-    private String mLatinImePackageName;
 
     public static InputMethodManagerCompatWrapper getInstance() {
         if (sInstance.mImm == null)
@@ -81,12 +62,8 @@ public class InputMethodManagerCompatWrapper {
     }
 
     public static void init(InputMethodServiceCompatWrapper service) {
-        sInstance.mService = service;
         sInstance.mImm = (InputMethodManager) service.getSystemService(
                 Context.INPUT_METHOD_SERVICE);
-        sInstance.mLatinImePackageName = service.getPackageName();
-        sInstance.mPackageManager = service.getPackageManager();
-        sInstance.mApplicationInfo = service.getApplicationInfo();
     }
 
     public InputMethodSubtypeCompatWrapper getCurrentInputMethodSubtype() {
@@ -104,67 +81,18 @@ public class InputMethodManagerCompatWrapper {
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getEnabledInputMethodSubtypeList,
                 imi, allowsImplicitlySelectedSubtypes);
         if (retval == null || !(retval instanceof List<?>) || ((List<?>)retval).isEmpty()) {
-            if (!FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES) {
-                // Returns an empty list
-                return Collections.emptyList();
-            }
-            // Creates dummy subtypes
-            @SuppressWarnings("unused")
-            List<InputMethodSubtypeCompatWrapper> subtypeList =
-                    new ArrayList<InputMethodSubtypeCompatWrapper>();
-            InputMethodSubtypeCompatWrapper keyboardSubtype = getLastResortSubtype(KEYBOARD_MODE);
-            InputMethodSubtypeCompatWrapper voiceSubtype = getLastResortSubtype(VOICE_MODE);
-            if (keyboardSubtype != null) {
-                subtypeList.add(keyboardSubtype);
-            }
-            if (voiceSubtype != null) {
-                subtypeList.add(voiceSubtype);
-            }
-            return subtypeList;
+            // Returns an empty list
+            return Collections.emptyList();
         }
         return CompatUtils.copyInputMethodSubtypeListToWrapper(retval);
-    }
-
-    private InputMethodInfo getLatinImeInputMethodInfo() {
-        if (TextUtils.isEmpty(mLatinImePackageName))
-            return null;
-        return SubtypeUtils.getInputMethodInfo(mLatinImePackageName);
-    }
-
-    private static InputMethodSubtypeCompatWrapper getLastResortSubtype(String mode) {
-        if (VOICE_MODE.equals(mode) && !FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES)
-            return null;
-        Locale inputLocale = SubtypeSwitcher.getInstance().getInputLocale();
-        if (inputLocale == null)
-            return null;
-        return new InputMethodSubtypeCompatWrapper(0, 0, inputLocale.toString(), mode, "");
     }
 
     public Map<InputMethodInfo, List<InputMethodSubtypeCompatWrapper>>
             getShortcutInputMethodsAndSubtypes() {
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getShortcutInputMethodsAndSubtypes);
         if (retval == null || !(retval instanceof Map<?, ?>) || ((Map<?, ?>)retval).isEmpty()) {
-            if (!FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES) {
-                // Returns an empty map
-                return Collections.emptyMap();
-            }
-            // Creates dummy subtypes
-            @SuppressWarnings("unused")
-            InputMethodInfo imi = getLatinImeInputMethodInfo();
-            InputMethodSubtypeCompatWrapper voiceSubtype = getLastResortSubtype(VOICE_MODE);
-            if (imi != null && voiceSubtype != null) {
-                Map<InputMethodInfo, List<InputMethodSubtypeCompatWrapper>>
-                        shortcutMap =
-                                new HashMap<InputMethodInfo,
-                                        List<InputMethodSubtypeCompatWrapper>>();
-                List<InputMethodSubtypeCompatWrapper> subtypeList =
-                        new ArrayList<InputMethodSubtypeCompatWrapper>();
-                subtypeList.add(voiceSubtype);
-                shortcutMap.put(imi, subtypeList);
-                return shortcutMap;
-            } else {
-                return Collections.emptyMap();
-            }
+            // Returns an empty map
+            return Collections.emptyMap();
         }
         Map<InputMethodInfo, List<InputMethodSubtypeCompatWrapper>> shortcutMap =
                 new HashMap<InputMethodInfo, List<InputMethodSubtypeCompatWrapper>>();

@@ -18,7 +18,6 @@ package com.android.inputmethod.latin;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Fragment;
 import android.app.backup.BackupManager;
 import android.content.Context;
@@ -34,31 +33,20 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
-import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-import com.android.inputmethod.compat.CompatUtils;
-import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
-import com.android.inputmethod.latin.VibratorUtils;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethodcommon.InputMethodSettingsActivity;
 
-import java.util.Locale;
-
 public class Settings extends InputMethodSettingsActivity
-        implements SharedPreferences.OnSharedPreferenceChangeListener, OnPreferenceClickListener {
-    private static final String TAG = Settings.class.getSimpleName();
-
+        implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final boolean ENABLE_EXPERIMENTAL_SETTINGS = false;
 
     // In the same order as xml/prefs.xml
     public static final String PREF_GENERAL_SETTINGS = "general_settings";
-    public static final String PREF_SUBTYPES_SETTINGS = "subtype_settings";
     public static final String PREF_AUTO_CAP = "auto_cap";
     public static final String PREF_VIBRATE_ON = "vibrate_on";
     public static final String PREF_SOUND_ON = "sound_on";
@@ -90,7 +78,6 @@ public class Settings extends InputMethodSettingsActivity
     public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
     public static final String PREF_DEBUG_SETTINGS = "debug_settings";
 
-    private PreferenceScreen mInputLanguageSelection;
     private PreferenceScreen mKeypressVibrationDurationSettingsPref;
     private PreferenceScreen mKeypressSoundVolumeSettingsPref;
     private ListPreference mVoicePreference;
@@ -102,13 +89,9 @@ public class Settings extends InputMethodSettingsActivity
     // Prediction: use bigrams to predict the next word when there is no input for it yet
     private CheckBoxPreference mBigramPrediction;
     private Preference mDebugSettingsPreference;
-    private boolean mVoiceOn;
 
-    private AlertDialog mDialog;
     private TextView mKeypressVibrationDurationSettingsTextView;
     private TextView mKeypressSoundVolumeSettingsTextView;
-
-    private String mVoiceModeOff;
 
     private void ensureConsistencyOfAutoCorrectionSettings() {
         final String autoCorrectionOff = getResources().getString(
@@ -140,17 +123,11 @@ public class Settings extends InputMethodSettingsActivity
         final Context context = getActivityInternal();
 
         addPreferencesFromResource(R.xml.prefs);
-        mInputLanguageSelection = (PreferenceScreen) findPreference(PREF_SUBTYPES_SETTINGS);
-        mInputLanguageSelection.setOnPreferenceClickListener(this);
         mVoicePreference = (ListPreference) findPreference(PREF_VOICE_MODE);
         mShowCorrectionSuggestionsPreference =
                 (ListPreference) findPreference(PREF_SHOW_SUGGESTIONS_SETTING);
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(this);
-
-        mVoiceModeOff = getString(R.string.voice_mode_off);
-        mVoiceOn = !(prefs.getString(PREF_VOICE_MODE, mVoiceModeOff)
-                .equals(mVoiceModeOff));
 
         mAutoCorrectionThresholdPreference =
                 (ListPreference) findPreference(PREF_AUTO_CORRECTION_THRESHOLD);
@@ -181,10 +158,6 @@ public class Settings extends InputMethodSettingsActivity
 
         if (!VibratorUtils.getInstance(context).hasVibrator()) {
             generalSettings.removePreference(findPreference(PREF_VIBRATE_ON));
-        }
-
-        if (InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED) {
-            generalSettings.removePreference(findPreference(PREF_SUBTYPES_SETTINGS));
         }
 
         final boolean showPopupOption = res.getBoolean(
@@ -318,23 +291,10 @@ public class Settings extends InputMethodSettingsActivity
                     !SettingsValues.isLanguageSwitchKeySupressed(prefs));
         }
         ensureConsistencyOfAutoCorrectionSettings();
-        mVoiceOn = !(prefs.getString(PREF_VOICE_MODE, mVoiceModeOff)
-                .equals(mVoiceModeOff));
         updateVoiceModeSummary();
         updateShowCorrectionSuggestionsSummary();
         updateKeyPreviewPopupDelaySummary();
         refreshEnablingsOfKeypressSoundAndVibrationSettings(prefs, getResources());
-    }
-
-    @Override
-    public boolean onPreferenceClick(Preference pref) {
-        if (pref == mInputLanguageSelection) {
-            final String imeId = SubtypeUtils.getInputMethodId(
-                    getActivityInternal().getApplicationInfo().packageName);
-            startActivity(CompatUtils.getInputLanguageSelectionIntent(imeId, 0));
-            return true;
-        }
-        return false;
     }
 
     private void updateShowCorrectionSuggestionsSummary() {

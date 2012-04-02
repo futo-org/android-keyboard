@@ -27,15 +27,6 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 
 public class InputMethodServiceCompatWrapper extends InputMethodService {
-    // CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED needs to be false if the API level is 10
-    // or previous. Note that InputMethodSubtype was added in the API level 11.
-    // For the API level 11 or later, LatinIME should override onCurrentInputMethodSubtypeChanged().
-    // For the API level 10 or previous, we handle the "subtype changed" events by ourselves
-    // without having support from framework -- onCurrentInputMethodSubtypeChanged().
-    public static final boolean CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED = true;
-
-    private InputMethodManagerCompatWrapper mImm;
-
     // For compatibility of {@link InputMethodManager#showInputMethodPicker}.
     // TODO: Move this variable back to LatinIME when this compatibility wrapper is removed.
     protected AlertDialog mOptionsDialog;
@@ -62,32 +53,6 @@ public class InputMethodServiceCompatWrapper extends InputMethodService {
     @Override
     public void onCreate() {
         super.onCreate();
-        mImm = InputMethodManagerCompatWrapper.getInstance();
-    }
-
-    // When the API level is 10 or previous, notifyOnCurrentInputMethodSubtypeChanged should
-    // handle the event the current subtype was changed. LatinIME calls
-    // notifyOnCurrentInputMethodSubtypeChanged every time LatinIME
-    // changes the current subtype.
-    // This call is required to let LatinIME itself know a subtype changed
-    // event when the API level is 10 or previous.
-    @SuppressWarnings("unused")
-    public void notifyOnCurrentInputMethodSubtypeChanged(
-            InputMethodSubtypeCompatWrapper newSubtype) {
-        // Do nothing when the API level is 11 or later
-        // and FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES is not true
-        if (CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED && !InputMethodManagerCompatWrapper.
-                FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES) {
-            return;
-        }
-        final InputMethodSubtypeCompatWrapper subtype = (newSubtype == null)
-                ? mImm.getCurrentInputMethodSubtype()
-                : newSubtype;
-        if (subtype != null) {
-            if (!InputMethodManagerCompatWrapper.FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES
-                    && !subtype.isDummy()) return;
-            SubtypeSwitcher.getInstance().updateSubtype(subtype);
-        }
     }
 
     //////////////////////////////////////
@@ -95,8 +60,6 @@ public class InputMethodServiceCompatWrapper extends InputMethodService {
     //////////////////////////////////////
     @Override
     public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype subtype) {
-        // Do nothing when the API level is 10 or previous
-        if (!CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED) return;
         SubtypeSwitcher.getInstance().updateSubtype(
                 new InputMethodSubtypeCompatWrapper(subtype));
     }

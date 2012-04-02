@@ -35,23 +35,16 @@ public class CompatUtils {
 
     public static Intent getInputLanguageSelectionIntent(String inputMethodId,
             int flagsForSubtypeSettings) {
-        final String action;
-        Intent intent;
-        if (InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED
-                /* android.os.Build.VERSION_CODES.HONEYCOMB */
-                && android.os.Build.VERSION.SDK_INT >=  11) {
-            // Refer to android.provider.Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS
-            action = INPUT_METHOD_SUBTYPE_SETTINGS;
-            intent = new Intent(action);
-            if (!TextUtils.isEmpty(inputMethodId)) {
-                intent.putExtra(EXTRA_INPUT_METHOD_ID, inputMethodId);
-            }
-            if (flagsForSubtypeSettings > 0) {
-                intent.setFlags(flagsForSubtypeSettings);
-            }
-            return intent;
+        // Refer to android.provider.Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS
+        final String action = INPUT_METHOD_SUBTYPE_SETTINGS;
+        final Intent intent = new Intent(action);
+        if (!TextUtils.isEmpty(inputMethodId)) {
+            intent.putExtra(EXTRA_INPUT_METHOD_ID, inputMethodId);
         }
-        throw new RuntimeException("Language selection doesn't supported on this platform");
+        if (flagsForSubtypeSettings > 0) {
+            intent.setFlags(flagsForSubtypeSettings);
+        }
+        return intent;
     }
 
     public static Class<?> getClass(String className) {
