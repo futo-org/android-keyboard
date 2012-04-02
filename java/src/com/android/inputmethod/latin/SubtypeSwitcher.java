@@ -29,14 +29,13 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.inputmethod.InputMethodInfo;
 
-import com.android.inputmethod.compat.InputMethodInfoCompatWrapper;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -47,7 +46,6 @@ public class SubtypeSwitcher {
 
     public static final String KEYBOARD_MODE = "keyboard";
     private static final char LOCALE_SEPARATOR = '_';
-    private static final String VOICE_MODE = "voice";
     private static final String SUBTYPE_EXTRAVALUE_REQUIRE_NETWORK_CONNECTIVITY =
             "requireNetworkConnectivity";
 
@@ -68,7 +66,7 @@ public class SubtypeSwitcher {
     // Variants which should be changed only by reload functions.
     private boolean mNeedsToDisplayLanguage;
     private boolean mIsSystemLanguageSameAsInputLanguage;
-    private InputMethodInfoCompatWrapper mShortcutInputMethodInfo;
+    private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtypeCompatWrapper mShortcutSubtype;
     private List<InputMethodSubtypeCompatWrapper> mAllEnabledSubtypesOfCurrentInputMethod;
     private InputMethodSubtypeCompatWrapper mCurrentSubtype;
@@ -168,11 +166,11 @@ public class SubtypeSwitcher {
                             + ", " + mShortcutSubtype.getMode())));
         }
         // TODO: Update an icon for shortcut IME
-        final Map<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>> shortcuts =
+        final Map<InputMethodInfo, List<InputMethodSubtypeCompatWrapper>> shortcuts =
                 mImm.getShortcutInputMethodsAndSubtypes();
         mShortcutInputMethodInfo = null;
         mShortcutSubtype = null;
-        for (InputMethodInfoCompatWrapper imi : shortcuts.keySet()) {
+        for (InputMethodInfo imi : shortcuts.keySet()) {
             List<InputMethodSubtypeCompatWrapper> subtypes = shortcuts.get(imi);
             // TODO: Returns the first found IMI for now. Should handle all shortcuts as
             // appropriate.
@@ -320,8 +318,7 @@ public class SubtypeSwitcher {
         return getSubtypeIcon(mShortcutInputMethodInfo, mShortcutSubtype);
     }
 
-    private Drawable getSubtypeIcon(
-            InputMethodInfoCompatWrapper imi, InputMethodSubtypeCompatWrapper subtype) {
+    private Drawable getSubtypeIcon(InputMethodInfo imi, InputMethodSubtypeCompatWrapper subtype) {
         final PackageManager pm = mService.getPackageManager();
         if (imi != null) {
             final String imiPackageName = imi.getPackageName();

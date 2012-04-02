@@ -17,8 +17,8 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.view.inputmethod.InputMethodInfo;
 
-import com.android.inputmethod.compat.InputMethodInfoCompatWrapper;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
 
@@ -36,7 +36,7 @@ public class SubtypeUtils {
         final InputMethodManagerCompatWrapper imm = InputMethodManagerCompatWrapper.getInstance();
         if (imm == null) return false;
 
-        final InputMethodInfoCompatWrapper myImi = getInputMethodInfo(context.getPackageName());
+        final InputMethodInfo myImi = getInputMethodInfo(context.getPackageName());
         final List<InputMethodSubtypeCompatWrapper> subtypes =
                 imm.getEnabledInputMethodSubtypeList(myImi, true);
         for (final InputMethodSubtypeCompatWrapper subtype : subtypes) {
@@ -52,26 +52,26 @@ public class SubtypeUtils {
         final InputMethodManagerCompatWrapper imm = InputMethodManagerCompatWrapper.getInstance();
         if (imm == null) return false;
 
-        final List<InputMethodInfoCompatWrapper> enabledImis = imm.getEnabledInputMethodList();
+        final List<InputMethodInfo> enabledImis = imm.getEnabledInputMethodList();
         return hasMultipleEnabledSubtypes(shouldIncludeAuxiliarySubtypes, enabledImis);
     }
 
     public static boolean hasMultipleEnabledSubtypesInThisIme(Context context,
             final boolean shouldIncludeAuxiliarySubtypes) {
-        final InputMethodInfoCompatWrapper myImi = getInputMethodInfo(context.getPackageName());
-        final List<InputMethodInfoCompatWrapper> imiList = Collections.singletonList(myImi);
+        final InputMethodInfo myImi = getInputMethodInfo(context.getPackageName());
+        final List<InputMethodInfo> imiList = Collections.singletonList(myImi);
         return hasMultipleEnabledSubtypes(shouldIncludeAuxiliarySubtypes, imiList);
     }
 
     private static boolean hasMultipleEnabledSubtypes(final boolean shouldIncludeAuxiliarySubtypes,
-            List<InputMethodInfoCompatWrapper> imiList) {
+            List<InputMethodInfo> imiList) {
         final InputMethodManagerCompatWrapper imm = InputMethodManagerCompatWrapper.getInstance();
         if (imm == null) return false;
 
         // Number of the filtered IMEs
         int filteredImisCount = 0;
 
-        for (InputMethodInfoCompatWrapper imi : imiList) {
+        for (InputMethodInfo imi : imiList) {
             // We can return true immediately after we find two or more filtered IMEs.
             if (filteredImisCount > 1) return true;
             final List<InputMethodSubtypeCompatWrapper> subtypes =
@@ -120,13 +120,13 @@ public class SubtypeUtils {
         return getInputMethodInfo(packageName).getId();
     }
 
-    public static InputMethodInfoCompatWrapper getInputMethodInfo(String packageName) {
+    public static InputMethodInfo getInputMethodInfo(String packageName) {
         final InputMethodManagerCompatWrapper imm = InputMethodManagerCompatWrapper.getInstance();
         if (imm == null) {
             throw new RuntimeException("Input method manager not found");
         }
 
-        for (final InputMethodInfoCompatWrapper imi : imm.getEnabledInputMethodList()) {
+        for (final InputMethodInfo imi : imm.getEnabledInputMethodList()) {
             if (imi.getPackageName().equals(packageName))
                 return imi;
         }
