@@ -17,6 +17,7 @@
 package com.android.inputmethod.compat;
 
 import android.content.Context;
+import android.inputmethodservice.InputMethodService;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.inputmethod.InputMethodInfo;
@@ -45,7 +46,7 @@ public class InputMethodManagerCompatWrapper {
         return sInstance;
     }
 
-    public static void init(InputMethodServiceCompatWrapper service) {
+    public static void init(InputMethodService service) {
         sInstance.mImm = (InputMethodManager) service.getSystemService(
                 Context.INPUT_METHOD_SERVICE);
     }

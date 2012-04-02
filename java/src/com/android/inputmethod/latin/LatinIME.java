@@ -45,6 +45,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewParent;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
@@ -56,7 +58,6 @@ import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
-import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
 import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
@@ -75,7 +76,7 @@ import java.util.Locale;
 /**
  * Input method implementation for Qwerty'ish keyboard.
  */
-public class LatinIME extends InputMethodServiceCompatWrapper implements KeyboardActionListener,
+public class LatinIME extends InputMethodService implements KeyboardActionListener,
         SuggestionsView.Listener {
     private static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean TRACE = false;
@@ -224,6 +225,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private CharSequence mEnteredText;
 
     private boolean mIsAutoCorrectionIndicatorOn;
+
+    private AlertDialog mOptionsDialog;
 
     public final UIHandler mHandler = new UIHandler(this);
 
@@ -973,7 +976,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             final int touchHeight = inputView.getHeight() + extraHeight
                     // Extend touchable region below the keyboard.
                     + EXTENDED_TOUCHABLE_REGION_HEIGHT;
-            setTouchableRegionCompat(outInsets, 0, touchY, touchWidth, touchHeight);
+            outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION;
+            outInsets.touchableRegion.set(0, touchY, touchWidth, touchHeight);
         }
         outInsets.contentTopInsets = touchY;
         outInsets.visibleTopInsets = touchY;
@@ -2266,6 +2270,25 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 .setItems(items, listener)
                 .setTitle(title);
         showOptionDialogInternal(builder.create());
+    }
+
+    private void showOptionDialogInternal(AlertDialog dialog) {
+        final IBinder windowToken = KeyboardSwitcher.getInstance().getKeyboardView()
+                .getWindowToken();
+        if (windowToken == null) return;
+
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+
+        final Window window = dialog.getWindow();
+        final WindowManager.LayoutParams lp = window.getAttributes();
+        lp.token = windowToken;
+        lp.type = WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG;
+        window.setAttributes(lp);
+        window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+
+        mOptionsDialog = dialog;
+        dialog.show();
     }
 
     @Override
