@@ -23,6 +23,8 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.util.Log;
 
+import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -154,11 +156,13 @@ class BinaryDictionaryGetter {
      */
     private static AssetFileAddress loadFallbackResource(final Context context,
             final int fallbackResId, final Locale locale) {
-        final Resources res = context.getResources();
-        final Locale savedLocale = LocaleUtils.setSystemLocale(res, locale);
-        final AssetFileDescriptor afd = res.openRawResourceFd(fallbackResId);
-        LocaleUtils.setSystemLocale(res, savedLocale);
-
+        final RunInLocale<AssetFileDescriptor> job = new RunInLocale<AssetFileDescriptor>() {
+            @Override
+            protected AssetFileDescriptor job(Resources res) {
+                return res.openRawResourceFd(fallbackResId);
+            }
+        };
+        final AssetFileDescriptor afd = job.runInLocale(context.getResources(), locale);
         if (afd == null) {
             Log.e(TAG, "Found the resource but cannot read it. Is it compressed? resId="
                     + fallbackResId);

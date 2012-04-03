@@ -161,21 +161,36 @@ public class LocaleUtils {
         return LOCALE_MATCH <= level;
     }
 
-    /**
-     * Sets the system locale for this process.
-     *
-     * @param res the resources to use. Pass current resources.
-     * @param newLocale the locale to change to.
-     * @return the old locale.
-     */
-    public static synchronized Locale setSystemLocale(final Resources res, final Locale newLocale) {
-        final Configuration conf = res.getConfiguration();
-        final Locale oldLocale = conf.locale;
-        if (newLocale != null && !newLocale.equals(oldLocale)) {
-            conf.locale = newLocale;
-            res.updateConfiguration(conf, res.getDisplayMetrics());
+    static final Object sLockForRunInLocale = new Object();
+
+    public abstract static class RunInLocale<T> {
+        protected abstract T job(Resources res);
+
+        /**
+         * Execute {@link #job(Resources)} method in specified system locale exclusively.
+         *
+         * @param res the resources to use. Pass current resources.
+         * @param newLocale the locale to change to
+         * @return the value returned from {@link #job(Resources)}.
+         */
+        public T runInLocale(final Resources res, final Locale newLocale) {
+            synchronized (sLockForRunInLocale) {
+                final Configuration conf = res.getConfiguration();
+                final Locale oldLocale = conf.locale;
+                try {
+                    if (newLocale != null && !newLocale.equals(oldLocale)) {
+                        conf.locale = newLocale;
+                        res.updateConfiguration(conf, res.getDisplayMetrics());
+                    }
+                    return job(res);
+                } finally {
+                    if (newLocale != null && !newLocale.equals(oldLocale)) {
+                        conf.locale = oldLocale;
+                        res.updateConfiguration(conf, res.getDisplayMetrics());
+                    }
+                }
+            }
         }
-        return oldLocale;
     }
 
     private static final HashMap<String, Locale> sLocaleCache = new HashMap<String, Locale>();

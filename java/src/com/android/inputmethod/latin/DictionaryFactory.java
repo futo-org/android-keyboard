@@ -21,6 +21,8 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.util.Log;
 
+import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -30,7 +32,6 @@ import java.util.Locale;
  * Factory for dictionary instances.
  */
 public class DictionaryFactory {
-
     private static String TAG = DictionaryFactory.class.getSimpleName();
 
     /**
@@ -98,14 +99,13 @@ public class DictionaryFactory {
             final int resId, final Locale locale) {
         AssetFileDescriptor afd = null;
         try {
-            final Resources res = context.getResources();
-            if (null != locale) {
-                final Locale savedLocale = LocaleUtils.setSystemLocale(res, locale);
-                afd = res.openRawResourceFd(resId);
-                LocaleUtils.setSystemLocale(res, savedLocale);
-            } else {
-                afd = res.openRawResourceFd(resId);
-            }
+            final RunInLocale<AssetFileDescriptor> job = new RunInLocale<AssetFileDescriptor>() {
+                @Override
+                protected AssetFileDescriptor job(Resources res) {
+                    return res.openRawResourceFd(resId);
+                }
+            };
+            afd = job.runInLocale(context.getResources(), locale);
             if (afd == null) {
                 Log.e(TAG, "Found the resource but it is compressed. resId=" + resId);
                 return null;
@@ -161,39 +161,41 @@ public class DictionaryFactory {
      * @return whether a (non-placeholder) dictionary is available or not.
      */
     public static boolean isDictionaryAvailable(Context context, Locale locale) {
-        final Resources res = context.getResources();
-        final Locale saveLocale = LocaleUtils.setSystemLocale(res, locale);
-
-        final int resourceId = getMainDictionaryResourceId(res);
-        final AssetFileDescriptor afd = res.openRawResourceFd(resourceId);
-        final boolean hasDictionary = isFullDictionary(afd);
-        try {
-            if (null != afd) afd.close();
-        } catch (java.io.IOException e) {
-            /* Um, what can we do here exactly? */
-        }
-
-        LocaleUtils.setSystemLocale(res, saveLocale);
-        return hasDictionary;
+        final RunInLocale<Boolean> job = new RunInLocale<Boolean>() {
+            @Override
+            protected Boolean job(Resources res) {
+                final int resourceId = getMainDictionaryResourceId(res);
+                final AssetFileDescriptor afd = res.openRawResourceFd(resourceId);
+                final boolean hasDictionary = isFullDictionary(afd);
+                try {
+                    if (null != afd) afd.close();
+                } catch (java.io.IOException e) {
+                    /* Um, what can we do here exactly? */
+                }
+                return hasDictionary;
+            }
+        };
+        return job.runInLocale(context.getResources(), locale);
     }
 
     // TODO: Do not use the size of the dictionary as an unique dictionary ID.
     public static Long getDictionaryId(final Context context, final Locale locale) {
-        final Resources res = context.getResources();
-        final Locale saveLocale = LocaleUtils.setSystemLocale(res, locale);
-
-        final int resourceId = getMainDictionaryResourceId(res);
-        final AssetFileDescriptor afd = res.openRawResourceFd(resourceId);
-        final Long size = (afd != null && afd.getLength() > PLACEHOLDER_LENGTH)
-                ? afd.getLength()
-                : null;
-        try {
-            if (null != afd) afd.close();
-        } catch (java.io.IOException e) {
-        }
-
-        LocaleUtils.setSystemLocale(res, saveLocale);
-        return size;
+        final RunInLocale<Long> job = new RunInLocale<Long>() {
+            @Override
+            protected Long job(Resources res) {
+                final int resourceId = getMainDictionaryResourceId(res);
+                final AssetFileDescriptor afd = res.openRawResourceFd(resourceId);
+                final Long size = (afd != null && afd.getLength() > PLACEHOLDER_LENGTH)
+                        ? afd.getLength()
+                        : null;
+                try {
+                    if (null != afd) afd.close();
+                } catch (java.io.IOException e) {
+                }
+                return size;
+            }
+        };
+        return job.runInLocale(context.getResources(), locale);
     }
 
     // TODO: Find the Right Way to find out whether the resource is a placeholder or not.

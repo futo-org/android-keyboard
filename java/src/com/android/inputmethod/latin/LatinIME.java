@@ -64,6 +64,7 @@ import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.LatinKeyboardView;
+import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.suggestions.SuggestionsView;
 
@@ -478,7 +479,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Has to be package-visible for unit tests
     /* package */ void loadSettings() {
         if (null == mPrefs) mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mSettingsValues = new SettingsValues(mPrefs, this, mSubtypeSwitcher.getInputLocaleStr());
+        final RunInLocale<SettingsValues> job = new RunInLocale<SettingsValues>() {
+            @Override
+            protected SettingsValues job(Resources res) {
+                return new SettingsValues(mPrefs, LatinIME.this);
+            }
+        };
+        mSettingsValues = job.runInLocale(mResources, mSubtypeSwitcher.getInputLocale());
         mFeedbackManager = new AudioAndHapticFeedbackManager(this, mSettingsValues);
         resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
     }
@@ -487,33 +494,37 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final String localeStr = mSubtypeSwitcher.getInputLocaleStr();
         final Locale keyboardLocale = mSubtypeSwitcher.getInputLocale();
 
-        final Resources res = mResources;
-        final Locale savedLocale = LocaleUtils.setSystemLocale(res, keyboardLocale);
-        final ContactsDictionary oldContactsDictionary;
-        if (mSuggest != null) {
-            oldContactsDictionary = mSuggest.getContactsDictionary();
-            mSuggest.close();
-        } else {
-            oldContactsDictionary = null;
-        }
+        final Context context = this;
+        final RunInLocale<Void> job = new RunInLocale<Void>() {
+            @Override
+            protected Void job(Resources res) {
+                final ContactsDictionary oldContactsDictionary;
+                if (mSuggest != null) {
+                    oldContactsDictionary = mSuggest.getContactsDictionary();
+                    mSuggest.close();
+                } else {
+                    oldContactsDictionary = null;
+                }
 
-        int mainDicResId = DictionaryFactory.getMainDictionaryResourceId(res);
-        mSuggest = new Suggest(this, mainDicResId, keyboardLocale);
-        if (mSettingsValues.mAutoCorrectEnabled) {
-            mSuggest.setAutoCorrectionThreshold(mSettingsValues.mAutoCorrectionThreshold);
-        }
+                int mainDicResId = DictionaryFactory.getMainDictionaryResourceId(res);
+                mSuggest = new Suggest(context, mainDicResId, keyboardLocale);
+                if (mSettingsValues.mAutoCorrectEnabled) {
+                    mSuggest.setAutoCorrectionThreshold(mSettingsValues.mAutoCorrectionThreshold);
+                }
 
-        mUserDictionary = new UserDictionary(this, localeStr);
-        mSuggest.setUserDictionary(mUserDictionary);
-        mIsUserDictionaryAvailable = mUserDictionary.isEnabled();
+                mUserDictionary = new UserDictionary(context, localeStr);
+                mSuggest.setUserDictionary(mUserDictionary);
+                mIsUserDictionaryAvailable = mUserDictionary.isEnabled();
 
-        resetContactsDictionary(oldContactsDictionary);
+                resetContactsDictionary(oldContactsDictionary);
 
-        mUserHistoryDictionary
-                = new UserHistoryDictionary(this, localeStr, Suggest.DIC_USER_HISTORY);
-        mSuggest.setUserHistoryDictionary(mUserHistoryDictionary);
-
-        LocaleUtils.setSystemLocale(res, savedLocale);
+                mUserHistoryDictionary
+                    = new UserHistoryDictionary(context, localeStr, Suggest.DIC_USER_HISTORY);
+                mSuggest.setUserHistoryDictionary(mUserHistoryDictionary);
+                return null;
+            }
+        };
+        job.runInLocale(mResources, keyboardLocale);
     }
 
     /**
