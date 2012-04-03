@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.compat;
+package com.android.inputmethod.keyboard;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,20 +22,9 @@ import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-public class FrameLayoutCompatUtils {
-    private static final boolean NEEDS_FRAME_LAYOUT_HACK = (
-            android.os.Build.VERSION.SDK_INT < 11 /* Honeycomb */);
-
-    public static ViewGroup getPlacer(ViewGroup container) {
-        if (NEEDS_FRAME_LAYOUT_HACK) {
-            // Insert RelativeLayout to be able to setMargin because pre-Honeycomb FrameLayout
-            // could not handle setMargin properly.
-            final ViewGroup placer = new RelativeLayout(container.getContext());
-            container.addView(placer);
-            return placer;
-        } else {
-            return container;
-        }
+public class ViewLayoutUtils {
+    private ViewLayoutUtils() {
+        // This utility class is not publicly instantiable.
     }
 
     public static MarginLayoutParams newLayoutParam(ViewGroup placer, int width, int height) {
