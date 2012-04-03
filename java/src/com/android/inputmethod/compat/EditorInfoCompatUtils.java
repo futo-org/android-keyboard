@@ -17,54 +17,20 @@
 package com.android.inputmethod.compat;
 
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
 
 import java.lang.reflect.Field;
 
 public class EditorInfoCompatUtils {
-    private static final Field FIELD_IME_FLAG_NAVIGATE_NEXT = CompatUtils.getField(
-            EditorInfo.class, "IME_FLAG_NAVIGATE_NEXT");
-    private static final Field FIELD_IME_FLAG_NAVIGATE_PREVIOUS = CompatUtils.getField(
-            EditorInfo.class, "IME_FLAG_NAVIGATE_PREVIOUS");
     private static final Field FIELD_IME_FLAG_FORCE_ASCII = CompatUtils.getField(
             EditorInfo.class, "IME_FLAG_FORCE_ASCII");
-    private static final Field FIELD_IME_ACTION_PREVIOUS = CompatUtils.getField(
-            EditorInfo.class, "IME_ACTION_PREVIOUS");
-    private static final Integer OBJ_IME_FLAG_NAVIGATE_NEXT = (Integer) CompatUtils
-            .getFieldValue(null, null, FIELD_IME_FLAG_NAVIGATE_NEXT);
-    private static final Integer OBJ_IME_FLAG_NAVIGATE_PREVIOUS = (Integer) CompatUtils
-            .getFieldValue(null, null, FIELD_IME_FLAG_NAVIGATE_PREVIOUS);
     private static final Integer OBJ_IME_FLAG_FORCE_ASCII = (Integer) CompatUtils
             .getFieldValue(null, null, FIELD_IME_FLAG_FORCE_ASCII);
-    private static final Integer OBJ_IME_ACTION_PREVIOUS = (Integer) CompatUtils
-            .getFieldValue(null, null, FIELD_IME_ACTION_PREVIOUS);
-
-    // EditorInfo.IME_FLAG_NAVIGATE_NEXT has been introduced since API#11 (Honeycomb).
-    public static boolean hasFlagNavigateNext(int imeOptions) {
-        if (OBJ_IME_FLAG_NAVIGATE_NEXT == null)
-            return false;
-        return (imeOptions & OBJ_IME_FLAG_NAVIGATE_NEXT) != 0;
-    }
-
-    // EditorInfo.IME_FLAG_NAVIGATE_PREVIOUS has been introduced since API#11 (Honeycomb).
-    public static boolean hasFlagNavigatePrevious(int imeOptions) {
-        if (OBJ_IME_FLAG_NAVIGATE_PREVIOUS == null)
-            return false;
-        return (imeOptions & OBJ_IME_FLAG_NAVIGATE_PREVIOUS) != 0;
-    }
 
     // EditorInfo.IME_FLAG_FORCE_ASCII has been introduced since API#16 (JellyBean).
     public static boolean hasFlagForceAscii(int imeOptions) {
         if (OBJ_IME_FLAG_FORCE_ASCII == null)
             return false;
         return (imeOptions & OBJ_IME_FLAG_FORCE_ASCII) != 0;
-    }
-
-    // EditorInfo.IME_ACTION_PREVIOUS has been introduced since API#11 (Honeycomb).
-    public static void performEditorActionPrevious(InputConnection ic) {
-        if (OBJ_IME_ACTION_PREVIOUS == null || ic == null)
-            return;
-        ic.performEditorAction(OBJ_IME_ACTION_PREVIOUS);
     }
 
     public static String imeActionName(int imeOptions) {
@@ -84,12 +50,10 @@ public class EditorInfoCompatUtils {
             return "actionNext";
         case EditorInfo.IME_ACTION_DONE:
             return "actionDone";
+        case EditorInfo.IME_ACTION_PREVIOUS:
+            return "actionPrevious";
         default:
-            if (OBJ_IME_ACTION_PREVIOUS != null && actionId == OBJ_IME_ACTION_PREVIOUS) {
-                return "actionPrevious";
-            } else {
-                return "actionUnknown(" + actionId + ")";
-            }
+            return "actionUnknown(" + actionId + ")";
         }
     }
 
@@ -99,10 +63,10 @@ public class EditorInfoCompatUtils {
         if ((imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
             flags.append("flagNoEnterAction|");
         }
-        if (hasFlagNavigateNext(imeOptions)) {
+        if ((imeOptions & EditorInfo.IME_FLAG_NAVIGATE_NEXT) != 0) {
             flags.append("flagNavigateNext|");
         }
-        if (hasFlagNavigatePrevious(imeOptions)) {
+        if ((imeOptions & EditorInfo.IME_FLAG_NAVIGATE_PREVIOUS) != 0) {
             flags.append("flagNavigatePrevious|");
         }
         if (hasFlagForceAscii(imeOptions)) {
