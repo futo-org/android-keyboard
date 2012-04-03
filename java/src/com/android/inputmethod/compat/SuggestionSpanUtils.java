@@ -77,6 +77,10 @@ public class SuggestionSpanUtils {
         }
     }
 
+    private SuggestionSpanUtils() {
+        // This utility class is not publicly instantiable.
+    }
+
     public static CharSequence getTextWithAutoCorrectionIndicatorUnderline(
             Context context, CharSequence text) {
         if (TextUtils.isEmpty(text) || CONSTRUCTOR_SuggestionSpan == null

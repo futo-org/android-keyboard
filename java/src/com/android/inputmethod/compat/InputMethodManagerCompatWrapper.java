@@ -40,6 +40,10 @@ public class InputMethodManagerCompatWrapper {
 
     private InputMethodManager mImm;
 
+    private InputMethodManagerCompatWrapper() {
+        // This wrapper class is not publicly instantiable.
+    }
+
     public static InputMethodManagerCompatWrapper getInstance() {
         if (sInstance.mImm == null)
             Log.w(TAG, "getInstance() is called before initialization");

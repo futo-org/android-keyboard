@@ -21,12 +21,16 @@ import android.view.inputmethod.EditorInfo;
 import java.lang.reflect.Field;
 
 public class EditorInfoCompatUtils {
+    // EditorInfo.IME_FLAG_FORCE_ASCII has been introduced since API#16 (JellyBean).
     private static final Field FIELD_IME_FLAG_FORCE_ASCII = CompatUtils.getField(
             EditorInfo.class, "IME_FLAG_FORCE_ASCII");
     private static final Integer OBJ_IME_FLAG_FORCE_ASCII = (Integer) CompatUtils
             .getFieldValue(null, null, FIELD_IME_FLAG_FORCE_ASCII);
 
-    // EditorInfo.IME_FLAG_FORCE_ASCII has been introduced since API#16 (JellyBean).
+    private EditorInfoCompatUtils() {
+        // This utility class is not publicly instantiable.
+    }
+
     public static boolean hasFlagForceAscii(int imeOptions) {
         if (OBJ_IME_FLAG_FORCE_ASCII == null)
             return false;

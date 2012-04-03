@@ -30,6 +30,7 @@ public class SuggestionsInfoCompatUtils {
                     ? OBJ_RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS : 0;
 
     private SuggestionsInfoCompatUtils() {
+        // This utility class is not publicly instantiable.
     }
 
     /**
