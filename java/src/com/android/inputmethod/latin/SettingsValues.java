@@ -27,8 +27,11 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
 
+/**
+ * When you call the constructor of this class, you may want to change the current system locale by
+ * using {@link LocaleUtils.RunInLocale}.
+ */
 public class SettingsValues {
     private static final String TAG = SettingsValues.class.getSimpleName();
 
@@ -76,16 +79,8 @@ public class SettingsValues {
     private final boolean mVoiceKeyEnabled;
     private final boolean mVoiceKeyOnMain;
 
-    public SettingsValues(final SharedPreferences prefs, final Context context,
-            final String localeStr) {
+    public SettingsValues(final SharedPreferences prefs, final Context context) {
         final Resources res = context.getResources();
-        final Locale savedLocale;
-        if (null != localeStr) {
-            final Locale keyboardLocale = LocaleUtils.constructLocaleFromString(localeStr);
-            savedLocale = LocaleUtils.setSystemLocale(res, keyboardLocale);
-        } else {
-            savedLocale = null;
-        }
 
         // Get the resources
         mDelayUpdateOldSuggestions = res.getInteger(R.integer.config_delay_update_old_suggestions);
@@ -150,8 +145,6 @@ public class SettingsValues {
                 mAutoCorrectionThresholdRawValue);
         mVoiceKeyEnabled = mVoiceMode != null && !mVoiceMode.equals(voiceModeOff);
         mVoiceKeyOnMain = mVoiceMode != null && mVoiceMode.equals(voiceModeMain);
-
-        LocaleUtils.setSystemLocale(res, savedLocale);
     }
 
     // Helper functions to create member values.

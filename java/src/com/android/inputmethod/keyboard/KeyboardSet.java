@@ -31,7 +31,7 @@ import com.android.inputmethod.keyboard.KeyboardSet.Params.ElementParams;
 import com.android.inputmethod.latin.InputTypeUtils;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.LocaleUtils;
+import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.XmlParseUtils;
@@ -66,6 +66,7 @@ public class KeyboardSet {
 
     public static class KeyboardSetException extends RuntimeException {
         public final KeyboardId mKeyboardId;
+
         public KeyboardSetException(Throwable cause, KeyboardId keyboardId) {
             super(cause);
             mKeyboardId = keyboardId;
@@ -161,26 +162,29 @@ public class KeyboardSet {
         }
     }
 
-    private Keyboard getKeyboard(Context context, ElementParams elementParams, KeyboardId id) {
-        final Resources res = context.getResources();
+    private Keyboard getKeyboard(Context context, ElementParams elementParams,
+            final KeyboardId id) {
         final SoftReference<Keyboard> ref = sKeyboardCache.get(id);
         Keyboard keyboard = (ref == null) ? null : ref.get();
         if (keyboard == null) {
-            final Locale savedLocale = LocaleUtils.setSystemLocale(res, id.mLocale);
-            try {
-                final Keyboard.Builder<Keyboard.Params> builder =
-                        new Keyboard.Builder<Keyboard.Params>(context, new Keyboard.Params());
-                if (id.isAlphabetKeyboard()) {
-                    builder.setAutoGenerate(sKeysCache);
-                }
-                builder.load(elementParams.mKeyboardXmlId, id);
-                builder.setTouchPositionCorrectionEnabled(mParams.mTouchPositionCorrectionEnabled);
-                builder.setProximityCharsCorrectionEnabled(
-                        elementParams.mProximityCharsCorrectionEnabled);
-                keyboard = builder.build();
-            } finally {
-                LocaleUtils.setSystemLocale(res, savedLocale);
+            final Keyboard.Builder<Keyboard.Params> builder =
+                    new Keyboard.Builder<Keyboard.Params>(mContext, new Keyboard.Params());
+            if (id.isAlphabetKeyboard()) {
+                builder.setAutoGenerate(sKeysCache);
             }
+            final int keyboardXmlId = elementParams.mKeyboardXmlId;
+            final RunInLocale<Void> job = new RunInLocale<Void>() {
+                @Override
+                protected Void job(Resources res) {
+                    builder.load(keyboardXmlId, id);
+                    return null;
+                }
+            };
+            job.runInLocale(context.getResources(), id.mLocale);
+            builder.setTouchPositionCorrectionEnabled(mParams.mTouchPositionCorrectionEnabled);
+            builder.setProximityCharsCorrectionEnabled(
+                    elementParams.mProximityCharsCorrectionEnabled);
+            keyboard = builder.build();
             sKeyboardCache.put(id, new SoftReference<Keyboard>(keyboard));
 
             if (DEBUG_CACHE) {
@@ -271,16 +275,20 @@ public class KeyboardSet {
             if (mParams.mLocale == null)
                 throw new RuntimeException("KeyboardSet subtype is not specified");
 
-            final Locale savedLocale = LocaleUtils.setSystemLocale(mResources, mParams.mLocale);
-            try {
-                parseKeyboardSet(mResources, R.xml.keyboard_set);
-            } catch (Exception e) {
-                throw new RuntimeException(e.getMessage() + " in "
-                        + mResources.getResourceName(R.xml.keyboard_set)
-                        + " of locale " + mParams.mLocale);
-            } finally {
-                LocaleUtils.setSystemLocale(mResources, savedLocale);
-            }
+            final RunInLocale<Void> job = new RunInLocale<Void>() {
+                @Override
+                protected Void job(Resources res) {
+                    try {
+                        parseKeyboardSet(res, R.xml.keyboard_set);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e.getMessage() + " in "
+                                + res.getResourceName(R.xml.keyboard_set)
+                                + " of locale " + mParams.mLocale);
+                    }
+                    return null;
+                }
+            };
+            job.runInLocale(mResources, mParams.mLocale);
             return new KeyboardSet(mContext, mParams);
         }
 

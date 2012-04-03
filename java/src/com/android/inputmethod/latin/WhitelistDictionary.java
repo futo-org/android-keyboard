@@ -22,6 +22,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
+import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
+
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -36,10 +38,14 @@ public class WhitelistDictionary extends ExpandableDictionary {
     // TODO: Conform to the async load contact of ExpandableDictionary
     public WhitelistDictionary(final Context context, final Locale locale) {
         super(context, Suggest.DIC_WHITELIST);
-        final Resources res = context.getResources();
-        final Locale previousLocale = LocaleUtils.setSystemLocale(res, locale);
-        initWordlist(res.getStringArray(R.array.wordlist_whitelist));
-        LocaleUtils.setSystemLocale(res, previousLocale);
+        final RunInLocale<Void> job = new RunInLocale<Void>() {
+            @Override
+            protected Void job(Resources res) {
+                initWordlist(res.getStringArray(R.array.wordlist_whitelist));
+                return null;
+            }
+        };
+        job.runInLocale(context.getResources(), locale);
     }
 
     private void initWordlist(String[] wordlist) {
