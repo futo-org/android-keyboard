@@ -1175,7 +1175,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return keyboard != null ? keyboard.mId.imeActionId() : EditorInfo.IME_ACTION_NONE;
     }
 
-    private void performeEditorAction(int actionId) {
+    private void performEditorAction(int actionId) {
         final InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
             ic.performEditorAction(actionId);
@@ -1266,13 +1266,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSubtypeSwitcher.switchToShortcutIME();
             break;
         case Keyboard.CODE_ACTION_ENTER:
-            performeEditorAction(getActionId(switcher.getKeyboard()));
+            performEditorAction(getActionId(switcher.getKeyboard()));
             break;
         case Keyboard.CODE_ACTION_NEXT:
-            performeEditorAction(EditorInfo.IME_ACTION_NEXT);
+            performEditorAction(EditorInfo.IME_ACTION_NEXT);
             break;
         case Keyboard.CODE_ACTION_PREVIOUS:
-            performeEditorAction(EditorInfo.IME_ACTION_PREVIOUS);
+            performEditorAction(EditorInfo.IME_ACTION_PREVIOUS);
             break;
         case Keyboard.CODE_LANGUAGE_SWITCH:
             handleLanguageSwitchKey();
