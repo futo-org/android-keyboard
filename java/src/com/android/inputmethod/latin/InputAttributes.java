@@ -20,8 +20,6 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 
-import com.android.inputmethod.compat.InputTypeCompatUtils;
-
 /**
  * Class to hold attributes of the input field.
  */
@@ -66,9 +64,9 @@ public class InputAttributes {
                     0 != (inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
 
             // Make sure that passwords are not displayed in {@link SuggestionsView}.
-            if (InputTypeCompatUtils.isPasswordInputType(inputType)
-                    || InputTypeCompatUtils.isVisiblePasswordInputType(inputType)
-                    || InputTypeCompatUtils.isEmailVariation(variation)
+            if (InputTypeUtils.isPasswordInputType(inputType)
+                    || InputTypeUtils.isVisiblePasswordInputType(inputType)
+                    || InputTypeUtils.isEmailVariation(variation)
                     || InputType.TYPE_TEXT_VARIATION_URI == variation
                     || InputType.TYPE_TEXT_VARIATION_FILTER == variation
                     || flagNoSuggestions

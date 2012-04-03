@@ -21,7 +21,7 @@ import android.text.TextUtils;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
-import com.android.inputmethod.compat.InputTypeCompatUtils;
+import com.android.inputmethod.latin.InputTypeUtils;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -140,8 +140,8 @@ public class KeyboardId {
 
     public boolean passwordInput() {
         final int inputType = mEditorInfo.inputType;
-        return InputTypeCompatUtils.isPasswordInputType(inputType)
-                || InputTypeCompatUtils.isVisiblePasswordInputType(inputType);
+        return InputTypeUtils.isPasswordInputType(inputType)
+                || InputTypeUtils.isVisiblePasswordInputType(inputType);
     }
 
     public boolean isMultiLine() {
