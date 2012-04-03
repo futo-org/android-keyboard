@@ -19,6 +19,7 @@ package com.android.inputmethod.latin.makedict;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -250,6 +251,10 @@ public class FusionDictionary implements Iterable<Word> {
      * There are no options at the moment, so this class is empty.
      */
     public static class DictionaryOptions {
+        final HashMap<String, String> mAttributes;
+        public DictionaryOptions(final HashMap<String, String> attributes) {
+            mAttributes = attributes;
+        }
     }
 
 
@@ -257,13 +262,22 @@ public class FusionDictionary implements Iterable<Word> {
     public final Node mRoot;
 
     public FusionDictionary() {
-        mOptions = new DictionaryOptions();
         mRoot = new Node();
+        mOptions = new DictionaryOptions(new HashMap<String, String>());
+    }
+
+    public FusionDictionary(final HashMap<String, String> attributes) {
+        mRoot = new Node();
+        mOptions = new DictionaryOptions(attributes);
     }
 
     public FusionDictionary(final Node root, final DictionaryOptions options) {
         mRoot = root;
         mOptions = options;
+    }
+
+    public void addOptionAttribute(final String key, final String value) {
+        mOptions.mAttributes.put(key, value);
     }
 
     /**

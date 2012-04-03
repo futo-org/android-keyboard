@@ -40,6 +40,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class XmlDictInputOutput {
 
+    private static final String ROOT_TAG = "wordlist";
     private static final String WORD_TAG = "w";
     private static final String BIGRAM_TAG = "bigram";
     private static final String SHORTCUT_TAG = "shortcut";
@@ -95,6 +96,11 @@ public class XmlDictInputOutput {
                     if (FREQUENCY_ATTR.equals(attrName)) {
                         mFreq = Integer.parseInt(attrs.getValue(attrIndex));
                     }
+                }
+            } else if (ROOT_TAG.equals(localName)) {
+                for (int attrIndex = 0; attrIndex < attrs.getLength(); ++attrIndex) {
+                    final String attrName = attrs.getLocalName(attrIndex);
+                    mDictionary.mOptions.mAttributes.put(attrName, attrs.getValue(attrIndex));
                 }
             } else {
                 mState = UNKNOWN;
@@ -275,7 +281,13 @@ public class XmlDictInputOutput {
             set.add(word);
         }
         // TODO: use an XMLSerializer if this gets big
-        destination.write("<wordlist format=\"2\">\n");
+        destination.write("<wordlist format=\"2\"");
+        final HashMap<String, String> options = dict.mOptions.mAttributes;
+        for (final String key : dict.mOptions.mAttributes.keySet()) {
+            final String value = dict.mOptions.mAttributes.get(key);
+            destination.write(" " + key + "=\"" + value + "\"");
+        }
+        destination.write(">\n");
         destination.write("<!-- Warning: there is no code to read this format yet. -->\n");
         for (Word word : set) {
             destination.write("  <" + WORD_TAG + " " + WORD_ATTR + "=\"" + word.mWord + "\" "

@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -922,7 +923,14 @@ public class BinaryDictInputOutput {
         if (version >= FIRST_VERSION_WITH_HEADER_SIZE) {
             final int headerSizeOffset = index;
             index += 4; // Size of the header size
-            // TODO: Write out the header contents here.
+
+            // Write out the options.
+            for (final String key : dict.mOptions.mAttributes.keySet()) {
+                final String value = dict.mOptions.mAttributes.get(key);
+                index += CharEncoding.writeString(buffer, index, key);
+                index += CharEncoding.writeString(buffer, index, value);
+            }
+
             // Write out the header size.
             buffer[headerSizeOffset] = (byte) (0xFF & (index >> 24));
             buffer[headerSizeOffset + 1] = (byte) (0xFF & (index >> 16));
@@ -1214,12 +1222,17 @@ public class BinaryDictInputOutput {
         source.readUnsignedShort();
 
         final long headerSize;
+        final HashMap<String, String> options = new HashMap<String, String>();
         if (version < FIRST_VERSION_WITH_HEADER_SIZE) {
             headerSize = source.getFilePointer();
         } else {
             headerSize = (source.readUnsignedByte() << 24) + (source.readUnsignedByte() << 16)
                     + (source.readUnsignedByte() << 8) + source.readUnsignedByte();
-            // read the header body
+            while (source.getFilePointer() < headerSize) {
+                final String key = CharEncoding.readString(source);
+                final String value = CharEncoding.readString(source);
+                options.put(key, value);
+            }
             source.seek(headerSize);
         }
 
@@ -1228,7 +1241,7 @@ public class BinaryDictInputOutput {
         final Node root = readNode(source, headerSize, reverseNodeMapping, reverseGroupMapping);
 
         FusionDictionary newDict = new FusionDictionary(root,
-                new FusionDictionary.DictionaryOptions());
+                new FusionDictionary.DictionaryOptions(options));
         if (null != dict) {
             for (Word w : dict) {
                 newDict.add(w.mWord, w.mFrequency, w.mShortcutTargets, w.mBigrams);
