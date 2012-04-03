@@ -237,7 +237,6 @@ public class KeyboardSet {
             return this;
         }
 
-        // TODO: Use InputMethodSubtype object as argument.
         public Builder setSubtype(Locale inputLocale, boolean asciiCapable) {
             final boolean deprecatedForceAscii = StringUtils.inPrivateImeOptions(
                     mPackageName, LatinIME.IME_OPTION_FORCE_ASCII, mEditorInfo);

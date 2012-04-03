@@ -18,9 +18,9 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.view.inputmethod.InputMethodInfo;
+import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
-import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,15 +31,13 @@ public class SubtypeUtils {
     }
 
     // TODO: Cache my InputMethodInfo and/or InputMethodSubtype list.
-    public static boolean checkIfSubtypeBelongsToThisIme(Context context,
-            InputMethodSubtypeCompatWrapper ims) {
+    public static boolean checkIfSubtypeBelongsToThisIme(Context context, InputMethodSubtype ims) {
         final InputMethodManagerCompatWrapper imm = InputMethodManagerCompatWrapper.getInstance();
         if (imm == null) return false;
 
         final InputMethodInfo myImi = getInputMethodInfo(context.getPackageName());
-        final List<InputMethodSubtypeCompatWrapper> subtypes =
-                imm.getEnabledInputMethodSubtypeList(myImi, true);
-        for (final InputMethodSubtypeCompatWrapper subtype : subtypes) {
+        final List<InputMethodSubtype> subtypes = imm.getEnabledInputMethodSubtypeList(myImi, true);
+        for (final InputMethodSubtype subtype : subtypes) {
             if (subtype.equals(ims)) {
                 return true;
             }
@@ -74,7 +72,7 @@ public class SubtypeUtils {
         for (InputMethodInfo imi : imiList) {
             // We can return true immediately after we find two or more filtered IMEs.
             if (filteredImisCount > 1) return true;
-            final List<InputMethodSubtypeCompatWrapper> subtypes =
+            final List<InputMethodSubtype> subtypes =
                     imm.getEnabledInputMethodSubtypeList(imi, true);
             // IMEs that have no subtypes should be counted.
             if (subtypes.isEmpty()) {
@@ -83,7 +81,7 @@ public class SubtypeUtils {
             }
 
             int auxCount = 0;
-            for (InputMethodSubtypeCompatWrapper subtype : subtypes) {
+            for (InputMethodSubtype subtype : subtypes) {
                 if (subtype.isAuxiliary()) {
                     ++auxCount;
                 }
@@ -102,13 +100,12 @@ public class SubtypeUtils {
         if (filteredImisCount > 1) {
             return true;
         }
-        final List<InputMethodSubtypeCompatWrapper> subtypes =
-                imm.getEnabledInputMethodSubtypeList(null, true);
+        final List<InputMethodSubtype> subtypes = imm.getEnabledInputMethodSubtypeList(null, true);
         int keyboardCount = 0;
         // imm.getEnabledInputMethodSubtypeList(null, true) will return the current IME's
         // both explicitly and implicitly enabled input method subtype.
         // (The current IME should be LatinIME.)
-        for (InputMethodSubtypeCompatWrapper subtype : subtypes) {
+        for (InputMethodSubtype subtype : subtypes) {
             if (SubtypeSwitcher.KEYBOARD_MODE.equals(subtype.getMode())) {
                 ++keyboardCount;
             }

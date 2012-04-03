@@ -49,6 +49,7 @@ import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
@@ -56,7 +57,6 @@ import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
-import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
 import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
@@ -627,6 +627,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mHandler.onFinishInput();
     }
 
+    @Override
+    public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype subtype) {
+        SubtypeSwitcher.getInstance().updateSubtype(subtype);
+    }
+
     private void onStartInputInternal(EditorInfo editorInfo, boolean restarting) {
         super.onStartInput(editorInfo, restarting);
     }
@@ -1178,7 +1183,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final boolean includesOtherImes = mSettingsValues.mIncludesOtherImesInLanguageSwitchList;
         final IBinder token = getWindow().getWindow().getAttributes().token;
         if (mShouldSwitchToLastSubtype) {
-            final InputMethodSubtypeCompatWrapper lastSubtype = mImm.getLastInputMethodSubtype();
+            final InputMethodSubtype lastSubtype = mImm.getLastInputMethodSubtype();
             final boolean lastSubtypeBelongsToThisIme = SubtypeUtils.checkIfSubtypeBelongsToThisIme(
                     this, lastSubtype);
             if ((includesOtherImes || lastSubtypeBelongsToThisIme)

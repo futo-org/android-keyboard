@@ -21,10 +21,8 @@ import android.inputmethodservice.InputMethodService;
 import android.os.IBinder;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import com.android.inputmethod.latin.SubtypeSwitcher;
 
 public class InputMethodServiceCompatWrapper extends InputMethodService {
     // For compatibility of {@link InputMethodManager#showInputMethodPicker}.
@@ -48,20 +46,6 @@ public class InputMethodServiceCompatWrapper extends InputMethodService {
 
         mOptionsDialog = dialog;
         dialog.show();
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
-
-    //////////////////////////////////////
-    // Functions using API v11 or later //
-    //////////////////////////////////////
-    @Override
-    public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype subtype) {
-        SubtypeSwitcher.getInstance().updateSubtype(
-                new InputMethodSubtypeCompatWrapper(subtype));
     }
 
     protected static void setTouchableRegionCompat(InputMethodService.Insets outInsets,

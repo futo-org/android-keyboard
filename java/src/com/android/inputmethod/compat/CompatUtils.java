@@ -23,8 +23,6 @@ import android.util.Log;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CompatUtils {
     private static final String TAG = CompatUtils.class.getSimpleName();
@@ -130,16 +128,5 @@ public class CompatUtils {
         } catch (Exception e) {
             Log.e(TAG, "Exception in setFieldValue: " + e.getClass().getSimpleName());
         }
-    }
-
-    public static List<InputMethodSubtypeCompatWrapper> copyInputMethodSubtypeListToWrapper(
-            Object listObject) {
-        if (!(listObject instanceof List<?>)) return null;
-        final List<InputMethodSubtypeCompatWrapper> subtypes =
-                new ArrayList<InputMethodSubtypeCompatWrapper>();
-        for (Object o: (List<?>)listObject) {
-            subtypes.add(new InputMethodSubtypeCompatWrapper(o));
-        }
-        return subtypes;
     }
 }
