@@ -34,6 +34,7 @@ import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StringUtils;
+import com.android.inputmethod.latin.SubtypeLocale;
 import com.android.inputmethod.latin.XmlParseUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -247,7 +248,8 @@ public class KeyboardSet {
             final boolean forceAscii = EditorInfoCompatUtils.hasFlagForceAscii(
                     mParams.mEditorInfo.imeOptions)
                     || deprecatedForceAscii;
-            mParams.mLocale = (forceAscii && !asciiCapable) ? Locale.US : inputLocale;
+            mParams.mLocale = (forceAscii && !asciiCapable)
+                    ? SubtypeLocale.LOCALE_NO_LANGUAGE_QWERTY : inputLocale;
             return this;
         }
 

@@ -375,6 +375,9 @@ public class SubtypeSwitcher {
     }
 
     public boolean needsToDisplayLanguage(Locale keyboardLocale) {
+        if (keyboardLocale.equals(SubtypeLocale.LOCALE_NO_LANGUAGE_QWERTY)) {
+            return true;
+        }
         if (!keyboardLocale.equals(mInputLocale)) {
             return false;
         }
