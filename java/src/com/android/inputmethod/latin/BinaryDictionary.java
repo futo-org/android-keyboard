@@ -17,10 +17,14 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.Resources;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * Implements a static, compacted, binary dictionary of standard words.
@@ -94,14 +98,23 @@ public class BinaryDictionary extends Dictionary {
      * @param flagArray the flags to limit the dictionary to, or null for default.
      */
     public BinaryDictionary(final Context context,
-            final String filename, final long offset, final long length, Flag[] flagArray) {
+            final String filename, final long offset, final long length, final Flag[] flagArray,
+            Locale locale) {
         // Note: at the moment a binary dictionary is always of the "main" type.
         // Initializing this here will help transitioning out of the scheme where
         // the Suggest class knows everything about every single dictionary.
         mDicTypeId = Suggest.DIC_MAIN;
         // TODO: Stop relying on the state of SubtypeSwitcher, get it as a parameter
-        mFlags = Flag.initFlags(null == flagArray ? ALL_CONFIG_FLAGS : flagArray, context,
-                SubtypeSwitcher.getInstance());
+        final RunInLocale<Void> job = new RunInLocale<Void>() {
+            @Override
+            protected Void job(Resources res) {
+                // TODO: remove this when all flags are moved to the native code
+                mFlags = Flag.initFlags(null == flagArray ? ALL_CONFIG_FLAGS : flagArray, context,
+                        SubtypeSwitcher.getInstance());
+                return null;
+            }
+        };
+        job.runInLocale(context.getResources(), locale);
         loadDictionary(filename, offset, length);
     }
 
