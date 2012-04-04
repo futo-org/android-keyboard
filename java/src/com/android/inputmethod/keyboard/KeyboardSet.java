@@ -25,6 +25,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardSet.Params.ElementParams;
@@ -242,7 +243,10 @@ public class KeyboardSet {
             return this;
         }
 
-        public Builder setSubtype(Locale inputLocale, boolean asciiCapable) {
+        public Builder setSubtype(InputMethodSubtype subtype) {
+            final Locale inputLocale = SubtypeLocale.getSubtypeLocale(subtype);
+            final boolean asciiCapable = subtype.containsExtraValueKey(
+                    LatinIME.SUBTYPE_EXTRA_VALUE_ASCII_CAPABLE);
             final boolean deprecatedForceAscii = StringUtils.inPrivateImeOptions(
                     mPackageName, LatinIME.IME_OPTION_FORCE_ASCII, mEditorInfo);
             final boolean forceAscii = EditorInfoCompatUtils.hasFlagForceAscii(

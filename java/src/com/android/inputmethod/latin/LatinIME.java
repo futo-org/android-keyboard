@@ -713,9 +713,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSuggest.setAutoCorrectionThreshold(mSettingsValues.mAutoCorrectionThreshold);
         }
 
-        if (mSubtypeSwitcher.isKeyboardMode()) {
-            switcher.loadKeyboard(editorInfo, mSettingsValues);
-        }
+        switcher.loadKeyboard(editorInfo, mSettingsValues);
 
         if (mSuggestionsView != null)
             mSuggestionsView.clear();

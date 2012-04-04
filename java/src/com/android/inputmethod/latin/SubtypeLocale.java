@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.view.inputmethod.InputMethodSubtype;
 
 import java.util.Locale;
 
@@ -119,5 +120,15 @@ public class SubtypeLocale {
         // a single letter.
         // - It also does not work with unicode surrogate code points.
         return s.toUpperCase(locale).charAt(0) + s.substring(1);
+    }
+
+    public static String getSubtypeLocaleString(InputMethodSubtype subtype) {
+        final String keyboardLocale = subtype.getExtraValueOf(
+                LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LOCALE);
+        return keyboardLocale != null ? keyboardLocale : subtype.getLocale();
+    }
+
+    public static Locale getSubtypeLocale(InputMethodSubtype subtype) {
+        return LocaleUtils.constructLocaleFromString(getSubtypeLocaleString(subtype));
     }
 }

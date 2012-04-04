@@ -137,10 +137,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
         final KeyboardSet.Builder builder = new KeyboardSet.Builder(mThemeContext, editorInfo);
         builder.setScreenGeometry(mThemeContext.getResources().getConfiguration().orientation,
                 mThemeContext.getResources().getDisplayMetrics().widthPixels);
-        builder.setSubtype(
-                mSubtypeSwitcher.getInputLocale(),
-                mSubtypeSwitcher.currentSubtypeContainsExtraValueKey(
-                        LatinIME.SUBTYPE_EXTRA_VALUE_ASCII_CAPABLE));
+        builder.setSubtype(mSubtypeSwitcher.getCurrentSubtype());
         builder.setOptions(
                 settingsValues.isVoiceKeyEnabled(editorInfo),
                 settingsValues.isVoiceKeyOnMain(),
@@ -384,7 +381,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     public void onNetworkStateChanged() {
         if (mKeyboardView != null) {
-            mKeyboardView.updateShortcutKey(SubtypeSwitcher.getInstance().isShortcutImeReady());
+            mKeyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
         }
     }
 

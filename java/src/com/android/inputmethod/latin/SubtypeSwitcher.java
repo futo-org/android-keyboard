@@ -419,30 +419,23 @@ public class SubtypeSwitcher {
         }
     }
 
-    public boolean isKeyboardMode() {
+    // TODO: Remove this method
+    private boolean isKeyboardMode() {
         return KEYBOARD_MODE.equals(getCurrentSubtypeMode());
     }
 
-    /////////////////////////////
-    // Other utility functions //
-    /////////////////////////////
-
-    public String getCurrentSubtypeExtraValue() {
-        // If null, return what an empty ExtraValue would return : the empty string.
-        return mCurrentSubtype.getExtraValue();
+    // TODO: Remove this method
+    private String getCurrentSubtypeMode() {
+        return mCurrentSubtype.getMode();
     }
 
+    // TODO: Remove this method
     public boolean currentSubtypeContainsExtraValueKey(String key) {
         // If null, return what an empty ExtraValue would return : false.
         return mCurrentSubtype.containsExtraValueKey(key);
     }
 
-    public String getCurrentSubtypeExtraValueOf(String key) {
-        // If null, return what an empty ExtraValue would return : null.
-        return mCurrentSubtype.getExtraValueOf(key);
-    }
-
-    public String getCurrentSubtypeMode() {
-        return mCurrentSubtype.getMode();
+    public InputMethodSubtype getCurrentSubtype() {
+        return mCurrentSubtype;
     }
 }
