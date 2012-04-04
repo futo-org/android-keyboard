@@ -95,7 +95,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mLatinIME);
         final boolean previousDebugSetting = prefs.getBoolean(PREF_DEBUG_MODE, false);
         final SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(PREF_DEBUG_MODE, true);
+        editor.putBoolean(PREF_DEBUG_MODE, mode);
         editor.commit();
         return previousDebugSetting;
     }
