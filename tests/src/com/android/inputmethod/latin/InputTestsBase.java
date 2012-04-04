@@ -138,17 +138,20 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         final InputMethodManager imm = (InputMethodManager)mLatinIME.getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         final String packageName = mLatinIME.getPackageName();
-        for (final InputMethodInfo imi : imm.getEnabledInputMethodList()) {
+        // The IMEs and subtypes don't need to be enabled to run this test because IMF isn't
+        // involved here.
+        for (final InputMethodInfo imi : imm.getInputMethodList()) {
             if (imi.getPackageName().equals(packageName)) {
-                for (final InputMethodSubtype ims :
-                    imm.getEnabledInputMethodSubtypeList(imi, true)) {
+                final int subtypeCount = imi.getSubtypeCount();
+                for (int i = 0; i < subtypeCount; i++) {
+                    final InputMethodSubtype ims = imi.getSubtypeAt(i);
                     final String locale = ims.getLocale();
                     mSubtypeMap.put(locale, ims);
                 }
                 return;
             }
         }
-        fail("LatinIME is disabled");
+        fail("LatinIME is not found");
     }
 
     // We need to run the messages added to the handler from LatinIME. The only way to do
@@ -176,7 +179,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         // The only way to get out of Looper#loop() is to call #quit() on it (or on its queue).
         // Once #quit() is called remaining messages are not processed, which is why we post
         // a message that calls it instead of calling it directly.
-        looper.loop();
+        Looper.loop();
 
         // Once #quit() has been called, the message queue has an "mQuiting" field that prevents
         // any subsequent post in this queue. However the queue itself is still fully functional!
