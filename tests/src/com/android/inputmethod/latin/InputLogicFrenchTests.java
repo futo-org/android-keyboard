@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.keyboard.Keyboard;
-
 public class InputLogicFrenchTests extends InputTestsBase {
 
     public void testAutoCorrectForFrench() {
