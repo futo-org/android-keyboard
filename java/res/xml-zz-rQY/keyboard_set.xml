@@ -19,8 +19,7 @@
 -->
 
 <KeyboardSet
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-    latin:disableShortcutKey="true" >
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
     <Element
         latin:elementName="alphabet"
         latin:elementKeyboard="@xml/kbd_qwerty"

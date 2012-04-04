@@ -403,11 +403,6 @@
         <attr name="parentStyle" format="string" />
     </declare-styleable>
 
-    <declare-styleable name="KeyboardSet">
-        <!-- Disable shortcut key. Shortcut key is enabled by default. -->
-        <attr name="disableShortcutKey" format="boolean" />
-    </declare-styleable>
-
     <declare-styleable name="KeyboardSet_Element">
         <!-- This should be aligned with KeyboardId.ELEMENT_* -->
         <attr name="elementName" format="enum">

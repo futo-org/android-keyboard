@@ -23,7 +23,7 @@ import java.util.Locale;
 
 public class SubtypeLocale {
     // Special language code to represent "no language".
-    /* package for test */ static final String NO_LANGUAGE = "zz";
+    public static final String NO_LANGUAGE = "zz";
     // Special country code to represent "QWERTY".
     /* package for test */ static final String QWERTY = "QY";
 
