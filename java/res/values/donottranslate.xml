@@ -156,22 +156,20 @@
     <string-array name="subtype_locale_exception_keys">
         <item>en_US</item>
         <item>en_GB</item>
-        <item>de_QY</item>
-        <item>zz_QY</item>
+        <item>*_QY</item>
+        <item>QY</item>
     </string-array>
     <string-array name="subtype_locale_exception_values">
         <item>English (US)</item>
         <item>English (UK)</item>
         <item>@string/subtype_generic_qwerty</item>
-        <item>@string/subtype_qwerty</item>
+        <item>QWERTY</item>
     </string-array>
 
     <!-- Generic subtype label -->
     <string name="subtype_generic">%s</string>
     <!-- Description for generic QWERTY keyboard subtype -->
     <string name="subtype_generic_qwerty">%s (QWERTY)</string>
-    <!-- Description for language agnostic QWERTY keyboard subtype -->
-    <string name="subtype_qwerty">QWERTY</string>
 
     <!-- dictionary pack package name /settings activity (for shared prefs and settings) -->
     <string name="dictionary_pack_package_name">com.google.android.inputmethod.latin.dictionarypack</string>

@@ -420,10 +420,6 @@ public class SubtypeSwitcher {
         return KEYBOARD_MODE.equals(getCurrentSubtypeMode());
     }
 
-    public String getInputLanguageName() {
-        return StringUtils.getDisplayLanguage(getInputLocale());
-    }
-
     /////////////////////////////
     // Other utility functions //
     /////////////////////////////

@@ -47,7 +47,7 @@ import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.ResearchLogger;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
-import com.android.inputmethod.latin.StringUtils;
+import com.android.inputmethod.latin.SubtypeLocale;
 import com.android.inputmethod.latin.SubtypeUtils;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.Utils.UsabilityStudyLogUtils;
@@ -926,7 +926,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         paint.setTextAlign(Align.CENTER);
         paint.setTypeface(Typeface.DEFAULT);
         // Estimate appropriate language name text size to fit in maxTextWidth.
-        String language = StringUtils.getFullDisplayName(locale, true);
+        String language = SubtypeLocale.getFullDisplayName(locale);
         int textWidth = getTextWidth(paint, language, origTextSize);
         // Assuming text width and text size are proportional to each other.
         float textSize = origTextSize * Math.min(width / textWidth, 1.0f);
@@ -938,7 +938,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         final boolean useShortName;
         if (useMiddleName) {
-            language = StringUtils.getMiddleDisplayLanguage(locale);
+            language = SubtypeLocale.getMiddleDisplayName(locale);
             textWidth = getTextWidth(paint, language, origTextSize);
             textSize = origTextSize * Math.min(width / textWidth, 1.0f);
             useShortName = (textSize / origTextSize < MINIMUM_SCALE_OF_LANGUAGE_NAME)
@@ -948,7 +948,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
 
         if (useShortName) {
-            language = StringUtils.getShortDisplayLanguage(locale);
+            language = SubtypeLocale.getShortDisplayName(locale);
             textWidth = getTextWidth(paint, language, origTextSize);
             textSize = origTextSize * Math.min(width / textWidth, 1.0f);
         }

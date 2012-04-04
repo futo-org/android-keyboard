@@ -252,6 +252,8 @@
     <string name="subtype_en_GB">English (UK)</string>
     <!-- Description for English (United States) keyboard subtype [CHAR LIMIT=22] -->
     <string name="subtype_en_US">English (US)</string>
+    <!-- Description for language agnostic QWERTY keyboard subtype [CHAR LIMIT=22] -->
+    <string name="subtype_no_language_qwerty">No language (QWERTY)</string>
 
     <!-- Title of an option for usability study mode -->
     <string name="prefs_usability_study_mode">Usability study mode</string>
