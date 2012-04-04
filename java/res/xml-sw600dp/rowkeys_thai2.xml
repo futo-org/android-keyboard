@@ -39,10 +39,10 @@
             <!-- U+0E18: "ธ" THAI CHARACTER THO THONG -->
             <Key
                 latin:keyLabel="&#x0E18;" />
-            <!-- U+0E4D: "กํ" THAI CHARACTER THANTHAKHAT -->
+            <!-- U+0E4D: " ํ" THAI CHARACTER THANTHAKHAT -->
             <Key
                 latin:keyLabel="&#x0E4D;" />
-            <!-- U+0E4A: "ก๊" THAI CHARACTER MAI TRI -->
+            <!-- U+0E4A: " ๊" THAI CHARACTER MAI TRI -->
             <Key
                 latin:keyLabel="&#x0E4A;" />
             <!-- U+0E13: "ณ" THAI CHARACTER NO NEN -->
@@ -79,10 +79,10 @@
             <!-- U+0E30: "ะ" THAI CHARACTER SARA A -->
             <Key
                 latin:keyLabel="&#x0E30;" />
-            <!-- U+0E31: "กั" THAI CHARACTER MAI HAN-AKAT -->
+            <!-- U+0E31: " ั" THAI CHARACTER MAI HAN-AKAT -->
             <Key
                 latin:keyLabel="&#x0E31;" />
-            <!-- U+0E35: "กี" HAI CHARACTER SARA II -->
+            <!-- U+0E35: " ี" HAI CHARACTER SARA II -->
             <Key
                 latin:keyLabel="&#x0E35;" />
             <!-- U+0E23: "ร" THAI CHARACTER RO RUA -->
