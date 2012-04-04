@@ -115,16 +115,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public static final String IME_OPTION_FORCE_ASCII = "forceAscii";
 
     /**
+     * The subtype extra value used to indicate that the subtype keyboard layout set name.
+     */
+    public static final String SUBTYPE_EXTRA_VALUE_KEYBOARD_LAYOUT_SET = "KeyboardLayoutSet";
+
+    /**
      * The subtype extra value used to indicate that the subtype keyboard layout is capable for
      * typing ASCII characters.
      */
     public static final String SUBTYPE_EXTRA_VALUE_ASCII_CAPABLE = "AsciiCapable";
-
-    /**
-     * The subtype extra value used to indicate that the subtype keyboard layout should be loaded
-     * from the specified locale.
-     */
-    public static final String SUBTYPE_EXTRA_VALUE_KEYBOARD_LOCALE = "KeyboardLocale";
 
     private static final int EXTENDED_TOUCHABLE_REGION_HEIGHT = 100;
 

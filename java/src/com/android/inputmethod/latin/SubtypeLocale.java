@@ -18,7 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.view.inputmethod.InputMethodSubtype;
+
 
 import java.util.Locale;
 
@@ -69,10 +69,10 @@ public class SubtypeLocale {
         }
         final String value = lookupExceptionalLocale(key);
         if (value == null) {
-            return toTitleCase(locale.getDisplayName(locale), locale);
+            return StringUtils.toTitleCase(locale.getDisplayName(locale), locale);
         }
         if (value.indexOf("%s") >= 0) {
-            final String languageName = toTitleCase(locale.getDisplayLanguage(locale), locale);
+            final String languageName = StringUtils.toTitleCase(locale.getDisplayLanguage(locale), locale);
             return String.format(value, languageName);
         }
         return value;
@@ -88,7 +88,7 @@ public class SubtypeLocale {
         if (NO_LANGUAGE.equals(locale.getLanguage())) {
             return lookupExceptionalLocale(locale.getCountry());
         } else {
-            return toTitleCase(locale.getDisplayLanguage(locale), locale);
+            return StringUtils.toTitleCase(locale.getDisplayLanguage(locale), locale);
         }
     }
 
@@ -102,33 +102,7 @@ public class SubtypeLocale {
         if (NO_LANGUAGE.equals(locale.getLanguage())) {
             return locale.getCountry();
         } else {
-            return toTitleCase(locale.getLanguage(), locale);
+            return StringUtils.toTitleCase(locale.getLanguage(), locale);
         }
-    }
-
-    public static String toTitleCase(String s, Locale locale) {
-        if (s.length() <= 1) {
-            // TODO: is this really correct? Shouldn't this be s.toUpperCase()?
-            return s;
-        }
-        // TODO: fix the bugs below
-        // - This does not work for Greek, because it returns upper case instead of title case.
-        // - It does not work for Serbian, because it fails to account for the "lj" character,
-        // which should be "Lj" in title case and "LJ" in upper case.
-        // - It does not work for Dutch, because it fails to account for the "ij" digraph, which
-        // are two different characters but both should be capitalized as "IJ" as if they were
-        // a single letter.
-        // - It also does not work with unicode surrogate code points.
-        return s.toUpperCase(locale).charAt(0) + s.substring(1);
-    }
-
-    public static String getSubtypeLocaleString(InputMethodSubtype subtype) {
-        final String keyboardLocale = subtype.getExtraValueOf(
-                LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LOCALE);
-        return keyboardLocale != null ? keyboardLocale : subtype.getLocale();
-    }
-
-    public static Locale getSubtypeLocale(InputMethodSubtype subtype) {
-        return LocaleUtils.constructLocaleFromString(getSubtypeLocaleString(subtype));
     }
 }

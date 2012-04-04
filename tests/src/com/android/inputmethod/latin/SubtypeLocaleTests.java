@@ -22,6 +22,8 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.keyboard.KeyboardLayoutSet;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -58,29 +60,17 @@ public class SubtypeLocaleTests extends AndroidTestCase {
         assertTrue("Can not find keyboard subtype", mSubtypesList.size() > 0);
     }
 
-    private static Locale getSubtypeLocale(InputMethodSubtype subtype) {
-        return LocaleUtils.constructLocaleFromString(subtype.getLocale());
-    }
-
-    private static Locale getKeyboardLocale(InputMethodSubtype subtype) {
-        final String subtypeLocaleString = subtype.containsExtraValueKey(
-                LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LOCALE)
-                ? subtype.getExtraValueOf(LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LOCALE)
-                : subtype.getLocale();
-        return LocaleUtils.constructLocaleFromString(subtypeLocaleString);
-    }
-
     public void testFullDisplayName() {
         final StringBuilder messages = new StringBuilder();
         int failedCount = 0;
         for (final InputMethodSubtype subtype : mSubtypesList) {
-            final Locale locale = getKeyboardLocale(subtype);
+            final Locale locale = KeyboardLayoutSet.getKeyboardLayoutSetLocale(subtype);
             if (locale.getLanguage().equals(SubtypeLocale.NO_LANGUAGE)) {
                 // This is special language name for language agnostic usage.
                 continue;
             }
             final String keyboardName = SubtypeLocale.getFullDisplayName(locale);
-            final String languageName = SubtypeLocale.toTitleCase(
+            final String languageName = StringUtils.toTitleCase(
                     locale.getDisplayLanguage(locale), locale);
             if (!keyboardName.contains(languageName)) {
                 failedCount++;
@@ -104,13 +94,13 @@ public class SubtypeLocaleTests extends AndroidTestCase {
         final StringBuilder messages = new StringBuilder();
         int failedCount = 0;
         for (final InputMethodSubtype subtype : mSubtypesList) {
-            final Locale locale = getKeyboardLocale(subtype);
+            final Locale locale = KeyboardLayoutSet.getKeyboardLayoutSetLocale(subtype);
             if (locale.getLanguage().equals(SubtypeLocale.NO_LANGUAGE)) {
                 // This is special language name for language agnostic usage.
                 continue;
             }
             final String keyboardName = SubtypeLocale.getMiddleDisplayName(locale);
-            final String languageName = SubtypeLocale.toTitleCase(
+            final String languageName = StringUtils.toTitleCase(
                     locale.getDisplayLanguage(locale), locale);
             if (!keyboardName.equals(languageName)) {
                 failedCount++;
@@ -131,13 +121,13 @@ public class SubtypeLocaleTests extends AndroidTestCase {
         final StringBuilder messages = new StringBuilder();
         int failedCount = 0;
         for (final InputMethodSubtype subtype : mSubtypesList) {
-            final Locale locale = getKeyboardLocale(subtype);
+            final Locale locale = KeyboardLayoutSet.getKeyboardLayoutSetLocale(subtype);
             if (locale.getCountry().equals(SubtypeLocale.QWERTY)) {
                 // This is special country code for QWERTY keyboard.
                 continue;
             }
             final String keyboardName = SubtypeLocale.getShortDisplayName(locale);
-            final String languageCode = SubtypeLocale.toTitleCase(locale.getLanguage(), locale);
+            final String languageCode = StringUtils.toTitleCase(locale.getLanguage(), locale);
             if (!keyboardName.equals(languageCode)) {
                 failedCount++;
                 messages.append(String.format(

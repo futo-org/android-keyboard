@@ -33,6 +33,7 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 
 import java.util.ArrayList;
@@ -68,6 +69,7 @@ public class SubtypeSwitcher {
     private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
     private List<InputMethodSubtype> mAllEnabledSubtypesOfCurrentInputMethod;
+    private InputMethodSubtype mNoLanguageSubtype;
     // Note: This variable is always non-null after {@link #initialize(LatinIME)}.
     private InputMethodSubtype mCurrentSubtype;
     private Locale mSystemLocale;
@@ -104,6 +106,8 @@ public class SubtypeSwitcher {
         mInputLocaleStr = null;
         mCurrentSubtype = mImm.getCurrentInputMethodSubtype();
         mAllEnabledSubtypesOfCurrentInputMethod = null;
+        mNoLanguageSubtype = SubtypeUtils.findSubtypeByKeyboardLayoutSetLocale(
+                service, SubtypeLocale.LOCALE_NO_LANGUAGE_QWERTY);
 
         final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
         mIsNetworkConnected = (info != null && info.isConnected());
@@ -133,7 +137,7 @@ public class SubtypeSwitcher {
         mEnabledLanguagesOfCurrentInputMethod.clear();
         mEnabledKeyboardSubtypesOfCurrentInputMethod.clear();
         for (InputMethodSubtype ims : mAllEnabledSubtypesOfCurrentInputMethod) {
-            final String locale = getSubtypeLocale(ims);
+            final String locale = KeyboardLayoutSet.getKeyboardLayoutSetLocaleString(ims);
             final String mode = ims.getMode();
             mLocaleSplitter.setString(locale);
             if (mLocaleSplitter.hasNext()) {
@@ -162,7 +166,8 @@ public class SubtypeSwitcher {
             Log.d(TAG, "Update shortcut IME from : "
                     + (mShortcutInputMethodInfo == null
                             ? "<null>" : mShortcutInputMethodInfo.getId()) + ", "
-                    + (mShortcutSubtype == null ? "<null>" : (getSubtypeLocale(mShortcutSubtype)
+                    + (mShortcutSubtype == null ? "<null>" : (
+                            KeyboardLayoutSet.getKeyboardLayoutSetLocaleString(mShortcutSubtype)
                             + ", " + mShortcutSubtype.getMode())));
         }
         // TODO: Update an icon for shortcut IME
@@ -184,20 +189,15 @@ public class SubtypeSwitcher {
             Log.d(TAG, "Update shortcut IME to : "
                     + (mShortcutInputMethodInfo == null
                             ? "<null>" : mShortcutInputMethodInfo.getId()) + ", "
-                    + (mShortcutSubtype == null ? "<null>" : (getSubtypeLocale(mShortcutSubtype)
+                    + (mShortcutSubtype == null ? "<null>" : (
+                            KeyboardLayoutSet.getKeyboardLayoutSetLocaleString(mShortcutSubtype)
                             + ", " + mShortcutSubtype.getMode())));
         }
     }
 
-    private static String getSubtypeLocale(InputMethodSubtype subtype) {
-        final String keyboardLocale = subtype.getExtraValueOf(
-                LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LOCALE);
-        return keyboardLocale != null ? keyboardLocale : subtype.getLocale();
-    }
-
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
     public void updateSubtype(InputMethodSubtype newSubtype) {
-        final String newLocale = getSubtypeLocale(newSubtype);
+        final String newLocale = KeyboardLayoutSet.getKeyboardLayoutSetLocaleString(newSubtype);
         final String newMode = newSubtype.getMode();
         final String oldMode = getCurrentSubtypeMode();
         if (DBG) {
@@ -301,7 +301,8 @@ public class SubtypeSwitcher {
             final String imiPackageName = imi.getPackageName();
             if (DBG) {
                 Log.d(TAG, "Update icons of IME: " + imiPackageName + ","
-                        + getSubtypeLocale(subtype) + "," + subtype.getMode());
+                        + KeyboardLayoutSet.getKeyboardLayoutSetLocaleString(subtype) + ","
+                        + subtype.getMode());
             }
             if (subtype != null) {
                 return pm.getDrawable(imiPackageName, subtype.getIconResId(),
@@ -437,5 +438,9 @@ public class SubtypeSwitcher {
 
     public InputMethodSubtype getCurrentSubtype() {
         return mCurrentSubtype;
+    }
+
+    public InputMethodSubtype getNoLanguageSubtype() {
+        return mNoLanguageSubtype;
     }
 }

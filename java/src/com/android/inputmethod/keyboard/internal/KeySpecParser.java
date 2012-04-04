@@ -318,7 +318,7 @@ public class KeySpecParser {
         }
     }
 
-    private static int getResourceId(Resources res, String name, int packageNameResId) {
+    public static int getResourceId(Resources res, String name, int packageNameResId) {
         String packageName = res.getResourcePackageName(packageNameResId);
         int resId = res.getIdentifier(name, null, packageName);
         if (resId == 0) {

@@ -40,7 +40,7 @@
   void setLogFileManager(...);
 }
 
--keep class com.android.inputmethod.keyboard.KeyboardSet$Builder {
+-keep class com.android.inputmethod.keyboard.KeyboardLayoutSet$Builder {
   void setTouchPositionCorrectionEnabled(...);
 }
 

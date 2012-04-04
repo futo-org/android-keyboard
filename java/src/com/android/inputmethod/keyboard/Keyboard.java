@@ -239,7 +239,7 @@ public class Keyboard {
         public final ArrayList<Key> mAltCodeKeysWhileTyping = new ArrayList<Key>();
         public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
 
-        public KeyboardSet.KeysCache mKeysCache;
+        public KeyboardLayoutSet.KeysCache mKeysCache;
 
         public int mMostCommonKeyHeight = 0;
         public int mMostCommonKeyWidth = 0;
@@ -637,7 +637,7 @@ public class Keyboard {
             params.GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
         }
 
-        public void setAutoGenerate(KeyboardSet.KeysCache keysCache) {
+        public void setAutoGenerate(KeyboardLayoutSet.KeysCache keysCache) {
             mParams.mKeysCache = keysCache;
         }
 
@@ -1061,8 +1061,8 @@ public class Keyboard {
             final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.Keyboard_Case);
             try {
-                final boolean keyboardSetElementMatched = matchTypedValue(a,
-                        R.styleable.Keyboard_Case_keyboardSetElement, id.mElementId,
+                final boolean keyboardLayoutSetElementMatched = matchTypedValue(a,
+                        R.styleable.Keyboard_Case_keyboardLayoutSetElement, id.mElementId,
                         KeyboardId.elementIdToName(id.mElementId));
                 final boolean modeMatched = matchTypedValue(a,
                         R.styleable.Keyboard_Case_mode, id.mMode, KeyboardId.modeName(id.mMode));
@@ -1091,7 +1091,7 @@ public class Keyboard {
                         R.styleable.Keyboard_Case_languageCode, id.mLocale.getLanguage());
                 final boolean countryCodeMatched = matchString(a,
                         R.styleable.Keyboard_Case_countryCode, id.mLocale.getCountry());
-                final boolean selected = keyboardSetElementMatched && modeMatched
+                final boolean selected = keyboardLayoutSetElementMatched && modeMatched
                         && navigateNextMatched && navigatePreviousMatched && passwordInputMatched
                         && clobberSettingsKeyMatched && shortcutKeyEnabledMatched
                         && hasShortcutKeyMatched && languageSwitchKeyEnabledMatched
@@ -1100,8 +1100,9 @@ public class Keyboard {
 
                 if (DEBUG) {
                     startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
-                            textAttr(a.getString(R.styleable.Keyboard_Case_keyboardSetElement),
-                                    "keyboardSetElement"),
+                            textAttr(a.getString(
+                                    R.styleable.Keyboard_Case_keyboardLayoutSetElement),
+                                    "keyboardLayoutSetElement"),
                             textAttr(a.getString(R.styleable.Keyboard_Case_mode), "mode"),
                             textAttr(a.getString(R.styleable.Keyboard_Case_imeAction),
                                     "imeAction"),

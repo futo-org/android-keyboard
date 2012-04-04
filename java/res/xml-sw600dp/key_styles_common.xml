@@ -23,7 +23,7 @@
 >
     <switch>
         <case
-            latin:keyboardSetElement="alphabetManualShifted|alphabetShiftLockShifted"
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"
         >
             <key-style
                 latin:styleName="hasShiftedLetterHintStyle"
@@ -38,7 +38,7 @@
     <!-- Functional key styles -->
     <switch>
         <case
-            latin:keyboardSetElement="alphabetManualShifted|alphabetAutomaticShifted"
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetAutomaticShifted"
         >
             <key-style
                 latin:styleName="shiftKeyStyle"
@@ -48,7 +48,7 @@
                 latin:backgroundType="stickyOff" />
         </case>
         <case
-            latin:keyboardSetElement="alphabetShiftLocked|alphabetShiftLockShifted"
+            latin:keyboardLayoutSetElement="alphabetShiftLocked|alphabetShiftLockShifted"
         >
             <key-style
                 latin:styleName="shiftKeyStyle"
@@ -109,7 +109,7 @@
         latin:backgroundType="functional" />
     <switch>
         <case
-            latin:keyboardSetElement="alphabetManualShifted|alphabetShiftLockShifted"
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"
             latin:navigatePrevious="true"
         >
             <key-style
