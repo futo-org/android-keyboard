@@ -87,8 +87,9 @@ public class SuggestedWords {
             final CompletionInfo[] infos) {
         final ArrayList<SuggestedWordInfo> result = new ArrayList<SuggestedWordInfo>();
         for (CompletionInfo info : infos) {
-            if (null != info) result.add(new SuggestedWordInfo(info.getText(),
-                    SuggestedWordInfo.MAX_SCORE));
+            if (null != info && info.getText() != null) {
+                result.add(new SuggestedWordInfo(info.getText(), SuggestedWordInfo.MAX_SCORE));
+            }
         }
         return result;
     }
