@@ -261,7 +261,9 @@ public class Suggest implements Dictionary.WordCallback {
         SuggestedWordInfo.removeDups(mSuggestions);
 
         return new SuggestedWords(mSuggestions,
-                false /* typedWordValid */,
+                // TODO: Just assuming the suggestions that came from the bigram prediction are
+                // valid now. Need to assign a correct value for typedWordValid.
+                true /* typedWordValid */,
                 false /* hasAutoCorrectionCandidate */,
                 false /* allowsToBeAutoCorrected */,
                 false /* isPunctuationSuggestions */,

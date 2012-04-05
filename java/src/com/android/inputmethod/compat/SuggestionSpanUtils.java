@@ -136,6 +136,8 @@ public class SuggestionSpanUtils {
                 ? (OBJ_FLAG_EASY_CORRECT | OBJ_FLAG_MISSPELLED)
                 : 0;
 
+        // TODO: We should avoid adding suggestion span candidates that came from the bigram
+        // prediction.
         final Object[] args =
                 { context, null, suggestionsList.toArray(new String[suggestionsList.size()]), flag,
                         (Class<?>) SuggestionSpanPickedNotificationReceiver.class };
