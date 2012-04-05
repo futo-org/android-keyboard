@@ -50,7 +50,7 @@
     <string name="multiple_labels_with_escape_surrounded_by_spaces">" \\abc , d\\ef , gh\\i "</string>
     <string name="multiple_labels_with_comma_and_escape">"ab\\\\,d\\\\\\,,g\\,i"</string>
     <string name="multiple_labels_with_comma_and_escape_surrounded_by_spaces">" ab\\\\ , d\\\\\\, , g\\,i "</string>
-    <string name="indirect_string">@string/multiple_chars</string>
-    <string name="indirect_string_with_literal">x,@string/multiple_chars,y</string>
-    <string name="infinite_indirection">infinite,@string/infinite_indirection,loop</string>
+    <string name="indirect_string">!label/multiple_chars</string>
+    <string name="indirect_string_with_literal">x,!label/multiple_chars,y</string>
+    <string name="infinite_indirection">infinite,!label/infinite_indirection,loop</string>
 </resources>

@@ -26,7 +26,7 @@
     <key-style
         latin:styleName="currencyKeyStyle"
         latin:keyLabel="&#x20AC;"
-        latin:moreKeys="@string/more_keys_for_currency_euro" />
+        latin:moreKeys="!abel/more_keys_for_currency_euro" />
     <key-style
         latin:styleName="moreCurrency1KeyStyle"
         latin:keyLabel="&#x00A3;" />

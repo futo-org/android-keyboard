@@ -97,7 +97,7 @@ public class SettingsValues {
             }
         }
         final String[] suggestPuncsSpec = KeySpecParser.parseCsvString(
-                res.getString(R.string.suggested_punctuations), res, R.string.english_ime_name);
+                res.getString(R.string.suggested_punctuations), null);
         mSuggestPuncList = createSuggestPuncList(suggestPuncsSpec);
         mSymbolsExcludedFromWordSeparators =
                 res.getString(R.string.symbols_excluded_from_word_separators);

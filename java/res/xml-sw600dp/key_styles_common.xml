@@ -92,7 +92,7 @@
         latin:keyLabel=":-)"
         latin:keyOutputText=":-) "
         latin:keyLabelFlags="hasPopupHint|preserveCase"
-        latin:moreKeys="@string/more_keys_for_smiley" />
+        latin:moreKeys="!label/more_keys_for_smiley" />
     <key-style
         latin:styleName="shortcutKeyStyle"
         latin:code="!code/key_shortcut"
@@ -131,35 +131,35 @@
     <key-style
         latin:styleName="toSymbolKeyStyle"
         latin:code="!code/key_switch_alpha_symbol"
-        latin:keyLabel="@string/label_to_symbol_key"
+        latin:keyLabel="!label/label_to_symbol_key"
         latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="toAlphaKeyStyle"
         latin:code="!code/key_switch_alpha_symbol"
-        latin:keyLabel="@string/label_to_alpha_key"
+        latin:keyLabel="!label/label_to_alpha_key"
         latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="toMoreSymbolKeyStyle"
         latin:code="!code/key_shift"
-        latin:keyLabel="@string/label_to_more_symbol_for_tablet_key"
+        latin:keyLabel="!label/label_to_more_symbol_for_tablet_key"
         latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="backFromMoreSymbolKeyStyle"
         latin:code="!code/key_shift"
-        latin:keyLabel="@string/label_to_symbol_key"
+        latin:keyLabel="!label/label_to_symbol_key"
         latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="comKeyStyle"
-        latin:keyLabel="@string/keylabel_for_popular_domain"
+        latin:keyLabel="!label/keylabel_for_popular_domain"
         latin:keyLabelFlags="fontNormal|hasPopupHint|preserveCase"
-        latin:keyOutputText="@string/keylabel_for_popular_domain"
-        latin:moreKeys="@string/more_keys_for_popular_domain" />
+        latin:keyOutputText="!label/keylabel_for_popular_domain"
+        latin:moreKeys="!label/more_keys_for_popular_domain" />
 </merge>

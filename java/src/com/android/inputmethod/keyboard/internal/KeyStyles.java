@@ -34,24 +34,55 @@ public class KeyStyles {
 
     private final HashMap<String, DeclaredKeyStyle> mStyles =
             new HashMap<String, DeclaredKeyStyle>();
-    private static final KeyStyle EMPTY_KEY_STYLE = new EmptyKeyStyle();
 
-    public interface KeyStyle {
-        public String[] getStringArray(TypedArray a, int index);
-        public String getString(TypedArray a, int index);
-        public int getInt(TypedArray a, int index, int defaultValue);
-        public int getFlag(TypedArray a, int index);
+    private final KeyboardLabelsSet mLabelsSet;
+    private final KeyStyle mEmptyKeyStyle;
+
+    public KeyStyles(KeyboardLabelsSet labelsSet) {
+        mLabelsSet = labelsSet;
+        mEmptyKeyStyle = new EmptyKeyStyle(labelsSet);
     }
 
-    static class EmptyKeyStyle implements KeyStyle {
+    public static abstract class KeyStyle {
+        protected final KeyboardLabelsSet mLabelsSet;
+
+        public KeyStyle(KeyboardLabelsSet labelsSet) {
+            mLabelsSet = labelsSet;
+        }
+
+        public abstract String[] getStringArray(TypedArray a, int index);
+        public abstract String getString(TypedArray a, int index);
+        public abstract int getInt(TypedArray a, int index, int defaultValue);
+        public abstract int getFlag(TypedArray a, int index);
+
+        protected String parseString(TypedArray a, int index) {
+            if (a.hasValue(index)) {
+                return KeySpecParser.resolveLabelReference(a.getString(index), mLabelsSet);
+            }
+            return null;
+        }
+
+        protected String[] parseStringArray(TypedArray a, int index) {
+            if (a.hasValue(index)) {
+                return KeySpecParser.parseCsvString(a.getString(index), mLabelsSet);
+            }
+            return null;
+        }
+    }
+
+    private static class EmptyKeyStyle extends KeyStyle {
+        public EmptyKeyStyle(KeyboardLabelsSet labelsSet) {
+            super(labelsSet);
+        }
+
         @Override
         public String[] getStringArray(TypedArray a, int index) {
-            return KeyStyles.parseStringArray(a, index);
+            return parseStringArray(a, index);
         }
 
         @Override
         public String getString(TypedArray a, int index) {
-            return a.getString(index);
+            return parseString(a, index);
         }
 
         @Override
@@ -65,8 +96,12 @@ public class KeyStyles {
         }
     }
 
-    static class DeclaredKeyStyle implements KeyStyle {
+    private static class DeclaredKeyStyle extends KeyStyle {
         private final HashMap<Integer, Object> mStyleAttributes = new HashMap<Integer, Object>();
+
+        public DeclaredKeyStyle(KeyboardLabelsSet labelsSet) {
+            super(labelsSet);
+        }
 
         @Override
         public String[] getStringArray(TypedArray a, int index) {
@@ -79,7 +114,7 @@ public class KeyStyles {
         @Override
         public String getString(TypedArray a, int index) {
             if (a.hasValue(index)) {
-                return a.getString(index);
+                return parseString(a, index);
             }
             return (String)mStyleAttributes.get(index);
         }
@@ -120,7 +155,7 @@ public class KeyStyles {
 
         private void readString(TypedArray a, int index) {
             if (a.hasValue(index)) {
-                mStyleAttributes.put(index, a.getString(index));
+                mStyleAttributes.put(index, parseString(a, index));
             }
         }
 
@@ -131,30 +166,21 @@ public class KeyStyles {
         }
 
         private void readFlag(TypedArray a, int index) {
-            final Integer value = (Integer)mStyleAttributes.get(index);
             if (a.hasValue(index)) {
+                final Integer value = (Integer)mStyleAttributes.get(index);
                 mStyleAttributes.put(index, a.getInt(index, 0) | (value != null ? value : 0));
             }
         }
 
         private void readStringArray(TypedArray a, int index) {
-            final String[] value = parseStringArray(a, index);
-            if (value != null) {
-                mStyleAttributes.put(index, value);
+            if (a.hasValue(index)) {
+                mStyleAttributes.put(index, parseStringArray(a, index));
             }
         }
 
         void addParentStyleAttributes(DeclaredKeyStyle parentStyle) {
             mStyleAttributes.putAll(parentStyle.mStyleAttributes);
         }
-    }
-
-    static String[] parseStringArray(TypedArray a, int index) {
-        if (a.hasValue(index)) {
-            return KeySpecParser.parseCsvString(
-                    a.getString(index), a.getResources(), R.string.english_ime_name);
-        }
-        return null;
     }
 
     public void parseKeyStyleAttributes(TypedArray keyStyleAttr, TypedArray keyAttrs,
@@ -169,7 +195,7 @@ public class KeyStyles {
             }
         }
 
-        final DeclaredKeyStyle style = new DeclaredKeyStyle();
+        final DeclaredKeyStyle style = new DeclaredKeyStyle(mLabelsSet);
         if (keyStyleAttr.hasValue(R.styleable.Keyboard_KeyStyle_parentStyle)) {
             final String parentStyle = keyStyleAttr.getString(
                     R.styleable.Keyboard_KeyStyle_parentStyle);
@@ -188,7 +214,7 @@ public class KeyStyles {
         return mStyles.get(styleName);
     }
 
-    public static KeyStyle getEmptyKeyStyle() {
-        return EMPTY_KEY_STYLE;
+    public KeyStyle getEmptyKeyStyle() {
+        return mEmptyKeyStyle;
     }
 }

@@ -34,14 +34,14 @@
     <Key
         latin:keyLabel="&#x043C;" />
     <Key
-        latin:keyLabel="@string/keylabel_for_east_slavic_row3_5" />
+        latin:keyLabel="!label/keylabel_for_east_slavic_row3_5" />
     <!-- U+0442: "т" CYRILLIC SMALL LETTER TE -->
     <Key
         latin:keyLabel="&#x0442;" />
     <!-- U+044C: "ь" CYRILLIC SMALL LETTER SOFT SIGN -->
     <Key
         latin:keyLabel="&#x044C;"
-        latin:moreKeys="@string/more_keys_for_cyrillic_soft_sign" />
+        latin:moreKeys="!label/more_keys_for_cyrillic_soft_sign" />
     <!-- U+0431: "б" CYRILLIC SMALL LETTER BE -->
     <Key
         latin:keyLabel="&#x0431;" />

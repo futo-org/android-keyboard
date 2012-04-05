@@ -32,14 +32,14 @@
         </case>
         <default>
             <Key
-                latin:keyLabel="@string/keylabel_for_tablet_comma"
-                latin:keyHintLabel="@string/keyhintlabel_for_tablet_comma"
-                latin:moreKeys="@string/more_keys_for_tablet_comma"
+                latin:keyLabel="!label/keylabel_for_tablet_comma"
+                latin:keyHintLabel="!label/keyhintlabel_for_tablet_comma"
+                latin:moreKeys="!label/more_keys_for_tablet_comma"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
             <Key
                 latin:keyLabel="."
-                latin:keyHintLabel="@string/keyhintlabel_for_tablet_period"
-                latin:moreKeys="@string/more_keys_for_tablet_period"
+                latin:keyHintLabel="!label/keyhintlabel_for_tablet_period"
+                latin:moreKeys="!label/more_keys_for_tablet_period"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
         </default>
     </switch>

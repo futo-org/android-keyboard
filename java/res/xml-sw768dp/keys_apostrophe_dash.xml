@@ -39,9 +39,9 @@
         </case>
         <default>
             <Key
-                latin:keyLabel="@string/keylabel_for_apostrophe"
-                latin:keyHintLabel="@string/keyhintlabel_for_apostrophe"
-                latin:moreKeys="@string/more_keys_for_apostrophe"
+                latin:keyLabel="!label/keylabel_for_apostrophe"
+                latin:keyHintLabel="!label/keyhintlabel_for_apostrophe"
+                latin:moreKeys="!label/more_keys_for_apostrophe"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
         </default>
     </switch>
@@ -54,9 +54,9 @@
         </case>
         <default>
             <Key
-                latin:keyLabel="@string/keylabel_for_dash"
-                latin:keyHintLabel="@string/keyhintlabel_for_dash"
-                latin:moreKeys="@string/more_keys_for_dash"
+                latin:keyLabel="!label/keylabel_for_dash"
+                latin:keyHintLabel="!label/keyhintlabel_for_dash"
+                latin:moreKeys="!label/more_keys_for_dash"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
         </default>
     </switch>

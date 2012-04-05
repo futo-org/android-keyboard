@@ -41,11 +41,11 @@
         </default>
     </switch>
     <Key
-        latin:keyLabel="@string/keylabel_for_symbols_semicolon"
-        latin:moreKeys="@string/more_keys_for_symbols_semicolon" />
+        latin:keyLabel="!label/keylabel_for_symbols_semicolon"
+        latin:moreKeys="!label/more_keys_for_symbols_semicolon" />
     <Key
-        latin:keyLabel="@string/keylabel_for_comma"
-        latin:moreKeys="@string/more_keys_for_comma" />
+        latin:keyLabel="!label/keylabel_for_comma"
+        latin:moreKeys="!label/more_keys_for_comma" />
     <Key
         latin:keyLabel="." />
     <!-- U+00A1: "¡" INVERTED EXCLAMATION MARK -->
@@ -53,6 +53,6 @@
         latin:keyLabel="!"
         latin:moreKeys="&#x00A1;" />
     <Key
-        latin:keyLabel="@string/keylabel_for_symbols_question"
-        latin:moreKeys="@string/more_keys_for_symbols_question" />
+        latin:keyLabel="!label/keylabel_for_symbols_question"
+        latin:moreKeys="!label/more_keys_for_symbols_question" />
 </merge>

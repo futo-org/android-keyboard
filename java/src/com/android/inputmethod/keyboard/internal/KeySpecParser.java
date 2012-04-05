@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import android.content.res.Resources;
 import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.Keyboard;
@@ -27,18 +26,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * String parser of moreKeys attribute of Key.
- * The string is comma separated texts each of which represents one "more key".
- * - String resource can be embedded into specification @string/name. This is done before parsing
- *   comma.
+ * The string parser of more keys specification.
+ * The specification is comma separated texts each of which represents one "more key".
+ * The specification might have label or string resource reference in it. These references are
+ * expanded before parsing comma.
+ * - Label reference should be a string representation of label (!label/label_name)
+ * - String resource reference should be a string representation of resource (!label/resource_name)
  * Each "more key" specification is one of the following:
  * - Label optionally followed by keyOutputText or code (keyLabel|keyOutputText).
  * - Icon followed by keyOutputText or code (!icon/icon_name|!code/code_name)
  *   - Icon should be a string representation of icon (!icon/icon_name).
- *   - Code should be a code point presented by hexadecimal string prefixed with "0x".
- *     Or a string representation of code (!code/code_name).
+ *   - Code should be a code point presented by hexadecimal string prefixed with "0x", or a string
+ *     representation of code (!code/code_name).
  * Special character, comma ',' backslash '\', and bar '|' can be escaped by '\' character.
- * Note that the character '@' and '\' are also parsed by XML parser and CSV parser as well.
+ * Note that the '\' is also parsed by XML parser and CSV parser as well.
  * See {@link KeyboardIconsSet} about icon_name.
  */
 public class KeySpecParser {
@@ -49,10 +50,8 @@ public class KeySpecParser {
     // Constants for parsing.
     private static int COMMA = ',';
     private static final char ESCAPE_CHAR = '\\';
-    private static final char PREFIX_AT = '@';
-    private static final char SUFFIX_SLASH = '/';
-    private static final String PREFIX_STRING = PREFIX_AT + "string" + SUFFIX_SLASH;
     private static final char LABEL_END = '|';
+    private static final String PREFIX_LABEL = "!label/";
     private static final String PREFIX_ICON = "!icon/";
     private static final String PREFIX_CODE = "!code/";
     private static final String PREFIX_HEX = "0x";
@@ -341,17 +340,7 @@ public class KeySpecParser {
         }
     }
 
-    public static int getResourceId(Resources res, String name, int packageNameResId) {
-        String packageName = res.getResourcePackageName(packageNameResId);
-        int resId = res.getIdentifier(name, null, packageName);
-        if (resId == 0) {
-            throw new RuntimeException("Unknown resource: " + name);
-        }
-        return resId;
-    }
-
-    private static String resolveStringResource(String rawText, Resources res,
-            int packageNameResId) {
+    public static String resolveLabelReference(String rawText, KeyboardLabelsSet labelsSet) {
         int level = 0;
         String text = rawText;
         StringBuilder sb;
@@ -362,21 +351,20 @@ public class KeySpecParser {
             }
 
             final int size = text.length();
-            if (size < PREFIX_STRING.length()) {
+            if (size < PREFIX_LABEL.length()) {
                 return text;
             }
 
             sb = null;
             for (int pos = 0; pos < size; pos++) {
                 final char c = text.charAt(pos);
-                if (c == PREFIX_AT && text.startsWith(PREFIX_STRING, pos)) {
+                if (text.startsWith(PREFIX_LABEL, pos) && labelsSet != null) {
                     if (sb == null) {
                         sb = new StringBuilder(text.substring(0, pos));
                     }
-                    final int end = searchResourceNameEnd(text, pos + PREFIX_STRING.length());
-                    final String resName = text.substring(pos + 1, end);
-                    final int resId = getResourceId(res, resName, packageNameResId);
-                    sb.append(res.getString(resId));
+                    final int end = searchLabelNameEnd(text, pos + PREFIX_LABEL.length());
+                    final String name = text.substring(pos + PREFIX_LABEL.length(), end);
+                    sb.append(labelsSet.getLabel(name));
                     pos = end - 1;
                 } else if (c == ESCAPE_CHAR) {
                     if (sb != null) {
@@ -397,7 +385,7 @@ public class KeySpecParser {
         return text;
     }
 
-    private static int searchResourceNameEnd(String text, int start) {
+    private static int searchLabelNameEnd(String text, int start) {
         final int size = text.length();
         for (int pos = start; pos < size; pos++) {
             final char c = text.charAt(pos);
@@ -410,8 +398,8 @@ public class KeySpecParser {
         return size;
     }
 
-    public static String[] parseCsvString(String rawText, Resources res, int packageNameResId) {
-        final String text = resolveStringResource(rawText, res, packageNameResId);
+    public static String[] parseCsvString(String rawText, KeyboardLabelsSet labelsSet) {
+        final String text = resolveLabelReference(rawText, labelsSet);
         final int size = text.length();
         if (size == 0) {
             return null;

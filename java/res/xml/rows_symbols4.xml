@@ -37,9 +37,9 @@
             <!-- latin:hasShortcutKey="false" -->
             <default>
                 <Key
-                    latin:keyLabel="@string/keylabel_for_comma"
+                    latin:keyLabel="!label/keylabel_for_comma"
                     latin:keyLabelFlags="hasPopupHint"
-                    latin:additionalMoreKeys="@string/more_keys_for_comma"
+                    latin:additionalMoreKeys="!label/more_keys_for_comma"
                     latin:keyStyle="f1MoreKeysStyle" />
             </default>
         </switch>

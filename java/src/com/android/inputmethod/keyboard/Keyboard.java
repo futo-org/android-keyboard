@@ -30,6 +30,7 @@ import android.view.InflateException;
 import com.android.inputmethod.keyboard.internal.KeyStyles;
 import com.android.inputmethod.keyboard.internal.KeyboardCodesSet;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
+import com.android.inputmethod.keyboard.internal.KeyboardLabelsSet;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.Utils;
@@ -240,6 +241,8 @@ public class Keyboard {
         public final ArrayList<Key> mAltCodeKeysWhileTyping = new ArrayList<Key>();
         public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
         public final KeyboardCodesSet mCodesSet = new KeyboardCodesSet();
+        public final KeyboardLabelsSet mLabelsSet = new KeyboardLabelsSet();
+        public final KeyStyles mKeyStyles = new KeyStyles(mLabelsSet);
 
         public KeyboardLayoutSet.KeysCache mKeysCache;
 
@@ -500,7 +503,6 @@ public class Keyboard {
         private boolean mLeftEdge;
         private boolean mTopEdge;
         private Key mRightEdgeKey = null;
-        private final KeyStyles mKeyStyles = new KeyStyles();
 
         /**
          * Container for keys in the keyboard. All keys in a row are at the same Y-coordinate.
@@ -777,7 +779,10 @@ public class Keyboard {
 
                 params.mThemeId = keyboardAttr.getInt(R.styleable.Keyboard_themeId, 0);
                 params.mIconsSet.loadIcons(keyboardAttr);
-                params.mCodesSet.setLanguage(params.mId.mLocale.getLanguage());
+                final String language = params.mId.mLocale.getLanguage();
+                params.mCodesSet.setLanguage(language);
+                params.mLabelsSet.setLanguage(language);
+                params.mLabelsSet.loadStringResources(mContext);
 
                 final int resourceId = keyboardAttr.getResourceId(
                         R.styleable.Keyboard_touchPositionCorrectionData, 0);
@@ -887,7 +892,7 @@ public class Keyboard {
                 XmlParseUtils.checkEndTag(TAG_KEY, parser);
                 if (DEBUG) startEndTag("<%s /> skipped", TAG_KEY);
             } else {
-                final Key key = new Key(mResources, mParams, row, parser, mKeyStyles);
+                final Key key = new Key(mResources, mParams, row, parser);
                 if (DEBUG) {
                     startEndTag("<%s%s %s moreKeys=%s />", TAG_KEY,
                             (key.isEnabled() ? "" : " disabled"), key,
@@ -904,8 +909,7 @@ public class Keyboard {
                 XmlParseUtils.checkEndTag(TAG_SPACER, parser);
                 if (DEBUG) startEndTag("<%s /> skipped", TAG_SPACER);
             } else {
-                final Key.Spacer spacer = new Key.Spacer(
-                        mResources, mParams, row, parser, mKeyStyles);
+                final Key.Spacer spacer = new Key.Spacer(mResources, mParams, row, parser);
                 if (DEBUG) startEndTag("<%s />", TAG_SPACER);
                 XmlParseUtils.checkEndTag(TAG_SPACER, parser);
                 endKey(spacer);
@@ -1210,7 +1214,7 @@ public class Keyboard {
                         skip ? " skipped" : "");
                 }
                 if (!skip)
-                    mKeyStyles.parseKeyStyleAttributes(keyStyleAttr, keyAttrs, parser);
+                    mParams.mKeyStyles.parseKeyStyleAttributes(keyStyleAttr, keyAttrs, parser);
             } finally {
                 keyStyleAttr.recycle();
                 keyAttrs.recycle();

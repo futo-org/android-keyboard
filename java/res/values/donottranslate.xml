@@ -45,24 +45,6 @@
     <!-- <string name="layout_switch_back_symbols">\"\'&#x2018;&#x2019;&#x201A;&#x201B;&#x201C;&#x201D;&#x201E;&#x201F;&#x00AB;&#x00BB;</string> -->
     <string name="layout_switch_back_symbols"></string>
 
-    <!-- Label for "switch to more symbol" modifier key.  Must be short to fit on key! -->
-    <string name="label_to_more_symbol_key">= \\ &lt;</string>
-    <!-- Label for "switch to more symbol" modifier key on tablets.  Must be short to fit on key! -->
-    <string name="label_to_more_symbol_for_tablet_key">~ \\ {</string>
-
-    <!-- Label for "Tab" key.  Must be short to fit on key! -->
-    <string name="label_tab_key">Tab</string>
-    <!-- Label for "switch to phone numeric" key.  Must be short to fit on key! -->
-    <string name="label_to_phone_numeric_key">123</string>
-    <!-- Label for "switch to phone symbols" key.  Must be short to fit on key! -->
-    <!-- U+FF0A: "＊" FULLWIDTH ASTERISK
-         U+FF03: "＃" FULLWIDTH NUMBER SIGN -->
-    <string name="label_to_phone_symbols_key">&#xFF0A;&#xFF03;</string>
-    <!-- Key label for "ante meridiem" -->
-    <string name="label_time_am">"AM"</string>
-    <!-- Key label for "post meridiem" -->
-    <string name="label_time_pm">"PM"</string>
-
     <!--  Always show the suggestion strip -->
     <string name="prefs_suggestion_visibility_show_value">0</string>
     <!--  Show the suggestion strip only on portrait mode -->

@@ -65,9 +65,7 @@ public class KeyboardLayoutSet {
 
     private static final String DEFAULT_KEYBOARD_LAYOUT_SET = "qwerty";
     private static final char KEYBOARD_LAYOUT_SET_LOCALE_DELIMITER = ':';
-    private static final String KEYBOARD_LAYOUT_SET_RESOURCE_PREFIX = "xml/keyboard_layout_set_";
-    private static final int DEFAULT_KEYBOARD_LAYOUT_SET_RESOURCE_ID =
-            R.xml.keyboard_layout_set_qwerty;
+    private static final String KEYBOARD_LAYOUT_SET_RESOURCE_PREFIX = "keyboard_layout_set_";
 
     private final Context mContext;
     private final Params mParams;
@@ -319,9 +317,10 @@ public class KeyboardLayoutSet {
                 throw new RuntimeException("Screen geometry is not specified");
             if (mParams.mLocale == null)
                 throw new RuntimeException("KeyboardLayoutSet subtype is not specified");
+            final String packageName = mResources.getResourcePackageName(
+                    R.xml.keyboard_layout_set_qwerty);
             final String keyboardLayoutSetName = mParams.mKeyboardLayoutSetName;
-            final int xmlId = KeySpecParser.getResourceId(
-                    mResources, keyboardLayoutSetName, DEFAULT_KEYBOARD_LAYOUT_SET_RESOURCE_ID);
+            final int xmlId = mResources.getIdentifier(keyboardLayoutSetName, "xml", packageName);
             final RunInLocale<Void> job = new RunInLocale<Void>() {
                 @Override
                 protected Void job(Resources res) {

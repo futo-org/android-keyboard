@@ -100,25 +100,25 @@
     <key-style
         latin:styleName="numPhoneToSymbolKeyStyle"
         latin:code="!code/key_switch_alpha_symbol"
-        latin:keyLabel="@string/label_to_phone_symbols_key"
+        latin:keyLabel="!label/label_to_phone_symbols_key"
         latin:parentStyle="numModeKeyStyle" />
     <key-style
         latin:styleName="numPhoneToNumericKeyStyle"
         latin:code="!code/key_switch_alpha_symbol"
-        latin:keyLabel="@string/label_to_phone_numeric_key"
+        latin:keyLabel="!label/label_to_phone_numeric_key"
         latin:parentStyle="numModeKeyStyle" />
     <!-- U+002C: "," COMMA -->
     <key-style
         latin:styleName="numPauseKeyStyle"
         latin:code="0x002C"
-        latin:keyLabel="@string/label_pause_key"
+        latin:keyLabel="!label/label_pause_key"
         latin:keyLabelFlags="followKeyHintLabelRatio|autoXScale"
         latin:parentStyle="numKeyBaseStyle" />
     <!-- U+003B: ";" SEMICOLON -->
     <key-style
         latin:styleName="numWaitKeyStyle"
         latin:code="0x003B"
-        latin:keyLabel="@string/label_wait_key"
+        latin:keyLabel="!label/label_wait_key"
         latin:keyLabelFlags="followKeyHintLabelRatio|autoXScale"
         latin:parentStyle="numKeyBaseStyle" />
     <key-style

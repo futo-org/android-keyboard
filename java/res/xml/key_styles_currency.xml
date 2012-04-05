@@ -86,7 +86,7 @@
             <key-style
                 latin:styleName="currencyKeyStyle"
                 latin:keyLabel="&#x20AA;"
-                latin:moreKeys="@string/more_keys_for_currency_general" />
+                latin:moreKeys="!label/more_keys_for_currency_general" />
             <key-style
                 latin:styleName="moreCurrency1KeyStyle"
                 latin:keyLabel="&#x00A3;" />
@@ -112,7 +112,7 @@
             <key-style
                 latin:styleName="currencyKeyStyle"
                 latin:keyLabel="&#xFDFC;"
-                latin:moreKeys="@string/more_keys_for_currency_general" />
+                latin:moreKeys="!label/more_keys_for_currency_general" />
             <key-style
                 latin:styleName="moreCurrency1KeyStyle"
                 latin:keyLabel="£" />
@@ -138,7 +138,7 @@
             <key-style
                 latin:styleName="currencyKeyStyle"
                 latin:keyLabel="&#x00A3;"
-                latin:moreKeys="@string/more_keys_for_currency_pound" />
+                latin:moreKeys="!label/more_keys_for_currency_pound" />
             <key-style
                 latin:styleName="moreCurrency1KeyStyle"
                 latin:keyLabel="&#x20AC;" />

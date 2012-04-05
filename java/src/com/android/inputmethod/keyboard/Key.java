@@ -189,11 +189,11 @@ public class Key {
      * @param row the row that this key belongs to. row's x-coordinate will be the right edge of
      *        this key.
      * @param parser the XML parser containing the attributes for this key
-     * @param keyStyles active key styles set
      * @throws XmlPullParserException
      */
     public Key(Resources res, Keyboard.Params params, Keyboard.Builder.Row row,
-            XmlPullParser parser, KeyStyles keyStyles) throws XmlPullParserException {
+            XmlPullParser parser) throws XmlPullParserException {
+        final KeyStyles keyStyles = params.mKeyStyles;
         final float horizontalGap = isSpacer() ? 0 : params.mHorizontalGap;
         final int keyHeight = row.mRowHeight;
         mVerticalGap = params.mVerticalGap;
@@ -210,7 +210,7 @@ public class Key {
                 throw new XmlParseUtils.ParseException(
                         "Unknown key style: " + styleName, parser);
         } else {
-            style = KeyStyles.getEmptyKeyStyle();
+            style = keyStyles.getEmptyKeyStyle();
         }
 
         final float keyXPos = row.getKeyX(keyAttr);
@@ -709,8 +709,8 @@ public class Key {
 
     public static class Spacer extends Key {
         public Spacer(Resources res, Keyboard.Params params, Keyboard.Builder.Row row,
-                XmlPullParser parser, KeyStyles keyStyles) throws XmlPullParserException {
-            super(res, params, row, parser, keyStyles);
+                XmlPullParser parser) throws XmlPullParserException {
+            super(res, params, row, parser);
         }
 
         /**

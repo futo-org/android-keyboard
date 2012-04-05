@@ -25,47 +25,47 @@
         latin:keyLabel="a"
         latin:keyHintLabel="1"
         latin:additionalMoreKeys="1"
-        latin:moreKeys="@string/more_keys_for_a" />
+        latin:moreKeys="!label/more_keys_for_a" />
     <Key
         latin:keyLabel="z"
         latin:keyHintLabel="2"
         latin:additionalMoreKeys="2"
-        latin:moreKeys="@string/more_keys_for_z" />
+        latin:moreKeys="!label/more_keys_for_z" />
     <Key
         latin:keyLabel="e"
         latin:keyHintLabel="3"
         latin:additionalMoreKeys="3"
-        latin:moreKeys="@string/more_keys_for_e" />
+        latin:moreKeys="!label/more_keys_for_e" />
     <Key
         latin:keyLabel="r"
         latin:keyHintLabel="4"
         latin:additionalMoreKeys="4"
-        latin:moreKeys="@string/more_keys_for_r" />
+        latin:moreKeys="!label/more_keys_for_r" />
     <Key
         latin:keyLabel="t"
         latin:keyHintLabel="5"
         latin:additionalMoreKeys="5"
-        latin:moreKeys="@string/more_keys_for_t" />
+        latin:moreKeys="!label/more_keys_for_t" />
     <Key
         latin:keyLabel="y"
         latin:keyHintLabel="6"
         latin:additionalMoreKeys="6"
-        latin:moreKeys="@string/more_keys_for_y" />
+        latin:moreKeys="!label/more_keys_for_y" />
     <Key
         latin:keyLabel="u"
         latin:keyHintLabel="7"
         latin:additionalMoreKeys="7"
-        latin:moreKeys="@string/more_keys_for_u" />
+        latin:moreKeys="!label/more_keys_for_u" />
     <Key
         latin:keyLabel="i"
         latin:keyHintLabel="8"
         latin:additionalMoreKeys="8"
-        latin:moreKeys="@string/more_keys_for_i" />
+        latin:moreKeys="!label/more_keys_for_i" />
     <Key
         latin:keyLabel="o"
         latin:keyHintLabel="9"
         latin:additionalMoreKeys="9"
-        latin:moreKeys="@string/more_keys_for_o" />
+        latin:moreKeys="!label/more_keys_for_o" />
     <Key
         latin:keyLabel="p"
         latin:keyHintLabel="0"

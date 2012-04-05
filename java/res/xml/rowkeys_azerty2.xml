@@ -25,27 +25,27 @@
         latin:keyLabel="q" />
     <Key
         latin:keyLabel="s"
-        latin:moreKeys="@string/more_keys_for_s" />
+        latin:moreKeys="!label/more_keys_for_s" />
     <Key
         latin:keyLabel="d"
-        latin:moreKeys="@string/more_keys_for_d" />
+        latin:moreKeys="!label/more_keys_for_d" />
     <Key
         latin:keyLabel="f" />
     <Key
         latin:keyLabel="g"
-        latin:moreKeys="@string/more_keys_for_g" />
+        latin:moreKeys="!label/more_keys_for_g" />
     <Key
         latin:keyLabel="h"
-        latin:moreKeys="@string/more_keys_for_h" />
+        latin:moreKeys="!label/more_keys_for_h" />
     <Key
         latin:keyLabel="j"
-        latin:moreKeys="@string/more_keys_for_j" />
+        latin:moreKeys="!label/more_keys_for_j" />
     <Key
         latin:keyLabel="k"
-        latin:moreKeys="@string/more_keys_for_k" />
+        latin:moreKeys="!label/more_keys_for_k" />
     <Key
         latin:keyLabel="l"
-        latin:moreKeys="@string/more_keys_for_l" />
+        latin:moreKeys="!label/more_keys_for_l" />
     <Key
         latin:keyLabel="m" />
 </merge>

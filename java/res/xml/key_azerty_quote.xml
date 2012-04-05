@@ -31,7 +31,7 @@
         <default>
             <Key
                 latin:keyLabel="\'"
-                latin:moreKeys="\@string/more_keys_for_single_quote" />
+                latin:moreKeys="!label/more_keys_for_single_quote" />
         </default>
     </switch>
 </merge>
