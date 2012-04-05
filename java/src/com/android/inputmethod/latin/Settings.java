@@ -66,8 +66,8 @@ public class Settings extends InputMethodSettingsActivity
     public static final String PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY =
             "pref_key_preview_popup_dismiss_delay";
     public static final String PREF_KEY_USE_CONTACTS_DICT = "pref_key_use_contacts_dict";
-    public static final String PREF_BIGRAM_SUGGESTION = "bigram_suggestion";
-    public static final String PREF_BIGRAM_PREDICTIONS = "bigram_prediction";
+    public static final String PREF_BIGRAM_SUGGESTION = "next_word_suggestion";
+    public static final String PREF_BIGRAM_PREDICTIONS = "next_word_prediction";
     public static final String PREF_KEY_ENABLE_SPAN_INSERT = "enable_span_insert";
     public static final String PREF_VIBRATION_DURATION_SETTINGS =
             "pref_vibration_duration_settings";
@@ -167,7 +167,7 @@ public class Settings extends InputMethodSettingsActivity
         }
 
         final boolean showBigramSuggestionsOption = res.getBoolean(
-                R.bool.config_enable_bigram_suggestions_option);
+                R.bool.config_enable_next_word_suggestions_option);
         if (!showBigramSuggestionsOption) {
             textCorrectionGroup.removePreference(mBigramSuggestion);
             if (null != mBigramPrediction) {

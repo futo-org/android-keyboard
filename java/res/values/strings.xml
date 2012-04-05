@@ -118,13 +118,13 @@
     <!-- Option to suggest auto correction suggestions very aggressively. Auto-corrects to a word which has even large edit distance from typed word. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_very_aggeressive">Very aggressive</string>
 
-    <!-- Option to enable bigram correction -->
-    <string name="bigram_suggestion">Bigram suggestions</string>
-    <!-- Description for auto correction -->
-    <string name="bigram_suggestion_summary">Use previous word to improve suggestion</string>
-    <!-- Option to enable using user-history bigram when no input -->
-    <string name="bigram_prediction">Bigram prediction</string>
-    <!-- Description for auto correction -->
+    <!-- Option to enable next word correction -->
+    <string name="bigram_suggestion">Next word suggestions</string>
+    <!-- Option to enable next word suggestion. This uses the previous word in an attempt to improve the suggestions quality -->
+    <string name="bigram_suggestion_summary">Use previous word to improve suggestions</string>
+    <!-- Option to enable using next word prediction -->
+    <string name="bigram_prediction">Next word prediction</string>
+    <!-- Description for "next word prediction" option. This displays suggestions even when there is no input, based on the previous word. -->
     <string name="bigram_prediction_summary">Use previous word also for prediction</string>
 
     <!-- Indicates that a word has been added to the dictionary -->
