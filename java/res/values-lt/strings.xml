@@ -61,9 +61,12 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Vidutinis"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Atkaklus"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Labai agresyviai"</string>
-    <string name="bigram_suggestion" msgid="2636414079905220518">"Bigramų pasiūlymai"</string>
-    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Naudoti ankstesnį žodį pasiūlymui patobulinti"</string>
-    <string name="bigram_prediction" msgid="8914273444762259739">"Bigramų numatymas"</string>
+    <!-- no translation found for bigram_suggestion (8169311444438922902) -->
+    <skip />
+    <!-- no translation found for bigram_suggestion_summary (6635527607242625713) -->
+    <skip />
+    <!-- no translation found for bigram_prediction (3216364899483135294) -->
+    <skip />
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"Numatant naudoti ir ankstesnį žodį"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: išsaugota"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Pradėti"</string>
@@ -111,14 +114,15 @@
     <string name="configure_input_method" msgid="373356270290742459">"Konfigūruoti įvesties metodus"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Įvesties kalbos"</string>
     <string name="select_language" msgid="3693815588777926848">"Įvesties kalbos"</string>
-    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Jei norite išsaugoti, palieskite dar kartą"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Žodynas galimas"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Įgalinti naudotojų atsiliepimus"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Padėkite patobulinti šią įvesties metodo redagavimo programą automatiškai „Google“ siųsdami naudojimo statistiką ir strigčių ataskaitas."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Klaviatūros tema"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Anglų k. (JK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Anglų k. (JAV)"</string>
+    <!-- no translation found for subtype_no_language_qwerty (2956121451616633133) -->
+    <skip />
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Tinkamumo tyrimo režimas"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Vibracijos paspaudus mygtuką trukmės nustatymai"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Garso paspaudus mygtuką garsumo nustatymai"</string>

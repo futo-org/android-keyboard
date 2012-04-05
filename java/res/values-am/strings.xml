@@ -61,9 +61,12 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"መጠነኛ"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"ኃይለኛ"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"በጣም ቁጡ"</string>
-    <string name="bigram_suggestion" msgid="2636414079905220518">"የቢግራም ምክሮች"</string>
-    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"ምክርን ለማሻሻል የቀደመ ቃልን ተጠቀም"</string>
-    <string name="bigram_prediction" msgid="8914273444762259739">"የቢግራም ትንበያዎች"</string>
+    <!-- no translation found for bigram_suggestion (8169311444438922902) -->
+    <skip />
+    <!-- no translation found for bigram_suggestion_summary (6635527607242625713) -->
+    <skip />
+    <!-- no translation found for bigram_prediction (3216364899483135294) -->
+    <skip />
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"ለትንበያ የቀደመ ቃል እንዲሁ ተጠቀም"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : ተቀምጧል"</string>
     <string name="label_go_key" msgid="1635148082137219148">"ሂድ"</string>
@@ -118,6 +121,8 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"የቁልፍ ሰሌዳ ገጽታ"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"እንግሊዘኛ (የታላቋ ብሪታንያ)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"እንግሊዘኛ (ዩ.ኤስ)"</string>
+    <!-- no translation found for subtype_no_language_qwerty (2956121451616633133) -->
+    <skip />
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"የተገልጋይነት ጥናት ሁነታ"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"ቁልፍ ተጫን በቅንጅቶች ወቅት ንዝረት"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"ቁልፍ ተጫን የድምጽ መጠን ቅንጅቶች"</string>

@@ -37,7 +37,7 @@
     <string name="misc_category" msgid="6894192814868233453">"Diğer seçenekler"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Gelişmiş ayarlar"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Uzmanlar için seçenekler"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Diğ. giriş yöntem. geç"</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Diğer giriş yöntemine geç"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Dil geçiş tuşu diğer giriş yöntemlerini de kapsar"</string>
     <string name="suppress_language_switch_key" msgid="8003788410354806368">"Dil geçiş tuşunu gösterme"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Tuş popup içn kaptm ertlm"</string>
@@ -61,9 +61,12 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Ölçülü"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agresif"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Çok geniş ölçekte"</string>
-    <string name="bigram_suggestion" msgid="2636414079905220518">"Bigram önerileri"</string>
-    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Öneriyi geliştirmek için önceki kelimeyi kullanın"</string>
-    <string name="bigram_prediction" msgid="8914273444762259739">"Bigram tahmini"</string>
+    <!-- no translation found for bigram_suggestion (8169311444438922902) -->
+    <skip />
+    <!-- no translation found for bigram_suggestion_summary (6635527607242625713) -->
+    <skip />
+    <!-- no translation found for bigram_prediction (3216364899483135294) -->
+    <skip />
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"Önceki kelimeyi de tahmin için kullan"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Kaydedildi"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Git"</string>
@@ -111,14 +114,15 @@
     <string name="configure_input_method" msgid="373356270290742459">"Giriş yöntemlerini yapılandır"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Giriş dilleri"</string>
     <string name="select_language" msgid="3693815588777926848">"Giriş dilleri"</string>
-    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Kaydetmek için tekrar dokunun"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Sözlük kullanılabilir"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Kullanıcı geri bildirimini etkinleştir"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Kullanım istatistiklerini ve kilitlenme raporlarını Google\'a otomatik olarak göndererek bu giriş yöntemi düzenleyicisinin iyileştirilmesine yardımcı olun."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Klavye teması"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"İngilizce (BK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"İngilizce (ABD)"</string>
+    <!-- no translation found for subtype_no_language_qwerty (2956121451616633133) -->
+    <skip />
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Kullanılabilirlik çalışması modu"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Tuşa basma titreşim süresi ayarları"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Tuşa basma ses düzeyi ayarları"</string>

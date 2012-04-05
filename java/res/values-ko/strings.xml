@@ -61,9 +61,12 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"약"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"중"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"강"</string>
-    <string name="bigram_suggestion" msgid="2636414079905220518">"Bigram 추천"</string>
-    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"이전 단어를 사용하여 추천 기능 개선"</string>
-    <string name="bigram_prediction" msgid="8914273444762259739">"Bigram 예측"</string>
+    <!-- no translation found for bigram_suggestion (8169311444438922902) -->
+    <skip />
+    <!-- no translation found for bigram_suggestion_summary (6635527607242625713) -->
+    <skip />
+    <!-- no translation found for bigram_prediction (3216364899483135294) -->
+    <skip />
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"이전 단어를 사용하여 예상 검색어를 표시합니다."</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: 저장됨"</string>
     <string name="label_go_key" msgid="1635148082137219148">"이동"</string>
@@ -111,14 +114,15 @@
     <string name="configure_input_method" msgid="373356270290742459">"입력 방법 설정"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"입력 언어"</string>
     <string name="select_language" msgid="3693815588777926848">"입력 언어"</string>
-    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"저장하려면 다시 터치"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"사전 사용 가능"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"사용자 의견 사용"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"사용 통계 및 충돌 보고서를 Google에 자동으로 전송하여 입력 방법 편집기의 개선에 도움을 줍니다."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"키보드 테마"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"영어(영국)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"영어(미국)"</string>
+    <!-- no translation found for subtype_no_language_qwerty (2956121451616633133) -->
+    <skip />
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"가용성 연구 모드"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"키를 누를 때 진동 시간 설정"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"키를 누를 때 효과음 설정"</string>

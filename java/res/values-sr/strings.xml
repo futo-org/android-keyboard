@@ -61,9 +61,12 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Умерено"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Агресивно"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Веома агресивно"</string>
-    <string name="bigram_suggestion" msgid="2636414079905220518">"Bigram предлози"</string>
-    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Користи претходну реч за побољшање предлога"</string>
-    <string name="bigram_prediction" msgid="8914273444762259739">"Bigram предвиђање"</string>
+    <!-- no translation found for bigram_suggestion (8169311444438922902) -->
+    <skip />
+    <!-- no translation found for bigram_suggestion_summary (6635527607242625713) -->
+    <skip />
+    <!-- no translation found for bigram_prediction (3216364899483135294) -->
+    <skip />
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"Користи претходну реч и за предвиђање"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Сачувано"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Иди"</string>
@@ -111,14 +114,15 @@
     <string name="configure_input_method" msgid="373356270290742459">"Конфигурисање метода уноса"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Језици за унос"</string>
     <string name="select_language" msgid="3693815588777926848">"Језици уноса"</string>
-    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Поново додирните да бисте сачували"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Речник је доступан"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Омогући повратну информацију корисника"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Помозите да се побољша овај уређивач режима уноса тако што ће се аутоматски послати статистика о коришћењу и извештаји о грешкама компанији Google."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Тема тастатуре"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"енглески (УК)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"енглески (САД)"</string>
+    <!-- no translation found for subtype_no_language_qwerty (2956121451616633133) -->
+    <skip />
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Режим за студију могућности коришћења"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Подешавања трајања вибрације при притиску на тастере"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Подешавања јачине звука при притиску на тастере"</string>

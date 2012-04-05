@@ -61,9 +61,12 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Mérsékelt"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agresszív"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Nagyon agresszív"</string>
-    <string name="bigram_suggestion" msgid="2636414079905220518">"Bigram javaslatok"</string>
-    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Előző szó használata a javaslatok javításához"</string>
-    <string name="bigram_prediction" msgid="8914273444762259739">"Bigram előrejelzés"</string>
+    <!-- no translation found for bigram_suggestion (8169311444438922902) -->
+    <skip />
+    <!-- no translation found for bigram_suggestion_summary (6635527607242625713) -->
+    <skip />
+    <!-- no translation found for bigram_prediction (3216364899483135294) -->
+    <skip />
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"Az előző szó használata a prediktív bevitelhez is"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : mentve"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Ugrás"</string>
@@ -111,14 +114,15 @@
     <string name="configure_input_method" msgid="373356270290742459">"Beviteli módok beállítása"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Beviteli nyelvek"</string>
     <string name="select_language" msgid="3693815588777926848">"Beviteli nyelvek"</string>
-    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Érintse meg újból a mentéshez"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Van elérhető szótár"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Felhasználói visszajelzés engedélyezése"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Segíthet ennek a beviteli módszernek a javításában, ha engedélyezi a használati statisztikák és a hibajelentések elküldését a Google-nak."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Billentyűzettéma"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"angol (brit)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"angol (amerikai)"</string>
+    <!-- no translation found for subtype_no_language_qwerty (2956121451616633133) -->
+    <skip />
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Használhatósági teszt"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Gombnyomás rezgési időtartamának beállításai"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Gombnyomás hangerejének beállításai"</string>

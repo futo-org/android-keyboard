@@ -96,10 +96,11 @@
     <skip />
     <!-- no translation found for auto_correction_threshold_mode_very_aggeressive (3386782235540547678) -->
     <skip />
-    <!-- no translation found for bigram_suggestion (2636414079905220518) -->
+    <!-- no translation found for bigram_suggestion (8169311444438922902) -->
     <skip />
-    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Meglierar la proposta cun agid dal pled precedent"</string>
-    <!-- no translation found for bigram_prediction (8914273444762259739) -->
+    <!-- no translation found for bigram_suggestion_summary (6635527607242625713) -->
+    <skip />
+    <!-- no translation found for bigram_prediction (3216364899483135294) -->
     <skip />
     <!-- no translation found for bigram_prediction_summary (1747261921174300098) -->
     <skip />
@@ -199,6 +200,8 @@
     <!-- no translation found for subtype_en_GB (88170601942311355) -->
     <skip />
     <!-- no translation found for subtype_en_US (6160452336634534239) -->
+    <skip />
+    <!-- no translation found for subtype_no_language_qwerty (2956121451616633133) -->
     <skip />
     <!-- no translation found for prefs_usability_study_mode (1261130555134595254) -->
     <skip />

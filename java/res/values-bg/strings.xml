@@ -61,9 +61,12 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Умерено"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Агресивно"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Много агресивно"</string>
-    <string name="bigram_suggestion" msgid="2636414079905220518">"Предложения за биграми"</string>
-    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Използване на предишната дума за подобряване на предложението"</string>
-    <string name="bigram_prediction" msgid="8914273444762259739">"Предвиждане за биграми"</string>
+    <!-- no translation found for bigram_suggestion (8169311444438922902) -->
+    <skip />
+    <!-- no translation found for bigram_suggestion_summary (6635527607242625713) -->
+    <skip />
+    <!-- no translation found for bigram_prediction (3216364899483135294) -->
+    <skip />
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"Използване на предишната дума и за предвиждане"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Запазено"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Старт"</string>
@@ -111,14 +114,15 @@
     <string name="configure_input_method" msgid="373356270290742459">"Конфигуриране на въвеждането"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Входни езици"</string>
     <string name="select_language" msgid="3693815588777926848">"Езици за въвеждане"</string>
-    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Докоснете отново, за да запазите"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Има достъп до речник"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Активиране на отзивите от потребителите"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Помогнете за подобряването на този редактор за въвеждане чрез автоматично изпращане до Google на статистически данни за употребата и сигнали за сривове."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Тема на клавиатурата"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"английски (Великобритания)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"английски (САЩ)"</string>
+    <!-- no translation found for subtype_no_language_qwerty (2956121451616633133) -->
+    <skip />
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Режим за изучаване на използваемостта"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Настройки за продължителност на вибрирането при натискане на клавиш"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Настройки за силата на звука при натискане на клавиш"</string>

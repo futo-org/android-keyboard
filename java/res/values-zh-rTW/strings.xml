@@ -61,9 +61,12 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"部分"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"全部"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"更正範圍極大"</string>
-    <string name="bigram_suggestion" msgid="2636414079905220518">"雙連詞建議"</string>
-    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"根據前一個字詞自動找出更適合的建議"</string>
-    <string name="bigram_prediction" msgid="8914273444762259739">"雙連詞預測"</string>
+    <!-- no translation found for bigram_suggestion (8169311444438922902) -->
+    <skip />
+    <!-- no translation found for bigram_suggestion_summary (6635527607242625713) -->
+    <skip />
+    <!-- no translation found for bigram_prediction (3216364899483135294) -->
+    <skip />
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"同樣使用先前的字詞進行預測"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>：已儲存"</string>
     <string name="label_go_key" msgid="1635148082137219148">"開始"</string>
@@ -111,14 +114,15 @@
     <string name="configure_input_method" msgid="373356270290742459">"設定輸入法"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"輸入語言"</string>
     <string name="select_language" msgid="3693815588777926848">"輸入語言"</string>
-    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
-    <skip />
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"再次輕觸即可儲存"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"可使用字典"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"啟用使用者意見回饋"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"自動將使用統計資料和當機報告傳送給 Google，協助改善這個輸入法編輯器。"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"鍵盤主題"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"英文 (英式)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"英文 (美式)"</string>
+    <!-- no translation found for subtype_no_language_qwerty (2956121451616633133) -->
+    <skip />
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"使用性研究模式"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"按鍵震動持續時間設定"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"按鍵音量設定"</string>
