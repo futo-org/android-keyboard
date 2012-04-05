@@ -95,6 +95,7 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
         event.setPackageName(mKeyboardView.getContext().getPackageName());
         event.setClassName(key.getClass().getName());
         event.getText().add(keyDescription);
+        event.setEnabled(true);
 
         final AccessibilityRecordCompat record = new AccessibilityRecordCompat(event);
         record.setSource(mKeyboardView, virtualViewId);
@@ -171,6 +172,9 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
             info.setSource(mKeyboardView, virtualViewId);
             info.setBoundsInScreen(boundsInScreen);
             info.setText(keyDescription);
+            info.setClickable(true);
+            info.setEnabled(true);
+            info.setLongClickable(true);
         }
 
         return info;
