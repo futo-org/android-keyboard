@@ -22,17 +22,17 @@
     <bool name="config_use_fullscreen_mode">false</bool>
     <bool name="config_enable_show_voice_key_option">true</bool>
     <bool name="config_enable_show_popup_on_keypress_option">true</bool>
-    <bool name="config_enable_bigram_suggestions_option">true</bool>
+    <bool name="config_enable_next_word_suggestions_option">true</bool>
     <!-- TODO: Disable the following configuration for production. -->
     <bool name="config_enable_usability_study_mode_option">true</bool>
     <!-- Whether or not Popup on key press is enabled by default -->
     <bool name="config_default_popup_preview">true</bool>
-    <!-- Default value for bigram suggestion: while showing suggestions for a word should we weigh
+    <!-- Default value for next word suggestion: while showing suggestions for a word should we weigh
          in the previous word? -->
-    <bool name="config_default_bigram_suggestions">true</bool>
-    <!-- Default value for bigram prediction: after entering a word and a space only, should we look
+    <bool name="config_default_next_word_suggestions">true</bool>
+    <!-- Default value for next word prediction: after entering a word and a space only, should we look
          at input history to suggest a hopefully helpful suggestions for the next word? -->
-    <bool name="config_default_bigram_prediction">false</bool>
+    <bool name="config_default_next_word_prediction">true</bool>
     <bool name="config_default_sound_enabled">false</bool>
     <bool name="config_default_vibration_enabled">true</bool>
     <integer name="config_delay_update_suggestions">100</integer>

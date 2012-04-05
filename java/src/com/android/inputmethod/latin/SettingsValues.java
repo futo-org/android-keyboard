@@ -236,18 +236,18 @@ public class SettingsValues {
     private static boolean isBigramSuggestionEnabled(final SharedPreferences sp,
             final Resources resources, final boolean autoCorrectEnabled) {
         final boolean showBigramSuggestionsOption = resources.getBoolean(
-                R.bool.config_enable_bigram_suggestions_option);
+                R.bool.config_enable_next_word_suggestions_option);
         if (!showBigramSuggestionsOption) {
             return autoCorrectEnabled;
         }
         return sp.getBoolean(Settings.PREF_BIGRAM_SUGGESTION, resources.getBoolean(
-                R.bool.config_default_bigram_suggestions));
+                R.bool.config_default_next_word_suggestions));
     }
 
     private static boolean isBigramPredictionEnabled(final SharedPreferences sp,
             final Resources resources) {
         return sp.getBoolean(Settings.PREF_BIGRAM_PREDICTIONS, resources.getBoolean(
-                R.bool.config_default_bigram_prediction));
+                R.bool.config_default_next_word_prediction));
     }
 
     private static double getAutoCorrectionThreshold(final Resources resources,
