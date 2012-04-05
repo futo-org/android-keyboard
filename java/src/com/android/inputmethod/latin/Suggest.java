@@ -112,7 +112,7 @@ public class Suggest implements Dictionary.WordCallback {
             final long startOffset, final long length, final Flag[] flagArray,
             final Locale locale) {
         initSynchronously(context, DictionaryFactory.createDictionaryForTest(context, dictionary,
-                startOffset, length, flagArray), locale);
+                startOffset, length, flagArray, locale), locale);
     }
 
     private void initWhitelistAndAutocorrectAndPool(final Context context, final Locale locale) {
