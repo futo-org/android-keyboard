@@ -145,10 +145,10 @@ public class DictionaryFactory {
      * @return the created dictionary, or null.
      */
     public static Dictionary createDictionaryForTest(Context context, File dictionary,
-            long startOffset, long length, Flag[] flagArray) {
+            long startOffset, long length, Flag[] flagArray, Locale locale) {
         if (dictionary.isFile()) {
             return new BinaryDictionary(context, dictionary.getAbsolutePath(), startOffset, length,
-                    flagArray, null);
+                    flagArray, locale);
         } else {
             Log.e(TAG, "Could not find the file. path=" + dictionary.getAbsolutePath());
             return null;
