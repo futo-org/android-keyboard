@@ -56,30 +56,6 @@ public class BinaryDictionary extends Dictionary {
     private final int[] mScores = new int[MAX_WORDS];
     private final int[] mBigramScores = new int[MAX_BIGRAMS];
 
-    public static final Flag FLAG_REQUIRES_GERMAN_UMLAUT_PROCESSING =
-            new Flag(R.bool.config_require_umlaut_processing, 0x1);
-    public static final Flag FLAG_REQUIRES_FRENCH_LIGATURES_PROCESSING =
-            new Flag(R.bool.config_require_ligatures_processing, 0x4);
-
-    // Can create a new flag from extravalue :
-    // public static final Flag FLAG_MYFLAG =
-    //         new Flag("my_flag", 0x02);
-
-    // ALL_CONFIG_FLAGS is a collection of flags that enable reading all flags from configuration.
-    // This is but a mask - it does not mean the flags will be on, only that the configuration
-    // will be read for this particular flag.
-    public static final Flag[] ALL_CONFIG_FLAGS = {
-        // Here should reside all flags that trigger some special processing
-        // These *must* match the definition in UnigramDictionary enum in
-        // unigram_dictionary.h so please update both at the same time.
-        // Please note that flags created with a resource are of type CONFIG while flags
-        // created with a string are of type EXTRAVALUE. These behave like masks, and the
-        // actual value will be read from the configuration/extra value at run time for
-        // the configuration at dictionary creation time.
-        FLAG_REQUIRES_GERMAN_UMLAUT_PROCESSING,
-        FLAG_REQUIRES_FRENCH_LIGATURES_PROCESSING,
-    };
-
     private final boolean mUseFullEditDistance;
 
     /**
