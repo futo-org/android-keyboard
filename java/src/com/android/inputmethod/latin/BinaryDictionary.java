@@ -61,11 +61,6 @@ public class BinaryDictionary extends Dictionary {
     public static final Flag FLAG_REQUIRES_FRENCH_LIGATURES_PROCESSING =
             new Flag(R.bool.config_require_ligatures_processing, 0x4);
 
-    // FULL_EDIT_DISTANCE is a flag that forces the dictionary to use full words
-    // when computing edit distance, instead of the default behavior of stopping
-    // the evaluation at the size the user typed.
-    public static final int FLAG_USE_FULL_EDIT_DISTANCE = 0x2;
-
     // Can create a new flag from extravalue :
     // public static final Flag FLAG_MYFLAG =
     //         new Flag("my_flag", 0x02);
@@ -85,7 +80,7 @@ public class BinaryDictionary extends Dictionary {
         FLAG_REQUIRES_FRENCH_LIGATURES_PROCESSING,
     };
 
-    private final int mFlags;
+    private final boolean mUseFullEditDistance;
 
     /**
      * Constructor for the binary dictionary. This is supposed to be called from the
@@ -104,11 +99,7 @@ public class BinaryDictionary extends Dictionary {
         // Initializing this here will help transitioning out of the scheme where
         // the Suggest class knows everything about every single dictionary.
         mDicTypeId = Suggest.DIC_MAIN;
-        if (useFullEditDistance) {
-            mFlags = FLAG_USE_FULL_EDIT_DISTANCE;
-        } else {
-            mFlags = 0;
-        }
+        mUseFullEditDistance = useFullEditDistance;
         loadDictionary(filename, offset, length);
     }
 
@@ -121,8 +112,8 @@ public class BinaryDictionary extends Dictionary {
     private native void closeNative(long dict);
     private native boolean isValidWordNative(long dict, char[] word, int wordLength);
     private native int getSuggestionsNative(long dict, long proximityInfo, int[] xCoordinates,
-            int[] yCoordinates, int[] inputCodes, int codesSize, int flags, char[] outputChars,
-            int[] scores);
+            int[] yCoordinates, int[] inputCodes, int codesSize, boolean useFullEditDistance,
+            char[] outputChars, int[] scores);
     private native int getBigramsNative(long dict, char[] prevWord, int prevWordLength,
             int[] inputCodes, int inputCodesLength, char[] outputChars, int[] scores,
             int maxWordLength, int maxBigrams);
@@ -214,7 +205,7 @@ public class BinaryDictionary extends Dictionary {
         return getSuggestionsNative(
                 mNativeDict, proximityInfo.getNativeProximityInfo(),
                 codes.getXCoordinates(), codes.getYCoordinates(), mInputCodes, codesSize,
-                mFlags, outputChars, scores);
+                mUseFullEditDistance, outputChars, scores);
     }
 
     public static double calcNormalizedScore(String before, String after, int score) {

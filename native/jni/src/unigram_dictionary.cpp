@@ -98,7 +98,7 @@ int UnigramDictionary::getDigraphReplacement(const int *codes, const int i, cons
 void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codesBuffer,
         int *xCoordinatesBuffer, int *yCoordinatesBuffer,
-        const int codesBufferSize, const int flags, const int *codesSrc,
+        const int codesBufferSize, const bool useFullEditDistance, const int *codesSrc,
         const int codesRemain, const int currentDepth, int *codesDest, Correction *correction,
         WordsPriorityQueuePool *queuePool,
         const digraph_t* const digraphs, const unsigned int digraphsSize) {
@@ -126,8 +126,8 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
                 codesDest[(i - 1) * (BYTES_IN_ONE_CHAR / sizeof(codesDest[0]))] =
                         replacementCodePoint;
                 getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
-                        codesBuffer, xCoordinatesBuffer, yCoordinatesBuffer, codesBufferSize, flags,
-                        codesSrc + i + 1, codesRemain - i - 1,
+                        codesBuffer, xCoordinatesBuffer, yCoordinatesBuffer, codesBufferSize,
+                        useFullEditDistance, codesSrc + i + 1, codesRemain - i - 1,
                         currentDepth + 1, codesDest + i, correction,
                         queuePool, digraphs, digraphsSize);
 
@@ -136,8 +136,8 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
                 // In our example, after "pru" in the buffer copy the "e", and continue on "fen"
                 memcpy(codesDest + i, codesSrc + i, BYTES_IN_ONE_CHAR);
                 getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
-                        codesBuffer, xCoordinatesBuffer, yCoordinatesBuffer, codesBufferSize, flags,
-                        codesSrc + i, codesRemain - i, currentDepth + 1,
+                        codesBuffer, xCoordinatesBuffer, yCoordinatesBuffer, codesBufferSize,
+                        useFullEditDistance, codesSrc + i, codesRemain - i, currentDepth + 1,
                         codesDest + i, correction, queuePool,
                         digraphs, digraphsSize);
                 return;
@@ -160,14 +160,14 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
     }
 
     getWordSuggestions(proximityInfo, xCoordinatesBuffer, yCoordinatesBuffer, codesBuffer,
-            startIndex + codesRemain, flags, correction,
+            startIndex + codesRemain, useFullEditDistance, correction,
             queuePool);
 }
 
 int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
         WordsPriorityQueuePool *queuePool, Correction *correction, const int *xcoordinates,
-        const int *ycoordinates, const int *codes, const int codesSize, const int flags,
-        unsigned short *outWords, int *frequencies) {
+        const int *ycoordinates, const int *codes, const int codesSize,
+        const bool useFullEditDistance, unsigned short *outWords, int *frequencies) {
 
     queuePool->clearAll();
     Correction* masterCorrection = correction;
@@ -178,8 +178,8 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
         int yCoordinatesBuffer[codesSize];
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
                 xCoordinatesBuffer, yCoordinatesBuffer,
-                codesSize, flags, codes, codesSize, 0, codesBuffer, masterCorrection, queuePool,
-                GERMAN_UMLAUT_DIGRAPHS,
+                codesSize, useFullEditDistance, codes, codesSize, 0, codesBuffer, masterCorrection,
+                queuePool, GERMAN_UMLAUT_DIGRAPHS,
                 sizeof(GERMAN_UMLAUT_DIGRAPHS) / sizeof(GERMAN_UMLAUT_DIGRAPHS[0]));
     } else if (BinaryFormat::REQUIRES_FRENCH_LIGATURES_PROCESSING & FLAGS) {
         int codesBuffer[getCodesBufferSize(codes, codesSize)];
@@ -187,12 +187,12 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
         int yCoordinatesBuffer[codesSize];
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
                 xCoordinatesBuffer, yCoordinatesBuffer,
-                codesSize, flags, codes, codesSize, 0, codesBuffer, masterCorrection, queuePool,
-                FRENCH_LIGATURES_DIGRAPHS,
+                codesSize, useFullEditDistance, codes, codesSize, 0, codesBuffer, masterCorrection,
+                queuePool, FRENCH_LIGATURES_DIGRAPHS,
                 sizeof(FRENCH_LIGATURES_DIGRAPHS) / sizeof(FRENCH_LIGATURES_DIGRAPHS[0]));
     } else { // Normal processing
-        getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, codesSize, flags,
-                masterCorrection, queuePool);
+        getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, codesSize,
+                useFullEditDistance, masterCorrection, queuePool);
     }
 
     PROF_START(20);
@@ -225,7 +225,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
 
 void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codes,
-        const int inputLength, const int flags, Correction *correction,
+        const int inputLength, const bool useFullEditDistance, Correction *correction,
         WordsPriorityQueuePool *queuePool) {
 
     PROF_OPEN;
@@ -233,7 +233,6 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
     PROF_END(0);
 
     PROF_START(1);
-    const bool useFullEditDistance = USE_FULL_EDIT_DISTANCE & flags;
     getOneWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, useFullEditDistance,
             inputLength, correction, queuePool);
     PROF_END(1);

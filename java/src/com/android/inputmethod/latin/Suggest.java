@@ -108,14 +108,6 @@ public class Suggest implements Dictionary.WordCallback {
         initAsynchronously(context, dictionaryResId, locale);
     }
 
-    // TODO: remove when the tests are updated
-    /* package for test */ Suggest(final Context context, final File dictionary,
-            final long startOffset, final long length, final Flag[] flagArray,
-            final Locale locale) {
-        initSynchronously(context, DictionaryFactory.createDictionaryForTest(context, dictionary,
-                startOffset, length /* useFullEditDistance */, false, locale), locale);
-    }
-
     /* package for test */ Suggest(final Context context, final File dictionary,
             final long startOffset, final long length, final Locale locale) {
         initSynchronously(context, DictionaryFactory.createDictionaryForTest(context, dictionary,

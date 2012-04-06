@@ -127,7 +127,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
 
 static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object, jlong dict,
         jlong proximityInfo, jintArray xCoordinatesArray, jintArray yCoordinatesArray,
-        jintArray inputArray, jint arraySize, jint flags,
+        jintArray inputArray, jint arraySize, jboolean useFullEditDistance,
         jcharArray outputArray, jintArray frequencyArray) {
     Dictionary *dictionary = (Dictionary*)dict;
     if (!dictionary) return 0;
@@ -141,7 +141,7 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object,
     jchar *outputChars = env->GetCharArrayElements(outputArray, 0);
 
     int count = dictionary->getSuggestions(pInfo, xCoordinates, yCoordinates, inputCodes,
-            arraySize, flags, (unsigned short*) outputChars, frequencies);
+            arraySize, useFullEditDistance, (unsigned short*) outputChars, frequencies);
 
     env->ReleaseIntArrayElements(frequencyArray, frequencies, 0);
     env->ReleaseIntArrayElements(inputArray, inputCodes, JNI_ABORT);
@@ -241,7 +241,7 @@ void releaseDictBuf(void* dictBuf, const size_t length, int fd) {
 static JNINativeMethod sMethods[] = {
     {"openNative", "(Ljava/lang/String;JJIIII)J", (void*)latinime_BinaryDictionary_open},
     {"closeNative", "(J)V", (void*)latinime_BinaryDictionary_close},
-    {"getSuggestionsNative", "(JJ[I[I[III[C[I)I", (void*)latinime_BinaryDictionary_getSuggestions},
+    {"getSuggestionsNative", "(JJ[I[I[IIZ[C[I)I", (void*)latinime_BinaryDictionary_getSuggestions},
     {"isValidWordNative", "(J[CI)Z", (void*)latinime_BinaryDictionary_isValidWord},
     {"getBigramsNative", "(J[CI[II[C[III)I", (void*)latinime_BinaryDictionary_getBigrams},
     {"calcNormalizedScoreNative", "([CI[CII)D",

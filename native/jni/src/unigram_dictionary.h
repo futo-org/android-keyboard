@@ -75,20 +75,21 @@ class UnigramDictionary {
     int getBigramPosition(int pos, unsigned short *word, int offset, int length) const;
     int getSuggestions(ProximityInfo *proximityInfo, WordsPriorityQueuePool *queuePool,
             Correction *correction, const int *xcoordinates,
-            const int *ycoordinates, const int *codes, const int codesSize, const int flags,
-            unsigned short *outWords, int *frequencies);
+            const int *ycoordinates, const int *codes, const int codesSize,
+            const bool useFullEditDistance, unsigned short *outWords, int *frequencies);
     virtual ~UnigramDictionary();
 
  private:
     void getWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int inputLength,
-            const int flags, Correction *correction, WordsPriorityQueuePool *queuePool);
+            const bool useFullEditDistance, Correction *correction,
+            WordsPriorityQueuePool *queuePool);
     int getDigraphReplacement(const int *codes, const int i, const int codesSize,
             const digraph_t* const digraphs, const unsigned int digraphsSize) const;
     void getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int* ycoordinates, const int *codesBuffer,
         int *xCoordinatesBuffer, int *yCoordinatesBuffer,
-        const int codesBufferSize, const int flags, const int* codesSrc,
+        const int codesBufferSize, const bool useFullEditDistance, const int* codesSrc,
         const int codesRemain, const int currentDepth, int* codesDest, Correction *correction,
         WordsPriorityQueuePool* queuePool, const digraph_t* const digraphs,
         const unsigned int digraphsSize);
@@ -145,13 +146,6 @@ class UnigramDictionary {
     const int MAX_DIGRAPH_SEARCH_DEPTH;
     const int FLAGS;
 
-    // Flags for special processing
-    // Those *must* match the flags in BinaryDictionary.Flags.ALL_FLAGS in BinaryDictionary.java
-    // or something very bad (like, the apocalypse) will happen.
-    // Please update both at the same time.
-    enum {
-        USE_FULL_EDIT_DISTANCE = 0x2,
-    };
     static const digraph_t GERMAN_UMLAUT_DIGRAPHS[];
     static const digraph_t FRENCH_LIGATURES_DIGRAPHS[];
 

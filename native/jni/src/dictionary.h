@@ -33,10 +33,11 @@ class Dictionary {
             int fullWordMultiplier, int maxWordLength, int maxWords);
 
     int getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
-            int *codes, int codesSize, int flags, unsigned short *outWords, int *frequencies) {
+            int *codes, int codesSize, bool useFullEditDistance, unsigned short *outWords,
+            int *frequencies) {
         return mUnigramDictionary->getSuggestions(proximityInfo, mWordsPriorityQueuePool,
                 mCorrection, xcoordinates, ycoordinates, codes,
-                codesSize, flags, outWords, frequencies);
+                codesSize, useFullEditDistance, outWords, frequencies);
     }
 
     int getBigrams(unsigned short *word, int length, int *codes, int codesSize,
