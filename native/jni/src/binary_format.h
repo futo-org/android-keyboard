@@ -40,6 +40,9 @@ class BinaryFormat {
     // implementations. On this occasion, we made the magic number 32 bits long.
     const static uint32_t FORMAT_VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
 
+    const static int CHARACTER_ARRAY_TERMINATOR_SIZE = 1;
+    const static int SHORTCUT_LIST_SIZE_SIZE = 2;
+
     static int detectFormat(const uint8_t* const dict);
     static unsigned int getHeaderSize(const uint8_t* const dict);
     static int getGroupCountAndForwardPointer(const uint8_t* const dict, int* pos);
@@ -47,9 +50,10 @@ class BinaryFormat {
     static int32_t getCharCodeAndForwardPointer(const uint8_t* const dict, int* pos);
     static int readFrequencyWithoutMovingPointer(const uint8_t* const dict, const int pos);
     static int skipOtherCharacters(const uint8_t* const dict, const int pos);
-    static int skipAttributes(const uint8_t* const dict, const int pos);
     static int skipChildrenPosition(const uint8_t flags, const int pos);
     static int skipFrequency(const uint8_t flags, const int pos);
+    static int skipShortcuts(const uint8_t* const dict, const uint8_t flags, const int pos);
+    static int skipBigrams(const uint8_t* const dict, const uint8_t flags, const int pos);
     static int skipAllAttributes(const uint8_t* const dict, const uint8_t flags, const int pos);
     static int skipChildrenPosAndAttributes(const uint8_t* const dict, const uint8_t flags,
             const int pos);
@@ -157,12 +161,12 @@ static inline int attributeAddressSize(const uint8_t flags) {
     */
 }
 
-inline int BinaryFormat::skipAttributes(const uint8_t* const dict, const int pos) {
+static inline int skipExistingBigrams(const uint8_t* const dict, const int pos) {
     int currentPos = pos;
-    uint8_t flags = getFlagsAndForwardPointer(dict, &currentPos);
+    uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(dict, &currentPos);
     while (flags & UnigramDictionary::FLAG_ATTRIBUTE_HAS_NEXT) {
         currentPos += attributeAddressSize(flags);
-        flags = getFlagsAndForwardPointer(dict, &currentPos);
+        flags = BinaryFormat::getFlagsAndForwardPointer(dict, &currentPos);
     }
     currentPos += attributeAddressSize(flags);
     return currentPos;
@@ -174,6 +178,10 @@ static inline int childrenAddressSize(const uint8_t flags) {
     /* See the note in attributeAddressSize. The same applies here */
 }
 
+static inline int shortcutByteSize(const uint8_t* const dict, const int pos) {
+    return ((int)(dict[pos] << 8)) + (dict[pos + 1]);
+}
+
 inline int BinaryFormat::skipChildrenPosition(const uint8_t flags, const int pos) {
     return pos + childrenAddressSize(flags);
 }
@@ -182,16 +190,30 @@ inline int BinaryFormat::skipFrequency(const uint8_t flags, const int pos) {
     return UnigramDictionary::FLAG_IS_TERMINAL & flags ? pos + 1 : pos;
 }
 
+inline int BinaryFormat::skipShortcuts(const uint8_t* const dict, const uint8_t flags,
+        const int pos) {
+    if (UnigramDictionary::FLAG_HAS_SHORTCUT_TARGETS & flags) {
+        return pos + shortcutByteSize(dict, pos);
+    } else {
+        return pos;
+    }
+}
+
+inline int BinaryFormat::skipBigrams(const uint8_t* const dict, const uint8_t flags,
+        const int pos) {
+    if (UnigramDictionary::FLAG_HAS_BIGRAMS & flags) {
+        return skipExistingBigrams(dict, pos);
+    } else {
+        return pos;
+    }
+}
+
 inline int BinaryFormat::skipAllAttributes(const uint8_t* const dict, const uint8_t flags,
         const int pos) {
     // This function skips all attributes: shortcuts and bigrams.
     int newPos = pos;
-    if (UnigramDictionary::FLAG_HAS_SHORTCUT_TARGETS & flags) {
-        newPos = skipAttributes(dict, newPos);
-    }
-    if (UnigramDictionary::FLAG_HAS_BIGRAMS & flags) {
-        newPos = skipAttributes(dict, newPos);
-    }
+    newPos = skipShortcuts(dict, flags, newPos);
+    newPos = skipBigrams(dict, flags, newPos);
     return newPos;
 }
 

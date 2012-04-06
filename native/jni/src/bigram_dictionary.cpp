@@ -123,6 +123,7 @@ int BigramDictionary::getBigrams(unsigned short *prevWord, int prevWordLength, i
     }
     pos = BinaryFormat::skipChildrenPosition(flags, pos);
     pos = BinaryFormat::skipFrequency(flags, pos);
+    pos = BinaryFormat::skipShortcuts(root, flags, pos);
     int bigramFlags;
     int bigramCount = 0;
     do {
