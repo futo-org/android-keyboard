@@ -46,7 +46,7 @@ public class StringUtils {
         return text.codePointCount(0, text.length());
     }
 
-    public static boolean containsInCsv(String key, String csv) {
+    private static boolean containsInCsv(String key, String csv) {
         if (csv == null)
             return false;
         for (String option : csv.split(",")) {
@@ -129,7 +129,7 @@ public class StringUtils {
     /**
      * Remove duplicates from an array of strings.
      *
-     * This method will always keep the first occurence of all strings at their position
+     * This method will always keep the first occurrence of all strings at their position
      * in the array, removing the subsequent ones.
      */
     public static void removeDupes(final ArrayList<CharSequence> suggestions) {

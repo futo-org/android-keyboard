@@ -18,11 +18,9 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -291,45 +289,6 @@ public class SubtypeSwitcher {
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public Drawable getShortcutIcon() {
-        return getSubtypeIcon(mShortcutInputMethodInfo, mShortcutSubtype);
-    }
-
-    private Drawable getSubtypeIcon(InputMethodInfo imi, InputMethodSubtype subtype) {
-        final PackageManager pm = mService.getPackageManager();
-        if (imi != null) {
-            final String imiPackageName = imi.getPackageName();
-            if (DBG) {
-                Log.d(TAG, "Update icons of IME: " + imiPackageName + ","
-                        + KeyboardLayoutSet.getKeyboardLayoutSetLocaleString(subtype) + ","
-                        + subtype.getMode());
-            }
-            if (subtype != null) {
-                return pm.getDrawable(imiPackageName, subtype.getIconResId(),
-                        imi.getServiceInfo().applicationInfo);
-            } else if (imi.getSubtypeCount() > 0 && imi.getSubtypeAt(0) != null) {
-                return pm.getDrawable(imiPackageName,
-                        imi.getSubtypeAt(0).getIconResId(),
-                        imi.getServiceInfo().applicationInfo);
-            } else {
-                try {
-                    return pm.getApplicationInfo(imiPackageName, 0).loadIcon(pm);
-                } catch (PackageManager.NameNotFoundException e) {
-                    Log.w(TAG, "IME can't be found: " + imiPackageName);
-                }
-            }
-        }
-        return null;
-    }
-
-    private static boolean contains(String[] hay, String needle) {
-        for (String element : hay) {
-            if (element.equals(needle))
-                return true;
-        }
-        return false;
-    }
-
     public boolean isShortcutImeEnabled() {
         if (mShortcutInputMethodInfo == null) {
             return false;
@@ -352,7 +311,7 @@ public class SubtypeSwitcher {
             return false;
         if (mShortcutSubtype == null)
             return true;
-        if (contains(mShortcutSubtype.getExtraValue().split(","),
+        if (mShortcutSubtype.containsExtraValueKey(
                 SUBTYPE_EXTRAVALUE_REQUIRE_NETWORK_CONNECTIVITY)) {
             return mIsNetworkConnected;
         }

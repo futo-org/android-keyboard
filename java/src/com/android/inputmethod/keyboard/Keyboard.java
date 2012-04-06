@@ -1229,7 +1229,7 @@ public class Keyboard {
 
         private void endRow(Row row) {
             if (mCurrentRow == null)
-                throw new InflateException("orphant end row tag");
+                throw new InflateException("orphan end row tag");
             if (mRightEdgeKey != null) {
                 mRightEdgeKey.markAsRightEdge(mParams);
                 mRightEdgeKey = null;
