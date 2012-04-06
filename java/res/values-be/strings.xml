@@ -74,7 +74,7 @@
     <string name="label_previous_key" msgid="1211868118071386787">"Назад"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Гатова"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Адправіць"</string>
-    <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"АБВ"</string>
     <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
     <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Паўза"</string>
