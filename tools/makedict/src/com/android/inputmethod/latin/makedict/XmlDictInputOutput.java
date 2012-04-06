@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin.makedict;
 
+import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
+import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
 import java.io.IOException;
@@ -61,7 +63,7 @@ public class XmlDictInputOutput {
         private static final int END = 5;
         private static final int UNKNOWN = 6;
 
-        final FusionDictionary mDictionary;
+        FusionDictionary mDictionary;
         int mState; // the state of the parser
         int mFreq; // the currently read freq
         String mWord; // the current word
@@ -71,18 +73,28 @@ public class XmlDictInputOutput {
         /**
          * Create the handler.
          *
-         * @param dict the dictionary to construct.
+         * @param shortcuts the shortcuts as a map. This may be empty, but may not be null.
          * @param bigrams the bigrams as a map. This may be empty, but may not be null.
          */
-        public UnigramHandler(final FusionDictionary dict,
-                final HashMap<String, ArrayList<WeightedString>> shortcuts,
+        public UnigramHandler(final HashMap<String, ArrayList<WeightedString>> shortcuts,
                 final HashMap<String, ArrayList<WeightedString>> bigrams) {
-            mDictionary = dict;
+            mDictionary = null;
             mShortcutsMap = shortcuts;
             mBigramsMap = bigrams;
             mWord = "";
             mState = START;
             mFreq = 0;
+        }
+
+        public FusionDictionary getFinalDictionary() {
+            final FusionDictionary dict = mDictionary;
+            mDictionary = null;
+            mShortcutsMap.clear();
+            mBigramsMap.clear();
+            mWord = "";
+            mState = START;
+            mFreq = 0;
+            return dict;
         }
 
         @Override
@@ -97,10 +109,12 @@ public class XmlDictInputOutput {
                     }
                 }
             } else if (ROOT_TAG.equals(localName)) {
+                final HashMap<String, String> attributes = new HashMap<String, String>();
                 for (int attrIndex = 0; attrIndex < attrs.getLength(); ++attrIndex) {
                     final String attrName = attrs.getLocalName(attrIndex);
-                    mDictionary.mOptions.mAttributes.put(attrName, attrs.getValue(attrIndex));
+                    attributes.put(attrName, attrs.getValue(attrIndex));
                 }
+                mDictionary = new FusionDictionary(new Node(), new DictionaryOptions(attributes));
             } else {
                 mState = UNKNOWN;
             }
@@ -235,12 +249,11 @@ public class XmlDictInputOutput {
         final ShortcutHandler shortcutHandler = new ShortcutHandler();
         if (null != shortcuts) parser.parse(shortcuts, shortcutHandler);
 
-        final FusionDictionary dict = new FusionDictionary();
         final UnigramHandler unigramHandler =
-                new UnigramHandler(dict, shortcutHandler.getShortcutMap(),
+                new UnigramHandler(shortcutHandler.getShortcutMap(),
                         bigramHandler.getBigramMap());
         parser.parse(unigrams, unigramHandler);
-        return dict;
+        return unigramHandler.getFinalDictionary();
     }
 
     /**

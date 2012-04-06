@@ -249,16 +249,6 @@ public class FusionDictionary implements Iterable<Word> {
     public final DictionaryOptions mOptions;
     public final Node mRoot;
 
-    public FusionDictionary() {
-        mRoot = new Node();
-        mOptions = new DictionaryOptions(new HashMap<String, String>());
-    }
-
-    public FusionDictionary(final HashMap<String, String> attributes) {
-        mRoot = new Node();
-        mOptions = new DictionaryOptions(attributes);
-    }
-
     public FusionDictionary(final Node root, final DictionaryOptions options) {
         mRoot = root;
         mOptions = options;
