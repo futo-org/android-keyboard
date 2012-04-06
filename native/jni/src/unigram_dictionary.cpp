@@ -40,10 +40,8 @@ const UnigramDictionary::digraph_t UnigramDictionary::FRENCH_LIGATURES_DIGRAPHS[
 
 // TODO: check the header
 UnigramDictionary::UnigramDictionary(const uint8_t* const streamStart, int typedLetterMultiplier,
-        int fullWordMultiplier, int maxWordLength, int maxWords,
-        const bool isLatestDictVersion)
+        int fullWordMultiplier, int maxWordLength, int maxWords)
     : DICT_ROOT(streamStart), MAX_WORD_LENGTH(maxWordLength), MAX_WORDS(maxWords),
-    IS_LATEST_DICT_VERSION(isLatestDictVersion),
     TYPED_LETTER_MULTIPLIER(typedLetterMultiplier), FULL_WORD_MULTIPLIER(fullWordMultiplier),
       // TODO : remove this variable.
     ROOT_POS(0),

@@ -70,8 +70,7 @@ class UnigramDictionary {
     static const int MAX_ERRORS_FOR_TWO_WORDS = 1;
 
     UnigramDictionary(const uint8_t* const streamStart, int typedLetterMultipler,
-            int fullWordMultiplier, int maxWordLength, int maxWords,
-            const bool isLatestDictVersion);
+            int fullWordMultiplier, int maxWordLength, int maxWords);
     bool isValidWord(const uint16_t* const inWord, const int length) const;
     int getBigramPosition(int pos, unsigned short *word, int offset, int length) const;
     int getSuggestions(ProximityInfo *proximityInfo, WordsPriorityQueuePool *queuePool,
@@ -139,7 +138,6 @@ class UnigramDictionary {
     const uint8_t* const DICT_ROOT;
     const int MAX_WORD_LENGTH;
     const int MAX_WORDS;
-    const bool IS_LATEST_DICT_VERSION;
     const int TYPED_LETTER_MULTIPLIER;
     const int FULL_WORD_MULTIPLIER;
     const int ROOT_POS;

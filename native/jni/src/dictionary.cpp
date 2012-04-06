@@ -29,9 +29,7 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
         int typedLetterMultiplier, int fullWordMultiplier,
         int maxWordLength, int maxWords)
     : mDict((unsigned char*) dict), mDictSize(dictSize),
-    mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust),
-    // Checks whether it has the latest dictionary or the old dictionary
-    IS_LATEST_DICT_VERSION((((unsigned char*) dict)[0] & 0xFF) >= DICTIONARY_VERSION_MIN) {
+      mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust) {
     if (DEBUG_DICT) {
         if (MAX_WORD_LENGTH_INTERNAL < maxWordLength) {
             AKLOGI("Max word length (%d) is greater than %d",
@@ -44,9 +42,8 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
             maxWords, SUB_QUEUE_MAX_WORDS, maxWordLength);
     const unsigned int headerSize = BinaryFormat::getHeaderSize(mDict);
     mUnigramDictionary = new UnigramDictionary(mDict + headerSize, typedLetterMultiplier,
-            fullWordMultiplier, maxWordLength, maxWords, IS_LATEST_DICT_VERSION);
-    mBigramDictionary = new BigramDictionary(mDict + headerSize, maxWordLength,
-            IS_LATEST_DICT_VERSION, true /* hasBigram */, this);
+            fullWordMultiplier, maxWordLength, maxWords);
+    mBigramDictionary = new BigramDictionary(mDict + headerSize, maxWordLength, this);
 }
 
 Dictionary::~Dictionary() {

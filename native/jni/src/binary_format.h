@@ -81,7 +81,7 @@ inline int BinaryFormat::detectFormat(const uint8_t* const dict) {
         // Format 2 header is as follows:
         // Magic number (4 bytes) 0x9B 0xC1 0x3A 0xFE
         // Version number (2 bytes) 0x00 0x02
-        // Options (2 bytes) must be 0x00 0x00
+        // Options (2 bytes)
         // Header size (4 bytes) : integer, big endian
         return (dict[4] << 8) + dict[5];
     default:

@@ -39,7 +39,6 @@ class Dictionary {
                 codesSize, flags, outWords, frequencies);
     }
 
-    // TODO: Call mBigramDictionary instead of mUnigramDictionary
     int getBigrams(unsigned short *word, int length, int *codes, int codesSize,
             unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams) {
         return mBigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies,
@@ -68,7 +67,6 @@ class Dictionary {
     const int mMmapFd;
     const int mDictBufAdjust;
 
-    const bool IS_LATEST_DICT_VERSION;
     UnigramDictionary *mUnigramDictionary;
     BigramDictionary *mBigramDictionary;
     WordsPriorityQueuePool *mWordsPriorityQueuePool;

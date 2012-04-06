@@ -26,11 +26,8 @@
 namespace latinime {
 
 BigramDictionary::BigramDictionary(const unsigned char *dict, int maxWordLength,
-        const bool isLatestDictVersion, const bool hasBigram,
         Dictionary *parentDictionary)
-    : DICT(dict), MAX_WORD_LENGTH(maxWordLength),
-    IS_LATEST_DICT_VERSION(isLatestDictVersion),
-    HAS_BIGRAM(hasBigram), mParentDictionary(parentDictionary) {
+    : DICT(dict), MAX_WORD_LENGTH(maxWordLength), mParentDictionary(parentDictionary) {
     if (DEBUG_DICT) {
         AKLOGI("BigramDictionary - constructor");
         AKLOGI("Has Bigram : %d", hasBigram);
