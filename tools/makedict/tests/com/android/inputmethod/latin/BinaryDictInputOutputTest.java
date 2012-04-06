@@ -41,7 +41,8 @@ public class BinaryDictInputOutputTest extends TestCase {
     // that it does not contain any duplicates.
     public void testFlattenNodes() {
         final FusionDictionary dict = new FusionDictionary(new Node(),
-                new DictionaryOptions(new HashMap<String, String>()));
+                new DictionaryOptions(new HashMap<String, String>(),
+                        false /* germanUmlautProcessing */, false /* frenchLigatureProcessing */));
         dict.add("foo", 1, null, null);
         dict.add("fta", 1, null, null);
         dict.add("ftb", 1, null, null);

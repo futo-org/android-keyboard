@@ -51,6 +51,10 @@ public class XmlDictInputOutput {
 
     private static final int SHORTCUT_ONLY_DEFAULT_FREQ = 1;
 
+    private static final String OPTIONS_KEY = "options";
+    private static final String GERMAN_UMLAUT_PROCESSING_OPTION = "german_umlaut_processing";
+    private static final String FRENCH_LIGATURE_PROCESSING_OPTION = "french_ligature_processing";
+
     /**
      * SAX handler for a unigram XML file.
      */
@@ -114,7 +118,13 @@ public class XmlDictInputOutput {
                     final String attrName = attrs.getLocalName(attrIndex);
                     attributes.put(attrName, attrs.getValue(attrIndex));
                 }
-                mDictionary = new FusionDictionary(new Node(), new DictionaryOptions(attributes));
+                final String optionsString = attributes.get(OPTIONS_KEY);
+                final boolean processUmlauts =
+                        GERMAN_UMLAUT_PROCESSING_OPTION.equals(optionsString);
+                final boolean processLigatures =
+                        FRENCH_LIGATURE_PROCESSING_OPTION.equals(optionsString);
+                mDictionary = new FusionDictionary(new Node(), new DictionaryOptions(attributes,
+                        processUmlauts, processLigatures));
             } else {
                 mState = UNKNOWN;
             }

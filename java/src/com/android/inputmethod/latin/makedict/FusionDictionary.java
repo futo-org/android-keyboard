@@ -239,12 +239,16 @@ public class FusionDictionary implements Iterable<Word> {
      * There are no options at the moment, so this class is empty.
      */
     public static class DictionaryOptions {
-        final HashMap<String, String> mAttributes;
-        public DictionaryOptions(final HashMap<String, String> attributes) {
+        public final boolean mGermanUmlautProcessing;
+        public final boolean mFrenchLigatureProcessing;
+        public final HashMap<String, String> mAttributes;
+        public DictionaryOptions(final HashMap<String, String> attributes,
+                final boolean germanUmlautProcessing, final boolean frenchLigatureProcessing) {
             mAttributes = attributes;
+            mGermanUmlautProcessing = germanUmlautProcessing;
+            mFrenchLigatureProcessing = frenchLigatureProcessing;
         }
     }
-
 
     public final DictionaryOptions mOptions;
     public final Node mRoot;

@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
+import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
@@ -126,8 +127,9 @@ public class BinaryDictInputOutput {
     private static final int NOT_A_VERSION_NUMBER = -1;
     private static final int FIRST_VERSION_WITH_HEADER_SIZE = 2;
 
-    // No options yet, reserved for future use.
-    private static final int OPTIONS = 0;
+    // These options need to be the same numeric values as the one in the native reading code.
+    private static final int GERMAN_UMLAUT_PROCESSING_FLAG = 0x1;
+    private static final int FRENCH_LIGATURE_PROCESSING_FLAG = 0x4;
 
     // TODO: Make this value adaptative to content data, store it in the header, and
     // use it in the reading code.
@@ -704,6 +706,14 @@ public class BinaryDictInputOutput {
     }
 
     /**
+     * Makes the 2-byte value for options flags.
+     */
+    private static final int makeOptionsValue(final DictionaryOptions options) {
+        return (options.mFrenchLigatureProcessing ? FRENCH_LIGATURE_PROCESSING_FLAG : 0)
+                + (options.mGermanUmlautProcessing ? GERMAN_UMLAUT_PROCESSING_FLAG : 0);
+    }
+
+    /**
      * Makes the flag value for a shortcut.
      *
      * @param more whether there are more attributes after this one.
@@ -918,8 +928,9 @@ public class BinaryDictInputOutput {
             buffer[index++] = (byte) (0xFF & version);
         }
         // Options flags
-        buffer[index++] = (byte) (0xFF & (OPTIONS >> 8));
-        buffer[index++] = (byte) (0xFF & OPTIONS);
+        final int options = makeOptionsValue(dict.mOptions);
+        buffer[index++] = (byte) (0xFF & (options >> 8));
+        buffer[index++] = (byte) (0xFF & options);
         if (version >= FIRST_VERSION_WITH_HEADER_SIZE) {
             final int headerSizeOffset = index;
             index += 4; // Size of the header size
@@ -1218,7 +1229,7 @@ public class BinaryDictInputOutput {
         }
 
         // Read options
-        source.readUnsignedShort();
+        final int optionsFlags = source.readUnsignedShort();
 
         final long headerSize;
         final HashMap<String, String> options = new HashMap<String, String>();
@@ -1240,7 +1251,9 @@ public class BinaryDictInputOutput {
         final Node root = readNode(source, headerSize, reverseNodeMapping, reverseGroupMapping);
 
         FusionDictionary newDict = new FusionDictionary(root,
-                new FusionDictionary.DictionaryOptions(options));
+                new FusionDictionary.DictionaryOptions(options,
+                        0 != (optionsFlags & GERMAN_UMLAUT_PROCESSING_FLAG),
+                        0 != (optionsFlags & FRENCH_LIGATURE_PROCESSING_FLAG)));
         if (null != dict) {
             for (Word w : dict) {
                 newDict.add(w.mWord, w.mFrequency, w.mShortcutTargets, w.mBigrams);
