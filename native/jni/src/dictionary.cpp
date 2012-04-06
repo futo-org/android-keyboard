@@ -41,8 +41,9 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
     mWordsPriorityQueuePool = new WordsPriorityQueuePool(
             maxWords, SUB_QUEUE_MAX_WORDS, maxWordLength);
     const unsigned int headerSize = BinaryFormat::getHeaderSize(mDict);
+    const unsigned int options = BinaryFormat::getFlags(mDict);
     mUnigramDictionary = new UnigramDictionary(mDict + headerSize, typedLetterMultiplier,
-            fullWordMultiplier, maxWordLength, maxWords);
+            fullWordMultiplier, maxWordLength, maxWords, options);
     mBigramDictionary = new BigramDictionary(mDict + headerSize, maxWordLength, this);
 }
 

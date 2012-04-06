@@ -70,7 +70,7 @@ class UnigramDictionary {
     static const int MAX_ERRORS_FOR_TWO_WORDS = 1;
 
     UnigramDictionary(const uint8_t* const streamStart, int typedLetterMultipler,
-            int fullWordMultiplier, int maxWordLength, int maxWords);
+            int fullWordMultiplier, int maxWordLength, int maxWords, const unsigned int flags);
     bool isValidWord(const uint16_t* const inWord, const int length) const;
     int getBigramPosition(int pos, unsigned short *word, int offset, int length) const;
     int getSuggestions(ProximityInfo *proximityInfo, WordsPriorityQueuePool *queuePool,
@@ -143,6 +143,7 @@ class UnigramDictionary {
     const int ROOT_POS;
     const unsigned int BYTES_IN_ONE_CHAR;
     const int MAX_DIGRAPH_SEARCH_DEPTH;
+    const int FLAGS;
 
     // Flags for special processing
     // Those *must* match the flags in BinaryDictionary.Flags.ALL_FLAGS in BinaryDictionary.java
