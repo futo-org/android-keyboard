@@ -43,11 +43,11 @@ public class DictionaryFactory {
      * @param context application context for reading resources
      * @param locale the locale for which to create the dictionary
      * @param fallbackResId the id of the resource to use as a fallback if no pack is found
-     * @param flagArray an array of flags to use
+     * @param useFullEditDistance whether to use the full edit distance in suggestions
      * @return an initialized instance of DictionaryCollection
      */
     public static DictionaryCollection createDictionaryFromManager(final Context context,
-            final Locale locale, final int fallbackResId, final Flag[] flagArray) {
+            final Locale locale, final int fallbackResId, final boolean useFullEditDistance) {
         if (null == locale) {
             Log.e(TAG, "No locale defined for dictionary");
             return new DictionaryCollection(createBinaryDictionary(context, fallbackResId, locale));
@@ -59,8 +59,8 @@ public class DictionaryFactory {
         if (null != assetFileList) {
             for (final AssetFileAddress f : assetFileList) {
                 final BinaryDictionary binaryDictionary =
-                        new BinaryDictionary(context, f.mFilename, f.mOffset, f.mLength, flagArray,
-                                locale);
+                        new BinaryDictionary(context, f.mFilename, f.mOffset, f.mLength,
+                                useFullEditDistance, locale);
                 if (binaryDictionary.isValidDictionary()) {
                     dictList.add(binaryDictionary);
                 }
@@ -86,7 +86,8 @@ public class DictionaryFactory {
      */
     public static DictionaryCollection createDictionaryFromManager(final Context context,
             final Locale locale, final int fallbackResId) {
-        return createDictionaryFromManager(context, locale, fallbackResId, null);
+        return createDictionaryFromManager(context, locale, fallbackResId,
+                false /* useFullEditDistance */);
     }
 
     /**
@@ -119,8 +120,8 @@ public class DictionaryFactory {
                 Log.e(TAG, "sourceDir is not a file: " + sourceDir);
                 return null;
             }
-            return new BinaryDictionary(context,
-                    sourceDir, afd.getStartOffset(), afd.getLength(), null, locale);
+            return new BinaryDictionary(context, sourceDir, afd.getStartOffset(), afd.getLength(),
+                    false /* useFullEditDistance */, locale);
         } catch (android.content.res.Resources.NotFoundException e) {
             Log.e(TAG, "Could not find the resource. resId=" + resId);
             return null;
@@ -141,14 +142,14 @@ public class DictionaryFactory {
      * @param dictionary the file to read
      * @param startOffset the offset in the file where the data starts
      * @param length the length of the data
-     * @param flagArray the flags to use with this data for testing
+     * @param useFullEditDistance whether to use the full edit distance in suggestions
      * @return the created dictionary, or null.
      */
     public static Dictionary createDictionaryForTest(Context context, File dictionary,
-            long startOffset, long length, Flag[] flagArray, Locale locale) {
+            long startOffset, long length, final boolean useFullEditDistance, Locale locale) {
         if (dictionary.isFile()) {
             return new BinaryDictionary(context, dictionary.getAbsolutePath(), startOffset, length,
-                    flagArray, locale);
+                    useFullEditDistance, locale);
         } else {
             Log.e(TAG, "Could not find the file. path=" + dictionary.getAbsolutePath());
             return null;

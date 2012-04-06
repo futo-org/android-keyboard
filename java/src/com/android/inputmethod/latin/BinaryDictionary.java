@@ -64,7 +64,7 @@ public class BinaryDictionary extends Dictionary {
     // FULL_EDIT_DISTANCE is a flag that forces the dictionary to use full words
     // when computing edit distance, instead of the default behavior of stopping
     // the evaluation at the size the user typed.
-    public static final Flag FLAG_USE_FULL_EDIT_DISTANCE = new Flag(0x2);
+    public static final int FLAG_USE_FULL_EDIT_DISTANCE = 0x2;
 
     // Can create a new flag from extravalue :
     // public static final Flag FLAG_MYFLAG =
@@ -85,7 +85,7 @@ public class BinaryDictionary extends Dictionary {
         FLAG_REQUIRES_FRENCH_LIGATURES_PROCESSING,
     };
 
-    private int mFlags = 0;
+    private final int mFlags;
 
     /**
      * Constructor for the binary dictionary. This is supposed to be called from the
@@ -95,26 +95,20 @@ public class BinaryDictionary extends Dictionary {
      * @param filename the name of the file to read through native code.
      * @param offset the offset of the dictionary data within the file.
      * @param length the length of the binary data.
-     * @param flagArray the flags to limit the dictionary to, or null for default.
+     * @param useFullEditDistance whether to use the full edit distance in suggestions
      */
     public BinaryDictionary(final Context context,
-            final String filename, final long offset, final long length, final Flag[] flagArray,
-            Locale locale) {
+            final String filename, final long offset, final long length,
+            final boolean useFullEditDistance, final Locale locale) {
         // Note: at the moment a binary dictionary is always of the "main" type.
         // Initializing this here will help transitioning out of the scheme where
         // the Suggest class knows everything about every single dictionary.
         mDicTypeId = Suggest.DIC_MAIN;
-        // TODO: Stop relying on the state of SubtypeSwitcher, get it as a parameter
-        final RunInLocale<Void> job = new RunInLocale<Void>() {
-            @Override
-            protected Void job(Resources res) {
-                // TODO: remove this when all flags are moved to the native code
-                mFlags = Flag.initFlags(null == flagArray ? ALL_CONFIG_FLAGS : flagArray, context,
-                        SubtypeSwitcher.getInstance());
-                return null;
-            }
-        };
-        job.runInLocale(context.getResources(), locale);
+        if (useFullEditDistance) {
+            mFlags = FLAG_USE_FULL_EDIT_DISTANCE;
+        } else {
+            mFlags = 0;
+        }
         loadDictionary(filename, offset, length);
     }
 

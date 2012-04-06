@@ -68,17 +68,6 @@ public class AndroidSpellCheckerService extends SpellCheckerService
     private static final int CAPITALIZE_ALL = 2; // All caps
 
     private final static String[] EMPTY_STRING_ARRAY = new String[0];
-    private final static Flag[] USE_FULL_EDIT_DISTANCE_FLAG_ARRAY;
-    static {
-        // See BinaryDictionary.java for an explanation of these flags
-        // Specifially, ALL_CONFIG_FLAGS means that we want to consider all flags with the
-        // current dictionary configuration - for example, consider the UMLAUT flag
-        // so that it will be turned on for German dictionaries and off for others.
-        USE_FULL_EDIT_DISTANCE_FLAG_ARRAY = Arrays.copyOf(BinaryDictionary.ALL_CONFIG_FLAGS,
-                BinaryDictionary.ALL_CONFIG_FLAGS.length + 1);
-        USE_FULL_EDIT_DISTANCE_FLAG_ARRAY[BinaryDictionary.ALL_CONFIG_FLAGS.length] =
-                BinaryDictionary.FLAG_USE_FULL_EDIT_DISTANCE;
-    }
     private Map<String, DictionaryPool> mDictionaryPools =
             Collections.synchronizedMap(new TreeMap<String, DictionaryPool>());
     private Map<String, Dictionary> mUserDictionaries =
@@ -402,7 +391,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         final int fallbackResourceId = DictionaryFactory.getMainDictionaryResourceId(resources);
         final DictionaryCollection dictionaryCollection =
                 DictionaryFactory.createDictionaryFromManager(this, locale, fallbackResourceId,
-                        USE_FULL_EDIT_DISTANCE_FLAG_ARRAY);
+                        true /* useFullEditDistance */);
         final String localeStr = locale.toString();
         Dictionary userDictionary = mUserDictionaries.get(localeStr);
         if (null == userDictionary) {
