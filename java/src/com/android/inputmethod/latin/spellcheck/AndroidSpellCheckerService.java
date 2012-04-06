@@ -37,7 +37,6 @@ import com.android.inputmethod.latin.Flag;
 import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StringUtils;
-import com.android.inputmethod.latin.SubtypeLocale;
 import com.android.inputmethod.latin.SynchronouslyLoadedContactsDictionary;
 import com.android.inputmethod.latin.SynchronouslyLoadedUserDictionary;
 import com.android.inputmethod.latin.WhitelistDictionary;
@@ -326,7 +325,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 } else if (CAPITALIZE_FIRST == capitalizeType) {
                     for (int i = 0; i < mSuggestions.size(); ++i) {
                         // Likewise
-                        mSuggestions.set(i, SubtypeLocale.toTitleCase(
+                        mSuggestions.set(i, StringUtils.toTitleCase(
                                 mSuggestions.get(i).toString(), locale));
                     }
                 }

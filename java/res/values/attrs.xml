@@ -350,8 +350,8 @@
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Case">
-        <!-- This should be aligned with KeyboardSet_Element's elementName. -->
-        <attr name="keyboardSetElement" format="enum|string">
+        <!-- This should be aligned with KeyboardLayoutSet_Element's elementName. -->
+        <attr name="keyboardLayoutSetElement" format="enum|string">
             <enum name="alphabet" value="0" />
             <enum name="alphabetManualShifted" value="1" />
             <enum name="alphabetAutomaticShifted" value="2" />
@@ -403,7 +403,7 @@
         <attr name="parentStyle" format="string" />
     </declare-styleable>
 
-    <declare-styleable name="KeyboardSet_Element">
+    <declare-styleable name="KeyboardLayoutSet_Element">
         <!-- This should be aligned with KeyboardId.ELEMENT_* -->
         <attr name="elementName" format="enum">
             <enum name="alphabet" value="0" />

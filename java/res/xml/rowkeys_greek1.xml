@@ -25,7 +25,7 @@
     <!--
     <switch>
         <case
-            latin:keyboardSetElement="alphabetManualShifted|alphabetShiftLockShifted"
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"
         >
             U+0385: "΅" GREEK DIALYTIKA TONOS
             <Key

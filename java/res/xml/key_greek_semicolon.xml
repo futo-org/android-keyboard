@@ -23,7 +23,7 @@
 >
     <switch>
         <case
-            latin:keyboardSetElement="alphabetManualShifted|alphabetShiftLockShifted"
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"
         >
             <Key
                 latin:keyLabel=":"

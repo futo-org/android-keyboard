@@ -27,7 +27,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
-import com.android.inputmethod.keyboard.KeyboardSet.KeyboardSetException;
+import com.android.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetException;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
 import com.android.inputmethod.latin.DebugSettings;
@@ -76,7 +76,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     private KeyboardState mState;
 
-    private KeyboardSet mKeyboardSet;
+    private KeyboardLayoutSet mKeyboardLayoutSet;
 
     /** mIsAutoCorrectionActive indicates that auto corrected word will be input instead of
      * what user actually typed. */
@@ -129,12 +129,13 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
         if (mKeyboardTheme.mThemeId != keyboardTheme.mThemeId) {
             mKeyboardTheme = keyboardTheme;
             mThemeContext = new ContextThemeWrapper(context, keyboardTheme.mStyleId);
-            KeyboardSet.clearKeyboardCache();
+            KeyboardLayoutSet.clearKeyboardCache();
         }
     }
 
     public void loadKeyboard(EditorInfo editorInfo, SettingsValues settingsValues) {
-        final KeyboardSet.Builder builder = new KeyboardSet.Builder(mThemeContext, editorInfo);
+        final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
+                mThemeContext, editorInfo);
         builder.setScreenGeometry(mThemeContext.getResources().getConfiguration().orientation,
                 mThemeContext.getResources().getDisplayMetrics().widthPixels);
         builder.setSubtype(mSubtypeSwitcher.getCurrentSubtype());
@@ -142,10 +143,10 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 settingsValues.isVoiceKeyEnabled(editorInfo),
                 settingsValues.isVoiceKeyOnMain(),
                 settingsValues.isLanguageSwitchKeyEnabled(mThemeContext));
-        mKeyboardSet = builder.build();
+        mKeyboardLayoutSet = builder.build();
         try {
             mState.onLoadKeyboard(mResources.getString(R.string.layout_switch_back_symbols));
-        } catch (KeyboardSetException e) {
+        } catch (KeyboardLayoutSetException e) {
             Log.w(TAG, "loading keyboard failed: " + e.mKeyboardId, e.getCause());
             LatinImeLogger.logOnException(e.mKeyboardId.toString(), e.getCause());
             return;
@@ -214,43 +215,43 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetKeyboard() {
-        setKeyboard(mKeyboardSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET));
+        setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET));
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetManualShiftedKeyboard() {
-        setKeyboard(mKeyboardSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED));
+        setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED));
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetAutomaticShiftedKeyboard() {
-        setKeyboard(mKeyboardSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED));
+        setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED));
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetShiftLockedKeyboard() {
-        setKeyboard(mKeyboardSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED));
+        setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED));
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetShiftLockShiftedKeyboard() {
-        setKeyboard(mKeyboardSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED));
+        setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED));
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setSymbolsKeyboard() {
-        setKeyboard(mKeyboardSet.getKeyboard(KeyboardId.ELEMENT_SYMBOLS));
+        setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_SYMBOLS));
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setSymbolsShiftedKeyboard() {
-        setKeyboard(mKeyboardSet.getKeyboard(KeyboardId.ELEMENT_SYMBOLS_SHIFTED));
+        setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_SYMBOLS_SHIFTED));
     }
 
     // Implements {@link KeyboardState.SwitchActions}.

@@ -21,9 +21,11 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class SubtypeUtils {
     private SubtypeUtils() {
@@ -128,5 +130,19 @@ public class SubtypeUtils {
                 return imi;
         }
         throw new RuntimeException("Can not find input method id for " + packageName);
+    }
+
+    public static InputMethodSubtype findSubtypeByKeyboardLayoutSetLocale(
+            Context context, Locale locale) {
+        final String localeString = locale.toString();
+        final InputMethodInfo imi = SubtypeUtils.getInputMethodInfo(context.getPackageName());
+        final int count = imi.getSubtypeCount();
+        for (int i = 0; i < count; i++) {
+            final InputMethodSubtype subtype = imi.getSubtypeAt(i);
+            if (localeString.equals(KeyboardLayoutSet.getKeyboardLayoutSetLocaleString(subtype))) {
+                return subtype;
+            }
+        }
+        throw new RuntimeException("Can not find subtype of locale " + localeString);
     }
 }

@@ -42,7 +42,7 @@
     <!-- Functional key styles -->
     <switch>
         <case
-            latin:keyboardSetElement="alphabetManualShifted|alphabetAutomaticShifted"
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetAutomaticShifted"
         >
             <key-style
                 latin:styleName="shiftKeyStyle"
@@ -52,7 +52,7 @@
                 latin:backgroundType="stickyOff" />
         </case>
         <case
-            latin:keyboardSetElement="alphabetShiftLocked|alphabetShiftLockShifted"
+            latin:keyboardLayoutSetElement="alphabetShiftLocked|alphabetShiftLockShifted"
         >
             <key-style
                 latin:styleName="shiftKeyStyle"
@@ -82,7 +82,7 @@
         <!-- Shift + Enter in textMultiLine field. -->
         <case
             latin:isMultiLine="true"
-            latin:keyboardSetElement="alphabetManualShifted|alphabetShiftLockShifted"
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"
         >
             <key-style
                 latin:styleName="enterKeyStyle"
