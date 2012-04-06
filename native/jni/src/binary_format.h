@@ -45,6 +45,7 @@ class BinaryFormat {
 
     static int detectFormat(const uint8_t* const dict);
     static unsigned int getHeaderSize(const uint8_t* const dict);
+    static unsigned int getFlags(const uint8_t* const dict);
     static int getGroupCountAndForwardPointer(const uint8_t* const dict, int* pos);
     static uint8_t getFlagsAndForwardPointer(const uint8_t* const dict, int* pos);
     static int32_t getCharCodeAndForwardPointer(const uint8_t* const dict, int* pos);
@@ -65,6 +66,15 @@ class BinaryFormat {
             const int length);
     static int getWordAtAddress(const uint8_t* const root, const int address, const int maxDepth,
             uint16_t* outWord);
+
+    // Flags for special processing
+    // Those *must* match the flags in makedict (BinaryDictInputOutput#*_PROCESSING_FLAG) or
+    // something very bad (like, the apocalypse) will happen. Please update both at the same time.
+    enum {
+        REQUIRES_GERMAN_UMLAUT_PROCESSING = 0x1,
+        REQUIRES_FRENCH_LIGATURES_PROCESSING = 0x4
+    };
+    const static unsigned int NO_FLAGS = 0;
 };
 
 inline int BinaryFormat::detectFormat(const uint8_t* const dict) {
@@ -86,6 +96,15 @@ inline int BinaryFormat::detectFormat(const uint8_t* const dict) {
         return (dict[4] << 8) + dict[5];
     default:
         return UNKNOWN_FORMAT;
+    }
+}
+
+inline unsigned int BinaryFormat::getFlags(const uint8_t* const dict) {
+    switch (detectFormat(dict)) {
+    case 1:
+        return NO_FLAGS;
+    default:
+        return (dict[6] << 8) + dict[7];
     }
 }
 

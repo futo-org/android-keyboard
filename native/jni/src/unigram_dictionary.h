@@ -149,9 +149,7 @@ class UnigramDictionary {
     // or something very bad (like, the apocalypse) will happen.
     // Please update both at the same time.
     enum {
-        REQUIRES_GERMAN_UMLAUT_PROCESSING = 0x1,
         USE_FULL_EDIT_DISTANCE = 0x2,
-        REQUIRES_FRENCH_LIGATURES_PROCESSING = 0x4
     };
     static const digraph_t GERMAN_UMLAUT_DIGRAPHS[];
     static const digraph_t FRENCH_LIGATURES_DIGRAPHS[];

@@ -171,7 +171,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
 
     queuePool->clearAll();
     Correction* masterCorrection = correction;
-    if (REQUIRES_GERMAN_UMLAUT_PROCESSING & flags)
+    if (BinaryFormat::REQUIRES_GERMAN_UMLAUT_PROCESSING & flags)
     { // Incrementally tune the word and try all possibilities
         int codesBuffer[getCodesBufferSize(codes, codesSize)];
         int xCoordinatesBuffer[codesSize];
@@ -181,7 +181,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
                 codesSize, flags, codes, codesSize, 0, codesBuffer, masterCorrection, queuePool,
                 GERMAN_UMLAUT_DIGRAPHS,
                 sizeof(GERMAN_UMLAUT_DIGRAPHS) / sizeof(GERMAN_UMLAUT_DIGRAPHS[0]));
-    } else if (REQUIRES_FRENCH_LIGATURES_PROCESSING & flags) {
+    } else if (BinaryFormat::REQUIRES_FRENCH_LIGATURES_PROCESSING & flags) {
         int codesBuffer[getCodesBufferSize(codes, codesSize)];
         int xCoordinatesBuffer[codesSize];
         int yCoordinatesBuffer[codesSize];
