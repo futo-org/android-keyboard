@@ -23,8 +23,6 @@ import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.ResearchLogger;
-import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.util.ArrayList;
 
@@ -237,10 +235,6 @@ public class PointerTracker {
                     + " ignoreModifier=" + ignoreModifierKey
                     + " enabled=" + key.isEnabled());
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.pointerTracker_callListenerOnPressAndCheckKeyboardLayoutChange(key,
-                    ignoreModifierKey);
-        }
         if (ignoreModifierKey) {
             return false;
         }
@@ -264,10 +258,6 @@ public class PointerTracker {
                     + " x=" + x + " y=" + y
                     + " ignoreModifier=" + ignoreModifierKey + " altersCode=" + altersCode
                     + " enabled=" + key.isEnabled());
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.pointerTracker_callListenerOnCodeInput(key, x, y, ignoreModifierKey,
-                    altersCode, code);
         }
         if (ignoreModifierKey) {
             return;
@@ -294,10 +284,6 @@ public class PointerTracker {
                     + " sliding=" + withSliding + " ignoreModifier=" + ignoreModifierKey
                     + " enabled="+ key.isEnabled());
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.pointerTracker_callListenerOnRelease(key, primaryCode, withSliding,
-                    ignoreModifierKey);
-        }
         if (ignoreModifierKey) {
             return;
         }
@@ -309,9 +295,6 @@ public class PointerTracker {
     private void callListenerOnCancelInput() {
         if (DEBUG_LISTENER)
             Log.d(TAG, "onCancelInput");
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.pointerTracker_callListenerOnCancelInput();
-        }
         mListener.onCancelInput();
     }
 
@@ -496,9 +479,6 @@ public class PointerTracker {
                 if (DEBUG_MODE)
                     Log.w(TAG, "onDownEvent: ignore potential noise: time=" + deltaT
                             + " distance=" + distanceSquared);
-                if (ProductionFlag.IS_EXPERIMENTAL) {
-                    ResearchLogger.pointerTracker_onDownEvent(deltaT, distanceSquared);
-                }
                 mKeyAlreadyProcessed = true;
                 return;
             }
@@ -603,9 +583,6 @@ public class PointerTracker {
                         if (DEBUG_MODE)
                             Log.w(TAG, String.format("onMoveEvent: sudden move is translated to "
                                     + "up[%d,%d]/down[%d,%d] events", lastX, lastY, x, y));
-                        if (ProductionFlag.IS_EXPERIMENTAL) {
-                            ResearchLogger.pointerTracker_onMoveEvent(x, y, lastX, lastY);
-                        }
                         onUpEventInternal(lastX, lastY, eventTime);
                         onDownEventInternal(x, y, eventTime);
                     } else {

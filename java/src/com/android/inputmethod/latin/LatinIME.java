@@ -665,9 +665,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     + String.format("inputType=0x%08x imeOptions=0x%08x",
                             editorInfo.inputType, editorInfo.imeOptions));
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_onStartInputViewInternal(editorInfo);
-        }
         if (StringUtils.inPrivateImeOptions(null, IME_OPTION_NO_MICROPHONE_COMPAT, editorInfo)) {
             Log.w(TAG, "Deprecated private IME option specified: "
                     + editorInfo.privateImeOptions);
@@ -765,6 +762,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd,
                 composingSpanStart, composingSpanEnd);
 
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            if (ResearchLogger.UnsLogGroup.ON_UPDATE_SELECTION.isEnabled) {
+                final String s = "onUpdateSelection: oss=" + oldSelStart
+                    + ", ose=" + oldSelEnd
+                    + ", lss=" + mLastSelectionStart
+                    + ", lse=" + mLastSelectionEnd
+                    + ", nss=" + newSelStart
+                    + ", nse=" + newSelEnd
+                    + ", cs=" + composingSpanStart
+                    + ", ce=" + composingSpanEnd;
+                ResearchLogger.logUnstructured(ResearchLogger.UnsLogGroup.ON_UPDATE_SELECTION, s);
+            }
+        }
         if (DEBUG) {
             Log.i(TAG, "onUpdateSelection: oss=" + oldSelStart
                     + ", ose=" + oldSelEnd
@@ -774,11 +784,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     + ", nse=" + newSelEnd
                     + ", cs=" + composingSpanStart
                     + ", ce=" + composingSpanEnd);
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_onUpdateSelection(mLastSelectionStart, mLastSelectionEnd,
-                    oldSelStart, oldSelEnd, newSelStart, newSelEnd, composingSpanStart,
-                    composingSpanEnd);
         }
 
         // TODO: refactor the following code to be less contrived.
@@ -880,9 +885,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     Log.i(TAG, "  #" + i + ": " + applicationSpecifiedCompletions[i]);
                 }
             }
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_onDisplayCompletions(applicationSpecifiedCompletions);
         }
         if (mInputAttributes.mApplicationSpecifiedCompletionOn) {
             mApplicationSpecifiedCompletions = applicationSpecifiedCompletions;
@@ -1657,9 +1659,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void switchToKeyboardView() {
         if (DEBUG) {
             Log.d(TAG, "Switch to keyboard view.");
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_switchToKeyboardView();
         }
         View v = mKeyboardSwitcher.getKeyboardView();
         if (v != null) {
