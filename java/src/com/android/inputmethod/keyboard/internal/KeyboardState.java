@@ -20,8 +20,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.latin.ResearchLogger;
-import com.android.inputmethod.latin.define.ProductionFlag;
 
 /**
  * Keyboard state machine.
@@ -141,18 +139,12 @@ public class KeyboardState {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onSaveKeyboardState: saved=" + state + " " + this);
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_onSaveKeyboardState(this, state.toString());
-        }
     }
 
     private void onRestoreKeyboardState() {
         final SavedKeyboardState state = mSavedKeyboardState;
         if (DEBUG_EVENT) {
             Log.d(TAG, "onRestoreKeyboardState: saved=" + state + " " + this);
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_onRestoreKeyboardState(this, state.toString());
         }
         if (!state.mIsValid || state.mIsAlphabetMode) {
             setAlphabetKeyboard();
@@ -185,9 +177,6 @@ public class KeyboardState {
     private void setShifted(int shiftMode) {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setShifted: shiftMode=" + shiftModeToString(shiftMode) + " " + this);
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_setShifted(this, shiftModeToString(shiftMode));
         }
         if (!mIsAlphabetMode) return;
         final int prevShiftMode;
@@ -228,9 +217,6 @@ public class KeyboardState {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setShiftLocked: shiftLocked=" + shiftLocked + " " + this);
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_setShiftLocked(this, shiftLocked);
-        }
         if (!mIsAlphabetMode) return;
         if (shiftLocked && (!mAlphabetShiftState.isShiftLocked()
                 || mAlphabetShiftState.isShiftLockShifted())) {
@@ -245,9 +231,6 @@ public class KeyboardState {
     private void toggleAlphabetAndSymbols() {
         if (DEBUG_ACTION) {
             Log.d(TAG, "toggleAlphabetAndSymbols: " + this);
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_toggleAlphabetAndSymbols(this);
         }
         if (mIsAlphabetMode) {
             mPrevMainKeyboardWasShiftLocked = mAlphabetShiftState.isShiftLocked();
@@ -279,10 +262,6 @@ public class KeyboardState {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setAlphabetKeyboard");
         }
-
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_setAlphabetKeyboard();
-        }
         mSwitchActions.setAlphabetKeyboard();
         mIsAlphabetMode = true;
         mIsSymbolShifted = false;
@@ -293,9 +272,6 @@ public class KeyboardState {
     private void setSymbolsKeyboard() {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setSymbolsKeyboard");
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_setSymbolsKeyboard();
         }
         mSwitchActions.setSymbolsKeyboard();
         mIsAlphabetMode = false;
@@ -309,9 +285,6 @@ public class KeyboardState {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setSymbolsShiftedKeyboard");
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_setSymbolsShiftedKeyboard();
-        }
         mSwitchActions.setSymbolsShiftedKeyboard();
         mIsAlphabetMode = false;
         mIsSymbolShifted = true;
@@ -323,9 +296,6 @@ public class KeyboardState {
     public void onPressKey(int code) {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onPressKey: code=" + Keyboard.printableCode(code) + " " + this);
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_onPressKey(code, this);
         }
         if (code == Keyboard.CODE_SHIFT) {
             onPressShift();
@@ -343,9 +313,6 @@ public class KeyboardState {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onReleaseKey: code=" + Keyboard.printableCode(code)
                     + " sliding=" + withSliding + " " + this);
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_onReleaseKey(this, code, withSliding);
         }
         if (code == Keyboard.CODE_SHIFT) {
             onReleaseShift(withSliding);
@@ -378,9 +345,6 @@ public class KeyboardState {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onLongPressTimeout: code=" + Keyboard.printableCode(code) + " " + this);
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_onLongPressTimeout(code, this);
-        }
         if (mIsAlphabetMode && code == Keyboard.CODE_SHIFT) {
             if (mAlphabetShiftState.isShiftLocked()) {
                 setShiftLocked(false);
@@ -398,9 +362,6 @@ public class KeyboardState {
     public void onUpdateShiftState(boolean autoCaps) {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onUpdateShiftState: autoCaps=" + autoCaps + " " + this);
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_onUpdateShiftState(this, autoCaps);
         }
         updateAlphabetShiftState(autoCaps);
     }
@@ -520,9 +481,6 @@ public class KeyboardState {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onCancelInput: single=" + isSinglePointer + " " + this);
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_onCancelInput(isSinglePointer, this);
-        }
         // Switch back to the previous keyboard mode if the user cancels sliding input.
         if (isSinglePointer) {
             if (mSwitchState == SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL) {
@@ -553,9 +511,6 @@ public class KeyboardState {
             Log.d(TAG, "onCodeInput: code=" + Keyboard.printableCode(code)
                     + " single=" + isSinglePointer
                     + " autoCaps=" + autoCaps + " " + this);
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_onCodeInput(code, isSinglePointer, autoCaps, this);
         }
 
         switch (mSwitchState) {

@@ -555,9 +555,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
      * method on the base class if the subclass doesn't wish to handle the call.
      */
     protected boolean onLongPress(Key parentKey, PointerTracker tracker) {
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinKeyboardView_onLongPress();
-        }
         final int primaryCode = parentKey.mCode;
         if (parentKey.hasEmbeddedMoreKey()) {
             final int embeddedCode = KeySpecParser.getCode(getResources(), parentKey.mMoreKeys[0]);
@@ -698,8 +695,17 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             }
         }
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinKeyboardView_processMotionEvent(me, action, eventTime, index, id,
-                    x, y);
+            if (ResearchLogger.sIsLogging) {
+                // TODO: remove redundant calculations of size and pressure by
+                // removing UsabilityStudyLog code once the ResearchLogger is mature enough
+                final float size = me.getSize(index);
+                final float pressure = me.getPressure(index);
+                if (action != MotionEvent.ACTION_MOVE) {
+                    // Skip ACTION_MOVE events as they are logged below
+                    ResearchLogger.getInstance().logMotionEvent(action, eventTime, id, x, y,
+                            size, pressure);
+                }
+            }
         }
 
         if (mKeyTimerHandler.isInKeyRepeat()) {
@@ -767,8 +773,13 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                             + pointerSize + "," + pointerPressure);
                 }
                 if (ProductionFlag.IS_EXPERIMENTAL) {
-                    ResearchLogger.latinKeyboardView_processMotionEvent(me, action, eventTime,
-                            i, pointerId, px, py);
+                    if (ResearchLogger.sIsLogging) {
+                        // TODO: earlier comment about redundant calculations applies here too
+                        final float pointerSize = me.getSize(i);
+                        final float pointerPressure = me.getPressure(i);
+                        ResearchLogger.getInstance().logMotionEvent(action, eventTime, pointerId,
+                                px, py, pointerSize, pointerPressure);
+                    }
                 }
             }
         } else {
