@@ -32,10 +32,11 @@ import java.util.Arrays;
  * - String resource can be embedded into specification @string/name. This is done before parsing
  *   comma.
  * Each "more key" specification is one of the following:
- * - A single letter (Letter)
  * - Label optionally followed by keyOutputText or code (keyLabel|keyOutputText).
- * - Icon followed by keyOutputText or a string representation of codes
- *   (@icon/icon_name|!code/key_code)
+ * - Icon followed by keyOutputText or code (!icon/icon_name|!code/code_name)
+ *   - Icon should be a string representation of icon (!icon/icon_name).
+ *   - Code should be a code point presented by hexadecimal string prefixed with "0x".
+ *     Or a string representation of code (!code/code_name).
  * Special character, comma ',' backslash '\', and bar '|' can be escaped by '\' character.
  * Note that the character '@' and '\' are also parsed by XML parser and CSV parser as well.
  * See {@link KeyboardIconsSet} about icon_name.
@@ -52,7 +53,7 @@ public class KeySpecParser {
     private static final char SUFFIX_SLASH = '/';
     private static final String PREFIX_STRING = PREFIX_AT + "string" + SUFFIX_SLASH;
     private static final char LABEL_END = '|';
-    private static final String PREFIX_ICON = PREFIX_AT + "icon" + SUFFIX_SLASH;
+    private static final String PREFIX_ICON = "!icon/";
     private static final String PREFIX_CODE = "!code/";
     private static final String PREFIX_HEX = "0x";
     private static final String ADDITIONAL_MORE_KEY_MARKER = "%";

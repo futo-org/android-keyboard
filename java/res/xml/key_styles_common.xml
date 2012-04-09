@@ -113,7 +113,7 @@
         latin:styleName="zwnjKeyStyle"
         latin:code="0x200C"
         latin:keyIcon="iconZwnjKey"
-        latin:moreKeys="\@icon/zwjKey|&#x200D;"
+        latin:moreKeys="!icon/zwjKey|&#x200D;"
         latin:keyLabelFlags="hasPopupHint"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />

@@ -300,6 +300,7 @@
             <flag name="disableAdditionalMoreKeys" value="0x80000000" />
         </attr>
         <!-- The icon to display on the key instead of the label. -->
+        <!-- TODO: Use string format !icon/name. -->
         <attr name="keyIcon" format="enum">
             <!-- This should be aligned with the KeyboardIconsSet.ICON_* -->
             <enum name="iconUndefined" value="0" />
@@ -319,11 +320,13 @@
             <enum name="iconZwjKey" value="16" />
         </attr>
         <!-- The icon for disabled key -->
+        <!-- TODO: Use string format !icon/name. -->
         <attr name="keyIconDisabled" format="enum">
             <!-- This should be aligned with the KeyboardIconsSet.ICON_* -->
             <enum name="iconDisabledShortcutKey" value="12" />
         </attr>
         <!-- The icon to show in the popup preview. -->
+        <!-- TODO: Use string format !icon/name. -->
         <attr name="keyIconPreview" format="enum">
             <!-- This should be aligned with the KeyboardIconsSet.ICON_* -->
             <enum name="iconPreviewTabKey" value="13" />

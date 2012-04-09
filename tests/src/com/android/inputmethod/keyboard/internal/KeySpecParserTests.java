@@ -33,9 +33,9 @@ public class KeySpecParserTests extends AndroidTestCase {
     private static final String ICON_SETTINGS_NAME = "settingsKey";
 
     private static final String CODE_SETTINGS = "!code/" + CODE_SETTINGS_NAME;
-    private static final String ICON_SETTINGS = "@icon/" + ICON_SETTINGS_NAME;
+    private static final String ICON_SETTINGS = "!icon/" + ICON_SETTINGS_NAME;
     private static final String CODE_NON_EXISTING = "!code/non_existing";
-    private static final String ICON_NON_EXISTING = "@icon/non_existing";
+    private static final String ICON_NON_EXISTING = "!icon/non_existing";
 
     private int mCodeSettings;
     private int mSettingsIconId;
