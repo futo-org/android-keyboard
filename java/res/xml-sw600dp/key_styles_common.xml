@@ -42,7 +42,7 @@
         >
             <key-style
                 latin:styleName="shiftKeyStyle"
-                latin:code="@integer/key_shift"
+                latin:code="!code/key_shift"
                 latin:keyIcon="iconShiftKeyShifted"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="stickyOff" />
@@ -52,7 +52,7 @@
         >
             <key-style
                 latin:styleName="shiftKeyStyle"
-                latin:code="@integer/key_shift"
+                latin:code="!code/key_shift"
                 latin:keyIcon="iconShiftKeyShifted"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="stickyOn" />
@@ -60,7 +60,7 @@
         <default>
             <key-style
                 latin:styleName="shiftKeyStyle"
-                latin:code="@integer/key_shift"
+                latin:code="!code/key_shift"
                 latin:keyIcon="iconShiftKey"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="stickyOff" />
@@ -68,7 +68,7 @@
     </switch>
     <key-style
         latin:styleName="deleteKeyStyle"
-        latin:code="@integer/key_delete"
+        latin:code="!code/key_delete"
         latin:keyIcon="iconDeleteKey"
         latin:keyActionFlags="isRepeatable|noKeyPreview"
         latin:backgroundType="functional" />
@@ -76,7 +76,7 @@
         latin:keyboardLayout="@xml/key_styles_enter" />
     <key-style
         latin:styleName="spaceKeyStyle"
-        latin:code="@integer/key_space"
+        latin:code="!code/key_space"
         latin:keyActionFlags="noKeyPreview" />
     <!-- U+200C: ZERO WIDTH NON-JOINER
          U+200D: ZERO WIDTH JOINER -->
@@ -95,7 +95,7 @@
         latin:moreKeys="@string/more_keys_for_smiley" />
     <key-style
         latin:styleName="shortcutKeyStyle"
-        latin:code="@integer/key_shortcut"
+        latin:code="!code/key_shortcut"
         latin:keyIcon="iconShortcutKey"
         latin:keyIconDisabled="iconDisabledShortcutKey"
         latin:keyLabelFlags="preserveCase"
@@ -103,7 +103,7 @@
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="settingsKeyStyle"
-        latin:code="@integer/key_settings"
+        latin:code="!code/key_settings"
         latin:keyIcon="iconSettingsKey"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
         latin:backgroundType="functional" />
@@ -114,7 +114,7 @@
         >
             <key-style
                 latin:styleName="tabKeyStyle"
-                latin:code="@integer/key_action_previous"
+                latin:code="!code/key_action_previous"
                 latin:keyIcon="iconTabKey"
                 latin:keyIconPreview="iconPreviewTabKey"
                 latin:backgroundType="functional" />
@@ -122,7 +122,7 @@
         <default>
             <key-style
                 latin:styleName="tabKeyStyle"
-                latin:code="@integer/key_tab"
+                latin:code="!code/key_tab"
                 latin:keyIcon="iconTabKey"
                 latin:keyIconPreview="iconPreviewTabKey"
                 latin:backgroundType="functional" />
@@ -130,28 +130,28 @@
     </switch>
     <key-style
         latin:styleName="toSymbolKeyStyle"
-        latin:code="@integer/key_switch_alpha_symbol"
+        latin:code="!code/key_switch_alpha_symbol"
         latin:keyLabel="@string/label_to_symbol_key"
         latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="toAlphaKeyStyle"
-        latin:code="@integer/key_switch_alpha_symbol"
+        latin:code="!code/key_switch_alpha_symbol"
         latin:keyLabel="@string/label_to_alpha_key"
         latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="toMoreSymbolKeyStyle"
-        latin:code="@integer/key_shift"
+        latin:code="!code/key_shift"
         latin:keyLabel="@string/label_to_more_symbol_for_tablet_key"
         latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="backFromMoreSymbolKeyStyle"
-        latin:code="@integer/key_shift"
+        latin:code="!code/key_shift"
         latin:keyLabel="@string/label_to_symbol_key"
         latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview"

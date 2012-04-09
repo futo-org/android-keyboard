@@ -19,7 +19,7 @@ package com.android.inputmethod.keyboard;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 
-import com.android.inputmethod.keyboard.internal.KeySpecParser;
+import com.android.inputmethod.keyboard.internal.KeySpecParser.MoreKeySpec;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StringUtils;
@@ -301,8 +301,8 @@ public class MoreKeysKeyboard extends Keyboard {
                     ? view.mKeyDrawParams.mKeyLabelSize
                     : view.mKeyDrawParams.mKeyLetterSize);
             int maxWidth = minKeyWidth;
-            for (String moreKeySpec : parentKey.mMoreKeys) {
-                final String label = KeySpecParser.getLabel(moreKeySpec);
+            for (final MoreKeySpec spec : parentKey.mMoreKeys) {
+                final String label = spec.mLabel;
                 // If the label is single letter, minKeyWidth is enough to hold the label.
                 if (label != null && StringUtils.codePointCount(label) > 1) {
                     final int width = (int)view.getLabelWidth(label, paint) + padding;
@@ -336,13 +336,13 @@ public class MoreKeysKeyboard extends Keyboard {
             // label's code point count.
             final int moreKeyFlags = mParentKey.hasLabelsInMoreKeys() ? 0
                     : Key.LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO;
-            final String[] moreKeys = mParentKey.mMoreKeys;
+            final MoreKeySpec[] moreKeys = mParentKey.mMoreKeys;
             for (int n = 0; n < moreKeys.length; n++) {
-                final String moreKeySpec = moreKeys[n];
+                final MoreKeySpec moreKeySpec = moreKeys[n];
                 final int row = n / params.mNumColumns;
                 final int x = params.getX(n, row);
                 final int y = params.getY(row);
-                final Key key = new Key(mResources, params, moreKeySpec, x, y,
+                final Key key = new Key(params, moreKeySpec, x, y,
                         params.mDefaultKeyWidth, params.mDefaultRowHeight, moreKeyFlags);
                 params.markAsEdgeKey(key, row);
                 params.onAddKey(key);

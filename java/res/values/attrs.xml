@@ -229,10 +229,14 @@
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Key">
-        <!-- The unicode value that this key outputs. -->
-        <attr name="code" format="integer" />
-        <!-- The alternate unicode value that this key outputs while typing. -->
-        <attr name="altCode" format="integer" />
+        <!-- The unicode value that this key outputs.
+             Code value represented in hexadecimal prefixed with "0x" or code value reference using
+             "!code/<code_name>" notation. -->
+        <attr name="code" format="string" />
+        <!-- The alternate unicode value that this key outputs while typing.
+             Code value represented in hexadecimal prefixed with "0x" or code value reference using
+             "!code/<code_name>" notation. -->
+        <attr name="altCode" format="string" />
         <!-- The keys to display in the more keys keyboard. -->
         <attr name="moreKeys" format="string" />
         <!-- The keys to display in the more keys keyboard in addition to moreKeys.

@@ -26,6 +26,7 @@ import android.util.Log;
 import android.util.Xml;
 
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
+import com.android.inputmethod.keyboard.internal.KeySpecParser.MoreKeySpec;
 import com.android.inputmethod.keyboard.internal.KeyStyles;
 import com.android.inputmethod.keyboard.internal.KeyStyles.KeyStyle;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
@@ -104,7 +105,7 @@ public class Key {
     /** Text to output when pressed. This can be multiple characters, like ".com" */
     public final CharSequence mOutputText;
     /** More keys */
-    public final String[] mMoreKeys;
+    public final MoreKeySpec[] mMoreKeys;
     /** More keys column number and flags */
     private final int mMoreKeysColumnAndFlags;
     private static final int MORE_KEYS_COLUMN_MASK = 0x000000ff;
@@ -140,15 +141,12 @@ public class Key {
     private boolean mEnabled = true;
 
     /**
-     * This constructor is being used only for key in more keys keyboard.
+     * This constructor is being used only for keys in more keys keyboard.
      */
-    public Key(Resources res, Keyboard.Params params, String moreKeySpec,
-            int x, int y, int width, int height, int labelFlags) {
-        this(params, KeySpecParser.getLabel(moreKeySpec), null,
-                KeySpecParser.getIconId(moreKeySpec),
-                KeySpecParser.getCode(res, moreKeySpec),
-                KeySpecParser.getOutputText(moreKeySpec),
-                x, y, width, height, labelFlags);
+    public Key(Keyboard.Params params, MoreKeySpec moreKeySpec, int x, int y, int width, int height,
+            int labelFlags) {
+        this(params, moreKeySpec.mLabel, null, moreKeySpec.mIconId, moreKeySpec.mCode,
+                moreKeySpec.mOutputText, x, y, width, height, labelFlags);
     }
 
     /**
@@ -278,13 +276,15 @@ public class Key {
         moreKeys = KeySpecParser.insertAddtionalMoreKeys(moreKeys, additionalMoreKeys);
         if (moreKeys != null) {
             actionFlags |= ACTION_FLAGS_ENABLE_LONG_PRESS;
+            mMoreKeys = new MoreKeySpec[moreKeys.length];
             for (int i = 0; i < moreKeys.length; i++) {
-                moreKeys[i] = adjustCaseOfStringForKeyboardId(
-                        moreKeys[i], preserveCase, params.mId);
+                mMoreKeys[i] = new MoreKeySpec(adjustCaseOfStringForKeyboardId(
+                        moreKeys[i], preserveCase, params.mId), params.mCodesSet);
             }
+        } else {
+            mMoreKeys = null;
         }
         mActionFlags = actionFlags;
-        mMoreKeys = moreKeys;
 
         if ((mLabelFlags & LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL) != 0) {
             mLabel = params.mId.mCustomActionLabel;
@@ -300,8 +300,9 @@ public class Key {
         }
         String outputText = adjustCaseOfStringForKeyboardId(style.getString(
                 keyAttr, R.styleable.Keyboard_Key_keyOutputText), preserveCase, params.mId);
-        final int code = style.getInt(
-                keyAttr, R.styleable.Keyboard_Key_code, Keyboard.CODE_UNSPECIFIED);
+        final int code = KeySpecParser.parseCode(style.getString(
+                keyAttr, R.styleable.Keyboard_Key_code),
+                params.mCodesSet, Keyboard.CODE_UNSPECIFIED);
         // Choose the first letter of the label as primary code if not specified.
         if (code == Keyboard.CODE_UNSPECIFIED && TextUtils.isEmpty(outputText)
                 && !TextUtils.isEmpty(mLabel)) {
@@ -331,9 +332,10 @@ public class Key {
             mCode = adjustCaseOfCodeForKeyboardId(code, preserveCase, params.mId);
         }
         mOutputText = outputText;
-        mAltCode = adjustCaseOfCodeForKeyboardId(style.getInt(keyAttr,
-                R.styleable.Keyboard_Key_altCode, Keyboard.CODE_UNSPECIFIED), preserveCase,
-                params.mId);
+        mAltCode = adjustCaseOfCodeForKeyboardId(KeySpecParser.parseCode(style.getString(
+                keyAttr, R.styleable.Keyboard_Key_altCode),
+                params.mCodesSet, Keyboard.CODE_UNSPECIFIED),
+                preserveCase, params.mId);
         mHashCode = computeHashCode(this);
 
         keyAttr.recycle();

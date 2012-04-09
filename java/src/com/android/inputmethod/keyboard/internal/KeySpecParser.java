@@ -21,7 +21,6 @@ import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StringUtils;
 
 import java.util.ArrayList;
@@ -35,7 +34,8 @@ import java.util.Arrays;
  * Each "more key" specification is one of the following:
  * - A single letter (Letter)
  * - Label optionally followed by keyOutputText or code (keyLabel|keyOutputText).
- * - Icon followed by keyOutputText or code (@icon/icon_name|@integer/key_code)
+ * - Icon followed by keyOutputText or a string representation of codes
+ *   (@icon/icon_name|!code/key_code)
  * Special character, comma ',' backslash '\', and bar '|' can be escaped by '\' character.
  * Note that the character '@' and '\' are also parsed by XML parser and CSV parser as well.
  * See {@link KeyboardIconsSet} about icon_name.
@@ -53,8 +53,23 @@ public class KeySpecParser {
     private static final String PREFIX_STRING = PREFIX_AT + "string" + SUFFIX_SLASH;
     private static final char LABEL_END = '|';
     private static final String PREFIX_ICON = PREFIX_AT + "icon" + SUFFIX_SLASH;
-    private static final String PREFIX_CODE = PREFIX_AT + "integer" + SUFFIX_SLASH;
+    private static final String PREFIX_CODE = "!code/";
+    private static final String PREFIX_HEX = "0x";
     private static final String ADDITIONAL_MORE_KEY_MARKER = "%";
+
+    public static class MoreKeySpec {
+        public final int mCode;
+        public final String mLabel;
+        public final String mOutputText;
+        public final int mIconId;
+
+        public MoreKeySpec(final String moreKeySpec, final KeyboardCodesSet codesSet) {
+            mCode = getCode(moreKeySpec, codesSet);
+            mLabel = getLabel(moreKeySpec);
+            mOutputText = getOutputText(moreKeySpec);
+            mIconId = getIconId(moreKeySpec);
+        }
+    }
 
     private KeySpecParser() {
         // Intentional empty constructor for utility class.
@@ -144,7 +159,7 @@ public class KeySpecParser {
         return parseEscape(moreKeySpec.substring(end + /* LABEL_END */1));
     }
 
-    public static String getOutputText(String moreKeySpec) {
+    private static String getOutputText(String moreKeySpec) {
         if (hasCode(moreKeySpec)) {
             return null;
         }
@@ -168,17 +183,13 @@ public class KeySpecParser {
         return (StringUtils.codePointCount(label) == 1) ? null : label;
     }
 
-    public static int getCode(Resources res, String moreKeySpec) {
+    private static int getCode(String moreKeySpec, KeyboardCodesSet codesSet) {
         if (hasCode(moreKeySpec)) {
             final int end = indexOfLabelEnd(moreKeySpec, 0);
             if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0) {
                 throw new KeySpecParserError("Multiple " + LABEL_END + ": " + moreKeySpec);
             }
-            final int resId = getResourceId(res,
-                    moreKeySpec.substring(end + /* LABEL_END */1 + /* PREFIX_AT */1),
-                    R.string.english_ime_name);
-            final int code = res.getInteger(resId);
-            return code;
+            return parseCode(moreKeySpec.substring(end + 1), codesSet, Keyboard.CODE_UNSPECIFIED);
         }
         final String outputText = getOutputTextInternal(moreKeySpec);
         if (outputText != null) {
@@ -197,7 +208,18 @@ public class KeySpecParser {
         return Keyboard.CODE_OUTPUT_TEXT;
     }
 
-    public static int getIconId(String moreKeySpec) {
+    public static int parseCode(String text, KeyboardCodesSet codesSet, int defCode) {
+        if (text == null) return defCode;
+        if (text.startsWith(PREFIX_CODE)) {
+            return codesSet.getCode(text.substring(PREFIX_CODE.length()));
+        } else if (text.startsWith(PREFIX_HEX)) {
+            return Integer.parseInt(text.substring(PREFIX_HEX.length()), 16);
+        } else {
+            return Integer.parseInt(text);
+        }
+    }
+
+    private static int getIconId(String moreKeySpec) {
         if (hasIcon(moreKeySpec)) {
             final int end = moreKeySpec.indexOf(LABEL_END, PREFIX_ICON.length());
             final String name = moreKeySpec.substring(PREFIX_ICON.length(), end);

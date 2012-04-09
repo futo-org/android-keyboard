@@ -41,7 +41,6 @@ import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
-import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -560,7 +559,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
         final int primaryCode = parentKey.mCode;
         if (parentKey.hasEmbeddedMoreKey()) {
-            final int embeddedCode = KeySpecParser.getCode(getResources(), parentKey.mMoreKeys[0]);
+            final int embeddedCode = parentKey.mMoreKeys[0].mCode;
             tracker.onLongPressed();
             invokeCodeInput(embeddedCode);
             invokeReleaseKey(primaryCode);

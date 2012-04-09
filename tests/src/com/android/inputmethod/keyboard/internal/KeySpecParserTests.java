@@ -16,25 +16,25 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import android.content.res.Resources;
 import android.test.AndroidTestCase;
 
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.latin.R;
+import com.android.inputmethod.keyboard.internal.KeySpecParser.MoreKeySpec;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 public class KeySpecParserTests extends AndroidTestCase {
-    private Resources mRes;
+    private final KeyboardCodesSet mCodesSet = new KeyboardCodesSet();
 
     private static final int ICON_UNDEFINED = KeyboardIconsSet.ICON_UNDEFINED;
 
-    private static final String CODE_SETTINGS_RES = "integer/key_settings";
+    private static final String CODE_SETTINGS_NAME = "key_settings";
     private static final String ICON_SETTINGS_NAME = "settingsKey";
 
-    private static final String CODE_SETTINGS = "@" + CODE_SETTINGS_RES;
+    private static final String CODE_SETTINGS = "!code/" + CODE_SETTINGS_NAME;
     private static final String ICON_SETTINGS = "@icon/" + ICON_SETTINGS_NAME;
-    private static final String CODE_NON_EXISTING = "@integer/non_existing";
+    private static final String CODE_NON_EXISTING = "!code/non_existing";
     private static final String ICON_NON_EXISTING = "@icon/non_existing";
 
     private int mCodeSettings;
@@ -42,28 +42,18 @@ public class KeySpecParserTests extends AndroidTestCase {
 
     @Override
     protected void setUp() {
-        Resources res = getContext().getResources();
-        mRes = res;
-
-        final String packageName = res.getResourcePackageName(R.string.english_ime_name);
-        final int codeId = res.getIdentifier(CODE_SETTINGS_RES, null, packageName);
-        mCodeSettings = res.getInteger(codeId);
+        mCodesSet.setLocale(Locale.US);
+        mCodeSettings = mCodesSet.getCode(CODE_SETTINGS_NAME);
         mSettingsIconId = KeyboardIconsSet.getIconId(ICON_SETTINGS_NAME);
     }
 
     private void assertParser(String message, String moreKeySpec, String expectedLabel,
             String expectedOutputText, int expectedIcon, int expectedCode) {
-        String actualLabel = KeySpecParser.getLabel(moreKeySpec);
-        assertEquals(message + ": label:", expectedLabel, actualLabel);
-
-        String actualOutputText = KeySpecParser.getOutputText(moreKeySpec);
-        assertEquals(message + ": ouptputText:", expectedOutputText, actualOutputText);
-
-        int actualIcon = KeySpecParser.getIconId(moreKeySpec);
-        assertEquals(message + ": icon:", expectedIcon, actualIcon);
-
-        int actualCode = KeySpecParser.getCode(mRes, moreKeySpec);
-        assertEquals(message + ": codes value:", expectedCode, actualCode);
+        final MoreKeySpec spec = new MoreKeySpec(moreKeySpec, mCodesSet);
+        assertEquals(message + ": label:", expectedLabel, spec.mLabel);
+        assertEquals(message + ": ouptputText:", expectedOutputText, spec.mOutputText);
+        assertEquals(message + ": icon:", expectedIcon, spec.mIconId);
+        assertEquals(message + ": codes value:", expectedCode, spec.mCode);
     }
 
     private void assertParserError(String message, String moreKeySpec, String expectedLabel,

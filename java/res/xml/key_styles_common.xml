@@ -46,7 +46,7 @@
         >
             <key-style
                 latin:styleName="shiftKeyStyle"
-                latin:code="@integer/key_shift"
+                latin:code="!code/key_shift"
                 latin:keyIcon="iconShiftKeyShifted"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="stickyOff" />
@@ -56,7 +56,7 @@
         >
             <key-style
                 latin:styleName="shiftKeyStyle"
-                latin:code="@integer/key_shift"
+                latin:code="!code/key_shift"
                 latin:keyIcon="iconShiftKeyShifted"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="stickyOn" />
@@ -64,7 +64,7 @@
         <default>
             <key-style
                 latin:styleName="shiftKeyStyle"
-                latin:code="@integer/key_shift"
+                latin:code="!code/key_shift"
                 latin:keyIcon="iconShiftKey"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="stickyOff" />
@@ -72,7 +72,7 @@
     </switch>
     <key-style
         latin:styleName="deleteKeyStyle"
-        latin:code="@integer/key_delete"
+        latin:code="!code/key_delete"
         latin:keyIcon="iconDeleteKey"
         latin:keyActionFlags="isRepeatable|noKeyPreview"
         latin:backgroundType="functional" />
@@ -104,7 +104,7 @@
     </switch>
     <key-style
         latin:styleName="spaceKeyStyle"
-        latin:code="@integer/key_space"
+        latin:code="!code/key_space"
         latin:keyActionFlags="noKeyPreview|enableLongPress"
         latin:backgroundType="functional" />
     <!-- U+200C: ZERO WIDTH NON-JOINER
@@ -119,23 +119,23 @@
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="shortcutKeyStyle"
-        latin:code="@integer/key_shortcut"
+        latin:code="!code/key_shortcut"
         latin:keyIcon="iconShortcutKey"
         latin:keyIconDisabled="iconDisabledShortcutKey"
         latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
-        latin:altCode="@integer/key_space"
+        latin:altCode="!code/key_space"
         latin:parentStyle="f1MoreKeysStyle" />
     <key-style
         latin:styleName="languageSwitchKeyStyle"
-        latin:code="@integer/key_language_switch"
+        latin:code="!code/key_language_switch"
         latin:keyIcon="iconLanguageSwitchKey"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping|enableLongPress"
-        latin:altCode="@integer/key_space"
+        latin:altCode="!code/key_space"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="tabKeyStyle"
-        latin:code="@integer/key_tab"
+        latin:code="!code/key_tab"
         latin:keyIcon="iconTabKey"
         latin:keyIconPreview="iconPreviewTabKey"
         latin:backgroundType="functional" />
@@ -143,7 +143,7 @@
          laid out as normal letter key. -->
     <key-style
         latin:styleName="nonSpecialBackgroundTabKeyStyle"
-        latin:code="@integer/key_tab"
+        latin:code="!code/key_tab"
         latin:keyIcon="iconTabKey"
         latin:keyIconPreview="iconPreviewTabKey" />
     <switch>
@@ -156,7 +156,7 @@
         >
             <key-style
                 latin:styleName="toSymbolKeyStyle"
-                latin:code="@integer/key_switch_alpha_symbol"
+                latin:code="!code/key_switch_alpha_symbol"
                 latin:keyIcon="iconShortcutForLabel"
                 latin:keyLabel="@string/label_to_symbol_with_microphone_key"
                 latin:keyLabelFlags="withIconRight|preserveCase"
@@ -166,7 +166,7 @@
         <default>
             <key-style
                 latin:styleName="toSymbolKeyStyle"
-                latin:code="@integer/key_switch_alpha_symbol"
+                latin:code="!code/key_switch_alpha_symbol"
                 latin:keyLabel="@string/label_to_symbol_key"
                 latin:keyLabelFlags="preserveCase"
                 latin:keyActionFlags="noKeyPreview"
@@ -175,21 +175,21 @@
     </switch>
     <key-style
         latin:styleName="toAlphaKeyStyle"
-        latin:code="@integer/key_switch_alpha_symbol"
+        latin:code="!code/key_switch_alpha_symbol"
         latin:keyLabel="@string/label_to_alpha_key"
         latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="toMoreSymbolKeyStyle"
-        latin:code="@integer/key_shift"
+        latin:code="!code/key_shift"
         latin:keyLabel="@string/label_to_more_symbol_key"
         latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="backFromMoreSymbolKeyStyle"
-        latin:code="@integer/key_shift"
+        latin:code="!code/key_shift"
         latin:keyLabel="@string/label_to_symbol_key"
         latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview"

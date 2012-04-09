@@ -28,6 +28,7 @@ import android.util.Xml;
 import android.view.InflateException;
 
 import com.android.inputmethod.keyboard.internal.KeyStyles;
+import com.android.inputmethod.keyboard.internal.KeyboardCodesSet;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -238,6 +239,7 @@ public class Keyboard {
         public final ArrayList<Key> mShiftKeys = new ArrayList<Key>();
         public final ArrayList<Key> mAltCodeKeysWhileTyping = new ArrayList<Key>();
         public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
+        public final KeyboardCodesSet mCodesSet = new KeyboardCodesSet();
 
         public KeyboardLayoutSet.KeysCache mKeysCache;
 
@@ -775,6 +777,7 @@ public class Keyboard {
 
                 params.mThemeId = keyboardAttr.getInt(R.styleable.Keyboard_themeId, 0);
                 params.mIconsSet.loadIcons(keyboardAttr);
+                params.mCodesSet.setLocale(params.mId.mLocale);
 
                 final int resourceId = keyboardAttr.getResourceId(
                         R.styleable.Keyboard_touchPositionCorrectionData, 0);

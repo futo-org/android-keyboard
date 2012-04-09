@@ -99,12 +99,12 @@
     <!-- Only for non-tablet device -->
     <key-style
         latin:styleName="numPhoneToSymbolKeyStyle"
-        latin:code="@integer/key_switch_alpha_symbol"
+        latin:code="!code/key_switch_alpha_symbol"
         latin:keyLabel="@string/label_to_phone_symbols_key"
         latin:parentStyle="numModeKeyStyle" />
     <key-style
         latin:styleName="numPhoneToNumericKeyStyle"
-        latin:code="@integer/key_switch_alpha_symbol"
+        latin:code="!code/key_switch_alpha_symbol"
         latin:keyLabel="@string/label_to_phone_numeric_key"
         latin:parentStyle="numModeKeyStyle" />
     <!-- U+002C: "," COMMA -->
@@ -127,7 +127,7 @@
         latin:parentStyle="tabKeyStyle" />
     <key-style
         latin:styleName="numSpaceKeyStyle"
-        latin:code="@integer/key_space"
+        latin:code="!code/key_space"
         latin:keyIcon="iconSpaceKeyForNumberLayout"
         latin:keyActionFlags="enableLongPress"
         latin:parentStyle="numKeyBaseStyle" />

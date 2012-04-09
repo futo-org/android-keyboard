@@ -92,7 +92,7 @@
     <!-- Enter key style -->
     <key-style
         latin:styleName="defaultEnterKeyStyle"
-        latin:code="@integer/key_enter"
+        latin:code="!code/key_enter"
         latin:keyIcon="iconReturnKey"
         latin:keyLabelFlags="autoXScale|preserveCase"
         latin:keyActionFlags="noKeyPreview"
@@ -100,7 +100,7 @@
         latin:parentStyle="navigateMoreKeysStyle" />
     <key-style
         latin:styleName="defaultActionKeyStyle"
-        latin:code="@integer/key_action_enter"
+        latin:code="!code/key_action_enter"
         latin:keyIcon="iconUndefined"
         latin:backgroundType="action"
         latin:parentStyle="defaultEnterKeyStyle" />
