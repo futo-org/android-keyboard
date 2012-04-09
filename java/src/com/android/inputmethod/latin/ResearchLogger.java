@@ -277,11 +277,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         private static final boolean ALPHABETSHIFTSTATE_SETSHIFTLOCKED_ENABLED = DEFAULT_ENABLED;
         private static final boolean ALPHABETSHIFTSTATE_SETAUTOMATICSHIFTED_ENABLED
                 = DEFAULT_ENABLED;
-        private static final boolean AUTOCORRECTION_HASAUTOCORRECTIONFORBINARYDICTIONARY_ENABLED
-                = DEFAULT_ENABLED;
-        private static final boolean
-                AUTOCORRECTION_HASAUTOCORRECTIONFORBINARYDICTIONARY_BYSTHRESHOLD_ENABLED
-                = DEFAULT_ENABLED;
         private static final boolean KEYBOARDSTATE_ONCANCELINPUT_ENABLED = DEFAULT_ENABLED;
         private static final boolean KEYBOARDSTATE_ONCODEINPUT_ENABLED = DEFAULT_ENABLED;
         private static final boolean KEYBOARDSTATE_ONLONGPRESSTIMEOUT_ENABLED = DEFAULT_ENABLED;
@@ -317,6 +312,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         private static final boolean POINTERTRACKER_ONMOVEEVENT_ENABLED = DEFAULT_ENABLED;
         private static final boolean SUDDENJUMPINGTOUCHEVENTHANDLER_ONTOUCHEVENT_ENABLED
                 = DEFAULT_ENABLED;
+        private static final boolean SUGGESTIONSVIEW_SETSUGGESTIONS_ENABLED = DEFAULT_ENABLED;
     }
 
     public static void logUnstructured(String logGroup, final String details) {
@@ -394,25 +390,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (UnsLogGroup.ALPHABETSHIFTSTATE_SETAUTOMATICSHIFTED_ENABLED) {
             final String s = "setAutomaticShifted: " + oldState + " > " + alphabetShiftState;
             logUnstructured("AlphabetShiftState_setAutomaticShifted", s);
-        }
-    }
-
-    public static void autoCorrection_hasAutoCorrectionForBinaryDictionary(
-            final CharSequence consideredWord, final double autoCorrectionThreshold,
-            final CharSequence autoCorrectionSuggestion, final int autoCorrectionSuggestionScore,
-            final double normalizedScore) {
-        if (UnsLogGroup.AUTOCORRECTION_HASAUTOCORRECTIONFORBINARYDICTIONARY_ENABLED) {
-            final String s = "Normalized " + consideredWord + ","
-                    + autoCorrectionSuggestion + "," + autoCorrectionSuggestionScore
-                    + ", " + normalizedScore + "(" + autoCorrectionThreshold + ")";
-            logUnstructured("AutoCorrection_hasAutoCorrectionForBinaryDictionary", s);
-        }
-    }
-
-    public static void autoCorrection_hasAutoCorrectionForBinaryDictionary_bySthreshold() {
-        if (UnsLogGroup.AUTOCORRECTION_HASAUTOCORRECTIONFORBINARYDICTIONARY_BYSTHRESHOLD_ENABLED) {
-            final String s = "Auto corrected by S-threshold.";
-            logUnstructured("AutoCorrection_hasAutoCorrectionForBinaryDictionar_bySthreshold", s);
         }
     }
 
@@ -664,6 +641,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (UnsLogGroup.SUDDENJUMPINGTOUCHEVENTHANDLER_ONTOUCHEVENT_ENABLED) {
             final String s = "onTouchEvent: ignore sudden jump " + me;
             logUnstructured("SuddenJumpingTouchEventHandler_onTouchEvent", s);
+        }
+    }
+
+    public static void suggestionsView_setSuggestions(SuggestedWords mSuggestedWords) {
+        if (UnsLogGroup.SUGGESTIONSVIEW_SETSUGGESTIONS_ENABLED) {
+            logUnstructured("SuggestionsView_setSuggestions", mSuggestedWords.toString());
         }
     }
 }
