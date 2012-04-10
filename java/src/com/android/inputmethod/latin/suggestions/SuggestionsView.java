@@ -59,10 +59,12 @@ import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.keyboard.ViewLayoutUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.ResearchLogger;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.Utils;
+import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.util.ArrayList;
 
@@ -663,6 +665,9 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         clear();
         mSuggestedWords = suggestedWords;
         mParams.layout(mSuggestedWords, mSuggestionsStrip, this, getWidth());
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.suggestionsView_setSuggestions(mSuggestedWords);
+        }
     }
 
     public int setMoreSuggestionsHeight(int remainingHeight) {

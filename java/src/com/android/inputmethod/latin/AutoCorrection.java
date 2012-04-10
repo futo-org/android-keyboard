@@ -21,8 +21,6 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.android.inputmethod.latin.define.ProductionFlag;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -117,18 +115,9 @@ public class AutoCorrection {
                         + autoCorrectionSuggestionScore + ", " + normalizedScore
                         + "(" + autoCorrectionThreshold + ")");
             }
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.autoCorrection_hasAutoCorrectionForBinaryDictionary(consideredWord,
-                        autoCorrectionThreshold, autoCorrectionSuggestion.toString(),
-                        autoCorrectionSuggestionScore, normalizedScore);
-            }
             if (normalizedScore >= autoCorrectionThreshold) {
                 if (DBG) {
                     Log.d(TAG, "Auto corrected by S-threshold.");
-                }
-                if (ProductionFlag.IS_EXPERIMENTAL) {
-                    ResearchLogger
-                            .autoCorrection_hasAutoCorrectionForBinaryDictionary_bySthreshold();
                 }
                 return true;
             }
