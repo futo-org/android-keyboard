@@ -19,17 +19,16 @@ package com.android.inputmethod.keyboard.internal;
 import com.android.inputmethod.keyboard.Keyboard;
 
 import java.util.HashMap;
-import java.util.Locale;
 
 public class KeyboardCodesSet {
-    private static final HashMap<Locale, int[]> sLocaleToCodesMap =
-            new HashMap<Locale, int[]>();
+    private static final HashMap<String, int[]> sLanguageToCodesMap =
+            new HashMap<String, int[]>();
     private static final HashMap<String, Integer> sNameToIdMap = new HashMap<String, Integer>();
 
     private int[] mCodes = DEFAULT;
 
-    public void setLocale(final Locale locale) {
-        final int[] codes = sLocaleToCodesMap.get(locale);
+    public void setLanguage(final String language) {
+        final int[] codes = sLanguageToCodesMap.get(language);
         mCodes = (codes != null) ? codes : DEFAULT;
     }
 
@@ -85,6 +84,7 @@ public class KeyboardCodesSet {
         Keyboard.CODE_SHORTCUT,
         Keyboard.CODE_ACTION_ENTER,
         Keyboard.CODE_ACTION_NEXT,
+        Keyboard.CODE_ACTION_PREVIOUS,
         Keyboard.CODE_LANGUAGE_SWITCH,
         Keyboard.CODE_UNSPECIFIED,
         CODE_LEFT_PARENTHESIS,
@@ -111,6 +111,7 @@ public class KeyboardCodesSet {
         DEFAULT[10],
         DEFAULT[11],
         DEFAULT[12],
+        DEFAULT[13],
         CODE_RIGHT_PARENTHESIS,
         CODE_LEFT_PARENTHESIS,
         CODE_GREATER_THAN_SIGN,
@@ -121,12 +122,12 @@ public class KeyboardCodesSet {
         CODE_LEFT_CURLY_BRACKET,
     };
 
-    private static final String LANGUAGE_DEFAULT = null;
+    private static final String LANGUAGE_DEFAULT = "DEFAULT";
     private static final String LANGUAGE_ARABIC = "ar";
     private static final String LANGUAGE_PERSIAN = "fa";
     private static final String LANGUAGE_HEBREW = "iw";
 
-    private static final Object[] LOCALE_AND_CODES = {
+    private static final Object[] LANGUAGE_AND_CODES = {
         LANGUAGE_DEFAULT, DEFAULT,
         LANGUAGE_ARABIC, RTL,
         LANGUAGE_PERSIAN, RTL,
@@ -138,12 +139,10 @@ public class KeyboardCodesSet {
             sNameToIdMap.put(ID_TO_NAME[i], i);
         }
 
-        for (int i = 0; i < LOCALE_AND_CODES.length; i += 2) {
-            final String localeString = (String)LOCALE_AND_CODES[i];
-            final int[] codes = (int[])LOCALE_AND_CODES[i + 1];
-            final Locale locale = (localeString == LANGUAGE_DEFAULT)
-                    ? null : new Locale(localeString);
-            sLocaleToCodesMap.put(locale, codes);
+        for (int i = 0; i < LANGUAGE_AND_CODES.length; i += 2) {
+            final String language = (String)LANGUAGE_AND_CODES[i];
+            final int[] codes = (int[])LANGUAGE_AND_CODES[i + 1];
+            sLanguageToCodesMap.put(language, codes);
         }
     }
 }

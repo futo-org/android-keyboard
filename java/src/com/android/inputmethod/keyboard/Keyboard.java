@@ -777,7 +777,7 @@ public class Keyboard {
 
                 params.mThemeId = keyboardAttr.getInt(R.styleable.Keyboard_themeId, 0);
                 params.mIconsSet.loadIcons(keyboardAttr);
-                params.mCodesSet.setLocale(params.mId.mLocale);
+                params.mCodesSet.setLanguage(params.mId.mLocale.getLanguage());
 
                 final int resourceId = keyboardAttr.getResourceId(
                         R.styleable.Keyboard_touchPositionCorrectionData, 0);

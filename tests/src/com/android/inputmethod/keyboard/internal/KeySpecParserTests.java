@@ -41,8 +41,10 @@ public class KeySpecParserTests extends AndroidTestCase {
     private int mSettingsIconId;
 
     @Override
-    protected void setUp() {
-        mCodesSet.setLocale(Locale.US);
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        mCodesSet.setLanguage(Locale.ENGLISH.getLanguage());
         mCodeSettings = mCodesSet.getCode(CODE_SETTINGS_NAME);
         mSettingsIconId = KeyboardIconsSet.getIconId(ICON_SETTINGS_NAME);
     }
