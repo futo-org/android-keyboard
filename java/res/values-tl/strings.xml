@@ -61,12 +61,9 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Modest"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agresibo"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Napaka-agresibo"</string>
-    <!-- no translation found for bigram_suggestion (8169311444438922902) -->
-    <skip />
-    <!-- no translation found for bigram_suggestion_summary (6635527607242625713) -->
-    <skip />
-    <!-- no translation found for bigram_prediction (3216364899483135294) -->
-    <skip />
+    <string name="bigram_suggestion" msgid="8169311444438922902">"Mga paghuhula sa susunod na salita"</string>
+    <string name="bigram_suggestion_summary" msgid="6635527607242625713">"Gamitin ang naunang salita para mapahusay ang mga suhestiyon"</string>
+    <string name="bigram_prediction" msgid="3216364899483135294">"Paghuhula sa susunod na salita"</string>
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"Gamitin ang nakaraang salita para din sa hula"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Na-save"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Punta"</string>
@@ -121,8 +118,7 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema ng keyboard"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Ingles (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Ingles (Estados Unidos)"</string>
-    <!-- no translation found for subtype_no_language_qwerty (2956121451616633133) -->
-    <skip />
+    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Walang wika (QWERTY)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Study mode ng pagiging kapaki-pakinabang"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Mga setting ng tagal ng vibration ng keypress"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Mga setting ng volume ng tunog ng keypress"</string>
