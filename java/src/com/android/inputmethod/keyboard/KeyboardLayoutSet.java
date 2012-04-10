@@ -29,12 +29,10 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet.Params.ElementParams;
-import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.latin.InputTypeUtils;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.LocaleUtils;
-import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SubtypeLocale;
@@ -183,14 +181,7 @@ public class KeyboardLayoutSet {
                 builder.setAutoGenerate(sKeysCache);
             }
             final int keyboardXmlId = elementParams.mKeyboardXmlId;
-            final RunInLocale<Void> job = new RunInLocale<Void>() {
-                @Override
-                protected Void job(Resources res) {
-                    builder.load(keyboardXmlId, id);
-                    return null;
-                }
-            };
-            job.runInLocale(context.getResources(), id.mLocale);
+            builder.load(keyboardXmlId, id);
             builder.setTouchPositionCorrectionEnabled(mParams.mTouchPositionCorrectionEnabled);
             builder.setProximityCharsCorrectionEnabled(
                     elementParams.mProximityCharsCorrectionEnabled);
@@ -321,18 +312,11 @@ public class KeyboardLayoutSet {
                     R.xml.keyboard_layout_set_qwerty);
             final String keyboardLayoutSetName = mParams.mKeyboardLayoutSetName;
             final int xmlId = mResources.getIdentifier(keyboardLayoutSetName, "xml", packageName);
-            final RunInLocale<Void> job = new RunInLocale<Void>() {
-                @Override
-                protected Void job(Resources res) {
-                    try {
-                        parseKeyboardLayoutSet(res, xmlId);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e.getMessage() + " in " + keyboardLayoutSetName);
-                    }
-                    return null;
-                }
-            };
-            job.runInLocale(mResources, mParams.mLocale);
+            try {
+                parseKeyboardLayoutSet(mResources, xmlId);
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage() + " in " + keyboardLayoutSetName);
+            }
             return new KeyboardLayoutSet(mContext, mParams);
         }
 

@@ -32,7 +32,9 @@ import com.android.inputmethod.keyboard.internal.KeyboardCodesSet;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardLabelsSet;
 import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.SubtypeLocale;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.XmlParseUtils;
 
@@ -44,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 
 /**
  * Loads an XML description of a keyboard and stores the attributes of the keys. A keyboard
@@ -782,7 +785,17 @@ public class Keyboard {
                 final String language = params.mId.mLocale.getLanguage();
                 params.mCodesSet.setLanguage(language);
                 params.mLabelsSet.setLanguage(language);
-                params.mLabelsSet.loadStringResources(mContext);
+                final RunInLocale<Void> job = new RunInLocale<Void>() {
+                    @Override
+                    protected Void job(Resources res) {
+                        params.mLabelsSet.loadStringResources(mContext);
+                        return null;
+                    }
+                };
+                // Null means the current system locale.
+                final Locale locale = language.equals(SubtypeLocale.NO_LANGUAGE)
+                        ? null : params.mId.mLocale;
+                job.runInLocale(mResources, locale);
 
                 final int resourceId = keyboardAttr.getResourceId(
                         R.styleable.Keyboard_touchPositionCorrectionData, 0);
