@@ -38,6 +38,12 @@
 
 -keep class com.android.inputmethod.latin.ResearchLogger {
   void setLogFileManager(...);
+  void clearAll();
+  com.android.inputmethod.latin.ResearchLogger$LogFileManager getLogFileManager();
+}
+
+-keep class com.android.inputmethod.latin.ResearchLogger$LogFileManager {
+  java.lang.String getContents();
 }
 
 -keep class com.android.inputmethod.keyboard.KeyboardLayoutSet$Builder {
