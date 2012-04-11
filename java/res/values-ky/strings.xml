@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- no translation found for english_ime_name (7252517407088836577) -->
+    <skip />
+    <!-- no translation found for aosp_android_keyboard_ime_name (7877134937939182296) -->
+    <skip />
+    <!-- no translation found for english_ime_settings (6661589557206947774) -->
+    <skip />
+    <!-- no translation found for english_ime_input_options (3909945612939668554) -->
+    <skip />
+    <!-- no translation found for spell_checker_service_name (7338064335159755926) -->
+    <skip />
+    <!-- no translation found for aosp_spell_checker_service_name (6985142605330377819) -->
+    <skip />
+    <!-- no translation found for android_spell_checker_settings (5822324635435443689) -->
+    <skip />
+    <!-- no translation found for use_contacts_for_spellchecking_option_title (5374120998125353898) -->
+    <skip />
+    <!-- no translation found for use_contacts_for_spellchecking_option_summary (8754413382543307713) -->
+    <skip />
+    <!-- no translation found for vibrate_on_keypress (5258079494276955460) -->
+    <skip />
+    <!-- no translation found for sound_on_keypress (6093592297198243644) -->
+    <skip />
+    <!-- no translation found for popup_on_keypress (123894815723512944) -->
+    <skip />
+    <!-- no translation found for general_category (1859088467017573195) -->
+    <skip />
+    <!-- no translation found for correction_category (2236750915056607613) -->
+    <skip />
+    <!-- no translation found for misc_category (6894192814868233453) -->
+    <skip />
+    <!-- no translation found for advanced_settings (362895144495591463) -->
+    <skip />
+    <!-- no translation found for advanced_settings_summary (4487980456152830271) -->
+    <skip />
+    <!-- no translation found for include_other_imes_in_language_switch_list (4533689960308565519) -->
+    <skip />
+    <!-- no translation found for include_other_imes_in_language_switch_list_summary (840637129103317635) -->
+    <skip />
+    <!-- no translation found for suppress_language_switch_key (8003788410354806368) -->
+    <skip />
+    <!-- no translation found for key_preview_popup_dismiss_delay (6213164897443068248) -->
+    <skip />
+    <!-- no translation found for key_preview_popup_dismiss_no_delay (2096123151571458064) -->
+    <skip />
+    <!-- no translation found for key_preview_popup_dismiss_default_delay (2166964333903906734) -->
+    <skip />
+    <!-- no translation found for use_contacts_dict (4435317977804180815) -->
+    <skip />
+    <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
+    <skip />
+    <!-- no translation found for enable_span_insert (7204653105667167620) -->
+    <skip />
+    <!-- no translation found for enable_span_insert_summary (2947317657871394467) -->
+    <skip />
+    <!-- no translation found for auto_cap (1719746674854628252) -->
+    <skip />
+    <!-- no translation found for configure_dictionaries_title (4238652338556902049) -->
+    <skip />
+    <!-- no translation found for main_dictionary (4798763781818361168) -->
+    <skip />
+    <!-- no translation found for prefs_show_suggestions (8026799663445531637) -->
+    <skip />
+    <!-- no translation found for prefs_show_suggestions_summary (1583132279498502825) -->
+    <skip />
+    <!-- no translation found for prefs_suggestion_visibility_show_name (3219916594067551303) -->
+    <skip />
+    <!-- no translation found for prefs_suggestion_visibility_show_only_portrait_name (3551821800439659812) -->
+    <skip />
+    <!-- no translation found for prefs_suggestion_visibility_hide_name (6309143926422234673) -->
+    <skip />
+    <!-- no translation found for auto_correction (4979925752001319458) -->
+    <skip />
+    <!-- no translation found for auto_correction_summary (5625751551134658006) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_very_aggeressive (3386782235540547678) -->
+    <skip />
+    <!-- no translation found for bigram_suggestion (8169311444438922902) -->
+    <skip />
+    <!-- no translation found for bigram_suggestion_summary (6635527607242625713) -->
+    <skip />
+    <!-- no translation found for bigram_prediction (3216364899483135294) -->
+    <skip />
+    <!-- no translation found for bigram_prediction_summary (1747261921174300098) -->
+    <skip />
+    <!-- no translation found for added_word (8993883354622484372) -->
+    <skip />
+    <string name="label_go_key" msgid="1635148082137219148">"Баруу"</string>
+    <string name="label_next_key" msgid="362972844525672568">"Кийин"</string>
+    <string name="label_previous_key" msgid="1211868118071386787">"Мурун"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"Даяр"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"Жибер"</string>
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"АБВ"</string>
+    <!-- no translation found for label_to_symbol_key (8516904117128967293) -->
+    <skip />
+    <!-- no translation found for label_to_symbol_with_microphone_key (9035925553010061906) -->
+    <skip />
+    <!-- no translation found for label_pause_key (181098308428035340) -->
+    <skip />
+    <!-- no translation found for label_wait_key (6402152600878093134) -->
+    <skip />
+    <!-- no translation found for spoken_use_headphones (896961781287283493) -->
+    <skip />
+    <!-- no translation found for spoken_current_text_is (2485723011272583845) -->
+    <skip />
+    <!-- no translation found for spoken_no_text_entered (7479685225597344496) -->
+    <skip />
+    <!-- no translation found for spoken_description_unknown (3197434010402179157) -->
+    <skip />
+    <!-- no translation found for spoken_description_shift (244197883292549308) -->
+    <skip />
+    <!-- no translation found for spoken_description_shift_shifted (1681877323344195035) -->
+    <skip />
+    <!-- no translation found for spoken_description_caps_lock (3276478269526304432) -->
+    <skip />
+    <!-- no translation found for spoken_description_delete (8740376944276199801) -->
+    <skip />
+    <!-- no translation found for spoken_description_to_symbol (5486340107500448969) -->
+    <skip />
+    <!-- no translation found for spoken_description_to_alpha (23129338819771807) -->
+    <skip />
+    <!-- no translation found for spoken_description_to_numeric (591752092685161732) -->
+    <skip />
+    <!-- no translation found for spoken_description_settings (4627462689603838099) -->
+    <skip />
+    <!-- no translation found for spoken_description_tab (2667716002663482248) -->
+    <skip />
+    <!-- no translation found for spoken_description_space (2582521050049860859) -->
+    <skip />
+    <!-- no translation found for spoken_description_mic (615536748882611950) -->
+    <skip />
+    <!-- no translation found for spoken_description_smiley (2256309826200113918) -->
+    <skip />
+    <!-- no translation found for spoken_description_return (8178083177238315647) -->
+    <skip />
+    <!-- no translation found for spoken_description_dot (40711082435231673) -->
+    <skip />
+    <!-- no translation found for spoken_description_shiftmode_on (5700440798609574589) -->
+    <skip />
+    <!-- no translation found for spoken_description_shiftmode_locked (593175803181701830) -->
+    <skip />
+    <!-- no translation found for spoken_description_shiftmode_off (657219998449174808) -->
+    <skip />
+    <!-- no translation found for spoken_description_mode_symbol (7183343879909747642) -->
+    <skip />
+    <!-- no translation found for spoken_description_mode_alpha (3528307674390156956) -->
+    <skip />
+    <!-- no translation found for spoken_description_mode_phone (6520207943132026264) -->
+    <skip />
+    <!-- no translation found for spoken_description_mode_phone_shift (5499629753962641227) -->
+    <skip />
+    <!-- no translation found for voice_input (3583258583521397548) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_off (3745699748218082014) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_main_keyboard (6586544292900314339) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_symbols_keyboard (5233725927281932391) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
+    <skip />
+    <!-- no translation found for configure_input_method (373356270290742459) -->
+    <skip />
+    <!-- no translation found for language_selection_title (1651299598555326750) -->
+    <skip />
+    <!-- no translation found for select_language (3693815588777926848) -->
+    <skip />
+    <!-- no translation found for hint_add_to_dictionary (573678656946085380) -->
+    <skip />
+    <!-- no translation found for has_dictionary (6071847973466625007) -->
+    <skip />
+    <!-- no translation found for prefs_enable_log (6620424505072963557) -->
+    <skip />
+    <!-- no translation found for prefs_description_log (5827825607258246003) -->
+    <skip />
+    <!-- no translation found for keyboard_layout (8451164783510487501) -->
+    <skip />
+    <!-- no translation found for subtype_en_GB (88170601942311355) -->
+    <skip />
+    <!-- no translation found for subtype_en_US (6160452336634534239) -->
+    <skip />
+    <!-- no translation found for subtype_no_language_qwerty (2956121451616633133) -->
+    <skip />
+    <!-- no translation found for prefs_usability_study_mode (1261130555134595254) -->
+    <skip />
+    <!-- no translation found for prefs_keypress_vibration_duration_settings (1829950405285211668) -->
+    <skip />
+    <!-- no translation found for prefs_keypress_sound_volume_settings (5875933757082305040) -->
+    <skip />
+</resources>
