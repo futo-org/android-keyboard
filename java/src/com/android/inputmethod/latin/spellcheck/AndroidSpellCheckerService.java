@@ -387,7 +387,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         final ProximityInfo proximityInfo = ProximityInfo.createSpellCheckerProximityInfo(
                 SpellCheckerProximityInfo.getProximityForScript(script));
         final Resources resources = getResources();
-        final int fallbackResourceId = DictionaryFactory.getMainDictionaryResourceId(resources);
+        final int fallbackResourceId = DictionaryFactory.getMainDictionaryResourceId(
+                resources, locale);
         final DictionaryCollection dictionaryCollection =
                 DictionaryFactory.createDictionaryFromManager(this, locale, fallbackResourceId,
                         true /* useFullEditDistance */);

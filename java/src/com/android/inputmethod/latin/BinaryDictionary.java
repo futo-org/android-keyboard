@@ -17,11 +17,8 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.Resources;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
-import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 
 import java.util.Arrays;
 import java.util.Locale;

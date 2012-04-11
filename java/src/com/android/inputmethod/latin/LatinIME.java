@@ -493,37 +493,30 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final String localeStr = mSubtypeSwitcher.getInputLocaleStr();
         final Locale keyboardLocale = mSubtypeSwitcher.getInputLocale();
 
-        final Context context = this;
-        final RunInLocale<Void> job = new RunInLocale<Void>() {
-            @Override
-            protected Void job(Resources res) {
-                final ContactsDictionary oldContactsDictionary;
-                if (mSuggest != null) {
-                    oldContactsDictionary = mSuggest.getContactsDictionary();
-                    mSuggest.close();
-                } else {
-                    oldContactsDictionary = null;
-                }
+        final ContactsDictionary oldContactsDictionary;
+        if (mSuggest != null) {
+            oldContactsDictionary = mSuggest.getContactsDictionary();
+            mSuggest.close();
+        } else {
+            oldContactsDictionary = null;
+        }
 
-                int mainDicResId = DictionaryFactory.getMainDictionaryResourceId(res);
-                mSuggest = new Suggest(context, mainDicResId, keyboardLocale);
-                if (mSettingsValues.mAutoCorrectEnabled) {
-                    mSuggest.setAutoCorrectionThreshold(mSettingsValues.mAutoCorrectionThreshold);
-                }
+        final int mainDicResId = DictionaryFactory.getMainDictionaryResourceId(
+                mResources, keyboardLocale);
+        mSuggest = new Suggest(this, mainDicResId, keyboardLocale);
+        if (mSettingsValues.mAutoCorrectEnabled) {
+            mSuggest.setAutoCorrectionThreshold(mSettingsValues.mAutoCorrectionThreshold);
+        }
 
-                mUserDictionary = new UserDictionary(context, localeStr);
-                mSuggest.setUserDictionary(mUserDictionary);
-                mIsUserDictionaryAvailable = mUserDictionary.isEnabled();
+        mUserDictionary = new UserDictionary(this, localeStr);
+        mSuggest.setUserDictionary(mUserDictionary);
+        mIsUserDictionaryAvailable = mUserDictionary.isEnabled();
 
-                resetContactsDictionary(oldContactsDictionary);
+        resetContactsDictionary(oldContactsDictionary);
 
-                mUserHistoryDictionary
-                    = new UserHistoryDictionary(context, localeStr, Suggest.DIC_USER_HISTORY);
-                mSuggest.setUserHistoryDictionary(mUserHistoryDictionary);
-                return null;
-            }
-        };
-        job.runInLocale(mResources, keyboardLocale);
+        mUserHistoryDictionary = new UserHistoryDictionary(
+                this, localeStr, Suggest.DIC_USER_HISTORY);
+        mSuggest.setUserHistoryDictionary(mUserHistoryDictionary);
     }
 
     /**
@@ -560,7 +553,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     /* package private */ void resetSuggestMainDict() {
         final Locale keyboardLocale = mSubtypeSwitcher.getInputLocale();
-        int mainDicResId = DictionaryFactory.getMainDictionaryResourceId(mResources);
+        int mainDicResId = DictionaryFactory.getMainDictionaryResourceId(
+                mResources, keyboardLocale);
         mSuggest.resetMainDict(this, mainDicResId, keyboardLocale);
     }
 
