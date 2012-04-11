@@ -104,8 +104,8 @@ public class Suggest implements Dictionary.WordCallback {
 
     private static final int MINIMUM_SAFETY_NET_CHAR_LENGTH = 4;
 
-    public Suggest(final Context context, final int dictionaryResId, final Locale locale) {
-        initAsynchronously(context, dictionaryResId, locale);
+    public Suggest(final Context context, final Locale locale) {
+        initAsynchronously(context, locale);
     }
 
     /* package for test */ Suggest(final Context context, final File dictionary,
@@ -119,9 +119,8 @@ public class Suggest implements Dictionary.WordCallback {
         addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_WHITELIST, mWhiteListDictionary);
     }
 
-    private void initAsynchronously(final Context context, final int dictionaryResId,
-            final Locale locale) {
-        resetMainDict(context, dictionaryResId, locale);
+    private void initAsynchronously(final Context context, final Locale locale) {
+        resetMainDict(context, locale);
 
         // TODO: read the whitelist and init the pool asynchronously too.
         // initPool should be done asynchronously now that the pool is thread-safe.
@@ -146,14 +145,13 @@ public class Suggest implements Dictionary.WordCallback {
         }
     }
 
-    public void resetMainDict(final Context context, final int dictionaryResId,
-            final Locale locale) {
+    public void resetMainDict(final Context context, final Locale locale) {
         mMainDict = null;
         new Thread("InitializeBinaryDictionary") {
             @Override
             public void run() {
                 final Dictionary newMainDict = DictionaryFactory.createDictionaryFromManager(
-                        context, locale, dictionaryResId);
+                        context, locale);
                 mMainDict = newMainDict;
                 addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, newMainDict);
                 addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, newMainDict);

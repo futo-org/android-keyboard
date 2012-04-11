@@ -255,13 +255,13 @@ class BinaryDictionaryGetter {
      * - Uses a content provider to get a public dictionary set, as per the protocol described
      *   in BinaryDictionaryFileDumper.
      * If that fails:
-     * - Gets a file name from the fallback resource passed as an argument.
+     * - Gets a file name from the built-in dictionary for this locale, if any.
      * If that fails:
      * - Returns null.
      * @return The list of addresses of valid dictionary files, or null.
      */
     public static ArrayList<AssetFileAddress> getDictionaryFiles(final Locale locale,
-            final Context context, final int fallbackResId) {
+            final Context context) {
 
         // cacheWordListsFromContentProvider returns the list of files it copied to local
         // storage, but we don't really care about what was copied NOW: what we want is the
@@ -290,6 +290,8 @@ class BinaryDictionaryGetter {
         }
 
         if (!foundMainDict && dictPackSettings.isWordListActive(mainDictId)) {
+            final int fallbackResId =
+                    DictionaryFactory.getMainDictionaryResourceId(context.getResources(), locale);
             final AssetFileAddress fallbackAsset = loadFallbackResource(context, fallbackResId);
             if (null != fallbackAsset) {
                 fileList.add(fallbackAsset);

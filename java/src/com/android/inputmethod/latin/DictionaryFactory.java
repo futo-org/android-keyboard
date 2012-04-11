@@ -36,24 +36,22 @@ public class DictionaryFactory {
      * Initializes a dictionary from a dictionary pack, with explicit flags.
      *
      * This searches for a content provider providing a dictionary pack for the specified
-     * locale. If none is found, it falls back to using the resource passed as fallBackResId
-     * as a dictionary.
+     * locale. If none is found, it falls back to the built-in dictionary - if any.
      * @param context application context for reading resources
      * @param locale the locale for which to create the dictionary
-     * @param fallbackResId the id of the resource to use as a fallback if no pack is found
      * @param useFullEditDistance whether to use the full edit distance in suggestions
      * @return an initialized instance of DictionaryCollection
      */
     public static DictionaryCollection createDictionaryFromManager(final Context context,
-            final Locale locale, final int fallbackResId, final boolean useFullEditDistance) {
+            final Locale locale, final boolean useFullEditDistance) {
         if (null == locale) {
             Log.e(TAG, "No locale defined for dictionary");
-            return new DictionaryCollection(createBinaryDictionary(context, fallbackResId, locale));
+            return new DictionaryCollection(createBinaryDictionary(context, locale));
         }
 
         final LinkedList<Dictionary> dictList = new LinkedList<Dictionary>();
         final ArrayList<AssetFileAddress> assetFileList =
-                BinaryDictionaryGetter.getDictionaryFiles(locale, context, fallbackResId);
+                BinaryDictionaryGetter.getDictionaryFiles(locale, context);
         if (null != assetFileList) {
             for (final AssetFileAddress f : assetFileList) {
                 final BinaryDictionary binaryDictionary =
@@ -75,17 +73,14 @@ public class DictionaryFactory {
      * Initializes a dictionary from a dictionary pack, with default flags.
      *
      * This searches for a content provider providing a dictionary pack for the specified
-     * locale. If none is found, it falls back to using the resource passed as fallBackResId
-     * as a dictionary.
+     * locale. If none is found, it falls back to the built-in dictionary, if any.
      * @param context application context for reading resources
      * @param locale the locale for which to create the dictionary
-     * @param fallbackResId the id of the resource to use as a fallback if no pack is found
      * @return an initialized instance of DictionaryCollection
      */
     public static DictionaryCollection createDictionaryFromManager(final Context context,
-            final Locale locale, final int fallbackResId) {
-        return createDictionaryFromManager(context, locale, fallbackResId,
-                false /* useFullEditDistance */);
+            final Locale locale) {
+        return createDictionaryFromManager(context, locale, false /* useFullEditDistance */);
     }
 
     /**
@@ -96,9 +91,10 @@ public class DictionaryFactory {
      * @return an initialized instance of BinaryDictionary
      */
     protected static BinaryDictionary createBinaryDictionary(final Context context,
-            final int resId, final Locale locale) {
+            final Locale locale) {
         AssetFileDescriptor afd = null;
         try {
+            final int resId = getMainDictionaryResourceId(context.getResources(), locale);
             afd = context.getResources().openRawResourceFd(resId);
             if (afd == null) {
                 Log.e(TAG, "Found the resource but it is compressed. resId=" + resId);
@@ -115,7 +111,7 @@ public class DictionaryFactory {
             return new BinaryDictionary(context, sourceDir, afd.getStartOffset(), afd.getLength(),
                     false /* useFullEditDistance */, locale);
         } catch (android.content.res.Resources.NotFoundException e) {
-            Log.e(TAG, "Could not find the resource. resId=" + resId);
+            Log.e(TAG, "Could not find the resource");
             return null;
         } finally {
             if (null != afd) {

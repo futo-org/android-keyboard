@@ -386,11 +386,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         final int script = getScriptFromLocale(locale);
         final ProximityInfo proximityInfo = ProximityInfo.createSpellCheckerProximityInfo(
                 SpellCheckerProximityInfo.getProximityForScript(script));
-        final Resources resources = getResources();
-        final int fallbackResourceId = DictionaryFactory.getMainDictionaryResourceId(
-                resources, locale);
         final DictionaryCollection dictionaryCollection =
-                DictionaryFactory.createDictionaryFromManager(this, locale, fallbackResourceId,
+                DictionaryFactory.createDictionaryFromManager(this, locale,
                         true /* useFullEditDistance */);
         final String localeStr = locale.toString();
         Dictionary userDictionary = mUserDictionaries.get(localeStr);

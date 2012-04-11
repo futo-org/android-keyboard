@@ -501,9 +501,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             oldContactsDictionary = null;
         }
 
-        final int mainDicResId = DictionaryFactory.getMainDictionaryResourceId(
-                mResources, keyboardLocale);
-        mSuggest = new Suggest(this, mainDicResId, keyboardLocale);
+        mSuggest = new Suggest(this, keyboardLocale);
         if (mSettingsValues.mAutoCorrectEnabled) {
             mSuggest.setAutoCorrectionThreshold(mSettingsValues.mAutoCorrectionThreshold);
         }
@@ -552,10 +550,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     /* package private */ void resetSuggestMainDict() {
-        final Locale keyboardLocale = mSubtypeSwitcher.getInputLocale();
-        int mainDicResId = DictionaryFactory.getMainDictionaryResourceId(
-                mResources, keyboardLocale);
-        mSuggest.resetMainDict(this, mainDicResId, keyboardLocale);
+        mSuggest.resetMainDict(this, mSubtypeSwitcher.getInputLocale());
     }
 
     @Override
