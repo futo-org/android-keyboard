@@ -35,10 +35,16 @@ import com.android.inputmethod.keyboard.internal.AlphabetShiftState;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 
 /**
  * Logs the use of the LatinIME keyboard.
@@ -70,15 +76,15 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      * Handles creation, deletion, and provides Readers, Writers, and InputStreams to access
      * the logs.
      */
-    public static class LogFileManager {
-        private static final String DEFAULT_FILENAME = "log.txt";
-        private static final String DEFAULT_LOG_DIRECTORY = "researchLogger";
+    /* package */ static class LogFileManager {
+        public static final String RESEARCH_LOG_FILENAME_KEY = "RESEARCH_LOG_FILENAME";
 
+        private static final String DEFAULT_FILENAME = "researchLog.txt";
         private static final long LOGFILE_PURGE_INTERVAL = 1000 * 60 * 60 * 24;
 
-        private InputMethodService mIms;
-        private File mFile;
-        private PrintWriter mPrintWriter;
+        protected InputMethodService mIms;
+        protected File mFile;
+        protected PrintWriter mPrintWriter;
 
         /* package */ LogFileManager() {
         }
@@ -89,15 +95,28 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
         public synchronized boolean createLogFile() {
             try {
-                return createLogFile(DEFAULT_LOG_DIRECTORY, DEFAULT_FILENAME);
-            } catch (final FileNotFoundException e) {
+                return createLogFile(DEFAULT_FILENAME);
+            } catch (IOException e) {
+                e.printStackTrace();
                 Log.w(TAG, e);
                 return false;
             }
         }
 
-        public synchronized boolean createLogFile(final String dir, final String filename)
-                throws FileNotFoundException {
+        public synchronized boolean createLogFile(final SharedPreferences prefs) {
+            try {
+                final String filename =
+                        prefs.getString(RESEARCH_LOG_FILENAME_KEY, DEFAULT_FILENAME);
+                return createLogFile(filename);
+            } catch (IOException e) {
+                Log.w(TAG, e);
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        public synchronized boolean createLogFile(final String filename)
+                throws IOException {
             if (mIms == null) {
                 Log.w(TAG, "InputMethodService is not configured.  Logging is off.");
                 return false;
@@ -107,29 +126,22 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 Log.w(TAG, "Storage directory does not exist.  Logging is off.");
                 return false;
             }
-            final File directory = new File(filesDir, dir);
-            if (!directory.exists()) {
-                final boolean wasCreated = directory.mkdirs();
-                if (!wasCreated) {
-                    Log.w(TAG, "Log directory cannot be created.  Logging is off.");
-                    return false;
-                }
-            }
-
             close();
-            mFile = new File(directory, filename);
-            mFile.setReadable(false, false);
+            final File file = new File(filesDir, filename);
+            mFile = file;
+            file.setReadable(false, false);
             boolean append = true;
-            if (mFile.exists() && mFile.lastModified() + LOGFILE_PURGE_INTERVAL <
+            if (file.exists() && file.lastModified() + LOGFILE_PURGE_INTERVAL <
                     System.currentTimeMillis()) {
                 append = false;
             }
-            mPrintWriter = new PrintWriter(new FileOutputStream(mFile, append), true);
+            mPrintWriter = new PrintWriter(new BufferedWriter(new FileWriter(file, append)), true);
             return true;
         }
 
         public synchronized boolean append(final String s) {
-            if (mPrintWriter == null) {
+            final PrintWriter printWriter = mPrintWriter;
+            if (printWriter == null) {
                 if (DEBUG) {
                     Log.w(TAG, "PrintWriter is null... attempting to create default log file");
                 }
@@ -140,8 +152,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     }
                 }
             }
-            mPrintWriter.print(s);
-            return !mPrintWriter.checkError();
+            printWriter.print(s);
+            printWriter.flush();
+            return !printWriter.checkError();
         }
 
         public synchronized void reset() {
@@ -149,7 +162,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 mPrintWriter.close();
                 mPrintWriter = null;
             }
-            if (mFile != null && mFile.exists()) {
+            if (mFile != null) {
                 mFile.delete();
                 mFile = null;
             }
@@ -161,6 +174,53 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 mPrintWriter = null;
                 mFile = null;
             }
+        }
+
+        /* package */ synchronized void flush() {
+            if (mPrintWriter != null) {
+                mPrintWriter.flush();
+            }
+        }
+
+        /* package */ synchronized String getContents() {
+            final File file = mFile;
+            if (file == null) {
+                return "";
+            }
+            if (mPrintWriter != null) {
+                mPrintWriter.flush();
+            }
+            FileInputStream stream = null;
+            FileChannel fileChannel = null;
+            String s = "";
+            try {
+                stream = new FileInputStream(file);
+                fileChannel = stream.getChannel();
+                final ByteBuffer byteBuffer = ByteBuffer.allocate((int) file.length());
+                fileChannel.read(byteBuffer);
+                byteBuffer.rewind();
+                CharBuffer charBuffer = Charset.defaultCharset().decode(byteBuffer);
+                s = charBuffer.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fileChannel != null) {
+                        fileChannel.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        if (stream != null) {
+                            stream.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return s;
         }
     }
 
@@ -182,9 +242,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
     public void initInternal(final InputMethodService ims, final SharedPreferences prefs) {
         mIms = ims;
-        if (mLogFileManager != null) {
-            mLogFileManager.init(ims);
-            mLogFileManager.createLogFile();
+        final LogFileManager logFileManager = mLogFileManager;
+        if (logFileManager != null) {
+            logFileManager.init(ims);
+            logFileManager.createLogFile(prefs);
         }
         if (prefs != null) {
             sIsLogging = prefs.getBoolean(PREF_USABILITY_STUDY_MODE, false);
@@ -357,6 +418,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 mLogFileManager.reset();
             }
         });
+    }
+
+    /* package */ LogFileManager getLogFileManager() {
+        return mLogFileManager;
     }
 
     @Override
@@ -644,7 +709,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
-    public static void suggestionsView_setSuggestions(SuggestedWords mSuggestedWords) {
+    public static void suggestionsView_setSuggestions(final SuggestedWords mSuggestedWords) {
         if (UnsLogGroup.SUGGESTIONSVIEW_SETSUGGESTIONS_ENABLED) {
             logUnstructured("SuggestionsView_setSuggestions", mSuggestedWords.toString());
         }
