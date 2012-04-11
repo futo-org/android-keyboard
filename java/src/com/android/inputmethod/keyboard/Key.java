@@ -60,10 +60,12 @@ public class Key {
     private static final int LABEL_FLAGS_ALIGN_LEFT = 0x01;
     private static final int LABEL_FLAGS_ALIGN_RIGHT = 0x02;
     private static final int LABEL_FLAGS_ALIGN_LEFT_OF_CENTER = 0x08;
-    private static final int LABEL_FLAGS_LARGE_LETTER = 0x10;
-    private static final int LABEL_FLAGS_FONT_NORMAL = 0x20;
-    private static final int LABEL_FLAGS_FONT_MONO_SPACE = 0x40;
-    public static final int LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO = 0x80;
+    private static final int LABEL_FLAGS_FONT_NORMAL = 0x10;
+    private static final int LABEL_FLAGS_FONT_MONO_SPACE = 0x20;
+    private static final int LABEL_FLAGS_FOLLOW_KEY_RATIO_MASK = 0x1C0;
+    private static final int LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO = 0x40;
+    private static final int LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO = 0x80;
+    private static final int LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO = 0xC0;
     private static final int LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO = 0x100;
     private static final int LABEL_FLAGS_HAS_POPUP_HINT = 0x200;
     private static final int LABEL_FLAGS_HAS_SHIFTED_LETTER_HINT = 0x400;
@@ -498,16 +500,17 @@ public class Key {
     }
 
     public int selectTextSize(int letter, int largeLetter, int label, int hintLabel) {
-        if (StringUtils.codePointCount(mLabel) > 1
-                && (mLabelFlags & (LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO
-                        | LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO)) == 0) {
-            return label;
-        } else if ((mLabelFlags & LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO) != 0) {
-            return hintLabel;
-        } else if ((mLabelFlags & LABEL_FLAGS_LARGE_LETTER) != 0) {
+        switch (mLabelFlags & LABEL_FLAGS_FOLLOW_KEY_RATIO_MASK) {
+        case LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO:
             return largeLetter;
-        } else {
+        case LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO:
             return letter;
+        case LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO:
+            return label;
+        case LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO:
+            return hintLabel;
+        default: // No follow key ratio flag specified.
+            return StringUtils.codePointCount(mLabel) == 1 ? letter : label;
         }
     }
 
@@ -561,6 +564,12 @@ public class Key {
 
     public boolean hasLabelsInMoreKeys() {
         return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_HAS_LABELS) != 0;
+    }
+
+    public int getMoreKeyLabelFlags() {
+        return hasLabelsInMoreKeys()
+                ? LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO
+                : LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO;
     }
 
     public boolean needsDividersInMoreKeys() {

@@ -275,10 +275,11 @@
             <flag name="alignLeft" value="0x01" />
             <flag name="alignRight" value="0x02" />
             <flag name="alignLeftOfCenter" value="0x08" />
-            <flag name="largeLetter" value="0x10" />
-            <flag name="fontNormal" value="0x20" />
-            <flag name="fontMonoSpace" value="0x40" />
+            <flag name="fontNormal" value="0x10" />
+            <flag name="fontMonoSpace" value="0x20" />
+            <flag name="followKeyLargeLetterRatio" value="0x40" />
             <flag name="followKeyLetterRatio" value="0x80" />
+            <flag name="followKeyLabelRatio" value="0xC0" />
             <flag name="followKeyHintLabelRatio" value="0x100" />
             <flag name="hasPopupHint" value="0x200" />
             <flag name="hasShiftedLetterHint" value="0x400" />

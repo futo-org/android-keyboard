@@ -26,7 +26,7 @@
         latin:keyActionFlags="noKeyPreview" />
     <key-style
         latin:styleName="numKeyStyle"
-        latin:keyLabelFlags="largeLetter|followKeyLetterRatio"
+        latin:keyLabelFlags="followKeyLargeLetterRatio"
         latin:parentStyle="numKeyBaseStyle" />
     <key-style
         latin:styleName="numModeKeyStyle"
@@ -34,7 +34,7 @@
         latin:parentStyle="numKeyBaseStyle" />
     <key-style
         latin:styleName="numFunctionalKeyStyle"
-        latin:keyLabelFlags="largeLetter|followKeyLetterRatio"
+        latin:keyLabelFlags="followKeyLargeLetterRatio"
         latin:backgroundType="functional"
         latin:parentStyle="numKeyBaseStyle" />
     <key-style

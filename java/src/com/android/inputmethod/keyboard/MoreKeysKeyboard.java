@@ -332,10 +332,7 @@ public class MoreKeysKeyboard extends Keyboard {
         @Override
         public MoreKeysKeyboard build() {
             final MoreKeysKeyboardParams params = mParams;
-            // moreKeyFlags == 0 means that the rendered text size will be determined by its
-            // label's code point count.
-            final int moreKeyFlags = mParentKey.hasLabelsInMoreKeys() ? 0
-                    : Key.LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO;
+            final int moreKeyFlags = mParentKey.getMoreKeyLabelFlags();
             final MoreKeySpec[] moreKeys = mParentKey.mMoreKeys;
             for (int n = 0; n < moreKeys.length; n++) {
                 final MoreKeySpec moreKeySpec = moreKeys[n];
