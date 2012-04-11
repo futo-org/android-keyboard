@@ -20,10 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetFileDescriptor;
-import android.content.res.Resources;
 import android.util.Log;
-
-import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -155,14 +152,8 @@ class BinaryDictionaryGetter {
      * Returns a file address from a resource, or null if it cannot be opened.
      */
     private static AssetFileAddress loadFallbackResource(final Context context,
-            final int fallbackResId, final Locale locale) {
-        final RunInLocale<AssetFileDescriptor> job = new RunInLocale<AssetFileDescriptor>() {
-            @Override
-            protected AssetFileDescriptor job(Resources res) {
-                return res.openRawResourceFd(fallbackResId);
-            }
-        };
-        final AssetFileDescriptor afd = job.runInLocale(context.getResources(), locale);
+            final int fallbackResId) {
+        final AssetFileDescriptor afd = context.getResources().openRawResourceFd(fallbackResId);
         if (afd == null) {
             Log.e(TAG, "Found the resource but cannot read it. Is it compressed? resId="
                     + fallbackResId);
@@ -299,8 +290,7 @@ class BinaryDictionaryGetter {
         }
 
         if (!foundMainDict && dictPackSettings.isWordListActive(mainDictId)) {
-            final AssetFileAddress fallbackAsset = loadFallbackResource(context, fallbackResId,
-                    locale);
+            final AssetFileAddress fallbackAsset = loadFallbackResource(context, fallbackResId);
             if (null != fallbackAsset) {
                 fileList.add(fallbackAsset);
             }

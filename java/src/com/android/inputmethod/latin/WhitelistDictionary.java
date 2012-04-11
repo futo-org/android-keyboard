@@ -38,6 +38,7 @@ public class WhitelistDictionary extends ExpandableDictionary {
     // TODO: Conform to the async load contact of ExpandableDictionary
     public WhitelistDictionary(final Context context, final Locale locale) {
         super(context, Suggest.DIC_WHITELIST);
+        // TODO: Move whitelist dictionary into main dictionary.
         final RunInLocale<Void> job = new RunInLocale<Void>() {
             @Override
             protected Void job(Resources res) {
