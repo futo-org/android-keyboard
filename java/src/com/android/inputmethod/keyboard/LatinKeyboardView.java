@@ -35,6 +35,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodSubtype;
 import android.widget.PopupWindow;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
@@ -52,7 +53,6 @@ import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.Utils.UsabilityStudyLogUtils;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
-import java.util.Locale;
 import java.util.WeakHashMap;
 
 /**
@@ -80,7 +80,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     private ObjectAnimator mLanguageOnSpacebarFadeoutAnimator;
     private static final int ALPHA_OPAQUE = 255;
     private boolean mNeedsToDisplayLanguage;
-    private Locale mSpacebarLocale;
     private int mLanguageOnSpacebarAnimAlpha = ALPHA_OPAQUE;
     private final float mSpacebarTextRatio;
     private float mSpacebarTextSize;
@@ -468,7 +467,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         mSpaceIcon = (mSpaceKey != null) ? mSpaceKey.getIcon(keyboard.mIconsSet) : null;
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mSpacebarTextSize = keyHeight * mSpacebarTextRatio;
-        mSpacebarLocale = keyboard.mId.mLocale;
     }
 
     /**
@@ -904,12 +902,12 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     }
 
     // Layout locale language name on spacebar.
-    private String layoutLanguageOnSpacebar(Paint paint, Locale locale, int width,
+    private String layoutLanguageOnSpacebar(Paint paint, InputMethodSubtype subtype, int width,
             float origTextSize) {
         paint.setTextAlign(Align.CENTER);
         paint.setTypeface(Typeface.DEFAULT);
         // Estimate appropriate language name text size to fit in maxTextWidth.
-        String language = SubtypeLocale.getFullDisplayName(locale);
+        String language = SubtypeLocale.getFullDisplayName(subtype);
         int textWidth = getTextWidth(paint, language, origTextSize);
         // Assuming text width and text size are proportional to each other.
         float textSize = origTextSize * Math.min(width / textWidth, 1.0f);
@@ -921,7 +919,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         final boolean useShortName;
         if (useMiddleName) {
-            language = SubtypeLocale.getMiddleDisplayName(locale);
+            language = SubtypeLocale.getMiddleDisplayName(subtype);
             textWidth = getTextWidth(paint, language, origTextSize);
             textSize = origTextSize * Math.min(width / textWidth, 1.0f);
             useShortName = (textSize / origTextSize < MINIMUM_SCALE_OF_LANGUAGE_NAME)
@@ -931,7 +929,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
 
         if (useShortName) {
-            language = SubtypeLocale.getShortDisplayName(locale);
+            language = SubtypeLocale.getShortDisplayName(subtype);
             textWidth = getTextWidth(paint, language, origTextSize);
             textSize = origTextSize * Math.min(width / textWidth, 1.0f);
         }
@@ -944,10 +942,10 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         final int width = key.mWidth;
         final int height = key.mHeight;
 
-        // If input subtypes are explicitly selected.
+        // If input language are explicitly selected.
         if (mNeedsToDisplayLanguage) {
-            final String language = layoutLanguageOnSpacebar(paint, mSpacebarLocale, width,
-                    mSpacebarTextSize);
+            final String language = layoutLanguageOnSpacebar(
+                    paint, getKeyboard().mId.mSubtype, width, mSpacebarTextSize);
             // Draw language text with shadow
             // In case there is no space icon, we will place the language text at the center of
             // spacebar.

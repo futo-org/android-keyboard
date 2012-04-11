@@ -53,6 +53,10 @@ public class InputMethodManagerCompatWrapper {
         sInstance.mImm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
+    public void setAdditionalInputMethodSubtypes(String imiId, InputMethodSubtype[] subtypes) {
+        mImm.setAdditionalInputMethodSubtypes(imiId, subtypes);
+    }
+
     public InputMethodSubtype getCurrentInputMethodSubtype() {
         return mImm.getCurrentInputMethodSubtype();
     }

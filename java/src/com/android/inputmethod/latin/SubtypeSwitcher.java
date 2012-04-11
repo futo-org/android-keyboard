@@ -105,7 +105,7 @@ public class SubtypeSwitcher {
         mCurrentSubtype = mImm.getCurrentInputMethodSubtype();
         mAllEnabledSubtypesOfCurrentInputMethod = null;
         mNoLanguageSubtype = SubtypeUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                service, SubtypeLocale.LOCALE_NO_LANGUAGE_QWERTY, "qwerty");
+                service, SubtypeLocale.LOCALE_NO_LANGUAGE, AdditionalSubtype.QWERTY);
 
         final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
         mIsNetworkConnected = (info != null && info.isConnected());
@@ -135,7 +135,7 @@ public class SubtypeSwitcher {
         mEnabledLanguagesOfCurrentInputMethod.clear();
         mEnabledKeyboardSubtypesOfCurrentInputMethod.clear();
         for (InputMethodSubtype ims : mAllEnabledSubtypesOfCurrentInputMethod) {
-            final String locale = SubtypeLocale.getKeyboardLayoutSetLocaleString(ims);
+            final String locale = ims.getLocale();
             final String mode = ims.getMode();
             mLocaleSplitter.setString(locale);
             if (mLocaleSplitter.hasNext()) {
@@ -165,8 +165,7 @@ public class SubtypeSwitcher {
                     + (mShortcutInputMethodInfo == null
                             ? "<null>" : mShortcutInputMethodInfo.getId()) + ", "
                     + (mShortcutSubtype == null ? "<null>" : (
-                            SubtypeLocale.getKeyboardLayoutSetLocaleString(mShortcutSubtype)
-                            + ", " + mShortcutSubtype.getMode())));
+                            mShortcutSubtype.getLocale() + ", " + mShortcutSubtype.getMode())));
         }
         // TODO: Update an icon for shortcut IME
         final Map<InputMethodInfo, List<InputMethodSubtype>> shortcuts =
@@ -188,14 +187,13 @@ public class SubtypeSwitcher {
                     + (mShortcutInputMethodInfo == null
                             ? "<null>" : mShortcutInputMethodInfo.getId()) + ", "
                     + (mShortcutSubtype == null ? "<null>" : (
-                            SubtypeLocale.getKeyboardLayoutSetLocaleString(mShortcutSubtype)
-                            + ", " + mShortcutSubtype.getMode())));
+                            mShortcutSubtype.getLocale() + ", " + mShortcutSubtype.getMode())));
         }
     }
 
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
     public void updateSubtype(InputMethodSubtype newSubtype) {
-        final String newLocale = SubtypeLocale.getKeyboardLayoutSetLocaleString(newSubtype);
+        final String newLocale = newSubtype.getLocale();
         final String newMode = newSubtype.getMode();
         final String oldMode = mCurrentSubtype.getMode();
         if (DBG) {
@@ -335,7 +333,7 @@ public class SubtypeSwitcher {
     }
 
     public boolean needsToDisplayLanguage(Locale keyboardLocale) {
-        if (keyboardLocale.equals(SubtypeLocale.LOCALE_NO_LANGUAGE_QWERTY)) {
+        if (keyboardLocale.equals(SubtypeLocale.LOCALE_NO_LANGUAGE)) {
             return true;
         }
         if (!keyboardLocale.equals(mInputLocale)) {

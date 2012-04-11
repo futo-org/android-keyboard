@@ -793,7 +793,7 @@ public class Keyboard {
                     }
                 };
                 // Null means the current system locale.
-                final Locale locale = language.equals(SubtypeLocale.NO_LANGUAGE)
+                final Locale locale = SubtypeLocale.isNoLanguage(params.mId.mSubtype)
                         ? null : params.mId.mLocale;
                 job.runInLocale(mResources, locale);
 

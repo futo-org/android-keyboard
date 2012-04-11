@@ -20,23 +20,17 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.view.inputmethod.InputMethodSubtype;
 
-
-
+import java.util.HashMap;
 import java.util.Locale;
 
 public class SubtypeLocale {
     // Special language code to represent "no language".
-    public static final String NO_LANGUAGE = "zz";
-    // Special country code to represent "QWERTY".
-    /* package for test */ static final String QWERTY = "QY";
+    private static final String NO_LANGUAGE = "zz";
+    public static final Locale LOCALE_NO_LANGUAGE = new Locale(NO_LANGUAGE);
 
-    public static final Locale LOCALE_NO_LANGUAGE_QWERTY = new Locale(NO_LANGUAGE, QWERTY);
-
-    private static String[] sExceptionKeys;
-    private static String[] sExceptionValues;
-
-    private static final String DEFAULT_KEYBOARD_LAYOUT_SET = "qwerty";
-    private static final char KEYBOARD_LAYOUT_SET_LOCALE_DELIMITER = ':';
+    // Exceptional locales to display name map.
+    private static final HashMap<String, String> sExceptionalDisplayNamesMap =
+            new HashMap<String, String>();
 
     private SubtypeLocale() {
         // Intentional empty constructor for utility class.
@@ -44,72 +38,74 @@ public class SubtypeLocale {
 
     public static void init(Context context) {
         final Resources res = context.getResources();
-        sExceptionKeys = res.getStringArray(R.array.subtype_locale_exception_keys);
-        sExceptionValues = res.getStringArray(R.array.subtype_locale_exception_values);
-    }
-
-    private static String lookupExceptionalLocale(String key) {
-        for (int index = 0; index < sExceptionKeys.length; index++) {
-            if (sExceptionKeys[index].equals(key)) {
-                return sExceptionValues[index];
-            }
-        }
-        return null;
-    }
-
-    // Get Locale's full display name in its locale.
-    // For example:
-    // "fr_CH" is converted to "Français (Suisse)".
-    // "de_QY" is converted to "Deutsche (QWERTY)". (Any locale that has country code "QY")
-    // "zz_QY" is converted to "QWERTY". (The language code "zz" means "No language", thus just
-    // ends up with the keyboard layout name.)
-    public static String getFullDisplayName(Locale locale) {
-        final String key;
-        if (locale.getLanguage().equals(NO_LANGUAGE)) {
-            key = locale.getCountry();
-        } else if (locale.getCountry().equals(QWERTY)) {
-            key = "*_" + QWERTY;
-        } else {
-            key = locale.toString();
-        }
-        final String value = lookupExceptionalLocale(key);
-        if (value == null) {
-            return StringUtils.toTitleCase(locale.getDisplayName(locale), locale);
-        }
-        if (value.indexOf("%s") >= 0) {
-            final String languageName = StringUtils.toTitleCase(
-                    locale.getDisplayLanguage(locale), locale);
-            return String.format(value, languageName);
-        }
-        return value;
-    }
-
-    // Get Locale's middle display name in its locale.
-    // For example:
-    // "fr_CH" is converted to "Français".
-    // "de_QY" is converted to "Deutsche". (Any locale that has country code "QY")
-    // "zz_QY" is converted to "QWERTY". (The language code "zz" means "No language", thus just
-    // ends up with the keyboard layout name.)
-    public static String getMiddleDisplayName(Locale locale) {
-        if (NO_LANGUAGE.equals(locale.getLanguage())) {
-            return lookupExceptionalLocale(locale.getCountry());
-        } else {
-            return StringUtils.toTitleCase(locale.getDisplayLanguage(locale), locale);
+        final String[] locales = res.getStringArray(R.array.subtype_locale_exception_keys);
+        final String[] displayNames = res.getStringArray(R.array.subtype_locale_exception_values);
+        for (int i = 0; i < locales.length; i++) {
+            sExceptionalDisplayNamesMap.put(locales[i], displayNames[i]);
         }
     }
 
-    // Get Locale's short display name in its locale.
-    // For example:
-    // "fr_CH" is converted to "Fr".
-    // "de_QY" is converted to "De". (Any locale that has country code "QY")
-    // "zz_QY" is converter to "QY". (The language code "zz" means "No language", thus just ends
-    // up with the keyboard layout name.)
-    public static String getShortDisplayName(Locale locale) {
-        if (NO_LANGUAGE.equals(locale.getLanguage())) {
-            return locale.getCountry();
-        } else {
-            return StringUtils.toTitleCase(locale.getLanguage(), locale);
+    // Get InputMethodSubtype's display name in its locale.
+    //        isAdditionalSubtype (T=true, F=false)
+    // locale layout | Short  Middle      Full
+    // ------ ------ - ---- --------- -----------------
+    //  en_US qwerty F  En  English   English (US)      exception
+    //  en_GB qwerty F  En  English   English (UK)      exception
+    //  fr    azerty F  Fr  Français  Français
+    //  fr_CA qwerty F  Fr  Français  Français (Canada)
+    //  de    qwertz F  De  Deutsch   Deutsch
+    //  zz    qwerty F      QWERTY    QWERTY
+    //  fr    qwertz T  Fr  Français  Français (QWERTZ)
+    //  de    qwerty T  De  Deutsch   Deutsch (QWERTY)
+    //  en    azerty T  En  English   English (AZERTY)
+    //  zz    azerty T      AZERTY    AZERTY
+
+    // Get InputMethodSubtype's full display name in its locale.
+    public static String getFullDisplayName(InputMethodSubtype subtype) {
+        final String value = sExceptionalDisplayNamesMap.get(subtype.getLocale());
+        if (value != null) {
+            return value;
         }
+
+        if (isNoLanguage(subtype)) {
+            return getKeyboardLayoutSetName(subtype).toUpperCase();
+        }
+
+        final Locale locale = getSubtypeLocale(subtype);
+        final String language = StringUtils.toTitleCase(locale.getDisplayLanguage(locale), locale);
+        if (AdditionalSubtype.isAdditionalSubtype(subtype)) {
+            return String.format("%s (%s)",
+                    language, getKeyboardLayoutSetName(subtype).toUpperCase());
+        }
+        return StringUtils.toTitleCase(locale.getDisplayName(locale), locale);
+    }
+
+    // Get InputMethodSubtype's middle display name in its locale.
+    public static String getMiddleDisplayName(InputMethodSubtype subtype) {
+        if (isNoLanguage(subtype)) {
+            return getKeyboardLayoutSetName(subtype).toUpperCase();
+        }
+        final Locale locale = getSubtypeLocale(subtype);
+        return StringUtils.toTitleCase(locale.getDisplayLanguage(locale), locale);
+    }
+
+    // Get InputMethodSubtype's short display name in its locale.
+    public static String getShortDisplayName(InputMethodSubtype subtype) {
+        if (isNoLanguage(subtype)) {
+            return "";
+        }
+        final Locale locale = getSubtypeLocale(subtype);
+        return StringUtils.toTitleCase(locale.getLanguage(), locale);
+    }
+
+    public static boolean isNoLanguage(InputMethodSubtype subtype) {
+        final String localeString = subtype.getLocale();
+        return localeString.equals(NO_LANGUAGE);
+    }
+
+    public static Locale getSubtypeLocale(InputMethodSubtype subtype) {
+        final String localeString = subtype.getLocale();
+        return LocaleUtils.constructLocaleFromString(localeString);
     }
 
     public static String getKeyboardLayoutSetName(InputMethodSubtype subtype) {
@@ -117,22 +113,7 @@ public class SubtypeLocale {
                 LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LAYOUT_SET);
         // TODO: Remove this null check when InputMethodManager.getCurrentInputMethodSubtype is
         // fixed.
-        if (keyboardLayoutSet == null) return DEFAULT_KEYBOARD_LAYOUT_SET;
-        final int pos = keyboardLayoutSet.indexOf(KEYBOARD_LAYOUT_SET_LOCALE_DELIMITER);
-        return (pos > 0) ? keyboardLayoutSet.substring(0, pos) : keyboardLayoutSet;
-    }
-
-    public static String getKeyboardLayoutSetLocaleString(InputMethodSubtype subtype) {
-        final String keyboardLayoutSet = subtype.getExtraValueOf(
-                LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LAYOUT_SET);
-        // TODO: Remove this null check when InputMethodManager.getCurrentInputMethodSubtype is
-        // fixed.
-        if (keyboardLayoutSet == null) return subtype.getLocale();
-        final int pos = keyboardLayoutSet.indexOf(KEYBOARD_LAYOUT_SET_LOCALE_DELIMITER);
-        return (pos > 0) ? keyboardLayoutSet.substring(pos + 1) : subtype.getLocale();
-    }
-
-    public static Locale getKeyboardLayoutSetLocale(InputMethodSubtype subtype) {
-        return LocaleUtils.constructLocaleFromString(getKeyboardLayoutSetLocaleString(subtype));
+        if (keyboardLayoutSet == null) return AdditionalSubtype.QWERTY;
+        return keyboardLayoutSet;
     }
 }

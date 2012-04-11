@@ -44,7 +44,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
-import java.util.Locale;
 
 /**
  * This class represents a set of keyboard layouts. Each of them represents a different keyboard
@@ -109,7 +108,7 @@ public class KeyboardLayoutSet {
         boolean mVoiceKeyOnMain;
         boolean mNoSettingsKey;
         boolean mLanguageSwitchKeyEnabled;
-        Locale mLocale;
+        InputMethodSubtype mSubtype;
         int mOrientation;
         int mWidth;
         // KeyboardLayoutSet element id to element's parameters map.
@@ -203,10 +202,10 @@ public class KeyboardLayoutSet {
         final Params params = mParams;
         final boolean isSymbols = (keyboardLayoutSetElementId == KeyboardId.ELEMENT_SYMBOLS
                 || keyboardLayoutSetElementId == KeyboardId.ELEMENT_SYMBOLS_SHIFTED);
-        final boolean noLanguage = params.mLocale.getLanguage().equals(SubtypeLocale.NO_LANGUAGE);
+        final boolean noLanguage = SubtypeLocale.isNoLanguage(params.mSubtype);
         final boolean voiceKeyEnabled = params.mVoiceKeyEnabled && !noLanguage;
         final boolean hasShortcutKey = voiceKeyEnabled && (isSymbols != params.mVoiceKeyOnMain);
-        return new KeyboardId(keyboardLayoutSetElementId, params.mLocale, params.mOrientation,
+        return new KeyboardId(keyboardLayoutSetElementId, params.mSubtype, params.mOrientation,
                 params.mWidth, params.mMode, params.mEditorInfo, params.mNoSettingsKey,
                 voiceKeyEnabled, hasShortcutKey, params.mLanguageSwitchKeyEnabled);
     }
@@ -251,7 +250,7 @@ public class KeyboardLayoutSet {
             final InputMethodSubtype keyboardSubtype = (forceAscii && !asciiCapable)
                     ? SubtypeSwitcher.getInstance().getNoLanguageSubtype()
                     : subtype;
-            mParams.mLocale = SubtypeLocale.getKeyboardLayoutSetLocale(keyboardSubtype);
+            mParams.mSubtype = keyboardSubtype;
             mParams.mKeyboardLayoutSetName = KEYBOARD_LAYOUT_SET_RESOURCE_PREFIX
                     + SubtypeLocale.getKeyboardLayoutSetName(keyboardSubtype);
             return this;
@@ -278,7 +277,7 @@ public class KeyboardLayoutSet {
         public KeyboardLayoutSet build() {
             if (mParams.mOrientation == Configuration.ORIENTATION_UNDEFINED)
                 throw new RuntimeException("Screen geometry is not specified");
-            if (mParams.mLocale == null)
+            if (mParams.mSubtype == null)
                 throw new RuntimeException("KeyboardLayoutSet subtype is not specified");
             final String packageName = mResources.getResourcePackageName(
                     R.xml.keyboard_layout_set_qwerty);

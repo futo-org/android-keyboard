@@ -21,12 +21,14 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * When you call the constructor of this class, you may want to change the current system locale by
@@ -69,6 +71,7 @@ public class SettingsValues {
     private final int mVibrationDurationSettingsRawValue;
     @SuppressWarnings("unused") // TODO: Use this
     private final float mKeypressSoundVolumeRawValue;
+    private final InputMethodSubtype[] mPredefinedAdditionalSubtypes;
 
     // Deduced settings
     public final int mKeypressVibrationDuration;
@@ -145,6 +148,16 @@ public class SettingsValues {
                 mAutoCorrectionThresholdRawValue);
         mVoiceKeyEnabled = mVoiceMode != null && !mVoiceMode.equals(voiceModeOff);
         mVoiceKeyOnMain = mVoiceMode != null && mVoiceMode.equals(voiceModeMain);
+
+        // Predefined additional subtypes
+        final InputMethodSubtype DE_QWERTY = AdditionalSubtype.createAddtionalSubtype(
+                Locale.GERMAN, AdditionalSubtype.QWERTY);
+        final InputMethodSubtype FR_QWERTZ = AdditionalSubtype.createAddtionalSubtype(
+                Locale.FRENCH, AdditionalSubtype.QWERTZ);
+        mPredefinedAdditionalSubtypes = new InputMethodSubtype[] {
+                DE_QWERTY,
+                FR_QWERTZ,
+        };
     }
 
     // Helper functions to create member values.
@@ -302,6 +315,11 @@ public class SettingsValues {
 
     public boolean isFullscreenModeAllowed(Resources res) {
         return res.getBoolean(R.bool.config_use_fullscreen_mode);
+    }
+
+    // TODO: Should be able to add/remove/edit.
+    public InputMethodSubtype[] getPrefefinedAdditionalSubtypes() {
+        return mPredefinedAdditionalSubtypes;
     }
 
     // Accessed from the settings interface, hence public

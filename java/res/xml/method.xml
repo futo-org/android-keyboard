@@ -28,7 +28,6 @@
     cs: Czech/qwertz
     da: Danish/nordic
     de: German/qwertz
-    de_QY: German (QWERTY)/qwerty
     el: Greek/greek
     en_US: English United States/qwerty
     en_GB: English Great Britain/qwerty
@@ -38,7 +37,6 @@
     fi: Finnish/nordic
     fr: French/azerty
     fr_CA: French Canada/qwerty
-    fr_CH: French Switzerland/qwertz
     hi: Hindi/hindi
     hr: Croatian/qwertz
     hu: Hungarian/qwertz
@@ -64,7 +62,7 @@
     tr: Turkish/qwerty
     uk: Ukrainian/east_slavic
     vi: Vietnamese/qwerty
-    zz_QY: QWERTY/qwerty
+    zz: QWERTY/qwerty
     -->
 <!-- TODO: use <lang>_keyboard icon instead of a common keyboard icon. -->
 <!-- If IME doesn't have an applicable subtype, the first subtype will be used as a default
@@ -121,12 +119,6 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwertz,AsciiCapable"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
-            android:label="@string/subtype_generic_qwerty"
-            android:imeSubtypeLocale="de"
-            android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty:de_QY,AsciiCapable"
-    />
-    <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
             android:imeSubtypeLocale="el"
             android:imeSubtypeMode="keyboard"
@@ -167,12 +159,6 @@
             android:imeSubtypeLocale="fr_CA"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable"
-    />
-    <subtype android:icon="@drawable/ic_subtype_keyboard"
-            android:label="@string/subtype_generic"
-            android:imeSubtypeLocale="fr_CH"
-            android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwertz,AsciiCapable"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
@@ -327,7 +313,7 @@
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_no_language_qwerty"
-            android:imeSubtypeLocale="zz_QY"
+            android:imeSubtypeLocale="zz"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EnabledWhenDefaultIsNotAsciiCapable"
     />

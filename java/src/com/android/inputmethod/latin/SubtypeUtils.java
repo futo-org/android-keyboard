@@ -143,6 +143,7 @@ public class SubtypeUtils {
                 return subtype;
             }
         }
-        throw new RuntimeException("Can not find subtype of locale " + localeString);
+        throw new RuntimeException("Can't find subtype for locale " + localeString
+                + " and keyboard layout " + keyoardLayoutSet);
     }
 }

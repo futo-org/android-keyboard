@@ -19,9 +19,12 @@ package com.android.inputmethod.keyboard;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.latin.InputTypeUtils;
+import com.android.inputmethod.latin.LatinIME;
+import com.android.inputmethod.latin.SubtypeLocale;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -53,6 +56,7 @@ public class KeyboardId {
 
     private static final int IME_ACTION_CUSTOM_LABEL = EditorInfo.IME_MASK_ACTION + 1;
 
+    public final InputMethodSubtype mSubtype;
     public final Locale mLocale;
     public final int mOrientation;
     public final int mWidth;
@@ -67,10 +71,11 @@ public class KeyboardId {
 
     private final int mHashCode;
 
-    public KeyboardId(int elementId, Locale locale, int orientation, int width, int mode,
-            EditorInfo editorInfo, boolean clobberSettingsKey, boolean shortcutKeyEnabled,
+    public KeyboardId(int elementId, InputMethodSubtype subtype, int orientation, int width,
+            int mode, EditorInfo editorInfo, boolean clobberSettingsKey, boolean shortcutKeyEnabled,
             boolean hasShortcutKey, boolean languageSwitchKeyEnabled) {
-        mLocale = locale;
+        mSubtype = subtype;
+        mLocale = SubtypeLocale.getSubtypeLocale(subtype);
         mOrientation = orientation;
         mWidth = width;
         mMode = mode;
@@ -102,7 +107,7 @@ public class KeyboardId {
                 id.mCustomActionLabel,
                 id.navigateNext(),
                 id.navigatePrevious(),
-                id.mLocale
+                id.mSubtype
         });
     }
 
@@ -123,7 +128,7 @@ public class KeyboardId {
                 && TextUtils.equals(other.mCustomActionLabel, mCustomActionLabel)
                 && other.navigateNext() == navigateNext()
                 && other.navigatePrevious() == navigatePrevious()
-                && other.mLocale.equals(mLocale);
+                && other.mSubtype.equals(mSubtype);
     }
 
     public boolean isAlphabetKeyboard() {
@@ -176,9 +181,10 @@ public class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format("[%s %s %s%d %s %s %s%s%s%s%s%s%s%s]",
+        return String.format("[%s %s:%s %s%d %s %s %s%s%s%s%s%s%s%s]",
                 elementIdToName(mElementId),
                 mLocale,
+                mSubtype.getExtraValueOf(LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LAYOUT_SET),
                 (mOrientation == 1 ? "port" : "land"), mWidth,
                 modeName(mMode),
                 imeAction(),
