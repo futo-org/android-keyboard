@@ -263,10 +263,12 @@ class BinaryDictionaryGetter {
     public static ArrayList<AssetFileAddress> getDictionaryFiles(final Locale locale,
             final Context context) {
 
+        final boolean hasDefaultWordList = DictionaryFactory.isDictionaryAvailable(context, locale);
         // cacheWordListsFromContentProvider returns the list of files it copied to local
         // storage, but we don't really care about what was copied NOW: what we want is the
         // list of everything we ever cached, so we ignore the return value.
-        BinaryDictionaryFileDumper.cacheWordListsFromContentProvider(locale, context);
+        BinaryDictionaryFileDumper.cacheWordListsFromContentProvider(locale, context,
+                hasDefaultWordList);
         final File[] cachedWordLists = getCachedWordLists(locale.toString(), context);
 
         final String mainDictId = getMainDictId(locale);
