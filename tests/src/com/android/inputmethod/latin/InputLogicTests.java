@@ -30,7 +30,7 @@ public class InputLogicTests extends InputTestsBase {
         final String WORD_TO_TYPE = "this";
         final String EXPECTED_RESULT = "this";
         type(WORD_TO_TYPE);
-        mLatinIME.pickSuggestionManually(0, WORD_TO_TYPE);
+        pickSuggestionManually(0, WORD_TO_TYPE);
         mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
         type(Keyboard.CODE_DELETE);
         assertEquals("press suggestion then backspace", EXPECTED_RESULT,
@@ -44,7 +44,7 @@ public class InputLogicTests extends InputTestsBase {
         type(WORD_TO_TYPE);
         // Choose the auto-correction, which is always in position 0. For "tgis", the
         // auto-correction should be "this".
-        mLatinIME.pickSuggestionManually(0, WORD_TO_PICK);
+        pickSuggestionManually(0, WORD_TO_PICK);
         mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
         assertEquals("pick typed word over auto-correction then backspace", WORD_TO_PICK,
                 mTextView.getText().toString());
@@ -59,7 +59,7 @@ public class InputLogicTests extends InputTestsBase {
         type(WORD_TO_TYPE);
         // Choose the typed word, which should be in position 1 (because position 0 should
         // be occupied by the "this" auto-correction, as checked by testAutoCorrect())
-        mLatinIME.pickSuggestionManually(1, WORD_TO_TYPE);
+        pickSuggestionManually(1, WORD_TO_TYPE);
         mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
         assertEquals("pick typed word over auto-correction then backspace", WORD_TO_TYPE,
                 mTextView.getText().toString());
@@ -75,7 +75,7 @@ public class InputLogicTests extends InputTestsBase {
         type(WORD_TO_TYPE);
         // Choose the second suggestion, which should be in position 2 and should be "thus"
         // when "tgis is typed.
-        mLatinIME.pickSuggestionManually(2, WORD_TO_PICK);
+        pickSuggestionManually(2, WORD_TO_PICK);
         mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
         assertEquals("pick different suggestion then backspace", WORD_TO_PICK,
                 mTextView.getText().toString());
@@ -171,7 +171,7 @@ public class InputLogicTests extends InputTestsBase {
         final String WORD_TO_TYPE = "this";
         final String EXPECTED_RESULT = WORD_TO_TYPE;
         type(WORD_TO_TYPE);
-        mLatinIME.pickSuggestionManually(0, WORD_TO_TYPE);
+        pickSuggestionManually(0, WORD_TO_TYPE);
         assertEquals("no space after manual pick", EXPECTED_RESULT,
                 mTextView.getText().toString());
     }
@@ -181,7 +181,7 @@ public class InputLogicTests extends InputTestsBase {
         final String WORD2_TO_TYPE = "is";
         final String EXPECTED_RESULT = "this is";
         type(WORD1_TO_TYPE);
-        mLatinIME.pickSuggestionManually(0, WORD1_TO_TYPE);
+        pickSuggestionManually(0, WORD1_TO_TYPE);
         type(WORD2_TO_TYPE);
         assertEquals("manual pick then type", EXPECTED_RESULT, mTextView.getText().toString());
     }
@@ -191,7 +191,7 @@ public class InputLogicTests extends InputTestsBase {
         final String WORD2_TO_TYPE = "!";
         final String EXPECTED_RESULT = "this!";
         type(WORD1_TO_TYPE);
-        mLatinIME.pickSuggestionManually(0, WORD1_TO_TYPE);
+        pickSuggestionManually(0, WORD1_TO_TYPE);
         type(WORD2_TO_TYPE);
         assertEquals("manual pick then separator", EXPECTED_RESULT, mTextView.getText().toString());
     }
@@ -201,7 +201,7 @@ public class InputLogicTests extends InputTestsBase {
         final String WORD2_TO_TYPE = " is";
         final String EXPECTED_RESULT = "this is";
         type(WORD1_TO_TYPE);
-        mLatinIME.pickSuggestionManually(0, WORD1_TO_TYPE);
+        pickSuggestionManually(0, WORD1_TO_TYPE);
         type(WORD2_TO_TYPE);
         assertEquals("manual pick then space then type", EXPECTED_RESULT,
                 mTextView.getText().toString());
@@ -212,11 +212,11 @@ public class InputLogicTests extends InputTestsBase {
         final String WORD2_TO_PICK = "is";
         final String EXPECTED_RESULT = "this is";
         type(WORD1_TO_TYPE);
-        mLatinIME.pickSuggestionManually(0, WORD1_TO_TYPE);
+        pickSuggestionManually(0, WORD1_TO_TYPE);
         // Here we fake picking a word through bigram prediction. This test is taking
         // advantage of the fact that Latin IME blindly trusts the caller of #pickSuggestionManually
         // to actually pass the right string.
-        mLatinIME.pickSuggestionManually(1, WORD2_TO_PICK);
+        pickSuggestionManually(1, WORD2_TO_PICK);
         assertEquals("manual pick then manual pick", EXPECTED_RESULT,
                 mTextView.getText().toString());
     }
