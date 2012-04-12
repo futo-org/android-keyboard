@@ -248,6 +248,9 @@ public class PointerTracker {
             mListener.onPressKey(key.mCode);
             final boolean keyboardLayoutHasBeenChanged = mKeyboardLayoutHasBeenChanged;
             mKeyboardLayoutHasBeenChanged = false;
+            if (!key.altCodeWhileTyping() && !key.isModifier()) {
+                mTimerProxy.startTypingStateTimer();
+            }
             return keyboardLayoutHasBeenChanged;
         }
         return false;
@@ -278,9 +281,6 @@ public class PointerTracker {
                 mListener.onTextInput(key.mOutputText);
             } else if (code != Keyboard.CODE_UNSPECIFIED) {
                 mListener.onCodeInput(code, x, y);
-            }
-            if (!key.altCodeWhileTyping() && !key.isModifier()) {
-                mTimerProxy.startTypingStateTimer();
             }
         }
     }
@@ -734,6 +734,9 @@ public class PointerTracker {
     public void onRepeatKey(Key key) {
         if (key != null) {
             detectAndSendKey(key, key.mX, key.mY);
+            if (!key.altCodeWhileTyping() && !key.isModifier()) {
+                mTimerProxy.startTypingStateTimer();
+            }
         }
     }
 
