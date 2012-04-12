@@ -53,17 +53,23 @@ public class BinaryDictionaryFileDumper {
 
     private static final String DICTIONARY_PROJECTION[] = { "id" };
 
+    public static final String QUERY_PARAMETER_MAY_PROMPT_USER = "mayPrompt";
+    public static final String QUERY_PARAMETER_TRUE = "true";
+
     // Prevents this class to be accidentally instantiated.
     private BinaryDictionaryFileDumper() {
     }
 
     /**
-     * Return for a given locale or dictionary id the provider URI to get the dictionary.
+     * Returns a URI builder pointing to the dictionary pack.
+     *
+     * This creates a URI builder able to build a URI pointing to the dictionary
+     * pack content provider for a specific dictionary id.
      */
-    private static Uri getProviderUri(String path) {
+    private static Uri.Builder getProviderUriBuilder(final String path) {
         return new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT)
                 .authority(BinaryDictionary.DICTIONARY_PACK_AUTHORITY).appendPath(
-                        path).build();
+                        path);
     }
 
     /**
@@ -71,9 +77,13 @@ public class BinaryDictionaryFileDumper {
      * available to copy into Latin IME.
      */
     private static List<WordListInfo> getWordListWordListInfos(final Locale locale,
-            final Context context) {
+            final Context context, final boolean hasDefaultWordList) {
         final ContentResolver resolver = context.getContentResolver();
-        final Uri dictionaryPackUri = getProviderUri(locale.toString());
+        final Uri.Builder builder = getProviderUriBuilder(locale.toString());
+        if (!hasDefaultWordList) {
+            builder.appendQueryParameter(QUERY_PARAMETER_MAY_PROMPT_USER, QUERY_PARAMETER_TRUE);
+        }
+        final Uri dictionaryPackUri = builder.build();
 
         final Cursor c = resolver.query(dictionaryPackUri, DICTIONARY_PROJECTION, null, null, null);
         if (null == c) return Collections.<WordListInfo>emptyList();
@@ -132,7 +142,7 @@ public class BinaryDictionaryFileDumper {
         final int MODE_MIN = COMPRESSED_CRYPTED_COMPRESSED;
         final int MODE_MAX = NONE;
 
-        final Uri wordListUri = getProviderUri(id);
+        final Uri wordListUri = getProviderUriBuilder(id).build();
         final String outputFileName = BinaryDictionaryGetter.getCacheFileName(id, locale, context);
 
         for (int mode = MODE_MIN; mode <= MODE_MAX; ++mode) {
@@ -231,9 +241,10 @@ public class BinaryDictionaryFileDumper {
      * @throw IOException if the provider-returned data could not be read.
      */
     public static List<AssetFileAddress> cacheWordListsFromContentProvider(final Locale locale,
-            final Context context) {
+            final Context context, final boolean hasDefaultWordList) {
         final ContentResolver resolver = context.getContentResolver();
-        final List<WordListInfo> idList = getWordListWordListInfos(locale, context);
+        final List<WordListInfo> idList = getWordListWordListInfos(locale, context,
+                hasDefaultWordList);
         final List<AssetFileAddress> fileAddressList = new ArrayList<AssetFileAddress>();
         for (WordListInfo id : idList) {
             final AssetFileAddress afd = cacheWordList(id.mId, id.mLocale, resolver, context);

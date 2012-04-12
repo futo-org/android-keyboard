@@ -94,13 +94,14 @@ public class DictionaryFactory {
             final Locale locale) {
         AssetFileDescriptor afd = null;
         try {
-            final int resId = getMainDictionaryResourceId(context.getResources(), locale);
+            final int resId =
+                    getMainDictionaryResourceIdIfAvailableForLocale(context.getResources(), locale);
+            if (0 == resId) return null;
             afd = context.getResources().openRawResourceFd(resId);
             if (afd == null) {
                 Log.e(TAG, "Found the resource but it is compressed. resId=" + resId);
                 return null;
             }
-            if (!isFullDictionary(afd)) return null;
             final String sourceDir = context.getApplicationInfo().sourceDir;
             final File packagePath = new File(sourceDir);
             // TODO: Come up with a way to handle a directory.
@@ -152,55 +153,19 @@ public class DictionaryFactory {
      */
     public static boolean isDictionaryAvailable(Context context, Locale locale) {
         final Resources res = context.getResources();
-        final int resourceId = getMainDictionaryResourceId(res, locale);
-        final AssetFileDescriptor afd = res.openRawResourceFd(resourceId);
-        final boolean hasDictionary = isFullDictionary(afd);
-        try {
-            if (null != afd) afd.close();
-        } catch (java.io.IOException e) {
-            /* Um, what can we do here exactly? */
-        }
-        return hasDictionary;
-    }
-
-    // TODO: Do not use the size of the dictionary as an unique dictionary ID.
-    public static Long getDictionaryId(final Context context, final Locale locale) {
-        final Resources res = context.getResources();
-        final int resourceId = getMainDictionaryResourceId(res, locale);
-        final AssetFileDescriptor afd = res.openRawResourceFd(resourceId);
-        final Long size = (afd != null && afd.getLength() > PLACEHOLDER_LENGTH)
-                ? afd.getLength()
-                : null;
-        try {
-            if (null != afd) afd.close();
-        } catch (java.io.IOException e) {
-        }
-        return size;
-    }
-
-    // TODO: Find the Right Way to find out whether the resource is a placeholder or not.
-    // Suggestion : strip the locale, open the placeholder file and store its offset.
-    // Upon opening the file, if it's the same offset, then it's the placeholder.
-    private static final long PLACEHOLDER_LENGTH = 34;
-    /**
-     * Finds out whether the data pointed out by an AssetFileDescriptor is a full
-     * dictionary (as opposed to null, or to a place holder).
-     * @param afd the file descriptor to test, or null
-     * @return true if the dictionary is a real full dictionary, false if it's null or a placeholder
-     */
-    protected static boolean isFullDictionary(final AssetFileDescriptor afd) {
-        return (afd != null && afd.getLength() > PLACEHOLDER_LENGTH);
+        return 0 != getMainDictionaryResourceIdIfAvailableForLocale(res, locale);
     }
 
     private static final String DEFAULT_MAIN_DICT = "main";
     private static final String MAIN_DICT_PREFIX = "main_";
 
     /**
-     * Returns a main dictionary resource id
+     * Helper method to return a dictionary res id for a locale, or 0 if none.
      * @param locale dictionary locale
      * @return main dictionary resource id
      */
-    public static int getMainDictionaryResourceId(Resources res, Locale locale) {
+    private static int getMainDictionaryResourceIdIfAvailableForLocale(final Resources res,
+            final Locale locale) {
         final String packageName = LatinIME.class.getPackage().getName();
         int resId;
 
@@ -218,6 +183,19 @@ public class DictionaryFactory {
             return resId;
         }
 
+        // Not found, return 0
+        return 0;
+    }
+
+    /**
+     * Returns a main dictionary resource id
+     * @param locale dictionary locale
+     * @return main dictionary resource id
+     */
+    public static int getMainDictionaryResourceId(final Resources res, final Locale locale) {
+        int resourceId = getMainDictionaryResourceIdIfAvailableForLocale(res, locale);
+        if (0 != resourceId) return resourceId;
+        final String packageName = LatinIME.class.getPackage().getName();
         return res.getIdentifier(DEFAULT_MAIN_DICT, "raw", packageName);
     }
 }
