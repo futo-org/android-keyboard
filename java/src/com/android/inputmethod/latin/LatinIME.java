@@ -1895,7 +1895,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (mSettingsValues.mEnableSuggestionSpanInsertion) {
                 final SuggestedWords suggestedWords = mSuggestionsView.getSuggestions();
                 ic.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(
-                        this, bestWord, suggestedWords), 1);
+                        this, bestWord, suggestedWords, mSubtypeSwitcher.isDictionaryAvailable()),
+                        1);
             } else {
                 ic.commitText(bestWord, 1);
             }
