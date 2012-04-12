@@ -227,16 +227,16 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             removeMessages(MSG_LONGPRESS_KEY);
         }
 
-        public static void cancelAndStartAnimators(ObjectAnimator animatorToCancel,
-                ObjectAnimator animatorToStart) {
-            if (animatorToCancel != null && animatorToCancel.isStarted()) {
+        public static void cancelAndStartAnimators(final ObjectAnimator animatorToCancel,
+                final ObjectAnimator animatorToStart) {
+            float startFraction = 0.0f;
+            if (animatorToCancel.isStarted()) {
                 animatorToCancel.cancel();
+                startFraction = 1.0f - animatorToCancel.getAnimatedFraction();
             }
-            // TODO: Start the animation with an initial value that is the same as the final value
-            // of the above animation when it gets cancelled.
-            if (animatorToStart != null && !animatorToStart.isStarted()) {
-                animatorToStart.start();
-            }
+            final long startTime = (long)(animatorToStart.getDuration() * startFraction);
+            animatorToStart.start();
+            animatorToStart.setCurrentPlayTime(startTime);
         }
 
         @Override
