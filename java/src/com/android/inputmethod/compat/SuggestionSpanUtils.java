@@ -104,8 +104,9 @@ public class SuggestionSpanUtils {
     }
 
     public static CharSequence getTextWithSuggestionSpan(Context context,
-            CharSequence pickedWord, SuggestedWords suggestedWords) {
-        if (TextUtils.isEmpty(pickedWord) || CONSTRUCTOR_SuggestionSpan == null
+            CharSequence pickedWord, SuggestedWords suggestedWords, boolean dictionaryAvailable) {
+        if (!dictionaryAvailable || TextUtils.isEmpty(pickedWord)
+                || CONSTRUCTOR_SuggestionSpan == null
                 || suggestedWords == null || suggestedWords.size() == 0
                 || OBJ_SUGGESTIONS_MAX_SIZE == null) {
             return pickedWord;

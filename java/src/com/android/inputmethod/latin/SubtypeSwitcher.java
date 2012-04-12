@@ -63,6 +63,7 @@ public class SubtypeSwitcher {
     /*-----------------------------------------------------------*/
     // Variants which should be changed only by reload functions.
     private boolean mNeedsToDisplayLanguage;
+    private boolean mIsDictionaryAvailable;
     private boolean mIsSystemLanguageSameAsInputLanguage;
     private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
@@ -260,6 +261,7 @@ public class SubtypeSwitcher {
                 getInputLocale().getLanguage());
         mNeedsToDisplayLanguage = !(getEnabledKeyboardLocaleCount() <= 1
                 && mIsSystemLanguageSameAsInputLanguage);
+        mIsDictionaryAvailable = DictionaryFactory.isDictionaryAvailable(mService, mInputLocale);
     }
 
     ////////////////////////////
@@ -377,6 +379,10 @@ public class SubtypeSwitcher {
         if (!TextUtils.equals(systemLocale.toString(), mSystemLocale.toString())) {
             updateAllParameters();
         }
+    }
+
+    public boolean isDictionaryAvailable() {
+        return mIsDictionaryAvailable;
     }
 
     // TODO: Remove this method
