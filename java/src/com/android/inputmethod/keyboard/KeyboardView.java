@@ -260,7 +260,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             mKeyHintLabelSize = (int)(keyHeight * mKeyHintLabelRatio);
         }
 
-        public void brendAlpha(Paint paint) {
+        public void blendAlpha(Paint paint) {
             final int color = paint.getColor();
             paint.setARGB((paint.getAlpha() * mAnimAlpha) / ALPHA_OPAQUE,
                     Color.red(color), Color.green(color), Color.blue(color));
@@ -600,7 +600,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 // Make label invisible
                 paint.setColor(Color.TRANSPARENT);
             }
-            params.brendAlpha(paint);
+            params.blendAlpha(paint);
             canvas.drawText(label, 0, label.length(), positionX, baseline, paint);
             // Turn off drop shadow and reset x-scale.
             paint.setShadowLayer(0, 0, 0, 0);
@@ -645,7 +645,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 hintSize = params.mKeyHintLetterSize;
             }
             paint.setColor(hintColor);
-            params.brendAlpha(paint);
+            params.blendAlpha(paint);
             paint.setTextSize(hintSize);
             final float hintX, hintY;
             if (key.hasHintLabel()) {
@@ -715,7 +715,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         paint.setTextSize(params.mKeyHintLetterSize);
         paint.setColor(params.mKeyHintLabelColor);
-        params.brendAlpha(paint);
+        params.blendAlpha(paint);
         paint.setTextAlign(Align.CENTER);
         final float hintX = keyWidth - params.mKeyHintLetterPadding
                 - getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) / 2;

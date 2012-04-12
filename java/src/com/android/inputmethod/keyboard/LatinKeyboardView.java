@@ -239,14 +239,10 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             }
         }
 
-        private void cancelTypingStateTimer() {
-            removeMessages(MSG_TYPING_STATE_EXPIRED);
-        }
-
         @Override
         public void startTypingStateTimer() {
             final boolean isTyping = isTypingState();
-            cancelTypingStateTimer();
+            removeMessages(MSG_TYPING_STATE_EXPIRED);
             sendMessageDelayed(
                     obtainMessage(MSG_TYPING_STATE_EXPIRED), mParams.mIgnoreAltCodeKeyTimeout);
             if (isTyping) {
@@ -286,7 +282,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         public void cancelAllMessages() {
             cancelKeyTimers();
-            cancelTypingStateTimer();
         }
     }
 

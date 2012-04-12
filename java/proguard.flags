@@ -28,7 +28,7 @@
   # Keep getter/setter methods for ObjectAnimator
   int getLanguageOnSpacebarAnimAlpha();
   void setLanguageOnSpacebarAnimAlpha(int);
-  int getAltCodeKeyWhileTypingAnimAlhpa();
+  int getAltCodeKeyWhileTypingAnimAlpha();
   void setAltCodeKeyWhileTypingAnimAlpha(int);
 }
 
