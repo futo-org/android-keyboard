@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.latin;
 
-public class InputLogicFrenchTests extends InputTestsBase {
+public class InputLogicTestsNonEnglish extends InputTestsBase {
 
     public void testAutoCorrectForFrench() {
         final String STRING_TO_TYPE = "irq ";
@@ -53,5 +53,23 @@ public class InputLogicFrenchTests extends InputTestsBase {
         mLatinIME.pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
         assertEquals("type word then type space then punctuation from strip twice for French",
                 EXPECTED_RESULT, mTextView.getText().toString());
+    }
+
+    public void testAutoCorrectForGerman() {
+        final String STRING_TO_TYPE = "unf ";
+        final String EXPECTED_RESULT = "und ";
+        changeLanguage("de");
+        type(STRING_TO_TYPE);
+        assertEquals("simple auto-correct for German", EXPECTED_RESULT,
+                mTextView.getText().toString());
+    }
+
+    public void testAutoCorrectWithUmlautForGerman() {
+        final String STRING_TO_TYPE = "ueber ";
+        final String EXPECTED_RESULT = "über ";
+        changeLanguage("de");
+        type(STRING_TO_TYPE);
+        assertEquals("auto-correct with umlaut for German", EXPECTED_RESULT,
+                mTextView.getText().toString());
     }
 }
