@@ -16,9 +16,7 @@
 
 package com.android.inputmethod.latin;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.backup.BackupManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -33,15 +31,16 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.android.inputmethod.latin.define.ProductionFlag;
-import com.android.inputmethodcommon.InputMethodSettingsActivity;
+import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
-public class Settings extends InputMethodSettingsActivity
+public class Settings extends InputMethodSettingsFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final boolean ENABLE_EXPERIMENTAL_SETTINGS = false;
 
@@ -103,26 +102,16 @@ public class Settings extends InputMethodSettingsActivity
         }
     }
 
-    public Activity getActivityInternal() {
-        Object thisObject = (Object) this;
-        if (thisObject instanceof Activity) {
-            return (Activity) thisObject;
-        } else if (thisObject instanceof Fragment) {
-            return ((Fragment) thisObject).getActivity();
-        } else {
-            return null;
-        }
-    }
-
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setInputMethodSettingsCategoryTitle(R.string.language_selection_title);
         setSubtypeEnablerTitle(R.string.select_language);
-        final Resources res = getResources();
-        final Context context = getActivityInternal();
-
         addPreferencesFromResource(R.xml.prefs);
+
+        final Resources res = getResources();
+        final Context context = getActivity();
+
         mVoicePreference = (ListPreference) findPreference(PREF_VOICE_MODE);
         mShowCorrectionSuggestionsPreference =
                 (ListPreference) findPreference(PREF_SHOW_SUGGESTIONS_SETTING);
@@ -276,7 +265,7 @@ public class Settings extends InputMethodSettingsActivity
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        (new BackupManager(getActivityInternal())).dataChanged();
+        (new BackupManager(getActivity())).dataChanged();
         if (key.equals(PREF_POPUP_ON)) {
             final ListPreference popupDismissDelay =
                 (ListPreference)findPreference(PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
@@ -318,7 +307,7 @@ public class Settings extends InputMethodSettingsActivity
     private void refreshEnablingsOfKeypressSoundAndVibrationSettings(
             SharedPreferences sp, Resources res) {
         if (mKeypressVibrationDurationSettingsPref != null) {
-            final boolean hasVibrator = VibratorUtils.getInstance(this).hasVibrator();
+            final boolean hasVibrator = VibratorUtils.getInstance(getActivity()).hasVibrator();
             final boolean vibrateOn = hasVibrator && sp.getBoolean(Settings.PREF_VIBRATE_ON,
                     res.getBoolean(R.bool.config_default_vibration_enabled));
             mKeypressVibrationDurationSettingsPref.setEnabled(vibrateOn);
@@ -342,7 +331,7 @@ public class Settings extends InputMethodSettingsActivity
 
     private void showKeypressVibrationDurationSettingsDialog() {
         final SharedPreferences sp = getPreferenceManager().getSharedPreferences();
-        final Activity context = getActivityInternal();
+        final Context context = getActivity();
         final Resources res = context.getResources();
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.prefs_keypress_vibration_duration_settings);
@@ -361,7 +350,7 @@ public class Settings extends InputMethodSettingsActivity
                 dialog.dismiss();
             }
         });
-        final View v = context.getLayoutInflater().inflate(
+        final View v = LayoutInflater.from(context).inflate(
                 R.layout.vibration_settings_dialog, null);
         final int currentMs = SettingsValues.getCurrentVibrationDuration(
                 getPreferenceManager().getSharedPreferences(), getResources());
@@ -398,9 +387,9 @@ public class Settings extends InputMethodSettingsActivity
     }
 
     private void showKeypressSoundVolumeSettingDialog() {
-        final AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        final Context context = getActivity();
+        final AudioManager am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         final SharedPreferences sp = getPreferenceManager().getSharedPreferences();
-        final Activity context = getActivityInternal();
         final Resources res = context.getResources();
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.prefs_keypress_sound_volume_settings);
@@ -420,7 +409,7 @@ public class Settings extends InputMethodSettingsActivity
                 dialog.dismiss();
             }
         });
-        final View v = context.getLayoutInflater().inflate(
+        final View v = LayoutInflater.from(context).inflate(
                 R.layout.sound_effect_volume_dialog, null);
         final int currentVolumeInt =
                 (int)(SettingsValues.getCurrentKeypressSoundVolume(sp, res) * 100);

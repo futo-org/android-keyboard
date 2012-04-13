@@ -2226,15 +2226,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    protected void launchSettings() {
-        launchSettingsClass(Settings.class);
+    private void launchSettings() {
+        launchSettingsClass(SettingsActivity.class);
     }
 
     public void launchDebugSettings() {
-        launchSettingsClass(DebugSettings.class);
+        launchSettingsClass(DebugSettingsActivity.class);
     }
 
-    protected void launchSettingsClass(Class<? extends PreferenceActivity> settingsClass) {
+    private void launchSettingsClass(Class<? extends PreferenceActivity> settingsClass) {
         handleClose();
         Intent intent = new Intent();
         intent.setClass(LatinIME.this, settingsClass);

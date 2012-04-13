@@ -30,7 +30,7 @@
             <meta-data android:name="android.view.textservice.scs" android:resource="@xml/spellchecker" />
         </service>
 
-        <activity android:name="Settings" android:label="@string/english_ime_settings">
+        <activity android:name="SettingsActivity" android:label="@string/english_ime_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
@@ -43,7 +43,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="DebugSettings" android:label="@string/english_ime_debug_settings">
+        <activity android:name="DebugSettingsActivity" android:label="@string/english_ime_debug_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>

@@ -16,18 +16,19 @@
 
 package com.android.inputmethod.latin;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Process;
 import android.preference.CheckBoxPreference;
-import android.preference.PreferenceActivity;
+import android.preference.PreferenceFragment;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 
-public class DebugSettings extends PreferenceActivity
+public class DebugSettings extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = DebugSettings.class.getSimpleName();
@@ -38,7 +39,7 @@ public class DebugSettings extends PreferenceActivity
     private CheckBoxPreference mDebugMode;
 
     @Override
-    protected void onCreate(Bundle icicle) {
+    public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.prefs_for_debug);
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
@@ -50,7 +51,7 @@ public class DebugSettings extends PreferenceActivity
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         if (mServiceNeedsRestart) Process.killProcess(Process.myPid());
     }
@@ -76,7 +77,9 @@ public class DebugSettings extends PreferenceActivity
         boolean isDebugMode = mDebugMode.isChecked();
         String version = "";
         try {
-            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
+            final Context context = getActivity();
+            final String packageName = context.getPackageName();
+            PackageInfo info = context.getPackageManager().getPackageInfo(packageName, 0);
             version = "Version " + info.versionName;
         } catch (NameNotFoundException e) {
             Log.e(TAG, "Could not find version info.");
