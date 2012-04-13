@@ -31,7 +31,6 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
-import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 
 import java.util.ArrayList;
@@ -105,8 +104,8 @@ public class SubtypeSwitcher {
         mInputLocaleStr = null;
         mCurrentSubtype = mImm.getCurrentInputMethodSubtype();
         mAllEnabledSubtypesOfCurrentInputMethod = null;
-        mNoLanguageSubtype = SubtypeUtils.findSubtypeByKeyboardLayoutSetLocale(
-                service, SubtypeLocale.LOCALE_NO_LANGUAGE_QWERTY);
+        mNoLanguageSubtype = SubtypeUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
+                service, SubtypeLocale.LOCALE_NO_LANGUAGE_QWERTY, "qwerty");
 
         final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
         mIsNetworkConnected = (info != null && info.isConnected());
@@ -129,14 +128,14 @@ public class SubtypeSwitcher {
 
     // Reload enabledSubtypes from the framework.
     private void updateEnabledSubtypes() {
-        final String currentMode = getCurrentSubtypeMode();
+        final String currentMode = mCurrentSubtype.getMode();
         boolean foundCurrentSubtypeBecameDisabled = true;
         mAllEnabledSubtypesOfCurrentInputMethod = mImm.getEnabledInputMethodSubtypeList(
                 null, true);
         mEnabledLanguagesOfCurrentInputMethod.clear();
         mEnabledKeyboardSubtypesOfCurrentInputMethod.clear();
         for (InputMethodSubtype ims : mAllEnabledSubtypesOfCurrentInputMethod) {
-            final String locale = KeyboardLayoutSet.getKeyboardLayoutSetLocaleString(ims);
+            final String locale = SubtypeLocale.getKeyboardLayoutSetLocaleString(ims);
             final String mode = ims.getMode();
             mLocaleSplitter.setString(locale);
             if (mLocaleSplitter.hasNext()) {
@@ -166,7 +165,7 @@ public class SubtypeSwitcher {
                     + (mShortcutInputMethodInfo == null
                             ? "<null>" : mShortcutInputMethodInfo.getId()) + ", "
                     + (mShortcutSubtype == null ? "<null>" : (
-                            KeyboardLayoutSet.getKeyboardLayoutSetLocaleString(mShortcutSubtype)
+                            SubtypeLocale.getKeyboardLayoutSetLocaleString(mShortcutSubtype)
                             + ", " + mShortcutSubtype.getMode())));
         }
         // TODO: Update an icon for shortcut IME
@@ -189,16 +188,16 @@ public class SubtypeSwitcher {
                     + (mShortcutInputMethodInfo == null
                             ? "<null>" : mShortcutInputMethodInfo.getId()) + ", "
                     + (mShortcutSubtype == null ? "<null>" : (
-                            KeyboardLayoutSet.getKeyboardLayoutSetLocaleString(mShortcutSubtype)
+                            SubtypeLocale.getKeyboardLayoutSetLocaleString(mShortcutSubtype)
                             + ", " + mShortcutSubtype.getMode())));
         }
     }
 
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
     public void updateSubtype(InputMethodSubtype newSubtype) {
-        final String newLocale = KeyboardLayoutSet.getKeyboardLayoutSetLocaleString(newSubtype);
+        final String newLocale = SubtypeLocale.getKeyboardLayoutSetLocaleString(newSubtype);
         final String newMode = newSubtype.getMode();
-        final String oldMode = getCurrentSubtypeMode();
+        final String oldMode = mCurrentSubtype.getMode();
         if (DBG) {
             Log.w(TAG, "Update subtype to:" + newLocale + "," + newMode
                     + ", from: " + mInputLocaleStr + ", " + oldMode);
@@ -218,7 +217,7 @@ public class SubtypeSwitcher {
         }
         mCurrentSubtype = newSubtype;
 
-        if (isKeyboardMode()) {
+        if (KEYBOARD_MODE.equals(mCurrentSubtype.getMode())) {
             if (modeChanged || languageChanged) {
                 updateShortcutIME();
                 mService.onRefreshKeyboard();
@@ -233,12 +232,10 @@ public class SubtypeSwitcher {
             }
             Log.w(TAG, "Unknown subtype mode: " + newMode + "," + version + ", " + packageName
                     + ". IME is already changed to other IME.");
-            if (newSubtype != null) {
-                Log.w(TAG, "Subtype mode:" + newSubtype.getMode());
-                Log.w(TAG, "Subtype locale:" + newSubtype.getLocale());
-                Log.w(TAG, "Subtype extra value:" + newSubtype.getExtraValue());
-                Log.w(TAG, "Subtype is auxiliary:" + newSubtype.isAuxiliary());
-            }
+            Log.w(TAG, "Subtype mode:" + newSubtype.getMode());
+            Log.w(TAG, "Subtype locale:" + newSubtype.getLocale());
+            Log.w(TAG, "Subtype extra value:" + newSubtype.getExtraValue());
+            Log.w(TAG, "Subtype is auxiliary:" + newSubtype.isAuxiliary());
         }
     }
 
@@ -282,10 +279,11 @@ public class SubtypeSwitcher {
         if (token == null) {
             return;
         }
+        final InputMethodManagerCompatWrapper imm = mImm;
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                mImm.setInputMethodAndSubtype(token, imiId, subtype);
+                imm.setInputMethodAndSubtype(token, imiId, subtype);
                 return null;
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -383,22 +381,6 @@ public class SubtypeSwitcher {
 
     public boolean isDictionaryAvailable() {
         return mIsDictionaryAvailable;
-    }
-
-    // TODO: Remove this method
-    private boolean isKeyboardMode() {
-        return KEYBOARD_MODE.equals(getCurrentSubtypeMode());
-    }
-
-    // TODO: Remove this method
-    private String getCurrentSubtypeMode() {
-        return mCurrentSubtype.getMode();
-    }
-
-    // TODO: Remove this method
-    public boolean currentSubtypeContainsExtraValueKey(String key) {
-        // If null, return what an empty ExtraValue would return : false.
-        return mCurrentSubtype.containsExtraValueKey(key);
     }
 
     public InputMethodSubtype getCurrentSubtype() {

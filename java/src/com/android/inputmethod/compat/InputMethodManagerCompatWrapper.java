@@ -17,7 +17,6 @@
 package com.android.inputmethod.compat;
 
 import android.content.Context;
-import android.inputmethodservice.InputMethodService;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.inputmethod.InputMethodInfo;
@@ -50,9 +49,8 @@ public class InputMethodManagerCompatWrapper {
         return sInstance;
     }
 
-    public static void init(InputMethodService service) {
-        sInstance.mImm = (InputMethodManager) service.getSystemService(
-                Context.INPUT_METHOD_SERVICE);
+    public static void init(Context context) {
+        sInstance.mImm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     public InputMethodSubtype getCurrentInputMethodSubtype() {
@@ -84,6 +82,11 @@ public class InputMethodManagerCompatWrapper {
     public boolean switchToNextInputMethod(IBinder token, boolean onlyCurrentIme) {
         return (Boolean)CompatUtils.invoke(mImm, false, METHOD_switchToNextInputMethod, token,
                 onlyCurrentIme);
+    }
+
+    public List<InputMethodInfo> getInputMethodList() {
+        if (mImm == null) return null;
+        return mImm.getInputMethodList();
     }
 
     public List<InputMethodInfo> getEnabledInputMethodList() {

@@ -18,6 +18,8 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.view.inputmethod.InputMethodSubtype;
+
 
 
 import java.util.Locale;
@@ -32,6 +34,9 @@ public class SubtypeLocale {
 
     private static String[] sExceptionKeys;
     private static String[] sExceptionValues;
+
+    private static final String DEFAULT_KEYBOARD_LAYOUT_SET = "qwerty";
+    private static final char KEYBOARD_LAYOUT_SET_LOCALE_DELIMITER = ':';
 
     private SubtypeLocale() {
         // Intentional empty constructor for utility class.
@@ -72,7 +77,8 @@ public class SubtypeLocale {
             return StringUtils.toTitleCase(locale.getDisplayName(locale), locale);
         }
         if (value.indexOf("%s") >= 0) {
-            final String languageName = StringUtils.toTitleCase(locale.getDisplayLanguage(locale), locale);
+            final String languageName = StringUtils.toTitleCase(
+                    locale.getDisplayLanguage(locale), locale);
             return String.format(value, languageName);
         }
         return value;
@@ -104,5 +110,29 @@ public class SubtypeLocale {
         } else {
             return StringUtils.toTitleCase(locale.getLanguage(), locale);
         }
+    }
+
+    public static String getKeyboardLayoutSetName(InputMethodSubtype subtype) {
+        final String keyboardLayoutSet = subtype.getExtraValueOf(
+                LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LAYOUT_SET);
+        // TODO: Remove this null check when InputMethodManager.getCurrentInputMethodSubtype is
+        // fixed.
+        if (keyboardLayoutSet == null) return DEFAULT_KEYBOARD_LAYOUT_SET;
+        final int pos = keyboardLayoutSet.indexOf(KEYBOARD_LAYOUT_SET_LOCALE_DELIMITER);
+        return (pos > 0) ? keyboardLayoutSet.substring(0, pos) : keyboardLayoutSet;
+    }
+
+    public static String getKeyboardLayoutSetLocaleString(InputMethodSubtype subtype) {
+        final String keyboardLayoutSet = subtype.getExtraValueOf(
+                LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LAYOUT_SET);
+        // TODO: Remove this null check when InputMethodManager.getCurrentInputMethodSubtype is
+        // fixed.
+        if (keyboardLayoutSet == null) return subtype.getLocale();
+        final int pos = keyboardLayoutSet.indexOf(KEYBOARD_LAYOUT_SET_LOCALE_DELIMITER);
+        return (pos > 0) ? keyboardLayoutSet.substring(pos + 1) : subtype.getLocale();
+    }
+
+    public static Locale getKeyboardLayoutSetLocale(InputMethodSubtype subtype) {
+        return LocaleUtils.constructLocaleFromString(getKeyboardLayoutSetLocaleString(subtype));
     }
 }

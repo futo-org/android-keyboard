@@ -22,8 +22,6 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.keyboard.KeyboardLayoutSet;
-
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -64,7 +62,7 @@ public class SubtypeLocaleTests extends AndroidTestCase {
         final StringBuilder messages = new StringBuilder();
         int failedCount = 0;
         for (final InputMethodSubtype subtype : mSubtypesList) {
-            final Locale locale = KeyboardLayoutSet.getKeyboardLayoutSetLocale(subtype);
+            final Locale locale = SubtypeLocale.getKeyboardLayoutSetLocale(subtype);
             if (locale.getLanguage().equals(SubtypeLocale.NO_LANGUAGE)) {
                 // This is special language name for language agnostic usage.
                 continue;
@@ -94,7 +92,7 @@ public class SubtypeLocaleTests extends AndroidTestCase {
         final StringBuilder messages = new StringBuilder();
         int failedCount = 0;
         for (final InputMethodSubtype subtype : mSubtypesList) {
-            final Locale locale = KeyboardLayoutSet.getKeyboardLayoutSetLocale(subtype);
+            final Locale locale = SubtypeLocale.getKeyboardLayoutSetLocale(subtype);
             if (locale.getLanguage().equals(SubtypeLocale.NO_LANGUAGE)) {
                 // This is special language name for language agnostic usage.
                 continue;
@@ -121,7 +119,7 @@ public class SubtypeLocaleTests extends AndroidTestCase {
         final StringBuilder messages = new StringBuilder();
         int failedCount = 0;
         for (final InputMethodSubtype subtype : mSubtypesList) {
-            final Locale locale = KeyboardLayoutSet.getKeyboardLayoutSetLocale(subtype);
+            final Locale locale = SubtypeLocale.getKeyboardLayoutSetLocale(subtype);
             if (locale.getCountry().equals(SubtypeLocale.QWERTY)) {
                 // This is special country code for QWERTY keyboard.
                 continue;

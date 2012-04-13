@@ -32,7 +32,6 @@ import com.android.inputmethod.keyboard.KeyboardLayoutSet.Params.ElementParams;
 import com.android.inputmethod.latin.InputTypeUtils;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SubtypeLocale;
@@ -61,8 +60,6 @@ public class KeyboardLayoutSet {
     private static final String TAG_KEYBOARD_SET = "KeyboardLayoutSet";
     private static final String TAG_ELEMENT = "Element";
 
-    private static final String DEFAULT_KEYBOARD_LAYOUT_SET = "qwerty";
-    private static final char KEYBOARD_LAYOUT_SET_LOCALE_DELIMITER = ':';
     private static final String KEYBOARD_LAYOUT_SET_RESOURCE_PREFIX = "keyboard_layout_set_";
 
     private final Context mContext;
@@ -164,14 +161,13 @@ public class KeyboardLayoutSet {
         }
         final KeyboardId id = getKeyboardId(keyboardLayoutSetElementId);
         try {
-            return getKeyboard(mContext, elementParams, id);
+            return getKeyboard(elementParams, id);
         } catch (RuntimeException e) {
             throw new KeyboardLayoutSetException(e, id);
         }
     }
 
-    private Keyboard getKeyboard(Context context, ElementParams elementParams,
-            final KeyboardId id) {
+    private Keyboard getKeyboard(ElementParams elementParams, final KeyboardId id) {
         final SoftReference<Keyboard> ref = sKeyboardCache.get(id);
         Keyboard keyboard = (ref == null) ? null : ref.get();
         if (keyboard == null) {
@@ -215,30 +211,6 @@ public class KeyboardLayoutSet {
                 voiceKeyEnabled, hasShortcutKey, params.mLanguageSwitchKeyEnabled);
     }
 
-    private static String getKeyboardLayoutSetName(InputMethodSubtype subtype) {
-        final String keyboardLayoutSet = subtype.getExtraValueOf(
-                LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LAYOUT_SET);
-        // TODO: Remove this null check when InputMethodManager.getCurrentInputMethodSubtype is
-        // fixed.
-        if (keyboardLayoutSet == null) return DEFAULT_KEYBOARD_LAYOUT_SET;
-        final int pos = keyboardLayoutSet.indexOf(KEYBOARD_LAYOUT_SET_LOCALE_DELIMITER);
-        return (pos > 0) ? keyboardLayoutSet.substring(0, pos) : keyboardLayoutSet;
-    }
-
-    public static String getKeyboardLayoutSetLocaleString(InputMethodSubtype subtype) {
-        final String keyboardLayoutSet = subtype.getExtraValueOf(
-                LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LAYOUT_SET);
-        // TODO: Remove this null check when InputMethodManager.getCurrentInputMethodSubtype is
-        // fixed.
-        if (keyboardLayoutSet == null) return subtype.getLocale();
-        final int pos = keyboardLayoutSet.indexOf(KEYBOARD_LAYOUT_SET_LOCALE_DELIMITER);
-        return (pos > 0) ? keyboardLayoutSet.substring(pos + 1) : subtype.getLocale();
-    }
-
-    public static Locale getKeyboardLayoutSetLocale(InputMethodSubtype subtype) {
-        return LocaleUtils.constructLocaleFromString(getKeyboardLayoutSetLocaleString(subtype));
-    }
-
     public static class Builder {
         private final Context mContext;
         private final String mPackageName;
@@ -279,9 +251,9 @@ public class KeyboardLayoutSet {
             final InputMethodSubtype keyboardSubtype = (forceAscii && !asciiCapable)
                     ? SubtypeSwitcher.getInstance().getNoLanguageSubtype()
                     : subtype;
-            mParams.mLocale = getKeyboardLayoutSetLocale(keyboardSubtype);
+            mParams.mLocale = SubtypeLocale.getKeyboardLayoutSetLocale(keyboardSubtype);
             mParams.mKeyboardLayoutSetName = KEYBOARD_LAYOUT_SET_RESOURCE_PREFIX
-                    + getKeyboardLayoutSetName(keyboardSubtype);
+                    + SubtypeLocale.getKeyboardLayoutSetName(keyboardSubtype);
             return this;
         }
 

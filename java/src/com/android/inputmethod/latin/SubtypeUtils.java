@@ -21,7 +21,6 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
-import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 
 import java.util.Collections;
 import java.util.List;
@@ -125,21 +124,22 @@ public class SubtypeUtils {
             throw new RuntimeException("Input method manager not found");
         }
 
-        for (final InputMethodInfo imi : imm.getEnabledInputMethodList()) {
+        for (final InputMethodInfo imi : imm.getInputMethodList()) {
             if (imi.getPackageName().equals(packageName))
                 return imi;
         }
         throw new RuntimeException("Can not find input method id for " + packageName);
     }
 
-    public static InputMethodSubtype findSubtypeByKeyboardLayoutSetLocale(
-            Context context, Locale locale) {
+    public static InputMethodSubtype findSubtypeByLocaleAndKeyboardLayoutSet(
+            Context context, Locale locale, String keyoardLayoutSet) {
         final String localeString = locale.toString();
-        final InputMethodInfo imi = SubtypeUtils.getInputMethodInfo(context.getPackageName());
+        final InputMethodInfo imi = getInputMethodInfo(context.getPackageName());
         final int count = imi.getSubtypeCount();
         for (int i = 0; i < count; i++) {
             final InputMethodSubtype subtype = imi.getSubtypeAt(i);
-            if (localeString.equals(KeyboardLayoutSet.getKeyboardLayoutSetLocaleString(subtype))) {
+            final String layout = SubtypeLocale.getKeyboardLayoutSetName(subtype);
+            if (localeString.equals(subtype.getLocale()) && keyoardLayoutSet.equals(layout)) {
                 return subtype;
             }
         }
