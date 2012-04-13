@@ -354,6 +354,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 = DEFAULT_ENABLED;
         private static final boolean KEYBOARDSTATE_TOGGLEALPHABETANDSYMBOLS_ENABLED
                 = DEFAULT_ENABLED;
+        private static final boolean LATINIME_COMMITCURRENTAUTOCORRECTION_ENABLED = DEFAULT_ENABLED;
         private static final boolean LATINIME_ONDISPLAYCOMPLETIONS_ENABLED = DEFAULT_ENABLED;
         private static final boolean LATINIME_ONSTARTINPUTVIEWINTERNAL_ENABLED = DEFAULT_ENABLED;
         private static final boolean LATINIME_ONUPDATESELECTION_ENABLED = DEFAULT_ENABLED;
@@ -571,6 +572,17 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (UnsLogGroup.KEYBOARDSTATE_TOGGLEALPHABETANDSYMBOLS_ENABLED) {
             final String s = "toggleAlphabetAndSymbols: " + keyboardState;
             logUnstructured("KeyboardState_toggleAlphabetAndSymbols", s);
+        }
+    }
+
+    public static void LatinIME_commitCurrentAutoCorrection(final String typedWord,
+            final String autoCorrection) {
+        if (UnsLogGroup.LATINIME_COMMITCURRENTAUTOCORRECTION_ENABLED) {
+            if (typedWord.equals(autoCorrection)) {
+                getInstance().logCorrection("[----]", typedWord, autoCorrection, -1);
+            } else {
+                getInstance().logCorrection("[Auto]", typedWord, autoCorrection, -1);
+            }
         }
     }
 
