@@ -1783,6 +1783,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         + "is empty? Impossible! I must commit suicide.");
             }
             Utils.Stats.onAutoCorrection(typedWord, autoCorrection.toString(), separatorCodePoint);
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.LatinIME_commitCurrentAutoCorrection(typedWord,
+                        autoCorrection.toString());
+            }
             mExpectingUpdateSelection = true;
             commitChosenWord(autoCorrection, LastComposedWord.COMMIT_TYPE_DECIDED_WORD,
                     separatorCodePoint);
