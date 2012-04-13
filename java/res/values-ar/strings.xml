@@ -63,7 +63,7 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"شديد الصرامة"</string>
     <string name="bigram_suggestion" msgid="8169311444438922902">"اقتراحات الكلمات التالية"</string>
     <string name="bigram_suggestion_summary" msgid="6635527607242625713">"استخدام الكلمة السابقة لتحسين الاقتراحات"</string>
-    <string name="bigram_prediction" msgid="3216364899483135294">"التنبؤ بالكلمات التالي"</string>
+    <string name="bigram_prediction" msgid="3216364899483135294">"تنبؤ الكلمات التالية"</string>
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"استخدام الكلمة السابقة أيضًا للتنبؤ"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : تم الحفظ"</string>
     <string name="label_go_key" msgid="1635148082137219148">"تنفيذ"</string>

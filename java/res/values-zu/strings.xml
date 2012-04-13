@@ -62,7 +62,7 @@
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Bukhali"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Nobudlova kakhulu"</string>
     <string name="bigram_suggestion" msgid="8169311444438922902">"Iziphakamiso zegama elilandelayo"</string>
-    <string name="bigram_suggestion_summary" msgid="6635527607242625713">"Sebenzisa igama elandulele ukuthuthukisa okusikiselwayo"</string>
+    <string name="bigram_suggestion_summary" msgid="6635527607242625713">"Sebenzisa igama elandulele ukuthuthukisa iziphakamiso"</string>
     <string name="bigram_prediction" msgid="3216364899483135294">"Ukuqagela kwegama elilandelayo"</string>
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"Sebenzisa igama langaphambilini ukuze uqagele"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Kulondoloziwe"</string>
