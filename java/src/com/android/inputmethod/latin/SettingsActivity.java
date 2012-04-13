@@ -20,11 +20,15 @@ import android.content.Intent;
 import android.preference.PreferenceActivity;
 
 public class SettingsActivity extends PreferenceActivity {
+    private static final String DEFAULT_FRAGMENT = Settings.class.getName();
+
     @Override
     public Intent getIntent() {
-        final Intent modIntent = new Intent(super.getIntent());
-        modIntent.putExtra(EXTRA_SHOW_FRAGMENT, Settings.class.getName());
-        modIntent.putExtra(EXTRA_NO_HEADERS, true);
-        return modIntent;
+        final Intent intent = super.getIntent();
+        if (!intent.hasExtra(EXTRA_SHOW_FRAGMENT)) {
+            intent.putExtra(EXTRA_SHOW_FRAGMENT, DEFAULT_FRAGMENT);
+        }
+        intent.putExtra(EXTRA_NO_HEADERS, true);
+        return intent;
     }
 }

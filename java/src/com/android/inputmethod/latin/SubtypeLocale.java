@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public class SubtypeLocale {
+    private static final String TAG = SubtypeLocale.class.getSimpleName();
+
     // Special language code to represent "no language".
     public static final String NO_LANGUAGE = "zz";
 
@@ -56,26 +58,29 @@ public class SubtypeLocale {
     //  zz    qwerty F      QWERTY    QWERTY
     //  fr    qwertz T  Fr  Français  Français (QWERTZ)
     //  de    qwerty T  De  Deutsch   Deutsch (QWERTY)
-    //  en    azerty T  En  English   English (AZERTY)
+    //  en_US azerty T  En  English   English (US) (AZERTY)
     //  zz    azerty T      AZERTY    AZERTY
 
     // Get InputMethodSubtype's full display name in its locale.
     public static String getFullDisplayName(InputMethodSubtype subtype) {
-        final String value = sExceptionalDisplayNamesMap.get(subtype.getLocale());
-        if (value != null) {
-            return value;
-        }
-
         if (isNoLanguage(subtype)) {
             return getKeyboardLayoutSetDisplayName(subtype);
         }
 
+        final String exceptionalValue = sExceptionalDisplayNamesMap.get(subtype.getLocale());
+
         final Locale locale = getSubtypeLocale(subtype);
-        final String language = StringUtils.toTitleCase(locale.getDisplayLanguage(locale), locale);
         if (AdditionalSubtype.isAdditionalSubtype(subtype)) {
-            return String.format("%s (%s)",
-                    language, getKeyboardLayoutSetDisplayName(subtype));
+            final String language = (exceptionalValue != null) ? exceptionalValue
+                    : StringUtils.toTitleCase(locale.getDisplayLanguage(locale), locale);
+            final String layout = getKeyboardLayoutSetDisplayName(subtype);
+            return String.format("%s (%s)", language, layout);
         }
+
+        if (exceptionalValue != null) {
+            return exceptionalValue;
+        }
+
         return StringUtils.toTitleCase(locale.getDisplayName(locale), locale);
     }
 
@@ -116,7 +121,11 @@ public class SubtypeLocale {
                 LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LAYOUT_SET);
         // TODO: Remove this null check when InputMethodManager.getCurrentInputMethodSubtype is
         // fixed.
-        if (keyboardLayoutSet == null) return AdditionalSubtype.QWERTY;
+        if (keyboardLayoutSet == null) {
+            android.util.Log.w(TAG, "KeyboardLayoutSet not found, use QWERTY: " +
+                    getFullDisplayName(subtype) + " extraValue=" + subtype.getExtraValue());
+            return AdditionalSubtype.QWERTY;
+        }
         return keyboardLayoutSet;
     }
 }

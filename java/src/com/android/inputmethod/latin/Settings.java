@@ -33,6 +33,7 @@ import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodSubtype;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -255,6 +256,7 @@ public class Settings extends InputMethodSettingsFragment
         }
         updateShowCorrectionSuggestionsSummary();
         updateKeyPreviewPopupDelaySummary();
+        updateCustomInputStylesSummary();
     }
 
     @Override
@@ -292,6 +294,21 @@ public class Settings extends InputMethodSettingsFragment
                 getResources().getStringArray(R.array.prefs_suggestion_visibilities)
                 [mShowCorrectionSuggestionsPreference.findIndexOfValue(
                         mShowCorrectionSuggestionsPreference.getValue())]);
+    }
+
+    private void updateCustomInputStylesSummary() {
+        final PreferenceScreen customInputStyles =
+                (PreferenceScreen)findPreference(PREF_CUSTOM_INPUT_STYLES);
+        final SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
+        final String prefSubtype = SettingsValues.getPrefAdditionalSubtypes(prefs, getResources());
+        final InputMethodSubtype[] subtypes =
+                AdditionalSubtype.createAdditionalSubtypesArray(prefSubtype);
+        final StringBuilder styles = new StringBuilder();
+        for (final InputMethodSubtype subtype : subtypes) {
+            if (styles.length() > 0) styles.append(", ");
+            styles.append(SubtypeLocale.getFullDisplayName(subtype));
+        }
+        customInputStyles.setSummary(styles);
     }
 
     private void updateKeyPreviewPopupDelaySummary() {

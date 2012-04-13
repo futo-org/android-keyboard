@@ -24,6 +24,11 @@ public class AdditionalSubtype {
     public static final String QWERTY = "qwerty";
     public static final String QWERTZ = "qwertz";
     public static final String AZERTY = "azerty";
+    public static final String[] PREDEFINED_KEYBOARD_LAYOUT_SET = {
+        QWERTY,
+        QWERTZ,
+        AZERTY
+    };
 
     private static final String SUBTYPE_MODE_KEYBOARD = "keyboard";
     private static final String SUBTYPE_EXTRA_VALUE_IS_ADDITIONAL_SUBTYPE = "isAdditionalSubtype";
@@ -38,40 +43,60 @@ public class AdditionalSubtype {
         sKeyboardLayoutToNameIdsMap.put(AZERTY, R.string.subtype_generic_azerty);
     }
 
+    private AdditionalSubtype() {
+        // This utility class is not publicly instantiable.
+    }
+
     public static boolean isAdditionalSubtype(InputMethodSubtype subtype) {
         return subtype.containsExtraValueKey(SUBTYPE_EXTRA_VALUE_IS_ADDITIONAL_SUBTYPE);
     }
+
+    private static final String LOCALE_AND_LAYOUT_SEPARATOR = ":";
+    public static final String PREF_SUBTYPE_SEPARATOR = ";";
 
     public static InputMethodSubtype createAdditionalSubtype(
             String localeString, String keyboardLayoutSetName, String extraValue) {
         final String layoutExtraValue = LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LAYOUT_SET + "="
                 + keyboardLayoutSetName;
         final String filteredExtraValue = StringUtils.appendToCsvIfNotExists(
-                SUBTYPE_EXTRA_VALUE_IS_ADDITIONAL_SUBTYPE,
-                StringUtils.removeFromCsvIfExists(layoutExtraValue, extraValue));
+                SUBTYPE_EXTRA_VALUE_IS_ADDITIONAL_SUBTYPE, extraValue);
         Integer nameId = sKeyboardLayoutToNameIdsMap.get(keyboardLayoutSetName);
         if (nameId == null) nameId = R.string.subtype_generic;
         return new InputMethodSubtype(nameId, R.drawable.ic_subtype_keyboard,
-                localeString, SUBTYPE_MODE_KEYBOARD, filteredExtraValue, false, false);
+                localeString, SUBTYPE_MODE_KEYBOARD,
+                layoutExtraValue + "," + filteredExtraValue, false, false);
     }
 
-    private static final String LOCALE_AND_LAYOUT_SEPARATOR = ":";
-    private static final String PREF_SUBTYPE_SEPARATOR = ";";
+    public static String getPrefSubtype(InputMethodSubtype subtype) {
+        final String localeString = subtype.getLocale();
+        final String keyboardLayoutSetName = SubtypeLocale.getKeyboardLayoutSetName(subtype);
+        final String layoutExtraValue = LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LAYOUT_SET + "="
+                + keyboardLayoutSetName;
+        final String extraValue = StringUtils.removeFromCsvIfExists(layoutExtraValue,
+                StringUtils.removeFromCsvIfExists(SUBTYPE_EXTRA_VALUE_IS_ADDITIONAL_SUBTYPE,
+                        subtype.getExtraValue()));
+        final String basePrefSubtype = localeString + LOCALE_AND_LAYOUT_SEPARATOR
+                + keyboardLayoutSetName;
+        return extraValue.isEmpty() ? basePrefSubtype
+                : basePrefSubtype + LOCALE_AND_LAYOUT_SEPARATOR + extraValue;
+    }
+
+    public static InputMethodSubtype createAdditionalSubtype(String prefSubtype) {
+        final String elems[] = prefSubtype.split(LOCALE_AND_LAYOUT_SEPARATOR);
+        if (elems.length < 2 || elems.length > 3) {
+            throw new RuntimeException("Unknown additional subtype specified: " + prefSubtype);
+        }
+        final String localeString = elems[0];
+        final String keyboardLayoutSetName = elems[1];
+        final String extraValue = (elems.length == 3) ? elems[2] : null;
+        return createAdditionalSubtype(localeString, keyboardLayoutSetName, extraValue);
+    }
 
     public static InputMethodSubtype[] createAdditionalSubtypesArray(String prefSubtypes) {
         final String[] prefSubtypeArray = prefSubtypes.split(PREF_SUBTYPE_SEPARATOR);
         final InputMethodSubtype[] subtypesArray = new InputMethodSubtype[prefSubtypeArray.length];
         for (int i = 0; i < prefSubtypeArray.length; i++) {
-            final String prefSubtype = prefSubtypeArray[i];
-            final String elems[] = prefSubtype.split(LOCALE_AND_LAYOUT_SEPARATOR);
-            if (elems.length < 2 || elems.length > 3) {
-                throw new RuntimeException("Unknown subtype found in preference: " + prefSubtype);
-            }
-            final String localeString = elems[0];
-            final String keyboardLayoutSetName = elems[1];
-            final String extraValue = (elems.length == 3) ? elems[2] : null;
-            subtypesArray[i] = AdditionalSubtype.createAdditionalSubtype(
-                    localeString, keyboardLayoutSetName, extraValue);
+            subtypesArray[i] = createAdditionalSubtype(prefSubtypeArray[i]);
         }
         return subtypesArray;
     }

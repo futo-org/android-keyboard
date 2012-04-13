@@ -100,6 +100,10 @@
                 android:summary="@string/include_other_imes_in_language_switch_list_summary"
                 android:persistent="true"
                 android:defaultValue="false" />
+            <PreferenceScreen
+                android:fragment="com.android.inputmethod.latin.AdditionalSubtypeSettings"
+                android:key="custom_input_styles"
+                android:title="@string/custom_input_styles_title" />
             <!-- Values for popup dismiss delay are added programatically -->
             <ListPreference
                 android:key="pref_key_preview_popup_dismiss_delay"

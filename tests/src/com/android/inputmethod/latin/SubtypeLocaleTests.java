@@ -110,6 +110,7 @@ public class SubtypeLocaleTests extends AndroidTestCase {
     //  zz    qwerty F      QWERTY    QWERTY
     //  fr    qwertz T  Fr  Français  Français (QWERTZ)
     //  de    qwerty T  De  Deutsch   Deutsch (QWERTY)
+    //  en_US azerty T  En  English   English (US) (AZERTY)
     //  zz    azerty T      AZERTY    AZERTY
 
     public void testSampleSubtypes() {
@@ -168,29 +169,33 @@ public class SubtypeLocaleTests extends AndroidTestCase {
                 Locale.GERMAN.toString(), AdditionalSubtype.QWERTY, null);
         final InputMethodSubtype FR_QWERTZ = AdditionalSubtype.createAdditionalSubtype(
                 Locale.FRENCH.toString(), AdditionalSubtype.QWERTZ, null);
-        final InputMethodSubtype EN_AZERTY = AdditionalSubtype.createAdditionalSubtype(
-                Locale.ENGLISH.toString(), AdditionalSubtype.AZERTY, null);
+        final InputMethodSubtype US_AZERTY = AdditionalSubtype.createAdditionalSubtype(
+                Locale.US.toString(), AdditionalSubtype.AZERTY, null);
         final InputMethodSubtype ZZ_AZERTY = AdditionalSubtype.createAdditionalSubtype(
                 SubtypeLocale.NO_LANGUAGE, AdditionalSubtype.AZERTY, null);
 
         assertTrue(AdditionalSubtype.isAdditionalSubtype(FR_QWERTZ));
         assertTrue(AdditionalSubtype.isAdditionalSubtype(DE_QWERTY));
-        assertTrue(AdditionalSubtype.isAdditionalSubtype(EN_AZERTY));
+        assertTrue(AdditionalSubtype.isAdditionalSubtype(US_AZERTY));
         assertTrue(AdditionalSubtype.isAdditionalSubtype(ZZ_AZERTY));
 
-        assertEquals("fr qwertz", "Français (QWERTZ)", SubtypeLocale.getFullDisplayName(FR_QWERTZ));
-        assertEquals("de qwerty", "Deutsch (QWERTY)",  SubtypeLocale.getFullDisplayName(DE_QWERTY));
-        assertEquals("en azerty", "English (AZERTY)",  SubtypeLocale.getFullDisplayName(EN_AZERTY));
-        assertEquals("zz azerty", "AZERTY",            SubtypeLocale.getFullDisplayName(ZZ_AZERTY));
+        assertEquals("fr qwertz",    "Français (QWERTZ)",
+                SubtypeLocale.getFullDisplayName(FR_QWERTZ));
+        assertEquals("de qwerty",    "Deutsch (QWERTY)",
+                SubtypeLocale.getFullDisplayName(DE_QWERTY));
+        assertEquals("en_US azerty", "English (US) (AZERTY)",
+                SubtypeLocale.getFullDisplayName(US_AZERTY));
+        assertEquals("zz azerty",    "AZERTY",
+                SubtypeLocale.getFullDisplayName(ZZ_AZERTY));
 
-        assertEquals("fr qwertz", "Français", SubtypeLocale.getMiddleDisplayName(FR_QWERTZ));
-        assertEquals("de qwerty", "Deutsch",  SubtypeLocale.getMiddleDisplayName(DE_QWERTY));
-        assertEquals("en azerty", "English",  SubtypeLocale.getMiddleDisplayName(EN_AZERTY));
-        assertEquals("zz azerty", "AZERTY",   SubtypeLocale.getMiddleDisplayName(ZZ_AZERTY));
+        assertEquals("fr qwertz",    "Français", SubtypeLocale.getMiddleDisplayName(FR_QWERTZ));
+        assertEquals("de qwerty",    "Deutsch",  SubtypeLocale.getMiddleDisplayName(DE_QWERTY));
+        assertEquals("en_US azerty", "English",  SubtypeLocale.getMiddleDisplayName(US_AZERTY));
+        assertEquals("zz azerty",    "AZERTY",   SubtypeLocale.getMiddleDisplayName(ZZ_AZERTY));
 
-        assertEquals("fr qwertz", "Fr", SubtypeLocale.getShortDisplayName(FR_QWERTZ));
-        assertEquals("de qwerty", "De", SubtypeLocale.getShortDisplayName(DE_QWERTY));
-        assertEquals("en azerty", "En", SubtypeLocale.getShortDisplayName(EN_AZERTY));
-        assertEquals("zz azerty", "", SubtypeLocale.getShortDisplayName(ZZ_AZERTY));
+        assertEquals("fr qwertz",    "Fr", SubtypeLocale.getShortDisplayName(FR_QWERTZ));
+        assertEquals("de qwerty",    "De", SubtypeLocale.getShortDisplayName(DE_QWERTY));
+        assertEquals("en_US azerty", "En", SubtypeLocale.getShortDisplayName(US_AZERTY));
+        assertEquals("zz azerty",    "", SubtypeLocale.getShortDisplayName(ZZ_AZERTY));
     }
 }

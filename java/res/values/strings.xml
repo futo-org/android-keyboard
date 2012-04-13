@@ -252,8 +252,25 @@
     <string name="subtype_en_GB">English (UK)</string>
     <!-- Description for English (United States) keyboard subtype [CHAR LIMIT=22] -->
     <string name="subtype_en_US">English (US)</string>
+    <!-- Description for language agnostic keyboard subtype [CHAR LIMIT=22] -->
+    <string name="subtype_no_language">No language</string>
     <!-- Description for language agnostic QWERTY keyboard subtype [CHAR LIMIT=22] -->
     <string name="subtype_no_language_qwerty">No language (QWERTY)</string>
+
+    <!-- Title of the preference settings for custom input styles (language and keyboard layout pairs) [CHAR LIMIT=22]-->
+    <string name="custom_input_styles_title">Custom input styles</string>
+    <!-- Title of the option menu to add a new style entry in the preference settings [CHAR_LIMIT=12] -->
+    <string name="add_style">Add style</string>
+    <!-- Title of the button to add custom style entry in the settings dialog [CHAR_LIMIT=12]  -->
+    <string name="add">Add</string>
+    <!-- Title of the button to remove a custom style entry in the settings dialog [CHAR_LIMIT=12]  -->
+    <string name="remove">Remove</string>
+    <!-- Title of the button to save a custom style entry in the settings dialog [CHAR_LIMIT=12]  -->
+    <string name="save">Save</string>
+    <!-- Title of the spinner for choosing a language of custom style in the settings dialog [CHAR_LIMIT=12]  -->
+    <string name="subtype_locale">Language</string>
+    <!-- Title of the spinner for choosing a keyboard layout of custom style in the settings dialog [CHAR_LIMIT=12]  -->
+    <string name="keyboard_layout_set">Layout</string>
 
     <!-- Title of an option for usability study mode -->
     <string name="prefs_usability_study_mode">Usability study mode</string>
