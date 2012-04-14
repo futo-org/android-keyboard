@@ -33,9 +33,11 @@ import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.Dictionary.WordCallback;
 import com.android.inputmethod.latin.DictionaryCollection;
 import com.android.inputmethod.latin.DictionaryFactory;
+import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StringUtils;
+import com.android.inputmethod.latin.SynchronouslyLoadedContactsBinaryDictionary;
 import com.android.inputmethod.latin.SynchronouslyLoadedContactsDictionary;
 import com.android.inputmethod.latin.SynchronouslyLoadedUserDictionary;
 import com.android.inputmethod.latin.WhitelistDictionary;
@@ -73,7 +75,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             Collections.synchronizedMap(new TreeMap<String, Dictionary>());
     private Map<String, Dictionary> mWhitelistDictionaries =
             Collections.synchronizedMap(new TreeMap<String, Dictionary>());
-    private SynchronouslyLoadedContactsDictionary mContactsDictionary;
+    private Dictionary mContactsDictionary;
 
     // The threshold for a candidate to be offered as a suggestion.
     private double mSuggestionThreshold;
@@ -157,7 +159,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService
 
     private void stopUsingContactsDictionaryLocked() {
         if (null == mContactsDictionary) return;
-        final SynchronouslyLoadedContactsDictionary contactsDict = mContactsDictionary;
+        final Dictionary contactsDict = mContactsDictionary;
+        // TODO: revert to the concrete type when USE_BINARY_CONTACTS_DICTIONARY is no longer needed
         mContactsDictionary = null;
         final Iterator<WeakReference<DictionaryCollection>> iterator =
                 mDictionaryCollectionsList.iterator();
@@ -360,12 +363,14 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         for (Dictionary dict : oldWhitelistDictionaries.values()) {
             dict.close();
         }
-        synchronized(mUseContactsLock) {
+        synchronized (mUseContactsLock) {
             if (null != mContactsDictionary) {
                 // The synchronously loaded contacts dictionary should have been in one
                 // or several pools, but it is shielded against multiple closing and it's
                 // safe to call it several times.
-                final SynchronouslyLoadedContactsDictionary dictToClose = mContactsDictionary;
+                final Dictionary dictToClose = mContactsDictionary;
+                // TODO: revert to the concrete type when USE_BINARY_CONTACTS_DICTIONARY is no
+                // longer needed
                 mContactsDictionary = null;
                 dictToClose.close();
             }
@@ -402,10 +407,16 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             mWhitelistDictionaries.put(localeStr, whitelistDictionary);
         }
         dictionaryCollection.addDictionary(whitelistDictionary);
-        synchronized(mUseContactsLock) {
+        synchronized (mUseContactsLock) {
             if (mUseContactsDictionary) {
                 if (null == mContactsDictionary) {
-                    mContactsDictionary = new SynchronouslyLoadedContactsDictionary(this);
+                    // TODO: revert to the concrete type when USE_BINARY_CONTACTS_DICTIONARY is no
+                    // longer needed
+                    if (LatinIME.USE_BINARY_CONTACTS_DICTIONARY) {
+                        mContactsDictionary = new SynchronouslyLoadedContactsBinaryDictionary(this);
+                    } else {
+                        mContactsDictionary = new SynchronouslyLoadedContactsDictionary(this);
+                    }
                 }
             }
             dictionaryCollection.addDictionary(mContactsDictionary);
