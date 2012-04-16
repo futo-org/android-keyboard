@@ -90,14 +90,21 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         super(LatinIME.class);
     }
 
-    // returns the previous setting value
-    protected boolean setDebugMode(final boolean mode) {
+    // TODO: Isn't there a way to make this generic somehow? We can take a <T> and return a <T>
+    // but we'd have to dispatch types on editor.put...() functions
+    protected boolean setBooleanPreference(final String key, final boolean value,
+            final boolean defaultValue) {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mLatinIME);
-        final boolean previousDebugSetting = prefs.getBoolean(PREF_DEBUG_MODE, false);
+        final boolean previousSetting = prefs.getBoolean(key, defaultValue);
         final SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(PREF_DEBUG_MODE, mode);
+        editor.putBoolean(key, value);
         editor.commit();
-        return previousDebugSetting;
+        return previousSetting;
+    }
+
+    // returns the previous setting value
+    protected boolean setDebugMode(final boolean value) {
+        return setBooleanPreference(PREF_DEBUG_MODE, value, false);
     }
 
     // overload this to configure preferences in a way specific to a subclass's tests
