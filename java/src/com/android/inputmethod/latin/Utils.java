@@ -466,11 +466,12 @@ public class Utils {
     }
 
     private static final String HARDWARE_PREFIX = Build.HARDWARE + ",";
-    private static final HashMap<Integer, String> sDeviceOverrideValueMap =
-            new HashMap<Integer, String>();
+    private static final HashMap<String, String> sDeviceOverrideValueMap =
+            new HashMap<String, String>();
 
     public static String getDeviceOverrideValue(Resources res, int overrideResId, String defValue) {
-        final Integer key = overrideResId;
+        final int orientation = res.getConfiguration().orientation;
+        final String key = overrideResId + "-" + orientation;
         if (!sDeviceOverrideValueMap.containsKey(key)) {
             String overrideValue = defValue;
             for (final String element : res.getStringArray(overrideResId)) {
