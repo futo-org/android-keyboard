@@ -132,23 +132,18 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object,
     Dictionary *dictionary = (Dictionary*)dict;
     if (!dictionary) return 0;
     ProximityInfo *pInfo = (ProximityInfo*)proximityInfo;
-
     int *xCoordinates = env->GetIntArrayElements(xCoordinatesArray, 0);
     int *yCoordinates = env->GetIntArrayElements(yCoordinatesArray, 0);
-
     int *frequencies = env->GetIntArrayElements(frequencyArray, 0);
     int *inputCodes = env->GetIntArrayElements(inputArray, 0);
     jchar *outputChars = env->GetCharArrayElements(outputArray, 0);
-
     int count = dictionary->getSuggestions(pInfo, xCoordinates, yCoordinates, inputCodes,
             arraySize, useFullEditDistance, (unsigned short*) outputChars, frequencies);
-
-    env->ReleaseIntArrayElements(frequencyArray, frequencies, 0);
-    env->ReleaseIntArrayElements(inputArray, inputCodes, JNI_ABORT);
-    env->ReleaseIntArrayElements(xCoordinatesArray, xCoordinates, 0);
-    env->ReleaseIntArrayElements(yCoordinatesArray, yCoordinates, 0);
     env->ReleaseCharArrayElements(outputArray, outputChars, 0);
-
+    env->ReleaseIntArrayElements(inputArray, inputCodes, JNI_ABORT);
+    env->ReleaseIntArrayElements(frequencyArray, frequencies, 0);
+    env->ReleaseIntArrayElements(yCoordinatesArray, yCoordinates, 0);
+    env->ReleaseIntArrayElements(xCoordinatesArray, xCoordinates, 0);
     return count;
 }
 
@@ -157,20 +152,16 @@ static int latinime_BinaryDictionary_getBigrams(JNIEnv *env, jobject object, jlo
         jcharArray outputArray, jintArray frequencyArray, jint maxWordLength, jint maxBigrams) {
     Dictionary *dictionary = (Dictionary*)dict;
     if (!dictionary) return 0;
-
     jchar *prevWord = env->GetCharArrayElements(prevWordArray, 0);
     int *inputCodes = env->GetIntArrayElements(inputArray, 0);
     jchar *outputChars = env->GetCharArrayElements(outputArray, 0);
     int *frequencies = env->GetIntArrayElements(frequencyArray, 0);
-
     int count = dictionary->getBigrams((unsigned short*) prevWord, prevWordLength, inputCodes,
             inputArraySize, (unsigned short*) outputChars, frequencies, maxWordLength, maxBigrams);
-
-    env->ReleaseCharArrayElements(prevWordArray, prevWord, JNI_ABORT);
-    env->ReleaseIntArrayElements(inputArray, inputCodes, JNI_ABORT);
-    env->ReleaseCharArrayElements(outputArray, outputChars, 0);
     env->ReleaseIntArrayElements(frequencyArray, frequencies, 0);
-
+    env->ReleaseCharArrayElements(outputArray, outputChars, 0);
+    env->ReleaseIntArrayElements(inputArray, inputCodes, JNI_ABORT);
+    env->ReleaseCharArrayElements(prevWordArray, prevWord, JNI_ABORT);
     return count;
 }
 
@@ -178,11 +169,9 @@ static jboolean latinime_BinaryDictionary_isValidWord(JNIEnv *env, jobject objec
         jcharArray wordArray, jint wordLength) {
     Dictionary *dictionary = (Dictionary*)dict;
     if (!dictionary) return (jboolean) false;
-
     jchar *word = env->GetCharArrayElements(wordArray, 0);
     jboolean result = dictionary->isValidWord((unsigned short*) word, wordLength);
     env->ReleaseCharArrayElements(wordArray, word, JNI_ABORT);
-
     return result;
 }
 
@@ -190,11 +179,10 @@ static jdouble latinime_BinaryDictionary_calcNormalizedScore(JNIEnv *env, jobjec
         jcharArray before, jint beforeLength, jcharArray after, jint afterLength, jint score) {
     jchar *beforeChars = env->GetCharArrayElements(before, 0);
     jchar *afterChars = env->GetCharArrayElements(after, 0);
-    jdouble result = Correction::RankingAlgorithm::calcNormalizedScore(
-            (unsigned short*)beforeChars, beforeLength, (unsigned short*)afterChars, afterLength,
-                    score);
-    env->ReleaseCharArrayElements(before, beforeChars, JNI_ABORT);
+    jdouble result = Correction::RankingAlgorithm::calcNormalizedScore((unsigned short*)beforeChars,
+            beforeLength, (unsigned short*)afterChars, afterLength, score);
     env->ReleaseCharArrayElements(after, afterChars, JNI_ABORT);
+    env->ReleaseCharArrayElements(before, beforeChars, JNI_ABORT);
     return result;
 }
 
@@ -204,8 +192,8 @@ static jint latinime_BinaryDictionary_editDistance(JNIEnv *env, jobject object,
     jchar *afterChars = env->GetCharArrayElements(after, 0);
     jint result = Correction::RankingAlgorithm::editDistance(
             (unsigned short*)beforeChars, beforeLength, (unsigned short*)afterChars, afterLength);
-    env->ReleaseCharArrayElements(before, beforeChars, JNI_ABORT);
     env->ReleaseCharArrayElements(after, afterChars, JNI_ABORT);
+    env->ReleaseCharArrayElements(before, beforeChars, JNI_ABORT);
     return result;
 }
 
