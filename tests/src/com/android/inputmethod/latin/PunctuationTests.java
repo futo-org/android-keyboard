@@ -16,21 +16,36 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.R;
+
 public class PunctuationTests extends InputTestsBase {
+
+    final String NEXT_WORD_PREDICTION_OPTION = "next_word_prediction";
 
     public void testWordThenSpaceThenPunctuationFromStripTwice() {
         final String WORD_TO_TYPE = "this ";
         final String PUNCTUATION_FROM_STRIP = "!";
         final String EXPECTED_RESULT = "this!! ";
-        type(WORD_TO_TYPE);
-        sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
-        runMessages();
-        assertTrue("type word then type space should display punctuation strip",
-                mLatinIME.isShowingPunctuationList());
-        mLatinIME.pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
-        mLatinIME.pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
-        assertEquals("type word then type space then punctuation from strip twice", EXPECTED_RESULT,
-                mTextView.getText().toString());
+        final boolean defaultNextWordPredictionOption =
+                mLatinIME.getResources().getBoolean(R.bool.config_default_next_word_suggestions);
+        final boolean previousNextWordPredictionOption =
+                setBooleanPreference(NEXT_WORD_PREDICTION_OPTION, false,
+                        defaultNextWordPredictionOption);
+        try {
+            mLatinIME.loadSettings();
+            type(WORD_TO_TYPE);
+            sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+            runMessages();
+            assertTrue("type word then type space should display punctuation strip",
+                    mLatinIME.isShowingPunctuationList());
+            mLatinIME.pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
+            mLatinIME.pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
+            assertEquals("type word then type space then punctuation from strip twice",
+                    EXPECTED_RESULT, mTextView.getText().toString());
+        } finally {
+            setBooleanPreference(NEXT_WORD_PREDICTION_OPTION, previousNextWordPredictionOption,
+                    defaultNextWordPredictionOption);
+        }
     }
 
     public void testWordThenSpaceThenPunctuationFromKeyboardTwice() {
