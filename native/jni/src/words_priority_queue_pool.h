@@ -26,6 +26,7 @@ namespace latinime {
 class WordsPriorityQueuePool {
  public:
     WordsPriorityQueuePool(int mainQueueMaxWords, int subQueueMaxWords, int maxWordLength) {
+        // Note: using placement new() requires the caller to call the destructor explicitly.
         mMasterQueue = new(mMasterQueueBuf) WordsPriorityQueue(mainQueueMaxWords, maxWordLength);
         for (int i = 0, subQueueBufOffset = 0;
                 i < MULTIPLE_WORDS_SUGGESTION_MAX_WORDS * SUB_QUEUE_MAX_COUNT;
@@ -36,6 +37,11 @@ class WordsPriorityQueuePool {
     }
 
     virtual ~WordsPriorityQueuePool() {
+        // Note: these explicit calls to the destructor match the calls to placement new() above.
+        if (mMasterQueue) mMasterQueue->~WordsPriorityQueue();
+        for (int i = 0; i < MULTIPLE_WORDS_SUGGESTION_MAX_WORDS * SUB_QUEUE_MAX_COUNT; ++i) {
+            if (mSubQueues[i]) mSubQueues[i]->~WordsPriorityQueue();
+        }
     }
 
     WordsPriorityQueue* getMasterQueue() {
