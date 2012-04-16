@@ -713,9 +713,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         final int keyWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight;
         final int keyHeight = key.mHeight;
 
+        paint.setTypeface(params.mKeyTextStyle);
         paint.setTextSize(params.mKeyHintLetterSize);
         paint.setColor(params.mKeyHintLabelColor);
-        params.blendAlpha(paint);
         paint.setTextAlign(Align.CENTER);
         final float hintX = keyWidth - params.mKeyHintLetterPadding
                 - getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) / 2;
