@@ -17,7 +17,6 @@
 package com.android.inputmethod.latin;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
 public class SettingsActivity extends PreferenceActivity {
@@ -25,12 +24,7 @@ public class SettingsActivity extends PreferenceActivity {
     public Intent getIntent() {
         final Intent modIntent = new Intent(super.getIntent());
         modIntent.putExtra(EXTRA_SHOW_FRAGMENT, Settings.class.getName());
+        modIntent.putExtra(EXTRA_NO_HEADERS, true);
         return modIntent;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setTitle(R.string.english_ime_settings);
     }
 }
