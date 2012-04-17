@@ -340,7 +340,7 @@ public class Suggest implements Dictionary.WordCallback {
                 if (key.equals(DICT_KEY_USER_HISTORY_UNIGRAM) || key.equals(DICT_KEY_WHITELIST))
                     continue;
                 final Dictionary dictionary = mUnigramDictionaries.get(key);
-                dictionary.getWords(wordComposerForLookup, this, proximityInfo);
+                dictionary.getWords(wordComposerForLookup, prevWordForBigram, this, proximityInfo);
             }
         }
 

@@ -192,8 +192,8 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     @Override
-    public void getWords(final WordComposer codes, final WordCallback callback,
-            final ProximityInfo proximityInfo) {
+    public void getWords(final WordComposer codes, final CharSequence prevWordForBigrams,
+            final WordCallback callback, final ProximityInfo proximityInfo) {
         synchronized (mUpdatingLock) {
             // If we need to update, start off a background task
             if (mRequiresReload) startDictionaryLoadingTaskLocked();
@@ -203,10 +203,11 @@ public class ExpandableDictionary extends Dictionary {
         if (codes.size() >= BinaryDictionary.MAX_WORD_LENGTH) {
             return;
         }
-        getWordsInner(codes, callback, proximityInfo);
+        getWordsInner(codes, prevWordForBigrams, callback, proximityInfo);
     }
 
-    protected final void getWordsInner(final WordComposer codes, final WordCallback callback,
+    protected final void getWordsInner(final WordComposer codes,
+            final CharSequence prevWordForBigrams, final WordCallback callback,
             @SuppressWarnings("unused") final ProximityInfo proximityInfo) {
         mInputLength = codes.size();
         if (mCodes.length < mInputLength) mCodes = new int[mInputLength][];

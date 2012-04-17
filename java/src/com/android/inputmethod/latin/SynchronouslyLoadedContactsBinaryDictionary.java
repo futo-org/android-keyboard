@@ -30,10 +30,11 @@ public class SynchronouslyLoadedContactsBinaryDictionary extends ContactsBinaryD
     }
 
     @Override
-    public synchronized void getWords(final WordComposer codes, final WordCallback callback,
+    public synchronized void getWords(final WordComposer codes,
+            final CharSequence prevWordForBigrams, final WordCallback callback,
             final ProximityInfo proximityInfo) {
         syncReloadDictionaryIfRequired();
-        getWordsInner(codes, callback, proximityInfo);
+        getWordsInner(codes, prevWordForBigrams, callback, proximityInfo);
     }
 
     @Override

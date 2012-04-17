@@ -29,10 +29,11 @@ public class SynchronouslyLoadedContactsDictionary extends ContactsDictionary {
     }
 
     @Override
-    public synchronized void getWords(final WordComposer codes, final WordCallback callback,
+    public synchronized void getWords(final WordComposer codes,
+            final CharSequence prevWordForBigrams, final WordCallback callback,
             final ProximityInfo proximityInfo) {
         blockingReloadDictionaryIfRequired();
-        getWordsInner(codes, callback, proximityInfo);
+        getWordsInner(codes, prevWordForBigrams, callback, proximityInfo);
     }
 
     @Override

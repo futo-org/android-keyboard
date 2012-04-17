@@ -61,11 +61,13 @@ public abstract class Dictionary {
      * Searches for words in the dictionary that match the characters in the composer. Matched
      * words are added through the callback object.
      * @param composer the key sequence to match
+     * @param prevWordForBigrams the previous word, or null if none
      * @param callback the callback object to send matched words to as possible candidates
      * @param proximityInfo the object for key proximity. May be ignored by some implementations.
      * @see WordCallback#addWord(char[], int, int, int, int, int)
      */
-    abstract public void getWords(final WordComposer composer, final WordCallback callback,
+    abstract public void getWords(final WordComposer composer,
+            final CharSequence prevWordForBigrams, final WordCallback callback,
             final ProximityInfo proximityInfo);
 
     /**

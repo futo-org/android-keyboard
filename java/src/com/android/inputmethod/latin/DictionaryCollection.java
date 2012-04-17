@@ -50,10 +50,10 @@ public class DictionaryCollection extends Dictionary {
     }
 
     @Override
-    public void getWords(final WordComposer composer, final WordCallback callback,
-            final ProximityInfo proximityInfo) {
+    public void getWords(final WordComposer composer, final CharSequence prevWordForBigrams,
+            final WordCallback callback, final ProximityInfo proximityInfo) {
         for (final Dictionary dict : mDictionaries)
-            dict.getWords(composer, callback, proximityInfo);
+            dict.getWords(composer, prevWordForBigrams, callback, proximityInfo);
     }
 
     @Override
