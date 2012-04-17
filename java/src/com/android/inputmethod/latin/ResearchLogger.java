@@ -375,6 +375,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         private static final boolean SUDDENJUMPINGTOUCHEVENTHANDLER_ONTOUCHEVENT_ENABLED
                 = DEFAULT_ENABLED;
         private static final boolean SUGGESTIONSVIEW_SETSUGGESTIONS_ENABLED = DEFAULT_ENABLED;
+        private static final boolean LATINIME_PICKAPPLICATIONSPECIFIEDCOMPLETION_ENABLED
+                = DEFAULT_ENABLED;
+        private static final boolean LATINIME_PICKPUNCTUATIONSUGGESTION_ENABLED = DEFAULT_ENABLED;
+        private static final boolean LATINIME_PICKSUGGESTIONMANUALLY_ENABLED = DEFAULT_ENABLED;
     }
 
     public static void logUnstructured(String logGroup, final String details) {
@@ -630,6 +634,30 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     + ", cs=" + composingSpanStart
                     + ", ce=" + composingSpanEnd;
             logUnstructured("LatinIME_onUpdateSelection", s);
+        }
+    }
+
+    public static void latinIME_pickApplicationSpecifiedCompletion(final int index,
+            final CharSequence text, int x, int y) {
+        if (UnsLogGroup.LATINIME_PICKAPPLICATIONSPECIFIEDCOMPLETION_ENABLED) {
+            final String s = String.valueOf(index) + '\t' + text + '\t' + x + '\t' + y;
+            logUnstructured("latinIME_pickApplicationSpecifiedCompletion", s);
+        }
+    }
+
+    public static void latinIME_pickSuggestionManually(final String replacedWord,
+            final int index, CharSequence suggestion, int x, int y) {
+        if (UnsLogGroup.LATINIME_PICKSUGGESTIONMANUALLY_ENABLED) {
+            final String s = String.valueOf(index) + '\t' + suggestion + '\t' + x + '\t' + y;
+            logUnstructured("latinIME_pickSuggestionManually", s);
+        }
+    }
+
+    public static void latinIME_punctuationSuggestion(final int index,
+            final CharSequence suggestion, int x, int y) {
+        if (UnsLogGroup.LATINIME_PICKPUNCTUATIONSUGGESTION_ENABLED) {
+            final String s = String.valueOf(index) + '\t' + suggestion + '\t' + x + '\t' + y;
+            logUnstructured("latinIME_pickPunctuationSuggestion", s);
         }
     }
 

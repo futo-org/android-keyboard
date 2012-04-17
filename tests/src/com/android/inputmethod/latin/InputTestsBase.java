@@ -278,6 +278,11 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         waitForDictionaryToBeLoaded();
     }
 
+    protected void pickSuggestionManually(final int index, final CharSequence suggestion) {
+        mLatinIME.pickSuggestionManually(index, suggestion,
+                KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
+                KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
+    }
 
     // Helper to avoid writing the try{}catch block each time
     protected static void sleep(final int milliseconds) {

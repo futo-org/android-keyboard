@@ -1817,7 +1817,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public void pickSuggestionManually(final int index, final CharSequence suggestion) {
+    public void pickSuggestionManually(final int index, final CharSequence suggestion,
+            int x, int y) {
         final SuggestedWords suggestedWords = mSuggestionsView.getSuggestions();
 
         if (SPACE_STATE_PHANTOM == mSpaceState && suggestion.length() > 0) {
@@ -1840,6 +1841,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (ic != null) {
                 final CompletionInfo completionInfo = mApplicationSpecifiedCompletions[index];
                 ic.commitCompletion(completionInfo);
+                if (ProductionFlag.IS_EXPERIMENTAL) {
+                    ResearchLogger.latinIME_pickApplicationSpecifiedCompletion(index,
+                            completionInfo.getText(), x, y);
+                }
             }
             return;
         }
@@ -1850,6 +1855,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // So, LatinImeLogger logs "" as a user's input.
             LatinImeLogger.logOnManualSuggestion("", suggestion.toString(), index, suggestedWords);
             // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.latinIME_punctuationSuggestion(index, suggestion, x, y);
+            }
             final int primaryCode = suggestion.charAt(0);
             onCodeInput(primaryCode,
                     KeyboardActionListener.SUGGESTION_STRIP_COORDINATE,
@@ -1858,8 +1866,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         // We need to log before we commit, because the word composer will store away the user
         // typed word.
-        LatinImeLogger.logOnManualSuggestion(mWordComposer.getTypedWord().toString(),
+        final String replacedWord = mWordComposer.getTypedWord().toString();
+        LatinImeLogger.logOnManualSuggestion(replacedWord,
                 suggestion.toString(), index, suggestedWords);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_pickSuggestionManually(replacedWord, index, suggestion, x, y);
+        }
         mExpectingUpdateSelection = true;
         commitChosenWord(suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,
                 LastComposedWord.NOT_A_SEPARATOR);
