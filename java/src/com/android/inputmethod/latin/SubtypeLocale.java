@@ -68,14 +68,14 @@ public class SubtypeLocale {
         }
 
         if (isNoLanguage(subtype)) {
-            return getKeyboardLayoutSetName(subtype).toUpperCase();
+            return getKeyboardLayoutSetDisplayName(subtype);
         }
 
         final Locale locale = getSubtypeLocale(subtype);
         final String language = StringUtils.toTitleCase(locale.getDisplayLanguage(locale), locale);
         if (AdditionalSubtype.isAdditionalSubtype(subtype)) {
             return String.format("%s (%s)",
-                    language, getKeyboardLayoutSetName(subtype).toUpperCase());
+                    language, getKeyboardLayoutSetDisplayName(subtype));
         }
         return StringUtils.toTitleCase(locale.getDisplayName(locale), locale);
     }
@@ -83,7 +83,7 @@ public class SubtypeLocale {
     // Get InputMethodSubtype's middle display name in its locale.
     public static String getMiddleDisplayName(InputMethodSubtype subtype) {
         if (isNoLanguage(subtype)) {
-            return getKeyboardLayoutSetName(subtype).toUpperCase();
+            return getKeyboardLayoutSetDisplayName(subtype);
         }
         final Locale locale = getSubtypeLocale(subtype);
         return StringUtils.toTitleCase(locale.getDisplayLanguage(locale), locale);
@@ -106,6 +106,10 @@ public class SubtypeLocale {
     public static Locale getSubtypeLocale(InputMethodSubtype subtype) {
         final String localeString = subtype.getLocale();
         return LocaleUtils.constructLocaleFromString(localeString);
+    }
+
+    public static String getKeyboardLayoutSetDisplayName(InputMethodSubtype subtype) {
+        return getKeyboardLayoutSetName(subtype).toUpperCase();
     }
 
     public static String getKeyboardLayoutSetName(InputMethodSubtype subtype) {
