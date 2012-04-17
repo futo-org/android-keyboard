@@ -30,7 +30,6 @@ BigramDictionary::BigramDictionary(const unsigned char *dict, int maxWordLength,
     : DICT(dict), MAX_WORD_LENGTH(maxWordLength), mParentDictionary(parentDictionary) {
     if (DEBUG_DICT) {
         AKLOGI("BigramDictionary - constructor");
-        AKLOGI("Has Bigram : %d", hasBigram);
     }
 }
 

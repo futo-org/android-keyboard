@@ -58,8 +58,6 @@ class Dictionary {
     static int wideStrLen(unsigned short *str);
 
  private:
-    bool hasBigram();
-
     const unsigned char *mDict;
 
     // Used only for the mmap version of dictionary loading, but we use these as dummy variables
