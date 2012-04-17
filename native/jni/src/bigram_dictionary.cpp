@@ -108,19 +108,7 @@ int BigramDictionary::getBigrams(unsigned short *prevWord, int prevWordLength, i
     mMaxBigrams = maxBigrams;
 
     const uint8_t* const root = DICT;
-    int pos = BinaryFormat::getTerminalPosition(root, prevWord, prevWordLength);
-
-    if (NOT_VALID_WORD == pos) return 0;
-    const int flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
-    if (0 == (flags & UnigramDictionary::FLAG_HAS_BIGRAMS)) return 0;
-    if (0 == (flags & UnigramDictionary::FLAG_HAS_MULTIPLE_CHARS)) {
-        BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
-    } else {
-        pos = BinaryFormat::skipOtherCharacters(root, pos);
-    }
-    pos = BinaryFormat::skipChildrenPosition(flags, pos);
-    pos = BinaryFormat::skipFrequency(flags, pos);
-    pos = BinaryFormat::skipShortcuts(root, flags, pos);
+    int pos = getBigramListForWord(root, prevWord, prevWordLength);
     int bigramFlags;
     int bigramCount = 0;
     do {
@@ -140,6 +128,24 @@ int BigramDictionary::getBigrams(unsigned short *prevWord, int prevWordLength, i
         }
     } while (0 != (UnigramDictionary::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags));
     return bigramCount;
+}
+
+int BigramDictionary::getBigramListForWord(const uint8_t* const root,
+        const unsigned short *prevWord, const int prevWordLength) {
+    int pos = BinaryFormat::getTerminalPosition(root, prevWord, prevWordLength);
+
+    if (NOT_VALID_WORD == pos) return 0;
+    const int flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
+    if (0 == (flags & UnigramDictionary::FLAG_HAS_BIGRAMS)) return 0;
+    if (0 == (flags & UnigramDictionary::FLAG_HAS_MULTIPLE_CHARS)) {
+        BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
+    } else {
+        pos = BinaryFormat::skipOtherCharacters(root, pos);
+    }
+    pos = BinaryFormat::skipChildrenPosition(flags, pos);
+    pos = BinaryFormat::skipFrequency(flags, pos);
+    pos = BinaryFormat::skipShortcuts(root, flags, pos);
+    return pos;
 }
 
 bool BigramDictionary::checkFirstCharacter(unsigned short *word) {
