@@ -588,7 +588,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 try {
                     dictInfo = mDictionaryPool.takeOrGetNull();
                     if (null == dictInfo) return getNotInDictEmptySuggestions();
-                    dictInfo.mDictionary.getWords(composer, suggestionsGatherer,
+                    dictInfo.mDictionary.getWords(composer, null, suggestionsGatherer,
                             dictInfo.mProximityInfo);
                     isInDict = dictInfo.mDictionary.isValidWord(text);
                     if (!isInDict && CAPITALIZE_NONE != capitalizeType) {

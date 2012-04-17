@@ -135,11 +135,12 @@ public class BinaryDictionary extends Dictionary {
         }
     }
 
-    // proximityInfo may not be null.
+    // proximityInfo and/or prevWordForBigrams may not be null.
     @Override
-    public void getWords(final WordComposer codes, final WordCallback callback,
-            final ProximityInfo proximityInfo) {
-        final int count = getSuggestions(codes, proximityInfo, mOutputChars, mScores);
+    public void getWords(final WordComposer codes, final CharSequence prevWordForBigrams,
+            final WordCallback callback, final ProximityInfo proximityInfo) {
+        final int count = getSuggestions(codes, prevWordForBigrams, proximityInfo, mOutputChars,
+                mScores);
 
         for (int j = 0; j < count; ++j) {
             if (mScores[j] < 1) break;
@@ -161,7 +162,8 @@ public class BinaryDictionary extends Dictionary {
 
     // proximityInfo may not be null.
     /* package for test */ int getSuggestions(final WordComposer codes,
-            final ProximityInfo proximityInfo, char[] outputChars, int[] scores) {
+            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo,
+            char[] outputChars, int[] scores) {
         if (!isValidDictionary()) return -1;
 
         final int codesSize = codes.size();
@@ -175,6 +177,7 @@ public class BinaryDictionary extends Dictionary {
         Arrays.fill(outputChars, (char) 0);
         Arrays.fill(scores, 0);
 
+        // TODO: pass the previous word to native code
         return getSuggestionsNative(
                 mNativeDict, proximityInfo.getNativeProximityInfo(),
                 codes.getXCoordinates(), codes.getYCoordinates(), mInputCodes, codesSize,
