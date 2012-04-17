@@ -146,4 +146,14 @@ public class SubtypeUtils {
         throw new RuntimeException("Can't find subtype for locale " + localeString
                 + " and keyboard layout " + keyoardLayoutSet);
     }
+
+    public static void setAditionalInputMethodSubtypes(Context context,
+            InputMethodSubtype[] subtypes) {
+        final InputMethodManagerCompatWrapper imm = InputMethodManagerCompatWrapper.getInstance();
+        if (imm == null) {
+            throw new RuntimeException("Input method manager not found");
+        }
+        final String imiId = getInputMethodId(context.getPackageName());
+        imm.setAdditionalInputMethodSubtypes(imiId, subtypes);
+    }
 }
