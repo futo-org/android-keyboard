@@ -131,16 +131,11 @@ public class SuggestionSpanUtils {
                 sameAsTyped = true;
             }
         }
-        // TODO: Share the implementation for checking typed word validity between the IME
-        // and the spell checker.
-        final int flag = (sameAsTyped && !suggestedWords.mTypedWordValid)
-                ? (OBJ_FLAG_EASY_CORRECT | OBJ_FLAG_MISSPELLED)
-                : 0;
 
         // TODO: We should avoid adding suggestion span candidates that came from the bigram
         // prediction.
         final Object[] args =
-                { context, null, suggestionsList.toArray(new String[suggestionsList.size()]), flag,
+                { context, null, suggestionsList.toArray(new String[suggestionsList.size()]), 0,
                         (Class<?>) SuggestionSpanPickedNotificationReceiver.class };
         final Object ss = CompatUtils.newInstance(CONSTRUCTOR_SuggestionSpan, args);
         if (ss == null) {
