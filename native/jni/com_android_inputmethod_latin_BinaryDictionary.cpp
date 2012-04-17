@@ -127,8 +127,8 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
 
 static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object, jlong dict,
         jlong proximityInfo, jintArray xCoordinatesArray, jintArray yCoordinatesArray,
-        jintArray inputArray, jint arraySize, jboolean useFullEditDistance,
-        jcharArray outputArray, jintArray frequencyArray) {
+        jintArray inputArray, jint arraySize, jintArray prevWordForBigrams,
+        jboolean useFullEditDistance, jcharArray outputArray, jintArray frequencyArray) {
     Dictionary *dictionary = (Dictionary*)dict;
     if (!dictionary) return 0;
     ProximityInfo *pInfo = (ProximityInfo*)proximityInfo;
@@ -137,6 +137,11 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object,
     int *frequencies = env->GetIntArrayElements(frequencyArray, 0);
     int *inputCodes = env->GetIntArrayElements(inputArray, 0);
     jchar *outputChars = env->GetCharArrayElements(outputArray, 0);
+    // Deactivated to prevent unused variable errors.
+    // TODO: use the following variables.
+    // jint *prevWordChars = prevWordForBigrams
+    //         ? env->GetIntArrayElements(prevWordForBigrams, 0) : NULL;
+    // jsize prevWordLength = prevWordChars ? env->GetArrayLength(prevWordForBigrams) : 0;
     int count = dictionary->getSuggestions(pInfo, xCoordinates, yCoordinates, inputCodes,
             arraySize, useFullEditDistance, (unsigned short*) outputChars, frequencies);
     env->ReleaseCharArrayElements(outputArray, outputChars, 0);
@@ -229,7 +234,8 @@ void releaseDictBuf(void* dictBuf, const size_t length, int fd) {
 static JNINativeMethod sMethods[] = {
     {"openNative", "(Ljava/lang/String;JJIIII)J", (void*)latinime_BinaryDictionary_open},
     {"closeNative", "(J)V", (void*)latinime_BinaryDictionary_close},
-    {"getSuggestionsNative", "(JJ[I[I[IIZ[C[I)I", (void*)latinime_BinaryDictionary_getSuggestions},
+    {"getSuggestionsNative", "(JJ[I[I[II[IZ[C[I)I",
+            (void*)latinime_BinaryDictionary_getSuggestions},
     {"isValidWordNative", "(J[CI)Z", (void*)latinime_BinaryDictionary_isValidWord},
     {"getBigramsNative", "(J[CI[II[C[III)I", (void*)latinime_BinaryDictionary_getBigrams},
     {"calcNormalizedScoreNative", "([CI[CII)D",

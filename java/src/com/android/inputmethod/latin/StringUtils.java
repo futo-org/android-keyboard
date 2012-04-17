@@ -166,4 +166,19 @@ public class StringUtils {
         // - It also does not work with unicode surrogate code points.
         return s.toUpperCase(locale).charAt(0) + s.substring(1);
     }
+
+    public static int[] toCodePointArray(final String string) {
+        final char[] characters = string.toCharArray();
+        final int length = characters.length;
+        final int[] codePoints = new int[Character.codePointCount(characters, 0, length)];
+        int codePoint = Character.codePointAt(characters, 0);
+        int dsti = 0;
+        for (int srci = Character.charCount(codePoint);
+                srci < length; srci += Character.charCount(codePoint), ++dsti) {
+            codePoints[dsti] = codePoint;
+            codePoint = Character.codePointAt(characters, srci);
+        }
+        codePoints[dsti] = codePoint;
+        return codePoints;
+    }
 }
