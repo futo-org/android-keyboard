@@ -18,11 +18,11 @@ package com.android.inputmethod.latin.spellcheck;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.service.textservice.SpellCheckerService;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.LruCache;
 import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
 
@@ -455,6 +455,35 @@ public class AndroidSpellCheckerService extends SpellCheckerService
 
         private final AndroidSpellCheckerService mService;
 
+        private final SuggestionsCache mSuggestionsCache = new SuggestionsCache();
+
+        private static class SuggestionsParams {
+            public final String[] mSuggestions;
+            public final int mFlags;
+            public SuggestionsParams(String[] suggestions, int flags) {
+                mSuggestions = suggestions;
+                mFlags = flags;
+            }
+        }
+
+        private static class SuggestionsCache {
+            private static final int MAX_CACHE_SIZE = 50;
+            // TODO: support bigram
+            private final LruCache<String, SuggestionsParams> mUnigramSuggestionsInfoCache =
+                    new LruCache<String, SuggestionsParams>(MAX_CACHE_SIZE);
+
+            public SuggestionsParams getSuggestionsFromCache(String query) {
+                return mUnigramSuggestionsInfoCache.get(query);
+            }
+
+            public void putSuggestionsToCache(String query, String[] suggestions, int flags) {
+                if (suggestions == null || TextUtils.isEmpty(query)) {
+                    return;
+                }
+                mUnigramSuggestionsInfoCache.put(query, new SuggestionsParams(suggestions, flags));
+            }
+        }
+
         AndroidSpellCheckerSession(final AndroidSpellCheckerService service) {
             mService = service;
         }
@@ -546,6 +575,15 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 final int suggestionsLimit) {
             try {
                 final String text = textInfo.getText();
+                final SuggestionsParams cachedSuggestionsParams =
+                        mSuggestionsCache.getSuggestionsFromCache(text);
+                if (cachedSuggestionsParams != null) {
+                    if (DBG) {
+                        Log.d(TAG, "Cache hit: " + text + ", " + cachedSuggestionsParams.mFlags);
+                    }
+                    return new SuggestionsInfo(
+                            cachedSuggestionsParams.mFlags, cachedSuggestionsParams.mSuggestions);
+                }
 
                 if (shouldFilterOut(text, mScript)) {
                     DictAndProximity dictInfo = null;
@@ -628,7 +666,9 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                                 ? SuggestionsInfoCompatUtils
                                         .getValueOf_RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS()
                                 : 0);
-                return new SuggestionsInfo(flags, result.mSuggestions);
+                final SuggestionsInfo retval = new SuggestionsInfo(flags, result.mSuggestions);
+                mSuggestionsCache.putSuggestionsToCache(text, result.mSuggestions, flags);
+                return retval;
             } catch (RuntimeException e) {
                 // Don't kill the keyboard if there is a bug in the spell checker
                 if (DBG) {
