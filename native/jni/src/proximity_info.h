@@ -45,7 +45,7 @@ class ProximityInfo {
     } ProximityType;
 
     ProximityInfo(const std::string localeStr, const int maxProximityCharsSize,
-            const int keyboardWidth, const int keybaordHeight, const int gridWidth,
+            const int keyboardWidth, const int keyboardHeight, const int gridWidth,
             const int gridHeight, const int mostCommonkeyWidth,
             const int32_t *proximityCharsArray, const int keyCount, const int32_t *keyXCoordinates,
             const int32_t *keyYCoordinates, const int32_t *keyWidths, const int32_t *keyHeights,

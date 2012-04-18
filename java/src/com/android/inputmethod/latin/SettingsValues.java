@@ -150,10 +150,10 @@ public class SettingsValues {
         mVoiceKeyOnMain = mVoiceMode != null && mVoiceMode.equals(voiceModeMain);
 
         // Predefined additional subtypes
-        final InputMethodSubtype DE_QWERTY = AdditionalSubtype.createAddtionalSubtype(
-                Locale.GERMAN, AdditionalSubtype.QWERTY);
-        final InputMethodSubtype FR_QWERTZ = AdditionalSubtype.createAddtionalSubtype(
-                Locale.FRENCH, AdditionalSubtype.QWERTZ);
+        final InputMethodSubtype DE_QWERTY = AdditionalSubtype.createAdditionalSubtype(
+                Locale.GERMAN.toString(), AdditionalSubtype.QWERTY);
+        final InputMethodSubtype FR_QWERTZ = AdditionalSubtype.createAdditionalSubtype(
+                Locale.FRENCH.toString(), AdditionalSubtype.QWERTZ);
         mPredefinedAdditionalSubtypes = new InputMethodSubtype[] {
                 DE_QWERTY,
                 FR_QWERTZ,

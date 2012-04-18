@@ -25,8 +25,7 @@ import java.util.Locale;
 
 public class SubtypeLocale {
     // Special language code to represent "no language".
-    private static final String NO_LANGUAGE = "zz";
-    public static final Locale LOCALE_NO_LANGUAGE = new Locale(NO_LANGUAGE);
+    public static final String NO_LANGUAGE = "zz";
 
     // Exceptional locales to display name map.
     private static final HashMap<String, String> sExceptionalDisplayNamesMap =

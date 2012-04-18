@@ -267,7 +267,7 @@ public class KeySpecParser {
         }
     }
 
-    public static String[] insertAddtionalMoreKeys(String[] moreKeySpecs,
+    public static String[] insertAdditionalMoreKeys(String[] moreKeySpecs,
             String[] additionalMoreKeySpecs) {
         final String[] moreKeys = filterOutEmptyString(moreKeySpecs);
         final String[] additionalMoreKeys = filterOutEmptyString(additionalMoreKeySpecs);
