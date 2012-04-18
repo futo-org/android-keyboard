@@ -40,7 +40,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -1007,50 +1006,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // In fullscreen mode, no need to have extra space to show the key preview.
         // If not, we should have extra space above the keyboard to show the key preview.
         mKeyPreviewBackingView.setVisibility(isFullscreenMode() ? View.GONE : View.VISIBLE);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        switch (keyCode) {
-        case KeyEvent.KEYCODE_BACK:
-            if (event.getRepeatCount() == 0) {
-                if (mSuggestionsView != null && mSuggestionsView.handleBack()) {
-                    return true;
-                }
-                final LatinKeyboardView keyboardView = mKeyboardSwitcher.getKeyboardView();
-                if (keyboardView != null && keyboardView.handleBack()) {
-                    return true;
-                }
-            }
-            break;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        switch (keyCode) {
-        case KeyEvent.KEYCODE_DPAD_DOWN:
-        case KeyEvent.KEYCODE_DPAD_UP:
-        case KeyEvent.KEYCODE_DPAD_LEFT:
-        case KeyEvent.KEYCODE_DPAD_RIGHT:
-            final LatinKeyboardView keyboardView = mKeyboardSwitcher.getKeyboardView();
-            final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
-            // Enable shift key and DPAD to do selections
-            if ((keyboardView != null && keyboardView.isShown())
-                    && (keyboard != null && keyboard.isShiftedOrShiftLocked())) {
-                KeyEvent newEvent = new KeyEvent(event.getDownTime(), event.getEventTime(),
-                        event.getAction(), event.getKeyCode(), event.getRepeatCount(),
-                        event.getDeviceId(), event.getScanCode(),
-                        KeyEvent.META_SHIFT_LEFT_ON | KeyEvent.META_SHIFT_ON);
-                final InputConnection ic = getCurrentInputConnection();
-                if (ic != null)
-                    ic.sendKeyEvent(newEvent);
-                return true;
-            }
-            break;
-        }
-        return super.onKeyUp(keyCode, event);
     }
 
     // This will reset the whole input state to the starting state. It will clear

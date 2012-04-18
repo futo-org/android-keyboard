@@ -790,10 +790,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         return false;
     }
 
-    public boolean handleBack() {
-        return dismissMoreKeysPanel();
-    }
-
     @Override
     public void draw(Canvas c) {
         Utils.GCUtils.getInstance().reset();
