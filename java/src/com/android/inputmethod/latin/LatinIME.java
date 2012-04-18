@@ -634,7 +634,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                             editorInfo.inputType, editorInfo.imeOptions));
         }
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_onStartInputViewInternal(editorInfo);
+            ResearchLogger.latinIME_onStartInputViewInternal(editorInfo, mPrefs);
         }
         if (InputAttributes.inPrivateImeOptions(null, NO_MICROPHONE_COMPAT, editorInfo)) {
             Log.w(TAG, "Deprecated private IME option specified: "

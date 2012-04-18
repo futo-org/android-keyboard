@@ -18,10 +18,12 @@ package com.android.inputmethod.latin;
 
 import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -45,6 +47,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.util.Map;
 
 /**
  * Logs the use of the LatinIME keyboard.
@@ -68,7 +71,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      * Isolates management of files. This variable should never be null, but can be changed
      * to support testing.
      */
-    private LogFileManager mLogFileManager;
+    /* package */ LogFileManager mLogFileManager;
 
     /**
      * Manages the file(s) that stores the logs.
@@ -93,63 +96,53 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             mIms = ims;
         }
 
-        public synchronized boolean createLogFile() {
-            try {
-                return createLogFile(DEFAULT_FILENAME);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.w(TAG, e);
-                return false;
-            }
+        public synchronized void createLogFile() throws IOException {
+            createLogFile(DEFAULT_FILENAME);
         }
 
-        public synchronized boolean createLogFile(final SharedPreferences prefs) {
-            try {
-                final String filename =
-                        prefs.getString(RESEARCH_LOG_FILENAME_KEY, DEFAULT_FILENAME);
-                return createLogFile(filename);
-            } catch (IOException e) {
-                Log.w(TAG, e);
-                e.printStackTrace();
-            }
-            return false;
+        public synchronized void createLogFile(final SharedPreferences prefs)
+                throws IOException {
+            final String filename =
+                    prefs.getString(RESEARCH_LOG_FILENAME_KEY, DEFAULT_FILENAME);
+            createLogFile(filename);
         }
 
-        public synchronized boolean createLogFile(final String filename)
+        public synchronized void createLogFile(final String filename)
                 throws IOException {
             if (mIms == null) {
-                Log.w(TAG, "InputMethodService is not configured.  Logging is off.");
-                return false;
+                final String msg = "InputMethodService is not configured.  Logging is off.";
+                Log.w(TAG, msg);
+                throw new IOException(msg);
             }
             final File filesDir = mIms.getFilesDir();
             if (filesDir == null || !filesDir.exists()) {
-                Log.w(TAG, "Storage directory does not exist.  Logging is off.");
-                return false;
+                final String msg = "Storage directory does not exist.  Logging is off.";
+                Log.w(TAG, msg);
+                throw new IOException(msg);
             }
             close();
             final File file = new File(filesDir, filename);
             mFile = file;
-            file.setReadable(false, false);
             boolean append = true;
             if (file.exists() && file.lastModified() + LOGFILE_PURGE_INTERVAL <
                     System.currentTimeMillis()) {
                 append = false;
             }
             mPrintWriter = new PrintWriter(new BufferedWriter(new FileWriter(file, append)), true);
-            return true;
         }
 
         public synchronized boolean append(final String s) {
-            final PrintWriter printWriter = mPrintWriter;
-            if (printWriter == null) {
+            PrintWriter printWriter = mPrintWriter;
+            if (printWriter == null || !mFile.exists()) {
                 if (DEBUG) {
                     Log.w(TAG, "PrintWriter is null... attempting to create default log file");
                 }
-                if (!createLogFile()) {
-                    if (DEBUG) {
-                        Log.w(TAG, "Failed to create log file.  Not logging.");
-                        return false;
-                    }
+                try {
+                    createLogFile();
+                    printWriter = mPrintWriter;
+                } catch (IOException e) {
+                    Log.w(TAG, "Failed to create log file.  Not logging.");
+                    return false;
                 }
             }
             printWriter.print(s);
@@ -161,9 +154,15 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             if (mPrintWriter != null) {
                 mPrintWriter.close();
                 mPrintWriter = null;
+                if (DEBUG) {
+                    Log.d(TAG, "logfile closed");
+                }
             }
             if (mFile != null) {
                 mFile.delete();
+                if (DEBUG) {
+                    Log.d(TAG, "logfile deleted");
+                }
                 mFile = null;
             }
         }
@@ -173,6 +172,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 mPrintWriter.close();
                 mPrintWriter = null;
                 mFile = null;
+                if (DEBUG) {
+                    Log.d(TAG, "logfile closed");
+                }
             }
         }
 
@@ -240,29 +242,20 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         sInstance.initInternal(ims, prefs);
     }
 
-    public void initInternal(final InputMethodService ims, final SharedPreferences prefs) {
+    /* package */ void initInternal(final InputMethodService ims, final SharedPreferences prefs) {
         mIms = ims;
         final LogFileManager logFileManager = mLogFileManager;
         if (logFileManager != null) {
             logFileManager.init(ims);
-            logFileManager.createLogFile(prefs);
+            try {
+                logFileManager.createLogFile(prefs);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         if (prefs != null) {
             sIsLogging = prefs.getBoolean(PREF_USABILITY_STUDY_MODE, false);
             prefs.registerOnSharedPreferenceChangeListener(this);
-        }
-    }
-
-    /**
-     * Change to a different logFileManager.
-     *
-     * @throws IllegalArgumentException if logFileManager is null
-     */
-    void setLogFileManager(final LogFileManager manager) {
-        if (manager == null) {
-            throw new IllegalArgumentException("warning: trying to set null logFileManager");
-        } else {
-            mLogFileManager = manager;
         }
     }
 
@@ -377,6 +370,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         private static final boolean LATINKEYBOARDVIEW_ONLONGPRESS_ENABLED = DEFAULT_ENABLED;
         private static final boolean LATINKEYBOARDVIEW_ONPROCESSMOTIONEVENT_ENABLED
                 = DEFAULT_ENABLED;
+        private static final boolean LATINKEYBOARDVIEW_SETKEYBOARD_ENABLED = DEFAULT_ENABLED;
         private static final boolean POINTERTRACKER_CALLLISTENERONCANCELINPUT_ENABLED
                 = DEFAULT_ENABLED;
         private static final boolean POINTERTRACKER_CALLLISTENERONCODEINPUT_ENABLED
@@ -413,11 +407,20 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 if (DEBUG) {
                     Log.d(TAG, "Write: " + '[' + logGroup.mLogString + ']' + log);
                 }
-                if (mLogFileManager.append(builder.toString())) {
+                final String s = builder.toString();
+                if (mLogFileManager.append(s)) {
                     // success
                 } else {
                     if (DEBUG) {
                         Log.w(TAG, "Unable to write to log.");
+                    }
+                    // perhaps logfile was deleted.  try to recreate and relog.
+                    try {
+                        mLogFileManager.createLogFile(PreferenceManager
+                                .getDefaultSharedPreferences(mIms));
+                        mLogFileManager.append(s);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -474,6 +477,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
+    // TODO: Remove keyboardState logging that is redundant in light of
+    // latinKeyboardView_setKeyboard
     public static void keyboardState_onCancelInput(final boolean isSinglePointer,
             final KeyboardState keyboardState) {
         if (UnsLogGroup.KEYBOARDSTATE_ONCANCELINPUT_ENABLED) {
@@ -637,14 +642,22 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
-    public static void latinIME_onStartInputViewInternal(final EditorInfo editorInfo) {
+    public static void latinIME_onStartInputViewInternal(final EditorInfo editorInfo,
+            final SharedPreferences prefs) {
         if (UnsLogGroup.LATINIME_ONSTARTINPUTVIEWINTERNAL_ENABLED) {
             final StringBuilder builder = new StringBuilder();
             builder.append("onStartInputView: editorInfo:");
-            builder.append("inputType=");
-            builder.append(editorInfo.inputType);
-            builder.append("imeOptions=");
-            builder.append(editorInfo.imeOptions);
+            builder.append("\tinputType=");
+            builder.append(Integer.toHexString(editorInfo.inputType));
+            builder.append("\timeOptions=");
+            builder.append(Integer.toHexString(editorInfo.imeOptions));
+            builder.append("\tdisplay="); builder.append(Build.DISPLAY);
+            builder.append("\tmodel="); builder.append(Build.MODEL);
+            for (Map.Entry<String,?> entry : prefs.getAll().entrySet()) {
+                builder.append("\t" + entry.getKey());
+                Object value = entry.getValue();
+                builder.append("=" + ((value == null) ? "<null>" : value.toString()));
+            }
             logUnstructured("LatinIME_onStartInputViewInternal", builder.toString());
         }
     }
@@ -742,6 +755,42 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             if (action != MotionEvent.ACTION_MOVE) {
                 getInstance().logMotionEvent(action, eventTime, id, x, y, size, pressure);
             }
+        }
+    }
+
+    public static void latinKeyboardView_setKeyboard(final Keyboard keyboard) {
+        if (UnsLogGroup.LATINKEYBOARDVIEW_SETKEYBOARD_ENABLED) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("id=");
+            builder.append(keyboard.mId);
+            builder.append("\tw=");
+            builder.append(keyboard.mOccupiedWidth);
+            builder.append("\th=");
+            builder.append(keyboard.mOccupiedHeight);
+            builder.append("\tkeys=[");
+            boolean first = true;
+            for (Key key : keyboard.mKeys) {
+                if (first) {
+                    first = false;
+                } else {
+                    builder.append(",");
+                }
+                builder.append("{code:");
+                builder.append(key.mCode);
+                builder.append(",altCode:");
+                builder.append(key.mAltCode);
+                builder.append(",x:");
+                builder.append(key.mX);
+                builder.append(",y:");
+                builder.append(key.mY);
+                builder.append(",w:");
+                builder.append(key.mWidth);
+                builder.append(",h:");
+                builder.append(key.mHeight);
+                builder.append("}");
+            }
+            builder.append("]");
+            logUnstructured("LatinKeyboardView_setKeyboard", builder.toString());
         }
     }
 
