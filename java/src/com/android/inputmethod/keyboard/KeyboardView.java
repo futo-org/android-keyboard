@@ -109,7 +109,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
     // Drawing
     /** True if the entire keyboard needs to be dimmed. */
-    private boolean mNeedsToDimBackground;
+    private boolean mNeedsToDimEntireKeyboard;
     /** Whether the keyboard bitmap buffer needs to be redrawn before it's blitted. **/
     private boolean mBufferNeedsUpdate;
     /** True if all keys should be drawn */
@@ -455,12 +455,15 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         final KeyDrawParams params = mKeyDrawParams;
 
         if (mInvalidateAllKeys || mInvalidatedKeys.isEmpty()) {
-            mInvalidatedKeysRect.set(0, 0, getWidth(), getHeight());
+            mInvalidatedKeysRect.set(0, 0, width, height);
             canvas.clipRect(mInvalidatedKeysRect, Op.REPLACE);
             canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
             // Draw all keys.
             for (final Key key : mKeyboard.mKeys) {
                 onDrawKey(key, canvas, paint, params);
+            }
+            if (mNeedsToDimEntireKeyboard) {
+                drawDimRectangle(canvas, mInvalidatedKeysRect, mBackgroundDimAlpha, paint);
             }
         } else {
             // Draw invalidated keys.
@@ -471,14 +474,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 canvas.clipRect(mInvalidatedKeysRect, Op.REPLACE);
                 canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
                 onDrawKey(key, canvas, paint, params);
+                if (mNeedsToDimEntireKeyboard) {
+                    drawDimRectangle(canvas, mInvalidatedKeysRect, mBackgroundDimAlpha, paint);
+                }
             }
-        }
-
-        // Overlay a dark rectangle to dim the entire keyboard
-        if (mNeedsToDimBackground) {
-            paint.setColor(Color.BLACK);
-            paint.setAlpha(mBackgroundDimAlpha);
-            canvas.drawRect(0, 0, width, height, paint);
         }
 
         mInvalidatedKeys.clear();
@@ -487,8 +486,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     public void dimEntireKeyboard(boolean dimmed) {
-        final boolean needsRedrawing = mNeedsToDimBackground != dimmed;
-        mNeedsToDimBackground = dimmed;
+        final boolean needsRedrawing = mNeedsToDimEntireKeyboard != dimmed;
+        mNeedsToDimEntireKeyboard = dimmed;
         if (needsRedrawing) {
             invalidateAllKeys();
         }
@@ -807,6 +806,13 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         canvas.translate(x, y);
         canvas.drawRect(0, 0, w, h, paint);
         canvas.translate(-x, -y);
+    }
+
+    // Overlay a dark rectangle to dim.
+    private static void drawDimRectangle(Canvas canvas, Rect rect, int alpha, Paint paint) {
+        paint.setColor(Color.BLACK);
+        paint.setAlpha(alpha);
+        canvas.drawRect(rect, paint);
     }
 
     public Paint newDefaultLabelPaint() {
