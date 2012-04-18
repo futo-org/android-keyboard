@@ -71,7 +71,7 @@ public class SettingsValues {
     private final int mVibrationDurationSettingsRawValue;
     @SuppressWarnings("unused") // TODO: Use this
     private final float mKeypressSoundVolumeRawValue;
-    private final InputMethodSubtype[] mPredefinedAdditionalSubtypes;
+    private final InputMethodSubtype[] mAdditionalSubtypes;
 
     // Deduced settings
     public final int mKeypressVibrationDuration;
@@ -149,15 +149,8 @@ public class SettingsValues {
         mVoiceKeyEnabled = mVoiceMode != null && !mVoiceMode.equals(voiceModeOff);
         mVoiceKeyOnMain = mVoiceMode != null && mVoiceMode.equals(voiceModeMain);
 
-        // Predefined additional subtypes
-        final InputMethodSubtype DE_QWERTY = AdditionalSubtype.createAdditionalSubtype(
-                Locale.GERMAN.toString(), AdditionalSubtype.QWERTY);
-        final InputMethodSubtype FR_QWERTZ = AdditionalSubtype.createAdditionalSubtype(
-                Locale.FRENCH.toString(), AdditionalSubtype.QWERTZ);
-        mPredefinedAdditionalSubtypes = new InputMethodSubtype[] {
-                DE_QWERTY,
-                FR_QWERTZ,
-        };
+        mAdditionalSubtypes = AdditionalSubtype.createAdditionalSubtypesArray(
+                getCsvAdditionalSubtypes(prefs, res));
     }
 
     // Helper functions to create member values.
@@ -318,9 +311,14 @@ public class SettingsValues {
         return res.getBoolean(R.bool.config_use_fullscreen_mode);
     }
 
-    // TODO: Should be able to add/remove/edit.
-    public InputMethodSubtype[] getPrefefinedAdditionalSubtypes() {
-        return mPredefinedAdditionalSubtypes;
+    public InputMethodSubtype[] getAdditionalSubtypes() {
+        return mAdditionalSubtypes;
+    }
+
+    public static String getCsvAdditionalSubtypes(final SharedPreferences prefs,
+            final Resources res) {
+        final String csvPredefinedSubtypes = res.getString(R.string.predefined_subtypes, "");
+        return prefs.getString(Settings.PREF_CUSTOM_INPUT_STYLES, csvPredefinedSubtypes);
     }
 
     // Accessed from the settings interface, hence public

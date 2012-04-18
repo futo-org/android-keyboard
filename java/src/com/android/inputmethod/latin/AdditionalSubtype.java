@@ -52,4 +52,20 @@ public class AdditionalSubtype {
         return new InputMethodSubtype(nameId, R.drawable.ic_subtype_keyboard,
                 localeString, SUBTYPE_MODE_KEYBOARD, extraValue, false, false);
     }
+
+    private static final String LOCALE_AND_LAYOUT_SEPARATOR = ":";
+    private static final String SUBTYPE_SEPARATOR = ",";
+
+    public static InputMethodSubtype[] createAdditionalSubtypesArray(String csvSubtypes) {
+        final String[] subtypeSpecs = csvSubtypes.split(SUBTYPE_SEPARATOR);
+        final InputMethodSubtype[] subtypesArray = new InputMethodSubtype[subtypeSpecs.length];
+        for (int i = 0; i < subtypeSpecs.length; i++) {
+            final String elems[] = subtypeSpecs[i].split(LOCALE_AND_LAYOUT_SEPARATOR);
+            final String localeString = elems[0];
+            final String keyboardLayoutSetName = elems[1];
+            subtypesArray[i] = AdditionalSubtype.createAdditionalSubtype(
+                    localeString, keyboardLayoutSetName);
+        }
+        return subtypesArray;
+    }
 }

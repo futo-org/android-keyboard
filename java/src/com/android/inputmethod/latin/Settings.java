@@ -62,6 +62,7 @@ public class Settings extends InputMethodSettingsFragment
             "pref_suppress_language_switch_key";
     public static final String PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST =
             "pref_include_other_imes_in_language_switch_list";
+    public static final String PREF_CUSTOM_INPUT_STYLES = "custom_input_styles";
     public static final String PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY =
             "pref_key_preview_popup_dismiss_delay";
     public static final String PREF_KEY_USE_CONTACTS_DICT = "pref_key_use_contacts_dict";
