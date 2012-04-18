@@ -1035,6 +1035,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     separatorCode);
             if (ic != null) {
                 ic.commitText(typedWord, 1);
+                if (ProductionFlag.IS_EXPERIMENTAL) {
+                    ResearchLogger.latinIME_commitText(typedWord);
+                }
             }
             addToUserHistoryDictionary(typedWord);
         }
@@ -1059,7 +1062,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (lastTwo != null && lastTwo.length() == 2
                 && lastTwo.charAt(0) == Keyboard.CODE_SPACE) {
             ic.deleteSurroundingText(2, 0);
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.latinIME_deleteSurroundingText(2);
+            }
             ic.commitText(lastTwo.charAt(1) + " ", 1);
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.latinIME_swapSwapperAndSpaceWhileInBatchEdit();
+            }
             mKeyboardSwitcher.updateShiftState();
         }
     }
@@ -1076,6 +1085,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mHandler.cancelDoubleSpacesTimer();
             ic.deleteSurroundingText(2, 0);
             ic.commitText(". ", 1);
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.latinIME_doubleSpaceAutoPeriod();
+            }
             mKeyboardSwitcher.updateShiftState();
             return true;
         }
@@ -1089,6 +1101,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (lastOne != null && lastOne.length() == 1
                 && lastOne.charAt(0) == Keyboard.CODE_SPACE) {
             ic.deleteSurroundingText(1, 0);
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.latinIME_deleteSurroundingText(1);
+            }
         }
     }
 
@@ -1143,6 +1158,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
             ic.performEditorAction(actionId);
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.latinIME_performEditorAction(actionId);
+            }
         }
     }
 
@@ -1177,6 +1195,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (ic != null) {
             final String text = new String(new int[] { code }, 0, 1);
             ic.commitText(text, text.length());
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.latinIME_sendKeyCodePoint(code);
+            }
         }
     }
 
@@ -1276,6 +1297,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             sendKeyCodePoint(Keyboard.CODE_SPACE);
         }
         ic.commitText(text, 1);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_commitText(text);
+        }
         ic.endBatchEdit();
         mKeyboardSwitcher.updateShiftState();
         mKeyboardSwitcher.onCodeInput(Keyboard.CODE_OUTPUT_TEXT);
@@ -1327,7 +1351,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // Cancel multi-character input: remove the text we just entered.
             // This is triggered on backspace after a key that inputs multiple characters,
             // like the smiley key or the .com key.
-            ic.deleteSurroundingText(mEnteredText.length(), 0);
+            final int length = mEnteredText.length();
+            ic.deleteSurroundingText(length, 0);
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.latinIME_deleteSurroundingText(length);
+            }
             // If we have mEnteredText, then we know that mHasUncommittedTypedChars == false.
             // In addition we know that spaceState is false, and that we should not be
             // reverting any autocorrect at this point. So we can safely return.
@@ -1350,6 +1378,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 }
             } else {
                 ic.deleteSurroundingText(1, 0);
+                if (ProductionFlag.IS_EXPERIMENTAL) {
+                    ResearchLogger.latinIME_deleteSurroundingText(1);
+                }
             }
         } else {
             if (mLastComposedWord.canRevertCommit()) {
@@ -1377,6 +1408,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 final int lengthToDelete = mLastSelectionEnd - mLastSelectionStart;
                 ic.setSelection(mLastSelectionEnd, mLastSelectionEnd);
                 ic.deleteSurroundingText(lengthToDelete, 0);
+                if (ProductionFlag.IS_EXPERIMENTAL) {
+                    ResearchLogger.latinIME_deleteSurroundingText(lengthToDelete);
+                }
             } else {
                 // There is no selection, just delete one character.
                 if (NOT_A_CURSOR_POSITION == mLastSelectionEnd) {
@@ -1384,8 +1418,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     Log.e(TAG, "Backspace when we don't know the selection position");
                 }
                 ic.deleteSurroundingText(1, 0);
+                if (ProductionFlag.IS_EXPERIMENTAL) {
+                    ResearchLogger.latinIME_deleteSurroundingText(1);
+                }
                 if (mDeleteCount > DELETE_ACCELERATE_AT) {
                     ic.deleteSurroundingText(1, 0);
+                    if (ProductionFlag.IS_EXPERIMENTAL) {
+                        ResearchLogger.latinIME_deleteSurroundingText(1);
+                    }
                 }
             }
             if (isSuggestionsRequested()) {
@@ -1753,7 +1793,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
             Utils.Stats.onAutoCorrection(typedWord, autoCorrection.toString(), separatorCodePoint);
             if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.LatinIME_commitCurrentAutoCorrection(typedWord,
+                ResearchLogger.latinIME_commitCurrentAutoCorrection(typedWord,
                         autoCorrection.toString());
             }
             mExpectingUpdateSelection = true;
@@ -1882,8 +1922,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 ic.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(
                         this, bestWord, suggestedWords, mSubtypeSwitcher.isDictionaryAvailable()),
                         1);
+                if (ProductionFlag.IS_EXPERIMENTAL) {
+                    ResearchLogger.latinIME_commitText(bestWord);
+                }
             } else {
                 ic.commitText(bestWord, 1);
+                if (ProductionFlag.IS_EXPERIMENTAL) {
+                    ResearchLogger.latinIME_commitText(bestWord);
+                }
             }
         }
         // TODO: figure out here if this is an auto-correct or if the best word is actually
@@ -2032,7 +2078,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void restartSuggestionsOnWordBeforeCursor(final InputConnection ic,
             final CharSequence word) {
         mWordComposer.setComposingWord(word, mKeyboardSwitcher.getKeyboard());
-        ic.deleteSurroundingText(word.length(), 0);
+        final int length = word.length();
+        ic.deleteSurroundingText(length, 0);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_deleteSurroundingText(length);
+        }
         ic.setComposingText(word, 1);
         mHandler.postUpdateSuggestions();
     }
@@ -2045,12 +2095,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int separatorLength = LastComposedWord.getSeparatorLength(
                 mLastComposedWord.mSeparatorCode);
         // TODO: should we check our saved separator against the actual contents of the text view?
+        final int deleteLength = cancelLength + separatorLength;
         if (DEBUG) {
             if (mWordComposer.isComposingWord()) {
                 throw new RuntimeException("revertCommit, but we are composing a word");
             }
             final String wordBeforeCursor =
-                    ic.getTextBeforeCursor(cancelLength + separatorLength, 0)
+                    ic.getTextBeforeCursor(deleteLength, 0)
                             .subSequence(0, cancelLength).toString();
             if (!TextUtils.equals(committedWord, wordBeforeCursor)) {
                 throw new RuntimeException("revertCommit check failed: we thought we were "
@@ -2058,7 +2109,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         + "\", but before the cursor we found \"" + wordBeforeCursor + "\"");
             }
         }
-        ic.deleteSurroundingText(cancelLength + separatorLength, 0);
+        ic.deleteSurroundingText(deleteLength, 0);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_deleteSurroundingText(deleteLength);
+        }
         if (0 == separatorLength || mLastComposedWord.didCommitTypedWord()) {
             // This is the case when we cancel a manual pick.
             // We should restart suggestion on the word right away.
@@ -2070,6 +2124,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             sendKeyCodePoint(mLastComposedWord.mSeparatorCode);
             Utils.Stats.onSeparator(mLastComposedWord.mSeparatorCode, WordComposer.NOT_A_COORDINATE,
                     WordComposer.NOT_A_COORDINATE);
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.latinIME_revertCommit(originallyTypedWord);
+            }
             // Don't restart suggestion yet. We'll restart if the user deletes the
             // separator.
         }
@@ -2093,7 +2150,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return false;
         }
         ic.deleteSurroundingText(2, 0);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_deleteSurroundingText(2);
+        }
         ic.commitText("  ", 1);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_revertDoubleSpaceWhileInBatchEdit();
+        }
         return true;
     }
 
@@ -2114,7 +2177,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         ic.beginBatchEdit();
         ic.deleteSurroundingText(2, 0);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_deleteSurroundingText(2);
+        }
         ic.commitText(" " + textBeforeCursor.subSequence(0, 1), 1);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_revertSwapPunctuation();
+        }
         ic.endBatchEdit();
         return true;
     }

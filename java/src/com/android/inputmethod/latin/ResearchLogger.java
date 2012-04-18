@@ -355,9 +355,24 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         private static final boolean KEYBOARDSTATE_TOGGLEALPHABETANDSYMBOLS_ENABLED
                 = DEFAULT_ENABLED;
         private static final boolean LATINIME_COMMITCURRENTAUTOCORRECTION_ENABLED = DEFAULT_ENABLED;
+        private static final boolean LATINIME_COMMITTEXT_ENABLED = DEFAULT_ENABLED;
+        private static final boolean LATINIME_DELETESURROUNDINGTEXT_ENABLED = DEFAULT_ENABLED;
+        private static final boolean LATINIME_DOUBLESPACEAUTOPERIOD_ENABLED = DEFAULT_ENABLED;
         private static final boolean LATINIME_ONDISPLAYCOMPLETIONS_ENABLED = DEFAULT_ENABLED;
         private static final boolean LATINIME_ONSTARTINPUTVIEWINTERNAL_ENABLED = DEFAULT_ENABLED;
         private static final boolean LATINIME_ONUPDATESELECTION_ENABLED = DEFAULT_ENABLED;
+        private static final boolean LATINIME_PERFORMEDITORACTION_ENABLED = DEFAULT_ENABLED;
+        private static final boolean LATINIME_PICKAPPLICATIONSPECIFIEDCOMPLETION_ENABLED
+                = DEFAULT_ENABLED;
+        private static final boolean LATINIME_PICKPUNCTUATIONSUGGESTION_ENABLED = DEFAULT_ENABLED;
+        private static final boolean LATINIME_PICKSUGGESTIONMANUALLY_ENABLED = DEFAULT_ENABLED;
+        private static final boolean LATINIME_REVERTCOMMIT_ENABLED = DEFAULT_ENABLED;
+        private static final boolean LATINIME_REVERTDOUBLESPACEWHILEINBATCHEDIT_ENABLED
+                = DEFAULT_ENABLED;
+        private static final boolean LATINIME_REVERTSWAPPUNCTUATION_ENABLED = DEFAULT_ENABLED;
+        private static final boolean LATINIME_SENDKEYCODEPOINT_ENABLED = DEFAULT_ENABLED;
+        private static final boolean LATINIME_SWAPSWAPPERANDSPACEWHILEINBATCHEDIT_ENABLED
+                = DEFAULT_ENABLED;
         private static final boolean LATINIME_SWITCHTOKEYBOARDVIEW_ENABLED = DEFAULT_ENABLED;
         private static final boolean LATINKEYBOARDVIEW_ONLONGPRESS_ENABLED = DEFAULT_ENABLED;
         private static final boolean LATINKEYBOARDVIEW_ONPROCESSMOTIONEVENT_ENABLED
@@ -375,10 +390,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         private static final boolean SUDDENJUMPINGTOUCHEVENTHANDLER_ONTOUCHEVENT_ENABLED
                 = DEFAULT_ENABLED;
         private static final boolean SUGGESTIONSVIEW_SETSUGGESTIONS_ENABLED = DEFAULT_ENABLED;
-        private static final boolean LATINIME_PICKAPPLICATIONSPECIFIEDCOMPLETION_ENABLED
-                = DEFAULT_ENABLED;
-        private static final boolean LATINIME_PICKPUNCTUATIONSUGGESTION_ENABLED = DEFAULT_ENABLED;
-        private static final boolean LATINIME_PICKSUGGESTIONMANUALLY_ENABLED = DEFAULT_ENABLED;
     }
 
     public static void logUnstructured(String logGroup, final String details) {
@@ -579,7 +590,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
-    public static void LatinIME_commitCurrentAutoCorrection(final String typedWord,
+    public static void latinIME_commitCurrentAutoCorrection(final String typedWord,
             final String autoCorrection) {
         if (UnsLogGroup.LATINIME_COMMITCURRENTAUTOCORRECTION_ENABLED) {
             if (typedWord.equals(autoCorrection)) {
@@ -587,6 +598,24 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             } else {
                 getInstance().logCorrection("[Auto]", typedWord, autoCorrection, -1);
             }
+        }
+    }
+
+    public static void latinIME_commitText(final CharSequence typedWord) {
+        if (UnsLogGroup.LATINIME_COMMITTEXT_ENABLED) {
+            logUnstructured("LatinIME_commitText", typedWord.toString());
+        }
+    }
+
+    public static void latinIME_deleteSurroundingText(final int length) {
+        if (UnsLogGroup.LATINIME_DELETESURROUNDINGTEXT_ENABLED) {
+            logUnstructured("LatinIME_deleteSurroundingText", String.valueOf(length));
+        }
+    }
+
+    public static void latinIME_doubleSpaceAutoPeriod() {
+        if (UnsLogGroup.LATINIME_DOUBLESPACEAUTOPERIOD_ENABLED) {
+            logUnstructured("LatinIME_doubleSpaceAutoPeriod", "");
         }
     }
 
@@ -637,11 +666,17 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
+    public static void latinIME_performEditorAction(final int imeActionNext) {
+        if (UnsLogGroup.LATINIME_PERFORMEDITORACTION_ENABLED) {
+            logUnstructured("LatinIME_performEditorAction", String.valueOf(imeActionNext));
+        }
+    }
+
     public static void latinIME_pickApplicationSpecifiedCompletion(final int index,
             final CharSequence text, int x, int y) {
         if (UnsLogGroup.LATINIME_PICKAPPLICATIONSPECIFIEDCOMPLETION_ENABLED) {
             final String s = String.valueOf(index) + '\t' + text + '\t' + x + '\t' + y;
-            logUnstructured("latinIME_pickApplicationSpecifiedCompletion", s);
+            logUnstructured("LatinIME_pickApplicationSpecifiedCompletion", s);
         }
     }
 
@@ -649,7 +684,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final int index, CharSequence suggestion, int x, int y) {
         if (UnsLogGroup.LATINIME_PICKSUGGESTIONMANUALLY_ENABLED) {
             final String s = String.valueOf(index) + '\t' + suggestion + '\t' + x + '\t' + y;
-            logUnstructured("latinIME_pickSuggestionManually", s);
+            logUnstructured("LatinIME_pickSuggestionManually", s);
         }
     }
 
@@ -657,7 +692,31 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final CharSequence suggestion, int x, int y) {
         if (UnsLogGroup.LATINIME_PICKPUNCTUATIONSUGGESTION_ENABLED) {
             final String s = String.valueOf(index) + '\t' + suggestion + '\t' + x + '\t' + y;
-            logUnstructured("latinIME_pickPunctuationSuggestion", s);
+            logUnstructured("LatinIME_pickPunctuationSuggestion", s);
+        }
+    }
+
+    public static void latinIME_revertDoubleSpaceWhileInBatchEdit() {
+        if (UnsLogGroup.LATINIME_REVERTDOUBLESPACEWHILEINBATCHEDIT_ENABLED) {
+            logUnstructured("LatinIME_revertDoubleSpaceWhileInBatchEdit", "");
+        }
+    }
+
+    public static void latinIME_revertSwapPunctuation() {
+        if (UnsLogGroup.LATINIME_REVERTSWAPPUNCTUATION_ENABLED) {
+            logUnstructured("LatinIME_revertSwapPunctuation", "");
+        }
+    }
+
+    public static void latinIME_sendKeyCodePoint(final int code) {
+        if (UnsLogGroup.LATINIME_SENDKEYCODEPOINT_ENABLED) {
+            logUnstructured("LatinIME_sendKeyCodePoint", String.valueOf(code));
+        }
+    }
+
+    public static void latinIME_swapSwapperAndSpaceWhileInBatchEdit() {
+        if (UnsLogGroup.LATINIME_SWAPSWAPPERANDSPACEWHILEINBATCHEDIT_ENABLED) {
+            logUnstructured("latinIME_swapSwapperAndSpaceWhileInBatchEdit", "");
         }
     }
 
@@ -683,6 +742,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             if (action != MotionEvent.ACTION_MOVE) {
                 getInstance().logMotionEvent(action, eventTime, id, x, y, size, pressure);
             }
+        }
+    }
+
+    public static void latinIME_revertCommit(final String originallyTypedWord) {
+        if (UnsLogGroup.LATINIME_REVERTCOMMIT_ENABLED) {
+            logUnstructured("LatinIME_revertCommit", originallyTypedWord);
         }
     }
 
