@@ -61,9 +61,9 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Matig"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Aggressief"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Baie aggressief"</string>
-    <string name="bigram_suggestion" msgid="8169311444438922902">"Volgende woordvoorstelle"</string>
+    <string name="bigram_suggestion" msgid="8169311444438922902">"Volgendewoordvoorstelle"</string>
     <string name="bigram_suggestion_summary" msgid="6635527607242625713">"Gebruik vorige woord om voorstelle te verbeter"</string>
-    <string name="bigram_prediction" msgid="3216364899483135294">"Volgende woordvoorspelling"</string>
+    <string name="bigram_prediction" msgid="3216364899483135294">"Volgendewoordvoorspelling"</string>
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"Gebruik vorige woord ook vir voorspelling"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Gestoor"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Gaan"</string>
