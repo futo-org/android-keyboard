@@ -85,8 +85,8 @@ public class BinaryDictionary extends Dictionary {
     private native void closeNative(long dict);
     private native boolean isValidWordNative(long dict, char[] word, int wordLength);
     private native int getSuggestionsNative(long dict, long proximityInfo, int[] xCoordinates,
-            int[] yCoordinates, int[] inputCodes, int codesSize, boolean useFullEditDistance,
-            char[] outputChars, int[] scores);
+            int[] yCoordinates, int[] inputCodes, int codesSize, int[] prevWordForBigrams,
+            boolean useFullEditDistance, char[] outputChars, int[] scores);
     private native int getBigramsNative(long dict, char[] prevWord, int prevWordLength,
             int[] inputCodes, int inputCodesLength, char[] outputChars, int[] scores,
             int maxWordLength, int maxBigrams);
@@ -177,11 +177,14 @@ public class BinaryDictionary extends Dictionary {
         Arrays.fill(outputChars, (char) 0);
         Arrays.fill(scores, 0);
 
+        final int[] prevWordCodePointArray = null == prevWordForBigrams
+                ? null : StringUtils.toCodePointArray(prevWordForBigrams.toString());
+
         // TODO: pass the previous word to native code
         return getSuggestionsNative(
                 mNativeDict, proximityInfo.getNativeProximityInfo(),
                 codes.getXCoordinates(), codes.getYCoordinates(), mInputCodes, codesSize,
-                mUseFullEditDistance, outputChars, scores);
+                prevWordCodePointArray, mUseFullEditDistance, outputChars, scores);
     }
 
     public static double calcNormalizedScore(String before, String after, int score) {
