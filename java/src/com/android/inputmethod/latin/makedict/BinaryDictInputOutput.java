@@ -21,6 +21,7 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -269,6 +270,29 @@ public class BinaryDictInputOutput {
             }
             buffer[index++] = GROUP_CHARACTERS_TERMINATOR;
             return index - origin;
+        }
+
+        /**
+         * Writes a string with our character format to a ByteArrayOutputStream.
+         *
+         * This will also write the terminator byte.
+         *
+         * @param buffer the ByteArrayOutputStream to write to.
+         * @param word the string to write.
+         */
+        private static void writeString(ByteArrayOutputStream buffer, final String word) {
+            final int length = word.length();
+            for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
+                final int codePoint = word.codePointAt(i);
+                if (1 == getCharSize(codePoint)) {
+                    buffer.write((byte) codePoint);
+                } else {
+                    buffer.write((byte) (0xFF & (codePoint >> 16)));
+                    buffer.write((byte) (0xFF & (codePoint >> 8)));
+                    buffer.write((byte) (0xFF & codePoint));
+                }
+            }
+            buffer.write(GROUP_CHARACTERS_TERMINATOR);
         }
 
         /**
@@ -894,15 +918,11 @@ public class BinaryDictInputOutput {
             final FusionDictionary dict, final int version)
             throws IOException, UnsupportedFormatException {
 
-        // Addresses are limited to 3 bytes, so we'll just make a 16MB buffer. Since addresses
-        // can be relative to each node, the structure itself is not limited to 16MB at all, but
-        // I doubt this will ever be shot. If it is, deciding the order of the nodes becomes
-        // a quite complicated problem, because though the dictionary itself does not have a
-        // size limit, each node must still be within 16MB of all its children and parents.
-        // As long as this is ensured, the dictionary file may grow to any size.
-        // Anyway, to make a dictionary bigger than 16MB just increase the size of this buffer.
-        final byte[] buffer = new byte[1 << 24];
-        int index = 0;
+        // Addresses are limited to 3 bytes, but since addresses can be relative to each node, the
+        // structure itself is not limited to 16MB. However, if it is over 16MB deciding the order
+        // of the nodes becomes a quite complicated problem, because though the dictionary itself
+        // does not have a size limit, each node must still be within 16MB of all its children and
+        // parents. As long as this is ensured, the dictionary file may grow to any size.
 
         if (version < MINIMUM_SUPPORTED_VERSION || version > MAXIMUM_SUPPORTED_VERSION) {
             throw new UnsupportedFormatException("Requested file format version " + version
@@ -910,47 +930,54 @@ public class BinaryDictInputOutput {
                     + MINIMUM_SUPPORTED_VERSION + " through " + MAXIMUM_SUPPORTED_VERSION);
         }
 
+        ByteArrayOutputStream headerBuffer = new ByteArrayOutputStream(256);
+
         // The magic number in big-endian order.
         if (version >= FIRST_VERSION_WITH_HEADER_SIZE) {
             // Magic number for version 2+.
-            buffer[index++] = (byte) (0xFF & (VERSION_2_MAGIC_NUMBER >> 24));
-            buffer[index++] = (byte) (0xFF & (VERSION_2_MAGIC_NUMBER >> 16));
-            buffer[index++] = (byte) (0xFF & (VERSION_2_MAGIC_NUMBER >> 8));
-            buffer[index++] = (byte) (0xFF & VERSION_2_MAGIC_NUMBER);
+            headerBuffer.write((byte) (0xFF & (VERSION_2_MAGIC_NUMBER >> 24)));
+            headerBuffer.write((byte) (0xFF & (VERSION_2_MAGIC_NUMBER >> 16)));
+            headerBuffer.write((byte) (0xFF & (VERSION_2_MAGIC_NUMBER >> 8)));
+            headerBuffer.write((byte) (0xFF & VERSION_2_MAGIC_NUMBER));
             // Dictionary version.
-            buffer[index++] = (byte) (0xFF & (version >> 8));
-            buffer[index++] = (byte) (0xFF & version);
+            headerBuffer.write((byte) (0xFF & (version >> 8)));
+            headerBuffer.write((byte) (0xFF & version));
         } else {
             // Magic number for version 1.
-            buffer[index++] = (byte) (0xFF & (VERSION_1_MAGIC_NUMBER >> 8));
-            buffer[index++] = (byte) (0xFF & VERSION_1_MAGIC_NUMBER);
+            headerBuffer.write((byte) (0xFF & (VERSION_1_MAGIC_NUMBER >> 8)));
+            headerBuffer.write((byte) (0xFF & VERSION_1_MAGIC_NUMBER));
             // Dictionary version.
-            buffer[index++] = (byte) (0xFF & version);
+            headerBuffer.write((byte) (0xFF & version));
         }
         // Options flags
         final int options = makeOptionsValue(dict.mOptions);
-        buffer[index++] = (byte) (0xFF & (options >> 8));
-        buffer[index++] = (byte) (0xFF & options);
+        headerBuffer.write((byte) (0xFF & (options >> 8)));
+        headerBuffer.write((byte) (0xFF & options));
         if (version >= FIRST_VERSION_WITH_HEADER_SIZE) {
-            final int headerSizeOffset = index;
-            index += 4; // Size of the header size
-
+            final int headerSizeOffset = headerBuffer.size();
+            // Placeholder to be written later with header size.
+            for (int i = 0; i < 4; ++i) {
+                headerBuffer.write(0);
+            }
             // Write out the options.
             for (final String key : dict.mOptions.mAttributes.keySet()) {
                 final String value = dict.mOptions.mAttributes.get(key);
-                index += CharEncoding.writeString(buffer, index, key);
-                index += CharEncoding.writeString(buffer, index, value);
+                CharEncoding.writeString(headerBuffer, key);
+                CharEncoding.writeString(headerBuffer, value);
             }
-
+            final int size = headerBuffer.size();
+            final byte[] bytes = headerBuffer.toByteArray();
             // Write out the header size.
-            buffer[headerSizeOffset] = (byte) (0xFF & (index >> 24));
-            buffer[headerSizeOffset + 1] = (byte) (0xFF & (index >> 16));
-            buffer[headerSizeOffset + 2] = (byte) (0xFF & (index >> 8));
-            buffer[headerSizeOffset + 3] = (byte) (0xFF & (index >> 0));
+            bytes[headerSizeOffset] = (byte) (0xFF & (size >> 24));
+            bytes[headerSizeOffset + 1] = (byte) (0xFF & (size >> 16));
+            bytes[headerSizeOffset + 2] = (byte) (0xFF & (size >> 8));
+            bytes[headerSizeOffset + 3] = (byte) (0xFF & (size >> 0));
+            destination.write(bytes);
+        } else {
+            headerBuffer.writeTo(destination);
         }
 
-        destination.write(buffer, 0, index);
-        index = 0;
+        headerBuffer.close();
 
         // Leave the choice of the optimal node order to the flattenTree function.
         MakedictLog.i("Flattening the tree...");
@@ -960,6 +987,12 @@ public class BinaryDictInputOutput {
         computeAddresses(dict, flatNodes);
         MakedictLog.i("Checking array...");
         checkFlatNodeArray(flatNodes);
+
+        // Create a buffer that matches the final dictionary size.
+        final Node lastNode = flatNodes.get(flatNodes.size() - 1);
+        final int bufferSize =(lastNode.mCachedAddress + lastNode.mCachedSize);
+        final byte[] buffer = new byte[bufferSize];
+        int index = 0;
 
         MakedictLog.i("Writing file...");
         int dataEndOffset = 0;
