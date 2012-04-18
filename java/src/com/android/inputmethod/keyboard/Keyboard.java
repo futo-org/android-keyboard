@@ -197,14 +197,6 @@ public class Keyboard {
         return null;
     }
 
-    // TODO: Remove this method.
-    public boolean isShiftedOrShiftLocked() {
-        // Alphabet mode have unshifted, manual shifted, automatic shifted, shift locked, and
-        // shift lock shifted element. So that unshifed element is the only one that is NOT in
-        // shifted or shift locked state.
-        return mId.isAlphabetKeyboard() && mId.mElementId != KeyboardId.ELEMENT_ALPHABET;
-    }
-
     public static boolean isLetterCode(int code) {
         return code >= MINIMUM_LETTER_CODE;
     }
