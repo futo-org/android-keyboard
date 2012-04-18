@@ -441,7 +441,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         loadSettings();
 
-        SubtypeUtils.setAdditionalInputMethodSubtypes(
+        ImfUtils.setAdditionalInputMethodSubtypes(
                 this, mSettingsValues.getPrefefinedAdditionalSubtypes());
 
         // TODO: remove the following when it's not needed by updateCorrectionMode() any more
@@ -1134,7 +1134,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (isShowingOptionDialog()) return false;
         switch (requestCode) {
         case CODE_SHOW_INPUT_METHOD_PICKER:
-            if (SubtypeUtils.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */)) {
+            if (ImfUtils.hasMultipleEnabledIMEsOrSubtypes(
+                    this, true /* include aux subtypes */)) {
                 mImm.showInputMethodPicker();
                 return true;
             }
@@ -1169,7 +1170,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final IBinder token = getWindow().getWindow().getAttributes().token;
         if (mShouldSwitchToLastSubtype) {
             final InputMethodSubtype lastSubtype = mImm.getLastInputMethodSubtype();
-            final boolean lastSubtypeBelongsToThisIme = SubtypeUtils.checkIfSubtypeBelongsToThisIme(
+            final boolean lastSubtypeBelongsToThisIme = ImfUtils.checkIfSubtypeBelongsToThisIme(
                     this, lastSubtype);
             if ((includesOtherImes || lastSubtypeBelongsToThisIme)
                     && mImm.switchToLastInputMethod(token)) {
@@ -2299,6 +2300,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 getString(R.string.language_selection_title),
                 getString(R.string.english_ime_settings),
         };
+        final Context context = this;
         final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface di, int position) {
@@ -2306,7 +2308,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 switch (position) {
                 case 0:
                     Intent intent = CompatUtils.getInputLanguageSelectionIntent(
-                            SubtypeUtils.getInputMethodId(getPackageName()),
+                            ImfUtils.getInputMethodIdOfThisIme(context),
                             Intent.FLAG_ACTIVITY_NEW_TASK
                             | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                             | Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -42,13 +42,13 @@ import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
+import com.android.inputmethod.latin.ImfUtils;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.ResearchLogger;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.SubtypeLocale;
-import com.android.inputmethod.latin.SubtypeUtils;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.Utils.UsabilityStudyLogUtils;
 import com.android.inputmethod.latin.define.ProductionFlag;
@@ -877,13 +877,14 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
             // Whether space key needs to show the "..." popup hint for special purposes
             if (mIsSpacebarTriggeringPopupByLongPress
-                    && SubtypeUtils.hasMultipleEnabledIMEsOrSubtypes(
-                            true /* include aux subtypes */)) {
+                    && ImfUtils.hasMultipleEnabledIMEsOrSubtypes(
+                            getContext(), true /* include aux subtypes */)) {
                 drawKeyPopupHint(key, canvas, paint, params);
             }
         } else if (key.mCode == Keyboard.CODE_LANGUAGE_SWITCH) {
             super.onDrawKeyTopVisuals(key, canvas, paint, params);
-            if (SubtypeUtils.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */)) {
+            if (ImfUtils.hasMultipleEnabledIMEsOrSubtypes(
+                    getContext(), true /* include aux subtypes */)) {
                 drawKeyPopupHint(key, canvas, paint, params);
             }
         } else {

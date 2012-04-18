@@ -114,17 +114,17 @@ public class SubtypeLocaleTests extends AndroidTestCase {
 
     public void testSampleSubtypes() {
         final Context context = getContext();
-        final InputMethodSubtype EN_US = SubtypeUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
+        final InputMethodSubtype EN_US = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
                 context, Locale.US.toString(), AdditionalSubtype.QWERTY);
-        final InputMethodSubtype EN_GB = SubtypeUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
+        final InputMethodSubtype EN_GB = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
                 context, Locale.UK.toString(), AdditionalSubtype.QWERTY);
-        final InputMethodSubtype FR = SubtypeUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
+        final InputMethodSubtype FR = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
                 context, Locale.FRENCH.toString(), AdditionalSubtype.AZERTY);
-        final InputMethodSubtype FR_CA = SubtypeUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
+        final InputMethodSubtype FR_CA = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
                 context, Locale.CANADA_FRENCH.toString(), AdditionalSubtype.QWERTY);
-        final InputMethodSubtype DE = SubtypeUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
+        final InputMethodSubtype DE = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
                 context, Locale.GERMAN.toString(), AdditionalSubtype.QWERTZ);
-        final InputMethodSubtype ZZ = SubtypeUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
+        final InputMethodSubtype ZZ = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
                 context, SubtypeLocale.NO_LANGUAGE, AdditionalSubtype.QWERTY);
 
         assertFalse(AdditionalSubtype.isAdditionalSubtype(EN_US));

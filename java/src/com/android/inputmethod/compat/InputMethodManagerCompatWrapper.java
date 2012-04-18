@@ -18,14 +18,12 @@ package com.android.inputmethod.compat;
 
 import android.content.Context;
 import android.os.IBinder;
-import android.util.Log;
-import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.latin.ImfUtils;
+
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
 
 // TODO: Override this class with the concrete implementation if we need to take care of the
 // performance.
@@ -44,39 +42,18 @@ public class InputMethodManagerCompatWrapper {
     }
 
     public static InputMethodManagerCompatWrapper getInstance() {
-        if (sInstance.mImm == null)
-            Log.w(TAG, "getInstance() is called before initialization");
+        if (sInstance.mImm == null) {
+            throw new RuntimeException(TAG + ".getInstance() is called before initialization");
+        }
         return sInstance;
     }
 
     public static void init(Context context) {
-        sInstance.mImm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
-    }
-
-    public void setAdditionalInputMethodSubtypes(String imiId, InputMethodSubtype[] subtypes) {
-        mImm.setAdditionalInputMethodSubtypes(imiId, subtypes);
-    }
-
-    public InputMethodSubtype getCurrentInputMethodSubtype() {
-        return mImm.getCurrentInputMethodSubtype();
+        sInstance.mImm = ImfUtils.getInputMethodManager(context);
     }
 
     public InputMethodSubtype getLastInputMethodSubtype() {
         return mImm.getLastInputMethodSubtype();
-    }
-
-    public List<InputMethodSubtype> getEnabledInputMethodSubtypeList(
-            InputMethodInfo imi, boolean allowsImplicitlySelectedSubtypes) {
-        return mImm.getEnabledInputMethodSubtypeList(imi, allowsImplicitlySelectedSubtypes);
-    }
-
-    public Map<InputMethodInfo, List<InputMethodSubtype>> getShortcutInputMethodsAndSubtypes() {
-        return mImm.getShortcutInputMethodsAndSubtypes();
-    }
-
-    // We don't call this method when we switch between subtypes within this IME.
-    public void setInputMethodAndSubtype(IBinder token, String id, InputMethodSubtype subtype) {
-        mImm.setInputMethodAndSubtype(token, id, subtype);
     }
 
     public boolean switchToLastInputMethod(IBinder token) {
@@ -88,18 +65,7 @@ public class InputMethodManagerCompatWrapper {
                 onlyCurrentIme);
     }
 
-    public List<InputMethodInfo> getInputMethodList() {
-        if (mImm == null) return null;
-        return mImm.getInputMethodList();
-    }
-
-    public List<InputMethodInfo> getEnabledInputMethodList() {
-        if (mImm == null) return null;
-        return mImm.getEnabledInputMethodList();
-    }
-
     public void showInputMethodPicker() {
-        if (mImm == null) return;
         mImm.showInputMethodPicker();
     }
 }

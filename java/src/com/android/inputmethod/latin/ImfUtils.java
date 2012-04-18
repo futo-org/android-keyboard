@@ -18,24 +18,52 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.view.inputmethod.InputMethodInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
-
-import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 
 import java.util.Collections;
 import java.util.List;
 
-public class SubtypeUtils {
-    private SubtypeUtils() {
+/**
+ * Utility class for Input Method Framework
+ */
+public class ImfUtils {
+    private ImfUtils() {
         // This utility class is not publicly instantiable.
     }
 
-    // TODO: Cache my InputMethodInfo and/or InputMethodSubtype list.
-    public static boolean checkIfSubtypeBelongsToThisIme(Context context, InputMethodSubtype ims) {
-        final InputMethodManagerCompatWrapper imm = InputMethodManagerCompatWrapper.getInstance();
-        if (imm == null) return false;
+    private static InputMethodManager sInputMethodManager;
 
-        final InputMethodInfo myImi = getInputMethodInfo(context.getPackageName());
+    public static InputMethodManager getInputMethodManager(Context context) {
+        if (sInputMethodManager == null) {
+            sInputMethodManager = (InputMethodManager)context.getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+        }
+        return sInputMethodManager;
+    }
+
+    private static InputMethodInfo sInputMethodInfoOfThisIme;
+
+    public static InputMethodInfo getInputMethodInfoOfThisIme(Context context) {
+        if (sInputMethodInfoOfThisIme == null) {
+            final InputMethodManager imm = getInputMethodManager(context);
+            final String packageName = context.getPackageName();
+            for (final InputMethodInfo imi : imm.getInputMethodList()) {
+                if (imi.getPackageName().equals(packageName))
+                    return imi;
+            }
+            throw new RuntimeException("Can not find input method id for " + packageName);
+        }
+        return sInputMethodInfoOfThisIme;
+    }
+
+    public static String getInputMethodIdOfThisIme(Context context) {
+        return getInputMethodInfoOfThisIme(context).getId();
+    }
+
+    public static boolean checkIfSubtypeBelongsToThisIme(Context context, InputMethodSubtype ims) {
+        final InputMethodInfo myImi = getInputMethodInfoOfThisIme(context);
+        final InputMethodManager imm = getInputMethodManager(context);
         final List<InputMethodSubtype> subtypes = imm.getEnabledInputMethodSubtypeList(myImi, true);
         for (final InputMethodSubtype subtype : subtypes) {
             if (subtype.equals(ims)) {
@@ -45,26 +73,23 @@ public class SubtypeUtils {
         return false;
     }
 
-    public static boolean hasMultipleEnabledIMEsOrSubtypes(
+    public static boolean hasMultipleEnabledIMEsOrSubtypes(Context context,
             final boolean shouldIncludeAuxiliarySubtypes) {
-        final InputMethodManagerCompatWrapper imm = InputMethodManagerCompatWrapper.getInstance();
-        if (imm == null) return false;
-
+        final InputMethodManager imm = getInputMethodManager(context);
         final List<InputMethodInfo> enabledImis = imm.getEnabledInputMethodList();
-        return hasMultipleEnabledSubtypes(shouldIncludeAuxiliarySubtypes, enabledImis);
+        return hasMultipleEnabledSubtypes(context, shouldIncludeAuxiliarySubtypes, enabledImis);
     }
 
     public static boolean hasMultipleEnabledSubtypesInThisIme(Context context,
             final boolean shouldIncludeAuxiliarySubtypes) {
-        final InputMethodInfo myImi = getInputMethodInfo(context.getPackageName());
+        final InputMethodInfo myImi = getInputMethodInfoOfThisIme(context);
         final List<InputMethodInfo> imiList = Collections.singletonList(myImi);
-        return hasMultipleEnabledSubtypes(shouldIncludeAuxiliarySubtypes, imiList);
+        return hasMultipleEnabledSubtypes(context, shouldIncludeAuxiliarySubtypes, imiList);
     }
 
-    private static boolean hasMultipleEnabledSubtypes(final boolean shouldIncludeAuxiliarySubtypes,
-            List<InputMethodInfo> imiList) {
-        final InputMethodManagerCompatWrapper imm = InputMethodManagerCompatWrapper.getInstance();
-        if (imm == null) return false;
+    private static boolean hasMultipleEnabledSubtypes(Context context,
+            final boolean shouldIncludeAuxiliarySubtypes, List<InputMethodInfo> imiList) {
+        final InputMethodManager imm = getInputMethodManager(context);
 
         // Number of the filtered IMEs
         int filteredImisCount = 0;
@@ -113,26 +138,9 @@ public class SubtypeUtils {
         return keyboardCount > 1;
     }
 
-    public static String getInputMethodId(String packageName) {
-        return getInputMethodInfo(packageName).getId();
-    }
-
-    public static InputMethodInfo getInputMethodInfo(String packageName) {
-        final InputMethodManagerCompatWrapper imm = InputMethodManagerCompatWrapper.getInstance();
-        if (imm == null) {
-            throw new RuntimeException("Input method manager not found");
-        }
-
-        for (final InputMethodInfo imi : imm.getInputMethodList()) {
-            if (imi.getPackageName().equals(packageName))
-                return imi;
-        }
-        throw new RuntimeException("Can not find input method id for " + packageName);
-    }
-
     public static InputMethodSubtype findSubtypeByLocaleAndKeyboardLayoutSet(
             Context context, String localeString, String keyboardLayoutSetName) {
-        final InputMethodInfo imi = getInputMethodInfo(context.getPackageName());
+        final InputMethodInfo imi = getInputMethodInfoOfThisIme(context);
         final int count = imi.getSubtypeCount();
         for (int i = 0; i < count; i++) {
             final InputMethodSubtype subtype = imi.getSubtypeAt(i);
@@ -148,11 +156,8 @@ public class SubtypeUtils {
 
     public static void setAdditionalInputMethodSubtypes(Context context,
             InputMethodSubtype[] subtypes) {
-        final InputMethodManagerCompatWrapper imm = InputMethodManagerCompatWrapper.getInstance();
-        if (imm == null) {
-            throw new RuntimeException("Input method manager not found");
-        }
-        final String imiId = getInputMethodId(context.getPackageName());
+        final InputMethodManager imm = getInputMethodManager(context);
+        final String imiId = getInputMethodIdOfThisIme(context);
         imm.setAdditionalInputMethodSubtypes(imiId, subtypes);
     }
 }

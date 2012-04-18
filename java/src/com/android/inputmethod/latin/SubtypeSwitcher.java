@@ -28,9 +28,9 @@ import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.inputmethod.InputMethodInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ public class SubtypeSwitcher {
 
     private static final SubtypeSwitcher sInstance = new SubtypeSwitcher();
     private /* final */ LatinIME mService;
-    private /* final */ InputMethodManagerCompatWrapper mImm;
+    private /* final */ InputMethodManager mImm;
     private /* final */ Resources mResources;
     private /* final */ ConnectivityManager mConnectivityManager;
     private final ArrayList<InputMethodSubtype> mEnabledKeyboardSubtypesOfCurrentInputMethod =
@@ -94,7 +94,7 @@ public class SubtypeSwitcher {
     private void initialize(LatinIME service) {
         mService = service;
         mResources = service.getResources();
-        mImm = InputMethodManagerCompatWrapper.getInstance();
+        mImm = ImfUtils.getInputMethodManager(service);
         mConnectivityManager = (ConnectivityManager) service.getSystemService(
                 Context.CONNECTIVITY_SERVICE);
         mEnabledKeyboardSubtypesOfCurrentInputMethod.clear();
@@ -104,7 +104,7 @@ public class SubtypeSwitcher {
         mInputLocaleStr = null;
         mCurrentSubtype = mImm.getCurrentInputMethodSubtype();
         mAllEnabledSubtypesOfCurrentInputMethod = null;
-        mNoLanguageSubtype = SubtypeUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
+        mNoLanguageSubtype = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
                 service, SubtypeLocale.NO_LANGUAGE, AdditionalSubtype.QWERTY);
 
         final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
@@ -277,7 +277,7 @@ public class SubtypeSwitcher {
         if (token == null) {
             return;
         }
-        final InputMethodManagerCompatWrapper imm = mImm;
+        final InputMethodManager imm = mImm;
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {

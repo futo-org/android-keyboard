@@ -306,9 +306,10 @@ public class SettingsValues {
             return false;
         }
         if (mIncludesOtherImesInLanguageSwitchList) {
-            return SubtypeUtils.hasMultipleEnabledIMEsOrSubtypes(/* include aux subtypes */false);
+            return ImfUtils.hasMultipleEnabledIMEsOrSubtypes(
+                    context, /* include aux subtypes */false);
         } else {
-            return SubtypeUtils.hasMultipleEnabledSubtypesInThisIme(
+            return ImfUtils.hasMultipleEnabledSubtypesInThisIme(
                     context, /* include aux subtypes */false);
         }
     }
