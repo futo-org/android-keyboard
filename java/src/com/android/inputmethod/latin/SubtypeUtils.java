@@ -24,7 +24,6 @@ import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 public class SubtypeUtils {
     private SubtypeUtils() {
@@ -132,22 +131,22 @@ public class SubtypeUtils {
     }
 
     public static InputMethodSubtype findSubtypeByLocaleAndKeyboardLayoutSet(
-            Context context, Locale locale, String keyoardLayoutSet) {
-        final String localeString = locale.toString();
+            Context context, String localeString, String keyboardLayoutSetName) {
         final InputMethodInfo imi = getInputMethodInfo(context.getPackageName());
         final int count = imi.getSubtypeCount();
         for (int i = 0; i < count; i++) {
             final InputMethodSubtype subtype = imi.getSubtypeAt(i);
-            final String layout = SubtypeLocale.getKeyboardLayoutSetName(subtype);
-            if (localeString.equals(subtype.getLocale()) && keyoardLayoutSet.equals(layout)) {
+            final String layoutName = SubtypeLocale.getKeyboardLayoutSetName(subtype);
+            if (localeString.equals(subtype.getLocale())
+                    && keyboardLayoutSetName.equals(layoutName)) {
                 return subtype;
             }
         }
         throw new RuntimeException("Can't find subtype for locale " + localeString
-                + " and keyboard layout " + keyoardLayoutSet);
+                + " and keyboard layout " + keyboardLayoutSetName);
     }
 
-    public static void setAditionalInputMethodSubtypes(Context context,
+    public static void setAdditionalInputMethodSubtypes(Context context,
             InputMethodSubtype[] subtypes) {
         final InputMethodManagerCompatWrapper imm = InputMethodManagerCompatWrapper.getInstance();
         if (imm == null) {

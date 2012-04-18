@@ -115,17 +115,17 @@ public class SubtypeLocaleTests extends AndroidTestCase {
     public void testSampleSubtypes() {
         final Context context = getContext();
         final InputMethodSubtype EN_US = SubtypeUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                context, Locale.US, AdditionalSubtype.QWERTY);
+                context, Locale.US.toString(), AdditionalSubtype.QWERTY);
         final InputMethodSubtype EN_GB = SubtypeUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                context, Locale.UK, AdditionalSubtype.QWERTY);
+                context, Locale.UK.toString(), AdditionalSubtype.QWERTY);
         final InputMethodSubtype FR = SubtypeUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                context, Locale.FRENCH, AdditionalSubtype.AZERTY);
+                context, Locale.FRENCH.toString(), AdditionalSubtype.AZERTY);
         final InputMethodSubtype FR_CA = SubtypeUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                context, Locale.CANADA_FRENCH, AdditionalSubtype.QWERTY);
+                context, Locale.CANADA_FRENCH.toString(), AdditionalSubtype.QWERTY);
         final InputMethodSubtype DE = SubtypeUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                context, Locale.GERMAN, AdditionalSubtype.QWERTZ);
+                context, Locale.GERMAN.toString(), AdditionalSubtype.QWERTZ);
         final InputMethodSubtype ZZ = SubtypeUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                context, SubtypeLocale.LOCALE_NO_LANGUAGE, AdditionalSubtype.QWERTY);
+                context, SubtypeLocale.NO_LANGUAGE, AdditionalSubtype.QWERTY);
 
         assertFalse(AdditionalSubtype.isAdditionalSubtype(EN_US));
         assertFalse(AdditionalSubtype.isAdditionalSubtype(EN_GB));
@@ -164,14 +164,14 @@ public class SubtypeLocaleTests extends AndroidTestCase {
     }
 
     public void testAdditionalSubtype() {
-        final InputMethodSubtype DE_QWERTY = AdditionalSubtype.createAddtionalSubtype(
-                Locale.GERMAN, AdditionalSubtype.QWERTY);
-        final InputMethodSubtype FR_QWERTZ = AdditionalSubtype.createAddtionalSubtype(
-                Locale.FRENCH, AdditionalSubtype.QWERTZ);
-        final InputMethodSubtype EN_AZERTY = AdditionalSubtype.createAddtionalSubtype(
-                Locale.ENGLISH, AdditionalSubtype.AZERTY);
-        final InputMethodSubtype ZZ_AZERTY = AdditionalSubtype.createAddtionalSubtype(
-                SubtypeLocale.LOCALE_NO_LANGUAGE, AdditionalSubtype.AZERTY);
+        final InputMethodSubtype DE_QWERTY = AdditionalSubtype.createAdditionalSubtype(
+                Locale.GERMAN.toString(), AdditionalSubtype.QWERTY);
+        final InputMethodSubtype FR_QWERTZ = AdditionalSubtype.createAdditionalSubtype(
+                Locale.FRENCH.toString(), AdditionalSubtype.QWERTZ);
+        final InputMethodSubtype EN_AZERTY = AdditionalSubtype.createAdditionalSubtype(
+                Locale.ENGLISH.toString(), AdditionalSubtype.AZERTY);
+        final InputMethodSubtype ZZ_AZERTY = AdditionalSubtype.createAdditionalSubtype(
+                SubtypeLocale.NO_LANGUAGE, AdditionalSubtype.AZERTY);
 
         assertTrue(AdditionalSubtype.isAdditionalSubtype(FR_QWERTZ));
         assertTrue(AdditionalSubtype.isAdditionalSubtype(DE_QWERTY));

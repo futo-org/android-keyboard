@@ -19,7 +19,6 @@ package com.android.inputmethod.latin;
 import android.view.inputmethod.InputMethodSubtype;
 
 import java.util.HashMap;
-import java.util.Locale;
 
 public class AdditionalSubtype {
     public static final String QWERTY = "qwerty";
@@ -43,14 +42,14 @@ public class AdditionalSubtype {
         return subtype.containsExtraValueKey(SUBTYPE_EXTRA_VALUE_IS_ADDITIONAL_SUBTYPE);
     }
 
-    public static InputMethodSubtype createAddtionalSubtype(
-            Locale locale, String keyboardLayoutSet) {
+    public static InputMethodSubtype createAdditionalSubtype(
+            String localeString, String keyboardLayoutSet) {
         final String extraValue = String.format(
                 "%s=%s,%s", LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LAYOUT_SET, keyboardLayoutSet,
                 SUBTYPE_EXTRA_VALUE_IS_ADDITIONAL_SUBTYPE);
         Integer nameId = sKeyboardLayoutToNameIdsMap.get(keyboardLayoutSet);
         if (nameId == null) nameId = R.string.subtype_generic;
         return new InputMethodSubtype(nameId, R.drawable.ic_subtype_keyboard,
-                locale.toString(), SUBTYPE_MODE_KEYBOARD, extraValue, false, false);
+                localeString, SUBTYPE_MODE_KEYBOARD, extraValue, false, false);
     }
 }

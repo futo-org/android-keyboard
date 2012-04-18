@@ -275,7 +275,7 @@ public class Key {
             additionalMoreKeys = style.getStringArray(
                     keyAttr, R.styleable.Keyboard_Key_additionalMoreKeys);
         }
-        moreKeys = KeySpecParser.insertAddtionalMoreKeys(moreKeys, additionalMoreKeys);
+        moreKeys = KeySpecParser.insertAdditionalMoreKeys(moreKeys, additionalMoreKeys);
         if (moreKeys != null) {
             actionFlags |= ACTION_FLAGS_ENABLE_LONG_PRESS;
             mMoreKeys = new MoreKeySpec[moreKeys.length];

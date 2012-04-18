@@ -105,7 +105,7 @@ public class SubtypeSwitcher {
         mCurrentSubtype = mImm.getCurrentInputMethodSubtype();
         mAllEnabledSubtypesOfCurrentInputMethod = null;
         mNoLanguageSubtype = SubtypeUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                service, SubtypeLocale.LOCALE_NO_LANGUAGE, AdditionalSubtype.QWERTY);
+                service, SubtypeLocale.NO_LANGUAGE, AdditionalSubtype.QWERTY);
 
         final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
         mIsNetworkConnected = (info != null && info.isConnected());
@@ -333,7 +333,7 @@ public class SubtypeSwitcher {
     }
 
     public boolean needsToDisplayLanguage(Locale keyboardLocale) {
-        if (keyboardLocale.equals(SubtypeLocale.LOCALE_NO_LANGUAGE)) {
+        if (keyboardLocale.toString().equals(SubtypeLocale.NO_LANGUAGE)) {
             return true;
         }
         if (!keyboardLocale.equals(mInputLocale)) {

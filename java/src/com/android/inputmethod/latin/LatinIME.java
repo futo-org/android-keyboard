@@ -441,7 +441,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         loadSettings();
 
-        SubtypeUtils.setAditionalInputMethodSubtypes(
+        SubtypeUtils.setAdditionalInputMethodSubtypes(
                 this, mSettingsValues.getPrefefinedAdditionalSubtypes());
 
         // TODO: remove the following when it's not needed by updateCorrectionMode() any more

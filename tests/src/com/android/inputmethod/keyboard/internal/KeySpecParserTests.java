@@ -253,7 +253,7 @@ public class KeySpecParserTests extends AndroidTestCase {
 
     private static void assertMoreKeys(String message, String[] moreKeys,
             String[] additionalMoreKeys, String[] expected) {
-        final String[] actual = KeySpecParser.insertAddtionalMoreKeys(
+        final String[] actual = KeySpecParser.insertAdditionalMoreKeys(
                 moreKeys, additionalMoreKeys);
         if (expected == null && actual == null) {
             return;
