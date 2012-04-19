@@ -669,12 +669,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.latinIME_onStartInputViewInternal(editorInfo);
         }
-        if (StringUtils.inPrivateImeOptions(null, IME_OPTION_NO_MICROPHONE_COMPAT, editorInfo)) {
+        if (InputAttributes.inPrivateImeOptions(
+                null, IME_OPTION_NO_MICROPHONE_COMPAT, editorInfo)) {
             Log.w(TAG, "Deprecated private IME option specified: "
                     + editorInfo.privateImeOptions);
             Log.w(TAG, "Use " + getPackageName() + "." + IME_OPTION_NO_MICROPHONE + " instead");
         }
-        if (StringUtils.inPrivateImeOptions(getPackageName(), IME_OPTION_FORCE_ASCII, editorInfo)) {
+        if (InputAttributes.inPrivateImeOptions(
+                getPackageName(), IME_OPTION_FORCE_ASCII, editorInfo)) {
             Log.w(TAG, "Deprecated private IME option specified: "
                     + editorInfo.privateImeOptions);
             Log.w(TAG, "Use EditorInfo.IME_FLAG_FORCE_ASCII flag instead");
@@ -1077,7 +1079,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (ic == null) return false;
         final CharSequence lastThree = ic.getTextBeforeCursor(3, 0);
         if (lastThree != null && lastThree.length() == 3
-                && StringUtils.canBeFollowedByPeriod(lastThree.charAt(0))
+                && canBeFollowedByPeriod(lastThree.charAt(0))
                 && lastThree.charAt(1) == Keyboard.CODE_SPACE
                 && lastThree.charAt(2) == Keyboard.CODE_SPACE
                 && mHandler.isAcceptingDoubleSpaces()) {
@@ -1091,6 +1093,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return true;
         }
         return false;
+    }
+
+    private static boolean canBeFollowedByPeriod(final int codePoint) {
+        // TODO: Check again whether there really ain't a better way to check this.
+        // TODO: This should probably be language-dependant...
+        return Character.isLetterOrDigit(codePoint)
+                || codePoint == Keyboard.CODE_SINGLE_QUOTE
+                || codePoint == Keyboard.CODE_DOUBLE_QUOTE
+                || codePoint == Keyboard.CODE_CLOSING_PARENTHESIS
+                || codePoint == Keyboard.CODE_CLOSING_SQUARE_BRACKET
+                || codePoint == Keyboard.CODE_CLOSING_CURLY_BRACKET
+                || codePoint == Keyboard.CODE_CLOSING_ANGLE_BRACKET;
     }
 
     // "ic" may be null

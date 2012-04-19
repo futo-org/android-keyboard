@@ -29,11 +29,11 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet.Params.ElementParams;
+import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.InputTypeUtils;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SubtypeLocale;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.XmlParseUtils;
@@ -229,7 +229,7 @@ public class KeyboardLayoutSet {
 
             params.mMode = getKeyboardMode(editorInfo);
             params.mEditorInfo = (editorInfo != null) ? editorInfo : EMPTY_EDITOR_INFO;
-            params.mNoSettingsKey = StringUtils.inPrivateImeOptions(
+            params.mNoSettingsKey = InputAttributes.inPrivateImeOptions(
                     mPackageName, LatinIME.IME_OPTION_NO_SETTINGS_KEY, mEditorInfo);
         }
 
@@ -242,7 +242,7 @@ public class KeyboardLayoutSet {
         public Builder setSubtype(InputMethodSubtype subtype) {
             final boolean asciiCapable = subtype.containsExtraValueKey(
                     LatinIME.SUBTYPE_EXTRA_VALUE_ASCII_CAPABLE);
-            final boolean deprecatedForceAscii = StringUtils.inPrivateImeOptions(
+            final boolean deprecatedForceAscii = InputAttributes.inPrivateImeOptions(
                     mPackageName, LatinIME.IME_OPTION_FORCE_ASCII, mEditorInfo);
             final boolean forceAscii = EditorInfoCompatUtils.hasFlagForceAscii(
                     mParams.mEditorInfo.imeOptions)
@@ -259,9 +259,9 @@ public class KeyboardLayoutSet {
         public Builder setOptions(boolean voiceKeyEnabled, boolean voiceKeyOnMain,
                 boolean languageSwitchKeyEnabled) {
             @SuppressWarnings("deprecation")
-            final boolean deprecatedNoMicrophone = StringUtils.inPrivateImeOptions(
+            final boolean deprecatedNoMicrophone = InputAttributes.inPrivateImeOptions(
                     null, LatinIME.IME_OPTION_NO_MICROPHONE_COMPAT, mEditorInfo);
-            final boolean noMicrophone = StringUtils.inPrivateImeOptions(
+            final boolean noMicrophone = InputAttributes.inPrivateImeOptions(
                     mPackageName, LatinIME.IME_OPTION_NO_MICROPHONE, mEditorInfo)
                     || deprecatedNoMicrophone;
             mParams.mVoiceKeyEnabled = voiceKeyEnabled && !noMicrophone;

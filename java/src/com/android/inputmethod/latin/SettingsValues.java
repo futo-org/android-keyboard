@@ -150,7 +150,7 @@ public class SettingsValues {
         mVoiceKeyOnMain = mVoiceMode != null && mVoiceMode.equals(voiceModeMain);
 
         mAdditionalSubtypes = AdditionalSubtype.createAdditionalSubtypesArray(
-                getCsvAdditionalSubtypes(prefs, res));
+                getPrefAdditionalSubtypes(prefs, res));
     }
 
     // Helper functions to create member values.
@@ -315,10 +315,10 @@ public class SettingsValues {
         return mAdditionalSubtypes;
     }
 
-    public static String getCsvAdditionalSubtypes(final SharedPreferences prefs,
+    public static String getPrefAdditionalSubtypes(final SharedPreferences prefs,
             final Resources res) {
-        final String csvPredefinedSubtypes = res.getString(R.string.predefined_subtypes, "");
-        return prefs.getString(Settings.PREF_CUSTOM_INPUT_STYLES, csvPredefinedSubtypes);
+        final String prefSubtypes = res.getString(R.string.predefined_subtypes, "");
+        return prefs.getString(Settings.PREF_CUSTOM_INPUT_STYLES, prefSubtypes);
     }
 
     // Accessed from the settings interface, hence public

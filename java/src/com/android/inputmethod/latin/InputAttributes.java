@@ -162,4 +162,12 @@ public class InputAttributes {
                 + "\n mIsSettingsSuggestionStripOn = " + mIsSettingsSuggestionStripOn
                 + "\n mApplicationSpecifiedCompletionOn = " + mApplicationSpecifiedCompletionOn;
     }
+
+    public static boolean inPrivateImeOptions(String packageName, String key,
+            EditorInfo editorInfo) {
+        if (editorInfo == null) return false;
+        final String findingKey = (packageName != null) ? packageName + "." + key
+                : key;
+        return StringUtils.containsInCsv(findingKey, editorInfo.privateImeOptions);
+    }
 }

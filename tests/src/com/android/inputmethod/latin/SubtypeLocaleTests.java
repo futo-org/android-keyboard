@@ -165,13 +165,13 @@ public class SubtypeLocaleTests extends AndroidTestCase {
 
     public void testAdditionalSubtype() {
         final InputMethodSubtype DE_QWERTY = AdditionalSubtype.createAdditionalSubtype(
-                Locale.GERMAN.toString(), AdditionalSubtype.QWERTY);
+                Locale.GERMAN.toString(), AdditionalSubtype.QWERTY, null);
         final InputMethodSubtype FR_QWERTZ = AdditionalSubtype.createAdditionalSubtype(
-                Locale.FRENCH.toString(), AdditionalSubtype.QWERTZ);
+                Locale.FRENCH.toString(), AdditionalSubtype.QWERTZ, null);
         final InputMethodSubtype EN_AZERTY = AdditionalSubtype.createAdditionalSubtype(
-                Locale.ENGLISH.toString(), AdditionalSubtype.AZERTY);
+                Locale.ENGLISH.toString(), AdditionalSubtype.AZERTY, null);
         final InputMethodSubtype ZZ_AZERTY = AdditionalSubtype.createAdditionalSubtype(
-                SubtypeLocale.NO_LANGUAGE, AdditionalSubtype.AZERTY);
+                SubtypeLocale.NO_LANGUAGE, AdditionalSubtype.AZERTY, null);
 
         assertTrue(AdditionalSubtype.isAdditionalSubtype(FR_QWERTZ));
         assertTrue(AdditionalSubtype.isAdditionalSubtype(DE_QWERTY));

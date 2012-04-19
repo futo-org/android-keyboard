@@ -17,9 +17,6 @@
 package com.android.inputmethod.latin;
 
 import android.text.TextUtils;
-import android.view.inputmethod.EditorInfo;
-
-import com.android.inputmethod.keyboard.Keyboard;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -29,39 +26,38 @@ public class StringUtils {
         // This utility class is not publicly instantiable.
     }
 
-    public static boolean canBeFollowedByPeriod(final int codePoint) {
-        // TODO: Check again whether there really ain't a better way to check this.
-        // TODO: This should probably be language-dependant...
-        return Character.isLetterOrDigit(codePoint)
-                || codePoint == Keyboard.CODE_SINGLE_QUOTE
-                || codePoint == Keyboard.CODE_DOUBLE_QUOTE
-                || codePoint == Keyboard.CODE_CLOSING_PARENTHESIS
-                || codePoint == Keyboard.CODE_CLOSING_SQUARE_BRACKET
-                || codePoint == Keyboard.CODE_CLOSING_CURLY_BRACKET
-                || codePoint == Keyboard.CODE_CLOSING_ANGLE_BRACKET;
-    }
-
     public static int codePointCount(String text) {
         if (TextUtils.isEmpty(text)) return 0;
         return text.codePointCount(0, text.length());
     }
 
-    private static boolean containsInCsv(String key, String csv) {
-        if (csv == null)
-            return false;
-        for (String option : csv.split(",")) {
-            if (option.equals(key))
-                return true;
+    public static boolean containsInArray(String key, String[] array) {
+        for (final String element : array) {
+            if (key.equals(element)) return true;
         }
         return false;
     }
 
-    public static boolean inPrivateImeOptions(String packageName, String key,
-            EditorInfo editorInfo) {
-        if (editorInfo == null)
-            return false;
-        return containsInCsv(packageName != null ? packageName + "." + key : key,
-                editorInfo.privateImeOptions);
+    public static boolean containsInCsv(String key, String csv) {
+        if (TextUtils.isEmpty(csv)) return false;
+        return containsInArray(key, csv.split(","));
+    }
+
+    public static String appendToCsvIfNotExists(String key, String csv) {
+        if (TextUtils.isEmpty(csv)) return key;
+        if (containsInCsv(key, csv)) return csv;
+        return csv + "," + key;
+    }
+
+    public static String removeFromCsvIfExists(String key, String csv) {
+        if (TextUtils.isEmpty(csv)) return "";
+        final String[] elements = csv.split(",");
+        if (!containsInArray(key, elements)) return csv;
+        final ArrayList<String> result = new ArrayList<String>(elements.length - 1);
+        for (final String element : elements) {
+            if (!key.equals(element)) result.add(element);
+        }
+        return TextUtils.join(",", result);
     }
 
     /**
