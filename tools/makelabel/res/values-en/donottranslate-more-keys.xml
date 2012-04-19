@@ -47,7 +47,7 @@
          U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
          U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
          U+00F5: "õ" LATIN SMALL LETTER O WITH TILDE -->
-    <string name="more_keys_for_o">&#x00F4;,&#x00F6;,&#x00F2;,&#x00F3;,&#x0153;,&#x00F8;&#x014D;,&#x00F5;</string>
+    <string name="more_keys_for_o">&#x00F4;,&#x00F6;,&#x00F2;,&#x00F3;,&#x0153;,&#x00F8;,&#x014D;,&#x00F5;</string>
     <!-- U+00FB: "û" LATIN SMALL LETTER U WITH CIRCUMFLEX
          U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS
          U+00F9: "ù" LATIN SMALL LETTER U WITH GRAVE

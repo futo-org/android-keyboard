@@ -770,7 +770,7 @@ public final class KeyboardLabelsSet {
         // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
         // U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
         // U+00F5: "õ" LATIN SMALL LETTER O WITH TILDE
-        /* 3 */ "\u00F4,\u00F6,\u00F2,\u00F3,\u0153,\u00F8\u014D,\u00F5",
+        /* 3 */ "\u00F4,\u00F6,\u00F2,\u00F3,\u0153,\u00F8,\u014D,\u00F5",
         // U+00FB: "û" LATIN SMALL LETTER U WITH CIRCUMFLEX
         // U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS
         // U+00F9: "ù" LATIN SMALL LETTER U WITH GRAVE
