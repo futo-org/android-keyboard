@@ -152,6 +152,8 @@
     <string name="subtype_generic_qwertz">%s (QWERTZ)</string>
     <!-- Description for generic AZERTY keyboard subtype -->
     <string name="subtype_generic_azerty">%s (AZERTY)</string>
+    <!-- Description for generic Dvorak keyboard subtype -->
+    <string name="subtype_generic_dvorak">%s (Dvorak)</string>
 
     <!-- dictionary pack package name /settings activity (for shared prefs and settings) -->
     <string name="dictionary_pack_package_name">com.google.android.inputmethod.latin.dictionarypack</string>

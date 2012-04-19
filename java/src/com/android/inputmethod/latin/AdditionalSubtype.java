@@ -28,10 +28,12 @@ public class AdditionalSubtype {
     public static final String QWERTY = "qwerty";
     public static final String QWERTZ = "qwertz";
     public static final String AZERTY = "azerty";
+    public static final String DVORAK = "dvorak";
     public static final String[] PREDEFINED_KEYBOARD_LAYOUT_SET = {
         QWERTY,
         QWERTZ,
-        AZERTY
+        AZERTY,
+        DVORAK
     };
 
     // Keyboard layout to subtype name resource id map.
@@ -42,6 +44,7 @@ public class AdditionalSubtype {
         sKeyboardLayoutToNameIdsMap.put(QWERTY, R.string.subtype_generic_qwerty);
         sKeyboardLayoutToNameIdsMap.put(QWERTZ, R.string.subtype_generic_qwertz);
         sKeyboardLayoutToNameIdsMap.put(AZERTY, R.string.subtype_generic_azerty);
+        sKeyboardLayoutToNameIdsMap.put(DVORAK, R.string.subtype_generic_dvorak);
     }
 
     private AdditionalSubtype() {

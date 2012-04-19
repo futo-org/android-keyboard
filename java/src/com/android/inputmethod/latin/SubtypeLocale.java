@@ -115,7 +115,12 @@ public class SubtypeLocale {
     }
 
     public static String getKeyboardLayoutSetDisplayName(InputMethodSubtype subtype) {
-        return getKeyboardLayoutSetName(subtype).toUpperCase();
+        final String layoutName = getKeyboardLayoutSetName(subtype);
+        // TODO: This hack should be removed.
+        if (layoutName.equals(AdditionalSubtype.DVORAK)) {
+            return StringUtils.toTitleCase(layoutName, Locale.US);
+        }
+        return layoutName.toUpperCase();
     }
 
     public static String getKeyboardLayoutSetName(InputMethodSubtype subtype) {
