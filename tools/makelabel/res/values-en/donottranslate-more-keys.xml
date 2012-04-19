@@ -32,7 +32,7 @@
          U+00EA: "ê" LATIN SMALL LETTER E WITH CIRCUMFLEX
          U+00EB: "ë" LATIN SMALL LETTER E WITH DIAERESIS
          U+0113: "ē" LATIN SMALL LETTER E WITH MACRON -->
-    <string name="more_keys_for_e">&#x00E8;,&#x00E9;,&#x00EA;,&#x00EB;,&#x0103;</string>
+    <string name="more_keys_for_e">&#x00E8;,&#x00E9;,&#x00EA;,&#x00EB;,&#x0113;</string>
     <!-- U+00EE: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
          U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
          U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE

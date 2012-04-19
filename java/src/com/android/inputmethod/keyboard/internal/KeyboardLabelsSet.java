@@ -755,7 +755,7 @@ public final class KeyboardLabelsSet {
         // U+00EA: "ê" LATIN SMALL LETTER E WITH CIRCUMFLEX
         // U+00EB: "ë" LATIN SMALL LETTER E WITH DIAERESIS
         // U+0113: "ē" LATIN SMALL LETTER E WITH MACRON
-        /* 1 */ "\u00E8,\u00E9,\u00EA,\u00EB,\u0103",
+        /* 1 */ "\u00E8,\u00E9,\u00EA,\u00EB,\u0113",
         // U+00EE: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
         // U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
         // U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE
