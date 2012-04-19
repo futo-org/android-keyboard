@@ -124,7 +124,7 @@ public class SubtypeLocale {
         // fixed.
         if (keyboardLayoutSet == null) {
             android.util.Log.w(TAG, "KeyboardLayoutSet not found, use QWERTY: " +
-                    getFullDisplayName(subtype) + " extraValue=" + subtype.getExtraValue());
+                    "locale=" + subtype.getLocale() + " extraValue=" + subtype.getExtraValue());
             return AdditionalSubtype.QWERTY;
         }
         return keyboardLayoutSet;
