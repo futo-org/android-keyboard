@@ -455,8 +455,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void initSuggest() {
-        final String localeStr = mSubtypeSwitcher.getInputLocaleStr();
         final Locale keyboardLocale = mSubtypeSwitcher.getInputLocale();
+        final String localeStr = keyboardLocale.toString();
 
         final Dictionary oldContactsDictionary;
         if (mSuggest != null) {

@@ -16,19 +16,16 @@
 
 package com.android.inputmethod.latin;
 
-import static com.android.inputmethod.latin.Constants.Subtype.KEYBOARD_MODE;
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.REQ_NETWORK_CONNECTIVITY;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.IBinder;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -36,7 +33,6 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -45,36 +41,42 @@ public class SubtypeSwitcher {
     private static boolean DBG = LatinImeLogger.sDBG;
     private static final String TAG = SubtypeSwitcher.class.getSimpleName();
 
-    private static final char LOCALE_SEPARATOR = '_';
-    private final TextUtils.SimpleStringSplitter mLocaleSplitter =
-            new TextUtils.SimpleStringSplitter(LOCALE_SEPARATOR);
-
     private static final SubtypeSwitcher sInstance = new SubtypeSwitcher();
     private /* final */ LatinIME mService;
     private /* final */ InputMethodManager mImm;
     private /* final */ Resources mResources;
     private /* final */ ConnectivityManager mConnectivityManager;
-    private final ArrayList<InputMethodSubtype> mEnabledKeyboardSubtypesOfCurrentInputMethod =
-            new ArrayList<InputMethodSubtype>();
-    private final ArrayList<String> mEnabledLanguagesOfCurrentInputMethod = new ArrayList<String>();
 
     /*-----------------------------------------------------------*/
     // Variants which should be changed only by reload functions.
-    private boolean mNeedsToDisplayLanguage;
+    private NeedsToDisplayLanguage mNeedsToDisplayLanguage = new NeedsToDisplayLanguage();
     private boolean mIsDictionaryAvailable;
-    private boolean mIsSystemLanguageSameAsInputLanguage;
     private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
-    private List<InputMethodSubtype> mAllEnabledSubtypesOfCurrentInputMethod;
     private InputMethodSubtype mNoLanguageSubtype;
     // Note: This variable is always non-null after {@link #initialize(LatinIME)}.
     private InputMethodSubtype mCurrentSubtype;
-    private Locale mSystemLocale;
-    private Locale mInputLocale;
-    private String mInputLocaleStr;
+    private Locale mCurrentSystemLocale;
     /*-----------------------------------------------------------*/
 
     private boolean mIsNetworkConnected;
+
+    static class NeedsToDisplayLanguage {
+        private int mEnabledSubtypeCount;
+        private boolean mIsSystemLanguageSameAsInputLanguage;
+
+        public boolean getValue() {
+            return mEnabledSubtypeCount >= 2 || !mIsSystemLanguageSameAsInputLanguage;
+        }
+
+        public void updateEnabledSubtypeCount(int count) {
+            mEnabledSubtypeCount = count;
+        }
+
+        public void updateIsSystemLanguageSameAsInputLanguage(boolean isSame) {
+            mIsSystemLanguageSameAsInputLanguage = isSame;
+        }
+    }
 
     public static SubtypeSwitcher getInstance() {
         return sInstance;
@@ -96,13 +98,8 @@ public class SubtypeSwitcher {
         mImm = ImfUtils.getInputMethodManager(service);
         mConnectivityManager = (ConnectivityManager) service.getSystemService(
                 Context.CONNECTIVITY_SERVICE);
-        mEnabledKeyboardSubtypesOfCurrentInputMethod.clear();
-        mEnabledLanguagesOfCurrentInputMethod.clear();
-        mSystemLocale = null;
-        mInputLocale = null;
-        mInputLocaleStr = null;
+        mCurrentSystemLocale = mResources.getConfiguration().locale;
         mCurrentSubtype = mImm.getCurrentInputMethodSubtype();
-        mAllEnabledSubtypesOfCurrentInputMethod = null;
         mNoLanguageSubtype = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
                 service, SubtypeLocale.NO_LANGUAGE, AdditionalSubtype.QWERTY);
 
@@ -113,7 +110,7 @@ public class SubtypeSwitcher {
     // Update all parameters stored in SubtypeSwitcher.
     // Only configuration changed event is allowed to call this because this is heavy.
     private void updateAllParameters() {
-        mSystemLocale = mResources.getConfiguration().locale;
+        mCurrentSystemLocale = mResources.getConfiguration().locale;
         updateSubtype(mImm.getCurrentInputMethodSubtype());
         updateParametersOnStartInputView();
     }
@@ -127,31 +124,20 @@ public class SubtypeSwitcher {
 
     // Reload enabledSubtypes from the framework.
     private void updateEnabledSubtypes() {
-        final String currentMode = mCurrentSubtype.getMode();
+        final InputMethodSubtype currentSubtype = mCurrentSubtype;
         boolean foundCurrentSubtypeBecameDisabled = true;
-        mAllEnabledSubtypesOfCurrentInputMethod = mImm.getEnabledInputMethodSubtypeList(
-                null, true);
-        mEnabledLanguagesOfCurrentInputMethod.clear();
-        mEnabledKeyboardSubtypesOfCurrentInputMethod.clear();
-        for (InputMethodSubtype ims : mAllEnabledSubtypesOfCurrentInputMethod) {
-            final String locale = ims.getLocale();
-            final String mode = ims.getMode();
-            mLocaleSplitter.setString(locale);
-            if (mLocaleSplitter.hasNext()) {
-                mEnabledLanguagesOfCurrentInputMethod.add(mLocaleSplitter.next());
-            }
-            if (locale.equals(mInputLocaleStr) && mode.equals(currentMode)) {
+        final List<InputMethodSubtype> enabledSubtypesOfThisIme =
+                mImm.getEnabledInputMethodSubtypeList(null, true);
+        for (InputMethodSubtype ims : enabledSubtypesOfThisIme) {
+            if (ims.equals(currentSubtype)) {
                 foundCurrentSubtypeBecameDisabled = false;
             }
-            if (KEYBOARD_MODE.equals(ims.getMode())) {
-                mEnabledKeyboardSubtypesOfCurrentInputMethod.add(ims);
-            }
         }
-        mNeedsToDisplayLanguage = !(getEnabledKeyboardLocaleCount() <= 1
-                && mIsSystemLanguageSameAsInputLanguage);
+        mNeedsToDisplayLanguage.updateEnabledSubtypeCount(enabledSubtypesOfThisIme.size());
         if (foundCurrentSubtypeBecameDisabled) {
             if (DBG) {
-                Log.w(TAG, "Current subtype: " + mInputLocaleStr + ", " + currentMode);
+                Log.w(TAG, "Last subtype: "
+                        + currentSubtype.getLocale() + "/" + currentSubtype.getExtraValue());
                 Log.w(TAG, "Last subtype was disabled. Update to the current one.");
             }
             updateSubtype(mImm.getCurrentInputMethodSubtype());
@@ -192,70 +178,21 @@ public class SubtypeSwitcher {
 
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
     public void updateSubtype(InputMethodSubtype newSubtype) {
-        final String newLocale = newSubtype.getLocale();
-        final String newMode = newSubtype.getMode();
-        final String oldMode = mCurrentSubtype.getMode();
         if (DBG) {
-            Log.w(TAG, "Update subtype to:" + newLocale + "," + newMode
-                    + ", from: " + mInputLocaleStr + ", " + oldMode);
+            Log.w(TAG, "onCurrentInputMethodSubtypeChanged: to: "
+                    + newSubtype.getLocale() + "/" + newSubtype.getExtraValue() + ", from: "
+                    + mCurrentSubtype.getLocale() + "/" + mCurrentSubtype.getExtraValue());
         }
-        boolean languageChanged = false;
-        if (!newLocale.equals(mInputLocaleStr)) {
-            if (mInputLocaleStr != null) {
-                languageChanged = true;
-            }
-            updateInputLocale(newLocale);
-        }
-        boolean modeChanged = false;
-        if (!newMode.equals(oldMode)) {
-            if (oldMode != null) {
-                modeChanged = true;
-            }
-        }
+        if (newSubtype.equals(mCurrentSubtype)) return;
+
+        final Locale newLocale = SubtypeLocale.getSubtypeLocale(newSubtype);
+        mNeedsToDisplayLanguage.updateIsSystemLanguageSameAsInputLanguage(
+                mCurrentSystemLocale.equals(newLocale));
+        mIsDictionaryAvailable = DictionaryFactory.isDictionaryAvailable(mService, newLocale);
+
         mCurrentSubtype = newSubtype;
-
-        if (KEYBOARD_MODE.equals(mCurrentSubtype.getMode())) {
-            if (modeChanged || languageChanged) {
-                updateShortcutIME();
-                mService.onRefreshKeyboard();
-            }
-        } else {
-            final String packageName = mService.getPackageName();
-            int version = -1;
-            try {
-                version = mService.getPackageManager().getPackageInfo(
-                        packageName, 0).versionCode;
-            } catch (NameNotFoundException e) {
-            }
-            Log.w(TAG, "Unknown subtype mode: " + newMode + "," + version + ", " + packageName
-                    + ". IME is already changed to other IME.");
-            Log.w(TAG, "Subtype mode:" + newSubtype.getMode());
-            Log.w(TAG, "Subtype locale:" + newSubtype.getLocale());
-            Log.w(TAG, "Subtype extra value:" + newSubtype.getExtraValue());
-            Log.w(TAG, "Subtype is auxiliary:" + newSubtype.isAuxiliary());
-        }
-    }
-
-    // Update the current input locale from Locale string.
-    private void updateInputLocale(String inputLocaleStr) {
-        // example: inputLocaleStr = "en_US" "en" ""
-        // "en_US" --> language: en  & country: US
-        // "en" --> language: en
-        // "" --> the system locale
-        if (!TextUtils.isEmpty(inputLocaleStr)) {
-            mInputLocale = LocaleUtils.constructLocaleFromString(inputLocaleStr);
-            mInputLocaleStr = inputLocaleStr;
-        } else {
-            mInputLocale = mSystemLocale;
-            String country = mSystemLocale.getCountry();
-            mInputLocaleStr = mSystemLocale.getLanguage()
-                    + (TextUtils.isEmpty(country) ? "" : "_" + mSystemLocale.getLanguage());
-        }
-        mIsSystemLanguageSameAsInputLanguage = getSystemLocale().getLanguage().equalsIgnoreCase(
-                getInputLocale().getLanguage());
-        mNeedsToDisplayLanguage = !(getEnabledKeyboardLocaleCount() <= 1
-                && mIsSystemLanguageSameAsInputLanguage);
-        mIsDictionaryAvailable = DictionaryFactory.isDictionaryAvailable(mService, mInputLocale);
+        updateShortcutIME();
+        mService.onRefreshKeyboard();
     }
 
     ////////////////////////////
@@ -323,54 +260,27 @@ public class SubtypeSwitcher {
     }
 
     //////////////////////////////////
-    // Language Switching functions //
+    // Subtype Switching functions //
     //////////////////////////////////
-
-    public int getEnabledKeyboardLocaleCount() {
-        return mEnabledKeyboardSubtypesOfCurrentInputMethod.size();
-    }
 
     public boolean needsToDisplayLanguage(Locale keyboardLocale) {
         if (keyboardLocale.toString().equals(SubtypeLocale.NO_LANGUAGE)) {
             return true;
         }
-        if (!keyboardLocale.equals(mInputLocale)) {
+        if (!keyboardLocale.equals(getInputLocale())) {
             return false;
         }
-        return mNeedsToDisplayLanguage;
+        return mNeedsToDisplayLanguage.getValue();
     }
 
     public Locale getInputLocale() {
-        return mInputLocale;
-    }
-
-    public String getInputLocaleStr() {
-        return mInputLocaleStr;
-    }
-
-    public String[] getEnabledLanguages() {
-        int enabledLanguageCount = mEnabledLanguagesOfCurrentInputMethod.size();
-        // Workaround for explicitly specifying the voice language
-        if (enabledLanguageCount == 1) {
-            mEnabledLanguagesOfCurrentInputMethod.add(mEnabledLanguagesOfCurrentInputMethod
-                    .get(0));
-            ++enabledLanguageCount;
-        }
-        return mEnabledLanguagesOfCurrentInputMethod.toArray(new String[enabledLanguageCount]);
-    }
-
-    public Locale getSystemLocale() {
-        return mSystemLocale;
-    }
-
-    public boolean isSystemLanguageSameAsInputLanguage() {
-        return mIsSystemLanguageSameAsInputLanguage;
+        return SubtypeLocale.getSubtypeLocale(mCurrentSubtype);
     }
 
     public void onConfigurationChanged(Configuration conf) {
         final Locale systemLocale = conf.locale;
         // If system configuration was changed, update all parameters.
-        if (!TextUtils.equals(systemLocale.toString(), mSystemLocale.toString())) {
+        if (!systemLocale.equals(mCurrentSystemLocale)) {
             updateAllParameters();
         }
     }
