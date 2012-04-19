@@ -30,7 +30,10 @@ import java.util.Locale;
  * Factory for dictionary instances.
  */
 public class DictionaryFactory {
-    private static String TAG = DictionaryFactory.class.getSimpleName();
+    private static final String TAG = DictionaryFactory.class.getSimpleName();
+    // This class must be located in the same package as LatinIME.java.
+    private static final String RESOURCE_PACKAGE_NAME =
+            DictionaryFactory.class.getPackage().getName();
 
     /**
      * Initializes a dictionary from a dictionary pack, with explicit flags.
@@ -166,20 +169,19 @@ public class DictionaryFactory {
      */
     private static int getMainDictionaryResourceIdIfAvailableForLocale(final Resources res,
             final Locale locale) {
-        final String packageName = LatinIME.class.getPackage().getName();
         int resId;
-
         // Try to find main_language_country dictionary.
         if (!locale.getCountry().isEmpty()) {
             final String dictLanguageCountry = MAIN_DICT_PREFIX + locale.toString().toLowerCase();
-            if ((resId = res.getIdentifier(dictLanguageCountry, "raw", packageName)) != 0) {
+            if ((resId = res.getIdentifier(
+                    dictLanguageCountry, "raw", RESOURCE_PACKAGE_NAME)) != 0) {
                 return resId;
             }
         }
 
         // Try to find main_language dictionary.
         final String dictLanguage = MAIN_DICT_PREFIX + locale.getLanguage();
-        if ((resId = res.getIdentifier(dictLanguage, "raw", packageName)) != 0) {
+        if ((resId = res.getIdentifier(dictLanguage, "raw", RESOURCE_PACKAGE_NAME)) != 0) {
             return resId;
         }
 
@@ -195,7 +197,6 @@ public class DictionaryFactory {
     public static int getMainDictionaryResourceId(final Resources res, final Locale locale) {
         int resourceId = getMainDictionaryResourceIdIfAvailableForLocale(res, locale);
         if (0 != resourceId) return resourceId;
-        final String packageName = LatinIME.class.getPackage().getName();
-        return res.getIdentifier(DEFAULT_MAIN_DICT, "raw", packageName);
+        return res.getIdentifier(DEFAULT_MAIN_DICT, "raw", RESOURCE_PACKAGE_NAME);
     }
 }
