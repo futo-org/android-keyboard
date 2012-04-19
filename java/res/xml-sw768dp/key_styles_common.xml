@@ -97,7 +97,6 @@
         latin:code="!code/key_shortcut"
         latin:keyIcon="iconShortcutKey"
         latin:keyIconDisabled="iconDisabledShortcutKey"
-        latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
         latin:backgroundType="functional" />
     <key-style
@@ -131,7 +130,7 @@
         latin:styleName="toSymbolKeyStyle"
         latin:code="!code/key_switch_alpha_symbol"
         latin:keyLabel="!label/label_to_symbol_key"
-        latin:keyLabelFlags="fontNormal|preserveCase"
+        latin:keyLabelFlags="fontNormal"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
@@ -145,14 +144,14 @@
         latin:styleName="toMoreSymbolKeyStyle"
         latin:code="!code/key_shift"
         latin:keyLabel="!label/label_to_more_symbol_for_tablet_key"
-        latin:keyLabelFlags="fontNormal|preserveCase"
+        latin:keyLabelFlags="fontNormal"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="backFromMoreSymbolKeyStyle"
         latin:code="!code/key_shift"
         latin:keyLabel="!label/label_to_symbol_key"
-        latin:keyLabelFlags="fontNormal|preserveCase"
+        latin:keyLabelFlags="fontNormal"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style

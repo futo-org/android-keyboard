@@ -76,7 +76,7 @@ public class KeySpecParser {
     }
 
     private static boolean hasIcon(String moreKeySpec) {
-        if (moreKeySpec.startsWith(PREFIX_ICON)) {
+        if (moreKeySpec.regionMatches(true, 0, PREFIX_ICON, 0, PREFIX_ICON.length())) {
             final int end = indexOfLabelEnd(moreKeySpec, 0);
             if (end > 0) {
                 return true;
@@ -88,8 +88,8 @@ public class KeySpecParser {
 
     private static boolean hasCode(String moreKeySpec) {
         final int end = indexOfLabelEnd(moreKeySpec, 0);
-        if (end > 0 && end + 1 < moreKeySpec.length()
-                && moreKeySpec.substring(end + 1).startsWith(PREFIX_CODE)) {
+        if (end > 0 && end + 1 < moreKeySpec.length() && moreKeySpec.regionMatches(
+                true, end + 1, PREFIX_CODE, 0, PREFIX_CODE.length())) {
             return true;
         }
         return false;
@@ -210,9 +210,9 @@ public class KeySpecParser {
 
     public static int parseCode(String text, KeyboardCodesSet codesSet, int defCode) {
         if (text == null) return defCode;
-        if (text.startsWith(PREFIX_CODE)) {
+        if (text.regionMatches(true, 0, PREFIX_CODE, 0, PREFIX_CODE.length())) {
             return codesSet.getCode(text.substring(PREFIX_CODE.length()));
-        } else if (text.startsWith(PREFIX_HEX)) {
+        } else if (text.regionMatches(true, 0, PREFIX_HEX, 0, PREFIX_HEX.length())) {
             return Integer.parseInt(text.substring(PREFIX_HEX.length()), 16);
         } else {
             return Integer.parseInt(text);
@@ -350,20 +350,22 @@ public class KeySpecParser {
                 throw new RuntimeException("too many @string/resource indirection: " + text);
             }
 
+            final int prefixLen = PREFIX_LABEL.length();
             final int size = text.length();
-            if (size < PREFIX_LABEL.length()) {
+            if (size < prefixLen) {
                 return text;
             }
 
             sb = null;
             for (int pos = 0; pos < size; pos++) {
                 final char c = text.charAt(pos);
-                if (text.startsWith(PREFIX_LABEL, pos) && labelsSet != null) {
+                if (text.regionMatches(true, pos, PREFIX_LABEL, 0, prefixLen)
+                        && labelsSet != null) {
                     if (sb == null) {
                         sb = new StringBuilder(text.substring(0, pos));
                     }
-                    final int end = searchLabelNameEnd(text, pos + PREFIX_LABEL.length());
-                    final String name = text.substring(pos + PREFIX_LABEL.length(), end);
+                    final int end = searchLabelNameEnd(text, pos + prefixLen);
+                    final String name = text.substring(pos + prefixLen, end);
                     sb.append(labelsSet.getLabel(name));
                     pos = end - 1;
                 } else if (c == ESCAPE_CHAR) {
@@ -389,8 +391,9 @@ public class KeySpecParser {
         final int size = text.length();
         for (int pos = start; pos < size; pos++) {
             final char c = text.charAt(pos);
-            // String resource name should be consisted of [a-z_0-9].
-            if ((c >= 'a' && c <= 'z') || c == '_' || (c >= '0' && c <= '9')) {
+            // Label name should be consisted of [a-zA-Z_0-9].
+            if ((c >= 'a' && c <= 'z') || c == '_' || (c >= '0' && c <= '9')
+                    || (c >= 'A' && c <= 'Z')) {
                 continue;
             }
             return pos;
@@ -442,17 +445,19 @@ public class KeySpecParser {
         if (moreKeys == null) {
             return defaultValue;
         }
+        final int keyLen = key.length();
         boolean foundValue = false;
         int value = defaultValue;
         for (int i = 0; i < moreKeys.length; i++) {
             final String moreKeySpec = moreKeys[i];
-            if (moreKeySpec == null || !moreKeySpec.startsWith(key)) {
+            if (moreKeySpec == null || !moreKeySpec.regionMatches(true, 0, key, 0, keyLen)) {
                 continue;
             }
             moreKeys[i] = null;
             try {
                 if (!foundValue) {
-                    value = Integer.parseInt(moreKeySpec.substring(key.length()));
+                    value = Integer.parseInt(moreKeySpec.substring(keyLen));
+                    foundValue = true;
                 }
             } catch (NumberFormatException e) {
                 throw new RuntimeException(
@@ -469,7 +474,7 @@ public class KeySpecParser {
         boolean value = false;
         for (int i = 0; i < moreKeys.length; i++) {
             final String moreKeySpec = moreKeys[i];
-            if (moreKeySpec == null || !moreKeySpec.equals(key)) {
+            if (moreKeySpec == null || !moreKeySpec.equalsIgnoreCase(key)) {
                 continue;
             }
             moreKeys[i] = null;

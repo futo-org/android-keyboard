@@ -17,7 +17,6 @@
 package com.android.inputmethod.keyboard.internal;
 
 import android.test.AndroidTestCase;
-import android.text.TextUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -32,6 +31,7 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
         super.setUp();
 
         mLabelsSet.setLanguage(Locale.ENGLISH.getLanguage());
+        mLabelsSet.loadStringResources(getContext());
         final String[] testResourceNames = getAllResourceIdNames(
                 com.android.inputmethod.latin.tests.R.string.class);
         mLabelsSet.loadStringResourcesInternal(getTestContext(),
@@ -49,20 +49,28 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
         return names.toArray(new String[names.size()]);
     }
 
-    private void assertTextArray(String message, String value, String ... expected) {
-        final String actual[] = KeySpecParser.parseCsvString(value, mLabelsSet);
-        if (expected.length == 0) {
-            assertNull(message + ": expected=null actual=" + Arrays.toString(actual),
-                    actual);
+    private static void assertArrayEquals(String message, Object[] expected, Object[] actual) {
+        if (expected == actual) {
             return;
         }
-        assertEquals(message + ": expected=" + Arrays.toString(expected)
-                + " actual=" + Arrays.toString(actual)
-                + ": result length", expected.length, actual.length);
-        for (int i = 0; i < actual.length; i++) {
-            final boolean equals = TextUtils.equals(expected[i], actual[i]);
-            assertTrue(format(message + ": result at " + i + ":", expected[i], actual[i]), equals);
+        if (expected == null || actual == null) {
+            assertEquals(message, Arrays.toString(expected), Arrays.toString(actual));
+            return;
         }
+        if (expected.length != actual.length) {
+            assertEquals(message + " [length]", Arrays.toString(expected), Arrays.toString(actual));
+            return;
+        }
+        for (int i = 0; i < expected.length; i++) {
+            assertEquals(message + " [" + i + "]",
+                    Arrays.toString(expected), Arrays.toString(actual));
+        }
+    }
+
+    private void assertTextArray(String message, String value, String ... expectedArray) {
+        final String[] actual = KeySpecParser.parseCsvString(value, mLabelsSet);
+        final String[] expected = (expectedArray.length == 0) ? null : expectedArray;
+        assertArrayEquals(message, expected, actual);
     }
 
     private void assertError(String message, String value, String ... expected) {
@@ -116,6 +124,7 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
 
         assertTextArray("Incomplete resource reference 1", "label", "label");
         assertTextArray("Incomplete resource reference 2", "!label", "!label");
+        assertTextArray("Incomplete RESOURCE REFERENCE 2", "!LABEL", "!LABEL");
         assertTextArray("Incomplete resource reference 3", "label/", "label/");
         assertTextArray("Incomplete resource reference 4", "!" + SURROGATE2, "!" + SURROGATE2);
     }
@@ -150,7 +159,9 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
 
         assertTextArray("Escaped !label", "\\!label", "\\!label");
         assertTextArray("Escaped !label/", "\\!label/", "\\!label/");
-        assertTextArray("Escaped !label/", "\\!label/empty_string", "\\!label/empty_string");
+        assertTextArray("Escaped !LABEL/", "\\!LABEL/", "\\!LABEL/");
+        assertTextArray("Escaped !label/name", "\\!label/empty_string", "\\!label/empty_string");
+        assertTextArray("Escaped !LABEL/NAME", "\\!LABEL/EMPTY_STRING", "\\!LABEL/EMPTY_STRING");
     }
 
     public void testParseCsvTextMulti() {
@@ -183,6 +194,8 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
 
         assertTextArray("Multiple escaped !label", "\\!,\\!label/empty_string",
                 "\\!", "\\!label/empty_string");
+        assertTextArray("Multiple escaped !LABEL", "\\!,\\!LABEL/EMPTY_STRING",
+                "\\!", "\\!LABEL/EMPTY_STRING");
     }
 
     public void testParseCsvResourceError() {
@@ -193,11 +206,15 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
     public void testParseCsvResourceZero() {
         assertTextArray("Empty string",
                 "!label/empty_string");
+        assertTextArray("EMPTY STRING",
+                "!LABEL/EMPTY_STRING");
     }
 
     public void testParseCsvResourceSingle() {
         assertTextArray("Single char",
                 "!label/single_char", "a");
+        assertTextArray("SINGLE CHAR",
+                "!LABEL/SINGLE_CHAR", "a");
         assertTextArray("Space",
                 "!label/space", " ");
         assertTextArray("Single label",
@@ -215,6 +232,8 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
 
         assertTextArray("Escape and single char",
                 "\\\\!label/single_char", "\\\\a");
+        assertTextArray("Escape and SINGLE CHAR",
+                "\\\\!LABEL/SINGLE_CHAR", "\\\\a");
     }
 
     public void testParseCsvResourceSingleEscaped() {
@@ -247,6 +266,8 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
     public void testParseCsvResourceMulti() {
         assertTextArray("Multiple chars",
                 "!label/multiple_chars", "a", "b", "c");
+        assertTextArray("MULTIPLE CHARS",
+                "!LABEL/MULTIPLE_CHARS", "a", "b", "c");
         assertTextArray("Multiple chars surrounded by spaces",
                 "!label/multiple_chars_surrounded_by_spaces",
                 " a ", " b ", " c ");
@@ -280,6 +301,8 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
     public void testParseMultipleResources() {
         assertTextArray("Literals and resources",
                 "1,!label/multiple_chars,z", "1", "a", "b", "c", "z");
+        assertTextArray("Literals and RESOURCES",
+                "1,!LABEL/MULTIPLE_CHARS,z", "1", "a", "b", "c", "z");
         assertTextArray("Literals and resources and escape at end",
                 "\\1,!label/multiple_chars,z\\", "\\1", "a", "b", "c", "z\\");
         assertTextArray("Multiple single resource chars and labels",
@@ -287,6 +310,9 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
                 "a", "abc", "\\,");
         assertTextArray("Multiple single resource chars and labels 2",
                 "!label/single_char,!label/single_label,!label/escaped_comma_escape",
+                "a", "abc", "a\\,\\");
+        assertTextArray("Multiple single RESOURCE chars and LABELS 2",
+                "!LABEL/SINGLE_CHAR,!LABEL/SINGLE_LABEL,!LABEL/ESCAPED_COMMA_ESCAPE",
                 "a", "abc", "a\\,\\");
         assertTextArray("Multiple multiple resource chars and labels",
                 "!label/multiple_chars,!label/multiple_labels,!label/multiple_chars_with_comma",
@@ -304,10 +330,68 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
                 "!label/indirect_string", "a", "b", "c");
         assertTextArray("Indirect with literal",
                 "1,!label/indirect_string_with_literal,2", "1", "x", "a", "b", "c", "y", "2");
+        assertTextArray("Indirect2",
+                "!label/indirect2_string", "a", "b", "c");
+
+        assertTextArray("INDIRECT",
+                "!LABEL/INDIRECT_STRING", "a", "b", "c");
+        assertTextArray("INDIRECT with literal",
+                "1,!LABEL/INDIRECT_STRING_WITH_LITERAL,2", "1", "x", "a", "b", "c", "y", "2");
+        assertTextArray("INDIRECT2",
+                "!LABEL/INDIRECT2_STRING", "a", "b", "c");
+
+        assertTextArray("Upper indirect",
+                "!label/upper_indirect_string", "a", "b", "c");
+        assertTextArray("Upper indirect with literal",
+                "1,!label/upper_indirect_string_with_literal,2", "1", "x", "a", "b", "c", "y", "2");
+        assertTextArray("Upper indirect2",
+                "!label/upper_indirect2_string", "a", "b", "c");
+
+        assertTextArray("UPPER INDIRECT",
+                "!LABEL/upper_INDIRECT_STRING", "a", "b", "c");
+        assertTextArray("Upper INDIRECT with literal",
+                "1,!LABEL/upper_INDIRECT_STRING_WITH_LITERAL,2", "1", "x", "a", "b", "c", "y", "2");
+        assertTextArray("Upper INDIRECT2",
+                "!LABEL/upper_INDIRECT2_STRING", "a", "b", "c");
     }
 
     public void testParseInfiniteIndirectReference() {
         assertError("Infinite indirection",
                 "1,!label/infinite_indirection,2", "1", "infinite", "<infinite>", "loop", "2");
+        assertError("INFINITE INDIRECTION",
+                "1,!LABEL/INFINITE_INDIRECTION,2", "1", "infinite", "<infinite>", "loop", "2");
+
+        assertError("Upper infinite indirection",
+                "1,!label/upper_infinite_indirection,2",
+                "1", "infinite", "<infinite>", "loop", "2");
+        assertError("Upper INFINITE INDIRECTION",
+                "1,!LABEL/UPPER_INFINITE_INDIRECTION,2",
+                "1", "infinite", "<infinite>", "loop", "2");
+    }
+
+    public void testLabelReferece() {
+        assertTextArray("Label time am", "!label/label_time_am", "AM");
+        assertTextArray("LABEL TIME AM", "!LABEL/LABEL_TIME_AM", "AM");
+
+        assertTextArray("More keys for am pm", "!label/more_keys_for_am_pm",
+                "!fixedColumnOrder!2", "!hasLabels!", "AM", "PM");
+        assertTextArray("MORE KEYS FOR AM OM", "!LABEL/MORE_KEYS_FOR_AM_PM",
+                "!fixedColumnOrder!2", "!hasLabels!", "AM", "PM");
+
+        assertTextArray("Settings as more key", "!label/settings_as_more_key",
+                "!icon/settingsKey|!code/key_settings");
+        assertTextArray("SETTINGS AS MORE KEY", "!LABEL/SETTINGS_AS_MORE_KEY",
+                "!icon/settingsKey|!code/key_settings");
+
+        assertTextArray("Indirect naviagte actions as more key",
+                "!label/indirect_navigate_actions_as_more_key",
+                "!fixedColumnOrder!2",
+                "!hasLabels!", "Prev|!code/key_action_previous",
+                "!hasLabels!", "Next|!code/key_action_next");
+        assertTextArray("INDIRECT NAVIGATE ACTIONS AS MORE KEY",
+                "!LABEL/INDIRECT_NAVIGATE_ACTIONS_AS_MORE_KEY",
+                "!fixedColumnOrder!2",
+                "!hasLabels!", "Prev|!code/key_action_previous",
+                "!hasLabels!", "Next|!code/key_action_next");
     }
 }

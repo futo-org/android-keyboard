@@ -26,82 +26,64 @@
             latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
         >
             <Key
-                latin:keyLabel="A"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="A" />
             <!-- U+10E8: "შ" GEORGIAN LETTER SHIN -->
             <Key
-                latin:keyLabel="&#x10E8;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="&#x10E8;" />
             <Key
-                latin:keyLabel="D"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="D" />
             <Key
-                latin:keyLabel="F"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="F" />
             <Key
-                latin:keyLabel="G"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="G" />
             <Key
-                latin:keyLabel="H"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="H" />
             <!-- U+10DF: "ჟ" GEORGIAN LETTER ZHAR -->
             <Key
-                latin:keyLabel="&#x10DF;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="&#x10DF;" />
             <Key
-                latin:keyLabel="K"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="K" />
             <Key
-                latin:keyLabel="L"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="L" />
         </case>
         <default>
             <!-- U+10D0: "ა" GEORGIAN LETTER AN
                  U+10FA: "ჺ" GEORGIAN LETTER AIN -->
             <Key
                 latin:keyLabel="&#x10D0;"
-                latin:moreKeys="&#x10FA;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:moreKeys="&#x10FA;" />
             <!-- U+10E1: "ს" GEORGIAN LETTER SAN -->
             <Key
-                latin:keyLabel="&#x10E1;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="&#x10E1;" />
             <!-- U+10D3: "დ" GEORGIAN LETTER DON -->
             <Key
-                latin:keyLabel="&#x10D3;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="&#x10D3;" />
             <!-- U+10E4: "ფ" GEORGIAN LETTER PHAR
                  U+10F6: "ჶ" GEORGIAN LETTER FI -->
             <Key
                 latin:keyLabel="&#x10E4;"
-                latin:moreKeys="&#x10F6;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:moreKeys="&#x10F6;" />
             <!-- U+10D2: "გ" GEORGIAN LETTER GAN
                  U+10F9: "ჹ" GEORGIAN LETTER TURNED GAN -->
             <Key
                 latin:keyLabel="&#x10D2;"
-                latin:moreKeys="&#x10F9;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:moreKeys="&#x10F9;" />
             <!-- U+10F0: "ჰ" GEORGIAN LETTER HAE
                  U+10F5: "ჵ" GEORGIAN LETTER HOE -->
             <Key
                 latin:keyLabel="&#x10F0;"
-                latin:moreKeys="&#x10F5;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:moreKeys="&#x10F5;" />
             <!-- U+10EF: "ჯ" GEORGIAN LETTER JHAN
                  U+10F7: "ჷ" GEORGIAN LETTER YN -->
             <Key
                 latin:keyLabel="&#x10EF;"
-                latin:moreKeys="&#x10F7;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:moreKeys="&#x10F7;" />
             <!-- U+10D9: "კ" GEORGIAN LETTER KAN -->
             <Key
-                latin:keyLabel="&#x10D9;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="&#x10D9;" />
             <!-- U+10DA: "ლ" GEORGIAN LETTER LAS -->
             <Key
-                latin:keyLabel="&#x10DA;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="&#x10DA;" />
         </default>
     </switch>
 </merge>

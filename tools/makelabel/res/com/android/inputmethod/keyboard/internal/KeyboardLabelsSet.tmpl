@@ -31,7 +31,8 @@ public final class KeyboardLabelsSet {
     // Language to labels map.
     private static final HashMap<String, String[]> sLocaleToLabelsMap =
             new HashMap<String, String[]>();
-    private static final HashMap<String, Integer> sNameToIdMap = new HashMap<String, Integer>();
+    private static final HashMap<String, Integer> sLowerCaseNameToIdsMap =
+            new HashMap<String, Integer>();
 
     private String[] mLabels;
     // Resource name to label map.
@@ -60,12 +61,21 @@ public final class KeyboardLabelsSet {
     }
 
     public String getLabel(final String name) {
-        if (mResourceNameToLabelsMap.containsKey(name)) {
-            return mResourceNameToLabelsMap.get(name);
+        String lowerCaseName = null;
+        String label = mResourceNameToLabelsMap.get(name);
+        if (label == null) {
+            lowerCaseName = name.toLowerCase();
+            label = mResourceNameToLabelsMap.get(lowerCaseName);
         }
-        final Integer id = sNameToIdMap.get(name);
+        if (label != null) {
+            return label;
+        }
+        Integer id = sLowerCaseNameToIdsMap.get(name);
+        if (id == null) {
+            id = sLowerCaseNameToIdsMap.get(lowerCaseName); // lowerCaseName != null
+        }
         if (id == null) throw new RuntimeException("Unknown label: " + name);
-        final String label = (id < mLabels.length) ? mLabels[id] : null;
+        label = (id < mLabels.length) ? mLabels[id] : null;
         return (label == null) ? LANGUAGE_DEFAULT[id] : label;
     }
 
@@ -105,7 +115,7 @@ public final class KeyboardLabelsSet {
     static {
         int id = 0;
         for (final String name : NAMES) {
-            sNameToIdMap.put(name, id++);
+            sLowerCaseNameToIdsMap.put(name, id++);
         }
 
         for (int i = 0; i < LANGUAGES_AND_LABELS.length; i += 2) {
