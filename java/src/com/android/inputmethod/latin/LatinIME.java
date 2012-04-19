@@ -154,6 +154,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private final SubtypeSwitcher mSubtypeSwitcher;
     private boolean mShouldSwitchToLastSubtype = true;
 
+    private boolean mIsMainDictionaryAvailable;
     private UserDictionary mUserDictionary;
     private UserHistoryDictionary mUserHistoryDictionary;
     private boolean mIsUserDictionaryAvailable;
@@ -449,14 +450,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 return new SettingsValues(mPrefs, LatinIME.this);
             }
         };
-        mSettingsValues = job.runInLocale(mResources, mSubtypeSwitcher.getInputLocale());
+        mSettingsValues = job.runInLocale(mResources, mSubtypeSwitcher.getCurrentSubtypeLocale());
         mFeedbackManager = new AudioAndHapticFeedbackManager(this, mSettingsValues);
         resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
     }
 
     private void initSuggest() {
-        final Locale keyboardLocale = mSubtypeSwitcher.getInputLocale();
-        final String localeStr = keyboardLocale.toString();
+        final Locale subtypeLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
+        final String localeStr = subtypeLocale.toString();
 
         final Dictionary oldContactsDictionary;
         if (mSuggest != null) {
@@ -465,10 +466,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             oldContactsDictionary = null;
         }
-        mSuggest = new Suggest(this, keyboardLocale);
+        mSuggest = new Suggest(this, subtypeLocale);
         if (mSettingsValues.mAutoCorrectEnabled) {
             mSuggest.setAutoCorrectionThreshold(mSettingsValues.mAutoCorrectionThreshold);
         }
+
+        mIsMainDictionaryAvailable = DictionaryFactory.isDictionaryAvailable(this, subtypeLocale);
 
         mUserDictionary = new UserDictionary(this, localeStr);
         mSuggest.setUserDictionary(mUserDictionary);
@@ -511,7 +514,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             if (USE_BINARY_CONTACTS_DICTIONARY) {
                 dictionaryToUse = new ContactsBinaryDictionary(this, Suggest.DIC_CONTACTS,
-                        mSubtypeSwitcher.getInputLocale());
+                        mSubtypeSwitcher.getCurrentSubtypeLocale());
             } else {
                 dictionaryToUse = new ContactsDictionary(this, Suggest.DIC_CONTACTS);
             }
@@ -523,7 +526,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     /* package private */ void resetSuggestMainDict() {
-        mSuggest.resetMainDict(this, mSubtypeSwitcher.getInputLocale());
+        final Locale subtypeLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
+        mSuggest.resetMainDict(this, subtypeLocale);
+        mIsMainDictionaryAvailable = DictionaryFactory.isDictionaryAvailable(this, subtypeLocale);
     }
 
     @Override
@@ -603,7 +608,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype subtype) {
-        SubtypeSwitcher.getInstance().updateSubtype(subtype);
+        mSubtypeSwitcher.updateSubtype(subtype);
     }
 
     private void onStartInputInternal(EditorInfo editorInfo, boolean restarting) {
@@ -1894,7 +1899,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (mSettingsValues.mEnableSuggestionSpanInsertion) {
                 final SuggestedWords suggestedWords = mSuggestionsView.getSuggestions();
                 ic.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(
-                        this, bestWord, suggestedWords, mSubtypeSwitcher.isDictionaryAvailable()),
+                        this, bestWord, suggestedWords, mIsMainDictionaryAvailable),
                         1);
                 if (ProductionFlag.IS_EXPERIMENTAL) {
                     ResearchLogger.latinIME_commitText(bestWord);
@@ -1972,7 +1977,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
             final String secondWord;
             if (mWordComposer.isAutoCapitalized() && !mWordComposer.isMostlyCaps()) {
-                secondWord = suggestion.toString().toLowerCase(mSubtypeSwitcher.getInputLocale());
+                secondWord = suggestion.toString().toLowerCase(
+                        mSubtypeSwitcher.getCurrentSubtypeLocale());
             } else {
                 secondWord = suggestion.toString();
             }
@@ -2300,8 +2306,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void showOptionDialogInternal(AlertDialog dialog) {
-        final IBinder windowToken = KeyboardSwitcher.getInstance().getKeyboardView()
-                .getWindowToken();
+        final IBinder windowToken = mKeyboardSwitcher.getKeyboardView().getWindowToken();
         if (windowToken == null) return;
 
         dialog.setCancelable(true);

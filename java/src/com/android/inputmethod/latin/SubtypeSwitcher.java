@@ -50,7 +50,6 @@ public class SubtypeSwitcher {
     /*-----------------------------------------------------------*/
     // Variants which should be changed only by reload functions.
     private NeedsToDisplayLanguage mNeedsToDisplayLanguage = new NeedsToDisplayLanguage();
-    private boolean mIsDictionaryAvailable;
     private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
     private InputMethodSubtype mNoLanguageSubtype;
@@ -188,7 +187,6 @@ public class SubtypeSwitcher {
         final Locale newLocale = SubtypeLocale.getSubtypeLocale(newSubtype);
         mNeedsToDisplayLanguage.updateIsSystemLanguageSameAsInputLanguage(
                 mCurrentSystemLocale.equals(newLocale));
-        mIsDictionaryAvailable = DictionaryFactory.isDictionaryAvailable(mService, newLocale);
 
         mCurrentSubtype = newSubtype;
         updateShortcutIME();
@@ -267,13 +265,13 @@ public class SubtypeSwitcher {
         if (keyboardLocale.toString().equals(SubtypeLocale.NO_LANGUAGE)) {
             return true;
         }
-        if (!keyboardLocale.equals(getInputLocale())) {
+        if (!keyboardLocale.equals(getCurrentSubtypeLocale())) {
             return false;
         }
         return mNeedsToDisplayLanguage.getValue();
     }
 
-    public Locale getInputLocale() {
+    public Locale getCurrentSubtypeLocale() {
         return SubtypeLocale.getSubtypeLocale(mCurrentSubtype);
     }
 
@@ -283,10 +281,6 @@ public class SubtypeSwitcher {
         if (!systemLocale.equals(mCurrentSystemLocale)) {
             updateAllParameters();
         }
-    }
-
-    public boolean isDictionaryAvailable() {
-        return mIsDictionaryAvailable;
     }
 
     public InputMethodSubtype getCurrentSubtype() {
