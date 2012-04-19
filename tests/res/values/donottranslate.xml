@@ -50,13 +50,13 @@
     <string name="multiple_labels_with_escape_surrounded_by_spaces">" \\abc , d\\ef , gh\\i "</string>
     <string name="multiple_labels_with_comma_and_escape">"ab\\\\,d\\\\\\,,g\\,i"</string>
     <string name="multiple_labels_with_comma_and_escape_surrounded_by_spaces">" ab\\\\ , d\\\\\\, , g\\,i "</string>
-    <string name="indirect_string">!label/multiple_chars</string>
-    <string name="indirect_string_with_literal">x,!label/multiple_chars,y</string>
-    <string name="indirect2_string">!label/indirect_string</string>
-    <string name="infinite_indirection">infinite,!label/infinite_indirection,loop</string>
-    <string name="upper_indirect_string">!LABEL/MULTIPLE_CHARS</string>
-    <string name="upper_indirect_string_with_literal">x,!LABEL/MULTIPLE_CHARS,y</string>
-    <string name="upper_indirect2_string">!LABEL/UPPER_INDIRECT_STRING</string>
-    <string name="upper_infinite_indirection">infinite,!LABEL/INFINITE_INDIRECTION,loop</string>
-    <string name="indirect_navigate_actions_as_more_key">!fixedColumnOrder!2,!label/action_previous_as_more_key,!label/action_next_as_more_key</string>
+    <string name="indirect_string">!text/multiple_chars</string>
+    <string name="indirect_string_with_literal">x,!text/multiple_chars,y</string>
+    <string name="indirect2_string">!text/indirect_string</string>
+    <string name="infinite_indirection">infinite,!text/infinite_indirection,loop</string>
+    <string name="upper_indirect_string">!TEXT/MULTIPLE_CHARS</string>
+    <string name="upper_indirect_string_with_literal">x,!TEXT/MULTIPLE_CHARS,y</string>
+    <string name="upper_indirect2_string">!TEXT/UPPER_INDIRECT_STRING</string>
+    <string name="upper_infinite_indirection">infinite,!TEXT/INFINITE_INDIRECTION,loop</string>
+    <string name="indirect_navigate_actions_as_more_key">!fixedColumnOrder!2,!text/action_previous_as_more_key,!text/action_next_as_more_key</string>
 </resources>

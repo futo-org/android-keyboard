@@ -30,7 +30,7 @@ import java.util.Locale;
 
 public class KeySpecParserTests extends AndroidTestCase {
     private final KeyboardCodesSet mCodesSet = new KeyboardCodesSet();
-    private final KeyboardLabelsSet mLabelsSet = new KeyboardLabelsSet();
+    private final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
 
     private static final String CODE_SETTINGS = "!code/key_settings";
     private static final String ICON_SETTINGS = "!icon/settings_key";
@@ -49,8 +49,8 @@ public class KeySpecParserTests extends AndroidTestCase {
 
         final String language = Locale.ENGLISH.getLanguage();
         mCodesSet.setLanguage(language);
-        mLabelsSet.setLanguage(language);
-        mLabelsSet.loadStringResources(getContext());
+        mTextsSet.setLanguage(language);
+        mTextsSet.loadStringResources(getContext());
 
         mCodeSettings = KeySpecParser.parseCode(
                 CODE_SETTINGS, mCodesSet, CODE_UNSPECIFIED);
@@ -61,7 +61,7 @@ public class KeySpecParserTests extends AndroidTestCase {
 
     private void assertParser(String message, String moreKeySpec, String expectedLabel,
             String expectedOutputText, int expectedIcon, int expectedCode) {
-        final String labelResolved = KeySpecParser.resolveLabelReference(moreKeySpec, mLabelsSet);
+        final String labelResolved = KeySpecParser.resolveTextReference(moreKeySpec, mTextsSet);
         final MoreKeySpec spec = new MoreKeySpec(labelResolved, mCodesSet);
         assertEquals(message + " [label]", expectedLabel, spec.mLabel);
         assertEquals(message + " [ouptputText]", expectedOutputText, spec.mOutputText);
@@ -257,21 +257,21 @@ public class KeySpecParserTests extends AndroidTestCase {
     }
 
     public void testResourceReference() {
-        assertParser("Settings as more key", "!label/settings_as_more_key",
+        assertParser("Settings as more key", "!text/settings_as_more_key",
                 null, null, mSettingsIconId, mCodeSettings);
-        assertParser("SETTINGS AS MORE KEY", "!LABEL/SETTINGS_AS_MORE_KEY",
+        assertParser("SETTINGS AS MORE KEY", "!TEXT/SETTINGS_AS_MORE_KEY",
                 null, null, mSettingsIconId, mCodeSettings);
 
-        assertParser("Action next as more key", "!label/label_next_key|!code/key_action_next",
+        assertParser("Action next as more key", "!text/label_next_key|!code/key_action_next",
                 "Next", null, ICON_UNDEFINED, mCodeActionNext);
-        assertParser("ACTION NEXT AS MORE KEY", "!LABEL/LABEL_NEXT_KEY|!CODE/KEY_ACTION_NEXT",
+        assertParser("ACTION NEXT AS MORE KEY", "!TEXT/LABEL_NEXT_KEY|!CODE/KEY_ACTION_NEXT",
                 "Next", null, ICON_UNDEFINED, mCodeActionNext);
 
         assertParser("Popular domain",
-                "!label/keylabel_for_popular_domain|!label/keylabel_for_popular_domain ",
+                "!text/keylabel_for_popular_domain|!text/keylabel_for_popular_domain ",
                 ".com", ".com ", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("POPULAR DOMAIN",
-                "!LABEL/KEYLABEL_FOR_POPULAR_DOMAIN|!LABEL/KEYLABEL_FOR_POPULAR_DOMAIN ",
+                "!TEXT/KEYLABEL_FOR_POPULAR_DOMAIN|!TEXT/KEYLABEL_FOR_POPULAR_DOMAIN ",
                 ".com", ".com ", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
     }
 

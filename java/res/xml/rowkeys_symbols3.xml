@@ -31,20 +31,20 @@
         latin:moreKeys="&#x00A1;" />
     <Key
         latin:keyLabel="&quot;"
-        latin:moreKeys="!label/more_keys_for_double_quote" />
+        latin:moreKeys="!text/more_keys_for_double_quote" />
     <Key
         latin:keyLabel="\'"
-        latin:moreKeys="!label/more_keys_for_single_quote" />
+        latin:moreKeys="!text/more_keys_for_single_quote" />
     <Key
         latin:keyLabel=":" />
     <Key
-        latin:keyLabel="!label/keylabel_for_symbols_semicolon"
-        latin:moreKeys="!label/more_keys_for_symbols_semicolon" />
+        latin:keyLabel="!text/keylabel_for_symbols_semicolon"
+        latin:moreKeys="!text/more_keys_for_symbols_semicolon" />
     <Key
         latin:keyLabel="/" />
     <Key
-        latin:keyLabel="!label/keylabel_for_symbols_question"
-        latin:moreKeys="!label/more_keys_for_symbols_question" />
+        latin:keyLabel="!text/keylabel_for_symbols_question"
+        latin:moreKeys="!text/more_keys_for_symbols_question" />
     <Key
         latin:keyStyle="deleteKeyStyle"
         latin:keyWidth="fillRight"

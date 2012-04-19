@@ -72,7 +72,7 @@
                 <Key
                     latin:keyLabel=","
                     latin:keyLabelFlags="hasPopupHint"
-                    latin:moreKeys="!label/more_keys_for_am_pm"
+                    latin:moreKeys="!text/more_keys_for_am_pm"
                     latin:keyStyle="numKeyStyle"
                     latin:keyWidth="8.047%p" />
             </case>

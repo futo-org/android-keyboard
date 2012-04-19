@@ -24,9 +24,9 @@
     <Key
         latin:keyLabel="&lt;"
         latin:code="!code/key_less_than"
-        latin:moreKeys="!label/more_keys_for_less_than" />
+        latin:moreKeys="!text/more_keys_for_less_than" />
     <Key
         latin:keyLabel="&gt;"
         latin:code="!code/key_greater_than"
-        latin:moreKeys="!label/more_keys_for_greater_than" />
+        latin:moreKeys="!text/more_keys_for_greater_than" />
 </merge>

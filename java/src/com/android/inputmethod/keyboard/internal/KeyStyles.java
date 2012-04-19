@@ -35,19 +35,19 @@ public class KeyStyles {
     private final HashMap<String, DeclaredKeyStyle> mStyles =
             new HashMap<String, DeclaredKeyStyle>();
 
-    private final KeyboardLabelsSet mLabelsSet;
+    private final KeyboardTextsSet mTextsSet;
     private final KeyStyle mEmptyKeyStyle;
 
-    public KeyStyles(KeyboardLabelsSet labelsSet) {
-        mLabelsSet = labelsSet;
-        mEmptyKeyStyle = new EmptyKeyStyle(labelsSet);
+    public KeyStyles(KeyboardTextsSet textsSet) {
+        mTextsSet = textsSet;
+        mEmptyKeyStyle = new EmptyKeyStyle(textsSet);
     }
 
     public static abstract class KeyStyle {
-        protected final KeyboardLabelsSet mLabelsSet;
+        protected final KeyboardTextsSet mTextsSet;
 
-        public KeyStyle(KeyboardLabelsSet labelsSet) {
-            mLabelsSet = labelsSet;
+        public KeyStyle(KeyboardTextsSet textsSet) {
+            mTextsSet = textsSet;
         }
 
         public abstract String[] getStringArray(TypedArray a, int index);
@@ -57,22 +57,22 @@ public class KeyStyles {
 
         protected String parseString(TypedArray a, int index) {
             if (a.hasValue(index)) {
-                return KeySpecParser.resolveLabelReference(a.getString(index), mLabelsSet);
+                return KeySpecParser.resolveTextReference(a.getString(index), mTextsSet);
             }
             return null;
         }
 
         protected String[] parseStringArray(TypedArray a, int index) {
             if (a.hasValue(index)) {
-                return KeySpecParser.parseCsvString(a.getString(index), mLabelsSet);
+                return KeySpecParser.parseCsvString(a.getString(index), mTextsSet);
             }
             return null;
         }
     }
 
     private static class EmptyKeyStyle extends KeyStyle {
-        public EmptyKeyStyle(KeyboardLabelsSet labelsSet) {
-            super(labelsSet);
+        public EmptyKeyStyle(KeyboardTextsSet textsSet) {
+            super(textsSet);
         }
 
         @Override
@@ -99,8 +99,8 @@ public class KeyStyles {
     private static class DeclaredKeyStyle extends KeyStyle {
         private final HashMap<Integer, Object> mStyleAttributes = new HashMap<Integer, Object>();
 
-        public DeclaredKeyStyle(KeyboardLabelsSet labelsSet) {
-            super(labelsSet);
+        public DeclaredKeyStyle(KeyboardTextsSet textsSet) {
+            super(textsSet);
         }
 
         @Override
@@ -195,7 +195,7 @@ public class KeyStyles {
             }
         }
 
-        final DeclaredKeyStyle style = new DeclaredKeyStyle(mLabelsSet);
+        final DeclaredKeyStyle style = new DeclaredKeyStyle(mTextsSet);
         if (keyStyleAttr.hasValue(R.styleable.Keyboard_KeyStyle_parentStyle)) {
             final String parentStyle = keyStyleAttr.getString(
                     R.styleable.Keyboard_KeyStyle_parentStyle);

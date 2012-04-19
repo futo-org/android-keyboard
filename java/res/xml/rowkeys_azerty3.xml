@@ -23,20 +23,20 @@
 >
     <Key
         latin:keyLabel="w"
-        latin:moreKeys="!label/more_keys_for_w" />
+        latin:moreKeys="!text/more_keys_for_w" />
     <Key
         latin:keyLabel="x" />
     <Key
         latin:keyLabel="c"
-        latin:moreKeys="!label/more_keys_for_c" />
+        latin:moreKeys="!text/more_keys_for_c" />
     <Key
         latin:keyLabel="v"
-        latin:moreKeys="!label/more_keys_for_v" />
+        latin:moreKeys="!text/more_keys_for_v" />
     <Key
         latin:keyLabel="b" />
     <Key
         latin:keyLabel="n"
-        latin:moreKeys="!label/more_keys_for_n" />
+        latin:moreKeys="!text/more_keys_for_n" />
     <include
         latin:keyboardLayout="@xml/key_azerty_quote" />
 </merge>

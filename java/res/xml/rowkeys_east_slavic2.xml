@@ -25,8 +25,8 @@
     <Key
         latin:keyLabel="&#x0444;" />
     <Key
-        latin:keyLabel="!label/keylabel_for_east_slavic_row2_1"
-        latin:moreKeys="!label/more_keys_for_east_slavic_row2_1" />
+        latin:keyLabel="!text/keylabel_for_east_slavic_row2_1"
+        latin:moreKeys="!text/more_keys_for_east_slavic_row2_1" />
     <!-- U+0432: "в" CYRILLIC SMALL LETTER VE -->
     <Key
         latin:keyLabel="&#x0432;" />
@@ -42,7 +42,7 @@
     <!-- U+043E: "о" CYRILLIC SMALL LETTER O -->
     <Key
         latin:keyLabel="&#x043E;"
-        latin:moreKeys="!label/more_keys_for_cyrillic_o" />
+        latin:moreKeys="!text/more_keys_for_cyrillic_o" />
     <!-- U+043B: "л" CYRILLIC SMALL LETTER EL -->
     <Key
         latin:keyLabel="&#x043B;" />

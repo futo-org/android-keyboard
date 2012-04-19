@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin.makelabel;
+package com.android.inputmethod.latin.maketext;
 
 import java.io.IOException;
 import java.io.InputStream;

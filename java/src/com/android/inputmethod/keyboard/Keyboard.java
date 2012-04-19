@@ -30,7 +30,7 @@ import android.view.InflateException;
 import com.android.inputmethod.keyboard.internal.KeyStyles;
 import com.android.inputmethod.keyboard.internal.KeyboardCodesSet;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
-import com.android.inputmethod.keyboard.internal.KeyboardLabelsSet;
+import com.android.inputmethod.keyboard.internal.KeyboardTextsSet;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 import com.android.inputmethod.latin.R;
@@ -236,8 +236,8 @@ public class Keyboard {
         public final ArrayList<Key> mAltCodeKeysWhileTyping = new ArrayList<Key>();
         public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
         public final KeyboardCodesSet mCodesSet = new KeyboardCodesSet();
-        public final KeyboardLabelsSet mLabelsSet = new KeyboardLabelsSet();
-        public final KeyStyles mKeyStyles = new KeyStyles(mLabelsSet);
+        public final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
+        public final KeyStyles mKeyStyles = new KeyStyles(mTextsSet);
 
         public KeyboardLayoutSet.KeysCache mKeysCache;
 
@@ -776,11 +776,11 @@ public class Keyboard {
                 params.mIconsSet.loadIcons(keyboardAttr);
                 final String language = params.mId.mLocale.getLanguage();
                 params.mCodesSet.setLanguage(language);
-                params.mLabelsSet.setLanguage(language);
+                params.mTextsSet.setLanguage(language);
                 final RunInLocale<Void> job = new RunInLocale<Void>() {
                     @Override
                     protected Void job(Resources res) {
-                        params.mLabelsSet.loadStringResources(mContext);
+                        params.mTextsSet.loadStringResources(mContext);
                         return null;
                     }
                 };

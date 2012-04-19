@@ -30,8 +30,8 @@ import java.util.Arrays;
  * The specification is comma separated texts each of which represents one "more key".
  * The specification might have label or string resource reference in it. These references are
  * expanded before parsing comma.
- * - Label reference should be a string representation of label (!label/label_name)
- * - String resource reference should be a string representation of resource (!label/resource_name)
+ * - Label reference should be a string representation of label (!text/label_name)
+ * - String resource reference should be a string representation of resource (!text/resource_name)
  * Each "more key" specification is one of the following:
  * - Label optionally followed by keyOutputText or code (keyLabel|keyOutputText).
  * - Icon followed by keyOutputText or code (!icon/icon_name|!code/code_name)
@@ -51,7 +51,7 @@ public class KeySpecParser {
     private static int COMMA = ',';
     private static final char ESCAPE_CHAR = '\\';
     private static final char LABEL_END = '|';
-    private static final String PREFIX_LABEL = "!label/";
+    private static final String PREFIX_TEXT = "!text/";
     private static final String PREFIX_ICON = "!icon/";
     private static final String PREFIX_CODE = "!code/";
     private static final String PREFIX_HEX = "0x";
@@ -334,7 +334,7 @@ public class KeySpecParser {
         }
     }
 
-    public static String resolveLabelReference(String rawText, KeyboardLabelsSet labelsSet) {
+    public static String resolveTextReference(String rawText, KeyboardTextsSet textsSet) {
         int level = 0;
         String text = rawText;
         StringBuilder sb;
@@ -344,7 +344,7 @@ public class KeySpecParser {
                 throw new RuntimeException("too many @string/resource indirection: " + text);
             }
 
-            final int prefixLen = PREFIX_LABEL.length();
+            final int prefixLen = PREFIX_TEXT.length();
             final int size = text.length();
             if (size < prefixLen) {
                 return text;
@@ -353,14 +353,14 @@ public class KeySpecParser {
             sb = null;
             for (int pos = 0; pos < size; pos++) {
                 final char c = text.charAt(pos);
-                if (text.regionMatches(true, pos, PREFIX_LABEL, 0, prefixLen)
-                        && labelsSet != null) {
+                if (text.regionMatches(true, pos, PREFIX_TEXT, 0, prefixLen)
+                        && textsSet != null) {
                     if (sb == null) {
                         sb = new StringBuilder(text.substring(0, pos));
                     }
-                    final int end = searchLabelNameEnd(text, pos + prefixLen);
+                    final int end = searchTextNameEnd(text, pos + prefixLen);
                     final String name = text.substring(pos + prefixLen, end);
-                    sb.append(labelsSet.getLabel(name));
+                    sb.append(textsSet.getText(name));
                     pos = end - 1;
                 } else if (c == ESCAPE_CHAR) {
                     if (sb != null) {
@@ -381,7 +381,7 @@ public class KeySpecParser {
         return text;
     }
 
-    private static int searchLabelNameEnd(String text, int start) {
+    private static int searchTextNameEnd(String text, int start) {
         final int size = text.length();
         for (int pos = start; pos < size; pos++) {
             final char c = text.charAt(pos);
@@ -395,8 +395,8 @@ public class KeySpecParser {
         return size;
     }
 
-    public static String[] parseCsvString(String rawText, KeyboardLabelsSet labelsSet) {
-        final String text = resolveLabelReference(rawText, labelsSet);
+    public static String[] parseCsvString(String rawText, KeyboardTextsSet textsSet) {
+        final String text = resolveTextReference(rawText, textsSet);
         final int size = text.length();
         if (size == 0) {
             return null;

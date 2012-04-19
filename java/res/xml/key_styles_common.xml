@@ -35,7 +35,7 @@
             <key-style
                 latin:styleName="f1MoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!label/settings_as_more_key"
+                latin:moreKeys="!text/settings_as_more_key"
                 latin:backgroundType="functional" />
         </default>
     </switch>
@@ -98,7 +98,7 @@
                 latin:keyLabel=":-)"
                 latin:keyOutputText=":-) "
                 latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!label/more_keys_for_smiley"
+                latin:moreKeys="!text/more_keys_for_smiley"
                 latin:backgroundType="functional" />
         </case>
     </switch>
@@ -157,7 +157,7 @@
                 latin:styleName="toSymbolKeyStyle"
                 latin:code="!code/key_switch_alpha_symbol"
                 latin:keyIcon="!icon/shortcut_for_label"
-                latin:keyLabel="!label/label_to_symbol_with_microphone_key"
+                latin:keyLabel="!text/label_to_symbol_with_microphone_key"
                 latin:keyLabelFlags="withIconRight"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="functional" />
@@ -166,7 +166,7 @@
             <key-style
                 latin:styleName="toSymbolKeyStyle"
                 latin:code="!code/key_switch_alpha_symbol"
-                latin:keyLabel="!label/label_to_symbol_key"
+                latin:keyLabel="!text/label_to_symbol_key"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="functional" />
         </default>
@@ -174,27 +174,27 @@
     <key-style
         latin:styleName="toAlphaKeyStyle"
         latin:code="!code/key_switch_alpha_symbol"
-        latin:keyLabel="!label/label_to_alpha_key"
+        latin:keyLabel="!text/label_to_alpha_key"
         latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="toMoreSymbolKeyStyle"
         latin:code="!code/key_shift"
-        latin:keyLabel="!label/label_to_more_symbol_key"
+        latin:keyLabel="!text/label_to_more_symbol_key"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="backFromMoreSymbolKeyStyle"
         latin:code="!code/key_shift"
-        latin:keyLabel="!label/label_to_symbol_key"
+        latin:keyLabel="!text/label_to_symbol_key"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="punctuationKeyStyle"
         latin:keyLabel="."
-        latin:keyHintLabel="!label/keyhintlabel_for_punctuation"
+        latin:keyHintLabel="!text/keyhintlabel_for_punctuation"
         latin:keyLabelFlags="hasPopupHint"
-        latin:moreKeys="!label/more_keys_for_punctuation"
+        latin:moreKeys="!text/more_keys_for_punctuation"
         latin:backgroundType="functional" />
 </merge>

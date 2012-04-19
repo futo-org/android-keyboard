@@ -14,14 +14,14 @@
  * the License.
  */
 
-package com.android.inputmethod.latin.makelabel;
+package com.android.inputmethod.latin.maketext;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.jar.JarFile;
 
-public class LabelMaker {
+public class LabelText {
     static class Options {
         private static final String OPTION_JAVA = "-java";
 
@@ -58,7 +58,7 @@ public class LabelMaker {
 
     public static void main(final String[] args) {
         final Options options = new Options(args);
-        final JarFile jar = JarUtils.getJarFile(LabelMaker.class.getClassLoader());
+        final JarFile jar = JarUtils.getJarFile(LabelText.class.getClassLoader());
         final MoreKeysResources resources = new MoreKeysResources(jar);
         resources.writeToJava(options.mJava);
     }

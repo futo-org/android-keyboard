@@ -37,7 +37,7 @@
             latin:keyWidth="39.750%p" />
         <Key
             latin:keyLabel="&quot;"
-            latin:moreKeys="!label/more_keys_for_tablet_double_quote" />
+            latin:moreKeys="!text/more_keys_for_tablet_double_quote" />
         <Key
             latin:keyLabel="_" />
         <Spacer

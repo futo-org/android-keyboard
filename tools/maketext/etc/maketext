@@ -33,7 +33,7 @@ progdir=`pwd`
 prog="${progdir}"/`basename "${prog}"`
 cd "${oldwd}"
 
-jarfile=makelabel.jar
+jarfile=maketext.jar
 frameworkdir="$progdir"
 if [ ! -r "$frameworkdir/$jarfile" ]
 then

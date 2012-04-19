@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin.makelabel;
+package com.android.inputmethod.latin.maketext;
 
 import java.io.Closeable;
 import java.io.File;
@@ -30,13 +30,13 @@ import java.util.Locale;
 import java.util.jar.JarFile;
 
 public class MoreKeysResources {
-    private static final String LABEL_RESOURCE_NAME = "donottranslate-more-keys.xml";
+    private static final String TEXT_RESOURCE_NAME = "donottranslate-more-keys.xml";
 
-    private static final String JAVA_TEMPLATE = "KeyboardLabelsSet.tmpl";
+    private static final String JAVA_TEMPLATE = "KeyboardTextsSet.tmpl";
     private static final String MARK_NAMES = "@NAMES@";
-    private static final String MARK_DEFAULT_LABELS = "@DEFAULT_LABELS@";
-    private static final String MARK_LABELS = "@LABELS@";
-    private static final String MARK_LANGUAGES_AND_LABELS = "@LANGUAGES_AND_LABELS@";
+    private static final String MARK_DEFAULT_TEXTS = "@DEFAULT_TEXTS@";
+    private static final String MARK_TEXTS = "@TEXTS@";
+    private static final String MARK_LANGUAGES_AND_TEXTS = "@LANGUAGES_AND_TEXTS@";
     private static final String DEFAUT_LANGUAGE_NAME = "DEFAULT";
     private static final String ARRAY_NAME_FOR_LANGUAGE = "LANGUAGE_%s";
     private static final String EMPTY_STRING_VAR = "EMPTY";
@@ -53,7 +53,7 @@ public class MoreKeysResources {
 
     public MoreKeysResources(final JarFile jar) {
         mJar = jar;
-        final ArrayList<String> resources = JarUtils.getNameListing(jar, LABEL_RESOURCE_NAME);
+        final ArrayList<String> resources = JarUtils.getNameListing(jar, TEXT_RESOURCE_NAME);
         for (final String name : resources) {
             final String dirName = name.substring(0, name.lastIndexOf('/'));
             final int pos = dirName.lastIndexOf('/');
@@ -118,11 +118,11 @@ public class MoreKeysResources {
         while ((line = in.readLine()) != null) {
             if (line.contains(MARK_NAMES)) {
                 dumpNames(out);
-            } else if (line.contains(MARK_DEFAULT_LABELS)) {
-                dumpDefaultLabels(out);
-            } else if (line.contains(MARK_LABELS)) {
-                dumpLabels(out);
-            } else if (line.contains(MARK_LANGUAGES_AND_LABELS)) {
+            } else if (line.contains(MARK_DEFAULT_TEXTS)) {
+                dumpDefaultTexts(out);
+            } else if (line.contains(MARK_TEXTS)) {
+                dumpTexts(out);
+            } else if (line.contains(MARK_LANGUAGES_AND_TEXTS)) {
                 dumpLanguageMap(out);
             } else {
                 out.println(line);
@@ -140,12 +140,12 @@ public class MoreKeysResources {
         }
     }
 
-    private void dumpDefaultLabels(final PrintStream out) {
+    private void dumpDefaultTexts(final PrintStream out) {
         final StringResourceMap defaultResMap = mResourcesMap.get(DEFAUT_LANGUAGE_NAME);
-        dumpLabelsInternal(out, defaultResMap, defaultResMap);
+        dumpTextsInternal(out, defaultResMap, defaultResMap);
     }
 
-    private void dumpLabels(final PrintStream out) {
+    private void dumpTexts(final PrintStream out) {
         final StringResourceMap defaultResMap = mResourcesMap.get(DEFAUT_LANGUAGE_NAME);
         final ArrayList<String> allLanguages = new ArrayList<String>();
         allLanguages.addAll(mResourcesMap.keySet());
@@ -158,7 +158,7 @@ public class MoreKeysResources {
             out.format("    private static final String[] " + ARRAY_NAME_FOR_LANGUAGE + " = {\n",
                     language);
             final StringResourceMap resMap = mResourcesMap.get(language);
-            dumpLabelsInternal(out, resMap, defaultResMap);
+            dumpTextsInternal(out, resMap, defaultResMap);
             out.format("    };\n\n");
         }
     }
@@ -181,7 +181,7 @@ public class MoreKeysResources {
         }
     }
 
-    private static void dumpLabelsInternal(final PrintStream out, final StringResourceMap resMap,
+    private static void dumpTextsInternal(final PrintStream out, final StringResourceMap resMap,
             final StringResourceMap defaultResMap) {
         final ArrayInitializerFormatter formatter =
                 new ArrayInitializerFormatter(out, 100, "        ");
@@ -235,7 +235,7 @@ public class MoreKeysResources {
         String t = text;
         t = replaceAll(t, "\\?", "?");
         t = replaceAll(t, "\\@", "@");
-        t = replaceAll(t, "@string/", "!label/");
+        t = replaceAll(t, "@string/", "!text/");
         return t;
     }
 

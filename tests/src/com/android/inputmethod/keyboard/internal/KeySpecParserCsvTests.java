@@ -24,17 +24,17 @@ import java.util.Arrays;
 import java.util.Locale;
 
 public class KeySpecParserCsvTests extends AndroidTestCase {
-    private final KeyboardLabelsSet mLabelsSet = new KeyboardLabelsSet();
+    private final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
-        mLabelsSet.setLanguage(Locale.ENGLISH.getLanguage());
-        mLabelsSet.loadStringResources(getContext());
+        mTextsSet.setLanguage(Locale.ENGLISH.getLanguage());
+        mTextsSet.loadStringResources(getContext());
         final String[] testResourceNames = getAllResourceIdNames(
                 com.android.inputmethod.latin.tests.R.string.class);
-        mLabelsSet.loadStringResourcesInternal(getTestContext(),
+        mTextsSet.loadStringResourcesInternal(getTestContext(),
                 testResourceNames,
                 com.android.inputmethod.latin.tests.R.string.empty_string);
     }
@@ -68,7 +68,7 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
     }
 
     private void assertTextArray(String message, String value, String ... expectedArray) {
-        final String[] actual = KeySpecParser.parseCsvString(value, mLabelsSet);
+        final String[] actual = KeySpecParser.parseCsvString(value, mTextsSet);
         final String[] expected = (expectedArray.length == 0) ? null : expectedArray;
         assertArrayEquals(message, expected, actual);
     }
@@ -122,10 +122,10 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
                 "ab" + SURROGATE1 + "cd",
                 "ab" + SURROGATE1 + "cd");
 
-        assertTextArray("Incomplete resource reference 1", "label", "label");
-        assertTextArray("Incomplete resource reference 2", "!label", "!label");
-        assertTextArray("Incomplete RESOURCE REFERENCE 2", "!LABEL", "!LABEL");
-        assertTextArray("Incomplete resource reference 3", "label/", "label/");
+        assertTextArray("Incomplete resource reference 1", "text", "text");
+        assertTextArray("Incomplete resource reference 2", "!text", "!text");
+        assertTextArray("Incomplete RESOURCE REFERENCE 2", "!TEXT", "!TEXT");
+        assertTextArray("Incomplete resource reference 3", "text/", "text/");
         assertTextArray("Incomplete resource reference 4", "!" + SURROGATE2, "!" + SURROGATE2);
     }
 
@@ -157,11 +157,11 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
         assertTextArray("Escaped surrogate with escape",
                 PAIR1 + "\\\\" + PAIR2, PAIR1 + "\\\\" + PAIR2);
 
-        assertTextArray("Escaped !label", "\\!label", "\\!label");
-        assertTextArray("Escaped !label/", "\\!label/", "\\!label/");
-        assertTextArray("Escaped !LABEL/", "\\!LABEL/", "\\!LABEL/");
-        assertTextArray("Escaped !label/name", "\\!label/empty_string", "\\!label/empty_string");
-        assertTextArray("Escaped !LABEL/NAME", "\\!LABEL/EMPTY_STRING", "\\!LABEL/EMPTY_STRING");
+        assertTextArray("Escaped !text", "\\!text", "\\!text");
+        assertTextArray("Escaped !text/", "\\!text/", "\\!text/");
+        assertTextArray("Escaped !TEXT/", "\\!TEXT/", "\\!TEXT/");
+        assertTextArray("Escaped !text/name", "\\!text/empty_string", "\\!text/empty_string");
+        assertTextArray("Escaped !TEXT/NAME", "\\!TEXT/EMPTY_STRING", "\\!TEXT/EMPTY_STRING");
     }
 
     public void testParseCsvTextMulti() {
@@ -192,204 +192,204 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
         assertTextArray("Multiple labels with comma and escape surrounded by spaces",
                 " ab\\\\ , d\\\\\\, , g\\,i ", " ab\\\\ ", " d\\\\\\, ", " g\\,i ");
 
-        assertTextArray("Multiple escaped !label", "\\!,\\!label/empty_string",
-                "\\!", "\\!label/empty_string");
-        assertTextArray("Multiple escaped !LABEL", "\\!,\\!LABEL/EMPTY_STRING",
-                "\\!", "\\!LABEL/EMPTY_STRING");
+        assertTextArray("Multiple escaped !text", "\\!,\\!text/empty_string",
+                "\\!", "\\!text/empty_string");
+        assertTextArray("Multiple escaped !TEXT", "\\!,\\!TEXT/EMPTY_STRING",
+                "\\!", "\\!TEXT/EMPTY_STRING");
     }
 
     public void testParseCsvResourceError() {
-        assertError("Incomplete resource name", "!label/", "!label/");
-        assertError("Non existing resource", "!label/non_existing");
+        assertError("Incomplete resource name", "!text/", "!text/");
+        assertError("Non existing resource", "!text/non_existing");
     }
 
     public void testParseCsvResourceZero() {
         assertTextArray("Empty string",
-                "!label/empty_string");
+                "!text/empty_string");
         assertTextArray("EMPTY STRING",
-                "!LABEL/EMPTY_STRING");
+                "!TEXT/EMPTY_STRING");
     }
 
     public void testParseCsvResourceSingle() {
         assertTextArray("Single char",
-                "!label/single_char", "a");
+                "!text/single_char", "a");
         assertTextArray("SINGLE CHAR",
-                "!LABEL/SINGLE_CHAR", "a");
+                "!TEXT/SINGLE_CHAR", "a");
         assertTextArray("Space",
-                "!label/space", " ");
+                "!text/space", " ");
         assertTextArray("Single label",
-                "!label/single_label", "abc");
+                "!text/single_label", "abc");
         assertTextArray("Spaces",
-                "!label/spaces", "   ");
+                "!text/spaces", "   ");
         assertTextArray("Spaces in label",
-                "!label/spaces_in_label", "a b c");
+                "!text/spaces_in_label", "a b c");
         assertTextArray("Spaces at beginning of label",
-                "!label/spaces_at_beginning_of_label", " abc");
+                "!text/spaces_at_beginning_of_label", " abc");
         assertTextArray("Spaces at end of label",
-                "!label/spaces_at_end_of_label", "abc ");
+                "!text/spaces_at_end_of_label", "abc ");
         assertTextArray("label surrounded by spaces",
-                "!label/label_surrounded_by_spaces", " abc ");
+                "!text/label_surrounded_by_spaces", " abc ");
 
         assertTextArray("Escape and single char",
-                "\\\\!label/single_char", "\\\\a");
+                "\\\\!text/single_char", "\\\\a");
         assertTextArray("Escape and SINGLE CHAR",
-                "\\\\!LABEL/SINGLE_CHAR", "\\\\a");
+                "\\\\!TEXT/SINGLE_CHAR", "\\\\a");
     }
 
     public void testParseCsvResourceSingleEscaped() {
         assertTextArray("Escaped char",
-                "!label/escaped_char", "\\a");
+                "!text/escaped_char", "\\a");
         assertTextArray("Escaped comma",
-                "!label/escaped_comma", "\\,");
+                "!text/escaped_comma", "\\,");
         assertTextArray("Escaped comma escape",
-                "!label/escaped_comma_escape", "a\\,\\");
+                "!text/escaped_comma_escape", "a\\,\\");
         assertTextArray("Escaped escape",
-                "!label/escaped_escape", "\\\\");
+                "!text/escaped_escape", "\\\\");
         assertTextArray("Escaped label",
-                "!label/escaped_label", "a\\bc");
+                "!text/escaped_label", "a\\bc");
         assertTextArray("Escaped label at beginning",
-                "!label/escaped_label_at_beginning", "\\abc");
+                "!text/escaped_label_at_beginning", "\\abc");
         assertTextArray("Escaped label at end",
-                "!label/escaped_label_at_end", "abc\\");
+                "!text/escaped_label_at_end", "abc\\");
         assertTextArray("Escaped label with comma",
-                "!label/escaped_label_with_comma", "a\\,c");
+                "!text/escaped_label_with_comma", "a\\,c");
         assertTextArray("Escaped label with comma at beginning",
-                "!label/escaped_label_with_comma_at_beginning", "\\,bc");
+                "!text/escaped_label_with_comma_at_beginning", "\\,bc");
         assertTextArray("Escaped label with comma at end",
-                "!label/escaped_label_with_comma_at_end", "ab\\,");
+                "!text/escaped_label_with_comma_at_end", "ab\\,");
         assertTextArray("Escaped label with successive",
-                "!label/escaped_label_with_successive", "\\,\\\\bc");
+                "!text/escaped_label_with_successive", "\\,\\\\bc");
         assertTextArray("Escaped label with escape",
-                "!label/escaped_label_with_escape", "a\\\\c");
+                "!text/escaped_label_with_escape", "a\\\\c");
     }
 
     public void testParseCsvResourceMulti() {
         assertTextArray("Multiple chars",
-                "!label/multiple_chars", "a", "b", "c");
+                "!text/multiple_chars", "a", "b", "c");
         assertTextArray("MULTIPLE CHARS",
-                "!LABEL/MULTIPLE_CHARS", "a", "b", "c");
+                "!TEXT/MULTIPLE_CHARS", "a", "b", "c");
         assertTextArray("Multiple chars surrounded by spaces",
-                "!label/multiple_chars_surrounded_by_spaces",
+                "!text/multiple_chars_surrounded_by_spaces",
                 " a ", " b ", " c ");
         assertTextArray("Multiple labels",
-                "!label/multiple_labels", "abc", "def", "ghi");
+                "!text/multiple_labels", "abc", "def", "ghi");
         assertTextArray("Multiple labels surrounded by spaces",
-                "!label/multiple_labels_surrounded_by_spaces", " abc ", " def ", " ghi ");
+                "!text/multiple_labels_surrounded_by_spaces", " abc ", " def ", " ghi ");
     }
 
     public void testParseCsvResourcetMultiEscaped() {
         assertTextArray("Multiple chars with comma",
-                "!label/multiple_chars_with_comma",
+                "!text/multiple_chars_with_comma",
                 "a", "\\,", "c");
         assertTextArray("Multiple chars with comma surrounded by spaces",
-                "!label/multiple_chars_with_comma_surrounded_by_spaces",
+                "!text/multiple_chars_with_comma_surrounded_by_spaces",
                 " a ", " \\, ", " c ");
         assertTextArray("Multiple labels with escape",
-                "!label/multiple_labels_with_escape",
+                "!text/multiple_labels_with_escape",
                 "\\abc", "d\\ef", "gh\\i");
         assertTextArray("Multiple labels with escape surrounded by spaces",
-                "!label/multiple_labels_with_escape_surrounded_by_spaces",
+                "!text/multiple_labels_with_escape_surrounded_by_spaces",
                 " \\abc ", " d\\ef ", " gh\\i ");
         assertTextArray("Multiple labels with comma and escape",
-                "!label/multiple_labels_with_comma_and_escape",
+                "!text/multiple_labels_with_comma_and_escape",
                 "ab\\\\", "d\\\\\\,", "g\\,i");
         assertTextArray("Multiple labels with comma and escape surrounded by spaces",
-                "!label/multiple_labels_with_comma_and_escape_surrounded_by_spaces",
+                "!text/multiple_labels_with_comma_and_escape_surrounded_by_spaces",
                 " ab\\\\ ", " d\\\\\\, ", " g\\,i ");
     }
 
     public void testParseMultipleResources() {
         assertTextArray("Literals and resources",
-                "1,!label/multiple_chars,z", "1", "a", "b", "c", "z");
+                "1,!text/multiple_chars,z", "1", "a", "b", "c", "z");
         assertTextArray("Literals and RESOURCES",
-                "1,!LABEL/MULTIPLE_CHARS,z", "1", "a", "b", "c", "z");
+                "1,!TEXT/MULTIPLE_CHARS,z", "1", "a", "b", "c", "z");
         assertTextArray("Literals and resources and escape at end",
-                "\\1,!label/multiple_chars,z\\", "\\1", "a", "b", "c", "z\\");
+                "\\1,!text/multiple_chars,z\\", "\\1", "a", "b", "c", "z\\");
         assertTextArray("Multiple single resource chars and labels",
-                "!label/single_char,!label/single_label,!label/escaped_comma",
+                "!text/single_char,!text/single_label,!text/escaped_comma",
                 "a", "abc", "\\,");
         assertTextArray("Multiple single resource chars and labels 2",
-                "!label/single_char,!label/single_label,!label/escaped_comma_escape",
+                "!text/single_char,!text/single_label,!text/escaped_comma_escape",
                 "a", "abc", "a\\,\\");
         assertTextArray("Multiple single RESOURCE chars and LABELS 2",
-                "!LABEL/SINGLE_CHAR,!LABEL/SINGLE_LABEL,!LABEL/ESCAPED_COMMA_ESCAPE",
+                "!TEXT/SINGLE_CHAR,!TEXT/SINGLE_LABEL,!TEXT/ESCAPED_COMMA_ESCAPE",
                 "a", "abc", "a\\,\\");
         assertTextArray("Multiple multiple resource chars and labels",
-                "!label/multiple_chars,!label/multiple_labels,!label/multiple_chars_with_comma",
+                "!text/multiple_chars,!text/multiple_labels,!text/multiple_chars_with_comma",
                 "a", "b", "c", "abc", "def", "ghi", "a", "\\,", "c");
         assertTextArray("Concatenated resources",
-                "!label/multiple_chars!label/multiple_labels!label/multiple_chars_with_comma",
+                "!text/multiple_chars!text/multiple_labels!text/multiple_chars_with_comma",
                 "a", "b", "cabc", "def", "ghia", "\\,", "c");
         assertTextArray("Concatenated resource and literal",
-                "abc!label/multiple_labels",
+                "abc!text/multiple_labels",
                 "abcabc", "def", "ghi");
     }
 
     public void testParseIndirectReference() {
         assertTextArray("Indirect",
-                "!label/indirect_string", "a", "b", "c");
+                "!text/indirect_string", "a", "b", "c");
         assertTextArray("Indirect with literal",
-                "1,!label/indirect_string_with_literal,2", "1", "x", "a", "b", "c", "y", "2");
+                "1,!text/indirect_string_with_literal,2", "1", "x", "a", "b", "c", "y", "2");
         assertTextArray("Indirect2",
-                "!label/indirect2_string", "a", "b", "c");
+                "!text/indirect2_string", "a", "b", "c");
 
         assertTextArray("INDIRECT",
-                "!LABEL/INDIRECT_STRING", "a", "b", "c");
+                "!TEXT/INDIRECT_STRING", "a", "b", "c");
         assertTextArray("INDIRECT with literal",
-                "1,!LABEL/INDIRECT_STRING_WITH_LITERAL,2", "1", "x", "a", "b", "c", "y", "2");
+                "1,!TEXT/INDIRECT_STRING_WITH_LITERAL,2", "1", "x", "a", "b", "c", "y", "2");
         assertTextArray("INDIRECT2",
-                "!LABEL/INDIRECT2_STRING", "a", "b", "c");
+                "!TEXT/INDIRECT2_STRING", "a", "b", "c");
 
         assertTextArray("Upper indirect",
-                "!label/upper_indirect_string", "a", "b", "c");
+                "!text/upper_indirect_string", "a", "b", "c");
         assertTextArray("Upper indirect with literal",
-                "1,!label/upper_indirect_string_with_literal,2", "1", "x", "a", "b", "c", "y", "2");
+                "1,!text/upper_indirect_string_with_literal,2", "1", "x", "a", "b", "c", "y", "2");
         assertTextArray("Upper indirect2",
-                "!label/upper_indirect2_string", "a", "b", "c");
+                "!text/upper_indirect2_string", "a", "b", "c");
 
         assertTextArray("UPPER INDIRECT",
-                "!LABEL/upper_INDIRECT_STRING", "a", "b", "c");
+                "!TEXT/upper_INDIRECT_STRING", "a", "b", "c");
         assertTextArray("Upper INDIRECT with literal",
-                "1,!LABEL/upper_INDIRECT_STRING_WITH_LITERAL,2", "1", "x", "a", "b", "c", "y", "2");
+                "1,!TEXT/upper_INDIRECT_STRING_WITH_LITERAL,2", "1", "x", "a", "b", "c", "y", "2");
         assertTextArray("Upper INDIRECT2",
-                "!LABEL/upper_INDIRECT2_STRING", "a", "b", "c");
+                "!TEXT/upper_INDIRECT2_STRING", "a", "b", "c");
     }
 
     public void testParseInfiniteIndirectReference() {
         assertError("Infinite indirection",
-                "1,!label/infinite_indirection,2", "1", "infinite", "<infinite>", "loop", "2");
+                "1,!text/infinite_indirection,2", "1", "infinite", "<infinite>", "loop", "2");
         assertError("INFINITE INDIRECTION",
-                "1,!LABEL/INFINITE_INDIRECTION,2", "1", "infinite", "<infinite>", "loop", "2");
+                "1,!TEXT/INFINITE_INDIRECTION,2", "1", "infinite", "<infinite>", "loop", "2");
 
         assertError("Upper infinite indirection",
-                "1,!label/upper_infinite_indirection,2",
+                "1,!text/upper_infinite_indirection,2",
                 "1", "infinite", "<infinite>", "loop", "2");
         assertError("Upper INFINITE INDIRECTION",
-                "1,!LABEL/UPPER_INFINITE_INDIRECTION,2",
+                "1,!TEXT/UPPER_INFINITE_INDIRECTION,2",
                 "1", "infinite", "<infinite>", "loop", "2");
     }
 
     public void testLabelReferece() {
-        assertTextArray("Label time am", "!label/label_time_am", "AM");
-        assertTextArray("LABEL TIME AM", "!LABEL/LABEL_TIME_AM", "AM");
+        assertTextArray("Label time am", "!text/label_time_am", "AM");
+        assertTextArray("LABEL TIME AM", "!TEXT/LABEL_TIME_AM", "AM");
 
-        assertTextArray("More keys for am pm", "!label/more_keys_for_am_pm",
+        assertTextArray("More keys for am pm", "!text/more_keys_for_am_pm",
                 "!fixedColumnOrder!2", "!hasLabels!", "AM", "PM");
-        assertTextArray("MORE KEYS FOR AM OM", "!LABEL/MORE_KEYS_FOR_AM_PM",
+        assertTextArray("MORE KEYS FOR AM OM", "!TEXT/MORE_KEYS_FOR_AM_PM",
                 "!fixedColumnOrder!2", "!hasLabels!", "AM", "PM");
 
-        assertTextArray("Settings as more key", "!label/settings_as_more_key",
+        assertTextArray("Settings as more key", "!text/settings_as_more_key",
                 "!icon/settings_key|!code/key_settings");
-        assertTextArray("SETTINGS AS MORE KEY", "!LABEL/SETTINGS_AS_MORE_KEY",
+        assertTextArray("SETTINGS AS MORE KEY", "!TEXT/SETTINGS_AS_MORE_KEY",
                 "!icon/settings_key|!code/key_settings");
 
         assertTextArray("Indirect naviagte actions as more key",
-                "!label/indirect_navigate_actions_as_more_key",
+                "!text/indirect_navigate_actions_as_more_key",
                 "!fixedColumnOrder!2",
                 "!hasLabels!", "Prev|!code/key_action_previous",
                 "!hasLabels!", "Next|!code/key_action_next");
         assertTextArray("INDIRECT NAVIGATE ACTIONS AS MORE KEY",
-                "!LABEL/INDIRECT_NAVIGATE_ACTIONS_AS_MORE_KEY",
+                "!TEXT/INDIRECT_NAVIGATE_ACTIONS_AS_MORE_KEY",
                 "!fixedColumnOrder!2",
                 "!hasLabels!", "Prev|!code/key_action_previous",
                 "!hasLabels!", "Next|!code/key_action_next");

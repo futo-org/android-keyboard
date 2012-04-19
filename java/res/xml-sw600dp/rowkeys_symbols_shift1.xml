@@ -30,7 +30,7 @@
     <!-- U+2022: "•" BULLET -->
     <Key
         latin:keyLabel="&#x2022;"
-        latin:moreKeys="!label/more_keys_for_bullet" />
+        latin:moreKeys="!text/more_keys_for_bullet" />
     <!-- U+221A: "√" SQUARE ROOT -->
     <Key
         latin:keyLabel="&#x221A;" />
