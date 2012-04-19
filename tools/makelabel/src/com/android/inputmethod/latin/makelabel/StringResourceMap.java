@@ -92,6 +92,9 @@ public class StringResourceMap {
         @Override
         public void comment(char[] ch, int start, int length) {
             mComment.append(ch, start, length);
+            if (ch[start + length - 1] != '\n') {
+                mComment.append('\n');
+            }
         }
 
         @Override

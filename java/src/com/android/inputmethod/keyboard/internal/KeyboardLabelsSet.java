@@ -220,9 +220,11 @@ public final class KeyboardLabelsSet {
         EMPTY, EMPTY,
         /* ~40 */
         /* 41 */ "!fixedColumnOrder!4,\u2018,\u2019,\u201A,\u201B",
-        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK.  <string name="more_keys_for_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;,&#x00BB;</string>
+        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK.
+        // <string name="more_keys_for_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;,&#x00BB;</string>
         /* 42 */ "!fixedColumnOrder!4,\u201C,\u201D,\u00AB,\u00BB",
-        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK.  <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;,&#x00BB;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
+        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK.
+        // <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;,&#x00BB;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
         /* 43 */ "!fixedColumnOrder!4,\u201C,\u201D,\u00AB,\u00BB,\u2018,\u2019,\u201A,\u201B",
         // U+00A2: "¢" CENT SIGN
         // U+00A3: "£" POUND SIGN
@@ -343,7 +345,8 @@ public final class KeyboardLabelsSet {
         /* 115 */ "Tab",
         // Label for "switch to phone numeric" key.  Must be short to fit on key!
         /* 116 */ "123",
-        // Label for "switch to phone symbols" key.  Must be short to fit on key!  U+FF0A: "＊" FULLWIDTH ASTERISK
+        // Label for "switch to phone symbols" key.  Must be short to fit on key!
+        // U+FF0A: "＊" FULLWIDTH ASTERISK
         // U+FF03: "＃" FULLWIDTH NUMBER SIGN
         /* 117 */ "\uFF0A\uFF03",
         // Key label for "ante meridiem"
@@ -359,28 +362,33 @@ public final class KeyboardLabelsSet {
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null,
         /* ~41 */
-        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK  <string name="more_keys_for_double_quote">&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;</string>
+        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+        // <string name="more_keys_for_double_quote">&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;</string>
         /* 42 */ "!fixedColumnOrder!4,\u201C,\u201D,\u00AB|\u00BB,\u00BB|\u00AB",
-        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK  <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB|&#x00AB;;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
+        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+        // <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB|&#x00AB;;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
         /* 43 */ "!fixedColumnOrder!4,\u201C,\u201D,\u00AB|\u00BB,\u00BB|\u00AB,\u2018,\u2019,\u201A,\u201B",
         /* 44~ */
         null, null, null, null, null,
         /* ~48 */
         // U+061F: "؟" ARABIC QUESTION MARK
         // U+060C: "،" ARABIC COMMA
-        // U+061B: "؛" ARABIC SEMICOLON  U+0650: "ِ" ARABIC KASRA
+        // U+061B: "؛" ARABIC SEMICOLON
+        // U+0650: "ِ" ARABIC KASRA
         // U+064E: "َ" ARABIC FATHA
         // U+064D: "ٍ" ARABIC KASRATAN
         // U+064B: "ً" ARABIC FATHATAN
         // U+0656: "ٖ" ARABIC SUBSCRIPT ALEF
         // U+0670: "ٰ" ARABIC LETTER SUPERSCRIPT ALEF
         // U+0655: "ٕ" ARABIC HAMZA BELOW
-        // U+0654: "ٔ" ARABIC HAMZA ABOVE  U+064F: "ُ" ARABIC DAMMA
+        // U+0654: "ٔ" ARABIC HAMZA ABOVE
+        // U+064F: "ُ" ARABIC DAMMA
         // U+064C: "ٌ" ARABIC DAMMATAN
         // U+0651: "ّ" ARABIC SHADDA
         // U+0652: "ْ" ARABIC SUKUN
         // U+0653: "ٓ" ARABIC MADDAH ABOVE
-        // U+0640: "ـ" ARABIC TATWEEL  In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label.
+        // U+0640: "ـ" ARABIC TATWEEL
+        // In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label.
         /* 49 */ "!fixedColumnOrder!8,\",\',-,:,!,\u061F,\u060C,\u061B,\u0650,\u064E,\u064D,\u064B,\u0656,\u0670,\u0655,\u0654,\u064F,\u064C,\u0651,\u0652,\u0653,\u0640\u0640\u0640|\u0640,/",
         /* 50 */ "\u064B",
         /* 51 */ null,
@@ -448,14 +456,17 @@ public final class KeyboardLabelsSet {
         // U+0652: "ْ" ARABIC SUKUN
         // U+064C: "ٌ" ARABIC DAMMATAN
         // U+0653: "ٓ" ARABIC MADDAH ABOVE
-        // U+064F: "ُ" ARABIC DAMMA  U+0650: "ِ" ARABIC KASRA
+        // U+064F: "ُ" ARABIC DAMMA
+        // U+0650: "ِ" ARABIC KASRA
         // U+064E: "َ" ARABIC FATHA
         // U+064B: "ً" ARABIC FATHATAN
         // U+0640: "ـ" ARABIC TATWEEL
-        // U+064D: "ٍ" ARABIC KASRATAN  U+0670: "ٰ" ARABIC LETTER SUPERSCRIPT ALEF
+        // U+064D: "ٍ" ARABIC KASRATAN
+        // U+0670: "ٰ" ARABIC LETTER SUPERSCRIPT ALEF
         // U+0656: "ٖ" ARABIC SUBSCRIPT ALEF
         // U+0654: "ٔ" ARABIC HAMZA ABOVE
-        // U+0655: "ٕ" ARABIC HAMZA BELOW  In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label.
+        // U+0655: "ٕ" ARABIC HAMZA BELOW
+        // In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label.
         /* 105 */ "\u0651,\u0652,\u064C,\u0653,\u064F,\u0650,\u064E,\u064B,\u0640\u0640\u0640|\u0640,\u064D,\u0654,\u0656,\u0655,\u0670",
         // U+266A: "♪" EIGHTH NOTE
         /* 106 */ "\u266A",
@@ -464,8 +475,11 @@ public final class KeyboardLabelsSet {
         /* 107 */ "\u2605,\u066D",
         /* 108 */ null,
         // The all letters need to be mirrored are found at
-        // http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt  U+FD3E: "﴾" ORNATE LEFT PARENTHESIS
-        // U+FD3F: "﴿" ORNATE RIGHT PARENTHESIS  TODO: DroidSansArabic lacks the glyph of U+FD3E ORNATE LEFT PARENTHESIS  TODO: DroidSansArabic lacks the glyph of U+FD3F ORNATE RIGHT PARENTHESIS
+        // http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt
+        // U+FD3E: "﴾" ORNATE LEFT PARENTHESIS
+        // U+FD3F: "﴿" ORNATE RIGHT PARENTHESIS
+        // TODO: DroidSansArabic lacks the glyph of U+FD3E ORNATE LEFT PARENTHESIS
+        // TODO: DroidSansArabic lacks the glyph of U+FD3F ORNATE RIGHT PARENTHESIS
         /* 109 */ "!fixedColumnOrder!4,\uFD3E|\uFD3F,<|>,{|},[|]",
         /* 110 */ "!fixedColumnOrder!4,\uFD3F|\uFD3E,>|<,}|{,]|[",
         // U+2264: "≤" LESS-THAN OR EQUAL TO
@@ -954,28 +968,33 @@ public final class KeyboardLabelsSet {
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null,
         /* ~41 */
-        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK  <string name="more_keys_for_double_quote">&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;</string>
+        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+        // <string name="more_keys_for_double_quote">&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;</string>
         /* 42 */ "!fixedColumnOrder!4,\u201C,\u201D,\u00AB|\u00BB,\u00BB|\u00AB",
-        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK  <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB|&#x00AB;;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
+        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+        // <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB|&#x00AB;;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
         /* 43 */ "!fixedColumnOrder!4,\u201C,\u201D,\u00AB|\u00BB,\u00BB|\u00AB,\u2018,\u2019,\u201A,\u201B",
         /* 44~ */
         null, null, null, null, null,
         /* ~48 */
         // U+061F: "؟" ARABIC QUESTION MARK
         // U+060C: "،" ARABIC COMMA
-        // U+061B: "؛" ARABIC SEMICOLON  U+0650: "ِ" ARABIC KASRA
+        // U+061B: "؛" ARABIC SEMICOLON
+        // U+0650: "ِ" ARABIC KASRA
         // U+064E: "َ" ARABIC FATHA
         // U+064D: "ٍ" ARABIC KASRATAN
         // U+064B: "ً" ARABIC FATHATAN
         // U+0656: "ٖ" ARABIC SUBSCRIPT ALEF
         // U+0670: "ٰ" ARABIC LETTER SUPERSCRIPT ALEF
         // U+0655: "ٕ" ARABIC HAMZA BELOW
-        // U+0654: "ٔ" ARABIC HAMZA ABOVE  U+064F: "ُ" ARABIC DAMMA
+        // U+0654: "ٔ" ARABIC HAMZA ABOVE
+        // U+064F: "ُ" ARABIC DAMMA
         // U+064C: "ٌ" ARABIC DAMMATAN
         // U+0651: "ّ" ARABIC SHADDA
         // U+0652: "ْ" ARABIC SUKUN
         // U+0653: "ٓ" ARABIC MADDAH ABOVE
-        // U+0640: "ـ" ARABIC TATWEEL  In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label.
+        // U+0640: "ـ" ARABIC TATWEEL
+        // In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label.
         /* 49 */ "!fixedColumnOrder!8,\",\',-,:,!,\u061F,\u060C,\u061B,\u0650,\u064E,\u064D,\u064B,\u0656,\u0670,\u0655,\u0654,\u064F,\u064C,\u0651,\u0652,\u0653,\u0640\u0640\u0640|\u0640,/",
         /* 50 */ "\u064B",
         /* 51 */ null,
@@ -1045,14 +1064,17 @@ public final class KeyboardLabelsSet {
         // U+0652: "ْ" ARABIC SUKUN
         // U+064C: "ٌ" ARABIC DAMMATAN
         // U+0653: "ٓ" ARABIC MADDAH ABOVE
-        // U+064F: "ُ" ARABIC DAMMA  U+0650: "ِ" ARABIC KASRA
+        // U+064F: "ُ" ARABIC DAMMA
+        // U+0650: "ِ" ARABIC KASRA
         // U+064E: "َ" ARABIC FATHA
         // U+064B: "ً" ARABIC FATHATAN
         // U+0640: "ـ" ARABIC TATWEEL
-        // U+064D: "ٍ" ARABIC KASRATAN  U+0670: "ٰ" ARABIC LETTER SUPERSCRIPT ALEF
+        // U+064D: "ٍ" ARABIC KASRATAN
+        // U+0670: "ٰ" ARABIC LETTER SUPERSCRIPT ALEF
         // U+0656: "ٖ" ARABIC SUBSCRIPT ALEF
         // U+0654: "ٔ" ARABIC HAMZA ABOVE
-        // U+0655: "ٕ" ARABIC HAMZA BELOW  In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label.
+        // U+0655: "ٕ" ARABIC HAMZA BELOW
+        // In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label.
         /* 105 */ "\u0651,\u0652,\u064C,\u0653,\u064F,\u0650,\u064E,\u064B,\u0640\u0640\u0640|\u0640,\u064D,\u0654,\u0656,\u0655,_,\u0670",
         // U+266A: "♪" EIGHTH NOTE
         /* 106 */ "\u266A",
@@ -1061,8 +1083,11 @@ public final class KeyboardLabelsSet {
         /* 107 */ "\u2605,\u066D",
         /* 108 */ null,
         // The all letters need to be mirrored are found at
-        // http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt  U+FD3E: "﴾" ORNATE LEFT PARENTHESIS
-        // U+FD3F: "﴿" ORNATE RIGHT PARENTHESIS  TODO: DroidSansArabic lacks the glyph of U+FD3E ORNATE LEFT PARENTHESIS  TODO: DroidSansArabic lacks the glyph of U+FD3F ORNATE RIGHT PARENTHESIS
+        // http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt
+        // U+FD3E: "﴾" ORNATE LEFT PARENTHESIS
+        // U+FD3F: "﴿" ORNATE RIGHT PARENTHESIS
+        // TODO: DroidSansArabic lacks the glyph of U+FD3E ORNATE LEFT PARENTHESIS
+        // TODO: DroidSansArabic lacks the glyph of U+FD3F ORNATE RIGHT PARENTHESIS
         /* 109 */ "!fixedColumnOrder!4,\uFD3E|\uFD3F,<|>,{|},[|]",
         /* 110 */ "!fixedColumnOrder!4,\uFD3F|\uFD3E,>|<,}|{,]|[",
         // U+2264: "≤" LESS-THAN OR EQUAL TO
@@ -1411,9 +1436,11 @@ public final class KeyboardLabelsSet {
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null,
         /* ~41 */
-        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK  <string name="more_keys_for_double_quote">&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;</string>
+        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+        // <string name="more_keys_for_double_quote">&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;</string>
         /* 42 */ "!fixedColumnOrder!4,\u201C,\u201D,\u00AB|\u00BB,\u00BB|\u00AB",
-        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK  <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB|&#x00AB;;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
+        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+        // <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB|&#x00AB;;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
         /* 43 */ "!fixedColumnOrder!4,\u201C,\u201D,\u00AB|\u00BB,\u00BB|\u00AB,\u2018,\u2019,\u201A,\u201B",
         /* 44~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
@@ -1682,9 +1709,12 @@ public final class KeyboardLabelsSet {
         // U+201C: "“" LEFT DOUBLE QUOTATION MARK
         // U+201D: "”" RIGHT DOUBLE QUOTATION MARK
         // U+201E: "„" DOUBLE LOW-9 QUOTATION MARK
-        // U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK  TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK.  <string name="more_keys_for_double_quote">!fixedColumnOrder!6,&#x201E;,&#x201C;,&#x201D;,&#x201F;,&#x00AB;,&#x00BB;</string>
+        // U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK.
+        // <string name="more_keys_for_double_quote">!fixedColumnOrder!6,&#x201E;,&#x201C;,&#x201D;,&#x201F;,&#x00AB;,&#x00BB;</string>
         /* 42 */ "!fixedColumnOrder!5,\u201E,\u201C,\u201D,\u00AB,\u00BB",
-        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK.  <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;,&#x00BB;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
+        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK.
+        // <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;,&#x00BB;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
         /* 43 */ "!fixedColumnOrder!5,\u201E,\u201C,\u201D,\u00AB,\u00BB,\u2018,\u2019,\u201A,\u201B",
     };
 
@@ -2100,9 +2130,12 @@ public final class KeyboardLabelsSet {
         // U+201C: "“" LEFT DOUBLE QUOTATION MARK
         // U+201D: "”" RIGHT DOUBLE QUOTATION MARK
         // U+201E: "„" DOUBLE LOW-9 QUOTATION MARK
-        // U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK  TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK.  <string name="more_keys_for_double_quote">!fixedColumnOrder!6,&#x201E;,&#x201C;,&#x201D;,&#x201F;,&#x00AB;,&#x00BB;</string>
+        // U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK.
+        // <string name="more_keys_for_double_quote">!fixedColumnOrder!6,&#x201E;,&#x201C;,&#x201D;,&#x201F;,&#x00AB;,&#x00BB;</string>
         /* 42 */ "!fixedColumnOrder!5,\u201E,\u201C,\u201D,\u00AB,\u00BB",
-        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK.  <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;,&#x00BB;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
+        // TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK.
+        // <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;,&#x00BB;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
         /* 43 */ "!fixedColumnOrder!5,\u201E,\u201C,\u201D,\u00AB,\u00BB,\u2018,\u2019,\u201A,\u201B",
     };
 
