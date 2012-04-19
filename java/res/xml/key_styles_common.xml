@@ -47,7 +47,7 @@
             <key-style
                 latin:styleName="shiftKeyStyle"
                 latin:code="!code/key_shift"
-                latin:keyIcon="iconShiftKeyShifted"
+                latin:keyIcon="!icon/shift_key_shifted"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="stickyOff" />
         </case>
@@ -57,7 +57,7 @@
             <key-style
                 latin:styleName="shiftKeyStyle"
                 latin:code="!code/key_shift"
-                latin:keyIcon="iconShiftKeyShifted"
+                latin:keyIcon="!icon/shift_key_shifted"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="stickyOn" />
         </case>
@@ -65,7 +65,7 @@
             <key-style
                 latin:styleName="shiftKeyStyle"
                 latin:code="!code/key_shift"
-                latin:keyIcon="iconShiftKey"
+                latin:keyIcon="!icon/shift_key"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="stickyOff" />
         </default>
@@ -73,7 +73,7 @@
     <key-style
         latin:styleName="deleteKeyStyle"
         latin:code="!code/key_delete"
-        latin:keyIcon="iconDeleteKey"
+        latin:keyIcon="!icon/delete_key"
         latin:keyActionFlags="isRepeatable|noKeyPreview"
         latin:backgroundType="functional" />
     <include
@@ -112,39 +112,39 @@
     <key-style
         latin:styleName="zwnjKeyStyle"
         latin:code="0x200C"
-        latin:keyIcon="iconZwnjKey"
-        latin:moreKeys="!icon/zwjKey|&#x200D;"
+        latin:keyIcon="!icon/zwnj_key"
+        latin:moreKeys="!icon/zwj_key|&#x200D;"
         latin:keyLabelFlags="hasPopupHint"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="shortcutKeyStyle"
         latin:code="!code/key_shortcut"
-        latin:keyIcon="iconShortcutKey"
-        latin:keyIconDisabled="iconDisabledShortcutKey"
+        latin:keyIcon="!icon/shortcut_key"
+        latin:keyIconDisabled="!icon/shortcut_key_disabled"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
         latin:altCode="!code/key_space"
         latin:parentStyle="f1MoreKeysStyle" />
     <key-style
         latin:styleName="languageSwitchKeyStyle"
         latin:code="!code/key_language_switch"
-        latin:keyIcon="iconLanguageSwitchKey"
+        latin:keyIcon="!icon/language_switch_key"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping|enableLongPress"
         latin:altCode="!code/key_space"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="tabKeyStyle"
         latin:code="!code/key_tab"
-        latin:keyIcon="iconTabKey"
-        latin:keyIconPreview="iconPreviewTabKey"
+        latin:keyIcon="!icon/tab_key"
+        latin:keyIconPreview="!icon/tab_key_preview"
         latin:backgroundType="functional" />
     <!-- Note: This key style is not for functional tab key. This is used for the tab key which is
          laid out as normal letter key. -->
     <key-style
         latin:styleName="nonSpecialBackgroundTabKeyStyle"
         latin:code="!code/key_tab"
-        latin:keyIcon="iconTabKey"
-        latin:keyIconPreview="iconPreviewTabKey" />
+        latin:keyIcon="!icon/tab_key"
+        latin:keyIconPreview="!icon/tab_key_preview" />
     <switch>
         <!-- When this qwerty keyboard has no shortcut keys but shortcut key is enabled, then symbol
              keyboard will have a shortcut key. That means we should use
@@ -156,7 +156,7 @@
             <key-style
                 latin:styleName="toSymbolKeyStyle"
                 latin:code="!code/key_switch_alpha_symbol"
-                latin:keyIcon="iconShortcutForLabel"
+                latin:keyIcon="!icon/shortcut_for_label"
                 latin:keyLabel="!label/label_to_symbol_with_microphone_key"
                 latin:keyLabelFlags="withIconRight"
                 latin:keyActionFlags="noKeyPreview"

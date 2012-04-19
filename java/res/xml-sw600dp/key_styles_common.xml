@@ -43,7 +43,7 @@
             <key-style
                 latin:styleName="shiftKeyStyle"
                 latin:code="!code/key_shift"
-                latin:keyIcon="iconShiftKeyShifted"
+                latin:keyIcon="!icon/shift_key_shifted"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="stickyOff" />
         </case>
@@ -53,7 +53,7 @@
             <key-style
                 latin:styleName="shiftKeyStyle"
                 latin:code="!code/key_shift"
-                latin:keyIcon="iconShiftKeyShifted"
+                latin:keyIcon="!icon/shift_key_shifted"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="stickyOn" />
         </case>
@@ -61,7 +61,7 @@
             <key-style
                 latin:styleName="shiftKeyStyle"
                 latin:code="!code/key_shift"
-                latin:keyIcon="iconShiftKey"
+                latin:keyIcon="!icon/shift_key"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="stickyOff" />
         </default>
@@ -69,7 +69,7 @@
     <key-style
         latin:styleName="deleteKeyStyle"
         latin:code="!code/key_delete"
-        latin:keyIcon="iconDeleteKey"
+        latin:keyIcon="!icon/delete_key"
         latin:keyActionFlags="isRepeatable|noKeyPreview"
         latin:backgroundType="functional" />
     <include
@@ -83,8 +83,8 @@
     <key-style
         latin:styleName="zwnjKeyStyle"
         latin:code="0x200C"
-        latin:keyIcon="iconZwnjKey"
-        latin:moreKeys="!icon/zwjKey|&#x200D;"
+        latin:keyIcon="!icon/zwnj_key"
+        latin:moreKeys="!icon/zwj_key|&#x200D;"
         latin:keyLabelFlags="hasPopupHint"
         latin:keyActionFlags="noKeyPreview" />
     <key-style
@@ -96,14 +96,14 @@
     <key-style
         latin:styleName="shortcutKeyStyle"
         latin:code="!code/key_shortcut"
-        latin:keyIcon="iconShortcutKey"
-        latin:keyIconDisabled="iconDisabledShortcutKey"
+        latin:keyIcon="!icon/shortcut_key"
+        latin:keyIconDisabled="!icon/shortcut_key_disabled"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="settingsKeyStyle"
         latin:code="!code/key_settings"
-        latin:keyIcon="iconSettingsKey"
+        latin:keyIcon="!icon/settings_key"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
         latin:backgroundType="functional" />
     <switch>
@@ -114,16 +114,16 @@
             <key-style
                 latin:styleName="tabKeyStyle"
                 latin:code="!code/key_action_previous"
-                latin:keyIcon="iconTabKey"
-                latin:keyIconPreview="iconPreviewTabKey"
+                latin:keyIcon="!icon/tab_key"
+                latin:keyIconPreview="!icon/tab_key_preview"
                 latin:backgroundType="functional" />
         </case>
         <default>
             <key-style
                 latin:styleName="tabKeyStyle"
                 latin:code="!code/key_tab"
-                latin:keyIcon="iconTabKey"
-                latin:keyIconPreview="iconPreviewTabKey"
+                latin:keyIcon="!icon/tab_key"
+                latin:keyIconPreview="!icon/tab_key_preview"
                 latin:backgroundType="functional" />
         </default>
     </switch>

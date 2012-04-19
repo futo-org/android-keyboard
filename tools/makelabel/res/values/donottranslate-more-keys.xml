@@ -181,8 +181,8 @@
          U+2663: "♣" BLACK CLUB SUIT -->
     <string name="more_keys_for_bullet">&#x266A;,&#x2665;,&#x2660;,&#x2666;,&#x2663;</string>
     <string name="more_keys_for_am_pm">!fixedColumnOrder!2,!hasLabels!,\@string/label_time_am,\@string/label_time_pm</string>
-    <string name="settings_as_more_key">!icon/settingsKey|!code/key_settings</string>
-    <string name="shortcut_as_more_key">!icon/shortcutKey|!code/key_shortcut</string>
+    <string name="settings_as_more_key">!icon/settings_key|!code/key_settings</string>
+    <string name="shortcut_as_more_key">!icon/shortcut_key|!code/key_shortcut</string>
     <string name="action_next_as_more_key">!hasLabels!,\@string/label_next_key|!code/key_action_next</string>
     <string name="action_previous_as_more_key">!hasLabels!,\@string/label_previous_key|!code/key_action_previous</string>
     <!-- Label for "switch to more symbol" modifier key.  Must be short to fit on key! -->

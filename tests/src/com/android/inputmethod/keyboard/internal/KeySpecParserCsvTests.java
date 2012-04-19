@@ -379,9 +379,9 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
                 "!fixedColumnOrder!2", "!hasLabels!", "AM", "PM");
 
         assertTextArray("Settings as more key", "!label/settings_as_more_key",
-                "!icon/settingsKey|!code/key_settings");
+                "!icon/settings_key|!code/key_settings");
         assertTextArray("SETTINGS AS MORE KEY", "!LABEL/SETTINGS_AS_MORE_KEY",
-                "!icon/settingsKey|!code/key_settings");
+                "!icon/settings_key|!code/key_settings");
 
         assertTextArray("Indirect naviagte actions as more key",
                 "!label/indirect_navigate_actions_as_more_key",

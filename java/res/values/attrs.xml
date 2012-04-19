@@ -209,20 +209,21 @@
         <attr name="verticalGap" format="dimension|fraction" />
         <!-- More keys keyboard layout template -->
         <attr name="moreKeysTemplate" format="reference" />
-        <!-- Icon set for key top and key preview. -->
+        <!-- Icon set for key top and key preview.
+             These should be aligned with KeyboardIconsSet.NAMES_AND_ATTR_IDS[] -->
         <attr name="iconShiftKey" format="reference" />
         <attr name="iconDeleteKey" format="reference" />
         <attr name="iconSettingsKey" format="reference" />
         <attr name="iconSpaceKey" format="reference" />
-        <attr name="iconReturnKey" format="reference" />
+        <attr name="iconEnterKey" format="reference" />
         <attr name="iconSearchKey" format="reference" />
         <attr name="iconTabKey" format="reference" />
         <attr name="iconShortcutKey" format="reference" />
         <attr name="iconShortcutForLabel" format="reference" />
         <attr name="iconSpaceKeyForNumberLayout" format="reference" />
         <attr name="iconShiftKeyShifted" format="reference" />
-        <attr name="iconDisabledShortcutKey" format="reference" />
-        <attr name="iconPreviewTabKey" format="reference" />
+        <attr name="iconShortcutKeyDisabled" format="reference" />
+        <attr name="iconTabKeyPreview" format="reference" />
         <attr name="iconLanguageSwitchKey" format="reference" />
         <attr name="iconZwnjKey" format="reference" />
         <attr name="iconZwjKey" format="reference" />
@@ -301,37 +302,11 @@
             <flag name="disableAdditionalMoreKeys" value="0x80000000" />
         </attr>
         <!-- The icon to display on the key instead of the label. -->
-        <!-- TODO: Use string format !icon/name. -->
-        <attr name="keyIcon" format="enum">
-            <!-- This should be aligned with the KeyboardIconsSet.ICON_* -->
-            <enum name="iconUndefined" value="0" />
-            <enum name="iconShiftKey" value="1" />
-            <enum name="iconDeleteKey" value="2" />
-            <enum name="iconSettingsKey" value="3" />
-            <enum name="iconSpaceKey" value="4" />
-            <enum name="iconReturnKey" value="5" />
-            <enum name="iconSearchKey" value="6" />
-            <enum name="iconTabKey" value="7" />
-            <enum name="iconShortcutKey" value="8" />
-            <enum name="iconShortcutForLabel" value="9" />
-            <enum name="iconSpaceKeyForNumberLayout" value="10" />
-            <enum name="iconShiftKeyShifted" value="11" />
-            <enum name="iconLanguageSwitchKey" value="14" />
-            <enum name="iconZwnjKey" value="15" />
-            <enum name="iconZwjKey" value="16" />
-        </attr>
+        <attr name="keyIcon" format="string" />
         <!-- The icon for disabled key -->
-        <!-- TODO: Use string format !icon/name. -->
-        <attr name="keyIconDisabled" format="enum">
-            <!-- This should be aligned with the KeyboardIconsSet.ICON_* -->
-            <enum name="iconDisabledShortcutKey" value="12" />
-        </attr>
+        <attr name="keyIconDisabled" format="string" />
         <!-- The icon to show in the popup preview. -->
-        <!-- TODO: Use string format !icon/name. -->
-        <attr name="keyIconPreview" format="enum">
-            <!-- This should be aligned with the KeyboardIconsSet.ICON_* -->
-            <enum name="iconPreviewTabKey" value="13" />
-        </attr>
+        <attr name="keyIconPreview" format="string" />
         <!-- The key style to specify a set of key attributes defined by <key_style/> -->
         <attr name="keyStyle" format="string" />
         <!-- Visual insets -->

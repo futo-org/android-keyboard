@@ -28,48 +28,52 @@ import java.util.HashMap;
 public class KeyboardIconsSet {
     private static final String TAG = KeyboardIconsSet.class.getSimpleName();
 
-    // The value should be aligned with the enum value of Key.keyIcon.
     public static final int ICON_UNDEFINED = 0;
-    private static final int NUM_ICONS = 16;
-
-    private final Drawable[] mIcons = new Drawable[NUM_ICONS + 1];
+    private static final int ATTR_UNDEFINED = 0;
 
     private static final HashMap<Integer, Integer> ATTR_ID_TO_ICON_ID
             = new HashMap<Integer, Integer>();
+
     // Lower case icon name to icon id map.
     private static final HashMap<String, Integer> sLowerCaseNameToIdsMap =
             new HashMap<String, Integer>();
-    private static final String[] ICON_NAMES = new String[NUM_ICONS + 1];
 
-    private static final int ATTR_UNDEFINED = 0;
+    private static final Object[] NAMES_AND_ATTR_IDS = {
+        "undefined",                    ATTR_UNDEFINED,
+        "shift_key",                    R.styleable.Keyboard_iconShiftKey,
+        "delete_key",                   R.styleable.Keyboard_iconDeleteKey,
+        "settings_key",                 R.styleable.Keyboard_iconSettingsKey,
+        "space_key",                    R.styleable.Keyboard_iconSpaceKey,
+        "enter_key",                    R.styleable.Keyboard_iconEnterKey,
+        "search_key",                   R.styleable.Keyboard_iconSearchKey,
+        "tab_key",                      R.styleable.Keyboard_iconTabKey,
+        "shortcut_key",                 R.styleable.Keyboard_iconShortcutKey,
+        "shortcut_for_label",           R.styleable.Keyboard_iconShortcutForLabel,
+        "space_key_for_number_layout",  R.styleable.Keyboard_iconSpaceKeyForNumberLayout,
+        "shift_key_shifted",            R.styleable.Keyboard_iconShiftKeyShifted,
+        "shortcut_key_disabled",        R.styleable.Keyboard_iconShortcutKeyDisabled,
+        "tab_key_preview",              R.styleable.Keyboard_iconTabKeyPreview,
+        "language_switch_key",          R.styleable.Keyboard_iconLanguageSwitchKey,
+        "zwnj_key",                     R.styleable.Keyboard_iconZwnjKey,
+        "zwj_key",                      R.styleable.Keyboard_iconZwjKey,
+    };
+
+    private static int NUM_ICONS = NAMES_AND_ATTR_IDS.length / 2;
+    private static final String[] ICON_NAMES = new String[NUM_ICONS];
+    private final Drawable[] mIcons = new Drawable[NUM_ICONS];
+
     static {
-        // The key value should be aligned with the enum value of Key.keyIcon.
-        addIconIdMap(0, "undefined", ATTR_UNDEFINED);
-        addIconIdMap(1, "shiftKey", R.styleable.Keyboard_iconShiftKey);
-        addIconIdMap(2, "deleteKey", R.styleable.Keyboard_iconDeleteKey);
-        addIconIdMap(3, "settingsKey", R.styleable.Keyboard_iconSettingsKey);
-        addIconIdMap(4, "spaceKey", R.styleable.Keyboard_iconSpaceKey);
-        addIconIdMap(5, "returnKey", R.styleable.Keyboard_iconReturnKey);
-        addIconIdMap(6, "searchKey", R.styleable.Keyboard_iconSearchKey);
-        addIconIdMap(7, "tabKey", R.styleable.Keyboard_iconTabKey);
-        addIconIdMap(8, "shortcutKey", R.styleable.Keyboard_iconShortcutKey);
-        addIconIdMap(9, "shortcutForLabel", R.styleable.Keyboard_iconShortcutForLabel);
-        addIconIdMap(10, "spaceKeyForNumberLayout",
-                R.styleable.Keyboard_iconSpaceKeyForNumberLayout);
-        addIconIdMap(11, "shiftKeyShifted", R.styleable.Keyboard_iconShiftKeyShifted);
-        addIconIdMap(12, "disabledShortcurKey", R.styleable.Keyboard_iconDisabledShortcutKey);
-        addIconIdMap(13, "previewTabKey", R.styleable.Keyboard_iconPreviewTabKey);
-        addIconIdMap(14, "languageSwitchKey", R.styleable.Keyboard_iconLanguageSwitchKey);
-        addIconIdMap(15, "zwnjKey", R.styleable.Keyboard_iconZwnjKey);
-        addIconIdMap(16, "zwjKey", R.styleable.Keyboard_iconZwjKey);
-    }
-
-    private static void addIconIdMap(int iconId, String name, int attrId) {
-        if (attrId != ATTR_UNDEFINED) {
-            ATTR_ID_TO_ICON_ID.put(attrId,  iconId);
+        int iconId = ICON_UNDEFINED;
+        for (int i = 0; i < NAMES_AND_ATTR_IDS.length; i += 2) {
+            final String name = (String)NAMES_AND_ATTR_IDS[i];
+            final Integer attrId = (Integer)NAMES_AND_ATTR_IDS[i + 1];
+            if (attrId != ATTR_UNDEFINED) {
+                ATTR_ID_TO_ICON_ID.put(attrId,  iconId);
+            }
+            sLowerCaseNameToIdsMap.put(name, iconId);
+            ICON_NAMES[iconId] = name;
+            iconId++;
         }
-        sLowerCaseNameToIdsMap.put(name.toLowerCase(), iconId);
-        ICON_NAMES[iconId] = name;
     }
 
     public void loadIcons(final TypedArray keyboardAttrs) {
@@ -95,7 +99,7 @@ public class KeyboardIconsSet {
         return isValidIconId(iconId) ? ICON_NAMES[iconId] : "unknown<" + iconId + ">";
     }
 
-    public static int getIconId(final String name) {
+    static int getIconId(final String name) {
         Integer iconId = sLowerCaseNameToIdsMap.get(name);
         if (iconId == null) {
             iconId = sLowerCaseNameToIdsMap.get(name.toLowerCase());

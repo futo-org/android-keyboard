@@ -128,7 +128,7 @@
     <key-style
         latin:styleName="numSpaceKeyStyle"
         latin:code="!code/key_space"
-        latin:keyIcon="iconSpaceKeyForNumberLayout"
+        latin:keyIcon="!icon/space_key_for_number_layout"
         latin:keyActionFlags="enableLongPress"
         latin:parentStyle="numKeyBaseStyle" />
 </merge>

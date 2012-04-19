@@ -93,7 +93,7 @@
     <key-style
         latin:styleName="defaultEnterKeyStyle"
         latin:code="!code/key_enter"
-        latin:keyIcon="iconReturnKey"
+        latin:keyIcon="!icon/enter_key"
         latin:keyLabelFlags="autoXScale|followKeyLabelRatio"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional"
@@ -101,7 +101,7 @@
     <key-style
         latin:styleName="defaultActionKeyStyle"
         latin:code="!code/key_action_enter"
-        latin:keyIcon="iconUndefined"
+        latin:keyIcon="!icon/undefined"
         latin:backgroundType="action"
         latin:parentStyle="defaultEnterKeyStyle" />
     <switch>
@@ -159,7 +159,7 @@
         >
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:keyIcon="iconSearchKey"
+                latin:keyIcon="!icon/search_key"
                 latin:parentStyle="defaultActionKeyStyle" />
         </case>
         <case

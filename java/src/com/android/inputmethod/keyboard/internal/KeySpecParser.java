@@ -76,14 +76,7 @@ public class KeySpecParser {
     }
 
     private static boolean hasIcon(String moreKeySpec) {
-        if (moreKeySpec.regionMatches(true, 0, PREFIX_ICON, 0, PREFIX_ICON.length())) {
-            final int end = indexOfLabelEnd(moreKeySpec, 0);
-            if (end > 0) {
-                return true;
-            }
-            throw new KeySpecParserError("outputText or code not specified: " + moreKeySpec);
-        }
-        return false;
+        return moreKeySpec.regionMatches(true, 0, PREFIX_ICON, 0, PREFIX_ICON.length());
     }
 
     private static boolean hasCode(String moreKeySpec) {
@@ -219,10 +212,11 @@ public class KeySpecParser {
         }
     }
 
-    static int getIconId(String moreKeySpec) {
-        if (hasIcon(moreKeySpec)) {
+    public static int getIconId(String moreKeySpec) {
+        if (moreKeySpec != null && hasIcon(moreKeySpec)) {
             final int end = moreKeySpec.indexOf(LABEL_END, PREFIX_ICON.length());
-            final String name = moreKeySpec.substring(PREFIX_ICON.length(), end);
+            final String name = (end < 0) ? moreKeySpec.substring(PREFIX_ICON.length())
+                    : moreKeySpec.substring(PREFIX_ICON.length(), end);
             return KeyboardIconsSet.getIconId(name);
         }
         return KeyboardIconsSet.ICON_UNDEFINED;

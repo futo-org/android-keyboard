@@ -21,7 +21,7 @@
         <item name="iconDeleteKey">@drawable/sym_keyboard_delete</item>
         <item name="iconSettingsKey">@drawable/sym_keyboard_settings</item>
         <item name="iconSpaceKey">@drawable/sym_keyboard_space</item>
-        <item name="iconReturnKey">@drawable/sym_keyboard_return</item>
+        <item name="iconEnterKey">@drawable/sym_keyboard_return</item>ZZ
         <item name="iconSearchKey">@drawable/sym_keyboard_search</item>
         <item name="iconTabKey">@drawable/sym_keyboard_tab</item>
         <item name="iconShortcutKey">@drawable/sym_keyboard_mic</item>
@@ -29,8 +29,8 @@
         <item name="iconSpaceKeyForNumberLayout">@drawable/sym_keyboard_space</item>
         <item name="iconShiftKeyShifted">@drawable/sym_keyboard_shift_locked</item>
         <!-- TODO: Needs non-holo disabled shortcut icon drawable -->
-        <item name="iconDisabledShortcutKey">@drawable/sym_keyboard_voice_off_holo</item>
-        <item name="iconPreviewTabKey">@drawable/sym_keyboard_feedback_tab</item>
+        <item name="iconShortcutKeyDisabled">@drawable/sym_keyboard_voice_off_holo</item>
+        <item name="iconTabKeyPreview">@drawable/sym_keyboard_feedback_tab</item>
         <item name="iconLanguageSwitchKey">@drawable/sym_keyboard_language_switch</item>
         <!-- TODO: Needs dedicated black theme ZWNJ and ZWJ icons -->
         <item name="iconZwnjKey">@drawable/sym_keyboard_zwnj_holo</item>

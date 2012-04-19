@@ -25,15 +25,15 @@
         <item name="iconDeleteKey">@drawable/sym_bkeyboard_delete</item>
         <item name="iconSettingsKey">@drawable/sym_bkeyboard_settings</item>
         <item name="iconSpaceKey">@drawable/sym_bkeyboard_space</item>
-        <item name="iconReturnKey">@drawable/sym_bkeyboard_return</item>
+        <item name="iconEnterKey">@drawable/sym_bkeyboard_return</item>
         <item name="iconSearchKey">@drawable/sym_bkeyboard_search</item>
         <item name="iconTabKey">@drawable/sym_bkeyboard_tab</item>
         <item name="iconShortcutKey">@drawable/sym_bkeyboard_mic</item>
         <item name="iconShortcutForLabel">@drawable/sym_bkeyboard_label_mic</item>
         <item name="iconSpaceKeyForNumberLayout">@drawable/sym_bkeyboard_space</item>
         <item name="iconShiftKeyShifted">@drawable/sym_bkeyboard_shift_locked</item>
-        <item name="iconDisabledShortcutKey">@drawable/sym_bkeyboard_voice_off</item>
-        <item name="iconPreviewTabKey">@drawable/sym_keyboard_feedback_tab</item>
+        <item name="iconShortcutKeyDisabled">@drawable/sym_bkeyboard_voice_off</item>
+        <item name="iconTabKeyPreview">@drawable/sym_keyboard_feedback_tab</item>
         <!-- TODO: Needs dedicated black theme globe icon -->
         <item name="iconLanguageSwitchKey">@drawable/sym_keyboard_language_switch</item>
         <!-- TODO: Needs dedicated black theme ZWNJ and ZWJ icons -->

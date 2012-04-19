@@ -345,8 +345,8 @@ public final class KeyboardLabelsSet {
         // U+2663: "♣" BLACK CLUB SUIT
         /* 108 */ "\u266A,\u2665,\u2660,\u2666,\u2663",
         /* 109 */ "!fixedColumnOrder!2,!hasLabels!,!label/label_time_am,!label/label_time_pm",
-        /* 110 */ "!icon/settingsKey|!code/key_settings",
-        /* 111 */ "!icon/shortcutKey|!code/key_shortcut",
+        /* 110 */ "!icon/settings_key|!code/key_settings",
+        /* 111 */ "!icon/shortcut_key|!code/key_shortcut",
         /* 112 */ "!hasLabels!,!label/label_next_key|!code/key_action_next",
         /* 113 */ "!hasLabels!,!label/label_previous_key|!code/key_action_previous",
         // Label for "switch to more symbol" modifier key.  Must be short to fit on key!

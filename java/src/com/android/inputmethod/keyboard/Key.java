@@ -16,6 +16,12 @@
 
 package com.android.inputmethod.keyboard;
 
+import static com.android.inputmethod.keyboard.Keyboard.CODE_OUTPUT_TEXT;
+import static com.android.inputmethod.keyboard.Keyboard.CODE_SHIFT;
+import static com.android.inputmethod.keyboard.Keyboard.CODE_SWITCH_ALPHA_SYMBOL;
+import static com.android.inputmethod.keyboard.Keyboard.CODE_UNSPECIFIED;
+import static com.android.inputmethod.keyboard.internal.KeyboardIconsSet.ICON_UNDEFINED;
+
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
@@ -170,11 +176,11 @@ public class Key {
         mLabel = label;
         mOutputText = outputText;
         mCode = code;
-        mEnabled = (code != Keyboard.CODE_UNSPECIFIED);
-        mAltCode = Keyboard.CODE_UNSPECIFIED;
+        mEnabled = (code != CODE_UNSPECIFIED);
+        mAltCode = CODE_UNSPECIFIED;
         mIconId = iconId;
-        mDisabledIconId = KeyboardIconsSet.ICON_UNDEFINED;
-        mPreviewIconId = KeyboardIconsSet.ICON_UNDEFINED;
+        mDisabledIconId = ICON_UNDEFINED;
+        mPreviewIconId = ICON_UNDEFINED;
         // Horizontal gap is divided equally to both sides of the key.
         mX = x + mHorizontalGap / 2;
         mY = y;
@@ -208,9 +214,9 @@ public class Key {
         if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyStyle)) {
             String styleName = keyAttr.getString(R.styleable.Keyboard_Key_keyStyle);
             style = keyStyles.getKeyStyle(styleName);
-            if (style == null)
-                throw new XmlParseUtils.ParseException(
-                        "Unknown key style: " + styleName, parser);
+            if (style == null) {
+                throw new XmlParseUtils.ParseException("Unknown key style: " + styleName, parser);
+            }
         } else {
             style = keyStyles.getEmptyKeyStyle();
         }
@@ -235,12 +241,12 @@ public class Key {
                 R.styleable.Keyboard_Key_visualInsetsLeft, params.mBaseWidth, 0);
         mVisualInsetsRight = (int) Keyboard.Builder.getDimensionOrFraction(keyAttr,
                 R.styleable.Keyboard_Key_visualInsetsRight, params.mBaseWidth, 0);
-        mPreviewIconId = style.getInt(keyAttr,
-                R.styleable.Keyboard_Key_keyIconPreview, KeyboardIconsSet.ICON_UNDEFINED);
-        mIconId = style.getInt(keyAttr,
-                R.styleable.Keyboard_Key_keyIcon, KeyboardIconsSet.ICON_UNDEFINED);
-        mDisabledIconId = style.getInt(keyAttr,
-                R.styleable.Keyboard_Key_keyIconDisabled, KeyboardIconsSet.ICON_UNDEFINED);
+        mIconId = KeySpecParser.getIconId(style.getString(keyAttr,
+                R.styleable.Keyboard_Key_keyIcon));
+        mDisabledIconId = KeySpecParser.getIconId(style.getString(keyAttr,
+                R.styleable.Keyboard_Key_keyIconDisabled));
+        mPreviewIconId = KeySpecParser.getIconId(style.getString(keyAttr,
+                R.styleable.Keyboard_Key_keyIconPreview));
 
         mLabelFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags)
                 | row.getDefaultKeyLabelFlags();
@@ -272,8 +278,8 @@ public class Key {
         if ((mLabelFlags & LABEL_FLAGS_DISABLE_ADDITIONAL_MORE_KEYS) != 0) {
             additionalMoreKeys = null;
         } else {
-            additionalMoreKeys = style.getStringArray(
-                    keyAttr, R.styleable.Keyboard_Key_additionalMoreKeys);
+            additionalMoreKeys = style.getStringArray(keyAttr,
+                    R.styleable.Keyboard_Key_additionalMoreKeys);
         }
         moreKeys = KeySpecParser.insertAdditionalMoreKeys(moreKeys, additionalMoreKeys);
         if (moreKeys != null) {
@@ -291,22 +297,21 @@ public class Key {
         if ((mLabelFlags & LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL) != 0) {
             mLabel = params.mId.mCustomActionLabel;
         } else {
-            mLabel = adjustCaseOfStringForKeyboardId(style.getString(
-                    keyAttr, R.styleable.Keyboard_Key_keyLabel), preserveCase, params.mId);
+            mLabel = adjustCaseOfStringForKeyboardId(style.getString(keyAttr,
+                    R.styleable.Keyboard_Key_keyLabel), preserveCase, params.mId);
         }
         if ((mLabelFlags & LABEL_FLAGS_DISABLE_HINT_LABEL) != 0) {
             mHintLabel = null;
         } else {
-            mHintLabel = adjustCaseOfStringForKeyboardId(style.getString(
-                    keyAttr, R.styleable.Keyboard_Key_keyHintLabel), preserveCase, params.mId);
+            mHintLabel = adjustCaseOfStringForKeyboardId(style.getString(keyAttr,
+                    R.styleable.Keyboard_Key_keyHintLabel), preserveCase, params.mId);
         }
-        String outputText = adjustCaseOfStringForKeyboardId(style.getString(
-                keyAttr, R.styleable.Keyboard_Key_keyOutputText), preserveCase, params.mId);
-        final int code = KeySpecParser.parseCode(style.getString(
-                keyAttr, R.styleable.Keyboard_Key_code),
-                params.mCodesSet, Keyboard.CODE_UNSPECIFIED);
+        String outputText = adjustCaseOfStringForKeyboardId(style.getString(keyAttr,
+                R.styleable.Keyboard_Key_keyOutputText), preserveCase, params.mId);
+        final int code = KeySpecParser.parseCode(style.getString(keyAttr,
+                R.styleable.Keyboard_Key_code), params.mCodesSet, CODE_UNSPECIFIED);
         // Choose the first letter of the label as primary code if not specified.
-        if (code == Keyboard.CODE_UNSPECIFIED && TextUtils.isEmpty(outputText)
+        if (code == CODE_UNSPECIFIED && TextUtils.isEmpty(outputText)
                 && !TextUtils.isEmpty(mLabel)) {
             if (StringUtils.codePointCount(mLabel) == 1) {
                 // Use the first letter of the hint label if shiftedLetterActivated flag is
@@ -321,22 +326,21 @@ public class Key {
                 // In some locale and case, the character might be represented by multiple code
                 // points, such as upper case Eszett of German alphabet.
                 outputText = mLabel;
-                mCode = Keyboard.CODE_OUTPUT_TEXT;
+                mCode = CODE_OUTPUT_TEXT;
             }
-        } else if (code == Keyboard.CODE_UNSPECIFIED && outputText != null) {
+        } else if (code == CODE_UNSPECIFIED && outputText != null) {
             if (StringUtils.codePointCount(outputText) == 1) {
                 mCode = outputText.codePointAt(0);
                 outputText = null;
             } else {
-                mCode = Keyboard.CODE_OUTPUT_TEXT;
+                mCode = CODE_OUTPUT_TEXT;
             }
         } else {
             mCode = adjustCaseOfCodeForKeyboardId(code, preserveCase, params.mId);
         }
         mOutputText = outputText;
-        mAltCode = adjustCaseOfCodeForKeyboardId(KeySpecParser.parseCode(style.getString(
-                keyAttr, R.styleable.Keyboard_Key_altCode),
-                params.mCodesSet, Keyboard.CODE_UNSPECIFIED),
+        mAltCode = adjustCaseOfCodeForKeyboardId(KeySpecParser.parseCode(style.getString(keyAttr,
+                R.styleable.Keyboard_Key_altCode), params.mCodesSet, CODE_UNSPECIFIED),
                 preserveCase, params.mId);
         mHashCode = computeHashCode(this);
 
@@ -353,7 +357,7 @@ public class Key {
         final String text = new String(new int[] { code } , 0, 1);
         final String casedText = adjustCaseOfStringForKeyboardId(text, preserveCase, id);
         return StringUtils.codePointCount(casedText) == 1
-                ? casedText.codePointAt(0) : Keyboard.CODE_UNSPECIFIED;
+                ? casedText.codePointAt(0) : CODE_UNSPECIFIED;
     }
 
     private static String adjustCaseOfStringForKeyboardId(String text, boolean preserveCase,
@@ -463,11 +467,11 @@ public class Key {
     }
 
     public boolean isShift() {
-        return mCode == Keyboard.CODE_SHIFT;
+        return mCode == CODE_SHIFT;
     }
 
     public boolean isModifier() {
-        return mCode == Keyboard.CODE_SHIFT || mCode == Keyboard.CODE_SWITCH_ALPHA_SYMBOL;
+        return mCode == CODE_SHIFT || mCode == CODE_SWITCH_ALPHA_SYMBOL;
     }
 
     public boolean isRepeatable() {
@@ -586,7 +590,7 @@ public class Key {
     }
 
     public Drawable getPreviewIcon(KeyboardIconsSet iconSet) {
-        return mPreviewIconId != KeyboardIconsSet.ICON_UNDEFINED
+        return mPreviewIconId != ICON_UNDEFINED
                 ? iconSet.getIconDrawable(mPreviewIconId)
                 : iconSet.getIconDrawable(mIconId);
     }
@@ -726,7 +730,7 @@ public class Key {
          * This constructor is being used only for divider in more keys keyboard.
          */
         protected Spacer(Keyboard.Params params, int x, int y, int width, int height) {
-            super(params, null, null, KeyboardIconsSet.ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED,
+            super(params, null, null, ICON_UNDEFINED, CODE_UNSPECIFIED,
                     null, x, y, width, height, 0);
         }
     }

@@ -22,6 +22,7 @@ import static com.android.inputmethod.keyboard.internal.KeyboardIconsSet.ICON_UN
 
 import android.test.AndroidTestCase;
 
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.internal.KeySpecParser.MoreKeySpec;
 
 import java.util.Arrays;
@@ -31,11 +32,8 @@ public class KeySpecParserTests extends AndroidTestCase {
     private final KeyboardCodesSet mCodesSet = new KeyboardCodesSet();
     private final KeyboardLabelsSet mLabelsSet = new KeyboardLabelsSet();
 
-    private static final String CODE_SETTINGS_NAME = "key_settings";
-    private static final String ICON_SETTINGS_NAME = "settingsKey";
-
-    private static final String CODE_SETTINGS = "!code/" + CODE_SETTINGS_NAME;
-    private static final String ICON_SETTINGS = "!icon/" + ICON_SETTINGS_NAME;
+    private static final String CODE_SETTINGS = "!code/key_settings";
+    private static final String ICON_SETTINGS = "!icon/settings_key";
     private static final String CODE_SETTINGS_UPPERCASE = CODE_SETTINGS.toUpperCase();
     private static final String ICON_SETTINGS_UPPERCASE = ICON_SETTINGS.toUpperCase();
     private static final String CODE_NON_EXISTING = "!code/non_existing";
@@ -54,19 +52,25 @@ public class KeySpecParserTests extends AndroidTestCase {
         mLabelsSet.setLanguage(language);
         mLabelsSet.loadStringResources(getContext());
 
-        mCodeSettings = mCodesSet.getCode(CODE_SETTINGS_NAME);
-        mCodeActionNext = mCodesSet.getCode("key_action_next");
-        mSettingsIconId = KeyboardIconsSet.getIconId(ICON_SETTINGS_NAME);
+        mCodeSettings = KeySpecParser.parseCode(
+                CODE_SETTINGS, mCodesSet, CODE_UNSPECIFIED);
+        mCodeActionNext = KeySpecParser.parseCode(
+                "!code/key_action_next", mCodesSet, CODE_UNSPECIFIED);
+        mSettingsIconId = KeySpecParser.getIconId(ICON_SETTINGS);
     }
 
     private void assertParser(String message, String moreKeySpec, String expectedLabel,
             String expectedOutputText, int expectedIcon, int expectedCode) {
-        final MoreKeySpec spec = new MoreKeySpec(
-                KeySpecParser.resolveLabelReference(moreKeySpec, mLabelsSet), mCodesSet);
-        assertEquals(message + ": label:", expectedLabel, spec.mLabel);
-        assertEquals(message + ": ouptputText:", expectedOutputText, spec.mOutputText);
-        assertEquals(message + ": icon:", expectedIcon, spec.mIconId);
-        assertEquals(message + ": codes value:", expectedCode, spec.mCode);
+        final String labelResolved = KeySpecParser.resolveLabelReference(moreKeySpec, mLabelsSet);
+        final MoreKeySpec spec = new MoreKeySpec(labelResolved, mCodesSet);
+        assertEquals(message + " [label]", expectedLabel, spec.mLabel);
+        assertEquals(message + " [ouptputText]", expectedOutputText, spec.mOutputText);
+        assertEquals(message + " [icon]",
+                KeyboardIconsSet.getIconName(expectedIcon),
+                KeyboardIconsSet.getIconName(spec.mIconId));
+        assertEquals(message + " [code]",
+                Keyboard.printableCode(expectedCode),
+                Keyboard.printableCode(spec.mCode));
     }
 
     private void assertParserError(String message, String moreKeySpec, String expectedLabel,
