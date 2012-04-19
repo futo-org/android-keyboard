@@ -88,4 +88,15 @@ public class StringUtilsTests extends AndroidTestCase {
         assertEquals("in 5 elements at position 2,4", "key1,key3,key5",
                 StringUtils.removeFromCsvIfExists("key", "key1,key,key3,key,key5"));
     }
+
+    public void testHasUpperCase() {
+        assertTrue("single upper-case string", StringUtils.hasUpperCase("String"));
+        assertTrue("multi upper-case string", StringUtils.hasUpperCase("stRInG"));
+        assertTrue("all upper-case string", StringUtils.hasUpperCase("STRING"));
+        assertTrue("upper-case string with non-letters", StringUtils.hasUpperCase("He's"));
+
+        assertFalse("empty string", StringUtils.hasUpperCase(""));
+        assertFalse("lower-case string", StringUtils.hasUpperCase("string"));
+        assertFalse("lower-case string with non-letters", StringUtils.hasUpperCase("he's"));
+    }
 }
