@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.view.inputmethod.InputMethodSubtype;
@@ -117,8 +119,7 @@ public class SubtypeLocale {
     }
 
     public static String getKeyboardLayoutSetName(InputMethodSubtype subtype) {
-        final String keyboardLayoutSet = subtype.getExtraValueOf(
-                LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LAYOUT_SET);
+        final String keyboardLayoutSet = subtype.getExtraValueOf(KEYBOARD_LAYOUT_SET);
         // TODO: Remove this null check when InputMethodManager.getCurrentInputMethodSubtype is
         // fixed.
         if (keyboardLayoutSet == null) {

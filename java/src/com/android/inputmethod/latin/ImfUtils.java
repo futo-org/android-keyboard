@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import static com.android.inputmethod.latin.Constants.Subtype.KEYBOARD_MODE;
+
 import android.content.Context;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -131,7 +133,7 @@ public class ImfUtils {
         // both explicitly and implicitly enabled input method subtype.
         // (The current IME should be LatinIME.)
         for (InputMethodSubtype subtype : subtypes) {
-            if (SubtypeSwitcher.KEYBOARD_MODE.equals(subtype.getMode())) {
+            if (KEYBOARD_MODE.equals(subtype.getMode())) {
                 ++keyboardCount;
             }
         }

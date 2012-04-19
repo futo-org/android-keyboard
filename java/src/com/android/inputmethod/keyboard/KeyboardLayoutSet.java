@@ -16,6 +16,12 @@
 
 package com.android.inputmethod.keyboard;
 
+import static com.android.inputmethod.latin.Constants.ImeOption.FORCE_ASCII;
+import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE;
+import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE_COMPAT;
+import static com.android.inputmethod.latin.Constants.ImeOption.NO_SETTINGS_KEY;
+import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.ASCII_CAPABLE;
+
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -31,7 +37,6 @@ import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet.Params.ElementParams;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.InputTypeUtils;
-import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeLocale;
@@ -230,7 +235,7 @@ public class KeyboardLayoutSet {
             params.mMode = getKeyboardMode(editorInfo);
             params.mEditorInfo = (editorInfo != null) ? editorInfo : EMPTY_EDITOR_INFO;
             params.mNoSettingsKey = InputAttributes.inPrivateImeOptions(
-                    mPackageName, LatinIME.IME_OPTION_NO_SETTINGS_KEY, mEditorInfo);
+                    mPackageName, NO_SETTINGS_KEY, mEditorInfo);
         }
 
         public Builder setScreenGeometry(int orientation, int widthPixels) {
@@ -240,10 +245,10 @@ public class KeyboardLayoutSet {
         }
 
         public Builder setSubtype(InputMethodSubtype subtype) {
-            final boolean asciiCapable = subtype.containsExtraValueKey(
-                    LatinIME.SUBTYPE_EXTRA_VALUE_ASCII_CAPABLE);
+            final boolean asciiCapable = subtype.containsExtraValueKey(ASCII_CAPABLE);
+            @SuppressWarnings("deprecation")
             final boolean deprecatedForceAscii = InputAttributes.inPrivateImeOptions(
-                    mPackageName, LatinIME.IME_OPTION_FORCE_ASCII, mEditorInfo);
+                    mPackageName, FORCE_ASCII, mEditorInfo);
             final boolean forceAscii = EditorInfoCompatUtils.hasFlagForceAscii(
                     mParams.mEditorInfo.imeOptions)
                     || deprecatedForceAscii;
@@ -260,9 +265,9 @@ public class KeyboardLayoutSet {
                 boolean languageSwitchKeyEnabled) {
             @SuppressWarnings("deprecation")
             final boolean deprecatedNoMicrophone = InputAttributes.inPrivateImeOptions(
-                    null, LatinIME.IME_OPTION_NO_MICROPHONE_COMPAT, mEditorInfo);
+                    null, NO_MICROPHONE_COMPAT, mEditorInfo);
             final boolean noMicrophone = InputAttributes.inPrivateImeOptions(
-                    mPackageName, LatinIME.IME_OPTION_NO_MICROPHONE, mEditorInfo)
+                    mPackageName, NO_MICROPHONE, mEditorInfo)
                     || deprecatedNoMicrophone;
             mParams.mVoiceKeyEnabled = voiceKeyEnabled && !noMicrophone;
             mParams.mVoiceKeyOnMain = voiceKeyOnMain;

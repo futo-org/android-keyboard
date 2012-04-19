@@ -16,6 +16,10 @@
 
 package com.android.inputmethod.latin;
 
+import static com.android.inputmethod.latin.Constants.ImeOption.FORCE_ASCII;
+import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE;
+import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE_COMPAT;
+
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -80,49 +84,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean TRACE = false;
     private static boolean DEBUG;
-
-    /**
-     * The private IME option used to indicate that no microphone should be
-     * shown for a given text field. For instance, this is specified by the
-     * search dialog when the dialog is already showing a voice search button.
-     *
-     * @deprecated Use {@link LatinIME#IME_OPTION_NO_MICROPHONE} with package name prefixed.
-     */
-    @SuppressWarnings("dep-ann")
-    public static final String IME_OPTION_NO_MICROPHONE_COMPAT = "nm";
-
-    /**
-     * The private IME option used to indicate that no microphone should be
-     * shown for a given text field. For instance, this is specified by the
-     * search dialog when the dialog is already showing a voice search button.
-     */
-    public static final String IME_OPTION_NO_MICROPHONE = "noMicrophoneKey";
-
-    /**
-     * The private IME option used to indicate that no settings key should be
-     * shown for a given text field.
-     */
-    public static final String IME_OPTION_NO_SETTINGS_KEY = "noSettingsKey";
-
-    /**
-     * The private IME option used to indicate that the given text field needs
-     * ASCII code points input.
-     *
-     * @deprecated Use {@link EditorInfo#IME_FLAG_FORCE_ASCII}.
-     */
-    @SuppressWarnings("dep-ann")
-    public static final String IME_OPTION_FORCE_ASCII = "forceAscii";
-
-    /**
-     * The subtype extra value used to indicate that the subtype keyboard layout set name.
-     */
-    public static final String SUBTYPE_EXTRA_VALUE_KEYBOARD_LAYOUT_SET = "KeyboardLayoutSet";
-
-    /**
-     * The subtype extra value used to indicate that the subtype keyboard layout is capable for
-     * typing ASCII characters.
-     */
-    public static final String SUBTYPE_EXTRA_VALUE_ASCII_CAPABLE = "AsciiCapable";
 
     private static final int EXTENDED_TOUCHABLE_REGION_HEIGHT = 100;
 
@@ -649,6 +610,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         super.onStartInput(editorInfo, restarting);
     }
 
+    @SuppressWarnings("deprecation")
     private void onStartInputViewInternal(EditorInfo editorInfo, boolean restarting) {
         super.onStartInputView(editorInfo, restarting);
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
@@ -669,14 +631,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.latinIME_onStartInputViewInternal(editorInfo);
         }
-        if (InputAttributes.inPrivateImeOptions(
-                null, IME_OPTION_NO_MICROPHONE_COMPAT, editorInfo)) {
+        if (InputAttributes.inPrivateImeOptions(null, NO_MICROPHONE_COMPAT, editorInfo)) {
             Log.w(TAG, "Deprecated private IME option specified: "
                     + editorInfo.privateImeOptions);
-            Log.w(TAG, "Use " + getPackageName() + "." + IME_OPTION_NO_MICROPHONE + " instead");
+            Log.w(TAG, "Use " + getPackageName() + "." + NO_MICROPHONE + " instead");
         }
-        if (InputAttributes.inPrivateImeOptions(
-                getPackageName(), IME_OPTION_FORCE_ASCII, editorInfo)) {
+        if (InputAttributes.inPrivateImeOptions(getPackageName(), FORCE_ASCII, editorInfo)) {
             Log.w(TAG, "Deprecated private IME option specified: "
                     + editorInfo.privateImeOptions);
             Log.w(TAG, "Use EditorInfo.IME_FLAG_FORCE_ASCII flag instead");

@@ -159,7 +159,7 @@ public class KeySpecParser {
         return parseEscape(moreKeySpec.substring(end + /* LABEL_END */1));
     }
 
-    private static String getOutputText(String moreKeySpec) {
+    static String getOutputText(String moreKeySpec) {
         if (hasCode(moreKeySpec)) {
             return null;
         }
@@ -183,7 +183,7 @@ public class KeySpecParser {
         return (StringUtils.codePointCount(label) == 1) ? null : label;
     }
 
-    private static int getCode(String moreKeySpec, KeyboardCodesSet codesSet) {
+    static int getCode(String moreKeySpec, KeyboardCodesSet codesSet) {
         if (hasCode(moreKeySpec)) {
             final int end = indexOfLabelEnd(moreKeySpec, 0);
             if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0) {
@@ -219,7 +219,7 @@ public class KeySpecParser {
         }
     }
 
-    private static int getIconId(String moreKeySpec) {
+    static int getIconId(String moreKeySpec) {
         if (hasIcon(moreKeySpec)) {
             final int end = moreKeySpec.indexOf(LABEL_END, PREFIX_ICON.length());
             final String name = moreKeySpec.substring(PREFIX_ICON.length(), end);

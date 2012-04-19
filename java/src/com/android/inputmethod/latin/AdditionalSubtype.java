@@ -16,6 +16,10 @@
 
 package com.android.inputmethod.latin;
 
+import static com.android.inputmethod.latin.Constants.Subtype.KEYBOARD_MODE;
+import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.IS_ADDITIONAL_SUBTYPE;
+import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
+
 import android.view.inputmethod.InputMethodSubtype;
 
 import java.util.HashMap;
@@ -29,9 +33,6 @@ public class AdditionalSubtype {
         QWERTZ,
         AZERTY
     };
-
-    private static final String SUBTYPE_MODE_KEYBOARD = "keyboard";
-    private static final String SUBTYPE_EXTRA_VALUE_IS_ADDITIONAL_SUBTYPE = "isAdditionalSubtype";
 
     // Keyboard layout to subtype name resource id map.
     private static final HashMap<String, Integer> sKeyboardLayoutToNameIdsMap =
@@ -48,7 +49,7 @@ public class AdditionalSubtype {
     }
 
     public static boolean isAdditionalSubtype(InputMethodSubtype subtype) {
-        return subtype.containsExtraValueKey(SUBTYPE_EXTRA_VALUE_IS_ADDITIONAL_SUBTYPE);
+        return subtype.containsExtraValueKey(IS_ADDITIONAL_SUBTYPE);
     }
 
     private static final String LOCALE_AND_LAYOUT_SEPARATOR = ":";
@@ -56,25 +57,22 @@ public class AdditionalSubtype {
 
     public static InputMethodSubtype createAdditionalSubtype(
             String localeString, String keyboardLayoutSetName, String extraValue) {
-        final String layoutExtraValue = LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LAYOUT_SET + "="
-                + keyboardLayoutSetName;
+        final String layoutExtraValue = KEYBOARD_LAYOUT_SET + "=" + keyboardLayoutSetName;
         final String filteredExtraValue = StringUtils.appendToCsvIfNotExists(
-                SUBTYPE_EXTRA_VALUE_IS_ADDITIONAL_SUBTYPE, extraValue);
+                IS_ADDITIONAL_SUBTYPE, extraValue);
         Integer nameId = sKeyboardLayoutToNameIdsMap.get(keyboardLayoutSetName);
         if (nameId == null) nameId = R.string.subtype_generic;
         return new InputMethodSubtype(nameId, R.drawable.ic_subtype_keyboard,
-                localeString, SUBTYPE_MODE_KEYBOARD,
+                localeString, KEYBOARD_MODE,
                 layoutExtraValue + "," + filteredExtraValue, false, false);
     }
 
     public static String getPrefSubtype(InputMethodSubtype subtype) {
         final String localeString = subtype.getLocale();
         final String keyboardLayoutSetName = SubtypeLocale.getKeyboardLayoutSetName(subtype);
-        final String layoutExtraValue = LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LAYOUT_SET + "="
-                + keyboardLayoutSetName;
+        final String layoutExtraValue = KEYBOARD_LAYOUT_SET + "=" + keyboardLayoutSetName;
         final String extraValue = StringUtils.removeFromCsvIfExists(layoutExtraValue,
-                StringUtils.removeFromCsvIfExists(SUBTYPE_EXTRA_VALUE_IS_ADDITIONAL_SUBTYPE,
-                        subtype.getExtraValue()));
+                StringUtils.removeFromCsvIfExists(IS_ADDITIONAL_SUBTYPE, subtype.getExtraValue()));
         final String basePrefSubtype = localeString + LOCALE_AND_LAYOUT_SEPARATOR
                 + keyboardLayoutSetName;
         return extraValue.isEmpty() ? basePrefSubtype

@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.ASCII_CAPABLE;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -88,7 +90,7 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
             final int count = imi.getSubtypeCount();
             for (int i = 0; i < count; i++) {
                 final InputMethodSubtype subtype = imi.getSubtypeAt(i);
-                if (subtype.containsExtraValueKey(LatinIME.SUBTYPE_EXTRA_VALUE_ASCII_CAPABLE)) {
+                if (subtype.containsExtraValueKey(ASCII_CAPABLE)) {
                     items.add(createItem(context, subtype.getLocale()));
                 }
             }
@@ -223,7 +225,7 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
                 final KeyboardLayoutSetItem layout =
                         (KeyboardLayoutSetItem) mKeyboardLayoutSetSpinner.getSelectedItem();
                 final InputMethodSubtype subtype = AdditionalSubtype.createAdditionalSubtype(
-                        locale.first, layout.first, LatinIME.SUBTYPE_EXTRA_VALUE_ASCII_CAPABLE);
+                        locale.first, layout.first, ASCII_CAPABLE);
                 setSubtype(subtype);
                 notifyChanged();
                 break;

@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.keyboard;
 
+import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
+
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.inputmethod.EditorInfo;
@@ -23,7 +25,6 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.latin.InputTypeUtils;
-import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.SubtypeLocale;
 
 import java.util.Arrays;
@@ -184,7 +185,7 @@ public class KeyboardId {
         return String.format("[%s %s:%s %s%d %s %s %s%s%s%s%s%s%s%s]",
                 elementIdToName(mElementId),
                 mLocale,
-                mSubtype.getExtraValueOf(LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LAYOUT_SET),
+                mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
                 (mOrientation == 1 ? "port" : "land"), mWidth,
                 modeName(mMode),
                 imeAction(),

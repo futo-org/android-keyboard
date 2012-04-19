@@ -16,6 +16,9 @@
 
 package com.android.inputmethod.latin;
 
+import static com.android.inputmethod.latin.Constants.Subtype.KEYBOARD_MODE;
+import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.REQ_NETWORK_CONNECTIVITY;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -42,11 +45,7 @@ public class SubtypeSwitcher {
     private static boolean DBG = LatinImeLogger.sDBG;
     private static final String TAG = SubtypeSwitcher.class.getSimpleName();
 
-    public static final String KEYBOARD_MODE = "keyboard";
     private static final char LOCALE_SEPARATOR = '_';
-    private static final String SUBTYPE_EXTRAVALUE_REQUIRE_NETWORK_CONNECTIVITY =
-            "requireNetworkConnectivity";
-
     private final TextUtils.SimpleStringSplitter mLocaleSplitter =
             new TextUtils.SimpleStringSplitter(LOCALE_SEPARATOR);
 
@@ -309,8 +308,7 @@ public class SubtypeSwitcher {
             return false;
         if (mShortcutSubtype == null)
             return true;
-        if (mShortcutSubtype.containsExtraValueKey(
-                SUBTYPE_EXTRAVALUE_REQUIRE_NETWORK_CONNECTIVITY)) {
+        if (mShortcutSubtype.containsExtraValueKey(REQ_NETWORK_CONNECTIVITY)) {
             return mIsNetworkConnected;
         }
         return true;
