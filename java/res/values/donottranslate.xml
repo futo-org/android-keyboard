@@ -146,13 +146,26 @@
 
     <!-- Generic subtype label -->
     <string name="subtype_generic">%s</string>
-    <!-- Description for generic QWERTY keyboard subtype -->
+
+    <!-- Predefined keyboard layouts for additional subtype -->
+    <string-array name="predefined_layouts">
+        <item>qwerty</item>
+        <item>qwertz</item>
+        <item>azerty</item>
+        <item>dvorak</item>
+    </string-array>
+    <!-- Predefined keyboard layout display names -->
+    <string-array name="predefined_layout_display_names">
+        <item>QWERTY</item>
+        <item>QWERTZ</item>
+        <item>AZERTY</item>
+        <item>Dvorak</item>
+    </string-array>
+    <!-- Description for generic subtype that has predefined layout.
+         The string resource name must be "subtype_generic_<layout name>". -->
     <string name="subtype_generic_qwerty">%s (QWERTY)</string>
-    <!-- Description for generic QWERTZ keyboard subtype -->
     <string name="subtype_generic_qwertz">%s (QWERTZ)</string>
-    <!-- Description for generic AZERTY keyboard subtype -->
     <string name="subtype_generic_azerty">%s (AZERTY)</string>
-    <!-- Description for generic Dvorak keyboard subtype -->
     <string name="subtype_generic_dvorak">%s (Dvorak)</string>
 
     <!-- dictionary pack package name /settings activity (for shared prefs and settings) -->

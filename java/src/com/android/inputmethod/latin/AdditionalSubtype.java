@@ -22,30 +22,8 @@ import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOAR
 
 import android.view.inputmethod.InputMethodSubtype;
 
-import java.util.HashMap;
 
 public class AdditionalSubtype {
-    public static final String QWERTY = "qwerty";
-    public static final String QWERTZ = "qwertz";
-    public static final String AZERTY = "azerty";
-    public static final String DVORAK = "dvorak";
-    public static final String[] PREDEFINED_KEYBOARD_LAYOUT_SET = {
-        QWERTY,
-        QWERTZ,
-        AZERTY,
-        DVORAK
-    };
-
-    // Keyboard layout to subtype name resource id map.
-    private static final HashMap<String, Integer> sKeyboardLayoutToNameIdsMap =
-            new HashMap<String, Integer>();
-
-    static {
-        sKeyboardLayoutToNameIdsMap.put(QWERTY, R.string.subtype_generic_qwerty);
-        sKeyboardLayoutToNameIdsMap.put(QWERTZ, R.string.subtype_generic_qwertz);
-        sKeyboardLayoutToNameIdsMap.put(AZERTY, R.string.subtype_generic_azerty);
-        sKeyboardLayoutToNameIdsMap.put(DVORAK, R.string.subtype_generic_dvorak);
-    }
 
     private AdditionalSubtype() {
         // This utility class is not publicly instantiable.
@@ -63,7 +41,8 @@ public class AdditionalSubtype {
         final String layoutExtraValue = KEYBOARD_LAYOUT_SET + "=" + keyboardLayoutSetName;
         final String filteredExtraValue = StringUtils.appendToCsvIfNotExists(
                 IS_ADDITIONAL_SUBTYPE, extraValue);
-        Integer nameId = sKeyboardLayoutToNameIdsMap.get(keyboardLayoutSetName);
+        Integer nameId = SubtypeLocale.getSubtypeNameIdFromKeyboardLayoutName(
+                keyboardLayoutSetName);
         if (nameId == null) nameId = R.string.subtype_generic;
         return new InputMethodSubtype(nameId, R.drawable.ic_subtype_keyboard,
                 localeString, KEYBOARD_MODE,
