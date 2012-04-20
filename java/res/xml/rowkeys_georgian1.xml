@@ -27,55 +27,45 @@
         >
             <Key
                 latin:keyLabel="Q"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="1"
                 latin:additionalMoreKeys="1" />
             <!-- U+10ED: "ჭ" GEORGIAN LETTER CHAR -->
             <Key
                 latin:keyLabel="&#x10ED;"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="2"
                 latin:additionalMoreKeys="2" />
             <Key
                 latin:keyLabel="E"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="3"
                 latin:additionalMoreKeys="3" />
             <!-- U+10E6: "ღ" GEORGIAN LETTER GHAN -->
             <Key
                 latin:keyLabel="&#x10E6;"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="4"
                 latin:additionalMoreKeys="4" />
             <!-- U+10D7: "თ" GEORGIAN LETTER TAN -->
             <Key
                 latin:keyLabel="&#x10D7;"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="5"
                 latin:additionalMoreKeys="5" />
             <Key
                 latin:keyLabel="Y"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="6"
                 latin:additionalMoreKeys="6" />
             <Key
                 latin:keyLabel="U"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="7"
                 latin:additionalMoreKeys="7" />
             <Key
                 latin:keyLabel="I"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="8"
                 latin:additionalMoreKeys="8" />
             <Key
                 latin:keyLabel="O"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="9"
                 latin:additionalMoreKeys="9" />
             <Key
                 latin:keyLabel="P"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="0"
                 latin:additionalMoreKeys="0" />
         </case>
@@ -83,13 +73,11 @@
             <!-- U+10E5: "ქ" GEORGIAN LETTER GHAN -->
             <Key
                 latin:keyLabel="&#x10E5;"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="1"
                 latin:additionalMoreKeys="1" />
             <!-- U+10EC: "წ" GEORGIAN LETTER CIL -->
             <Key
                 latin:keyLabel="&#x10EC;"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="2"
                 latin:additionalMoreKeys="2" />
             <!-- U+10D4: "ე" GEORGIAN LETTER EN
@@ -97,19 +85,16 @@
             <Key
                 latin:keyLabel="&#x10D4;"
                 latin:moreKeys="&#x10F1;"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="3"
                 latin:additionalMoreKeys="3" />
             <!-- U+10E0: "რ" GEORGIAN LETTER RAE -->
             <Key
                 latin:keyLabel="&#x10E0;"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="4"
                 latin:additionalMoreKeys="4" />
             <!-- U+10E2: "ტ" GEORGIAN LETTER TAR -->
             <Key
                 latin:keyLabel="&#x10E2;"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="5"
                 latin:additionalMoreKeys="5" />
             <!-- U+10E7: "ყ" GEORGIAN LETTER QAR
@@ -117,13 +102,11 @@
             <Key
                 latin:keyLabel="&#x10E7;"
                 latin:moreKeys="&#x10F8;"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="6"
                 latin:additionalMoreKeys="6" />
             <!-- U+10E3: "უ" GEORGIAN LETTER UN -->
             <Key
                 latin:keyLabel="&#x10E3;"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="7"
                 latin:additionalMoreKeys="7" />
             <!-- U+10D8: "ი" GEORGIAN LETTER IN
@@ -131,19 +114,16 @@
             <Key
                 latin:keyLabel="&#x10D8;"
                 latin:moreKeys="&#x10F2;"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="8"
                 latin:additionalMoreKeys="8" />
             <!-- U+10DD: "ო" GEORGIAN LETTER ON -->
             <Key
                 latin:keyLabel="&#x10DD;"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="9"
                 latin:additionalMoreKeys="9" />
             <!-- U+10DE: "პ" GEORGIAN LETTER PAR -->
             <Key
                 latin:keyLabel="&#x10DE;"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyHintLabel="0"
                 latin:additionalMoreKeys="0" />
         </default>

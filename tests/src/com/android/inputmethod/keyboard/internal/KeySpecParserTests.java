@@ -16,9 +16,12 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import static com.android.inputmethod.keyboard.Keyboard.CODE_OUTPUT_TEXT;
+import static com.android.inputmethod.keyboard.Keyboard.CODE_UNSPECIFIED;
+import static com.android.inputmethod.keyboard.internal.KeyboardIconsSet.ICON_UNDEFINED;
+
 import android.test.AndroidTestCase;
 
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.internal.KeySpecParser.MoreKeySpec;
 
 import java.util.Arrays;
@@ -26,32 +29,40 @@ import java.util.Locale;
 
 public class KeySpecParserTests extends AndroidTestCase {
     private final KeyboardCodesSet mCodesSet = new KeyboardCodesSet();
-
-    private static final int ICON_UNDEFINED = KeyboardIconsSet.ICON_UNDEFINED;
+    private final KeyboardLabelsSet mLabelsSet = new KeyboardLabelsSet();
 
     private static final String CODE_SETTINGS_NAME = "key_settings";
     private static final String ICON_SETTINGS_NAME = "settingsKey";
 
     private static final String CODE_SETTINGS = "!code/" + CODE_SETTINGS_NAME;
     private static final String ICON_SETTINGS = "!icon/" + ICON_SETTINGS_NAME;
+    private static final String CODE_SETTINGS_UPPERCASE = CODE_SETTINGS.toUpperCase();
+    private static final String ICON_SETTINGS_UPPERCASE = ICON_SETTINGS.toUpperCase();
     private static final String CODE_NON_EXISTING = "!code/non_existing";
     private static final String ICON_NON_EXISTING = "!icon/non_existing";
 
     private int mCodeSettings;
+    private int mCodeActionNext;
     private int mSettingsIconId;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
 
-        mCodesSet.setLanguage(Locale.ENGLISH.getLanguage());
+        final String language = Locale.ENGLISH.getLanguage();
+        mCodesSet.setLanguage(language);
+        mLabelsSet.setLanguage(language);
+        mLabelsSet.loadStringResources(getContext());
+
         mCodeSettings = mCodesSet.getCode(CODE_SETTINGS_NAME);
+        mCodeActionNext = mCodesSet.getCode("key_action_next");
         mSettingsIconId = KeyboardIconsSet.getIconId(ICON_SETTINGS_NAME);
     }
 
     private void assertParser(String message, String moreKeySpec, String expectedLabel,
             String expectedOutputText, int expectedIcon, int expectedCode) {
-        final MoreKeySpec spec = new MoreKeySpec(moreKeySpec, mCodesSet);
+        final MoreKeySpec spec = new MoreKeySpec(
+                KeySpecParser.resolveLabelReference(moreKeySpec, mLabelsSet), mCodesSet);
         assertEquals(message + ": label:", expectedLabel, spec.mLabel);
         assertEquals(message + ": ouptputText:", expectedOutputText, spec.mOutputText);
         assertEquals(message + ": icon:", expectedIcon, spec.mIconId);
@@ -106,195 +117,253 @@ public class KeySpecParserTests extends AndroidTestCase {
         assertParser("Single surrogate pair outputText", "G Clef|" + PAIR1,
                 "G Clef", null, ICON_UNDEFINED, CODE1);
         assertParser("Single letter with outputText", "a|abc",
-                "a", "abc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a", "abc", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Single letter with surrogate outputText", "a|" + SURROGATE1,
-                "a", SURROGATE1, ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a", SURROGATE1, ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Single surrogate with outputText", PAIR3 + "|abc",
-                PAIR3, "abc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                PAIR3, "abc", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Single letter with escaped outputText", "a|a\\|c",
-                "a", "a|c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a", "a|c", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Single letter with escaped surrogate outputText",
                 "a|" + PAIR1 + "\\|" + PAIR2,
-                "a", PAIR1 + "|" + PAIR2, ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a", PAIR1 + "|" + PAIR2, ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Single letter with comma outputText", "a|a,b",
-                "a", "a,b", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a", "a,b", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Single letter with escaped comma outputText", "a|a\\,b",
-                "a", "a,b", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a", "a,b", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Single letter with outputText starts with bang", "a|!bc",
-                "a", "!bc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a", "!bc", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Single letter with surrogate outputText starts with bang", "a|!" + SURROGATE2,
-                "a", "!" + SURROGATE2, ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a", "!" + SURROGATE2, ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Single letter with outputText contains bang", "a|a!c",
-                "a", "a!c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a", "a!c", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Single letter with escaped bang outputText", "a|\\!bc",
-                "a", "!bc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a", "!bc", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Single escaped escape with single outputText", "\\\\|\\\\",
                 "\\", null, ICON_UNDEFINED, '\\');
         assertParser("Single escaped bar with single outputText", "\\||\\|",
                 "|", null, ICON_UNDEFINED, '|');
         assertParser("Single letter with code", "a|" + CODE_SETTINGS,
                 "a", null, ICON_UNDEFINED, mCodeSettings);
+        assertParser("Single letter with CODE", "a|" + CODE_SETTINGS_UPPERCASE,
+                "a", null, ICON_UNDEFINED, mCodeSettings);
     }
 
     public void testLabel() {
         assertParser("Simple label", "abc",
-                "abc", "abc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "abc", "abc", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Simple surrogate label", SURROGATE1,
-                SURROGATE1, SURROGATE1, ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                SURROGATE1, SURROGATE1, ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label with escaped bar", "a\\|c",
-                "a|c", "a|c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a|c", "a|c", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Surrogate label with escaped bar", PAIR1 + "\\|" + PAIR2,
                 PAIR1 + "|" + PAIR2, PAIR1 + "|" + PAIR2,
-                ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label with escaped escape", "a\\\\c",
-                "a\\c", "a\\c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a\\c", "a\\c", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label with comma", "a,c",
-                "a,c", "a,c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a,c", "a,c", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label with escaped comma", "a\\,c",
-                "a,c", "a,c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a,c", "a,c", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label starts with bang", "!bc",
-                "!bc", "!bc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "!bc", "!bc", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Surrogate label starts with bang", "!" + SURROGATE1,
-                "!" + SURROGATE1, "!" + SURROGATE1, ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "!" + SURROGATE1, "!" + SURROGATE1, ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label contains bang", "a!c",
-                "a!c", "a!c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a!c", "a!c", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label with escaped bang", "\\!bc",
-                "!bc", "!bc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "!bc", "!bc", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label with escaped letter", "\\abc",
-                "abc", "abc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "abc", "abc", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label with outputText", "abc|def",
-                "abc", "def", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "abc", "def", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label with comma and outputText", "a,c|def",
-                "a,c", "def", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a,c", "def", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Escaped comma label with outputText", "a\\,c|def",
-                "a,c", "def", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a,c", "def", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Escaped label with outputText", "a\\|c|def",
-                "a|c", "def", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a|c", "def", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label with escaped bar outputText", "abc|d\\|f",
-                "abc", "d|f", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "abc", "d|f", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Escaped escape label with outputText", "a\\\\|def",
-                "a\\", "def", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a\\", "def", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label starts with bang and outputText", "!bc|def",
-                "!bc", "def", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "!bc", "def", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label contains bang label and outputText", "a!c|def",
-                "a!c", "def", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a!c", "def", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Escaped bang label with outputText", "\\!bc|def",
-                "!bc", "def", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "!bc", "def", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label with comma outputText", "abc|a,b",
-                "abc", "a,b", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "abc", "a,b", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label with escaped comma outputText", "abc|a\\,b",
-                "abc", "a,b", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "abc", "a,b", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label with outputText starts with bang", "abc|!bc",
-                "abc", "!bc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "abc", "!bc", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label with outputText contains bang", "abc|a!c",
-                "abc", "a!c", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "abc", "a!c", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label with escaped bang outputText", "abc|\\!bc",
-                "abc", "!bc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "abc", "!bc", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label with escaped bar outputText", "abc|d\\|f",
-                "abc", "d|f", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "abc", "d|f", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Escaped bar label with escaped bar outputText", "a\\|c|d\\|f",
-                "a|c", "d|f", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                "a|c", "d|f", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label with code", "abc|" + CODE_SETTINGS,
                 "abc", null, ICON_UNDEFINED, mCodeSettings);
+        assertParser("Label with CODE", "abc|" + CODE_SETTINGS_UPPERCASE,
+                "abc", null, ICON_UNDEFINED, mCodeSettings);
         assertParser("Escaped label with code", "a\\|c|" + CODE_SETTINGS,
+                "a|c", null, ICON_UNDEFINED, mCodeSettings);
+        assertParser("Escaped label with CODE", "a\\|c|" + CODE_SETTINGS_UPPERCASE,
                 "a|c", null, ICON_UNDEFINED, mCodeSettings);
     }
 
     public void testIconAndCode() {
         assertParser("Icon with outputText", ICON_SETTINGS + "|abc",
-                null, "abc", mSettingsIconId, Keyboard.CODE_OUTPUT_TEXT);
+                null, "abc", mSettingsIconId, CODE_OUTPUT_TEXT);
+        assertParser("ICON with outputText", ICON_SETTINGS_UPPERCASE + "|abc",
+                null, "abc", mSettingsIconId, CODE_OUTPUT_TEXT);
         assertParser("Icon with outputText starts with bang", ICON_SETTINGS + "|!bc",
-                null, "!bc", mSettingsIconId, Keyboard.CODE_OUTPUT_TEXT);
+                null, "!bc", mSettingsIconId, CODE_OUTPUT_TEXT);
+        assertParser("ICON with outputText starts with bang", ICON_SETTINGS_UPPERCASE + "|!bc",
+                null, "!bc", mSettingsIconId, CODE_OUTPUT_TEXT);
         assertParser("Icon with outputText contains bang", ICON_SETTINGS + "|a!c",
-                null, "a!c", mSettingsIconId, Keyboard.CODE_OUTPUT_TEXT);
+                null, "a!c", mSettingsIconId, CODE_OUTPUT_TEXT);
+        assertParser("ICON with outputText contains bang", ICON_SETTINGS_UPPERCASE + "|a!c",
+                null, "a!c", mSettingsIconId, CODE_OUTPUT_TEXT);
         assertParser("Icon with escaped bang outputText", ICON_SETTINGS + "|\\!bc",
-                null, "!bc", mSettingsIconId, Keyboard.CODE_OUTPUT_TEXT);
+                null, "!bc", mSettingsIconId, CODE_OUTPUT_TEXT);
+        assertParser("ICON with escaped bang outputText", ICON_SETTINGS_UPPERCASE + "|\\!bc",
+                null, "!bc", mSettingsIconId, CODE_OUTPUT_TEXT);
         assertParser("Label starts with bang and code", "!bc|" + CODE_SETTINGS,
+                "!bc", null, ICON_UNDEFINED, mCodeSettings);
+        assertParser("Label starts with bang and CODE", "!bc|" + CODE_SETTINGS_UPPERCASE,
                 "!bc", null, ICON_UNDEFINED, mCodeSettings);
         assertParser("Label contains bang and code", "a!c|" + CODE_SETTINGS,
                 "a!c", null, ICON_UNDEFINED, mCodeSettings);
+        assertParser("Label contains bang and CODE", "a!c|" + CODE_SETTINGS_UPPERCASE,
+                "a!c", null, ICON_UNDEFINED, mCodeSettings);
         assertParser("Escaped bang label with code", "\\!bc|" + CODE_SETTINGS,
+                "!bc", null, ICON_UNDEFINED, mCodeSettings);
+        assertParser("Escaped bang label with CODE", "\\!bc|" + CODE_SETTINGS_UPPERCASE,
                 "!bc", null, ICON_UNDEFINED, mCodeSettings);
         assertParser("Icon with code", ICON_SETTINGS + "|" + CODE_SETTINGS,
                 null, null, mSettingsIconId, mCodeSettings);
+        assertParser("ICON with CODE", ICON_SETTINGS_UPPERCASE + "|" + CODE_SETTINGS_UPPERCASE,
+                null, null, mSettingsIconId, mCodeSettings);
+    }
+
+    public void testResourceReference() {
+        assertParser("Settings as more key", "!label/settings_as_more_key",
+                null, null, mSettingsIconId, mCodeSettings);
+        assertParser("SETTINGS AS MORE KEY", "!LABEL/SETTINGS_AS_MORE_KEY",
+                null, null, mSettingsIconId, mCodeSettings);
+
+        assertParser("Action next as more key", "!label/label_next_key|!code/key_action_next",
+                "Next", null, ICON_UNDEFINED, mCodeActionNext);
+        assertParser("ACTION NEXT AS MORE KEY", "!LABEL/LABEL_NEXT_KEY|!CODE/KEY_ACTION_NEXT",
+                "Next", null, ICON_UNDEFINED, mCodeActionNext);
+
+        assertParser("Popular domain",
+                "!label/keylabel_for_popular_domain|!label/keylabel_for_popular_domain ",
+                ".com", ".com ", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
+        assertParser("POPULAR DOMAIN",
+                "!LABEL/KEYLABEL_FOR_POPULAR_DOMAIN|!LABEL/KEYLABEL_FOR_POPULAR_DOMAIN ",
+                ".com", ".com ", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
     }
 
     public void testFormatError() {
         assertParserError("Empty spec", "", null,
-                null, ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                null, ICON_UNDEFINED, CODE_UNSPECIFIED);
         assertParserError("Empty label with outputText", "|a",
-                null, "a", ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                null, "a", ICON_UNDEFINED, CODE_UNSPECIFIED);
         assertParserError("Empty label with code", "|" + CODE_SETTINGS,
                 null, null, ICON_UNDEFINED, mCodeSettings);
+        assertParserError("Empty label with CODE", "|" + CODE_SETTINGS_UPPERCASE,
+                null, null, ICON_UNDEFINED, mCodeSettings);
         assertParserError("Empty outputText with label", "a|",
-                "a", null, ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a", null, ICON_UNDEFINED, CODE_UNSPECIFIED);
         assertParserError("Empty outputText with icon", ICON_SETTINGS + "|",
-                null, null, mSettingsIconId, Keyboard.CODE_UNSPECIFIED);
+                null, null, mSettingsIconId, CODE_UNSPECIFIED);
+        assertParserError("Empty outputText with ICON", ICON_SETTINGS_UPPERCASE + "|",
+                null, null, mSettingsIconId, CODE_UNSPECIFIED);
         assertParserError("Empty icon and code", "|",
-                null, null, ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                null, null, ICON_UNDEFINED, CODE_UNSPECIFIED);
         assertParserError("Icon without code", ICON_SETTINGS,
-                null, null, mSettingsIconId, Keyboard.CODE_UNSPECIFIED);
+                null, null, mSettingsIconId, CODE_UNSPECIFIED);
+        assertParserError("ICON without code", ICON_SETTINGS_UPPERCASE,
+                null, null, mSettingsIconId, CODE_UNSPECIFIED);
         assertParserError("Non existing icon", ICON_NON_EXISTING + "|abc",
-                null, "abc", ICON_UNDEFINED, Keyboard.CODE_OUTPUT_TEXT);
+                null, "abc", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParserError("Non existing code", "abc|" + CODE_NON_EXISTING,
-                "abc", null, ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "abc", null, ICON_UNDEFINED, CODE_UNSPECIFIED);
         assertParserError("Third bar at end", "a|b|",
-                "a", null, ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a", null, ICON_UNDEFINED, CODE_UNSPECIFIED);
         assertParserError("Multiple bar", "a|b|c",
-                "a", null, ICON_UNDEFINED, Keyboard.CODE_UNSPECIFIED);
+                "a", null, ICON_UNDEFINED, CODE_UNSPECIFIED);
         assertParserError("Multiple bar with label and code", "a|" + CODE_SETTINGS + "|c",
                 "a", null, ICON_UNDEFINED, mCodeSettings);
+        assertParserError("Multiple bar with label and CODE", "a|" + CODE_SETTINGS_UPPERCASE + "|c",
+                "a", null, ICON_UNDEFINED, mCodeSettings);
         assertParserError("Multiple bar with icon and outputText", ICON_SETTINGS + "|b|c",
-                null, null, mSettingsIconId, Keyboard.CODE_UNSPECIFIED);
+                null, null, mSettingsIconId, CODE_UNSPECIFIED);
+        assertParserError("Multiple bar with ICON and outputText", ICON_SETTINGS_UPPERCASE + "|b|c",
+                null, null, mSettingsIconId, CODE_UNSPECIFIED);
         assertParserError("Multiple bar with icon and code",
                 ICON_SETTINGS + "|" + CODE_SETTINGS + "|c",
                 null, null, mSettingsIconId, mCodeSettings);
+        assertParserError("Multiple bar with ICON and CODE",
+                ICON_SETTINGS_UPPERCASE + "|" + CODE_SETTINGS_UPPERCASE + "|c",
+                null, null, mSettingsIconId, mCodeSettings);
     }
 
-    private static void assertMoreKeys(String message, String[] moreKeys,
-            String[] additionalMoreKeys, String[] expected) {
-        final String[] actual = KeySpecParser.insertAdditionalMoreKeys(
-                moreKeys, additionalMoreKeys);
-        if (expected == null && actual == null) {
+    private static void assertArrayEquals(String message, Object[] expected, Object[] actual) {
+        if (expected == actual) {
             return;
         }
         if (expected == null || actual == null) {
             assertEquals(message, Arrays.toString(expected), Arrays.toString(actual));
-        } else {
-            if (expected.length != actual.length) {
-                assertEquals(message, Arrays.toString(expected), Arrays.toString(actual));
-            }
-            for (int i = 0; i < expected.length; i++) {
-                if (!actual[i].equals(expected[i])) {
-                    assertEquals(message, Arrays.toString(expected), Arrays.toString(actual));
-                }
-            }
+            return;
+        }
+        if (expected.length != actual.length) {
+            assertEquals(message + " [length]", Arrays.toString(expected), Arrays.toString(actual));
+            return;
+        }
+        for (int i = 0; i < expected.length; i++) {
+            assertEquals(message + " [" + i + "]",
+                    Arrays.toString(expected), Arrays.toString(actual));
         }
     }
 
+    private static void assertInsertAdditionalMoreKeys(String message, String[] moreKeys,
+            String[] additionalMoreKeys, String[] expected) {
+        final String[] actual =
+                KeySpecParser.insertAdditionalMoreKeys( moreKeys, additionalMoreKeys);
+        assertArrayEquals(message, expected, actual);
+    }
+
     public void testEmptyEntry() {
-        assertMoreKeys("null more keys and null additons",
+        assertInsertAdditionalMoreKeys("null more keys and null additons",
                 null,
                 null,
                 null);
-        assertMoreKeys("null more keys and empty additons",
+        assertInsertAdditionalMoreKeys("null more keys and empty additons",
                 null,
                 new String[0],
                 null);
-        assertMoreKeys("empty more keys and null additons",
+        assertInsertAdditionalMoreKeys("empty more keys and null additons",
                 new String[0],
                 null,
                 null);
-        assertMoreKeys("empty more keys and empty additons",
+        assertInsertAdditionalMoreKeys("empty more keys and empty additons",
                 new String[0],
                 new String[0],
                 null);
 
-        assertMoreKeys("filter out empty more keys",
+        assertInsertAdditionalMoreKeys("filter out empty more keys",
                 new String[] { null, "a", "", "b", null },
                 null,
                 new String[] { "a", "b" });
-        assertMoreKeys("filter out empty additons",
+        assertInsertAdditionalMoreKeys("filter out empty additons",
                 new String[] { "a", "%", "b", "%", "c", "%", "d" },
                 new String[] { null, "A", "", "B", null },
                 new String[] { "a", "A", "b", "B", "c", "d" });
@@ -302,188 +371,261 @@ public class KeySpecParserTests extends AndroidTestCase {
 
     public void testInsertAdditionalMoreKeys() {
         // Escaped marker.
-        assertMoreKeys("escaped marker",
+        assertInsertAdditionalMoreKeys("escaped marker",
                 new String[] { "\\%", "%-)" },
                 new String[] { "1", "2" },
                 new String[] { "1", "2", "\\%", "%-)" });
 
         // 0 more key.
-        assertMoreKeys("null & null", null, null, null);
-        assertMoreKeys("null & 1 additon",
+        assertInsertAdditionalMoreKeys("null & null", null, null, null);
+        assertInsertAdditionalMoreKeys("null & 1 additon",
                 null,
                 new String[] { "1" },
                 new String[] { "1" });
-        assertMoreKeys("null & 2 additons",
+        assertInsertAdditionalMoreKeys("null & 2 additons",
                 null,
                 new String[] { "1", "2" },
                 new String[] { "1", "2" });
 
         // 0 additional more key.
-        assertMoreKeys("1 more key & null",
+        assertInsertAdditionalMoreKeys("1 more key & null",
                 new String[] { "A" },
                 null,
                 new String[] { "A" });
-        assertMoreKeys("2 more keys & null",
+        assertInsertAdditionalMoreKeys("2 more keys & null",
                 new String[] { "A", "B" },
                 null,
                 new String[] { "A", "B" });
 
         // No marker.
-        assertMoreKeys("1 more key & 1 addtional & no marker",
+        assertInsertAdditionalMoreKeys("1 more key & 1 addtional & no marker",
                 new String[] { "A" },
                 new String[] { "1" },
                 new String[] { "1", "A" });
-        assertMoreKeys("1 more key & 2 addtionals & no marker",
+        assertInsertAdditionalMoreKeys("1 more key & 2 addtionals & no marker",
                 new String[] { "A" },
                 new String[] { "1", "2" },
                 new String[] { "1", "2", "A" });
-        assertMoreKeys("2 more keys & 1 addtional & no marker",
+        assertInsertAdditionalMoreKeys("2 more keys & 1 addtional & no marker",
                 new String[] { "A", "B" },
                 new String[] { "1" },
                 new String[] { "1", "A", "B" });
-        assertMoreKeys("2 more keys & 2 addtionals & no marker",
+        assertInsertAdditionalMoreKeys("2 more keys & 2 addtionals & no marker",
                 new String[] { "A", "B" },
                 new String[] { "1", "2" },
                 new String[] { "1", "2", "A", "B" });
 
         // 1 marker.
-        assertMoreKeys("1 more key & 1 additon & marker at head",
+        assertInsertAdditionalMoreKeys("1 more key & 1 additon & marker at head",
                 new String[] { "%", "A" },
                 new String[] { "1" },
                 new String[] { "1", "A" });
-        assertMoreKeys("1 more key & 1 additon & marker at tail",
+        assertInsertAdditionalMoreKeys("1 more key & 1 additon & marker at tail",
                 new String[] { "A", "%" },
                 new String[] { "1" },
                 new String[] { "A", "1" });
-        assertMoreKeys("2 more keys & 1 additon & marker at middle",
+        assertInsertAdditionalMoreKeys("2 more keys & 1 additon & marker at middle",
                 new String[] { "A", "%", "B" },
                 new String[] { "1" },
                 new String[] { "A", "1", "B" });
 
         // 1 marker & excess additional more keys.
-        assertMoreKeys("1 more key & 2 additons & marker at head",
+        assertInsertAdditionalMoreKeys("1 more key & 2 additons & marker at head",
                 new String[] { "%", "A", "B" },
                 new String[] { "1", "2" },
                 new String[] { "1", "A", "B", "2" });
-        assertMoreKeys("1 more key & 2 additons & marker at tail",
+        assertInsertAdditionalMoreKeys("1 more key & 2 additons & marker at tail",
                 new String[] { "A", "B", "%" },
                 new String[] { "1", "2" },
                 new String[] { "A", "B", "1", "2" });
-        assertMoreKeys("2 more keys & 2 additons & marker at middle",
+        assertInsertAdditionalMoreKeys("2 more keys & 2 additons & marker at middle",
                 new String[] { "A", "%", "B" },
                 new String[] { "1", "2" },
                 new String[] { "A", "1", "B", "2" });
 
         // 2 markers.
-        assertMoreKeys("0 more key & 2 addtional & 2 markers",
+        assertInsertAdditionalMoreKeys("0 more key & 2 addtional & 2 markers",
                 new String[] { "%", "%" },
                 new String[] { "1", "2" },
                 new String[] { "1", "2" });
-        assertMoreKeys("1 more key & 2 addtional & 2 markers at head",
+        assertInsertAdditionalMoreKeys("1 more key & 2 addtional & 2 markers at head",
                 new String[] { "%", "%", "A" },
                 new String[] { "1", "2" },
                 new String[] { "1", "2", "A" });
-        assertMoreKeys("1 more key & 2 addtional & 2 markers at tail",
+        assertInsertAdditionalMoreKeys("1 more key & 2 addtional & 2 markers at tail",
                 new String[] { "A", "%", "%" },
                 new String[] { "1", "2" },
                 new String[] { "A", "1", "2" });
-        assertMoreKeys("2 more keys & 2 addtional & 2 markers at middle",
+        assertInsertAdditionalMoreKeys("2 more keys & 2 addtional & 2 markers at middle",
                 new String[] { "A", "%", "%", "B" },
                 new String[] { "1", "2" },
                 new String[] { "A", "1", "2", "B" });
-        assertMoreKeys("2 more keys & 2 addtional & 2 markers at head & middle",
+        assertInsertAdditionalMoreKeys("2 more keys & 2 addtional & 2 markers at head & middle",
                 new String[] { "%", "A", "%", "B" },
                 new String[] { "1", "2" },
                 new String[] { "1", "A", "2", "B" });
-        assertMoreKeys("2 more keys & 2 addtional & 2 markers at head & tail",
+        assertInsertAdditionalMoreKeys("2 more keys & 2 addtional & 2 markers at head & tail",
                 new String[] { "%", "A", "B", "%" },
                 new String[] { "1", "2" },
                 new String[] { "1", "A", "B", "2" });
-        assertMoreKeys("2 more keys & 2 addtional & 2 markers at middle & tail",
+        assertInsertAdditionalMoreKeys("2 more keys & 2 addtional & 2 markers at middle & tail",
                 new String[] { "A", "%", "B", "%" },
                 new String[] { "1", "2" },
                 new String[] { "A", "1", "B", "2" });
 
         // 2 markers & excess additional more keys.
-        assertMoreKeys("0 more key & 2 additons & 2 markers",
+        assertInsertAdditionalMoreKeys("0 more key & 2 additons & 2 markers",
                 new String[] { "%", "%" },
                 new String[] { "1", "2", "3" },
                 new String[] { "1", "2", "3" });
-        assertMoreKeys("1 more key & 2 additons & 2 markers at head",
+        assertInsertAdditionalMoreKeys("1 more key & 2 additons & 2 markers at head",
                 new String[] { "%", "%", "A" },
                 new String[] { "1", "2", "3" },
                 new String[] { "1", "2", "A", "3" });
-        assertMoreKeys("1 more key & 2 additons & 2 markers at tail",
+        assertInsertAdditionalMoreKeys("1 more key & 2 additons & 2 markers at tail",
                 new String[] { "A", "%", "%" },
                 new String[] { "1", "2", "3" },
                 new String[] { "A", "1", "2", "3" });
-        assertMoreKeys("2 more keys & 2 additons & 2 markers at middle",
+        assertInsertAdditionalMoreKeys("2 more keys & 2 additons & 2 markers at middle",
                 new String[] { "A", "%", "%", "B" },
                 new String[] { "1", "2", "3" },
                 new String[] { "A", "1", "2", "B", "3" });
-        assertMoreKeys("2 more keys & 2 additons & 2 markers at head & middle",
+        assertInsertAdditionalMoreKeys("2 more keys & 2 additons & 2 markers at head & middle",
                 new String[] { "%", "A", "%", "B" },
                 new String[] { "1", "2", "3" },
                 new String[] { "1", "A", "2", "B", "3" });
-        assertMoreKeys("2 more keys & 2 additons & 2 markers at head & tail",
+        assertInsertAdditionalMoreKeys("2 more keys & 2 additons & 2 markers at head & tail",
                 new String[] { "%", "A", "B", "%" },
                 new String[] { "1", "2", "3" },
                 new String[] { "1", "A", "B", "2", "3" });
-        assertMoreKeys("2 more keys & 2 additons & 2 markers at middle & tail",
+        assertInsertAdditionalMoreKeys("2 more keys & 2 additons & 2 markers at middle & tail",
                 new String[] { "A", "%", "B", "%" },
                 new String[] { "1", "2", "3" },
                 new String[] { "A", "1", "B", "2", "3" });
 
         // 0 addtional more key and excess markers.
-        assertMoreKeys("0 more key & null & excess marker",
+        assertInsertAdditionalMoreKeys("0 more key & null & excess marker",
                 new String[] { "%" },
                 null,
                 null);
-        assertMoreKeys("1 more key & null & excess marker at head",
+        assertInsertAdditionalMoreKeys("1 more key & null & excess marker at head",
                 new String[] { "%", "A" },
                 null,
                 new String[] { "A" });
-        assertMoreKeys("1 more key & null & excess marker at tail",
+        assertInsertAdditionalMoreKeys("1 more key & null & excess marker at tail",
                 new String[] { "A", "%" },
                 null,
                 new String[] { "A" });
-        assertMoreKeys("2 more keys & null & excess marker at middle",
+        assertInsertAdditionalMoreKeys("2 more keys & null & excess marker at middle",
                 new String[] { "A", "%", "B" },
                 null,
                 new String[] { "A", "B" });
-        assertMoreKeys("2 more keys & null & excess markers",
+        assertInsertAdditionalMoreKeys("2 more keys & null & excess markers",
                 new String[] { "%", "A", "%", "B", "%" },
                 null,
                 new String[] { "A", "B" });
 
         // Excess markers.
-        assertMoreKeys("0 more key & 1 additon & excess marker",
+        assertInsertAdditionalMoreKeys("0 more key & 1 additon & excess marker",
                 new String[] { "%", "%" },
                 new String[] { "1" },
                 new String[] { "1" });
-        assertMoreKeys("1 more key & 1 additon & excess marker at head",
+        assertInsertAdditionalMoreKeys("1 more key & 1 additon & excess marker at head",
                 new String[] { "%", "%", "A" },
                 new String[] { "1" },
                 new String[] { "1", "A" });
-        assertMoreKeys("1 more key & 1 additon & excess marker at tail",
+        assertInsertAdditionalMoreKeys("1 more key & 1 additon & excess marker at tail",
                 new String[] { "A", "%", "%" },
                 new String[] { "1" },
                 new String[] { "A", "1" });
-        assertMoreKeys("2 more keys & 1 additon & excess marker at middle",
+        assertInsertAdditionalMoreKeys("2 more keys & 1 additon & excess marker at middle",
                 new String[] { "A", "%", "%", "B" },
                 new String[] { "1" },
                 new String[] { "A", "1", "B" });
-        assertMoreKeys("2 more keys & 1 additon & excess markers",
+        assertInsertAdditionalMoreKeys("2 more keys & 1 additon & excess markers",
                 new String[] { "%", "A", "%", "B", "%" },
                 new String[] { "1" },
                 new String[] { "1", "A", "B" });
-        assertMoreKeys("2 more keys & 2 additons & excess markers",
+        assertInsertAdditionalMoreKeys("2 more keys & 2 additons & excess markers",
                 new String[] { "%", "A", "%", "B", "%" },
                 new String[] { "1", "2" },
                 new String[] { "1", "A", "2", "B" });
-        assertMoreKeys("2 more keys & 3 additons & excess markers",
+        assertInsertAdditionalMoreKeys("2 more keys & 3 additons & excess markers",
                 new String[] { "%", "A", "%", "%", "B", "%" },
                 new String[] { "1", "2", "3" },
                 new String[] { "1", "A", "2", "3", "B" });
+    }
+
+    private static final String HAS_LABEL = "!hasLabel!";
+    private static final String NEEDS_DIVIDER = "!needsDividers!";
+    private static final String AUTO_COLUMN_ORDER = "!autoColumnOrder!";
+    private static final String FIXED_COLUMN_ORDER = "!fixedColumnOrder!";
+
+    private static void assertGetBooleanValue(String message, String key, String[] moreKeys,
+            String[] expected, boolean expectedValue) {
+        final String[] actual = Arrays.copyOf(moreKeys, moreKeys.length);
+        final boolean actualValue = KeySpecParser.getBooleanValue(actual, key);
+        assertEquals(message + " [value]", expectedValue, actualValue);
+        assertArrayEquals(message, expected, actual);
+    }
+
+    public void testGetBooleanValue() {
+        assertGetBooleanValue("Has label", HAS_LABEL,
+                new String[] { HAS_LABEL, "a", "b", "c" },
+                new String[] { null, "a", "b", "c" }, true);
+        assertGetBooleanValue("HAS LABEL", HAS_LABEL,
+                new String[] { HAS_LABEL.toUpperCase(), "a", "b", "c" },
+                new String[] { null, "a", "b", "c" }, true);
+
+        assertGetBooleanValue("No has label", HAS_LABEL,
+                new String[] { "a", "b", "c" },
+                new String[] { "a", "b", "c" }, false);
+        assertGetBooleanValue("No has label with fixed clumn order", HAS_LABEL,
+                new String[] { FIXED_COLUMN_ORDER + "3", "a", "b", "c" },
+                new String[] { FIXED_COLUMN_ORDER + "3", "a", "b", "c" }, false);
+
+        assertGetBooleanValue("Multiple has label", HAS_LABEL,
+                new String[] {
+                    "a", HAS_LABEL.toUpperCase(), "b", "c", HAS_LABEL, "d" },
+                new String[] {
+                    "a", null, "b", "c", null, "d" }, true);
+        assertGetBooleanValue("Multiple has label with needs dividers", HAS_LABEL,
+                new String[] {
+                    "a", HAS_LABEL, "b", NEEDS_DIVIDER, HAS_LABEL.toUpperCase(), "d" },
+                new String[] {
+                    "a", null, "b", NEEDS_DIVIDER, null, "d" }, true);
+    }
+
+    private static void assertGetIntValue(String message, String key, int defaultValue,
+            String[] moreKeys, String[] expected, int expectedValue) {
+        final String[] actual = Arrays.copyOf(moreKeys, moreKeys.length);
+        final int actualValue = KeySpecParser.getIntValue(actual, key, defaultValue);
+        assertEquals(message + " [value]", expectedValue, actualValue);
+        assertArrayEquals(message, expected, actual);
+    }
+
+    public void testGetIntValue() {
+        assertGetIntValue("Fixed column order 3", FIXED_COLUMN_ORDER, -1,
+                new String[] { FIXED_COLUMN_ORDER + "3", "a", "b", "c" },
+                new String[] { null, "a", "b", "c" }, 3);
+        assertGetIntValue("FIXED COLUMN ORDER 3", FIXED_COLUMN_ORDER, -1,
+                new String[] { FIXED_COLUMN_ORDER.toUpperCase() + "3", "a", "b", "c" },
+                new String[] { null, "a", "b", "c" }, 3);
+
+        assertGetIntValue("No fixed column order", FIXED_COLUMN_ORDER, -1,
+                new String[] { "a", "b", "c" },
+                new String[] { "a", "b", "c" }, -1);
+        assertGetIntValue("No fixed column order with auto column order", FIXED_COLUMN_ORDER, -1,
+                new String[] { AUTO_COLUMN_ORDER + "5", "a", "b", "c" },
+                new String[] { AUTO_COLUMN_ORDER + "5", "a", "b", "c" }, -1);
+
+        assertGetIntValue("Multiple fixed column order 3,5", FIXED_COLUMN_ORDER, -1,
+                new String[] { FIXED_COLUMN_ORDER + "3", "a", FIXED_COLUMN_ORDER + "5", "b" },
+                new String[] { null, "a", null, "b" }, 3);
+        assertGetIntValue("Multiple fixed column order 5,3 with has label", FIXED_COLUMN_ORDER, -1,
+                new String[] {
+                    FIXED_COLUMN_ORDER.toUpperCase() + "5", HAS_LABEL, "a",
+                    FIXED_COLUMN_ORDER + "3", "b" },
+                new String[] { null, HAS_LABEL, "a", null, "b" }, 5);
     }
 }

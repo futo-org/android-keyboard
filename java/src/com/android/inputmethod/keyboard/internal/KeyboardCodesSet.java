@@ -33,7 +33,10 @@ public class KeyboardCodesSet {
     }
 
     public int getCode(final String name) {
-        final Integer id = sNameToIdMap.get(name);
+        Integer id = sNameToIdMap.get(name);
+        if (id == null) {
+            id = sNameToIdMap.get(name.toLowerCase());
+        }
         if (id == null) throw new RuntimeException("Unknown key code: " + name);
         return mCodes[id];
     }

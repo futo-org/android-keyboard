@@ -27,63 +27,49 @@
         >
             <!-- U+10EB: "ძ" GEORGIAN LETTER JIL -->
             <Key
-                latin:keyLabel="&#x10EB;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="&#x10EB;" />
             <Key
-                latin:keyLabel="X"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="X" />
             <!-- U+10E9: "ჩ" GEORGIAN LETTER CHIN -->
             <Key
-                latin:keyLabel="&#x10E9;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="&#x10E9;" />
             <Key
-                latin:keyLabel="V"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="V" />
             <Key
-                latin:keyLabel="B"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="B" />
             <Key
-                latin:keyLabel="N"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="N" />
             <Key
-                latin:keyLabel="M"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="M" />
         </case>
         <default>
             <!-- U+10D6: "ზ" GEORGIAN LETTER ZEN -->
             <Key
-                latin:keyLabel="&#x10D6;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="&#x10D6;" />
             <!-- U+10EE: "ხ" GEORGIAN LETTER XAN
                  U+10F4: "ჴ" GEORGIAN LETTER HAR -->
             <Key
                 latin:keyLabel="&#x10EE;"
-                latin:moreKeys="&#x10F4;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:moreKeys="&#x10F4;" />
             <!-- U+10EA: "ც" GEORGIAN LETTER CAN -->
             <Key
-                latin:keyLabel="&#x10EA;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="&#x10EA;" />
             <!-- U+10D5: "ვ" GEORGIAN LETTER VIN
                  U+10F3: "ჳ" GEORGIAN LETTER WE -->
             <Key
                 latin:keyLabel="&#x10D5;"
-                latin:moreKeys="&#x10F3;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:moreKeys="&#x10F3;" />
             <!-- U+10D1: "ბ" GEORGIAN LETTER BAN -->
             <Key
-                latin:keyLabel="&#x10D1;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="&#x10D1;" />
             <!-- U+10DC: "ნ" GEORGIAN LETTER NAR
                  U+10FC: "ჼ" MODIFIER LETTER GEORGIAN NAR -->
             <Key
                 latin:keyLabel="&#x10DC;"
-                latin:moreKeys="&#x10FC;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:moreKeys="&#x10FC;" />
             <!-- U+10DB: "მ" GEORGIAN LETTER MAN -->
             <Key
-                latin:keyLabel="&#x10DB;"
-                latin:keyLabelFlags="preserveCase" />
+                latin:keyLabel="&#x10DB;" />
         </default>
     </switch>
 </merge>

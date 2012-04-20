@@ -34,7 +34,7 @@
         <default>
             <key-style
                 latin:styleName="f1MoreKeysStyle"
-                latin:keyLabelFlags="hasPopupHint|preserveCase"
+                latin:keyLabelFlags="hasPopupHint"
                 latin:moreKeys="!label/settings_as_more_key"
                 latin:backgroundType="functional" />
         </default>
@@ -122,7 +122,6 @@
         latin:code="!code/key_shortcut"
         latin:keyIcon="iconShortcutKey"
         latin:keyIconDisabled="iconDisabledShortcutKey"
-        latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
         latin:altCode="!code/key_space"
         latin:parentStyle="f1MoreKeysStyle" />
@@ -159,7 +158,7 @@
                 latin:code="!code/key_switch_alpha_symbol"
                 latin:keyIcon="iconShortcutForLabel"
                 latin:keyLabel="!label/label_to_symbol_with_microphone_key"
-                latin:keyLabelFlags="withIconRight|preserveCase"
+                latin:keyLabelFlags="withIconRight"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="functional" />
         </case>
@@ -168,7 +167,6 @@
                 latin:styleName="toSymbolKeyStyle"
                 latin:code="!code/key_switch_alpha_symbol"
                 latin:keyLabel="!label/label_to_symbol_key"
-                latin:keyLabelFlags="preserveCase"
                 latin:keyActionFlags="noKeyPreview"
                 latin:backgroundType="functional" />
         </default>
@@ -184,21 +182,19 @@
         latin:styleName="toMoreSymbolKeyStyle"
         latin:code="!code/key_shift"
         latin:keyLabel="!label/label_to_more_symbol_key"
-        latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="backFromMoreSymbolKeyStyle"
         latin:code="!code/key_shift"
         latin:keyLabel="!label/label_to_symbol_key"
-        latin:keyLabelFlags="preserveCase"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="punctuationKeyStyle"
         latin:keyLabel="."
         latin:keyHintLabel="!label/keyhintlabel_for_punctuation"
-        latin:keyLabelFlags="hasPopupHint|preserveCase"
+        latin:keyLabelFlags="hasPopupHint"
         latin:moreKeys="!label/more_keys_for_punctuation"
         latin:backgroundType="functional" />
 </merge>
