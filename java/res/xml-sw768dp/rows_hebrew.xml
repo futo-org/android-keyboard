@@ -31,7 +31,9 @@
             latin:keyLabelFlags="alignLeft"
             latin:keyWidth="7.969%p" />
         <include
-            latin:keyboardLayout="@xml/keys_apostrophe_dash" />
+            latin:keyboardLayout="@xml/key_apostrophe" />
+        <include
+            latin:keyboardLayout="@xml/key_dash" />
         <include
             latin:keyboardLayout="@xml/rowkeys_hebrew1" />
         <Key

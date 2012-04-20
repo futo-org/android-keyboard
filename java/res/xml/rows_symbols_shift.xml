@@ -44,5 +44,5 @@
             latin:keyboardLayout="@xml/rowkeys_symbols_shift3" />
     </Row>
     <include
-        latin:keyboardLayout="@xml/rows_symbols_shift4" />
+        latin:keyboardLayout="@xml/row_symbols_shift4" />
 </merge>

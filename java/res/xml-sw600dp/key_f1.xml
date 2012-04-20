@@ -18,9 +18,28 @@
 */
 -->
 
-<Keyboard
+<merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <include
-        latin:keyboardLayout="@xml/rows_10_10_7_symbols" />
-</Keyboard>
+    <switch>
+        <case
+            latin:mode="email"
+        >
+            <Key
+                latin:keyStyle="comKeyStyle" />
+        </case>
+        <case
+            latin:mode="url"
+        >
+            <Key
+                latin:keyStyle="comKeyStyle" />
+        </case>
+        <default>
+            <Key
+                latin:keyLabel="/"
+                latin:keyHintLabel="\@"
+                latin:moreKeys="\@"
+                latin:keyStyle="hasShiftedLetterHintStyle" />
+        </default>
+    </switch>
+</merge>

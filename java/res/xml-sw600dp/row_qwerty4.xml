@@ -29,45 +29,10 @@
             latin:keyWidth="13.0%p" />
         <Key
             latin:keyStyle="tabKeyStyle" />
-        <switch>
-            <case
-                latin:mode="email"
-            >
-                <Key
-                    latin:keyStyle="comKeyStyle" />
-            </case>
-            <case
-                latin:mode="url"
-            >
-                <Key
-                    latin:keyStyle="comKeyStyle" />
-            </case>
-            <default>
-                <Key
-                    latin:keyLabel="/"
-                    latin:keyHintLabel="\@"
-                    latin:moreKeys="\@"
-                    latin:keyStyle="hasShiftedLetterHintStyle" />
-            </default>
-        </switch>
-        <switch>
-            <case
-                latin:languageCode="fa"
-            >
-                <Key
-                    latin:keyStyle="spaceKeyStyle"
-                    latin:keyXPos="30.750%p"
-                    latin:keyWidth="30.850%p" />
-                <Key
-                    latin:keyStyle="zwnjKeyStyle" />
-            </case>
-            <default>
-                <Key
-                    latin:keyStyle="spaceKeyStyle"
-                    latin:keyXPos="30.750%p"
-                    latin:keyWidth="39.750%p" />
-            </default>
-        </switch>
+        <include
+            latin:keyboardLayout="@xml/key_f1" />
+        <include
+            latin:keyboardLayout="@xml/key_space" />
         <switch>
             <case
                 latin:languageCode="iw"
@@ -78,7 +43,9 @@
             <!-- not languageCode="iw" -->
             <default>
                 <include
-                    latin:keyboardLayout="@xml/keys_apostrophe_dash" />
+                    latin:keyboardLayout="@xml/key_apostrophe" />
+                <include
+                    latin:keyboardLayout="@xml/key_dash" />
             </default>
         </switch>
         <Spacer
