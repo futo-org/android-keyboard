@@ -1848,6 +1848,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mExpectingUpdateSelection = true;
         commitChosenWord(suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,
                 LastComposedWord.NOT_A_SEPARATOR);
+        // Don't allow cancellation of manual pick
+        mLastComposedWord.deactivate();
         // Add the word to the user history dictionary
         addToUserHistoryDictionary(suggestion);
         mSpaceState = SPACE_STATE_PHANTOM;
