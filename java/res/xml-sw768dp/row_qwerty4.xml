@@ -29,73 +29,10 @@
         <Spacer
             latin:keyXPos="15.157%p"
             latin:keyWidth="0%p" />
-        <switch>
-            <case
-                latin:mode="url"
-            >
-                <Key
-                    latin:keyStyle="comKeyStyle"
-                    latin:keyWidth="16.084%p" />
-            </case>
-            <default>
-                <switch>
-                    <case
-                        latin:mode="email"
-                    >
-                        <Key
-                            latin:keyStyle="comKeyStyle" />
-                    </case>
-                    <case
-                        latin:imeAction="actionSearch"
-                    >
-                        <Key
-                            latin:keyLabel=":"
-                            latin:keyHintLabel="+"
-                            latin:moreKeys="+"
-                            latin:keyStyle="hasShiftedLetterHintStyle" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:keyStyle="smileyKeyStyle" />
-                    </default>
-                </switch>
-                <switch>
-                    <case
-                        latin:mode="email"
-                    >
-                        <Key
-                            latin:keyLabel="\@" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:keyLabel="/"
-                            latin:keyHintLabel="\@"
-                            latin:moreKeys="\@"
-                            latin:keyStyle="hasShiftedLetterHintStyle" />
-                    </default>
-                </switch>
-            </default>
-        </switch>
-        <switch>
-            <case
-                latin:languageCode="fa"
-            >
-                <Key
-                    latin:keyStyle="spaceKeyStyle"
-                    latin:keyXPos="31.250%p"
-                    latin:keyWidth="29.453%p" />
-                <!-- U+200C: "" ZERO WIDTH NON-JOINER
-                     U+200D: "" ZERO WIDTH JOINER -->
-                <Key
-                    latin:keyStyle="zwnjKeyStyle" />
-            </case>
-            <default>
-                <Key
-                    latin:keyStyle="spaceKeyStyle"
-                    latin:keyXPos="31.250%p"
-                    latin:keyWidth="37.500%p" />
-            </default>
-        </switch>
+        <include
+            latin:keyboardLayout="@xml/keys_f1f2" />
+        <include
+            latin:keyboardLayout="@xml/key_space" />
         <switch>
             <case
                 latin:languageCode="iw"
@@ -105,7 +42,9 @@
             </case>
             <default>
                 <include
-                    latin:keyboardLayout="@xml/keys_apostrophe_dash" />
+                    latin:keyboardLayout="@xml/key_apostrophe" />
+                <include
+                    latin:keyboardLayout="@xml/key_dash" />
             </default>
         </switch>
         <switch>
