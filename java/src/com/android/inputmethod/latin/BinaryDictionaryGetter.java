@@ -24,6 +24,7 @@ import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
@@ -45,6 +46,10 @@ class BinaryDictionaryGetter {
      * Name of the common preferences name to know which word list are on and which are off.
      */
     private static final String COMMON_PREFERENCES_NAME = "LatinImeDictPrefs";
+
+    // Name of the category for the main dictionary
+    private static final String MAIN_DICTIONARY_CATEGORY = "main";
+    public static final String ID_CATEGORY_SEPARATOR = ":";
 
     // Prevents this from being instantiated
     private BinaryDictionaryGetter() {}
@@ -206,7 +211,40 @@ class BinaryDictionaryGetter {
     }
 
     /**
-     * Returns the list of cached files for a specific locale.
+     * Returns the category for a given file name.
+     *
+     * This parses the file name, extracts the category, and returns it. See
+     * {@link #getMainDictId(Locale)} and {@link #isMainWordListId(String)}.
+     * @return The category as a string or null if it can't be found in the file name.
+     */
+    private static String getCategoryFromFileName(final String fileName) {
+        final String id = getWordListIdFromFileName(fileName);
+        final String[] idArray = id.split(ID_CATEGORY_SEPARATOR);
+        if (2 != idArray.length) return null;
+        return idArray[0];
+    }
+
+    /**
+     * Utility class for the {@link #getCachedWordLists} method
+     */
+    private static class FileAndMatchLevel {
+        final File mFile;
+        final int mMatchLevel;
+        public FileAndMatchLevel(final File file, final int matchLevel) {
+            mFile = file;
+            mMatchLevel = matchLevel;
+        }
+    }
+
+    /**
+     * Returns the list of cached files for a specific locale, one for each category.
+     *
+     * This will return exactly one file for each word list category that matches
+     * the passed locale. If several files match the locale for any given category,
+     * this returns the file with the closest match to the locale. For example, if
+     * the passed word list is en_US, and for a category we have an en and an en_US
+     * word list available, we'll return only the en_US one.
+     * Thus, the list will contain as many files as there are categories.
      *
      * @param locale the locale to find the dictionary files for, as a string.
      * @param context the context on which to open the files upon.
@@ -216,21 +254,32 @@ class BinaryDictionaryGetter {
             final Context context) {
         final File[] directoryList = getCachedDirectoryList(context);
         if (null == directoryList) return EMPTY_FILE_ARRAY;
-        final ArrayList<File> cacheFiles = new ArrayList<File>();
+        final HashMap<String, FileAndMatchLevel> cacheFiles =
+                new HashMap<String, FileAndMatchLevel>();
         for (File directory : directoryList) {
             if (!directory.isDirectory()) continue;
             final String dirLocale = getWordListIdFromFileName(directory.getName());
-            if (LocaleUtils.isMatch(LocaleUtils.getMatchLevel(dirLocale, locale))) {
+            final int matchLevel = LocaleUtils.getMatchLevel(dirLocale, locale);
+            if (LocaleUtils.isMatch(matchLevel)) {
                 final File[] wordLists = directory.listFiles();
                 if (null != wordLists) {
                     for (File wordList : wordLists) {
-                        cacheFiles.add(wordList);
+                        final String category = getCategoryFromFileName(wordList.getName());
+                        final FileAndMatchLevel currentBestMatch = cacheFiles.get(category);
+                        if (null == currentBestMatch || currentBestMatch.mMatchLevel < matchLevel) {
+                            cacheFiles.put(category, new FileAndMatchLevel(wordList, matchLevel));
+                        }
                     }
                 }
             }
         }
         if (cacheFiles.isEmpty()) return EMPTY_FILE_ARRAY;
-        return cacheFiles.toArray(EMPTY_FILE_ARRAY);
+        final File[] result = new File[cacheFiles.size()];
+        int index = 0;
+        for (final FileAndMatchLevel entry : cacheFiles.values()) {
+            result[index++] = entry.mFile;
+        }
+        return result;
     }
 
     /**
@@ -245,7 +294,13 @@ class BinaryDictionaryGetter {
         // This works because we don't include by default different dictionaries for
         // different countries. This actually needs to return the id that we would
         // like to use for word lists included in resources, and the following is okay.
-        return locale.getLanguage().toString();
+        return MAIN_DICTIONARY_CATEGORY + ID_CATEGORY_SEPARATOR + locale.getLanguage().toString();
+    }
+
+    private static boolean isMainWordListId(final String id) {
+        final String[] idArray = id.split(ID_CATEGORY_SEPARATOR);
+        if (2 != idArray.length) return false;
+        return MAIN_DICTIONARY_CATEGORY.equals(idArray[0]);
     }
 
     /**
@@ -270,9 +325,7 @@ class BinaryDictionaryGetter {
         BinaryDictionaryFileDumper.cacheWordListsFromContentProvider(locale, context,
                 hasDefaultWordList);
         final File[] cachedWordLists = getCachedWordLists(locale.toString(), context);
-
         final String mainDictId = getMainDictId(locale);
-
         final DictPackSettings dictPackSettings = new DictPackSettings(context);
 
         boolean foundMainDict = false;
@@ -280,7 +333,7 @@ class BinaryDictionaryGetter {
         // cachedWordLists may not be null, see doc for getCachedDictionaryList
         for (final File f : cachedWordLists) {
             final String wordListId = getWordListIdFromFileName(f.getName());
-            if (wordListId.equals(mainDictId)) {
+            if (isMainWordListId(wordListId)) {
                 foundMainDict = true;
             }
             if (!dictPackSettings.isWordListActive(wordListId)) continue;
