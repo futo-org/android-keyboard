@@ -49,7 +49,10 @@ public class BinaryDictionaryFileDumper {
      */
     private static final int FILE_READ_BUFFER_SIZE = 1024;
     // TODO: make the following data common with the native code
-    private static final byte[] MAGIC_NUMBER = new byte[] { 0x78, (byte)0xB1 };
+    private static final byte[] MAGIC_NUMBER_VERSION_1 =
+            new byte[] { (byte)0x78, (byte)0xB1, (byte)0x00, (byte)0x00 };
+    private static final byte[] MAGIC_NUMBER_VERSION_2 =
+            new byte[] { (byte)0x9B, (byte)0xC1, (byte)0x3A, (byte)0xFE };
 
     private static final String DICTIONARY_PROJECTION[] = { "id" };
 
@@ -268,15 +271,18 @@ public class BinaryDictionaryFileDumper {
     private static void checkMagicAndCopyFileTo(final BufferedInputStream input,
             final FileOutputStream output) throws FileNotFoundException, IOException {
         // Check the magic number
-        final byte[] magicNumberBuffer = new byte[MAGIC_NUMBER.length];
-        final int readMagicNumberSize = input.read(magicNumberBuffer, 0, MAGIC_NUMBER.length);
-        if (readMagicNumberSize < MAGIC_NUMBER.length) {
+        final int length = MAGIC_NUMBER_VERSION_2.length;
+        final byte[] magicNumberBuffer = new byte[length];
+        final int readMagicNumberSize = input.read(magicNumberBuffer, 0, length);
+        if (readMagicNumberSize < length) {
             throw new IOException("Less bytes to read than the magic number length");
         }
-        if (!Arrays.equals(MAGIC_NUMBER, magicNumberBuffer)) {
-            throw new IOException("Wrong magic number for downloaded file");
+        if (!Arrays.equals(MAGIC_NUMBER_VERSION_2, magicNumberBuffer)) {
+            if (!Arrays.equals(MAGIC_NUMBER_VERSION_1, magicNumberBuffer)) {
+                throw new IOException("Wrong magic number for downloaded file");
+            }
         }
-        output.write(MAGIC_NUMBER);
+        output.write(magicNumberBuffer);
 
         // Actually copy the file
         final byte[] buffer = new byte[FILE_READ_BUFFER_SIZE];
