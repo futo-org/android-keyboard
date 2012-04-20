@@ -141,18 +141,12 @@ public class KeyboardState {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onSaveKeyboardState: saved=" + state + " " + this);
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_onSaveKeyboardState(this, state.toString());
-        }
     }
 
     private void onRestoreKeyboardState() {
         final SavedKeyboardState state = mSavedKeyboardState;
         if (DEBUG_EVENT) {
             Log.d(TAG, "onRestoreKeyboardState: saved=" + state + " " + this);
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_onRestoreKeyboardState(this, state.toString());
         }
         if (!state.mIsValid || state.mIsAlphabetMode) {
             setAlphabetKeyboard();
@@ -185,9 +179,6 @@ public class KeyboardState {
     private void setShifted(int shiftMode) {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setShifted: shiftMode=" + shiftModeToString(shiftMode) + " " + this);
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_setShifted(this, shiftModeToString(shiftMode));
         }
         if (!mIsAlphabetMode) return;
         final int prevShiftMode;
@@ -228,9 +219,6 @@ public class KeyboardState {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setShiftLocked: shiftLocked=" + shiftLocked + " " + this);
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_setShiftLocked(this, shiftLocked);
-        }
         if (!mIsAlphabetMode) return;
         if (shiftLocked && (!mAlphabetShiftState.isShiftLocked()
                 || mAlphabetShiftState.isShiftLockShifted())) {
@@ -245,9 +233,6 @@ public class KeyboardState {
     private void toggleAlphabetAndSymbols() {
         if (DEBUG_ACTION) {
             Log.d(TAG, "toggleAlphabetAndSymbols: " + this);
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_toggleAlphabetAndSymbols(this);
         }
         if (mIsAlphabetMode) {
             mPrevMainKeyboardWasShiftLocked = mAlphabetShiftState.isShiftLocked();
@@ -280,9 +265,6 @@ public class KeyboardState {
             Log.d(TAG, "setAlphabetKeyboard");
         }
 
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_setAlphabetKeyboard();
-        }
         mSwitchActions.setAlphabetKeyboard();
         mIsAlphabetMode = true;
         mIsSymbolShifted = false;
@@ -293,9 +275,6 @@ public class KeyboardState {
     private void setSymbolsKeyboard() {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setSymbolsKeyboard");
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_setSymbolsKeyboard();
         }
         mSwitchActions.setSymbolsKeyboard();
         mIsAlphabetMode = false;
@@ -308,9 +287,6 @@ public class KeyboardState {
     private void setSymbolsShiftedKeyboard() {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setSymbolsShiftedKeyboard");
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_setSymbolsShiftedKeyboard();
         }
         mSwitchActions.setSymbolsShiftedKeyboard();
         mIsAlphabetMode = false;
@@ -398,9 +374,6 @@ public class KeyboardState {
     public void onUpdateShiftState(boolean autoCaps) {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onUpdateShiftState: autoCaps=" + autoCaps + " " + this);
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_onUpdateShiftState(this, autoCaps);
         }
         updateAlphabetShiftState(autoCaps);
     }
