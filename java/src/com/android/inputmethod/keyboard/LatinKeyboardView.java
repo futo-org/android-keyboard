@@ -467,6 +467,9 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         mSpaceIcon = (mSpaceKey != null) ? mSpaceKey.getIcon(keyboard.mIconsSet) : null;
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mSpacebarTextSize = keyHeight * mSpacebarTextRatio;
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinKeyboardView_setKeyboard(keyboard);
+        }
     }
 
     /**

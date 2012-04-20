@@ -107,31 +107,15 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         return setBooleanPreference(PREF_DEBUG_MODE, value, false);
     }
 
-    // overload this to configure preferences in a way specific to a subclass's tests
-    protected void configurePreferences() {
-        // please avoid changing preferences any more than is necessary, as an interruption
-        // during a test will leave the user's preferences in a bad state.
-    }
-
-    // restore any preferences set in configurePreferences()
-    protected void restorePreferences() {
-        // undo any effects from configurePreferences()
-    }
-
     @Override
-    protected void setUp() {
-        try {
-            super.setUp();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    protected void setUp() throws Exception {
+        super.setUp();
         mTextView = new TextView(getContext());
         mTextView.setInputType(InputType.TYPE_CLASS_TEXT);
         mTextView.setEnabled(true);
         setupService();
         mLatinIME = getService();
         final boolean previousDebugSetting = setDebugMode(true);
-        configurePreferences();
         mLatinIME.onCreate();
         setDebugMode(previousDebugSetting);
         initSubtypeMap();
@@ -151,12 +135,6 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         mInputConnection = ic;
         mKeyboard = mLatinIME.mKeyboardSwitcher.getKeyboard();
         changeLanguage("en_US");
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        restorePreferences();
     }
 
     private void initSubtypeMap() {
