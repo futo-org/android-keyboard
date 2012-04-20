@@ -100,7 +100,7 @@ public class SubtypeSwitcher {
         mCurrentSystemLocale = mResources.getConfiguration().locale;
         mCurrentSubtype = mImm.getCurrentInputMethodSubtype();
         mNoLanguageSubtype = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                service, SubtypeLocale.NO_LANGUAGE, AdditionalSubtype.QWERTY);
+                service, SubtypeLocale.NO_LANGUAGE, SubtypeLocale.QWERTY);
 
         final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
         mIsNetworkConnected = (info != null && info.isConnected());

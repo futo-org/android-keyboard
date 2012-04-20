@@ -27,10 +27,23 @@ import java.util.Locale;
 
 public class SubtypeLocale {
     private static final String TAG = SubtypeLocale.class.getSimpleName();
+    // This class must be located in the same package as LatinIME.java.
+    private static final String RESOURCE_PACKAGE_NAME =
+            DictionaryFactory.class.getPackage().getName();
 
     // Special language code to represent "no language".
     public static final String NO_LANGUAGE = "zz";
 
+    public static final String QWERTY = "qwerty";
+
+    private static String[] sPredefinedKeyboardLayoutSet;
+    // Keyboard layout to its display name map.
+    private static final HashMap<String, String> sKeyboardKayoutToDisplayNameMap =
+            new HashMap<String, String>();
+    // Keyboard layout to subtype name resource id map.
+    private static final HashMap<String, Integer> sKeyboardLayoutToNameIdsMap =
+            new HashMap<String, Integer>();
+    private static final String SUBTYPE_RESOURCE_GENERIC_NAME_PREFIX = "string/subtype_generic_";
     // Exceptional locales to display name map.
     private static final HashMap<String, String> sExceptionalDisplayNamesMap =
             new HashMap<String, String>();
@@ -41,11 +54,34 @@ public class SubtypeLocale {
 
     public static void init(Context context) {
         final Resources res = context.getResources();
-        final String[] locales = res.getStringArray(R.array.subtype_locale_exception_keys);
-        final String[] displayNames = res.getStringArray(R.array.subtype_locale_exception_values);
-        for (int i = 0; i < locales.length; i++) {
-            sExceptionalDisplayNamesMap.put(locales[i], displayNames[i]);
+
+        final String[] predefinedLayoutSet = res.getStringArray(R.array.predefined_layouts);
+        sPredefinedKeyboardLayoutSet = predefinedLayoutSet;
+        final String[] layoutDisplayNames = res.getStringArray(
+                R.array.predefined_layout_display_names);
+        for (int i = 0; i < predefinedLayoutSet.length; i++) {
+            final String layoutName = predefinedLayoutSet[i];
+            sKeyboardKayoutToDisplayNameMap.put(layoutName, layoutDisplayNames[i]);
+            final String resourceName = SUBTYPE_RESOURCE_GENERIC_NAME_PREFIX + layoutName;
+            final int resId = res.getIdentifier(resourceName, null, RESOURCE_PACKAGE_NAME);
+            sKeyboardLayoutToNameIdsMap.put(layoutName, resId);
         }
+
+        final String[] exceptionalLocales = res.getStringArray(
+                R.array.subtype_locale_exception_keys);
+        final String[] exceptionalDisplayNames = res.getStringArray(
+                R.array.subtype_locale_exception_values);
+        for (int i = 0; i < exceptionalLocales.length; i++) {
+            sExceptionalDisplayNamesMap.put(exceptionalLocales[i], exceptionalDisplayNames[i]);
+        }
+    }
+
+    public static String[] getPredefinedKeyboardLayoutSet() {
+        return sPredefinedKeyboardLayoutSet;
+    }
+
+    public static int getSubtypeNameIdFromKeyboardLayoutName(String keyboardLayoutName) {
+        return sKeyboardLayoutToNameIdsMap.get(keyboardLayoutName);
     }
 
     // Get InputMethodSubtype's display name in its locale.
@@ -116,11 +152,7 @@ public class SubtypeLocale {
 
     public static String getKeyboardLayoutSetDisplayName(InputMethodSubtype subtype) {
         final String layoutName = getKeyboardLayoutSetName(subtype);
-        // TODO: This hack should be removed.
-        if (layoutName.equals(AdditionalSubtype.DVORAK)) {
-            return StringUtils.toTitleCase(layoutName, Locale.US);
-        }
-        return layoutName.toUpperCase();
+        return sKeyboardKayoutToDisplayNameMap.get(layoutName);
     }
 
     public static String getKeyboardLayoutSetName(InputMethodSubtype subtype) {
@@ -130,7 +162,7 @@ public class SubtypeLocale {
         if (keyboardLayoutSet == null) {
             android.util.Log.w(TAG, "KeyboardLayoutSet not found, use QWERTY: " +
                     "locale=" + subtype.getLocale() + " extraValue=" + subtype.getExtraValue());
-            return AdditionalSubtype.QWERTY;
+            return QWERTY;
         }
         return keyboardLayoutSet;
     }

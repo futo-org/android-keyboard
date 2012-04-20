@@ -129,7 +129,7 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
             setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
             // TODO: Should filter out already existing combinations of locale and layout.
-            for (final String layout : AdditionalSubtype.PREDEFINED_KEYBOARD_LAYOUT_SET) {
+            for (final String layout : SubtypeLocale.getPredefinedKeyboardLayoutSet()) {
                 add(new KeyboardLayoutSetItem(layout));
             }
         }
