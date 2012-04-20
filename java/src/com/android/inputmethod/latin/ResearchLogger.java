@@ -33,7 +33,6 @@ import android.view.inputmethod.EditorInfo;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.internal.AlphabetShiftState;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
@@ -327,26 +326,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static class UnsLogGroup {
         private static final boolean DEFAULT_ENABLED = true;
 
-        private static final boolean ALPHABETSHIFTSTATE_SETSHIFTED_ENABLED = DEFAULT_ENABLED;
-        private static final boolean ALPHABETSHIFTSTATE_SETSHIFTLOCKED_ENABLED = DEFAULT_ENABLED;
-        private static final boolean ALPHABETSHIFTSTATE_SETAUTOMATICSHIFTED_ENABLED
-                = DEFAULT_ENABLED;
         private static final boolean KEYBOARDSTATE_ONCANCELINPUT_ENABLED = DEFAULT_ENABLED;
         private static final boolean KEYBOARDSTATE_ONCODEINPUT_ENABLED = DEFAULT_ENABLED;
         private static final boolean KEYBOARDSTATE_ONLONGPRESSTIMEOUT_ENABLED = DEFAULT_ENABLED;
         private static final boolean KEYBOARDSTATE_ONPRESSKEY_ENABLED = DEFAULT_ENABLED;
         private static final boolean KEYBOARDSTATE_ONRELEASEKEY_ENABLED = DEFAULT_ENABLED;
-        private static final boolean KEYBOARDSTATE_ONRESTOREKEYBOARDSTATE_ENABLED = DEFAULT_ENABLED;
-        private static final boolean KEYBOARDSTATE_ONSAVEKEYBOARDSTATE_ENABLED = DEFAULT_ENABLED;
-        private static final boolean KEYBOARDSTATE_ONUPDATESHIFTSTATE_ENABLED = DEFAULT_ENABLED;
-        private static final boolean KEYBOARDSTATE_SETALPHABETKEYBOARD_ENABLED = DEFAULT_ENABLED;
-        private static final boolean KEYBOARDSTATE_SETSHIFTED_ENABLED = DEFAULT_ENABLED;
-        private static final boolean KEYBOARDSTATE_SETSHIFTLOCKED_ENABLED = DEFAULT_ENABLED;
-        private static final boolean KEYBOARDSTATE_SETSYMBOLSKEYBOARD_ENABLED = DEFAULT_ENABLED;
-        private static final boolean KEYBOARDSTATE_SETSYMBOLSSHIFTEDKEYBOARD_ENABLED
-                = DEFAULT_ENABLED;
-        private static final boolean KEYBOARDSTATE_TOGGLEALPHABETANDSYMBOLS_ENABLED
-                = DEFAULT_ENABLED;
         private static final boolean LATINIME_COMMITCURRENTAUTOCORRECTION_ENABLED = DEFAULT_ENABLED;
         private static final boolean LATINIME_COMMITTEXT_ENABLED = DEFAULT_ENABLED;
         private static final boolean LATINIME_DELETESURROUNDINGTEXT_ENABLED = DEFAULT_ENABLED;
@@ -451,34 +435,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         sIsLogging = prefs.getBoolean(PREF_USABILITY_STUDY_MODE, false);
     }
 
-    public static void alphabetShiftState_setShifted(final boolean newShiftState,
-            final int oldState, final AlphabetShiftState alphabetShiftState) {
-        if (UnsLogGroup.ALPHABETSHIFTSTATE_SETSHIFTED_ENABLED) {
-            final String s = "setShifted(" + newShiftState + "): " + oldState
-                    + " > " + alphabetShiftState;
-            logUnstructured("AlphabetShiftState_setShifted", s);
-        }
-    }
-
-    public static void alphabetShiftState_setShiftLocked(final boolean newShiftLockState,
-            final int oldState, final AlphabetShiftState alphabetShiftState) {
-        if (UnsLogGroup.ALPHABETSHIFTSTATE_SETSHIFTLOCKED_ENABLED) {
-            final String s = "setShiftLocked(" + newShiftLockState + "): "
-                    + oldState + " > " + alphabetShiftState;
-            logUnstructured("AlphabetShiftState_setShiftLocked", s);
-        }
-    }
-
-    public static void alphabetShiftState_setAutomaticShifted(final int oldState,
-            final AlphabetShiftState alphabetShiftState) {
-        if (UnsLogGroup.ALPHABETSHIFTSTATE_SETAUTOMATICSHIFTED_ENABLED) {
-            final String s = "setAutomaticShifted: " + oldState + " > " + alphabetShiftState;
-            logUnstructured("AlphabetShiftState_setAutomaticShifted", s);
-        }
-    }
-
-    // TODO: Remove keyboardState logging that is redundant in light of
-    // latinKeyboardView_setKeyboard
     public static void keyboardState_onCancelInput(final boolean isSinglePointer,
             final KeyboardState keyboardState) {
         if (UnsLogGroup.KEYBOARDSTATE_ONCANCELINPUT_ENABLED) {
@@ -522,76 +478,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final String s = "onReleaseKey: code=" + Keyboard.printableCode(code)
                     + " sliding=" + withSliding + " " + keyboardState;
             logUnstructured("KeyboardState_onReleaseKey", s);
-        }
-    }
-
-    public static void keyboardState_onRestoreKeyboardState(final KeyboardState keyboardState,
-            final String savedKeyboardState) {
-        if (UnsLogGroup.KEYBOARDSTATE_ONRESTOREKEYBOARDSTATE_ENABLED) {
-            final String s = "onRestoreKeyboardState: saved=" + savedKeyboardState + " "
-                    + keyboardState;
-            logUnstructured("KeyboardState_onRestoreKeyboardState", s);
-        }
-    }
-
-    public static void keyboardState_onSaveKeyboardState(final KeyboardState keyboardState,
-            final String savedKeyboardState) {
-        if (UnsLogGroup.KEYBOARDSTATE_ONSAVEKEYBOARDSTATE_ENABLED) {
-            final String s = "onSaveKeyboardState: saved=" + savedKeyboardState + " "
-                    + keyboardState;
-            logUnstructured("KeyboardState_onSaveKeyboardState", s);
-        }
-    }
-
-    public static void keyboardState_onUpdateShiftState(final KeyboardState keyboardState,
-            final boolean autoCaps) {
-        if (UnsLogGroup.KEYBOARDSTATE_ONUPDATESHIFTSTATE_ENABLED) {
-            final String s = "onUpdateShiftState: autoCaps=" + autoCaps + " " + keyboardState;
-            logUnstructured("KeyboardState_onUpdateShiftState", s);
-        }
-    }
-
-    public static void keyboardState_setAlphabetKeyboard() {
-        if (UnsLogGroup.KEYBOARDSTATE_SETALPHABETKEYBOARD_ENABLED) {
-            final String s = "setAlphabetKeyboard";
-            logUnstructured("KeyboardState_setAlphabetKeyboard", s);
-        }
-    }
-
-    public static void keyboardState_setShifted(final KeyboardState keyboardState,
-            final String shiftMode) {
-        if (UnsLogGroup.KEYBOARDSTATE_SETSHIFTED_ENABLED) {
-            final String s = "setShifted: shiftMode=" + shiftMode + " " + keyboardState;
-            logUnstructured("KeyboardState_setShifted", s);
-        }
-    }
-
-    public static void keyboardState_setShiftLocked(final KeyboardState keyboardState,
-            final boolean shiftLocked) {
-        if (UnsLogGroup.KEYBOARDSTATE_SETSHIFTLOCKED_ENABLED) {
-            final String s = "setShiftLocked: shiftLocked=" + shiftLocked + " " + keyboardState;
-            logUnstructured("KeyboardState_setShiftLocked", s);
-        }
-    }
-
-    public static void keyboardState_setSymbolsKeyboard() {
-        if (UnsLogGroup.KEYBOARDSTATE_SETSYMBOLSKEYBOARD_ENABLED) {
-            final String s = "setSymbolsKeyboard";
-            logUnstructured("KeyboardState_setSymbolsKeyboard", s);
-        }
-    }
-
-    public static void keyboardState_setSymbolsShiftedKeyboard() {
-        if (UnsLogGroup.KEYBOARDSTATE_SETSYMBOLSSHIFTEDKEYBOARD_ENABLED) {
-            final String s = "setSymbolsShiftedKeyboard";
-            logUnstructured("KeyboardState_setSymbolsShiftedKeyboard", s);
-        }
-    }
-
-    public static void keyboardState_toggleAlphabetAndSymbols(final KeyboardState keyboardState) {
-        if (UnsLogGroup.KEYBOARDSTATE_TOGGLEALPHABETANDSYMBOLS_ENABLED) {
-            final String s = "toggleAlphabetAndSymbols: " + keyboardState;
-            logUnstructured("KeyboardState_toggleAlphabetAndSymbols", s);
         }
     }
 

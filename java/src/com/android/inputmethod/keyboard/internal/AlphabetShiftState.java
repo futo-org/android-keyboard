@@ -18,9 +18,6 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.util.Log;
 
-import com.android.inputmethod.latin.ResearchLogger;
-import com.android.inputmethod.latin.define.ProductionFlag;
-
 public class AlphabetShiftState {
     private static final String TAG = AlphabetShiftState.class.getSimpleName();
     private static final boolean DEBUG = false;
@@ -62,9 +59,6 @@ public class AlphabetShiftState {
         }
         if (DEBUG)
             Log.d(TAG, "setShifted(" + newShiftState + "): " + toString(oldState) + " > " + this);
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.alphabetShiftState_setShifted(newShiftState, oldState, this);
-        }
     }
 
     public void setShiftLocked(boolean newShiftLockState) {
@@ -84,9 +78,6 @@ public class AlphabetShiftState {
         if (DEBUG)
             Log.d(TAG, "setShiftLocked(" + newShiftLockState + "): " + toString(oldState)
                     + " > " + this);
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.alphabetShiftState_setShiftLocked(newShiftLockState, oldState, this);
-        }
     }
 
     public void setAutomaticShifted() {
@@ -94,9 +85,6 @@ public class AlphabetShiftState {
         mState = AUTOMATIC_SHIFTED;
         if (DEBUG)
             Log.d(TAG, "setAutomaticShifted: " + toString(oldState) + " > " + this);
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.alphabetShiftState_setAutomaticShifted(oldState, this);
-        }
     }
 
     public boolean isShiftedOrShiftLocked() {
