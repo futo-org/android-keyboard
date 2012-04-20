@@ -313,8 +313,11 @@ public class Keyboard {
 
         public void onAddKey(Key newKey) {
             final Key key = (mKeysCache != null) ? mKeysCache.get(newKey) : newKey;
-            mKeys.add(key);
-            updateHistogram(key);
+            final boolean zeroWidthSpacer = key.isSpacer() && key.mWidth == 0;
+            if (!zeroWidthSpacer) {
+                mKeys.add(key);
+                updateHistogram(key);
+            }
             if (key.mCode == Keyboard.CODE_SHIFT) {
                 mShiftKeys.add(key);
             }

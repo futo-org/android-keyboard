@@ -43,9 +43,8 @@
                     latin:keyStyle="f1MoreKeysStyle" />
             </default>
         </switch>
-        <Key
-            latin:keyStyle="spaceKeyStyle"
-            latin:keyWidth="50%p" />
+        <include
+            latin:keyboardLayout="@xml/key_space" />
         <Key
             latin:keyStyle="punctuationKeyStyle" />
         <Key
