@@ -101,6 +101,12 @@
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
         latin:backgroundType="functional" />
     <key-style
+        latin:styleName="languageSwitchKeyStyle"
+        latin:code="!code/key_language_switch"
+        latin:keyIcon="!icon/language_switch_key"
+        latin:keyActionFlags="noKeyPreview|altCodeWhileTyping|enableLongPress"
+        latin:altCode="!code/key_space" />
+    <key-style
         latin:styleName="settingsKeyStyle"
         latin:code="!code/key_settings"
         latin:keyIcon="!icon/settings_key"

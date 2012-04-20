@@ -24,18 +24,39 @@
     <switch>
         <case
             latin:languageCode="fa"
+            latin:languageSwitchKeyEnabled="true"
+        >
+            <Key
+                latin:keyStyle="languageSwitchKeyStyle" />
+            <Key
+                latin:keyStyle="spaceKeyStyle"
+                latin:keyWidth="21.950%p" />
+            <Key
+                latin:keyStyle="zwnjKeyStyle" />
+        </case>
+        <case
+            latin:languageCode="fa"
+            latin:languageSwitchKeyEnabled="false"
         >
             <Key
                 latin:keyStyle="spaceKeyStyle"
-                latin:keyXPos="30.750%p"
                 latin:keyWidth="30.850%p" />
             <Key
                 latin:keyStyle="zwnjKeyStyle" />
         </case>
+        <case
+            latin:languageSwitchKeyEnabled="true"
+        >
+            <Key
+                latin:keyStyle="languageSwitchKeyStyle" />
+            <Key
+                latin:keyStyle="spaceKeyStyle"
+                latin:keyWidth="30.850%p" />
+        </case>
+        <!-- languageSwitchKeyEnabled="false" -->
         <default>
             <Key
                 latin:keyStyle="spaceKeyStyle"
-                latin:keyXPos="30.750%p"
                 latin:keyWidth="39.750%p" />
         </default>
     </switch>
