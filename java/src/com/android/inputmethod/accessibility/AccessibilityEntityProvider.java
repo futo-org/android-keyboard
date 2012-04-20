@@ -18,6 +18,7 @@ package com.android.inputmethod.accessibility;
 
 import android.graphics.Rect;
 import android.inputmethodservice.InputMethodService;
+import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeProviderCompat;
@@ -185,14 +186,15 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
      * the host View, with the given <code>virtualViewId</code> or the host View itself if
      * <code>virtualViewId</code> equals to {@link View#NO_ID}.
      *
-     * @param action The action to perform.
      * @param virtualViewId A client defined virtual view id.
+     * @param action The action to perform.
+     * @param arguments Optional arguments.
      * @return True if the action was performed.
      * @see #createAccessibilityNodeInfo(int)
      * @see AccessibilityNodeInfoCompat
      */
     @Override
-    public boolean performAccessibilityAction(int action, int virtualViewId) {
+    public boolean performAction(int virtualViewId, int action, Bundle arguments) {
         if (virtualViewId == View.NO_ID) {
             // Perform the action on the host View.
             switch (action) {
