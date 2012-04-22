@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import android.text.TextUtils;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
@@ -122,7 +121,6 @@ public class EditingUtils {
 
     private static final Pattern spaceRegex = Pattern.compile("\\s+");
 
-
     public static CharSequence getPreviousWord(InputConnection connection,
             String sentenceSeperators) {
         //TODO: Should fix this. This could be slow!
@@ -180,78 +178,5 @@ public class EditingUtils {
         if (sentenceSeperators.contains(String.valueOf(lastChar))) return null;
 
         return w[w.length - 1];
-    }
-
-    public static class SelectedWord {
-        public final int mStart;
-        public final int mEnd;
-        public final CharSequence mWord;
-
-        public SelectedWord(int start, int end, CharSequence word) {
-            mStart = start;
-            mEnd = end;
-            mWord = word;
-        }
-    }
-
-    /**
-     * Takes a character sequence with a single character and checks if the character occurs
-     * in a list of word separators or is empty.
-     * @param singleChar A CharSequence with null, zero or one character
-     * @param wordSeparators A String containing the word separators
-     * @return true if the character is at a word boundary, false otherwise
-     */
-    private static boolean isWordBoundary(CharSequence singleChar, String wordSeparators) {
-        return TextUtils.isEmpty(singleChar) || wordSeparators.contains(singleChar);
-    }
-
-    /**
-     * Checks if the cursor is inside a word or the current selection is a whole word.
-     * @param ic the InputConnection for accessing the text field
-     * @param selStart the start position of the selection within the text field
-     * @param selEnd the end position of the selection within the text field. This could be
-     *               the same as selStart, if there's no selection.
-     * @param wordSeparators the word separator characters for the current language
-     * @return an object containing the text and coordinates of the selected/touching word,
-     *         null if the selection/cursor is not marking a whole word.
-     */
-    public static SelectedWord getWordAtCursorOrSelection(final InputConnection ic,
-            int selStart, int selEnd, String wordSeparators) {
-        if (selStart == selEnd) {
-            // There is just a cursor, so get the word at the cursor
-            // getWordRangeAtCursor returns null if the connection is null
-            final EditingUtils.Range range = getWordRangeAtCursor(ic, wordSeparators);
-            if (range != null && !TextUtils.isEmpty(range.mWord)) {
-                return new SelectedWord(selStart - range.mCharsBefore, selEnd + range.mCharsAfter,
-                        range.mWord);
-            }
-        } else {
-            if (null == ic) return null;
-            // Is the previous character empty or a word separator? If not, return null.
-            final CharSequence charsBefore = ic.getTextBeforeCursor(1, 0);
-            if (!isWordBoundary(charsBefore, wordSeparators)) {
-                return null;
-            }
-
-            // Is the next character empty or a word separator? If not, return null.
-            final CharSequence charsAfter = ic.getTextAfterCursor(1, 0);
-            if (!isWordBoundary(charsAfter, wordSeparators)) {
-                return null;
-            }
-
-            // Extract the selection alone
-            final CharSequence touching = ic.getSelectedText(0);
-            if (TextUtils.isEmpty(touching)) return null;
-            // Is any part of the selection a separator? If so, return null.
-            final int length = touching.length();
-            for (int i = 0; i < length; i++) {
-                if (wordSeparators.contains(touching.subSequence(i, i + 1))) {
-                    return null;
-                }
-            }
-            // Prepare the selected word
-            return new SelectedWord(selStart, selEnd, touching);
-        }
-        return null;
     }
 }
