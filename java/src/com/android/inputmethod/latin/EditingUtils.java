@@ -37,30 +37,6 @@ public class EditingUtils {
         // Unintentional empty constructor for singleton.
     }
 
-    /**
-     * Append newText to the text field represented by connection.
-     * The new text becomes selected.
-     */
-    public static void appendText(InputConnection connection, String newText) {
-        if (connection == null) {
-            return;
-        }
-
-        // Commit the composing text
-        connection.finishComposingText();
-
-        // Add a space if the field already has text.
-        String text = newText;
-        CharSequence charBeforeCursor = connection.getTextBeforeCursor(1, 0);
-        if (charBeforeCursor != null
-                && !charBeforeCursor.equals(" ")
-                && (charBeforeCursor.length() > 0)) {
-            text = " " + text;
-        }
-
-        connection.setComposingText(text, 1);
-    }
-
     private static int getCursorPosition(InputConnection connection) {
         if (null == connection) return INVALID_CURSOR_POSITION;
         ExtractedText extracted = connection.getExtractedText(
