@@ -118,23 +118,15 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"Тема клавіатури"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Англійська (Великобританія)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Англійська (США)"</string>
-    <!-- no translation found for subtype_no_language (141420857808801746) -->
-    <skip />
+    <string name="subtype_no_language" msgid="141420857808801746">"Мову не вибрано"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Немає мови (QWERTY)"</string>
-    <!-- no translation found for custom_input_styles_title (8429952441821251512) -->
-    <skip />
-    <!-- no translation found for add_style (6163126614514489951) -->
-    <skip />
-    <!-- no translation found for add (8299699805688017798) -->
-    <skip />
-    <!-- no translation found for remove (4486081658752944606) -->
-    <skip />
-    <!-- no translation found for save (7646738597196767214) -->
-    <skip />
-    <!-- no translation found for subtype_locale (8576443440738143764) -->
-    <skip />
-    <!-- no translation found for keyboard_layout_set (4309233698194565609) -->
-    <skip />
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"Стилі спец. введення"</string>
+    <string name="add_style" msgid="6163126614514489951">"Додати стиль"</string>
+    <string name="add" msgid="8299699805688017798">"Додати"</string>
+    <string name="remove" msgid="4486081658752944606">"Видалити"</string>
+    <string name="save" msgid="7646738597196767214">"Зберегти"</string>
+    <string name="subtype_locale" msgid="8576443440738143764">"Мова"</string>
+    <string name="keyboard_layout_set" msgid="4309233698194565609">"Макет"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Режим вивчення зручності у використанні"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Налаштування тривалості вібрації під час натискання клавіші"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Налаштування гучності звуку під час натискання клавіші"</string>

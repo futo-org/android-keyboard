@@ -118,23 +118,15 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"Billentyűzettéma"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"angol (brit)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"angol (amerikai)"</string>
-    <!-- no translation found for subtype_no_language (141420857808801746) -->
-    <skip />
+    <string name="subtype_no_language" msgid="141420857808801746">"Nincs nyelv"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Nincs nyelv (QWERTY)"</string>
-    <!-- no translation found for custom_input_styles_title (8429952441821251512) -->
-    <skip />
-    <!-- no translation found for add_style (6163126614514489951) -->
-    <skip />
-    <!-- no translation found for add (8299699805688017798) -->
-    <skip />
-    <!-- no translation found for remove (4486081658752944606) -->
-    <skip />
-    <!-- no translation found for save (7646738597196767214) -->
-    <skip />
-    <!-- no translation found for subtype_locale (8576443440738143764) -->
-    <skip />
-    <!-- no translation found for keyboard_layout_set (4309233698194565609) -->
-    <skip />
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"Egyedi bevitelstílusok"</string>
+    <string name="add_style" msgid="6163126614514489951">"Új stílus"</string>
+    <string name="add" msgid="8299699805688017798">"Hozzáadás"</string>
+    <string name="remove" msgid="4486081658752944606">"Eltávolítás"</string>
+    <string name="save" msgid="7646738597196767214">"Mentés"</string>
+    <string name="subtype_locale" msgid="8576443440738143764">"Nyelv"</string>
+    <string name="keyboard_layout_set" msgid="4309233698194565609">"Elrendezés"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Használhatósági teszt"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Gombnyomás rezgési időtartamának beállításai"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Gombnyomás hangerejének beállításai"</string>
