@@ -141,7 +141,8 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
         public KeyboardLayoutSetAdapter getKeyboardLayoutSetAdapter();
     }
 
-    static class SubtypePreference extends DialogPreference {
+    static class SubtypePreference extends DialogPreference
+            implements DialogInterface.OnCancelListener {
         private static final String KEY_PREFIX = "subtype_pref_";
         private static final String KEY_NEW_SUBTYPE = KEY_PREFIX + "new";
 
@@ -205,6 +206,7 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
         @Override
         protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
             final Context context = builder.getContext();
+            builder.setCancelable(true).setOnCancelListener(this);
             if (isIncomplete()) {
                 builder.setPositiveButton(R.string.add, this)
                         .setNegativeButton(android.R.string.cancel, this);
@@ -229,6 +231,13 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
                     spinner.setSelection(i);
                     return;
                 }
+            }
+        }
+
+        @Override
+        public void onCancel(DialogInterface dialog) {
+            if (isIncomplete()) {
+                mProxy.onRemovePressed(this);
             }
         }
 
