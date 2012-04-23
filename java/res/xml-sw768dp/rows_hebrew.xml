@@ -61,5 +61,5 @@
             latin:keyXPos="13.829%p" />
     </Row>
     <include
-        latin:keyboardLayout="@xml/row_qwerty4" />
+        latin:keyboardLayout="@xml/row_hebrew4" />
 </merge>

@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2011, The Android Open Source Project
+** Copyright 2012, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -34,9 +34,7 @@
         <include
             latin:keyboardLayout="@xml/key_space" />
         <include
-            latin:keyboardLayout="@xml/key_apostrophe" />
-        <include
-            latin:keyboardLayout="@xml/key_dash" />
+            latin:keyboardLayout="@xml/keys_comma_period" />
         <Spacer
             latin:keyXPos="-10.00%p"
             latin:keyWidth="0%p" />

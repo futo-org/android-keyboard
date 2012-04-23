@@ -33,20 +33,10 @@
             latin:keyboardLayout="@xml/keys_f1f2" />
         <include
             latin:keyboardLayout="@xml/key_space" />
-        <switch>
-            <case
-                latin:languageCode="iw"
-            >
-                <include
-                    latin:keyboardLayout="@xml/keys_comma_period" />
-            </case>
-            <default>
-                <include
-                    latin:keyboardLayout="@xml/key_apostrophe" />
-                <include
-                    latin:keyboardLayout="@xml/key_dash" />
-            </default>
-        </switch>
+        <include
+            latin:keyboardLayout="@xml/key_apostrophe" />
+        <include
+            latin:keyboardLayout="@xml/key_dash" />
         <include
             latin:keyboardLayout="@xml/key_shortcut" />
     </Row>
