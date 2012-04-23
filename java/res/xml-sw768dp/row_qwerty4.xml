@@ -47,15 +47,7 @@
                     latin:keyboardLayout="@xml/key_dash" />
             </default>
         </switch>
-        <switch>
-            <case
-                latin:shortcutKeyEnabled="true"
-            >
-                <Key
-                    latin:keyStyle="shortcutKeyStyle"
-                    latin:keyXPos="-8.047%p"
-                    latin:keyWidth="fillRight" />
-            </case>
-        </switch>
+        <include
+            latin:keyboardLayout="@xml/key_shortcut" />
     </Row>
 </merge>

@@ -21,23 +21,14 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <Row
-        latin:keyWidth="8.047%p"
-    >
-        <include
-            latin:keyboardLayout="@xml/key_settings" />
-        <Spacer
-            latin:keyXPos="15.157%p"
-            latin:keyWidth="0%p" />
-        <include
-            latin:keyboardLayout="@xml/keys_f1f2" />
-        <include
-            latin:keyboardLayout="@xml/key_space" />
-        <include
-            latin:keyboardLayout="@xml/key_question_exclamation" />
-        <include
-            latin:keyboardLayout="@xml/key_dash" />
-        <include
-            latin:keyboardLayout="@xml/key_shortcut" />
-    </Row>
+    <switch>
+        <case
+            latin:shortcutKeyEnabled="true"
+        >
+            <Key
+                latin:keyStyle="shortcutKeyStyle"
+                latin:keyXPos="-8.047%p"
+                latin:keyWidth="fillRight" />
+        </case>
+    </switch>
 </merge>
