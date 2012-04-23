@@ -109,17 +109,14 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
     }
 
     static class KeyboardLayoutSetItem extends Pair<String, String> {
-        public KeyboardLayoutSetItem(String keyboardLayoutSetName) {
-            super(keyboardLayoutSetName, getDisplayName(keyboardLayoutSetName));
+        public KeyboardLayoutSetItem(InputMethodSubtype subtype) {
+            super(SubtypeLocale.getKeyboardLayoutSetName(subtype),
+                    SubtypeLocale.getKeyboardLayoutSetDisplayName(subtype));
         }
 
         @Override
         public String toString() {
             return second;
-        }
-
-        private static String getDisplayName(String keyboardLayoutSetName) {
-            return keyboardLayoutSetName.toUpperCase();
         }
     }
 
@@ -130,7 +127,10 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
 
             // TODO: Should filter out already existing combinations of locale and layout.
             for (final String layout : SubtypeLocale.getPredefinedKeyboardLayoutSet()) {
-                add(new KeyboardLayoutSetItem(layout));
+                // This is a dummy subtype with NO_LANGUAGE, only for display.
+                final InputMethodSubtype subtype = AdditionalSubtype.createAdditionalSubtype(
+                        SubtypeLocale.NO_LANGUAGE, layout, null);
+                add(new KeyboardLayoutSetItem(subtype));
             }
         }
     }
@@ -196,8 +196,7 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
                         .setNegativeButton(R.string.remove, this);
                 final SubtypeLocaleItem localeItem = SubtypeLocaleAdapter.createItem(
                         context, mSubtype.getLocale());
-                final KeyboardLayoutSetItem layoutItem = new KeyboardLayoutSetItem(
-                        SubtypeLocale.getKeyboardLayoutSetName(mSubtype));
+                final KeyboardLayoutSetItem layoutItem = new KeyboardLayoutSetItem(mSubtype);
                 setSpinnerPosition(mSubtypeLocaleSpinner, localeItem);
                 setSpinnerPosition(mKeyboardLayoutSetSpinner, layoutItem);
             }
