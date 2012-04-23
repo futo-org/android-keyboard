@@ -201,4 +201,6 @@
     <string name="label_time_am">"AM"</string>
     <!-- Key label for "post meridiem" -->
     <string name="label_time_pm">"PM"</string>
+    <!-- Label for "switch to symbols" key on PC QWERTY layout -->
+    <string name="label_to_symbol_key_pcqwerty">Sym</string>
 </resources>

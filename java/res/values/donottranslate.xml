@@ -154,6 +154,7 @@
         <item>azerty</item>
         <item>dvorak</item>
         <item>colemak</item>
+        <item>pcqwerty</item>
     </string-array>
     <!-- Predefined keyboard layout display names -->
     <string-array name="predefined_layout_display_names">
@@ -162,6 +163,7 @@
         <item>AZERTY</item>
         <item>Dvorak</item>
         <item>Colemak</item>
+        <item>PC</item>
     </string-array>
     <!-- Description for generic subtype that has predefined layout.
          The string resource name must be "subtype_generic_<layout name>". -->
@@ -170,6 +172,7 @@
     <string name="subtype_generic_azerty">%s (AZERTY)</string>
     <string name="subtype_generic_dvorak">%s (Dvorak)</string>
     <string name="subtype_generic_colemak">%s (Colemak)</string>
+    <string name="subtype_generic_pcqwerty">%s (PC)</string>
 
     <!-- dictionary pack package name /settings activity (for shared prefs and settings) -->
     <string name="dictionary_pack_package_name">com.google.android.inputmethod.latin.dictionarypack</string>

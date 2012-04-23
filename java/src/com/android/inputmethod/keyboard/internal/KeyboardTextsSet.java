@@ -234,6 +234,7 @@ public final class KeyboardTextsSet {
         /* 118 */ "label_to_phone_symbols_key",
         /* 119 */ "label_time_am",
         /* 120 */ "label_time_pm",
+        /* 121 */ "label_to_symbol_key_pcqwerty",
     };
 
     private static final String EMPTY = "";
@@ -381,6 +382,8 @@ public final class KeyboardTextsSet {
         /* 119 */ "AM",
         // Key label for "post meridiem"
         /* 120 */ "PM",
+        // Label for "switch to symbols" key on PC QWERTY layout
+        /* 121 */ "Sym",
     };
 
     /* Language ar: Arabic */

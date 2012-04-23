@@ -147,8 +147,8 @@
         latin:keyIconPreview="!icon/tab_key_preview" />
     <switch>
         <!-- When this qwerty keyboard has no shortcut keys but shortcut key is enabled, then symbol
-             keyboard will have a shortcut key. That means we should use
-             iconToSymbolKeyWithShortcutKey here. -->
+             keyboard will have a shortcut key. That means we should use label_to_symbol_key label
+             and shortcut_for_label icon. -->
         <case
             latin:shortcutKeyEnabled="true"
             latin:hasShortcutKey="false"
