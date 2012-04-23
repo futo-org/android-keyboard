@@ -880,18 +880,19 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         final KeyPreviewDrawParams params = mKeyPreviewDrawParams;
         final int keyDrawX = key.mX + key.mVisualInsetsLeft;
         final int keyDrawWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight;
+        final String label = key.isShiftedLetterActivated() ? key.mHintLabel : key.mLabel;
         // What we show as preview should match what we show on a key top in onBufferDraw().
-        if (key.mLabel != null) {
+        if (label != null) {
             // TODO Should take care of temporaryShiftLabel here.
             previewText.setCompoundDrawables(null, null, null, null);
-            if (StringUtils.codePointCount(key.mLabel) > 1) {
+            if (StringUtils.codePointCount(label) > 1) {
                 previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, params.mKeyLetterSize);
                 previewText.setTypeface(Typeface.DEFAULT_BOLD);
             } else {
                 previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, params.mPreviewTextSize);
                 previewText.setTypeface(params.mKeyTextStyle);
             }
-            previewText.setText(key.mLabel);
+            previewText.setText(label);
         } else {
             previewText.setCompoundDrawables(null, null, null,
                     key.getPreviewIcon(mKeyboard.mIconsSet));
