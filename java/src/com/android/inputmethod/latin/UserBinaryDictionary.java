@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 The Android Open Source Project
+ * Copyright (C) 2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,15 +25,14 @@ import android.database.Cursor;
 import android.provider.UserDictionary.Words;
 import android.text.TextUtils;
 
-import com.android.inputmethod.keyboard.ProximityInfo;
-
 import java.util.Arrays;
 
 /**
  * An expandable dictionary that stores the words in the user unigram dictionary.
- * To be deprecated: functionality being transferred to UserBinaryDictionary.
-*/
-public class UserDictionary extends ExpandableDictionary {
+ *
+ * Largely a copy of UserDictionary, will replace that class in the future.
+ */
+public class UserBinaryDictionary extends ExpandableBinaryDictionary {
 
     // TODO: use Words.SHORTCUT when it's public in the SDK
     final static String SHORTCUT = "shortcut";
@@ -43,6 +42,8 @@ public class UserDictionary extends ExpandableDictionary {
         Words.FREQUENCY,
     };
 
+    private static final String NAME = "userunigram";
+
     // This is not exported by the framework so we pretty much have to write it here verbatim
     private static final String ACTION_USER_DICTIONARY_INSERT =
             "com.android.settings.USER_DICTIONARY_INSERT";
@@ -51,13 +52,13 @@ public class UserDictionary extends ExpandableDictionary {
     final private String mLocale;
     final private boolean mAlsoUseMoreRestrictiveLocales;
 
-    public UserDictionary(final Context context, final String locale) {
+    public UserBinaryDictionary(final Context context, final String locale) {
         this(context, locale, false);
     }
 
-    public UserDictionary(final Context context, final String locale,
+    public UserBinaryDictionary(final Context context, final String locale,
             final boolean alsoUseMoreRestrictiveLocales) {
-        super(context, Suggest.DIC_USER);
+        super(context, getFilenameWithLocale(NAME, locale), Suggest.DIC_USER);
         if (null == locale) throw new NullPointerException(); // Catch the error earlier
         mLocale = locale;
         mAlsoUseMoreRestrictiveLocales = alsoUseMoreRestrictiveLocales;
@@ -79,7 +80,7 @@ public class UserDictionary extends ExpandableDictionary {
     @Override
     public synchronized void close() {
         if (mObserver != null) {
-            getContext().getContentResolver().unregisterContentObserver(mObserver);
+            mContext.getContentResolver().unregisterContentObserver(mObserver);
             mObserver = null;
         }
         super.close();
@@ -134,9 +135,8 @@ public class UserDictionary extends ExpandableDictionary {
         } else {
             requestArguments = localeElements;
         }
-        final Cursor cursor = getContext().getContentResolver()
-                .query(Words.CONTENT_URI, PROJECTION_QUERY, request.toString(),
-                        requestArguments, null);
+        final Cursor cursor = mContext.getContentResolver().query(
+            Words.CONTENT_URI, PROJECTION_QUERY, request.toString(), requestArguments, null);
         try {
             addWords(cursor);
         } finally {
@@ -145,7 +145,7 @@ public class UserDictionary extends ExpandableDictionary {
     }
 
     public boolean isEnabled() {
-        final ContentResolver cr = getContext().getContentResolver();
+        final ContentResolver cr = mContext.getContentResolver();
         final ContentProviderClient client = cr.acquireContentProviderClient(Words.CONTENT_URI);
         if (client != null) {
             client.release();
@@ -158,8 +158,8 @@ public class UserDictionary extends ExpandableDictionary {
     /**
      * Adds a word to the user dictionary and makes it persistent.
      *
-     * This will call upon the system interface to do the actual work through the intent
-     * readied by the system to this effect.
+     * This will call upon the system interface to do the actual work through the intent readied by
+     * the system to this effect.
      *
      * @param word the word to add. If the word is capitalized, then the dictionary will
      * recognize it as a capitalized word when searched.
@@ -168,37 +168,22 @@ public class UserDictionary extends ExpandableDictionary {
      * @TODO use a higher or float range for frequency
      */
     public synchronized void addWordToUserDictionary(final String word, final int frequency) {
-        // Force load the dictionary here synchronously
-        if (getRequiresReload()) loadDictionaryAsync();
         // TODO: do something for the UI. With the following, any sufficiently long word will
         // look like it will go to the user dictionary but it won't.
         // Safeguard against adding long words. Can cause stack overflow.
-        if (word.length() >= getMaxWordLength()) return;
+        if (word.length() >= MAX_WORD_LENGTH) return;
 
         // TODO: Add an argument to the intent to specify the frequency.
         Intent intent = new Intent(ACTION_USER_DICTIONARY_INSERT);
         intent.putExtra(Words.WORD, word);
         intent.putExtra(Words.LOCALE, mLocale);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getContext().startActivity(intent);
-    }
-
-    @Override
-    public synchronized void getWords(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final WordCallback callback,
-            final ProximityInfo proximityInfo) {
-        super.getWords(codes, prevWordForBigrams, callback, proximityInfo);
-    }
-
-    @Override
-    public synchronized boolean isValidWord(CharSequence word) {
-        return super.isValidWord(word);
+        mContext.startActivity(intent);
     }
 
     private void addWords(Cursor cursor) {
-        clearDictionary();
+        clearFusionDictionary();
         if (cursor == null) return;
-        final int maxWordLength = getMaxWordLength();
         if (cursor.moveToFirst()) {
             final int indexWord = cursor.getColumnIndex(Words.WORD);
             final int indexShortcut = cursor.getColumnIndex(SHORTCUT);
@@ -207,16 +192,20 @@ public class UserDictionary extends ExpandableDictionary {
                 String word = cursor.getString(indexWord);
                 String shortcut = cursor.getString(indexShortcut);
                 int frequency = cursor.getInt(indexFrequency);
-                // Safeguard against adding really long words. Stack may overflow due
-                // to recursion
-                if (word.length() < maxWordLength) {
+                // Safeguard against adding really long words.
+                if (word.length() < MAX_WORD_LENGTH) {
                     super.addWord(word, null, frequency);
                 }
-                if (null != shortcut && shortcut.length() < maxWordLength) {
+                if (null != shortcut && shortcut.length() < MAX_WORD_LENGTH) {
                     super.addWord(shortcut, word, frequency);
                 }
                 cursor.moveToNext();
             }
         }
+    }
+
+    @Override
+    protected boolean hasContentChanged() {
+        return true;
     }
 }

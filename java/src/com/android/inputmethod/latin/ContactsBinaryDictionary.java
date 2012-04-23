@@ -60,17 +60,13 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     private final boolean mUseFirstLastBigrams;
 
     public ContactsBinaryDictionary(final Context context, final int dicTypeId, Locale locale) {
-        super(context, getFilenameWithLocale(locale), dicTypeId);
+        super(context, getFilenameWithLocale(NAME, locale.toString()), dicTypeId);
         mUseFirstLastBigrams = useFirstLastBigramsForLocale(locale);
         registerObserver(context);
 
         // Load the current binary dictionary from internal storage. If no binary dictionary exists,
         // loadDictionary will start a new thread to generate one asynchronously.
         loadDictionary();
-    }
-
-    private static String getFilenameWithLocale(Locale locale) {
-        return NAME + "." + locale.toString() + ".dict";
     }
 
     private synchronized void registerObserver(final Context context) {
@@ -175,7 +171,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                 // capitalization of i.
                 final int wordLen = word.codePointCount(0, word.length());
                 if (wordLen < MAX_WORD_LENGTH && wordLen > 1) {
-                    super.addWord(word, FREQUENCY_FOR_CONTACTS);
+                    super.addWord(word, null /* shortcut */, FREQUENCY_FOR_CONTACTS);
                     if (!TextUtils.isEmpty(prevWord)) {
                         if (mUseFirstLastBigrams) {
                             super.setBigram(prevWord, word, FREQUENCY_FOR_CONTACTS_BIGRAM);
