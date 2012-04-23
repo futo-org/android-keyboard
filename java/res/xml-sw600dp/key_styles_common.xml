@@ -98,7 +98,7 @@
         latin:code="!code/key_shortcut"
         latin:keyIcon="!icon/shortcut_key"
         latin:keyIconDisabled="!icon/shortcut_key_disabled"
-        latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
+        latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="languageSwitchKeyStyle"
@@ -110,7 +110,7 @@
         latin:styleName="settingsKeyStyle"
         latin:code="!code/key_settings"
         latin:keyIcon="!icon/settings_key"
-        latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
+        latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
     <switch>
         <case
