@@ -54,7 +54,7 @@ Dictionary::~Dictionary() {
     delete mBigramDictionary;
 }
 
-bool Dictionary::isValidWord(unsigned short *word, int length) {
+bool Dictionary::isValidWord(const int32_t *word, int length) {
     return mUnigramDictionary->isValidWord(word, length);
 }
 
