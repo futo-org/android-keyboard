@@ -78,6 +78,7 @@
             </default>
         </switch>
         <include
+            latin:keyXPos="25%p"
             latin:keyboardLayout="@xml/key_space" />
         <Key
             latin:keyLabel="z"

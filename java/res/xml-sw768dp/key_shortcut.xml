@@ -26,9 +26,7 @@
             latin:shortcutKeyEnabled="true"
         >
             <Key
-                latin:keyStyle="shortcutKeyStyle"
-                latin:keyXPos="-8.047%p"
-                latin:keyWidth="fillRight" />
+                latin:keyStyle="shortcutKeyStyle" />
         </case>
     </switch>
 </merge>

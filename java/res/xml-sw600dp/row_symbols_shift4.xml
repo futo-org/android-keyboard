@@ -30,11 +30,11 @@
         <Key
             latin:keyStyle="tabKeyStyle" />
         <include
+            latin:keyXPos="30.750%p"
             latin:keyboardLayout="@xml/key_space" />
-        <Spacer
-            latin:keyXPos="-10.00%p"
-            latin:keyWidth="0%p" />
         <include
+            latin:keyXPos="-10.00%p"
+            latin:keyWidth="fillRight"
             latin:keyboardLayout="@xml/key_shortcut" />
     </Row>
 </merge>

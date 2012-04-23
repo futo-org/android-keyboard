@@ -28,7 +28,7 @@
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_thai1"
-            latin:keyXPos="11.508%p"/>
+            latin:keyXPos="11.508%p" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillBoth"/>

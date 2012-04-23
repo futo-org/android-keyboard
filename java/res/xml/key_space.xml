@@ -21,9 +21,6 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <Spacer
-        latin:keyWidth="0dp"
-        latin:keyXPos="25%p" />
     <switch>
         <case
             latin:languageCode="fa"

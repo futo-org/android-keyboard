@@ -38,7 +38,7 @@
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_hindi2"
-            latin:keyXPos="4.500%p" />
+            latin:keyXPos="4.5%p" />
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillBoth" />
@@ -54,7 +54,9 @@
         <include
             latin:keyboardLayout="@xml/keys_comma_period" />
         <include
-            latin:keyboardLayout="@xml/key_smiley" />
+            latin:keyboardLayout="@xml/key_smiley"
+            latin:keyXPos="-7.5%p"
+            latin:keyWidth="fillRight" />
     </Row>
     <include
         latin:keyboardLayout="@xml/row_qwerty4" />

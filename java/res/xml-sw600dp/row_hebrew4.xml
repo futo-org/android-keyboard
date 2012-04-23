@@ -35,10 +35,9 @@
             latin:keyboardLayout="@xml/key_space" />
         <include
             latin:keyboardLayout="@xml/keys_comma_period" />
-        <Spacer
-            latin:keyXPos="-10.00%p"
-            latin:keyWidth="0%p" />
         <include
+            latin:keyXPos="-10.0%p"
+            latin:keyWidth="fillRight"
             latin:keyboardLayout="@xml/key_shortcut" />
     </Row>
 </merge>

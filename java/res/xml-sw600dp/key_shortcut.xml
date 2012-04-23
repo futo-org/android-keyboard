@@ -29,24 +29,21 @@
             <Key
                 latin:keyStyle="shortcutKeyStyle"
                 latin:keyLabelFlags="hasPopupHint|preserveCase"
-                latin:moreKeys="!text/settings_as_more_key"
-                latin:keyWidth="fillBoth" />
+                latin:moreKeys="!text/settings_as_more_key" />
         </case>
         <case
             latin:shortcutKeyEnabled="true"
             latin:clobberSettingsKey="true"
         >
             <Key
-                latin:keyStyle="shortcutKeyStyle"
-                latin:keyWidth="fillBoth" />
+                latin:keyStyle="shortcutKeyStyle" />
         </case>
         <case
             latin:shortcutKeyEnabled="false"
             latin:clobberSettingsKey="false"
         >
             <Key
-                latin:keyStyle="settingsKeyStyle"
-                latin:keyWidth="fillBoth" />
+                latin:keyStyle="settingsKeyStyle" />
         </case>
         <!-- shortcutKeyEnabled="false" clobberSettingsKey="true" -->
         <default>

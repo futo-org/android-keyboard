@@ -135,8 +135,7 @@
             latin:keyLabel="9"
             latin:keyStyle="numKeyStyle" />
         <!-- Note: This Spacer prevents the above key from being marked as a right edge key. -->
-        <Spacer
-            latin:keyWidth="0%p" />
+        <Spacer />
     </Row>
     <Row>
         <Key
@@ -155,10 +154,9 @@
         <Key
             latin:keyLabel="#"
             latin:keyStyle="numKeyStyle" />
-        <Spacer
-            latin:keyXPos="-11.00%p"
-            latin:keyWidth="0%p" />
         <include
+            latin:keyXPos="-11.0%p"
+            latin:keyWidth="fillRight"
             latin:keyboardLayout="@xml/key_shortcut" />
     </Row>
 </merge>

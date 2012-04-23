@@ -55,7 +55,7 @@
             latin:keyboardLayout="@xml/keys_comma_period" />
         <include
             latin:keyboardLayout="@xml/key_smiley"
-            latin:keyXPos="-9.0%p"
+            latin:keyXPos="-7.6%p"
             latin:keyWidth="fillRight" />
     </Row>
     <include

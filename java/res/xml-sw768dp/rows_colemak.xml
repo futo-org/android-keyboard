@@ -34,7 +34,7 @@
             latin:keyboardLayout="@xml/rowkeys_colemak1"
             latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
         <include
-            latin:keyboardLayout="@xml/key_colemak_semicolon" />
+            latin:keyboardLayout="@xml/key_colemak_colon" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillBoth" />

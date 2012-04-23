@@ -30,6 +30,7 @@
         <include
             latin:keyboardLayout="@xml/key_f1" />
         <include
+            latin:keyXPos="25%p"
             latin:keyboardLayout="@xml/key_space" />
         <Key
             latin:keyStyle="punctuationKeyStyle" />

@@ -26,18 +26,19 @@
     >
         <include
             latin:keyboardLayout="@xml/key_settings" />
-        <Spacer
-            latin:keyXPos="15.157%p"
-            latin:keyWidth="0%p" />
         <include
+            latin:keyXPos="15.157%p"
             latin:keyboardLayout="@xml/keys_f1f2" />
         <include
+            latin:keyXPos="31.250%p"
             latin:keyboardLayout="@xml/key_space" />
         <include
             latin:keyboardLayout="@xml/key_apostrophe" />
         <include
             latin:keyboardLayout="@xml/key_dash" />
         <include
+            latin:keyXPos="-8.047%p"
+            latin:keyWidth="fillRight"
             latin:keyboardLayout="@xml/key_shortcut" />
     </Row>
 </merge>

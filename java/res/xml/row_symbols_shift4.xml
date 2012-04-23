@@ -36,6 +36,7 @@
             latin:keyLabel="&#x201E;"
             latin:backgroundType="functional" />
         <include
+            latin:keyXPos="25%p"
             latin:keyboardLayout="@xml/key_space" />
         <!-- U+2026: "…" HORIZONTAL ELLIPSIS -->
         <Key
