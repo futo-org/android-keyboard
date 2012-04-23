@@ -98,7 +98,8 @@ int UnigramDictionary::getDigraphReplacement(const int *codes, const int i, cons
 void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codesBuffer,
         int *xCoordinatesBuffer, int *yCoordinatesBuffer,
-        const int codesBufferSize, const bool useFullEditDistance, const int *codesSrc,
+        const int codesBufferSize, const int bigramListPosition,
+        const bool useFullEditDistance, const int *codesSrc,
         const int codesRemain, const int currentDepth, int *codesDest, Correction *correction,
         WordsPriorityQueuePool *queuePool,
         const digraph_t* const digraphs, const unsigned int digraphsSize) {
@@ -127,8 +128,8 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
                         replacementCodePoint;
                 getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
                         codesBuffer, xCoordinatesBuffer, yCoordinatesBuffer, codesBufferSize,
-                        useFullEditDistance, codesSrc + i + 1, codesRemain - i - 1,
-                        currentDepth + 1, codesDest + i, correction,
+                        bigramListPosition, useFullEditDistance, codesSrc + i + 1,
+                        codesRemain - i - 1, currentDepth + 1, codesDest + i, correction,
                         queuePool, digraphs, digraphsSize);
 
                 // Copy the second char of the digraph in place, then continue processing on
@@ -137,9 +138,9 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
                 memcpy(codesDest + i, codesSrc + i, BYTES_IN_ONE_CHAR);
                 getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
                         codesBuffer, xCoordinatesBuffer, yCoordinatesBuffer, codesBufferSize,
-                        useFullEditDistance, codesSrc + i, codesRemain - i, currentDepth + 1,
-                        codesDest + i, correction, queuePool,
-                        digraphs, digraphsSize);
+                        bigramListPosition, useFullEditDistance, codesSrc + i, codesRemain - i,
+                        currentDepth + 1, codesDest + i, correction, queuePool, digraphs,
+                        digraphsSize);
                 return;
             }
         }
@@ -160,14 +161,16 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
     }
 
     getWordSuggestions(proximityInfo, xCoordinatesBuffer, yCoordinatesBuffer, codesBuffer,
-            startIndex + codesRemain, useFullEditDistance, correction,
+            startIndex + codesRemain, bigramListPosition, useFullEditDistance, correction,
             queuePool);
 }
 
+// bigramListPosition is the offset in the file to the list of bigrams for the previous word.
 int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
         WordsPriorityQueuePool *queuePool, Correction *correction, const int *xcoordinates,
         const int *ycoordinates, const int *codes, const int codesSize,
-        const bool useFullEditDistance, unsigned short *outWords, int *frequencies) {
+        const int bigramListPosition, const bool useFullEditDistance, unsigned short *outWords,
+        int *frequencies) {
 
     queuePool->clearAll();
     Correction* masterCorrection = correction;
@@ -177,8 +180,8 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
         int xCoordinatesBuffer[codesSize];
         int yCoordinatesBuffer[codesSize];
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
-                xCoordinatesBuffer, yCoordinatesBuffer,
-                codesSize, useFullEditDistance, codes, codesSize, 0, codesBuffer, masterCorrection,
+                xCoordinatesBuffer, yCoordinatesBuffer, codesSize, bigramListPosition,
+                useFullEditDistance, codes, codesSize, 0, codesBuffer, masterCorrection,
                 queuePool, GERMAN_UMLAUT_DIGRAPHS,
                 sizeof(GERMAN_UMLAUT_DIGRAPHS) / sizeof(GERMAN_UMLAUT_DIGRAPHS[0]));
     } else if (BinaryFormat::REQUIRES_FRENCH_LIGATURES_PROCESSING & FLAGS) {
@@ -186,13 +189,13 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
         int xCoordinatesBuffer[codesSize];
         int yCoordinatesBuffer[codesSize];
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
-                xCoordinatesBuffer, yCoordinatesBuffer,
-                codesSize, useFullEditDistance, codes, codesSize, 0, codesBuffer, masterCorrection,
+                xCoordinatesBuffer, yCoordinatesBuffer, codesSize, bigramListPosition,
+                useFullEditDistance, codes, codesSize, 0, codesBuffer, masterCorrection,
                 queuePool, FRENCH_LIGATURES_DIGRAPHS,
                 sizeof(FRENCH_LIGATURES_DIGRAPHS) / sizeof(FRENCH_LIGATURES_DIGRAPHS[0]));
     } else { // Normal processing
         getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, codesSize,
-                useFullEditDistance, masterCorrection, queuePool);
+                bigramListPosition, useFullEditDistance, masterCorrection, queuePool);
     }
 
     PROF_START(20);
@@ -225,16 +228,16 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
 
 void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codes,
-        const int inputLength, const bool useFullEditDistance, Correction *correction,
-        WordsPriorityQueuePool *queuePool) {
+        const int inputLength, const int bigramListPosition, const bool useFullEditDistance,
+        Correction *correction, WordsPriorityQueuePool *queuePool) {
 
     PROF_OPEN;
     PROF_START(0);
     PROF_END(0);
 
     PROF_START(1);
-    getOneWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, useFullEditDistance,
-            inputLength, correction, queuePool);
+    getOneWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, bigramListPosition,
+            useFullEditDistance, inputLength, correction, queuePool);
     PROF_END(1);
 
     PROF_START(2);
@@ -305,15 +308,16 @@ static const char SPACE = ' ';
 
 void UnigramDictionary::getOneWordSuggestions(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codes,
-        const bool useFullEditDistance, const int inputLength, Correction *correction,
-        WordsPriorityQueuePool *queuePool) {
+        const int bigramListPosition, const bool useFullEditDistance, const int inputLength,
+        Correction *correction, WordsPriorityQueuePool *queuePool) {
     initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, inputLength, correction);
-    getSuggestionCandidates(useFullEditDistance, inputLength, correction, queuePool,
-            true /* doAutoCompletion */, DEFAULT_MAX_ERRORS, FIRST_WORD_INDEX);
+    getSuggestionCandidates(useFullEditDistance, inputLength, bigramListPosition, correction,
+            queuePool, true /* doAutoCompletion */, DEFAULT_MAX_ERRORS, FIRST_WORD_INDEX);
 }
 
 void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
-        const int inputLength, Correction *correction, WordsPriorityQueuePool *queuePool,
+        const int inputLength, const int bigramListPosition,
+        Correction *correction, WordsPriorityQueuePool *queuePool,
         const bool doAutoCompletion, const int maxErrors, const int currentWordIndex) {
     // TODO: Remove setCorrectionParams
     correction->setCorrectionParams(0, 0, 0,
@@ -333,8 +337,8 @@ void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
             int firstChildPos;
 
             const bool needsToTraverseChildrenNodes = processCurrentNode(siblingPos,
-                    correction, &childCount, &firstChildPos, &siblingPos, queuePool,
-                    currentWordIndex);
+                    bigramListPosition, correction, &childCount, &firstChildPos, &siblingPos,
+                    queuePool, currentWordIndex);
             // Update next sibling pos
             correction->setTreeSiblingPos(outputIndex, siblingPos);
 
@@ -426,8 +430,10 @@ bool UnigramDictionary::getSubStringSuggestion(
             initSuggestions(proximityInfo, &xcoordinates[offset], &ycoordinates[offset],
                     codes + offset, inputWordLength, correction);
             queuePool->clearSubQueue(currentWordIndex);
-            getSuggestionCandidates(useFullEditDistance, inputWordLength, correction,
-                    queuePool, false, MAX_ERRORS_FOR_TWO_WORDS, currentWordIndex);
+            // TODO: pass the bigram list for substring suggestion
+            getSuggestionCandidates(useFullEditDistance, inputWordLength,
+                    0 /* bigramListPosition */, correction, queuePool, false /* doAutoCompletion */,
+                    MAX_ERRORS_FOR_TWO_WORDS, currentWordIndex);
             if (DEBUG_DICT) {
                 if (currentWordIndex < MULTIPLE_WORDS_SUGGESTION_MAX_WORDS) {
                     AKLOGI("Dump word candidates(%d) %d", currentWordIndex, inputWordLength);
@@ -757,15 +763,13 @@ int UnigramDictionary::getBigramPosition(int pos, unsigned short *word, int offs
 // the current node in nextSiblingPosition. Thus, the caller must keep count of the nodes at any
 // given level, as output into newCount when traversing this level's parent.
 inline bool UnigramDictionary::processCurrentNode(const int initialPos,
-        Correction *correction, int *newCount,
+        const int bigramListPosition, Correction *correction, int *newCount,
         int *newChildrenPosition, int *nextSiblingPosition, WordsPriorityQueuePool *queuePool,
         const int currentWordIndex) {
     if (DEBUG_DICT) {
         correction->checkState();
     }
     int pos = initialPos;
-    // TODO: get this as an argument
-    const int bigramListPosition = 0;
 
     // Flags contain the following information:
     // - Address type (MASK_GROUP_ADDRESS_TYPE) on two bits:
@@ -842,6 +846,8 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos,
         const int childrenAddressPos = BinaryFormat::skipFrequency(flags, pos);
         const int attributesPos = BinaryFormat::skipChildrenPosition(flags, childrenAddressPos);
         TerminalAttributes terminalAttributes(DICT_ROOT, flags, attributesPos);
+        // The bigramListPosition is the offset in the file of the bigrams for the previous word,
+        // or zero if we don't know of any bigrams for it.
         const int probability = BinaryFormat::getProbability(bigramListPosition, unigramFreq);
         onTerminal(probability, terminalAttributes, correction, queuePool, needsToInvokeOnTerminal,
                 currentWordIndex);

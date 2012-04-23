@@ -74,34 +74,35 @@ class UnigramDictionary {
     bool isValidWord(const int32_t* const inWord, const int length) const;
     int getBigramPosition(int pos, unsigned short *word, int offset, int length) const;
     int getSuggestions(ProximityInfo *proximityInfo, WordsPriorityQueuePool *queuePool,
-            Correction *correction, const int *xcoordinates,
-            const int *ycoordinates, const int *codes, const int codesSize,
+            Correction *correction, const int *xcoordinates, const int *ycoordinates,
+            const int *codes, const int codesSize, const int bigramListPosition,
             const bool useFullEditDistance, unsigned short *outWords, int *frequencies);
     virtual ~UnigramDictionary();
 
  private:
     void getWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int inputLength,
-            const bool useFullEditDistance, Correction *correction,
+            const int bigramListPosition, const bool useFullEditDistance, Correction *correction,
             WordsPriorityQueuePool *queuePool);
     int getDigraphReplacement(const int *codes, const int i, const int codesSize,
             const digraph_t* const digraphs, const unsigned int digraphsSize) const;
     void getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int* ycoordinates, const int *codesBuffer,
-        int *xCoordinatesBuffer, int *yCoordinatesBuffer,
-        const int codesBufferSize, const bool useFullEditDistance, const int* codesSrc,
+        int *xCoordinatesBuffer, int *yCoordinatesBuffer, const int codesBufferSize,
+        const int bigramListPosition, const bool useFullEditDistance, const int* codesSrc,
         const int codesRemain, const int currentDepth, int* codesDest, Correction *correction,
         WordsPriorityQueuePool* queuePool, const digraph_t* const digraphs,
         const unsigned int digraphsSize);
     void initSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize, Correction *correction);
     void getOneWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
-            const int *ycoordinates, const int *codes, const bool useFullEditDistance,
-            const int inputLength, Correction *correction, WordsPriorityQueuePool* queuePool);
-    void getSuggestionCandidates(
+            const int *ycoordinates, const int *codes, const int bigramListPosition,
             const bool useFullEditDistance, const int inputLength, Correction *correction,
-            WordsPriorityQueuePool* queuePool, const bool doAutoCompletion, const int maxErrors,
-            const int currentWordIndex);
+            WordsPriorityQueuePool* queuePool);
+    void getSuggestionCandidates(
+            const bool useFullEditDistance, const int inputLength, const int bigramListPosition,
+            Correction *correction, WordsPriorityQueuePool* queuePool, const bool doAutoCompletion,
+            const int maxErrors, const int currentWordIndex);
     void getSplitMultipleWordsSuggestions(ProximityInfo *proximityInfo,
             const int *xcoordinates, const int *ycoordinates, const int *codes,
             const bool useFullEditDistance, const int inputLength,
@@ -113,9 +114,9 @@ class UnigramDictionary {
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
     // Process a node by considering proximity, missing and excessive character
-    bool processCurrentNode(const int initialPos, Correction *correction, int *newCount,
-            int *newChildPosition, int *nextSiblingPosition, WordsPriorityQueuePool *queuePool,
-            const int currentWordIndex);
+    bool processCurrentNode(const int initialPos, const int bigramListPosition,
+            Correction *correction, int *newCount, int *newChildPosition, int *nextSiblingPosition,
+            WordsPriorityQueuePool *queuePool, const int currentWordIndex);
     int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
             ProximityInfo *proximityInfo, unsigned short *word);
     int getMostFrequentWordLikeInner(const uint16_t* const inWord, const int length,
