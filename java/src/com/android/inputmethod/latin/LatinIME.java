@@ -1796,6 +1796,22 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final InputConnection ic = getCurrentInputConnection();
         if (ic != null) ic.beginBatchEdit();
 
+        // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
+        if (suggestion.length() == 1 && isShowingPunctuationList()) {
+            // Word separators are suggested before the user inputs something.
+            // So, LatinImeLogger logs "" as a user's input.
+            LatinImeLogger.logOnManualSuggestion("", suggestion.toString(), index, suggestedWords);
+            // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.latinIME_punctuationSuggestion(index, suggestion, x, y);
+            }
+            final int primaryCode = suggestion.charAt(0);
+            onCodeInput(primaryCode,
+                    KeyboardActionListener.SUGGESTION_STRIP_COORDINATE,
+                    KeyboardActionListener.SUGGESTION_STRIP_COORDINATE);
+            return;
+        }
+
         if (SPACE_STATE_PHANTOM == mSpaceState && suggestion.length() > 0) {
             int firstChar = Character.codePointAt(suggestion, 0);
             if ((!mSettingsValues.isWeakSpaceStripper(firstChar))
@@ -1823,21 +1839,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
 
-        // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
-        if (suggestion.length() == 1 && isShowingPunctuationList()) {
-            // Word separators are suggested before the user inputs something.
-            // So, LatinImeLogger logs "" as a user's input.
-            LatinImeLogger.logOnManualSuggestion("", suggestion.toString(), index, suggestedWords);
-            // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIME_punctuationSuggestion(index, suggestion, x, y);
-            }
-            final int primaryCode = suggestion.charAt(0);
-            onCodeInput(primaryCode,
-                    KeyboardActionListener.SUGGESTION_STRIP_COORDINATE,
-                    KeyboardActionListener.SUGGESTION_STRIP_COORDINATE);
-            return;
-        }
         // We need to log before we commit, because the word composer will store away the user
         // typed word.
         final String replacedWord = mWordComposer.getTypedWord().toString();
