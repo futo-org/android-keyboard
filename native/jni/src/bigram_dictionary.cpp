@@ -96,7 +96,7 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
  * and the bigrams are used to boost unigram result scores, it makes little sense to
  * reduce their scope to the ones that match the first letter.
  */
-int BigramDictionary::getBigrams(unsigned short *prevWord, int prevWordLength, int *codes,
+int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, int *codes,
         int codesSize, unsigned short *bigramChars, int *bigramFreq, int maxWordLength,
         int maxBigrams) {
     // TODO: remove unused arguments, and refrain from storing stuff in members of this class
@@ -134,7 +134,7 @@ int BigramDictionary::getBigrams(unsigned short *prevWord, int prevWordLength, i
 // Returns a pointer to the start of the bigram list.
 // If the word is not found or has no bigrams, this function returns 0.
 int BigramDictionary::getBigramListForWord(const uint8_t* const root,
-        const unsigned short *prevWord, const int prevWordLength) {
+        const int32_t *prevWord, const int prevWordLength) {
     int pos = BinaryFormat::getTerminalPosition(root, prevWord, prevWordLength);
 
     if (NOT_VALID_WORD == pos) return 0;

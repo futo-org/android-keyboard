@@ -153,30 +153,30 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object,
 }
 
 static int latinime_BinaryDictionary_getBigrams(JNIEnv *env, jobject object, jlong dict,
-        jcharArray prevWordArray, jint prevWordLength, jintArray inputArray, jint inputArraySize,
+        jintArray prevWordArray, jint prevWordLength, jintArray inputArray, jint inputArraySize,
         jcharArray outputArray, jintArray frequencyArray, jint maxWordLength, jint maxBigrams) {
     Dictionary *dictionary = (Dictionary*)dict;
     if (!dictionary) return 0;
-    jchar *prevWord = env->GetCharArrayElements(prevWordArray, 0);
+    jint *prevWord = env->GetIntArrayElements(prevWordArray, 0);
     int *inputCodes = env->GetIntArrayElements(inputArray, 0);
     jchar *outputChars = env->GetCharArrayElements(outputArray, 0);
     int *frequencies = env->GetIntArrayElements(frequencyArray, 0);
-    int count = dictionary->getBigrams((unsigned short*) prevWord, prevWordLength, inputCodes,
+    int count = dictionary->getBigrams(prevWord, prevWordLength, inputCodes,
             inputArraySize, (unsigned short*) outputChars, frequencies, maxWordLength, maxBigrams);
     env->ReleaseIntArrayElements(frequencyArray, frequencies, 0);
     env->ReleaseCharArrayElements(outputArray, outputChars, 0);
     env->ReleaseIntArrayElements(inputArray, inputCodes, JNI_ABORT);
-    env->ReleaseCharArrayElements(prevWordArray, prevWord, JNI_ABORT);
+    env->ReleaseIntArrayElements(prevWordArray, prevWord, JNI_ABORT);
     return count;
 }
 
 static jboolean latinime_BinaryDictionary_isValidWord(JNIEnv *env, jobject object, jlong dict,
-        jcharArray wordArray, jint wordLength) {
+        jintArray wordArray, jint wordLength) {
     Dictionary *dictionary = (Dictionary*)dict;
     if (!dictionary) return (jboolean) false;
-    jchar *word = env->GetCharArrayElements(wordArray, 0);
-    jboolean result = dictionary->isValidWord((unsigned short*) word, wordLength);
-    env->ReleaseCharArrayElements(wordArray, word, JNI_ABORT);
+    jint *word = env->GetIntArrayElements(wordArray, 0);
+    jboolean result = dictionary->isValidWord(word, wordLength);
+    env->ReleaseIntArrayElements(wordArray, word, JNI_ABORT);
     return result;
 }
 
@@ -236,8 +236,8 @@ static JNINativeMethod sMethods[] = {
     {"closeNative", "(J)V", (void*)latinime_BinaryDictionary_close},
     {"getSuggestionsNative", "(JJ[I[I[II[IZ[C[I)I",
             (void*)latinime_BinaryDictionary_getSuggestions},
-    {"isValidWordNative", "(J[CI)Z", (void*)latinime_BinaryDictionary_isValidWord},
-    {"getBigramsNative", "(J[CI[II[C[III)I", (void*)latinime_BinaryDictionary_getBigrams},
+    {"isValidWordNative", "(J[II)Z", (void*)latinime_BinaryDictionary_isValidWord},
+    {"getBigramsNative", "(J[II[II[C[III)I", (void*)latinime_BinaryDictionary_getBigrams},
     {"calcNormalizedScoreNative", "([CI[CII)D",
             (void*)latinime_BinaryDictionary_calcNormalizedScore},
     {"editDistanceNative", "([CI[CI)I", (void*)latinime_BinaryDictionary_editDistance}

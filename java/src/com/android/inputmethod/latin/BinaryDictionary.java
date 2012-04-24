@@ -83,11 +83,11 @@ public class BinaryDictionary extends Dictionary {
     private native long openNative(String sourceDir, long dictOffset, long dictSize,
             int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength, int maxWords);
     private native void closeNative(long dict);
-    private native boolean isValidWordNative(long dict, char[] word, int wordLength);
+    private native boolean isValidWordNative(long dict, int[] word, int wordLength);
     private native int getSuggestionsNative(long dict, long proximityInfo, int[] xCoordinates,
             int[] yCoordinates, int[] inputCodes, int codesSize, int[] prevWordForBigrams,
             boolean useFullEditDistance, char[] outputChars, int[] scores);
-    private native int getBigramsNative(long dict, char[] prevWord, int prevWordLength,
+    private native int getBigramsNative(long dict, int[] prevWord, int prevWordLength,
             int[] inputCodes, int inputCodesLength, char[] outputChars, int[] scores,
             int maxWordLength, int maxBigrams);
     private static native double calcNormalizedScoreNative(
@@ -105,7 +105,7 @@ public class BinaryDictionary extends Dictionary {
             final WordCallback callback) {
         if (mNativeDict == 0) return;
 
-        char[] chars = previousWord.toString().toCharArray();
+        int[] codePoints = StringUtils.toCodePointArray(previousWord.toString());
         Arrays.fill(mOutputChars_bigrams, (char) 0);
         Arrays.fill(mBigramScores, 0);
 
@@ -115,8 +115,8 @@ public class BinaryDictionary extends Dictionary {
             mInputCodes[0] = codes.getCodeAt(0);
         }
 
-        int count = getBigramsNative(mNativeDict, chars, chars.length, mInputCodes, codesSize,
-                mOutputChars_bigrams, mBigramScores, MAX_WORD_LENGTH, MAX_BIGRAMS);
+        int count = getBigramsNative(mNativeDict, codePoints, codePoints.length, mInputCodes,
+                codesSize, mOutputChars_bigrams, mBigramScores, MAX_WORD_LENGTH, MAX_BIGRAMS);
         if (count > MAX_BIGRAMS) {
             count = MAX_BIGRAMS;
         }
@@ -200,7 +200,7 @@ public class BinaryDictionary extends Dictionary {
     @Override
     public boolean isValidWord(CharSequence word) {
         if (word == null) return false;
-        char[] chars = word.toString().toCharArray();
+        int[] chars = StringUtils.toCodePointArray(word.toString());
         return isValidWordNative(mNativeDict, chars, chars.length);
     }
 

@@ -40,13 +40,13 @@ class Dictionary {
                 codesSize, useFullEditDistance, outWords, frequencies);
     }
 
-    int getBigrams(unsigned short *word, int length, int *codes, int codesSize,
+    int getBigrams(const int32_t *word, int length, int *codes, int codesSize,
             unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams) {
         return mBigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies,
                 maxWordLength, maxBigrams);
     }
 
-    bool isValidWord(unsigned short *word, int length);
+    bool isValidWord(const int32_t *word, int length);
     void *getDict() { return (void *)mDict; }
     int getDictSize() { return mDictSize; }
     int getMmapFd() { return mMmapFd; }

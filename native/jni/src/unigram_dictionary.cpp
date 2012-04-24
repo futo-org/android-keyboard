@@ -730,7 +730,7 @@ int UnigramDictionary::getMostFrequentWordLikeInner(const uint16_t * const inWor
     return maxFreq;
 }
 
-bool UnigramDictionary::isValidWord(const uint16_t* const inWord, const int length) const {
+bool UnigramDictionary::isValidWord(const int32_t* const inWord, const int length) const {
     return NOT_VALID_WORD != BinaryFormat::getTerminalPosition(DICT_ROOT, inWord, length);
 }
 
