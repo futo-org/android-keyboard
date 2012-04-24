@@ -21,10 +21,6 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <Key
-        latin:keyStyle="backFromMoreSymbolKeyStyle"
-        latin:keyWidth="15%p"
-        latin:visualInsetsRight="1%p" />
     <!-- U+2122: "™" TRADE MARK SIGN -->
     <Key
         latin:keyLabel="&#x2122;" />
@@ -43,8 +39,4 @@
         latin:keyLabel="\\" />
     <include
         latin:keyboardLayout="@xml/keys_less_greater" />
-    <Key
-        latin:keyStyle="deleteKeyStyle"
-        latin:keyWidth="fillRight"
-        latin:visualInsetsLeft="1%p" />
 </merge>

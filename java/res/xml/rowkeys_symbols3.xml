@@ -21,10 +21,6 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <Key
-        latin:keyStyle="toMoreSymbolKeyStyle"
-        latin:keyWidth="15%p"
-        latin:visualInsetsRight="1%p" />
     <!-- U+00A1: "¡" INVERTED EXCLAMATION MARK -->
     <Key
         latin:keyLabel="!"
@@ -45,8 +41,4 @@
     <Key
         latin:keyLabel="!text/keylabel_for_symbols_question"
         latin:moreKeys="!text/more_keys_for_symbols_question" />
-    <Key
-        latin:keyStyle="deleteKeyStyle"
-        latin:keyWidth="fillRight"
-        latin:visualInsetsLeft="1%p" />
 </merge>
