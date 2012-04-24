@@ -34,10 +34,11 @@
     <!-- U+221A: "√" SQUARE ROOT -->
     <Key
         latin:keyLabel="&#x221A;" />
-    <!-- U+03C0: "π" GREEK SMALL LETTER PI -->
+    <!-- U+03C0: "π" GREEK SMALL LETTER PI
+         U+03A0: "Π" GREEK CAPITAL LETTER PI  -->
     <Key
         latin:keyLabel="&#x03C0;"
-        latin:moreKeys="Π" />
+        latin:moreKeys="&#x03A0;" />
     <!-- U+00F7: "÷" DIVISION SIGN -->
     <Key
         latin:keyLabel="&#x00F7;" />
