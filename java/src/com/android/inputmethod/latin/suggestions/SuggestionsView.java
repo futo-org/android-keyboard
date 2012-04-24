@@ -171,7 +171,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
 
         public boolean mMoreSuggestionsAvailable;
 
-        public final TextView mWordToSaveView;
+        private final TextView mWordToSaveView;
         private final TextView mLeftwardsArrowView;
         private final TextView mHintToSaveView;
 
@@ -477,7 +477,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         }
 
         public void layoutAddToDictionaryHint(CharSequence word, ViewGroup stripView,
-                int stripWidth, CharSequence hintText) {
+                int stripWidth, CharSequence hintText, OnClickListener listener) {
             final int width = stripWidth - mDividerWidth - mPadding * 2;
 
             final TextView wordView = mWordToSaveView;
@@ -508,6 +508,18 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             stripView.addView(hintView);
             setLayoutWeight(
                     hintView, 1.0f - mCenterSuggestionWeight, ViewGroup.LayoutParams.MATCH_PARENT);
+
+            wordView.setOnClickListener(listener);
+            leftArrowView.setOnClickListener(listener);
+            hintView.setOnClickListener(listener);
+        }
+
+        public CharSequence getAddToDictionaryWord() {
+            return (CharSequence)mWordToSaveView.getTag();
+        }
+
+        public boolean isAddToDictionaryShowing(View v) {
+            return v == mWordToSaveView || v == mHintToSaveView || v == mLeftwardsArrowView;
         }
 
         private static void setLayoutWeight(View v, float weight, int height) {
@@ -620,7 +632,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         }
 
         mParams = new SuggestionsViewParams(context, attrs, defStyle, mWords, mDividers, mInfos);
-        mParams.mWordToSaveView.setOnClickListener(this);
 
         mMoreSuggestionsContainer = inflater.inflate(R.layout.more_suggestions, null);
         mMoreSuggestionsView = (MoreSuggestionsView)mMoreSuggestionsContainer
@@ -676,12 +687,12 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
 
     public boolean isShowingAddToDictionaryHint() {
         return mSuggestionsStrip.getChildCount() > 0
-                && mSuggestionsStrip.getChildAt(0) == mParams.mWordToSaveView;
+                && mParams.isAddToDictionaryShowing(mSuggestionsStrip.getChildAt(0));
     }
 
     public void showAddToDictionaryHint(CharSequence word, CharSequence hintText) {
         clear();
-        mParams.layoutAddToDictionaryHint(word, mSuggestionsStrip, getWidth(), hintText);
+        mParams.layoutAddToDictionaryHint(word, mSuggestionsStrip, getWidth(), hintText, this);
     }
 
     public boolean dismissAddToDictionaryHint() {
@@ -851,8 +862,8 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
 
     @Override
     public void onClick(View view) {
-        if (view == mParams.mWordToSaveView) {
-            addToDictionary((CharSequence)view.getTag());
+        if (mParams.isAddToDictionaryShowing(view)) {
+            addToDictionary(mParams.getAddToDictionaryWord());
             clear();
             return;
         }
