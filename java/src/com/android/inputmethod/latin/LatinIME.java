@@ -1793,6 +1793,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void pickSuggestionManually(final int index, final CharSequence suggestion,
             int x, int y) {
         final SuggestedWords suggestedWords = mSuggestionsView.getSuggestions();
+        final InputConnection ic = getCurrentInputConnection();
+        if (ic != null) ic.beginBatchEdit();
 
         if (SPACE_STATE_PHANTOM == mSpaceState && suggestion.length() > 0) {
             int firstChar = Character.codePointAt(suggestion, 0);
@@ -1810,7 +1812,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
             mKeyboardSwitcher.updateShiftState();
             resetComposingState(true /* alsoResetLastComposedWord */);
-            final InputConnection ic = getCurrentInputConnection();
             if (ic != null) {
                 final CompletionInfo completionInfo = mApplicationSpecifiedCompletions[index];
                 ic.commitCompletion(completionInfo);
@@ -1889,6 +1890,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mHandler.postUpdateSuggestions();
             }
         }
+        if (null != ic) ic.endBatchEdit();
     }
 
     /**
