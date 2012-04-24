@@ -1142,6 +1142,12 @@ public class BinaryDictInputOutput {
         }
     }
 
+    // The word cache here is a stopgap bandaid to help the catastrophic performance
+    // of this method. Since it performs direct, unbuffered random access to the file and
+    // may be called hundreds of thousands of times, the resulting performance is not
+    // reasonable without some kind of cache. Thus:
+    // TODO: perform buffered I/O here and in other places in the code.
+    private static TreeMap<Integer, String> wordCache = new TreeMap<Integer, String>();
     /**
      * Finds, as a string, the word at the address passed as an argument.
      *
@@ -1151,8 +1157,10 @@ public class BinaryDictInputOutput {
      * @return the word, as a string.
      * @throws IOException if the file can't be read.
      */
-    private static String getWordAtAddress(RandomAccessFile source, long headerSize,
+    private static String getWordAtAddress(final RandomAccessFile source, final long headerSize,
             int address) throws IOException {
+        final String cachedString = wordCache.get(address);
+        if (null != cachedString) return cachedString;
         final long originalPointer = source.getFilePointer();
         source.seek(headerSize);
         final int count = readCharGroupCount(source);
@@ -1191,6 +1199,7 @@ public class BinaryDictInputOutput {
             }
         }
         source.seek(originalPointer);
+        wordCache.put(address, result);
         return result;
     }
 
