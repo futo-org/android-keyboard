@@ -174,6 +174,13 @@ public class BinaryDictInputOutput {
 
     private static final int MAX_TERMINAL_FREQUENCY = 255;
 
+    // Arbitrary limit to how much passes we consider address size compression should
+    // terminate in. At the time of this writing, our largest dictionary completes
+    // compression in five passes.
+    // If the number of passes exceeds this number, makedict bails with an exception on
+    // suspicion that a bug might be causing an infinite loop.
+    private static final int MAX_PASSES = 24;
+
     /**
      * A class grouping utility function for our specific character encoding.
      */
@@ -510,14 +517,22 @@ public class BinaryDictInputOutput {
      * Each node stores its tentative address. During dictionary address computing, these
      * are not final, but they can be used to compute the node size (the node size depends
      * on the address of the children because the number of bytes necessary to store an
-     * address depends on its numeric value.
+     * address depends on its numeric value. The return value indicates whether the node
+     * contents (as in, any of the addresses stored in the cache fields) have changed with
+     * respect to their previous value.
      *
      * @param node the node to compute the size of.
      * @param dict the dictionary in which the word/attributes are to be found.
+     * @return false if none of the cached addresses inside the node changed, true otherwise.
      */
-    private static void computeActualNodeSize(Node node, FusionDictionary dict) {
+    private static boolean computeActualNodeSize(Node node, FusionDictionary dict) {
+        boolean changed = false;
         int size = getGroupCountSize(node);
         for (CharGroup group : node.mData) {
+            if (group.mCachedAddress != node.mCachedAddress + size) {
+                changed = true;
+                group.mCachedAddress = node.mCachedAddress + size;
+            }
             int groupSize = GROUP_FLAGS_SIZE + getGroupCharactersSize(group);
             if (group.isTerminal()) groupSize += GROUP_FREQUENCY_SIZE;
             if (null != group.mChildren) {
@@ -538,7 +553,11 @@ public class BinaryDictInputOutput {
             group.mCachedSize = groupSize;
             size += groupSize;
         }
-        node.mCachedSize = size;
+        if (node.mCachedSize != size) {
+            node.mCachedSize = size;
+            changed = true;
+        }
+        return changed;
     }
 
     /**
@@ -594,13 +613,14 @@ public class BinaryDictInputOutput {
             changesDone = false;
             for (Node n : flatNodes) {
                 final int oldNodeSize = n.mCachedSize;
-                computeActualNodeSize(n, dict);
+                final boolean changed = computeActualNodeSize(n, dict);
                 final int newNodeSize = n.mCachedSize;
                 if (oldNodeSize < newNodeSize) throw new RuntimeException("Increased size ?!");
-                if (oldNodeSize != newNodeSize) changesDone = true;
+                changesDone |= changed;
             }
             stackNodes(flatNodes);
             ++passes;
+            if (passes > MAX_PASSES) throw new RuntimeException("Too many passes - probably a bug");
         } while (changesDone);
 
         final Node lastNode = flatNodes.get(flatNodes.size() - 1);
