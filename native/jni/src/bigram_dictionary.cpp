@@ -107,8 +107,8 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
     mMaxBigrams = maxBigrams;
 
     const uint8_t* const root = DICT;
-    int pos = getBigramListForWord(root, prevWord, prevWordLength);
-    // getBigramListForWord returns 0 if this word is not in the dictionary or has no bigrams
+    int pos = getBigramListPositionForWord(prevWord, prevWordLength);
+    // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
     if (0 == pos) return 0;
     int bigramFlags;
     int bigramCount = 0;
@@ -133,8 +133,9 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
 
 // Returns a pointer to the start of the bigram list.
 // If the word is not found or has no bigrams, this function returns 0.
-int BigramDictionary::getBigramListForWord(const uint8_t* const root,
-        const int32_t *prevWord, const int prevWordLength) {
+int BigramDictionary::getBigramListPositionForWord(const int32_t *prevWord,
+        const int prevWordLength) {
+    const uint8_t* const root = DICT;
     int pos = BinaryFormat::getTerminalPosition(root, prevWord, prevWordLength);
 
     if (NOT_VALID_WORD == pos) return 0;

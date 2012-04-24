@@ -137,13 +137,15 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object,
     int *frequencies = env->GetIntArrayElements(frequencyArray, 0);
     int *inputCodes = env->GetIntArrayElements(inputArray, 0);
     jchar *outputChars = env->GetCharArrayElements(outputArray, 0);
-    // Deactivated to prevent unused variable errors.
-    // TODO: use the following variables.
-    // jint *prevWordChars = prevWordForBigrams
-    //         ? env->GetIntArrayElements(prevWordForBigrams, 0) : NULL;
-    // jsize prevWordLength = prevWordChars ? env->GetArrayLength(prevWordForBigrams) : 0;
+    jint *prevWordChars = prevWordForBigrams
+            ? env->GetIntArrayElements(prevWordForBigrams, 0) : 0;
+    jsize prevWordLength = prevWordChars ? env->GetArrayLength(prevWordForBigrams) : 0;
     int count = dictionary->getSuggestions(pInfo, xCoordinates, yCoordinates, inputCodes,
-            arraySize, useFullEditDistance, (unsigned short*) outputChars, frequencies);
+            arraySize, prevWordChars, prevWordLength, useFullEditDistance,
+            (unsigned short*) outputChars, frequencies);
+    if (prevWordChars) {
+        env->ReleaseIntArrayElements(prevWordForBigrams, prevWordChars, JNI_ABORT);
+    }
     env->ReleaseCharArrayElements(outputArray, outputChars, 0);
     env->ReleaseIntArrayElements(inputArray, inputCodes, JNI_ABORT);
     env->ReleaseIntArrayElements(frequencyArray, frequencies, 0);
