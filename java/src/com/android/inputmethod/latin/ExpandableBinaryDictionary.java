@@ -288,13 +288,16 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
         loadDictionaryAsync();
 
+        final String tempFileName = mFilename + ".temp";
         final File file = new File(mContext.getFilesDir(), mFilename);
+        final File tempFile = new File(mContext.getFilesDir(), tempFileName);
         FileOutputStream out = null;
         try {
-            out = new FileOutputStream(file);
+            out = new FileOutputStream(tempFile);
             BinaryDictInputOutput.writeDictionaryBinary(out, mFusionDictionary, 1);
             out.flush();
             out.close();
+            tempFile.renameTo(file);
             clearFusionDictionary();
         } catch (IOException e) {
             Log.e(TAG, "IO exception while writing file: " + e);
