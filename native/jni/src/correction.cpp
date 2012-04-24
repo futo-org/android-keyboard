@@ -165,28 +165,28 @@ int Correction::getFreqForSplitMultipleWords(const int *freqArray, const int *wo
             wordCount, this, isSpaceProximity, word);
 }
 
-int Correction::getFinalFreq(const int freq, unsigned short **word, int *wordLength) {
-    return getFinalFreqInternal(freq, word, wordLength, mInputLength);
+int Correction::getFinalProbability(const int probability, unsigned short **word, int *wordLength) {
+    return getFinalProbabilityInternal(probability, word, wordLength, mInputLength);
 }
 
-int Correction::getFinalFreqForSubQueue(const int freq, unsigned short **word, int *wordLength,
-        const int inputLength) {
-    return getFinalFreqInternal(freq, word, wordLength, inputLength);
+int Correction::getFinalProbabilityForSubQueue(const int probability, unsigned short **word,
+        int *wordLength, const int inputLength) {
+    return getFinalProbabilityInternal(probability, word, wordLength, inputLength);
 }
 
-int Correction::getFinalFreqInternal(const int freq, unsigned short **word, int *wordLength,
-        const int inputLength) {
+int Correction::getFinalProbabilityInternal(const int probability, unsigned short **word,
+        int *wordLength, const int inputLength) {
     const int outputIndex = mTerminalOutputIndex;
     const int inputIndex = mTerminalInputIndex;
     *wordLength = outputIndex + 1;
     if (outputIndex < MIN_SUGGEST_DEPTH) {
-        return NOT_A_FREQUENCY;
+        return NOT_A_PROBABILITY;
     }
 
     *word = mWord;
-    int finalFreq = Correction::RankingAlgorithm::calculateFinalFreq(
-            inputIndex, outputIndex, freq, mEditDistanceTable, this, inputLength);
-    return finalFreq;
+    int finalProbability= Correction::RankingAlgorithm::calculateFinalProbability(
+            inputIndex, outputIndex, probability, mEditDistanceTable, this, inputLength);
+    return finalProbability;
 }
 
 bool Correction::initProcessState(const int outputIndex) {
@@ -649,8 +649,8 @@ inline static bool isUpperCase(unsigned short c) {
 //////////////////////
 
 /* static */
-int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const int outputIndex,
-        const int freq, int* editDistanceTable, const Correction* correction,
+int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex,
+        const int outputIndex, const int freq, int* editDistanceTable, const Correction* correction,
         const int inputLength) {
     const int excessivePos = correction->getExcessivePos();
     const int typedLetterMultiplier = correction->TYPED_LETTER_MULTIPLIER;

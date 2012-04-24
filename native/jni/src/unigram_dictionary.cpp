@@ -349,7 +349,7 @@ void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
     }
 }
 
-inline void UnigramDictionary::onTerminal(const int freq,
+inline void UnigramDictionary::onTerminal(const int probability,
         const TerminalAttributes& terminalAttributes, Correction *correction,
         WordsPriorityQueuePool *queuePool, const bool addToMasterQueue,
         const int currentWordIndex) {
@@ -361,26 +361,28 @@ inline void UnigramDictionary::onTerminal(const int freq,
 
     if ((currentWordIndex == FIRST_WORD_INDEX) && addToMasterQueue) {
         WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
-        const int finalFreq = correction->getFinalFreq(freq, &wordPointer, &wordLength);
-        if (finalFreq != NOT_A_FREQUENCY) {
-            addWord(wordPointer, wordLength, finalFreq, masterQueue);
+        const int finalProbability =
+                correction->getFinalProbability(probability, &wordPointer, &wordLength);
+        if (finalProbability != NOT_A_PROBABILITY) {
+            addWord(wordPointer, wordLength, finalProbability, masterQueue);
 
-            const int shortcutFreq = finalFreq > 0 ? finalFreq - 1 : 0;
+            const int shortcutProbability = finalProbability > 0 ? finalProbability - 1 : 0;
             // Please note that the shortcut candidates will be added to the master queue only.
             TerminalAttributes::ShortcutIterator iterator =
                     terminalAttributes.getShortcutIterator();
             while (iterator.hasNextShortcutTarget()) {
                 // TODO: addWord only supports weak ordering, meaning we have no means
                 // to control the order of the shortcuts relative to one another or to the word.
-                // We need to either modulate the frequency of each shortcut according
-                // to its own shortcut frequency or to make the queue
+                // We need to either modulate the probability of each shortcut according
+                // to its own shortcut probability or to make the queue
                 // so that the insert order is protected inside the queue for words
                 // with the same score. For the moment we use -1 to make sure the shortcut will
                 // never be in front of the word.
                 uint16_t shortcutTarget[MAX_WORD_LENGTH_INTERNAL];
                 const int shortcutTargetStringLength = iterator.getNextShortcutTarget(
                         MAX_WORD_LENGTH_INTERNAL, shortcutTarget);
-                addWord(shortcutTarget, shortcutTargetStringLength, shortcutFreq, masterQueue);
+                addWord(shortcutTarget, shortcutTargetStringLength, shortcutProbability,
+                        masterQueue);
             }
         }
     }
@@ -393,9 +395,9 @@ inline void UnigramDictionary::onTerminal(const int freq,
         if (!subQueue) {
             return;
         }
-        const int finalFreq = correction->getFinalFreqForSubQueue(freq, &wordPointer, &wordLength,
-                inputIndex);
-        addWord(wordPointer, wordLength, finalFreq, subQueue);
+        const int finalProbability = correction->getFinalProbabilityForSubQueue(
+                probability, &wordPointer, &wordLength, inputIndex);
+        addWord(wordPointer, wordLength, finalProbability, subQueue);
     }
 }
 
@@ -762,6 +764,8 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos,
         correction->checkState();
     }
     int pos = initialPos;
+    // TODO: get this as an argument
+    const int bigramListPosition = 0;
 
     // Flags contain the following information:
     // - Address type (MASK_GROUP_ADDRESS_TYPE) on two bits:
@@ -834,11 +838,12 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos,
     if (isTerminalNode) {
         // The frequency should be here, because we come here only if this is actually
         // a terminal node, and we are on its last char.
-        const int freq = BinaryFormat::readFrequencyWithoutMovingPointer(DICT_ROOT, pos);
+        const int unigramFreq = BinaryFormat::readFrequencyWithoutMovingPointer(DICT_ROOT, pos);
         const int childrenAddressPos = BinaryFormat::skipFrequency(flags, pos);
         const int attributesPos = BinaryFormat::skipChildrenPosition(flags, childrenAddressPos);
         TerminalAttributes terminalAttributes(DICT_ROOT, flags, attributesPos);
-        onTerminal(freq, terminalAttributes, correction, queuePool, needsToInvokeOnTerminal,
+        const int probability = BinaryFormat::getProbability(bigramListPosition, unigramFreq);
+        onTerminal(probability, terminalAttributes, correction, queuePool, needsToInvokeOnTerminal,
                 currentWordIndex);
 
         // If there are more chars in this node, then this virtual node has children.

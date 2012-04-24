@@ -66,6 +66,7 @@ class BinaryFormat {
             const int length);
     static int getWordAtAddress(const uint8_t* const root, const int address, const int maxDepth,
             uint16_t* outWord);
+    static int getProbability(const int bigramListPosition, const int unigramFreq);
 
     // Flags for special processing
     // Those *must* match the flags in makedict (BinaryDictInputOutput#*_PROCESSING_FLAG) or
@@ -515,6 +516,14 @@ inline int BinaryFormat::getWordAtAddress(const uint8_t* const root, const int a
     // If we have looked through all the chargroups and found no match, the address is
     // not the address of a terminal in this dictionary.
     return 0;
+}
+
+// This should probably return a probability in log space.
+inline int BinaryFormat::getProbability(const int bigramListPosition, const int unigramFreq) {
+    // TODO: use the bigram list position to get the bigram probability. If the bigram
+    // is not found, use the unigram frequency.
+    // TODO: if the unigram frequency is used, compute the actual probability
+    return unigramFreq;
 }
 
 } // namespace latinime

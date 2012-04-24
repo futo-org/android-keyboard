@@ -172,7 +172,7 @@ static inline void prof_out(void) {
 #define PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO -3
 #define ADDITIONAL_PROXIMITY_CHAR_DISTANCE_INFO -4
 #define NOT_AN_INDEX -1
-#define NOT_A_FREQUENCY -1
+#define NOT_A_PROBABILITY -1
 
 #define KEYCODE_SPACE ' '
 

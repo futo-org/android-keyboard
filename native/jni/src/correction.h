@@ -132,9 +132,9 @@ class Correction {
     int getFreqForSplitMultipleWords(
             const int *freqArray, const int *wordLengthArray, const int wordCount,
             const bool isSpaceProximity, const unsigned short *word);
-    int getFinalFreq(const int freq, unsigned short **word, int* wordLength);
-    int getFinalFreqForSubQueue(const int freq, unsigned short **word, int* wordLength,
-            const int inputLength);
+    int getFinalProbability(const int probability, unsigned short **word, int* wordLength);
+    int getFinalProbabilityForSubQueue(const int probability, unsigned short **word,
+            int* wordLength, const int inputLength);
 
     CorrectionType processCharAndCalcState(const int32_t c, const bool isTerminal);
 
@@ -156,8 +156,8 @@ class Correction {
 
     class RankingAlgorithm {
      public:
-        static int calculateFinalFreq(const int inputIndex, const int depth,
-                const int freq, int *editDistanceTable, const Correction* correction,
+        static int calculateFinalProbability(const int inputIndex, const int depth,
+                const int probability, int *editDistanceTable, const Correction* correction,
                 const int inputLength);
         static int calcFreqForSplitMultipleWords(const int *freqArray, const int *wordLengthArray,
                 const int wordCount, const Correction* correction, const bool isSpaceProximity,
@@ -182,8 +182,8 @@ class Correction {
             const int32_t c, const bool isTerminal, const bool inputIndexIncremented);
     inline CorrectionType processUnrelatedCorrectionType();
     inline void addCharToCurrentWord(const int32_t c);
-    inline int getFinalFreqInternal(const int freq, unsigned short **word, int* wordLength,
-            const int inputLength);
+    inline int getFinalProbabilityInternal(const int probability, unsigned short **word,
+            int* wordLength, const int inputLength);
 
     const int TYPED_LETTER_MULTIPLIER;
     const int FULL_WORD_MULTIPLIER;
