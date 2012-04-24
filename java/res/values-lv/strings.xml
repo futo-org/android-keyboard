@@ -118,23 +118,15 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"Tastatūras motīvs"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Angļu valoda (Lielbritānija)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Angļu valoda (ASV)"</string>
-    <!-- no translation found for subtype_no_language (141420857808801746) -->
-    <skip />
+    <string name="subtype_no_language" msgid="141420857808801746">"Nav valodas"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Nav valodas (QWERTY)"</string>
-    <!-- no translation found for custom_input_styles_title (8429952441821251512) -->
-    <skip />
-    <!-- no translation found for add_style (6163126614514489951) -->
-    <skip />
-    <!-- no translation found for add (8299699805688017798) -->
-    <skip />
-    <!-- no translation found for remove (4486081658752944606) -->
-    <skip />
-    <!-- no translation found for save (7646738597196767214) -->
-    <skip />
-    <!-- no translation found for subtype_locale (8576443440738143764) -->
-    <skip />
-    <!-- no translation found for keyboard_layout_set (4309233698194565609) -->
-    <skip />
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"Pielāg. ievades stili"</string>
+    <string name="add_style" msgid="6163126614514489951">"Piev. stilu"</string>
+    <string name="add" msgid="8299699805688017798">"Pievienot"</string>
+    <string name="remove" msgid="4486081658752944606">"Noņemt"</string>
+    <string name="save" msgid="7646738597196767214">"Saglabāt"</string>
+    <string name="subtype_locale" msgid="8576443440738143764">"Valoda"</string>
+    <string name="keyboard_layout_set" msgid="4309233698194565609">"Izkārtojums"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Lietojamības izpētes režīms"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Taustiņu nospiešanas vibrācijas ilguma iestatījumi"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Taustiņu nospiešanas skaņas skaļuma iestatījumi"</string>

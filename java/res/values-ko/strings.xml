@@ -118,23 +118,15 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"키보드 테마"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"영어(영국)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"영어(미국)"</string>
-    <!-- no translation found for subtype_no_language (141420857808801746) -->
-    <skip />
+    <string name="subtype_no_language" msgid="141420857808801746">"언어가 없음"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"언어가 없음(QWERTY)"</string>
-    <!-- no translation found for custom_input_styles_title (8429952441821251512) -->
-    <skip />
-    <!-- no translation found for add_style (6163126614514489951) -->
-    <skip />
-    <!-- no translation found for add (8299699805688017798) -->
-    <skip />
-    <!-- no translation found for remove (4486081658752944606) -->
-    <skip />
-    <!-- no translation found for save (7646738597196767214) -->
-    <skip />
-    <!-- no translation found for subtype_locale (8576443440738143764) -->
-    <skip />
-    <!-- no translation found for keyboard_layout_set (4309233698194565609) -->
-    <skip />
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"맞춤 입력 스타일"</string>
+    <string name="add_style" msgid="6163126614514489951">"스타일 추가"</string>
+    <string name="add" msgid="8299699805688017798">"추가"</string>
+    <string name="remove" msgid="4486081658752944606">"삭제"</string>
+    <string name="save" msgid="7646738597196767214">"저장"</string>
+    <string name="subtype_locale" msgid="8576443440738143764">"언어"</string>
+    <string name="keyboard_layout_set" msgid="4309233698194565609">"레이아웃"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"가용성 연구 모드"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"키를 누를 때 진동 시간 설정"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"키를 누를 때 효과음 설정"</string>
