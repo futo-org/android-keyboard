@@ -40,8 +40,16 @@
     <Row
         latin:keyWidth="10%p"
     >
+        <Key
+            latin:keyStyle="backFromMoreSymbolKeyStyle"
+            latin:keyWidth="15%p"
+            latin:visualInsetsRight="1%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_symbols_shift3" />
+        <Key
+            latin:keyStyle="deleteKeyStyle"
+            latin:keyWidth="fillRight"
+            latin:visualInsetsLeft="1%p" />
     </Row>
     <include
         latin:keyboardLayout="@xml/row_symbols_shift4" />
