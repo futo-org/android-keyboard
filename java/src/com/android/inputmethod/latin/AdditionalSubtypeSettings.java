@@ -366,6 +366,7 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
             final Preference pref = mSubtypePrefGroup.getPreference(i);
             if (pref instanceof SubtypePreference) {
                 final InputMethodSubtype subtype = ((SubtypePreference)pref).getSubtype();
+                if (subtype == null) continue;
                 if (sb.length() > 0) {
                     sb.append(AdditionalSubtype.PREF_SUBTYPE_SEPARATOR);
                 }
