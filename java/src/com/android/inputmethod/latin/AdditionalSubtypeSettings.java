@@ -348,11 +348,9 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
     private void setPrefSubtypes(String prefSubtypes, Context context) {
         final PreferenceGroup group = mSubtypePrefGroup;
         group.removeAll();
-        final String[] prefSubtypeArray = prefSubtypes.split(
-                AdditionalSubtype.PREF_SUBTYPE_SEPARATOR);
-        for (final String prefSubtype : prefSubtypeArray) {
-            final InputMethodSubtype subtype =
-                    AdditionalSubtype.createAdditionalSubtype(prefSubtype);
+        final InputMethodSubtype[] subtypesArray =
+                AdditionalSubtype.createAdditionalSubtypesArray(prefSubtypes);
+        for (final InputMethodSubtype subtype : subtypesArray) {
             final SubtypePreference pref = new SubtypePreference(
                     context, subtype, mSubtypeProxy);
             group.addPreference(pref);

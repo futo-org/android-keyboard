@@ -36,6 +36,8 @@ public class SubtypeLocale {
 
     public static final String QWERTY = "qwerty";
 
+    public static final int UNKNOWN_KEYBOARD_LAYOUT = R.string.subtype_generic;
+
     private static String[] sPredefinedKeyboardLayoutSet;
     // Keyboard layout to its display name map.
     private static final HashMap<String, String> sKeyboardKayoutToDisplayNameMap =
@@ -81,7 +83,8 @@ public class SubtypeLocale {
     }
 
     public static int getSubtypeNameIdFromKeyboardLayoutName(String keyboardLayoutName) {
-        return sKeyboardLayoutToNameIdsMap.get(keyboardLayoutName);
+        final Integer nameId = sKeyboardLayoutToNameIdsMap.get(keyboardLayoutName);
+        return nameId == null ? UNKNOWN_KEYBOARD_LAYOUT : nameId;
     }
 
     // Get InputMethodSubtype's display name in its locale.
