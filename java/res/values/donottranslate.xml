@@ -166,7 +166,9 @@
         <item>PC</item>
     </string-array>
     <!-- Description for generic subtype that has predefined layout.
-         The string resource name must be "subtype_generic_<layout name>". -->
+         The string resource name must be "subtype_generic_<layout name>".
+         The string resource with "No language" also must be added to strings.xml and the resource
+         name must be "subtype_no_language_<layout name>" -->
     <string name="subtype_generic_qwerty">%s (QWERTY)</string>
     <string name="subtype_generic_qwertz">%s (QWERTZ)</string>
     <string name="subtype_generic_azerty">%s (AZERTY)</string>

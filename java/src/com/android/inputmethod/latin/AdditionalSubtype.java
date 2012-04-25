@@ -42,8 +42,7 @@ public class AdditionalSubtype {
         final String layoutExtraValue = KEYBOARD_LAYOUT_SET + "=" + keyboardLayoutSetName;
         final String filteredExtraValue = StringUtils.appendToCsvIfNotExists(
                 IS_ADDITIONAL_SUBTYPE, extraValue);
-        final int nameId = SubtypeLocale.getSubtypeNameIdFromKeyboardLayoutName(
-                keyboardLayoutSetName);
+        final int nameId = SubtypeLocale.getSubtypeNameId(localeString, keyboardLayoutSetName);
         return new InputMethodSubtype(nameId, R.drawable.ic_subtype_keyboard,
                 localeString, KEYBOARD_MODE,
                 layoutExtraValue + "," + filteredExtraValue, false, false);

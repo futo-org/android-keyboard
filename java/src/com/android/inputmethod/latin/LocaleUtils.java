@@ -180,13 +180,13 @@ public class LocaleUtils {
                 try {
                     if (newLocale != null && !newLocale.equals(oldLocale)) {
                         conf.locale = newLocale;
-                        res.updateConfiguration(conf, res.getDisplayMetrics());
+                        res.updateConfiguration(conf, null);
                     }
                     return job(res);
                 } finally {
                     if (newLocale != null && !newLocale.equals(oldLocale)) {
                         conf.locale = oldLocale;
-                        res.updateConfiguration(conf, res.getDisplayMetrics());
+                        res.updateConfiguration(conf, null);
                     }
                 }
             }

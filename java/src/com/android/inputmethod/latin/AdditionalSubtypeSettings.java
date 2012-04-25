@@ -41,7 +41,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
-import java.util.Locale;
 import java.util.TreeSet;
 
 public class AdditionalSubtypeSettings extends PreferenceFragment {
@@ -61,7 +60,7 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
         }
 
         public SubtypeLocaleItem(String localeString) {
-            this(localeString, getDisplayName(localeString));
+            this(localeString, SubtypeLocale.getSubtypeLocaleDisplayName(localeString));
         }
 
         @Override
@@ -72,11 +71,6 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
         @Override
         public int compareTo(SubtypeLocaleItem o) {
             return first.compareTo(o.first);
-        }
-
-        private static String getDisplayName(String localeString) {
-            final Locale locale = LocaleUtils.constructLocaleFromString(localeString);
-            return StringUtils.toTitleCase(locale.getDisplayName(locale), locale);
         }
     }
 
@@ -185,7 +179,8 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
                 setDialogTitle(R.string.add_style);
                 setKey(KEY_NEW_SUBTYPE);
             } else {
-                final String displayName = SubtypeLocale.getFullDisplayName(subtype);
+                final String displayName = SubtypeLocale.getSubtypeDisplayName(
+                        subtype, getContext().getResources());
                 setTitle(displayName);
                 setDialogTitle(displayName);
                 setKey(KEY_PREFIX + subtype.getLocale() + "_"
