@@ -427,8 +427,6 @@ public final class KeyboardTextsSet {
         // http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt
         // U+FD3E: "﴾" ORNATE LEFT PARENTHESIS
         // U+FD3F: "﴿" ORNATE RIGHT PARENTHESIS
-        // TODO: DroidSansArabic lacks the glyph of U+FD3E ORNATE LEFT PARENTHESIS
-        // TODO: DroidSansArabic lacks the glyph of U+FD3F ORNATE RIGHT PARENTHESIS
         /* 53 */ "!fixedColumnOrder!4,\uFD3E|\uFD3F,<|>,{|},[|]",
         /* 54 */ "!fixedColumnOrder!4,\uFD3F|\uFD3E,>|<,}|{,]|[",
         // U+2264: "≤" LESS-THAN OR EQUAL TO
@@ -495,7 +493,7 @@ public final class KeyboardTextsSet {
         /* 94 */ "?",
         /* 95 */ ";",
         // U+2030: "‰" PER MILLE SIGN
-        /* 96 */ "%,\u2030",
+        /* 96 */ "\\%,\u2030",
         /* 97~ */
         null, null, null, null, null,
         /* ~101 */
@@ -1031,8 +1029,6 @@ public final class KeyboardTextsSet {
         // http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt
         // U+FD3E: "﴾" ORNATE LEFT PARENTHESIS
         // U+FD3F: "﴿" ORNATE RIGHT PARENTHESIS
-        // TODO: DroidSansArabic lacks the glyph of U+FD3E ORNATE LEFT PARENTHESIS
-        // TODO: DroidSansArabic lacks the glyph of U+FD3F ORNATE RIGHT PARENTHESIS
         /* 53 */ "!fixedColumnOrder!4,\uFD3E|\uFD3F,<|>,{|},[|]",
         /* 54 */ "!fixedColumnOrder!4,\uFD3F|\uFD3E,>|<,}|{,]|[",
         // U+2264: "≤" LESS-THAN OR EQUAL TO
@@ -1099,7 +1095,7 @@ public final class KeyboardTextsSet {
         /* 94 */ "?",
         /* 95 */ ";",
         // U+2030: "‰" PER MILLE SIGN
-        /* 96 */ "%,\u2030",
+        /* 96 */ "\\%,\u2030",
         // U+060C: "،" ARABIC COMMA
         // U+061B: "؛" ARABIC SEMICOLON
         // U+061F: "؟" ARABIC QUESTION MARK
