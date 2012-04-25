@@ -22,6 +22,7 @@ import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOAR
 
 import android.view.inputmethod.InputMethodSubtype;
 
+import java.util.ArrayList;
 
 public class AdditionalSubtype {
 
@@ -41,9 +42,8 @@ public class AdditionalSubtype {
         final String layoutExtraValue = KEYBOARD_LAYOUT_SET + "=" + keyboardLayoutSetName;
         final String filteredExtraValue = StringUtils.appendToCsvIfNotExists(
                 IS_ADDITIONAL_SUBTYPE, extraValue);
-        Integer nameId = SubtypeLocale.getSubtypeNameIdFromKeyboardLayoutName(
+        final int nameId = SubtypeLocale.getSubtypeNameIdFromKeyboardLayoutName(
                 keyboardLayoutSetName);
-        if (nameId == null) nameId = R.string.subtype_generic;
         return new InputMethodSubtype(nameId, R.drawable.ic_subtype_keyboard,
                 localeString, KEYBOARD_MODE,
                 layoutExtraValue + "," + filteredExtraValue, false, false);
@@ -74,10 +74,17 @@ public class AdditionalSubtype {
 
     public static InputMethodSubtype[] createAdditionalSubtypesArray(String prefSubtypes) {
         final String[] prefSubtypeArray = prefSubtypes.split(PREF_SUBTYPE_SEPARATOR);
-        final InputMethodSubtype[] subtypesArray = new InputMethodSubtype[prefSubtypeArray.length];
+        final ArrayList<InputMethodSubtype> subtypesList =
+                new ArrayList<InputMethodSubtype>(prefSubtypeArray.length);
         for (int i = 0; i < prefSubtypeArray.length; i++) {
-            subtypesArray[i] = createAdditionalSubtype(prefSubtypeArray[i]);
+            final InputMethodSubtype subtype = createAdditionalSubtype(prefSubtypeArray[i]);
+            if (subtype.getNameResId() == SubtypeLocale.UNKNOWN_KEYBOARD_LAYOUT) {
+                // Skip unknown keyboard layout subtype. This may happen when predefined keyboard
+                // layout has been removed.
+                continue;
+            }
+            subtypesList.add(subtype);
         }
-        return subtypesArray;
+        return subtypesList.toArray(new InputMethodSubtype[subtypesList.size()]);
     }
 }
