@@ -20,8 +20,8 @@
 <resources>
     <string-array name="keypress_volumes" translatable="false">
         <!-- Build.HARDWARE,volume -->
-        <item>herring,0.05</item>
-        <item>tuna,0.05</item>
-        <item>stingray,0.04</item>
+        <item>herring,0.5</item>
+        <item>tuna,0.5</item>
+        <item>stingray,0.4</item>
     </string-array>
 </resources>
