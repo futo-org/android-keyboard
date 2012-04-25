@@ -20,6 +20,7 @@ import android.animation.AnimatorInflater;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -48,11 +49,13 @@ import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.ResearchLogger;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
+import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SubtypeLocale;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.Utils.UsabilityStudyLogUtils;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
+import java.util.Locale;
 import java.util.WeakHashMap;
 
 /**
@@ -907,7 +910,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         paint.setTextAlign(Align.CENTER);
         paint.setTypeface(Typeface.DEFAULT);
         // Estimate appropriate language name text size to fit in maxTextWidth.
-        String language = SubtypeLocale.getFullDisplayName(subtype);
+        String language = getFullDisplayName(subtype, getResources());
         int textWidth = getTextWidth(paint, language, origTextSize);
         // Assuming text width and text size are proportional to each other.
         float textSize = origTextSize * Math.min(width / textWidth, 1.0f);
@@ -919,7 +922,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         final boolean useShortName;
         if (useMiddleName) {
-            language = SubtypeLocale.getMiddleDisplayName(subtype);
+            language = getMiddleDisplayName(subtype);
             textWidth = getTextWidth(paint, language, origTextSize);
             textSize = origTextSize * Math.min(width / textWidth, 1.0f);
             useShortName = (textSize / origTextSize < MINIMUM_SCALE_OF_LANGUAGE_NAME)
@@ -929,7 +932,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
 
         if (useShortName) {
-            language = SubtypeLocale.getShortDisplayName(subtype);
+            language = getShortDisplayName(subtype);
             textWidth = getTextWidth(paint, language, origTextSize);
             textSize = origTextSize * Math.min(width / textWidth, 1.0f);
         }
@@ -974,5 +977,47 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             int y = height - iconHeight;
             drawIcon(canvas, mSpaceIcon, x, y, iconWidth, iconHeight);
         }
+    }
+
+    // InputMethodSubtype's display name for spacebar text in its locale.
+    //        isAdditionalSubtype (T=true, F=false)
+    // locale layout | Short  Middle      Full
+    // ------ ------ - ---- --------- ----------------------
+    //  en_US qwerty F  En  English   English (US)           exception
+    //  en_GB qwerty F  En  English   English (UK)           exception
+    //  fr    azerty F  Fr  Français  Français
+    //  fr_CA qwerty F  Fr  Français  Français (Canada)
+    //  de    qwertz F  De  Deutsch   Deutsch
+    //  zz    qwerty F      QWERTY    QWERTY
+    //  fr    qwertz T  Fr  Français  Français (QWERTZ)
+    //  de    qwerty T  De  Deutsch   Deutsch (QWERTY)
+    //  en_US azerty T  En  English   English (US) (AZERTY)
+    //  zz    azerty T      AZERTY    AZERTY
+
+    // Get InputMethodSubtype's full display name in its locale.
+    static String getFullDisplayName(InputMethodSubtype subtype, Resources res) {
+        if (SubtypeLocale.isNoLanguage(subtype)) {
+            return SubtypeLocale.getKeyboardLayoutSetDisplayName(subtype);
+        }
+
+        return SubtypeLocale.getSubtypeDisplayName(subtype, res);
+    }
+
+    // Get InputMethodSubtype's short display name in its locale.
+    static String getShortDisplayName(InputMethodSubtype subtype) {
+        if (SubtypeLocale.isNoLanguage(subtype)) {
+            return "";
+        }
+        final Locale locale = SubtypeLocale.getSubtypeLocale(subtype);
+        return StringUtils.toTitleCase(locale.getLanguage(), locale);
+    }
+
+    // Get InputMethodSubtype's middle display name in its locale.
+    static String getMiddleDisplayName(InputMethodSubtype subtype) {
+        if (SubtypeLocale.isNoLanguage(subtype)) {
+            return SubtypeLocale.getKeyboardLayoutSetDisplayName(subtype);
+        }
+        final Locale locale = SubtypeLocale.getSubtypeLocale(subtype);
+        return StringUtils.toTitleCase(locale.getDisplayLanguage(locale), locale);
     }
 }

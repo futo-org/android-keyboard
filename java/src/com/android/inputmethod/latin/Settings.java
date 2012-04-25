@@ -300,13 +300,14 @@ public class Settings extends InputMethodSettingsFragment
         final PreferenceScreen customInputStyles =
                 (PreferenceScreen)findPreference(PREF_CUSTOM_INPUT_STYLES);
         final SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
-        final String prefSubtype = SettingsValues.getPrefAdditionalSubtypes(prefs, getResources());
+        final Resources res = getResources();
+        final String prefSubtype = SettingsValues.getPrefAdditionalSubtypes(prefs, res);
         final InputMethodSubtype[] subtypes =
                 AdditionalSubtype.createAdditionalSubtypesArray(prefSubtype);
         final StringBuilder styles = new StringBuilder();
         for (final InputMethodSubtype subtype : subtypes) {
             if (styles.length() > 0) styles.append(", ");
-            styles.append(SubtypeLocale.getFullDisplayName(subtype));
+            styles.append(SubtypeLocale.getSubtypeDisplayName(subtype, res));
         }
         customInputStyles.setSummary(styles);
     }

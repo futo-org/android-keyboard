@@ -256,6 +256,16 @@
     <string name="subtype_no_language">No language</string>
     <!-- Description for language agnostic QWERTY keyboard subtype [CHAR LIMIT=22] -->
     <string name="subtype_no_language_qwerty">No language (QWERTY)</string>
+    <!-- Description for language agnostic QWERTZ keyboard subtype [CHAR LIMIT=22] -->
+    <string name="subtype_no_language_qwertz">No language (QWERTZ)</string>
+    <!-- Description for language agnostic AZERTY keyboard subtype [CHAR LIMIT=22] -->
+    <string name="subtype_no_language_azerty">No language (AZERTY)</string>
+    <!-- Description for language agnostic Dvorak keyboard subtype [CHAR LIMIT=22] -->
+    <string name="subtype_no_language_dvorak">No language (Dvorak)</string>
+    <!-- Description for language agnostic Colemak keyboard subtype [CHAR LIMIT=22] -->
+    <string name="subtype_no_language_colemak">No language (Colemak)</string>
+    <!-- Description for language agnostic PC QWERTY keyboard subtype [CHAR LIMIT=22] -->
+    <string name="subtype_no_language_pcqwerty">No language (PC)</string>
 
     <!-- Title of the preference settings for custom input styles (language and keyboard layout pairs) [CHAR LIMIT=22]-->
     <string name="custom_input_styles_title">Custom input styles</string>
