@@ -286,7 +286,7 @@ public class FusionDictionary implements Iterable<Word> {
             for (WeightedString word : words) {
                 final CharGroup t = findWordInTree(mRoot, word.mWord);
                 if (null == t) {
-                    add(getCodePoints(word.mWord), 0, null, null);
+                    add(getCodePoints(word.mWord), 0, null);
                 }
             }
         }
@@ -305,12 +305,8 @@ public class FusionDictionary implements Iterable<Word> {
      * @param bigrams a list of bigrams, or null.
      */
     public void add(final String word, final int frequency,
-            final ArrayList<WeightedString> shortcutTargets,
-            final ArrayList<WeightedString> bigrams) {
-        if (null != bigrams) {
-            addNeutralWords(bigrams);
-        }
-        add(getCodePoints(word), frequency, shortcutTargets, bigrams);
+            final ArrayList<WeightedString> shortcutTargets) {
+        add(getCodePoints(word), frequency, shortcutTargets);
     }
 
     /**
@@ -344,7 +340,7 @@ public class FusionDictionary implements Iterable<Word> {
             final CharGroup charGroup2 = findWordInTree(mRoot, word2);
             if (charGroup2 == null) {
                 // TODO: refactor with the identical code in addNeutralWords
-                add(getCodePoints(word2), 0, null, null);
+                add(getCodePoints(word2), 0, null);
             }
             charGroup.addBigram(word2, frequency);
         } else {
@@ -355,17 +351,15 @@ public class FusionDictionary implements Iterable<Word> {
     /**
      * Add a word to this dictionary.
      *
-     * The shortcuts and bigrams, if any, have to be in the dictionary already. If they aren't,
+     * The shortcuts, if any, have to be in the dictionary already. If they aren't,
      * an exception is thrown.
      *
      * @param word the word, as an int array.
      * @param frequency the frequency of the word, in the range [0..255].
      * @param shortcutTargets an optional list of shortcut targets for this word (null if none).
-     * @param bigrams an optional list of bigrams for this word (null if none).
      */
     private void add(final int[] word, final int frequency,
-            final ArrayList<WeightedString> shortcutTargets,
-            final ArrayList<WeightedString> bigrams) {
+            final ArrayList<WeightedString> shortcutTargets) {
         assert(frequency >= 0 && frequency <= 255);
         Node currentNode = mRoot;
         int charIndex = 0;
@@ -390,7 +384,7 @@ public class FusionDictionary implements Iterable<Word> {
             final int insertionIndex = findInsertionIndex(currentNode, word[charIndex]);
             final CharGroup newGroup = new CharGroup(
                     Arrays.copyOfRange(word, charIndex, word.length),
-                    shortcutTargets, bigrams, frequency);
+                    shortcutTargets, null /* bigrams */, frequency);
             currentNode.mData.add(insertionIndex, newGroup);
             checkStack(currentNode);
         } else {
@@ -400,21 +394,21 @@ public class FusionDictionary implements Iterable<Word> {
                     // The new word is a prefix of an existing word, but the node on which it
                     // should end already exists as is. Since the old CharNode was not a terminal, 
                     // make it one by filling in its frequency and other attributes
-                    currentGroup.update(frequency, shortcutTargets, bigrams);
+                    currentGroup.update(frequency, shortcutTargets, null);
                 } else {
                     // The new word matches the full old word and extends past it.
                     // We only have to create a new node and add it to the end of this.
                     final CharGroup newNode = new CharGroup(
                             Arrays.copyOfRange(word, charIndex + differentCharIndex, word.length),
-                                    shortcutTargets, bigrams, frequency);
+                                    shortcutTargets, null /* bigrams */, frequency);
                     currentGroup.mChildren = new Node();
                     currentGroup.mChildren.mData.add(newNode);
                 }
             } else {
                 if (0 == differentCharIndex) {
                     // Exact same word. Update the frequency if higher. This will also add the
-                    // new bigrams to the existing bigram list if it already exists.
-                    currentGroup.update(frequency, shortcutTargets, bigrams);
+                    // new shortcuts to the existing shortcut list if it already exists.
+                    currentGroup.update(frequency, shortcutTargets, null);
                 } else {
                     // Partial prefix match only. We have to replace the current node with a node
                     // containing the current prefix and create two new ones for the tails.
@@ -429,14 +423,14 @@ public class FusionDictionary implements Iterable<Word> {
                     if (charIndex + differentCharIndex >= word.length) {
                         newParent = new CharGroup(
                                 Arrays.copyOfRange(currentGroup.mChars, 0, differentCharIndex),
-                                shortcutTargets, bigrams, frequency, newChildren);
+                                shortcutTargets, null /* bigrams */, frequency, newChildren);
                     } else {
                         newParent = new CharGroup(
                                 Arrays.copyOfRange(currentGroup.mChars, 0, differentCharIndex),
-                                null, null, -1, newChildren);
-                        final CharGroup newWord = new CharGroup(
-                                Arrays.copyOfRange(word, charIndex + differentCharIndex,
-                                        word.length), shortcutTargets, bigrams, frequency);
+                                null /* shortcutTargets */, null /* bigrams */, -1, newChildren);
+                        final CharGroup newWord = new CharGroup(Arrays.copyOfRange(word,
+                                charIndex + differentCharIndex, word.length),
+                                shortcutTargets, null /* bigrams */, frequency);
                         final int addIndex = word[charIndex + differentCharIndex]
                                 > currentGroup.mChars[differentCharIndex] ? 1 : 0;
                         newChildren.mData.add(addIndex, newWord);
@@ -494,7 +488,8 @@ public class FusionDictionary implements Iterable<Word> {
      */
     private static int findInsertionIndex(final Node node, int character) {
         final ArrayList<CharGroup> data = node.mData;
-        final CharGroup reference = new CharGroup(new int[] { character }, null, null, 0);
+        final CharGroup reference = new CharGroup(new int[] { character },
+                null /* shortcutTargets */, null /* bigrams */, 0);
         int result = Collections.binarySearch(data, reference, CHARGROUP_COMPARATOR);
         return result >= 0 ? result : -result - 1;
     }
