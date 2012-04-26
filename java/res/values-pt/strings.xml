@@ -120,7 +120,17 @@
     <string name="subtype_en_US" msgid="6160452336634534239">"Inglês (EUA)"</string>
     <string name="subtype_no_language" msgid="141420857808801746">"Sem idioma"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Nenhum idioma (QWERTY)"</string>
-    <string name="custom_input_styles_title" msgid="8429952441821251512">"Estilos entrad. pers."</string>
+    <!-- no translation found for subtype_no_language_qwertz (1177848172397202890) -->
+    <skip />
+    <!-- no translation found for subtype_no_language_azerty (8721460968141187394) -->
+    <skip />
+    <!-- no translation found for subtype_no_language_dvorak (3122976737669823935) -->
+    <skip />
+    <!-- no translation found for subtype_no_language_colemak (4205992994906097244) -->
+    <skip />
+    <!-- no translation found for subtype_no_language_pcqwerty (8840928374394180189) -->
+    <skip />
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"Estilos personalizados"</string>
     <string name="add_style" msgid="6163126614514489951">"Adic. estilo"</string>
     <string name="add" msgid="8299699805688017798">"Adicionar"</string>
     <string name="remove" msgid="4486081658752944606">"Remover"</string>
