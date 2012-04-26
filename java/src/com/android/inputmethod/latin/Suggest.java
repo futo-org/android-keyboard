@@ -385,6 +385,7 @@ public class Suggest implements Dictionary.WordCallback {
         }
         // Don't auto-correct words with multiple capital letter
         autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
+        autoCorrectionAvailable &= !wordComposer.isResumed();
         if (allowsToBeAutoCorrected && suggestionsList.size() > 1 && mAutoCorrectionThreshold > 0
                 && Suggest.shouldBlockAutoCorrectionBySafetyNet(typedWord,
                         suggestionsList.get(1).mWord)) {
