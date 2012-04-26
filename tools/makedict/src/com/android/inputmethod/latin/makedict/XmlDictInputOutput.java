@@ -72,19 +72,15 @@ public class XmlDictInputOutput {
         int mFreq; // the currently read freq
         String mWord; // the current word
         final HashMap<String, ArrayList<WeightedString>> mShortcutsMap;
-        final HashMap<String, ArrayList<WeightedString>> mBigramsMap;
 
         /**
          * Create the handler.
          *
          * @param shortcuts the shortcuts as a map. This may be empty, but may not be null.
-         * @param bigrams the bigrams as a map. This may be empty, but may not be null.
          */
-        public UnigramHandler(final HashMap<String, ArrayList<WeightedString>> shortcuts,
-                final HashMap<String, ArrayList<WeightedString>> bigrams) {
+        public UnigramHandler(final HashMap<String, ArrayList<WeightedString>> shortcuts) {
             mDictionary = null;
             mShortcutsMap = shortcuts;
-            mBigramsMap = bigrams;
             mWord = "";
             mState = START;
             mFreq = 0;
@@ -94,7 +90,6 @@ public class XmlDictInputOutput {
             final FusionDictionary dict = mDictionary;
             mDictionary = null;
             mShortcutsMap.clear();
-            mBigramsMap.clear();
             mWord = "";
             mState = START;
             mFreq = 0;
@@ -143,7 +138,7 @@ public class XmlDictInputOutput {
         @Override
         public void endElement(String uri, String localName, String qName) {
             if (WORD == mState) {
-                mDictionary.add(mWord, mFreq, mShortcutsMap.get(mWord), mBigramsMap.get(mWord));
+                mDictionary.add(mWord, mFreq, mShortcutsMap.get(mWord));
                 mState = START;
             }
         }
@@ -191,6 +186,7 @@ public class XmlDictInputOutput {
             }
         }
 
+        // This may return an empty map, but will never return null.
         public HashMap<String, ArrayList<WeightedString>> getAssocMap() {
             return mAssocMap;
         }
@@ -211,6 +207,7 @@ public class XmlDictInputOutput {
                     BIGRAM_FREQ_ATTRIBUTE);
         }
 
+        // As per getAssocMap(), this never returns null.
         public HashMap<String, ArrayList<WeightedString>> getBigramMap() {
             return getAssocMap();
         }
@@ -231,6 +228,7 @@ public class XmlDictInputOutput {
                     TARGET_PRIORITY_ATTRIBUTE);
         }
 
+        // As per getAssocMap(), this never returns null.
         public HashMap<String, ArrayList<WeightedString>> getShortcutMap() {
             return getAssocMap();
         }
@@ -260,10 +258,19 @@ public class XmlDictInputOutput {
         if (null != shortcuts) parser.parse(shortcuts, shortcutHandler);
 
         final UnigramHandler unigramHandler =
-                new UnigramHandler(shortcutHandler.getShortcutMap(),
-                        bigramHandler.getBigramMap());
+                new UnigramHandler(shortcutHandler.getShortcutMap());
         parser.parse(unigrams, unigramHandler);
-        return unigramHandler.getFinalDictionary();
+        final FusionDictionary dict = unigramHandler.getFinalDictionary();
+        final HashMap<String, ArrayList<WeightedString>> bigramMap = bigramHandler.getBigramMap();
+        for (final String firstWord : bigramMap.keySet()) {
+            if (!dict.hasWord(firstWord)) continue;
+            final ArrayList<WeightedString> bigramList = bigramMap.get(firstWord);
+            for (final WeightedString bigram : bigramList) {
+                if (!dict.hasWord(bigram.mWord)) continue;
+                dict.setBigram(firstWord, bigram.mWord, bigram.mFrequency);
+            }
+        }
+        return dict;
     }
 
     /**

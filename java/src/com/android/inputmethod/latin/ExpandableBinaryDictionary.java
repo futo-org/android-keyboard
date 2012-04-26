@@ -159,7 +159,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     // TODO: Create "cache dictionary" to cache fresh words for frequently updated dictionaries,
     // considering performance regression.
     protected void addWord(final String word, final int frequency) {
-        mFusionDictionary.add(word, frequency, null, null);
+        mFusionDictionary.add(word, frequency, null /* shortcutTargets */);
     }
 
     /**

@@ -1317,8 +1317,16 @@ public class BinaryDictInputOutput {
                         0 != (optionsFlags & GERMAN_UMLAUT_PROCESSING_FLAG),
                         0 != (optionsFlags & FRENCH_LIGATURE_PROCESSING_FLAG)));
         if (null != dict) {
-            for (Word w : dict) {
-                newDict.add(w.mWord, w.mFrequency, w.mShortcutTargets, w.mBigrams);
+            for (final Word w : dict) {
+                newDict.add(w.mWord, w.mFrequency, w.mShortcutTargets);
+            }
+            for (final Word w : dict) {
+                // By construction a binary dictionary may not have bigrams pointing to
+                // words that are not also registered as unigrams so we don't have to avoid
+                // them explicitly here.
+                for (final WeightedString bigram : w.mBigrams) {
+                    newDict.setBigram(w.mWord, bigram.mWord, bigram.mFrequency);
+                }
             }
         }
 
