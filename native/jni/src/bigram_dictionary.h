@@ -27,8 +27,7 @@ class BigramDictionary {
     BigramDictionary(const unsigned char *dict, int maxWordLength, Dictionary *parentDictionary);
     int getBigrams(const int32_t *word, int length, int *codes, int codesSize,
             unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams);
-    int getBigramListForWord(const uint8_t* const root,
-        const int32_t *prevWord, const int prevWordLength);
+    int getBigramListPositionForWord(const int32_t *prevWord, const int prevWordLength);
     ~BigramDictionary();
  private:
     bool addWordBigram(unsigned short *word, int length, int frequency);

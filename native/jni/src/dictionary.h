@@ -33,12 +33,12 @@ class Dictionary {
             int fullWordMultiplier, int maxWordLength, int maxWords);
 
     int getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
-            int *codes, int codesSize, bool useFullEditDistance, unsigned short *outWords,
-            int *frequencies) {
+            int *codes, int codesSize, const int32_t* prevWordChars, const int prevWordLength,
+            bool useFullEditDistance, unsigned short *outWords, int *frequencies) {
         // bigramListPosition is, as an int, the offset of the bigram list in the file.
         // If none, it's zero.
-        // TODO: get this from the bigram dictionary instance
-        const int bigramListPosition = 0;
+        const int bigramListPosition = !prevWordChars ? 0
+                : mBigramDictionary->getBigramListPositionForWord(prevWordChars, prevWordLength);
         return mUnigramDictionary->getSuggestions(proximityInfo, mWordsPriorityQueuePool,
                 mCorrection, xcoordinates, ycoordinates, codes, codesSize, bigramListPosition,
                 useFullEditDistance, outWords, frequencies);
