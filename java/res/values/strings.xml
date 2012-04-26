@@ -64,11 +64,11 @@
     <!-- Option summary for advanced settings screen [CHAR LIMIT=65 (two lines) or 30 (fits on one line, preferable)] -->
     <string name="advanced_settings_summary">Options for experts</string>
 
-    <!-- Option name for including other IMEs in the language switch list [CHAR LIMIT=25] -->
+    <!-- Option name for including other IMEs in the language switch list [CHAR LIMIT=30] -->
     <string name="include_other_imes_in_language_switch_list">Switch to other input methods</string>
     <!-- Option summary for including other IMEs in the language switch list [CHAR LIMIT=65] -->
     <string name="include_other_imes_in_language_switch_list_summary">Language switch key covers other input methods too</string>
-    <!-- Option to suppress language switch key [CHAR LIMIT=25] -->
+    <!-- Option to suppress language switch key [CHAR LIMIT=30] -->
     <string name="suppress_language_switch_key">Suppress language switch key</string>
 
     <!-- Option for the dismiss delay of the key popup [CHAR LIMIT=25] -->
@@ -267,9 +267,9 @@
     <!-- Description for language agnostic PC QWERTY keyboard subtype [CHAR LIMIT=22] -->
     <string name="subtype_no_language_pcqwerty">No language (PC)</string>
 
-    <!-- Title of the preference settings for custom input styles (language and keyboard layout pairs) [CHAR LIMIT=22]-->
+    <!-- Title of the preference settings for custom input styles (language and keyboard layout pairs) [CHAR LIMIT=35]-->
     <string name="custom_input_styles_title">Custom input styles</string>
-    <!-- Title of the option menu to add a new style entry in the preference settings [CHAR_LIMIT=12] -->
+    <!-- Title of the option menu to add a new style entry in the preference settings [CHAR_LIMIT=16] -->
     <string name="add_style">Add style</string>
     <!-- Title of the button to add custom style entry in the settings dialog [CHAR_LIMIT=12]  -->
     <string name="add">Add</string>
