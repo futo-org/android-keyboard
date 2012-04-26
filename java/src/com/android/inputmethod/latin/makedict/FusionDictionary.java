@@ -563,7 +563,7 @@ public class FusionDictionary implements Iterable<Word> {
      * Recursively count the number of nodes in a given branch of the trie.
      *
      * @param node the node to count.
-     * @result the number of nodes in this branch.
+     * @return the number of nodes in this branch.
      */
     public static int countNodes(final Node node) {
         int size = 1;
@@ -573,6 +573,32 @@ public class FusionDictionary implements Iterable<Word> {
                 size += countNodes(group.mChildren);
         }
         return size;
+    }
+
+    // Recursively find out whether there are any bigrams.
+    // This can be pretty expensive especially if there aren't any (we return as soon
+    // as we find one, so it's much cheaper if there are bigrams)
+    private static boolean hasBigramsInternal(final Node node) {
+        if (null == node) return false;
+        for (int i = node.mData.size() - 1; i >= 0; --i) {
+            CharGroup group = node.mData.get(i);
+            if (null != group.mBigrams) return true;
+            if (hasBigramsInternal(group.mChildren)) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Finds out whether there are any bigrams in this dictionary.
+     *
+     * @return true if there is any bigram, false otherwise.
+     */
+    // TODO: this is expensive especially for large dictionaries without any bigram.
+    // The up side is, this is always accurate and correct and uses no memory. We should
+    // find a more efficient way of doing this, without compromising too much on memory
+    // and ease of use.
+    public boolean hasBigrams() {
+        return hasBigramsInternal(mRoot);
     }
 
     // Historically, the tails of the words were going to be merged to save space.

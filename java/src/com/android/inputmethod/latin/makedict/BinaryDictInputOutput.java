@@ -131,6 +131,7 @@ public class BinaryDictInputOutput {
     // These options need to be the same numeric values as the one in the native reading code.
     private static final int GERMAN_UMLAUT_PROCESSING_FLAG = 0x1;
     private static final int FRENCH_LIGATURE_PROCESSING_FLAG = 0x4;
+    private static final int CONTAINS_BIGRAMS_FLAG = 0x8;
 
     // TODO: Make this value adaptative to content data, store it in the header, and
     // use it in the reading code.
@@ -752,9 +753,12 @@ public class BinaryDictInputOutput {
     /**
      * Makes the 2-byte value for options flags.
      */
-    private static final int makeOptionsValue(final DictionaryOptions options) {
+    private static final int makeOptionsValue(final FusionDictionary dictionary) {
+        final DictionaryOptions options = dictionary.mOptions;
+        final boolean hasBigrams = dictionary.hasBigrams();
         return (options.mFrenchLigatureProcessing ? FRENCH_LIGATURE_PROCESSING_FLAG : 0)
-                + (options.mGermanUmlautProcessing ? GERMAN_UMLAUT_PROCESSING_FLAG : 0);
+                + (options.mGermanUmlautProcessing ? GERMAN_UMLAUT_PROCESSING_FLAG : 0)
+                + (hasBigrams ? CONTAINS_BIGRAMS_FLAG : 0);
     }
 
     /**
@@ -970,7 +974,7 @@ public class BinaryDictInputOutput {
             headerBuffer.write((byte) (0xFF & version));
         }
         // Options flags
-        final int options = makeOptionsValue(dict.mOptions);
+        final int options = makeOptionsValue(dict);
         headerBuffer.write((byte) (0xFF & (options >> 8)));
         headerBuffer.write((byte) (0xFF & options));
         if (version >= FIRST_VERSION_WITH_HEADER_SIZE) {
