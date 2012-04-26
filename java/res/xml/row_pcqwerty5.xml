@@ -48,6 +48,12 @@
                 <Key
                     latin:keyStyle="shortcutKeyStyle" />
             </case>
+            <case
+                latin:clobberSettingsKey="false"
+            >
+                <Key
+                    latin:keyStyle="settingsKeyStyle" />
+            </case>
         </switch>
         <switch>
             <case
