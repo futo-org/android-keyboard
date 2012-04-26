@@ -182,11 +182,12 @@ public class SubtypeSwitcher {
                     + newSubtype.getLocale() + "/" + newSubtype.getExtraValue() + ", from: "
                     + mCurrentSubtype.getLocale() + "/" + mCurrentSubtype.getExtraValue());
         }
-        if (newSubtype.equals(mCurrentSubtype)) return;
 
         final Locale newLocale = SubtypeLocale.getSubtypeLocale(newSubtype);
         mNeedsToDisplayLanguage.updateIsSystemLanguageSameAsInputLanguage(
                 mCurrentSystemLocale.equals(newLocale));
+
+        if (newSubtype.equals(mCurrentSubtype)) return;
 
         mCurrentSubtype = newSubtype;
         updateShortcutIME();
