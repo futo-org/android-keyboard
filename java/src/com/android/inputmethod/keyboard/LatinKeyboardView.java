@@ -88,9 +88,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     private float mSpacebarTextSize;
     private final int mSpacebarTextColor;
     private final int mSpacebarTextShadowColor;
-    // If the full language name needs to be smaller than this value to be drawn on space key,
-    // its short language name will be used instead.
-    private static final float MINIMUM_SCALE_OF_LANGUAGE_NAME = 0.8f;
+    // The minimum x-scale to fit the language name on spacebar.
+    private static final float MINIMUM_XSCALE_OF_LANGUAGE_NAME = 0.8f;
     // Stuff to draw auto correction LED on spacebar.
     private boolean mAutoCorrectionSpacebarLedOn;
     private final boolean mAutoCorrectionSpacebarLedEnabled;
@@ -898,47 +897,38 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
     }
 
-    // Compute width of text with specified text size using paint.
-    private int getTextWidth(Paint paint, String text, float textSize) {
-        paint.setTextSize(textSize);
-        return (int)getLabelWidth(text, paint);
+    private boolean fitsTextIntoWidth(final int width, String text, Paint paint) {
+        paint.setTextScaleX(1.0f);
+        final float textWidth = getLabelWidth(text, paint);
+        if (textWidth < width) return true;
+
+        final float scaleX = width / textWidth;
+        if (scaleX < MINIMUM_XSCALE_OF_LANGUAGE_NAME) return false;
+
+        paint.setTextScaleX(scaleX);
+        return getLabelWidth(text, paint) < width;
     }
 
-    // Layout locale language name on spacebar.
-    private String layoutLanguageOnSpacebar(Paint paint, InputMethodSubtype subtype, int width,
-            float origTextSize) {
-        paint.setTextAlign(Align.CENTER);
-        paint.setTypeface(Typeface.DEFAULT);
-        // Estimate appropriate language name text size to fit in maxTextWidth.
-        String language = getFullDisplayName(subtype, getResources());
-        int textWidth = getTextWidth(paint, language, origTextSize);
-        // Assuming text width and text size are proportional to each other.
-        float textSize = origTextSize * Math.min(width / textWidth, 1.0f);
-        // allow variable text size
-        textWidth = getTextWidth(paint, language, textSize);
-        // If text size goes too small or text does not fit, use middle or short name
-        final boolean useMiddleName = (textSize / origTextSize < MINIMUM_SCALE_OF_LANGUAGE_NAME)
-                || (textWidth > width);
-
-        final boolean useShortName;
-        if (useMiddleName) {
-            language = getMiddleDisplayName(subtype);
-            textWidth = getTextWidth(paint, language, origTextSize);
-            textSize = origTextSize * Math.min(width / textWidth, 1.0f);
-            useShortName = (textSize / origTextSize < MINIMUM_SCALE_OF_LANGUAGE_NAME)
-                    || (textWidth > width);
-        } else {
-            useShortName = false;
+    // Layout language name on spacebar.
+    private String layoutLanguageOnSpacebar(Paint paint, InputMethodSubtype subtype,
+            final int width) {
+        // Choose appropriate language name to fit into the width.
+        String text = getFullDisplayName(subtype, getResources());
+        if (fitsTextIntoWidth(width, text, paint)) {
+            return text;
         }
 
-        if (useShortName) {
-            language = getShortDisplayName(subtype);
-            textWidth = getTextWidth(paint, language, origTextSize);
-            textSize = origTextSize * Math.min(width / textWidth, 1.0f);
+        text = getMiddleDisplayName(subtype);
+        if (fitsTextIntoWidth(width, text, paint)) {
+            return text;
         }
-        paint.setTextSize(textSize);
 
-        return language;
+        text = getShortDisplayName(subtype);
+        if (fitsTextIntoWidth(width, text, paint)) {
+            return text;
+        }
+
+        return "";
     }
 
     private void drawSpacebar(Key key, Canvas canvas, Paint paint) {
@@ -947,11 +937,12 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         // If input language are explicitly selected.
         if (mNeedsToDisplayLanguage) {
-            final String language = layoutLanguageOnSpacebar(
-                    paint, getKeyboard().mId.mSubtype, width, mSpacebarTextSize);
+            paint.setTextAlign(Align.CENTER);
+            paint.setTypeface(Typeface.DEFAULT);
+            paint.setTextSize(mSpacebarTextSize);
+            final InputMethodSubtype subtype = getKeyboard().mId.mSubtype;
+            final String language = layoutLanguageOnSpacebar(paint, subtype, width);
             // Draw language text with shadow
-            // In case there is no space icon, we will place the language text at the center of
-            // spacebar.
             final float descent = paint.descent();
             final float textHeight = -paint.ascent() + descent;
             final float baseline = height / 2 + textHeight / 2;
