@@ -130,7 +130,7 @@
     <skip />
     <!-- no translation found for subtype_no_language_pcqwerty (8840928374394180189) -->
     <skip />
-    <string name="custom_input_styles_title" msgid="8429952441821251512">"Mitindo maalum ya kuingiza"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"Mitindo maalum ya ingizo"</string>
     <string name="add_style" msgid="6163126614514489951">"Ongeza mtindo"</string>
     <string name="add" msgid="8299699805688017798">"Ongeza"</string>
     <string name="remove" msgid="4486081658752944606">"Ondoa"</string>
