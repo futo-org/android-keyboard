@@ -18,6 +18,7 @@ package com.android.inputmethod.keyboard;
 
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.view.View;
 
 import com.android.inputmethod.keyboard.internal.KeySpecParser.MoreKeySpec;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
@@ -251,30 +252,38 @@ public class MoreKeysKeyboard extends Keyboard {
             }
         }
 
-        public Builder(KeyboardView view, int xmlId, Key parentKey, Keyboard parentKeyboard) {
-            super(view.getContext(), new MoreKeysKeyboardParams());
-            load(xmlId, parentKeyboard.mId);
+        /**
+         * The builder of MoreKeysKeyboard.
+         * @param containerView the container of {@link MoreKeysKeyboardView}.
+         * @param parentKey the {@link Key} that invokes more keys keyboard.
+         * @param parentKeyboardView the {@link KeyboardView} that contains the parentKey.
+         */
+        public Builder(View containerView, Key parentKey, KeyboardView parentKeyboardView) {
+            super(containerView.getContext(), new MoreKeysKeyboardParams());
+            final Keyboard parentKeyboard = parentKeyboardView.getKeyboard();
+            load(parentKeyboard.mMoreKeysTemplate, parentKeyboard.mId);
 
             // TODO: More keys keyboard's vertical gap is currently calculated heuristically.
             // Should revise the algorithm.
             mParams.mVerticalGap = parentKeyboard.mVerticalGap / 2;
             mParentKey = parentKey;
 
-            final int previewWidth = view.mKeyPreviewDrawParams.mPreviewBackgroundWidth;
-            final int previewHeight = view.mKeyPreviewDrawParams.mPreviewBackgroundHeight;
             final int width, height;
-            // Use pre-computed width and height if these values are available and more keys
-            // keyboard has only one key to mitigate visual flicker between key preview and more
-            // keys keyboard.
-            final boolean validKeyPreview = view.isKeyPreviewPopupEnabled()
-                    && !parentKey.noKeyPreview() && (previewWidth > 0) && (previewHeight > 0);
-            final boolean singleMoreKeyWithPreview = validKeyPreview
-                    && parentKey.mMoreKeys.length == 1;
+            final boolean singleMoreKeyWithPreview = parentKeyboardView.isKeyPreviewPopupEnabled()
+                    && !parentKey.noKeyPreview() && parentKey.mMoreKeys.length == 1;
             if (singleMoreKeyWithPreview) {
-                width = previewWidth;
-                height = previewHeight + mParams.mVerticalGap;
+                // Use pre-computed width and height if this more keys keyboard has only one key to
+                // mitigate visual flicker between key preview and more keys keyboard.
+                // Caveats for the visual assets: To achieve this effect, both the key preview
+                // backgrounds and the more keys keyboard panel background have the exact same
+                // left/right/top paddings. The bottom paddings of both backgrounds don't need to
+                // be considered because the vertical positions of both backgrounds were already
+                // adjusted with their bottom paddings deducted.
+                width = parentKeyboardView.mKeyPreviewDrawParams.mPreviewVisibleWidth;
+                height = parentKeyboardView.mKeyPreviewDrawParams.mPreviewVisibleHeight
+                        + mParams.mVerticalGap;
             } else {
-                width = getMaxKeyWidth(view, parentKey, mParams.mDefaultKeyWidth);
+                width = getMaxKeyWidth(parentKeyboardView, parentKey, mParams.mDefaultKeyWidth);
                 height = parentKeyboard.mMostCommonKeyHeight;
             }
             final int dividerWidth;
@@ -288,8 +297,9 @@ public class MoreKeysKeyboard extends Keyboard {
                 dividerWidth = 0;
             }
             mParams.setParameters(parentKey.mMoreKeys.length, parentKey.getMoreKeysColumn(),
-                    width, height, parentKey.mX + parentKey.mWidth / 2, view.getMeasuredWidth(),
-                    parentKey.isFixedColumnOrderMoreKeys(), dividerWidth);
+                    width, height, parentKey.mX + parentKey.mWidth / 2,
+                    parentKeyboardView.getMeasuredWidth(), parentKey.isFixedColumnOrderMoreKeys(),
+                    dividerWidth);
         }
 
         private static int getMaxKeyWidth(KeyboardView view, Key parentKey, int minKeyWidth) {

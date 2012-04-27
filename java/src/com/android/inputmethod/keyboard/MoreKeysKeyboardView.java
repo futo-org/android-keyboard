@@ -141,10 +141,8 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         final MoreKeysKeyboard pane = (MoreKeysKeyboard)getKeyboard();
         final int defaultCoordX = pane.getDefaultCoordX();
         // The coordinates of panel's left-top corner in parentView's coordinate system.
-        final int x = pointX - defaultCoordX - container.getPaddingLeft()
-                + parentView.getPaddingLeft();
-        final int y = pointY - container.getMeasuredHeight() + container.getPaddingBottom()
-                + parentView.getPaddingTop();
+        final int x = pointX - defaultCoordX - container.getPaddingLeft();
+        final int y = pointY - container.getMeasuredHeight() + container.getPaddingBottom();
 
         window.setContentView(container);
         window.setWidth(container.getMeasuredWidth());

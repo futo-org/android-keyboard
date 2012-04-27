@@ -108,8 +108,6 @@
     </style>
     <style name="MoreKeysKeyboardPanelStyle">
         <item name="android:background">@drawable/keyboard_popup_panel_background</item>
-        <item name="android:paddingLeft">@dimen/more_keys_keyboard_horizontal_edges_padding</item>
-        <item name="android:paddingRight">@dimen/more_keys_keyboard_horizontal_edges_padding</item>
     </style>
     <style name="SuggestionsStripBackgroundStyle">
         <item name="android:background">@drawable/keyboard_suggest_strip</item>
@@ -311,8 +309,6 @@
         <item name="keyPreviewBackground">@drawable/keyboard_key_feedback_ics</item>
         <item name="keyPreviewLeftBackground">@drawable/keyboard_key_feedback_left_ics</item>
         <item name="keyPreviewRightBackground">@drawable/keyboard_key_feedback_right_ics</item>
-        <item name="keyPreviewBackgroundWidth">@dimen/keyboard_key_feedback_background_holo_width</item>
-        <item name="keyPreviewBackgroundHeight">@dimen/keyboard_key_feedback_background_holo_height</item>
         <item name="keyPreviewTextColor">#FFFFFFFF</item>
         <item name="keyPreviewOffset">@dimen/key_preview_offset_ics</item>
         <item name="shadowColor">#00000000</item>
@@ -346,8 +342,6 @@
     </style>
     <style name="MoreKeysKeyboardPanelStyle.IceCreamSandwich">
         <item name="android:background">@drawable/keyboard_popup_panel_background_holo</item>
-        <item name="android:paddingLeft">@dimen/more_keys_keyboard_horizontal_edges_padding_ics</item>
-        <item name="android:paddingRight">@dimen/more_keys_keyboard_horizontal_edges_padding_ics</item>
     </style>
     <style name="SuggestionsStripBackgroundStyle.IceCreamSandwich">
         <item name="android:background">@drawable/keyboard_suggest_strip_holo</item>

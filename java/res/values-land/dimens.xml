@@ -53,7 +53,7 @@
     <fraction name="key_uppercase_letter_ratio">40%</fraction>
     <fraction name="key_preview_text_ratio">90%</fraction>
     <fraction name="spacebar_text_ratio">40.000%</fraction>
-    <dimen name="key_preview_offset">12.8dp</dimen>
+    <dimen name="key_preview_offset">0.0dp</dimen>
 
     <dimen name="key_preview_offset_ics">1.6dp</dimen>
     <!-- popup_key_height x -0.5 -->

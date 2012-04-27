@@ -272,8 +272,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         public final Drawable mPreviewBackground;
         public final Drawable mPreviewLeftBackground;
         public final Drawable mPreviewRightBackground;
-        public final int mPreviewBackgroundWidth;
-        public final int mPreviewBackgroundHeight;
         public final int mPreviewTextColor;
         public final int mPreviewOffset;
         public final int mPreviewHeight;
@@ -282,6 +280,31 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         private final float mPreviewTextRatio;
         private final float mKeyLetterRatio;
+
+        // The graphical geometry of the key preview.
+        // <-width->
+        // +-------+   ^
+        // |       |   |
+        // |preview| height (visible)
+        // |       |   |
+        // +       + ^ v
+        //  \     /  |offset
+        // +-\   /-+ v
+        // |  +-+  |
+        // |parent |
+        // |    key|
+        // +-------+
+        // The background of a {@link TextView} being used for a key preview may have invisible
+        // paddings. To align the more keys keyboard panel's visible part with the visible part of
+        // the background, we need to record the width and height of key preview that don't include
+        // invisible paddings.
+        public int mPreviewVisibleWidth;
+        public int mPreviewVisibleHeight;
+        // The key preview may have an arbitrary offset and its background that may have a bottom
+        // padding. To align the more keys keyboard and the key preview we also need to record the
+        // offset between the top edge of parent key and the bottom of the visible part of key
+        // preview background.
+        public int mPreviewVisibleOffset;
 
         public int mPreviewTextSize;
         public int mKeyLetterSize;
@@ -298,10 +321,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             setAlpha(mPreviewBackground, PREVIEW_ALPHA);
             setAlpha(mPreviewLeftBackground, PREVIEW_ALPHA);
             setAlpha(mPreviewRightBackground, PREVIEW_ALPHA);
-            mPreviewBackgroundWidth = a.getDimensionPixelSize(
-                    R.styleable.KeyboardView_keyPreviewBackgroundWidth, 0);
-            mPreviewBackgroundHeight = a.getDimensionPixelSize(
-                    R.styleable.KeyboardView_keyPreviewBackgroundHeight, 0);
             mPreviewOffset = a.getDimensionPixelOffset(
                     R.styleable.KeyboardView_keyPreviewOffset, 0);
             mPreviewHeight = a.getDimensionPixelSize(
@@ -839,13 +858,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     @Override
-    public void showKeyPreview(PointerTracker tracker) {
-        if (mShowKeyPreviewPopup) {
-            showKey(tracker);
-        }
-    }
-
-    @Override
     public void dismissKeyPreview(PointerTracker tracker) {
         mDrawingHandler.dismissKeyPreview(mDelayAfterPreview, tracker);
     }
@@ -861,7 +873,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 keyPreview, ViewLayoutUtils.newLayoutParam(mPreviewPlacer, 0, 0));
     }
 
-    private void showKey(PointerTracker tracker) {
+    @Override
+    public void showKeyPreview(PointerTracker tracker) {
+        if (!mShowKeyPreviewPopup) return;
+
         final TextView previewText = tracker.getKeyPreviewText();
         // If the key preview has no parent view yet, add it to the ViewGroup which can place
         // key preview absolutely in SoftInputWindow.
@@ -878,8 +893,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             return;
 
         final KeyPreviewDrawParams params = mKeyPreviewDrawParams;
-        final int keyDrawX = key.mX + key.mVisualInsetsLeft;
-        final int keyDrawWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight;
         final String label = key.isShiftedLetterActivated() ? key.mHintLabel : key.mLabel;
         // What we show as preview should match what we show on a key top in onBufferDraw().
         if (label != null) {
@@ -902,13 +915,24 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         previewText.measure(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        final int previewWidth = Math.max(previewText.getMeasuredWidth(), keyDrawWidth
-                + previewText.getPaddingLeft() + previewText.getPaddingRight());
+        final int keyDrawWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight;
+        final int previewWidth = previewText.getMeasuredWidth();
         final int previewHeight = params.mPreviewHeight;
+        // The width and height of visible part of the key preview background. The content marker
+        // of the background 9-patch have to cover the visible part of the background.
+        params.mPreviewVisibleWidth = previewWidth - previewText.getPaddingLeft()
+                - previewText.getPaddingRight();
+        params.mPreviewVisibleHeight = previewHeight - previewText.getPaddingTop()
+                - previewText.getPaddingBottom();
+        // The distance between the top edge of the parent key and the bottom of the visible part
+        // of the key preview background.
+        params.mPreviewVisibleOffset = params.mPreviewOffset - previewText.getPaddingBottom();
         getLocationInWindow(params.mCoordinates);
-        int previewX = keyDrawX - (previewWidth - keyDrawWidth) / 2 + params.mCoordinates[0];
-        final int previewY = key.mY - previewHeight
-                + params.mCoordinates[1] + params.mPreviewOffset;
+        // The key preview is horizontally aligned with the center of the visible part of the
+        // parent key. If it doesn't fit in this {@link KeyboardView}, it is moved inward to fit and
+        // the left/right background is used if such background is specified.
+        int previewX = key.mX + key.mVisualInsetsLeft - (previewWidth - keyDrawWidth) / 2
+                + params.mCoordinates[0];
         if (previewX < 0) {
             previewX = 0;
             if (params.mPreviewLeftBackground != null) {
@@ -920,6 +944,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 previewText.setBackgroundDrawable(params.mPreviewRightBackground);
             }
         }
+        // The key preview is placed vertically above the top edge of the parent key with an
+        // arbitrary offset.
+        final int previewY = key.mY - previewHeight + params.mPreviewOffset
+                + params.mCoordinates[1];
 
         // Set the preview background state
         previewText.getBackground().setState(
