@@ -58,4 +58,9 @@ bool Dictionary::isValidWord(const int32_t *word, int length) {
     return mUnigramDictionary->isValidWord(word, length);
 }
 
+bool Dictionary::isValidBigram(const int32_t *word1, int length1, const int32_t *word2,
+        int length2) {
+    return mBigramDictionary->isValidBigram(word1, length1, word2, length2);
+}
+
 } // namespace latinime

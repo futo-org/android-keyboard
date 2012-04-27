@@ -182,6 +182,20 @@ static jboolean latinime_BinaryDictionary_isValidWord(JNIEnv *env, jobject objec
     return result;
 }
 
+static jboolean latinime_BinaryDictionary_isValidBigram(JNIEnv *env, jobject object, jlong dict,
+        jintArray wordArray1, jintArray wordArray2) {
+    Dictionary *dictionary = (Dictionary*)dict;
+    if (!dictionary) return (jboolean) false;
+    jint *word1 = env->GetIntArrayElements(wordArray1, 0);
+    jint *word2 = env->GetIntArrayElements(wordArray2, 0);
+    jsize length1 = word1 ? env->GetArrayLength(wordArray1) : 0;
+    jsize length2 = word2 ? env->GetArrayLength(wordArray2) : 0;
+    jboolean result = dictionary->isValidBigram(word1, length1, word2, length2);
+    env->ReleaseIntArrayElements(wordArray2, word2, JNI_ABORT);
+    env->ReleaseIntArrayElements(wordArray1, word1, JNI_ABORT);
+    return result;
+}
+
 static jdouble latinime_BinaryDictionary_calcNormalizedScore(JNIEnv *env, jobject object,
         jcharArray before, jint beforeLength, jcharArray after, jint afterLength, jint score) {
     jchar *beforeChars = env->GetCharArrayElements(before, 0);
@@ -239,6 +253,7 @@ static JNINativeMethod sMethods[] = {
     {"getSuggestionsNative", "(JJ[I[I[II[IZ[C[I)I",
             (void*)latinime_BinaryDictionary_getSuggestions},
     {"isValidWordNative", "(J[II)Z", (void*)latinime_BinaryDictionary_isValidWord},
+    {"isValidBigramNative", "(J[I[I)Z", (void*)latinime_BinaryDictionary_isValidBigram},
     {"getBigramsNative", "(J[II[II[C[III)I", (void*)latinime_BinaryDictionary_getBigrams},
     {"calcNormalizedScoreNative", "([CI[CII)D",
             (void*)latinime_BinaryDictionary_calcNormalizedScore},
