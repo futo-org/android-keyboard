@@ -33,11 +33,10 @@ public class SubtypeLocale {
 
     // Special language code to represent "no language".
     public static final String NO_LANGUAGE = "zz";
-
     public static final String QWERTY = "qwerty";
-
     public static final int UNKNOWN_KEYBOARD_LAYOUT = R.string.subtype_generic;
 
+    private static Context sContext;
     private static String[] sPredefinedKeyboardLayoutSet;
     // Keyboard layout to its display name map.
     private static final HashMap<String, String> sKeyboardKayoutToDisplayNameMap =
@@ -58,6 +57,7 @@ public class SubtypeLocale {
     }
 
     public static void init(Context context) {
+        sContext = context;
         final Resources res = context.getResources();
 
         final String[] predefinedLayoutSet = res.getStringArray(R.array.predefined_layouts);
@@ -128,6 +128,9 @@ public class SubtypeLocale {
     //  zz    azerty T  No language (AZERTY)
 
     public static String getSubtypeDisplayName(InputMethodSubtype subtype, Resources res) {
+        // TODO: Remove this check when InputMethodManager.getLastInputMethodSubtype is
+        // fixed.
+        if (!ImfUtils.checkIfSubtypeBelongsToThisIme(sContext, subtype)) return "";
         final String language = getSubtypeLocaleDisplayName(subtype.getLocale());
         return res.getString(subtype.getNameResId(), language);
     }
