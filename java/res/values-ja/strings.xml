@@ -120,16 +120,11 @@
     <string name="subtype_en_US" msgid="6160452336634534239">"英語（米国）"</string>
     <string name="subtype_no_language" msgid="141420857808801746">"言語設定なし"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"言語設定なし（QWERTY）"</string>
-    <!-- no translation found for subtype_no_language_qwertz (1177848172397202890) -->
-    <skip />
-    <!-- no translation found for subtype_no_language_azerty (8721460968141187394) -->
-    <skip />
-    <!-- no translation found for subtype_no_language_dvorak (3122976737669823935) -->
-    <skip />
-    <!-- no translation found for subtype_no_language_colemak (4205992994906097244) -->
-    <skip />
-    <!-- no translation found for subtype_no_language_pcqwerty (8840928374394180189) -->
-    <skip />
+    <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"言語設定なし（QWERTZ）"</string>
+    <string name="subtype_no_language_azerty" msgid="8721460968141187394">"言語設定なし（AZERTY）"</string>
+    <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"言語設定なし（Dvorak）"</string>
+    <string name="subtype_no_language_colemak" msgid="4205992994906097244">"言語設定なし（Colemak）"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"言語設定なし（PC）"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"カスタム入力スタイル"</string>
     <string name="add_style" msgid="6163126614514489951">"スタイル追加"</string>
     <string name="add" msgid="8299699805688017798">"追加"</string>
