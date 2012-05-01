@@ -63,12 +63,26 @@ public class ImfUtils {
         return getInputMethodInfoOfThisIme(context).getId();
     }
 
-    public static boolean checkIfSubtypeBelongsToThisIme(Context context, InputMethodSubtype ims) {
+    public static boolean checkIfSubtypeBelongsToThisImeAndEnabled(Context context,
+            InputMethodSubtype ims) {
         final InputMethodInfo myImi = getInputMethodInfoOfThisIme(context);
         final InputMethodManager imm = getInputMethodManager(context);
         // TODO: Cache all subtypes of this IME for optimization
         final List<InputMethodSubtype> subtypes = imm.getEnabledInputMethodSubtypeList(myImi, true);
         for (final InputMethodSubtype subtype : subtypes) {
+            if (subtype.equals(ims)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean checkIfSubtypeBelongsToThisIme(Context context,
+            InputMethodSubtype ims) {
+        final InputMethodInfo myImi = getInputMethodInfoOfThisIme(context);
+        final int count = myImi.getSubtypeCount();
+        for (int i = 0; i < count; i++) {
+            final InputMethodSubtype subtype = myImi.getSubtypeAt(i);
             if (subtype.equals(ims)) {
                 return true;
             }
