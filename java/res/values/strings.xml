@@ -248,23 +248,23 @@
     <!-- Title of the item to change the keyboard theme [CHAR LIMIT=20]-->
     <string name="keyboard_layout">Keyboard theme</string>
 
-    <!-- Description for English (United Kingdom) keyboard subtype [CHAR LIMIT=22] -->
+    <!-- Description for English (United Kingdom) keyboard subtype [CHAR LIMIT=25] -->
     <string name="subtype_en_GB">English (UK)</string>
-    <!-- Description for English (United States) keyboard subtype [CHAR LIMIT=22] -->
+    <!-- Description for English (United States) keyboard subtype [CHAR LIMIT=25] -->
     <string name="subtype_en_US">English (US)</string>
-    <!-- Description for language agnostic keyboard subtype [CHAR LIMIT=22] -->
+    <!-- Description for language agnostic keyboard subtype [CHAR LIMIT=25] -->
     <string name="subtype_no_language">No language</string>
-    <!-- Description for language agnostic QWERTY keyboard subtype [CHAR LIMIT=22] -->
+    <!-- Description for language agnostic QWERTY keyboard subtype [CHAR LIMIT=25] -->
     <string name="subtype_no_language_qwerty">No language (QWERTY)</string>
-    <!-- Description for language agnostic QWERTZ keyboard subtype [CHAR LIMIT=22] -->
+    <!-- Description for language agnostic QWERTZ keyboard subtype [CHAR LIMIT=25] -->
     <string name="subtype_no_language_qwertz">No language (QWERTZ)</string>
-    <!-- Description for language agnostic AZERTY keyboard subtype [CHAR LIMIT=22] -->
+    <!-- Description for language agnostic AZERTY keyboard subtype [CHAR LIMIT=25] -->
     <string name="subtype_no_language_azerty">No language (AZERTY)</string>
-    <!-- Description for language agnostic Dvorak keyboard subtype [CHAR LIMIT=22] -->
+    <!-- Description for language agnostic Dvorak keyboard subtype [CHAR LIMIT=25] -->
     <string name="subtype_no_language_dvorak">No language (Dvorak)</string>
-    <!-- Description for language agnostic Colemak keyboard subtype [CHAR LIMIT=22] -->
+    <!-- Description for language agnostic Colemak keyboard subtype [CHAR LIMIT=25] -->
     <string name="subtype_no_language_colemak">No language (Colemak)</string>
-    <!-- Description for language agnostic PC QWERTY keyboard subtype [CHAR LIMIT=22] -->
+    <!-- Description for language agnostic PC QWERTY keyboard subtype [CHAR LIMIT=25] -->
     <string name="subtype_no_language_pcqwerty">No language (PC)</string>
 
     <!-- Title of the preference settings for custom input styles (language and keyboard layout pairs) [CHAR LIMIT=35]-->
