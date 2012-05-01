@@ -38,6 +38,7 @@ public class WordComposer {
     private int[] mYCoordinates;
     private StringBuilder mTypedWord;
     private CharSequence mAutoCorrection;
+    private boolean mIsResumed;
 
     // Cache these values for performance
     private int mCapsCount;
@@ -57,6 +58,7 @@ public class WordComposer {
         mYCoordinates = new int[N];
         mAutoCorrection = null;
         mTrailingSingleQuotesCount = 0;
+        mIsResumed = false;
         refreshSize();
     }
 
@@ -73,6 +75,7 @@ public class WordComposer {
         mIsFirstCharCapitalized = source.mIsFirstCharCapitalized;
         mAutoCapitalized = source.mAutoCapitalized;
         mTrailingSingleQuotesCount = source.mTrailingSingleQuotesCount;
+        mIsResumed = source.mIsResumed;
         refreshSize();
     }
 
@@ -85,6 +88,7 @@ public class WordComposer {
         mCapsCount = 0;
         mIsFirstCharCapitalized = false;
         mTrailingSingleQuotesCount = 0;
+        mIsResumed = false;
         refreshSize();
     }
 
@@ -193,6 +197,7 @@ public class WordComposer {
             int codePoint = Character.codePointAt(word, i);
             addKeyInfo(codePoint, keyboard);
         }
+        mIsResumed = true;
     }
 
     /**
@@ -299,6 +304,13 @@ public class WordComposer {
         return mAutoCorrection;
     }
 
+    /**
+     * @return whether we started composing this word by resuming suggestion on an existing string
+     */
+    public boolean isResumed() {
+        return mIsResumed;
+    }
+
     // `type' should be one of the LastComposedWord.COMMIT_TYPE_* constants above.
     public LastComposedWord commitWord(final int type, final String committedWord,
             final int separatorCode) {
@@ -320,6 +332,7 @@ public class WordComposer {
         mTypedWord.setLength(0);
         refreshSize();
         mAutoCorrection = null;
+        mIsResumed = false;
         return lastComposedWord;
     }
 
@@ -331,5 +344,6 @@ public class WordComposer {
         mTypedWord.append(lastComposedWord.mTypedWord);
         refreshSize();
         mAutoCorrection = null; // This will be filled by the next call to updateSuggestion.
+        mIsResumed = true;
     }
 }
