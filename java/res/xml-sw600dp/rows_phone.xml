@@ -26,79 +26,69 @@
     <include
         latin:keyboardLayout="@xml/key_styles_number" />
     <Row>
-        <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
-        <Spacer
-            latin:keyWidth="12.75%p" />
         <Key
             latin:keyLabel="-"
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="9.25%p" />
+            latin:keyWidth="10.00%p" />
         <Key
             latin:keyLabel="+"
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="9.25%p" />
+            latin:keyWidth="10.00%p" />
         <Key
             latin:keyStyle="numPauseKeyStyle"
-            latin:keyWidth="9.25%p" />
+            latin:keyWidth="10.00%p" />
         <Key
             latin:keyStyle="num1KeyStyle"
-            latin:keyXPos="42.25%p" />
+            latin:keyXPos="32.00%p" />
         <Key
             latin:keyStyle="num2KeyStyle" />
         <Key
             latin:keyStyle="num3KeyStyle" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyXPos="-11.00%p"
+            latin:keyXPos="-12.00%p"
             latin:keyWidth="fillRight" />
     </Row>
     <Row>
-        <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
-        <Spacer
-            latin:keyWidth="12.75%p" />
         <Key
             latin:keyLabel=","
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="9.25%p" />
+            latin:keyWidth="10.00%p" />
         <Key
             latin:keyLabel="."
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="9.25%p" />
+            latin:keyWidth="10.00%p" />
         <Key
             latin:keyStyle="numWaitKeyStyle"
-            latin:keyWidth="9.25%p" />
+            latin:keyWidth="10.00%p" />
         <Key
             latin:keyStyle="num4KeyStyle"
-            latin:keyXPos="42.25%p" />
+            latin:keyXPos="32.00%p" />
         <Key
             latin:keyStyle="num5KeyStyle" />
         <Key
             latin:keyStyle="num6KeyStyle" />
         <Key
             latin:keyStyle="enterKeyStyle"
-            latin:keyXPos="-11.00%p"
+            latin:keyXPos="-12.00%p"
             latin:keyWidth="fillRight" />
     </Row>
     <Row>
-        <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
-        <Spacer
-            latin:keyWidth="12.75%p" />
         <Key
             latin:keyLabel="("
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="9.25%p"
-            latin:keyXPos="12.75%p" />
+            latin:keyWidth="10.00%p" />
         <Key
             latin:keyLabel=")"
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="9.25%p" />
+            latin:keyWidth="10.00%p" />
         <Key
             latin:keyLabel="N"
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="9.25%p" />
+            latin:keyWidth="10.00%p" />
         <Key
             latin:keyStyle="num7KeyStyle"
-            latin:keyXPos="42.25%p" />
+            latin:keyXPos="32.00%p" />
         <Key
             latin:keyStyle="num8KeyStyle" />
         <Key
@@ -108,22 +98,18 @@
     </Row>
     <Row>
         <Key
-            latin:keyStyle="numTabKeyStyle"
-            latin:keyWidth="11.00%p" />
-        <Key
             latin:keyStyle="spaceKeyStyle"
-            latin:keyWidth="27.75%p"
-            latin:keyXPos="12.75%p" />
+            latin:keyWidth="30.00%p" />
         <Key
             latin:keyStyle="numStarKeyStyle"
-            latin:keyXPos="42.25%p" />
+            latin:keyXPos="32.00%p" />
         <Key
             latin:keyStyle="num0KeyStyle" />
         <Key
             latin:keyLabel="#"
             latin:keyStyle="numKeyStyle" />
         <include
-            latin:keyXPos="-11.0%p"
+            latin:keyXPos="-12.0%p"
             latin:keyWidth="fillRight"
             latin:keyboardLayout="@xml/key_shortcut" />
     </Row>
