@@ -39,8 +39,7 @@
         latin:keyWidth="8.5%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_dvorak2"
-            latin:keyXPos="4.5%p" />
+            latin:keyboardLayout="@xml/rowkeys_dvorak2" />
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillBoth" />
@@ -50,12 +49,12 @@
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="10.0%p" />
+            latin:keyWidth="11.75%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_dvorak3" />
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyXPos="-10.0%p"
+            latin:keyXPos="-11.75%p"
             latin:keyWidth="fillRight" />
     </Row>
     <include
