@@ -39,7 +39,7 @@
     <fraction name="key_horizontal_gap_gb">2.113%p</fraction>
 
     <fraction name="key_bottom_gap_ics">4.0%p</fraction>
-    <fraction name="keyboard_bottom_padding_ics">0.0%p</fraction>
+    <fraction name="keyboard_bottom_padding_ics">4.0%p</fraction>
 
     <dimen name="more_keys_keyboard_key_horizontal_padding">6dp</dimen>
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
