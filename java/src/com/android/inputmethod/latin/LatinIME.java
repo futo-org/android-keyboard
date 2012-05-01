@@ -1148,8 +1148,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final IBinder token = getWindow().getWindow().getAttributes().token;
         if (mShouldSwitchToLastSubtype) {
             final InputMethodSubtype lastSubtype = mImm.getLastInputMethodSubtype();
-            final boolean lastSubtypeBelongsToThisIme = ImfUtils.checkIfSubtypeBelongsToThisIme(
-                    this, lastSubtype);
+            final boolean lastSubtypeBelongsToThisIme =
+                    ImfUtils.checkIfSubtypeBelongsToThisImeAndEnabled(this, lastSubtype);
             if ((includesOtherImes || lastSubtypeBelongsToThisIme)
                     && mImm.switchToLastInputMethod(token)) {
                 mShouldSwitchToLastSubtype = false;
