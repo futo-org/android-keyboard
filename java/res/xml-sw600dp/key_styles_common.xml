@@ -161,7 +161,7 @@
     <key-style
         latin:styleName="comKeyStyle"
         latin:keyLabel="!text/keylabel_for_popular_domain"
-        latin:keyLabelFlags="fontNormal|hasPopupHint|preserveCase"
+        latin:keyLabelFlags="autoXScale|fontNormal|hasPopupHint|preserveCase"
         latin:keyOutputText="!text/keylabel_for_popular_domain"
         latin:moreKeys="!text/more_keys_for_popular_domain" />
 </merge>
