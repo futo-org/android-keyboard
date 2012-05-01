@@ -53,9 +53,9 @@
             latin:keyWidth="10.0%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_dvorak3" />
-        <include
-            latin:keyboardLayout="@xml/key_smiley"
-            latin:keyXPos="-8.5%p"
+        <Key
+            latin:keyStyle="shiftKeyStyle"
+            latin:keyXPos="-10.0%p"
             latin:keyWidth="fillRight" />
     </Row>
     <include

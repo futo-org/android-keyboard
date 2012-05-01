@@ -28,7 +28,7 @@
             latin:keyStyle="toAlphaKeyStyle"
             latin:keyWidth="13.0%p" />
         <Key
-            latin:keyStyle="tabKeyStyle" />
+            latin:keyStyle="smileyKeyStyle" />
         <Key
             latin:keyLabel="\@" />
         <include
