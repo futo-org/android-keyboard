@@ -52,10 +52,6 @@
         <include
             latin:keyboardLayout="@xml/rowkeys_hebrew3"
             latin:keyXPos="10.0%p" />
-        <include
-            latin:keyboardLayout="@xml/key_smiley"
-            latin:keyXPos="-8.5%p"
-            latin:keyWidth="fillRight" />
     </Row>
     <include
         latin:keyboardLayout="@xml/row_hebrew4" />
