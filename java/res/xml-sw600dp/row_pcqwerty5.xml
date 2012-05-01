@@ -41,9 +41,9 @@
                     latin:keyWidth="10.5%p" />
             </case>
             <default>
-                <Spacer
-                    latin:keyXPos="15.0%p"
-                    latin:keyWidth="10.5%p" />
+                <include
+                    latin:keyboardLayout="@xml/key_smiley"
+                    latin:keyXPos="18.5%p" />
             </default>
         </switch>
         <switch>

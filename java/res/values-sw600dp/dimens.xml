@@ -38,7 +38,8 @@
     <fraction name="key_bottom_gap_gb">4.625%p</fraction>
     <fraction name="key_horizontal_gap_gb">2.113%p</fraction>
 
-    <fraction name="key_bottom_gap_ics">4.0%p</fraction>
+    <fraction name="key_bottom_gap_ics">4.5%p</fraction>
+    <fraction name="key_horizontal_gap_ics">1.565%p</fraction>
     <fraction name="keyboard_bottom_padding_ics">4.0%p</fraction>
 
     <dimen name="more_keys_keyboard_key_horizontal_padding">6dp</dimen>

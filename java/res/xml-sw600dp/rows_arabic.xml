@@ -46,10 +46,8 @@
         latin:keyWidth="7.6%p"
     >
         <include
-            latin:keyboardLayout="@xml/key_smiley"
-            latin:keyWidth="10.0%p" />
-        <include
-            latin:keyboardLayout="@xml/rowkeys_arabic3" />
+            latin:keyboardLayout="@xml/rowkeys_arabic3"
+            latin:keyXPos="10.0%p" />
     </Row>
     <include
         latin:keyboardLayout="@xml/row_qwerty4" />
