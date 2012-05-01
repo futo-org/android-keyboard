@@ -659,7 +659,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 hintX = keyWidth - params.mKeyShiftedLetterHintPadding
                         - getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) / 2;
                 paint.getFontMetrics(mFontMetrics);
-                hintY = -mFontMetrics.top + params.mKeyShiftedLetterHintPadding;
+                hintY = -mFontMetrics.top;
                 paint.setTextAlign(Align.CENTER);
             } else { // key.hasHintLetter()
                 // The hint letter is placed at top-right corner of the key. Used mainly on phone.

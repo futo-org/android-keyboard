@@ -59,9 +59,9 @@
     <fraction name="key_label_ratio">25%</fraction>
     <fraction name="key_hint_letter_ratio">23%</fraction>
     <fraction name="key_hint_label_ratio">28%</fraction>
-    <fraction name="key_uppercase_letter_ratio">26%</fraction>
+    <fraction name="key_uppercase_letter_ratio">22%</fraction>
     <fraction name="key_preview_text_ratio">50%</fraction>
-    <fraction name="spacebar_text_ratio">32.14%</fraction>
+    <fraction name="spacebar_text_ratio">28.0%</fraction>
     <dimen name="key_preview_height">94.5dp</dimen>
     <dimen name="key_preview_offset">16.0dp</dimen>
 

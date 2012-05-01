@@ -44,13 +44,14 @@
     <!-- left or right padding of label alignment -->
     <dimen name="key_label_horizontal_padding">18dp</dimen>
 
-    <fraction name="key_letter_ratio">45%</fraction>
+    <fraction name="key_letter_ratio">50%</fraction>
     <fraction name="key_large_letter_ratio">48%</fraction>
     <fraction name="key_label_ratio">32%</fraction>
     <fraction name="key_hint_letter_ratio">23%</fraction>
     <fraction name="key_hint_label_ratio">34%</fraction>
     <fraction name="key_uppercase_letter_ratio">29%</fraction>
-    <fraction name="spacebar_text_ratio">33.33%</fraction>
+    <fraction name="spacebar_text_ratio">30.0%</fraction>
+    <dimen name="key_uppercase_letter_padding">4dp</dimen>
 
     <dimen name="suggestions_strip_padding">252.0dp</dimen>
     <integer name="max_more_suggestions_row">5</integer>

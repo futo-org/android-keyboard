@@ -68,7 +68,7 @@
         <attr name="keyHintLetterPadding" format="dimension" />
         <!-- Bottom padding of popup hint letter "..." to the edge of the key.-->
         <attr name="keyPopupHintLetterPadding" format="dimension" />
-        <!-- Top and right padding of shifted letter hint to the edge of the key.-->
+        <!-- Right padding of shifted letter hint to the edge of the key.-->
         <attr name="keyShiftedLetterHintPadding" format="dimension" />
 
         <!-- Color to use for the label in a key. -->
