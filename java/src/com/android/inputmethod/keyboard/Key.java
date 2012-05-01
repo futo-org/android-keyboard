@@ -33,12 +33,10 @@ import android.util.Xml;
 
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.keyboard.internal.KeySpecParser.MoreKeySpec;
-import com.android.inputmethod.keyboard.internal.KeyStyles;
 import com.android.inputmethod.keyboard.internal.KeyStyles.KeyStyle;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StringUtils;
-import com.android.inputmethod.latin.XmlParseUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -201,7 +199,6 @@ public class Key {
      */
     public Key(Resources res, Keyboard.Params params, Keyboard.Builder.Row row,
             XmlPullParser parser) throws XmlPullParserException {
-        final KeyStyles keyStyles = params.mKeyStyles;
         final float horizontalGap = isSpacer() ? 0 : params.mHorizontalGap;
         final int keyHeight = row.mRowHeight;
         mVerticalGap = params.mVerticalGap;
@@ -210,17 +207,7 @@ public class Key {
         final TypedArray keyAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_Key);
 
-        final KeyStyle style;
-        if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyStyle)) {
-            String styleName = keyAttr.getString(R.styleable.Keyboard_Key_keyStyle);
-            style = keyStyles.getKeyStyle(styleName);
-            if (style == null) {
-                throw new XmlParseUtils.ParseException("Unknown key style: " + styleName, parser);
-            }
-        } else {
-            style = keyStyles.getEmptyKeyStyle();
-        }
-
+        final KeyStyle style = params.mKeyStyles.getKeyStyle(keyAttr, parser);
         final float keyXPos = row.getKeyX(keyAttr);
         final float keyWidth = row.getKeyWidth(keyAttr, keyXPos);
         final int keyYPos = row.getKeyY();
