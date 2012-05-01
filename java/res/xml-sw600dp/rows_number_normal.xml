@@ -22,25 +22,22 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Row>
-        <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
-        <Spacer
-            latin:keyWidth="12.75%p" />
         <Key
             latin:keyLabel="-"
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="9.25%p" />
+            latin:keyWidth="10%p" />
         <Key
             latin:keyLabel="+"
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="9.25%p" />
+            latin:keyWidth="10%p" />
         <Key
             latin:keyLabel="."
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="9.25%p" />
+            latin:keyWidth="10%p" />
         <Key
             latin:keyLabel="1"
             latin:keyStyle="numKeyStyle"
-            latin:keyXPos="42.25%p" />
+            latin:keyXPos="31%p" />
         <Key
             latin:keyLabel="2"
             latin:keyStyle="numKeyStyle" />
@@ -49,20 +46,17 @@
             latin:keyStyle="numKeyStyle" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyXPos="-11.00%p"
+            latin:keyXPos="-14%p"
             latin:keyWidth="fillRight" />
     </Row>
     <Row>
-        <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
-        <Spacer
-            latin:keyWidth="12.75%p" />
         <Key
             latin:keyStyle="numStarKeyStyle"
-            latin:keyWidth="9.25%p" />
+            latin:keyWidth="10%p" />
         <Key
             latin:keyLabel="/"
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="9.25%p" />
+            latin:keyWidth="10%p" />
         <switch>
             <case
                 latin:mode="time|datetime"
@@ -72,19 +66,19 @@
                     latin:keyLabelFlags="hasPopupHint"
                     latin:moreKeys="!text/more_keys_for_am_pm"
                     latin:keyStyle="numKeyStyle"
-                    latin:keyWidth="9.25%p" />
+                    latin:keyWidth="10%p" />
             </case>
             <default>
                 <Key
                     latin:keyLabel=","
                     latin:keyStyle="numKeyStyle"
-                    latin:keyWidth="9.25%p" />
+                    latin:keyWidth="10%p" />
             </default>
         </switch>
         <Key
             latin:keyLabel="4"
             latin:keyStyle="numKeyStyle"
-            latin:keyXPos="42.25%p" />
+            latin:keyXPos="31%p" />
         <Key
             latin:keyLabel="5"
             latin:keyStyle="numKeyStyle" />
@@ -93,21 +87,18 @@
             latin:keyStyle="numKeyStyle" />
         <Key
             latin:keyStyle="enterKeyStyle"
-            latin:keyXPos="-11.00%p"
+            latin:keyXPos="-14%p"
             latin:keyWidth="fillRight" />
     </Row>
     <Row>
-        <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
-        <Spacer
-            latin:keyWidth="12.75%p" />
         <Key
             latin:keyLabel="("
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="9.25%p" />
+            latin:keyWidth="10%p" />
         <Key
             latin:keyLabel=")"
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="9.25%p" />
+            latin:keyWidth="10%p" />
         <switch>
             <case
                 latin:mode="time|datetime"
@@ -115,19 +106,19 @@
                 <Key
                     latin:keyLabel=":"
                     latin:keyStyle="numKeyStyle"
-                    latin:keyWidth="9.25%p" />
+                    latin:keyWidth="10%p" />
             </case>
             <default>
                 <Key
                     latin:keyLabel="="
                     latin:keyStyle="numKeyStyle"
-                    latin:keyWidth="9.25%p" />
+                    latin:keyWidth="10%p" />
             </default>
         </switch>
         <Key
             latin:keyLabel="7"
             latin:keyStyle="numKeyStyle"
-            latin:keyXPos="42.25%p" />
+            latin:keyXPos="31%p" />
         <Key
             latin:keyLabel="8"
             latin:keyStyle="numKeyStyle" />
@@ -139,15 +130,11 @@
     </Row>
     <Row>
         <Key
-            latin:keyStyle="numTabKeyStyle"
-            latin:keyWidth="11.00%p" />
-        <Key
             latin:keyStyle="spaceKeyStyle"
-            latin:keyWidth="27.75%p"
-            latin:keyXPos="12.75%p" />
+            latin:keyWidth="30%p" />
         <Key
             latin:keyStyle="numStarKeyStyle"
-            latin:keyXPos="42.25%p" />
+            latin:keyXPos="31%p" />
         <Key
             latin:keyLabel="0"
             latin:keyStyle="numKeyStyle" />
@@ -155,7 +142,7 @@
             latin:keyLabel="#"
             latin:keyStyle="numKeyStyle" />
         <include
-            latin:keyXPos="-11.0%p"
+            latin:keyXPos="-10%p"
             latin:keyWidth="fillRight"
             latin:keyboardLayout="@xml/key_shortcut" />
     </Row>
