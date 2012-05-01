@@ -33,7 +33,7 @@
                     latin:keyWidth="10.5%p" />
             </case>
             <case
-                latin:mode="email|url"
+                latin:mode="url"
             >
                 <Key
                     latin:keyStyle="comKeyStyle"
@@ -42,7 +42,7 @@
             </case>
             <default>
                 <include
-                    latin:keyboardLayout="@xml/key_smiley"
+                    latin:keyboardLayout="@xml/keys_f1f2"
                     latin:keyXPos="18.5%p" />
             </default>
         </switch>
