@@ -74,6 +74,12 @@
     <include
         latin:keyboardLayout="@xml/key_styles_enter" />
     <key-style
+        latin:styleName="defaultActionKeyStyle"
+        latin:code="!code/key_action_enter"
+        latin:keyIcon="!icon/undefined"
+        latin:backgroundType="functional"
+        latin:parentStyle="defaultEnterKeyStyle" />
+    <key-style
         latin:styleName="spaceKeyStyle"
         latin:code="!code/key_space"
         latin:keyActionFlags="noKeyPreview" />
