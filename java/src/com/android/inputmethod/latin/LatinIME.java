@@ -964,7 +964,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         outInsets.contentTopInsets = touchY;
         outInsets.visibleTopInsets = touchY;
-        if (WORKAROUND_USE_LAST_BACKING_HEIGHT_WHEN_NOT_REQADY) {
+        if (WORKAROUND_USE_LAST_BACKING_HEIGHT_WHEN_NOT_READY) {
             if (LatinImeLogger.sDBG) {
                 Log.i(TAG, "--- insets: " + touchY + "," + backingHeight + "," + suggestionsHeight);
             }
