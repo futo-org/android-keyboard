@@ -135,6 +135,7 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
 // If the word is not found or has no bigrams, this function returns 0.
 int BigramDictionary::getBigramListPositionForWord(const int32_t *prevWord,
         const int prevWordLength) {
+    if (0 >= prevWordLength) return 0;
     const uint8_t* const root = DICT;
     int pos = BinaryFormat::getTerminalPosition(root, prevWord, prevWordLength);
 
@@ -150,6 +151,22 @@ int BigramDictionary::getBigramListPositionForWord(const int32_t *prevWord,
     pos = BinaryFormat::skipFrequency(flags, pos);
     pos = BinaryFormat::skipShortcuts(root, flags, pos);
     return pos;
+}
+
+void BigramDictionary::fillBigramAddressToFrequencyMap(const int32_t *prevWord,
+        const int prevWordLength, std::map<int, int> *map) {
+    const uint8_t* const root = DICT;
+    int pos = getBigramListPositionForWord(prevWord, prevWordLength);
+    if (0 == pos) return;
+
+    int bigramFlags;
+    do {
+        bigramFlags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
+        const int frequency = UnigramDictionary::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
+        const int bigramPos = BinaryFormat::getAttributeAddressAndForwardPointer(root, bigramFlags,
+                &pos);
+        (*map)[bigramPos] = frequency;
+    } while (0 != (UnigramDictionary::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags));
 }
 
 bool BigramDictionary::checkFirstCharacter(unsigned short *word) {
