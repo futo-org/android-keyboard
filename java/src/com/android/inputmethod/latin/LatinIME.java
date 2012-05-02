@@ -93,6 +93,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private static final int QUICK_PRESS = 200;
 
     private static final int PENDING_IMS_CALLBACK_DURATION = 800;
+    // TODO: remove this
+    private static final boolean WORKAROUND_USE_LAST_BACKING_HEIGHT_WHEN_NOT_READY = true;
+    private static int sLastBackingHeight = 0;
 
     /**
      * The name of the scheme used by the Package Manager to warn of a new package installation,
@@ -933,8 +936,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // be considered.
         // See {@link android.inputmethodservice.InputMethodService#onComputeInsets}.
         final int extractHeight = isFullscreenMode() ? mExtractArea.getHeight() : 0;
-        final int backingHeight = (mKeyPreviewBackingView.getVisibility() == View.GONE) ? 0
-                : mKeyPreviewBackingView.getHeight();
+        final boolean backingGone = mKeyPreviewBackingView.getVisibility() == View.GONE;
+        int backingHeight = backingGone ? 0 : mKeyPreviewBackingView.getHeight();
+        if (WORKAROUND_USE_LAST_BACKING_HEIGHT_WHEN_NOT_READY && !backingGone) {
+            if (backingHeight <= 0) {
+                backingHeight = sLastBackingHeight;
+            } else {
+                sLastBackingHeight = backingHeight;
+            }
+        }
         final int suggestionsHeight = (mSuggestionsContainer.getVisibility() == View.GONE) ? 0
                 : mSuggestionsContainer.getHeight();
         final int extraHeight = extractHeight + backingHeight + suggestionsHeight;
@@ -954,6 +964,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         outInsets.contentTopInsets = touchY;
         outInsets.visibleTopInsets = touchY;
+        if (WORKAROUND_USE_LAST_BACKING_HEIGHT_WHEN_NOT_REQADY) {
+            if (LatinImeLogger.sDBG) {
+                Log.i(TAG, "--- insets: " + touchY + "," + backingHeight + "," + suggestionsHeight);
+            }
+        }
     }
 
     @Override
