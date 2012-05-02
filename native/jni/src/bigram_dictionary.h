@@ -20,6 +20,8 @@
 #include <map>
 #include <stdint.h>
 
+#include "defines.h"
+
 namespace latinime {
 
 class Dictionary;
@@ -29,8 +31,8 @@ class BigramDictionary {
     int getBigrams(const int32_t *word, int length, int *codes, int codesSize,
             unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams);
     int getBigramListPositionForWord(const int32_t *prevWord, const int prevWordLength);
-    void fillBigramAddressToFrequencyMap(const int32_t *prevWord, const int prevWordLength,
-            std::map<int, int> *map);
+    void fillBigramAddressToFrequencyMapAndFilter(const int32_t *prevWord, const int prevWordLength,
+            std::map<int, int> *map, uint8_t *filter);
     ~BigramDictionary();
  private:
     bool addWordBigram(unsigned short *word, int length, int frequency);

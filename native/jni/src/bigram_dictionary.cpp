@@ -153,8 +153,14 @@ int BigramDictionary::getBigramListPositionForWord(const int32_t *prevWord,
     return pos;
 }
 
-void BigramDictionary::fillBigramAddressToFrequencyMap(const int32_t *prevWord,
-        const int prevWordLength, std::map<int, int> *map) {
+static inline void setInFilter(uint8_t *filter, const int position) {
+    const unsigned int bucket = position % BIGRAM_FILTER_MODULO;
+    filter[bucket >> 3] |= (1 << (bucket & 0x7));
+}
+
+void BigramDictionary::fillBigramAddressToFrequencyMapAndFilter(const int32_t *prevWord,
+        const int prevWordLength, std::map<int, int> *map, uint8_t *filter) {
+    memset(filter, 0, BIGRAM_FILTER_BYTE_SIZE);
     const uint8_t* const root = DICT;
     int pos = getBigramListPositionForWord(prevWord, prevWordLength);
     if (0 == pos) return;
@@ -166,6 +172,7 @@ void BigramDictionary::fillBigramAddressToFrequencyMap(const int32_t *prevWord,
         const int bigramPos = BinaryFormat::getAttributeAddressAndForwardPointer(root, bigramFlags,
                 &pos);
         (*map)[bigramPos] = frequency;
+        setInFilter(filter, bigramPos);
     } while (0 != (UnigramDictionary::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags));
 }
 

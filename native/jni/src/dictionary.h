@@ -42,8 +42,9 @@ class Dictionary {
         const int bigramListPosition = !prevWordChars ? 0
                 : mBigramDictionary->getBigramListPositionForWord(prevWordChars, prevWordLength);
         std::map<int, int> bigramMap;
-        mBigramDictionary->fillBigramAddressToFrequencyMap(prevWordChars, prevWordLength,
-                &bigramMap);
+        uint8_t bigramFilter[BIGRAM_FILTER_BYTE_SIZE];
+        mBigramDictionary->fillBigramAddressToFrequencyMapAndFilter(prevWordChars,
+                prevWordLength, &bigramMap, bigramFilter);
         return mUnigramDictionary->getSuggestions(proximityInfo, mWordsPriorityQueuePool,
                 mCorrection, xcoordinates, ycoordinates, codes, codesSize, bigramListPosition,
                 useFullEditDistance, outWords, frequencies);
