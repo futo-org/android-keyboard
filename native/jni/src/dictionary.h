@@ -17,6 +17,8 @@
 #ifndef LATINIME_DICTIONARY_H
 #define LATINIME_DICTIONARY_H
 
+#include <map>
+
 #include "bigram_dictionary.h"
 #include "char_utils.h"
 #include "correction.h"
@@ -39,6 +41,9 @@ class Dictionary {
         // If none, it's zero.
         const int bigramListPosition = !prevWordChars ? 0
                 : mBigramDictionary->getBigramListPositionForWord(prevWordChars, prevWordLength);
+        std::map<int, int> bigramMap;
+        mBigramDictionary->fillBigramAddressToFrequencyMap(prevWordChars, prevWordLength,
+                &bigramMap);
         return mUnigramDictionary->getSuggestions(proximityInfo, mWordsPriorityQueuePool,
                 mCorrection, xcoordinates, ycoordinates, codes, codesSize, bigramListPosition,
                 useFullEditDistance, outWords, frequencies);
