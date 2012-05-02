@@ -17,6 +17,7 @@
 #ifndef LATINIME_BIGRAM_DICTIONARY_H
 #define LATINIME_BIGRAM_DICTIONARY_H
 
+#include <map>
 #include <stdint.h>
 
 namespace latinime {
@@ -28,6 +29,8 @@ class BigramDictionary {
     int getBigrams(const int32_t *word, int length, int *codes, int codesSize,
             unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams);
     int getBigramListPositionForWord(const int32_t *prevWord, const int prevWordLength);
+    void fillBigramAddressToFrequencyMap(const int32_t *prevWord, const int prevWordLength,
+            std::map<int, int> *map);
     ~BigramDictionary();
  private:
     bool addWordBigram(unsigned short *word, int length, int frequency);
