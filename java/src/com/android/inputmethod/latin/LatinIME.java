@@ -702,6 +702,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onWindowHidden() {
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_onWindowHidden(mLastSelectionStart, mLastSelectionEnd,
+                    getCurrentInputConnection());
+        }
         super.onWindowHidden();
         KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null) inputView.closing();
@@ -732,7 +736,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             int composingSpanStart, int composingSpanEnd) {
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd,
                 composingSpanStart, composingSpanEnd);
-
         if (DEBUG) {
             Log.i(TAG, "onUpdateSelection: oss=" + oldSelStart
                     + ", ose=" + oldSelEnd
@@ -744,9 +747,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     + ", ce=" + composingSpanEnd);
         }
         if (ProductionFlag.IS_EXPERIMENTAL) {
+            final boolean expectingUpdateSelectionFromLogger =
+                    ResearchLogger.getAndClearLatinIMEExpectingUpdateSelection();
             ResearchLogger.latinIME_onUpdateSelection(mLastSelectionStart, mLastSelectionEnd,
                     oldSelStart, oldSelEnd, newSelStart, newSelEnd, composingSpanStart,
-                    composingSpanEnd);
+                    composingSpanEnd, mExpectingUpdateSelection,
+                    expectingUpdateSelectionFromLogger);
+            if (expectingUpdateSelectionFromLogger) {
+                return;
+            }
         }
 
         // TODO: refactor the following code to be less contrived.
