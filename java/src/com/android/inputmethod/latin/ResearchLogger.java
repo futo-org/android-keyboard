@@ -533,6 +533,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (UnsLogGroup.LATINIME_ONSTARTINPUTVIEWINTERNAL_ENABLED) {
             final StringBuilder builder = new StringBuilder();
             builder.append("onStartInputView: editorInfo:");
+            builder.append("\tpackageName=");
+            builder.append(editorInfo.packageName);
             builder.append("\tinputType=");
             builder.append(Integer.toHexString(editorInfo.inputType));
             builder.append("\timeOptions=");
