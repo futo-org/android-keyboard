@@ -27,8 +27,8 @@
     <string name="spell_checker_service_name" msgid="7338064335159755926">"Pemeriksa ejaan Android"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Pemeriksa ejaan Android (AOSP)"</string>
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Setelan pemeriksaan ejaan"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Cari nama kenalan"</string>
-    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Pemeriksa ejaan menggunakan entri dari daftar kenalan Anda"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Cari nama kontak"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Pemeriksa ejaan menggunakan entri dari daftar kontak Anda"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Getar jika tombol ditekan"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Berbunyi jika tombol ditekan"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Muncul saat tombol ditekan"</string>
@@ -43,8 +43,8 @@
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Tundaan singkir munculan kunci"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Tanpa penundaan"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Default"</string>
-    <string name="use_contacts_dict" msgid="4435317977804180815">"Sarankan nama Kenalan"</string>
-    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Menggunakan nama dari Kenalan untuk saran dan koreksi"</string>
+    <string name="use_contacts_dict" msgid="4435317977804180815">"Sarankan nama Kontak"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Menggunakan nama dari Kontak untuk saran dan koreksi"</string>
     <string name="enable_span_insert" msgid="7204653105667167620">"Aktifkan koreksi ulang"</string>
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"Setel saran untuk koreksi ulang"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Kapitalisasi otomatis"</string>
