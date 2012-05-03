@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.inputmethodservice.InputMethodService;
 import android.os.Build;
 import android.os.Handler;
@@ -47,6 +48,7 @@ import java.nio.CharBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Logs the use of the LatinIME keyboard.
@@ -59,6 +61,7 @@ import java.util.Map;
 public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = ResearchLogger.class.getSimpleName();
     private static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
+    private static final String PREF_RESEARCH_LOGGER_UUID_STRING = "pref_research_logger_uuid";
     private static final boolean DEBUG = false;
 
     private static final ResearchLogger sInstance = new ResearchLogger(new LogFileManager());
@@ -546,8 +549,21 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 Object value = entry.getValue();
                 builder.append("=" + ((value == null) ? "<null>" : value.toString()));
             }
+            builder.append("\tuuid="); builder.append(getUUID(prefs));
             logUnstructured("LatinIME_onStartInputViewInternal", builder.toString());
         }
+    }
+
+    private static String getUUID(final SharedPreferences prefs) {
+        String uuidString = prefs.getString(PREF_RESEARCH_LOGGER_UUID_STRING, null);
+        if (null == uuidString) {
+            UUID uuid = UUID.randomUUID();
+            uuidString = uuid.toString();
+            Editor editor = prefs.edit();
+            editor.putString(PREF_RESEARCH_LOGGER_UUID_STRING, uuidString);
+            editor.apply();
+        }
+        return uuidString;
     }
 
     public static void latinIME_onUpdateSelection(final int lastSelectionStart,
