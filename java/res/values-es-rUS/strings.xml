@@ -120,11 +120,11 @@
     <string name="subtype_en_US" msgid="6160452336634534239">"Inglés (EE.UU.)"</string>
     <string name="subtype_no_language" msgid="141420857808801746">"Ningún idioma"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Ningún idioma (QWERTY)"</string>
-    <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"Ningún idioma (QWERTZ)"</string>
-    <string name="subtype_no_language_azerty" msgid="8721460968141187394">"Ningún idioma (AZERTY)"</string>
-    <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"Ningún idioma (Dvorak)"</string>
-    <string name="subtype_no_language_colemak" msgid="4205992994906097244">"Ningún idioma (Colemak)"</string>
-    <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"Ningún idioma (PC)"</string>
+    <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"Sin idioma (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8721460968141187394">"Sin idioma (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"Sin idioma (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="4205992994906097244">"Sin idioma (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"Sin idioma (PC)"</string>
     <string name="custom_input_styles_title" msgid="8429952441821251512">"Estilos entrada pers."</string>
     <string name="add_style" msgid="6163126614514489951">"Agr. estilo"</string>
     <string name="add" msgid="8299699805688017798">"Agregar"</string>
