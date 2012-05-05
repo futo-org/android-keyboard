@@ -30,6 +30,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
@@ -65,9 +66,14 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final boolean DEBUG = false;
 
     private static final ResearchLogger sInstance = new ResearchLogger(new LogFileManager());
+    private static final int MAX_INPUTVIEW_LENGTH_TO_CAPTURE = 8192; // must be >=1
     public static boolean sIsLogging = false;
     /* package */ final Handler mLoggingHandler;
     private InputMethodService mIms;
+
+    // set when LatinIME should ignore a onUpdateSelection() callback that
+    // arises from operations in this class
+    private static boolean mLatinIMEExpectingUpdateSelection = false;
 
     /**
      * Isolates management of files. This variable should never be null, but can be changed
@@ -339,6 +345,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         private static final boolean LATINIME_DELETESURROUNDINGTEXT_ENABLED = DEFAULT_ENABLED;
         private static final boolean LATINIME_DOUBLESPACEAUTOPERIOD_ENABLED = DEFAULT_ENABLED;
         private static final boolean LATINIME_ONDISPLAYCOMPLETIONS_ENABLED = DEFAULT_ENABLED;
+        private static final boolean LATINIME_ONWINDOWHIDDEN_ENABLED = DEFAULT_ENABLED;
         private static final boolean LATINIME_ONSTARTINPUTVIEWINTERNAL_ENABLED = DEFAULT_ENABLED;
         private static final boolean LATINIME_ONUPDATESELECTION_ENABLED = DEFAULT_ENABLED;
         private static final boolean LATINIME_PERFORMEDITORACTION_ENABLED = DEFAULT_ENABLED;
@@ -531,6 +538,43 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
+    /* package */ static boolean getAndClearLatinIMEExpectingUpdateSelection() {
+        boolean returnValue = mLatinIMEExpectingUpdateSelection;
+        mLatinIMEExpectingUpdateSelection = false;
+        return returnValue;
+    }
+
+    public static void latinIME_onWindowHidden(final int savedSelectionStart,
+            final int savedSelectionEnd, final InputConnection ic) {
+        if (UnsLogGroup.LATINIME_ONWINDOWHIDDEN_ENABLED) {
+            if (ic != null) {
+                ic.beginBatchEdit();
+                ic.performContextMenuAction(android.R.id.selectAll);
+                CharSequence charSequence = ic.getSelectedText(0);
+                ic.setSelection(savedSelectionStart, savedSelectionEnd);
+                ic.endBatchEdit();
+                mLatinIMEExpectingUpdateSelection = true;
+                if (TextUtils.isEmpty(charSequence)) {
+                    logUnstructured("LatinIME_onWindowHidden", "<no text>");
+                } else {
+                    if (charSequence.length() > MAX_INPUTVIEW_LENGTH_TO_CAPTURE) {
+                        // do not cut in the middle of a supplementary character
+                        int length = MAX_INPUTVIEW_LENGTH_TO_CAPTURE;
+                        if (!Character.isLetter(charSequence.charAt(length))) {
+                            length--;
+                        }
+                        final CharSequence truncatedCharSequence = charSequence.subSequence(0,
+                                length);
+                        logUnstructured("LatinIME_onWindowHidden", truncatedCharSequence.toString()
+                                + "<truncated>");
+                    } else {
+                        logUnstructured("LatinIME_onWindowHidden", charSequence.toString());
+                    }
+                }
+            }
+        }
+    }
+
     public static void latinIME_onStartInputViewInternal(final EditorInfo editorInfo,
             final SharedPreferences prefs) {
         if (UnsLogGroup.LATINIME_ONSTARTINPUTVIEWINTERNAL_ENABLED) {
@@ -569,7 +613,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void latinIME_onUpdateSelection(final int lastSelectionStart,
             final int lastSelectionEnd, final int oldSelStart, final int oldSelEnd,
             final int newSelStart, final int newSelEnd, final int composingSpanStart,
-            final int composingSpanEnd) {
+            final int composingSpanEnd, final boolean expectingUpdateSelection,
+            final boolean expectingUpdateSelectionFromLogger) {
         if (UnsLogGroup.LATINIME_ONUPDATESELECTION_ENABLED) {
             final String s = "onUpdateSelection: oss=" + oldSelStart
                     + ", ose=" + oldSelEnd
@@ -578,7 +623,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     + ", nss=" + newSelStart
                     + ", nse=" + newSelEnd
                     + ", cs=" + composingSpanStart
-                    + ", ce=" + composingSpanEnd;
+                    + ", ce=" + composingSpanEnd
+                    + ", eus=" + expectingUpdateSelection
+                    + ", eusfl=" + expectingUpdateSelectionFromLogger;
             logUnstructured("LatinIME_onUpdateSelection", s);
         }
     }
