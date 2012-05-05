@@ -30,14 +30,12 @@ public class SubtypeLocaleTests extends AndroidTestCase {
     // Locale to subtypes list.
     private final ArrayList<InputMethodSubtype> mSubtypesList = new ArrayList<InputMethodSubtype>();
 
-    private Context mContext;
     private Resources mRes;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         final Context context = getContext();
-        mContext = context;
         mRes = context.getResources();
         SubtypeLocale.init(context);
     }
@@ -124,10 +122,6 @@ public class SubtypeLocaleTests extends AndroidTestCase {
         final InputMethodSubtype ZZ_AZERTY = AdditionalSubtype.createAdditionalSubtype(
                 SubtypeLocale.NO_LANGUAGE, "azerty", null);
 
-        ImfUtils.setAdditionalInputMethodSubtypes(mContext, new InputMethodSubtype[] {
-                DE_QWERTY, FR_QWERTZ, US_AZERTY, ZZ_AZERTY
-        });
-
         final RunInLocale<Void> tests = new RunInLocale<Void>() {
             @Override
             protected Void job(Resources res) {
@@ -190,10 +184,6 @@ public class SubtypeLocaleTests extends AndroidTestCase {
                 Locale.US.toString(), "azerty", null);
         final InputMethodSubtype ZZ_AZERTY = AdditionalSubtype.createAdditionalSubtype(
                 SubtypeLocale.NO_LANGUAGE, "azerty", null);
-
-        ImfUtils.setAdditionalInputMethodSubtypes(mContext, new InputMethodSubtype[] {
-                DE_QWERTY, FR_QWERTZ, US_AZERTY, ZZ_AZERTY
-        });
 
         final RunInLocale<Void> tests = new RunInLocale<Void>() {
             @Override
