@@ -20,9 +20,12 @@ package com.android.inputmethod.latin.makedict;
  * Wrapper to redirect log events to the right output medium.
  */
 public class MakedictLog {
+    private static final boolean DEBUG = false;
 
     private static void print(String message) {
-        System.out.println(message);
+        if (DEBUG) {
+            System.out.println(message);
+        }
     }
 
     public static void d(String message) {
