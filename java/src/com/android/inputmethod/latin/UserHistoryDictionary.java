@@ -162,7 +162,7 @@ public class UserHistoryDictionary extends ExpandableDictionary {
      * Return whether the passed charsequence is in the dictionary.
      */
     @Override
-    public boolean isValidWord(final CharSequence word) {
+    public synchronized boolean isValidWord(final CharSequence word) {
         // TODO: figure out what is the correct thing to do here.
         return false;
     }
