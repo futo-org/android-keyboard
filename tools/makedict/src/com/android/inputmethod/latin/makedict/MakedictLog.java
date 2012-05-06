@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,32 +16,27 @@
 
 package com.android.inputmethod.latin.makedict;
 
-import android.util.Log;
-
 /**
  * Wrapper to redirect log events to the right output medium.
  */
 public class MakedictLog {
-    private static final boolean DBG = false;
-    private static final String TAG = MakedictLog.class.getSimpleName();
+    private static void print(String message) {
+        System.out.println(message);
+    }
 
     public static void d(String message) {
-        if (DBG) {
-            Log.d(TAG, message);
-        }
+        print(message);
     }
 
     public static void i(String message) {
-        if (DBG) {
-            Log.i(TAG, message);
-        }
+        print(message);
     }
 
     public static void w(String message) {
-        Log.w(TAG, message);
+        print(message);
     }
 
     public static void e(String message) {
-        Log.e(TAG, message);
+        print(message);
     }
 }
