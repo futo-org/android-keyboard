@@ -43,8 +43,8 @@ public class AdditionalSubtype {
             String localeString, String keyboardLayoutSetName, String extraValue) {
         final String layoutExtraValue = KEYBOARD_LAYOUT_SET + "=" + keyboardLayoutSetName;
         final String layoutDisplayNameExtraValue;
-        if (SubtypeLocale.isExceptionalLocale(localeString)
-                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT >= /* JELLY_BEAN */ 15
+                && SubtypeLocale.isExceptionalLocale(localeString)) {
             final String layoutDisplayName = SubtypeLocale.getKeyboardLayoutSetDisplayName(
                     keyboardLayoutSetName);
             layoutDisplayNameExtraValue = StringUtils.appendToCsvIfNotExists(
