@@ -134,7 +134,9 @@
         <item>5</item>
     </string-array>
 
-    <!-- Subtype locale display name exceptions -->
+    <!-- Subtype locale display name exceptions.
+         For each exception, there should be related string resource for display name that has
+         explicit keyboard layout. The string resource name must be "subtype_with_layout_<locale>. -->
     <string-array name="subtype_locale_exception_keys">
         <item>en_US</item>
         <item>en_GB</item>

@@ -19,7 +19,9 @@ package com.android.inputmethod.latin;
 import static com.android.inputmethod.latin.Constants.Subtype.KEYBOARD_MODE;
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.IS_ADDITIONAL_SUBTYPE;
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
+import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME;
 
+import android.os.Build;
 import android.view.inputmethod.InputMethodSubtype;
 
 import java.util.ArrayList;
@@ -40,12 +42,22 @@ public class AdditionalSubtype {
     public static InputMethodSubtype createAdditionalSubtype(
             String localeString, String keyboardLayoutSetName, String extraValue) {
         final String layoutExtraValue = KEYBOARD_LAYOUT_SET + "=" + keyboardLayoutSetName;
-        final String filteredExtraValue = StringUtils.appendToCsvIfNotExists(
-                IS_ADDITIONAL_SUBTYPE, extraValue);
+        final String layoutDisplayNameExtraValue;
+        if (SubtypeLocale.isExceptionalLocale(localeString)
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            final String layoutDisplayName = SubtypeLocale.getKeyboardLayoutSetDisplayName(
+                    keyboardLayoutSetName);
+            layoutDisplayNameExtraValue = StringUtils.appendToCsvIfNotExists(
+                    UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME + "=" + layoutDisplayName, extraValue);
+        } else {
+            layoutDisplayNameExtraValue = extraValue;
+        }
+        final String additionalSubtypeExtraValue = StringUtils.appendToCsvIfNotExists(
+                IS_ADDITIONAL_SUBTYPE, layoutDisplayNameExtraValue);
         final int nameId = SubtypeLocale.getSubtypeNameId(localeString, keyboardLayoutSetName);
         return new InputMethodSubtype(nameId, R.drawable.ic_subtype_keyboard,
                 localeString, KEYBOARD_MODE,
-                layoutExtraValue + "," + filteredExtraValue, false, false);
+                layoutExtraValue + "," + additionalSubtypeExtraValue, false, false);
     }
 
     public static String getPrefSubtype(InputMethodSubtype subtype) {

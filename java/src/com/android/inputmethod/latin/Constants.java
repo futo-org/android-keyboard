@@ -65,11 +65,6 @@ public final class Constants {
 
         public static final class ExtraValue {
             /**
-             * The subtype extra value used to indicate that the subtype keyboard layout set name.
-             */
-            public static final String KEYBOARD_LAYOUT_SET = "KeyboardLayoutSet";
-
-            /**
              * The subtype extra value used to indicate that the subtype keyboard layout is capable
              * for typing ASCII characters.
              */
@@ -80,6 +75,20 @@ public final class Constants {
              * to work.
              */
             public static final String REQ_NETWORK_CONNECTIVITY = "requireNetworkConnectivity";
+
+            /**
+             * The subtype extra value used to indicate that the subtype display name contains "%s"
+             * for replacement mark and it should be replaced by this extra value.
+             * This extra value is supported on JellyBean and later.
+             */
+            public static final String UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME =
+                    "UntranslatableReplacementStringInSubtypeName";
+
+            /**
+             * The subtype extra value used to indicate that the subtype keyboard layout set name.
+             * This extra value is private to LatinIME.
+             */
+            public static final String KEYBOARD_LAYOUT_SET = "KeyboardLayoutSet";
 
             /**
              * The subtype extra value used to indicate that the subtype is additional subtype

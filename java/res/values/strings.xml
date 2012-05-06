@@ -252,6 +252,12 @@
     <string name="subtype_en_GB">English (UK)</string>
     <!-- Description for English (United States) keyboard subtype [CHAR LIMIT=25] -->
     <string name="subtype_en_US">English (US)</string>
+    <!-- Description for English (United Kingdom) keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
+         This should be identical to subtype_en_GB aside from the trailing (%s). -->
+    <string name="subtype_with_layout_en_GB">English (UK) (<xliff:g id="layout">%s</xliff:g>)</string>
+    <!-- Description for English (United States) keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
+         This should be identical to subtype_en_US aside from the trailing (%s). -->
+    <string name="subtype_with_layout_en_US">English (US) (<xliff:g id="layout">%s</xliff:g>)</string>
     <!-- Description for language agnostic keyboard subtype [CHAR LIMIT=25] -->
     <string name="subtype_no_language">No language</string>
     <!-- Description for language agnostic QWERTY keyboard subtype [CHAR LIMIT=25] -->
