@@ -21,7 +21,6 @@ import android.content.res.Resources;
 import android.test.AndroidTestCase;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 
 import java.util.ArrayList;
@@ -31,14 +30,15 @@ public class SubtypeLocaleTests extends AndroidTestCase {
     // Locale to subtypes list.
     private final ArrayList<InputMethodSubtype> mSubtypesList = new ArrayList<InputMethodSubtype>();
 
+    private Context mContext;
     private Resources mRes;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         final Context context = getContext();
+        mContext = context;
         mRes = context.getResources();
-        InputMethodManagerCompatWrapper.init(context);
         SubtypeLocale.init(context);
     }
 
@@ -65,13 +65,13 @@ public class SubtypeLocaleTests extends AndroidTestCase {
     //  fr    azerty F  Français
     //  fr_CA qwerty F  Français (Canada)
     //  de    qwertz F  Deutsch
-    //  zz    qwerty F  No language (QWERTY)
+    //  zz    qwerty F  No language (QWERTY)    in system locale
     //  fr    qwertz T  Français (QWERTZ)
     //  de    qwerty T  Deutsch (QWERTY)
     //  en_US azerty T  English (US) (AZERTY)
-    //  zz    azerty T  No language (AZERTY)
+    //  zz    azerty T  No language (AZERTY)    in system locale
 
-    public void testPredefinedSubtypes() {
+    public void testPredefinedSubtypesInEnglish() {
         final Context context = getContext();
         final InputMethodSubtype EN_US = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
                 context, Locale.US.toString(), "qwerty");
@@ -93,21 +93,28 @@ public class SubtypeLocaleTests extends AndroidTestCase {
         assertEquals("de   ", "qwertz", SubtypeLocale.getKeyboardLayoutSetName(DE));
         assertEquals("zz   ", "qwerty", SubtypeLocale.getKeyboardLayoutSetName(ZZ));
 
-        assertEquals("en_US", "English (US)",
-                SubtypeLocale.getSubtypeDisplayName(EN_US, mRes));
-        assertEquals("en_GB", "English (UK)",
-                SubtypeLocale.getSubtypeDisplayName(EN_GB, mRes));
-        assertEquals("fr   ", "Français",
-                SubtypeLocale.getSubtypeDisplayName(FR, mRes));
-        assertEquals("fr_CA", "Français (Canada)",
-                SubtypeLocale.getSubtypeDisplayName(FR_CA, mRes));
-        assertEquals("de   ", "Deutsch",
-                SubtypeLocale.getSubtypeDisplayName(DE, mRes));
-        assertEquals("zz   ", "No language (QWERTY)",
-                SubtypeLocale.getSubtypeDisplayName(ZZ, mRes));
+        final RunInLocale<Void> tests = new RunInLocale<Void>() {
+            @Override
+            protected Void job(Resources res) {
+                assertEquals("en_US", "English (US)",
+                        SubtypeLocale.getSubtypeDisplayName(EN_US, res));
+                assertEquals("en_GB", "English (UK)",
+                        SubtypeLocale.getSubtypeDisplayName(EN_GB, res));
+                assertEquals("fr   ", "Français",
+                        SubtypeLocale.getSubtypeDisplayName(FR, res));
+                assertEquals("fr_CA", "Français (Canada)",
+                        SubtypeLocale.getSubtypeDisplayName(FR_CA, res));
+                assertEquals("de   ", "Deutsch",
+                        SubtypeLocale.getSubtypeDisplayName(DE, res));
+                assertEquals("zz   ", "No language (QWERTY)",
+                        SubtypeLocale.getSubtypeDisplayName(ZZ, res));
+                return null;
+            }
+        };
+        tests.runInLocale(mRes, Locale.ENGLISH);
     }
 
-    public void testAdditionalSubtype() {
+    public void testAdditionalSubtypesInEnglish() {
         final InputMethodSubtype DE_QWERTY = AdditionalSubtype.createAdditionalSubtype(
                 Locale.GERMAN.toString(), "qwerty", null);
         final InputMethodSubtype FR_QWERTZ = AdditionalSubtype.createAdditionalSubtype(
@@ -117,32 +124,87 @@ public class SubtypeLocaleTests extends AndroidTestCase {
         final InputMethodSubtype ZZ_AZERTY = AdditionalSubtype.createAdditionalSubtype(
                 SubtypeLocale.NO_LANGUAGE, "azerty", null);
 
-        assertEquals("fr qwertz",    "Français (QWERTZ)",
-                SubtypeLocale.getSubtypeDisplayName(FR_QWERTZ, mRes));
-        assertEquals("de qwerty",    "Deutsch (QWERTY)",
-                SubtypeLocale.getSubtypeDisplayName(DE_QWERTY, mRes));
-        assertEquals("en_US azerty", "English (US) (AZERTY)",
-                SubtypeLocale.getSubtypeDisplayName(US_AZERTY, mRes));
-        assertEquals("zz azerty",    "No language (AZERTY)",
-                SubtypeLocale.getSubtypeDisplayName(ZZ_AZERTY, mRes));
-    }
-
-    public void testNoLanguageInFrench() {
-        final Context context = getContext();
-        final InputMethodSubtype ZZ = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                context, SubtypeLocale.NO_LANGUAGE, "qwerty");
-        final InputMethodSubtype ZZ_AZERTY = AdditionalSubtype.createAdditionalSubtype(
-                SubtypeLocale.NO_LANGUAGE, "azerty", null);
+        ImfUtils.setAdditionalInputMethodSubtypes(mContext, new InputMethodSubtype[] {
+                DE_QWERTY, FR_QWERTZ, US_AZERTY, ZZ_AZERTY
+        });
 
         final RunInLocale<Void> tests = new RunInLocale<Void>() {
             @Override
             protected Void job(Resources res) {
-                assertEquals("zz   ", "qwerty", SubtypeLocale.getKeyboardLayoutSetName(ZZ));
-                assertEquals("zz   ", "azerty", SubtypeLocale.getKeyboardLayoutSetName(ZZ_AZERTY));
+                assertEquals("fr qwertz",    "Français (QWERTZ)",
+                        SubtypeLocale.getSubtypeDisplayName(FR_QWERTZ, res));
+                assertEquals("de qwerty",    "Deutsch (QWERTY)",
+                        SubtypeLocale.getSubtypeDisplayName(DE_QWERTY, res));
+                assertEquals("en_US azerty", "English (US) (AZERTY)",
+                        SubtypeLocale.getSubtypeDisplayName(US_AZERTY, res));
+                assertEquals("zz azerty",    "No language (AZERTY)",
+                        SubtypeLocale.getSubtypeDisplayName(ZZ_AZERTY, res));
+                return null;
+            }
+        };
+        tests.runInLocale(mRes, Locale.ENGLISH);
+    }
 
-                assertEquals("zz   ",     "Pas de langue (QWERTY)",
+    public void testPredefinedSubtypesInFrench() {
+        final Context context = getContext();
+        final InputMethodSubtype EN_US = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
+                context, Locale.US.toString(), "qwerty");
+        final InputMethodSubtype EN_GB = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
+                context, Locale.UK.toString(), "qwerty");
+        final InputMethodSubtype FR = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
+                context, Locale.FRENCH.toString(), "azerty");
+        final InputMethodSubtype FR_CA = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
+                context, Locale.CANADA_FRENCH.toString(), "qwerty");
+        final InputMethodSubtype DE = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
+                context, Locale.GERMAN.toString(), "qwertz");
+        final InputMethodSubtype ZZ = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
+                context, SubtypeLocale.NO_LANGUAGE, "qwerty");
+
+        final RunInLocale<Void> tests = new RunInLocale<Void>() {
+            @Override
+            protected Void job(Resources res) {
+                assertEquals("en_US", "English (US)",
+                        SubtypeLocale.getSubtypeDisplayName(EN_US, res));
+                assertEquals("en_GB", "English (UK)",
+                        SubtypeLocale.getSubtypeDisplayName(EN_GB, res));
+                assertEquals("fr   ", "Français",
+                        SubtypeLocale.getSubtypeDisplayName(FR, res));
+                assertEquals("fr_CA", "Français (Canada)",
+                        SubtypeLocale.getSubtypeDisplayName(FR_CA, res));
+                assertEquals("de   ", "Deutsch",
+                        SubtypeLocale.getSubtypeDisplayName(DE, res));
+                assertEquals("zz   ", "Pas de langue (QWERTY)",
                         SubtypeLocale.getSubtypeDisplayName(ZZ, res));
-                assertEquals("zz azerty", "Pas de langue (AZERTY)",
+                return null;
+            }
+        };
+        tests.runInLocale(mRes, Locale.FRENCH);
+    }
+
+    public void testAdditionalSubtypesInFrench() {
+        final InputMethodSubtype DE_QWERTY = AdditionalSubtype.createAdditionalSubtype(
+                Locale.GERMAN.toString(), "qwerty", null);
+        final InputMethodSubtype FR_QWERTZ = AdditionalSubtype.createAdditionalSubtype(
+                Locale.FRENCH.toString(), "qwertz", null);
+        final InputMethodSubtype US_AZERTY = AdditionalSubtype.createAdditionalSubtype(
+                Locale.US.toString(), "azerty", null);
+        final InputMethodSubtype ZZ_AZERTY = AdditionalSubtype.createAdditionalSubtype(
+                SubtypeLocale.NO_LANGUAGE, "azerty", null);
+
+        ImfUtils.setAdditionalInputMethodSubtypes(mContext, new InputMethodSubtype[] {
+                DE_QWERTY, FR_QWERTZ, US_AZERTY, ZZ_AZERTY
+        });
+
+        final RunInLocale<Void> tests = new RunInLocale<Void>() {
+            @Override
+            protected Void job(Resources res) {
+                assertEquals("fr qwertz",    "Français (QWERTZ)",
+                        SubtypeLocale.getSubtypeDisplayName(FR_QWERTZ, res));
+                assertEquals("de qwerty",    "Deutsch (QWERTY)",
+                        SubtypeLocale.getSubtypeDisplayName(DE_QWERTY, res));
+                assertEquals("en_US azerty", "English (US) (AZERTY)",
+                        SubtypeLocale.getSubtypeDisplayName(US_AZERTY, res));
+                assertEquals("zz azerty",    "Aucune langue (AZERTY)",
                         SubtypeLocale.getSubtypeDisplayName(ZZ_AZERTY, res));
                 return null;
             }
