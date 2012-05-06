@@ -22,6 +22,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
+
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -121,18 +123,27 @@ public class SubtypeLocale {
     //  fr    azerty F  Français
     //  fr_CA qwerty F  Français (Canada)
     //  de    qwertz F  Deutsch
-    //  zz    qwerty F  No language (QWERTY)
+    //  zz    qwerty F  No language (QWERTY)    in system locale
     //  fr    qwertz T  Français (QWERTZ)
     //  de    qwerty T  Deutsch (QWERTY)
     //  en_US azerty T  English (US) (AZERTY)
-    //  zz    azerty T  No language (AZERTY)
+    //  zz    azerty T  No language (AZERTY)    in system locale
 
     public static String getSubtypeDisplayName(InputMethodSubtype subtype, Resources res) {
         // TODO: Remove this check when InputMethodManager.getLastInputMethodSubtype is
         // fixed.
         if (!ImfUtils.checkIfSubtypeBelongsToThisIme(sContext, subtype)) return "";
         final String language = getSubtypeLocaleDisplayName(subtype.getLocale());
-        return res.getString(subtype.getNameResId(), language);
+        final int nameResId = subtype.getNameResId();
+        final RunInLocale<String> getSubtypeName = new RunInLocale<String>() {
+            @Override
+            protected String job(Resources res) {
+                return res.getString(nameResId, language);
+            }
+        };
+        final Locale locale = isNoLanguage(subtype)
+                ? res.getConfiguration().locale : getSubtypeLocale(subtype);
+        return getSubtypeName.runInLocale(res, locale);
     }
 
     public static boolean isNoLanguage(InputMethodSubtype subtype) {

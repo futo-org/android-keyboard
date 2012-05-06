@@ -21,7 +21,6 @@ import android.content.res.Resources;
 import android.test.AndroidTestCase;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.latin.AdditionalSubtype;
 import com.android.inputmethod.latin.ImfUtils;
 import com.android.inputmethod.latin.StringUtils;
@@ -41,7 +40,6 @@ public class SpacebarTextTests extends AndroidTestCase {
         super.setUp();
         final Context context = getContext();
         mRes = context.getResources();
-        InputMethodManagerCompatWrapper.init(context);
         SubtypeLocale.init(context);
     }
 
