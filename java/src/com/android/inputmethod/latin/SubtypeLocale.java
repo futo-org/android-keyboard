@@ -20,6 +20,7 @@ import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOAR
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
@@ -28,7 +29,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public class SubtypeLocale {
-    private static final String TAG = SubtypeLocale.class.getSimpleName();
+    static final String TAG = SubtypeLocale.class.getSimpleName();
     // This class must be located in the same package as LatinIME.java.
     private static final String RESOURCE_PACKAGE_NAME =
             DictionaryFactory.class.getPackage().getName();
@@ -38,7 +39,6 @@ public class SubtypeLocale {
     public static final String QWERTY = "qwerty";
     public static final int UNKNOWN_KEYBOARD_LAYOUT = R.string.subtype_generic;
 
-    private static Context sContext;
     private static String[] sPredefinedKeyboardLayoutSet;
     // Keyboard layout to its display name map.
     private static final HashMap<String, String> sKeyboardKayoutToDisplayNameMap =
@@ -59,7 +59,6 @@ public class SubtypeLocale {
     }
 
     public static void init(Context context) {
-        sContext = context;
         final Resources res = context.getResources();
 
         final String[] predefinedLayoutSet = res.getStringArray(R.array.predefined_layouts);
@@ -129,16 +128,23 @@ public class SubtypeLocale {
     //  en_US azerty T  English (US) (AZERTY)
     //  zz    azerty T  No language (AZERTY)    in system locale
 
-    public static String getSubtypeDisplayName(InputMethodSubtype subtype, Resources res) {
-        // TODO: Remove this check when InputMethodManager.getLastInputMethodSubtype is
-        // fixed.
-        if (!ImfUtils.checkIfSubtypeBelongsToThisIme(sContext, subtype)) return "";
+    public static String getSubtypeDisplayName(final InputMethodSubtype subtype, Resources res) {
         final String language = getSubtypeLocaleDisplayName(subtype.getLocale());
         final int nameResId = subtype.getNameResId();
         final RunInLocale<String> getSubtypeName = new RunInLocale<String>() {
             @Override
             protected String job(Resources res) {
-                return res.getString(nameResId, language);
+                try {
+                    return res.getString(nameResId, language);
+                } catch (Resources.NotFoundException e) {
+                    // TODO: Remove this catch when InputMethodManager.getCurrentInputMethodSubtype
+                    // is fixed.
+                    Log.w(TAG, "Unknown subtype: mode=" + subtype.getMode()
+                            + " locale=" + subtype.getLocale()
+                            + " extra=" + subtype.getExtraValue()
+                            + "\n" + Utils.getStackTrace());
+                    return "";
+                }
             }
         };
         final Locale locale = isNoLanguage(subtype)
