@@ -18,6 +18,7 @@
 #define LATINIME_BINARY_FORMAT_H
 
 #include <limits>
+#include "bloom_filter.h"
 #include "unigram_dictionary.h"
 
 namespace latinime {
@@ -66,8 +67,8 @@ class BinaryFormat {
             const int length);
     static int getWordAtAddress(const uint8_t* const root, const int address, const int maxDepth,
             uint16_t* outWord);
-    static int getProbability(const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
-            const int unigramFreq);
+    static int getProbability(const int position, const std::map<int, int> *bigramMap,
+            const uint8_t *bigramFilter, const int unigramFreq);
 
     // Flags for special processing
     // Those *must* match the flags in makedict (BinaryDictInputOutput#*_PROCESSING_FLAG) or
@@ -520,13 +521,18 @@ inline int BinaryFormat::getWordAtAddress(const uint8_t* const root, const int a
 }
 
 // This should probably return a probability in log space.
-inline int BinaryFormat::getProbability(const std::map<int, int> *bigramMap,
+inline int BinaryFormat::getProbability(const int position, const std::map<int, int> *bigramMap,
         const uint8_t *bigramFilter, const int unigramFreq) {
-    // TODO: use the bigram filter for fast rejection, then the bigram map for lookup
-    // to get the bigram probability. If the bigram is not found, use the unigram frequency.
-    // Don't forget that they can be null.
+    if (!bigramMap || !bigramFilter) return unigramFreq;
+    if (!isInFilter(bigramFilter, position)) return unigramFreq;
+    const std::map<int, int>::const_iterator bigramFreq = bigramMap->find(position);
+    if (bigramFreq != bigramMap->end()) {
+        // TODO: return the frequency in bigramFreq->second
+        return unigramFreq;
+    } else {
+        return unigramFreq;
+    }
     // TODO: if the unigram frequency is used, compute the actual probability
-    return unigramFreq;
 }
 
 } // namespace latinime
