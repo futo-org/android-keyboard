@@ -90,6 +90,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService
 
     public static final int SCRIPT_LATIN = 0;
     public static final int SCRIPT_CYRILLIC = 1;
+    private static final String SINGLE_QUOTE = "\u0027";
+    private static final String APOSTROPHE = "\u2019";
     private static final TreeMap<String, Integer> mLanguageToScript;
     static {
         // List of the supported languages and their associated script. We won't check
@@ -574,24 +576,24 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         public SuggestionsInfo onGetSuggestions(final TextInfo textInfo,
                 final int suggestionsLimit) {
             try {
-                final String text = textInfo.getText();
+                final String inText = textInfo.getText();
                 final SuggestionsParams cachedSuggestionsParams =
-                        mSuggestionsCache.getSuggestionsFromCache(text);
+                        mSuggestionsCache.getSuggestionsFromCache(inText);
                 if (cachedSuggestionsParams != null) {
                     if (DBG) {
-                        Log.d(TAG, "Cache hit: " + text + ", " + cachedSuggestionsParams.mFlags);
+                        Log.d(TAG, "Cache hit: " + inText + ", " + cachedSuggestionsParams.mFlags);
                     }
                     return new SuggestionsInfo(
                             cachedSuggestionsParams.mFlags, cachedSuggestionsParams.mSuggestions);
                 }
 
-                if (shouldFilterOut(text, mScript)) {
+                if (shouldFilterOut(inText, mScript)) {
                     DictAndProximity dictInfo = null;
                     try {
                         dictInfo = mDictionaryPool.takeOrGetNull();
                         if (null == dictInfo) return getNotInDictEmptySuggestions();
-                        return dictInfo.mDictionary.isValidWord(text) ? getInDictEmptySuggestions()
-                                : getNotInDictEmptySuggestions();
+                        return dictInfo.mDictionary.isValidWord(inText) ?
+                                getInDictEmptySuggestions() : getNotInDictEmptySuggestions();
                     } finally {
                         if (null != dictInfo) {
                             if (!mDictionaryPool.offer(dictInfo)) {
@@ -600,6 +602,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                         }
                     }
                 }
+                final String text = inText.replaceAll(APOSTROPHE, SINGLE_QUOTE);
 
                 // TODO: Don't gather suggestions if the limit is <= 0 unless necessary
                 final SuggestionsGatherer suggestionsGatherer = new SuggestionsGatherer(text,
