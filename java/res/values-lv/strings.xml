@@ -118,6 +118,10 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"Tastatūras motīvs"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Angļu valoda (Lielbritānija)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Angļu valoda (ASV)"</string>
+    <!-- no translation found for subtype_with_layout_en_GB (2179097748724725906) -->
+    <skip />
+    <!-- no translation found for subtype_with_layout_en_US (1362581347576714579) -->
+    <skip />
     <string name="subtype_no_language" msgid="141420857808801746">"Nav valodas"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Nav valodas (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"Nav valodas (QWERTZ)"</string>
