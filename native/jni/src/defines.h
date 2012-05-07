@@ -241,6 +241,24 @@ static inline void prof_out(void) {
 #define MIN_USER_TYPED_LENGTH_FOR_MULTIPLE_WORD_SUGGESTION 3
 #define MIN_USER_TYPED_LENGTH_FOR_EXCESSIVE_CHARACTER_SUGGESTION 3
 
+// Size, in bytes, of the bloom filter index for bigrams
+// 128 gives us 1024 buckets. The probability of false positive is (1 - e ** (-kn/m))**k,
+// where k is the number of hash functions, n the number of bigrams, and m the number of
+// bits we can test.
+// At the moment 100 is the maximum number of bigrams for a word with the current
+// dictionaries, so n = 100. 1024 buckets give us m = 1024.
+// With 1 hash function, our false positive rate is about 9.3%, which should be enough for
+// our uses since we are only using this to increase average performance. For the record,
+// k = 2 gives 3.1% and k = 3 gives 1.6%. With k = 1, making m = 2048 gives 4.8%,
+// and m = 4096 gives 2.4%.
+#define BIGRAM_FILTER_BYTE_SIZE 128
+// Must be smaller than BIGRAM_FILTER_BYTE_SIZE * 8, and preferably prime. 1021 is the largest
+// prime under 128 * 8.
+#define BIGRAM_FILTER_MODULO 1021
+#if BIGRAM_FILTER_BYTE_SIZE * 8 < BIGRAM_FILTER_MODULO
+#error "BIGRAM_FILTER_MODULO is larger than BIGRAM_FILTER_BYTE_SIZE"
+#endif
+
 template<typename T> inline T min(T a, T b) { return a < b ? a : b; }
 template<typename T> inline T max(T a, T b) { return a > b ? a : b; }
 
