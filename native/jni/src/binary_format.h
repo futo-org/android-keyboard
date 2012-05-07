@@ -66,7 +66,8 @@ class BinaryFormat {
             const int length);
     static int getWordAtAddress(const uint8_t* const root, const int address, const int maxDepth,
             uint16_t* outWord);
-    static int getProbability(const int bigramListPosition, const int unigramFreq);
+    static int getProbability(const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
+            const int unigramFreq);
 
     // Flags for special processing
     // Those *must* match the flags in makedict (BinaryDictInputOutput#*_PROCESSING_FLAG) or
@@ -519,9 +520,11 @@ inline int BinaryFormat::getWordAtAddress(const uint8_t* const root, const int a
 }
 
 // This should probably return a probability in log space.
-inline int BinaryFormat::getProbability(const int bigramListPosition, const int unigramFreq) {
-    // TODO: use the bigram list position to get the bigram probability. If the bigram
-    // is not found, use the unigram frequency.
+inline int BinaryFormat::getProbability(const std::map<int, int> *bigramMap,
+        const uint8_t *bigramFilter, const int unigramFreq) {
+    // TODO: use the bigram filter for fast rejection, then the bigram map for lookup
+    // to get the bigram probability. If the bigram is not found, use the unigram frequency.
+    // Don't forget that they can be null.
     // TODO: if the unigram frequency is used, compute the actual probability
     return unigramFreq;
 }

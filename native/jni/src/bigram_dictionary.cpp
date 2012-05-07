@@ -158,6 +158,11 @@ static inline void setInFilter(uint8_t *filter, const int position) {
     filter[bucket >> 3] |= (1 << (bucket & 0x7));
 }
 
+static inline bool isInFilter(uint8_t *filter, const int position) {
+    const unsigned int bucket = position % BIGRAM_FILTER_MODULO;
+    return filter[bucket >> 3] & (1 << (bucket & 0x7));
+}
+
 void BigramDictionary::fillBigramAddressToFrequencyMapAndFilter(const int32_t *prevWord,
         const int prevWordLength, std::map<int, int> *map, uint8_t *filter) {
     memset(filter, 0, BIGRAM_FILTER_BYTE_SIZE);

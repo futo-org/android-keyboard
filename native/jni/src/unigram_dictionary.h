@@ -17,6 +17,7 @@
 #ifndef LATINIME_UNIGRAM_DICTIONARY_H
 #define LATINIME_UNIGRAM_DICTIONARY_H
 
+#include <map>
 #include <stdint.h>
 #include "correction.h"
 #include "correction_state.h"
@@ -75,32 +76,36 @@ class UnigramDictionary {
     int getBigramPosition(int pos, unsigned short *word, int offset, int length) const;
     int getSuggestions(ProximityInfo *proximityInfo, WordsPriorityQueuePool *queuePool,
             Correction *correction, const int *xcoordinates, const int *ycoordinates,
-            const int *codes, const int codesSize, const int bigramListPosition,
-            const bool useFullEditDistance, unsigned short *outWords, int *frequencies);
+            const int *codes, const int codesSize, const std::map<int, int> *bigramMap,
+            const uint8_t *bigramFilter, const bool useFullEditDistance, unsigned short *outWords,
+            int *frequencies);
     virtual ~UnigramDictionary();
 
  private:
     void getWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int inputLength,
-            const int bigramListPosition, const bool useFullEditDistance, Correction *correction,
+            const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
+            const bool useFullEditDistance, Correction *correction,
             WordsPriorityQueuePool *queuePool);
     int getDigraphReplacement(const int *codes, const int i, const int codesSize,
             const digraph_t* const digraphs, const unsigned int digraphsSize) const;
     void getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int* ycoordinates, const int *codesBuffer,
         int *xCoordinatesBuffer, int *yCoordinatesBuffer, const int codesBufferSize,
-        const int bigramListPosition, const bool useFullEditDistance, const int* codesSrc,
-        const int codesRemain, const int currentDepth, int* codesDest, Correction *correction,
+        const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
+        const bool useFullEditDistance, const int* codesSrc, const int codesRemain,
+        const int currentDepth, int* codesDest, Correction *correction,
         WordsPriorityQueuePool* queuePool, const digraph_t* const digraphs,
         const unsigned int digraphsSize);
     void initSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize, Correction *correction);
     void getOneWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
-            const int *ycoordinates, const int *codes, const int bigramListPosition,
-            const bool useFullEditDistance, const int inputLength, Correction *correction,
-            WordsPriorityQueuePool* queuePool);
+            const int *ycoordinates, const int *codes, const std::map<int, int> *bigramMap,
+            const uint8_t *bigramFilter, const bool useFullEditDistance, const int inputLength,
+            Correction *correction, WordsPriorityQueuePool* queuePool);
     void getSuggestionCandidates(
-            const bool useFullEditDistance, const int inputLength, const int bigramListPosition,
+            const bool useFullEditDistance, const int inputLength,
+            const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
             Correction *correction, WordsPriorityQueuePool* queuePool, const bool doAutoCompletion,
             const int maxErrors, const int currentWordIndex);
     void getSplitMultipleWordsSuggestions(ProximityInfo *proximityInfo,
@@ -114,9 +119,10 @@ class UnigramDictionary {
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
     // Process a node by considering proximity, missing and excessive character
-    bool processCurrentNode(const int initialPos, const int bigramListPosition,
-            Correction *correction, int *newCount, int *newChildPosition, int *nextSiblingPosition,
-            WordsPriorityQueuePool *queuePool, const int currentWordIndex);
+    bool processCurrentNode(const int initialPos, const std::map<int, int> *bigramMap,
+            const uint8_t *bigramFilter, Correction *correction, int *newCount,
+            int *newChildPosition, int *nextSiblingPosition, WordsPriorityQueuePool *queuePool,
+            const int currentWordIndex);
     int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
             ProximityInfo *proximityInfo, unsigned short *word);
     int getMostFrequentWordLikeInner(const uint16_t* const inWord, const int length,

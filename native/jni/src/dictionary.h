@@ -37,17 +37,13 @@ class Dictionary {
     int getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
             int *codes, int codesSize, const int32_t* prevWordChars, const int prevWordLength,
             bool useFullEditDistance, unsigned short *outWords, int *frequencies) {
-        // bigramListPosition is, as an int, the offset of the bigram list in the file.
-        // If none, it's zero.
-        const int bigramListPosition = !prevWordChars ? 0
-                : mBigramDictionary->getBigramListPositionForWord(prevWordChars, prevWordLength);
         std::map<int, int> bigramMap;
         uint8_t bigramFilter[BIGRAM_FILTER_BYTE_SIZE];
         mBigramDictionary->fillBigramAddressToFrequencyMapAndFilter(prevWordChars,
                 prevWordLength, &bigramMap, bigramFilter);
         return mUnigramDictionary->getSuggestions(proximityInfo, mWordsPriorityQueuePool,
-                mCorrection, xcoordinates, ycoordinates, codes, codesSize, bigramListPosition,
-                useFullEditDistance, outWords, frequencies);
+                mCorrection, xcoordinates, ycoordinates, codes, codesSize, &bigramMap,
+                bigramFilter, useFullEditDistance, outWords, frequencies);
     }
 
     int getBigrams(const int32_t *word, int length, int *codes, int codesSize,
