@@ -94,7 +94,7 @@
         latin:styleName="defaultEnterKeyStyle"
         latin:code="!code/key_enter"
         latin:keyIcon="!icon/enter_key"
-        latin:keyLabelFlags="autoXScale|followKeyLabelRatio"
+        latin:keyLabelFlags="preserveCase|autoXScale|followKeyLabelRatio"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional"
         latin:parentStyle="navigateMoreKeysStyle" />
