@@ -63,9 +63,6 @@
     <integer name="config_long_press_key_timeout">400</integer>
     <!-- Long pressing shift will invoke caps-lock if > 0, never invoke caps-lock if == 0 -->
     <integer name="config_long_press_shift_key_timeout">1200</integer>
-    <!-- Long pressing space will invoke IME switcher if > 0, never invoke IME switcher if == 0 -->
-    <integer name="config_long_press_space_key_timeout">
-            @integer/config_long_press_key_timeout</integer>
     <integer name="config_ignore_alt_code_key_timeout">700</integer>
     <!-- Showing more keys keyboard, just above the touched point if true, aligned to the key if
          false -->

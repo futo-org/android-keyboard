@@ -110,7 +110,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     private final boolean mConfigShowMoreKeysKeyboardAtTouchedPoint;
 
     private final PointerTrackerParams mPointerTrackerParams;
-    private final boolean mIsSpacebarTriggeringPopupByLongPress;
     private final SuddenJumpingTouchEventHandler mTouchScreenRegulator;
 
     protected KeyDetector mKeyDetector;
@@ -197,29 +196,27 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         @Override
         public void startLongPressTimer(PointerTracker tracker) {
             cancelLongPressTimer();
-            if (tracker != null) {
-                final Key key = tracker.getKey();
-                final int delay;
-                switch (key.mCode) {
-                case Keyboard.CODE_SHIFT:
-                    delay = mParams.mLongPressShiftKeyTimeout;
-                    break;
-                case Keyboard.CODE_SPACE:
-                    delay = mParams.mLongPressSpaceKeyTimeout;
-                    break;
-                default:
-                    if (KeyboardSwitcher.getInstance().isInMomentarySwitchState()) {
-                        // We use longer timeout for sliding finger input started from the symbols
-                        // mode key.
-                        delay = mParams.mLongPressKeyTimeout * 3;
-                    } else {
-                        delay = mParams.mLongPressKeyTimeout;
-                    }
-                    break;
+            if (tracker == null) {
+                return;
+            }
+            final Key key = tracker.getKey();
+            final int delay;
+            switch (key.mCode) {
+            case Keyboard.CODE_SHIFT:
+                delay = mParams.mLongPressShiftKeyTimeout;
+                break;
+            default:
+                if (KeyboardSwitcher.getInstance().isInMomentarySwitchState()) {
+                    // We use longer timeout for sliding finger input started from the symbols
+                    // mode key.
+                    delay = mParams.mLongPressKeyTimeout * 3;
+                } else {
+                    delay = mParams.mLongPressKeyTimeout;
                 }
-                if (delay > 0) {
-                    sendMessageDelayed(obtainMessage(MSG_LONGPRESS_KEY, tracker), delay);
-                }
+                break;
+            }
+            if (delay > 0) {
+                sendMessageDelayed(obtainMessage(MSG_LONGPRESS_KEY, tracker), delay);
             }
         }
 
@@ -314,7 +311,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         public final int mKeyRepeatInterval;
         public final int mLongPressKeyTimeout;
         public final int mLongPressShiftKeyTimeout;
-        public final int mLongPressSpaceKeyTimeout;
         public final int mIgnoreAltCodeKeyTimeout;
 
         public KeyTimerParams(TypedArray latinKeyboardViewAttr) {
@@ -326,8 +322,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                     R.styleable.LatinKeyboardView_longPressKeyTimeout, 0);
             mLongPressShiftKeyTimeout = latinKeyboardViewAttr.getInt(
                     R.styleable.LatinKeyboardView_longPressShiftKeyTimeout, 0);
-            mLongPressSpaceKeyTimeout = latinKeyboardViewAttr.getInt(
-                    R.styleable.LatinKeyboardView_longPressSpaceKeyTimeout, 0);
             mIgnoreAltCodeKeyTimeout = latinKeyboardViewAttr.getInt(
                     R.styleable.LatinKeyboardView_ignoreAltCodeKeyTimeout, 0);
         }
@@ -369,7 +363,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         final KeyTimerParams keyTimerParams = new KeyTimerParams(a);
         mPointerTrackerParams = new PointerTrackerParams(a);
-        mIsSpacebarTriggeringPopupByLongPress = (keyTimerParams.mLongPressSpaceKeyTimeout > 0);
 
         final float keyHysteresisDistance = a.getDimension(
                 R.styleable.LatinKeyboardView_keyHysteresisDistance, 0);
@@ -881,9 +874,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             drawSpacebar(key, canvas, paint);
 
             // Whether space key needs to show the "..." popup hint for special purposes
-            if (mIsSpacebarTriggeringPopupByLongPress
-                    && ImfUtils.hasMultipleEnabledIMEsOrSubtypes(
-                            getContext(), true /* include aux subtypes */)) {
+            if (key.isLongPressEnabled() && ImfUtils.hasMultipleEnabledIMEsOrSubtypes(
+                    getContext(), true /* include aux subtypes */)) {
                 drawKeyPopupHint(key, canvas, paint, params);
             }
         } else if (key.mCode == Keyboard.CODE_LANGUAGE_SWITCH) {
