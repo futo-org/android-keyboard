@@ -29,6 +29,7 @@ public class InputAttributes {
     final public boolean mInputTypeNoAutoCorrect;
     final public boolean mIsSettingsSuggestionStripOn;
     final public boolean mApplicationSpecifiedCompletionOn;
+    final public int mEditorAction;
 
     public InputAttributes(final EditorInfo editorInfo, final boolean isFullscreenMode) {
         final int inputType = null != editorInfo ? editorInfo.inputType : 0;
@@ -91,6 +92,8 @@ public class InputAttributes {
 
             mApplicationSpecifiedCompletionOn = flagAutoComplete && isFullscreenMode;
         }
+        mEditorAction = (editorInfo == null) ? EditorInfo.IME_ACTION_UNSPECIFIED
+                : editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION;
     }
 
     @SuppressWarnings("unused")
