@@ -1487,9 +1487,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             sendKeyCodePoint(Keyboard.CODE_SPACE);
         }
 
-        if ((isAlphabet(primaryCode)
+        // NOTE: isCursorTouchingWord() is a blocking IPC call, so it often takes several
+        // dozen milliseconds. Avoid calling it as much as possible, since we are on the UI
+        // thread here.
+        if (!isComposingWord && (isAlphabet(primaryCode)
                 || mSettingsValues.isSymbolExcludedFromWordSeparators(primaryCode))
-                && isSuggestionsRequested() && !isComposingWord && !isCursorTouchingWord()) {
+                && isSuggestionsRequested() && !isCursorTouchingWord()) {
             // Reset entirely the composing state anyway, then start composing a new word unless
             // the character is a single quote. The idea here is, single quote is not a
             // separator and it should be treated as a normal character, except in the first
