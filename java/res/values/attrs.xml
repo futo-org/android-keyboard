@@ -91,10 +91,6 @@
         <attr name="keyPreviewLeftBackground" format="reference" />
         <!-- The background for the right edge key press feedback. -->
         <attr name="keyPreviewRightBackground" format="reference" />
-        <!-- The width of rectangle part of the key press feedback background. -->
-        <attr name="keyPreviewBackgroundWidth" format="dimension" />
-        <!-- The height of rectangle part of the key press feedback background. -->
-        <attr name="keyPreviewBackgroundHeight" format="dimension" />
         <!-- The text color for key press feedback. -->
         <attr name="keyPreviewTextColor" format="color" />
         <!-- Vertical offset of the key press feedback from the key. -->

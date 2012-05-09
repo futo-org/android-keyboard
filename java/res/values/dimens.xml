@@ -27,7 +27,6 @@
 
     <dimen name="popup_key_height">52.8dp</dimen>
 
-    <dimen name="more_keys_keyboard_horizontal_edges_padding">16dp</dimen>
     <dimen name="more_keys_keyboard_key_horizontal_padding">8dp</dimen>
 
     <fraction name="keyboard_top_padding">1.556%p</fraction>
@@ -66,7 +65,7 @@
     <fraction name="key_preview_text_ratio">82%</fraction>
     <fraction name="spacebar_text_ratio">33.735%</fraction>
     <dimen name="key_preview_height">80dp</dimen>
-    <dimen name="key_preview_offset">16.0dp</dimen>
+    <dimen name="key_preview_offset">-8.0dp</dimen>
 
     <dimen name="key_label_horizontal_padding">4dp</dimen>
     <dimen name="key_hint_letter_padding">1dp</dimen>
