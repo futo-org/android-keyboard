@@ -54,7 +54,7 @@ public class EditingUtils {
      */
     public static String getWordAtCursor(InputConnection connection, String separators) {
         // getWordRangeAtCursor returns null if the connection is null
-        Range r = getWordRangeAtCursor(connection, separators);
+        Range r = getWordRangeAtCursor(connection, separators, 0);
         return (r == null) ? null : r.mWord;
     }
 
@@ -84,7 +84,17 @@ public class EditingUtils {
         }
     }
 
-    private static Range getWordRangeAtCursor(InputConnection connection, String sep) {
+    /**
+     * Returns the text surrounding the cursor.
+     *
+     * @param connection the InputConnection to the TextView
+     * @param sep a string of characters that split words.
+     * @param additionalPrecedingWordsCount the number of words before the current word that should
+     *   be included in the returned range
+     * @return a range containing the text surrounding the cursor
+     */
+    public static Range getWordRangeAtCursor(InputConnection connection, String sep,
+            int additionalPrecedingWordsCount) {
         if (connection == null || sep == null) {
             return null;
         }
@@ -94,14 +104,40 @@ public class EditingUtils {
             return null;
         }
 
-        // Find first word separator before the cursor
+        // Going backward, alternate skipping non-separators and separators until enough words
+        // have been read.
         int start = before.length();
-        while (start > 0 && !isWhitespace(before.charAt(start - 1), sep)) start--;
+        boolean isStoppingAtWhitespace = true;  // toggles to indicate what to stop at
+        while (true) { // see comments below for why this is guaranteed to halt
+            while (start > 0) {
+                final int codePoint = Character.codePointBefore(before, start);
+                if (isStoppingAtWhitespace == isSeparator(codePoint, sep)) {
+                    break;  // inner loop
+                }
+                --start;
+                if (Character.isSupplementaryCodePoint(codePoint)) {
+                    --start;
+                }
+            }
+            // isStoppingAtWhitespace is true every other time through the loop,
+            // so additionalPrecedingWordsCount is guaranteed to become < 0, which
+            // guarantees outer loop termination
+            if (isStoppingAtWhitespace && (--additionalPrecedingWordsCount < 0)) {
+                break;  // outer loop
+            }
+            isStoppingAtWhitespace = !isStoppingAtWhitespace;
+        }
 
         // Find last word separator after the cursor
         int end = -1;
-        while (++end < after.length() && !isWhitespace(after.charAt(end), sep)) {
-            // Nothing to do here.
+        while (++end < after.length()) {
+            final int codePoint = Character.codePointAt(after, end);
+            if (isSeparator(codePoint, sep)) {
+                break;
+            }
+            if (Character.isSupplementaryCodePoint(codePoint)) {
+                ++end;
+            }
         }
 
         int cursor = getCursorPosition(connection);
@@ -114,8 +150,8 @@ public class EditingUtils {
         return null;
     }
 
-    private static boolean isWhitespace(int code, String whitespace) {
-        return whitespace.contains(String.valueOf((char) code));
+    private static boolean isSeparator(int code, String sep) {
+        return sep.indexOf(code) != -1;
     }
 
     private static final Pattern spaceRegex = Pattern.compile("\\s+");
