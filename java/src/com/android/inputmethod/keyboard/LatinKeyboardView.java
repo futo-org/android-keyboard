@@ -527,9 +527,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         final MoreKeysKeyboardView moreKeysKeyboardView =
                 (MoreKeysKeyboardView)container.findViewById(R.id.more_keys_keyboard_view);
-        final Keyboard parentKeyboard = getKeyboard();
-        final Keyboard moreKeysKeyboard = new MoreKeysKeyboard.Builder(
-                this, parentKeyboard.mMoreKeysTemplate, parentKey, parentKeyboard).build();
+        final Keyboard moreKeysKeyboard = new MoreKeysKeyboard.Builder(container, parentKey, this)
+                .build();
         moreKeysKeyboardView.setKeyboard(moreKeysKeyboard);
         container.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
@@ -598,10 +597,19 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         mMoreKeysPanel = moreKeysPanel;
         mMoreKeysPanelPointerTrackerId = tracker.mPointerId;
 
-        final Keyboard keyboard = getKeyboard();
-        final int pointX = (mConfigShowMoreKeysKeyboardAtTouchedPoint) ? tracker.getLastX()
+        final boolean keyPreviewEnabled = isKeyPreviewPopupEnabled() && !parentKey.noKeyPreview();
+        // The more keys keyboard is usually horizontally aligned with the center of the parent key.
+        // If showMoreKeysKeyboardAtTouchedPoint is true and the key preview is disabled, the more
+        // keys keyboard is placed at the touch point of the parent key.
+        final int pointX = (mConfigShowMoreKeysKeyboardAtTouchedPoint && !keyPreviewEnabled)
+                ? tracker.getLastX()
                 : parentKey.mX + parentKey.mWidth / 2;
-        final int pointY = parentKey.mY - keyboard.mVerticalGap;
+        // The more keys keyboard is usually vertically aligned with the top edge of the parent key
+        // (plus vertical gap). If the key preview is enabled, the more keys keyboard is vertically
+        // aligned with the bottom edge of the visible part of the key preview.
+        final int pointY = parentKey.mY + (keyPreviewEnabled
+                ? mKeyPreviewDrawParams.mPreviewVisibleOffset
+                : -parentKey.mVerticalGap);
         moreKeysPanel.showMoreKeysPanel(
                 this, this, pointX, pointY, mMoreKeysWindow, mKeyboardActionListener);
         final int translatedX = moreKeysPanel.translateX(tracker.getLastX());
