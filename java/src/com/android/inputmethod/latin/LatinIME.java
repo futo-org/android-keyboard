@@ -1489,20 +1489,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         if ((isAlphabet(primaryCode)
                 || mSettingsValues.isSymbolExcludedFromWordSeparators(primaryCode))
-                && isSuggestionsRequested() && !isCursorTouchingWord()) {
-            if (!isComposingWord) {
-                // Reset entirely the composing state anyway, then start composing a new word unless
-                // the character is a single quote. The idea here is, single quote is not a
-                // separator and it should be treated as a normal character, except in the first
-                // position where it should not start composing a word.
-                isComposingWord = (Keyboard.CODE_SINGLE_QUOTE != primaryCode);
-                // Here we don't need to reset the last composed word. It will be reset
-                // when we commit this one, if we ever do; if on the other hand we backspace
-                // it entirely and resume suggestions on the previous word, we'd like to still
-                // have touch coordinates for it.
-                resetComposingState(false /* alsoResetLastComposedWord */);
-                clearSuggestions();
-            }
+                && isSuggestionsRequested() && !isComposingWord && !isCursorTouchingWord()) {
+            // Reset entirely the composing state anyway, then start composing a new word unless
+            // the character is a single quote. The idea here is, single quote is not a
+            // separator and it should be treated as a normal character, except in the first
+            // position where it should not start composing a word.
+            isComposingWord = (Keyboard.CODE_SINGLE_QUOTE != primaryCode);
+            // Here we don't need to reset the last composed word. It will be reset
+            // when we commit this one, if we ever do; if on the other hand we backspace
+            // it entirely and resume suggestions on the previous word, we'd like to still
+            // have touch coordinates for it.
+            resetComposingState(false /* alsoResetLastComposedWord */);
+            clearSuggestions();
         }
         if (isComposingWord) {
             mWordComposer.add(
