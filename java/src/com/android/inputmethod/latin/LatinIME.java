@@ -1035,13 +1035,25 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public boolean getCurrentAutoCapsState() {
+        if (!mSettingsValues.mAutoCap) return false;
+
+        final EditorInfo ei = getCurrentInputEditorInfo();
+        if (ei == null) return false;
+
+        final int inputType = ei.inputType;
+        if ((inputType & InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS) != 0) return true;
+
+        final boolean noNeedToCheckCapsMode = (inputType & (InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+                | InputType.TYPE_TEXT_FLAG_CAP_WORDS)) == 0;
+        if (noNeedToCheckCapsMode) return false;
+
         final InputConnection ic = getCurrentInputConnection();
-        EditorInfo ei = getCurrentInputEditorInfo();
-        if (mSettingsValues.mAutoCap && ic != null && ei != null
-                && ei.inputType != InputType.TYPE_NULL) {
-            return ic.getCursorCapsMode(ei.inputType) != 0;
-        }
-        return false;
+        if (ic == null) return false;
+        // TODO: This blocking IPC call is heavy. Consider doing this without using IPC calls.
+        // Note: getCursorCapsMode() returns the current capitalization mode that is any
+        // combination of CAP_MODE_CHARACTERS, CAP_MODE_WORDS, and CAP_MODE_SENTENCES. 0 means none
+        // of them.
+        return ic.getCursorCapsMode(inputType) != 0;
     }
 
     // "ic" may be null
