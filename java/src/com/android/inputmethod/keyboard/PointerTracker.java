@@ -606,7 +606,7 @@ public class PointerTracker {
                         if (ProductionFlag.IS_EXPERIMENTAL) {
                             ResearchLogger.pointerTracker_onMoveEvent(x, y, lastX, lastY);
                         }
-                        onUpEventInternal(lastX, lastY, eventTime);
+                        onUpEventInternal();
                         onDownEventInternal(x, y, eventTime);
                     } else {
                         mKeyAlreadyProcessed = true;
@@ -646,7 +646,7 @@ public class PointerTracker {
             }
             queue.remove(this);
         }
-        onUpEventInternal(x, y, eventTime);
+        onUpEventInternal();
     }
 
     // Let this pointer tracker know that one of newer-than-this pointer trackers got an up event.
@@ -655,24 +655,15 @@ public class PointerTracker {
     public void onPhantomUpEvent(int x, int y, long eventTime) {
         if (DEBUG_EVENT)
             printTouchEvent("onPhntEvent:", x, y, eventTime);
-        onUpEventInternal(x, y, eventTime);
+        onUpEventInternal();
         mKeyAlreadyProcessed = true;
     }
 
-    private void onUpEventInternal(int x, int y, long eventTime) {
+    private void onUpEventInternal() {
         mTimerProxy.cancelKeyTimers();
         mIsInSlidingKeyInput = false;
-        final int keyX, keyY;
-        if (isMajorEnoughMoveToBeOnNewKey(x, y, onMoveKey(x, y))) {
-            keyX = x;
-            keyY = y;
-        } else {
-            // Use previous fixed key coordinates.
-            keyX = mKeyX;
-            keyY = mKeyY;
-        }
-        final Key key = onUpKey(keyX, keyY, eventTime);
-        setReleasedKeyGraphics(key);
+        // Release the last pressed key.
+        setReleasedKeyGraphics(mCurrentKey);
         if (mIsShowingMoreKeysPanel) {
             mDrawingProxy.dismissMoreKeysPanel();
             mIsShowingMoreKeysPanel = false;
@@ -680,7 +671,7 @@ public class PointerTracker {
         if (mKeyAlreadyProcessed)
             return;
         if (!mIsRepeatableKey) {
-            detectAndSendKey(key, keyX, keyY);
+            detectAndSendKey(mCurrentKey, mKeyX, mKeyY);
         }
     }
 
