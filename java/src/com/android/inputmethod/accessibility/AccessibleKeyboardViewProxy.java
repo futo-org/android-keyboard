@@ -17,8 +17,6 @@
 package com.android.inputmethod.accessibility;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.inputmethodservice.InputMethodService;
 import android.support.v4.view.AccessibilityDelegateCompat;
 import android.support.v4.view.ViewCompat;
@@ -38,16 +36,13 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
     private static final AccessibleKeyboardViewProxy sInstance = new AccessibleKeyboardViewProxy();
 
     private InputMethodService mInputMethod;
-    private FlickGestureDetector mGestureDetector;
     private LatinKeyboardView mView;
-    private AccessibleKeyboardActionListener mListener;
     private AccessibilityEntityProvider mAccessibilityNodeProvider;
 
     private Key mLastHoverKey = null;
 
     public static void init(InputMethodService inputMethod) {
         sInstance.initInternal(inputMethod);
-        sInstance.mListener = AccessibleInputMethodServiceProxy.getInstance();
     }
 
     public static AccessibleKeyboardViewProxy getInstance() {
@@ -59,14 +54,7 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
     }
 
     private void initInternal(InputMethodService inputMethod) {
-        final Paint paint = new Paint();
-        paint.setTextAlign(Paint.Align.LEFT);
-        paint.setTextSize(14.0f);
-        paint.setAntiAlias(true);
-        paint.setColor(Color.YELLOW);
-
         mInputMethod = inputMethod;
-        mGestureDetector = new KeyboardFlickGestureDetector(inputMethod);
     }
 
     /**
@@ -112,19 +100,6 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
      * @return {@code true} if the event is handled
      */
     public boolean dispatchHoverEvent(MotionEvent event, PointerTracker tracker) {
-        if (mGestureDetector.onHoverEvent(event, this, tracker))
-            return true;
-
-        return onHoverEventInternal(event, tracker);
-    }
-
-    /**
-     * Handles touch exploration events when Accessibility is turned on.
-     *
-     * @param event The touch exploration hover event.
-     * @return {@code true} if the event was handled
-     */
-    /* package */boolean onHoverEventInternal(MotionEvent event, PointerTracker tracker) {
         final int x = (int) event.getX();
         final int y = (int) event.getY();
         final Key key = tracker.getKeyOn(x, y);
@@ -212,20 +187,6 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
 
         // Propagates the event up the view hierarchy.
         mView.getParent().requestSendAccessibilityEvent(mView, event);
-    }
-
-    private class KeyboardFlickGestureDetector extends FlickGestureDetector {
-        public KeyboardFlickGestureDetector(Context context) {
-            super(context);
-        }
-
-        @Override
-        public boolean onFlick(MotionEvent e1, MotionEvent e2, int direction) {
-            if (mListener != null) {
-                mListener.onFlickGesture(direction);
-            }
-            return true;
-        }
     }
 
     /**

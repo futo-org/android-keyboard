@@ -58,7 +58,6 @@ public class AccessibilityUtils {
         // These only need to be initialized if the kill switch is off.
         sInstance.initInternal(inputMethod);
         KeyCodeDescriptionMapper.init();
-        AccessibleInputMethodServiceProxy.init(inputMethod);
         AccessibleKeyboardViewProxy.init(inputMethod);
     }
 
