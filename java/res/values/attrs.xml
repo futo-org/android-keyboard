@@ -154,8 +154,6 @@
         <attr name="longPressKeyTimeout" format="integer" />
         <!-- Long press timeout of shift key in millisecond. -->
         <attr name="longPressShiftKeyTimeout" format="integer" />
-        <!-- Long press timeout of space key in millisecond. -->
-        <attr name="longPressSpaceKeyTimeout" format="integer" />
         <!-- Ignore special key timeout while typing in millisecond. -->
         <attr name="ignoreAltCodeKeyTimeout" format="integer" />
         <!-- More keys keyboard will shown at touched point. -->

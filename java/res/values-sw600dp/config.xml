@@ -28,8 +28,6 @@
     <bool name="config_auto_correction_spacebar_led_enabled">false</bool>
     <!-- The language is never displayed if == 0, always displayed if < 0 -->
     <integer name="config_delay_before_fadeout_language_on_spacebar">1200</integer>
-    <!-- Long pressing space will invoke IME switcher if > 0, never invoke IME switcher if == 0 -->
-    <integer name="config_long_press_space_key_timeout">0</integer>
     <!-- This configuration is the index of the array {@link KeyboardSwitcher.KEYBOARD_THEMES}. -->
     <string name="config_default_keyboard_theme_index" translatable="false">5</string>
     <integer name="config_max_more_keys_column">5</integer>
