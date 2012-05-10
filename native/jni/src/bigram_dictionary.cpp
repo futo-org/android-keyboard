@@ -20,8 +20,9 @@
 #define LOG_TAG "LatinIME: bigram_dictionary.cpp"
 
 #include "bigram_dictionary.h"
-#include "dictionary.h"
 #include "binary_format.h"
+#include "bloom_filter.h"
+#include "dictionary.h"
 
 namespace latinime {
 
@@ -151,16 +152,6 @@ int BigramDictionary::getBigramListPositionForWord(const int32_t *prevWord,
     pos = BinaryFormat::skipFrequency(flags, pos);
     pos = BinaryFormat::skipShortcuts(root, flags, pos);
     return pos;
-}
-
-static inline void setInFilter(uint8_t *filter, const int position) {
-    const unsigned int bucket = position % BIGRAM_FILTER_MODULO;
-    filter[bucket >> 3] |= (1 << (bucket & 0x7));
-}
-
-static inline bool isInFilter(uint8_t *filter, const int position) {
-    const unsigned int bucket = position % BIGRAM_FILTER_MODULO;
-    return filter[bucket >> 3] & (1 << (bucket & 0x7));
 }
 
 void BigramDictionary::fillBigramAddressToFrequencyMapAndFilter(const int32_t *prevWord,

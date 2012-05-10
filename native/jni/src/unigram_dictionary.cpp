@@ -851,7 +851,8 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos,
         TerminalAttributes terminalAttributes(DICT_ROOT, flags, attributesPos);
         // bigramMap contains the bigram frequencies indexed by addresses for fast lookup.
         // bigramFilter is a bloom filter of said frequencies for even faster rejection.
-        const int probability = BinaryFormat::getProbability(bigramMap, bigramFilter, unigramFreq);
+        const int probability = BinaryFormat::getProbability(initialPos, bigramMap, bigramFilter,
+                unigramFreq);
         onTerminal(probability, terminalAttributes, correction, queuePool, needsToInvokeOnTerminal,
                 currentWordIndex);
 
