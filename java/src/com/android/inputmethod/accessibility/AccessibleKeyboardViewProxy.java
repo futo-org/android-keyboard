@@ -23,6 +23,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.android.inputmethod.keyboard.Key;
@@ -41,6 +42,12 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
 
     private Key mLastHoverKey = null;
 
+    /**
+     * Inset in pixels to look for keys when the user's finger exits the
+     * keyboard area. See {@link ViewConfiguration#getScaledEdgeSlop()}.
+     */
+    private int mEdgeSlop;
+
     public static void init(InputMethodService inputMethod) {
         sInstance.initInternal(inputMethod);
     }
@@ -55,6 +62,7 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
 
     private void initInternal(InputMethodService inputMethod) {
         mInputMethod = inputMethod;
+        mEdgeSlop = ViewConfiguration.get(inputMethod).getScaledEdgeSlop();
     }
 
     /**
@@ -108,8 +116,14 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
         mLastHoverKey = key;
 
         switch (event.getAction()) {
-        case MotionEvent.ACTION_HOVER_ENTER:
         case MotionEvent.ACTION_HOVER_EXIT:
+            // Make sure we're not getting an EXIT event because the user slid
+            // off the keyboard area, then force a key press.
+            if (pointInView(x, y)) {
+                tracker.onRegisterKey(key);
+            }
+            //$FALL-THROUGH$
+        case MotionEvent.ACTION_HOVER_ENTER:
             return onHoverKey(key, event);
         case MotionEvent.ACTION_HOVER_MOVE:
             if (key != previousKey) {
@@ -120,6 +134,20 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
         }
 
         return false;
+    }
+
+    /**
+     * Utility method to determine whether the given point, in local
+     * coordinates, is inside the view, where the area of the view is contracted
+     * by the edge slop factor.
+     *
+     * @param localX The local x-coordinate.
+     * @param localY The local y-coordinate.
+     */
+    private boolean pointInView(int localX, int localY) {
+        return (localX >= mEdgeSlop) && (localY >= mEdgeSlop)
+                && (localX < (mView.getWidth() - mEdgeSlop))
+                && (localY < (mView.getHeight() - mEdgeSlop));
     }
 
     /**
