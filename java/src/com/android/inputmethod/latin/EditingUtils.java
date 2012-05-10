@@ -38,8 +38,7 @@ public class EditingUtils {
 
     private static int getCursorPosition(InputConnection connection) {
         if (null == connection) return INVALID_CURSOR_POSITION;
-        ExtractedText extracted = connection.getExtractedText(
-            new ExtractedTextRequest(), 0);
+        final ExtractedText extracted = connection.getExtractedText(new ExtractedTextRequest(), 0);
         if (extracted == null) {
             return INVALID_CURSOR_POSITION;
         }
