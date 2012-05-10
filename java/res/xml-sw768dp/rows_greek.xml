@@ -35,6 +35,9 @@
         <include
             latin:keyboardLayout="@xml/rowkeys_greek1"
             latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
+        <Key
+            latin:keyStyle="deleteKeyStyle"
+            latin:keyWidth="fillBoth"/>
     </Row>
     <Row
         latin:keyWidth="8.125%p"

@@ -24,7 +24,7 @@
     <include
         latin:keyboardLayout="@xml/key_styles_common" />
     <Row
-        latin:keyWidth="7.000%p"
+        latin:keyWidth="7.125%p"
     >
         <Key
             latin:keyStyle="tabKeyStyle"
@@ -32,9 +32,6 @@
             latin:keyWidth="7.969%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_farsi1" />
-        <Key
-            latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillBoth" />
     </Row>
     <Row
         latin:keyWidth="7.125%p"
@@ -46,22 +43,19 @@
         <include
             latin:keyboardLayout="@xml/rowkeys_farsi2" />
         <Key
-            latin:keyStyle="enterKeyStyle"
+            latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillBoth" />
     </Row>
     <Row
         latin:keyWidth="7.375%p"
     >
-        <Key
-            latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="13.829%p"/>
         <include
-            latin:keyboardLayout="@xml/rowkeys_farsi3" />
+            latin:keyboardLayout="@xml/rowkeys_farsi3"
+            latin:keyXPos="13.829%p" />
         <include
             latin:keyboardLayout="@xml/keys_comma_period" />
         <Key
-            latin:keyStyle="shiftKeyStyle"
-            latin:keyXPos="-13.750%p"
+            latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillBoth" />
     </Row>
     <include
