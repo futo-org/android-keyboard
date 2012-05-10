@@ -18,7 +18,6 @@ package com.android.inputmethod.accessibility;
 
 import android.graphics.Rect;
 import android.inputmethodservice.InputMethodService;
-import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeProviderCompat;
@@ -33,10 +32,6 @@ import android.view.inputmethod.EditorInfo;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardView;
-
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Exposes a virtual view sub-tree for {@link KeyboardView} and generates
@@ -95,7 +90,6 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
         final AccessibilityEvent event = AccessibilityEvent.obtain(eventType);
         event.setPackageName(mKeyboardView.getContext().getPackageName());
         event.setClassName(key.getClass().getName());
-        event.getText().add(keyDescription);
         event.setEnabled(true);
 
         final AccessibilityRecordCompat record = new AccessibilityRecordCompat(event);
@@ -136,7 +130,6 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
             ViewCompat.onInitializeAccessibilityNodeInfo(mKeyboardView, info);
 
             // Add the virtual children of the root View.
-            // TODO: Need to assign a unique ID to each key.
             final Keyboard keyboard = mKeyboardView.getKeyboard();
             final Key[] keys = keyboard.mKeys;
             for (Key key : keys) {
@@ -163,8 +156,6 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
             // Obtain and initialize an AccessibilityNodeInfo with
             // information about the virtual view.
             info = AccessibilityNodeInfoCompat.obtain();
-            info.addAction(AccessibilityNodeInfoCompat.ACTION_SELECT);
-            info.addAction(AccessibilityNodeInfoCompat.ACTION_CLEAR_SELECTION);
             info.setPackageName(mKeyboardView.getContext().getPackageName());
             info.setClassName(key.getClass().getName());
             info.setBoundsInParent(boundsInParent);
@@ -173,152 +164,10 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
             info.setSource(mKeyboardView, virtualViewId);
             info.setBoundsInScreen(boundsInScreen);
             info.setText(keyDescription);
-            info.setClickable(true);
             info.setEnabled(true);
-            info.setLongClickable(true);
         }
 
         return info;
-    }
-
-    /**
-     * Performs an accessibility action on a virtual view, i.e. a descendant of
-     * the host View, with the given <code>virtualViewId</code> or the host View itself if
-     * <code>virtualViewId</code> equals to {@link View#NO_ID}.
-     *
-     * @param virtualViewId A client defined virtual view id.
-     * @param action The action to perform.
-     * @param arguments Optional arguments.
-     * @return True if the action was performed.
-     * @see #createAccessibilityNodeInfo(int)
-     * @see AccessibilityNodeInfoCompat
-     */
-    @Override
-    public boolean performAction(int virtualViewId, int action, Bundle arguments) {
-        if (virtualViewId == View.NO_ID) {
-            // Perform the action on the host View.
-            switch (action) {
-            case AccessibilityNodeInfoCompat.ACTION_SELECT:
-                if (!mKeyboardView.isSelected()) {
-                    mKeyboardView.setSelected(true);
-                    return mKeyboardView.isSelected();
-                }
-                break;
-            case AccessibilityNodeInfoCompat.ACTION_CLEAR_SELECTION:
-                if (mKeyboardView.isSelected()) {
-                    mKeyboardView.setSelected(false);
-                    return !mKeyboardView.isSelected();
-                }
-                break;
-            }
-        } else {
-            // Find the view that corresponds to the given id.
-            final Key child = mVirtualViewIdToKey.get(virtualViewId);
-            if (child == null)
-                return false;
-
-            // Perform the action on a virtual view.
-            switch (action) {
-            case AccessibilityNodeInfoCompat.ACTION_SELECT:
-                // TODO: Provide some focus indicator.
-                return true;
-            case AccessibilityNodeInfoCompat.ACTION_CLEAR_SELECTION:
-                // TODO: Provide some clear focus indicator.
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Finds {@link AccessibilityNodeInfoCompat}s by text. The match is case
-     * insensitive containment. The search is relative to the virtual view, i.e.
-     * a descendant of the host View, with the given <code>virtualViewId</code> or the host
-     * View itself <code>virtualViewId</code> equals to {@link View#NO_ID}.
-     *
-     * @param virtualViewId A client defined virtual view id which defined the
-     *            root of the tree in which to perform the search.
-     * @param text The searched text.
-     * @return A list of node info.
-     * @see #createAccessibilityNodeInfo(int)
-     * @see AccessibilityNodeInfoCompat
-     */
-    @Override
-    public List<AccessibilityNodeInfoCompat> findAccessibilityNodeInfosByText(
-            String text, int virtualViewId) {
-        final String searchedLowerCase = text.toLowerCase();
-        final Keyboard keyboard = mKeyboardView.getKeyboard();
-
-        List<AccessibilityNodeInfoCompat> results = null;
-
-        if (virtualViewId == View.NO_ID) {
-            for (Key key : keyboard.mKeys) {
-                results = findByTextAndPopulate(searchedLowerCase, key, results);
-            }
-        } else {
-            final Key key = mVirtualViewIdToKey.get(virtualViewId);
-
-            results = findByTextAndPopulate(searchedLowerCase, key, results);
-        }
-
-        if (results == null) {
-            return Collections.emptyList();
-        }
-
-        return results;
-    }
-
-    /**
-     * Helper method for {@link #findAccessibilityNodeInfosByText(String, int)}.
-     * Takes a current set of results and matches a specified key against a
-     * lower-case search string. Returns an updated list of results.
-     *
-     * @param searchedLowerCase The lower-case search string.
-     * @param key The key to compare against.
-     * @param results The current list of results, or {@code null} if no results
-     *            found.
-     * @return An updated list of results, or {@code null} if no results found.
-     */
-    private List<AccessibilityNodeInfoCompat> findByTextAndPopulate(String searchedLowerCase,
-            Key key, List<AccessibilityNodeInfoCompat> results) {
-        if (!keyContainsText(key, searchedLowerCase)) {
-            return results;
-        }
-
-        final int childVirtualViewId = generateVirtualViewIdForKey(key);
-        final AccessibilityNodeInfoCompat nodeInfo = createAccessibilityNodeInfo(
-                childVirtualViewId);
-
-        if (results == null) {
-            results = new LinkedList<AccessibilityNodeInfoCompat>();
-        }
-
-        results.add(nodeInfo);
-
-        return results;
-    }
-
-    /**
-     * Returns whether a key's current description contains the lower-case
-     * search text.
-     *
-     * @param key The key to compare against.
-     * @param textLowerCase The lower-case search string.
-     * @return {@code true} if the key contains the search text.
-     */
-    private boolean keyContainsText(Key key, String textLowerCase) {
-        if (key == null) {
-            return false;
-        }
-
-        final String description = getKeyDescription(key);
-
-        if (description == null) {
-            return false;
-        }
-
-        return description.toLowerCase().contains(textLowerCase);
     }
 
     /**
