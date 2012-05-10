@@ -56,6 +56,8 @@
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="13.829%p" />
+        <Spacer
+            latin:keyWidth="3.689%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_qwerty3" />
         <include
