@@ -211,14 +211,17 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
     }
 
     /**
-     * Generates a virtual view identifier for the specified key.
+     * Generates a virtual view identifier for the given key. Returned
+     * identifiers are valid until the next global layout state change.
      *
      * @param key The key to identify.
      * @return A virtual view identifier.
      */
     private static int generateVirtualViewIdForKey(Key key) {
-        // The key code is unique within an instance of a Keyboard.
-        return key.mCode;
+        // The key x- and y-coordinates are stable between layout changes.
+        // Generate an identifier by bit-shifting the x-coordinate to the
+        // left-half of the integer and OR'ing with the y-coordinate.
+        return ((0xFFFF & key.mX) << (Integer.SIZE / 2)) | (0xFFFF & key.mY);
     }
 
     private final OnGlobalLayoutListener mGlobalLayoutListener = new OnGlobalLayoutListener() {
