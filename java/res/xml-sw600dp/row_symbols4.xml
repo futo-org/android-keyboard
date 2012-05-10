@@ -22,17 +22,17 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Row
-        latin:keyWidth="8.9%p"
+        latin:keyWidth="8.5%p"
     >
         <Key
             latin:keyStyle="toAlphaKeyStyle"
-            latin:keyWidth="13.0%p" />
+            latin:keyWidth="11.75%p" />
         <Key
             latin:keyStyle="smileyKeyStyle" />
         <Key
             latin:keyLabel="\@" />
         <include
-            latin:keyXPos="30.750%p"
+            latin:keyXPos="28.75%p"
             latin:keyboardLayout="@xml/key_space" />
         <Key
             latin:keyLabel="&quot;"
@@ -40,7 +40,7 @@
         <Key
             latin:keyLabel="_" />
         <include
-            latin:keyXPos="-10.0%p"
+            latin:keyXPos="-8.5%p"
             latin:keyWidth="fillRight"
             latin:keyboardLayout="@xml/key_shortcut" />
     </Row>
