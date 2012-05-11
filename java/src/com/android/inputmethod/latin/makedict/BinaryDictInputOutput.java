@@ -722,15 +722,16 @@ public class BinaryDictInputOutput {
     }
 
     /**
-     * Makes the flag value for an attribute.
+     * Makes the flag value for a bigram.
      *
-     * @param more whether there are more attributes after this one.
-     * @param offset the offset of the attribute.
-     * @param frequency the frequency of the attribute, 0..15
+     * @param more whether there are more bigrams after this one.
+     * @param offset the offset of the bigram.
+     * @param bigramFrequency the frequency of the bigram, 0..15.
+     * @param unigramFrequency the unigram frequency of the same word.
      * @return the flags
      */
-    private static final int makeAttributeFlags(final boolean more, final int offset,
-            final int frequency) {
+    private static final int makeBigramFlags(final boolean more, final int offset,
+            final int bigramFrequency, final int unigramFrequency) {
         int bigramFlags = (more ? FLAG_ATTRIBUTE_HAS_NEXT : 0)
                 + (offset < 0 ? FLAG_ATTRIBUTE_OFFSET_NEGATIVE : 0);
         switch (getByteSize(offset)) {
@@ -746,7 +747,7 @@ public class BinaryDictInputOutput {
         default:
             throw new RuntimeException("Strange offset size");
         }
-        bigramFlags += frequency & FLAG_ATTRIBUTE_FREQUENCY;
+        bigramFlags += bigramFrequency & FLAG_ATTRIBUTE_FREQUENCY;
         return bigramFlags;
     }
 
@@ -854,11 +855,14 @@ public class BinaryDictInputOutput {
                 final Iterator bigramIterator = group.mBigrams.iterator();
                 while (bigramIterator.hasNext()) {
                     final WeightedString bigram = (WeightedString)bigramIterator.next();
-                    final int addressOfBigram = findAddressOfWord(dict, bigram.mWord);
+                    final CharGroup target =
+                            FusionDictionary.findWordInTree(dict.mRoot, bigram.mWord);
+                    final int addressOfBigram = target.mCachedAddress;
+                    final int unigramFrequencyForThisWord = target.mFrequency;
                     ++groupAddress;
                     final int offset = addressOfBigram - groupAddress;
-                    int bigramFlags = makeAttributeFlags(bigramIterator.hasNext(), offset,
-                            bigram.mFrequency);
+                    int bigramFlags = makeBigramFlags(bigramIterator.hasNext(), offset,
+                            bigram.mFrequency, unigramFrequencyForThisWord);
                     buffer[index++] = (byte)bigramFlags;
                     final int bigramShift = writeVariableAddress(buffer, index, Math.abs(offset));
                     index += bigramShift;
