@@ -21,7 +21,6 @@ import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.Keyboard.Params.TouchPositionCorrection;
 import com.android.inputmethod.latin.JniUtils;
-import com.android.inputmethod.latin.spellcheck.SpellCheckerProximityInfo;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -75,15 +74,12 @@ public class ProximityInfo {
         return new ProximityInfo("", 1, 1, 1, 1, 1, 1, EMPTY_KEY_ARRAY, null);
     }
 
-    public static ProximityInfo createSpellCheckerProximityInfo(final int[] proximity) {
+    public static ProximityInfo createSpellCheckerProximityInfo(final int[] proximity,
+            int rowSize, int gridWidth, int gridHeight) {
         final ProximityInfo spellCheckerProximityInfo = createDummyProximityInfo();
         spellCheckerProximityInfo.mNativeProximityInfo =
                 spellCheckerProximityInfo.setProximityInfoNative("",
-                        SpellCheckerProximityInfo.ROW_SIZE,
-                        SpellCheckerProximityInfo.PROXIMITY_GRID_WIDTH,
-                        SpellCheckerProximityInfo.PROXIMITY_GRID_HEIGHT,
-                        SpellCheckerProximityInfo.PROXIMITY_GRID_WIDTH,
-                        SpellCheckerProximityInfo.PROXIMITY_GRID_HEIGHT,
+                        rowSize, gridWidth, gridHeight, gridWidth, gridHeight,
                         1, proximity, 0, null, null, null, null, null, null, null, null);
         return spellCheckerProximityInfo;
     }
