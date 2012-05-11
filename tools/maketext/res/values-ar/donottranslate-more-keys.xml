@@ -18,26 +18,6 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- U+061F: "؟" ARABIC QUESTION MARK
-         U+060C: "،" ARABIC COMMA
-         U+061B: "؛" ARABIC SEMICOLON -->
-    <!-- U+0650: "ِ" ARABIC KASRA
-         U+064E: "َ" ARABIC FATHA
-         U+064D: "ٍ" ARABIC KASRATAN
-         U+064B: "ً" ARABIC FATHATAN
-         U+0656: "ٖ" ARABIC SUBSCRIPT ALEF
-         U+0670: "ٰ" ARABIC LETTER SUPERSCRIPT ALEF
-         U+0655: "ٕ" ARABIC HAMZA BELOW
-         U+0654: "ٔ" ARABIC HAMZA ABOVE -->
-    <!-- U+064F: "ُ" ARABIC DAMMA
-         U+064C: "ٌ" ARABIC DAMMATAN
-         U+0651: "ّ" ARABIC SHADDA
-         U+0652: "ْ" ARABIC SUKUN
-         U+0653: "ٓ" ARABIC MADDAH ABOVE
-         U+0640: "ـ" ARABIC TATWEEL -->
-    <!-- In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label. -->
-    <string name="more_keys_for_punctuation">"!fixedColumnOrder!8,\",\',-,:,!,&#x061F;,&#x060C;,&#x061B;,&#x0650;,&#x064E;,&#x064D;,&#x064B;,&#x0656;,&#x0670;,&#x0655;,&#x0654;,&#x064F;,&#x064C;,&#x0651;,&#x0652;,&#x0653;,&#x0640;&#x0640;&#x0640;|&#x0640;,/"</string>
-    <string name="keyhintlabel_for_punctuation">&#x064B;</string>
     <!-- U+0661: "١" ARABIC-INDIC DIGIT ONE -->
     <string name="keylabel_for_symbols_1">&#x0661;</string>
     <!-- U+0662: "٢" ARABIC-INDIC DIGIT TWO -->
@@ -85,26 +65,12 @@
          U+061B: "؛" ARABIC SEMICOLON
          U+061F: "؟" ARABIC QUESTION MARK -->
     <string name="keylabel_for_apostrophe">&#x060C;</string>
-    <string name="keylabel_for_dash">"."</string>
     <string name="keyhintlabel_for_apostrophe">&#x061F;</string>
-    <string name="keyhintlabel_for_dash">&#x064B;</string>
+    <!-- U+061F: "؟" ARABIC QUESTION MARK
+         U+060C: "،" ARABIC COMMA
+         U+061B: "؛" ARABIC SEMICOLON -->
+    <string name="more_keys_for_punctuation">"!fixedColumnOrder!8,\",\',#,-,:,!,&#x060C;,&#x061F;,\@,&amp;,\\%,+,&#x061B;,/,(,)"</string>
     <string name="more_keys_for_apostrophe">"&#x061F;,&#x061B;,!,:,-,/,\',\""</string>
-    <!-- U+0651: "ّ" ARABIC SHADDA
-         U+0652: "ْ" ARABIC SUKUN
-         U+064C: "ٌ" ARABIC DAMMATAN
-         U+0653: "ٓ" ARABIC MADDAH ABOVE
-         U+064F: "ُ" ARABIC DAMMA -->
-    <!-- U+0650: "ِ" ARABIC KASRA
-         U+064E: "َ" ARABIC FATHA
-         U+064B: "ً" ARABIC FATHATAN
-         U+0640: "ـ" ARABIC TATWEEL
-         U+064D: "ٍ" ARABIC KASRATAN -->
-    <!-- U+0670: "ٰ" ARABIC LETTER SUPERSCRIPT ALEF
-         U+0656: "ٖ" ARABIC SUBSCRIPT ALEF
-         U+0654: "ٔ" ARABIC HAMZA ABOVE
-         U+0655: "ٕ" ARABIC HAMZA BELOW -->
-    <!-- In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label. -->
-    <string name="more_keys_for_dash">"&#x0651;,&#x0652;,&#x064C;,&#x0653;,&#x064F;,&#x0650;,&#x064E;,&#x064B;,&#x0640;&#x0640;&#x0640;|&#x0640;,&#x064D;,&#x0654;,&#x0656;,&#x0655;,&#x0670;"</string>
     <!-- U+266A: "♪" EIGHTH NOTE -->
     <string name="more_keys_for_bullet">&#x266A;</string>
     <!-- U+2605: "★" BLACK STAR

@@ -201,7 +201,6 @@
     <key-style
         latin:styleName="punctuationKeyStyle"
         latin:keyLabel="."
-        latin:keyHintLabel="!text/keyhintlabel_for_punctuation"
         latin:keyLabelFlags="hasPopupHint"
         latin:moreKeys="!text/more_keys_for_punctuation"
         latin:backgroundType="functional" />

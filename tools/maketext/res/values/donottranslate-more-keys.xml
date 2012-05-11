@@ -75,13 +75,17 @@
     <string name="more_keys_for_currency_euro">&#x00A2;,&#x00A3;,$,&#x00A5;,&#x20B1;</string>
     <string name="more_keys_for_currency_pound">&#x00A2;,$,&#x20AC;,&#x00A5;,&#x20B1;</string>
     <string name="more_keys_for_currency_general">&#x00A2;,$,&#x20AC;,&#x00A3;,&#x00A5;,&#x20B1;</string>
-    <string name="more_keys_for_smiley">"!fixedColumnOrder!5,!hasLabels!,=-O|=-O ,:-P|:-P ,;-)|;-) ,:-(|:-( ,:-)|:-) ,:-!|:-! ,:-$|:-$ ,B-)|B-) ,:O|:O ,:-*|:-* ,:-D|:-D ,:\'(|:\'( ,:-\\\\|:-\\\\ ,O:-)|O:-) ,:-[|:-[ "</string>
     <string name="more_keys_for_punctuation">"!fixedColumnOrder!8,\",\',#,-,:,!,\\,,\?,\@,&amp;,\\%,+,;,/,(,)"</string>
-    <string name="keyhintlabel_for_punctuation"></string>
     <!-- U+2020: "†" DAGGER
          U+2021: "‡" DOUBLE DAGGER
          U+2605: "★" BLACK STAR -->
     <string name="more_keys_for_star">&#x2020;,&#x2021;,&#x2605;</string>
+    <!-- U+266A: "♪" EIGHTH NOTE
+         U+2665: "♥" BLACK HEART SUIT
+         U+2660: "♠" BLACK SPADE SUIT
+         U+2666: "♦" BLACK DIAMOND SUIT
+         U+2663: "♣" BLACK CLUB SUIT -->
+    <string name="more_keys_for_bullet">&#x266A;,&#x2665;,&#x2660;,&#x2666;,&#x2663;</string>
     <!-- U+00B1: "±" PLUS-MINUS SIGN -->
     <string name="more_keys_for_plus">&#x00B1;</string>
     <!-- The all letters need to be mirrored are found at
@@ -105,9 +109,6 @@
          U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
     <string name="more_keys_for_less_than">!fixedColumnOrder!3,&#x2039;,&#x2264;,&#x00AB;</string>
     <string name="more_keys_for_greater_than">!fixedColumnOrder!3,&#x203A;,&#x2265;,&#x00BB;</string>
-    <string name="keylabel_for_popular_domain">".com"</string>
-    <!-- popular web domains for the locale - most popular, displayed on the keyboard -->
-    <string name="more_keys_for_popular_domain">"!hasLabels!,.net,.org,.gov,.edu"</string>
     <string name="keylabel_for_symbols_1">1</string>
     <string name="keylabel_for_symbols_2">2</string>
     <string name="keylabel_for_symbols_3">3</string>
@@ -169,17 +170,8 @@
     <string name="keyhintlabel_for_tablet_period">\?</string>
     <string name="more_keys_for_tablet_period">\?</string>
     <string name="keylabel_for_apostrophe">\'</string>
-    <string name="keylabel_for_dash">-</string>
     <string name="keyhintlabel_for_apostrophe">\"</string>
-    <string name="keyhintlabel_for_dash">_</string>
     <string name="more_keys_for_apostrophe">\"</string>
-    <string name="more_keys_for_dash">_</string>
-    <!-- U+266A: "♪" EIGHTH NOTE
-         U+2665: "♥" BLACK HEART SUIT
-         U+2660: "♠" BLACK SPADE SUIT
-         U+2666: "♦" BLACK DIAMOND SUIT
-         U+2663: "♣" BLACK CLUB SUIT -->
-    <string name="more_keys_for_bullet">&#x266A;,&#x2665;,&#x2660;,&#x2666;,&#x2663;</string>
     <string name="more_keys_for_am_pm">!fixedColumnOrder!2,!hasLabels!,\@string/label_time_am,\@string/label_time_pm</string>
     <string name="settings_as_more_key">!icon/settings_key|!code/key_settings</string>
     <string name="shortcut_as_more_key">!icon/shortcut_key|!code/key_shortcut</string>
@@ -203,4 +195,24 @@
     <string name="label_time_pm">"PM"</string>
     <!-- Label for "switch to symbols" key on PC QWERTY layout -->
     <string name="label_to_symbol_key_pcqwerty">Sym</string>
+    <string name="keylabel_for_popular_domain">".com"</string>
+    <!-- popular web domains for the locale - most popular, displayed on the keyboard -->
+    <string name="more_keys_for_popular_domain">"!hasLabels!,.net,.org,.gov,.edu"</string>
+    <string name="more_keys_for_smiley">"!fixedColumnOrder!5,!hasLabels!,=-O|=-O ,:-P|:-P ,;-)|;-) ,:-(|:-( ,:-)|:-) ,:-!|:-! ,:-$|:-$ ,B-)|B-) ,:O|:O ,:-*|:-* ,:-D|:-D ,:\'(|:\'( ,:-\\\\|:-\\\\ ,O:-)|O:-) ,:-[|:-[ "</string>
+    <!-- U+064F: "ُ" ARABIC DAMMA
+         U+064C: "ٌ" ARABIC DAMMATAN
+         U+0651: "ّ" ARABIC SHADDA
+         U+0652: "ْ" ARABIC SUKUN
+         U+0653: "ٓ" ARABIC MADDAH ABOVE -->
+    <!-- U+064D: "ٍ" ARABIC KASRATAN
+         U+064B: "ً" ARABIC FATHATAN
+         U+0650: "ِ" ARABIC KASRA
+         U+064E: "َ" ARABIC FATHA
+         U+0640: "ـ" ARABIC TATWEEL -->
+    <!-- U+0656: "ٖ" ARABIC SUBSCRIPT ALEF
+         U+0670: "ٰ" ARABIC LETTER SUPERSCRIPT ALEF
+         U+0655: "ٕ" ARABIC HAMZA BELOW
+         U+0654: "ٔ" ARABIC HAMZA ABOVE -->
+    <!-- In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label. -->
+    <string name="more_keys_for_arabic_diacritics">"!fixedColumnOrder!5,&#x064F;,&#x064C;,&#x0651;,&#x0652;,&#x0653;,&#x064D;,&#x064B;,&#x0650;,&#x064E;,&#x0640;&#x0640;&#x0640;|&#x0640;,&#x0656;,&#x0670;,&#x0655;,&#x0654;"</string>
 </resources>
