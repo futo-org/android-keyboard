@@ -32,8 +32,23 @@
         <include
             latin:keyXPos="25%p"
             latin:keyboardLayout="@xml/key_space" />
-        <Key
-            latin:keyStyle="punctuationKeyStyle" />
+        <switch>
+            <case
+                latin:languageCode="ar|fa"
+            >
+                <!-- U+064B: "ً" ARABIC FATHATAN -->
+                <Key
+                    latin:keyLabel="."
+                    latin:keyHintLabel="&#x064B;"
+                    latin:keyLabelFlags="hasPopupHint|hasShiftedLetterHint"
+                    latin:moreKeys="!text/more_keys_for_arabic_diacritics"
+                    latin:backgroundType="functional" />
+            </case>
+            <default>
+                <Key
+                latin:keyStyle="punctuationKeyStyle" />
+            </default>
+        </switch>
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillRight" />
