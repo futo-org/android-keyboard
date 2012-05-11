@@ -118,10 +118,8 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"Chủ đề bàn phím"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Tiếng Anh (Anh)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Tiếng Anh (Mỹ)"</string>
-    <!-- no translation found for subtype_with_layout_en_GB (2179097748724725906) -->
-    <skip />
-    <!-- no translation found for subtype_with_layout_en_US (1362581347576714579) -->
-    <skip />
+    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Tiếng Anh (Anh) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Tiếng Anh (Mỹ) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_no_language" msgid="141420857808801746">"Không có ngôn ngữ nào"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Không có ngôn ngữ (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"0 ngôn ngữ (QWERTZ)"</string>
