@@ -489,10 +489,17 @@ public class BinaryDictInputOutput {
         // Merging tails can only be done if there are no attributes. Searching for attributes
         // in LatinIME code depends on a total breadth-first ordering, which merging tails
         // breaks. If there are no attributes, it should be fine (and reduce the file size)
-        // to merge tails, and the following step would be necessary.
-        // If eventually the code runs on Android, searching through the whole array each time
-        // may be a performance concern.
-        list.remove(node);
+        // to merge tails, and removing the node from the list would be necessary. However,
+        // we don't merge tails because breaking the breadth-first ordering would result in
+        // extreme overhead at bigram lookup time (it would make the search function O(n) instead
+        // of the current O(log(n)), where n=number of nodes in the dictionary which is pretty
+        // high).
+        // If no nodes are ever merged, we can't have the same node twice in the list, hence
+        // searching for duplicates in unnecessary. It is also very performance consuming,
+        // since `list' is an ArrayList so it's an O(n) operation that runs on all nodes, making
+        // this simple list.remove operation O(n*n) overall. On Android this overhead is very
+        // high.
+        // For future reference, the code to remove duplicate is a simple : list.remove(node);
         list.add(node);
         final ArrayList<CharGroup> branches = node.mData;
         final int nodeSize = branches.size();
