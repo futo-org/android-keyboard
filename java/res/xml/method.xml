@@ -25,6 +25,7 @@
     ar: Arabic/arabic
     be: Belarusian/east_slavic
     bg: Bulgarian/bulgarian
+    bg: Bulgarian/bulgarian_bds
     cs: Czech/qwertz
     da: Danish/nordic
     de: German/qwertz
@@ -99,6 +100,12 @@
             android:imeSubtypeLocale="bg"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=bulgarian"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_bulgarian_bds"
+            android:imeSubtypeLocale="bg"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=bulgarian_bds"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
