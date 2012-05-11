@@ -635,6 +635,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             Log.d(TAG, "onStartInputView: editorInfo:"
                     + String.format("inputType=0x%08x imeOptions=0x%08x",
                             editorInfo.inputType, editorInfo.imeOptions));
+            Log.d(TAG, "All caps = "
+                    + ((editorInfo.inputType & InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS) != 0)
+                    + ", sentence caps = "
+                    + ((editorInfo.inputType & InputType.TYPE_TEXT_FLAG_CAP_SENTENCES) != 0)
+                    + ", word caps = "
+                    + ((editorInfo.inputType & InputType.TYPE_TEXT_FLAG_CAP_WORDS) != 0));
         }
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.latinIME_onStartInputViewInternal(editorInfo, mPrefs);
