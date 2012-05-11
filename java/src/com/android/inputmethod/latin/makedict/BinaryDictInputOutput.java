@@ -174,6 +174,7 @@ public class BinaryDictInputOutput {
     private static final int MAX_CHARGROUPS_IN_A_NODE = 0x7FFF; // 32767
 
     private static final int MAX_TERMINAL_FREQUENCY = 255;
+    private static final int MAX_BIGRAM_FREQUENCY = 15;
 
     // Arbitrary limit to how much passes we consider address size compression should
     // terminate in. At the time of this writing, our largest dictionary completes
@@ -726,12 +727,13 @@ public class BinaryDictInputOutput {
      *
      * @param more whether there are more bigrams after this one.
      * @param offset the offset of the bigram.
-     * @param bigramFrequency the frequency of the bigram, 0..15.
-     * @param unigramFrequency the unigram frequency of the same word.
+     * @param bigramFrequency the frequency of the bigram, 0..255.
+     * @param unigramFrequency the unigram frequency of the same word, 0..255.
+     * @param word the second bigram, for debugging purposes
      * @return the flags
      */
     private static final int makeBigramFlags(final boolean more, final int offset,
-            final int bigramFrequency, final int unigramFrequency) {
+            int bigramFrequency, final int unigramFrequency, final String word) {
         int bigramFlags = (more ? FLAG_ATTRIBUTE_HAS_NEXT : 0)
                 + (offset < 0 ? FLAG_ATTRIBUTE_OFFSET_NEGATIVE : 0);
         switch (getByteSize(offset)) {
@@ -747,7 +749,21 @@ public class BinaryDictInputOutput {
         default:
             throw new RuntimeException("Strange offset size");
         }
-        bigramFlags += bigramFrequency & FLAG_ATTRIBUTE_FREQUENCY;
+        if (unigramFrequency > bigramFrequency) {
+            MakedictLog.e("Unigram freq is superior to bigram freq for \"" + word
+                    + "\". Bigram freq is " + bigramFrequency + ", unigram freq for "
+                    + word + " is " + unigramFrequency);
+            bigramFrequency = unigramFrequency;
+        }
+        // We compute the difference between 255 (which means probability = 1) and the
+        // unigram score. We split this into discrete 16 steps, and this is the value
+        // we store into the 4 bits of the bigrams frequency.
+        final float bigramRatio = (float)(bigramFrequency - unigramFrequency)
+                / (MAX_TERMINAL_FREQUENCY - unigramFrequency);
+        // TODO: if the bigram freq is very close to the unigram frequency, we don't want
+        // to include the bigram in the binary dictionary at all.
+        final int discretizedFrequency = Math.round(bigramRatio * MAX_BIGRAM_FREQUENCY);
+        bigramFlags += discretizedFrequency & FLAG_ATTRIBUTE_FREQUENCY;
         return bigramFlags;
     }
 
@@ -862,7 +878,7 @@ public class BinaryDictInputOutput {
                     ++groupAddress;
                     final int offset = addressOfBigram - groupAddress;
                     int bigramFlags = makeBigramFlags(bigramIterator.hasNext(), offset,
-                            bigram.mFrequency, unigramFrequencyForThisWord);
+                            bigram.mFrequency, unigramFrequencyForThisWord, bigram.mWord);
                     buffer[index++] = (byte)bigramFlags;
                     final int bigramShift = writeVariableAddress(buffer, index, Math.abs(offset));
                     index += bigramShift;
