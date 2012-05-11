@@ -40,6 +40,8 @@ import java.util.TreeMap;
  */
 public class BinaryDictInputOutput {
 
+    final static boolean DBG = MakedictLog.DBG;
+
     /* Node layout is as follows:
      *   | addressType                         xx     : mask with MASK_GROUP_ADDRESS_TYPE
      *                                 2 bits, 00 = no children : FLAG_GROUP_ADDRESS_TYPE_NOADDRESS
@@ -715,13 +717,13 @@ public class BinaryDictInputOutput {
              }
         }
         if (null != group.mShortcutTargets) {
-            if (0 == group.mShortcutTargets.size()) {
+            if (DBG && 0 == group.mShortcutTargets.size()) {
                 throw new RuntimeException("0-sized shortcut list must be null");
             }
             flags |= FLAG_HAS_SHORTCUT_TARGETS;
         }
         if (null != group.mBigrams) {
-            if (0 == group.mBigrams.size()) {
+            if (DBG && 0 == group.mBigrams.size()) {
                 throw new RuntimeException("0-sized bigram list must be null");
             }
             flags |= FLAG_HAS_BIGRAMS;
@@ -830,7 +832,7 @@ public class BinaryDictInputOutput {
                     + index + " <> " + group.mCachedAddress);
             groupAddress += GROUP_FLAGS_SIZE + getGroupCharactersSize(group);
             // Sanity checks.
-            if (group.mFrequency > MAX_TERMINAL_FREQUENCY) {
+            if (DBG && group.mFrequency > MAX_TERMINAL_FREQUENCY) {
                 throw new RuntimeException("A node has a frequency > " + MAX_TERMINAL_FREQUENCY
                         + " : " + group.mFrequency);
             }
@@ -1037,7 +1039,7 @@ public class BinaryDictInputOutput {
         MakedictLog.i("Computing addresses...");
         computeAddresses(dict, flatNodes);
         MakedictLog.i("Checking array...");
-        checkFlatNodeArray(flatNodes);
+        if (DBG) checkFlatNodeArray(flatNodes);
 
         // Create a buffer that matches the final dictionary size.
         final Node lastNode = flatNodes.get(flatNodes.size() - 1);
