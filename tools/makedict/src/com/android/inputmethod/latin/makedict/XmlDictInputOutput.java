@@ -154,7 +154,7 @@ public class XmlDictInputOutput {
         // In this version of the XML file, the bigram frequency is given as an int 0..XML_MAX
         private final static int XML_MAX = 256;
         // In memory and in the binary dictionary the bigram frequency is 0..MEMORY_MAX
-        private final static int MEMORY_MAX = 16;
+        private final static int MEMORY_MAX = 256;
         private final static int XML_TO_MEMORY_RATIO = XML_MAX / MEMORY_MAX;
 
         private String mSrc;
