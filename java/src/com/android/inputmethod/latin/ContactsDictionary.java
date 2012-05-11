@@ -149,7 +149,8 @@ public class ContactsDictionary extends ExpandableDictionary {
                                 // capitalization of i.
                                 final int wordLen = word.length();
                                 if (wordLen < maxWordLength && wordLen > 1) {
-                                    super.addWord(word, FREQUENCY_FOR_CONTACTS);
+                                    super.addWord(word, null /* shortcut */,
+                                            FREQUENCY_FOR_CONTACTS);
                                     if (!TextUtils.isEmpty(prevWord)) {
                                         super.setBigram(prevWord, word,
                                                 FREQUENCY_FOR_CONTACTS_BIGRAM);
