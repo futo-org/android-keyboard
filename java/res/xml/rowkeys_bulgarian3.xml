@@ -24,15 +24,15 @@
     <!-- U+0437: "з" CYRILLIC SMALL LETTER ZE -->
     <Key
         latin:keyLabel="&#x0437;" />
-    <!-- U+0436: "ж" CYRILLIC SMALL LETTER ZHE -->
+    <!-- U+044C: "ь" CYRILLIC SMALL LETTER SOFT SIGN -->
     <Key
-        latin:keyLabel="&#x0436;" />
+        latin:keyLabel="&#x044C;" />
     <!-- U+0446: "ц" CYRILLIC SMALL LETTER TSE -->
     <Key
         latin:keyLabel="&#x0446;" />
-    <!-- U+0432: "в" CYRILLIC SMALL LETTER VE -->
+    <!-- U+0436: "ж" CYRILLIC SMALL LETTER ZHE -->
     <Key
-        latin:keyLabel="&#x0432;" />
+        latin:keyLabel="&#x0436;" />
     <!-- U+0431: "б" CYRILLIC SMALL LETTER BE -->
     <Key
         latin:keyLabel="&#x0431;" />
