@@ -48,10 +48,10 @@
     <!-- U+043B: "л" CYRILLIC SMALL LETTER EL -->
     <Key
         latin:keyLabel="&#x043B;" />
+    <!-- U+0448: "ш" CYRILLIC SMALL LETTER SHA -->
+    <Key
+        latin:keyLabel="&#x0448;" />
     <!-- U+0449: "щ" CYRILLIC SMALL LETTER SHCHA -->
     <Key
         latin:keyLabel="&#x0449;" />
-    <!-- U+044C: "ь" CYRILLIC SMALL LETTER SOFT SIGN -->
-    <Key
-        latin:keyLabel="&#x044C;" />
 </merge>
