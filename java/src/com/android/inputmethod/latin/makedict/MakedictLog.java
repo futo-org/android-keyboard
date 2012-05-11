@@ -22,7 +22,7 @@ import android.util.Log;
  * Wrapper to redirect log events to the right output medium.
  */
 public class MakedictLog {
-    private static final boolean DBG = false;
+    public static final boolean DBG = false;
     private static final String TAG = MakedictLog.class.getSimpleName();
 
     public static void d(String message) {
