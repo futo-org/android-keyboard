@@ -23,6 +23,7 @@ import android.service.textservice.SpellCheckerService;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.LruCache;
+import android.view.textservice.SentenceSuggestionsInfo;
 import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
 
@@ -487,6 +488,10 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 }
                 mUnigramSuggestionsInfoCache.put(query, new SuggestionsParams(suggestions, flags));
             }
+
+            public void remove(String key) {
+                mUnigramSuggestionsInfoCache.remove(key);
+            }
         }
 
         AndroidSpellCheckerSession(final AndroidSpellCheckerService service) {
@@ -567,6 +572,96 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             // Guestimate heuristic: perform spell checking if at least 3/4 of the characters
             // in this word are letters
             return (letterCount * 4 < length * 3);
+        }
+
+        private SentenceSuggestionsInfo fixWronglyInvalidatedWordWithSingleQuote(
+                TextInfo ti, SentenceSuggestionsInfo ssi) {
+            final String typedText = ti.getText();
+            if (!typedText.contains(SINGLE_QUOTE)) {
+                return null;
+            }
+            final int N = ssi.getSuggestionsCount();
+            final ArrayList<Integer> additionalOffsets = new ArrayList<Integer>();
+            final ArrayList<Integer> additionalLengths = new ArrayList<Integer>();
+            final ArrayList<SuggestionsInfo> additionalSuggestionsInfos =
+                    new ArrayList<SuggestionsInfo>();
+            for (int i = 0; i < N; ++i) {
+                final SuggestionsInfo si = ssi.getSuggestionsInfoAt(i);
+                final int flags = si.getSuggestionsAttributes();
+                if ((flags & SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY) == 0) {
+                    continue;
+                }
+                final int offset = ssi.getOffsetAt(i);
+                final int length = ssi.getLengthAt(i);
+                final String subText = typedText.substring(offset, offset + length);
+                if (!subText.contains(SINGLE_QUOTE)) {
+                    continue;
+                }
+                final String[] splitTexts = subText.split(SINGLE_QUOTE, -1);
+                if (splitTexts == null || splitTexts.length <= 1) {
+                    continue;
+                }
+                final int splitNum = splitTexts.length;
+                for (int j = 0; j < splitNum; ++j) {
+                    final String splitText = splitTexts[j];
+                    if (TextUtils.isEmpty(splitText)) {
+                        continue;
+                    }
+                    if (mSuggestionsCache.getSuggestionsFromCache(splitText) == null) {
+                        continue;
+                    }
+                    final int newLength = splitText.length();
+                    // Neither RESULT_ATTR_IN_THE_DICTIONARY nor RESULT_ATTR_LOOKS_LIKE_TYPO
+                    final int newFlags = 0;
+                    final SuggestionsInfo newSi = new SuggestionsInfo(newFlags, EMPTY_STRING_ARRAY);
+                    newSi.setCookieAndSequence(si.getCookie(), si.getSequence());
+                    if (DBG) {
+                        Log.d(TAG, "Override and remove old span over: "
+                                + splitText + ", " + offset + "," + newLength);
+                    }
+                    additionalOffsets.add(offset);
+                    additionalLengths.add(newLength);
+                    additionalSuggestionsInfos.add(newSi);
+                }
+            }
+            final int additionalSize = additionalOffsets.size();
+            if (additionalSize <= 0) {
+                return null;
+            }
+            final int suggestionsSize = N + additionalSize;
+            final int[] newOffsets = new int[suggestionsSize];
+            final int[] newLengths = new int[suggestionsSize];
+            final SuggestionsInfo[] newSuggestionsInfos = new SuggestionsInfo[suggestionsSize];
+            int i;
+            for (i = 0; i < N; ++i) {
+                newOffsets[i] = ssi.getOffsetAt(i);
+                newLengths[i] = ssi.getLengthAt(i);
+                newSuggestionsInfos[i] = ssi.getSuggestionsInfoAt(i);
+            }
+            for (; i < suggestionsSize; ++i) {
+                newOffsets[i] = additionalOffsets.get(i - N);
+                newLengths[i] = additionalLengths.get(i - N);
+                newSuggestionsInfos[i] = additionalSuggestionsInfos.get(i - N);
+            }
+            return new SentenceSuggestionsInfo(newSuggestionsInfos, newOffsets, newLengths);
+        }
+
+        @Override
+        public SentenceSuggestionsInfo[] onGetSentenceSuggestionsMultiple(
+                TextInfo[] textInfos, int suggestionsLimit) {
+            final SentenceSuggestionsInfo[] retval = super.onGetSentenceSuggestionsMultiple(
+                    textInfos, suggestionsLimit);
+            if (retval == null || retval.length != textInfos.length) {
+                return retval;
+            }
+            for (int i = 0; i < retval.length; ++i) {
+                final SentenceSuggestionsInfo tempSsi =
+                        fixWronglyInvalidatedWordWithSingleQuote(textInfos[i], retval[i]);
+                if (tempSsi != null) {
+                    retval[i] = tempSsi;
+                }
+            }
+            return retval;
         }
 
         // Note : this must be reentrant
