@@ -714,7 +714,7 @@ public class PointerTracker {
 
     private void startRepeatKey(Key key) {
         if (key != null && key.isRepeatable()) {
-            onRepeatKey(key);
+            onRegisterKey(key);
             mTimerProxy.startKeyRepeatTimer(this);
             mIsRepeatableKey = true;
         } else {
@@ -722,7 +722,7 @@ public class PointerTracker {
         }
     }
 
-    public void onRepeatKey(Key key) {
+    public void onRegisterKey(Key key) {
         if (key != null) {
             detectAndSendKey(key, key.mX, key.mY);
             if (!key.altCodeWhileTyping() && !key.isModifier()) {

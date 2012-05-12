@@ -140,7 +140,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             final PointerTracker tracker = (PointerTracker) msg.obj;
             switch (msg.what) {
             case MSG_REPEAT_KEY:
-                tracker.onRepeatKey(tracker.getKey());
+                tracker.onRegisterKey(tracker.getKey());
                 startKeyRepeatTimer(tracker, mParams.mKeyRepeatInterval);
                 break;
             case MSG_LONGPRESS_KEY:
