@@ -108,6 +108,7 @@ public class SuggestionSpanUtils {
         if (!dictionaryAvailable || TextUtils.isEmpty(pickedWord)
                 || CONSTRUCTOR_SuggestionSpan == null
                 || suggestedWords == null || suggestedWords.size() == 0
+                || suggestedWords.mIsPrediction || suggestedWords.mIsPunctuationSuggestions
                 || OBJ_SUGGESTIONS_MAX_SIZE == null) {
             return pickedWord;
         }

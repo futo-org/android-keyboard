@@ -253,13 +253,12 @@ public class Suggest implements Dictionary.WordCallback {
         SuggestedWordInfo.removeDups(mSuggestions);
 
         return new SuggestedWords(mSuggestions,
-                // TODO: Just assuming the suggestions that came from the bigram prediction are
-                // valid now. Need to assign a correct value for typedWordValid.
-                true /* typedWordValid */,
+                false /* typedWordValid */,
                 false /* hasAutoCorrectionCandidate */,
                 false /* allowsToBeAutoCorrected */,
                 false /* isPunctuationSuggestions */,
-                false /* isObsoleteSuggestions */);
+                false /* isObsoleteSuggestions */,
+                true /* isPrediction */);
     }
 
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
@@ -396,7 +395,8 @@ public class Suggest implements Dictionary.WordCallback {
                 autoCorrectionAvailable /* hasAutoCorrectionCandidate */,
                 allowsToBeAutoCorrected /* allowsToBeAutoCorrected */,
                 false /* isPunctuationSuggestions */,
-                false /* isObsoleteSuggestions */);
+                false /* isObsoleteSuggestions */,
+                false /* isPrediction */);
     }
 
     /**
