@@ -18,6 +18,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.os.SystemClock;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract.Contacts;
 import android.text.TextUtils;
@@ -30,9 +31,12 @@ import java.util.Locale;
 public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
 
     private static final String[] PROJECTION = {BaseColumns._ID, Contacts.DISPLAY_NAME,};
+    private static final String[] PROJECTION_ID_ONLY = {BaseColumns._ID};
 
     private static final String TAG = ContactsBinaryDictionary.class.getSimpleName();
     private static final String NAME = "contacts";
+
+    private static boolean DEBUG = false;
 
     /**
      * Frequency for contacts information into the dictionary
@@ -40,7 +44,13 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     private static final int FREQUENCY_FOR_CONTACTS = 40;
     private static final int FREQUENCY_FOR_CONTACTS_BIGRAM = 90;
 
+    /** The maximum number of contacts that this dictionary supports. */
+    private static final int MAX_CONTACT_COUNT = 10000;
+
     private static final int INDEX_NAME = 1;
+
+    /** The number of contacts in the most recent dictionary rebuild. */
+    static private int sContactCountAtLastRebuild = 0;
 
     private ContentObserver mObserver;
 
@@ -98,6 +108,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
             if (cursor != null) {
                 try {
                     if (cursor.moveToFirst()) {
+                        sContactCountAtLastRebuild = getContactCount();
                         addWords(cursor);
                     }
                 } finally {
@@ -125,13 +136,26 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
 
     private void addWords(Cursor cursor) {
         clearFusionDictionary();
-        while (!cursor.isAfterLast()) {
+        int count = 0;
+        while (!cursor.isAfterLast() && count < MAX_CONTACT_COUNT) {
             String name = cursor.getString(INDEX_NAME);
-            if (name != null && -1 == name.indexOf('@')) {
+            if (isValidName(name)) {
                 addName(name);
+                ++count;
             }
             cursor.moveToNext();
         }
+    }
+
+    private int getContactCount() {
+        // TODO: consider switching to a rawQuery("select count(*)...") on the database if
+        // performance is a bottleneck.
+        final Cursor cursor = mContext.getContentResolver().query(
+                Contacts.CONTENT_URI, PROJECTION_ID_ONLY, null, null, null);
+        if (cursor != null) {
+            return cursor.getCount();
+        }
+        return 0;
     }
 
     /**
@@ -144,16 +168,9 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         // TODO: Better tokenization for non-Latin writing systems
         for (int i = 0; i < len; i++) {
             if (Character.isLetter(name.codePointAt(i))) {
-                int j;
-                for (j = i + 1; j < len; j++) {
-                    final int codePoint = name.codePointAt(j);
-                    if (!(codePoint == Keyboard.CODE_DASH || codePoint == Keyboard.CODE_SINGLE_QUOTE
-                            || Character.isLetter(codePoint))) {
-                        break;
-                    }
-                }
-                String word = name.substring(i, j);
-                i = j - 1;
+                int end = getWordEndPosition(name, len, i);
+                String word = name.substring(i, end);
+                i = end - 1;
                 // Don't add single letter words, possibly confuses
                 // capitalization of i.
                 final int wordLen = word.codePointCount(0, word.length());
@@ -168,5 +185,101 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                 }
             }
         }
+    }
+
+    /**
+     * Returns the index of the last letter in the word, starting from position startIndex.
+     */
+    private static int getWordEndPosition(String string, int len, int startIndex) {
+        int end;
+        int cp = 0;
+        for (end = startIndex + 1; end < len; end += Character.charCount(cp)) {
+            cp = string.codePointAt(end);
+            if (!(cp == Keyboard.CODE_DASH || cp == Keyboard.CODE_SINGLE_QUOTE
+                    || Character.isLetter(cp))) {
+                break;
+            }
+        }
+        return end;
+    }
+
+    @Override
+    protected boolean hasContentChanged() {
+        final long startTime = SystemClock.uptimeMillis();
+        final int contactCount = getContactCount();
+        if (contactCount > MAX_CONTACT_COUNT) {
+            // If there are too many contacts then return false. In this rare case it is impossible
+            // to include all of them anyways and the cost of rebuilding the dictionary is too high.
+            // TODO: Sort and check only the MAX_CONTACT_COUNT most recent contacts?
+            return false;
+        }
+        if (contactCount != sContactCountAtLastRebuild) {
+            return true;
+        }
+        // Check all contacts since it's not possible to find out which names have changed.
+        // This is needed because it's possible to receive extraneous onChange events even when no
+        // name has changed.
+        Cursor cursor = mContext.getContentResolver().query(
+                Contacts.CONTENT_URI, PROJECTION, null, null, null);
+        if (cursor != null) {
+            try {
+                if (cursor.moveToFirst()) {
+                    while (!cursor.isAfterLast()) {
+                        String name = cursor.getString(INDEX_NAME);
+                        if (isValidName(name) && !isNameInDictionary(name)) {
+                            if (DEBUG) {
+                                Log.d(TAG, "Contact name missing: " + name + " (runtime = "
+                                        + (SystemClock.uptimeMillis() - startTime) + " ms)");
+                            }
+                            return true;
+                        }
+                        cursor.moveToNext();
+                    }
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (DEBUG) {
+            Log.d(TAG, "No contacts changed. (runtime = " + (SystemClock.uptimeMillis() - startTime)
+                    + " ms)");
+        }
+        return false;
+    }
+
+    private static boolean isValidName(String name) {
+        if (name != null && -1 == name.indexOf('@')) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the words in a name are in the current binary dictionary.
+     */
+    private boolean isNameInDictionary(String name) {
+        int len = name.codePointCount(0, name.length());
+        String prevWord = null;
+        for (int i = 0; i < len; i++) {
+            if (Character.isLetter(name.codePointAt(i))) {
+                int end = getWordEndPosition(name, len, i);
+                String word = name.substring(i, end);
+                i = end - 1;
+                final int wordLen = word.codePointCount(0, word.length());
+                if (wordLen < MAX_WORD_LENGTH && wordLen > 1) {
+                    if (!TextUtils.isEmpty(prevWord) && mUseFirstLastBigrams) {
+                        if (!super.isValidBigramLocked(prevWord, word)) {
+                            return false;
+                        }
+                    } else {
+                        if (!super.isValidWordLocked(word)) {
+                            return false;
+                        }
+                    }
+                    prevWord = word;
+                }
+            }
+        }
+        return true;
     }
 }

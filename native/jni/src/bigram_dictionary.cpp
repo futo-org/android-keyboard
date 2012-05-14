@@ -128,7 +128,7 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
                 ++bigramCount;
             }
         }
-    } while (0 != (UnigramDictionary::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags));
+    } while (UnigramDictionary::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags);
     return bigramCount;
 }
 
@@ -186,6 +186,26 @@ bool BigramDictionary::checkFirstCharacter(unsigned short *word) {
         inputCodes++;
         maxAlt--;
     }
+    return false;
+}
+
+bool BigramDictionary::isValidBigram(const int32_t *word1, int length1, const int32_t *word2,
+        int length2) {
+    const uint8_t* const root = DICT;
+    int pos = getBigramListPositionForWord(word1, length1);
+    // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
+    if (0 == pos) return false;
+    int nextWordPos = BinaryFormat::getTerminalPosition(root, word2, length2);
+    if (NOT_VALID_WORD == nextWordPos) return false;
+    int bigramFlags;
+    do {
+        bigramFlags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
+        const int bigramPos = BinaryFormat::getAttributeAddressAndForwardPointer(root, bigramFlags,
+                &pos);
+        if (bigramPos == nextWordPos) {
+            return true;
+        }
+    } while (UnigramDictionary::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags);
     return false;
 }
 

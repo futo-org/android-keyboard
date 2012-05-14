@@ -96,6 +96,13 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     protected abstract void loadDictionaryAsync();
 
     /**
+     * Indicates that the source dictionary content has changed and a rebuild of the binary file is
+     * required. If it returns false, the next reload will only read the current binary dictionary
+     * from file. Note that the shared binary dictionary is locked when this is called.
+     */
+    protected abstract boolean hasContentChanged();
+
+    /**
      * Gets the shared dictionary controller for the given filename.
      */
     private static synchronized DictionaryController getSharedDictionaryController(
@@ -148,8 +155,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * the native side.
      */
     public void clearFusionDictionary() {
-        mFusionDictionary = new FusionDictionary(new Node(), new FusionDictionary.DictionaryOptions(
-                new HashMap<String, String>(), false, false));
+        mFusionDictionary = new FusionDictionary(new Node(),
+                new FusionDictionary.DictionaryOptions(new HashMap<String, String>(), false, 
+                        false));
     }
 
     /**
@@ -224,14 +232,38 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     protected boolean isValidWordInner(final CharSequence word) {
         if (mLocalDictionaryController.tryLock()) {
             try {
-                if (mBinaryDictionary != null) {
-                    return mBinaryDictionary.isValidWord(word);
-                }
+                return isValidWordLocked(word);
             } finally {
                 mLocalDictionaryController.unlock();
             }
         }
         return false;
+    }
+
+    protected boolean isValidWordLocked(final CharSequence word) {
+        if (mBinaryDictionary == null) return false;
+        return mBinaryDictionary.isValidWord(word);
+    }
+
+    protected boolean isValidBigram(final CharSequence word1, final CharSequence word2) {
+        if (mBinaryDictionary == null) return false;
+        return mBinaryDictionary.isValidBigram(word1, word2);
+    }
+
+    protected boolean isValidBigramInner(final CharSequence word1, final CharSequence word2) {
+        if (mLocalDictionaryController.tryLock()) {
+            try {
+                return isValidBigramLocked(word1, word2);
+            } finally {
+                mLocalDictionaryController.unlock();
+            }
+        }
+        return false;
+    }
+
+    protected boolean isValidBigramLocked(final CharSequence word1, final CharSequence word2) {
+        if (mBinaryDictionary == null) return false;
+        return mBinaryDictionary.isValidBigram(word1, word2);
     }
 
     /**
@@ -315,12 +347,16 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     /**
-     * Sets whether or not the dictionary is out of date and requires a reload.
+     * Marks that the dictionary is out of date and requires a reload.
+     *
+     * @param requiresRebuild Indicates that the source dictionary content has changed and a rebuild
+     *        of the binary file is required. If not true, the next reload process will only read
+     *        the current binary dictionary from file.
      */
-    protected void setRequiresReload(final boolean reload) {
-        final long time = reload ? SystemClock.uptimeMillis() : 0;
-        mSharedDictionaryController.mLastUpdateRequestTime = time;
+    protected void setRequiresReload(final boolean requiresRebuild) {
+        final long time = SystemClock.uptimeMillis();
         mLocalDictionaryController.mLastUpdateRequestTime = time;
+        mSharedDictionaryController.mLastUpdateRequestTime = time;
         if (DEBUG) {
             Log.d(TAG, "Reload request: request=" + time + " update="
                     + mSharedDictionaryController.mLastUpdateTime);
@@ -351,21 +387,30 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             if (mSharedDictionaryController.isOutOfDate() || !dictionaryFileExists()) {
                 // If the shared dictionary file does not exist or is out of date, the first
                 // instance that acquires the lock will generate a new one.
-                mSharedDictionaryController.mLastUpdateTime = time;
-                mLocalDictionaryController.mLastUpdateTime = time;
-                generateBinaryDictionary();
-                loadBinaryDictionary();
-            } else if (mLocalDictionaryController.isOutOfDate()) {
-                // Otherwise, if only the local dictionary for this instance is out of date, load
-                // the shared dictionary from file.
-                mLocalDictionaryController.mLastUpdateTime = time;
+                if (hasContentChanged()) {
+                    // If the source content has changed, rebuild the binary dictionary.
+                    mSharedDictionaryController.mLastUpdateTime = time;
+                    generateBinaryDictionary();
+                    loadBinaryDictionary();
+                } else {
+                    // If not, the reload request was unnecessary so revert LastUpdateRequestTime
+                    // to LastUpdateTime.
+                    mSharedDictionaryController.mLastUpdateRequestTime =
+                            mSharedDictionaryController.mLastUpdateTime;
+                }
+            } else if (mBinaryDictionary == null || mLocalDictionaryController.mLastUpdateTime
+                    < mSharedDictionaryController.mLastUpdateTime) {
+                // Otherwise, if the local dictionary is older than the shared dictionary, load the
+                // shared dictionary.
                 loadBinaryDictionary();
             }
+            mLocalDictionaryController.mLastUpdateTime = time;
         } finally {
             mSharedDictionaryController.unlock();
         }
     }
 
+    // TODO: cache the file's existence so that we avoid doing a disk access each time.
     private boolean dictionaryFileExists() {
         final File file = new File(mContext.getFilesDir(), mFilename);
         return file.exists();

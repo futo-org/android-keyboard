@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 
@@ -84,6 +85,7 @@ public class BinaryDictionary extends Dictionary {
             int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength, int maxWords);
     private native void closeNative(long dict);
     private native boolean isValidWordNative(long dict, int[] word, int wordLength);
+    private native boolean isValidBigramNative(long dict, int[] word1, int[] word2);
     private native int getSuggestionsNative(long dict, long proximityInfo, int[] xCoordinates,
             int[] yCoordinates, int[] inputCodes, int codesSize, int[] prevWordForBigrams,
             boolean useFullEditDistance, char[] outputChars, int[] scores);
@@ -202,6 +204,15 @@ public class BinaryDictionary extends Dictionary {
         if (word == null) return false;
         int[] chars = StringUtils.toCodePointArray(word.toString());
         return isValidWordNative(mNativeDict, chars, chars.length);
+    }
+
+    // TODO: Add a batch process version (isValidBigramMultiple?) to avoid excessive numbers of jni
+    // calls when checking for changes in an entire dictionary.
+    public boolean isValidBigram(CharSequence word1, CharSequence word2) {
+        if (TextUtils.isEmpty(word1) || TextUtils.isEmpty(word2)) return false;
+        int[] chars1 = StringUtils.toCodePointArray(word1.toString());
+        int[] chars2 = StringUtils.toCodePointArray(word2.toString());
+        return isValidBigramNative(mNativeDict, chars1, chars2);
     }
 
     @Override

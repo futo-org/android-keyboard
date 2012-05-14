@@ -53,6 +53,7 @@ class Dictionary {
     }
 
     bool isValidWord(const int32_t *word, int length);
+    bool isValidBigram(const int32_t *word1, int length1, const int32_t *word2, int length2);
     void *getDict() { return (void *)mDict; }
     int getDictSize() { return mDictSize; }
     int getMmapFd() { return mMmapFd; }
