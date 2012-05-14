@@ -24,8 +24,8 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.JsonWriter;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.inputmethod.CompletionInfo;
@@ -36,19 +36,17 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
-import com.android.inputmethod.latin.EditingUtils.Range;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.charset.Charset;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -62,381 +60,161 @@ import java.util.UUID;
  */
 public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = ResearchLogger.class.getSimpleName();
-    private static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
-    private static final String PREF_RESEARCH_LOGGER_UUID_STRING = "pref_research_logger_uuid";
     private static final boolean DEBUG = false;
+    /* package */ static boolean sIsLogging = false;
+    private static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
+    private static final String FILENAME_PREFIX = "researchLog";
+    private static final String FILENAME_SUFFIX = ".txt";
+    private static final JsonWriter NULL_JSON_WRITER = new JsonWriter(
+            new OutputStreamWriter(new NullOutputStream()));
+    private static final SimpleDateFormat TIMESTAMP_DATEFORMAT =
+            new SimpleDateFormat("yyyyMMDDHHmmss", Locale.US);
+
+    // constants related to specific log points
     private static final String WHITESPACE_SEPARATORS = " \t\n\r";
-
-    private static final ResearchLogger sInstance = new ResearchLogger(new LogFileManager());
     private static final int MAX_INPUTVIEW_LENGTH_TO_CAPTURE = 8192; // must be >=1
-    public static boolean sIsLogging = false;
-    /* package */ final Handler mLoggingHandler;
-    private InputMethodService mIms;
+    private static final String PREF_RESEARCH_LOGGER_UUID_STRING = "pref_research_logger_uuid";
 
-    // set when LatinIME should ignore a onUpdateSelection() callback that
+    private static final ResearchLogger sInstance = new ResearchLogger();
+    private HandlerThread mHandlerThread;
+    /* package */ Handler mLoggingHandler;
+    // to write to a different filename, e.g., for testing, set mFile before calling start()
+    private File mFilesDir;
+    /* package */ File mFile;
+    private JsonWriter mJsonWriter = NULL_JSON_WRITER; // should never be null
+
+    private int mLoggingState;
+    private static final int LOGGING_STATE_OFF = 0;
+    private static final int LOGGING_STATE_ON = 1;
+    private static final int LOGGING_STATE_STOPPING = 2;
+
+    // set when LatinIME should ignore an onUpdateSelection() callback that
     // arises from operations in this class
-    private static boolean mLatinIMEExpectingUpdateSelection = false;
+    private static boolean sLatinIMEExpectingUpdateSelection = false;
 
-    /**
-     * Isolates management of files. This variable should never be null, but can be changed
-     * to support testing.
-     */
-    /* package */ LogFileManager mLogFileManager;
-
-    /**
-     * Manages the file(s) that stores the logs.
-     *
-     * Handles creation, deletion, and provides Readers, Writers, and InputStreams to access
-     * the logs.
-     */
-    /* package */ static class LogFileManager {
-        public static final String RESEARCH_LOG_FILENAME_KEY = "RESEARCH_LOG_FILENAME";
-
-        private static final String DEFAULT_FILENAME = "researchLog.txt";
-        private static final long LOGFILE_PURGE_INTERVAL = 1000 * 60 * 60 * 24;
-
-        protected InputMethodService mIms;
-        protected File mFile;
-        protected PrintWriter mPrintWriter;
-
-        /* package */ LogFileManager() {
+    private static class NullOutputStream extends OutputStream {
+        /** {@inheritDoc} */
+        @Override
+        public void write(byte[] buffer, int offset, int count) throws IOException {
+            // nop
         }
 
-        public void init(final InputMethodService ims) {
-            mIms = ims;
+        /** {@inheritDoc} */
+        @Override
+        public void write(byte[] buffer) throws IOException {
+            // nop
         }
 
-        public synchronized void createLogFile() throws IOException {
-            createLogFile(DEFAULT_FILENAME);
-        }
-
-        public synchronized void createLogFile(final SharedPreferences prefs)
-                throws IOException {
-            final String filename =
-                    prefs.getString(RESEARCH_LOG_FILENAME_KEY, DEFAULT_FILENAME);
-            createLogFile(filename);
-        }
-
-        public synchronized void createLogFile(final String filename)
-                throws IOException {
-            if (mIms == null) {
-                final String msg = "InputMethodService is not configured.  Logging is off.";
-                Log.w(TAG, msg);
-                throw new IOException(msg);
-            }
-            final File filesDir = mIms.getFilesDir();
-            if (filesDir == null || !filesDir.exists()) {
-                final String msg = "Storage directory does not exist.  Logging is off.";
-                Log.w(TAG, msg);
-                throw new IOException(msg);
-            }
-            close();
-            final File file = new File(filesDir, filename);
-            mFile = file;
-            boolean append = true;
-            if (file.exists() && file.lastModified() + LOGFILE_PURGE_INTERVAL <
-                    System.currentTimeMillis()) {
-                append = false;
-            }
-            mPrintWriter = new PrintWriter(new BufferedWriter(new FileWriter(file, append)), true);
-        }
-
-        public synchronized boolean append(final String s) {
-            PrintWriter printWriter = mPrintWriter;
-            if (printWriter == null || !mFile.exists()) {
-                if (DEBUG) {
-                    Log.w(TAG, "PrintWriter is null... attempting to create default log file");
-                }
-                try {
-                    createLogFile();
-                    printWriter = mPrintWriter;
-                } catch (IOException e) {
-                    Log.w(TAG, "Failed to create log file.  Not logging.");
-                    return false;
-                }
-            }
-            printWriter.print(s);
-            printWriter.flush();
-            return !printWriter.checkError();
-        }
-
-        public synchronized void reset() {
-            if (mPrintWriter != null) {
-                mPrintWriter.close();
-                mPrintWriter = null;
-                if (DEBUG) {
-                    Log.d(TAG, "logfile closed");
-                }
-            }
-            if (mFile != null) {
-                mFile.delete();
-                if (DEBUG) {
-                    Log.d(TAG, "logfile deleted");
-                }
-                mFile = null;
-            }
-        }
-
-        public synchronized void close() {
-            if (mPrintWriter != null) {
-                mPrintWriter.close();
-                mPrintWriter = null;
-                mFile = null;
-                if (DEBUG) {
-                    Log.d(TAG, "logfile closed");
-                }
-            }
-        }
-
-        /* package */ synchronized void flush() {
-            if (mPrintWriter != null) {
-                mPrintWriter.flush();
-            }
-        }
-
-        /* package */ synchronized String getContents() {
-            final File file = mFile;
-            if (file == null) {
-                return "";
-            }
-            if (mPrintWriter != null) {
-                mPrintWriter.flush();
-            }
-            FileInputStream stream = null;
-            FileChannel fileChannel = null;
-            String s = "";
-            try {
-                stream = new FileInputStream(file);
-                fileChannel = stream.getChannel();
-                final ByteBuffer byteBuffer = ByteBuffer.allocate((int) file.length());
-                fileChannel.read(byteBuffer);
-                byteBuffer.rewind();
-                CharBuffer charBuffer = Charset.defaultCharset().decode(byteBuffer);
-                s = charBuffer.toString();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (fileChannel != null) {
-                        fileChannel.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    try {
-                        if (stream != null) {
-                            stream.close();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            return s;
+        @Override
+        public void write(int oneByte) {
         }
     }
 
-    private ResearchLogger(final LogFileManager logFileManager) {
-        final HandlerThread handlerThread = new HandlerThread("ResearchLogger logging task",
-                Process.THREAD_PRIORITY_BACKGROUND);
-        handlerThread.start();
-        mLoggingHandler = new Handler(handlerThread.getLooper());
-        mLogFileManager = logFileManager;
+    private ResearchLogger() {
+        mLoggingState = LOGGING_STATE_OFF;
     }
 
     public static ResearchLogger getInstance() {
         return sInstance;
     }
 
-    public static void init(final InputMethodService ims, final SharedPreferences prefs) {
-        sInstance.initInternal(ims, prefs);
-    }
-
-    /* package */ void initInternal(final InputMethodService ims, final SharedPreferences prefs) {
-        mIms = ims;
-        final LogFileManager logFileManager = mLogFileManager;
-        if (logFileManager != null) {
-            logFileManager.init(ims);
-            try {
-                logFileManager.createLogFile(prefs);
-            } catch (IOException e) {
-                e.printStackTrace();
+    public void init(final InputMethodService ims, final SharedPreferences prefs) {
+        assert ims != null;
+        if (ims == null) {
+            Log.w(TAG, "IMS is null; logging is off");
+        } else {
+            mFilesDir = ims.getFilesDir();
+            if (mFilesDir == null || !mFilesDir.exists()) {
+                Log.w(TAG, "IME storage directory does not exist.");
             }
         }
         if (prefs != null) {
             sIsLogging = prefs.getBoolean(PREF_USABILITY_STUDY_MODE, false);
-            prefs.registerOnSharedPreferenceChangeListener(this);
+            prefs.registerOnSharedPreferenceChangeListener(sInstance);
         }
     }
 
-    /**
-     * Represents a category of logging events that share the same subfield structure.
-     */
-    private static enum LogGroup {
-        MOTION_EVENT("m"),
-        KEY("k"),
-        CORRECTION("c"),
-        STATE_CHANGE("s"),
-        UNSTRUCTURED("u");
-
-        private final String mLogString;
-
-        private LogGroup(final String logString) {
-            mLogString = logString;
-        }
-    }
-
-    public void logMotionEvent(final int action, final long eventTime, final int id,
-            final int x, final int y, final float size, final float pressure) {
-        final String eventTag;
-        switch (action) {
-            case MotionEvent.ACTION_CANCEL: eventTag = "[Cancel]"; break;
-            case MotionEvent.ACTION_UP: eventTag = "[Up]"; break;
-            case MotionEvent.ACTION_DOWN: eventTag = "[Down]"; break;
-            case MotionEvent.ACTION_POINTER_UP: eventTag = "[PointerUp]"; break;
-            case MotionEvent.ACTION_POINTER_DOWN: eventTag = "[PointerDown]"; break;
-            case MotionEvent.ACTION_MOVE: eventTag = "[Move]"; break;
-            case MotionEvent.ACTION_OUTSIDE: eventTag = "[Outside]"; break;
-            default: eventTag = "[Action" + action + "]"; break;
-        }
-        if (!TextUtils.isEmpty(eventTag)) {
-            final StringBuilder sb = new StringBuilder();
-            sb.append(eventTag);
-            sb.append('\t'); sb.append(eventTime);
-            sb.append('\t'); sb.append(id);
-            sb.append('\t'); sb.append(x);
-            sb.append('\t'); sb.append(y);
-            sb.append('\t'); sb.append(size);
-            sb.append('\t'); sb.append(pressure);
-            write(LogGroup.MOTION_EVENT, sb.toString());
-        }
-    }
-
-    public void logKeyEvent(final int code, final int x, final int y) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(Keyboard.printableCode(code));
-        sb.append('\t'); sb.append(x);
-        sb.append('\t'); sb.append(y);
-        write(LogGroup.KEY, sb.toString());
-    }
-
-    public void logCorrection(final String subgroup, final String before, final String after,
-            final int position) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(subgroup);
-        sb.append('\t'); sb.append(before);
-        sb.append('\t'); sb.append(after);
-        sb.append('\t'); sb.append(position);
-        write(LogGroup.CORRECTION, sb.toString());
-    }
-
-    public void logStateChange(final String subgroup, final String details) {
-        write(LogGroup.STATE_CHANGE, subgroup + "\t" + details);
-    }
-
-    public static class UnsLogGroup {
-        private static final boolean DEFAULT_ENABLED = true;
-
-        private static final boolean KEYBOARDSTATE_ONCANCELINPUT_ENABLED = DEFAULT_ENABLED;
-        private static final boolean KEYBOARDSTATE_ONCODEINPUT_ENABLED = DEFAULT_ENABLED;
-        private static final boolean KEYBOARDSTATE_ONLONGPRESSTIMEOUT_ENABLED = DEFAULT_ENABLED;
-        private static final boolean KEYBOARDSTATE_ONPRESSKEY_ENABLED = DEFAULT_ENABLED;
-        private static final boolean KEYBOARDSTATE_ONRELEASEKEY_ENABLED = DEFAULT_ENABLED;
-        private static final boolean LATINIME_COMMITCURRENTAUTOCORRECTION_ENABLED = DEFAULT_ENABLED;
-        private static final boolean LATINIME_COMMITTEXT_ENABLED = DEFAULT_ENABLED;
-        private static final boolean LATINIME_DELETESURROUNDINGTEXT_ENABLED = DEFAULT_ENABLED;
-        private static final boolean LATINIME_DOUBLESPACEAUTOPERIOD_ENABLED = DEFAULT_ENABLED;
-        private static final boolean LATINIME_ONDISPLAYCOMPLETIONS_ENABLED = DEFAULT_ENABLED;
-        private static final boolean LATINIME_ONWINDOWHIDDEN_ENABLED = DEFAULT_ENABLED;
-        private static final boolean LATINIME_ONSTARTINPUTVIEWINTERNAL_ENABLED = DEFAULT_ENABLED;
-        private static final boolean LATINIME_ONUPDATESELECTION_ENABLED = DEFAULT_ENABLED;
-        private static final boolean LATINIME_PERFORMEDITORACTION_ENABLED = DEFAULT_ENABLED;
-        private static final boolean LATINIME_PICKAPPLICATIONSPECIFIEDCOMPLETION_ENABLED
-                = DEFAULT_ENABLED;
-        private static final boolean LATINIME_PICKPUNCTUATIONSUGGESTION_ENABLED = DEFAULT_ENABLED;
-        private static final boolean LATINIME_PICKSUGGESTIONMANUALLY_ENABLED = DEFAULT_ENABLED;
-        private static final boolean LATINIME_REVERTCOMMIT_ENABLED = DEFAULT_ENABLED;
-        private static final boolean LATINIME_REVERTDOUBLESPACEWHILEINBATCHEDIT_ENABLED
-                = DEFAULT_ENABLED;
-        private static final boolean LATINIME_REVERTSWAPPUNCTUATION_ENABLED = DEFAULT_ENABLED;
-        private static final boolean LATINIME_SENDKEYCODEPOINT_ENABLED = DEFAULT_ENABLED;
-        private static final boolean LATINIME_SWAPSWAPPERANDSPACEWHILEINBATCHEDIT_ENABLED
-                = DEFAULT_ENABLED;
-        private static final boolean LATINIME_SWITCHTOKEYBOARDVIEW_ENABLED = DEFAULT_ENABLED;
-        private static final boolean LATINKEYBOARDVIEW_ONLONGPRESS_ENABLED = DEFAULT_ENABLED;
-        private static final boolean LATINKEYBOARDVIEW_ONPROCESSMOTIONEVENT_ENABLED
-                = DEFAULT_ENABLED;
-        private static final boolean LATINKEYBOARDVIEW_SETKEYBOARD_ENABLED = DEFAULT_ENABLED;
-        private static final boolean POINTERTRACKER_CALLLISTENERONCANCELINPUT_ENABLED
-                = DEFAULT_ENABLED;
-        private static final boolean POINTERTRACKER_CALLLISTENERONCODEINPUT_ENABLED
-                = DEFAULT_ENABLED;
-        private static final boolean
-                POINTERTRACKER_CALLLISTENERONPRESSANDCHECKKEYBOARDLAYOUTCHANGE_ENABLED
-                = DEFAULT_ENABLED;
-        private static final boolean POINTERTRACKER_CALLLISTENERONRELEASE_ENABLED = DEFAULT_ENABLED;
-        private static final boolean POINTERTRACKER_ONDOWNEVENT_ENABLED = DEFAULT_ENABLED;
-        private static final boolean POINTERTRACKER_ONMOVEEVENT_ENABLED = DEFAULT_ENABLED;
-        private static final boolean SUDDENJUMPINGTOUCHEVENTHANDLER_ONTOUCHEVENT_ENABLED
-                = DEFAULT_ENABLED;
-        private static final boolean SUGGESTIONSVIEW_SETSUGGESTIONS_ENABLED = DEFAULT_ENABLED;
-    }
-
-    public static void logUnstructured(String logGroup, final String details) {
-        // TODO: improve performance by making entire class static and/or implementing natively
-        getInstance().write(LogGroup.UNSTRUCTURED, logGroup + "\t" + details);
-    }
-
-    private void write(final LogGroup logGroup, final String log) {
-        // TODO: rewrite in native for better performance
-        mLoggingHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                final long currentTime = System.currentTimeMillis();
-                final long upTime = SystemClock.uptimeMillis();
-                final StringBuilder builder = new StringBuilder();
-                builder.append(currentTime);
-                builder.append('\t'); builder.append(upTime);
-                builder.append('\t'); builder.append(logGroup.mLogString);
-                builder.append('\t'); builder.append(log);
-                builder.append('\n');
-                if (DEBUG) {
-                    Log.d(TAG, "Write: " + '[' + logGroup.mLogString + ']' + log);
+    public synchronized void start() {
+        Log.d(TAG, "start called");
+        if (mFilesDir == null || !mFilesDir.exists()) {
+            Log.w(TAG, "IME storage directory does not exist.  Cannot start logging.");
+        } else {
+            if (mHandlerThread == null || !mHandlerThread.isAlive()) {
+                mHandlerThread = new HandlerThread("ResearchLogger logging task",
+                        Process.THREAD_PRIORITY_BACKGROUND);
+                mHandlerThread.start();
+                mLoggingHandler = null;
+                mLoggingState = LOGGING_STATE_OFF;
+            }
+            if (mLoggingHandler == null) {
+                mLoggingHandler = new Handler(mHandlerThread.getLooper());
+                mLoggingState = LOGGING_STATE_OFF;
+            }
+            if (mFile == null) {
+                final String timestampString = TIMESTAMP_DATEFORMAT.format(new Date());
+                mFile = new File(mFilesDir, FILENAME_PREFIX + timestampString + FILENAME_SUFFIX);
+            }
+            if (mLoggingState == LOGGING_STATE_OFF) {
+                try {
+                    mJsonWriter = new JsonWriter(new BufferedWriter(new FileWriter(mFile)));
+                    mJsonWriter.setLenient(true);
+                    mJsonWriter.beginArray();
+                    mLoggingState = LOGGING_STATE_ON;
+                } catch (IOException e) {
+                    Log.w(TAG, "cannot start JsonWriter");
+                    mJsonWriter = NULL_JSON_WRITER;
+                    e.printStackTrace();
                 }
-                final String s = builder.toString();
-                if (mLogFileManager.append(s)) {
-                    // success
-                } else {
-                    if (DEBUG) {
-                        Log.w(TAG, "Unable to write to log.");
-                    }
-                    // perhaps logfile was deleted.  try to recreate and relog.
+            }
+        }
+    }
+
+    public synchronized void stop() {
+        Log.d(TAG, "stop called");
+        if (mLoggingHandler != null && mLoggingState == LOGGING_STATE_ON) {
+            mLoggingState = LOGGING_STATE_STOPPING;
+            // put this in the Handler queue so pending writes are processed first.
+            mLoggingHandler.post(new Runnable() {
+                @Override
+                public void run() {
                     try {
-                        mLogFileManager.createLogFile(PreferenceManager
-                                .getDefaultSharedPreferences(mIms));
-                        mLogFileManager.append(s);
+                        Log.d(TAG, "closing jsonwriter");
+                        mJsonWriter.endArray();
+                        mJsonWriter.flush();
+                        mJsonWriter.close();
+                    } catch (IllegalStateException e1) {
+                        // assume that this is just the json not being terminated properly.
+                        // ignore
+                        e1.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    mJsonWriter = NULL_JSON_WRITER;
+                    mFile = null;
+                    mLoggingState = LOGGING_STATE_OFF;
+                    if (DEBUG) {
+                        Log.d(TAG, "logfile closed");
+                    }
+                    Log.d(TAG, "finished stop(), notifying");
+                    synchronized (ResearchLogger.this) {
+                        ResearchLogger.this.notify();
+                    }
                 }
+            });
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        });
+        }
     }
 
-    public void clearAll() {
-        mLoggingHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (DEBUG) {
-                    Log.d(TAG, "Delete log file.");
-                }
-                mLogFileManager.reset();
-            }
-        });
-    }
-
-    /* package */ LogFileManager getLogFileManager() {
-        return mLogFileManager;
+    /* package */ synchronized void flush() {
+        try {
+            mJsonWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -447,157 +225,321 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         sIsLogging = prefs.getBoolean(PREF_USABILITY_STUDY_MODE, false);
     }
 
-    public static void keyboardState_onCancelInput(final boolean isSinglePointer,
-            final KeyboardState keyboardState) {
-        if (UnsLogGroup.KEYBOARDSTATE_ONCANCELINPUT_ENABLED) {
-            final String s = "onCancelInput: single=" + isSinglePointer + " " + keyboardState;
-            logUnstructured("KeyboardState_onCancelInput", s);
+    private static final String CURRENT_TIME_KEY = "_ct";
+    private static final String UPTIME_KEY = "_ut";
+    private static final String EVENT_TYPE_KEY = "_ty";
+    private static final Object[] EVENTKEYS_NULLVALUES = {};
+
+    /**
+     * Write a description of the event out to the ResearchLog.
+     *
+     * Runs in the background to avoid blocking the UI thread.
+     *
+     * @param keys an array containing a descriptive name for the event, followed by the keys
+     * @param values an array of values, either a String or Number.  length should be one
+     * less than the keys array
+     */
+    private synchronized void writeEvent(final String[] keys, final Object[] values) {
+        assert values.length + 1 == keys.length;
+        if (mLoggingState == LOGGING_STATE_ON) {
+            mLoggingHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        mJsonWriter.beginObject();
+                        mJsonWriter.name(CURRENT_TIME_KEY).value(System.currentTimeMillis());
+                        mJsonWriter.name(UPTIME_KEY).value(SystemClock.uptimeMillis());
+                        mJsonWriter.name(EVENT_TYPE_KEY).value(keys[0]);
+                        final int length = values.length;
+                        for (int i = 0; i < length; i++) {
+                            mJsonWriter.name(keys[i + 1]);
+                            Object value = values[i];
+                            if (value instanceof String) {
+                                mJsonWriter.value((String) value);
+                            } else if (value instanceof Number) {
+                                mJsonWriter.value((Number) value);
+                            } else if (value instanceof Boolean) {
+                                mJsonWriter.value((Boolean) value);
+                            } else if (value instanceof CompletionInfo[]) {
+                                CompletionInfo[] ci = (CompletionInfo[]) value;
+                                mJsonWriter.beginArray();
+                                for (int j = 0; j < ci.length; j++) {
+                                    mJsonWriter.value(ci[j].toString());
+                                }
+                                mJsonWriter.endArray();
+                            } else if (value instanceof SharedPreferences) {
+                                SharedPreferences prefs = (SharedPreferences) value;
+                                mJsonWriter.beginObject();
+                                for (Map.Entry<String,?> entry : prefs.getAll().entrySet()) {
+                                    mJsonWriter.name(entry.getKey());
+                                    final Object innerValue = entry.getValue();
+                                    if (innerValue == null) {
+                                        mJsonWriter.nullValue();
+                                    } else {
+                                        mJsonWriter.value(innerValue.toString());
+                                    }
+                                }
+                                mJsonWriter.endObject();
+                            } else if (value instanceof Keyboard) {
+                                Keyboard keyboard = (Keyboard) value;
+                                mJsonWriter.beginArray();
+                                for (Key key : keyboard.mKeys) {
+                                    mJsonWriter.beginObject();
+                                    mJsonWriter.name("code").value(key.mCode);
+                                    mJsonWriter.name("altCode").value(key.mAltCode);
+                                    mJsonWriter.name("x").value(key.mX);
+                                    mJsonWriter.name("y").value(key.mY);
+                                    mJsonWriter.name("w").value(key.mWidth);
+                                    mJsonWriter.name("h").value(key.mHeight);
+                                    mJsonWriter.endObject();
+                                }
+                                mJsonWriter.endArray();
+                            } else if (value == null) {
+                                mJsonWriter.nullValue();
+                            } else {
+                                Log.w(TAG, "Unrecognized type to be logged: " +
+                                        (value == null ? "<null>" : value.getClass().getName()));
+                                mJsonWriter.nullValue();
+                            }
+                        }
+                        mJsonWriter.endObject();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Log.w(TAG, "Error in JsonWriter; disabling logging");
+                        try {
+                            mJsonWriter.close();
+                        } catch (IllegalStateException e1) {
+                            // assume that this is just the json not being terminated properly.
+                            // ignore
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        } finally {
+                            mJsonWriter = NULL_JSON_WRITER;
+                        }
+                    }
+                }
+            });
         }
     }
 
+    private static final String[] EVENTKEYS_LATINKEYBOARDVIEW_PROCESSMOTIONEVENT = {
+        "LATINKEYBOARDVIEW_PROCESSMOTIONEVENT", "action", "eventTime", "id", "x", "y", "size",
+        "pressure"
+    };
+    public static void latinKeyboardView_processMotionEvent(final MotionEvent me, final int action,
+            final long eventTime, final int index, final int id, final int x, final int y) {
+        if (me != null) {
+            final String actionString;
+            switch (action) {
+                case MotionEvent.ACTION_CANCEL: actionString = "CANCEL"; break;
+                case MotionEvent.ACTION_UP: actionString = "UP"; break;
+                case MotionEvent.ACTION_DOWN: actionString = "DOWN"; break;
+                case MotionEvent.ACTION_POINTER_UP: actionString = "POINTER_UP"; break;
+                case MotionEvent.ACTION_POINTER_DOWN: actionString = "POINTER_DOWN"; break;
+                case MotionEvent.ACTION_MOVE: actionString = "MOVE"; break;
+                case MotionEvent.ACTION_OUTSIDE: actionString = "OUTSIDE"; break;
+                default: actionString = "ACTION_" + action; break;
+            }
+            final float size = me.getSize(index);
+            final float pressure = me.getPressure(index);
+            final Object[] values = {
+                actionString, eventTime, id, x, y, size, pressure
+            };
+            getInstance().writeEvent(EVENTKEYS_LATINKEYBOARDVIEW_PROCESSMOTIONEVENT, values);
+        }
+    }
+
+    private static final String[] EVENTKEYS_LATINIME_ONCODEINPUT = {
+        "LATINIME_ONCODEINPUT", "code", "x", "y"
+    };
+    public static void latinIME_onCodeInput(final int code, final int x, final int y) {
+        final Object[] values = {
+            Keyboard.printableCode(code), x, y
+        };
+        getInstance().writeEvent(EVENTKEYS_LATINIME_ONCODEINPUT, values);
+    }
+
+    private static final String[] EVENTKEYS_CORRECTION = {
+        "CORRECTION", "subgroup", "before", "after", "position"
+    };
+    public static void logCorrection(final String subgroup, final String before, final String after,
+            final int position) {
+        final Object[] values = {
+            subgroup, before, after, position
+        };
+        getInstance().writeEvent(EVENTKEYS_CORRECTION, values);
+    }
+
+    private static final String[] EVENTKEYS_STATECHANGE = {
+        "STATECHANGE", "subgroup", "details"
+    };
+    public static void logStateChange(final String subgroup, final String details) {
+        final Object[] values = {
+            subgroup, details
+        };
+        getInstance().writeEvent(EVENTKEYS_STATECHANGE, values);
+    }
+
+    private static final String[] EVENTKEYS_KEYBOARDSTATE_ONCANCELINPUT = {
+        "KEYBOARDSTATE_ONCANCELINPUT", "isSinglePointer", "keyboardState"
+    };
+    public static void keyboardState_onCancelInput(final boolean isSinglePointer,
+            final KeyboardState keyboardState) {
+        final Object[] values = {
+            isSinglePointer, keyboardState.toString()
+        };
+        getInstance().writeEvent(EVENTKEYS_KEYBOARDSTATE_ONCANCELINPUT, values);
+    }
+
+    private static final String[] EVENTKEYS_KEYBOARDSTATE_ONCODEINPUT = {
+        "KEYBOARDSTATE_ONCODEINPUT", "code", "isSinglePointer", "autoCaps", "keyboardState"
+    };
     public static void keyboardState_onCodeInput(
             final int code, final boolean isSinglePointer, final boolean autoCaps,
             final KeyboardState keyboardState) {
-        if (UnsLogGroup.KEYBOARDSTATE_ONCODEINPUT_ENABLED) {
-            final String s = "onCodeInput: code=" + Keyboard.printableCode(code)
-                    + " single=" + isSinglePointer
-                    + " autoCaps=" + autoCaps + " " + keyboardState;
-            logUnstructured("KeyboardState_onCodeInput", s);
-        }
+        final Object[] values = {
+            Keyboard.printableCode(code), isSinglePointer, autoCaps, keyboardState.toString()
+        };
+        getInstance().writeEvent(EVENTKEYS_KEYBOARDSTATE_ONCODEINPUT, values);
     }
 
+    private static final String[] EVENTKEYS_KEYBOARDSTATE_ONLONGPRESSTIMEOUT = {
+        "KEYBOARDSTATE_ONLONGPRESSTIMEOUT", "code", "keyboardState"
+    };
     public static void keyboardState_onLongPressTimeout(final int code,
             final KeyboardState keyboardState) {
-        if (UnsLogGroup.KEYBOARDSTATE_ONLONGPRESSTIMEOUT_ENABLED) {
-            final String s = "onLongPressTimeout: code=" + Keyboard.printableCode(code) + " "
-                    + keyboardState;
-            logUnstructured("KeyboardState_onLongPressTimeout", s);
-        }
+        final Object[] values = {
+            Keyboard.printableCode(code), keyboardState.toString()
+        };
+        getInstance().writeEvent(EVENTKEYS_KEYBOARDSTATE_ONLONGPRESSTIMEOUT, values);
     }
 
+    private static final String[] EVENTKEYS_KEYBOARDSTATE_ONPRESSKEY = {
+        "KEYBOARDSTATE_ONPRESSKEY", "code", "keyboardState"
+    };
     public static void keyboardState_onPressKey(final int code,
             final KeyboardState keyboardState) {
-        if (UnsLogGroup.KEYBOARDSTATE_ONPRESSKEY_ENABLED) {
-            final String s = "onPressKey: code=" + Keyboard.printableCode(code) + " "
-                    + keyboardState;
-            logUnstructured("KeyboardState_onPressKey", s);
-        }
+        final Object[] values = {
+            Keyboard.printableCode(code), keyboardState.toString()
+        };
+        getInstance().writeEvent(EVENTKEYS_KEYBOARDSTATE_ONPRESSKEY, values);
     }
 
+    private static final String[] EVENTKEYS_KEYBOARDSTATE_ONRELEASEKEY = {
+        "KEYBOARDSTATE_ONRELEASEKEY", "code", "withSliding", "keyboardState"
+    };
     public static void keyboardState_onReleaseKey(final KeyboardState keyboardState, final int code,
             final boolean withSliding) {
-        if (UnsLogGroup.KEYBOARDSTATE_ONRELEASEKEY_ENABLED) {
-            final String s = "onReleaseKey: code=" + Keyboard.printableCode(code)
-                    + " sliding=" + withSliding + " " + keyboardState;
-            logUnstructured("KeyboardState_onReleaseKey", s);
-        }
+        final Object[] values = {
+            Keyboard.printableCode(code), withSliding, keyboardState.toString()
+        };
+        getInstance().writeEvent(EVENTKEYS_KEYBOARDSTATE_ONRELEASEKEY, values);
     }
 
+    private static final String[] EVENTKEYS_LATINIME_COMMITCURRENTAUTOCORRECTION = {
+        "LATINIME_COMMITCURRENTAUTOCORRECTION", "typedWord", "autoCorrection"
+    };
     public static void latinIME_commitCurrentAutoCorrection(final String typedWord,
             final String autoCorrection) {
-        if (UnsLogGroup.LATINIME_COMMITCURRENTAUTOCORRECTION_ENABLED) {
-            if (typedWord.equals(autoCorrection)) {
-                getInstance().logCorrection("[----]", typedWord, autoCorrection, -1);
-            } else {
-                getInstance().logCorrection("[Auto]", typedWord, autoCorrection, -1);
-            }
-        }
+        final Object[] values = {
+            typedWord, autoCorrection
+        };
+        getInstance().writeEvent(EVENTKEYS_LATINIME_COMMITCURRENTAUTOCORRECTION, values);
     }
 
+    private static final String[] EVENTKEYS_LATINIME_COMMITTEXT = {
+        "LATINIME_COMMITTEXT", "typedWord"
+    };
     public static void latinIME_commitText(final CharSequence typedWord) {
-        if (UnsLogGroup.LATINIME_COMMITTEXT_ENABLED) {
-            logUnstructured("LatinIME_commitText", typedWord.toString());
-        }
+        final Object[] values = {
+            typedWord.toString()
+        };
+        getInstance().writeEvent(EVENTKEYS_LATINIME_COMMITTEXT, values);
     }
 
+    private static final String[] EVENTKEYS_LATINIME_DELETESURROUNDINGTEXT = {
+        "LATINIME_DELETESURROUNDINGTEXT", "length"
+    };
     public static void latinIME_deleteSurroundingText(final int length) {
-        if (UnsLogGroup.LATINIME_DELETESURROUNDINGTEXT_ENABLED) {
-            logUnstructured("LatinIME_deleteSurroundingText", String.valueOf(length));
-        }
+        final Object[] values = {
+            length
+        };
+        getInstance().writeEvent(EVENTKEYS_LATINIME_DELETESURROUNDINGTEXT, values);
     }
 
+    private static final String[] EVENTKEYS_LATINIME_DOUBLESPACEAUTOPERIOD = {
+        "LATINIME_DOUBLESPACEAUTOPERIOD"
+    };
     public static void latinIME_doubleSpaceAutoPeriod() {
-        if (UnsLogGroup.LATINIME_DOUBLESPACEAUTOPERIOD_ENABLED) {
-            logUnstructured("LatinIME_doubleSpaceAutoPeriod", "");
-        }
+        getInstance().writeEvent(EVENTKEYS_LATINIME_DOUBLESPACEAUTOPERIOD, EVENTKEYS_NULLVALUES);
     }
 
+    private static final String[] EVENTKEYS_LATINIME_ONDISPLAYCOMPLETIONS = {
+        "LATINIME_ONDISPLAYCOMPLETIONS", "applicationSpecifiedCompletions"
+    };
     public static void latinIME_onDisplayCompletions(
             final CompletionInfo[] applicationSpecifiedCompletions) {
-        if (UnsLogGroup.LATINIME_ONDISPLAYCOMPLETIONS_ENABLED) {
-            final StringBuilder builder = new StringBuilder();
-            builder.append("Received completions:");
-            if (applicationSpecifiedCompletions != null) {
-                for (int i = 0; i < applicationSpecifiedCompletions.length; i++) {
-                    builder.append("  #");
-                    builder.append(i);
-                    builder.append(": ");
-                    builder.append(applicationSpecifiedCompletions[i]);
-                    builder.append("\n");
-                }
-            }
-            logUnstructured("LatinIME_onDisplayCompletions", builder.toString());
-        }
+        final Object[] values = {
+            applicationSpecifiedCompletions
+        };
+        getInstance().writeEvent(EVENTKEYS_LATINIME_ONDISPLAYCOMPLETIONS, values);
     }
 
     /* package */ static boolean getAndClearLatinIMEExpectingUpdateSelection() {
-        boolean returnValue = mLatinIMEExpectingUpdateSelection;
-        mLatinIMEExpectingUpdateSelection = false;
+        boolean returnValue = sLatinIMEExpectingUpdateSelection;
+        sLatinIMEExpectingUpdateSelection = false;
         return returnValue;
     }
 
+    private static final String[] EVENTKEYS_LATINIME_ONWINDOWHIDDEN = {
+        "LATINIME_ONWINDOWHIDDEN", "isTextTruncated", "text"
+    };
     public static void latinIME_onWindowHidden(final int savedSelectionStart,
             final int savedSelectionEnd, final InputConnection ic) {
-        if (UnsLogGroup.LATINIME_ONWINDOWHIDDEN_ENABLED) {
-            if (ic != null) {
-                ic.beginBatchEdit();
-                ic.performContextMenuAction(android.R.id.selectAll);
-                CharSequence charSequence = ic.getSelectedText(0);
-                ic.setSelection(savedSelectionStart, savedSelectionEnd);
-                ic.endBatchEdit();
-                mLatinIMEExpectingUpdateSelection = true;
-                if (TextUtils.isEmpty(charSequence)) {
-                    logUnstructured("LatinIME_onWindowHidden", "<no text>");
-                } else {
-                    if (charSequence.length() > MAX_INPUTVIEW_LENGTH_TO_CAPTURE) {
-                        int length = MAX_INPUTVIEW_LENGTH_TO_CAPTURE;
-                        // do not cut in the middle of a supplementary character
-                        final char c = charSequence.charAt(length-1);
-                        if (Character.isHighSurrogate(c)) {
-                            length--;
-                        }
-                        final CharSequence truncatedCharSequence = charSequence.subSequence(0,
-                                length);
-                        logUnstructured("LatinIME_onWindowHidden", truncatedCharSequence.toString()
-                                + "<truncated>");
-                    } else {
-                        logUnstructured("LatinIME_onWindowHidden", charSequence.toString());
+        if (ic != null) {
+            ic.beginBatchEdit();
+            ic.performContextMenuAction(android.R.id.selectAll);
+            CharSequence charSequence = ic.getSelectedText(0);
+            ic.setSelection(savedSelectionStart, savedSelectionEnd);
+            ic.endBatchEdit();
+            sLatinIMEExpectingUpdateSelection = true;
+            Object[] values = new Object[2];
+            if (TextUtils.isEmpty(charSequence)) {
+                values[0] = false;
+                values[1] = "";
+            } else {
+                if (charSequence.length() > MAX_INPUTVIEW_LENGTH_TO_CAPTURE) {
+                    int length = MAX_INPUTVIEW_LENGTH_TO_CAPTURE;
+                    // do not cut in the middle of a supplementary character
+                    final char c = charSequence.charAt(length - 1);
+                    if (Character.isHighSurrogate(c)) {
+                        length--;
                     }
+                    final CharSequence truncatedCharSequence = charSequence.subSequence(0, length);
+                    values[0] = true;
+                    values[1] = truncatedCharSequence.toString();
+                } else {
+                    values[0] = false;
+                    values[1] = charSequence.toString();
                 }
             }
+            getInstance().writeEvent(EVENTKEYS_LATINIME_ONWINDOWHIDDEN, values);
         }
     }
 
+    private static final String[] EVENTKEYS_LATINIME_ONSTARTINPUTVIEWINTERNAL = {
+        "LATINIME_ONSTARTINPUTVIEWINTERNAL", "uuid", "packageName", "inputType", "imeOptions",
+        "display", "model", "prefs"
+    };
+
     public static void latinIME_onStartInputViewInternal(final EditorInfo editorInfo,
             final SharedPreferences prefs) {
-        if (UnsLogGroup.LATINIME_ONSTARTINPUTVIEWINTERNAL_ENABLED) {
-            final StringBuilder builder = new StringBuilder();
-            builder.append("onStartInputView: editorInfo:");
-            builder.append("\tpackageName=");
-            builder.append(editorInfo.packageName);
-            builder.append("\tinputType=");
-            builder.append(Integer.toHexString(editorInfo.inputType));
-            builder.append("\timeOptions=");
-            builder.append(Integer.toHexString(editorInfo.imeOptions));
-            builder.append("\tdisplay="); builder.append(Build.DISPLAY);
-            builder.append("\tmodel="); builder.append(Build.MODEL);
-            for (Map.Entry<String,?> entry : prefs.getAll().entrySet()) {
-                builder.append("\t" + entry.getKey());
-                Object value = entry.getValue();
-                builder.append("=" + ((value == null) ? "<null>" : value.toString()));
-            }
-            builder.append("\tuuid="); builder.append(getUUID(prefs));
-            logUnstructured("LatinIME_onStartInputViewInternal", builder.toString());
+        if (editorInfo != null) {
+            final Object[] values = {
+                getUUID(prefs), editorInfo.packageName, Integer.toHexString(editorInfo.inputType),
+                Integer.toHexString(editorInfo.imeOptions), Build.DISPLAY, Build.MODEL, prefs
+            };
+            getInstance().writeEvent(EVENTKEYS_LATINIME_ONSTARTINPUTVIEWINTERNAL, values);
         }
     }
 
@@ -613,215 +555,239 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         return uuidString;
     }
 
+    private static final String[] EVENTKEYS_LATINIME_ONUPDATESELECTION = {
+        "LATINIME_ONUPDATESELECTION", "lastSelectionStart", "lastSelectionEnd", "oldSelStart",
+        "oldSelEnd", "newSelStart", "newSelEnd", "composingSpanStart", "composingSpanEnd",
+        "expectingUpdateSelection", "expectingUpdateSelectionFromLogger", "context" 
+    };
+
     public static void latinIME_onUpdateSelection(final int lastSelectionStart,
             final int lastSelectionEnd, final int oldSelStart, final int oldSelEnd,
             final int newSelStart, final int newSelEnd, final int composingSpanStart,
             final int composingSpanEnd, final boolean expectingUpdateSelection,
             final boolean expectingUpdateSelectionFromLogger, final InputConnection connection) {
-        if (UnsLogGroup.LATINIME_ONUPDATESELECTION_ENABLED) {
-            final String s = "onUpdateSelection: oss=" + oldSelStart
-                    + ", ose=" + oldSelEnd
-                    + ", lss=" + lastSelectionStart
-                    + ", lse=" + lastSelectionEnd
-                    + ", nss=" + newSelStart
-                    + ", nse=" + newSelEnd
-                    + ", cs=" + composingSpanStart
-                    + ", ce=" + composingSpanEnd
-                    + ", eus=" + expectingUpdateSelection
-                    + ", eusfl=" + expectingUpdateSelectionFromLogger
-                    + ", context=\"" + EditingUtils.getWordRangeAtCursor(connection,
-                            WHITESPACE_SEPARATORS, 1).mWord + "\"";
-            logUnstructured("LatinIME_onUpdateSelection", s);
-        }
+        final Object[] values = {
+            lastSelectionStart, lastSelectionEnd, oldSelStart, oldSelEnd, newSelStart,
+            newSelEnd, composingSpanStart, composingSpanEnd, expectingUpdateSelection,
+            expectingUpdateSelectionFromLogger,
+            EditingUtils.getWordRangeAtCursor(connection, WHITESPACE_SEPARATORS, 1).mWord
+        };
+        getInstance().writeEvent(EVENTKEYS_LATINIME_ONUPDATESELECTION, values);
     }
 
+    private static final String[] EVENTKEYS_LATINIME_PERFORMEDITORACTION = {
+        "LATINIME_PERFORMEDITORACTION", "imeActionNext"
+    };
     public static void latinIME_performEditorAction(final int imeActionNext) {
-        if (UnsLogGroup.LATINIME_PERFORMEDITORACTION_ENABLED) {
-            logUnstructured("LatinIME_performEditorAction", String.valueOf(imeActionNext));
-        }
+        final Object[] values = {
+            imeActionNext
+        };
+        getInstance().writeEvent(EVENTKEYS_LATINIME_PERFORMEDITORACTION, values);
     }
 
+    private static final String[] EVENTKEYS_LATINIME_PICKAPPLICATIONSPECIFIEDCOMPLETION = {
+        "LATINIME_PICKAPPLICATIONSPECIFIEDCOMPLETION", "index", "text", "x", "y"
+    };
     public static void latinIME_pickApplicationSpecifiedCompletion(final int index,
             final CharSequence text, int x, int y) {
-        if (UnsLogGroup.LATINIME_PICKAPPLICATIONSPECIFIEDCOMPLETION_ENABLED) {
-            final String s = String.valueOf(index) + '\t' + text + '\t' + x + '\t' + y;
-            logUnstructured("LatinIME_pickApplicationSpecifiedCompletion", s);
-        }
+        final Object[] values = {
+            index, text.toString(), x, y
+        };
+        getInstance().writeEvent(EVENTKEYS_LATINIME_PICKAPPLICATIONSPECIFIEDCOMPLETION, values);
     }
 
+    private static final String[] EVENTKEYS_LATINIME_PICKSUGGESTIONMANUALLY = {
+        "LATINIME_PICKSUGGESTIONMANUALLY", "replacedWord", "index", "suggestion", "x", "y"
+    };
     public static void latinIME_pickSuggestionManually(final String replacedWord,
             final int index, CharSequence suggestion, int x, int y) {
-        if (UnsLogGroup.LATINIME_PICKSUGGESTIONMANUALLY_ENABLED) {
-            final String s = String.valueOf(index) + '\t' + suggestion + '\t' + x + '\t' + y;
-            logUnstructured("LatinIME_pickSuggestionManually", s);
-        }
+        final Object[] values = {
+            replacedWord, index, suggestion.toString(), x, y
+        };
+        getInstance().writeEvent(EVENTKEYS_LATINIME_PICKSUGGESTIONMANUALLY, values);
     }
 
+    private static final String[] EVENTKEYS_LATINIME_PUNCTUATIONSUGGESTION = {
+        "LATINIME_PUNCTUATIONSUGGESTION", "index", "suggestion", "x", "y"
+    };
     public static void latinIME_punctuationSuggestion(final int index,
             final CharSequence suggestion, int x, int y) {
-        if (UnsLogGroup.LATINIME_PICKPUNCTUATIONSUGGESTION_ENABLED) {
-            final String s = String.valueOf(index) + '\t' + suggestion + '\t' + x + '\t' + y;
-            logUnstructured("LatinIME_pickPunctuationSuggestion", s);
-        }
+        final Object[] values = {
+            index, suggestion.toString(), x, y
+        };
+        getInstance().writeEvent(EVENTKEYS_LATINIME_PUNCTUATIONSUGGESTION, values);
     }
 
+    private static final String[] EVENTKEYS_LATINIME_REVERTDOUBLESPACEWHILEINBATCHEDIT = {
+        "LATINIME_REVERTDOUBLESPACEWHILEINBATCHEDIT"
+    };
     public static void latinIME_revertDoubleSpaceWhileInBatchEdit() {
-        if (UnsLogGroup.LATINIME_REVERTDOUBLESPACEWHILEINBATCHEDIT_ENABLED) {
-            logUnstructured("LatinIME_revertDoubleSpaceWhileInBatchEdit", "");
-        }
+        getInstance().writeEvent(EVENTKEYS_LATINIME_REVERTDOUBLESPACEWHILEINBATCHEDIT,
+                EVENTKEYS_NULLVALUES);
     }
 
+    private static final String[] EVENTKEYS_LATINIME_REVERTSWAPPUNCTUATION = {
+        "LATINIME_REVERTSWAPPUNCTUATION"
+    };
     public static void latinIME_revertSwapPunctuation() {
-        if (UnsLogGroup.LATINIME_REVERTSWAPPUNCTUATION_ENABLED) {
-            logUnstructured("LatinIME_revertSwapPunctuation", "");
-        }
+        getInstance().writeEvent(EVENTKEYS_LATINIME_REVERTSWAPPUNCTUATION, EVENTKEYS_NULLVALUES);
     }
 
+    private static final String[] EVENTKEYS_LATINIME_SENDKEYCODEPOINT = {
+        "LATINIME_SENDKEYCODEPOINT", "code"
+    };
     public static void latinIME_sendKeyCodePoint(final int code) {
-        if (UnsLogGroup.LATINIME_SENDKEYCODEPOINT_ENABLED) {
-            logUnstructured("LatinIME_sendKeyCodePoint", String.valueOf(code));
-        }
+        final Object[] values = {
+            code
+        };
+        getInstance().writeEvent(EVENTKEYS_LATINIME_SENDKEYCODEPOINT, values);
     }
 
+    private static final String[] EVENTKEYS_LATINIME_SWAPSWAPPERANDSPACEWHILEINBATCHEDIT = {
+        "LATINIME_SWAPSWAPPERANDSPACEWHILEINBATCHEDIT"
+    };
     public static void latinIME_swapSwapperAndSpaceWhileInBatchEdit() {
-        if (UnsLogGroup.LATINIME_SWAPSWAPPERANDSPACEWHILEINBATCHEDIT_ENABLED) {
-            logUnstructured("latinIME_swapSwapperAndSpaceWhileInBatchEdit", "");
-        }
+        getInstance().writeEvent(EVENTKEYS_LATINIME_SWAPSWAPPERANDSPACEWHILEINBATCHEDIT,
+                EVENTKEYS_NULLVALUES);
     }
 
+    private static final String[] EVENTKEYS_LATINIME_SWITCHTOKEYBOARDVIEW = {
+        "LATINIME_SWITCHTOKEYBOARDVIEW"
+    };
     public static void latinIME_switchToKeyboardView() {
-        if (UnsLogGroup.LATINIME_SWITCHTOKEYBOARDVIEW_ENABLED) {
-            final String s = "Switch to keyboard view.";
-            logUnstructured("LatinIME_switchToKeyboardView", s);
-        }
+        getInstance().writeEvent(EVENTKEYS_LATINIME_SWITCHTOKEYBOARDVIEW, EVENTKEYS_NULLVALUES);
     }
 
+    private static final String[] EVENTKEYS_LATINKEYBOARDVIEW_ONLONGPRESS = {
+        "LATINKEYBOARDVIEW_ONLONGPRESS"
+    };
     public static void latinKeyboardView_onLongPress() {
-        if (UnsLogGroup.LATINKEYBOARDVIEW_ONLONGPRESS_ENABLED) {
-            final String s = "long press detected";
-            logUnstructured("LatinKeyboardView_onLongPress", s);
-        }
+        getInstance().writeEvent(EVENTKEYS_LATINKEYBOARDVIEW_ONLONGPRESS, EVENTKEYS_NULLVALUES);
     }
 
-    public static void latinKeyboardView_processMotionEvent(MotionEvent me, int action,
-            long eventTime, int index, int id, int x, int y) {
-        if (UnsLogGroup.LATINKEYBOARDVIEW_ONPROCESSMOTIONEVENT_ENABLED) {
-            final float size = me.getSize(index);
-            final float pressure = me.getPressure(index);
-            if (action != MotionEvent.ACTION_MOVE) {
-                getInstance().logMotionEvent(action, eventTime, id, x, y, size, pressure);
-            }
-        }
-    }
-
+    private static final String[] EVENTKEYS_LATINKEYBOARDVIEW_SETKEYBOARD = {
+        "LATINKEYBOARDVIEW_SETKEYBOARD", "id", "tw", "th", "keys"
+    };
     public static void latinKeyboardView_setKeyboard(final Keyboard keyboard) {
-        if (UnsLogGroup.LATINKEYBOARDVIEW_SETKEYBOARD_ENABLED) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("id=");
-            builder.append(keyboard.mId);
-            builder.append("\tw=");
-            builder.append(keyboard.mOccupiedWidth);
-            builder.append("\th=");
-            builder.append(keyboard.mOccupiedHeight);
-            builder.append("\tkeys=[");
-            boolean first = true;
-            for (Key key : keyboard.mKeys) {
-                if (first) {
-                    first = false;
-                } else {
-                    builder.append(",");
-                }
-                builder.append("{code:");
-                builder.append(key.mCode);
-                builder.append(",altCode:");
-                builder.append(key.mAltCode);
-                builder.append(",x:");
-                builder.append(key.mX);
-                builder.append(",y:");
-                builder.append(key.mY);
-                builder.append(",w:");
-                builder.append(key.mWidth);
-                builder.append(",h:");
-                builder.append(key.mHeight);
-                builder.append("}");
-            }
-            builder.append("]");
-            logUnstructured("LatinKeyboardView_setKeyboard", builder.toString());
+        if (keyboard != null) {
+            final Object[] values = {
+                keyboard.mId.toString(), keyboard.mOccupiedWidth, keyboard.mOccupiedHeight,
+                keyboard
+            };
+            getInstance().writeEvent(EVENTKEYS_LATINKEYBOARDVIEW_SETKEYBOARD, values);
         }
     }
 
+    private static final String[] EVENTKEYS_LATINIME_REVERTCOMMIT = {
+        "LATINIME_REVERTCOMMIT", "originallyTypedWord"
+    };
     public static void latinIME_revertCommit(final String originallyTypedWord) {
-        if (UnsLogGroup.LATINIME_REVERTCOMMIT_ENABLED) {
-            logUnstructured("LatinIME_revertCommit", originallyTypedWord);
-        }
+        final Object[] values = {
+            originallyTypedWord
+        };
+        getInstance().writeEvent(EVENTKEYS_LATINIME_REVERTCOMMIT, values);
     }
 
+    private static final String[] EVENTKEYS_POINTERTRACKER_CALLLISTENERONCANCELINPUT = {
+        "POINTERTRACKER_CALLLISTENERONCANCELINPUT"
+    };
     public static void pointerTracker_callListenerOnCancelInput() {
-        final String s = "onCancelInput";
-        if (UnsLogGroup.POINTERTRACKER_CALLLISTENERONCANCELINPUT_ENABLED) {
-            logUnstructured("PointerTracker_callListenerOnCancelInput", s);
-        }
+        getInstance().writeEvent(EVENTKEYS_POINTERTRACKER_CALLLISTENERONCANCELINPUT,
+                EVENTKEYS_NULLVALUES);
     }
 
+    private static final String[] EVENTKEYS_POINTERTRACKER_CALLLISTENERONCODEINPUT = {
+        "POINTERTRACKER_CALLLISTENERONCODEINPUT", "code", "outputText", "x", "y",
+        "ignoreModifierKey", "altersCode", "isEnabled"
+    };
     public static void pointerTracker_callListenerOnCodeInput(final Key key, final int x,
             final int y, final boolean ignoreModifierKey, final boolean altersCode,
             final int code) {
-        if (UnsLogGroup.POINTERTRACKER_CALLLISTENERONCODEINPUT_ENABLED) {
-            final String s = "onCodeInput: " + Keyboard.printableCode(code)
-                    + " text=" + key.mOutputText + " x=" + x + " y=" + y
-                    + " ignoreModifier=" + ignoreModifierKey + " altersCode=" + altersCode
-                    + " enabled=" + key.isEnabled();
-            logUnstructured("PointerTracker_callListenerOnCodeInput", s);
+        if (key != null) {
+            CharSequence outputText = key.mOutputText;
+            final Object[] values = {
+                Keyboard.printableCode(code), outputText == null ? "" : outputText.toString(),
+                x, y, ignoreModifierKey, altersCode, key.isEnabled()
+            };
+            getInstance().writeEvent(EVENTKEYS_POINTERTRACKER_CALLLISTENERONCODEINPUT, values);
         }
     }
 
+    private static final String[]
+            EVENTKEYS_POINTERTRACKER_CALLLISTENERONPRESSANDCHECKKEYBOARDLAYOUTCHANGE = {
+                "POINTERTRACKER_CALLLISTENERONPRESSANDCHECKKEYBOARDLAYOUTCHANGE", "code",
+                "ignoreModifierKey", "isEnabled"
+    };
     public static void pointerTracker_callListenerOnPressAndCheckKeyboardLayoutChange(
             final Key key, final boolean ignoreModifierKey) {
-        if (UnsLogGroup.POINTERTRACKER_CALLLISTENERONPRESSANDCHECKKEYBOARDLAYOUTCHANGE_ENABLED) {
-            final String s = "onPress    : " + KeyDetector.printableCode(key)
-                    + " ignoreModifier=" + ignoreModifierKey
-                    + " enabled=" + key.isEnabled();
-            logUnstructured("PointerTracker_callListenerOnPressAndCheckKeyboardLayoutChange", s);
+        if (key != null) {
+            final Object[] values = {
+                KeyDetector.printableCode(key), ignoreModifierKey, key.isEnabled()
+            };
+            getInstance().writeEvent(
+                    EVENTKEYS_POINTERTRACKER_CALLLISTENERONPRESSANDCHECKKEYBOARDLAYOUTCHANGE,
+                    values);
         }
     }
 
+    private static final String[] EVENTKEYS_POINTERTRACKER_CALLLISTENERONRELEASE = {
+        "POINTERTRACKER_CALLLISTENERONRELEASE", "code", "withSliding", "ignoreModifierKey",
+        "isEnabled"
+    };
     public static void pointerTracker_callListenerOnRelease(final Key key, final int primaryCode,
             final boolean withSliding, final boolean ignoreModifierKey) {
-        if (UnsLogGroup.POINTERTRACKER_CALLLISTENERONRELEASE_ENABLED) {
-            final String s = "onRelease  : " + Keyboard.printableCode(primaryCode)
-                    + " sliding=" + withSliding + " ignoreModifier=" + ignoreModifierKey
-                    + " enabled="+ key.isEnabled();
-            logUnstructured("PointerTracker_callListenerOnRelease", s);
+        if (key != null) {
+            final Object[] values = {
+                Keyboard.printableCode(primaryCode), withSliding, ignoreModifierKey,
+                key.isEnabled()
+            };
+            getInstance().writeEvent(EVENTKEYS_POINTERTRACKER_CALLLISTENERONRELEASE, values);
         }
     }
 
+    private static final String[] EVENTKEYS_POINTERTRACKER_ONDOWNEVENT = {
+        "POINTERTRACKER_ONDOWNEVENT", "deltaT", "distanceSquared"
+    };
     public static void pointerTracker_onDownEvent(long deltaT, int distanceSquared) {
-        if (UnsLogGroup.POINTERTRACKER_ONDOWNEVENT_ENABLED) {
-            final String s = "onDownEvent: ignore potential noise: time=" + deltaT
-                    + " distance=" + distanceSquared;
-            logUnstructured("PointerTracker_onDownEvent", s);
-        }
+        final Object[] values = {
+            deltaT, distanceSquared
+        };
+        getInstance().writeEvent(EVENTKEYS_POINTERTRACKER_ONDOWNEVENT, values);
     }
 
+    private static final String[] EVENTKEYS_POINTERTRACKER_ONMOVEEVENT = {
+        "POINTERTRACKER_ONMOVEEVENT", "x", "y", "lastX", "lastY"
+    };
     public static void pointerTracker_onMoveEvent(final int x, final int y, final int lastX,
             final int lastY) {
-        if (UnsLogGroup.POINTERTRACKER_ONMOVEEVENT_ENABLED) {
-            final String s = String.format("onMoveEvent: sudden move is translated to "
-                    + "up[%d,%d]/down[%d,%d] events", lastX, lastY, x, y);
-            logUnstructured("PointerTracker_onMoveEvent", s);
-        }
+        final Object[] values = {
+            x, y, lastX, lastY
+        };
+        getInstance().writeEvent(EVENTKEYS_POINTERTRACKER_ONMOVEEVENT, values);
     }
 
+    private static final String[] EVENTKEYS_SUDDENJUMPINGTOUCHEVENTHANDLER_ONTOUCHEVENT = {
+        "SUDDENJUMPINGTOUCHEVENTHANDLER_ONTOUCHEVENT", "motionEvent"
+    };
     public static void suddenJumpingTouchEventHandler_onTouchEvent(final MotionEvent me) {
-        if (UnsLogGroup.SUDDENJUMPINGTOUCHEVENTHANDLER_ONTOUCHEVENT_ENABLED) {
-            final String s = "onTouchEvent: ignore sudden jump " + me;
-            logUnstructured("SuddenJumpingTouchEventHandler_onTouchEvent", s);
+        if (me != null) {
+            final Object[] values = {
+                me.toString()
+            };
+            getInstance().writeEvent(EVENTKEYS_SUDDENJUMPINGTOUCHEVENTHANDLER_ONTOUCHEVENT,
+                    values);
         }
     }
 
-    public static void suggestionsView_setSuggestions(final SuggestedWords mSuggestedWords) {
-        if (UnsLogGroup.SUGGESTIONSVIEW_SETSUGGESTIONS_ENABLED) {
-            logUnstructured("SuggestionsView_setSuggestions", mSuggestedWords.toString());
+    private static final String[] EVENTKEYS_SUGGESTIONSVIEW_SETSUGGESTIONS = {
+        "SUGGESTIONSVIEW_SETSUGGESTIONS", "suggestedWords"
+    };
+    public static void suggestionsView_setSuggestions(final SuggestedWords suggestedWords) {
+        if (suggestedWords != null) {
+            final Object[] values = {
+                suggestedWords.toString()
+            };
+            getInstance().writeEvent(EVENTKEYS_SUGGESTIONSVIEW_SETSUGGESTIONS, values);
         }
     }
 }
