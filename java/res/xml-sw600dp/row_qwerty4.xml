@@ -22,22 +22,22 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Row
-        latin:keyWidth="8.5%p"
+        latin:keyWidth="9.0%p"
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
-            latin:keyWidth="11.75%p" />
+            latin:keyWidth="10.0%p" />
         <include
             latin:keyboardLayout="@xml/keys_f1f2" />
         <include
-            latin:keyXPos="28.75%p"
+            latin:keyXPos="28.0%p"
             latin:keyboardLayout="@xml/key_space" />
         <include
             latin:keyboardLayout="@xml/key_apostrophe" />
         <include
             latin:keyboardLayout="@xml/key_dash" />
         <include
-            latin:keyXPos="-8.5%p"
+            latin:keyXPos="-9.0%p"
             latin:keyWidth="fillRight"
             latin:keyboardLayout="@xml/key_shortcut" />
     </Row>
