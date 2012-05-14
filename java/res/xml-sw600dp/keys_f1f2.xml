@@ -27,7 +27,7 @@
         >
             <Key
                 latin:keyStyle="comKeyStyle"
-                latin:keyWidth="17.8%p" />
+                latin:keyWidth="17.0%p" />
         </case>
         <default>
             <switch>
