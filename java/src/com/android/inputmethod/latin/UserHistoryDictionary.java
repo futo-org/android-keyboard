@@ -176,7 +176,7 @@ public class UserHistoryDictionary extends ExpandableDictionary {
      * The second word may not be null (a NullPointerException would be thrown).
      */
     public int addToUserHistory(final String word1, String word2) {
-        super.addWord(word2, FREQUENCY_FOR_TYPED);
+        super.addWord(word2, null /* shortcut */, FREQUENCY_FOR_TYPED);
         // Do not insert a word as a bigram of itself
         if (word2.equals(word1)) {
             return 0;
@@ -246,7 +246,7 @@ public class UserHistoryDictionary extends ExpandableDictionary {
                     // Safeguard against adding really long words. Stack may overflow due
                     // to recursive lookup
                     if (null == word1) {
-                        super.addWord(word2, frequency);
+                        super.addWord(word2, null /* shortcut */, frequency);
                     } else if (word1.length() < BinaryDictionary.MAX_WORD_LENGTH
                             && word2.length() < BinaryDictionary.MAX_WORD_LENGTH) {
                         super.setBigram(word1, word2, frequency);

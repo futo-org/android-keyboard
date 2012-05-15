@@ -42,6 +42,6 @@ public class SynchronouslyLoadedUserDictionary extends UserDictionary {
     @Override
     public synchronized boolean isValidWord(CharSequence word) {
         blockingReloadDictionaryIfRequired();
-        return getWordFrequency(word) > -1;
+        return super.isValidWord(word);
     }
 }

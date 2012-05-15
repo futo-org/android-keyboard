@@ -22,6 +22,7 @@ import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.ProximityInfo;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -53,6 +54,8 @@ public class ExpandableDictionary extends Dictionary {
         boolean mTerminal;
         Node mParent;
         NodeArray mChildren;
+        ArrayList<char[]> mShortcutTargets;
+        boolean mShortcutOnly;
         LinkedList<NextWord> mNGrams; // Supports ngram
     }
 
@@ -150,15 +153,15 @@ public class ExpandableDictionary extends Dictionary {
         return BinaryDictionary.MAX_WORD_LENGTH;
     }
 
-    public void addWord(String word, int frequency) {
+    public void addWord(final String word, final String shortcutTarget, final int frequency) {
         if (word.length() >= BinaryDictionary.MAX_WORD_LENGTH) {
             return;
         }
-        addWordRec(mRoots, word, 0, frequency, null);
+        addWordRec(mRoots, word, 0, shortcutTarget, frequency, null);
     }
 
     private void addWordRec(NodeArray children, final String word, final int depth,
-            final int frequency, Node parentNode) {
+            final String shortcutTarget, final int frequency, Node parentNode) {
         final int wordLength = word.length();
         if (wordLength <= depth) return;
         final char c = word.charAt(depth);
@@ -172,15 +175,25 @@ public class ExpandableDictionary extends Dictionary {
                 break;
             }
         }
+        final boolean isShortcutOnly = (null != shortcutTarget);
         if (childNode == null) {
             childNode = new Node();
             childNode.mCode = c;
             childNode.mParent = parentNode;
+            childNode.mShortcutOnly = isShortcutOnly;
             children.add(childNode);
         }
         if (wordLength == depth + 1) {
             // Terminate this word
             childNode.mTerminal = true;
+            if (isShortcutOnly) {
+                if (null == childNode.mShortcutTargets) {
+                    childNode.mShortcutTargets = new ArrayList<char[]>();
+                }
+                childNode.mShortcutTargets.add(shortcutTarget.toCharArray());
+            } else {
+                childNode.mShortcutOnly = false;
+            }
             childNode.mFrequency = Math.max(frequency, childNode.mFrequency);
             if (childNode.mFrequency > 255) childNode.mFrequency = 255;
             return;
@@ -188,7 +201,7 @@ public class ExpandableDictionary extends Dictionary {
         if (childNode.mChildren == null) {
             childNode.mChildren = new NodeArray();
         }
-        addWordRec(childNode.mChildren, word, depth + 1, frequency, childNode);
+        addWordRec(childNode.mChildren, word, depth + 1, shortcutTarget, frequency, childNode);
     }
 
     @Override
@@ -239,7 +252,13 @@ public class ExpandableDictionary extends Dictionary {
             if (mRequiresReload) startDictionaryLoadingTaskLocked();
             if (mUpdatingDictionary) return false;
         }
-        return getWordFrequency(word) > -1;
+        final Node node = searchNode(mRoots, word, 0, word.length());
+        // If node is null, we didn't find the word, so it's not valid.
+        // If node.mShortcutOnly is true, then it exists as a shortcut but not as a word,
+        // so that means it's not a valid word.
+        // If node.mShortcutOnly is false, then it exists as a word (it may also exist as
+        // a shortcut, but this does not matter), so it's a valid word.
+        return (node == null) ? false : !node.mShortcutOnly;
     }
 
     /**
@@ -247,7 +266,7 @@ public class ExpandableDictionary extends Dictionary {
      */
     protected int getWordFrequency(CharSequence word) {
         // Case-sensitive search
-        Node node = searchNode(mRoots, word, 0, word.length());
+        final Node node = searchNode(mRoots, word, 0, word.length());
         return (node == null) ? -1 : node.mFrequency;
     }
 
@@ -259,6 +278,35 @@ public class ExpandableDictionary extends Dictionary {
         } else {
             return 0;
         }
+    }
+
+    /**
+     * Helper method to add a word and its shortcuts.
+     *
+     * @param node the terminal node
+     * @param word the word to insert, as an array of code points
+     * @param depth the depth of the node in the tree
+     * @param finalFreq the frequency for this word
+     * @return whether there is still space for more words. {@see Dictionary.WordCallback#addWord}.
+     */
+    private boolean addWordAndShortcutsFromNode(final Node node, final char[] word, final int depth,
+            final int finalFreq, final WordCallback callback) {
+        if (finalFreq > 0 && !node.mShortcutOnly) {
+            if (!callback.addWord(word, 0, depth + 1, finalFreq, mDicTypeId, Dictionary.UNIGRAM)) {
+                return false;
+            }
+        }
+        if (null != node.mShortcutTargets) {
+            final int length = node.mShortcutTargets.size();
+            for (int shortcutIndex = 0; shortcutIndex < length; ++shortcutIndex) {
+                final char[] shortcut = node.mShortcutTargets.get(shortcutIndex);
+                if (!callback.addWord(shortcut, 0, shortcut.length, finalFreq, mDicTypeId,
+                        Dictionary.UNIGRAM)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -313,8 +361,8 @@ public class ExpandableDictionary extends Dictionary {
                     } else {
                         finalFreq = computeSkippedWordFinalFreq(freq, snr, mInputLength);
                     }
-                    if (!callback.addWord(word, 0, depth + 1, finalFreq, mDicTypeId,
-                            Dictionary.UNIGRAM)) {
+                    if (!addWordAndShortcutsFromNode(node, word, depth, finalFreq, callback)) {
+                        // No space left in the queue, bail out
                         return;
                     }
                 }
@@ -344,18 +392,18 @@ public class ExpandableDictionary extends Dictionary {
 
                         if (codeSize == inputIndex + 1) {
                             if (terminal) {
-                                if (INCLUDE_TYPED_WORD_IF_VALID
-                                        || !same(word, depth + 1, codes.getTypedWord())) {
-                                    final int finalFreq;
-                                    if (skipPos < 0) {
-                                        finalFreq = freq * snr * addedAttenuation
-                                                * FULL_WORD_SCORE_MULTIPLIER;
-                                    } else {
-                                        finalFreq = computeSkippedWordFinalFreq(freq,
-                                                snr * addedAttenuation, mInputLength);
-                                    }
-                                    callback.addWord(word, 0, depth + 1, finalFreq, mDicTypeId,
-                                            Dictionary.UNIGRAM);
+                                final int finalFreq;
+                                if (skipPos < 0) {
+                                    finalFreq = freq * snr * addedAttenuation
+                                            * FULL_WORD_SCORE_MULTIPLIER;
+                                } else {
+                                    finalFreq = computeSkippedWordFinalFreq(freq,
+                                            snr * addedAttenuation, mInputLength);
+                                }
+                                if (!addWordAndShortcutsFromNode(node, word, depth, finalFreq,
+                                        callback)) {
+                                    // No space left in the queue, bail out
+                                    return;
                                 }
                             }
                             if (children != null) {

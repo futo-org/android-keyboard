@@ -31,8 +31,11 @@ import java.util.Arrays;
 
 public class UserDictionary extends ExpandableDictionary {
 
+    // TODO: use Words.SHORTCUT when it's public in the SDK
+    final static String SHORTCUT = "shortcut";
     private static final String[] PROJECTION_QUERY = {
         Words.WORD,
+        SHORTCUT,
         Words.FREQUENCY,
     };
 
@@ -149,15 +152,18 @@ public class UserDictionary extends ExpandableDictionary {
     }
 
     /**
-     * Adds a word to the dictionary and makes it persistent.
+     * Adds a word to the user dictionary and makes it persistent.
+     *
+     * This will call upon the system interface to do the actual work through the intent
+     * readied by the system to this effect.
+     *
      * @param word the word to add. If the word is capitalized, then the dictionary will
      * recognize it as a capitalized word when searched.
      * @param frequency the frequency of occurrence of the word. A frequency of 255 is considered
      * the highest.
      * @TODO use a higher or float range for frequency
      */
-    @Override
-    public synchronized void addWord(final String word, final int frequency) {
+    public synchronized void addWordToUserDictionary(final String word, final int frequency) {
         // Force load the dictionary here synchronously
         if (getRequiresReload()) loadDictionaryAsync();
         // TODO: do something for the UI. With the following, any sufficiently long word will
@@ -191,14 +197,19 @@ public class UserDictionary extends ExpandableDictionary {
         final int maxWordLength = getMaxWordLength();
         if (cursor.moveToFirst()) {
             final int indexWord = cursor.getColumnIndex(Words.WORD);
+            final int indexShortcut = cursor.getColumnIndex(SHORTCUT);
             final int indexFrequency = cursor.getColumnIndex(Words.FREQUENCY);
             while (!cursor.isAfterLast()) {
                 String word = cursor.getString(indexWord);
+                String shortcut = cursor.getString(indexShortcut);
                 int frequency = cursor.getInt(indexFrequency);
                 // Safeguard against adding really long words. Stack may overflow due
                 // to recursion
                 if (word.length() < maxWordLength) {
-                    super.addWord(word, frequency);
+                    super.addWord(word, null, frequency);
+                }
+                if (null != shortcut && shortcut.length() < maxWordLength) {
+                    super.addWord(shortcut, word, frequency);
                 }
                 cursor.moveToNext();
             }

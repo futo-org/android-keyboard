@@ -24,11 +24,6 @@ import com.android.inputmethod.keyboard.ProximityInfo;
  */
 public abstract class Dictionary {
     /**
-     * Whether or not to replicate the typed word in the suggested list, even if it's valid.
-     */
-    protected static final boolean INCLUDE_TYPED_WORD_IF_VALID = false;
-
-    /**
      * The weight to give to a word if it's length is the same as the number of typed characters.
      */
     protected static final int FULL_WORD_SCORE_MULTIPLIER = 2;
