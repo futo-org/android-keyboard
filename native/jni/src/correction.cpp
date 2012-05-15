@@ -344,8 +344,10 @@ Correction::CorrectionType Correction::processCharAndCalcState(
                 mDistances[mOutputIndex] =
                         mProximityInfo->getNormalizedSquaredDistance(mInputIndex, proximityIndex);
             }
-            incrementInputIndex();
-            incremented = true;
+            if (!isQuote(c)) {
+                incrementInputIndex();
+                incremented = true;
+            }
         }
         return processSkipChar(c, isTerminal, incremented);
     }
@@ -710,7 +712,7 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
         ed = max(0, ed - quoteDiffCount);
         adjustedProximityMatchedCount = min(max(0, ed - (outputLength - inputLength)),
                 proximityMatchedCount);
-        if (transposedCount < 1) {
+        if (transposedCount <= 0) {
             if (ed == 1 && (inputLength == outputLength - 1 || inputLength == outputLength + 1)) {
                 // Promote a word with just one skipped or excessive char
                 if (sameLength) {
