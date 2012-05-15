@@ -207,6 +207,7 @@ static inline void prof_out(void) {
 #define NEUTRAL_SCORE_SQUARED_RADIUS 8.0f
 #define HALF_SCORE_SQUARED_RADIUS 32.0f
 #define MAX_FREQ 255
+#define MAX_BIGRAM_FREQ 15
 
 // This must be greater than or equal to MAX_WORD_LENGTH defined in BinaryDictionary.java
 // This is only used for the size of array. Not to be used in c functions.
@@ -225,8 +226,8 @@ static inline void prof_out(void) {
 #define MULTIPLE_WORDS_DEMOTION_RATE 80
 #define MIN_INPUT_LENGTH_FOR_THREE_OR_MORE_WORDS_CORRECTION 6
 
-#define TWO_WORDS_CORRECTION_WITH_OTHER_ERROR_THRESHOLD 0.39
-#define START_TWO_WORDS_CORRECTION_THRESHOLD 0.22
+#define TWO_WORDS_CORRECTION_WITH_OTHER_ERROR_THRESHOLD 0.35
+#define START_TWO_WORDS_CORRECTION_THRESHOLD 0.185
 
 #define MAX_DEPTH_MULTIPLIER 3
 

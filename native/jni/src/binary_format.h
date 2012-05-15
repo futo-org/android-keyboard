@@ -520,19 +520,33 @@ inline int BinaryFormat::getWordAtAddress(const uint8_t* const root, const int a
     return 0;
 }
 
-// This should probably return a probability in log space.
+static inline int backoff(const int unigramFreq) {
+    return unigramFreq;
+    // For some reason, applying the backoff weight gives bad results in tests. To apply the
+    // backoff weight, we divide the probability by 2, which in our storing format means
+    // decreasing the score by 8.
+    // TODO: figure out what's wrong with this.
+    // return unigramFreq > 8 ? unigramFreq - 8 : (0 == unigramFreq ? 0 : 8);
+}
+
+// This returns a probability in log space.
 inline int BinaryFormat::getProbability(const int position, const std::map<int, int> *bigramMap,
         const uint8_t *bigramFilter, const int unigramFreq) {
-    if (!bigramMap || !bigramFilter) return unigramFreq;
-    if (!isInFilter(bigramFilter, position)) return unigramFreq;
-    const std::map<int, int>::const_iterator bigramFreq = bigramMap->find(position);
-    if (bigramFreq != bigramMap->end()) {
-        // TODO: return the frequency in bigramFreq->second
-        return unigramFreq;
+    if (!bigramMap || !bigramFilter) return backoff(unigramFreq);
+    if (!isInFilter(bigramFilter, position)) return backoff(unigramFreq);
+    const std::map<int, int>::const_iterator bigramFreqIt = bigramMap->find(position);
+    if (bigramFreqIt != bigramMap->end()) {
+        const int bigramFreq = bigramFreqIt->second;
+        // We divide the range [unigramFreq..255] in 16.5 steps - in other words, we want the
+        // unigram frequency to be the median value of the 17th step from the top. A value of
+        // 0 for the bigram frequency represents the middle of the 16th step from the top,
+        // while a value of 15 represents the middle of the top step.
+        // See makedict.BinaryDictInputOutput for details.
+        const float stepSize = ((float)MAX_FREQ - unigramFreq) / (1.5f + MAX_BIGRAM_FREQ);
+        return (int)(unigramFreq + bigramFreq * stepSize);
     } else {
-        return unigramFreq;
+        return backoff(unigramFreq);
     }
-    // TODO: if the unigram frequency is used, compute the actual probability
 }
 
 } // namespace latinime
