@@ -131,6 +131,7 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
 
     private interface SubtypeDialogProxy {
         public void onRemovePressed(SubtypePreference subtypePref);
+        public void onAddPressed(SubtypePreference subtypePref);
         public SubtypeLocaleAdapter getSubtypeLocaleAdapter();
         public KeyboardLayoutSetAdapter getKeyboardLayoutSetAdapter();
     }
@@ -241,6 +242,7 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
             super.onClick(dialog, which);
             switch (which) {
             case DialogInterface.BUTTON_POSITIVE:
+                final boolean addPressed = isIncomplete();
                 final SubtypeLocaleItem locale =
                         (SubtypeLocaleItem) mSubtypeLocaleSpinner.getSelectedItem();
                 final KeyboardLayoutSetItem layout =
@@ -249,6 +251,9 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
                         locale.first, layout.first, ASCII_CAPABLE);
                 setSubtype(subtype);
                 notifyChanged();
+                if (addPressed) {
+                    mProxy.onAddPressed(this);
+                }
                 break;
             case DialogInterface.BUTTON_NEUTRAL:
                 // Nothing to do
@@ -388,6 +393,11 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
             if (group != null) {
                 group.removePreference(subtypePref);
             }
+        }
+
+        @Override
+        public void onAddPressed(SubtypePreference subtypePref) {
+            mIsAddingNewSubtype = false;
         }
 
         @Override
