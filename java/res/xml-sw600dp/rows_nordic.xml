@@ -24,39 +24,39 @@
     <include
         latin:keyboardLayout="@xml/key_styles_common" />
     <Row
-        latin:keyWidth="7.727%p"
+        latin:keyWidth="8.182%p"
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_nordic1"
             latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillBoth" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row
-        latin:keyWidth="7.727%p"
+        latin:keyWidth="8.182%p"
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_nordic2" />
         <Key
             latin:keyStyle="enterKeyStyle"
-            latin:keyWidth="fillBoth" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row
-        latin:keyWidth="7.727%p"
+        latin:keyWidth="8.182%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="11.75%p" />
+            latin:keyWidth="10.0%p" />
         <Spacer
-            latin:keyWidth="3.479%p" />
+            latin:keyWidth="3.181%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_qwerty3" />
         <include
             latin:keyboardLayout="@xml/keys_comma_period" />
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyXPos="-11.75%p"
+            latin:keyXPos="-10.0%p"
             latin:keyWidth="fillRight" />
     </Row>
     <include
