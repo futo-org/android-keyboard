@@ -25,13 +25,14 @@ import java.util.HashSet;
 
 public class SuggestedWords {
     public static final SuggestedWords EMPTY = new SuggestedWords(
-            new ArrayList<SuggestedWordInfo>(0), false, false, false, false, false);
+            new ArrayList<SuggestedWordInfo>(0), false, false, false, false, false, false);
 
     public final boolean mTypedWordValid;
     public final boolean mHasAutoCorrectionCandidate;
     public final boolean mIsPunctuationSuggestions;
     public final boolean mAllowsToBeAutoCorrected;
     public final boolean mIsObsoleteSuggestions;
+    public final boolean mIsPrediction;
     private final ArrayList<SuggestedWordInfo> mSuggestedWordInfoList;
 
     public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
@@ -39,13 +40,15 @@ public class SuggestedWords {
             final boolean hasAutoCorrectionCandidate,
             final boolean allowsToBeAutoCorrected,
             final boolean isPunctuationSuggestions,
-            final boolean isObsoleteSuggestions) {
+            final boolean isObsoleteSuggestions,
+            final boolean isPrediction) {
         mSuggestedWordInfoList = suggestedWordInfoList;
         mTypedWordValid = typedWordValid;
         mHasAutoCorrectionCandidate = hasAutoCorrectionCandidate;
         mAllowsToBeAutoCorrected = allowsToBeAutoCorrected;
         mIsPunctuationSuggestions = isPunctuationSuggestions;
         mIsObsoleteSuggestions = isObsoleteSuggestions;
+        mIsPrediction = isPrediction;
     }
 
     public int size() {
