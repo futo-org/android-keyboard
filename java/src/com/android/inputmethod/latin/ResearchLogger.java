@@ -36,6 +36,7 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
+import com.android.inputmethod.latin.EditingUtils.Range;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.io.BufferedWriter;
@@ -64,6 +65,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
     private static final String PREF_RESEARCH_LOGGER_UUID_STRING = "pref_research_logger_uuid";
     private static final boolean DEBUG = false;
+    private static final String WHITESPACE_SEPARATORS = " \t\n\r";
 
     private static final ResearchLogger sInstance = new ResearchLogger(new LogFileManager());
     private static final int MAX_INPUTVIEW_LENGTH_TO_CAPTURE = 8192; // must be >=1
@@ -558,9 +560,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     logUnstructured("LatinIME_onWindowHidden", "<no text>");
                 } else {
                     if (charSequence.length() > MAX_INPUTVIEW_LENGTH_TO_CAPTURE) {
-                        // do not cut in the middle of a supplementary character
                         int length = MAX_INPUTVIEW_LENGTH_TO_CAPTURE;
-                        if (!Character.isLetter(charSequence.charAt(length))) {
+                        // do not cut in the middle of a supplementary character
+                        final char c = charSequence.charAt(length-1);
+                        if (Character.isHighSurrogate(c)) {
                             length--;
                         }
                         final CharSequence truncatedCharSequence = charSequence.subSequence(0,
@@ -614,7 +617,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final int lastSelectionEnd, final int oldSelStart, final int oldSelEnd,
             final int newSelStart, final int newSelEnd, final int composingSpanStart,
             final int composingSpanEnd, final boolean expectingUpdateSelection,
-            final boolean expectingUpdateSelectionFromLogger) {
+            final boolean expectingUpdateSelectionFromLogger, final InputConnection connection) {
         if (UnsLogGroup.LATINIME_ONUPDATESELECTION_ENABLED) {
             final String s = "onUpdateSelection: oss=" + oldSelStart
                     + ", ose=" + oldSelEnd
@@ -625,7 +628,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     + ", cs=" + composingSpanStart
                     + ", ce=" + composingSpanEnd
                     + ", eus=" + expectingUpdateSelection
-                    + ", eusfl=" + expectingUpdateSelectionFromLogger;
+                    + ", eusfl=" + expectingUpdateSelectionFromLogger
+                    + ", context=\"" + EditingUtils.getWordRangeAtCursor(connection,
+                            WHITESPACE_SEPARATORS, 1).mWord + "\"";
             logUnstructured("LatinIME_onUpdateSelection", s);
         }
     }

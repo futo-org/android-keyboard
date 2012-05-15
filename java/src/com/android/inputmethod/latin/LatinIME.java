@@ -761,7 +761,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             ResearchLogger.latinIME_onUpdateSelection(mLastSelectionStart, mLastSelectionEnd,
                     oldSelStart, oldSelEnd, newSelStart, newSelEnd, composingSpanStart,
                     composingSpanEnd, mExpectingUpdateSelection,
-                    expectingUpdateSelectionFromLogger);
+                    expectingUpdateSelectionFromLogger, getCurrentInputConnection());
             if (expectingUpdateSelectionFromLogger) {
                 return;
             }
