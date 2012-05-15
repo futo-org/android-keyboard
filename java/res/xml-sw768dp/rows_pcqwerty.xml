@@ -30,7 +30,7 @@
             latin:keyboardLayout="@xml/rowkeys_pcqwerty1" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillBoth" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row
         latin:keyWidth="7.0%p"
@@ -52,7 +52,7 @@
             latin:keyboardLayout="@xml/rowkeys_pcqwerty3" />
         <Key
             latin:keyStyle="enterKeyStyle"
-            latin:keyWidth="fillBoth" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row
         latin:keyWidth="7.0%p"
@@ -64,7 +64,7 @@
             latin:keyboardLayout="@xml/rowkeys_pcqwerty4" />
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="fillBoth" />
+            latin:keyWidth="fillRight" />
     </Row>
     <include
         latin:keyboardLayout="@xml/row_pcqwerty5" />

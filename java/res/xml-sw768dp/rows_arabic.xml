@@ -34,10 +34,10 @@
             latin:keyboardLayout="@xml/rowkeys_arabic1" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillBoth" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row
-        latin:keyWidth="7.375%p"
+        latin:keyWidth="7.227%p"
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
@@ -47,10 +47,10 @@
             latin:keyboardLayout="@xml/rowkeys_arabic2" />
         <Key
             latin:keyStyle="enterKeyStyle"
-            latin:keyWidth="fillBoth" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row
-        latin:keyWidth="7.375%p"
+        latin:keyWidth="7.227%p"
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_arabic3"

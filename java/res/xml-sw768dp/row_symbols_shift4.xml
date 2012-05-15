@@ -27,7 +27,7 @@
         <include
             latin:keyboardLayout="@xml/key_settings" />
         <include
-            latin:keyXPos="31.250%p"
+            latin:keyXPos="29.923%p"
             latin:keyboardLayout="@xml/key_space" />
         <include
             latin:keyXPos="-8.047%p"

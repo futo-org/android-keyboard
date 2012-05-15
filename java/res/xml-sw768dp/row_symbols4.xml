@@ -28,11 +28,11 @@
             latin:keyboardLayout="@xml/key_settings" />
         <Key
             latin:keyLabel="/"
-            latin:keyXPos="15.157%p" />
+            latin:keyXPos="13.829%p" />
         <Key
             latin:keyLabel="\@" />
         <include
-            latin:keyXPos="31.250%p"
+            latin:keyXPos="29.923%p"
             latin:keyboardLayout="@xml/key_space" />
         <Key
             latin:keyLabel="&quot;"
