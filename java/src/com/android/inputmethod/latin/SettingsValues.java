@@ -166,7 +166,8 @@ public class SettingsValues {
                 false /* hasAutoCorrectionCandidate */,
                 false /* allowsToBeAutoCorrected */,
                 true /* isPunctuationSuggestions */,
-                false /* isObsoleteSuggestions */);
+                false /* isObsoleteSuggestions */,
+                false /* isPrediction */);
     }
 
     private static String createWordSeparators(final String weakSpaceStrippers,
