@@ -28,6 +28,8 @@ import java.util.LinkedList;
  */
 public class FusionDictionary implements Iterable<Word> {
 
+    private static final boolean DBG = MakedictLog.DBG;
+
     /**
      * A node of the dictionary, containing several CharGroups.
      *
@@ -159,6 +161,7 @@ public class FusionDictionary implements Iterable<Word> {
          * shortcut list.
          */
         public WeightedString getShortcut(final String word) {
+            // TODO: Don't do a linear search
             if (mShortcutTargets != null) {
                 final int size = mShortcutTargets.size();
                 for (int i = 0; i < size; ++i) {
@@ -176,6 +179,7 @@ public class FusionDictionary implements Iterable<Word> {
          * Returns null if the word is not in the bigrams list.
          */
         public WeightedString getBigram(final String word) {
+            // TODO: Don't do a linear search
             if (mBigrams != null) {
                 final int size = mBigrams.size();
                 for (int i = 0; i < size; ++i) {
@@ -265,31 +269,21 @@ public class FusionDictionary implements Iterable<Word> {
     /**
      * Helper method to convert a String to an int array.
      */
-    static private int[] getCodePoints(String word) {
-        final int wordLength = word.length();
-        int[] array = new int[word.codePointCount(0, wordLength)];
-        for (int i = 0; i < wordLength; i = word.offsetByCodePoints(i, 1)) {
-            array[i] = word.codePointAt(i);
+    static private int[] getCodePoints(final String word) {
+        // TODO: this is a copy-paste of the contents of StringUtils.toCodePointArray,
+        // which is not visible from the makedict package. Factor this code.
+        final char[] characters = word.toCharArray();
+        final int length = characters.length;
+        final int[] codePoints = new int[Character.codePointCount(characters, 0, length)];
+        int codePoint = Character.codePointAt(characters, 0);
+        int dsti = 0;
+        for (int srci = Character.charCount(codePoint);
+                srci < length; srci += Character.charCount(codePoint), ++dsti) {
+            codePoints[dsti] = codePoint;
+            codePoint = Character.codePointAt(characters, srci);
         }
-        return array;
-    }
-
-    /**
-     * Helper method to add all words in a list as 0-frequency entries
-     *
-     * These words are added when shortcuts targets or bigrams are not found in the dictionary
-     * yet. The same words may be added later with an actual frequency - this is handled by
-     * the private version of add().
-     */
-    private void addNeutralWords(final ArrayList<WeightedString> words) {
-        if (null != words) {
-            for (WeightedString word : words) {
-                final CharGroup t = findWordInTree(mRoot, word.mWord);
-                if (null == t) {
-                    add(getCodePoints(word.mWord), 0, null);
-                }
-            }
-        }
+        codePoints[dsti] = codePoint;
+        return codePoints;
     }
 
     /**
@@ -339,7 +333,6 @@ public class FusionDictionary implements Iterable<Word> {
         if (charGroup != null) {
             final CharGroup charGroup2 = findWordInTree(mRoot, word2);
             if (charGroup2 == null) {
-                // TODO: refactor with the identical code in addNeutralWords
                 add(getCodePoints(word2), 0, null);
             }
             charGroup.addBigram(word2, frequency);
@@ -386,7 +379,7 @@ public class FusionDictionary implements Iterable<Word> {
                     Arrays.copyOfRange(word, charIndex, word.length),
                     shortcutTargets, null /* bigrams */, frequency);
             currentNode.mData.add(insertionIndex, newGroup);
-            checkStack(currentNode);
+            if (DBG) checkStack(currentNode);
         } else {
             // There is a word with a common prefix.
             if (differentCharIndex == currentGroup.mChars.length) {
@@ -437,7 +430,7 @@ public class FusionDictionary implements Iterable<Word> {
                     }
                     currentNode.mData.set(nodeIndex, newParent);
                 }
-                checkStack(currentNode);
+                if (DBG) checkStack(currentNode);
             }
         }
     }
