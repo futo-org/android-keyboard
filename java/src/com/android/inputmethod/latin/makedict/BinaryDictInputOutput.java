@@ -1053,7 +1053,7 @@ public class BinaryDictInputOutput {
             dataEndOffset = writePlacedNode(dict, buffer, n);
         }
 
-        showStatistics(flatNodes);
+        if (DBG) showStatistics(flatNodes);
 
         destination.write(buffer, 0, dataEndOffset);
 
