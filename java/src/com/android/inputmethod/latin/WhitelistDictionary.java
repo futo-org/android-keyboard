@@ -66,7 +66,7 @@ public class WhitelistDictionary extends ExpandableDictionary {
                 if (before != null && after != null) {
                     mWhitelistWords.put(
                             before.toLowerCase(), new Pair<Integer, String>(score, after));
-                    addWord(after, score);
+                    addWord(after, null /* shortcut */, score);
                 }
             }
         } catch (NumberFormatException e) {
