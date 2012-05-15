@@ -18,13 +18,18 @@ package com.android.inputmethod.accessibility;
 
 import android.graphics.Rect;
 import android.inputmethodservice.InputMethodService;
+import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeProviderCompat;
 import android.support.v4.view.accessibility.AccessibilityRecordCompat;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewParent;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.inputmethod.EditorInfo;
@@ -45,6 +50,7 @@ import com.android.inputmethod.keyboard.KeyboardView;
  */
 public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat {
     private static final String TAG = AccessibilityEntityProvider.class.getSimpleName();
+    private static final int UNDEFINED = Integer.MIN_VALUE;
 
     private final KeyboardView mKeyboardView;
     private final InputMethodService mInputMethodService;
@@ -59,6 +65,9 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
 
     /** The parent view's cached on-screen location. */
     private final int[] mParentLocation = new int[2];
+
+    /** The virtual view identifier for the focused node. */
+    private int mAccessibilityFocusedView = UNDEFINED;
 
     public AccessibilityEntityProvider(KeyboardView keyboardView, InputMethodService inputMethod) {
         mKeyboardView = keyboardView;
@@ -124,7 +133,9 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
     public AccessibilityNodeInfoCompat createAccessibilityNodeInfo(int virtualViewId) {
         AccessibilityNodeInfoCompat info = null;
 
-        if (virtualViewId == View.NO_ID) {
+        if (virtualViewId == UNDEFINED) {
+            return null;
+        } else  if (virtualViewId == View.NO_ID) {
             // We are requested to create an AccessibilityNodeInfo describing
             // this View, i.e. the root of the virtual sub-tree.
             info = AccessibilityNodeInfoCompat.obtain(mKeyboardView);
@@ -166,9 +177,112 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
             info.setSource(mKeyboardView, virtualViewId);
             info.setBoundsInScreen(boundsInScreen);
             info.setEnabled(true);
+            info.setClickable(true);
+            info.addAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
+
+            if (mAccessibilityFocusedView == virtualViewId) {
+                info.addAction(AccessibilityNodeInfoCompat.ACTION_CLEAR_ACCESSIBILITY_FOCUS);
+            } else {
+                info.addAction(AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS);
+            }
         }
 
         return info;
+    }
+
+    /**
+     * Simulates a key press by injecting touch events into the keyboard view.
+     * This avoids the complexity of trackers and listeners within the keyboard.
+     *
+     * @param key The key to press.
+     */
+    void simulateKeyPress(Key key) {
+        final int x = key.mX + (key.mWidth / 2);
+        final int y = key.mY + (key.mHeight / 2);
+        final long downTime = SystemClock.uptimeMillis();
+        final MotionEvent downEvent = MotionEvent.obtain(
+                downTime, downTime, MotionEvent.ACTION_DOWN, x, y, 0);
+        final MotionEvent upEvent = MotionEvent.obtain(
+                downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, x, y, 0);
+
+        mKeyboardView.onTouchEvent(downEvent);
+        mKeyboardView.onTouchEvent(upEvent);
+    }
+
+    @Override
+    public boolean performAction(int virtualViewId, int action, Bundle arguments) {
+        final Key key = mVirtualViewIdToKey.get(virtualViewId);
+
+        if (key == null) {
+            return false;
+        }
+
+        return performActionForKey(key, action, arguments);
+    }
+
+    /**
+     * Performs the specified accessibility action for the given key.
+     *
+     * @param key The on which to perform the action.
+     * @param action The action to perform.
+     * @param arguments The action's arguments.
+     * @return The result of performing the action, or false if the action is
+     *         not supported.
+     */
+    boolean performActionForKey(Key key, int action, Bundle arguments) {
+        final int virtualViewId = generateVirtualViewIdForKey(key);
+
+        switch (action) {
+        case AccessibilityNodeInfoCompat.ACTION_CLICK:
+            simulateKeyPress(key);
+            return true;
+        case AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS:
+            if (mAccessibilityFocusedView == virtualViewId) {
+                return false;
+            }
+            mAccessibilityFocusedView = virtualViewId;
+            sendAccessibilityEventForKey(
+                    key, AccessibilityEventCompat.TYPE_VIEW_ACCESSIBILITY_FOCUSED);
+            return true;
+        case AccessibilityNodeInfoCompat.ACTION_CLEAR_ACCESSIBILITY_FOCUS:
+            if (mAccessibilityFocusedView != virtualViewId) {
+                return false;
+            }
+            mAccessibilityFocusedView = UNDEFINED;
+            sendAccessibilityEventForKey(
+                    key, AccessibilityEventCompat.TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public AccessibilityNodeInfoCompat findAccessibilityFocus(int virtualViewId) {
+        return createAccessibilityNodeInfo(mAccessibilityFocusedView);
+    }
+
+    @Override
+    public AccessibilityNodeInfoCompat accessibilityFocusSearch(int direction, int virtualViewId) {
+        // Focus search is not currently supported for IMEs.
+        return null;
+    }
+
+    /**
+     * Sends an accessibility event for the given {@link Key}.
+     *
+     * @param key The key that's sending the event.
+     * @param eventType The type of event to send.
+     */
+    void sendAccessibilityEventForKey(Key key, int eventType) {
+        final AccessibilityEvent event = createAccessibilityEvent(key, eventType);
+        final ViewParent parent = mKeyboardView.getParent();
+
+        if (parent == null) {
+            return;
+        }
+
+        parent.requestSendAccessibilityEvent(mKeyboardView, event);
     }
 
     /**

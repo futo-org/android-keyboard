@@ -21,10 +21,10 @@ import android.inputmethodservice.InputMethodService;
 import android.support.v4.view.AccessibilityDelegateCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.accessibility.AccessibilityEventCompat;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.accessibility.AccessibilityEvent;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -91,13 +91,7 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
      */
     @Override
     public AccessibilityEntityProvider getAccessibilityNodeProvider(View host) {
-        // Instantiate the provide only when requested. Since the system
-        // will call this method multiple times it is a good practice to
-        // cache the provider instance.
-        if (mAccessibilityNodeProvider == null) {
-            mAccessibilityNodeProvider = new AccessibilityEntityProvider(mView, mInputMethod);
-        }
-        return mAccessibilityNodeProvider;
+        return getAccessibilityNodeProvider();
     }
 
     /**
@@ -120,7 +114,7 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
             // Make sure we're not getting an EXIT event because the user slid
             // off the keyboard area, then force a key press.
             if (pointInView(x, y)) {
-                tracker.onRegisterKey(key);
+                getAccessibilityNodeProvider().simulateKeyPress(key);
             }
             //$FALL-THROUGH$
         case MotionEvent.ACTION_HOVER_ENTER:
@@ -134,6 +128,19 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
         }
 
         return false;
+    }
+
+    /**
+     * @return A lazily-instantiated node provider for this view proxy.
+     */
+    private AccessibilityEntityProvider getAccessibilityNodeProvider() {
+        // Instantiate the provide only when requested. Since the system
+        // will call this method multiple times it is a good practice to
+        // cache the provider instance.
+        if (mAccessibilityNodeProvider == null) {
+            mAccessibilityNodeProvider = new AccessibilityEntityProvider(mView, mInputMethod);
+        }
+        return mAccessibilityNodeProvider;
     }
 
     /**
@@ -191,30 +198,22 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
             return false;
         }
 
+        final AccessibilityEntityProvider provider = getAccessibilityNodeProvider();
+
         switch (event.getAction()) {
         case MotionEvent.ACTION_HOVER_ENTER:
-            sendAccessibilityEventForKey(key, AccessibilityEventCompat.TYPE_VIEW_HOVER_ENTER);
+            provider.sendAccessibilityEventForKey(
+                    key, AccessibilityEventCompat.TYPE_VIEW_HOVER_ENTER);
+            provider.performActionForKey(
+                    key, AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS, null);
             break;
         case MotionEvent.ACTION_HOVER_EXIT:
-            sendAccessibilityEventForKey(key, AccessibilityEventCompat.TYPE_VIEW_HOVER_EXIT);
+            provider.sendAccessibilityEventForKey(
+                    key, AccessibilityEventCompat.TYPE_VIEW_HOVER_EXIT);
             break;
         }
 
         return true;
-    }
-
-    /**
-     * Populates and sends an {@link AccessibilityEvent} for the specified key.
-     *
-     * @param key The key to send an event for.
-     * @param eventType The type of event to send.
-     */
-    private void sendAccessibilityEventForKey(Key key, int eventType) {
-        final AccessibilityEntityProvider nodeProvider = getAccessibilityNodeProvider(null);
-        final AccessibilityEvent event = nodeProvider.createAccessibilityEvent(key, eventType);
-
-        // Propagates the event up the view hierarchy.
-        mView.getParent().requestSendAccessibilityEvent(mView, event);
     }
 
     /**
