@@ -511,7 +511,6 @@ public class Keyboard {
             // keyWidth enum constants
             private static final int KEYWIDTH_NOT_ENUM = 0;
             private static final int KEYWIDTH_FILL_RIGHT = -1;
-            private static final int KEYWIDTH_FILL_BOTH = -2;
 
             private final Params mParams;
             /** Default width of a key in this row. */
@@ -576,11 +575,6 @@ public class Keyboard {
             public float getKeyX(TypedArray keyAttr) {
                 final int widthType = Builder.getEnumValue(keyAttr,
                         R.styleable.Keyboard_Key_keyWidth, KEYWIDTH_NOT_ENUM);
-                if (widthType == KEYWIDTH_FILL_BOTH) {
-                    // If keyWidth is fillBoth, the key width should start right after the nearest
-                    // key on the left hand side.
-                    return mCurrentX;
-                }
 
                 final int keyboardRightEdge = mParams.mOccupiedWidth
                         - mParams.mHorizontalEdgesPadding;
@@ -610,14 +604,10 @@ public class Keyboard {
                         R.styleable.Keyboard_Key_keyWidth, KEYWIDTH_NOT_ENUM);
                 switch (widthType) {
                 case KEYWIDTH_FILL_RIGHT:
-                case KEYWIDTH_FILL_BOTH:
                     final int keyboardRightEdge =
                             mParams.mOccupiedWidth - mParams.mHorizontalEdgesPadding;
                     // If keyWidth is fillRight, the actual key width will be determined to fill
                     // out the area up to the right edge of the keyboard.
-                    // If keyWidth is fillBoth, the actual key width will be determined to fill out
-                    // the area between the nearest key on the left hand side and the right edge of
-                    // the keyboard.
                     return keyboardRightEdge - keyXPos;
                 default: // KEYWIDTH_NOT_ENUM
                     return Builder.getDimensionOrFraction(keyAttr,

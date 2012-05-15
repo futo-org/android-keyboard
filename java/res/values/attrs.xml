@@ -308,14 +308,10 @@
         <attr name="visualInsetsRight" format="dimension|fraction" />
         <!-- Width of the key, in pixels or percentage of display width.
              If the value is fillRight, the actual key width will be determined to fill out the area
-             up to the right edge of the keyboard.
-             If the value is fillBoth, the actual key width will be determined to fill out the
-             area between the nearest key on the left hand side and the right edge of the keyboard.
-             -->
+             up to the right edge of the keyboard. -->
         <!-- This should be aligned with KeyboardBuilder.Row.KEYWIDTH_* -->
         <attr name="keyWidth" format="dimension|fraction|enum">
             <enum name="fillRight" value="-1" />
-            <enum name="fillBoth" value="-2" />
         </attr>
         <!-- The X-coordinate of upper right corner of this key including horizontal gap.
              If the value is negative, the origin is the right edge of the keyboard. -->

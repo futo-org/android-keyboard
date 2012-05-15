@@ -47,7 +47,7 @@
             latin:keyboardLayout="@xml/rowkeys_georgian3" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillBoth"
+            latin:keyWidth="fillRight"
             latin:visualInsetsLeft="1%p" />
     </Row>
     <include
