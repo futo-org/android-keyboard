@@ -33,6 +33,7 @@ class BigramDictionary {
     int getBigramListPositionForWord(const int32_t *prevWord, const int prevWordLength);
     void fillBigramAddressToFrequencyMapAndFilter(const int32_t *prevWord, const int prevWordLength,
             std::map<int, int> *map, uint8_t *filter);
+    bool isValidBigram(const int32_t *word1, int length1, const int32_t *word2, int length2);
     ~BigramDictionary();
  private:
     bool addWordBigram(unsigned short *word, int length, int frequency);
