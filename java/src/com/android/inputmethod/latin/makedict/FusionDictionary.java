@@ -507,21 +507,21 @@ public class FusionDictionary implements Iterable<Word> {
      */
     public static CharGroup findWordInTree(Node node, final String s) {
         int index = 0;
-        final StringBuilder checker = new StringBuilder();
+        final StringBuilder checker = DBG ? new StringBuilder() : null;
 
         CharGroup currentGroup;
         do {
             int indexOfGroup = findIndexOfChar(node, s.codePointAt(index));
             if (CHARACTER_NOT_FOUND == indexOfGroup) return null;
             currentGroup = node.mData.get(indexOfGroup);
-            checker.append(new String(currentGroup.mChars, 0, currentGroup.mChars.length));
+            if (DBG) checker.append(new String(currentGroup.mChars, 0, currentGroup.mChars.length));
             index += currentGroup.mChars.length;
             if (index < s.length()) {
                 node = currentGroup.mChildren;
             }
         } while (null != node && index < s.length());
 
-        if (!s.equals(checker.toString())) return null;
+        if (DBG && !s.equals(checker.toString())) return null;
         return currentGroup;
     }
 
