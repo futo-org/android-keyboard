@@ -765,14 +765,39 @@ public class BinaryDictInputOutput {
             bigramFrequency = unigramFrequency;
         }
         // We compute the difference between 255 (which means probability = 1) and the
-        // unigram score. We split this into discrete 16 steps, and this is the value
-        // we store into the 4 bits of the bigrams frequency.
-        final float bigramRatio = (float)(bigramFrequency - unigramFrequency)
-                / (MAX_TERMINAL_FREQUENCY - unigramFrequency);
-        // TODO: if the bigram freq is very close to the unigram frequency, we don't want
-        // to include the bigram in the binary dictionary at all.
-        final int discretizedFrequency = Math.round(bigramRatio * MAX_BIGRAM_FREQUENCY);
-        bigramFlags += discretizedFrequency & FLAG_ATTRIBUTE_FREQUENCY;
+        // unigram score. We split this into a number of discrete steps.
+        // Now, the steps are numbered 0~15; 0 represents an increase of 1 step while 15
+        // represents an increase of 16 steps: a value of 15 will be interpreted as the median
+        // value of the 16th step. In all justice, if the bigram frequency is low enough to be
+        // rounded below the first step (which means it is less than half a step higher than the
+        // unigram frequency) then the unigram frequency itself is the best approximation of the
+        // bigram freq that we could possibly supply, hence we should *not* include this bigram
+        // in the file at all.
+        // until this is done, we'll write 0 and slightly overestimate this case.
+        // In other words, 0 means "between 0.5 step and 1.5 step", 1 means "between 1.5 step
+        // and 2.5 steps", and 15 means "between 15.5 steps and 16.5 steps". So we want to
+        // divide our range [unigramFreq..MAX_TERMINAL_FREQUENCY] in 16.5 steps to get the
+        // step size. Then we compute the start of the first step (the one where value 0 starts)
+        // by adding half-a-step to the unigramFrequency. From there, we compute the integer
+        // number of steps to the bigramFrequency. One last thing: we want our steps to include
+        // their lower bound and exclude their higher bound so we need to have the first step
+        // start at exactly 1 unit higher than floor(unigramFreq + half a step).
+        // Note : to reconstruct the score, the dictionary reader will need to divide
+        // MAX_TERMINAL_FREQUENCY - unigramFreq by 16.5 likewise, and add
+        // (discretizedFrequency + 0.5) times this value to get the median value of the step,
+        // which is the best approximation. This is how we get the most precise result with
+        // only four bits.
+        final double stepSize =
+                (double)(MAX_TERMINAL_FREQUENCY - unigramFrequency) / (1.5 + MAX_BIGRAM_FREQUENCY);
+        final double firstStepStart = 1 + unigramFrequency + (stepSize / 2.0);
+        final int discretizedFrequency = (int)((bigramFrequency - firstStepStart) / stepSize);
+        // If the bigram freq is less than half-a-step higher than the unigram freq, we get -1
+        // here. The best approximation would be the unigram freq itself, so we should not
+        // include this bigram in the dictionary. For now, register as 0, and live with the
+        // small over-estimation that we get in this case. TODO: actually remove this bigram
+        // if discretizedFrequency < 0.
+        final int finalBigramFrequency = discretizedFrequency > 0 ? discretizedFrequency : 0;
+        bigramFlags += finalBigramFrequency & FLAG_ATTRIBUTE_FREQUENCY;
         return bigramFlags;
     }
 
