@@ -38,7 +38,7 @@
             latin:keyboardLayout="@xml/rowkeys_hebrew1" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillBoth" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row
         latin:keyWidth="8.125%p"
@@ -51,7 +51,7 @@
             latin:keyboardLayout="@xml/rowkeys_hebrew2" />
         <Key
             latin:keyStyle="enterKeyStyle"
-            latin:keyWidth="fillBoth" />
+            latin:keyWidth="fillRight" />
         </Row>
     <Row
         latin:keyWidth="8.047%p"

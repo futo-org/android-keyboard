@@ -27,10 +27,10 @@
         <include
             latin:keyboardLayout="@xml/key_settings" />
         <include
-            latin:keyXPos="15.157%p"
+            latin:keyXPos="13.829%p"
             latin:keyboardLayout="@xml/keys_f1f2" />
         <include
-            latin:keyXPos="31.250%p"
+            latin:keyXPos="29.923%p"
             latin:keyboardLayout="@xml/key_space" />
         <include
             latin:keyboardLayout="@xml/key_question_exclamation" />

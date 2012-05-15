@@ -33,7 +33,7 @@
             latin:keyXPos="7.969%p" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillBoth" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row
         latin:keyWidth="8.282%p"
@@ -56,7 +56,7 @@
             latin:keyboardLayout="@xml/rowkeys_symbols_shift2" />
         <Key
             latin:keyStyle="enterKeyStyle"
-            latin:keyWidth="fillBoth" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row
         latin:keyWidth="8.047%p"
@@ -69,7 +69,7 @@
         <Key
             latin:keyStyle="backFromMoreSymbolKeyStyle"
             latin:keyXPos="-13.750%p"
-            latin:keyWidth="fillBoth" />
+            latin:keyWidth="fillRight" />
     </Row>
     <include
         latin:keyboardLayout="@xml/row_symbols_shift4" />

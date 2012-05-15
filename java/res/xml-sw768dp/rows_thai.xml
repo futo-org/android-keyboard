@@ -31,7 +31,7 @@
             latin:keyXPos="11.508%p" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillBoth"/>
+            latin:keyWidth="fillRight"/>
     </Row>
     <Row
         latin:keyWidth="7.079%p"
@@ -54,7 +54,7 @@
             latin:keyboardLayout="@xml/rowkeys_thai3" />
         <Key
             latin:keyStyle="enterKeyStyle"
-            latin:keyWidth="fillBoth" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row
         latin:keyWidth="7.181%p"
