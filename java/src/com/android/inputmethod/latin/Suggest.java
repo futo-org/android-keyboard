@@ -79,7 +79,7 @@ public class Suggest implements Dictionary.WordCallback {
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 
-    private Dictionary mMainDict;
+    private boolean mHasMainDictionary;
     private Dictionary mContactsDict;
     private WhitelistDictionary mWhiteListDictionary;
     private final HashMap<String, Dictionary> mUnigramDictionaries =
@@ -110,8 +110,12 @@ public class Suggest implements Dictionary.WordCallback {
 
     /* package for test */ Suggest(final Context context, final File dictionary,
             final long startOffset, final long length, final Locale locale) {
-        initSynchronously(context, DictionaryFactory.createDictionaryForTest(context, dictionary,
-                startOffset, length /* useFullEditDistance */, false, locale), locale);
+        final Dictionary mainDict = DictionaryFactory.createDictionaryForTest(context, dictionary,
+                startOffset, length /* useFullEditDistance */, false, locale);
+        mHasMainDictionary = null != mainDict;
+        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, mainDict);
+        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, mainDict);
+        initWhitelistAndAutocorrectAndPool(context, locale);
     }
 
     private void initWhitelistAndAutocorrectAndPool(final Context context, final Locale locale) {
@@ -127,14 +131,6 @@ public class Suggest implements Dictionary.WordCallback {
         initWhitelistAndAutocorrectAndPool(context, locale);
     }
 
-    private void initSynchronously(final Context context, final Dictionary mainDict,
-            final Locale locale) {
-        mMainDict = mainDict;
-        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, mainDict);
-        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, mainDict);
-        initWhitelistAndAutocorrectAndPool(context, locale);
-    }
-
     private static void addOrReplaceDictionary(HashMap<String, Dictionary> dictionaries, String key,
             Dictionary dict) {
         final Dictionary oldDict = (dict == null)
@@ -146,13 +142,13 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     public void resetMainDict(final Context context, final Locale locale) {
-        mMainDict = null;
+        mHasMainDictionary = false;
         new Thread("InitializeBinaryDictionary") {
             @Override
             public void run() {
-                final Dictionary newMainDict = DictionaryFactory.createDictionaryFromManager(
-                        context, locale);
-                mMainDict = newMainDict;
+                final DictionaryCollection newMainDict =
+                        DictionaryFactory.createMainDictionaryFromManager(context, locale);
+                mHasMainDictionary = null != newMainDict && !newMainDict.isEmpty();
                 addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, newMainDict);
                 addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, newMainDict);
             }
@@ -162,7 +158,7 @@ public class Suggest implements Dictionary.WordCallback {
     // The main dictionary could have been loaded asynchronously.  Don't cache the return value
     // of this method.
     public boolean hasMainDictionary() {
-        return mMainDict != null;
+        return mHasMainDictionary;
     }
 
     public Dictionary getContactsDictionary() {
@@ -376,7 +372,13 @@ public class Suggest implements Dictionary.WordCallback {
         // a boolean flag. Right now this is handled with a slight hack in
         // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
         final boolean allowsToBeAutoCorrected = AutoCorrection.allowsToBeAutoCorrected(
-                getUnigramDictionaries(), consideredWord, wordComposer.isFirstCharCapitalized());
+                getUnigramDictionaries(), consideredWord, wordComposer.isFirstCharCapitalized())
+        // If we don't have a main dictionary, we never want to auto-correct. The reason for this
+        // is, the user may have a contact whose name happens to match a valid word in their
+        // language, and it will unexpectedly auto-correct. For example, if the user types in
+        // English with no dictionary and has a "Will" in their contact list, "will" would
+        // always auto-correct to "Will" which is unwanted. Hence, no main dict => no auto-correct.
+                && mHasMainDictionary;
 
         boolean autoCorrectionAvailable = hasAutoCorrection;
         if (correctionMode == CORRECTION_FULL || correctionMode == CORRECTION_FULL_BIGRAM) {
@@ -563,7 +565,7 @@ public class Suggest implements Dictionary.WordCallback {
         for (final Dictionary dictionary : dictionaries) {
             dictionary.close();
         }
-        mMainDict = null;
+        mHasMainDictionary = false;
     }
 
     // TODO: Resolve the inconsistencies between the native auto correction algorithms and

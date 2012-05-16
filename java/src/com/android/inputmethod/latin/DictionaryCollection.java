@@ -70,6 +70,10 @@ public class DictionaryCollection extends Dictionary {
         return false;
     }
 
+    public boolean isEmpty() {
+        return mDictionaries.isEmpty();
+    }
+
     @Override
     public void close() {
         for (final Dictionary dict : mDictionaries)
