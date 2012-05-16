@@ -36,7 +36,7 @@ public class DictionaryFactory {
             DictionaryFactory.class.getPackage().getName();
 
     /**
-     * Initializes a dictionary from a dictionary pack, with explicit flags.
+     * Initializes a main dictionary collection from a dictionary pack, with explicit flags.
      *
      * This searches for a content provider providing a dictionary pack for the specified
      * locale. If none is found, it falls back to the built-in dictionary - if any.
@@ -45,7 +45,7 @@ public class DictionaryFactory {
      * @param useFullEditDistance whether to use the full edit distance in suggestions
      * @return an initialized instance of DictionaryCollection
      */
-    public static DictionaryCollection createDictionaryFromManager(final Context context,
+    public static DictionaryCollection createMainDictionaryFromManager(final Context context,
             final Locale locale, final boolean useFullEditDistance) {
         if (null == locale) {
             Log.e(TAG, "No locale defined for dictionary");
@@ -73,7 +73,7 @@ public class DictionaryFactory {
     }
 
     /**
-     * Initializes a dictionary from a dictionary pack, with default flags.
+     * Initializes a main dictionary collection from a dictionary pack, with default flags.
      *
      * This searches for a content provider providing a dictionary pack for the specified
      * locale. If none is found, it falls back to the built-in dictionary, if any.
@@ -81,9 +81,9 @@ public class DictionaryFactory {
      * @param locale the locale for which to create the dictionary
      * @return an initialized instance of DictionaryCollection
      */
-    public static DictionaryCollection createDictionaryFromManager(final Context context,
+    public static DictionaryCollection createMainDictionaryFromManager(final Context context,
             final Locale locale) {
-        return createDictionaryFromManager(context, locale, false /* useFullEditDistance */);
+        return createMainDictionaryFromManager(context, locale, false /* useFullEditDistance */);
     }
 
     /**
