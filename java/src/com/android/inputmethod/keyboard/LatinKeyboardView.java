@@ -459,7 +459,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         mMoreKeysPanelCache.clear();
 
         mSpaceKey = keyboard.getKey(Keyboard.CODE_SPACE);
-        mSpaceIcon = (mSpaceKey != null) ? mSpaceKey.getIcon(keyboard.mIconsSet) : null;
+        mSpaceIcon = (mSpaceKey != null)
+                ? mSpaceKey.getIcon(keyboard.mIconsSet, ALPHA_OPAQUE) : null;
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mSpacebarTextSize = keyHeight * mSpacebarTextRatio;
         if (ProductionFlag.IS_EXPERIMENTAL) {

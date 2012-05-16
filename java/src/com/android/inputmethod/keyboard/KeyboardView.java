@@ -560,10 +560,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
 
         // Draw key label.
-        final Drawable icon = key.getIcon(mKeyboard.mIconsSet);
-        if (icon != null) {
-            icon.setAlpha(params.mAnimAlpha);
-        }
+        final Drawable icon = key.getIcon(mKeyboard.mIconsSet, params.mAnimAlpha);
         float positionX = centerX;
         if (key.mLabel != null) {
             final String label = key.mLabel;

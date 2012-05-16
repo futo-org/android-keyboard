@@ -56,8 +56,6 @@ public class MoreSuggestions extends Keyboard {
                 clearKeys();
                 final Resources res = view.getContext().getResources();
                 mDivider = res.getDrawable(R.drawable.more_suggestions_divider);
-                // TODO: Drawable itself should have an alpha value.
-                mDivider.setAlpha(128);
                 mDividerWidth = mDivider.getIntrinsicWidth();
                 final int padding = (int) res.getDimension(
                         R.dimen.more_suggestions_key_horizontal_padding);
@@ -195,7 +193,11 @@ public class MoreSuggestions extends Keyboard {
             }
 
             @Override
-            public Drawable getIcon(KeyboardIconsSet iconSet) {
+            public Drawable getIcon(KeyboardIconsSet iconSet, int alpha) {
+                // KeyboardIconsSet and alpha are unused. Use the icon that has been passed to the
+                // constructor.
+                // TODO: Drawable itself should have an alpha value.
+                mIcon.setAlpha(128);
                 return mIcon;
             }
         }
