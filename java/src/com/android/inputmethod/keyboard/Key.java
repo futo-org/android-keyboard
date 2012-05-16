@@ -571,9 +571,13 @@ public class Key {
         return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_EMBEDDED_MORE_KEY) != 0;
     }
 
-    public Drawable getIcon(KeyboardIconsSet iconSet) {
+    public Drawable getIcon(KeyboardIconsSet iconSet, int alpha) {
         final int iconId = mEnabled ? mIconId : mDisabledIconId;
-        return iconSet.getIconDrawable(iconId);
+        final Drawable icon = iconSet.getIconDrawable(iconId);
+        if (icon != null) {
+            icon.setAlpha(alpha);
+        }
+        return icon;
     }
 
     public Drawable getPreviewIcon(KeyboardIconsSet iconSet) {
