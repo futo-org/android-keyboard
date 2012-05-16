@@ -19,6 +19,7 @@
 
 #include "com_android_inputmethod_keyboard_ProximityInfo.h"
 #include "com_android_inputmethod_latin_BinaryDictionary.h"
+#include "defines.h"
 #include "jni.h"
 #include "proximity_info.h"
 

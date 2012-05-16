@@ -21,6 +21,7 @@
 #define LOG_TAG "LatinIME: unigram_dictionary.cpp"
 
 #include "char_utils.h"
+#include "defines.h"
 #include "dictionary.h"
 #include "unigram_dictionary.h"
 
