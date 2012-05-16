@@ -92,10 +92,12 @@ class WordsPriorityQueue {
         return sw;
     }
 
-    int outputSuggestions(int *frequencies, unsigned short *outputChars) {
+    int outputSuggestions(const unsigned short* before, const int beforeLength,
+            int *frequencies, unsigned short *outputChars) {
         mHighestSuggestedWord = 0;
         const unsigned int size = min(
               MAX_WORDS, static_cast<unsigned int>(mSuggestions.size()));
+        SuggestedWord* swBuffer[size];
         int index = size - 1;
         while (!mSuggestions.empty() && index >= 0) {
             SuggestedWord* sw = mSuggestions.top();
@@ -103,17 +105,45 @@ class WordsPriorityQueue {
                 AKLOGI("dump word. %d", sw->mScore);
                 DUMP_WORD(sw->mWord, sw->mWordLength);
             }
+            swBuffer[index] = sw;
+            mSuggestions.pop();
+            --index;
+        }
+        if (size >= 2) {
+            SuggestedWord* nsMaxSw = 0;
+            unsigned int maxIndex = 0;
+            double maxNs = 0;
+            for (unsigned int i = 0; i < size; ++i) {
+                SuggestedWord* tempSw = swBuffer[i];
+                if (!tempSw) {
+                    continue;
+                }
+                const double tempNs = getNormalizedScore(tempSw, before, beforeLength, 0, 0, 0);
+                if (tempNs >= maxNs) {
+                    maxNs = tempNs;
+                    maxIndex = i;
+                    nsMaxSw = tempSw;
+                }
+            }
+            if (maxIndex > 0 && nsMaxSw) {
+                memmove(&swBuffer[1], &swBuffer[0], maxIndex * sizeof(SuggestedWord*));
+                swBuffer[0] = nsMaxSw;
+            }
+        }
+        for (unsigned int i = 0; i < size; ++i) {
+            SuggestedWord* sw = swBuffer[i];
+            if (!sw) {
+                AKLOGE("SuggestedWord is null %d", i);
+                continue;
+            }
             const unsigned int wordLength = sw->mWordLength;
-            char* targetAdr = (char*) outputChars
-                    + (index) * MAX_WORD_LENGTH * sizeof(short);
-            frequencies[index] = sw->mScore;
+            char* targetAdr = (char*) outputChars + i * MAX_WORD_LENGTH * sizeof(short);
+            frequencies[i] = sw->mScore;
             memcpy(targetAdr, sw->mWord, (wordLength) * sizeof(short));
             if (wordLength < MAX_WORD_LENGTH) {
                 ((unsigned short*) targetAdr)[wordLength] = 0;
             }
             sw->mUsed = false;
-            mSuggestions.pop();
-            --index;
         }
         return size;
     }
@@ -147,21 +177,8 @@ class WordsPriorityQueue {
         if (!mHighestSuggestedWord) {
             return 0.0;
         }
-        SuggestedWord* sw = mHighestSuggestedWord;
-        const int score = sw->mScore;
-        unsigned short* word = sw->mWord;
-        const int wordLength = sw->mWordLength;
-        if (outScore) {
-            *outScore = score;
-        }
-        if (outWord) {
-            *outWord = word;
-        }
-        if (outLength) {
-            *outLength = wordLength;
-        }
-        return Correction::RankingAlgorithm::calcNormalizedScore(
-                before, beforeLength, word, wordLength, score);
+        return getNormalizedScore(
+                mHighestSuggestedWord, before, beforeLength, outWord, outScore, outLength);
     }
 
  private:
@@ -180,6 +197,24 @@ class WordsPriorityQueue {
             }
         }
         return 0;
+    }
+
+    static double getNormalizedScore(SuggestedWord* sw, const unsigned short* before,
+            const int beforeLength, unsigned short** outWord, int *outScore, int *outLength) {
+        const int score = sw->mScore;
+        unsigned short* word = sw->mWord;
+        const int wordLength = sw->mWordLength;
+        if (outScore) {
+            *outScore = score;
+        }
+        if (outWord) {
+            *outWord = word;
+        }
+        if (outLength) {
+            *outLength = wordLength;
+        }
+        return Correction::RankingAlgorithm::calcNormalizedScore(
+                before, beforeLength, word, wordLength, score);
     }
 
     typedef std::priority_queue<SuggestedWord*, std::vector<SuggestedWord*>,
