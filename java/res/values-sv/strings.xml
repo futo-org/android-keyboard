@@ -134,6 +134,12 @@
     <string name="save" msgid="7646738597196767214">"Spara"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Språk"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Layout"</string>
+    <!-- no translation found for custom_input_style_note_message (8826731320846363423) -->
+    <skip />
+    <!-- no translation found for enable (5031294444630523247) -->
+    <skip />
+    <!-- no translation found for not_now (6172462888202790482) -->
+    <skip />
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Läge för studie av användbarhet"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Inställningar för vibrationslängd vid knapptryck"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Volyminställningar för knappljud"</string>
