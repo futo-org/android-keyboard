@@ -293,6 +293,8 @@
     <string name="enable">Enable</string>
     <!-- Title of the button to postpone enabling a custom input style entry in the settings dialog [CHAR LIMIT=12] -->
     <string name="not_now">Not now</string>
+    <!-- Toast text to describe the same input style already exists [CHAR LIMIT=64]-->
+    <string name="custom_input_style_already_exists">"The same input style already exists: <xliff:g id="input_style_name">%s</xliff:g>"</string>
 
     <!-- Title of an option for usability study mode -->
     <string name="prefs_usability_study_mode">Usability study mode</string>
