@@ -408,8 +408,6 @@ public class Suggest implements Dictionary.WordCallback {
             final String typedWord, final ArrayList<SuggestedWordInfo> suggestions) {
         final SuggestedWordInfo typedWordInfo = suggestions.get(0);
         typedWordInfo.setDebugString("+");
-        double normalizedScore = BinaryDictionary.calcNormalizedScore(
-                typedWord, typedWordInfo.toString(), typedWordInfo.mScore);
         final int suggestionsSize = suggestions.size();
         final ArrayList<SuggestedWordInfo> suggestionsList =
                 new ArrayList<SuggestedWordInfo>(suggestionsSize);
@@ -418,10 +416,11 @@ public class Suggest implements Dictionary.WordCallback {
         // than i because we added the typed word to mSuggestions without touching mScores.
         for (int i = 0; i < suggestionsSize - 1; ++i) {
             final SuggestedWordInfo cur = suggestions.get(i + 1);
+            final double normalizedScore = BinaryDictionary.calcNormalizedScore(
+                    typedWord, cur.toString(), cur.mScore);
             final String scoreInfoString;
             if (normalizedScore > 0) {
                 scoreInfoString = String.format("%d (%4.2f)", cur.mScore, normalizedScore);
-                normalizedScore = 0.0;
             } else {
                 scoreInfoString = Integer.toString(cur.mScore);
             }

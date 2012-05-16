@@ -208,7 +208,8 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
         AKLOGI("Max normalized score = %f", ns);
     }
     const int suggestedWordsCount =
-            queuePool->getMasterQueue()->outputSuggestions(frequencies, outWords);
+            queuePool->getMasterQueue()->outputSuggestions(
+                    proximityInfo->getPrimaryInputWord(), codesSize, frequencies, outWords);
 
     if (DEBUG_DICT) {
         double ns = queuePool->getMasterQueue()->getHighestNormalizedScore(
