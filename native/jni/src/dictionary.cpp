@@ -20,6 +20,7 @@
 #define LOG_TAG "LatinIME: dictionary.cpp"
 
 #include "binary_format.h"
+#include "defines.h"
 #include "dictionary.h"
 
 namespace latinime {

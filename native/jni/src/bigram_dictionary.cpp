@@ -22,6 +22,7 @@
 #include "bigram_dictionary.h"
 #include "binary_format.h"
 #include "bloom_filter.h"
+#include "defines.h"
 #include "dictionary.h"
 
 namespace latinime {

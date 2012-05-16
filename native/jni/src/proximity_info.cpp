@@ -21,6 +21,7 @@
 #define LOG_TAG "LatinIME: proximity_info.cpp"
 
 #include "additional_proximity_chars.h"
+#include "defines.h"
 #include "dictionary.h"
 #include "proximity_info.h"
 
