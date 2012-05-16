@@ -79,9 +79,9 @@ public class AndroidSpellCheckerService extends SpellCheckerService
     private Dictionary mContactsDictionary;
 
     // The threshold for a candidate to be offered as a suggestion.
-    private double mSuggestionThreshold;
+    private float mSuggestionThreshold;
     // The threshold for a suggestion to be considered "recommended".
-    private double mRecommendedThreshold;
+    private float mRecommendedThreshold;
     // Whether to use the contacts dictionary
     private boolean mUseContactsDictionary;
     private final Object mUseContactsLock = new Object();
@@ -113,9 +113,9 @@ public class AndroidSpellCheckerService extends SpellCheckerService
     @Override public void onCreate() {
         super.onCreate();
         mSuggestionThreshold =
-                Double.parseDouble(getString(R.string.spellchecker_suggestion_threshold_value));
+                Float.parseFloat(getString(R.string.spellchecker_suggestion_threshold_value));
         mRecommendedThreshold =
-                Double.parseDouble(getString(R.string.spellchecker_recommended_threshold_value));
+                Float.parseFloat(getString(R.string.spellchecker_recommended_threshold_value));
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.registerOnSharedPreferenceChangeListener(this);
         onSharedPreferenceChanged(prefs, PREF_USE_CONTACTS_KEY);
@@ -207,8 +207,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         private final ArrayList<CharSequence> mSuggestions;
         private final int[] mScores;
         private final String mOriginalText;
-        private final double mSuggestionThreshold;
-        private final double mRecommendedThreshold;
+        private final float mSuggestionThreshold;
+        private final float mRecommendedThreshold;
         private final int mMaxLength;
         private int mLength = 0;
 
@@ -217,8 +217,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         private String mBestSuggestion = null;
         private int mBestScore = Integer.MIN_VALUE; // As small as possible
 
-        SuggestionsGatherer(final String originalText, final double suggestionThreshold,
-                final double recommendedThreshold, final int maxLength) {
+        SuggestionsGatherer(final String originalText, final float suggestionThreshold,
+                final float recommendedThreshold, final int maxLength) {
             mOriginalText = originalText;
             mSuggestionThreshold = suggestionThreshold;
             mRecommendedThreshold = recommendedThreshold;
@@ -261,7 +261,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             // Compute the normalized score and skip this word if it's normalized score does not
             // make the threshold.
             final String wordString = new String(word, wordOffset, wordLength);
-            final double normalizedScore =
+            final float normalizedScore =
                     BinaryDictionary.calcNormalizedScore(mOriginalText, wordString, score);
             if (normalizedScore < mSuggestionThreshold) {
                 if (DBG) Log.i(TAG, wordString + " does not make the score threshold");
@@ -295,7 +295,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                     hasRecommendedSuggestions = false;
                 } else {
                     gatheredSuggestions = EMPTY_STRING_ARRAY;
-                    final double normalizedScore = BinaryDictionary.calcNormalizedScore(
+                    final float normalizedScore = BinaryDictionary.calcNormalizedScore(
                             mOriginalText, mBestSuggestion, mBestScore);
                     hasRecommendedSuggestions = (normalizedScore > mRecommendedThreshold);
                 }
@@ -329,7 +329,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
 
                 final int bestScore = mScores[mLength - 1];
                 final CharSequence bestSuggestion = mSuggestions.get(0);
-                final double normalizedScore =
+                final float normalizedScore =
                         BinaryDictionary.calcNormalizedScore(
                                 mOriginalText, bestSuggestion.toString(), bestScore);
                 hasRecommendedSuggestions = (normalizedScore > mRecommendedThreshold);

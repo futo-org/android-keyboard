@@ -162,7 +162,7 @@ class Correction {
         static int calcFreqForSplitMultipleWords(const int *freqArray, const int *wordLengthArray,
                 const int wordCount, const Correction* correction, const bool isSpaceProximity,
                 const unsigned short *word);
-        static double calcNormalizedScore(const unsigned short* before, const int beforeLength,
+        static float calcNormalizedScore(const unsigned short* before, const int beforeLength,
                 const unsigned short* after, const int afterLength, const int score);
         static int editDistance(const unsigned short* before,
                 const int beforeLength, const unsigned short* after, const int afterLength);

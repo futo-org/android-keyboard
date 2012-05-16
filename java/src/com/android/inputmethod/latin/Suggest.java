@@ -77,7 +77,7 @@ public class Suggest implements Dictionary.WordCallback {
 
     private static final int PREF_MAX_BIGRAMS = 60;
 
-    private double mAutoCorrectionThreshold;
+    private float mAutoCorrectionThreshold;
 
     private ArrayList<SuggestedWordInfo> mSuggestions = new ArrayList<SuggestedWordInfo>();
     private ArrayList<SuggestedWordInfo> mBigramSuggestions = new ArrayList<SuggestedWordInfo>();
@@ -185,7 +185,7 @@ public class Suggest implements Dictionary.WordCallback {
                 userHistoryDictionary);
     }
 
-    public void setAutoCorrectionThreshold(double threshold) {
+    public void setAutoCorrectionThreshold(float threshold) {
         mAutoCorrectionThreshold = threshold;
     }
 
@@ -416,7 +416,7 @@ public class Suggest implements Dictionary.WordCallback {
         // than i because we added the typed word to mSuggestions without touching mScores.
         for (int i = 0; i < suggestionsSize - 1; ++i) {
             final SuggestedWordInfo cur = suggestions.get(i + 1);
-            final double normalizedScore = BinaryDictionary.calcNormalizedScore(
+            final float normalizedScore = BinaryDictionary.calcNormalizedScore(
                     typedWord, cur.toString(), cur.mScore);
             final String scoreInfoString;
             if (normalizedScore > 0) {
