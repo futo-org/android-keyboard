@@ -64,7 +64,7 @@
     <string name="bigram_suggestion" msgid="8169311444438922902">"다음 추천 검색어"</string>
     <string name="bigram_suggestion_summary" msgid="6635527607242625713">"이전 단어를 사용하여 추천 검색어 개선"</string>
     <string name="bigram_prediction" msgid="3216364899483135294">"다음 예상 검색어"</string>
-    <string name="bigram_prediction_summary" msgid="1747261921174300098">"이전 단어를 사용하여 예상 검색어를 표시합니다."</string>
+    <string name="bigram_prediction_summary" msgid="1747261921174300098">"이전 단어를 사용하여 예상 검색어 표시"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: 저장됨"</string>
     <string name="label_go_key" msgid="1635148082137219148">"이동"</string>
     <string name="label_next_key" msgid="362972844525672568">"다음"</string>
