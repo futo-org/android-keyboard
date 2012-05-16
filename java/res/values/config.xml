@@ -23,8 +23,7 @@
     <bool name="config_enable_show_voice_key_option">true</bool>
     <bool name="config_enable_show_popup_on_keypress_option">true</bool>
     <bool name="config_enable_next_word_suggestions_option">true</bool>
-    <!-- TODO: Disable the following configuration for production. -->
-    <bool name="config_enable_usability_study_mode_option">true</bool>
+    <bool name="config_enable_usability_study_mode_option">false</bool>
     <!-- Whether or not Popup on key press is enabled by default -->
     <bool name="config_default_popup_preview">true</bool>
     <!-- Default value for next word suggestion: while showing suggestions for a word should we weigh
