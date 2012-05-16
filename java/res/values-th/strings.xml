@@ -118,10 +118,8 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"ชุดรูปแบบแป้นพิมพ์"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"อังกฤษ (สหราชอาณาจักร)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"อังกฤษ (อเมริกัน)"</string>
-    <!-- no translation found for subtype_with_layout_en_GB (2179097748724725906) -->
-    <skip />
-    <!-- no translation found for subtype_with_layout_en_US (1362581347576714579) -->
-    <skip />
+    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"อังกฤษ (สหราชอาณาจักร) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"อังกฤษ (สหรัฐอเมริกา) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_no_language" msgid="141420857808801746">"ไม่มีภาษา"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"ไม่มีภาษา (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"ไม่มีภาษา (QWERTZ)"</string>
@@ -136,6 +134,12 @@
     <string name="save" msgid="7646738597196767214">"บันทึก"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"ภาษา"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"การจัดวาง"</string>
+    <!-- no translation found for custom_input_style_note_message (8826731320846363423) -->
+    <skip />
+    <!-- no translation found for enable (5031294444630523247) -->
+    <skip />
+    <!-- no translation found for not_now (6172462888202790482) -->
+    <skip />
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"โหมดศึกษาประโยชน์ในการใช้งาน"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"การตั้งค่าระยะเวลาการสั่นเมื่อกดแป้นพิมพ์"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"การตั้งค่าระดับเสียงเมื่อกดแป้นพิมพ์"</string>
