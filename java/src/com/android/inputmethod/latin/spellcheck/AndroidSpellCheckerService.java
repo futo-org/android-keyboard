@@ -398,7 +398,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 SpellCheckerProximityInfo.PROXIMITY_GRID_WIDTH,
                 SpellCheckerProximityInfo.PROXIMITY_GRID_HEIGHT);
         final DictionaryCollection dictionaryCollection =
-                DictionaryFactory.createDictionaryFromManager(this, locale,
+                DictionaryFactory.createMainDictionaryFromManager(this, locale,
                         true /* useFullEditDistance */);
         final String localeStr = locale.toString();
         Dictionary userDictionary = mUserDictionaries.get(localeStr);
