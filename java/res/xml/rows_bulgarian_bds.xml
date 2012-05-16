@@ -36,7 +36,7 @@
             latin:keyboardLayout="@xml/rowkeys_bulgarian_bds2" />
     </Row>
     <Row
-        latin:keyWidth="9.091%p"
+        latin:keyWidth="8.711%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
