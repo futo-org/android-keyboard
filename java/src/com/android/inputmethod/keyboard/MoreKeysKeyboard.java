@@ -289,8 +289,6 @@ public class MoreKeysKeyboard extends Keyboard {
             final int dividerWidth;
             if (parentKey.needsDividersInMoreKeys()) {
                 mDivider = mResources.getDrawable(R.drawable.more_keys_divider);
-                // TODO: Drawable itself should have an alpha value.
-                mDivider.setAlpha(128);
                 dividerWidth = (int)(width * DIVIDER_RATIO);
             } else {
                 mDivider = null;
@@ -333,8 +331,11 @@ public class MoreKeysKeyboard extends Keyboard {
             }
 
             @Override
-            public Drawable getIcon(KeyboardIconsSet iconSet) {
-                // KeyboardIconsSet is unused. Use the icon that has been passed to the constructor.
+            public Drawable getIcon(KeyboardIconsSet iconSet, int alpha) {
+                // KeyboardIconsSet and alpha are unused. Use the icon that has been passed to the
+                // constructor.
+                // TODO: Drawable itself should have an alpha value.
+                mIcon.setAlpha(128);
                 return mIcon;
             }
         }
