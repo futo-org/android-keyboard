@@ -43,20 +43,6 @@ public class Suggest implements Dictionary.WordCallback {
     public static final int CORRECTION_FULL = 1;
     public static final int CORRECTION_FULL_BIGRAM = 2;
 
-    /**
-     * Words that appear in both bigram and unigram data gets multiplier ranging from
-     * BIGRAM_MULTIPLIER_MIN to BIGRAM_MULTIPLIER_MAX depending on the score from
-     * bigram data.
-     */
-    public static final double BIGRAM_MULTIPLIER_MIN = 1.2;
-    public static final double BIGRAM_MULTIPLIER_MAX = 1.5;
-
-    /**
-     * Maximum possible bigram frequency. Will depend on how many bits are being used in data
-     * structure. Maximum bigram frequency will get the BIGRAM_MULTIPLIER_MAX as the multiplier.
-     */
-    public static final int MAXIMUM_BIGRAM_FREQUENCY = 127;
-
     // It seems the following values are only used for logging.
     public static final int DIC_USER_TYPED = 0;
     public static final int DIC_MAIN = 1;
@@ -478,25 +464,6 @@ public class Suggest implements Dictionary.WordCallback {
                 }
             }
         } else {
-            if (dataType == Dictionary.UNIGRAM) {
-                // Check if the word was already added before (by bigram data)
-                int bigramSuggestion = searchBigramSuggestion(word,offset,length);
-                if(bigramSuggestion >= 0) {
-                    dataTypeForLog = Dictionary.BIGRAM;
-                    // turn freq from bigram into multiplier specified above
-                    double multiplier = (((double) mBigramSuggestions.get(bigramSuggestion).mScore)
-                            / MAXIMUM_BIGRAM_FREQUENCY)
-                            * (BIGRAM_MULTIPLIER_MAX - BIGRAM_MULTIPLIER_MIN)
-                            + BIGRAM_MULTIPLIER_MIN;
-                    /* Log.d(TAG,"bigram num: " + bigramSuggestion
-                            + "  wordB: " + mBigramSuggestions.get(bigramSuggestion).toString()
-                            + "  currentScore: " + score + "  bigramScore: "
-                            + mBigramScores[bigramSuggestion]
-                            + "  multiplier: " + multiplier); */
-                    score = (int)Math.round((score * multiplier));
-                }
-            }
-
             // Check the last one's score and bail
             if (suggestions.size() >= prefMaxSuggestions
                     && suggestions.get(prefMaxSuggestions - 1).mScore >= score) return true;
