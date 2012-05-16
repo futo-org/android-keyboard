@@ -111,6 +111,9 @@ public class KeyCodeDescriptionMapper {
             if (mKeyLabelMap.containsKey(label)) {
                 return context.getString(mKeyLabelMap.get(label));
             }
+
+            // Otherwise, return the label.
+            return key.mLabel;
         }
 
         // Just attempt to speak the description.
