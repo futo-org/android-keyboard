@@ -196,11 +196,11 @@ static jboolean latinime_BinaryDictionary_isValidBigram(JNIEnv *env, jobject obj
     return result;
 }
 
-static jdouble latinime_BinaryDictionary_calcNormalizedScore(JNIEnv *env, jobject object,
+static jfloat latinime_BinaryDictionary_calcNormalizedScore(JNIEnv *env, jobject object,
         jcharArray before, jint beforeLength, jcharArray after, jint afterLength, jint score) {
     jchar *beforeChars = env->GetCharArrayElements(before, 0);
     jchar *afterChars = env->GetCharArrayElements(after, 0);
-    jdouble result = Correction::RankingAlgorithm::calcNormalizedScore((unsigned short*)beforeChars,
+    jfloat result = Correction::RankingAlgorithm::calcNormalizedScore((unsigned short*)beforeChars,
             beforeLength, (unsigned short*)afterChars, afterLength, score);
     env->ReleaseCharArrayElements(after, afterChars, JNI_ABORT);
     env->ReleaseCharArrayElements(before, beforeChars, JNI_ABORT);
@@ -255,7 +255,7 @@ static JNINativeMethod sMethods[] = {
     {"isValidWordNative", "(J[II)Z", (void*)latinime_BinaryDictionary_isValidWord},
     {"isValidBigramNative", "(J[I[I)Z", (void*)latinime_BinaryDictionary_isValidBigram},
     {"getBigramsNative", "(J[II[II[C[III)I", (void*)latinime_BinaryDictionary_getBigrams},
-    {"calcNormalizedScoreNative", "([CI[CII)D",
+    {"calcNormalizedScoreNative", "([CI[CII)F",
             (void*)latinime_BinaryDictionary_calcNormalizedScore},
     {"editDistanceNative", "([CI[CI)I", (void*)latinime_BinaryDictionary_editDistance}
 };

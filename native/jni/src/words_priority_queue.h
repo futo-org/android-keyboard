@@ -112,13 +112,13 @@ class WordsPriorityQueue {
         if (size >= 2) {
             SuggestedWord* nsMaxSw = 0;
             unsigned int maxIndex = 0;
-            double maxNs = 0;
+            float maxNs = 0;
             for (unsigned int i = 0; i < size; ++i) {
                 SuggestedWord* tempSw = swBuffer[i];
                 if (!tempSw) {
                     continue;
                 }
-                const double tempNs = getNormalizedScore(tempSw, before, beforeLength, 0, 0, 0);
+                const float tempNs = getNormalizedScore(tempSw, before, beforeLength, 0, 0, 0);
                 if (tempNs >= maxNs) {
                     maxNs = tempNs;
                     maxIndex = i;
@@ -172,7 +172,7 @@ class WordsPriorityQueue {
         DUMP_WORD(mHighestSuggestedWord->mWord, mHighestSuggestedWord->mWordLength);
     }
 
-    double getHighestNormalizedScore(const unsigned short* before, const int beforeLength,
+    float getHighestNormalizedScore(const unsigned short* before, const int beforeLength,
             unsigned short** outWord, int *outScore, int *outLength) {
         if (!mHighestSuggestedWord) {
             return 0.0;
@@ -199,7 +199,7 @@ class WordsPriorityQueue {
         return 0;
     }
 
-    static double getNormalizedScore(SuggestedWord* sw, const unsigned short* before,
+    static float getNormalizedScore(SuggestedWord* sw, const unsigned short* before,
             const int beforeLength, unsigned short** outWord, int *outScore, int *outLength) {
         const int score = sw->mScore;
         unsigned short* word = sw->mWord;

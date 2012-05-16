@@ -202,7 +202,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
 
     PROF_START(20);
     if (DEBUG_DICT) {
-        double ns = queuePool->getMasterQueue()->getHighestNormalizedScore(
+        float ns = queuePool->getMasterQueue()->getHighestNormalizedScore(
                 proximityInfo->getPrimaryInputWord(), codesSize, 0, 0, 0);
         ns += 0;
         AKLOGI("Max normalized score = %f", ns);
@@ -212,7 +212,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
                     proximityInfo->getPrimaryInputWord(), codesSize, frequencies, outWords);
 
     if (DEBUG_DICT) {
-        double ns = queuePool->getMasterQueue()->getHighestNormalizedScore(
+        float ns = queuePool->getMasterQueue()->getHighestNormalizedScore(
                 proximityInfo->getPrimaryInputWord(), codesSize, 0, 0, 0);
         ns += 0;
         AKLOGI("Returning %d words", suggestedWordsCount);
@@ -255,7 +255,7 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
     bool hasAutoCorrectionCandidate = false;
     WordsPriorityQueue* masterQueue = queuePool->getMasterQueue();
     if (masterQueue->size() > 0) {
-        double nsForMaster = masterQueue->getHighestNormalizedScore(
+        float nsForMaster = masterQueue->getHighestNormalizedScore(
                 proximityInfo->getPrimaryInputWord(), inputLength, 0, 0, 0);
         hasAutoCorrectionCandidate = (nsForMaster > START_TWO_WORDS_CORRECTION_THRESHOLD);
     }
@@ -284,7 +284,7 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
                 const int score = sw->mScore;
                 const unsigned short* word = sw->mWord;
                 const int wordLength = sw->mWordLength;
-                double ns = Correction::RankingAlgorithm::calcNormalizedScore(
+                float ns = Correction::RankingAlgorithm::calcNormalizedScore(
                         proximityInfo->getPrimaryInputWord(), i, word, wordLength, score);
                 ns += 0;
                 AKLOGI("--- TOP SUB WORDS for %d --- %d %f [%d]", i, score, ns,
@@ -452,7 +452,7 @@ bool UnigramDictionary::getSubStringSuggestion(
             return false;
         }
         int score = 0;
-        const double ns = queue->getHighestNormalizedScore(
+        const float ns = queue->getHighestNormalizedScore(
                 proximityInfo->getPrimaryInputWord(), inputWordLength,
                 &tempOutputWord, &score, &nextWordLength);
         if (DEBUG_DICT) {

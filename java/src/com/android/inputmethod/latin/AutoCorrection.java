@@ -35,7 +35,7 @@ public class AutoCorrection {
     public static CharSequence computeAutoCorrectionWord(
             HashMap<String, Dictionary> dictionaries,
             WordComposer wordComposer, ArrayList<SuggestedWordInfo> suggestions,
-            CharSequence consideredWord, double autoCorrectionThreshold,
+            CharSequence consideredWord, float autoCorrectionThreshold,
             CharSequence whitelistedWord) {
         if (hasAutoCorrectionForWhitelistedWord(whitelistedWord)) {
             return whitelistedWord;
@@ -100,14 +100,14 @@ public class AutoCorrection {
 
     private static boolean hasAutoCorrectionForBinaryDictionary(WordComposer wordComposer,
             ArrayList<SuggestedWordInfo> suggestions,
-            CharSequence consideredWord, double autoCorrectionThreshold) {
+            CharSequence consideredWord, float autoCorrectionThreshold) {
         if (wordComposer.size() > 1 && suggestions.size() > 0) {
             final SuggestedWordInfo autoCorrectionSuggestion = suggestions.get(0);
             //final int autoCorrectionSuggestionScore = sortedScores[0];
             final int autoCorrectionSuggestionScore = autoCorrectionSuggestion.mScore;
             // TODO: when the normalized score of the first suggestion is nearly equals to
             //       the normalized score of the second suggestion, behave less aggressive.
-            final double normalizedScore = BinaryDictionary.calcNormalizedScore(
+            final float normalizedScore = BinaryDictionary.calcNormalizedScore(
                     consideredWord.toString(), autoCorrectionSuggestion.mWord.toString(),
                     autoCorrectionSuggestionScore);
             if (DBG) {

@@ -77,7 +77,7 @@ public class SettingsValues {
     public final float mFxVolume;
     public final int mKeyPreviewPopupDismissDelay;
     public final boolean mAutoCorrectEnabled;
-    public final double mAutoCorrectionThreshold;
+    public final float mAutoCorrectionThreshold;
     private final boolean mVoiceKeyEnabled;
     private final boolean mVoiceKeyOnMain;
 
@@ -255,21 +255,21 @@ public class SettingsValues {
                 R.bool.config_default_next_word_prediction));
     }
 
-    private static double getAutoCorrectionThreshold(final Resources resources,
+    private static float getAutoCorrectionThreshold(final Resources resources,
             final String currentAutoCorrectionSetting) {
         final String[] autoCorrectionThresholdValues = resources.getStringArray(
                 R.array.auto_correction_threshold_values);
         // When autoCorrectionThreshold is greater than 1.0, it's like auto correction is off.
-        double autoCorrectionThreshold = Double.MAX_VALUE;
+        float autoCorrectionThreshold = Float.MAX_VALUE;
         try {
             final int arrayIndex = Integer.valueOf(currentAutoCorrectionSetting);
             if (arrayIndex >= 0 && arrayIndex < autoCorrectionThresholdValues.length) {
-                autoCorrectionThreshold = Double.parseDouble(
+                autoCorrectionThreshold = Float.parseFloat(
                         autoCorrectionThresholdValues[arrayIndex]);
             }
         } catch (NumberFormatException e) {
             // Whenever the threshold settings are correct, never come here.
-            autoCorrectionThreshold = Double.MAX_VALUE;
+            autoCorrectionThreshold = Float.MAX_VALUE;
             Log.w(TAG, "Cannot load auto correction threshold setting."
                     + " currentAutoCorrectionSetting: " + currentAutoCorrectionSetting
                     + ", autoCorrectionThresholdValues: "

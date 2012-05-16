@@ -92,7 +92,7 @@ public class BinaryDictionary extends Dictionary {
     private native int getBigramsNative(long dict, int[] prevWord, int prevWordLength,
             int[] inputCodes, int inputCodesLength, char[] outputChars, int[] scores,
             int maxWordLength, int maxBigrams);
-    private static native double calcNormalizedScoreNative(
+    private static native float calcNormalizedScoreNative(
             char[] before, int beforeLength, char[] after, int afterLength, int score);
     private static native int editDistanceNative(
             char[] before, int beforeLength, char[] after, int afterLength);
@@ -189,7 +189,7 @@ public class BinaryDictionary extends Dictionary {
                 prevWordCodePointArray, mUseFullEditDistance, outputChars, scores);
     }
 
-    public static double calcNormalizedScore(String before, String after, int score) {
+    public static float calcNormalizedScore(String before, String after, int score) {
         return calcNormalizedScoreNative(before.toCharArray(), before.length(),
                 after.toCharArray(), after.length(), score);
     }

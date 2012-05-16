@@ -1113,7 +1113,7 @@ int Correction::RankingAlgorithm::editDistance(const unsigned short* before,
 // So, we can normalize original score by dividing pow(2, min(b.l(),a.l())) * 255 * 2.
 
 /* static */
-double Correction::RankingAlgorithm::calcNormalizedScore(const unsigned short* before,
+float Correction::RankingAlgorithm::calcNormalizedScore(const unsigned short* before,
         const int beforeLength, const unsigned short* after, const int afterLength,
         const int score) {
     if (0 == beforeLength || 0 == afterLength) {
@@ -1131,14 +1131,14 @@ double Correction::RankingAlgorithm::calcNormalizedScore(const unsigned short* b
         return 0;
     }
 
-    const double maxScore = score >= S_INT_MAX ? S_INT_MAX : MAX_INITIAL_SCORE
-            * pow((double)TYPED_LETTER_MULTIPLIER,
-                    (double)min(beforeLength, afterLength - spaceCount)) * FULL_WORD_MULTIPLIER;
+    const float maxScore = score >= S_INT_MAX ? S_INT_MAX : MAX_INITIAL_SCORE
+            * pow((float)TYPED_LETTER_MULTIPLIER,
+                    (float)min(beforeLength, afterLength - spaceCount)) * FULL_WORD_MULTIPLIER;
 
     // add a weight based on edit distance.
     // distance <= max(afterLength, beforeLength) == afterLength,
     // so, 0 <= distance / afterLength <= 1
-    const double weight = 1.0 - (double) distance / afterLength;
+    const float weight = 1.0 - (float) distance / afterLength;
     return (score / maxScore) * weight;
 }
 
