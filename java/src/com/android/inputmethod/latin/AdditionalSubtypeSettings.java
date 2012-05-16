@@ -22,6 +22,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -41,6 +42,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
+import com.android.inputmethod.compat.CompatUtils;
+
 import java.util.TreeSet;
 
 public class AdditionalSubtypeSettings extends PreferenceFragment {
@@ -49,9 +52,14 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
     private KeyboardLayoutSetAdapter mKeyboardLayoutSetAdapter;
 
     private boolean mIsAddingNewSubtype;
+    private AlertDialog mSubtypeEnablerNotificationDialog;
+    private String mSubtypePreferenceKeyForSubtypeEnabler;
 
     private static final int MENU_ADD_SUBTYPE = Menu.FIRST;
-    private static final String SAVE_IS_ADDING_NEW_SUBTYPE = "is_adding_new_subtype";
+    private static final String KEY_IS_ADDING_NEW_SUBTYPE = "is_adding_new_subtype";
+    private static final String KEY_IS_SUBTYPE_ENABLER_NOTIFICATION_DIALOG_OPEN =
+            "is_subtype_enabler_notification_dialog_open";
+    private static final String KEY_SUBTYPE_FOR_SUBTYPE_ENABLER = "subtype_for_subtype_enabler";
 
     static class SubtypeLocaleItem extends Pair<String, String>
             implements Comparable<SubtypeLocaleItem> {
@@ -368,20 +376,36 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
         setPrefSubtypes(prefSubtypes, context);
 
         mIsAddingNewSubtype = (savedInstanceState != null)
-                && savedInstanceState.containsKey(SAVE_IS_ADDING_NEW_SUBTYPE);
+                && savedInstanceState.containsKey(KEY_IS_ADDING_NEW_SUBTYPE);
         if (mIsAddingNewSubtype) {
             getPreferenceScreen().addPreference(
                     SubtypePreference.newIncompleteSubtypePreference(context, mSubtypeProxy));
         }
 
         super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(
+                KEY_IS_SUBTYPE_ENABLER_NOTIFICATION_DIALOG_OPEN)) {
+            mSubtypePreferenceKeyForSubtypeEnabler = savedInstanceState.getString(
+                    KEY_SUBTYPE_FOR_SUBTYPE_ENABLER);
+            final SubtypePreference subtypePref = (SubtypePreference)findPreference(
+                    mSubtypePreferenceKeyForSubtypeEnabler);
+            mSubtypeEnablerNotificationDialog = createDialog(subtypePref);
+            mSubtypeEnablerNotificationDialog.show();
+        }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mIsAddingNewSubtype) {
-            outState.putBoolean(SAVE_IS_ADDING_NEW_SUBTYPE, true);
+            outState.putBoolean(KEY_IS_ADDING_NEW_SUBTYPE, true);
+        }
+        if (mSubtypeEnablerNotificationDialog != null
+                && mSubtypeEnablerNotificationDialog.isShowing()) {
+            outState.putBoolean(KEY_IS_SUBTYPE_ENABLER_NOTIFICATION_DIALOG_OPEN, true);
+            outState.putString(
+                    KEY_SUBTYPE_FOR_SUBTYPE_ENABLER, mSubtypePreferenceKeyForSubtypeEnabler);
         }
     }
 
@@ -398,6 +422,10 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
         @Override
         public void onAddPressed(SubtypePreference subtypePref) {
             mIsAddingNewSubtype = false;
+            setAdditionalInputMethodSubtypes(getPrefSubtypes());
+            mSubtypePreferenceKeyForSubtypeEnabler = subtypePref.getKey();
+            mSubtypeEnablerNotificationDialog = createDialog(subtypePref);
+            mSubtypeEnablerNotificationDialog.show();
         }
 
         @Override
@@ -410,6 +438,29 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
             return mKeyboardLayoutSetAdapter;
         }
     };
+
+    private AlertDialog createDialog(SubtypePreference subtypePref) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.custom_input_styles_title)
+                .setMessage(R.string.custom_input_style_note_message)
+                .setNegativeButton(R.string.not_now, null)
+                .setPositiveButton(R.string.enable, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        final Intent intent = CompatUtils.getInputLanguageSelectionIntent(
+                                ImfUtils.getInputMethodIdOfThisIme(getActivity()),
+                                Intent.FLAG_ACTIVITY_NEW_TASK
+                                | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
+                                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        // TODO: Add newly adding subtype to extra value of the intent as a hint
+                        // for the input language selection activity.
+                        // intent.putExtra("newlyAddedSubtype", subtypePref.getSubtype());
+                        startActivity(intent);
+                    }
+                });
+
+        return builder.create();
+    }
 
     private void setPrefSubtypes(String prefSubtypes, Context context) {
         final PreferenceGroup group = getPreferenceScreen();
@@ -458,6 +509,10 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
         } finally {
             editor.apply();
         }
+        setAdditionalInputMethodSubtypes(prefSubtypes);
+    }
+
+    private void setAdditionalInputMethodSubtypes(final String prefSubtypes) {
         final InputMethodSubtype[] subtypes =
                 AdditionalSubtype.createAdditionalSubtypesArray(prefSubtypes);
         ImfUtils.setAdditionalInputMethodSubtypes(getActivity(), subtypes);
