@@ -101,6 +101,9 @@ public class SubtypeSwitcher {
         mCurrentSubtype = mImm.getCurrentInputMethodSubtype();
         mNoLanguageSubtype = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
                 service, SubtypeLocale.NO_LANGUAGE, SubtypeLocale.QWERTY);
+        if (mNoLanguageSubtype == null) {
+            throw new RuntimeException("Can't find no lanugage with QWERTY subtype");
+        }
 
         final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
         mIsNetworkConnected = (info != null && info.isConnected());
