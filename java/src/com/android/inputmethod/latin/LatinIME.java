@@ -1298,8 +1298,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             break;
         }
         switcher.onCodeInput(primaryCode);
-        // Reset after any single keystroke
-        if (!didAutoCorrect)
+        // Reset after any single keystroke, except shift and symbol-shift
+        if (!didAutoCorrect && primaryCode != Keyboard.CODE_SHIFT
+                && primaryCode != Keyboard.CODE_SWITCH_ALPHA_SYMBOL)
             mLastComposedWord.deactivate();
         mEnteredText = null;
     }
