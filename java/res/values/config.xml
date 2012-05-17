@@ -74,9 +74,9 @@
         <item></item>
         <!-- Modest : Suggestion whose normalized score is greater than this value
              will be subject to auto-correction. -->
-        <item>0.22</item>
+        <item>0.185</item>
         <!-- Aggressive -->
-        <item>0.08</item>
+        <item>0.067</item>
         <!-- Very Aggressive : Suggestion whose normalized score is greater than this value
              will be subject to auto-correction. -->
         <item>0</item>
