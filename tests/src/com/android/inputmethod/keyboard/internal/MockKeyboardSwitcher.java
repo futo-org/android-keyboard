@@ -174,8 +174,8 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onSaveKeyboardState();
     }
 
-    public void onPressKey(int code) {
-        mState.onPressKey(code);
+    public void onPressKey(int code, boolean isSinglePointer) {
+        mState.onPressKey(code, isSinglePointer, mAutoCapsState);
     }
 
     public void onReleaseKey(int code, boolean withSliding) {

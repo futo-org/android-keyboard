@@ -1056,6 +1056,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 | InputType.TYPE_TEXT_FLAG_CAP_WORDS)) == 0;
         if (noNeedToCheckCapsMode) return Constants.TextUtils.CAP_MODE_OFF;
 
+        // Avoid making heavy round-trip IPC calls of {@link InputConnection#getCursorCapsMode}
+        // unless needed.
+        if (mWordComposer.isComposingWord()) return Constants.TextUtils.CAP_MODE_OFF;
+
         final InputConnection ic = getCurrentInputConnection();
         if (ic == null) return Constants.TextUtils.CAP_MODE_OFF;
         // TODO: This blocking IPC call is heavy. Consider doing this without using IPC calls.
