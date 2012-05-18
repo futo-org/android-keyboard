@@ -573,7 +573,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             final String label = key.mLabel;
             // For characters, use large font. For labels like "Done", use smaller font.
             paint.setTypeface(key.selectTypeface(params.mKeyTextStyle));
-            final int labelSize = key.selectTextSize(params);
+            final int labelSize = key.selectTextSize(params.mKeyLetterSize,
+                    params.mKeyLargeLetterSize, params.mKeyLabelSize, params.mKeyLargeLabelSize,
+                    params.mKeyHintLabelSize);
             paint.setTextSize(labelSize);
             final float labelCharHeight = getCharHeight(KEY_LABEL_REFERENCE_CHAR, paint);
             final float labelCharWidth = getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint);
