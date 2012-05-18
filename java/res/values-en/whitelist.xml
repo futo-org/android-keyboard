@@ -30,60 +30,13 @@
         <item>ill</item>
         <item>I\'ll</item>
 
-        <!-- Following entries came from AutoText -->
-        <!-- TODO: Trim down these entries by removing ones getting auto-corrected by the typing
-                error correction algorithms. -->
-        <item>255</item>
-        <item>abouta</item>
-        <item>about a</item>
-
-        <item>255</item>
-        <item>aboutit</item>
-        <item>about it</item>
-
-        <item>255</item>
-        <item>aboutthe</item>
-        <item>about the</item>
-
-        <item>255</item>
-        <item>acheive</item>
-        <item>achieve</item>
-
-        <item>255</item>
-        <item>acheived</item>
-        <item>achieved</item>
-
-        <item>255</item>
-        <item>acheiving</item>
-        <item>achieving</item>
+        <!-- Following entries came from AutoText the Android keyboard no longer uses. -->
+        <!-- TODO: Trim down more entries by removing ones that get auto-corrected by the
+             Android keyboard's own typing error correction algorithms. -->
 
         <item>255</item>
         <item>acomodate</item>
         <item>accommodate</item>
-
-        <item>255</item>
-        <item>accomodate</item>
-        <item>accommodate</item>
-
-        <item>255</item>
-        <item>acn</item>
-        <item>can</item>
-
-        <item>255</item>
-        <item>adn</item>
-        <item>and</item>
-
-        <item>255</item>
-        <item>agian</item>
-        <item>again</item>
-
-        <item>255</item>
-        <item>ahd</item>
-        <item>had</item>
-
-        <item>255</item>
-        <item>ahve</item>
-        <item>have</item>
 
         <item>255</item>
         <item>aint</item>
@@ -94,80 +47,12 @@
         <item>a lot</item>
 
         <item>255</item>
-        <item>amde</item>
-        <item>made</item>
-
-        <item>255</item>
-        <item>amke</item>
-        <item>make</item>
-
-        <item>255</item>
-        <item>andone</item>
-        <item>and one</item>
-
-        <item>255</item>
         <item>andteh</item>
         <item>and the</item>
 
         <item>255</item>
-        <item>anothe</item>
-        <item>another</item>
-
-        <item>255</item>
         <item>arent</item>
         <item>aren\'t</item>
-
-        <item>255</item>
-        <item>asthe</item>
-        <item>as the</item>
-
-        <item>255</item>
-        <item>atthe</item>
-        <item>at the</item>
-
-        <item>255</item>
-        <item>bakc</item>
-        <item>back</item>
-
-        <item>255</item>
-        <item>beacuse</item>
-        <item>because</item>
-
-        <item>255</item>
-        <item>becasue</item>
-        <item>because</item>
-
-        <item>255</item>
-        <item>becaus</item>
-        <item>because</item>
-
-        <item>255</item>
-        <item>becausea</item>
-        <item>because a</item>
-
-        <item>255</item>
-        <item>becauseof</item>
-        <item>because of</item>
-
-        <item>255</item>
-        <item>becausethe</item>
-        <item>because the</item>
-
-        <item>255</item>
-        <item>becauseyou</item>
-        <item>because you</item>
-
-        <item>255</item>
-        <item>becuase</item>
-        <item>because</item>
-
-        <item>255</item>
-        <item>becuse</item>
-        <item>because</item>
-
-        <item>255</item>
-        <item>beleive</item>
-        <item>believe</item>
 
         <item>255</item>
         <item>bot</item>
@@ -178,124 +63,16 @@
         <item>but</item>
 
         <item>255</item>
-        <item>butthe</item>
-        <item>but the</item>
-
-        <item>255</item>
         <item>cant</item>
         <item>can\'t</item>
-
-        <item>255</item>
-        <item>certian</item>
-        <item>certain</item>
-
-        <item>255</item>
-        <item>changable</item>
-        <item>changeable</item>
-
-        <item>255</item>
-        <item>chekc</item>
-        <item>check</item>
-
-        <item>255</item>
-        <item>chnage</item>
-        <item>change</item>
-
-        <item>255</item>
-        <item>couldnt</item>
-        <item>couldn\'t</item>
-
-        <item>255</item>
-        <item>couldthe</item>
-        <item>could the</item>
-
-        <item>255</item>
-        <item>couldve</item>
-        <item>could\'ve</item>
-
-        <item>255</item>
-        <item>cna</item>
-        <item>can</item>
-
-        <item>255</item>
-        <item>committment</item>
-        <item>commitment</item>
-
-        <item>255</item>
-        <item>committments</item>
-        <item>commitments</item>
-
-        <item>255</item>
-        <item>companys</item>
-        <item>company\'s</item>
-
-        <item>255</item>
-        <item>cxan</item>
-        <item>can</item>
 
         <item>255</item>
         <item>didint</item>
         <item>didn\'t</item>
 
         <item>255</item>
-        <item>didnot</item>
-        <item>did not</item>
-
-        <item>255</item>
-        <item>didnt</item>
-        <item>didn\'t</item>
-
-        <item>255</item>
-        <item>doesnt</item>
-        <item>doesn\'t</item>
-
-        <item>255</item>
-        <item>dont</item>
-        <item>don\'t</item>
-
-        <item>255</item>
-        <item>eyt</item>
-        <item>yet</item>
-
-        <item>255</item>
-        <item>fidn</item>
-        <item>find</item>
-
-        <item>255</item>
         <item>fora</item>
         <item>for a</item>
-
-        <item>255</item>
-        <item>freind</item>
-        <item>friend</item>
-
-        <item>255</item>
-        <item>friday</item>
-        <item>Friday</item>
-
-        <item>255</item>
-        <item>hadbeen</item>
-        <item>had been</item>
-
-        <item>255</item>
-        <item>hadnt</item>
-        <item>hadn\'t</item>
-
-        <item>255</item>
-        <item>haev</item>
-        <item>have</item>
-
-        <item>255</item>
-        <item>hasbeen</item>
-        <item>has been</item>
-
-        <item>255</item>
-        <item>hasnt</item>
-        <item>hasn\'t</item>
-
-        <item>255</item>
-        <item>havent</item>
-        <item>haven\'t</item>
 
         <item>255</item>
         <item>hed</item>
@@ -308,22 +85,6 @@
         <item>255</item>
         <item>heres</item>
         <item>here\'s</item>
-
-        <item>255</item>
-        <item>hes</item>
-        <item>he\'s</item>
-
-        <item>255</item>
-        <item>hlep</item>
-        <item>help</item>
-
-        <item>255</item>
-        <item>hoe</item>
-        <item>how</item>
-
-        <item>255</item>
-        <item>hoes</item>
-        <item>how\'s</item>
 
         <item>255</item>
         <item>howd</item>
@@ -342,18 +103,6 @@
         <item>how\'ve</item>
 
         <item>255</item>
-        <item>hte</item>
-        <item>the</item>
-
-        <item>255</item>
-        <item>htis</item>
-        <item>this</item>
-
-        <item>255</item>
-        <item>hvae</item>
-        <item>have</item>
-
-        <item>255</item>
         <item>i</item>
         <item>I</item>
 
@@ -366,48 +115,16 @@
         <item>I\'m</item>
 
         <item>255</item>
-        <item>i\'m</item>
-        <item>I\'m</item>
-
-        <item>255</item>
-        <item>i\'ll</item>
-        <item>I\'ll</item>
-
-        <item>255</item>
-        <item>i\'ve</item>
-        <item>I\'ve</item>
-
-        <item>255</item>
         <item>inteh</item>
         <item>in the</item>
-
-        <item>255</item>
-        <item>isnt</item>
-        <item>isn\'t</item>
-
-        <item>255</item>
-        <item>isthe</item>
-        <item>is the</item>
 
         <item>255</item>
         <item>itd</item>
         <item>it\'d</item>
 
         <item>255</item>
-        <item>itis</item>
-        <item>it is</item>
-
-        <item>255</item>
-        <item>itll</item>
-        <item>it\'ll</item>
-
-        <item>255</item>
         <item>itsa</item>
         <item>it\'s a</item>
-
-        <item>255</item>
-        <item>ive</item>
-        <item>I\'ve</item>
 
         <item>255</item>
         <item>jot</item>
@@ -426,216 +143,36 @@
         <item>more</item>
 
         <item>255</item>
-        <item>mkae</item>
-        <item>make</item>
-
-        <item>255</item>
-        <item>mkaes</item>
-        <item>makes</item>
-
-        <item>255</item>
         <item>moat</item>
         <item>most</item>
-
-        <item>255</item>
-        <item>monday</item>
-        <item>Monday</item>
 
         <item>255</item>
         <item>mot</item>
         <item>not</item>
 
         <item>255</item>
-        <item>mustnt</item>
-        <item>mustn\'t</item>
-
-        <item>255</item>
-        <item>neednt</item>
-        <item>needn\'t</item>
-
-        <item>255</item>
         <item>nit</item>
         <item>not</item>
-
-        <item>255</item>
-        <item>oclock</item>
-        <item>o\'clock</item>
-
-        <item>255</item>
-        <item>ofits</item>
-        <item>of its</item>
-
-        <item>255</item>
-        <item>ofthe</item>
-        <item>of the</item>
-
-        <item>255</item>
-        <item>omre</item>
-        <item>more</item>
-
-        <item>255</item>
-        <item>oneof</item>
-        <item>one of</item>
 
         <item>255</item>
         <item>os</item>
         <item>is</item>
 
         <item>255</item>
-        <item>otehr</item>
-        <item>other</item>
-
-        <item>255</item>
-        <item>outof</item>
-        <item>out of</item>
-
-        <item>255</item>
-        <item>overthe</item>
-        <item>over the</item>
-
-        <item>255</item>
-        <item>owrk</item>
-        <item>work</item>
-
-        <item>255</item>
-        <item>percentof</item>
-        <item>percent of</item>
-
-        <item>255</item>
-        <item>recieve</item>
-        <item>receive</item>
-
-        <item>255</item>
-        <item>recieved</item>
-        <item>received</item>
-
-        <item>255</item>
-        <item>recieving</item>
-        <item>receiving</item>
-
-        <item>255</item>
-        <item>saidthat</item>
-        <item>said that</item>
-
-        <item>255</item>
-        <item>saidthe</item>
-        <item>said the</item>
-
-        <item>255</item>
-        <item>saturday</item>
-        <item>Saturday</item>
-
-        <item>255</item>
-        <item>seh</item>
-        <item>she</item>
-
-        <item>255</item>
-        <item>shant</item>
-        <item>shan\'t</item>
-
-        <item>255</item>
-        <item>she\'</item>
-        <item>she\'ll</item>
-
-        <item>255</item>
         <item>shel</item>
         <item>she\'ll</item>
-
-        <item>255</item>
-        <item>shes</item>
-        <item>she\'s</item>
 
         <item>255</item>
         <item>shouldent</item>
         <item>shouldn\'t</item>
 
         <item>255</item>
-        <item>shouldnt</item>
-        <item>shouldn\'t</item>
-
-        <item>255</item>
-        <item>shouldve</item>
-        <item>should\'ve</item>
-
-        <item>255</item>
-        <item>sone</item>
-        <item>some</item>
-
-        <item>255</item>
-        <item>sunday</item>
-        <item>Sunday</item>
-
-        <item>255</item>
-        <item>tahn</item>
-        <item>than</item>
-
-        <item>255</item>
-        <item>taht</item>
-        <item>that</item>
-
-        <item>255</item>
-        <item>teh</item>
-        <item>the</item>
-
-        <item>255</item>
         <item>thatd</item>
         <item>that\'d</item>
 
         <item>255</item>
-        <item>thatll</item>
-        <item>that\'ll</item>
-
-        <item>255</item>
-        <item>thats</item>
-        <item>that\'s</item>
-
-        <item>255</item>
-        <item>thatthe</item>
-        <item>that the</item>
-
-        <item>255</item>
-        <item>theres</item>
-        <item>there\'s</item>
-
-        <item>255</item>
-        <item>theyd</item>
-        <item>they\'d</item>
-
-        <item>255</item>
-        <item>theyll</item>
-        <item>they\'ll</item>
-
-        <item>255</item>
-        <item>theyre</item>
-        <item>they\'re</item>
-
-        <item>255</item>
-        <item>theyve</item>
-        <item>they\'ve</item>
-
-        <item>255</item>
-        <item>thier</item>
-        <item>their</item>
-
-        <item>255</item>
-        <item>thsi</item>
-        <item>this</item>
-
-        <item>255</item>
-        <item>thursday</item>
-        <item>Thursday</item>
-
-        <item>255</item>
         <item>tine</item>
         <item>time</item>
-
-        <item>255</item>
-        <item>tothe</item>
-        <item>to the</item>
-
-        <item>255</item>
-        <item>tuesday</item>
-        <item>Tuesday</item>
 
         <!-- through additional proximity, 'uf' becomes 'of'. 'o' is not next to 'u' so anyone
              typing 'uf' probably meant 'if', but 'of' is much more common and should be left
@@ -664,14 +201,6 @@
         <item>vis-a-vis</item>
 
         <item>255</item>
-        <item>wasnt</item>
-        <item>wasn\'t</item>
-
-        <item>255</item>
-        <item>wednesday</item>
-        <item>Wednesday</item>
-
-        <item>255</item>
         <item>wierd</item>
         <item>weird</item>
 
@@ -684,20 +213,8 @@
         <item>we\'re</item>
 
         <item>255</item>
-        <item>werent</item>
-        <item>weren\'t</item>
-
-        <item>255</item>
-        <item>weve</item>
-        <item>we\'ve</item>
-
-        <item>255</item>
         <item>whatd</item>
         <item>what\'d</item>
-
-        <item>255</item>
-        <item>whatll</item>
-        <item>what\'ll</item>
 
         <item>255</item>
         <item>whatm</item>
@@ -728,16 +245,8 @@
         <item>where\'s</item>
 
         <item>255</item>
-        <item>whod</item>
-        <item>who\'d</item>
-
-        <item>255</item>
         <item>wholl</item>
         <item>who\'ll</item>
-
-        <item>255</item>
-        <item>whos</item>
-        <item>who\'s</item>
 
         <item>255</item>
         <item>whove</item>
@@ -760,20 +269,8 @@
         <item>why\'ve</item>
 
         <item>255</item>
-        <item>witha</item>
-        <item>with a</item>
-
-        <item>255</item>
         <item>wont</item>
         <item>won\'t</item>
-
-        <item>255</item>
-        <item>wouldnt</item>
-        <item>wouldn\'t</item>
-
-        <item>255</item>
-        <item>wouldve</item>
-        <item>would\'ve</item>
 
         <item>255</item>
         <item>yall</item>
@@ -787,16 +284,5 @@
         <item>youd</item>
         <item>you\'d</item>
 
-        <item>255</item>
-        <item>youll</item>
-        <item>you\'ll</item>
-
-        <item>255</item>
-        <item>youre</item>
-        <item>you\'re</item>
-
-        <item>255</item>
-        <item>youve</item>
-        <item>you\'ve</item>
     </string-array>
 </resources>
