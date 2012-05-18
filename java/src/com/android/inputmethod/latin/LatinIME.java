@@ -1834,10 +1834,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void pickSuggestionManually(final int index, final CharSequence suggestion,
             int x, int y) {
-        final SuggestedWords suggestedWords = mSuggestionsView.getSuggestions();
         final InputConnection ic = getCurrentInputConnection();
-        if (ic != null) ic.beginBatchEdit();
+        if (null != ic) ic.beginBatchEdit();
+        pickSuggestionManuallyWhileInBatchEdit(index, suggestion, x, y, ic);
+        if (null != ic) ic.endBatchEdit();
+    }
 
+    public void pickSuggestionManuallyWhileInBatchEdit(final int index,
+        final CharSequence suggestion, final int x, final int y, final InputConnection ic) {
+        final SuggestedWords suggestedWords = mSuggestionsView.getSuggestions();
         // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
         if (suggestion.length() == 1 && isShowingPunctuationList()) {
             // Word separators are suggested before the user inputs something.
@@ -1933,7 +1938,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mHandler.postUpdateSuggestions();
             }
         }
-        if (null != ic) ic.endBatchEdit();
     }
 
     /**
