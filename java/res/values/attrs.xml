@@ -55,6 +55,8 @@
         <attr name="keyLargeLetterRatio" format="float" />
         <!-- Size of the text for keys with multiple letters, in the proportion of key height. -->
         <attr name="keyLabelRatio" format="float" />
+        <!-- Large size of the text for keys with multiple letters, in the proportion of key height. -->
+        <attr name="keyLargeLabelRatio" format="float" />
         <!-- Size of the text for hint letter (= one character hint label), in the proportion of
              key height. -->
         <attr name="keyHintLetterRatio" format="float" />
@@ -275,7 +277,8 @@
             <flag name="followKeyLargeLetterRatio" value="0x40" />
             <flag name="followKeyLetterRatio" value="0x80" />
             <flag name="followKeyLabelRatio" value="0xC0" />
-            <flag name="followKeyHintLabelRatio" value="0x100" />
+            <flag name="followKeyLargeLabelRatio" value="0x100" />
+            <flag name="followKeyHintLabelRatio" value="0x140" />
             <flag name="hasPopupHint" value="0x200" />
             <flag name="hasShiftedLetterHint" value="0x400" />
             <flag name="hasHintLabel" value="0x800" />

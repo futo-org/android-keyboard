@@ -66,11 +66,14 @@ public class Key {
     private static final int LABEL_FLAGS_ALIGN_LEFT_OF_CENTER = 0x08;
     private static final int LABEL_FLAGS_FONT_NORMAL = 0x10;
     private static final int LABEL_FLAGS_FONT_MONO_SPACE = 0x20;
-    private static final int LABEL_FLAGS_FOLLOW_KEY_RATIO_MASK = 0x1C0;
+    // Start of key text ratio enum values
+    private static final int LABEL_FLAGS_FOLLOW_KEY_TEXT_RATIO_MASK = 0x1C0;
     private static final int LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO = 0x40;
     private static final int LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO = 0x80;
     private static final int LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO = 0xC0;
-    private static final int LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO = 0x100;
+    private static final int LABEL_FLAGS_FOLLOW_KEY_LARGE_LABEL_RATIO = 0x100;
+    private static final int LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO = 0x140;
+    // End of key text ratio mask enum values
     private static final int LABEL_FLAGS_HAS_POPUP_HINT = 0x200;
     private static final int LABEL_FLAGS_HAS_SHIFTED_LETTER_HINT = 0x400;
     private static final int LABEL_FLAGS_HAS_HINT_LABEL = 0x800;
@@ -490,18 +493,21 @@ public class Key {
         }
     }
 
-    public int selectTextSize(int letter, int largeLetter, int label, int hintLabel) {
-        switch (mLabelFlags & LABEL_FLAGS_FOLLOW_KEY_RATIO_MASK) {
+    public int selectTextSize(KeyboardView.KeyDrawParams params) {
+        switch (mLabelFlags & LABEL_FLAGS_FOLLOW_KEY_TEXT_RATIO_MASK) {
         case LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO:
-            return largeLetter;
+            return params.mKeyLargeLetterSize;
         case LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO:
-            return letter;
+            return params.mKeyLetterSize;
         case LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO:
-            return label;
+            return params.mKeyLabelSize;
+        case LABEL_FLAGS_FOLLOW_KEY_LARGE_LABEL_RATIO:
+            return params.mKeyLargeLabelSize;
         case LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO:
-            return hintLabel;
+            return params.mKeyHintLabelSize;
         default: // No follow key ratio flag specified.
-            return StringUtils.codePointCount(mLabel) == 1 ? letter : label;
+            return StringUtils.codePointCount(mLabel) == 1
+                    ? params.mKeyLetterSize : params.mKeyLabelSize;
         }
     }
 
