@@ -74,6 +74,15 @@
         latin:backgroundType="functional" />
     <include
         latin:keyboardLayout="@xml/key_styles_enter" />
+    <!-- Override defaultEnterKeyStyle in key_styles_enter.xml -->
+    <key-style
+        latin:styleName="defaultEnterKeyStyle"
+        latin:code="!code/key_enter"
+        latin:keyIcon="!icon/enter_key"
+        latin:keyLabelFlags="preserveCase|autoXScale|followKeyLargeLabelRatio"
+        latin:keyActionFlags="noKeyPreview"
+        latin:backgroundType="functional"
+        latin:parentStyle="navigateMoreKeysStyle" />
     <key-style
         latin:styleName="spaceKeyStyle"
         latin:code="!code/key_space"
