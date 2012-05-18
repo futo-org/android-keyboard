@@ -159,7 +159,7 @@ public class ContactsDictionary extends ExpandableDictionary {
                                     super.addWord(word, null /* shortcut */,
                                             FREQUENCY_FOR_CONTACTS);
                                     if (!TextUtils.isEmpty(prevWord)) {
-                                        super.setBigram(prevWord, word,
+                                        super.setBigramAndGetFrequency(prevWord, word,
                                                 FREQUENCY_FOR_CONTACTS_BIGRAM);
                                     }
                                     prevWord = word;

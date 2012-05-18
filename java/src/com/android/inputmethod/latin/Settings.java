@@ -58,6 +58,8 @@ public class Settings extends InputMethodSettingsFragment
     public static final String PREF_SHOW_SUGGESTIONS_SETTING = "show_suggestions_setting";
     public static final String PREF_MISC_SETTINGS = "misc_settings";
     public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
+    public static final String PREF_LAST_USER_DICTIONARY_WRITE_TIME =
+            "last_user_dictionary_write_time";
     public static final String PREF_ADVANCED_SETTINGS = "pref_advanced_settings";
     public static final String PREF_SUPPRESS_LANGUAGE_SWITCH_KEY =
             "pref_suppress_language_switch_key";
@@ -244,7 +246,6 @@ public class Settings extends InputMethodSettingsFragment
         refreshEnablingsOfKeypressSoundAndVibrationSettings(prefs, res);
     }
 
-    @SuppressWarnings("unused")
     @Override
     public void onResume() {
         super.onResume();
