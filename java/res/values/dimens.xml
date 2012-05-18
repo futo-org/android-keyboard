@@ -59,6 +59,7 @@
     <fraction name="key_letter_ratio">55%</fraction>
     <fraction name="key_large_letter_ratio">65%</fraction>
     <fraction name="key_label_ratio">34%</fraction>
+    <fraction name="key_large_label_ratio">40%</fraction>
     <fraction name="key_hint_letter_ratio">25%</fraction>
     <fraction name="key_hint_label_ratio">44%</fraction>
     <fraction name="key_uppercase_letter_ratio">35%</fraction>
