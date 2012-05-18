@@ -106,6 +106,21 @@ public final class Constants {
         }
     }
 
+    public static class TextUtils {
+        /**
+         * Capitalization mode for {@link android.text.TextUtils#getCapsMode}: don't capitalize
+         * characters.  This value may be used with
+         * {@link android.text.TextUtils#CAP_MODE_CHARACTERS},
+         * {@link android.text.TextUtils#CAP_MODE_WORDS}, and
+         * {@link android.text.TextUtils#CAP_MODE_SENTENCES}.
+         */
+        public static final int CAP_MODE_OFF = 0;
+
+        private TextUtils() {
+            // This utility class is not publicly instantiable.
+        }
+    }
+
     private Constants() {
         // This utility class is not publicly instantiable.
     }

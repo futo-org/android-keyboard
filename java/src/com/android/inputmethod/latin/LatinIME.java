@@ -1032,26 +1032,28 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         updateSuggestions();
     }
 
-    public boolean getCurrentAutoCapsState() {
-        if (!mSettingsValues.mAutoCap) return false;
+    public int getCurrentAutoCapsState() {
+        if (!mSettingsValues.mAutoCap) return Constants.TextUtils.CAP_MODE_OFF;
 
         final EditorInfo ei = getCurrentInputEditorInfo();
-        if (ei == null) return false;
+        if (ei == null) return Constants.TextUtils.CAP_MODE_OFF;
 
         final int inputType = ei.inputType;
-        if ((inputType & InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS) != 0) return true;
+        if ((inputType & InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS) != 0) {
+            return TextUtils.CAP_MODE_CHARACTERS;
+        }
 
         final boolean noNeedToCheckCapsMode = (inputType & (InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
                 | InputType.TYPE_TEXT_FLAG_CAP_WORDS)) == 0;
-        if (noNeedToCheckCapsMode) return false;
+        if (noNeedToCheckCapsMode) return Constants.TextUtils.CAP_MODE_OFF;
 
         final InputConnection ic = getCurrentInputConnection();
-        if (ic == null) return false;
+        if (ic == null) return Constants.TextUtils.CAP_MODE_OFF;
         // TODO: This blocking IPC call is heavy. Consider doing this without using IPC calls.
         // Note: getCursorCapsMode() returns the current capitalization mode that is any
         // combination of CAP_MODE_CHARACTERS, CAP_MODE_WORDS, and CAP_MODE_SENTENCES. 0 means none
         // of them.
-        return ic.getCursorCapsMode(inputType) != 0;
+        return ic.getCursorCapsMode(inputType);
     }
 
     // "ic" may be null
@@ -1522,7 +1524,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (ic != null) {
                 // If it's the first letter, make note of auto-caps state
                 if (mWordComposer.size() == 1) {
-                    mWordComposer.setAutoCapitalized(getCurrentAutoCapsState());
+                    mWordComposer.setAutoCapitalized(
+                            getCurrentAutoCapsState() != Constants.TextUtils.CAP_MODE_OFF);
                 }
                 ic.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
             }
