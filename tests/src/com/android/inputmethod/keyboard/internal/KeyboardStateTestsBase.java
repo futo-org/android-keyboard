@@ -29,12 +29,12 @@ public class KeyboardStateTestsBase extends AndroidTestCase
         super.setUp();
 
         mSwitcher = new MockKeyboardSwitcher();
-        mSwitcher.setAutoCapsMode(NO_AUTO_CAPS);
+        mSwitcher.setAutoCapsMode(CAP_MODE_OFF);
 
         loadKeyboard(ALPHABET_UNSHIFTED);
     }
 
-    public void setAutoCapsMode(boolean autoCaps) {
+    public void setAutoCapsMode(int autoCaps) {
         mSwitcher.setAutoCapsMode(autoCaps);
     }
 

@@ -206,8 +206,8 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
 
     // Chording input in automatic upper case.
     public void testChordingAutomaticUpperCase() {
-        // Set auto caps mode on.
-        setAutoCapsMode(AUTO_CAPS);
+        // Set capitalize the first character of all words mode.
+        setAutoCapsMode(CAP_MODE_WORDS);
 
         // Update shift state with auto caps enabled.
         pressAndReleaseKey(CODE_AUTO_CAPS_TRIGGER, ALPHABET_UNSHIFTED, ALPHABET_AUTOMATIC_SHIFTED);

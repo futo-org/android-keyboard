@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import android.text.TextUtils;
+
 import com.android.inputmethod.keyboard.Keyboard;
 
 public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
@@ -26,8 +28,10 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         // Argument for {@link KeyboardState#onCodeInput}.
         public static final boolean SINGLE = true;
         public static final boolean MULTI = false;
-        public static final boolean NO_AUTO_CAPS = false;
-        public static final boolean AUTO_CAPS = true;
+        public static final int CAP_MODE_OFF =
+                com.android.inputmethod.latin.Constants.TextUtils.CAP_MODE_OFF;
+        public static final int CAP_MODE_WORDS = TextUtils.CAP_MODE_WORDS;
+        public static final int CAP_MODE_CHARACTERS = TextUtils.CAP_MODE_CHARACTERS;
 
         public static final int CODE_SHIFT = Keyboard.CODE_SHIFT;
         public static final int CODE_SYMBOL = Keyboard.CODE_SWITCH_ALPHA_SYMBOL;
@@ -45,9 +49,9 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
 
     private int mLayout = Constants.ALPHABET_UNSHIFTED;
 
-    private boolean mAutoCapsMode = Constants.NO_AUTO_CAPS;
+    private int mAutoCapsMode = Constants.CAP_MODE_OFF;
     // Following InputConnection's behavior. Simulating InputType.TYPE_TEXT_FLAG_CAP_WORDS.
-    private boolean mAutoCapsState = true;
+    private int mAutoCapsState = Constants.CAP_MODE_OFF;
 
     private boolean mIsInDoubleTapTimeout;
     private int mLongPressTimeoutCode;
@@ -71,8 +75,9 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
         }
     }
 
-    public void setAutoCapsMode(boolean autoCaps) {
+    public void setAutoCapsMode(int autoCaps) {
         mAutoCapsMode = autoCaps;
+        mAutoCapsState = autoCaps;
     }
 
     public void expireDoubleTapTimeout() {
@@ -116,7 +121,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
 
     @Override
     public void requestUpdatingShiftState() {
-        mState.onUpdateShiftState(mAutoCapsMode && mAutoCapsState);
+        mState.onUpdateShiftState(mAutoCapsState);
     }
 
     @Override
@@ -158,7 +163,7 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void updateShiftState() {
-        mState.onUpdateShiftState(mAutoCapsMode && mAutoCapsState);
+        mState.onUpdateShiftState(mAutoCapsState);
     }
 
     public void loadKeyboard(String layoutSwitchBackSymbols) {
@@ -181,10 +186,15 @@ public class MockKeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void onCodeInput(int code, boolean isSinglePointer) {
-        if (Keyboard.isLetterCode(code)) {
-            mAutoCapsState = (code == Constants.CODE_AUTO_CAPS_TRIGGER);
+        if (mAutoCapsMode == Constants.CAP_MODE_WORDS) {
+            if (Keyboard.isLetterCode(code)) {
+                mAutoCapsState = (code == Constants.CODE_AUTO_CAPS_TRIGGER)
+                        ? mAutoCapsMode : Constants.CAP_MODE_OFF;
+            }
+        } else {
+            mAutoCapsState = mAutoCapsMode;
         }
-        mState.onCodeInput(code, isSinglePointer, mAutoCapsMode && mAutoCapsState);
+        mState.onCodeInput(code, isSinglePointer, mAutoCapsState);
     }
 
     public void onCancelInput(boolean isSinglePointer) {

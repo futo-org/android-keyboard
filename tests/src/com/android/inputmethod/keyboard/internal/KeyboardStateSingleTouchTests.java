@@ -202,8 +202,8 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
 
     // Automatic upper case test
     public void testAutomaticUpperCase() {
-        // Set auto caps mode on.
-        setAutoCapsMode(AUTO_CAPS);
+        // Set capitalize the first character of all words mode.
+        setAutoCapsMode(CAP_MODE_WORDS);
         // Load keyboard, should be in automatic shifted.
         loadKeyboard(ALPHABET_AUTOMATIC_SHIFTED);
 
@@ -239,7 +239,7 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
     // Long press shift key.
     public void testLongPressShift() {
         // Set auto caps mode off.
-        setAutoCapsMode(NO_AUTO_CAPS);
+        setAutoCapsMode(CAP_MODE_OFF);
         // Load keyboard, should be in alphabet.
         loadKeyboard(ALPHABET_UNSHIFTED);
         // Long press shift key, enter alphabet shift locked.
@@ -268,8 +268,8 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         // Press/release shift key, back to alphabet.
         pressAndReleaseKey(CODE_SHIFT, ALPHABET_SHIFT_LOCK_SHIFTED, ALPHABET_UNSHIFTED);
 
-        // Set auto caps mode on.
-        setAutoCapsMode(AUTO_CAPS);
+        // Set capitalize the first character of all words mode.
+        setAutoCapsMode(CAP_MODE_WORDS);
         // Load keyboard, should be in automatic shifted.
         loadKeyboard(ALPHABET_AUTOMATIC_SHIFTED);
         // Long press shift key, enter alphabet shift locked.
@@ -303,8 +303,8 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         // Second shift key tap.
         secondPressAndReleaseKey(CODE_SHIFT, ALPHABET_UNSHIFTED, ALPHABET_UNSHIFTED);
 
-        // Set auto caps mode on.
-        setAutoCapsMode(AUTO_CAPS);
+        // Set capitalize the first character of all words mode.
+        setAutoCapsMode(CAP_MODE_WORDS);
         // Load keyboard, should be in automatic shifted.
         loadKeyboard(ALPHABET_AUTOMATIC_SHIFTED);
 
@@ -322,7 +322,7 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
     // Update shift state.
     public void testUpdateShiftState() {
         // Set auto caps mode off.
-        setAutoCapsMode(NO_AUTO_CAPS);
+        setAutoCapsMode(CAP_MODE_OFF);
         // Load keyboard, should be in alphabet.
         loadKeyboard(ALPHABET_UNSHIFTED);
         // Update shift state, remained in alphabet.
@@ -350,8 +350,8 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         // Update shift state, remained in symbols shifted.
         updateShiftState(SYMBOLS_SHIFTED);
 
-        // Set auto caps mode on.
-        setAutoCapsMode(AUTO_CAPS);
+        // Set capitalize the first character of all words mode.
+        setAutoCapsMode(CAP_MODE_WORDS);
         // Load keyboard, should be in automatic shifted.
         loadKeyboard(ALPHABET_AUTOMATIC_SHIFTED);
         // Update shift state, remained in automatic shifted.
@@ -592,11 +592,8 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
 
     // Change focus to auto caps text field.
     public void testChangeFocusAutoCaps() {
-        // Set auto caps mode on.
-        setAutoCapsMode(AUTO_CAPS);
-
-        // Update shift state.
-        updateShiftState(ALPHABET_AUTOMATIC_SHIFTED);
+        // Set capitalize the first character of all words mode.
+        setAutoCapsMode(CAP_MODE_WORDS);
         // Change focus to new text field.
         loadKeyboard(ALPHABET_AUTOMATIC_SHIFTED);
 
@@ -735,8 +732,8 @@ public class KeyboardStateSingleTouchTests extends KeyboardStateTestsBase {
         // Rapidly press/release letter key.
         secondPressAndReleaseKey('J', ALPHABET_MANUAL_SHIFTED, ALPHABET_UNSHIFTED);
 
-        // Set auto caps mode on.
-        setAutoCapsMode(AUTO_CAPS);
+        // Set capitalize the first character of all words mode.
+        setAutoCapsMode(CAP_MODE_WORDS);
         // Press/release auto caps trigger letter to enter alphabet automatic shifted.
         pressAndReleaseKey(CODE_AUTO_CAPS_TRIGGER, ALPHABET_UNSHIFTED, ALPHABET_AUTOMATIC_SHIFTED);
         // Press/release shift key
