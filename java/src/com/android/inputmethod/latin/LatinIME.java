@@ -106,6 +106,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     /** Whether to use the binary version of the contacts dictionary */
     public static final boolean USE_BINARY_CONTACTS_DICTIONARY = true;
 
+    /** Whether to use the binary version of the user dictionary */
+    public static final boolean USE_BINARY_USER_DICTIONARY = true;
+
     // TODO: migrate this to SettingsValues
     private int mSuggestionVisibility;
     private static final int SUGGESTION_VISIBILILTY_SHOW_VALUE
@@ -158,7 +161,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean mShouldSwitchToLastSubtype = true;
 
     private boolean mIsMainDictionaryAvailable;
-    private UserDictionary mUserDictionary;
+    // TODO: revert this back to the concrete class after transition.
+    private Dictionary mUserDictionary;
     private UserHistoryDictionary mUserHistoryDictionary;
     private boolean mIsUserDictionaryAvailable;
 
@@ -476,9 +480,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         mIsMainDictionaryAvailable = DictionaryFactory.isDictionaryAvailable(this, subtypeLocale);
 
-        mUserDictionary = new UserDictionary(this, localeStr);
+        if (USE_BINARY_USER_DICTIONARY) {
+            mUserDictionary = new UserBinaryDictionary(this, localeStr);
+            mIsUserDictionaryAvailable = ((UserBinaryDictionary)mUserDictionary).isEnabled();
+        } else {
+            mUserDictionary = new UserDictionary(this, localeStr);
+            mIsUserDictionaryAvailable = ((UserDictionary)mUserDictionary).isEnabled();
+        }
         mSuggest.setUserDictionary(mUserDictionary);
-        mIsUserDictionaryAvailable = mUserDictionary.isEnabled();
 
         resetContactsDictionary(oldContactsDictionary);
 
@@ -1123,7 +1132,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public boolean addWordToDictionary(String word) {
-        mUserDictionary.addWordToUserDictionary(word, 128);
+        if (USE_BINARY_USER_DICTIONARY) {
+            ((UserBinaryDictionary)mUserDictionary).addWordToUserDictionary(word, 128);
+        } else {
+            ((UserDictionary)mUserDictionary).addWordToUserDictionary(word, 128);
+        }
         // Suggestion strip should be updated after the operation of adding word to the
         // user dictionary
         mHandler.postUpdateSuggestions();

@@ -22,11 +22,13 @@ import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
+import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -133,6 +135,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         clearFusionDictionary();
     }
 
+    protected static String getFilenameWithLocale(final String name, final String localeStr) {
+        return name + "." + localeStr + ".dict";
+    }
+
     /**
      * Closes and cleans up the binary dictionary.
      */
@@ -166,8 +172,15 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     // TODO: Create "cache dictionary" to cache fresh words for frequently updated dictionaries,
     // considering performance regression.
-    protected void addWord(final String word, final int frequency) {
-        mFusionDictionary.add(word, frequency, null /* shortcutTargets */);
+    protected void addWord(final String word, final String shortcutTarget, final int frequency) {
+        if (shortcutTarget == null) {
+            mFusionDictionary.add(word, frequency, null);
+        } else {
+            // TODO: Do this in the subclass, with this class taking an arraylist.
+            final ArrayList<WeightedString> shortcutTargets = new ArrayList<WeightedString>();
+            shortcutTargets.add(new WeightedString(shortcutTarget, frequency));
+            mFusionDictionary.add(word, frequency, shortcutTargets);
+        }
     }
 
     /**
