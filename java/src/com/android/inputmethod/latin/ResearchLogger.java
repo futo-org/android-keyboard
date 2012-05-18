@@ -444,7 +444,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public static void keyboardState_onCodeInput(
-            final int code, final boolean isSinglePointer, final boolean autoCaps,
+            final int code, final boolean isSinglePointer, final int autoCaps,
             final KeyboardState keyboardState) {
         if (UnsLogGroup.KEYBOARDSTATE_ONCODEINPUT_ENABLED) {
             final String s = "onCodeInput: code=" + Keyboard.printableCode(code)
