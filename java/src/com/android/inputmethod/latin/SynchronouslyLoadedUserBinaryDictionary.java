@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2012 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,13 @@ import android.content.Context;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 
-public class SynchronouslyLoadedUserDictionary extends UserDictionary {
-    private boolean mClosed;
+public class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDictionary {
 
-    public SynchronouslyLoadedUserDictionary(final Context context, final String locale) {
+    public SynchronouslyLoadedUserBinaryDictionary(final Context context, final String locale) {
         this(context, locale, false);
     }
 
-    public SynchronouslyLoadedUserDictionary(final Context context, final String locale,
+    public SynchronouslyLoadedUserBinaryDictionary(final Context context, final String locale,
             final boolean alsoUseMoreRestrictiveLocales) {
         super(context, locale, alsoUseMoreRestrictiveLocales);
     }
@@ -36,21 +35,13 @@ public class SynchronouslyLoadedUserDictionary extends UserDictionary {
     public synchronized void getWords(final WordComposer codes,
             final CharSequence prevWordForBigrams, final WordCallback callback,
             final ProximityInfo proximityInfo) {
-        blockingReloadDictionaryIfRequired();
+        syncReloadDictionaryIfRequired();
         getWordsInner(codes, prevWordForBigrams, callback, proximityInfo);
     }
 
     @Override
     public synchronized boolean isValidWord(CharSequence word) {
-        blockingReloadDictionaryIfRequired();
-        return super.isValidWord(word);
-    }
-
-    // Protect against multiple closing
-    @Override
-    public synchronized void close() {
-        if (mClosed) return;
-        mClosed = true;
-        super.close();
+        syncReloadDictionaryIfRequired();
+        return isValidWordInner(word);
     }
 }
