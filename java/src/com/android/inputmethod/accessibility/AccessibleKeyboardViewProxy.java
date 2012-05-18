@@ -113,7 +113,7 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
         case MotionEvent.ACTION_HOVER_EXIT:
             // Make sure we're not getting an EXIT event because the user slid
             // off the keyboard area, then force a key press.
-            if (pointInView(x, y)) {
+            if (pointInView(x, y) && (key != null)) {
                 getAccessibilityNodeProvider().simulateKeyPress(key);
             }
             //$FALL-THROUGH$
