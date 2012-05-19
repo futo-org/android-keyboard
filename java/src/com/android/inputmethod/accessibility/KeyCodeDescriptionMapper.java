@@ -111,9 +111,6 @@ public class KeyCodeDescriptionMapper {
             if (mKeyLabelMap.containsKey(label)) {
                 return context.getString(mKeyLabelMap.get(label));
             }
-
-            // Otherwise, return the label.
-            return key.mLabel;
         }
 
         // Just attempt to speak the description.
@@ -229,6 +226,8 @@ public class KeyCodeDescriptionMapper {
             return context.getString(mKeyCodeMap.get(code));
         } else if (isDefinedNonCtrl) {
             return Character.toString((char) code);
+        } else if (!TextUtils.isEmpty(key.mLabel)) {
+            return key.mLabel;
         } else {
             return context.getString(R.string.spoken_description_unknown, code);
         }
