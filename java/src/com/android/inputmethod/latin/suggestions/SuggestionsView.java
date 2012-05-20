@@ -596,7 +596,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
     }
 
     /**
-     * Construct a {@link SuggestionsView} for showing suggested words for completion.
+     * Construct a {@link SuggestionsView} for showing suggestions to be picked by the user.
      * @param context
      * @param attrs
      */
