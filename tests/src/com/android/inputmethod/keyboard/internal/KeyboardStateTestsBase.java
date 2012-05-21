@@ -64,14 +64,14 @@ public class KeyboardStateTestsBase extends AndroidTestCase
         assertLayout(afterRotate, mSwitcher.getLayoutId());
     }
 
-    private void pressKeyWithoutTimerExpire(int code, int afterPress) {
-        mSwitcher.onPressKey(code);
+    private void pressKeyWithoutTimerExpire(int code, boolean isSinglePointer, int afterPress) {
+        mSwitcher.onPressKey(code, isSinglePointer);
         assertLayout(afterPress, mSwitcher.getLayoutId());
     }
 
     public void pressKey(int code, int afterPress) {
         mSwitcher.expireDoubleTapTimeout();
-        pressKeyWithoutTimerExpire(code, afterPress);
+        pressKeyWithoutTimerExpire(code, true, afterPress);
     }
 
     public void releaseKey(int code, int afterRelease) {
@@ -86,7 +86,8 @@ public class KeyboardStateTestsBase extends AndroidTestCase
     }
 
     public void chordingPressKey(int code, int afterPress) {
-        pressKey(code, afterPress);
+        mSwitcher.expireDoubleTapTimeout();
+        pressKeyWithoutTimerExpire(code, false, afterPress);
     }
 
     public void chordingReleaseKey(int code, int afterRelease) {
@@ -114,7 +115,7 @@ public class KeyboardStateTestsBase extends AndroidTestCase
     }
 
     public void secondPressAndReleaseKey(int code, int afterPress, int afterRelease) {
-        pressKeyWithoutTimerExpire(code, afterPress);
+        pressKeyWithoutTimerExpire(code, true, afterPress);
         releaseKey(code, afterRelease);
     }
 }
