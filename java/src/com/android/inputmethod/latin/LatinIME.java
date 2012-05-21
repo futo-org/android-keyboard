@@ -1154,7 +1154,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // Virtual codes representing custom requests.  These are used in onCustomRequest() below.
     public static final int CODE_SHOW_INPUT_METHOD_PICKER = 1;
-    public static final int CODE_HAPTIC_AND_AUDIO_FEEDBACK = 2;
 
     @Override
     public boolean onCustomRequest(int requestCode) {
@@ -1167,9 +1166,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 return true;
             }
             return false;
-        case CODE_HAPTIC_AND_AUDIO_FEEDBACK:
-            hapticAndAudioFeedback(Keyboard.CODE_UNSPECIFIED);
-            return true;
         }
         return false;
     }
@@ -2265,6 +2261,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
+    // TODO: Remove this method from {@link LatinIME} and move {@link FeedbackManager} to
+    // {@link KeyboardSwitcher}.
     public void hapticAndAudioFeedback(final int primaryCode) {
         mFeedbackManager.hapticAndAudioFeedback(primaryCode, mKeyboardSwitcher.getKeyboardView());
     }
