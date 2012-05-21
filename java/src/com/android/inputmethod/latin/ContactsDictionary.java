@@ -28,6 +28,12 @@ import android.util.Log;
 
 import com.android.inputmethod.keyboard.Keyboard;
 
+// TODO: This class is superseded by {@link ContactsBinaryDictionary}. Should be cleaned up.
+/**
+ * An expandable dictionary that stores the words from Contacts provider.
+ *
+ * @deprecated Use {@link ContactsBinaryDictionary}.
+ */
 public class ContactsDictionary extends ExpandableDictionary {
 
     private static final String[] PROJECTION = {

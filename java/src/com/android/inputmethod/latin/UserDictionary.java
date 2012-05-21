@@ -29,10 +29,12 @@ import com.android.inputmethod.keyboard.ProximityInfo;
 
 import java.util.Arrays;
 
+// TODO: This class is superseded by {@link UserBinaryDictionary}. Should be cleaned up.
 /**
  * An expandable dictionary that stores the words in the user unigram dictionary.
- * To be deprecated: functionality being transferred to UserBinaryDictionary.
-*/
+ *
+ * @deprecated Use {@link UserBinaryDictionary}.
+ */
 public class UserDictionary extends ExpandableDictionary {
 
     // TODO: use Words.SHORTCUT when it's public in the SDK
