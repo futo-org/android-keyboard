@@ -487,6 +487,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         } else {
             // Draw invalidated keys.
             for (final Key key : mInvalidatedKeys) {
+                if (!mKeyboard.hasKey(key)) {
+                    continue;
+                }
                 final int x = key.mX + getPaddingLeft();
                 final int y = key.mY + getPaddingTop();
                 mInvalidatedKeysRect.set(x, y, x + key.mWidth, y + key.mHeight);

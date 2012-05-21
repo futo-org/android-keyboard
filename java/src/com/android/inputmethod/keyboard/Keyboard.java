@@ -197,6 +197,20 @@ public class Keyboard {
         return null;
     }
 
+    public boolean hasKey(Key aKey) {
+        if (mKeyCache.containsKey(aKey)) {
+            return true;
+        }
+
+        for (final Key key : mKeys) {
+            if (key == aKey) {
+                mKeyCache.put(key.mCode, key);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static boolean isLetterCode(int code) {
         return code >= MINIMUM_LETTER_CODE;
     }
