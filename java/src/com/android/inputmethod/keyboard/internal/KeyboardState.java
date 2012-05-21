@@ -20,6 +20,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.ResearchLogger;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
@@ -30,8 +31,8 @@ import com.android.inputmethod.latin.define.ProductionFlag;
  *
  * The input events are {@link #onLoadKeyboard(String)}, {@link #onSaveKeyboardState()},
  * {@link #onPressKey(int)}, {@link #onReleaseKey(int, boolean)},
- * {@link #onCodeInput(int, boolean, boolean)}, {@link #onCancelInput(boolean)},
- * {@link #onUpdateShiftState(boolean)}, {@link #onLongPressTimeout(int)}.
+ * {@link #onCodeInput(int, boolean, int)}, {@link #onCancelInput(boolean)},
+ * {@link #onUpdateShiftState(int)}, {@link #onLongPressTimeout(int)}.
  *
  * The actions are {@link SwitchActions}'s methods.
  */
@@ -50,7 +51,7 @@ public class KeyboardState {
         public void setSymbolsShiftedKeyboard();
 
         /**
-         * Request to call back {@link KeyboardState#onUpdateShiftState(boolean)}.
+         * Request to call back {@link KeyboardState#onUpdateShiftState(int)}.
          */
         public void requestUpdatingShiftState();
 
@@ -371,14 +372,14 @@ public class KeyboardState {
         }
     }
 
-    public void onUpdateShiftState(boolean autoCaps) {
+    public void onUpdateShiftState(int autoCaps) {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onUpdateShiftState: autoCaps=" + autoCaps + " " + this);
         }
         updateAlphabetShiftState(autoCaps);
     }
 
-    private void updateAlphabetShiftState(boolean autoCaps) {
+    private void updateAlphabetShiftState(int autoCaps) {
         if (!mIsAlphabetMode) return;
         if (!mShiftKeyState.isReleasing()) {
             // Ignore update shift state event while the shift key is being pressed (including
@@ -386,7 +387,7 @@ public class KeyboardState {
             return;
         }
         if (!mAlphabetShiftState.isShiftLocked() && !mShiftKeyState.isIgnoring()) {
-            if (mShiftKeyState.isReleasing() && autoCaps) {
+            if (mShiftKeyState.isReleasing() && autoCaps != Constants.TextUtils.CAP_MODE_OFF) {
                 // Only when shift key is releasing, automatic temporary upper case will be set.
                 setShifted(AUTOMATIC_SHIFT);
             } else {
@@ -521,7 +522,7 @@ public class KeyboardState {
         return false;
     }
 
-    public void onCodeInput(int code, boolean isSinglePointer, boolean autoCaps) {
+    public void onCodeInput(int code, boolean isSinglePointer, int autoCaps) {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onCodeInput: code=" + Keyboard.printableCode(code)
                     + " single=" + isSinglePointer
