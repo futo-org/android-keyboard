@@ -149,7 +149,11 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         final Cursor cursor = mContext.getContentResolver().query(
                 Contacts.CONTENT_URI, PROJECTION_ID_ONLY, null, null, null);
         if (cursor != null) {
-            return cursor.getCount();
+            try {
+                return cursor.getCount();
+            } finally {
+                cursor.close();
+            }
         }
         return 0;
     }
