@@ -282,7 +282,12 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
             return;
         }
 
-        parent.requestSendAccessibilityEvent(mKeyboardView, event);
+        if (!parent.requestSendAccessibilityEvent(mKeyboardView, event)) {
+            // TODO: Remove this line after the top-level view for the IME
+            // window is fixed to be non-null and requestSendAccessibilityEvent
+            // can return true.
+            mAccessibilityUtils.requestSendAccessibilityEvent(event);
+        }
     }
 
     /**

@@ -174,4 +174,16 @@ public class AccessibilityUtils {
             speak(text);
         }
     }
+
+    /**
+     * Sends the specified {@link AccessibilityEvent} if accessibility is
+     * enabled. No operation if accessibility is disabled.
+     *
+     * @param event The event to send.
+     */
+    public void requestSendAccessibilityEvent(AccessibilityEvent event) {
+        if (mAccessibilityManager.isEnabled()) {
+            mAccessibilityManager.sendAccessibilityEvent(event);
+        }
+    }
 }
