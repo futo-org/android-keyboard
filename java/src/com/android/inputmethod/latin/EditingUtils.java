@@ -29,7 +29,8 @@ public class EditingUtils {
     /**
      * Number of characters we want to look back in order to identify the previous word
      */
-    private static final int LOOKBACK_CHARACTER_NUM = 15;
+    // Provision for a long word pair and a separator
+    private static final int LOOKBACK_CHARACTER_NUM = BinaryDictionary.MAX_WORD_LENGTH * 2 + 1;
     private static final int INVALID_CURSOR_POSITION = -1;
 
     private EditingUtils() {
