@@ -191,6 +191,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         /* package */ final float mKeyLetterRatio;
         private final float mKeyLargeLetterRatio;
         private final float mKeyLabelRatio;
+        private final float mKeyLargeLabelRatio;
         private final float mKeyHintLetterRatio;
         private final float mKeyShiftedLetterHintRatio;
         private final float mKeyHintLabelRatio;
@@ -200,6 +201,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         public int mKeyLetterSize;
         public int mKeyLargeLetterSize;
         public int mKeyLabelSize;
+        public int mKeyLargeLabelSize;
         public int mKeyHintLetterSize;
         public int mKeyShiftedLetterHintSize;
         public int mKeyHintLabelSize;
@@ -219,6 +221,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             } else {
                 mKeyLabelRatio = getRatio(a, R.styleable.KeyboardView_keyLabelRatio);
             }
+            mKeyLargeLabelRatio = getRatio(a, R.styleable.KeyboardView_keyLargeLabelRatio);
             mKeyLargeLetterRatio = getRatio(a, R.styleable.KeyboardView_keyLargeLetterRatio);
             mKeyHintLetterRatio = getRatio(a, R.styleable.KeyboardView_keyHintLetterRatio);
             mKeyShiftedLetterHintRatio = getRatio(a,
@@ -254,6 +257,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 mKeyLetterSize = (int)(keyHeight * mKeyLetterRatio);
             if (mKeyLabelRatio >= 0.0f)
                 mKeyLabelSize = (int)(keyHeight * mKeyLabelRatio);
+            mKeyLargeLabelSize = (int)(keyHeight * mKeyLargeLabelRatio);
             mKeyLargeLetterSize = (int)(keyHeight * mKeyLargeLetterRatio);
             mKeyHintLetterSize = (int)(keyHeight * mKeyHintLetterRatio);
             mKeyShiftedLetterHintSize = (int)(keyHeight * mKeyShiftedLetterHintRatio);
@@ -569,8 +573,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             final String label = key.mLabel;
             // For characters, use large font. For labels like "Done", use smaller font.
             paint.setTypeface(key.selectTypeface(params.mKeyTextStyle));
-            final int labelSize = key.selectTextSize(params.mKeyLetterSize,
-                    params.mKeyLargeLetterSize, params.mKeyLabelSize, params.mKeyHintLabelSize);
+            final int labelSize = key.selectTextSize(params);
             paint.setTextSize(labelSize);
             final float labelCharHeight = getCharHeight(KEY_LABEL_REFERENCE_CHAR, paint);
             final float labelCharWidth = getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint);
