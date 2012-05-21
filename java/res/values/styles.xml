@@ -38,6 +38,7 @@
         <item name="keyLetterRatio">@fraction/key_letter_ratio</item>
         <item name="keyLargeLetterRatio">@fraction/key_large_letter_ratio</item>
         <item name="keyLabelRatio">@fraction/key_label_ratio</item>
+        <item name="keyLargeLabelRatio">@fraction/key_large_label_ratio</item>
         <item name="keyHintLetterRatio">@fraction/key_hint_letter_ratio</item>
         <item name="keyHintLabelRatio">@fraction/key_hint_label_ratio</item>
         <item name="keyShiftedLetterHintRatio">@fraction/key_uppercase_letter_ratio</item>

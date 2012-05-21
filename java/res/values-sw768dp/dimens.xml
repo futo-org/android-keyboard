@@ -58,6 +58,7 @@
     <fraction name="key_letter_ratio">40%</fraction>
     <fraction name="key_large_letter_ratio">42%</fraction>
     <fraction name="key_label_ratio">28%</fraction>
+    <fraction name="key_large_label_ratio">28%</fraction>
     <fraction name="key_hint_letter_ratio">23%</fraction>
     <fraction name="key_hint_label_ratio">28%</fraction>
     <fraction name="key_uppercase_letter_ratio">26%</fraction>
