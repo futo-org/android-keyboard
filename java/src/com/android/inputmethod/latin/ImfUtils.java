@@ -167,8 +167,7 @@ public class ImfUtils {
                 return subtype;
             }
         }
-        throw new RuntimeException("Can't find subtype for locale " + localeString
-                + " and keyboard layout " + keyboardLayoutSetName);
+        return null;
     }
 
     public static void setAdditionalInputMethodSubtypes(Context context,
