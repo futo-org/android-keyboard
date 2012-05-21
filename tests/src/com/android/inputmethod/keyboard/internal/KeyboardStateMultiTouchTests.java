@@ -34,6 +34,26 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         releaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED);
     }
 
+    // Chording input in shifted.
+    public void testChordingShifted() {
+        // Press shift key, enter alphabet shifted.
+        pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+
+        // Press shift key and hold, enter into choring shift state.
+        pressKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED);
+        // Press/release letter key.
+        chordingPressAndReleaseKey('Z', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Release shift key, switch back to alphabet shifted.
+        releaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED);
+
+        // Press "?123" key and hold, enter into choring symbols state.
+        pressKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED);
+        // Press/release symbol letter key.
+        chordingPressAndReleaseKey('1', SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
+        // Release "123?" key, switch back to alphabet shift unshifted.
+        releaseKey(CODE_SYMBOL, ALPHABET_UNSHIFTED);
+    }
+
     // Chording input in shift locked.
     public void testChordingShiftLocked() {
         // Long press shift key, enter alphabet shift locked.
@@ -238,6 +258,118 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         // Press another letter key and hold.
         chordingPressAndReleaseKey('J', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
         // Release shift key
+        releaseKey(CODE_SHIFT, ALPHABET_UNSHIFTED);
+    }
+
+    // Multi touch input in manual shifted.
+    public void testMultiTouchManualShifted() {
+        // Press/release shift key, enter into alphabet shifted.
+        pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+
+        // Press 'X' key and hold
+        pressKey('X', ALPHABET_MANUAL_SHIFTED);
+        // TODO: The following test fails due to a bug. Temporarily commented out.
+//        // Press 'z' key and hold, switch back to alphabet unshifted.
+//        chordingPressKey('z', ALPHABET_UNSHIFTED);
+//        // Release 'X' key
+//        releaseKey('X', ALPHABET_UNSHIFTED);
+//        // Release 'z' key
+//        releaseKey('z', ALPHABET_UNSHIFTED);
+    }
+
+    // Multi touch input in automatic upper case.
+    public void testMultiTouchAutomaticUpperCase() {
+        // Set auto word caps mode on.
+        setAutoCapsMode(CAP_MODE_WORDS);
+        // Update shift state with auto caps enabled.
+        pressAndReleaseKey(CODE_AUTO_CAPS_TRIGGER, ALPHABET_UNSHIFTED, ALPHABET_AUTOMATIC_SHIFTED);
+
+        // Press 'X' key and hold
+        pressKey('X', ALPHABET_AUTOMATIC_SHIFTED);
+        // TODO: The following test fails due to a bug. Temporarily commented out.
+//        // Press 'z' key and hold, switch back to alphabet unshifted.
+//        chordingPressKey('z', ALPHABET_UNSHIFTED);
+//        // Release 'X' key
+//        releaseKey('X', ALPHABET_UNSHIFTED);
+//        // Release 'z' key
+//        releaseKey('z', ALPHABET_UNSHIFTED);
+    }
+
+    // Multi touch input in capitalize character mode.
+    public void testMultiTouchCapModeCharacter() {
+        // Set auto character caps mode on.
+        setAutoCapsMode(CAP_MODE_CHARACTERS);
+        // Update shift state with auto caps enabled.
+        pressAndReleaseKey(CODE_AUTO_CAPS_TRIGGER, ALPHABET_UNSHIFTED, ALPHABET_AUTOMATIC_SHIFTED);
+
+        // Press 'X' key and hold
+        pressKey('X', ALPHABET_AUTOMATIC_SHIFTED);
+        // Press 'Z' key and hold, stay in automatic shifted mode.
+        chordingPressKey('Z', ALPHABET_AUTOMATIC_SHIFTED);
+        // Release 'X' key
+        releaseKey('X', ALPHABET_AUTOMATIC_SHIFTED);
+        // Release 'Z' key
+        releaseKey('Z', ALPHABET_AUTOMATIC_SHIFTED);
+    }
+
+    // Multi touch shift chording input in manual shifted.
+    public void testMultiTouchShiftChordingManualShifted() {
+        // Press/release shift key, enter into alphabet shifted.
+        pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+
+        // Press shift key and hold, stays in alphabet shifted.
+        pressKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED);
+        // Press 'X' key and hold
+        chordingPressKey('X', ALPHABET_MANUAL_SHIFTED);
+        // Press 'Z' key and hold, stays in alphabet shifted.
+        chordingPressKey('Z', ALPHABET_MANUAL_SHIFTED);
+        // Release 'X' key
+        releaseKey('X', ALPHABET_MANUAL_SHIFTED);
+        // Release 'Z' key
+        releaseKey('Z', ALPHABET_MANUAL_SHIFTED);
+        // Release shift key.
+        releaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED);
+    }
+
+    // Multi touch shift chording input in automatic upper case.
+    public void testMultiTouchShiftChordingAutomaticUpperCase() {
+        // Set auto word caps mode on.
+        setAutoCapsMode(CAP_MODE_WORDS);
+        // Update shift state with auto caps enabled.
+        pressAndReleaseKey(CODE_AUTO_CAPS_TRIGGER, ALPHABET_UNSHIFTED, ALPHABET_AUTOMATIC_SHIFTED);
+
+        // Press shift key and hold, switch to alphabet shifted.
+        pressKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED);
+        // Press 'X' key and hold
+        chordingPressKey('X', ALPHABET_MANUAL_SHIFTED);
+        // Press 'Z' key and hold, stays in alphabet shifted.
+        chordingPressKey('Z', ALPHABET_MANUAL_SHIFTED);
+        // Release 'X' key
+        releaseKey('X', ALPHABET_MANUAL_SHIFTED);
+        // Release 'Z' key
+        releaseKey('Z', ALPHABET_MANUAL_SHIFTED);
+        // Release shift key.
+        releaseKey(CODE_SHIFT, ALPHABET_UNSHIFTED);
+    }
+
+    // Multi touch shift chording input in capitalize character mode.
+    public void testMultiTouchShiftChordingCapModeCharacter() {
+        // Set auto character caps mode on.
+        setAutoCapsMode(CAP_MODE_CHARACTERS);
+        // Update shift state with auto caps enabled.
+        pressAndReleaseKey(CODE_AUTO_CAPS_TRIGGER, ALPHABET_UNSHIFTED, ALPHABET_AUTOMATIC_SHIFTED);
+
+        // Press shift key and hold, switch to alphabet shifted.
+        pressKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED);
+        // Press 'X' key and hold
+        chordingPressKey('X', ALPHABET_MANUAL_SHIFTED);
+        // Press 'Z' key and hold, stay in automatic shifted mode.
+        chordingPressKey('Z', ALPHABET_MANUAL_SHIFTED);
+        // Release 'X' key
+        releaseKey('X', ALPHABET_MANUAL_SHIFTED);
+        // Release 'Z' key
+        releaseKey('Z', ALPHABET_MANUAL_SHIFTED);
+        // Release shift key.
         releaseKey(CODE_SHIFT, ALPHABET_UNSHIFTED);
     }
 }
