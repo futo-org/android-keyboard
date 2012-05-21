@@ -26,7 +26,6 @@ public class SynchronouslyLoadedContactsBinaryDictionary extends ContactsBinaryD
     public SynchronouslyLoadedContactsBinaryDictionary(final Context context) {
         // TODO: add locale information.
         super(context, Suggest.DIC_CONTACTS, null);
-        mClosed = false;
     }
 
     @Override

@@ -40,6 +40,7 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SynchronouslyLoadedContactsBinaryDictionary;
 import com.android.inputmethod.latin.SynchronouslyLoadedContactsDictionary;
+import com.android.inputmethod.latin.SynchronouslyLoadedUserBinaryDictionary;
 import com.android.inputmethod.latin.SynchronouslyLoadedUserDictionary;
 import com.android.inputmethod.latin.WhitelistDictionary;
 import com.android.inputmethod.latin.WordComposer;
@@ -403,7 +404,11 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         final String localeStr = locale.toString();
         Dictionary userDictionary = mUserDictionaries.get(localeStr);
         if (null == userDictionary) {
-            userDictionary = new SynchronouslyLoadedUserDictionary(this, localeStr, true);
+            if (LatinIME.USE_BINARY_USER_DICTIONARY) {
+                userDictionary = new SynchronouslyLoadedUserBinaryDictionary(this, localeStr, true);
+            } else {
+                userDictionary = new SynchronouslyLoadedUserDictionary(this, localeStr, true);
+            }
             mUserDictionaries.put(localeStr, userDictionary);
         }
         dictionaryCollection.addDictionary(userDictionary);
