@@ -31,7 +31,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Xml;
 
-import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.keyboard.internal.KeySpecParser.MoreKeySpec;
 import com.android.inputmethod.keyboard.internal.KeyStyles.KeyStyle;
@@ -494,7 +493,7 @@ public class Key {
         }
     }
 
-    public int selectTextSize(KeyDrawParams params) {
+    public int selectTextSize(KeyboardView.KeyDrawParams params) {
         switch (mLabelFlags & LABEL_FLAGS_FOLLOW_KEY_TEXT_RATIO_MASK) {
         case LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO:
             return params.mKeyLargeLetterSize;
