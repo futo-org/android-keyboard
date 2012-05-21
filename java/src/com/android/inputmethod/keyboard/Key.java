@@ -493,21 +493,21 @@ public class Key {
         }
     }
 
-    public int selectTextSize(KeyboardView.KeyDrawParams params) {
+    public int selectTextSize(int letterSize, int largeLetterSize, int labelSize,
+            int largeLabelSize, int hintLabelSize) {
         switch (mLabelFlags & LABEL_FLAGS_FOLLOW_KEY_TEXT_RATIO_MASK) {
-        case LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO:
-            return params.mKeyLargeLetterSize;
         case LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO:
-            return params.mKeyLetterSize;
+            return letterSize;
+        case LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO:
+            return largeLetterSize;
         case LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO:
-            return params.mKeyLabelSize;
+            return labelSize;
         case LABEL_FLAGS_FOLLOW_KEY_LARGE_LABEL_RATIO:
-            return params.mKeyLargeLabelSize;
+            return largeLabelSize;
         case LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO:
-            return params.mKeyHintLabelSize;
+            return hintLabelSize;
         default: // No follow key ratio flag specified.
-            return StringUtils.codePointCount(mLabel) == 1
-                    ? params.mKeyLetterSize : params.mKeyLabelSize;
+            return StringUtils.codePointCount(mLabel) == 1 ? letterSize : labelSize;
         }
     }
 
