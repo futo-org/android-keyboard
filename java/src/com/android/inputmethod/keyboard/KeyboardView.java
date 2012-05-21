@@ -37,6 +37,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.inputmethod.keyboard.internal.KeyDrawParams;
+import com.android.inputmethod.keyboard.internal.KeyPreviewDrawParams;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
@@ -94,7 +96,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     // The maximum key label width in the proportion to the key width.
     private static final float MAX_LABEL_RATIO = 0.90f;
 
-    private final static int ALPHA_OPAQUE = 255;
+    private static final int ALPHA_OPAQUE = 255;
 
     // Main keyboard
     private Keyboard mKeyboard;
@@ -171,184 +173,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
     }
 
-    protected static class KeyDrawParams {
-        // XML attributes
-        public final int mKeyTextColor;
-        public final int mKeyTextInactivatedColor;
-        public final Typeface mKeyTextStyle;
-        public final float mKeyLabelHorizontalPadding;
-        public final float mKeyHintLetterPadding;
-        public final float mKeyPopupHintLetterPadding;
-        public final float mKeyShiftedLetterHintPadding;
-        public final int mShadowColor;
-        public final float mShadowRadius;
-        public final Drawable mKeyBackground;
-        public final int mKeyHintLetterColor;
-        public final int mKeyHintLabelColor;
-        public final int mKeyShiftedLetterHintInactivatedColor;
-        public final int mKeyShiftedLetterHintActivatedColor;
-
-        /* package */ final float mKeyLetterRatio;
-        private final float mKeyLargeLetterRatio;
-        private final float mKeyLabelRatio;
-        private final float mKeyLargeLabelRatio;
-        private final float mKeyHintLetterRatio;
-        private final float mKeyShiftedLetterHintRatio;
-        private final float mKeyHintLabelRatio;
-        private static final float UNDEFINED_RATIO = -1.0f;
-
-        public final Rect mPadding = new Rect();
-        public int mKeyLetterSize;
-        public int mKeyLargeLetterSize;
-        public int mKeyLabelSize;
-        public int mKeyLargeLabelSize;
-        public int mKeyHintLetterSize;
-        public int mKeyShiftedLetterHintSize;
-        public int mKeyHintLabelSize;
-        public int mAnimAlpha;
-
-        public KeyDrawParams(TypedArray a) {
-            mKeyBackground = a.getDrawable(R.styleable.KeyboardView_keyBackground);
-            if (a.hasValue(R.styleable.KeyboardView_keyLetterSize)) {
-                mKeyLetterRatio = UNDEFINED_RATIO;
-                mKeyLetterSize = a.getDimensionPixelSize(R.styleable.KeyboardView_keyLetterSize, 0);
-            } else {
-                mKeyLetterRatio = getRatio(a, R.styleable.KeyboardView_keyLetterRatio);
-            }
-            if (a.hasValue(R.styleable.KeyboardView_keyLabelSize)) {
-                mKeyLabelRatio = UNDEFINED_RATIO;
-                mKeyLabelSize = a.getDimensionPixelSize(R.styleable.KeyboardView_keyLabelSize, 0);
-            } else {
-                mKeyLabelRatio = getRatio(a, R.styleable.KeyboardView_keyLabelRatio);
-            }
-            mKeyLargeLabelRatio = getRatio(a, R.styleable.KeyboardView_keyLargeLabelRatio);
-            mKeyLargeLetterRatio = getRatio(a, R.styleable.KeyboardView_keyLargeLetterRatio);
-            mKeyHintLetterRatio = getRatio(a, R.styleable.KeyboardView_keyHintLetterRatio);
-            mKeyShiftedLetterHintRatio = getRatio(a,
-                    R.styleable.KeyboardView_keyShiftedLetterHintRatio);
-            mKeyHintLabelRatio = getRatio(a, R.styleable.KeyboardView_keyHintLabelRatio);
-            mKeyLabelHorizontalPadding = a.getDimension(
-                    R.styleable.KeyboardView_keyLabelHorizontalPadding, 0);
-            mKeyHintLetterPadding = a.getDimension(
-                    R.styleable.KeyboardView_keyHintLetterPadding, 0);
-            mKeyPopupHintLetterPadding = a.getDimension(
-                    R.styleable.KeyboardView_keyPopupHintLetterPadding, 0);
-            mKeyShiftedLetterHintPadding = a.getDimension(
-                    R.styleable.KeyboardView_keyShiftedLetterHintPadding, 0);
-            mKeyTextColor = a.getColor(R.styleable.KeyboardView_keyTextColor, 0xFF000000);
-            mKeyTextInactivatedColor = a.getColor(
-                    R.styleable.KeyboardView_keyTextInactivatedColor, 0xFF000000);
-            mKeyHintLetterColor = a.getColor(R.styleable.KeyboardView_keyHintLetterColor, 0);
-            mKeyHintLabelColor = a.getColor(R.styleable.KeyboardView_keyHintLabelColor, 0);
-            mKeyShiftedLetterHintInactivatedColor = a.getColor(
-                    R.styleable.KeyboardView_keyShiftedLetterHintInactivatedColor, 0);
-            mKeyShiftedLetterHintActivatedColor = a.getColor(
-                    R.styleable.KeyboardView_keyShiftedLetterHintActivatedColor, 0);
-            mKeyTextStyle = Typeface.defaultFromStyle(
-                    a.getInt(R.styleable.KeyboardView_keyTextStyle, Typeface.NORMAL));
-            mShadowColor = a.getColor(R.styleable.KeyboardView_shadowColor, 0);
-            mShadowRadius = a.getFloat(R.styleable.KeyboardView_shadowRadius, 0f);
-
-            mKeyBackground.getPadding(mPadding);
-        }
-
-        public void updateKeyHeight(int keyHeight) {
-            if (mKeyLetterRatio >= 0.0f)
-                mKeyLetterSize = (int)(keyHeight * mKeyLetterRatio);
-            if (mKeyLabelRatio >= 0.0f)
-                mKeyLabelSize = (int)(keyHeight * mKeyLabelRatio);
-            mKeyLargeLabelSize = (int)(keyHeight * mKeyLargeLabelRatio);
-            mKeyLargeLetterSize = (int)(keyHeight * mKeyLargeLetterRatio);
-            mKeyHintLetterSize = (int)(keyHeight * mKeyHintLetterRatio);
-            mKeyShiftedLetterHintSize = (int)(keyHeight * mKeyShiftedLetterHintRatio);
-            mKeyHintLabelSize = (int)(keyHeight * mKeyHintLabelRatio);
-        }
-
-        public void blendAlpha(Paint paint) {
-            final int color = paint.getColor();
-            paint.setARGB((paint.getAlpha() * mAnimAlpha) / ALPHA_OPAQUE,
-                    Color.red(color), Color.green(color), Color.blue(color));
-        }
-    }
-
-    /* package */ static class KeyPreviewDrawParams {
-        // XML attributes.
-        public final Drawable mPreviewBackground;
-        public final Drawable mPreviewLeftBackground;
-        public final Drawable mPreviewRightBackground;
-        public final int mPreviewTextColor;
-        public final int mPreviewOffset;
-        public final int mPreviewHeight;
-        public final Typeface mKeyTextStyle;
-        public final int mLingerTimeout;
-
-        private final float mPreviewTextRatio;
-        private final float mKeyLetterRatio;
-
-        // The graphical geometry of the key preview.
-        // <-width->
-        // +-------+   ^
-        // |       |   |
-        // |preview| height (visible)
-        // |       |   |
-        // +       + ^ v
-        //  \     /  |offset
-        // +-\   /-+ v
-        // |  +-+  |
-        // |parent |
-        // |    key|
-        // +-------+
-        // The background of a {@link TextView} being used for a key preview may have invisible
-        // paddings. To align the more keys keyboard panel's visible part with the visible part of
-        // the background, we need to record the width and height of key preview that don't include
-        // invisible paddings.
-        public int mPreviewVisibleWidth;
-        public int mPreviewVisibleHeight;
-        // The key preview may have an arbitrary offset and its background that may have a bottom
-        // padding. To align the more keys keyboard and the key preview we also need to record the
-        // offset between the top edge of parent key and the bottom of the visible part of key
-        // preview background.
-        public int mPreviewVisibleOffset;
-
-        public int mPreviewTextSize;
-        public int mKeyLetterSize;
-        public final int[] mCoordinates = new int[2];
-
-        private static final int PREVIEW_ALPHA = 240;
-
-        public KeyPreviewDrawParams(TypedArray a, KeyDrawParams keyDrawParams) {
-            mPreviewBackground = a.getDrawable(R.styleable.KeyboardView_keyPreviewBackground);
-            mPreviewLeftBackground = a.getDrawable(
-                    R.styleable.KeyboardView_keyPreviewLeftBackground);
-            mPreviewRightBackground = a.getDrawable(
-                    R.styleable.KeyboardView_keyPreviewRightBackground);
-            setAlpha(mPreviewBackground, PREVIEW_ALPHA);
-            setAlpha(mPreviewLeftBackground, PREVIEW_ALPHA);
-            setAlpha(mPreviewRightBackground, PREVIEW_ALPHA);
-            mPreviewOffset = a.getDimensionPixelOffset(
-                    R.styleable.KeyboardView_keyPreviewOffset, 0);
-            mPreviewHeight = a.getDimensionPixelSize(
-                    R.styleable.KeyboardView_keyPreviewHeight, 80);
-            mPreviewTextRatio = getRatio(a, R.styleable.KeyboardView_keyPreviewTextRatio);
-            mPreviewTextColor = a.getColor(R.styleable.KeyboardView_keyPreviewTextColor, 0);
-            mLingerTimeout = a.getInt(R.styleable.KeyboardView_keyPreviewLingerTimeout, 0);
-
-            mKeyLetterRatio = keyDrawParams.mKeyLetterRatio;
-            mKeyTextStyle = keyDrawParams.mKeyTextStyle;
-        }
-
-        public void updateKeyHeight(int keyHeight) {
-            mPreviewTextSize = (int)(keyHeight * mPreviewTextRatio);
-            mKeyLetterSize = (int)(keyHeight * mKeyLetterRatio);
-        }
-
-        private static void setAlpha(Drawable drawable, int alpha) {
-            if (drawable == null)
-                return;
-            drawable.setAlpha(alpha);
-        }
-    }
-
     public KeyboardView(Context context, AttributeSet attrs) {
         this(context, attrs, R.attr.keyboardViewStyle);
     }
@@ -374,11 +198,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mDelayAfterPreview = mKeyPreviewDrawParams.mLingerTimeout;
 
         mPaint.setAntiAlias(true);
-    }
-
-    // Read fraction value in TypedArray as float.
-    /* package */ static float getRatio(TypedArray a, int index) {
-        return a.getFraction(index, 1000, 1000, 1) / 1000.0f;
     }
 
     /**
