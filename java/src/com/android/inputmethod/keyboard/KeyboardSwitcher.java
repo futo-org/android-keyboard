@@ -71,7 +71,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     private InputView mCurrentInputView;
     private LatinKeyboardView mKeyboardView;
-    private LatinIME mInputMethodService;
+    private LatinIME mLatinIME;
     private Resources mResources;
 
     private KeyboardState mState;
@@ -95,17 +95,17 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
         // Intentional empty constructor for singleton.
     }
 
-    public static void init(LatinIME ims, SharedPreferences prefs) {
-        sInstance.initInternal(ims, prefs);
+    public static void init(LatinIME latinIme, SharedPreferences prefs) {
+        sInstance.initInternal(latinIme, prefs);
     }
 
-    private void initInternal(LatinIME ims, SharedPreferences prefs) {
-        mInputMethodService = ims;
-        mResources = ims.getResources();
+    private void initInternal(LatinIME latinIme, SharedPreferences prefs) {
+        mLatinIME = latinIme;
+        mResources = latinIme.getResources();
         mPrefs = prefs;
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mState = new KeyboardState(this);
-        setContextThemeWrapper(ims, getKeyboardTheme(ims, prefs));
+        setContextThemeWrapper(latinIme, getKeyboardTheme(latinIme, prefs));
         mForceNonDistinctMultitouch = prefs.getBoolean(
                 DebugSettings.FORCE_NON_DISTINCT_MULTITOUCH_KEY, false);
     }
@@ -194,14 +194,14 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
      * Update keyboard shift state triggered by connected EditText status change.
      */
     public void updateShiftState() {
-        mState.onUpdateShiftState(mInputMethodService.getCurrentAutoCapsState());
+        mState.onUpdateShiftState(mLatinIME.getCurrentAutoCapsState());
     }
 
     public void onPressKey(int code) {
         if (isVibrateAndSoundFeedbackRequired()) {
-            mInputMethodService.hapticAndAudioFeedback(code);
+            mLatinIME.hapticAndAudioFeedback(code);
         }
-        mState.onPressKey(code);
+        mState.onPressKey(code, isSinglePointer(), mLatinIME.getCurrentAutoCapsState());
     }
 
     public void onReleaseKey(int code, boolean withSliding) {
@@ -257,7 +257,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void requestUpdatingShiftState() {
-        mState.onUpdateShiftState(mInputMethodService.getCurrentAutoCapsState());
+        mState.onUpdateShiftState(mLatinIME.getCurrentAutoCapsState());
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
@@ -311,7 +311,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void hapticAndAudioFeedback(int code) {
-        mInputMethodService.hapticAndAudioFeedback(code);
+        mLatinIME.hapticAndAudioFeedback(code);
     }
 
     public void onLongPressTimeout(int code) {
@@ -338,7 +338,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
      * Updates state machine to figure out when to automatically switch back to the previous mode.
      */
     public void onCodeInput(int code) {
-        mState.onCodeInput(code, isSinglePointer(), mInputMethodService.getCurrentAutoCapsState());
+        mState.onCodeInput(code, isSinglePointer(), mLatinIME.getCurrentAutoCapsState());
     }
 
     public LatinKeyboardView getKeyboardView() {
@@ -354,7 +354,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
         boolean tryGC = true;
         for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
             try {
-                setContextThemeWrapper(mInputMethodService, mKeyboardTheme);
+                setContextThemeWrapper(mLatinIME, mKeyboardTheme);
                 mCurrentInputView = (InputView)LayoutInflater.from(mThemeContext).inflate(
                         R.layout.input_view, null);
                 tryGC = false;
@@ -368,7 +368,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
         }
 
         mKeyboardView = (LatinKeyboardView) mCurrentInputView.findViewById(R.id.keyboard_view);
-        mKeyboardView.setKeyboardActionListener(mInputMethodService);
+        mKeyboardView.setKeyboardActionListener(mLatinIME);
         if (mForceNonDistinctMultitouch) {
             mKeyboardView.setDistinctMultitouch(false);
         }

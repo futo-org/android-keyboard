@@ -30,7 +30,7 @@ import com.android.inputmethod.latin.define.ProductionFlag;
  * This class contains all keyboard state transition logic.
  *
  * The input events are {@link #onLoadKeyboard(String)}, {@link #onSaveKeyboardState()},
- * {@link #onPressKey(int)}, {@link #onReleaseKey(int, boolean)},
+ * {@link #onPressKey(int, boolean, int)}, {@link #onReleaseKey(int, boolean)},
  * {@link #onCodeInput(int, boolean, int)}, {@link #onCancelInput(boolean)},
  * {@link #onUpdateShiftState(int)}, {@link #onLongPressTimeout(int)}.
  *
@@ -297,9 +297,10 @@ public class KeyboardState {
         mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
     }
 
-    public void onPressKey(int code) {
+    public void onPressKey(int code, boolean isSinglePointer, int autoCaps) {
         if (DEBUG_EVENT) {
-            Log.d(TAG, "onPressKey: code=" + Keyboard.printableCode(code) + " " + this);
+            Log.d(TAG, "onPressKey: code=" + Keyboard.printableCode(code)
+                   + " single=" + isSinglePointer + " autoCaps=" + autoCaps + " " + this);
         }
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.keyboardState_onPressKey(code, this);
@@ -313,6 +314,21 @@ public class KeyboardState {
             mSwitchActions.cancelLongPressTimer();
             mShiftKeyState.onOtherKeyPressed();
             mSymbolKeyState.onOtherKeyPressed();
+            // It is required to reset the auto caps state when all of the following conditions
+            // are met:
+            // 1) two or more fingers are in action
+            // 2) in alphabet layout
+            // 3) not in all characters caps mode
+            // As for #3, please note that it's required to check even when the auto caps mode is
+            // off because, for example, we may be in the #1 state within the manual temporary
+            // shifted mode.
+            if (!isSinglePointer && mIsAlphabetMode && autoCaps != TextUtils.CAP_MODE_CHARACTERS) {
+                final boolean needsToResetAutoCaps = mAlphabetShiftState.isAutomaticShifted()
+                        || (mAlphabetShiftState.isManualShifted() && mShiftKeyState.isReleasing());
+                if (needsToResetAutoCaps) {
+                    mSwitchActions.setAlphabetKeyboard();
+                }
+            }
         }
     }
 

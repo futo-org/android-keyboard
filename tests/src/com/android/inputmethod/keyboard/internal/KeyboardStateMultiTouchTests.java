@@ -268,13 +268,12 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
 
         // Press 'X' key and hold
         pressKey('X', ALPHABET_MANUAL_SHIFTED);
-        // TODO: The following test fails due to a bug. Temporarily commented out.
-//        // Press 'z' key and hold, switch back to alphabet unshifted.
-//        chordingPressKey('z', ALPHABET_UNSHIFTED);
-//        // Release 'X' key
-//        releaseKey('X', ALPHABET_UNSHIFTED);
-//        // Release 'z' key
-//        releaseKey('z', ALPHABET_UNSHIFTED);
+        // Press 'z' key and hold, switch back to alphabet unshifted.
+        chordingPressKey('z', ALPHABET_UNSHIFTED);
+        // Release 'X' key
+        releaseKey('X', ALPHABET_UNSHIFTED);
+        // Release 'z' key
+        releaseKey('z', ALPHABET_UNSHIFTED);
     }
 
     // Multi touch input in automatic upper case.
@@ -286,13 +285,12 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
 
         // Press 'X' key and hold
         pressKey('X', ALPHABET_AUTOMATIC_SHIFTED);
-        // TODO: The following test fails due to a bug. Temporarily commented out.
-//        // Press 'z' key and hold, switch back to alphabet unshifted.
-//        chordingPressKey('z', ALPHABET_UNSHIFTED);
-//        // Release 'X' key
-//        releaseKey('X', ALPHABET_UNSHIFTED);
-//        // Release 'z' key
-//        releaseKey('z', ALPHABET_UNSHIFTED);
+        // Press 'z' key and hold, switch back to alphabet unshifted.
+        chordingPressKey('z', ALPHABET_UNSHIFTED);
+        // Release 'X' key
+        releaseKey('X', ALPHABET_UNSHIFTED);
+        // Release 'z' key
+        releaseKey('z', ALPHABET_UNSHIFTED);
     }
 
     // Multi touch input in capitalize character mode.

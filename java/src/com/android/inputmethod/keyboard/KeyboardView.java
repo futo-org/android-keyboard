@@ -389,11 +389,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
      * @param keyboard the keyboard to display in this view
      */
     public void setKeyboard(Keyboard keyboard) {
-        // Remove any pending messages.
-        mDrawingHandler.cancelAllMessages();
-        if (mKeyboard != null) {
-            PointerTracker.dismissAllKeyPreviews();
-        }
         mKeyboard = keyboard;
         LatinImeLogger.onSetKeyboard(keyboard);
         requestLayout();
