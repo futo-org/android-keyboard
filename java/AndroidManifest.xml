@@ -30,7 +30,8 @@
             <meta-data android:name="android.view.textservice.scs" android:resource="@xml/spellchecker" />
         </service>
 
-        <activity android:name="SettingsActivity" android:label="@string/english_ime_settings">
+        <activity android:name="SettingsActivity" android:label="@string/english_ime_settings"
+                  android:uiOptions="splitActionBarWhenNarrow">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
