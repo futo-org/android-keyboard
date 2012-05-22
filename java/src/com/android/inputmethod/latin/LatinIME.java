@@ -2300,6 +2300,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 break;
             }
         }
+
+        if (Keyboard.CODE_DELETE == primaryCode) {
+            // This is a stopgap solution to avoid leaving a high surrogate alone in a text view.
+            // In the future, we need to deprecate deteleSurroundingText() and have a surrogate
+            // pair-friendly way of deleting characters in InputConnection.
+            final InputConnection ic = getCurrentInputConnection();
+            if (null != ic) {
+                final CharSequence lastChar = ic.getTextBeforeCursor(1, 0);
+                if (lastChar.length() > 0 && Character.isHighSurrogate(lastChar.charAt(0))) {
+                    ic.deleteSurroundingText(1, 0);
+                }
+            }
+        }
     }
 
     // receive ringer mode change and network state change.
