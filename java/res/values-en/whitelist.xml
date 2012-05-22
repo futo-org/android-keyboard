@@ -174,11 +174,6 @@
         <item>shouldent</item>
         <item>shouldn\'t</item>
 
-        <!-- TODO: Remove this entry after "yes" gets bumped up in the dictionary. -->
-        <item>255</item>
-        <item>tes</item>
-        <item>yes</item>
-
         <item>255</item>
         <item>thatd</item>
         <item>that\'d</item>
