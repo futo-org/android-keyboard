@@ -29,7 +29,6 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewParent;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.inputmethod.EditorInfo;
@@ -276,18 +275,7 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
      */
     void sendAccessibilityEventForKey(Key key, int eventType) {
         final AccessibilityEvent event = createAccessibilityEvent(key, eventType);
-        final ViewParent parent = mKeyboardView.getParent();
-
-        if (parent == null) {
-            return;
-        }
-
-        if (!parent.requestSendAccessibilityEvent(mKeyboardView, event)) {
-            // TODO: Remove this line after the top-level view for the IME
-            // window is fixed to be non-null and requestSendAccessibilityEvent
-            // can return true.
-            mAccessibilityUtils.requestSendAccessibilityEvent(event);
-        }
+        mAccessibilityUtils.requestSendAccessibilityEvent(event);
     }
 
     /**
