@@ -28,7 +28,7 @@ public class InputLogicTests extends InputTestsBase {
 
     public void testPickSuggestionThenBackspace() {
         final String WORD_TO_TYPE = "this";
-        final String EXPECTED_RESULT = "this";
+        final String EXPECTED_RESULT = "thi";
         type(WORD_TO_TYPE);
         pickSuggestionManually(0, WORD_TO_TYPE);
         mLatinIME.onUpdateSelection(0, 0, WORD_TO_TYPE.length(), WORD_TO_TYPE.length(), -1, -1);
@@ -40,7 +40,7 @@ public class InputLogicTests extends InputTestsBase {
     public void testPickAutoCorrectionThenBackspace() {
         final String WORD_TO_TYPE = "tgis";
         final String WORD_TO_PICK = "this";
-        final String EXPECTED_RESULT = "tgis";
+        final String EXPECTED_RESULT = "thi";
         type(WORD_TO_TYPE);
         // Choose the auto-correction, which is always in position 0. For "tgis", the
         // auto-correction should be "this".
@@ -55,7 +55,7 @@ public class InputLogicTests extends InputTestsBase {
 
     public void testPickTypedWordOverAutoCorrectionThenBackspace() {
         final String WORD_TO_TYPE = "tgis";
-        final String EXPECTED_RESULT = "tgis";
+        final String EXPECTED_RESULT = "tgi";
         type(WORD_TO_TYPE);
         // Choose the typed word, which should be in position 1 (because position 0 should
         // be occupied by the "this" auto-correction, as checked by testAutoCorrect())
@@ -71,7 +71,7 @@ public class InputLogicTests extends InputTestsBase {
     public void testPickDifferentSuggestionThenBackspace() {
         final String WORD_TO_TYPE = "tgis";
         final String WORD_TO_PICK = "thus";
-        final String EXPECTED_RESULT = "tgis";
+        final String EXPECTED_RESULT = "thu";
         type(WORD_TO_TYPE);
         // Choose the second suggestion, which should be in position 2 and should be "thus"
         // when "tgis is typed.
