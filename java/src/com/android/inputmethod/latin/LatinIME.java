@@ -392,7 +392,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mPrefs = prefs;
         LatinImeLogger.init(this, prefs);
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.init(this, prefs);
+            ResearchLogger.getInstance().init(this, prefs);
         }
         InputMethodManagerCompatWrapper.init(this);
         SubtypeSwitcher.init(this);
@@ -652,6 +652,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     + ((editorInfo.inputType & InputType.TYPE_TEXT_FLAG_CAP_WORDS) != 0));
         }
         if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.getInstance().start();
             ResearchLogger.latinIME_onStartInputViewInternal(editorInfo, mPrefs);
         }
         if (InputAttributes.inPrivateImeOptions(null, NO_MICROPHONE_COMPAT, editorInfo)) {
@@ -733,6 +734,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         super.onFinishInput();
 
         LatinImeLogger.commit();
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.getInstance().stop();
+        }
 
         KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null) inputView.closing();
@@ -1248,9 +1252,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mLastKeyTime = when;
 
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            if (ResearchLogger.sIsLogging) {
-                ResearchLogger.getInstance().logKeyEvent(primaryCode, x, y);
-            }
+            ResearchLogger.latinIME_onCodeInput(primaryCode, x, y);
         }
 
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
