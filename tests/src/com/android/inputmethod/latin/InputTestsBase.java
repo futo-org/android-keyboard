@@ -24,6 +24,7 @@ import android.preference.PreferenceManager;
 import android.test.ServiceTestCase;
 import android.text.InputType;
 import android.text.SpannableStringBuilder;
+import android.text.style.CharacterStyle;
 import android.text.style.SuggestionSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,18 +58,19 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
             new HashMap<String, InputMethodSubtype>();
 
     // A helper class to ease span tests
-    public static class Span {
+    public static class SpanGetter {
         final SpannableStringBuilder mInputText;
-        final SuggestionSpan mSpan;
+        final CharacterStyle mSpan;
         final int mStart;
         final int mEnd;
         // The supplied CharSequence should be an instance of SpannableStringBuilder,
-        // and it should contain exactly zero or one SuggestionSpan. Otherwise, an exception
+        // and it should contain exactly zero or one span. Otherwise, an exception
         // is thrown.
-        public Span(final CharSequence inputText) {
+        public SpanGetter(final CharSequence inputText,
+                final Class<? extends CharacterStyle> spanType) {
             mInputText = (SpannableStringBuilder)inputText;
-            final SuggestionSpan[] spans =
-                    mInputText.getSpans(0, mInputText.length(), SuggestionSpan.class);
+            final CharacterStyle[] spans =
+                    mInputText.getSpans(0, mInputText.length(), spanType);
             if (0 == spans.length) {
                 mSpan = null;
                 mStart = -1;
@@ -78,11 +80,12 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
                 mStart = mInputText.getSpanStart(mSpan);
                 mEnd = mInputText.getSpanEnd(mSpan);
             } else {
-                throw new RuntimeException("Expected one SuggestionSpan, found " + spans.length);
+                throw new RuntimeException("Expected one span, found " + spans.length);
             }
         }
         public boolean isAutoCorrectionIndicator() {
-            return 0 != (SuggestionSpan.FLAG_AUTO_CORRECTION & mSpan.getFlags());
+            return (mSpan instanceof SuggestionSpan) &&
+                    0 != (SuggestionSpan.FLAG_AUTO_CORRECTION & ((SuggestionSpan)mSpan).getFlags());
         }
     }
 
