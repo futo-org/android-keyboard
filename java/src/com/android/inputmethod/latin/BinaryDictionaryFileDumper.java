@@ -193,6 +193,7 @@ public class BinaryDictionaryFileDumper {
                 if (0 >= resolver.delete(wordListUri, null, null)) {
                     Log.e(TAG, "Could not have the dictionary pack delete a word list");
                 }
+                BinaryDictionaryGetter.removeFilesWithIdExcept(context, id, outputFile);
                 // Success! Close files (through the finally{} clause) and return.
                 return AssetFileAddress.makeFromFileName(outputFileName);
             } catch (Exception e) {

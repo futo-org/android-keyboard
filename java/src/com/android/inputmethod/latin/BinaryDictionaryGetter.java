@@ -283,6 +283,39 @@ class BinaryDictionaryGetter {
     }
 
     /**
+     * Remove all files with the passed id, except the passed file.
+     *
+     * If a dictionary with a given ID has a metadata change that causes it to change
+     * path, we need to remove the old version. The only way to do this is to check all
+     * installed files for a matching ID in a different directory.
+     */
+    public static void removeFilesWithIdExcept(final Context context, final String id,
+            final File fileToKeep) {
+        try {
+            final File canonicalFileToKeep = fileToKeep.getCanonicalFile();
+            final File[] directoryList = getCachedDirectoryList(context);
+            if (null == directoryList) return;
+            for (File directory : directoryList) {
+                // There is one directory per locale. See #getCachedDirectoryList
+                if (!directory.isDirectory()) continue;
+                final File[] wordLists = directory.listFiles();
+                if (null == wordLists) continue;
+                for (File wordList : wordLists) {
+                    final String fileId = getWordListIdFromFileName(wordList.getName());
+                    if (fileId.equals(id)) {
+                        if (!canonicalFileToKeep.equals(wordList.getCanonicalFile())) {
+                            wordList.delete();
+                        }
+                    }
+                }
+            }
+        } catch (java.io.IOException e) {
+            Log.e(TAG, "IOException trying to cleanup files : " + e);
+        }
+    }
+
+
+    /**
      * Returns the id associated with the main word list for a specified locale.
      *
      * Word lists stored in Android Keyboard's resources are referred to as the "main"
