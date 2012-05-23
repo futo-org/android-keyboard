@@ -58,6 +58,9 @@ public class BinaryDictionaryFileDumper {
 
     public static final String QUERY_PARAMETER_MAY_PROMPT_USER = "mayPrompt";
     public static final String QUERY_PARAMETER_TRUE = "true";
+    public static final String QUERY_PARAMETER_DELETE_RESULT = "result";
+    public static final String QUERY_PARAMETER_SUCCESS = "success";
+    public static final String QUERY_PARAMETER_FAILURE = "failure";
 
     // Prevents this class to be accidentally instantiated.
     private BinaryDictionaryFileDumper() {
@@ -145,7 +148,7 @@ public class BinaryDictionaryFileDumper {
         final int MODE_MIN = COMPRESSED_CRYPTED_COMPRESSED;
         final int MODE_MAX = NONE;
 
-        final Uri wordListUri = getProviderUriBuilder(id).build();
+        final Uri.Builder wordListUriBuilder = getProviderUriBuilder(id);
         final String outputFileName = BinaryDictionaryGetter.getCacheFileName(id, locale, context);
 
         for (int mode = MODE_MIN; mode <= MODE_MAX; ++mode) {
@@ -154,6 +157,7 @@ public class BinaryDictionaryFileDumper {
             File outputFile = null;
             FileOutputStream outputStream = null;
             AssetFileDescriptor afd = null;
+            final Uri wordListUri = wordListUriBuilder.build();
             try {
                 // Open input.
                 afd = openAssetFileDescriptor(resolver, wordListUri);
@@ -190,7 +194,9 @@ public class BinaryDictionaryFileDumper {
                         break;
                     }
                 checkMagicAndCopyFileTo(new BufferedInputStream(inputStream), outputStream);
-                if (0 >= resolver.delete(wordListUri, null, null)) {
+                wordListUriBuilder.appendQueryParameter(QUERY_PARAMETER_DELETE_RESULT,
+                        QUERY_PARAMETER_SUCCESS);
+                if (0 >= resolver.delete(wordListUriBuilder.build(), null, null)) {
                     Log.e(TAG, "Could not have the dictionary pack delete a word list");
                 }
                 BinaryDictionaryGetter.removeFilesWithIdExcept(context, id, outputFile);
@@ -226,9 +232,11 @@ public class BinaryDictionaryFileDumper {
         // We could not copy the file at all. This is very unexpected.
         // I'd rather not print the word list ID to the log out of security concerns
         Log.e(TAG, "Could not copy a word list. Will not be able to use it.");
-        // If we can't copy it we should probably delete it to avoid trying to copy it over
-        // and over each time we open LatinIME.
-        if (0 >= resolver.delete(wordListUri, null, null)) {
+        // If we can't copy it we should warn the dictionary provider so that it can mark it
+        // as invalid.
+        wordListUriBuilder.appendQueryParameter(QUERY_PARAMETER_DELETE_RESULT,
+                QUERY_PARAMETER_FAILURE);
+        if (0 >= resolver.delete(wordListUriBuilder.build(), null, null)) {
             Log.e(TAG, "In addition, we were unable to delete it.");
         }
         return null;
