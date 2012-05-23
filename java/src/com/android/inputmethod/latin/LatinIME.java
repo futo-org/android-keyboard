@@ -2299,7 +2299,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final InputConnection ic = getCurrentInputConnection();
             if (null != ic) {
                 final CharSequence lastChar = ic.getTextBeforeCursor(1, 0);
-                if (lastChar.length() > 0 && Character.isHighSurrogate(lastChar.charAt(0))) {
+                if (!TextUtils.isEmpty(lastChar) && Character.isHighSurrogate(lastChar.charAt(0))) {
                     ic.deleteSurroundingText(1, 0);
                 }
             }
