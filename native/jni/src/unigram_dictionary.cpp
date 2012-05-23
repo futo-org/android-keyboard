@@ -504,8 +504,12 @@ bool UnigramDictionary::getSubStringSuggestion(
                 freqArray, wordLengthArray, currentWordIndex + 1, isSpaceProximity, outputWord);
         if (DEBUG_DICT) {
             DUMP_WORD(outputWord, tempOutputWordLength);
-            AKLOGI("Split two words: %d, %d, %d, %d, (%d) %d", freqArray[0], freqArray[1], pairFreq,
-                    inputLength, wordLengthArray[0], tempOutputWordLength);
+            for (int i = 0; i < currentWordIndex + 1; ++i) {
+                AKLOGI("Split %d,%d words: freq = %d, length = %d", i, currentWordIndex + 1,
+                        freqArray[i], wordLengthArray[i]);
+            }
+            AKLOGI("Split two words: freq = %d, length = %d, %d, isSpace ? %d", pairFreq,
+                    inputLength, tempOutputWordLength, isSpaceProximity);
         }
         addWord(outputWord, tempOutputWordLength, pairFreq, queuePool->getMasterQueue());
     }
