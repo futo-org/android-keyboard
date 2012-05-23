@@ -503,27 +503,6 @@ public class Suggest implements Dictionary.WordCallback {
         return true;
     }
 
-    // TODO: Use codepoint instead of char
-    private int searchBigramSuggestion(final char[] word, final int offset, final int length) {
-        // TODO This is almost O(n^2). Might need fix.
-        // search whether the word appeared in bigram data
-        int bigramSuggestSize = mBigramSuggestions.size();
-        for (int i = 0; i < bigramSuggestSize; i++) {
-            if (mBigramSuggestions.get(i).codePointCount() == length) {
-                boolean chk = true;
-                for (int j = 0; j < length; j++) {
-                    if (mBigramSuggestions.get(i).codePointAt(j) != word[offset+j]) {
-                        chk = false;
-                        break;
-                    }
-                }
-                if (chk) return i;
-            }
-        }
-
-        return -1;
-    }
-
     public void close() {
         final HashSet<Dictionary> dictionaries = new HashSet<Dictionary>();
         dictionaries.addAll(mUnigramDictionaries.values());
