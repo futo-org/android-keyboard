@@ -977,7 +977,7 @@ int Correction::RankingAlgorithm::calcFreqForSplitMultipleWords(
             }
             const int freq = freqArray[i];
             // Demote too short weak words
-            if (wordLength <= 4 && freq <= MAX_FREQ * 2 / 3 /* heuristic... */) {
+            if (wordLength <= 4 && freq <= SUPPRESS_SHORT_MULTIPLE_WORDS_THRESHOLD_FREQ) {
                 multiplyRate(100 * freq / MAX_FREQ, &totalFreq);
             }
             if (wordLength == 1) {

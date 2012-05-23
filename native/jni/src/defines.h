@@ -228,6 +228,8 @@ static inline void prof_out(void) {
 
 #define TWO_WORDS_CORRECTION_WITH_OTHER_ERROR_THRESHOLD 0.35
 #define START_TWO_WORDS_CORRECTION_THRESHOLD 0.185
+/* heuristic... This should be changed if we change the unit of the frequency. */
+#define SUPPRESS_SHORT_MULTIPLE_WORDS_THRESHOLD_FREQ (MAX_FREQ * 58 / 100)
 
 #define MAX_DEPTH_MULTIPLIER 3
 
