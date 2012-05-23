@@ -7,6 +7,10 @@
   *;
 }
 
+-keep class com.android.inputmethod.keyboard.ProximityInfo {
+  <init>(com.android.inputmethod.keyboard.ProximityInfo);
+}
+
 -keep class com.android.inputmethod.latin.Suggest {
   <init>(...);
   com.android.inputmethod.latin.SuggestedWords getSuggestions(...);

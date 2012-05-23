@@ -42,6 +42,8 @@ public class ProximityInfo {
     private final int mKeyboardMinWidth;
     private final int mKeyboardHeight;
     private final int mMostCommonKeyWidth;
+    private final Key[] mKeys;
+    private final TouchPositionCorrection mTouchPositionCorrection;
     private final Key[][] mGridNeighbors;
     private final String mLocaleStr;
 
@@ -62,13 +64,36 @@ public class ProximityInfo {
         mKeyboardHeight = height;
         mKeyHeight = mostCommonKeyHeight;
         mMostCommonKeyWidth = mostCommonKeyWidth;
+        mKeys = keys;
+        mTouchPositionCorrection = touchPositionCorrection;
         mGridNeighbors = new Key[mGridSize][];
         if (minWidth == 0 || height == 0) {
             // No proximity required. Keyboard might be more keys keyboard.
             return;
         }
-        computeNearestNeighbors(
-                mostCommonKeyWidth, keys, touchPositionCorrection);
+        computeNearestNeighbors();
+        mNativeProximityInfo = createNativeProximityInfo();
+    }
+
+    // TODO: Remove this public constructor when the native part of the ProximityInfo becomes
+    // immutable.
+    // This public constructor aims only for test purpose.
+    public ProximityInfo(ProximityInfo o) {
+        mLocaleStr = o.mLocaleStr;
+        mGridWidth = o.mGridWidth;
+        mGridHeight = o.mGridHeight;
+        mGridSize = o.mGridSize;
+        mCellWidth = o.mCellWidth;
+        mCellHeight = o.mCellHeight;
+        mKeyboardMinWidth = o.mKeyboardMinWidth;
+        mKeyboardHeight = o.mKeyboardHeight;
+        mKeyHeight = o.mKeyHeight;
+        mMostCommonKeyWidth = o.mMostCommonKeyWidth;
+        mKeys = o.mKeys;
+        mTouchPositionCorrection = o.mTouchPositionCorrection;
+        mGridNeighbors = new Key[mGridSize][];
+        computeNearestNeighbors();
+        mNativeProximityInfo = createNativeProximityInfo();
     }
 
     public static ProximityInfo createDummyProximityInfo() {
@@ -100,8 +125,12 @@ public class ProximityInfo {
 
     private native void releaseProximityInfoNative(long nativeProximityInfo);
 
-    private final void setProximityInfo(Key[][] gridNeighborKeys, int keyboardWidth,
-            int keyboardHeight, final Key[] keys, TouchPositionCorrection touchPositionCorrection) {
+    private final long createNativeProximityInfo() {
+        final Key[][] gridNeighborKeys = mGridNeighbors;
+        final int keyboardWidth = mKeyboardMinWidth;
+        final int keyboardHeight = mKeyboardHeight;
+        final Key[] keys = mKeys;
+        final TouchPositionCorrection touchPositionCorrection = mTouchPositionCorrection;
         final int[] proximityCharsArray = new int[mGridSize * MAX_PROXIMITY_CHARS_SIZE];
         Arrays.fill(proximityCharsArray, KeyDetector.NOT_A_CODE);
         for (int i = 0; i < mGridSize; ++i) {
@@ -156,7 +185,7 @@ public class ProximityInfo {
             sweetSpotCenterXs = sweetSpotCenterYs = sweetSpotRadii = null;
         }
 
-        mNativeProximityInfo = setProximityInfoNative(mLocaleStr, MAX_PROXIMITY_CHARS_SIZE,
+        return setProximityInfoNative(mLocaleStr, MAX_PROXIMITY_CHARS_SIZE,
                 keyboardWidth, keyboardHeight, mGridWidth, mGridHeight, mMostCommonKeyWidth,
                 proximityCharsArray,
                 keyCount, keyXCoordinates, keyYCoordinates, keyWidths, keyHeights, keyCharCodes,
@@ -179,8 +208,9 @@ public class ProximityInfo {
         }
     }
 
-    private void computeNearestNeighbors(int defaultWidth, final Key[] keys,
-            TouchPositionCorrection touchPositionCorrection) {
+    private void computeNearestNeighbors() {
+        final int defaultWidth = mMostCommonKeyWidth;
+        final Key[] keys = mKeys;
         final HashMap<Integer, Key> keyCodeMap = new HashMap<Integer, Key>();
         for (final Key key : keys) {
             keyCodeMap.put(key.mCode, key);
@@ -206,8 +236,6 @@ public class ProximityInfo {
                         Arrays.copyOfRange(neighborKeys, 0, count);
             }
         }
-        setProximityInfo(mGridNeighbors, mKeyboardMinWidth, mKeyboardHeight, keys,
-                touchPositionCorrection);
     }
 
     public void fillArrayWithNearestKeyCodes(int x, int y, int primaryKeyCode, int[] dest) {
