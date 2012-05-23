@@ -22,6 +22,7 @@ import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOAR
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME;
 
 import android.os.Build;
+import android.text.TextUtils;
 import android.view.inputmethod.InputMethodSubtype;
 
 import java.util.ArrayList;
@@ -84,11 +85,14 @@ public class AdditionalSubtype {
     }
 
     public static InputMethodSubtype[] createAdditionalSubtypesArray(String prefSubtypes) {
+        if (TextUtils.isEmpty(prefSubtypes)) {
+            return null;
+        }
         final String[] prefSubtypeArray = prefSubtypes.split(PREF_SUBTYPE_SEPARATOR);
         final ArrayList<InputMethodSubtype> subtypesList =
                 new ArrayList<InputMethodSubtype>(prefSubtypeArray.length);
-        for (int i = 0; i < prefSubtypeArray.length; i++) {
-            final InputMethodSubtype subtype = createAdditionalSubtype(prefSubtypeArray[i]);
+        for (final String prefSubtype : prefSubtypeArray) {
+            final InputMethodSubtype subtype = createAdditionalSubtype(prefSubtype);
             if (subtype.getNameResId() == SubtypeLocale.UNKNOWN_KEYBOARD_LAYOUT) {
                 // Skip unknown keyboard layout subtype. This may happen when predefined keyboard
                 // layout has been removed.
