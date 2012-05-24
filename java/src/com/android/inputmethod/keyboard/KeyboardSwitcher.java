@@ -31,6 +31,7 @@ import com.android.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetExcep
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
 import com.android.inputmethod.latin.DebugSettings;
+import com.android.inputmethod.latin.ImfUtils;
 import com.android.inputmethod.latin.InputView;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
@@ -180,7 +181,8 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 || !keyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
         final boolean needsToDisplayLanguage = mSubtypeSwitcher.needsToDisplayLanguage(
                 keyboard.mId.mLocale);
-        mKeyboardView.startDisplayLanguageOnSpacebar(subtypeChanged, needsToDisplayLanguage);
+        mKeyboardView.startDisplayLanguageOnSpacebar(subtypeChanged, needsToDisplayLanguage,
+                ImfUtils.hasMultipleEnabledIMEsOrSubtypes(mLatinIME, true));
     }
 
     public Keyboard getKeyboard() {
