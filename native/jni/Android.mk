@@ -20,24 +20,6 @@ LOCAL_PATH := $(call my-dir)
 #FLAG_DBG := true
 #FLAG_DO_PROFILE := true
 
-TARGETING_UNBUNDLED_FROYO := true
-
-ifeq ($(TARGET_ARCH), x86)
-    TARGETING_UNBUNDLED_FROYO := false
-endif
-
-ifeq ($(TARGET_ARCH), mips)
-    TARGETING_UNBUNDLED_FROYO := false
-endif
-
-ifeq ($(FLAG_DBG), true)
-    TARGETING_UNBUNDLED_FROYO := false
-endif
-
-ifeq ($(FLAG_DO_PROFILE), true)
-    TARGETING_UNBUNDLED_FROYO := false
-endif
-
 ######################################
 include $(CLEAR_VARS)
 
@@ -68,11 +50,6 @@ LATIN_IME_CORE_SRC_FILES := \
 LOCAL_SRC_FILES := \
     $(LATIN_IME_JNI_SRC_FILES) \
     $(addprefix $(LATIN_IME_SRC_DIR)/,$(LATIN_IME_CORE_SRC_FILES))
-
-ifeq ($(TARGETING_UNBUNDLED_FROYO), true)
-    LOCAL_NDK_VERSION := 4
-    LOCAL_SDK_VERSION := 8
-endif
 
 ifeq ($(FLAG_DO_PROFILE), true)
     $(warning Making profiling version of native library)
@@ -116,11 +93,6 @@ ifeq ($(FLAG_DBG), true)
     LOCAL_SHARED_LIBRARIES += libcutils libutils
 endif # FLAG_DBG
 endif # FLAG_DO_PROFILE
-
-ifeq ($(TARGETING_UNBUNDLED_FROYO), true)
-    LOCAL_NDK_VERSION := 4
-    LOCAL_SDK_VERSION := 8
-endif
 
 LOCAL_MODULE := libjni_latinime
 LOCAL_MODULE_TAGS := optional
