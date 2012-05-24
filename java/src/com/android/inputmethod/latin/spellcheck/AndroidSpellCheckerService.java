@@ -669,6 +669,28 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             return retval;
         }
 
+        @Override
+        public SuggestionsInfo[] onGetSuggestionsMultiple(TextInfo[] textInfos,
+                int suggestionsLimit, boolean sequentialWords) {
+            final int length = textInfos.length;
+            final SuggestionsInfo[] retval = new SuggestionsInfo[length];
+            for (int i = 0; i < length; ++i) {
+                final String prevWord;
+                if (sequentialWords && i > 0) {
+                    final String prevWordCandidate = textInfos[i - 1].getText();
+                    // Note that an empty string would be used to indicate the initial word
+                    // in the future.
+                    prevWord = TextUtils.isEmpty(prevWordCandidate) ? null : prevWordCandidate;
+                } else {
+                    prevWord = null;
+                }
+                retval[i] = onGetSuggestions(textInfos[i], prevWord, suggestionsLimit);
+                retval[i].setCookieAndSequence(
+                        textInfos[i].getCookie(), textInfos[i].getSequence());
+            }
+            return retval;
+        }
+
         // Note : this must be reentrant
         /**
          * Gets a list of suggestions for a specific string. This returns a list of possible
@@ -678,6 +700,11 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         @Override
         public SuggestionsInfo onGetSuggestions(final TextInfo textInfo,
                 final int suggestionsLimit) {
+            return onGetSuggestions(textInfo, null, suggestionsLimit);
+        }
+
+        private SuggestionsInfo onGetSuggestions(
+                final TextInfo textInfo, final String prevWord, final int suggestionsLimit) {
             try {
                 final String inText = textInfo.getText();
                 final SuggestionsParams cachedSuggestionsParams =
@@ -732,7 +759,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 try {
                     dictInfo = mDictionaryPool.takeOrGetNull();
                     if (null == dictInfo) return getNotInDictEmptySuggestions();
-                    dictInfo.mDictionary.getWords(composer, null, suggestionsGatherer,
+                    dictInfo.mDictionary.getWords(composer, prevWord, suggestionsGatherer,
                             dictInfo.mProximityInfo);
                     isInDict = dictInfo.mDictionary.isValidWord(text);
                     if (!isInDict && CAPITALIZE_NONE != capitalizeType) {
