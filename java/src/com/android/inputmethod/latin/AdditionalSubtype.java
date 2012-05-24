@@ -28,7 +28,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import java.util.ArrayList;
 
 public class AdditionalSubtype {
-    private static final InputMethodSubtype EMPTY_SUBTYPE_ARRAY = new InputMethodSubtype[0];
+    private static final InputMethodSubtype[] EMPTY_SUBTYPE_ARRAY = new InputMethodSubtype[0];
 
     private AdditionalSubtype() {
         // This utility class is not publicly instantiable.
