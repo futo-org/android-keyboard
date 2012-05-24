@@ -313,7 +313,7 @@ public class WordComposer {
 
     // `type' should be one of the LastComposedWord.COMMIT_TYPE_* constants above.
     public LastComposedWord commitWord(final int type, final String committedWord,
-            final int separatorCode) {
+            final int separatorCode, final CharSequence prevWord) {
         // Note: currently, we come here whenever we commit a word. If it's a MANUAL_PICK
         // or a DECIDED_WORD we may cancel the commit later; otherwise, we should deactivate
         // the last composed word to ensure this does not happen.
@@ -324,7 +324,8 @@ public class WordComposer {
         mXCoordinates = new int[N];
         mYCoordinates = new int[N];
         final LastComposedWord lastComposedWord = new LastComposedWord(primaryKeyCodes,
-                xCoordinates, yCoordinates, mTypedWord.toString(), committedWord, separatorCode);
+                xCoordinates, yCoordinates, mTypedWord.toString(), committedWord, separatorCode,
+                prevWord);
         if (type != LastComposedWord.COMMIT_TYPE_DECIDED_WORD
                 && type != LastComposedWord.COMMIT_TYPE_MANUAL_PICK) {
             lastComposedWord.deactivate();

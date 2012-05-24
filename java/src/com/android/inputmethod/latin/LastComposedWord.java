@@ -46,17 +46,18 @@ public class LastComposedWord {
     public final String mTypedWord;
     public final String mCommittedWord;
     public final int mSeparatorCode;
+    public final CharSequence mPrevWord;
 
     private boolean mActive;
 
     public static final LastComposedWord NOT_A_COMPOSED_WORD =
-            new LastComposedWord(null, null, null, "", "", NOT_A_SEPARATOR);
+            new LastComposedWord(null, null, null, "", "", NOT_A_SEPARATOR, null);
 
     // Warning: this is using the passed objects as is and fully expects them to be
     // immutable. Do not fiddle with their contents after you passed them to this constructor.
     public LastComposedWord(final int[] primaryKeyCodes, final int[] xCoordinates,
             final int[] yCoordinates, final String typedWord, final String committedWord,
-            final int separatorCode) {
+            final int separatorCode, final CharSequence prevWord) {
         mPrimaryKeyCodes = primaryKeyCodes;
         mXCoordinates = xCoordinates;
         mYCoordinates = yCoordinates;
@@ -64,6 +65,7 @@ public class LastComposedWord {
         mCommittedWord = committedWord;
         mSeparatorCode = separatorCode;
         mActive = true;
+        mPrevWord = prevWord;
     }
 
     public void deactivate() {
