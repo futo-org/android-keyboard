@@ -22,7 +22,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AutoCorrection {
     private static final boolean DBG = LatinImeLogger.sDBG;
@@ -33,10 +33,10 @@ public class AutoCorrection {
     }
 
     public static CharSequence computeAutoCorrectionWord(
-            HashMap<String, Dictionary> dictionaries,
-            WordComposer wordComposer, ArrayList<SuggestedWordInfo> suggestions,
-            CharSequence consideredWord, float autoCorrectionThreshold,
-            CharSequence whitelistedWord) {
+            final ConcurrentHashMap<String, Dictionary> dictionaries,
+            final WordComposer wordComposer, final ArrayList<SuggestedWordInfo> suggestions,
+            final CharSequence consideredWord, final float autoCorrectionThreshold,
+            final CharSequence whitelistedWord) {
         if (hasAutoCorrectionForWhitelistedWord(whitelistedWord)) {
             return whitelistedWord;
         } else if (hasAutoCorrectionForConsideredWord(
@@ -49,8 +49,8 @@ public class AutoCorrection {
         return null;
     }
 
-    public static boolean isValidWord(
-            HashMap<String, Dictionary> dictionaries, CharSequence word, boolean ignoreCase) {
+    public static boolean isValidWord(final ConcurrentHashMap<String, Dictionary> dictionaries,
+           CharSequence word, boolean ignoreCase) {
         if (TextUtils.isEmpty(word)) {
             return false;
         }
@@ -75,7 +75,8 @@ public class AutoCorrection {
     }
 
     public static boolean allowsToBeAutoCorrected(
-            HashMap<String, Dictionary> dictionaries, CharSequence word, boolean ignoreCase) {
+            final ConcurrentHashMap<String, Dictionary> dictionaries,
+            final CharSequence word, final boolean ignoreCase) {
         final WhitelistDictionary whitelistDictionary =
                 (WhitelistDictionary)dictionaries.get(Suggest.DICT_KEY_WHITELIST);
         // If "word" is in the whitelist dictionary, it should not be auto corrected.
@@ -91,8 +92,9 @@ public class AutoCorrection {
     }
 
     private static boolean hasAutoCorrectionForConsideredWord(
-            HashMap<String, Dictionary> dictionaries, WordComposer wordComposer,
-            ArrayList<SuggestedWordInfo> suggestions, CharSequence consideredWord) {
+            final ConcurrentHashMap<String, Dictionary> dictionaries,
+            final WordComposer wordComposer, final ArrayList<SuggestedWordInfo> suggestions,
+            final CharSequence consideredWord) {
         if (TextUtils.isEmpty(consideredWord)) return false;
         return wordComposer.size() > 1 && suggestions.size() > 0
                 && !allowsToBeAutoCorrected(dictionaries, consideredWord, false);
