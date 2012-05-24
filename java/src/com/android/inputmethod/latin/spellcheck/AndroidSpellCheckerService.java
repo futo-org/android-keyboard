@@ -102,13 +102,19 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         // will never have any suggestions, so it makes no sense checking them.
         mLanguageToScript = new TreeMap<String, Integer>();
         mLanguageToScript.put("en", SCRIPT_LATIN);
+        mLanguageToScript.put("en_US", SCRIPT_LATIN);
+        mLanguageToScript.put("en_GB", SCRIPT_LATIN);
         mLanguageToScript.put("fr", SCRIPT_LATIN);
         mLanguageToScript.put("de", SCRIPT_LATIN);
         mLanguageToScript.put("nl", SCRIPT_LATIN);
         mLanguageToScript.put("cs", SCRIPT_LATIN);
         mLanguageToScript.put("es", SCRIPT_LATIN);
         mLanguageToScript.put("it", SCRIPT_LATIN);
+        mLanguageToScript.put("hr", SCRIPT_LATIN);
+        mLanguageToScript.put("pt_BR", SCRIPT_LATIN);
         mLanguageToScript.put("ru", SCRIPT_CYRILLIC);
+        // TODO: Make a persian proximity, and activate the Farsi subtype.
+        // mLanguageToScript.put("fa", SCRIPT_PERSIAN);
     }
 
     @Override public void onCreate() {
