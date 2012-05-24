@@ -202,6 +202,15 @@ public class UserHistoryDictionary extends ExpandableDictionary {
         return freq;
     }
 
+    public boolean cancelAddingUserHistory(String word1, String word2) {
+        final Bigram bi = new Bigram(word1, word2, 0);
+        if (mPendingWrites.contains(bi)) {
+            mPendingWrites.remove(bi);
+            return super.removeBigram(word1, word2);
+        }
+        return false;
+    }
+
     /**
      * Schedules a background thread to write any pending words to the database.
      */
