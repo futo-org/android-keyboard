@@ -26,9 +26,9 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class loads a dictionary and provides a list of suggestions for a given sequence of
@@ -68,10 +68,10 @@ public class Suggest implements Dictionary.WordCallback {
     private boolean mHasMainDictionary;
     private Dictionary mContactsDict;
     private WhitelistDictionary mWhiteListDictionary;
-    private final HashMap<String, Dictionary> mUnigramDictionaries =
-            new HashMap<String, Dictionary>();
-    private final HashMap<String, Dictionary> mBigramDictionaries =
-            new HashMap<String, Dictionary>();
+    private final ConcurrentHashMap<String, Dictionary> mUnigramDictionaries =
+            new ConcurrentHashMap<String, Dictionary>();
+    private final ConcurrentHashMap<String, Dictionary> mBigramDictionaries =
+            new ConcurrentHashMap<String, Dictionary>();
 
     private int mPrefMaxSuggestions = 18;
 
@@ -117,8 +117,9 @@ public class Suggest implements Dictionary.WordCallback {
         initWhitelistAndAutocorrectAndPool(context, locale);
     }
 
-    private static void addOrReplaceDictionary(HashMap<String, Dictionary> dictionaries, String key,
-            Dictionary dict) {
+    private static void addOrReplaceDictionary(
+            final ConcurrentHashMap<String, Dictionary> dictionaries,
+            final String key, final Dictionary dict) {
         final Dictionary oldDict = (dict == null)
                 ? dictionaries.remove(key)
                 : dictionaries.put(key, dict);
@@ -151,7 +152,7 @@ public class Suggest implements Dictionary.WordCallback {
         return mContactsDict;
     }
 
-    public HashMap<String, Dictionary> getUnigramDictionaries() {
+    public ConcurrentHashMap<String, Dictionary> getUnigramDictionaries() {
         return mUnigramDictionaries;
     }
 
