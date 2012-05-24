@@ -1040,16 +1040,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!mWordComposer.isComposingWord()) return;
         final CharSequence typedWord = mWordComposer.getTypedWord();
         if (typedWord.length() > 0) {
-            mLastComposedWord = mWordComposer.commitWord(
-                    LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, typedWord.toString(),
-                    separatorCode);
             if (ic != null) {
                 ic.commitText(typedWord, 1);
                 if (ProductionFlag.IS_EXPERIMENTAL) {
                     ResearchLogger.latinIME_commitText(typedWord);
                 }
             }
-            addToUserHistoryDictionary(typedWord);
+            final CharSequence prevWord = addToUserHistoryDictionary(typedWord);
+            mLastComposedWord = mWordComposer.commitWord(
+                    LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, typedWord.toString(),
+                    separatorCode, prevWord);
         }
         updateSuggestions();
     }
@@ -1847,8 +1847,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mExpectingUpdateSelection = true;
             commitChosenWord(autoCorrection, LastComposedWord.COMMIT_TYPE_DECIDED_WORD,
                     separatorCodePoint);
-            // Add the word to the user history dictionary
-            addToUserHistoryDictionary(autoCorrection);
             if (!typedWord.equals(autoCorrection) && null != ic) {
                 // This will make the correction flash for a short while as a visual clue
                 // to the user that auto-correction happened.
@@ -1926,8 +1924,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 LastComposedWord.NOT_A_SEPARATOR);
         // Don't allow cancellation of manual pick
         mLastComposedWord.deactivate();
-        // Add the word to the user history dictionary
-        addToUserHistoryDictionary(suggestion);
         mSpaceState = SPACE_STATE_PHANTOM;
         // TODO: is this necessary?
         mKeyboardSwitcher.updateShiftState();
@@ -1970,31 +1966,33 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     /**
      * Commits the chosen word to the text field and saves it for later retrieval.
      */
-    private void commitChosenWord(final CharSequence bestWord, final int commitType,
+    private void commitChosenWord(final CharSequence chosenWord, final int commitType,
             final int separatorCode) {
         final InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
             if (mSettingsValues.mEnableSuggestionSpanInsertion) {
                 final SuggestedWords suggestedWords = mSuggestionsView.getSuggestions();
                 ic.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(
-                        this, bestWord, suggestedWords, mIsMainDictionaryAvailable),
+                        this, chosenWord, suggestedWords, mIsMainDictionaryAvailable),
                         1);
                 if (ProductionFlag.IS_EXPERIMENTAL) {
-                    ResearchLogger.latinIME_commitText(bestWord);
+                    ResearchLogger.latinIME_commitText(chosenWord);
                 }
             } else {
-                ic.commitText(bestWord, 1);
+                ic.commitText(chosenWord, 1);
                 if (ProductionFlag.IS_EXPERIMENTAL) {
-                    ResearchLogger.latinIME_commitText(bestWord);
+                    ResearchLogger.latinIME_commitText(chosenWord);
                 }
             }
         }
+        // Add the word to the user history dictionary
+        final CharSequence prevWord = addToUserHistoryDictionary(chosenWord);
         // TODO: figure out here if this is an auto-correct or if the best word is actually
         // what user typed. Note: currently this is done much later in
         // LastComposedWord#didCommitTypedWord by string equality of the remembered
         // strings.
-        mLastComposedWord = mWordComposer.commitWord(commitType, bestWord.toString(),
-                separatorCode);
+        mLastComposedWord = mWordComposer.commitWord(commitType, chosenWord.toString(),
+                separatorCode, prevWord);
     }
 
     public void updateBigramPredictions() {
@@ -2034,15 +2032,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         setSuggestionStripShown(isSuggestionsStripVisible());
     }
 
-    private void addToUserHistoryDictionary(final CharSequence suggestion) {
-        if (TextUtils.isEmpty(suggestion)) return;
+    private CharSequence addToUserHistoryDictionary(final CharSequence suggestion) {
+        if (TextUtils.isEmpty(suggestion)) return null;
 
         // Only auto-add to dictionary if auto-correct is ON. Otherwise we'll be
         // adding words in situations where the user or application really didn't
         // want corrections enabled or learned.
         if (!(mCorrectionMode == Suggest.CORRECTION_FULL
                 || mCorrectionMode == Suggest.CORRECTION_FULL_BIGRAM)) {
-            return;
+            return null;
         }
 
         if (mUserHistoryDictionary != null) {
@@ -2062,7 +2060,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
             mUserHistoryDictionary.addToUserHistory(null == prevWord ? null : prevWord.toString(),
                     secondWord);
+            return prevWord;
         }
+        return null;
     }
 
     public boolean isCursorTouchingWord() {
@@ -2147,6 +2147,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // "ic" must not be null
     private void revertCommit(final InputConnection ic) {
+        final CharSequence previousWord = mLastComposedWord.mPrevWord;
         final String originallyTypedWord = mLastComposedWord.mTypedWord;
         final CharSequence committedWord = mLastComposedWord.mCommittedWord;
         final int cancelLength = committedWord.length();
@@ -2170,6 +2171,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         ic.deleteSurroundingText(deleteLength, 0);
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.latinIME_deleteSurroundingText(deleteLength);
+        }
+        if (!TextUtils.isEmpty(previousWord) && !TextUtils.isEmpty(committedWord)) {
+            mUserHistoryDictionary.cancelAddingUserHistory(
+                    previousWord.toString(), committedWord.toString());
         }
         if (0 == separatorLength || mLastComposedWord.didCommitTypedWord()) {
             // This is the case when we cancel a manual pick.
