@@ -28,6 +28,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import java.util.ArrayList;
 
 public class AdditionalSubtype {
+    private static final InputMethodSubtype EMPTY_SUBTYPE_ARRAY = new InputMethodSubtype[0];
 
     private AdditionalSubtype() {
         // This utility class is not publicly instantiable.
@@ -86,7 +87,7 @@ public class AdditionalSubtype {
 
     public static InputMethodSubtype[] createAdditionalSubtypesArray(String prefSubtypes) {
         if (TextUtils.isEmpty(prefSubtypes)) {
-            return null;
+            return EMPTY_SUBTYPE_ARRAY;
         }
         final String[] prefSubtypeArray = prefSubtypes.split(PREF_SUBTYPE_SEPARATOR);
         final ArrayList<InputMethodSubtype> subtypesList =
