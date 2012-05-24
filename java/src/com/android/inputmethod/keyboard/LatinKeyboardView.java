@@ -43,7 +43,6 @@ import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
-import com.android.inputmethod.latin.ImfUtils;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -83,6 +82,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     private ObjectAnimator mLanguageOnSpacebarFadeoutAnimator;
     private static final int ALPHA_OPAQUE = 255;
     private boolean mNeedsToDisplayLanguage;
+    private boolean mHasMultipleEnabledIMEsOrSubtypes;
     private int mLanguageOnSpacebarAnimAlpha = ALPHA_OPAQUE;
     private final float mSpacebarTextRatio;
     private float mSpacebarTextSize;
@@ -847,9 +847,10 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     }
 
     public void startDisplayLanguageOnSpacebar(boolean subtypeChanged,
-            boolean needsToDisplayLanguage) {
-        final ObjectAnimator animator = mLanguageOnSpacebarFadeoutAnimator;
+            boolean needsToDisplayLanguage, boolean hasMultipleEnabledIMEsOrSubtypes) {
         mNeedsToDisplayLanguage = needsToDisplayLanguage;
+        mHasMultipleEnabledIMEsOrSubtypes = hasMultipleEnabledIMEsOrSubtypes;
+        final ObjectAnimator animator = mLanguageOnSpacebarFadeoutAnimator;
         if (animator == null) {
             mNeedsToDisplayLanguage = false;
         } else {
@@ -881,18 +882,13 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
         if (key.mCode == Keyboard.CODE_SPACE) {
             drawSpacebar(key, canvas, paint);
-
             // Whether space key needs to show the "..." popup hint for special purposes
-            if (key.isLongPressEnabled() && ImfUtils.hasMultipleEnabledIMEsOrSubtypes(
-                    getContext(), true /* include aux subtypes */)) {
+            if (key.isLongPressEnabled() && mHasMultipleEnabledIMEsOrSubtypes) {
                 drawKeyPopupHint(key, canvas, paint, params);
             }
         } else if (key.mCode == Keyboard.CODE_LANGUAGE_SWITCH) {
             super.onDrawKeyTopVisuals(key, canvas, paint, params);
-            if (ImfUtils.hasMultipleEnabledIMEsOrSubtypes(
-                    getContext(), true /* include aux subtypes */)) {
-                drawKeyPopupHint(key, canvas, paint, params);
-            }
+            drawKeyPopupHint(key, canvas, paint, params);
         } else {
             super.onDrawKeyTopVisuals(key, canvas, paint, params);
         }
