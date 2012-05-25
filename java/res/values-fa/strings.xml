@@ -122,8 +122,8 @@
     <string name="keyboard_layout" msgid="8451164783510487501">"طرح زمینه صفحه کلید"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"انگیسی (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"انگیسی (US)"</string>
-    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"انگلیسی (انگلستان) ( <xliff:g id="LAYOUT">%s</xliff:g> )"</string>
-    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"انگلیسی (ایالات متحده) ( <xliff:g id="LAYOUT">%s</xliff:g> )"</string>
+    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"انگلیسی (انگلستان) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"انگلیسی (ایالات متحده) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_no_language" msgid="141420857808801746">"زبانی موجود نیست"</string>
     <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"هیچ کدام از زبانها (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"هیچکدام از زبان‌ها (QWERTZ)"</string>
@@ -138,12 +138,10 @@
     <string name="save" msgid="7646738597196767214">"ذخیره"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"زبان"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"چیدمان"</string>
-    <!-- no translation found for custom_input_style_note_message (8826731320846363423) -->
-    <skip />
-    <!-- no translation found for enable (5031294444630523247) -->
-    <skip />
-    <!-- no translation found for not_now (6172462888202790482) -->
-    <skip />
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"سبک ورودی سفارشی شما باید قبل از شروع به استفاده از آن فعال شود. می‌خواهید اکنون آن را فعال کنید؟"</string>
+    <string name="enable" msgid="5031294444630523247">"فعال کردن"</string>
+    <string name="not_now" msgid="6172462888202790482">"اکنون خیر"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"سبک ورودی مشابهی در حال حاضر وجود دارد: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"حالت بررسی قابلیت استفاده"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"تنظیمات مدت زمان لرزش فشار کلید"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"تنظیمات میزان صدای فشار کلید"</string>

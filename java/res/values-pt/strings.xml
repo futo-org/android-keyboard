@@ -61,7 +61,7 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderado"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agressivo"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Muito agressivo"</string>
-    <string name="bigram_suggestion" msgid="8169311444438922902">"Sugestões para a palavra seguinte"</string>
+    <string name="bigram_suggestion" msgid="8169311444438922902">"Sugestões p/ palavra seguinte"</string>
     <string name="bigram_suggestion_summary" msgid="6635527607242625713">"Usar palavra anterior para melhorar as sugestões"</string>
     <string name="bigram_prediction" msgid="3216364899483135294">"Previsão da palavra seguinte"</string>
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"Use também a palavra anterior para prever"</string>
@@ -134,13 +134,11 @@
     <string name="save" msgid="7646738597196767214">"Salvar"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Idioma"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Layout"</string>
-    <!-- no translation found for custom_input_style_note_message (8826731320846363423) -->
-    <skip />
-    <!-- no translation found for enable (5031294444630523247) -->
-    <skip />
-    <!-- no translation found for not_now (6172462888202790482) -->
-    <skip />
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Deseja ativar e usar o estilo de entrada personalizado?"</string>
+    <string name="enable" msgid="5031294444630523247">"Ativar"</string>
+    <string name="not_now" msgid="6172462888202790482">"Agora não"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"O estilo de entrada já existe: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modo de estudo de utilização"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Configurações de duração da vibração ao tocar a tecla"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Configurações do volume ao tocar a tecla"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Config. volume ao tocar a tecla"</string>
 </resources>

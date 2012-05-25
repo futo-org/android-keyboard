@@ -134,12 +134,10 @@
     <string name="save" msgid="7646738597196767214">"Αποθήκευση"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Γλώσσα"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Διάταξη"</string>
-    <!-- no translation found for custom_input_style_note_message (8826731320846363423) -->
-    <skip />
-    <!-- no translation found for enable (5031294444630523247) -->
-    <skip />
-    <!-- no translation found for not_now (6172462888202790482) -->
-    <skip />
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Απαιτείται ενεργοποίηση του προσαρμοσμένου στυλ εισόδου για χρήση. Ενεργοποίηση τώρα;"</string>
+    <string name="enable" msgid="5031294444630523247">"Ενεργοποίηση"</string>
+    <string name="not_now" msgid="6172462888202790482">"Όχι τώρα"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Το ίδιο στυλ εισόδου υπάρχει ήδη: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Λειτουργία μελέτης χρηστικότητας"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Ρυθμίσεις διάρκειας δόνησης κατά το πάτημα πλήκτρων"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Ρυθμίσεις έντασης ήχου κατά το πάτημα πλήκτρων"</string>
