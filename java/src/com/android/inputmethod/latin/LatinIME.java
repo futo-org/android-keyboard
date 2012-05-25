@@ -27,6 +27,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Rect;
@@ -80,7 +81,7 @@ import java.util.Locale;
  * Input method implementation for Qwerty'ish keyboard.
  */
 public class LatinIME extends InputMethodService implements KeyboardActionListener,
-        SuggestionsView.Listener {
+        SuggestionsView.Listener, TargetApplicationGetter.OnTargetApplicationKnownListener {
     private static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean TRACE = false;
     private static boolean DEBUG;
@@ -152,6 +153,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private SuggestionsView mSuggestionsView;
     /* package for tests */ Suggest mSuggest;
     private CompletionInfo[] mApplicationSpecifiedCompletions;
+    private ApplicationInfo mTargetApplicationInfo;
 
     private InputMethodManagerCompatWrapper mImm;
     private Resources mResources;
@@ -665,6 +667,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             Log.w(TAG, "Use EditorInfo.IME_FLAG_FORCE_ASCII flag instead");
         }
 
+        mTargetApplicationInfo = null;
+        new TargetApplicationGetter(this /* context */, this /* listener */)
+                .execute(editorInfo.packageName);
+
         LatinImeLogger.onStartInputView(editorInfo);
         // In landscape mode, this method gets called without the input view being created.
         if (inputView == null) {
@@ -716,6 +722,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         inputView.setProximityCorrectionEnabled(true);
 
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
+    }
+
+    public void onTargetApplicationKnown(final ApplicationInfo info) {
+        mTargetApplicationInfo = info;
     }
 
     @Override
