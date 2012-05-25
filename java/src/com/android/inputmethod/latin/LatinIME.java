@@ -667,9 +667,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             Log.w(TAG, "Use EditorInfo.IME_FLAG_FORCE_ASCII flag instead");
         }
 
-        mTargetApplicationInfo = null;
-        new TargetApplicationGetter(this /* context */, this /* listener */)
-                .execute(editorInfo.packageName);
+        mTargetApplicationInfo =
+                TargetApplicationGetter.getCachedApplicationInfo(editorInfo.packageName);
+        if (null == mTargetApplicationInfo) {
+            new TargetApplicationGetter(this /* context */, this /* listener */)
+                    .execute(editorInfo.packageName);
+        }
 
         LatinImeLogger.onStartInputView(editorInfo);
         // In landscape mode, this method gets called without the input view being created.

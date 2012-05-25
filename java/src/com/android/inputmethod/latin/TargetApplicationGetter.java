@@ -20,8 +20,18 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.util.LruCache;
 
 public class TargetApplicationGetter extends AsyncTask<String, Void, ApplicationInfo> {
+
+    private static final int MAX_CACHE_ENTRIES = 64; // arbitrary
+    private static LruCache<String, ApplicationInfo> sCache =
+            new LruCache<String, ApplicationInfo>(MAX_CACHE_ENTRIES);
+
+    public static ApplicationInfo getCachedApplicationInfo(final String packageName) {
+        return sCache.get(packageName);
+    }
+    // TODO: Wipe the cache when new packages are installed.
 
     public interface OnTargetApplicationKnownListener {
         public void onTargetApplicationKnown(final ApplicationInfo info);
@@ -38,12 +48,12 @@ public class TargetApplicationGetter extends AsyncTask<String, Void, Application
 
     @Override
     protected ApplicationInfo doInBackground(final String... packageName) {
-        // TODO: cache app info. Wipe the cache when new packages are installed.
         final PackageManager pm = mContext.getPackageManager();
         mContext = null; // Bazooka-powered anti-leak device
         try {
             final ApplicationInfo targetAppInfo =
                     pm.getApplicationInfo(packageName[0], 0 /* flags */);
+            sCache.put(packageName[0], targetAppInfo);
             return targetAppInfo;
         } catch (android.content.pm.PackageManager.NameNotFoundException e) {
             return null;
