@@ -294,7 +294,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     protected void loadBinaryDictionary() {
         if (DEBUG) {
-            Log.d(TAG, "Loading binary dictionary: request="
+            Log.d(TAG, "Loading binary dictionary: " + mFilename + " request="
                     + mSharedDictionaryController.mLastUpdateRequestTime + " update="
                     + mSharedDictionaryController.mLastUpdateTime);
         }
@@ -326,7 +326,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     private void generateBinaryDictionary() {
         if (DEBUG) {
-            Log.d(TAG, "Generating binary dictionary: request="
+            Log.d(TAG, "Generating binary dictionary: " + mFilename + " request="
                     + mSharedDictionaryController.mLastUpdateRequestTime + " update="
                     + mSharedDictionaryController.mLastUpdateTime);
         }
@@ -371,7 +371,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         mLocalDictionaryController.mLastUpdateRequestTime = time;
         mSharedDictionaryController.mLastUpdateRequestTime = time;
         if (DEBUG) {
-            Log.d(TAG, "Reload request: request=" + time + " update="
+            Log.d(TAG, "Reload request: " + mFilename + ": request=" + time + " update="
                     + mSharedDictionaryController.mLastUpdateTime);
         }
     }
@@ -380,28 +380,46 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * Reloads the dictionary if required. Reload will occur asynchronously in a separate thread.
      */
     void asyncReloadDictionaryIfRequired() {
+        if (!isReloadRequired()) return;
+        if (DEBUG) {
+            Log.d(TAG, "Starting AsyncReloadDictionaryTask: " + mFilename);
+        }
         new AsyncReloadDictionaryTask().start();
     }
 
     /**
-     * Reloads the dictionary if required. Access is controlled on a per dictionary file basis and
-     * supports concurrent calls from multiple instances that share the same dictionary file.
+     * Reloads the dictionary if required.
      */
     protected final void syncReloadDictionaryIfRequired() {
-        if (mBinaryDictionary != null && !mLocalDictionaryController.isOutOfDate()) {
-            return;
-        }
+        if (!isReloadRequired()) return;
+        syncReloadDictionaryInternal();
+    }
 
+    /**
+     * Returns whether a dictionary reload is required.
+     */
+    private boolean isReloadRequired() {
+        return mBinaryDictionary == null || mLocalDictionaryController.isOutOfDate();
+    }
+
+    /**
+     * Reloads the dictionary. Access is controlled on a per dictionary file basis and supports
+     * concurrent calls from multiple instances that share the same dictionary file.
+     */
+    private final void syncReloadDictionaryInternal() {
         // Ensure that only one thread attempts to read or write to the shared binary dictionary
         // file at the same time.
         mSharedDictionaryController.lock();
         try {
             final long time = SystemClock.uptimeMillis();
-            if (mSharedDictionaryController.isOutOfDate() || !dictionaryFileExists()) {
+            final boolean dictionaryFileExists = dictionaryFileExists();
+            if (mSharedDictionaryController.isOutOfDate() || !dictionaryFileExists) {
                 // If the shared dictionary file does not exist or is out of date, the first
                 // instance that acquires the lock will generate a new one.
-                if (hasContentChanged()) {
-                    // If the source content has changed, rebuild the binary dictionary.
+                if (hasContentChanged() || !dictionaryFileExists) {
+                    // If the source content has changed or the dictionary does not exist, rebuild
+                    // the binary dictionary. Empty dictionaries are supported (in the case where
+                    // loadDictionaryAsync() adds nothing) in order to provide a uniform framework.
                     mSharedDictionaryController.mLastUpdateTime = time;
                     generateBinaryDictionary();
                     loadBinaryDictionary();
@@ -435,7 +453,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     private class AsyncReloadDictionaryTask extends Thread {
         @Override
         public void run() {
-            syncReloadDictionaryIfRequired();
+            syncReloadDictionaryInternal();
         }
     }
 
