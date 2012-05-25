@@ -24,10 +24,10 @@
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Klawiatura Androida (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Ustawienia klawiatury Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opcje wprowadzania"</string>
-    <string name="spell_checker_service_name" msgid="7338064335159755926">"Sprawdzanie pisowni na Androidzie"</string>
+    <string name="spell_checker_service_name" msgid="7338064335159755926">"Słownik Androida"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Sprawdzanie pisowni na Androidzie (AOSP)"</string>
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Ustawienia sprawdzania pisowni"</string>
-    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Przeszukaj nazwy kontaktów"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Przeszukaj kontakty"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Sprawdzanie pisowni bierze pod uwagę wpisy z listy kontaktów."</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Wibracja przy naciśnięciu"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Dźwięk przy naciśnięciu"</string>
@@ -134,12 +134,10 @@
     <string name="save" msgid="7646738597196767214">"Zapisz"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Język"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Układ"</string>
-    <!-- no translation found for custom_input_style_note_message (8826731320846363423) -->
-    <skip />
-    <!-- no translation found for enable (5031294444630523247) -->
-    <skip />
-    <!-- no translation found for not_now (6172462888202790482) -->
-    <skip />
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Niestandardowy styl wprowadzania trzeba przed użyciem włączyć. Zrobić to teraz?"</string>
+    <string name="enable" msgid="5031294444630523247">"Włącz"</string>
+    <string name="not_now" msgid="6172462888202790482">"Nie teraz"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Taki styl wprowadzania już istnieje: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Tryb badania przydatności"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Czas trwania wibracji przy naciśnięciu"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Głośność dźwięku przy naciśnięciu"</string>

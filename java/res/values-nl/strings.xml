@@ -134,12 +134,10 @@
     <string name="save" msgid="7646738597196767214">"Opslaan"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Taal"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Lay-out"</string>
-    <!-- no translation found for custom_input_style_note_message (8826731320846363423) -->
-    <skip />
-    <!-- no translation found for enable (5031294444630523247) -->
-    <skip />
-    <!-- no translation found for not_now (6172462888202790482) -->
-    <skip />
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"U moet uw aangepaste invoerstijl inschakelen voor u deze kunt gebruiken. Wilt u de invoerstijl nu inschakelen?"</string>
+    <string name="enable" msgid="5031294444630523247">"Inschakelen"</string>
+    <string name="not_now" msgid="6172462888202790482">"Niet nu"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Dezelfde invoerstijl bestaat al: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modus voor gebruiksvriendelijkheidsonderzoek"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Instellingen voor trillingsduur bij druk op een toets"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Instellingen voor geluidsvolume bij druk op een toets"</string>
