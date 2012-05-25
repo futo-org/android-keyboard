@@ -89,7 +89,6 @@ public class DictionaryFactory {
     /**
      * Initializes a dictionary from a raw resource file
      * @param context application context for reading resources
-     * @param resId the resource containing the raw binary dictionary
      * @param locale the locale to use for the resource
      * @return an initialized instance of BinaryDictionary
      */

@@ -296,7 +296,6 @@ public class FusionDictionary implements Iterable<Word> {
      * @param word the word to add.
      * @param frequency the frequency of the word, in the range [0..255].
      * @param shortcutTargets a list of shortcut targets for this word, or null.
-     * @param bigrams a list of bigrams, or null.
      */
     public void add(final String word, final int frequency,
             final ArrayList<WeightedString> shortcutTargets) {
@@ -435,6 +434,8 @@ public class FusionDictionary implements Iterable<Word> {
         }
     }
 
+    private static int ARRAYS_ARE_EQUAL = 0;
+
     /**
      * Custom comparison of two int arrays taken to contain character codes.
      *
@@ -450,7 +451,6 @@ public class FusionDictionary implements Iterable<Word> {
      * @param dstOffset the offset in the right-hand side string.
      * @return the index at which the strings differ, or ARRAYS_ARE_EQUAL = 0 if they don't.
      */
-    private static int ARRAYS_ARE_EQUAL = 0;
     private static int compareArrays(final int[] src, final int[] dst, int dstOffset) {
         // We do NOT test the first char, because we come from a method that already
         // tested it.
@@ -469,6 +469,7 @@ public class FusionDictionary implements Iterable<Word> {
      * This comparator imposes orderings that are inconsistent with equals.
      */
     static private class CharGroupComparator implements java.util.Comparator<CharGroup> {
+        @Override
         public int compare(CharGroup c1, CharGroup c2) {
             if (c1.mChars[0] == c2.mChars[0]) return 0;
             return c1.mChars[0] < c2.mChars[0] ? -1 : 1;
@@ -487,6 +488,8 @@ public class FusionDictionary implements Iterable<Word> {
         return result >= 0 ? result : -result - 1;
     }
 
+    private static int CHARACTER_NOT_FOUND = -1;
+
     /**
      * Find the index of a char in a node, if it exists.
      *
@@ -494,7 +497,6 @@ public class FusionDictionary implements Iterable<Word> {
      * @param character the character to search for.
      * @return the position of the character if it's there, or CHARACTER_NOT_FOUND = -1 else.
      */
-    private static int CHARACTER_NOT_FOUND = -1;
     private static int findIndexOfChar(final Node node, int character) {
         final int insertionIndex = findInsertionIndex(node, character);
         if (node.mData.size() <= insertionIndex) return CHARACTER_NOT_FOUND;
