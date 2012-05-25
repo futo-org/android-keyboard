@@ -31,7 +31,9 @@ public class TargetApplicationGetter extends AsyncTask<String, Void, Application
     public static ApplicationInfo getCachedApplicationInfo(final String packageName) {
         return sCache.get(packageName);
     }
-    // TODO: Wipe the cache when new packages are installed.
+    public static void removeApplicationInfoCache(final String packageName) {
+        sCache.remove(packageName);
+    }
 
     public interface OnTargetApplicationKnownListener {
         public void onTargetApplicationKnown(final ApplicationInfo info);
