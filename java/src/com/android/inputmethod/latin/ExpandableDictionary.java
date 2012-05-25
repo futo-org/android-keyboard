@@ -309,7 +309,8 @@ public class ExpandableDictionary extends Dictionary {
      * @param word the word to insert, as an array of code points
      * @param depth the depth of the node in the tree
      * @param finalFreq the frequency for this word
-     * @return whether there is still space for more words. {@see Dictionary.WordCallback#addWord}.
+     * @return whether there is still space for more words.
+     * @see Dictionary.WordCallback#addWord(char[], int, int, int, int, int)
      */
     private boolean addWordAndShortcutsFromNode(final Node node, final char[] word, final int depth,
             final int finalFreq, final WordCallback callback) {

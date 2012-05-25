@@ -452,12 +452,6 @@ public class PointerTracker {
         return newKey;
     }
 
-    private Key onUpKey(int x, int y, long eventTime) {
-        mUpTime = eventTime;
-        mCurrentKey = null;
-        return onMoveKeyInternal(x, y);
-    }
-
     public void processMotionEvent(int action, int x, int y, long eventTime,
             KeyEventHandler handler) {
         switch (action) {
