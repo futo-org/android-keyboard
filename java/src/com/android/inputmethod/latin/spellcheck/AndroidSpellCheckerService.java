@@ -499,10 +499,6 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 }
                 mUnigramSuggestionsInfoCache.put(query, new SuggestionsParams(suggestions, flags));
             }
-
-            public void remove(String key) {
-                mUnigramSuggestionsInfoCache.remove(key);
-            }
         }
 
         AndroidSpellCheckerSession(final AndroidSpellCheckerService service) {

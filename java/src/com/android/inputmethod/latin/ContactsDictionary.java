@@ -34,6 +34,7 @@ import com.android.inputmethod.keyboard.Keyboard;
  *
  * @deprecated Use {@link ContactsBinaryDictionary}.
  */
+@Deprecated
 public class ContactsDictionary extends ExpandableDictionary {
 
     private static final String[] PROJECTION = {
