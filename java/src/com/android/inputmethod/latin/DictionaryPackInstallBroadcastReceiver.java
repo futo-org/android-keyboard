@@ -51,6 +51,8 @@ public class DictionaryPackInstallBroadcastReceiver extends BroadcastReceiver {
             if (null == packageUri) return; // No package name : we can't do anything
             final String packageName = packageUri.getSchemeSpecificPart();
             if (null == packageName) return;
+            // TODO: do this in a more appropriate place
+            TargetApplicationGetter.removeApplicationInfoCache(packageName);
             final PackageInfo packageInfo;
             try {
                 packageInfo = manager.getPackageInfo(packageName, PackageManager.GET_PROVIDERS);
