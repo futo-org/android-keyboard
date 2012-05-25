@@ -35,6 +35,7 @@ import java.util.Arrays;
  *
  * @deprecated Use {@link UserBinaryDictionary}.
  */
+@Deprecated
 public class UserDictionary extends ExpandableDictionary {
 
     // TODO: use Words.SHORTCUT when it's public in the SDK

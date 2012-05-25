@@ -882,9 +882,9 @@ public class BinaryDictInputOutput {
                 final int indexOfShortcutByteSize = index;
                 index += GROUP_SHORTCUT_LIST_SIZE_SIZE;
                 groupAddress += GROUP_SHORTCUT_LIST_SIZE_SIZE;
-                final Iterator shortcutIterator = group.mShortcutTargets.iterator();
+                final Iterator<WeightedString> shortcutIterator = group.mShortcutTargets.iterator();
                 while (shortcutIterator.hasNext()) {
-                    final WeightedString target = (WeightedString)shortcutIterator.next();
+                    final WeightedString target = shortcutIterator.next();
                     ++groupAddress;
                     int shortcutFlags = makeShortcutFlags(shortcutIterator.hasNext(),
                             target.mFrequency);
@@ -902,9 +902,9 @@ public class BinaryDictInputOutput {
             }
             // Write bigrams
             if (null != group.mBigrams) {
-                final Iterator bigramIterator = group.mBigrams.iterator();
+                final Iterator<WeightedString> bigramIterator = group.mBigrams.iterator();
                 while (bigramIterator.hasNext()) {
-                    final WeightedString bigram = (WeightedString)bigramIterator.next();
+                    final WeightedString bigram = bigramIterator.next();
                     final CharGroup target =
                             FusionDictionary.findWordInTree(dict.mRoot, bigram.mWord);
                     final int addressOfBigram = target.mCachedAddress;
