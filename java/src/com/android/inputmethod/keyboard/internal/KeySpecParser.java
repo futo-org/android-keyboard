@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import static com.android.inputmethod.keyboard.Keyboard.CODE_UNSPECIFIED;
+
 import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.Keyboard;
@@ -24,6 +26,7 @@ import com.android.inputmethod.latin.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * The string parser of more keys specification.
@@ -63,10 +66,14 @@ public class KeySpecParser {
         public final String mOutputText;
         public final int mIconId;
 
-        public MoreKeySpec(final String moreKeySpec, final KeyboardCodesSet codesSet) {
-            mCode = getCode(moreKeySpec, codesSet);
-            mLabel = getLabel(moreKeySpec);
-            mOutputText = getOutputText(moreKeySpec);
+        public MoreKeySpec(final String moreKeySpec, boolean needsToUpperCase, Locale locale,
+                final KeyboardCodesSet codesSet) {
+            mCode = toUpperCaseOfCodeForLocale(getCode(moreKeySpec, codesSet),
+                    needsToUpperCase, locale);
+            mLabel = toUpperCaseOfStringForLocale(getLabel(moreKeySpec),
+                    needsToUpperCase, locale);
+            mOutputText = toUpperCaseOfStringForLocale(getOutputText(moreKeySpec),
+                    needsToUpperCase, locale);
             mIconId = getIconId(moreKeySpec);
         }
     }
@@ -256,9 +263,8 @@ public class KeySpecParser {
         }
         if (out == null) {
             return array;
-        } else {
-            return out.toArray(new String[out.size()]);
         }
+        return out.toArray(new String[out.size()]);
     }
 
     public static String[] insertAdditionalMoreKeys(String[] moreKeySpecs,
@@ -427,12 +433,11 @@ public class KeySpecParser {
         final String remain = (size - start > 0) ? text.substring(start) : null;
         if (list == null) {
             return remain != null ? new String[] { remain } : null;
-        } else {
-            if (remain != null) {
-                list.add(remain);
-            }
-            return list.toArray(new String[list.size()]);
         }
+        if (remain != null) {
+            list.add(remain);
+        }
+        return list.toArray(new String[list.size()]);
     }
 
     public static int getIntValue(String[] moreKeys, String key, int defaultValue) {
@@ -475,5 +480,21 @@ public class KeySpecParser {
             value = true;
         }
         return value;
+    }
+
+    public static int toUpperCaseOfCodeForLocale(int code, boolean needsToUpperCase,
+            Locale locale) {
+        if (!Keyboard.isLetterCode(code) || !needsToUpperCase) return code;
+        final String text = new String(new int[] { code } , 0, 1);
+        final String casedText = KeySpecParser.toUpperCaseOfStringForLocale(
+                text, needsToUpperCase, locale);
+        return StringUtils.codePointCount(casedText) == 1
+                ? casedText.codePointAt(0) : CODE_UNSPECIFIED;
+    }
+
+    public static String toUpperCaseOfStringForLocale(String text, boolean needsToUpperCase,
+            Locale locale) {
+        if (text == null || !needsToUpperCase) return text;
+        return text.toUpperCase(locale);
     }
 }
