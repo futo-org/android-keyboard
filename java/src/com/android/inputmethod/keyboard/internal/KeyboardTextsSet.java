@@ -47,7 +47,7 @@ public final class KeyboardTextsSet {
     // Language to texts map.
     private static final HashMap<String, String[]> sLocaleToTextsMap =
             new HashMap<String, String[]>();
-    private static final HashMap<String, Integer> sLowerCaseNameToIdsMap =
+    private static final HashMap<String, Integer> sNameToIdsMap =
             new HashMap<String, Integer>();
 
     private String[] mTexts;
@@ -77,19 +77,11 @@ public final class KeyboardTextsSet {
     }
 
     public String getText(final String name) {
-        String lowerCaseName = null;
         String text = mResourceNameToTextsMap.get(name);
-        if (text == null) {
-            lowerCaseName = name.toLowerCase();
-            text = mResourceNameToTextsMap.get(lowerCaseName);
-        }
         if (text != null) {
             return text;
         }
-        Integer id = sLowerCaseNameToIdsMap.get(name);
-        if (id == null) {
-            id = sLowerCaseNameToIdsMap.get(lowerCaseName); // lowerCaseName != null
-        }
+        final Integer id = sNameToIdsMap.get(name);
         if (id == null) throw new RuntimeException("Unknown label: " + name);
         text = (id < mTexts.length) ? mTexts[id] : null;
         return (text == null) ? LANGUAGE_DEFAULT[id] : text;
@@ -2484,7 +2476,7 @@ public final class KeyboardTextsSet {
     static {
         int id = 0;
         for (final String name : NAMES) {
-            sLowerCaseNameToIdsMap.put(name, id++);
+            sNameToIdsMap.put(name, id++);
         }
 
         for (int i = 0; i < LANGUAGES_AND_TEXTS.length; i += 2) {
