@@ -45,6 +45,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -1237,6 +1239,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
+    static private void sendUpDownEnterOrBackspace(final int code, final InputConnection ic) {
+        final long eventTime = SystemClock.uptimeMillis();
+        ic.sendKeyEvent(new KeyEvent(eventTime, eventTime,
+                KeyEvent.ACTION_DOWN, code, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
+                KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
+        ic.sendKeyEvent(new KeyEvent(SystemClock.uptimeMillis(), eventTime,
+                KeyEvent.ACTION_UP, code, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
+                KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
+    }
+
     private void sendKeyCodePoint(int code) {
         // TODO: Remove this special handling of digit letters.
         // For backward compatibility. See {@link InputMethodService#sendKeyChar(char)}.
@@ -1247,8 +1259,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         final InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
-            final String text = new String(new int[] { code }, 0, 1);
-            ic.commitText(text, text.length());
+            // 16 is android.os.Build.VERSION_CODES.JELLY_BEAN but we can't write it because
+            // we want to be able to compile against the Ice Cream Sandwich SDK.
+            if (Keyboard.CODE_ENTER == code && mTargetApplicationInfo != null
+                    && mTargetApplicationInfo.targetSdkVersion < 16) {
+                // Backward compatibility mode. Before Jelly bean, the keyboard would simulate
+                // a hardware keyboard event on pressing enter or delete. This is bad for many
+                // reasons (there are race conditions with commits) but some applications are
+                // relying on this behavior so we continue to support it for older apps.
+                sendUpDownEnterOrBackspace(KeyEvent.KEYCODE_ENTER, ic);
+            } else {
+                final String text = new String(new int[] { code }, 0, 1);
+                ic.commitText(text, text.length());
+            }
             if (ProductionFlag.IS_EXPERIMENTAL) {
                 ResearchLogger.latinIME_sendKeyCodePoint(code);
             }
@@ -1475,7 +1498,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     // This should never happen.
                     Log.e(TAG, "Backspace when we don't know the selection position");
                 }
-                ic.deleteSurroundingText(1, 0);
+                // 16 is android.os.Build.VERSION_CODES.JELLY_BEAN but we can't write it because
+                // we want to be able to compile against the Ice Cream Sandwich SDK.
+                if (mTargetApplicationInfo != null
+                        && mTargetApplicationInfo.targetSdkVersion < 16) {
+                    // Backward compatibility mode. Before Jelly bean, the keyboard would simulate
+                    // a hardware keyboard event on pressing enter or delete. This is bad for many
+                    // reasons (there are race conditions with commits) but some applications are
+                    // relying on this behavior so we continue to support it for older apps.
+                    sendUpDownEnterOrBackspace(KeyEvent.KEYCODE_DEL, ic);
+                } else {
+                    ic.deleteSurroundingText(1, 0);
+                }
                 if (ProductionFlag.IS_EXPERIMENTAL) {
                     ResearchLogger.latinIME_deleteSurroundingText(1);
                 }
