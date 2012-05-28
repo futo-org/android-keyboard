@@ -42,6 +42,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * Class for describing the position and characteristics of a single key in the keyboard.
@@ -240,7 +241,8 @@ public class Key {
 
         mLabelFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags)
                 | row.getDefaultKeyLabelFlags();
-        final boolean preserveCase = (mLabelFlags & LABEL_FLAGS_PRESERVE_CASE) != 0;
+        final boolean needsToUpperCase = needsToUpperCase(mLabelFlags, params.mId.mElementId);
+        final Locale locale = params.mId.mLocale;
         int actionFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyActionFlags);
         String[] moreKeys = style.getStringArray(keyAttr, R.styleable.Keyboard_Key_moreKeys);
 
@@ -276,8 +278,8 @@ public class Key {
             actionFlags |= ACTION_FLAGS_ENABLE_LONG_PRESS;
             mMoreKeys = new MoreKeySpec[moreKeys.length];
             for (int i = 0; i < moreKeys.length; i++) {
-                mMoreKeys[i] = new MoreKeySpec(adjustCaseOfStringForKeyboardId(
-                        moreKeys[i], preserveCase, params.mId), params.mCodesSet);
+                mMoreKeys[i] = new MoreKeySpec(
+                        moreKeys[i], needsToUpperCase, locale, params.mCodesSet);
             }
         } else {
             mMoreKeys = null;
@@ -287,17 +289,17 @@ public class Key {
         if ((mLabelFlags & LABEL_FLAGS_FROM_CUSTOM_ACTION_LABEL) != 0) {
             mLabel = params.mId.mCustomActionLabel;
         } else {
-            mLabel = adjustCaseOfStringForKeyboardId(style.getString(keyAttr,
-                    R.styleable.Keyboard_Key_keyLabel), preserveCase, params.mId);
+            mLabel = KeySpecParser.toUpperCaseOfStringForLocale(style.getString(keyAttr,
+                    R.styleable.Keyboard_Key_keyLabel), needsToUpperCase, locale);
         }
         if ((mLabelFlags & LABEL_FLAGS_DISABLE_HINT_LABEL) != 0) {
             mHintLabel = null;
         } else {
-            mHintLabel = adjustCaseOfStringForKeyboardId(style.getString(keyAttr,
-                    R.styleable.Keyboard_Key_keyHintLabel), preserveCase, params.mId);
+            mHintLabel = KeySpecParser.toUpperCaseOfStringForLocale(style.getString(keyAttr,
+                    R.styleable.Keyboard_Key_keyHintLabel), needsToUpperCase, locale);
         }
-        String outputText = adjustCaseOfStringForKeyboardId(style.getString(keyAttr,
-                R.styleable.Keyboard_Key_keyOutputText), preserveCase, params.mId);
+        String outputText = KeySpecParser.toUpperCaseOfStringForLocale(style.getString(keyAttr,
+                R.styleable.Keyboard_Key_keyOutputText), needsToUpperCase, locale);
         final int code = KeySpecParser.parseCode(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_code), params.mCodesSet, CODE_UNSPECIFIED);
         // Choose the first letter of the label as primary code if not specified.
@@ -326,12 +328,13 @@ public class Key {
                 mCode = CODE_OUTPUT_TEXT;
             }
         } else {
-            mCode = adjustCaseOfCodeForKeyboardId(code, preserveCase, params.mId);
+            mCode = KeySpecParser.toUpperCaseOfCodeForLocale(code, needsToUpperCase, locale);
         }
         mOutputText = outputText;
-        mAltCode = adjustCaseOfCodeForKeyboardId(KeySpecParser.parseCode(style.getString(keyAttr,
+        mAltCode = KeySpecParser.toUpperCaseOfCodeForLocale(
+                KeySpecParser.parseCode(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_altCode), params.mCodesSet, CODE_UNSPECIFIED),
-                preserveCase, params.mId);
+                needsToUpperCase, locale);
         mHashCode = computeHashCode(this);
 
         keyAttr.recycle();
@@ -341,26 +344,16 @@ public class Key {
         }
     }
 
-    private static int adjustCaseOfCodeForKeyboardId(int code, boolean preserveCase,
-            KeyboardId id) {
-        if (!Keyboard.isLetterCode(code) || preserveCase) return code;
-        final String text = new String(new int[] { code } , 0, 1);
-        final String casedText = adjustCaseOfStringForKeyboardId(text, preserveCase, id);
-        return StringUtils.codePointCount(casedText) == 1
-                ? casedText.codePointAt(0) : CODE_UNSPECIFIED;
-    }
-
-    private static String adjustCaseOfStringForKeyboardId(String text, boolean preserveCase,
-            KeyboardId id) {
-        if (text == null || preserveCase) return text;
-        switch (id.mElementId) {
+    private static boolean needsToUpperCase(int labelFlags, int keyboardElementId) {
+        if ((labelFlags & LABEL_FLAGS_PRESERVE_CASE) != 0) return false;
+        switch (keyboardElementId) {
         case KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:
         case KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED:
         case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED:
         case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED:
-            return text.toUpperCase(id.mLocale);
+            return true;
         default:
-            return text;
+            return false;
         }
     }
 

@@ -62,7 +62,8 @@ public class KeySpecParserTests extends AndroidTestCase {
     private void assertParser(String message, String moreKeySpec, String expectedLabel,
             String expectedOutputText, int expectedIcon, int expectedCode) {
         final String labelResolved = KeySpecParser.resolveTextReference(moreKeySpec, mTextsSet);
-        final MoreKeySpec spec = new MoreKeySpec(labelResolved, mCodesSet);
+        final MoreKeySpec spec = new MoreKeySpec(labelResolved, false /* needsToUpperCase */,
+                Locale.US, mCodesSet);
         assertEquals(message + " [label]", expectedLabel, spec.mLabel);
         assertEquals(message + " [ouptputText]", expectedOutputText, spec.mOutputText);
         assertEquals(message + " [icon]",
@@ -149,7 +150,7 @@ public class KeySpecParserTests extends AndroidTestCase {
                 "|", null, ICON_UNDEFINED, '|');
         assertParser("Single letter with code", "a|" + CODE_SETTINGS,
                 "a", null, ICON_UNDEFINED, mCodeSettings);
-        assertParser("Single letter with CODE", "a|" + CODE_SETTINGS_UPPERCASE,
+        assertParserError("Single letter with CODE", "a|" + CODE_SETTINGS_UPPERCASE,
                 "a", null, ICON_UNDEFINED, mCodeSettings);
     }
 
@@ -213,11 +214,11 @@ public class KeySpecParserTests extends AndroidTestCase {
                 "a|c", "d|f", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label with code", "abc|" + CODE_SETTINGS,
                 "abc", null, ICON_UNDEFINED, mCodeSettings);
-        assertParser("Label with CODE", "abc|" + CODE_SETTINGS_UPPERCASE,
+        assertParserError("Label with CODE", "abc|" + CODE_SETTINGS_UPPERCASE,
                 "abc", null, ICON_UNDEFINED, mCodeSettings);
         assertParser("Escaped label with code", "a\\|c|" + CODE_SETTINGS,
                 "a|c", null, ICON_UNDEFINED, mCodeSettings);
-        assertParser("Escaped label with CODE", "a\\|c|" + CODE_SETTINGS_UPPERCASE,
+        assertParserError("Escaped label with CODE", "a\\|c|" + CODE_SETTINGS_UPPERCASE,
                 "a|c", null, ICON_UNDEFINED, mCodeSettings);
     }
 
@@ -240,19 +241,19 @@ public class KeySpecParserTests extends AndroidTestCase {
                 null, "!bc", mSettingsIconId, CODE_OUTPUT_TEXT);
         assertParser("Label starts with bang and code", "!bc|" + CODE_SETTINGS,
                 "!bc", null, ICON_UNDEFINED, mCodeSettings);
-        assertParser("Label starts with bang and CODE", "!bc|" + CODE_SETTINGS_UPPERCASE,
+        assertParserError("Label starts with bang and CODE", "!bc|" + CODE_SETTINGS_UPPERCASE,
                 "!bc", null, ICON_UNDEFINED, mCodeSettings);
         assertParser("Label contains bang and code", "a!c|" + CODE_SETTINGS,
                 "a!c", null, ICON_UNDEFINED, mCodeSettings);
-        assertParser("Label contains bang and CODE", "a!c|" + CODE_SETTINGS_UPPERCASE,
+        assertParserError("Label contains bang and CODE", "a!c|" + CODE_SETTINGS_UPPERCASE,
                 "a!c", null, ICON_UNDEFINED, mCodeSettings);
         assertParser("Escaped bang label with code", "\\!bc|" + CODE_SETTINGS,
                 "!bc", null, ICON_UNDEFINED, mCodeSettings);
-        assertParser("Escaped bang label with CODE", "\\!bc|" + CODE_SETTINGS_UPPERCASE,
+        assertParserError("Escaped bang label with CODE", "\\!bc|" + CODE_SETTINGS_UPPERCASE,
                 "!bc", null, ICON_UNDEFINED, mCodeSettings);
         assertParser("Icon with code", ICON_SETTINGS + "|" + CODE_SETTINGS,
                 null, null, mSettingsIconId, mCodeSettings);
-        assertParser("ICON with CODE", ICON_SETTINGS_UPPERCASE + "|" + CODE_SETTINGS_UPPERCASE,
+        assertParserError("ICON with CODE", ICON_SETTINGS_UPPERCASE + "|" + CODE_SETTINGS_UPPERCASE,
                 null, null, mSettingsIconId, mCodeSettings);
     }
 
@@ -264,7 +265,7 @@ public class KeySpecParserTests extends AndroidTestCase {
 
         assertParser("Action next as more key", "!text/label_next_key|!code/key_action_next",
                 "Next", null, ICON_UNDEFINED, mCodeActionNext);
-        assertParser("ACTION NEXT AS MORE KEY", "!TEXT/LABEL_NEXT_KEY|!CODE/KEY_ACTION_NEXT",
+        assertParserError("ACTION NEXT AS MORE KEY", "!TEXT/LABEL_NEXT_KEY|!CODE/KEY_ACTION_NEXT",
                 "Next", null, ICON_UNDEFINED, mCodeActionNext);
 
         assertParser("Popular domain",
