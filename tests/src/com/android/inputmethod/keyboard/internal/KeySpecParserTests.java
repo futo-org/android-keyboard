@@ -150,8 +150,6 @@ public class KeySpecParserTests extends AndroidTestCase {
                 "|", null, ICON_UNDEFINED, '|');
         assertParser("Single letter with code", "a|" + CODE_SETTINGS,
                 "a", null, ICON_UNDEFINED, mCodeSettings);
-        assertParserError("Single letter with CODE", "a|" + CODE_SETTINGS_UPPERCASE,
-                "a", null, ICON_UNDEFINED, mCodeSettings);
     }
 
     public void testLabel() {
@@ -214,65 +212,38 @@ public class KeySpecParserTests extends AndroidTestCase {
                 "a|c", "d|f", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
         assertParser("Label with code", "abc|" + CODE_SETTINGS,
                 "abc", null, ICON_UNDEFINED, mCodeSettings);
-        assertParserError("Label with CODE", "abc|" + CODE_SETTINGS_UPPERCASE,
-                "abc", null, ICON_UNDEFINED, mCodeSettings);
         assertParser("Escaped label with code", "a\\|c|" + CODE_SETTINGS,
-                "a|c", null, ICON_UNDEFINED, mCodeSettings);
-        assertParserError("Escaped label with CODE", "a\\|c|" + CODE_SETTINGS_UPPERCASE,
                 "a|c", null, ICON_UNDEFINED, mCodeSettings);
     }
 
     public void testIconAndCode() {
         assertParser("Icon with outputText", ICON_SETTINGS + "|abc",
                 null, "abc", mSettingsIconId, CODE_OUTPUT_TEXT);
-        assertParser("ICON with outputText", ICON_SETTINGS_UPPERCASE + "|abc",
-                null, "abc", mSettingsIconId, CODE_OUTPUT_TEXT);
         assertParser("Icon with outputText starts with bang", ICON_SETTINGS + "|!bc",
-                null, "!bc", mSettingsIconId, CODE_OUTPUT_TEXT);
-        assertParser("ICON with outputText starts with bang", ICON_SETTINGS_UPPERCASE + "|!bc",
                 null, "!bc", mSettingsIconId, CODE_OUTPUT_TEXT);
         assertParser("Icon with outputText contains bang", ICON_SETTINGS + "|a!c",
                 null, "a!c", mSettingsIconId, CODE_OUTPUT_TEXT);
-        assertParser("ICON with outputText contains bang", ICON_SETTINGS_UPPERCASE + "|a!c",
-                null, "a!c", mSettingsIconId, CODE_OUTPUT_TEXT);
         assertParser("Icon with escaped bang outputText", ICON_SETTINGS + "|\\!bc",
-                null, "!bc", mSettingsIconId, CODE_OUTPUT_TEXT);
-        assertParser("ICON with escaped bang outputText", ICON_SETTINGS_UPPERCASE + "|\\!bc",
                 null, "!bc", mSettingsIconId, CODE_OUTPUT_TEXT);
         assertParser("Label starts with bang and code", "!bc|" + CODE_SETTINGS,
                 "!bc", null, ICON_UNDEFINED, mCodeSettings);
-        assertParserError("Label starts with bang and CODE", "!bc|" + CODE_SETTINGS_UPPERCASE,
-                "!bc", null, ICON_UNDEFINED, mCodeSettings);
         assertParser("Label contains bang and code", "a!c|" + CODE_SETTINGS,
-                "a!c", null, ICON_UNDEFINED, mCodeSettings);
-        assertParserError("Label contains bang and CODE", "a!c|" + CODE_SETTINGS_UPPERCASE,
                 "a!c", null, ICON_UNDEFINED, mCodeSettings);
         assertParser("Escaped bang label with code", "\\!bc|" + CODE_SETTINGS,
                 "!bc", null, ICON_UNDEFINED, mCodeSettings);
-        assertParserError("Escaped bang label with CODE", "\\!bc|" + CODE_SETTINGS_UPPERCASE,
-                "!bc", null, ICON_UNDEFINED, mCodeSettings);
         assertParser("Icon with code", ICON_SETTINGS + "|" + CODE_SETTINGS,
-                null, null, mSettingsIconId, mCodeSettings);
-        assertParserError("ICON with CODE", ICON_SETTINGS_UPPERCASE + "|" + CODE_SETTINGS_UPPERCASE,
                 null, null, mSettingsIconId, mCodeSettings);
     }
 
     public void testResourceReference() {
         assertParser("Settings as more key", "!text/settings_as_more_key",
                 null, null, mSettingsIconId, mCodeSettings);
-        assertParser("SETTINGS AS MORE KEY", "!TEXT/SETTINGS_AS_MORE_KEY",
-                null, null, mSettingsIconId, mCodeSettings);
 
         assertParser("Action next as more key", "!text/label_next_key|!code/key_action_next",
-                "Next", null, ICON_UNDEFINED, mCodeActionNext);
-        assertParserError("ACTION NEXT AS MORE KEY", "!TEXT/LABEL_NEXT_KEY|!CODE/KEY_ACTION_NEXT",
                 "Next", null, ICON_UNDEFINED, mCodeActionNext);
 
         assertParser("Popular domain",
                 "!text/keylabel_for_popular_domain|!text/keylabel_for_popular_domain ",
-                ".com", ".com ", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
-        assertParser("POPULAR DOMAIN",
-                "!TEXT/KEYLABEL_FOR_POPULAR_DOMAIN|!TEXT/KEYLABEL_FOR_POPULAR_DOMAIN ",
                 ".com", ".com ", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
     }
 
@@ -283,19 +254,13 @@ public class KeySpecParserTests extends AndroidTestCase {
                 null, "a", ICON_UNDEFINED, CODE_UNSPECIFIED);
         assertParserError("Empty label with code", "|" + CODE_SETTINGS,
                 null, null, ICON_UNDEFINED, mCodeSettings);
-        assertParserError("Empty label with CODE", "|" + CODE_SETTINGS_UPPERCASE,
-                null, null, ICON_UNDEFINED, mCodeSettings);
         assertParserError("Empty outputText with label", "a|",
                 "a", null, ICON_UNDEFINED, CODE_UNSPECIFIED);
         assertParserError("Empty outputText with icon", ICON_SETTINGS + "|",
                 null, null, mSettingsIconId, CODE_UNSPECIFIED);
-        assertParserError("Empty outputText with ICON", ICON_SETTINGS_UPPERCASE + "|",
-                null, null, mSettingsIconId, CODE_UNSPECIFIED);
         assertParserError("Empty icon and code", "|",
                 null, null, ICON_UNDEFINED, CODE_UNSPECIFIED);
         assertParserError("Icon without code", ICON_SETTINGS,
-                null, null, mSettingsIconId, CODE_UNSPECIFIED);
-        assertParserError("ICON without code", ICON_SETTINGS_UPPERCASE,
                 null, null, mSettingsIconId, CODE_UNSPECIFIED);
         assertParserError("Non existing icon", ICON_NON_EXISTING + "|abc",
                 null, "abc", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
@@ -307,15 +272,56 @@ public class KeySpecParserTests extends AndroidTestCase {
                 "a", null, ICON_UNDEFINED, CODE_UNSPECIFIED);
         assertParserError("Multiple bar with label and code", "a|" + CODE_SETTINGS + "|c",
                 "a", null, ICON_UNDEFINED, mCodeSettings);
-        assertParserError("Multiple bar with label and CODE", "a|" + CODE_SETTINGS_UPPERCASE + "|c",
-                "a", null, ICON_UNDEFINED, mCodeSettings);
         assertParserError("Multiple bar with icon and outputText", ICON_SETTINGS + "|b|c",
-                null, null, mSettingsIconId, CODE_UNSPECIFIED);
-        assertParserError("Multiple bar with ICON and outputText", ICON_SETTINGS_UPPERCASE + "|b|c",
                 null, null, mSettingsIconId, CODE_UNSPECIFIED);
         assertParserError("Multiple bar with icon and code",
                 ICON_SETTINGS + "|" + CODE_SETTINGS + "|c",
                 null, null, mSettingsIconId, mCodeSettings);
+    }
+
+    public void testUselessUpperCaseSpecifier() {
+        assertParser("Single letter with CODE", "a|" + CODE_SETTINGS_UPPERCASE,
+                "a", "!CODE/KEY_SETTINGS", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
+        assertParser("Label with CODE", "abc|" + CODE_SETTINGS_UPPERCASE,
+                "abc", "!CODE/KEY_SETTINGS", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
+        assertParser("Escaped label with CODE", "a\\|c|" + CODE_SETTINGS_UPPERCASE,
+                "a|c", "!CODE/KEY_SETTINGS", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
+        assertParser("ICON with outputText", ICON_SETTINGS_UPPERCASE + "|abc",
+                "!ICON/SETTINGS_KEY", "abc", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
+        assertParser("ICON with outputText starts with bang", ICON_SETTINGS_UPPERCASE + "|!bc",
+                "!ICON/SETTINGS_KEY", "!bc", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
+        assertParser("ICON with outputText contains bang", ICON_SETTINGS_UPPERCASE + "|a!c",
+                "!ICON/SETTINGS_KEY", "a!c", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
+        assertParser("ICON with escaped bang outputText", ICON_SETTINGS_UPPERCASE + "|\\!bc",
+                "!ICON/SETTINGS_KEY", "!bc", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
+        assertParser("Label starts with bang and CODE", "!bc|" + CODE_SETTINGS_UPPERCASE,
+                "!bc", "!CODE/KEY_SETTINGS", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
+        assertParser("Label contains bang and CODE", "a!c|" + CODE_SETTINGS_UPPERCASE,
+                "a!c", "!CODE/KEY_SETTINGS", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
+        assertParser("Escaped bang label with CODE", "\\!bc|" + CODE_SETTINGS_UPPERCASE,
+                "!bc", "!CODE/KEY_SETTINGS", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
+        assertParser("ICON with CODE", ICON_SETTINGS_UPPERCASE + "|" + CODE_SETTINGS_UPPERCASE,
+                "!ICON/SETTINGS_KEY", "!CODE/KEY_SETTINGS", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
+        assertParser("SETTINGS AS MORE KEY", "!TEXT/SETTINGS_AS_MORE_KEY",
+                "!TEXT/SETTINGS_AS_MORE_KEY", "!TEXT/SETTINGS_AS_MORE_KEY", ICON_UNDEFINED,
+                CODE_OUTPUT_TEXT);
+        assertParser("ACTION NEXT AS MORE KEY", "!TEXT/LABEL_NEXT_KEY|!CODE/KEY_ACTION_NEXT",
+                "!TEXT/LABEL_NEXT_KEY", "!CODE/KEY_ACTION_NEXT", ICON_UNDEFINED,
+                CODE_OUTPUT_TEXT);
+        assertParser("POPULAR DOMAIN",
+                "!TEXT/KEYLABEL_FOR_POPULAR_DOMAIN|!TEXT/KEYLABEL_FOR_POPULAR_DOMAIN ",
+                "!TEXT/KEYLABEL_FOR_POPULAR_DOMAIN", "!TEXT/KEYLABEL_FOR_POPULAR_DOMAIN ",
+                ICON_UNDEFINED, CODE_OUTPUT_TEXT);
+        assertParserError("Empty label with CODE", "|" + CODE_SETTINGS_UPPERCASE,
+                null, null, ICON_UNDEFINED, mCodeSettings);
+        assertParserError("Empty outputText with ICON", ICON_SETTINGS_UPPERCASE + "|",
+                null, null, mSettingsIconId, CODE_UNSPECIFIED);
+        assertParser("ICON without code", ICON_SETTINGS_UPPERCASE,
+                "!ICON/SETTINGS_KEY", "!ICON/SETTINGS_KEY", ICON_UNDEFINED, CODE_OUTPUT_TEXT);
+        assertParserError("Multiple bar with label and CODE", "a|" + CODE_SETTINGS_UPPERCASE + "|c",
+                "a", null, ICON_UNDEFINED, mCodeSettings);
+        assertParserError("Multiple bar with ICON and outputText", ICON_SETTINGS_UPPERCASE + "|b|c",
+                null, null, mSettingsIconId, CODE_UNSPECIFIED);
         assertParserError("Multiple bar with ICON and CODE",
                 ICON_SETTINGS_UPPERCASE + "|" + CODE_SETTINGS_UPPERCASE + "|c",
                 null, null, mSettingsIconId, mCodeSettings);
@@ -578,9 +584,10 @@ public class KeySpecParserTests extends AndroidTestCase {
         assertGetBooleanValue("Has label", HAS_LABEL,
                 new String[] { HAS_LABEL, "a", "b", "c" },
                 new String[] { null, "a", "b", "c" }, true);
+        // Upper case specification will not work.
         assertGetBooleanValue("HAS LABEL", HAS_LABEL,
                 new String[] { HAS_LABEL.toUpperCase(), "a", "b", "c" },
-                new String[] { null, "a", "b", "c" }, true);
+                new String[] { "!HASLABEL!", "a", "b", "c" }, false);
 
         assertGetBooleanValue("No has label", HAS_LABEL,
                 new String[] { "a", "b", "c" },
@@ -589,16 +596,18 @@ public class KeySpecParserTests extends AndroidTestCase {
                 new String[] { FIXED_COLUMN_ORDER + "3", "a", "b", "c" },
                 new String[] { FIXED_COLUMN_ORDER + "3", "a", "b", "c" }, false);
 
+        // Upper case specification will not work.
         assertGetBooleanValue("Multiple has label", HAS_LABEL,
                 new String[] {
                     "a", HAS_LABEL.toUpperCase(), "b", "c", HAS_LABEL, "d" },
                 new String[] {
-                    "a", null, "b", "c", null, "d" }, true);
+                    "a", "!HASLABEL!", "b", "c", null, "d" }, true);
+        // Upper case specification will not work.
         assertGetBooleanValue("Multiple has label with needs dividers", HAS_LABEL,
                 new String[] {
                     "a", HAS_LABEL, "b", NEEDS_DIVIDER, HAS_LABEL.toUpperCase(), "d" },
                 new String[] {
-                    "a", null, "b", NEEDS_DIVIDER, null, "d" }, true);
+                    "a", null, "b", NEEDS_DIVIDER, "!HASLABEL!", "d" }, true);
     }
 
     private static void assertGetIntValue(String message, String key, int defaultValue,
@@ -613,9 +622,10 @@ public class KeySpecParserTests extends AndroidTestCase {
         assertGetIntValue("Fixed column order 3", FIXED_COLUMN_ORDER, -1,
                 new String[] { FIXED_COLUMN_ORDER + "3", "a", "b", "c" },
                 new String[] { null, "a", "b", "c" }, 3);
+        // Upper case specification will not work.
         assertGetIntValue("FIXED COLUMN ORDER 3", FIXED_COLUMN_ORDER, -1,
                 new String[] { FIXED_COLUMN_ORDER.toUpperCase() + "3", "a", "b", "c" },
-                new String[] { null, "a", "b", "c" }, 3);
+                new String[] { "!FIXEDCOLUMNORDER!3", "a", "b", "c" }, -1);
 
         assertGetIntValue("No fixed column order", FIXED_COLUMN_ORDER, -1,
                 new String[] { "a", "b", "c" },
@@ -627,10 +637,11 @@ public class KeySpecParserTests extends AndroidTestCase {
         assertGetIntValue("Multiple fixed column order 3,5", FIXED_COLUMN_ORDER, -1,
                 new String[] { FIXED_COLUMN_ORDER + "3", "a", FIXED_COLUMN_ORDER + "5", "b" },
                 new String[] { null, "a", null, "b" }, 3);
+        // Upper case specification will not work.
         assertGetIntValue("Multiple fixed column order 5,3 with has label", FIXED_COLUMN_ORDER, -1,
                 new String[] {
                     FIXED_COLUMN_ORDER.toUpperCase() + "5", HAS_LABEL, "a",
                     FIXED_COLUMN_ORDER + "3", "b" },
-                new String[] { null, HAS_LABEL, "a", null, "b" }, 5);
+                new String[] { "!FIXEDCOLUMNORDER!5", HAS_LABEL, "a", null, "b" }, 3);
     }
 }
