@@ -206,15 +206,11 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
     public void testParseCsvResourceZero() {
         assertTextArray("Empty string",
                 "!text/empty_string");
-        assertTextArray("EMPTY STRING",
-                "!TEXT/EMPTY_STRING");
     }
 
     public void testParseCsvResourceSingle() {
         assertTextArray("Single char",
                 "!text/single_char", "a");
-        assertTextArray("SINGLE CHAR",
-                "!TEXT/SINGLE_CHAR", "a");
         assertTextArray("Space",
                 "!text/space", " ");
         assertTextArray("Single label",
@@ -232,8 +228,6 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
 
         assertTextArray("Escape and single char",
                 "\\\\!text/single_char", "\\\\a");
-        assertTextArray("Escape and SINGLE CHAR",
-                "\\\\!TEXT/SINGLE_CHAR", "\\\\a");
     }
 
     public void testParseCsvResourceSingleEscaped() {
@@ -266,8 +260,6 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
     public void testParseCsvResourceMulti() {
         assertTextArray("Multiple chars",
                 "!text/multiple_chars", "a", "b", "c");
-        assertTextArray("MULTIPLE CHARS",
-                "!TEXT/MULTIPLE_CHARS", "a", "b", "c");
         assertTextArray("Multiple chars surrounded by spaces",
                 "!text/multiple_chars_surrounded_by_spaces",
                 " a ", " b ", " c ");
@@ -301,8 +293,6 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
     public void testParseMultipleResources() {
         assertTextArray("Literals and resources",
                 "1,!text/multiple_chars,z", "1", "a", "b", "c", "z");
-        assertTextArray("Literals and RESOURCES",
-                "1,!TEXT/MULTIPLE_CHARS,z", "1", "a", "b", "c", "z");
         assertTextArray("Literals and resources and escape at end",
                 "\\1,!text/multiple_chars,z\\", "\\1", "a", "b", "c", "z\\");
         assertTextArray("Multiple single resource chars and labels",
@@ -310,9 +300,6 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
                 "a", "abc", "\\,");
         assertTextArray("Multiple single resource chars and labels 2",
                 "!text/single_char,!text/single_label,!text/escaped_comma_escape",
-                "a", "abc", "a\\,\\");
-        assertTextArray("Multiple single RESOURCE chars and LABELS 2",
-                "!TEXT/SINGLE_CHAR,!TEXT/SINGLE_LABEL,!TEXT/ESCAPED_COMMA_ESCAPE",
                 "a", "abc", "a\\,\\");
         assertTextArray("Multiple multiple resource chars and labels",
                 "!text/multiple_chars,!text/multiple_labels,!text/multiple_chars_with_comma",
@@ -332,55 +319,20 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
                 "1,!text/indirect_string_with_literal,2", "1", "x", "a", "b", "c", "y", "2");
         assertTextArray("Indirect2",
                 "!text/indirect2_string", "a", "b", "c");
-
-        assertTextArray("INDIRECT",
-                "!TEXT/INDIRECT_STRING", "a", "b", "c");
-        assertTextArray("INDIRECT with literal",
-                "1,!TEXT/INDIRECT_STRING_WITH_LITERAL,2", "1", "x", "a", "b", "c", "y", "2");
-        assertTextArray("INDIRECT2",
-                "!TEXT/INDIRECT2_STRING", "a", "b", "c");
-
-        assertTextArray("Upper indirect",
-                "!text/upper_indirect_string", "a", "b", "c");
-        assertTextArray("Upper indirect with literal",
-                "1,!text/upper_indirect_string_with_literal,2", "1", "x", "a", "b", "c", "y", "2");
-        assertTextArray("Upper indirect2",
-                "!text/upper_indirect2_string", "a", "b", "c");
-
-        assertTextArray("UPPER INDIRECT",
-                "!TEXT/upper_INDIRECT_STRING", "a", "b", "c");
-        assertTextArray("Upper INDIRECT with literal",
-                "1,!TEXT/upper_INDIRECT_STRING_WITH_LITERAL,2", "1", "x", "a", "b", "c", "y", "2");
-        assertTextArray("Upper INDIRECT2",
-                "!TEXT/upper_INDIRECT2_STRING", "a", "b", "c");
     }
 
     public void testParseInfiniteIndirectReference() {
         assertError("Infinite indirection",
                 "1,!text/infinite_indirection,2", "1", "infinite", "<infinite>", "loop", "2");
-        assertError("INFINITE INDIRECTION",
-                "1,!TEXT/INFINITE_INDIRECTION,2", "1", "infinite", "<infinite>", "loop", "2");
-
-        assertError("Upper infinite indirection",
-                "1,!text/upper_infinite_indirection,2",
-                "1", "infinite", "<infinite>", "loop", "2");
-        assertError("Upper INFINITE INDIRECTION",
-                "1,!TEXT/UPPER_INFINITE_INDIRECTION,2",
-                "1", "infinite", "<infinite>", "loop", "2");
     }
 
     public void testLabelReferece() {
         assertTextArray("Label time am", "!text/label_time_am", "AM");
-        assertTextArray("LABEL TIME AM", "!TEXT/LABEL_TIME_AM", "AM");
 
         assertTextArray("More keys for am pm", "!text/more_keys_for_am_pm",
                 "!fixedColumnOrder!2", "!hasLabels!", "AM", "PM");
-        assertTextArray("MORE KEYS FOR AM OM", "!TEXT/MORE_KEYS_FOR_AM_PM",
-                "!fixedColumnOrder!2", "!hasLabels!", "AM", "PM");
 
         assertTextArray("Settings as more key", "!text/settings_as_more_key",
-                "!icon/settings_key|!code/key_settings");
-        assertTextArray("SETTINGS AS MORE KEY", "!TEXT/SETTINGS_AS_MORE_KEY",
                 "!icon/settings_key|!code/key_settings");
 
         assertTextArray("Indirect naviagte actions as more key",
@@ -388,10 +340,67 @@ public class KeySpecParserCsvTests extends AndroidTestCase {
                 "!fixedColumnOrder!2",
                 "!hasLabels!", "Prev|!code/key_action_previous",
                 "!hasLabels!", "Next|!code/key_action_next");
+    }
+
+    public void testUselessUpperCaseSpecifier() {
+        assertTextArray("EMPTY STRING",
+                "!TEXT/EMPTY_STRING", "!TEXT/EMPTY_STRING");
+
+        assertTextArray("SINGLE CHAR",
+                "!TEXT/SINGLE_CHAR", "!TEXT/SINGLE_CHAR");
+        assertTextArray("Escape and SINGLE CHAR",
+                "\\\\!TEXT/SINGLE_CHAR", "\\\\!TEXT/SINGLE_CHAR");
+
+        assertTextArray("MULTIPLE CHARS",
+                "!TEXT/MULTIPLE_CHARS", "!TEXT/MULTIPLE_CHARS");
+
+        assertTextArray("Literals and RESOURCES",
+                "1,!TEXT/MULTIPLE_CHARS,z", "1", "!TEXT/MULTIPLE_CHARS", "z");
+        assertTextArray("Multiple single RESOURCE chars and LABELS 2",
+                "!TEXT/SINGLE_CHAR,!TEXT/SINGLE_LABEL,!TEXT/ESCAPED_COMMA_ESCAPE",
+                "!TEXT/SINGLE_CHAR", "!TEXT/SINGLE_LABEL", "!TEXT/ESCAPED_COMMA_ESCAPE");
+
+        assertTextArray("INDIRECT",
+                "!TEXT/INDIRECT_STRING", "!TEXT/INDIRECT_STRING");
+        assertTextArray("INDIRECT with literal",
+                "1,!TEXT/INDIRECT_STRING_WITH_LITERAL,2",
+                "1", "!TEXT/INDIRECT_STRING_WITH_LITERAL", "2");
+        assertTextArray("INDIRECT2",
+                "!TEXT/INDIRECT2_STRING", "!TEXT/INDIRECT2_STRING");
+
+        assertTextArray("Upper indirect",
+                "!text/upper_indirect_string", "!TEXT/MULTIPLE_CHARS");
+        assertTextArray("Upper indirect with literal",
+                "1,!text/upper_indirect_string_with_literal,2",
+                "1", "x", "!TEXT/MULTIPLE_CHARS", "y", "2");
+        assertTextArray("Upper indirect2",
+                "!text/upper_indirect2_string", "!TEXT/UPPER_INDIRECT_STRING");
+
+        assertTextArray("UPPER INDIRECT",
+                "!TEXT/upper_INDIRECT_STRING", "!TEXT/upper_INDIRECT_STRING");
+        assertTextArray("Upper INDIRECT with literal",
+                "1,!TEXT/upper_INDIRECT_STRING_WITH_LITERAL,2",
+                "1", "!TEXT/upper_INDIRECT_STRING_WITH_LITERAL", "2");
+        assertTextArray("Upper INDIRECT2",
+                "!TEXT/upper_INDIRECT2_STRING", "!TEXT/upper_INDIRECT2_STRING");
+
+        assertTextArray("INFINITE INDIRECTION",
+                "1,!TEXT/INFINITE_INDIRECTION,2", "1", "!TEXT/INFINITE_INDIRECTION", "2");
+
+        assertTextArray("Upper infinite indirection",
+                "1,!text/upper_infinite_indirection,2",
+                "1", "infinite", "!TEXT/INFINITE_INDIRECTION", "loop", "2");
+        assertTextArray("Upper INFINITE INDIRECTION",
+                "1,!TEXT/UPPER_INFINITE_INDIRECTION,2",
+                "1", "!TEXT/UPPER_INFINITE_INDIRECTION", "2");
+
+        assertTextArray("LABEL TIME AM", "!TEXT/LABEL_TIME_AM", "!TEXT/LABEL_TIME_AM");
+        assertTextArray("MORE KEYS FOR AM OM", "!TEXT/MORE_KEYS_FOR_AM_PM",
+                "!TEXT/MORE_KEYS_FOR_AM_PM");
+        assertTextArray("SETTINGS AS MORE KEY", "!TEXT/SETTINGS_AS_MORE_KEY",
+                "!TEXT/SETTINGS_AS_MORE_KEY");
         assertTextArray("INDIRECT NAVIGATE ACTIONS AS MORE KEY",
                 "!TEXT/INDIRECT_NAVIGATE_ACTIONS_AS_MORE_KEY",
-                "!fixedColumnOrder!2",
-                "!hasLabels!", "Prev|!code/key_action_previous",
-                "!hasLabels!", "Next|!code/key_action_next");
-    }
+                "!TEXT/INDIRECT_NAVIGATE_ACTIONS_AS_MORE_KEY");
+     }
 }

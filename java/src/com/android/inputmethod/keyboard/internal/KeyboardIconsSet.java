@@ -34,9 +34,8 @@ public class KeyboardIconsSet {
     private static final HashMap<Integer, Integer> ATTR_ID_TO_ICON_ID
             = new HashMap<Integer, Integer>();
 
-    // Lower case icon name to icon id map.
-    private static final HashMap<String, Integer> sLowerCaseNameToIdsMap =
-            new HashMap<String, Integer>();
+    // Icon name to icon id map.
+    private static final HashMap<String, Integer> sNameToIdsMap = new HashMap<String, Integer>();
 
     private static final Object[] NAMES_AND_ATTR_IDS = {
         "undefined",                    ATTR_UNDEFINED,
@@ -70,7 +69,7 @@ public class KeyboardIconsSet {
             if (attrId != ATTR_UNDEFINED) {
                 ATTR_ID_TO_ICON_ID.put(attrId,  iconId);
             }
-            sLowerCaseNameToIdsMap.put(name, iconId);
+            sNameToIdsMap.put(name, iconId);
             ICON_NAMES[iconId] = name;
             iconId++;
         }
@@ -100,10 +99,7 @@ public class KeyboardIconsSet {
     }
 
     static int getIconId(final String name) {
-        Integer iconId = sLowerCaseNameToIdsMap.get(name);
-        if (iconId == null) {
-            iconId = sLowerCaseNameToIdsMap.get(name.toLowerCase());
-        }
+        Integer iconId = sNameToIdsMap.get(name);
         if (iconId != null) {
             return iconId;
         }
