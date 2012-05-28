@@ -217,21 +217,22 @@ public class Key {
         final int keyYPos = row.getKeyY();
 
         // Horizontal gap is divided equally to both sides of the key.
-        mX = (int) (keyXPos + horizontalGap / 2);
+        mX = Math.round(keyXPos + horizontalGap / 2);
         mY = keyYPos;
-        mWidth = (int) (keyWidth - horizontalGap);
-        mHorizontalGap = (int) horizontalGap;
-        mHitBox.set((int)keyXPos, keyYPos, (int)(keyXPos + keyWidth) + 1, keyYPos + keyHeight);
+        mWidth = Math.round(keyWidth - horizontalGap);
+        mHorizontalGap = Math.round(horizontalGap);
+        mHitBox.set(Math.round(keyXPos), keyYPos, Math.round(keyXPos + keyWidth) + 1,
+                keyYPos + keyHeight);
         // Update row to have current x coordinate.
         row.setXPos(keyXPos + keyWidth);
 
         mBackgroundType = style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_backgroundType, BACKGROUND_TYPE_NORMAL);
 
-        mVisualInsetsLeft = (int) Keyboard.Builder.getDimensionOrFraction(keyAttr,
-                R.styleable.Keyboard_Key_visualInsetsLeft, params.mBaseWidth, 0);
-        mVisualInsetsRight = (int) Keyboard.Builder.getDimensionOrFraction(keyAttr,
-                R.styleable.Keyboard_Key_visualInsetsRight, params.mBaseWidth, 0);
+        mVisualInsetsLeft = Math.round(Keyboard.Builder.getDimensionOrFraction(keyAttr,
+                R.styleable.Keyboard_Key_visualInsetsLeft, params.mBaseWidth, 0));
+        mVisualInsetsRight = Math.round(Keyboard.Builder.getDimensionOrFraction(keyAttr,
+                R.styleable.Keyboard_Key_visualInsetsRight, params.mBaseWidth, 0));
         mIconId = KeySpecParser.getIconId(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_keyIcon));
         mDisabledIconId = KeySpecParser.getIconId(style.getString(keyAttr,
