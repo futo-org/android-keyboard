@@ -28,6 +28,8 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * When you call the constructor of this class, you may want to change the current system locale by
@@ -350,5 +352,24 @@ public class SettingsValues {
     public static boolean getUsabilityStudyMode(final SharedPreferences prefs) {
         // TODO: use mUsabilityStudyMode instead of reading it again here
         return prefs.getBoolean(Settings.PREF_USABILITY_STUDY_MODE, true);
+    }
+
+    public static long getLastUserHistoryWriteTime(
+            final SharedPreferences prefs, final String locale) {
+        final String str = prefs.getString(Settings.PREF_LAST_USER_DICTIONARY_WRITE_TIME, "");
+        final HashMap<String, Long> map = Utils.localeAndTimeStrToHashMap(str);
+        if (map.containsKey(locale)) {
+            return map.get(locale);
+        }
+        return 0;
+    }
+
+    public static void setLastUserHistoryWriteTime(
+            final SharedPreferences prefs, final String locale) {
+        final String oldStr = prefs.getString(Settings.PREF_LAST_USER_DICTIONARY_WRITE_TIME, "");
+        final HashMap<String, Long> map = Utils.localeAndTimeStrToHashMap(oldStr);
+        map.put(locale, System.currentTimeMillis());
+        final String newStr = Utils.localeAndTimeHashMapToStr(map);
+        prefs.edit().putString(Settings.PREF_LAST_USER_DICTIONARY_WRITE_TIME, newStr).apply();
     }
 }
