@@ -83,13 +83,13 @@ public class KeySpecParser {
     }
 
     private static boolean hasIcon(String moreKeySpec) {
-        return moreKeySpec.regionMatches(true, 0, PREFIX_ICON, 0, PREFIX_ICON.length());
+        return moreKeySpec.startsWith(PREFIX_ICON);
     }
 
     private static boolean hasCode(String moreKeySpec) {
         final int end = indexOfLabelEnd(moreKeySpec, 0);
-        if (end > 0 && end + 1 < moreKeySpec.length() && moreKeySpec.regionMatches(
-                true, end + 1, PREFIX_CODE, 0, PREFIX_CODE.length())) {
+        if (end > 0 && end + 1 < moreKeySpec.length() && moreKeySpec.startsWith(
+                PREFIX_CODE, end + 1)) {
             return true;
         }
         return false;
@@ -210,9 +210,9 @@ public class KeySpecParser {
 
     public static int parseCode(String text, KeyboardCodesSet codesSet, int defCode) {
         if (text == null) return defCode;
-        if (text.regionMatches(true, 0, PREFIX_CODE, 0, PREFIX_CODE.length())) {
+        if (text.startsWith(PREFIX_CODE)) {
             return codesSet.getCode(text.substring(PREFIX_CODE.length()));
-        } else if (text.regionMatches(true, 0, PREFIX_HEX, 0, PREFIX_HEX.length())) {
+        } else if (text.startsWith(PREFIX_HEX)) {
             return Integer.parseInt(text.substring(PREFIX_HEX.length()), 16);
         } else {
             return Integer.parseInt(text);
@@ -359,8 +359,7 @@ public class KeySpecParser {
             sb = null;
             for (int pos = 0; pos < size; pos++) {
                 final char c = text.charAt(pos);
-                if (text.regionMatches(true, pos, PREFIX_TEXT, 0, prefixLen)
-                        && textsSet != null) {
+                if (text.startsWith(PREFIX_TEXT, pos) && textsSet != null) {
                     if (sb == null) {
                         sb = new StringBuilder(text.substring(0, pos));
                     }
@@ -392,8 +391,7 @@ public class KeySpecParser {
         for (int pos = start; pos < size; pos++) {
             final char c = text.charAt(pos);
             // Label name should be consisted of [a-zA-Z_0-9].
-            if ((c >= 'a' && c <= 'z') || c == '_' || (c >= '0' && c <= '9')
-                    || (c >= 'A' && c <= 'Z')) {
+            if ((c >= 'a' && c <= 'z') || c == '_' || (c >= '0' && c <= '9')) {
                 continue;
             }
             return pos;
@@ -449,7 +447,7 @@ public class KeySpecParser {
         int value = defaultValue;
         for (int i = 0; i < moreKeys.length; i++) {
             final String moreKeySpec = moreKeys[i];
-            if (moreKeySpec == null || !moreKeySpec.regionMatches(true, 0, key, 0, keyLen)) {
+            if (moreKeySpec == null || !moreKeySpec.startsWith(key)) {
                 continue;
             }
             moreKeys[i] = null;
@@ -473,7 +471,7 @@ public class KeySpecParser {
         boolean value = false;
         for (int i = 0; i < moreKeys.length; i++) {
             final String moreKeySpec = moreKeys[i];
-            if (moreKeySpec == null || !moreKeySpec.equalsIgnoreCase(key)) {
+            if (moreKeySpec == null || !moreKeySpec.equals(key)) {
                 continue;
             }
             moreKeys[i] = null;
