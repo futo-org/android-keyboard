@@ -496,7 +496,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         resetContactsDictionary(oldContactsDictionary);
 
         mUserHistoryDictionary = new UserHistoryDictionary(
-                this, localeStr, Suggest.DIC_USER_HISTORY);
+                this, localeStr, Suggest.DIC_USER_HISTORY, mPrefs);
         mSuggest.setUserHistoryDictionary(mUserHistoryDictionary);
     }
 
@@ -747,7 +747,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null) inputView.closing();
-        if (mUserHistoryDictionary != null) mUserHistoryDictionary.flushPendingWrites();
     }
 
     private void onFinishInputViewInternal(boolean finishingInput) {

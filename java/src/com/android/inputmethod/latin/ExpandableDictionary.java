@@ -21,6 +21,7 @@ import android.content.Context;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.UserHistoryForgettingCurveUtils.ForgettingCurveParams;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -80,28 +81,70 @@ public class ExpandableDictionary extends Dictionary {
         }
     }
 
-    private static class NextWord {
-        public final Node mWord;
-        private int mFrequency;
+    protected interface NextWord {
+        public Node getWordNode();
+        public int getFrequency();
+        /** FcValue is a bit set */
+        public int getFcValue();
+        public int notifyTypedAgainAndGetFrequency();
+    }
 
-        public NextWord(Node word, int frequency) {
+    private static class NextStaticWord implements NextWord {
+        public final Node mWord;
+        private final int mFrequency;
+        public NextStaticWord(Node word, int frequency) {
             mWord = word;
             mFrequency = frequency;
         }
 
+        @Override
+        public Node getWordNode() {
+            return mWord;
+        }
+
+        @Override
         public int getFrequency() {
             return mFrequency;
         }
 
-        public int setFrequency(int freq) {
-            mFrequency = freq;
+        @Override
+        public int getFcValue() {
             return mFrequency;
         }
 
-        public int addFrequency(int add) {
-            mFrequency += add;
-            if (mFrequency > BIGRAM_MAX_FREQUENCY) mFrequency = BIGRAM_MAX_FREQUENCY;
+        @Override
+        public int notifyTypedAgainAndGetFrequency() {
             return mFrequency;
+        }
+    }
+
+    private static class NextHistoryWord implements NextWord {
+        public final Node mWord;
+        public final ForgettingCurveParams mFcp;
+
+        public NextHistoryWord(Node word, ForgettingCurveParams fcp) {
+            mWord = word;
+            mFcp = fcp;
+        }
+
+        @Override
+        public Node getWordNode() {
+            return mWord;
+        }
+
+        @Override
+        public int getFrequency() {
+            return mFcp.getFrequency();
+        }
+
+        @Override
+        public int getFcValue() {
+            return mFcp.getFc();
+        }
+
+        @Override
+        public int notifyTypedAgainAndGetFrequency() {
+            return mFcp.notifyTypedAgainAndGetFrequency();
         }
     }
 
@@ -183,7 +226,7 @@ public class ExpandableDictionary extends Dictionary {
             childNode.mShortcutOnly = isShortcutOnly;
             children.add(childNode);
         }
-        if (wordLength == depth + 1) {
+        if (wordLength == depth + 1 && shortcutTarget != null) {
             // Terminate this word
             childNode.mTerminal = true;
             if (isShortcutOnly) {
@@ -221,7 +264,7 @@ public class ExpandableDictionary extends Dictionary {
 
     protected final void getWordsInner(final WordComposer codes,
             final CharSequence prevWordForBigrams, final WordCallback callback,
-            @SuppressWarnings("unused") final ProximityInfo proximityInfo) {
+            final ProximityInfo proximityInfo) {
         mInputLength = codes.size();
         if (mCodes.length < mInputLength) mCodes = new int[mInputLength][];
         final int[] xCoordinates = codes.getXCoordinates();
@@ -265,13 +308,13 @@ public class ExpandableDictionary extends Dictionary {
         // Refer to addOrSetBigram() about word1.toLowerCase()
         final Node firstWord = searchWord(mRoots, word1.toLowerCase(), 0, null);
         final Node secondWord = searchWord(mRoots, word2, 0, null);
-        LinkedList<NextWord> bigram = firstWord.mNGrams;
+        LinkedList<NextWord> bigrams = firstWord.mNGrams;
         NextWord bigramNode = null;
-        if (bigram == null || bigram.size() == 0) {
+        if (bigrams == null || bigrams.size() == 0) {
             return false;
         } else {
-            for (NextWord nw : bigram) {
-                if (nw.mWord == secondWord) {
+            for (NextWord nw : bigrams) {
+                if (nw.getWordNode() == secondWord) {
                     bigramNode = nw;
                     break;
                 }
@@ -280,7 +323,7 @@ public class ExpandableDictionary extends Dictionary {
         if (bigramNode == null) {
             return false;
         }
-        return bigram.remove(bigramNode);
+        return bigrams.remove(bigramNode);
     }
 
     /**
@@ -290,6 +333,23 @@ public class ExpandableDictionary extends Dictionary {
         // Case-sensitive search
         final Node node = searchNode(mRoots, word, 0, word.length());
         return (node == null) ? -1 : node.mFrequency;
+    }
+
+    protected NextWord getBigramWord(String word1, String word2) {
+        // Refer to addOrSetBigram() about word1.toLowerCase()
+        final Node firstWord = searchWord(mRoots, word1.toLowerCase(), 0, null);
+        final Node secondWord = searchWord(mRoots, word2, 0, null);
+        LinkedList<NextWord> bigrams = firstWord.mNGrams;
+        if (bigrams == null || bigrams.size() == 0) {
+            return null;
+        } else {
+            for (NextWord nw : bigrams) {
+                if (nw.getWordNode() == secondWord) {
+                    return nw;
+                }
+            }
+        }
+        return null;
     }
 
     private static int computeSkippedWordFinalFreq(int freq, int snr, int inputLength) {
@@ -445,43 +505,45 @@ public class ExpandableDictionary extends Dictionary {
         }
     }
 
-    protected int setBigram(String word1, String word2, int frequency) {
-        return addOrSetBigram(word1, word2, frequency, false);
+    public int setBigramAndGetFrequency(String word1, String word2, int frequency) {
+        return setBigramAndGetFrequency(word1, word2, frequency, null /* unused */);
     }
 
-    protected int addBigram(String word1, String word2, int frequency) {
-        return addOrSetBigram(word1, word2, frequency, true);
+    public int setBigramAndGetFrequency(String word1, String word2, ForgettingCurveParams fcp) {
+        return setBigramAndGetFrequency(word1, word2, 0 /* unused */, fcp);
     }
 
     /**
      * Adds bigrams to the in-memory trie structure that is being used to retrieve any word
      * @param frequency frequency for this bigram
      * @param addFrequency if true, it adds to current frequency, else it overwrites the old value
-     * @return returns the final frequency
+     * @return returns the final bigram frequency
      */
-    private int addOrSetBigram(String word1, String word2, int frequency, boolean addFrequency) {
+    private int setBigramAndGetFrequency(
+            String word1, String word2, int frequency, ForgettingCurveParams fcp) {
         // We don't want results to be different according to case of the looked up left hand side
         // word. We do want however to return the correct case for the right hand side.
         // So we want to squash the case of the left hand side, and preserve that of the right
         // hand side word.
         Node firstWord = searchWord(mRoots, word1.toLowerCase(), 0, null);
         Node secondWord = searchWord(mRoots, word2, 0, null);
-        LinkedList<NextWord> bigram = firstWord.mNGrams;
-        if (bigram == null || bigram.size() == 0) {
+        LinkedList<NextWord> bigrams = firstWord.mNGrams;
+        if (bigrams == null || bigrams.size() == 0) {
             firstWord.mNGrams = new LinkedList<NextWord>();
-            bigram = firstWord.mNGrams;
+            bigrams = firstWord.mNGrams;
         } else {
-            for (NextWord nw : bigram) {
-                if (nw.mWord == secondWord) {
-                    if (addFrequency) {
-                        return nw.addFrequency(frequency);
-                    } else {
-                        return nw.setFrequency(frequency);
-                    }
+            for (NextWord nw : bigrams) {
+                if (nw.getWordNode() == secondWord) {
+                    return nw.notifyTypedAgainAndGetFrequency();
                 }
             }
         }
-        firstWord.mNGrams.add(new NextWord(secondWord, frequency));
+        if (fcp != null) {
+            // history
+            firstWord.mNGrams.add(new NextHistoryWord(secondWord, fcp));
+        } else {
+            firstWord.mNGrams.add(new NextStaticWord(secondWord, frequency));
+        }
         return frequency;
     }
 
@@ -580,7 +642,7 @@ public class ExpandableDictionary extends Dictionary {
         Node node;
         int freq;
         for (NextWord nextWord : terminalNodes) {
-            node = nextWord.mWord;
+            node = nextWord.getWordNode();
             freq = nextWord.getFrequency();
             int index = BinaryDictionary.MAX_WORD_LENGTH;
             do {
@@ -589,8 +651,10 @@ public class ExpandableDictionary extends Dictionary {
                 node = node.mParent;
             } while (node != null);
 
-            callback.addWord(mLookedUpString, index, BinaryDictionary.MAX_WORD_LENGTH - index,
-                    freq, mDicTypeId, Dictionary.BIGRAM);
+            if (freq >= 0) {
+                callback.addWord(mLookedUpString, index, BinaryDictionary.MAX_WORD_LENGTH - index,
+                        freq, mDicTypeId, Dictionary.BIGRAM);
+            }
         }
     }
 
