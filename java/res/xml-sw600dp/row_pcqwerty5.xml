@@ -26,44 +26,19 @@
     >
         <switch>
             <case
-                latin:keyboardLayoutSetElement="symbols|symbolsShifted"
-            >
-                <Spacer
-                    latin:keyXPos="15.0%p"
-                    latin:keyWidth="10.5%p" />
-            </case>
-            <case
-                latin:mode="url"
-            >
-                <Key
-                    latin:keyStyle="comKeyStyle"
-                    latin:keyXPos="15.0%p"
-                    latin:keyWidth="10.5%p" />
-            </case>
-            <default>
-                <include
-                    latin:keyboardLayout="@xml/keys_f1f2"
-                    latin:keyXPos="18.5%p" />
-            </default>
-        </switch>
-        <switch>
-            <case
                 latin:languageSwitchKeyEnabled="true"
             >
                 <Key
-                    latin:keyStyle="languageSwitchKeyStyle" />
-                <Key
-                    latin:keyStyle="spaceKeyStyle"
-                    latin:keyWidth="42.0%p" />
+                    latin:keyStyle="languageSwitchKeyStyle"
+                    latin:keyWidth="9.0%p"
+                    latin:backgroundType="functional" />
             </case>
-            <!-- languageSwitchKeyEnabled="false" -->
-            <default>
-                <Key
-                    latin:keyStyle="spaceKeyStyle"
-                    latin:keyWidth="49.0%p" />
-            </default>
         </switch>
-        <include
+        <Key
+            latin:keyStyle="spaceKeyStyle"
+            latin:keyXPos="25.5%p"
+            latin:keyWidth="49.0%p" />
+         <include
             latin:keyXPos="-9.0%p"
             latin:keyWidth="fillRight"
             latin:keyboardLayout="@xml/key_shortcut" />
