@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -25,6 +26,8 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.AsyncTask;
 import android.provider.BaseColumns;
 import android.util.Log;
+
+import com.android.inputmethod.latin.UserHistoryForgettingCurveUtils.ForgettingCurveParams;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,9 +42,6 @@ public class UserHistoryDictionary extends ExpandableDictionary {
 
     /** Any pair being typed or picked */
     private static final int FREQUENCY_FOR_TYPED = 2;
-
-    /** Maximum frequency for all pairs */
-    private static final int FREQUENCY_MAX = 127;
 
     /** Maximum number of pairs. Pruning will start when databases goes above this number. */
     private static int sMaxHistoryBigrams = 10000;
@@ -81,6 +81,7 @@ public class UserHistoryDictionary extends ExpandableDictionary {
     private HashSet<Bigram> mPendingWrites = new HashSet<Bigram>();
     private final Object mPendingWritesLock = new Object();
     private static volatile boolean sUpdatingDB = false;
+    private final SharedPreferences mPrefs;
 
     private final static HashMap<String, String> sDictProjectionMap;
 
@@ -101,12 +102,10 @@ public class UserHistoryDictionary extends ExpandableDictionary {
     private static class Bigram {
         public final String mWord1;
         public final String mWord2;
-        public final int mFrequency;
 
-        Bigram(String word1, String word2, int frequency) {
+        Bigram(String word1, String word2) {
             this.mWord1 = word1;
             this.mWord2 = word2;
-            this.mFrequency = frequency;
         }
 
         @Override
@@ -137,7 +136,8 @@ public class UserHistoryDictionary extends ExpandableDictionary {
         sDeleteHistoryBigrams = deleteHistoryBigram;
     }
 
-    public UserHistoryDictionary(final Context context, final String locale, final int dicTypeId) {
+    public UserHistoryDictionary(final Context context, final String locale, final int dicTypeId,
+            SharedPreferences sp) {
         super(context, dicTypeId);
         mLocale = locale;
         if (sOpenHelper == null) {
@@ -146,11 +146,13 @@ public class UserHistoryDictionary extends ExpandableDictionary {
         if (mLocale != null && mLocale.length() > 1) {
             loadDictionary();
         }
+        mPrefs = sp;
     }
 
     @Override
     public void close() {
         flushPendingWrites();
+        SettingsValues.setLastUserHistoryWriteTime(mPrefs, mLocale);
         // Don't close the database as locale changes will require it to be reopened anyway
         // Also, the database is written to somewhat frequently, so it needs to be kept alive
         // throughout the life of the process.
@@ -176,25 +178,20 @@ public class UserHistoryDictionary extends ExpandableDictionary {
      * The second word may not be null (a NullPointerException would be thrown).
      */
     public int addToUserHistory(final String word1, String word2) {
-        super.addWord(word2, null /* shortcut */, FREQUENCY_FOR_TYPED);
+        super.addWord(word2, null /* the "shortcut" parameter is null */, FREQUENCY_FOR_TYPED);
         // Do not insert a word as a bigram of itself
         if (word2.equals(word1)) {
             return 0;
         }
-
-        int freq;
+        final int freq;
         if (null == word1) {
             freq = FREQUENCY_FOR_TYPED;
         } else {
-            freq = super.addBigram(word1, word2, FREQUENCY_FOR_TYPED);
+            freq = super.setBigramAndGetFrequency(word1, word2, new ForgettingCurveParams());
         }
-        if (freq > FREQUENCY_MAX) freq = FREQUENCY_MAX;
         synchronized (mPendingWritesLock) {
-            if (freq == FREQUENCY_FOR_TYPED || mPendingWrites.isEmpty()) {
-                mPendingWrites.add(new Bigram(word1, word2, freq));
-            } else {
-                Bigram bi = new Bigram(word1, word2, freq);
-                mPendingWrites.remove(bi);
+            final Bigram bi = new Bigram(word1, word2);
+            if (!mPendingWrites.contains(bi)) {
                 mPendingWrites.add(bi);
             }
         }
@@ -203,7 +200,7 @@ public class UserHistoryDictionary extends ExpandableDictionary {
     }
 
     public boolean cancelAddingUserHistory(String word1, String word2) {
-        final Bigram bi = new Bigram(word1, word2, 0);
+        final Bigram bi = new Bigram(word1, word2);
         if (mPendingWrites.contains(bi)) {
             mPendingWrites.remove(bi);
             return super.removeBigram(word1, word2);
@@ -214,12 +211,12 @@ public class UserHistoryDictionary extends ExpandableDictionary {
     /**
      * Schedules a background thread to write any pending words to the database.
      */
-    public void flushPendingWrites() {
+    private void flushPendingWrites() {
         synchronized (mPendingWritesLock) {
             // Nothing pending? Return
             if (mPendingWrites.isEmpty()) return;
             // Create a background thread to write the pending entries
-            new UpdateDbTask(sOpenHelper, mPendingWrites, mLocale).execute();
+            new UpdateDbTask(sOpenHelper, mPendingWrites, mLocale, this).execute();
             // Create a new map for writing new entries into while the old one is written to db
             mPendingWrites = new HashSet<Bigram>();
         }
@@ -240,25 +237,30 @@ public class UserHistoryDictionary extends ExpandableDictionary {
 
     @Override
     public void loadDictionaryAsync() {
+        final long last = SettingsValues.getLastUserHistoryWriteTime(mPrefs, mLocale);
+        final long now = System.currentTimeMillis();
         // Load the words that correspond to the current input locale
         final Cursor cursor = query(MAIN_COLUMN_LOCALE + "=?", new String[] { mLocale });
         if (null == cursor) return;
         try {
             if (cursor.moveToFirst()) {
-                int word1Index = cursor.getColumnIndex(MAIN_COLUMN_WORD1);
-                int word2Index = cursor.getColumnIndex(MAIN_COLUMN_WORD2);
-                int frequencyIndex = cursor.getColumnIndex(FREQ_COLUMN_FREQUENCY);
+                final int word1Index = cursor.getColumnIndex(MAIN_COLUMN_WORD1);
+                final int word2Index = cursor.getColumnIndex(MAIN_COLUMN_WORD2);
+                final int frequencyIndex = cursor.getColumnIndex(FREQ_COLUMN_FREQUENCY);
                 while (!cursor.isAfterLast()) {
-                    String word1 = cursor.getString(word1Index);
-                    String word2 = cursor.getString(word2Index);
-                    int frequency = cursor.getInt(frequencyIndex);
+                    final String word1 = cursor.getString(word1Index);
+                    final String word2 = cursor.getString(word2Index);
+                    final int frequency = cursor.getInt(frequencyIndex);
                     // Safeguard against adding really long words. Stack may overflow due
                     // to recursive lookup
                     if (null == word1) {
                         super.addWord(word2, null /* shortcut */, frequency);
                     } else if (word1.length() < BinaryDictionary.MAX_WORD_LENGTH
                             && word2.length() < BinaryDictionary.MAX_WORD_LENGTH) {
-                        super.setBigram(word1, word2, frequency);
+                        super.setBigramAndGetFrequency(
+                                word1, word2, new ForgettingCurveParams(frequency, now, last));
+                        // TODO: optimize
+                        mPendingWrites.add(new Bigram(word1, word2));
                     }
                     cursor.moveToNext();
                 }
@@ -340,12 +342,14 @@ public class UserHistoryDictionary extends ExpandableDictionary {
         private final HashSet<Bigram> mMap;
         private final DatabaseHelper mDbHelper;
         private final String mLocale;
+        private final UserHistoryDictionary mUserHistoryDictionary;
 
         public UpdateDbTask(DatabaseHelper openHelper, HashSet<Bigram> pendingWrites,
-                String locale) {
+                String locale, UserHistoryDictionary dict) {
             mMap = pendingWrites;
             mLocale = locale;
             mDbHelper = openHelper;
+            mUserHistoryDictionary = dict;
         }
 
         /** Prune any old data if the database is getting too big. */
@@ -357,7 +361,8 @@ public class UserHistoryDictionary extends ExpandableDictionary {
                 int totalRowCount = c.getCount();
                 // prune out old data if we have too much data
                 if (totalRowCount > sMaxHistoryBigrams) {
-                    int numDeleteRows = (totalRowCount - sMaxHistoryBigrams) + sDeleteHistoryBigrams;
+                    int numDeleteRows = (totalRowCount - sMaxHistoryBigrams)
+                            + sDeleteHistoryBigrams;
                     int pairIdColumnId = c.getColumnIndex(FREQ_COLUMN_PAIR_ID);
                     c.moveToFirst();
                     int count = 0;
@@ -397,43 +402,70 @@ public class UserHistoryDictionary extends ExpandableDictionary {
             }
             db.execSQL("PRAGMA foreign_keys = ON;");
             // Write all the entries to the db
-            Iterator<Bigram> iterator = mMap.iterator();
+            final Iterator<Bigram> iterator = mMap.iterator();
             while (iterator.hasNext()) {
                 // TODO: this process of making a text search for each pair each time
                 // is terribly inefficient. Optimize this.
-                Bigram bi = iterator.next();
+                final Bigram bi = iterator.next();
 
                 // find pair id
-                final Cursor c;
-                if (null != bi.mWord1) {
-                    c = db.query(MAIN_TABLE_NAME, new String[] { MAIN_COLUMN_ID },
-                            MAIN_COLUMN_WORD1 + "=? AND " + MAIN_COLUMN_WORD2 + "=? AND "
-                            + MAIN_COLUMN_LOCALE + "=?",
-                            new String[] { bi.mWord1, bi.mWord2, mLocale }, null, null, null);
-                } else {
-                    c = db.query(MAIN_TABLE_NAME, new String[] { MAIN_COLUMN_ID },
-                            MAIN_COLUMN_WORD1 + " IS NULL AND " + MAIN_COLUMN_WORD2 + "=? AND "
-                            + MAIN_COLUMN_LOCALE + "=?",
-                            new String[] { bi.mWord2, mLocale }, null, null, null);
-                }
+                Cursor c = null;
+                try {
+                    if (null != bi.mWord1) {
+                        c = db.query(MAIN_TABLE_NAME, new String[] { MAIN_COLUMN_ID },
+                                MAIN_COLUMN_WORD1 + "=? AND " + MAIN_COLUMN_WORD2 + "=? AND "
+                                        + MAIN_COLUMN_LOCALE + "=?",
+                                        new String[] { bi.mWord1, bi.mWord2, mLocale }, null, null,
+                                        null);
+                    } else {
+                        c = db.query(MAIN_TABLE_NAME, new String[] { MAIN_COLUMN_ID },
+                                MAIN_COLUMN_WORD1 + " IS NULL AND " + MAIN_COLUMN_WORD2 + "=? AND "
+                                        + MAIN_COLUMN_LOCALE + "=?",
+                                        new String[] { bi.mWord2, mLocale }, null, null, null);
+                    }
 
-                int pairId;
-                if (c.moveToFirst()) {
-                    // existing pair
-                    pairId = c.getInt(c.getColumnIndex(MAIN_COLUMN_ID));
-                    db.delete(FREQ_TABLE_NAME, FREQ_COLUMN_PAIR_ID + "=?",
-                            new String[] { Integer.toString(pairId) });
-                } else {
-                    // new pair
-                    Long pairIdLong = db.insert(MAIN_TABLE_NAME, null,
-                            getContentValues(bi.mWord1, bi.mWord2, mLocale));
-                    pairId = pairIdLong.intValue();
+                    final int pairId;
+                    if (c.moveToFirst()) {
+                        // existing pair
+                        pairId = c.getInt(c.getColumnIndex(MAIN_COLUMN_ID));
+                        db.delete(FREQ_TABLE_NAME, FREQ_COLUMN_PAIR_ID + "=?",
+                                new String[] { Integer.toString(pairId) });
+                    } else {
+                        // new pair
+                        Long pairIdLong = db.insert(MAIN_TABLE_NAME, null,
+                                getContentValues(bi.mWord1, bi.mWord2, mLocale));
+                        pairId = pairIdLong.intValue();
+                    }
+                    // insert new frequency
+                    final int freq;
+                    if (bi.mWord1 == null) {
+                        freq = FREQUENCY_FOR_TYPED;
+                    } else {
+                        final NextWord nw = mUserHistoryDictionary.getBigramWord(
+                                bi.mWord1, bi.mWord2);
+                        if (nw != null) {
+                            final int tempFreq = nw.getFcValue();
+                            // TODO: Check whether the word is valid or not
+                            if (UserHistoryForgettingCurveUtils.needsToSave(
+                                    (byte)tempFreq, false)) {
+                                freq = tempFreq;
+                            } else {
+                                freq = -1;
+                            }
+                        } else {
+                            freq = -1;
+                        }
+                    }
+                    if (freq > 0) {
+                        db.insert(FREQ_TABLE_NAME, null, getFrequencyContentValues(pairId, freq));
+                    }
+                } finally {
+                    if (c != null) {
+                        c.close();
+                    }
                 }
-                c.close();
-
-                // insert new frequency
-                db.insert(FREQ_TABLE_NAME, null, getFrequencyContentValues(pairId, bi.mFrequency));
             }
+
             checkPruneData(db);
             sUpdatingDB = false;
 

@@ -16,13 +16,77 @@
 
 package com.android.inputmethod.latin;
 
+import android.text.format.DateUtils;
+import android.util.Log;
+
 public class UserHistoryForgettingCurveUtils {
+    private static final String TAG = UserHistoryForgettingCurveUtils.class.getSimpleName();
+    private static final boolean DEBUG = false;
     private static final int FC_FREQ_MAX = 127;
     /* package */ static final int COUNT_MAX = 3;
     private static final int FC_LEVEL_MAX = 3;
     /* package */ static final int ELAPSED_TIME_MAX = 15;
     private static final int ELAPSED_TIME_INTERVAL_HOURS = 6;
+    private static final long ELAPSED_TIME_INTERVAL_MILLIS = ELAPSED_TIME_INTERVAL_HOURS
+            * DateUtils.HOUR_IN_MILLIS;
     private static final int HALF_LIFE_HOURS = 48;
+
+    private UserHistoryForgettingCurveUtils() {
+        // This utility class is not publicly instantiable.
+    }
+
+    public static class ForgettingCurveParams {
+        private byte mFc;
+        long mLastTouchedTime = 0;
+
+        private void updateLastTouchedTime() {
+            mLastTouchedTime = System.currentTimeMillis();
+        }
+
+        public ForgettingCurveParams() {
+            // TODO: Check whether this word is valid or not
+            this(System.currentTimeMillis());
+        }
+
+        private ForgettingCurveParams(long now) {
+            this((int)pushCount((byte)0, false), now, now);
+        }
+
+        public ForgettingCurveParams(int fc, long now, long last) {
+            mFc = (byte)fc;
+            mLastTouchedTime = last;
+            updateElapsedTime(now);
+        }
+
+        public byte getFc() {
+            updateElapsedTime(System.currentTimeMillis());
+            return mFc;
+        }
+
+        public int getFrequency() {
+            updateElapsedTime(System.currentTimeMillis());
+            return UserHistoryForgettingCurveUtils.fcToFreq(mFc);
+        }
+
+        public int notifyTypedAgainAndGetFrequency() {
+            updateLastTouchedTime();
+            // TODO: Check whether this word is valid or not
+            mFc = pushCount(mFc, false);
+            return UserHistoryForgettingCurveUtils.fcToFreq(mFc);
+        }
+
+        private void updateElapsedTime(long now) {
+            final int elapsedTimeCount =
+                    (int)((now - mLastTouchedTime) / ELAPSED_TIME_INTERVAL_MILLIS);
+            if (elapsedTimeCount <= 0) {
+                return;
+            }
+            for (int i = 0; i < elapsedTimeCount; ++i) {
+                mLastTouchedTime += ELAPSED_TIME_INTERVAL_MILLIS;
+                mFc = pushElapsedTime(mFc);
+            }
+        }
+    }
 
     /* package */ static  int fcToElapsedTime(byte fc) {
         return fc & 0x0F;
@@ -38,8 +102,8 @@ public class UserHistoryForgettingCurveUtils {
 
     private static int calcFreq(int elapsedTime, int count, int level) {
         if (level <= 0) {
-            // Reserved words, just return 0
-            return 0;
+            // Reserved words, just return -1
+            return -1;
         }
         if (count == COUNT_MAX) {
             // Temporary promote because it's frequently typed recently
@@ -87,10 +151,24 @@ public class UserHistoryForgettingCurveUtils {
             // Upgrade level
             ++level;
             count = 0;
+            if (DEBUG) {
+                Log.d(TAG, "Upgrade level.");
+            }
         } else {
             ++count;
         }
         return calcFc(0, count, level);
+    }
+
+    // TODO: isValid should be false for a word whose frequency is 0,
+    // or that is not in the dictionary.
+    public static boolean needsToSave(byte fc, boolean isValid) {
+        int level = fcToLevel(fc);
+        if (isValid && level == 0) {
+            return false;
+        }
+        final int elapsedTime = fcToElapsedTime(fc);
+        return (elapsedTime < ELAPSED_TIME_MAX - 1 || level > 0);
     }
 
     private static class MathUtils {
