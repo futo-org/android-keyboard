@@ -57,7 +57,8 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
     // Chording input in shift locked.
     public void testChordingShiftLocked() {
         // Long press shift key, enter alphabet shift locked.
-        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED);
+        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED,
+                ALPHABET_SHIFT_LOCKED);
 
         // Press shift key and hold, enter into choring shift state.
         pressKey(CODE_SHIFT, ALPHABET_SHIFT_LOCK_SHIFTED);
@@ -115,7 +116,8 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         // Load keyboard
         loadKeyboard(ALPHABET_UNSHIFTED);
         // Long press shift key, enter alphabet shift locked.
-        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED);
+        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED,
+                ALPHABET_SHIFT_LOCKED);
         // Press/release "?123" key, enter into symbols.
         pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
         // Press "ABC" key, enter into chording alphabet shift locked.
@@ -132,7 +134,8 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         // Load keyboard
         loadKeyboard(ALPHABET_UNSHIFTED);
         // Long press shift key, enter alphabet shift locked.
-        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED);
+        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED,
+                ALPHABET_SHIFT_LOCKED);
         // Press/release "?123" key, enter into symbols.
         pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
         // Press "=\<" key, enter into symbols shifted chording state.
@@ -190,7 +193,8 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         // Load keyboard
         loadKeyboard(ALPHABET_UNSHIFTED);
         // Long press shift key, enter alphabet shift locked.
-        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED);
+        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED,
+                ALPHABET_SHIFT_LOCKED);
         // Press/release "?123" key, enter into symbols.
         pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
         // Press/release "=\<" key, enter symbols shifted.
@@ -209,7 +213,8 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         // Load keyboard
         loadKeyboard(ALPHABET_UNSHIFTED);
         // Long press shift key, enter alphabet shift locked.
-        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED);
+        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED,
+                ALPHABET_SHIFT_LOCKED);
         // Press/release "?123" key, enter into symbols.
         pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
         // Press/release "=\<" key, enter symbols shifted.
