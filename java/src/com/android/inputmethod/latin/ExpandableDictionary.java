@@ -84,8 +84,7 @@ public class ExpandableDictionary extends Dictionary {
     protected interface NextWord {
         public Node getWordNode();
         public int getFrequency();
-        /** FcValue is a bit set */
-        public int getFcValue();
+        public ForgettingCurveParams getFcParams();
         public int notifyTypedAgainAndGetFrequency();
     }
 
@@ -108,8 +107,8 @@ public class ExpandableDictionary extends Dictionary {
         }
 
         @Override
-        public int getFcValue() {
-            return mFrequency;
+        public ForgettingCurveParams getFcParams() {
+            return null;
         }
 
         @Override
@@ -138,8 +137,8 @@ public class ExpandableDictionary extends Dictionary {
         }
 
         @Override
-        public int getFcValue() {
-            return mFcp.getFc();
+        public ForgettingCurveParams getFcParams() {
+            return mFcp;
         }
 
         @Override

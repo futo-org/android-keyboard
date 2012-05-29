@@ -31,6 +31,7 @@ public abstract class Dictionary {
     public static final int UNIGRAM = 0;
     public static final int BIGRAM = 1;
 
+    public static final int NOT_A_PROBABILITY = -1;
     /**
      * Interface to be implemented by classes requesting words to be fetched from the dictionary.
      * @see #getWords(WordComposer, CharSequence, WordCallback, ProximityInfo)
@@ -83,6 +84,10 @@ public abstract class Dictionary {
      * @return true if the word exists, false otherwise
      */
     abstract public boolean isValidWord(CharSequence word);
+
+    public int getFrequency(CharSequence word) {
+        return NOT_A_PROBABILITY;
+    }
 
     /**
      * Compares the contents of the character array with the typed word and returns true if they
