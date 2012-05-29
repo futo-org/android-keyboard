@@ -66,7 +66,7 @@ class BinaryFormat {
     static int getTerminalPosition(const uint8_t* const root, const int32_t* const inWord,
             const int length);
     static int getWordAtAddress(const uint8_t* const root, const int address, const int maxDepth,
-            uint16_t* outWord);
+            uint16_t* outWord, int* outUnigramFrequency);
     static int computeFrequencyForBigram(const int unigramFreq, const int bigramFreq);
     static int getProbability(const int position, const std::map<int, int> *bigramMap,
             const uint8_t *bigramFilter, const int unigramFreq);
@@ -391,10 +391,11 @@ inline int BinaryFormat::getTerminalPosition(const uint8_t* const root,
  * address: the byte position of the last chargroup of the word we are searching for (this is
  *   what is stored as the "bigram address" in each bigram)
  * outword: an array to write the found word, with MAX_WORD_LENGTH size.
+ * outUnigramFrequency: a pointer to an int to write the frequency into.
  * Return value : the length of the word, of 0 if the word was not found.
  */
 inline int BinaryFormat::getWordAtAddress(const uint8_t* const root, const int address,
-        const int maxDepth, uint16_t* outWord) {
+        const int maxDepth, uint16_t* outWord, int* outUnigramFrequency) {
     int pos = 0;
     int wordPos = 0;
 
@@ -427,6 +428,7 @@ inline int BinaryFormat::getWordAtAddress(const uint8_t* const root, const int a
                         nextChar = getCharCodeAndForwardPointer(root, &pos);
                     }
                 }
+                *outUnigramFrequency = readFrequencyWithoutMovingPointer(root, pos);
                 return ++wordPos;
             }
             // We need to skip past this char group, so skip any remaining chars after the

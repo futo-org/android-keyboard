@@ -117,14 +117,17 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
     do {
         bigramFlags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
         uint16_t bigramBuffer[MAX_WORD_LENGTH];
+        int unigramFreq;
         const int bigramPos = BinaryFormat::getAttributeAddressAndForwardPointer(root, bigramFlags,
                 &pos);
         const int length = BinaryFormat::getWordAtAddress(root, bigramPos, MAX_WORD_LENGTH,
-                bigramBuffer);
+                bigramBuffer, &unigramFreq);
 
         // codesSize == 0 means we are trying to find bigram predictions.
         if (codesSize < 1 || checkFirstCharacter(bigramBuffer)) {
-            const int frequency = UnigramDictionary::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
+            const int bigramFreq = UnigramDictionary::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
+            const int frequency =
+                    BinaryFormat::computeFrequencyForBigram(unigramFreq, bigramFreq);
             if (addWordBigram(bigramBuffer, length, frequency)) {
                 ++bigramCount;
             }
