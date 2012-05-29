@@ -148,7 +148,7 @@ public class UserHistoryDictionary extends ExpandableDictionary {
      * context, as in beginning of a sentence for example.
      * The second word may not be null (a NullPointerException would be thrown).
      */
-    public int addToUserHistory(final String word1, String word2) {
+    public int addToUserHistory(final String word1, String word2, boolean isValid) {
         super.addWord(word2, null /* the "shortcut" parameter is null */, FREQUENCY_FOR_TYPED);
         // Do not insert a word as a bigram of itself
         if (word2.equals(word1)) {
@@ -158,7 +158,7 @@ public class UserHistoryDictionary extends ExpandableDictionary {
         if (null == word1) {
             freq = FREQUENCY_FOR_TYPED;
         } else {
-            freq = super.setBigramAndGetFrequency(word1, word2, new ForgettingCurveParams());
+            freq = super.setBigramAndGetFrequency(word1, word2, new ForgettingCurveParams(isValid));
         }
         synchronized (mPendingWritesLock) {
             mBigramList.addBigram(word1, word2);
@@ -416,10 +416,11 @@ public class UserHistoryDictionary extends ExpandableDictionary {
                         } else {
                             final NextWord nw = mUserHistoryDictionary.getBigramWord(word1, word2);
                             if (nw != null) {
-                                final int tempFreq = nw.getFcValue();
-                                // TODO: Check whether the word is valid or not
+                                final ForgettingCurveParams fcp = nw.getFcParams();
+                                final int tempFreq = fcp.getFc();
+                                final boolean isValid = fcp.isValid();
                                 if (UserHistoryForgettingCurveUtils.needsToSave(
-                                        (byte)tempFreq, false, addLevel0Bigram)) {
+                                        (byte)tempFreq, isValid, addLevel0Bigram)) {
                                     freq = tempFreq;
                                 } else {
                                     freq = -1;

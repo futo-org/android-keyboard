@@ -201,10 +201,14 @@ public class BinaryDictionary extends Dictionary {
 
     @Override
     public boolean isValidWord(CharSequence word) {
-        if (word == null) return false;
+        return getFrequency(word) >= 0;
+    }
+
+    @Override
+    public int getFrequency(CharSequence word) {
+        if (word == null) return -1;
         int[] chars = StringUtils.toCodePointArray(word.toString());
-        final int freq = getFrequencyNative(mNativeDict, chars, chars.length);
-        return freq >= 0;
+        return getFrequencyNative(mNativeDict, chars, chars.length);
     }
 
     // TODO: Add a batch process version (isValidBigramMultiple?) to avoid excessive numbers of jni
