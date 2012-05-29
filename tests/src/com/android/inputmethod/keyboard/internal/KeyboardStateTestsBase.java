@@ -120,8 +120,12 @@ public class KeyboardStateTestsBase extends AndroidTestCase
         releaseKey(code, afterRelease);
     }
 
-    public void secondPressAndReleaseKey(int code, int afterPress, int afterRelease) {
+    public void secondPressKey(int code, int afterPress) {
         pressKeyWithoutTimerExpire(code, true, afterPress);
+    }
+
+    public void secondPressAndReleaseKey(int code, int afterPress, int afterRelease) {
+        secondPressKey(code, afterPress);
         releaseKey(code, afterRelease);
     }
 }
