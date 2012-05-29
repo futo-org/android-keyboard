@@ -50,7 +50,7 @@ public class AutoCorrection {
     }
 
     public static boolean isValidWord(final ConcurrentHashMap<String, Dictionary> dictionaries,
-           CharSequence word, boolean ignoreCase) {
+            CharSequence word, boolean ignoreCase) {
         if (TextUtils.isEmpty(word)) {
             return false;
         }
@@ -72,6 +72,24 @@ public class AutoCorrection {
             }
         }
         return false;
+    }
+
+    public static int getMaxFrequency(final ConcurrentHashMap<String, Dictionary> dictionaries,
+            CharSequence word) {
+        if (TextUtils.isEmpty(word)) {
+            return Dictionary.NOT_A_PROBABILITY;
+        }
+        int maxFreq = -1;
+        for (final String key : dictionaries.keySet()) {
+            if (key.equals(Suggest.DICT_KEY_WHITELIST)) continue;
+            final Dictionary dictionary = dictionaries.get(key);
+            if (null == dictionary) continue;
+            final int tempFreq = dictionary.getFrequency(word);
+            if (tempFreq >= maxFreq) {
+                maxFreq = tempFreq;
+            }
+        }
+        return maxFreq;
     }
 
     public static boolean allowsToBeAutoCorrected(
