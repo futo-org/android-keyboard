@@ -162,10 +162,15 @@ public class UserHistoryForgettingCurveUtils {
 
     // TODO: isValid should be false for a word whose frequency is 0,
     // or that is not in the dictionary.
-    public static boolean needsToSave(byte fc, boolean isValid) {
+    /**
+     * Check wheather we should save the bigram to the SQL DB or not
+     */
+    public static boolean needsToSave(byte fc, boolean isValid, boolean addLevel0Bigram) {
         int level = fcToLevel(fc);
-        if (isValid && level == 0) {
-            return false;
+        if (level == 0) {
+            if (isValid || !addLevel0Bigram) {
+                return false;
+            }
         }
         final int elapsedTime = fcToElapsedTime(fc);
         return (elapsedTime < ELAPSED_TIME_MAX - 1 || level > 0);
