@@ -173,12 +173,12 @@ static int latinime_BinaryDictionary_getBigrams(JNIEnv *env, jobject object, jlo
     return count;
 }
 
-static jboolean latinime_BinaryDictionary_isValidWord(JNIEnv *env, jobject object, jlong dict,
+static jint latinime_BinaryDictionary_getFrequency(JNIEnv *env, jobject object, jlong dict,
         jintArray wordArray, jint wordLength) {
     Dictionary *dictionary = (Dictionary*)dict;
     if (!dictionary) return (jboolean) false;
     jint *word = env->GetIntArrayElements(wordArray, 0);
-    jboolean result = dictionary->isValidWord(word, wordLength);
+    jint result = dictionary->getFrequency(word, wordLength);
     env->ReleaseIntArrayElements(wordArray, word, JNI_ABORT);
     return result;
 }
@@ -253,7 +253,7 @@ static JNINativeMethod sMethods[] = {
     {"closeNative", "(J)V", (void*)latinime_BinaryDictionary_close},
     {"getSuggestionsNative", "(JJ[I[I[II[IZ[C[I)I",
             (void*)latinime_BinaryDictionary_getSuggestions},
-    {"isValidWordNative", "(J[II)Z", (void*)latinime_BinaryDictionary_isValidWord},
+    {"getFrequencyNative", "(J[II)I", (void*)latinime_BinaryDictionary_getFrequency},
     {"isValidBigramNative", "(J[I[I)Z", (void*)latinime_BinaryDictionary_isValidBigram},
     {"getBigramsNative", "(J[II[II[C[III)I", (void*)latinime_BinaryDictionary_getBigrams},
     {"calcNormalizedScoreNative", "([CI[CII)F",

@@ -84,7 +84,7 @@ public class BinaryDictionary extends Dictionary {
     private native long openNative(String sourceDir, long dictOffset, long dictSize,
             int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength, int maxWords);
     private native void closeNative(long dict);
-    private native boolean isValidWordNative(long dict, int[] word, int wordLength);
+    private native int getFrequencyNative(long dict, int[] word, int wordLength);
     private native boolean isValidBigramNative(long dict, int[] word1, int[] word2);
     private native int getSuggestionsNative(long dict, long proximityInfo, int[] xCoordinates,
             int[] yCoordinates, int[] inputCodes, int codesSize, int[] prevWordForBigrams,
@@ -203,7 +203,8 @@ public class BinaryDictionary extends Dictionary {
     public boolean isValidWord(CharSequence word) {
         if (word == null) return false;
         int[] chars = StringUtils.toCodePointArray(word.toString());
-        return isValidWordNative(mNativeDict, chars, chars.length);
+        final int freq = getFrequencyNative(mNativeDict, chars, chars.length);
+        return freq >= 0;
     }
 
     // TODO: Add a batch process version (isValidBigramMultiple?) to avoid excessive numbers of jni
