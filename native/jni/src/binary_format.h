@@ -421,7 +421,7 @@ inline int BinaryFormat::getWordAtAddress(const uint8_t* const root, const int a
                     // We count chars in order to avoid infinite loops if the file is broken or
                     // if there is some other bug
                     int charCount = maxDepth;
-                    while (-1 != nextChar && --charCount > 0) {
+                    while (NOT_A_CHARACTER != nextChar && --charCount > 0) {
                         outWord[++wordPos] = nextChar;
                         nextChar = getCharCodeAndForwardPointer(root, &pos);
                     }
