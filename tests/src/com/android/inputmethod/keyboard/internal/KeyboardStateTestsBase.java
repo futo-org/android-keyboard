@@ -108,11 +108,15 @@ public class KeyboardStateTestsBase extends AndroidTestCase
         assertLayout("afterSlide", afterSlide, mSwitcher.getLayoutId());
     }
 
-    public void longPressAndReleaseKey(int code, int afterPress, int afterLongPress,
-            int afterRelease) {
+    public void longPressKey(int code, int afterPress, int afterLongPress) {
         pressKey(code, afterPress);
         mSwitcher.onLongPressTimeout(code);
         assertLayout("afterLongPress", afterLongPress, mSwitcher.getLayoutId());
+    }
+
+    public void longPressAndReleaseKey(int code, int afterPress, int afterLongPress,
+            int afterRelease) {
+        longPressKey(code, afterPress, afterLongPress);
         releaseKey(code, afterRelease);
     }
 
