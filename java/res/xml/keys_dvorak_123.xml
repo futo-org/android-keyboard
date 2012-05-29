@@ -29,6 +29,35 @@
                 latin:keyLabel="&quot;"
                 latin:keyHintLabel="1"
                 latin:additionalMoreKeys="1" />
+        </case>
+        <case
+            latin:mode="url"
+        >
+            <Key
+                latin:keyLabel="/"
+                latin:keyHintLabel="1"
+                latin:additionalMoreKeys="1" />
+        </case>
+        <case
+            latin:mode="email"
+        >
+            <Key
+                latin:keyLabel="\@"
+                latin:keyHintLabel="1"
+                latin:additionalMoreKeys="1" />
+        </case>
+        <default>
+            <Key
+                latin:keyLabel="\'"
+                latin:keyHintLabel="1"
+                latin:additionalMoreKeys="1"
+                latin:moreKeys="!" />
+        </default>
+    </switch>
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+        >
             <Key
                 latin:keyLabel="&lt;"
                 latin:keyHintLabel="2"
@@ -39,11 +68,6 @@
                 latin:additionalMoreKeys="3" />
         </case>
         <default>
-            <Key
-                latin:keyLabel="\'"
-                latin:keyHintLabel="1"
-                latin:additionalMoreKeys="1"
-                latin:moreKeys="!" />
             <Key
                 latin:keyLabel=","
                 latin:keyHintLabel="2"
