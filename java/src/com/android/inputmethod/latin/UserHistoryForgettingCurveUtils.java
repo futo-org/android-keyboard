@@ -38,24 +38,37 @@ public class UserHistoryForgettingCurveUtils {
     public static class ForgettingCurveParams {
         private byte mFc;
         long mLastTouchedTime = 0;
+        private final boolean mIsValid;
 
         private void updateLastTouchedTime() {
             mLastTouchedTime = System.currentTimeMillis();
         }
 
-        public ForgettingCurveParams() {
-            // TODO: Check whether this word is valid or not
-            this(System.currentTimeMillis());
+        public ForgettingCurveParams(boolean isValid) {
+            this(System.currentTimeMillis(), isValid);
         }
 
-        private ForgettingCurveParams(long now) {
-            this((int)pushCount((byte)0, false), now, now);
+        private ForgettingCurveParams(long now, boolean isValid) {
+            this((int)pushCount((byte)0, isValid), now, now, isValid);
         }
 
+        /** This constructor is called when the user history bigram dictionary is being restored. */
         public ForgettingCurveParams(int fc, long now, long last) {
+            // All words with level >= 1 had been saved.
+            // Invalid words with level == 0 had been saved.
+            // Valid words words with level == 0 had *not* been saved.
+            this(fc, now, last, fcToLevel((byte)fc) > 0);
+        }
+
+        private ForgettingCurveParams(int fc, long now, long last, boolean isValid) {
+            mIsValid = isValid;
             mFc = (byte)fc;
             mLastTouchedTime = last;
             updateElapsedTime(now);
+        }
+
+        public boolean isValid() {
+            return mIsValid;
         }
 
         public byte getFc() {

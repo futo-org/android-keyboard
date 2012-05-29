@@ -70,6 +70,18 @@ public class DictionaryCollection extends Dictionary {
         return false;
     }
 
+    @Override
+    public int getFrequency(CharSequence word) {
+        int maxFreq = -1;
+        for (int i = mDictionaries.size() - 1; i >= 0; --i) {
+            final int tempFreq = mDictionaries.get(i).getFrequency(word);
+            if (tempFreq >= maxFreq) {
+                maxFreq = tempFreq;
+            }
+        }
+        return maxFreq;
+    }
+
     public boolean isEmpty() {
         return mDictionaries.isEmpty();
     }
