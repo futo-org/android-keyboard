@@ -537,7 +537,7 @@ inline int BinaryFormat::computeFrequencyForBigram(const int unigramFreq, const 
     // while a value of 15 represents the middle of the top step.
     // See makedict.BinaryDictInputOutput for details.
     const float stepSize = ((float)MAX_FREQ - unigramFreq) / (1.5f + MAX_BIGRAM_FREQ);
-    return (int)(unigramFreq + bigramFreq * stepSize);
+    return (int)(unigramFreq + (bigramFreq + 1) * stepSize);
 }
 
 // This returns a probability in log space.
