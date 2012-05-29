@@ -29,20 +29,6 @@
             latin:keyWidth="15%p" />
         <switch>
             <case
-                latin:mode="url"
-            >
-                <Key
-                    latin:keyLabel="/"
-                    latin:keyStyle="f1MoreKeysStyle" />
-            </case>
-            <case
-                latin:mode="email"
-            >
-                <Key
-                    latin:keyLabel="\@"
-                    latin:keyStyle="f1MoreKeysStyle" />
-            </case>
-            <case
                 latin:hasShortcutKey="true"
                 latin:keyboardLayoutSetElement="alphabet"
             >
