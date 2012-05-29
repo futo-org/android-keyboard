@@ -747,8 +747,21 @@ int UnigramDictionary::getMostFrequentWordLikeInner(const uint16_t * const inWor
     return maxFreq;
 }
 
-bool UnigramDictionary::isValidWord(const int32_t* const inWord, const int length) const {
-    return NOT_VALID_WORD != BinaryFormat::getTerminalPosition(DICT_ROOT, inWord, length);
+int UnigramDictionary::getFrequency(const int32_t* const inWord, const int length) const {
+    const uint8_t* const root = DICT_ROOT;
+    int pos = BinaryFormat::getTerminalPosition(root, inWord, length);
+    if (NOT_VALID_WORD == pos) {
+        return NOT_A_PROBABILITY;
+    }
+    const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
+    const bool hasMultipleChars = (0 != (FLAG_HAS_MULTIPLE_CHARS & flags));
+    if (hasMultipleChars) {
+        pos = BinaryFormat::skipOtherCharacters(root, pos);
+    } else {
+        BinaryFormat::getCharCodeAndForwardPointer(DICT_ROOT, &pos);
+    }
+    const int unigramFreq = BinaryFormat::readFrequencyWithoutMovingPointer(root, pos);
+    return unigramFreq;
 }
 
 // TODO: remove this function.

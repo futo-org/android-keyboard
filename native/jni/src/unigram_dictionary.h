@@ -72,7 +72,7 @@ class UnigramDictionary {
 
     UnigramDictionary(const uint8_t* const streamStart, int typedLetterMultipler,
             int fullWordMultiplier, int maxWordLength, int maxWords, const unsigned int flags);
-    bool isValidWord(const int32_t* const inWord, const int length) const;
+    int getFrequency(const int32_t* const inWord, const int length) const;
     int getBigramPosition(int pos, unsigned short *word, int offset, int length) const;
     int getSuggestions(ProximityInfo *proximityInfo, WordsPriorityQueuePool *queuePool,
             Correction *correction, const int *xcoordinates, const int *ycoordinates,
