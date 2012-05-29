@@ -237,10 +237,6 @@ public class PointerTracker {
                     + " ignoreModifier=" + ignoreModifierKey
                     + " enabled=" + key.isEnabled());
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.pointerTracker_callListenerOnPressAndCheckKeyboardLayoutChange(key,
-                    ignoreModifierKey);
-        }
         if (ignoreModifierKey) {
             return false;
         }
