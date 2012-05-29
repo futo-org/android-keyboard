@@ -500,8 +500,8 @@ public class Utils {
         }
         final HashMap<String, Long> retval = new HashMap<String, Long>();
         for (int i = 0; i < N / 2; ++i) {
-            final String localeStr = ss[i];
-            final long time = Long.valueOf(ss[i + 1]);
+            final String localeStr = ss[i * 2];
+            final long time = Long.valueOf(ss[i * 2 + 1]);
             retval.put(localeStr, time);
         }
         return retval;
