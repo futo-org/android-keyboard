@@ -57,7 +57,7 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
     // Chording input in shift locked.
     public void testChordingShiftLocked() {
         // Long press shift key, enter alphabet shift locked.
-        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED,
+        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED,
                 ALPHABET_SHIFT_LOCKED);
 
         // Press shift key and hold, enter into choring shift state.
@@ -116,7 +116,7 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         // Load keyboard
         loadKeyboard(ALPHABET_UNSHIFTED);
         // Long press shift key, enter alphabet shift locked.
-        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED,
+        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED,
                 ALPHABET_SHIFT_LOCKED);
         // Press/release "?123" key, enter into symbols.
         pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
@@ -134,7 +134,7 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         // Load keyboard
         loadKeyboard(ALPHABET_UNSHIFTED);
         // Long press shift key, enter alphabet shift locked.
-        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED,
+        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED,
                 ALPHABET_SHIFT_LOCKED);
         // Press/release "?123" key, enter into symbols.
         pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
@@ -193,7 +193,7 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         // Load keyboard
         loadKeyboard(ALPHABET_UNSHIFTED);
         // Long press shift key, enter alphabet shift locked.
-        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED,
+        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED,
                 ALPHABET_SHIFT_LOCKED);
         // Press/release "?123" key, enter into symbols.
         pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
@@ -213,7 +213,7 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
         // Load keyboard
         loadKeyboard(ALPHABET_UNSHIFTED);
         // Long press shift key, enter alphabet shift locked.
-        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_SHIFT_LOCKED,
+        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED,
                 ALPHABET_SHIFT_LOCKED);
         // Press/release "?123" key, enter into symbols.
         pressAndReleaseKey(CODE_SYMBOL, SYMBOLS_UNSHIFTED, SYMBOLS_UNSHIFTED);
@@ -377,45 +377,44 @@ public class KeyboardStateMultiTouchTests extends KeyboardStateTestsBase {
     }
 
     public void testLongPressShiftAndChording() {
-        // TODO: The following tests fail due to bug. Temporarily commented.
-//        // Long press shift key, enter maybe shift locked.
-//        longPressKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
-//        // Press/release letter key, remain in manual shifted.
-//        chordingPressAndReleaseKey('A', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
-//        // Release shift key, back to alphabet (not shift locked).
-//        releaseKey(CODE_SHIFT, ALPHABET_UNSHIFTED);
-//
-//        // Long press shift key, enter alphabet shift locked.
-//        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED,
-//                ALPHABET_SHIFT_LOCKED);
-//        // Long press shift key, enter maybe alphabet.
-//        longPressKey(CODE_SHIFT, ALPHABET_SHIFT_LOCK_SHIFTED, ALPHABET_SHIFT_LOCK_SHIFTED);
-//        // Press/release letter key, remain in manual shifted.
-//        chordingPressAndReleaseKey('A', ALPHABET_SHIFT_LOCK_SHIFTED, ALPHABET_SHIFT_LOCK_SHIFTED);
-//        // Release shift key, back to shift locked (not alphabet).
-//        releaseKey(CODE_SHIFT, ALPHABET_SHIFT_LOCKED);
-//        // Long press shift key, enter alphabet
-//        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_SHIFT_LOCK_SHIFTED, ALPHABET_SHIFT_LOCK_SHIFTED,
-//                ALPHABET_UNSHIFTED);
-//
-//        // Press/release shift key, enter alphabet shifted.
-//        pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
-//        // Long press shift key, enter maybe alphabet.
-//        longPressKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
-//        // Press/release letter key, remain in manual shifted.
-//        chordingPressAndReleaseKey('A', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
-//        // Release shift key, back to alphabet shifted (not alphabet).
-//        releaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED);
-//
-//        // Set capitalize the first character of all words mode.
-//        setAutoCapsMode(CAP_MODE_WORDS);
-//        // Load keyboard, should be in automatic shifted.
-//        loadKeyboard(ALPHABET_AUTOMATIC_SHIFTED);
-//        // Long press shift key, enter maybe shift locked.
-//        longPressKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
-//        // Press/release letter key, remain in manual shifted.
-//        chordingPressAndReleaseKey('A', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
-//        // Release shift key, back to alphabet (not shift locked).
-//        releaseKey(CODE_SHIFT, ALPHABET_UNSHIFTED);
+        // Long press shift key, enter maybe shift locked.
+        longPressKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Press/release letter key, remain in manual shifted.
+        chordingPressAndReleaseKey('A', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Release shift key, back to alphabet (not shift locked).
+        releaseKey(CODE_SHIFT, ALPHABET_UNSHIFTED);
+
+        // Long press shift key, enter alphabet shift locked.
+        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED,
+                ALPHABET_SHIFT_LOCKED);
+        // Long press shift key, enter maybe alphabet.
+        longPressKey(CODE_SHIFT, ALPHABET_SHIFT_LOCK_SHIFTED, ALPHABET_SHIFT_LOCK_SHIFTED);
+        // Press/release letter key, remain in manual shifted.
+        chordingPressAndReleaseKey('A', ALPHABET_SHIFT_LOCK_SHIFTED, ALPHABET_SHIFT_LOCK_SHIFTED);
+        // Release shift key, back to shift locked (not alphabet).
+        releaseKey(CODE_SHIFT, ALPHABET_SHIFT_LOCKED);
+        // Long press shift key, enter alphabet
+        longPressAndReleaseKey(CODE_SHIFT, ALPHABET_SHIFT_LOCK_SHIFTED, ALPHABET_SHIFT_LOCK_SHIFTED,
+                ALPHABET_UNSHIFTED);
+
+        // Press/release shift key, enter alphabet shifted.
+        pressAndReleaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Long press shift key, enter maybe alphabet.
+        longPressKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Press/release letter key, remain in manual shifted.
+        chordingPressAndReleaseKey('A', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Release shift key, back to alphabet shifted (not alphabet).
+        releaseKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED);
+
+        // Set capitalize the first character of all words mode.
+        setAutoCapsMode(CAP_MODE_WORDS);
+        // Load keyboard, should be in automatic shifted.
+        loadKeyboard(ALPHABET_AUTOMATIC_SHIFTED);
+        // Long press shift key, enter maybe shift locked.
+        longPressKey(CODE_SHIFT, ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Press/release letter key, remain in manual shifted.
+        chordingPressAndReleaseKey('A', ALPHABET_MANUAL_SHIFTED, ALPHABET_MANUAL_SHIFTED);
+        // Release shift key, back to alphabet (not shift locked).
+        releaseKey(CODE_SHIFT, ALPHABET_UNSHIFTED);
     }
 }

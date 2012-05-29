@@ -85,6 +85,9 @@ public class KeyboardState {
     private boolean mPrevMainKeyboardWasShiftLocked;
     private boolean mPrevSymbolsKeyboardWasShifted;
 
+    // For handling long press.
+    private boolean mLongPressShiftLockFired;
+
     // For handling double tap.
     private boolean mIsInAlphabetUnshiftedFromShifted;
     private boolean mIsInDoubleTapShiftKey;
@@ -312,6 +315,7 @@ public class KeyboardState {
         } else {
             mSwitchActions.cancelDoubleTapTimer();
             mSwitchActions.cancelLongPressTimer();
+            mLongPressShiftLockFired = false;
             mShiftKeyState.onOtherKeyPressed();
             mSymbolKeyState.onOtherKeyPressed();
             // It is required to reset the auto caps state when all of the following conditions
@@ -375,15 +379,7 @@ public class KeyboardState {
             ResearchLogger.keyboardState_onLongPressTimeout(code, this);
         }
         if (mIsAlphabetMode && code == Keyboard.CODE_SHIFT) {
-            if (mAlphabetShiftState.isShiftLocked()) {
-                setShiftLocked(false);
-                // Shift key is long pressed while shift locked state, we will toggle back to normal
-                // state. And mark as if shift key is released.
-                mShiftKeyState.onRelease();
-            } else {
-                // Shift key is long pressed while shift unlocked state.
-                setShiftLocked(true);
-            }
+            mLongPressShiftLockFired = true;
             mSwitchActions.hapticAndAudioFeedback(code);
         }
     }
@@ -413,6 +409,7 @@ public class KeyboardState {
     }
 
     private void onPressShift() {
+        mLongPressShiftLockFired = false;
         if (mIsAlphabetMode) {
             mIsInDoubleTapShiftKey = mSwitchActions.isInDoubleTapTimeout();
             if (!mIsInDoubleTapShiftKey) {
@@ -466,6 +463,8 @@ public class KeyboardState {
                 // Double tap shift key has been handled in {@link #onPressShift}, so that just
                 // ignore this release shift key here.
                 mIsInDoubleTapShiftKey = false;
+            } else if (mLongPressShiftLockFired) {
+                setShiftLocked(!mAlphabetShiftState.isShiftLocked());
             } else if (mShiftKeyState.isChording()) {
                 if (mAlphabetShiftState.isShiftLockShifted()) {
                     // After chording input while shift locked state.
