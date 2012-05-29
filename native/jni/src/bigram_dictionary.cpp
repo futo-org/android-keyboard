@@ -149,8 +149,8 @@ int BigramDictionary::getBigramListPositionForWord(const int32_t *prevWord,
     } else {
         pos = BinaryFormat::skipOtherCharacters(root, pos);
     }
-    pos = BinaryFormat::skipChildrenPosition(flags, pos);
     pos = BinaryFormat::skipFrequency(flags, pos);
+    pos = BinaryFormat::skipChildrenPosition(flags, pos);
     pos = BinaryFormat::skipShortcuts(root, flags, pos);
     return pos;
 }
