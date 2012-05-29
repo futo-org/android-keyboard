@@ -112,7 +112,7 @@
     <string name="language_selection_title" msgid="1651299598555326750">"输入语言"</string>
     <string name="select_language" msgid="3693815588777926848">"输入语言"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"再次触摸即可保存"</string>
-    <string name="has_dictionary" msgid="6071847973466625007">"提供字典"</string>
+    <string name="has_dictionary" msgid="6071847973466625007">"有可用词典"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"启用用户反馈"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"自动向 Google 发送使用情况统计信息和崩溃报告，帮助改进该输入法编辑器。"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"键盘主题"</string>
