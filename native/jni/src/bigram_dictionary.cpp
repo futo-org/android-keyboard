@@ -126,6 +126,11 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
         // codesSize == 0 means we are trying to find bigram predictions.
         if (codesSize < 1 || checkFirstCharacter(bigramBuffer)) {
             const int bigramFreq = UnigramDictionary::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
+            // Due to space constraints, the frequency for bigrams is approximate - the lower the
+            // unigram frequency, the worse the precision. The theoritical maximum error in
+            // resulting frequency is 8 - although in the practice it's never bigger than 3 or 4
+            // in very bad cases. This means that sometimes, we'll see some bigrams interverted
+            // here, but it can't get too bad.
             const int frequency =
                     BinaryFormat::computeFrequencyForBigram(unigramFreq, bigramFreq);
             if (addWordBigram(bigramBuffer, length, frequency)) {
