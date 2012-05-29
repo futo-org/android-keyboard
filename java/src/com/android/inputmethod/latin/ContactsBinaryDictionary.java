@@ -214,6 +214,10 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
             return false;
         }
         if (contactCount != sContactCountAtLastRebuild) {
+            if (DEBUG) {
+                Log.d(TAG, "Contact count changed: " + sContactCountAtLastRebuild + " to "
+                        + contactCount);
+            }
             return true;
         }
         // Check all contacts since it's not possible to find out which names have changed.
