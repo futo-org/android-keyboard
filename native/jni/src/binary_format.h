@@ -67,6 +67,7 @@ class BinaryFormat {
             const int length);
     static int getWordAtAddress(const uint8_t* const root, const int address, const int maxDepth,
             uint16_t* outWord);
+    static int computeFrequencyForBigram(const int unigramFreq, const int bigramFreq);
     static int getProbability(const int position, const std::map<int, int> *bigramMap,
             const uint8_t *bigramFilter, const int unigramFreq);
 
@@ -529,6 +530,16 @@ static inline int backoff(const int unigramFreq) {
     // return unigramFreq > 8 ? unigramFreq - 8 : (0 == unigramFreq ? 0 : 8);
 }
 
+inline int BinaryFormat::computeFrequencyForBigram(const int unigramFreq, const int bigramFreq) {
+    // We divide the range [unigramFreq..255] in 16.5 steps - in other words, we want the
+    // unigram frequency to be the median value of the 17th step from the top. A value of
+    // 0 for the bigram frequency represents the middle of the 16th step from the top,
+    // while a value of 15 represents the middle of the top step.
+    // See makedict.BinaryDictInputOutput for details.
+    const float stepSize = ((float)MAX_FREQ - unigramFreq) / (1.5f + MAX_BIGRAM_FREQ);
+    return (int)(unigramFreq + bigramFreq * stepSize);
+}
+
 // This returns a probability in log space.
 inline int BinaryFormat::getProbability(const int position, const std::map<int, int> *bigramMap,
         const uint8_t *bigramFilter, const int unigramFreq) {
@@ -537,13 +548,7 @@ inline int BinaryFormat::getProbability(const int position, const std::map<int, 
     const std::map<int, int>::const_iterator bigramFreqIt = bigramMap->find(position);
     if (bigramFreqIt != bigramMap->end()) {
         const int bigramFreq = bigramFreqIt->second;
-        // We divide the range [unigramFreq..255] in 16.5 steps - in other words, we want the
-        // unigram frequency to be the median value of the 17th step from the top. A value of
-        // 0 for the bigram frequency represents the middle of the 16th step from the top,
-        // while a value of 15 represents the middle of the top step.
-        // See makedict.BinaryDictInputOutput for details.
-        const float stepSize = ((float)MAX_FREQ - unigramFreq) / (1.5f + MAX_BIGRAM_FREQ);
-        return (int)(unigramFreq + bigramFreq * stepSize);
+        return computeFrequencyForBigram(unigramFreq, bigramFreq);
     } else {
         return backoff(unigramFreq);
     }
