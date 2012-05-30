@@ -134,12 +134,10 @@
     <string name="save" msgid="7646738597196767214">"저장"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"언어"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"레이아웃"</string>
-    <!-- no translation found for custom_input_style_note_message (8826731320846363423) -->
-    <skip />
-    <!-- no translation found for enable (5031294444630523247) -->
-    <skip />
-    <!-- no translation found for not_now (6172462888202790482) -->
-    <skip />
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"맞춤 입력 스타일을 사용하려면 사용 설정해야 합니다. 지금 사용 설정하시겠습니까?"</string>
+    <string name="enable" msgid="5031294444630523247">"사용"</string>
+    <string name="not_now" msgid="6172462888202790482">"나중에"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"같은 입력 스타일이 다음과 같이 이미 존재합니다. <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"가용성 연구 모드"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"키를 누를 때 진동 시간 설정"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"키를 누를 때 효과음 설정"</string>

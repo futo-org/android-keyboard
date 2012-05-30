@@ -38,7 +38,7 @@
     <string name="advanced_settings" msgid="362895144495591463">"Advanced settings"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Options for experts"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Switch to other input methods"</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Language switch key covers other input methods too"</string>
+    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Language switch key also covers other input methods"</string>
     <string name="suppress_language_switch_key" msgid="8003788410354806368">"Suppress language switch key"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Key pop-up dismiss delay"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"No delay"</string>
@@ -53,10 +53,10 @@
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Show correction suggestions"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Display suggested words while typing"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Always show"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Show on portrait mode"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Show in portrait mode"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Always hide"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Auto-correction"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"Spacebar and punctuation correct mistyped words automatically"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Correct mistyped words automatically with spacebar and punctuation"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Off"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Modest"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Aggressive"</string>
@@ -134,12 +134,10 @@
     <string name="save" msgid="7646738597196767214">"Save"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Language"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Layout"</string>
-    <!-- no translation found for custom_input_style_note_message (8826731320846363423) -->
-    <skip />
-    <!-- no translation found for enable (5031294444630523247) -->
-    <skip />
-    <!-- no translation found for not_now (6172462888202790482) -->
-    <skip />
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Your custom input style needs to be enabled before you start using it. Do you want to enable it now?"</string>
+    <string name="enable" msgid="5031294444630523247">"Enable"</string>
+    <string name="not_now" msgid="6172462888202790482">"Not now"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"The same input style already exists: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Usability study mode"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Key-press vibration duration settings"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Key-press sound volume settings"</string>

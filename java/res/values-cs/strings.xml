@@ -31,16 +31,16 @@
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Kontrola pravopisu používá záznamy z vašeho seznamu kontaktů."</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Při stisku klávesy vibrovat"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Zvuk při stisku klávesy"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Zobrazit znaky při stisku klávesy"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Detail znaku při stisku klávesy"</string>
     <string name="general_category" msgid="1859088467017573195">"Obecné"</string>
     <string name="correction_category" msgid="2236750915056607613">"Oprava textu"</string>
     <string name="misc_category" msgid="6894192814868233453">"Další možnosti"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Pokročilá nastavení"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Možnosti pro odborníky"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Přep. na jiné metody zad."</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Přepínat metody zadávání"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Klávesa pro přepínání jazyka ovládá i další metody zadávání"</string>
-    <string name="suppress_language_switch_key" msgid="8003788410354806368">"Zakázat kl. přep. jazyka"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Prodleva vysk. okna kláv."</string>
+    <string name="suppress_language_switch_key" msgid="8003788410354806368">"Zakázat kl. přepínání jazyka"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Prodleva vysk. okna klávesnice"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Bez prodlevy"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Výchozí"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Navrhovat jména kontaktů"</string>
@@ -61,9 +61,9 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Mírné"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agresivní"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Velmi agresivní"</string>
-    <string name="bigram_suggestion" msgid="8169311444438922902">"Návrhy dalšího slova"</string>
+    <string name="bigram_suggestion" msgid="8169311444438922902">"Návrh dalšího slova"</string>
     <string name="bigram_suggestion_summary" msgid="6635527607242625713">"Použít předchozí slovo ke zlepšení návrhů"</string>
-    <string name="bigram_prediction" msgid="3216364899483135294">"Návrh dalšího slova"</string>
+    <string name="bigram_prediction" msgid="3216364899483135294">"Odhad dalšího slova"</string>
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"Použít předchozí slovo také pro odhad"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: Uloženo"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Přejít"</string>
@@ -101,18 +101,18 @@
     <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Režim písmen"</string>
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Režim telefonu"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Režim telefonních symbolů"</string>
-    <string name="voice_input" msgid="3583258583521397548">"Klíč hlasového vstupu"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Klávesa hlasového vstupu"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Na hlavní klávesnici"</string>
-    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Na klávesnici se symb."</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Na klávesnici se symboly"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Vypnuto"</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikr. na hlav. kláv."</string>
-    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikr. na kláv. se symb."</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikrofon na hlavní klávesnici"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikrofon na klávesnici se symboly"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Hlasový vstup vypnut"</string>
-    <string name="configure_input_method" msgid="373356270290742459">"Konfigurace metod vstupu"</string>
+    <string name="configure_input_method" msgid="373356270290742459">"Konfigurace metod zadávání"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Vstupní jazyky"</string>
-    <string name="select_language" msgid="3693815588777926848">"Jazyky vstupu"</string>
+    <string name="select_language" msgid="3693815588777926848">"Vstupní jazyky"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Opětovným dotykem provedete uložení"</string>
-    <string name="has_dictionary" msgid="6071847973466625007">"K dispozici je slovník"</string>
+    <string name="has_dictionary" msgid="6071847973466625007">"Slovník k dispozici"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Aktivovat zasílání statistik užívání a zpráv o selhání"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Automatickým zasíláním statistik o užívání editoru zadávání dat a zpráv o jeho selhání do Googlu můžete přispět k vylepšení tohoto nástroje."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Motiv klávesnice"</string>
@@ -127,20 +127,18 @@
     <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"Žádný jazyk (Dvorak)"</string>
     <string name="subtype_no_language_colemak" msgid="4205992994906097244">"Žádný jazyk (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"Žádný jazyk (PC)"</string>
-    <string name="custom_input_styles_title" msgid="8429952441821251512">"Vlastní styly vstupu"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"Vlastní styl zadávání"</string>
     <string name="add_style" msgid="6163126614514489951">"Přidat styl"</string>
     <string name="add" msgid="8299699805688017798">"Přidat"</string>
     <string name="remove" msgid="4486081658752944606">"Odebrat"</string>
     <string name="save" msgid="7646738597196767214">"Uložit"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Jazyk"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Rozvržení"</string>
-    <!-- no translation found for custom_input_style_note_message (8826731320846363423) -->
-    <skip />
-    <!-- no translation found for enable (5031294444630523247) -->
-    <skip />
-    <!-- no translation found for not_now (6172462888202790482) -->
-    <skip />
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Vlastní styl vstupu musíte nejdříve povolit. Povolit?"</string>
+    <string name="enable" msgid="5031294444630523247">"Povolit"</string>
+    <string name="not_now" msgid="6172462888202790482">"Teď ne"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Stejný styl vstupu již existuje: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Režim studie použitelnosti"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Nastavení trvání vibrace při stisku klávesy"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Nastavení hlasitosti zvuku při stisknutí klávesy"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Délka vibrace při stisku klávesy"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Hlasitost při stisknutí klávesy"</string>
 </resources>
