@@ -151,6 +151,11 @@ public class Settings extends InputMethodSettingsFragment
 
         if (!VibratorUtils.getInstance(context).hasVibrator()) {
             generalSettings.removePreference(findPreference(PREF_VIBRATE_ON));
+            final PreferenceGroup advancedSettings =
+                    (PreferenceGroup) findPreference(PREF_ADVANCED_SETTINGS);
+            if (null != advancedSettings) { // Theoretically advancedSettings cannot be null
+                advancedSettings.removePreference(findPreference(PREF_VIBRATION_DURATION_SETTINGS));
+            }
         }
 
         final boolean showPopupOption = res.getBoolean(
