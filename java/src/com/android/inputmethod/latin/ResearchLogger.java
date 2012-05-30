@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
+
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.inputmethodservice.InputMethodService;
@@ -35,7 +37,8 @@ import android.view.inputmethod.InputConnection;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.internal.KeyboardState;
+import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.io.BufferedWriter;
@@ -68,7 +71,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final JsonWriter NULL_JSON_WRITER = new JsonWriter(
             new OutputStreamWriter(new NullOutputStream()));
     private static final SimpleDateFormat TIMESTAMP_DATEFORMAT =
-            new SimpleDateFormat("yyyyMMDDHHmmss", Locale.US);
+            new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
 
     // constants related to specific log points
     private static final String WHITESPACE_SEPARATORS = " \t\n\r";
@@ -275,15 +278,19 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                                     final Object innerValue = entry.getValue();
                                     if (innerValue == null) {
                                         mJsonWriter.nullValue();
+                                    } else if (innerValue instanceof Boolean) {
+                                        mJsonWriter.value((Boolean) innerValue);
+                                    } else if (innerValue instanceof Number) {
+                                        mJsonWriter.value((Number) innerValue);
                                     } else {
                                         mJsonWriter.value(innerValue.toString());
                                     }
                                 }
                                 mJsonWriter.endObject();
-                            } else if (value instanceof Keyboard) {
-                                Keyboard keyboard = (Keyboard) value;
+                            } else if (value instanceof Key[]) {
+                                Key[] keys = (Key[]) value;
                                 mJsonWriter.beginArray();
-                                for (Key key : keyboard.mKeys) {
+                                for (Key key : keys) {
                                     mJsonWriter.beginObject();
                                     mJsonWriter.name("code").value(key.mCode);
                                     mJsonWriter.name("altCode").value(key.mAltCode);
@@ -294,6 +301,29 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                                     mJsonWriter.endObject();
                                 }
                                 mJsonWriter.endArray();
+                            } else if (value instanceof SuggestedWords) {
+                                SuggestedWords words = (SuggestedWords) value;
+                                mJsonWriter.beginObject();
+                                mJsonWriter.name("typedWordValid").value(words.mTypedWordValid);
+                                mJsonWriter.name("hasAutoCorrectionCandidate")
+                                    .value(words.mHasAutoCorrectionCandidate);
+                                mJsonWriter.name("isPunctuationSuggestions")
+                                    .value(words.mIsPunctuationSuggestions);
+                                mJsonWriter.name("allowsToBeAutoCorrected")
+                                    .value(words.mAllowsToBeAutoCorrected);
+                                mJsonWriter.name("isObsoleteSuggestions")
+                                    .value(words.mIsObsoleteSuggestions);
+                                mJsonWriter.name("isPrediction")
+                                    .value(words.mIsPrediction);
+                                mJsonWriter.name("words");
+                                mJsonWriter.beginArray();
+                                final int size = words.size();
+                                for (int j = 0; j < size; j++) {
+                                    SuggestedWordInfo wordInfo = words.getWordInfo(j);
+                                    mJsonWriter.value(wordInfo.toString());
+                                }
+                                mJsonWriter.endArray();
+                                mJsonWriter.endObject();
                             } else if (value == null) {
                                 mJsonWriter.nullValue();
                             } else {
@@ -368,72 +398,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             subgroup, before, after, position
         };
         getInstance().writeEvent(EVENTKEYS_CORRECTION, values);
-    }
-
-    private static final String[] EVENTKEYS_STATECHANGE = {
-        "STATECHANGE", "subgroup", "details"
-    };
-    public static void logStateChange(final String subgroup, final String details) {
-        final Object[] values = {
-            subgroup, details
-        };
-        getInstance().writeEvent(EVENTKEYS_STATECHANGE, values);
-    }
-
-    private static final String[] EVENTKEYS_KEYBOARDSTATE_ONCANCELINPUT = {
-        "KEYBOARDSTATE_ONCANCELINPUT", "isSinglePointer", "keyboardState"
-    };
-    public static void keyboardState_onCancelInput(final boolean isSinglePointer,
-            final KeyboardState keyboardState) {
-        final Object[] values = {
-            isSinglePointer, keyboardState.toString()
-        };
-        getInstance().writeEvent(EVENTKEYS_KEYBOARDSTATE_ONCANCELINPUT, values);
-    }
-
-    private static final String[] EVENTKEYS_KEYBOARDSTATE_ONCODEINPUT = {
-        "KEYBOARDSTATE_ONCODEINPUT", "code", "isSinglePointer", "autoCaps", "keyboardState"
-    };
-    public static void keyboardState_onCodeInput(
-            final int code, final boolean isSinglePointer, final int autoCaps,
-            final KeyboardState keyboardState) {
-        final Object[] values = {
-            Keyboard.printableCode(code), isSinglePointer, autoCaps, keyboardState.toString()
-        };
-        getInstance().writeEvent(EVENTKEYS_KEYBOARDSTATE_ONCODEINPUT, values);
-    }
-
-    private static final String[] EVENTKEYS_KEYBOARDSTATE_ONLONGPRESSTIMEOUT = {
-        "KEYBOARDSTATE_ONLONGPRESSTIMEOUT", "code", "keyboardState"
-    };
-    public static void keyboardState_onLongPressTimeout(final int code,
-            final KeyboardState keyboardState) {
-        final Object[] values = {
-            Keyboard.printableCode(code), keyboardState.toString()
-        };
-        getInstance().writeEvent(EVENTKEYS_KEYBOARDSTATE_ONLONGPRESSTIMEOUT, values);
-    }
-
-    private static final String[] EVENTKEYS_KEYBOARDSTATE_ONPRESSKEY = {
-        "KEYBOARDSTATE_ONPRESSKEY", "code", "keyboardState"
-    };
-    public static void keyboardState_onPressKey(final int code,
-            final KeyboardState keyboardState) {
-        final Object[] values = {
-            Keyboard.printableCode(code), keyboardState.toString()
-        };
-        getInstance().writeEvent(EVENTKEYS_KEYBOARDSTATE_ONPRESSKEY, values);
-    }
-
-    private static final String[] EVENTKEYS_KEYBOARDSTATE_ONRELEASEKEY = {
-        "KEYBOARDSTATE_ONRELEASEKEY", "code", "withSliding", "keyboardState"
-    };
-    public static void keyboardState_onReleaseKey(final KeyboardState keyboardState, final int code,
-            final boolean withSliding) {
-        final Object[] values = {
-            Keyboard.printableCode(code), withSliding, keyboardState.toString()
-        };
-        getInstance().writeEvent(EVENTKEYS_KEYBOARDSTATE_ONRELEASEKEY, values);
     }
 
     private static final String[] EVENTKEYS_LATINIME_COMMITCURRENTAUTOCORRECTION = {
@@ -529,7 +493,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
     private static final String[] EVENTKEYS_LATINIME_ONSTARTINPUTVIEWINTERNAL = {
         "LATINIME_ONSTARTINPUTVIEWINTERNAL", "uuid", "packageName", "inputType", "imeOptions",
-        "display", "model", "prefs"
+        "fieldId", "display", "model", "prefs"
     };
 
     public static void latinIME_onStartInputViewInternal(final EditorInfo editorInfo,
@@ -537,7 +501,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (editorInfo != null) {
             final Object[] values = {
                 getUUID(prefs), editorInfo.packageName, Integer.toHexString(editorInfo.inputType),
-                Integer.toHexString(editorInfo.imeOptions), Build.DISPLAY, Build.MODEL, prefs
+                Integer.toHexString(editorInfo.imeOptions), editorInfo.fieldId, Build.DISPLAY,
+                Build.MODEL, prefs
             };
             getInstance().writeEvent(EVENTKEYS_LATINIME_ONSTARTINPUTVIEWINTERNAL, values);
         }
@@ -558,7 +523,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final String[] EVENTKEYS_LATINIME_ONUPDATESELECTION = {
         "LATINIME_ONUPDATESELECTION", "lastSelectionStart", "lastSelectionEnd", "oldSelStart",
         "oldSelEnd", "newSelStart", "newSelEnd", "composingSpanStart", "composingSpanEnd",
-        "expectingUpdateSelection", "expectingUpdateSelectionFromLogger", "context" 
+        "expectingUpdateSelection", "expectingUpdateSelectionFromLogger", "context"
     };
 
     public static void latinIME_onUpdateSelection(final int lastSelectionStart,
@@ -666,14 +631,33 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_LATINKEYBOARDVIEW_SETKEYBOARD = {
-        "LATINKEYBOARDVIEW_SETKEYBOARD", "id", "tw", "th", "keys"
+        "LATINKEYBOARDVIEW_SETKEYBOARD", "elementId", "locale", "orientation", "width",
+        "modeName", "action", "navigateNext", "navigatePrevious", "clobberSettingsKey",
+        "passwordInput", "shortcutKeyEnabled", "hasShortcutKey", "languageSwitchKeyEnabled",
+        "isMultiLine", "tw", "th", "keys"
     };
     public static void latinKeyboardView_setKeyboard(final Keyboard keyboard) {
         if (keyboard != null) {
+            final KeyboardId kid = keyboard.mId;
             final Object[] values = {
-                keyboard.mId.toString(), keyboard.mOccupiedWidth, keyboard.mOccupiedHeight,
-                keyboard
-            };
+                    KeyboardId.elementIdToName(kid.mElementId),
+                    kid.mLocale + ":" + kid.mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
+                    kid.mOrientation,
+                    kid.mWidth,
+                    KeyboardId.modeName(kid.mMode),
+                    kid.imeAction(),
+                    kid.navigateNext(),
+                    kid.navigatePrevious(),
+                    kid.mClobberSettingsKey,
+                    kid.passwordInput(),
+                    kid.mShortcutKeyEnabled,
+                    kid.mHasShortcutKey,
+                    kid.mLanguageSwitchKeyEnabled,
+                    kid.isMultiLine(),
+                    keyboard.mOccupiedWidth,
+                    keyboard.mOccupiedHeight,
+                    keyboard.mKeys
+                };
             getInstance().writeEvent(EVENTKEYS_LATINKEYBOARDVIEW_SETKEYBOARD, values);
         }
     }
@@ -710,23 +694,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 x, y, ignoreModifierKey, altersCode, key.isEnabled()
             };
             getInstance().writeEvent(EVENTKEYS_POINTERTRACKER_CALLLISTENERONCODEINPUT, values);
-        }
-    }
-
-    private static final String[]
-            EVENTKEYS_POINTERTRACKER_CALLLISTENERONPRESSANDCHECKKEYBOARDLAYOUTCHANGE = {
-                "POINTERTRACKER_CALLLISTENERONPRESSANDCHECKKEYBOARDLAYOUTCHANGE", "code",
-                "ignoreModifierKey", "isEnabled"
-    };
-    public static void pointerTracker_callListenerOnPressAndCheckKeyboardLayoutChange(
-            final Key key, final boolean ignoreModifierKey) {
-        if (key != null) {
-            final Object[] values = {
-                KeyDetector.printableCode(key), ignoreModifierKey, key.isEnabled()
-            };
-            getInstance().writeEvent(
-                    EVENTKEYS_POINTERTRACKER_CALLLISTENERONPRESSANDCHECKKEYBOARDLAYOUTCHANGE,
-                    values);
         }
     }
 
@@ -785,7 +752,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void suggestionsView_setSuggestions(final SuggestedWords suggestedWords) {
         if (suggestedWords != null) {
             final Object[] values = {
-                suggestedWords.toString()
+                suggestedWords
             };
             getInstance().writeEvent(EVENTKEYS_SUGGESTIONSVIEW_SETSUGGESTIONS, values);
         }

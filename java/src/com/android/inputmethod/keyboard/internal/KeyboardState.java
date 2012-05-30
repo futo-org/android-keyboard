@@ -305,9 +305,6 @@ public class KeyboardState {
             Log.d(TAG, "onPressKey: code=" + Keyboard.printableCode(code)
                    + " single=" + isSinglePointer + " autoCaps=" + autoCaps + " " + this);
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_onPressKey(code, this);
-        }
         if (code == Keyboard.CODE_SHIFT) {
             onPressShift();
         } else if (code == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
@@ -341,9 +338,6 @@ public class KeyboardState {
             Log.d(TAG, "onReleaseKey: code=" + Keyboard.printableCode(code)
                     + " sliding=" + withSliding + " " + this);
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_onReleaseKey(this, code, withSliding);
-        }
         if (code == Keyboard.CODE_SHIFT) {
             onReleaseShift(withSliding);
         } else if (code == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
@@ -374,9 +368,6 @@ public class KeyboardState {
     public void onLongPressTimeout(int code) {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onLongPressTimeout: code=" + Keyboard.printableCode(code) + " " + this);
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_onLongPressTimeout(code, this);
         }
         if (mIsAlphabetMode && code == Keyboard.CODE_SHIFT) {
             mLongPressShiftLockFired = true;
@@ -509,9 +500,6 @@ public class KeyboardState {
         if (DEBUG_EVENT) {
             Log.d(TAG, "onCancelInput: single=" + isSinglePointer + " " + this);
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_onCancelInput(isSinglePointer, this);
-        }
         // Switch back to the previous keyboard mode if the user cancels sliding input.
         if (isSinglePointer) {
             if (mSwitchState == SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL) {
@@ -542,9 +530,6 @@ public class KeyboardState {
             Log.d(TAG, "onCodeInput: code=" + Keyboard.printableCode(code)
                     + " single=" + isSinglePointer
                     + " autoCaps=" + autoCaps + " " + this);
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.keyboardState_onCodeInput(code, isSinglePointer, autoCaps, this);
         }
 
         switch (mSwitchState) {
