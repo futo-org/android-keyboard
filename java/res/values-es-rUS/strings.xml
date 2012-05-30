@@ -37,9 +37,9 @@
     <string name="misc_category" msgid="6894192814868233453">"Otras opciones"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Configuración avanzada"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Opciones para expertos"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Otros métodos de introd."</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"La tecla de cambio de idioma abarca otros métodos de introd."</string>
-    <string name="suppress_language_switch_key" msgid="8003788410354806368">"Supr. tecla cambio idioma"</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Otros métodos de entrada"</string>
+    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"La tecla de cambio de idioma abarca otros métodos de entrada."</string>
+    <string name="suppress_language_switch_key" msgid="8003788410354806368">"Elim. tecla cambio de idioma"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Retraso en rechazo de alerta de tecla"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Sin demora"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Predeterminada"</string>
@@ -127,20 +127,18 @@
     <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"Sin idioma (Dvorak)"</string>
     <string name="subtype_no_language_colemak" msgid="4205992994906097244">"Sin idioma (Colemak)"</string>
     <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"Sin idioma (PC)"</string>
-    <string name="custom_input_styles_title" msgid="8429952441821251512">"Estilos entrada pers."</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"Estilos de entrada personalizados"</string>
     <string name="add_style" msgid="6163126614514489951">"Agr. estilo"</string>
     <string name="add" msgid="8299699805688017798">"Agregar"</string>
     <string name="remove" msgid="4486081658752944606">"Eliminar"</string>
     <string name="save" msgid="7646738597196767214">"Guardar"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Idioma"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Diseño"</string>
-    <!-- no translation found for custom_input_style_note_message (8826731320846363423) -->
-    <skip />
-    <!-- no translation found for enable (5031294444630523247) -->
-    <skip />
-    <!-- no translation found for not_now (6172462888202790482) -->
-    <skip />
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Debes activar estilo de entrada personalizado para utilizarlo."</string>
+    <string name="enable" msgid="5031294444630523247">"Activar"</string>
+    <string name="not_now" msgid="6172462888202790482">"Ahora no"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Ya existe el estilo de entrada <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>."</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modo de estudio de usabilidad"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Configuración de la duración de vibraciones al presionar las teclas"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Configuración del volumen de sonio al presionar las teclas"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Duración de vibración al presionar teclas"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Volumen de sonido al presionar teclas"</string>
 </resources>
