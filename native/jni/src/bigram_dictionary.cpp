@@ -117,7 +117,7 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
     do {
         bigramFlags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
         uint16_t bigramBuffer[MAX_WORD_LENGTH];
-        int unigramFreq;
+        int unigramFreq = 0;
         const int bigramPos = BinaryFormat::getAttributeAddressAndForwardPointer(root, bigramFlags,
                 &pos);
         const int length = BinaryFormat::getWordAtAddress(root, bigramPos, MAX_WORD_LENGTH,
