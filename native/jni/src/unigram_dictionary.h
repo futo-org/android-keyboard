@@ -70,6 +70,9 @@ class UnigramDictionary {
     static const int DEFAULT_MAX_ERRORS = 2;
     static const int MAX_ERRORS_FOR_TWO_WORDS = 1;
 
+    static const int FLAG_MULTIPLE_SUGGEST_ABORT = 0;
+    static const int FLAG_MULTIPLE_SUGGEST_SKIP = 1;
+    static const int FLAG_MULTIPLE_SUGGEST_CONTINUE = 2;
     UnigramDictionary(const uint8_t* const streamStart, int typedLetterMultipler,
             int fullWordMultiplier, int maxWordLength, int maxWords, const unsigned int flags);
     int getFrequency(const int32_t* const inWord, const int length) const;
@@ -127,7 +130,7 @@ class UnigramDictionary {
             ProximityInfo *proximityInfo, unsigned short *word);
     int getMostFrequentWordLikeInner(const uint16_t* const inWord, const int length,
             short unsigned int *outWord);
-    bool getSubStringSuggestion(
+    int getSubStringSuggestion(
             ProximityInfo *proximityInfo, const int *xcoordinates, const int *ycoordinates,
             const int *codes, const bool useFullEditDistance, Correction *correction,
             WordsPriorityQueuePool* queuePool, const int inputLength,

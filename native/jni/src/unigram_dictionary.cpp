@@ -177,6 +177,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
 
     queuePool->clearAll();
     Correction* masterCorrection = correction;
+    correction->resetCorrection();
     if (BinaryFormat::REQUIRES_GERMAN_UMLAUT_PROCESSING & FLAGS)
     { // Incrementally tune the word and try all possibilities
         int codesBuffer[getCodesBufferSize(codes, codesSize)];
@@ -301,6 +302,7 @@ void UnigramDictionary::initSuggestions(ProximityInfo *proximityInfo, const int 
         const int *yCoordinates, const int *codes, const int inputLength, Correction *correction) {
     if (DEBUG_DICT) {
         AKLOGI("initSuggest");
+        DUMP_WORD_INT(codes, inputLength);
     }
     proximityInfo->setInputParams(codes, inputLength, xCoordinates, yCoordinates);
     const int maxDepth = min(inputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
@@ -324,6 +326,16 @@ void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
         const int inputLength, const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
         Correction *correction, WordsPriorityQueuePool *queuePool,
         const bool doAutoCompletion, const int maxErrors, const int currentWordIndex) {
+    uint8_t totalTraverseCount = correction->pushAndGetTotalTraverseCount();
+    if (DEBUG_DICT) {
+        AKLOGI("Traverse count %d", totalTraverseCount);
+    }
+    if (totalTraverseCount > MULTIPLE_WORDS_SUGGESTION_MAX_TOTAL_TRAVERSE_COUNT) {
+        if (DEBUG_DICT) {
+            AKLOGI("Abort traversing %d", totalTraverseCount);
+        }
+        return;
+    }
     // TODO: Remove setCorrectionParams
     correction->setCorrectionParams(0, 0, 0,
             -1 /* spaceProximityPos */, -1 /* missingSpacePos */, useFullEditDistance,
@@ -410,7 +422,7 @@ inline void UnigramDictionary::onTerminal(const int probability,
     }
 }
 
-bool UnigramDictionary::getSubStringSuggestion(
+int UnigramDictionary::getSubStringSuggestion(
         ProximityInfo *proximityInfo, const int *xcoordinates, const int *ycoordinates,
         const int *codes, const bool useFullEditDistance, Correction *correction,
         WordsPriorityQueuePool* queuePool, const int inputLength,
@@ -449,8 +461,9 @@ bool UnigramDictionary::getSubStringSuggestion(
             }
         }
         WordsPriorityQueue* queue = queuePool->getSubQueue(currentWordIndex, inputWordLength);
-        if (!queue || queue->size() < 1) {
-            return false;
+        // TODO: Return the correct value depending on doAutoCompletion
+        if (!queue || queue->size() <= 0) {
+            return FLAG_MULTIPLE_SUGGEST_ABORT;
         }
         int score = 0;
         const float ns = queue->getHighestNormalizedScore(
@@ -463,7 +476,7 @@ bool UnigramDictionary::getSubStringSuggestion(
         // threshold.
         if (ns < TWO_WORDS_CORRECTION_WITH_OTHER_ERROR_THRESHOLD
                 || nextWordLength < SUB_QUEUE_MIN_WORD_LENGTH) {
-            return false;
+            return FLAG_MULTIPLE_SUGGEST_SKIP;
         }
         freq = score >> (nextWordLength + TWO_WORDS_PLUS_OTHER_ERROR_CORRECTION_DEMOTION_DIVIDER);
     }
@@ -474,7 +487,7 @@ bool UnigramDictionary::getSubStringSuggestion(
     }
     if (freq <= 0 || nextWordLength <= 0
             || MAX_WORD_LENGTH <= (outputWordStartPos + nextWordLength)) {
-        return false;
+        return FLAG_MULTIPLE_SUGGEST_SKIP;
     }
     for (int i = 0; i < nextWordLength; ++i) {
         outputWord[outputWordStartPos + i] = tempOutputWord[i];
@@ -491,7 +504,7 @@ bool UnigramDictionary::getSubStringSuggestion(
 
     if ((inputWordStartPos + inputWordLength) < inputLength) {
         if (outputWordStartPos + nextWordLength >= MAX_WORD_LENGTH) {
-            return false;
+            return FLAG_MULTIPLE_SUGGEST_SKIP;
         }
         outputWord[tempOutputWordLength] = SPACE;
         if (outputWordLength) {
@@ -512,7 +525,7 @@ bool UnigramDictionary::getSubStringSuggestion(
         }
         addWord(outputWord, tempOutputWordLength, pairFreq, queuePool->getMasterQueue());
     }
-    return true;
+    return FLAG_MULTIPLE_SUGGEST_CONTINUE;
 }
 
 void UnigramDictionary::getMultiWordsSuggestionRec(ProximityInfo *proximityInfo,
@@ -542,11 +555,18 @@ void UnigramDictionary::getMultiWordsSuggestionRec(ProximityInfo *proximityInfo,
         // Current word
         int inputWordStartPos = startInputPos;
         int inputWordLength = i - startInputPos;
-        if (!getSubStringSuggestion(proximityInfo, xcoordinates, ycoordinates, codes,
-                useFullEditDistance, correction, queuePool, inputLength, hasAutoCorrectionCandidate,
-                startWordIndex, inputWordStartPos, inputWordLength, outputWordLength,
-                true /* not used */, freqArray, wordLengthArray, outputWord,
-                &tempOutputWordLength)) {
+        if (inputWordLength > MULTIPLE_WORDS_SUGGESTION_MAX_WORD_LENGTH) {
+            break;
+        }
+        const int suggestionFlag = getSubStringSuggestion(proximityInfo, xcoordinates, ycoordinates,
+                codes, useFullEditDistance, correction, queuePool, inputLength,
+                hasAutoCorrectionCandidate, startWordIndex, inputWordStartPos, inputWordLength,
+                outputWordLength, true /* not used */, freqArray, wordLengthArray, outputWord,
+                &tempOutputWordLength);
+        if (suggestionFlag == FLAG_MULTIPLE_SUGGEST_ABORT) {
+            // TODO: break here
+            continue;
+        } else if (suggestionFlag == FLAG_MULTIPLE_SUGGEST_SKIP) {
             continue;
         }
 
@@ -557,10 +577,11 @@ void UnigramDictionary::getMultiWordsSuggestionRec(ProximityInfo *proximityInfo,
         // Missing space
         inputWordStartPos = i;
         inputWordLength = inputLength - i;
-        if(!getSubStringSuggestion(proximityInfo, xcoordinates, ycoordinates, codes,
+        if(getSubStringSuggestion(proximityInfo, xcoordinates, ycoordinates, codes,
                 useFullEditDistance, correction, queuePool, inputLength, hasAutoCorrectionCandidate,
                 startWordIndex + 1, inputWordStartPos, inputWordLength, tempOutputWordLength,
-                false /* missing space */, freqArray, wordLengthArray, outputWord, 0)) {
+                false /* missing space */, freqArray, wordLengthArray, outputWord, 0)
+                        != FLAG_MULTIPLE_SUGGEST_CONTINUE) {
             getMultiWordsSuggestionRec(proximityInfo, xcoordinates, ycoordinates, codes,
                     useFullEditDistance, inputLength, correction, queuePool,
                     hasAutoCorrectionCandidate, inputWordStartPos, startWordIndex + 1,
