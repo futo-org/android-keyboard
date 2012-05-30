@@ -18,10 +18,10 @@
 */
 -->
 
-<!-- Preferable keyboard height in absolute scale: 1.100in -->
 <resources>
     <!-- Build.HARDWARE,keyboard_height_in_dp -->
     <string-array name="keyboard_heights" translatable="false">
+    <!-- Preferable keyboard height in absolute scale: 1.100in -->
         <!-- Droid -->
         <item>sholes,194.3333</item>
         <!-- Nexus One -->
@@ -30,5 +30,8 @@
         <item>herring,171.9385</item>
         <!-- Galaxy Nexus -->
         <item>tuna,173.4207</item>
+    <!-- Preferable keyboard height in absolute scale: 45.0mm -->
+        <!-- Xoom -->
+        <item>stingray,265.4378</item>
     </string-array>
 </resources>
