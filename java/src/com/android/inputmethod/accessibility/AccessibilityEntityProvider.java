@@ -29,7 +29,6 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.inputmethod.EditorInfo;
 
@@ -51,7 +50,6 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
     private static final String TAG = AccessibilityEntityProvider.class.getSimpleName();
     private static final int UNDEFINED = Integer.MIN_VALUE;
 
-    private final KeyboardView mKeyboardView;
     private final InputMethodService mInputMethodService;
     private final KeyCodeDescriptionMapper mKeyCodeDescriptionMapper;
     private final AccessibilityUtils mAccessibilityUtils;
@@ -68,18 +66,28 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
     /** The virtual view identifier for the focused node. */
     private int mAccessibilityFocusedView = UNDEFINED;
 
+    /** The current keyboard view. */
+    private KeyboardView mKeyboardView;
+
     public AccessibilityEntityProvider(KeyboardView keyboardView, InputMethodService inputMethod) {
-        mKeyboardView = keyboardView;
         mInputMethodService = inputMethod;
 
         mKeyCodeDescriptionMapper = KeyCodeDescriptionMapper.getInstance();
         mAccessibilityUtils = AccessibilityUtils.getInstance();
 
+        setView(keyboardView);
+    }
+
+    /**
+     * Sets the keyboard view represented by this node provider.
+     *
+     * @param keyboardView The keyboard view to represent.
+     */
+    public void setView(KeyboardView keyboardView) {
+        mKeyboardView = keyboardView;
+
         assignVirtualViewIds();
         updateParentLocation();
-
-        // Ensure that the on-screen bounds are cleared when the layout changes.
-        mKeyboardView.getViewTreeObserver().addOnGlobalLayoutListener(mGlobalLayoutListener);
     }
 
     /**
@@ -196,8 +204,8 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
      * @param key The key to press.
      */
     void simulateKeyPress(Key key) {
-        final int x = key.mX + (key.mWidth / 2);
-        final int y = key.mY + (key.mHeight / 2);
+        final int x = key.mHitBox.centerX();
+        final int y = key.mHitBox.centerY();
         final long downTime = SystemClock.uptimeMillis();
         final MotionEvent downEvent = MotionEvent.obtain(
                 downTime, downTime, MotionEvent.ACTION_DOWN, x, y, 0);
@@ -331,12 +339,4 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
         // left-half of the integer and OR'ing with the y-coordinate.
         return ((0xFFFF & key.mX) << (Integer.SIZE / 2)) | (0xFFFF & key.mY);
     }
-
-    private final OnGlobalLayoutListener mGlobalLayoutListener = new OnGlobalLayoutListener() {
-        @Override
-        public void onGlobalLayout() {
-            assignVirtualViewIds();
-            updateParentLocation();
-        }
-    };
 }

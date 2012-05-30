@@ -80,6 +80,10 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
 
         // Ensure that the view has an accessibility delegate.
         ViewCompat.setAccessibilityDelegate(view, this);
+
+        if (mAccessibilityNodeProvider != null) {
+            mAccessibilityNodeProvider.setView(view);
+        }
     }
 
     /**
