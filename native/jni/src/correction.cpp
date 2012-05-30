@@ -110,6 +110,10 @@ Correction::Correction(const int typedLetterMultiplier, const int fullWordMultip
     initEditDistance(mEditDistanceTable);
 }
 
+void Correction::resetCorrection() {
+    mTotalTraverseCount = 0;
+}
+
 void Correction::initCorrection(const ProximityInfo *pi, const int inputLength,
         const int maxDepth) {
     mProximityInfo = pi;

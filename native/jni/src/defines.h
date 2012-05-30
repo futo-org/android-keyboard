@@ -24,6 +24,7 @@
 #define AKLOGI ALOGI
 
 #define DUMP_WORD(word, length) do { dumpWord(word, length); } while(0)
+#define DUMP_WORD_INT(word, length) do { dumpWordInt(word, length); } while(0)
 
 static inline void dumpWord(const unsigned short* word, const int length) {
     static char charBuf[50];
@@ -35,10 +36,21 @@ static inline void dumpWord(const unsigned short* word, const int length) {
     AKLOGI("[ %s ]", charBuf);
 }
 
+static inline void dumpWordInt(const int* word, const int length) {
+    static char charBuf[50];
+
+    for (int i = 0; i < length; ++i) {
+        charBuf[i] = word[i];
+    }
+    charBuf[length] = 0;
+    AKLOGI("i[ %s ]", charBuf);
+}
+
 #else
 #define AKLOGE(fmt, ...)
 #define AKLOGI(fmt, ...)
 #define DUMP_WORD(word, length)
+#define DUMP_WORD_INT(word, length)
 #endif
 
 #ifdef FLAG_DO_PROFILE
@@ -223,6 +235,10 @@ static inline void prof_out(void) {
 #define SUB_QUEUE_MAX_COUNT 10
 #define SUB_QUEUE_MIN_WORD_LENGTH 4
 #define MULTIPLE_WORDS_SUGGESTION_MAX_WORDS 10
+// TODO: Remove this limitation
+#define MULTIPLE_WORDS_SUGGESTION_MAX_WORD_LENGTH 12
+// TODO: Remove this limitation
+#define MULTIPLE_WORDS_SUGGESTION_MAX_TOTAL_TRAVERSE_COUNT 110
 #define MULTIPLE_WORDS_DEMOTION_RATE 80
 #define MIN_INPUT_LENGTH_FOR_THREE_OR_MORE_WORDS_CORRECTION 6
 

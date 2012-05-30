@@ -94,6 +94,7 @@ class Correction {
     }
 
     Correction(const int typedLetterMultiplier, const int fullWordMultiplier);
+    void resetCorrection();
     void initCorrection(
             const ProximityInfo *pi, const int inputLength, const int maxWordLength);
     void initCorrectionState(const int rootPos, const int childCount, const bool traverseAll);
@@ -128,6 +129,10 @@ class Correction {
     }
 
     bool needsToPrune() const;
+
+    int pushAndGetTotalTraverseCount() {
+        return ++mTotalTraverseCount;
+    }
 
     int getFreqForSplitMultipleWords(
             const int *freqArray, const int *wordLengthArray, const int wordCount,
@@ -199,6 +204,8 @@ class Correction {
     int mTerminalInputIndex;
     int mTerminalOutputIndex;
     int mMaxErrors;
+
+    uint8_t mTotalTraverseCount;
 
     // The following arrays are state buffer.
     unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];
