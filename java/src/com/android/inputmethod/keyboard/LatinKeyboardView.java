@@ -338,8 +338,10 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         mHasDistinctMultitouch = context.getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT);
-
-        PointerTracker.init(mHasDistinctMultitouch);
+        final boolean needsPhantomSuddenMoveEventHack = Boolean.parseBoolean(
+                Utils.getDeviceOverrideValue(context.getResources(),
+                        R.array.phantom_sudden_move_event_device_list, "false"));
+        PointerTracker.init(mHasDistinctMultitouch, needsPhantomSuddenMoveEventHack);
 
         final TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.LatinKeyboardView, defStyle, R.style.LatinKeyboardView);

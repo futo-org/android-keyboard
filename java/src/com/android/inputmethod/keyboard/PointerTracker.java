@@ -108,6 +108,7 @@ public class PointerTracker {
     // Parameters for pointer handling.
     private static LatinKeyboardView.PointerTrackerParams sParams;
     private static int sTouchNoiseThresholdDistanceSquared;
+    private static boolean sNeedsPhantomSuddenMoveEventHack;
 
     private static final ArrayList<PointerTracker> sTrackers = new ArrayList<PointerTracker>();
     private static PointerTrackerQueue sPointerTrackerQueue;
@@ -162,12 +163,14 @@ public class PointerTracker {
     private static final KeyboardActionListener EMPTY_LISTENER =
             new KeyboardActionListener.Adapter();
 
-    public static void init(boolean hasDistinctMultitouch) {
+    public static void init(boolean hasDistinctMultitouch,
+            boolean needsPhantomSuddenMoveEventHack) {
         if (hasDistinctMultitouch) {
             sPointerTrackerQueue = new PointerTrackerQueue();
         } else {
             sPointerTrackerQueue = null;
         }
+        sNeedsPhantomSuddenMoveEventHack = needsPhantomSuddenMoveEventHack;
 
         setParameters(LatinKeyboardView.PointerTrackerParams.DEFAULT);
     }
@@ -589,10 +592,13 @@ public class PointerTracker {
                     final int dx = x - lastX;
                     final int dy = y - lastY;
                     final int lastMoveSquared = dx * dx + dy * dy;
-                    if (lastMoveSquared >= mKeyQuarterWidthSquared) {
-                        if (DEBUG_MODE)
-                            Log.w(TAG, String.format("onMoveEvent: sudden move is translated to "
+                    if (sNeedsPhantomSuddenMoveEventHack
+                            && lastMoveSquared >= mKeyQuarterWidthSquared) {
+                        if (DEBUG_MODE) {
+                            Log.w(TAG, String.format("onMoveEvent:"
+                                    + " phantom sudden move event is translated to "
                                     + "up[%d,%d]/down[%d,%d] events", lastX, lastY, x, y));
+                        }
                         if (ProductionFlag.IS_EXPERIMENTAL) {
                             ResearchLogger.pointerTracker_onMoveEvent(x, y, lastX, lastY);
                         }
