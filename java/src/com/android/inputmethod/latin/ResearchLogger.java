@@ -65,6 +65,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final String TAG = ResearchLogger.class.getSimpleName();
     private static final boolean DEBUG = false;
     /* package */ static boolean sIsLogging = false;
+    private static final int OUTPUT_FORMAT_VERSION = 1;
     private static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
     private static final String FILENAME_PREFIX = "researchLog";
     private static final String FILENAME_SUFFIX = ".txt";
@@ -493,16 +494,15 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
     private static final String[] EVENTKEYS_LATINIME_ONSTARTINPUTVIEWINTERNAL = {
         "LATINIME_ONSTARTINPUTVIEWINTERNAL", "uuid", "packageName", "inputType", "imeOptions",
-        "fieldId", "display", "model", "prefs"
+        "fieldId", "display", "model", "prefs", "outputFormatVersion"
     };
-
     public static void latinIME_onStartInputViewInternal(final EditorInfo editorInfo,
             final SharedPreferences prefs) {
         if (editorInfo != null) {
             final Object[] values = {
                 getUUID(prefs), editorInfo.packageName, Integer.toHexString(editorInfo.inputType),
                 Integer.toHexString(editorInfo.imeOptions), editorInfo.fieldId, Build.DISPLAY,
-                Build.MODEL, prefs
+                Build.MODEL, prefs, OUTPUT_FORMAT_VERSION
             };
             getInstance().writeEvent(EVENTKEYS_LATINIME_ONSTARTINPUTVIEWINTERNAL, values);
         }
@@ -525,7 +525,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         "oldSelEnd", "newSelStart", "newSelEnd", "composingSpanStart", "composingSpanEnd",
         "expectingUpdateSelection", "expectingUpdateSelectionFromLogger", "context"
     };
-
     public static void latinIME_onUpdateSelection(final int lastSelectionStart,
             final int lastSelectionEnd, final int oldSelStart, final int oldSelEnd,
             final int newSelStart, final int newSelEnd, final int composingSpanStart,
