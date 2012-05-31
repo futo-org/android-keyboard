@@ -430,6 +430,48 @@ int UnigramDictionary::getSubStringSuggestion(
         const int inputWordStartPos, const int inputWordLength,
         const int outputWordStartPos, const bool isSpaceProximity, int *freqArray,
         int*wordLengthArray, unsigned short* outputWord, int *outputWordLength) {
+    if (inputWordLength > MULTIPLE_WORDS_SUGGESTION_MAX_WORD_LENGTH) {
+        return FLAG_MULTIPLE_SUGGEST_ABORT;
+    }
+
+    /////////////////////////////////////////////
+    // safety net for multiple word suggestion //
+    // TODO: Remove this safety net            //
+    /////////////////////////////////////////////
+    int smallWordCount = 0;
+    int singleLetterWordCount = 0;
+    if (inputWordLength == 1) {
+        ++singleLetterWordCount;
+    }
+    if (inputWordLength <= 2) {
+        // small word == single letter or 2-letter word
+        ++smallWordCount;
+    }
+    for (int i = 0; i < currentWordIndex; ++i) {
+        const int length = wordLengthArray[i];
+        if (length == 1) {
+            ++singleLetterWordCount;
+            // Safety net to avoid suggesting sequential single letter words
+            if (i < (currentWordIndex - 1)) {
+                if (wordLengthArray[i + 1] == 1) {
+                    return FLAG_MULTIPLE_SUGGEST_ABORT;
+                }
+            } else if (inputWordLength == 1) {
+                return FLAG_MULTIPLE_SUGGEST_ABORT;
+            }
+        }
+        if (length <= 2) {
+            ++smallWordCount;
+        }
+        // Safety net to avoid suggesting multiple words with many (4 or more, for now) small words
+        if (singleLetterWordCount >= 3 || smallWordCount >= 4) {
+            return FLAG_MULTIPLE_SUGGEST_ABORT;
+        }
+    }
+    //////////////////////////////////////////////
+    // TODO: Remove the safety net above        //
+    //////////////////////////////////////////////
+
     unsigned short* tempOutputWord = 0;
     int nextWordLength = 0;
     // TODO: Optimize init suggestion
@@ -555,9 +597,6 @@ void UnigramDictionary::getMultiWordsSuggestionRec(ProximityInfo *proximityInfo,
         // Current word
         int inputWordStartPos = startInputPos;
         int inputWordLength = i - startInputPos;
-        if (inputWordLength > MULTIPLE_WORDS_SUGGESTION_MAX_WORD_LENGTH) {
-            break;
-        }
         const int suggestionFlag = getSubStringSuggestion(proximityInfo, xcoordinates, ycoordinates,
                 codes, useFullEditDistance, correction, queuePool, inputLength,
                 hasAutoCorrectionCandidate, startWordIndex, inputWordStartPos, inputWordLength,
