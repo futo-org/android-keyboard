@@ -121,7 +121,7 @@
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Английская (Великобр.) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Английская (США) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_no_language" msgid="141420857808801746">"Язык не указан"</string>
-    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Язык не указан (QWERTY)"</string>
+    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"QWERTY-клавиатура"</string>
     <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"Язык не задан (QWERTZ)"</string>
     <string name="subtype_no_language_azerty" msgid="8721460968141187394">"Язык не задан (AZERTY)"</string>
     <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"Язык не задан (Dvorak)"</string>
