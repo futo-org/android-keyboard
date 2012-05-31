@@ -168,15 +168,13 @@ public class ProximityInfo {
                 final Rect hitBox = key.mHitBox;
                 final int row = hitBox.top / mKeyHeight;
                 if (row < touchPositionCorrection.mRadii.length) {
-                    final float hitBoxCenterX = (hitBox.left + hitBox.right) * 0.5f;
-                    final float hitBoxCenterY = (hitBox.top + hitBox.bottom) * 0.5f;
-                    final float hitBoxWidth = hitBox.right - hitBox.left;
-                    final float hitBoxHeight = hitBox.bottom - hitBox.top;
+                    final int hitBoxWidth = hitBox.width();
+                    final int hitBoxHeight = hitBox.height();
                     final float x = touchPositionCorrection.mXs[row];
                     final float y = touchPositionCorrection.mYs[row];
                     final float radius = touchPositionCorrection.mRadii[row];
-                    sweetSpotCenterXs[i] = hitBoxCenterX + x * hitBoxWidth;
-                    sweetSpotCenterYs[i] = hitBoxCenterY + y * hitBoxHeight;
+                    sweetSpotCenterXs[i] = hitBox.exactCenterX() + x * hitBoxWidth;
+                    sweetSpotCenterYs[i] = hitBox.exactCenterY() + y * hitBoxHeight;
                     sweetSpotRadii[i] = radius * FloatMath.sqrt(
                             hitBoxWidth * hitBoxWidth + hitBoxHeight * hitBoxHeight);
                 }
