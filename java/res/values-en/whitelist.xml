@@ -159,6 +159,14 @@
         <item>not</item>
 
         <item>255</item>
+        <item>mote</item>
+        <item>note</item>
+
+        <item>255</item>
+        <item>motes</item>
+        <item>notes</item>
+
+        <item>255</item>
         <item>nit</item>
         <item>not</item>
 
@@ -180,6 +188,14 @@
 
         <item>255</item>
         <item>tine</item>
+        <item>time</item>
+
+        <item>255</item>
+        <item>thong</item>
+        <item>thing</item>
+
+        <item>255</item>
+        <item>tome</item>
         <item>time</item>
 
         <!-- through additional proximity, 'uf' becomes 'of'. 'o' is not next to 'u' so anyone
