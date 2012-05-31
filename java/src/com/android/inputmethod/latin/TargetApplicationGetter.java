@@ -29,6 +29,7 @@ public class TargetApplicationGetter extends AsyncTask<String, Void, Application
             new LruCache<String, ApplicationInfo>(MAX_CACHE_ENTRIES);
 
     public static ApplicationInfo getCachedApplicationInfo(final String packageName) {
+        if (null == packageName) return null;
         return sCache.get(packageName);
     }
     public static void removeApplicationInfoCache(final String packageName) {
