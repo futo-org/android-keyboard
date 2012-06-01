@@ -19,6 +19,7 @@ package com.android.inputmethod.accessibility;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -104,6 +105,10 @@ public class KeyCodeDescriptionMapper {
             return getDescriptionForShiftKey(context, keyboard);
         }
 
+        if (code == Keyboard.CODE_ACTION_ENTER) {
+            return getDescriptionForActionKey(context, keyboard, key);
+        }
+
         if (!TextUtils.isEmpty(key.mLabel)) {
             final String label = key.mLabel.toString().trim();
 
@@ -186,6 +191,52 @@ public class KeyCodeDescriptionMapper {
             break;
         default:
             resId = R.string.spoken_description_shift;
+        }
+
+        return context.getString(resId);
+    }
+
+    /**
+     * Returns a context-sensitive description of the "Enter" action key.
+     *
+     * @param context The package's context.
+     * @param keyboard The keyboard on which the key resides.
+     * @param key The key to describe.
+     * @return Returns a context-sensitive description of the "Enter" action
+     *         key.
+     */
+    private String getDescriptionForActionKey(Context context, Keyboard keyboard, Key key) {
+        final KeyboardId keyboardId = keyboard.mId;
+        final int actionId = keyboardId.imeActionId();
+        final int resId;
+
+        // Always use the label, if available.
+        if (!TextUtils.isEmpty(key.mLabel)) {
+            return key.mLabel.toString().trim();
+        }
+
+        // Otherwise, use the action ID.
+        switch (actionId) {
+        case EditorInfo.IME_ACTION_SEARCH:
+            resId = R.string.spoken_description_search;
+            break;
+        case EditorInfo.IME_ACTION_GO:
+            resId = R.string.label_go_key;
+            break;
+        case EditorInfo.IME_ACTION_SEND:
+            resId = R.string.label_send_key;
+            break;
+        case EditorInfo.IME_ACTION_NEXT:
+            resId = R.string.label_next_key;
+            break;
+        case EditorInfo.IME_ACTION_DONE:
+            resId = R.string.label_done_key;
+            break;
+        case EditorInfo.IME_ACTION_PREVIOUS:
+            resId = R.string.label_previous_key;
+            break;
+        default:
+            resId = R.string.spoken_description_return;
         }
 
         return context.getString(resId);
