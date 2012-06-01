@@ -93,6 +93,8 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"Steminvoering"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Glimlag-gesiggie"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Enter"</string>
+    <!-- no translation found for spoken_description_search (1247236163755920808) -->
+    <skip />
     <string name="spoken_description_dot" msgid="40711082435231673">"Punt"</string>
     <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift geaktiveer"</string>
     <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Kasslot geaktiveer"</string>
@@ -134,7 +136,7 @@
     <string name="save" msgid="7646738597196767214">"Stoor"</string>
     <string name="subtype_locale" msgid="8576443440738143764">"Taal"</string>
     <string name="keyboard_layout_set" msgid="4309233698194565609">"Uitleg"</string>
-    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Jou gepasmaakte invoerstyl moet geaktiveer word voor gebruik. Wil jy nou aktiveer?"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Jou gepasmaakte invoerstyl moet geaktiveer word voor gebruik. Aktiveer nou?"</string>
     <string name="enable" msgid="5031294444630523247">"Aktiveer"</string>
     <string name="not_now" msgid="6172462888202790482">"Nie nou nie"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Dieselfde invoerstyl bestaan ​​reeds: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>

@@ -93,6 +93,8 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"Input suara"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Muka senyum"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Return"</string>
+    <!-- no translation found for spoken_description_search (1247236163755920808) -->
+    <skip />
     <string name="spoken_description_dot" msgid="40711082435231673">"Titik"</string>
     <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Kunci anjak didayakan"</string>
     <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Kunci huruf besar didayakan"</string>
