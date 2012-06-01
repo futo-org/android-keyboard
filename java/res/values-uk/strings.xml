@@ -93,6 +93,8 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"Голосовий ввід"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Смайлик"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Клавіша Return"</string>
+    <!-- no translation found for spoken_description_search (1247236163755920808) -->
+    <skip />
     <string name="spoken_description_dot" msgid="40711082435231673">"Крапка"</string>
     <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift увімкнено"</string>
     <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps Lock увімкнено"</string>
@@ -137,7 +139,7 @@
     <string name="custom_input_style_note_message" msgid="8826731320846363423">"Щоб використовувати користувацький стиль введення, його потрібно ввімкнути. Увімкнути його?"</string>
     <string name="enable" msgid="5031294444630523247">"Увімкнути"</string>
     <string name="not_now" msgid="6172462888202790482">"Не зараз"</string>
-    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Таких стиль введення вже існує: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Такий стиль введення вже існує: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Режим вивчення зручності у використанні"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Налаштування тривалості вібрації під час натискання клавіші"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Налаштування гучності звуку під час натискання клавіші"</string>
