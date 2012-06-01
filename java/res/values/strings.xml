@@ -188,6 +188,8 @@
     <string name="spoken_description_smiley">Smiley face</string>
     <!-- Spoken description for the "Return" keyboard key. -->
     <string name="spoken_description_return">Return</string>
+    <!-- Spoken description for the "Search" keyboard key. -->
+    <string name="spoken_description_search">Search</string>
     <!-- Spoken description for the "U+2022" (BULLET) keyboard key. -->
     <string name="spoken_description_dot">Dot</string>
 
