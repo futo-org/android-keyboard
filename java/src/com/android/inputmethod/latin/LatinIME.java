@@ -454,6 +454,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // Has to be package-visible for unit tests
     /* package */ void loadSettings() {
+        // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
+        // is not guaranteed. It may even be called at the same time on a different thread.
         if (null == mPrefs) mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         final RunInLocale<SettingsValues> job = new RunInLocale<SettingsValues>() {
             @Override
@@ -495,6 +497,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         resetContactsDictionary(oldContactsDictionary);
 
+        // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
+        // is not guaranteed. It may even be called at the same time on a different thread.
+        if (null == mPrefs) mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mUserHistoryDictionary = new UserHistoryDictionary(
                 this, localeStr, Suggest.DIC_USER_HISTORY, mPrefs);
         mSuggest.setUserHistoryDictionary(mUserHistoryDictionary);
@@ -624,6 +629,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype subtype) {
+        // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
+        // is not guaranteed. It may even be called at the same time on a different thread.
         mSubtypeSwitcher.updateSubtype(subtype);
     }
 
