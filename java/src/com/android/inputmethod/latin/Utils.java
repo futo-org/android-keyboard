@@ -126,8 +126,9 @@ public class Utils {
         }
         public static RingCharBuffer init(InputMethodService context, boolean enabled,
                 boolean usabilityStudy) {
+            if (!(enabled || usabilityStudy)) return null;
             sRingCharBuffer.mContext = context;
-            sRingCharBuffer.mEnabled = enabled || usabilityStudy;
+            sRingCharBuffer.mEnabled = true;
             UsabilityStudyLogUtils.getInstance().init(context);
             return sRingCharBuffer;
         }
@@ -221,8 +222,6 @@ public class Utils {
         // TODO: remove code duplication with ResearchLog class
         private static final String USABILITY_TAG = UsabilityStudyLogUtils.class.getSimpleName();
         private static final String FILENAME = "log.txt";
-        private static final UsabilityStudyLogUtils sInstance =
-                new UsabilityStudyLogUtils();
         private final Handler mLoggingHandler;
         private File mFile;
         private File mDirectory;
@@ -241,8 +240,13 @@ public class Utils {
             mLoggingHandler = new Handler(handlerThread.getLooper());
         }
 
+        // Initialization-on-demand holder
+        private static class OnDemandInitializationHolder {
+            public static final UsabilityStudyLogUtils sInstance = new UsabilityStudyLogUtils();
+        }
+
         public static UsabilityStudyLogUtils getInstance() {
-            return sInstance;
+            return OnDemandInitializationHolder.sInstance;
         }
 
         public void init(InputMethodService ims) {
