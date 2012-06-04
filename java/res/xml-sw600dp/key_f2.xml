@@ -26,14 +26,20 @@
             latin:mode="email|url"
         >
             <Key
-                latin:keyLabel="-" />
+                latin:keyStyle="comKeyStyle" />
+        </case>
+        <case
+            latin:imeAction="actionSearch"
+        >
+            <Key
+                latin:keyLabel=":"
+                latin:keyHintLabel="+"
+                latin:moreKeys="+"
+                latin:keyStyle="hasShiftedLetterHintStyle" />
         </case>
         <default>
             <Key
-                latin:keyLabel="!text/keylabel_for_apostrophe"
-                latin:keyHintLabel="!text/keyhintlabel_for_apostrophe"
-                latin:moreKeys="!text/more_keys_for_apostrophe"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
+                latin:keyStyle="smileyKeyStyle" />
         </default>
     </switch>
 </merge>

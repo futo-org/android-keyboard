@@ -23,19 +23,10 @@
 >
     <switch>
         <case
-            latin:mode="email"
+            latin:mode="email|url"
         >
             <Key
                 latin:keyLabel="-" />
-        </case>
-        <case
-            latin:mode="url"
-        >
-            <Key
-                latin:keyLabel="/"
-                latin:keyHintLabel=":"
-                latin:moreKeys=":"
-                latin:keyStyle="hasShiftedLetterHintStyle" />
         </case>
         <default>
             <Key

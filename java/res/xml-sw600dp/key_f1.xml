@@ -23,16 +23,39 @@
 >
     <switch>
         <case
-            latin:mode="email|url"
+            latin:keyboardLayoutSetElement="symbols"
+            latin:mode="url"
         >
             <Key
-                latin:keyLabel="-" />
+                latin:keyLabel=":" />
+        </case>
+        <case
+            latin:keyboardLayoutSetElement="symbols"
+        >
+            <Key
+                latin:keyLabel="\@" />
+        </case>
+        <!-- keyboardLayoutSetElement != "symbols" -->
+        <case
+            latin:mode="email"
+        >
+            <Key
+                latin:keyLabel="\@" />
+        </case>
+        <case
+            latin:mode="url"
+        >
+            <Key
+                latin:keyLabel="/"
+                latin:keyHintLabel=":"
+                latin:moreKeys=":"
+                latin:keyStyle="hasShiftedLetterHintStyle" />
         </case>
         <default>
             <Key
-                latin:keyLabel="!text/keylabel_for_apostrophe"
-                latin:keyHintLabel="!text/keyhintlabel_for_apostrophe"
-                latin:moreKeys="!text/more_keys_for_apostrophe"
+                latin:keyLabel="/"
+                latin:keyHintLabel="\@"
+                latin:moreKeys="\@"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
         </default>
     </switch>

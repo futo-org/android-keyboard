@@ -23,16 +23,16 @@
 >
     <Row
         latin:keyWidth="9.0%p"
+        latin:backgroundType="functional"
     >
         <Key
             latin:keyStyle="toAlphaKeyStyle"
             latin:keyWidth="10.0%p" />
+        <!-- Here is empty space. -->
         <include
             latin:keyXPos="28.0%p"
-            latin:keyboardLayout="@xml/key_space" />
-        <include
-            latin:keyXPos="-9.0%p"
-            latin:keyWidth="fillRight"
-            latin:keyboardLayout="@xml/key_shortcut" />
+            latin:keyboardLayout="@xml/key_space"
+            latin:backgroundType="normal" />
+        <!-- Here is empty space. -->
     </Row>
 </merge>

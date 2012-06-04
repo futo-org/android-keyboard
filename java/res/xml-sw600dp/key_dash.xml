@@ -23,7 +23,7 @@
 >
     <switch>
         <case
-            latin:mode="email"
+            latin:mode="email|url"
         >
             <Key
                 latin:keyLabel="_" />
