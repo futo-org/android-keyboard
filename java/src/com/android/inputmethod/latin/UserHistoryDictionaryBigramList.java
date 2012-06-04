@@ -19,7 +19,6 @@ package com.android.inputmethod.latin;
 import android.util.Log;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -28,10 +27,11 @@ import java.util.Set;
  * bigrams when we write to the SQL DB.
  */
 public class UserHistoryDictionaryBigramList {
+    public static final byte FORGETTING_CURVE_INITIAL_VALUE = 0;
     private static final String TAG = UserHistoryDictionaryBigramList.class.getSimpleName();
-    private static final HashSet<String> EMPTY_STRING_SET = new HashSet<String>();
-    private final HashMap<String, HashSet<String>> mBigramMap =
-            new HashMap<String, HashSet<String>>();
+    private static final HashMap<String, Byte> EMPTY_BIGRAM_MAP = new HashMap<String, Byte>();
+    private final HashMap<String, HashMap<String, Byte>> mBigramMap =
+            new HashMap<String, HashMap<String, Byte>>();
     private int mSize = 0;
 
     public void evictAll() {
@@ -40,19 +40,23 @@ public class UserHistoryDictionaryBigramList {
     }
 
     public void addBigram(String word1, String word2) {
+        addBigram(word1, word2, FORGETTING_CURVE_INITIAL_VALUE);
+    }
+
+    public void addBigram(String word1, String word2, byte fcValue) {
         if (UserHistoryDictionary.DBG_SAVE_RESTORE) {
             Log.d(TAG, "--- add bigram: " + word1 + ", " + word2);
         }
-        final HashSet<String> set;
+        final HashMap<String, Byte> map;
         if (mBigramMap.containsKey(word1)) {
-            set = mBigramMap.get(word1);
+            map = mBigramMap.get(word1);
         } else {
-            set = new HashSet<String>();
-            mBigramMap.put(word1, set);
+            map = new HashMap<String, Byte>();
+            mBigramMap.put(word1, map);
         }
-        if (!set.contains(word2)) {
+        if (!map.containsKey(word2)) {
             ++mSize;
-            set.add(word2);
+            map.put(word2, fcValue);
         }
     }
 
@@ -68,20 +72,20 @@ public class UserHistoryDictionaryBigramList {
         return mBigramMap.keySet();
     }
 
-    public HashSet<String> getBigrams(String word1) {
+    public HashMap<String, Byte> getBigrams(String word1) {
         if (!mBigramMap.containsKey(word1)) {
-            return EMPTY_STRING_SET;
+            return EMPTY_BIGRAM_MAP;
         } else {
             return mBigramMap.get(word1);
         }
     }
 
     public boolean removeBigram(String word1, String word2) {
-        final HashSet<String> set = getBigrams(word1);
+        final HashMap<String, Byte> set = getBigrams(word1);
         if (set.isEmpty()) {
             return false;
         }
-        if (set.contains(word2)) {
+        if (set.containsKey(word2)) {
             set.remove(word2);
             --mSize;
             return true;
