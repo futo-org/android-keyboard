@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
@@ -213,6 +214,7 @@ public class PointerTracker {
 
     public static void dismissAllKeyPreviews() {
         for (final PointerTracker tracker : sTrackers) {
+            tracker.getKeyPreviewText().setVisibility(View.INVISIBLE);
             tracker.setReleasedKeyGraphics(tracker.mCurrentKey);
         }
     }
