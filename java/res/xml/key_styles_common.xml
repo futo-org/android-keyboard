@@ -22,23 +22,8 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <!-- Base key style for the key which may have settings or tab key as popup key. -->
-    <switch>
-        <case
-            latin:clobberSettingsKey="true"
-        >
-            <key-style
-                latin:styleName="f1MoreKeysStyle"
-                latin:backgroundType="functional" />
-        </case>
-        <!-- clobberSettingsKey="false" -->
-        <default>
-            <key-style
-                latin:styleName="f1MoreKeysStyle"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!text/settings_as_more_key"
-                latin:backgroundType="functional" />
-        </default>
-    </switch>
+    <include
+        latin:keyboardLayout="@xml/key_styles_f1" />
     <!-- Functional key styles -->
     <switch>
         <case
