@@ -96,9 +96,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private static final int QUICK_PRESS = 200;
 
     private static final int PENDING_IMS_CALLBACK_DURATION = 800;
-    // TODO: remove this
-    private static final boolean WORKAROUND_USE_LAST_BACKING_HEIGHT_WHEN_NOT_READY = true;
-    private static int sLastBackingHeight = 0;
 
     /**
      * The name of the scheme used by the Package Manager to warn of a new package installation,
@@ -954,13 +951,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         setSuggestionStripShownInternal(shown, /* needsInputViewShown */true);
     }
 
-    private void adjustInputViewHeight() {
-        if (mKeyPreviewBackingView.getHeight() > 0) {
-            return;
+    private int getAdjustedBackingViewHeight() {
+        final int currentHeight = mKeyPreviewBackingView.getHeight();
+        if (currentHeight > 0) {
+            return currentHeight;
         }
 
         final KeyboardView keyboardView = mKeyboardSwitcher.getKeyboardView();
-        if (keyboardView == null) return;
+        if (keyboardView == null) {
+            return 0;
+        }
         final int keyboardHeight = keyboardView.getHeight();
         final int suggestionsHeight = mSuggestionsContainer.getHeight();
         final int displayHeight = mResources.getDisplayMetrics().heightPixels;
@@ -973,6 +973,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final LayoutParams params = mKeyPreviewBackingView.getLayoutParams();
         params.height = mSuggestionsView.setMoreSuggestionsHeight(remainingHeight);
         mKeyPreviewBackingView.setLayoutParams(params);
+        return params.height;
     }
 
     @Override
@@ -981,20 +982,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView == null || mSuggestionsContainer == null)
             return;
-        adjustInputViewHeight();
+        final int backingHeight = getAdjustedBackingViewHeight();
         // In fullscreen mode, the height of the extract area managed by InputMethodService should
         // be considered.
         // See {@link android.inputmethodservice.InputMethodService#onComputeInsets}.
         final int extractHeight = isFullscreenMode() ? mExtractArea.getHeight() : 0;
-        final boolean backingGone = mKeyPreviewBackingView.getVisibility() == View.GONE;
-        int backingHeight = backingGone ? 0 : mKeyPreviewBackingView.getHeight();
-        if (WORKAROUND_USE_LAST_BACKING_HEIGHT_WHEN_NOT_READY && !backingGone) {
-            if (backingHeight <= 0) {
-                backingHeight = sLastBackingHeight;
-            } else {
-                sLastBackingHeight = backingHeight;
-            }
-        }
         final int suggestionsHeight = (mSuggestionsContainer.getVisibility() == View.GONE) ? 0
                 : mSuggestionsContainer.getHeight();
         final int extraHeight = extractHeight + backingHeight + suggestionsHeight;
@@ -1014,11 +1006,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         outInsets.contentTopInsets = touchY;
         outInsets.visibleTopInsets = touchY;
-        if (WORKAROUND_USE_LAST_BACKING_HEIGHT_WHEN_NOT_READY) {
-            if (LatinImeLogger.sDBG) {
-                Log.i(TAG, "--- insets: " + touchY + "," + backingHeight + "," + suggestionsHeight);
-            }
-        }
     }
 
     @Override
