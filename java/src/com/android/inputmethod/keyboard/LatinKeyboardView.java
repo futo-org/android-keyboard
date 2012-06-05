@@ -468,6 +468,10 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.latinKeyboardView_setKeyboard(keyboard);
         }
+
+        // This always needs to be set since the accessibility state can
+        // potentially change without the keyboard being set again.
+        AccessibleKeyboardViewProxy.getInstance().setKeyboard(keyboard);
     }
 
     /**
