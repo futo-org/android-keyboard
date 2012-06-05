@@ -86,6 +86,12 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
         }
     }
 
+    public void setKeyboard(Keyboard keyboard) {
+        if (mAccessibilityNodeProvider != null) {
+            mAccessibilityNodeProvider.setKeyboard(keyboard);
+        }
+    }
+
     /**
      * Proxy method for View.getAccessibilityNodeProvider(). This method is
      * called in SDK version 15 and higher to obtain the virtual node hierarchy
