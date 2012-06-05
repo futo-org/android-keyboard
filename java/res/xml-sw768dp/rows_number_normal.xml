@@ -30,15 +30,18 @@
             latin:keyLabel="-"
             latin:keyStyle="numKeyStyle"
             latin:keyXPos="13.829%p"
-            latin:keyWidth="8.047%p" />
+            latin:keyWidth="8.047%p"
+            latin:backgroundType="functional" />
         <Key
             latin:keyLabel="+"
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="8.047%p" />
+            latin:keyWidth="8.047%p"
+            latin:backgroundType="functional" />
         <Key
             latin:keyLabel="."
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="8.047%p" />
+            latin:keyWidth="8.047%p"
+            latin:backgroundType="functional" />
         <Key
             latin:keyLabel="1"
             latin:keyStyle="numKeyStyle"
@@ -60,11 +63,13 @@
             latin:keyWidth="13.829%p" />
         <Key
             latin:keyStyle="numStarKeyStyle"
-            latin:keyWidth="8.047%p" />
+            latin:keyWidth="8.047%p"
+            latin:backgroundType="functional" />
         <Key
             latin:keyLabel="/"
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="8.047%p" />
+            latin:keyWidth="8.047%p"
+            latin:backgroundType="functional" />
         <switch>
             <case
                 latin:mode="time|datetime"
@@ -74,13 +79,15 @@
                     latin:keyLabelFlags="hasPopupHint"
                     latin:moreKeys="!text/more_keys_for_am_pm"
                     latin:keyStyle="numKeyStyle"
-                    latin:keyWidth="8.047%p" />
+                    latin:keyWidth="8.047%p"
+                    latin:backgroundType="functional" />
             </case>
             <default>
                 <Key
                     latin:keyLabel=","
                     latin:keyStyle="numKeyStyle"
-                    latin:keyWidth="8.047%p" />
+                    latin:keyWidth="8.047%p"
+                    latin:backgroundType="functional" />
             </default>
         </switch>
         <Key
@@ -105,11 +112,13 @@
         <Key
             latin:keyLabel="("
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="8.047%p" />
+            latin:keyWidth="8.047%p"
+            latin:backgroundType="functional" />
         <Key
             latin:keyLabel=")"
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="8.047%p" />
+            latin:keyWidth="8.047%p"
+            latin:backgroundType="functional" />
         <switch>
             <case
                 latin:mode="time|datetime"
@@ -117,13 +126,15 @@
                 <Key
                     latin:keyLabel=":"
                     latin:keyStyle="numKeyStyle"
-                    latin:keyWidth="8.047%p" />
+                    latin:keyWidth="8.047%p"
+                    latin:backgroundType="functional" />
             </case>
             <default>
                 <Key
                     latin:keyLabel="="
                     latin:keyStyle="numKeyStyle"
-                    latin:keyWidth="8.047%p" />
+                    latin:keyWidth="8.047%p"
+                    latin:backgroundType="functional" />
             </default>
         </switch>
         <Key
@@ -146,7 +157,8 @@
         <Key
             latin:keyStyle="spaceKeyStyle"
             latin:keyXPos="13.829%p"
-            latin:keyWidth="24.140%p" />
+            latin:keyWidth="24.140%p"
+            latin:backgroundType="functional" />
         <Key
             latin:keyStyle="numStarKeyStyle"
             latin:keyXPos="43.125%p" />
@@ -156,9 +168,5 @@
         <Key
             latin:keyLabel="#"
             latin:keyStyle="numKeyStyle" />
-        <include
-            latin:keyXPos="-8.047%p"
-            latin:keyWidth="fillRight"
-            latin:keyboardLayout="@xml/key_shortcut" />
     </Row>
 </merge>

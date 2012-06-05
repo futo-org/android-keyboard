@@ -28,5 +28,9 @@
             <Key
                 latin:keyStyle="shortcutKeyStyle" />
         </case>
+        <default>
+            <!-- The empty space instead of shortcut key. -->
+            <Spacer />
+        </default>
     </switch>
 </merge>
