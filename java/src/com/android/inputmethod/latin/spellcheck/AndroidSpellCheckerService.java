@@ -496,20 +496,32 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         }
 
         private static class SuggestionsCache {
+            private static final char CHAR_DELIMITER = '\uFFFC';
             private static final int MAX_CACHE_SIZE = 50;
-            // TODO: support bigram
             private final LruCache<String, SuggestionsParams> mUnigramSuggestionsInfoCache =
                     new LruCache<String, SuggestionsParams>(MAX_CACHE_SIZE);
 
-            public SuggestionsParams getSuggestionsFromCache(String query) {
-                return mUnigramSuggestionsInfoCache.get(query);
+            // TODO: Support n-gram input
+            private static String generateKey(String query, String prevWord) {
+                if (TextUtils.isEmpty(query) || TextUtils.isEmpty(prevWord)) {
+                    return query;
+                }
+                return query + CHAR_DELIMITER + prevWord;
             }
 
-            public void putSuggestionsToCache(String query, String[] suggestions, int flags) {
+            // TODO: Support n-gram input
+            public SuggestionsParams getSuggestionsFromCache(String query, String prevWord) {
+                return mUnigramSuggestionsInfoCache.get(generateKey(query, prevWord));
+            }
+
+            // TODO: Support n-gram input
+            public void putSuggestionsToCache(
+                    String query, String prevWord, String[] suggestions, int flags) {
                 if (suggestions == null || TextUtils.isEmpty(query)) {
                     return;
                 }
-                mUnigramSuggestionsInfoCache.put(query, new SuggestionsParams(suggestions, flags));
+                mUnigramSuggestionsInfoCache.put(
+                        generateKey(query, prevWord), new SuggestionsParams(suggestions, flags));
             }
         }
 
@@ -604,6 +616,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             final ArrayList<Integer> additionalLengths = new ArrayList<Integer>();
             final ArrayList<SuggestionsInfo> additionalSuggestionsInfos =
                     new ArrayList<SuggestionsInfo>();
+            String currentWord = null;
             for (int i = 0; i < N; ++i) {
                 final SuggestionsInfo si = ssi.getSuggestionsInfoAt(i);
                 final int flags = si.getSuggestionsAttributes();
@@ -613,6 +626,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 final int offset = ssi.getOffsetAt(i);
                 final int length = ssi.getLengthAt(i);
                 final String subText = typedText.substring(offset, offset + length);
+                final String prevWord = currentWord;
+                currentWord = subText;
                 if (!subText.contains(SINGLE_QUOTE)) {
                     continue;
                 }
@@ -626,7 +641,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                     if (TextUtils.isEmpty(splitText)) {
                         continue;
                     }
-                    if (mSuggestionsCache.getSuggestionsFromCache(splitText) == null) {
+                    if (mSuggestionsCache.getSuggestionsFromCache(
+                            splitText, prevWord) == null) {
                         continue;
                     }
                     final int newLength = splitText.length();
@@ -722,7 +738,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             try {
                 final String inText = textInfo.getText();
                 final SuggestionsParams cachedSuggestionsParams =
-                        mSuggestionsCache.getSuggestionsFromCache(inText);
+                        mSuggestionsCache.getSuggestionsFromCache(inText, prevWord);
                 if (cachedSuggestionsParams != null) {
                     if (DBG) {
                         Log.d(TAG, "Cache hit: " + inText + ", " + cachedSuggestionsParams.mFlags);
@@ -814,7 +830,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                                         .getValueOf_RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS()
                                 : 0);
                 final SuggestionsInfo retval = new SuggestionsInfo(flags, result.mSuggestions);
-                mSuggestionsCache.putSuggestionsToCache(text, result.mSuggestions, flags);
+                mSuggestionsCache.putSuggestionsToCache(text, prevWord, result.mSuggestions, flags);
                 return retval;
             } catch (RuntimeException e) {
                 // Don't kill the keyboard if there is a bug in the spell checker
