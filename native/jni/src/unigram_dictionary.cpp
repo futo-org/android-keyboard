@@ -305,7 +305,7 @@ void UnigramDictionary::initSuggestions(ProximityInfo *proximityInfo, const int 
         AKLOGI("initSuggest");
         DUMP_WORD_INT(codes, inputLength);
     }
-    proximityInfo->setInputParams(codes, inputLength, xCoordinates, yCoordinates);
+    proximityInfo->initInputParams(codes, inputLength, xCoordinates, yCoordinates);
     const int maxDepth = min(inputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
     correction->initCorrection(proximityInfo, inputLength, maxDepth);
 }

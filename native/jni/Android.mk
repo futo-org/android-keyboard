@@ -45,6 +45,7 @@ LATIN_IME_CORE_SRC_FILES := \
     correction.cpp \
     dictionary.cpp \
     proximity_info.cpp \
+    proximity_info_state.cpp \
     unigram_dictionary.cpp
 
 LOCAL_SRC_FILES := \

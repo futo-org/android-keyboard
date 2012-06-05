@@ -27,6 +27,7 @@
 #include "defines.h"
 #include "dictionary.h"
 #include "proximity_info.h"
+#include "proximity_info_state.h"
 
 namespace latinime {
 
@@ -308,13 +309,12 @@ Correction::CorrectionType Correction::processUnrelatedCorrectionType() {
     return UNRELATED;
 }
 
-inline bool isEquivalentChar(ProximityInfo::ProximityType type) {
-    return type == ProximityInfo::EQUIVALENT_CHAR;
+inline bool isEquivalentChar(ProximityType type) {
+    return type == EQUIVALENT_CHAR;
 }
 
-inline bool isProximityCharOrEquivalentChar(ProximityInfo::ProximityType type) {
-    return type == ProximityInfo::EQUIVALENT_CHAR
-            || type == ProximityInfo::NEAR_PROXIMITY_CHAR;
+inline bool isProximityCharOrEquivalentChar(ProximityType type) {
+    return type == EQUIVALENT_CHAR || type == NEAR_PROXIMITY_CHAR;
 }
 
 Correction::CorrectionType Correction::processCharAndCalcState(
@@ -335,14 +335,14 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         bool incremented = false;
         if (mLastCharExceeded && mInputIndex == mInputLength - 1) {
             // TODO: Do not check the proximity if EditDistance exceeds the threshold
-            const ProximityInfo::ProximityType matchId =
+            const ProximityType matchId =
                     mProximityInfo->getMatchedProximityId(mInputIndex, c, true, &proximityIndex);
             if (isEquivalentChar(matchId)) {
                 mLastCharExceeded = false;
                 --mExcessiveCount;
                 mDistances[mOutputIndex] =
                         mProximityInfo->getNormalizedSquaredDistance(mInputIndex, 0);
-            } else if (matchId == ProximityInfo::NEAR_PROXIMITY_CHAR) {
+            } else if (matchId == NEAR_PROXIMITY_CHAR) {
                 mLastCharExceeded = false;
                 --mExcessiveCount;
                 ++mProximityCount;
@@ -417,13 +417,13 @@ Correction::CorrectionType Correction::processCharAndCalcState(
             ? (noCorrectionsHappenedSoFar || mProximityCount == 0)
             : (noCorrectionsHappenedSoFar && mProximityCount == 0);
 
-    ProximityInfo::ProximityType matchedProximityCharId = secondTransposing
-            ? ProximityInfo::EQUIVALENT_CHAR
+    ProximityType matchedProximityCharId = secondTransposing
+            ? EQUIVALENT_CHAR
             : mProximityInfo->getMatchedProximityId(
                     mInputIndex, c, checkProximityChars, &proximityIndex);
 
-    if (ProximityInfo::UNRELATED_CHAR == matchedProximityCharId
-            || ProximityInfo::ADDITIONAL_PROXIMITY_CHAR == matchedProximityCharId) {
+    if (UNRELATED_CHAR == matchedProximityCharId
+            || ADDITIONAL_PROXIMITY_CHAR == matchedProximityCharId) {
         if (canTryCorrection && mOutputIndex > 0
                 && mCorrectionStates[mOutputIndex].mProximityMatching
                 && mCorrectionStates[mOutputIndex].mExceeding
@@ -451,9 +451,9 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         }
     }
 
-    if (ProximityInfo::UNRELATED_CHAR == matchedProximityCharId
-            || ProximityInfo::ADDITIONAL_PROXIMITY_CHAR == matchedProximityCharId) {
-        if (ProximityInfo::ADDITIONAL_PROXIMITY_CHAR == matchedProximityCharId) {
+    if (UNRELATED_CHAR == matchedProximityCharId
+            || ADDITIONAL_PROXIMITY_CHAR == matchedProximityCharId) {
+        if (ADDITIONAL_PROXIMITY_CHAR == matchedProximityCharId) {
             mAdditionalProximityMatching = true;
         }
         // TODO: Optimize
@@ -543,7 +543,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
                         mTransposedCount, mExcessiveCount, c);
             }
             return processSkipChar(c, isTerminal, false);
-        } else if (ProximityInfo::ADDITIONAL_PROXIMITY_CHAR == matchedProximityCharId) {
+        } else if (ADDITIONAL_PROXIMITY_CHAR == matchedProximityCharId) {
             // As a last resort, use additional proximity characters
             mProximityMatching = true;
             ++mProximityCount;
@@ -574,7 +574,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         mMatching = true;
         ++mEquivalentCharCount;
         mDistances[mOutputIndex] = mProximityInfo->getNormalizedSquaredDistance(mInputIndex, 0);
-    } else if (ProximityInfo::NEAR_PROXIMITY_CHAR == matchedProximityCharId) {
+    } else if (NEAR_PROXIMITY_CHAR == matchedProximityCharId) {
         mProximityMatching = true;
         ++mProximityCount;
         mDistances[mOutputIndex] =
@@ -737,8 +737,7 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
         multiplyIntCapped(matchWeight, &finalFreq);
     }
 
-    if (proximityInfo->getMatchedProximityId(0, word[0], true)
-            == ProximityInfo::UNRELATED_CHAR) {
+    if (proximityInfo->getMatchedProximityId(0, word[0], true) == UNRELATED_CHAR) {
         multiplyRate(FIRST_CHAR_DIFFERENT_DEMOTION_RATE, &finalFreq);
     }
 
@@ -796,7 +795,7 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
                 static const float R1 = NEUTRAL_SCORE_SQUARED_RADIUS;
                 static const float R2 = HALF_SCORE_SQUARED_RADIUS;
                 const float x = (float)squaredDistance
-                        / ProximityInfo::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
+                        / ProximityInfoState::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
                 const float factor = max((x < R1)
                     ? (A * (R1 - x) + B * x) / R1
                     : (B * (R2 - x) + C * (x - R1)) / (R2 - R1), MIN);

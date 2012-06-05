@@ -27,6 +27,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class ProximityInfo {
+    /** MAX_PROXIMITY_CHARS_SIZE must be the same as MAX_PROXIMITY_CHARS_SIZE_INTERNAL
+     * in defines.h */
     public static final int MAX_PROXIMITY_CHARS_SIZE = 16;
     /** Number of key widths from current touch point to search for nearest keys. */
     private static float SEARCH_DISTANCE = 1.2f;
