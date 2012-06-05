@@ -85,9 +85,20 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
      */
     public void setView(KeyboardView keyboardView) {
         mKeyboardView = keyboardView;
-
-        assignVirtualViewIds();
         updateParentLocation();
+
+        // Since this class is constructed lazily, we might not get a subsequent
+        // call to setKeyboard() and therefore need to call it now.
+        setKeyboard(mKeyboardView.getKeyboard());
+    }
+
+    /**
+     * Sets the keyboard represented by this node provider.
+     *
+     * @param keyboard The keyboard to represent.
+     */
+    public void setKeyboard(Keyboard keyboard) {
+        assignVirtualViewIds();
     }
 
     /**
