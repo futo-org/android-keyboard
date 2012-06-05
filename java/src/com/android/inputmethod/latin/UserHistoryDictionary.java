@@ -72,10 +72,10 @@ public class UserHistoryDictionary extends ExpandableDictionary {
     private static final String FREQ_TABLE_NAME = "frequency";
     private static final String FREQ_COLUMN_ID = BaseColumns._ID;
     private static final String FREQ_COLUMN_PAIR_ID = "pair_id";
-    private static final String FREQ_COLUMN_FREQUENCY = "freq";
+    private static final String COLUMN_FORGETTING_CURVE_VALUE = "freq";
 
-    /** Locale for which this auto dictionary is storing words */
-    private String mLocale;
+    /** Locale for which this user history dictionary is storing words */
+    private final String mLocale;
 
     private UserHistoryDictionaryBigramList mBigramList =
             new UserHistoryDictionaryBigramList();
@@ -94,7 +94,7 @@ public class UserHistoryDictionary extends ExpandableDictionary {
 
         sDictProjectionMap.put(FREQ_COLUMN_ID, FREQ_COLUMN_ID);
         sDictProjectionMap.put(FREQ_COLUMN_PAIR_ID, FREQ_COLUMN_PAIR_ID);
-        sDictProjectionMap.put(FREQ_COLUMN_FREQUENCY, FREQ_COLUMN_FREQUENCY);
+        sDictProjectionMap.put(COLUMN_FORGETTING_CURVE_VALUE, COLUMN_FORGETTING_CURVE_VALUE);
     }
 
     private static DatabaseHelper sOpenHelper = null;
@@ -214,25 +214,26 @@ public class UserHistoryDictionary extends ExpandableDictionary {
             if (cursor.moveToFirst()) {
                 final int word1Index = cursor.getColumnIndex(MAIN_COLUMN_WORD1);
                 final int word2Index = cursor.getColumnIndex(MAIN_COLUMN_WORD2);
-                final int frequencyIndex = cursor.getColumnIndex(FREQ_COLUMN_FREQUENCY);
+                final int fcIndex = cursor.getColumnIndex(COLUMN_FORGETTING_CURVE_VALUE);
                 while (!cursor.isAfterLast()) {
                     final String word1 = cursor.getString(word1Index);
                     final String word2 = cursor.getString(word2Index);
-                    final int frequency = cursor.getInt(frequencyIndex);
+                    final int fc = cursor.getInt(fcIndex);
                     if (DBG_SAVE_RESTORE) {
-                        Log.d(TAG, "--- Load user history: " + word1 + ", " + word2);
+                        Log.d(TAG, "--- Load user history: " + word1 + ", " + word2 + ","
+                                + mLocale + "," + this);
                     }
                     // Safeguard against adding really long words. Stack may overflow due
                     // to recursive lookup
                     if (null == word1) {
-                        super.addWord(word2, null /* shortcut */, frequency);
+                        super.addWord(word2, null /* shortcut */, fc);
                     } else if (word1.length() < BinaryDictionary.MAX_WORD_LENGTH
                             && word2.length() < BinaryDictionary.MAX_WORD_LENGTH) {
                         super.setBigramAndGetFrequency(
-                                word1, word2, new ForgettingCurveParams(frequency, now, last));
+                                word1, word2, new ForgettingCurveParams(fc, now, last));
                     }
                     synchronized(mPendingWritesLock) {
-                        mBigramList.addBigram(word1, word2);
+                        mBigramList.addBigram(word1, word2, (byte)fc);
                     }
                     cursor.moveToNext();
                 }
@@ -259,7 +260,8 @@ public class UserHistoryDictionary extends ExpandableDictionary {
         try {
             SQLiteDatabase db = sOpenHelper.getReadableDatabase();
             Cursor c = qb.query(db,
-                    new String[] { MAIN_COLUMN_WORD1, MAIN_COLUMN_WORD2, FREQ_COLUMN_FREQUENCY },
+                    new String[] {
+                            MAIN_COLUMN_WORD1, MAIN_COLUMN_WORD2, COLUMN_FORGETTING_CURVE_VALUE },
                     selection, selectionArgs, null, null, null);
             return c;
         } catch (android.database.sqlite.SQLiteCantOpenDatabaseException e) {
@@ -290,7 +292,7 @@ public class UserHistoryDictionary extends ExpandableDictionary {
             db.execSQL("CREATE TABLE " + FREQ_TABLE_NAME + " ("
                     + FREQ_COLUMN_ID + " INTEGER PRIMARY KEY,"
                     + FREQ_COLUMN_PAIR_ID + " INTEGER,"
-                    + FREQ_COLUMN_FREQUENCY + " INTEGER,"
+                    + COLUMN_FORGETTING_CURVE_VALUE + " INTEGER,"
                     + "FOREIGN KEY(" + FREQ_COLUMN_PAIR_ID + ") REFERENCES " + MAIN_TABLE_NAME
                     + "(" + MAIN_COLUMN_ID + ")" + " ON DELETE CASCADE"
                     + ");");
@@ -378,10 +380,40 @@ public class UserHistoryDictionary extends ExpandableDictionary {
 
             // Write all the entries to the db
             for (String word1 : mBigramList.keySet()) {
-                for (String word2 : mBigramList.getBigrams(word1)) {
+                final HashMap<String, Byte> word1Bigrams = mBigramList.getBigrams(word1);
+                for (String word2 : word1Bigrams.keySet()) {
+                    // Get new frequency. Do not insert shortcuts/bigrams which freq is "-1".
+                    final int freq; // -1, or 0~255
+                    if (word1 == null) {
+                        freq = FREQUENCY_FOR_TYPED;
+                    } else {
+                        final NextWord nw = mUserHistoryDictionary.getBigramWord(word1, word2);
+                        if (nw != null) {
+                            final ForgettingCurveParams fcp = nw.getFcParams();
+                            final byte prevFc = word1Bigrams.get(word2);
+                            final byte fc = (byte)fcp.getFc();
+                            final boolean isValid = fcp.isValid();
+                            if (prevFc > 0 && prevFc == fc) {
+                                // No need to update since we found no changes for this entry.
+                                // Just skip to the next entry.
+                                if (DBG_SAVE_RESTORE) {
+                                    Log.d(TAG, "Skip update user history: " + word1 + "," + word2
+                                            + "," + prevFc);
+                                }
+                                continue;
+                            } else if (UserHistoryForgettingCurveUtils.
+                                    needsToSave(fc, isValid, addLevel0Bigram)) {
+                                freq = fc;
+                            } else {
+                                freq = -1;
+                            }
+                        } else {
+                            freq = -1;
+                        }
+                    }
                     // TODO: this process of making a text search for each pair each time
                     // is terribly inefficient. Optimize this.
-                    // find pair id
+                    // Find pair id
                     Cursor c = null;
                     try {
                         if (null != word1) {
@@ -399,40 +431,22 @@ public class UserHistoryDictionary extends ExpandableDictionary {
 
                         final int pairId;
                         if (c.moveToFirst()) {
-                            // existing pair
+                            // Delete existing pair
                             pairId = c.getInt(c.getColumnIndex(MAIN_COLUMN_ID));
                             db.delete(FREQ_TABLE_NAME, FREQ_COLUMN_PAIR_ID + "=?",
                                     new String[] { Integer.toString(pairId) });
                         } else {
-                            // new pair
+                            // Create new pair
                             Long pairIdLong = db.insert(MAIN_TABLE_NAME, null,
                                     getContentValues(word1, word2, mLocale));
                             pairId = pairIdLong.intValue();
                         }
-                        // insert new frequency
-                        final int freq;
-                        if (word1 == null) {
-                            freq = FREQUENCY_FOR_TYPED;
-                        } else {
-                            final NextWord nw = mUserHistoryDictionary.getBigramWord(word1, word2);
-                            if (nw != null) {
-                                final ForgettingCurveParams fcp = nw.getFcParams();
-                                final int tempFreq = fcp.getFc();
-                                final boolean isValid = fcp.isValid();
-                                if (UserHistoryForgettingCurveUtils.needsToSave(
-                                        (byte)tempFreq, isValid, addLevel0Bigram)) {
-                                    freq = tempFreq;
-                                } else {
-                                    freq = -1;
-                                }
-                            } else {
-                                freq = -1;
-                            }
-                        }
                         if (freq > 0) {
                             if (DBG_SAVE_RESTORE) {
-                                Log.d(TAG, "--- Save user history: " + word1 + ", " + word2);
+                                Log.d(TAG, "--- Save user history: " + word1 + ", " + word2
+                                        + mLocale + "," + this);
                             }
+                            // Insert new frequency
                             db.insert(FREQ_TABLE_NAME, null,
                                     getFrequencyContentValues(pairId, freq));
                         }
@@ -461,7 +475,7 @@ public class UserHistoryDictionary extends ExpandableDictionary {
         private static ContentValues getFrequencyContentValues(int pairId, int frequency) {
            ContentValues values = new ContentValues(2);
            values.put(FREQ_COLUMN_PAIR_ID, pairId);
-           values.put(FREQ_COLUMN_FREQUENCY, frequency);
+           values.put(COLUMN_FORGETTING_CURVE_VALUE, frequency);
            return values;
         }
     }
