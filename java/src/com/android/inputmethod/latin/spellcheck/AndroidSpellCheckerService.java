@@ -154,7 +154,11 @@ public class AndroidSpellCheckerService extends SpellCheckerService
 
     private void startUsingContactsDictionaryLocked() {
         if (null == mContactsDictionary) {
-            mContactsDictionary = new SynchronouslyLoadedContactsDictionary(this);
+            if (LatinIME.USE_BINARY_CONTACTS_DICTIONARY) {
+                mContactsDictionary = new SynchronouslyLoadedContactsBinaryDictionary(this);
+            } else {
+                mContactsDictionary = new SynchronouslyLoadedContactsDictionary(this);
+            }
         }
         final Iterator<WeakReference<DictionaryCollection>> iterator =
                 mDictionaryCollectionsList.iterator();
