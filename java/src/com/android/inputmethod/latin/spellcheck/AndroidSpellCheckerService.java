@@ -99,11 +99,13 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         // List of the supported languages and their associated script. We won't check
         // words written in another script than the selected script, because we know we
         // don't have those in our dictionary so we will underline everything and we
-        // will never have any suggestions, so it makes no sense checking them.
+        // will never have any suggestions, so it makes no sense checking them, and this
+        // is done in {@link #shouldFilterOut}. Also, the script is used to choose which
+        // proximity to pass to the dictionary descent algorithm.
+        // IMPORTANT: this only contains languages - do not write countries in there.
+        // Only the language is searched from the map.
         mLanguageToScript = new TreeMap<String, Integer>();
         mLanguageToScript.put("en", SCRIPT_LATIN);
-        mLanguageToScript.put("en_US", SCRIPT_LATIN);
-        mLanguageToScript.put("en_GB", SCRIPT_LATIN);
         mLanguageToScript.put("fr", SCRIPT_LATIN);
         mLanguageToScript.put("de", SCRIPT_LATIN);
         mLanguageToScript.put("nl", SCRIPT_LATIN);
@@ -111,7 +113,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         mLanguageToScript.put("es", SCRIPT_LATIN);
         mLanguageToScript.put("it", SCRIPT_LATIN);
         mLanguageToScript.put("hr", SCRIPT_LATIN);
-        mLanguageToScript.put("pt_BR", SCRIPT_LATIN);
+        mLanguageToScript.put("pt", SCRIPT_LATIN);
         mLanguageToScript.put("ru", SCRIPT_CYRILLIC);
         // TODO: Make a persian proximity, and activate the Farsi subtype.
         // mLanguageToScript.put("fa", SCRIPT_PERSIAN);
