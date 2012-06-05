@@ -23,7 +23,7 @@
     <string name="english_ime_name" msgid="7252517407088836577">"Teclado de Android"</string>
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Teclado Android (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Ajustes del teclado de Android"</string>
-    <string name="english_ime_input_options" msgid="3909945612939668554">"Opciones introducción texto"</string>
+    <string name="english_ime_input_options" msgid="3909945612939668554">"Opciones entrada texto"</string>
     <string name="spell_checker_service_name" msgid="7338064335159755926">"Corrector de Android"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Corrector de Android (AOSP)"</string>
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Ajustes del corrector ortográfico"</string>
@@ -37,7 +37,7 @@
     <string name="misc_category" msgid="6894192814868233453">"Otras opciones"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Ajustes avanzados"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"Opciones para expertos"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Otros métodos de introducción"</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Otros métodos de entrada"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"La tecla de cambio de idioma sirve también para otros métodos"</string>
     <string name="suppress_language_switch_key" msgid="8003788410354806368">"Quitar tecla de idioma"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Retraso al ampliar tecla"</string>
@@ -110,13 +110,13 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Micrófono en teclado principal"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Micrófono en teclado de símbolos"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Entrada de voz inhabilitada"</string>
-    <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de introducción"</string>
+    <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de entrada"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas"</string>
     <string name="select_language" msgid="3693815588777926848">"Idiomas de entrada"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Toca otra vez para guardar."</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Hay un diccionario disponible"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Habilitar comentarios de usuarios"</string>
-    <string name="prefs_description_log" msgid="5827825607258246003">"Ayuda a mejorar este editor de método de introducción de texto enviando estadísticas de uso e informes de error a Google."</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"Ayuda a mejorar este editor de método de entrada de texto enviando estadísticas de uso e informes de error a Google."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema de teclado"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"inglés (Reino Unido)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"inglés (EE.UU.)"</string>
