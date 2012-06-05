@@ -227,7 +227,7 @@ public class Key {
         row.setXPos(keyXPos + keyWidth);
 
         mBackgroundType = style.getInt(keyAttr,
-                R.styleable.Keyboard_Key_backgroundType, BACKGROUND_TYPE_NORMAL);
+                R.styleable.Keyboard_Key_backgroundType, row.getDefaultBackgroundType());
 
         mVisualInsetsLeft = Math.round(Keyboard.Builder.getDimensionOrFraction(keyAttr,
                 R.styleable.Keyboard_Key_visualInsetsLeft, params.mBaseWidth, 0));
