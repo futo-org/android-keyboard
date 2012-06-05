@@ -20,12 +20,13 @@ import android.content.Context;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 
+import java.util.Locale;
+
 public class SynchronouslyLoadedContactsBinaryDictionary extends ContactsBinaryDictionary {
     private boolean mClosed;
 
-    public SynchronouslyLoadedContactsBinaryDictionary(final Context context) {
-        // TODO: add locale information.
-        super(context, Suggest.DIC_CONTACTS, null);
+    public SynchronouslyLoadedContactsBinaryDictionary(final Context context, final Locale locale) {
+        super(context, Suggest.DIC_CONTACTS, locale);
     }
 
     @Override

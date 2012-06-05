@@ -155,7 +155,9 @@ public class AndroidSpellCheckerService extends SpellCheckerService
     private void startUsingContactsDictionaryLocked() {
         if (null == mContactsDictionary) {
             if (LatinIME.USE_BINARY_CONTACTS_DICTIONARY) {
-                mContactsDictionary = new SynchronouslyLoadedContactsBinaryDictionary(this);
+                // TODO: use the right locale for each session
+                mContactsDictionary =
+                        new SynchronouslyLoadedContactsBinaryDictionary(this, Locale.getDefault());
             } else {
                 mContactsDictionary = new SynchronouslyLoadedContactsDictionary(this);
             }
@@ -436,7 +438,11 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                     // TODO: revert to the concrete type when USE_BINARY_CONTACTS_DICTIONARY is no
                     // longer needed
                     if (LatinIME.USE_BINARY_CONTACTS_DICTIONARY) {
-                        mContactsDictionary = new SynchronouslyLoadedContactsBinaryDictionary(this);
+                        // TODO: use the right locale. We can't do it right now because the
+                        // spell checker is reusing the contacts dictionary across sessions
+                        // without regard for their locale, so we need to fix that first.
+                        mContactsDictionary = new SynchronouslyLoadedContactsBinaryDictionary(this,
+                                Locale.getDefault());
                     } else {
                         mContactsDictionary = new SynchronouslyLoadedContactsDictionary(this);
                     }
