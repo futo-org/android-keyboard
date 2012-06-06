@@ -422,67 +422,67 @@ public class Keyboard {
      * This class parses Keyboard XML file and eventually build a Keyboard.
      * The Keyboard XML file looks like:
      * <pre>
-     *   &gt;!-- xml/keyboard.xml --&lt;
-     *   &gt;Keyboard keyboard_attributes*&lt;
-     *     &gt;!-- Keyboard Content --&lt;
-     *     &gt;Row row_attributes*&lt;
-     *       &gt;!-- Row Content --&lt;
-     *       &gt;Key key_attributes* /&lt;
-     *       &gt;Spacer horizontalGap="32.0dp" /&lt;
-     *       &gt;include keyboardLayout="@xml/other_keys"&lt;
+     *   &lt;!-- xml/keyboard.xml --&gt;
+     *   &lt;Keyboard keyboard_attributes*&gt;
+     *     &lt;!-- Keyboard Content --&gt;
+     *     &lt;Row row_attributes*&gt;
+     *       &lt;!-- Row Content --&gt;
+     *       &lt;Key key_attributes* /&gt;
+     *       &lt;Spacer horizontalGap="32.0dp" /&gt;
+     *       &lt;include keyboardLayout="@xml/other_keys"&gt;
      *       ...
-     *     &gt;/Row&lt;
-     *     &gt;include keyboardLayout="@xml/other_rows"&lt;
+     *     &lt;/Row&gt;
+     *     &lt;include keyboardLayout="@xml/other_rows"&gt;
      *     ...
-     *   &gt;/Keyboard&lt;
+     *   &lt;/Keyboard&gt;
      * </pre>
-     * The XML file which is included in other file must have &gt;merge&lt; as root element,
+     * The XML file which is included in other file must have &lt;merge&gt; as root element,
      * such as:
      * <pre>
-     *   &gt;!-- xml/other_keys.xml --&lt;
-     *   &gt;merge&lt;
-     *     &gt;Key key_attributes* /&lt;
+     *   &lt;!-- xml/other_keys.xml --&gt;
+     *   &lt;merge&gt;
+     *     &lt;Key key_attributes* /&gt;
      *     ...
-     *   &gt;/merge&lt;
+     *   &lt;/merge&gt;
      * </pre>
      * and
      * <pre>
-     *   &gt;!-- xml/other_rows.xml --&lt;
-     *   &gt;merge&lt;
-     *     &gt;Row row_attributes*&lt;
-     *       &gt;Key key_attributes* /&lt;
-     *     &gt;/Row&lt;
+     *   &lt;!-- xml/other_rows.xml --&gt;
+     *   &lt;merge&gt;
+     *     &lt;Row row_attributes*&gt;
+     *       &lt;Key key_attributes* /&gt;
+     *     &lt;/Row&gt;
      *     ...
-     *   &gt;/merge&lt;
+     *   &lt;/merge&gt;
      * </pre>
      * You can also use switch-case-default tags to select Rows and Keys.
      * <pre>
-     *   &gt;switch&lt;
-     *     &gt;case case_attribute*&lt;
-     *       &gt;!-- Any valid tags at switch position --&lt;
-     *     &gt;/case&lt;
+     *   &lt;switch&gt;
+     *     &lt;case case_attribute*&gt;
+     *       &lt;!-- Any valid tags at switch position --&gt;
+     *     &lt;/case&gt;
      *     ...
-     *     &gt;default&lt;
-     *       &gt;!-- Any valid tags at switch position --&lt;
-     *     &gt;/default&lt;
-     *   &gt;/switch&lt;
+     *     &lt;default&gt;
+     *       &lt;!-- Any valid tags at switch position --&gt;
+     *     &lt;/default&gt;
+     *   &lt;/switch&gt;
      * </pre>
      * You can declare Key style and specify styles within Key tags.
      * <pre>
-     *     &gt;switch&lt;
-     *       &gt;case mode="email"&lt;
-     *         &gt;key-style styleName="f1-key" parentStyle="modifier-key"
+     *     &lt;switch&gt;
+     *       &lt;case mode="email"&gt;
+     *         &lt;key-style styleName="f1-key" parentStyle="modifier-key"
      *           keyLabel=".com"
-     *         /&lt;
-     *       &gt;/case&lt;
-     *       &gt;case mode="url"&lt;
-     *         &gt;key-style styleName="f1-key" parentStyle="modifier-key"
+     *         /&gt;
+     *       &lt;/case&gt;
+     *       &lt;case mode="url"&gt;
+     *         &lt;key-style styleName="f1-key" parentStyle="modifier-key"
      *           keyLabel="http://"
-     *         /&lt;
-     *       &gt;/case&lt;
-     *     &gt;/switch&lt;
+     *         /&gt;
+     *       &lt;/case&gt;
+     *     &lt;/switch&gt;
      *     ...
-     *     &gt;Key keyStyle="shift-key" ... /&lt;
+     *     &lt;Key keyStyle="shift-key" ... /&gt;
      * </pre>
      */
 
