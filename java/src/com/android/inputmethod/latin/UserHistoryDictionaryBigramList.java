@@ -39,13 +39,19 @@ public class UserHistoryDictionaryBigramList {
         mBigramMap.clear();
     }
 
+    /**
+     * Called when the user typed a word.
+     */
     public void addBigram(String word1, String word2) {
         addBigram(word1, word2, FORGETTING_CURVE_INITIAL_VALUE);
     }
 
+    /**
+     * Called when loaded from the SQL DB.
+     */
     public void addBigram(String word1, String word2, byte fcValue) {
         if (UserHistoryDictionary.DBG_SAVE_RESTORE) {
-            Log.d(TAG, "--- add bigram: " + word1 + ", " + word2);
+            Log.d(TAG, "--- add bigram: " + word1 + ", " + word2 + ", " + fcValue);
         }
         final HashMap<String, Byte> map;
         if (mBigramMap.containsKey(word1)) {
@@ -58,6 +64,25 @@ public class UserHistoryDictionaryBigramList {
             ++mSize;
             map.put(word2, fcValue);
         }
+    }
+
+    /**
+     * Called when inserted to the SQL DB.
+     */
+    public void updateBigram(String word1, String word2, byte fcValue) {
+        if (UserHistoryDictionary.DBG_SAVE_RESTORE) {
+            Log.d(TAG, "--- update bigram: " + word1 + ", " + word2 + ", " + fcValue);
+        }
+        final HashMap<String, Byte> map;
+        if (mBigramMap.containsKey(word1)) {
+            map = mBigramMap.get(word1);
+        } else {
+            return;
+        }
+        if (!map.containsKey(word2)) {
+            return;
+        }
+        map.put(word2, fcValue);
     }
 
     public int size() {
