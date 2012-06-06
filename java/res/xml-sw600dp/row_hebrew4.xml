@@ -23,20 +23,22 @@
 >
     <Row
         latin:keyWidth="9.0%p"
+        latin:backgroundType="functional"
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyWidth="10.0%p" />
         <include
-            latin:keyboardLayout="@xml/keys_f1f2" />
+            latin:keyboardLayout="@xml/key_shortcut" />
+        <include
+            latin:keyboardLayout="@xml/key_f1" />
         <include
             latin:keyXPos="28.0%p"
-            latin:keyboardLayout="@xml/key_space" />
+            latin:keyboardLayout="@xml/key_space"
+            latin:backgroundType="normal" />
         <include
             latin:keyboardLayout="@xml/keys_comma_period" />
         <include
-            latin:keyXPos="-9.0%p"
-            latin:keyWidth="fillRight"
-            latin:keyboardLayout="@xml/key_shortcut" />
+            latin:keyboardLayout="@xml/key_f2" />
     </Row>
 </merge>

@@ -23,25 +23,24 @@
 >
     <Row
         latin:keyWidth="9.0%p"
+        latin:backgroundType="functional"
     >
         <Key
             latin:keyStyle="toAlphaKeyStyle"
             latin:keyWidth="10.0%p" />
         <Key
             latin:keyLabel="/" />
-        <Key
-            latin:keyLabel="\@" />
+        <include
+            latin:keyboardLayout="@xml/key_f1" />
         <include
             latin:keyXPos="28.0%p"
-            latin:keyboardLayout="@xml/key_space" />
+            latin:keyboardLayout="@xml/key_space"
+            latin:backgroundType="normal" />
         <Key
             latin:keyLabel="&quot;"
             latin:moreKeys="!text/more_keys_for_tablet_double_quote" />
         <Key
             latin:keyLabel="_" />
-        <include
-            latin:keyXPos="-9.0%p"
-            latin:keyWidth="fillRight"
-            latin:keyboardLayout="@xml/key_shortcut" />
+        <!-- Here is empty space. -->
     </Row>
 </merge>
