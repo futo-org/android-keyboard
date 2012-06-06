@@ -497,7 +497,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
         if (null == mPrefs) mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mUserHistoryDictionary = new UserHistoryDictionary(
+        mUserHistoryDictionary = UserHistoryDictionary.getInstance(
                 this, localeStr, Suggest.DIC_USER_HISTORY, mPrefs);
         mSuggest.setUserHistoryDictionary(mUserHistoryDictionary);
     }
