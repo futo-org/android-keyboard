@@ -52,6 +52,9 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     /** The number of contacts in the most recent dictionary rebuild. */
     static private int sContactCountAtLastRebuild = 0;
 
+    /** The locale for this contacts dictionary. Controls name bigram predictions. */
+    public final Locale mLocale;
+
     private ContentObserver mObserver;
 
     /**
@@ -61,6 +64,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
 
     public ContactsBinaryDictionary(final Context context, final int dicTypeId, Locale locale) {
         super(context, getFilenameWithLocale(NAME, locale.toString()), dicTypeId);
+        mLocale = locale;
         mUseFirstLastBigrams = useFirstLastBigramsForLocale(locale);
         registerObserver(context);
 
