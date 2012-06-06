@@ -23,22 +23,24 @@
 >
     <Row
         latin:keyWidth="8.047%p"
+        latin:backgroundType="functional"
     >
         <include
+            latin:keyXPos="5.782%p"
             latin:keyboardLayout="@xml/key_settings" />
         <include
-            latin:keyXPos="13.829%p"
-            latin:keyboardLayout="@xml/keys_f1f2" />
+            latin:keyboardLayout="@xml/key_shortcut" />
+        <include
+            latin:keyboardLayout="@xml/key_f1" />
         <include
             latin:keyXPos="29.923%p"
-            latin:keyboardLayout="@xml/key_space" />
+            latin:keyboardLayout="@xml/key_space"
+            latin:backgroundType="normal" />
         <include
             latin:keyboardLayout="@xml/key_question_exclamation" />
         <include
             latin:keyboardLayout="@xml/key_dash" />
         <include
-            latin:keyXPos="-8.047%p"
-            latin:keyWidth="fillRight"
-            latin:keyboardLayout="@xml/key_shortcut" />
+            latin:keyboardLayout="@xml/key_f2" />
     </Row>
 </merge>
