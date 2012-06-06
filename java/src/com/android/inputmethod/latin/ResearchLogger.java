@@ -354,7 +354,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_LATINKEYBOARDVIEW_PROCESSMOTIONEVENT = {
-        "LATINKEYBOARDVIEW_PROCESSMOTIONEVENT", "action", "eventTime", "id", "x", "y", "size",
+        "LatinKeyboardViewProcessMotionEvent", "action", "eventTime", "id", "x", "y", "size",
         "pressure"
     };
     public static void latinKeyboardView_processMotionEvent(final MotionEvent me, final int action,
@@ -381,7 +381,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_LATINIME_ONCODEINPUT = {
-        "LATINIME_ONCODEINPUT", "code", "x", "y"
+        "LatinIMEOnCodeInput", "code", "x", "y"
     };
     public static void latinIME_onCodeInput(final int code, final int x, final int y) {
         final Object[] values = {
@@ -391,7 +391,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_CORRECTION = {
-        "CORRECTION", "subgroup", "before", "after", "position"
+        "LogCorrection", "subgroup", "before", "after", "position"
     };
     public static void logCorrection(final String subgroup, final String before, final String after,
             final int position) {
@@ -402,7 +402,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_LATINIME_COMMITCURRENTAUTOCORRECTION = {
-        "LATINIME_COMMITCURRENTAUTOCORRECTION", "typedWord", "autoCorrection"
+        "LatinIMECommitCurrentAutoCorrection", "typedWord", "autoCorrection"
     };
     public static void latinIME_commitCurrentAutoCorrection(final String typedWord,
             final String autoCorrection) {
@@ -413,7 +413,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_LATINIME_COMMITTEXT = {
-        "LATINIME_COMMITTEXT", "typedWord"
+        "LatinIMECommitText", "typedWord"
     };
     public static void latinIME_commitText(final CharSequence typedWord) {
         final Object[] values = {
@@ -423,7 +423,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_LATINIME_DELETESURROUNDINGTEXT = {
-        "LATINIME_DELETESURROUNDINGTEXT", "length"
+        "LatinIMEDeleteSurroundingText", "length"
     };
     public static void latinIME_deleteSurroundingText(final int length) {
         final Object[] values = {
@@ -433,14 +433,14 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_LATINIME_DOUBLESPACEAUTOPERIOD = {
-        "LATINIME_DOUBLESPACEAUTOPERIOD"
+        "LatinIMEDoubleSpaceAutoPeriod"
     };
     public static void latinIME_doubleSpaceAutoPeriod() {
         getInstance().writeEvent(EVENTKEYS_LATINIME_DOUBLESPACEAUTOPERIOD, EVENTKEYS_NULLVALUES);
     }
 
     private static final String[] EVENTKEYS_LATINIME_ONDISPLAYCOMPLETIONS = {
-        "LATINIME_ONDISPLAYCOMPLETIONS", "applicationSpecifiedCompletions"
+        "LatinIMEOnDisplayCompletions", "applicationSpecifiedCompletions"
     };
     public static void latinIME_onDisplayCompletions(
             final CompletionInfo[] applicationSpecifiedCompletions) {
@@ -457,7 +457,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_LATINIME_ONWINDOWHIDDEN = {
-        "LATINIME_ONWINDOWHIDDEN", "isTextTruncated", "text"
+        "LatinIMEOnWindowHidden", "isTextTruncated", "text"
     };
     public static void latinIME_onWindowHidden(final int savedSelectionStart,
             final int savedSelectionEnd, final InputConnection ic) {
@@ -493,7 +493,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_LATINIME_ONSTARTINPUTVIEWINTERNAL = {
-        "LATINIME_ONSTARTINPUTVIEWINTERNAL", "uuid", "packageName", "inputType", "imeOptions",
+        "LatinIMEOnStartInputViewInternal", "uuid", "packageName", "inputType", "imeOptions",
         "fieldId", "display", "model", "prefs", "outputFormatVersion"
     };
     public static void latinIME_onStartInputViewInternal(final EditorInfo editorInfo,
@@ -521,7 +521,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_LATINIME_ONUPDATESELECTION = {
-        "LATINIME_ONUPDATESELECTION", "lastSelectionStart", "lastSelectionEnd", "oldSelStart",
+        "LatinIMEOnUpdateSelection", "lastSelectionStart", "lastSelectionEnd", "oldSelStart",
         "oldSelEnd", "newSelStart", "newSelEnd", "composingSpanStart", "composingSpanEnd",
         "expectingUpdateSelection", "expectingUpdateSelectionFromLogger", "context"
     };
@@ -540,7 +540,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_LATINIME_PERFORMEDITORACTION = {
-        "LATINIME_PERFORMEDITORACTION", "imeActionNext"
+        "LatinIMEPerformEditorAction", "imeActionNext"
     };
     public static void latinIME_performEditorAction(final int imeActionNext) {
         final Object[] values = {
@@ -550,7 +550,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_LATINIME_PICKAPPLICATIONSPECIFIEDCOMPLETION = {
-        "LATINIME_PICKAPPLICATIONSPECIFIEDCOMPLETION", "index", "text", "x", "y"
+        "LatinIMEPickApplicationSpecifiedCompletion", "index", "text", "x", "y"
     };
     public static void latinIME_pickApplicationSpecifiedCompletion(final int index,
             final CharSequence text, int x, int y) {
@@ -561,7 +561,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_LATINIME_PICKSUGGESTIONMANUALLY = {
-        "LATINIME_PICKSUGGESTIONMANUALLY", "replacedWord", "index", "suggestion", "x", "y"
+        "LatinIMEPickSuggestionManually", "replacedWord", "index", "suggestion", "x", "y"
     };
     public static void latinIME_pickSuggestionManually(final String replacedWord,
             final int index, CharSequence suggestion, int x, int y) {
@@ -572,7 +572,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_LATINIME_PUNCTUATIONSUGGESTION = {
-        "LATINIME_PUNCTUATIONSUGGESTION", "index", "suggestion", "x", "y"
+        "LatinIMEPunctuationSuggestion", "index", "suggestion", "x", "y"
     };
     public static void latinIME_punctuationSuggestion(final int index,
             final CharSequence suggestion, int x, int y) {
@@ -583,7 +583,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_LATINIME_REVERTDOUBLESPACEWHILEINBATCHEDIT = {
-        "LATINIME_REVERTDOUBLESPACEWHILEINBATCHEDIT"
+        "LatinIMERevertDoubleSpaceWhileInBatchEdit"
     };
     public static void latinIME_revertDoubleSpaceWhileInBatchEdit() {
         getInstance().writeEvent(EVENTKEYS_LATINIME_REVERTDOUBLESPACEWHILEINBATCHEDIT,
@@ -591,14 +591,14 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_LATINIME_REVERTSWAPPUNCTUATION = {
-        "LATINIME_REVERTSWAPPUNCTUATION"
+        "LatinIMERevertSwapPunctuation"
     };
     public static void latinIME_revertSwapPunctuation() {
         getInstance().writeEvent(EVENTKEYS_LATINIME_REVERTSWAPPUNCTUATION, EVENTKEYS_NULLVALUES);
     }
 
     private static final String[] EVENTKEYS_LATINIME_SENDKEYCODEPOINT = {
-        "LATINIME_SENDKEYCODEPOINT", "code"
+        "LatinIMESendKeyCodePoint", "code"
     };
     public static void latinIME_sendKeyCodePoint(final int code) {
         final Object[] values = {
@@ -608,7 +608,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_LATINIME_SWAPSWAPPERANDSPACEWHILEINBATCHEDIT = {
-        "LATINIME_SWAPSWAPPERANDSPACEWHILEINBATCHEDIT"
+        "LatinIMESwapSwapperAndSpaceWhileInBatchEdit"
     };
     public static void latinIME_swapSwapperAndSpaceWhileInBatchEdit() {
         getInstance().writeEvent(EVENTKEYS_LATINIME_SWAPSWAPPERANDSPACEWHILEINBATCHEDIT,
@@ -616,21 +616,21 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_LATINIME_SWITCHTOKEYBOARDVIEW = {
-        "LATINIME_SWITCHTOKEYBOARDVIEW"
+        "LatinIMESwitchToKeyboardView"
     };
     public static void latinIME_switchToKeyboardView() {
         getInstance().writeEvent(EVENTKEYS_LATINIME_SWITCHTOKEYBOARDVIEW, EVENTKEYS_NULLVALUES);
     }
 
     private static final String[] EVENTKEYS_LATINKEYBOARDVIEW_ONLONGPRESS = {
-        "LATINKEYBOARDVIEW_ONLONGPRESS"
+        "LatinKeyboardViewOnLongPress"
     };
     public static void latinKeyboardView_onLongPress() {
         getInstance().writeEvent(EVENTKEYS_LATINKEYBOARDVIEW_ONLONGPRESS, EVENTKEYS_NULLVALUES);
     }
 
     private static final String[] EVENTKEYS_LATINKEYBOARDVIEW_SETKEYBOARD = {
-        "LATINKEYBOARDVIEW_SETKEYBOARD", "elementId", "locale", "orientation", "width",
+        "LatinKeyboardViewSetKeyboard", "elementId", "locale", "orientation", "width",
         "modeName", "action", "navigateNext", "navigatePrevious", "clobberSettingsKey",
         "passwordInput", "shortcutKeyEnabled", "hasShortcutKey", "languageSwitchKeyEnabled",
         "isMultiLine", "tw", "th", "keys"
@@ -662,7 +662,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_LATINIME_REVERTCOMMIT = {
-        "LATINIME_REVERTCOMMIT", "originallyTypedWord"
+        "LatinIMERevertCommit", "originallyTypedWord"
     };
     public static void latinIME_revertCommit(final String originallyTypedWord) {
         final Object[] values = {
@@ -672,7 +672,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_POINTERTRACKER_CALLLISTENERONCANCELINPUT = {
-        "POINTERTRACKER_CALLLISTENERONCANCELINPUT"
+        "PointerTrackerCallListenerOnCancelInput"
     };
     public static void pointerTracker_callListenerOnCancelInput() {
         getInstance().writeEvent(EVENTKEYS_POINTERTRACKER_CALLLISTENERONCANCELINPUT,
@@ -680,7 +680,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_POINTERTRACKER_CALLLISTENERONCODEINPUT = {
-        "POINTERTRACKER_CALLLISTENERONCODEINPUT", "code", "outputText", "x", "y",
+        "PointerTrackerCallListenerOnCodeInput", "code", "outputText", "x", "y",
         "ignoreModifierKey", "altersCode", "isEnabled"
     };
     public static void pointerTracker_callListenerOnCodeInput(final Key key, final int x,
@@ -697,7 +697,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_POINTERTRACKER_CALLLISTENERONRELEASE = {
-        "POINTERTRACKER_CALLLISTENERONRELEASE", "code", "withSliding", "ignoreModifierKey",
+        "PointerTrackerCallListenerOnRelease", "code", "withSliding", "ignoreModifierKey",
         "isEnabled"
     };
     public static void pointerTracker_callListenerOnRelease(final Key key, final int primaryCode,
@@ -712,7 +712,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_POINTERTRACKER_ONDOWNEVENT = {
-        "POINTERTRACKER_ONDOWNEVENT", "deltaT", "distanceSquared"
+        "PointerTrackerOnDownEvent", "deltaT", "distanceSquared"
     };
     public static void pointerTracker_onDownEvent(long deltaT, int distanceSquared) {
         final Object[] values = {
@@ -722,7 +722,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_POINTERTRACKER_ONMOVEEVENT = {
-        "POINTERTRACKER_ONMOVEEVENT", "x", "y", "lastX", "lastY"
+        "PointerTrackerOnMoveEvent", "x", "y", "lastX", "lastY"
     };
     public static void pointerTracker_onMoveEvent(final int x, final int y, final int lastX,
             final int lastY) {
@@ -733,7 +733,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_SUDDENJUMPINGTOUCHEVENTHANDLER_ONTOUCHEVENT = {
-        "SUDDENJUMPINGTOUCHEVENTHANDLER_ONTOUCHEVENT", "motionEvent"
+        "SuddenJumpingTouchEventHandlerOnTouchEvent", "motionEvent"
     };
     public static void suddenJumpingTouchEventHandler_onTouchEvent(final MotionEvent me) {
         if (me != null) {
@@ -746,7 +746,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final String[] EVENTKEYS_SUGGESTIONSVIEW_SETSUGGESTIONS = {
-        "SUGGESTIONSVIEW_SETSUGGESTIONS", "suggestedWords"
+        "SuggestionsViewSetSuggestions", "suggestedWords"
     };
     public static void suggestionsView_setSuggestions(final SuggestedWords suggestedWords) {
         if (suggestedWords != null) {
