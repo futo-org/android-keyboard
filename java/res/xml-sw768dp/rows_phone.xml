@@ -34,14 +34,17 @@
             latin:keyLabel="-"
             latin:keyStyle="numKeyStyle"
             latin:keyXPos="13.829%p"
-            latin:keyWidth="8.047%p" />
+            latin:keyWidth="8.047%p"
+            latin:backgroundType="functional" />
         <Key
             latin:keyLabel="+"
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="8.047%p" />
+            latin:keyWidth="8.047%p"
+            latin:backgroundType="functional" />
         <Key
             latin:keyStyle="numPauseKeyStyle"
-            latin:keyWidth="8.047%p" />
+            latin:keyWidth="8.047%p"
+            latin:backgroundType="functional" />
         <Key
             latin:keyStyle="num1KeyStyle"
             latin:keyXPos="43.125%p" />
@@ -62,14 +65,17 @@
             latin:keyLabel=","
             latin:keyStyle="numKeyStyle"
             latin:keyXPos="13.829%p"
-            latin:keyWidth="8.047%p" />
+            latin:keyWidth="8.047%p"
+            latin:backgroundType="functional" />
         <Key
             latin:keyLabel="."
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="8.047%p" />
+            latin:keyWidth="8.047%p"
+            latin:backgroundType="functional" />
         <Key
             latin:keyStyle="numWaitKeyStyle"
-            latin:keyWidth="8.047%p" />
+            latin:keyWidth="8.047%p"
+            latin:backgroundType="functional" />
         <Key
             latin:keyStyle="num4KeyStyle"
             latin:keyXPos="43.125%p" />
@@ -89,15 +95,18 @@
         <Key
             latin:keyLabel="("
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="8.047%p" />
+            latin:keyWidth="8.047%p"
+            latin:backgroundType="functional" />
         <Key
             latin:keyLabel=")"
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="8.047%p" />
+            latin:keyWidth="8.047%p"
+            latin:backgroundType="functional" />
         <Key
             latin:keyLabel="N"
             latin:keyStyle="numKeyStyle"
-            latin:keyWidth="8.047%p" />
+            latin:keyWidth="8.047%p"
+            latin:backgroundType="functional" />
         <Key
             latin:keyStyle="num7KeyStyle"
             latin:keyXPos="43.125%p" />
@@ -115,7 +124,8 @@
         <Key
             latin:keyStyle="spaceKeyStyle"
             latin:keyXPos="13.829%p"
-            latin:keyWidth="24.140%p" />
+            latin:keyWidth="24.140%p"
+            latin:backgroundType="functional" />
         <Key
             latin:keyStyle="numStarKeyStyle"
             latin:keyXPos="43.125%p" />
@@ -124,9 +134,5 @@
         <Key
             latin:keyLabel="#"
             latin:keyStyle="numKeyStyle" />
-        <include
-            latin:keyXPos="-8.047%p"
-            latin:keyWidth="fillRight"
-            latin:keyboardLayout="@xml/key_shortcut" />
-    </Row>
+   </Row>
 </merge>
