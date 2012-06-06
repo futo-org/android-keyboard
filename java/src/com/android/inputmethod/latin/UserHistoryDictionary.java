@@ -29,7 +29,9 @@ import android.util.Log;
 
 import com.android.inputmethod.latin.UserHistoryForgettingCurveUtils.ForgettingCurveParams;
 
+import java.lang.ref.SoftReference;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Locally gathers stats about the words user types and various other signals like auto-correction
@@ -38,6 +40,7 @@ import java.util.HashMap;
 public class UserHistoryDictionary extends ExpandableDictionary {
     private static final String TAG = "UserHistoryDictionary";
     public static final boolean DBG_SAVE_RESTORE = false;
+    public static final boolean PROFILE_SAVE_RESTORE = LatinImeLogger.sDBG;
 
     /** Any pair being typed or picked */
     private static final int FREQUENCY_FOR_TYPED = 2;
@@ -77,13 +80,14 @@ public class UserHistoryDictionary extends ExpandableDictionary {
     /** Locale for which this user history dictionary is storing words */
     private final String mLocale;
 
-    private UserHistoryDictionaryBigramList mBigramList =
+    private final UserHistoryDictionaryBigramList mBigramList =
             new UserHistoryDictionaryBigramList();
-    private final Object mPendingWritesLock = new Object();
     private static volatile boolean sUpdatingDB = false;
     private final SharedPreferences mPrefs;
 
     private final static HashMap<String, String> sDictProjectionMap;
+    private final static ConcurrentHashMap<String, SoftReference<UserHistoryDictionary>>
+            sLangDictCache = new ConcurrentHashMap<String, SoftReference<UserHistoryDictionary>>();
 
     static {
         sDictProjectionMap = new HashMap<String, String>();
@@ -107,7 +111,26 @@ public class UserHistoryDictionary extends ExpandableDictionary {
         sDeleteHistoryBigrams = deleteHistoryBigram;
     }
 
-    public UserHistoryDictionary(final Context context, final String locale, final int dicTypeId,
+    public synchronized static UserHistoryDictionary getInstance(
+            final Context context, final String locale,
+            final int dictTypeId, final SharedPreferences sp) {
+        if (sLangDictCache.containsKey(locale)) {
+            final SoftReference<UserHistoryDictionary> ref = sLangDictCache.get(locale);
+            final UserHistoryDictionary dict = ref == null ? null : ref.get();
+            if (dict != null) {
+                if (PROFILE_SAVE_RESTORE) {
+                    Log.w(TAG, "Use cached UserHistoryDictionary for " + locale);
+                }
+                return dict;
+            }
+        }
+        final UserHistoryDictionary dict =
+                new UserHistoryDictionary(context, locale, dictTypeId, sp);
+        sLangDictCache.put(locale, new SoftReference<UserHistoryDictionary>(dict));
+        return dict;
+    }
+
+    private UserHistoryDictionary(final Context context, final String locale, final int dicTypeId,
             SharedPreferences sp) {
         super(context, dicTypeId);
         mLocale = locale;
@@ -123,12 +146,13 @@ public class UserHistoryDictionary extends ExpandableDictionary {
     @Override
     public void close() {
         flushPendingWrites();
-        SettingsValues.setLastUserHistoryWriteTime(mPrefs, mLocale);
         // Don't close the database as locale changes will require it to be reopened anyway
         // Also, the database is written to somewhat frequently, so it needs to be kept alive
         // throughout the life of the process.
         // mOpenHelper.close();
-        super.close();
+        // Ignore close because we cache UserHistoryDictionary for each language. See getInstance()
+        // above.
+        // super.close();
     }
 
     /**
@@ -160,7 +184,7 @@ public class UserHistoryDictionary extends ExpandableDictionary {
         } else {
             freq = super.setBigramAndGetFrequency(word1, word2, new ForgettingCurveParams(isValid));
         }
-        synchronized (mPendingWritesLock) {
+        synchronized (mBigramList) {
             mBigramList.addBigram(word1, word2);
         }
 
@@ -168,7 +192,7 @@ public class UserHistoryDictionary extends ExpandableDictionary {
     }
 
     public boolean cancelAddingUserHistory(String word1, String word2) {
-        synchronized (mPendingWritesLock) {
+        synchronized (mBigramList) {
             if (mBigramList.removeBigram(word1, word2)) {
                 return super.removeBigram(word1, word2);
             }
@@ -180,19 +204,17 @@ public class UserHistoryDictionary extends ExpandableDictionary {
      * Schedules a background thread to write any pending words to the database.
      */
     private void flushPendingWrites() {
-        synchronized (mPendingWritesLock) {
+        synchronized (mBigramList) {
             // Nothing pending? Return
             if (mBigramList.isEmpty()) return;
             // Create a background thread to write the pending entries
-            new UpdateDbTask(sOpenHelper, mBigramList, mLocale, this).execute();
-            // Create a new map for writing new entries into while the old one is written to db
-            mBigramList = new UserHistoryDictionaryBigramList();
+            new UpdateDbTask(sOpenHelper, mBigramList, mLocale, this, mPrefs).execute();
         }
     }
 
     /** Used for testing purpose **/
     void waitUntilUpdateDBDone() {
-        synchronized (mPendingWritesLock) {
+        synchronized (mBigramList) {
             while (sUpdatingDB) {
                 try {
                     Thread.sleep(100);
@@ -205,41 +227,46 @@ public class UserHistoryDictionary extends ExpandableDictionary {
 
     @Override
     public void loadDictionaryAsync() {
-        final long last = SettingsValues.getLastUserHistoryWriteTime(mPrefs, mLocale);
-        final long now = System.currentTimeMillis();
-        // Load the words that correspond to the current input locale
-        final Cursor cursor = query(MAIN_COLUMN_LOCALE + "=?", new String[] { mLocale });
-        if (null == cursor) return;
-        try {
-            if (cursor.moveToFirst()) {
-                final int word1Index = cursor.getColumnIndex(MAIN_COLUMN_WORD1);
-                final int word2Index = cursor.getColumnIndex(MAIN_COLUMN_WORD2);
-                final int fcIndex = cursor.getColumnIndex(COLUMN_FORGETTING_CURVE_VALUE);
-                while (!cursor.isAfterLast()) {
-                    final String word1 = cursor.getString(word1Index);
-                    final String word2 = cursor.getString(word2Index);
-                    final int fc = cursor.getInt(fcIndex);
-                    if (DBG_SAVE_RESTORE) {
-                        Log.d(TAG, "--- Load user history: " + word1 + ", " + word2 + ","
-                                + mLocale + "," + this);
-                    }
-                    // Safeguard against adding really long words. Stack may overflow due
-                    // to recursive lookup
-                    if (null == word1) {
-                        super.addWord(word2, null /* shortcut */, fc);
-                    } else if (word1.length() < BinaryDictionary.MAX_WORD_LENGTH
-                            && word2.length() < BinaryDictionary.MAX_WORD_LENGTH) {
-                        super.setBigramAndGetFrequency(
-                                word1, word2, new ForgettingCurveParams(fc, now, last));
-                    }
-                    synchronized(mPendingWritesLock) {
+        synchronized(mBigramList) {
+            final long last = SettingsValues.getLastUserHistoryWriteTime(mPrefs, mLocale);
+            final long now = System.currentTimeMillis();
+            // Load the words that correspond to the current input locale
+            final Cursor cursor = query(MAIN_COLUMN_LOCALE + "=?", new String[] { mLocale });
+            if (null == cursor) return;
+            try {
+                if (cursor.moveToFirst()) {
+                    final int word1Index = cursor.getColumnIndex(MAIN_COLUMN_WORD1);
+                    final int word2Index = cursor.getColumnIndex(MAIN_COLUMN_WORD2);
+                    final int fcIndex = cursor.getColumnIndex(COLUMN_FORGETTING_CURVE_VALUE);
+                    while (!cursor.isAfterLast()) {
+                        final String word1 = cursor.getString(word1Index);
+                        final String word2 = cursor.getString(word2Index);
+                        final int fc = cursor.getInt(fcIndex);
+                        if (DBG_SAVE_RESTORE) {
+                            Log.d(TAG, "--- Load user history: " + word1 + ", " + word2 + ","
+                                    + mLocale + "," + this);
+                        }
+                        // Safeguard against adding really long words. Stack may overflow due
+                        // to recursive lookup
+                        if (null == word1) {
+                            super.addWord(word2, null /* shortcut */, fc);
+                        } else if (word1.length() < BinaryDictionary.MAX_WORD_LENGTH
+                                && word2.length() < BinaryDictionary.MAX_WORD_LENGTH) {
+                            super.setBigramAndGetFrequency(
+                                    word1, word2, new ForgettingCurveParams(fc, now, last));
+                        }
                         mBigramList.addBigram(word1, word2, (byte)fc);
+                        cursor.moveToNext();
                     }
-                    cursor.moveToNext();
+                }
+            } finally {
+                cursor.close();
+                if (PROFILE_SAVE_RESTORE) {
+                    final long diff = System.currentTimeMillis() - now;
+                    Log.w(TAG, "PROF: Load User HistoryDictionary: "
+                            + mLocale + ", " + diff + "ms.");
                 }
             }
-        } finally {
-            cursor.close();
         }
     }
 
@@ -317,14 +344,16 @@ public class UserHistoryDictionary extends ExpandableDictionary {
         private final DatabaseHelper mDbHelper;
         private final String mLocale;
         private final UserHistoryDictionary mUserHistoryDictionary;
+        private final SharedPreferences mPrefs;
 
         public UpdateDbTask(
                 DatabaseHelper openHelper, UserHistoryDictionaryBigramList pendingWrites,
-                String locale, UserHistoryDictionary dict) {
+                String locale, UserHistoryDictionary dict, SharedPreferences prefs) {
             mBigramList = pendingWrites;
             mLocale = locale;
             mDbHelper = openHelper;
             mUserHistoryDictionary = dict;
+            mPrefs = prefs;
         }
 
         /** Prune any old data if the database is getting too big. */
@@ -363,37 +392,39 @@ public class UserHistoryDictionary extends ExpandableDictionary {
 
         @Override
         protected Void doInBackground(Void... v) {
-            SQLiteDatabase db = null;
-            try {
-                db = mDbHelper.getWritableDatabase();
-            } catch (android.database.sqlite.SQLiteCantOpenDatabaseException e) {
-                // If we can't open the db, don't do anything. Exit through the next test
-                // for non-nullity of the db variable.
-            }
-            if (null == db) {
-                // Not much we can do. Just exit.
-                sUpdatingDB = false;
-                return null;
-            }
-            db.execSQL("PRAGMA foreign_keys = ON;");
-            final boolean addLevel0Bigram = mBigramList.size() <= sMaxHistoryBigrams;
+            synchronized(mBigramList) {
+                final long now = PROFILE_SAVE_RESTORE ? System.currentTimeMillis() : 0;
+                int profTotal = 0;
+                int profInsert = 0;
+                int profDelete = 0;
+                SQLiteDatabase db = null;
+                try {
+                    db = mDbHelper.getWritableDatabase();
+                } catch (android.database.sqlite.SQLiteCantOpenDatabaseException e) {
+                    // If we can't open the db, don't do anything. Exit through the next test
+                    // for non-nullity of the db variable.
+                }
+                if (null == db) {
+                    // Not much we can do. Just exit.
+                    sUpdatingDB = false;
+                    return null;
+                }
+                db.execSQL("PRAGMA foreign_keys = ON;");
+                final boolean addLevel0Bigram = mBigramList.size() <= sMaxHistoryBigrams;
 
-            // Write all the entries to the db
-            for (String word1 : mBigramList.keySet()) {
-                final HashMap<String, Byte> word1Bigrams = mBigramList.getBigrams(word1);
-                for (String word2 : word1Bigrams.keySet()) {
-                    // Get new frequency. Do not insert shortcuts/bigrams which freq is "-1".
-                    final int freq; // -1, or 0~255
-                    if (word1 == null) {
-                        freq = FREQUENCY_FOR_TYPED;
-                    } else {
-                        final NextWord nw = mUserHistoryDictionary.getBigramWord(word1, word2);
-                        if (nw != null) {
-                            final ForgettingCurveParams fcp = nw.getFcParams();
+                // Write all the entries to the db
+                for (String word1 : mBigramList.keySet()) {
+                    final HashMap<String, Byte> word1Bigrams = mBigramList.getBigrams(word1);
+                    for (String word2 : word1Bigrams.keySet()) {
+                        if (PROFILE_SAVE_RESTORE) {
+                            ++profTotal;
+                        }
+                        // Get new frequency. Do not insert unigrams/bigrams which freq is "-1".
+                        final int freq; // -1, or 0~255
+                        if (word1 == null) { // unigram
+                            freq = FREQUENCY_FOR_TYPED;
                             final byte prevFc = word1Bigrams.get(word2);
-                            final byte fc = (byte)fcp.getFc();
-                            final boolean isValid = fcp.isValid();
-                            if (prevFc > 0 && prevFc == fc) {
+                            if (prevFc == FREQUENCY_FOR_TYPED) {
                                 // No need to update since we found no changes for this entry.
                                 // Just skip to the next entry.
                                 if (DBG_SAVE_RESTORE) {
@@ -401,67 +432,100 @@ public class UserHistoryDictionary extends ExpandableDictionary {
                                             + "," + prevFc);
                                 }
                                 continue;
-                            } else if (UserHistoryForgettingCurveUtils.
-                                    needsToSave(fc, isValid, addLevel0Bigram)) {
-                                freq = fc;
+                            }
+                        } else { // bigram
+                            final NextWord nw = mUserHistoryDictionary.getBigramWord(word1, word2);
+                            if (nw != null) {
+                                final ForgettingCurveParams fcp = nw.getFcParams();
+                                final byte prevFc = word1Bigrams.get(word2);
+                                final byte fc = (byte)fcp.getFc();
+                                final boolean isValid = fcp.isValid();
+                                if (prevFc > 0 && prevFc == fc) {
+                                    // No need to update since we found no changes for this entry.
+                                    // Just skip to the next entry.
+                                    if (DBG_SAVE_RESTORE) {
+                                        Log.d(TAG, "Skip update user history: " + word1 + ","
+                                                + word2 + "," + prevFc);
+                                    }
+                                    continue;
+                                } else if (UserHistoryForgettingCurveUtils.
+                                        needsToSave(fc, isValid, addLevel0Bigram)) {
+                                    freq = fc;
+                                } else {
+                                    freq = -1;
+                                }
                             } else {
                                 freq = -1;
                             }
-                        } else {
-                            freq = -1;
                         }
-                    }
-                    // TODO: this process of making a text search for each pair each time
-                    // is terribly inefficient. Optimize this.
-                    // Find pair id
-                    Cursor c = null;
-                    try {
-                        if (null != word1) {
-                            c = db.query(MAIN_TABLE_NAME, new String[] { MAIN_COLUMN_ID },
-                                    MAIN_COLUMN_WORD1 + "=? AND " + MAIN_COLUMN_WORD2 + "=? AND "
-                                            + MAIN_COLUMN_LOCALE + "=?",
-                                            new String[] { word1, word2, mLocale }, null, null,
-                                            null);
-                        } else {
-                            c = db.query(MAIN_TABLE_NAME, new String[] { MAIN_COLUMN_ID },
-                                    MAIN_COLUMN_WORD1 + " IS NULL AND " + MAIN_COLUMN_WORD2
-                                            + "=? AND " + MAIN_COLUMN_LOCALE + "=?",
-                                            new String[] { word2, mLocale }, null, null, null);
-                        }
-
-                        final int pairId;
-                        if (c.moveToFirst()) {
-                            // Delete existing pair
-                            pairId = c.getInt(c.getColumnIndex(MAIN_COLUMN_ID));
-                            db.delete(FREQ_TABLE_NAME, FREQ_COLUMN_PAIR_ID + "=?",
-                                    new String[] { Integer.toString(pairId) });
-                        } else {
-                            // Create new pair
-                            Long pairIdLong = db.insert(MAIN_TABLE_NAME, null,
-                                    getContentValues(word1, word2, mLocale));
-                            pairId = pairIdLong.intValue();
-                        }
-                        if (freq > 0) {
-                            if (DBG_SAVE_RESTORE) {
-                                Log.d(TAG, "--- Save user history: " + word1 + ", " + word2
-                                        + mLocale + "," + this);
+                        // TODO: this process of making a text search for each pair each time
+                        // is terribly inefficient. Optimize this.
+                        // Find pair id
+                        Cursor c = null;
+                        try {
+                            if (null != word1) {
+                                c = db.query(MAIN_TABLE_NAME, new String[] { MAIN_COLUMN_ID },
+                                        MAIN_COLUMN_WORD1 + "=? AND " + MAIN_COLUMN_WORD2 + "=? AND "
+                                                + MAIN_COLUMN_LOCALE + "=?",
+                                                new String[] { word1, word2, mLocale }, null, null,
+                                                null);
+                            } else {
+                                c = db.query(MAIN_TABLE_NAME, new String[] { MAIN_COLUMN_ID },
+                                        MAIN_COLUMN_WORD1 + " IS NULL AND " + MAIN_COLUMN_WORD2
+                                                + "=? AND " + MAIN_COLUMN_LOCALE + "=?",
+                                                new String[] { word2, mLocale }, null, null, null);
                             }
-                            // Insert new frequency
-                            db.insert(FREQ_TABLE_NAME, null,
-                                    getFrequencyContentValues(pairId, freq));
-                        }
-                    } finally {
-                        if (c != null) {
-                            c.close();
+
+                            final int pairId;
+                            if (c.moveToFirst()) {
+                                if (PROFILE_SAVE_RESTORE) {
+                                    ++profDelete;
+                                }
+                                // Delete existing pair
+                                pairId = c.getInt(c.getColumnIndex(MAIN_COLUMN_ID));
+                                db.delete(FREQ_TABLE_NAME, FREQ_COLUMN_PAIR_ID + "=?",
+                                        new String[] { Integer.toString(pairId) });
+                            } else {
+                                // Create new pair
+                                Long pairIdLong = db.insert(MAIN_TABLE_NAME, null,
+                                        getContentValues(word1, word2, mLocale));
+                                pairId = pairIdLong.intValue();
+                            }
+                            if (freq > 0) {
+                                if (PROFILE_SAVE_RESTORE) {
+                                    ++profInsert;
+                                }
+                                if (DBG_SAVE_RESTORE) {
+                                    Log.d(TAG, "--- Save user history: " + word1 + ", " + word2
+                                            + mLocale + "," + this);
+                                }
+                                // Insert new frequency
+                                db.insert(FREQ_TABLE_NAME, null,
+                                        getFrequencyContentValues(pairId, freq));
+                                // Update an existing bigram entry in mBigramList too in order to
+                                // synchronize the SQL DB and mBigramList.
+                                mBigramList.updateBigram(word1, word2, (byte)freq);
+                            }
+                        } finally {
+                            if (c != null) {
+                                c.close();
+                            }
                         }
                     }
                 }
-            }
 
-            checkPruneData(db);
-            sUpdatingDB = false;
-
-            return null;
+                checkPruneData(db);
+                // Save the timestamp after we finish writing the SQL DB.
+                SettingsValues.setLastUserHistoryWriteTime(mPrefs, mLocale);
+                sUpdatingDB = false;
+                if (PROFILE_SAVE_RESTORE) {
+                    final long diff = System.currentTimeMillis() - now;
+                    Log.w(TAG, "PROF: Write User HistoryDictionary: " + mLocale + ", "+ diff
+                            + "ms. Total: " + profTotal + ". Insert: " + profInsert + ". Delete: "
+                            + profDelete);
+                }
+                return null;
+            } // synchronized
         }
 
         private static ContentValues getContentValues(String word1, String word2, String locale) {
