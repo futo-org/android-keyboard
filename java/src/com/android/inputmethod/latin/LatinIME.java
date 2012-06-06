@@ -969,7 +969,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView == null || mSuggestionsContainer == null)
             return;
-        final int backingHeight = getAdjustedBackingViewHeight();
+        final int adjustedBackingHeight = getAdjustedBackingViewHeight();
+        final boolean backingGone = (mKeyPreviewBackingView.getVisibility() == View.GONE);
+        final int backingHeight = backingGone ? 0 : adjustedBackingHeight;
         // In fullscreen mode, the height of the extract area managed by InputMethodService should
         // be considered.
         // See {@link android.inputmethodservice.InputMethodService#onComputeInsets}.
