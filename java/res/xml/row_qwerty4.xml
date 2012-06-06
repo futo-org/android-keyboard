@@ -38,15 +38,14 @@
             >
                 <!-- U+064B: "ً" ARABIC FATHATAN -->
                 <Key
-                    latin:keyLabel="."
                     latin:keyHintLabel="&#x064B;"
                     latin:keyLabelFlags="hasPopupHint|hasShiftedLetterHint"
                     latin:moreKeys="!text/more_keys_for_arabic_diacritics"
-                    latin:backgroundType="functional" />
+                    latin:keyStyle="punctuationKeyStyle" />
             </case>
             <default>
                 <Key
-                latin:keyStyle="punctuationKeyStyle" />
+                    latin:keyStyle="punctuationKeyStyle" />
             </default>
         </switch>
         <Key
