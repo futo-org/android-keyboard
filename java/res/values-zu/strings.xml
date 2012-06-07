@@ -24,6 +24,8 @@
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Ikhibhodi ye-Android (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Izilungiselelo zekhibhodi ye-Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Okukhethwa kukho kokungenayo"</string>
+    <!-- no translation found for english_ime_research_log (8492602295696577851) -->
+    <skip />
     <string name="spell_checker_service_name" msgid="7338064335159755926">"Isihloli sokupela se-Android"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Isihloli sokupela se-Android (AOSP)"</string>
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Izilungiselelo zokuhlola ukupela"</string>
@@ -111,6 +113,18 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Okufakwayo ngezwi kuvinjelwe"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Misa izindlela zokufakwayo"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Izilimi zokufakwayo"</string>
+    <!-- no translation found for note_timestamp_for_researchlog (1889446857977976026) -->
+    <skip />
+    <!-- no translation found for notify_recorded_timestamp (8036429032449612051) -->
+    <skip />
+    <!-- no translation found for do_not_log_this_session (413762473641146336) -->
+    <skip />
+    <!-- no translation found for notify_session_log_deleting (3299507647764414623) -->
+    <skip />
+    <!-- no translation found for notify_session_log_deleted (8687927130100934686) -->
+    <skip />
+    <!-- no translation found for notify_session_log_not_deleted (2592908998810755970) -->
+    <skip />
     <string name="select_language" msgid="3693815588777926848">"Izilimi zokufakwayo"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Thinta futhi ukuze ulondoloze"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Isichazamazwi siyatholakala"</string>
