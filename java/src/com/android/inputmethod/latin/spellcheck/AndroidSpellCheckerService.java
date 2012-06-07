@@ -372,27 +372,32 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         mUserDictionaries = Collections.synchronizedMap(new TreeMap<String, Dictionary>());
         final Map<String, Dictionary> oldWhitelistDictionaries = mWhitelistDictionaries;
         mWhitelistDictionaries = Collections.synchronizedMap(new TreeMap<String, Dictionary>());
-        for (DictionaryPool pool : oldPools.values()) {
-            pool.close();
-        }
-        for (Dictionary dict : oldUserDictionaries.values()) {
-            dict.close();
-        }
-        for (Dictionary dict : oldWhitelistDictionaries.values()) {
-            dict.close();
-        }
-        synchronized (mUseContactsLock) {
-            if (null != mContactsDictionary) {
-                // The synchronously loaded contacts dictionary should have been in one
-                // or several pools, but it is shielded against multiple closing and it's
-                // safe to call it several times.
-                final Dictionary dictToClose = mContactsDictionary;
-                // TODO: revert to the concrete type when USE_BINARY_CONTACTS_DICTIONARY is no
-                // longer needed
-                mContactsDictionary = null;
-                dictToClose.close();
+        new Thread("spellchecker_close_dicts") {
+            @Override
+            public void run() {
+                for (DictionaryPool pool : oldPools.values()) {
+                    pool.close();
+                }
+                for (Dictionary dict : oldUserDictionaries.values()) {
+                    dict.close();
+                }
+                for (Dictionary dict : oldWhitelistDictionaries.values()) {
+                    dict.close();
+                }
+                synchronized (mUseContactsLock) {
+                    if (null != mContactsDictionary) {
+                        // The synchronously loaded contacts dictionary should have been in one
+                        // or several pools, but it is shielded against multiple closing and it's
+                        // safe to call it several times.
+                        final Dictionary dictToClose = mContactsDictionary;
+                        // TODO: revert to the concrete type when USE_BINARY_CONTACTS_DICTIONARY
+                        // is no longer needed
+                        mContactsDictionary = null;
+                        dictToClose.close();
+                    }
+                }
             }
-        }
+        }.start();
     }
 
     private DictionaryPool getDictionaryPool(final String locale) {
