@@ -23,7 +23,7 @@
 >
     <Row
         latin:keyWidth="9.0%p"
-        backgroundType="functional"
+        latin:backgroundType="functional"
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
