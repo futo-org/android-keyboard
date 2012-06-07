@@ -18,6 +18,8 @@ package com.android.inputmethod.latin;
 
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.inputmethodservice.InputMethodService;
@@ -33,9 +35,9 @@ import android.view.MotionEvent;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.widget.Toast;
 
 import com.android.inputmethod.keyboard.Key;
-import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -134,12 +136,16 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         if (prefs != null) {
             sIsLogging = prefs.getBoolean(PREF_USABILITY_STUDY_MODE, false);
-            prefs.registerOnSharedPreferenceChangeListener(sInstance);
+            prefs.registerOnSharedPreferenceChangeListener(this);
         }
     }
 
     public synchronized void start() {
         Log.d(TAG, "start called");
+        if (!sIsLogging) {
+            // Log.w(TAG, "not in usability mode; not logging");
+            return;
+        }
         if (mFilesDir == null || !mFilesDir.exists()) {
             Log.w(TAG, "IME storage directory does not exist.  Cannot start logging.");
         } else {
@@ -192,16 +198,17 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                         e1.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }
-                    mJsonWriter = NULL_JSON_WRITER;
-                    mFile = null;
-                    mLoggingState = LOGGING_STATE_OFF;
-                    if (DEBUG) {
-                        Log.d(TAG, "logfile closed");
-                    }
-                    Log.d(TAG, "finished stop(), notifying");
-                    synchronized (ResearchLogger.this) {
-                        ResearchLogger.this.notify();
+                    } finally {
+                        mJsonWriter = NULL_JSON_WRITER;
+                        mFile = null;
+                        mLoggingState = LOGGING_STATE_OFF;
+                        if (DEBUG) {
+                            Log.d(TAG, "logfile closed");
+                        }
+                        Log.d(TAG, "finished stop(), notifying");
+                        synchronized (ResearchLogger.this) {
+                            ResearchLogger.this.notify();
+                        }
                     }
                 }
             });
@@ -211,6 +218,38 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 e.printStackTrace();
             }
         }
+    }
+
+    public synchronized boolean abort() {
+        Log.d(TAG, "abort called");
+        boolean isLogFileDeleted = false;
+        if (mLoggingHandler != null && mLoggingState == LOGGING_STATE_ON) {
+            mLoggingState = LOGGING_STATE_STOPPING;
+            try {
+                Log.d(TAG, "closing jsonwriter");
+                mJsonWriter.endArray();
+                mJsonWriter.close();
+            } catch (IllegalStateException e1) {
+                // assume that this is just the json not being terminated properly.
+                // ignore
+                e1.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                mJsonWriter = NULL_JSON_WRITER;
+                // delete file
+                final boolean isDeleted = mFile.delete();
+                if (isDeleted) {
+                    isLogFileDeleted = true;
+                }
+                mFile = null;
+                mLoggingState = LOGGING_STATE_OFF;
+                if (DEBUG) {
+                    Log.d(TAG, "logfile closed");
+                }
+            }
+        }
+        return isLogFileDeleted;
     }
 
     /* package */ synchronized void flush() {
@@ -227,6 +266,50 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             return;
         }
         sIsLogging = prefs.getBoolean(PREF_USABILITY_STUDY_MODE, false);
+        if (sIsLogging == false) {
+            abort();
+        }
+    }
+
+    /* package */ void presentResearchDialog(final LatinIME latinIME) {
+        final CharSequence title = latinIME.getString(R.string.english_ime_research_log);
+        final CharSequence[] items = new CharSequence[] {
+                latinIME.getString(R.string.note_timestamp_for_researchlog),
+                latinIME.getString(R.string.do_not_log_this_session),
+        };
+        final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface di, int position) {
+                di.dismiss();
+                switch (position) {
+                    case 0:
+                        ResearchLogger.getInstance().userTimestamp();
+                        Toast.makeText(latinIME, R.string.notify_recorded_timestamp,
+                                Toast.LENGTH_LONG).show();
+                        break;
+                    case 1:
+                        Toast toast = Toast.makeText(latinIME,
+                                R.string.notify_session_log_deleting, Toast.LENGTH_LONG);
+                        toast.show();
+                        final ResearchLogger logger = ResearchLogger.getInstance();
+                        boolean isLogDeleted = logger.abort();
+                        toast.cancel();
+                        if (isLogDeleted) {
+                            Toast.makeText(latinIME, R.string.notify_session_log_deleted,
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(latinIME,
+                                    R.string.notify_session_log_not_deleted, Toast.LENGTH_LONG)
+                                    .show();
+                        }
+                        break;
+                }
+            }
+        };
+        final AlertDialog.Builder builder = new AlertDialog.Builder(latinIME)
+                .setItems(items, listener)
+                .setTitle(title);
+        latinIME.showOptionDialog(builder.create());
     }
 
     private static final String CURRENT_TIME_KEY = "_ct";
@@ -755,5 +838,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             };
             getInstance().writeEvent(EVENTKEYS_SUGGESTIONSVIEW_SETSUGGESTIONS, values);
         }
+    }
+
+    private static final String[] EVENTKEYS_USER_TIMESTAMP = {
+        "UserTimestamp"
+    };
+    public void userTimestamp() {
+        getInstance().writeEvent(EVENTKEYS_USER_TIMESTAMP, EVENTKEYS_NULLVALUES);
     }
 }

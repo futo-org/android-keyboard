@@ -1332,6 +1332,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         case Keyboard.CODE_LANGUAGE_SWITCH:
             handleLanguageSwitchKey();
             break;
+        case Keyboard.CODE_RESEARCH:
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.getInstance().presentResearchDialog(this);
+            }
+            break;
         default:
             if (primaryCode == Keyboard.CODE_TAB
                     && mInputAttributes.mEditorAction == EditorInfo.IME_ACTION_NEXT) {
@@ -2446,10 +2451,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setItems(items, listener)
                 .setTitle(title);
-        showOptionDialogInternal(builder.create());
+        showOptionDialog(builder.create());
     }
 
-    private void showOptionDialogInternal(AlertDialog dialog) {
+    /* package */ void showOptionDialog(AlertDialog dialog) {
         final IBinder windowToken = mKeyboardSwitcher.getKeyboardView().getWindowToken();
         if (windowToken == null) return;
 
