@@ -134,13 +134,13 @@ public class UserHistoryDictionary extends ExpandableDictionary {
             SharedPreferences sp) {
         super(context, dicTypeId);
         mLocale = locale;
+        mPrefs = sp;
         if (sOpenHelper == null) {
             sOpenHelper = new DatabaseHelper(getContext());
         }
         if (mLocale != null && mLocale.length() > 1) {
             loadDictionary();
         }
-        mPrefs = sp;
     }
 
     @Override
