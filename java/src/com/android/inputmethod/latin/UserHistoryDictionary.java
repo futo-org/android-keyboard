@@ -229,6 +229,7 @@ public class UserHistoryDictionary extends ExpandableDictionary {
     public void loadDictionaryAsync() {
         synchronized(mBigramList) {
             final long last = SettingsValues.getLastUserHistoryWriteTime(mPrefs, mLocale);
+            final boolean initializing = last == 0;
             final long now = System.currentTimeMillis();
             // Load the words that correspond to the current input locale
             final Cursor cursor = query(MAIN_COLUMN_LOCALE + "=?", new String[] { mLocale });
@@ -253,7 +254,8 @@ public class UserHistoryDictionary extends ExpandableDictionary {
                         } else if (word1.length() < BinaryDictionary.MAX_WORD_LENGTH
                                 && word2.length() < BinaryDictionary.MAX_WORD_LENGTH) {
                             super.setBigramAndGetFrequency(
-                                    word1, word2, new ForgettingCurveParams(fc, now, last));
+                                    word1, word2, initializing ? new ForgettingCurveParams(true)
+                                            : new ForgettingCurveParams(fc, now, last));
                         }
                         mBigramList.addBigram(word1, word2, (byte)fc);
                         cursor.moveToNext();

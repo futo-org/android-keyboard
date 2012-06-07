@@ -30,6 +30,7 @@ public class UserHistoryForgettingCurveUtils {
     private static final long ELAPSED_TIME_INTERVAL_MILLIS = ELAPSED_TIME_INTERVAL_HOURS
             * DateUtils.HOUR_IN_MILLIS;
     private static final int HALF_LIFE_HOURS = 48;
+    private static final int MAX_PUSH_ELAPSED = (FC_LEVEL_MAX + 1) * (ELAPSED_TIME_MAX + 1);
 
     private UserHistoryForgettingCurveUtils() {
         // This utility class is not publicly instantiable.
@@ -92,6 +93,11 @@ public class UserHistoryForgettingCurveUtils {
             final int elapsedTimeCount =
                     (int)((now - mLastTouchedTime) / ELAPSED_TIME_INTERVAL_MILLIS);
             if (elapsedTimeCount <= 0) {
+                return;
+            }
+            if (elapsedTimeCount >= MAX_PUSH_ELAPSED) {
+                mLastTouchedTime = now;
+                mFc = 0;
                 return;
             }
             for (int i = 0; i < elapsedTimeCount; ++i) {
