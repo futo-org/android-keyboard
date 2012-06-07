@@ -111,17 +111,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // TODO: migrate this to SettingsValues
     private int mSuggestionVisibility;
-    private static final int SUGGESTION_VISIBILILTY_SHOW_VALUE
+    private static final int SUGGESTION_VISIBILITY_SHOW_VALUE
             = R.string.prefs_suggestion_visibility_show_value;
-    private static final int SUGGESTION_VISIBILILTY_SHOW_ONLY_PORTRAIT_VALUE
+    private static final int SUGGESTION_VISIBILITY_SHOW_ONLY_PORTRAIT_VALUE
             = R.string.prefs_suggestion_visibility_show_only_portrait_value;
-    private static final int SUGGESTION_VISIBILILTY_HIDE_VALUE
+    private static final int SUGGESTION_VISIBILITY_HIDE_VALUE
             = R.string.prefs_suggestion_visibility_hide_value;
 
     private static final int[] SUGGESTION_VISIBILITY_VALUE_ARRAY = new int[] {
-        SUGGESTION_VISIBILILTY_SHOW_VALUE,
-        SUGGESTION_VISIBILILTY_SHOW_ONLY_PORTRAIT_VALUE,
-        SUGGESTION_VISIBILILTY_HIDE_VALUE
+        SUGGESTION_VISIBILITY_SHOW_VALUE,
+        SUGGESTION_VISIBILITY_SHOW_ONLY_PORTRAIT_VALUE,
+        SUGGESTION_VISIBILITY_HIDE_VALUE
     };
 
     private static final int SPACE_STATE_NONE = 0;
@@ -1742,8 +1742,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public boolean isShowingSuggestionsStrip() {
-        return (mSuggestionVisibility == SUGGESTION_VISIBILILTY_SHOW_VALUE)
-                || (mSuggestionVisibility == SUGGESTION_VISIBILILTY_SHOW_ONLY_PORTRAIT_VALUE
+        return (mSuggestionVisibility == SUGGESTION_VISIBILITY_SHOW_VALUE)
+                || (mSuggestionVisibility == SUGGESTION_VISIBILITY_SHOW_ONLY_PORTRAIT_VALUE
                         && mDisplayOrientation == Configuration.ORIENTATION_PORTRAIT);
     }
 
