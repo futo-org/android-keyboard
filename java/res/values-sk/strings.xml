@@ -60,7 +60,7 @@
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Vypnuté"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Mierne"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agresívne"</string>
-    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Veľmi agresívna"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Veľmi agresívne"</string>
     <string name="bigram_suggestion" msgid="8169311444438922902">"Návrhy ďalšieho slova"</string>
     <string name="bigram_suggestion_summary" msgid="6635527607242625713">"Na zlepšenie návrhov použiť predchádzajúce slovo"</string>
     <string name="bigram_prediction" msgid="3216364899483135294">"Odhad ďalšieho slova"</string>
@@ -93,8 +93,7 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"Hlasový vstup"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Usmiata tvár"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Enter"</string>
-    <!-- no translation found for spoken_description_search (1247236163755920808) -->
-    <skip />
+    <string name="spoken_description_search" msgid="1247236163755920808">"vyhľadávacie tlačidlo"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"Bodka"</string>
     <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Kláves Shift je povolený"</string>
     <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Kláves Caps Lock je povolený"</string>
