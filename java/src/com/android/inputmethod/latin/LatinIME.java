@@ -505,9 +505,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     /**
      * Resets the contacts dictionary in mSuggest according to the user settings.
      *
-     * This method takes an optional contacts dictionary to use. Since the contacts dictionary
-     * does not depend on the locale, it can be reused across different instances of Suggest.
-     * The dictionary will also be opened or closed as necessary depending on the settings.
+     * This method takes an optional contacts dictionary to use when the locale hasn't changed
+     * since the contacts dictionary can be opened or closed as necessary depending on the settings.
      *
      * @param oldContactsDictionary an optional dictionary to use, or null
      */
@@ -520,21 +519,35 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // so it's safe to call it anyways.
             if (null != oldContactsDictionary) oldContactsDictionary.close();
             dictionaryToUse = null;
-        } else if (null != oldContactsDictionary) {
-            // Make sure the old contacts dictionary is opened. If it is already open, this is a
-            // no-op, so it's safe to call it anyways.
-            if (USE_BINARY_CONTACTS_DICTIONARY) {
-                ((ContactsBinaryDictionary)oldContactsDictionary).reopen(this);
-            } else {
-                ((ContactsDictionary)oldContactsDictionary).reopen(this);
-            }
-            dictionaryToUse = oldContactsDictionary;
         } else {
-            if (USE_BINARY_CONTACTS_DICTIONARY) {
-                dictionaryToUse = new ContactsBinaryDictionary(this, Suggest.DIC_CONTACTS,
-                        mSubtypeSwitcher.getCurrentSubtypeLocale());
+            final Locale locale = mSubtypeSwitcher.getCurrentSubtypeLocale();
+            if (null != oldContactsDictionary) {
+                if (USE_BINARY_CONTACTS_DICTIONARY) {
+                    ContactsBinaryDictionary oldContactsBinaryDictionary =
+                            (ContactsBinaryDictionary)oldContactsDictionary;
+                    if (!oldContactsBinaryDictionary.mLocale.equals(locale)) {
+                        // If the locale has changed then recreate the contacts dictionary. This
+                        // allows locale dependent rules for handling bigram name predictions.
+                        oldContactsDictionary.close();
+                        dictionaryToUse = new ContactsBinaryDictionary(
+                            this, Suggest.DIC_CONTACTS, locale);
+                    } else {
+                        // Make sure the old contacts dictionary is opened. If it is already open,
+                        // this is a no-op, so it's safe to call it anyways.
+                        oldContactsBinaryDictionary.reopen(this);
+                        dictionaryToUse = oldContactsDictionary;
+                    }
+                } else {
+                    ((ContactsDictionary)oldContactsDictionary).reopen(this);
+                    dictionaryToUse = oldContactsDictionary;
+                }
             } else {
-                dictionaryToUse = new ContactsDictionary(this, Suggest.DIC_CONTACTS);
+                if (USE_BINARY_CONTACTS_DICTIONARY) {
+                    dictionaryToUse = new ContactsBinaryDictionary(this, Suggest.DIC_CONTACTS,
+                            locale);
+                } else {
+                    dictionaryToUse = new ContactsDictionary(this, Suggest.DIC_CONTACTS);
+                }
             }
         }
 
