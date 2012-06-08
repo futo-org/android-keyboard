@@ -1395,7 +1395,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
             if (SPACE_STATE_DOUBLE == spaceState) {
                 mHandler.cancelDoubleSpacesTimer();
-                if (revertDoubleSpaceWhileInBatchEdit()) {
+                if (mConnection.revertDoubleSpace()) {
                     // No need to reset mSpaceState, it has already be done (that's why we
                     // receive it as a parameter)
                     return;
@@ -2073,29 +2073,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
         mHandler.cancelUpdateBigramPredictions();
         mHandler.postUpdateSuggestions();
-    }
-
-    private boolean revertDoubleSpaceWhileInBatchEdit() {
-        // Here we test whether we indeed have a period and a space before us. This should not
-        // be needed, but it's there just in case something went wrong.
-        final CharSequence textBeforeCursor = mConnection.getTextBeforeCursor(2, 0);
-        if (!". ".equals(textBeforeCursor)) {
-            // Theoretically we should not be coming here if there isn't ". " before the
-            // cursor, but the application may be changing the text while we are typing, so
-            // anything goes. We should not crash.
-            Log.d(TAG, "Tried to revert double-space combo but we didn't find "
-                    + "\". \" just before the cursor.");
-            return false;
-        }
-        mConnection.deleteSurroundingText(2, 0);
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_deleteSurroundingText(2);
-        }
-        mConnection.commitText("  ", 1);
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_revertDoubleSpaceWhileInBatchEdit();
-        }
-        return true;
     }
 
     private boolean revertSwapPunctuation() {
