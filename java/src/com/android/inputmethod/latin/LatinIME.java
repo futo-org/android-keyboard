@@ -1804,14 +1804,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void pickSuggestionManually(final int index, final CharSequence suggestion,
-            int x, int y) {
-        mConnection.beginBatchEdit(getCurrentInputConnection());
-        pickSuggestionManuallyWhileInBatchEdit(index, suggestion, x, y);
-        mConnection.endBatchEdit();
-    }
-
-    public void pickSuggestionManuallyWhileInBatchEdit(final int index,
-        final CharSequence suggestion, final int x, final int y) {
+            final int x, final int y) {
         final SuggestedWords suggestedWords = mSuggestionsView.getSuggestions();
         // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
         if (suggestion.length() == 1 && isShowingPunctuationList()) {
@@ -1846,7 +1839,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mKeyboardSwitcher.updateShiftState();
             resetComposingState(true /* alsoResetLastComposedWord */);
             final CompletionInfo completionInfo = mApplicationSpecifiedCompletions[index];
+            mConnection.beginBatchEdit(getCurrentInputConnection());
             mConnection.commitCompletion(completionInfo);
+            mConnection.endBatchEdit();
             if (ProductionFlag.IS_EXPERIMENTAL) {
                 ResearchLogger.latinIME_pickApplicationSpecifiedCompletion(index,
                         completionInfo.getText(), x, y);

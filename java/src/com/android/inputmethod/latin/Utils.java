@@ -204,16 +204,22 @@ public class Utils {
     }
 
     // Get the current stack trace
-    public static String getStackTrace() {
+    public static String getStackTrace(final int limit) {
         StringBuilder sb = new StringBuilder();
         try {
             throw new RuntimeException();
         } catch (RuntimeException e) {
             StackTraceElement[] frames = e.getStackTrace();
             // Start at 1 because the first frame is here and we don't care about it
-            for (int j = 1; j < frames.length; ++j) sb.append(frames[j].toString() + "\n");
+            for (int j = 1; j < frames.length && j < limit + 1; ++j) {
+                sb.append(frames[j].toString() + "\n");
+            }
         }
         return sb.toString();
+    }
+
+    public static String getStackTrace() {
+        return getStackTrace(Integer.MAX_VALUE);
     }
 
     public static class UsabilityStudyLogUtils {
