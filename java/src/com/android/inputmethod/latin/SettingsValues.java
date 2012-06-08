@@ -29,7 +29,6 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * When you call the constructor of this class, you may want to change the current system locale by

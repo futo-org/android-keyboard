@@ -50,7 +50,7 @@ public class UserHistoryForgettingCurveUtils {
         }
 
         private ForgettingCurveParams(long now, boolean isValid) {
-            this((int)pushCount((byte)0, isValid), now, now, isValid);
+            this(pushCount((byte)0, isValid), now, now, isValid);
         }
 
         /** This constructor is called when the user history bigram dictionary is being restored. */
@@ -201,7 +201,7 @@ public class UserHistoryForgettingCurveUtils {
             for (int i = 0; i < FC_LEVEL_MAX; ++i) {
                 final double initialFreq;
                 if (i >= 2) {
-                    initialFreq = (double)FC_FREQ_MAX;
+                    initialFreq = FC_FREQ_MAX;
                 } else if (i == 1) {
                     initialFreq = (double)FC_FREQ_MAX / 2;
                 } else if (i == 0) {
