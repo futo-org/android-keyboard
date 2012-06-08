@@ -199,20 +199,20 @@ public class UserHistoryForgettingCurveUtils {
         public static final int[][] SCORE_TABLE = new int[FC_LEVEL_MAX][ELAPSED_TIME_MAX + 1];
         static {
             for (int i = 0; i < FC_LEVEL_MAX; ++i) {
-                final double initialFreq;
+                final float initialFreq;
                 if (i >= 2) {
                     initialFreq = FC_FREQ_MAX;
                 } else if (i == 1) {
-                    initialFreq = (double)FC_FREQ_MAX / 2;
+                    initialFreq = FC_FREQ_MAX / 2;
                 } else if (i == 0) {
-                    initialFreq = (double)FC_FREQ_MAX / 4;
+                    initialFreq = FC_FREQ_MAX / 4;
                 } else {
                     continue;
                 }
                 for (int j = 0; j < ELAPSED_TIME_MAX; ++j) {
-                    final double elapsedHour = j * ELAPSED_TIME_INTERVAL_HOURS;
+                    final float elapsedHours = j * ELAPSED_TIME_INTERVAL_HOURS;
                     final double freq =
-                            initialFreq * Math.pow(initialFreq, elapsedHour / HALF_LIFE_HOURS);
+                            initialFreq * Math.pow(initialFreq, elapsedHours / HALF_LIFE_HOURS);
                     final int intFreq = Math.min(FC_FREQ_MAX, Math.max(0, (int)freq));
                     SCORE_TABLE[i][j] = intFreq;
                 }
