@@ -225,6 +225,9 @@ static inline void prof_out(void) {
 // This is only used for the size of array. Not to be used in c functions.
 #define MAX_WORD_LENGTH_INTERNAL 48
 
+// This must be the same as ProximityInfo#MAX_PROXIMITY_CHARS_SIZE, currently it's 16.
+#define MAX_PROXIMITY_CHARS_SIZE_INTERNAL 16
+
 // This must be equal to ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE in KeyDetector.java
 #define ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE 2
 
@@ -288,5 +291,17 @@ template<typename T> inline T max(T a, T b) { return a > b ? a : b; }
 // DEBUG
 #define INPUTLENGTH_FOR_DEBUG -1
 #define MIN_OUTPUT_INDEX_FOR_DEBUG -1
+
+// Used as a return value for character comparison
+typedef enum {
+    // Same char, possibly with different case or accent
+    EQUIVALENT_CHAR,
+    // It is a char located nearby on the keyboard
+    NEAR_PROXIMITY_CHAR,
+    // It is an unrelated char
+    UNRELATED_CHAR,
+    // Additional proximity char which can differ by language.
+    ADDITIONAL_PROXIMITY_CHAR
+} ProximityType;
 
 #endif // LATINIME_DEFINES_H

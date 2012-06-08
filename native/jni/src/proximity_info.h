@@ -25,24 +25,10 @@
 namespace latinime {
 
 class Correction;
+class ProximityInfoState;
 
 class ProximityInfo {
  public:
-    static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2 = 10;
-    static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR =
-            1 << NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
-
-    // Used as a return value for character comparison
-    typedef enum {
-        // Same char, possibly with different case or accent
-        EQUIVALENT_CHAR,
-        // It is a char located nearby on the keyboard
-        NEAR_PROXIMITY_CHAR,
-        // It is an unrelated char
-        UNRELATED_CHAR,
-        // Additional proximity char which can differ by language.
-        ADDITIONAL_PROXIMITY_CHAR
-    } ProximityType;
 
     ProximityInfo(const std::string localeStr, const int maxProximityCharsSize,
             const int keyboardWidth, const int keyboardHeight, const int gridWidth,
@@ -53,7 +39,40 @@ class ProximityInfo {
             const float *sweetSpotCenterYs, const float *sweetSpotRadii);
     ~ProximityInfo();
     bool hasSpaceProximity(const int x, const int y) const;
-    void setInputParams(const int32_t *inputCodes, const int inputLength,
+    int getNormalizedSquaredDistance(const int inputIndex, const int proximityIndex) const;
+    bool sameAsTyped(const unsigned short *word, int length) const;
+    int squaredDistanceToEdge(const int keyId, const int x, const int y) const;
+    bool isOnKey(const int keyId, const int x, const int y) const {
+        if (keyId < 0) return true; // NOT_A_ID is -1, but return whenever < 0 just in case
+        const int left = mKeyXCoordinates[keyId];
+        const int top = mKeyYCoordinates[keyId];
+        const int right = left + mKeyWidths[keyId] + 1;
+        const int bottom = top + mKeyHeights[keyId];
+        return left < right && top < bottom && x >= left && x < right && y >= top && y < bottom;
+    }
+    int getKeyIndex(const int c) const;
+    bool hasSweetSpotData(const int keyIndex) const {
+        // When there are no calibration data for a key,
+        // the radius of the key is assigned to zero.
+        return mSweetSpotRadii[keyIndex] > 0.0;
+    }
+    float getSweetSpotRadiiAt(int keyIndex) const {
+        return mSweetSpotRadii[keyIndex];
+    }
+    float getSweetSpotCenterXAt(int keyIndex) const {
+        return mSweetSpotCenterXs[keyIndex];
+    }
+    float getSweetSpotCenterYAt(int keyIndex) const {
+        return mSweetSpotCenterYs[keyIndex];
+    }
+    void calculateNearbyKeyCodes(
+            const int x, const int y, const int32_t primaryKey, int *inputCodes) const;
+
+    ////////////////////////////////////
+    // Access to proximity info state //
+    // TODO: remove                   //
+    ////////////////////////////////////
+    void initInputParams(const int32_t *inputCodes, const int inputLength,
             const int *xCoordinates, const int *yCoordinates);
     const int* getProximityCharsAt(const int index) const;
     unsigned short getPrimaryCharAt(const int index) const;
@@ -61,16 +80,9 @@ class ProximityInfo {
     bool existsAdjacentProximityChars(const int index) const;
     ProximityType getMatchedProximityId(const int index, const unsigned short c,
             const bool checkProximityChars, int *proximityIndex = 0) const;
-    int getNormalizedSquaredDistance(const int inputIndex, const int proximityIndex) const {
-        return mNormalizedSquaredDistances[inputIndex * MAX_PROXIMITY_CHARS_SIZE + proximityIndex];
-    }
-    bool sameAsTyped(const unsigned short *word, int length) const;
-    const unsigned short* getPrimaryInputWord() const {
-        return mPrimaryInputWord;
-    }
-    bool touchPositionCorrectionEnabled() const {
-        return mTouchPositionCorrectionEnabled;
-    }
+    const unsigned short* getPrimaryInputWord() const;
+    bool touchPositionCorrectionEnabled() const;
+    ////////////////////////////////////
 
  private:
     // The max number of the keys in one keyboard layout
@@ -86,16 +98,6 @@ class ProximityInfo {
     float calculateSquaredDistanceFromSweetSpotCenter(
             const int keyIndex, const int inputIndex) const;
     bool hasInputCoordinates() const;
-    int getKeyIndex(const int c) const;
-    bool hasSweetSpotData(const int keyIndex) const {
-        // When there are no calibration data for a key,
-        // the radius of the key is assigned to zero.
-        return mSweetSpotRadii[keyIndex] > 0.0;
-    }
-    bool isOnKey(const int keyId, const int x, const int y) const;
-    int squaredDistanceToEdge(const int keyId, const int x, const int y) const;
-    void calculateNearbyKeyCodes(
-            const int x, const int y, const int32_t primaryKey, int *inputCodes) const;
 
     const int MAX_PROXIMITY_CHARS_SIZE;
     const int KEYBOARD_WIDTH;
@@ -108,14 +110,7 @@ class ProximityInfo {
     const int KEY_COUNT;
     const bool HAS_TOUCH_POSITION_CORRECTION_DATA;
     const std::string mLocaleStr;
-    // TODO: remove this
-    const int *mInputCodesFromJava;
-    int32_t *mInputCodes;
-    const int *mInputXCoordinates;
-    const int *mInputYCoordinates;
-    bool mTouchPositionCorrectionEnabled;
     int32_t *mProximityCharsArray;
-    int *mNormalizedSquaredDistances;
     int32_t mKeyXCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int32_t mKeyYCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int32_t mKeyWidths[MAX_KEY_COUNT_IN_A_KEYBOARD];
@@ -124,9 +119,9 @@ class ProximityInfo {
     float mSweetSpotCenterXs[MAX_KEY_COUNT_IN_A_KEYBOARD];
     float mSweetSpotCenterYs[MAX_KEY_COUNT_IN_A_KEYBOARD];
     float mSweetSpotRadii[MAX_KEY_COUNT_IN_A_KEYBOARD];
-    int mInputLength;
-    unsigned short mPrimaryInputWord[MAX_WORD_LENGTH_INTERNAL];
     int mCodeToKeyIndex[MAX_CHAR_CODE + 1];
+    // TODO: move to correction.h
+    ProximityInfoState *mProximityInfoState;
 };
 
 } // namespace latinime

@@ -24,6 +24,7 @@
 #include "defines.h"
 #include "dictionary.h"
 #include "proximity_info.h"
+#include "proximity_info_state.h"
 
 namespace latinime {
 
@@ -51,23 +52,14 @@ ProximityInfo::ProximityInfo(const std::string localeStr, const int maxProximity
           HAS_TOUCH_POSITION_CORRECTION_DATA(keyCount > 0 && keyXCoordinates && keyYCoordinates
                   && keyWidths && keyHeights && keyCharCodes && sweetSpotCenterXs
                   && sweetSpotCenterYs && sweetSpotRadii),
-          mLocaleStr(localeStr),
-          mInputXCoordinates(0), mInputYCoordinates(0),
-          mTouchPositionCorrectionEnabled(false) {
-    const int proximityGridLength = GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE;
-    mProximityCharsArray = new int32_t[proximityGridLength];
-    mInputCodes = new int32_t[MAX_PROXIMITY_CHARS_SIZE * MAX_WORD_LENGTH_INTERNAL];
+          mLocaleStr(localeStr) {
     if (DEBUG_PROXIMITY_INFO) {
         AKLOGI("Create proximity info array %d", proximityGridLength);
     }
+    const int proximityGridLength = GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE;
+    mProximityCharsArray = new int32_t[proximityGridLength];
     memcpy(mProximityCharsArray, proximityCharsArray,
             proximityGridLength * sizeof(mProximityCharsArray[0]));
-    const int normalizedSquaredDistancesLength =
-            MAX_PROXIMITY_CHARS_SIZE * MAX_WORD_LENGTH_INTERNAL;
-    mNormalizedSquaredDistances = new int[normalizedSquaredDistancesLength];
-    for (int i = 0; i < normalizedSquaredDistancesLength; ++i) {
-        mNormalizedSquaredDistances[i] = NOT_A_DISTANCE;
-    }
 
     copyOrFillZero(mKeyXCoordinates, keyXCoordinates, KEY_COUNT * sizeof(mKeyXCoordinates[0]));
     copyOrFillZero(mKeyYCoordinates, keyYCoordinates, KEY_COUNT * sizeof(mKeyYCoordinates[0]));
@@ -81,6 +73,9 @@ ProximityInfo::ProximityInfo(const std::string localeStr, const int maxProximity
     copyOrFillZero(mSweetSpotRadii, sweetSpotRadii, KEY_COUNT * sizeof(mSweetSpotRadii[0]));
 
     initializeCodeToKeyIndex();
+    mProximityInfoState = new ProximityInfoState(this, MAX_PROXIMITY_CHARS_SIZE,
+            HAS_TOUCH_POSITION_CORRECTION_DATA, MOST_COMMON_KEY_WIDTH_SQUARE, mLocaleStr,
+            KEY_COUNT, CELL_HEIGHT, CELL_WIDTH, GRID_WIDTH, GRID_HEIGHT);
 }
 
 // Build the reversed look up table from the char code to the index in mKeyXCoordinates,
@@ -96,9 +91,8 @@ void ProximityInfo::initializeCodeToKeyIndex() {
 }
 
 ProximityInfo::~ProximityInfo() {
-    delete[] mNormalizedSquaredDistances;
     delete[] mProximityCharsArray;
-    delete[] mInputCodes;
+    delete mProximityInfoState;
 }
 
 inline int ProximityInfo::getStartIndexFromCoordinates(const int x, const int y) const {
@@ -119,24 +113,16 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
     if (DEBUG_PROXIMITY_INFO) {
         AKLOGI("hasSpaceProximity: index %d, %d, %d", startIndex, x, y);
     }
+    int32_t* proximityCharsArray = mProximityCharsArray;
     for (int i = 0; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
         if (DEBUG_PROXIMITY_INFO) {
             AKLOGI("Index: %d", mProximityCharsArray[startIndex + i]);
         }
-        if (mProximityCharsArray[startIndex + i] == KEYCODE_SPACE) {
+        if (proximityCharsArray[startIndex + i] == KEYCODE_SPACE) {
             return true;
         }
     }
     return false;
-}
-
-bool ProximityInfo::isOnKey(const int keyId, const int x, const int y) const {
-    if (keyId < 0) return true; // NOT_A_ID is -1, but return whenever < 0 just in case
-    const int left = mKeyXCoordinates[keyId];
-    const int top = mKeyYCoordinates[keyId];
-    const int right = left + mKeyWidths[keyId] + 1;
-    const int bottom = top + mKeyHeights[keyId];
-    return left < right && top < bottom && x >= left && x < right && y >= top && y < bottom;
 }
 
 int ProximityInfo::squaredDistanceToEdge(const int keyId, const int x, const int y) const {
@@ -154,12 +140,13 @@ int ProximityInfo::squaredDistanceToEdge(const int keyId, const int x, const int
 
 void ProximityInfo::calculateNearbyKeyCodes(
         const int x, const int y, const int32_t primaryKey, int *inputCodes) const {
+    int32_t *proximityCharsArray = mProximityCharsArray;
     int insertPos = 0;
     inputCodes[insertPos++] = primaryKey;
     const int startIndex = getStartIndexFromCoordinates(x, y);
     if (startIndex >= 0) {
         for (int i = 0; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
-            const int32_t c = mProximityCharsArray[startIndex + i];
+            const int32_t c = proximityCharsArray[startIndex + i];
             if (c < KEYCODE_SPACE || c == primaryKey) {
                 continue;
             }
@@ -216,113 +203,10 @@ void ProximityInfo::calculateNearbyKeyCodes(
     }
 }
 
-void ProximityInfo::setInputParams(const int32_t* inputCodes, const int inputLength,
-        const int* xCoordinates, const int* yCoordinates) {
-    memset(mInputCodes, 0,
-            MAX_WORD_LENGTH_INTERNAL * MAX_PROXIMITY_CHARS_SIZE * sizeof(mInputCodes[0]));
-
-    for (int i = 0; i < inputLength; ++i) {
-        const int32_t primaryKey = inputCodes[i];
-        const int x = xCoordinates[i];
-        const int y = yCoordinates[i];
-        int *proximities = &mInputCodes[i * MAX_PROXIMITY_CHARS_SIZE];
-        calculateNearbyKeyCodes(x, y, primaryKey, proximities);
-    }
-
-    if (DEBUG_PROXIMITY_CHARS) {
-        for (int i = 0; i < inputLength; ++i) {
-            AKLOGI("---");
-            for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE; ++j) {
-                int icc = mInputCodes[i * MAX_PROXIMITY_CHARS_SIZE + j];
-                int icfjc = inputCodes[i * MAX_PROXIMITY_CHARS_SIZE + j];
-                icc+= 0;
-                icfjc += 0;
-                AKLOGI("--- (%d)%c,%c", i, icc, icfjc);
-                AKLOGI("---             A<%d>,B<%d>", icc, icfjc);
-            }
-        }
-    }
-    //Keep for debug, sorry
-    //for (int i = 0; i < MAX_WORD_LENGTH_INTERNAL * MAX_PROXIMITY_CHARS_SIZE; ++i) {
-    //if (i < inputLength * MAX_PROXIMITY_CHARS_SIZE) {
-    //mInputCodes[i] = mInputCodesFromJava[i];
-    //} else {
-    // mInputCodes[i] = 0;
-    // }
-    //}
-    mInputXCoordinates = xCoordinates;
-    mInputYCoordinates = yCoordinates;
-    mTouchPositionCorrectionEnabled =
-            HAS_TOUCH_POSITION_CORRECTION_DATA && xCoordinates && yCoordinates;
-    mInputLength = inputLength;
-    for (int i = 0; i < inputLength; ++i) {
-        mPrimaryInputWord[i] = getPrimaryCharAt(i);
-    }
-    mPrimaryInputWord[inputLength] = 0;
-    if (DEBUG_PROXIMITY_CHARS) {
-        AKLOGI("--- setInputParams");
-    }
-    for (int i = 0; i < mInputLength; ++i) {
-        const int *proximityChars = getProximityCharsAt(i);
-        const int primaryKey = proximityChars[0];
-        const int x = xCoordinates[i];
-        const int y = yCoordinates[i];
-        if (DEBUG_PROXIMITY_CHARS) {
-            int a = x + y + primaryKey;
-            a += 0;
-            AKLOGI("--- Primary = %c, x = %d, y = %d", primaryKey, x, y);
-            // Keep debug code just in case
-            //int proximities[50];
-            //for (int m = 0; m < 50; ++m) {
-            //proximities[m] = 0;
-            //}
-            //calculateNearbyKeyCodes(x, y, primaryKey, proximities);
-            //for (int l = 0; l < 50 && proximities[l] > 0; ++l) {
-            //if (DEBUG_PROXIMITY_CHARS) {
-            //AKLOGI("--- native Proximity (%d) = %c", l, proximities[l]);
-            //}
-            //}
-        }
-        for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE && proximityChars[j] > 0; ++j) {
-            const int currentChar = proximityChars[j];
-            const float squaredDistance = hasInputCoordinates()
-                    ? calculateNormalizedSquaredDistance(getKeyIndex(currentChar), i)
-                    : NOT_A_DISTANCE_FLOAT;
-            if (squaredDistance >= 0.0f) {
-                mNormalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE + j] =
-                        (int)(squaredDistance * NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR);
-            } else {
-                mNormalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE + j] = (j == 0)
-                        ? EQUIVALENT_CHAR_WITHOUT_DISTANCE_INFO
-                        : PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO;
-            }
-            if (DEBUG_PROXIMITY_CHARS) {
-                AKLOGI("--- Proximity (%d) = %c", j, currentChar);
-            }
-        }
-    }
-}
-
-inline float square(const float x) { return x * x; }
-
-float ProximityInfo::calculateNormalizedSquaredDistance(
-        const int keyIndex, const int inputIndex) const {
-    if (keyIndex == NOT_AN_INDEX) {
-        return NOT_A_DISTANCE_FLOAT;
-    }
-    if (!hasSweetSpotData(keyIndex)) {
-        return NOT_A_DISTANCE_FLOAT;
-    }
-    if (NOT_A_COORDINATE == mInputXCoordinates[inputIndex]) {
-        return NOT_A_DISTANCE_FLOAT;
-    }
-    const float squaredDistance = calculateSquaredDistanceFromSweetSpotCenter(keyIndex, inputIndex);
-    const float squaredRadius = square(mSweetSpotRadii[keyIndex]);
-    return squaredDistance / squaredRadius;
-}
-
-bool ProximityInfo::hasInputCoordinates() const {
-    return mInputXCoordinates && mInputYCoordinates;
+// TODO: remove
+void ProximityInfo::initInputParams(const int32_t *inputCodes, const int inputLength,
+        const int *xCoordinates, const int *yCoordinates) {
+    mProximityInfoState->initInputParams(inputCodes, inputLength, xCoordinates, yCoordinates);
 }
 
 int ProximityInfo::getKeyIndex(const int c) const {
@@ -337,131 +221,46 @@ int ProximityInfo::getKeyIndex(const int c) const {
     return mCodeToKeyIndex[baseLowerC];
 }
 
-float ProximityInfo::calculateSquaredDistanceFromSweetSpotCenter(
-        const int keyIndex, const int inputIndex) const {
-    const float sweetSpotCenterX = mSweetSpotCenterXs[keyIndex];
-    const float sweetSpotCenterY = mSweetSpotCenterYs[keyIndex];
-    const float inputX = (float)mInputXCoordinates[inputIndex];
-    const float inputY = (float)mInputYCoordinates[inputIndex];
-    return square(inputX - sweetSpotCenterX) + square(inputY - sweetSpotCenterY);
-}
-
+// TODO: remove
 inline const int* ProximityInfo::getProximityCharsAt(const int index) const {
-    return mInputCodes + (index * MAX_PROXIMITY_CHARS_SIZE);
+    return mProximityInfoState->getProximityCharsAt(index);
 }
 
+// TODO: remove
 unsigned short ProximityInfo::getPrimaryCharAt(const int index) const {
-    return getProximityCharsAt(index)[0];
+    return mProximityInfoState->getPrimaryCharAt(index);
 }
 
-inline bool ProximityInfo::existsCharInProximityAt(const int index, const int c) const {
-    const int *chars = getProximityCharsAt(index);
-    int i = 0;
-    while (chars[i] > 0 && i < MAX_PROXIMITY_CHARS_SIZE) {
-        if (chars[i++] == c) {
-            return true;
-        }
-    }
-    return false;
+// TODO: remove
+bool ProximityInfo::existsCharInProximityAt(const int index, const int c) const {
+    return mProximityInfoState->existsCharInProximityAt(index, c);
 }
 
+// TODO: remove
 bool ProximityInfo::existsAdjacentProximityChars(const int index) const {
-    if (index < 0 || index >= mInputLength) return false;
-    const int currentChar = getPrimaryCharAt(index);
-    const int leftIndex = index - 1;
-    if (leftIndex >= 0 && existsCharInProximityAt(leftIndex, currentChar)) {
-        return true;
-    }
-    const int rightIndex = index + 1;
-    if (rightIndex < mInputLength && existsCharInProximityAt(rightIndex, currentChar)) {
-        return true;
-    }
-    return false;
+    return mProximityInfoState->existsAdjacentProximityChars(index);
 }
 
-// In the following function, c is the current character of the dictionary word
-// currently examined.
-// currentChars is an array containing the keys close to the character the
-// user actually typed at the same position. We want to see if c is in it: if so,
-// then the word contains at that position a character close to what the user
-// typed.
-// What the user typed is actually the first character of the array.
-// proximityIndex is a pointer to the variable where getMatchedProximityId returns
-// the index of c in the proximity chars of the input index.
-// Notice : accented characters do not have a proximity list, so they are alone
-// in their list. The non-accented version of the character should be considered
-// "close", but not the other keys close to the non-accented version.
-ProximityInfo::ProximityType ProximityInfo::getMatchedProximityId(const int index,
+// TODO: remove
+ProximityType ProximityInfo::getMatchedProximityId(const int index,
         const unsigned short c, const bool checkProximityChars, int *proximityIndex) const {
-    const int *currentChars = getProximityCharsAt(index);
-    const int firstChar = currentChars[0];
-    const unsigned short baseLowerC = toBaseLowerCase(c);
-
-    // The first char in the array is what user typed. If it matches right away,
-    // that means the user typed that same char for this pos.
-    if (firstChar == baseLowerC || firstChar == c) {
-        return EQUIVALENT_CHAR;
-    }
-
-    if (!checkProximityChars) return UNRELATED_CHAR;
-
-    // If the non-accented, lowercased version of that first character matches c,
-    // then we have a non-accented version of the accented character the user
-    // typed. Treat it as a close char.
-    if (toBaseLowerCase(firstChar) == baseLowerC)
-        return NEAR_PROXIMITY_CHAR;
-
-    // Not an exact nor an accent-alike match: search the list of close keys
-    int j = 1;
-    while (j < MAX_PROXIMITY_CHARS_SIZE
-            && currentChars[j] > ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE) {
-        const bool matched = (currentChars[j] == baseLowerC || currentChars[j] == c);
-        if (matched) {
-            if (proximityIndex) {
-                *proximityIndex = j;
-            }
-            return NEAR_PROXIMITY_CHAR;
-        }
-        ++j;
-    }
-    if (j < MAX_PROXIMITY_CHARS_SIZE
-            && currentChars[j] == ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE) {
-        ++j;
-        while (j < MAX_PROXIMITY_CHARS_SIZE
-                && currentChars[j] > ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE) {
-            const bool matched = (currentChars[j] == baseLowerC || currentChars[j] == c);
-            if (matched) {
-                if (proximityIndex) {
-                    *proximityIndex = j;
-                }
-                return ADDITIONAL_PROXIMITY_CHAR;
-            }
-            ++j;
-        }
-    }
-
-    // Was not included, signal this as an unrelated character.
-    return UNRELATED_CHAR;
+    return mProximityInfoState->getMatchedProximityId(
+            index, c, checkProximityChars, proximityIndex);
 }
 
-bool ProximityInfo::sameAsTyped(const unsigned short *word, int length) const {
-    if (length != mInputLength) {
-        return false;
-    }
-    const int *inputCodes = mInputCodes;
-    while (length--) {
-        if ((unsigned int) *inputCodes != (unsigned int) *word) {
-            return false;
-        }
-        inputCodes += MAX_PROXIMITY_CHARS_SIZE;
-        word++;
-    }
-    return true;
+// TODO: remove
+int ProximityInfo::getNormalizedSquaredDistance(
+        const int inputIndex, const int proximityIndex) const {
+    return mProximityInfoState->getNormalizedSquaredDistance(inputIndex, proximityIndex);
 }
 
-const int ProximityInfo::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
-const int ProximityInfo::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
-const int ProximityInfo::MAX_KEY_COUNT_IN_A_KEYBOARD;
-const int ProximityInfo::MAX_CHAR_CODE;
+// TODO: remove
+const unsigned short* ProximityInfo::getPrimaryInputWord() const {
+    return mProximityInfoState->getPrimaryInputWord();
+}
 
+// TODO: remove
+bool ProximityInfo::touchPositionCorrectionEnabled() const {
+    return mProximityInfoState->touchPositionCorrectionEnabled();
+}
 } // namespace latinime
