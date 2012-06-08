@@ -81,7 +81,7 @@ class UnigramDictionary {
             Correction *correction, const int *xcoordinates, const int *ycoordinates,
             const int *codes, const int codesSize, const std::map<int, int> *bigramMap,
             const uint8_t *bigramFilter, const bool useFullEditDistance, unsigned short *outWords,
-            int *frequencies);
+            int *frequencies) const;
     virtual ~UnigramDictionary();
 
  private:
@@ -89,7 +89,7 @@ class UnigramDictionary {
             const int *ycoordinates, const int *codes, const int inputLength,
             const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
             const bool useFullEditDistance, Correction *correction,
-            WordsPriorityQueuePool *queuePool);
+            WordsPriorityQueuePool *queuePool) const;
     int getDigraphReplacement(const int *codes, const int i, const int codesSize,
             const digraph_t* const digraphs, const unsigned int digraphsSize) const;
     void getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo,
@@ -99,37 +99,36 @@ class UnigramDictionary {
         const bool useFullEditDistance, const int* codesSrc, const int codesRemain,
         const int currentDepth, int* codesDest, Correction *correction,
         WordsPriorityQueuePool* queuePool, const digraph_t* const digraphs,
-        const unsigned int digraphsSize);
+        const unsigned int digraphsSize) const;
     void initSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
-            const int *ycoordinates, const int *codes, const int codesSize, Correction *correction);
+            const int *ycoordinates, const int *codes, const int codesSize,
+            Correction *correction) const;
     void getOneWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const std::map<int, int> *bigramMap,
             const uint8_t *bigramFilter, const bool useFullEditDistance, const int inputLength,
-            Correction *correction, WordsPriorityQueuePool* queuePool);
+            Correction *correction, WordsPriorityQueuePool* queuePool) const;
     void getSuggestionCandidates(
             const bool useFullEditDistance, const int inputLength,
             const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
             Correction *correction, WordsPriorityQueuePool* queuePool, const bool doAutoCompletion,
-            const int maxErrors, const int currentWordIndex);
+            const int maxErrors, const int currentWordIndex) const;
     void getSplitMultipleWordsSuggestions(ProximityInfo *proximityInfo,
             const int *xcoordinates, const int *ycoordinates, const int *codes,
             const bool useFullEditDistance, const int inputLength,
             Correction *correction, WordsPriorityQueuePool* queuePool,
-            const bool hasAutoCorrectionCandidate);
+            const bool hasAutoCorrectionCandidate) const;
     void onTerminal(const int freq, const TerminalAttributes& terminalAttributes,
             Correction *correction, WordsPriorityQueuePool *queuePool, const bool addToMasterQueue,
-            const int currentWordIndex);
-    bool needsToSkipCurrentNode(const unsigned short c,
-            const int inputIndex, const int skipPos, const int depth);
+            const int currentWordIndex) const;
     // Process a node by considering proximity, missing and excessive character
     bool processCurrentNode(const int initialPos, const std::map<int, int> *bigramMap,
             const uint8_t *bigramFilter, Correction *correction, int *newCount,
             int *newChildPosition, int *nextSiblingPosition, WordsPriorityQueuePool *queuePool,
-            const int currentWordIndex);
+            const int currentWordIndex) const;
     int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
-            Correction *correction, unsigned short *word);
+            Correction *correction, unsigned short *word) const;
     int getMostFrequentWordLikeInner(const uint16_t* const inWord, const int length,
-            short unsigned int *outWord);
+            short unsigned int *outWord) const;
     int getSubStringSuggestion(
             ProximityInfo *proximityInfo, const int *xcoordinates, const int *ycoordinates,
             const int *codes, const bool useFullEditDistance, Correction *correction,
@@ -137,14 +136,14 @@ class UnigramDictionary {
             const bool hasAutoCorrectionCandidate, const int currentWordIndex,
             const int inputWordStartPos, const int inputWordLength,
             const int outputWordStartPos, const bool isSpaceProximity, int *freqArray,
-            int *wordLengthArray, unsigned short* outputWord, int *outputWordLength);
+            int *wordLengthArray, unsigned short* outputWord, int *outputWordLength) const;
     void getMultiWordsSuggestionRec(ProximityInfo *proximityInfo,
             const int *xcoordinates, const int *ycoordinates, const int *codes,
             const bool useFullEditDistance, const int inputLength,
             Correction *correction, WordsPriorityQueuePool* queuePool,
             const bool hasAutoCorrectionCandidate, const int startPos, const int startWordIndex,
             const int outputWordLength, int *freqArray, int* wordLengthArray,
-            unsigned short* outputWord);
+            unsigned short* outputWord) const;
 
     const uint8_t* const DICT_ROOT;
     const int MAX_WORD_LENGTH;
@@ -158,12 +157,6 @@ class UnigramDictionary {
 
     static const digraph_t GERMAN_UMLAUT_DIGRAPHS[];
     static const digraph_t FRENCH_LIGATURES_DIGRAPHS[];
-
-    // Still bundled members
-    unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];// TODO: remove
-    int mStackChildCount[MAX_WORD_LENGTH_INTERNAL];// TODO: remove
-    int mStackInputIndex[MAX_WORD_LENGTH_INTERNAL];// TODO: remove
-    int mStackSiblingPos[MAX_WORD_LENGTH_INTERNAL];// TODO: remove
 };
 } // namespace latinime
 
