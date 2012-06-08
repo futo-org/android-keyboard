@@ -1125,7 +1125,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 || codePoint == Keyboard.CODE_CLOSING_ANGLE_BRACKET;
     }
 
-    private void removeTrailingSpaceWhileInBatchEdit() {
+    private void removeTrailingSpace() {
         final CharSequence lastOne = mConnection.getTextBeforeCursor(1, 0);
         if (lastOne != null && lastOne.length() == 1
                 && lastOne.charAt(0) == Keyboard.CODE_SPACE) {
@@ -1250,6 +1250,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mDeleteCount = 0;
         }
         mLastKeyTime = when;
+        mConnection.beginBatchEdit(getCurrentInputConnection());
 
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.latinIME_onCodeInput(primaryCode, x, y);
@@ -1334,6 +1335,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 && primaryCode != Keyboard.CODE_SWITCH_ALPHA_SYMBOL)
             mLastComposedWord.deactivate();
         mEnteredText = null;
+        mConnection.endBatchEdit();
     }
 
     @Override
@@ -1381,12 +1383,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void handleBackspace(final int spaceState) {
-        mConnection.beginBatchEdit(getCurrentInputConnection());
-        handleBackspaceWhileInBatchEdit(spaceState);
-        mConnection.endBatchEdit();
-    }
-
-    private void handleBackspaceWhileInBatchEdit(final int spaceState) {
         // In many cases, we may have to put the keyboard in auto-shift state again.
         mHandler.postUpdateShiftState();
 
@@ -1488,10 +1484,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private boolean maybeStripSpaceWhileInBatchEdit(final int code,
+    private boolean maybeStripSpace(final int code,
             final int spaceState, final boolean isFromSuggestionStrip) {
         if (Keyboard.CODE_ENTER == code && SPACE_STATE_SWAP_PUNCTUATION == spaceState) {
-            removeTrailingSpaceWhileInBatchEdit();
+            removeTrailingSpace();
             return false;
         } else if ((SPACE_STATE_WEAK == spaceState
                 || SPACE_STATE_SWAP_PUNCTUATION == spaceState)
@@ -1500,7 +1496,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 return true;
             } else {
                 if (mSettingsValues.isWeakSpaceStripper(code)) {
-                    removeTrailingSpaceWhileInBatchEdit();
+                    removeTrailingSpace();
                 }
                 return false;
             }
@@ -1511,13 +1507,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void handleCharacter(final int primaryCode, final int x,
             final int y, final int spaceState) {
-        mConnection.beginBatchEdit(getCurrentInputConnection());
-        handleCharacterWhileInBatchEdit(primaryCode, x, y, spaceState);
-        mConnection.endBatchEdit();
-    }
-
-    private void handleCharacterWhileInBatchEdit(final int primaryCode,
-            final int x, final int y, final int spaceState) {
         boolean isComposingWord = mWordComposer.isComposingWord();
 
         if (SPACE_STATE_PHANTOM == spaceState &&
@@ -1558,7 +1547,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
             mHandler.postUpdateSuggestions();
         } else {
-            final boolean swapWeakSpace = maybeStripSpaceWhileInBatchEdit(primaryCode,
+            final boolean swapWeakSpace = maybeStripSpace(primaryCode,
                     spaceState, KeyboardActionListener.SUGGESTION_STRIP_COORDINATE == x);
 
             sendKeyCodePoint(primaryCode);
@@ -1591,7 +1580,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         boolean didAutoCorrect = false;
         // Handle separator
-        mConnection.beginBatchEdit(getCurrentInputConnection());
         if (mWordComposer.isComposingWord()) {
             // In certain languages where single quote is a separator, it's better
             // not to auto correct, but accept the typed word. For instance,
@@ -1607,7 +1595,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
 
-        final boolean swapWeakSpace = maybeStripSpaceWhileInBatchEdit(primaryCode, spaceState,
+        final boolean swapWeakSpace = maybeStripSpace(primaryCode, spaceState,
                 KeyboardActionListener.SUGGESTION_STRIP_COORDINATE == x);
 
         if (SPACE_STATE_PHANTOM == spaceState &&
@@ -1651,7 +1639,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         Utils.Stats.onSeparator((char)primaryCode, x, y);
 
-        mConnection.endBatchEdit();
         return didAutoCorrect;
     }
 
@@ -2209,7 +2196,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     + "find a space just before the cursor.");
             return false;
         }
-        mConnection.beginBatchEdit(getCurrentInputConnection());
         mConnection.deleteSurroundingText(2, 0);
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.latinIME_deleteSurroundingText(2);
@@ -2218,7 +2204,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.latinIME_revertSwapPunctuation();
         }
-        mConnection.endBatchEdit();
         return true;
     }
 
