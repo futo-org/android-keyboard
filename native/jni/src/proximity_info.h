@@ -25,11 +25,9 @@
 namespace latinime {
 
 class Correction;
-class ProximityInfoState;
 
 class ProximityInfo {
  public:
-
     ProximityInfo(const std::string localeStr, const int maxProximityCharsSize,
             const int keyboardWidth, const int keyboardHeight, const int gridWidth,
             const int gridHeight, const int mostCommonkeyWidth,
@@ -68,21 +66,37 @@ class ProximityInfo {
     void calculateNearbyKeyCodes(
             const int x, const int y, const int32_t primaryKey, int *inputCodes) const;
 
-    ////////////////////////////////////
-    // Access to proximity info state //
-    // TODO: remove                   //
-    ////////////////////////////////////
-    void initInputParams(const int32_t *inputCodes, const int inputLength,
-            const int *xCoordinates, const int *yCoordinates);
-    const int* getProximityCharsAt(const int index) const;
-    unsigned short getPrimaryCharAt(const int index) const;
-    bool existsCharInProximityAt(const int index, const int c) const;
-    bool existsAdjacentProximityChars(const int index) const;
-    ProximityType getMatchedProximityId(const int index, const unsigned short c,
-            const bool checkProximityChars, int *proximityIndex = 0) const;
-    const unsigned short* getPrimaryInputWord() const;
-    bool touchPositionCorrectionEnabled() const;
-    ////////////////////////////////////
+    bool hasTouchPositionCorrectionData() const {
+        return HAS_TOUCH_POSITION_CORRECTION_DATA;
+    }
+
+    int getMostCommonKeyWidthSquare() const {
+        return MOST_COMMON_KEY_WIDTH_SQUARE;
+    }
+
+    std::string getLocaleStr() const {
+        return mLocaleStr;
+    }
+
+    int getKeyCount() const {
+        return KEY_COUNT;
+    }
+
+    int getCellHeight() const {
+        return CELL_HEIGHT;
+    }
+
+    int getCellWidth() const {
+        return CELL_WIDTH;
+    }
+
+    int getGridWidth() const {
+        return GRID_WIDTH;
+    }
+
+    int getGridHeight() const {
+        return GRID_HEIGHT;
+    }
 
  private:
     // The max number of the keys in one keyboard layout
@@ -121,7 +135,6 @@ class ProximityInfo {
     float mSweetSpotRadii[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int mCodeToKeyIndex[MAX_CHAR_CODE + 1];
     // TODO: move to correction.h
-    ProximityInfoState *mProximityInfoState;
 };
 
 } // namespace latinime
