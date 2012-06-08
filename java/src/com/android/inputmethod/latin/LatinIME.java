@@ -391,6 +391,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         Utils.GCUtils.getInstance().reset();
         boolean tryGC = true;
+        // Shouldn't this be removed? I think that from Honeycomb on, the GC is now actually working
+        // as expected and this code is useless.
         for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
             try {
                 initSuggest();
@@ -762,6 +764,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     composingSpanEnd, mExpectingUpdateSelection,
                     expectingUpdateSelectionFromLogger, mConnection);
             if (expectingUpdateSelectionFromLogger) {
+                // TODO: Investigate. Quitting now sounds wrong - we won't do the resetting work
                 return;
             }
         }
@@ -1626,7 +1629,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public boolean isSuggestionsRequested() {
         // TODO: move this method to mSettingsValues
         return mInputAttributes.mIsSettingsSuggestionStripOn
-                && (mCurrentSettings.mCorrectionMode > 0 || isShowingSuggestionsStrip());
+                && (mCurrentSettings.isCorrectionOn() || isShowingSuggestionsStrip());
     }
 
     public boolean isShowingPunctuationList() {
