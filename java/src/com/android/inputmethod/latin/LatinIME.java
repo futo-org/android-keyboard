@@ -179,7 +179,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     public static class UIHandler extends StaticInnerHandlerWrapper<LatinIME> {
         private static final int MSG_UPDATE_SHIFT_STATE = 1;
-        private static final int MSG_SPACE_TYPED = 4;
         private static final int MSG_SET_BIGRAM_PREDICTIONS = 5;
         private static final int MSG_PENDING_IMS_CALLBACK = 6;
         private static final int MSG_UPDATE_SUGGESTIONS = 7;
@@ -187,6 +186,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private int mDelayUpdateSuggestions;
         private int mDelayUpdateShiftState;
         private long mDoubleSpacesTurnIntoPeriodTimeout;
+        private long mDoubleSpaceTimerStart;
 
         public UIHandler(LatinIME outerInstance) {
             super(outerInstance);
@@ -251,16 +251,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         public void startDoubleSpacesTimer() {
-            removeMessages(MSG_SPACE_TYPED);
-            sendMessageDelayed(obtainMessage(MSG_SPACE_TYPED), mDoubleSpacesTurnIntoPeriodTimeout);
+            mDoubleSpaceTimerStart = SystemClock.uptimeMillis();
         }
 
         public void cancelDoubleSpacesTimer() {
-            removeMessages(MSG_SPACE_TYPED);
+            mDoubleSpaceTimerStart = 0;
         }
 
         public boolean isAcceptingDoubleSpaces() {
-            return hasMessages(MSG_SPACE_TYPED);
+            return SystemClock.uptimeMillis() - mDoubleSpaceTimerStart
+                    < mDoubleSpacesTurnIntoPeriodTimeout;
         }
 
         // Working variables for the following methods.
