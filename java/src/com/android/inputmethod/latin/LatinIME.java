@@ -102,21 +102,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     private static final String SCHEME_PACKAGE = "package";
 
-    // TODO: migrate this to SettingsValues
-    private int mSuggestionVisibility;
-    private static final int SUGGESTION_VISIBILITY_SHOW_VALUE
-            = R.string.prefs_suggestion_visibility_show_value;
-    private static final int SUGGESTION_VISIBILITY_SHOW_ONLY_PORTRAIT_VALUE
-            = R.string.prefs_suggestion_visibility_show_only_portrait_value;
-    private static final int SUGGESTION_VISIBILITY_HIDE_VALUE
-            = R.string.prefs_suggestion_visibility_hide_value;
-
-    private static final int[] SUGGESTION_VISIBILITY_VALUE_ARRAY = new int[] {
-        SUGGESTION_VISIBILITY_SHOW_VALUE,
-        SUGGESTION_VISIBILITY_SHOW_ONLY_PORTRAIT_VALUE,
-        SUGGESTION_VISIBILITY_HIDE_VALUE
-    };
-
     private static final int SPACE_STATE_NONE = 0;
     // Double space: the state where the user pressed space twice quickly, which LatinIME
     // resolved as period-space. Undoing this converts the period to a space.
@@ -694,7 +679,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mSpaceState = SPACE_STATE_NONE;
 
         loadSettings();
-        updateSuggestionVisibility(mResources);
 
         if (mSuggest != null && mSettingsValues.mAutoCorrectEnabled) {
             mSuggest.setAutoCorrectionThreshold(mSettingsValues.mAutoCorrectionThreshold);
@@ -1650,9 +1634,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public boolean isShowingSuggestionsStrip() {
-        return (mSuggestionVisibility == SUGGESTION_VISIBILITY_SHOW_VALUE)
-                || (mSuggestionVisibility == SUGGESTION_VISIBILITY_SHOW_ONLY_PORTRAIT_VALUE
-                        && mDisplayOrientation == Configuration.ORIENTATION_PORTRAIT);
+        return mSettingsValues.isSuggestionStripVisibleInOrientation(mDisplayOrientation);
     }
 
     public boolean isSuggestionsStripVisible() {
@@ -2256,16 +2238,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
     };
-
-    private void updateSuggestionVisibility(final Resources res) {
-        final String suggestionVisiblityStr = mSettingsValues.mShowSuggestionsSetting;
-        for (int visibility : SUGGESTION_VISIBILITY_VALUE_ARRAY) {
-            if (suggestionVisiblityStr.equals(res.getString(visibility))) {
-                mSuggestionVisibility = visibility;
-                break;
-            }
-        }
-    }
 
     private void launchSettings() {
         launchSettingsClass(SettingsActivity.class);
