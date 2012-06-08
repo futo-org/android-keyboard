@@ -60,7 +60,7 @@
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Dezactivată"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderată"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agresivă"</string>
-    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Foarte agresiv"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Foarte exigentă"</string>
     <string name="bigram_suggestion" msgid="8169311444438922902">"Sugestii pentru cuvântul următor"</string>
     <string name="bigram_suggestion_summary" msgid="6635527607242625713">"Utilizaţi cuvântul anterior pentru a îmbunătăţi sugestiile"</string>
     <string name="bigram_prediction" msgid="3216364899483135294">"Predicţia cuvântului următor"</string>
