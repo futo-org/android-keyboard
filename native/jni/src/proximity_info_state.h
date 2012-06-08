@@ -22,6 +22,7 @@
 #include <string>
 
 #include "additional_proximity_chars.h"
+#include "char_utils.h"
 #include "defines.h"
 
 namespace latinime {
@@ -33,8 +34,6 @@ class ProximityInfoState {
     static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2 = 10;
     static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR =
             1 << NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
-    // The max number of the keys in one keyboard layout
-    static const int MAX_KEY_COUNT_IN_A_KEYBOARD = 64;
     // The upper limit of the char code in mCodeToKeyIndex
     static const int MAX_CHAR_CODE = 127;
     static const float NOT_A_DISTANCE_FLOAT = -1.0f;
@@ -43,39 +42,15 @@ class ProximityInfoState {
     /////////////////////////////////////////
     // Defined in proximity_info_state.cpp //
     /////////////////////////////////////////
-    void initInputParams(const int32_t* inputCodes, const int inputLength,
-           const int* xCoordinates, const int* yCoordinates);
+    void initInputParams(
+            const ProximityInfo* proximityInfo, const int32_t* inputCodes, const int inputLength,
+            const int* xCoordinates, const int* yCoordinates);
 
     /////////////////////////////////////////
     // Defined here                        //
     /////////////////////////////////////////
-    // TODO: Move the constructor to initInputParams
-    ProximityInfoState(ProximityInfo* proximityInfo, const int maxProximityCharsSize,
-            const bool hasTouchPositionCorrectionData, const int mostCommonKeyWidthSquare,
-            const std::string localeStr, const int keyCount, const int cellHeight,
-            const int cellWidth, const int gridHeight, const int gridWidth)
-            : mProximityInfo(proximityInfo),
-              MAX_PROXIMITY_CHARS_SIZE(maxProximityCharsSize),
-              HAS_TOUCH_POSITION_CORRECTION_DATA(hasTouchPositionCorrectionData),
-              MOST_COMMON_KEY_WIDTH_SQUARE(mostCommonKeyWidthSquare),
-              LOCALE_STR(localeStr),
-              KEY_COUNT(keyCount),
-              CELL_HEIGHT(cellHeight),
-              CELL_WIDTH(cellWidth),
-              GRID_HEIGHT(gridHeight),
-              GRID_WIDTH(gridWidth),
-              mInputXCoordinates(0),
-              mInputYCoordinates(0),
-              mTouchPositionCorrectionEnabled(false) {
-        const int normalizedSquaredDistancesLength =
-                MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH_INTERNAL;
-        for (int i = 0; i < normalizedSquaredDistancesLength; ++i) {
-            mNormalizedSquaredDistances[i] = NOT_A_DISTANCE;
-        }
-    }
-
     inline const int* getProximityCharsAt(const int index) const {
-        return mInputCodes + (index * MAX_PROXIMITY_CHARS_SIZE);
+        return mInputCodes + (index * MAX_PROXIMITY_CHARS_SIZE_INTERNAL);
     }
 
     inline unsigned short getPrimaryCharAt(const int index) const {
@@ -85,7 +60,7 @@ class ProximityInfoState {
     inline bool existsCharInProximityAt(const int index, const int c) const {
         const int *chars = getProximityCharsAt(index);
         int i = 0;
-        while (chars[i] > 0 && i < MAX_PROXIMITY_CHARS_SIZE) {
+        while (chars[i] > 0 && i < MAX_PROXIMITY_CHARS_SIZE_INTERNAL) {
             if (chars[i++] == c) {
                 return true;
             }
@@ -120,7 +95,7 @@ class ProximityInfoState {
     // in their list. The non-accented version of the character should be considered
     // "close", but not the other keys close to the non-accented version.
     inline ProximityType getMatchedProximityId(const int index,
-            const unsigned short c, const bool checkProximityChars, int *proximityIndex) const {
+            const unsigned short c, const bool checkProximityChars, int *proximityIndex = 0) const {
         const int *currentChars = getProximityCharsAt(index);
         const int firstChar = currentChars[0];
         const unsigned short baseLowerC = toBaseLowerCase(c);
@@ -141,7 +116,7 @@ class ProximityInfoState {
 
         // Not an exact nor an accent-alike match: search the list of close keys
         int j = 1;
-        while (j < MAX_PROXIMITY_CHARS_SIZE
+        while (j < MAX_PROXIMITY_CHARS_SIZE_INTERNAL
                 && currentChars[j] > ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE) {
             const bool matched = (currentChars[j] == baseLowerC || currentChars[j] == c);
             if (matched) {
@@ -152,10 +127,10 @@ class ProximityInfoState {
             }
             ++j;
         }
-        if (j < MAX_PROXIMITY_CHARS_SIZE
+        if (j < MAX_PROXIMITY_CHARS_SIZE_INTERNAL
                 && currentChars[j] == ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE) {
             ++j;
-            while (j < MAX_PROXIMITY_CHARS_SIZE
+            while (j < MAX_PROXIMITY_CHARS_SIZE_INTERNAL
                     && currentChars[j] > ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE) {
                 const bool matched = (currentChars[j] == baseLowerC || currentChars[j] == c);
                 if (matched) {
@@ -174,7 +149,8 @@ class ProximityInfoState {
 
     inline int getNormalizedSquaredDistance(
             const int inputIndex, const int proximityIndex) const {
-        return mNormalizedSquaredDistances[inputIndex * MAX_PROXIMITY_CHARS_SIZE + proximityIndex];
+        return mNormalizedSquaredDistances[
+                inputIndex * MAX_PROXIMITY_CHARS_SIZE_INTERNAL + proximityIndex];
     }
 
     inline const unsigned short* getPrimaryInputWord() const {
@@ -186,36 +162,21 @@ class ProximityInfoState {
     }
 
  private:
-    inline float square(const float x) const { return x * x; }
+    /////////////////////////////////////////
+    // Defined in proximity_info_state.cpp //
+    /////////////////////////////////////////
+    float calculateNormalizedSquaredDistance(const int keyIndex, const int inputIndex) const;
 
-    float calculateNormalizedSquaredDistance(
-            const int keyIndex, const int inputIndex) const {
-        if (keyIndex == NOT_AN_INDEX) {
-            return NOT_A_DISTANCE_FLOAT;
-        }
-        if (!mProximityInfo->hasSweetSpotData(keyIndex)) {
-            return NOT_A_DISTANCE_FLOAT;
-        }
-        if (NOT_A_COORDINATE == mInputXCoordinates[inputIndex]) {
-            return NOT_A_DISTANCE_FLOAT;
-        }
-        const float squaredDistance = calculateSquaredDistanceFromSweetSpotCenter(
-                keyIndex, inputIndex);
-        const float squaredRadius = square(mProximityInfo->getSweetSpotRadiiAt(keyIndex));
-        return squaredDistance / squaredRadius;
-    }
+    float calculateSquaredDistanceFromSweetSpotCenter(
+            const int keyIndex, const int inputIndex) const;
+
+    /////////////////////////////////////////
+    // Defined here                        //
+    /////////////////////////////////////////
+    inline float square(const float x) const { return x * x; }
 
     bool hasInputCoordinates() const {
         return mInputXCoordinates && mInputYCoordinates;
-    }
-
-    float calculateSquaredDistanceFromSweetSpotCenter(
-            const int keyIndex, const int inputIndex) const {
-        const float sweetSpotCenterX = mProximityInfo->getSweetSpotCenterXAt(keyIndex);
-        const float sweetSpotCenterY = mProximityInfo->getSweetSpotCenterYAt(keyIndex);
-        const float inputX = (float)mInputXCoordinates[inputIndex];
-        const float inputY = (float)mInputYCoordinates[inputIndex];
-        return square(inputX - sweetSpotCenterX) + square(inputY - sweetSpotCenterY);
     }
 
     bool sameAsTyped(const unsigned short *word, int length) const {
@@ -227,23 +188,22 @@ class ProximityInfoState {
             if ((unsigned int) *inputCodes != (unsigned int) *word) {
                 return false;
             }
-            inputCodes += MAX_PROXIMITY_CHARS_SIZE;
+            inputCodes += MAX_PROXIMITY_CHARS_SIZE_INTERNAL;
             word++;
         }
         return true;
     }
 
-    // TODO: const
-    ProximityInfo *mProximityInfo;
-    const int MAX_PROXIMITY_CHARS_SIZE;
-    const bool HAS_TOUCH_POSITION_CORRECTION_DATA;
-    const int MOST_COMMON_KEY_WIDTH_SQUARE;
-    const std::string LOCALE_STR;
-    const int KEY_COUNT;
-    const int CELL_HEIGHT;
-    const int CELL_WIDTH;
-    const int GRID_HEIGHT;
-    const int GRID_WIDTH;
+    // const
+    const ProximityInfo *mProximityInfo;
+    bool mHasTouchPositionCorrectionData;
+    int mMostCommonKeyWidthSquare;
+    std::string mLocaleStr;
+    int mKeyCount;
+    int mCellHeight;
+    int mCellWidth;
+    int mGridHeight;
+    int mGridWidth;
 
     const int *mInputXCoordinates;
     const int *mInputYCoordinates;

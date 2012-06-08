@@ -127,7 +127,7 @@ class UnigramDictionary {
             int *newChildPosition, int *nextSiblingPosition, WordsPriorityQueuePool *queuePool,
             const int currentWordIndex);
     int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
-            ProximityInfo *proximityInfo, unsigned short *word);
+            Correction *correction, unsigned short *word);
     int getMostFrequentWordLikeInner(const uint16_t* const inWord, const int length,
             short unsigned int *outWord);
     int getSubStringSuggestion(

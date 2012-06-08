@@ -73,9 +73,6 @@ ProximityInfo::ProximityInfo(const std::string localeStr, const int maxProximity
     copyOrFillZero(mSweetSpotRadii, sweetSpotRadii, KEY_COUNT * sizeof(mSweetSpotRadii[0]));
 
     initializeCodeToKeyIndex();
-    mProximityInfoState = new ProximityInfoState(this, MAX_PROXIMITY_CHARS_SIZE,
-            HAS_TOUCH_POSITION_CORRECTION_DATA, MOST_COMMON_KEY_WIDTH_SQUARE, mLocaleStr,
-            KEY_COUNT, CELL_HEIGHT, CELL_WIDTH, GRID_WIDTH, GRID_HEIGHT);
 }
 
 // Build the reversed look up table from the char code to the index in mKeyXCoordinates,
@@ -92,7 +89,6 @@ void ProximityInfo::initializeCodeToKeyIndex() {
 
 ProximityInfo::~ProximityInfo() {
     delete[] mProximityCharsArray;
-    delete mProximityInfoState;
 }
 
 inline int ProximityInfo::getStartIndexFromCoordinates(const int x, const int y) const {
@@ -203,12 +199,6 @@ void ProximityInfo::calculateNearbyKeyCodes(
     }
 }
 
-// TODO: remove
-void ProximityInfo::initInputParams(const int32_t *inputCodes, const int inputLength,
-        const int *xCoordinates, const int *yCoordinates) {
-    mProximityInfoState->initInputParams(inputCodes, inputLength, xCoordinates, yCoordinates);
-}
-
 int ProximityInfo::getKeyIndex(const int c) const {
     if (KEY_COUNT == 0) {
         // We do not have the coordinate data
@@ -219,48 +209,5 @@ int ProximityInfo::getKeyIndex(const int c) const {
         return NOT_AN_INDEX;
     }
     return mCodeToKeyIndex[baseLowerC];
-}
-
-// TODO: remove
-inline const int* ProximityInfo::getProximityCharsAt(const int index) const {
-    return mProximityInfoState->getProximityCharsAt(index);
-}
-
-// TODO: remove
-unsigned short ProximityInfo::getPrimaryCharAt(const int index) const {
-    return mProximityInfoState->getPrimaryCharAt(index);
-}
-
-// TODO: remove
-bool ProximityInfo::existsCharInProximityAt(const int index, const int c) const {
-    return mProximityInfoState->existsCharInProximityAt(index, c);
-}
-
-// TODO: remove
-bool ProximityInfo::existsAdjacentProximityChars(const int index) const {
-    return mProximityInfoState->existsAdjacentProximityChars(index);
-}
-
-// TODO: remove
-ProximityType ProximityInfo::getMatchedProximityId(const int index,
-        const unsigned short c, const bool checkProximityChars, int *proximityIndex) const {
-    return mProximityInfoState->getMatchedProximityId(
-            index, c, checkProximityChars, proximityIndex);
-}
-
-// TODO: remove
-int ProximityInfo::getNormalizedSquaredDistance(
-        const int inputIndex, const int proximityIndex) const {
-    return mProximityInfoState->getNormalizedSquaredDistance(inputIndex, proximityIndex);
-}
-
-// TODO: remove
-const unsigned short* ProximityInfo::getPrimaryInputWord() const {
-    return mProximityInfoState->getPrimaryInputWord();
-}
-
-// TODO: remove
-bool ProximityInfo::touchPositionCorrectionEnabled() const {
-    return mProximityInfoState->touchPositionCorrectionEnabled();
 }
 } // namespace latinime

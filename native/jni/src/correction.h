@@ -19,9 +19,10 @@
 
 #include <assert.h>
 #include <stdint.h>
-#include "correction_state.h"
 
+#include "correction_state.h"
 #include "defines.h"
+#include "proximity_info_state.h"
 
 namespace latinime {
 
@@ -178,6 +179,21 @@ class Correction {
         static const int FULL_WORD_MULTIPLIER = 2;
     };
 
+    // proximity info state
+    void initInputParams(const ProximityInfo *proximityInfo, const int32_t *inputCodes,
+            const int inputLength, const int *xCoordinates, const int *yCoordinates) {
+        mProximityInfoState.initInputParams(
+                proximityInfo, inputCodes, inputLength, xCoordinates, yCoordinates);
+    }
+
+    const unsigned short* getPrimaryInputWord() const {
+        return mProximityInfoState.getPrimaryInputWord();
+    }
+
+    unsigned short getPrimaryCharAt(const int index) const {
+        return mProximityInfoState.getPrimaryCharAt(index);
+    }
+
  private:
     inline void incrementInputIndex();
     inline void incrementOutputIndex();
@@ -240,7 +256,7 @@ class Correction {
     bool mExceeding;
     bool mTransposing;
     bool mSkipping;
-
+    ProximityInfoState mProximityInfoState;
 };
 } // namespace latinime
 #endif // LATINIME_CORRECTION_H

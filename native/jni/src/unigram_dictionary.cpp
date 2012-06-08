@@ -205,17 +205,17 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
     PROF_START(20);
     if (DEBUG_DICT) {
         float ns = queuePool->getMasterQueue()->getHighestNormalizedScore(
-                proximityInfo->getPrimaryInputWord(), codesSize, 0, 0, 0);
+                correction->getPrimaryInputWord(), codesSize, 0, 0, 0);
         ns += 0;
         AKLOGI("Max normalized score = %f", ns);
     }
     const int suggestedWordsCount =
             queuePool->getMasterQueue()->outputSuggestions(
-                    proximityInfo->getPrimaryInputWord(), codesSize, frequencies, outWords);
+                    correction->getPrimaryInputWord(), codesSize, frequencies, outWords);
 
     if (DEBUG_DICT) {
         float ns = queuePool->getMasterQueue()->getHighestNormalizedScore(
-                proximityInfo->getPrimaryInputWord(), codesSize, 0, 0, 0);
+                correction->getPrimaryInputWord(), codesSize, 0, 0, 0);
         ns += 0;
         AKLOGI("Returning %d words", suggestedWordsCount);
         /// Print the returned words
@@ -259,7 +259,7 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
     WordsPriorityQueue* masterQueue = queuePool->getMasterQueue();
     if (masterQueue->size() > 0) {
         float nsForMaster = masterQueue->getHighestNormalizedScore(
-                proximityInfo->getPrimaryInputWord(), inputLength, 0, 0, 0);
+                correction->getPrimaryInputWord(), inputLength, 0, 0, 0);
         hasAutoCorrectionCandidate = (nsForMaster > START_TWO_WORDS_CORRECTION_THRESHOLD);
     }
     PROF_END(4);
@@ -288,11 +288,11 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
                 const unsigned short* word = sw->mWord;
                 const int wordLength = sw->mWordLength;
                 float ns = Correction::RankingAlgorithm::calcNormalizedScore(
-                        proximityInfo->getPrimaryInputWord(), i, word, wordLength, score);
+                        correction->getPrimaryInputWord(), i, word, wordLength, score);
                 ns += 0;
                 AKLOGI("--- TOP SUB WORDS for %d --- %d %f [%d]", i, score, ns,
                         (ns > TWO_WORDS_CORRECTION_WITH_OTHER_ERROR_THRESHOLD));
-                DUMP_WORD(proximityInfo->getPrimaryInputWord(), i);
+                DUMP_WORD(correction->getPrimaryInputWord(), i);
                 DUMP_WORD(word, wordLength);
             }
         }
@@ -305,7 +305,7 @@ void UnigramDictionary::initSuggestions(ProximityInfo *proximityInfo, const int 
         AKLOGI("initSuggest");
         DUMP_WORD_INT(codes, inputLength);
     }
-    proximityInfo->initInputParams(codes, inputLength, xCoordinates, yCoordinates);
+    correction->initInputParams(proximityInfo, codes, inputLength, xCoordinates, yCoordinates);
     const int maxDepth = min(inputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
     correction->initCorrection(proximityInfo, inputLength, maxDepth);
 }
@@ -480,7 +480,7 @@ int UnigramDictionary::getSubStringSuggestion(
             inputLength, correction);
 
     int freq = getMostFrequentWordLike(
-            inputWordStartPos, inputWordLength, proximityInfo, mWord);
+            inputWordStartPos, inputWordLength, correction, mWord);
     if (freq > 0) {
         nextWordLength = inputWordLength;
         tempOutputWord = mWord;
@@ -510,7 +510,7 @@ int UnigramDictionary::getSubStringSuggestion(
         }
         int score = 0;
         const float ns = queue->getHighestNormalizedScore(
-                proximityInfo->getPrimaryInputWord(), inputWordLength,
+                correction->getPrimaryInputWord(), inputWordLength,
                 &tempOutputWord, &score, &nextWordLength);
         if (DEBUG_DICT) {
             AKLOGI("NS(%d) = %f, Score = %d", currentWordIndex, ns, score);
@@ -678,11 +678,11 @@ void UnigramDictionary::getSplitMultipleWordsSuggestions(ProximityInfo *proximit
 // Wrapper for getMostFrequentWordLikeInner, which matches it to the previous
 // interface.
 inline int UnigramDictionary::getMostFrequentWordLike(const int startInputIndex,
-        const int inputLength, ProximityInfo *proximityInfo, unsigned short *word) {
+        const int inputLength, Correction *correction, unsigned short *word) {
     uint16_t inWord[inputLength];
 
     for (int i = 0; i < inputLength; ++i) {
-        inWord[i] = (uint16_t)proximityInfo->getPrimaryCharAt(startInputIndex + i);
+        inWord[i] = (uint16_t)correction->getPrimaryCharAt(startInputIndex + i);
     }
     return getMostFrequentWordLikeInner(inWord, inputLength, word);
 }
