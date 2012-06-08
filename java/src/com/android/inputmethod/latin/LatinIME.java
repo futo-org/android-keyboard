@@ -1394,6 +1394,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 return;
             }
             if (SPACE_STATE_DOUBLE == spaceState) {
+                mHandler.cancelDoubleSpacesTimer();
                 if (revertDoubleSpaceWhileInBatchEdit()) {
                     // No need to reset mSpaceState, it has already be done (that's why we
                     // receive it as a parameter)
@@ -2075,7 +2076,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private boolean revertDoubleSpaceWhileInBatchEdit() {
-        mHandler.cancelDoubleSpacesTimer();
         // Here we test whether we indeed have a period and a space before us. This should not
         // be needed, but it's there just in case something went wrong.
         final CharSequence textBeforeCursor = mConnection.getTextBeforeCursor(2, 0);
