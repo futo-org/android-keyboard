@@ -30,18 +30,17 @@ import android.view.textservice.TextInfo;
 import com.android.inputmethod.compat.SuggestionsInfoCompatUtils;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.BinaryDictionary;
+import com.android.inputmethod.latin.ContactsBinaryDictionary;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.Dictionary.WordCallback;
 import com.android.inputmethod.latin.DictionaryCollection;
 import com.android.inputmethod.latin.DictionaryFactory;
-import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SynchronouslyLoadedContactsBinaryDictionary;
-import com.android.inputmethod.latin.SynchronouslyLoadedContactsDictionary;
 import com.android.inputmethod.latin.SynchronouslyLoadedUserBinaryDictionary;
-import com.android.inputmethod.latin.SynchronouslyLoadedUserDictionary;
+import com.android.inputmethod.latin.UserBinaryDictionary;
 import com.android.inputmethod.latin.WhitelistDictionary;
 import com.android.inputmethod.latin.WordComposer;
 
@@ -73,11 +72,11 @@ public class AndroidSpellCheckerService extends SpellCheckerService
     private final static String[] EMPTY_STRING_ARRAY = new String[0];
     private Map<String, DictionaryPool> mDictionaryPools =
             Collections.synchronizedMap(new TreeMap<String, DictionaryPool>());
-    private Map<String, Dictionary> mUserDictionaries =
-            Collections.synchronizedMap(new TreeMap<String, Dictionary>());
+    private Map<String, UserBinaryDictionary> mUserDictionaries =
+            Collections.synchronizedMap(new TreeMap<String, UserBinaryDictionary>());
     private Map<String, Dictionary> mWhitelistDictionaries =
             Collections.synchronizedMap(new TreeMap<String, Dictionary>());
-    private Dictionary mContactsDictionary;
+    private ContactsBinaryDictionary mContactsDictionary;
 
     // The threshold for a candidate to be offered as a suggestion.
     private float mSuggestionThreshold;
@@ -154,13 +153,9 @@ public class AndroidSpellCheckerService extends SpellCheckerService
 
     private void startUsingContactsDictionaryLocked() {
         if (null == mContactsDictionary) {
-            if (LatinIME.USE_BINARY_CONTACTS_DICTIONARY) {
-                // TODO: use the right locale for each session
-                mContactsDictionary =
-                        new SynchronouslyLoadedContactsBinaryDictionary(this, Locale.getDefault());
-            } else {
-                mContactsDictionary = new SynchronouslyLoadedContactsDictionary(this);
-            }
+            // TODO: use the right locale for each session
+            mContactsDictionary =
+                    new SynchronouslyLoadedContactsBinaryDictionary(this, Locale.getDefault());
         }
         final Iterator<WeakReference<DictionaryCollection>> iterator =
                 mDictionaryCollectionsList.iterator();
@@ -368,8 +363,9 @@ public class AndroidSpellCheckerService extends SpellCheckerService
     private void closeAllDictionaries() {
         final Map<String, DictionaryPool> oldPools = mDictionaryPools;
         mDictionaryPools = Collections.synchronizedMap(new TreeMap<String, DictionaryPool>());
-        final Map<String, Dictionary> oldUserDictionaries = mUserDictionaries;
-        mUserDictionaries = Collections.synchronizedMap(new TreeMap<String, Dictionary>());
+        final Map<String, UserBinaryDictionary> oldUserDictionaries = mUserDictionaries;
+        mUserDictionaries =
+                Collections.synchronizedMap(new TreeMap<String, UserBinaryDictionary>());
         final Map<String, Dictionary> oldWhitelistDictionaries = mWhitelistDictionaries;
         mWhitelistDictionaries = Collections.synchronizedMap(new TreeMap<String, Dictionary>());
         new Thread("spellchecker_close_dicts") {
@@ -389,7 +385,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                         // The synchronously loaded contacts dictionary should have been in one
                         // or several pools, but it is shielded against multiple closing and it's
                         // safe to call it several times.
-                        final Dictionary dictToClose = mContactsDictionary;
+                        final ContactsBinaryDictionary dictToClose = mContactsDictionary;
                         // TODO: revert to the concrete type when USE_BINARY_CONTACTS_DICTIONARY
                         // is no longer needed
                         mContactsDictionary = null;
@@ -421,13 +417,9 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 DictionaryFactory.createMainDictionaryFromManager(this, locale,
                         true /* useFullEditDistance */);
         final String localeStr = locale.toString();
-        Dictionary userDictionary = mUserDictionaries.get(localeStr);
+        UserBinaryDictionary userDictionary = mUserDictionaries.get(localeStr);
         if (null == userDictionary) {
-            if (LatinIME.USE_BINARY_USER_DICTIONARY) {
-                userDictionary = new SynchronouslyLoadedUserBinaryDictionary(this, localeStr, true);
-            } else {
-                userDictionary = new SynchronouslyLoadedUserDictionary(this, localeStr, true);
-            }
+            userDictionary = new SynchronouslyLoadedUserBinaryDictionary(this, localeStr, true);
             mUserDictionaries.put(localeStr, userDictionary);
         }
         dictionaryCollection.addDictionary(userDictionary);
@@ -440,17 +432,11 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         synchronized (mUseContactsLock) {
             if (mUseContactsDictionary) {
                 if (null == mContactsDictionary) {
-                    // TODO: revert to the concrete type when USE_BINARY_CONTACTS_DICTIONARY is no
-                    // longer needed
-                    if (LatinIME.USE_BINARY_CONTACTS_DICTIONARY) {
-                        // TODO: use the right locale. We can't do it right now because the
-                        // spell checker is reusing the contacts dictionary across sessions
-                        // without regard for their locale, so we need to fix that first.
-                        mContactsDictionary = new SynchronouslyLoadedContactsBinaryDictionary(this,
-                                Locale.getDefault());
-                    } else {
-                        mContactsDictionary = new SynchronouslyLoadedContactsDictionary(this);
-                    }
+                    // TODO: use the right locale. We can't do it right now because the
+                    // spell checker is reusing the contacts dictionary across sessions
+                    // without regard for their locale, so we need to fix that first.
+                    mContactsDictionary = new SynchronouslyLoadedContactsBinaryDictionary(this,
+                            Locale.getDefault());
                 }
             }
             dictionaryCollection.addDictionary(mContactsDictionary);

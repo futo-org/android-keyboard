@@ -66,7 +66,7 @@ public class Suggest implements Dictionary.WordCallback {
     private static final boolean DBG = LatinImeLogger.sDBG;
 
     private boolean mHasMainDictionary;
-    private Dictionary mContactsDict;
+    private ContactsBinaryDictionary mContactsDict;
     private WhitelistDictionary mWhiteListDictionary;
     private final ConcurrentHashMap<String, Dictionary> mUnigramDictionaries =
             new ConcurrentHashMap<String, Dictionary>();
@@ -148,7 +148,7 @@ public class Suggest implements Dictionary.WordCallback {
         return mHasMainDictionary;
     }
 
-    public Dictionary getContactsDictionary() {
+    public ContactsBinaryDictionary getContactsDictionary() {
         return mContactsDict;
     }
 
@@ -164,7 +164,7 @@ public class Suggest implements Dictionary.WordCallback {
      * Sets an optional user dictionary resource to be loaded. The user dictionary is consulted
      * before the main dictionary, if set. This refers to the system-managed user dictionary.
      */
-    public void setUserDictionary(Dictionary userDictionary) {
+    public void setUserDictionary(UserBinaryDictionary userDictionary) {
         addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_USER, userDictionary);
     }
 
@@ -173,13 +173,13 @@ public class Suggest implements Dictionary.WordCallback {
      * the contacts dictionary by passing null to this method. In this case no contacts dictionary
      * won't be used.
      */
-    public void setContactsDictionary(Dictionary contactsDictionary) {
+    public void setContactsDictionary(ContactsBinaryDictionary contactsDictionary) {
         mContactsDict = contactsDictionary;
         addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_CONTACTS, contactsDictionary);
         addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_CONTACTS, contactsDictionary);
     }
 
-    public void setUserHistoryDictionary(Dictionary userHistoryDictionary) {
+    public void setUserHistoryDictionary(UserHistoryDictionary userHistoryDictionary) {
         addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_USER_HISTORY_UNIGRAM,
                 userHistoryDictionary);
         addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_USER_HISTORY_BIGRAM,

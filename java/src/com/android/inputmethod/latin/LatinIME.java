@@ -103,12 +103,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     private static final String SCHEME_PACKAGE = "package";
 
-    /** Whether to use the binary version of the contacts dictionary */
-    public static final boolean USE_BINARY_CONTACTS_DICTIONARY = true;
-
-    /** Whether to use the binary version of the user dictionary */
-    public static final boolean USE_BINARY_USER_DICTIONARY = true;
-
     // TODO: migrate this to SettingsValues
     private int mSuggestionVisibility;
     private static final int SUGGESTION_VISIBILITY_SHOW_VALUE
@@ -162,8 +156,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean mShouldSwitchToLastSubtype = true;
 
     private boolean mIsMainDictionaryAvailable;
-    // TODO: revert this back to the concrete class after transition.
-    private Dictionary mUserDictionary;
+    private UserBinaryDictionary mUserDictionary;
     private UserHistoryDictionary mUserHistoryDictionary;
     private boolean mIsUserDictionaryAvailable;
 
@@ -469,7 +462,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final Locale subtypeLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
         final String localeStr = subtypeLocale.toString();
 
-        final Dictionary oldContactsDictionary;
+        final ContactsBinaryDictionary oldContactsDictionary;
         if (mSuggest != null) {
             oldContactsDictionary = mSuggest.getContactsDictionary();
             mSuggest.close();
@@ -483,13 +476,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         mIsMainDictionaryAvailable = DictionaryFactory.isDictionaryAvailable(this, subtypeLocale);
 
-        if (USE_BINARY_USER_DICTIONARY) {
-            mUserDictionary = new UserBinaryDictionary(this, localeStr);
-            mIsUserDictionaryAvailable = ((UserBinaryDictionary)mUserDictionary).isEnabled();
-        } else {
-            mUserDictionary = new UserDictionary(this, localeStr);
-            mIsUserDictionaryAvailable = ((UserDictionary)mUserDictionary).isEnabled();
-        }
+        mUserDictionary = new UserBinaryDictionary(this, localeStr);
+        mIsUserDictionaryAvailable = mUserDictionary.isEnabled();
         mSuggest.setUserDictionary(mUserDictionary);
 
         resetContactsDictionary(oldContactsDictionary);
@@ -510,10 +498,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      *
      * @param oldContactsDictionary an optional dictionary to use, or null
      */
-    private void resetContactsDictionary(final Dictionary oldContactsDictionary) {
+    private void resetContactsDictionary(final ContactsBinaryDictionary oldContactsDictionary) {
         final boolean shouldSetDictionary = (null != mSuggest && mSettingsValues.mUseContactsDict);
 
-        final Dictionary dictionaryToUse;
+        final ContactsBinaryDictionary dictionaryToUse;
         if (!shouldSetDictionary) {
             // Make sure the dictionary is closed. If it is already closed, this is a no-op,
             // so it's safe to call it anyways.
@@ -522,32 +510,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             final Locale locale = mSubtypeSwitcher.getCurrentSubtypeLocale();
             if (null != oldContactsDictionary) {
-                if (USE_BINARY_CONTACTS_DICTIONARY) {
-                    ContactsBinaryDictionary oldContactsBinaryDictionary =
-                            (ContactsBinaryDictionary)oldContactsDictionary;
-                    if (!oldContactsBinaryDictionary.mLocale.equals(locale)) {
-                        // If the locale has changed then recreate the contacts dictionary. This
-                        // allows locale dependent rules for handling bigram name predictions.
-                        oldContactsDictionary.close();
-                        dictionaryToUse = new ContactsBinaryDictionary(
-                            this, Suggest.DIC_CONTACTS, locale);
-                    } else {
-                        // Make sure the old contacts dictionary is opened. If it is already open,
-                        // this is a no-op, so it's safe to call it anyways.
-                        oldContactsBinaryDictionary.reopen(this);
-                        dictionaryToUse = oldContactsDictionary;
-                    }
+                if (!oldContactsDictionary.mLocale.equals(locale)) {
+                    // If the locale has changed then recreate the contacts dictionary. This
+                    // allows locale dependent rules for handling bigram name predictions.
+                    oldContactsDictionary.close();
+                    dictionaryToUse = new ContactsBinaryDictionary(
+                        this, Suggest.DIC_CONTACTS, locale);
                 } else {
-                    ((ContactsDictionary)oldContactsDictionary).reopen(this);
+                    // Make sure the old contacts dictionary is opened. If it is already open,
+                    // this is a no-op, so it's safe to call it anyways.
+                    oldContactsDictionary.reopen(this);
                     dictionaryToUse = oldContactsDictionary;
                 }
             } else {
-                if (USE_BINARY_CONTACTS_DICTIONARY) {
-                    dictionaryToUse = new ContactsBinaryDictionary(this, Suggest.DIC_CONTACTS,
-                            locale);
-                } else {
-                    dictionaryToUse = new ContactsDictionary(this, Suggest.DIC_CONTACTS);
-                }
+                dictionaryToUse = new ContactsBinaryDictionary(this, Suggest.DIC_CONTACTS, locale);
             }
         }
 
@@ -1173,11 +1149,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public boolean addWordToDictionary(String word) {
-        if (USE_BINARY_USER_DICTIONARY) {
-            ((UserBinaryDictionary)mUserDictionary).addWordToUserDictionary(word, 128);
-        } else {
-            ((UserDictionary)mUserDictionary).addWordToUserDictionary(word, 128);
-        }
+        mUserDictionary.addWordToUserDictionary(word, 128);
         // Suggestion strip should be updated after the operation of adding word to the
         // user dictionary
         mHandler.postUpdateSuggestions();
