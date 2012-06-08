@@ -449,7 +449,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             oldContactsDictionary = null;
         }
         mSuggest = new Suggest(this, subtypeLocale);
-        if (mCurrentSettings.mAutoCorrectEnabled) {
+        if (mCurrentSettings.isCorrectionOn()) {
             mSuggest.setAutoCorrectionThreshold(mCurrentSettings.mAutoCorrectionThreshold);
         }
 
@@ -680,7 +680,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         loadSettings();
 
-        if (mSuggest != null && mCurrentSettings.mAutoCorrectEnabled) {
+        if (mSuggest != null && mCurrentSettings.isCorrectionOn()) {
             mSuggest.setAutoCorrectionThreshold(mCurrentSettings.mAutoCorrectionThreshold);
         }
 
@@ -1553,8 +1553,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // not to auto correct, but accept the typed word. For instance,
             // in Italian dov' should not be expanded to dove' because the elision
             // requires the last vowel to be removed.
-            final boolean shouldAutoCorrect = mCurrentSettings.mAutoCorrectEnabled
-                    && !mInputAttributes.mInputTypeNoAutoCorrect;
+            final boolean shouldAutoCorrect = mCurrentSettings.isCorrectionOn();
             if (shouldAutoCorrect && primaryCode != Keyboard.CODE_SINGLE_QUOTE) {
                 commitCurrentAutoCorrection(primaryCode);
                 didAutoCorrect = true;
@@ -1914,14 +1913,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mConnection.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(
                     this, chosenWord, suggestedWords, mIsMainDictionaryAvailable),
                     1);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIME_commitText(chosenWord);
-            }
         } else {
             mConnection.commitText(chosenWord, 1);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIME_commitText(chosenWord);
-            }
+        }
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_commitText(chosenWord);
         }
         // Add the word to the user history dictionary
         final CharSequence prevWord = addToUserHistoryDictionary(chosenWord);
@@ -2231,7 +2227,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         p.println("  mIsSuggestionsRequested=" + mInputAttributes.mIsSettingsSuggestionStripOn);
         p.println("  mCorrectionMode=" + mCurrentSettings.mCorrectionMode);
         p.println("  isComposingWord=" + mWordComposer.isComposingWord());
-        p.println("  mAutoCorrectEnabled=" + mCurrentSettings.mAutoCorrectEnabled);
+        p.println("  isCorrectionOn=" + mCurrentSettings.isCorrectionOn());
         p.println("  mSoundOn=" + mCurrentSettings.mSoundOn);
         p.println("  mVibrateOn=" + mCurrentSettings.mVibrateOn);
         p.println("  mKeyPreviewPopupOn=" + mCurrentSettings.mKeyPreviewPopupOn);
