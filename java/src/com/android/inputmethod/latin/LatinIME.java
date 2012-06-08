@@ -1075,12 +1075,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private boolean maybeDoubleSpace() {
         if (mCurrentSettings.mCorrectionMode == Suggest.CORRECTION_NONE) return false;
+        if (!mHandler.isAcceptingDoubleSpaces()) return false;
         final CharSequence lastThree = mConnection.getTextBeforeCursor(3, 0);
         if (lastThree != null && lastThree.length() == 3
                 && canBeFollowedByPeriod(lastThree.charAt(0))
                 && lastThree.charAt(1) == Keyboard.CODE_SPACE
-                && lastThree.charAt(2) == Keyboard.CODE_SPACE
-                && mHandler.isAcceptingDoubleSpaces()) {
+                && lastThree.charAt(2) == Keyboard.CODE_SPACE) {
             mHandler.cancelDoubleSpacesTimer();
             mConnection.deleteSurroundingText(2, 0);
             mConnection.commitText(". ", 1);
