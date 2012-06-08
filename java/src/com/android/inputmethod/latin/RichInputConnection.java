@@ -326,4 +326,48 @@ public class RichInputConnection {
         }
     }
 
+    public boolean sameAsTextBeforeCursor(final CharSequence text) {
+        final CharSequence beforeText = getTextBeforeCursor(text.length(), 0);
+        return TextUtils.equals(text, beforeText);
+    }
+
+    /* (non-javadoc)
+     * Returns the word before the cursor if the cursor is at the end of a word, null otherwise
+     */
+    public CharSequence getWordBeforeCursorIfAtEndOfWord(final SettingsValues settings) {
+        // Bail out if the cursor is not at the end of a word (cursor must be preceded by
+        // non-whitespace, non-separator, non-start-of-text)
+        // Example ("|" is the cursor here) : <SOL>"|a" " |a" " | " all get rejected here.
+        final CharSequence textBeforeCursor = getTextBeforeCursor(1, 0);
+        if (TextUtils.isEmpty(textBeforeCursor)
+                || settings.isWordSeparator(textBeforeCursor.charAt(0))) return null;
+
+        // Bail out if the cursor is in the middle of a word (cursor must be followed by whitespace,
+        // separator or end of line/text)
+        // Example: "test|"<EOL> "te|st" get rejected here
+        final CharSequence textAfterCursor = getTextAfterCursor(1, 0);
+        if (!TextUtils.isEmpty(textAfterCursor)
+                && !settings.isWordSeparator(textAfterCursor.charAt(0))) return null;
+
+        // Bail out if word before cursor is 0-length or a single non letter (like an apostrophe)
+        // Example: " -|" gets rejected here but "e-|" and "e|" are okay
+        CharSequence word = getWordAtCursor(settings.mWordSeparators);
+        // We don't suggest on leading single quotes, so we have to remove them from the word if
+        // it starts with single quotes.
+        while (!TextUtils.isEmpty(word) && Keyboard.CODE_SINGLE_QUOTE == word.charAt(0)) {
+            word = word.subSequence(1, word.length());
+        }
+        if (TextUtils.isEmpty(word)) return null;
+        final char firstChar = word.charAt(0); // we just tested that word is not empty
+        if (word.length() == 1 && !Character.isLetter(firstChar)) return null;
+
+        // We only suggest on words that start with a letter or a symbol that is excluded from
+        // word separators (see #handleCharacterWhileInBatchEdit).
+        if (!(Character.isLetter(firstChar)
+                || settings.isSymbolExcludedFromWordSeparators(firstChar))) {
+            return null;
+        }
+
+        return word;
+    }
 }

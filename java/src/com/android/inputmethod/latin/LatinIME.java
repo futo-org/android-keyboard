@@ -1352,7 +1352,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // In many cases, we may have to put the keyboard in auto-shift state again.
         mHandler.postUpdateShiftState();
 
-        if (mEnteredText != null && sameAsTextBeforeCursor(mEnteredText)) {
+        if (mEnteredText != null && mConnection.sameAsTextBeforeCursor(mEnteredText)) {
             // Cancel multi-character input: remove the text we just entered.
             // This is triggered on backspace after a key that inputs multiple characters,
             // like the smiley key or the .com key.
@@ -2000,51 +2000,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return null;
     }
 
-    private boolean sameAsTextBeforeCursor(final CharSequence text) {
-        final CharSequence beforeText = mConnection.getTextBeforeCursor(text.length(), 0);
-        return TextUtils.equals(text, beforeText);
-    }
-
     /**
      * Check if the cursor is actually at the end of a word. If so, restart suggestions on this
      * word, else do nothing.
      */
     private void restartSuggestionsOnWordBeforeCursorIfAtEndOfWord() {
-        // Bail out if the cursor is not at the end of a word (cursor must be preceded by
-        // non-whitespace, non-separator, non-start-of-text)
-        // Example ("|" is the cursor here) : <SOL>"|a" " |a" " | " all get rejected here.
-        final CharSequence textBeforeCursor = mConnection.getTextBeforeCursor(1, 0);
-        if (TextUtils.isEmpty(textBeforeCursor)
-                || mCurrentSettings.isWordSeparator(textBeforeCursor.charAt(0))) return;
-
-        // Bail out if the cursor is in the middle of a word (cursor must be followed by whitespace,
-        // separator or end of line/text)
-        // Example: "test|"<EOL> "te|st" get rejected here
-        final CharSequence textAfterCursor = mConnection.getTextAfterCursor(1, 0);
-        if (!TextUtils.isEmpty(textAfterCursor)
-                && !mCurrentSettings.isWordSeparator(textAfterCursor.charAt(0))) return;
-
-        // Bail out if word before cursor is 0-length or a single non letter (like an apostrophe)
-        // Example: " -|" gets rejected here but "e-|" and "e|" are okay
-        CharSequence word = mConnection.getWordAtCursor(mCurrentSettings.mWordSeparators);
-        // We don't suggest on leading single quotes, so we have to remove them from the word if
-        // it starts with single quotes.
-        while (!TextUtils.isEmpty(word) && Keyboard.CODE_SINGLE_QUOTE == word.charAt(0)) {
-            word = word.subSequence(1, word.length());
+        final CharSequence word = mConnection.getWordBeforeCursorIfAtEndOfWord(mCurrentSettings);
+        if (null != word) {
+            restartSuggestionsOnWordBeforeCursor(word);
         }
-        if (TextUtils.isEmpty(word)) return;
-        final char firstChar = word.charAt(0); // we just tested that word is not empty
-        if (word.length() == 1 && !Character.isLetter(firstChar)) return;
-
-        // We only suggest on words that start with a letter or a symbol that is excluded from
-        // word separators (see #handleCharacterWhileInBatchEdit).
-        if (!(isAlphabet(firstChar)
-                || mCurrentSettings.isSymbolExcludedFromWordSeparators(firstChar))) {
-            return;
-        }
-
-        // Okay, we are at the end of a word. Restart suggestions.
-        restartSuggestionsOnWordBeforeCursor(word);
     }
 
     private void restartSuggestionsOnWordBeforeCursor(final CharSequence word) {
