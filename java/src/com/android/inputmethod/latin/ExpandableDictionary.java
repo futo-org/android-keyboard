@@ -514,8 +514,10 @@ public class ExpandableDictionary extends Dictionary {
 
     /**
      * Adds bigrams to the in-memory trie structure that is being used to retrieve any word
+     * @param word1 the first word of this bigram
+     * @param word2 the second word of this bigram
      * @param frequency frequency for this bigram
-     * @param addFrequency if true, it adds to current frequency, else it overwrites the old value
+     * @param fcp an instance of ForgettingCurveParams to use for decay policy
      * @return returns the final bigram frequency
      */
     private int setBigramAndGetFrequency(

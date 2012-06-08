@@ -873,6 +873,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 keyPreview, ViewLayoutUtils.newLayoutParam(mPreviewPlacer, 0, 0));
     }
 
+    @SuppressWarnings("deprecation") // setBackgroundDrawable is replaced by setBackground in API16
     @Override
     public void showKeyPreview(PointerTracker tracker) {
         if (!mShowKeyPreviewPopup) return;

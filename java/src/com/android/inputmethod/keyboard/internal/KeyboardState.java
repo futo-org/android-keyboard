@@ -21,8 +21,6 @@ import android.util.Log;
 
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.Constants;
-import com.android.inputmethod.latin.ResearchLogger;
-import com.android.inputmethod.latin.define.ProductionFlag;
 
 /**
  * Keyboard state machine.

@@ -440,7 +440,7 @@ public class UserHistoryDictionary extends ExpandableDictionary {
                             if (nw != null) {
                                 final ForgettingCurveParams fcp = nw.getFcParams();
                                 final byte prevFc = word1Bigrams.get(word2);
-                                final byte fc = (byte)fcp.getFc();
+                                final byte fc = fcp.getFc();
                                 final boolean isValid = fcp.isValid();
                                 if (prevFc > 0 && prevFc == fc) {
                                     // No need to update since we found no changes for this entry.

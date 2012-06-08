@@ -101,13 +101,13 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static class NullOutputStream extends OutputStream {
         /** {@inheritDoc} */
         @Override
-        public void write(byte[] buffer, int offset, int count) throws IOException {
+        public void write(byte[] buffer, int offset, int count) {
             // nop
         }
 
         /** {@inheritDoc} */
         @Override
-        public void write(byte[] buffer) throws IOException {
+        public void write(byte[] buffer) {
             // nop
         }
 

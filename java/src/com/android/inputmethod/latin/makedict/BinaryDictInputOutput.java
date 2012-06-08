@@ -788,7 +788,7 @@ public class BinaryDictInputOutput {
         // which is the best approximation. This is how we get the most precise result with
         // only four bits.
         final double stepSize =
-                (double)(MAX_TERMINAL_FREQUENCY - unigramFrequency) / (1.5 + MAX_BIGRAM_FREQUENCY);
+                (MAX_TERMINAL_FREQUENCY - unigramFrequency) / (1.5 + MAX_BIGRAM_FREQUENCY);
         final double firstStepStart = 1 + unigramFrequency + (stepSize / 2.0);
         final int discretizedFrequency = (int)((bigramFrequency - firstStepStart) / stepSize);
         // If the bigram freq is less than half-a-step higher than the unigram freq, we get -1

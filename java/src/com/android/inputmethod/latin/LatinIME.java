@@ -747,6 +747,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
 
+    @Override
     public void onTargetApplicationKnown(final ApplicationInfo info) {
         mTargetApplicationInfo = info;
     }
