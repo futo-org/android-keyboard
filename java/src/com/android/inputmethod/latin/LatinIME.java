@@ -1076,7 +1076,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mConnection.getCursorCapsMode(inputType);
     }
 
-    private void swapSwapperAndSpaceWhileInBatchEdit() {
+    private void swapSwapperAndSpace() {
         CharSequence lastTwo = mConnection.getTextBeforeCursor(2, 0);
         // It is guaranteed lastTwo.charAt(1) is a swapper - else this method is not called.
         if (lastTwo != null && lastTwo.length() == 2
@@ -1093,7 +1093,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private boolean maybeDoubleSpaceWhileInBatchEdit() {
+    private boolean maybeDoubleSpace() {
         if (mCorrectionMode == Suggest.CORRECTION_NONE) return false;
         final CharSequence lastThree = mConnection.getTextBeforeCursor(3, 0);
         if (lastThree != null && lastThree.length() == 3
@@ -1123,17 +1123,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 || codePoint == Keyboard.CODE_CLOSING_SQUARE_BRACKET
                 || codePoint == Keyboard.CODE_CLOSING_CURLY_BRACKET
                 || codePoint == Keyboard.CODE_CLOSING_ANGLE_BRACKET;
-    }
-
-    private void removeTrailingSpace() {
-        final CharSequence lastOne = mConnection.getTextBeforeCursor(1, 0);
-        if (lastOne != null && lastOne.length() == 1
-                && lastOne.charAt(0) == Keyboard.CODE_SPACE) {
-            mConnection.deleteSurroundingText(1, 0);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIME_deleteSurroundingText(1);
-            }
-        }
     }
 
     @Override
@@ -1487,7 +1476,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean maybeStripSpace(final int code,
             final int spaceState, final boolean isFromSuggestionStrip) {
         if (Keyboard.CODE_ENTER == code && SPACE_STATE_SWAP_PUNCTUATION == spaceState) {
-            removeTrailingSpace();
+            mConnection.removeTrailingSpace();
             return false;
         } else if ((SPACE_STATE_WEAK == spaceState
                 || SPACE_STATE_SWAP_PUNCTUATION == spaceState)
@@ -1496,7 +1485,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 return true;
             } else {
                 if (mSettingsValues.isWeakSpaceStripper(code)) {
-                    removeTrailingSpace();
+                    mConnection.removeTrailingSpace();
                 }
                 return false;
             }
@@ -1523,7 +1512,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // thread here.
         if (!isComposingWord && (isAlphabet(primaryCode)
                 || mSettingsValues.isSymbolExcludedFromWordSeparators(primaryCode))
-                && isSuggestionsRequested() && !isCursorTouchingWord()) {
+                && isSuggestionsRequested() && !mConnection.isCursorTouchingWord(mSettingsValues)) {
             // Reset entirely the composing state anyway, then start composing a new word unless
             // the character is a single quote. The idea here is, single quote is not a
             // separator and it should be treated as a normal character, except in the first
@@ -1553,7 +1542,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             sendKeyCodePoint(primaryCode);
 
             if (swapWeakSpace) {
-                swapSwapperAndSpaceWhileInBatchEdit();
+                swapSwapperAndSpace();
                 mSpaceState = SPACE_STATE_WEAK;
             }
             // Some characters are not word separators, yet they don't start a new
@@ -1606,7 +1595,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         if (Keyboard.CODE_SPACE == primaryCode) {
             if (isSuggestionsRequested()) {
-                if (maybeDoubleSpaceWhileInBatchEdit()) {
+                if (maybeDoubleSpace()) {
                     mSpaceState = SPACE_STATE_DOUBLE;
                 } else if (!isShowingPunctuationList()) {
                     mSpaceState = SPACE_STATE_WEAK;
@@ -1614,13 +1603,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
 
             mHandler.startDoubleSpacesTimer();
-            if (!isCursorTouchingWord()) {
+            if (!mConnection.isCursorTouchingWord(mSettingsValues)) {
                 mHandler.cancelUpdateSuggestions();
                 mHandler.postUpdateBigramPredictions();
             }
         } else {
             if (swapWeakSpace) {
-                swapSwapperAndSpaceWhileInBatchEdit();
+                swapSwapperAndSpace();
                 mSpaceState = SPACE_STATE_SWAP_PUNCTUATION;
             } else if (SPACE_STATE_PHANTOM == spaceState) {
                 // If we are in phantom space state, and the user presses a separator, we want to
@@ -2033,20 +2022,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return null;
     }
 
-    public boolean isCursorTouchingWord() {
-        CharSequence before = mConnection.getTextBeforeCursor(1, 0);
-        CharSequence after = mConnection.getTextAfterCursor(1, 0);
-        if (!TextUtils.isEmpty(before) && !mSettingsValues.isWordSeparator(before.charAt(0))
-                && !mSettingsValues.isSymbolExcludedFromWordSeparators(before.charAt(0))) {
-            return true;
-        }
-        if (!TextUtils.isEmpty(after) && !mSettingsValues.isWordSeparator(after.charAt(0))
-                && !mSettingsValues.isSymbolExcludedFromWordSeparators(after.charAt(0))) {
-            return true;
-        }
-        return false;
-    }
-
     private boolean sameAsTextBeforeCursor(final CharSequence text) {
         final CharSequence beforeText = mConnection.getTextBeforeCursor(text.length(), 0);
         return TextUtils.equals(text, beforeText);
@@ -2230,7 +2205,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Since we just changed languages, we should re-evaluate suggestions with whatever word
         // we are currently composing. If we are not composing anything, we may want to display
         // predictions or punctuation signs (which is done by updateBigramPredictions anyway).
-        if (isCursorTouchingWord()) {
+        if (mConnection.isCursorTouchingWord(mSettingsValues)) {
             mHandler.postUpdateSuggestions();
         } else {
             mHandler.postUpdateBigramPredictions();

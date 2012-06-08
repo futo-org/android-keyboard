@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.CompletionInfo;
@@ -23,6 +24,9 @@ import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
+
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.util.regex.Pattern;
 
@@ -295,6 +299,31 @@ public class RichInputConnection {
         }
 
         return null;
+    }
+
+    public boolean isCursorTouchingWord(final SettingsValues settingsValues) {
+        CharSequence before = getTextBeforeCursor(1, 0);
+        CharSequence after = getTextAfterCursor(1, 0);
+        if (!TextUtils.isEmpty(before) && !settingsValues.isWordSeparator(before.charAt(0))
+                && !settingsValues.isSymbolExcludedFromWordSeparators(before.charAt(0))) {
+            return true;
+        }
+        if (!TextUtils.isEmpty(after) && !settingsValues.isWordSeparator(after.charAt(0))
+                && !settingsValues.isSymbolExcludedFromWordSeparators(after.charAt(0))) {
+            return true;
+        }
+        return false;
+    }
+
+    public void removeTrailingSpace() {
+        final CharSequence lastOne = getTextBeforeCursor(1, 0);
+        if (lastOne != null && lastOne.length() == 1
+                && lastOne.charAt(0) == Keyboard.CODE_SPACE) {
+            deleteSurroundingText(1, 0);
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.latinIME_deleteSurroundingText(1);
+            }
+        }
     }
 
 }
