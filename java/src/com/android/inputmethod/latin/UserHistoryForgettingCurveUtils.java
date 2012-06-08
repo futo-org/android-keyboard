@@ -211,8 +211,8 @@ public class UserHistoryForgettingCurveUtils {
                 }
                 for (int j = 0; j < ELAPSED_TIME_MAX; ++j) {
                     final float elapsedHours = j * ELAPSED_TIME_INTERVAL_HOURS;
-                    final double freq =
-                            initialFreq * Math.pow(initialFreq, elapsedHours / HALF_LIFE_HOURS);
+                    final float freq = initialFreq
+                            * NativeUtils.powf(initialFreq, elapsedHours / HALF_LIFE_HOURS);
                     final int intFreq = Math.min(FC_FREQ_MAX, Math.max(0, (int)freq));
                     SCORE_TABLE[i][j] = intFreq;
                 }
