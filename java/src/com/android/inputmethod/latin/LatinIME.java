@@ -783,7 +783,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             ResearchLogger.latinIME_onUpdateSelection(mLastSelectionStart, mLastSelectionEnd,
                     oldSelStart, oldSelEnd, newSelStart, newSelEnd, composingSpanStart,
                     composingSpanEnd, mExpectingUpdateSelection,
-                    expectingUpdateSelectionFromLogger, getCurrentInputConnection());
+                    expectingUpdateSelectionFromLogger, mConnection);
             if (expectingUpdateSelectionFromLogger) {
                 return;
             }
@@ -1760,11 +1760,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         // TODO: May need a better way of retrieving previous word
-        final CharSequence prevWord;
-        // TODO: move getPreviousWord to AutoInputConnection
-        prevWord = EditingUtils.getPreviousWord(mConnection.getInputConnection(),
-                mSettingsValues.mWordSeparators);
-
+        final CharSequence prevWord = mConnection.getPreviousWord(mSettingsValues.mWordSeparators);
         final CharSequence typedWord = mWordComposer.getTypedWord();
         // getSuggestedWords handles gracefully a null value of prevWord
         final SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
@@ -1993,8 +1989,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         final SuggestedWords suggestedWords;
         if (mCorrectionMode == Suggest.CORRECTION_FULL_BIGRAM) {
-            final CharSequence prevWord = EditingUtils.getThisWord(getCurrentInputConnection(),
-                    mSettingsValues.mWordSeparators);
+            final CharSequence prevWord = mConnection.getThisWord(mSettingsValues.mWordSeparators);
             if (!TextUtils.isEmpty(prevWord)) {
                 suggestedWords = mSuggest.getBigramPredictions(prevWord);
             } else {
@@ -2031,10 +2026,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         if (mUserHistoryDictionary != null) {
-            final CharSequence prevWord;
-            // TODO: move getPreviousWord to AutoInputConnection
-            prevWord = EditingUtils.getPreviousWord(mConnection.getInputConnection(),
-                    mSettingsValues.mWordSeparators);
+            final CharSequence prevWord
+                    = mConnection.getPreviousWord(mSettingsValues.mWordSeparators);
             final String secondWord;
             if (mWordComposer.isAutoCapitalized() && !mWordComposer.isMostlyCaps()) {
                 secondWord = suggestion.toString().toLowerCase(
@@ -2093,9 +2086,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         // Bail out if word before cursor is 0-length or a single non letter (like an apostrophe)
         // Example: " -|" gets rejected here but "e-|" and "e|" are okay
-        // TODO: move getWordAtCursor inside AutoInputConnection
-        CharSequence word = EditingUtils.getWordAtCursor(mConnection.getInputConnection(),
-                mSettingsValues.mWordSeparators);
+        CharSequence word = mConnection.getWordAtCursor(mSettingsValues.mWordSeparators);
         // We don't suggest on leading single quotes, so we have to remove them from the word if
         // it starts with single quotes.
         while (!TextUtils.isEmpty(word) && Keyboard.CODE_SINGLE_QUOTE == word.charAt(0)) {

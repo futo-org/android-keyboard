@@ -612,12 +612,13 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final int lastSelectionEnd, final int oldSelStart, final int oldSelEnd,
             final int newSelStart, final int newSelEnd, final int composingSpanStart,
             final int composingSpanEnd, final boolean expectingUpdateSelection,
-            final boolean expectingUpdateSelectionFromLogger, final InputConnection connection) {
+            final boolean expectingUpdateSelectionFromLogger,
+            final RichInputConnection connection) {
         final Object[] values = {
             lastSelectionStart, lastSelectionEnd, oldSelStart, oldSelEnd, newSelStart,
             newSelEnd, composingSpanStart, composingSpanEnd, expectingUpdateSelection,
             expectingUpdateSelectionFromLogger,
-            EditingUtils.getWordRangeAtCursor(connection, WHITESPACE_SEPARATORS, 1).mWord
+            connection.getWordRangeAtCursor(WHITESPACE_SEPARATORS, 1).mWord
         };
         getInstance().writeEvent(EVENTKEYS_LATINIME_ONUPDATESELECTION, values);
     }

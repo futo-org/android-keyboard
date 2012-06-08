@@ -20,7 +20,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.CorrectionInfo;
+import android.view.inputmethod.ExtractedText;
+import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
+
+import java.util.regex.Pattern;
 
 /**
  * Wrapper for InputConnection to simplify interaction
@@ -28,16 +32,16 @@ import android.view.inputmethod.InputConnection;
 public class RichInputConnection {
     private static final String TAG = RichInputConnection.class.getSimpleName();
     private static final boolean DBG = false;
+    // Provision for a long word pair and a separator
+    private static final int LOOKBACK_CHARACTER_NUM = BinaryDictionary.MAX_WORD_LENGTH * 2 + 1;
+    private static final Pattern spaceRegex = Pattern.compile("\\s+");
+    private static final int INVALID_CURSOR_POSITION = -1;
+
     InputConnection mIC;
     int mNestLevel;
     public RichInputConnection() {
         mIC = null;
         mNestLevel = 0;
-    }
-
-    // TODO: remove this method - the whole point of this class is void if mIC is escaping
-    public InputConnection getInputConnection() {
-        return mIC;
     }
 
     public void beginBatchEdit(final InputConnection newInputConnection) {
@@ -119,4 +123,178 @@ public class RichInputConnection {
         if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
         if (null != mIC) mIC.commitCompletion(completionInfo);
     }
+
+    public CharSequence getPreviousWord(final String sentenceSeperators) {
+        //TODO: Should fix this. This could be slow!
+        if (null == mIC) return null;
+        CharSequence prev = mIC.getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
+        return getPreviousWord(prev, sentenceSeperators);
+    }
+
+    /**
+     * Represents a range of text, relative to the current cursor position.
+     */
+    public static class Range {
+        /** Characters before selection start */
+        public final int mCharsBefore;
+
+        /**
+         * Characters after selection start, including one trailing word
+         * separator.
+         */
+        public final int mCharsAfter;
+
+        /** The actual characters that make up a word */
+        public final String mWord;
+
+        public Range(int charsBefore, int charsAfter, String word) {
+            if (charsBefore < 0 || charsAfter < 0) {
+                throw new IndexOutOfBoundsException();
+            }
+            this.mCharsBefore = charsBefore;
+            this.mCharsAfter = charsAfter;
+            this.mWord = word;
+        }
+    }
+
+    private static boolean isSeparator(int code, String sep) {
+        return sep.indexOf(code) != -1;
+    }
+
+    // Get the word before the whitespace preceding the non-whitespace preceding the cursor.
+    // Also, it won't return words that end in a separator.
+    // Example :
+    // "abc def|" -> abc
+    // "abc def |" -> abc
+    // "abc def. |" -> abc
+    // "abc def . |" -> def
+    // "abc|" -> null
+    // "abc |" -> null
+    // "abc. def|" -> null
+    public static CharSequence getPreviousWord(CharSequence prev, String sentenceSeperators) {
+        if (prev == null) return null;
+        String[] w = spaceRegex.split(prev);
+
+        // If we can't find two words, or we found an empty word, return null.
+        if (w.length < 2 || w[w.length - 2].length() <= 0) return null;
+
+        // If ends in a separator, return null
+        char lastChar = w[w.length - 2].charAt(w[w.length - 2].length() - 1);
+        if (sentenceSeperators.contains(String.valueOf(lastChar))) return null;
+
+        return w[w.length - 2];
+    }
+
+    public CharSequence getThisWord(String sentenceSeperators) {
+        if (null == mIC) return null;
+        final CharSequence prev = mIC.getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
+        return getThisWord(prev, sentenceSeperators);
+    }
+
+    // Get the word immediately before the cursor, even if there is whitespace between it and
+    // the cursor - but not if there is punctuation.
+    // Example :
+    // "abc def|" -> def
+    // "abc def |" -> def
+    // "abc def. |" -> null
+    // "abc def . |" -> null
+    public static CharSequence getThisWord(CharSequence prev, String sentenceSeperators) {
+        if (prev == null) return null;
+        String[] w = spaceRegex.split(prev);
+
+        // No word : return null
+        if (w.length < 1 || w[w.length - 1].length() <= 0) return null;
+
+        // If ends in a separator, return null
+        char lastChar = w[w.length - 1].charAt(w[w.length - 1].length() - 1);
+        if (sentenceSeperators.contains(String.valueOf(lastChar))) return null;
+
+        return w[w.length - 1];
+    }
+
+    /**
+     * @param separators characters which may separate words
+     * @return the word that surrounds the cursor, including up to one trailing
+     *   separator. For example, if the field contains "he|llo world", where |
+     *   represents the cursor, then "hello " will be returned.
+     */
+    public String getWordAtCursor(String separators) {
+        // getWordRangeAtCursor returns null if the connection is null
+        Range r = getWordRangeAtCursor(separators, 0);
+        return (r == null) ? null : r.mWord;
+    }
+
+    private int getCursorPosition() {
+        if (null == mIC) return INVALID_CURSOR_POSITION;
+        final ExtractedText extracted = mIC.getExtractedText(new ExtractedTextRequest(), 0);
+        if (extracted == null) {
+            return INVALID_CURSOR_POSITION;
+        }
+        return extracted.startOffset + extracted.selectionStart;
+    }
+
+    /**
+     * Returns the text surrounding the cursor.
+     *
+     * @param sep a string of characters that split words.
+     * @param additionalPrecedingWordsCount the number of words before the current word that should
+     *   be included in the returned range
+     * @return a range containing the text surrounding the cursor
+     */
+    public Range getWordRangeAtCursor(String sep, int additionalPrecedingWordsCount) {
+        if (mIC == null || sep == null) {
+            return null;
+        }
+        CharSequence before = mIC.getTextBeforeCursor(1000, 0);
+        CharSequence after = mIC.getTextAfterCursor(1000, 0);
+        if (before == null || after == null) {
+            return null;
+        }
+
+        // Going backward, alternate skipping non-separators and separators until enough words
+        // have been read.
+        int start = before.length();
+        boolean isStoppingAtWhitespace = true;  // toggles to indicate what to stop at
+        while (true) { // see comments below for why this is guaranteed to halt
+            while (start > 0) {
+                final int codePoint = Character.codePointBefore(before, start);
+                if (isStoppingAtWhitespace == isSeparator(codePoint, sep)) {
+                    break;  // inner loop
+                }
+                --start;
+                if (Character.isSupplementaryCodePoint(codePoint)) {
+                    --start;
+                }
+            }
+            // isStoppingAtWhitespace is true every other time through the loop,
+            // so additionalPrecedingWordsCount is guaranteed to become < 0, which
+            // guarantees outer loop termination
+            if (isStoppingAtWhitespace && (--additionalPrecedingWordsCount < 0)) {
+                break;  // outer loop
+            }
+            isStoppingAtWhitespace = !isStoppingAtWhitespace;
+        }
+
+        // Find last word separator after the cursor
+        int end = -1;
+        while (++end < after.length()) {
+            final int codePoint = Character.codePointAt(after, end);
+            if (isSeparator(codePoint, sep)) {
+                break;
+            }
+            if (Character.isSupplementaryCodePoint(codePoint)) {
+                ++end;
+            }
+        }
+
+        int cursor = getCursorPosition();
+        if (start >= 0 && cursor + end <= after.length() + before.length()) {
+            String word = before.toString().substring(start, before.length())
+                    + after.toString().substring(0, end);
+            return new Range(before.length() - start, end, word);
+        }
+
+        return null;
+    }
+
 }
