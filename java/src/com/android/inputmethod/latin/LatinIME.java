@@ -1629,7 +1629,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public boolean isSuggestionsRequested() {
         // TODO: move this method to mCurrentSettings
         return (null != mInputAttributes && mInputAttributes.mIsSettingsSuggestionStripOn)
-                && (mCurrentSettings.isCorrectionOn() || isShowingSuggestionsStrip());
+                && (mCurrentSettings.isCorrectionOn()
+                || mCurrentSettings.isSuggestionStripVisibleInOrientation(mDisplayOrientation));
     }
 
     public boolean isShowingPunctuationList() {
@@ -1637,16 +1638,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mCurrentSettings.mSuggestPuncList == mSuggestionsView.getSuggestions();
     }
 
-    public boolean isShowingSuggestionsStrip() {
-        return mCurrentSettings.isSuggestionStripVisibleInOrientation(mDisplayOrientation);
-    }
-
     public boolean isSuggestionsStripVisible() {
         if (mSuggestionsView == null)
             return false;
         if (mSuggestionsView.isShowingAddToDictionaryHint())
             return true;
-        if (!isShowingSuggestionsStrip())
+        if (!mCurrentSettings.isSuggestionStripVisibleInOrientation(mDisplayOrientation))
             return false;
         if (null != mInputAttributes && mInputAttributes.mApplicationSpecifiedCompletionOn)
             return true;
