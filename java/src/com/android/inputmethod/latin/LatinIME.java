@@ -402,13 +402,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final Resources res = getResources();
         mResources = res;
 
+        // TODO: remove the following when it's not needed by updateCorrectionMode() any more
+        mInputAttributes = new InputAttributes(null, false /* isFullscreenMode */);
         loadSettings();
 
         ImfUtils.setAdditionalInputMethodSubtypes(this, mSettingsValues.getAdditionalSubtypes());
-
-        // TODO: remove the following when it's not needed by updateCorrectionMode() any more
-        mInputAttributes = new InputAttributes(null, false /* isFullscreenMode */);
-        updateCorrectionMode();
 
         Utils.GCUtils.getInstance().reset();
         boolean tryGC = true;
@@ -454,6 +452,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         };
         mSettingsValues = job.runInLocale(mResources, mSubtypeSwitcher.getCurrentSubtypeLocale());
+        updateCorrectionMode();
         mFeedbackManager = new AudioAndHapticFeedbackManager(this, mSettingsValues);
         resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
     }
@@ -700,7 +699,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mSpaceState = SPACE_STATE_NONE;
 
         loadSettings();
-        updateCorrectionMode();
         updateSuggestionVisibility(mResources);
 
         if (mSuggest != null && mSettingsValues.mAutoCorrectEnabled) {
@@ -2200,7 +2198,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(), mSettingsValues);
         }
         initSuggest();
-        updateCorrectionMode();
         loadSettings();
         // Since we just changed languages, we should re-evaluate suggestions with whatever word
         // we are currently composing. If we are not composing anything, we may want to display
