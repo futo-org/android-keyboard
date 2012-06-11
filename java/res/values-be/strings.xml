@@ -24,8 +24,7 @@
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Клавіятура Android (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Налады клавіятуры Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Параметры ўводу"</string>
-    <!-- no translation found for english_ime_research_log (8492602295696577851) -->
-    <skip />
+    <string name="english_ime_research_log" msgid="8492602295696577851">"Каманды гiсторыя даследаванняў"</string>
     <string name="spell_checker_service_name" msgid="7338064335159755926">"Iнструмент праверкi правапiсу для Android"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Iнструмент праверкi правапiсу для Android (AOSP)"</string>
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Налады праверкі арфаграфіі"</string>
@@ -113,18 +112,12 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Галасавы набор адкл."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Налада метадаў уводу"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Мовы ўводу"</string>
-    <!-- no translation found for note_timestamp_for_researchlog (1889446857977976026) -->
-    <skip />
-    <!-- no translation found for notify_recorded_timestamp (8036429032449612051) -->
-    <skip />
-    <!-- no translation found for do_not_log_this_session (413762473641146336) -->
-    <skip />
-    <!-- no translation found for notify_session_log_deleting (3299507647764414623) -->
-    <skip />
-    <!-- no translation found for notify_session_log_deleted (8687927130100934686) -->
-    <skip />
-    <!-- no translation found for notify_session_log_not_deleted (2592908998810755970) -->
-    <skip />
+    <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Пазначыць час у гiсторыi"</string>
+    <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Запiсаныя пазнакі"</string>
+    <string name="do_not_log_this_session" msgid="413762473641146336">"Не рэгістраваць гэты сеанс"</string>
+    <string name="notify_session_log_deleting" msgid="3299507647764414623">"Выдаленне гiсторыi сеанса"</string>
+    <string name="notify_session_log_deleted" msgid="8687927130100934686">"Гiсторыя сеанса выдалена"</string>
+    <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Гiсторыя сеанса НЕ выдалена"</string>
     <string name="select_language" msgid="3693815588777926848">"Мовы ўводу"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Дакраніцеся зноў, каб захаваць"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Слоўнік даступны"</string>
