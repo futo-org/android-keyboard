@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
@@ -36,6 +37,19 @@ import java.util.HashMap;
  */
 public class SettingsValues {
     private static final String TAG = SettingsValues.class.getSimpleName();
+
+    private static final int SUGGESTION_VISIBILITY_SHOW_VALUE
+            = R.string.prefs_suggestion_visibility_show_value;
+    private static final int SUGGESTION_VISIBILITY_SHOW_ONLY_PORTRAIT_VALUE
+            = R.string.prefs_suggestion_visibility_show_only_portrait_value;
+    private static final int SUGGESTION_VISIBILITY_HIDE_VALUE
+            = R.string.prefs_suggestion_visibility_hide_value;
+
+    private static final int[] SUGGESTION_VISIBILITY_VALUE_ARRAY = new int[] {
+        SUGGESTION_VISIBILITY_SHOW_VALUE,
+        SUGGESTION_VISIBILITY_SHOW_ONLY_PORTRAIT_VALUE,
+        SUGGESTION_VISIBILITY_HIDE_VALUE
+    };
 
     // From resources:
     public final int mDelayUpdateOldSuggestions;
@@ -80,6 +94,7 @@ public class SettingsValues {
     public final boolean mAutoCorrectEnabled;
     public final float mAutoCorrectionThreshold;
     public final int mCorrectionMode;
+    public final int mSuggestionVisibility;
     private final boolean mVoiceKeyEnabled;
     private final boolean mVoiceKeyOnMain;
 
@@ -153,6 +168,7 @@ public class SettingsValues {
         mAdditionalSubtypes = AdditionalSubtype.createAdditionalSubtypesArray(
                 getPrefAdditionalSubtypes(prefs, res));
         mCorrectionMode = createCorrectionMode(inputAttributes);
+        mSuggestionVisibility = createSuggestionVisibility(res);
     }
 
     // Helper functions to create member values.
@@ -193,11 +209,27 @@ public class SettingsValues {
         return shouldAutoCorrect ? Suggest.CORRECTION_FULL : Suggest.CORRECTION_NONE;
     }
 
+    private int createSuggestionVisibility(final Resources res) {
+        final String suggestionVisiblityStr = mShowSuggestionsSetting;
+        for (int visibility : SUGGESTION_VISIBILITY_VALUE_ARRAY) {
+            if (suggestionVisiblityStr.equals(res.getString(visibility))) {
+                return visibility;
+            }
+        }
+        throw new RuntimeException("Bug: visibility string is not configured correctly");
+    }
+
     private static boolean isVibrateOn(final Context context, final SharedPreferences prefs,
             final Resources res) {
         final boolean hasVibrator = VibratorUtils.getInstance(context).hasVibrator();
         return hasVibrator && prefs.getBoolean(Settings.PREF_VIBRATE_ON,
                 res.getBoolean(R.bool.config_default_vibration_enabled));
+    }
+
+    public boolean isSuggestionStripVisibleInOrientation(final int orientation) {
+        return (mSuggestionVisibility == SUGGESTION_VISIBILITY_SHOW_VALUE)
+                || (mSuggestionVisibility == SUGGESTION_VISIBILITY_SHOW_ONLY_PORTRAIT_VALUE
+                        && orientation == Configuration.ORIENTATION_PORTRAIT);
     }
 
     public boolean isWordSeparator(int code) {
