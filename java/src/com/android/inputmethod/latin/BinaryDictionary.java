@@ -107,9 +107,9 @@ public class BinaryDictionary extends Dictionary {
     }
 
     @Override
-    public void getBigrams(final WordComposer codes, final CharSequence previousWord,
-            final WordCallback callback) {
-        if (mNativeDict == 0) return;
+    public ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
+            final CharSequence previousWord, final WordCallback callback) {
+        if (mNativeDict == 0) return null;
 
         int[] codePoints = StringUtils.toCodePointArray(previousWord.toString());
         Arrays.fill(mOutputChars_bigrams, (char) 0);
@@ -142,12 +142,14 @@ public class BinaryDictionary extends Dictionary {
             }
         }
         Utils.addAllSuggestions(mDicTypeId, Dictionary.BIGRAM, suggestions, callback);
+        return suggestions;
     }
 
     // proximityInfo and/or prevWordForBigrams may not be null.
     @Override
-    public void getWords(final WordComposer codes, final CharSequence prevWordForBigrams,
-            final WordCallback callback, final ProximityInfo proximityInfo) {
+    public ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
+            final CharSequence prevWordForBigrams, final WordCallback callback,
+            final ProximityInfo proximityInfo) {
         final int count = getSuggestions(codes, prevWordForBigrams, proximityInfo, mOutputChars,
                 mScores, mSpaceIndices);
 
@@ -167,6 +169,7 @@ public class BinaryDictionary extends Dictionary {
             }
         }
         Utils.addAllSuggestions(mDicTypeId, Dictionary.UNIGRAM, suggestions, callback);
+        return suggestions;
     }
 
     /* package for test */ boolean isValidDictionary() {

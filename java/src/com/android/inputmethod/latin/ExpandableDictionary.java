@@ -248,20 +248,22 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     @Override
-    public void getWords(final WordComposer codes, final CharSequence prevWordForBigrams,
-            final WordCallback callback, final ProximityInfo proximityInfo) {
+    public ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
+            final CharSequence prevWordForBigrams, final WordCallback callback,
+            final ProximityInfo proximityInfo) {
         synchronized (mUpdatingLock) {
             // If we need to update, start off a background task
             if (mRequiresReload) startDictionaryLoadingTaskLocked();
             // Currently updating contacts, don't return any results.
-            if (mUpdatingDictionary) return;
+            if (mUpdatingDictionary) return null;
         }
         if (codes.size() >= BinaryDictionary.MAX_WORD_LENGTH) {
-            return;
+            return null;
         }
         final ArrayList<SuggestedWordInfo> suggestions =
                 getWordsInner(codes, prevWordForBigrams, proximityInfo);
         Utils.addAllSuggestions(mDicTypeId, Dictionary.UNIGRAM, suggestions, callback);
+        return suggestions;
     }
 
     protected final ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer codes,
@@ -611,13 +613,15 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     @Override
-    public void getBigrams(final WordComposer codes, final CharSequence previousWord,
-            final WordCallback callback) {
+    public ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
+            final CharSequence previousWord, final WordCallback callback) {
         if (!reloadDictionaryIfRequired()) {
             final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
             runBigramReverseLookUp(previousWord, suggestions);
             Utils.addAllSuggestions(mDicTypeId, Dictionary.BIGRAM, suggestions, callback);
+            return suggestions;
         }
+        return null;
     }
 
     /**

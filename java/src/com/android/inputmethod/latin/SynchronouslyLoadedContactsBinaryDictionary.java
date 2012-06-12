@@ -19,7 +19,9 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class SynchronouslyLoadedContactsBinaryDictionary extends ContactsBinaryDictionary {
@@ -30,11 +32,11 @@ public class SynchronouslyLoadedContactsBinaryDictionary extends ContactsBinaryD
     }
 
     @Override
-    public synchronized void getWords(final WordComposer codes,
+    public synchronized ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
             final CharSequence prevWordForBigrams, final WordCallback callback,
             final ProximityInfo proximityInfo) {
         syncReloadDictionaryIfRequired();
-        getWordsInner(codes, prevWordForBigrams, callback, proximityInfo);
+        return getWordsInner(codes, prevWordForBigrams, callback, proximityInfo);
     }
 
     @Override

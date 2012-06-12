@@ -19,6 +19,7 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
@@ -194,13 +195,14 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     @Override
-    public void getWords(final WordComposer codes, final CharSequence prevWordForBigrams,
-            final WordCallback callback, final ProximityInfo proximityInfo) {
+    public ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
+            final CharSequence prevWordForBigrams, final WordCallback callback,
+            final ProximityInfo proximityInfo) {
         asyncReloadDictionaryIfRequired();
-        getWordsInner(codes, prevWordForBigrams, callback, proximityInfo);
+        return getWordsInner(codes, prevWordForBigrams, callback, proximityInfo);
     }
 
-    protected final void getWordsInner(final WordComposer codes,
+    protected final ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer codes,
             final CharSequence prevWordForBigrams, final WordCallback callback,
             final ProximityInfo proximityInfo) {
         // Ensure that there are no concurrent calls to getWords. If there are, do nothing and
@@ -208,32 +210,35 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         if (mLocalDictionaryController.tryLock()) {
             try {
                 if (mBinaryDictionary != null) {
-                    mBinaryDictionary.getWords(codes, prevWordForBigrams, callback, proximityInfo);
+                    return mBinaryDictionary.getWords(codes, prevWordForBigrams, callback,
+                            proximityInfo);
                 }
             } finally {
                 mLocalDictionaryController.unlock();
             }
         }
+        return null;
     }
 
     @Override
-    public void getBigrams(final WordComposer codes, final CharSequence previousWord,
-            final WordCallback callback) {
+    public ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
+            final CharSequence previousWord, final WordCallback callback) {
         asyncReloadDictionaryIfRequired();
-        getBigramsInner(codes, previousWord, callback);
+        return getBigramsInner(codes, previousWord, callback);
     }
 
-    protected void getBigramsInner(final WordComposer codes, final CharSequence previousWord,
-            final WordCallback callback) {
+    protected ArrayList<SuggestedWordInfo> getBigramsInner(final WordComposer codes,
+            final CharSequence previousWord, final WordCallback callback) {
         if (mLocalDictionaryController.tryLock()) {
             try {
                 if (mBinaryDictionary != null) {
-                    mBinaryDictionary.getBigrams(codes, previousWord, callback);
+                    return mBinaryDictionary.getBigrams(codes, previousWord, callback);
                 }
             } finally {
                 mLocalDictionaryController.unlock();
             }
         }
+        return null;
     }
 
     @Override
