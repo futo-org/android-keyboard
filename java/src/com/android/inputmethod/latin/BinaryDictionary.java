@@ -20,7 +20,9 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -125,6 +127,7 @@ public class BinaryDictionary extends Dictionary {
             count = MAX_BIGRAMS;
         }
 
+        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
         for (int j = 0; j < count; ++j) {
             if (codesSize > 0 && mBigramScores[j] < 1) break;
             final int start = j * MAX_WORD_LENGTH;
@@ -133,19 +136,22 @@ public class BinaryDictionary extends Dictionary {
                 ++len;
             }
             if (len > 0) {
-                callback.addWord(mOutputChars_bigrams, null, start, len, mBigramScores[j],
-                        mDicTypeId, Dictionary.BIGRAM);
+                suggestions.add(new SuggestedWordInfo(
+                        new String(mOutputChars_bigrams, start, len),
+                        mBigramScores[j], SuggestedWordInfo.KIND_CORRECTION));
             }
         }
+        Utils.addAllSuggestions(mDicTypeId, Dictionary.BIGRAM, suggestions, callback);
     }
 
     // proximityInfo and/or prevWordForBigrams may not be null.
     @Override
     public void getWords(final WordComposer codes, final CharSequence prevWordForBigrams,
             final WordCallback callback, final ProximityInfo proximityInfo) {
-
         final int count = getSuggestions(codes, prevWordForBigrams, proximityInfo, mOutputChars,
                 mScores, mSpaceIndices);
+
+        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
         for (int j = 0; j < count; ++j) {
             if (mScores[j] < 1) break;
             final int start = j * MAX_WORD_LENGTH;
@@ -154,10 +160,13 @@ public class BinaryDictionary extends Dictionary {
                 ++len;
             }
             if (len > 0) {
-                callback.addWord(mOutputChars, null, start, len, mScores[j], mDicTypeId,
-                        Dictionary.UNIGRAM);
+                // TODO: actually get the kind from native code
+                suggestions.add(new SuggestedWordInfo(
+                        new String(mOutputChars, start, len),
+                        mScores[j], SuggestedWordInfo.KIND_CORRECTION));
             }
         }
+        Utils.addAllSuggestions(mDicTypeId, Dictionary.UNIGRAM, suggestions, callback);
     }
 
     /* package for test */ boolean isValidDictionary() {
