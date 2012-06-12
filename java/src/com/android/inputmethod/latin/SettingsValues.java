@@ -91,7 +91,7 @@ public class SettingsValues {
     public final int mKeypressVibrationDuration;
     public final float mFxVolume;
     public final int mKeyPreviewPopupDismissDelay;
-    public final boolean mAutoCorrectEnabled;
+    private final boolean mAutoCorrectEnabled;
     public final float mAutoCorrectionThreshold;
     public final int mCorrectionMode;
     public final int mSuggestionVisibility;
