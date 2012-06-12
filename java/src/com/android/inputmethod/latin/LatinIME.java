@@ -400,8 +400,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final Resources res = getResources();
         mResources = res;
 
-        // TODO: remove the following when it's not needed by updateCorrectionMode() any more
-        mInputAttributes = new InputAttributes(null, false /* isFullscreenMode */);
         loadSettings();
 
         ImfUtils.setAdditionalInputMethodSubtypes(this, mSettingsValues.getAdditionalSubtypes());

@@ -188,7 +188,7 @@ public class SettingsValues {
 
     private int createCorrectionMode(final InputAttributes inputAttributes) {
         final boolean shouldAutoCorrect = mAutoCorrectEnabled
-                && !inputAttributes.mInputTypeNoAutoCorrect;
+                && (null == inputAttributes || !inputAttributes.mInputTypeNoAutoCorrect);
         if (mBigramSuggestionEnabled && shouldAutoCorrect) return Suggest.CORRECTION_FULL_BIGRAM;
         return shouldAutoCorrect ? Suggest.CORRECTION_FULL : Suggest.CORRECTION_NONE;
     }
