@@ -335,15 +335,16 @@ public class Suggest implements Dictionary.WordCallback {
                 for (int i = mTrailingSingleQuotesCount - 1; i >= 0; --i) {
                     sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
                 }
-                mSuggestions.add(0, new SuggestedWordInfo(
-                        sb.toString(), SuggestedWordInfo.MAX_SCORE));
+                mSuggestions.add(0, new SuggestedWordInfo(sb.toString(),
+                        SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST));
             } else {
-                mSuggestions.add(0, new SuggestedWordInfo(
-                        whitelistedWord, SuggestedWordInfo.MAX_SCORE));
+                mSuggestions.add(0, new SuggestedWordInfo(whitelistedWord,
+                        SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST));
             }
         }
 
-        mSuggestions.add(0, new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE));
+        mSuggestions.add(0, new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE,
+                SuggestedWordInfo.KIND_TYPED));
         SuggestedWordInfo.removeDups(mSuggestions);
 
         final ArrayList<SuggestedWordInfo> suggestionsList;
@@ -495,7 +496,8 @@ public class Suggest implements Dictionary.WordCallback {
         for (int i = mTrailingSingleQuotesCount - 1; i >= 0; --i) {
             sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
         }
-        suggestions.add(pos, new SuggestedWordInfo(sb, score));
+        // TODO: figure out what type of suggestion this is
+        suggestions.add(pos, new SuggestedWordInfo(sb, score, SuggestedWordInfo.KIND_CORRECTION));
         if (suggestions.size() > prefMaxSuggestions) {
             suggestions.remove(prefMaxSuggestions);
         } else {

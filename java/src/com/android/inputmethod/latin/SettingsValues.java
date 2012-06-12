@@ -173,12 +173,11 @@ public class SettingsValues {
 
     // Helper functions to create member values.
     private static SuggestedWords createSuggestPuncList(final String[] puncs) {
-        final ArrayList<SuggestedWords.SuggestedWordInfo> puncList =
-                new ArrayList<SuggestedWords.SuggestedWordInfo>();
+        final ArrayList<SuggestedWordInfo> puncList = new ArrayList<SuggestedWordInfo>();
         if (puncs != null) {
             for (final String puncSpec : puncs) {
-                puncList.add(new SuggestedWords.SuggestedWordInfo(
-                        KeySpecParser.getLabel(puncSpec), SuggestedWordInfo.MAX_SCORE));
+                puncList.add(new SuggestedWordInfo(KeySpecParser.getLabel(puncSpec),
+                        SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_HARDCODED));
             }
         }
         return new SuggestedWords(puncList,
