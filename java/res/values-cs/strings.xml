@@ -124,7 +124,7 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Aktivovat zasílání statistik užívání a zpráv o selhání"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Automatickým zasíláním statistik o užívání editoru zadávání dat a zpráv o jeho selhání do Googlu můžete přispět k vylepšení tohoto nástroje."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Motiv klávesnice"</string>
-    <string name="subtype_en_GB" msgid="88170601942311355">"angličtina (Spojené království)"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"angličtina (Velká Británie)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"angličtina (USA)"</string>
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"angličtina (VB) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"angličtina (USA) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>

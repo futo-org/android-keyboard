@@ -24,7 +24,7 @@
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Teclado de Android (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Configuración de teclado de Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opciones de entrada"</string>
-    <string name="english_ime_research_log" msgid="8492602295696577851">"Comandos regis. de inves."</string>
+    <string name="english_ime_research_log" msgid="8492602295696577851">"Comandos registro invest."</string>
     <string name="spell_checker_service_name" msgid="7338064335159755926">"Corrector ortográfico de Android"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Corrector ortográfico de Android (AOSP)"</string>
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Configuración del corrector ortográfico"</string>
@@ -112,12 +112,12 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"La entrada por voz está inhabilitada"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de entrada"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas de entrada"</string>
-    <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Marcar punto en el regis."</string>
+    <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Marcar tiempo en registro"</string>
     <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Marca tiempo registrada"</string>
     <string name="do_not_log_this_session" msgid="413762473641146336">"No registrar esta sesión"</string>
-    <string name="notify_session_log_deleting" msgid="3299507647764414623">"Eliminando regis. sesión"</string>
-    <string name="notify_session_log_deleted" msgid="8687927130100934686">"Regis. sesión eliminado"</string>
-    <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"NO se eliminó el regis."</string>
+    <string name="notify_session_log_deleting" msgid="3299507647764414623">"Eliminando registro"</string>
+    <string name="notify_session_log_deleted" msgid="8687927130100934686">"Registro sesión eliminado"</string>
+    <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"NO se eliminó el registro"</string>
     <string name="select_language" msgid="3693815588777926848">"Idiomas de entrada"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Vuelve a tocar para guardar."</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Diccionario disponible"</string>
