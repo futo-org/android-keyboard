@@ -77,27 +77,6 @@ public class ProximityInfo {
         mNativeProximityInfo = createNativeProximityInfo();
     }
 
-    // TODO: Remove this public constructor when the native part of the ProximityInfo becomes
-    // immutable.
-    // This public constructor aims only for test purpose.
-    public ProximityInfo(ProximityInfo o) {
-        mLocaleStr = o.mLocaleStr;
-        mGridWidth = o.mGridWidth;
-        mGridHeight = o.mGridHeight;
-        mGridSize = o.mGridSize;
-        mCellWidth = o.mCellWidth;
-        mCellHeight = o.mCellHeight;
-        mKeyboardMinWidth = o.mKeyboardMinWidth;
-        mKeyboardHeight = o.mKeyboardHeight;
-        mKeyHeight = o.mKeyHeight;
-        mMostCommonKeyWidth = o.mMostCommonKeyWidth;
-        mKeys = o.mKeys;
-        mTouchPositionCorrection = o.mTouchPositionCorrection;
-        mGridNeighbors = new Key[mGridSize][];
-        computeNearestNeighbors();
-        mNativeProximityInfo = createNativeProximityInfo();
-    }
-
     public static ProximityInfo createDummyProximityInfo() {
         return new ProximityInfo("", 1, 1, 1, 1, 1, 1, EMPTY_KEY_ARRAY, null);
     }
