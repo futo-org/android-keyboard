@@ -226,6 +226,11 @@ public class SettingsValues {
                 res.getBoolean(R.bool.config_default_vibration_enabled));
     }
 
+    public boolean isCorrectionOn() {
+        return mCorrectionMode == Suggest.CORRECTION_FULL
+                || mCorrectionMode == Suggest.CORRECTION_FULL_BIGRAM;
+    }
+
     public boolean isSuggestionStripVisibleInOrientation(final int orientation) {
         return (mSuggestionVisibility == SUGGESTION_VISIBILITY_SHOW_VALUE)
                 || (mSuggestionVisibility == SUGGESTION_VISIBILITY_SHOW_ONLY_PORTRAIT_VALUE

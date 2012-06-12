@@ -393,4 +393,30 @@ public class RichInputConnection {
         }
         return true;
     }
+
+    public boolean revertSwapPunctuation() {
+        // Here we test whether we indeed have a space and something else before us. This should not
+        // be needed, but it's there just in case something went wrong.
+        final CharSequence textBeforeCursor = getTextBeforeCursor(2, 0);
+        // NOTE: This does not work with surrogate pairs. Hopefully when the keyboard is able to
+        // enter surrogate pairs this code will have been removed.
+        if (TextUtils.isEmpty(textBeforeCursor)
+                || (Keyboard.CODE_SPACE != textBeforeCursor.charAt(1))) {
+            // We may only come here if the application is changing the text while we are typing.
+            // This is quite a broken case, but not logically impossible, so we shouldn't crash,
+            // but some debugging log may be in order.
+            Log.d(TAG, "Tried to revert a swap of punctuation but we didn't "
+                    + "find a space just before the cursor.");
+            return false;
+        }
+        deleteSurroundingText(2, 0);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_deleteSurroundingText(2);
+        }
+        commitText(" " + textBeforeCursor.subSequence(0, 1), 1);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_revertSwapPunctuation();
+        }
+        return true;
+    }
 }
