@@ -828,7 +828,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     @Override
     public void onExtractedTextClicked() {
-        if (isSuggestionsRequested()) return;
+        if (mCurrentSettings.isSuggestionsRequested(mDisplayOrientation)) return;
 
         super.onExtractedTextClicked();
     }
@@ -844,7 +844,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     @Override
     public void onExtractedCursorMovement(int dx, int dy) {
-        if (isSuggestionsRequested()) return;
+        if (mCurrentSettings.isSuggestionsRequested(mDisplayOrientation)) return;
 
         super.onExtractedCursorMovement(dx, dy);
     }
@@ -1449,7 +1449,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     }
                 }
             }
-            if (isSuggestionsRequested()) {
+            if (mCurrentSettings.isSuggestionsRequested(mDisplayOrientation)) {
                 restartSuggestionsOnWordBeforeCursorIfAtEndOfWord();
             }
         }
@@ -1494,7 +1494,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // thread here.
         if (!isComposingWord && (isAlphabet(primaryCode)
                 || mCurrentSettings.isSymbolExcludedFromWordSeparators(primaryCode))
-                && isSuggestionsRequested() &&
+                && mCurrentSettings.isSuggestionsRequested(mDisplayOrientation) &&
                 !mConnection.isCursorTouchingWord(mCurrentSettings)) {
             // Reset entirely the composing state anyway, then start composing a new word unless
             // the character is a single quote. The idea here is, single quote is not a
@@ -1576,7 +1576,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         sendKeyCodePoint(primaryCode);
 
         if (Keyboard.CODE_SPACE == primaryCode) {
-            if (isSuggestionsRequested()) {
+            if (mCurrentSettings.isSuggestionsRequested(mDisplayOrientation)) {
                 if (maybeDoubleSpace()) {
                     mSpaceState = SPACE_STATE_DOUBLE;
                 } else if (!isShowingPunctuationList()) {
@@ -1627,13 +1627,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             inputView.closing();
     }
 
-    public boolean isSuggestionsRequested() {
-        // TODO: move this method to mCurrentSettings
-        return mCurrentSettings.isSuggestionStripRequestedByTextField()
-                && (mCurrentSettings.isCorrectionOn()
-                || mCurrentSettings.isSuggestionStripVisibleInOrientation(mDisplayOrientation));
-    }
-
     public boolean isShowingPunctuationList() {
         if (mSuggestionsView == null) return false;
         return mCurrentSettings.mSuggestPuncList == mSuggestionsView.getSuggestions();
@@ -1648,7 +1641,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return false;
         if (mCurrentSettings.isApplicationSpecifiedCompletionsOn())
             return true;
-        return isSuggestionsRequested();
+        return mCurrentSettings.isSuggestionsRequested(mDisplayOrientation);
     }
 
     public void switchToKeyboardView() {
@@ -1697,7 +1690,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     public void updateSuggestions() {
         // Check if we have a suggestion engine attached.
-        if ((mSuggest == null || !isSuggestionsRequested())) {
+        if ((mSuggest == null || !mCurrentSettings.isSuggestionsRequested(mDisplayOrientation))) {
             if (mWordComposer.isComposingWord()) {
                 Log.w(TAG, "Called updateSuggestions but suggestions were not requested!");
                 mWordComposer.setAutoCorrection(mWordComposer.getTypedWord());
@@ -1926,7 +1919,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public void updateBigramPredictions() {
-        if (mSuggest == null || !isSuggestionsRequested())
+        if (mSuggest == null || !mCurrentSettings.isSuggestionsRequested(mDisplayOrientation))
             return;
 
         if (!mCurrentSettings.mBigramPredictionEnabled) {
@@ -2225,8 +2218,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
         final int keyboardMode = keyboard != null ? keyboard.mId.mMode : -1;
         p.println("  Keyboard mode = " + keyboardMode);
-        p.println("  mIsSuggestionsStripRequestedByTextField = "
-                + mCurrentSettings.isSuggestionStripRequestedByTextField());
+        p.println("  mIsSuggestionsSuggestionsRequested = "
+                + mCurrentSettings.isSuggestionsRequested(mDisplayOrientation));
         p.println("  mCorrectionMode=" + mCurrentSettings.mCorrectionMode);
         p.println("  isComposingWord=" + mWordComposer.isComposingWord());
         p.println("  isCorrectionOn=" + mCurrentSettings.isCorrectionOn());
