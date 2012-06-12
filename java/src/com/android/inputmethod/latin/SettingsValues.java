@@ -79,10 +79,12 @@ public class SettingsValues {
     public final int mKeyPreviewPopupDismissDelay;
     public final boolean mAutoCorrectEnabled;
     public final float mAutoCorrectionThreshold;
+    public final int mCorrectionMode;
     private final boolean mVoiceKeyEnabled;
     private final boolean mVoiceKeyOnMain;
 
-    public SettingsValues(final SharedPreferences prefs, final Context context) {
+    public SettingsValues(final SharedPreferences prefs, final InputAttributes inputAttributes,
+            final Context context) {
         final Resources res = context.getResources();
 
         // Get the resources
@@ -150,6 +152,7 @@ public class SettingsValues {
         mVoiceKeyOnMain = mVoiceMode != null && mVoiceMode.equals(voiceModeMain);
         mAdditionalSubtypes = AdditionalSubtype.createAdditionalSubtypesArray(
                 getPrefAdditionalSubtypes(prefs, res));
+        mCorrectionMode = createCorrectionMode(inputAttributes);
     }
 
     // Helper functions to create member values.
@@ -181,6 +184,13 @@ public class SettingsValues {
                     symbolsExcludedFromWordSeparators.substring(i, i + 1), "");
         }
         return wordSeparators;
+    }
+
+    private int createCorrectionMode(final InputAttributes inputAttributes) {
+        final boolean shouldAutoCorrect = mAutoCorrectEnabled
+                && !inputAttributes.mInputTypeNoAutoCorrect;
+        if (mBigramSuggestionEnabled && shouldAutoCorrect) return Suggest.CORRECTION_FULL_BIGRAM;
+        return shouldAutoCorrect ? Suggest.CORRECTION_FULL : Suggest.CORRECTION_NONE;
     }
 
     private static boolean isVibrateOn(final Context context, final SharedPreferences prefs,
