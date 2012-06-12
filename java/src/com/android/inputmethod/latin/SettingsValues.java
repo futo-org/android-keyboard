@@ -238,12 +238,8 @@ public class SettingsValues {
         return mInputAttributes.mEditorAction == EditorInfo.IME_ACTION_NEXT;
     }
 
-    private boolean isSuggestionStripRequestedByTextField() {
-        return mInputAttributes.mIsSettingsSuggestionStripOn;
-    }
-
     public boolean isSuggestionsRequested(final int displayOrientation) {
-        return isSuggestionStripRequestedByTextField()
+        return mInputAttributes.mIsSettingsSuggestionStripOn
                 && (isCorrectionOn() || isSuggestionStripVisibleInOrientation(displayOrientation));
     }
 
