@@ -40,6 +40,7 @@ import android.widget.Toast;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.latin.RichInputConnection.Range;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
@@ -614,11 +615,17 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final int composingSpanEnd, final boolean expectingUpdateSelection,
             final boolean expectingUpdateSelectionFromLogger,
             final RichInputConnection connection) {
+        String word = "";
+        if (connection != null) {
+            Range range = connection.getWordRangeAtCursor(WHITESPACE_SEPARATORS, 1);
+            if (range != null) {
+                word = range.mWord;
+            }
+        }
         final Object[] values = {
             lastSelectionStart, lastSelectionEnd, oldSelStart, oldSelEnd, newSelStart,
             newSelEnd, composingSpanStart, composingSpanEnd, expectingUpdateSelection,
-            expectingUpdateSelectionFromLogger,
-            connection.getWordRangeAtCursor(WHITESPACE_SEPARATORS, 1).mWord
+            expectingUpdateSelectionFromLogger, word
         };
         getInstance().writeEvent(EVENTKEYS_LATINIME_ONUPDATESELECTION, values);
     }
@@ -637,9 +644,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         "LatinIMEPickApplicationSpecifiedCompletion", "index", "text", "x", "y"
     };
     public static void latinIME_pickApplicationSpecifiedCompletion(final int index,
-            final CharSequence text, int x, int y) {
+            final CharSequence cs, int x, int y) {
         final Object[] values = {
-            index, text.toString(), x, y
+            index, cs, x, y
         };
         getInstance().writeEvent(EVENTKEYS_LATINIME_PICKAPPLICATIONSPECIFIEDCOMPLETION, values);
     }
@@ -650,7 +657,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void latinIME_pickSuggestionManually(final String replacedWord,
             final int index, CharSequence suggestion, int x, int y) {
         final Object[] values = {
-            replacedWord, index, suggestion.toString(), x, y
+            replacedWord, index, suggestion, x, y
         };
         getInstance().writeEvent(EVENTKEYS_LATINIME_PICKSUGGESTIONMANUALLY, values);
     }
@@ -661,7 +668,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void latinIME_punctuationSuggestion(final int index,
             final CharSequence suggestion, int x, int y) {
         final Object[] values = {
-            index, suggestion.toString(), x, y
+            index, suggestion, x, y
         };
         getInstance().writeEvent(EVENTKEYS_LATINIME_PUNCTUATIONSUGGESTION, values);
     }
@@ -773,8 +780,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (key != null) {
             CharSequence outputText = key.mOutputText;
             final Object[] values = {
-                Keyboard.printableCode(code), outputText == null ? "" : outputText.toString(),
-                x, y, ignoreModifierKey, altersCode, key.isEnabled()
+                Keyboard.printableCode(code), outputText, x, y, ignoreModifierKey, altersCode,
+                key.isEnabled()
             };
             getInstance().writeEvent(EVENTKEYS_POINTERTRACKER_CALLLISTENERONCODEINPUT, values);
         }
