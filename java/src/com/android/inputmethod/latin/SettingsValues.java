@@ -87,6 +87,9 @@ public class SettingsValues {
     private final float mKeypressSoundVolumeRawValue;
     private final InputMethodSubtype[] mAdditionalSubtypes;
 
+    // From the input box
+    private final InputAttributes mInputAttributes;
+
     // Deduced settings
     public final int mKeypressVibrationDuration;
     public final float mFxVolume;
@@ -124,6 +127,13 @@ public class SettingsValues {
         mWordSeparators = createWordSeparators(mWeakSpaceStrippers, mWeakSpaceSwappers,
                 mSymbolsExcludedFromWordSeparators, res);
         mHintToSaveText = context.getText(R.string.hint_add_to_dictionary);
+
+        // Store the input attributes
+        if (null == inputAttributes) {
+            mInputAttributes = new InputAttributes(null, false /* isFullscreenMode */);
+        } else {
+            mInputAttributes = inputAttributes;
+        }
 
         // Get the settings preferences
         mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);
@@ -167,7 +177,7 @@ public class SettingsValues {
         mVoiceKeyOnMain = mVoiceMode != null && mVoiceMode.equals(voiceModeMain);
         mAdditionalSubtypes = AdditionalSubtype.createAdditionalSubtypesArray(
                 getPrefAdditionalSubtypes(prefs, res));
-        mCorrectionMode = createCorrectionMode(inputAttributes);
+        mCorrectionMode = createCorrectionMode();
         mSuggestionVisibility = createSuggestionVisibility(res);
     }
 
@@ -202,9 +212,9 @@ public class SettingsValues {
         return wordSeparators;
     }
 
-    private int createCorrectionMode(final InputAttributes inputAttributes) {
+    private int createCorrectionMode() {
         final boolean shouldAutoCorrect = mAutoCorrectEnabled
-                && (null == inputAttributes || !inputAttributes.mInputTypeNoAutoCorrect);
+                && !mInputAttributes.mInputTypeNoAutoCorrect;
         if (mBigramSuggestionEnabled && shouldAutoCorrect) return Suggest.CORRECTION_FULL_BIGRAM;
         return shouldAutoCorrect ? Suggest.CORRECTION_FULL : Suggest.CORRECTION_NONE;
     }
@@ -224,6 +234,18 @@ public class SettingsValues {
         final boolean hasVibrator = VibratorUtils.getInstance(context).hasVibrator();
         return hasVibrator && prefs.getBoolean(Settings.PREF_VIBRATE_ON,
                 res.getBoolean(R.bool.config_default_vibration_enabled));
+    }
+
+    public boolean isApplicationSpecifiedCompletionsOn() {
+        return mInputAttributes.mApplicationSpecifiedCompletionOn;
+    }
+
+    public boolean isEditorActionNext() {
+        return mInputAttributes.mEditorAction == EditorInfo.IME_ACTION_NEXT;
+    }
+
+    public boolean isSuggestionStripRequestedByTextField() {
+        return mInputAttributes.mIsSettingsSuggestionStripOn;
     }
 
     public boolean isCorrectionOn() {
@@ -412,5 +434,10 @@ public class SettingsValues {
         map.put(locale, System.currentTimeMillis());
         final String newStr = Utils.localeAndTimeHashMapToStr(map);
         prefs.edit().putString(Settings.PREF_LAST_USER_DICTIONARY_WRITE_TIME, newStr).apply();
+    }
+
+    // For debug.
+    public String getInputAttributesDebugString() {
+        return mInputAttributes.toString();
     }
 }
