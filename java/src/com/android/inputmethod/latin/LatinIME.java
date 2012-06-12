@@ -1268,13 +1268,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 if (SPACE_STATE_PHANTOM == spaceState) {
                     commitTyped(LastComposedWord.NOT_A_SEPARATOR);
                 }
+                final int keyX, keyY;
                 final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
                 if (keyboard != null && keyboard.hasProximityCharsCorrection(primaryCode)) {
-                    handleCharacter(primaryCode, x, y, spaceState);
+                    keyX = x;
+                    keyY = y;
                 } else {
-                    handleCharacter(primaryCode, NOT_A_TOUCH_COORDINATE, NOT_A_TOUCH_COORDINATE,
-                            spaceState);
+                    keyX = NOT_A_TOUCH_COORDINATE;
+                    keyY = NOT_A_TOUCH_COORDINATE;
                 }
+                handleCharacter(primaryCode, keyX, keyY, spaceState);
             }
             mExpectingUpdateSelection = true;
             mShouldSwitchToLastSubtype = true;
@@ -1320,10 +1323,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSpaceState = SPACE_STATE_PHANTOM;
         }
         mConnection.endBatchEdit();
+        // TODO: Should handle TextUtils.CAP_MODE_CHARACTER.
+        mWordComposer.setAutoCapitalized(
+                getCurrentAutoCapsState() != Constants.TextUtils.CAP_MODE_OFF);
+    }
+
+    @Override
+    public SuggestedWords onUpdateBatchInput(InputPointers batchPointers) {
+        mWordComposer.setBatchInputPointers(batchPointers);
+        return updateSuggestionsOrPredictions();
     }
 
     @Override
     public void onEndBatchInput(CharSequence text) {
+        mWordComposer.setBatchInputWord(text);
         mConnection.beginBatchEdit();
         if (SPACE_STATE_PHANTOM == mSpaceState) {
             sendKeyCodePoint(Keyboard.CODE_SPACE);
@@ -1669,7 +1682,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     // TODO: rename this method to updateSuggestionStrip or simply updateSuggestions
-    private void updateSuggestionsOrPredictions() {
+    private SuggestedWords updateSuggestionsOrPredictions() {
         mHandler.cancelUpdateSuggestionStrip();
 
         // Check if we have a suggestion engine attached.
@@ -1679,13 +1692,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         + "requested!");
                 mWordComposer.setAutoCorrection(mWordComposer.getTypedWord());
             }
-            return;
+            return null;
         }
 
         final String typedWord = mWordComposer.getTypedWord();
         if (!mWordComposer.isComposingWord() && !mCurrentSettings.mBigramPredictionEnabled) {
             setPunctuationSuggestions();
-            return;
+            return null;
         }
 
         // Get the word on which we should search the bigrams. If we are composing a word, it's
@@ -1701,6 +1714,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         suggestedWords = maybeRetrieveOlderSuggestions(typedWord, suggestedWords);
 
         showSuggestions(suggestedWords, typedWord);
+        return suggestedWords;
     }
 
     private SuggestedWords maybeRetrieveOlderSuggestions(final CharSequence typedWord,
@@ -1761,9 +1775,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mHandler.hasPendingUpdateSuggestions()) {
             updateSuggestionsOrPredictions();
         }
-        final CharSequence autoCorrection = mWordComposer.getAutoCorrectionOrNull();
+        final CharSequence typedAutoCorrection = mWordComposer.getAutoCorrectionOrNull();
+        final String typedWord = mWordComposer.getTypedWord();
+        final CharSequence autoCorrection = (typedAutoCorrection != null)
+                ? typedAutoCorrection : typedWord;
         if (autoCorrection != null) {
-            final String typedWord = mWordComposer.getTypedWord();
             if (TextUtils.isEmpty(typedWord)) {
                 throw new RuntimeException("We have an auto-correction but the typed word "
                         + "is empty? Impossible! I must commit suicide.");
@@ -1808,7 +1824,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         mConnection.beginBatchEdit();
-        if (SPACE_STATE_PHANTOM == mSpaceState && suggestion.length() > 0) {
+        if (SPACE_STATE_PHANTOM == mSpaceState && suggestion.length() > 0
+                // In the batch input mode, a manually picked suggested word should just replace
+                // the current batch input text and there is no need for a phantom space.
+                && !mWordComposer.isBatchMode()) {
             int firstChar = Character.codePointAt(suggestion, 0);
             if ((!mCurrentSettings.isWeakSpaceStripper(firstChar))
                     && (!mCurrentSettings.isWeakSpaceSwapper(firstChar))) {

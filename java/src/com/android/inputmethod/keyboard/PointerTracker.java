@@ -22,6 +22,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.inputmethod.keyboard.internal.GestureTracker;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.ResearchLogger;
@@ -161,6 +162,9 @@ public class PointerTracker {
     private static final KeyboardActionListener EMPTY_LISTENER =
             new KeyboardActionListener.Adapter();
 
+    // Gesture tracker singleton instance
+    private static final GestureTracker sGestureTracker = GestureTracker.getInstance();
+
     public static void init(boolean hasDistinctMultitouch,
             boolean needsPhantomSuddenMoveEventHack) {
         if (hasDistinctMultitouch) {
@@ -199,6 +203,7 @@ public class PointerTracker {
         for (final PointerTracker tracker : sTrackers) {
             tracker.mListener = listener;
         }
+        GestureTracker.init(listener);
     }
 
     public static void setKeyDetector(KeyDetector keyDetector) {
@@ -207,6 +212,7 @@ public class PointerTracker {
             // Mark that keyboard layout has been changed.
             tracker.mKeyboardLayoutHasBeenChanged = true;
         }
+        sGestureTracker.setKeyboard(keyDetector.getKeyboard());
     }
 
     public static void dismissAllKeyPreviews() {
@@ -233,6 +239,9 @@ public class PointerTracker {
 
     // Returns true if keyboard has been changed by this callback.
     private boolean callListenerOnPressAndCheckKeyboardLayoutChange(Key key) {
+        if (sGestureTracker.isInGesture()) {
+            return false;
+        }
         final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
         if (DEBUG_LISTENER) {
             Log.d(TAG, "onPress    : " + KeyDetector.printableCode(key)
@@ -286,6 +295,9 @@ public class PointerTracker {
     // Note that we need primaryCode argument because the keyboard may in shifted state and the
     // primaryCode is different from {@link Key#mCode}.
     private void callListenerOnRelease(Key key, int primaryCode, boolean withSliding) {
+        if (sGestureTracker.isInGesture()) {
+            return;
+        }
         final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
         if (DEBUG_LISTENER) {
             Log.d(TAG, "onRelease  : " + Keyboard.printableCode(primaryCode)
@@ -386,7 +398,7 @@ public class PointerTracker {
             return;
         }
 
-        if (!key.noKeyPreview()) {
+        if (!key.noKeyPreview() && !sGestureTracker.isInGesture()) {
             mDrawingProxy.showKeyPreview(this);
         }
         updatePressKeyGraphics(key);
@@ -504,8 +516,8 @@ public class PointerTracker {
         }
 
         final PointerTrackerQueue queue = sPointerTrackerQueue;
+        final Key key = getKeyOn(x, y);
         if (queue != null) {
-            final Key key = getKeyOn(x, y);
             if (key != null && key.isModifier()) {
                 // Before processing a down event of modifier key, all pointers already being
                 // tracked should be released.
@@ -514,6 +526,9 @@ public class PointerTracker {
             queue.add(this);
         }
         onDownEventInternal(x, y, eventTime);
+        if (queue != null && queue.size() == 1) {
+            sGestureTracker.onDownEvent(this, x, y, eventTime, key);
+        }
     }
 
     private void onDownEventInternal(int x, int y, long eventTime) {
@@ -554,10 +569,34 @@ public class PointerTracker {
         if (mKeyAlreadyProcessed)
             return;
 
+        if (me != null) {
+            // Add historical points to gesture path.
+            final int pointerIndex = me.findPointerIndex(mPointerId);
+            final int historicalSize = me.getHistorySize();
+            for (int h = 0; h < historicalSize; h++) {
+                final int historicalX = (int)me.getHistoricalX(pointerIndex, h);
+                final int historicalY = (int)me.getHistoricalY(pointerIndex, h);
+                final long historicalTime = me.getHistoricalEventTime(h);
+                sGestureTracker.onMoveEvent(this, historicalX, historicalY, historicalTime,
+                        true /* isHistorical */, null);
+            }
+        }
+
         final int lastX = mLastX;
         final int lastY = mLastY;
         final Key oldKey = mCurrentKey;
         Key key = onMoveKey(x, y);
+
+        // Register move event on gesture tracker.
+        sGestureTracker.onMoveEvent(this, x, y, eventTime, false, key);
+        if (sGestureTracker.isInGesture()) {
+            mIgnoreModifierKey = true;
+            mTimerProxy.cancelLongPressTimer();
+            mIsInSlidingKeyInput = true;
+            mCurrentKey = null;
+            setReleasedKeyGraphics(oldKey);
+        }
+
         if (key != null) {
             if (oldKey == null) {
                 // The pointer has been slid in to the new key, but the finger was not on any keys.
@@ -607,7 +646,7 @@ public class PointerTracker {
                         if (ProductionFlag.IS_EXPERIMENTAL) {
                             ResearchLogger.pointerTracker_onMoveEvent(x, y, lastX, lastY);
                         }
-                        onUpEventInternal();
+                        onUpEventInternal(x, y, eventTime);
                         onDownEventInternal(x, y, eventTime);
                     } else {
                         // HACK: If there are currently multiple touches, register the key even if
@@ -617,7 +656,7 @@ public class PointerTracker {
                         // this hack.
                         if (me != null && me.getPointerCount() > 1
                                 && !sPointerTrackerQueue.hasModifierKeyOlderThan(this)) {
-                            onUpEventInternal();
+                            onUpEventInternal(x, y, eventTime);
                         }
                         mKeyAlreadyProcessed = true;
                         setReleasedKeyGraphics(oldKey);
@@ -647,16 +686,18 @@ public class PointerTracker {
 
         final PointerTrackerQueue queue = sPointerTrackerQueue;
         if (queue != null) {
-            if (mCurrentKey != null && mCurrentKey.isModifier()) {
-                // Before processing an up event of modifier key, all pointers already being
-                // tracked should be released.
-                queue.releaseAllPointersExcept(this, eventTime);
-            } else {
-                queue.releaseAllPointersOlderThan(this, eventTime);
+            if (!sGestureTracker.isInGesture()) {
+                if (mCurrentKey != null && mCurrentKey.isModifier()) {
+                    // Before processing an up event of modifier key, all pointers already being
+                    // tracked should be released.
+                    queue.releaseAllPointersExcept(this, eventTime);
+                } else {
+                    queue.releaseAllPointersOlderThan(this, eventTime);
+                }
             }
             queue.remove(this);
         }
-        onUpEventInternal();
+        onUpEventInternal(x, y, eventTime);
     }
 
     // Let this pointer tracker know that one of newer-than-this pointer trackers got an up event.
@@ -665,11 +706,11 @@ public class PointerTracker {
     public void onPhantomUpEvent(int x, int y, long eventTime) {
         if (DEBUG_EVENT)
             printTouchEvent("onPhntEvent:", x, y, eventTime);
-        onUpEventInternal();
+        onUpEventInternal(x, y, eventTime);
         mKeyAlreadyProcessed = true;
     }
 
-    private void onUpEventInternal() {
+    private void onUpEventInternal(int x, int y, long eventTime) {
         mTimerProxy.cancelKeyTimers();
         mIsInSlidingKeyInput = false;
         // Release the last pressed key.
@@ -678,6 +719,24 @@ public class PointerTracker {
             mDrawingProxy.dismissMoreKeysPanel();
             mIsShowingMoreKeysPanel = false;
         }
+
+        if (sGestureTracker.isInGesture()) {
+            // Register up event on gesture tracker.
+            sGestureTracker.onUpEvent(this, x, y, eventTime);
+            if (!sPointerTrackerQueue.isAnyInSlidingKeyInput()) {
+                // TODO: Calls to beginBatchInput() is missing in this class. Reorganize the code.
+                sGestureTracker.endBatchInput();
+            }
+            if (mCurrentKey != null) {
+                callListenerOnRelease(mCurrentKey, mCurrentKey.mCode, true);
+            }
+            mCurrentKey = null;
+            return;
+        } else {
+            // TODO: Calls to beginBatchInput() is missing in this class. Reorganize the code.
+            sGestureTracker.endBatchInput();
+        }
+
         if (mKeyAlreadyProcessed)
             return;
         if (mCurrentKey != null && !mCurrentKey.isRepeatable()) {
@@ -689,6 +748,8 @@ public class PointerTracker {
         onLongPressed();
         onDownEvent(x, y, SystemClock.uptimeMillis(), handler);
         mIsShowingMoreKeysPanel = true;
+        // TODO: Calls to beginBatchInput() is missing in this class. Reorganize the code.
+        sGestureTracker.abortBatchInput();
     }
 
     public void onLongPressed() {
@@ -723,7 +784,7 @@ public class PointerTracker {
     }
 
     private void startRepeatKey(Key key) {
-        if (key != null && key.isRepeatable()) {
+        if (key != null && key.isRepeatable() && !sGestureTracker.isInGesture()) {
             onRegisterKey(key);
             mTimerProxy.startKeyRepeatTimer(this);
         }
@@ -753,7 +814,7 @@ public class PointerTracker {
     }
 
     private void startLongPressTimer(Key key) {
-        if (key != null && key.isLongPressEnabled()) {
+        if (key != null && key.isLongPressEnabled() && !sGestureTracker.isInGesture()) {
             mTimerProxy.startLongPressTimer(this);
         }
     }

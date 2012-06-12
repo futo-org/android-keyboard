@@ -16,6 +16,9 @@
 
 package com.android.inputmethod.keyboard;
 
+import com.android.inputmethod.latin.InputPointers;
+import com.android.inputmethod.latin.SuggestedWords;
+
 public interface KeyboardActionListener {
 
     /**
@@ -64,13 +67,18 @@ public interface KeyboardActionListener {
      */
     public void onTextInput(CharSequence text);
 
-    // TODO: Should move this method to some more appropriate interface.
     /**
      * Called when user started batch input.
      */
     public void onStartBatchInput();
 
-    // TODO: Should move this method to some more appropriate interface.
+    /**
+     * Sends the batch input points data to get updated suggestions
+     * @param batchPointers the batch input points representing the user input
+     * @return updated suggestions that reflects the user input
+     */
+    public SuggestedWords onUpdateBatchInput(InputPointers batchPointers);
+
     /**
      * Sends a sequence of characters to the listener as batch input.
      *
@@ -100,6 +108,8 @@ public interface KeyboardActionListener {
         public void onTextInput(CharSequence text) {}
         @Override
         public void onStartBatchInput() {}
+        @Override
+        public SuggestedWords onUpdateBatchInput(InputPointers batchPointers) { return null; }
         @Override
         public void onEndBatchInput(CharSequence text) {}
         @Override
