@@ -115,8 +115,8 @@
     <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Înreg. marc. temp. jurnal"</string>
     <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Marcaj temporal înregis."</string>
     <string name="do_not_log_this_session" msgid="413762473641146336">"Nu înregistraţi sesiunea"</string>
-    <string name="notify_session_log_deleting" msgid="3299507647764414623">"Ştergere jurnal sesiune"</string>
-    <string name="notify_session_log_deleted" msgid="8687927130100934686">"Jurnal sesiune eliminat"</string>
+    <string name="notify_session_log_deleting" msgid="3299507647764414623">"Se șterge jurnal sesiune"</string>
+    <string name="notify_session_log_deleted" msgid="8687927130100934686">"Jurnal de sesiune șters"</string>
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Jurnal sesiune neşters"</string>
     <string name="select_language" msgid="3693815588777926848">"Limbi de intrare"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Atingeţi din nou pentru a salva"</string>

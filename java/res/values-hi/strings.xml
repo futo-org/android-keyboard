@@ -114,7 +114,7 @@
     <string name="language_selection_title" msgid="1651299598555326750">"इनपुट भाषा"</string>
     <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"लॉग में टाइमस्‍टैम्‍प नोट करें"</string>
     <string name="notify_recorded_timestamp" msgid="8036429032449612051">"रिकॉर्ड किया गया टाइमस्टैम्प"</string>
-    <string name="do_not_log_this_session" msgid="413762473641146336">"इस सत्र को लॉग नहीं करें"</string>
+    <string name="do_not_log_this_session" msgid="413762473641146336">"इस सत्र को लॉग न करें"</string>
     <string name="notify_session_log_deleting" msgid="3299507647764414623">"सत्र लॉग हटाया जा रहा है"</string>
     <string name="notify_session_log_deleted" msgid="8687927130100934686">"सत्र लॉग हटाया गया"</string>
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"सत्र लॉग हटाया नहीं गया"</string>
