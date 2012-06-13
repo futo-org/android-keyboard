@@ -29,6 +29,7 @@
             android:id="@+id/more_suggestions_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            latin:keyLetterSize="@dimen/suggestion_text_size"
             latin:keyLabelSize="@dimen/suggestion_text_size"
             latin:keyHintLetterRatio="@fraction/more_suggestions_info_ratio"
             latin:keyHintLetterColor="@android:color/white"
