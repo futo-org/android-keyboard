@@ -18,7 +18,7 @@ LOCAL_PATH := $(call my-dir)
 # If you change any of those flags, you need to rebuild both libjni_latinime_static
 # and the shared library.
 #FLAG_DBG := true
-#FLAG_DO_PROFILE := true
+FLAG_DO_PROFILE ?= false
 
 ######################################
 include $(CLEAR_VARS)

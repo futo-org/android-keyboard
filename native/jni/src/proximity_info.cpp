@@ -53,10 +53,10 @@ ProximityInfo::ProximityInfo(const std::string localeStr, const int maxProximity
                   && keyWidths && keyHeights && keyCharCodes && sweetSpotCenterXs
                   && sweetSpotCenterYs && sweetSpotRadii),
           mLocaleStr(localeStr) {
+    const int proximityGridLength = GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE;
     if (DEBUG_PROXIMITY_INFO) {
         AKLOGI("Create proximity info array %d", proximityGridLength);
     }
-    const int proximityGridLength = GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE;
     mProximityCharsArray = new int32_t[proximityGridLength];
     memcpy(mProximityCharsArray, proximityCharsArray,
             proximityGridLength * sizeof(mProximityCharsArray[0]));
