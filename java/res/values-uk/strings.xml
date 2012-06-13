@@ -24,7 +24,7 @@
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Клавіатура Android (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Налашт-ня клавіат. Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Парам. введення"</string>
-    <string name="english_ime_research_log" msgid="8492602295696577851">"Команди для журн.дослідж."</string>
+    <string name="english_ime_research_log" msgid="8492602295696577851">"Команди журналу дослідж."</string>
     <string name="spell_checker_service_name" msgid="7338064335159755926">"Засіб перевірки орфографії Android"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Засіб перевірки орфографії Android (AOSP)"</string>
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Налаштування перевірки орфографії"</string>
@@ -112,7 +112,7 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Голос. ввід вимкнено"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Налаштування методів введення"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Мови вводу"</string>
-    <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Указ. мітку часу в журн."</string>
+    <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Мітка часу в журналі"</string>
     <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Записана мітка часу"</string>
     <string name="do_not_log_this_session" msgid="413762473641146336">"Не реєструвати цю сесію"</string>
     <string name="notify_session_log_deleting" msgid="3299507647764414623">"Видалення журналу сесії"</string>

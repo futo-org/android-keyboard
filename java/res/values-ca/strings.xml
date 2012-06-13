@@ -24,7 +24,7 @@
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Teclat d\'Android (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Configuració del teclat d\'Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opcions d\'entrada"</string>
-    <string name="english_ime_research_log" msgid="8492602295696577851">"Recerca d\'ordres de registre"</string>
+    <string name="english_ime_research_log" msgid="8492602295696577851">"Recerca d\'ordres de reg."</string>
     <string name="spell_checker_service_name" msgid="7338064335159755926">"Corrector ortogràfic d\'Android"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Corrector ortogràfic d\'Android (AOSP)"</string>
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Configuració de la correcció ortogràfica"</string>
@@ -112,12 +112,12 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Entr. veu desactiv."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configura mètodes d\'entrada"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomes d\'entrada"</string>
-    <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Indica la marca horària al registre"</string>
-    <string name="notify_recorded_timestamp" msgid="8036429032449612051">"S\'ha enregistrat la marca horària"</string>
-    <string name="do_not_log_this_session" msgid="413762473641146336">"No registris aquesta sessió"</string>
-    <string name="notify_session_log_deleting" msgid="3299507647764414623">"S\'està suprimint el registre de la sessió"</string>
-    <string name="notify_session_log_deleted" msgid="8687927130100934686">"S\'ha suprimit el registre de la sessió"</string>
-    <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"El registre d\'aquesta sessió NO s\'ha suprimit"</string>
+    <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Indica m. horària al reg."</string>
+    <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Marca horària enregistrada"</string>
+    <string name="do_not_log_this_session" msgid="413762473641146336">"No enregistris la sessió"</string>
+    <string name="notify_session_log_deleting" msgid="3299507647764414623">"Suprimint registre de ses."</string>
+    <string name="notify_session_log_deleted" msgid="8687927130100934686">"Registre de ses. suprimit"</string>
+    <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Registre de ses. NO sup."</string>
     <string name="select_language" msgid="3693815588777926848">"Idiomes d\'entrada"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Torna a tocar per desar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Diccionari disponible"</string>
