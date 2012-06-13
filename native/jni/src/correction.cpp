@@ -908,7 +908,7 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
 
     if (DEBUG_CORRECTION_FREQ
             && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == inputLength)) {
-        DUMP_WORD(proximityInfo->getPrimaryInputWord(), inputLength);
+        DUMP_WORD(correction->getPrimaryInputWord(), inputLength);
         DUMP_WORD(correction->mWord, outputLength);
         AKLOGI("FinalFreq: [P%d, S%d, T%d, E%d, A%d] %d, %d, %d, %d, %d, %d", proximityMatchedCount,
                 skippedCount, transposedCount, excessiveCount, additionalProximityCount,
