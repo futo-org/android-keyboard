@@ -65,66 +65,70 @@ public class RichInputConnection {
         if (--mNestLevel == 0 && null != mIC) mIC.endBatchEdit();
     }
 
+    private void checkBatchEdit() {
+        if (mNestLevel != 1) {
+            // TODO: exception instead
+            Log.e(TAG, "Batch edit level incorrect : " + mNestLevel);
+            Log.e(TAG, Utils.getStackTrace(4));
+        }
+    }
+
     public void finishComposingText() {
-        if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
+        checkBatchEdit();
         if (null != mIC) mIC.finishComposingText();
     }
 
     public void commitText(final CharSequence text, final int i) {
-        if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
+        checkBatchEdit();
         if (null != mIC) mIC.commitText(text, i);
     }
 
     public int getCursorCapsMode(final int inputType) {
-        if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
         if (null == mIC) return Constants.TextUtils.CAP_MODE_OFF;
         return mIC.getCursorCapsMode(inputType);
     }
 
     public CharSequence getTextBeforeCursor(final int i, final int j) {
-        if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
         if (null != mIC) return mIC.getTextBeforeCursor(i, j);
         return null;
     }
 
     public CharSequence getTextAfterCursor(final int i, final int j) {
-        if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
         if (null != mIC) return mIC.getTextAfterCursor(i, j);
         return null;
     }
 
     public void deleteSurroundingText(final int i, final int j) {
-        if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
+        checkBatchEdit();
         if (null != mIC) mIC.deleteSurroundingText(i, j);
     }
 
     public void performEditorAction(final int actionId) {
-        if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
         if (null != mIC) mIC.performEditorAction(actionId);
     }
 
     public void sendKeyEvent(final KeyEvent keyEvent) {
-        if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
+        checkBatchEdit();
         if (null != mIC) mIC.sendKeyEvent(keyEvent);
     }
 
     public void setComposingText(final CharSequence text, final int i) {
-        if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
+        checkBatchEdit();
         if (null != mIC) mIC.setComposingText(text, i);
     }
 
     public void setSelection(final int from, final int to) {
-        if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
+        checkBatchEdit();
         if (null != mIC) mIC.setSelection(from, to);
     }
 
     public void commitCorrection(final CorrectionInfo correctionInfo) {
-        if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
+        checkBatchEdit();
         if (null != mIC) mIC.commitCorrection(correctionInfo);
     }
 
     public void commitCompletion(final CompletionInfo completionInfo) {
-        if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
+        checkBatchEdit();
         if (null != mIC) mIC.commitCompletion(completionInfo);
     }
 
@@ -316,6 +320,7 @@ public class RichInputConnection {
     }
 
     public void removeTrailingSpace() {
+        checkBatchEdit();
         final CharSequence lastOne = getTextBeforeCursor(1, 0);
         if (lastOne != null && lastOne.length() == 1
                 && lastOne.charAt(0) == Keyboard.CODE_SPACE) {
@@ -372,6 +377,7 @@ public class RichInputConnection {
     }
 
     public boolean revertDoubleSpace() {
+        checkBatchEdit();
         // Here we test whether we indeed have a period and a space before us. This should not
         // be needed, but it's there just in case something went wrong.
         final CharSequence textBeforeCursor = getTextBeforeCursor(2, 0);
@@ -395,6 +401,7 @@ public class RichInputConnection {
     }
 
     public boolean revertSwapPunctuation() {
+        checkBatchEdit();
         // Here we test whether we indeed have a space and something else before us. This should not
         // be needed, but it's there just in case something went wrong.
         final CharSequence textBeforeCursor = getTextBeforeCursor(2, 0);
