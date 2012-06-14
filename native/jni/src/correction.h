@@ -94,7 +94,7 @@ class Correction {
         }
     }
 
-    Correction(const int typedLetterMultiplier, const int fullWordMultiplier);
+    Correction() {};
     void resetCorrection();
     void initCorrection(
             const ProximityInfo *pi, const int inputLength, const int maxWordLength);
@@ -175,8 +175,6 @@ class Correction {
      private:
         static const int CODE_SPACE = ' ';
         static const int MAX_INITIAL_SCORE = 255;
-        static const int TYPED_LETTER_MULTIPLIER = 2;
-        static const int FULL_WORD_MULTIPLIER = 2;
     };
 
     // proximity info state
@@ -195,6 +193,7 @@ class Correction {
     }
 
  private:
+    DISALLOW_COPY_AND_ASSIGN(Correction);
     inline void incrementInputIndex();
     inline void incrementOutputIndex();
     inline void startToTraverseAllNodes();
@@ -206,8 +205,8 @@ class Correction {
     inline int getFinalProbabilityInternal(const int probability, unsigned short **word,
             int* wordLength, const int inputLength);
 
-    const int TYPED_LETTER_MULTIPLIER;
-    const int FULL_WORD_MULTIPLIER;
+    static const int TYPED_LETTER_MULTIPLIER = 2;
+    static const int FULL_WORD_MULTIPLIER = 2;
     const ProximityInfo *mProximityInfo;
 
     bool mUseFullEditDistance;

@@ -182,6 +182,7 @@ class WordsPriorityQueue {
     }
 
  private:
+    DISALLOW_IMPLICIT_CONSTRUCTORS(WordsPriorityQueue);
     struct wordComparator {
         bool operator ()(SuggestedWord * left, SuggestedWord * right) {
             return left->mScore > right->mScore;

@@ -49,6 +49,7 @@ class ProximityInfoState {
     /////////////////////////////////////////
     // Defined here                        //
     /////////////////////////////////////////
+    ProximityInfoState() {};
     inline const int* getProximityCharsAt(const int index) const {
         return mInputCodes + (index * MAX_PROXIMITY_CHARS_SIZE_INTERNAL);
     }
@@ -162,6 +163,7 @@ class ProximityInfoState {
     }
 
  private:
+    DISALLOW_COPY_AND_ASSIGN(ProximityInfoState);
     /////////////////////////////////////////
     // Defined in proximity_info_state.cpp //
     /////////////////////////////////////////

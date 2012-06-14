@@ -106,11 +106,6 @@ inline bool Correction::isQuote(const unsigned short c) {
 // Correction //
 ////////////////
 
-Correction::Correction(const int typedLetterMultiplier, const int fullWordMultiplier)
-        : TYPED_LETTER_MULTIPLIER(typedLetterMultiplier), FULL_WORD_MULTIPLIER(fullWordMultiplier) {
-    initEditDistance(mEditDistanceTable);
-}
-
 void Correction::resetCorrection() {
     mTotalTraverseCount = 0;
 }

@@ -38,7 +38,6 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
             AKLOGI("IN NATIVE SUGGEST Version: %d", (mDict[0] & 0xFF));
         }
     }
-    mCorrection = new Correction(typedLetterMultiplier, fullWordMultiplier);
     mWordsPriorityQueuePool = new WordsPriorityQueuePool(
             maxWords, SUB_QUEUE_MAX_WORDS, maxWordLength);
     const unsigned int headerSize = BinaryFormat::getHeaderSize(mDict);
@@ -49,7 +48,6 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
 }
 
 Dictionary::~Dictionary() {
-    delete mCorrection;
     delete mWordsPriorityQueuePool;
     delete mUnigramDictionary;
     delete mBigramDictionary;

@@ -36,6 +36,7 @@ class BigramDictionary {
     bool isValidBigram(const int32_t *word1, int length1, const int32_t *word2, int length2);
     ~BigramDictionary();
  private:
+    DISALLOW_IMPLICIT_CONSTRUCTORS(BigramDictionary);
     bool addWordBigram(unsigned short *word, int length, int frequency);
     int getBigramAddress(int *pos, bool advance);
     int getBigramFreq(int *pos);

@@ -99,6 +99,7 @@ class ProximityInfo {
     }
 
  private:
+    DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfo);
     // The max number of the keys in one keyboard layout
     static const int MAX_KEY_COUNT_IN_A_KEYBOARD = 64;
     // The upper limit of the char code in mCodeToKeyIndex

@@ -25,6 +25,7 @@ namespace latinime {
 
 class BinaryFormat {
  private:
+    DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryFormat);
     const static int32_t MINIMAL_ONE_BYTE_CHARACTER_VALUE = 0x20;
     const static int32_t CHARACTER_ARRAY_TERMINATOR = 0x1F;
     const static int MULTIPLE_BYTE_CHARACTER_ADDITIONAL_SIZE = 2;

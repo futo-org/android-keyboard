@@ -26,6 +26,7 @@ namespace latinime {
 
 class AdditionalProximityChars {
  private:
+    DISALLOW_IMPLICIT_CONSTRUCTORS(AdditionalProximityChars);
     static const std::string LOCALE_EN_US;
     static const int EN_US_ADDITIONAL_A_SIZE = 4;
     static const int32_t EN_US_ADDITIONAL_A[];
