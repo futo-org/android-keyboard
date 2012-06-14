@@ -27,9 +27,8 @@
 
 namespace latinime {
 
-BigramDictionary::BigramDictionary(const unsigned char *dict, int maxWordLength,
-        Dictionary *parentDictionary)
-    : DICT(dict), MAX_WORD_LENGTH(maxWordLength), mParentDictionary(parentDictionary) {
+BigramDictionary::BigramDictionary(const unsigned char *dict, int maxWordLength)
+        : DICT(dict), MAX_WORD_LENGTH(maxWordLength) {
     if (DEBUG_DICT) {
         AKLOGI("BigramDictionary - constructor");
     }
@@ -38,7 +37,8 @@ BigramDictionary::BigramDictionary(const unsigned char *dict, int maxWordLength,
 BigramDictionary::~BigramDictionary() {
 }
 
-bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequency) {
+bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequency,
+        const int maxBigrams, int *bigramFreq, unsigned short *bigramChars) const {
     word[length] = 0;
     if (DEBUG_DICT) {
 #ifdef FLAG_DBG
@@ -50,25 +50,25 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
 
     // Find the right insertion point
     int insertAt = 0;
-    while (insertAt < mMaxBigrams) {
-        if (frequency > mBigramFreq[insertAt] || (mBigramFreq[insertAt] == frequency
-                && length < Dictionary::wideStrLen(mBigramChars + insertAt * MAX_WORD_LENGTH))) {
+    while (insertAt < maxBigrams) {
+        if (frequency > bigramFreq[insertAt] || (bigramFreq[insertAt] == frequency
+                && length < Dictionary::wideStrLen(bigramChars + insertAt * MAX_WORD_LENGTH))) {
             break;
         }
         insertAt++;
     }
     if (DEBUG_DICT) {
-        AKLOGI("Bigram: InsertAt -> %d maxBigrams: %d", insertAt, mMaxBigrams);
+        AKLOGI("Bigram: InsertAt -> %d maxBigrams: %d", insertAt, maxBigrams);
     }
-    if (insertAt < mMaxBigrams) {
-        memmove((char*) mBigramFreq + (insertAt + 1) * sizeof(mBigramFreq[0]),
-               (char*) mBigramFreq + insertAt * sizeof(mBigramFreq[0]),
-               (mMaxBigrams - insertAt - 1) * sizeof(mBigramFreq[0]));
-        mBigramFreq[insertAt] = frequency;
-        memmove((char*) mBigramChars + (insertAt + 1) * MAX_WORD_LENGTH * sizeof(short),
-               (char*) mBigramChars + (insertAt    ) * MAX_WORD_LENGTH * sizeof(short),
-               (mMaxBigrams - insertAt - 1) * sizeof(short) * MAX_WORD_LENGTH);
-        unsigned short *dest = mBigramChars + (insertAt    ) * MAX_WORD_LENGTH;
+    if (insertAt < maxBigrams) {
+        memmove((char*) bigramFreq + (insertAt + 1) * sizeof(bigramFreq[0]),
+               (char*) bigramFreq + insertAt * sizeof(bigramFreq[0]),
+               (maxBigrams - insertAt - 1) * sizeof(bigramFreq[0]));
+        bigramFreq[insertAt] = frequency;
+        memmove((char*) bigramChars + (insertAt + 1) * MAX_WORD_LENGTH * sizeof(short),
+               (char*) bigramChars + (insertAt    ) * MAX_WORD_LENGTH * sizeof(short),
+               (maxBigrams - insertAt - 1) * sizeof(short) * MAX_WORD_LENGTH);
+        unsigned short *dest = bigramChars + (insertAt    ) * MAX_WORD_LENGTH;
         while (length--) {
             *dest++ = *word++;
         }
@@ -84,7 +84,7 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
 /* Parameters :
  * prevWord: the word before, the one for which we need to look up bigrams.
  * prevWordLength: its length.
- * codes: what user typed, in the same format as for UnigramDictionary::getSuggestions.
+ * inputCodes: what user typed, in the same format as for UnigramDictionary::getSuggestions.
  * codesSize: the size of the codes array.
  * bigramChars: an array for output, at the same format as outwords for getSuggestions.
  * bigramFreq: an array to output frequencies.
@@ -98,15 +98,11 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
  * and the bigrams are used to boost unigram result scores, it makes little sense to
  * reduce their scope to the ones that match the first letter.
  */
-int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, int *codes,
+int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, int *inputCodes,
         int codesSize, unsigned short *bigramChars, int *bigramFreq, int maxWordLength,
-        int maxBigrams) {
+        int maxBigrams) const {
     // TODO: remove unused arguments, and refrain from storing stuff in members of this class
     // TODO: have "in" arguments before "out" ones, and make out args explicit in the name
-    mBigramFreq = bigramFreq;
-    mBigramChars = bigramChars;
-    mInputCodes = codes;
-    mMaxBigrams = maxBigrams;
 
     const uint8_t* const root = DICT;
     int pos = getBigramListPositionForWord(prevWord, prevWordLength);
@@ -124,16 +120,17 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
                 bigramBuffer, &unigramFreq);
 
         // codesSize == 0 means we are trying to find bigram predictions.
-        if (codesSize < 1 || checkFirstCharacter(bigramBuffer)) {
-            const int bigramFreq = UnigramDictionary::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
+        if (codesSize < 1 || checkFirstCharacter(bigramBuffer, inputCodes)) {
+            const int bigramFreqTemp = UnigramDictionary::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
             // Due to space constraints, the frequency for bigrams is approximate - the lower the
             // unigram frequency, the worse the precision. The theoritical maximum error in
             // resulting frequency is 8 - although in the practice it's never bigger than 3 or 4
             // in very bad cases. This means that sometimes, we'll see some bigrams interverted
             // here, but it can't get too bad.
             const int frequency =
-                    BinaryFormat::computeFrequencyForBigram(unigramFreq, bigramFreq);
-            if (addWordBigram(bigramBuffer, length, frequency)) {
+                    BinaryFormat::computeFrequencyForBigram(unigramFreq, bigramFreqTemp);
+            if (addWordBigram(
+                    bigramBuffer, length, frequency, maxBigrams, bigramFreq, bigramChars)) {
                 ++bigramCount;
             }
         }
@@ -144,7 +141,7 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
 // Returns a pointer to the start of the bigram list.
 // If the word is not found or has no bigrams, this function returns 0.
 int BigramDictionary::getBigramListPositionForWord(const int32_t *prevWord,
-        const int prevWordLength) {
+        const int prevWordLength) const {
     if (0 >= prevWordLength) return 0;
     const uint8_t* const root = DICT;
     int pos = BinaryFormat::getTerminalPosition(root, prevWord, prevWordLength);
@@ -164,7 +161,7 @@ int BigramDictionary::getBigramListPositionForWord(const int32_t *prevWord,
 }
 
 void BigramDictionary::fillBigramAddressToFrequencyMapAndFilter(const int32_t *prevWord,
-        const int prevWordLength, std::map<int, int> *map, uint8_t *filter) {
+        const int prevWordLength, std::map<int, int> *map, uint8_t *filter) const {
     memset(filter, 0, BIGRAM_FILTER_BYTE_SIZE);
     const uint8_t* const root = DICT;
     int pos = getBigramListPositionForWord(prevWord, prevWordLength);
@@ -181,11 +178,10 @@ void BigramDictionary::fillBigramAddressToFrequencyMapAndFilter(const int32_t *p
     } while (0 != (UnigramDictionary::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags));
 }
 
-bool BigramDictionary::checkFirstCharacter(unsigned short *word) {
+bool BigramDictionary::checkFirstCharacter(unsigned short *word, int *inputCodes) const {
     // Checks whether this word starts with same character or neighboring characters of
     // what user typed.
 
-    int *inputCodes = mInputCodes;
     int maxAlt = MAX_ALTERNATIVES;
     const unsigned short firstBaseChar = toBaseLowerCase(*word);
     while (maxAlt > 0) {
@@ -199,7 +195,7 @@ bool BigramDictionary::checkFirstCharacter(unsigned short *word) {
 }
 
 bool BigramDictionary::isValidBigram(const int32_t *word1, int length1, const int32_t *word2,
-        int length2) {
+        int length2) const {
     const uint8_t* const root = DICT;
     int pos = getBigramListPositionForWord(word1, length1);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams

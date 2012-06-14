@@ -170,12 +170,13 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
 // bigramFilter is a bloom filter for fast rejection: see functions setInFilter and isInFilter
 // in bigram_dictionary.cpp
 int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
-        WordsPriorityQueuePool *queuePool, const int *xcoordinates,
+        const int *xcoordinates,
         const int *ycoordinates, const int *codes, const int codesSize,
         const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
         const bool useFullEditDistance, unsigned short *outWords, int *frequencies) const {
 
-    queuePool->clearAll();
+    WordsPriorityQueuePool queuePool(MAX_WORDS, SUB_QUEUE_MAX_WORDS, MAX_WORD_LENGTH);
+    queuePool.clearAll();
     Correction masterCorrection;
     masterCorrection.resetCorrection();
     if (BinaryFormat::REQUIRES_GERMAN_UMLAUT_PROCESSING & FLAGS)
@@ -186,7 +187,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
                 xCoordinatesBuffer, yCoordinatesBuffer, codesSize, bigramMap, bigramFilter,
                 useFullEditDistance, codes, codesSize, 0, codesBuffer, &masterCorrection,
-                queuePool, GERMAN_UMLAUT_DIGRAPHS,
+                &queuePool, GERMAN_UMLAUT_DIGRAPHS,
                 sizeof(GERMAN_UMLAUT_DIGRAPHS) / sizeof(GERMAN_UMLAUT_DIGRAPHS[0]));
     } else if (BinaryFormat::REQUIRES_FRENCH_LIGATURES_PROCESSING & FLAGS) {
         int codesBuffer[getCodesBufferSize(codes, codesSize)];
@@ -195,26 +196,26 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
                 xCoordinatesBuffer, yCoordinatesBuffer, codesSize, bigramMap, bigramFilter,
                 useFullEditDistance, codes, codesSize, 0, codesBuffer, &masterCorrection,
-                queuePool, FRENCH_LIGATURES_DIGRAPHS,
+                &queuePool, FRENCH_LIGATURES_DIGRAPHS,
                 sizeof(FRENCH_LIGATURES_DIGRAPHS) / sizeof(FRENCH_LIGATURES_DIGRAPHS[0]));
     } else { // Normal processing
         getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, codesSize,
-                bigramMap, bigramFilter, useFullEditDistance, &masterCorrection, queuePool);
+                bigramMap, bigramFilter, useFullEditDistance, &masterCorrection, &queuePool);
     }
 
     PROF_START(20);
     if (DEBUG_DICT) {
-        float ns = queuePool->getMasterQueue()->getHighestNormalizedScore(
+        float ns = queuePool.getMasterQueue()->getHighestNormalizedScore(
                 masterCorrection.getPrimaryInputWord(), codesSize, 0, 0, 0);
         ns += 0;
         AKLOGI("Max normalized score = %f", ns);
     }
     const int suggestedWordsCount =
-            queuePool->getMasterQueue()->outputSuggestions(
+            queuePool.getMasterQueue()->outputSuggestions(
                     masterCorrection.getPrimaryInputWord(), codesSize, frequencies, outWords);
 
     if (DEBUG_DICT) {
-        float ns = queuePool->getMasterQueue()->getHighestNormalizedScore(
+        float ns = queuePool.getMasterQueue()->getHighestNormalizedScore(
                 masterCorrection.getPrimaryInputWord(), codesSize, 0, 0, 0);
         ns += 0;
         AKLOGI("Returning %d words", suggestedWordsCount);

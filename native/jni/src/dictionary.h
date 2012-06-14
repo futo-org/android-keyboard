@@ -35,28 +35,28 @@ class Dictionary {
 
     int getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
             int *codes, int codesSize, const int32_t* prevWordChars, const int prevWordLength,
-            bool useFullEditDistance, unsigned short *outWords, int *frequencies) {
+            bool useFullEditDistance, unsigned short *outWords, int *frequencies) const {
         std::map<int, int> bigramMap;
         uint8_t bigramFilter[BIGRAM_FILTER_BYTE_SIZE];
         mBigramDictionary->fillBigramAddressToFrequencyMapAndFilter(prevWordChars,
                 prevWordLength, &bigramMap, bigramFilter);
-        return mUnigramDictionary->getSuggestions(proximityInfo, mWordsPriorityQueuePool,
+        return mUnigramDictionary->getSuggestions(proximityInfo,
                 xcoordinates, ycoordinates, codes, codesSize, &bigramMap,
                 bigramFilter, useFullEditDistance, outWords, frequencies);
     }
 
     int getBigrams(const int32_t *word, int length, int *codes, int codesSize,
-            unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams) {
+            unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams) const {
         return mBigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies,
                 maxWordLength, maxBigrams);
     }
 
-    int getFrequency(const int32_t *word, int length);
-    bool isValidBigram(const int32_t *word1, int length1, const int32_t *word2, int length2);
-    void *getDict() { return (void *)mDict; }
-    int getDictSize() { return mDictSize; }
-    int getMmapFd() { return mMmapFd; }
-    int getDictBufAdjust() { return mDictBufAdjust; }
+    int getFrequency(const int32_t *word, int length) const;
+    bool isValidBigram(const int32_t *word1, int length1, const int32_t *word2, int length2) const;
+    void *getDict() const { return (void *)mDict; }
+    int getDictSize() const { return mDictSize; }
+    int getMmapFd() const { return mMmapFd; }
+    int getDictBufAdjust() const { return mDictBufAdjust; }
     ~Dictionary();
 
     // public static utility methods
@@ -74,8 +74,7 @@ class Dictionary {
     const int mDictBufAdjust;
 
     const UnigramDictionary *mUnigramDictionary;
-    BigramDictionary *mBigramDictionary;
-    WordsPriorityQueuePool *mWordsPriorityQueuePool;
+    const BigramDictionary *mBigramDictionary;
 };
 
 // public static utility methods
