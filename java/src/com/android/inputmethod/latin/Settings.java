@@ -149,10 +149,13 @@ public class Settings extends InputMethodSettingsFragment
             generalSettings.removePreference(mVoicePreference);
         }
 
+        final PreferenceGroup advancedSettings =
+                (PreferenceGroup) findPreference(PREF_ADVANCED_SETTINGS);
+        // Remove those meaningless options for now. TODO: delete them for good
+        advancedSettings.removePreference(findPreference(PREF_BIGRAM_SUGGESTION));
+        advancedSettings.removePreference(findPreference(PREF_KEY_ENABLE_SPAN_INSERT));
         if (!VibratorUtils.getInstance(context).hasVibrator()) {
             generalSettings.removePreference(findPreference(PREF_VIBRATE_ON));
-            final PreferenceGroup advancedSettings =
-                    (PreferenceGroup) findPreference(PREF_ADVANCED_SETTINGS);
             if (null != advancedSettings) { // Theoretically advancedSettings cannot be null
                 advancedSettings.removePreference(findPreference(PREF_VIBRATION_DURATION_SETTINGS));
             }
