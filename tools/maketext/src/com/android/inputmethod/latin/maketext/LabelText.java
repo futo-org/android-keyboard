@@ -58,7 +58,7 @@ public class LabelText {
 
     public static void main(final String[] args) {
         final Options options = new Options(args);
-        final JarFile jar = JarUtils.getJarFile(LabelText.class.getClassLoader());
+        final JarFile jar = JarUtils.getJarFile(LabelText.class);
         final MoreKeysResources resources = new MoreKeysResources(jar);
         resources.writeToJava(options.mJava);
     }

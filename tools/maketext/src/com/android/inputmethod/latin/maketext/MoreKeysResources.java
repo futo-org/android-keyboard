@@ -100,7 +100,7 @@ public class MoreKeysResources {
                 final File outputFile = new File(outPackage,
                         JAVA_TEMPLATE.replace(".tmpl", ".java"));
                 outPackage.mkdirs();
-                ps = new PrintStream(outputFile);
+                ps = new PrintStream(outputFile, "UTF-8");
             }
             lnr = new LineNumberReader(new InputStreamReader(JarUtils.openResource(template)));
             inflateTemplate(lnr, ps);
