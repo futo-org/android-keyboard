@@ -292,6 +292,14 @@ template<typename T> inline T max(T a, T b) { return a > b ? a : b; }
 #define INPUTLENGTH_FOR_DEBUG -1
 #define MIN_OUTPUT_INDEX_FOR_DEBUG -1
 
+#define DISALLOW_COPY_AND_ASSIGN(TypeName) \
+  TypeName(const TypeName&);               \
+  void operator=(const TypeName&)
+
+#define DISALLOW_IMPLICIT_CONSTRUCTORS(TypeName) \
+  TypeName();                                    \
+  DISALLOW_COPY_AND_ASSIGN(TypeName)
+
 // Used as a return value for character comparison
 typedef enum {
     // Same char, possibly with different case or accent

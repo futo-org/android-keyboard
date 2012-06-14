@@ -62,6 +62,7 @@ class TerminalAttributes {
     };
 
  private:
+    DISALLOW_IMPLICIT_CONSTRUCTORS(TerminalAttributes);
     const uint8_t* const mDict;
     const uint8_t mFlags;
     const int mStartPos;

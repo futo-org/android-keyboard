@@ -21,7 +21,6 @@
 
 #include "bigram_dictionary.h"
 #include "char_utils.h"
-#include "correction.h"
 #include "defines.h"
 #include "proximity_info.h"
 #include "unigram_dictionary.h"
@@ -42,7 +41,7 @@ class Dictionary {
         mBigramDictionary->fillBigramAddressToFrequencyMapAndFilter(prevWordChars,
                 prevWordLength, &bigramMap, bigramFilter);
         return mUnigramDictionary->getSuggestions(proximityInfo, mWordsPriorityQueuePool,
-                mCorrection, xcoordinates, ycoordinates, codes, codesSize, &bigramMap,
+                xcoordinates, ycoordinates, codes, codesSize, &bigramMap,
                 bigramFilter, useFullEditDistance, outWords, frequencies);
     }
 
@@ -65,6 +64,7 @@ class Dictionary {
     static int wideStrLen(unsigned short *str);
 
  private:
+    DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);
     const unsigned char *mDict;
 
     // Used only for the mmap version of dictionary loading, but we use these as dummy variables
@@ -73,10 +73,9 @@ class Dictionary {
     const int mMmapFd;
     const int mDictBufAdjust;
 
-    UnigramDictionary *mUnigramDictionary;
+    const UnigramDictionary *mUnigramDictionary;
     BigramDictionary *mBigramDictionary;
     WordsPriorityQueuePool *mWordsPriorityQueuePool;
-    Correction *mCorrection;
 };
 
 // public static utility methods

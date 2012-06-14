@@ -78,13 +78,14 @@ class UnigramDictionary {
     int getFrequency(const int32_t* const inWord, const int length) const;
     int getBigramPosition(int pos, unsigned short *word, int offset, int length) const;
     int getSuggestions(ProximityInfo *proximityInfo, WordsPriorityQueuePool *queuePool,
-            Correction *correction, const int *xcoordinates, const int *ycoordinates,
+            const int *xcoordinates, const int *ycoordinates,
             const int *codes, const int codesSize, const std::map<int, int> *bigramMap,
             const uint8_t *bigramFilter, const bool useFullEditDistance, unsigned short *outWords,
             int *frequencies) const;
     virtual ~UnigramDictionary();
 
  private:
+    DISALLOW_IMPLICIT_CONSTRUCTORS(UnigramDictionary);
     void getWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int inputLength,
             const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,

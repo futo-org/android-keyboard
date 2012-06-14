@@ -170,14 +170,14 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
 // bigramFilter is a bloom filter for fast rejection: see functions setInFilter and isInFilter
 // in bigram_dictionary.cpp
 int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
-        WordsPriorityQueuePool *queuePool, Correction *correction, const int *xcoordinates,
+        WordsPriorityQueuePool *queuePool, const int *xcoordinates,
         const int *ycoordinates, const int *codes, const int codesSize,
         const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
         const bool useFullEditDistance, unsigned short *outWords, int *frequencies) const {
 
     queuePool->clearAll();
-    Correction* masterCorrection = correction;
-    correction->resetCorrection();
+    Correction masterCorrection;
+    masterCorrection.resetCorrection();
     if (BinaryFormat::REQUIRES_GERMAN_UMLAUT_PROCESSING & FLAGS)
     { // Incrementally tune the word and try all possibilities
         int codesBuffer[getCodesBufferSize(codes, codesSize)];
@@ -185,7 +185,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
         int yCoordinatesBuffer[codesSize];
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
                 xCoordinatesBuffer, yCoordinatesBuffer, codesSize, bigramMap, bigramFilter,
-                useFullEditDistance, codes, codesSize, 0, codesBuffer, masterCorrection,
+                useFullEditDistance, codes, codesSize, 0, codesBuffer, &masterCorrection,
                 queuePool, GERMAN_UMLAUT_DIGRAPHS,
                 sizeof(GERMAN_UMLAUT_DIGRAPHS) / sizeof(GERMAN_UMLAUT_DIGRAPHS[0]));
     } else if (BinaryFormat::REQUIRES_FRENCH_LIGATURES_PROCESSING & FLAGS) {
@@ -194,28 +194,28 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
         int yCoordinatesBuffer[codesSize];
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
                 xCoordinatesBuffer, yCoordinatesBuffer, codesSize, bigramMap, bigramFilter,
-                useFullEditDistance, codes, codesSize, 0, codesBuffer, masterCorrection,
+                useFullEditDistance, codes, codesSize, 0, codesBuffer, &masterCorrection,
                 queuePool, FRENCH_LIGATURES_DIGRAPHS,
                 sizeof(FRENCH_LIGATURES_DIGRAPHS) / sizeof(FRENCH_LIGATURES_DIGRAPHS[0]));
     } else { // Normal processing
         getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, codesSize,
-                bigramMap, bigramFilter, useFullEditDistance, masterCorrection, queuePool);
+                bigramMap, bigramFilter, useFullEditDistance, &masterCorrection, queuePool);
     }
 
     PROF_START(20);
     if (DEBUG_DICT) {
         float ns = queuePool->getMasterQueue()->getHighestNormalizedScore(
-                correction->getPrimaryInputWord(), codesSize, 0, 0, 0);
+                masterCorrection.getPrimaryInputWord(), codesSize, 0, 0, 0);
         ns += 0;
         AKLOGI("Max normalized score = %f", ns);
     }
     const int suggestedWordsCount =
             queuePool->getMasterQueue()->outputSuggestions(
-                    correction->getPrimaryInputWord(), codesSize, frequencies, outWords);
+                    masterCorrection.getPrimaryInputWord(), codesSize, frequencies, outWords);
 
     if (DEBUG_DICT) {
         float ns = queuePool->getMasterQueue()->getHighestNormalizedScore(
-                correction->getPrimaryInputWord(), codesSize, 0, 0, 0);
+                masterCorrection.getPrimaryInputWord(), codesSize, 0, 0, 0);
         ns += 0;
         AKLOGI("Returning %d words", suggestedWordsCount);
         /// Print the returned words
