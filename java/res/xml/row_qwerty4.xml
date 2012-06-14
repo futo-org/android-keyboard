@@ -36,9 +36,8 @@
             <case
                 latin:languageCode="ar|fa"
             >
-                <!-- U+064B: "ً" ARABIC FATHATAN -->
                 <Key
-                    latin:keyHintLabel="&#x064B;"
+                    latin:keyHintLabel="!text/keyhintlabel_for_arabic_diacritics"
                     latin:keyLabelFlags="hasPopupHint|hasShiftedLetterHint"
                     latin:moreKeys="!text/more_keys_for_arabic_diacritics"
                     latin:keyStyle="punctuationKeyStyle" />
