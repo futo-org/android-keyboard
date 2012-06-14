@@ -884,5 +884,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         super.onDetachedFromWindow();
         mHandler.cancelAllMessages();
         hidePreview();
+        dismissMoreSuggestions();
     }
 }
