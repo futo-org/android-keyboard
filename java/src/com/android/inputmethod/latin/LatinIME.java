@@ -2053,12 +2053,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // showSuggestions will retrieve the word near the cursor, we don't want that here)
             showSuggestions(suggestedWords, "");
         } else {
-            if (!isShowingPunctuationList()) setPunctuationSuggestions();
+            clearSuggestions();
         }
     }
 
     public void setPunctuationSuggestions() {
-        setSuggestions(mSettingsValues.mSuggestPuncList, false);
+        if (mSettingsValues.mBigramPredictionEnabled) {
+            clearSuggestions();
+        } else {
+            setSuggestions(mSettingsValues.mSuggestPuncList, false);
+        }
         setAutoCorrectionIndicator(false);
         setSuggestionStripShown(isSuggestionsStripVisible());
     }

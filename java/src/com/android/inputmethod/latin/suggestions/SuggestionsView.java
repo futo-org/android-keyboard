@@ -670,7 +670,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
     }
 
     public void setSuggestions(SuggestedWords suggestedWords) {
-        if (suggestedWords == null || suggestedWords.size() == 0)
+        if (suggestedWords == null)
             return;
 
         clear();
