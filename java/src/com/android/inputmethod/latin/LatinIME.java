@@ -2089,10 +2089,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             } else {
                 secondWord = suggestion.toString();
             }
-            // We demote unrecognized word and words with 0-frequency (assuming they would be
-            // profanity etc.) by specifying them as "invalid".
+            // We demote unrecognized words (frequency < 0, below) by specifying them as "invalid".
+            // We don't add words with 0-frequency (assuming they would be profanity etc.).
             final int maxFreq = AutoCorrection.getMaxFrequency(
                     mSuggest.getUnigramDictionaries(), suggestion);
+            if (maxFreq == 0) return null;
             mUserHistoryDictionary.addToUserHistory(null == prevWord ? null : prevWord.toString(),
                     secondWord, maxFreq > 0);
             return prevWord;
