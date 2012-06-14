@@ -872,7 +872,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.latinIME_onDisplayCompletions(applicationSpecifiedCompletions);
         }
-        if (mInputAttributes.mApplicationSpecifiedCompletionOn) {
+        if (null != mInputAttributes && mInputAttributes.mApplicationSpecifiedCompletionOn) {
             mApplicationSpecifiedCompletions = applicationSpecifiedCompletions;
             if (applicationSpecifiedCompletions == null) {
                 clearSuggestions();
@@ -1628,7 +1628,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     public boolean isSuggestionsRequested() {
         // TODO: move this method to mSettingsValues
-        return mInputAttributes.mIsSettingsSuggestionStripOn
+        return (null != mInputAttributes && mInputAttributes.mIsSettingsSuggestionStripOn)
                 && (mCurrentSettings.isCorrectionOn() || isShowingSuggestionsStrip());
     }
 
@@ -1648,7 +1648,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return true;
         if (!isShowingSuggestionsStrip())
             return false;
-        if (mInputAttributes.mApplicationSpecifiedCompletionOn)
+        if (null != mInputAttributes && mInputAttributes.mApplicationSpecifiedCompletionOn)
             return true;
         return isSuggestionsRequested();
     }
@@ -1830,7 +1830,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
 
-        if (mInputAttributes.mApplicationSpecifiedCompletionOn
+        if ((null != mInputAttributes && mInputAttributes.mApplicationSpecifiedCompletionOn)
                 && mApplicationSpecifiedCompletions != null
                 && index >= 0 && index < mApplicationSpecifiedCompletions.length) {
             if (mSuggestionsView != null) {
