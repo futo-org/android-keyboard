@@ -151,8 +151,8 @@ public class SettingsValues {
                 && isBigramSuggestionEnabled(prefs, res, mAutoCorrectEnabled);
         mBigramPredictionEnabled = mBigramSuggestionEnabled
                 && isBigramPredictionEnabled(prefs, res);
-        mEnableSuggestionSpanInsertion =
-                prefs.getBoolean(Settings.PREF_KEY_ENABLE_SPAN_INSERT, true);
+        // TODO: remove mEnableSuggestionSpanInsertion. It's always true.
+        mEnableSuggestionSpanInsertion = true;
         mVibrationDurationSettingsRawValue =
                 prefs.getInt(Settings.PREF_VIBRATION_DURATION_SETTINGS, -1);
         mKeypressSoundVolumeRawValue = prefs.getFloat(Settings.PREF_KEYPRESS_SOUND_VOLUME, -1.0f);
@@ -288,13 +288,8 @@ public class SettingsValues {
 
     private static boolean isBigramSuggestionEnabled(final SharedPreferences sp,
             final Resources resources, final boolean autoCorrectEnabled) {
-        final boolean showBigramSuggestionsOption = resources.getBoolean(
-                R.bool.config_enable_next_word_suggestions_option);
-        if (!showBigramSuggestionsOption) {
-            return autoCorrectEnabled;
-        }
-        return sp.getBoolean(Settings.PREF_BIGRAM_SUGGESTION, resources.getBoolean(
-                R.bool.config_default_next_word_suggestions));
+        // TODO: remove this method. Bigram suggestion is always true.
+        return true;
     }
 
     private static boolean isBigramPredictionEnabled(final SharedPreferences sp,
