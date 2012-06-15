@@ -41,15 +41,15 @@
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Diğer giriş yöntemine geç"</string>
     <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Dil geçiş tuşu diğer giriş yöntemlerini de kapsar"</string>
     <string name="suppress_language_switch_key" msgid="8003788410354806368">"Dil geçiş tuşunu gösterme"</string>
-    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Tuş popup içn kaptm ertlm"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Tuş popup\'ının kapatılmasını geciktirme"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Gecikme yok"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Varsayılan"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Kişi Adları öner"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Öneri ve düzeltmeler için Kişiler\'deki adları kullan"</string>
     <string name="enable_span_insert" msgid="7204653105667167620">"Düzeltmeleri etkinleştir"</string>
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"Yeniden düzeltmeler için önerileri ayarla"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Otomatik olarak büyük harf yap"</string>
-    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Ekli sözlükler"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Otomatik olarak büyük fark yap"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Ek sözlükler"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Ana sözlük"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Düzeltme önerilerini göster"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Yazarken, önerilen kelimeleri görüntüle"</string>
@@ -57,7 +57,7 @@
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Dikey modda göster"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Her zaman gizle"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Otomatik düzeltme"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"Boşluk çbğ ve nokt işr yanlış yazılan kelimeleri oto düzeltir"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Boşluk tuşu ve noktalama işaretleri yanlış yazılan kelimeleri otomatikman düzeltir"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Kapalı"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Ölçülü"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agresif"</string>
@@ -107,7 +107,7 @@
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Ana klavyede"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Simge klavyesinde"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Kapalı"</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Ana klavyede mikrfn"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Ana klavyedeki mikrofon"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Simge klavysnd mikrf"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Sesle grş devre dışı"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Giriş yöntemlerini yapılandır"</string>
