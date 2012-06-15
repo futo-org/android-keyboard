@@ -105,6 +105,7 @@
             latin:languageCode="fa"
         >
             <!-- U+FDFC: "﷼" RIAL SIGN
+                 U+060B: "؋" AFGHANI SIGN
                  U+00A3: "£" POUND SIGN
                  U+20AC: "€" EURO SIGN
                  U+00A2: "¢" CENT SIGN -->
@@ -112,20 +113,20 @@
             <key-style
                 latin:styleName="currencyKeyStyle"
                 latin:keyLabel="&#xFDFC;"
-                latin:moreKeys="!text/more_keys_for_currency_general" />
+                latin:moreKeys="!text/more_keys_for_currency_general,&#x060B;" />
             <key-style
                 latin:styleName="moreCurrency1KeyStyle"
-                latin:keyLabel="£" />
+                latin:keyLabel="&#x00A3;" />
             <key-style
                 latin:styleName="moreCurrency2KeyStyle"
-                latin:keyLabel="€" />
+                latin:keyLabel="&#x20AC;" />
             <key-style
                 latin:styleName="moreCurrency3KeyStyle"
                 latin:keyLabel="$"
-                latin:moreKeys="¢" />
+                latin:moreKeys="&#x00A2;" />
             <key-style
                 latin:styleName="moreCurrency4KeyStyle"
-                latin:keyLabel="¢" />
+                latin:keyLabel="&#x00A2;" />
         </case>
         <!-- United Kingdom -->
         <case
