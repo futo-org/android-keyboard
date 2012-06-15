@@ -38,27 +38,24 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
             AKLOGI("IN NATIVE SUGGEST Version: %d", (mDict[0] & 0xFF));
         }
     }
-    mWordsPriorityQueuePool = new WordsPriorityQueuePool(
-            maxWords, SUB_QUEUE_MAX_WORDS, maxWordLength);
     const unsigned int headerSize = BinaryFormat::getHeaderSize(mDict);
     const unsigned int options = BinaryFormat::getFlags(mDict);
     mUnigramDictionary = new UnigramDictionary(mDict + headerSize, typedLetterMultiplier,
             fullWordMultiplier, maxWordLength, maxWords, options);
-    mBigramDictionary = new BigramDictionary(mDict + headerSize, maxWordLength, this);
+    mBigramDictionary = new BigramDictionary(mDict + headerSize, maxWordLength);
 }
 
 Dictionary::~Dictionary() {
-    delete mWordsPriorityQueuePool;
     delete mUnigramDictionary;
     delete mBigramDictionary;
 }
 
-int Dictionary::getFrequency(const int32_t *word, int length) {
+int Dictionary::getFrequency(const int32_t *word, int length) const {
     return mUnigramDictionary->getFrequency(word, length);
 }
 
 bool Dictionary::isValidBigram(const int32_t *word1, int length1, const int32_t *word2,
-        int length2) {
+        int length2) const {
     return mBigramDictionary->isValidBigram(word1, length1, word2, length2);
 }
 

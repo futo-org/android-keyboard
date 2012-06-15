@@ -77,8 +77,8 @@ class UnigramDictionary {
             int fullWordMultiplier, int maxWordLength, int maxWords, const unsigned int flags);
     int getFrequency(const int32_t* const inWord, const int length) const;
     int getBigramPosition(int pos, unsigned short *word, int offset, int length) const;
-    int getSuggestions(ProximityInfo *proximityInfo, WordsPriorityQueuePool *queuePool,
-            const int *xcoordinates, const int *ycoordinates,
+    int getSuggestions(
+            ProximityInfo *proximityInfo, const int *xcoordinates, const int *ycoordinates,
             const int *codes, const int codesSize, const std::map<int, int> *bigramMap,
             const uint8_t *bigramFilter, const bool useFullEditDistance, unsigned short *outWords,
             int *frequencies) const;

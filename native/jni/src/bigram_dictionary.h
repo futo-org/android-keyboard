@@ -27,35 +27,29 @@ namespace latinime {
 class Dictionary;
 class BigramDictionary {
  public:
-    BigramDictionary(const unsigned char *dict, int maxWordLength, Dictionary *parentDictionary);
-    int getBigrams(const int32_t *word, int length, int *codes, int codesSize,
-            unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams);
-    int getBigramListPositionForWord(const int32_t *prevWord, const int prevWordLength);
+    BigramDictionary(const unsigned char *dict, int maxWordLength);
+    int getBigrams(const int32_t *word, int length, int *inputCodes, int codesSize,
+            unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams) const;
+    int getBigramListPositionForWord(const int32_t *prevWord, const int prevWordLength) const;
     void fillBigramAddressToFrequencyMapAndFilter(const int32_t *prevWord, const int prevWordLength,
-            std::map<int, int> *map, uint8_t *filter);
-    bool isValidBigram(const int32_t *word1, int length1, const int32_t *word2, int length2);
+            std::map<int, int> *map, uint8_t *filter) const;
+    bool isValidBigram(const int32_t *word1, int length1, const int32_t *word2, int length2) const;
     ~BigramDictionary();
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BigramDictionary);
-    bool addWordBigram(unsigned short *word, int length, int frequency);
+    bool addWordBigram(unsigned short *word, int length, int frequency, const int maxBigrams,
+            int *bigramFreq, unsigned short *bigramChars) const;
     int getBigramAddress(int *pos, bool advance);
     int getBigramFreq(int *pos);
     void searchForTerminalNode(int addressLookingFor, int frequency);
     bool getFirstBitOfByte(int *pos) { return (DICT[*pos] & 0x80) > 0; }
     bool getSecondBitOfByte(int *pos) { return (DICT[*pos] & 0x40) > 0; }
-    bool checkFirstCharacter(unsigned short *word);
+    bool checkFirstCharacter(unsigned short *word, int *inputCodes) const;
 
     const unsigned char *DICT;
     const int MAX_WORD_LENGTH;
     // TODO: Re-implement proximity correction for bigram correction
     static const int MAX_ALTERNATIVES = 1;
-
-    Dictionary *mParentDictionary;
-    int *mBigramFreq;
-    int mMaxBigrams;
-    unsigned short *mBigramChars;
-    int *mInputCodes;
-    int mInputLength;
 };
 
 } // namespace latinime
