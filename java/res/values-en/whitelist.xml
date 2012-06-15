@@ -30,7 +30,6 @@
         <item>ill</item>
         <item>I\'ll</item>
 
-        <!-- Following entries came from AutoText the Android keyboard no longer uses. -->
         <!-- TODO: Trim down more entries by removing ones that get auto-corrected by the
              Android keyboard's own typing error correction algorithms. -->
 
@@ -63,20 +62,60 @@
         <item>been</item>
 
         <item>255</item>
+        <item>bot</item>
+        <item>not</item>
+
+        <item>255</item>
         <item>bur</item>
         <item>but</item>
+
+        <item>255</item>
+        <item>cam</item>
+        <item>can</item>
 
         <item>255</item>
         <item>cant</item>
         <item>can\'t</item>
 
         <item>255</item>
+        <item>dame</item>
+        <item>same</item>
+
+        <item>255</item>
         <item>didint</item>
         <item>didn\'t</item>
 
         <item>255</item>
+        <item>dormer</item>
+        <item>former</item>
+
+        <item>255</item>
+        <item>dud</item>
+        <item>did</item>
+
+        <item>255</item>
+        <item>fay</item>
+        <item>day</item>
+
+        <item>255</item>
+        <item>fife</item>
+        <item>five</item>
+
+        <item>255</item>
+        <item>foo</item>
+        <item>for</item>
+
+        <item>255</item>
         <item>fora</item>
         <item>for a</item>
+
+        <item>255</item>
+        <item>galled</item>
+        <item>called</item>
+
+        <item>255</item>
+        <item>goo</item>
+        <item>too</item>
 
         <item>255</item>
         <item>hed</item>
@@ -89,6 +128,10 @@
         <item>255</item>
         <item>heres</item>
         <item>here\'s</item>
+
+        <item>255</item>
+        <item>hew</item>
+        <item>new</item>
 
         <item>255</item>
         <item>hoe</item>
@@ -115,8 +158,16 @@
         <item>how\'ve</item>
 
         <item>255</item>
+        <item>hum</item>
+        <item>him</item>
+
+        <item>255</item>
         <item>i</item>
         <item>I</item>
+
+        <item>255</item>
+        <item>ifs</item>
+        <item>its</item>
 
         <item>255</item>
         <item>il</item>
@@ -139,16 +190,24 @@
         <item>it\'s a</item>
 
         <item>255</item>
-        <item>jot</item>
-        <item>not</item>
-
-        <item>255</item>
         <item>lets</item>
         <item>let\'s</item>
 
         <item>255</item>
         <item>maam</item>
         <item>ma\'am</item>
+
+        <item>255</item>
+        <item>manu</item>
+        <item>many</item>
+
+        <item>255</item>
+        <item>mare</item>
+        <item>made</item>
+
+        <item>255</item>
+        <item>mew</item>
+        <item>new</item>
 
         <item>255</item>
         <item>mire</item>
@@ -171,12 +230,44 @@
         <item>notes</item>
 
         <item>255</item>
+        <item>mow</item>
+        <item>now</item>
+
+        <item>255</item>
+        <item>namer</item>
+        <item>named</item>
+
+        <item>255</item>
+        <item>nave</item>
+        <item>have</item>
+
+        <item>255</item>
+        <item>nee</item>
+        <item>new</item>
+
+        <item>255</item>
+        <item>nigh</item>
+        <item>high</item>
+
+        <item>255</item>
         <item>nit</item>
         <item>not</item>
 
         <item>255</item>
+        <item>oft</item>
+        <item>off</item>
+
+        <item>255</item>
         <item>os</item>
         <item>is</item>
+
+        <item>255</item>
+        <item>pater</item>
+        <item>later</item>
+
+        <item>255</item>
+        <item>rook</item>
+        <item>took</item>
 
         <item>255</item>
         <item>shel</item>
@@ -185,6 +276,14 @@
         <item>255</item>
         <item>shouldent</item>
         <item>shouldn\'t</item>
+
+        <item>255</item>
+        <item>sill</item>
+        <item>will</item>
+
+        <item>255</item>
+        <item>sown</item>
+        <item>down</item>
 
         <item>255</item>
         <item>thatd</item>
@@ -303,10 +402,6 @@
         <item>255</item>
         <item>yall</item>
         <item>y\'all</item>
-
-        <item>255</item>
-        <item>yo</item>
-        <item>to</item>
 
         <item>255</item>
         <item>youd</item>
