@@ -1627,7 +1627,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public boolean isSuggestionsRequested() {
-        // TODO: move this method to mSettingsValues
+        // TODO: move this method to mCurrentSettings
         return (null != mInputAttributes && mInputAttributes.mIsSettingsSuggestionStripOn)
                 && (mCurrentSettings.isCorrectionOn() || isShowingSuggestionsStrip());
     }
@@ -1953,12 +1953,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // showSuggestions will retrieve the word near the cursor, we don't want that here)
             showSuggestions(suggestedWords, "");
         } else {
-            if (!isShowingPunctuationList()) setPunctuationSuggestions();
+            clearSuggestions();
         }
     }
 
     public void setPunctuationSuggestions() {
-        setSuggestions(mCurrentSettings.mSuggestPuncList, false);
+        if (mCurrentSettings.mBigramPredictionEnabled) {
+            clearSuggestions();
+        } else {
+            setSuggestions(mCurrentSettings.mSuggestPuncList, false);
+        }
         setAutoCorrectionIndicator(false);
         setSuggestionStripShown(isSuggestionsStripVisible());
     }
