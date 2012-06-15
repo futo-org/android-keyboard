@@ -428,23 +428,23 @@ public final class KeyboardTextsSet {
         // U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK
         /* 54 */ "!fixedColumnOrder!3,\u2039|\u203A,\u2264|\u2265,\u00AB|\u00BB",
         /* 55 */ "!fixedColumnOrder!3,\u203A|\u2039,\u2265|\u2264,\u00BB|\u00AB",
-        // U+064F: "ُ" ARABIC DAMMA
-        // U+064C: "ٌ" ARABIC DAMMATAN
-        // U+0651: "ّ" ARABIC SHADDA
-        // U+0652: "ْ" ARABIC SUKUN
-        // U+0653: "ٓ" ARABIC MADDAH ABOVE
-        // U+064D: "ٍ" ARABIC KASRATAN
-        // U+064B: "ً" ARABIC FATHATAN
-        // U+0650: "ِ" ARABIC KASRA
-        // U+064E: "َ" ARABIC FATHA
-        // U+0640: "ـ" ARABIC TATWEEL
-        // U+0656: "ٖ" ARABIC SUBSCRIPT ALEF
-        // U+0670: "ٰ" ARABIC LETTER SUPERSCRIPT ALEF
         // U+0655: "ٕ" ARABIC HAMZA BELOW
         // U+0654: "ٔ" ARABIC HAMZA ABOVE
+        // U+0652: "ْ" ARABIC SUKUN
+        // U+064D: "ٍ" ARABIC KASRATAN
+        // U+064C: "ٌ" ARABIC DAMMATAN
+        // U+064B: "ً" ARABIC FATHATAN
+        // U+0651: "ّ" ARABIC SHADDA
+        // U+0656: "ٖ" ARABIC SUBSCRIPT ALEF
+        // U+0670: "ٰ" ARABIC LETTER SUPERSCRIPT ALEF
+        // U+0653: "ٓ" ARABIC MADDAH ABOVE
+        // U+0650: "ِ" ARABIC KASRA
+        // U+064F: "ُ" ARABIC DAMMA
+        // U+064E: "َ" ARABIC FATHA
+        // U+0640: "ـ" ARABIC TATWEEL
         // In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label.
-        /* 56 */ "!fixedColumnOrder!5,\u064F,\u064C,\u0651,\u0652,\u0653,\u064D,\u064B,\u0650,\u064E,\u0640\u0640\u0640|\u0640,\u0656,\u0670,\u0655,\u0654",
-        /* 57 */ "\u064F",
+        /* 56 */ "!fixedColumnOrder!7,\u0655,\u0654,\u0652,\u064D,\u064C,\u064B,\u0651,\u0656,\u0670,\u0653,\u0650,\u064F,\u064E,\u0640\u0640\u0640|\u0640",
+        /* 57 */ "\u0651",
         // U+0661: "١" ARABIC-INDIC DIGIT ONE
         /* 58 */ "\u0661",
         // U+0662: "٢" ARABIC-INDIC DIGIT TWO
