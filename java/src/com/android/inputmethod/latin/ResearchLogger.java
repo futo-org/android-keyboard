@@ -94,6 +94,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final int LOGGING_STATE_OFF = 0;
     private static final int LOGGING_STATE_ON = 1;
     private static final int LOGGING_STATE_STOPPING = 2;
+    private boolean mIsPasswordView = false;
 
     // set when LatinIME should ignore an onUpdateSelection() callback that
     // arises from operations in this class
@@ -313,6 +314,14 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         latinIME.showOptionDialog(builder.create());
     }
 
+    private void setIsPasswordView(boolean isPasswordView) {
+        mIsPasswordView = isPasswordView;
+    }
+
+    private boolean isAllowedToLog() {
+        return mLoggingState == LOGGING_STATE_ON && !mIsPasswordView;
+    }
+
     private static final String CURRENT_TIME_KEY = "_ct";
     private static final String UPTIME_KEY = "_ut";
     private static final String EVENT_TYPE_KEY = "_ty";
@@ -329,7 +338,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      */
     private synchronized void writeEvent(final String[] keys, final Object[] values) {
         assert values.length + 1 == keys.length;
-        if (mLoggingState == LOGGING_STATE_ON) {
+        if (isAllowedToLog()) {
             mLoggingHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -729,6 +738,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void latinKeyboardView_setKeyboard(final Keyboard keyboard) {
         if (keyboard != null) {
             final KeyboardId kid = keyboard.mId;
+            boolean isPasswordView = kid.passwordInput();
             final Object[] values = {
                     KeyboardId.elementIdToName(kid.mElementId),
                     kid.mLocale + ":" + kid.mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
@@ -739,7 +749,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     kid.navigateNext(),
                     kid.navigatePrevious(),
                     kid.mClobberSettingsKey,
-                    kid.passwordInput(),
+                    isPasswordView,
                     kid.mShortcutKeyEnabled,
                     kid.mHasShortcutKey,
                     kid.mLanguageSwitchKeyEnabled,
@@ -749,6 +759,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     keyboard.mKeys
                 };
             getInstance().writeEvent(EVENTKEYS_LATINKEYBOARDVIEW_SETKEYBOARD, values);
+            getInstance().setIsPasswordView(isPasswordView);
         }
     }
 
