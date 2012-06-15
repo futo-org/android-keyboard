@@ -45,12 +45,11 @@
     <!-- U+0647: "ه" ARABIC LETTER HEH
          U+FEEB: "ﻫ" ARABIC LETTER HEH INITIAL FORM
          U+0647/U+200D: ARABIC LETTER HEH + ZERO WIDTH JOINER
-         U+06C0: "ۀ" ARABIC LETTER HEH WITH YEH ABOVE
+         U+0647/U+0654: ARABIC LETTER HEH + ARABIC HAMZA ABOVE
          U+0629: "ة" ARABIC LETTER TEH MARBUTA -->
-    <!-- TODO: DroidSansArabic lacks the glyph of U+06C0 ARABIC LETTER HEH WITH YEH ABOVE -->
     <Key
         latin:keyLabel="&#x0647;"
-        latin:moreKeys="&#xFEEB;|&#x0647;&#x200D;,&#x06C0;,&#x0629;,%" />
+        latin:moreKeys="&#xFEEB;|&#x0647;&#x200D;,&#x0647;&#x0654;,&#x0629;,%" />
     <!-- U+062E: "خ" ARABIC LETTER KHAH -->
     <Key
         latin:keyLabel="&#x062E;" />
