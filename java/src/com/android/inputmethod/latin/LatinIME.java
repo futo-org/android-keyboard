@@ -1716,7 +1716,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // getSuggestedWords handles gracefully a null value of prevWord
         final SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
-                mCurrentSettings.mCorrectionMode);
+                mCurrentSettings.isCorrectionOn());
 
         // Basically, we update the suggestion strip only when suggestion count > 1.  However,
         // there is an exception: We update the suggestion strip whenever typed word's length
