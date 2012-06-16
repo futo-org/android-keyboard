@@ -21,15 +21,43 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <Key
-        latin:keyLabel="#" />
+    <switch>
+        <case
+            latin:languageCode="fa"
+        >
+            <!-- U+066C: "٬" ARABIC THOUSANDS SEPARATOR -->
+            <Key
+                latin:keyLabel="&#x066C;"
+                latin:keyHintLabel="&amp;"
+                latin:keyLabelFlags="hasPopupHint|hasShiftedLetterHint"
+                latin:moreKeys="&amp;" />
+        </case>
+        <default>
+            <Key
+                latin:keyLabel="#" />
+        </default>
+    </switch>
     <Key
         latin:keyStyle="currencyKeyStyle" />
     <Key
         latin:keyLabel="!text/keylabel_for_symbols_percent"
         latin:moreKeys="!text/more_keys_for_symbols_percent" />
-    <Key
-        latin:keyLabel="&amp;" />
+    <switch>
+        <case
+            latin:languageCode="fa"
+        >
+            <!-- U+066B: "٫" ARABIC DECIMAL SEPARATOR -->
+            <Key
+                latin:keyLabel="&#x066B;"
+                latin:keyHintLabel="#"
+                latin:keyLabelFlags="hasPopupHint|hasShiftedLetterHint"
+                latin:moreKeys="#" />
+        </case>
+        <default>
+            <Key
+                latin:keyLabel="&amp;" />
+        </default>
+    </switch>
     <Key
         latin:keyLabel="*"
         latin:moreKeys="!text/more_keys_for_star" />

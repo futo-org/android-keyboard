@@ -29,10 +29,12 @@
         latin:keyLabel="&#x0633;" />
     <!-- U+06CC: "ی" ARABIC LETTER FARSI YEH
          U+0626: "ئ" ARABIC LETTER YEH WITH HAMZA ABOVE
-         U+064A: "ي" ARABIC LETTER YEH -->
+         U+064A: "ي" ARABIC LETTER YEH
+         U+FBE8: "ﯨ" ARABIC LETTER UIGHUR KAZAKH KIRGHIZ ALEF MAKSURA INITIAL FORM
+         U+0649: "ى" ARABIC LETTER ALEF MAKSURA -->
     <Key
         latin:keyLabel="&#x06CC;"
-        latin:moreKeys="&#x0626;,&#x064A;" />
+        latin:moreKeys="&#x0626;,&#x064A;,&#xFBE8;|&#x0649;" />
     <!-- U+0628: "ب" ARABIC LETTER BEH -->
     <Key
         latin:keyLabel="&#x0628;" />
@@ -42,17 +44,18 @@
     <!-- U+0627: "ا" ARABIC LETTER ALEF
          U+0621: "ء" ARABIC LETTER HAMZA
          U+0622: "آ" ARABIC LETTER ALEF WITH MADDA ABOVE
-         U+0672: "ٲ" ARABIC LETTER ALEF WITH WAVY HAMZA ABOVE
+         U+0623: "أ" ARABIC LETTER ALEF WITH HAMZA ABOVE
          U+0671: "ٱ" ARABIC LETTER ALEF WASLA
-         U+0673: "ٳ" ARABIC LETTER ALEF WITH WAVY HAMZA BELOW-->
-    <!-- TODO: DroidSansArabic lacks the glyph of U+0672 ARABIC LETTER ALEF WITH WAVY HAMZA ABOVE -->
-    <!-- TODO: DroidSansArabic lacks the glyph of U+0673 ARABIC LETTER ALEF WITH WAVY HAMZA BELOW -->
+         U+0625: "إ" ARABIC LETTER ALEF WITH HAMZA BELOW -->
     <Key
         latin:keyLabel="&#x0627;"
-        latin:moreKeys="&#x0621;,&#x0622;,&#x0672;,&#x0671;,&#x0673;" />
-    <!-- U+062A: "ت" ARABIC LETTER TEH -->
+        latin:moreKeys="&#x0621;,&#x0622;,&#x0623;,&#x0671;,&#x0625;" />
+    <!-- U+062A: "ت" ARABIC LETTER TEH
+         U+062B: "ﺙ" ARABIC LETTER THEH
+         U+0629: "ة": ARABIC LETTER TEH MARBUTA -->
     <Key
-        latin:keyLabel="&#x062A;" />
+        latin:keyLabel="&#x062A;"
+        latin:moreKeys="&#x062B;,&#x0629;" />
     <!-- U+0646: "ن" ARABIC LETTER NOON -->
     <Key
         latin:keyLabel="&#x0646;" />

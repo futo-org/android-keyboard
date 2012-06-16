@@ -44,11 +44,10 @@
     <Key
         latin:keyLabel="&#x067E;" />
     <!-- U+0648: "و" ARABIC LETTER WAW
-         U+0676: "ٶ" ARABIC LETTER HIGH HAMZA WAW -->
-    <!-- TODO: DroidSansArabic lacks the glyph of U+0676 ARABIC LETTER HIGH HAMZA WAW -->
+         U+0624: "ؤ" ARABIC LETTER WAW WITH HAMZA ABOVE -->
     <Key
         latin:keyLabel="&#x0648;"
-        latin:moreKeys="&#x0676;" />
+        latin:moreKeys="&#x0624;" />
     <!-- U+06AF: "گ" ARABIC LETTER GAF -->
     <Key
         latin:keyLabel="&#x06AF;" />
