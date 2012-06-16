@@ -452,7 +452,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             oldContactsDictionary = null;
         }
         mSuggest = new Suggest(this, subtypeLocale);
-        if (mCurrentSettings.isCorrectionOn()) {
+        if (mCurrentSettings.mCorrectionEnabled) {
             mSuggest.setAutoCorrectionThreshold(mCurrentSettings.mAutoCorrectionThreshold);
         }
 
@@ -685,7 +685,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         loadSettings();
 
-        if (mSuggest != null && mCurrentSettings.isCorrectionOn()) {
+        if (mSuggest != null && mCurrentSettings.mCorrectionEnabled) {
             mSuggest.setAutoCorrectionThreshold(mCurrentSettings.mAutoCorrectionThreshold);
         }
 
@@ -1557,8 +1557,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // not to auto correct, but accept the typed word. For instance,
             // in Italian dov' should not be expanded to dove' because the elision
             // requires the last vowel to be removed.
-            final boolean shouldAutoCorrect = mCurrentSettings.isCorrectionOn();
-            if (shouldAutoCorrect && primaryCode != Keyboard.CODE_SINGLE_QUOTE) {
+            if (mCurrentSettings.mCorrectionEnabled && primaryCode != Keyboard.CODE_SINGLE_QUOTE) {
                 commitCurrentAutoCorrection(primaryCode);
                 didAutoCorrect = true;
             } else {
@@ -1712,7 +1711,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // getSuggestedWords handles gracefully a null value of prevWord
         final SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
-                mCurrentSettings.isCorrectionOn());
+                mCurrentSettings.mCorrectionEnabled);
 
         // Basically, we update the suggestion strip only when suggestion count > 1.  However,
         // there is an exception: We update the suggestion strip whenever typed word's length
@@ -1926,7 +1925,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         final SuggestedWords suggestedWords;
-        if (mCurrentSettings.isCorrectionOn()) {
+        if (mCurrentSettings.mCorrectionEnabled) {
             final CharSequence prevWord = mConnection.getThisWord(mCurrentSettings.mWordSeparators);
             if (!TextUtils.isEmpty(prevWord)) {
                 suggestedWords = mSuggest.getBigramPredictions(prevWord);
@@ -1959,10 +1958,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private CharSequence addToUserHistoryDictionary(final CharSequence suggestion) {
         if (TextUtils.isEmpty(suggestion)) return null;
 
-        // Only auto-add to dictionary if auto-correct is ON. Otherwise we'll be
-        // adding words in situations where the user or application really didn't
-        // want corrections enabled or learned.
-        if (!mCurrentSettings.isCorrectionOn()) return null;
+        // If correction is not enabled, we don't add words to the user history dictionary.
+        // That's to avoid unintended additions in some sensitive fields, or fields that
+        // expect to receive non-words.
+        if (!mCurrentSettings.mCorrectionEnabled) return null;
 
         if (mUserHistoryDictionary != null) {
             final CharSequence prevWord
@@ -2220,7 +2219,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 + mCurrentSettings.isSuggestionsRequested(mDisplayOrientation));
         p.println("  mCorrectionEnabled=" + mCurrentSettings.mCorrectionEnabled);
         p.println("  isComposingWord=" + mWordComposer.isComposingWord());
-        p.println("  isCorrectionOn=" + mCurrentSettings.isCorrectionOn());
         p.println("  mSoundOn=" + mCurrentSettings.mSoundOn);
         p.println("  mVibrateOn=" + mCurrentSettings.mVibrateOn);
         p.println("  mKeyPreviewPopupOn=" + mCurrentSettings.mKeyPreviewPopupOn);

@@ -233,11 +233,8 @@ public class SettingsValues {
 
     public boolean isSuggestionsRequested(final int displayOrientation) {
         return mInputAttributes.mIsSettingsSuggestionStripOn
-                && (isCorrectionOn() || isSuggestionStripVisibleInOrientation(displayOrientation));
-    }
-
-    public boolean isCorrectionOn() {
-        return mCorrectionEnabled;
+                && (mCorrectionEnabled
+                        || isSuggestionStripVisibleInOrientation(displayOrientation));
     }
 
     public boolean isSuggestionStripVisibleInOrientation(final int orientation) {
