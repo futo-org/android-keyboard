@@ -82,8 +82,9 @@ public class DictionaryCollection extends Dictionary {
         return maxFreq;
     }
 
-    public boolean isEmpty() {
-        return mDictionaries.isEmpty();
+    @Override
+    public boolean isInitialized() {
+        return !mDictionaries.isEmpty();
     }
 
     @Override

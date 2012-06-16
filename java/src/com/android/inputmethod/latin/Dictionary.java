@@ -115,4 +115,12 @@ public abstract class Dictionary {
     public void close() {
         // empty base implementation
     }
+
+    /**
+     * Subclasses may override to indicate that this Dictionary is not yet properly initialized.
+     */
+
+    public boolean isInitialized() {
+        return true;
+    }
 }

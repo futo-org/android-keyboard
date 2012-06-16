@@ -65,7 +65,7 @@ public class Suggest implements Dictionary.WordCallback {
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 
-    private boolean mHasMainDictionary;
+    private Dictionary mMainDictionary;
     private ContactsBinaryDictionary mContactsDict;
     private WhitelistDictionary mWhiteListDictionary;
     private final ConcurrentHashMap<String, Dictionary> mUnigramDictionaries =
@@ -98,7 +98,7 @@ public class Suggest implements Dictionary.WordCallback {
             final long startOffset, final long length, final Locale locale) {
         final Dictionary mainDict = DictionaryFactory.createDictionaryForTest(context, dictionary,
                 startOffset, length /* useFullEditDistance */, false, locale);
-        mHasMainDictionary = null != mainDict;
+        mMainDictionary = mainDict;
         addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, mainDict);
         addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, mainDict);
         initWhitelistAndAutocorrectAndPool(context, locale);
@@ -129,15 +129,15 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     public void resetMainDict(final Context context, final Locale locale) {
-        mHasMainDictionary = false;
+        mMainDictionary = null;
         new Thread("InitializeBinaryDictionary") {
             @Override
             public void run() {
                 final DictionaryCollection newMainDict =
                         DictionaryFactory.createMainDictionaryFromManager(context, locale);
-                mHasMainDictionary = null != newMainDict && !newMainDict.isEmpty();
                 addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, newMainDict);
                 addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, newMainDict);
+                mMainDictionary = newMainDict;
             }
         }.start();
     }
@@ -145,7 +145,11 @@ public class Suggest implements Dictionary.WordCallback {
     // The main dictionary could have been loaded asynchronously.  Don't cache the return value
     // of this method.
     public boolean hasMainDictionary() {
-        return mHasMainDictionary;
+        return null != mMainDictionary && mMainDictionary.isInitialized();
+    }
+
+    public Dictionary getMainDictionary() {
+        return mMainDictionary;
     }
 
     public ContactsBinaryDictionary getContactsDictionary() {
@@ -365,7 +369,7 @@ public class Suggest implements Dictionary.WordCallback {
         // language, and it will unexpectedly auto-correct. For example, if the user types in
         // English with no dictionary and has a "Will" in their contact list, "will" would
         // always auto-correct to "Will" which is unwanted. Hence, no main dict => no auto-correct.
-                && mHasMainDictionary;
+                && hasMainDictionary();
 
         boolean autoCorrectionAvailable = hasAutoCorrection;
         if (correctionMode == CORRECTION_FULL || correctionMode == CORRECTION_FULL_BIGRAM) {
@@ -511,7 +515,7 @@ public class Suggest implements Dictionary.WordCallback {
         for (final Dictionary dictionary : dictionaries) {
             dictionary.close();
         }
-        mHasMainDictionary = false;
+        mMainDictionary = null;
     }
 
     // TODO: Resolve the inconsistencies between the native auto correction algorithms and
