@@ -1894,14 +1894,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     private void commitChosenWord(final CharSequence chosenWord, final int commitType,
             final int separatorCode) {
-        if (mCurrentSettings.mEnableSuggestionSpanInsertion) {
-            final SuggestedWords suggestedWords = mSuggestionsView.getSuggestions();
-            mConnection.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(
-                    this, chosenWord, suggestedWords, mIsMainDictionaryAvailable),
-                    1);
-        } else {
-            mConnection.commitText(chosenWord, 1);
-        }
+        final SuggestedWords suggestedWords = mSuggestionsView.getSuggestions();
+        mConnection.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(
+                this, chosenWord, suggestedWords, mIsMainDictionaryAvailable), 1);
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.latinIME_commitText(chosenWord);
         }

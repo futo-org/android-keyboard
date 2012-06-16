@@ -78,7 +78,6 @@ public class SettingsValues {
     public final boolean mUseContactsDict;
     // Use bigrams to predict the next word when there is no input for it yet
     public final boolean mBigramPredictionEnabled;
-    public final boolean mEnableSuggestionSpanInsertion;
     @SuppressWarnings("unused") // TODO: Use this
     private final int mVibrationDurationSettingsRawValue;
     @SuppressWarnings("unused") // TODO: Use this
@@ -156,8 +155,6 @@ public class SettingsValues {
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mAutoCorrectEnabled = isAutoCorrectEnabled(res, mAutoCorrectionThresholdRawValue);
         mBigramPredictionEnabled = isBigramPredictionEnabled(prefs, res);
-        // TODO: remove mEnableSuggestionSpanInsertion. It's always true.
-        mEnableSuggestionSpanInsertion = true;
         mVibrationDurationSettingsRawValue =
                 prefs.getInt(Settings.PREF_VIBRATION_DURATION_SETTINGS, -1);
         mKeypressSoundVolumeRawValue = prefs.getFloat(Settings.PREF_KEYPRESS_SOUND_VOLUME, -1.0f);
