@@ -157,8 +157,7 @@ public class SettingsValues {
                 Integer.toString(res.getInteger(R.integer.config_key_preview_linger_timeout)));
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mAutoCorrectEnabled = isAutoCorrectEnabled(res, mAutoCorrectionThresholdRawValue);
-        mBigramSuggestionEnabled = mAutoCorrectEnabled
-                && isBigramSuggestionEnabled(prefs, res, mAutoCorrectEnabled);
+        mBigramSuggestionEnabled = mAutoCorrectEnabled;
         mBigramPredictionEnabled = mBigramSuggestionEnabled
                 && isBigramPredictionEnabled(prefs, res);
         // TODO: remove mEnableSuggestionSpanInsertion. It's always true.
@@ -306,12 +305,6 @@ public class SettingsValues {
         return Integer.parseInt(sp.getString(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
                 Integer.toString(resources.getInteger(
                         R.integer.config_key_preview_linger_timeout))));
-    }
-
-    private static boolean isBigramSuggestionEnabled(final SharedPreferences sp,
-            final Resources resources, final boolean autoCorrectEnabled) {
-        // TODO: remove this method. Bigram suggestion is always true.
-        return true;
     }
 
     private static boolean isBigramPredictionEnabled(final SharedPreferences sp,
