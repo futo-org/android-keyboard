@@ -1076,7 +1076,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private boolean maybeDoubleSpace() {
-        if (mCurrentSettings.mCorrectionMode == Suggest.CORRECTION_NONE) return false;
+        if (!mCurrentSettings.mCorrectionEnabled) return false;
         if (!mHandler.isAcceptingDoubleSpaces()) return false;
         final CharSequence lastThree = mConnection.getTextBeforeCursor(3, 0);
         if (lastThree != null && lastThree.length() == 3
@@ -1864,8 +1864,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // - There is a dictionary and the word is not in it
         // Please note that if mSuggest is null, it means that everything is off: suggestion
         // and correction, so we shouldn't try to show the hint
-        // We used to look at mCorrectionMode here, but showing the hint should have nothing
-        // to do with the autocorrection setting.
         final boolean showingAddToDictionaryHint = index == 0 && mSuggest != null
                 // If there is no dictionary the hint should be shown.
                 && (!mSuggest.hasMainDictionary()
@@ -2220,7 +2218,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         p.println("  Keyboard mode = " + keyboardMode);
         p.println("  mIsSuggestionsSuggestionsRequested = "
                 + mCurrentSettings.isSuggestionsRequested(mDisplayOrientation));
-        p.println("  mCorrectionMode=" + mCurrentSettings.mCorrectionMode);
+        p.println("  mCorrectionEnabled=" + mCurrentSettings.mCorrectionEnabled);
         p.println("  isComposingWord=" + mWordComposer.isComposingWord());
         p.println("  isCorrectionOn=" + mCurrentSettings.isCorrectionOn());
         p.println("  mSoundOn=" + mCurrentSettings.mSoundOn);

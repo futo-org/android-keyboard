@@ -94,7 +94,7 @@ public class SettingsValues {
     public final int mKeyPreviewPopupDismissDelay;
     private final boolean mAutoCorrectEnabled;
     public final float mAutoCorrectionThreshold;
-    public final int mCorrectionMode;
+    public final boolean mCorrectionEnabled;
     public final int mSuggestionVisibility;
     private final boolean mVoiceKeyEnabled;
     private final boolean mVoiceKeyOnMain;
@@ -172,7 +172,7 @@ public class SettingsValues {
         mVoiceKeyOnMain = mVoiceMode != null && mVoiceMode.equals(voiceModeMain);
         mAdditionalSubtypes = AdditionalSubtype.createAdditionalSubtypesArray(
                 getPrefAdditionalSubtypes(prefs, res));
-        mCorrectionMode = createCorrectionMode();
+        mCorrectionEnabled = mAutoCorrectEnabled && !mInputAttributes.mInputTypeNoAutoCorrect;
         mSuggestionVisibility = createSuggestionVisibility(res);
     }
 
@@ -206,14 +206,6 @@ public class SettingsValues {
         return wordSeparators;
     }
 
-    private int createCorrectionMode() {
-        if (mAutoCorrectEnabled && !mInputAttributes.mInputTypeNoAutoCorrect) {
-            return Suggest.CORRECTION_FULL;
-        } else {
-            return Suggest.CORRECTION_NONE;
-        }
-    }
-
     private int createSuggestionVisibility(final Resources res) {
         final String suggestionVisiblityStr = mShowSuggestionsSetting;
         for (int visibility : SUGGESTION_VISIBILITY_VALUE_ARRAY) {
@@ -245,7 +237,7 @@ public class SettingsValues {
     }
 
     public boolean isCorrectionOn() {
-        return mCorrectionMode == Suggest.CORRECTION_FULL;
+        return mCorrectionEnabled;
     }
 
     public boolean isSuggestionStripVisibleInOrientation(final int orientation) {
