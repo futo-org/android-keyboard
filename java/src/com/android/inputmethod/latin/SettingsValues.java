@@ -76,9 +76,7 @@ public class SettingsValues {
     @SuppressWarnings("unused") // TODO: Use this
     private final String mKeyPreviewPopupDismissDelayRawValue;
     public final boolean mUseContactsDict;
-    // Suggestion: use bigrams to adjust scores of suggestions obtained from unigram dictionary
-    public final boolean mBigramSuggestionEnabled;
-    // Prediction: use bigrams to predict the next word when there is no input for it yet
+    // Use bigrams to predict the next word when there is no input for it yet
     public final boolean mBigramPredictionEnabled;
     public final boolean mEnableSuggestionSpanInsertion;
     @SuppressWarnings("unused") // TODO: Use this
@@ -157,9 +155,7 @@ public class SettingsValues {
                 Integer.toString(res.getInteger(R.integer.config_key_preview_linger_timeout)));
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mAutoCorrectEnabled = isAutoCorrectEnabled(res, mAutoCorrectionThresholdRawValue);
-        mBigramSuggestionEnabled = mAutoCorrectEnabled;
-        mBigramPredictionEnabled = mBigramSuggestionEnabled
-                && isBigramPredictionEnabled(prefs, res);
+        mBigramPredictionEnabled = isBigramPredictionEnabled(prefs, res);
         // TODO: remove mEnableSuggestionSpanInsertion. It's always true.
         mEnableSuggestionSpanInsertion = true;
         mVibrationDurationSettingsRawValue =
@@ -214,7 +210,7 @@ public class SettingsValues {
     private int createCorrectionMode() {
         final boolean shouldAutoCorrect = mAutoCorrectEnabled
                 && !mInputAttributes.mInputTypeNoAutoCorrect;
-        if (mBigramSuggestionEnabled && shouldAutoCorrect) return Suggest.CORRECTION_FULL_BIGRAM;
+        if (shouldAutoCorrect) return Suggest.CORRECTION_FULL_BIGRAM;
         return shouldAutoCorrect ? Suggest.CORRECTION_FULL : Suggest.CORRECTION_NONE;
     }
 
