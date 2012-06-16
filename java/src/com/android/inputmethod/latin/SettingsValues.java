@@ -210,7 +210,6 @@ public class SettingsValues {
     private int createCorrectionMode() {
         final boolean shouldAutoCorrect = mAutoCorrectEnabled
                 && !mInputAttributes.mInputTypeNoAutoCorrect;
-        if (shouldAutoCorrect) return Suggest.CORRECTION_FULL_BIGRAM;
         return shouldAutoCorrect ? Suggest.CORRECTION_FULL : Suggest.CORRECTION_NONE;
     }
 
@@ -244,8 +243,7 @@ public class SettingsValues {
     }
 
     public boolean isCorrectionOn() {
-        return mCorrectionMode == Suggest.CORRECTION_FULL
-                || mCorrectionMode == Suggest.CORRECTION_FULL_BIGRAM;
+        return mCorrectionMode == Suggest.CORRECTION_FULL;
     }
 
     public boolean isSuggestionStripVisibleInOrientation(final int orientation) {

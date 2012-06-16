@@ -1932,7 +1932,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         final SuggestedWords suggestedWords;
-        if (mCurrentSettings.mCorrectionMode == Suggest.CORRECTION_FULL_BIGRAM) {
+        if (mCurrentSettings.isCorrectionOn()) {
             final CharSequence prevWord = mConnection.getThisWord(mCurrentSettings.mWordSeparators);
             if (!TextUtils.isEmpty(prevWord)) {
                 suggestedWords = mSuggest.getBigramPredictions(prevWord);
