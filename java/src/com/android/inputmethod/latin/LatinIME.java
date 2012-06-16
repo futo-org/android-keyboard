@@ -122,7 +122,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private int mSpaceState;
 
     private SettingsValues mCurrentSettings;
-    private InputAttributes mInputAttributes;
 
     private View mExtractArea;
     private View mKeyPreviewBackingView;
@@ -428,10 +427,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
         if (null == mPrefs) mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final InputAttributes inputAttributes =
+                new InputAttributes(getCurrentInputEditorInfo(), isFullscreenMode());
         final RunInLocale<SettingsValues> job = new RunInLocale<SettingsValues>() {
             @Override
             protected SettingsValues job(Resources res) {
-                return new SettingsValues(mPrefs, mInputAttributes, LatinIME.this);
+                return new SettingsValues(mPrefs, inputAttributes, LatinIME.this);
             }
         };
         mCurrentSettings = job.runInLocale(mResources, mSubtypeSwitcher.getCurrentSubtypeLocale());
@@ -674,7 +675,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         updateFullscreenMode();
         mLastSelectionStart = editorInfo.initialSelStart;
         mLastSelectionEnd = editorInfo.initialSelEnd;
-        mInputAttributes = new InputAttributes(editorInfo, isFullscreenMode());
         mApplicationSpecifiedCompletions = null;
 
         inputView.closing();

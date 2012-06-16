@@ -130,11 +130,11 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
                 (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final ViewGroup vg = new FrameLayout(getContext());
         final View inputView = inflater.inflate(R.layout.input_view, vg);
+        mLatinIME.onCreateInputMethodInterface().startInput(ic, ei);
         mLatinIME.setInputView(inputView);
         mLatinIME.onBindInput();
         mLatinIME.onCreateInputView();
         mLatinIME.onStartInputView(ei, false);
-        mLatinIME.onCreateInputMethodInterface().startInput(ic, ei);
         mInputConnection = ic;
         mKeyboard = mLatinIME.mKeyboardSwitcher.getKeyboard();
         changeLanguage("en_US");
