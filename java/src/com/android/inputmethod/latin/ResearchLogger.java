@@ -96,6 +96,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final int LOGGING_STATE_STOPPING = 2;
     private boolean mIsPasswordView = false;
 
+    // digits entered by the user are replaced with this codepoint.
+    /* package for test */ static final int DIGIT_REPLACEMENT_CODEPOINT =
+            Character.codePointAt("\uE000", 0);  // U+E000 is in the "private-use area"
     // set when LatinIME should ignore an onUpdateSelection() callback that
     // arises from operations in this class
     private static boolean sLatinIMEExpectingUpdateSelection = false;
@@ -361,7 +364,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                                 CompletionInfo[] ci = (CompletionInfo[]) value;
                                 mJsonWriter.beginArray();
                                 for (int j = 0; j < ci.length; j++) {
-                                    mJsonWriter.value(ci[j].toString());
+                                    mJsonWriter.value(scrubDigitsFromString(ci[j].toString()));
                                 }
                                 mJsonWriter.endArray();
                             } else if (value instanceof SharedPreferences) {
@@ -414,7 +417,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                                 final int size = words.size();
                                 for (int j = 0; j < size; j++) {
                                     SuggestedWordInfo wordInfo = words.getWordInfo(j);
-                                    mJsonWriter.value(wordInfo.toString());
+                                    mJsonWriter.value(scrubDigitsFromString(wordInfo.toString()));
                                 }
                                 mJsonWriter.endArray();
                                 mJsonWriter.endObject();
@@ -443,6 +446,34 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     }
                 }
             });
+        }
+    }
+
+    private static int scrubDigitFromCodePoint(int codePoint) {
+        return Character.isDigit(codePoint) ? DIGIT_REPLACEMENT_CODEPOINT : codePoint;
+    }
+
+    /* package for test */ static String scrubDigitsFromString(String s) {
+        StringBuilder sb = null;
+        final int length = s.length();
+        for (int i = 0; i < length; i = s.offsetByCodePoints(i, 1)) {
+            int codePoint = Character.codePointAt(s, i);
+            if (Character.isDigit(codePoint)) {
+                if (sb == null) {
+                    sb = new StringBuilder(length);
+                    sb.append(s.substring(0, i));
+                }
+                sb.appendCodePoint(DIGIT_REPLACEMENT_CODEPOINT);
+            } else {
+                if (sb != null) {
+                    sb.appendCodePoint(codePoint);
+                }
+            }
+        }
+        if (sb == null) {
+            return s;
+        } else {
+            return sb.toString();
         }
     }
 
@@ -478,7 +509,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     };
     public static void latinIME_onCodeInput(final int code, final int x, final int y) {
         final Object[] values = {
-            Keyboard.printableCode(code), x, y
+            Keyboard.printableCode(scrubDigitFromCodePoint(code)), x, y
         };
         getInstance().writeEvent(EVENTKEYS_LATINIME_ONCODEINPUT, values);
     }
@@ -489,7 +520,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void logCorrection(final String subgroup, final String before, final String after,
             final int position) {
         final Object[] values = {
-            subgroup, before, after, position
+            subgroup, scrubDigitsFromString(before), scrubDigitsFromString(after), position
         };
         getInstance().writeEvent(EVENTKEYS_CORRECTION, values);
     }
@@ -500,7 +531,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void latinIME_commitCurrentAutoCorrection(final String typedWord,
             final String autoCorrection) {
         final Object[] values = {
-            typedWord, autoCorrection
+            scrubDigitsFromString(typedWord), scrubDigitsFromString(autoCorrection)
         };
         getInstance().writeEvent(EVENTKEYS_LATINIME_COMMITCURRENTAUTOCORRECTION, values);
     }
@@ -510,7 +541,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     };
     public static void latinIME_commitText(final CharSequence typedWord) {
         final Object[] values = {
-            typedWord.toString()
+            scrubDigitsFromString(typedWord.toString())
         };
         getInstance().writeEvent(EVENTKEYS_LATINIME_COMMITTEXT, values);
     }
@@ -575,10 +606,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     }
                     final CharSequence truncatedCharSequence = charSequence.subSequence(0, length);
                     values[0] = true;
-                    values[1] = truncatedCharSequence.toString();
+                    values[1] = scrubDigitsFromString(truncatedCharSequence.toString());
                 } else {
                     values[0] = false;
-                    values[1] = charSequence.toString();
+                    values[1] = scrubDigitsFromString(charSequence.toString());
                 }
             }
             getInstance().writeEvent(EVENTKEYS_LATINIME_ONWINDOWHIDDEN, values);
@@ -634,7 +665,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final Object[] values = {
             lastSelectionStart, lastSelectionEnd, oldSelStart, oldSelEnd, newSelStart,
             newSelEnd, composingSpanStart, composingSpanEnd, expectingUpdateSelection,
-            expectingUpdateSelectionFromLogger, word
+            expectingUpdateSelectionFromLogger, scrubDigitsFromString(word)
         };
         getInstance().writeEvent(EVENTKEYS_LATINIME_ONUPDATESELECTION, values);
     }
@@ -666,7 +697,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void latinIME_pickSuggestionManually(final String replacedWord,
             final int index, CharSequence suggestion, int x, int y) {
         final Object[] values = {
-            replacedWord, index, suggestion, x, y
+            scrubDigitsFromString(replacedWord), index, suggestion == null ? null :
+                    scrubDigitsFromString(suggestion.toString()), x, y
         };
         getInstance().writeEvent(EVENTKEYS_LATINIME_PICKSUGGESTIONMANUALLY, values);
     }
@@ -702,7 +734,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     };
     public static void latinIME_sendKeyCodePoint(final int code) {
         final Object[] values = {
-            code
+            Keyboard.printableCode(scrubDigitFromCodePoint(code))
         };
         getInstance().writeEvent(EVENTKEYS_LATINIME_SENDKEYCODEPOINT, values);
     }
@@ -738,7 +770,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void latinKeyboardView_setKeyboard(final Keyboard keyboard) {
         if (keyboard != null) {
             final KeyboardId kid = keyboard.mId;
-            boolean isPasswordView = kid.passwordInput();
+            final boolean isPasswordView = kid.passwordInput();
             final Object[] values = {
                     KeyboardId.elementIdToName(kid.mElementId),
                     kid.mLocale + ":" + kid.mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
@@ -791,8 +823,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (key != null) {
             CharSequence outputText = key.mOutputText;
             final Object[] values = {
-                Keyboard.printableCode(code), outputText, x, y, ignoreModifierKey, altersCode,
-                key.isEnabled()
+                Keyboard.printableCode(scrubDigitFromCodePoint(code)), outputText == null ? null
+                        : scrubDigitsFromString(outputText.toString()),
+                x, y, ignoreModifierKey, altersCode, key.isEnabled()
             };
             getInstance().writeEvent(EVENTKEYS_POINTERTRACKER_CALLLISTENERONCODEINPUT, values);
         }
@@ -806,8 +839,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final boolean withSliding, final boolean ignoreModifierKey) {
         if (key != null) {
             final Object[] values = {
-                Keyboard.printableCode(primaryCode), withSliding, ignoreModifierKey,
-                key.isEnabled()
+                Keyboard.printableCode(scrubDigitFromCodePoint(primaryCode)), withSliding,
+                ignoreModifierKey, key.isEnabled()
             };
             getInstance().writeEvent(EVENTKEYS_POINTERTRACKER_CALLLISTENERONRELEASE, values);
         }
