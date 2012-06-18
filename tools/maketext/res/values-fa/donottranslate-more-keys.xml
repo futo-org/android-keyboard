@@ -100,11 +100,11 @@
          U+201D: "”" RIGHT DOUBLE QUOTATION MARK
          U+201E: "„" DOUBLE LOW-9 QUOTATION MARK
          U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
-    <string name="more_keys_for_less_than">!fixedColumnOrder!3,&#x2039;|&#x203A;,&#x2264;|&#x2265;,&#x00AB;|&#x00BB;</string>
-    <string name="more_keys_for_greater_than">!fixedColumnOrder!3,&#x203A;|&#x2039;,&#x2265;|&#x2264;,&#x00BB;|&#x00AB;</string>
+    <string name="more_keys_for_less_than">!fixedColumnOrder!3,&#x2039;|&#x203A;,&#x2264;|&#x2265;,&lt;|&gt;</string>
+    <string name="more_keys_for_greater_than">!fixedColumnOrder!3,&#x203A;|&#x2039;,&#x2265;|&#x2264;,&gt;|&lt;</string>
     <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
     <!-- <string name="more_keys_for_double_quote">&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;</string> -->
-    <string name="more_keys_for_double_quote">!fixedColumnOrder!4,&#x201C;,&#x201D;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;</string>
+    <string name="more_keys_for_double_quote">!fixedColumnOrder!4,&#x201C;,&#x201D;,\",\'</string>
     <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
     <!-- <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB|&#x00AB;;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string> -->
     <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!4,&#x201C;,&#x201D;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
