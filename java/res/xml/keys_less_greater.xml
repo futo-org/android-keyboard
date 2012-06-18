@@ -21,12 +21,30 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <Key
-        latin:keyLabel="&lt;"
-        latin:code="!code/key_less_than"
-        latin:moreKeys="!text/more_keys_for_less_than" />
-    <Key
-        latin:keyLabel="&gt;"
-        latin:code="!code/key_greater_than"
-        latin:moreKeys="!text/more_keys_for_greater_than" />
+    <switch>
+        <case
+            latin:languageCode="fa"
+        >
+            <!-- U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+                 U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK -->
+            <Key
+                latin:keyLabel="&#x00AB;"
+                latin:code="0x00BB"
+                latin:moreKeys="!text/more_keys_for_less_than" />
+            <Key
+                latin:keyLabel="&#x00BB;"
+                latin:code="0x00AB"
+                latin:moreKeys="!text/more_keys_for_greater_than" />
+        </case>
+        <default>
+            <Key
+                latin:keyLabel="&lt;"
+                latin:code="!code/key_less_than"
+                latin:moreKeys="!text/more_keys_for_less_than" />
+            <Key
+                latin:keyLabel="&gt;"
+                latin:code="!code/key_greater_than"
+                latin:moreKeys="!text/more_keys_for_greater_than" />
+        </default>
+    </switch>
 </merge>
