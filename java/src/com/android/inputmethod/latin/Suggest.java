@@ -73,7 +73,7 @@ public class Suggest implements Dictionary.WordCallback {
     private final ConcurrentHashMap<String, Dictionary> mBigramDictionaries =
             new ConcurrentHashMap<String, Dictionary>();
 
-    private int mPrefMaxSuggestions = 18;
+    public static final int MAX_SUGGESTIONS = 18;
 
     private static final int PREF_MAX_BIGRAMS = 60;
 
@@ -221,7 +221,7 @@ public class Suggest implements Dictionary.WordCallback {
         mIsFirstCharCapitalized = false;
         mIsAllUpperCase = false;
         mTrailingSingleQuotesCount = 0;
-        mSuggestions = new ArrayList<SuggestedWordInfo>(mPrefMaxSuggestions);
+        mSuggestions = new ArrayList<SuggestedWordInfo>(MAX_SUGGESTIONS);
 
         // Treating USER_TYPED as UNIGRAM suggestion for logging now.
         LatinImeLogger.onAddSuggestedWord("", Suggest.DIC_USER_TYPED, Dictionary.UNIGRAM);
@@ -232,7 +232,7 @@ public class Suggest implements Dictionary.WordCallback {
         getAllBigrams(prevWordForBigram, sEmptyWordComposer);
 
         // Nothing entered: return all bigrams for the previous word
-        int insertCount = Math.min(mBigramSuggestions.size(), mPrefMaxSuggestions);
+        int insertCount = Math.min(mBigramSuggestions.size(), MAX_SUGGESTIONS);
         for (int i = 0; i < insertCount; ++i) {
             addBigramToSuggestions(mBigramSuggestions.get(i));
         }
@@ -256,7 +256,7 @@ public class Suggest implements Dictionary.WordCallback {
         mIsFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
         mIsAllUpperCase = wordComposer.isAllUpperCase();
         mTrailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
-        mSuggestions = new ArrayList<SuggestedWordInfo>(mPrefMaxSuggestions);
+        mSuggestions = new ArrayList<SuggestedWordInfo>(MAX_SUGGESTIONS);
 
         final String typedWord = wordComposer.getTypedWord();
         final String consideredWord = mTrailingSingleQuotesCount > 0
@@ -274,7 +274,7 @@ public class Suggest implements Dictionary.WordCallback {
                 getAllBigrams(prevWordForBigram, wordComposer);
                 if (TextUtils.isEmpty(consideredWord)) {
                     // Nothing entered: return all bigrams for the previous word
-                    int insertCount = Math.min(mBigramSuggestions.size(), mPrefMaxSuggestions);
+                    int insertCount = Math.min(mBigramSuggestions.size(), MAX_SUGGESTIONS);
                     for (int i = 0; i < insertCount; ++i) {
                         addBigramToSuggestions(mBigramSuggestions.get(i));
                     }
@@ -293,7 +293,7 @@ public class Suggest implements Dictionary.WordCallback {
                         if (bigramSuggestionFirstChar == currentChar
                                 || bigramSuggestionFirstChar == currentCharUpper) {
                             addBigramToSuggestions(bigramSuggestion);
-                            if (++count > mPrefMaxSuggestions) break;
+                            if (++count > MAX_SUGGESTIONS) break;
                         }
                     }
                 }
@@ -448,7 +448,7 @@ public class Suggest implements Dictionary.WordCallback {
             prefMaxSuggestions = PREF_MAX_BIGRAMS;
         } else {
             suggestions = mSuggestions;
-            prefMaxSuggestions = mPrefMaxSuggestions;
+            prefMaxSuggestions = MAX_SUGGESTIONS;
         }
 
         int pos = 0;
