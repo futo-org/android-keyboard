@@ -280,12 +280,6 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
         return createAccessibilityNodeInfo(mAccessibilityFocusedView);
     }
 
-    @Override
-    public AccessibilityNodeInfoCompat accessibilityFocusSearch(int direction, int virtualViewId) {
-        // Focus search is not currently supported for IMEs.
-        return null;
-    }
-
     /**
      * Sends an accessibility event for the given {@link Key}.
      *
