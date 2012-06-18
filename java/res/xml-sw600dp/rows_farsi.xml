@@ -44,8 +44,6 @@
         <include
             latin:keyboardLayout="@xml/rowkeys_farsi3"
             latin:keyXPos="4.091%p" />
-        <include
-            latin:keyboardLayout="@xml/keys_comma_period" />
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillRight" />

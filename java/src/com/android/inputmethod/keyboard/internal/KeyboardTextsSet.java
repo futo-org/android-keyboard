@@ -1101,14 +1101,16 @@ public final class KeyboardTextsSet {
         // U+060C: "،" ARABIC COMMA
         // U+061B: "؛" ARABIC SEMICOLON
         // U+061F: "؟" ARABIC QUESTION MARK
+        // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+        // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
         /* 98 */ "\u060C",
         /* 99 */ "!",
         /* 100 */ "!,\\,",
         /* 101 */ "\u061F",
         /* 102 */ "\u061F,?",
-        /* 103 */ null,
-        /* 104 */ null,
-        /* 105 */ "\u061F,\u061B,!,:,-,/,\',\"",
+        /* 103 */ "\u060C",
+        /* 104 */ "\u061F",
+        /* 105 */ "!fixedColumnOrder!4,:,!,\u061F,\u061B,-,/,\u00AB|\u00BB,\u00BB|\u00AB",
     };
 
     /* Language fi: Finnish */

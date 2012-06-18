@@ -27,11 +27,12 @@
     <!-- U+0637: "ط" ARABIC LETTER TAH -->
     <Key
         latin:keyLabel="&#x0637;" />
-    <!-- U+0632: "ز" ARABIC LETTER ZAIN
-         U+0698: "ژ" ARABIC LETTER JEH -->
+    <!-- U+0698: "ژ" ARABIC LETTER JEH -->
     <Key
-        latin:keyLabel="&#x0632;"
-        latin:moreKeys="&#x0698;" />
+        latin:keyLabel="&#x0698;" />
+    <!-- U+0632: "ز" ARABIC LETTER ZAIN -->
+    <Key
+        latin:keyLabel="&#x0632;" />
     <!-- U+0631: "ر" ARABIC LETTER REH -->
     <Key
         latin:keyLabel="&#x0631;" />
@@ -49,4 +50,7 @@
     <Key
         latin:keyLabel="&#x0648;"
         latin:moreKeys="&#x0624;" />
+    <!-- U+0622: "آ" ARABIC LETTER ALEF WITH MADDA ABOVE -->
+    <Key
+        latin:keyLabel="&#x0622;" />
 </merge>
