@@ -34,6 +34,7 @@
             <Key
                 latin:keyLabel="."
                 latin:keyHintLabel="!text/keyhintlabel_for_arabic_diacritics"
+                latin:keyLabelFlags="hasPopupHint"
                 latin:moreKeys="!text/more_keys_for_arabic_diacritics"
                 latin:keyStyle="hasShiftedLetterHintStyle" />
         </case>
