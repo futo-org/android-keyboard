@@ -275,11 +275,6 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
         return false;
     }
 
-    @Override
-    public AccessibilityNodeInfoCompat findAccessibilityFocus(int virtualViewId) {
-        return createAccessibilityNodeInfo(mAccessibilityFocusedView);
-    }
-
     /**
      * Sends an accessibility event for the given {@link Key}.
      *
