@@ -91,7 +91,8 @@ public class SuggestedWords {
         final ArrayList<SuggestedWordInfo> result = new ArrayList<SuggestedWordInfo>();
         for (CompletionInfo info : infos) {
             if (null != info && info.getText() != null) {
-                result.add(new SuggestedWordInfo(info.getText(), SuggestedWordInfo.MAX_SCORE));
+                result.add(new SuggestedWordInfo(info.getText(), SuggestedWordInfo.MAX_SCORE,
+                        SuggestedWordInfo.KIND_APP_DEFINED));
             }
         }
         return result;
@@ -103,7 +104,8 @@ public class SuggestedWords {
             final CharSequence typedWord, final SuggestedWords previousSuggestions) {
         final ArrayList<SuggestedWordInfo> suggestionsList = new ArrayList<SuggestedWordInfo>();
         final HashSet<String> alreadySeen = new HashSet<String>();
-        suggestionsList.add(new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE));
+        suggestionsList.add(new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE,
+                SuggestedWordInfo.KIND_TYPED));
         alreadySeen.add(typedWord.toString());
         final int previousSize = previousSuggestions.size();
         for (int pos = 1; pos < previousSize; pos++) {
@@ -120,16 +122,25 @@ public class SuggestedWords {
 
     public static class SuggestedWordInfo {
         public static final int MAX_SCORE = Integer.MAX_VALUE;
+        public static final int KIND_TYPED = 0; // What user typed
+        public static final int KIND_CORRECTION = 1; // Simple correction/suggestion
+        public static final int KIND_COMPLETION = 2; // Completion (suggestion with appended chars)
+        public static final int KIND_WHITELIST = 3; // Whitelisted word
+        public static final int KIND_BLACKLIST = 4; // Blacklisted word
+        public static final int KIND_HARDCODED = 5; // Hardcoded suggestion, e.g. punctuation
+        public static final int KIND_APP_DEFINED = 6; // Suggested by the application
         private final String mWordStr;
         public final CharSequence mWord;
         public final int mScore;
+        public final int mKind;
         public final int mCodePointCount;
         private String mDebugString = "";
 
-        public SuggestedWordInfo(final CharSequence word, final int score) {
+        public SuggestedWordInfo(final CharSequence word, final int score, final int kind) {
             mWordStr = word.toString();
             mWord = word;
             mScore = score;
+            mKind = kind;
             mCodePointCount = mWordStr.codePointCount(0, mWordStr.length());
         }
 
