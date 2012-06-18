@@ -106,8 +106,8 @@
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Su tastiera principale"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Su tastiera simboli"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Non attivo"</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mic su tastiera principale"</string>
-    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mic su tastiera simboli"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Microfono su tastiera principale"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Microfono su tastiera simboli"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Comandi vocali disatt."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configura metodi di immissione"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Lingue comandi"</string>
@@ -140,6 +140,6 @@
     <string name="not_now" msgid="6172462888202790482">"Non ora"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Esiste già uno stile di inuput uguale: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modalità Studio sull\'usabilità"</string>
-    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Impostazioni durata vibrazione alla pressione di un tasto"</string>
-    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Impostazioni volume audio alla pressione di un tasto"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Durata vibrazione alla pressione tasto"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Volume audio alla pressione di un tasto"</string>
 </resources>
