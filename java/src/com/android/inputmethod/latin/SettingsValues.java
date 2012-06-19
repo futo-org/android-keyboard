@@ -207,9 +207,11 @@ public class SettingsValues {
     }
 
     private int createCorrectionMode() {
-        final boolean shouldAutoCorrect = mAutoCorrectEnabled
-                && !mInputAttributes.mInputTypeNoAutoCorrect;
-        return shouldAutoCorrect ? Suggest.CORRECTION_FULL : Suggest.CORRECTION_NONE;
+        if (mAutoCorrectEnabled && !mInputAttributes.mInputTypeNoAutoCorrect) {
+            return Suggest.CORRECTION_FULL;
+        } else {
+            return Suggest.CORRECTION_NONE;
+        }
     }
 
     private int createSuggestionVisibility(final Resources res) {

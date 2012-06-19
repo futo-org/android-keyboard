@@ -249,10 +249,18 @@ public class Suggest implements Dictionary.WordCallback {
                 true /* isPrediction */);
     }
 
-    // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
+    // Wrapper for test compatibility. TODO: remove this method
     public SuggestedWords getSuggestedWords(
             final WordComposer wordComposer, CharSequence prevWordForBigram,
             final ProximityInfo proximityInfo, final int correctionMode) {
+        return getSuggestedWords(wordComposer, prevWordForBigram, proximityInfo,
+                Suggest.CORRECTION_FULL == correctionMode);
+    }
+
+    // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
+    public SuggestedWords getSuggestedWords(
+            final WordComposer wordComposer, CharSequence prevWordForBigram,
+            final ProximityInfo proximityInfo, final boolean isCorrectionEnabled) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         mIsFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
         mIsAllUpperCase = wordComposer.isAllUpperCase();
@@ -267,7 +275,7 @@ public class Suggest implements Dictionary.WordCallback {
         LatinImeLogger.onAddSuggestedWord(typedWord, Suggest.DIC_USER_TYPED, Dictionary.UNIGRAM);
         mConsideredWord = consideredWord;
 
-        if (wordComposer.size() <= 1 && (correctionMode == CORRECTION_FULL)) {
+        if (wordComposer.size() <= 1 && isCorrectionEnabled) {
             // At first character typed, search only the bigrams
             mBigramSuggestions = new ArrayList<SuggestedWordInfo>(PREF_MAX_BIGRAMS);
 
@@ -324,7 +332,7 @@ public class Suggest implements Dictionary.WordCallback {
                 mIsFirstCharCapitalized, mWhiteListDictionary.getWhitelistedWord(consideredWord));
 
         final boolean hasAutoCorrection;
-        if (CORRECTION_FULL == correctionMode) {
+        if (isCorrectionEnabled) {
             final CharSequence autoCorrection =
                     AutoCorrection.computeAutoCorrectionWord(mUnigramDictionaries, wordComposer,
                             mSuggestions, consideredWord, mAutoCorrectionThreshold,
@@ -374,7 +382,7 @@ public class Suggest implements Dictionary.WordCallback {
                 && hasMainDictionary();
 
         boolean autoCorrectionAvailable = hasAutoCorrection;
-        if (correctionMode == CORRECTION_FULL) {
+        if (isCorrectionEnabled) {
             autoCorrectionAvailable |= !allowsToBeAutoCorrected;
         }
         // Don't auto-correct words with multiple capital letter
