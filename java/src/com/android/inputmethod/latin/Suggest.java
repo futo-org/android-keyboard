@@ -39,9 +39,10 @@ public class Suggest implements Dictionary.WordCallback {
 
     public static final int APPROX_MAX_WORD_LENGTH = 32;
 
+    // TODO: rename this to CORRECTION_OFF
     public static final int CORRECTION_NONE = 0;
+    // TODO: rename this to CORRECTION_ON
     public static final int CORRECTION_FULL = 1;
-    public static final int CORRECTION_FULL_BIGRAM = 2;
 
     // It seems the following values are only used for logging.
     public static final int DIC_USER_TYPED = 0;
@@ -266,7 +267,7 @@ public class Suggest implements Dictionary.WordCallback {
         LatinImeLogger.onAddSuggestedWord(typedWord, Suggest.DIC_USER_TYPED, Dictionary.UNIGRAM);
         mConsideredWord = consideredWord;
 
-        if (wordComposer.size() <= 1 && (correctionMode == CORRECTION_FULL_BIGRAM)) {
+        if (wordComposer.size() <= 1 && (correctionMode == CORRECTION_FULL)) {
             // At first character typed, search only the bigrams
             mBigramSuggestions = new ArrayList<SuggestedWordInfo>(PREF_MAX_BIGRAMS);
 
@@ -323,7 +324,7 @@ public class Suggest implements Dictionary.WordCallback {
                 mIsFirstCharCapitalized, mWhiteListDictionary.getWhitelistedWord(consideredWord));
 
         final boolean hasAutoCorrection;
-        if (CORRECTION_FULL == correctionMode || CORRECTION_FULL_BIGRAM == correctionMode) {
+        if (CORRECTION_FULL == correctionMode) {
             final CharSequence autoCorrection =
                     AutoCorrection.computeAutoCorrectionWord(mUnigramDictionaries, wordComposer,
                             mSuggestions, consideredWord, mAutoCorrectionThreshold,
@@ -373,7 +374,7 @@ public class Suggest implements Dictionary.WordCallback {
                 && hasMainDictionary();
 
         boolean autoCorrectionAvailable = hasAutoCorrection;
-        if (correctionMode == CORRECTION_FULL || correctionMode == CORRECTION_FULL_BIGRAM) {
+        if (correctionMode == CORRECTION_FULL) {
             autoCorrectionAvailable |= !allowsToBeAutoCorrected;
         }
         // Don't auto-correct words with multiple capital letter
