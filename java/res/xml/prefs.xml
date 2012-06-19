@@ -81,6 +81,12 @@
         android:title="@string/misc_category"
         android:key="misc_settings">
         <CheckBoxPreference
+            android:key="next_word_prediction"
+            android:title="@string/bigram_prediction"
+            android:summary="@string/bigram_prediction_summary"
+            android:persistent="true"
+            android:defaultValue="true" />
+        <CheckBoxPreference
             android:key="usability_study_mode"
             android:title="@string/prefs_usability_study_mode"
             android:persistent="true"
@@ -112,12 +118,6 @@
                 android:key="pref_key_use_contacts_dict"
                 android:title="@string/use_contacts_dict"
                 android:summary="@string/use_contacts_dict_summary"
-                android:persistent="true"
-                android:defaultValue="true" />
-            <CheckBoxPreference
-                android:key="next_word_prediction"
-                android:title="@string/bigram_prediction"
-                android:summary="@string/bigram_prediction_summary"
                 android:persistent="true"
                 android:defaultValue="true" />
             <PreferenceScreen
