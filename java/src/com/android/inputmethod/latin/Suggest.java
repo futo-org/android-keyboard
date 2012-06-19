@@ -249,14 +249,6 @@ public class Suggest implements Dictionary.WordCallback {
                 true /* isPrediction */);
     }
 
-    // Wrapper for test compatibility. TODO: remove this method
-    public SuggestedWords getSuggestedWords(
-            final WordComposer wordComposer, CharSequence prevWordForBigram,
-            final ProximityInfo proximityInfo, final int correctionMode) {
-        return getSuggestedWords(wordComposer, prevWordForBigram, proximityInfo,
-                Suggest.CORRECTION_FULL == correctionMode);
-    }
-
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
     public SuggestedWords getSuggestedWords(
             final WordComposer wordComposer, CharSequence prevWordForBigram,
