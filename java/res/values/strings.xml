@@ -85,11 +85,6 @@
     <!-- Description for option enabling or disabling the use of names of people in Contacts for suggestion and correction [CHAR LIMIT=65] -->
     <string name="use_contacts_dict_summary">Use names from Contacts for suggestions and corrections</string>
 
-    <!-- Option name for enabling insertion of suggestion spans (advanced option) [CHAR LIMIT=25] -->
-    <string name="enable_span_insert">Enable recorrections</string>
-    <!-- Option summary for enabling insertion of suggestion spans (advanced option) [CHAR LIMIT=65] -->
-    <string name="enable_span_insert_summary">Set suggestions for recorrections</string>
-
     <!-- Option to enable auto capitalization of sentences -->
     <string name="auto_cap">Auto-capitalization</string>
 
@@ -120,14 +115,10 @@
     <!-- Option to suggest auto correction suggestions very aggressively. Auto-corrects to a word which has even large edit distance from typed word. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_very_aggeressive">Very aggressive</string>
 
-    <!-- Option to enable next word correction -->
-    <string name="bigram_suggestion">Next word suggestions</string>
-    <!-- Option to enable next word suggestion. This uses the previous word in an attempt to improve the suggestions quality -->
-    <string name="bigram_suggestion_summary">Use previous word to improve suggestions</string>
-    <!-- Option to enable using next word prediction -->
-    <string name="bigram_prediction">Next word prediction</string>
-    <!-- Description for "next word prediction" option. This displays suggestions even when there is no input, based on the previous word. -->
-    <string name="bigram_prediction_summary">Use previous word also for prediction</string>
+    <!-- Option to enable using next word suggestions. After the user types a space, with this option on, the keyboard will try to predict the next word. -->
+    <string name="bigram_prediction">Next word suggestions</string>
+    <!-- Description for "next word suggestion" option. This displays suggestions even when there is no input, based on the previous word. -->
+    <string name="bigram_prediction_summary">Based on previous word</string>
 
     <!-- Indicates that a word has been added to the dictionary -->
     <string name="added_word"><xliff:g id="word">%s</xliff:g> : Saved</string>
