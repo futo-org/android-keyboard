@@ -69,9 +69,7 @@ public class Settings extends InputMethodSettingsFragment
     public static final String PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY =
             "pref_key_preview_popup_dismiss_delay";
     public static final String PREF_KEY_USE_CONTACTS_DICT = "pref_key_use_contacts_dict";
-    public static final String PREF_BIGRAM_SUGGESTION = "next_word_suggestion";
     public static final String PREF_BIGRAM_PREDICTIONS = "next_word_prediction";
-    public static final String PREF_KEY_ENABLE_SPAN_INSERT = "enable_span_insert";
     public static final String PREF_VIBRATION_DURATION_SETTINGS =
             "pref_vibration_duration_settings";
     public static final String PREF_KEYPRESS_SOUND_VOLUME =
@@ -87,9 +85,7 @@ public class Settings extends InputMethodSettingsFragment
     private ListPreference mShowCorrectionSuggestionsPreference;
     private ListPreference mAutoCorrectionThresholdPreference;
     private ListPreference mKeyPreviewPopupDismissDelay;
-    // Suggestion: use bigrams to adjust scores of suggestions obtained from unigram dictionary
-    private CheckBoxPreference mBigramSuggestion;
-    // Prediction: use bigrams to predict the next word when there is no input for it yet
+    // Use bigrams to predict the next word when there is no input for it yet
     private CheckBoxPreference mBigramPrediction;
     private Preference mDebugSettingsPreference;
 
@@ -100,7 +96,6 @@ public class Settings extends InputMethodSettingsFragment
         final String autoCorrectionOff = getResources().getString(
                 R.string.auto_correction_threshold_mode_index_off);
         final String currentSetting = mAutoCorrectionThresholdPreference.getValue();
-        mBigramSuggestion.setEnabled(!currentSetting.equals(autoCorrectionOff));
         if (null != mBigramPrediction) {
             mBigramPrediction.setEnabled(!currentSetting.equals(autoCorrectionOff));
         }
@@ -124,7 +119,6 @@ public class Settings extends InputMethodSettingsFragment
 
         mAutoCorrectionThresholdPreference =
                 (ListPreference) findPreference(PREF_AUTO_CORRECTION_THRESHOLD);
-        mBigramSuggestion = (CheckBoxPreference) findPreference(PREF_BIGRAM_SUGGESTION);
         mBigramPrediction = (CheckBoxPreference) findPreference(PREF_BIGRAM_PREDICTIONS);
         mDebugSettingsPreference = findPreference(PREF_DEBUG_SETTINGS);
         if (mDebugSettingsPreference != null) {
@@ -149,12 +143,9 @@ public class Settings extends InputMethodSettingsFragment
             generalSettings.removePreference(mVoicePreference);
         }
 
-        final PreferenceGroup advancedSettings =
-                (PreferenceGroup) findPreference(PREF_ADVANCED_SETTINGS);
-        // Remove those meaningless options for now. TODO: delete them for good
-        advancedSettings.removePreference(findPreference(PREF_BIGRAM_SUGGESTION));
-        advancedSettings.removePreference(findPreference(PREF_KEY_ENABLE_SPAN_INSERT));
         if (!VibratorUtils.getInstance(context).hasVibrator()) {
+            final PreferenceGroup advancedSettings =
+                    (PreferenceGroup) findPreference(PREF_ADVANCED_SETTINGS);
             generalSettings.removePreference(findPreference(PREF_VIBRATE_ON));
             if (null != advancedSettings) { // Theoretically advancedSettings cannot be null
                 advancedSettings.removePreference(findPreference(PREF_VIBRATION_DURATION_SETTINGS));
@@ -165,15 +156,6 @@ public class Settings extends InputMethodSettingsFragment
                 R.bool.config_enable_show_popup_on_keypress_option);
         if (!showPopupOption) {
             generalSettings.removePreference(findPreference(PREF_POPUP_ON));
-        }
-
-        final boolean showBigramSuggestionsOption = res.getBoolean(
-                R.bool.config_enable_next_word_suggestions_option);
-        if (!showBigramSuggestionsOption) {
-            textCorrectionGroup.removePreference(mBigramSuggestion);
-            if (null != mBigramPrediction) {
-                textCorrectionGroup.removePreference(mBigramPrediction);
-            }
         }
 
         final CheckBoxPreference includeOtherImesInLanguageSwitchList =

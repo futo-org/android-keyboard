@@ -115,21 +115,9 @@
                 android:persistent="true"
                 android:defaultValue="true" />
             <CheckBoxPreference
-                android:key="next_word_suggestion"
-                android:title="@string/bigram_suggestion"
-                android:summary="@string/bigram_suggestion_summary"
-                android:persistent="true"
-                android:defaultValue="true" />
-            <CheckBoxPreference
                 android:key="next_word_prediction"
                 android:title="@string/bigram_prediction"
                 android:summary="@string/bigram_prediction_summary"
-                android:persistent="true"
-                android:defaultValue="true" />
-            <CheckBoxPreference
-                android:key="enable_span_insert"
-                android:title="@string/enable_span_insert"
-                android:summary="@string/enable_span_insert_summary"
                 android:persistent="true"
                 android:defaultValue="true" />
             <PreferenceScreen
