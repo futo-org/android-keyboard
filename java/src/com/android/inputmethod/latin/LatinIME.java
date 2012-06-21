@@ -1002,8 +1002,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     // This will reset the whole input state to the starting state. It will clear
-    // the composing word, reset the last composed word, tell the inputconnection
-    // and the composingStateManager about it.
+    // the composing word, reset the last composed word, tell the inputconnection about it.
     private void resetEntireInputState() {
         resetComposingState(true /* alsoResetLastComposedWord */);
         updateSuggestions();
