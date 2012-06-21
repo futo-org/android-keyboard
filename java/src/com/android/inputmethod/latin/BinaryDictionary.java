@@ -141,7 +141,6 @@ public class BinaryDictionary extends Dictionary {
                         mBigramScores[j], SuggestedWordInfo.KIND_CORRECTION));
             }
         }
-        Utils.addAllSuggestions(mDicTypeId, Dictionary.BIGRAM, suggestions, callback);
         return suggestions;
     }
 
@@ -168,7 +167,6 @@ public class BinaryDictionary extends Dictionary {
                         mScores[j], SuggestedWordInfo.KIND_CORRECTION));
             }
         }
-        Utils.addAllSuggestions(mDicTypeId, Dictionary.UNIGRAM, suggestions, callback);
         return suggestions;
     }
 

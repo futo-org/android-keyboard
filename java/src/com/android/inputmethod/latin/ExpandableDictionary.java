@@ -262,7 +262,6 @@ public class ExpandableDictionary extends Dictionary {
         }
         final ArrayList<SuggestedWordInfo> suggestions =
                 getWordsInner(codes, prevWordForBigrams, proximityInfo);
-        Utils.addAllSuggestions(mDicTypeId, Dictionary.UNIGRAM, suggestions, callback);
         return suggestions;
     }
 
@@ -618,7 +617,6 @@ public class ExpandableDictionary extends Dictionary {
         if (!reloadDictionaryIfRequired()) {
             final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
             runBigramReverseLookUp(previousWord, suggestions);
-            Utils.addAllSuggestions(mDicTypeId, Dictionary.BIGRAM, suggestions, callback);
             return suggestions;
         }
         return null;
