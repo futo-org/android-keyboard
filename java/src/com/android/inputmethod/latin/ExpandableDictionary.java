@@ -249,8 +249,7 @@ public class ExpandableDictionary extends Dictionary {
 
     @Override
     public ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final WordCallback callback,
-            final ProximityInfo proximityInfo) {
+            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         synchronized (mUpdatingLock) {
             // If we need to update, start off a background task
             if (mRequiresReload) startDictionaryLoadingTaskLocked();

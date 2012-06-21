@@ -147,8 +147,7 @@ public class BinaryDictionary extends Dictionary {
     // proximityInfo and/or prevWordForBigrams may not be null.
     @Override
     public ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final WordCallback callback,
-            final ProximityInfo proximityInfo) {
+            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         final int count = getSuggestions(codes, prevWordForBigrams, proximityInfo, mOutputChars,
                 mScores, mSpaceIndices);
 

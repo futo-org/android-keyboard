@@ -59,17 +59,15 @@ public abstract class Dictionary {
 
     /**
      * Searches for words in the dictionary that match the characters in the composer. Matched
-     * words are added through the callback object.
-     * @param composer the key sequence to match
+     * words are returned as an ArrayList.
+     * @param composer the key sequence to match with coordinate info, as a WordComposer
      * @param prevWordForBigrams the previous word, or null if none
-     * @param callback the callback object to send matched words to as possible candidates
      * @param proximityInfo the object for key proximity. May be ignored by some implementations.
      * @return the list of suggestions
      * @see WordCallback#addWord(char[], int, int, int, int, int)
      */
     abstract public ArrayList<SuggestedWordInfo> getWords(final WordComposer composer,
-            final CharSequence prevWordForBigrams, final WordCallback callback,
-            final ProximityInfo proximityInfo);
+            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo);
 
     /**
      * Searches for pairs in the bigram dictionary that matches the previous word and all the
