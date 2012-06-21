@@ -108,7 +108,7 @@ public class BinaryDictionary extends Dictionary {
 
     @Override
     public ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
-            final CharSequence previousWord, final WordCallback callback) {
+            final CharSequence previousWord) {
         if (mNativeDict == 0) return null;
 
         int[] codePoints = StringUtils.toCodePointArray(previousWord.toString());

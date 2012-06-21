@@ -219,17 +219,17 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     @Override
     public ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
-            final CharSequence previousWord, final WordCallback callback) {
+            final CharSequence previousWord) {
         asyncReloadDictionaryIfRequired();
-        return getBigramsInner(codes, previousWord, callback);
+        return getBigramsInner(codes, previousWord);
     }
 
     protected ArrayList<SuggestedWordInfo> getBigramsInner(final WordComposer codes,
-            final CharSequence previousWord, final WordCallback callback) {
+            final CharSequence previousWord) {
         if (mLocalDictionaryController.tryLock()) {
             try {
                 if (mBinaryDictionary != null) {
-                    return mBinaryDictionary.getBigrams(codes, previousWord, callback);
+                    return mBinaryDictionary.getBigrams(codes, previousWord);
                 }
             } finally {
                 mLocalDictionaryController.unlock();

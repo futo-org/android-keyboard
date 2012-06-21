@@ -70,15 +70,13 @@ public abstract class Dictionary {
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo);
 
     /**
-     * Searches for pairs in the bigram dictionary that matches the previous word and all the
-     * possible words following are added through the callback object.
+     * Searches for pairs in the bigram dictionary that matches the previous word.
      * @param composer the key sequence to match
      * @param previousWord the word before
-     * @param callback the callback object to send possible word following previous word
      * @return the list of suggestions
      */
     public abstract ArrayList<SuggestedWordInfo> getBigrams(final WordComposer composer,
-            final CharSequence previousWord, final WordCallback callback);
+            final CharSequence previousWord);
 
     /**
      * Checks if the given word occurs in the dictionary

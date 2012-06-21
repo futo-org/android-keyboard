@@ -789,7 +789,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                     dictInfo = mDictionaryPool.takeOrGetNull();
                     if (null == dictInfo) return getNotInDictEmptySuggestions();
                     final ArrayList<SuggestedWordInfo> suggestions = dictInfo.mDictionary.getWords(
-                            composer, prevWord, suggestionsGatherer, dictInfo.mProximityInfo);
+                            composer, prevWord, dictInfo.mProximityInfo);
                     for (final SuggestedWordInfo suggestion : suggestions) {
                         final String suggestionStr = suggestion.mWord.toString();
                         suggestionsGatherer.oldAddWord(suggestionStr.toCharArray(), null, 0,

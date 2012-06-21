@@ -263,10 +263,9 @@ public class Suggest implements Dictionary.WordCallback {
                     final int dicTypeId = sDictKeyToDictIndex.get(key);
                     final Dictionary dictionary = mBigramDictionaries.get(key);
                     final ArrayList<SuggestedWordInfo> suggestions =
-                            dictionary.getBigrams(wordComposer, prevWordForBigram, this);
+                            dictionary.getBigrams(wordComposer, prevWordForBigram);
                     if (null != lowerPrevWord) {
-                        suggestions.addAll(dictionary.getBigrams(wordComposer, lowerPrevWord,
-                                this));
+                        suggestions.addAll(dictionary.getBigrams(wordComposer, lowerPrevWord));
                     }
                     for (final SuggestedWordInfo suggestion : suggestions) {
                         final String suggestionStr = suggestion.mWord.toString();

@@ -72,18 +72,18 @@ public class DictionaryCollection extends Dictionary {
 
     @Override
     public ArrayList<SuggestedWordInfo> getBigrams(final WordComposer composer,
-            final CharSequence previousWord, final WordCallback callback) {
+            final CharSequence previousWord) {
         final CopyOnWriteArrayList<Dictionary> dictionaries = mDictionaries;
         if (dictionaries.isEmpty()) return null;
         // To avoid creating unnecessary objects, we get the list out of the first
         // dictionary and add the rest to it if not null, hence the get(0)
         ArrayList<SuggestedWordInfo> suggestions = dictionaries.get(0).getBigrams(composer,
-                previousWord, callback);
+                previousWord);
         if (null == suggestions) suggestions = new ArrayList<SuggestedWordInfo>();
         final int length = dictionaries.size();
         for (int i = 0; i < length; ++ i) {
             final ArrayList<SuggestedWordInfo> sugg =
-                    dictionaries.get(i).getBigrams(composer, previousWord, callback);
+                   dictionaries.get(i).getBigrams(composer, previousWord);
             if (null != sugg) suggestions.addAll(sugg);
         }
         return suggestions;

@@ -612,7 +612,7 @@ public class ExpandableDictionary extends Dictionary {
 
     @Override
     public ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
-            final CharSequence previousWord, final WordCallback callback) {
+            final CharSequence previousWord) {
         if (!reloadDictionaryIfRequired()) {
             final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
             runBigramReverseLookUp(previousWord, suggestions);
