@@ -1957,7 +1957,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // expect to receive non-words.
         if (!mCurrentSettings.mCorrectionEnabled) return null;
 
-        if (mUserHistoryDictionary != null) {
+        final UserHistoryDictionary userHistoryDictionary = mUserHistoryDictionary;
+        if (userHistoryDictionary != null) {
             final CharSequence prevWord
                     = mConnection.getPreviousWord(mCurrentSettings.mWordSeparators);
             final String secondWord;
@@ -1972,7 +1973,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final int maxFreq = AutoCorrection.getMaxFrequency(
                     mSuggest.getUnigramDictionaries(), suggestion);
             if (maxFreq == 0) return null;
-            mUserHistoryDictionary.addToUserHistory(null == prevWord ? null : prevWord.toString(),
+            userHistoryDictionary.addToUserHistory(null == prevWord ? null : prevWord.toString(),
                     secondWord, maxFreq > 0);
             return prevWord;
         }
