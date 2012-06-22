@@ -379,29 +379,43 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mCurrentLogUnit.addLogAtom(keys, values, false);
     }
 
-    private boolean isInDictionary(CharSequence word) {
-        return (mDictionary != null) && (mDictionary.isValidWord(word));
-    }
-
-    /**
-     * Write out enqueued LogEvents to the log, filtered for privacy.
-     *
-     * If word is in the dictionary, then it is not privacy-sensitive and all LogEvents related to
-     * it can be written to the log.  If the word is not in the dictionary, then it may correspond
-     * to a proper name, which might reveal private information, so neither the word nor any
-     * information related to the word (e.g. the down/motion/up coordinates) should be revealed.
-     * These LogEvents have been marked as privacy-sensitive; non privacy-sensitive events are still
-     * written out.
-     *
-     * @param word the word to be checked for inclusion in the dictionary
-     */
-    /* package for test */ synchronized void flushQueue(CharSequence word) {
-        if (isAllowedToLog()) {
-            // check for dictionary
+    /* package for test */ boolean isPrivacyThreat(String word) {
+        // currently: word not in dictionary or contains numbers.
+        if (TextUtils.isEmpty(word)) {
+            return false;
+        }
+        final int length = word.length();
+        boolean hasLetter = false;
+        for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
+            final int codePoint = Character.codePointAt(word, i);
+            if (Character.isDigit(codePoint)) {
+                return true;
+            }
+            if (Character.isLetter(codePoint)) {
+                hasLetter = true;
+                break; // Word may contain digits, but will only be allowed if in the dictionary.
+            }
+        }
+        if (hasLetter) {
             if (mDictionary == null && mSuggest != null && mSuggest.hasMainDictionary()) {
                 mDictionary = mSuggest.getMainDictionary();
             }
-            mCurrentLogUnit.setIsPrivacySafe(word != null && isInDictionary(word));
+            if (mDictionary == null) {
+                // Can't access dictionary.  Assume privacy threat.
+                return true;
+            }
+            return !(mDictionary.isValidWord(word));
+        }
+        // No letters, no numbers.  Punctuation, space, or something else.
+        return false;
+    }
+
+    /**
+     * Write out enqueued LogEvents to the log, possibly dropping privacy sensitive events.
+     */
+    /* package for test */ synchronized void flushQueue(boolean removePotentiallyPrivateEvents) {
+        if (isAllowedToLog()) {
+            mCurrentLogUnit.setRemovePotentiallyPrivateEvents(removePotentiallyPrivateEvents);
             mLoggingHandler.post(mCurrentLogUnit);
             mCurrentLogUnit = new LogUnit();
         }
@@ -513,7 +527,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         private final List<String[]> mKeysList = new ArrayList<String[]>();
         private final List<Object[]> mValuesList = new ArrayList<Object[]>();
         private final List<Boolean> mIsPotentiallyPrivate = new ArrayList<Boolean>();
-        private boolean mIsPrivacySafe = false;
+        private boolean mRemovePotentiallyPrivateEvents = true;
 
         private void addLogAtom(final String[] keys, final Object[] values,
                 final Boolean isPotentiallyPrivate) {
@@ -522,15 +536,15 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             mIsPotentiallyPrivate.add(isPotentiallyPrivate);
         }
 
-        void setIsPrivacySafe(boolean isPrivacySafe) {
-            mIsPrivacySafe = isPrivacySafe;
+        void setRemovePotentiallyPrivateEvents(boolean removePotentiallyPrivateEvents) {
+            mRemovePotentiallyPrivateEvents = removePotentiallyPrivateEvents;
         }
 
         @Override
         public void run() {
             final int numAtoms = mKeysList.size();
             for (int atomIndex = 0; atomIndex < numAtoms; atomIndex++) {
-                if (!mIsPrivacySafe && mIsPotentiallyPrivate.get(atomIndex)) {
+                if (mRemovePotentiallyPrivateEvents && mIsPotentiallyPrivate.get(atomIndex)) {
                     continue;
                 }
                 final String[] keys = mKeysList.get(atomIndex);
@@ -548,7 +562,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         StringBuilder sb = null;
         final int length = s.length();
         for (int i = 0; i < length; i = s.offsetByCodePoints(i, 1)) {
-            int codePoint = Character.codePointAt(s, i);
+            final int codePoint = Character.codePointAt(s, i);
             if (Character.isDigit(codePoint)) {
                 if (sb == null) {
                     sb = new StringBuilder(length);
@@ -638,19 +652,20 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueuePotentiallyPrivateEvent(
                 EVENTKEYS_LATINIME_COMMITCURRENTAUTOCORRECTION, values);
-        researchLogger.flushQueue(autoCorrection);
+        researchLogger.flushQueue(researchLogger.isPrivacyThreat(autoCorrection));
     }
 
     private static final String[] EVENTKEYS_LATINIME_COMMITTEXT = {
         "LatinIMECommitText", "typedWord"
     };
     public static void latinIME_commitText(final CharSequence typedWord) {
+        final String scrubbedWord = scrubDigitsFromString(typedWord.toString());
         final Object[] values = {
-            scrubDigitsFromString(typedWord.toString())
+            scrubbedWord
         };
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_COMMITTEXT, values);
-        researchLogger.flushQueue(typedWord);
+        researchLogger.flushQueue(researchLogger.isPrivacyThreat(scrubbedWord));
     }
 
     private static final String[] EVENTKEYS_LATINIME_DELETESURROUNDINGTEXT = {
@@ -728,7 +743,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             }
             final ResearchLogger researchLogger = getInstance();
             researchLogger.enqueueEvent(EVENTKEYS_LATINIME_ONWINDOWHIDDEN, values);
-            researchLogger.flushQueue(null);
+            researchLogger.flushQueue(true); // Play it safe.  Remove privacy-sensitive events.
         }
     }
 
@@ -809,7 +824,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueuePotentiallyPrivateEvent(
                 EVENTKEYS_LATINIME_PICKAPPLICATIONSPECIFIEDCOMPLETION, values);
-        researchLogger.flushQueue(cs.toString());
+        researchLogger.flushQueue(researchLogger.isPrivacyThreat(cs.toString()));
     }
 
     private static final String[] EVENTKEYS_LATINIME_PICKSUGGESTIONMANUALLY = {
@@ -824,7 +839,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_PICKSUGGESTIONMANUALLY,
                 values);
-        researchLogger.flushQueue(suggestion.toString());
+        researchLogger.flushQueue(researchLogger.isPrivacyThreat(suggestion.toString()));
     }
 
     private static final String[] EVENTKEYS_LATINIME_PUNCTUATIONSUGGESTION = {
