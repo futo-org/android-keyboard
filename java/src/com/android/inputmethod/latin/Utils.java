@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -529,5 +530,15 @@ public class Utils {
             builder.append(String.valueOf(time));
         }
         return builder.toString();
+    }
+
+    public static void addAllSuggestions(final int dicTypeId, final int dataType,
+            final ArrayList<SuggestedWords.SuggestedWordInfo> suggestions,
+            final Dictionary.WordCallback callback) {
+        for (SuggestedWordInfo suggestion : suggestions) {
+            final String suggestionStr = suggestion.mWord.toString();
+            callback.addWord(suggestionStr.toCharArray(), 0, suggestionStr.length(),
+                    suggestion.mScore, dicTypeId, dataType);
+        }
     }
 }

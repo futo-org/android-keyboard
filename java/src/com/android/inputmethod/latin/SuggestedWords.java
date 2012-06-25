@@ -129,10 +129,11 @@ public class SuggestedWords {
         public static final int KIND_BLACKLIST = 4; // Blacklisted word
         public static final int KIND_HARDCODED = 5; // Hardcoded suggestion, e.g. punctuation
         public static final int KIND_APP_DEFINED = 6; // Suggested by the application
+        public static final int KIND_SHORTCUT = 7; // A shortcut
         private final String mWordStr;
         public final CharSequence mWord;
         public final int mScore;
-        public final int mKind;
+        public final int mKind; // one of the KIND_* constants above
         public final int mCodePointCount;
         private String mDebugString = "";
 

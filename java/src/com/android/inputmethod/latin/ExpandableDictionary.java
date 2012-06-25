@@ -21,6 +21,7 @@ import android.content.Context;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.UserHistoryForgettingCurveUtils.ForgettingCurveParams;
 
 import java.util.ArrayList;
@@ -258,12 +259,14 @@ public class ExpandableDictionary extends Dictionary {
         if (codes.size() >= BinaryDictionary.MAX_WORD_LENGTH) {
             return;
         }
-        getWordsInner(codes, prevWordForBigrams, callback, proximityInfo);
+        final ArrayList<SuggestedWordInfo> suggestions =
+                getWordsInner(codes, prevWordForBigrams, proximityInfo);
+        Utils.addAllSuggestions(mDicTypeId, Dictionary.UNIGRAM, suggestions, callback);
     }
 
-    protected final void getWordsInner(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final WordCallback callback,
-            final ProximityInfo proximityInfo) {
+    protected final ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer codes,
+            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
+        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
         mInputLength = codes.size();
         if (mCodes.length < mInputLength) mCodes = new int[mInputLength][];
         final int[] xCoordinates = codes.getXCoordinates();
@@ -281,10 +284,11 @@ public class ExpandableDictionary extends Dictionary {
             proximityInfo.fillArrayWithNearestKeyCodes(x, y, codes.getCodeAt(i), mCodes[i]);
         }
         mMaxDepth = mInputLength * 3;
-        getWordsRec(mRoots, codes, mWordBuilder, 0, false, 1, 0, -1, callback);
+        getWordsRec(mRoots, codes, mWordBuilder, 0, false, 1, 0, -1, suggestions);
         for (int i = 0; i < mInputLength; i++) {
-            getWordsRec(mRoots, codes, mWordBuilder, 0, false, 1, 0, i, callback);
+            getWordsRec(mRoots, codes, mWordBuilder, 0, false, 1, 0, i, suggestions);
         }
+        return suggestions;
     }
 
     @Override
@@ -368,24 +372,27 @@ public class ExpandableDictionary extends Dictionary {
      * @param word the word to insert, as an array of code points
      * @param depth the depth of the node in the tree
      * @param finalFreq the frequency for this word
+     * @param suggestions the suggestion collection to add the suggestions to
      * @return whether there is still space for more words.
-     * @see Dictionary.WordCallback#addWord(char[], int, int, int, int, int)
      */
     private boolean addWordAndShortcutsFromNode(final Node node, final char[] word, final int depth,
-            final int finalFreq, final WordCallback callback) {
+            final int finalFreq, final ArrayList<SuggestedWordInfo> suggestions) {
         if (finalFreq > 0 && !node.mShortcutOnly) {
-            if (!callback.addWord(word, 0, depth + 1, finalFreq, mDicTypeId, Dictionary.UNIGRAM)) {
-                return false;
-            }
+            // Use KIND_CORRECTION always. This dictionary does not really have a notion of
+            // COMPLETION against CORRECTION; we could artificially add one by looking at
+            // the respective size of the typed word and the suggestion if it matters sometime
+            // in the future.
+            suggestions.add(new SuggestedWordInfo(new String(word, 0, depth + 1), finalFreq,
+                    SuggestedWordInfo.KIND_CORRECTION));
+            if (suggestions.size() >= Suggest.MAX_SUGGESTIONS) return false;
         }
         if (null != node.mShortcutTargets) {
             final int length = node.mShortcutTargets.size();
             for (int shortcutIndex = 0; shortcutIndex < length; ++shortcutIndex) {
                 final char[] shortcut = node.mShortcutTargets.get(shortcutIndex);
-                if (!callback.addWord(shortcut, 0, shortcut.length, finalFreq, mDicTypeId,
-                        Dictionary.UNIGRAM)) {
-                    return false;
-                }
+                suggestions.add(new SuggestedWordInfo(new String(shortcut, 0, shortcut.length),
+                        finalFreq, SuggestedWordInfo.KIND_SHORTCUT));
+                if (suggestions.size() > Suggest.MAX_SUGGESTIONS) return false;
             }
         }
         return true;
@@ -408,12 +415,12 @@ public class ExpandableDictionary extends Dictionary {
      * case we skip over some punctuations such as apostrophe in the traversal. That is, if you type
      * "wouldve", it could be matching "would've", so the depth will be one more than the
      * inputIndex
-     * @param callback the callback class for adding a word
+     * @param suggestions the list in which to add suggestions
      */
     // TODO: Share this routine with the native code for BinaryDictionary
     protected void getWordsRec(NodeArray roots, final WordComposer codes, final char[] word,
             final int depth, final boolean completion, int snr, int inputIndex, int skipPos,
-            WordCallback callback) {
+            final ArrayList<SuggestedWordInfo> suggestions) {
         final int count = roots.mLength;
         final int codeSize = mInputLength;
         // Optimization: Prune out words that are too long compared to how much was typed.
@@ -443,14 +450,14 @@ public class ExpandableDictionary extends Dictionary {
                     } else {
                         finalFreq = computeSkippedWordFinalFreq(freq, snr, mInputLength);
                     }
-                    if (!addWordAndShortcutsFromNode(node, word, depth, finalFreq, callback)) {
+                    if (!addWordAndShortcutsFromNode(node, word, depth, finalFreq, suggestions)) {
                         // No space left in the queue, bail out
                         return;
                     }
                 }
                 if (children != null) {
                     getWordsRec(children, codes, word, depth + 1, true, snr, inputIndex,
-                            skipPos, callback);
+                            skipPos, suggestions);
                 }
             } else if ((c == Keyboard.CODE_SINGLE_QUOTE
                     && currentChars[0] != Keyboard.CODE_SINGLE_QUOTE) || depth == skipPos) {
@@ -458,7 +465,7 @@ public class ExpandableDictionary extends Dictionary {
                 word[depth] = c;
                 if (children != null) {
                     getWordsRec(children, codes, word, depth + 1, completion, snr, inputIndex,
-                            skipPos, callback);
+                            skipPos, suggestions);
                 }
             } else {
                 // Don't use alternatives if we're looking for missing characters
@@ -483,7 +490,7 @@ public class ExpandableDictionary extends Dictionary {
                                             snr * addedAttenuation, mInputLength);
                                 }
                                 if (!addWordAndShortcutsFromNode(node, word, depth, finalFreq,
-                                        callback)) {
+                                        suggestions)) {
                                     // No space left in the queue, bail out
                                     return;
                                 }
@@ -491,12 +498,12 @@ public class ExpandableDictionary extends Dictionary {
                             if (children != null) {
                                 getWordsRec(children, codes, word, depth + 1,
                                         true, snr * addedAttenuation, inputIndex + 1,
-                                        skipPos, callback);
+                                        skipPos, suggestions);
                             }
                         } else if (children != null) {
                             getWordsRec(children, codes, word, depth + 1,
                                     false, snr * addedAttenuation, inputIndex + 1,
-                                    skipPos, callback);
+                                    skipPos, suggestions);
                         }
                     }
                 }
