@@ -306,7 +306,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         // Build the new binary dictionary
         final BinaryDictionary newBinaryDictionary =
                 new BinaryDictionary(mContext, filename, 0, length, true /* useFullEditDistance */,
-                        null);
+                        null, mDicTypeId);
 
         if (mBinaryDictionary != null) {
             // Ensure all threads accessing the current dictionary have finished before swapping in

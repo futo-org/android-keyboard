@@ -34,15 +34,19 @@ class Dictionary {
             int fullWordMultiplier, int maxWordLength, int maxWords);
 
     int getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
-            int *codes, int codesSize, const int32_t* prevWordChars, const int prevWordLength,
-            bool useFullEditDistance, unsigned short *outWords, int *frequencies) const {
+            int *times, int *pointerIds, int *codes, int codesSize, int *prevWordChars,
+            int prevWordLength, int commitPoint, bool isGesture, int dicTypeId,
+            bool useFullEditDistance, unsigned short *outWords,
+            int *frequencies, int *spaceIndices) {
+        int result = 0;
         std::map<int, int> bigramMap;
         uint8_t bigramFilter[BIGRAM_FILTER_BYTE_SIZE];
         mBigramDictionary->fillBigramAddressToFrequencyMapAndFilter(prevWordChars,
                 prevWordLength, &bigramMap, bigramFilter);
-        return mUnigramDictionary->getSuggestions(proximityInfo,
-                xcoordinates, ycoordinates, codes, codesSize, &bigramMap,
-                bigramFilter, useFullEditDistance, outWords, frequencies);
+        result = mUnigramDictionary->getSuggestions(proximityInfo, xcoordinates,
+                ycoordinates, codes, codesSize, &bigramMap, bigramFilter,
+                useFullEditDistance, outWords, frequencies);
+        return result;
     }
 
     int getBigrams(const int32_t *word, int length, int *codes, int codesSize,

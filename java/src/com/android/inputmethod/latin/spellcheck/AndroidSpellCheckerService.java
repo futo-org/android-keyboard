@@ -238,8 +238,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         }
 
         @Override
-        synchronized public boolean addWord(char[] word, int wordOffset, int wordLength, int score,
-                int dicTypeId, int dataType) {
+        synchronized public boolean addWord(char[] word, int[] spaceIndices, int wordOffset,
+                int wordLength, int score, int dicTypeId, int dataType) {
             final int positionIndex = Arrays.binarySearch(mScores, 0, mLength, score);
             // binarySearch returns the index if the element exists, and -<insertion index> - 1
             // if it doesn't. See documentation for binarySearch.

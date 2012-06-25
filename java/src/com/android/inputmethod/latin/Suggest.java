@@ -439,8 +439,8 @@ public class Suggest implements Dictionary.WordCallback {
 
     // TODO: Use codepoint instead of char
     @Override
-    public boolean addWord(final char[] word, final int offset, final int length, int score,
-            final int dicTypeId, final int dataType) {
+    public boolean addWord(final char[] word, int[] indices, final int offset, final int length,
+            int score, final int dicTypeId, final int dataType) {
         int dataTypeForLog = dataType;
         final ArrayList<SuggestedWordInfo> suggestions;
         final int prefMaxSuggestions;

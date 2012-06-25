@@ -59,7 +59,7 @@ public class DictionaryFactory {
             for (final AssetFileAddress f : assetFileList) {
                 final BinaryDictionary binaryDictionary =
                         new BinaryDictionary(context, f.mFilename, f.mOffset, f.mLength,
-                                useFullEditDistance, locale);
+                                useFullEditDistance, locale, Suggest.DIC_MAIN);
                 if (binaryDictionary.isValidDictionary()) {
                     dictList.add(binaryDictionary);
                 }
@@ -112,7 +112,7 @@ public class DictionaryFactory {
                 return null;
             }
             return new BinaryDictionary(context, sourceDir, afd.getStartOffset(), afd.getLength(),
-                    false /* useFullEditDistance */, locale);
+                    false /* useFullEditDistance */, locale, Suggest.DIC_MAIN);
         } catch (android.content.res.Resources.NotFoundException e) {
             Log.e(TAG, "Could not find the resource");
             return null;
@@ -140,7 +140,7 @@ public class DictionaryFactory {
             long startOffset, long length, final boolean useFullEditDistance, Locale locale) {
         if (dictionary.isFile()) {
             return new BinaryDictionary(context, dictionary.getAbsolutePath(), startOffset, length,
-                    useFullEditDistance, locale);
+                    useFullEditDistance, locale, Suggest.DIC_MAIN);
         } else {
             Log.e(TAG, "Could not find the file. path=" + dictionary.getAbsolutePath());
             return null;

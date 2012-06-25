@@ -537,7 +537,7 @@ public class Utils {
             final Dictionary.WordCallback callback) {
         for (SuggestedWordInfo suggestion : suggestions) {
             final String suggestionStr = suggestion.mWord.toString();
-            callback.addWord(suggestionStr.toCharArray(), 0, suggestionStr.length(),
+            callback.addWord(suggestionStr.toCharArray(), null, 0, suggestionStr.length(),
                     suggestion.mScore, dicTypeId, dataType);
         }
     }

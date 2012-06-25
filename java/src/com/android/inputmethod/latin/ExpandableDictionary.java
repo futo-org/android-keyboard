@@ -660,8 +660,9 @@ public class ExpandableDictionary extends Dictionary {
             } while (node != null);
 
             if (freq >= 0) {
-                callback.addWord(mLookedUpString, index, BinaryDictionary.MAX_WORD_LENGTH - index,
-                        freq, mDicTypeId, Dictionary.BIGRAM);
+                callback.addWord(mLookedUpString, null, index,
+                        BinaryDictionary.MAX_WORD_LENGTH - index, freq, mDicTypeId,
+                        Dictionary.BIGRAM);
             }
         }
     }

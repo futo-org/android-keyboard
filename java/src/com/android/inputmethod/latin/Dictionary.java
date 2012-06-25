@@ -41,6 +41,7 @@ public abstract class Dictionary {
          * Adds a word to a list of suggestions. The word is expected to be ordered based on
          * the provided score.
          * @param word the character array containing the word
+         * @param spaceIndices the indices of inserted spaces
          * @param wordOffset starting offset of the word in the character array
          * @param wordLength length of valid characters in the character array
          * @param score the score of occurrence. This is normalized between 1 and 255, but
@@ -49,8 +50,8 @@ public abstract class Dictionary {
          * @param dataType tells type of this data, either UNIGRAM or BIGRAM
          * @return true if the word was added, false if no more words are required
          */
-        boolean addWord(char[] word, int wordOffset, int wordLength, int score, int dicTypeId,
-                int dataType);
+        boolean addWord(char[] word, int[] spaceIndices, int wordOffset, int wordLength, int score,
+                int dicTypeId, int dataType);
     }
 
     /**
