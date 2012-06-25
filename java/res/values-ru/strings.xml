@@ -43,8 +43,8 @@
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Задержка закрытия"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Без задержки"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"По умолчанию"</string>
-    <string name="use_contacts_dict" msgid="4435317977804180815">"Подсказки имен контактов"</string>
-    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Подсказки и исправления на основе имен из контактов"</string>
+    <string name="use_contacts_dict" msgid="4435317977804180815">"Подсказывать имена"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Подсказывать исправления на основе имен из списка контактов"</string>
     <string name="enable_span_insert" msgid="7204653105667167620">"Автоисправление"</string>
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"Показывать варианты исправления"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Заглавные автоматически"</string>
