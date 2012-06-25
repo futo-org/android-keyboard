@@ -139,7 +139,7 @@
     <string name="enable" msgid="5031294444630523247">"Aktiver"</string>
     <string name="not_now" msgid="6172462888202790482">"Ikke nå"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Inndatastilen finnes allerede: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Nyttighetsmodus"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Bruksstudiemodus"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Innstillinger for vibrasjonsvarighet ved tastetrykk"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Innstillinger for lydstyrke ved tastetrykk"</string>
 </resources>
