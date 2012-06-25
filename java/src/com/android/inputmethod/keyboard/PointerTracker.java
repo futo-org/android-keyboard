@@ -148,6 +148,7 @@ public class PointerTracker {
     // true if this pointer has been long-pressed and is showing a more keys panel.
     private boolean mIsShowingMoreKeysPanel;
 
+    // TODO: Remove this variable.
     // true if this pointer is repeatable key
     private boolean mIsRepeatableKey;
 
@@ -319,6 +320,13 @@ public class PointerTracker {
     private void setKeyDetectorInner(KeyDetector keyDetector) {
         mKeyDetector = keyDetector;
         mKeyboard = keyDetector.getKeyboard();
+        final Key newKey = mKeyDetector.detectHitKey(mKeyX, mKeyY);
+        if (newKey != mCurrentKey) {
+            if (mDrawingProxy != null) {
+                setReleasedKeyGraphics(mCurrentKey);
+            }
+            mCurrentKey = newKey;
+        }
         final int keyQuarterWidth = mKeyboard.mMostCommonKeyWidth / 4;
         mKeyQuarterWidthSquared = keyQuarterWidth * keyQuarterWidth;
     }
