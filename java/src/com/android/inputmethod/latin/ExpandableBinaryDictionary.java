@@ -196,22 +196,19 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     @Override
     public ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final WordCallback callback,
-            final ProximityInfo proximityInfo) {
+            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         asyncReloadDictionaryIfRequired();
-        return getWordsInner(codes, prevWordForBigrams, callback, proximityInfo);
+        return getWordsInner(codes, prevWordForBigrams, proximityInfo);
     }
 
     protected final ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final WordCallback callback,
-            final ProximityInfo proximityInfo) {
+            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         // Ensure that there are no concurrent calls to getWords. If there are, do nothing and
         // return.
         if (mLocalDictionaryController.tryLock()) {
             try {
                 if (mBinaryDictionary != null) {
-                    return mBinaryDictionary.getWords(codes, prevWordForBigrams, callback,
-                            proximityInfo);
+                    return mBinaryDictionary.getWords(codes, prevWordForBigrams, proximityInfo);
                 }
             } finally {
                 mLocalDictionaryController.unlock();
