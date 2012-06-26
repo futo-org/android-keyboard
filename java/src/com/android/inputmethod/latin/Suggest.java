@@ -115,6 +115,8 @@ public class Suggest {
     private void initWhitelistAndAutocorrectAndPool(final Context context, final Locale locale) {
         mWhiteListDictionary = new WhitelistDictionary(context, locale);
         addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_WHITELIST, mWhiteListDictionary);
+        // The whitelist dictionary never returns any bigrams, so it's safe to add it here
+        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_WHITELIST, mWhiteListDictionary);
     }
 
     private void initAsynchronously(final Context context, final Locale locale) {
@@ -178,6 +180,8 @@ public class Suggest {
      */
     public void setUserDictionary(UserBinaryDictionary userDictionary) {
         addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_USER, userDictionary);
+        // The user dictionary never returns any bigrams, so it's safe to add it
+        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_USER, userDictionary);
     }
 
     /**
