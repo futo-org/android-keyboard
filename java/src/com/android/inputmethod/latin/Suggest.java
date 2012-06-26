@@ -239,15 +239,19 @@ public class Suggest implements Dictionary.WordCallback {
         if (wordComposer.size() <= 1 && isCorrectionEnabled) {
             // At first character typed, search only the bigrams
             if (!TextUtils.isEmpty(prevWordForBigram)) {
+                final CharSequence lowerPrevWord;
                 if (StringUtils.hasUpperCase(prevWordForBigram)) {
                     // TODO: Must pay attention to locale when changing case.
-                    final CharSequence lowerPrevWord = prevWordForBigram.toString().toLowerCase();
-                    for (final Dictionary dictionary : mBigramDictionaries.values()) {
+                    lowerPrevWord = prevWordForBigram.toString().toLowerCase();
+                } else {
+                    lowerPrevWord = null;
+                }
+                for (final String key : mBigramDictionaries.keySet()) {
+                    final Dictionary dictionary = mBigramDictionaries.get(key);
+                    dictionary.getBigrams(wordComposer, prevWordForBigram, this);
+                    if (null != lowerPrevWord) {
                         dictionary.getBigrams(wordComposer, lowerPrevWord, this);
                     }
-                }
-                for (final Dictionary dictionary : mBigramDictionaries.values()) {
-                    dictionary.getBigrams(wordComposer, prevWordForBigram, this);
                 }
             }
         } else if (wordComposer.size() > 1) {
