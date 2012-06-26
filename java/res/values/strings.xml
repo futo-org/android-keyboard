@@ -305,7 +305,7 @@
     <string name="subtype_locale">Language</string>
     <!-- Title of the spinner for choosing a keyboard layout of custom style in the settings dialog [CHAR LIMIT=15] -->
     <string name="keyboard_layout_set">Layout</string>
-    <!-- The message of the dialog to note that a custom input style needs to be enabled. [CHAR LIMIT=64] -->
+    <!-- The message of the dialog to note that a custom input style needs to be enabled. [CHAR LIMIT=130] -->
     <string name="custom_input_style_note_message">"Your custom input style needs to be enabled before you start using it. Do you want to enable it now?"</string>
     <!-- Title of the button to enable a custom input style entry in the settings dialog [CHAR LIMIT=15] -->
     <string name="enable">Enable</string>
