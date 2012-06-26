@@ -127,9 +127,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         private static final int MSG_TYPING_STATE_EXPIRED = 4;
 
         private final KeyTimerParams mParams;
-        // TODO: Suppress layout changes in key repeat mode
-        // TODO: Remove this variable.
-        private boolean mInKeyRepeat;
 
         public KeyTimerHandler(LatinKeyboardView outerInstance, KeyTimerParams params) {
             super(outerInstance);
@@ -165,7 +162,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         private void startKeyRepeatTimer(PointerTracker tracker, long delay) {
             final Key key = tracker.getKey();
             if (key == null) return;
-            mInKeyRepeat = true;
             sendMessageDelayed(obtainMessage(MSG_REPEAT_KEY, key.mCode, 0, tracker), delay);
         }
 
@@ -175,12 +171,12 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
 
         public void cancelKeyRepeatTimer() {
-            mInKeyRepeat = false;
             removeMessages(MSG_REPEAT_KEY);
         }
 
+        // TODO: Suppress layout changes in key repeat mode
         public boolean isInKeyRepeat() {
-            return mInKeyRepeat;
+            return hasMessages(MSG_REPEAT_KEY);
         }
 
         @Override

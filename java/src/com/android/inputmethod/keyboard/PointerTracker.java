@@ -148,10 +148,6 @@ public class PointerTracker {
     // true if this pointer has been long-pressed and is showing a more keys panel.
     private boolean mIsShowingMoreKeysPanel;
 
-    // TODO: Remove this variable.
-    // true if this pointer is repeatable key
-    private boolean mIsRepeatableKey;
-
     // true if this pointer is in sliding key input
     boolean mIsInSlidingKeyInput;
 
@@ -529,7 +525,6 @@ public class PointerTracker {
                 || mKeyDetector.alwaysAllowsSlidingInput();
         mKeyboardLayoutHasBeenChanged = false;
         mKeyAlreadyProcessed = false;
-        mIsRepeatableKey = false;
         mIsInSlidingKeyInput = false;
         mIgnoreModifierKey = false;
         if (key != null) {
@@ -676,7 +671,7 @@ public class PointerTracker {
         }
         if (mKeyAlreadyProcessed)
             return;
-        if (!mIsRepeatableKey) {
+        if (mCurrentKey != null && !mCurrentKey.isRepeatable()) {
             detectAndSendKey(mCurrentKey, mKeyX, mKeyY);
         }
     }
@@ -722,9 +717,6 @@ public class PointerTracker {
         if (key != null && key.isRepeatable()) {
             onRegisterKey(key);
             mTimerProxy.startKeyRepeatTimer(this);
-            mIsRepeatableKey = true;
-        } else {
-            mIsRepeatableKey = false;
         }
     }
 
