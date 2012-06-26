@@ -222,7 +222,7 @@ public class Suggest {
         mIsFirstCharCapitalized = !isPrediction && wordComposer.isFirstCharCapitalized();
         mIsAllUpperCase = !isPrediction && wordComposer.isAllUpperCase();
         mTrailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
-        final ArrayList<SuggestedWordInfo> suggestions =
+        final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 new ArrayList<SuggestedWordInfo>(MAX_SUGGESTIONS);
 
         final String typedWord = wordComposer.getTypedWord();
@@ -250,11 +250,9 @@ public class Suggest {
                     if (null != lowerPrevWord) {
                         localSuggestions.addAll(dictionary.getBigrams(wordComposer, lowerPrevWord));
                     }
-                    for (final SuggestedWordInfo suggestion : localSuggestions) {
-                        final String suggestionStr = suggestion.mWord.toString();
-                        addWord(suggestionStr, null,
-                                suggestion.mScore, dicTypeId, Dictionary.BIGRAM,
-                                suggestions, consideredWord);
+                    for (final SuggestedWordInfo localSuggestion : localSuggestions) {
+                        addWord(localSuggestion, dicTypeId, Dictionary.BIGRAM,
+                                suggestionsContainer, consideredWord);
                     }
                 }
             }
@@ -278,10 +276,8 @@ public class Suggest {
                 final ArrayList<SuggestedWordInfo> localSuggestions = dictionary.getWords(
                         wordComposerForLookup, prevWordForBigram, proximityInfo);
                 for (final SuggestedWordInfo suggestion : localSuggestions) {
-                    final String suggestionStr = suggestion.mWord.toString();
-                    addWord(suggestionStr, null,
-                            suggestion.mScore, dicTypeId, Dictionary.UNIGRAM,
-                            suggestions, consideredWord);
+                    addWord(suggestion, dicTypeId, Dictionary.UNIGRAM,
+                            suggestionsContainer, consideredWord);
                 }
             }
         }
@@ -293,7 +289,7 @@ public class Suggest {
         if (isCorrectionEnabled) {
             final CharSequence autoCorrection =
                     AutoCorrection.computeAutoCorrectionWord(mDictionaries, wordComposer,
-                            suggestions, consideredWord, mAutoCorrectionThreshold,
+                            suggestionsContainer, consideredWord, mAutoCorrectionThreshold,
                             whitelistedWord);
             hasAutoCorrection = (null != autoCorrection);
         } else {
@@ -306,25 +302,25 @@ public class Suggest {
                 for (int i = mTrailingSingleQuotesCount - 1; i >= 0; --i) {
                     sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
                 }
-                suggestions.add(0, new SuggestedWordInfo(sb.toString(),
+                suggestionsContainer.add(0, new SuggestedWordInfo(sb.toString(),
                         SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST));
             } else {
-                suggestions.add(0, new SuggestedWordInfo(whitelistedWord,
+                suggestionsContainer.add(0, new SuggestedWordInfo(whitelistedWord,
                         SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST));
             }
         }
 
         if (!isPrediction) {
-            suggestions.add(0, new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE,
-                    SuggestedWordInfo.KIND_TYPED));
+            suggestionsContainer.add(0, new SuggestedWordInfo(typedWord,
+                    SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_TYPED));
         }
-        SuggestedWordInfo.removeDups(suggestions);
+        SuggestedWordInfo.removeDups(suggestionsContainer);
 
         final ArrayList<SuggestedWordInfo> suggestionsList;
-        if (DBG && !suggestions.isEmpty()) {
-            suggestionsList = getSuggestionsInfoListWithDebugInfo(typedWord, suggestions);
+        if (DBG && !suggestionsContainer.isEmpty()) {
+            suggestionsList = getSuggestionsInfoListWithDebugInfo(typedWord, suggestionsContainer);
         } else {
-            suggestionsList = suggestions;
+            suggestionsList = suggestionsContainer;
         }
 
         // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
@@ -388,13 +384,14 @@ public class Suggest {
         return suggestionsList;
     }
 
-    public boolean addWord(final String word, int[] indices,
-            int score, final int dicTypeId, final int dataType,
+    public boolean addWord(final SuggestedWordInfo wordInfo,
+            final int dicTypeId, final int dataType,
             final ArrayList<SuggestedWordInfo> suggestions, final String consideredWord) {
         int dataTypeForLog = dataType;
         final int prefMaxSuggestions = MAX_SUGGESTIONS;
-        final int length = word.codePointCount(0, word.length());
 
+        final String word = wordInfo.mWord.toString();
+        final int score = wordInfo.mScore;
         int pos = 0;
 
         // Check if it's the same word, only caps are different
@@ -416,6 +413,7 @@ public class Suggest {
             // Check the last one's score and bail
             if (suggestions.size() >= prefMaxSuggestions
                     && suggestions.get(prefMaxSuggestions - 1).mScore >= score) return true;
+            final int length = word.codePointCount(0, word.length());
             while (pos < suggestions.size()) {
                 final int curScore = suggestions.get(pos).mScore;
                 if (curScore < score
@@ -440,8 +438,7 @@ public class Suggest {
         for (int i = mTrailingSingleQuotesCount - 1; i >= 0; --i) {
             sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
         }
-        // TODO: figure out what type of suggestion this is
-        suggestions.add(pos, new SuggestedWordInfo(sb, score, SuggestedWordInfo.KIND_CORRECTION));
+        suggestions.add(pos, new SuggestedWordInfo(sb, score, wordInfo.mKind));
         if (suggestions.size() > prefMaxSuggestions) {
             suggestions.remove(prefMaxSuggestions);
         } else {
