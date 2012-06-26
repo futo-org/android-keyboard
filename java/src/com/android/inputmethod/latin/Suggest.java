@@ -413,11 +413,11 @@ public class Suggest {
             // Check the last one's score and bail
             if (suggestions.size() >= prefMaxSuggestions
                     && suggestions.get(prefMaxSuggestions - 1).mScore >= score) return true;
-            final int length = Character.codePointCount(word, 0, word.length());
+            final int length = wordInfo.mCodePointCount;
             while (pos < suggestions.size()) {
                 final int curScore = suggestions.get(pos).mScore;
                 if (curScore < score
-                        || (curScore == score && length < suggestions.get(pos).codePointCount())) {
+                        || (curScore == score && length < suggestions.get(pos).mCodePointCount)) {
                     break;
                 }
                 pos++;
