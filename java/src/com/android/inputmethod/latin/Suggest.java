@@ -234,13 +234,22 @@ public class Suggest implements Dictionary.WordCallback {
                 true /* isPrediction */);
     }
 
-    // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
+    // Compatibility for tests. TODO: remove this
     public SuggestedWords getSuggestedWords(
             final WordComposer wordComposer, CharSequence prevWordForBigram,
             final ProximityInfo proximityInfo, final boolean isCorrectionEnabled) {
+        return getSuggestedWords(wordComposer, prevWordForBigram, proximityInfo,
+                isCorrectionEnabled, false);
+    }
+
+    // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
+    public SuggestedWords getSuggestedWords(
+            final WordComposer wordComposer, CharSequence prevWordForBigram,
+            final ProximityInfo proximityInfo, final boolean isCorrectionEnabled,
+            final boolean isPrediction) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
-        mIsFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
-        mIsAllUpperCase = wordComposer.isAllUpperCase();
+        mIsFirstCharCapitalized = !isPrediction && wordComposer.isFirstCharCapitalized();
+        mIsAllUpperCase = !isPrediction && wordComposer.isAllUpperCase();
         mTrailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
         mSuggestions = new ArrayList<SuggestedWordInfo>(MAX_SUGGESTIONS);
 
@@ -305,12 +314,14 @@ public class Suggest implements Dictionary.WordCallback {
             }
         }
 
-        mSuggestions.add(0, new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE,
-                SuggestedWordInfo.KIND_TYPED));
+        if (!isPrediction) {
+            mSuggestions.add(0, new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE,
+                    SuggestedWordInfo.KIND_TYPED));
+        }
         SuggestedWordInfo.removeDups(mSuggestions);
 
         final ArrayList<SuggestedWordInfo> suggestionsList;
-        if (DBG) {
+        if (DBG && !mSuggestions.isEmpty()) {
             suggestionsList = getSuggestionsInfoListWithDebugInfo(typedWord, mSuggestions);
         } else {
             suggestionsList = mSuggestions;
@@ -343,12 +354,12 @@ public class Suggest implements Dictionary.WordCallback {
             autoCorrectionAvailable = false;
         }
         return new SuggestedWords(suggestionsList,
-                !allowsToBeAutoCorrected /* typedWordValid */,
-                autoCorrectionAvailable /* hasAutoCorrectionCandidate */,
-                allowsToBeAutoCorrected /* allowsToBeAutoCorrected */,
+                !isPrediction && !allowsToBeAutoCorrected /* typedWordValid */,
+                !isPrediction && autoCorrectionAvailable /* hasAutoCorrectionCandidate */,
+                !isPrediction && allowsToBeAutoCorrected /* allowsToBeAutoCorrected */,
                 false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
-                false /* isPrediction */);
+                isPrediction);
     }
 
     /**
