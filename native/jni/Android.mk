@@ -47,7 +47,8 @@ LATIN_IME_CORE_SRC_FILES := \
     dictionary.cpp \
     proximity_info.cpp \
     proximity_info_state.cpp \
-    unigram_dictionary.cpp
+    unigram_dictionary.cpp \
+    gesture/build_check.cpp
 
 LOCAL_SRC_FILES := \
     $(LATIN_IME_JNI_SRC_FILES) \
