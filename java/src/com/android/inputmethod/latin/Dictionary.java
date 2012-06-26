@@ -35,27 +35,6 @@ public abstract class Dictionary {
     public static final int BIGRAM = 1;
 
     public static final int NOT_A_PROBABILITY = -1;
-    /**
-     * Interface to be implemented by classes requesting words to be fetched from the dictionary.
-     * @see #getWords(WordComposer, CharSequence, WordCallback, ProximityInfo)
-     */
-    public interface WordCallback {
-        /**
-         * Adds a word to a list of suggestions. The word is expected to be ordered based on
-         * the provided score.
-         * @param word the character array containing the word
-         * @param spaceIndices the indices of inserted spaces
-         * @param wordOffset starting offset of the word in the character array
-         * @param wordLength length of valid characters in the character array
-         * @param score the score of occurrence. This is normalized between 1 and 255, but
-         * can exceed those limits
-         * @param dicTypeId of the dictionary where word was from
-         * @param dataType tells type of this data, either UNIGRAM or BIGRAM
-         * @return true if the word was added, false if no more words are required
-         */
-        boolean addWord(char[] word, int[] spaceIndices, int wordOffset, int wordLength, int score,
-                int dicTypeId, int dataType);
-    }
 
     /**
      * Searches for words in the dictionary that match the characters in the composer. Matched
@@ -64,7 +43,6 @@ public abstract class Dictionary {
      * @param prevWordForBigrams the previous word, or null if none
      * @param proximityInfo the object for key proximity. May be ignored by some implementations.
      * @return the list of suggestions
-     * @see WordCallback#addWord(char[], int, int, int, int, int)
      */
     abstract public ArrayList<SuggestedWordInfo> getWords(final WordComposer composer,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo);

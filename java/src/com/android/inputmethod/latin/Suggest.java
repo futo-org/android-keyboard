@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * This class loads a dictionary and provides a list of suggestions for a given sequence of
  * characters. This includes corrections and completions.
  */
-public class Suggest implements Dictionary.WordCallback {
+public class Suggest {
     public static final String TAG = Suggest.class.getSimpleName();
 
     public static final int APPROX_MAX_WORD_LENGTH = 32;
@@ -401,13 +401,6 @@ public class Suggest implements Dictionary.WordCallback {
             suggestionsList.add(cur);
         }
         return suggestionsList;
-    }
-
-    // TODO: Remove this method
-    @Override
-    public boolean addWord(final char[] word, int[] indices, final int offset, final int length,
-            int score, final int dicTypeId, final int dataType) {
-        return true;
     }
 
     // TODO: Use codepoint instead of char
