@@ -38,6 +38,7 @@ import com.android.inputmethod.latin.DictionaryFactory;
 import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StringUtils;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.SynchronouslyLoadedContactsBinaryDictionary;
 import com.android.inputmethod.latin.SynchronouslyLoadedUserBinaryDictionary;
 import com.android.inputmethod.latin.UserBinaryDictionary;
@@ -203,6 +204,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 EMPTY_STRING_ARRAY);
     }
 
+    // TODO: remove this class when WordCallback is finally out of the picture and
+    // replace it by storage local to the session.
     private static class SuggestionsGatherer implements WordCallback {
         public static class Result {
             public final String[] mSuggestions;
@@ -240,6 +243,11 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         @Override
         synchronized public boolean addWord(char[] word, int[] spaceIndices, int wordOffset,
                 int wordLength, int score, int dicTypeId, int dataType) {
+            return true;
+        }
+
+        synchronized public boolean oldAddWord(char[] word, int[] spaceIndices, int wordOffset,
+                int wordLength, int score, int dicTypeId /* unused */, int dataType) {
             final int positionIndex = Arrays.binarySearch(mScores, 0, mLength, score);
             // binarySearch returns the index if the element exists, and -<insertion index> - 1
             // if it doesn't. See documentation for binarySearch.
@@ -780,8 +788,14 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 try {
                     dictInfo = mDictionaryPool.takeOrGetNull();
                     if (null == dictInfo) return getNotInDictEmptySuggestions();
-                    dictInfo.mDictionary.getWords(composer, prevWord, suggestionsGatherer,
-                            dictInfo.mProximityInfo);
+                    final ArrayList<SuggestedWordInfo> suggestions = dictInfo.mDictionary.getWords(
+                            composer, prevWord, suggestionsGatherer, dictInfo.mProximityInfo);
+                    for (final SuggestedWordInfo suggestion : suggestions) {
+                        final String suggestionStr = suggestion.mWord.toString();
+                        suggestionsGatherer.oldAddWord(suggestionStr.toCharArray(), 0,
+                                suggestionStr.length(), suggestion.mScore, 0 /* ignored */,
+                                Dictionary.UNIGRAM);
+                    }
                     isInDict = dictInfo.mDictionary.isValidWord(text);
                     if (!isInDict && CAPITALIZE_NONE != capitalizeType) {
                         // We want to test the word again if it's all caps or first caps only.
