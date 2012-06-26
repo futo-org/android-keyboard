@@ -59,10 +59,8 @@ public class Suggest {
     public static final String DICT_KEY_CONTACTS = "contacts";
     // User dictionary, the system-managed one.
     public static final String DICT_KEY_USER = "user";
-    // User history dictionary for the unigram map, internal to LatinIME
-    public static final String DICT_KEY_USER_HISTORY_UNIGRAM = "history_unigram";
-    // User history dictionary for the bigram map, internal to LatinIME
-    public static final String DICT_KEY_USER_HISTORY_BIGRAM = "history_bigram";
+    // User history dictionary internal to LatinIME
+    public static final String DICT_KEY_USER_HISTORY = "history";
     public static final String DICT_KEY_WHITELIST ="whitelist";
     // TODO: remove this map. This only serves as backward compatibility with a feature
     // that has never been used and has been broken for a while.
@@ -71,8 +69,7 @@ public class Suggest {
     static {
         sDictKeyToDictIndex.put(DICT_KEY_MAIN, DIC_MAIN);
         sDictKeyToDictIndex.put(DICT_KEY_USER, DIC_USER);
-        sDictKeyToDictIndex.put(DICT_KEY_USER_HISTORY_UNIGRAM, DIC_USER_HISTORY);
-        sDictKeyToDictIndex.put(DICT_KEY_USER_HISTORY_BIGRAM, DIC_USER_HISTORY);
+        sDictKeyToDictIndex.put(DICT_KEY_USER_HISTORY, DIC_USER_HISTORY);
         sDictKeyToDictIndex.put(DICT_KEY_CONTACTS, DIC_CONTACTS);
         sDictKeyToDictIndex.put(DICT_KEY_WHITELIST, DIC_WHITELIST);
     }
@@ -195,10 +192,8 @@ public class Suggest {
     }
 
     public void setUserHistoryDictionary(UserHistoryDictionary userHistoryDictionary) {
-        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_USER_HISTORY_UNIGRAM,
-                userHistoryDictionary);
-        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_USER_HISTORY_BIGRAM,
-                userHistoryDictionary);
+        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_USER_HISTORY, userHistoryDictionary);
+        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_USER_HISTORY, userHistoryDictionary);
     }
 
     public void setAutoCorrectionThreshold(float threshold) {
@@ -269,8 +264,8 @@ public class Suggest {
                     }
                     for (final SuggestedWordInfo suggestion : suggestions) {
                         final String suggestionStr = suggestion.mWord.toString();
-                        oldAddWord(suggestionStr.toCharArray(), null, 0, suggestionStr.length(),
-                                suggestion.mScore, dicTypeId, Dictionary.BIGRAM);
+                        addWord(suggestionStr.toCharArray(), null, 0, suggestionStr.length(),
+                                suggestion.mScore, dicTypeId, Dictionary.BIGRAM, mSuggestions);
                     }
                 }
             }
@@ -287,7 +282,7 @@ public class Suggest {
             // At second character typed, search the unigrams (scores being affected by bigrams)
             for (final String key : mUnigramDictionaries.keySet()) {
                 // Skip UserUnigramDictionary and WhitelistDictionary to lookup
-                if (key.equals(DICT_KEY_USER_HISTORY_UNIGRAM) || key.equals(DICT_KEY_WHITELIST))
+                if (key.equals(DICT_KEY_USER_HISTORY) || key.equals(DICT_KEY_WHITELIST))
                     continue;
                 final int dicTypeId = sDictKeyToDictIndex.get(key);
                 final Dictionary dictionary = mUnigramDictionaries.get(key);
@@ -295,8 +290,8 @@ public class Suggest {
                         wordComposerForLookup, prevWordForBigram, proximityInfo);
                 for (final SuggestedWordInfo suggestion : suggestions) {
                     final String suggestionStr = suggestion.mWord.toString();
-                    oldAddWord(suggestionStr.toCharArray(), null, 0, suggestionStr.length(),
-                            suggestion.mScore, dicTypeId, Dictionary.UNIGRAM);
+                    addWord(suggestionStr.toCharArray(), null, 0, suggestionStr.length(),
+                            suggestion.mScore, dicTypeId, Dictionary.UNIGRAM, mSuggestions);
                 }
             }
         }
@@ -404,13 +399,11 @@ public class Suggest {
     }
 
     // TODO: Use codepoint instead of char
-    public boolean oldAddWord(final char[] word, int[] indices, final int offset, final int length,
-            int score, final int dicTypeId, final int dataType) {
+    public boolean addWord(final char[] word, int[] indices, final int offset, final int length,
+            int score, final int dicTypeId, final int dataType,
+            final ArrayList<SuggestedWordInfo> suggestions) {
         int dataTypeForLog = dataType;
-        final ArrayList<SuggestedWordInfo> suggestions;
-        final int prefMaxSuggestions;
-        suggestions = mSuggestions;
-        prefMaxSuggestions = MAX_SUGGESTIONS;
+        final int prefMaxSuggestions = MAX_SUGGESTIONS;
 
         int pos = 0;
 

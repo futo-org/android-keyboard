@@ -238,8 +238,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             mScores = new int[mMaxLength];
         }
 
-        synchronized public boolean oldAddWord(char[] word, int[] spaceIndices, int wordOffset,
-                int wordLength, int score, int dicTypeId /* unused */, int dataType) {
+        synchronized public boolean addWord(char[] word, int[] spaceIndices, int wordOffset,
+                int wordLength, int score) {
             final int positionIndex = Arrays.binarySearch(mScores, 0, mLength, score);
             // binarySearch returns the index if the element exists, and -<insertion index> - 1
             // if it doesn't. See documentation for binarySearch.
@@ -784,9 +784,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                             composer, prevWord, dictInfo.mProximityInfo);
                     for (final SuggestedWordInfo suggestion : suggestions) {
                         final String suggestionStr = suggestion.mWord.toString();
-                        suggestionsGatherer.oldAddWord(suggestionStr.toCharArray(), null, 0,
-                                suggestionStr.length(), suggestion.mScore, 0 /* ignored */,
-                                Dictionary.UNIGRAM);
+                        suggestionsGatherer.addWord(suggestionStr.toCharArray(), null, 0,
+                                suggestionStr.length(), suggestion.mScore);
                     }
                     isInDict = dictInfo.mDictionary.isValidWord(text);
                     if (!isInDict && CAPITALIZE_NONE != capitalizeType) {
