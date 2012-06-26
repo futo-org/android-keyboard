@@ -411,15 +411,11 @@ public class Suggest {
         final int score = wordInfo.mScore;
         int pos = 0;
 
-        // Check the last one's score and bail
-        if (suggestions.size() >= prefMaxSuggestions
-                && suggestions.get(prefMaxSuggestions - 1).mScore >= score) return true;
-        final int length = wordInfo.mCodePointCount;
-        while (pos < suggestions.size()) {
-            if (sSuggestedWordInfoComparator.compare(wordInfo, suggestions.get(pos)) < 0)
-                break;
-            pos++;
-        }
+        final int index =
+                Collections.binarySearch(suggestions, wordInfo, sSuggestedWordInfoComparator);
+        // binarySearch returns the index of an equal word info if found. If not found
+        // it returns -insertionPoint - 1. We want the insertion point, so:
+        pos = index >= 0 ? index : -index - 1;
         if (pos >= prefMaxSuggestions) {
             return true;
         }
