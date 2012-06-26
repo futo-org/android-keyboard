@@ -22,6 +22,7 @@
 #include "bigram_dictionary.h"
 #include "char_utils.h"
 #include "defines.h"
+#include "gesture/gesture_decoder.h"
 #include "proximity_info.h"
 #include "unigram_dictionary.h"
 #include "words_priority_queue_pool.h"
@@ -39,13 +40,20 @@ class Dictionary {
             bool useFullEditDistance, unsigned short *outWords,
             int *frequencies, int *spaceIndices) {
         int result = 0;
-        std::map<int, int> bigramMap;
-        uint8_t bigramFilter[BIGRAM_FILTER_BYTE_SIZE];
-        mBigramDictionary->fillBigramAddressToFrequencyMapAndFilter(prevWordChars,
-                prevWordLength, &bigramMap, bigramFilter);
-        result = mUnigramDictionary->getSuggestions(proximityInfo, xcoordinates,
-                ycoordinates, codes, codesSize, &bigramMap, bigramFilter,
-                useFullEditDistance, outWords, frequencies);
+        if (isGesture) {
+            mGestureDecoder->setPrevWord(prevWordChars, prevWordLength);
+            result = mGestureDecoder->getSuggestions(proximityInfo, xcoordinates, ycoordinates,
+                    times, pointerIds, codes, codesSize, commitPoint, dicTypeId == 1 /* main */,
+                    outWords, frequencies, spaceIndices);
+        } else {
+            std::map<int, int> bigramMap;
+            uint8_t bigramFilter[BIGRAM_FILTER_BYTE_SIZE];
+            mBigramDictionary->fillBigramAddressToFrequencyMapAndFilter(prevWordChars,
+                    prevWordLength, &bigramMap, bigramFilter);
+            result = mUnigramDictionary->getSuggestions(proximityInfo, xcoordinates,
+                    ycoordinates, codes, codesSize, &bigramMap, bigramFilter,
+                    useFullEditDistance, outWords, frequencies);
+        }
         return result;
     }
 
@@ -79,6 +87,7 @@ class Dictionary {
 
     const UnigramDictionary *mUnigramDictionary;
     const BigramDictionary *mBigramDictionary;
+    GestureDecoder *mGestureDecoder;
 };
 
 // public static utility methods
