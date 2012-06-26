@@ -427,24 +427,36 @@ public class Suggest {
             return true;
         }
 
-        final StringBuilder sb = new StringBuilder(getApproxMaxWordLength());
-        if (mIsAllUpperCase) {
-            sb.append(word.toString().toUpperCase(mLocale));
-        } else if (mIsFirstCharCapitalized) {
-            sb.append(StringUtils.toTitleCase(word.toString(), mLocale));
-        } else {
-            sb.append(word);
-        }
-        for (int i = mTrailingSingleQuotesCount - 1; i >= 0; --i) {
-            sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
-        }
-        suggestions.add(pos, new SuggestedWordInfo(sb, score, wordInfo.mKind));
+        final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(wordInfo,
+                mLocale, mIsAllUpperCase, mIsFirstCharCapitalized, mTrailingSingleQuotesCount);
+        suggestions.add(pos, transformedWordInfo);
         if (suggestions.size() > prefMaxSuggestions) {
             suggestions.remove(prefMaxSuggestions);
         } else {
-            LatinImeLogger.onAddSuggestedWord(sb.toString(), dicTypeId, dataTypeForLog);
+            LatinImeLogger.onAddSuggestedWord(transformedWordInfo.mWord.toString(), dicTypeId,
+                    dataTypeForLog);
         }
         return true;
+    }
+
+    private static SuggestedWordInfo getTransformedSuggestedWordInfo(
+            final SuggestedWordInfo wordInfo, final Locale locale, final boolean isAllUpperCase,
+            final boolean isFirstCharCapitalized, final int trailingSingleQuotesCount) {
+        if (!isFirstCharCapitalized && !isAllUpperCase && 0 == trailingSingleQuotesCount) {
+            return wordInfo;
+        }
+        final StringBuilder sb = new StringBuilder(getApproxMaxWordLength());
+        if (isAllUpperCase) {
+            sb.append(wordInfo.mWord.toString().toUpperCase(locale));
+        } else if (isFirstCharCapitalized) {
+            sb.append(StringUtils.toTitleCase(wordInfo.mWord.toString(), locale));
+        } else {
+            sb.append(wordInfo.mWord);
+        }
+        for (int i = trailingSingleQuotesCount - 1; i >= 0; --i) {
+            sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
+        }
+        return new SuggestedWordInfo(sb, wordInfo.mScore, wordInfo.mKind);
     }
 
     public void close() {
