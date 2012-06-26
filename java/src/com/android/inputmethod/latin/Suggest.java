@@ -86,8 +86,6 @@ public class Suggest {
 
     private float mAutoCorrectionThreshold;
 
-    private CharSequence mConsideredWord;
-
     // TODO: Remove these member variables by passing more context to addWord() callback method
     private boolean mIsFirstCharCapitalized;
     private boolean mIsAllUpperCase;
@@ -228,7 +226,6 @@ public class Suggest {
                 : typedWord;
         // Treating USER_TYPED as UNIGRAM suggestion for logging now.
         LatinImeLogger.onAddSuggestedWord(typedWord, Suggest.DIC_USER_TYPED, Dictionary.UNIGRAM);
-        mConsideredWord = consideredWord;
 
         if (wordComposer.size() <= 1 && isCorrectionEnabled) {
             // At first character typed, search only the bigrams
@@ -251,7 +248,8 @@ public class Suggest {
                     for (final SuggestedWordInfo suggestion : localSuggestions) {
                         final String suggestionStr = suggestion.mWord.toString();
                         addWord(suggestionStr.toCharArray(), null, 0, suggestionStr.length(),
-                                suggestion.mScore, dicTypeId, Dictionary.BIGRAM, suggestions);
+                                suggestion.mScore, dicTypeId, Dictionary.BIGRAM,
+                                suggestions, consideredWord);
                     }
                 }
             }
@@ -277,7 +275,8 @@ public class Suggest {
                 for (final SuggestedWordInfo suggestion : localSuggestions) {
                     final String suggestionStr = suggestion.mWord.toString();
                     addWord(suggestionStr.toCharArray(), null, 0, suggestionStr.length(),
-                            suggestion.mScore, dicTypeId, Dictionary.UNIGRAM, suggestions);
+                            suggestion.mScore, dicTypeId, Dictionary.UNIGRAM,
+                            suggestions, consideredWord);
                 }
             }
         }
@@ -387,14 +386,14 @@ public class Suggest {
     // TODO: Use codepoint instead of char
     public boolean addWord(final char[] word, int[] indices, final int offset, final int length,
             int score, final int dicTypeId, final int dataType,
-            final ArrayList<SuggestedWordInfo> suggestions) {
+            final ArrayList<SuggestedWordInfo> suggestions, final String consideredWord) {
         int dataTypeForLog = dataType;
         final int prefMaxSuggestions = MAX_SUGGESTIONS;
 
         int pos = 0;
 
         // Check if it's the same word, only caps are different
-        if (StringUtils.equalsIgnoreCase(mConsideredWord, word, offset, length)) {
+        if (StringUtils.equalsIgnoreCase(consideredWord, word, offset, length)) {
             // TODO: remove this surrounding if clause and move this logic to
             // getSuggestedWordBuilder.
             if (suggestions.size() > 0) {
