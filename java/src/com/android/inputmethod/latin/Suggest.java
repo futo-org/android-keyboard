@@ -26,6 +26,7 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
@@ -63,6 +64,18 @@ public class Suggest implements Dictionary.WordCallback {
     // User history dictionary for the bigram map, internal to LatinIME
     public static final String DICT_KEY_USER_HISTORY_BIGRAM = "history_bigram";
     public static final String DICT_KEY_WHITELIST ="whitelist";
+    // TODO: remove this map. This only serves as backward compatibility with a feature
+    // that has never been used and has been broken for a while.
+    private static final HashMap<String, Integer> sDictKeyToDictIndex
+            = new HashMap<String, Integer>();
+    static {
+        sDictKeyToDictIndex.put(DICT_KEY_MAIN, DIC_MAIN);
+        sDictKeyToDictIndex.put(DICT_KEY_USER, DIC_USER);
+        sDictKeyToDictIndex.put(DICT_KEY_USER_HISTORY_UNIGRAM, DIC_USER_HISTORY);
+        sDictKeyToDictIndex.put(DICT_KEY_USER_HISTORY_BIGRAM, DIC_USER_HISTORY);
+        sDictKeyToDictIndex.put(DICT_KEY_CONTACTS, DIC_CONTACTS);
+        sDictKeyToDictIndex.put(DICT_KEY_WHITELIST, DIC_WHITELIST);
+    }
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 
@@ -247,10 +260,18 @@ public class Suggest implements Dictionary.WordCallback {
                     lowerPrevWord = null;
                 }
                 for (final String key : mBigramDictionaries.keySet()) {
+                    final int dicTypeId = sDictKeyToDictIndex.get(key);
                     final Dictionary dictionary = mBigramDictionaries.get(key);
-                    dictionary.getBigrams(wordComposer, prevWordForBigram, this);
+                    final ArrayList<SuggestedWordInfo> suggestions =
+                            dictionary.getBigrams(wordComposer, prevWordForBigram, this);
                     if (null != lowerPrevWord) {
-                        dictionary.getBigrams(wordComposer, lowerPrevWord, this);
+                        suggestions.addAll(dictionary.getBigrams(wordComposer, lowerPrevWord,
+                                this));
+                    }
+                    for (final SuggestedWordInfo suggestion : suggestions) {
+                        final String suggestionStr = suggestion.mWord.toString();
+                        oldAddWord(suggestionStr.toCharArray(), null, 0, suggestionStr.length(),
+                                suggestion.mScore, dicTypeId, Dictionary.BIGRAM);
                     }
                 }
             }
@@ -269,8 +290,16 @@ public class Suggest implements Dictionary.WordCallback {
                 // Skip UserUnigramDictionary and WhitelistDictionary to lookup
                 if (key.equals(DICT_KEY_USER_HISTORY_UNIGRAM) || key.equals(DICT_KEY_WHITELIST))
                     continue;
+                final int dicTypeId = sDictKeyToDictIndex.get(key);
                 final Dictionary dictionary = mUnigramDictionaries.get(key);
-                dictionary.getWords(wordComposerForLookup, prevWordForBigram, this, proximityInfo);
+                final ArrayList<SuggestedWordInfo> suggestions =
+                        dictionary.getWords(wordComposerForLookup, prevWordForBigram, this,
+                                proximityInfo);
+                for (final SuggestedWordInfo suggestion : suggestions) {
+                    final String suggestionStr = suggestion.mWord.toString();
+                    oldAddWord(suggestionStr.toCharArray(), null, 0, suggestionStr.length(),
+                            suggestion.mScore, dicTypeId, Dictionary.UNIGRAM);
+                }
             }
         }
 
@@ -376,9 +405,15 @@ public class Suggest implements Dictionary.WordCallback {
         return suggestionsList;
     }
 
-    // TODO: Use codepoint instead of char
+    // TODO: Remove this method
     @Override
     public boolean addWord(final char[] word, int[] indices, final int offset, final int length,
+            int score, final int dicTypeId, final int dataType) {
+        return true;
+    }
+
+    // TODO: Use codepoint instead of char
+    public boolean oldAddWord(final char[] word, int[] indices, final int offset, final int length,
             int score, final int dicTypeId, final int dataType) {
         int dataTypeForLog = dataType;
         final ArrayList<SuggestedWordInfo> suggestions;
