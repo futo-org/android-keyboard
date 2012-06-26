@@ -127,6 +127,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         private static final int MSG_TYPING_STATE_EXPIRED = 4;
 
         private final KeyTimerParams mParams;
+        // TODO: Suppress layout changes in key repeat mode
+        // TODO: Remove this variable.
         private boolean mInKeyRepeat;
 
         public KeyTimerHandler(LatinKeyboardView outerInstance, KeyTimerParams params) {
@@ -140,8 +142,11 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             final PointerTracker tracker = (PointerTracker) msg.obj;
             switch (msg.what) {
             case MSG_REPEAT_KEY:
-                tracker.onRegisterKey(tracker.getKey());
-                startKeyRepeatTimer(tracker, mParams.mKeyRepeatInterval);
+                final Key currentKey = tracker.getKey();
+                if (currentKey != null && currentKey.mCode == msg.arg1) {
+                    tracker.onRegisterKey(currentKey);
+                    startKeyRepeatTimer(tracker, mParams.mKeyRepeatInterval);
+                }
                 break;
             case MSG_LONGPRESS_KEY:
                 if (tracker != null) {
@@ -158,12 +163,14 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
 
         private void startKeyRepeatTimer(PointerTracker tracker, long delay) {
-            sendMessageDelayed(obtainMessage(MSG_REPEAT_KEY, tracker), delay);
+            final Key key = tracker.getKey();
+            if (key == null) return;
+            mInKeyRepeat = true;
+            sendMessageDelayed(obtainMessage(MSG_REPEAT_KEY, key.mCode, 0, tracker), delay);
         }
 
         @Override
         public void startKeyRepeatTimer(PointerTracker tracker) {
-            mInKeyRepeat = true;
             startKeyRepeatTimer(tracker, mParams.mKeyRepeatStartTimeout);
         }
 
@@ -451,8 +458,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
      */
     @Override
     public void setKeyboard(Keyboard keyboard) {
-        // Remove any pending messages, except dismissing preview
-        mKeyTimerHandler.cancelKeyTimers();
+        // Remove any pending messages, except dismissing preview and key repeat.
+        mKeyTimerHandler.cancelLongPressTimer();
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(
                 keyboard, -getPaddingLeft(), -getPaddingTop() + mVerticalCorrection);
