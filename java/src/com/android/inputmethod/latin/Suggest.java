@@ -211,14 +211,6 @@ public class Suggest {
         return sb;
     }
 
-    // Compatibility for tests. TODO: remove this
-    public SuggestedWords getSuggestedWords(
-            final WordComposer wordComposer, CharSequence prevWordForBigram,
-            final ProximityInfo proximityInfo, final boolean isCorrectionEnabled) {
-        return getSuggestedWords(wordComposer, prevWordForBigram, proximityInfo,
-                isCorrectionEnabled, false);
-    }
-
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
     public SuggestedWords getSuggestedWords(
             final WordComposer wordComposer, CharSequence prevWordForBigram,
