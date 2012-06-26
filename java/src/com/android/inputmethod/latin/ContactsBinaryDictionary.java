@@ -120,12 +120,6 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         }
     }
 
-    @Override
-    public void getBigrams(final WordComposer codes, final CharSequence previousWord,
-            final WordCallback callback) {
-        super.getBigrams(codes, previousWord, callback);
-    }
-
     private boolean useFirstLastBigramsForLocale(Locale locale) {
         // TODO: Add firstname/lastname bigram rules for other languages.
         if (locale != null && locale.getLanguage().equals(Locale.ENGLISH.getLanguage())) {

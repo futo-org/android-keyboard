@@ -17,6 +17,9 @@
 package com.android.inputmethod.latin;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+
+import java.util.ArrayList;
 
 /**
  * Abstract base class for a dictionary that can do a fuzzy search for words based on a set of key
@@ -61,9 +64,10 @@ public abstract class Dictionary {
      * @param prevWordForBigrams the previous word, or null if none
      * @param callback the callback object to send matched words to as possible candidates
      * @param proximityInfo the object for key proximity. May be ignored by some implementations.
+     * @return the list of suggestions
      * @see WordCallback#addWord(char[], int, int, int, int, int)
      */
-    abstract public void getWords(final WordComposer composer,
+    abstract public ArrayList<SuggestedWordInfo> getWords(final WordComposer composer,
             final CharSequence prevWordForBigrams, final WordCallback callback,
             final ProximityInfo proximityInfo);
 
@@ -73,11 +77,10 @@ public abstract class Dictionary {
      * @param composer the key sequence to match
      * @param previousWord the word before
      * @param callback the callback object to send possible word following previous word
+     * @return the list of suggestions
      */
-    public void getBigrams(final WordComposer composer, final CharSequence previousWord,
-            final WordCallback callback) {
-        // empty base implementation
-    }
+    public abstract ArrayList<SuggestedWordInfo> getBigrams(final WordComposer composer,
+            final CharSequence previousWord, final WordCallback callback);
 
     /**
      * Checks if the given word occurs in the dictionary
