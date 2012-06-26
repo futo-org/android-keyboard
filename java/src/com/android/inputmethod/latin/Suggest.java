@@ -79,9 +79,7 @@ public class Suggest {
     private Dictionary mMainDictionary;
     private ContactsBinaryDictionary mContactsDict;
     private WhitelistDictionary mWhiteListDictionary;
-    private final ConcurrentHashMap<String, Dictionary> mUnigramDictionaries =
-            new ConcurrentHashMap<String, Dictionary>();
-    private final ConcurrentHashMap<String, Dictionary> mBigramDictionaries =
+    private final ConcurrentHashMap<String, Dictionary> mDictionaries =
             new ConcurrentHashMap<String, Dictionary>();
 
     public static final int MAX_SUGGESTIONS = 18;
@@ -107,16 +105,13 @@ public class Suggest {
         final Dictionary mainDict = DictionaryFactory.createDictionaryForTest(context, dictionary,
                 startOffset, length /* useFullEditDistance */, false, locale);
         mMainDictionary = mainDict;
-        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, mainDict);
-        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, mainDict);
+        addOrReplaceDictionary(mDictionaries, DICT_KEY_MAIN, mainDict);
         initWhitelistAndAutocorrectAndPool(context, locale);
     }
 
     private void initWhitelistAndAutocorrectAndPool(final Context context, final Locale locale) {
         mWhiteListDictionary = new WhitelistDictionary(context, locale);
-        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_WHITELIST, mWhiteListDictionary);
-        // The whitelist dictionary never returns any bigrams, so it's safe to add it here
-        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_WHITELIST, mWhiteListDictionary);
+        addOrReplaceDictionary(mDictionaries, DICT_KEY_WHITELIST, mWhiteListDictionary);
     }
 
     private void initAsynchronously(final Context context, final Locale locale) {
@@ -145,8 +140,7 @@ public class Suggest {
             public void run() {
                 final DictionaryCollection newMainDict =
                         DictionaryFactory.createMainDictionaryFromManager(context, locale);
-                addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, newMainDict);
-                addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, newMainDict);
+                addOrReplaceDictionary(mDictionaries, DICT_KEY_MAIN, newMainDict);
                 mMainDictionary = newMainDict;
             }
         }.start();
@@ -167,7 +161,7 @@ public class Suggest {
     }
 
     public ConcurrentHashMap<String, Dictionary> getUnigramDictionaries() {
-        return mUnigramDictionaries;
+        return mDictionaries;
     }
 
     public static int getApproxMaxWordLength() {
@@ -179,9 +173,7 @@ public class Suggest {
      * before the main dictionary, if set. This refers to the system-managed user dictionary.
      */
     public void setUserDictionary(UserBinaryDictionary userDictionary) {
-        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_USER, userDictionary);
-        // The user dictionary never returns any bigrams, so it's safe to add it
-        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_USER, userDictionary);
+        addOrReplaceDictionary(mDictionaries, DICT_KEY_USER, userDictionary);
     }
 
     /**
@@ -191,13 +183,11 @@ public class Suggest {
      */
     public void setContactsDictionary(ContactsBinaryDictionary contactsDictionary) {
         mContactsDict = contactsDictionary;
-        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_CONTACTS, contactsDictionary);
-        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_CONTACTS, contactsDictionary);
+        addOrReplaceDictionary(mDictionaries, DICT_KEY_CONTACTS, contactsDictionary);
     }
 
     public void setUserHistoryDictionary(UserHistoryDictionary userHistoryDictionary) {
-        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_USER_HISTORY, userHistoryDictionary);
-        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_USER_HISTORY, userHistoryDictionary);
+        addOrReplaceDictionary(mDictionaries, DICT_KEY_USER_HISTORY, userHistoryDictionary);
     }
 
     public void setAutoCorrectionThreshold(float threshold) {
@@ -258,9 +248,9 @@ public class Suggest {
                 } else {
                     lowerPrevWord = null;
                 }
-                for (final String key : mBigramDictionaries.keySet()) {
+                for (final String key : mDictionaries.keySet()) {
                     final int dicTypeId = sDictKeyToDictIndex.get(key);
-                    final Dictionary dictionary = mBigramDictionaries.get(key);
+                    final Dictionary dictionary = mDictionaries.get(key);
                     final ArrayList<SuggestedWordInfo> suggestions =
                             dictionary.getBigrams(wordComposer, prevWordForBigram);
                     if (null != lowerPrevWord) {
@@ -284,12 +274,12 @@ public class Suggest {
                 wordComposerForLookup = wordComposer;
             }
             // At second character typed, search the unigrams (scores being affected by bigrams)
-            for (final String key : mUnigramDictionaries.keySet()) {
+            for (final String key : mDictionaries.keySet()) {
                 // Skip UserUnigramDictionary and WhitelistDictionary to lookup
                 if (key.equals(DICT_KEY_USER_HISTORY) || key.equals(DICT_KEY_WHITELIST))
                     continue;
                 final int dicTypeId = sDictKeyToDictIndex.get(key);
-                final Dictionary dictionary = mUnigramDictionaries.get(key);
+                final Dictionary dictionary = mDictionaries.get(key);
                 final ArrayList<SuggestedWordInfo> suggestions = dictionary.getWords(
                         wordComposerForLookup, prevWordForBigram, proximityInfo);
                 for (final SuggestedWordInfo suggestion : suggestions) {
@@ -306,7 +296,7 @@ public class Suggest {
         final boolean hasAutoCorrection;
         if (isCorrectionEnabled) {
             final CharSequence autoCorrection =
-                    AutoCorrection.computeAutoCorrectionWord(mUnigramDictionaries, wordComposer,
+                    AutoCorrection.computeAutoCorrectionWord(mDictionaries, wordComposer,
                             mSuggestions, consideredWord, mAutoCorrectionThreshold,
                             whitelistedWord);
             hasAutoCorrection = (null != autoCorrection);
@@ -470,8 +460,7 @@ public class Suggest {
 
     public void close() {
         final HashSet<Dictionary> dictionaries = new HashSet<Dictionary>();
-        dictionaries.addAll(mUnigramDictionaries.values());
-        dictionaries.addAll(mBigramDictionaries.values());
+        dictionaries.addAll(mDictionaries.values());
         for (final Dictionary dictionary : dictionaries) {
             dictionary.close();
         }
