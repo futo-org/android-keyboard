@@ -86,7 +86,6 @@ public class Suggest {
 
     private float mAutoCorrectionThreshold;
 
-    private ArrayList<SuggestedWordInfo> mSuggestions = new ArrayList<SuggestedWordInfo>();
     private CharSequence mConsideredWord;
 
     // TODO: Remove these member variables by passing more context to addWord() callback method
@@ -220,7 +219,8 @@ public class Suggest {
         mIsFirstCharCapitalized = !isPrediction && wordComposer.isFirstCharCapitalized();
         mIsAllUpperCase = !isPrediction && wordComposer.isAllUpperCase();
         mTrailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
-        mSuggestions = new ArrayList<SuggestedWordInfo>(MAX_SUGGESTIONS);
+        final ArrayList<SuggestedWordInfo> suggestions =
+                new ArrayList<SuggestedWordInfo>(MAX_SUGGESTIONS);
 
         final String typedWord = wordComposer.getTypedWord();
         final String consideredWord = mTrailingSingleQuotesCount > 0
@@ -243,15 +243,15 @@ public class Suggest {
                 for (final String key : mDictionaries.keySet()) {
                     final int dicTypeId = sDictKeyToDictIndex.get(key);
                     final Dictionary dictionary = mDictionaries.get(key);
-                    final ArrayList<SuggestedWordInfo> suggestions =
+                    final ArrayList<SuggestedWordInfo> localSuggestions =
                             dictionary.getBigrams(wordComposer, prevWordForBigram);
                     if (null != lowerPrevWord) {
-                        suggestions.addAll(dictionary.getBigrams(wordComposer, lowerPrevWord));
+                        localSuggestions.addAll(dictionary.getBigrams(wordComposer, lowerPrevWord));
                     }
-                    for (final SuggestedWordInfo suggestion : suggestions) {
+                    for (final SuggestedWordInfo suggestion : localSuggestions) {
                         final String suggestionStr = suggestion.mWord.toString();
                         addWord(suggestionStr.toCharArray(), null, 0, suggestionStr.length(),
-                                suggestion.mScore, dicTypeId, Dictionary.BIGRAM, mSuggestions);
+                                suggestion.mScore, dicTypeId, Dictionary.BIGRAM, suggestions);
                     }
                 }
             }
@@ -272,12 +272,12 @@ public class Suggest {
                     continue;
                 final int dicTypeId = sDictKeyToDictIndex.get(key);
                 final Dictionary dictionary = mDictionaries.get(key);
-                final ArrayList<SuggestedWordInfo> suggestions = dictionary.getWords(
+                final ArrayList<SuggestedWordInfo> localSuggestions = dictionary.getWords(
                         wordComposerForLookup, prevWordForBigram, proximityInfo);
-                for (final SuggestedWordInfo suggestion : suggestions) {
+                for (final SuggestedWordInfo suggestion : localSuggestions) {
                     final String suggestionStr = suggestion.mWord.toString();
                     addWord(suggestionStr.toCharArray(), null, 0, suggestionStr.length(),
-                            suggestion.mScore, dicTypeId, Dictionary.UNIGRAM, mSuggestions);
+                            suggestion.mScore, dicTypeId, Dictionary.UNIGRAM, suggestions);
                 }
             }
         }
@@ -289,7 +289,7 @@ public class Suggest {
         if (isCorrectionEnabled) {
             final CharSequence autoCorrection =
                     AutoCorrection.computeAutoCorrectionWord(mDictionaries, wordComposer,
-                            mSuggestions, consideredWord, mAutoCorrectionThreshold,
+                            suggestions, consideredWord, mAutoCorrectionThreshold,
                             whitelistedWord);
             hasAutoCorrection = (null != autoCorrection);
         } else {
@@ -302,25 +302,25 @@ public class Suggest {
                 for (int i = mTrailingSingleQuotesCount - 1; i >= 0; --i) {
                     sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
                 }
-                mSuggestions.add(0, new SuggestedWordInfo(sb.toString(),
+                suggestions.add(0, new SuggestedWordInfo(sb.toString(),
                         SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST));
             } else {
-                mSuggestions.add(0, new SuggestedWordInfo(whitelistedWord,
+                suggestions.add(0, new SuggestedWordInfo(whitelistedWord,
                         SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST));
             }
         }
 
         if (!isPrediction) {
-            mSuggestions.add(0, new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE,
+            suggestions.add(0, new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE,
                     SuggestedWordInfo.KIND_TYPED));
         }
-        SuggestedWordInfo.removeDups(mSuggestions);
+        SuggestedWordInfo.removeDups(suggestions);
 
         final ArrayList<SuggestedWordInfo> suggestionsList;
-        if (DBG && !mSuggestions.isEmpty()) {
-            suggestionsList = getSuggestionsInfoListWithDebugInfo(typedWord, mSuggestions);
+        if (DBG && !suggestions.isEmpty()) {
+            suggestionsList = getSuggestionsInfoListWithDebugInfo(typedWord, suggestions);
         } else {
-            suggestionsList = mSuggestions;
+            suggestionsList = suggestions;
         }
 
         // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
