@@ -432,10 +432,9 @@ public class Suggest {
         suggestions.add(pos, transformedWordInfo);
         if (suggestions.size() > prefMaxSuggestions) {
             suggestions.remove(prefMaxSuggestions);
-        } else {
-            LatinImeLogger.onAddSuggestedWord(transformedWordInfo.mWord.toString(), dicTypeId,
-                    dataTypeForLog);
         }
+        LatinImeLogger.onAddSuggestedWord(transformedWordInfo.mWord.toString(), dicTypeId,
+                dataTypeForLog);
         return true;
     }
 
