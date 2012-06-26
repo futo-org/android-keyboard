@@ -792,7 +792,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                             composer, prevWord, suggestionsGatherer, dictInfo.mProximityInfo);
                     for (final SuggestedWordInfo suggestion : suggestions) {
                         final String suggestionStr = suggestion.mWord.toString();
-                        suggestionsGatherer.oldAddWord(suggestionStr.toCharArray(), 0,
+                        suggestionsGatherer.oldAddWord(suggestionStr.toCharArray(), null, 0,
                                 suggestionStr.length(), suggestion.mScore, 0 /* ignored */,
                                 Dictionary.UNIGRAM);
                     }
