@@ -473,7 +473,7 @@ public class PointerTracker {
             onUpEvent(x, y, eventTime);
             break;
         case MotionEvent.ACTION_MOVE:
-            onMoveEvent(x, y, eventTime);
+            onMoveEvent(x, y, eventTime, null);
             break;
         case MotionEvent.ACTION_CANCEL:
             onCancelEvent(x, y, eventTime);
@@ -553,7 +553,7 @@ public class PointerTracker {
         mIsInSlidingKeyInput = true;
     }
 
-    public void onMoveEvent(int x, int y, long eventTime) {
+    public void onMoveEvent(int x, int y, long eventTime, MotionEvent me) {
         if (DEBUG_MOVE_EVENT)
             printTouchEvent("onMoveEvent:", x, y, eventTime);
         if (mKeyAlreadyProcessed)

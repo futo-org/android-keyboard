@@ -762,15 +762,18 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 final PointerTracker tracker = PointerTracker.getPointerTracker(
                         pointerId, this);
                 final int px, py;
+                final MotionEvent motionEvent;
                 if (mMoreKeysPanel != null
                         && tracker.mPointerId == mMoreKeysPanelPointerTrackerId) {
                     px = mMoreKeysPanel.translateX((int)me.getX(i));
                     py = mMoreKeysPanel.translateY((int)me.getY(i));
+                    motionEvent = null;
                 } else {
                     px = (int)me.getX(i);
                     py = (int)me.getY(i);
+                    motionEvent = me;
                 }
-                tracker.onMoveEvent(px, py, eventTime);
+                tracker.onMoveEvent(px, py, eventTime, motionEvent);
                 if (ENABLE_USABILITY_STUDY_LOG) {
                     final float pointerSize = me.getSize(i);
                     final float pointerPressure = me.getPressure(i);
