@@ -252,7 +252,7 @@ public class Suggest {
                     }
                     for (final SuggestedWordInfo suggestion : localSuggestions) {
                         final String suggestionStr = suggestion.mWord.toString();
-                        addWord(suggestionStr.toCharArray(), null, 0, suggestionStr.length(),
+                        addWord(suggestionStr, null,
                                 suggestion.mScore, dicTypeId, Dictionary.BIGRAM,
                                 suggestions, consideredWord);
                     }
@@ -279,7 +279,7 @@ public class Suggest {
                         wordComposerForLookup, prevWordForBigram, proximityInfo);
                 for (final SuggestedWordInfo suggestion : localSuggestions) {
                     final String suggestionStr = suggestion.mWord.toString();
-                    addWord(suggestionStr.toCharArray(), null, 0, suggestionStr.length(),
+                    addWord(suggestionStr, null,
                             suggestion.mScore, dicTypeId, Dictionary.UNIGRAM,
                             suggestions, consideredWord);
                 }
@@ -388,17 +388,17 @@ public class Suggest {
         return suggestionsList;
     }
 
-    // TODO: Use codepoint instead of char
-    public boolean addWord(final char[] word, int[] indices, final int offset, final int length,
+    public boolean addWord(final String word, int[] indices,
             int score, final int dicTypeId, final int dataType,
             final ArrayList<SuggestedWordInfo> suggestions, final String consideredWord) {
         int dataTypeForLog = dataType;
         final int prefMaxSuggestions = MAX_SUGGESTIONS;
+        final int length = word.codePointCount(0, word.length());
 
         int pos = 0;
 
         // Check if it's the same word, only caps are different
-        if (StringUtils.equalsIgnoreCase(consideredWord, word, offset, length)) {
+        if (StringUtils.equalsIgnoreCase(consideredWord, word)) {
             // TODO: remove this surrounding if clause and move this logic to
             // getSuggestedWordBuilder.
             if (suggestions.size() > 0) {
@@ -407,7 +407,7 @@ public class Suggest {
                 // frequency to determine the insertion position. This does not ensure strictly
                 // correct ordering, but ensures the top score is on top which is enough for
                 // removing duplicates correctly.
-                if (StringUtils.equalsIgnoreCase(currentHighestWord.mWord, word, offset, length)
+                if (StringUtils.equalsIgnoreCase(currentHighestWord.mWord, word)
                         && score <= currentHighestWord.mScore) {
                     pos = 1;
                 }
@@ -430,16 +430,12 @@ public class Suggest {
         }
 
         final StringBuilder sb = new StringBuilder(getApproxMaxWordLength());
-        // TODO: Must pay attention to locale when changing case.
         if (mIsAllUpperCase) {
-            sb.append(new String(word, offset, length).toUpperCase());
+            sb.append(word.toUpperCase(mLocale));
         } else if (mIsFirstCharCapitalized) {
-            sb.append(Character.toUpperCase(word[offset]));
-            if (length > 1) {
-                sb.append(word, offset + 1, length - 1);
-            }
+            sb.append(StringUtils.toTitleCase(word, mLocale));
         } else {
-            sb.append(word, offset, length);
+            sb.append(word);
         }
         for (int i = mTrailingSingleQuotesCount - 1; i >= 0; --i) {
             sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
