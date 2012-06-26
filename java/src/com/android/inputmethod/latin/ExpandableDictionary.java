@@ -600,13 +600,13 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     private void runBigramReverseLookUp(final CharSequence previousWord,
-            final WordCallback callback) {
+            final ArrayList<SuggestedWordInfo> suggestions) {
         // Search for the lowercase version of the word only, because that's where bigrams
         // store their sons.
         Node prevWord = searchNode(mRoots, previousWord.toString().toLowerCase(), 0,
                 previousWord.length());
         if (prevWord != null && prevWord.mNGrams != null) {
-            reverseLookUp(prevWord.mNGrams, callback);
+            reverseLookUp(prevWord.mNGrams, suggestions);
         }
     }
 
@@ -614,7 +614,9 @@ public class ExpandableDictionary extends Dictionary {
     public void getBigrams(final WordComposer codes, final CharSequence previousWord,
             final WordCallback callback) {
         if (!reloadDictionaryIfRequired()) {
-            runBigramReverseLookUp(previousWord, callback);
+            final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
+            runBigramReverseLookUp(previousWord, suggestions);
+            Utils.addAllSuggestions(mDicTypeId, Dictionary.BIGRAM, suggestions, callback);
         }
     }
 
@@ -642,11 +644,12 @@ public class ExpandableDictionary extends Dictionary {
 
     /**
      * reverseLookUp retrieves the full word given a list of terminal nodes and adds those words
-     * through callback.
+     * to the suggestions list passed as an argument.
      * @param terminalNodes list of terminal nodes we want to add
+     * @param suggestions the suggestion collection to add the word to
      */
     private void reverseLookUp(LinkedList<NextWord> terminalNodes,
-            final WordCallback callback) {
+            final ArrayList<SuggestedWordInfo> suggestions) {
         Node node;
         int freq;
         for (NextWord nextWord : terminalNodes) {
@@ -660,9 +663,9 @@ public class ExpandableDictionary extends Dictionary {
             } while (node != null);
 
             if (freq >= 0) {
-                callback.addWord(mLookedUpString, null, index,
-                        BinaryDictionary.MAX_WORD_LENGTH - index, freq, mDicTypeId,
-                        Dictionary.BIGRAM);
+                suggestions.add(new SuggestedWordInfo(new String(mLookedUpString, index,
+                        BinaryDictionary.MAX_WORD_LENGTH - index),
+                        freq, SuggestedWordInfo.KIND_CORRECTION));
             }
         }
     }
