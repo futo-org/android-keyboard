@@ -768,14 +768,10 @@ public class PointerTracker {
         callListenerOnRelease(key, code, false);
     }
 
-    private long mPreviousEventTime;
-
     private void printTouchEvent(String title, int x, int y, long eventTime) {
         final Key key = mKeyDetector.detectHitKey(x, y);
         final String code = KeyDetector.printableCode(key);
-        final long delta = eventTime - mPreviousEventTime;
         Log.d(TAG, String.format("%s%s[%d] %4d %4d %5d %s", title,
-                (mKeyAlreadyProcessed ? "-" : " "), mPointerId, x, y, delta, code));
-        mPreviousEventTime = eventTime;
+                (mKeyAlreadyProcessed ? "-" : " "), mPointerId, x, y, eventTime, code));
     }
 }
