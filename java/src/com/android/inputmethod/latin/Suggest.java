@@ -390,7 +390,7 @@ public class Suggest {
         int dataTypeForLog = dataType;
         final int prefMaxSuggestions = MAX_SUGGESTIONS;
 
-        final String word = wordInfo.mWord.toString();
+        final CharSequence word = wordInfo.mWord;
         final int score = wordInfo.mScore;
         int pos = 0;
 
@@ -413,7 +413,7 @@ public class Suggest {
             // Check the last one's score and bail
             if (suggestions.size() >= prefMaxSuggestions
                     && suggestions.get(prefMaxSuggestions - 1).mScore >= score) return true;
-            final int length = word.codePointCount(0, word.length());
+            final int length = Character.codePointCount(word, 0, word.length());
             while (pos < suggestions.size()) {
                 final int curScore = suggestions.get(pos).mScore;
                 if (curScore < score
@@ -429,9 +429,9 @@ public class Suggest {
 
         final StringBuilder sb = new StringBuilder(getApproxMaxWordLength());
         if (mIsAllUpperCase) {
-            sb.append(word.toUpperCase(mLocale));
+            sb.append(word.toString().toUpperCase(mLocale));
         } else if (mIsFirstCharCapitalized) {
-            sb.append(StringUtils.toTitleCase(word, mLocale));
+            sb.append(StringUtils.toTitleCase(word.toString(), mLocale));
         } else {
             sb.append(word);
         }
