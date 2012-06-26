@@ -143,42 +143,45 @@ public class Settings extends InputMethodSettingsFragment
             generalSettings.removePreference(mVoicePreference);
         }
 
+        final PreferenceGroup advancedSettings =
+                (PreferenceGroup) findPreference(PREF_ADVANCED_SETTINGS);
         if (!VibratorUtils.getInstance(context).hasVibrator()) {
-            final PreferenceGroup advancedSettings =
-                    (PreferenceGroup) findPreference(PREF_ADVANCED_SETTINGS);
             generalSettings.removePreference(findPreference(PREF_VIBRATE_ON));
             if (null != advancedSettings) { // Theoretically advancedSettings cannot be null
                 advancedSettings.removePreference(findPreference(PREF_VIBRATION_DURATION_SETTINGS));
             }
         }
 
-        final boolean showPopupOption = res.getBoolean(
+        final boolean showKeyPreviewPopupOption = res.getBoolean(
                 R.bool.config_enable_show_popup_on_keypress_option);
-        if (!showPopupOption) {
+        mKeyPreviewPopupDismissDelay =
+                (ListPreference) findPreference(PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
+        if (!showKeyPreviewPopupOption) {
             generalSettings.removePreference(findPreference(PREF_POPUP_ON));
+            if (null != advancedSettings) { // Theoretically advancedSettings cannot be null
+                advancedSettings.removePreference(mKeyPreviewPopupDismissDelay);
+            }
+        } else {
+            final String[] entries = new String[] {
+                    res.getString(R.string.key_preview_popup_dismiss_no_delay),
+                    res.getString(R.string.key_preview_popup_dismiss_default_delay),
+            };
+            final String popupDismissDelayDefaultValue = Integer.toString(res.getInteger(
+                    R.integer.config_key_preview_linger_timeout));
+            mKeyPreviewPopupDismissDelay.setEntries(entries);
+            mKeyPreviewPopupDismissDelay.setEntryValues(
+                    new String[] { "0", popupDismissDelayDefaultValue });
+            if (null == mKeyPreviewPopupDismissDelay.getValue()) {
+                mKeyPreviewPopupDismissDelay.setValue(popupDismissDelayDefaultValue);
+            }
+            mKeyPreviewPopupDismissDelay.setEnabled(
+                    SettingsValues.isKeyPreviewPopupEnabled(prefs, res));
         }
 
         final CheckBoxPreference includeOtherImesInLanguageSwitchList =
                 (CheckBoxPreference)findPreference(PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST);
         includeOtherImesInLanguageSwitchList.setEnabled(
                 !SettingsValues.isLanguageSwitchKeySupressed(prefs));
-
-        mKeyPreviewPopupDismissDelay =
-                (ListPreference)findPreference(PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
-        final String[] entries = new String[] {
-                res.getString(R.string.key_preview_popup_dismiss_no_delay),
-                res.getString(R.string.key_preview_popup_dismiss_default_delay),
-        };
-        final String popupDismissDelayDefaultValue = Integer.toString(res.getInteger(
-                R.integer.config_key_preview_linger_timeout));
-        mKeyPreviewPopupDismissDelay.setEntries(entries);
-        mKeyPreviewPopupDismissDelay.setEntryValues(
-                new String[] { "0", popupDismissDelayDefaultValue });
-        if (null == mKeyPreviewPopupDismissDelay.getValue()) {
-            mKeyPreviewPopupDismissDelay.setValue(popupDismissDelayDefaultValue);
-        }
-        mKeyPreviewPopupDismissDelay.setEnabled(
-                SettingsValues.isKeyPreviewPopupEnabled(prefs, res));
 
         final PreferenceScreen dictionaryLink =
                 (PreferenceScreen) findPreference(PREF_CONFIGURE_DICTIONARIES_KEY);
@@ -305,13 +308,15 @@ public class Settings extends InputMethodSettingsFragment
 
     private void updateKeyPreviewPopupDelaySummary() {
         final ListPreference lp = mKeyPreviewPopupDismissDelay;
-        lp.setSummary(lp.getEntries()[lp.findIndexOfValue(lp.getValue())]);
+        final CharSequence[] entries = lp.getEntries();
+        if (entries == null || entries.length <= 0) return;
+        lp.setSummary(entries[lp.findIndexOfValue(lp.getValue())]);
     }
 
     private void updateVoiceModeSummary() {
         mVoicePreference.setSummary(
                 getResources().getStringArray(R.array.voice_input_modes_summary)
-                [mVoicePreference.findIndexOfValue(mVoicePreference.getValue())]);
+                        [mVoicePreference.findIndexOfValue(mVoicePreference.getValue())]);
     }
 
     private void refreshEnablingsOfKeypressSoundAndVibrationSettings(
