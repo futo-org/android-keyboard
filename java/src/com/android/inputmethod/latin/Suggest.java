@@ -91,16 +91,21 @@ public class Suggest {
     private boolean mIsAllUpperCase;
     private int mTrailingSingleQuotesCount;
 
+    // Locale used for upper- and title-casing words
+    final private Locale mLocale;
+
     private static final int MINIMUM_SAFETY_NET_CHAR_LENGTH = 4;
 
     public Suggest(final Context context, final Locale locale) {
         initAsynchronously(context, locale);
+        mLocale = locale;
     }
 
     /* package for test */ Suggest(final Context context, final File dictionary,
             final long startOffset, final long length, final Locale locale) {
         final Dictionary mainDict = DictionaryFactory.createDictionaryForTest(context, dictionary,
                 startOffset, length /* useFullEditDistance */, false, locale);
+        mLocale = locale;
         mMainDictionary = mainDict;
         addOrReplaceDictionary(mDictionaries, DICT_KEY_MAIN, mainDict);
         initWhitelistAndAutocorrectAndPool(context, locale);
