@@ -209,31 +209,6 @@ public class Suggest implements Dictionary.WordCallback {
         return sb;
     }
 
-    private static final WordComposer sEmptyWordComposer = new WordComposer();
-    public SuggestedWords getBigramPredictions(CharSequence prevWordForBigram) {
-        LatinImeLogger.onStartSuggestion(prevWordForBigram);
-        mIsFirstCharCapitalized = false;
-        mIsAllUpperCase = false;
-        mTrailingSingleQuotesCount = 0;
-        mSuggestions = new ArrayList<SuggestedWordInfo>(MAX_SUGGESTIONS);
-
-        // Treating USER_TYPED as UNIGRAM suggestion for logging now.
-        LatinImeLogger.onAddSuggestedWord("", Suggest.DIC_USER_TYPED, Dictionary.UNIGRAM);
-        mConsideredWord = "";
-
-        getAllBigrams(prevWordForBigram, sEmptyWordComposer);
-
-        SuggestedWordInfo.removeDups(mSuggestions);
-
-        return new SuggestedWords(mSuggestions,
-                false /* typedWordValid */,
-                false /* hasAutoCorrectionCandidate */,
-                false /* allowsToBeAutoCorrected */,
-                false /* isPunctuationSuggestions */,
-                false /* isObsoleteSuggestions */,
-                true /* isPrediction */);
-    }
-
     // Compatibility for tests. TODO: remove this
     public SuggestedWords getSuggestedWords(
             final WordComposer wordComposer, CharSequence prevWordForBigram,
@@ -264,7 +239,16 @@ public class Suggest implements Dictionary.WordCallback {
         if (wordComposer.size() <= 1 && isCorrectionEnabled) {
             // At first character typed, search only the bigrams
             if (!TextUtils.isEmpty(prevWordForBigram)) {
-                getAllBigrams(prevWordForBigram, wordComposer);
+                if (StringUtils.hasUpperCase(prevWordForBigram)) {
+                    // TODO: Must pay attention to locale when changing case.
+                    final CharSequence lowerPrevWord = prevWordForBigram.toString().toLowerCase();
+                    for (final Dictionary dictionary : mBigramDictionaries.values()) {
+                        dictionary.getBigrams(wordComposer, lowerPrevWord, this);
+                    }
+                }
+                for (final Dictionary dictionary : mBigramDictionaries.values()) {
+                    dictionary.getBigrams(wordComposer, prevWordForBigram, this);
+                }
             }
         } else if (wordComposer.size() > 1) {
             final WordComposer wordComposerForLookup;
@@ -360,23 +344,6 @@ public class Suggest implements Dictionary.WordCallback {
                 false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
                 isPrediction);
-    }
-
-    /**
-     * Adds all bigram predictions for prevWord. Also checks the lower case version of prevWord if
-     * it contains any upper case characters.
-     */
-    private void getAllBigrams(final CharSequence prevWord, final WordComposer wordComposer) {
-        if (StringUtils.hasUpperCase(prevWord)) {
-            // TODO: Must pay attention to locale when changing case.
-            final CharSequence lowerPrevWord = prevWord.toString().toLowerCase();
-            for (final Dictionary dictionary : mBigramDictionaries.values()) {
-                dictionary.getBigrams(wordComposer, lowerPrevWord, this);
-            }
-        }
-        for (final Dictionary dictionary : mBigramDictionaries.values()) {
-            dictionary.getBigrams(wordComposer, prevWord, this);
-        }
     }
 
     private static ArrayList<SuggestedWordInfo> getSuggestionsInfoListWithDebugInfo(
