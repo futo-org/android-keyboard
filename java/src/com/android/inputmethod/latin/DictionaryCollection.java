@@ -33,11 +33,13 @@ public class DictionaryCollection extends Dictionary {
     private final String TAG = DictionaryCollection.class.getSimpleName();
     protected final CopyOnWriteArrayList<Dictionary> mDictionaries;
 
-    public DictionaryCollection() {
+    public DictionaryCollection(final String dictType) {
+        super(dictType);
         mDictionaries = new CopyOnWriteArrayList<Dictionary>();
     }
 
-    public DictionaryCollection(Dictionary... dictionaries) {
+    public DictionaryCollection(final String dictType, Dictionary... dictionaries) {
+        super(dictType);
         if (null == dictionaries) {
             mDictionaries = new CopyOnWriteArrayList<Dictionary>();
         } else {
@@ -46,7 +48,8 @@ public class DictionaryCollection extends Dictionary {
         }
     }
 
-    public DictionaryCollection(Collection<Dictionary> dictionaries) {
+    public DictionaryCollection(final String dictType, Collection<Dictionary> dictionaries) {
+        super(dictType);
         mDictionaries = new CopyOnWriteArrayList<Dictionary>(dictionaries);
         mDictionaries.removeAll(Collections.singleton(null));
     }

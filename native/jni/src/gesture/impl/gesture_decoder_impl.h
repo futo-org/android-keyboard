@@ -30,7 +30,7 @@ class GestureDecoderImpl : public IncrementalDecoder {
     }
 
     int getSuggestions(ProximityInfo *pInfo, int *inputXs, int *inputYs, int *times,
-            int *pointerIds, int *codes, int inputSize, int commitPoint, bool isMainDict,
+            int *pointerIds, int *codes, int inputSize, int commitPoint,
             unsigned short *outWords, int *frequencies, int *outputIndices) {
         return 0;
     }

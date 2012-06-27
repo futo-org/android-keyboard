@@ -38,7 +38,6 @@ public class ExpandableDictionary extends Dictionary {
 
     private Context mContext;
     private char[] mWordBuilder = new char[BinaryDictionary.MAX_WORD_LENGTH];
-    private int mDicTypeId;
     private int mMaxDepth;
     private int mInputLength;
 
@@ -152,11 +151,11 @@ public class ExpandableDictionary extends Dictionary {
 
     private int[][] mCodes;
 
-    public ExpandableDictionary(Context context, int dicTypeId) {
+    public ExpandableDictionary(final Context context, final String dictType) {
+        super(dictType);
         mContext = context;
         clearDictionary();
         mCodes = new int[BinaryDictionary.MAX_WORD_LENGTH][];
-        mDicTypeId = dicTypeId;
     }
 
     public void loadDictionary() {

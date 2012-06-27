@@ -36,14 +36,14 @@ class Dictionary {
 
     int getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
             int *times, int *pointerIds, int *codes, int codesSize, int *prevWordChars,
-            int prevWordLength, int commitPoint, bool isGesture, int dicTypeId,
+            int prevWordLength, int commitPoint, bool isGesture,
             bool useFullEditDistance, unsigned short *outWords,
             int *frequencies, int *spaceIndices) {
         int result = 0;
         if (isGesture) {
             mGestureDecoder->setPrevWord(prevWordChars, prevWordLength);
             result = mGestureDecoder->getSuggestions(proximityInfo, xcoordinates, ycoordinates,
-                    times, pointerIds, codes, codesSize, commitPoint, dicTypeId == 1 /* main */,
+                    times, pointerIds, codes, codesSize, commitPoint,
                     outWords, frequencies, spaceIndices);
         } else {
             std::map<int, int> bigramMap;

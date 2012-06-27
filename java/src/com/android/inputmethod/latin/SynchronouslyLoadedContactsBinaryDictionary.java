@@ -28,7 +28,7 @@ public class SynchronouslyLoadedContactsBinaryDictionary extends ContactsBinaryD
     private boolean mClosed;
 
     public SynchronouslyLoadedContactsBinaryDictionary(final Context context, final Locale locale) {
-        super(context, Suggest.DIC_CONTACTS, locale);
+        super(context, locale);
     }
 
     @Override

@@ -49,7 +49,8 @@ public class DictionaryFactory {
             final Locale locale, final boolean useFullEditDistance) {
         if (null == locale) {
             Log.e(TAG, "No locale defined for dictionary");
-            return new DictionaryCollection(createBinaryDictionary(context, locale));
+            return new DictionaryCollection(Suggest.DICT_KEY_MAIN,
+                    createBinaryDictionary(context, locale));
         }
 
         final LinkedList<Dictionary> dictList = new LinkedList<Dictionary>();
@@ -59,7 +60,7 @@ public class DictionaryFactory {
             for (final AssetFileAddress f : assetFileList) {
                 final BinaryDictionary binaryDictionary =
                         new BinaryDictionary(context, f.mFilename, f.mOffset, f.mLength,
-                                useFullEditDistance, locale, Suggest.DIC_MAIN);
+                                useFullEditDistance, locale, Suggest.DICT_KEY_MAIN);
                 if (binaryDictionary.isValidDictionary()) {
                     dictList.add(binaryDictionary);
                 }
@@ -69,7 +70,7 @@ public class DictionaryFactory {
         // If the list is empty, that means we should not use any dictionary (for example, the user
         // explicitly disabled the main dictionary), so the following is okay. dictList is never
         // null, but if for some reason it is, DictionaryCollection handles it gracefully.
-        return new DictionaryCollection(dictList);
+        return new DictionaryCollection(Suggest.DICT_KEY_MAIN, dictList);
     }
 
     /**
@@ -112,7 +113,7 @@ public class DictionaryFactory {
                 return null;
             }
             return new BinaryDictionary(context, sourceDir, afd.getStartOffset(), afd.getLength(),
-                    false /* useFullEditDistance */, locale, Suggest.DIC_MAIN);
+                    false /* useFullEditDistance */, locale, Suggest.DICT_KEY_MAIN);
         } catch (android.content.res.Resources.NotFoundException e) {
             Log.e(TAG, "Could not find the resource");
             return null;
@@ -140,7 +141,7 @@ public class DictionaryFactory {
             long startOffset, long length, final boolean useFullEditDistance, Locale locale) {
         if (dictionary.isFile()) {
             return new BinaryDictionary(context, dictionary.getAbsolutePath(), startOffset, length,
-                    useFullEditDistance, locale, Suggest.DIC_MAIN);
+                    useFullEditDistance, locale, Suggest.DICT_KEY_MAIN);
         } else {
             Log.e(TAG, "Could not find the file. path=" + dictionary.getAbsolutePath());
             return null;
