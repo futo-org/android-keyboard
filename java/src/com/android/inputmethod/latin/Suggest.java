@@ -58,11 +58,6 @@ public class Suggest {
 
     private float mAutoCorrectionThreshold;
 
-    // TODO: Remove these member variables by passing more context to addWord() callback method
-    private boolean mIsFirstCharCapitalized;
-    private boolean mIsAllUpperCase;
-    private int mTrailingSingleQuotesCount;
-
     // Locale used for upper- and title-casing words
     final private Locale mLocale;
 
@@ -191,15 +186,16 @@ public class Suggest {
             final ProximityInfo proximityInfo, final boolean isCorrectionEnabled,
             final boolean isPrediction) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
-        mIsFirstCharCapitalized = !isPrediction && wordComposer.isFirstCharCapitalized();
-        mIsAllUpperCase = !isPrediction && wordComposer.isAllUpperCase();
-        mTrailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
+        final boolean isFirstCharCapitalized =
+                !isPrediction && wordComposer.isFirstCharCapitalized();
+        final boolean isAllUpperCase = !isPrediction && wordComposer.isAllUpperCase();
+        final int trailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 new ArrayList<SuggestedWordInfo>(MAX_SUGGESTIONS);
 
         final String typedWord = wordComposer.getTypedWord();
-        final String consideredWord = mTrailingSingleQuotesCount > 0
-                ? typedWord.substring(0, typedWord.length() - mTrailingSingleQuotesCount)
+        final String consideredWord = trailingSingleQuotesCount > 0
+                ? typedWord.substring(0, typedWord.length() - trailingSingleQuotesCount)
                 : typedWord;
         LatinImeLogger.onAddSuggestedWord(typedWord, Dictionary.TYPE_USER_TYPED);
 
@@ -227,9 +223,9 @@ public class Suggest {
             }
         } else if (wordComposer.size() > 1) {
             final WordComposer wordComposerForLookup;
-            if (mTrailingSingleQuotesCount > 0) {
+            if (trailingSingleQuotesCount > 0) {
                 wordComposerForLookup = new WordComposer(wordComposer);
-                for (int i = mTrailingSingleQuotesCount - 1; i >= 0; --i) {
+                for (int i = trailingSingleQuotesCount - 1; i >= 0; --i) {
                     wordComposerForLookup.deleteLast();
                 }
             } else {
@@ -253,14 +249,14 @@ public class Suggest {
         for (int i = 0; i < suggestionsContainer.size(); ++i) {
             final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
             final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(wordInfo,
-                    mLocale, mIsAllUpperCase, mIsFirstCharCapitalized, mTrailingSingleQuotesCount);
+                    mLocale, isAllUpperCase, isFirstCharCapitalized, trailingSingleQuotesCount);
             suggestionsContainer.set(i, transformedWordInfo);
             LatinImeLogger.onAddSuggestedWord(transformedWordInfo.mWord.toString(),
                     transformedWordInfo.mSourceDict);
         }
 
-        final CharSequence whitelistedWord = capitalizeWord(mIsAllUpperCase,
-                mIsFirstCharCapitalized, mWhiteListDictionary.getWhitelistedWord(consideredWord));
+        final CharSequence whitelistedWord = capitalizeWord(isAllUpperCase,
+                isFirstCharCapitalized, mWhiteListDictionary.getWhitelistedWord(consideredWord));
 
         final boolean hasAutoCorrection;
         if (isCorrectionEnabled) {
@@ -274,9 +270,9 @@ public class Suggest {
         }
 
         if (whitelistedWord != null) {
-            if (mTrailingSingleQuotesCount > 0) {
+            if (trailingSingleQuotesCount > 0) {
                 final StringBuilder sb = new StringBuilder(whitelistedWord);
-                for (int i = mTrailingSingleQuotesCount - 1; i >= 0; --i) {
+                for (int i = trailingSingleQuotesCount - 1; i >= 0; --i) {
                     sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
                 }
                 suggestionsContainer.add(0, new SuggestedWordInfo(sb.toString(),
