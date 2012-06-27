@@ -250,6 +250,15 @@ public class Suggest {
             }
         }
 
+        for (int i = 0; i < suggestionsContainer.size(); ++i) {
+            final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
+            final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(wordInfo,
+                    mLocale, mIsAllUpperCase, mIsFirstCharCapitalized, mTrailingSingleQuotesCount);
+            suggestionsContainer.set(i, transformedWordInfo);
+            LatinImeLogger.onAddSuggestedWord(transformedWordInfo.mWord.toString(),
+                    transformedWordInfo.mSourceDict);
+        }
+
         final CharSequence whitelistedWord = capitalizeWord(mIsAllUpperCase,
                 mIsFirstCharCapitalized, mWhiteListDictionary.getWhitelistedWord(consideredWord));
 
@@ -370,7 +379,7 @@ public class Suggest {
     private static final SuggestedWordInfoComparator sSuggestedWordInfoComparator =
             new SuggestedWordInfoComparator();
 
-    public void addWord(final SuggestedWordInfo wordInfo,
+    private static void addWord(final SuggestedWordInfo wordInfo,
             final ArrayList<SuggestedWordInfo> suggestions) {
         final int index =
                 Collections.binarySearch(suggestions, wordInfo, sSuggestedWordInfoComparator);
@@ -378,15 +387,10 @@ public class Suggest {
         // it returns -insertionPoint - 1. We want the insertion point, so:
         final int pos = index >= 0 ? index : -index - 1;
         if (pos >= MAX_SUGGESTIONS) return;
-
-        final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(wordInfo,
-                mLocale, mIsAllUpperCase, mIsFirstCharCapitalized, mTrailingSingleQuotesCount);
-        suggestions.add(pos, transformedWordInfo);
+        suggestions.add(pos, wordInfo);
         if (suggestions.size() > MAX_SUGGESTIONS) {
             suggestions.remove(MAX_SUGGESTIONS);
         }
-        LatinImeLogger.onAddSuggestedWord(transformedWordInfo.mWord.toString(),
-                transformedWordInfo.mSourceDict);
     }
 
     private static SuggestedWordInfo getTransformedSuggestedWordInfo(
