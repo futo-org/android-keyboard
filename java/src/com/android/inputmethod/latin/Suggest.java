@@ -26,7 +26,6 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Locale;
@@ -190,8 +189,8 @@ public class Suggest {
                 !isPrediction && wordComposer.isFirstCharCapitalized();
         final boolean isAllUpperCase = !isPrediction && wordComposer.isAllUpperCase();
         final int trailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
-        final ArrayList<SuggestedWordInfo> suggestionsContainer =
-                new ArrayList<SuggestedWordInfo>(MAX_SUGGESTIONS);
+        final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
+                MAX_SUGGESTIONS);
 
         final String typedWord = wordComposer.getTypedWord();
         final String consideredWord = trailingSingleQuotesCount > 0
@@ -211,13 +210,9 @@ public class Suggest {
                 }
                 for (final String key : mDictionaries.keySet()) {
                     final Dictionary dictionary = mDictionaries.get(key);
-                    final ArrayList<SuggestedWordInfo> localSuggestions =
-                            dictionary.getBigrams(wordComposer, prevWordForBigram);
+                    suggestionsSet.addAll(dictionary.getBigrams(wordComposer, prevWordForBigram));
                     if (null != lowerPrevWord) {
-                        localSuggestions.addAll(dictionary.getBigrams(wordComposer, lowerPrevWord));
-                    }
-                    for (final SuggestedWordInfo localSuggestion : localSuggestions) {
-                        addWord(localSuggestion, suggestionsContainer);
+                        suggestionsSet.addAll(dictionary.getBigrams(wordComposer, lowerPrevWord));
                     }
                 }
             }
@@ -238,14 +233,13 @@ public class Suggest {
                         || key.equals(Dictionary.TYPE_WHITELIST))
                     continue;
                 final Dictionary dictionary = mDictionaries.get(key);
-                final ArrayList<SuggestedWordInfo> localSuggestions = dictionary.getWords(
-                        wordComposerForLookup, prevWordForBigram, proximityInfo);
-                for (final SuggestedWordInfo suggestion : localSuggestions) {
-                    addWord(suggestion, suggestionsContainer);
-                }
+                suggestionsSet.addAll(dictionary.getWords(
+                        wordComposerForLookup, prevWordForBigram, proximityInfo));
             }
         }
 
+        final ArrayList<SuggestedWordInfo> suggestionsContainer =
+                new ArrayList<SuggestedWordInfo>(suggestionsSet);
         for (int i = 0; i < suggestionsContainer.size(); ++i) {
             final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
             final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(wordInfo,
@@ -374,20 +368,6 @@ public class Suggest {
     }
     private static final SuggestedWordInfoComparator sSuggestedWordInfoComparator =
             new SuggestedWordInfoComparator();
-
-    private static void addWord(final SuggestedWordInfo wordInfo,
-            final ArrayList<SuggestedWordInfo> suggestions) {
-        final int index =
-                Collections.binarySearch(suggestions, wordInfo, sSuggestedWordInfoComparator);
-        // binarySearch returns the index of an equal word info if found. If not found
-        // it returns -insertionPoint - 1. We want the insertion point, so:
-        final int pos = index >= 0 ? index : -index - 1;
-        if (pos >= MAX_SUGGESTIONS) return;
-        suggestions.add(pos, wordInfo);
-        if (suggestions.size() > MAX_SUGGESTIONS) {
-            suggestions.remove(MAX_SUGGESTIONS);
-        }
-    }
 
     private static SuggestedWordInfo getTransformedSuggestedWordInfo(
             final SuggestedWordInfo wordInfo, final Locale locale, final boolean isAllUpperCase,
