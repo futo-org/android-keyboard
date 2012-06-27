@@ -28,7 +28,8 @@ class IncrementalDecoderImpl : IncrementalDecoderInterface {
 
  public:
      IncrementalDecoderImpl(int maxWordLength, int maxWords) { };
-     void setDict(const UnigramDictionary *dict, const BigramDictionary *bigram) { };
+     void setDict(const UnigramDictionary *dict, const BigramDictionary *bigram,
+             const uint8_t *dictRoot, int rootPos) { };
      void setPrevWord(const int32_t *prevWord, int prevWordLength) { };
      void reset() { };
 

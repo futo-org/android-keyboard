@@ -15,6 +15,7 @@
  */
 
 #include <assert.h>
+#include <math.h>
 #include <stdio.h>
 #include <string>
 
@@ -209,5 +210,26 @@ int ProximityInfo::getKeyIndex(const int c) const {
         return NOT_AN_INDEX;
     }
     return mCodeToKeyIndex[baseLowerC];
+}
+
+// TODO: [Staging] Optimize
+void ProximityInfo::getCenters(int *centerXs, int *centerYs, int *codeToKeyIndex,
+        int *keyToCodeIndex, int *keyCount, int *keyWidth) const {
+    *keyCount = KEY_COUNT;
+    *keyWidth = sqrt((float)MOST_COMMON_KEY_WIDTH_SQUARE);
+
+    for (int i = 0; i < KEY_COUNT; ++i) {
+        const int code = mKeyCharCodes[i];
+        const int lowerCode = toBaseLowerCase(code);
+        centerXs[i] = mKeyXCoordinates[i] + mKeyWidths[i] / 2;
+        centerYs[i] = mKeyYCoordinates[i] + mKeyHeights[i] / 2;
+        codeToKeyIndex[code] = i;
+        if (code != lowerCode && lowerCode >= 0 && lowerCode <= MAX_CHAR_CODE) {
+            codeToKeyIndex[lowerCode] = i;
+            keyToCodeIndex[i] = lowerCode;
+        } else {
+            keyToCodeIndex[i] = code;
+        }
+    }
 }
 } // namespace latinime
