@@ -231,7 +231,7 @@ public class Suggest {
                         localSuggestions.addAll(dictionary.getBigrams(wordComposer, lowerPrevWord));
                     }
                     for (final SuggestedWordInfo localSuggestion : localSuggestions) {
-                        addWord(localSuggestion, key, suggestionsContainer, consideredWord);
+                        addWord(localSuggestion, key, suggestionsContainer);
                     }
                 }
             }
@@ -254,7 +254,7 @@ public class Suggest {
                 final ArrayList<SuggestedWordInfo> localSuggestions = dictionary.getWords(
                         wordComposerForLookup, prevWordForBigram, proximityInfo);
                 for (final SuggestedWordInfo suggestion : localSuggestions) {
-                    addWord(suggestion, key, suggestionsContainer, consideredWord);
+                    addWord(suggestion, key, suggestionsContainer);
                 }
             }
         }
@@ -376,31 +376,22 @@ public class Suggest {
     private static final SuggestedWordInfoComparator sSuggestedWordInfoComparator =
             new SuggestedWordInfoComparator();
 
-    public boolean addWord(final SuggestedWordInfo wordInfo, final String dictTypeKey,
-            final ArrayList<SuggestedWordInfo> suggestions, final String consideredWord) {
-        final int prefMaxSuggestions = MAX_SUGGESTIONS;
-
-        final CharSequence word = wordInfo.mWord;
-        final int score = wordInfo.mScore;
-        int pos = 0;
-
+    public void addWord(final SuggestedWordInfo wordInfo, final String dictTypeKey,
+            final ArrayList<SuggestedWordInfo> suggestions) {
         final int index =
                 Collections.binarySearch(suggestions, wordInfo, sSuggestedWordInfoComparator);
         // binarySearch returns the index of an equal word info if found. If not found
         // it returns -insertionPoint - 1. We want the insertion point, so:
-        pos = index >= 0 ? index : -index - 1;
-        if (pos >= prefMaxSuggestions) {
-            return true;
-        }
+        final int pos = index >= 0 ? index : -index - 1;
+        if (pos >= MAX_SUGGESTIONS) return;
 
         final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(wordInfo,
                 mLocale, mIsAllUpperCase, mIsFirstCharCapitalized, mTrailingSingleQuotesCount);
         suggestions.add(pos, transformedWordInfo);
-        if (suggestions.size() > prefMaxSuggestions) {
-            suggestions.remove(prefMaxSuggestions);
+        if (suggestions.size() > MAX_SUGGESTIONS) {
+            suggestions.remove(MAX_SUGGESTIONS);
         }
         LatinImeLogger.onAddSuggestedWord(transformedWordInfo.mWord.toString(), dictTypeKey);
-        return true;
     }
 
     private static SuggestedWordInfo getTransformedSuggestedWordInfo(
