@@ -28,6 +28,7 @@ LATIN_IME_SRC_DIR := src
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)/gesture
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)/gesture/impl
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)/gesture/impl/header
 
 LOCAL_CFLAGS += -Werror -Wall
 
@@ -50,7 +51,11 @@ LATIN_IME_CORE_SRC_FILES := \
     proximity_info.cpp \
     proximity_info_state.cpp \
     unigram_dictionary.cpp \
-    gesture/build_check.cpp
+    gesture/build_check.cpp \
+    gesture/impl/gesture_decoder_impl.cpp \
+    gesture/impl/incremental_decoder_impl.cpp \
+    gesture/impl/token_beam_impl.cpp \
+    gesture/impl/token_impl.cpp
 
 LOCAL_SRC_FILES := \
     $(LATIN_IME_JNI_SRC_FILES) \
