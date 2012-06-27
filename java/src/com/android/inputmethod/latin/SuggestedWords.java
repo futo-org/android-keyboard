@@ -142,7 +142,7 @@ public class SuggestedWords {
             mWord = word;
             mScore = score;
             mKind = kind;
-            mCodePointCount = mWordStr.codePointCount(0, mWordStr.length());
+            mCodePointCount = StringUtils.codePointCount(mWordStr);
         }
 
 

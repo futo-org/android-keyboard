@@ -92,7 +92,7 @@ public class WordComposer {
         refreshSize();
     }
 
-    public final void refreshSize() {
+    private final void refreshSize() {
         mCodePointSize = mTypedWord.codePointCount(0, mTypedWord.length());
     }
 

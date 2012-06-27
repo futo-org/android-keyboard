@@ -161,7 +161,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
      * bigrams depending on locale.
      */
     private void addName(String name) {
-        int len = name.codePointCount(0, name.length());
+        int len = StringUtils.codePointCount(name);
         String prevWord = null;
         // TODO: Better tokenization for non-Latin writing systems
         for (int i = 0; i < len; i++) {
@@ -171,7 +171,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
                 i = end - 1;
                 // Don't add single letter words, possibly confuses
                 // capitalization of i.
-                final int wordLen = word.codePointCount(0, word.length());
+                final int wordLen = StringUtils.codePointCount(word);
                 if (wordLen < MAX_WORD_LENGTH && wordLen > 1) {
                     super.addWord(word, null /* shortcut */, FREQUENCY_FOR_CONTACTS);
                     if (!TextUtils.isEmpty(prevWord)) {
@@ -260,14 +260,14 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
      * Checks if the words in a name are in the current binary dictionary.
      */
     private boolean isNameInDictionary(String name) {
-        int len = name.codePointCount(0, name.length());
+        int len = StringUtils.codePointCount(name);
         String prevWord = null;
         for (int i = 0; i < len; i++) {
             if (Character.isLetter(name.codePointAt(i))) {
                 int end = getWordEndPosition(name, len, i);
                 String word = name.substring(i, end);
                 i = end - 1;
-                final int wordLen = word.codePointCount(0, word.length());
+                final int wordLen = StringUtils.codePointCount(word);
                 if (wordLen < MAX_WORD_LENGTH && wordLen > 1) {
                     if (!TextUtils.isEmpty(prevWord) && mUseFirstLastBigrams) {
                         if (!super.isValidBigramLocked(prevWord, word)) {
