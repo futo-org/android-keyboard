@@ -115,8 +115,7 @@ public class UserHistoryDictionary extends ExpandableDictionary {
     }
 
     public synchronized static UserHistoryDictionary getInstance(
-            final Context context, final String locale,
-            final int dictTypeId, final SharedPreferences sp) {
+            final Context context, final String locale, final SharedPreferences sp) {
         if (sLangDictCache.containsKey(locale)) {
             final SoftReference<UserHistoryDictionary> ref = sLangDictCache.get(locale);
             final UserHistoryDictionary dict = ref == null ? null : ref.get();
