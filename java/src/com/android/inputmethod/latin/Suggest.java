@@ -394,34 +394,17 @@ public class Suggest {
         final int score = wordInfo.mScore;
         int pos = 0;
 
-        // Check if it's the same word, only caps are different
-        if (StringUtils.equalsIgnoreCase(consideredWord, word)) {
-            // TODO: remove this surrounding if clause and move this logic to
-            // getSuggestedWordBuilder.
-            if (suggestions.size() > 0) {
-                final SuggestedWordInfo currentHighestWord = suggestions.get(0);
-                // If the current highest word is also equal to typed word, we need to compare
-                // frequency to determine the insertion position. This does not ensure strictly
-                // correct ordering, but ensures the top score is on top which is enough for
-                // removing duplicates correctly.
-                if (StringUtils.equalsIgnoreCase(currentHighestWord.mWord, word)
-                        && score <= currentHighestWord.mScore) {
-                    pos = 1;
-                }
+        // Check the last one's score and bail
+        if (suggestions.size() >= prefMaxSuggestions
+                && suggestions.get(prefMaxSuggestions - 1).mScore >= score) return true;
+        final int length = wordInfo.mCodePointCount;
+        while (pos < suggestions.size()) {
+            final int curScore = suggestions.get(pos).mScore;
+            if (curScore < score
+                    || (curScore == score && length < suggestions.get(pos).mCodePointCount)) {
+                break;
             }
-        } else {
-            // Check the last one's score and bail
-            if (suggestions.size() >= prefMaxSuggestions
-                    && suggestions.get(prefMaxSuggestions - 1).mScore >= score) return true;
-            final int length = wordInfo.mCodePointCount;
-            while (pos < suggestions.size()) {
-                final int curScore = suggestions.get(pos).mScore;
-                if (curScore < score
-                        || (curScore == score && length < suggestions.get(pos).mCodePointCount)) {
-                    break;
-                }
-                pos++;
-            }
+            pos++;
         }
         if (pos >= prefMaxSuggestions) {
             return true;
