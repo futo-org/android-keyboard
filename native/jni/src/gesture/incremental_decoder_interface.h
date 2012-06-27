@@ -31,7 +31,8 @@ class IncrementalDecoderInterface {
             int *pointerIds, int *codes, int inputSize, int commitPoint, bool isMainDict,
             unsigned short *outWords, int *frequencies, int *outputIndices) = 0;
     virtual void reset() = 0;
-    virtual void setDict(const UnigramDictionary *dict, const BigramDictionary *bigram) = 0;
+    virtual void setDict(const UnigramDictionary *dict, const BigramDictionary *bigram,
+            const uint8_t *dictRoot, int rootPos) = 0;
     virtual void setPrevWord(const int32_t *prevWord, int prevWordLength) = 0;
     virtual ~IncrementalDecoderInterface() { };
 };
