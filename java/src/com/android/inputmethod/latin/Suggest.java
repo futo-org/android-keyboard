@@ -57,6 +57,7 @@ public class Suggest {
     // If you add a type of dictionary, increment DIC_TYPE_LAST_ID
     // TODO: this value seems unused. Remove it?
     public static final int DIC_TYPE_LAST_ID = 6;
+    public static final String DICT_KEY_USER_TYPED = "user_typed";
     public static final String DICT_KEY_MAIN = "main";
     public static final String DICT_KEY_CONTACTS = "contacts";
     // User dictionary, the system-managed one.
@@ -232,7 +233,7 @@ public class Suggest {
                 ? typedWord.substring(0, typedWord.length() - mTrailingSingleQuotesCount)
                 : typedWord;
         // Treating USER_TYPED as UNIGRAM suggestion for logging now.
-        LatinImeLogger.onAddSuggestedWord(typedWord, Suggest.DIC_USER_TYPED, Dictionary.UNIGRAM);
+        LatinImeLogger.onAddSuggestedWord(typedWord, DICT_KEY_USER_TYPED);
 
         if (wordComposer.size() <= 1 && isCorrectionEnabled) {
             // At first character typed, search only the bigrams
@@ -253,8 +254,7 @@ public class Suggest {
                         localSuggestions.addAll(dictionary.getBigrams(wordComposer, lowerPrevWord));
                     }
                     for (final SuggestedWordInfo localSuggestion : localSuggestions) {
-                        addWord(localSuggestion, dicTypeId, Dictionary.BIGRAM,
-                                suggestionsContainer, consideredWord);
+                        addWord(localSuggestion, key, suggestionsContainer, consideredWord);
                     }
                 }
             }
@@ -278,8 +278,7 @@ public class Suggest {
                 final ArrayList<SuggestedWordInfo> localSuggestions = dictionary.getWords(
                         wordComposerForLookup, prevWordForBigram, proximityInfo);
                 for (final SuggestedWordInfo suggestion : localSuggestions) {
-                    addWord(suggestion, dicTypeId, Dictionary.UNIGRAM,
-                            suggestionsContainer, consideredWord);
+                    addWord(suggestion, key, suggestionsContainer, consideredWord);
                 }
             }
         }
@@ -401,10 +400,8 @@ public class Suggest {
     private static final SuggestedWordInfoComparator sSuggestedWordInfoComparator =
             new SuggestedWordInfoComparator();
 
-    public boolean addWord(final SuggestedWordInfo wordInfo,
-            final int dicTypeId, final int dataType,
+    public boolean addWord(final SuggestedWordInfo wordInfo, final String dictTypeKey,
             final ArrayList<SuggestedWordInfo> suggestions, final String consideredWord) {
-        int dataTypeForLog = dataType;
         final int prefMaxSuggestions = MAX_SUGGESTIONS;
 
         final CharSequence word = wordInfo.mWord;
@@ -426,8 +423,7 @@ public class Suggest {
         if (suggestions.size() > prefMaxSuggestions) {
             suggestions.remove(prefMaxSuggestions);
         }
-        LatinImeLogger.onAddSuggestedWord(transformedWordInfo.mWord.toString(), dicTypeId,
-                dataTypeForLog);
+        LatinImeLogger.onAddSuggestedWord(transformedWordInfo.mWord.toString(), dictTypeKey);
         return true;
     }
 
