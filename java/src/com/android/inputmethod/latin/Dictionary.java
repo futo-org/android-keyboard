@@ -31,9 +31,6 @@ public abstract class Dictionary {
      */
     protected static final int FULL_WORD_SCORE_MULTIPLIER = 2;
 
-    public static final int UNIGRAM = 0;
-    public static final int BIGRAM = 1;
-
     public static final int NOT_A_PROBABILITY = -1;
 
     /**
