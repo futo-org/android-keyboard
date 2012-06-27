@@ -249,6 +249,8 @@ public class Suggest {
                     transformedWordInfo.mSourceDict);
         }
 
+        final SuggestedWordInfo bestSuggestion = suggestionsContainer.isEmpty()
+                ? null : suggestionsContainer.get(0);
         final CharSequence whitelistedWord = capitalizeWord(isAllUpperCase,
                 isFirstCharCapitalized, mWhiteListDictionary.getWhitelistedWord(consideredWord));
 
@@ -256,7 +258,7 @@ public class Suggest {
         if (isCorrectionEnabled) {
             final CharSequence autoCorrection =
                     AutoCorrection.computeAutoCorrectionWord(mDictionaries, wordComposer,
-                            suggestionsContainer, consideredWord, mAutoCorrectionThreshold,
+                            bestSuggestion, consideredWord, mAutoCorrectionThreshold,
                             whitelistedWord);
             hasAutoCorrection = (null != autoCorrection);
         } else {

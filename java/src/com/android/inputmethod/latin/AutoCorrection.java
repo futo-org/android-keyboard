@@ -34,17 +34,17 @@ public class AutoCorrection {
 
     public static CharSequence computeAutoCorrectionWord(
             final ConcurrentHashMap<String, Dictionary> dictionaries,
-            final WordComposer wordComposer, final ArrayList<SuggestedWordInfo> suggestions,
+            final WordComposer wordComposer, SuggestedWordInfo suggestion,
             final CharSequence consideredWord, final float autoCorrectionThreshold,
             final CharSequence whitelistedWord) {
         if (hasAutoCorrectionForWhitelistedWord(whitelistedWord)) {
             return whitelistedWord;
         } else if (hasAutoCorrectionForConsideredWord(
-                dictionaries, wordComposer, suggestions, consideredWord)) {
+                dictionaries, wordComposer, suggestion, consideredWord)) {
             return consideredWord;
-        } else if (hasAutoCorrectionForBinaryDictionary(wordComposer, suggestions,
+        } else if (hasAutoCorrectionForBinaryDictionary(wordComposer, suggestion,
                 consideredWord, autoCorrectionThreshold)) {
-            return suggestions.get(0).mWord;
+            return suggestion.mWord;
         }
         return null;
     }
@@ -111,27 +111,26 @@ public class AutoCorrection {
 
     private static boolean hasAutoCorrectionForConsideredWord(
             final ConcurrentHashMap<String, Dictionary> dictionaries,
-            final WordComposer wordComposer, final ArrayList<SuggestedWordInfo> suggestions,
+            final WordComposer wordComposer, final SuggestedWordInfo suggestion,
             final CharSequence consideredWord) {
         if (TextUtils.isEmpty(consideredWord)) return false;
-        return wordComposer.size() > 1 && suggestions.size() > 0
+        return wordComposer.size() > 1 && null != suggestion
                 && !allowsToBeAutoCorrected(dictionaries, consideredWord, false);
     }
 
     private static boolean hasAutoCorrectionForBinaryDictionary(WordComposer wordComposer,
-            ArrayList<SuggestedWordInfo> suggestions,
+            SuggestedWordInfo suggestion,
             CharSequence consideredWord, float autoCorrectionThreshold) {
-        if (wordComposer.size() > 1 && suggestions.size() > 0) {
-            final SuggestedWordInfo autoCorrectionSuggestion = suggestions.get(0);
+        if (wordComposer.size() > 1 && null != suggestion) {
             //final int autoCorrectionSuggestionScore = sortedScores[0];
-            final int autoCorrectionSuggestionScore = autoCorrectionSuggestion.mScore;
+            final int autoCorrectionSuggestionScore = suggestion.mScore;
             // TODO: when the normalized score of the first suggestion is nearly equals to
             //       the normalized score of the second suggestion, behave less aggressive.
             final float normalizedScore = BinaryDictionary.calcNormalizedScore(
-                    consideredWord.toString(), autoCorrectionSuggestion.mWord.toString(),
+                    consideredWord.toString(), suggestion.mWord.toString(),
                     autoCorrectionSuggestionScore);
             if (DBG) {
-                Log.d(TAG, "Normalized " + consideredWord + "," + autoCorrectionSuggestion + ","
+                Log.d(TAG, "Normalized " + consideredWord + "," + suggestion + ","
                         + autoCorrectionSuggestionScore + ", " + normalizedScore
                         + "(" + autoCorrectionThreshold + ")");
             }
