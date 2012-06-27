@@ -46,15 +46,6 @@ public class Suggest {
     // TODO: rename this to CORRECTION_ON
     public static final int CORRECTION_FULL = 1;
 
-    public static final String DICT_KEY_USER_TYPED = "user_typed";
-    public static final String DICT_KEY_MAIN = "main";
-    public static final String DICT_KEY_CONTACTS = "contacts";
-    // User dictionary, the system-managed one.
-    public static final String DICT_KEY_USER = "user";
-    // User history dictionary internal to LatinIME
-    public static final String DICT_KEY_USER_HISTORY = "history";
-    public static final String DICT_KEY_WHITELIST ="whitelist";
-
     private static final boolean DBG = LatinImeLogger.sDBG;
 
     private Dictionary mMainDictionary;
@@ -88,13 +79,13 @@ public class Suggest {
                 startOffset, length /* useFullEditDistance */, false, locale);
         mLocale = locale;
         mMainDictionary = mainDict;
-        addOrReplaceDictionary(mDictionaries, DICT_KEY_MAIN, mainDict);
+        addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_MAIN, mainDict);
         initWhitelistAndAutocorrectAndPool(context, locale);
     }
 
     private void initWhitelistAndAutocorrectAndPool(final Context context, final Locale locale) {
         mWhiteListDictionary = new WhitelistDictionary(context, locale);
-        addOrReplaceDictionary(mDictionaries, DICT_KEY_WHITELIST, mWhiteListDictionary);
+        addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_WHITELIST, mWhiteListDictionary);
     }
 
     private void initAsynchronously(final Context context, final Locale locale) {
@@ -123,7 +114,7 @@ public class Suggest {
             public void run() {
                 final DictionaryCollection newMainDict =
                         DictionaryFactory.createMainDictionaryFromManager(context, locale);
-                addOrReplaceDictionary(mDictionaries, DICT_KEY_MAIN, newMainDict);
+                addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_MAIN, newMainDict);
                 mMainDictionary = newMainDict;
             }
         }.start();
@@ -156,7 +147,7 @@ public class Suggest {
      * before the main dictionary, if set. This refers to the system-managed user dictionary.
      */
     public void setUserDictionary(UserBinaryDictionary userDictionary) {
-        addOrReplaceDictionary(mDictionaries, DICT_KEY_USER, userDictionary);
+        addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_USER, userDictionary);
     }
 
     /**
@@ -166,11 +157,11 @@ public class Suggest {
      */
     public void setContactsDictionary(ContactsBinaryDictionary contactsDictionary) {
         mContactsDict = contactsDictionary;
-        addOrReplaceDictionary(mDictionaries, DICT_KEY_CONTACTS, contactsDictionary);
+        addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_CONTACTS, contactsDictionary);
     }
 
     public void setUserHistoryDictionary(UserHistoryDictionary userHistoryDictionary) {
-        addOrReplaceDictionary(mDictionaries, DICT_KEY_USER_HISTORY, userHistoryDictionary);
+        addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_USER_HISTORY, userHistoryDictionary);
     }
 
     public void setAutoCorrectionThreshold(float threshold) {
@@ -211,7 +202,7 @@ public class Suggest {
                 ? typedWord.substring(0, typedWord.length() - mTrailingSingleQuotesCount)
                 : typedWord;
         // Treating USER_TYPED as UNIGRAM suggestion for logging now.
-        LatinImeLogger.onAddSuggestedWord(typedWord, DICT_KEY_USER_TYPED);
+        LatinImeLogger.onAddSuggestedWord(typedWord, Dictionary.TYPE_USER_TYPED);
 
         if (wordComposer.size() <= 1 && isCorrectionEnabled) {
             // At first character typed, search only the bigrams
@@ -248,7 +239,8 @@ public class Suggest {
             // At second character typed, search the unigrams (scores being affected by bigrams)
             for (final String key : mDictionaries.keySet()) {
                 // Skip UserUnigramDictionary and WhitelistDictionary to lookup
-                if (key.equals(DICT_KEY_USER_HISTORY) || key.equals(DICT_KEY_WHITELIST))
+                if (key.equals(Dictionary.TYPE_USER_HISTORY)
+                        || key.equals(Dictionary.TYPE_WHITELIST))
                     continue;
                 final Dictionary dictionary = mDictionaries.get(key);
                 final ArrayList<SuggestedWordInfo> localSuggestions = dictionary.getWords(

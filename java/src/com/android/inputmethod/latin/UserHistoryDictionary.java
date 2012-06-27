@@ -134,7 +134,7 @@ public class UserHistoryDictionary extends ExpandableDictionary {
 
     private UserHistoryDictionary(final Context context, final String locale,
             final SharedPreferences sp) {
-        super(context, Suggest.DICT_KEY_USER_HISTORY);
+        super(context, Dictionary.TYPE_USER_HISTORY);
         mLocale = locale;
         mPrefs = sp;
         if (sOpenHelper == null) {

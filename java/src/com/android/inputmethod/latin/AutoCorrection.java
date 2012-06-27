@@ -56,7 +56,7 @@ public class AutoCorrection {
         }
         final CharSequence lowerCasedWord = word.toString().toLowerCase();
         for (final String key : dictionaries.keySet()) {
-            if (key.equals(Suggest.DICT_KEY_WHITELIST)) continue;
+            if (key.equals(Dictionary.TYPE_WHITELIST)) continue;
             final Dictionary dictionary = dictionaries.get(key);
             // It's unclear how realistically 'dictionary' can be null, but the monkey is somehow
             // managing to get null in here. Presumably the language is changing to a language with
@@ -81,7 +81,7 @@ public class AutoCorrection {
         }
         int maxFreq = -1;
         for (final String key : dictionaries.keySet()) {
-            if (key.equals(Suggest.DICT_KEY_WHITELIST)) continue;
+            if (key.equals(Dictionary.TYPE_WHITELIST)) continue;
             final Dictionary dictionary = dictionaries.get(key);
             if (null == dictionary) continue;
             final int tempFreq = dictionary.getFrequency(word);
@@ -96,7 +96,7 @@ public class AutoCorrection {
             final ConcurrentHashMap<String, Dictionary> dictionaries,
             final CharSequence word, final boolean ignoreCase) {
         final WhitelistDictionary whitelistDictionary =
-                (WhitelistDictionary)dictionaries.get(Suggest.DICT_KEY_WHITELIST);
+                (WhitelistDictionary)dictionaries.get(Dictionary.TYPE_WHITELIST);
         // If "word" is in the whitelist dictionary, it should not be auto corrected.
         if (whitelistDictionary != null
                 && whitelistDictionary.shouldForciblyAutoCorrectFrom(word)) {

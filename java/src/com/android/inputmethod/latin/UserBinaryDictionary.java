@@ -69,7 +69,7 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
 
     public UserBinaryDictionary(final Context context, final String locale,
             final boolean alsoUseMoreRestrictiveLocales) {
-        super(context, getFilenameWithLocale(NAME, locale), Suggest.DICT_KEY_USER);
+        super(context, getFilenameWithLocale(NAME, locale), Dictionary.TYPE_USER);
         if (null == locale) throw new NullPointerException(); // Catch the error earlier
         mLocale = locale;
         mAlsoUseMoreRestrictiveLocales = alsoUseMoreRestrictiveLocales;

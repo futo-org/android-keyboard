@@ -63,7 +63,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     private final boolean mUseFirstLastBigrams;
 
     public ContactsBinaryDictionary(final Context context, Locale locale) {
-        super(context, getFilenameWithLocale(NAME, locale.toString()), Suggest.DICT_KEY_CONTACTS);
+        super(context, getFilenameWithLocale(NAME, locale.toString()), Dictionary.TYPE_CONTACTS);
         mLocale = locale;
         mUseFirstLastBigrams = useFirstLastBigramsForLocale(locale);
         registerObserver(context);
