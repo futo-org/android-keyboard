@@ -499,8 +499,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     // If the locale has changed then recreate the contacts dictionary. This
                     // allows locale dependent rules for handling bigram name predictions.
                     oldContactsDictionary.close();
-                    dictionaryToUse = new ContactsBinaryDictionary(
-                        this, Suggest.DIC_CONTACTS, locale);
+                    dictionaryToUse = new ContactsBinaryDictionary(this, locale);
                 } else {
                     // Make sure the old contacts dictionary is opened. If it is already open,
                     // this is a no-op, so it's safe to call it anyways.
@@ -508,7 +507,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     dictionaryToUse = oldContactsDictionary;
                 }
             } else {
-                dictionaryToUse = new ContactsBinaryDictionary(this, Suggest.DIC_CONTACTS, locale);
+                dictionaryToUse = new ContactsBinaryDictionary(this, locale);
             }
         }
 

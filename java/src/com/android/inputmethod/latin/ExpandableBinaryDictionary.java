@@ -76,9 +76,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /** The expandable fusion dictionary used to generate the binary dictionary. */
     private FusionDictionary mFusionDictionary;
 
-    /** The dictionary type id. */
-    public final int mDicTypeId;
-
     /**
      * The name of this dictionary, used as the filename for storing the binary dictionary. Multiple
      * dictionary instances with the same filename is supported, with access controlled by
@@ -124,11 +121,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * @param context The application context of the parent.
      * @param filename The filename for this binary dictionary. Multiple dictionaries with the same
      *        filename is supported.
-     * @param dictType The type of this dictionary.
+     * @param dictType the dictionary type, as a human-readable string
      */
     public ExpandableBinaryDictionary(
-            final Context context, final String filename, final int dictType) {
-        mDicTypeId = dictType;
+            final Context context, final String filename, final String dictType) {
+        super(dictType);
         mFilename = filename;
         mContext = context;
         mBinaryDictionary = null;
@@ -308,7 +305,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         // Build the new binary dictionary
         final BinaryDictionary newBinaryDictionary =
                 new BinaryDictionary(mContext, filename, 0, length, true /* useFullEditDistance */,
-                        null, mDicTypeId);
+                        null, mDictType);
 
         if (mBinaryDictionary != null) {
             // Ensure all threads accessing the current dictionary have finished before swapping in

@@ -49,7 +49,6 @@ public class BinaryDictionary extends Dictionary {
 
     private static final int TYPED_LETTER_MULTIPLIER = 2;
 
-    private int mDicTypeId;
     private long mNativeDict;
     private final int[] mInputCodes = new int[MAX_WORD_LENGTH];
     private final char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_WORDS];
@@ -69,12 +68,12 @@ public class BinaryDictionary extends Dictionary {
      * @param offset the offset of the dictionary data within the file.
      * @param length the length of the binary data.
      * @param useFullEditDistance whether to use the full edit distance in suggestions
-     * @param dicTypeId the dictionary type id of the dictionary
+     * @param dictType the dictionary type, as a human-readable string
      */
     public BinaryDictionary(final Context context,
             final String filename, final long offset, final long length,
-            final boolean useFullEditDistance, final Locale locale, final int dicTypeId) {
-        mDicTypeId = dicTypeId;
+            final boolean useFullEditDistance, final Locale locale, final String dictType) {
+        super(dictType);
         mUseFullEditDistance = useFullEditDistance;
         loadDictionary(filename, offset, length);
     }
@@ -90,7 +89,7 @@ public class BinaryDictionary extends Dictionary {
     private native boolean isValidBigramNative(long dict, int[] word1, int[] word2);
     private native int getSuggestionsNative(long dict, long proximityInfo, int[] xCoordinates,
             int[] yCoordinates, int[] times, int[] pointerIds, int[] inputCodes, int codesSize,
-            int commitPoint, boolean isGesture, int dicTypeId,
+            int commitPoint, boolean isGesture,
             int[] prevWordCodePointArray, boolean useFullEditDistance, char[] outputChars,
             int[] scores, int[] outputIndices);
     private native int getBigramsNative(long dict, int[] prevWord, int prevWordLength,
@@ -202,8 +201,7 @@ public class BinaryDictionary extends Dictionary {
 
         return getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
             codes.getXCoordinates(), codes.getYCoordinates(), emptyArray, emptyArray, mInputCodes,
-            codesSize, 0 /* unused */, false, mDicTypeId,
-            prevWordCodePointArray, mUseFullEditDistance,
+            codesSize, 0 /* unused */, false, prevWordCodePointArray, mUseFullEditDistance,
             outputChars, scores, spaceIndices);
     }
 

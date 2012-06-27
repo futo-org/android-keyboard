@@ -28,7 +28,7 @@ class IncrementalDecoderInterface {
 
  public:
     virtual int getSuggestions(ProximityInfo *pInfo, int *inputXs, int *inputYs, int *times,
-            int *pointerIds, int *codes, int inputSize, int commitPoint, bool isMainDict,
+            int *pointerIds, int *codes, int inputSize, int commitPoint,
             unsigned short *outWords, int *frequencies, int *outputIndices) = 0;
     virtual void reset() = 0;
     virtual void setDict(const UnigramDictionary *dict, const BigramDictionary *bigram,

@@ -128,14 +128,14 @@ public class UserHistoryDictionary extends ExpandableDictionary {
             }
         }
         final UserHistoryDictionary dict =
-                new UserHistoryDictionary(context, locale, dictTypeId, sp);
+                new UserHistoryDictionary(context, locale, sp);
         sLangDictCache.put(locale, new SoftReference<UserHistoryDictionary>(dict));
         return dict;
     }
 
-    private UserHistoryDictionary(final Context context, final String locale, final int dicTypeId,
-            SharedPreferences sp) {
-        super(context, dicTypeId);
+    private UserHistoryDictionary(final Context context, final String locale,
+            final SharedPreferences sp) {
+        super(context, Suggest.DICT_KEY_USER_HISTORY);
         mLocale = locale;
         mPrefs = sp;
         if (sOpenHelper == null) {

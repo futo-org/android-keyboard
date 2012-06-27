@@ -33,6 +33,12 @@ public abstract class Dictionary {
 
     public static final int NOT_A_PROBABILITY = -1;
 
+    protected final String mDictType;
+
+    public Dictionary(final String dictType) {
+        mDictType = dictType;
+    }
+
     /**
      * Searches for words in the dictionary that match the characters in the composer. Matched
      * words are returned as an ArrayList.
