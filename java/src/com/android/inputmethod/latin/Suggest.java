@@ -221,7 +221,7 @@ public class Suggest {
                         localSuggestions.addAll(dictionary.getBigrams(wordComposer, lowerPrevWord));
                     }
                     for (final SuggestedWordInfo localSuggestion : localSuggestions) {
-                        addWord(localSuggestion, key, suggestionsContainer);
+                        addWord(localSuggestion, suggestionsContainer);
                     }
                 }
             }
@@ -245,7 +245,7 @@ public class Suggest {
                 final ArrayList<SuggestedWordInfo> localSuggestions = dictionary.getWords(
                         wordComposerForLookup, prevWordForBigram, proximityInfo);
                 for (final SuggestedWordInfo suggestion : localSuggestions) {
-                    addWord(suggestion, key, suggestionsContainer);
+                    addWord(suggestion, suggestionsContainer);
                 }
             }
         }
@@ -370,7 +370,7 @@ public class Suggest {
     private static final SuggestedWordInfoComparator sSuggestedWordInfoComparator =
             new SuggestedWordInfoComparator();
 
-    public void addWord(final SuggestedWordInfo wordInfo, final String dictTypeKey,
+    public void addWord(final SuggestedWordInfo wordInfo,
             final ArrayList<SuggestedWordInfo> suggestions) {
         final int index =
                 Collections.binarySearch(suggestions, wordInfo, sSuggestedWordInfoComparator);
@@ -385,7 +385,8 @@ public class Suggest {
         if (suggestions.size() > MAX_SUGGESTIONS) {
             suggestions.remove(MAX_SUGGESTIONS);
         }
-        LatinImeLogger.onAddSuggestedWord(transformedWordInfo.mWord.toString(), dictTypeKey);
+        LatinImeLogger.onAddSuggestedWord(transformedWordInfo.mWord.toString(),
+                transformedWordInfo.mSourceDict);
     }
 
     private static SuggestedWordInfo getTransformedSuggestedWordInfo(
