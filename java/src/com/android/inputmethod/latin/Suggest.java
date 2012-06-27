@@ -28,7 +28,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,16 +46,6 @@ public class Suggest {
     // TODO: rename this to CORRECTION_ON
     public static final int CORRECTION_FULL = 1;
 
-    // It seems the following values are only used for logging.
-    public static final int DIC_USER_TYPED = 0;
-    public static final int DIC_MAIN = 1;
-    public static final int DIC_USER = 2;
-    public static final int DIC_USER_HISTORY = 3;
-    public static final int DIC_CONTACTS = 4;
-    public static final int DIC_WHITELIST = 6;
-    // If you add a type of dictionary, increment DIC_TYPE_LAST_ID
-    // TODO: this value seems unused. Remove it?
-    public static final int DIC_TYPE_LAST_ID = 6;
     public static final String DICT_KEY_USER_TYPED = "user_typed";
     public static final String DICT_KEY_MAIN = "main";
     public static final String DICT_KEY_CONTACTS = "contacts";
@@ -65,17 +54,6 @@ public class Suggest {
     // User history dictionary internal to LatinIME
     public static final String DICT_KEY_USER_HISTORY = "history";
     public static final String DICT_KEY_WHITELIST ="whitelist";
-    // TODO: remove this map. This only serves as backward compatibility with a feature
-    // that has never been used and has been broken for a while.
-    private static final HashMap<String, Integer> sDictKeyToDictIndex
-            = new HashMap<String, Integer>();
-    static {
-        sDictKeyToDictIndex.put(DICT_KEY_MAIN, DIC_MAIN);
-        sDictKeyToDictIndex.put(DICT_KEY_USER, DIC_USER);
-        sDictKeyToDictIndex.put(DICT_KEY_USER_HISTORY, DIC_USER_HISTORY);
-        sDictKeyToDictIndex.put(DICT_KEY_CONTACTS, DIC_CONTACTS);
-        sDictKeyToDictIndex.put(DICT_KEY_WHITELIST, DIC_WHITELIST);
-    }
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 
@@ -246,7 +224,6 @@ public class Suggest {
                     lowerPrevWord = null;
                 }
                 for (final String key : mDictionaries.keySet()) {
-                    final int dicTypeId = sDictKeyToDictIndex.get(key);
                     final Dictionary dictionary = mDictionaries.get(key);
                     final ArrayList<SuggestedWordInfo> localSuggestions =
                             dictionary.getBigrams(wordComposer, prevWordForBigram);
@@ -273,7 +250,6 @@ public class Suggest {
                 // Skip UserUnigramDictionary and WhitelistDictionary to lookup
                 if (key.equals(DICT_KEY_USER_HISTORY) || key.equals(DICT_KEY_WHITELIST))
                     continue;
-                final int dicTypeId = sDictKeyToDictIndex.get(key);
                 final Dictionary dictionary = mDictionaries.get(key);
                 final ArrayList<SuggestedWordInfo> localSuggestions = dictionary.getWords(
                         wordComposerForLookup, prevWordForBigram, proximityInfo);
