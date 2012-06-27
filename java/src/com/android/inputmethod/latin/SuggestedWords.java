@@ -92,7 +92,7 @@ public class SuggestedWords {
         for (CompletionInfo info : infos) {
             if (null != info && info.getText() != null) {
                 result.add(new SuggestedWordInfo(info.getText(), SuggestedWordInfo.MAX_SCORE,
-                        SuggestedWordInfo.KIND_APP_DEFINED));
+                        SuggestedWordInfo.KIND_APP_DEFINED, Dictionary.TYPE_APPLICATION_DEFINED));
             }
         }
         return result;
@@ -105,7 +105,7 @@ public class SuggestedWords {
         final ArrayList<SuggestedWordInfo> suggestionsList = new ArrayList<SuggestedWordInfo>();
         final HashSet<String> alreadySeen = new HashSet<String>();
         suggestionsList.add(new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE,
-                SuggestedWordInfo.KIND_TYPED));
+                SuggestedWordInfo.KIND_TYPED, Dictionary.TYPE_USER_TYPED));
         alreadySeen.add(typedWord.toString());
         final int previousSize = previousSuggestions.size();
         for (int pos = 1; pos < previousSize; pos++) {
@@ -135,13 +135,16 @@ public class SuggestedWords {
         public final int mScore;
         public final int mKind; // one of the KIND_* constants above
         public final int mCodePointCount;
+        public final String mSourceDict;
         private String mDebugString = "";
 
-        public SuggestedWordInfo(final CharSequence word, final int score, final int kind) {
+        public SuggestedWordInfo(final CharSequence word, final int score, final int kind,
+                final String sourceDict) {
             mWordStr = word.toString();
             mWord = word;
             mScore = score;
             mKind = kind;
+            mSourceDict = sourceDict;
             mCodePointCount = StringUtils.codePointCount(mWordStr);
         }
 

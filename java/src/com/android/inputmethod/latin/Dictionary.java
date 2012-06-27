@@ -34,6 +34,8 @@ public abstract class Dictionary {
     public static final int NOT_A_PROBABILITY = -1;
 
     public static final String TYPE_USER_TYPED = "user_typed";
+    public static final String TYPE_APPLICATION_DEFINED = "application_defined";
+    public static final String TYPE_HARDCODED = "hardcoded"; // punctuation signs and such
     public static final String TYPE_MAIN = "main";
     public static final String TYPE_CONTACTS = "contacts";
     // User dictionary, the system-managed one.

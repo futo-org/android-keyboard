@@ -201,7 +201,6 @@ public class Suggest {
         final String consideredWord = mTrailingSingleQuotesCount > 0
                 ? typedWord.substring(0, typedWord.length() - mTrailingSingleQuotesCount)
                 : typedWord;
-        // Treating USER_TYPED as UNIGRAM suggestion for logging now.
         LatinImeLogger.onAddSuggestedWord(typedWord, Dictionary.TYPE_USER_TYPED);
 
         if (wordComposer.size() <= 1 && isCorrectionEnabled) {
@@ -272,16 +271,19 @@ public class Suggest {
                     sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
                 }
                 suggestionsContainer.add(0, new SuggestedWordInfo(sb.toString(),
-                        SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST));
+                        SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST,
+                        Dictionary.TYPE_WHITELIST));
             } else {
                 suggestionsContainer.add(0, new SuggestedWordInfo(whitelistedWord,
-                        SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST));
+                        SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST,
+                        Dictionary.TYPE_WHITELIST));
             }
         }
 
         if (!isPrediction) {
             suggestionsContainer.add(0, new SuggestedWordInfo(typedWord,
-                    SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_TYPED));
+                    SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_TYPED,
+                    Dictionary.TYPE_USER_TYPED));
         }
         SuggestedWordInfo.removeDups(suggestionsContainer);
 
@@ -403,7 +405,7 @@ public class Suggest {
         for (int i = trailingSingleQuotesCount - 1; i >= 0; --i) {
             sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
         }
-        return new SuggestedWordInfo(sb, wordInfo.mScore, wordInfo.mKind);
+        return new SuggestedWordInfo(sb, wordInfo.mScore, wordInfo.mKind, wordInfo.mSourceDict);
     }
 
     public void close() {

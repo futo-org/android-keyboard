@@ -137,7 +137,7 @@ public class BinaryDictionary extends Dictionary {
             if (len > 0) {
                 suggestions.add(new SuggestedWordInfo(
                         new String(mOutputChars_bigrams, start, len),
-                        mBigramScores[j], SuggestedWordInfo.KIND_CORRECTION));
+                        mBigramScores[j], SuggestedWordInfo.KIND_CORRECTION, mDictType));
             }
         }
         return suggestions;
@@ -162,7 +162,7 @@ public class BinaryDictionary extends Dictionary {
                 // TODO: actually get the kind from native code
                 suggestions.add(new SuggestedWordInfo(
                         new String(mOutputChars, start, len),
-                        mScores[j], SuggestedWordInfo.KIND_CORRECTION));
+                        mScores[j], SuggestedWordInfo.KIND_CORRECTION, mDictType));
             }
         }
         return suggestions;
