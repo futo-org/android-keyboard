@@ -26,6 +26,8 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
@@ -384,6 +386,21 @@ public class Suggest {
         return suggestionsList;
     }
 
+    private static class SuggestedWordInfoComparator implements Comparator<SuggestedWordInfo> {
+        // This comparator ranks the word info with the higher frequency first. That's because
+        // that's the order we want our elements in.
+        @Override
+        public int compare(final SuggestedWordInfo o1, final SuggestedWordInfo o2) {
+            if (o1.mScore > o2.mScore) return -1;
+            if (o1.mScore < o2.mScore) return 1;
+            if (o1.mCodePointCount < o2.mCodePointCount) return -1;
+            if (o1.mCodePointCount > o2.mCodePointCount) return 1;
+            return o1.mWord.toString().compareTo(o2.mWord.toString());
+        }
+    }
+    private static final SuggestedWordInfoComparator sSuggestedWordInfoComparator =
+            new SuggestedWordInfoComparator();
+
     public boolean addWord(final SuggestedWordInfo wordInfo,
             final int dicTypeId, final int dataType,
             final ArrayList<SuggestedWordInfo> suggestions, final String consideredWord) {
@@ -399,11 +416,8 @@ public class Suggest {
                 && suggestions.get(prefMaxSuggestions - 1).mScore >= score) return true;
         final int length = wordInfo.mCodePointCount;
         while (pos < suggestions.size()) {
-            final int curScore = suggestions.get(pos).mScore;
-            if (curScore < score
-                    || (curScore == score && length < suggestions.get(pos).mCodePointCount)) {
+            if (sSuggestedWordInfoComparator.compare(wordInfo, suggestions.get(pos)) < 0)
                 break;
-            }
             pos++;
         }
         if (pos >= prefMaxSuggestions) {
