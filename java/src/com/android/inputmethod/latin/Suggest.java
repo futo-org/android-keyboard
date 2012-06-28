@@ -245,13 +245,20 @@ public class Suggest {
 
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 new ArrayList<SuggestedWordInfo>(suggestionsSet);
-        for (int i = 0; i < suggestionsContainer.size(); ++i) {
+        final int suggestionsCount = suggestionsContainer.size();
+        if (isFirstCharCapitalized || isAllUpperCase || 0 != trailingSingleQuotesCount) {
+            for (int i = 0; i < suggestionsCount; ++i) {
+                final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
+                final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(
+                        wordInfo, mLocale, isAllUpperCase, isFirstCharCapitalized,
+                        trailingSingleQuotesCount);
+                suggestionsContainer.set(i, transformedWordInfo);
+            }
+        }
+
+        for (int i = 0; i < suggestionsCount; ++i) {
             final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
-            final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(wordInfo,
-                    mLocale, isAllUpperCase, isFirstCharCapitalized, trailingSingleQuotesCount);
-            suggestionsContainer.set(i, transformedWordInfo);
-            LatinImeLogger.onAddSuggestedWord(transformedWordInfo.mWord.toString(),
-                    transformedWordInfo.mSourceDict);
+            LatinImeLogger.onAddSuggestedWord(wordInfo.mWord.toString(), wordInfo.mSourceDict);
         }
 
         if (!isPrediction) {
@@ -347,9 +354,6 @@ public class Suggest {
     private static SuggestedWordInfo getTransformedSuggestedWordInfo(
             final SuggestedWordInfo wordInfo, final Locale locale, final boolean isAllUpperCase,
             final boolean isFirstCharCapitalized, final int trailingSingleQuotesCount) {
-        if (!isFirstCharCapitalized && !isAllUpperCase && 0 == trailingSingleQuotesCount) {
-            return wordInfo;
-        }
         final StringBuilder sb = new StringBuilder(getApproxMaxWordLength());
         if (isAllUpperCase) {
             sb.append(wordInfo.mWord.toString().toUpperCase(locale));
