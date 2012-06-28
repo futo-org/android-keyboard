@@ -241,8 +241,7 @@ public class Suggest {
             hasAutoCorrection = false;
         } else if (AutoCorrection.suggestionExceedsAutoCorrectionThreshold(suggestionsSet.first(),
                 consideredWord, mAutoCorrectionThreshold)) {
-            hasAutoCorrection = !AutoCorrection.shouldBlockAutoCorrectionBySafetyNet(typedWord,
-                    suggestionsSet.first().mWord);
+            hasAutoCorrection = true;
         } else {
             hasAutoCorrection = false;
         }

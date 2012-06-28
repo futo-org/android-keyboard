@@ -108,7 +108,8 @@ public class AutoCorrection {
                 if (DBG) {
                     Log.d(TAG, "Auto corrected by S-threshold.");
                 }
-                return true;
+                return !shouldBlockAutoCorrectionBySafetyNet(consideredWord.toString(),
+                        suggestion.mWord);
             }
         }
         return false;
