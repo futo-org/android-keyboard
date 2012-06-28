@@ -230,10 +230,17 @@ public class Suggest {
         if (isCorrectionEnabled) {
             final SuggestedWordInfo bestSuggestion = suggestionsSet.isEmpty()
                     ? null : suggestionsSet.first();
-            final CharSequence autoCorrection =
-                    AutoCorrection.computeAutoCorrectionWord(mDictionaries, wordComposer,
-                            bestSuggestion, consideredWord, mAutoCorrectionThreshold,
-                            whitelistedWord);
+            final CharSequence autoCorrection;
+            if (AutoCorrection.hasAutoCorrectionForWhitelistedWord(whitelistedWord)) {
+                autoCorrection = whitelistedWord;
+            } else if (AutoCorrection.shouldAutoCorrectToSelf(mDictionaries, consideredWord)) {
+                autoCorrection = consideredWord;
+            } else if (AutoCorrection.hasAutoCorrectionForBinaryDictionary(bestSuggestion,
+                            consideredWord, mAutoCorrectionThreshold)) {
+                autoCorrection = bestSuggestion.mWord;
+            } else {
+                autoCorrection = null;
+            }
             hasAutoCorrection = (null != autoCorrection);
         } else {
             hasAutoCorrection = false;

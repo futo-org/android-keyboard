@@ -31,22 +31,6 @@ public class AutoCorrection {
         // Purely static class: can't instantiate.
     }
 
-    public static CharSequence computeAutoCorrectionWord(
-            final ConcurrentHashMap<String, Dictionary> dictionaries,
-            final WordComposer wordComposer, SuggestedWordInfo suggestion,
-            final CharSequence consideredWord, final float autoCorrectionThreshold,
-            final CharSequence whitelistedWord) {
-        if (hasAutoCorrectionForWhitelistedWord(whitelistedWord)) {
-            return whitelistedWord;
-        } else if (shouldAutoCorrectToSelf(dictionaries, consideredWord)) {
-            return consideredWord;
-        } else if (hasAutoCorrectionForBinaryDictionary(suggestion,
-                consideredWord, autoCorrectionThreshold)) {
-            return suggestion.mWord;
-        }
-        return null;
-    }
-
     public static boolean isValidWord(final ConcurrentHashMap<String, Dictionary> dictionaries,
             CharSequence word, boolean ignoreCase) {
         if (TextUtils.isEmpty(word)) {
@@ -104,18 +88,18 @@ public class AutoCorrection {
         return !isValidWord(dictionaries, word, ignoreCase);
     }
 
-    private static boolean hasAutoCorrectionForWhitelistedWord(CharSequence whiteListedWord) {
+    static public boolean hasAutoCorrectionForWhitelistedWord(CharSequence whiteListedWord) {
         return whiteListedWord != null;
     }
 
-    private static boolean shouldAutoCorrectToSelf(
+    public static boolean shouldAutoCorrectToSelf(
             final ConcurrentHashMap<String, Dictionary> dictionaries,
             final CharSequence consideredWord) {
         if (TextUtils.isEmpty(consideredWord)) return false;
         return !allowsToBeAutoCorrected(dictionaries, consideredWord, false);
     }
 
-    private static boolean hasAutoCorrectionForBinaryDictionary(SuggestedWordInfo suggestion,
+    public static boolean hasAutoCorrectionForBinaryDictionary(SuggestedWordInfo suggestion,
             CharSequence consideredWord, float autoCorrectionThreshold) {
         if (null != suggestion) {
             //final int autoCorrectionSuggestionScore = sortedScores[0];
