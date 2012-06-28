@@ -46,8 +46,6 @@
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"デフォルト"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"候補の連絡先名を表示"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"連絡先の名前を使用して候補表示や自動修正を行います"</string>
-    <string name="enable_span_insert" msgid="7204653105667167620">"再修正を有効にする"</string>
-    <string name="enable_span_insert_summary" msgid="2947317657871394467">"再修正の候補を挿入する"</string>
     <string name="auto_cap" msgid="1719746674854628252">"自動大文字変換"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"アドオン辞書"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"メイン辞書"</string>
@@ -62,10 +60,10 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"中"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"強"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"最も強い"</string>
-    <string name="bigram_suggestion" msgid="8169311444438922902">"次の入力候補"</string>
-    <string name="bigram_suggestion_summary" msgid="6635527607242625713">"直前の単語から入力候補を予測します"</string>
-    <string name="bigram_prediction" msgid="3216364899483135294">"次の入力候補を予測"</string>
-    <string name="bigram_prediction_summary" msgid="1747261921174300098">"前の語句も予測に使用"</string>
+    <!-- no translation found for bigram_prediction (5809665643352206540) -->
+    <skip />
+    <!-- no translation found for bigram_prediction_summary (3253961591626441019) -->
+    <skip />
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>:保存しました"</string>
     <string name="label_go_key" msgid="1635148082137219148">"実行"</string>
     <string name="label_next_key" msgid="362972844525672568">"次へ"</string>
