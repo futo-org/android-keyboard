@@ -230,19 +230,17 @@ public class Suggest {
         if (isCorrectionEnabled) {
             final SuggestedWordInfo bestSuggestion = suggestionsSet.isEmpty()
                     ? null : suggestionsSet.first();
-            final CharSequence autoCorrection;
             if (null != whitelistedWord) {
-                autoCorrection = whitelistedWord;
+                hasAutoCorrection = true;
             } else if (!AutoCorrection.isWhitelistedOrNotAWord(
                     mDictionaries, consideredWord, false)) {
-                autoCorrection = consideredWord;
+                hasAutoCorrection = true;
             } else if (AutoCorrection.hasAutoCorrectionForBinaryDictionary(bestSuggestion,
                             consideredWord, mAutoCorrectionThreshold)) {
-                autoCorrection = bestSuggestion.mWord;
+                hasAutoCorrection = true;
             } else {
-                autoCorrection = null;
+                hasAutoCorrection = false;
             }
-            hasAutoCorrection = (null != autoCorrection);
         } else {
             hasAutoCorrection = false;
         }
