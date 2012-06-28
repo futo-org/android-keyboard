@@ -30,7 +30,6 @@ public class SuggestedWords {
     public final boolean mTypedWordValid;
     public final boolean mHasAutoCorrectionCandidate;
     public final boolean mIsPunctuationSuggestions;
-    public final boolean mAllowsToBeAutoCorrected;
     public final boolean mIsObsoleteSuggestions;
     public final boolean mIsPrediction;
     private final ArrayList<SuggestedWordInfo> mSuggestedWordInfoList;
@@ -45,7 +44,6 @@ public class SuggestedWords {
         mSuggestedWordInfoList = suggestedWordInfoList;
         mTypedWordValid = typedWordValid;
         mHasAutoCorrectionCandidate = hasAutoCorrectionCandidate;
-        mAllowsToBeAutoCorrected = allowsToBeAutoCorrected;
         mIsPunctuationSuggestions = isPunctuationSuggestions;
         mIsObsoleteSuggestions = isObsoleteSuggestions;
         mIsPrediction = isPrediction;
@@ -81,7 +79,6 @@ public class SuggestedWords {
         return "SuggestedWords:"
                 + " mTypedWordValid=" + mTypedWordValid
                 + " mHasAutoCorrectionCandidate=" + mHasAutoCorrectionCandidate
-                + " mAllowsToBeAutoCorrected=" + mAllowsToBeAutoCorrected
                 + " mIsPunctuationSuggestions=" + mIsPunctuationSuggestions
                 + " words=" + Arrays.toString(mSuggestedWordInfoList.toArray());
     }

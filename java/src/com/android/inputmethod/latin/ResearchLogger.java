@@ -536,8 +536,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                         .value(words.mHasAutoCorrectionCandidate);
                     mJsonWriter.name("isPunctuationSuggestions")
                         .value(words.mIsPunctuationSuggestions);
-                    mJsonWriter.name("allowsToBeAutoCorrected")
-                        .value(words.mAllowsToBeAutoCorrected);
                     mJsonWriter.name("isObsoleteSuggestions")
                         .value(words.mIsObsoleteSuggestions);
                     mJsonWriter.name("isPrediction")
