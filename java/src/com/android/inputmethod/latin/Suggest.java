@@ -249,8 +249,8 @@ public class Suggest {
                     transformedWordInfo.mSourceDict);
         }
 
-        final CharSequence whitelistedWord = capitalizeWord(isAllUpperCase,
-                isFirstCharCapitalized, mWhiteListDictionary.getWhitelistedWord(consideredWord));
+        final CharSequence whitelistedWord =
+                mWhiteListDictionary.getWhitelistedWord(consideredWord);
 
         final boolean hasAutoCorrection;
         if (isCorrectionEnabled) {
@@ -267,20 +267,11 @@ public class Suggest {
 
         if (whitelistedWord != null) {
             final SuggestedWordInfo whitelistSuggestion;
-            if (trailingSingleQuotesCount > 0) {
-                final StringBuilder sb = new StringBuilder(whitelistedWord);
-                for (int i = trailingSingleQuotesCount - 1; i >= 0; --i) {
-                    sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
-                }
-                whitelistSuggestion = new SuggestedWordInfo(sb.toString(),
-                        SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST,
-                        Dictionary.TYPE_WHITELIST);
-            } else {
-                whitelistSuggestion = new SuggestedWordInfo(whitelistedWord,
-                        SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST,
-                        Dictionary.TYPE_WHITELIST);
-            }
-            suggestionsContainer.add(0, whitelistSuggestion);
+            whitelistSuggestion = new SuggestedWordInfo(whitelistedWord,
+                    SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST,
+                    Dictionary.TYPE_WHITELIST);
+            suggestionsContainer.add(0, getTransformedSuggestedWordInfo(whitelistSuggestion,
+                    mLocale, isAllUpperCase, isFirstCharCapitalized, trailingSingleQuotesCount));
         }
 
         if (!isPrediction) {
