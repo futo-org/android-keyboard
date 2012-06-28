@@ -817,7 +817,8 @@ int UnigramDictionary::getMostFrequentWordLikeInner(const uint16_t * const inWor
 
 int UnigramDictionary::getFrequency(const int32_t* const inWord, const int length) const {
     const uint8_t* const root = DICT_ROOT;
-    int pos = BinaryFormat::getTerminalPosition(root, inWord, length);
+    int pos = BinaryFormat::getTerminalPosition(root, inWord, length,
+            false /* forceLowerCaseSearch */);
     if (NOT_VALID_WORD == pos) {
         return NOT_A_PROBABILITY;
     }

@@ -50,14 +50,17 @@ inline static unsigned short toBaseChar(unsigned short c) {
     return c;
 }
 
-inline static unsigned short toBaseLowerCase(unsigned short c) {
-    c = toBaseChar(c);
+inline static unsigned short toLowerCase(const unsigned short c) {
     if (isAsciiUpper(c)) {
         return toAsciiLower(c);
     } else if (isAscii(c)) {
         return c;
     }
     return latin_tolower(c);
+}
+
+inline static unsigned short toBaseLowerCase(const unsigned short c) {
+    return toLowerCase(toBaseChar(c));
 }
 
 } // namespace latinime

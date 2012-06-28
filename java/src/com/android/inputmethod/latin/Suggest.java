@@ -177,19 +177,9 @@ public class Suggest {
         if (wordComposer.size() <= 1 && isCorrectionEnabled) {
             // At first character typed, search only the bigrams
             if (!TextUtils.isEmpty(prevWordForBigram)) {
-                final CharSequence lowerPrevWord;
-                if (StringUtils.hasUpperCase(prevWordForBigram)) {
-                    // TODO: Must pay attention to locale when changing case.
-                    lowerPrevWord = prevWordForBigram.toString().toLowerCase();
-                } else {
-                    lowerPrevWord = null;
-                }
                 for (final String key : mDictionaries.keySet()) {
                     final Dictionary dictionary = mDictionaries.get(key);
                     suggestionsSet.addAll(dictionary.getBigrams(wordComposer, prevWordForBigram));
-                    if (null != lowerPrevWord) {
-                        suggestionsSet.addAll(dictionary.getBigrams(wordComposer, lowerPrevWord));
-                    }
                 }
             }
         } else if (wordComposer.size() > 1) {

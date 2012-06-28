@@ -19,6 +19,7 @@
 
 #include <limits>
 #include "bloom_filter.h"
+#include "char_utils.h"
 #include "unigram_dictionary.h"
 
 namespace latinime {
@@ -65,7 +66,7 @@ class BinaryFormat {
     static int getAttributeAddressAndForwardPointer(const uint8_t* const dict, const uint8_t flags,
             int *pos);
     static int getTerminalPosition(const uint8_t* const root, const int32_t* const inWord,
-            const int length);
+            const int length, const bool forceLowerCaseSearch);
     static int getWordAtAddress(const uint8_t* const root, const int address, const int maxDepth,
             uint16_t* outWord, int* outUnigramFrequency);
     static int computeFrequencyForBigram(const int unigramFreq, const int bigramFreq);
@@ -309,7 +310,7 @@ inline int BinaryFormat::getAttributeAddressAndForwardPointer(const uint8_t* con
 // This function gets the byte position of the last chargroup of the exact matching word in the
 // dictionary. If no match is found, it returns NOT_VALID_WORD.
 inline int BinaryFormat::getTerminalPosition(const uint8_t* const root,
-        const int32_t* const inWord, const int length) {
+        const int32_t* const inWord, const int length, const bool forceLowerCaseSearch) {
     int pos = 0;
     int wordPos = 0;
 
@@ -318,7 +319,7 @@ inline int BinaryFormat::getTerminalPosition(const uint8_t* const root,
         // there was no match (or we would have found it).
         if (wordPos > length) return NOT_VALID_WORD;
         int charGroupCount = BinaryFormat::getGroupCountAndForwardPointer(root, &pos);
-        const int32_t wChar = inWord[wordPos];
+        const int32_t wChar = forceLowerCaseSearch ? toLowerCase(inWord[wordPos]) : inWord[wordPos];
         while (true) {
             // If there are no more character groups in this node, it means we could not
             // find a matching character for this depth, therefore there is no match.
