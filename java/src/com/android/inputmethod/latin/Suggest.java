@@ -233,7 +233,8 @@ public class Suggest {
             final CharSequence autoCorrection;
             if (null != whitelistedWord) {
                 autoCorrection = whitelistedWord;
-            } else if (AutoCorrection.shouldAutoCorrectToSelf(mDictionaries, consideredWord)) {
+            } else if (!TextUtils.isEmpty(consideredWord) &&
+                    !AutoCorrection.allowsToBeAutoCorrected(mDictionaries, consideredWord, false)) {
                 autoCorrection = consideredWord;
             } else if (AutoCorrection.hasAutoCorrectionForBinaryDictionary(bestSuggestion,
                             consideredWord, mAutoCorrectionThreshold)) {

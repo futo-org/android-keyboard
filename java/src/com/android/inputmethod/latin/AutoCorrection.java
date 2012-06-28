@@ -88,13 +88,6 @@ public class AutoCorrection {
         return !isValidWord(dictionaries, word, ignoreCase);
     }
 
-    public static boolean shouldAutoCorrectToSelf(
-            final ConcurrentHashMap<String, Dictionary> dictionaries,
-            final CharSequence consideredWord) {
-        return (!TextUtils.isEmpty(consideredWord) && !allowsToBeAutoCorrected(dictionaries,
-                consideredWord, false));
-    }
-
     public static boolean hasAutoCorrectionForBinaryDictionary(SuggestedWordInfo suggestion,
             CharSequence consideredWord, float autoCorrectionThreshold) {
         if (null != suggestion) {
