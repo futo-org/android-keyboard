@@ -186,7 +186,6 @@ public class SettingsValues {
         return new SuggestedWords(puncList,
                 false /* typedWordValid */,
                 false /* hasAutoCorrectionCandidate */,
-                false /* allowsToBeAutoCorrected */,
                 true /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
                 false /* isPrediction */);

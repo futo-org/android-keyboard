@@ -306,7 +306,6 @@ public class Suggest {
                 // rename the attribute or change the value.
                 !isPrediction && !allowsToBeAutoCorrected /* typedWordValid */,
                 !isPrediction && autoCorrectionAvailable /* hasAutoCorrectionCandidate */,
-                !isPrediction && allowsToBeAutoCorrected /* allowsToBeAutoCorrected */,
                 false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
                 isPrediction);

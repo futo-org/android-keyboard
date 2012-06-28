@@ -25,7 +25,7 @@ import java.util.HashSet;
 
 public class SuggestedWords {
     public static final SuggestedWords EMPTY = new SuggestedWords(
-            new ArrayList<SuggestedWordInfo>(0), false, false, false, false, false, false);
+            new ArrayList<SuggestedWordInfo>(0), false, false, false, false, false);
 
     public final boolean mTypedWordValid;
     public final boolean mHasAutoCorrectionCandidate;
@@ -37,7 +37,6 @@ public class SuggestedWords {
     public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
             final boolean typedWordValid,
             final boolean hasAutoCorrectionCandidate,
-            final boolean allowsToBeAutoCorrected,
             final boolean isPunctuationSuggestions,
             final boolean isObsoleteSuggestions,
             final boolean isPrediction) {

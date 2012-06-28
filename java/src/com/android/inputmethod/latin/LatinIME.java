@@ -887,7 +887,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 applicationSuggestedWords,
                 false /* typedWordValid */,
                 false /* hasAutoCorrectionCandidate */,
-                false /* allowsToBeAutoCorrected */,
                 false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
                 false /* isPrediction */);
@@ -1733,7 +1732,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     new SuggestedWords(typedWordAndPreviousSuggestions,
                             false /* typedWordValid */,
                             false /* hasAutoCorrectionCandidate */,
-                            false /* allowsToBeAutoCorrected */,
                             false /* isPunctuationSuggestions */,
                             true /* isObsoleteSuggestions */,
                             false /* isPrediction */);
