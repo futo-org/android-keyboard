@@ -38,9 +38,9 @@ public class AutoCorrection {
             final CharSequence whitelistedWord) {
         if (hasAutoCorrectionForWhitelistedWord(whitelistedWord)) {
             return whitelistedWord;
-        } else if (shouldAutoCorrectToSelf(dictionaries, wordComposer, consideredWord)) {
+        } else if (shouldAutoCorrectToSelf(dictionaries, consideredWord)) {
             return consideredWord;
-        } else if (hasAutoCorrectionForBinaryDictionary(wordComposer, suggestion,
+        } else if (hasAutoCorrectionForBinaryDictionary(suggestion,
                 consideredWord, autoCorrectionThreshold)) {
             return suggestion.mWord;
         }
@@ -110,16 +110,14 @@ public class AutoCorrection {
 
     private static boolean shouldAutoCorrectToSelf(
             final ConcurrentHashMap<String, Dictionary> dictionaries,
-            final WordComposer wordComposer, final CharSequence consideredWord) {
+            final CharSequence consideredWord) {
         if (TextUtils.isEmpty(consideredWord)) return false;
-        return wordComposer.size() > 1
-                && !allowsToBeAutoCorrected(dictionaries, consideredWord, false);
+        return !allowsToBeAutoCorrected(dictionaries, consideredWord, false);
     }
 
-    private static boolean hasAutoCorrectionForBinaryDictionary(WordComposer wordComposer,
-            SuggestedWordInfo suggestion,
+    private static boolean hasAutoCorrectionForBinaryDictionary(SuggestedWordInfo suggestion,
             CharSequence consideredWord, float autoCorrectionThreshold) {
-        if (wordComposer.size() > 1 && null != suggestion) {
+        if (null != suggestion) {
             //final int autoCorrectionSuggestionScore = sortedScores[0];
             final int autoCorrectionSuggestionScore = suggestion.mScore;
             // TODO: when the normalized score of the first suggestion is nearly equals to
