@@ -38,7 +38,7 @@ public class AutoCorrection {
             final CharSequence whitelistedWord) {
         if (hasAutoCorrectionForWhitelistedWord(whitelistedWord)) {
             return whitelistedWord;
-        } else if (hasAutoCorrectionForConsideredWord(
+        } else if (shouldAutoCorrectToSelf(
                 dictionaries, wordComposer, suggestion, consideredWord)) {
             return consideredWord;
         } else if (hasAutoCorrectionForBinaryDictionary(wordComposer, suggestion,
@@ -91,6 +91,7 @@ public class AutoCorrection {
         return maxFreq;
     }
 
+    // Returns true if this is a whitelist entry, or it isn't in any dictionary.
     public static boolean allowsToBeAutoCorrected(
             final ConcurrentHashMap<String, Dictionary> dictionaries,
             final CharSequence word, final boolean ignoreCase) {
@@ -108,7 +109,7 @@ public class AutoCorrection {
         return whiteListedWord != null;
     }
 
-    private static boolean hasAutoCorrectionForConsideredWord(
+    private static boolean shouldAutoCorrectToSelf(
             final ConcurrentHashMap<String, Dictionary> dictionaries,
             final WordComposer wordComposer, final SuggestedWordInfo suggestion,
             final CharSequence consideredWord) {
