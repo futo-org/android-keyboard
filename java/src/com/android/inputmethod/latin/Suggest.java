@@ -162,23 +162,6 @@ public class Suggest {
         mAutoCorrectionThreshold = threshold;
     }
 
-    private static CharSequence capitalizeWord(final boolean all, final boolean first,
-            final CharSequence word) {
-        if (TextUtils.isEmpty(word) || !(all || first)) return word;
-        final int wordLength = word.length();
-        final StringBuilder sb = new StringBuilder(getApproxMaxWordLength());
-        // TODO: Must pay attention to locale when changing case.
-        if (all) {
-            sb.append(word.toString().toUpperCase());
-        } else if (first) {
-            sb.append(Character.toUpperCase(word.charAt(0)));
-            if (wordLength > 1) {
-                sb.append(word.subSequence(1, wordLength));
-            }
-        }
-        return sb;
-    }
-
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
     public SuggestedWords getSuggestedWords(
             final WordComposer wordComposer, CharSequence prevWordForBigram,

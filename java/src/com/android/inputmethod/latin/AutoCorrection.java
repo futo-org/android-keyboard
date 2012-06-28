@@ -21,7 +21,6 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import android.text.TextUtils;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AutoCorrection {
