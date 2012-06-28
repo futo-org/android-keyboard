@@ -227,20 +227,18 @@ public class Suggest {
                 mWhiteListDictionary.getWhitelistedWord(consideredWord);
 
         final boolean hasAutoCorrection;
-        if (isCorrectionEnabled) {
-            if (null != whitelistedWord) {
-                hasAutoCorrection = true;
-            } else if (!AutoCorrection.isWhitelistedOrNotAWord(
-                    mDictionaries, consideredWord, false)) {
-                hasAutoCorrection = true;
-            } else if (suggestionsSet.isEmpty()) {
-                hasAutoCorrection = false;
-            } else if (AutoCorrection.hasAutoCorrectionForBinaryDictionary(suggestionsSet.first(),
-                    consideredWord, mAutoCorrectionThreshold)) {
-                hasAutoCorrection = true;
-            } else {
-                hasAutoCorrection = false;
-            }
+        if (!isCorrectionEnabled) {
+            hasAutoCorrection = false;
+        } else if (null != whitelistedWord) {
+            hasAutoCorrection = true;
+        } else if (!AutoCorrection.isWhitelistedOrNotAWord(
+                mDictionaries, consideredWord, false)) {
+            hasAutoCorrection = true;
+        } else if (suggestionsSet.isEmpty()) {
+            hasAutoCorrection = false;
+        } else if (AutoCorrection.hasAutoCorrectionForBinaryDictionary(suggestionsSet.first(),
+                consideredWord, mAutoCorrectionThreshold)) {
+            hasAutoCorrection = true;
         } else {
             hasAutoCorrection = false;
         }
