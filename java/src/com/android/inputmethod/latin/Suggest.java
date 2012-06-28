@@ -217,6 +217,20 @@ public class Suggest {
             }
         }
 
+        // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
+        // but still autocorrected from - in the case the whitelist only capitalizes the word.
+        // The whitelist should be case-insensitive, so it's not possible to be consistent with
+        // a boolean flag. Right now this is handled with a slight hack in
+        // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
+        final boolean allowsToBeAutoCorrected = AutoCorrection.isWhitelistedOrNotAWord(
+                mDictionaries, consideredWord, wordComposer.isFirstCharCapitalized())
+        // If we don't have a main dictionary, we never want to auto-correct. The reason for this
+        // is, the user may have a contact whose name happens to match a valid word in their
+        // language, and it will unexpectedly auto-correct. For example, if the user types in
+        // English with no dictionary and has a "Will" in their contact list, "will" would
+        // always auto-correct to "Will" which is unwanted. Hence, no main dict => no auto-correct.
+                && hasMainDictionary();
+
         final CharSequence whitelistedWord =
                 mWhiteListDictionary.getWhitelistedWord(consideredWord);
 
@@ -275,20 +289,6 @@ public class Suggest {
         } else {
             suggestionsList = suggestionsContainer;
         }
-
-        // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
-        // but still autocorrected from - in the case the whitelist only capitalizes the word.
-        // The whitelist should be case-insensitive, so it's not possible to be consistent with
-        // a boolean flag. Right now this is handled with a slight hack in
-        // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
-        final boolean allowsToBeAutoCorrected = AutoCorrection.isWhitelistedOrNotAWord(
-                mDictionaries, consideredWord, wordComposer.isFirstCharCapitalized())
-        // If we don't have a main dictionary, we never want to auto-correct. The reason for this
-        // is, the user may have a contact whose name happens to match a valid word in their
-        // language, and it will unexpectedly auto-correct. For example, if the user types in
-        // English with no dictionary and has a "Will" in their contact list, "will" would
-        // always auto-correct to "Will" which is unwanted. Hence, no main dict => no auto-correct.
-                && hasMainDictionary();
 
         return new SuggestedWords(suggestionsList,
                 // TODO: this first argument is lying. If this is a whitelisted word which is an
