@@ -60,6 +60,10 @@ public class SubtypeLocale {
     // Exceptional locales to display name map.
     private static final HashMap<String, String> sExceptionalDisplayNamesMap =
             new HashMap<String, String>();
+    // Keyboard layout set name for the subtypes that don't have a keyboardLayoutSet extra value.
+    // This is for compatibility to keep the same subtype ids as pre-JellyBean.
+    private static final HashMap<String,String> sLocaleAndExtraValueToKeyboardLayoutSetMap =
+            new HashMap<String,String>();
 
     private SubtypeLocale() {
         // Intentional empty constructor for utility class.
@@ -96,6 +100,14 @@ public class SubtypeLocale {
             final String resourceName = SUBTYPE_NAME_RESOURCE_WITH_LAYOUT_PREFIX + localeString;
             final int resId = res.getIdentifier(resourceName, null, RESOURCE_PACKAGE_NAME);
             sExceptionalLocaleToWithLayoutNameIdsMap.put(localeString, resId);
+        }
+
+        final String[] keyboardLayoutSetMap = res.getStringArray(
+                R.array.locale_and_extra_value_to_keyboard_layout_set_map);
+        for (int i = 0; i < keyboardLayoutSetMap.length; i += 2) {
+            final String key = keyboardLayoutSetMap[i];
+            final String keyboardLayoutSet = keyboardLayoutSetMap[i + 1];
+            sLocaleAndExtraValueToKeyboardLayoutSetMap.put(key, keyboardLayoutSet);
         }
     }
 
@@ -193,7 +205,14 @@ public class SubtypeLocale {
     }
 
     public static String getKeyboardLayoutSetName(InputMethodSubtype subtype) {
-        final String keyboardLayoutSet = subtype.getExtraValueOf(KEYBOARD_LAYOUT_SET);
+        String keyboardLayoutSet = subtype.getExtraValueOf(KEYBOARD_LAYOUT_SET);
+        if (keyboardLayoutSet == null) {
+            // This subtype doesn't have a keyboardLayoutSet extra value, so lookup its keyboard
+            // layout set in sLocaleAndExtraValueToKeyboardLayoutSetMap to keep it compatible with
+            // pre-JellyBean.
+            final String key = subtype.getLocale() + ":" + subtype.getExtraValue();
+            keyboardLayoutSet = sLocaleAndExtraValueToKeyboardLayoutSetMap.get(key);
+        }
         // TODO: Remove this null check when InputMethodManager.getCurrentInputMethodSubtype is
         // fixed.
         if (keyboardLayoutSet == null) {
