@@ -249,13 +249,13 @@ public class Suggest {
                     transformedWordInfo.mSourceDict);
         }
 
-        final SuggestedWordInfo bestSuggestion = suggestionsContainer.isEmpty()
-                ? null : suggestionsContainer.get(0);
         final CharSequence whitelistedWord = capitalizeWord(isAllUpperCase,
                 isFirstCharCapitalized, mWhiteListDictionary.getWhitelistedWord(consideredWord));
 
         final boolean hasAutoCorrection;
         if (isCorrectionEnabled) {
+            final SuggestedWordInfo bestSuggestion = suggestionsSet.isEmpty()
+                    ? null : suggestionsSet.first();
             final CharSequence autoCorrection =
                     AutoCorrection.computeAutoCorrectionWord(mDictionaries, wordComposer,
                             bestSuggestion, consideredWord, mAutoCorrectionThreshold,
@@ -266,19 +266,21 @@ public class Suggest {
         }
 
         if (whitelistedWord != null) {
+            final SuggestedWordInfo whitelistSuggestion;
             if (trailingSingleQuotesCount > 0) {
                 final StringBuilder sb = new StringBuilder(whitelistedWord);
                 for (int i = trailingSingleQuotesCount - 1; i >= 0; --i) {
                     sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
                 }
-                suggestionsContainer.add(0, new SuggestedWordInfo(sb.toString(),
+                whitelistSuggestion = new SuggestedWordInfo(sb.toString(),
                         SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST,
-                        Dictionary.TYPE_WHITELIST));
+                        Dictionary.TYPE_WHITELIST);
             } else {
-                suggestionsContainer.add(0, new SuggestedWordInfo(whitelistedWord,
+                whitelistSuggestion = new SuggestedWordInfo(whitelistedWord,
                         SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST,
-                        Dictionary.TYPE_WHITELIST));
+                        Dictionary.TYPE_WHITELIST);
             }
+            suggestionsContainer.add(0, whitelistSuggestion);
         }
 
         if (!isPrediction) {
