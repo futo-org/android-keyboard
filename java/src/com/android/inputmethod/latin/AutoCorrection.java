@@ -88,10 +88,6 @@ public class AutoCorrection {
         return !isValidWord(dictionaries, word, ignoreCase);
     }
 
-    static public boolean hasAutoCorrectionForWhitelistedWord(CharSequence whiteListedWord) {
-        return whiteListedWord != null;
-    }
-
     public static boolean shouldAutoCorrectToSelf(
             final ConcurrentHashMap<String, Dictionary> dictionaries,
             final CharSequence consideredWord) {

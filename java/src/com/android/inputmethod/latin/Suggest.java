@@ -231,7 +231,7 @@ public class Suggest {
             final SuggestedWordInfo bestSuggestion = suggestionsSet.isEmpty()
                     ? null : suggestionsSet.first();
             final CharSequence autoCorrection;
-            if (AutoCorrection.hasAutoCorrectionForWhitelistedWord(whitelistedWord)) {
+            if (null != whitelistedWord) {
                 autoCorrection = whitelistedWord;
             } else if (AutoCorrection.shouldAutoCorrectToSelf(mDictionaries, consideredWord)) {
                 autoCorrection = consideredWord;
