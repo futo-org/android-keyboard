@@ -88,7 +88,7 @@ public class AutoCorrection {
         return !isValidWord(dictionaries, word, ignoreCase);
     }
 
-    public static boolean hasAutoCorrectionForBinaryDictionary(SuggestedWordInfo suggestion,
+    public static boolean suggestionExceedsAutoCorrectionThreshold(SuggestedWordInfo suggestion,
             CharSequence consideredWord, float autoCorrectionThreshold) {
         if (null != suggestion) {
             //final int autoCorrectionSuggestionScore = sortedScores[0];

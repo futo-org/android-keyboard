@@ -236,7 +236,7 @@ public class Suggest {
             hasAutoCorrection = true;
         } else if (suggestionsSet.isEmpty()) {
             hasAutoCorrection = false;
-        } else if (AutoCorrection.hasAutoCorrectionForBinaryDictionary(suggestionsSet.first(),
+        } else if (AutoCorrection.suggestionExceedsAutoCorrectionThreshold(suggestionsSet.first(),
                 consideredWord, mAutoCorrectionThreshold)) {
             hasAutoCorrection = true;
         } else {
