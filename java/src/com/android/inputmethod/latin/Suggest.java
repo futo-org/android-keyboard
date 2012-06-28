@@ -225,8 +225,8 @@ public class Suggest {
             hasAutoCorrection = false;
         } else if (null != whitelistedWord) {
             hasAutoCorrection = true;
-        } else if (!AutoCorrection.isWhitelistedOrNotAWord(
-                mDictionaries, consideredWord, wordComposer.isFirstCharCapitalized())) {
+        } else if (!AutoCorrection.isWhitelistedOrNotAWord(mDictionaries, consideredWord,
+                wordComposer.isFirstCharCapitalized())) {
             hasAutoCorrection = true;
         } else if (suggestionsSet.isEmpty()) {
             hasAutoCorrection = false;
@@ -282,7 +282,7 @@ public class Suggest {
         // a boolean flag. Right now this is handled with a slight hack in
         // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
         final boolean allowsToBeAutoCorrected = AutoCorrection.isWhitelistedOrNotAWord(
-                getUnigramDictionaries(), consideredWord, wordComposer.isFirstCharCapitalized())
+                mDictionaries, consideredWord, wordComposer.isFirstCharCapitalized())
         // If we don't have a main dictionary, we never want to auto-correct. The reason for this
         // is, the user may have a contact whose name happens to match a valid word in their
         // language, and it will unexpectedly auto-correct. For example, if the user types in
