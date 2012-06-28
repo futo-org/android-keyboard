@@ -29,6 +29,7 @@ public class SuggestedWords {
 
     public final boolean mTypedWordValid;
     public final boolean mHasAutoCorrectionCandidate;
+    public final boolean mWillAutoCorrect;
     public final boolean mIsPunctuationSuggestions;
     public final boolean mIsObsoleteSuggestions;
     public final boolean mIsPrediction;
@@ -43,6 +44,7 @@ public class SuggestedWords {
         mSuggestedWordInfoList = suggestedWordInfoList;
         mTypedWordValid = typedWordValid;
         mHasAutoCorrectionCandidate = hasAutoCorrectionCandidate;
+        mWillAutoCorrect = !mTypedWordValid && mHasAutoCorrectionCandidate;
         mIsPunctuationSuggestions = isPunctuationSuggestions;
         mIsObsoleteSuggestions = isObsoleteSuggestions;
         mIsPrediction = isPrediction;
@@ -69,7 +71,7 @@ public class SuggestedWords {
     }
 
     public boolean willAutoCorrect() {
-        return !mTypedWordValid && mHasAutoCorrectionCandidate;
+        return mWillAutoCorrect;
     }
 
     @Override
