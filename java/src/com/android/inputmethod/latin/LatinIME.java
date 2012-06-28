@@ -1718,7 +1718,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // need to clear the previous state when the user starts typing a word (i.e. typed word's
         // length == 1).
         if (suggestedWords.size() > 1 || typedWord.length() == 1
-                || !suggestedWords.mAllowsToBeAutoCorrected
+                || !suggestedWords.mTypedWordValid
                 || mSuggestionsView.isShowingAddToDictionaryHint()) {
             showSuggestions(suggestedWords, typedWord);
         } else {
