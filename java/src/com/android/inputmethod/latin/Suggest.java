@@ -232,7 +232,7 @@ public class Suggest {
         } else if (null != whitelistedWord) {
             hasAutoCorrection = true;
         } else if (!AutoCorrection.isWhitelistedOrNotAWord(
-                mDictionaries, consideredWord, false)) {
+                mDictionaries, consideredWord, wordComposer.isFirstCharCapitalized())) {
             hasAutoCorrection = true;
         } else if (suggestionsSet.isEmpty()) {
             hasAutoCorrection = false;
@@ -296,9 +296,6 @@ public class Suggest {
                 && hasMainDictionary();
 
         boolean autoCorrectionAvailable = hasAutoCorrection;
-        if (isCorrectionEnabled) {
-            autoCorrectionAvailable |= !allowsToBeAutoCorrected;
-        }
         // Don't auto-correct words with multiple capital letter
         autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
         autoCorrectionAvailable &= !wordComposer.isResumed();
