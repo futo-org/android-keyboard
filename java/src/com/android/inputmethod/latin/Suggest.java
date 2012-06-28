@@ -38,8 +38,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Suggest {
     public static final String TAG = Suggest.class.getSimpleName();
 
-    public static final int APPROX_MAX_WORD_LENGTH = 32;
-
     // TODO: rename this to CORRECTION_OFF
     public static final int CORRECTION_NONE = 0;
     // TODO: rename this to CORRECTION_ON
@@ -130,10 +128,6 @@ public class Suggest {
 
     public ConcurrentHashMap<String, Dictionary> getUnigramDictionaries() {
         return mDictionaries;
-    }
-
-    public static int getApproxMaxWordLength() {
-        return APPROX_MAX_WORD_LENGTH;
     }
 
     /**
@@ -351,7 +345,7 @@ public class Suggest {
     private static SuggestedWordInfo getTransformedSuggestedWordInfo(
             final SuggestedWordInfo wordInfo, final Locale locale, final boolean isAllUpperCase,
             final boolean isFirstCharCapitalized, final int trailingSingleQuotesCount) {
-        final StringBuilder sb = new StringBuilder(getApproxMaxWordLength());
+        final StringBuilder sb = new StringBuilder(wordInfo.mWord.length());
         if (isAllUpperCase) {
             sb.append(wordInfo.mWord.toString().toUpperCase(locale));
         } else if (isFirstCharCapitalized) {
