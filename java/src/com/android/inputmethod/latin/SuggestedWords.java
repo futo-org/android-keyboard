@@ -66,10 +66,6 @@ public class SuggestedWords {
         return mSuggestedWordInfoList.get(pos);
     }
 
-    public boolean hasAutoCorrectionWord() {
-        return mHasAutoCorrectionCandidate && size() > 1 && !mTypedWordValid;
-    }
-
     public boolean willAutoCorrect() {
         return mWillAutoCorrect;
     }

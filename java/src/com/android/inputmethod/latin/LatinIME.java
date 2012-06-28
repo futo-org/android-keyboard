@@ -1742,7 +1742,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void showSuggestions(final SuggestedWords suggestedWords, final CharSequence typedWord) {
         final CharSequence autoCorrection;
         if (suggestedWords.size() > 0) {
-            if (suggestedWords.hasAutoCorrectionWord()) {
+            if (suggestedWords.mWillAutoCorrect) {
                 autoCorrection = suggestedWords.getWord(1);
             } else {
                 autoCorrection = typedWord;
