@@ -336,9 +336,8 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             if (LatinImeLogger.sDBG && suggestedWords.size() > 1) {
                 // If we auto-correct, then the autocorrection is in slot 0 and the typed word
                 // is in slot 1.
-                if (index == mCenterSuggestionIndex && suggestedWords.mHasAutoCorrectionCandidate
-                        && Suggest.shouldBlockAutoCorrectionBySafetyNet(
-                                suggestedWords.getWord(1).toString(), suggestedWords.getWord(0))) {
+                if (index == mCenterSuggestionIndex && Suggest.shouldBlockAutoCorrectionBySafetyNet(
+                        suggestedWords.getWord(1).toString(), suggestedWords.getWord(0))) {
                     return 0xFFFF0000;
                 }
             }
