@@ -238,11 +238,9 @@ public class Suggest {
         }
 
         if (whitelistedWord != null) {
-            final SuggestedWordInfo whitelistSuggestion;
-            whitelistSuggestion = new SuggestedWordInfo(whitelistedWord,
+            suggestionsSet.add(new SuggestedWordInfo(whitelistedWord,
                     SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST,
-                    Dictionary.TYPE_WHITELIST);
-            suggestionsSet.add(whitelistSuggestion);
+                    Dictionary.TYPE_WHITELIST));
         }
 
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
