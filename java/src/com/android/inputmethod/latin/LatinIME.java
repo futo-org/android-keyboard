@@ -1685,6 +1685,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public void updateSuggestions() {
+        mHandler.cancelUpdateSuggestions();
+        mHandler.cancelUpdateBigramPredictions();
+
         // Check if we have a suggestion engine attached.
         if ((mSuggest == null || !mCurrentSettings.isSuggestionsRequested(mDisplayOrientation))) {
             if (mWordComposer.isComposingWord()) {
@@ -1694,10 +1697,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
 
-        mHandler.cancelUpdateSuggestions();
-        mHandler.cancelUpdateBigramPredictions();
-
         if (!mWordComposer.isComposingWord()) {
+            // This is dead code: we can't come here with an empty word composer.
             setPunctuationSuggestions();
             return;
         }
@@ -1908,8 +1909,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public void updateBigramPredictions() {
-        if (mSuggest == null || !mCurrentSettings.isSuggestionsRequested(mDisplayOrientation))
+        mHandler.cancelUpdateSuggestions();
+        mHandler.cancelUpdateBigramPredictions();
+
+        if (mSuggest == null || !mCurrentSettings.isSuggestionsRequested(mDisplayOrientation)) {
+            if (mWordComposer.isComposingWord()) {
+                Log.w(TAG, "Called updateBigramPredictions but suggestions were not requested!");
+                mWordComposer.setAutoCorrection(mWordComposer.getTypedWord());
+            }
             return;
+        }
 
         if (!mCurrentSettings.mBigramPredictionEnabled) {
             setPunctuationSuggestions();
