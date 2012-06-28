@@ -240,11 +240,6 @@ public class Suggest {
             hasAutoCorrection = false;
         } else if (null != whitelistedWord) {
             hasAutoCorrection = true;
-        } else if (!allowsToBeAutoCorrected) {
-            // TODO: make the variable name clearer. If we don't allow auto-correct, that means
-            // this word is a dictionary word that is not whitelisted, so it should auto-correct
-            // to itself! Hence, the true here.
-            hasAutoCorrection = true;
         } else if (suggestionsSet.isEmpty()) {
             hasAutoCorrection = false;
         } else if (AutoCorrection.suggestionExceedsAutoCorrectionThreshold(suggestionsSet.first(),
