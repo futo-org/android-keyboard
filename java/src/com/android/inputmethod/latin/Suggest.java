@@ -221,17 +221,6 @@ public class Suggest {
             }
         }
 
-        final ArrayList<SuggestedWordInfo> suggestionsContainer =
-                new ArrayList<SuggestedWordInfo>(suggestionsSet);
-        for (int i = 0; i < suggestionsContainer.size(); ++i) {
-            final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
-            final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(wordInfo,
-                    mLocale, isAllUpperCase, isFirstCharCapitalized, trailingSingleQuotesCount);
-            suggestionsContainer.set(i, transformedWordInfo);
-            LatinImeLogger.onAddSuggestedWord(transformedWordInfo.mWord.toString(),
-                    transformedWordInfo.mSourceDict);
-        }
-
         final CharSequence whitelistedWord =
                 mWhiteListDictionary.getWhitelistedWord(consideredWord);
 
@@ -253,8 +242,18 @@ public class Suggest {
             whitelistSuggestion = new SuggestedWordInfo(whitelistedWord,
                     SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST,
                     Dictionary.TYPE_WHITELIST);
-            suggestionsContainer.add(0, getTransformedSuggestedWordInfo(whitelistSuggestion,
-                    mLocale, isAllUpperCase, isFirstCharCapitalized, trailingSingleQuotesCount));
+            suggestionsSet.add(whitelistSuggestion);
+        }
+
+        final ArrayList<SuggestedWordInfo> suggestionsContainer =
+                new ArrayList<SuggestedWordInfo>(suggestionsSet);
+        for (int i = 0; i < suggestionsContainer.size(); ++i) {
+            final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
+            final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(wordInfo,
+                    mLocale, isAllUpperCase, isFirstCharCapitalized, trailingSingleQuotesCount);
+            suggestionsContainer.set(i, transformedWordInfo);
+            LatinImeLogger.onAddSuggestedWord(transformedWordInfo.mWord.toString(),
+                    transformedWordInfo.mSourceDict);
         }
 
         if (!isPrediction) {
