@@ -302,12 +302,18 @@ public class Suggest {
         // Don't auto-correct words with multiple capital letter
         autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
         autoCorrectionAvailable &= !wordComposer.isResumed();
+        // TODO: this safety net check should be done right after we decide that the suggestion
+        // exceeds the auto-correction threshold. However as long as the |= !allowsToBeAutoCorrected
+        // line is there it can't be done safely in a logical manner.
         if (allowsToBeAutoCorrected && suggestionsList.size() > 1 && mAutoCorrectionThreshold > 0
                 && Suggest.shouldBlockAutoCorrectionBySafetyNet(typedWord,
                         suggestionsList.get(1).mWord)) {
             autoCorrectionAvailable = false;
         }
         return new SuggestedWords(suggestionsList,
+                // TODO: this first argument is lying. If this is a whitelisted word which is an
+                // actual word, it says typedWordValid = false, which looks wrong. We should either
+                // rename the attribute or change the value.
                 !isPrediction && !allowsToBeAutoCorrected /* typedWordValid */,
                 !isPrediction && autoCorrectionAvailable /* hasAutoCorrectionCandidate */,
                 !isPrediction && allowsToBeAutoCorrected /* allowsToBeAutoCorrected */,
