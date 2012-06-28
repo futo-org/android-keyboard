@@ -166,6 +166,8 @@ public class Suggest {
     public SuggestedWords getSuggestedWords(
             final WordComposer wordComposer, CharSequence prevWordForBigram,
             final ProximityInfo proximityInfo, final boolean isCorrectionEnabled,
+            // TODO: remove isPrediction parameter. It effectively means the same thing
+            // as wordComposer.size() <= 1
             final boolean isPrediction) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         final boolean isFirstCharCapitalized =
@@ -261,7 +263,7 @@ public class Suggest {
             LatinImeLogger.onAddSuggestedWord(wordInfo.mWord.toString(), wordInfo.mSourceDict);
         }
 
-        if (!isPrediction) {
+        if (!TextUtils.isEmpty(typedWord)) {
             suggestionsContainer.add(0, new SuggestedWordInfo(typedWord,
                     SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_TYPED,
                     Dictionary.TYPE_USER_TYPED));
