@@ -28,7 +28,9 @@ public class SuggestedWords {
             new ArrayList<SuggestedWordInfo>(0), false, false, false, false, false);
 
     public final boolean mTypedWordValid;
-    private final boolean mHasAutoCorrectionCandidate;
+    // Note: this INCLUDES cases where the word will auto-correct to itself. A good definition
+    // of what this flag means would be "the top suggestion is strong enough to auto-correct",
+    // whether this exactly matches the user entry or not.
     public final boolean mWillAutoCorrect;
     public final boolean mIsPunctuationSuggestions;
     public final boolean mIsObsoleteSuggestions;
@@ -37,14 +39,13 @@ public class SuggestedWords {
 
     public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
             final boolean typedWordValid,
-            final boolean hasAutoCorrectionCandidate,
+            final boolean willAutoCorrect,
             final boolean isPunctuationSuggestions,
             final boolean isObsoleteSuggestions,
             final boolean isPrediction) {
         mSuggestedWordInfoList = suggestedWordInfoList;
         mTypedWordValid = typedWordValid;
-        mHasAutoCorrectionCandidate = hasAutoCorrectionCandidate;
-        mWillAutoCorrect = !mTypedWordValid && mHasAutoCorrectionCandidate;
+        mWillAutoCorrect = willAutoCorrect;
         mIsPunctuationSuggestions = isPunctuationSuggestions;
         mIsObsoleteSuggestions = isObsoleteSuggestions;
         mIsPrediction = isPrediction;
@@ -75,7 +76,7 @@ public class SuggestedWords {
         // Pretty-print method to help debug
         return "SuggestedWords:"
                 + " mTypedWordValid=" + mTypedWordValid
-                + " mHasAutoCorrectionCandidate=" + mHasAutoCorrectionCandidate
+                + " mWillAutoCorrect=" + mWillAutoCorrect
                 + " mIsPunctuationSuggestions=" + mIsPunctuationSuggestions
                 + " words=" + Arrays.toString(mSuggestedWordInfoList.toArray());
     }

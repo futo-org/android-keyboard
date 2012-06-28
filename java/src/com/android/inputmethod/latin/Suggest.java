@@ -295,7 +295,7 @@ public class Suggest {
                 // actual word, it says typedWordValid = false, which looks wrong. We should either
                 // rename the attribute or change the value.
                 !isPrediction && !allowsToBeAutoCorrected /* typedWordValid */,
-                !isPrediction && hasAutoCorrection, /* hasAutoCorrectionCandidate */
+                !isPrediction && hasAutoCorrection && allowsToBeAutoCorrected, /* willAutoCorrect */
                 false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
                 isPrediction);
