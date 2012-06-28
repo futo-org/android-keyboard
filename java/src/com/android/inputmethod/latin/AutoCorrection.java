@@ -91,8 +91,8 @@ public class AutoCorrection {
     public static boolean shouldAutoCorrectToSelf(
             final ConcurrentHashMap<String, Dictionary> dictionaries,
             final CharSequence consideredWord) {
-        if (TextUtils.isEmpty(consideredWord)) return false;
-        return !allowsToBeAutoCorrected(dictionaries, consideredWord, false);
+        return (!TextUtils.isEmpty(consideredWord) && !allowsToBeAutoCorrected(dictionaries,
+                consideredWord, false));
     }
 
     public static boolean hasAutoCorrectionForBinaryDictionary(SuggestedWordInfo suggestion,
