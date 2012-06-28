@@ -75,7 +75,7 @@ public class AutoCorrection {
     }
 
     // Returns true if this is a whitelist entry, or it isn't in any dictionary.
-    public static boolean allowsToBeAutoCorrected(
+    public static boolean isWhitelistedOrNotAWord(
             final ConcurrentHashMap<String, Dictionary> dictionaries,
             final CharSequence word, final boolean ignoreCase) {
         final WhitelistDictionary whitelistDictionary =

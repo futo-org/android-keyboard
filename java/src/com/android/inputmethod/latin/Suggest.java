@@ -233,7 +233,7 @@ public class Suggest {
             final CharSequence autoCorrection;
             if (null != whitelistedWord) {
                 autoCorrection = whitelistedWord;
-            } else if (!AutoCorrection.allowsToBeAutoCorrected(
+            } else if (!AutoCorrection.isWhitelistedOrNotAWord(
                     mDictionaries, consideredWord, false)) {
                 autoCorrection = consideredWord;
             } else if (AutoCorrection.hasAutoCorrectionForBinaryDictionary(bestSuggestion,
@@ -290,7 +290,7 @@ public class Suggest {
         // The whitelist should be case-insensitive, so it's not possible to be consistent with
         // a boolean flag. Right now this is handled with a slight hack in
         // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
-        final boolean allowsToBeAutoCorrected = AutoCorrection.allowsToBeAutoCorrected(
+        final boolean allowsToBeAutoCorrected = AutoCorrection.isWhitelistedOrNotAWord(
                 getUnigramDictionaries(), consideredWord, wordComposer.isFirstCharCapitalized())
         // If we don't have a main dictionary, we never want to auto-correct. The reason for this
         // is, the user may have a contact whose name happens to match a valid word in their
