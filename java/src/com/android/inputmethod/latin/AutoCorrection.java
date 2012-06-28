@@ -38,8 +38,7 @@ public class AutoCorrection {
             final CharSequence whitelistedWord) {
         if (hasAutoCorrectionForWhitelistedWord(whitelistedWord)) {
             return whitelistedWord;
-        } else if (shouldAutoCorrectToSelf(
-                dictionaries, wordComposer, suggestion, consideredWord)) {
+        } else if (shouldAutoCorrectToSelf(dictionaries, wordComposer, consideredWord)) {
             return consideredWord;
         } else if (hasAutoCorrectionForBinaryDictionary(wordComposer, suggestion,
                 consideredWord, autoCorrectionThreshold)) {
@@ -111,10 +110,9 @@ public class AutoCorrection {
 
     private static boolean shouldAutoCorrectToSelf(
             final ConcurrentHashMap<String, Dictionary> dictionaries,
-            final WordComposer wordComposer, final SuggestedWordInfo suggestion,
-            final CharSequence consideredWord) {
+            final WordComposer wordComposer, final CharSequence consideredWord) {
         if (TextUtils.isEmpty(consideredWord)) return false;
-        return wordComposer.size() > 1 && null != suggestion
+        return wordComposer.size() > 1
                 && !allowsToBeAutoCorrected(dictionaries, consideredWord, false);
     }
 
