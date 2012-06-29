@@ -60,10 +60,8 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Μέτρια"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Υψηλή"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Πολύ επιθετική"</string>
-    <!-- no translation found for bigram_prediction (5809665643352206540) -->
-    <skip />
-    <!-- no translation found for bigram_prediction_summary (3253961591626441019) -->
-    <skip />
+    <string name="bigram_prediction" msgid="5809665643352206540">"Προτάσεις επόμενων λέξεων"</string>
+    <string name="bigram_prediction_summary" msgid="3253961591626441019">"Με βάση την προηγούμενη λέξη"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Αποθηκεύτηκε"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Μετ."</string>
     <string name="label_next_key" msgid="362972844525672568">"Επόμενο"</string>
