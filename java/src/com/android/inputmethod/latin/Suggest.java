@@ -243,6 +243,10 @@ public class Suggest {
         } else {
             hasAutoCorrection = false;
         }
+        boolean autoCorrectionAvailable = hasAutoCorrection;
+        // Don't auto-correct words with multiple capital letter
+        autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
+        autoCorrectionAvailable &= !wordComposer.isResumed();
 
         if (whitelistedWord != null) {
             suggestionsSet.add(new SuggestedWordInfo(whitelistedWord,
@@ -296,10 +300,6 @@ public class Suggest {
         // always auto-correct to "Will" which is unwanted. Hence, no main dict => no auto-correct.
                 && hasMainDictionary();
 
-        boolean autoCorrectionAvailable = hasAutoCorrection;
-        // Don't auto-correct words with multiple capital letter
-        autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
-        autoCorrectionAvailable &= !wordComposer.isResumed();
         return new SuggestedWords(suggestionsList,
                 // TODO: this first argument is lying. If this is a whitelisted word which is an
                 // actual word, it says typedWordValid = false, which looks wrong. We should either
