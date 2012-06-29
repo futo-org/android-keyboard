@@ -199,10 +199,12 @@ public class BinaryDictionary extends Dictionary {
         //final int commitPoint = codes.getCommitPoint();
         //codes.clearCommitPoint();
 
+        final InputPointers ips = codes.getInputPointers();
+
         return getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
-            codes.getXCoordinates(), codes.getYCoordinates(), emptyArray, emptyArray, mInputCodes,
-            codesSize, 0 /* unused */, false, prevWordCodePointArray, mUseFullEditDistance,
-            outputChars, scores, spaceIndices);
+            ips.getXCoordinates(), ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
+            mInputCodes, codesSize, 0 /* unused */, false, prevWordCodePointArray,
+            mUseFullEditDistance, outputChars, scores, spaceIndices);
     }
 
     public static float calcNormalizedScore(String before, String after, int score) {
