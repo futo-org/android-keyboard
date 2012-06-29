@@ -38,6 +38,7 @@
 
 -keep class com.android.inputmethod.latin.ResearchLogger {
   void flush();
+  void publishCurrentLogUnit(...);
 }
 
 -keep class com.android.inputmethod.keyboard.KeyboardLayoutSet$Builder {
