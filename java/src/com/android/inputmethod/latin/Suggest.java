@@ -227,7 +227,7 @@ public class Suggest {
                 mWhiteListDictionary.getWhitelistedWord(consideredWord);
 
         final boolean hasAutoCorrection;
-        if (!isCorrectionEnabled) {
+        if (!isCorrectionEnabled || wordComposer.isMostlyCaps() || wordComposer.isResumed()) {
             hasAutoCorrection = false;
         } else if (null != whitelistedWord) {
             hasAutoCorrection = true;
@@ -243,10 +243,6 @@ public class Suggest {
         } else {
             hasAutoCorrection = false;
         }
-        boolean autoCorrectionAvailable = hasAutoCorrection;
-        // Don't auto-correct words with multiple capital letter
-        autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
-        autoCorrectionAvailable &= !wordComposer.isResumed();
 
         if (whitelistedWord != null) {
             suggestionsSet.add(new SuggestedWordInfo(whitelistedWord,
@@ -305,7 +301,7 @@ public class Suggest {
                 // actual word, it says typedWordValid = false, which looks wrong. We should either
                 // rename the attribute or change the value.
                 !isPrediction && !allowsToBeAutoCorrected /* typedWordValid */,
-                !isPrediction && autoCorrectionAvailable /* hasAutoCorrectionCandidate */,
+                !isPrediction && hasAutoCorrection, /* hasAutoCorrectionCandidate */
                 false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
                 isPrediction);
