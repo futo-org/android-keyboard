@@ -1708,17 +1708,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
 
+        final CharSequence typedWord;
         if (isPredictions || !mWordComposer.isComposingWord()) {
-            updateBigramPredictions();
+            typedWord = "";
+            updateBigramPredictions(typedWord);
         } else {
-            updateSuggestions();
+            typedWord = mWordComposer.getTypedWord();
+            updateSuggestions(typedWord);
         }
     }
 
-    private void updateSuggestions() {
+    private void updateSuggestions(final CharSequence typedWord) {
         // TODO: May need a better way of retrieving previous word
         final CharSequence prevWord = mConnection.getPreviousWord(mCurrentSettings.mWordSeparators);
-        final CharSequence typedWord = mWordComposer.getTypedWord();
         // getSuggestedWords handles gracefully a null value of prevWord
         final SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
@@ -1925,7 +1927,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 separatorCode, prevWord);
     }
 
-    private void updateBigramPredictions() {
+    private void updateBigramPredictions(final CharSequence typedWord) {
         if (!mCurrentSettings.mBigramPredictionEnabled) {
             setPunctuationSuggestions();
             return;
@@ -1946,9 +1948,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         if (null != suggestedWords && suggestedWords.size() > 0) {
-            // Explicitly supply an empty typed word (the no-second-arg version of
-            // showSuggestions will retrieve the word near the cursor, we don't want that here)
-            showSuggestions(suggestedWords, "");
+            // Typed word is always empty. We pass it because the no-second-arg version of
+            // showSuggestions will retrieve the word near the cursor, and we don't want that here
+            showSuggestions(suggestedWords, typedWord);
         } else {
             clearSuggestions();
         }
