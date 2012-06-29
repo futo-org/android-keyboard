@@ -24,7 +24,6 @@ import com.android.inputmethod.keyboard.Keyboard.Params.TouchPositionCorrection;
 import com.android.inputmethod.latin.JniUtils;
 
 import java.util.Arrays;
-import java.util.HashMap;
 
 public class ProximityInfo {
     /** MAX_PROXIMITY_CHARS_SIZE must be the same as MAX_PROXIMITY_CHARS_SIZE_INTERNAL
@@ -190,10 +189,6 @@ public class ProximityInfo {
     private void computeNearestNeighbors() {
         final int defaultWidth = mMostCommonKeyWidth;
         final Key[] keys = mKeys;
-        final HashMap<Integer, Key> keyCodeMap = new HashMap<Integer, Key>();
-        for (final Key key : keys) {
-            keyCodeMap.put(key.mCode, key);
-        }
         final int thresholdBase = (int) (defaultWidth * SEARCH_DISTANCE);
         final int threshold = thresholdBase * thresholdBase;
         // Round-up so we don't have any pixels outside the grid

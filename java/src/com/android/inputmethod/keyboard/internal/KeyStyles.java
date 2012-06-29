@@ -18,6 +18,7 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.content.res.TypedArray;
 import android.util.Log;
+import android.util.SparseArray;
 
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.R;
@@ -89,7 +90,7 @@ public class KeyStyles {
 
     private class DeclaredKeyStyle extends KeyStyle {
         private final String mParentStyleName;
-        private final HashMap<Integer, Object> mStyleAttributes = new HashMap<Integer, Object>();
+        private final SparseArray<Object> mStyleAttributes = new SparseArray<Object>();
 
         public DeclaredKeyStyle(String parentStyleName) {
             mParentStyleName = parentStyleName;
@@ -100,8 +101,9 @@ public class KeyStyles {
             if (a.hasValue(index)) {
                 return parseStringArray(a, index);
             }
-            if (mStyleAttributes.containsKey(index)) {
-                return (String[])mStyleAttributes.get(index);
+            final Object value = mStyleAttributes.get(index);
+            if (value != null) {
+                return (String[])value;
             }
             final KeyStyle parentStyle = mStyles.get(mParentStyleName);
             return parentStyle.getStringArray(a, index);
@@ -112,8 +114,9 @@ public class KeyStyles {
             if (a.hasValue(index)) {
                 return parseString(a, index);
             }
-            if (mStyleAttributes.containsKey(index)) {
-                return (String)mStyleAttributes.get(index);
+            final Object value = mStyleAttributes.get(index);
+            if (value != null) {
+                return (String)value;
             }
             final KeyStyle parentStyle = mStyles.get(mParentStyleName);
             return parentStyle.getString(a, index);
@@ -124,8 +127,9 @@ public class KeyStyles {
             if (a.hasValue(index)) {
                 return a.getInt(index, defaultValue);
             }
-            if (mStyleAttributes.containsKey(index)) {
-                return (Integer)mStyleAttributes.get(index);
+            final Object value = mStyleAttributes.get(index);
+            if (value != null) {
+                return (Integer)value;
             }
             final KeyStyle parentStyle = mStyles.get(mParentStyleName);
             return parentStyle.getInt(a, index, defaultValue);
@@ -133,12 +137,13 @@ public class KeyStyles {
 
         @Override
         public int getFlag(TypedArray a, int index) {
-            int value = a.getInt(index, 0);
-            if (mStyleAttributes.containsKey(index)) {
-                value |= (Integer)mStyleAttributes.get(index);
+            int flags = a.getInt(index, 0);
+            final Object value = mStyleAttributes.get(index);
+            if (value != null) {
+                flags |= (Integer)value;
             }
             final KeyStyle parentStyle = mStyles.get(mParentStyleName);
-            return value | parentStyle.getFlag(a, index);
+            return flags | parentStyle.getFlag(a, index);
         }
 
         void readKeyAttributes(TypedArray keyAttr) {

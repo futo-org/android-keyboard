@@ -30,6 +30,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +43,6 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.StringUtils;
 
-import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -124,12 +124,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private Canvas mCanvas;
     private final Paint mPaint = new Paint();
     private final Paint.FontMetrics mFontMetrics = new Paint.FontMetrics();
-    // This map caches key label text height in pixel as value and key label text size as map key.
-    private static final HashMap<Integer, Float> sTextHeightCache =
-            new HashMap<Integer, Float>();
-    // This map caches key label text width in pixel as value and key label text size as map key.
-    private static final HashMap<Integer, Float> sTextWidthCache =
-            new HashMap<Integer, Float>();
+    // This sparse array caches key label text height in pixel indexed by key label text size.
+    private static final SparseArray<Float> sTextHeightCache = new SparseArray<Float>();
+    // This sparse array caches key label text width in pixel indexed by key label text size.
+    private static final SparseArray<Float> sTextWidthCache = new SparseArray<Float>();
     private static final char[] KEY_LABEL_REFERENCE_CHAR = { 'M' };
     private static final char[] KEY_NUMERIC_HINT_LABEL_REFERENCE_CHAR = { '8' };
 
@@ -766,7 +764,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private final Rect mTextBounds = new Rect();
 
     private float getCharHeight(char[] referenceChar, Paint paint) {
-        final Integer key = getCharGeometryCacheKey(referenceChar[0], paint);
+        final int key = getCharGeometryCacheKey(referenceChar[0], paint);
         final Float cachedValue = sTextHeightCache.get(key);
         if (cachedValue != null)
             return cachedValue;
@@ -778,7 +776,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     private float getCharWidth(char[] referenceChar, Paint paint) {
-        final Integer key = getCharGeometryCacheKey(referenceChar[0], paint);
+        final int key = getCharGeometryCacheKey(referenceChar[0], paint);
         final Float cachedValue = sTextWidthCache.get(key);
         if (cachedValue != null)
             return cachedValue;
