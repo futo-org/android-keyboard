@@ -29,6 +29,7 @@ import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.text.InputType;
 import android.util.Log;
+import android.util.SparseArray;
 import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
@@ -116,9 +117,9 @@ public class KeyboardLayoutSet {
         InputMethodSubtype mSubtype;
         int mOrientation;
         int mWidth;
-        // KeyboardLayoutSet element id to element's parameters map.
-        final HashMap<Integer, ElementParams> mKeyboardLayoutSetElementIdToParamsMap =
-                new HashMap<Integer, ElementParams>();
+        // Sparse array of KeyboardLayoutSet element parameters indexed by element's id.
+        final SparseArray<ElementParams> mKeyboardLayoutSetElementIdToParamsMap =
+                new SparseArray<ElementParams>();
 
         static class ElementParams {
             int mKeyboardXmlId;
