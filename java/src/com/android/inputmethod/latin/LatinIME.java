@@ -1709,16 +1709,27 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         final CharSequence typedWord;
+        final SuggestedWords suggestions;
         if (isPredictions || !mWordComposer.isComposingWord()) {
+            if (!mCurrentSettings.mBigramPredictionEnabled) {
+                setPunctuationSuggestions();
+                return;
+            }
             typedWord = "";
-            updateBigramPredictions(typedWord);
+            suggestions = updateBigramPredictions(typedWord);
         } else {
             typedWord = mWordComposer.getTypedWord();
-            updateSuggestions(typedWord);
+            suggestions = updateSuggestions(typedWord);
+        }
+
+        if (null != suggestions && suggestions.size() > 0) {
+            showSuggestions(suggestions, typedWord);
+        } else {
+            clearSuggestions();
         }
     }
 
-    private void updateSuggestions(final CharSequence typedWord) {
+    private SuggestedWords updateSuggestions(final CharSequence typedWord) {
         // TODO: May need a better way of retrieving previous word
         final CharSequence prevWord = mConnection.getPreviousWord(mCurrentSettings.mWordSeparators);
         // getSuggestedWords handles gracefully a null value of prevWord
@@ -1735,8 +1746,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (suggestedWords.size() > 1 || typedWord.length() == 1
                 || !suggestedWords.mTypedWordValid
                 || mSuggestionsView.isShowingAddToDictionaryHint()) {
-            // We know suggestedWords.size() > 1
-            showSuggestions(suggestedWords, typedWord);
+            return suggestedWords;
         } else {
             SuggestedWords previousSuggestions = mSuggestionsView.getSuggestions();
             if (previousSuggestions == mCurrentSettings.mSuggestPuncList) {
@@ -1745,16 +1755,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final ArrayList<SuggestedWords.SuggestedWordInfo> typedWordAndPreviousSuggestions =
                     SuggestedWords.getTypedWordAndPreviousSuggestions(
                             typedWord, previousSuggestions);
-            final SuggestedWords obsoleteSuggestedWords =
-                    new SuggestedWords(typedWordAndPreviousSuggestions,
+            return new SuggestedWords(typedWordAndPreviousSuggestions,
                             false /* typedWordValid */,
                             false /* hasAutoCorrectionCandidate */,
                             false /* isPunctuationSuggestions */,
                             true /* isObsoleteSuggestions */,
                             false /* isPrediction */);
-            // getTypedWordAndPreviousSuggestions never returns an empty array, so we know we have
-            // at least one element here.
-            showSuggestions(obsoleteSuggestedWords, typedWord);
         }
     }
 
@@ -1927,12 +1933,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 separatorCode, prevWord);
     }
 
-    private void updateBigramPredictions(final CharSequence typedWord) {
-        if (!mCurrentSettings.mBigramPredictionEnabled) {
-            setPunctuationSuggestions();
-            return;
-        }
-
+    private SuggestedWords updateBigramPredictions(final CharSequence typedWord) {
         final SuggestedWords suggestedWords;
         if (mCurrentSettings.mCorrectionEnabled) {
             final CharSequence prevWord = mConnection.getThisWord(mCurrentSettings.mWordSeparators);
@@ -1947,13 +1948,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             suggestedWords = null;
         }
 
-        if (null != suggestedWords && suggestedWords.size() > 0) {
-            // Typed word is always empty. We pass it because the no-second-arg version of
-            // showSuggestions will retrieve the word near the cursor, and we don't want that here
-            showSuggestions(suggestedWords, typedWord);
-        } else {
-            clearSuggestions();
-        }
+        return suggestedWords;
     }
 
     public void setPunctuationSuggestions() {
