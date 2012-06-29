@@ -26,5 +26,4 @@ class TokenBeamImpl {
     DISALLOW_IMPLICIT_CONSTRUCTORS(TokenBeamImpl);
 };
 } // namespace latinime
-
 #endif // LATINIME_TOKEN_BEAM_IMPL_H

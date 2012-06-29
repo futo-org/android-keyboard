@@ -15,7 +15,26 @@
  */
 
 #include "incremental_decoder_impl.h"
+#include "incremental_decoder_interface.h"
 
 namespace latinime {
+
+// A factory method for IncrementalDecoderImpl
+static IncrementalDecoderInterface *getDecoderInstance(int maxWordLength, int maxWords) {
+    return new IncrementalDecoderImpl(maxWordLength, maxWords);
+}
+
+// An ad-hoc internal class to register the factory method defined above
+class IncrementalDecoderFactoryRegisterer {
+ public:
+    IncrementalDecoderFactoryRegisterer() {
+        IncrementalDecoderInterface::setIncrementalDecoderFactoryMethod(getDecoderInstance);
+    }
+ private:
+    DISALLOW_COPY_AND_ASSIGN(IncrementalDecoderFactoryRegisterer);
 };
-// namespace latinime
+
+// To invoke the IncrementalDecoderFactoryRegisterer constructor in the global constructor
+// Not sure, but can be static?
+IncrementalDecoderFactoryRegisterer incrementalDecoderFactoryRegisterer;
+} // namespace latinime

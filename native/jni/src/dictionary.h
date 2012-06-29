@@ -22,7 +22,7 @@
 #include "bigram_dictionary.h"
 #include "char_utils.h"
 #include "defines.h"
-#include "gesture/gesture_decoder.h"
+#include "incremental_decoder_interface.h"
 #include "proximity_info.h"
 #include "unigram_dictionary.h"
 #include "words_priority_queue_pool.h"
@@ -87,7 +87,7 @@ class Dictionary {
 
     const UnigramDictionary *mUnigramDictionary;
     const BigramDictionary *mBigramDictionary;
-    GestureDecoder *mGestureDecoder;
+    IncrementalDecoderInterface *mGestureDecoder;
 };
 
 // public static utility methods

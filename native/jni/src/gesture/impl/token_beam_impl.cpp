@@ -17,5 +17,4 @@
 #include "token_beam_impl.h"
 
 namespace latinime {
-};
-// namespace latinime
+} // namespace latinime

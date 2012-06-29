@@ -22,6 +22,7 @@
 #include "binary_format.h"
 #include "defines.h"
 #include "dictionary.h"
+#include "incremental_decoder_interface.h"
 
 namespace latinime {
 
@@ -43,7 +44,8 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
     mUnigramDictionary = new UnigramDictionary(mDict + headerSize, typedLetterMultiplier,
             fullWordMultiplier, maxWordLength, maxWords, options);
     mBigramDictionary = new BigramDictionary(mDict + headerSize, maxWordLength);
-    mGestureDecoder = new GestureDecoder(maxWordLength, maxWords);
+    mGestureDecoder = IncrementalDecoderInterface::getGestureDecoderInstance(maxWordLength,
+            maxWords);
     mGestureDecoder->setDict(mUnigramDictionary, mBigramDictionary,
             mDict + headerSize /* dict root */, 0 /* root pos */);
 }
@@ -51,6 +53,7 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
 Dictionary::~Dictionary() {
     delete mUnigramDictionary;
     delete mBigramDictionary;
+    delete mGestureDecoder;
 }
 
 int Dictionary::getFrequency(const int32_t *word, int length) const {

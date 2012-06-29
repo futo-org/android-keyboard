@@ -17,25 +17,30 @@
 #ifndef LATINIME_INCREMENTAL_DECODER_IMPL_H
 #define LATINIME_INCREMENTAL_DECODER_IMPL_H
 
-#include "bigram_dictionary.h"
 #include "defines.h"
 #include "incremental_decoder_interface.h"
-#include "unigram_dictionary.h"
 
 namespace latinime {
 
-class IncrementalDecoderImpl : IncrementalDecoderInterface {
+class UnigramDictionary;
+class BigramDictionary;
 
+class IncrementalDecoderImpl : public IncrementalDecoderInterface {
  public:
-     IncrementalDecoderImpl(int maxWordLength, int maxWords) { };
-     void setDict(const UnigramDictionary *dict, const BigramDictionary *bigram,
-             const uint8_t *dictRoot, int rootPos) { };
-     void setPrevWord(const int32_t *prevWord, int prevWordLength) { };
-     void reset() { };
+    IncrementalDecoderImpl(int maxWordLength, int maxWords) { };
+    void setDict(const UnigramDictionary *dict, const BigramDictionary *bigram,
+            const uint8_t *dictRoot, int rootPos) { };
+    void setPrevWord(const int32_t *prevWord, int prevWordLength) { };
+    void reset() { };
+
+    int getSuggestions(ProximityInfo *pInfo, int *inputXs, int *inputYs, int *times,
+            int *pointerIds, int *codes, int inputSize, int commitPoint,
+            unsigned short *outWords, int *frequencies, int *outputIndices) {
+        return 0;
+    }
 
  private:
      DISALLOW_IMPLICIT_CONSTRUCTORS(IncrementalDecoderImpl);
 };
 } // namespace latinime
-
 #endif // LATINIME_INCREMENTAL_DECODER_IMPL_H

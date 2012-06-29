@@ -17,15 +17,16 @@
 #ifndef LATINIME_INCREMENTAL_DECODER_INTERFACE_H
 #define LATINIME_INCREMENTAL_DECODER_INTERFACE_H
 
-#include "bigram_dictionary.h"
+#include <stdint.h>
 #include "defines.h"
-#include "proximity_info.h"
-#include "unigram_dictionary.h"
 
 namespace latinime {
 
-class IncrementalDecoderInterface {
+class UnigramDictionary;
+class BigramDictionary;
+class ProximityInfo;
 
+class IncrementalDecoderInterface {
  public:
     virtual int getSuggestions(ProximityInfo *pInfo, int *inputXs, int *inputYs, int *times,
             int *pointerIds, int *codes, int inputSize, int commitPoint,
@@ -35,7 +36,35 @@ class IncrementalDecoderInterface {
             const uint8_t *dictRoot, int rootPos) = 0;
     virtual void setPrevWord(const int32_t *prevWord, int prevWordLength) = 0;
     virtual ~IncrementalDecoderInterface() { };
+
+    static IncrementalDecoderInterface *getGestureDecoderInstance(int maxWordLength, int maxWords) {
+        if (sGestureDecoderFactoryMethod) {
+            return sGestureDecoderFactoryMethod(maxWordLength, maxWords);
+        }
+        return 0;
+    }
+
+    static IncrementalDecoderInterface *getIncrementalDecoderInstance(int maxWordLength,
+            int maxWords) {
+        if (sIncrementalDecoderFactoryMethod) {
+            return sIncrementalDecoderFactoryMethod(maxWordLength, maxWords);
+        }
+        return 0;
+    }
+
+    static void setGestureDecoderFactoryMethod(
+            IncrementalDecoderInterface *(*factoryMethod)(int, int)) {
+        sGestureDecoderFactoryMethod = factoryMethod;
+    }
+
+    static void setIncrementalDecoderFactoryMethod(
+            IncrementalDecoderInterface *(*factoryMethod)(int, int)) {
+        sIncrementalDecoderFactoryMethod = factoryMethod;
+    }
+
+ private:
+    static IncrementalDecoderInterface *(*sGestureDecoderFactoryMethod)(int, int);
+    static IncrementalDecoderInterface *(*sIncrementalDecoderFactoryMethod)(int, int);
 };
 } // namespace latinime
-
 #endif // LATINIME_INCREMENTAL_DECODER_INTERFACE_H

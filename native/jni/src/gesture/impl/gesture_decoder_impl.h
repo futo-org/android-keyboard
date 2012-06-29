@@ -18,15 +18,14 @@
 #define LATINIME_GESTURE_DECODER_IMPL_H
 
 #include "defines.h"
-#include "incremental_decoder.h"
+#include "incremental_decoder_impl.h"
 
 namespace latinime {
 
-class GestureDecoderImpl : public IncrementalDecoder {
-
+class GestureDecoderImpl : public IncrementalDecoderImpl {
  public:
     GestureDecoderImpl(int maxWordLength, int maxWords) :
-            IncrementalDecoder(maxWordLength, maxWords) {
+            IncrementalDecoderImpl(maxWordLength, maxWords) {
     }
 
     int getSuggestions(ProximityInfo *pInfo, int *inputXs, int *inputYs, int *times,
@@ -39,5 +38,4 @@ class GestureDecoderImpl : public IncrementalDecoder {
     DISALLOW_IMPLICIT_CONSTRUCTORS(GestureDecoderImpl);
 };
 } // namespace latinime
-
 #endif // LATINIME_GESTURE_DECODER_IMPL_H
