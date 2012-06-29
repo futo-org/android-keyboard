@@ -268,8 +268,9 @@ public class ExpandableDictionary extends Dictionary {
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
         mInputLength = codes.size();
         if (mCodes.length < mInputLength) mCodes = new int[mInputLength][];
-        final int[] xCoordinates = codes.getXCoordinates();
-        final int[] yCoordinates = codes.getYCoordinates();
+        final InputPointers ips = codes.getInputPointers();
+        final int[] xCoordinates = ips.getXCoordinates();
+        final int[] yCoordinates = ips.getYCoordinates();
         // Cache the codes so that we don't have to lookup an array list
         for (int i = 0; i < mInputLength; i++) {
             // TODO: Calculate proximity info here.
