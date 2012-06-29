@@ -1708,8 +1708,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         if (!mWordComposer.isComposingWord()) {
-            // This is dead code: we can't come here with an empty word composer.
-            setPunctuationSuggestions();
+            // We are never called with an empty word composer, but if because of a bug
+            // we are, what we should do here is just call updateBigramsPredictions. This will
+            // update the predictions if the "predict next word" option is on, or display
+            // punctuation signs if it's off.
+            updateBigramPredictions();
             return;
         }
 
