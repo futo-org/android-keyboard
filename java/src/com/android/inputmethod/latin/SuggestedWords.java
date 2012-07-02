@@ -28,7 +28,7 @@ public class SuggestedWords {
             new ArrayList<SuggestedWordInfo>(0), false, false, false, false, false);
 
     public final boolean mTypedWordValid;
-    public final boolean mHasAutoCorrectionCandidate;
+    private final boolean mHasAutoCorrectionCandidate;
     public final boolean mWillAutoCorrect;
     public final boolean mIsPunctuationSuggestions;
     public final boolean mIsObsoleteSuggestions;
