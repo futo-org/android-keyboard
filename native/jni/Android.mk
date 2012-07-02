@@ -26,8 +26,7 @@ include $(CLEAR_VARS)
 LATIN_IME_SRC_DIR := src
 LATIN_IME_SRC_FULLPATH_DIR := $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
 
-LOCAL_C_INCLUDES += $(LATIN_IME_SRC_FULLPATH_DIR) \
-    $(addprefix $(LATIN_IME_SRC_FULLPATH_DIR)/, gesture gesture/impl)
+LOCAL_C_INCLUDES += $(LATIN_IME_SRC_FULLPATH_DIR) $(LATIN_IME_SRC_FULLPATH_DIR)/gesture
 
 LOCAL_CFLAGS += -Werror -Wall
 
@@ -52,50 +51,9 @@ LATIN_IME_CORE_SRC_FILES := \
     unigram_dictionary.cpp \
     gesture/incremental_decoder_interface.cpp
 
-LATIN_IME_GESTURE_IMPL_SRC_FILES := \
-    gesture/impl/gesture_decoder_impl.cpp \
-    gesture/impl/incremental_decoder_impl.cpp \
-    gesture/impl/token_beam_impl.cpp \
-    gesture/impl/token_impl.cpp
-
 LOCAL_SRC_FILES := \
     $(LATIN_IME_JNI_SRC_FILES) \
-    $(addprefix $(LATIN_IME_SRC_DIR)/, $(LATIN_IME_CORE_SRC_FILES)) \
-    $(addprefix $(LATIN_IME_SRC_DIR)/, $(LATIN_IME_GESTURE_IMPL_SRC_FILES))
-
-ifeq ($(FLAG_DO_PROFILE), true)
-    $(warning Making profiling version of native library)
-    LOCAL_CFLAGS += -DFLAG_DO_PROFILE
-else # FLAG_DO_PROFILE
-ifeq ($(FLAG_DBG), true)
-    $(warning Making debug version of native library)
-    LOCAL_CFLAGS += -DFLAG_DBG
-endif # FLAG_DBG
-endif # FLAG_DO_PROFILE
-
-LOCAL_MODULE := libjni_latinime_static
-LOCAL_MODULE_TAGS := optional
-
-ifdef HISTORICAL_NDK_VERSIONS_ROOT # In the platform build system
-include external/stlport/libstlport.mk
-else # In the NDK build system
-LOCAL_C_INCLUDES += external/stlport/stlport bionic
-endif
-
-include $(BUILD_STATIC_LIBRARY)
-######################################
-include $(CLEAR_VARS)
-
-LOCAL_C_INCLUDES = $(LATIN_IME_SRC_FULLPATH_DIR) $(LATIN_IME_SRC_FULLPATH_DIR)/gesture
-
-LOCAL_CFLAGS += -Werror -Wall
-
-# To suppress compiler warnings for unused variables/functions used for debug features etc.
-LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
-
-LOCAL_SRC_FILES := \
-    $(LATIN_IME_JNI_SRC_FILES) \
-    $(addprefix $(LATIN_IME_SRC_DIR)/,$(LATIN_IME_CORE_SRC_FILES))
+    $(addprefix $(LATIN_IME_SRC_DIR)/, $(LATIN_IME_CORE_SRC_FILES))
 
 ifeq ($(FLAG_DO_PROFILE), true)
     $(warning Making profiling version of native library)
@@ -120,8 +78,49 @@ include $(BUILD_STATIC_LIBRARY)
 ######################################
 include $(CLEAR_VARS)
 
+LOCAL_C_INCLUDES += $(LATIN_IME_SRC_FULLPATH_DIR) \
+    $(addprefix $(LATIN_IME_SRC_FULLPATH_DIR)/, gesture gesture/impl)
+
+LOCAL_CFLAGS += -Werror -Wall
+
+# To suppress compiler warnings for unused variables/functions used for debug features etc.
+LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
+
+LATIN_IME_GESTURE_IMPL_SRC_FILES := \
+    gesture/impl/gesture_decoder_impl.cpp \
+    gesture/impl/incremental_decoder_impl.cpp \
+    gesture/impl/token_beam_impl.cpp \
+    gesture/impl/token_impl.cpp
+
+LOCAL_SRC_FILES := $(addprefix $(LATIN_IME_SRC_DIR)/, $(LATIN_IME_GESTURE_IMPL_SRC_FILES))
+
+ifeq ($(FLAG_DO_PROFILE), true)
+    $(warning Making profiling version of native library)
+    LOCAL_CFLAGS += -DFLAG_DO_PROFILE
+else # FLAG_DO_PROFILE
+ifeq ($(FLAG_DBG), true)
+    $(warning Making debug version of native library)
+    LOCAL_CFLAGS += -DFLAG_DBG
+endif # FLAG_DBG
+endif # FLAG_DO_PROFILE
+
+# TODO: Can remove this static library from AOSP completely?
+LOCAL_MODULE := libjni_latinime_gesture_impl_aosp_static
+LOCAL_MODULE_TAGS := optional
+
+ifdef HISTORICAL_NDK_VERSIONS_ROOT # In the platform build system
+include external/stlport/libstlport.mk
+else # In the NDK build system
+LOCAL_C_INCLUDES += external/stlport/stlport bionic
+endif
+
+include $(BUILD_STATIC_LIBRARY)
+######################################
+include $(CLEAR_VARS)
+
 # All code in LOCAL_WHOLE_STATIC_LIBRARIES will be built into this shared library.
-LOCAL_WHOLE_STATIC_LIBRARIES := libjni_latinime_static
+LOCAL_WHOLE_STATIC_LIBRARIES := \
+    libjni_latinime_common_static libjni_latinime_gesture_impl_aosp_static
 
 ifdef HISTORICAL_NDK_VERSIONS_ROOT # In the platform build system
 LOCAL_SHARED_LIBRARIES := libstlport
