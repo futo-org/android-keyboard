@@ -50,11 +50,18 @@ LATIN_IME_CORE_SRC_FILES := \
     proximity_info.cpp \
     proximity_info_state.cpp \
     unigram_dictionary.cpp \
-    gesture/build_check.cpp
+    gesture/incremental_decoder_interface.cpp
+
+LATIN_IME_GESTURE_IMPL_SRC_FILES := \
+    gesture/impl/gesture_decoder_impl.cpp \
+    gesture/impl/incremental_decoder_impl.cpp \
+    gesture/impl/token_beam_impl.cpp \
+    gesture/impl/token_impl.cpp
 
 LOCAL_SRC_FILES := \
     $(LATIN_IME_JNI_SRC_FILES) \
-    $(addprefix $(LATIN_IME_SRC_DIR)/,$(LATIN_IME_CORE_SRC_FILES))
+    $(addprefix $(LATIN_IME_SRC_DIR)/, $(LATIN_IME_CORE_SRC_FILES)) \
+    $(addprefix $(LATIN_IME_SRC_DIR)/, $(LATIN_IME_GESTURE_IMPL_SRC_FILES))
 
 ifeq ($(FLAG_DO_PROFILE), true)
     $(warning Making profiling version of native library)
@@ -79,21 +86,16 @@ include $(BUILD_STATIC_LIBRARY)
 ######################################
 include $(CLEAR_VARS)
 
-LOCAL_C_INCLUDES += $(LATIN_IME_SRC_FULLPATH_DIR) \
-    $(addprefix $(LATIN_IME_SRC_FULLPATH_DIR)/, gesture gesture/impl gesture/impl/header)
+LOCAL_C_INCLUDES = $(LATIN_IME_SRC_FULLPATH_DIR) $(LATIN_IME_SRC_FULLPATH_DIR)/gesture
 
 LOCAL_CFLAGS += -Werror -Wall
 
 # To suppress compiler warnings for unused variables/functions used for debug features etc.
 LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
 
-LATIN_IME_GESTURE_IMPL_SRC_FILES := \
-    gesture/impl/gesture_decoder_impl.cpp \
-    gesture/impl/incremental_decoder_impl.cpp \
-    gesture/impl/token_beam_impl.cpp \
-    gesture/impl/token_impl.cpp
-
-LOCAL_SRC_FILES := $(addprefix $(LATIN_IME_SRC_DIR)/,$(LATIN_IME_GESTURE_IMPL_SRC_FILES))
+LOCAL_SRC_FILES := \
+    $(LATIN_IME_JNI_SRC_FILES) \
+    $(addprefix $(LATIN_IME_SRC_DIR)/,$(LATIN_IME_CORE_SRC_FILES))
 
 ifeq ($(FLAG_DO_PROFILE), true)
     $(warning Making profiling version of native library)
@@ -105,7 +107,7 @@ ifeq ($(FLAG_DBG), true)
 endif # FLAG_DBG
 endif # FLAG_DO_PROFILE
 
-LOCAL_MODULE := libjni_latinime_gesture_impl_static
+LOCAL_MODULE := libjni_latinime_common_static
 LOCAL_MODULE_TAGS := optional
 
 ifdef HISTORICAL_NDK_VERSIONS_ROOT # In the platform build system
@@ -119,7 +121,7 @@ include $(BUILD_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 
 # All code in LOCAL_WHOLE_STATIC_LIBRARIES will be built into this shared library.
-LOCAL_WHOLE_STATIC_LIBRARIES := libjni_latinime_static libjni_latinime_gesture_impl_static
+LOCAL_WHOLE_STATIC_LIBRARIES := libjni_latinime_static
 
 ifdef HISTORICAL_NDK_VERSIONS_ROOT # In the platform build system
 LOCAL_SHARED_LIBRARIES := libstlport

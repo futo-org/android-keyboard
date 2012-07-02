@@ -26,5 +26,4 @@ struct TokenImpl {
     DISALLOW_IMPLICIT_CONSTRUCTORS(TokenImpl);
 };
 } // namespace latinime
-
 #endif // LATINIME_TOKEN_IMPL_H

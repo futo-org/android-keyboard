@@ -15,7 +15,26 @@
  */
 
 #include "gesture_decoder_impl.h"
+#include "incremental_decoder_interface.h"
 
 namespace latinime {
+
+// A factory method for GestureDecoderImpl
+static IncrementalDecoderInterface *getDecoderInstance(int maxWordLength, int maxWords) {
+    return new GestureDecoderImpl(maxWordLength, maxWords);
+}
+
+// An ad-hoc internal class to register the factory method defined above
+class GestureDecoderFactoryRegisterer {
+ public:
+    GestureDecoderFactoryRegisterer() {
+        IncrementalDecoderInterface::setGestureDecoderFactoryMethod(getDecoderInstance);
+    }
+ private:
+    DISALLOW_COPY_AND_ASSIGN(GestureDecoderFactoryRegisterer);
 };
-// namespace latinime
+
+// To invoke the GestureDecoderFactoryRegisterer constructor in the global constructor
+// Not sure, but can be static?
+GestureDecoderFactoryRegisterer gestureDecoderFactoryRegisterer;
+} // namespace latinime

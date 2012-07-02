@@ -17,5 +17,4 @@
 #include "token_impl.h"
 
 namespace latinime {
-};
-// namespace latinime
+} // namespace latinime

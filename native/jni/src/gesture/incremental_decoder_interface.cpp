@@ -14,24 +14,11 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_GESTURE_DECODER_H
-#define LATINIME_GESTURE_DECODER_H
-
-#include "defines.h"
-#include "gesture_decoder_impl.h"
+#include "incremental_decoder_interface.h"
 
 namespace latinime {
-
-class GestureDecoder : public GestureDecoderImpl {
-
- public:
-    GestureDecoder(int maxWordLength, int maxWords) :
-            GestureDecoderImpl(maxWordLength, maxWords) {
-    }
-
- private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(GestureDecoder);
-};
+    IncrementalDecoderInterface *
+            (*IncrementalDecoderInterface::sGestureDecoderFactoryMethod)(int, int) = 0;
+    IncrementalDecoderInterface *
+            (*IncrementalDecoderInterface::sIncrementalDecoderFactoryMethod)(int, int) = 0;
 } // namespace latinime
-
-#endif // LATINIME_INCREMENTAL_DECODER_H
