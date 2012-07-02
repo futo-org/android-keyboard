@@ -34,7 +34,10 @@ import java.util.Arrays;
  */
 public class UserBinaryDictionary extends ExpandableBinaryDictionary {
 
-    // TODO: use Words.SHORTCUT when it's public in the SDK
+    // The user dictionary provider uses an empty string to mean "all languages".
+    private static final String USER_DICTIONARY_ALL_LANGUAGES = "";
+
+    // TODO: use Words.SHORTCUT when we target JellyBean or above
     final static String SHORTCUT = "shortcut";
     private static final String[] PROJECTION_QUERY;
     static {
@@ -71,7 +74,12 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
             final boolean alsoUseMoreRestrictiveLocales) {
         super(context, getFilenameWithLocale(NAME, locale), Dictionary.TYPE_USER);
         if (null == locale) throw new NullPointerException(); // Catch the error earlier
-        mLocale = locale;
+        if (SubtypeLocale.NO_LANGUAGE.equals(locale)) {
+            // If we don't have a locale, insert into the "all locales" user dictionary.
+            mLocale = USER_DICTIONARY_ALL_LANGUAGES;
+        } else {
+            mLocale = locale;
+        }
         mAlsoUseMoreRestrictiveLocales = alsoUseMoreRestrictiveLocales;
         // Perform a managed query. The Activity will handle closing and re-querying the cursor
         // when needed.
