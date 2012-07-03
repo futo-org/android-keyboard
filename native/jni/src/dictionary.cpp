@@ -22,7 +22,7 @@
 #include "binary_format.h"
 #include "defines.h"
 #include "dictionary.h"
-#include "incremental_decoder_interface.h"
+#include "gesture_decoder_wrapper.h"
 
 namespace latinime {
 
@@ -44,8 +44,7 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
     mUnigramDictionary = new UnigramDictionary(mDict + headerSize, typedLetterMultiplier,
             fullWordMultiplier, maxWordLength, maxWords, options);
     mBigramDictionary = new BigramDictionary(mDict + headerSize, maxWordLength);
-    mGestureDecoder = IncrementalDecoderInterface::getGestureDecoderInstance(maxWordLength,
-            maxWords);
+    mGestureDecoder = new GestureDecoderWrapper(maxWordLength, maxWords);
     mGestureDecoder->setDict(mUnigramDictionary, mBigramDictionary,
             mDict + headerSize /* dict root */, 0 /* root pos */);
 }

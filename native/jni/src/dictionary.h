@@ -45,6 +45,7 @@ class Dictionary {
             result = mGestureDecoder->getSuggestions(proximityInfo, xcoordinates, ycoordinates,
                     times, pointerIds, codes, codesSize, commitPoint,
                     outWords, frequencies, spaceIndices);
+            return result;
         } else {
             std::map<int, int> bigramMap;
             uint8_t bigramFilter[BIGRAM_FILTER_BYTE_SIZE];
@@ -53,8 +54,8 @@ class Dictionary {
             result = mUnigramDictionary->getSuggestions(proximityInfo, xcoordinates,
                     ycoordinates, codes, codesSize, &bigramMap, bigramFilter,
                     useFullEditDistance, outWords, frequencies);
+            return result;
         }
-        return result;
     }
 
     int getBigrams(const int32_t *word, int length, int *codes, int codesSize,

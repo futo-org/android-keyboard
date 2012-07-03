@@ -14,16 +14,9 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_TOKEN_BEAM_IMPL_H
-#define LATINIME_TOKEN_BEAM_IMPL_H
-
-#include "defines.h"
+#include "gesture_decoder_wrapper.h"
 
 namespace latinime {
-
-class TokenBeamImpl {
- private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(TokenBeamImpl);
-};
+    IncrementalDecoderInterface *
+            (*GestureDecoderWrapper::sGestureDecoderFactoryMethod)(int, int) = 0;
 } // namespace latinime
-#endif // LATINIME_TOKEN_BEAM_IMPL_H
