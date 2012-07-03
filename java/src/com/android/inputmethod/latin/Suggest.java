@@ -223,24 +223,27 @@ public class Suggest {
         // a boolean flag. Right now this is handled with a slight hack in
         // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
         final boolean allowsToBeAutoCorrected = AutoCorrection.isWhitelistedOrNotAWord(
-                mDictionaries, consideredWord, wordComposer.isFirstCharCapitalized())
-        // If we don't have a main dictionary, we never want to auto-correct. The reason for this
-        // is, the user may have a contact whose name happens to match a valid word in their
-        // language, and it will unexpectedly auto-correct. For example, if the user types in
-        // English with no dictionary and has a "Will" in their contact list, "will" would
-        // always auto-correct to "Will" which is unwanted. Hence, no main dict => no auto-correct.
-                && hasMainDictionary();
+                mDictionaries, consideredWord, wordComposer.isFirstCharCapitalized());
 
         final CharSequence whitelistedWord =
                 mWhiteListDictionary.getWhitelistedWord(consideredWord);
 
         final boolean hasAutoCorrection;
-        if (!isCorrectionEnabled || wordComposer.isMostlyCaps() || wordComposer.isResumed()) {
+        if (!isCorrectionEnabled || wordComposer.isMostlyCaps() || wordComposer.isResumed()
+                || !hasMainDictionary()) {
+            // If we don't have a main dictionary, we never want to auto-correct. The reason for
+            // this is, the user may have a contact whose name happens to match a valid word in
+            // their language, and it will unexpectedly auto-correct. For example, if the user
+            // types in English with no dictionary and has a "Will" in their contact list, "will"
+            // would always auto-correct to "Will" which is unwanted. Hence, no main dict => no
+            // auto-correct.
             hasAutoCorrection = false;
         } else if (null != whitelistedWord) {
             hasAutoCorrection = true;
-        } else if (!AutoCorrection.isWhitelistedOrNotAWord(mDictionaries, consideredWord,
-                wordComposer.isFirstCharCapitalized())) {
+        } else if (!allowsToBeAutoCorrected) {
+            // TODO: make the variable name clearer. If we don't allow auto-correct, that means
+            // this word is a dictionary word that is not whitelisted, so it should auto-correct
+            // to itself! Hence, the true here.
             hasAutoCorrection = true;
         } else if (suggestionsSet.isEmpty()) {
             hasAutoCorrection = false;
