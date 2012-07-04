@@ -52,6 +52,7 @@ public interface KeyboardActionListener {
      */
     public void onCodeInput(int primaryCode, int x, int y);
 
+    // See {@link Adapter#isInvalidCoordinate(int)}.
     public static final int NOT_A_TOUCH_COORDINATE = -1;
     public static final int SUGGESTION_STRIP_COORDINATE = -2;
     public static final int SPELL_CHECKER_COORDINATE = -3;
@@ -88,6 +89,14 @@ public interface KeyboardActionListener {
         @Override
         public boolean onCustomRequest(int requestCode) {
             return false;
+        }
+
+        // TODO: Remove this method when the vertical correction is removed.
+        public static boolean isInvalidCoordinate(int coordinate) {
+            // Detect {@link KeyboardActionListener#NOT_A_TOUCH_COORDINATE},
+            // {@link KeyboardActionListener#SUGGESTION_STRIP_COORDINATE}, and
+            // {@link KeyboardActionListener#SPELL_CHECKER_COORDINATE}.
+            return coordinate < 0;
         }
     }
 }

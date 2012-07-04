@@ -63,6 +63,7 @@ import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.SuggestionSpanUtils;
+import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
@@ -1505,8 +1506,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             clearSuggestions();
         }
         if (isComposingWord) {
-            mWordComposer.add(
-                    primaryCode, x, y, mKeyboardSwitcher.getKeyboardView().getKeyDetector());
+            final int keyX, keyY;
+            if (KeyboardActionListener.Adapter.isInvalidCoordinate(x)
+                    || KeyboardActionListener.Adapter.isInvalidCoordinate(y)) {
+                keyX = x;
+                keyY = y;
+            } else {
+                final KeyDetector keyDetector =
+                        mKeyboardSwitcher.getKeyboardView().getKeyDetector();
+                keyX = keyDetector.getTouchX(x);
+                keyY = keyDetector.getTouchY(y);
+            }
+            mWordComposer.add(primaryCode, keyX, keyY);
             // If it's the first letter, make note of auto-caps state
             if (mWordComposer.size() == 1) {
                 mWordComposer.setAutoCapitalized(
