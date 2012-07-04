@@ -55,7 +55,7 @@ public class SuggestedWords {
         return mSuggestedWordInfoList.size();
     }
 
-    public CharSequence getWord(int pos) {
+    public String getWord(int pos) {
         return mSuggestedWordInfoList.get(pos).mWord;
     }
 
@@ -125,8 +125,7 @@ public class SuggestedWords {
         public static final int KIND_HARDCODED = 5; // Hardcoded suggestion, e.g. punctuation
         public static final int KIND_APP_DEFINED = 6; // Suggested by the application
         public static final int KIND_SHORTCUT = 7; // A shortcut
-        private final String mWordStr;
-        public final CharSequence mWord;
+        public final String mWord;
         public final int mScore;
         public final int mKind; // one of the KIND_* constants above
         public final int mCodePointCount;
@@ -135,12 +134,11 @@ public class SuggestedWords {
 
         public SuggestedWordInfo(final CharSequence word, final int score, final int kind,
                 final String sourceDict) {
-            mWordStr = word.toString();
-            mWord = word;
+            mWord = word.toString();
             mScore = score;
             mKind = kind;
             mSourceDict = sourceDict;
-            mCodePointCount = StringUtils.codePointCount(mWordStr);
+            mCodePointCount = StringUtils.codePointCount(mWord);
         }
 
 
@@ -158,15 +156,15 @@ public class SuggestedWords {
         }
 
         public int codePointAt(int i) {
-            return mWordStr.codePointAt(i);
+            return mWord.codePointAt(i);
         }
 
         @Override
         public String toString() {
             if (TextUtils.isEmpty(mDebugString)) {
-                return mWordStr;
+                return mWord;
             } else {
-                return mWordStr + " (" + mDebugString.toString() + ")";
+                return mWord + " (" + mDebugString.toString() + ")";
             }
         }
 
@@ -180,7 +178,7 @@ public class SuggestedWords {
                 final SuggestedWordInfo cur = candidates.get(i);
                 for (int j = 0; j < i; ++j) {
                     final SuggestedWordInfo previous = candidates.get(j);
-                    if (TextUtils.equals(cur.mWord, previous.mWord)) {
+                    if (cur.mWord.equals(previous.mWord)) {
                         candidates.remove(cur.mScore < previous.mScore ? i : j);
                         --i;
                         break;
