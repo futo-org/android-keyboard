@@ -19,7 +19,6 @@ package com.android.inputmethod.latin;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardActionListener;
 
 import java.util.Arrays;
 
@@ -121,28 +120,10 @@ public class WordComposer {
         return previous && !Character.isUpperCase(codePoint);
     }
 
-    // TODO: remove input keyDetector
-    public void add(int primaryCode, int x, int y, KeyDetector keyDetector) {
-        final int keyX;
-        final int keyY;
-        if (null == keyDetector
-                || x == KeyboardActionListener.SUGGESTION_STRIP_COORDINATE
-                || y == KeyboardActionListener.SUGGESTION_STRIP_COORDINATE
-                || x == KeyboardActionListener.NOT_A_TOUCH_COORDINATE
-                || y == KeyboardActionListener.NOT_A_TOUCH_COORDINATE) {
-            keyX = x;
-            keyY = y;
-        } else {
-            keyX = keyDetector.getTouchX(x);
-            keyY = keyDetector.getTouchY(y);
-        }
-        add(primaryCode, keyX, keyY);
-    }
-
     /**
      * Add a new keystroke, with the pressed key's code point with the touch point coordinates.
      */
-    private void add(int primaryCode, int keyX, int keyY) {
+    public void add(int primaryCode, int keyX, int keyY) {
         final int newIndex = size();
         mTypedWord.appendCodePoint(primaryCode);
         refreshSize();
