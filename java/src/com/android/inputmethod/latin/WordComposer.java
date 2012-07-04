@@ -167,13 +167,12 @@ public class WordComposer {
      * Internal method to retrieve reasonable proximity info for a character.
      */
     private void addKeyInfo(final int codePoint, final Keyboard keyboard) {
-        for (final Key key : keyboard.mKeys) {
-            if (key.mCode == codePoint) {
-                final int x = key.mX + key.mWidth / 2;
-                final int y = key.mY + key.mHeight / 2;
-                add(codePoint, x, y);
-                return;
-            }
+        final Key key = keyboard.getKey(codePoint);
+        if (key != null) {
+            final int x = key.mX + key.mWidth / 2;
+            final int y = key.mY + key.mHeight / 2;
+            add(codePoint, x, y);
+            return;
         }
         add(codePoint, WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
     }
