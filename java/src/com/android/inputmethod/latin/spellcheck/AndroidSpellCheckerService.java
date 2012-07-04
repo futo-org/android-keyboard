@@ -768,9 +768,9 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                             codePoint, mScript);
                     if (SpellCheckerProximityInfo.NOT_A_COORDINATE_PAIR == xy) {
                         composer.add(codePoint, WordComposer.NOT_A_COORDINATE,
-                                WordComposer.NOT_A_COORDINATE, null);
+                                WordComposer.NOT_A_COORDINATE);
                     } else {
-                        composer.add(codePoint, xy & 0xFFFF, xy >> 16, null);
+                        composer.add(codePoint, xy & 0xFFFF, xy >> 16);
                     }
                 }
 
