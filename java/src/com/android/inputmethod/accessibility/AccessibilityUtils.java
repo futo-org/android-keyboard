@@ -16,19 +16,21 @@
 
 package com.android.inputmethod.accessibility;
 
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
+import android.media.AudioManager;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
+import android.view.inputmethod.EditorInfo;
 
-import com.android.inputmethod.compat.AccessibilityEventCompatUtils;
-import com.android.inputmethod.compat.AccessibilityManagerCompatWrapper;
-import com.android.inputmethod.compat.MotionEventCompatUtils;
+import com.android.inputmethod.compat.AudioManagerCompatWrapper;
+import com.android.inputmethod.compat.SettingsSecureCompatUtils;
+import com.android.inputmethod.latin.InputTypeUtils;
+import com.android.inputmethod.latin.R;
 
 public class AccessibilityUtils {
     private static final String TAG = AccessibilityUtils.class.getSimpleName();
@@ -38,8 +40,9 @@ public class AccessibilityUtils {
 
     private static final AccessibilityUtils sInstance = new AccessibilityUtils();
 
+    private Context mContext;
     private AccessibilityManager mAccessibilityManager;
-    private AccessibilityManagerCompatWrapper mCompatManager;
+    private AudioManagerCompatWrapper mAudioManager;
 
     /*
      * Setting this constant to {@code false} will disable all keyboard
@@ -48,15 +51,14 @@ public class AccessibilityUtils {
      */
     private static final boolean ENABLE_ACCESSIBILITY = true;
 
-    public static void init(InputMethodService inputMethod, SharedPreferences prefs) {
+    public static void init(InputMethodService inputMethod) {
         if (!ENABLE_ACCESSIBILITY)
             return;
 
         // These only need to be initialized if the kill switch is off.
-        sInstance.initInternal(inputMethod, prefs);
-        KeyCodeDescriptionMapper.init(inputMethod, prefs);
-        AccessibleInputMethodServiceProxy.init(inputMethod, prefs);
-        AccessibleKeyboardViewProxy.init(inputMethod, prefs);
+        sInstance.initInternal(inputMethod);
+        KeyCodeDescriptionMapper.init();
+        AccessibleKeyboardViewProxy.init(inputMethod);
     }
 
     public static AccessibilityUtils getInstance() {
@@ -67,10 +69,14 @@ public class AccessibilityUtils {
         // This class is not publicly instantiable.
     }
 
-    private void initInternal(Context context, SharedPreferences prefs) {
+    private void initInternal(Context context) {
+        mContext = context;
         mAccessibilityManager = (AccessibilityManager) context
                 .getSystemService(Context.ACCESSIBILITY_SERVICE);
-        mCompatManager = new AccessibilityManagerCompatWrapper(mAccessibilityManager);
+
+        final AudioManager audioManager = (AudioManager) context
+                .getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = new AudioManagerCompatWrapper(audioManager);
     }
 
     /**
@@ -82,10 +88,8 @@ public class AccessibilityUtils {
      */
     public boolean isTouchExplorationEnabled() {
         return ENABLE_ACCESSIBILITY
-                && AccessibilityEventCompatUtils.supportsTouchExploration()
                 && mAccessibilityManager.isEnabled()
-                && !mCompatManager.getEnabledAccessibilityServiceList(
-                        AccessibilityServiceInfo.FEEDBACK_SPOKEN).isEmpty();
+                && mAccessibilityManager.isTouchExplorationEnabled();
     }
 
     /**
@@ -99,9 +103,35 @@ public class AccessibilityUtils {
     public boolean isTouchExplorationEvent(MotionEvent event) {
         final int action = event.getAction();
 
-        return action == MotionEventCompatUtils.ACTION_HOVER_ENTER
-                || action == MotionEventCompatUtils.ACTION_HOVER_EXIT
-                || action == MotionEventCompatUtils.ACTION_HOVER_MOVE;
+        return action == MotionEvent.ACTION_HOVER_ENTER
+                || action == MotionEvent.ACTION_HOVER_EXIT
+                || action == MotionEvent.ACTION_HOVER_MOVE;
+    }
+
+    /**
+     * Returns whether the device should obscure typed password characters.
+     * Typically this means speaking "dot" in place of non-control characters.
+     *
+     * @return {@code true} if the device should obscure password characters.
+     */
+    public boolean shouldObscureInput(EditorInfo editorInfo) {
+        if (editorInfo == null)
+            return false;
+
+        // The user can optionally force speaking passwords.
+        if (SettingsSecureCompatUtils.ACCESSIBILITY_SPEAK_PASSWORD != null) {
+            final boolean speakPassword = Settings.Secure.getInt(mContext.getContentResolver(),
+                    SettingsSecureCompatUtils.ACCESSIBILITY_SPEAK_PASSWORD, 0) != 0;
+            if (speakPassword)
+                return false;
+        }
+
+        // Always speak if the user is listening through headphones.
+        if (mAudioManager.isWiredHeadsetOn() || mAudioManager.isBluetoothA2dpOn())
+            return false;
+
+        // Don't speak if the IME is connected to a password field.
+        return InputTypeUtils.isPasswordInputType(editorInfo.inputType);
     }
 
     /**
@@ -120,7 +150,7 @@ public class AccessibilityUtils {
         // class. Instead, we're just forcing a fake AccessibilityEvent into
         // the screen reader to make it speak.
         final AccessibilityEvent event = AccessibilityEvent
-                .obtain(AccessibilityEventCompatUtils.TYPE_VIEW_HOVER_ENTER);
+                .obtain(AccessibilityEvent.TYPE_VIEW_FOCUSED);
 
         event.setPackageName(PACKAGE);
         event.setClassName(CLASS);
@@ -129,5 +159,31 @@ public class AccessibilityUtils {
         event.getText().add(text);
 
         mAccessibilityManager.sendAccessibilityEvent(event);
+    }
+
+    /**
+     * Handles speaking the "connect a headset to hear passwords" notification
+     * when connecting to a password field.
+     *
+     * @param editorInfo The input connection's editor info attribute.
+     * @param restarting Whether the connection is being restarted.
+     */
+    public void onStartInputViewInternal(EditorInfo editorInfo, boolean restarting) {
+        if (shouldObscureInput(editorInfo)) {
+            final CharSequence text = mContext.getText(R.string.spoken_use_headphones);
+            speak(text);
+        }
+    }
+
+    /**
+     * Sends the specified {@link AccessibilityEvent} if accessibility is
+     * enabled. No operation if accessibility is disabled.
+     *
+     * @param event The event to send.
+     */
+    public void requestSendAccessibilityEvent(AccessibilityEvent event) {
+        if (mAccessibilityManager.isEnabled()) {
+            mAccessibilityManager.sendAccessibilityEvent(event);
+        }
     }
 }

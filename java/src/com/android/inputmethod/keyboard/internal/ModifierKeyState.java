@@ -18,15 +18,13 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.util.Log;
 
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
-
-public class ModifierKeyState {
-    protected static final String TAG = "ModifierKeyState";
-    protected static final boolean DEBUG = KeyboardSwitcher.DEBUG_STATE;
+/* package */ class ModifierKeyState {
+    protected static final String TAG = ModifierKeyState.class.getSimpleName();
+    protected static final boolean DEBUG = false;
 
     protected static final int RELEASING = 0;
     protected static final int PRESSING = 1;
-    protected static final int MOMENTARY = 2;
+    protected static final int CHORDING = 2;
 
     protected final String mName;
     protected int mState = RELEASING;
@@ -52,7 +50,7 @@ public class ModifierKeyState {
     public void onOtherKeyPressed() {
         final int oldState = mState;
         if (oldState == PRESSING)
-            mState = MOMENTARY;
+            mState = CHORDING;
         if (DEBUG)
             Log.d(TAG, mName + ".onOtherKeyPressed: " + toString(oldState) + " > " + this);
     }
@@ -65,8 +63,8 @@ public class ModifierKeyState {
         return mState == RELEASING;
     }
 
-    public boolean isMomentary() {
-        return mState == MOMENTARY;
+    public boolean isChording() {
+        return mState == CHORDING;
     }
 
     @Override
@@ -78,7 +76,7 @@ public class ModifierKeyState {
         switch (state) {
         case RELEASING: return "RELEASING";
         case PRESSING: return "PRESSING";
-        case MOMENTARY: return "MOMENTARY";
+        case CHORDING: return "CHORDING";
         default: return "UNKNOWN";
         }
     }

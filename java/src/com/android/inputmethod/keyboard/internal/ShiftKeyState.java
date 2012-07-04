@@ -18,7 +18,7 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.util.Log;
 
-public class ShiftKeyState extends ModifierKeyState {
+/* package */ class ShiftKeyState extends ModifierKeyState {
     private static final int PRESSING_ON_SHIFTED = 3; // both temporary shifted & shift locked
     private static final int IGNORING = 4;
 
@@ -30,7 +30,7 @@ public class ShiftKeyState extends ModifierKeyState {
     public void onOtherKeyPressed() {
         int oldState = mState;
         if (oldState == PRESSING) {
-            mState = MOMENTARY;
+            mState = CHORDING;
         } else if (oldState == PRESSING_ON_SHIFTED) {
             mState = IGNORING;
         }

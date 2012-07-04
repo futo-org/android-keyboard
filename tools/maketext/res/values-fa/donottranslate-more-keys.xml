@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2012, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- U+06F1: "۱" EXTENDED ARABIC-INDIC DIGIT ONE -->
+    <string name="keylabel_for_symbols_1">&#x06F1;</string>
+    <!-- U+06F2: "۲" EXTENDED ARABIC-INDIC DIGIT TWO -->
+    <string name="keylabel_for_symbols_2">&#x06F2;</string>
+    <!-- U+06F3: "۳" EXTENDED ARABIC-INDIC DIGIT THREE -->
+    <string name="keylabel_for_symbols_3">&#x06F3;</string>
+    <!-- U+06F4: "۴" EXTENDED ARABIC-INDIC DIGIT FOUR -->
+    <string name="keylabel_for_symbols_4">&#x06F4;</string>
+    <!-- U+06F5: "۵" EXTENDED ARABIC-INDIC DIGIT FIVE -->
+    <string name="keylabel_for_symbols_5">&#x06F5;</string>
+    <!-- U+06F6: "۶" EXTENDED ARABIC-INDIC DIGIT SIX -->
+    <string name="keylabel_for_symbols_6">&#x06F6;</string>
+    <!-- U+06F7: "۷" EXTENDED ARABIC-INDIC DIGIT SEVEN -->
+    <string name="keylabel_for_symbols_7">&#x06F7;</string>
+    <!-- U+06F8: "۸" EXTENDED ARABIC-INDIC DIGIT EIGHT -->
+    <string name="keylabel_for_symbols_8">&#x06F8;</string>
+    <!-- U+06F9: "۹" EXTENDED ARABIC-INDIC DIGIT NINE -->
+    <string name="keylabel_for_symbols_9">&#x06F9;</string>
+    <!-- U+06F0: "۰" EXTENDED ARABIC-INDIC DIGIT ZERO -->
+    <string name="keylabel_for_symbols_0">&#x06F0;</string>
+    <string name="additional_more_keys_for_symbols_1">1</string>
+    <string name="additional_more_keys_for_symbols_2">2</string>
+    <string name="additional_more_keys_for_symbols_3">3</string>
+    <string name="additional_more_keys_for_symbols_4">4</string>
+    <string name="additional_more_keys_for_symbols_5">5</string>
+    <string name="additional_more_keys_for_symbols_6">6</string>
+    <string name="additional_more_keys_for_symbols_7">7</string>
+    <string name="additional_more_keys_for_symbols_8">8</string>
+    <string name="additional_more_keys_for_symbols_9">9</string>
+    <!-- U+066B: "٫" ARABIC DECIMAL SEPARATOR
+         U+066C: "٬" ARABIC THOUSANDS SEPARATOR -->
+    <string name="additional_more_keys_for_symbols_0">0,&#x066B;,&#x066C;</string>
+    <!-- U+060C: "،" ARABIC COMMA -->
+    <string name="keylabel_for_comma">&#x060C;</string>
+    <string name="more_keys_for_comma">"\\,"</string>
+    <string name="keylabel_for_symbols_question">&#x061F;</string>
+    <string name="keylabel_for_symbols_semicolon">&#x061B;</string>
+    <!-- U+066A: "٪" ARABIC PERCENT SIGN -->
+    <string name="keylabel_for_symbols_percent">&#x066A;</string>
+    <string name="more_keys_for_symbols_question">\?</string>
+    <string name="more_keys_for_symbols_semicolon">;</string>
+    <!-- U+2030: "‰" PER MILLE SIGN -->
+    <string name="more_keys_for_symbols_percent">\\%,&#x2030;</string>
+    <!-- U+060C: "،" ARABIC COMMA
+         U+061B: "؛" ARABIC SEMICOLON
+         U+061F: "؟" ARABIC QUESTION MARK
+         U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+         U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK -->
+    <string name="keylabel_for_tablet_comma">"&#x060C;"</string>
+    <string name="keyhintlabel_for_tablet_comma">"!"</string>
+    <string name="more_keys_for_tablet_comma">"!,\\,"</string>
+    <string name="keyhintlabel_for_tablet_period">"&#x061F;"</string>
+    <string name="more_keys_for_tablet_period">"&#x061F;,\?"</string>
+    <string name="keylabel_for_apostrophe">&#x060C;</string>
+    <string name="keyhintlabel_for_apostrophe">&#x061F;</string>
+    <string name="more_keys_for_apostrophe">"!fixedColumnOrder!4,:,!,&#x061F;,&#x061B;,-,/,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;"</string>
+    <!-- U+061F: "؟" ARABIC QUESTION MARK
+         U+060C: "،" ARABIC COMMA
+         U+061B: "؛" ARABIC SEMICOLON -->
+    <string name="more_keys_for_punctuation">"!fixedColumnOrder!8,\",\',#,-,:,!,&#x060C;,&#x061F;,\@,&amp;,\\%,+,&#x061B;,/,(,)"</string>
+    <!-- U+266A: "♪" EIGHTH NOTE -->
+    <string name="more_keys_for_bullet">&#x266A;</string>
+    <!-- U+2605: "★" BLACK STAR
+         U+066D: "٭" ARABIC FIVE POINTED STAR -->
+    <string name="more_keys_for_star">&#x2605;,&#x066D;</string>
+    <!-- The all letters need to be mirrored are found at
+         http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt -->
+    <!-- U+FD3E: "﴾" ORNATE LEFT PARENTHESIS
+         U+FD3F: "﴿" ORNATE RIGHT PARENTHESIS -->
+    <string name="more_keys_for_left_parenthesis">!fixedColumnOrder!4,&#xFD3E;|&#xFD3F;,&lt;|&gt;,{|},[|]</string>
+    <string name="more_keys_for_right_parenthesis">!fixedColumnOrder!4,&#xFD3F;|&#xFD3E;,&gt;|&lt;,}|{,]|[</string>
+    <!-- U+2264: "≤" LESS-THAN OR EQUAL TO
+         U+2265: "≥" GREATER-THAN EQUAL TO
+         U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+         U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+         U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
+         U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
+         The following characters don't need BIDI mirroring.
+         U+2018: "‘" LEFT SINGLE QUOTATION MARK
+         U+2019: "’" RIGHT SINGLE QUOTATION MARK
+         U+201A: "‚" SINGLE LOW-9 QUOTATION MARK
+         U+201B: "‛" SINGLE HIGH-REVERSED-9 QUOTATION MARK
+         U+201C: "“" LEFT DOUBLE QUOTATION MARK
+         U+201D: "”" RIGHT DOUBLE QUOTATION MARK
+         U+201E: "„" DOUBLE LOW-9 QUOTATION MARK
+         U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
+    <string name="more_keys_for_less_than">!fixedColumnOrder!3,&#x2039;|&#x203A;,&#x2264;|&#x2265;,&lt;|&gt;</string>
+    <string name="more_keys_for_greater_than">!fixedColumnOrder!3,&#x203A;|&#x2039;,&#x2265;|&#x2264;,&gt;|&lt;</string>
+    <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
+    <!-- <string name="more_keys_for_double_quote">&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;</string> -->
+    <string name="more_keys_for_double_quote">!fixedColumnOrder!4,&#x201C;,&#x201D;,\",\'</string>
+    <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
+    <!-- <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB|&#x00AB;;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string> -->
+    <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!4,&#x201C;,&#x201D;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
+    <!-- U+0655: "ٕ" ARABIC HAMZA BELOW
+         U+0652: "ْ" ARABIC SUKUN
+         U+0651: "ّ" ARABIC SHADDA
+         U+064C: "ٌ" ARABIC DAMMATAN
+         U+064D: "ٍ" ARABIC KASRATAN
+         U+064B: "ً" ARABIC FATHATAN
+         U+0654: "ٔ" ARABIC HAMZA ABOVE -->
+    <!-- U+0656: "ٖ" ARABIC SUBSCRIPT ALEF
+         U+0670: "ٰ" ARABIC LETTER SUPERSCRIPT ALEF
+         U+0653: "ٓ" ARABIC MADDAH ABOVE
+         U+064F: "ُ" ARABIC DAMMA
+         U+0650: "ِ" ARABIC KASRA
+         U+064E: "َ" ARABIC FATHA
+         U+0640: "ـ" ARABIC TATWEEL -->
+    <!-- In order to make Tatweel easily distinguishable from other punctuations, we use consecutive Tatweels only for its displayed label. -->
+    <string name="more_keys_for_arabic_diacritics">"!fixedColumnOrder!7,&#x0655;,&#x0652;,&#x0651;,&#x064C;,&#x064D;,&#x064B;,&#x0654;,&#x0656;,&#x0670;,&#x0653;,&#x064F;,&#x0650;,&#x064E;,&#x0640;&#x0640;&#x0640;|&#x0640;"</string>
+    <string name="keyhintlabel_for_arabic_diacritics">&#x064B;</string>
+</resources>

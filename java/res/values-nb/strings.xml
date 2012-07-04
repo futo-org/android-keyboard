@@ -21,61 +21,69 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Skjermtastatur"</string>
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Android-tastatur (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Innstillinger for skjermtastatur"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Inndataalternativer"</string>
+    <string name="english_ime_research_log" msgid="8492602295696577851">"Kommandoer for undersøkelseslogging"</string>
+    <string name="spell_checker_service_name" msgid="7338064335159755926">"Android-stavekontroll"</string>
+    <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Android-stavekontroll (AOSP)"</string>
+    <string name="android_spell_checker_settings" msgid="5822324635435443689">"Innstillinger for stavekontroll"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Slå opp kontaktnavn"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Stavekontrollen bruker oppføringer fra kontaktlisten din"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrer ved tastetrykk"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Lyd ved tastetrykk"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Hurtigvindu ved tastetrykk"</string>
     <string name="general_category" msgid="1859088467017573195">"Generelt"</string>
     <string name="correction_category" msgid="2236750915056607613">"Tekstkorrigering"</string>
-    <string name="ngram_category" msgid="5337109164339320257">"Forslag basert på tidligere ord"</string>
     <string name="misc_category" msgid="6894192814868233453">"Andre alternativer"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Avanserte innstillinger"</string>
-    <string name="advanced_settings_summary" msgid="5193513161106637254">"Alternativer for ekspertbrukere"</string>
+    <string name="advanced_settings_summary" msgid="4487980456152830271">"Alternativer for eksperter"</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Bytt inndatametode"</string>
+    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Tasten for språkbytte dekker også andre inndatametoder"</string>
+    <string name="suppress_language_switch_key" msgid="8003788410354806368">"Skjul språkbyttetasten"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Tregt tastevindu"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"U/ forsinkelse"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Standard"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Foreslå kontaktnavn"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Bruk navn fra Kontakter til forslag og korrigeringer"</string>
+    <string name="enable_span_insert" msgid="7204653105667167620">"Aktiver korrigeringer"</string>
+    <string name="enable_span_insert_summary" msgid="2947317657871394467">"Angi forslag for korrigeringer"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Stor forbokstav"</string>
-    <string name="configure_dictionaries_title" msgid="3758288002414557345">"Konfigurer ordbøker"</string>
-    <string name="quick_fixes" msgid="5353213327680897927">"Autokorrektur"</string>
-    <string name="quick_fixes_summary" msgid="3405028402510332373">"Retter vanlige stavefeil"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Tilleggsordbøker"</string>
+    <string name="main_dictionary" msgid="4798763781818361168">"Hovedordliste"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Vis rettingsforslag"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Vis ordforslag under skriving"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Vis alltid"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Vis i stående modus"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Skjul alltid"</string>
-    <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"Bytt språk med mellomrom"</string>
-    <string name="prefs_settings_key" msgid="4623341240804046498">"Vis innstillingsnøkkel"</string>
-    <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatisk"</string>
-    <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Vis alltid"</string>
-    <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Skjul alltid"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Automatisk retting"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Mellomromstast og skilletegn retter automat. feilstavede ord"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Av"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderat"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Omfattende"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Veldig aggressiv"</string>
-    <string name="bigram_suggestion" msgid="2636414079905220518">"Bigram-forslag"</string>
-    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Bruk forrige ord til å forbedre forslaget"</string>
-    <string name="bigram_prediction" msgid="8914273444762259739">"Bigram-prediksjon"</string>
+    <string name="bigram_suggestion" msgid="8169311444438922902">"Forslag til rettelser av neste ord"</string>
+    <string name="bigram_suggestion_summary" msgid="6635527607242625713">"Bruk forrige ord til å forbedre forslagene"</string>
+    <string name="bigram_prediction" msgid="3216364899483135294">"Forslag til neste ord"</string>
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"Bruk forrige ord også for forslag"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: Lagret"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"Gå"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"Utfør"</string>
     <string name="label_next_key" msgid="362972844525672568">"Neste"</string>
+    <string name="label_previous_key" msgid="1211868118071386787">"Forr."</string>
     <string name="label_done_key" msgid="2441578748772529288">"Utfør"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Send"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
-    <string name="label_more_key" msgid="3760239494604948502">"Mer"</string>
+    <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
+    <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pause"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Vent"</string>
+    <string name="spoken_use_headphones" msgid="896961781287283493">"Koble til hodetelefoner for å høre opplesing av bokstavene i passordet."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Gjeldende tekst er %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Ingen tekst er skrevet inn"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Tastaturkode %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
-    <string name="spoken_description_shift_shifted" msgid="954941524766465022">"Shift er aktivert"</string>
-    <string name="spoken_description_caps_lock" msgid="5660626444912131764">"Caps Lock er aktivert"</string>
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Shift er på (trykk for å deaktivere)"</string>
+    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Caps Lock er på (trykk for å deaktivere)"</string>
     <string name="spoken_description_delete" msgid="8740376944276199801">"Slett"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Symboler"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"Bokstaver"</string>
@@ -86,103 +94,59 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"Taleinndata"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Smilefjes"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Return"</string>
-    <string name="spoken_description_comma" msgid="4970844442999724586">"Komma"</string>
-    <string name="spoken_description_period" msgid="5286614628077903945">"Punktum"</string>
-    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"Venstre parentes"</string>
-    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"Høyre parentes"</string>
-    <string name="spoken_description_colon" msgid="4312420908484277077">"Kolon"</string>
-    <string name="spoken_description_semicolon" msgid="37737920987155179">"Semikolon"</string>
-    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"Utropstegn"</string>
-    <string name="spoken_description_question_mark" msgid="7074097784255379666">"Spørsmålstegn"</string>
-    <string name="spoken_description_double_quote" msgid="5485320575389905967">"Dobbelt anførselstegn"</string>
-    <string name="spoken_description_single_quote" msgid="4451320362665463938">"Enkelt anførselstegn"</string>
+    <string name="spoken_description_search" msgid="1247236163755920808">"Søk"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"Prikk"</string>
-    <string name="spoken_description_square_root" msgid="190595160284757811">"Kvadratrot"</string>
-    <string name="spoken_description_pi" msgid="4554418247799952239">"Pi"</string>
-    <string name="spoken_description_delta" msgid="3607948313655721579">"Delta"</string>
-    <string name="spoken_description_trademark" msgid="475877774077871369">"Varemerke"</string>
-    <string name="spoken_description_care_of" msgid="7492800237237796530">"c/o"</string>
-    <string name="spoken_description_star" msgid="1009742725387231977">"Stjerne"</string>
-    <string name="spoken_description_pound" msgid="5530577649206922631">"Firkant"</string>
-    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"Ellipse"</string>
-    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"Lavt dobbelt anførselstegn"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Stemmedata"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Stemmedata håndteres foreløpig ikke på ditt språk, men fungerer på engelsk."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Google Voice bruker Googles talegjenkjenning. "<a href="http://m.google.com/privacy">"Personvernreglene for mobil"</a>" gjelder."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Gå til innstillinger for inndatametode for å slå av stemmedata."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Trykk på mikrofonknappen for å aktivere stemmedata."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Snakk nå"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Arbeider"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Feil. Prøv på nytt."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Kunne ikke koble til"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Feil – for mye tale"</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Lydproblem"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Tjenerfeil"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Ingen tale høres"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Ingen treff"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Talesøk ikke installert"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021">"Hint:"<b>" Sveip over tastaturet for å snakke"</b></string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Hint:"</b>" Neste gang kan du prøve å tale inn tegnsettingen ved for eksempel å si «punktum», «komma» eller «spørsmålstegn»."</string>
-    <string name="cancel" msgid="6830980399865683324">"Avbryt"</string>
-    <string name="ok" msgid="7898366843681727667">"OK"</string>
-    <string name="voice_input" msgid="2466640768843347841">"Talekommando"</string>
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift er aktivert"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps Lock er aktivert"</string>
+    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Shift er deaktivert"</string>
+    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"Symbolmodus"</string>
+    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Bokstavmodus"</string>
+    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Ringemodus"</string>
+    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Ringemodus med symboler"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Tast for taleinndata"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"På hovedtastatur"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"På talltastatur"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Av"</string>
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikrofon på hovedtast."</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikrofon på talltastatur"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Taleinndata er deaktiv."</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Velg inndatametode"</string>
+    <string name="configure_input_method" msgid="373356270290742459">"Konfigurer inndatametoder"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Inndataspråk"</string>
-    <string name="language_selection_summary" msgid="187110938289512256">"Dra fingeren på mellomromstasten for å endre språk"</string>
-    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"Trykk på nytt for å lagre"</string>
+    <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Notér tidsstempel i logg"</string>
+    <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Registrerte tidsstempel"</string>
+    <string name="do_not_log_this_session" msgid="413762473641146336">"Ikke loggfør denne økten"</string>
+    <string name="notify_session_log_deleting" msgid="3299507647764414623">"Sletter øktloggen"</string>
+    <string name="notify_session_log_deleted" msgid="8687927130100934686">"Øktloggen ble slettet"</string>
+    <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Øktloggen ble IKKE slettet"</string>
+    <string name="select_language" msgid="3693815588777926848">"Inndataspråk"</string>
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Trykk på nytt for å lagre"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Ordbok tilgjengelig"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Aktiver brukertilbakemelding"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Ved å sende bruksstatistikk og programstopprapporter til Google automatisk, hjelper du oss med å gjøre redigeringsfunksjonen for denne inndatametoden enda bedre."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Trykk for å endre ord"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Når forslag er synlige, kan du trykke på ord du har skrevet inn, for å endre dem"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tastaturtema"</string>
-    <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Tsjekkisk tastatur"</string>
-    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Arabisk tastatur"</string>
-    <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Dansk tastatur"</string>
-    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Tysk tastatur"</string>
-    <string name="subtype_mode_de_qwerty_keyboard" msgid="54890770769303956">"Tysk QWERTY-tastatur"</string>
-    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Engelsk tastatur (Storbritannia)"</string>
-    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Engelsk tastatur (USA)"</string>
-    <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Spansk tastatur"</string>
-    <string name="subtype_mode_fi_keyboard" msgid="3198596464082614532">"Finsk tastatur"</string>
-    <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Fransk tastatur"</string>
-    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Fransk tastatur (Canada)"</string>
-    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Fransk tastatur (Sveits)"</string>
-    <string name="subtype_mode_hr_keyboard" msgid="7177182405440070112">"Kroatisk tastatur"</string>
-    <string name="subtype_mode_hu_keyboard" msgid="8843338355732633647">"Ungarsk tastatur"</string>
-    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Hebraisk tastatur"</string>
-    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Italiensk tastatur"</string>
-    <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norsk tastatur"</string>
-    <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Nederlandsk tastatur"</string>
-    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"Polsk tastatur"</string>
-    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"Portugisisk tastatur"</string>
-    <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Russisk tastatur"</string>
-    <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Serbisk tastatur"</string>
-    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Svensk tastatur"</string>
-    <string name="subtype_mode_tr_keyboard" msgid="3155981874829226370">"Tyrkisk tastatur"</string>
-    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Afrikaans tale"</string>
-    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Tsjekkisk tale"</string>
-    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Tysk tale"</string>
-    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"Engelsk tale"</string>
-    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Spansk tale"</string>
-    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Fransk tale"</string>
-    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Italiensk stemme"</string>
-    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Japansk tale"</string>
-    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Koreansk tale"</string>
-    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"Nederlandsk stemme"</string>
-    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Polsk tale"</string>
-    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Portugisisk tale"</string>
-    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Russisk tale"</string>
-    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Tyrkisk tale"</string>
-    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Kinesisk (yue) tale"</string>
-    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Kinesisk (mandarin) tale"</string>
-    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"isiZulu tale"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"Engelsk (Storbritannia)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"Engelsk (USA)"</string>
+    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Engelsk (Storbritannia) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Engelsk (USA) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_no_language" msgid="141420857808801746">"Ingen språk"</string>
+    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Ingen språk (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"Ingen språk (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8721460968141187394">"Ingen språk (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"Ingen språk (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="4205992994906097244">"Ingen språk (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"Ingen språk (PC)"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"Egendefinerte inndata"</string>
+    <string name="add_style" msgid="6163126614514489951">"Legg til stil"</string>
+    <string name="add" msgid="8299699805688017798">"Legg til"</string>
+    <string name="remove" msgid="4486081658752944606">"Fjern"</string>
+    <string name="save" msgid="7646738597196767214">"Lagre"</string>
+    <string name="subtype_locale" msgid="8576443440738143764">"Språk"</string>
+    <string name="keyboard_layout_set" msgid="4309233698194565609">"Oppsett"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Tilpasset inndatastil må aktiveres før bruk. Vil du aktivere nå?"</string>
+    <string name="enable" msgid="5031294444630523247">"Aktiver"</string>
+    <string name="not_now" msgid="6172462888202790482">"Ikke nå"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Inndatastilen finnes allerede: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Nyttighetsmodus"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Innstillinger for vibrasjonsvarighet ved tastetrykk"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Innstillinger for lydstyrke ved tastetrykk"</string>
 </resources>

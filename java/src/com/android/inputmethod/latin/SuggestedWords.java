@@ -16,169 +16,180 @@
 
 package com.android.inputmethod.latin;
 
+import android.text.TextUtils;
 import android.view.inputmethod.CompletionInfo;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 
 public class SuggestedWords {
-    public static final SuggestedWords EMPTY = new SuggestedWords(null, false, false, null);
+    public static final SuggestedWords EMPTY = new SuggestedWords(
+            new ArrayList<SuggestedWordInfo>(0), false, false, false, false, false, false);
 
-    public final List<CharSequence> mWords;
     public final boolean mTypedWordValid;
-    public final boolean mHasMinimalSuggestion;
-    public final List<SuggestedWordInfo> mSuggestedWordInfoList;
+    public final boolean mHasAutoCorrectionCandidate;
+    public final boolean mIsPunctuationSuggestions;
+    public final boolean mAllowsToBeAutoCorrected;
+    public final boolean mIsObsoleteSuggestions;
+    public final boolean mIsPrediction;
+    private final ArrayList<SuggestedWordInfo> mSuggestedWordInfoList;
 
-    private SuggestedWords(List<CharSequence> words, boolean typedWordValid,
-            boolean hasMinimalSuggestion, List<SuggestedWordInfo> suggestedWordInfoList) {
-        if (words != null) {
-            mWords = words;
-        } else {
-            mWords = Collections.emptyList();
-        }
-        mTypedWordValid = typedWordValid;
-        mHasMinimalSuggestion = hasMinimalSuggestion;
+    public SuggestedWords(final ArrayList<SuggestedWordInfo> suggestedWordInfoList,
+            final boolean typedWordValid,
+            final boolean hasAutoCorrectionCandidate,
+            final boolean allowsToBeAutoCorrected,
+            final boolean isPunctuationSuggestions,
+            final boolean isObsoleteSuggestions,
+            final boolean isPrediction) {
         mSuggestedWordInfoList = suggestedWordInfoList;
+        mTypedWordValid = typedWordValid;
+        mHasAutoCorrectionCandidate = hasAutoCorrectionCandidate;
+        mAllowsToBeAutoCorrected = allowsToBeAutoCorrected;
+        mIsPunctuationSuggestions = isPunctuationSuggestions;
+        mIsObsoleteSuggestions = isObsoleteSuggestions;
+        mIsPrediction = isPrediction;
     }
 
     public int size() {
-        return mWords.size();
+        return mSuggestedWordInfoList.size();
     }
 
     public CharSequence getWord(int pos) {
-        return mWords.get(pos);
+        return mSuggestedWordInfoList.get(pos).mWord;
+    }
+
+    public SuggestedWordInfo getWordInfo(int pos) {
+        return mSuggestedWordInfoList.get(pos);
+    }
+
+    public SuggestedWordInfo getInfo(int pos) {
+        return mSuggestedWordInfoList.get(pos);
     }
 
     public boolean hasAutoCorrectionWord() {
-        return mHasMinimalSuggestion && size() > 1 && !mTypedWordValid;
+        return mHasAutoCorrectionCandidate && size() > 1 && !mTypedWordValid;
     }
 
-    public boolean hasWordAboveAutoCorrectionScoreThreshold() {
-        return mHasMinimalSuggestion && ((size() > 1 && !mTypedWordValid) || mTypedWordValid);
+    public boolean willAutoCorrect() {
+        return !mTypedWordValid && mHasAutoCorrectionCandidate;
     }
 
-    public static class Builder {
-        private List<CharSequence> mWords = new ArrayList<CharSequence>();
-        private boolean mTypedWordValid;
-        private boolean mHasMinimalSuggestion;
-        private List<SuggestedWordInfo> mSuggestedWordInfoList =
-                new ArrayList<SuggestedWordInfo>();
+    @Override
+    public String toString() {
+        // Pretty-print method to help debug
+        return "SuggestedWords:"
+                + " mTypedWordValid=" + mTypedWordValid
+                + " mHasAutoCorrectionCandidate=" + mHasAutoCorrectionCandidate
+                + " mAllowsToBeAutoCorrected=" + mAllowsToBeAutoCorrected
+                + " mIsPunctuationSuggestions=" + mIsPunctuationSuggestions
+                + " words=" + Arrays.toString(mSuggestedWordInfoList.toArray());
+    }
 
-        public Builder() {
-            // Nothing to do here.
-        }
-
-        public Builder addWords(List<CharSequence> words,
-                List<SuggestedWordInfo> suggestedWordInfoList) {
-            final int N = words.size();
-            for (int i = 0; i < N; ++i) {
-                SuggestedWordInfo suggestedWordInfo = null;
-                if (suggestedWordInfoList != null) {
-                    suggestedWordInfo = suggestedWordInfoList.get(i);
-                }
-                if (suggestedWordInfo == null) {
-                    suggestedWordInfo = new SuggestedWordInfo();
-                }
-                addWord(words.get(i), suggestedWordInfo);
+    public static ArrayList<SuggestedWordInfo> getFromApplicationSpecifiedCompletions(
+            final CompletionInfo[] infos) {
+        final ArrayList<SuggestedWordInfo> result = new ArrayList<SuggestedWordInfo>();
+        for (CompletionInfo info : infos) {
+            if (null != info && info.getText() != null) {
+                result.add(new SuggestedWordInfo(info.getText(), SuggestedWordInfo.MAX_SCORE,
+                        SuggestedWordInfo.KIND_APP_DEFINED));
             }
-            return this;
         }
+        return result;
+    }
 
-        public Builder addWord(CharSequence word) {
-            return addWord(word, null, false);
-        }
-
-        public Builder addWord(CharSequence word, CharSequence debugString,
-                boolean isPreviousSuggestedWord) {
-            SuggestedWordInfo info = new SuggestedWordInfo(debugString, isPreviousSuggestedWord);
-            return addWord(word, info);
-        }
-
-        private Builder addWord(CharSequence word, SuggestedWordInfo suggestedWordInfo) {
-            mWords.add(word);
-            mSuggestedWordInfoList.add(suggestedWordInfo);
-            return this;
-        }
-
-        public Builder setApplicationSpecifiedCompletions(CompletionInfo[] infos) {
-            for (CompletionInfo info : infos)
-                addWord(info.getText());
-            return this;
-        }
-
-        public Builder setTypedWordValid(boolean typedWordValid) {
-            mTypedWordValid = typedWordValid;
-            return this;
-        }
-
-        public Builder setHasMinimalSuggestion(boolean hasMinimalSuggestion) {
-            mHasMinimalSuggestion = hasMinimalSuggestion;
-            return this;
-        }
-
-        // Should get rid of the first one (what the user typed previously) from suggestions
-        // and replace it with what the user currently typed.
-        public Builder addTypedWordAndPreviousSuggestions(CharSequence typedWord,
-                SuggestedWords previousSuggestions) {
-            mWords.clear();
-            mSuggestedWordInfoList.clear();
-            final HashSet<String> alreadySeen = new HashSet<String>();
-            addWord(typedWord, null, false);
-            alreadySeen.add(typedWord.toString());
-            final int previousSize = previousSuggestions.size();
-            for (int pos = 1; pos < previousSize; pos++) {
-                final String prevWord = previousSuggestions.getWord(pos).toString();
-                // Filter out duplicate suggestion.
-                if (!alreadySeen.contains(prevWord)) {
-                    addWord(prevWord, null, true);
-                    alreadySeen.add(prevWord);
-                }
+    // Should get rid of the first one (what the user typed previously) from suggestions
+    // and replace it with what the user currently typed.
+    public static ArrayList<SuggestedWordInfo> getTypedWordAndPreviousSuggestions(
+            final CharSequence typedWord, final SuggestedWords previousSuggestions) {
+        final ArrayList<SuggestedWordInfo> suggestionsList = new ArrayList<SuggestedWordInfo>();
+        final HashSet<String> alreadySeen = new HashSet<String>();
+        suggestionsList.add(new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE,
+                SuggestedWordInfo.KIND_TYPED));
+        alreadySeen.add(typedWord.toString());
+        final int previousSize = previousSuggestions.size();
+        for (int pos = 1; pos < previousSize; pos++) {
+            final SuggestedWordInfo prevWordInfo = previousSuggestions.getWordInfo(pos);
+            final String prevWord = prevWordInfo.mWord.toString();
+            // Filter out duplicate suggestion.
+            if (!alreadySeen.contains(prevWord)) {
+                suggestionsList.add(prevWordInfo);
+                alreadySeen.add(prevWord);
             }
-            mTypedWordValid = false;
-            mHasMinimalSuggestion = false;
-            return this;
         }
-
-        public SuggestedWords build() {
-            return new SuggestedWords(mWords, mTypedWordValid, mHasMinimalSuggestion,
-                    mSuggestedWordInfoList);
-        }
-
-        public int size() {
-            return mWords.size();
-        }
-
-        public CharSequence getWord(int pos) {
-            return mWords.get(pos);
-        }
+        return suggestionsList;
     }
 
     public static class SuggestedWordInfo {
-        private final CharSequence mDebugString;
-        private final boolean mPreviousSuggestedWord;
+        public static final int MAX_SCORE = Integer.MAX_VALUE;
+        public static final int KIND_TYPED = 0; // What user typed
+        public static final int KIND_CORRECTION = 1; // Simple correction/suggestion
+        public static final int KIND_COMPLETION = 2; // Completion (suggestion with appended chars)
+        public static final int KIND_WHITELIST = 3; // Whitelisted word
+        public static final int KIND_BLACKLIST = 4; // Blacklisted word
+        public static final int KIND_HARDCODED = 5; // Hardcoded suggestion, e.g. punctuation
+        public static final int KIND_APP_DEFINED = 6; // Suggested by the application
+        public static final int KIND_SHORTCUT = 7; // A shortcut
+        private final String mWordStr;
+        public final CharSequence mWord;
+        public final int mScore;
+        public final int mKind; // one of the KIND_* constants above
+        public final int mCodePointCount;
+        private String mDebugString = "";
 
-        public SuggestedWordInfo() {
-            mDebugString = "";
-            mPreviousSuggestedWord = false;
+        public SuggestedWordInfo(final CharSequence word, final int score, final int kind) {
+            mWordStr = word.toString();
+            mWord = word;
+            mScore = score;
+            mKind = kind;
+            mCodePointCount = mWordStr.codePointCount(0, mWordStr.length());
         }
 
-        public SuggestedWordInfo(CharSequence debugString, boolean previousSuggestedWord) {
-            mDebugString = debugString;
-            mPreviousSuggestedWord = previousSuggestedWord;
+
+        public void setDebugString(String str) {
+            if (null == str) throw new NullPointerException("Debug info is null");
+            mDebugString = str;
         }
 
         public String getDebugString() {
-            if (mDebugString == null) {
-                return "";
+            return mDebugString;
+        }
+
+        public int codePointCount() {
+            return mCodePointCount;
+        }
+
+        public int codePointAt(int i) {
+            return mWordStr.codePointAt(i);
+        }
+
+        @Override
+        public String toString() {
+            if (TextUtils.isEmpty(mDebugString)) {
+                return mWordStr;
             } else {
-                return mDebugString.toString();
+                return mWordStr + " (" + mDebugString.toString() + ")";
             }
         }
 
-        public boolean isPreviousSuggestedWord () {
-            return mPreviousSuggestedWord;
+        // TODO: Consolidate this method and StringUtils.removeDupes() in the future.
+        public static void removeDups(ArrayList<SuggestedWordInfo> candidates) {
+            if (candidates.size() <= 1) {
+                return;
+            }
+            int i = 1;
+            while(i < candidates.size()) {
+                final SuggestedWordInfo cur = candidates.get(i);
+                for (int j = 0; j < i; ++j) {
+                    final SuggestedWordInfo previous = candidates.get(j);
+                    if (TextUtils.equals(cur.mWord, previous.mWord)) {
+                        candidates.remove(cur.mScore < previous.mScore ? i : j);
+                        --i;
+                        break;
+                    }
+                }
+                ++i;
+            }
         }
     }
 }

@@ -16,33 +16,44 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.keyboard.ProximityInfo;
+
+import android.util.Log;
+
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Class for a collection of dictionaries that behave like one dictionary.
  */
 public class DictionaryCollection extends Dictionary {
-
-    protected final List<Dictionary> mDictionaries;
+    private final String TAG = DictionaryCollection.class.getSimpleName();
+    protected final CopyOnWriteArrayList<Dictionary> mDictionaries;
 
     public DictionaryCollection() {
         mDictionaries = new CopyOnWriteArrayList<Dictionary>();
     }
 
     public DictionaryCollection(Dictionary... dictionaries) {
-        mDictionaries = new CopyOnWriteArrayList<Dictionary>(dictionaries);
+        if (null == dictionaries) {
+            mDictionaries = new CopyOnWriteArrayList<Dictionary>();
+        } else {
+            mDictionaries = new CopyOnWriteArrayList<Dictionary>(dictionaries);
+            mDictionaries.removeAll(Collections.singleton(null));
+        }
     }
 
     public DictionaryCollection(Collection<Dictionary> dictionaries) {
         mDictionaries = new CopyOnWriteArrayList<Dictionary>(dictionaries);
+        mDictionaries.removeAll(Collections.singleton(null));
     }
 
     @Override
-    public void getWords(final WordComposer composer, final WordCallback callback) {
+    public void getWords(final WordComposer composer, final CharSequence prevWordForBigrams,
+            final WordCallback callback, final ProximityInfo proximityInfo) {
         for (final Dictionary dict : mDictionaries)
-            dict.getWords(composer, callback);
+            dict.getWords(composer, prevWordForBigrams, callback, proximityInfo);
     }
 
     @Override
@@ -60,12 +71,43 @@ public class DictionaryCollection extends Dictionary {
     }
 
     @Override
+    public int getFrequency(CharSequence word) {
+        int maxFreq = -1;
+        for (int i = mDictionaries.size() - 1; i >= 0; --i) {
+            final int tempFreq = mDictionaries.get(i).getFrequency(word);
+            if (tempFreq >= maxFreq) {
+                maxFreq = tempFreq;
+            }
+        }
+        return maxFreq;
+    }
+
+    @Override
+    public boolean isInitialized() {
+        return !mDictionaries.isEmpty();
+    }
+
+    @Override
     public void close() {
         for (final Dictionary dict : mDictionaries)
             dict.close();
     }
 
-    public void addDictionary(Dictionary newDict) {
+    // Warning: this is not thread-safe. Take necessary precaution when calling.
+    public void addDictionary(final Dictionary newDict) {
+        if (null == newDict) return;
+        if (mDictionaries.contains(newDict)) {
+            Log.w(TAG, "This collection already contains this dictionary: " + newDict);
+        }
         mDictionaries.add(newDict);
+    }
+
+    // Warning: this is not thread-safe. Take necessary precaution when calling.
+    public void removeDictionary(final Dictionary dict) {
+        if (mDictionaries.contains(dict)) {
+            mDictionaries.remove(dict);
+        } else {
+            Log.w(TAG, "This collection does not contain this dictionary: " + dict);
+        }
     }
 }

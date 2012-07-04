@@ -16,14 +16,16 @@
 
 <resources>
     <style name="KeyboardTheme.Stone.Bold" parent="KeyboardIcons.Black">
-        <item name="keyboardStyle">@style/Keyboard.Stone</item>
-        <item name="latinKeyboardStyle">@style/LatinKeyboard.Stone</item>
+        <item name="keyboardStyle">@style/Keyboard.Stone.Bold</item>
         <item name="keyboardViewStyle">@style/KeyboardView.Stone.Bold</item>
-        <item name="popupMiniKeyboardViewStyle">@style/PopupMiniKeyboardView.Stone</item>
-        <item name="popupMiniKeyboardPanelStyle">@style/PopupMiniKeyboardPanelStyle</item>
+        <item name="latinKeyboardViewStyle">@style/LatinKeyboardView.Stone.Bold</item>
+        <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.Stone</item>
+        <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.Stone</item>
+        <item name="moreKeysKeyboardPanelStyle">@style/MoreKeysKeyboardPanelStyle</item>
         <item name="suggestionsStripBackgroundStyle">@style/SuggestionsStripBackgroundStyle</item>
+        <item name="suggestionsViewStyle">@style/SuggestionsViewStyle</item>
+        <item name="moreSuggestionsViewStyle">@style/MoreSuggestionsViewStyle</item>
         <item name="suggestionBackgroundStyle">@style/SuggestionBackgroundStyle</item>
         <item name="suggestionPreviewBackgroundStyle">@style/SuggestionPreviewBackgroundStyle</item>
-        <item name="candidateViewStyle">@style/CandidateViewStyle</item>
     </style>
 </resources>

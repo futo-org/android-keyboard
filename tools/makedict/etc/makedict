@@ -1,5 +1,5 @@
 #!/bin/sh
-# Copyright 2009, The Android Open Source Project
+# Copyright 2011, The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -60,4 +60,4 @@ fi
 
 # need to use "java.ext.dirs" because "-jar" causes classpath to be ignored
 # might need more memory, e.g. -Xmx128M
-exec java -Djava.ext.dirs="$frameworkdir" -jar "$jarpath" "$@"
+exec java -ea -Djava.ext.dirs="$frameworkdir" -jar "$jarpath" "$@"

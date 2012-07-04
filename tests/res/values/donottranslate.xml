@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2012, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<resources>
+    <string name="empty_string">""</string>
+    <string name="single_char">"a"</string>
+    <string name="space">" "</string>
+    <string name="single_label">"abc"</string>
+    <string name="spaces">"   "</string>
+    <string name="spaces_in_label">"a b c"</string>
+    <string name="spaces_at_beginning_of_label">" abc"</string>
+    <string name="spaces_at_end_of_label">"abc "</string>
+    <string name="label_surrounded_by_spaces">" abc "</string>
+    <string name="escaped_char">"\\a"</string>
+    <string name="escaped_comma">"\\,"</string>
+    <string name="escaped_comma_escape">"a\\,\\"</string>
+    <string name="escaped_escape">"\\\\"</string>
+    <string name="escaped_label">"a\\bc"</string>
+    <string name="escaped_label_at_beginning">"\\abc"</string>
+    <string name="escaped_label_at_end">"abc\\"</string>
+    <string name="escaped_label_with_comma">"a\\,c"</string>
+    <string name="escaped_label_with_comma_at_beginning">"\\,bc"</string>
+    <string name="escaped_label_with_comma_at_end">"ab\\,"</string>
+    <string name="escaped_label_with_successive">"\\,\\\\bc"</string>
+    <string name="escaped_label_with_escape">"a\\\\c"</string>
+    <string name="multiple_chars">"a,b,c"</string>
+    <string name="multiple_chars_surrounded_by_spaces">" a , b , c "</string>
+    <string name="multiple_labels">"abc,def,ghi"</string>
+    <string name="multiple_labels_surrounded_by_spaces">" abc , def , ghi "</string>
+    <string name="multiple_chars_with_comma">"a,\\,,c"</string>
+    <string name="multiple_chars_with_comma_surrounded_by_spaces">" a , \\, , c "</string>
+    <string name="multiple_labels_with_escape">"\\abc,d\\ef,gh\\i"</string>
+    <string name="multiple_labels_with_escape_surrounded_by_spaces">" \\abc , d\\ef , gh\\i "</string>
+    <string name="multiple_labels_with_comma_and_escape">"ab\\\\,d\\\\\\,,g\\,i"</string>
+    <string name="multiple_labels_with_comma_and_escape_surrounded_by_spaces">" ab\\\\ , d\\\\\\, , g\\,i "</string>
+    <string name="indirect_string">!text/multiple_chars</string>
+    <string name="indirect_string_with_literal">x,!text/multiple_chars,y</string>
+    <string name="indirect2_string">!text/indirect_string</string>
+    <string name="infinite_indirection">infinite,!text/infinite_indirection,loop</string>
+    <string name="upper_indirect_string">!TEXT/MULTIPLE_CHARS</string>
+    <string name="upper_indirect_string_with_literal">x,!TEXT/MULTIPLE_CHARS,y</string>
+    <string name="upper_indirect2_string">!TEXT/UPPER_INDIRECT_STRING</string>
+    <string name="upper_infinite_indirection">infinite,!TEXT/INFINITE_INDIRECTION,loop</string>
+    <string name="indirect_navigate_actions_as_more_key">!fixedColumnOrder!2,!text/action_previous_as_more_key,!text/action_next_as_more_key</string>
+</resources>

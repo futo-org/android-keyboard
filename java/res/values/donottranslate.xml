@@ -19,49 +19,31 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Symbols that are suggested between words -->
-    <string name="suggested_punctuations">!?,\u0022\u0027:();-/@_</string>
-    <!-- Symbols that should be swapped with a magic space -->
-    <string name="magic_space_swapping_symbols">.,;:!?)]}\u0022</string>
-    <!-- Symbols that should strip a magic space -->
-    <string name="magic_space_stripping_symbols">\u0009\u0020\n/_\u0027-</string>
-    <!-- Symbols that should convert magic spaces into real space -->
-    <string name="magic_space_promoting_symbols">([*&amp;@{&lt;&gt;+=|</string>
+    <string name="suggested_punctuations">!,?,\\,,:,;,\",(,),\',-,/,@,_</string>
+    <!-- Symbols that should be swapped with a weak space -->
+    <string name="weak_space_swapping_symbols">.,;:!?)]}\"</string>
+    <!-- Symbols that should strip a weak space -->
+    <string name="weak_space_stripping_symbols">"&#x0009;&#x0020;\n/_\'-"</string>
+    <!-- Symbols that should convert weak spaces into real space -->
+    <string name="phantom_space_promoting_symbols">([*&amp;@{&lt;&gt;+=|</string>
     <!-- Symbols that do NOT separate words -->
-    <string name="non_word_separator_symbols">\u0027-</string>
+    <string name="symbols_excluded_from_word_separators">\'-</string>
     <!-- Word separator list is the union of all symbols except those that are not separators:
-    magic_space_swapping_symbols | magic_space_stripping_symbols |
-            magic_space_neutral_symbols \ non_word_separator_symbols -->
-
-    <!-- Label for ALT modifier key.  Must be short to fit on key! -->
-    <string name="label_alt_key">ALT</string>
-    <!-- Label for "Tab" key.  Must be short to fit on key! -->
-    <string name="label_tab_key">Tab</string>
-    <!-- Label for "switch to symbols" key.  Must be short to fit on key! -->
-    <string name="label_to_symbol_key">\?123</string>
-    <!-- Label for "switch to phone numeric" key.  Must be short to fit on key! -->
-    <string name="label_to_phone_numeric_key">123</string>
-    <!-- Label for "switch to phone symbols" key.  Must be short to fit on key! -->
-    <string name="label_to_phone_symbols_key">\uff0a\uff03\uff08</string>
-
-    <!-- Option values to show/hide the settings key in onscreen keyboard -->
-    <!-- Automatically decide to show or hide the settings key -->
-    <string name="settings_key_mode_auto">0</string>
-    <!-- Always show the settings key -->
-    <string name="settings_key_mode_always_show">1</string>
-    <!-- Always hide the settings key -->
-    <string name="settings_key_mode_always_hide">2</string>
-    <!-- Array of the settings key mode values -->
-    <string-array name="settings_key_modes_values">
-        <item>@string/settings_key_mode_auto</item>
-        <item>@string/settings_key_mode_always_show</item>
-        <item>@string/settings_key_mode_always_hide</item>
-    </string-array>
-    <!-- Array of the settings key modes -->
-    <string-array name="settings_key_modes">
-        <item>@string/settings_key_mode_auto_name</item>
-        <item>@string/settings_key_mode_always_show_name</item>
-        <item>@string/settings_key_mode_always_hide_name</item>
-    </string-array>
+    weak_space_swapping_symbols | weak_space_stripping_symbols
+            \ symbols_excluded_from_word_separators -->
+    <!-- Symbol characters list that should switch back to the main layout -->
+    <!-- U+2018: "‘" LEFT SINGLE QUOTATION MARK
+         U+2019: "’" RIGHT SINGLE QUOTATION MARK
+         U+201A: "‚" SINGLE LOW-9 QUOTATION MARK
+         U+201B: "‛" SINGLE HIGH-REVERSED-9 QUOTATION MARK
+         U+201C: "“" LEFT DOUBLE QUOTATION MARK
+         U+201D: "”" RIGHT DOUBLE QUOTATION MARK
+         U+201E: "„" DOUBLE LOW-9 QUOTATION MARK
+         U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+         U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+         U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK -->
+    <!-- <string name="layout_switch_back_symbols">\"\'&#x2018;&#x2019;&#x201A;&#x201B;&#x201C;&#x201D;&#x201E;&#x201F;&#x00AB;&#x00BB;</string> -->
+    <string name="layout_switch_back_symbols"></string>
 
     <!--  Always show the suggestion strip -->
     <string name="prefs_suggestion_visibility_show_value">0</string>
@@ -124,6 +106,7 @@
     <!-- Title for Latin keyboard debug settings activity / dialog -->
     <string name="english_ime_debug_settings">Android keyboard Debug settings</string>
     <string name="prefs_debug_mode">Debug Mode</string>
+    <string name="prefs_force_non_distinct_multitouch">Force non-distinct multitouch</string>
 
     <!-- Keyboard theme names -->
     <string name="layout_basic">Basic</string>
@@ -151,15 +134,56 @@
         <item>5</item>
     </string-array>
 
-    <!-- Subtype locale name exceptions -->
+    <!-- Subtype locale display name exceptions.
+         For each exception, there should be related string resource for display name that has
+         explicit keyboard layout. The string resource name must be "subtype_with_layout_<locale>. -->
     <string-array name="subtype_locale_exception_keys">
         <item>en_US</item>
         <item>en_GB</item>
-        <item>de_ZZ</item>
     </string-array>
     <string-array name="subtype_locale_exception_values">
         <item>English (US)</item>
         <item>English (UK)</item>
-        <item>Deutsch (QWERTY)</item>
     </string-array>
+
+    <!-- Generic subtype label -->
+    <string name="subtype_generic">%s</string>
+
+    <!-- Predefined keyboard layouts for additional subtype -->
+    <string-array name="predefined_layouts">
+        <item>qwerty</item>
+        <item>qwertz</item>
+        <item>azerty</item>
+        <item>dvorak</item>
+        <item>colemak</item>
+        <item>pcqwerty</item>
+    </string-array>
+    <!-- Predefined keyboard layout display names -->
+    <string-array name="predefined_layout_display_names">
+        <item>QWERTY</item>
+        <item>QWERTZ</item>
+        <item>AZERTY</item>
+        <item>Dvorak</item>
+        <item>Colemak</item>
+        <item>PC</item>
+    </string-array>
+    <!-- Description for generic subtype that has predefined layout.
+         The string resource name must be "subtype_generic_<layout name>".
+         The string resource with "No language" also must be added to strings.xml and the resource
+         name must be "subtype_no_language_<layout name>" -->
+    <string name="subtype_generic_qwerty">%s (QWERTY)</string>
+    <string name="subtype_generic_qwertz">%s (QWERTZ)</string>
+    <string name="subtype_generic_azerty">%s (AZERTY)</string>
+    <string name="subtype_generic_dvorak">%s (Dvorak)</string>
+    <string name="subtype_generic_colemak">%s (Colemak)</string>
+    <string name="subtype_generic_pcqwerty">%s (PC)</string>
+
+    <!-- Description for Bulgarian (BDS) subtype. -->
+    <string name="subtype_bulgarian_bds">%s (BDS)</string>
+
+    <!-- dictionary pack package name /settings activity (for shared prefs and settings) -->
+    <string name="dictionary_pack_package_name">com.google.android.inputmethod.latin.dictionarypack</string>
+    <string name="dictionary_pack_settings_activity">com.google.android.inputmethod.latin.dictionarypack.DictionarySettingsActivity</string>
+    <string name="settings_ms">ms</string>
+    <string name="settings_warning_researcher_mode">Attention!  You are using the special keyboard for research purposes.</string>
 </resources>

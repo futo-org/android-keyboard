@@ -17,44 +17,24 @@
 <resources>
     <style name="KeyboardIcons.IceCreamSandwich">
         <!-- Keyboard icons -->
-        <!-- TODO: The following holo icon for phone (drawable-hdpi and drawable-xhdpi) are too
-             large for phone.
-             sym_keyboard_shift_holo
-             sym_keyboard_shift_locked_holo
-             sym_keyboard_delete_holo,
-             sym_keyboard_settings_holo
-             sym_keyboard_voice_holo
-             sym_keyboard_voice_holo_off
-             sym_keyboard_space_holo
-             sym_keyboard_return_holo
-             sym_keyboard_tab_holo
-             -->
         <!-- TODO: The following holo icon for phone (drawable-hdpi and drawable-xhdpi) are missing.
              sym_keyboard_123_mic_holo
-             sym_keyboard_search_holo
-             sym_keyboard_feedback_tab_holo
-             sym_keyboard_feedback_voice_holo
              -->
         <item name="iconShiftKey">@drawable/sym_keyboard_shift_holo</item>
-        <item name="iconToSymbolKeyWithShortcut">@drawable/sym_keyboard_123_mic_holo</item>
         <item name="iconDeleteKey">@drawable/sym_keyboard_delete_holo</item>
         <item name="iconSettingsKey">@drawable/sym_keyboard_settings_holo</item>
-        <item name="iconShortcutKey">@drawable/sym_keyboard_voice_holo</item>
-        <item name="iconSpaceKey">@drawable/sym_keyboard_space_holo</item>
-        <item name="iconReturnKey">@drawable/sym_keyboard_return_holo</item>
-        <item name="iconSearchKey">@drawable/sym_keyboard_search</item>
+        <item name="iconSpaceKey">@null</item>
+        <item name="iconEnterKey">@drawable/sym_keyboard_return_holo</item>
+        <item name="iconSearchKey">@drawable/sym_keyboard_search_holo</item>
         <item name="iconTabKey">@drawable/sym_keyboard_tab_holo</item>
-        <item name="iconShiftedShiftKey">@drawable/sym_keyboard_shift_locked_holo</item>
-        <item name="iconPreviewSpaceKey">@drawable/transparent</item>
-        <item name="iconPreviewTabKey">@drawable/sym_keyboard_feedback_tab</item>
-        <item name="iconPreviewSettingsKey">@drawable/sym_keyboard_settings_holo</item>
-        <item name="iconPreviewShortcutKey">@drawable/sym_keyboard_feedback_mic</item>
-        <!-- LatinKeyboard icons -->
-        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
-        <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
-        <item name="spacebarArrowLeftIcon">@drawable/sym_keyboard_language_arrows_left</item>
-        <item name="spacebarArrowRightIcon">@drawable/sym_keyboard_language_arrows_right</item>
-        <item name="spacebarArrowPreviewLeftIcon">@null</item>
-        <item name="spacebarArrowPreviewRightIcon">@null</item>
+        <item name="iconShortcutKey">@drawable/sym_keyboard_voice_holo</item>
+        <item name="iconShortcutForLabel">@drawable/sym_keyboard_label_mic_holo</item>
+        <item name="iconSpaceKeyForNumberLayout">@drawable/sym_keyboard_space_holo</item>
+        <item name="iconShiftKeyShifted">@drawable/sym_keyboard_shift_locked_holo</item>
+        <item name="iconShortcutKeyDisabled">@drawable/sym_keyboard_voice_off_holo</item>
+        <item name="iconTabKeyPreview">@drawable/sym_keyboard_feedback_tab</item>
+        <item name="iconLanguageSwitchKey">@drawable/sym_keyboard_language_switch</item>
+        <item name="iconZwnjKey">@drawable/sym_keyboard_zwnj_holo</item>
+        <item name="iconZwjKey">@drawable/sym_keyboard_zwj_holo</item>
     </style>
 </resources>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2011, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+>
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"
+        >
+            <key-style
+                latin:styleName="hasShiftedLetterHintStyle"
+                latin:keyLabelFlags="hasShiftedLetterHint|shiftedLetterActivated" />
+        </case>
+        <default>
+            <key-style
+                latin:styleName="hasShiftedLetterHintStyle"
+                latin:keyLabelFlags="hasShiftedLetterHint" />
+        </default>
+    </switch>
+    <!-- Functional key styles -->
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetAutomaticShifted"
+        >
+            <key-style
+                latin:styleName="shiftKeyStyle"
+                latin:code="!code/key_shift"
+                latin:keyIcon="!icon/shift_key_shifted"
+                latin:keyActionFlags="noKeyPreview"
+                latin:backgroundType="stickyOff" />
+        </case>
+        <case
+            latin:keyboardLayoutSetElement="alphabetShiftLocked|alphabetShiftLockShifted"
+        >
+            <key-style
+                latin:styleName="shiftKeyStyle"
+                latin:code="!code/key_shift"
+                latin:keyIcon="!icon/shift_key_shifted"
+                latin:keyActionFlags="noKeyPreview"
+                latin:backgroundType="stickyOn" />
+        </case>
+        <default>
+            <key-style
+                latin:styleName="shiftKeyStyle"
+                latin:code="!code/key_shift"
+                latin:keyIcon="!icon/shift_key"
+                latin:keyActionFlags="noKeyPreview"
+                latin:backgroundType="stickyOff" />
+        </default>
+    </switch>
+    <key-style
+        latin:styleName="deleteKeyStyle"
+        latin:code="!code/key_delete"
+        latin:keyIcon="!icon/delete_key"
+        latin:keyActionFlags="isRepeatable|noKeyPreview"
+        latin:backgroundType="functional" />
+    <include
+        latin:keyboardLayout="@xml/key_styles_enter" />
+    <!-- Override defaultEnterKeyStyle in key_styles_enter.xml -->
+    <key-style
+        latin:styleName="defaultEnterKeyStyle"
+        latin:code="!code/key_enter"
+        latin:keyIcon="!icon/enter_key"
+        latin:keyLabelFlags="preserveCase|autoXScale|followKeyLargeLabelRatio"
+        latin:keyActionFlags="noKeyPreview"
+        latin:backgroundType="functional"
+        latin:parentStyle="navigateMoreKeysStyle" />
+    <key-style
+        latin:styleName="spaceKeyStyle"
+        latin:code="!code/key_space"
+        latin:keyActionFlags="noKeyPreview|enableLongPress" />
+    <!-- U+200C: ZERO WIDTH NON-JOINER
+         U+200D: ZERO WIDTH JOINER -->
+    <key-style
+        latin:styleName="zwnjKeyStyle"
+        latin:code="0x200C"
+        latin:keyIcon="!icon/zwnj_key"
+        latin:moreKeys="!icon/zwj_key|&#x200D;"
+        latin:keyLabelFlags="hasPopupHint"
+        latin:keyActionFlags="noKeyPreview" />
+    <key-style
+        latin:styleName="smileyKeyStyle"
+        latin:keyLabel=":-)"
+        latin:keyOutputText=":-) "
+        latin:keyLabelFlags="hasPopupHint|preserveCase"
+        latin:moreKeys="!text/more_keys_for_smiley" />
+    <key-style
+        latin:styleName="shortcutKeyStyle"
+        latin:code="!code/key_shortcut"
+        latin:keyIcon="!icon/shortcut_key"
+        latin:keyIconDisabled="!icon/shortcut_key_disabled"
+        latin:keyActionFlags="noKeyPreview"
+        latin:backgroundType="functional" />
+    <key-style
+        latin:styleName="languageSwitchKeyStyle"
+        latin:code="!code/key_language_switch"
+        latin:keyIcon="!icon/language_switch_key"
+        latin:keyActionFlags="noKeyPreview|altCodeWhileTyping|enableLongPress"
+        latin:altCode="!code/key_space" />
+    <key-style
+        latin:styleName="settingsKeyStyle"
+        latin:code="!code/key_settings"
+        latin:keyIcon="!icon/settings_key"
+        latin:keyActionFlags="noKeyPreview"
+        latin:backgroundType="functional" />
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"
+            latin:navigatePrevious="true"
+        >
+            <key-style
+                latin:styleName="tabKeyStyle"
+                latin:code="!code/key_action_previous"
+                latin:keyIcon="!icon/tab_key"
+                latin:keyIconPreview="!icon/tab_key_preview"
+                latin:backgroundType="functional" />
+        </case>
+        <default>
+            <key-style
+                latin:styleName="tabKeyStyle"
+                latin:code="!code/key_tab"
+                latin:keyIcon="!icon/tab_key"
+                latin:keyIconPreview="!icon/tab_key_preview"
+                latin:backgroundType="functional" />
+        </default>
+    </switch>
+    <key-style
+        latin:styleName="toSymbolKeyStyle"
+        latin:code="!code/key_switch_alpha_symbol"
+        latin:keyLabel="!text/label_to_symbol_key"
+        latin:keyLabelFlags="preserveCase"
+        latin:keyActionFlags="noKeyPreview"
+        latin:backgroundType="functional" />
+    <key-style
+        latin:styleName="toAlphaKeyStyle"
+        latin:code="!code/key_switch_alpha_symbol"
+        latin:keyLabel="!text/label_to_alpha_key"
+        latin:keyLabelFlags="preserveCase"
+        latin:keyActionFlags="noKeyPreview"
+        latin:backgroundType="functional" />
+    <key-style
+        latin:styleName="toMoreSymbolKeyStyle"
+        latin:code="!code/key_shift"
+        latin:keyLabel="!text/label_to_more_symbol_for_tablet_key"
+        latin:keyActionFlags="noKeyPreview"
+        latin:backgroundType="functional" />
+    <key-style
+        latin:styleName="backFromMoreSymbolKeyStyle"
+        latin:code="!code/key_shift"
+        latin:keyLabel="!text/label_to_symbol_key"
+        latin:keyActionFlags="noKeyPreview"
+        latin:backgroundType="functional" />
+    <key-style
+        latin:styleName="comKeyStyle"
+        latin:keyLabel="!text/keylabel_for_popular_domain"
+        latin:keyLabelFlags="autoXScale|fontNormal|hasPopupHint|preserveCase"
+        latin:keyOutputText="!text/keylabel_for_popular_domain"
+        latin:moreKeys="!text/more_keys_for_popular_domain" />
+</merge>

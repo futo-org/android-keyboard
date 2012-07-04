@@ -37,16 +37,16 @@ class AssetFileAddress {
 
     public static AssetFileAddress makeFromFileName(final String filename) {
         if (null == filename) return null;
-        File f = new File(filename);
-        if (null == f || !f.isFile()) return null;
+        final File f = new File(filename);
+        if (!f.isFile()) return null;
         return new AssetFileAddress(filename, 0l, f.length());
     }
 
     public static AssetFileAddress makeFromFileNameAndOffset(final String filename,
             final long offset, final long length) {
         if (null == filename) return null;
-        File f = new File(filename);
-        if (null == f || !f.isFile()) return null;
+        final File f = new File(filename);
+        if (!f.isFile()) return null;
         return new AssetFileAddress(filename, offset, length);
     }
 }

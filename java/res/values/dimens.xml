@@ -19,64 +19,78 @@
 -->
 
 <resources>
-    <!-- keyboardHeight = key_height*4 + key_bottom_gap*3, key_height=0.295in -->
-    <dimen name="keyboardHeight">1.285in</dimen>
-    <fraction name="maxKeyboardHeight">50%p</fraction>
+    <!-- Preferable keyboard height in absolute scale: 1.285in -->
+    <!-- This keyboardHeight value should match with keyboard-heights.xml -->
+    <dimen name="keyboardHeight">205.6dp</dimen>
+    <fraction name="maxKeyboardHeight">46%p</fraction>
     <fraction name="minKeyboardHeight">-61.8%p</fraction>
-    <!-- key_height + key_bottom_gap = popup_key_height -->
-    <!-- <dimen name="key_height">0.295in</dimen> -->
-    <dimen name="key_bottom_gap">0.035in</dimen>
-    <dimen name="key_horizontal_gap">0.000in</dimen>
-    <dimen name="popup_key_height">0.330in</dimen>
-    <dimen name="keyboard_top_padding">0.00in</dimen>
-    <dimen name="keyboard_bottom_padding">0.06in</dimen>
-    <dimen name="keyboard_horizontal_edges_padding">0.0in</dimen>
-    <dimen name="mini_keyboard_horizontal_padding">16dip</dimen>
-    <dimen name="mini_keyboard_key_horizontal_padding">8dip</dimen>
 
-    <dimen name="key_bottom_gap_ics">0.06in</dimen>
-    <dimen name="key_horizontal_gap_ics">0.01in</dimen>
-    <dimen name="keyboard_top_padding_ics">0.03in</dimen>
-    <dimen name="keyboard_bottom_padding_ics">0.06in</dimen>
-    <dimen name="mini_keyboard_horizontal_padding_ics">38dip</dimen>
+    <dimen name="popup_key_height">52.8dp</dimen>
+
+    <dimen name="more_keys_keyboard_key_horizontal_padding">8dp</dimen>
+
+    <fraction name="keyboard_top_padding">1.556%p</fraction>
+    <fraction name="keyboard_bottom_padding">4.669%p</fraction>
+    <fraction name="keyboard_horizontal_edges_padding">0%p</fraction>
+    <fraction name="key_bottom_gap">6.250%p</fraction>
+    <fraction name="key_horizontal_gap">1.352%p</fraction>
+
+    <fraction name="keyboard_top_padding_stone">1.556%p</fraction>
+    <fraction name="keyboard_bottom_padding_stone">0.778%p</fraction>
+    <fraction name="key_bottom_gap_stone">7.506%p</fraction>
+    <fraction name="key_horizontal_gap_stone">1.739%p</fraction>
+
+    <fraction name="key_bottom_gap_gb">6.495%p</fraction>
+    <fraction name="key_horizontal_gap_gb">1.971%p</fraction>
+
+    <fraction name="keyboard_top_padding_ics">2.335%p</fraction>
+    <fraction name="keyboard_bottom_padding_ics">4.669%p</fraction>
+    <fraction name="key_bottom_gap_ics">6.127%p</fraction>
+    <fraction name="key_horizontal_gap_ics">1.739%p</fraction>
+    <dimen name="more_keys_keyboard_horizontal_edges_padding_ics">4dp</dimen>
 
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- popup_key_height x 1.2 -->
-    <dimen name="mini_keyboard_slide_allowance">0.396in</dimen>
+    <dimen name="more_keys_keyboard_slide_allowance">63.36dp</dimen>
     <!-- popup_key_height x -1.0 -->
-    <dimen name="mini_keyboard_vertical_correction">-0.330in</dimen>
-    <!-- We use "inch", not "dip" because this value tries dealing with physical distance related
-         to user's finger. -->
-    <dimen name="keyboard_vertical_correction">-0.05in</dimen>
+    <dimen name="more_keys_keyboard_vertical_correction">-52.8dp</dimen>
+    <dimen name="keyboard_vertical_correction">0.0dp</dimen>
 
-    <!-- left or right padding of label alignment -->
-    <dimen name="key_label_horizontal_alignment_padding">4dip</dimen>
-
-    <fraction name="key_letter_ratio">45%</fraction>
-    <fraction name="key_large_letter_ratio">55%</fraction>
-    <fraction name="key_label_ratio">29%</fraction>
-    <fraction name="key_hint_letter_ratio">23%</fraction>
-    <fraction name="key_hint_label_ratio">36%</fraction>
+    <fraction name="key_letter_ratio">55%</fraction>
+    <fraction name="key_large_letter_ratio">65%</fraction>
+    <fraction name="key_label_ratio">34%</fraction>
+    <fraction name="key_large_label_ratio">40%</fraction>
+    <fraction name="key_hint_letter_ratio">25%</fraction>
+    <fraction name="key_hint_label_ratio">44%</fraction>
     <fraction name="key_uppercase_letter_ratio">35%</fraction>
     <fraction name="key_preview_text_ratio">82%</fraction>
-    <dimen name="key_preview_height">80sp</dimen>
-    <dimen name="key_preview_offset">0.1in</dimen>
+    <fraction name="spacebar_text_ratio">33.735%</fraction>
+    <dimen name="key_preview_height">80dp</dimen>
+    <dimen name="key_preview_offset">-8.0dp</dimen>
 
-    <dimen name="key_preview_height_ics">80sp</dimen>
-    <dimen name="key_preview_offset_ics">0.05in</dimen>
+    <dimen name="key_label_horizontal_padding">4dp</dimen>
+    <dimen name="key_hint_letter_padding">1dp</dimen>
+    <dimen name="key_popup_hint_letter_padding">2dp</dimen>
+    <dimen name="key_uppercase_letter_padding">2dp</dimen>
 
-    <dimen name="candidate_strip_height">42dip</dimen>
-    <!-- candidate_strip_minimum_height =
-         key_preview_height_holo - key_preview_offset_holo + alpha -->
-    <dimen name="candidate_strip_minimum_height">100sp</dimen>
-    <dimen name="candidate_strip_fading_edge_length">63dip</dimen>
-    <dimen name="candidate_strip_padding">0dip</dimen>
-    <dimen name="candidate_min_width">44dip</dimen>
-    <dimen name="candidate_padding">6dip</dimen>
-    <dimen name="candidate_text_size">18dip</dimen>
-    <!-- If the screen height in landscape is larger than the below value, then the keyboard
-         will not go into extract (fullscreen) mode. -->
-    <dimen name="max_height_for_fullscreen">2.5in</dimen>
+    <dimen name="key_preview_offset_ics">8.0dp</dimen>
+    <!-- popup_key_height x -0.5 -->
+    <dimen name="more_keys_keyboard_vertical_correction_ics">-26.4dp</dimen>
 
-    <dimen name="key_hysteresis_distance">0.05in</dimen>
+    <dimen name="suggestions_strip_height">40dp</dimen>
+    <dimen name="more_suggestions_key_horizontal_padding">12dp</dimen>
+    <dimen name="more_suggestions_row_height">40dp</dimen>
+    <dimen name="more_suggestions_bottom_gap">6dp</dimen>
+    <dimen name="more_suggestions_modal_tolerance">32.0dp</dimen>
+    <dimen name="more_suggestions_slide_allowance">16.0dp</dimen>
+    <integer name="max_more_suggestions_row">6</integer>
+    <fraction name="min_more_suggestions_width">90%</fraction>
+    <fraction name="more_suggestions_info_ratio">18%</fraction>
+    <dimen name="suggestions_strip_padding">0dp</dimen>
+    <dimen name="suggestion_min_width">44dp</dimen>
+    <dimen name="suggestion_padding">6dp</dimen>
+    <dimen name="suggestion_text_size">18dp</dimen>
+    <dimen name="more_suggestions_hint_text_size">27dp</dimen>
+    <integer name="suggestions_count_in_strip">3</integer>
+    <integer name="center_suggestion_percentile">36</integer>
 </resources>

@@ -16,23 +16,22 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.latin.Dictionary.DataType;
-
-import android.content.Context;
 import android.content.SharedPreferences;
+import android.view.inputmethod.EditorInfo;
 
-import java.util.List;
+import com.android.inputmethod.keyboard.Keyboard;
 
 public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     public static boolean sDBG = false;
+    public static boolean sVISUALDEBUG = false;
+    public static boolean sUsabilityStudy = false;
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
     }
 
-    public static void init(Context context, SharedPreferences prefs) {
+    public static void init(LatinIME context, SharedPreferences prefs) {
     }
 
     public static void commit() {
@@ -42,8 +41,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public static void logOnManualSuggestion(
-            String before, String after, int position, List<CharSequence> suggestions) {
-   }
+            String before, String after, int position, SuggestedWords suggestedWords) {
+    }
 
     public static void logOnAutoCorrection(String before, String after, int separatorCode) {
     }
@@ -51,7 +50,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void logOnAutoCorrectionCancelled() {
     }
 
-    public static void logOnDelete() {
+    public static void logOnDelete(int x, int y) {
     }
 
     public static void logOnInputChar() {
@@ -66,10 +65,13 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void logOnWarning(String warning) {
     }
 
+    public static void onStartInputView(EditorInfo editorInfo) {
+    }
+
     public static void onStartSuggestion(CharSequence previousWords) {
     }
 
-    public static void onAddSuggestedWord(String word, int typeId, DataType dataType) {
+    public static void onAddSuggestedWord(String word, int typeId, int dataType) {
     }
 
     public static void onSetKeyboard(Keyboard kb) {

@@ -19,70 +19,77 @@
 -->
 
 <resources>
-    <bool name="config_swipeDisambiguation">true</bool>
-    <bool name="config_enable_show_settings_key_option">true</bool>
+    <bool name="config_use_fullscreen_mode">false</bool>
     <bool name="config_enable_show_voice_key_option">true</bool>
     <bool name="config_enable_show_popup_on_keypress_option">true</bool>
-    <bool name="config_enable_show_recorrection_option">true</bool>
-    <bool name="config_enable_quick_fixes_option">true</bool>
-    <bool name="config_enable_bigram_suggestions_option">true</bool>
-    <bool name="config_enable_usability_study_mode_option">false</bool>
-    <bool name="config_swipe_down_dismiss_keyboard_enabled">true</bool>
-    <bool name="config_sliding_key_input_enabled">true</bool>
-    <bool name="config_digit_popup_characters_enabled">true</bool>
+    <!-- TODO: Disable the following configuration for production. -->
+    <bool name="config_enable_usability_study_mode_option">true</bool>
     <!-- Whether or not Popup on key press is enabled by default -->
     <bool name="config_default_popup_preview">true</bool>
-    <!-- Default values for whether quick fixes and bigram suggestions are activated -->
-    <bool name="config_default_quick_fixes">true</bool>
-    <!-- Default value for bigram suggestion: while showing candidates for a word should we weigh
-         in the previous word? -->
-    <bool name="config_default_bigram_suggestions">true</bool>
-    <!-- Default value for bigram prediction: after entering a word and a space only, should we look
-         at input history to suggest a hopefully helpful candidate for the next word? -->
-    <bool name="config_default_bigram_prediction">false</bool>
-    <bool name="config_default_recorrection_enabled">true</bool>
+    <!-- Default value for next word prediction: after entering a word and a space only, should we look
+         at input history to suggest a hopefully helpful suggestions for the next word? -->
+    <bool name="config_default_next_word_prediction">true</bool>
     <bool name="config_default_sound_enabled">false</bool>
-    <bool name="config_auto_correction_spacebar_led_enabled">true</bool>
-    <bool name="config_use_spacebar_language_switcher">true</bool>
-    <!-- Showing mini keyboard, just above the touched point if true, aligned to the key if false -->
-    <bool name="config_show_mini_keyboard_at_touched_point">false</bool>
-    <!-- The language is never displayed if == 0, always displayed if < 0 -->
-    <integer name="config_delay_before_fadeout_language_on_spacebar">1200</integer>
+    <bool name="config_default_vibration_enabled">true</bool>
     <integer name="config_delay_update_suggestions">100</integer>
     <integer name="config_delay_update_old_suggestions">300</integer>
     <integer name="config_delay_update_shift_state">100</integer>
-    <integer name="config_duration_of_fadeout_language_on_spacebar">50</integer>
-    <integer name="config_final_fadeout_percentage_of_language_on_spacebar">50</integer>
-    <integer name="config_delay_before_preview">0</integer>
-    <integer name="config_delay_after_preview">70</integer>
-    <integer name="config_mini_keyboard_fadein_anim_time">0</integer>
-    <integer name="config_mini_keyboard_fadeout_anim_time">100</integer>
-    <integer name="config_delay_before_key_repeat_start">400</integer>
-    <integer name="config_key_repeat_interval">50</integer>
+    <integer name="config_language_on_spacebar_final_alpha">128</integer>
+    <integer name="config_more_keys_keyboard_fadein_anim_time">0</integer>
+    <integer name="config_more_keys_keyboard_fadeout_anim_time">100</integer>
     <integer name="config_keyboard_grid_width">32</integer>
     <integer name="config_keyboard_grid_height">16</integer>
-    <integer name="config_long_press_key_timeout">400</integer>
-    <integer name="config_long_press_shift_key_timeout">1200</integer>
-    <integer name="config_touch_noise_threshold_millis">40</integer>
     <integer name="config_double_spaces_turn_into_period_timeout">1100</integer>
-    <dimen name="config_touch_noise_threshold_distance">2.0mm</dimen>
     <!-- This configuration is the index of the array {@link KeyboardSwitcher.KEYBOARD_THEMES}. -->
-    <string name="config_default_keyboard_theme_id" translatable="false">5</string>
-    <string name="config_text_size_of_language_on_spacebar" translatable="false">small</string>
-    <integer name="config_max_popup_keyboard_column">5</integer>
+    <string name="config_default_keyboard_theme_index" translatable="false">5</string>
+    <integer name="config_max_more_keys_column">5</integer>
+    <!--
+         Configuration for KeyboardView
+    -->
+    <integer name="config_key_preview_linger_timeout">70</integer>
+    <!--
+         Configuration for LatinKeyboardView
+    -->
+    <dimen name="config_key_hysteresis_distance">8.0dp</dimen>
+    <integer name="config_touch_noise_threshold_time">40</integer>
+    <dimen name="config_touch_noise_threshold_distance">12.6dp</dimen>
+    <bool name="config_sliding_key_input_enabled">true</bool>
+    <integer name="config_key_repeat_start_timeout">400</integer>
+    <integer name="config_key_repeat_interval">50</integer>
+    <integer name="config_long_press_key_timeout">400</integer>
+    <!-- Long pressing shift will invoke caps-lock if > 0, never invoke caps-lock if == 0 -->
+    <integer name="config_long_press_shift_key_timeout">1200</integer>
+    <integer name="config_ignore_alt_code_key_timeout">350</integer>
+    <!-- Showing more keys keyboard, just above the touched point if true, aligned to the key if
+         false -->
+    <bool name="config_show_more_keys_keyboard_at_touched_point">false</bool>
+    <!--
+        Configuration for auto correction
+     -->
     <string-array name="auto_correction_threshold_values" translatable="false">
         <!-- Off, When auto correction setting is Off, this value is not used. -->
         <item></item>
         <!-- Modest : Suggestion whose normalized score is greater than this value
              will be subject to auto-correction. -->
-        <item>0.22</item>
+        <item>0.185</item>
         <!-- Aggressive -->
-        <item>0.08</item>
+        <item>0.067</item>
         <!-- Very Aggressive : Suggestion whose normalized score is greater than this value
              will be subject to auto-correction. -->
         <item>0</item>
     </string-array>
-    <!--  Screen metrics for logging. 0 = "mdpi", 1 = "hdpi", 2 = "xlarge" -->
+    <!-- Threshold of the normalized score of the best suggestion for the spell checker to declare
+         a word to be "recommended" -->
+    <string name="spellchecker_recommended_threshold_value" translatable="false">0.11</string>
+    <!-- Threshold of the normalized score of any dictionary lookup to be offered as a suggestion
+         by the spell checker -->
+    <string name="spellchecker_suggestion_threshold_value" translatable="false">0.03</string>
+    <!--  Screen metrics for logging.
+            0 = "mdpi phone screen"
+            1 = "hdpi phone screen"
+            2 = "mdpi 11 inch tablet screen"
+            3 = "xhdpi phone screen?"
+            4 = ?
+    -->
     <integer name="log_screen_metrics">0</integer>
-    <bool name="config_require_umlaut_processing">false</bool>
 </resources>

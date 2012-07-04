@@ -24,10 +24,8 @@ public interface KeyboardActionListener {
      *
      * @param primaryCode the unicode of the key being pressed. If the touch is not on a valid key,
      *            the value will be zero.
-     * @param withSliding true if pressing has occurred because the user slid finger from other key
-     *             to this key without releasing the finger.
      */
-    public void onPress(int primaryCode, boolean withSliding);
+    public void onPressKey(int primaryCode);
 
     /**
      * Called when the user releases a key. This is sent after the {@link #onCodeInput} is called.
@@ -37,27 +35,26 @@ public interface KeyboardActionListener {
      * @param withSliding true if releasing has occurred because the user slid finger from the key
      *             to other key without releasing the finger.
      */
-    public void onRelease(int primaryCode, boolean withSliding);
+    public void onReleaseKey(int primaryCode, boolean withSliding);
 
     /**
      * Send a key code to the listener.
      *
      * @param primaryCode this is the code of the key that was pressed
-     * @param keyCodes the codes for all the possible alternative keys with the primary code being
-     *            the first. If the primary key code is a single character such as an alphabet or
-     *            number or symbol, the alternatives will include other characters that may be on
-     *            the same key or adjacent keys. These codes are useful to correct for accidental
-     *            presses of a key adjacent to the intended key.
      * @param x x-coordinate pixel of touched event. If {@link #onCodeInput} is not called by
-     *            {@link PointerTracker#onTouchEvent} or so, the value should be
-     *            {@link #NOT_A_TOUCH_COORDINATE}.
+     *            {@link PointerTracker} or so, the value should be {@link #NOT_A_TOUCH_COORDINATE}.
+     *            If it's called on insertion from the suggestion strip, it should be
+     *            {@link #SUGGESTION_STRIP_COORDINATE}.
      * @param y y-coordinate pixel of touched event. If {@link #onCodeInput} is not called by
-     *            {@link PointerTracker#onTouchEvent} or so, the value should be
-     *            {@link #NOT_A_TOUCH_COORDINATE}.
+     *            {@link PointerTracker} or so, the value should be {@link #NOT_A_TOUCH_COORDINATE}.
+     *            If it's called on insertion from the suggestion strip, it should be
+     *            {@link #SUGGESTION_STRIP_COORDINATE}.
      */
-    public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y);
+    public void onCodeInput(int primaryCode, int x, int y);
 
     public static final int NOT_A_TOUCH_COORDINATE = -1;
+    public static final int SUGGESTION_STRIP_COORDINATE = -2;
+    public static final int SPELL_CHECKER_COORDINATE = -3;
 
     /**
      * Sends a sequence of characters to the listener.
@@ -72,7 +69,25 @@ public interface KeyboardActionListener {
     public void onCancelInput();
 
     /**
-     * Called when the user quickly moves the finger from up to down.
+     * Send a non-"code input" custom request to the listener.
+     * @return true if the request has been consumed, false otherwise.
      */
-    public void onSwipeDown();
+    public boolean onCustomRequest(int requestCode);
+
+    public static class Adapter implements KeyboardActionListener {
+        @Override
+        public void onPressKey(int primaryCode) {}
+        @Override
+        public void onReleaseKey(int primaryCode, boolean withSliding) {}
+        @Override
+        public void onCodeInput(int primaryCode, int x, int y) {}
+        @Override
+        public void onTextInput(CharSequence text) {}
+        @Override
+        public void onCancelInput() {}
+        @Override
+        public boolean onCustomRequest(int requestCode) {
+            return false;
+        }
+    }
 }

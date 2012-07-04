@@ -17,13 +17,17 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
-import java.util.HashMap;
+import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 
-public class WhitelistDictionary extends Dictionary {
+import java.util.HashMap;
+import java.util.Locale;
+
+public class WhitelistDictionary extends ExpandableDictionary {
 
     private static final boolean DBG = LatinImeLogger.sDBG;
     private static final String TAG = WhitelistDictionary.class.getSimpleName();
@@ -31,22 +35,18 @@ public class WhitelistDictionary extends Dictionary {
     private final HashMap<String, Pair<Integer, String>> mWhitelistWords =
             new HashMap<String, Pair<Integer, String>>();
 
-    private static final WhitelistDictionary sInstance = new WhitelistDictionary();
-
-    private WhitelistDictionary() {
-    }
-
-    public static WhitelistDictionary init(Context context) {
-        synchronized (sInstance) {
-            if (context != null) {
-                // Wordlist is initialized by the proper language in Suggestion.java#init
-                sInstance.initWordlist(
-                        context.getResources().getStringArray(R.array.wordlist_whitelist));
-            } else {
-                sInstance.mWhitelistWords.clear();
+    // TODO: Conform to the async load contact of ExpandableDictionary
+    public WhitelistDictionary(final Context context, final Locale locale) {
+        super(context, Suggest.DIC_WHITELIST);
+        // TODO: Move whitelist dictionary into main dictionary.
+        final RunInLocale<Void> job = new RunInLocale<Void>() {
+            @Override
+            protected Void job(Resources res) {
+                initWordlist(res.getStringArray(R.array.wordlist_whitelist));
+                return null;
             }
-        }
-        return sInstance;
+        };
+        job.runInLocale(context.getResources(), locale);
     }
 
     private void initWordlist(String[] wordlist) {
@@ -66,6 +66,7 @@ public class WhitelistDictionary extends Dictionary {
                 if (before != null && after != null) {
                     mWhitelistWords.put(
                             before.toLowerCase(), new Pair<Integer, String>(score, after));
+                    addWord(after, null /* shortcut */, score);
                 }
             }
         } catch (NumberFormatException e) {
@@ -75,26 +76,34 @@ public class WhitelistDictionary extends Dictionary {
         }
     }
 
-    public String getWhiteListedWord(String before) {
+    public String getWhitelistedWord(String before) {
         if (before == null) return null;
         final String lowerCaseBefore = before.toLowerCase();
         if(mWhitelistWords.containsKey(lowerCaseBefore)) {
             if (DBG) {
-                Log.d(TAG, "--- found whiteListedWord: " + lowerCaseBefore);
+                Log.d(TAG, "--- found whitelistedWord: " + lowerCaseBefore);
             }
             return mWhitelistWords.get(lowerCaseBefore).second;
         }
         return null;
     }
 
-    // Not used for WhitelistDictionary.  We use getWhitelistedWord() in Suggest.java instead
-    @Override
-    public void getWords(WordComposer composer, WordCallback callback) {
+    // See LatinIME#updateSuggestions. This breaks in the (queer) case that the whitelist
+    // lists that word a should autocorrect to word b, and word c would autocorrect to
+    // an upper-cased version of a. In this case, the way this return value is used would
+    // remove the first candidate when the user typed the upper-cased version of A.
+    // Example : abc -> def  and  xyz -> Abc
+    // A user typing Abc would experience it being autocorrected to something else (not
+    // necessarily def).
+    // There is no such combination in the whitelist at the time and there probably won't
+    // ever be - it doesn't make sense. But still.
+    public boolean shouldForciblyAutoCorrectFrom(CharSequence word) {
+        if (TextUtils.isEmpty(word)) return false;
+        final String correction = getWhitelistedWord(word.toString());
+        if (TextUtils.isEmpty(correction)) return false;
+        return !correction.equals(word);
     }
 
-    @Override
-    public boolean isValidWord(CharSequence word) {
-        if (TextUtils.isEmpty(word)) return false;
-        return !TextUtils.isEmpty(getWhiteListedWord(word.toString()));
-    }
+    // Leave implementation of getWords and isValidWord to the superclass.
+    // The words have been added to the ExpandableDictionary with addWord() inside initWordlist.
 }

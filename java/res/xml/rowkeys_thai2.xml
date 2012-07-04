@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2012, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+>
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+        >
+            <!-- U+0E24: "ฤ" THAI CHARACTER RU -->
+            <Key
+                latin:keyLabel="&#x0E24;" />
+            <!-- U+0E06: "ฆ" THAI CHARACTER KHO RAKHANG -->
+            <Key
+                latin:keyLabel="&#x0E06;" />
+            <!-- U+0E0F: "ฏ" THAI CHARACTER TO PATAK -->
+            <Key
+                latin:keyLabel="&#x0E0F;" />
+            <!-- U+0E0C: "ฌ" THAI CHARACTER CHO CHOE -->
+            <Key
+                latin:keyLabel="&#x0E0C;" />
+            <!-- U+0E29: "ษ" THAI CHARACTER SO RUSI -->
+            <Key
+                latin:keyLabel="&#x0E29;" />
+            <!-- U+0E28: "ศ" THAI CHARACTER SO SALA -->
+            <Key
+                latin:keyLabel="&#x0E28;" />
+            <!-- U+0E0B: "ซ" THAI CHARACTER SO SO -->
+            <Key
+                latin:keyLabel="&#x0E0B;" />
+            <!-- U+0E3F: "฿" THAI CURRENCY SYMBOL BAHT
+                 U+0E45: "ๅ" THAI CHARACTER LAKKHANGYAO -->
+            <Key
+                latin:keyLabel="&#x0E3F;"
+                latin:moreKeys="&#x0E45;" />
+            <!-- U+0E46: "ๆ" THAI CHARACTER MAIYAMOK
+                 U+0E2F: "ฯ" THAI CHARACTER PAIYANNOI -->
+            <Key
+                latin:keyLabel="&#x0E46;"
+                latin:moreKeys="&#x0E2F;" />
+        </case>
+        <default>
+            <!-- U+0E1F: "ฟ" THAI CHARACTER FO FAN
+                 U+0E1E: "พ" THAI CHARACTER PHO PHAN -->
+            <Key
+                latin:keyLabel="&#x0E1F;"
+                latin:moreKeys="&#x0E1E;" />
+            <!-- U+0E2B: "ห" THAI CHARACTER HO HIP -->
+            <Key
+                latin:keyLabel="&#x0E2B;" />
+            <!-- U+0E01: "ก" THAI CHARACTER KO KAI -->
+            <Key
+                latin:keyLabel="&#x0E01;" />
+            <!-- U+0E14: "ด" THAI CHARACTER DO DEK -->
+            <Key
+                latin:keyLabel="&#x0E14;" />
+            <!-- U+0E2A: "ส" THAI CHARACTER SO SUA -->
+            <Key
+                latin:keyLabel="&#x0E2A;" />
+            <!-- U+0E27: "ว" THAI CHARACTER WO WAEN -->
+            <Key
+                latin:keyLabel="&#x0E27;" />
+            <!-- U+0E07: "ง" THAI CHARACTER NGO NGU -->
+            <Key
+                latin:keyLabel="&#x0E07;" />
+            <!-- U+0E30: "ะ" THAI CHARACTER SARA A
+                 U+0E32: "า" THAI CHARACTER SARA AA
+                 U+0E33: " ำ" THAI CHARACTER SARA AM
+                 U+0E40: "เ" THAI CHARACTER SARA E
+                 U+0E41: "แ" THAI CHARACTER SARA AE
+                 U+0E43: "ใ" THAI CHARACTER SARA AI MAIMUAN
+                 U+0E44: "ไ" THAI CHARACTER SARA AI MAIMALAI
+                 U+0E42: "โ" THAI CHARACTER SARA O -->
+            <Key
+                latin:keyLabel="&#x0E30;"
+                latin:moreKeys="&#x0E32;,&#x0E33;,&#x0E40;,&#x0E41;,&#x0E43;,&#x0E44;,&#x0E42;" />
+            <!-- U+0E31: " ั" THAI CHARACTER MAI HAN-AKAT
+                 U+0E34: " ิ" THAI CHARACTER SARA I
+                 U+0E35: " ี" THAI CHARACTER SARA II
+                 U+0E36: " ึ" THAI CHARACTER SARA UE
+                 U+0E37: " ื" THAI CHARACTER SARA UEE
+                 U+0E38: " ุ" THAI CHARACTER SARA U
+                 U+0E39: " ู" THAI CHARACTER SARA UU -->
+            <Key
+                latin:keyLabel="&#x0E31;"
+                latin:moreKeys="&#x0E34;,&#x0E35;,&#x0E36;,&#x0E37;,&#x0E38;,&#x0E39;" />
+        </default>
+    </switch>
+</merge>

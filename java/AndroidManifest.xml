@@ -1,19 +1,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        coreApp="true"
         package="com.android.inputmethod.latin">
 
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />
-    <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
-    <application android:label="@string/english_ime_name"
+    <application android:label="@string/aosp_android_keyboard_ime_name"
+            android:icon="@drawable/ic_ime_settings"
             android:backupAgent="BackupAgent"
             android:killAfterRestore="false">
 
         <service android:name="LatinIME"
-                android:label="@string/english_ime_name"
+                android:label="@string/aosp_android_keyboard_ime_name"
                 android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
@@ -21,24 +21,32 @@
             <meta-data android:name="android.view.im" android:resource="@xml/method" />
         </service>
 
-        <activity android:name="Settings" android:label="@string/english_ime_settings">
+        <service android:name=".spellcheck.AndroidSpellCheckerService"
+                 android:label="@string/spell_checker_service_name"
+                 android:permission="android.permission.BIND_TEXT_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.textservice.SpellCheckerService" />
+            </intent-filter>
+            <meta-data android:name="android.view.textservice.scs" android:resource="@xml/spellchecker" />
+        </service>
+
+        <activity android:name="SettingsActivity" android:label="@string/english_ime_settings"
+                  android:uiOptions="splitActionBarWhenNarrow">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
 
-        <activity android:name="DebugSettings" android:label="@string/english_ime_debug_settings">
+        <activity android:name="com.android.inputmethod.latin.spellcheck.SpellCheckerSettingsActivity"
+                  android:label="@string/android_spell_checker_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
 
-        <activity android:name="com.android.inputmethod.deprecated.languageswitcher.InputLanguageSelection"
-                android:label="@string/language_selection_title">
+        <activity android:name="DebugSettingsActivity" android:label="@string/english_ime_debug_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-                <action android:name="com.android.inputmethod.latin.INPUT_LANGUAGE_SELECTION"/>
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 

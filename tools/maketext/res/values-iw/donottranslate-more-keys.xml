@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2011, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- U+2605: "★" BLACK STAR -->
+    <string name="more_keys_for_star">&#x2605;</string>
+    <!-- U+00B1: "±" PLUS-MINUS SIGN
+         U+FB29: "﬩" HEBREW LETTER ALTERNATIVE PLUS SIGN -->
+    <string name="more_keys_for_plus">&#x00B1;,&#xFB29;</string>
+    <!-- The all letters need to be mirrored are found at
+         http://www.unicode.org/Public/6.1.0/ucd/BidiMirroring.txt -->
+    <string name="more_keys_for_left_parenthesis">!fixedColumnOrder!3,&lt;|&gt;,{|},[|]</string>
+    <string name="more_keys_for_right_parenthesis">!fixedColumnOrder!3,&gt;|&lt;,}|{,]|[</string>
+    <!-- U+2264: "≤" LESS-THAN OR EQUAL TO
+         U+2265: "≥" GREATER-THAN EQUAL TO
+         U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+         U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+         U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
+         U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
+         The following characters don't need BIDI mirroring.
+         U+2018: "‘" LEFT SINGLE QUOTATION MARK
+         U+2019: "’" RIGHT SINGLE QUOTATION MARK
+         U+201A: "‚" SINGLE LOW-9 QUOTATION MARK
+         U+201B: "‛" SINGLE HIGH-REVERSED-9 QUOTATION MARK
+         U+201C: "“" LEFT DOUBLE QUOTATION MARK
+         U+201D: "”" RIGHT DOUBLE QUOTATION MARK
+         U+201E: "„" DOUBLE LOW-9 QUOTATION MARK
+         U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
+    <string name="more_keys_for_less_than">!fixedColumnOrder!3,&#x2039;|&#x203A;,&#x2264;|&#x2265;,&#x00AB;|&#x00BB;</string>
+    <string name="more_keys_for_greater_than">!fixedColumnOrder!3,&#x203A;|&#x2039;,&#x2265;|&#x2264;,&#x00BB;|&#x00AB;</string>
+    <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
+    <!-- <string name="more_keys_for_double_quote">&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;</string> -->
+    <string name="more_keys_for_double_quote">!fixedColumnOrder!4,&#x201C;,&#x201D;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;</string>
+    <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
+    <!-- <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!6,&#x201C;,&#x201D;,&#x201E;,&#x201F;,&#x00AB;|&#x00BB;,&#x00BB|&#x00AB;;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string> -->
+    <string name="more_keys_for_tablet_double_quote">!fixedColumnOrder!4,&#x201C;,&#x201D;,&#x00AB;|&#x00BB;,&#x00BB;|&#x00AB;,&#x2018;,&#x2019;,&#x201A;,&#x201B;</string>
+</resources>

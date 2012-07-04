@@ -16,13 +16,13 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import android.content.Context;
+import android.text.TextUtils;
+
 import com.android.inputmethod.keyboard.ProximityInfo;
 
-import android.content.Context;
-
 import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * Implements a static, compacted, binary dictionary of standard words.
@@ -41,38 +41,20 @@ public class BinaryDictionary extends Dictionary {
     public static final int MAX_WORD_LENGTH = 48;
     public static final int MAX_WORDS = 18;
 
-    @SuppressWarnings("unused")
     private static final String TAG = "BinaryDictionary";
-    private static final int MAX_PROXIMITY_CHARS_SIZE = ProximityInfo.MAX_PROXIMITY_CHARS_SIZE;
     private static final int MAX_BIGRAMS = 60;
 
     private static final int TYPED_LETTER_MULTIPLIER = 2;
 
     private int mDicTypeId;
-    private int mNativeDict;
-    private final int[] mInputCodes = new int[MAX_WORD_LENGTH * MAX_PROXIMITY_CHARS_SIZE];
+    private long mNativeDict;
+    private final int[] mInputCodes = new int[MAX_WORD_LENGTH];
     private final char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_WORDS];
     private final char[] mOutputChars_bigrams = new char[MAX_WORD_LENGTH * MAX_BIGRAMS];
     private final int[] mScores = new int[MAX_WORDS];
     private final int[] mBigramScores = new int[MAX_BIGRAMS];
 
-    private final KeyboardSwitcher mKeyboardSwitcher = KeyboardSwitcher.getInstance();
-
-    public static final Flag FLAG_REQUIRES_GERMAN_UMLAUT_PROCESSING =
-            new Flag(R.bool.config_require_umlaut_processing, 0x1);
-
-    // Can create a new flag from extravalue :
-    // public static final Flag FLAG_MYFLAG =
-    //         new Flag("my_flag", 0x02);
-
-    private static final Flag[] ALL_FLAGS = {
-        // Here should reside all flags that trigger some special processing
-        // These *must* match the definition in UnigramDictionary enum in
-        // unigram_dictionary.h so please update both at the same time.
-        FLAG_REQUIRES_GERMAN_UMLAUT_PROCESSING,
-    };
-
-    private int mFlags = 0;
+    private final boolean mUseFullEditDistance;
 
     /**
      * Constructor for the binary dictionary. This is supposed to be called from the
@@ -82,40 +64,42 @@ public class BinaryDictionary extends Dictionary {
      * @param filename the name of the file to read through native code.
      * @param offset the offset of the dictionary data within the file.
      * @param length the length of the binary data.
-     * @param flagArray the flags to limit the dictionary to, or null for default.
+     * @param useFullEditDistance whether to use the full edit distance in suggestions
      */
     public BinaryDictionary(final Context context,
-            final String filename, final long offset, final long length, Flag[] flagArray) {
+            final String filename, final long offset, final long length,
+            final boolean useFullEditDistance, final Locale locale) {
         // Note: at the moment a binary dictionary is always of the "main" type.
         // Initializing this here will help transitioning out of the scheme where
         // the Suggest class knows everything about every single dictionary.
         mDicTypeId = Suggest.DIC_MAIN;
-        // TODO: Stop relying on the state of SubtypeSwitcher, get it as a parameter
-        mFlags = Flag.initFlags(null == flagArray ? ALL_FLAGS : flagArray, context,
-                SubtypeSwitcher.getInstance());
+        mUseFullEditDistance = useFullEditDistance;
         loadDictionary(filename, offset, length);
     }
 
     static {
-        Utils.loadNativeLibrary();
+        JniUtils.loadNativeLibrary();
     }
 
-    private native int openNative(String sourceDir, long dictOffset, long dictSize,
-            int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength,
-            int maxWords, int maxAlternatives);
-    private native void closeNative(int dict);
-    private native boolean isValidWordNative(int nativeData, char[] word, int wordLength);
-    private native int getSuggestionsNative(int dict, int proximityInfo, int[] xCoordinates,
-            int[] yCoordinates, int[] inputCodes, int codesSize, int flags, char[] outputChars,
-            int[] scores);
-    private native int getBigramsNative(int dict, char[] prevWord, int prevWordLength,
+    private native long openNative(String sourceDir, long dictOffset, long dictSize,
+            int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength, int maxWords);
+    private native void closeNative(long dict);
+    private native int getFrequencyNative(long dict, int[] word, int wordLength);
+    private native boolean isValidBigramNative(long dict, int[] word1, int[] word2);
+    private native int getSuggestionsNative(long dict, long proximityInfo, int[] xCoordinates,
+            int[] yCoordinates, int[] inputCodes, int codesSize, int[] prevWordForBigrams,
+            boolean useFullEditDistance, char[] outputChars, int[] scores);
+    private native int getBigramsNative(long dict, int[] prevWord, int prevWordLength,
             int[] inputCodes, int inputCodesLength, char[] outputChars, int[] scores,
-            int maxWordLength, int maxBigrams, int maxAlternatives);
+            int maxWordLength, int maxBigrams);
+    private static native float calcNormalizedScoreNative(
+            char[] before, int beforeLength, char[] after, int afterLength, int score);
+    private static native int editDistanceNative(
+            char[] before, int beforeLength, char[] after, int afterLength);
 
     private final void loadDictionary(String path, long startOffset, long length) {
         mNativeDict = openNative(path, startOffset, length,
-                    TYPED_LETTER_MULTIPLIER, FULL_WORD_SCORE_MULTIPLIER,
-                    MAX_WORD_LENGTH, MAX_WORDS, MAX_PROXIMITY_CHARS_SIZE);
+                TYPED_LETTER_MULTIPLIER, FULL_WORD_SCORE_MULTIPLIER, MAX_WORD_LENGTH, MAX_WORDS);
     }
 
     @Override
@@ -123,27 +107,24 @@ public class BinaryDictionary extends Dictionary {
             final WordCallback callback) {
         if (mNativeDict == 0) return;
 
-        char[] chars = previousWord.toString().toCharArray();
+        int[] codePoints = StringUtils.toCodePointArray(previousWord.toString());
         Arrays.fill(mOutputChars_bigrams, (char) 0);
         Arrays.fill(mBigramScores, 0);
 
         int codesSize = codes.size();
-        if (codesSize <= 0) {
-            // Do not return bigrams from BinaryDictionary when nothing was typed.
-            // Only use user-history bigrams (or whatever other bigram dictionaries decide).
-            return;
-        }
         Arrays.fill(mInputCodes, -1);
-        int[] alternatives = codes.getCodesAt(0);
-        System.arraycopy(alternatives, 0, mInputCodes, 0,
-                Math.min(alternatives.length, MAX_PROXIMITY_CHARS_SIZE));
+        if (codesSize > 0) {
+            mInputCodes[0] = codes.getCodeAt(0);
+        }
 
-        int count = getBigramsNative(mNativeDict, chars, chars.length, mInputCodes, codesSize,
-                mOutputChars_bigrams, mBigramScores, MAX_WORD_LENGTH, MAX_BIGRAMS,
-                MAX_PROXIMITY_CHARS_SIZE);
+        int count = getBigramsNative(mNativeDict, codePoints, codePoints.length, mInputCodes,
+                codesSize, mOutputChars_bigrams, mBigramScores, MAX_WORD_LENGTH, MAX_BIGRAMS);
+        if (count > MAX_BIGRAMS) {
+            count = MAX_BIGRAMS;
+        }
 
         for (int j = 0; j < count; ++j) {
-            if (mBigramScores[j] < 1) break;
+            if (codesSize > 0 && mBigramScores[j] < 1) break;
             final int start = j * MAX_WORD_LENGTH;
             int len = 0;
             while (len <  MAX_WORD_LENGTH && mOutputChars_bigrams[start + len] != 0) {
@@ -151,15 +132,17 @@ public class BinaryDictionary extends Dictionary {
             }
             if (len > 0) {
                 callback.addWord(mOutputChars_bigrams, start, len, mBigramScores[j],
-                        mDicTypeId, DataType.BIGRAM);
+                        mDicTypeId, Dictionary.BIGRAM);
             }
         }
     }
 
+    // proximityInfo and/or prevWordForBigrams may not be null.
     @Override
-    public void getWords(final WordComposer codes, final WordCallback callback) {
-        final int count = getSuggestions(codes, mKeyboardSwitcher.getLatinKeyboard(),
-                mOutputChars, mScores);
+    public void getWords(final WordComposer codes, final CharSequence prevWordForBigrams,
+            final WordCallback callback, final ProximityInfo proximityInfo) {
+        final int count = getSuggestions(codes, prevWordForBigrams, proximityInfo, mOutputChars,
+                mScores);
 
         for (int j = 0; j < count; ++j) {
             if (mScores[j] < 1) break;
@@ -170,7 +153,7 @@ public class BinaryDictionary extends Dictionary {
             }
             if (len > 0) {
                 callback.addWord(mOutputChars, start, len, mScores[j], mDicTypeId,
-                        DataType.UNIGRAM);
+                        Dictionary.UNIGRAM);
             }
         }
     }
@@ -179,7 +162,9 @@ public class BinaryDictionary extends Dictionary {
         return mNativeDict != 0;
     }
 
-    /* package for test */ int getSuggestions(final WordComposer codes, final Keyboard keyboard,
+    // proximityInfo may not be null.
+    /* package for test */ int getSuggestions(final WordComposer codes,
+            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo,
             char[] outputChars, int[] scores) {
         if (!isValidDictionary()) return -1;
 
@@ -189,25 +174,50 @@ public class BinaryDictionary extends Dictionary {
 
         Arrays.fill(mInputCodes, WordComposer.NOT_A_CODE);
         for (int i = 0; i < codesSize; i++) {
-            int[] alternatives = codes.getCodesAt(i);
-            System.arraycopy(alternatives, 0, mInputCodes, i * MAX_PROXIMITY_CHARS_SIZE,
-                    Math.min(alternatives.length, MAX_PROXIMITY_CHARS_SIZE));
+            mInputCodes[i] = codes.getCodeAt(i);
         }
         Arrays.fill(outputChars, (char) 0);
         Arrays.fill(scores, 0);
 
-        final int proximityInfo = keyboard == null ? 0 : keyboard.getProximityInfo();
+        final int[] prevWordCodePointArray = null == prevWordForBigrams
+                ? null : StringUtils.toCodePointArray(prevWordForBigrams.toString());
+
+        // TODO: pass the previous word to native code
         return getSuggestionsNative(
-                mNativeDict, proximityInfo,
+                mNativeDict, proximityInfo.getNativeProximityInfo(),
                 codes.getXCoordinates(), codes.getYCoordinates(), mInputCodes, codesSize,
-                mFlags, outputChars, scores);
+                prevWordCodePointArray, mUseFullEditDistance, outputChars, scores);
+    }
+
+    public static float calcNormalizedScore(String before, String after, int score) {
+        return calcNormalizedScoreNative(before.toCharArray(), before.length(),
+                after.toCharArray(), after.length(), score);
+    }
+
+    public static int editDistance(String before, String after) {
+        return editDistanceNative(
+                before.toCharArray(), before.length(), after.toCharArray(), after.length());
     }
 
     @Override
     public boolean isValidWord(CharSequence word) {
-        if (word == null) return false;
-        char[] chars = word.toString().toCharArray();
-        return isValidWordNative(mNativeDict, chars, chars.length);
+        return getFrequency(word) >= 0;
+    }
+
+    @Override
+    public int getFrequency(CharSequence word) {
+        if (word == null) return -1;
+        int[] chars = StringUtils.toCodePointArray(word.toString());
+        return getFrequencyNative(mNativeDict, chars, chars.length);
+    }
+
+    // TODO: Add a batch process version (isValidBigramMultiple?) to avoid excessive numbers of jni
+    // calls when checking for changes in an entire dictionary.
+    public boolean isValidBigram(CharSequence word1, CharSequence word2) {
+        if (TextUtils.isEmpty(word1) || TextUtils.isEmpty(word2)) return false;
+        int[] chars1 = StringUtils.toCodePointArray(word1.toString());
+        int[] chars2 = StringUtils.toCodePointArray(word2.toString());
+        return isValidBigramNative(mNativeDict, chars1, chars2);
     }
 
     @Override

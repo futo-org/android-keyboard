@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2012, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+>
+    <Row
+        latin:keyWidth="10%p"
+    >
+        <Key
+            latin:keyStyle="toSymbolKeyStyle"
+            latin:keyWidth="15%p" />
+        <switch>
+            <case
+                latin:hasShortcutKey="true"
+                latin:keyboardLayoutSetElement="alphabet"
+            >
+                <Key
+                    latin:keyLabel="q"
+                    latin:backgroundType="normal"
+                    latin:additionalMoreKeys="!text/shortcut_as_more_key"
+                    latin:keyStyle="f1MoreKeysStyle" />
+            </case>
+            <case
+                latin:hasShortcutKey="true"
+            >
+                <Key
+                    latin:keyLabel="Q"
+                    latin:backgroundType="normal"
+                    latin:additionalMoreKeys="!text/shortcut_as_more_key"
+                    latin:keyStyle="f1MoreKeysStyle" />
+            </case>
+            <!-- latin:hasShortcutKey="false" -->
+            <case
+                latin:keyboardLayoutSetElement="alphabet"
+            >
+                <Key
+                    latin:keyLabel="q"
+                    latin:backgroundType="normal"
+                    latin:keyStyle="f1MoreKeysStyle" />
+            </case>
+            <default>
+                <Key
+                    latin:keyLabel="Q"
+                    latin:backgroundType="normal"
+                    latin:keyStyle="f1MoreKeysStyle" />
+            </default>
+        </switch>
+        <include
+            latin:keyXPos="25%p"
+            latin:keyboardLayout="@xml/key_space" />
+        <Key
+            latin:keyLabel="z"
+            latin:moreKeys="!text/more_keys_for_z" />
+        <Key
+            latin:keyStyle="enterKeyStyle"
+            latin:keyWidth="fillRight" />
+    </Row>
+</merge>

@@ -19,7 +19,8 @@
 -->
 
 <selector
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:exitFadeDuration="@android:integer/config_mediumAnimTime">
     <item
         android:state_window_focused="false"
         android:state_enabled="true"

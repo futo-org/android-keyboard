@@ -29,6 +29,7 @@
         <CheckBoxPreference
             android:key="vibrate_on"
             android:title="@string/vibrate_on_keypress"
+            android:defaultValue="@bool/config_default_vibration_enabled"
             android:persistent="true" />
         <CheckBoxPreference
             android:key="sound_on"
@@ -40,19 +41,6 @@
             android:title="@string/popup_on_keypress"
             android:persistent="true"
             android:defaultValue="@bool/config_default_popup_preview" />
-        <CheckBoxPreference
-            android:key="recorrection_enabled"
-            android:title="@string/prefs_enable_recorrection"
-            android:summary="@string/prefs_enable_recorrection_summary"
-            android:persistent="true"
-            android:defaultValue="@bool/config_default_recorrection_enabled" />
-        <ListPreference
-            android:key="settings_key"
-            android:title="@string/prefs_settings_key"
-            android:persistent="true"
-            android:entryValues="@array/settings_key_modes_values"
-            android:entries="@array/settings_key_modes"
-            android:defaultValue="@string/settings_key_mode_auto" />
         <ListPreference
             android:key="voice_mode"
             android:title="@string/voice_input"
@@ -60,10 +48,6 @@
             android:entryValues="@array/voice_input_modes_values"
             android:entries="@array/voice_input_modes"
             android:defaultValue="@string/voice_mode_main" />
-        <PreferenceScreen
-            android:key="subtype_settings"
-            android:title="@string/language_selection_title"
-            android:summary="@string/language_selection_summary" />
     </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/correction_category"
@@ -73,15 +57,9 @@
             android:title="@string/configure_dictionaries_title">
            <intent
               android:action="android.intent.action.MAIN"
-              android:targetPackage="com.google.android.inputmethod.latin.dictionarypack"
-              android:targetClass="com.google.android.inputmethod.latin.dictionarypack.DictionarySettings" />
+              android:targetPackage="@string/dictionary_pack_package_name"
+              android:targetClass="@string/dictionary_pack_settings_activity" />
         </PreferenceScreen>
-        <CheckBoxPreference
-            android:key="quick_fixes"
-            android:title="@string/quick_fixes"
-            android:summary="@string/quick_fixes_summary"
-            android:persistent="true"
-            android:defaultValue="true" />
         <ListPreference
             android:key="auto_correction_threshold"
             android:title="@string/auto_correction"
@@ -100,65 +78,54 @@
             android:defaultValue="@string/prefs_suggestion_visibility_default_value" />
     </PreferenceCategory>
     <PreferenceCategory
-        android:title="@string/ngram_category"
-        android:key="ngram_settings">
-        <CheckBoxPreference
-            android:key="bigram_suggestion"
-            android:title="@string/bigram_suggestion"
-            android:summary="@string/bigram_suggestion_summary"
-            android:persistent="true"
-            android:defaultValue="true" />
-        <CheckBoxPreference
-            android:key="bigram_prediction"
-            android:dependency="bigram_suggestion"
-            android:title="@string/bigram_prediction"
-            android:summary="@string/bigram_prediction_summary"
-            android:persistent="true"
-            android:defaultValue="false" />
-    </PreferenceCategory>
-    <PreferenceCategory
         android:title="@string/misc_category"
         android:key="misc_settings">
-      <CheckBoxPreference
-          android:key="usability_study_mode"
-          android:title="@string/prefs_usability_study_mode"
-          android:persistent="true"
-          android:defaultValue="false" />
-      <CheckBoxPreference
-          android:key="enable_logging"
-          android:title="@string/prefs_enable_log"
-          android:summary="@string/prefs_description_log"
-          android:persistent="true"
-          android:defaultValue="true" />
-      <ListPreference
-          android:key="pref_keyboard_layout_20100902"
-          android:title="@string/keyboard_layout"
-          android:persistent="true"
-          android:entryValues="@array/keyboard_layout_modes_values"
-          android:entries="@array/keyboard_layout_modes"
-          android:defaultValue="@string/config_default_keyboard_theme_id" />
+        <CheckBoxPreference
+            android:key="usability_study_mode"
+            android:title="@string/prefs_usability_study_mode"
+            android:persistent="true"
+            android:defaultValue="false" />
+        <PreferenceScreen
+            android:key="pref_advanced_settings"
+            android:title="@string/advanced_settings"
+            android:summary="@string/advanced_settings_summary">
+            <CheckBoxPreference
+                android:key="pref_suppress_language_switch_key"
+                android:title="@string/suppress_language_switch_key"
+                android:persistent="true"
+                android:defaultValue="false" />
+            <CheckBoxPreference
+                android:key="pref_include_other_imes_in_language_switch_list"
+                android:title="@string/include_other_imes_in_language_switch_list"
+                android:summary="@string/include_other_imes_in_language_switch_list_summary"
+                android:persistent="true"
+                android:defaultValue="false" />
+            <PreferenceScreen
+                android:fragment="com.android.inputmethod.latin.AdditionalSubtypeSettings"
+                android:key="custom_input_styles"
+                android:title="@string/custom_input_styles_title" />
+            <!-- Values for popup dismiss delay are added programatically -->
+            <ListPreference
+                android:key="pref_key_preview_popup_dismiss_delay"
+                android:title="@string/key_preview_popup_dismiss_delay" />
+            <CheckBoxPreference
+                android:key="pref_key_use_contacts_dict"
+                android:title="@string/use_contacts_dict"
+                android:summary="@string/use_contacts_dict_summary"
+                android:persistent="true"
+                android:defaultValue="true" />
+            <CheckBoxPreference
+                android:key="next_word_prediction"
+                android:title="@string/bigram_prediction"
+                android:summary="@string/bigram_prediction_summary"
+                android:persistent="true"
+                android:defaultValue="true" />
+            <PreferenceScreen
+                android:key="pref_vibration_duration_settings"
+                android:title="@string/prefs_keypress_vibration_duration_settings"/>
+            <PreferenceScreen
+                android:key="pref_keypress_sound_volume"
+                android:title="@string/prefs_keypress_sound_volume_settings" />
+        </PreferenceScreen>
     </PreferenceCategory>
-    <PreferenceScreen
-          android:key="pref_advanced_settings"
-          android:title="@string/advanced_settings"
-          android:summary="@string/advanced_settings_summary">
-          <!-- Values for popup dismiss delay are added programatically -->
-          <ListPreference
-              android:key="pref_key_preview_popup_dismiss_delay"
-              android:title="@string/key_preview_popup_dismiss_delay" />
-          <CheckBoxPreference
-             android:key="pref_key_use_contacts_dict"
-             android:title="@string/use_contacts_dict"
-             android:summary="@string/use_contacts_dict_summary"
-             android:persistent="true"
-             android:defaultValue="true" />
-    </PreferenceScreen>
-    <!-- <Preference
-        android:title="Debug Settings"
-        android:key="debug_settings">
-        <intent
-            android:action="android.intent.action.MAIN"
-            android:targetPackage="com.android.inputmethod.latin"
-            android:targetClass="com.android.inputmethod.latin.DebugSettings" />
-    </Preference>-->
 </PreferenceScreen>

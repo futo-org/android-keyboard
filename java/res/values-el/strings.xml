@@ -21,61 +21,69 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Πληκτρολόγιο Android"</string>
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Πληκτρολόγιο Android (AOSP)"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Ρυθμίσεις πληκτρολογίου Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Επιλογές εισόδου"</string>
+    <string name="english_ime_research_log" msgid="8492602295696577851">"Έρευνα εντολών καταγραφής"</string>
+    <string name="spell_checker_service_name" msgid="7338064335159755926">"Ορθογραφικός έλεγχος Android"</string>
+    <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Ορθογραφικός έλεγχος Android (AOSP)"</string>
+    <string name="android_spell_checker_settings" msgid="5822324635435443689">"Ρυθμίσεις ορθογραφικού ελέγχου"</string>
+    <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Αναζήτηση ονομάτων επαφών"</string>
+    <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Ο ορθογρ. έλεγχος χρησιμοπ. καταχωρίσεις από τη λίστα επαφών σας"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Δόνηση κατά το πάτημα πλήκτρων"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Ήχος κατά το πάτημα πλήκτρων"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Εμφάνιση με το πάτημα πλήκτρου"</string>
     <string name="general_category" msgid="1859088467017573195">"Γενικά"</string>
     <string name="correction_category" msgid="2236750915056607613">"Διόρθωση κειμένου"</string>
-    <string name="ngram_category" msgid="5337109164339320257">"Προτάσεις που βασίζονται σε προηγούμενες λέξεις"</string>
     <string name="misc_category" msgid="6894192814868233453">"Άλλες επιλογές"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Σύνθετες ρυθμίσεις"</string>
-    <string name="advanced_settings_summary" msgid="5193513161106637254">"Επιλογές για έμπειρους χρήστες"</string>
+    <string name="advanced_settings_summary" msgid="4487980456152830271">"Επιλογές για έμπειρους χρήστες"</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"Άλλη μέθοδος εισόδου"</string>
+    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"Το κλειδί αλλαγής γλώσσας καλύπτει και άλλες μεθόδους εισόδου"</string>
+    <string name="suppress_language_switch_key" msgid="8003788410354806368">"Κατάργ. κλειδιού γλώσσας"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Χρόνος εξαφ. αναδ. παραθ."</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Χωρίς καθυστέρ."</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Προεπιλογή"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Πρόταση ονομάτων επαφών"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Χρησιμοποιήστε ονόματα από τις Επαφές για προτάσεις και διορθ."</string>
+    <string name="enable_span_insert" msgid="7204653105667167620">"Ενεργ. επανάλ. διορθώσεων"</string>
+    <string name="enable_span_insert_summary" msgid="2947317657871394467">"Ορισμός προτάσεων για επαναλήψεις διορθώσεων"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Αυτόματη χρήση κεφαλαίων"</string>
-    <string name="configure_dictionaries_title" msgid="3758288002414557345">"Διαμόρφωση λεξικών"</string>
-    <string name="quick_fixes" msgid="5353213327680897927">"Γρήγορες διορθώσεις"</string>
-    <string name="quick_fixes_summary" msgid="3405028402510332373">"Διορθώνει συνηθισμένα λάθη πληκτρολόγησης"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Πρόσθετα λεξικά"</string>
+    <string name="main_dictionary" msgid="4798763781818361168">"Κύριο λεξικό"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Εμφάνιση προτάσεων διόρθωσης"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Προβολή προτεινόμενων λέξεων κατά την πληκτρολόγηση"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Να εμφανίζεται πάντα"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Εμφάνιση σε λειτουργία κατακόρυφης προβολής"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Πάντα απόκρυψη"</string>
-    <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"Αλλαγή γλώσ με space"</string>
-    <string name="prefs_settings_key" msgid="4623341240804046498">"Εμφάνιση πλήκτρου ρυθμίσεων"</string>
-    <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Αυτόματο"</string>
-    <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Να εμφανίζεται πάντα"</string>
-    <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Πάντα απόκρυψη"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Αυτόματη διόρθωση"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Τα πλήκτρα διαστήματος και στίξης διορθ. αυτόμ. λάθος λέξεις"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Απενεργοποίηση"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Μέτρια"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Υψηλή"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Πολύ επιθετική"</string>
-    <string name="bigram_suggestion" msgid="2636414079905220518">"Προτάσεις bigram"</string>
-    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Χρήση προηγούμενης λέξης για τη βελτίωση πρότασης"</string>
-    <string name="bigram_prediction" msgid="8914273444762259739">"Πρόβλεψη bigram"</string>
+    <string name="bigram_suggestion" msgid="8169311444438922902">"Προτάσεις επόμενων λέξεων"</string>
+    <string name="bigram_suggestion_summary" msgid="6635527607242625713">"Χρήση προηγούμενης λέξης για τη βελτίωση προτάσεων"</string>
+    <string name="bigram_prediction" msgid="3216364899483135294">"Πρόβλεψη επόμενης λέξης"</string>
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"Χρησιμοποιήστε, επίσης, την προηγούμενη λέξη για πρόβλεψη"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Αποθηκεύτηκε"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Μετ."</string>
     <string name="label_next_key" msgid="362972844525672568">"Επόμενο"</string>
+    <string name="label_previous_key" msgid="1211868118071386787">"Προηγ"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Τέλος"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Αποστολή"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ΑΒΓ"</string>
-    <string name="label_more_key" msgid="3760239494604948502">"Περισσότερα"</string>
+    <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
+    <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Παύση"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Αναμ."</string>
+    <string name="spoken_use_headphones" msgid="896961781287283493">"Συνδέστε ένα σετ ακουστικών για να ακούσετε τα πλήκτρα του κωδικού πρόσβασης να εκφωνούνται δυνατά."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Το τρέχον κείμενο είναι %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Δεν υπάρχει κείμενο"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Κωδικός πλήκτρου %d"</string>
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
-    <string name="spoken_description_shift_shifted" msgid="954941524766465022">"Shift ενεργοποιημένο"</string>
-    <string name="spoken_description_caps_lock" msgid="5660626444912131764">"Caps lock ενεργοποιημένο"</string>
+    <string name="spoken_description_shift_shifted" msgid="1681877323344195035">"Το Shift είναι ενεργοποιημένο (πατήστε για απενεργοποίηση)"</string>
+    <string name="spoken_description_caps_lock" msgid="3276478269526304432">"Το Caps lock είναι ενεργοποιημένο (πατήστε για απενεργοποίηση)"</string>
     <string name="spoken_description_delete" msgid="8740376944276199801">"Πλήκτρο Delete"</string>
     <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Σύμβολα"</string>
     <string name="spoken_description_to_alpha" msgid="23129338819771807">"Γράμματα:"</string>
@@ -86,103 +94,59 @@
     <string name="spoken_description_mic" msgid="615536748882611950">"Μικρόφωνο"</string>
     <string name="spoken_description_smiley" msgid="2256309826200113918">"Smiley"</string>
     <string name="spoken_description_return" msgid="8178083177238315647">"Πλήκτρο Return"</string>
-    <string name="spoken_description_comma" msgid="4970844442999724586">"Κόμμα"</string>
-    <string name="spoken_description_period" msgid="5286614628077903945">"Τελεία"</string>
-    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"Αριστερή παρένθεση"</string>
-    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"Δεξιά παρένθεση"</string>
-    <string name="spoken_description_colon" msgid="4312420908484277077">"Άνω και κάτω τελεία"</string>
-    <string name="spoken_description_semicolon" msgid="37737920987155179">"Ερωτηματικό"</string>
-    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"Θαυμαστικό"</string>
-    <string name="spoken_description_question_mark" msgid="7074097784255379666">"Ερωτηματικό"</string>
-    <string name="spoken_description_double_quote" msgid="5485320575389905967">"Διπλά εισαγωγικά"</string>
-    <string name="spoken_description_single_quote" msgid="4451320362665463938">"Μονό εισαγωγικό"</string>
+    <string name="spoken_description_search" msgid="1247236163755920808">"Αναζήτηση"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"Κουκκίδα"</string>
-    <string name="spoken_description_square_root" msgid="190595160284757811">"Τετραγωνική ρίζα"</string>
-    <string name="spoken_description_pi" msgid="4554418247799952239">"πι"</string>
-    <string name="spoken_description_delta" msgid="3607948313655721579">"Δέλτα"</string>
-    <string name="spoken_description_trademark" msgid="475877774077871369">"Εμπορικό σήμα"</string>
-    <string name="spoken_description_care_of" msgid="7492800237237796530">"Υπεύθυνος"</string>
-    <string name="spoken_description_star" msgid="1009742725387231977">"Αστερίσκος"</string>
-    <string name="spoken_description_pound" msgid="5530577649206922631">"Δίεση"</string>
-    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"Αποσιωπητικά"</string>
-    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"Χαμηλό διπλό εισαγωγικό"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Φωνητική είσοδος"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Η φωνητική είσοδος δεν υποστηρίζεται αυτή τη στιγμή για τη γλώσσα σας, ωστόσο λειτουργεί στα Αγγλικά."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Οι φωνητικές εντολές χρησιμοποιούν την τεχνολογία αναγνώρισης φωνής της Google. Ισχύει "<a href="http://m.google.com/privacy">"η Πολιτική Απορρήτου για κινητά"</a>"."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Για να απενεργοποιήσετε τις φωνητικές εντολές, μεταβείτε στις ρυθμίσεις της μεθόδου εισαγωγής."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Για τη χρήση φωνητικών εντολών, πατήστε το κουμπί του μικροφώνου."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Μιλήστε τώρα"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Σε λειτουργία"</string>
-    <string name="voice_initializing" msgid="661962047129906646"></string>
-    <string name="voice_error" msgid="5140896300312186162">"Σφάλμα. Δοκιμάστε ξανά."</string>
-    <string name="voice_network_error" msgid="6649556447401862563">"Δεν ήταν δυνατή η σύνδεση"</string>
-    <string name="voice_too_much_speech" msgid="5746973620134227376">"Σφάλμα, πολλές λέξεις."</string>
-    <string name="voice_audio_error" msgid="5072707727016414454">"Πρόβλημα ήχου"</string>
-    <string name="voice_server_error" msgid="7807129913977261644">"Σφάλμα διακομιστή"</string>
-    <string name="voice_speech_timeout" msgid="8461817525075498795">"Δεν ακούγεται ομιλία"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Δεν βρέθηκε καμία αντιστοίχιση"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Η Φωνητική αναζήτηση δεν εγκαταστάθηκε"</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Υπόδειξη:"</b>" Σύρετε κατά μήκος του πληκτρολογίου για να μιλήσετε"</string>
-    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Υπόδειξη:"</b>" Την επόμενη φορά, προσπαθήστε να προφέρετε σημεία στίξης, όπως \"τελεία\", \"κόμμα\" ή \"ερωτηματικό\"."</string>
-    <string name="cancel" msgid="6830980399865683324">"Ακύρωση"</string>
-    <string name="ok" msgid="7898366843681727667">"ΟΚ"</string>
-    <string name="voice_input" msgid="2466640768843347841">"Φωνητική είσοδος"</string>
+    <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Το Shift ενεργοποιημένο"</string>
+    <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Το Caps lock είναι ενεργοποιημένο"</string>
+    <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Το Shift είναι απενεργοποιημένο"</string>
+    <string name="spoken_description_mode_symbol" msgid="7183343879909747642">"Λειτουργία συμβόλων"</string>
+    <string name="spoken_description_mode_alpha" msgid="3528307674390156956">"Λειτουργία γραμμάτων"</string>
+    <string name="spoken_description_mode_phone" msgid="6520207943132026264">"Λειτουργία τηλεφώνου"</string>
+    <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"Λειτουργία συμβόλων τηλεφώνου"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Κλειδί φωνητικής εξόδου"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Στο κύριο πληκτρολ."</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Πληκτρ. συμβ. ενερ."</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Απενεργοποίηση"</string>
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Μικ. στο κύριο πληκ."</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Μικ. στο πληκ. συμβ."</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Απεν. φωνητ. είσοδος"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Επιλογή μεθόδου εισόδου"</string>
+    <string name="configure_input_method" msgid="373356270290742459">"Διαμόρφωση μεθόδων εισαγωγής"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Γλώσσες εισόδου"</string>
-    <string name="language_selection_summary" msgid="187110938289512256">"Σύρετε το δάχτυλο στο πλήκτρο διαστήματος για να αλλάξετε γλώσσα"</string>
-    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Αγγίξτε ξανά για αποθήκευση"</string>
+    <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Χρόνος στο αρχείο καταγρ."</string>
+    <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Καταγεγραμμένος χρόνος"</string>
+    <string name="do_not_log_this_session" msgid="413762473641146336">"Χωρίς αρχείο καταγραφής"</string>
+    <string name="notify_session_log_deleting" msgid="3299507647764414623">"Διαγραφή αρχείου σύνδεσης"</string>
+    <string name="notify_session_log_deleted" msgid="8687927130100934686">"Αρχείο καταγρ. διαγράφηκε"</string>
+    <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Αρχείο καταγρ. ΔΕΝ διαγρ."</string>
+    <string name="select_language" msgid="3693815588777926848">"Γλώσσες εισόδου"</string>
+    <string name="hint_add_to_dictionary" msgid="573678656946085380">"Αγγίξτε ξανά για αποθήκευση"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Λεξικό διαθέσιμο"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Ενεργοποίηση σχολίων χρηστών"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Βοηθήστε μας να βελτιώσουμε αυτό το πρόγραμμα επεξεργασίας μεθόδου εισόδου στέλνοντας αυτόματα στατιστικά στοιχεία και αναφορές σφαλμάτων στην Google."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Αγγίξτε για διόρθωση λέξεων"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Αγγίξτε τις λέξες για να τις διορθώσετε, μόνο όταν οι προτάσεις είναι ορατές"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Θέμα πληκτρολογίου"</string>
-    <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Τσεχικό πληκτρολόγιο"</string>
-    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Πληκτρολ. με αραβικούς χαρακτήρες"</string>
-    <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Δανικό πληκτρολόγιο"</string>
-    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Γερμανικό πληκτρολόγιο"</string>
-    <string name="subtype_mode_de_qwerty_keyboard" msgid="54890770769303956">"Γερμανικό πληκτρολόγιο QWERTY"</string>
-    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Αγγλικό (ΗΒ) πληκτρολόγιο"</string>
-    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Αγγλικό (ΗΠΑ) πληκτρολόγιο"</string>
-    <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Ισπανικό πληκτρολόγιο"</string>
-    <string name="subtype_mode_fi_keyboard" msgid="3198596464082614532">"Πληκτρ. με φινλανδικούς χαρακτήρες"</string>
-    <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Γαλλικό πληκτρολόγιο"</string>
-    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Γαλλικό (Καναδάς) πληκτρολόγιο"</string>
-    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Γαλλικό (Ελβετία) πληκτρολόγιο"</string>
-    <string name="subtype_mode_hr_keyboard" msgid="7177182405440070112">"Πληκτρολ. με κροατικούς χαρακτήρες"</string>
-    <string name="subtype_mode_hu_keyboard" msgid="8843338355732633647">"Πληκτρολ. με ουγγρικούς χαρακτήρες"</string>
-    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Πληκτρολ. με εβραϊκούς χαρακτήρες"</string>
-    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Ιταλικό πληκτρολόγιο"</string>
-    <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Νορβηγικό πληκτρολόγιο"</string>
-    <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Ολλανδικό πληκτρολόγιο"</string>
-    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"Πληκτρολ. με πολωνικούς χαρακτήρες"</string>
-    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"Πληκτρολ. με πορτογαλικούς χαρακτ."</string>
-    <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Ρωσικό πληκτρολόγιο"</string>
-    <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Σερβικό πληκτρολόγιο"</string>
-    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Σουηδικό πληκτρολόγιο"</string>
-    <string name="subtype_mode_tr_keyboard" msgid="3155981874829226370">"Πληκτρολ. με τουρκικούς χαρακτήρες"</string>
-    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Αφρικάανς"</string>
-    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Τσεχικά"</string>
-    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Γερμανικά"</string>
-    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"Αγγλικά"</string>
-    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Ισπανικά"</string>
-    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Γαλλικά"</string>
-    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Φωνητικές εντολές στα Ιταλικά"</string>
-    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Ιαπωνικά"</string>
-    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Κορεατικά"</string>
-    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"Φωνητικές εντολές στα Ολλανδικά"</string>
-    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Πολωνικά"</string>
-    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Πορτογαλικά"</string>
-    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Ρωσικά"</string>
-    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Τουρκικά"</string>
-    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Κινεζικά, Γιούε"</string>
-    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Κινεζικά, Μανδαρινικά"</string>
-    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"Ζουλού"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"Αγγλικά (Η.Β.)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"Αγγλικά (Η.Π.Α)"</string>
+    <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"Αγγλικά (ΗΒ) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"Αγγλικά (ΗΠΑ) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
+    <string name="subtype_no_language" msgid="141420857808801746">"Καμία γλώσσα"</string>
+    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"Καμία γλώσσα (QWERTY)"</string>
+    <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"Καμία γλώσσα (QWERTZ)"</string>
+    <string name="subtype_no_language_azerty" msgid="8721460968141187394">"Καμία γλώσσα (AZERTY)"</string>
+    <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"Καμία γλώσσα (Dvorak)"</string>
+    <string name="subtype_no_language_colemak" msgid="4205992994906097244">"Καμία γλώσσα (Colemak)"</string>
+    <string name="subtype_no_language_pcqwerty" msgid="8840928374394180189">"Καμία γλώσσα (PC)"</string>
+    <string name="custom_input_styles_title" msgid="8429952441821251512">"Προσαρμοσ. στυλ εισαγ."</string>
+    <string name="add_style" msgid="6163126614514489951">"Προσθ. στυλ"</string>
+    <string name="add" msgid="8299699805688017798">"Προσθήκη"</string>
+    <string name="remove" msgid="4486081658752944606">"Κατάργηση"</string>
+    <string name="save" msgid="7646738597196767214">"Αποθήκευση"</string>
+    <string name="subtype_locale" msgid="8576443440738143764">"Γλώσσα"</string>
+    <string name="keyboard_layout_set" msgid="4309233698194565609">"Διάταξη"</string>
+    <string name="custom_input_style_note_message" msgid="8826731320846363423">"Απαιτείται ενεργοποίηση προσαρμ. στυλ εισόδου. Να γίνει τώρα;"</string>
+    <string name="enable" msgid="5031294444630523247">"Ενεργοποίηση"</string>
+    <string name="not_now" msgid="6172462888202790482">"Όχι τώρα"</string>
+    <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Το ίδιο στυλ εισόδου υπάρχει ήδη: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Λειτουργία μελέτης χρηστικότητας"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Ρυθμίσεις διάρκειας δόνησης κατά το πάτημα πλήκτρων"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Ρυθμίσεις έντασης ήχου κατά το πάτημα πλήκτρων"</string>
 </resources>

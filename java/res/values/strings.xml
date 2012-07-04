@@ -20,10 +20,28 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Title for Latin keyboard  -->
     <string name="english_ime_name">Android keyboard</string>
+    <!-- Application name for opensource Android keyboard. AOSP(Android Open Source Project) should not be translated. -->
+    <string name="aosp_android_keyboard_ime_name">Android keyboard (AOSP)</string>
     <!-- Title for Latin keyboard settings activity / dialog -->
     <string name="english_ime_settings">Android keyboard settings</string>
     <!-- Title for Latin keyboard input options dialog [CHAR LIMIT=25] -->
     <string name="english_ime_input_options">Input options</string>
+    <!-- Title for Latin keyboard research log dialog, which contains special commands for users that contribute data for research. [CHAR LIMIT=33] -->
+    <string name="english_ime_research_log">Research Log Commands</string>
+
+    <!-- Name of Android spell checker service -->
+    <string name="spell_checker_service_name">Android spell checker</string>
+    <!-- Name of Android spell checker service. AOSP(Android Open Source Project) should not be translated. -->
+    <string name="aosp_spell_checker_service_name">Android spell checker (AOSP)</string>
+
+    <!-- Title for the spell checking service settings screen -->
+    <string name="android_spell_checker_settings">Spell checking settings</string>
+
+    <!-- Title for the spell checker option to turn on/off contact names lookup [CHAR LIMIT=25] -->
+    <string name="use_contacts_for_spellchecking_option_title">Look up contact names</string>
+
+    <!-- Description for the spell checker option to turn on/off contact names lookup. [CHAR LIMIT=65] -->
+    <string name="use_contacts_for_spellchecking_option_summary">Spell checker uses entries from your contact list</string>
 
     <!-- Option to provide vibrate/haptic feedback on keypress -->
     <string name="vibrate_on_keypress">Vibrate on keypress</string>
@@ -31,7 +49,7 @@
     <!-- Option to play back sound on keypress in soft keyboard -->
     <string name="sound_on_keypress">Sound on keypress</string>
 
-    <!-- Option to pop up the character with a larger font above soft keyboard -->
+    <!-- Option to control whether or not to show a popup with a larger font on each key press. -->
     <string name="popup_on_keypress">Popup on keypress</string>
 
     <!-- Category title for general settings for Android keyboard -->
@@ -40,16 +58,20 @@
     <!-- Category title for text prediction -->
     <string name="correction_category">Text correction</string>
 
-    <!-- Category title for ngrams  -->
-    <string name="ngram_category">Suggestions based on previous words</string>
-
     <!-- Category title for misc options  -->
     <string name="misc_category">Other options</string>
 
     <!-- Option name for advanced settings screen [CHAR LIMIT=25] -->
     <string name="advanced_settings">Advanced settings</string>
     <!-- Option summary for advanced settings screen [CHAR LIMIT=65 (two lines) or 30 (fits on one line, preferable)] -->
-    <string name="advanced_settings_summary">Options for expert users</string>
+    <string name="advanced_settings_summary">Options for experts</string>
+
+    <!-- Option name for including other IMEs in the language switch list [CHAR LIMIT=30] -->
+    <string name="include_other_imes_in_language_switch_list">Switch to other input methods</string>
+    <!-- Option summary for including other IMEs in the language switch list [CHAR LIMIT=65] -->
+    <string name="include_other_imes_in_language_switch_list_summary">Language switch key covers other input methods too</string>
+    <!-- Option to suppress language switch key [CHAR LIMIT=30] -->
+    <string name="suppress_language_switch_key">Suppress language switch key</string>
 
     <!-- Option for the dismiss delay of the key popup [CHAR LIMIT=25] -->
     <string name="key_preview_popup_dismiss_delay">Key popup dismiss delay</string>
@@ -63,16 +85,18 @@
     <!-- Description for option enabling or disabling the use of names of people in Contacts for suggestion and correction [CHAR LIMIT=65] -->
     <string name="use_contacts_dict_summary">Use names from Contacts for suggestions and corrections</string>
 
+    <!-- Option name for enabling insertion of suggestion spans (advanced option) [CHAR LIMIT=25] -->
+    <string name="enable_span_insert">Enable recorrections</string>
+    <!-- Option summary for enabling insertion of suggestion spans (advanced option) [CHAR LIMIT=65] -->
+    <string name="enable_span_insert_summary">Set suggestions for recorrections</string>
+
     <!-- Option to enable auto capitalization of sentences -->
     <string name="auto_cap">Auto-capitalization</string>
 
     <!-- Option to configure dictionaries -->
-    <string name="configure_dictionaries_title">Configure dictionaries</string>
-
-    <!-- Option to enable quick fixes -->
-    <string name="quick_fixes">Quick fixes</string>
-    <!-- Description for quick fixes -->
-    <string name="quick_fixes_summary">Corrects commonly typed mistakes</string>
+    <string name="configure_dictionaries_title">Add-on dictionaries</string>
+    <!-- Name of the main dictionary, as opposed to auxiliary dictionaries (medical/entertainment/sports...) -->
+    <string name="main_dictionary">Main dictionary</string>
 
     <!-- Option to enable showing suggestions -->
     <string name="prefs_show_suggestions">Show correction suggestions</string>
@@ -81,60 +105,57 @@
     <string name="prefs_suggestion_visibility_show_name">Always show</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name">Show on portrait mode</string>
     <string name="prefs_suggestion_visibility_hide_name">Always hide</string>
-    <!-- Option to enable spacebar language switcher [CHAR LIMIT=20]-->
-    <string name="prefs_use_spacebar_language_switch">Use the spacebar language switcher</string>
-
-    <!-- Option to show/hide the settings key -->
-    <string name="prefs_settings_key">Show settings key</string>
-    <!-- Option to automatically decide to show/hide the settings key -->
-    <string name="settings_key_mode_auto_name">Automatic</string>
-    <!-- Option to always show the settings key -->
-    <string name="settings_key_mode_always_show_name">Always show</string>
-    <!-- Option to always hide the settings key -->
-    <string name="settings_key_mode_always_hide_name">Always hide</string>
 
     <!-- Option to decide the auto correction threshold score -->
     <!-- Option to enable auto correction [CHAR LIMIT=20]-->
     <string name="auto_correction">Auto correction</string>
-    <!-- Description for auto correction [CHAR LIMIT=35] -->
+    <!-- Description for auto correction [CHAR LIMIT=65 (two lines) or 30 (fits on one line, preferable)] -->
     <string name="auto_correction_summary">Spacebar and punctuation automatically correct mistyped words</string>
     <!-- Option to disable auto correction. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_off">Off</string>
-    <!-- Option to suggest auto correction candidates modestly. Auto-corrects only to a word which has small edit distance from typed word. [CHAR LIMIT=20] -->
+    <!-- Option to suggest auto correction suggestions modestly. Auto-corrects only to a word which has small edit distance from typed word. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_modest">Modest</string>
-    <!-- Option to suggest auto correction candidates aggressively. Auto-corrects to a word which has even large edit distance from typed word. [CHAR LIMIT=20] -->
+    <!-- Option to suggest auto correction suggestions aggressively. Auto-corrects to a word which has even large edit distance from typed word. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_aggeressive">Aggressive</string>
-    <!-- Option to suggest auto correction candidates very aggressively. Auto-corrects to a word which has even large edit distance from typed word. [CHAR LIMIT=20] -->
+    <!-- Option to suggest auto correction suggestions very aggressively. Auto-corrects to a word which has even large edit distance from typed word. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_very_aggeressive">Very aggressive</string>
 
-    <!-- Option to enable bigram correction -->
-    <string name="bigram_suggestion">Bigram suggestions</string>
-    <!-- Description for auto correction -->
-    <string name="bigram_suggestion_summary">Use previous word to improve suggestion</string>
-    <!-- Option to enable using user-history bigram when no input -->
-    <string name="bigram_prediction">Bigram prediction</string>
-    <!-- Description for auto correction -->
+    <!-- Option to enable next word correction -->
+    <string name="bigram_suggestion">Next word suggestions</string>
+    <!-- Option to enable next word suggestion. This uses the previous word in an attempt to improve the suggestions quality -->
+    <string name="bigram_suggestion_summary">Use previous word to improve suggestions</string>
+    <!-- Option to enable using next word prediction -->
+    <string name="bigram_prediction">Next word prediction</string>
+    <!-- Description for "next word prediction" option. This displays suggestions even when there is no input, based on the previous word. -->
     <string name="bigram_prediction_summary">Use previous word also for prediction</string>
 
     <!-- Indicates that a word has been added to the dictionary -->
     <string name="added_word"><xliff:g id="word">%s</xliff:g> : Saved</string>
 
-    <!-- Label for soft enter key when it performs GO action.  Must be short to fit on key! -->
+    <!-- Label for soft enter key when it performs GO action.  Must be short to fit on key! [CHAR LIMIT=5] -->
     <string name="label_go_key">Go</string>
-    <!-- Label for soft enter key when it performs NEXT action.  Must be short to fit on key! -->
+    <!-- Label for soft enter key when it performs NEXT action.  Must be short to fit on key! [CHAR LIMIT=5] -->
     <string name="label_next_key">Next</string>
-    <!-- Label for soft enter key when it performs DONE action.  Must be short to fit on key! -->
+    <!-- Label for soft enter key when it performs PREVIOUS action.  Must be short to fit on key! [CHAR LIMIT=5] -->
+    <string name="label_previous_key">Prev</string>
+    <!-- Label for soft enter key when it performs DONE action.  Must be short to fit on key! [CHAR LIMIT=5] -->
     <string name="label_done_key">Done</string>
-    <!-- Label for soft enter key when it performs SEND action.  Must be short to fit on key! -->
+    <!-- Label for soft enter key when it performs SEND action.  Must be short to fit on key! [CHAR LIMIT=5] -->
     <string name="label_send_key">Send</string>
-    <!-- Label for "switch to alphabetic" key.  Must be short to fit on key! -->
+    <!-- Label for "switch to alphabetic" key.  Must be short to fit on key! [CHAR LIMIT=3] -->
     <string name="label_to_alpha_key">ABC</string>
-    <!-- Label for Shift modifier key of symbol keyboard.  Must be short to fit on key! -->
-    <string name="label_more_key">More</string>
+    <!-- Label for "switch to symbols" key.  Must be short to fit on key! [CHAR LIMIT=4] -->
+    <string name="label_to_symbol_key">\?123</string>
+    <!-- Label for "switch to symbols with microphone" key. This string shouldn't include the "mic"
+         part because it'll be appended by the code. Must be short to fit on key! [CHAR LIMIT=3] -->
+    <string name="label_to_symbol_with_microphone_key">123</string>
     <!-- Label for "Pause" key of phone number keyboard.  Must be short to fit on key! [CHAR LIMIT=5] -->
     <string name="label_pause_key">Pause</string>
     <!-- Label for "Wait" key of phone number keyboard.  Must be short to fit on key! [CHAR LIMIT=5]-->
     <string name="label_wait_key">Wait</string>
+
+    <!-- Spoken description to let the user know that when typing in a password, they can plug in a headset in to hear spoken descriptions of the keys they type. [CHAR LIMIT=NONE] -->
+    <string name="spoken_use_headphones">Plug in a headset to hear password keys spoken aloud.</string>
 
     <!-- Spoken description for the currently entered text -->
     <string name="spoken_current_text_is">Current text is "%s"</string>
@@ -143,12 +164,12 @@
 
     <!-- Spoken description for unknown keyboard keys. -->
     <string name="spoken_description_unknown">Key code %d</string>
-    <!-- Spoken description for the "Shift" keyboard key. -->
+    <!-- Spoken description for the "Shift" keyboard key when "Shift" is off. -->
     <string name="spoken_description_shift">Shift</string>
-    <!-- Spoken description for the "Shift" keyboard key's pressed state. -->
-    <string name="spoken_description_shift_shifted">Shift enabled</string>
-    <!-- Spoken description for the "Shift" keyboard key's pressed state. -->
-    <string name="spoken_description_caps_lock">Caps lock enabled</string>
+    <!-- Spoken description for the "Shift" keyboard key when "Shift" is on. -->
+    <string name="spoken_description_shift_shifted">Shift on (tap to disable)</string>
+    <!-- Spoken description for the "Shift" keyboard key when "Caps lock" is on. -->
+    <string name="spoken_description_caps_lock">Caps lock on (tap to disable)</string>
     <!-- Spoken description for the "Delete" keyboard key. -->
     <string name="spoken_description_delete">Delete</string>
     <!-- Spoken description for the "To Symbol" keyboard key. -->
@@ -169,119 +190,29 @@
     <string name="spoken_description_smiley">Smiley face</string>
     <!-- Spoken description for the "Return" keyboard key. -->
     <string name="spoken_description_return">Return</string>
-
-    <!-- Spoken description for the "," keyboard key. -->
-    <string name="spoken_description_comma">Comma</string>
-    <!-- Spoken description for the "." keyboard key. -->
-    <string name="spoken_description_period">Period</string>
-    <!-- Spoken description for the "(" keyboard key. -->
-    <string name="spoken_description_left_parenthesis">Left parenthesis</string>
-    <!-- Spoken description for the ")" keyboard key. -->
-    <string name="spoken_description_right_parenthesis">Right parenthesis</string>
-    <!-- Spoken description for the ":" keyboard key. -->
-    <string name="spoken_description_colon">Colon</string>
-    <!-- Spoken description for the ";" keyboard key. -->
-    <string name="spoken_description_semicolon">Semicolon</string>
-    <!-- Spoken description for the "!" keyboard key. -->
-    <string name="spoken_description_exclamation_mark">Exclamation mark</string>
-    <!-- Spoken description for the "?" keyboard key. -->
-    <string name="spoken_description_question_mark">Question mark</string>
-    <!-- Spoken description for the """ keyboard key. -->
-    <string name="spoken_description_double_quote">Double quote</string>
-    <!-- Spoken description for the "'" keyboard key. -->
-    <string name="spoken_description_single_quote">Single quote</string>
-    <!-- Spoken description for the "•" keyboard key. -->
+    <!-- Spoken description for the "Search" keyboard key. -->
+    <string name="spoken_description_search">Search</string>
+    <!-- Spoken description for the "U+2022" (BULLET) keyboard key. -->
     <string name="spoken_description_dot">Dot</string>
-    <!-- Spoken description for the "√" keyboard key. -->
-    <string name="spoken_description_square_root">Square root</string>
-    <!-- Spoken description for the "π" keyboard key. -->
-    <string name="spoken_description_pi">Pi</string>
-    <!-- Spoken description for the "Δ" keyboard key. -->
-    <string name="spoken_description_delta">Delta</string>
-    <!-- Spoken description for the "™" keyboard key. -->
-    <string name="spoken_description_trademark">Trademark</string>
-    <!-- Spoken description for the "℅" keyboard key. -->
-    <string name="spoken_description_care_of">Care of</string>
-    <!-- Spoken description for the "*" keyboard key. -->
-    <string name="spoken_description_star">Star</string>
-    <!-- Spoken description for the "#" keyboard key. -->
-    <string name="spoken_description_pound">Pound</string>
-    <!-- Spoken description for the "…" keyboard key. -->
-    <string name="spoken_description_ellipsis">Ellipsis</string>
-    <!-- Spoken description for the "„" keyboard key. -->
-    <string name="spoken_description_low_double_quote">Low double quote</string>
 
-    <!-- Voice related labels -->
+    <!-- Spoken feedback after turning "Shift" mode on. -->
+    <string name="spoken_description_shiftmode_on">Shift enabled</string>
+    <!-- Spoken feedback after turning "Caps lock" mode on. -->
+    <string name="spoken_description_shiftmode_locked">Caps lock enabled</string>
+    <!-- Spoken feedback after turning "Shift" mode off. -->
+    <string name="spoken_description_shiftmode_off">Shift disabled</string>
 
-    <!-- Title of the warning dialog that shows when a user initiates voice input for
-         the first time. -->
-    <string name="voice_warning_title">Voice input</string>
-
-    <!-- Message that gets put at the top of the warning dialog if the user is attempting to use
-         voice input in a currently unsupported locale. Voice input will work for such a user,
-         but it will only recognize them in English. -->
-    <string name="voice_warning_locale_not_supported">Voice input is not currently supported for your language, but does work in English.</string>
-
-    <!-- Message of the warning dialog that shows when a user initiates voice input for
-         the first time, or turns it on in settings. [CHAR LIMIT=200] -->
-    <string name="voice_warning_may_not_understand">Voice input uses Google\'s speech recognition. <a href="http://m.google.com/privacy">The Mobile Privacy Policy</a> applies.</string>
-
-    <!-- An additional part of the warning dialog for voice input that only shows when the user
-         actually initiates voice input, rather than just turning it on in settings. [CHAR LIMIT=200] -->
-    <string name="voice_warning_how_to_turn_off">To turn off voice input, go to input method settings.</string>
-
-    <!-- Message to show when user enables the voice input settings (which says
-        "Press the microphone button"). [CHAR LIMIT=100] -->
-    <string name="voice_hint_dialog_message">To use voice input, press the microphone button.</string>
-
-    <!-- Short message to tell the user the system is ready for them to speak. -->
-    <string name="voice_listening">Speak now</string>
-
-    <!-- Short message shown after the user finishes speaking. -->
-    <string name="voice_working">Working</string>
-
-    <!-- Short message shown before the user should speak. -->
-    <string name="voice_initializing"></string>
-
-    <!-- Short message shown when a generic error occurs. -->
-    <string name="voice_error">Error. Please try again.</string>
-
-    <!-- Short message shown for a network error. -->
-    <string name="voice_network_error">Couldn\'t connect</string>
-
-    <!-- Short message shown for a network error where the utterance was really long,
-         in which case we should suggest that the user speak less. -->
-    <string name="voice_too_much_speech">Error, too much speech.</string>
-
-    <!-- Short message shown for an audio error. -->
-    <string name="voice_audio_error">Audio problem</string>
-
-    <!-- Short message shown for an error with the voice server. -->
-    <string name="voice_server_error">Server error</string>
-
-    <!-- Short message shown when no speech is heard. -->
-    <string name="voice_speech_timeout">No speech heard</string>
-
-    <!-- Short message shown when the server couldn't parse any speech. -->
-    <string name="voice_no_match">No matches found</string>
-
-    <!-- Short message shown when the user initiates voice and voice search is not installed. -->
-    <string name="voice_not_installed">Voice search not installed</string>
-
-    <!-- Short hint shown in candidate view to explain voice input. -->
-    <string name="voice_swipe_hint"><b>Hint:</b> Swipe across keyboard to speak</string>
-
-    <!-- Short hint shown in candidate view to explain that user can speak punctuation. -->
-    <string name="voice_punctuation_hint"><b>Hint:</b> Next time, try speaking punctuation like \"period\", \"comma\", or \"question mark\".</string>
-
-    <!-- Label on button to stop recognition. Must be short to fit on button. -->
-    <string name="cancel">Cancel</string>
-
-    <!-- Label on button when an error occurs -->
-    <string name="ok">OK</string>
+    <!-- Spoken feedback after changing to the symbols keyboard. -->
+    <string name="spoken_description_mode_symbol">Symbols mode</string>
+    <!-- Spoken feedback after changing to the alphanumeric keyboard. -->
+    <string name="spoken_description_mode_alpha">Letters mode</string>
+    <!-- Spoken feedback after changing to the phone dialer keyboard. -->
+    <string name="spoken_description_mode_phone">Phone mode</string>
+    <!-- Spoken feedback after changing to the shifted phone dialer (symbols) keyboard. -->
+    <string name="spoken_description_mode_phone_shift">Phone symbols mode</string>
 
     <!-- Preferences item for enabling speech input -->
-    <string name="voice_input">Voice input</string>
+    <string name="voice_input">Voice input key</string>
 
     <!-- Voice Input modes -->
     <!-- On settings screen, voice input pop-up menu option to show voice key on main keyboard [CHAR LIMIT=20] -->
@@ -298,16 +229,31 @@
     <!-- On settings screen, voice input pop-up menu summary text to never show voice key [CHAR LIMIT=20] -->
     <string name="voice_input_modes_summary_off">Voice input is disabled</string>
 
-    <!-- Title of the dialog for selecting input methods. [CHAR LIMIT=20] -->
-    <string name="selectInputMethod">Select input method</string>
+    <!-- Title for configuring input method settings [CHAR LIMIT=35] -->
+    <string name="configure_input_method">Configure input methods</string>
 
     <!-- Title for input language selection screen -->
     <string name="language_selection_title">Input languages</string>
-    <!-- Title summary for input language selection screen -->
-    <string name="language_selection_summary">Slide finger on spacebar to change language</string>
+
+    <!-- Title for dialog option that lets user mark a particular time in the log for later review by experts [CHAR LIMIT=38] -->
+    <string name="note_timestamp_for_researchlog">Note timestamp in log</string>
+    <!-- Toast notification message that the time has been marked for later review. [CHAR LIMIT=25] -->
+    <string name="notify_recorded_timestamp">Recorded timestamp</string>
+
+    <!-- Title for dialog option to let users cancel logging and delete log for this session [CHAR LIMIT=35] -->
+    <string name="do_not_log_this_session">Do not log this session</string>
+    <!-- Toast notification that the system is processing the request to delete the log for this session [CHAR LIMIT=35] -->
+    <string name="notify_session_log_deleting">Deleting session log</string>
+    <!-- Toast notification that the system has successfully deleted the log for this session [CHAR LIMIT=35] -->
+    <string name="notify_session_log_deleted">Session log deleted</string>
+    <!-- Toast notification that the system has failed to delete the log for this session [CHAR LIMIT=35] -->
+    <string name="notify_session_log_not_deleted">Session log NOT deleted</string>
+
+    <!-- Preference for input language selection -->
+    <string name="select_language">Input languages</string>
 
     <!-- Add to dictionary hint -->
-    <string name="hint_add_to_dictionary">\u2190 Touch again to save</string>
+    <string name="hint_add_to_dictionary">Touch again to save</string>
 
     <!-- Inform the user that a particular language has an available dictionary -->
     <string name="has_dictionary">Dictionary available</string>
@@ -316,98 +262,62 @@
     <string name="prefs_enable_log">Enable user feedback</string>
     <!-- Description for enabling to send user statistics to Google -->
     <string name="prefs_description_log">Help improve this input method editor by automatically sending usage statistics and crash reports to Google.</string>
-    <!-- Preferences item for enabling to correct suggestions by touching words you have typed [CHAR LIMIT= 35] -->
-    <string name="prefs_enable_recorrection">Touch to correct words</string>
-    <!-- The summary for the preferences item for enabling to correct suggestions by touching words you have typed [CHAR LIMIT= 100] -->
-    <string name="prefs_enable_recorrection_summary">Touch entered words to correct them, only when suggestions are visible</string>
 
     <!-- Title of the item to change the keyboard theme [CHAR LIMIT=20]-->
     <string name="keyboard_layout">Keyboard theme</string>
 
-    <!-- Description for Czech keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_cs_keyboard">Czech Keyboard</string>
-    <!-- Description for Arabic keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_ar_keyboard">Arabic Keyboard</string>
-    <!-- Description for Danish keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_da_keyboard">Danish Keyboard</string>
-    <!-- Description for German keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_de_keyboard">German Keyboard</string>
-    <!-- Description for German QWERTY keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_de_qwerty_keyboard">German QWERTY Keyboard</string>
-    <!-- Description for English (United Kingdom) keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_en_GB_keyboard">English (UK) Keyboard</string>
-    <!-- Description for English (United States) keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_en_US_keyboard">English (US) Keyboard</string>
-    <!-- Description for Spanish keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_es_keyboard">Spanish Keyboard</string>
-    <!-- Description for Finnish keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_fi_keyboard">Finnish Keyboard</string>
-    <!-- Description for French keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_fr_keyboard">French Keyboard</string>
-    <!-- Description for French (Canada) keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_fr_CA_keyboard">French (Canada) Keyboard</string>
-    <!-- Description for French (Switzerland) keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_fr_CH_keyboard">French (Switzerland) Keyboard</string>
-    <!-- Description for Croatian keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_hr_keyboard">Croatian Keyboard</string>
-    <!-- Description for Hungarian keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_hu_keyboard">Hungarian Keyboard</string>
-    <!-- Description for Hebrew keyboard subtype [CHAR LIMIT=35] -->
-    <!-- Java uses the deprecated "iw" code instead of the standard "he" code -->
-    <string name="subtype_mode_iw_keyboard">Hebrew Keyboard</string>
-    <!-- Description for Italian keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_it_keyboard">Italian Keyboard</string>
-    <!-- Description for Norwegian keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_nb_keyboard">Norwegian Keyboard</string>
-    <!-- Description for Dutch keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_nl_keyboard">Dutch Keyboard</string>
-    <!-- Description for Polish keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_pl_keyboard">Polish Keyboard</string>
-    <!-- Description for Portuguese keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_pt_keyboard">Portuguese Keyboard</string>
-    <!-- Description for Russian keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_ru_keyboard">Russian Keyboard</string>
-    <!-- Description for Serbian keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_sr_keyboard">Serbian Keyboard</string>
-    <!-- Description for Swedish keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_sv_keyboard">Swedish Keyboard</string>
-    <!-- Description for Turkish keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_tr_keyboard">Turkish Keyboard</string>
-    <!-- Description for Afrikaans voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_af_voice">Afrikaans Voice</string>
-    <!-- Description for Czech voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_cs_voice">Czech Voice</string>
-    <!-- Description for German voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_de_voice">German Voice</string>
-    <!-- Description for English voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_en_voice">English Voice</string>
-    <!-- Description for Spanish voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_es_voice">Spanish Voice</string>
-    <!-- Description for French voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_fr_voice">French Voice</string>
-    <!-- Description for Italian voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_it_voice">Italian Voice</string>
-    <!-- Description for Japanese voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_ja_voice">Japanese Voice</string>
-    <!-- Description for Korean voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_ko_voice">Korean Voice</string>
-    <!-- Description for Dutch voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_nl_voice">Dutch Voice</string>
-    <!-- Description for Polish voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_pl_voice">Polish Voice</string>
-    <!-- Description for Portuguese voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_pt_voice">Portuguese Voice</string>
-    <!-- Description for Russian voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_ru_voice">Russian Voice</string>
-    <!-- Description for Turkish voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_tr_voice">Turkish Voice</string>
-    <!-- Description for Chinese, Yue voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_yue_voice">Chinese, Yue Voice</string>
-    <!-- Description for Chinese, Mandarin voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_zh_voice">Chinese, Mandarin Voice</string>
-    <!-- Description for isiZulu voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_zu_voice">isiZulu Voice</string>
+    <!-- Description for English (United Kingdom) keyboard subtype [CHAR LIMIT=25] -->
+    <string name="subtype_en_GB">English (UK)</string>
+    <!-- Description for English (United States) keyboard subtype [CHAR LIMIT=25] -->
+    <string name="subtype_en_US">English (US)</string>
+    <!-- Description for English (United Kingdom) keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
+         This should be identical to subtype_en_GB aside from the trailing (%s). -->
+    <string name="subtype_with_layout_en_GB">English (UK) (<xliff:g id="layout">%s</xliff:g>)</string>
+    <!-- Description for English (United States) keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
+         This should be identical to subtype_en_US aside from the trailing (%s). -->
+    <string name="subtype_with_layout_en_US">English (US) (<xliff:g id="layout">%s</xliff:g>)</string>
+    <!-- Description for language agnostic keyboard subtype [CHAR LIMIT=25] -->
+    <string name="subtype_no_language">No language</string>
+    <!-- Description for language agnostic QWERTY keyboard subtype [CHAR LIMIT=25] -->
+    <string name="subtype_no_language_qwerty">No language (QWERTY)</string>
+    <!-- Description for language agnostic QWERTZ keyboard subtype [CHAR LIMIT=25] -->
+    <string name="subtype_no_language_qwertz">No language (QWERTZ)</string>
+    <!-- Description for language agnostic AZERTY keyboard subtype [CHAR LIMIT=25] -->
+    <string name="subtype_no_language_azerty">No language (AZERTY)</string>
+    <!-- Description for language agnostic Dvorak keyboard subtype [CHAR LIMIT=25] -->
+    <string name="subtype_no_language_dvorak">No language (Dvorak)</string>
+    <!-- Description for language agnostic Colemak keyboard subtype [CHAR LIMIT=25] -->
+    <string name="subtype_no_language_colemak">No language (Colemak)</string>
+    <!-- Description for language agnostic PC QWERTY keyboard subtype [CHAR LIMIT=25] -->
+    <string name="subtype_no_language_pcqwerty">No language (PC)</string>
+
+    <!-- Title of the preference settings for custom input styles (language and keyboard layout pairs) [CHAR LIMIT=35]-->
+    <string name="custom_input_styles_title">Custom input styles</string>
+    <!-- Title of the option menu to add a new style entry in the preference settings [CHAR LIMIT=16] -->
+    <string name="add_style">Add style</string>
+    <!-- Title of the button to add custom style entry in the settings dialog [CHAR LIMIT=15] -->
+    <string name="add">Add</string>
+    <!-- Title of the button to remove a custom style entry in the settings dialog [CHAR LIMIT=15] -->
+    <string name="remove">Remove</string>
+    <!-- Title of the button to save a custom style entry in the settings dialog [CHAR LIMIT=15] -->
+    <string name="save">Save</string>
+    <!-- Title of the spinner for choosing a language of custom style in the settings dialog [CHAR LIMIT=15] -->
+    <string name="subtype_locale">Language</string>
+    <!-- Title of the spinner for choosing a keyboard layout of custom style in the settings dialog [CHAR LIMIT=15] -->
+    <string name="keyboard_layout_set">Layout</string>
+    <!-- The message of the dialog to note that a custom input style needs to be enabled. [CHAR LIMIT=64] -->
+    <string name="custom_input_style_note_message">"Your custom input style needs to be enabled before you start using it. Do you want to enable it now?"</string>
+    <!-- Title of the button to enable a custom input style entry in the settings dialog [CHAR LIMIT=15] -->
+    <string name="enable">Enable</string>
+    <!-- Title of the button to postpone enabling a custom input style entry in the settings dialog [CHAR LIMIT=15] -->
+    <string name="not_now">Not now</string>
+    <!-- Toast text to describe the same input style already exists [CHAR LIMIT=64]-->
+    <string name="custom_input_style_already_exists">"The same input style already exists: <xliff:g id="input_style_name">%s</xliff:g>"</string>
 
     <!-- Title of an option for usability study mode -->
     <string name="prefs_usability_study_mode">Usability study mode</string>
+    <!-- Title of the settings for keypress vibration duration -->
+    <string name="prefs_keypress_vibration_duration_settings">Keypress vibration duration settings</string>
+    <!-- Title of the settings for keypress sound volume -->
+    <string name="prefs_keypress_sound_volume_settings">Keypress sound volume settings</string>
 </resources>

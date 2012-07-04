@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2010, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<resources>
+    <bool name="config_enable_show_voice_key_option">false</bool>
+    <bool name="config_enable_show_popup_on_keypress_option">false</bool>
+    <bool name="config_enable_bigram_suggestions_option">false</bool>
+    <!-- Whether or not Popup on key press is enabled by default -->
+    <bool name="config_default_popup_preview">false</bool>
+    <bool name="config_default_sound_enabled">true</bool>
+    <bool name="config_auto_correction_spacebar_led_enabled">false</bool>
+    <!-- This configuration is the index of the array {@link KeyboardSwitcher.KEYBOARD_THEMES}. -->
+    <string name="config_default_keyboard_theme_index" translatable="false">5</string>
+    <integer name="config_max_more_keys_column">5</integer>
+    <!--
+        Configuration for LatinKeyboardView
+    -->
+    <bool name="config_sliding_key_input_enabled">false</bool>
+    <!-- Showing more keys keyboard, just above the touched point if true, aligned to the key if
+         false -->
+    <bool name="config_show_more_keys_keyboard_at_touched_point">true</bool>
+    <!--  Screen metrics for logging.
+            0 = "mdpi phone screen"
+            1 = "hdpi phone screen"
+            2 = "mdpi 11 inch tablet screen"
+            3 = "xhdpi phone screen?"
+            4 = ?
+    -->
+    <integer name="log_screen_metrics">2</integer>
+</resources>

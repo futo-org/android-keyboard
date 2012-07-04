@@ -23,6 +23,13 @@
     <item android:state_single="true"
           android:drawable="@drawable/btn_keyboard_key_dark_normal_holo" />
 
+    <!-- Action keys. -->
+
+    <item android:state_active="true" android:state_pressed="true"
+          android:drawable="@drawable/btn_keyboard_key_dark_pressed_holo" />
+    <item android:state_active="true"
+          android:drawable="@drawable/btn_keyboard_key_dark_active_holo" />
+
     <!-- Toggle keys. Use checkable/checked state. -->
 
     <item android:state_checkable="true" android:state_checked="true" android:state_pressed="true"
@@ -34,7 +41,7 @@
     <item android:state_checkable="true"
           android:drawable="@drawable/btn_keyboard_key_dark_normal_off_holo" />
 
-    <!-- Normal keys -->
+    <!-- Normal keys. -->
 
     <item android:state_pressed="true"
           android:drawable="@drawable/btn_keyboard_key_light_pressed_holo" />

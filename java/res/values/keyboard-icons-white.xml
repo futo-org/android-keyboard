@@ -18,25 +18,22 @@
     <style name="KeyboardIcons">
         <!-- Keyboard icons -->
         <item name="iconShiftKey">@drawable/sym_keyboard_shift</item>
-        <item name="iconToSymbolKeyWithShortcut">@drawable/sym_keyboard_123_mic</item>
         <item name="iconDeleteKey">@drawable/sym_keyboard_delete</item>
         <item name="iconSettingsKey">@drawable/sym_keyboard_settings</item>
-        <item name="iconShortcutKey">@drawable/sym_keyboard_mic</item>
         <item name="iconSpaceKey">@drawable/sym_keyboard_space</item>
-        <item name="iconReturnKey">@drawable/sym_keyboard_return</item>
+        <item name="iconEnterKey">@drawable/sym_keyboard_return</item>ZZ
         <item name="iconSearchKey">@drawable/sym_keyboard_search</item>
         <item name="iconTabKey">@drawable/sym_keyboard_tab</item>
-        <item name="iconShiftedShiftKey">@drawable/sym_keyboard_shift_locked</item>
-        <item name="iconPreviewSpaceKey">@drawable/sym_keyboard_feedback_space</item>
-        <item name="iconPreviewTabKey">@drawable/sym_keyboard_feedback_tab</item>
-        <item name="iconPreviewSettingsKey">@drawable/sym_keyboard_feedback_settings</item>
-        <item name="iconPreviewShortcutKey">@drawable/sym_keyboard_feedback_mic</item>
-        <!-- LatinKeyboard icons -->
-        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
-        <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
-        <item name="spacebarArrowLeftIcon">@drawable/sym_keyboard_language_arrows_left</item>
-        <item name="spacebarArrowRightIcon">@drawable/sym_keyboard_language_arrows_right</item>
-        <item name="spacebarArrowPreviewLeftIcon">@drawable/sym_keyboard_feedback_language_arrows_left</item>
-        <item name="spacebarArrowPreviewRightIcon">@drawable/sym_keyboard_feedback_language_arrows_right</item>
+        <item name="iconShortcutKey">@drawable/sym_keyboard_mic</item>
+        <item name="iconShortcutForLabel">@drawable/sym_keyboard_label_mic</item>
+        <item name="iconSpaceKeyForNumberLayout">@drawable/sym_keyboard_space</item>
+        <item name="iconShiftKeyShifted">@drawable/sym_keyboard_shift_locked</item>
+        <!-- TODO: Needs non-holo disabled shortcut icon drawable -->
+        <item name="iconShortcutKeyDisabled">@drawable/sym_keyboard_voice_off_holo</item>
+        <item name="iconTabKeyPreview">@drawable/sym_keyboard_feedback_tab</item>
+        <item name="iconLanguageSwitchKey">@drawable/sym_keyboard_language_switch</item>
+        <!-- TODO: Needs dedicated black theme ZWNJ and ZWJ icons -->
+        <item name="iconZwnjKey">@drawable/sym_keyboard_zwnj_holo</item>
+        <item name="iconZwjKey">@drawable/sym_keyboard_zwj_holo</item>
     </style>
 </resources>

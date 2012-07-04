@@ -23,8 +23,6 @@ import android.util.Log;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CompatUtils {
     private static final String TAG = CompatUtils.class.getSimpleName();
@@ -32,28 +30,17 @@ public class CompatUtils {
     // TODO: Can these be constants instead of literal String constants?
     private static final String INPUT_METHOD_SUBTYPE_SETTINGS =
             "android.settings.INPUT_METHOD_SUBTYPE_SETTINGS";
-    private static final String INPUT_LANGUAGE_SELECTION =
-            "com.android.inputmethod.latin.INPUT_LANGUAGE_SELECTION";
 
     public static Intent getInputLanguageSelectionIntent(String inputMethodId,
             int flagsForSubtypeSettings) {
-        final String action;
-        Intent intent;
-        if (InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED
-                /* android.os.Build.VERSION_CODES.HONEYCOMB */
-                && android.os.Build.VERSION.SDK_INT >=  11) {
-            // Refer to android.provider.Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS
-            action = INPUT_METHOD_SUBTYPE_SETTINGS;
-            intent = new Intent(action);
-            if (!TextUtils.isEmpty(inputMethodId)) {
-                intent.putExtra(EXTRA_INPUT_METHOD_ID, inputMethodId);
-            }
-            if (flagsForSubtypeSettings > 0) {
-                intent.setFlags(flagsForSubtypeSettings);
-            }
-        } else {
-            action = INPUT_LANGUAGE_SELECTION;
-            intent = new Intent(action);
+        // Refer to android.provider.Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS
+        final String action = INPUT_METHOD_SUBTYPE_SETTINGS;
+        final Intent intent = new Intent(action);
+        if (!TextUtils.isEmpty(inputMethodId)) {
+            intent.putExtra(EXTRA_INPUT_METHOD_ID, inputMethodId);
+        }
+        if (flagsForSubtypeSettings > 0) {
+            intent.setFlags(flagsForSubtypeSettings);
         }
         return intent;
     }
@@ -141,16 +128,5 @@ public class CompatUtils {
         } catch (Exception e) {
             Log.e(TAG, "Exception in setFieldValue: " + e.getClass().getSimpleName());
         }
-    }
-
-    public static List<InputMethodSubtypeCompatWrapper> copyInputMethodSubtypeListToWrapper(
-            Object listObject) {
-        if (!(listObject instanceof List<?>)) return null;
-        final List<InputMethodSubtypeCompatWrapper> subtypes =
-                new ArrayList<InputMethodSubtypeCompatWrapper>();
-        for (Object o: (List<?>)listObject) {
-            subtypes.add(new InputMethodSubtypeCompatWrapper(o));
-        }
-        return subtypes;
     }
 }

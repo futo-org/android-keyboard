@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2012, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+>
+    <!-- Navigate more keys style -->
+    <switch>
+        <case
+            latin:imeAction="actionNext"
+            latin:navigatePrevious="true"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle"
+                latin:keyLabelFlags="hasPopupHint|preserveCase"
+                latin:moreKeys="!text/action_previous_as_more_key" />
+        </case>
+        <case
+            latin:imeAction="actionNext"
+            latin:navigatePrevious="false"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle" />
+        </case>
+        <case
+            latin:imeAction="actionPrevious"
+            latin:navigateNext="true"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle"
+                latin:keyLabelFlags="hasPopupHint|preserveCase"
+                latin:moreKeys="!text/action_next_as_more_key" />
+        </case>
+        <case
+            latin:imeAction="actionPrevious"
+            latin:navigateNext="false"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle" />
+        </case>
+        <!-- imeAction!="actionNext" and imeAction!="actionPrevious" -->
+        <case
+            latin:navigateNext="true"
+            latin:navigatePrevious="true"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle"
+                latin:keyLabelFlags="hasPopupHint|preserveCase"
+                latin:moreKeys="!fixedColumnOrder!2,!needsDividers!,!text/action_previous_as_more_key,!text/action_next_as_more_key" />
+        </case>
+        <case
+            latin:navigateNext="true"
+            latin:navigatePrevious="false"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle"
+                latin:keyLabelFlags="hasPopupHint|preserveCase"
+                latin:moreKeys="!text/action_next_as_more_key" />
+        </case>
+        <case
+            latin:navigateNext="false"
+            latin:navigatePrevious="true"
+        >
+            <key-style
+                latin:styleName="navigateMoreKeysStyle"
+                latin:keyLabelFlags="hasPopupHint|preserveCase"
+                latin:moreKeys="!text/action_previous_as_more_key" />
+        </case>
+        <!-- naviagteNext="false" and navigatePrevious="false" -->
+        <default>
+            <key-style
+                latin:styleName="navigateMoreKeysStyle" />
+        </default>
+    </switch>
+    <!-- Enter key style -->
+    <key-style
+        latin:styleName="defaultEnterKeyStyle"
+        latin:code="!code/key_enter"
+        latin:keyIcon="!icon/enter_key"
+        latin:keyLabelFlags="preserveCase|autoXScale|followKeyLabelRatio"
+        latin:keyActionFlags="noKeyPreview"
+        latin:backgroundType="functional"
+        latin:parentStyle="navigateMoreKeysStyle" />
+    <key-style
+        latin:styleName="defaultActionKeyStyle"
+        latin:code="!code/key_action_enter"
+        latin:keyIcon="!icon/undefined"
+        latin:backgroundType="action"
+        latin:parentStyle="defaultEnterKeyStyle" />
+    <switch>
+        <!-- Shift + Enter in textMultiLine field. -->
+        <case
+            latin:isMultiLine="true"
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:parentStyle="defaultEnterKeyStyle" />
+        </case>
+        <case
+            latin:imeAction="actionGo"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keyLabel="!text/label_go_key"
+                latin:parentStyle="defaultActionKeyStyle" />
+        </case>
+        <case
+            latin:imeAction="actionNext"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keyLabel="!text/label_next_key"
+                latin:parentStyle="defaultActionKeyStyle" />
+        </case>
+        <case
+            latin:imeAction="actionPrevious"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keyLabel="!text/label_previous_key"
+                latin:parentStyle="defaultActionKeyStyle" />
+        </case>
+        <case
+            latin:imeAction="actionDone"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keyLabel="!text/label_done_key"
+                latin:parentStyle="defaultActionKeyStyle" />
+        </case>
+        <case
+            latin:imeAction="actionSend"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keyLabel="!text/label_send_key"
+                latin:parentStyle="defaultActionKeyStyle" />
+        </case>
+        <case
+            latin:imeAction="actionSearch"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keyIcon="!icon/search_key"
+                latin:parentStyle="defaultActionKeyStyle" />
+        </case>
+        <case
+            latin:imeAction="actionCustomLabel"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keyLabelFlags="fromCustomActionLabel"
+                latin:parentStyle="defaultActionKeyStyle" />
+        </case>
+        <!-- imeAction is either actionNone or actionUnspecified. -->
+        <default>
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:parentStyle="defaultEnterKeyStyle" />
+        </default>
+    </switch>
+</merge>

@@ -16,48 +16,41 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.compat.InputMethodInfoCompatWrapper;
-import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
-import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
-import com.android.inputmethod.compat.InputTypeCompatUtils;
-import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardId;
-
 import android.content.Context;
-import android.content.res.Configuration;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
-import android.text.InputType;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.view.inputmethod.EditorInfo;
+
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 
 public class Utils {
-    private static final String TAG = Utils.class.getSimpleName();
-    private static final int MINIMUM_SAFETY_NET_CHAR_LENGTH = 4;
-    private static boolean DBG = LatinImeLogger.sDBG;
-    private static boolean DBG_EDIT_DISTANCE = false;
-
     private Utils() {
-        // Intentional empty constructor for utility class.
+        // This utility class is not publicly instantiable.
     }
 
     /**
@@ -111,85 +104,6 @@ public class Utils {
         }
     }
 
-    public static boolean hasMultipleEnabledIMEsOrSubtypes(InputMethodManagerCompatWrapper imm) {
-        final List<InputMethodInfoCompatWrapper> enabledImis = imm.getEnabledInputMethodList();
-
-        // Filters out IMEs that have auxiliary subtypes only (including either implicitly or
-        // explicitly enabled ones).
-        final ArrayList<InputMethodInfoCompatWrapper> filteredImis =
-                new ArrayList<InputMethodInfoCompatWrapper>();
-
-        outerloop:
-        for (InputMethodInfoCompatWrapper imi : enabledImis) {
-            // We can return true immediately after we find two or more filtered IMEs.
-            if (filteredImis.size() > 1) return true;
-            final List<InputMethodSubtypeCompatWrapper> subtypes =
-                    imm.getEnabledInputMethodSubtypeList(imi, true);
-            // IMEs that have no subtypes should be included.
-            if (subtypes.isEmpty()) {
-                filteredImis.add(imi);
-                continue;
-            }
-            // IMEs that have one or more non-auxiliary subtypes should be included.
-            for (InputMethodSubtypeCompatWrapper subtype : subtypes) {
-                if (!subtype.isAuxiliary()) {
-                    filteredImis.add(imi);
-                    continue outerloop;
-                }
-            }
-        }
-
-        return filteredImis.size() > 1
-        // imm.getEnabledInputMethodSubtypeList(null, false) will return the current IME's enabled
-        // input method subtype (The current IME should be LatinIME.)
-                || imm.getEnabledInputMethodSubtypeList(null, false).size() > 1;
-    }
-
-    public static String getInputMethodId(InputMethodManagerCompatWrapper imm, String packageName) {
-        return getInputMethodInfo(imm, packageName).getId();
-    }
-
-    public static InputMethodInfoCompatWrapper getInputMethodInfo(
-            InputMethodManagerCompatWrapper imm, String packageName) {
-        for (final InputMethodInfoCompatWrapper imi : imm.getEnabledInputMethodList()) {
-            if (imi.getPackageName().equals(packageName))
-                return imi;
-        }
-        throw new RuntimeException("Can not find input method id for " + packageName);
-    }
-
-    public static boolean shouldBlockedBySafetyNetForAutoCorrection(SuggestedWords suggestions,
-            Suggest suggest) {
-        // Safety net for auto correction.
-        // Actually if we hit this safety net, it's actually a bug.
-        if (suggestions.size() <= 1 || suggestions.mTypedWordValid) return false;
-        // If user selected aggressive auto correction mode, there is no need to use the safety
-        // net.
-        if (suggest.isAggressiveAutoCorrectionMode()) return false;
-        CharSequence typedWord = suggestions.getWord(0);
-        // If the length of typed word is less than MINIMUM_SAFETY_NET_CHAR_LENGTH,
-        // we should not use net because relatively edit distance can be big.
-        if (typedWord.length() < MINIMUM_SAFETY_NET_CHAR_LENGTH) return false;
-        CharSequence candidateWord = suggestions.getWord(1);
-        final int typedWordLength = typedWord.length();
-        final int maxEditDistanceOfNativeDictionary = typedWordLength < 5 ? 2 : typedWordLength / 2;
-        final int distance = Utils.editDistance(typedWord, candidateWord);
-        if (DBG) {
-            Log.d(TAG, "Autocorrected edit distance = " + distance
-                    + ", " + maxEditDistanceOfNativeDictionary);
-        }
-        if (distance > maxEditDistanceOfNativeDictionary) {
-            if (DBG) {
-                Log.d(TAG, "Safety net: before = " + typedWord + ", after = " + candidateWord);
-                Log.w(TAG, "(Error) The edit distance of this correction exceeds limit. "
-                        + "Turning off auto-correction.");
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     /* package */ static class RingCharBuffer {
         private static RingCharBuffer sRingCharBuffer = new RingCharBuffer();
         private static final char PLACEHOLDER_DELIMITER_CHAR = '\uFFFC';
@@ -197,7 +111,6 @@ public class Utils {
         /* package */ static final int BUFSIZE = 20;
         private InputMethodService mContext;
         private boolean mEnabled = false;
-        private boolean mUsabilityStudy = false;
         private int mEnd = 0;
         /* package */ int mLength = 0;
         private char[] mCharBuf = new char[BUFSIZE];
@@ -212,21 +125,19 @@ public class Utils {
         }
         public static RingCharBuffer init(InputMethodService context, boolean enabled,
                 boolean usabilityStudy) {
+            if (!(enabled || usabilityStudy)) return null;
             sRingCharBuffer.mContext = context;
-            sRingCharBuffer.mEnabled = enabled || usabilityStudy;
-            sRingCharBuffer.mUsabilityStudy = usabilityStudy;
+            sRingCharBuffer.mEnabled = true;
             UsabilityStudyLogUtils.getInstance().init(context);
             return sRingCharBuffer;
         }
-        private int normalize(int in) {
+        private static int normalize(int in) {
             int ret = in % BUFSIZE;
             return ret < 0 ? ret + BUFSIZE : ret;
         }
+        // TODO: accept code points
         public void push(char c, int x, int y) {
             if (!mEnabled) return;
-            if (mUsabilityStudy) {
-                UsabilityStudyLogUtils.getInstance().writeChar(c, x, y);
-            }
             mCharBuf[mEnd] = c;
             mXBuf[mEnd] = x;
             mYBuf[mEnd] = y;
@@ -293,116 +204,29 @@ public class Utils {
         }
     }
 
-
-    /* Damerau-Levenshtein distance */
-    public static int editDistance(CharSequence s, CharSequence t) {
-        if (s == null || t == null) {
-            throw new IllegalArgumentException("editDistance: Arguments should not be null.");
-        }
-        final int sl = s.length();
-        final int tl = t.length();
-        int[][] dp = new int [sl + 1][tl + 1];
-        for (int i = 0; i <= sl; i++) {
-            dp[i][0] = i;
-        }
-        for (int j = 0; j <= tl; j++) {
-            dp[0][j] = j;
-        }
-        for (int i = 0; i < sl; ++i) {
-            for (int j = 0; j < tl; ++j) {
-                final char sc = Character.toLowerCase(s.charAt(i));
-                final char tc = Character.toLowerCase(t.charAt(j));
-                final int cost = sc == tc ? 0 : 1;
-                dp[i + 1][j + 1] = Math.min(
-                        dp[i][j + 1] + 1, Math.min(dp[i + 1][j] + 1, dp[i][j] + cost));
-                // Overwrite for transposition cases
-                if (i > 0 && j > 0
-                        && sc == Character.toLowerCase(t.charAt(j - 1))
-                        && tc == Character.toLowerCase(s.charAt(i - 1))) {
-                    dp[i + 1][j + 1] = Math.min(dp[i + 1][j + 1], dp[i - 1][j - 1] + cost);
-                }
-            }
-        }
-        if (DBG_EDIT_DISTANCE) {
-            Log.d(TAG, "editDistance:" + s + "," + t);
-            for (int i = 0; i < dp.length; ++i) {
-                StringBuffer sb = new StringBuffer();
-                for (int j = 0; j < dp[i].length; ++j) {
-                    sb.append(dp[i][j]).append(',');
-                }
-                Log.d(TAG, i + ":" + sb.toString());
-            }
-        }
-        return dp[sl][tl];
-    }
-
     // Get the current stack trace
-    public static String getStackTrace() {
+    public static String getStackTrace(final int limit) {
         StringBuilder sb = new StringBuilder();
         try {
             throw new RuntimeException();
         } catch (RuntimeException e) {
             StackTraceElement[] frames = e.getStackTrace();
             // Start at 1 because the first frame is here and we don't care about it
-            for (int j = 1; j < frames.length; ++j) sb.append(frames[j].toString() + "\n");
+            for (int j = 1; j < frames.length && j < limit + 1; ++j) {
+                sb.append(frames[j].toString() + "\n");
+            }
         }
         return sb.toString();
     }
 
-    // In dictionary.cpp, getSuggestion() method,
-    // suggestion scores are computed using the below formula.
-    // original score
-    //  := pow(mTypedLetterMultiplier (this is defined 2),
-    //         (the number of matched characters between typed word and suggested word))
-    //     * (individual word's score which defined in the unigram dictionary,
-    //         and this score is defined in range [0, 255].)
-    // Then, the following processing is applied.
-    //     - If the dictionary word is matched up to the point of the user entry
-    //       (full match up to min(before.length(), after.length())
-    //       => Then multiply by FULL_MATCHED_WORDS_PROMOTION_RATE (this is defined 1.2)
-    //     - If the word is a true full match except for differences in accents or
-    //       capitalization, then treat it as if the score was 255.
-    //     - If before.length() == after.length()
-    //       => multiply by mFullWordMultiplier (this is defined 2))
-    // So, maximum original score is pow(2, min(before.length(), after.length())) * 255 * 2 * 1.2
-    // For historical reasons we ignore the 1.2 modifier (because the measure for a good
-    // autocorrection threshold was done at a time when it didn't exist). This doesn't change
-    // the result.
-    // So, we can normalize original score by dividing pow(2, min(b.l(),a.l())) * 255 * 2.
-    private static final int MAX_INITIAL_SCORE = 255;
-    private static final int TYPED_LETTER_MULTIPLIER = 2;
-    private static final int FULL_WORD_MULTIPLIER = 2;
-    private static final int S_INT_MAX = 2147483647;
-    public static double calcNormalizedScore(CharSequence before, CharSequence after, int score) {
-        final int beforeLength = before.length();
-        final int afterLength = after.length();
-        if (beforeLength == 0 || afterLength == 0) return 0;
-        final int distance = editDistance(before, after);
-        // If afterLength < beforeLength, the algorithm is suggesting a word by excessive character
-        // correction.
-        int spaceCount = 0;
-        for (int i = 0; i < afterLength; ++i) {
-            if (after.charAt(i) == Keyboard.CODE_SPACE) {
-                ++spaceCount;
-            }
-        }
-        if (spaceCount == afterLength) return 0;
-        final double maximumScore = score == S_INT_MAX ? S_INT_MAX : MAX_INITIAL_SCORE
-                * Math.pow(
-                        TYPED_LETTER_MULTIPLIER, Math.min(beforeLength, afterLength - spaceCount))
-                * FULL_WORD_MULTIPLIER;
-        // add a weight based on edit distance.
-        // distance <= max(afterLength, beforeLength) == afterLength,
-        // so, 0 <= distance / afterLength <= 1
-        final double weight = 1.0 - (double) distance / afterLength;
-        return (score / maximumScore) * weight;
+    public static String getStackTrace() {
+        return getStackTrace(Integer.MAX_VALUE);
     }
 
     public static class UsabilityStudyLogUtils {
+        // TODO: remove code duplication with ResearchLog class
         private static final String USABILITY_TAG = UsabilityStudyLogUtils.class.getSimpleName();
         private static final String FILENAME = "log.txt";
-        private static final UsabilityStudyLogUtils sInstance =
-                new UsabilityStudyLogUtils();
         private final Handler mLoggingHandler;
         private File mFile;
         private File mDirectory;
@@ -413,7 +237,7 @@ public class Utils {
 
         private UsabilityStudyLogUtils() {
             mDate = new Date();
-            mDateFormat = new SimpleDateFormat("dd MMM HH:mm:ss.SSS");
+            mDateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss.SSSZ");
 
             HandlerThread handlerThread = new HandlerThread("UsabilityStudyLogUtils logging task",
                     Process.THREAD_PRIORITY_BACKGROUND);
@@ -421,8 +245,13 @@ public class Utils {
             mLoggingHandler = new Handler(handlerThread.getLooper());
         }
 
+        // Initialization-on-demand holder
+        private static class OnDemandInitializationHolder {
+            public static final UsabilityStudyLogUtils sInstance = new UsabilityStudyLogUtils();
+        }
+
         public static UsabilityStudyLogUtils getInstance() {
-            return sInstance;
+            return OnDemandInitializationHolder.sInstance;
         }
 
         public void init(InputMethodService ims) {
@@ -441,8 +270,8 @@ public class Utils {
             }
         }
 
-        public void writeBackSpace() {
-            UsabilityStudyLogUtils.getInstance().write("<backspace>\t0\t0");
+        public static void writeBackSpace(int x, int y) {
+            UsabilityStudyLogUtils.getInstance().write("<backspace>\t" + x + "\t" + y);
         }
 
         public void writeChar(char c, int x, int y) {
@@ -480,32 +309,89 @@ public class Utils {
             });
         }
 
+        private synchronized String getBufferedLogs() {
+            mWriter.flush();
+            StringBuilder sb = new StringBuilder();
+            BufferedReader br = getBufferedReader();
+            String line;
+            try {
+                while ((line = br.readLine()) != null) {
+                    sb.append('\n');
+                    sb.append(line);
+                }
+            } catch (IOException e) {
+                Log.e(USABILITY_TAG, "Can't read log file.");
+            } finally {
+                if (LatinImeLogger.sDBG) {
+                    Log.d(USABILITY_TAG, "Got all buffered logs\n" + sb.toString());
+                }
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    // ignore.
+                }
+            }
+            return sb.toString();
+        }
+
+        public void emailResearcherLogsAll() {
+            mLoggingHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    final Date date = new Date();
+                    date.setTime(System.currentTimeMillis());
+                    final String currentDateTimeString =
+                            new SimpleDateFormat("yyyyMMdd-HHmmssZ").format(date);
+                    if (mFile == null) {
+                        Log.w(USABILITY_TAG, "No internal log file found.");
+                        return;
+                    }
+                    if (mIms.checkCallingOrSelfPermission(
+                                android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                                        != PackageManager.PERMISSION_GRANTED) {
+                        Log.w(USABILITY_TAG, "Doesn't have the permission WRITE_EXTERNAL_STORAGE");
+                        return;
+                    }
+                    mWriter.flush();
+                    final String destPath = Environment.getExternalStorageDirectory()
+                            + "/research-" + currentDateTimeString + ".log";
+                    final File destFile = new File(destPath);
+                    try {
+                        final FileChannel src = (new FileInputStream(mFile)).getChannel();
+                        final FileChannel dest = (new FileOutputStream(destFile)).getChannel();
+                        src.transferTo(0, src.size(), dest);
+                        src.close();
+                        dest.close();
+                    } catch (FileNotFoundException e1) {
+                        Log.w(USABILITY_TAG, e1);
+                        return;
+                    } catch (IOException e2) {
+                        Log.w(USABILITY_TAG, e2);
+                        return;
+                    }
+                    if (destFile == null || !destFile.exists()) {
+                        Log.w(USABILITY_TAG, "Dest file doesn't exist.");
+                        return;
+                    }
+                    final Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    if (LatinImeLogger.sDBG) {
+                        Log.d(USABILITY_TAG, "Destination file URI is " + destFile.toURI());
+                    }
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_STREAM, Uri.parse("file://" + destPath));
+                    intent.putExtra(Intent.EXTRA_SUBJECT,
+                            "[Research Logs] " + currentDateTimeString);
+                    mIms.startActivity(intent);
+                }
+            });
+        }
+
         public void printAll() {
             mLoggingHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mWriter.flush();
-                    StringBuilder sb = new StringBuilder();
-                    BufferedReader br = getBufferedReader();
-                    String line;
-                    try {
-                        while ((line = br.readLine()) != null) {
-                            sb.append('\n');
-                            sb.append(line);
-                        }
-                    } catch (IOException e) {
-                        Log.e(USABILITY_TAG, "Can't read log file.");
-                    } finally {
-                        if (LatinImeLogger.sDBG) {
-                            Log.d(USABILITY_TAG, "output all logs\n" + sb.toString());
-                        }
-                        mIms.getCurrentInputConnection().commitText(sb.toString(), 0);
-                        try {
-                            br.close();
-                        } catch (IOException e) {
-                            // ignore.
-                        }
-                    }
+                    mIms.getCurrentInputConnection().commitText(getBufferedLogs(), 0);
                 }
             });
         }
@@ -546,134 +432,6 @@ public class Utils {
         }
     }
 
-    public static int getKeyboardMode(EditorInfo attribute) {
-        if (attribute == null)
-            return KeyboardId.MODE_TEXT;
-
-        final int inputType = attribute.inputType;
-        final int variation = inputType & InputType.TYPE_MASK_VARIATION;
-
-        switch (inputType & InputType.TYPE_MASK_CLASS) {
-        case InputType.TYPE_CLASS_NUMBER:
-        case InputType.TYPE_CLASS_DATETIME:
-            return KeyboardId.MODE_NUMBER;
-        case InputType.TYPE_CLASS_PHONE:
-            return KeyboardId.MODE_PHONE;
-        case InputType.TYPE_CLASS_TEXT:
-            if (InputTypeCompatUtils.isEmailVariation(variation)) {
-                return KeyboardId.MODE_EMAIL;
-            } else if (variation == InputType.TYPE_TEXT_VARIATION_URI) {
-                return KeyboardId.MODE_URL;
-            } else if (variation == InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE) {
-                return KeyboardId.MODE_IM;
-            } else if (variation == InputType.TYPE_TEXT_VARIATION_FILTER) {
-                return KeyboardId.MODE_TEXT;
-            } else {
-                return KeyboardId.MODE_TEXT;
-            }
-        default:
-            return KeyboardId.MODE_TEXT;
-        }
-    }
-
-    public static boolean containsInCsv(String key, String csv) {
-        if (csv == null)
-            return false;
-        for (String option : csv.split(",")) {
-            if (option.equals(key))
-                return true;
-        }
-        return false;
-    }
-
-    public static boolean inPrivateImeOptions(String packageName, String key,
-            EditorInfo attribute) {
-        if (attribute == null)
-            return false;
-        return containsInCsv(packageName != null ? packageName + "." + key : key,
-                attribute.privateImeOptions);
-    }
-
-    /**
-     * Returns a main dictionary resource id
-     * @return main dictionary resource id
-     */
-    public static int getMainDictionaryResourceId(Resources res) {
-        final String MAIN_DIC_NAME = "main";
-        String packageName = LatinIME.class.getPackage().getName();
-        return res.getIdentifier(MAIN_DIC_NAME, "raw", packageName);
-    }
-
-    public static void loadNativeLibrary() {
-        try {
-            System.loadLibrary("jni_latinime2");
-        } catch (UnsatisfiedLinkError ule) {
-            Log.e(TAG, "Could not load native library jni_latinime2");
-        }
-    }
-
-    /**
-     * Returns true if a and b are equal ignoring the case of the character.
-     * @param a first character to check
-     * @param b second character to check
-     * @return {@code true} if a and b are equal, {@code false} otherwise.
-     */
-    public static boolean equalsIgnoreCase(char a, char b) {
-        // Some language, such as Turkish, need testing both cases.
-        return a == b
-                || Character.toLowerCase(a) == Character.toLowerCase(b)
-                || Character.toUpperCase(a) == Character.toUpperCase(b);
-    }
-
-    /**
-     * Returns true if a and b are equal ignoring the case of the characters, including if they are
-     * both null.
-     * @param a first CharSequence to check
-     * @param b second CharSequence to check
-     * @return {@code true} if a and b are equal, {@code false} otherwise.
-     */
-    public static boolean equalsIgnoreCase(CharSequence a, CharSequence b) {
-        if (a == b)
-            return true;  // including both a and b are null.
-        if (a == null || b == null)
-            return false;
-        final int length = a.length();
-        if (length != b.length())
-            return false;
-        for (int i = 0; i < length; i++) {
-            if (!equalsIgnoreCase(a.charAt(i), b.charAt(i)))
-                return false;
-        }
-        return true;
-    }
-
-    /**
-     * Returns true if a and b are equal ignoring the case of the characters, including if a is null
-     * and b is zero length.
-     * @param a CharSequence to check
-     * @param b character array to check
-     * @param offset start offset of array b
-     * @param length length of characters in array b
-     * @return {@code true} if a and b are equal, {@code false} otherwise.
-     * @throws IndexOutOfBoundsException
-     *   if {@code offset < 0 || length < 0 || offset + length > data.length}.
-     * @throws NullPointerException if {@code b == null}.
-     */
-    public static boolean equalsIgnoreCase(CharSequence a, char[] b, int offset, int length) {
-        if (offset < 0 || length < 0 || length > b.length - offset)
-            throw new IndexOutOfBoundsException("array.length=" + b.length + " offset=" + offset
-                    + " length=" + length);
-        if (a == null)
-            return length == 0;  // including a is null and b is zero length.
-        if (a.length() != length)
-            return false;
-        for (int i = 0; i < length; i++) {
-            if (!equalsIgnoreCase(a.charAt(i), b[offset + i]))
-                return false;
-        }
-        return true;
-    }
-
     public static float getDipScale(Context context) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return scale;
@@ -684,35 +442,103 @@ public class Utils {
         return (int) (dip * scale + 0.5);
     }
 
-    public static Locale setSystemLocale(Resources res, Locale newLocale) {
-        final Configuration conf = res.getConfiguration();
-        final Locale saveLocale = conf.locale;
-        conf.locale = newLocale;
-        res.updateConfiguration(conf, res.getDisplayMetrics());
-        return saveLocale;
+    public static class Stats {
+        public static void onNonSeparator(final char code, final int x,
+                final int y) {
+            RingCharBuffer.getInstance().push(code, x, y);
+            LatinImeLogger.logOnInputChar();
+        }
+
+        public static void onSeparator(final int code, final int x,
+                final int y) {
+            // TODO: accept code points
+            RingCharBuffer.getInstance().push((char)code, x, y);
+            LatinImeLogger.logOnInputSeparator();
+        }
+
+        public static void onAutoCorrection(final String typedWord, final String correctedWord,
+                final int separatorCode) {
+            if (TextUtils.isEmpty(typedWord)) return;
+            LatinImeLogger.logOnAutoCorrection(typedWord, correctedWord, separatorCode);
+        }
+
+        public static void onAutoCorrectionCancellation() {
+            LatinImeLogger.logOnAutoCorrectionCancelled();
+        }
     }
 
-    private static final HashMap<String, Locale> sLocaleCache = new HashMap<String, Locale>();
+    public static String getDebugInfo(final SuggestedWords suggestions, final int pos) {
+        if (!LatinImeLogger.sDBG) return null;
+        final SuggestedWordInfo wordInfo = suggestions.getInfo(pos);
+        if (wordInfo == null) return null;
+        final String info = wordInfo.getDebugString();
+        if (TextUtils.isEmpty(info)) return null;
+        return info;
+    }
 
-    public static Locale constructLocaleFromString(String localeStr) {
-        if (localeStr == null)
-            return null;
-        synchronized (sLocaleCache) {
-            if (sLocaleCache.containsKey(localeStr))
-                return sLocaleCache.get(localeStr);
-            Locale retval = null;
-            String[] localeParams = localeStr.split("_", 3);
-            if (localeParams.length == 1) {
-                retval = new Locale(localeParams[0]);
-            } else if (localeParams.length == 2) {
-                retval = new Locale(localeParams[0], localeParams[1]);
-            } else if (localeParams.length == 3) {
-                retval = new Locale(localeParams[0], localeParams[1], localeParams[2]);
+    private static final String HARDWARE_PREFIX = Build.HARDWARE + ",";
+    private static final HashMap<String, String> sDeviceOverrideValueMap =
+            new HashMap<String, String>();
+
+    public static String getDeviceOverrideValue(Resources res, int overrideResId, String defValue) {
+        final int orientation = res.getConfiguration().orientation;
+        final String key = overrideResId + "-" + orientation;
+        if (!sDeviceOverrideValueMap.containsKey(key)) {
+            String overrideValue = defValue;
+            for (final String element : res.getStringArray(overrideResId)) {
+                if (element.startsWith(HARDWARE_PREFIX)) {
+                    overrideValue = element.substring(HARDWARE_PREFIX.length());
+                    break;
+                }
             }
-            if (retval != null) {
-                sLocaleCache.put(localeStr, retval);
+            sDeviceOverrideValueMap.put(key, overrideValue);
+        }
+        return sDeviceOverrideValueMap.get(key);
+    }
+
+    private static final HashMap<String, Long> EMPTY_LT_HASH_MAP = new HashMap<String, Long>();
+    private static final String LOCALE_AND_TIME_STR_SEPARATER = ",";
+    public static HashMap<String, Long> localeAndTimeStrToHashMap(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return EMPTY_LT_HASH_MAP;
+        }
+        final String[] ss = str.split(LOCALE_AND_TIME_STR_SEPARATER);
+        final int N = ss.length;
+        if (N < 2 || N % 2 != 0) {
+            return EMPTY_LT_HASH_MAP;
+        }
+        final HashMap<String, Long> retval = new HashMap<String, Long>();
+        for (int i = 0; i < N / 2; ++i) {
+            final String localeStr = ss[i * 2];
+            final long time = Long.valueOf(ss[i * 2 + 1]);
+            retval.put(localeStr, time);
+        }
+        return retval;
+    }
+
+    public static String localeAndTimeHashMapToStr(HashMap<String, Long> map) {
+        if (map == null || map.isEmpty()) {
+            return "";
+        }
+        final StringBuilder builder = new StringBuilder();
+        for (String localeStr : map.keySet()) {
+            if (builder.length() > 0) {
+                builder.append(LOCALE_AND_TIME_STR_SEPARATER);
             }
-            return retval;
+            final Long time = map.get(localeStr);
+            builder.append(localeStr).append(LOCALE_AND_TIME_STR_SEPARATER);
+            builder.append(String.valueOf(time));
+        }
+        return builder.toString();
+    }
+
+    public static void addAllSuggestions(final int dicTypeId, final int dataType,
+            final ArrayList<SuggestedWords.SuggestedWordInfo> suggestions,
+            final Dictionary.WordCallback callback) {
+        for (SuggestedWordInfo suggestion : suggestions) {
+            final String suggestionStr = suggestion.mWord.toString();
+            callback.addWord(suggestionStr.toCharArray(), 0, suggestionStr.length(),
+                    suggestion.mScore, dicTypeId, dataType);
         }
     }
 }

@@ -17,13 +17,15 @@
 <resources>
     <style name="KeyboardTheme" parent="KeyboardIcons">
         <item name="keyboardStyle">@style/Keyboard</item>
-        <item name="latinKeyboardStyle">@style/LatinKeyboard</item>
         <item name="keyboardViewStyle">@style/KeyboardView</item>
-        <item name="popupMiniKeyboardViewStyle">@style/PopupMiniKeyboardView</item>
-        <item name="popupMiniKeyboardPanelStyle">@style/PopupMiniKeyboardPanelStyle</item>
+        <item name="latinKeyboardViewStyle">@style/LatinKeyboardView</item>
+        <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard</item>
+        <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView</item>
+        <item name="moreKeysKeyboardPanelStyle">@style/MoreKeysKeyboardPanelStyle</item>
         <item name="suggestionsStripBackgroundStyle">@style/SuggestionsStripBackgroundStyle</item>
+        <item name="suggestionsViewStyle">@style/SuggestionsViewStyle</item>
+        <item name="moreSuggestionsViewStyle">@style/MoreSuggestionsViewStyle</item>
         <item name="suggestionBackgroundStyle">@style/SuggestionBackgroundStyle</item>
         <item name="suggestionPreviewBackgroundStyle">@style/SuggestionPreviewBackgroundStyle</item>
-        <item name="candidateViewStyle">@style/CandidateViewStyle</item>
     </style>
 </resources>

@@ -27,19 +27,12 @@
             />
 
     <ListPreference
-            android:key="pref_keyboard_layout_20100902"
+            android:key="pref_keyboard_layout_20110916"
             android:title="@string/keyboard_layout"
             android:persistent="true"
             android:entryValues="@array/keyboard_layout_modes_values"
             android:entries="@array/keyboard_layout_modes"
-            android:defaultValue="@string/config_default_keyboard_theme_id"
-            />
-
-    <CheckBoxPreference
-            android:key="use_spacebar_language_switch"
-            android:title="@string/prefs_use_spacebar_language_switch"
-            android:persistent="true"
-            android:defaultValue="false"
+            android:defaultValue="@string/config_default_keyboard_theme_index"
             />
 
     <CheckBoxPreference
@@ -49,4 +42,10 @@
             android:defaultValue="false"
             />
 
+    <CheckBoxPreference
+            android:key="force_non_distinct_multitouch"
+            android:title="@string/prefs_force_non_distinct_multitouch"
+            android:persistent="true"
+            android:defaultValue="false"
+            />
 </PreferenceScreen>

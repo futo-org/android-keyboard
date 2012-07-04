@@ -17,117 +17,110 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
-import android.text.AutoText;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
+
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class loads a dictionary and provides a list of suggestions for a given sequence of
  * characters. This includes corrections and completions.
  */
 public class Suggest implements Dictionary.WordCallback {
-
     public static final String TAG = Suggest.class.getSimpleName();
 
     public static final int APPROX_MAX_WORD_LENGTH = 32;
 
+    // TODO: rename this to CORRECTION_OFF
     public static final int CORRECTION_NONE = 0;
-    public static final int CORRECTION_BASIC = 1;
-    public static final int CORRECTION_FULL = 2;
-    public static final int CORRECTION_FULL_BIGRAM = 3;
+    // TODO: rename this to CORRECTION_ON
+    public static final int CORRECTION_FULL = 1;
 
-    /**
-     * Words that appear in both bigram and unigram data gets multiplier ranging from
-     * BIGRAM_MULTIPLIER_MIN to BIGRAM_MULTIPLIER_MAX depending on the score from
-     * bigram data.
-     */
-    public static final double BIGRAM_MULTIPLIER_MIN = 1.2;
-    public static final double BIGRAM_MULTIPLIER_MAX = 1.5;
-
-    /**
-     * Maximum possible bigram frequency. Will depend on how many bits are being used in data
-     * structure. Maximum bigram frequency will get the BIGRAM_MULTIPLIER_MAX as the multiplier.
-     */
-    public static final int MAXIMUM_BIGRAM_FREQUENCY = 127;
-
+    // It seems the following values are only used for logging.
     public static final int DIC_USER_TYPED = 0;
     public static final int DIC_MAIN = 1;
     public static final int DIC_USER = 2;
-    public static final int DIC_AUTO = 3;
+    public static final int DIC_USER_HISTORY = 3;
     public static final int DIC_CONTACTS = 4;
+    public static final int DIC_WHITELIST = 6;
     // If you add a type of dictionary, increment DIC_TYPE_LAST_ID
-    public static final int DIC_TYPE_LAST_ID = 4;
-
+    // TODO: this value seems unused. Remove it?
+    public static final int DIC_TYPE_LAST_ID = 6;
     public static final String DICT_KEY_MAIN = "main";
     public static final String DICT_KEY_CONTACTS = "contacts";
-    public static final String DICT_KEY_AUTO = "auto";
+    // User dictionary, the system-managed one.
     public static final String DICT_KEY_USER = "user";
-    public static final String DICT_KEY_USER_BIGRAM = "user_bigram";
+    // User history dictionary for the unigram map, internal to LatinIME
+    public static final String DICT_KEY_USER_HISTORY_UNIGRAM = "history_unigram";
+    // User history dictionary for the bigram map, internal to LatinIME
+    public static final String DICT_KEY_USER_HISTORY_BIGRAM = "history_bigram";
     public static final String DICT_KEY_WHITELIST ="whitelist";
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 
-    private AutoCorrection mAutoCorrection;
-
-    private Dictionary mMainDict;
+    private Dictionary mMainDictionary;
+    private ContactsBinaryDictionary mContactsDict;
     private WhitelistDictionary mWhiteListDictionary;
-    private final Map<String, Dictionary> mUnigramDictionaries = new HashMap<String, Dictionary>();
-    private final Map<String, Dictionary> mBigramDictionaries = new HashMap<String, Dictionary>();
+    private final ConcurrentHashMap<String, Dictionary> mUnigramDictionaries =
+            new ConcurrentHashMap<String, Dictionary>();
+    private final ConcurrentHashMap<String, Dictionary> mBigramDictionaries =
+            new ConcurrentHashMap<String, Dictionary>();
 
-    private int mPrefMaxSuggestions = 18;
+    public static final int MAX_SUGGESTIONS = 18;
 
     private static final int PREF_MAX_BIGRAMS = 60;
 
-    private boolean mQuickFixesEnabled;
+    private float mAutoCorrectionThreshold;
 
-    private double mAutoCorrectionThreshold;
-    private int[] mScores = new int[mPrefMaxSuggestions];
-    private int[] mBigramScores = new int[PREF_MAX_BIGRAMS];
-
-    private ArrayList<CharSequence> mSuggestions = new ArrayList<CharSequence>();
-    ArrayList<CharSequence> mBigramSuggestions  = new ArrayList<CharSequence>();
-    private ArrayList<CharSequence> mStringPool = new ArrayList<CharSequence>();
-    private CharSequence mTypedWord;
+    private ArrayList<SuggestedWordInfo> mSuggestions = new ArrayList<SuggestedWordInfo>();
+    private ArrayList<SuggestedWordInfo> mBigramSuggestions = new ArrayList<SuggestedWordInfo>();
+    private CharSequence mConsideredWord;
 
     // TODO: Remove these member variables by passing more context to addWord() callback method
     private boolean mIsFirstCharCapitalized;
     private boolean mIsAllUpperCase;
+    private int mTrailingSingleQuotesCount;
 
-    private int mCorrectionMode = CORRECTION_BASIC;
+    private static final int MINIMUM_SAFETY_NET_CHAR_LENGTH = 4;
 
-    public Suggest(Context context, int dictionaryResId, Locale locale) {
-        init(context, DictionaryFactory.createDictionaryFromManager(context, locale,
-                dictionaryResId));
+    public Suggest(final Context context, final Locale locale) {
+        initAsynchronously(context, locale);
     }
 
-    /* package for test */ Suggest(Context context, File dictionary, long startOffset, long length,
-            Flag[] flagArray) {
-        init(null, DictionaryFactory.createDictionaryForTest(context, dictionary, startOffset,
-                length, flagArray));
-    }
-
-    private void init(Context context, Dictionary mainDict) {
-        mMainDict = mainDict;
+    /* package for test */ Suggest(final Context context, final File dictionary,
+            final long startOffset, final long length, final Locale locale) {
+        final Dictionary mainDict = DictionaryFactory.createDictionaryForTest(context, dictionary,
+                startOffset, length /* useFullEditDistance */, false, locale);
+        mMainDictionary = mainDict;
         addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, mainDict);
         addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, mainDict);
-        mWhiteListDictionary = WhitelistDictionary.init(context);
-        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_WHITELIST, mWhiteListDictionary);
-        mAutoCorrection = new AutoCorrection();
-        initPool();
+        initWhitelistAndAutocorrectAndPool(context, locale);
     }
 
-    private void addOrReplaceDictionary(Map<String, Dictionary> dictionaries, String key,
-            Dictionary dict) {
+    private void initWhitelistAndAutocorrectAndPool(final Context context, final Locale locale) {
+        mWhiteListDictionary = new WhitelistDictionary(context, locale);
+        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_WHITELIST, mWhiteListDictionary);
+    }
+
+    private void initAsynchronously(final Context context, final Locale locale) {
+        resetMainDict(context, locale);
+
+        // TODO: read the whitelist and init the pool asynchronously too.
+        // initPool should be done asynchronously now that the pool is thread-safe.
+        initWhitelistAndAutocorrectAndPool(context, locale);
+    }
+
+    private static void addOrReplaceDictionary(
+            final ConcurrentHashMap<String, Dictionary> dictionaries,
+            final String key, final Dictionary dict) {
         final Dictionary oldDict = (dict == null)
                 ? dictionaries.remove(key)
                 : dictionaries.put(key, dict);
@@ -136,50 +129,47 @@ public class Suggest implements Dictionary.WordCallback {
         }
     }
 
-    public void resetMainDict(Context context, int dictionaryResId, Locale locale) {
-        final Dictionary newMainDict = DictionaryFactory.createDictionaryFromManager(
-                context, locale, dictionaryResId);
-        mMainDict = newMainDict;
-        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, newMainDict);
-        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, newMainDict);
+    public void resetMainDict(final Context context, final Locale locale) {
+        mMainDictionary = null;
+        new Thread("InitializeBinaryDictionary") {
+            @Override
+            public void run() {
+                final DictionaryCollection newMainDict =
+                        DictionaryFactory.createMainDictionaryFromManager(context, locale);
+                addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, newMainDict);
+                addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, newMainDict);
+                mMainDictionary = newMainDict;
+            }
+        }.start();
     }
 
-    private void initPool() {
-        for (int i = 0; i < mPrefMaxSuggestions; i++) {
-            StringBuilder sb = new StringBuilder(getApproxMaxWordLength());
-            mStringPool.add(sb);
-        }
-    }
-
-    public void setQuickFixesEnabled(boolean enabled) {
-        mQuickFixesEnabled = enabled;
-    }
-
-    public int getCorrectionMode() {
-        return mCorrectionMode;
-    }
-
-    public void setCorrectionMode(int mode) {
-        mCorrectionMode = mode;
-    }
-
+    // The main dictionary could have been loaded asynchronously.  Don't cache the return value
+    // of this method.
     public boolean hasMainDictionary() {
-        return mMainDict != null;
+        return null != mMainDictionary && mMainDictionary.isInitialized();
     }
 
-    public Map<String, Dictionary> getUnigramDictionaries() {
+    public Dictionary getMainDictionary() {
+        return mMainDictionary;
+    }
+
+    public ContactsBinaryDictionary getContactsDictionary() {
+        return mContactsDict;
+    }
+
+    public ConcurrentHashMap<String, Dictionary> getUnigramDictionaries() {
         return mUnigramDictionaries;
     }
 
-    public int getApproxMaxWordLength() {
+    public static int getApproxMaxWordLength() {
         return APPROX_MAX_WORD_LENGTH;
     }
 
     /**
      * Sets an optional user dictionary resource to be loaded. The user dictionary is consulted
-     * before the main dictionary, if set.
+     * before the main dictionary, if set. This refers to the system-managed user dictionary.
      */
-    public void setUserDictionary(Dictionary userDictionary) {
+    public void setUserDictionary(UserBinaryDictionary userDictionary) {
         addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_USER, userDictionary);
     }
 
@@ -188,68 +178,28 @@ public class Suggest implements Dictionary.WordCallback {
      * the contacts dictionary by passing null to this method. In this case no contacts dictionary
      * won't be used.
      */
-    public void setContactsDictionary(Dictionary contactsDictionary) {
+    public void setContactsDictionary(ContactsBinaryDictionary contactsDictionary) {
+        mContactsDict = contactsDictionary;
         addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_CONTACTS, contactsDictionary);
         addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_CONTACTS, contactsDictionary);
     }
 
-    public void setAutoDictionary(Dictionary autoDictionary) {
-        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_AUTO, autoDictionary);
+    public void setUserHistoryDictionary(UserHistoryDictionary userHistoryDictionary) {
+        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_USER_HISTORY_UNIGRAM,
+                userHistoryDictionary);
+        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_USER_HISTORY_BIGRAM,
+                userHistoryDictionary);
     }
 
-    public void setUserBigramDictionary(Dictionary userBigramDictionary) {
-        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_USER_BIGRAM, userBigramDictionary);
-    }
-
-    public void setAutoCorrectionThreshold(double threshold) {
+    public void setAutoCorrectionThreshold(float threshold) {
         mAutoCorrectionThreshold = threshold;
     }
 
-    public boolean isAggressiveAutoCorrectionMode() {
-        return (mAutoCorrectionThreshold == 0);
-    }
-
-    /**
-     * Number of suggestions to generate from the input key sequence. This has
-     * to be a number between 1 and 100 (inclusive).
-     * @param maxSuggestions
-     * @throws IllegalArgumentException if the number is out of range
-     */
-    public void setMaxSuggestions(int maxSuggestions) {
-        if (maxSuggestions < 1 || maxSuggestions > 100) {
-            throw new IllegalArgumentException("maxSuggestions must be between 1 and 100");
-        }
-        mPrefMaxSuggestions = maxSuggestions;
-        mScores = new int[mPrefMaxSuggestions];
-        mBigramScores = new int[PREF_MAX_BIGRAMS];
-        collectGarbage(mSuggestions, mPrefMaxSuggestions);
-        while (mStringPool.size() < mPrefMaxSuggestions) {
-            StringBuilder sb = new StringBuilder(getApproxMaxWordLength());
-            mStringPool.add(sb);
-        }
-    }
-
-    /**
-     * Returns a object which represents suggested words that match the list of character codes
-     * passed in. This object contents will be overwritten the next time this function is called.
-     * @param view a view for retrieving the context for AutoText
-     * @param wordComposer contains what is currently being typed
-     * @param prevWordForBigram previous word (used only for bigram)
-     * @return suggested words object.
-     */
-    public SuggestedWords getSuggestions(View view, WordComposer wordComposer,
-            CharSequence prevWordForBigram) {
-        return getSuggestedWordBuilder(view, wordComposer, prevWordForBigram).build();
-    }
-
-    private CharSequence capitalizeWord(boolean all, boolean first, CharSequence word) {
+    private static CharSequence capitalizeWord(final boolean all, final boolean first,
+            final CharSequence word) {
         if (TextUtils.isEmpty(word) || !(all || first)) return word;
         final int wordLength = word.length();
-        final int poolSize = mStringPool.size();
-        final StringBuilder sb =
-                poolSize > 0 ? (StringBuilder) mStringPool.remove(poolSize - 1)
-                        : new StringBuilder(getApproxMaxWordLength());
-        sb.setLength(0);
+        final StringBuilder sb = new StringBuilder(getApproxMaxWordLength());
         // TODO: Must pay attention to locale when changing case.
         if (all) {
             sb.append(word.toString().toUpperCase());
@@ -262,249 +212,271 @@ public class Suggest implements Dictionary.WordCallback {
         return sb;
     }
 
-    protected void addBigramToSuggestions(CharSequence bigram) {
-        final int poolSize = mStringPool.size();
-        final StringBuilder sb = poolSize > 0 ?
-                (StringBuilder) mStringPool.remove(poolSize - 1)
-                        : new StringBuilder(getApproxMaxWordLength());
-        sb.setLength(0);
-        sb.append(bigram);
-        mSuggestions.add(sb);
+    protected void addBigramToSuggestions(SuggestedWordInfo bigram) {
+        mSuggestions.add(bigram);
+    }
+
+    private static final WordComposer sEmptyWordComposer = new WordComposer();
+    public SuggestedWords getBigramPredictions(CharSequence prevWordForBigram) {
+        LatinImeLogger.onStartSuggestion(prevWordForBigram);
+        mIsFirstCharCapitalized = false;
+        mIsAllUpperCase = false;
+        mTrailingSingleQuotesCount = 0;
+        mSuggestions = new ArrayList<SuggestedWordInfo>(MAX_SUGGESTIONS);
+
+        // Treating USER_TYPED as UNIGRAM suggestion for logging now.
+        LatinImeLogger.onAddSuggestedWord("", Suggest.DIC_USER_TYPED, Dictionary.UNIGRAM);
+        mConsideredWord = "";
+
+        mBigramSuggestions = new ArrayList<SuggestedWordInfo>(PREF_MAX_BIGRAMS);
+
+        getAllBigrams(prevWordForBigram, sEmptyWordComposer);
+
+        // Nothing entered: return all bigrams for the previous word
+        int insertCount = Math.min(mBigramSuggestions.size(), MAX_SUGGESTIONS);
+        for (int i = 0; i < insertCount; ++i) {
+            addBigramToSuggestions(mBigramSuggestions.get(i));
+        }
+
+        SuggestedWordInfo.removeDups(mSuggestions);
+
+        return new SuggestedWords(mSuggestions,
+                false /* typedWordValid */,
+                false /* hasAutoCorrectionCandidate */,
+                false /* allowsToBeAutoCorrected */,
+                false /* isPunctuationSuggestions */,
+                false /* isObsoleteSuggestions */,
+                true /* isPrediction */);
     }
 
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
-    public SuggestedWords.Builder getSuggestedWordBuilder(View view, WordComposer wordComposer,
-            CharSequence prevWordForBigram) {
+    public SuggestedWords getSuggestedWords(
+            final WordComposer wordComposer, CharSequence prevWordForBigram,
+            final ProximityInfo proximityInfo, final boolean isCorrectionEnabled) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
-        mAutoCorrection.init();
         mIsFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
         mIsAllUpperCase = wordComposer.isAllUpperCase();
-        collectGarbage(mSuggestions, mPrefMaxSuggestions);
-        Arrays.fill(mScores, 0);
+        mTrailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
+        mSuggestions = new ArrayList<SuggestedWordInfo>(MAX_SUGGESTIONS);
 
-        // Save a lowercase version of the original word
-        CharSequence typedWord = wordComposer.getTypedWord();
-        if (typedWord != null) {
-            final String typedWordString = typedWord.toString();
-            typedWord = typedWordString;
-            // Treating USER_TYPED as UNIGRAM suggestion for logging now.
-            LatinImeLogger.onAddSuggestedWord(typedWordString, Suggest.DIC_USER_TYPED,
-                    Dictionary.DataType.UNIGRAM);
-        }
-        mTypedWord = typedWord;
+        final String typedWord = wordComposer.getTypedWord();
+        final String consideredWord = mTrailingSingleQuotesCount > 0
+                ? typedWord.substring(0, typedWord.length() - mTrailingSingleQuotesCount)
+                : typedWord;
+        // Treating USER_TYPED as UNIGRAM suggestion for logging now.
+        LatinImeLogger.onAddSuggestedWord(typedWord, Suggest.DIC_USER_TYPED, Dictionary.UNIGRAM);
+        mConsideredWord = consideredWord;
 
-        if (wordComposer.size() <= 1 && (mCorrectionMode == CORRECTION_FULL_BIGRAM
-                || mCorrectionMode == CORRECTION_BASIC)) {
+        if (wordComposer.size() <= 1 && isCorrectionEnabled) {
             // At first character typed, search only the bigrams
-            Arrays.fill(mBigramScores, 0);
-            collectGarbage(mBigramSuggestions, PREF_MAX_BIGRAMS);
+            mBigramSuggestions = new ArrayList<SuggestedWordInfo>(PREF_MAX_BIGRAMS);
 
             if (!TextUtils.isEmpty(prevWordForBigram)) {
-                CharSequence lowerPrevWord = prevWordForBigram.toString().toLowerCase();
-                if (mMainDict != null && mMainDict.isValidWord(lowerPrevWord)) {
-                    prevWordForBigram = lowerPrevWord;
-                }
-                for (final Dictionary dictionary : mBigramDictionaries.values()) {
-                    dictionary.getBigrams(wordComposer, prevWordForBigram, this);
-                }
-                if (TextUtils.isEmpty(typedWord)) {
+                getAllBigrams(prevWordForBigram, wordComposer);
+                if (TextUtils.isEmpty(consideredWord)) {
                     // Nothing entered: return all bigrams for the previous word
-                    int insertCount = Math.min(mBigramSuggestions.size(), mPrefMaxSuggestions);
+                    int insertCount = Math.min(mBigramSuggestions.size(), MAX_SUGGESTIONS);
                     for (int i = 0; i < insertCount; ++i) {
                         addBigramToSuggestions(mBigramSuggestions.get(i));
                     }
                 } else {
                     // Word entered: return only bigrams that match the first char of the typed word
-                    final char currentChar = typedWord.charAt(0);
+                    final char currentChar = consideredWord.charAt(0);
                     // TODO: Must pay attention to locale when changing case.
+                    // TODO: Use codepoint instead of char
                     final char currentCharUpper = Character.toUpperCase(currentChar);
                     int count = 0;
                     final int bigramSuggestionSize = mBigramSuggestions.size();
                     for (int i = 0; i < bigramSuggestionSize; i++) {
-                        final CharSequence bigramSuggestion = mBigramSuggestions.get(i);
-                        final char bigramSuggestionFirstChar = bigramSuggestion.charAt(0);
+                        final SuggestedWordInfo bigramSuggestion = mBigramSuggestions.get(i);
+                        final char bigramSuggestionFirstChar =
+                                (char)bigramSuggestion.codePointAt(0);
                         if (bigramSuggestionFirstChar == currentChar
                                 || bigramSuggestionFirstChar == currentCharUpper) {
                             addBigramToSuggestions(bigramSuggestion);
-                            if (++count > mPrefMaxSuggestions) break;
+                            if (++count > MAX_SUGGESTIONS) break;
                         }
                     }
                 }
             }
 
         } else if (wordComposer.size() > 1) {
+            final WordComposer wordComposerForLookup;
+            if (mTrailingSingleQuotesCount > 0) {
+                wordComposerForLookup = new WordComposer(wordComposer);
+                for (int i = mTrailingSingleQuotesCount - 1; i >= 0; --i) {
+                    wordComposerForLookup.deleteLast();
+                }
+            } else {
+                wordComposerForLookup = wordComposer;
+            }
             // At second character typed, search the unigrams (scores being affected by bigrams)
             for (final String key : mUnigramDictionaries.keySet()) {
-                // Skip AutoDictionary and WhitelistDictionary to lookup
-                if (key.equals(DICT_KEY_AUTO) || key.equals(DICT_KEY_WHITELIST))
+                // Skip UserUnigramDictionary and WhitelistDictionary to lookup
+                if (key.equals(DICT_KEY_USER_HISTORY_UNIGRAM) || key.equals(DICT_KEY_WHITELIST))
                     continue;
                 final Dictionary dictionary = mUnigramDictionaries.get(key);
-                dictionary.getWords(wordComposer, this);
-            }
-        }
-        CharSequence autoText = null;
-        final String typedWordString = typedWord == null ? null : typedWord.toString();
-        if (typedWord != null) {
-            // Apply quick fix only for the typed word.
-            if (mQuickFixesEnabled) {
-                final String lowerCaseTypedWord = typedWordString.toLowerCase();
-                CharSequence tempAutoText = capitalizeWord(
-                        mIsAllUpperCase, mIsFirstCharCapitalized, AutoText.get(
-                                lowerCaseTypedWord, 0, lowerCaseTypedWord.length(), view));
-                // TODO: cleanup canAdd
-                // Is there an AutoText (also known as Quick Fixes) correction?
-                // Capitalize as needed
-                boolean canAdd = tempAutoText != null;
-                // Is that correction already the current prediction (or original word)?
-                canAdd &= !TextUtils.equals(tempAutoText, typedWord);
-                // Is that correction already the next predicted word?
-                if (canAdd && mSuggestions.size() > 0 && mCorrectionMode != CORRECTION_BASIC) {
-                    canAdd &= !TextUtils.equals(tempAutoText, mSuggestions.get(0));
-                }
-                if (canAdd) {
-                    if (DBG) {
-                        Log.d(TAG, "Auto corrected by AUTOTEXT.");
-                    }
-                    autoText = tempAutoText;
-                }
+                dictionary.getWords(wordComposerForLookup, prevWordForBigram, this, proximityInfo);
             }
         }
 
-        CharSequence whitelistedWord = capitalizeWord(mIsAllUpperCase, mIsFirstCharCapitalized,
-                mWhiteListDictionary.getWhiteListedWord(typedWordString));
+        final CharSequence whitelistedWord = capitalizeWord(mIsAllUpperCase,
+                mIsFirstCharCapitalized, mWhiteListDictionary.getWhitelistedWord(consideredWord));
 
-        mAutoCorrection.updateAutoCorrectionStatus(mUnigramDictionaries, wordComposer,
-                mSuggestions, mScores, typedWord, mAutoCorrectionThreshold, mCorrectionMode,
-                autoText, whitelistedWord);
-
-        if (autoText != null) {
-            mSuggestions.add(0, autoText);
+        final boolean hasAutoCorrection;
+        if (isCorrectionEnabled) {
+            final CharSequence autoCorrection =
+                    AutoCorrection.computeAutoCorrectionWord(mUnigramDictionaries, wordComposer,
+                            mSuggestions, consideredWord, mAutoCorrectionThreshold,
+                            whitelistedWord);
+            hasAutoCorrection = (null != autoCorrection);
+        } else {
+            hasAutoCorrection = false;
         }
 
         if (whitelistedWord != null) {
-            mSuggestions.add(0, whitelistedWord);
+            if (mTrailingSingleQuotesCount > 0) {
+                final StringBuilder sb = new StringBuilder(whitelistedWord);
+                for (int i = mTrailingSingleQuotesCount - 1; i >= 0; --i) {
+                    sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
+                }
+                mSuggestions.add(0, new SuggestedWordInfo(sb.toString(),
+                        SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST));
+            } else {
+                mSuggestions.add(0, new SuggestedWordInfo(whitelistedWord,
+                        SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST));
+            }
         }
 
-        if (typedWord != null) {
-            mSuggestions.add(0, typedWordString);
-        }
-        removeDupes();
+        mSuggestions.add(0, new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE,
+                SuggestedWordInfo.KIND_TYPED));
+        SuggestedWordInfo.removeDups(mSuggestions);
 
+        final ArrayList<SuggestedWordInfo> suggestionsList;
         if (DBG) {
-            double normalizedScore = mAutoCorrection.getNormalizedScore();
-            ArrayList<SuggestedWords.SuggestedWordInfo> scoreInfoList =
-                    new ArrayList<SuggestedWords.SuggestedWordInfo>();
-            scoreInfoList.add(new SuggestedWords.SuggestedWordInfo("+", false));
-            for (int i = 0; i < mScores.length; ++i) {
-                if (normalizedScore > 0) {
-                    final String scoreThreshold = String.format("%d (%4.2f)", mScores[i],
-                            normalizedScore);
-                    scoreInfoList.add(
-                            new SuggestedWords.SuggestedWordInfo(scoreThreshold, false));
-                    normalizedScore = 0.0;
-                } else {
-                    final String score = Integer.toString(mScores[i]);
-                    scoreInfoList.add(new SuggestedWords.SuggestedWordInfo(score, false));
-                }
-            }
-            for (int i = mScores.length; i < mSuggestions.size(); ++i) {
-                scoreInfoList.add(new SuggestedWords.SuggestedWordInfo("--", false));
-            }
-            return new SuggestedWords.Builder().addWords(mSuggestions, scoreInfoList);
+            suggestionsList = getSuggestionsInfoListWithDebugInfo(typedWord, mSuggestions);
+        } else {
+            suggestionsList = mSuggestions;
         }
-        return new SuggestedWords.Builder().addWords(mSuggestions, null);
+
+        // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
+        // but still autocorrected from - in the case the whitelist only capitalizes the word.
+        // The whitelist should be case-insensitive, so it's not possible to be consistent with
+        // a boolean flag. Right now this is handled with a slight hack in
+        // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
+        final boolean allowsToBeAutoCorrected = AutoCorrection.allowsToBeAutoCorrected(
+                getUnigramDictionaries(), consideredWord, wordComposer.isFirstCharCapitalized())
+        // If we don't have a main dictionary, we never want to auto-correct. The reason for this
+        // is, the user may have a contact whose name happens to match a valid word in their
+        // language, and it will unexpectedly auto-correct. For example, if the user types in
+        // English with no dictionary and has a "Will" in their contact list, "will" would
+        // always auto-correct to "Will" which is unwanted. Hence, no main dict => no auto-correct.
+                && hasMainDictionary();
+
+        boolean autoCorrectionAvailable = hasAutoCorrection;
+        if (isCorrectionEnabled) {
+            autoCorrectionAvailable |= !allowsToBeAutoCorrected;
+        }
+        // Don't auto-correct words with multiple capital letter
+        autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
+        autoCorrectionAvailable &= !wordComposer.isResumed();
+        if (allowsToBeAutoCorrected && suggestionsList.size() > 1 && mAutoCorrectionThreshold > 0
+                && Suggest.shouldBlockAutoCorrectionBySafetyNet(typedWord,
+                        suggestionsList.get(1).mWord)) {
+            autoCorrectionAvailable = false;
+        }
+        return new SuggestedWords(suggestionsList,
+                !allowsToBeAutoCorrected /* typedWordValid */,
+                autoCorrectionAvailable /* hasAutoCorrectionCandidate */,
+                allowsToBeAutoCorrected /* allowsToBeAutoCorrected */,
+                false /* isPunctuationSuggestions */,
+                false /* isObsoleteSuggestions */,
+                false /* isPrediction */);
     }
 
-    private void removeDupes() {
-        final ArrayList<CharSequence> suggestions = mSuggestions;
-        if (suggestions.size() < 2) return;
-        int i = 1;
-        // Don't cache suggestions.size(), since we may be removing items
-        while (i < suggestions.size()) {
-            final CharSequence cur = suggestions.get(i);
-            // Compare each candidate with each previous candidate
-            for (int j = 0; j < i; j++) {
-                CharSequence previous = suggestions.get(j);
-                if (TextUtils.equals(cur, previous)) {
-                    removeFromSuggestions(i);
-                    i--;
-                    break;
-                }
+    /**
+     * Adds all bigram predictions for prevWord. Also checks the lower case version of prevWord if
+     * it contains any upper case characters.
+     */
+    private void getAllBigrams(final CharSequence prevWord, final WordComposer wordComposer) {
+        if (StringUtils.hasUpperCase(prevWord)) {
+            // TODO: Must pay attention to locale when changing case.
+            final CharSequence lowerPrevWord = prevWord.toString().toLowerCase();
+            for (final Dictionary dictionary : mBigramDictionaries.values()) {
+                dictionary.getBigrams(wordComposer, lowerPrevWord, this);
             }
-            i++;
+        }
+        for (final Dictionary dictionary : mBigramDictionaries.values()) {
+            dictionary.getBigrams(wordComposer, prevWord, this);
         }
     }
 
-    private void removeFromSuggestions(int index) {
-        CharSequence garbage = mSuggestions.remove(index);
-        if (garbage != null && garbage instanceof StringBuilder) {
-            mStringPool.add(garbage);
+    private static ArrayList<SuggestedWordInfo> getSuggestionsInfoListWithDebugInfo(
+            final String typedWord, final ArrayList<SuggestedWordInfo> suggestions) {
+        final SuggestedWordInfo typedWordInfo = suggestions.get(0);
+        typedWordInfo.setDebugString("+");
+        final int suggestionsSize = suggestions.size();
+        final ArrayList<SuggestedWordInfo> suggestionsList =
+                new ArrayList<SuggestedWordInfo>(suggestionsSize);
+        suggestionsList.add(typedWordInfo);
+        // Note: i here is the index in mScores[], but the index in mSuggestions is one more
+        // than i because we added the typed word to mSuggestions without touching mScores.
+        for (int i = 0; i < suggestionsSize - 1; ++i) {
+            final SuggestedWordInfo cur = suggestions.get(i + 1);
+            final float normalizedScore = BinaryDictionary.calcNormalizedScore(
+                    typedWord, cur.toString(), cur.mScore);
+            final String scoreInfoString;
+            if (normalizedScore > 0) {
+                scoreInfoString = String.format("%d (%4.2f)", cur.mScore, normalizedScore);
+            } else {
+                scoreInfoString = Integer.toString(cur.mScore);
+            }
+            cur.setDebugString(scoreInfoString);
+            suggestionsList.add(cur);
         }
+        return suggestionsList;
     }
 
-    public boolean hasAutoCorrection() {
-        return mAutoCorrection.hasAutoCorrection();
-    }
-
+    // TODO: Use codepoint instead of char
     @Override
     public boolean addWord(final char[] word, final int offset, final int length, int score,
-            final int dicTypeId, final Dictionary.DataType dataType) {
-        Dictionary.DataType dataTypeForLog = dataType;
-        final ArrayList<CharSequence> suggestions;
-        final int[] sortedScores;
+            final int dicTypeId, final int dataType) {
+        int dataTypeForLog = dataType;
+        final ArrayList<SuggestedWordInfo> suggestions;
         final int prefMaxSuggestions;
-        if(dataType == Dictionary.DataType.BIGRAM) {
+        if (dataType == Dictionary.BIGRAM) {
             suggestions = mBigramSuggestions;
-            sortedScores = mBigramScores;
             prefMaxSuggestions = PREF_MAX_BIGRAMS;
         } else {
             suggestions = mSuggestions;
-            sortedScores = mScores;
-            prefMaxSuggestions = mPrefMaxSuggestions;
+            prefMaxSuggestions = MAX_SUGGESTIONS;
         }
 
         int pos = 0;
 
         // Check if it's the same word, only caps are different
-        if (Utils.equalsIgnoreCase(mTypedWord, word, offset, length)) {
+        if (StringUtils.equalsIgnoreCase(mConsideredWord, word, offset, length)) {
             // TODO: remove this surrounding if clause and move this logic to
             // getSuggestedWordBuilder.
             if (suggestions.size() > 0) {
-                final String currentHighestWord = suggestions.get(0).toString();
+                final SuggestedWordInfo currentHighestWord = suggestions.get(0);
                 // If the current highest word is also equal to typed word, we need to compare
                 // frequency to determine the insertion position. This does not ensure strictly
                 // correct ordering, but ensures the top score is on top which is enough for
                 // removing duplicates correctly.
-                if (Utils.equalsIgnoreCase(currentHighestWord, word, offset, length)
-                        && score <= sortedScores[0]) {
+                if (StringUtils.equalsIgnoreCase(currentHighestWord.mWord, word, offset, length)
+                        && score <= currentHighestWord.mScore) {
                     pos = 1;
                 }
             }
         } else {
-            if (dataType == Dictionary.DataType.UNIGRAM) {
-                // Check if the word was already added before (by bigram data)
-                int bigramSuggestion = searchBigramSuggestion(word,offset,length);
-                if(bigramSuggestion >= 0) {
-                    dataTypeForLog = Dictionary.DataType.BIGRAM;
-                    // turn freq from bigram into multiplier specified above
-                    double multiplier = (((double) mBigramScores[bigramSuggestion])
-                            / MAXIMUM_BIGRAM_FREQUENCY)
-                            * (BIGRAM_MULTIPLIER_MAX - BIGRAM_MULTIPLIER_MIN)
-                            + BIGRAM_MULTIPLIER_MIN;
-                    /* Log.d(TAG,"bigram num: " + bigramSuggestion
-                            + "  wordB: " + mBigramSuggestions.get(bigramSuggestion).toString()
-                            + "  currentScore: " + score + "  bigramScore: "
-                            + mBigramScores[bigramSuggestion]
-                            + "  multiplier: " + multiplier); */
-                    score = (int)Math.round((score * multiplier));
-                }
-            }
-
             // Check the last one's score and bail
-            if (sortedScores[prefMaxSuggestions - 1] >= score) return true;
-            while (pos < prefMaxSuggestions) {
-                if (sortedScores[pos] < score
-                        || (sortedScores[pos] == score && length < suggestions.get(pos).length())) {
+            if (suggestions.size() >= prefMaxSuggestions
+                    && suggestions.get(prefMaxSuggestions - 1).mScore >= score) return true;
+            while (pos < suggestions.size()) {
+                final int curScore = suggestions.get(pos).mScore;
+                if (curScore < score
+                        || (curScore == score && length < suggestions.get(pos).codePointCount())) {
                     break;
                 }
                 pos++;
@@ -514,12 +486,7 @@ public class Suggest implements Dictionary.WordCallback {
             return true;
         }
 
-        System.arraycopy(sortedScores, pos, sortedScores, pos + 1, prefMaxSuggestions - pos - 1);
-        sortedScores[pos] = score;
-        int poolSize = mStringPool.size();
-        StringBuilder sb = poolSize > 0 ? (StringBuilder) mStringPool.remove(poolSize - 1)
-                : new StringBuilder(getApproxMaxWordLength());
-        sb.setLength(0);
+        final StringBuilder sb = new StringBuilder(getApproxMaxWordLength());
         // TODO: Must pay attention to locale when changing case.
         if (mIsAllUpperCase) {
             sb.append(new String(word, offset, length).toUpperCase());
@@ -531,62 +498,59 @@ public class Suggest implements Dictionary.WordCallback {
         } else {
             sb.append(word, offset, length);
         }
-        suggestions.add(pos, sb);
+        for (int i = mTrailingSingleQuotesCount - 1; i >= 0; --i) {
+            sb.appendCodePoint(Keyboard.CODE_SINGLE_QUOTE);
+        }
+        // TODO: figure out what type of suggestion this is
+        suggestions.add(pos, new SuggestedWordInfo(sb, score, SuggestedWordInfo.KIND_CORRECTION));
         if (suggestions.size() > prefMaxSuggestions) {
-            CharSequence garbage = suggestions.remove(prefMaxSuggestions);
-            if (garbage instanceof StringBuilder) {
-                mStringPool.add(garbage);
-            }
+            suggestions.remove(prefMaxSuggestions);
         } else {
             LatinImeLogger.onAddSuggestedWord(sb.toString(), dicTypeId, dataTypeForLog);
         }
         return true;
     }
 
-    private int searchBigramSuggestion(final char[] word, final int offset, final int length) {
-        // TODO This is almost O(n^2). Might need fix.
-        // search whether the word appeared in bigram data
-        int bigramSuggestSize = mBigramSuggestions.size();
-        for(int i = 0; i < bigramSuggestSize; i++) {
-            if(mBigramSuggestions.get(i).length() == length) {
-                boolean chk = true;
-                for(int j = 0; j < length; j++) {
-                    if(mBigramSuggestions.get(i).charAt(j) != word[offset+j]) {
-                        chk = false;
-                        break;
-                    }
-                }
-                if(chk) return i;
-            }
-        }
-
-        return -1;
-    }
-
-    private void collectGarbage(ArrayList<CharSequence> suggestions, int prefMaxSuggestions) {
-        int poolSize = mStringPool.size();
-        int garbageSize = suggestions.size();
-        while (poolSize < prefMaxSuggestions && garbageSize > 0) {
-            CharSequence garbage = suggestions.get(garbageSize - 1);
-            if (garbage != null && garbage instanceof StringBuilder) {
-                mStringPool.add(garbage);
-                poolSize++;
-            }
-            garbageSize--;
-        }
-        if (poolSize == prefMaxSuggestions + 1) {
-            Log.w("Suggest", "String pool got too big: " + poolSize);
-        }
-        suggestions.clear();
-    }
-
     public void close() {
-        final Set<Dictionary> dictionaries = new HashSet<Dictionary>();
+        final HashSet<Dictionary> dictionaries = new HashSet<Dictionary>();
         dictionaries.addAll(mUnigramDictionaries.values());
         dictionaries.addAll(mBigramDictionaries.values());
         for (final Dictionary dictionary : dictionaries) {
             dictionary.close();
         }
-        mMainDict = null;
+        mMainDictionary = null;
+    }
+
+    // TODO: Resolve the inconsistencies between the native auto correction algorithms and
+    // this safety net
+    public static boolean shouldBlockAutoCorrectionBySafetyNet(final String typedWord,
+            final CharSequence suggestion) {
+        // Safety net for auto correction.
+        // Actually if we hit this safety net, it's a bug.
+        // If user selected aggressive auto correction mode, there is no need to use the safety
+        // net.
+        // If the length of typed word is less than MINIMUM_SAFETY_NET_CHAR_LENGTH,
+        // we should not use net because relatively edit distance can be big.
+        final int typedWordLength = typedWord.length();
+        if (typedWordLength < Suggest.MINIMUM_SAFETY_NET_CHAR_LENGTH) {
+            return false;
+        }
+        final int maxEditDistanceOfNativeDictionary =
+                (typedWordLength < 5 ? 2 : typedWordLength / 2) + 1;
+        final int distance = BinaryDictionary.editDistance(typedWord, suggestion.toString());
+        if (DBG) {
+            Log.d(TAG, "Autocorrected edit distance = " + distance
+                    + ", " + maxEditDistanceOfNativeDictionary);
+        }
+        if (distance > maxEditDistanceOfNativeDictionary) {
+            if (DBG) {
+                Log.e(TAG, "Safety net: before = " + typedWord + ", after = " + suggestion);
+                Log.e(TAG, "(Error) The edit distance of this correction exceeds limit. "
+                        + "Turning off auto-correction.");
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 }

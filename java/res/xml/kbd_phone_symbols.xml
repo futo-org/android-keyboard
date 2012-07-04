@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-/* 
+/*
 **
 ** Copyright 2008, The Android Open Source Project
 **
-** Licensed under the Apache License, Version 2.0 (the "License"); 
-** you may not use this file except in compliance with the License. 
-** You may obtain a copy of the License at 
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
 **
-**     http://www.apache.org/licenses/LICENSE-2.0 
+**     http://www.apache.org/licenses/LICENSE-2.0
 **
-** Unless required by applicable law or agreed to in writing, software 
-** distributed under the License is distributed on an "AS IS" BASIS, 
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-** See the License for the specific language governing permissions and 
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
 ** limitations under the License.
 */
 -->
@@ -23,78 +23,5 @@
     latin:keyWidth="26.67%p"
 >
     <include
-        latin:keyboardLayout="@xml/kbd_key_styles" />
-    <include
-        latin:keyboardLayout="@xml/kbd_numkey_styles" />
-    <Row
-        latin:rowEdgeFlags="top"
-    >
-        <Key
-            latin:keyLabel="("
-            latin:keyStyle="numKeyStyle"
-            latin:keyEdgeFlags="left" />
-        <Key
-            latin:keyLabel="/"
-            latin:keyStyle="numKeyStyle" />
-        <Key
-            latin:keyLabel=")"
-            latin:keyStyle="numKeyStyle" />
-        <Key
-            latin:keyLabel="-"
-            latin:keyStyle="numFunctionalKeyStyle"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
-    </Row>
-    <Row>
-        <Key
-            latin:keyLabel="N"
-            latin:keyEdgeFlags="left" />
-        <!-- Pause is a comma. Check PhoneNumberUtils.java to see if this 
-            has changed. -->
-        <Key
-            latin:code="44"
-            latin:keyLabel="@string/label_pause_key"
-            latin:keyLabelOption="followKeyHintLabelRatio" />
-        <Key
-            latin:keyLabel=","
-            latin:keyStyle="numKeyStyle" />
-        <Key
-            latin:keyLabel="."
-            latin:keyStyle="numFunctionalKeyStyle"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
-    </Row>
-    <Row>
-        <Key
-            latin:keyStyle="numStarKeyStyle"
-            latin:keyEdgeFlags="left" />
-        <!-- Wait is a semicolon. -->
-        <Key
-            latin:code="59"
-            latin:keyLabel="@string/label_wait_key"
-            latin:keyLabelOption="followKeyHintLabelRatio" />
-        <Key
-            latin:keyLabel="#"
-            latin:keyStyle="numKeyStyle" />
-        <Key
-            latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
-    </Row>
-    <Row
-        latin:rowEdgeFlags="bottom"
-    >
-        <Key
-            latin:keyStyle="numSwitchToNumericKeyStyle"
-            latin:keyEdgeFlags="left" />
-        <Key
-            latin:keyLabel="+"
-            latin:keyStyle="numKeyStyle" />
-        <Key
-            latin:keyStyle="numSpaceKeyStyle" />
-        <Key
-            latin:keyStyle="returnKeyStyle"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
-    </Row>
+        latin:keyboardLayout="@xml/rows_phone_symbols" />
 </Keyboard>
