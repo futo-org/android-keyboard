@@ -19,22 +19,23 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class SynchronouslyLoadedContactsBinaryDictionary extends ContactsBinaryDictionary {
     private boolean mClosed;
 
     public SynchronouslyLoadedContactsBinaryDictionary(final Context context, final Locale locale) {
-        super(context, Suggest.DIC_CONTACTS, locale);
+        super(context, locale);
     }
 
     @Override
-    public synchronized void getWords(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final WordCallback callback,
-            final ProximityInfo proximityInfo) {
+    public synchronized ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
+            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         syncReloadDictionaryIfRequired();
-        getWordsInner(codes, prevWordForBigrams, callback, proximityInfo);
+        return getWordsInner(codes, prevWordForBigrams, proximityInfo);
     }
 
     @Override

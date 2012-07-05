@@ -23,6 +23,8 @@ import android.content.res.XmlResourceParser;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.SparseArray;
+import android.util.SparseIntArray;
 import android.util.TypedValue;
 import android.util.Xml;
 import android.view.InflateException;
@@ -44,7 +46,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 
@@ -134,7 +135,7 @@ public class Keyboard {
     public final Key[] mAltCodeKeysWhileTyping;
     public final KeyboardIconsSet mIconsSet;
 
-    private final HashMap<Integer, Key> mKeyCache = new HashMap<Integer, Key>();
+    private final SparseArray<Key> mKeyCache = new SparseArray<Key>();
 
     private final ProximityInfo mProximityInfo;
     private final boolean mProximityCharsCorrectionEnabled;
@@ -202,7 +203,7 @@ public class Keyboard {
     }
 
     public boolean hasKey(Key aKey) {
-        if (mKeyCache.containsKey(aKey)) {
+        if (mKeyCache.indexOfValue(aKey) >= 0) {
             return true;
         }
 
@@ -346,8 +347,8 @@ public class Keyboard {
 
         private int mMaxHeightCount = 0;
         private int mMaxWidthCount = 0;
-        private final HashMap<Integer, Integer> mHeightHistogram = new HashMap<Integer, Integer>();
-        private final HashMap<Integer, Integer> mWidthHistogram = new HashMap<Integer, Integer>();
+        private final SparseIntArray mHeightHistogram = new SparseIntArray();
+        private final SparseIntArray mWidthHistogram = new SparseIntArray();
 
         private void clearHistogram() {
             mMostCommonKeyHeight = 0;
@@ -359,22 +360,22 @@ public class Keyboard {
             mWidthHistogram.clear();
         }
 
-        private static int updateHistogramCounter(HashMap<Integer, Integer> histogram,
-                Integer key) {
-            final int count = (histogram.containsKey(key) ? histogram.get(key) : 0) + 1;
+        private static int updateHistogramCounter(SparseIntArray histogram, int key) {
+            final int index = histogram.indexOfKey(key);
+            final int count = (index >= 0 ? histogram.get(key) : 0) + 1;
             histogram.put(key, count);
             return count;
         }
 
         private void updateHistogram(Key key) {
-            final Integer height = key.mHeight + key.mVerticalGap;
+            final int height = key.mHeight + key.mVerticalGap;
             final int heightCount = updateHistogramCounter(mHeightHistogram, height);
             if (heightCount > mMaxHeightCount) {
                 mMaxHeightCount = heightCount;
                 mMostCommonKeyHeight = height;
             }
 
-            final Integer width = key.mWidth + key.mHorizontalGap;
+            final int width = key.mWidth + key.mHorizontalGap;
             final int widthCount = updateHistogramCounter(mWidthHistogram, width);
             if (widthCount > mMaxWidthCount) {
                 mMaxWidthCount = widthCount;

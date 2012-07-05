@@ -57,11 +57,11 @@ import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MoreKeysPanel;
 import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.keyboard.ViewLayoutUtils;
+import com.android.inputmethod.latin.AutoCorrection;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.ResearchLogger;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
-import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.define.ProductionFlag;
@@ -336,8 +336,8 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             if (LatinImeLogger.sDBG && suggestedWords.size() > 1) {
                 // If we auto-correct, then the autocorrection is in slot 0 and the typed word
                 // is in slot 1.
-                if (index == mCenterSuggestionIndex && suggestedWords.mHasAutoCorrectionCandidate
-                        && Suggest.shouldBlockAutoCorrectionBySafetyNet(
+                if (index == mCenterSuggestionIndex
+                        && AutoCorrection.shouldBlockAutoCorrectionBySafetyNet(
                                 suggestedWords.getWord(1).toString(), suggestedWords.getWord(0))) {
                     return 0xFFFF0000;
                 }

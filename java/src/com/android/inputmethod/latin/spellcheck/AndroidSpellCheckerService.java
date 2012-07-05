@@ -32,12 +32,12 @@ import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.ContactsBinaryDictionary;
 import com.android.inputmethod.latin.Dictionary;
-import com.android.inputmethod.latin.Dictionary.WordCallback;
 import com.android.inputmethod.latin.DictionaryCollection;
 import com.android.inputmethod.latin.DictionaryFactory;
 import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StringUtils;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.SynchronouslyLoadedContactsBinaryDictionary;
 import com.android.inputmethod.latin.SynchronouslyLoadedUserBinaryDictionary;
 import com.android.inputmethod.latin.UserBinaryDictionary;
@@ -203,7 +203,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 EMPTY_STRING_ARRAY);
     }
 
-    private static class SuggestionsGatherer implements WordCallback {
+    // TODO: remove this class and replace it by storage local to the session.
+    private static class SuggestionsGatherer {
         public static class Result {
             public final String[] mSuggestions;
             public final boolean mHasRecommendedSuggestions;
@@ -237,9 +238,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             mScores = new int[mMaxLength];
         }
 
-        @Override
-        synchronized public boolean addWord(char[] word, int wordOffset, int wordLength, int score,
-                int dicTypeId, int dataType) {
+        synchronized public boolean addWord(char[] word, int[] spaceIndices, int wordOffset,
+                int wordLength, int score) {
             final int positionIndex = Arrays.binarySearch(mScores, 0, mLength, score);
             // binarySearch returns the index if the element exists, and -<insertion index> - 1
             // if it doesn't. See documentation for binarySearch.
@@ -780,8 +780,13 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                 try {
                     dictInfo = mDictionaryPool.takeOrGetNull();
                     if (null == dictInfo) return getNotInDictEmptySuggestions();
-                    dictInfo.mDictionary.getWords(composer, prevWord, suggestionsGatherer,
-                            dictInfo.mProximityInfo);
+                    final ArrayList<SuggestedWordInfo> suggestions = dictInfo.mDictionary.getWords(
+                            composer, prevWord, dictInfo.mProximityInfo);
+                    for (final SuggestedWordInfo suggestion : suggestions) {
+                        final String suggestionStr = suggestion.mWord.toString();
+                        suggestionsGatherer.addWord(suggestionStr.toCharArray(), null, 0,
+                                suggestionStr.length(), suggestion.mScore);
+                    }
                     isInDict = dictInfo.mDictionary.isValidWord(text);
                     if (!isInDict && CAPITALIZE_NONE != capitalizeType) {
                         // We want to test the word again if it's all caps or first caps only.

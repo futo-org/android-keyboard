@@ -46,8 +46,6 @@
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Par défaut"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Proposer noms de contacts"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Utiliser des noms de contacts pour les suggestions et corrections"</string>
-    <string name="enable_span_insert" msgid="7204653105667167620">"Activer la recorrection"</string>
-    <string name="enable_span_insert_summary" msgid="2947317657871394467">"Définir des suggestions de recorrection"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Majuscules auto"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Dictionnaires complémentaires"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"Dictionnaire principal"</string>
@@ -62,10 +60,8 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Simple"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Proactive"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Très exigeante"</string>
-    <string name="bigram_suggestion" msgid="8169311444438922902">"Suggestions pour le mot suivant"</string>
-    <string name="bigram_suggestion_summary" msgid="6635527607242625713">"Améliorer les suggestions grâce au mot précédent"</string>
-    <string name="bigram_prediction" msgid="3216364899483135294">"Prédiction du mot suivant"</string>
-    <string name="bigram_prediction_summary" msgid="1747261921174300098">"Utiliser le mot précédent pour la prédiction"</string>
+    <string name="bigram_prediction" msgid="5809665643352206540">"Suggestions pour le mot suivant"</string>
+    <string name="bigram_prediction_summary" msgid="3253961591626441019">"Suggestions basées sur le mot précédent"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : enregistré"</string>
     <string name="label_go_key" msgid="1635148082137219148">"OK"</string>
     <string name="label_next_key" msgid="362972844525672568">"Suiv."</string>

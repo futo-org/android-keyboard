@@ -127,7 +127,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         private static final int MSG_TYPING_STATE_EXPIRED = 4;
 
         private final KeyTimerParams mParams;
-        private boolean mInKeyRepeat;
 
         public KeyTimerHandler(LatinKeyboardView outerInstance, KeyTimerParams params) {
             super(outerInstance);
@@ -140,8 +139,11 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             final PointerTracker tracker = (PointerTracker) msg.obj;
             switch (msg.what) {
             case MSG_REPEAT_KEY:
-                tracker.onRegisterKey(tracker.getKey());
-                startKeyRepeatTimer(tracker, mParams.mKeyRepeatInterval);
+                final Key currentKey = tracker.getKey();
+                if (currentKey != null && currentKey.mCode == msg.arg1) {
+                    tracker.onRegisterKey(currentKey);
+                    startKeyRepeatTimer(tracker, mParams.mKeyRepeatInterval);
+                }
                 break;
             case MSG_LONGPRESS_KEY:
                 if (tracker != null) {
@@ -158,22 +160,23 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         }
 
         private void startKeyRepeatTimer(PointerTracker tracker, long delay) {
-            sendMessageDelayed(obtainMessage(MSG_REPEAT_KEY, tracker), delay);
+            final Key key = tracker.getKey();
+            if (key == null) return;
+            sendMessageDelayed(obtainMessage(MSG_REPEAT_KEY, key.mCode, 0, tracker), delay);
         }
 
         @Override
         public void startKeyRepeatTimer(PointerTracker tracker) {
-            mInKeyRepeat = true;
             startKeyRepeatTimer(tracker, mParams.mKeyRepeatStartTimeout);
         }
 
         public void cancelKeyRepeatTimer() {
-            mInKeyRepeat = false;
             removeMessages(MSG_REPEAT_KEY);
         }
 
+        // TODO: Suppress layout changes in key repeat mode
         public boolean isInKeyRepeat() {
-            return mInKeyRepeat;
+            return hasMessages(MSG_REPEAT_KEY);
         }
 
         @Override
@@ -451,8 +454,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
      */
     @Override
     public void setKeyboard(Keyboard keyboard) {
-        // Remove any pending messages, except dismissing preview
-        mKeyTimerHandler.cancelKeyTimers();
+        // Remove any pending messages, except dismissing preview and key repeat.
+        mKeyTimerHandler.cancelLongPressTimer();
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(
                 keyboard, -getPaddingLeft(), -getPaddingTop() + mVerticalCorrection);
@@ -755,15 +758,18 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 final PointerTracker tracker = PointerTracker.getPointerTracker(
                         pointerId, this);
                 final int px, py;
+                final MotionEvent motionEvent;
                 if (mMoreKeysPanel != null
                         && tracker.mPointerId == mMoreKeysPanelPointerTrackerId) {
                     px = mMoreKeysPanel.translateX((int)me.getX(i));
                     py = mMoreKeysPanel.translateY((int)me.getY(i));
+                    motionEvent = null;
                 } else {
                     px = (int)me.getX(i);
                     py = (int)me.getY(i);
+                    motionEvent = me;
                 }
-                tracker.onMoveEvent(px, py, eventTime);
+                tracker.onMoveEvent(px, py, eventTime, motionEvent);
                 if (ENABLE_USABILITY_STUDY_LOG) {
                     final float pointerSize = me.getSize(i);
                     final float pointerPressure = me.getPressure(i);

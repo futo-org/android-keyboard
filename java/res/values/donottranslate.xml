@@ -181,6 +181,52 @@
     <!-- Description for Bulgarian (BDS) subtype. -->
     <string name="subtype_bulgarian_bds">%s (BDS)</string>
 
+    <!-- Compatibility map from subtypeLocale:subtypeExtraValue to keyboardLayoutSet -->
+    <string-array name="locale_and_extra_value_to_keyboard_layout_set_map">
+        <item>en_US:TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>qwerty</item>
+        <item>en_GB:TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>qwerty</item>
+        <item>ar:SupportTouchPositionCorrection</item>
+        <item>arabic</item>
+        <item>cs:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>qwertz</item>
+        <item>da:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>nordic</item>
+        <item>de:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>qwertz</item>
+        <item>es:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>spanish</item>
+        <item>fi:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>nordic</item>
+        <item>fr:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>azerty</item>
+        <item>fr_CA:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>qwerty</item>
+        <item>hr:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>qwertz</item>
+        <item>hu:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>qwertz</item>
+        <item>it:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>qwerty</item>
+        <item>iw:SupportTouchPositionCorrection</item>
+        <item>hebrew</item>
+        <item>nb:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>nordic</item>
+        <item>nl:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>qwerty</item>
+        <item>pl:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>qwerty</item>
+        <item>ru:SupportTouchPositionCorrection</item>
+        <item>east_slavic</item>
+        <item>sr:SupportTouchPositionCorrection</item>
+        <item>south_slavic</item>
+        <item>sv:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>nordic</item>
+        <item>tr:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>qwerty</item>
+    </string-array>
+
     <!-- dictionary pack package name /settings activity (for shared prefs and settings) -->
     <string name="dictionary_pack_package_name">com.google.android.inputmethod.latin.dictionarypack</string>
     <string name="dictionary_pack_settings_activity">com.google.android.inputmethod.latin.dictionarypack.DictionarySettingsActivity</string>

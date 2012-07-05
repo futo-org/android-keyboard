@@ -20,6 +20,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.util.SparseIntArray;
 
 import com.android.inputmethod.latin.R;
 
@@ -31,8 +32,7 @@ public class KeyboardIconsSet {
     public static final int ICON_UNDEFINED = 0;
     private static final int ATTR_UNDEFINED = 0;
 
-    private static final HashMap<Integer, Integer> ATTR_ID_TO_ICON_ID
-            = new HashMap<Integer, Integer>();
+    private static final SparseIntArray ATTR_ID_TO_ICON_ID = new SparseIntArray();
 
     // Icon name to icon id map.
     private static final HashMap<String, Integer> sNameToIdsMap = new HashMap<String, Integer>();
@@ -76,7 +76,9 @@ public class KeyboardIconsSet {
     }
 
     public void loadIcons(final TypedArray keyboardAttrs) {
-        for (final Integer attrId : ATTR_ID_TO_ICON_ID.keySet()) {
+        final int size = ATTR_ID_TO_ICON_ID.size();
+        for (int index = 0; index < size; index++) {
+            final int attrId = ATTR_ID_TO_ICON_ID.keyAt(index);
             try {
                 final Drawable icon = keyboardAttrs.getDrawable(attrId);
                 setDefaultBounds(icon);

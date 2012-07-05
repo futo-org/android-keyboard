@@ -98,6 +98,10 @@ class ProximityInfo {
         return GRID_HEIGHT;
     }
 
+    // Returns the keyboard key-center information.
+    void getCenters(int *centersX, int *centersY, int *codeToKeyIndex, int *keyToCodeIndex,
+            int *keyCount, int *keyWidth) const;
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfo);
     // The max number of the keys in one keyboard layout

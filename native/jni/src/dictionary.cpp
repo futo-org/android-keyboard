@@ -22,6 +22,7 @@
 #include "binary_format.h"
 #include "defines.h"
 #include "dictionary.h"
+#include "gesture_decoder_wrapper.h"
 
 namespace latinime {
 
@@ -43,11 +44,15 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
     mUnigramDictionary = new UnigramDictionary(mDict + headerSize, typedLetterMultiplier,
             fullWordMultiplier, maxWordLength, maxWords, options);
     mBigramDictionary = new BigramDictionary(mDict + headerSize, maxWordLength);
+    mGestureDecoder = new GestureDecoderWrapper(maxWordLength, maxWords);
+    mGestureDecoder->setDict(mUnigramDictionary, mBigramDictionary,
+            mDict + headerSize /* dict root */, 0 /* root pos */);
 }
 
 Dictionary::~Dictionary() {
     delete mUnigramDictionary;
     delete mBigramDictionary;
+    delete mGestureDecoder;
 }
 
 int Dictionary::getFrequency(const int32_t *word, int length) const {

@@ -71,7 +71,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void onStartSuggestion(CharSequence previousWords) {
     }
 
-    public static void onAddSuggestedWord(String word, int typeId, int dataType) {
+    public static void onAddSuggestedWord(String word, String sourceDictionaryId) {
     }
 
     public static void onSetKeyboard(Keyboard kb) {

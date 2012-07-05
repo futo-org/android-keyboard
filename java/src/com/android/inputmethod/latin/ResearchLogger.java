@@ -197,6 +197,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         Log.d(TAG, "stop called");
         if (mLoggingHandler != null && mLoggingState == LOGGING_STATE_ON) {
             mLoggingState = LOGGING_STATE_STOPPING;
+            flushEventQueue(true);
             // put this in the Handler queue so pending writes are processed first.
             mLoggingHandler.post(new Runnable() {
                 @Override
@@ -379,10 +380,51 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mCurrentLogUnit.addLogAtom(keys, values, false);
     }
 
+    // Used to track how often words are logged.  Too-frequent logging can leak
+    // semantics, disclosing private data.
+    /* package for test */ static class LoggingFrequencyState {
+        private static final int DEFAULT_WORD_LOG_FREQUENCY = 10;
+        private int mWordsRemainingToSkip;
+        private final int mFrequency;
+
+        /**
+         * Tracks how often words may be uploaded.
+         *
+         * @param frequency 1=Every word, 2=Every other word, etc.
+         */
+        public LoggingFrequencyState(int frequency) {
+            mFrequency = frequency;
+            mWordsRemainingToSkip = mFrequency;
+        }
+
+        public void onWordLogged() {
+            mWordsRemainingToSkip = mFrequency;
+        }
+
+        public void onWordNotLogged() {
+            if (mWordsRemainingToSkip > 1) {
+                mWordsRemainingToSkip--;
+            }
+        }
+
+        public boolean isSafeToLog() {
+            return mWordsRemainingToSkip <= 1;
+        }
+    }
+
+    /* package for test */ LoggingFrequencyState mLoggingFrequencyState =
+            new LoggingFrequencyState(LoggingFrequencyState.DEFAULT_WORD_LOG_FREQUENCY);
+
     /* package for test */ boolean isPrivacyThreat(String word) {
-        // currently: word not in dictionary or contains numbers.
+        // Current checks:
+        // - Word not in dictionary
+        // - Word contains numbers
+        // - Privacy-safe word not logged recently
         if (TextUtils.isEmpty(word)) {
             return false;
+        }
+        if (!mLoggingFrequencyState.isSafeToLog()) {
+            return true;
         }
         final int length = word.length();
         boolean hasLetter = false;
@@ -410,15 +452,26 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         return false;
     }
 
+    private void onWordComplete(String word) {
+        final boolean isPrivacyThreat = isPrivacyThreat(word);
+        flushEventQueue(isPrivacyThreat);
+        if (isPrivacyThreat) {
+            mLoggingFrequencyState.onWordNotLogged();
+        } else {
+            mLoggingFrequencyState.onWordLogged();
+        }
+    }
+
     /**
      * Write out enqueued LogEvents to the log, possibly dropping privacy sensitive events.
      */
-    /* package for test */ synchronized void flushQueue(boolean removePotentiallyPrivateEvents) {
+    /* package for test */ synchronized void flushEventQueue(
+            boolean removePotentiallyPrivateEvents) {
         if (isAllowedToLog()) {
             mCurrentLogUnit.setRemovePotentiallyPrivateEvents(removePotentiallyPrivateEvents);
             mLoggingHandler.post(mCurrentLogUnit);
-            mCurrentLogUnit = new LogUnit();
         }
+        mCurrentLogUnit = new LogUnit();
     }
 
     private synchronized void outputEvent(final String[] keys, final Object[] values) {
@@ -479,12 +532,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     SuggestedWords words = (SuggestedWords) value;
                     mJsonWriter.beginObject();
                     mJsonWriter.name("typedWordValid").value(words.mTypedWordValid);
-                    mJsonWriter.name("hasAutoCorrectionCandidate")
-                        .value(words.mHasAutoCorrectionCandidate);
+                    mJsonWriter.name("willAutoCorrect").value(words.mWillAutoCorrect);
                     mJsonWriter.name("isPunctuationSuggestions")
                         .value(words.mIsPunctuationSuggestions);
-                    mJsonWriter.name("allowsToBeAutoCorrected")
-                        .value(words.mAllowsToBeAutoCorrected);
                     mJsonWriter.name("isObsoleteSuggestions")
                         .value(words.mIsObsoleteSuggestions);
                     mJsonWriter.name("isPrediction")
@@ -652,7 +702,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueuePotentiallyPrivateEvent(
                 EVENTKEYS_LATINIME_COMMITCURRENTAUTOCORRECTION, values);
-        researchLogger.flushQueue(researchLogger.isPrivacyThreat(autoCorrection));
     }
 
     private static final String[] EVENTKEYS_LATINIME_COMMITTEXT = {
@@ -665,7 +714,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         };
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_COMMITTEXT, values);
-        researchLogger.flushQueue(researchLogger.isPrivacyThreat(scrubbedWord));
+        researchLogger.onWordComplete(scrubbedWord);
     }
 
     private static final String[] EVENTKEYS_LATINIME_DELETESURROUNDINGTEXT = {
@@ -743,7 +792,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             }
             final ResearchLogger researchLogger = getInstance();
             researchLogger.enqueueEvent(EVENTKEYS_LATINIME_ONWINDOWHIDDEN, values);
-            researchLogger.flushQueue(true); // Play it safe.  Remove privacy-sensitive events.
+            researchLogger.flushEventQueue(true); // Play it safe.  Remove privacy-sensitive events.
         }
     }
 
@@ -824,7 +873,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueuePotentiallyPrivateEvent(
                 EVENTKEYS_LATINIME_PICKAPPLICATIONSPECIFIEDCOMPLETION, values);
-        researchLogger.flushQueue(researchLogger.isPrivacyThreat(cs.toString()));
     }
 
     private static final String[] EVENTKEYS_LATINIME_PICKSUGGESTIONMANUALLY = {
@@ -839,7 +887,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_PICKSUGGESTIONMANUALLY,
                 values);
-        researchLogger.flushQueue(researchLogger.isPrivacyThreat(suggestion.toString()));
     }
 
     private static final String[] EVENTKEYS_LATINIME_PUNCTUATIONSUGGESTION = {

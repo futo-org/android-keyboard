@@ -38,7 +38,6 @@ public class ExpandableDictionary extends Dictionary {
 
     private Context mContext;
     private char[] mWordBuilder = new char[BinaryDictionary.MAX_WORD_LENGTH];
-    private int mDicTypeId;
     private int mMaxDepth;
     private int mInputLength;
 
@@ -152,11 +151,11 @@ public class ExpandableDictionary extends Dictionary {
 
     private int[][] mCodes;
 
-    public ExpandableDictionary(Context context, int dicTypeId) {
+    public ExpandableDictionary(final Context context, final String dictType) {
+        super(dictType);
         mContext = context;
         clearDictionary();
         mCodes = new int[BinaryDictionary.MAX_WORD_LENGTH][];
-        mDicTypeId = dicTypeId;
     }
 
     public void loadDictionary() {
@@ -248,20 +247,20 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     @Override
-    public void getWords(final WordComposer codes, final CharSequence prevWordForBigrams,
-            final WordCallback callback, final ProximityInfo proximityInfo) {
+    public ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
+            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         synchronized (mUpdatingLock) {
             // If we need to update, start off a background task
             if (mRequiresReload) startDictionaryLoadingTaskLocked();
             // Currently updating contacts, don't return any results.
-            if (mUpdatingDictionary) return;
+            if (mUpdatingDictionary) return null;
         }
         if (codes.size() >= BinaryDictionary.MAX_WORD_LENGTH) {
-            return;
+            return null;
         }
         final ArrayList<SuggestedWordInfo> suggestions =
                 getWordsInner(codes, prevWordForBigrams, proximityInfo);
-        Utils.addAllSuggestions(mDicTypeId, Dictionary.UNIGRAM, suggestions, callback);
+        return suggestions;
     }
 
     protected final ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer codes,
@@ -269,8 +268,9 @@ public class ExpandableDictionary extends Dictionary {
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
         mInputLength = codes.size();
         if (mCodes.length < mInputLength) mCodes = new int[mInputLength][];
-        final int[] xCoordinates = codes.getXCoordinates();
-        final int[] yCoordinates = codes.getYCoordinates();
+        final InputPointers ips = codes.getInputPointers();
+        final int[] xCoordinates = ips.getXCoordinates();
+        final int[] yCoordinates = ips.getYCoordinates();
         // Cache the codes so that we don't have to lookup an array list
         for (int i = 0; i < mInputLength; i++) {
             // TODO: Calculate proximity info here.
@@ -383,7 +383,7 @@ public class ExpandableDictionary extends Dictionary {
             // the respective size of the typed word and the suggestion if it matters sometime
             // in the future.
             suggestions.add(new SuggestedWordInfo(new String(word, 0, depth + 1), finalFreq,
-                    SuggestedWordInfo.KIND_CORRECTION));
+                    SuggestedWordInfo.KIND_CORRECTION, mDictType));
             if (suggestions.size() >= Suggest.MAX_SUGGESTIONS) return false;
         }
         if (null != node.mShortcutTargets) {
@@ -391,7 +391,7 @@ public class ExpandableDictionary extends Dictionary {
             for (int shortcutIndex = 0; shortcutIndex < length; ++shortcutIndex) {
                 final char[] shortcut = node.mShortcutTargets.get(shortcutIndex);
                 suggestions.add(new SuggestedWordInfo(new String(shortcut, 0, shortcut.length),
-                        finalFreq, SuggestedWordInfo.KIND_SHORTCUT));
+                        finalFreq, SuggestedWordInfo.KIND_SHORTCUT, mDictType));
                 if (suggestions.size() > Suggest.MAX_SUGGESTIONS) return false;
             }
         }
@@ -600,22 +600,25 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     private void runBigramReverseLookUp(final CharSequence previousWord,
-            final WordCallback callback) {
+            final ArrayList<SuggestedWordInfo> suggestions) {
         // Search for the lowercase version of the word only, because that's where bigrams
         // store their sons.
         Node prevWord = searchNode(mRoots, previousWord.toString().toLowerCase(), 0,
                 previousWord.length());
         if (prevWord != null && prevWord.mNGrams != null) {
-            reverseLookUp(prevWord.mNGrams, callback);
+            reverseLookUp(prevWord.mNGrams, suggestions);
         }
     }
 
     @Override
-    public void getBigrams(final WordComposer codes, final CharSequence previousWord,
-            final WordCallback callback) {
+    public ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
+            final CharSequence previousWord) {
         if (!reloadDictionaryIfRequired()) {
-            runBigramReverseLookUp(previousWord, callback);
+            final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
+            runBigramReverseLookUp(previousWord, suggestions);
+            return suggestions;
         }
+        return null;
     }
 
     /**
@@ -642,11 +645,12 @@ public class ExpandableDictionary extends Dictionary {
 
     /**
      * reverseLookUp retrieves the full word given a list of terminal nodes and adds those words
-     * through callback.
+     * to the suggestions list passed as an argument.
      * @param terminalNodes list of terminal nodes we want to add
+     * @param suggestions the suggestion collection to add the word to
      */
     private void reverseLookUp(LinkedList<NextWord> terminalNodes,
-            final WordCallback callback) {
+            final ArrayList<SuggestedWordInfo> suggestions) {
         Node node;
         int freq;
         for (NextWord nextWord : terminalNodes) {
@@ -660,8 +664,9 @@ public class ExpandableDictionary extends Dictionary {
             } while (node != null);
 
             if (freq >= 0) {
-                callback.addWord(mLookedUpString, index, BinaryDictionary.MAX_WORD_LENGTH - index,
-                        freq, mDicTypeId, Dictionary.BIGRAM);
+                suggestions.add(new SuggestedWordInfo(new String(mLookedUpString, index,
+                        BinaryDictionary.MAX_WORD_LENGTH - index),
+                        freq, SuggestedWordInfo.KIND_CORRECTION, mDictType));
             }
         }
     }

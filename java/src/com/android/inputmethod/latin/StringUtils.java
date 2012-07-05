@@ -184,6 +184,9 @@ public class StringUtils {
         final char[] characters = string.toCharArray();
         final int length = characters.length;
         final int[] codePoints = new int[Character.codePointCount(characters, 0, length)];
+        if (length <= 0) {
+            return new int[0];
+        }
         int codePoint = Character.codePointAt(characters, 0);
         int dsti = 0;
         for (int srci = Character.charCount(codePoint);

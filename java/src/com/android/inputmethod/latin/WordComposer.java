@@ -33,8 +33,7 @@ public class WordComposer {
     private static final int N = BinaryDictionary.MAX_WORD_LENGTH;
 
     private int[] mPrimaryKeyCodes;
-    private int[] mXCoordinates;
-    private int[] mYCoordinates;
+    private final InputPointers mInputPointers = new InputPointers();
     private StringBuilder mTypedWord;
     private CharSequence mAutoCorrection;
     private boolean mIsResumed;
@@ -53,8 +52,6 @@ public class WordComposer {
     public WordComposer() {
         mPrimaryKeyCodes = new int[N];
         mTypedWord = new StringBuilder(N);
-        mXCoordinates = new int[N];
-        mYCoordinates = new int[N];
         mAutoCorrection = null;
         mTrailingSingleQuotesCount = 0;
         mIsResumed = false;
@@ -68,8 +65,7 @@ public class WordComposer {
     public void init(WordComposer source) {
         mPrimaryKeyCodes = Arrays.copyOf(source.mPrimaryKeyCodes, source.mPrimaryKeyCodes.length);
         mTypedWord = new StringBuilder(source.mTypedWord);
-        mXCoordinates = Arrays.copyOf(source.mXCoordinates, source.mXCoordinates.length);
-        mYCoordinates = Arrays.copyOf(source.mYCoordinates, source.mYCoordinates.length);
+        mInputPointers.copy(source.mInputPointers);
         mCapsCount = source.mCapsCount;
         mIsFirstCharCapitalized = source.mIsFirstCharCapitalized;
         mAutoCapitalized = source.mAutoCapitalized;
@@ -91,7 +87,7 @@ public class WordComposer {
         refreshSize();
     }
 
-    public final void refreshSize() {
+    private final void refreshSize() {
         mCodePointSize = mTypedWord.codePointCount(0, mTypedWord.length());
     }
 
@@ -115,12 +111,8 @@ public class WordComposer {
         return mPrimaryKeyCodes[index];
     }
 
-    public int[] getXCoordinates() {
-        return mXCoordinates;
-    }
-
-    public int[] getYCoordinates() {
-        return mYCoordinates;
+    public InputPointers getInputPointers() {
+        return mInputPointers;
     }
 
     private static boolean isFirstCharCapitalized(int index, int codePoint, boolean previous) {
@@ -138,8 +130,8 @@ public class WordComposer {
         if (newIndex < BinaryDictionary.MAX_WORD_LENGTH) {
             mPrimaryKeyCodes[newIndex] = primaryCode >= Keyboard.CODE_SPACE
                     ? Character.toLowerCase(primaryCode) : primaryCode;
-            mXCoordinates[newIndex] = keyX;
-            mYCoordinates[newIndex] = keyY;
+            // TODO: Set correct pointer id and time
+            mInputPointers.addPointer(newIndex, keyX, keyY, 0, 0);
         }
         mIsFirstCharCapitalized = isFirstCharCapitalized(
                 newIndex, primaryCode, mIsFirstCharCapitalized);
@@ -298,14 +290,11 @@ public class WordComposer {
         // or a DECIDED_WORD we may cancel the commit later; otherwise, we should deactivate
         // the last composed word to ensure this does not happen.
         final int[] primaryKeyCodes = mPrimaryKeyCodes;
-        final int[] xCoordinates = mXCoordinates;
-        final int[] yCoordinates = mYCoordinates;
         mPrimaryKeyCodes = new int[N];
-        mXCoordinates = new int[N];
-        mYCoordinates = new int[N];
         final LastComposedWord lastComposedWord = new LastComposedWord(primaryKeyCodes,
-                xCoordinates, yCoordinates, mTypedWord.toString(), committedWord, separatorCode,
+                mInputPointers, mTypedWord.toString(), committedWord, separatorCode,
                 prevWord);
+        mInputPointers.reset();
         if (type != LastComposedWord.COMMIT_TYPE_DECIDED_WORD
                 && type != LastComposedWord.COMMIT_TYPE_MANUAL_PICK) {
             lastComposedWord.deactivate();
@@ -319,8 +308,7 @@ public class WordComposer {
 
     public void resumeSuggestionOnLastComposedWord(final LastComposedWord lastComposedWord) {
         mPrimaryKeyCodes = lastComposedWord.mPrimaryKeyCodes;
-        mXCoordinates = lastComposedWord.mXCoordinates;
-        mYCoordinates = lastComposedWord.mYCoordinates;
+        mInputPointers.set(lastComposedWord.mInputPointers);
         mTypedWord.setLength(0);
         mTypedWord.append(lastComposedWord.mTypedWord);
         refreshSize();

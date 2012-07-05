@@ -19,6 +19,7 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
@@ -75,9 +76,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /** The expandable fusion dictionary used to generate the binary dictionary. */
     private FusionDictionary mFusionDictionary;
 
-    /** The dictionary type id. */
-    public final int mDicTypeId;
-
     /**
      * The name of this dictionary, used as the filename for storing the binary dictionary. Multiple
      * dictionary instances with the same filename is supported, with access controlled by
@@ -123,11 +121,11 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * @param context The application context of the parent.
      * @param filename The filename for this binary dictionary. Multiple dictionaries with the same
      *        filename is supported.
-     * @param dictType The type of this dictionary.
+     * @param dictType the dictionary type, as a human-readable string
      */
     public ExpandableBinaryDictionary(
-            final Context context, final String filename, final int dictType) {
-        mDicTypeId = dictType;
+            final Context context, final String filename, final String dictType) {
+        super(dictType);
         mFilename = filename;
         mContext = context;
         mBinaryDictionary = null;
@@ -194,46 +192,47 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     @Override
-    public void getWords(final WordComposer codes, final CharSequence prevWordForBigrams,
-            final WordCallback callback, final ProximityInfo proximityInfo) {
+    public ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
+            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         asyncReloadDictionaryIfRequired();
-        getWordsInner(codes, prevWordForBigrams, callback, proximityInfo);
+        return getWordsInner(codes, prevWordForBigrams, proximityInfo);
     }
 
-    protected final void getWordsInner(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final WordCallback callback,
-            final ProximityInfo proximityInfo) {
+    protected final ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer codes,
+            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         // Ensure that there are no concurrent calls to getWords. If there are, do nothing and
         // return.
         if (mLocalDictionaryController.tryLock()) {
             try {
                 if (mBinaryDictionary != null) {
-                    mBinaryDictionary.getWords(codes, prevWordForBigrams, callback, proximityInfo);
+                    return mBinaryDictionary.getWords(codes, prevWordForBigrams, proximityInfo);
                 }
             } finally {
                 mLocalDictionaryController.unlock();
             }
         }
+        return null;
     }
 
     @Override
-    public void getBigrams(final WordComposer codes, final CharSequence previousWord,
-            final WordCallback callback) {
+    public ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
+            final CharSequence previousWord) {
         asyncReloadDictionaryIfRequired();
-        getBigramsInner(codes, previousWord, callback);
+        return getBigramsInner(codes, previousWord);
     }
 
-    protected void getBigramsInner(final WordComposer codes, final CharSequence previousWord,
-            final WordCallback callback) {
+    protected ArrayList<SuggestedWordInfo> getBigramsInner(final WordComposer codes,
+            final CharSequence previousWord) {
         if (mLocalDictionaryController.tryLock()) {
             try {
                 if (mBinaryDictionary != null) {
-                    mBinaryDictionary.getBigrams(codes, previousWord, callback);
+                    return mBinaryDictionary.getBigrams(codes, previousWord);
                 }
             } finally {
                 mLocalDictionaryController.unlock();
             }
         }
+        return null;
     }
 
     @Override
@@ -306,7 +305,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         // Build the new binary dictionary
         final BinaryDictionary newBinaryDictionary =
                 new BinaryDictionary(mContext, filename, 0, length, true /* useFullEditDistance */,
-                        null);
+                        null, mDictType);
 
         if (mBinaryDictionary != null) {
             // Ensure all threads accessing the current dictionary have finished before swapping in

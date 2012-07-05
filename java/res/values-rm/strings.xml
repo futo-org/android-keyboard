@@ -67,10 +67,6 @@
     <skip />
     <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
     <skip />
-    <!-- no translation found for enable_span_insert (7204653105667167620) -->
-    <skip />
-    <!-- no translation found for enable_span_insert_summary (2947317657871394467) -->
-    <skip />
     <string name="auto_cap" msgid="1719746674854628252">"Maiusclas automaticas"</string>
     <!-- no translation found for configure_dictionaries_title (4238652338556902049) -->
     <skip />
@@ -98,13 +94,9 @@
     <skip />
     <!-- no translation found for auto_correction_threshold_mode_very_aggeressive (3386782235540547678) -->
     <skip />
-    <!-- no translation found for bigram_suggestion (8169311444438922902) -->
+    <!-- no translation found for bigram_prediction (5809665643352206540) -->
     <skip />
-    <!-- no translation found for bigram_suggestion_summary (6635527607242625713) -->
-    <skip />
-    <!-- no translation found for bigram_prediction (3216364899483135294) -->
-    <skip />
-    <!-- no translation found for bigram_prediction_summary (1747261921174300098) -->
+    <!-- no translation found for bigram_prediction_summary (3253961591626441019) -->
     <skip />
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Memorisà"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Dai"</string>

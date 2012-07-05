@@ -148,9 +148,6 @@ public class PointerTracker {
     // true if this pointer has been long-pressed and is showing a more keys panel.
     private boolean mIsShowingMoreKeysPanel;
 
-    // true if this pointer is repeatable key
-    private boolean mIsRepeatableKey;
-
     // true if this pointer is in sliding key input
     boolean mIsInSlidingKeyInput;
 
@@ -319,6 +316,13 @@ public class PointerTracker {
     private void setKeyDetectorInner(KeyDetector keyDetector) {
         mKeyDetector = keyDetector;
         mKeyboard = keyDetector.getKeyboard();
+        final Key newKey = mKeyDetector.detectHitKey(mKeyX, mKeyY);
+        if (newKey != mCurrentKey) {
+            if (mDrawingProxy != null) {
+                setReleasedKeyGraphics(mCurrentKey);
+            }
+            mCurrentKey = newKey;
+        }
         final int keyQuarterWidth = mKeyboard.mMostCommonKeyWidth / 4;
         mKeyQuarterWidthSquared = keyQuarterWidth * keyQuarterWidth;
     }
@@ -465,7 +469,7 @@ public class PointerTracker {
             onUpEvent(x, y, eventTime);
             break;
         case MotionEvent.ACTION_MOVE:
-            onMoveEvent(x, y, eventTime);
+            onMoveEvent(x, y, eventTime, null);
             break;
         case MotionEvent.ACTION_CANCEL:
             onCancelEvent(x, y, eventTime);
@@ -521,7 +525,6 @@ public class PointerTracker {
                 || mKeyDetector.alwaysAllowsSlidingInput();
         mKeyboardLayoutHasBeenChanged = false;
         mKeyAlreadyProcessed = false;
-        mIsRepeatableKey = false;
         mIsInSlidingKeyInput = false;
         mIgnoreModifierKey = false;
         if (key != null) {
@@ -545,7 +548,7 @@ public class PointerTracker {
         mIsInSlidingKeyInput = true;
     }
 
-    public void onMoveEvent(int x, int y, long eventTime) {
+    public void onMoveEvent(int x, int y, long eventTime, MotionEvent me) {
         if (DEBUG_MOVE_EVENT)
             printTouchEvent("onMoveEvent:", x, y, eventTime);
         if (mKeyAlreadyProcessed)
@@ -668,7 +671,7 @@ public class PointerTracker {
         }
         if (mKeyAlreadyProcessed)
             return;
-        if (!mIsRepeatableKey) {
+        if (mCurrentKey != null && !mCurrentKey.isRepeatable()) {
             detectAndSendKey(mCurrentKey, mKeyX, mKeyY);
         }
     }
@@ -714,9 +717,6 @@ public class PointerTracker {
         if (key != null && key.isRepeatable()) {
             onRegisterKey(key);
             mTimerProxy.startKeyRepeatTimer(this);
-            mIsRepeatableKey = true;
-        } else {
-            mIsRepeatableKey = false;
         }
     }
 
@@ -760,14 +760,10 @@ public class PointerTracker {
         callListenerOnRelease(key, code, false);
     }
 
-    private long mPreviousEventTime;
-
     private void printTouchEvent(String title, int x, int y, long eventTime) {
         final Key key = mKeyDetector.detectHitKey(x, y);
         final String code = KeyDetector.printableCode(key);
-        final long delta = eventTime - mPreviousEventTime;
         Log.d(TAG, String.format("%s%s[%d] %4d %4d %5d %s", title,
-                (mKeyAlreadyProcessed ? "-" : " "), mPointerId, x, y, delta, code));
-        mPreviousEventTime = eventTime;
+                (mKeyAlreadyProcessed ? "-" : " "), mPointerId, x, y, eventTime, code));
     }
 }

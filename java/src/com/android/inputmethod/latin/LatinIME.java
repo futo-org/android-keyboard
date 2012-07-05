@@ -471,8 +471,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
         if (null == mPrefs) mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mUserHistoryDictionary = UserHistoryDictionary.getInstance(
-                this, localeStr, Suggest.DIC_USER_HISTORY, mPrefs);
+        mUserHistoryDictionary = UserHistoryDictionary.getInstance(this, localeStr, mPrefs);
         mSuggest.setUserHistoryDictionary(mUserHistoryDictionary);
     }
 
@@ -500,8 +499,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     // If the locale has changed then recreate the contacts dictionary. This
                     // allows locale dependent rules for handling bigram name predictions.
                     oldContactsDictionary.close();
-                    dictionaryToUse = new ContactsBinaryDictionary(
-                        this, Suggest.DIC_CONTACTS, locale);
+                    dictionaryToUse = new ContactsBinaryDictionary(this, locale);
                 } else {
                     // Make sure the old contacts dictionary is opened. If it is already open,
                     // this is a no-op, so it's safe to call it anyways.
@@ -509,7 +507,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     dictionaryToUse = oldContactsDictionary;
                 }
             } else {
-                dictionaryToUse = new ContactsBinaryDictionary(this, Suggest.DIC_CONTACTS, locale);
+                dictionaryToUse = new ContactsBinaryDictionary(this, locale);
             }
         }
 
@@ -890,7 +888,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 applicationSuggestedWords,
                 false /* typedWordValid */,
                 false /* hasAutoCorrectionCandidate */,
-                false /* allowsToBeAutoCorrected */,
                 false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
                 false /* isPrediction */);
@@ -1718,9 +1715,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
 
-        mHandler.cancelUpdateSuggestions();
-        mHandler.cancelUpdateBigramPredictions();
-
         if (!mWordComposer.isComposingWord()) {
             // We are never called with an empty word composer, but if because of a bug
             // we are, what we should do here is just call updateBigramsPredictions. This will
@@ -1736,7 +1730,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // getSuggestedWords handles gracefully a null value of prevWord
         final SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
-                mCurrentSettings.mCorrectionEnabled);
+                mCurrentSettings.mCorrectionEnabled, false);
 
         // Basically, we update the suggestion strip only when suggestion count > 1.  However,
         // there is an exception: We update the suggestion strip whenever typed word's length
@@ -1745,7 +1739,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // need to clear the previous state when the user starts typing a word (i.e. typed word's
         // length == 1).
         if (suggestedWords.size() > 1 || typedWord.length() == 1
-                || !suggestedWords.mAllowsToBeAutoCorrected
+                || !suggestedWords.mTypedWordValid
                 || mSuggestionsView.isShowingAddToDictionaryHint()) {
             showSuggestions(suggestedWords, typedWord);
         } else {
@@ -1760,7 +1754,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     new SuggestedWords(typedWordAndPreviousSuggestions,
                             false /* typedWordValid */,
                             false /* hasAutoCorrectionCandidate */,
-                            false /* allowsToBeAutoCorrected */,
                             false /* isPunctuationSuggestions */,
                             true /* isObsoleteSuggestions */,
                             false /* isPrediction */);
@@ -1771,7 +1764,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void showSuggestions(final SuggestedWords suggestedWords, final CharSequence typedWord) {
         final CharSequence autoCorrection;
         if (suggestedWords.size() > 0) {
-            if (suggestedWords.hasAutoCorrectionWord()) {
+            if (suggestedWords.mWillAutoCorrect) {
                 autoCorrection = suggestedWords.getWord(1);
             } else {
                 autoCorrection = typedWord;
@@ -1936,8 +1929,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public void updateBigramPredictions() {
-        if (mSuggest == null || !mCurrentSettings.isSuggestionsRequested(mDisplayOrientation))
+        mHandler.cancelUpdateSuggestions();
+        mHandler.cancelUpdateBigramPredictions();
+
+        if (mSuggest == null || !mCurrentSettings.isSuggestionsRequested(mDisplayOrientation)) {
+            if (mWordComposer.isComposingWord()) {
+                Log.w(TAG, "Called updateBigramPredictions but suggestions were not requested!");
+                mWordComposer.setAutoCorrection(mWordComposer.getTypedWord());
+            }
             return;
+        }
 
         if (!mCurrentSettings.mBigramPredictionEnabled) {
             setPunctuationSuggestions();
@@ -1948,7 +1949,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mCurrentSettings.mCorrectionEnabled) {
             final CharSequence prevWord = mConnection.getThisWord(mCurrentSettings.mWordSeparators);
             if (!TextUtils.isEmpty(prevWord)) {
-                suggestedWords = mSuggest.getBigramPredictions(prevWord);
+                suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
+                        prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
+                        mCurrentSettings.mCorrectionEnabled, true);
             } else {
                 suggestedWords = null;
             }

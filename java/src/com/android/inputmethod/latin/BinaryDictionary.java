@@ -20,7 +20,9 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -40,17 +42,18 @@ public class BinaryDictionary extends Dictionary {
      */
     public static final int MAX_WORD_LENGTH = 48;
     public static final int MAX_WORDS = 18;
+    public static final int MAX_SPACES = 16;
 
     private static final String TAG = "BinaryDictionary";
     private static final int MAX_BIGRAMS = 60;
 
     private static final int TYPED_LETTER_MULTIPLIER = 2;
 
-    private int mDicTypeId;
     private long mNativeDict;
     private final int[] mInputCodes = new int[MAX_WORD_LENGTH];
     private final char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_WORDS];
     private final char[] mOutputChars_bigrams = new char[MAX_WORD_LENGTH * MAX_BIGRAMS];
+    private final int[] mSpaceIndices = new int[MAX_SPACES];
     private final int[] mScores = new int[MAX_WORDS];
     private final int[] mBigramScores = new int[MAX_BIGRAMS];
 
@@ -65,14 +68,12 @@ public class BinaryDictionary extends Dictionary {
      * @param offset the offset of the dictionary data within the file.
      * @param length the length of the binary data.
      * @param useFullEditDistance whether to use the full edit distance in suggestions
+     * @param dictType the dictionary type, as a human-readable string
      */
     public BinaryDictionary(final Context context,
             final String filename, final long offset, final long length,
-            final boolean useFullEditDistance, final Locale locale) {
-        // Note: at the moment a binary dictionary is always of the "main" type.
-        // Initializing this here will help transitioning out of the scheme where
-        // the Suggest class knows everything about every single dictionary.
-        mDicTypeId = Suggest.DIC_MAIN;
+            final boolean useFullEditDistance, final Locale locale, final String dictType) {
+        super(dictType);
         mUseFullEditDistance = useFullEditDistance;
         loadDictionary(filename, offset, length);
     }
@@ -87,8 +88,10 @@ public class BinaryDictionary extends Dictionary {
     private native int getFrequencyNative(long dict, int[] word, int wordLength);
     private native boolean isValidBigramNative(long dict, int[] word1, int[] word2);
     private native int getSuggestionsNative(long dict, long proximityInfo, int[] xCoordinates,
-            int[] yCoordinates, int[] inputCodes, int codesSize, int[] prevWordForBigrams,
-            boolean useFullEditDistance, char[] outputChars, int[] scores);
+            int[] yCoordinates, int[] times, int[] pointerIds, int[] inputCodes, int codesSize,
+            int commitPoint, boolean isGesture,
+            int[] prevWordCodePointArray, boolean useFullEditDistance, char[] outputChars,
+            int[] scores, int[] outputIndices);
     private native int getBigramsNative(long dict, int[] prevWord, int prevWordLength,
             int[] inputCodes, int inputCodesLength, char[] outputChars, int[] scores,
             int maxWordLength, int maxBigrams);
@@ -103,9 +106,9 @@ public class BinaryDictionary extends Dictionary {
     }
 
     @Override
-    public void getBigrams(final WordComposer codes, final CharSequence previousWord,
-            final WordCallback callback) {
-        if (mNativeDict == 0) return;
+    public ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
+            final CharSequence previousWord) {
+        if (mNativeDict == 0) return null;
 
         int[] codePoints = StringUtils.toCodePointArray(previousWord.toString());
         Arrays.fill(mOutputChars_bigrams, (char) 0);
@@ -123,6 +126,7 @@ public class BinaryDictionary extends Dictionary {
             count = MAX_BIGRAMS;
         }
 
+        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
         for (int j = 0; j < count; ++j) {
             if (codesSize > 0 && mBigramScores[j] < 1) break;
             final int start = j * MAX_WORD_LENGTH;
@@ -131,19 +135,22 @@ public class BinaryDictionary extends Dictionary {
                 ++len;
             }
             if (len > 0) {
-                callback.addWord(mOutputChars_bigrams, start, len, mBigramScores[j],
-                        mDicTypeId, Dictionary.BIGRAM);
+                suggestions.add(new SuggestedWordInfo(
+                        new String(mOutputChars_bigrams, start, len),
+                        mBigramScores[j], SuggestedWordInfo.KIND_CORRECTION, mDictType));
             }
         }
+        return suggestions;
     }
 
     // proximityInfo and/or prevWordForBigrams may not be null.
     @Override
-    public void getWords(final WordComposer codes, final CharSequence prevWordForBigrams,
-            final WordCallback callback, final ProximityInfo proximityInfo) {
+    public ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
+            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         final int count = getSuggestions(codes, prevWordForBigrams, proximityInfo, mOutputChars,
-                mScores);
+                mScores, mSpaceIndices);
 
+        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
         for (int j = 0; j < count; ++j) {
             if (mScores[j] < 1) break;
             final int start = j * MAX_WORD_LENGTH;
@@ -152,10 +159,13 @@ public class BinaryDictionary extends Dictionary {
                 ++len;
             }
             if (len > 0) {
-                callback.addWord(mOutputChars, start, len, mScores[j], mDicTypeId,
-                        Dictionary.UNIGRAM);
+                // TODO: actually get the kind from native code
+                suggestions.add(new SuggestedWordInfo(
+                        new String(mOutputChars, start, len),
+                        mScores[j], SuggestedWordInfo.KIND_CORRECTION, mDictType));
             }
         }
+        return suggestions;
     }
 
     /* package for test */ boolean isValidDictionary() {
@@ -165,7 +175,7 @@ public class BinaryDictionary extends Dictionary {
     // proximityInfo may not be null.
     /* package for test */ int getSuggestions(final WordComposer codes,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo,
-            char[] outputChars, int[] scores) {
+            char[] outputChars, int[] scores, int[] spaceIndices) {
         if (!isValidDictionary()) return -1;
 
         final int codesSize = codes.size();
@@ -179,14 +189,22 @@ public class BinaryDictionary extends Dictionary {
         Arrays.fill(outputChars, (char) 0);
         Arrays.fill(scores, 0);
 
-        final int[] prevWordCodePointArray = null == prevWordForBigrams
+        // TODO: toLowerCase in the native code
+        final int[] prevWordCodePointArray = (null == prevWordForBigrams)
                 ? null : StringUtils.toCodePointArray(prevWordForBigrams.toString());
 
-        // TODO: pass the previous word to native code
-        return getSuggestionsNative(
-                mNativeDict, proximityInfo.getNativeProximityInfo(),
-                codes.getXCoordinates(), codes.getYCoordinates(), mInputCodes, codesSize,
-                prevWordCodePointArray, mUseFullEditDistance, outputChars, scores);
+        int[] emptyArray = new int[codesSize];
+        Arrays.fill(emptyArray, 0);
+
+        //final int commitPoint = codes.getCommitPoint();
+        //codes.clearCommitPoint();
+
+        final InputPointers ips = codes.getInputPointers();
+
+        return getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
+            ips.getXCoordinates(), ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
+            mInputCodes, codesSize, 0 /* unused */, false, prevWordCodePointArray,
+            mUseFullEditDistance, outputChars, scores, spaceIndices);
     }
 
     public static float calcNormalizedScore(String before, String after, int score) {

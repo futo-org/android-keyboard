@@ -179,13 +179,13 @@ public class SettingsValues {
         if (puncs != null) {
             for (final String puncSpec : puncs) {
                 puncList.add(new SuggestedWordInfo(KeySpecParser.getLabel(puncSpec),
-                        SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_HARDCODED));
+                        SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_HARDCODED,
+                        Dictionary.TYPE_HARDCODED));
             }
         }
         return new SuggestedWords(puncList,
                 false /* typedWordValid */,
                 false /* hasAutoCorrectionCandidate */,
-                false /* allowsToBeAutoCorrected */,
                 true /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
                 false /* isPrediction */);

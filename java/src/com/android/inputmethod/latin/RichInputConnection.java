@@ -340,13 +340,6 @@ public class RichInputConnection {
      * Returns the word before the cursor if the cursor is at the end of a word, null otherwise
      */
     public CharSequence getWordBeforeCursorIfAtEndOfWord(final SettingsValues settings) {
-        // Bail out if the cursor is not at the end of a word (cursor must be preceded by
-        // non-whitespace, non-separator, non-start-of-text)
-        // Example ("|" is the cursor here) : <SOL>"|a" " |a" " | " all get rejected here.
-        final CharSequence textBeforeCursor = getTextBeforeCursor(1, 0);
-        if (TextUtils.isEmpty(textBeforeCursor)
-                || settings.isWordSeparator(textBeforeCursor.charAt(0))) return null;
-
         // Bail out if the cursor is in the middle of a word (cursor must be followed by whitespace,
         // separator or end of line/text)
         // Example: "test|"<EOL> "te|st" get rejected here
@@ -363,6 +356,15 @@ public class RichInputConnection {
             word = word.subSequence(1, word.length());
         }
         if (TextUtils.isEmpty(word)) return null;
+        // Find the last code point of the string
+        final int lastCodePoint = Character.codePointBefore(word, word.length());
+        // If for some reason the text field contains non-unicode binary data, or if the
+        // charsequence is exactly one char long and the contents is a low surrogate, return null.
+        if (!Character.isDefined(lastCodePoint)) return null;
+        // Bail out if the cursor is not at the end of a word (cursor must be preceded by
+        // non-whitespace, non-separator, non-start-of-text)
+        // Example ("|" is the cursor here) : <SOL>"|a" " |a" " | " all get rejected here.
+        if (settings.isWordSeparator(lastCodePoint)) return null;
         final char firstChar = word.charAt(0); // we just tested that word is not empty
         if (word.length() == 1 && !Character.isLetter(firstChar)) return null;
 

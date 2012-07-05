@@ -17,15 +17,16 @@ LOCAL_PATH := $(call my-dir)
 ############ some local flags
 # If you change any of those flags, you need to rebuild both libjni_latinime_static
 # and the shared library.
-#FLAG_DBG := true
+FLAG_DBG ?= false
 FLAG_DO_PROFILE ?= false
 
 ######################################
 include $(CLEAR_VARS)
 
 LATIN_IME_SRC_DIR := src
+LATIN_IME_SRC_FULLPATH_DIR := $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
 
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/$(LATIN_IME_SRC_DIR)
+LOCAL_C_INCLUDES += $(LATIN_IME_SRC_FULLPATH_DIR) $(LATIN_IME_SRC_FULLPATH_DIR)/gesture
 
 LOCAL_CFLAGS += -Werror -Wall
 
@@ -47,11 +48,12 @@ LATIN_IME_CORE_SRC_FILES := \
     dictionary.cpp \
     proximity_info.cpp \
     proximity_info_state.cpp \
-    unigram_dictionary.cpp
+    unigram_dictionary.cpp \
+    gesture/gesture_decoder_wrapper.cpp
 
 LOCAL_SRC_FILES := \
     $(LATIN_IME_JNI_SRC_FILES) \
-    $(addprefix $(LATIN_IME_SRC_DIR)/,$(LATIN_IME_CORE_SRC_FILES))
+    $(addprefix $(LATIN_IME_SRC_DIR)/, $(LATIN_IME_CORE_SRC_FILES))
 
 ifeq ($(FLAG_DO_PROFILE), true)
     $(warning Making profiling version of native library)
@@ -73,12 +75,11 @@ LOCAL_C_INCLUDES += external/stlport/stlport bionic
 endif
 
 include $(BUILD_STATIC_LIBRARY)
-
 ######################################
 include $(CLEAR_VARS)
 
 # All code in LOCAL_WHOLE_STATIC_LIBRARIES will be built into this shared library.
-LOCAL_WHOLE_STATIC_LIBRARIES := libjni_latinime_static
+LOCAL_WHOLE_STATIC_LIBRARIES := libjni_latinime_common_static
 
 ifdef HISTORICAL_NDK_VERSIONS_ROOT # In the platform build system
 LOCAL_SHARED_LIBRARIES := libstlport
@@ -108,5 +109,6 @@ include $(BUILD_SHARED_LIBRARY)
 #################### Clean up the tmp vars
 LATIN_IME_CORE_SRC_FILES :=
 LATIN_IME_JNI_SRC_FILES :=
+LATIN_IME_GESTURE_IMPL_SRC_FILES :=
 LATIN_IME_SRC_DIR :=
-TARGETING_UNBUNDLED_FROYO :=
+LATIN_IME_SRC_FULLPATH_DIR :=

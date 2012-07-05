@@ -17,9 +17,11 @@
 package com.android.inputmethod.latin;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -31,11 +33,13 @@ public class DictionaryCollection extends Dictionary {
     private final String TAG = DictionaryCollection.class.getSimpleName();
     protected final CopyOnWriteArrayList<Dictionary> mDictionaries;
 
-    public DictionaryCollection() {
+    public DictionaryCollection(final String dictType) {
+        super(dictType);
         mDictionaries = new CopyOnWriteArrayList<Dictionary>();
     }
 
-    public DictionaryCollection(Dictionary... dictionaries) {
+    public DictionaryCollection(final String dictType, Dictionary... dictionaries) {
+        super(dictType);
         if (null == dictionaries) {
             mDictionaries = new CopyOnWriteArrayList<Dictionary>();
         } else {
@@ -44,23 +48,48 @@ public class DictionaryCollection extends Dictionary {
         }
     }
 
-    public DictionaryCollection(Collection<Dictionary> dictionaries) {
+    public DictionaryCollection(final String dictType, Collection<Dictionary> dictionaries) {
+        super(dictType);
         mDictionaries = new CopyOnWriteArrayList<Dictionary>(dictionaries);
         mDictionaries.removeAll(Collections.singleton(null));
     }
 
     @Override
-    public void getWords(final WordComposer composer, final CharSequence prevWordForBigrams,
-            final WordCallback callback, final ProximityInfo proximityInfo) {
-        for (final Dictionary dict : mDictionaries)
-            dict.getWords(composer, prevWordForBigrams, callback, proximityInfo);
+    public ArrayList<SuggestedWordInfo> getWords(final WordComposer composer,
+            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
+        final CopyOnWriteArrayList<Dictionary> dictionaries = mDictionaries;
+        if (dictionaries.isEmpty()) return null;
+        // To avoid creating unnecessary objects, we get the list out of the first
+        // dictionary and add the rest to it if not null, hence the get(0)
+        ArrayList<SuggestedWordInfo> suggestions = dictionaries.get(0).getWords(composer,
+                prevWordForBigrams, proximityInfo);
+        if (null == suggestions) suggestions = new ArrayList<SuggestedWordInfo>();
+        final int length = dictionaries.size();
+        for (int i = 0; i < length; ++ i) {
+            final ArrayList<SuggestedWordInfo> sugg = dictionaries.get(i).getWords(composer,
+                    prevWordForBigrams, proximityInfo);
+            if (null != sugg) suggestions.addAll(sugg);
+        }
+        return suggestions;
     }
 
     @Override
-    public void getBigrams(final WordComposer composer, final CharSequence previousWord,
-            final WordCallback callback) {
-        for (final Dictionary dict : mDictionaries)
-            dict.getBigrams(composer, previousWord, callback);
+    public ArrayList<SuggestedWordInfo> getBigrams(final WordComposer composer,
+            final CharSequence previousWord) {
+        final CopyOnWriteArrayList<Dictionary> dictionaries = mDictionaries;
+        if (dictionaries.isEmpty()) return null;
+        // To avoid creating unnecessary objects, we get the list out of the first
+        // dictionary and add the rest to it if not null, hence the get(0)
+        ArrayList<SuggestedWordInfo> suggestions = dictionaries.get(0).getBigrams(composer,
+                previousWord);
+        if (null == suggestions) suggestions = new ArrayList<SuggestedWordInfo>();
+        final int length = dictionaries.size();
+        for (int i = 0; i < length; ++ i) {
+            final ArrayList<SuggestedWordInfo> sugg =
+                   dictionaries.get(i).getBigrams(composer, previousWord);
+            if (null != sugg) suggestions.addAll(sugg);
+        }
+        return suggestions;
     }
 
     @Override

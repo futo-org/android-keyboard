@@ -3,10 +3,6 @@
   <init>(...);
 }
 
--keep class com.android.inputmethod.latin.Flag {
-  *;
-}
-
 -keep class com.android.inputmethod.keyboard.ProximityInfo {
   <init>(com.android.inputmethod.keyboard.ProximityInfo);
 }
