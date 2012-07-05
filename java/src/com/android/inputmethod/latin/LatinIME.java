@@ -2000,23 +2000,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mUserHistoryDictionary.cancelAddingUserHistory(
                     previousWord.toString(), committedWord.toString());
         }
-        if (0 == separatorLength || mLastComposedWord.didCommitTypedWord()) {
-            // This is the case when we cancel a manual pick.
-            // We should restart suggestion on the word right away.
-            mWordComposer.resumeSuggestionOnLastComposedWord(mLastComposedWord);
-            mConnection.setComposingText(originallyTypedWord, 1);
-        } else {
-            mConnection.commitText(originallyTypedWord, 1);
-            // Re-insert the separator
-            sendKeyCodePoint(mLastComposedWord.mSeparatorCode);
-            Utils.Stats.onSeparator(mLastComposedWord.mSeparatorCode, WordComposer.NOT_A_COORDINATE,
-                    WordComposer.NOT_A_COORDINATE);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIME_revertCommit(originallyTypedWord);
-            }
-            // Don't restart suggestion yet. We'll restart if the user deletes the
-            // separator.
+        mConnection.commitText(originallyTypedWord, 1);
+        // Re-insert the separator
+        sendKeyCodePoint(mLastComposedWord.mSeparatorCode);
+        Utils.Stats.onSeparator(mLastComposedWord.mSeparatorCode, WordComposer.NOT_A_COORDINATE,
+                WordComposer.NOT_A_COORDINATE);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_revertCommit(originallyTypedWord);
         }
+        // Don't restart suggestion yet. We'll restart if the user deletes the
+        // separator.
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
         mHandler.postUpdateSuggestions();
     }

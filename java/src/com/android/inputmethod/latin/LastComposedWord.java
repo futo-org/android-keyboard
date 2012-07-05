@@ -73,10 +73,10 @@ public class LastComposedWord {
     }
 
     public boolean canRevertCommit() {
-        return mActive && !TextUtils.isEmpty(mCommittedWord);
+        return mActive && !TextUtils.isEmpty(mCommittedWord) && !didCommitTypedWord();
     }
 
-    public boolean didCommitTypedWord() {
+    private boolean didCommitTypedWord() {
         return TextUtils.equals(mTypedWord, mCommittedWord);
     }
 
