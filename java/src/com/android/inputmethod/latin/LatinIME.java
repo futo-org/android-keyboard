@@ -689,8 +689,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSuggestionsView.clear();
         setSuggestionStripShownInternal(
                 isSuggestionsStripVisible(), /* needsInputViewShown */ false);
-        // Delay updating suggestions because keyboard input view may not be shown at this point.
-        mHandler.postUpdateSuggestions();
+
+        mHandler.cancelUpdateSuggestionStrip();
         mHandler.cancelDoubleSpacesTimer();
 
         inputView.setKeyPreviewPopupEnabled(mCurrentSettings.mKeyPreviewPopupOn,
