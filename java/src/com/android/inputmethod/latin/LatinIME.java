@@ -1105,7 +1105,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public boolean addWordToDictionary(String word) {
+    public boolean addWordToUserDictionary(String word) {
         mUserDictionary.addWordToUserDictionary(word, 128);
         // Suggestion strip should be updated after the operation of adding word to the
         // user dictionary
