@@ -133,6 +133,17 @@
                 latin:keyIconPreview="!icon/tab_key_preview"
                 latin:backgroundType="functional" />
         </case>
+        <case
+            latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted|alphabetShiftLocked"
+            latin:navigateNext="true"
+        >
+            <key-style
+                latin:styleName="tabKeyStyle"
+                latin:code="!code/key_action_next"
+                latin:keyIcon="!icon/tab_key"
+                latin:keyIconPreview="!icon/tab_key_preview"
+                latin:backgroundType="functional" />
+        </case>
         <default>
             <key-style
                 latin:styleName="tabKeyStyle"
