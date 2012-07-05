@@ -98,11 +98,11 @@ public class UserHistoryDictionaryBigramList {
     }
 
     public HashMap<String, Byte> getBigrams(String word1) {
-        if (!mBigramMap.containsKey(word1)) {
-            return EMPTY_BIGRAM_MAP;
-        } else {
-            return mBigramMap.get(word1);
-        }
+        if (mBigramMap.containsKey(word1)) return mBigramMap.get(word1);
+        // TODO: lower case according to locale
+        final String lowerWord1 = word1.toLowerCase();
+        if (mBigramMap.containsKey(lowerWord1)) return mBigramMap.get(lowerWord1);
+        return EMPTY_BIGRAM_MAP;
     }
 
     public boolean removeBigram(String word1, String word2) {

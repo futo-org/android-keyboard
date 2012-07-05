@@ -105,8 +105,15 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
     // TODO: have "in" arguments before "out" ones, and make out args explicit in the name
 
     const uint8_t* const root = DICT;
-    int pos = getBigramListPositionForWord(prevWord, prevWordLength);
+    int pos = getBigramListPositionForWord(prevWord, prevWordLength,
+            false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
+    if (0 == pos) {
+        // If no bigrams for this exact word, search again in lower case.
+        pos = getBigramListPositionForWord(prevWord, prevWordLength,
+                true /* forceLowerCaseSearch */);
+    }
+    // If still no bigrams, we really don't have them!
     if (0 == pos) return 0;
     int bigramFlags;
     int bigramCount = 0;
@@ -141,10 +148,11 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
 // Returns a pointer to the start of the bigram list.
 // If the word is not found or has no bigrams, this function returns 0.
 int BigramDictionary::getBigramListPositionForWord(const int32_t *prevWord,
-        const int prevWordLength) const {
+        const int prevWordLength, const bool forceLowerCaseSearch) const {
     if (0 >= prevWordLength) return 0;
     const uint8_t* const root = DICT;
-    int pos = BinaryFormat::getTerminalPosition(root, prevWord, prevWordLength);
+    int pos = BinaryFormat::getTerminalPosition(root, prevWord, prevWordLength,
+            forceLowerCaseSearch);
 
     if (NOT_VALID_WORD == pos) return 0;
     const int flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
@@ -164,7 +172,13 @@ void BigramDictionary::fillBigramAddressToFrequencyMapAndFilter(const int32_t *p
         const int prevWordLength, std::map<int, int> *map, uint8_t *filter) const {
     memset(filter, 0, BIGRAM_FILTER_BYTE_SIZE);
     const uint8_t* const root = DICT;
-    int pos = getBigramListPositionForWord(prevWord, prevWordLength);
+    int pos = getBigramListPositionForWord(prevWord, prevWordLength,
+            false /* forceLowerCaseSearch */);
+    if (0 == pos) {
+        // If no bigrams for this exact string, search again in lower case.
+        pos = getBigramListPositionForWord(prevWord, prevWordLength,
+                true /* forceLowerCaseSearch */);
+    }
     if (0 == pos) return;
 
     int bigramFlags;
@@ -197,10 +211,11 @@ bool BigramDictionary::checkFirstCharacter(unsigned short *word, int *inputCodes
 bool BigramDictionary::isValidBigram(const int32_t *word1, int length1, const int32_t *word2,
         int length2) const {
     const uint8_t* const root = DICT;
-    int pos = getBigramListPositionForWord(word1, length1);
+    int pos = getBigramListPositionForWord(word1, length1, false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
     if (0 == pos) return false;
-    int nextWordPos = BinaryFormat::getTerminalPosition(root, word2, length2);
+    int nextWordPos = BinaryFormat::getTerminalPosition(root, word2, length2,
+            false /* forceLowerCaseSearch */);
     if (NOT_VALID_WORD == nextWordPos) return false;
     int bigramFlags;
     do {

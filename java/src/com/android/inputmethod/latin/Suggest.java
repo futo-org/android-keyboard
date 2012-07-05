@@ -272,31 +272,9 @@ public class Suggest implements Dictionary.WordCallback {
             mBigramSuggestions = new ArrayList<SuggestedWordInfo>(PREF_MAX_BIGRAMS);
 
             if (!TextUtils.isEmpty(prevWordForBigram)) {
-                getAllBigrams(prevWordForBigram, wordComposer);
-                if (TextUtils.isEmpty(consideredWord)) {
-                    // Nothing entered: return all bigrams for the previous word
-                    int insertCount = Math.min(mBigramSuggestions.size(), MAX_SUGGESTIONS);
-                    for (int i = 0; i < insertCount; ++i) {
-                        addBigramToSuggestions(mBigramSuggestions.get(i));
-                    }
-                } else {
-                    // Word entered: return only bigrams that match the first char of the typed word
-                    final char currentChar = consideredWord.charAt(0);
-                    // TODO: Must pay attention to locale when changing case.
-                    // TODO: Use codepoint instead of char
-                    final char currentCharUpper = Character.toUpperCase(currentChar);
-                    int count = 0;
-                    final int bigramSuggestionSize = mBigramSuggestions.size();
-                    for (int i = 0; i < bigramSuggestionSize; i++) {
-                        final SuggestedWordInfo bigramSuggestion = mBigramSuggestions.get(i);
-                        final char bigramSuggestionFirstChar =
-                                (char)bigramSuggestion.codePointAt(0);
-                        if (bigramSuggestionFirstChar == currentChar
-                                || bigramSuggestionFirstChar == currentCharUpper) {
-                            addBigramToSuggestions(bigramSuggestion);
-                            if (++count > MAX_SUGGESTIONS) break;
-                        }
-                    }
+                for (final String key : mDictionaries.keySet()) {
+                    final Dictionary dictionary = mDictionaries.get(key);
+                    suggestionsSet.addAll(dictionary.getBigrams(wordComposer, prevWordForBigram));
                 }
             }
 

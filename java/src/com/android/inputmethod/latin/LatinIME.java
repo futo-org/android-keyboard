@@ -208,13 +208,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final KeyboardSwitcher switcher = latinIme.mKeyboardSwitcher;
             switch (msg.what) {
             case MSG_UPDATE_SUGGESTIONS:
-                latinIme.updateSuggestions();
+                latinIme.updateSuggestionsOrPredictions(false /* isPredictions */);
                 break;
             case MSG_UPDATE_SHIFT_STATE:
                 switcher.updateShiftState();
                 break;
             case MSG_SET_BIGRAM_PREDICTIONS:
-                latinIme.updateBigramPredictions();
+                latinIme.updateSuggestionsOrPredictions(true /* isPredictions */);
                 break;
             }
         }
@@ -1006,7 +1006,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // the composing word, reset the last composed word, tell the inputconnection about it.
     private void resetEntireInputState() {
         resetComposingState(true /* alsoResetLastComposedWord */);
-        updateSuggestions();
+        updateSuggestionsOrPredictions(false /* isPredictions */);
         mConnection.finishComposingText();
     }
 
@@ -1029,7 +1029,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, typedWord.toString(),
                     separatorCode, prevWord);
         }
-        updateSuggestions();
+        updateSuggestionsOrPredictions(false /* isPredictions */);
     }
 
     public int getCurrentAutoCapsState() {
@@ -1697,7 +1697,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    public void updateSuggestions() {
+    public void updateSuggestionsOrPredictions(final boolean isPredictions) {
+        if (isPredictions) {
+            updateBigramPredictions();
+        } else {
+            updateSuggestions();
+        }
+    }
+
+    private void updateSuggestions() {
+        mHandler.cancelUpdateSuggestions();
+        mHandler.cancelUpdateBigramPredictions();
+
         // Check if we have a suggestion engine attached.
         if ((mSuggest == null || !mCurrentSettings.isSuggestionsRequested(mDisplayOrientation))) {
             if (mWordComposer.isComposingWord()) {
@@ -1711,7 +1722,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mHandler.cancelUpdateBigramPredictions();
 
         if (!mWordComposer.isComposingWord()) {
-            setPunctuationSuggestions();
+            // We are never called with an empty word composer, but if because of a bug
+            // we are, what we should do here is just call updateBigramsPredictions. This will
+            // update the predictions if the "predict next word" option is on, or display
+            // punctuation signs if it's off.
+            updateBigramPredictions();
             return;
         }
 
@@ -1775,7 +1790,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Complete any pending suggestions query first
         if (mHandler.hasPendingUpdateSuggestions()) {
             mHandler.cancelUpdateSuggestions();
-            updateSuggestions();
+            updateSuggestionsOrPredictions(false /* isPredictions */);
         }
         final CharSequence autoCorrection = mWordComposer.getAutoCorrectionOrNull();
         if (autoCorrection != null) {
@@ -1885,7 +1900,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!showingAddToDictionaryHint) {
             // If we're not showing the "Touch again to save", then show corrections again.
             // In case the cursor position doesn't change, make sure we show the suggestions again.
-            updateBigramPredictions();
+            updateSuggestionsOrPredictions(true /* isPredictions */);
             // Updating the predictions right away may be slow and feel unresponsive on slower
             // terminals. On the other hand if we just postUpdateBigramPredictions() it will
             // take a noticeable delay to update them which may feel uneasy.

@@ -184,19 +184,21 @@ public class Keyboard {
         if (code == CODE_UNSPECIFIED) {
             return null;
         }
-        final Integer keyCode = code;
-        if (mKeyCache.containsKey(keyCode)) {
-            return mKeyCache.get(keyCode);
-        }
-
-        for (final Key key : mKeys) {
-            if (key.mCode == code) {
-                mKeyCache.put(keyCode, key);
-                return key;
+        synchronized (mKeyCache) {
+            final int index = mKeyCache.indexOfKey(code);
+            if (index >= 0) {
+                return mKeyCache.valueAt(index);
             }
+
+            for (final Key key : mKeys) {
+                if (key.mCode == code) {
+                    mKeyCache.put(code, key);
+                    return key;
+                }
+            }
+            mKeyCache.put(code, null);
+            return null;
         }
-        mKeyCache.put(keyCode, null);
-        return null;
     }
 
     public boolean hasKey(Key aKey) {
