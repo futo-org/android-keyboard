@@ -1534,11 +1534,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Returns true if we did an autocorrection, false otherwise.
     private boolean handleSeparator(final int primaryCode, final int x, final int y,
             final int spaceState) {
-        // Should dismiss the "Touch again to save" message when handling separator
-        if (mSuggestionsView != null && mSuggestionsView.dismissAddToDictionaryHint()) {
-            mHandler.postUpdateSuggestions();
-        }
-
         boolean didAutoCorrect = false;
         // Handle separator
         if (mWordComposer.isComposingWord()) {
