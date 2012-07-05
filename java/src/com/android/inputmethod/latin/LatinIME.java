@@ -1003,7 +1003,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // the composing word, reset the last composed word, tell the inputconnection about it.
     private void resetEntireInputState() {
         resetComposingState(true /* alsoResetLastComposedWord */);
-        updateSuggestionsOrPredictions(false /* isPredictions */);
+        clearSuggestions();
         mConnection.finishComposingText();
     }
 
@@ -1691,7 +1691,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public void updateSuggestionsOrPredictions(final boolean isPredictions) {
-        if (isPredictions) {
+        mHandler.cancelUpdateSuggestions();
+        mHandler.cancelUpdateBigramPredictions();
+
+        // Check if we have a suggestion engine attached.
+        if (mSuggest == null || !mCurrentSettings.isSuggestionsRequested(mDisplayOrientation)) {
+            if (mWordComposer.isComposingWord()) {
+                Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not "
+                        + "requested!");
+                mWordComposer.setAutoCorrection(mWordComposer.getTypedWord());
+            }
+            return;
+        }
+
+        if (isPredictions || !mWordComposer.isComposingWord()) {
             updateBigramPredictions();
         } else {
             updateSuggestions();
@@ -1699,27 +1712,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void updateSuggestions() {
-        mHandler.cancelUpdateSuggestions();
-        mHandler.cancelUpdateBigramPredictions();
-
-        // Check if we have a suggestion engine attached.
-        if ((mSuggest == null || !mCurrentSettings.isSuggestionsRequested(mDisplayOrientation))) {
-            if (mWordComposer.isComposingWord()) {
-                Log.w(TAG, "Called updateSuggestions but suggestions were not requested!");
-                mWordComposer.setAutoCorrection(mWordComposer.getTypedWord());
-            }
-            return;
-        }
-
-        if (!mWordComposer.isComposingWord()) {
-            // We are never called with an empty word composer, but if because of a bug
-            // we are, what we should do here is just call updateBigramsPredictions. This will
-            // update the predictions if the "predict next word" option is on, or display
-            // punctuation signs if it's off.
-            updateBigramPredictions();
-            return;
-        }
-
         // TODO: May need a better way of retrieving previous word
         final CharSequence prevWord = mConnection.getPreviousWord(mCurrentSettings.mWordSeparators);
         final CharSequence typedWord = mWordComposer.getTypedWord();
@@ -1737,6 +1729,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (suggestedWords.size() > 1 || typedWord.length() == 1
                 || !suggestedWords.mTypedWordValid
                 || mSuggestionsView.isShowingAddToDictionaryHint()) {
+            // We know suggestedWords.size() > 1
             showSuggestions(suggestedWords, typedWord);
         } else {
             SuggestedWords previousSuggestions = mSuggestionsView.getSuggestions();
@@ -1753,11 +1746,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                             false /* isPunctuationSuggestions */,
                             true /* isObsoleteSuggestions */,
                             false /* isPrediction */);
+            // getTypedWordAndPreviousSuggestions never returns an empty array, so we know we have
+            // at least one element here.
             showSuggestions(obsoleteSuggestedWords, typedWord);
         }
     }
 
-    public void showSuggestions(final SuggestedWords suggestedWords, final CharSequence typedWord) {
+    private void showSuggestions(final SuggestedWords suggestedWords,
+            final CharSequence typedWord) {
+        // This method is only ever called by updateSuggestions or updateBigramPredictions.
         final CharSequence autoCorrection;
         if (suggestedWords.size() > 0) {
             if (suggestedWords.mWillAutoCorrect) {
@@ -1924,18 +1921,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 separatorCode, prevWord);
     }
 
-    public void updateBigramPredictions() {
-        mHandler.cancelUpdateSuggestions();
-        mHandler.cancelUpdateBigramPredictions();
-
-        if (mSuggest == null || !mCurrentSettings.isSuggestionsRequested(mDisplayOrientation)) {
-            if (mWordComposer.isComposingWord()) {
-                Log.w(TAG, "Called updateBigramPredictions but suggestions were not requested!");
-                mWordComposer.setAutoCorrection(mWordComposer.getTypedWord());
-            }
-            return;
-        }
-
+    private void updateBigramPredictions() {
         if (!mCurrentSettings.mBigramPredictionEnabled) {
             setPunctuationSuggestions();
             return;
