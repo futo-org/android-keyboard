@@ -218,12 +218,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         public void postUpdateSuggestions() {
-            removeMessages(MSG_UPDATE_SUGGESTIONS);
+            cancelUpdateSuggestionStrip();
             sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTIONS), mDelayUpdateSuggestions);
         }
 
-        public void cancelUpdateSuggestions() {
+        public void cancelUpdateSuggestionStrip() {
             removeMessages(MSG_UPDATE_SUGGESTIONS);
+            removeMessages(MSG_SET_BIGRAM_PREDICTIONS);
         }
 
         public boolean hasPendingUpdateSuggestions() {
@@ -240,12 +241,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         public void postUpdateBigramPredictions() {
-            removeMessages(MSG_SET_BIGRAM_PREDICTIONS);
+            cancelUpdateSuggestionStrip();
             sendMessageDelayed(obtainMessage(MSG_SET_BIGRAM_PREDICTIONS), mDelayUpdateSuggestions);
-        }
-
-        public void cancelUpdateBigramPredictions() {
-            removeMessages(MSG_SET_BIGRAM_PREDICTIONS);
         }
 
         public void startDoubleSpacesTimer() {
@@ -737,7 +734,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null) inputView.cancelAllMessages();
         // Remove pending messages related to update suggestions
-        mHandler.cancelUpdateSuggestions();
+        mHandler.cancelUpdateSuggestionStrip();
     }
 
     @Override
@@ -1547,7 +1544,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final int spaceState) {
         // Should dismiss the "Touch again to save" message when handling separator
         if (mSuggestionsView != null && mSuggestionsView.dismissAddToDictionaryHint()) {
-            mHandler.cancelUpdateBigramPredictions();
             mHandler.postUpdateSuggestions();
         }
 
@@ -1586,7 +1582,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
             mHandler.startDoubleSpacesTimer();
             if (!mConnection.isCursorTouchingWord(mCurrentSettings)) {
-                mHandler.cancelUpdateSuggestions();
                 mHandler.postUpdateBigramPredictions();
             }
         } else {
@@ -1668,8 +1663,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public void updateSuggestionsOrPredictions(final boolean isPredictions) {
-        mHandler.cancelUpdateSuggestions();
-        mHandler.cancelUpdateBigramPredictions();
+        mHandler.cancelUpdateSuggestionStrip();
 
         // Check if we have a suggestion engine attached.
         if (mSuggest == null || !mCurrentSettings.isSuggestionsRequested(mDisplayOrientation)) {
@@ -1760,7 +1754,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void commitCurrentAutoCorrection(final int separatorCodePoint) {
         // Complete any pending suggestions query first
         if (mHandler.hasPendingUpdateSuggestions()) {
-            mHandler.cancelUpdateSuggestions();
+            mHandler.cancelUpdateSuggestionStrip();
             updateSuggestionsOrPredictions(false /* isPredictions */);
         }
         final CharSequence autoCorrection = mWordComposer.getAutoCorrectionOrNull();
@@ -2024,7 +2018,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // separator.
         }
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
-        mHandler.cancelUpdateBigramPredictions();
         mHandler.postUpdateSuggestions();
     }
 
