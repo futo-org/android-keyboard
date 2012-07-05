@@ -1934,17 +1934,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private SuggestedWords updateBigramPredictions(final CharSequence typedWord) {
-        if (mCurrentSettings.mCorrectionEnabled) {
-            final CharSequence prevWord = mConnection.getThisWord(mCurrentSettings.mWordSeparators);
-            if (!TextUtils.isEmpty(prevWord)) {
-                // If we call getSuggestedWord with mCorrectionEnabled == false or with
-                // an empty prevWord, we'll get a 0-sized list of suggestions.
-                return mSuggest.getSuggestedWords(mWordComposer,
-                        prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
-                        mCurrentSettings.mCorrectionEnabled, true);
-            }
-        }
-        return null;
+        final CharSequence prevWord = mConnection.getThisWord(mCurrentSettings.mWordSeparators);
+        return mSuggest.getSuggestedWords(mWordComposer,
+                prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
+                mCurrentSettings.mCorrectionEnabled, true);
     }
 
     public void setPunctuationSuggestions() {
