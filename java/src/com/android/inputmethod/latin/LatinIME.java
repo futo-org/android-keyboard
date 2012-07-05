@@ -2015,7 +2015,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Since we just changed languages, we should re-evaluate suggestions with whatever word
         // we are currently composing. If we are not composing anything, we may want to display
         // predictions or punctuation signs (which is done by updateBigramPredictions anyway).
-        if (mConnection.isCursorTouchingWord(mCurrentSettings)) {
+        if (mWordComposer.isComposingWord()) {
             mHandler.postUpdateSuggestions();
         } else {
             mHandler.postUpdateBigramPredictions();
