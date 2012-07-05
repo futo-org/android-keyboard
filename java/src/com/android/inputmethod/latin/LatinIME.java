@@ -1874,7 +1874,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mSuggestionsView.showAddToDictionaryHint(
                         suggestion, mCurrentSettings.mHintToSaveText);
             } else {
-                mHandler.postUpdateSuggestions();
+                // Here we just manually picked a suggestion. We should be showing the predictions!
+                mHandler.postUpdateBigramPredictions();
             }
         }
     }
@@ -2011,7 +2012,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Don't restart suggestion yet. We'll restart if the user deletes the
         // separator.
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
-        mHandler.postUpdateSuggestions();
+        // We have a separator between the word and the cursor: we should show predictions.
+        mHandler.postUpdateBigramPredictions();
     }
 
     public boolean isWordSeparator(int code) {
