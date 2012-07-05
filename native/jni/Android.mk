@@ -63,7 +63,7 @@ ifeq ($(FLAG_DBG), true)
 endif # FLAG_DBG
 endif # FLAG_DO_PROFILE
 
-LOCAL_MODULE := libjni_latinime_static
+LOCAL_MODULE := libjni_latinime_common_static
 LOCAL_MODULE_TAGS := optional
 
 ifdef HISTORICAL_NDK_VERSIONS_ROOT # In the platform build system
