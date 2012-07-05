@@ -48,9 +48,7 @@ import android.util.Printer;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.ViewParent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
@@ -1644,27 +1642,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mCurrentSettings.isApplicationSpecifiedCompletionsOn())
             return true;
         return mCurrentSettings.isSuggestionsRequested(mDisplayOrientation);
-    }
-
-    public void switchToKeyboardView() {
-        if (DEBUG) {
-            Log.d(TAG, "Switch to keyboard view.");
-        }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_switchToKeyboardView();
-        }
-        View v = mKeyboardSwitcher.getKeyboardView();
-        if (v != null) {
-            // Confirms that the keyboard view doesn't have parent view.
-            ViewParent p = v.getParent();
-            if (p != null && p instanceof ViewGroup) {
-                ((ViewGroup) p).removeView(v);
-            }
-            setInputView(v);
-        }
-        setSuggestionStripShown(isSuggestionsStripVisible());
-        updateInputViewShown();
-        mHandler.postUpdateSuggestions();
     }
 
     public void clearSuggestions() {
