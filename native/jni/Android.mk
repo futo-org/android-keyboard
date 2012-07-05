@@ -68,6 +68,9 @@ endif # FLAG_DO_PROFILE
 LOCAL_MODULE := libjni_latinime_common_static
 LOCAL_MODULE_TAGS := optional
 
+LOCAL_NDK_VERSION := 7
+LOCAL_SDK_VERSION := 14
+
 ifdef HISTORICAL_NDK_VERSIONS_ROOT # In the platform build system
 include external/stlport/libstlport.mk
 else # In the NDK build system
