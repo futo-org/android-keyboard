@@ -224,10 +224,6 @@ public class SettingsValues {
         return mInputAttributes.mApplicationSpecifiedCompletionOn;
     }
 
-    public boolean isEditorActionNext() {
-        return mInputAttributes.mEditorAction == EditorInfo.IME_ACTION_NEXT;
-    }
-
     public boolean isSuggestionsRequested(final int displayOrientation) {
         return mInputAttributes.mIsSettingsSuggestionStripOn
                 && (mCorrectionEnabled

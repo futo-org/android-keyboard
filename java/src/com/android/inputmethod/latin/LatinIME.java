@@ -1276,10 +1276,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
             break;
         default:
-            if (primaryCode == Keyboard.CODE_TAB && mCurrentSettings.isEditorActionNext()) {
-                performEditorAction(EditorInfo.IME_ACTION_NEXT);
-                break;
-            }
             mSpaceState = SPACE_STATE_NONE;
             if (mCurrentSettings.isWordSeparator(primaryCode)) {
                 didAutoCorrect = handleSeparator(primaryCode, x, y, spaceState);

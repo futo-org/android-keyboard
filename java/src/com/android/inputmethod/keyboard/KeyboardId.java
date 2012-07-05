@@ -137,11 +137,13 @@ public class KeyboardId {
     }
 
     public boolean navigateNext() {
-        return (mEditorInfo.imeOptions & EditorInfo.IME_FLAG_NAVIGATE_NEXT) != 0;
+        return (mEditorInfo.imeOptions & EditorInfo.IME_FLAG_NAVIGATE_NEXT) != 0
+                || imeAction() == EditorInfo.IME_ACTION_NEXT;
     }
 
     public boolean navigatePrevious() {
-        return (mEditorInfo.imeOptions & EditorInfo.IME_FLAG_NAVIGATE_PREVIOUS) != 0;
+        return (mEditorInfo.imeOptions & EditorInfo.IME_FLAG_NAVIGATE_PREVIOUS) != 0
+                || imeAction() == EditorInfo.IME_ACTION_PREVIOUS;
     }
 
     public boolean passwordInput() {
