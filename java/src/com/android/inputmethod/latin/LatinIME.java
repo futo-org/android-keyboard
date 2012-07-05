@@ -1523,15 +1523,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 swapSwapperAndSpace();
                 mSpaceState = SPACE_STATE_WEAK;
             }
-            // Some characters are not word separators, yet they don't start a new
-            // composing span. For these, we haven't changed the suggestion strip, and
-            // if the "add to dictionary" hint is shown, we should do so now. Examples of
-            // such characters include single quote, dollar, and others; the exact list is
-            // the list of characters for which we enter handleCharacterWhileInBatchEdit
-            // that don't match the test if ((isAlphabet...)) at the top of this method.
-            if (null != mSuggestionsView && mSuggestionsView.dismissAddToDictionaryHint()) {
-                mHandler.postUpdateBigramPredictions();
-            }
+            // We may need to update predictions, if the "add to dictionary" hint was displayed
+            // for example.
+            if (null != mSuggestionsView) mSuggestionsView.dismissAddToDictionaryHint();
+            mHandler.postUpdateBigramPredictions();
         }
         Utils.Stats.onNonSeparator((char)primaryCode, x, y);
     }
