@@ -68,12 +68,20 @@ public class KeySpecParser {
 
         public MoreKeySpec(final String moreKeySpec, boolean needsToUpperCase, Locale locale,
                 final KeyboardCodesSet codesSet) {
-            mCode = toUpperCaseOfCodeForLocale(getCode(moreKeySpec, codesSet),
-                    needsToUpperCase, locale);
             mLabel = toUpperCaseOfStringForLocale(getLabel(moreKeySpec),
                     needsToUpperCase, locale);
-            mOutputText = toUpperCaseOfStringForLocale(getOutputText(moreKeySpec),
+            final int code = toUpperCaseOfCodeForLocale(getCode(moreKeySpec, codesSet),
                     needsToUpperCase, locale);
+            if (code == Keyboard.CODE_UNSPECIFIED) {
+                // Some letter, for example German Eszett (U+00DF: "ß"), has multiple characters
+                // upper case representation ("SS").
+                mCode = Keyboard.CODE_OUTPUT_TEXT;
+                mOutputText = mLabel;
+            } else {
+                mCode = code;
+                mOutputText = toUpperCaseOfStringForLocale(getOutputText(moreKeySpec),
+                        needsToUpperCase, locale);
+            }
             mIconId = getIconId(moreKeySpec);
         }
     }
