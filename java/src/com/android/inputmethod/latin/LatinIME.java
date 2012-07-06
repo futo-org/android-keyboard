@@ -1663,7 +1663,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     public void updateSuggestionsOrPredictions() {
         mHandler.cancelUpdateSuggestionStrip();
-        final boolean isPredictions = !mWordComposer.isComposingWord();
 
         // Check if we have a suggestion engine attached.
         if (mSuggest == null || !mCurrentSettings.isSuggestionsRequested(mDisplayOrientation)) {
@@ -1677,14 +1676,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         final CharSequence typedWord;
         final SuggestedWords suggestions;
-        // TODO: cleanup the following, those two mean the same thing
-        if (isPredictions || !mWordComposer.isComposingWord()) {
+        if (!mWordComposer.isComposingWord()) {
             if (!mCurrentSettings.mBigramPredictionEnabled) {
                 setPunctuationSuggestions();
                 return;
             }
             typedWord = "";
-            suggestions = updateBigramPredictions(typedWord);
+            suggestions = updateBigramPredictions();
         } else {
             typedWord = mWordComposer.getTypedWord();
             suggestions = updateSuggestions(typedWord);
@@ -1892,7 +1890,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 separatorCode, prevWord);
     }
 
-    private SuggestedWords updateBigramPredictions(final CharSequence typedWord) {
+    private SuggestedWords updateBigramPredictions() {
         final CharSequence prevWord = mConnection.getThisWord(mCurrentSettings.mWordSeparators);
         return mSuggest.getSuggestedWords(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
