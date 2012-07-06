@@ -1675,35 +1675,36 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         final String typedWord = mWordComposer.getTypedWord();
-        final SuggestedWords suggestions;
         if (!mWordComposer.isComposingWord() && !mCurrentSettings.mBigramPredictionEnabled) {
             setPunctuationSuggestions();
             return;
         }
 
-        if (!mWordComposer.isComposingWord()) {
-            suggestions = updateBigramPredictions();
-        } else {
-            suggestions = updateSuggestions(typedWord);
+        // Get the word on which we should search the bigrams. If we are composing a word, it's
+        // whatever is *before* the half-committed word in the buffer, hence 2; if we aren't, we
+        // should just skip whitespace if any, so 1.
+        // TODO: this is slow (2-way IPC) - we should probably cache this instead.
+        final CharSequence prevWord =
+                mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators,
+                mWordComposer.isComposingWord() ? 2 : 1);
+        SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
+                prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
+                mCurrentSettings.mCorrectionEnabled, !mWordComposer.isComposingWord());
+
+        if (mWordComposer.isComposingWord()) {
+            suggestedWords = maybeRetrieveOlderSuggestions(typedWord, suggestedWords);
         }
 
-        if (null != suggestions && suggestions.size() > 0) {
-            showSuggestions(suggestions, typedWord);
+        if (null != suggestedWords && suggestedWords.size() > 0) {
+            showSuggestions(suggestedWords, typedWord);
         } else {
             clearSuggestions();
         }
     }
 
-    private SuggestedWords updateSuggestions(final CharSequence typedWord) {
-        // TODO: May need a better way of retrieving previous word
-        final CharSequence prevWord =
-                mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators, 2);
-        // getSuggestedWords handles gracefully a null value of prevWord
-        final SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
-                prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
-                // !mWordComposer.isComposingWord() is known to be false
-                mCurrentSettings.mCorrectionEnabled, !mWordComposer.isComposingWord());
-
+    private SuggestedWords maybeRetrieveOlderSuggestions(final CharSequence typedWord,
+            final SuggestedWords suggestedWords) {
+        // TODO: consolidate this into getSuggestedWords
         // Basically, we update the suggestion strip only when suggestion count > 1.  However,
         // there is an exception: We update the suggestion strip whenever typed word's length
         // is 1 or typed word is found in dictionary, regardless of suggestion count.  Actually,
@@ -1889,15 +1890,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // strings.
         mLastComposedWord = mWordComposer.commitWord(commitType, chosenWord.toString(),
                 separatorCode, prevWord);
-    }
-
-    private SuggestedWords updateBigramPredictions() {
-        final CharSequence prevWord =
-                mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators, 1);
-        return mSuggest.getSuggestedWords(mWordComposer,
-                prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
-                // !mWordComposer.isComposingWord() is known to be true
-                mCurrentSettings.mCorrectionEnabled, !mWordComposer.isComposingWord());
     }
 
     public void setPunctuationSuggestions() {
