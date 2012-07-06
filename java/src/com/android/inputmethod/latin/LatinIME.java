@@ -217,9 +217,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
 
-        public void postUpdateSuggestionStrip(final boolean isComposing) {
+        public void postUpdateSuggestionStrip() {
             cancelUpdateSuggestionStrip();
-            if (isComposing) {
+            if (getOuterInstance().mWordComposer.isComposingWord()) {
                 sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTIONS), mDelayUpdateSuggestions);
             } else {
                 sendMessageDelayed(obtainMessage(MSG_SET_BIGRAM_PREDICTIONS),
@@ -1394,7 +1394,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     mWordComposer.deleteLast();
                 }
                 mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
-                mHandler.postUpdateSuggestionStrip(mWordComposer.isComposingWord());
+                mHandler.postUpdateSuggestionStrip();
             } else {
                 mConnection.deleteSurroundingText(1, 0);
                 if (ProductionFlag.IS_EXPERIMENTAL) {
@@ -1550,7 +1550,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // In case the "add to dictionary" hint was still displayed.
             if (null != mSuggestionsView) mSuggestionsView.dismissAddToDictionaryHint();
         }
-        mHandler.postUpdateSuggestionStrip(mWordComposer.isComposingWord());
+        mHandler.postUpdateSuggestionStrip();
         Utils.Stats.onNonSeparator((char)primaryCode, x, y);
     }
 
@@ -1592,7 +1592,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
             mHandler.startDoubleSpacesTimer();
             if (!mConnection.isCursorTouchingWord(mCurrentSettings)) {
-                mHandler.postUpdateSuggestionStrip(mWordComposer.isComposingWord());
+                mHandler.postUpdateSuggestionStrip();
             }
         } else {
             if (swapWeakSpace) {
@@ -1877,7 +1877,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSuggestionsView.showAddToDictionaryHint(suggestion, mCurrentSettings.mHintToSaveText);
         } else {
             // If we're not showing the "Touch again to save", then update the suggestion strip.
-            mHandler.postUpdateSuggestionStrip(mWordComposer.isComposingWord());
+            mHandler.postUpdateSuggestionStrip();
         }
     }
 
@@ -1969,7 +1969,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             ResearchLogger.latinIME_deleteSurroundingText(length);
         }
         mConnection.setComposingText(word, 1);
-        mHandler.postUpdateSuggestionStrip(mWordComposer.isComposingWord());
+        mHandler.postUpdateSuggestionStrip();
     }
 
     private void revertCommit() {
@@ -2014,7 +2014,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // separator.
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
         // We have a separator between the word and the cursor: we should show predictions.
-        mHandler.postUpdateSuggestionStrip(mWordComposer.isComposingWord());
+        mHandler.postUpdateSuggestionStrip();
     }
 
     public boolean isWordSeparator(int code) {
@@ -2039,7 +2039,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Since we just changed languages, we should re-evaluate suggestions with whatever word
         // we are currently composing. If we are not composing anything, we may want to display
         // predictions or punctuation signs (which is done by the updateSuggestionStrip anyway).
-        mHandler.postUpdateSuggestionStrip(mWordComposer.isComposingWord());
+        mHandler.postUpdateSuggestionStrip();
     }
 
     // TODO: Remove this method from {@link LatinIME} and move {@link FeedbackManager} to
