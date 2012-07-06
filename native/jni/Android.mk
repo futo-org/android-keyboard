@@ -68,12 +68,13 @@ endif # FLAG_DO_PROFILE
 LOCAL_MODULE := libjni_latinime_common_static
 LOCAL_MODULE_TAGS := optional
 
-# In the platform build system
+ifdef ANDROID_BUILD_TOP # In the platform build system
 include external/stlport/libstlport.mk
-# In the unbundled build system
-#LOCAL_NDK_VERSION := 7
-#LOCAL_SDK_VERSION := 14
-#LOCAL_NDK_STL_VARIANT := stlport_static
+else # In the unbundled build system
+LOCAL_NDK_VERSION := 7
+LOCAL_SDK_VERSION := 14
+LOCAL_NDK_STL_VARIANT := stlport_static
+endif
 
 include $(BUILD_STATIC_LIBRARY)
 ######################################
@@ -95,12 +96,13 @@ endif # FLAG_DO_PROFILE
 LOCAL_MODULE := libjni_latinime
 LOCAL_MODULE_TAGS := optional
 
-# In the platform build system
+ifdef ANDROID_BUILD_TOP # In the platform build system
 LOCAL_STATIC_LIBRARIES += libstlport_static
-# In the unbundled build system
-#LOCAL_NDK_VERSION := 7
-#LOCAL_SDK_VERSION := 14
-#LOCAL_NDK_STL_VARIANT := stlport_static
+else # In the unbundled build system
+LOCAL_NDK_VERSION := 7
+LOCAL_SDK_VERSION := 14
+LOCAL_NDK_STL_VARIANT := stlport_static
+endif
 
 include $(BUILD_SHARED_LIBRARY)
 
