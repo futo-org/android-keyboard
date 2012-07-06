@@ -1676,11 +1676,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         final String typedWord = mWordComposer.getTypedWord();
         final SuggestedWords suggestions;
+        if (!mWordComposer.isComposingWord() && !mCurrentSettings.mBigramPredictionEnabled) {
+            setPunctuationSuggestions();
+            return;
+        }
+
         if (!mWordComposer.isComposingWord()) {
-            if (!mCurrentSettings.mBigramPredictionEnabled) {
-                setPunctuationSuggestions();
-                return;
-            }
             suggestions = updateBigramPredictions();
         } else {
             suggestions = updateSuggestions(typedWord);
@@ -1700,7 +1701,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // getSuggestedWords handles gracefully a null value of prevWord
         final SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
-                mCurrentSettings.mCorrectionEnabled, false);
+                // !mWordComposer.isComposingWord() is known to be false
+                mCurrentSettings.mCorrectionEnabled, !mWordComposer.isComposingWord());
 
         // Basically, we update the suggestion strip only when suggestion count > 1.  However,
         // there is an exception: We update the suggestion strip whenever typed word's length
@@ -1894,7 +1896,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators, 1);
         return mSuggest.getSuggestedWords(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
-                mCurrentSettings.mCorrectionEnabled, true);
+                // !mWordComposer.isComposingWord() is known to be true
+                mCurrentSettings.mCorrectionEnabled, !mWordComposer.isComposingWord());
     }
 
     public void setPunctuationSuggestions() {
