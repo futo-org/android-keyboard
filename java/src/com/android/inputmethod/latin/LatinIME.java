@@ -217,12 +217,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
 
-        // isComposing is always true
-        public void postUpdateSuggestions(final boolean isComposing) {
-            // TODO: remove this test
-            if (!isComposing) throw new RuntimeException("We are not composing a word");
+        public void postUpdateSuggestionStrip(final boolean isComposing) {
             cancelUpdateSuggestionStrip();
-            sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTIONS), mDelayUpdateSuggestions);
+            if (isComposing) {
+                sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTIONS), mDelayUpdateSuggestions);
+            } else {
+                sendMessageDelayed(obtainMessage(MSG_SET_BIGRAM_PREDICTIONS),
+                        mDelayUpdateSuggestions);
+            }
         }
 
         public void cancelUpdateSuggestionStrip() {
@@ -241,14 +243,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         public void cancelUpdateShiftState() {
             removeMessages(MSG_UPDATE_SHIFT_STATE);
-        }
-
-        // isComposing is always false
-        public void postUpdateBigramPredictions(final boolean isComposing) {
-            // TODO: remove this test
-            if (isComposing) throw new RuntimeException("We are composing a word");
-            cancelUpdateSuggestionStrip();
-            sendMessageDelayed(obtainMessage(MSG_SET_BIGRAM_PREDICTIONS), mDelayUpdateSuggestions);
         }
 
         public void startDoubleSpacesTimer() {
@@ -1400,15 +1394,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     mWordComposer.deleteLast();
                 }
                 mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
-                // If we have deleted the last remaining character of a word, then we are not
-                // isComposingWord() any more.
-                if (!mWordComposer.isComposingWord()) {
-                    // Not composing word any more, so we can show bigrams.
-                    mHandler.postUpdateBigramPredictions(mWordComposer.isComposingWord());
-                } else {
-                    // Still composing a word, so we still have letters to deduce a suggestion from.
-                    mHandler.postUpdateSuggestions(mWordComposer.isComposingWord());
-                }
+                mHandler.postUpdateSuggestionStrip(mWordComposer.isComposingWord());
             } else {
                 mConnection.deleteSurroundingText(1, 0);
                 if (ProductionFlag.IS_EXPERIMENTAL) {
@@ -1551,8 +1537,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         getCurrentAutoCapsState() != Constants.TextUtils.CAP_MODE_OFF);
             }
             mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
-            // We just added a character, so isComposingWord() is true
-            mHandler.postUpdateSuggestions(mWordComposer.isComposingWord());
         } else {
             final boolean swapWeakSpace = maybeStripSpace(primaryCode,
                     spaceState, KeyboardActionListener.SUGGESTION_STRIP_COORDINATE == x);
@@ -1563,14 +1547,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 swapSwapperAndSpace();
                 mSpaceState = SPACE_STATE_WEAK;
             }
-            // We may need to update predictions, if the "add to dictionary" hint was displayed
-            // for example.
+            // In case the "add to dictionary" hint was still displayed.
             if (null != mSuggestionsView) mSuggestionsView.dismissAddToDictionaryHint();
-            // Here we know we are not composing a word: if we were, then we can't come here because
-            // isComposingWord is still true; if we weren't, and we now are, then isComposingWord
-            // has been turned to true, so we can't come here either.
-            mHandler.postUpdateBigramPredictions(mWordComposer.isComposingWord());
         }
+        mHandler.postUpdateSuggestionStrip(mWordComposer.isComposingWord());
         Utils.Stats.onNonSeparator((char)primaryCode, x, y);
     }
 
@@ -1612,9 +1592,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
             mHandler.startDoubleSpacesTimer();
             if (!mConnection.isCursorTouchingWord(mCurrentSettings)) {
-                // We know mWordComposer.isComposingWord() is false here, since if it was true,
-                // we committed the text, making it false.
-                mHandler.postUpdateBigramPredictions(mWordComposer.isComposingWord());
+                mHandler.postUpdateSuggestionStrip(mWordComposer.isComposingWord());
             }
         } else {
             if (swapWeakSpace) {
@@ -1898,10 +1876,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (showingAddToDictionaryHint && mIsUserDictionaryAvailable) {
             mSuggestionsView.showAddToDictionaryHint(suggestion, mCurrentSettings.mHintToSaveText);
         } else {
-            // If we're not showing the "Touch again to save", then show predictions.
-            // We just called commitChosenWord, which ensures mWordComposer#isComposingWord()
-            // returns false.
-            mHandler.postUpdateBigramPredictions(mWordComposer.isComposingWord());
+            // If we're not showing the "Touch again to save", then update the suggestion strip.
+            mHandler.postUpdateSuggestionStrip(mWordComposer.isComposingWord());
         }
     }
 
@@ -1993,8 +1969,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             ResearchLogger.latinIME_deleteSurroundingText(length);
         }
         mConnection.setComposingText(word, 1);
-        // We just set a composing word, so isComposingWord() is true
-        mHandler.postUpdateSuggestions(mWordComposer.isComposingWord());
+        mHandler.postUpdateSuggestionStrip(mWordComposer.isComposingWord());
     }
 
     private void revertCommit() {
@@ -2039,9 +2014,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // separator.
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
         // We have a separator between the word and the cursor: we should show predictions.
-        // We know we are not composing a word here (there is even a test that throws an exception
-        // in debug mode in here)
-        mHandler.postUpdateBigramPredictions(mWordComposer.isComposingWord());
+        mHandler.postUpdateSuggestionStrip(mWordComposer.isComposingWord());
     }
 
     public boolean isWordSeparator(int code) {
@@ -2065,12 +2038,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         loadSettings();
         // Since we just changed languages, we should re-evaluate suggestions with whatever word
         // we are currently composing. If we are not composing anything, we may want to display
-        // predictions or punctuation signs (which is done by updateBigramPredictions anyway).
-        if (mWordComposer.isComposingWord()) {
-            mHandler.postUpdateSuggestions(mWordComposer.isComposingWord());
-        } else {
-            mHandler.postUpdateBigramPredictions(mWordComposer.isComposingWord());
-        }
+        // predictions or punctuation signs (which is done by the updateSuggestionStrip anyway).
+        mHandler.postUpdateSuggestionStrip(mWordComposer.isComposingWord());
     }
 
     // TODO: Remove this method from {@link LatinIME} and move {@link FeedbackManager} to
