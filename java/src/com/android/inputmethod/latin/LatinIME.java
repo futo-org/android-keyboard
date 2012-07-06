@@ -1799,6 +1799,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
 
+        mConnection.beginBatchEdit();
         if (SPACE_STATE_PHANTOM == mSpaceState && suggestion.length() > 0) {
             int firstChar = Character.codePointAt(suggestion, 0);
             if ((!mCurrentSettings.isWeakSpaceStripper(firstChar))
@@ -1816,7 +1817,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mKeyboardSwitcher.updateShiftState();
             resetComposingState(true /* alsoResetLastComposedWord */);
             final CompletionInfo completionInfo = mApplicationSpecifiedCompletions[index];
-            mConnection.beginBatchEdit();
             mConnection.commitCompletion(completionInfo);
             mConnection.endBatchEdit();
             if (ProductionFlag.IS_EXPERIMENTAL) {
@@ -1837,6 +1837,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mExpectingUpdateSelection = true;
         commitChosenWord(suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,
                 LastComposedWord.NOT_A_SEPARATOR);
+        mConnection.endBatchEdit();
         // Don't allow cancellation of manual pick
         mLastComposedWord.deactivate();
         mSpaceState = SPACE_STATE_PHANTOM;
