@@ -1702,13 +1702,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private SuggestedWords maybeRetrieveOlderSuggestions(final CharSequence typedWord,
             final SuggestedWords suggestedWords) {
         // TODO: consolidate this into getSuggestedWords
-        // Basically, we update the suggestion strip only when suggestion count > 1.  However,
-        // there is an exception: We update the suggestion strip whenever typed word's length
-        // is 1 or typed word is found in dictionary, regardless of suggestion count.  Actually,
-        // in most cases, suggestion count is 1 when typed word's length is 1, but we do always
-        // need to clear the previous state when the user starts typing a word (i.e. typed word's
-        // length == 1).
-        if (suggestedWords.size() > 1 || typedWord.length() == 1 || !mWordComposer.isComposingWord()
+        // We update the suggestion strip only when we have some suggestions to show, i.e. when
+        // the suggestion count is > 1; else, we leave the old suggestions, with the typed word
+        // replaced with the new one. However, when the word is a dictionary word, or when the
+        // length of the typed word is 1 or 0 (after a deletion typically), we do want to remove the
+        // old suggestions. Also, if we are showing the "add to dictionary" hint, we need to
+        // revert to suggestions - although it is unclear how we can come here if it's displayed.
+        if (suggestedWords.size() > 1 || typedWord.length() <= 1
                 || !suggestedWords.mTypedWordValid
                 || mSuggestionsView.isShowingAddToDictionaryHint()) {
             return suggestedWords;
