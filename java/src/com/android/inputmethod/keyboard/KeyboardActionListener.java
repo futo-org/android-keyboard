@@ -64,6 +64,20 @@ public interface KeyboardActionListener {
      */
     public void onTextInput(CharSequence text);
 
+    // TODO: Should move this method to some more appropriate interface.
+    /**
+     * Called when user started batch input.
+     */
+    public void onStartBatchInput();
+
+    // TODO: Should move this method to some more appropriate interface.
+    /**
+     * Sends a sequence of characters to the listener as batch input.
+     *
+     * @param text the sequence of characters to be displayed as composing text.
+     */
+    public void onEndBatchInput(CharSequence text);
+
     /**
      * Called when user released a finger outside any key.
      */
@@ -84,6 +98,10 @@ public interface KeyboardActionListener {
         public void onCodeInput(int primaryCode, int x, int y) {}
         @Override
         public void onTextInput(CharSequence text) {}
+        @Override
+        public void onStartBatchInput() {}
+        @Override
+        public void onEndBatchInput(CharSequence text) {}
         @Override
         public void onCancelInput() {}
         @Override

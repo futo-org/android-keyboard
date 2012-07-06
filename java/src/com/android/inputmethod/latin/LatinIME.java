@@ -1272,6 +1272,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (mCurrentSettings.isWordSeparator(primaryCode)) {
                 didAutoCorrect = handleSeparator(primaryCode, x, y, spaceState);
             } else {
+                if (SPACE_STATE_PHANTOM == spaceState) {
+                    commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+                }
                 final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
                 if (keyboard != null && keyboard.hasProximityCharsCorrection(primaryCode)) {
                     handleCharacter(primaryCode, x, y, spaceState);
@@ -1311,6 +1314,31 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mSpaceState = SPACE_STATE_NONE;
         mEnteredText = text;
         resetComposingState(true /* alsoResetLastComposedWord */);
+    }
+
+    @Override
+    public void onStartBatchInput() {
+        mConnection.beginBatchEdit();
+        if (mWordComposer.isComposingWord()) {
+            commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+            mExpectingUpdateSelection = true;
+            // TODO: Can we remove this?
+            mSpaceState = SPACE_STATE_PHANTOM;
+        }
+        mConnection.endBatchEdit();
+    }
+
+    @Override
+    public void onEndBatchInput(CharSequence text) {
+        mConnection.beginBatchEdit();
+        if (SPACE_STATE_PHANTOM == mSpaceState) {
+            sendKeyCodePoint(Keyboard.CODE_SPACE);
+        }
+        mConnection.setComposingText(text, 1);
+        mExpectingUpdateSelection = true;
+        mConnection.endBatchEdit();
+        mKeyboardSwitcher.updateShiftState();
+        mSpaceState = SPACE_STATE_PHANTOM;
     }
 
     private CharSequence specificTldProcessingOnTextInput(final CharSequence text) {
@@ -1359,7 +1387,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mWordComposer.isComposingWord()) {
             final int length = mWordComposer.size();
             if (length > 0) {
-                mWordComposer.deleteLast();
+                // Immediately after a batch input.
+                if (SPACE_STATE_PHANTOM == spaceState) {
+                    mWordComposer.reset();
+                } else {
+                    mWordComposer.deleteLast();
+                }
                 mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
                 // If we have deleted the last remaining character of a word, then we are not
                 // isComposingWord() any more.
