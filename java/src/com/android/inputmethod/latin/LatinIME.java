@@ -1863,12 +1863,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         Utils.Stats.onSeparator((char)Keyboard.CODE_SPACE, WordComposer.NOT_A_COORDINATE,
                 WordComposer.NOT_A_COORDINATE);
         if (!showingAddToDictionaryHint) {
-            // If we're not showing the "Touch again to save", then show corrections again.
-            // In case the cursor position doesn't change, make sure we show the suggestions again.
-            updateSuggestionsOrPredictions(true /* isPredictions */);
-            // Updating the predictions right away may be slow and feel unresponsive on slower
-            // terminals. On the other hand if we just postUpdateBigramPredictions() it will
-            // take a noticeable delay to update them which may feel uneasy.
+            // If we're not showing the "Touch again to save", then show predictions.
+            mHandler.postUpdateBigramPredictions();
         } else {
             if (mIsUserDictionaryAvailable) {
                 mSuggestionsView.showAddToDictionaryHint(
