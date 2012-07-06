@@ -177,9 +177,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     public static class UIHandler extends StaticInnerHandlerWrapper<LatinIME> {
         private static final int MSG_UPDATE_SHIFT_STATE = 1;
-        private static final int MSG_SET_BIGRAM_PREDICTIONS = 5;
         private static final int MSG_PENDING_IMS_CALLBACK = 6;
-        private static final int MSG_UPDATE_SUGGESTIONS = 7;
+        private static final int MSG_UPDATE_SUGGESTION_STRIP = 7;
 
         private int mDelayUpdateSuggestions;
         private int mDelayUpdateShiftState;
@@ -205,35 +204,26 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final LatinIME latinIme = getOuterInstance();
             final KeyboardSwitcher switcher = latinIme.mKeyboardSwitcher;
             switch (msg.what) {
-            case MSG_UPDATE_SUGGESTIONS:
-                latinIme.updateSuggestionsOrPredictions(false /* isPredictions */);
+            case MSG_UPDATE_SUGGESTION_STRIP:
+                latinIme.updateSuggestionsOrPredictions(
+                        !getOuterInstance().mWordComposer.isComposingWord());
                 break;
             case MSG_UPDATE_SHIFT_STATE:
                 switcher.updateShiftState();
-                break;
-            case MSG_SET_BIGRAM_PREDICTIONS:
-                latinIme.updateSuggestionsOrPredictions(true /* isPredictions */);
                 break;
             }
         }
 
         public void postUpdateSuggestionStrip() {
-            cancelUpdateSuggestionStrip();
-            if (getOuterInstance().mWordComposer.isComposingWord()) {
-                sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTIONS), mDelayUpdateSuggestions);
-            } else {
-                sendMessageDelayed(obtainMessage(MSG_SET_BIGRAM_PREDICTIONS),
-                        mDelayUpdateSuggestions);
-            }
+            sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTION_STRIP), mDelayUpdateSuggestions);
         }
 
         public void cancelUpdateSuggestionStrip() {
-            removeMessages(MSG_UPDATE_SUGGESTIONS);
-            removeMessages(MSG_SET_BIGRAM_PREDICTIONS);
+            removeMessages(MSG_UPDATE_SUGGESTION_STRIP);
         }
 
         public boolean hasPendingUpdateSuggestions() {
-            return hasMessages(MSG_UPDATE_SUGGESTIONS);
+            return hasMessages(MSG_UPDATE_SUGGESTION_STRIP);
         }
 
         public void postUpdateShiftState() {
