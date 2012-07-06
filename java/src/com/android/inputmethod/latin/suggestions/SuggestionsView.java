@@ -71,7 +71,7 @@ import java.util.ArrayList;
 public class SuggestionsView extends RelativeLayout implements OnClickListener,
         OnLongClickListener {
     public interface Listener {
-        public boolean addWordToDictionary(String word);
+        public boolean addWordToUserDictionary(String word);
         public void pickSuggestionManually(int index, CharSequence word, int x, int y);
     }
 
@@ -718,10 +718,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         mPreviewPopup.dismiss();
     }
 
-    private void addToDictionary(CharSequence word) {
-        mListener.addWordToDictionary(word.toString());
-    }
-
     private final KeyboardActionListener mMoreSuggestionsListener =
             new KeyboardActionListener.Adapter() {
         @Override
@@ -863,7 +859,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
     @Override
     public void onClick(View view) {
         if (mParams.isAddToDictionaryShowing(view)) {
-            addToDictionary(mParams.getAddToDictionaryWord());
+            mListener.addWordToUserDictionary(mParams.getAddToDictionaryWord().toString());
             clear();
             return;
         }

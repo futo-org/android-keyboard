@@ -117,6 +117,17 @@
                 latin:keyLabelFlags="fontNormal|preserveCase"
                 latin:backgroundType="functional" />
         </case>
+        <case
+            latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted|alphabetShiftLocked"
+            latin:navigateNext="true"
+        >
+            <key-style
+                latin:styleName="tabKeyStyle"
+                latin:code="!code/key_action_next"
+                latin:keyLabel="!text/label_tab_key"
+                latin:keyLabelFlags="fontNormal|preserveCase"
+                latin:backgroundType="functional" />
+        </case>
         <default>
             <key-style
                 latin:styleName="tabKeyStyle"

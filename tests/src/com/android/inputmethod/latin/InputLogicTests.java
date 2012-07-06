@@ -126,6 +126,26 @@ public class InputLogicTests extends InputTestsBase {
                 mTextView.getText().toString());
     }
 
+    public void testAutoCorrectWithSpaceThenRevert() {
+        final String STRING_TO_TYPE = "tgis ";
+        final String EXPECTED_RESULT = "tgis ";
+        type(STRING_TO_TYPE);
+        mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
+        type(Keyboard.CODE_DELETE);
+        assertEquals("auto-correct with space then revert", EXPECTED_RESULT,
+                mTextView.getText().toString());
+    }
+
+    public void testAutoCorrectToSelfDoesNotRevert() {
+        final String STRING_TO_TYPE = "this ";
+        final String EXPECTED_RESULT = "this";
+        type(STRING_TO_TYPE);
+        mLatinIME.onUpdateSelection(0, 0, STRING_TO_TYPE.length(), STRING_TO_TYPE.length(), -1, -1);
+        type(Keyboard.CODE_DELETE);
+        assertEquals("auto-correct with space does not revert", EXPECTED_RESULT,
+                mTextView.getText().toString());
+    }
+
     public void testDoubleSpace() {
         final String STRING_TO_TYPE = "this  ";
         final String EXPECTED_RESULT = "this. ";

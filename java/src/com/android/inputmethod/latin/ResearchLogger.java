@@ -933,13 +933,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 EVENTKEYS_NULLVALUES);
     }
 
-    private static final String[] EVENTKEYS_LATINIME_SWITCHTOKEYBOARDVIEW = {
-        "LatinIMESwitchToKeyboardView"
-    };
-    public static void latinIME_switchToKeyboardView() {
-        getInstance().enqueueEvent(EVENTKEYS_LATINIME_SWITCHTOKEYBOARDVIEW, EVENTKEYS_NULLVALUES);
-    }
-
     private static final String[] EVENTKEYS_LATINKEYBOARDVIEW_ONLONGPRESS = {
         "LatinKeyboardViewOnLongPress"
     };
