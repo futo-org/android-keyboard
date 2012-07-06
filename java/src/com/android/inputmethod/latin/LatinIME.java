@@ -144,7 +144,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private LastComposedWord mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
     private WordComposer mWordComposer = new WordComposer();
-    private RichInputConnection mConnection = new RichInputConnection();
+    private RichInputConnection mConnection = new RichInputConnection(this);
 
     // Keep track of the last selection range to decide if we need to show word alternatives
     private static final int NOT_A_CURSOR_POSITION = -1;
@@ -537,7 +537,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mDisplayOrientation != conf.orientation) {
             mDisplayOrientation = conf.orientation;
             mHandler.startOrientationChanging();
-            mConnection.beginBatchEdit(getCurrentInputConnection());
+            mConnection.beginBatchEdit();
             commitTyped(LastComposedWord.NOT_A_SEPARATOR);
             mConnection.finishComposingText();
             mConnection.endBatchEdit();
@@ -1213,7 +1213,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mDeleteCount = 0;
         }
         mLastKeyTime = when;
-        mConnection.beginBatchEdit(getCurrentInputConnection());
+        mConnection.beginBatchEdit();
 
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.latinIME_onCodeInput(primaryCode, x, y);
@@ -1298,7 +1298,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onTextInput(CharSequence text) {
-        mConnection.beginBatchEdit(getCurrentInputConnection());
+        mConnection.beginBatchEdit();
         commitTyped(LastComposedWord.NOT_A_SEPARATOR);
         text = specificTldProcessingOnTextInput(text);
         if (SPACE_STATE_PHANTOM == mSpaceState) {
@@ -1819,7 +1819,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mKeyboardSwitcher.updateShiftState();
             resetComposingState(true /* alsoResetLastComposedWord */);
             final CompletionInfo completionInfo = mApplicationSpecifiedCompletions[index];
-            mConnection.beginBatchEdit(getCurrentInputConnection());
+            mConnection.beginBatchEdit();
             mConnection.commitCompletion(completionInfo);
             mConnection.endBatchEdit();
             if (ProductionFlag.IS_EXPERIMENTAL) {

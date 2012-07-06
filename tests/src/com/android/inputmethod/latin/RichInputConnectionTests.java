@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import android.inputmethodservice.InputMethodService;
 import android.test.AndroidTestCase;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
@@ -83,6 +84,17 @@ public class RichInputConnectionTests extends AndroidTestCase {
         }
     }
 
+    private class MockInputMethodService extends InputMethodService {
+        InputConnection mInputConnection;
+        public void setInputConnection(final InputConnection inputConnection) {
+            mInputConnection = inputConnection;
+        }
+        @Override
+        public InputConnection getCurrentInputConnection() {
+            return mInputConnection;
+        }
+    }
+
     /************************** Tests ************************/
 
     /**
@@ -122,14 +134,14 @@ public class RichInputConnectionTests extends AndroidTestCase {
      */
     public void testGetWordRangeAtCursor() {
         ExtractedText et = new ExtractedText();
-        final RichInputConnection ic = new RichInputConnection();
-        InputConnection mockConnection;
-        mockConnection = new MockConnection("word wo", "rd", et);
+        final MockInputMethodService mockInputMethodService = new MockInputMethodService();
+        final RichInputConnection ic = new RichInputConnection(mockInputMethodService);
+        mockInputMethodService.setInputConnection(new MockConnection("word wo", "rd", et));
         et.startOffset = 0;
         et.selectionStart = 7;
         Range r;
 
-        ic.beginBatchEdit(mockConnection);
+        ic.beginBatchEdit();
         // basic case
         r = ic.getWordRangeAtCursor(" ", 0);
         assertEquals("word", r.mWord);
@@ -140,37 +152,38 @@ public class RichInputConnectionTests extends AndroidTestCase {
         ic.endBatchEdit();
 
         // tab character instead of space
-        mockConnection = new MockConnection("one\tword\two", "rd", et);
-        ic.beginBatchEdit(mockConnection);
+        mockInputMethodService.setInputConnection(new MockConnection("one\tword\two", "rd", et));
+        ic.beginBatchEdit();
         r = ic.getWordRangeAtCursor("\t", 1);
         ic.endBatchEdit();
         assertEquals("word\tword", r.mWord);
 
         // only one word doesn't go too far
-        mockConnection = new MockConnection("one\tword\two", "rd", et);
-        ic.beginBatchEdit(mockConnection);
+        mockInputMethodService.setInputConnection(new MockConnection("one\tword\two", "rd", et));
+        ic.beginBatchEdit();
         r = ic.getWordRangeAtCursor("\t", 1);
         ic.endBatchEdit();
         assertEquals("word\tword", r.mWord);
 
         // tab or space
-        mockConnection = new MockConnection("one word\two", "rd", et);
-        ic.beginBatchEdit(mockConnection);
+        mockInputMethodService.setInputConnection(new MockConnection("one word\two", "rd", et));
+        ic.beginBatchEdit();
         r = ic.getWordRangeAtCursor(" \t", 1);
         ic.endBatchEdit();
         assertEquals("word\tword", r.mWord);
 
         // tab or space multiword
-        mockConnection = new MockConnection("one word\two", "rd", et);
-        ic.beginBatchEdit(mockConnection);
+        mockInputMethodService.setInputConnection(new MockConnection("one word\two", "rd", et));
+        ic.beginBatchEdit();
         r = ic.getWordRangeAtCursor(" \t", 2);
         ic.endBatchEdit();
         assertEquals("one word\tword", r.mWord);
 
         // splitting on supplementary character
         final String supplementaryChar = "\uD840\uDC8A";
-        mockConnection = new MockConnection("one word" + supplementaryChar + "wo", "rd", et);
-        ic.beginBatchEdit(mockConnection);
+        mockInputMethodService.setInputConnection(
+                new MockConnection("one word" + supplementaryChar + "wo", "rd", et));
+        ic.beginBatchEdit();
         r = ic.getWordRangeAtCursor(supplementaryChar, 0);
         ic.endBatchEdit();
         assertEquals("word", r.mWord);

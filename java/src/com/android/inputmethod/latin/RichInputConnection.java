@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import android.inputmethodservice.InputMethodService;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -41,16 +42,18 @@ public class RichInputConnection {
     private static final Pattern spaceRegex = Pattern.compile("\\s+");
     private static final int INVALID_CURSOR_POSITION = -1;
 
+    private final InputMethodService mParent;
     InputConnection mIC;
     int mNestLevel;
-    public RichInputConnection() {
+    public RichInputConnection(final InputMethodService parent) {
+        mParent = parent;
         mIC = null;
         mNestLevel = 0;
     }
 
-    public void beginBatchEdit(final InputConnection newInputConnection) {
+    public void beginBatchEdit() {
         if (++mNestLevel == 1) {
-            mIC = newInputConnection;
+            mIC = mParent.getCurrentInputConnection();
             if (null != mIC) mIC.beginBatchEdit();
         } else {
             if (DBG) {
@@ -84,16 +87,19 @@ public class RichInputConnection {
     }
 
     public int getCursorCapsMode(final int inputType) {
+        mIC = mParent.getCurrentInputConnection();
         if (null == mIC) return Constants.TextUtils.CAP_MODE_OFF;
         return mIC.getCursorCapsMode(inputType);
     }
 
     public CharSequence getTextBeforeCursor(final int i, final int j) {
+        mIC = mParent.getCurrentInputConnection();
         if (null != mIC) return mIC.getTextBeforeCursor(i, j);
         return null;
     }
 
     public CharSequence getTextAfterCursor(final int i, final int j) {
+        mIC = mParent.getCurrentInputConnection();
         if (null != mIC) return mIC.getTextAfterCursor(i, j);
         return null;
     }
@@ -104,6 +110,7 @@ public class RichInputConnection {
     }
 
     public void performEditorAction(final int actionId) {
+        mIC = mParent.getCurrentInputConnection();
         if (null != mIC) mIC.performEditorAction(actionId);
     }
 
@@ -133,6 +140,7 @@ public class RichInputConnection {
     }
 
     public CharSequence getPreviousWord(final String sentenceSeperators) {
+        mIC = mParent.getCurrentInputConnection();
         //TODO: Should fix this. This could be slow!
         if (null == mIC) return null;
         CharSequence prev = mIC.getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
@@ -194,6 +202,7 @@ public class RichInputConnection {
     }
 
     public CharSequence getThisWord(String sentenceSeperators) {
+        mIC = mParent.getCurrentInputConnection();
         if (null == mIC) return null;
         final CharSequence prev = mIC.getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
         return getThisWord(prev, sentenceSeperators);
@@ -233,6 +242,7 @@ public class RichInputConnection {
     }
 
     private int getCursorPosition() {
+        mIC = mParent.getCurrentInputConnection();
         if (null == mIC) return INVALID_CURSOR_POSITION;
         final ExtractedText extracted = mIC.getExtractedText(new ExtractedTextRequest(), 0);
         if (extracted == null) {
@@ -250,6 +260,7 @@ public class RichInputConnection {
      * @return a range containing the text surrounding the cursor
      */
     public Range getWordRangeAtCursor(String sep, int additionalPrecedingWordsCount) {
+        mIC = mParent.getCurrentInputConnection();
         if (mIC == null || sep == null) {
             return null;
         }
