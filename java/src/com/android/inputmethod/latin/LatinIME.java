@@ -1862,17 +1862,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         Utils.Stats.onSeparator((char)Keyboard.CODE_SPACE, WordComposer.NOT_A_COORDINATE,
                 WordComposer.NOT_A_COORDINATE);
-        if (!showingAddToDictionaryHint) {
+        if (showingAddToDictionaryHint && mIsUserDictionaryAvailable) {
+            mSuggestionsView.showAddToDictionaryHint(suggestion, mCurrentSettings.mHintToSaveText);
+        } else {
             // If we're not showing the "Touch again to save", then show predictions.
             mHandler.postUpdateBigramPredictions();
-        } else {
-            if (mIsUserDictionaryAvailable) {
-                mSuggestionsView.showAddToDictionaryHint(
-                        suggestion, mCurrentSettings.mHintToSaveText);
-            } else {
-                // Here we just manually picked a suggestion. We should be showing the predictions!
-                mHandler.postUpdateBigramPredictions();
-            }
         }
     }
 
