@@ -1674,17 +1674,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
 
-        final CharSequence typedWord;
+        final String typedWord = mWordComposer.getTypedWord();
         final SuggestedWords suggestions;
         if (!mWordComposer.isComposingWord()) {
             if (!mCurrentSettings.mBigramPredictionEnabled) {
                 setPunctuationSuggestions();
                 return;
             }
-            typedWord = "";
             suggestions = updateBigramPredictions();
         } else {
-            typedWord = mWordComposer.getTypedWord();
             suggestions = updateSuggestions(typedWord);
         }
 
