@@ -58,6 +58,16 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         }
 
         @Override
+        public void onStartBatchInput() {
+            mListener.onStartBatchInput();
+        }
+
+        @Override
+        public void onEndBatchInput(CharSequence text) {
+            mListener.onEndBatchInput(text);
+        }
+
+        @Override
         public void onCancelInput() {
             mListener.onCancelInput();
         }

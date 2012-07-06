@@ -1272,6 +1272,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (mCurrentSettings.isWordSeparator(primaryCode)) {
                 didAutoCorrect = handleSeparator(primaryCode, x, y, spaceState);
             } else {
+                if (SPACE_STATE_PHANTOM == spaceState) {
+                    commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+                }
                 final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
                 if (keyboard != null && keyboard.hasProximityCharsCorrection(primaryCode)) {
                     handleCharacter(primaryCode, x, y, spaceState);
@@ -1311,6 +1314,31 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mSpaceState = SPACE_STATE_NONE;
         mEnteredText = text;
         resetComposingState(true /* alsoResetLastComposedWord */);
+    }
+
+    @Override
+    public void onStartBatchInput() {
+        mConnection.beginBatchEdit();
+        if (mWordComposer.isComposingWord()) {
+            commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+            mExpectingUpdateSelection = true;
+            // TODO: Can we remove this?
+            mSpaceState = SPACE_STATE_PHANTOM;
+        }
+        mConnection.endBatchEdit();
+    }
+
+    @Override
+    public void onEndBatchInput(CharSequence text) {
+        mConnection.beginBatchEdit();
+        if (SPACE_STATE_PHANTOM == mSpaceState) {
+            sendKeyCodePoint(Keyboard.CODE_SPACE);
+        }
+        mConnection.setComposingText(text, 1);
+        mExpectingUpdateSelection = true;
+        mConnection.endBatchEdit();
+        mKeyboardSwitcher.updateShiftState();
+        mSpaceState = SPACE_STATE_PHANTOM;
     }
 
     private CharSequence specificTldProcessingOnTextInput(final CharSequence text) {
@@ -1359,7 +1387,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mWordComposer.isComposingWord()) {
             final int length = mWordComposer.size();
             if (length > 0) {
-                mWordComposer.deleteLast();
+                // Immediately after a batch input.
+                if (SPACE_STATE_PHANTOM == spaceState) {
+                    mWordComposer.reset();
+                } else {
+                    mWordComposer.deleteLast();
+                }
                 mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
                 // If we have deleted the last remaining character of a word, then we are not
                 // isComposingWord() any more.
@@ -1523,15 +1556,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 swapSwapperAndSpace();
                 mSpaceState = SPACE_STATE_WEAK;
             }
-            // Some characters are not word separators, yet they don't start a new
-            // composing span. For these, we haven't changed the suggestion strip, and
-            // if the "add to dictionary" hint is shown, we should do so now. Examples of
-            // such characters include single quote, dollar, and others; the exact list is
-            // the list of characters for which we enter handleCharacterWhileInBatchEdit
-            // that don't match the test if ((isAlphabet...)) at the top of this method.
-            if (null != mSuggestionsView && mSuggestionsView.dismissAddToDictionaryHint()) {
-                mHandler.postUpdateBigramPredictions();
-            }
+            // We may need to update predictions, if the "add to dictionary" hint was displayed
+            // for example.
+            if (null != mSuggestionsView) mSuggestionsView.dismissAddToDictionaryHint();
+            mHandler.postUpdateBigramPredictions();
         }
         Utils.Stats.onNonSeparator((char)primaryCode, x, y);
     }
@@ -1539,11 +1567,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Returns true if we did an autocorrection, false otherwise.
     private boolean handleSeparator(final int primaryCode, final int x, final int y,
             final int spaceState) {
-        // Should dismiss the "Touch again to save" message when handling separator
-        if (mSuggestionsView != null && mSuggestionsView.dismissAddToDictionaryHint()) {
-            mHandler.postUpdateSuggestions();
-        }
-
         boolean didAutoCorrect = false;
         // Handle separator
         if (mWordComposer.isComposingWord()) {
@@ -1799,6 +1822,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
 
+        mConnection.beginBatchEdit();
         if (SPACE_STATE_PHANTOM == mSpaceState && suggestion.length() > 0) {
             int firstChar = Character.codePointAt(suggestion, 0);
             if ((!mCurrentSettings.isWeakSpaceStripper(firstChar))
@@ -1816,7 +1840,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mKeyboardSwitcher.updateShiftState();
             resetComposingState(true /* alsoResetLastComposedWord */);
             final CompletionInfo completionInfo = mApplicationSpecifiedCompletions[index];
-            mConnection.beginBatchEdit();
             mConnection.commitCompletion(completionInfo);
             mConnection.endBatchEdit();
             if (ProductionFlag.IS_EXPERIMENTAL) {
@@ -1837,6 +1860,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mExpectingUpdateSelection = true;
         commitChosenWord(suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,
                 LastComposedWord.NOT_A_SEPARATOR);
+        mConnection.endBatchEdit();
         // Don't allow cancellation of manual pick
         mLastComposedWord.deactivate();
         mSpaceState = SPACE_STATE_PHANTOM;
@@ -2025,7 +2049,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Since we just changed languages, we should re-evaluate suggestions with whatever word
         // we are currently composing. If we are not composing anything, we may want to display
         // predictions or punctuation signs (which is done by updateBigramPredictions anyway).
-        if (mConnection.isCursorTouchingWord(mCurrentSettings)) {
+        if (mWordComposer.isComposingWord()) {
             mHandler.postUpdateSuggestions();
         } else {
             mHandler.postUpdateBigramPredictions();
