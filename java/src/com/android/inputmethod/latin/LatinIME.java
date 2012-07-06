@@ -1695,7 +1695,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private SuggestedWords updateSuggestions(final CharSequence typedWord) {
         // TODO: May need a better way of retrieving previous word
-        final CharSequence prevWord = mConnection.getPreviousWord(mCurrentSettings.mWordSeparators);
+        final CharSequence prevWord =
+                mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators, 2);
         // getSuggestedWords handles gracefully a null value of prevWord
         final SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
@@ -1889,7 +1890,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private SuggestedWords updateBigramPredictions() {
-        final CharSequence prevWord = mConnection.getThisWord(mCurrentSettings.mWordSeparators);
+        final CharSequence prevWord =
+                mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators, 1);
         return mSuggest.getSuggestedWords(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
                 mCurrentSettings.mCorrectionEnabled, true);
@@ -1916,7 +1918,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final UserHistoryDictionary userHistoryDictionary = mUserHistoryDictionary;
         if (userHistoryDictionary != null) {
             final CharSequence prevWord
-                    = mConnection.getPreviousWord(mCurrentSettings.mWordSeparators);
+                    = mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators, 2);
             final String secondWord;
             if (mWordComposer.isAutoCapitalized() && !mWordComposer.isMostlyCaps()) {
                 secondWord = suggestion.toString().toLowerCase(
