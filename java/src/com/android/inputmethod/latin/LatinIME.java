@@ -205,8 +205,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final KeyboardSwitcher switcher = latinIme.mKeyboardSwitcher;
             switch (msg.what) {
             case MSG_UPDATE_SUGGESTION_STRIP:
-                latinIme.updateSuggestionsOrPredictions(
-                        !getOuterInstance().mWordComposer.isComposingWord());
+                latinIme.updateSuggestionsOrPredictions();
                 break;
             case MSG_UPDATE_SHIFT_STATE:
                 switcher.updateShiftState();
@@ -1011,7 +1010,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, typedWord.toString(),
                     separatorCode, prevWord);
         }
-        updateSuggestionsOrPredictions(false /* isPredictions */);
+        updateSuggestionsOrPredictions();
     }
 
     public int getCurrentAutoCapsState() {
@@ -1662,8 +1661,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    public void updateSuggestionsOrPredictions(final boolean isPredictions) {
+    public void updateSuggestionsOrPredictions() {
         mHandler.cancelUpdateSuggestionStrip();
+        final boolean isPredictions = !mWordComposer.isComposingWord();
 
         // Check if we have a suggestion engine attached.
         if (mSuggest == null || !mCurrentSettings.isSuggestionsRequested(mDisplayOrientation)) {
@@ -1677,6 +1677,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         final CharSequence typedWord;
         final SuggestedWords suggestions;
+        // TODO: cleanup the following, those two mean the same thing
         if (isPredictions || !mWordComposer.isComposingWord()) {
             if (!mCurrentSettings.mBigramPredictionEnabled) {
                 setPunctuationSuggestions();
@@ -1754,8 +1755,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void commitCurrentAutoCorrection(final int separatorCodePoint) {
         // Complete any pending suggestions query first
         if (mHandler.hasPendingUpdateSuggestions()) {
-            mHandler.cancelUpdateSuggestionStrip();
-            updateSuggestionsOrPredictions(false /* isPredictions */);
+            updateSuggestionsOrPredictions();
         }
         final CharSequence autoCorrection = mWordComposer.getAutoCorrectionOrNull();
         if (autoCorrection != null) {
