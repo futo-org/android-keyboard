@@ -263,6 +263,27 @@ public class ExpandableDictionary extends Dictionary {
         return suggestions;
     }
 
+    // @VisibleForTesting
+    boolean reloadDictionaryIfRequired() {
+        synchronized (mUpdatingLock) {
+            // If we need to update, start off a background task
+            if (mRequiresReload) startDictionaryLoadingTaskLocked();
+            // Currently updating contacts, don't return any results.
+            return mUpdatingDictionary;
+        }
+    }
+
+    @Override
+    public ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
+            final CharSequence previousWord) {
+        if (!reloadDictionaryIfRequired()) {
+            final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
+            runBigramReverseLookUp(previousWord, suggestions);
+            return suggestions;
+        }
+        return null;
+    }
+
     protected final ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer codes,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
@@ -589,16 +610,6 @@ public class ExpandableDictionary extends Dictionary {
         return searchWord(childNode.mChildren, word, depth + 1, childNode);
     }
 
-    // @VisibleForTesting
-    boolean reloadDictionaryIfRequired() {
-        synchronized (mUpdatingLock) {
-            // If we need to update, start off a background task
-            if (mRequiresReload) startDictionaryLoadingTaskLocked();
-            // Currently updating contacts, don't return any results.
-            return mUpdatingDictionary;
-        }
-    }
-
     private void runBigramReverseLookUp(final CharSequence previousWord,
             final ArrayList<SuggestedWordInfo> suggestions) {
         // Search for the lowercase version of the word only, because that's where bigrams
@@ -608,17 +619,6 @@ public class ExpandableDictionary extends Dictionary {
         if (prevWord != null && prevWord.mNGrams != null) {
             reverseLookUp(prevWord.mNGrams, suggestions);
         }
-    }
-
-    @Override
-    public ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
-            final CharSequence previousWord) {
-        if (!reloadDictionaryIfRequired()) {
-            final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
-            runBigramReverseLookUp(previousWord, suggestions);
-            return suggestions;
-        }
-        return null;
     }
 
     /**
