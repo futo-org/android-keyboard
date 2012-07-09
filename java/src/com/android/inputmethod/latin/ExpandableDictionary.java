@@ -249,12 +249,7 @@ public class ExpandableDictionary extends Dictionary {
     @Override
     public ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
-        synchronized (mUpdatingLock) {
-            // If we need to update, start off a background task
-            if (mRequiresReload) startDictionaryLoadingTaskLocked();
-            // Currently updating contacts, don't return any results.
-            if (mUpdatingDictionary) return null;
-        }
+        if (reloadDictionaryIfRequired()) return null;
         if (codes.size() >= BinaryDictionary.MAX_WORD_LENGTH) {
             return null;
         }
@@ -263,12 +258,13 @@ public class ExpandableDictionary extends Dictionary {
         return suggestions;
     }
 
+    // This reloads the dictionary if required, and returns whether it's currently updating its
+    // contents or not.
     // @VisibleForTesting
     boolean reloadDictionaryIfRequired() {
         synchronized (mUpdatingLock) {
             // If we need to update, start off a background task
             if (mRequiresReload) startDictionaryLoadingTaskLocked();
-            // Currently updating contacts, don't return any results.
             return mUpdatingDictionary;
         }
     }
@@ -276,12 +272,10 @@ public class ExpandableDictionary extends Dictionary {
     @Override
     public ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
             final CharSequence previousWord) {
-        if (!reloadDictionaryIfRequired()) {
-            final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
-            runBigramReverseLookUp(previousWord, suggestions);
-            return suggestions;
-        }
-        return null;
+        if (reloadDictionaryIfRequired()) return null;
+        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
+        runBigramReverseLookUp(previousWord, suggestions);
+        return suggestions;
     }
 
     protected final ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer codes,
