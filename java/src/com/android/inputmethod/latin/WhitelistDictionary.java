@@ -22,8 +22,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
+import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -85,6 +88,14 @@ public class WhitelistDictionary extends ExpandableDictionary {
             }
             return mWhitelistWords.get(lowerCaseBefore).second;
         }
+        return null;
+    }
+
+    @Override
+    public ArrayList<SuggestedWordInfo> getWords(final WordComposer composer,
+            final CharSequence prevWord, final ProximityInfo proximityInfo) {
+        // Whitelist does not supply suggestions (actually it should not even implement the
+        // Dictionary interface, as it responds to none of it, but it does for legacy reasons)
         return null;
     }
 

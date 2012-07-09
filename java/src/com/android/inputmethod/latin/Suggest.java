@@ -194,9 +194,6 @@ public class Suggest {
             }
             // At second character typed, search the unigrams (scores being affected by bigrams)
             for (final String key : mDictionaries.keySet()) {
-                // Skip WhitelistDictionary to lookup
-                if (key.equals(Dictionary.TYPE_WHITELIST))
-                    continue;
                 final Dictionary dictionary = mDictionaries.get(key);
                 suggestionsSet.addAll(dictionary.getWords(
                         wordComposerForLookup, prevWordForBigram, proximityInfo));
