@@ -27,9 +27,12 @@ import android.os.AsyncTask;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.UserHistoryForgettingCurveUtils.ForgettingCurveParams;
 
 import java.lang.ref.SoftReference;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
@@ -155,6 +158,14 @@ public class UserHistoryDictionary extends ExpandableDictionary {
         // Ignore close because we cache UserHistoryDictionary for each language. See getInstance()
         // above.
         // super.close();
+    }
+
+    @Override
+    public ArrayList<SuggestedWordInfo> getWords(final WordComposer composer,
+            final CharSequence prevWord, final ProximityInfo proximityInfo) {
+        // User history unigrams are not used at this moment. Implement this method to make them
+        // useful.
+        return null;
     }
 
     /**
