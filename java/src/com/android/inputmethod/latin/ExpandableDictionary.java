@@ -266,19 +266,6 @@ public class ExpandableDictionary extends Dictionary {
         }
     }
 
-    // TODO: remove this
-    @Override
-    protected ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
-        if (reloadDictionaryIfRequired()) return null;
-        if (codes.size() >= BinaryDictionary.MAX_WORD_LENGTH) {
-            return null;
-        }
-        final ArrayList<SuggestedWordInfo> suggestions =
-                getWordsInner(codes, prevWordForBigrams, proximityInfo);
-        return suggestions;
-    }
-
     // This reloads the dictionary if required, and returns whether it's currently updating its
     // contents or not.
     // @VisibleForTesting
@@ -290,17 +277,7 @@ public class ExpandableDictionary extends Dictionary {
         }
     }
 
-    // TODO: remove this
-    @Override
-    protected ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
-            final CharSequence previousWord) {
-        if (reloadDictionaryIfRequired()) return null;
-        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
-        runBigramReverseLookUp(previousWord, suggestions);
-        return suggestions;
-    }
-
-    protected final ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer codes,
+    protected ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer codes,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
         mInputLength = codes.size();

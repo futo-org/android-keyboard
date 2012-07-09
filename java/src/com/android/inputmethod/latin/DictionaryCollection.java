@@ -73,46 +73,6 @@ public class DictionaryCollection extends Dictionary {
         return suggestions;
     }
 
-    // TODO: remove this
-    @Override
-    protected ArrayList<SuggestedWordInfo> getWords(final WordComposer composer,
-            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
-        final CopyOnWriteArrayList<Dictionary> dictionaries = mDictionaries;
-        if (dictionaries.isEmpty()) return null;
-        // To avoid creating unnecessary objects, we get the list out of the first
-        // dictionary and add the rest to it if not null, hence the get(0)
-        ArrayList<SuggestedWordInfo> suggestions = dictionaries.get(0).getWords(composer,
-                prevWordForBigrams, proximityInfo);
-        if (null == suggestions) suggestions = new ArrayList<SuggestedWordInfo>();
-        final int length = dictionaries.size();
-        for (int i = 0; i < length; ++ i) {
-            final ArrayList<SuggestedWordInfo> sugg = dictionaries.get(i).getWords(composer,
-                    prevWordForBigrams, proximityInfo);
-            if (null != sugg) suggestions.addAll(sugg);
-        }
-        return suggestions;
-    }
-
-    // TODO: remove this
-    @Override
-    protected ArrayList<SuggestedWordInfo> getBigrams(final WordComposer composer,
-            final CharSequence previousWord) {
-        final CopyOnWriteArrayList<Dictionary> dictionaries = mDictionaries;
-        if (dictionaries.isEmpty()) return null;
-        // To avoid creating unnecessary objects, we get the list out of the first
-        // dictionary and add the rest to it if not null, hence the get(0)
-        ArrayList<SuggestedWordInfo> suggestions = dictionaries.get(0).getBigrams(composer,
-                previousWord);
-        if (null == suggestions) suggestions = new ArrayList<SuggestedWordInfo>();
-        final int length = dictionaries.size();
-        for (int i = 0; i < length; ++ i) {
-            final ArrayList<SuggestedWordInfo> sugg =
-                   dictionaries.get(i).getBigrams(composer, previousWord);
-            if (null != sugg) suggestions.addAll(sugg);
-        }
-        return suggestions;
-    }
-
     @Override
     public boolean isValidWord(CharSequence word) {
         for (int i = mDictionaries.size() - 1; i >= 0; --i)

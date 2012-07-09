@@ -109,15 +109,14 @@ public class BinaryDictionary extends Dictionary {
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final CharSequence prevWord, final ProximityInfo proximityInfo) {
         if (composer.size() <= 1) {
-            return TextUtils.isEmpty(prevWord) ? null : getBigrams(composer, prevWord);
+            return TextUtils.isEmpty(prevWord) ? null : getBigramsInternal(composer, prevWord);
         } else {
-            return getWords(composer, prevWord, proximityInfo);
+            return getWordsInternal(composer, prevWord, proximityInfo);
         }
     }
 
-    // TODO: rename this to getBigramsInternal, then move to native code
-    @Override
-    protected ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
+    // TODO: move to native code
+    private ArrayList<SuggestedWordInfo> getBigramsInternal(final WordComposer codes,
             final CharSequence previousWord) {
         if (mNativeDict == 0) return null;
 
@@ -154,10 +153,9 @@ public class BinaryDictionary extends Dictionary {
         return suggestions;
     }
 
-    // TODO: rename this to getWordsInternal, then move to native code
+    // TODO: move to native code
     // proximityInfo and/or prevWordForBigrams may not be null.
-    @Override
-    protected ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
+    private ArrayList<SuggestedWordInfo> getWordsInternal(final WordComposer codes,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         final int count = getSuggestions(codes, prevWordForBigrams, proximityInfo, mOutputChars,
                 mScores, mSpaceIndices);

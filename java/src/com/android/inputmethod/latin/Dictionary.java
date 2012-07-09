@@ -65,28 +65,6 @@ public abstract class Dictionary {
             final CharSequence prevWord, final ProximityInfo proximityInfo);
 
     /**
-     * Searches for words in the dictionary that match the characters in the composer. Matched
-     * words are returned as an ArrayList.
-     * @param composer the key sequence to match with coordinate info, as a WordComposer
-     * @param prevWordForBigrams the previous word, or null if none
-     * @param proximityInfo the object for key proximity. May be ignored by some implementations.
-     * @return the list of suggestions
-     */
-    // TODO: remove this
-    abstract protected ArrayList<SuggestedWordInfo> getWords(final WordComposer composer,
-            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo);
-
-    /**
-     * Searches for pairs in the bigram dictionary that matches the previous word.
-     * @param composer the key sequence to match
-     * @param previousWord the word before
-     * @return the list of suggestions
-     */
-    // TODO: remove this
-    abstract protected ArrayList<SuggestedWordInfo> getBigrams(final WordComposer composer,
-            final CharSequence previousWord);
-
-    /**
      * Checks if the given word occurs in the dictionary
      * @param word the word to search for. The search should be case-insensitive.
      * @return true if the word exists, false otherwise

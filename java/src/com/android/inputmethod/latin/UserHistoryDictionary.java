@@ -161,10 +161,10 @@ public class UserHistoryDictionary extends ExpandableDictionary {
     }
 
     @Override
-    protected ArrayList<SuggestedWordInfo> getWords(final WordComposer composer,
+    protected ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer composer,
             final CharSequence prevWord, final ProximityInfo proximityInfo) {
-        // User history unigrams are not used at this moment. Implement this method to make them
-        // useful.
+        // Inhibit suggestions (not predictions) for user history for now. Removing this method
+        // is enough to use it through the standard ExpandableDictionary way.
         return null;
     }
 

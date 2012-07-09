@@ -16,7 +16,6 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.os.SystemClock;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
@@ -200,52 +199,6 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             try {
                 if (mBinaryDictionary != null) {
                     return mBinaryDictionary.getSuggestions(composer, prevWord, proximityInfo);
-                }
-            } finally {
-                mLocalDictionaryController.unlock();
-            }
-        }
-        return null;
-    }
-
-    // TODO: remove this
-    @Override
-    protected ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
-        asyncReloadDictionaryIfRequired();
-        return getWordsInner(codes, prevWordForBigrams, proximityInfo);
-    }
-
-    protected final ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
-        // Ensure that there are no concurrent calls to getWords. If there are, do nothing and
-        // return.
-        if (mLocalDictionaryController.tryLock()) {
-            try {
-                if (mBinaryDictionary != null) {
-                    return mBinaryDictionary.getWords(codes, prevWordForBigrams, proximityInfo);
-                }
-            } finally {
-                mLocalDictionaryController.unlock();
-            }
-        }
-        return null;
-    }
-
-    // TODO: remove this
-    @Override
-    protected ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
-            final CharSequence previousWord) {
-        asyncReloadDictionaryIfRequired();
-        return getBigramsInner(codes, previousWord);
-    }
-
-    protected ArrayList<SuggestedWordInfo> getBigramsInner(final WordComposer codes,
-            final CharSequence previousWord) {
-        if (mLocalDictionaryController.tryLock()) {
-            try {
-                if (mBinaryDictionary != null) {
-                    return mBinaryDictionary.getBigrams(codes, previousWord);
                 }
             } finally {
                 mLocalDictionaryController.unlock();
