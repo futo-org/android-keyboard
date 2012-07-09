@@ -689,6 +689,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
 
+    // Callback for the TargetApplicationGetter
     @Override
     public void onTargetApplicationKnown(final ApplicationInfo info) {
         mTargetApplicationInfo = info;
@@ -997,7 +998,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
     }
 
-    public void commitTyped(final int separatorCode) {
+    private void commitTyped(final int separatorCode) {
         if (!mWordComposer.isComposingWord()) return;
         final CharSequence typedWord = mWordComposer.getTypedWord();
         if (typedWord.length() > 0) {
@@ -1013,6 +1014,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         updateSuggestionsOrPredictions();
     }
 
+    // Called from the KeyboardSwitcher which needs to know auto caps state to display
+    // the right layout.
     public int getCurrentAutoCapsState() {
         if (!mCurrentSettings.mAutoCap) return Constants.TextUtils.CAP_MODE_OFF;
 
@@ -1088,6 +1091,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 || codePoint == Keyboard.CODE_CLOSING_ANGLE_BRACKET;
     }
 
+    // Callback for the SuggestionsView, to call when the "add to dictionary" hint is pressed.
     @Override
     public boolean addWordToUserDictionary(String word) {
         mUserDictionary.addWordToUserDictionary(word, 128);
@@ -1285,6 +1289,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mConnection.endBatchEdit();
     }
 
+    // Called from PointerTracker through the KeyboardActionListener interface
     @Override
     public void onTextInput(CharSequence text) {
         mConnection.beginBatchEdit();
@@ -1348,6 +1353,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
+    // Called from PointerTracker through the KeyboardActionListener interface
     @Override
     public void onCancelInput() {
         // User released a finger outside any key
@@ -1620,12 +1626,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             inputView.closing();
     }
 
-    public boolean isShowingPunctuationList() {
+    // TODO: make this private
+    // Outside LatinIME, only used by the test suite.
+    /* package for tests */ boolean isShowingPunctuationList() {
         if (mSuggestionsView == null) return false;
         return mCurrentSettings.mSuggestPuncList == mSuggestionsView.getSuggestions();
     }
 
-    public boolean isSuggestionsStripVisible() {
+    private boolean isSuggestionsStripVisible() {
         if (mSuggestionsView == null)
             return false;
         if (mSuggestionsView.isShowingAddToDictionaryHint())
@@ -1637,7 +1645,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mCurrentSettings.isSuggestionsRequested(mDisplayOrientation);
     }
 
-    public void clearSuggestions() {
+    private void clearSuggestions() {
         setSuggestions(SuggestedWords.EMPTY, false);
         setAutoCorrectionIndicator(false);
     }
@@ -1660,7 +1668,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    public void updateSuggestionsOrPredictions() {
+    private void updateSuggestionsOrPredictions() {
         mHandler.cancelUpdateSuggestionStrip();
 
         // Check if we have a suggestion engine attached.
@@ -1778,6 +1786,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
+    // Called from SuggestionsView through the SuggestionsView.Listener interface
     @Override
     public void pickSuggestionManually(final int index, final CharSequence suggestion,
             final int x, final int y) {
@@ -1888,7 +1897,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 separatorCode, prevWord);
     }
 
-    public void setPunctuationSuggestions() {
+    private void setPunctuationSuggestions() {
         if (mCurrentSettings.mBigramPredictionEnabled) {
             clearSuggestions();
         } else {
@@ -1996,16 +2005,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mHandler.postUpdateSuggestionStrip();
     }
 
+    // Used by the RingCharBuffer
     public boolean isWordSeparator(int code) {
         return mCurrentSettings.isWordSeparator(code);
     }
 
-    public boolean preferCapitalization() {
-        return mWordComposer.isFirstCharCapitalized();
-    }
-
     // Notify that language or mode have been changed and toggleLanguage will update KeyboardID
-    // according to new language or mode.
+    // according to new language or mode. Called from SubtypeSwitcher.
     public void onRefreshKeyboard() {
         // When the device locale is changed in SetupWizard etc., this method may get called via
         // onConfigurationChanged before SoftInputWindow is shown.
@@ -2022,16 +2028,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     // TODO: Remove this method from {@link LatinIME} and move {@link FeedbackManager} to
-    // {@link KeyboardSwitcher}.
+    // {@link KeyboardSwitcher}. Called from KeyboardSwitcher
     public void hapticAndAudioFeedback(final int primaryCode) {
         mFeedbackManager.hapticAndAudioFeedback(primaryCode, mKeyboardSwitcher.getKeyboardView());
     }
 
+    // Callback called by PointerTracker through the KeyboardActionListener. This is called when a
+    // key is depressed; release matching call is onReleaseKey below.
     @Override
     public void onPressKey(int primaryCode) {
         mKeyboardSwitcher.onPressKey(primaryCode);
     }
 
+    // Callback by PointerTracker through the KeyboardActionListener. This is called when a key
+    // is released; press matching call is onPressKey above.
     @Override
     public void onReleaseKey(int primaryCode, boolean withSliding) {
         mKeyboardSwitcher.onReleaseKey(primaryCode, withSliding);
@@ -2076,6 +2086,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         launchSettingsClass(SettingsActivity.class);
     }
 
+    // Called from debug code only
     public void launchDebugSettings() {
         launchSettingsClass(DebugSettingsActivity.class);
     }
