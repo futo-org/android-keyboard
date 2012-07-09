@@ -174,7 +174,7 @@ public class Suggest {
                 : typedWord;
         LatinImeLogger.onAddSuggestedWord(typedWord, Dictionary.TYPE_USER_TYPED);
 
-        if (wordComposer.size() <= 1 && isCorrectionEnabled) {
+        if (wordComposer.size() <= 1) {
             // At first character typed, search only the bigrams
             if (!TextUtils.isEmpty(prevWordForBigram)) {
                 for (final String key : mDictionaries.keySet()) {
@@ -182,7 +182,7 @@ public class Suggest {
                     suggestionsSet.addAll(dictionary.getBigrams(wordComposer, prevWordForBigram));
                 }
             }
-        } else if (wordComposer.size() > 1) {
+        } else {
             final WordComposer wordComposerForLookup;
             if (trailingSingleQuotesCount > 0) {
                 wordComposerForLookup = new WordComposer(wordComposer);
@@ -216,6 +216,11 @@ public class Suggest {
                 mWhiteListDictionary.getWhitelistedWord(consideredWord);
 
         final boolean hasAutoCorrection;
+        // TODO: using isCorrectionEnabled here is not very good. It's probably useless, because
+        // any attempt to do auto-correction is already shielded with a test for this flag; at the
+        // same time, it feels wrong that the SuggestedWord object includes information about
+        // the current settings. It may also be useful to know, when the setting is off, whether
+        // the word *would* have been auto-corrected.
         if (!isCorrectionEnabled || !allowsToBeAutoCorrected || wordComposer.isMostlyCaps()
                 || wordComposer.isResumed() || !hasMainDictionary()) {
             // If we don't have a main dictionary, we never want to auto-correct. The reason for
