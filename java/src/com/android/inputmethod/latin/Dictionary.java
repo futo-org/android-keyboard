@@ -61,14 +61,8 @@ public abstract class Dictionary {
      */
     // TODO: pass more context than just the previous word, to enable better suggestions (n-gram
     // and more)
-    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final CharSequence prevWord, final ProximityInfo proximityInfo) {
-        if (composer.size() <= 1) {
-            return TextUtils.isEmpty(prevWord) ? null : getBigrams(composer, prevWord);
-        } else {
-            return getWords(composer, prevWord, proximityInfo);
-        }
-    }
+    abstract public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
+            final CharSequence prevWord, final ProximityInfo proximityInfo);
 
     /**
      * Searches for words in the dictionary that match the characters in the composer. Matched
@@ -78,6 +72,7 @@ public abstract class Dictionary {
      * @param proximityInfo the object for key proximity. May be ignored by some implementations.
      * @return the list of suggestions
      */
+    // TODO: remove this
     abstract protected ArrayList<SuggestedWordInfo> getWords(final WordComposer composer,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo);
 
@@ -87,6 +82,7 @@ public abstract class Dictionary {
      * @param previousWord the word before
      * @return the list of suggestions
      */
+    // TODO: remove this
     abstract protected ArrayList<SuggestedWordInfo> getBigrams(final WordComposer composer,
             final CharSequence previousWord);
 

@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -247,6 +248,26 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     @Override
+    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
+            final CharSequence prevWord, final ProximityInfo proximityInfo) {
+        if (reloadDictionaryIfRequired()) return null;
+        if (composer.size() <= 1) {
+            if (composer.size() >= BinaryDictionary.MAX_WORD_LENGTH) {
+                return null;
+            }
+            final ArrayList<SuggestedWordInfo> suggestions =
+                    getWordsInner(composer, prevWord, proximityInfo);
+            return suggestions;
+        } else {
+            if (TextUtils.isEmpty(prevWord)) return null;
+            final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
+            runBigramReverseLookUp(prevWord, suggestions);
+            return suggestions;
+        }
+    }
+
+    // TODO: remove this
+    @Override
     protected ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         if (reloadDictionaryIfRequired()) return null;
@@ -269,6 +290,7 @@ public class ExpandableDictionary extends Dictionary {
         }
     }
 
+    // TODO: remove this
     @Override
     protected ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
             final CharSequence previousWord) {

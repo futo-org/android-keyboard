@@ -16,6 +16,7 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.os.SystemClock;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
@@ -192,6 +193,23 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     @Override
+    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
+            final CharSequence prevWord, final ProximityInfo proximityInfo) {
+        asyncReloadDictionaryIfRequired();
+        if (mLocalDictionaryController.tryLock()) {
+            try {
+                if (mBinaryDictionary != null) {
+                    return mBinaryDictionary.getSuggestions(composer, prevWord, proximityInfo);
+                }
+            } finally {
+                mLocalDictionaryController.unlock();
+            }
+        }
+        return null;
+    }
+
+    // TODO: remove this
+    @Override
     protected ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         asyncReloadDictionaryIfRequired();
@@ -214,6 +232,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         return null;
     }
 
+    // TODO: remove this
     @Override
     protected ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
             final CharSequence previousWord) {

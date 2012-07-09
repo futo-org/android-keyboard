@@ -55,6 +55,26 @@ public class DictionaryCollection extends Dictionary {
     }
 
     @Override
+    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
+            final CharSequence prevWord, final ProximityInfo proximityInfo) {
+        final CopyOnWriteArrayList<Dictionary> dictionaries = mDictionaries;
+        if (dictionaries.isEmpty()) return null;
+        // To avoid creating unnecessary objects, we get the list out of the first
+        // dictionary and add the rest to it if not null, hence the get(0)
+        ArrayList<SuggestedWordInfo> suggestions = dictionaries.get(0).getSuggestions(composer,
+                prevWord, proximityInfo);
+        if (null == suggestions) suggestions = new ArrayList<SuggestedWordInfo>();
+        final int length = dictionaries.size();
+        for (int i = 0; i < length; ++ i) {
+            final ArrayList<SuggestedWordInfo> sugg = dictionaries.get(i).getSuggestions(composer,
+                    prevWord, proximityInfo);
+            if (null != sugg) suggestions.addAll(sugg);
+        }
+        return suggestions;
+    }
+
+    // TODO: remove this
+    @Override
     protected ArrayList<SuggestedWordInfo> getWords(final WordComposer composer,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         final CopyOnWriteArrayList<Dictionary> dictionaries = mDictionaries;
@@ -73,6 +93,7 @@ public class DictionaryCollection extends Dictionary {
         return suggestions;
     }
 
+    // TODO: remove this
     @Override
     protected ArrayList<SuggestedWordInfo> getBigrams(final WordComposer composer,
             final CharSequence previousWord) {
