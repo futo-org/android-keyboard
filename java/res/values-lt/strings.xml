@@ -20,14 +20,10 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name" msgid="7252517407088836577">"„Android“ klaviatūra"</string>
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"„Android“ klaviatūra (AOSP)"</string>
-    <string name="english_ime_settings" msgid="6661589557206947774">"„Android“ klaviatūros nustatymai"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Įvesties parinktys"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"Tyrinėti žurnalo komandas"</string>
-    <string name="spell_checker_service_name" msgid="7338064335159755926">"„Android“ rašybos tikrinimo programa"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"„Android“ rašybos tikrinimo programa (AOSP)"</string>
-    <string name="android_spell_checker_settings" msgid="5822324635435443689">"Rašybos tikrinimo nustatymai"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Kontaktų vardų paieška"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Rašybos tikrinimo progr. naudoja įrašus, esančius kontaktų sąraše"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibruoti, kai paspaudžiami klavišai"</string>

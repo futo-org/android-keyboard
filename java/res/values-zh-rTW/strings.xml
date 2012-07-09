@@ -20,14 +20,10 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name" msgid="7252517407088836577">"Android 鍵盤"</string>
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Android 鍵盤 (AOSP)"</string>
-    <string name="english_ime_settings" msgid="6661589557206947774">"Android 鍵盤設定"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"輸入選項"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"研究紀錄指令"</string>
-    <string name="spell_checker_service_name" msgid="7338064335159755926">"Android 拼字檢查"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Android 拼字檢查 (AOSP)"</string>
-    <string name="android_spell_checker_settings" msgid="5822324635435443689">"拼字檢查設定"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"查詢聯絡人姓名"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"拼字檢查程式使用您的聯絡人清單項目"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"按鍵時震動"</string>
@@ -61,7 +57,7 @@
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"更正範圍大"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"更正範圍極大"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"下一個字詞建議"</string>
-    <string name="bigram_prediction_summary" msgid="3253961591626441019">"根據先前字詞產生"</string>
+    <string name="bigram_prediction_summary" msgid="3253961591626441019">"根據上一個字詞產生"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>：已儲存"</string>
     <string name="label_go_key" msgid="1635148082137219148">"開始"</string>
     <string name="label_next_key" msgid="362972844525672568">"繼續"</string>

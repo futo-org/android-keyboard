@@ -20,14 +20,10 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name" msgid="7252517407088836577">"Android-sleutelbord"</string>
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Android-sleutelbord (AOSP)"</string>
-    <string name="english_ime_settings" msgid="6661589557206947774">"Android-sleutelbordinstellings"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Invoeropsies"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"Navorsing-loglêerbevele"</string>
-    <string name="spell_checker_service_name" msgid="7338064335159755926">"Android-speltoetser"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Android-speltoetser (AOSP)"</string>
-    <string name="android_spell_checker_settings" msgid="5822324635435443689">"Speltoetser se instellings"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Soek kontakname op"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Speltoetser gebruik inskrywings uit jou kontaklys"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibreer met sleuteldruk"</string>
@@ -60,7 +56,7 @@
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Matig"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Aggressief"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Baie aggressief"</string>
-    <string name="bigram_prediction" msgid="5809665643352206540">"Volgende woordvoorstelle"</string>
+    <string name="bigram_prediction" msgid="5809665643352206540">"Stel volgende woord voor"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Gebaseer op vorige woord"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Gestoor"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Gaan"</string>

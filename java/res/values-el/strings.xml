@@ -20,14 +20,10 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name" msgid="7252517407088836577">"Πληκτρολόγιο Android"</string>
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Πληκτρολόγιο Android (AOSP)"</string>
-    <string name="english_ime_settings" msgid="6661589557206947774">"Ρυθμίσεις πληκτρολογίου Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Επιλογές εισόδου"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"Έρευνα εντολών καταγραφής"</string>
-    <string name="spell_checker_service_name" msgid="7338064335159755926">"Ορθογραφικός έλεγχος Android"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Ορθογραφικός έλεγχος Android (AOSP)"</string>
-    <string name="android_spell_checker_settings" msgid="5822324635435443689">"Ρυθμίσεις ορθογραφικού ελέγχου"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Αναζήτηση ονομάτων επαφών"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Ο ορθογρ. έλεγχος χρησιμοπ. καταχωρίσεις από τη λίστα επαφών σας"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Δόνηση κατά το πάτημα πλήκτρων"</string>
