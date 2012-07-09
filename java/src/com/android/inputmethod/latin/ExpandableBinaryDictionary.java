@@ -192,7 +192,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     @Override
-    public ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
+    protected ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         asyncReloadDictionaryIfRequired();
         return getWordsInner(codes, prevWordForBigrams, proximityInfo);
@@ -215,7 +215,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     @Override
-    public ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
+    protected ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
             final CharSequence previousWord) {
         asyncReloadDictionaryIfRequired();
         return getBigramsInner(codes, previousWord);

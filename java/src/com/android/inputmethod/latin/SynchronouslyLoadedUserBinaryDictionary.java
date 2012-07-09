@@ -35,7 +35,7 @@ public class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDictionar
     }
 
     @Override
-    public synchronized ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
+    protected synchronized ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         syncReloadDictionaryIfRequired();
         return getWordsInner(codes, prevWordForBigrams, proximityInfo);

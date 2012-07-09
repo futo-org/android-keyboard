@@ -106,7 +106,7 @@ public class BinaryDictionary extends Dictionary {
     }
 
     @Override
-    public ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
+    protected ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
             final CharSequence previousWord) {
         if (mNativeDict == 0) return null;
 
@@ -145,7 +145,7 @@ public class BinaryDictionary extends Dictionary {
 
     // proximityInfo and/or prevWordForBigrams may not be null.
     @Override
-    public ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
+    protected ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         final int count = getSuggestions(codes, prevWordForBigrams, proximityInfo, mOutputChars,
                 mScores, mSpaceIndices);

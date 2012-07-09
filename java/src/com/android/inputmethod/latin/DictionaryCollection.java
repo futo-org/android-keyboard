@@ -55,7 +55,7 @@ public class DictionaryCollection extends Dictionary {
     }
 
     @Override
-    public ArrayList<SuggestedWordInfo> getWords(final WordComposer composer,
+    protected ArrayList<SuggestedWordInfo> getWords(final WordComposer composer,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         final CopyOnWriteArrayList<Dictionary> dictionaries = mDictionaries;
         if (dictionaries.isEmpty()) return null;
@@ -74,7 +74,7 @@ public class DictionaryCollection extends Dictionary {
     }
 
     @Override
-    public ArrayList<SuggestedWordInfo> getBigrams(final WordComposer composer,
+    protected ArrayList<SuggestedWordInfo> getBigrams(final WordComposer composer,
             final CharSequence previousWord) {
         final CopyOnWriteArrayList<Dictionary> dictionaries = mDictionaries;
         if (dictionaries.isEmpty()) return null;

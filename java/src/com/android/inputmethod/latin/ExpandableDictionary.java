@@ -247,7 +247,7 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     @Override
-    public ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
+    protected ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         if (reloadDictionaryIfRequired()) return null;
         if (codes.size() >= BinaryDictionary.MAX_WORD_LENGTH) {
@@ -270,7 +270,7 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     @Override
-    public ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
+    protected ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
             final CharSequence previousWord) {
         if (reloadDictionaryIfRequired()) return null;
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();

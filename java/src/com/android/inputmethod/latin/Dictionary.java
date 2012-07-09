@@ -78,7 +78,7 @@ public abstract class Dictionary {
      * @param proximityInfo the object for key proximity. May be ignored by some implementations.
      * @return the list of suggestions
      */
-    abstract public ArrayList<SuggestedWordInfo> getWords(final WordComposer composer,
+    abstract protected ArrayList<SuggestedWordInfo> getWords(final WordComposer composer,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo);
 
     /**
@@ -87,7 +87,7 @@ public abstract class Dictionary {
      * @param previousWord the word before
      * @return the list of suggestions
      */
-    public abstract ArrayList<SuggestedWordInfo> getBigrams(final WordComposer composer,
+    abstract protected ArrayList<SuggestedWordInfo> getBigrams(final WordComposer composer,
             final CharSequence previousWord);
 
     /**

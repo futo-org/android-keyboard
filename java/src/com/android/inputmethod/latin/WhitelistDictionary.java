@@ -92,7 +92,7 @@ public class WhitelistDictionary extends ExpandableDictionary {
     }
 
     @Override
-    public ArrayList<SuggestedWordInfo> getWords(final WordComposer composer,
+    protected ArrayList<SuggestedWordInfo> getWords(final WordComposer composer,
             final CharSequence prevWord, final ProximityInfo proximityInfo) {
         // Whitelist does not supply suggestions (actually it should not even implement the
         // Dictionary interface, as it responds to none of it, but it does for legacy reasons)
