@@ -61,7 +61,7 @@
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"तीव्र"</string>
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"बहुत तीव्र"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"अगले शब्द सुझाव"</string>
-    <string name="bigram_prediction_summary" msgid="3253961591626441019">"पिछले शब्दों के आधार पर"</string>
+    <string name="bigram_prediction_summary" msgid="3253961591626441019">"पिछले शब्द के आधार पर"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: सहेजा गया"</string>
     <string name="label_go_key" msgid="1635148082137219148">"जाएं"</string>
     <string name="label_next_key" msgid="362972844525672568">"अगला"</string>
