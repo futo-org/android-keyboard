@@ -177,9 +177,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     public static class UIHandler extends StaticInnerHandlerWrapper<LatinIME> {
         private static final int MSG_UPDATE_SHIFT_STATE = 1;
-        private static final int MSG_SET_BIGRAM_PREDICTIONS = 5;
         private static final int MSG_PENDING_IMS_CALLBACK = 6;
-        private static final int MSG_UPDATE_SUGGESTIONS = 7;
+        private static final int MSG_UPDATE_SUGGESTION_STRIP = 7;
 
         private int mDelayUpdateSuggestions;
         private int mDelayUpdateShiftState;
@@ -205,30 +204,25 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final LatinIME latinIme = getOuterInstance();
             final KeyboardSwitcher switcher = latinIme.mKeyboardSwitcher;
             switch (msg.what) {
-            case MSG_UPDATE_SUGGESTIONS:
-                latinIme.updateSuggestionsOrPredictions(false /* isPredictions */);
+            case MSG_UPDATE_SUGGESTION_STRIP:
+                latinIme.updateSuggestionsOrPredictions();
                 break;
             case MSG_UPDATE_SHIFT_STATE:
                 switcher.updateShiftState();
                 break;
-            case MSG_SET_BIGRAM_PREDICTIONS:
-                latinIme.updateSuggestionsOrPredictions(true /* isPredictions */);
-                break;
             }
         }
 
-        public void postUpdateSuggestions() {
-            cancelUpdateSuggestionStrip();
-            sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTIONS), mDelayUpdateSuggestions);
+        public void postUpdateSuggestionStrip() {
+            sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTION_STRIP), mDelayUpdateSuggestions);
         }
 
         public void cancelUpdateSuggestionStrip() {
-            removeMessages(MSG_UPDATE_SUGGESTIONS);
-            removeMessages(MSG_SET_BIGRAM_PREDICTIONS);
+            removeMessages(MSG_UPDATE_SUGGESTION_STRIP);
         }
 
         public boolean hasPendingUpdateSuggestions() {
-            return hasMessages(MSG_UPDATE_SUGGESTIONS);
+            return hasMessages(MSG_UPDATE_SUGGESTION_STRIP);
         }
 
         public void postUpdateShiftState() {
@@ -238,11 +232,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         public void cancelUpdateShiftState() {
             removeMessages(MSG_UPDATE_SHIFT_STATE);
-        }
-
-        public void postUpdateBigramPredictions() {
-            cancelUpdateSuggestionStrip();
-            sendMessageDelayed(obtainMessage(MSG_SET_BIGRAM_PREDICTIONS), mDelayUpdateSuggestions);
         }
 
         public void startDoubleSpacesTimer() {
@@ -689,8 +678,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSuggestionsView.clear();
         setSuggestionStripShownInternal(
                 isSuggestionsStripVisible(), /* needsInputViewShown */ false);
-        // Delay updating suggestions because keyboard input view may not be shown at this point.
-        mHandler.postUpdateSuggestions();
+
+        mHandler.cancelUpdateSuggestionStrip();
         mHandler.cancelDoubleSpacesTimer();
 
         inputView.setKeyPreviewPopupEnabled(mCurrentSettings.mKeyPreviewPopupOn,
@@ -1021,7 +1010,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, typedWord.toString(),
                     separatorCode, prevWord);
         }
-        updateSuggestionsOrPredictions(false /* isPredictions */);
+        updateSuggestionsOrPredictions();
     }
 
     public int getCurrentAutoCapsState() {
@@ -1394,15 +1383,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     mWordComposer.deleteLast();
                 }
                 mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
-                // If we have deleted the last remaining character of a word, then we are not
-                // isComposingWord() any more.
-                if (!mWordComposer.isComposingWord()) {
-                    // Not composing word any more, so we can show bigrams.
-                    mHandler.postUpdateBigramPredictions();
-                } else {
-                    // Still composing a word, so we still have letters to deduce a suggestion from.
-                    mHandler.postUpdateSuggestions();
-                }
+                mHandler.postUpdateSuggestionStrip();
             } else {
                 mConnection.deleteSurroundingText(1, 0);
                 if (ProductionFlag.IS_EXPERIMENTAL) {
@@ -1545,7 +1526,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         getCurrentAutoCapsState() != Constants.TextUtils.CAP_MODE_OFF);
             }
             mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
-            mHandler.postUpdateSuggestions();
         } else {
             final boolean swapWeakSpace = maybeStripSpace(primaryCode,
                     spaceState, KeyboardActionListener.SUGGESTION_STRIP_COORDINATE == x);
@@ -1556,11 +1536,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 swapSwapperAndSpace();
                 mSpaceState = SPACE_STATE_WEAK;
             }
-            // We may need to update predictions, if the "add to dictionary" hint was displayed
-            // for example.
+            // In case the "add to dictionary" hint was still displayed.
             if (null != mSuggestionsView) mSuggestionsView.dismissAddToDictionaryHint();
-            mHandler.postUpdateBigramPredictions();
         }
+        mHandler.postUpdateSuggestionStrip();
         Utils.Stats.onNonSeparator((char)primaryCode, x, y);
     }
 
@@ -1602,7 +1581,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
             mHandler.startDoubleSpacesTimer();
             if (!mConnection.isCursorTouchingWord(mCurrentSettings)) {
-                mHandler.postUpdateBigramPredictions();
+                mHandler.postUpdateSuggestionStrip();
             }
         } else {
             if (swapWeakSpace) {
@@ -1682,7 +1661,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    public void updateSuggestionsOrPredictions(final boolean isPredictions) {
+    public void updateSuggestionsOrPredictions() {
         mHandler.cancelUpdateSuggestionStrip();
 
         // Check if we have a suggestion engine attached.
@@ -1695,17 +1674,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
 
-        final CharSequence typedWord;
+        final String typedWord = mWordComposer.getTypedWord();
         final SuggestedWords suggestions;
-        if (isPredictions || !mWordComposer.isComposingWord()) {
-            if (!mCurrentSettings.mBigramPredictionEnabled) {
-                setPunctuationSuggestions();
-                return;
-            }
-            typedWord = "";
-            suggestions = updateBigramPredictions(typedWord);
+        if (!mWordComposer.isComposingWord() && !mCurrentSettings.mBigramPredictionEnabled) {
+            setPunctuationSuggestions();
+            return;
+        }
+
+        if (!mWordComposer.isComposingWord()) {
+            suggestions = updateBigramPredictions();
         } else {
-            typedWord = mWordComposer.getTypedWord();
             suggestions = updateSuggestions(typedWord);
         }
 
@@ -1718,11 +1696,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private SuggestedWords updateSuggestions(final CharSequence typedWord) {
         // TODO: May need a better way of retrieving previous word
-        final CharSequence prevWord = mConnection.getPreviousWord(mCurrentSettings.mWordSeparators);
+        final CharSequence prevWord =
+                mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators, 2);
         // getSuggestedWords handles gracefully a null value of prevWord
         final SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
-                mCurrentSettings.mCorrectionEnabled, false);
+                // !mWordComposer.isComposingWord() is known to be false
+                mCurrentSettings.mCorrectionEnabled, !mWordComposer.isComposingWord());
 
         // Basically, we update the suggestion strip only when suggestion count > 1.  However,
         // there is an exception: We update the suggestion strip whenever typed word's length
@@ -1774,8 +1754,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void commitCurrentAutoCorrection(final int separatorCodePoint) {
         // Complete any pending suggestions query first
         if (mHandler.hasPendingUpdateSuggestions()) {
-            mHandler.cancelUpdateSuggestionStrip();
-            updateSuggestionsOrPredictions(false /* isPredictions */);
+            updateSuggestionsOrPredictions();
         }
         final CharSequence autoCorrection = mWordComposer.getAutoCorrectionOrNull();
         if (autoCorrection != null) {
@@ -1886,8 +1865,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (showingAddToDictionaryHint && mIsUserDictionaryAvailable) {
             mSuggestionsView.showAddToDictionaryHint(suggestion, mCurrentSettings.mHintToSaveText);
         } else {
-            // If we're not showing the "Touch again to save", then show predictions.
-            mHandler.postUpdateBigramPredictions();
+            // If we're not showing the "Touch again to save", then update the suggestion strip.
+            mHandler.postUpdateSuggestionStrip();
         }
     }
 
@@ -1912,11 +1891,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 separatorCode, prevWord);
     }
 
-    private SuggestedWords updateBigramPredictions(final CharSequence typedWord) {
-        final CharSequence prevWord = mConnection.getThisWord(mCurrentSettings.mWordSeparators);
+    private SuggestedWords updateBigramPredictions() {
+        final CharSequence prevWord =
+                mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators, 1);
         return mSuggest.getSuggestedWords(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
-                mCurrentSettings.mCorrectionEnabled, true);
+                // !mWordComposer.isComposingWord() is known to be true
+                mCurrentSettings.mCorrectionEnabled, !mWordComposer.isComposingWord());
     }
 
     public void setPunctuationSuggestions() {
@@ -1940,7 +1921,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final UserHistoryDictionary userHistoryDictionary = mUserHistoryDictionary;
         if (userHistoryDictionary != null) {
             final CharSequence prevWord
-                    = mConnection.getPreviousWord(mCurrentSettings.mWordSeparators);
+                    = mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators, 2);
             final String secondWord;
             if (mWordComposer.isAutoCapitalized() && !mWordComposer.isMostlyCaps()) {
                 secondWord = suggestion.toString().toLowerCase(
@@ -1979,7 +1960,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             ResearchLogger.latinIME_deleteSurroundingText(length);
         }
         mConnection.setComposingText(word, 1);
-        mHandler.postUpdateSuggestions();
+        mHandler.postUpdateSuggestionStrip();
     }
 
     private void revertCommit() {
@@ -2024,7 +2005,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // separator.
         mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
         // We have a separator between the word and the cursor: we should show predictions.
-        mHandler.postUpdateBigramPredictions();
+        mHandler.postUpdateSuggestionStrip();
     }
 
     public boolean isWordSeparator(int code) {
@@ -2048,12 +2029,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         loadSettings();
         // Since we just changed languages, we should re-evaluate suggestions with whatever word
         // we are currently composing. If we are not composing anything, we may want to display
-        // predictions or punctuation signs (which is done by updateBigramPredictions anyway).
-        if (mWordComposer.isComposingWord()) {
-            mHandler.postUpdateSuggestions();
-        } else {
-            mHandler.postUpdateBigramPredictions();
-        }
+        // predictions or punctuation signs (which is done by the updateSuggestionStrip anyway).
+        mHandler.postUpdateSuggestionStrip();
     }
 
     // TODO: Remove this method from {@link LatinIME} and move {@link FeedbackManager} to

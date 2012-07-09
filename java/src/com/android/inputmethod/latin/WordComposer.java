@@ -34,7 +34,7 @@ public class WordComposer {
 
     private int[] mPrimaryKeyCodes;
     private final InputPointers mInputPointers = new InputPointers();
-    private StringBuilder mTypedWord;
+    private final StringBuilder mTypedWord;
     private CharSequence mAutoCorrection;
     private boolean mIsResumed;
 
@@ -59,10 +59,6 @@ public class WordComposer {
     }
 
     public WordComposer(WordComposer source) {
-        init(source);
-    }
-
-    public void init(WordComposer source) {
         mPrimaryKeyCodes = Arrays.copyOf(source.mPrimaryKeyCodes, source.mPrimaryKeyCodes.length);
         mTypedWord = new StringBuilder(source.mTypedWord);
         mInputPointers.copy(source.mInputPointers);

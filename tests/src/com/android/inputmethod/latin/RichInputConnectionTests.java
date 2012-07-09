@@ -102,31 +102,26 @@ public class RichInputConnectionTests extends AndroidTestCase {
      */
     public void testGetPreviousWord() {
         // If one of the following cases breaks, the bigram suggestions won't work.
-        assertEquals(RichInputConnection.getPreviousWord("abc def", sSeparators), "abc");
-        assertNull(RichInputConnection.getPreviousWord("abc", sSeparators));
-        assertNull(RichInputConnection.getPreviousWord("abc. def", sSeparators));
+        assertEquals(RichInputConnection.getNthPreviousWord("abc def", sSeparators, 2), "abc");
+        assertNull(RichInputConnection.getNthPreviousWord("abc", sSeparators, 2));
+        assertNull(RichInputConnection.getNthPreviousWord("abc. def", sSeparators, 2));
 
         // The following tests reflect the current behavior of the function
-        // RichInputConnection#getPreviousWord.
+        // RichInputConnection#getNthPreviousWord.
         // TODO: However at this time, the code does never go
         // into such a path, so it should be safe to change the behavior of
         // this function if needed - especially since it does not seem very
         // logical. These tests are just there to catch any unintentional
         // changes in the behavior of the RichInputConnection#getPreviousWord method.
-        assertEquals(RichInputConnection.getPreviousWord("abc def ", sSeparators), "abc");
-        assertEquals(RichInputConnection.getPreviousWord("abc def.", sSeparators), "abc");
-        assertEquals(RichInputConnection.getPreviousWord("abc def .", sSeparators), "def");
-        assertNull(RichInputConnection.getPreviousWord("abc ", sSeparators));
-    }
+        assertEquals(RichInputConnection.getNthPreviousWord("abc def ", sSeparators, 2), "abc");
+        assertEquals(RichInputConnection.getNthPreviousWord("abc def.", sSeparators, 2), "abc");
+        assertEquals(RichInputConnection.getNthPreviousWord("abc def .", sSeparators, 2), "def");
+        assertNull(RichInputConnection.getNthPreviousWord("abc ", sSeparators, 2));
 
-    /**
-     * Test for getting the word before the cursor (for bigram)
-     */
-    public void testGetThisWord() {
-        assertEquals(RichInputConnection.getThisWord("abc def", sSeparators), "def");
-        assertEquals(RichInputConnection.getThisWord("abc def ", sSeparators), "def");
-        assertNull(RichInputConnection.getThisWord("abc def.", sSeparators));
-        assertNull(RichInputConnection.getThisWord("abc def .", sSeparators));
+        assertEquals(RichInputConnection.getNthPreviousWord("abc def", sSeparators, 1), "def");
+        assertEquals(RichInputConnection.getNthPreviousWord("abc def ", sSeparators, 1), "def");
+        assertNull(RichInputConnection.getNthPreviousWord("abc def.", sSeparators, 1));
+        assertNull(RichInputConnection.getNthPreviousWord("abc def .", sSeparators, 1));
     }
 
     /**

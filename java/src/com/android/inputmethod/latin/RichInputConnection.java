@@ -139,12 +139,11 @@ public class RichInputConnection {
         if (null != mIC) mIC.commitCompletion(completionInfo);
     }
 
-    public CharSequence getPreviousWord(final String sentenceSeperators) {
+    public CharSequence getNthPreviousWord(final String sentenceSeperators, final int n) {
         mIC = mParent.getCurrentInputConnection();
-        //TODO: Should fix this. This could be slow!
         if (null == mIC) return null;
-        CharSequence prev = mIC.getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
-        return getPreviousWord(prev, sentenceSeperators);
+        final CharSequence prev = mIC.getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
+        return getNthPreviousWord(prev, sentenceSeperators, n);
     }
 
     /**
@@ -177,56 +176,35 @@ public class RichInputConnection {
         return sep.indexOf(code) != -1;
     }
 
-    // Get the word before the whitespace preceding the non-whitespace preceding the cursor.
-    // Also, it won't return words that end in a separator.
+    // Get the nth word before cursor. n = 1 retrieves the word immediately before the cursor,
+    // n = 2 retrieves the word before that, and so on. This splits on whitespace only.
+    // Also, it won't return words that end in a separator (if the nth word before the cursor
+    // ends in a separator, it returns null).
     // Example :
-    // "abc def|" -> abc
-    // "abc def |" -> abc
-    // "abc def. |" -> abc
-    // "abc def . |" -> def
-    // "abc|" -> null
-    // "abc |" -> null
-    // "abc. def|" -> null
-    public static CharSequence getPreviousWord(CharSequence prev, String sentenceSeperators) {
+    // (n = 1) "abc def|" -> def
+    // (n = 1) "abc def |" -> def
+    // (n = 1) "abc def. |" -> null
+    // (n = 1) "abc def . |" -> null
+    // (n = 2) "abc def|" -> abc
+    // (n = 2) "abc def |" -> abc
+    // (n = 2) "abc def. |" -> abc
+    // (n = 2) "abc def . |" -> def
+    // (n = 2) "abc|" -> null
+    // (n = 2) "abc |" -> null
+    // (n = 2) "abc. def|" -> null
+    public static CharSequence getNthPreviousWord(final CharSequence prev,
+            final String sentenceSeperators, final int n) {
         if (prev == null) return null;
         String[] w = spaceRegex.split(prev);
 
-        // If we can't find two words, or we found an empty word, return null.
-        if (w.length < 2 || w[w.length - 2].length() <= 0) return null;
+        // If we can't find n words, or we found an empty word, return null.
+        if (w.length < n || w[w.length - n].length() <= 0) return null;
 
         // If ends in a separator, return null
-        char lastChar = w[w.length - 2].charAt(w[w.length - 2].length() - 1);
+        char lastChar = w[w.length - n].charAt(w[w.length - n].length() - 1);
         if (sentenceSeperators.contains(String.valueOf(lastChar))) return null;
 
-        return w[w.length - 2];
-    }
-
-    public CharSequence getThisWord(String sentenceSeperators) {
-        mIC = mParent.getCurrentInputConnection();
-        if (null == mIC) return null;
-        final CharSequence prev = mIC.getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
-        return getThisWord(prev, sentenceSeperators);
-    }
-
-    // Get the word immediately before the cursor, even if there is whitespace between it and
-    // the cursor - but not if there is punctuation.
-    // Example :
-    // "abc def|" -> def
-    // "abc def |" -> def
-    // "abc def. |" -> null
-    // "abc def . |" -> null
-    public static CharSequence getThisWord(CharSequence prev, String sentenceSeperators) {
-        if (prev == null) return null;
-        String[] w = spaceRegex.split(prev);
-
-        // No word : return null
-        if (w.length < 1 || w[w.length - 1].length() <= 0) return null;
-
-        // If ends in a separator, return null
-        char lastChar = w[w.length - 1].charAt(w[w.length - 1].length() - 1);
-        if (sentenceSeperators.contains(String.valueOf(lastChar))) return null;
-
-        return w[w.length - 1];
+        return w[w.length - n];
     }
 
     /**
