@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import android.text.TextUtils;
+
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
@@ -47,6 +49,25 @@ public abstract class Dictionary {
 
     public Dictionary(final String dictType) {
         mDictType = dictType;
+    }
+
+    /**
+     * Searches for suggestions for a given context. For the moment the context is only the
+     * previous word.
+     * @param composer the key sequence to match with coordinate info, as a WordComposer
+     * @param prevWord the previous word, or null if none
+     * @param proximityInfo the object for key proximity. May be ignored by some implementations.
+     * @return the list of suggestions (possibly null if none)
+     */
+    // TODO: pass more context than just the previous word, to enable better suggestions (n-gram
+    // and more)
+    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
+            final CharSequence prevWord, final ProximityInfo proximityInfo) {
+        if (composer.size() <= 1) {
+            return TextUtils.isEmpty(prevWord) ? null : getBigrams(composer, prevWord);
+        } else {
+            return getWords(composer, prevWord, proximityInfo);
+        }
     }
 
     /**

@@ -240,8 +240,9 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                 if (null == dictInfo) {
                     return AndroidSpellCheckerService.getNotInDictEmptySuggestions();
                 }
-                final ArrayList<SuggestedWordInfo> suggestions = dictInfo.mDictionary.getWords(
-                        composer, prevWord, dictInfo.mProximityInfo);
+                final ArrayList<SuggestedWordInfo> suggestions =
+                        dictInfo.mDictionary.getSuggestions(composer, prevWord,
+                                dictInfo.mProximityInfo);
                 for (final SuggestedWordInfo suggestion : suggestions) {
                     final String suggestionStr = suggestion.mWord.toString();
                     suggestionsGatherer.addWord(suggestionStr.toCharArray(), null, 0,

@@ -188,15 +188,15 @@ public class Suggest {
             if (!TextUtils.isEmpty(prevWordForBigram)) {
                 for (final String key : mDictionaries.keySet()) {
                     final Dictionary dictionary = mDictionaries.get(key);
-                    suggestionsSet.addAll(dictionary.getBigrams(wordComposerForLookup,
-                            prevWordForBigram));
+                    suggestionsSet.addAll(dictionary.getSuggestions(wordComposerForLookup,
+                            prevWordForBigram, proximityInfo));
                 }
             }
         } else {
             // At second character typed, search the unigrams (scores being affected by bigrams)
             for (final String key : mDictionaries.keySet()) {
                 final Dictionary dictionary = mDictionaries.get(key);
-                suggestionsSet.addAll(dictionary.getWords(
+                suggestionsSet.addAll(dictionary.getSuggestions(
                         wordComposerForLookup, prevWordForBigram, proximityInfo));
             }
         }
