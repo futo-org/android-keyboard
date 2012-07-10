@@ -296,6 +296,7 @@ public class WordComposer {
             lastComposedWord.deactivate();
         }
         mTypedWord.setLength(0);
+        mTrailingSingleQuotesCount = 0;
         refreshSize();
         mAutoCorrection = null;
         mIsResumed = false;
