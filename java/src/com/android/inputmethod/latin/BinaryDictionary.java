@@ -114,31 +114,16 @@ public class BinaryDictionary extends Dictionary {
         // TODO: toLowerCase in the native code
         final int[] prevWordCodePointArray = (null == prevWord)
                 ? null : StringUtils.toCodePointArray(prevWord.toString());
+        final int count;
         if (composer.size() <= 1) {
-            return TextUtils.isEmpty(prevWord) ? null : getBigramsInternal(composer,
+            count = TextUtils.isEmpty(prevWord) ? -1 : getBigramsInternal(composer,
                     prevWordCodePointArray);
         } else {
-            return getWordsInternal(composer, prevWordCodePointArray, proximityInfo);
+            count = getWordsInternal(composer, prevWordCodePointArray, proximityInfo);
         }
-    }
-
-    // TODO: move to native code
-    private ArrayList<SuggestedWordInfo> getBigramsInternal(final WordComposer codes,
-            final int[] previousWord) {
-        int codesSize = codes.size();
-        if (codesSize > 0) {
-            mInputCodes[0] = codes.getCodeAt(0);
-        }
-
-        int count = getBigramsNative(mNativeDict, previousWord, previousWord.length, mInputCodes,
-                codesSize, mOutputChars, mOutputScores, MAX_WORD_LENGTH, MAX_BIGRAMS);
-        if (count > MAX_BIGRAMS) {
-            count = MAX_BIGRAMS;
-        }
-
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
         for (int j = 0; j < count; ++j) {
-            if (codesSize > 0 && mOutputScores[j] < 1) break;
+            if (composer.size() > 0 && mOutputScores[j] < 1) break;
             final int start = j * MAX_WORD_LENGTH;
             int len = 0;
             while (len <  MAX_WORD_LENGTH && mOutputChars[start + len] != 0) {
@@ -154,8 +139,24 @@ public class BinaryDictionary extends Dictionary {
     }
 
     // TODO: move to native code
+    private int getBigramsInternal(final WordComposer codes,
+            final int[] previousWord) {
+        int codesSize = codes.size();
+        if (codesSize > 0) {
+            mInputCodes[0] = codes.getCodeAt(0);
+        }
+
+        int count = getBigramsNative(mNativeDict, previousWord, previousWord.length, mInputCodes,
+                codesSize, mOutputChars, mOutputScores, MAX_WORD_LENGTH, MAX_BIGRAMS);
+        if (count > MAX_BIGRAMS) {
+            count = MAX_BIGRAMS;
+        }
+        return count;
+    }
+
+    // TODO: move to native code
     // proximityInfo and/or prevWordForBigrams may not be null.
-    private ArrayList<SuggestedWordInfo> getWordsInternal(final WordComposer codes,
+    private int getWordsInternal(final WordComposer codes,
             final int[] prevWord, final ProximityInfo proximityInfo) {
         final InputPointers ips = codes.getInputPointers();
         final boolean isGesture = codes.isBatchMode();
@@ -165,33 +166,16 @@ public class BinaryDictionary extends Dictionary {
         } else {
             codesSize = codes.size();
             // Won't deal with really long words.
-            if (codesSize > MAX_WORD_LENGTH - 1) return null;
+            if (codesSize > MAX_WORD_LENGTH - 1) return -1;
             for (int i = 0; i < codesSize; i++) {
                 mInputCodes[i] = codes.getCodeAt(i);
             }
         }
 
-        final int count = getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
+        return getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
             ips.getXCoordinates(), ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
             mInputCodes, codesSize, 0 /* unused */, isGesture, prevWord,
             mUseFullEditDistance, mOutputChars, mOutputScores, mSpaceIndices);
-
-        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
-        for (int j = 0; j < count; ++j) {
-            if (mOutputScores[j] < 1) break;
-            final int start = j * MAX_WORD_LENGTH;
-            int len = 0;
-            while (len < MAX_WORD_LENGTH && mOutputChars[start + len] != 0) {
-                ++len;
-            }
-            if (len > 0) {
-                // TODO: actually get the kind from native code
-                suggestions.add(new SuggestedWordInfo(
-                        new String(mOutputChars, start, len),
-                        mOutputScores[j], SuggestedWordInfo.KIND_CORRECTION, mDictType));
-            }
-        }
-        return suggestions;
     }
 
     /* package for test */ boolean isValidDictionary() {
