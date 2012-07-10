@@ -116,7 +116,8 @@ public class BinaryDictionary extends Dictionary {
                 ? null : StringUtils.toCodePointArray(prevWord.toString());
         final int composerSize = composer.size();
 
-        if (composerSize <= 1 || !composer.isBatchMode()) {
+        final boolean isGesture = composer.isBatchMode();
+        if (composerSize <= 1 || !isGesture) {
             if (composerSize > MAX_WORD_LENGTH - 1) return null;
             for (int i = 0; i < composerSize; i++) {
                 mInputCodes[i] = composer.getCodeAt(i);
@@ -124,7 +125,7 @@ public class BinaryDictionary extends Dictionary {
         }
 
         final int count;
-        if (!composer.isBatchMode() && composer.size() <= 1) {
+        if (!isGesture && composerSize <= 1) {
             if (TextUtils.isEmpty(prevWord)) return null;
             int tmpCount = getBigramsNative(mNativeDict, prevWordCodePointArray,
                     prevWordCodePointArray.length, mInputCodes, composerSize,
@@ -132,23 +133,17 @@ public class BinaryDictionary extends Dictionary {
             count = Math.min(tmpCount, MAX_BIGRAMS);
         } else {
             final InputPointers ips = composer.getInputPointers();
-            final boolean isGesture = composer.isBatchMode();
-            final int codesSize;
-            if (isGesture) {
-                codesSize = ips.getPointerSize();
-            } else {
-                codesSize = composer.size();
-            }
-
+            final int codesSize = isGesture ? ips.getPointerSize() : composerSize;
             // proximityInfo and/or prevWordForBigrams may not be null.
             count = getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
                 ips.getXCoordinates(), ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
                 mInputCodes, codesSize, 0 /* unused */, isGesture, prevWordCodePointArray,
                 mUseFullEditDistance, mOutputChars, mOutputScores, mSpaceIndices);
         }
+
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
         for (int j = 0; j < count; ++j) {
-            if (composer.size() > 0 && mOutputScores[j] < 1) break;
+            if (composerSize > 0 && mOutputScores[j] < 1) break;
             final int start = j * MAX_WORD_LENGTH;
             int len = 0;
             while (len <  MAX_WORD_LENGTH && mOutputChars[start + len] != 0) {
