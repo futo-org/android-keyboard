@@ -156,10 +156,8 @@ public class Suggest {
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
     public SuggestedWords getSuggestedWords(
             final WordComposer wordComposer, CharSequence prevWordForBigram,
-            final ProximityInfo proximityInfo, final boolean isCorrectionEnabled,
-            // TODO: remove isPrediction parameter. It effectively means the same thing
-            // as wordComposer.size() <= 1
-            final boolean isPrediction) {
+            final ProximityInfo proximityInfo, final boolean isCorrectionEnabled) {
+        final boolean isPrediction = !wordComposer.isComposingWord();
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         final boolean isFirstCharCapitalized =
                 !isPrediction && wordComposer.isFirstCharCapitalized();
