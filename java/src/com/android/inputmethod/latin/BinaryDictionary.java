@@ -131,7 +131,20 @@ public class BinaryDictionary extends Dictionary {
                     mOutputChars, mOutputScores, MAX_WORD_LENGTH, MAX_BIGRAMS);
             count = Math.min(tmpCount, MAX_BIGRAMS);
         } else {
-            count = getWordsInternal(composer, prevWordCodePointArray, proximityInfo);
+            final InputPointers ips = composer.getInputPointers();
+            final boolean isGesture = composer.isBatchMode();
+            final int codesSize;
+            if (isGesture) {
+                codesSize = ips.getPointerSize();
+            } else {
+                codesSize = composer.size();
+            }
+
+            // proximityInfo and/or prevWordForBigrams may not be null.
+            count = getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
+                ips.getXCoordinates(), ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
+                mInputCodes, codesSize, 0 /* unused */, isGesture, prevWordCodePointArray,
+                mUseFullEditDistance, mOutputChars, mOutputScores, mSpaceIndices);
         }
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
         for (int j = 0; j < count; ++j) {
@@ -148,25 +161,6 @@ public class BinaryDictionary extends Dictionary {
             }
         }
         return suggestions;
-    }
-
-    // TODO: move to native code
-    // proximityInfo and/or prevWordForBigrams may not be null.
-    private int getWordsInternal(final WordComposer codes,
-            final int[] prevWord, final ProximityInfo proximityInfo) {
-        final InputPointers ips = codes.getInputPointers();
-        final boolean isGesture = codes.isBatchMode();
-        final int codesSize;
-        if (isGesture) {
-            codesSize = ips.getPointerSize();
-        } else {
-            codesSize = codes.size();
-        }
-
-        return getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
-            ips.getXCoordinates(), ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
-            mInputCodes, codesSize, 0 /* unused */, isGesture, prevWord,
-            mUseFullEditDistance, mOutputChars, mOutputScores, mSpaceIndices);
     }
 
     /* package for test */ boolean isValidDictionary() {
