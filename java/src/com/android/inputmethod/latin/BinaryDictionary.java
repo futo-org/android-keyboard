@@ -111,24 +111,26 @@ public class BinaryDictionary extends Dictionary {
         Arrays.fill(mInputCodes, WordComposer.NOT_A_CODE);
         Arrays.fill(mOutputChars, (char) 0);
         Arrays.fill(mOutputScores, 0);
+        // TODO: toLowerCase in the native code
+        final int[] prevWordCodePointArray = (null == prevWord)
+                ? null : StringUtils.toCodePointArray(prevWord.toString());
         if (composer.size() <= 1) {
-            return TextUtils.isEmpty(prevWord) ? null : getBigramsInternal(composer, prevWord);
+            return TextUtils.isEmpty(prevWord) ? null : getBigramsInternal(composer,
+                    prevWordCodePointArray);
         } else {
-            return getWordsInternal(composer, prevWord, proximityInfo);
+            return getWordsInternal(composer, prevWordCodePointArray, proximityInfo);
         }
     }
 
     // TODO: move to native code
     private ArrayList<SuggestedWordInfo> getBigramsInternal(final WordComposer codes,
-            final CharSequence previousWord) {
-        int[] codePoints = StringUtils.toCodePointArray(previousWord.toString());
-
+            final int[] previousWord) {
         int codesSize = codes.size();
         if (codesSize > 0) {
             mInputCodes[0] = codes.getCodeAt(0);
         }
 
-        int count = getBigramsNative(mNativeDict, codePoints, codePoints.length, mInputCodes,
+        int count = getBigramsNative(mNativeDict, previousWord, previousWord.length, mInputCodes,
                 codesSize, mOutputChars, mOutputScores, MAX_WORD_LENGTH, MAX_BIGRAMS);
         if (count > MAX_BIGRAMS) {
             count = MAX_BIGRAMS;
@@ -154,9 +156,9 @@ public class BinaryDictionary extends Dictionary {
     // TODO: move to native code
     // proximityInfo and/or prevWordForBigrams may not be null.
     private ArrayList<SuggestedWordInfo> getWordsInternal(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
-        final int count = getWordsInternalInternal(codes, prevWordForBigrams, proximityInfo,
-                mOutputChars, mOutputScores, mSpaceIndices);
+            final int[] prevWord, final ProximityInfo proximityInfo) {
+        final int count = getWordsInternalInternal(codes, prevWord, proximityInfo, mOutputChars,
+                mOutputScores, mSpaceIndices);
 
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
         for (int j = 0; j < count; ++j) {
@@ -183,7 +185,7 @@ public class BinaryDictionary extends Dictionary {
     // proximityInfo may not be null.
     // TODO: remove this method by inlining it into getWordsInternal
     private int getWordsInternalInternal(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo,
+            final int[] prevWord, final ProximityInfo proximityInfo,
             char[] outputChars, int[] scores, int[] spaceIndices) {
         final InputPointers ips = codes.getInputPointers();
         final boolean isGesture = codes.isBatchMode();
@@ -199,13 +201,9 @@ public class BinaryDictionary extends Dictionary {
             }
         }
 
-        // TODO: toLowerCase in the native code
-        final int[] prevWordCodePointArray = (null == prevWordForBigrams)
-                ? null : StringUtils.toCodePointArray(prevWordForBigrams.toString());
-
         return getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
             ips.getXCoordinates(), ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
-            mInputCodes, codesSize, 0 /* unused */, isGesture, prevWordCodePointArray,
+            mInputCodes, codesSize, 0 /* unused */, isGesture, prevWord,
             mUseFullEditDistance, outputChars, scores, spaceIndices);
     }
 
