@@ -16,9 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import java.util.Arrays;
-
-// TODO: Add unit test
 public class InputPointers {
     private final ScalableIntArray mXCoordinates = new ScalableIntArray();
     private final ScalableIntArray mYCoordinates = new ScalableIntArray();
@@ -118,9 +115,10 @@ public class InputPointers {
         }
 
         public void add(int val) {
-            ensureCapacity(mLength);
+            final int nextLength = mLength + 1;
+            ensureCapacity(nextLength);
             mArray[mLength] = val;
-            ++mLength;
+            mLength = nextLength;
         }
 
         public void ensureCapacity(int minimumCapacity) {
@@ -132,7 +130,7 @@ public class InputPointers {
 
         private void grow(int newCapacity) {
             final int[] newArray = new int[newCapacity];
-            System.arraycopy(mArray, 0, newArray, 0, mLength);
+            System.arraycopy(mArray, 0, newArray, 0, mArray.length);
             mArray = newArray;
         }
 
@@ -150,7 +148,8 @@ public class InputPointers {
         }
 
         public void copy(ScalableIntArray ip) {
-            mArray = Arrays.copyOf(ip.mArray, ip.mArray.length);
+            ensureCapacity(ip.mLength);
+            System.arraycopy(ip.mArray, 0, mArray, 0, ip.mLength);
             mLength = ip.mLength;
         }
 

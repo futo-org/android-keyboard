@@ -20,6 +20,10 @@
   boolean equalsIgnoreCase(...);
 }
 
+-keep class com.android.inputmethod.latin.InputPointers {
+  *;
+}
+
 -keep class com.android.inputmethod.latin.spellcheck.SpellCheckerSettingsFragment {
   *;
 }
