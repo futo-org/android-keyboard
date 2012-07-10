@@ -188,32 +188,31 @@ public class BinaryDictionary extends Dictionary {
             char[] outputChars, int[] scores, int[] spaceIndices) {
         if (!isValidDictionary()) return -1;
 
-        final int codesSize = codes.size();
-        // Won't deal with really long words.
-        if (codesSize > MAX_WORD_LENGTH - 1) return -1;
-
         Arrays.fill(mInputCodes, WordComposer.NOT_A_CODE);
-        for (int i = 0; i < codesSize; i++) {
-            mInputCodes[i] = codes.getCodeAt(i);
-        }
         Arrays.fill(outputChars, (char) 0);
         Arrays.fill(scores, 0);
+
+        final InputPointers ips = codes.getInputPointers();
+        final boolean isGesture = codes.isBatchMode();
+        final int codesSize;
+        if (isGesture) {
+            codesSize = ips.getPointerSize();
+        } else {
+            codesSize = codes.size();
+            // Won't deal with really long words.
+            if (codesSize > MAX_WORD_LENGTH - 1) return -1;
+            for (int i = 0; i < codesSize; i++) {
+                mInputCodes[i] = codes.getCodeAt(i);
+            }
+        }
 
         // TODO: toLowerCase in the native code
         final int[] prevWordCodePointArray = (null == prevWordForBigrams)
                 ? null : StringUtils.toCodePointArray(prevWordForBigrams.toString());
 
-        int[] emptyArray = new int[codesSize];
-        Arrays.fill(emptyArray, 0);
-
-        //final int commitPoint = codes.getCommitPoint();
-        //codes.clearCommitPoint();
-
-        final InputPointers ips = codes.getInputPointers();
-
         return getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
             ips.getXCoordinates(), ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
-            mInputCodes, codesSize, 0 /* unused */, false, prevWordCodePointArray,
+            mInputCodes, codesSize, 0 /* unused */, isGesture, prevWordCodePointArray,
             mUseFullEditDistance, outputChars, scores, spaceIndices);
     }
 

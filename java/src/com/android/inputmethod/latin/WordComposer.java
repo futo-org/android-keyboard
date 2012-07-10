@@ -37,6 +37,7 @@ public class WordComposer {
     private final StringBuilder mTypedWord;
     private CharSequence mAutoCorrection;
     private boolean mIsResumed;
+    private boolean mIsBatchMode;
 
     // Cache these values for performance
     private int mCapsCount;
@@ -55,6 +56,7 @@ public class WordComposer {
         mAutoCorrection = null;
         mTrailingSingleQuotesCount = 0;
         mIsResumed = false;
+        mIsBatchMode = false;
         refreshSize();
     }
 
@@ -67,6 +69,7 @@ public class WordComposer {
         mAutoCapitalized = source.mAutoCapitalized;
         mTrailingSingleQuotesCount = source.mTrailingSingleQuotesCount;
         mIsResumed = source.mIsResumed;
+        mIsBatchMode = source.mIsBatchMode;
         refreshSize();
     }
 
@@ -80,6 +83,7 @@ public class WordComposer {
         mIsFirstCharCapitalized = false;
         mTrailingSingleQuotesCount = 0;
         mIsResumed = false;
+        mIsBatchMode = false;
         refreshSize();
     }
 
@@ -138,6 +142,12 @@ public class WordComposer {
             mTrailingSingleQuotesCount = 0;
         }
         mAutoCorrection = null;
+    }
+
+    // TODO: We may want to have appendBatchInputPointers() as well.
+    public void setBatchInputPointers(InputPointers batchPointers) {
+        mInputPointers.copy(batchPointers);
+        mIsBatchMode = true;
     }
 
     /**
@@ -311,5 +321,9 @@ public class WordComposer {
         refreshSize();
         mAutoCorrection = null; // This will be filled by the next call to updateSuggestion.
         mIsResumed = true;
+    }
+
+    public boolean isBatchMode() {
+        return mIsBatchMode;
     }
 }

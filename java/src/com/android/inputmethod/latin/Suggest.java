@@ -153,12 +153,23 @@ public class Suggest {
         mAutoCorrectionThreshold = threshold;
     }
 
-    // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
     public SuggestedWords getSuggestedWords(
             final WordComposer wordComposer, CharSequence prevWordForBigram,
             final ProximityInfo proximityInfo, final boolean isCorrectionEnabled) {
-        final boolean isPrediction = !wordComposer.isComposingWord();
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
+        if (wordComposer.isBatchMode()) {
+            return getSuggestedWordsForBatchInput(wordComposer, prevWordForBigram, proximityInfo);
+        } else {
+            return getSuggestedWordsForTypingInput(wordComposer, prevWordForBigram, proximityInfo,
+                    isCorrectionEnabled);
+        }
+    }
+
+    // Retrieves suggestions for the typing input.
+    private SuggestedWords getSuggestedWordsForTypingInput(
+            final WordComposer wordComposer, CharSequence prevWordForBigram,
+            final ProximityInfo proximityInfo, final boolean isCorrectionEnabled) {
+        final boolean isPrediction = !wordComposer.isComposingWord();
         final boolean isFirstCharCapitalized =
                 !isPrediction && wordComposer.isFirstCharCapitalized();
         final boolean isAllUpperCase = !isPrediction && wordComposer.isAllUpperCase();
@@ -283,6 +294,37 @@ public class Suggest {
                 false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
                 isPrediction);
+    }
+
+    // Retrieves suggestions for the batch input.
+    private SuggestedWords getSuggestedWordsForBatchInput(
+            final WordComposer wordComposer, CharSequence prevWordForBigram,
+            final ProximityInfo proximityInfo) {
+        final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
+                MAX_SUGGESTIONS);
+
+        // At second character typed, search the unigrams (scores being affected by bigrams)
+        for (final String key : mDictionaries.keySet()) {
+            // Skip UserUnigramDictionary and WhitelistDictionary to lookup
+            if (key.equals(Dictionary.TYPE_USER_HISTORY)
+                    || key.equals(Dictionary.TYPE_WHITELIST)) {
+                continue;
+            }
+            final Dictionary dictionary = mDictionaries.get(key);
+            suggestionsSet.addAll(dictionary.getSuggestions(
+                    wordComposer, prevWordForBigram, proximityInfo));
+        }
+
+        final ArrayList<SuggestedWordInfo> suggestionsContainer =
+                new ArrayList<SuggestedWordInfo>(suggestionsSet);
+
+        SuggestedWordInfo.removeDups(suggestionsContainer);
+        return new SuggestedWords(suggestionsContainer,
+                true /* typedWordValid */,
+                true /* willAutoCorrect */,
+                false /* isPunctuationSuggestions */,
+                false /* isObsoleteSuggestions */,
+                false /* isPrediction */);
     }
 
     private static ArrayList<SuggestedWordInfo> getSuggestionsInfoListWithDebugInfo(
