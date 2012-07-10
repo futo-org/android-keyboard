@@ -184,7 +184,9 @@ public class AndroidSpellCheckerService extends SpellCheckerService
 
     @Override
     public Session createSession() {
-        return new AndroidSpellCheckerSession(this);
+        // Should not refer to AndroidSpellCheckerSession directly considering
+        // that AndroidSpellCheckerSession may be overlaid.
+        return AndroidSpellCheckerSessionFactory.newInstance(this);
     }
 
     public static SuggestionsInfo getNotInDictEmptySuggestions() {
