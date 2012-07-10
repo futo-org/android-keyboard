@@ -126,7 +126,10 @@ public class BinaryDictionary extends Dictionary {
         final int count;
         if (!composer.isBatchMode() && composer.size() <= 1) {
             if (TextUtils.isEmpty(prevWord)) return null;
-            count = getBigramsInternal(composer, prevWordCodePointArray);
+            int tmpCount = getBigramsNative(mNativeDict, prevWordCodePointArray,
+                    prevWordCodePointArray.length, mInputCodes, composerSize,
+                    mOutputChars, mOutputScores, MAX_WORD_LENGTH, MAX_BIGRAMS);
+            count = Math.min(tmpCount, MAX_BIGRAMS);
         } else {
             count = getWordsInternal(composer, prevWordCodePointArray, proximityInfo);
         }
@@ -145,19 +148,6 @@ public class BinaryDictionary extends Dictionary {
             }
         }
         return suggestions;
-    }
-
-    // TODO: move to native code
-    private int getBigramsInternal(final WordComposer codes,
-            final int[] previousWord) {
-        int codesSize = codes.size();
-
-        int count = getBigramsNative(mNativeDict, previousWord, previousWord.length, mInputCodes,
-                codesSize, mOutputChars, mOutputScores, MAX_WORD_LENGTH, MAX_BIGRAMS);
-        if (count > MAX_BIGRAMS) {
-            count = MAX_BIGRAMS;
-        }
-        return count;
     }
 
     // TODO: move to native code
