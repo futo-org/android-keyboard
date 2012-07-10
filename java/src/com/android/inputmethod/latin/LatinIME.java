@@ -1505,7 +1505,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // it entirely and resume suggestions on the previous word, we'd like to still
             // have touch coordinates for it.
             resetComposingState(false /* alsoResetLastComposedWord */);
-            clearSuggestions();
         }
         if (isComposingWord) {
             final int keyX, keyY;
