@@ -46,16 +46,15 @@ public class BinaryDictionary extends Dictionary {
 
     private static final String TAG = "BinaryDictionary";
     private static final int MAX_BIGRAMS = 60;
+    private static final int MAX_RESULTS = MAX_BIGRAMS > MAX_WORDS ? MAX_BIGRAMS : MAX_WORDS;
 
     private static final int TYPED_LETTER_MULTIPLIER = 2;
 
     private long mNativeDict;
     private final int[] mInputCodes = new int[MAX_WORD_LENGTH];
-    private final char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_WORDS];
-    private final char[] mOutputChars_bigrams = new char[MAX_WORD_LENGTH * MAX_BIGRAMS];
+    private final char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_RESULTS];
     private final int[] mSpaceIndices = new int[MAX_SPACES];
-    private final int[] mScores = new int[MAX_WORDS];
-    private final int[] mBigramScores = new int[MAX_BIGRAMS];
+    private final int[] mOutputScores = new int[MAX_RESULTS];
 
     private final boolean mUseFullEditDistance;
 
@@ -121,8 +120,8 @@ public class BinaryDictionary extends Dictionary {
         if (!isValidDictionary()) return null;
 
         int[] codePoints = StringUtils.toCodePointArray(previousWord.toString());
-        Arrays.fill(mOutputChars_bigrams, (char) 0);
-        Arrays.fill(mBigramScores, 0);
+        Arrays.fill(mOutputChars, (char) 0);
+        Arrays.fill(mOutputScores, 0);
 
         int codesSize = codes.size();
         Arrays.fill(mInputCodes, -1);
@@ -131,23 +130,23 @@ public class BinaryDictionary extends Dictionary {
         }
 
         int count = getBigramsNative(mNativeDict, codePoints, codePoints.length, mInputCodes,
-                codesSize, mOutputChars_bigrams, mBigramScores, MAX_WORD_LENGTH, MAX_BIGRAMS);
+                codesSize, mOutputChars, mOutputScores, MAX_WORD_LENGTH, MAX_BIGRAMS);
         if (count > MAX_BIGRAMS) {
             count = MAX_BIGRAMS;
         }
 
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
         for (int j = 0; j < count; ++j) {
-            if (codesSize > 0 && mBigramScores[j] < 1) break;
+            if (codesSize > 0 && mOutputScores[j] < 1) break;
             final int start = j * MAX_WORD_LENGTH;
             int len = 0;
-            while (len <  MAX_WORD_LENGTH && mOutputChars_bigrams[start + len] != 0) {
+            while (len <  MAX_WORD_LENGTH && mOutputChars[start + len] != 0) {
                 ++len;
             }
             if (len > 0) {
                 suggestions.add(new SuggestedWordInfo(
-                        new String(mOutputChars_bigrams, start, len),
-                        mBigramScores[j], SuggestedWordInfo.KIND_CORRECTION, mDictType));
+                        new String(mOutputChars, start, len),
+                        mOutputScores[j], SuggestedWordInfo.KIND_CORRECTION, mDictType));
             }
         }
         return suggestions;
@@ -160,11 +159,11 @@ public class BinaryDictionary extends Dictionary {
         if (!isValidDictionary()) return null;
 
         final int count = getSuggestions(codes, prevWordForBigrams, proximityInfo, mOutputChars,
-                mScores, mSpaceIndices);
+                mOutputScores, mSpaceIndices);
 
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
         for (int j = 0; j < count; ++j) {
-            if (mScores[j] < 1) break;
+            if (mOutputScores[j] < 1) break;
             final int start = j * MAX_WORD_LENGTH;
             int len = 0;
             while (len < MAX_WORD_LENGTH && mOutputChars[start + len] != 0) {
@@ -174,7 +173,7 @@ public class BinaryDictionary extends Dictionary {
                 // TODO: actually get the kind from native code
                 suggestions.add(new SuggestedWordInfo(
                         new String(mOutputChars, start, len),
-                        mScores[j], SuggestedWordInfo.KIND_CORRECTION, mDictType));
+                        mOutputScores[j], SuggestedWordInfo.KIND_CORRECTION, mDictType));
             }
         }
         return suggestions;
