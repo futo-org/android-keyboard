@@ -20,7 +20,7 @@
 
 <resources>
     <!-- Title for Latin Keyboard  -->
-    <string name="english_ime_name">Android Keyboard</string>
+    <string name="english_ime_name">Android keyboard</string>
 
     <!-- Name of Android spell checker service -->
     <string name="spell_checker_service_name">Android spell checker</string>
