@@ -174,24 +174,25 @@ public class Suggest {
                 : typedWord;
         LatinImeLogger.onAddSuggestedWord(typedWord, Dictionary.TYPE_USER_TYPED);
 
-        if (wordComposer.size() <= 1) {
+        final WordComposer wordComposerForLookup;
+        if (trailingSingleQuotesCount > 0) {
+            wordComposerForLookup = new WordComposer(wordComposer);
+            for (int i = trailingSingleQuotesCount - 1; i >= 0; --i) {
+                wordComposerForLookup.deleteLast();
+            }
+        } else {
+            wordComposerForLookup = wordComposer;
+        }
+        if (wordComposerForLookup.size() <= 1) {
             // At first character typed, search only the bigrams
             if (!TextUtils.isEmpty(prevWordForBigram)) {
                 for (final String key : mDictionaries.keySet()) {
                     final Dictionary dictionary = mDictionaries.get(key);
-                    suggestionsSet.addAll(dictionary.getBigrams(wordComposer, prevWordForBigram));
+                    suggestionsSet.addAll(dictionary.getBigrams(wordComposerForLookup,
+                            prevWordForBigram));
                 }
             }
         } else {
-            final WordComposer wordComposerForLookup;
-            if (trailingSingleQuotesCount > 0) {
-                wordComposerForLookup = new WordComposer(wordComposer);
-                for (int i = trailingSingleQuotesCount - 1; i >= 0; --i) {
-                    wordComposerForLookup.deleteLast();
-                }
-            } else {
-                wordComposerForLookup = wordComposer;
-            }
             // At second character typed, search the unigrams (scores being affected by bigrams)
             for (final String key : mDictionaries.keySet()) {
                 final Dictionary dictionary = mDictionaries.get(key);
