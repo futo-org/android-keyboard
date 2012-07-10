@@ -149,7 +149,8 @@ public class BinaryDictionaryFileDumper {
         final int MODE_MAX = NONE;
 
         final Uri.Builder wordListUriBuilder = getProviderUriBuilder(id);
-        final String outputFileName = BinaryDictionaryGetter.getCacheFileName(id, locale, context);
+        final String finalFileName = BinaryDictionaryGetter.getCacheFileName(id, locale, context);
+        final String tempFileName = finalFileName + ".tmp";
 
         for (int mode = MODE_MIN; mode <= MODE_MAX; ++mode) {
             InputStream originalSourceStream = null;
@@ -165,7 +166,10 @@ public class BinaryDictionaryFileDumper {
                 if (null == afd) return null;
                 originalSourceStream = afd.createInputStream();
                 // Open output.
-                outputFile = new File(outputFileName);
+                outputFile = new File(tempFileName);
+                // Just to be sure, delete the file. This may fail silently, and return false: this
+                // is the right thing to do, as we just want to continue anyway.
+                outputFile.delete();
                 outputStream = new FileOutputStream(outputFile);
                 // Get the appropriate decryption method for this try
                 switch (mode) {
@@ -194,14 +198,20 @@ public class BinaryDictionaryFileDumper {
                         break;
                     }
                 checkMagicAndCopyFileTo(new BufferedInputStream(inputStream), outputStream);
+                outputStream.flush();
+                outputStream.close();
+                final File finalFile = new File(finalFileName);
+                if (!outputFile.renameTo(finalFile)) {
+                    throw new IOException("Can't move the file to its final name");
+                }
                 wordListUriBuilder.appendQueryParameter(QUERY_PARAMETER_DELETE_RESULT,
                         QUERY_PARAMETER_SUCCESS);
                 if (0 >= resolver.delete(wordListUriBuilder.build(), null, null)) {
                     Log.e(TAG, "Could not have the dictionary pack delete a word list");
                 }
-                BinaryDictionaryGetter.removeFilesWithIdExcept(context, id, outputFile);
+                BinaryDictionaryGetter.removeFilesWithIdExcept(context, id, finalFile);
                 // Success! Close files (through the finally{} clause) and return.
-                return AssetFileAddress.makeFromFileName(outputFileName);
+                return AssetFileAddress.makeFromFileName(finalFileName);
             } catch (Exception e) {
                 if (DEBUG) {
                     Log.i(TAG, "Can't open word list in mode " + mode + " : " + e);
