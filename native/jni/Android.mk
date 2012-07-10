@@ -68,6 +68,7 @@ endif # FLAG_DO_PROFILE
 LOCAL_MODULE := libjni_latinime_common_static
 LOCAL_MODULE_TAGS := optional
 
+# TODO: Remove this conditional block once we have no issues with building against NDK
 ifndef TARGET_BUILD_APPS # A full system image build
 include external/stlport/libstlport.mk
 else # An unbundled build
@@ -96,6 +97,7 @@ endif # FLAG_DO_PROFILE
 LOCAL_MODULE := libjni_latinime
 LOCAL_MODULE_TAGS := optional
 
+# TODO: Remove this conditional block once we have no issues with building against NDK
 ifndef TARGET_BUILD_APPS # A full system image build
 LOCAL_STATIC_LIBRARIES += libstlport_static
 else # An unbundled build
