@@ -1690,10 +1690,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
                 mCurrentSettings.mCorrectionEnabled, !mWordComposer.isComposingWord());
-
-        if (mWordComposer.isComposingWord()) {
-            suggestedWords = maybeRetrieveOlderSuggestions(typedWord, suggestedWords);
-        }
+        suggestedWords = maybeRetrieveOlderSuggestions(typedWord, suggestedWords);
 
         if (null != suggestedWords && suggestedWords.size() > 0) {
             showSuggestions(suggestedWords, typedWord);
@@ -1711,7 +1708,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // in most cases, suggestion count is 1 when typed word's length is 1, but we do always
         // need to clear the previous state when the user starts typing a word (i.e. typed word's
         // length == 1).
-        if (suggestedWords.size() > 1 || typedWord.length() == 1
+        if (suggestedWords.size() > 1 || typedWord.length() == 1 || !mWordComposer.isComposingWord()
                 || !suggestedWords.mTypedWordValid
                 || mSuggestionsView.isShowingAddToDictionaryHint()) {
             return suggestedWords;
