@@ -118,7 +118,7 @@ public class BinaryDictionary extends Dictionary {
     // TODO: move to native code
     private ArrayList<SuggestedWordInfo> getBigramsInternal(final WordComposer codes,
             final CharSequence previousWord) {
-        if (mNativeDict == 0) return null;
+        if (!isValidDictionary()) return null;
 
         int[] codePoints = StringUtils.toCodePointArray(previousWord.toString());
         Arrays.fill(mOutputChars_bigrams, (char) 0);
@@ -157,6 +157,8 @@ public class BinaryDictionary extends Dictionary {
     // proximityInfo and/or prevWordForBigrams may not be null.
     private ArrayList<SuggestedWordInfo> getWordsInternal(final WordComposer codes,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
+        if (!isValidDictionary()) return null;
+
         final int count = getSuggestions(codes, prevWordForBigrams, proximityInfo, mOutputChars,
                 mScores, mSpaceIndices);
 
@@ -183,11 +185,9 @@ public class BinaryDictionary extends Dictionary {
     }
 
     // proximityInfo may not be null.
-    /* package for test */ int getSuggestions(final WordComposer codes,
+    private int getSuggestions(final WordComposer codes,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo,
             char[] outputChars, int[] scores, int[] spaceIndices) {
-        if (!isValidDictionary()) return -1;
-
         Arrays.fill(mInputCodes, WordComposer.NOT_A_CODE);
         Arrays.fill(outputChars, (char) 0);
         Arrays.fill(scores, 0);
