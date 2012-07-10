@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin.spellcheck;
 
-
 import android.service.textservice.SpellCheckerService.Session;
 import android.text.TextUtils;
 import android.util.Log;
