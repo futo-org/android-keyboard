@@ -157,8 +157,7 @@ public class BinaryDictionary extends Dictionary {
     // proximityInfo and/or prevWordForBigrams may not be null.
     private ArrayList<SuggestedWordInfo> getWordsInternal(final WordComposer codes,
             final int[] prevWord, final ProximityInfo proximityInfo) {
-        final int count = getWordsInternalInternal(codes, prevWord, proximityInfo, mOutputChars,
-                mOutputScores, mSpaceIndices);
+        final int count = getWordsInternalInternal(codes, prevWord, proximityInfo);
 
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
         for (int j = 0; j < count; ++j) {
@@ -185,8 +184,7 @@ public class BinaryDictionary extends Dictionary {
     // proximityInfo may not be null.
     // TODO: remove this method by inlining it into getWordsInternal
     private int getWordsInternalInternal(final WordComposer codes,
-            final int[] prevWord, final ProximityInfo proximityInfo,
-            char[] outputChars, int[] scores, int[] spaceIndices) {
+            final int[] prevWord, final ProximityInfo proximityInfo) {
         final InputPointers ips = codes.getInputPointers();
         final boolean isGesture = codes.isBatchMode();
         final int codesSize;
@@ -204,7 +202,7 @@ public class BinaryDictionary extends Dictionary {
         return getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
             ips.getXCoordinates(), ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
             mInputCodes, codesSize, 0 /* unused */, isGesture, prevWord,
-            mUseFullEditDistance, outputChars, scores, spaceIndices);
+            mUseFullEditDistance, mOutputChars, mOutputScores, mSpaceIndices);
     }
 
     public static float calcNormalizedScore(String before, String after, int score) {
