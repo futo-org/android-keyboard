@@ -147,10 +147,17 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object,
     jint *prevWordChars = prevWordForBigrams
             ? env->GetIntArrayElements(prevWordForBigrams, 0) : 0;
     jsize prevWordLength = prevWordChars ? env->GetArrayLength(prevWordForBigrams) : 0;
-    int count = dictionary->getSuggestions(pInfo, xCoordinates, yCoordinates, times, pointerIds,
-            inputCodes, arraySize, prevWordChars, prevWordLength, commitPoint, isGesture,
-            useFullEditDistance, (unsigned short*) outputChars,
-            frequencies, spaceIndices);
+
+    int count;
+    if (isGesture || arraySize > 1) {
+        count = dictionary->getSuggestions(pInfo, xCoordinates, yCoordinates, times, pointerIds,
+                inputCodes, arraySize, prevWordChars, prevWordLength, commitPoint, isGesture,
+                useFullEditDistance, (unsigned short*) outputChars, frequencies, spaceIndices);
+    } else {
+        count = dictionary->getBigrams(prevWordChars, prevWordLength, inputCodes,
+                arraySize, (unsigned short*) outputChars, frequencies);
+    }
+
     if (prevWordChars) {
         env->ReleaseIntArrayElements(prevWordForBigrams, prevWordChars, JNI_ABORT);
     }
