@@ -157,7 +157,24 @@ public class BinaryDictionary extends Dictionary {
     // proximityInfo and/or prevWordForBigrams may not be null.
     private ArrayList<SuggestedWordInfo> getWordsInternal(final WordComposer codes,
             final int[] prevWord, final ProximityInfo proximityInfo) {
-        final int count = getWordsInternalInternal(codes, prevWord, proximityInfo);
+        final InputPointers ips = codes.getInputPointers();
+        final boolean isGesture = codes.isBatchMode();
+        final int codesSize;
+        if (isGesture) {
+            codesSize = ips.getPointerSize();
+        } else {
+            codesSize = codes.size();
+            // Won't deal with really long words.
+            if (codesSize > MAX_WORD_LENGTH - 1) return null;
+            for (int i = 0; i < codesSize; i++) {
+                mInputCodes[i] = codes.getCodeAt(i);
+            }
+        }
+
+        final int count = getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
+            ips.getXCoordinates(), ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
+            mInputCodes, codesSize, 0 /* unused */, isGesture, prevWord,
+            mUseFullEditDistance, mOutputChars, mOutputScores, mSpaceIndices);
 
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
         for (int j = 0; j < count; ++j) {
@@ -179,30 +196,6 @@ public class BinaryDictionary extends Dictionary {
 
     /* package for test */ boolean isValidDictionary() {
         return mNativeDict != 0;
-    }
-
-    // proximityInfo may not be null.
-    // TODO: remove this method by inlining it into getWordsInternal
-    private int getWordsInternalInternal(final WordComposer codes,
-            final int[] prevWord, final ProximityInfo proximityInfo) {
-        final InputPointers ips = codes.getInputPointers();
-        final boolean isGesture = codes.isBatchMode();
-        final int codesSize;
-        if (isGesture) {
-            codesSize = ips.getPointerSize();
-        } else {
-            codesSize = codes.size();
-            // Won't deal with really long words.
-            if (codesSize > MAX_WORD_LENGTH - 1) return -1;
-            for (int i = 0; i < codesSize; i++) {
-                mInputCodes[i] = codes.getCodeAt(i);
-            }
-        }
-
-        return getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
-            ips.getXCoordinates(), ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
-            mInputCodes, codesSize, 0 /* unused */, isGesture, prevWord,
-            mUseFullEditDistance, mOutputChars, mOutputScores, mSpaceIndices);
     }
 
     public static float calcNormalizedScore(String before, String after, int score) {
