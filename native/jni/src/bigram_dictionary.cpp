@@ -27,8 +27,8 @@
 
 namespace latinime {
 
-BigramDictionary::BigramDictionary(const unsigned char *dict, int maxWordLength)
-        : DICT(dict), MAX_WORD_LENGTH(maxWordLength) {
+BigramDictionary::BigramDictionary(const unsigned char *dict, int maxWordLength, int maxPredictions)
+        : DICT(dict), MAX_WORD_LENGTH(maxWordLength), MAX_PREDICTIONS(maxPredictions) {
     if (DEBUG_DICT) {
         AKLOGI("BigramDictionary - constructor");
     }

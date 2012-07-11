@@ -32,7 +32,7 @@ namespace latinime {
 class Dictionary {
  public:
     Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int typedLetterMultipler,
-            int fullWordMultiplier, int maxWordLength, int maxWords);
+            int fullWordMultiplier, int maxWordLength, int maxWords, int maxPredictions);
 
     int getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
             int *times, int *pointerIds, int *codes, int codesSize, int *prevWordChars,

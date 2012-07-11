@@ -46,7 +46,8 @@ void releaseDictBuf(void* dictBuf, const size_t length, int fd);
 
 static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         jstring sourceDir, jlong dictOffset, jlong dictSize,
-        jint typedLetterMultiplier, jint fullWordMultiplier, jint maxWordLength, jint maxWords) {
+        jint typedLetterMultiplier, jint fullWordMultiplier, jint maxWordLength, jint maxWords,
+        jint maxPredictions) {
     PROF_OPEN;
     PROF_START(66);
     const char *sourceDirChars = env->GetStringUTFChars(sourceDir, 0);
@@ -119,7 +120,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
 #endif // USE_MMAP_FOR_DICTIONARY
     } else {
         dictionary = new Dictionary(dictBuf, dictSize, fd, adjust, typedLetterMultiplier,
-                fullWordMultiplier, maxWordLength, maxWords);
+                fullWordMultiplier, maxWordLength, maxWords, maxPredictions);
     }
     PROF_END(66);
     PROF_CLOSE;
@@ -258,7 +259,7 @@ void releaseDictBuf(void* dictBuf, const size_t length, int fd) {
 }
 
 static JNINativeMethod sMethods[] = {
-    {"openNative", "(Ljava/lang/String;JJIIII)J", (void*)latinime_BinaryDictionary_open},
+    {"openNative", "(Ljava/lang/String;JJIIIII)J", (void*)latinime_BinaryDictionary_open},
     {"closeNative", "(J)V", (void*)latinime_BinaryDictionary_close},
     {"getSuggestionsNative", "(JJ[I[I[I[I[IIIZ[IZ[C[I[I)I",
             (void*) latinime_BinaryDictionary_getSuggestions},

@@ -45,8 +45,8 @@ public class BinaryDictionary extends Dictionary {
     public static final int MAX_SPACES = 16;
 
     private static final String TAG = "BinaryDictionary";
-    private static final int MAX_BIGRAMS = 60;
-    private static final int MAX_RESULTS = MAX_BIGRAMS > MAX_WORDS ? MAX_BIGRAMS : MAX_WORDS;
+    private static final int MAX_PREDICTIONS = 60;
+    private static final int MAX_RESULTS = Math.max(MAX_PREDICTIONS, MAX_WORDS);
 
     private static final int TYPED_LETTER_MULTIPLIER = 2;
 
@@ -82,7 +82,8 @@ public class BinaryDictionary extends Dictionary {
     }
 
     private native long openNative(String sourceDir, long dictOffset, long dictSize,
-            int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength, int maxWords);
+            int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength, int maxWords,
+            int maxPredictions);
     private native void closeNative(long dict);
     private native int getFrequencyNative(long dict, int[] word, int wordLength);
     private native boolean isValidBigramNative(long dict, int[] word1, int[] word2);
@@ -100,8 +101,8 @@ public class BinaryDictionary extends Dictionary {
             char[] before, int beforeLength, char[] after, int afterLength);
 
     private final void loadDictionary(String path, long startOffset, long length) {
-        mNativeDict = openNative(path, startOffset, length,
-                TYPED_LETTER_MULTIPLIER, FULL_WORD_SCORE_MULTIPLIER, MAX_WORD_LENGTH, MAX_WORDS);
+        mNativeDict = openNative(path, startOffset, length, TYPED_LETTER_MULTIPLIER,
+                FULL_WORD_SCORE_MULTIPLIER, MAX_WORD_LENGTH, MAX_WORDS, MAX_PREDICTIONS);
     }
 
     @Override
@@ -129,8 +130,8 @@ public class BinaryDictionary extends Dictionary {
             if (TextUtils.isEmpty(prevWord)) return null;
             int tmpCount = getBigramsNative(mNativeDict, prevWordCodePointArray,
                     prevWordCodePointArray.length, mInputCodes, composerSize,
-                    mOutputChars, mOutputScores, MAX_WORD_LENGTH, MAX_BIGRAMS);
-            count = Math.min(tmpCount, MAX_BIGRAMS);
+                    mOutputChars, mOutputScores, MAX_WORD_LENGTH, MAX_PREDICTIONS);
+            count = Math.min(tmpCount, MAX_PREDICTIONS);
         } else {
             final InputPointers ips = composer.getInputPointers();
             final int codesSize = isGesture ? ips.getPointerSize() : composerSize;
