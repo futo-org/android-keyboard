@@ -99,8 +99,7 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
  * reduce their scope to the ones that match the first letter.
  */
 int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, int *inputCodes,
-        int codesSize, unsigned short *bigramChars, int *bigramFreq, int maxWordLength,
-        int maxBigrams) const {
+        int codesSize, unsigned short *bigramChars, int *bigramFreq) const {
     // TODO: remove unused arguments, and refrain from storing stuff in members of this class
     // TODO: have "in" arguments before "out" ones, and make out args explicit in the name
 

@@ -59,9 +59,8 @@ class Dictionary {
     }
 
     int getBigrams(const int32_t *word, int length, int *codes, int codesSize,
-            unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams) const {
-        return mBigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies,
-                maxWordLength, maxBigrams);
+            unsigned short *outWords, int *frequencies) const {
+        return mBigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies);
     }
 
     int getFrequency(const int32_t *word, int length) const;

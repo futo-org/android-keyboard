@@ -93,8 +93,7 @@ public class BinaryDictionary extends Dictionary {
             int[] prevWordCodePointArray, boolean useFullEditDistance, char[] outputChars,
             int[] scores, int[] outputIndices);
     private native int getBigramsNative(long dict, int[] prevWord, int prevWordLength,
-            int[] inputCodes, int inputCodesLength, char[] outputChars, int[] scores,
-            int maxWordLength, int maxBigrams);
+            int[] inputCodes, int inputCodesLength, char[] outputChars, int[] scores);
     private static native float calcNormalizedScoreNative(
             char[] before, int beforeLength, char[] after, int afterLength, int score);
     private static native int editDistanceNative(
@@ -130,7 +129,7 @@ public class BinaryDictionary extends Dictionary {
             if (TextUtils.isEmpty(prevWord)) return null;
             int tmpCount = getBigramsNative(mNativeDict, prevWordCodePointArray,
                     prevWordCodePointArray.length, mInputCodes, composerSize,
-                    mOutputChars, mOutputScores, MAX_WORD_LENGTH, MAX_PREDICTIONS);
+                    mOutputChars, mOutputScores);
             count = Math.min(tmpCount, MAX_PREDICTIONS);
         } else {
             final InputPointers ips = composer.getInputPointers();
