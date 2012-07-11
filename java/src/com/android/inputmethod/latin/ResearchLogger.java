@@ -24,12 +24,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.inputmethodservice.InputMethodService;
 import android.os.Build;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Process;
-import android.os.SystemClock;
 import android.text.TextUtils;
-import android.util.JsonWriter;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.inputmethod.CompletionInfo;
@@ -40,22 +35,17 @@ import android.widget.Toast;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.RichInputConnection.Range;
-import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -68,36 +58,35 @@ import java.util.UUID;
  */
 public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = ResearchLogger.class.getSimpleName();
-    private static final boolean DEBUG = false;
     private static final boolean OUTPUT_ENTIRE_BUFFER = false;  // true may disclose private info
     /* package */ static boolean sIsLogging = false;
     private static final int OUTPUT_FORMAT_VERSION = 1;
     private static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
     private static final String FILENAME_PREFIX = "researchLog";
     private static final String FILENAME_SUFFIX = ".txt";
-    private static final JsonWriter NULL_JSON_WRITER = new JsonWriter(
-            new OutputStreamWriter(new NullOutputStream()));
     private static final SimpleDateFormat TIMESTAMP_DATEFORMAT =
-            new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
+            new SimpleDateFormat("yyyyMMddHHmmssS", Locale.US);
 
     // constants related to specific log points
     private static final String WHITESPACE_SEPARATORS = " \t\n\r";
     private static final int MAX_INPUTVIEW_LENGTH_TO_CAPTURE = 8192; // must be >=1
     private static final String PREF_RESEARCH_LOGGER_UUID_STRING = "pref_research_logger_uuid";
+    private static final int ABORT_TIMEOUT_IN_MS = 10 * 1000;
 
     private static final ResearchLogger sInstance = new ResearchLogger();
-    private HandlerThread mHandlerThread;
-    /* package */ Handler mLoggingHandler;
     // to write to a different filename, e.g., for testing, set mFile before calling start()
-    private File mFilesDir;
-    /* package */ File mFile;
-    private JsonWriter mJsonWriter = NULL_JSON_WRITER; // should never be null
+    /* package */ File mFilesDir;
+    /* package */ String mUUIDString;
+    /* package */ ResearchLog mMainResearchLog;
+    // The mIntentionalResearchLog records all events for the session, private or not (excepting
+    // passwords).  It is written to permanent storage only if the user explicitly commands
+    // the system to do so.
+    /* package */ ResearchLog mIntentionalResearchLog;
+    // LogUnits are queued here and released only when the user requests the intentional log.
+    private final List<LogUnit> mIntentionalResearchLogQueue = new ArrayList<LogUnit>();
 
-    private int mLoggingState;
-    private static final int LOGGING_STATE_OFF = 0;
-    private static final int LOGGING_STATE_ON = 1;
-    private static final int LOGGING_STATE_STOPPING = 2;
     private boolean mIsPasswordView = false;
+    private boolean mIsLoggingSuspended = false;
 
     // digits entered by the user are replaced with this codepoint.
     /* package for test */ static final int DIGIT_REPLACEMENT_CODEPOINT =
@@ -111,34 +100,17 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // used to check whether words are not unique
     private Suggest mSuggest;
     private Dictionary mDictionary;
-
-    private static class NullOutputStream extends OutputStream {
-        /** {@inheritDoc} */
-        @Override
-        public void write(byte[] buffer, int offset, int count) {
-            // nop
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public void write(byte[] buffer) {
-            // nop
-        }
-
-        @Override
-        public void write(int oneByte) {
-        }
-    }
+    private KeyboardSwitcher mKeyboardSwitcher;
 
     private ResearchLogger() {
-        mLoggingState = LOGGING_STATE_OFF;
     }
 
     public static ResearchLogger getInstance() {
         return sInstance;
     }
 
-    public void init(final InputMethodService ims, final SharedPreferences prefs) {
+    public void init(final InputMethodService ims, final SharedPreferences prefs,
+            KeyboardSwitcher keyboardSwitcher) {
         assert ims != null;
         if (ims == null) {
             Log.w(TAG, "IMS is null; logging is off");
@@ -149,129 +121,100 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             }
         }
         if (prefs != null) {
+            mUUIDString = getUUID(prefs);
             sIsLogging = prefs.getBoolean(PREF_USABILITY_STUDY_MODE, false);
             prefs.registerOnSharedPreferenceChangeListener(this);
         }
+        mKeyboardSwitcher = keyboardSwitcher;
     }
 
-    public synchronized void start() {
-        Log.d(TAG, "start called");
+    private File createLogFile(File filesDir) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(FILENAME_PREFIX).append('-');
+        sb.append(mUUIDString).append('-');
+        sb.append(TIMESTAMP_DATEFORMAT.format(new Date()));
+        sb.append(FILENAME_SUFFIX);
+        return new File(filesDir, sb.toString());
+    }
+
+    public void start() {
         if (!sIsLogging) {
             // Log.w(TAG, "not in usability mode; not logging");
             return;
         }
         if (mFilesDir == null || !mFilesDir.exists()) {
             Log.w(TAG, "IME storage directory does not exist.  Cannot start logging.");
-        } else {
-            if (mHandlerThread == null || !mHandlerThread.isAlive()) {
-                mHandlerThread = new HandlerThread("ResearchLogger logging task",
-                        Process.THREAD_PRIORITY_BACKGROUND);
-                mHandlerThread.start();
-                mLoggingHandler = null;
-                mLoggingState = LOGGING_STATE_OFF;
-            }
-            if (mLoggingHandler == null) {
-                mLoggingHandler = new Handler(mHandlerThread.getLooper());
-                mLoggingState = LOGGING_STATE_OFF;
-            }
-            if (mFile == null) {
-                final String timestampString = TIMESTAMP_DATEFORMAT.format(new Date());
-                mFile = new File(mFilesDir, FILENAME_PREFIX + timestampString + FILENAME_SUFFIX);
-            }
-            if (mLoggingState == LOGGING_STATE_OFF) {
-                try {
-                    mJsonWriter = new JsonWriter(new BufferedWriter(new FileWriter(mFile)));
-                    mJsonWriter.setLenient(true);
-                    mJsonWriter.beginArray();
-                    mLoggingState = LOGGING_STATE_ON;
-                } catch (IOException e) {
-                    Log.w(TAG, "cannot start JsonWriter");
-                    mJsonWriter = NULL_JSON_WRITER;
-                    e.printStackTrace();
-                }
-            }
+            return;
         }
-    }
-
-    public synchronized void stop() {
-        Log.d(TAG, "stop called");
-        if (mLoggingHandler != null && mLoggingState == LOGGING_STATE_ON) {
-            mLoggingState = LOGGING_STATE_STOPPING;
-            flushEventQueue(true);
-            // put this in the Handler queue so pending writes are processed first.
-            mLoggingHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Log.d(TAG, "closing jsonwriter");
-                        mJsonWriter.endArray();
-                        mJsonWriter.flush();
-                        mJsonWriter.close();
-                    } catch (IllegalStateException e1) {
-                        // assume that this is just the json not being terminated properly.
-                        // ignore
-                        e1.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
-                        mJsonWriter = NULL_JSON_WRITER;
-                        mFile = null;
-                        mLoggingState = LOGGING_STATE_OFF;
-                        if (DEBUG) {
-                            Log.d(TAG, "logfile closed");
-                        }
-                        Log.d(TAG, "finished stop(), notifying");
-                        synchronized (ResearchLogger.this) {
-                            ResearchLogger.this.notify();
-                        }
-                    }
-                }
-            });
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        if (mMainResearchLog == null || !mMainResearchLog.isAlive()) {
+            mMainResearchLog = new ResearchLog(createLogFile(mFilesDir));
         }
-    }
-
-    public synchronized boolean abort() {
-        Log.d(TAG, "abort called");
-        boolean isLogFileDeleted = false;
-        if (mLoggingHandler != null && mLoggingState == LOGGING_STATE_ON) {
-            mLoggingState = LOGGING_STATE_STOPPING;
-            try {
-                Log.d(TAG, "closing jsonwriter");
-                mJsonWriter.endArray();
-                mJsonWriter.close();
-            } catch (IllegalStateException e1) {
-                // assume that this is just the json not being terminated properly.
-                // ignore
-                e1.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                mJsonWriter = NULL_JSON_WRITER;
-                // delete file
-                final boolean isDeleted = mFile.delete();
-                if (isDeleted) {
-                    isLogFileDeleted = true;
-                }
-                mFile = null;
-                mLoggingState = LOGGING_STATE_OFF;
-                if (DEBUG) {
-                    Log.d(TAG, "logfile closed");
-                }
-            }
-        }
-        return isLogFileDeleted;
-    }
-
-    /* package */ synchronized void flush() {
         try {
-            mJsonWriter.flush();
+            mMainResearchLog.start();
+            if (mIntentionalResearchLog == null || !mIntentionalResearchLog.isAlive()) {
+                mIntentionalResearchLog = new ResearchLog(createLogFile(mFilesDir));
+            }
+            mIntentionalResearchLog.start();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.w(TAG, "Could not start ResearchLogger.");
+        }
+    }
+
+    public void stop() {
+        if (mMainResearchLog != null) {
+            mMainResearchLog.stop();
+        }
+    }
+
+    public boolean abort() {
+        mIsLoggingSuspended = true;
+        requestIndicatorRedraw();
+        boolean didAbortMainLog = false;
+        if (mMainResearchLog != null) {
+            mMainResearchLog.abort();
+            try {
+                mMainResearchLog.waitUntilStopped(ABORT_TIMEOUT_IN_MS);
+            } catch (InterruptedException e) {
+                // interrupted early.  carry on.
+            }
+            if (mMainResearchLog.isAbortSuccessful()) {
+                didAbortMainLog = true;
+            }
+        }
+        boolean didAbortIntentionalLog = false;
+        if (mIntentionalResearchLog != null) {
+            mIntentionalResearchLog.abort();
+            try {
+                mIntentionalResearchLog.waitUntilStopped(ABORT_TIMEOUT_IN_MS);
+            } catch (InterruptedException e) {
+                // interrupted early.  carry on.
+            }
+            if (mIntentionalResearchLog.isAbortSuccessful()) {
+                didAbortIntentionalLog = true;
+            }
+        }
+        return didAbortMainLog && didAbortIntentionalLog;
+    }
+
+    /* package */ void flush() {
+        if (mMainResearchLog != null) {
+            mMainResearchLog.flush();
+        }
+    }
+
+    private void logWholeSessionHistory() throws IOException {
+        try {
+            LogUnit headerLogUnit = new LogUnit();
+            headerLogUnit.addLogAtom(EVENTKEYS_INTENTIONAL_LOG, EVENTKEYS_NULLVALUES, false);
+            mIntentionalResearchLog.publishAllEvents(headerLogUnit);
+            for (LogUnit logUnit : mIntentionalResearchLogQueue) {
+                mIntentionalResearchLog.publishAllEvents(logUnit);
+            }
+            mIntentionalResearchLog.stop();
+            mIntentionalResearchLog = new ResearchLog(createLogFile(mFilesDir));
+            mIntentionalResearchLog.start();
+        } finally {
+            mIntentionalResearchLogQueue.clear();
         }
     }
 
@@ -290,7 +233,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final CharSequence title = latinIME.getString(R.string.english_ime_research_log);
         final CharSequence[] items = new CharSequence[] {
                 latinIME.getString(R.string.note_timestamp_for_researchlog),
-                latinIME.getString(R.string.do_not_log_this_session),
+                mIsLoggingSuspended ? latinIME.getString(R.string.enable_session_logging) :
+                        latinIME.getString(R.string.do_not_log_this_session),
+                latinIME.getString(R.string.log_whole_session_history),
         };
         final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
@@ -298,28 +243,46 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 di.dismiss();
                 switch (position) {
                     case 0:
-                        ResearchLogger.getInstance().userTimestamp();
+                        userTimestamp();
                         Toast.makeText(latinIME, R.string.notify_recorded_timestamp,
                                 Toast.LENGTH_LONG).show();
                         break;
                     case 1:
-                        Toast toast = Toast.makeText(latinIME,
-                                R.string.notify_session_log_deleting, Toast.LENGTH_LONG);
-                        toast.show();
-                        final ResearchLogger logger = ResearchLogger.getInstance();
-                        boolean isLogDeleted = logger.abort();
-                        toast.cancel();
-                        if (isLogDeleted) {
-                            Toast.makeText(latinIME, R.string.notify_session_log_deleted,
-                                    Toast.LENGTH_LONG).show();
+                        if (mIsLoggingSuspended) {
+                            mIsLoggingSuspended = false;
+                            requestIndicatorRedraw();
+                            Toast toast = Toast.makeText(latinIME,
+                                    R.string.notify_session_logging_enabled, Toast.LENGTH_LONG);
                         } else {
-                            Toast.makeText(latinIME,
-                                    R.string.notify_session_log_not_deleted, Toast.LENGTH_LONG)
-                                    .show();
+                            Toast toast = Toast.makeText(latinIME,
+                                    R.string.notify_session_log_deleting, Toast.LENGTH_LONG);
+                            toast.show();
+                            boolean isLogDeleted = abort();
+                            toast.cancel();
+                            if (isLogDeleted) {
+                                Toast.makeText(latinIME, R.string.notify_session_log_deleted,
+                                        Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(latinIME,
+                                        R.string.notify_session_log_not_deleted, Toast.LENGTH_LONG)
+                                        .show();
+                            }
+                        }
+                        break;
+                    case 2:
+                        try {
+                            logWholeSessionHistory();
+                            Toast.makeText(latinIME, R.string.notify_session_history_logged,
+                                    Toast.LENGTH_LONG).show();
+                        } catch (IOException e) {
+                            Toast.makeText(latinIME, R.string.notify_session_history_not_logged,
+                                    Toast.LENGTH_LONG).show();
+                            e.printStackTrace();
                         }
                         break;
                 }
             }
+
         };
         final AlertDialog.Builder builder = new AlertDialog.Builder(latinIME)
                 .setItems(items, listener)
@@ -336,7 +299,14 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private boolean isAllowedToLog() {
-        return mLoggingState == LOGGING_STATE_ON && !mIsPasswordView;
+        return !mIsPasswordView && !mIsLoggingSuspended;
+    }
+
+    public void requestIndicatorRedraw() {
+        // invalidate any existing graphics
+        if (mKeyboardSwitcher != null) {
+            mKeyboardSwitcher.getKeyboardView().invalidateAllKeys();
+        }
     }
 
     private static final String CURRENT_TIME_KEY = "_ct";
@@ -360,7 +330,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private synchronized void enqueuePotentiallyPrivateEvent(final String[] keys,
             final Object[] values) {
         assert values.length + 1 == keys.length;
-        mCurrentLogUnit.addLogAtom(keys, values, true);
+        if (isAllowedToLog()) {
+            mCurrentLogUnit.addLogAtom(keys, values, true);
+        }
     }
 
     /**
@@ -377,7 +349,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
      */
     private synchronized void enqueueEvent(final String[] keys, final Object[] values) {
         assert values.length + 1 == keys.length;
-        mCurrentLogUnit.addLogAtom(keys, values, false);
+        if (isAllowedToLog()) {
+            mCurrentLogUnit.addLogAtom(keys, values, false);
+        }
     }
 
     // Used to track how often words are logged.  Too-frequent logging can leak
@@ -453,131 +427,33 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void onWordComplete(String word) {
-        final boolean isPrivacyThreat = isPrivacyThreat(word);
-        flushEventQueue(isPrivacyThreat);
-        if (isPrivacyThreat) {
+        if (isPrivacyThreat(word)) {
+            publishLogUnit(mCurrentLogUnit, true);
             mLoggingFrequencyState.onWordNotLogged();
         } else {
+            publishLogUnit(mCurrentLogUnit, false);
             mLoggingFrequencyState.onWordLogged();
-        }
-    }
-
-    /**
-     * Write out enqueued LogEvents to the log, possibly dropping privacy sensitive events.
-     */
-    /* package for test */ synchronized void flushEventQueue(
-            boolean removePotentiallyPrivateEvents) {
-        if (isAllowedToLog()) {
-            mCurrentLogUnit.setRemovePotentiallyPrivateEvents(removePotentiallyPrivateEvents);
-            mLoggingHandler.post(mCurrentLogUnit);
         }
         mCurrentLogUnit = new LogUnit();
     }
 
-    private synchronized void outputEvent(final String[] keys, final Object[] values) {
-        try {
-            mJsonWriter.beginObject();
-            mJsonWriter.name(CURRENT_TIME_KEY).value(System.currentTimeMillis());
-            mJsonWriter.name(UPTIME_KEY).value(SystemClock.uptimeMillis());
-            mJsonWriter.name(EVENT_TYPE_KEY).value(keys[0]);
-            final int length = values.length;
-            for (int i = 0; i < length; i++) {
-                mJsonWriter.name(keys[i + 1]);
-                Object value = values[i];
-                if (value instanceof String) {
-                    mJsonWriter.value((String) value);
-                } else if (value instanceof Number) {
-                    mJsonWriter.value((Number) value);
-                } else if (value instanceof Boolean) {
-                    mJsonWriter.value((Boolean) value);
-                } else if (value instanceof CompletionInfo[]) {
-                    CompletionInfo[] ci = (CompletionInfo[]) value;
-                    mJsonWriter.beginArray();
-                    for (int j = 0; j < ci.length; j++) {
-                        mJsonWriter.value(ci[j].toString());
-                    }
-                    mJsonWriter.endArray();
-                } else if (value instanceof SharedPreferences) {
-                    SharedPreferences prefs = (SharedPreferences) value;
-                    mJsonWriter.beginObject();
-                    for (Map.Entry<String,?> entry : prefs.getAll().entrySet()) {
-                        mJsonWriter.name(entry.getKey());
-                        final Object innerValue = entry.getValue();
-                        if (innerValue == null) {
-                            mJsonWriter.nullValue();
-                        } else if (innerValue instanceof Boolean) {
-                            mJsonWriter.value((Boolean) innerValue);
-                        } else if (innerValue instanceof Number) {
-                            mJsonWriter.value((Number) innerValue);
-                        } else {
-                            mJsonWriter.value(innerValue.toString());
-                        }
-                    }
-                    mJsonWriter.endObject();
-                } else if (value instanceof Key[]) {
-                    Key[] keyboardKeys = (Key[]) value;
-                    mJsonWriter.beginArray();
-                    for (Key keyboardKey : keyboardKeys) {
-                        mJsonWriter.beginObject();
-                        mJsonWriter.name("code").value(keyboardKey.mCode);
-                        mJsonWriter.name("altCode").value(keyboardKey.mAltCode);
-                        mJsonWriter.name("x").value(keyboardKey.mX);
-                        mJsonWriter.name("y").value(keyboardKey.mY);
-                        mJsonWriter.name("w").value(keyboardKey.mWidth);
-                        mJsonWriter.name("h").value(keyboardKey.mHeight);
-                        mJsonWriter.endObject();
-                    }
-                    mJsonWriter.endArray();
-                } else if (value instanceof SuggestedWords) {
-                    SuggestedWords words = (SuggestedWords) value;
-                    mJsonWriter.beginObject();
-                    mJsonWriter.name("typedWordValid").value(words.mTypedWordValid);
-                    mJsonWriter.name("willAutoCorrect").value(words.mWillAutoCorrect);
-                    mJsonWriter.name("isPunctuationSuggestions")
-                        .value(words.mIsPunctuationSuggestions);
-                    mJsonWriter.name("isObsoleteSuggestions")
-                        .value(words.mIsObsoleteSuggestions);
-                    mJsonWriter.name("isPrediction")
-                        .value(words.mIsPrediction);
-                    mJsonWriter.name("words");
-                    mJsonWriter.beginArray();
-                    final int size = words.size();
-                    for (int j = 0; j < size; j++) {
-                        SuggestedWordInfo wordInfo = words.getWordInfo(j);
-                        mJsonWriter.value(wordInfo.toString());
-                    }
-                    mJsonWriter.endArray();
-                    mJsonWriter.endObject();
-                } else if (value == null) {
-                    mJsonWriter.nullValue();
-                } else {
-                    Log.w(TAG, "Unrecognized type to be logged: " +
-                            (value == null ? "<null>" : value.getClass().getName()));
-                    mJsonWriter.nullValue();
-                }
-            }
-            mJsonWriter.endObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.w(TAG, "Error in JsonWriter; disabling logging");
-            try {
-                mJsonWriter.close();
-            } catch (IllegalStateException e1) {
-                // assume that this is just the json not being terminated properly.
-                // ignore
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            } finally {
-                mJsonWriter = NULL_JSON_WRITER;
-            }
+    private void publishLogUnit(LogUnit logUnit, boolean isPrivacySensitive) {
+        if (isPrivacySensitive) {
+            mMainResearchLog.publishPublicEvents(logUnit);
+        } else {
+            mMainResearchLog.publishAllEvents(logUnit);
         }
+        mIntentionalResearchLogQueue.add(logUnit);
     }
 
-    private static class LogUnit implements Runnable {
+    /* package */ void publishCurrentLogUnit(ResearchLog researchLog, boolean isPrivacySensitive) {
+        publishLogUnit(mCurrentLogUnit, isPrivacySensitive);
+    }
+
+    static class LogUnit {
         private final List<String[]> mKeysList = new ArrayList<String[]>();
         private final List<Object[]> mValuesList = new ArrayList<Object[]>();
         private final List<Boolean> mIsPotentiallyPrivate = new ArrayList<Boolean>();
-        private boolean mRemovePotentiallyPrivateEvents = true;
 
         private void addLogAtom(final String[] keys, final Object[] values,
                 final Boolean isPotentiallyPrivate) {
@@ -586,20 +462,19 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             mIsPotentiallyPrivate.add(isPotentiallyPrivate);
         }
 
-        void setRemovePotentiallyPrivateEvents(boolean removePotentiallyPrivateEvents) {
-            mRemovePotentiallyPrivateEvents = removePotentiallyPrivateEvents;
+        public void publishPublicEventsTo(ResearchLog researchLog) {
+            final int size = mKeysList.size();
+            for (int i = 0; i < size; i++) {
+                if (!mIsPotentiallyPrivate.get(i)) {
+                    researchLog.outputEvent(mKeysList.get(i), mValuesList.get(i));
+                }
+            }
         }
 
-        @Override
-        public void run() {
-            final int numAtoms = mKeysList.size();
-            for (int atomIndex = 0; atomIndex < numAtoms; atomIndex++) {
-                if (mRemovePotentiallyPrivateEvents && mIsPotentiallyPrivate.get(atomIndex)) {
-                    continue;
-                }
-                final String[] keys = mKeysList.get(atomIndex);
-                final Object[] values = mValuesList.get(atomIndex);
-                ResearchLogger.getInstance().outputEvent(keys, values);
+        public void publishAllEventsTo(ResearchLog researchLog) {
+            final int size = mKeysList.size();
+            for (int i = 0; i < size; i++) {
+                researchLog.outputEvent(mKeysList.get(i), mValuesList.get(i));
             }
         }
     }
@@ -642,6 +517,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         return WORD_REPLACEMENT_STRING;
     }
 
+    private static final String[] EVENTKEYS_INTENTIONAL_LOG = {
+        "IntentionalLog"
+    };
     private static final String[] EVENTKEYS_LATINKEYBOARDVIEW_PROCESSMOTIONEVENT = {
         "LatinKeyboardViewProcessMotionEvent", "action", "eventTime", "id", "x", "y", "size",
         "pressure"
@@ -792,7 +670,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             }
             final ResearchLogger researchLogger = getInstance();
             researchLogger.enqueueEvent(EVENTKEYS_LATINIME_ONWINDOWHIDDEN, values);
-            researchLogger.flushEventQueue(true); // Play it safe.  Remove privacy-sensitive events.
+            // Play it safe.  Remove privacy-sensitive events.
+            researchLogger.publishLogUnit(researchLogger.mCurrentLogUnit, true);
+            researchLogger.mCurrentLogUnit = new LogUnit();
         }
     }
 
@@ -804,7 +684,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final SharedPreferences prefs) {
         if (editorInfo != null) {
             final Object[] values = {
-                getUUID(prefs), editorInfo.packageName, Integer.toHexString(editorInfo.inputType),
+                getInstance().mUUIDString, editorInfo.packageName,
+                Integer.toHexString(editorInfo.inputType),
                 Integer.toHexString(editorInfo.imeOptions), editorInfo.fieldId, Build.DISPLAY,
                 Build.MODEL, prefs, OUTPUT_FORMAT_VERSION
             };
