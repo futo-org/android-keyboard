@@ -170,9 +170,8 @@ public class Suggest {
             final WordComposer wordComposer, CharSequence prevWordForBigram,
             final ProximityInfo proximityInfo, final boolean isCorrectionEnabled) {
         final boolean isPrediction = !wordComposer.isComposingWord();
-        final boolean isFirstCharCapitalized =
-                !isPrediction && wordComposer.isFirstCharCapitalized();
-        final boolean isAllUpperCase = !isPrediction && wordComposer.isAllUpperCase();
+        final boolean isFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
+        final boolean isAllUpperCase = wordComposer.isAllUpperCase();
         final int trailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
         final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
                 MAX_SUGGESTIONS);
