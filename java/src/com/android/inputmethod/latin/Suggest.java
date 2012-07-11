@@ -169,9 +169,6 @@ public class Suggest {
     private SuggestedWords getSuggestedWordsForTypingInput(
             final WordComposer wordComposer, CharSequence prevWordForBigram,
             final ProximityInfo proximityInfo, final boolean isCorrectionEnabled) {
-        final boolean isPrediction = !wordComposer.isComposingWord();
-        final boolean isFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
-        final boolean isAllUpperCase = wordComposer.isAllUpperCase();
         final int trailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
         final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
                 MAX_SUGGESTIONS);
@@ -245,6 +242,8 @@ public class Suggest {
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 new ArrayList<SuggestedWordInfo>(suggestionsSet);
         final int suggestionsCount = suggestionsContainer.size();
+        final boolean isFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
+        final boolean isAllUpperCase = wordComposer.isAllUpperCase();
         if (isFirstCharCapitalized || isAllUpperCase || 0 != trailingSingleQuotesCount) {
             for (int i = 0; i < suggestionsCount; ++i) {
                 final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
@@ -282,7 +281,7 @@ public class Suggest {
                 hasAutoCorrection, /* willAutoCorrect */
                 false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
-                isPrediction);
+                !wordComposer.isComposingWord() /* isPrediction */);
     }
 
     // Retrieves suggestions for the batch input.
