@@ -277,7 +277,7 @@ public class Suggest {
                 // TODO: this first argument is lying. If this is a whitelisted word which is an
                 // actual word, it says typedWordValid = false, which looks wrong. We should either
                 // rename the attribute or change the value.
-                !isPrediction && !allowsToBeAutoCorrected /* typedWordValid */,
+                !allowsToBeAutoCorrected /* typedWordValid */,
                 !isPrediction && hasAutoCorrection, /* willAutoCorrect */
                 false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
