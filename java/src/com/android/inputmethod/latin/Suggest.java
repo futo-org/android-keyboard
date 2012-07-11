@@ -219,6 +219,7 @@ public class Suggest {
         // the current settings. It may also be useful to know, when the setting is off, whether
         // the word *would* have been auto-corrected.
         if (!isCorrectionEnabled || !allowsToBeAutoCorrected || !wordComposer.isComposingWord()
+                || suggestionsSet.isEmpty()
                 || wordComposer.isMostlyCaps() || wordComposer.isResumed()
                 || !hasMainDictionary()) {
             // If we don't have a main dictionary, we never want to auto-correct. The reason for
@@ -228,13 +229,9 @@ public class Suggest {
             // would always auto-correct to "Will" which is unwanted. Hence, no main dict => no
             // auto-correct.
             hasAutoCorrection = false;
-        } else if (suggestionsSet.isEmpty()) {
-            hasAutoCorrection = false;
-        } else if (AutoCorrection.suggestionExceedsAutoCorrectionThreshold(suggestionsSet.first(),
-                consideredWord, mAutoCorrectionThreshold)) {
-            hasAutoCorrection = true;
         } else {
-            hasAutoCorrection = false;
+            hasAutoCorrection = AutoCorrection.suggestionExceedsAutoCorrectionThreshold(
+                    suggestionsSet.first(), consideredWord, mAutoCorrectionThreshold);
         }
 
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
