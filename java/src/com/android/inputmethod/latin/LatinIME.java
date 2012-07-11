@@ -1668,6 +1668,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
+    // TODO: rename this method to updateSuggestionStrip or simply updateSuggestions
     private void updateSuggestionsOrPredictions() {
         mHandler.cancelUpdateSuggestionStrip();
 
@@ -1699,11 +1700,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mCurrentSettings.mCorrectionEnabled);
         suggestedWords = maybeRetrieveOlderSuggestions(typedWord, suggestedWords);
 
-        if (null != suggestedWords && suggestedWords.size() > 0) {
-            showSuggestions(suggestedWords, typedWord);
-        } else {
-            clearSuggestions();
-        }
+        showSuggestions(suggestedWords, typedWord);
     }
 
     private SuggestedWords maybeRetrieveOlderSuggestions(final CharSequence typedWord,
@@ -1738,7 +1735,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void showSuggestions(final SuggestedWords suggestedWords,
             final CharSequence typedWord) {
-        // This method is only ever called by updateSuggestions or updateBigramPredictions.
+        if (null == suggestedWords || suggestedWords.size() <= 0) {
+            clearSuggestions();
+            return;
+        }
         final CharSequence autoCorrection;
         if (suggestedWords.size() > 0) {
             if (suggestedWords.mWillAutoCorrect) {
