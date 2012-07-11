@@ -107,9 +107,19 @@
     <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Tandaan timestamp sa log"</string>
     <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Na-record na timestamp"</string>
     <string name="do_not_log_this_session" msgid="413762473641146336">"Huwag i-log ang session"</string>
+    <!-- no translation found for enable_session_logging (4202559020594036225) -->
+    <skip />
+    <!-- no translation found for log_whole_session_history (7087712461632081351) -->
+    <skip />
     <string name="notify_session_log_deleting" msgid="3299507647764414623">"Tinatanggl log ng session"</string>
     <string name="notify_session_log_deleted" msgid="8687927130100934686">"Tinanggal log ng session"</string>
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"HND ntnggl log ng session"</string>
+    <!-- no translation found for notify_session_history_logged (7723983399468056391) -->
+    <skip />
+    <!-- no translation found for notify_session_history_not_logged (6597910011368015361) -->
+    <skip />
+    <!-- no translation found for notify_session_logging_enabled (8549561596936177661) -->
+    <skip />
     <string name="select_language" msgid="3693815588777926848">"Mga wika ng input"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Pinduting muli upang i-save"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Available ang diksyunaryo"</string>
