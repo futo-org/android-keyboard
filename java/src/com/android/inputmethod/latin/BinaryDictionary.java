@@ -124,7 +124,7 @@ public class BinaryDictionary extends Dictionary {
         }
 
         final int count;
-        if (composer.size() <= 1) {
+        if (!composer.isBatchMode() && composer.size() <= 1) {
             if (TextUtils.isEmpty(prevWord)) return null;
             count = getBigramsInternal(composer, prevWordCodePointArray);
         } else {
