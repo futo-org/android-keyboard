@@ -205,6 +205,12 @@ public class Suggest {
 
         final CharSequence whitelistedWord =
                 mWhiteListDictionary.getWhitelistedWord(consideredWord);
+        if (whitelistedWord != null) {
+            // MAX_SCORE ensures this will be considered strong enough to be auto-corrected
+            suggestionsSet.add(new SuggestedWordInfo(whitelistedWord,
+                    SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST,
+                    Dictionary.TYPE_WHITELIST));
+        }
 
         final boolean hasAutoCorrection;
         // TODO: using isCorrectionEnabled here is not very good. It's probably useless, because
@@ -222,8 +228,6 @@ public class Suggest {
             // would always auto-correct to "Will" which is unwanted. Hence, no main dict => no
             // auto-correct.
             hasAutoCorrection = false;
-        } else if (null != whitelistedWord) {
-            hasAutoCorrection = true;
         } else if (suggestionsSet.isEmpty()) {
             hasAutoCorrection = false;
         } else if (AutoCorrection.suggestionExceedsAutoCorrectionThreshold(suggestionsSet.first(),
@@ -231,12 +235,6 @@ public class Suggest {
             hasAutoCorrection = true;
         } else {
             hasAutoCorrection = false;
-        }
-
-        if (whitelistedWord != null) {
-            suggestionsSet.add(new SuggestedWordInfo(whitelistedWord,
-                    SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST,
-                    Dictionary.TYPE_WHITELIST));
         }
 
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
