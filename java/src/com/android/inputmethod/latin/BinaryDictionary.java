@@ -107,6 +107,10 @@ public class BinaryDictionary extends Dictionary {
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final CharSequence prevWord, final ProximityInfo proximityInfo) {
+        if (!isValidDictionary()) return null;
+        Arrays.fill(mInputCodes, WordComposer.NOT_A_CODE);
+        Arrays.fill(mOutputChars, (char) 0);
+        Arrays.fill(mOutputScores, 0);
         if (composer.size() <= 1) {
             return TextUtils.isEmpty(prevWord) ? null : getBigramsInternal(composer, prevWord);
         } else {
@@ -117,14 +121,9 @@ public class BinaryDictionary extends Dictionary {
     // TODO: move to native code
     private ArrayList<SuggestedWordInfo> getBigramsInternal(final WordComposer codes,
             final CharSequence previousWord) {
-        if (!isValidDictionary()) return null;
-
         int[] codePoints = StringUtils.toCodePointArray(previousWord.toString());
-        Arrays.fill(mOutputChars, (char) 0);
-        Arrays.fill(mOutputScores, 0);
 
         int codesSize = codes.size();
-        Arrays.fill(mInputCodes, -1);
         if (codesSize > 0) {
             mInputCodes[0] = codes.getCodeAt(0);
         }
@@ -156,10 +155,8 @@ public class BinaryDictionary extends Dictionary {
     // proximityInfo and/or prevWordForBigrams may not be null.
     private ArrayList<SuggestedWordInfo> getWordsInternal(final WordComposer codes,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
-        if (!isValidDictionary()) return null;
-
-        final int count = getSuggestions(codes, prevWordForBigrams, proximityInfo, mOutputChars,
-                mOutputScores, mSpaceIndices);
+        final int count = getWordsInternalInternal(codes, prevWordForBigrams, proximityInfo,
+                mOutputChars, mOutputScores, mSpaceIndices);
 
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
         for (int j = 0; j < count; ++j) {
@@ -184,13 +181,10 @@ public class BinaryDictionary extends Dictionary {
     }
 
     // proximityInfo may not be null.
-    private int getSuggestions(final WordComposer codes,
+    // TODO: remove this method by inlining it into getWordsInternal
+    private int getWordsInternalInternal(final WordComposer codes,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo,
             char[] outputChars, int[] scores, int[] spaceIndices) {
-        Arrays.fill(mInputCodes, WordComposer.NOT_A_CODE);
-        Arrays.fill(outputChars, (char) 0);
-        Arrays.fill(scores, 0);
-
         final InputPointers ips = codes.getInputPointers();
         final boolean isGesture = codes.isBatchMode();
         final int codesSize;
