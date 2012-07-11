@@ -116,6 +116,10 @@ public class Settings extends InputMethodSettingsFragment
         final Resources res = getResources();
         final Context context = getActivity();
 
+        // When we are called from the Settings application but we are not already running, the
+        // {@link SubtypeLocale} class may not have been initialized. It is safe to call
+        // {@link SubtypeLocale#init(Context)} multiple times.
+        SubtypeLocale.init(context);
         mVoicePreference = (ListPreference) findPreference(PREF_VOICE_MODE);
         mShowCorrectionSuggestionsPreference =
                 (ListPreference) findPreference(PREF_SHOW_SUGGESTIONS_SETTING);

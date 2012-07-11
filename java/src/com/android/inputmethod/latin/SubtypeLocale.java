@@ -41,6 +41,7 @@ public class SubtypeLocale {
     public static final String QWERTY = "qwerty";
     public static final int UNKNOWN_KEYBOARD_LAYOUT = R.string.subtype_generic;
 
+    private static boolean sInitialized = false;
     private static String[] sPredefinedKeyboardLayoutSet;
     // Keyboard layout to its display name map.
     private static final HashMap<String, String> sKeyboardLayoutToDisplayNameMap =
@@ -69,7 +70,10 @@ public class SubtypeLocale {
         // Intentional empty constructor for utility class.
     }
 
-    public static void init(Context context) {
+    // Note that this initialization method can be called multiple times.
+    public static synchronized void init(Context context) {
+        if (sInitialized) return;
+
         final Resources res = context.getResources();
 
         final String[] predefinedLayoutSet = res.getStringArray(R.array.predefined_layouts);
@@ -109,6 +113,8 @@ public class SubtypeLocale {
             final String keyboardLayoutSet = keyboardLayoutSetMap[i + 1];
             sLocaleAndExtraValueToKeyboardLayoutSetMap.put(key, keyboardLayoutSet);
         }
+
+        sInitialized = true;
     }
 
     public static String[] getPredefinedKeyboardLayoutSet() {
