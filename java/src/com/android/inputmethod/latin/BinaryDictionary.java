@@ -124,22 +124,17 @@ public class BinaryDictionary extends Dictionary {
             }
         }
 
-        final int count;
-        if (!isGesture && composerSize <= 1) {
-            if (TextUtils.isEmpty(prevWord)) return null;
-            int tmpCount = getBigramsNative(mNativeDict, prevWordCodePointArray,
-                    prevWordCodePointArray.length, mInputCodes, composerSize,
-                    mOutputChars, mOutputScores);
-            count = Math.min(tmpCount, MAX_PREDICTIONS);
-        } else {
-            final InputPointers ips = composer.getInputPointers();
-            final int codesSize = isGesture ? ips.getPointerSize() : composerSize;
-            // proximityInfo and/or prevWordForBigrams may not be null.
-            count = getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
-                ips.getXCoordinates(), ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
+        // TODO: move this test to native code.
+        if (composerSize <= 1 && TextUtils.isEmpty(prevWord)) return null;
+        final InputPointers ips = composer.getInputPointers();
+        final int codesSize = isGesture ? ips.getPointerSize() : composerSize;
+        // proximityInfo and/or prevWordForBigrams may not be null.
+        final int tmpCount = getSuggestionsNative(mNativeDict,
+                proximityInfo.getNativeProximityInfo(), ips.getXCoordinates(),
+                ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
                 mInputCodes, codesSize, 0 /* unused */, isGesture, prevWordCodePointArray,
                 mUseFullEditDistance, mOutputChars, mOutputScores, mSpaceIndices);
-        }
+        final int count = Math.min(tmpCount, MAX_PREDICTIONS);
 
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
         for (int j = 0; j < count; ++j) {
