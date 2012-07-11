@@ -92,8 +92,6 @@ public class BinaryDictionary extends Dictionary {
             int commitPoint, boolean isGesture,
             int[] prevWordCodePointArray, boolean useFullEditDistance, char[] outputChars,
             int[] scores, int[] outputIndices);
-    private native int getBigramsNative(long dict, int[] prevWord, int prevWordLength,
-            int[] inputCodes, int inputCodesLength, char[] outputChars, int[] scores);
     private static native float calcNormalizedScoreNative(
             char[] before, int beforeLength, char[] after, int afterLength, int score);
     private static native int editDistanceNative(

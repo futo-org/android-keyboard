@@ -172,24 +172,6 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object,
     return count;
 }
 
-static int latinime_BinaryDictionary_getBigrams(JNIEnv *env, jobject object, jlong dict,
-        jintArray prevWordArray, jint prevWordLength, jintArray inputArray, jint inputArraySize,
-        jcharArray outputArray, jintArray frequencyArray) {
-    Dictionary *dictionary = (Dictionary*)dict;
-    if (!dictionary) return 0;
-    jint *prevWord = env->GetIntArrayElements(prevWordArray, 0);
-    int *inputCodes = env->GetIntArrayElements(inputArray, 0);
-    jchar *outputChars = env->GetCharArrayElements(outputArray, 0);
-    int *frequencies = env->GetIntArrayElements(frequencyArray, 0);
-    int count = dictionary->getBigrams(prevWord, prevWordLength, inputCodes,
-            inputArraySize, (unsigned short*) outputChars, frequencies);
-    env->ReleaseIntArrayElements(frequencyArray, frequencies, 0);
-    env->ReleaseCharArrayElements(outputArray, outputChars, 0);
-    env->ReleaseIntArrayElements(inputArray, inputCodes, JNI_ABORT);
-    env->ReleaseIntArrayElements(prevWordArray, prevWord, JNI_ABORT);
-    return count;
-}
-
 static jint latinime_BinaryDictionary_getFrequency(JNIEnv *env, jobject object, jlong dict,
         jintArray wordArray, jint wordLength) {
     Dictionary *dictionary = (Dictionary*)dict;
@@ -272,7 +254,6 @@ static JNINativeMethod sMethods[] = {
             (void*) latinime_BinaryDictionary_getSuggestions},
     {"getFrequencyNative", "(J[II)I", (void*)latinime_BinaryDictionary_getFrequency},
     {"isValidBigramNative", "(J[I[I)Z", (void*)latinime_BinaryDictionary_isValidBigram},
-    {"getBigramsNative", "(J[II[II[C[I)I", (void*)latinime_BinaryDictionary_getBigrams},
     {"calcNormalizedScoreNative", "([CI[CII)F",
             (void*)latinime_BinaryDictionary_calcNormalizedScore},
     {"editDistanceNative", "([CI[CI)I", (void*)latinime_BinaryDictionary_editDistance}
