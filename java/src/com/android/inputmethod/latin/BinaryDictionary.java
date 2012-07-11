@@ -111,9 +111,14 @@ public class BinaryDictionary extends Dictionary {
         Arrays.fill(mInputCodes, WordComposer.NOT_A_CODE);
         Arrays.fill(mOutputChars, (char) 0);
         Arrays.fill(mOutputScores, 0);
+        final boolean isGesture = composer.isBatchMode();
+        final boolean isValidPrevWord = (prevWord == null)
+                // TODO: Remove this check. Unfortunately the current gesture recognition code has
+                // a double-free bug.
+                && !isGesture;
         // TODO: toLowerCase in the native code
-        final int[] prevWordCodePointArray = (null == prevWord)
-                ? null : StringUtils.toCodePointArray(prevWord.toString());
+        final int[] prevWordCodePointArray = isValidPrevWord
+                ? StringUtils.toCodePointArray(prevWord.toString()) : null;
         final int composerSize = composer.size();
 
         if (composerSize <= 1 || !composer.isBatchMode()) {
@@ -124,7 +129,7 @@ public class BinaryDictionary extends Dictionary {
         }
 
         final int count;
-        if (!composer.isBatchMode() && composer.size() <= 1) {
+        if (!isGesture && composer.size() <= 1) {
             if (TextUtils.isEmpty(prevWord)) return null;
             int tmpCount = getBigramsNative(mNativeDict, prevWordCodePointArray,
                     prevWordCodePointArray.length, mInputCodes, composerSize,
@@ -132,7 +137,6 @@ public class BinaryDictionary extends Dictionary {
             count = Math.min(tmpCount, MAX_BIGRAMS);
         } else {
             final InputPointers ips = composer.getInputPointers();
-            final boolean isGesture = composer.isBatchMode();
             final int codesSize;
             if (isGesture) {
                 codesSize = ips.getPointerSize();
