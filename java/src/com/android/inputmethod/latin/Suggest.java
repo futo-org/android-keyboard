@@ -215,8 +215,9 @@ public class Suggest {
         // same time, it feels wrong that the SuggestedWord object includes information about
         // the current settings. It may also be useful to know, when the setting is off, whether
         // the word *would* have been auto-corrected.
-        if (!isCorrectionEnabled || !allowsToBeAutoCorrected || wordComposer.isMostlyCaps()
-                || wordComposer.isResumed() || !hasMainDictionary()) {
+        if (!isCorrectionEnabled || !allowsToBeAutoCorrected || !wordComposer.isComposingWord()
+                || wordComposer.isMostlyCaps() || wordComposer.isResumed()
+                || !hasMainDictionary()) {
             // If we don't have a main dictionary, we never want to auto-correct. The reason for
             // this is, the user may have a contact whose name happens to match a valid word in
             // their language, and it will unexpectedly auto-correct. For example, if the user
@@ -278,7 +279,7 @@ public class Suggest {
                 // actual word, it says typedWordValid = false, which looks wrong. We should either
                 // rename the attribute or change the value.
                 !allowsToBeAutoCorrected /* typedWordValid */,
-                !isPrediction && hasAutoCorrection, /* willAutoCorrect */
+                hasAutoCorrection, /* willAutoCorrect */
                 false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
                 isPrediction);
