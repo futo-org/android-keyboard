@@ -38,7 +38,7 @@ BigramDictionary::~BigramDictionary() {
 }
 
 bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequency,
-        const int maxBigrams, int *bigramFreq, unsigned short *bigramChars) const {
+        int *bigramFreq, unsigned short *bigramChars) const {
     word[length] = 0;
     if (DEBUG_DICT) {
 #ifdef FLAG_DBG
@@ -50,7 +50,7 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
 
     // Find the right insertion point
     int insertAt = 0;
-    while (insertAt < maxBigrams) {
+    while (insertAt < MAX_PREDICTIONS) {
         if (frequency > bigramFreq[insertAt] || (bigramFreq[insertAt] == frequency
                 && length < Dictionary::wideStrLen(bigramChars + insertAt * MAX_WORD_LENGTH))) {
             break;
@@ -58,16 +58,16 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
         insertAt++;
     }
     if (DEBUG_DICT) {
-        AKLOGI("Bigram: InsertAt -> %d maxBigrams: %d", insertAt, maxBigrams);
+        AKLOGI("Bigram: InsertAt -> %d MAX_PREDICTIONS: %d", insertAt, MAX_PREDICTIONS);
     }
-    if (insertAt < maxBigrams) {
+    if (insertAt < MAX_PREDICTIONS) {
         memmove((char*) bigramFreq + (insertAt + 1) * sizeof(bigramFreq[0]),
                (char*) bigramFreq + insertAt * sizeof(bigramFreq[0]),
-               (maxBigrams - insertAt - 1) * sizeof(bigramFreq[0]));
+               (MAX_PREDICTIONS - insertAt - 1) * sizeof(bigramFreq[0]));
         bigramFreq[insertAt] = frequency;
         memmove((char*) bigramChars + (insertAt + 1) * MAX_WORD_LENGTH * sizeof(short),
                (char*) bigramChars + (insertAt    ) * MAX_WORD_LENGTH * sizeof(short),
-               (maxBigrams - insertAt - 1) * sizeof(short) * MAX_WORD_LENGTH);
+               (MAX_PREDICTIONS - insertAt - 1) * sizeof(short) * MAX_WORD_LENGTH);
         unsigned short *dest = bigramChars + (insertAt    ) * MAX_WORD_LENGTH;
         while (length--) {
             *dest++ = *word++;
@@ -137,7 +137,7 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
             const int frequency =
                     BinaryFormat::computeFrequencyForBigram(unigramFreq, bigramFreqTemp);
             if (addWordBigram(
-                    bigramBuffer, length, frequency, maxBigrams, bigramFreq, bigramChars)) {
+                    bigramBuffer, length, frequency, bigramFreq, bigramChars)) {
                 ++bigramCount;
             }
         }

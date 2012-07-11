@@ -38,7 +38,7 @@ class BigramDictionary {
     ~BigramDictionary();
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BigramDictionary);
-    bool addWordBigram(unsigned short *word, int length, int frequency, const int maxBigrams,
+    bool addWordBigram(unsigned short *word, int length, int frequency,
             int *bigramFreq, unsigned short *bigramChars) const;
     int getBigramAddress(int *pos, bool advance);
     int getBigramFreq(int *pos);
