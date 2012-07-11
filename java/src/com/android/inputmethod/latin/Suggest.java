@@ -194,12 +194,10 @@ public class Suggest {
         }
         if (wordComposerForLookup.size() <= 1) {
             // At first character typed, search only the bigrams
-            if (!TextUtils.isEmpty(prevWordForBigram)) {
-                for (final String key : mDictionaries.keySet()) {
-                    final Dictionary dictionary = mDictionaries.get(key);
-                    suggestionsSet.addAll(dictionary.getSuggestions(wordComposerForLookup,
-                            prevWordForBigram, proximityInfo));
-                }
+            for (final String key : mDictionaries.keySet()) {
+                final Dictionary dictionary = mDictionaries.get(key);
+                suggestionsSet.addAll(dictionary.getSuggestions(
+                        wordComposerForLookup, prevWordForBigram, proximityInfo));
             }
         } else {
             // At second character typed, search the unigrams (scores being affected by bigrams)

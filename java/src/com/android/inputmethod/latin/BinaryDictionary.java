@@ -122,8 +122,6 @@ public class BinaryDictionary extends Dictionary {
             }
         }
 
-        // TODO: move this test to native code.
-        if (composerSize <= 1 && TextUtils.isEmpty(prevWord)) return null;
         final InputPointers ips = composer.getInputPointers();
         final int codesSize = isGesture ? ips.getPointerSize() : composerSize;
         // proximityInfo and/or prevWordForBigrams may not be null.

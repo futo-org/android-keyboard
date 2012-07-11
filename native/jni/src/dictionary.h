@@ -60,6 +60,7 @@ class Dictionary {
 
     int getBigrams(const int32_t *word, int length, int *codes, int codesSize,
             unsigned short *outWords, int *frequencies) const {
+        if (length <= 0) return 0;
         return mBigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies);
     }
 
