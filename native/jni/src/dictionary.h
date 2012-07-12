@@ -31,6 +31,17 @@ namespace latinime {
 
 class Dictionary {
  public:
+    // Taken from SuggestedWords.java
+    const static int KIND_TYPED = 0; // What user typed
+    const static int KIND_CORRECTION = 1; // Simple correction/suggestion
+    const static int KIND_COMPLETION = 2; // Completion (suggestion with appended chars)
+    const static int KIND_WHITELIST = 3; // Whitelisted word
+    const static int KIND_BLACKLIST = 4; // Blacklisted word
+    const static int KIND_HARDCODED = 5; // Hardcoded suggestion, e.g. punctuation
+    const static int KIND_APP_DEFINED = 6; // Suggested by the application
+    const static int KIND_SHORTCUT = 7; // A shortcut
+    const static int KIND_PREDICTION = 8; // A prediction (== a suggestion with no input)
+
     Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int typedLetterMultipler,
             int fullWordMultiplier, int maxWordLength, int maxWords, int maxPredictions);
 

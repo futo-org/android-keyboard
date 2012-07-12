@@ -39,7 +39,7 @@ class BigramDictionary {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BigramDictionary);
     bool addWordBigram(unsigned short *word, int length, int frequency,
-            int *bigramFreq, unsigned short *bigramChars) const;
+            int *bigramFreq, unsigned short *bigramChars, int *outputTypes) const;
     int getBigramAddress(int *pos, bool advance);
     int getBigramFreq(int *pos);
     void searchForTerminalNode(int addressLookingFor, int frequency);
