@@ -35,7 +35,7 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"بازشدن با فشار کلید"</string>
     <string name="general_category" msgid="1859088467017573195">"کلی"</string>
     <string name="correction_category" msgid="2236750915056607613">"تصحیح متن"</string>
-    <string name="misc_category" msgid="6894192814868233453">"سایر گزینه ها"</string>
+    <string name="misc_category" msgid="6894192814868233453">"سایر گزینه‌ها"</string>
     <string name="advanced_settings" msgid="362895144495591463">"تنظیمات پیشرفته"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"گزینه‌هایی برای حرفه‌ای‌ها"</string>
     <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"تغییر به دیگر روشهای ورودی"</string>
@@ -55,7 +55,7 @@
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"نمایش در حالت عمودی"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"همیشه پنهان شود"</string>
     <string name="auto_correction" msgid="4979925752001319458">"تصحیح خودکار"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"کلید فاصله و علائم نگارشی به صورت خودکار کلماتی را که غلط تایپ شده اند تصحیح می کنند"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"کلید فاصله و علائم نگارشی به صورت خودکار کلماتی را که غلط تایپ شده‌اند تصحیح می کنند"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"خاموش"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"متوسط"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"فعال"</string>
@@ -124,12 +124,12 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"فعال کردن بازخورد کاربر"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"با ارسال خودکار آمارهای کاربرد و گزارش های خرابی به Google، به بهبود این ویرایشگر روش ورودی کمک کنید."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"طرح زمینه صفحه کلید"</string>
-    <string name="subtype_en_GB" msgid="88170601942311355">"انگیسی (UK)"</string>
-    <string name="subtype_en_US" msgid="6160452336634534239">"انگیسی (US)"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"انگلیسی (بریتانیا)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"انگلیسی (امریکا)"</string>
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"انگلیسی (انگلستان) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_with_layout_en_US" msgid="1362581347576714579">"انگلیسی (ایالات متحده) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
     <string name="subtype_no_language" msgid="141420857808801746">"زبانی موجود نیست"</string>
-    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"هیچ کدام از زبانها (QWERTY)"</string>
+    <string name="subtype_no_language_qwerty" msgid="2956121451616633133">"بدون زبان (QWERTY)"</string>
     <string name="subtype_no_language_qwertz" msgid="1177848172397202890">"هیچکدام از زبان‌ها (QWERTZ)"</string>
     <string name="subtype_no_language_azerty" msgid="8721460968141187394">"هیچکدام از زبان‌ها (AZERTY)"</string>
     <string name="subtype_no_language_dvorak" msgid="3122976737669823935">"هیچکدام از زبان‌ها (Dvorak)"</string>
