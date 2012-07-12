@@ -107,19 +107,14 @@
     <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Anotar car. data no reg."</string>
     <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Carimbo de data gravado"</string>
     <string name="do_not_log_this_session" msgid="413762473641146336">"Não registar esta sessão"</string>
-    <!-- no translation found for enable_session_logging (4202559020594036225) -->
-    <skip />
-    <!-- no translation found for log_whole_session_history (7087712461632081351) -->
-    <skip />
+    <string name="enable_session_logging" msgid="4202559020594036225">"Ativar registos de sessão"</string>
+    <string name="log_whole_session_history" msgid="7087712461632081351">"Registar hist. de sessões completo"</string>
     <string name="notify_session_log_deleting" msgid="3299507647764414623">"A eliminar reg. da sessão"</string>
     <string name="notify_session_log_deleted" msgid="8687927130100934686">"Reg. de sessão eliminado"</string>
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Reg. de sessão NÃO elim."</string>
-    <!-- no translation found for notify_session_history_logged (7723983399468056391) -->
-    <skip />
-    <!-- no translation found for notify_session_history_not_logged (6597910011368015361) -->
-    <skip />
-    <!-- no translation found for notify_session_logging_enabled (8549561596936177661) -->
-    <skip />
+    <string name="notify_session_history_logged" msgid="7723983399468056391">"Histórico de sessões registado"</string>
+    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"Erro: hist. de sessões NÃO regist."</string>
+    <string name="notify_session_logging_enabled" msgid="8549561596936177661">"Registo de sessões ativado"</string>
     <string name="select_language" msgid="3693815588777926848">"Idiomas de introdução"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Toque novamente para guardar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicionário disponível"</string>

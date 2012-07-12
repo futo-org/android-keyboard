@@ -20,8 +20,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for english_ime_name (178705338187710493) -->
-    <skip />
+    <string name="english_ime_name" msgid="178705338187710493">"Android-tastatur"</string>
     <string name="spell_checker_service_name" msgid="6268342166872202903">"Android-stavekontroll"</string>
     <string name="english_ime_settings" msgid="7470027018752707691">"Innstillinger for Android-tastatur"</string>
     <string name="android_spell_checker_settings" msgid="8397842018475560441">"Innstillinger for stavekontroll"</string>

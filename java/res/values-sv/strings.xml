@@ -107,19 +107,14 @@
     <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Markera tidpunkt i loggen"</string>
     <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Tidpunkten har sparats"</string>
     <string name="do_not_log_this_session" msgid="413762473641146336">"Logga inte detta besök"</string>
-    <!-- no translation found for enable_session_logging (4202559020594036225) -->
-    <skip />
-    <!-- no translation found for log_whole_session_history (7087712461632081351) -->
-    <skip />
+    <string name="enable_session_logging" msgid="4202559020594036225">"Aktivera sessionsloggning"</string>
+    <string name="log_whole_session_history" msgid="7087712461632081351">"Logga hela sessionshistoriken"</string>
     <string name="notify_session_log_deleting" msgid="3299507647764414623">"Besöksloggen tas bort"</string>
     <string name="notify_session_log_deleted" msgid="8687927130100934686">"Besöksloggen togs bort"</string>
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Besöksloggen togs EJ bort"</string>
-    <!-- no translation found for notify_session_history_logged (7723983399468056391) -->
-    <skip />
-    <!-- no translation found for notify_session_history_not_logged (6597910011368015361) -->
-    <skip />
-    <!-- no translation found for notify_session_logging_enabled (8549561596936177661) -->
-    <skip />
+    <string name="notify_session_history_logged" msgid="7723983399468056391">"Sessionshistoriken har loggats"</string>
+    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"Fel: historiken har INTE loggats"</string>
+    <string name="notify_session_logging_enabled" msgid="8549561596936177661">"Sessionsloggning är aktiverat"</string>
     <string name="select_language" msgid="3693815588777926848">"Inmatningsspråk"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Spara genom att trycka igen"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"En ordlista är tillgänglig"</string>
