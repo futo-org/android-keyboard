@@ -173,7 +173,8 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
         const int *xcoordinates,
         const int *ycoordinates, const int *codes, const int codesSize,
         const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
-        const bool useFullEditDistance, unsigned short *outWords, int *frequencies) const {
+        const bool useFullEditDistance, unsigned short *outWords, int *frequencies,
+        int *outputTypes) const {
 
     WordsPriorityQueuePool queuePool(MAX_WORDS, SUB_QUEUE_MAX_WORDS, MAX_WORD_LENGTH);
     queuePool.clearAll();

@@ -55,6 +55,7 @@ public class BinaryDictionary extends Dictionary {
     private final char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_RESULTS];
     private final int[] mSpaceIndices = new int[MAX_SPACES];
     private final int[] mOutputScores = new int[MAX_RESULTS];
+    private final int[] mOutputTypes = new int[MAX_RESULTS];
 
     private final boolean mUseFullEditDistance;
 
@@ -91,7 +92,7 @@ public class BinaryDictionary extends Dictionary {
             int[] yCoordinates, int[] times, int[] pointerIds, int[] inputCodes, int codesSize,
             int commitPoint, boolean isGesture,
             int[] prevWordCodePointArray, boolean useFullEditDistance, char[] outputChars,
-            int[] scores, int[] outputIndices);
+            int[] outputScores, int[] outputIndices, int[] outputTypes);
     private static native float calcNormalizedScoreNative(
             char[] before, int beforeLength, char[] after, int afterLength, int score);
     private static native int editDistanceNative(
@@ -128,8 +129,8 @@ public class BinaryDictionary extends Dictionary {
         final int tmpCount = getSuggestionsNative(mNativeDict,
                 proximityInfo.getNativeProximityInfo(), ips.getXCoordinates(),
                 ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
-                mInputCodes, codesSize, 0 /* unused */, isGesture, prevWordCodePointArray,
-                mUseFullEditDistance, mOutputChars, mOutputScores, mSpaceIndices);
+                mInputCodes, codesSize, 0 /* commitPoint */, isGesture, prevWordCodePointArray,
+                mUseFullEditDistance, mOutputChars, mOutputScores, mSpaceIndices, mOutputTypes);
         final int count = Math.min(tmpCount, MAX_PREDICTIONS);
 
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();

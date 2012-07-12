@@ -39,13 +39,13 @@ class GestureDecoderWrapper : public IncrementalDecoderInterface {
 
     int getSuggestions(ProximityInfo *pInfo, int *inputXs, int *inputYs, int *times,
             int *pointerIds, int *codes, int inputSize, int commitPoint,
-            unsigned short *outWords, int *frequencies, int *outputIndices) {
+            unsigned short *outWords, int *frequencies, int *outputIndices, int *outputTypes) {
         if (!mIncrementalDecoderInterface) {
             return 0;
         }
         return mIncrementalDecoderInterface->getSuggestions(
                 pInfo, inputXs, inputYs, times, pointerIds, codes, inputSize, commitPoint,
-                outWords, frequencies, outputIndices);
+                outWords, frequencies, outputIndices, outputTypes);
     }
 
     void reset() {

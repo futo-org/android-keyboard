@@ -29,7 +29,7 @@ class BigramDictionary {
  public:
     BigramDictionary(const unsigned char *dict, int maxWordLength, int maxPredictions);
     int getBigrams(const int32_t *word, int length, int *inputCodes, int codesSize,
-            unsigned short *outWords, int *frequencies) const;
+            unsigned short *outWords, int *frequencies, int *outputTypes) const;
     int getBigramListPositionForWord(const int32_t *prevWord, const int prevWordLength,
             const bool forceLowerCaseSearch) const;
     void fillBigramAddressToFrequencyMapAndFilter(const int32_t *prevWord, const int prevWordLength,

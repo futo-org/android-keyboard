@@ -88,8 +88,7 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
  * codesSize: the size of the codes array.
  * bigramChars: an array for output, at the same format as outwords for getSuggestions.
  * bigramFreq: an array to output frequencies.
- * maxWordLength: the maximum size of a word.
- * maxBigrams: the maximum number of bigrams fitting in the bigramChars array.
+ * outputTypes: an array to output types.
  * This method returns the number of bigrams this word has, for backward compatibility.
  * Note: this is not the number of bigrams output in the array, which is the number of
  * bigrams this word has WHOSE first letter also matches the letter the user typed.
@@ -99,7 +98,7 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
  * reduce their scope to the ones that match the first letter.
  */
 int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, int *inputCodes,
-        int codesSize, unsigned short *bigramChars, int *bigramFreq) const {
+        int codesSize, unsigned short *bigramChars, int *bigramFreq, int *outputTypes) const {
     // TODO: remove unused arguments, and refrain from storing stuff in members of this class
     // TODO: have "in" arguments before "out" ones, and make out args explicit in the name
 

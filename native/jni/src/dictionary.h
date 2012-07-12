@@ -38,13 +38,13 @@ class Dictionary {
             int *times, int *pointerIds, int *codes, int codesSize, int *prevWordChars,
             int prevWordLength, int commitPoint, bool isGesture,
             bool useFullEditDistance, unsigned short *outWords,
-            int *frequencies, int *spaceIndices) {
+            int *frequencies, int *spaceIndices, int *outputTypes) {
         int result = 0;
         if (isGesture) {
             mGestureDecoder->setPrevWord(prevWordChars, prevWordLength);
             result = mGestureDecoder->getSuggestions(proximityInfo, xcoordinates, ycoordinates,
                     times, pointerIds, codes, codesSize, commitPoint,
-                    outWords, frequencies, spaceIndices);
+                    outWords, frequencies, spaceIndices, outputTypes);
             return result;
         } else {
             std::map<int, int> bigramMap;
@@ -53,15 +53,16 @@ class Dictionary {
                     prevWordLength, &bigramMap, bigramFilter);
             result = mUnigramDictionary->getSuggestions(proximityInfo, xcoordinates,
                     ycoordinates, codes, codesSize, &bigramMap, bigramFilter,
-                    useFullEditDistance, outWords, frequencies);
+                    useFullEditDistance, outWords, frequencies, outputTypes);
             return result;
         }
     }
 
     int getBigrams(const int32_t *word, int length, int *codes, int codesSize,
-            unsigned short *outWords, int *frequencies) const {
+            unsigned short *outWords, int *frequencies, int *outputTypes) const {
         if (length <= 0) return 0;
-        return mBigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies);
+        return mBigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies,
+                outputTypes);
     }
 
     int getFrequency(const int32_t *word, int length) const;
