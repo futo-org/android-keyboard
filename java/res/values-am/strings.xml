@@ -113,7 +113,7 @@
     <string name="notify_session_log_deleted" msgid="8687927130100934686">"የክፍለ ጊዜ ምዝግብ ማስታወሻ ተሰርዟል"</string>
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"የክፍለጊዜ ምዝግብ ማስታወሻ አልተሰረዘም"</string>
     <string name="notify_session_history_logged" msgid="7723983399468056391">"የክፍለጊዜ ታሪክ ተመዝግቧል"</string>
-    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"ስህተት፦ክፍለጊዜ ታሪክ አልተመዘገበም"</string>
+    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"ስህተት፦ ክፍለጊዜ ታሪክ አልተመዘገበም"</string>
     <string name="notify_session_logging_enabled" msgid="8549561596936177661">"ክፍለጊዜ ምዝገባ ነቅቷል"</string>
     <string name="select_language" msgid="3693815588777926848">"ቋንቋዎች አግቤት"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"ለማስቀመጥ እንደገና ንካ"</string>

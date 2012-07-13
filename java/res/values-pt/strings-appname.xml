@@ -20,8 +20,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for english_ime_name (178705338187710493) -->
-    <skip />
+    <string name="english_ime_name" msgid="178705338187710493">"Teclado do Android"</string>
     <string name="spell_checker_service_name" msgid="6268342166872202903">"Corretor ortográfico do Android"</string>
     <string name="english_ime_settings" msgid="7470027018752707691">"Configurações de teclado do Android"</string>
     <string name="android_spell_checker_settings" msgid="8397842018475560441">"Configurações de verificação ortográfica"</string>
