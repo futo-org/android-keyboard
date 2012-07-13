@@ -20,8 +20,11 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name" msgid="178705338187710493">"Papan kekunci Android"</string>
-    <string name="spell_checker_service_name" msgid="6268342166872202903">"Penyemak ejaan Android"</string>
-    <string name="english_ime_settings" msgid="7470027018752707691">"Tetapan papan kekunci Android"</string>
-    <string name="android_spell_checker_settings" msgid="8397842018475560441">"Tetapan penyemakan ejaan"</string>
+    <string name="english_ime_name" msgid="178705338187710493">"Klawiatura Android"</string>
+    <!-- no translation found for spell_checker_service_name (6268342166872202903) -->
+    <skip />
+    <!-- no translation found for english_ime_settings (7470027018752707691) -->
+    <skip />
+    <!-- no translation found for android_spell_checker_settings (8397842018475560441) -->
+    <skip />
 </resources>
