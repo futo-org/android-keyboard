@@ -305,8 +305,11 @@ public class WordComposer {
                 && type != LastComposedWord.COMMIT_TYPE_MANUAL_PICK) {
             lastComposedWord.deactivate();
         }
+        mCapsCount = 0;
+        mIsBatchMode = false;
         mTypedWord.setLength(0);
         mTrailingSingleQuotesCount = 0;
+        mIsFirstCharCapitalized = false;
         refreshSize();
         mAutoCorrection = null;
         mIsResumed = false;
