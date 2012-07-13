@@ -35,10 +35,10 @@ public class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDictionar
     }
 
     @Override
-    public synchronized ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
+    public synchronized ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer codes,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
         syncReloadDictionaryIfRequired();
-        return getWordsInner(codes, prevWordForBigrams, proximityInfo);
+        return super.getSuggestions(codes, prevWordForBigrams, proximityInfo);
     }
 
     @Override

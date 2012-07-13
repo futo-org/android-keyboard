@@ -20,6 +20,10 @@
   boolean equalsIgnoreCase(...);
 }
 
+-keep class com.android.inputmethod.latin.InputPointers {
+  *;
+}
+
 -keep class com.android.inputmethod.latin.spellcheck.SpellCheckerSettingsFragment {
   *;
 }
@@ -38,6 +42,7 @@
 
 -keep class com.android.inputmethod.latin.ResearchLogger {
   void flush();
+  void publishCurrentLogUnit(...);
 }
 
 -keep class com.android.inputmethod.keyboard.KeyboardLayoutSet$Builder {

@@ -20,14 +20,10 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name" msgid="7252517407088836577">"Клавиатура на Android"</string>
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Клавиатура на Android (AOSP)"</string>
-    <string name="english_ime_settings" msgid="6661589557206947774">"Настройки на клавиатурата на Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Опции за въвеждане"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"Команди за рег. файл за проучвания"</string>
-    <string name="spell_checker_service_name" msgid="7338064335159755926">"Програма за правописна проверка за Android"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Програма за правописна проверка за Android (AOSP)"</string>
-    <string name="android_spell_checker_settings" msgid="5822324635435443689">"Настройки за проверка на правописа"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Търсене на имена"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"За проверка на правописа се ползват записи от списъка с контакти"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Да вибрира при натискане на клавиш"</string>
@@ -111,9 +107,19 @@
     <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Отбелязване на часа в рег. файл"</string>
     <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Часът е записан"</string>
     <string name="do_not_log_this_session" msgid="413762473641146336">"Без регистр. на сесията"</string>
+    <!-- no translation found for enable_session_logging (4202559020594036225) -->
+    <skip />
+    <!-- no translation found for log_whole_session_history (7087712461632081351) -->
+    <skip />
     <string name="notify_session_log_deleting" msgid="3299507647764414623">"Рег. файл на сесията се изтрива"</string>
     <string name="notify_session_log_deleted" msgid="8687927130100934686">"Рег. файл на сесията е изтрит"</string>
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Рег. файл на сесията НЕ Е изтрит"</string>
+    <!-- no translation found for notify_session_history_logged (7723983399468056391) -->
+    <skip />
+    <!-- no translation found for notify_session_history_not_logged (6597910011368015361) -->
+    <skip />
+    <!-- no translation found for notify_session_logging_enabled (8549561596936177661) -->
+    <skip />
     <string name="select_language" msgid="3693815588777926848">"Езици за въвеждане"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Докоснете отново, за да запазите"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Има достъп до речник"</string>

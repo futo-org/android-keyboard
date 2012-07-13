@@ -153,17 +153,22 @@ public class Suggest {
         mAutoCorrectionThreshold = threshold;
     }
 
-    // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
     public SuggestedWords getSuggestedWords(
             final WordComposer wordComposer, CharSequence prevWordForBigram,
-            final ProximityInfo proximityInfo, final boolean isCorrectionEnabled,
-            // TODO: remove isPrediction parameter. It effectively means the same thing
-            // as wordComposer.size() <= 1
-            final boolean isPrediction) {
+            final ProximityInfo proximityInfo, final boolean isCorrectionEnabled) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
-        final boolean isFirstCharCapitalized =
-                !isPrediction && wordComposer.isFirstCharCapitalized();
-        final boolean isAllUpperCase = !isPrediction && wordComposer.isAllUpperCase();
+        if (wordComposer.isBatchMode()) {
+            return getSuggestedWordsForBatchInput(wordComposer, prevWordForBigram, proximityInfo);
+        } else {
+            return getSuggestedWordsForTypingInput(wordComposer, prevWordForBigram, proximityInfo,
+                    isCorrectionEnabled);
+        }
+    }
+
+    // Retrieves suggestions for the typing input.
+    private SuggestedWords getSuggestedWordsForTypingInput(
+            final WordComposer wordComposer, CharSequence prevWordForBigram,
+            final ProximityInfo proximityInfo, final boolean isCorrectionEnabled) {
         final int trailingSingleQuotesCount = wordComposer.trailingSingleQuotesCount();
         final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
                 MAX_SUGGESTIONS);
@@ -174,34 +179,20 @@ public class Suggest {
                 : typedWord;
         LatinImeLogger.onAddSuggestedWord(typedWord, Dictionary.TYPE_USER_TYPED);
 
-        if (wordComposer.size() <= 1 && isCorrectionEnabled) {
-            // At first character typed, search only the bigrams
-            if (!TextUtils.isEmpty(prevWordForBigram)) {
-                for (final String key : mDictionaries.keySet()) {
-                    final Dictionary dictionary = mDictionaries.get(key);
-                    suggestionsSet.addAll(dictionary.getBigrams(wordComposer, prevWordForBigram));
-                }
+        final WordComposer wordComposerForLookup;
+        if (trailingSingleQuotesCount > 0) {
+            wordComposerForLookup = new WordComposer(wordComposer);
+            for (int i = trailingSingleQuotesCount - 1; i >= 0; --i) {
+                wordComposerForLookup.deleteLast();
             }
-        } else if (wordComposer.size() > 1) {
-            final WordComposer wordComposerForLookup;
-            if (trailingSingleQuotesCount > 0) {
-                wordComposerForLookup = new WordComposer(wordComposer);
-                for (int i = trailingSingleQuotesCount - 1; i >= 0; --i) {
-                    wordComposerForLookup.deleteLast();
-                }
-            } else {
-                wordComposerForLookup = wordComposer;
-            }
-            // At second character typed, search the unigrams (scores being affected by bigrams)
-            for (final String key : mDictionaries.keySet()) {
-                // Skip UserUnigramDictionary and WhitelistDictionary to lookup
-                if (key.equals(Dictionary.TYPE_USER_HISTORY)
-                        || key.equals(Dictionary.TYPE_WHITELIST))
-                    continue;
-                final Dictionary dictionary = mDictionaries.get(key);
-                suggestionsSet.addAll(dictionary.getWords(
-                        wordComposerForLookup, prevWordForBigram, proximityInfo));
-            }
+        } else {
+            wordComposerForLookup = wordComposer;
+        }
+
+        for (final String key : mDictionaries.keySet()) {
+            final Dictionary dictionary = mDictionaries.get(key);
+            suggestionsSet.addAll(dictionary.getSuggestions(
+                    wordComposerForLookup, prevWordForBigram, proximityInfo));
         }
 
         // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
@@ -214,10 +205,23 @@ public class Suggest {
 
         final CharSequence whitelistedWord =
                 mWhiteListDictionary.getWhitelistedWord(consideredWord);
+        if (whitelistedWord != null) {
+            // MAX_SCORE ensures this will be considered strong enough to be auto-corrected
+            suggestionsSet.add(new SuggestedWordInfo(whitelistedWord,
+                    SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST,
+                    Dictionary.TYPE_WHITELIST));
+        }
 
         final boolean hasAutoCorrection;
-        if (!isCorrectionEnabled || !allowsToBeAutoCorrected || wordComposer.isMostlyCaps()
-                || wordComposer.isResumed() || !hasMainDictionary()) {
+        // TODO: using isCorrectionEnabled here is not very good. It's probably useless, because
+        // any attempt to do auto-correction is already shielded with a test for this flag; at the
+        // same time, it feels wrong that the SuggestedWord object includes information about
+        // the current settings. It may also be useful to know, when the setting is off, whether
+        // the word *would* have been auto-corrected.
+        if (!isCorrectionEnabled || !allowsToBeAutoCorrected || !wordComposer.isComposingWord()
+                || suggestionsSet.isEmpty()
+                || wordComposer.isMostlyCaps() || wordComposer.isResumed()
+                || !hasMainDictionary()) {
             // If we don't have a main dictionary, we never want to auto-correct. The reason for
             // this is, the user may have a contact whose name happens to match a valid word in
             // their language, and it will unexpectedly auto-correct. For example, if the user
@@ -225,26 +229,16 @@ public class Suggest {
             // would always auto-correct to "Will" which is unwanted. Hence, no main dict => no
             // auto-correct.
             hasAutoCorrection = false;
-        } else if (null != whitelistedWord) {
-            hasAutoCorrection = true;
-        } else if (suggestionsSet.isEmpty()) {
-            hasAutoCorrection = false;
-        } else if (AutoCorrection.suggestionExceedsAutoCorrectionThreshold(suggestionsSet.first(),
-                consideredWord, mAutoCorrectionThreshold)) {
-            hasAutoCorrection = true;
         } else {
-            hasAutoCorrection = false;
-        }
-
-        if (whitelistedWord != null) {
-            suggestionsSet.add(new SuggestedWordInfo(whitelistedWord,
-                    SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST,
-                    Dictionary.TYPE_WHITELIST));
+            hasAutoCorrection = AutoCorrection.suggestionExceedsAutoCorrectionThreshold(
+                    suggestionsSet.first(), consideredWord, mAutoCorrectionThreshold);
         }
 
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 new ArrayList<SuggestedWordInfo>(suggestionsSet);
         final int suggestionsCount = suggestionsContainer.size();
+        final boolean isFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
+        final boolean isAllUpperCase = wordComposer.isAllUpperCase();
         if (isFirstCharCapitalized || isAllUpperCase || 0 != trailingSingleQuotesCount) {
             for (int i = 0; i < suggestionsCount; ++i) {
                 final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
@@ -278,11 +272,42 @@ public class Suggest {
                 // TODO: this first argument is lying. If this is a whitelisted word which is an
                 // actual word, it says typedWordValid = false, which looks wrong. We should either
                 // rename the attribute or change the value.
-                !isPrediction && !allowsToBeAutoCorrected /* typedWordValid */,
-                !isPrediction && hasAutoCorrection, /* willAutoCorrect */
+                !allowsToBeAutoCorrected /* typedWordValid */,
+                hasAutoCorrection, /* willAutoCorrect */
                 false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
-                isPrediction);
+                !wordComposer.isComposingWord() /* isPrediction */);
+    }
+
+    // Retrieves suggestions for the batch input.
+    private SuggestedWords getSuggestedWordsForBatchInput(
+            final WordComposer wordComposer, CharSequence prevWordForBigram,
+            final ProximityInfo proximityInfo) {
+        final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
+                MAX_SUGGESTIONS);
+
+        // At second character typed, search the unigrams (scores being affected by bigrams)
+        for (final String key : mDictionaries.keySet()) {
+            // Skip UserUnigramDictionary and WhitelistDictionary to lookup
+            if (key.equals(Dictionary.TYPE_USER_HISTORY)
+                    || key.equals(Dictionary.TYPE_WHITELIST)) {
+                continue;
+            }
+            final Dictionary dictionary = mDictionaries.get(key);
+            suggestionsSet.addAll(dictionary.getSuggestions(
+                    wordComposer, prevWordForBigram, proximityInfo));
+        }
+
+        final ArrayList<SuggestedWordInfo> suggestionsContainer =
+                new ArrayList<SuggestedWordInfo>(suggestionsSet);
+
+        SuggestedWordInfo.removeDups(suggestionsContainer);
+        return new SuggestedWords(suggestionsContainer,
+                true /* typedWordValid */,
+                true /* willAutoCorrect */,
+                false /* isPunctuationSuggestions */,
+                false /* isObsoleteSuggestions */,
+                false /* isPrediction */);
     }
 
     private static ArrayList<SuggestedWordInfo> getSuggestionsInfoListWithDebugInfo(

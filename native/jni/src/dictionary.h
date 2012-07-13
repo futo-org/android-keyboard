@@ -31,20 +31,31 @@ namespace latinime {
 
 class Dictionary {
  public:
+    // Taken from SuggestedWords.java
+    const static int KIND_TYPED = 0; // What user typed
+    const static int KIND_CORRECTION = 1; // Simple correction/suggestion
+    const static int KIND_COMPLETION = 2; // Completion (suggestion with appended chars)
+    const static int KIND_WHITELIST = 3; // Whitelisted word
+    const static int KIND_BLACKLIST = 4; // Blacklisted word
+    const static int KIND_HARDCODED = 5; // Hardcoded suggestion, e.g. punctuation
+    const static int KIND_APP_DEFINED = 6; // Suggested by the application
+    const static int KIND_SHORTCUT = 7; // A shortcut
+    const static int KIND_PREDICTION = 8; // A prediction (== a suggestion with no input)
+
     Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int typedLetterMultipler,
-            int fullWordMultiplier, int maxWordLength, int maxWords);
+            int fullWordMultiplier, int maxWordLength, int maxWords, int maxPredictions);
 
     int getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
             int *times, int *pointerIds, int *codes, int codesSize, int *prevWordChars,
             int prevWordLength, int commitPoint, bool isGesture,
             bool useFullEditDistance, unsigned short *outWords,
-            int *frequencies, int *spaceIndices) {
+            int *frequencies, int *spaceIndices, int *outputTypes) {
         int result = 0;
         if (isGesture) {
             mGestureDecoder->setPrevWord(prevWordChars, prevWordLength);
             result = mGestureDecoder->getSuggestions(proximityInfo, xcoordinates, ycoordinates,
                     times, pointerIds, codes, codesSize, commitPoint,
-                    outWords, frequencies, spaceIndices);
+                    outWords, frequencies, spaceIndices, outputTypes);
             return result;
         } else {
             std::map<int, int> bigramMap;
@@ -53,15 +64,16 @@ class Dictionary {
                     prevWordLength, &bigramMap, bigramFilter);
             result = mUnigramDictionary->getSuggestions(proximityInfo, xcoordinates,
                     ycoordinates, codes, codesSize, &bigramMap, bigramFilter,
-                    useFullEditDistance, outWords, frequencies);
+                    useFullEditDistance, outWords, frequencies, outputTypes);
             return result;
         }
     }
 
     int getBigrams(const int32_t *word, int length, int *codes, int codesSize,
-            unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams) const {
+            unsigned short *outWords, int *frequencies, int *outputTypes) const {
+        if (length <= 0) return 0;
         return mBigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies,
-                maxWordLength, maxBigrams);
+                outputTypes);
     }
 
     int getFrequency(const int32_t *word, int length) const;

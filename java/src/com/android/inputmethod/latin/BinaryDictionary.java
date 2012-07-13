@@ -45,17 +45,17 @@ public class BinaryDictionary extends Dictionary {
     public static final int MAX_SPACES = 16;
 
     private static final String TAG = "BinaryDictionary";
-    private static final int MAX_BIGRAMS = 60;
+    private static final int MAX_PREDICTIONS = 60;
+    private static final int MAX_RESULTS = Math.max(MAX_PREDICTIONS, MAX_WORDS);
 
     private static final int TYPED_LETTER_MULTIPLIER = 2;
 
     private long mNativeDict;
     private final int[] mInputCodes = new int[MAX_WORD_LENGTH];
-    private final char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_WORDS];
-    private final char[] mOutputChars_bigrams = new char[MAX_WORD_LENGTH * MAX_BIGRAMS];
+    private final char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_RESULTS];
     private final int[] mSpaceIndices = new int[MAX_SPACES];
-    private final int[] mScores = new int[MAX_WORDS];
-    private final int[] mBigramScores = new int[MAX_BIGRAMS];
+    private final int[] mOutputScores = new int[MAX_RESULTS];
+    private final int[] mOutputTypes = new int[MAX_RESULTS];
 
     private final boolean mUseFullEditDistance;
 
@@ -83,7 +83,8 @@ public class BinaryDictionary extends Dictionary {
     }
 
     private native long openNative(String sourceDir, long dictOffset, long dictSize,
-            int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength, int maxWords);
+            int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength, int maxWords,
+            int maxPredictions);
     private native void closeNative(long dict);
     private native int getFrequencyNative(long dict, int[] word, int wordLength);
     private native boolean isValidBigramNative(long dict, int[] word1, int[] word2);
@@ -91,78 +92,59 @@ public class BinaryDictionary extends Dictionary {
             int[] yCoordinates, int[] times, int[] pointerIds, int[] inputCodes, int codesSize,
             int commitPoint, boolean isGesture,
             int[] prevWordCodePointArray, boolean useFullEditDistance, char[] outputChars,
-            int[] scores, int[] outputIndices);
-    private native int getBigramsNative(long dict, int[] prevWord, int prevWordLength,
-            int[] inputCodes, int inputCodesLength, char[] outputChars, int[] scores,
-            int maxWordLength, int maxBigrams);
+            int[] outputScores, int[] outputIndices, int[] outputTypes);
     private static native float calcNormalizedScoreNative(
             char[] before, int beforeLength, char[] after, int afterLength, int score);
     private static native int editDistanceNative(
             char[] before, int beforeLength, char[] after, int afterLength);
 
     private final void loadDictionary(String path, long startOffset, long length) {
-        mNativeDict = openNative(path, startOffset, length,
-                TYPED_LETTER_MULTIPLIER, FULL_WORD_SCORE_MULTIPLIER, MAX_WORD_LENGTH, MAX_WORDS);
+        mNativeDict = openNative(path, startOffset, length, TYPED_LETTER_MULTIPLIER,
+                FULL_WORD_SCORE_MULTIPLIER, MAX_WORD_LENGTH, MAX_WORDS, MAX_PREDICTIONS);
     }
 
     @Override
-    public ArrayList<SuggestedWordInfo> getBigrams(final WordComposer codes,
-            final CharSequence previousWord) {
-        if (mNativeDict == 0) return null;
+    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
+            final CharSequence prevWord, final ProximityInfo proximityInfo) {
+        if (!isValidDictionary()) return null;
+        Arrays.fill(mInputCodes, WordComposer.NOT_A_CODE);
+        Arrays.fill(mOutputChars, (char) 0);
+        Arrays.fill(mOutputScores, 0);
+        // TODO: toLowerCase in the native code
+        final int[] prevWordCodePointArray = (null == prevWord)
+                ? null : StringUtils.toCodePointArray(prevWord.toString());
+        final int composerSize = composer.size();
 
-        int[] codePoints = StringUtils.toCodePointArray(previousWord.toString());
-        Arrays.fill(mOutputChars_bigrams, (char) 0);
-        Arrays.fill(mBigramScores, 0);
-
-        int codesSize = codes.size();
-        Arrays.fill(mInputCodes, -1);
-        if (codesSize > 0) {
-            mInputCodes[0] = codes.getCodeAt(0);
+        final boolean isGesture = composer.isBatchMode();
+        if (composerSize <= 1 || !isGesture) {
+            if (composerSize > MAX_WORD_LENGTH - 1) return null;
+            for (int i = 0; i < composerSize; i++) {
+                mInputCodes[i] = composer.getCodeAt(i);
+            }
         }
 
-        int count = getBigramsNative(mNativeDict, codePoints, codePoints.length, mInputCodes,
-                codesSize, mOutputChars_bigrams, mBigramScores, MAX_WORD_LENGTH, MAX_BIGRAMS);
-        if (count > MAX_BIGRAMS) {
-            count = MAX_BIGRAMS;
-        }
+        final InputPointers ips = composer.getInputPointers();
+        final int codesSize = isGesture ? ips.getPointerSize() : composerSize;
+        // proximityInfo and/or prevWordForBigrams may not be null.
+        final int tmpCount = getSuggestionsNative(mNativeDict,
+                proximityInfo.getNativeProximityInfo(), ips.getXCoordinates(),
+                ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
+                mInputCodes, codesSize, 0 /* commitPoint */, isGesture, prevWordCodePointArray,
+                mUseFullEditDistance, mOutputChars, mOutputScores, mSpaceIndices, mOutputTypes);
+        final int count = Math.min(tmpCount, MAX_PREDICTIONS);
 
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
         for (int j = 0; j < count; ++j) {
-            if (codesSize > 0 && mBigramScores[j] < 1) break;
+            if (composerSize > 0 && mOutputScores[j] < 1) break;
             final int start = j * MAX_WORD_LENGTH;
             int len = 0;
-            while (len <  MAX_WORD_LENGTH && mOutputChars_bigrams[start + len] != 0) {
+            while (len <  MAX_WORD_LENGTH && mOutputChars[start + len] != 0) {
                 ++len;
             }
             if (len > 0) {
-                suggestions.add(new SuggestedWordInfo(
-                        new String(mOutputChars_bigrams, start, len),
-                        mBigramScores[j], SuggestedWordInfo.KIND_CORRECTION, mDictType));
-            }
-        }
-        return suggestions;
-    }
-
-    // proximityInfo and/or prevWordForBigrams may not be null.
-    @Override
-    public ArrayList<SuggestedWordInfo> getWords(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
-        final int count = getSuggestions(codes, prevWordForBigrams, proximityInfo, mOutputChars,
-                mScores, mSpaceIndices);
-
-        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
-        for (int j = 0; j < count; ++j) {
-            if (mScores[j] < 1) break;
-            final int start = j * MAX_WORD_LENGTH;
-            int len = 0;
-            while (len < MAX_WORD_LENGTH && mOutputChars[start + len] != 0) {
-                ++len;
-            }
-            if (len > 0) {
-                // TODO: actually get the kind from native code
                 suggestions.add(new SuggestedWordInfo(
                         new String(mOutputChars, start, len),
-                        mScores[j], SuggestedWordInfo.KIND_CORRECTION, mDictType));
+                        mOutputScores[j], SuggestedWordInfo.KIND_CORRECTION, mDictType));
             }
         }
         return suggestions;
@@ -170,41 +152,6 @@ public class BinaryDictionary extends Dictionary {
 
     /* package for test */ boolean isValidDictionary() {
         return mNativeDict != 0;
-    }
-
-    // proximityInfo may not be null.
-    /* package for test */ int getSuggestions(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo,
-            char[] outputChars, int[] scores, int[] spaceIndices) {
-        if (!isValidDictionary()) return -1;
-
-        final int codesSize = codes.size();
-        // Won't deal with really long words.
-        if (codesSize > MAX_WORD_LENGTH - 1) return -1;
-
-        Arrays.fill(mInputCodes, WordComposer.NOT_A_CODE);
-        for (int i = 0; i < codesSize; i++) {
-            mInputCodes[i] = codes.getCodeAt(i);
-        }
-        Arrays.fill(outputChars, (char) 0);
-        Arrays.fill(scores, 0);
-
-        // TODO: toLowerCase in the native code
-        final int[] prevWordCodePointArray = (null == prevWordForBigrams)
-                ? null : StringUtils.toCodePointArray(prevWordForBigrams.toString());
-
-        int[] emptyArray = new int[codesSize];
-        Arrays.fill(emptyArray, 0);
-
-        //final int commitPoint = codes.getCommitPoint();
-        //codes.clearCommitPoint();
-
-        final InputPointers ips = codes.getInputPointers();
-
-        return getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
-            ips.getXCoordinates(), ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
-            mInputCodes, codesSize, 0 /* unused */, false, prevWordCodePointArray,
-            mUseFullEditDistance, outputChars, scores, spaceIndices);
     }
 
     public static float calcNormalizedScore(String before, String after, int score) {

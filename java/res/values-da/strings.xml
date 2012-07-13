@@ -20,14 +20,10 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name" msgid="7252517407088836577">"Android-tastatur"</string>
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Android-tastatur (AOSP)"</string>
-    <string name="english_ime_settings" msgid="6661589557206947774">"Android-tastatur-indstillinger"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Indstillinger for input"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"Forskningslogkommandoer"</string>
-    <string name="spell_checker_service_name" msgid="7338064335159755926">"Android-stavekontrol"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Android-stavekontrol (AOSP)"</string>
-    <string name="android_spell_checker_settings" msgid="5822324635435443689">"Indstillinger for stavekontrol"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Slå kontaktnavne op"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Stavekontrollen bruger poster fra listen over kontaktpersoner"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibration ved tastetryk"</string>
@@ -111,9 +107,14 @@
     <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Notér tidsstempel i log"</string>
     <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Noteret tidsstempel"</string>
     <string name="do_not_log_this_session" msgid="413762473641146336">"Logfør ikke denne session"</string>
+    <string name="enable_session_logging" msgid="4202559020594036225">"Aktivér logføring af sessioner"</string>
+    <string name="log_whole_session_history" msgid="7087712461632081351">"Logfør hele sessionshistorikken"</string>
     <string name="notify_session_log_deleting" msgid="3299507647764414623">"Sletter sessionslogfil"</string>
     <string name="notify_session_log_deleted" msgid="8687927130100934686">"Sessionslogfil slettet"</string>
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Sessionslog IKKE slettet"</string>
+    <string name="notify_session_history_logged" msgid="7723983399468056391">"Sessionshistorikken er logført"</string>
+    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"Fejl: Sessionshistorik IKKE logført"</string>
+    <string name="notify_session_logging_enabled" msgid="8549561596936177661">"Logføring af sessioner er aktiveret"</string>
     <string name="select_language" msgid="3693815588777926848">"Inputsprog"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Tryk igen for at gemme"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Ordbog er tilgængelig"</string>

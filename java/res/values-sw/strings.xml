@@ -20,14 +20,10 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name" msgid="7252517407088836577">"Kibodi ya Android"</string>
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Kicharazio cha Android (AOSP)"</string>
-    <string name="english_ime_settings" msgid="6661589557206947774">"Mipangilio ya kibodi ya Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Chaguo za uingizaji"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"Amri za Kumbukumbu za Utafiti"</string>
-    <string name="spell_checker_service_name" msgid="7338064335159755926">"Kikagua tahajia cha Android"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Kikagua tahajia cha Android (AOSP)"</string>
-    <string name="android_spell_checker_settings" msgid="5822324635435443689">"Mipangilio ya kukagua sarufi"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Angalia majina ya wasiliani"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Kikagua tahajia hutumia ingizo kutoka kwa orodha yako ya anwani"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Tetema unabofya kitufe"</string>
@@ -111,9 +107,14 @@
     <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Dokeza mhuri wa muda kwenye kumbukumbu"</string>
     <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Mhuri wa muda uliorekodiwa"</string>
     <string name="do_not_log_this_session" msgid="413762473641146336">"Usihifadhi kumbukumbu za kipindi hiki"</string>
+    <string name="enable_session_logging" msgid="4202559020594036225">"Wezesha kuingia kwenye kipindi"</string>
+    <string name="log_whole_session_history" msgid="7087712461632081351">"Ingia kwenye historia ya kipindi kizima"</string>
     <string name="notify_session_log_deleting" msgid="3299507647764414623">"Inafuta kumbukumbu za kipindi"</string>
     <string name="notify_session_log_deleted" msgid="8687927130100934686">"Kumbukumbu za kipindi zimefutwa"</string>
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Kumbukumbu za kipindi HAZIJAFUTWA"</string>
+    <string name="notify_session_history_logged" msgid="7723983399468056391">"Historia ya kipindi imeingia"</string>
+    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"Hitilafu: Historia ya kipindi HAIJAINGIA"</string>
+    <string name="notify_session_logging_enabled" msgid="8549561596936177661">"Kuingia kwa kipindi kumewezeshwa"</string>
     <string name="select_language" msgid="3693815588777926848">"Lugha zinazoruhusiwa"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Gusa tena ili kuhifadhi"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Kamusi inapatikana"</string>

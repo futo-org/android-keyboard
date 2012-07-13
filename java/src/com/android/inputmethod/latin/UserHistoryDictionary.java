@@ -27,9 +27,12 @@ import android.os.AsyncTask;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.UserHistoryForgettingCurveUtils.ForgettingCurveParams;
 
 import java.lang.ref.SoftReference;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
@@ -155,6 +158,14 @@ public class UserHistoryDictionary extends ExpandableDictionary {
         // Ignore close because we cache UserHistoryDictionary for each language. See getInstance()
         // above.
         // super.close();
+    }
+
+    @Override
+    protected ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer composer,
+            final CharSequence prevWord, final ProximityInfo proximityInfo) {
+        // Inhibit suggestions (not predictions) for user history for now. Removing this method
+        // is enough to use it through the standard ExpandableDictionary way.
+        return null;
     }
 
     /**

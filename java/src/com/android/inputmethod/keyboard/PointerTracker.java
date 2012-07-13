@@ -610,6 +610,15 @@ public class PointerTracker {
                         onUpEventInternal();
                         onDownEventInternal(x, y, eventTime);
                     } else {
+                        // HACK: If there are currently multiple touches, register the key even if
+                        // the finger slides off the key. This defends against noise from some
+                        // touch panels when there are close multiple touches.
+                        // Caveat: When in chording input mode with a modifier key, we don't use
+                        // this hack.
+                        if (me != null && me.getPointerCount() > 1
+                                && !sPointerTrackerQueue.hasModifierKeyOlderThan(this)) {
+                            onUpEventInternal();
+                        }
                         mKeyAlreadyProcessed = true;
                         setReleasedKeyGraphics(oldKey);
                     }

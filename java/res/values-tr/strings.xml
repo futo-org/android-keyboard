@@ -20,14 +20,10 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name" msgid="7252517407088836577">"Android klavyesi"</string>
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Android klavye (AOSP)"</string>
-    <string name="english_ime_settings" msgid="6661589557206947774">"Android klavye ayarları"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Giriş seçenekleri"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"Araştırma Günlüğü Komutları"</string>
-    <string name="spell_checker_service_name" msgid="7338064335159755926">"Android yazım denetleyici"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Android yazım denetleyici (AOSP)"</string>
-    <string name="android_spell_checker_settings" msgid="5822324635435443689">"Yazım denetimi ayarları"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Kişi adlarını denetle"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Yazım denetleyici, kişi listenizdeki girişleri kullanır"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Tuşa basıldığında titret"</string>
@@ -111,9 +107,19 @@
     <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Günlüğe zaman damgası koy"</string>
     <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Zaman damgası kaydedildi"</string>
     <string name="do_not_log_this_session" msgid="413762473641146336">"Bu oturumu günlüğe kaydetme"</string>
+    <!-- no translation found for enable_session_logging (4202559020594036225) -->
+    <skip />
+    <!-- no translation found for log_whole_session_history (7087712461632081351) -->
+    <skip />
     <string name="notify_session_log_deleting" msgid="3299507647764414623">"Oturum günlüğü siliniyor"</string>
     <string name="notify_session_log_deleted" msgid="8687927130100934686">"Oturum günlüğü silindi"</string>
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Oturum günlüğü SİLİNMEDİ"</string>
+    <!-- no translation found for notify_session_history_logged (7723983399468056391) -->
+    <skip />
+    <!-- no translation found for notify_session_history_not_logged (6597910011368015361) -->
+    <skip />
+    <!-- no translation found for notify_session_logging_enabled (8549561596936177661) -->
+    <skip />
     <string name="select_language" msgid="3693815588777926848">"Giriş dilleri"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Kaydetmek için tekrar dokunun"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Sözlük kullanılabilir"</string>

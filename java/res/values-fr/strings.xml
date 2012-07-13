@@ -20,14 +20,10 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name" msgid="7252517407088836577">"Clavier Android"</string>
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Clavier Android (AOSP)"</string>
-    <string name="english_ime_settings" msgid="6661589557206947774">"Paramètres du clavier Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Options de saisie"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"Commandes journaux rech."</string>
-    <string name="spell_checker_service_name" msgid="7338064335159755926">"Correcteur orthographique Android"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Correcteur orthographique Android (AOSP)"</string>
-    <string name="android_spell_checker_settings" msgid="5822324635435443689">"Paramètre du correcteur orthographique"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Rechercher noms contacts"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Correcteur orthographique utilise entrées de liste de contacts."</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrer à chaque touche"</string>
@@ -111,9 +107,14 @@
     <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Noter heure dans journal"</string>
     <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Heure enregistrée."</string>
     <string name="do_not_log_this_session" msgid="413762473641146336">"Ne pas enregistrer session"</string>
+    <string name="enable_session_logging" msgid="4202559020594036225">"Activer l\'enregistrement de session"</string>
+    <string name="log_whole_session_history" msgid="7087712461632081351">"Enregistrer historique de la session"</string>
     <string name="notify_session_log_deleting" msgid="3299507647764414623">"Suppr. journal session…"</string>
     <string name="notify_session_log_deleted" msgid="8687927130100934686">"Journal session supprimé."</string>
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Journal session PAS suppr."</string>
+    <string name="notify_session_history_logged" msgid="7723983399468056391">"Historique de la session enregistré."</string>
+    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"Historique session NON enregistré."</string>
+    <string name="notify_session_logging_enabled" msgid="8549561596936177661">"Enregistrement de session activé."</string>
     <string name="select_language" msgid="3693815588777926848">"Langues de saisie"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Appuyer de nouveau pour enregistrer"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dictionnaire disponible"</string>

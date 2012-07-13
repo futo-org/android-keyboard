@@ -125,6 +125,7 @@ public class SuggestedWords {
         public static final int KIND_HARDCODED = 5; // Hardcoded suggestion, e.g. punctuation
         public static final int KIND_APP_DEFINED = 6; // Suggested by the application
         public static final int KIND_SHORTCUT = 7; // A shortcut
+        public static final int KIND_PREDICTION = 8; // A prediction (== a suggestion with no input)
         public final String mWord;
         public final int mScore;
         public final int mKind; // one of the KIND_* constants above

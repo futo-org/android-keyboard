@@ -46,7 +46,8 @@ void releaseDictBuf(void* dictBuf, const size_t length, int fd);
 
 static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         jstring sourceDir, jlong dictOffset, jlong dictSize,
-        jint typedLetterMultiplier, jint fullWordMultiplier, jint maxWordLength, jint maxWords) {
+        jint typedLetterMultiplier, jint fullWordMultiplier, jint maxWordLength, jint maxWords,
+        jint maxPredictions) {
     PROF_OPEN;
     PROF_START(66);
     const char *sourceDirChars = env->GetStringUTFChars(sourceDir, 0);
@@ -119,7 +120,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
 #endif // USE_MMAP_FOR_DICTIONARY
     } else {
         dictionary = new Dictionary(dictBuf, dictSize, fd, adjust, typedLetterMultiplier,
-                fullWordMultiplier, maxWordLength, maxWords);
+                fullWordMultiplier, maxWordLength, maxWords, maxPredictions);
     }
     PROF_END(66);
     PROF_CLOSE;
@@ -131,7 +132,7 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object,
         jintArray timesArray, jintArray pointerIdArray, jintArray inputArray, jint arraySize,
         jint commitPoint, jboolean isGesture,
         jintArray prevWordForBigrams, jboolean useFullEditDistance, jcharArray outputArray,
-        jintArray frequencyArray, jintArray spaceIndexArray) {
+        jintArray frequencyArray, jintArray spaceIndexArray, jintArray outputTypesArray) {
     Dictionary *dictionary = (Dictionary*) dict;
     if (!dictionary) return 0;
     ProximityInfo *pInfo = (ProximityInfo*)proximityInfo;
@@ -143,16 +144,26 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object,
     int *inputCodes = env->GetIntArrayElements(inputArray, 0);
     jchar *outputChars = env->GetCharArrayElements(outputArray, 0);
     int *spaceIndices = env->GetIntArrayElements(spaceIndexArray, 0);
+    int *outputTypes = env->GetIntArrayElements(outputTypesArray, 0);
     jint *prevWordChars = prevWordForBigrams
             ? env->GetIntArrayElements(prevWordForBigrams, 0) : 0;
     jsize prevWordLength = prevWordChars ? env->GetArrayLength(prevWordForBigrams) : 0;
-    int count = dictionary->getSuggestions(pInfo, xCoordinates, yCoordinates, times, pointerIds,
-            inputCodes, arraySize, prevWordChars, prevWordLength, commitPoint, isGesture,
-            useFullEditDistance, (unsigned short*) outputChars,
-            frequencies, spaceIndices);
+
+    int count;
+    if (isGesture || arraySize > 1) {
+        count = dictionary->getSuggestions(pInfo, xCoordinates, yCoordinates, times, pointerIds,
+                inputCodes, arraySize, prevWordChars, prevWordLength, commitPoint, isGesture,
+                useFullEditDistance, (unsigned short*) outputChars, frequencies, spaceIndices,
+                outputTypes);
+    } else {
+        count = dictionary->getBigrams(prevWordChars, prevWordLength, inputCodes,
+                arraySize, (unsigned short*) outputChars, frequencies, outputTypes);
+    }
+
     if (prevWordChars) {
         env->ReleaseIntArrayElements(prevWordForBigrams, prevWordChars, JNI_ABORT);
     }
+    env->ReleaseIntArrayElements(outputTypesArray, outputTypes, 0);
     env->ReleaseIntArrayElements(spaceIndexArray, spaceIndices, 0);
     env->ReleaseCharArrayElements(outputArray, outputChars, 0);
     env->ReleaseIntArrayElements(inputArray, inputCodes, JNI_ABORT);
@@ -161,24 +172,6 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object,
     env->ReleaseIntArrayElements(timesArray, times, 0);
     env->ReleaseIntArrayElements(yCoordinatesArray, yCoordinates, 0);
     env->ReleaseIntArrayElements(xCoordinatesArray, xCoordinates, 0);
-    return count;
-}
-
-static int latinime_BinaryDictionary_getBigrams(JNIEnv *env, jobject object, jlong dict,
-        jintArray prevWordArray, jint prevWordLength, jintArray inputArray, jint inputArraySize,
-        jcharArray outputArray, jintArray frequencyArray, jint maxWordLength, jint maxBigrams) {
-    Dictionary *dictionary = (Dictionary*)dict;
-    if (!dictionary) return 0;
-    jint *prevWord = env->GetIntArrayElements(prevWordArray, 0);
-    int *inputCodes = env->GetIntArrayElements(inputArray, 0);
-    jchar *outputChars = env->GetCharArrayElements(outputArray, 0);
-    int *frequencies = env->GetIntArrayElements(frequencyArray, 0);
-    int count = dictionary->getBigrams(prevWord, prevWordLength, inputCodes,
-            inputArraySize, (unsigned short*) outputChars, frequencies, maxWordLength, maxBigrams);
-    env->ReleaseIntArrayElements(frequencyArray, frequencies, 0);
-    env->ReleaseCharArrayElements(outputArray, outputChars, 0);
-    env->ReleaseIntArrayElements(inputArray, inputCodes, JNI_ABORT);
-    env->ReleaseIntArrayElements(prevWordArray, prevWord, JNI_ABORT);
     return count;
 }
 
@@ -258,13 +251,12 @@ void releaseDictBuf(void* dictBuf, const size_t length, int fd) {
 }
 
 static JNINativeMethod sMethods[] = {
-    {"openNative", "(Ljava/lang/String;JJIIII)J", (void*)latinime_BinaryDictionary_open},
+    {"openNative", "(Ljava/lang/String;JJIIIII)J", (void*)latinime_BinaryDictionary_open},
     {"closeNative", "(J)V", (void*)latinime_BinaryDictionary_close},
-    {"getSuggestionsNative", "(JJ[I[I[I[I[IIIZ[IZ[C[I[I)I",
+    {"getSuggestionsNative", "(JJ[I[I[I[I[IIIZ[IZ[C[I[I[I)I",
             (void*) latinime_BinaryDictionary_getSuggestions},
     {"getFrequencyNative", "(J[II)I", (void*)latinime_BinaryDictionary_getFrequency},
     {"isValidBigramNative", "(J[I[I)Z", (void*)latinime_BinaryDictionary_isValidBigram},
-    {"getBigramsNative", "(J[II[II[C[III)I", (void*)latinime_BinaryDictionary_getBigrams},
     {"calcNormalizedScoreNative", "([CI[CII)F",
             (void*)latinime_BinaryDictionary_calcNormalizedScore},
     {"editDistanceNative", "([CI[CI)I", (void*)latinime_BinaryDictionary_editDistance}

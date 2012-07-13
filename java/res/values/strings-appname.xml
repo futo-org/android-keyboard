@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2012, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<resources>
+    <!-- Title for Latin Keyboard  -->
+    <string name="english_ime_name">Android keyboard</string>
+
+    <!-- Name of Android spell checker service -->
+    <string name="spell_checker_service_name">Android spell checker</string>
+
+    <!-- Title for Latin keyboard settings activity / dialog -->
+    <string name="english_ime_settings">Android keyboard settings</string>
+
+    <!-- Title for the spell checking service settings screen -->
+    <string name="android_spell_checker_settings">Spell checking settings</string>
+</resources>

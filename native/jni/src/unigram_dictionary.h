@@ -81,7 +81,7 @@ class UnigramDictionary {
             ProximityInfo *proximityInfo, const int *xcoordinates, const int *ycoordinates,
             const int *codes, const int codesSize, const std::map<int, int> *bigramMap,
             const uint8_t *bigramFilter, const bool useFullEditDistance, unsigned short *outWords,
-            int *frequencies) const;
+            int *frequencies, int *outputTypes) const;
     virtual ~UnigramDictionary();
 
  private:

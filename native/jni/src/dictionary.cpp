@@ -29,7 +29,7 @@ namespace latinime {
 // TODO: Change the type of all keyCodes to uint32_t
 Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
         int typedLetterMultiplier, int fullWordMultiplier,
-        int maxWordLength, int maxWords)
+        int maxWordLength, int maxWords, int maxPredictions)
     : mDict((unsigned char*) dict), mDictSize(dictSize),
       mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust) {
     if (DEBUG_DICT) {
@@ -43,7 +43,7 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
     const unsigned int options = BinaryFormat::getFlags(mDict);
     mUnigramDictionary = new UnigramDictionary(mDict + headerSize, typedLetterMultiplier,
             fullWordMultiplier, maxWordLength, maxWords, options);
-    mBigramDictionary = new BigramDictionary(mDict + headerSize, maxWordLength);
+    mBigramDictionary = new BigramDictionary(mDict + headerSize, maxWordLength, maxPredictions);
     mGestureDecoder = new GestureDecoderWrapper(maxWordLength, maxWords);
     mGestureDecoder->setDict(mUnigramDictionary, mBigramDictionary,
             mDict + headerSize /* dict root */, 0 /* root pos */);

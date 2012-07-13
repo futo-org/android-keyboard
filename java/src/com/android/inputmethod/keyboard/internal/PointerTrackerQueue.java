@@ -28,6 +28,7 @@ public class PointerTrackerQueue {
     private static final String TAG = PointerTrackerQueue.class.getSimpleName();
     private static final boolean DEBUG = false;
 
+    // TODO: Use ring buffer instead of {@link LinkedList}.
     private final LinkedList<PointerTracker> mQueue = new LinkedList<PointerTracker>();
 
     public synchronized void add(PointerTracker tracker) {
@@ -79,6 +80,20 @@ public class PointerTrackerQueue {
                 it.remove();
             }
         }
+    }
+
+    public synchronized boolean hasModifierKeyOlderThan(PointerTracker tracker) {
+        final Iterator<PointerTracker> it = mQueue.iterator();
+        while (it.hasNext()) {
+            final PointerTracker t = it.next();
+            if (t == tracker) {
+                break;
+            }
+            if (t.isModifier()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public synchronized boolean isAnyInSlidingKeyInput() {

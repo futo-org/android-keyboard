@@ -20,14 +20,10 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name" msgid="7252517407088836577">"Teclado de Android"</string>
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"Teclado Android (AOSP)"</string>
-    <string name="english_ime_settings" msgid="6661589557206947774">"Ajustes del teclado de Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opciones entrada texto"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"Comandos registro investigación"</string>
-    <string name="spell_checker_service_name" msgid="7338064335159755926">"Corrector de Android"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"Corrector de Android (AOSP)"</string>
-    <string name="android_spell_checker_settings" msgid="5822324635435443689">"Ajustes del corrector ortográfico"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"Nombres de contactos"</string>
     <string name="use_contacts_for_spellchecking_option_summary" msgid="8754413382543307713">"Añadir nombres de tu lista de contactos al corrector"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar al pulsar tecla"</string>
@@ -111,9 +107,14 @@
     <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Anotar marca tiempo en registro"</string>
     <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Marca de tiempo registrada"</string>
     <string name="do_not_log_this_session" msgid="413762473641146336">"No registrar esta sesión"</string>
+    <string name="enable_session_logging" msgid="4202559020594036225">"Habilitar registro de sesión"</string>
+    <string name="log_whole_session_history" msgid="7087712461632081351">"Registrar historial de sesión"</string>
     <string name="notify_session_log_deleting" msgid="3299507647764414623">"Eliminando registro..."</string>
     <string name="notify_session_log_deleted" msgid="8687927130100934686">"Registro eliminado"</string>
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Registro no eliminado"</string>
+    <string name="notify_session_history_logged" msgid="7723983399468056391">"Historial de sesión registrado"</string>
+    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"Error: historial NO registrado"</string>
+    <string name="notify_session_logging_enabled" msgid="8549561596936177661">"Registro de sesión habilitado"</string>
     <string name="select_language" msgid="3693815588777926848">"Idiomas de entrada"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Toca otra vez para guardar."</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Hay un diccionario disponible"</string>

@@ -27,9 +27,9 @@ namespace latinime {
 class Dictionary;
 class BigramDictionary {
  public:
-    BigramDictionary(const unsigned char *dict, int maxWordLength);
+    BigramDictionary(const unsigned char *dict, int maxWordLength, int maxPredictions);
     int getBigrams(const int32_t *word, int length, int *inputCodes, int codesSize,
-            unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams) const;
+            unsigned short *outWords, int *frequencies, int *outputTypes) const;
     int getBigramListPositionForWord(const int32_t *prevWord, const int prevWordLength,
             const bool forceLowerCaseSearch) const;
     void fillBigramAddressToFrequencyMapAndFilter(const int32_t *prevWord, const int prevWordLength,
@@ -38,8 +38,8 @@ class BigramDictionary {
     ~BigramDictionary();
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(BigramDictionary);
-    bool addWordBigram(unsigned short *word, int length, int frequency, const int maxBigrams,
-            int *bigramFreq, unsigned short *bigramChars) const;
+    bool addWordBigram(unsigned short *word, int length, int frequency,
+            int *bigramFreq, unsigned short *bigramChars, int *outputTypes) const;
     int getBigramAddress(int *pos, bool advance);
     int getBigramFreq(int *pos);
     void searchForTerminalNode(int addressLookingFor, int frequency);
@@ -49,6 +49,7 @@ class BigramDictionary {
 
     const unsigned char *DICT;
     const int MAX_WORD_LENGTH;
+    const int MAX_PREDICTIONS;
     // TODO: Re-implement proximity correction for bigram correction
     static const int MAX_ALTERNATIVES = 1;
 };

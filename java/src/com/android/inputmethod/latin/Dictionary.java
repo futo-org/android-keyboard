@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import android.text.TextUtils;
+
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
@@ -50,24 +52,17 @@ public abstract class Dictionary {
     }
 
     /**
-     * Searches for words in the dictionary that match the characters in the composer. Matched
-     * words are returned as an ArrayList.
+     * Searches for suggestions for a given context. For the moment the context is only the
+     * previous word.
      * @param composer the key sequence to match with coordinate info, as a WordComposer
-     * @param prevWordForBigrams the previous word, or null if none
+     * @param prevWord the previous word, or null if none
      * @param proximityInfo the object for key proximity. May be ignored by some implementations.
-     * @return the list of suggestions
+     * @return the list of suggestions (possibly null if none)
      */
-    abstract public ArrayList<SuggestedWordInfo> getWords(final WordComposer composer,
-            final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo);
-
-    /**
-     * Searches for pairs in the bigram dictionary that matches the previous word.
-     * @param composer the key sequence to match
-     * @param previousWord the word before
-     * @return the list of suggestions
-     */
-    public abstract ArrayList<SuggestedWordInfo> getBigrams(final WordComposer composer,
-            final CharSequence previousWord);
+    // TODO: pass more context than just the previous word, to enable better suggestions (n-gram
+    // and more)
+    abstract public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
+            final CharSequence prevWord, final ProximityInfo proximityInfo);
 
     /**
      * Checks if the given word occurs in the dictionary

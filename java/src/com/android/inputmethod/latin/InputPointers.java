@@ -18,7 +18,7 @@ package com.android.inputmethod.latin;
 
 import java.util.Arrays;
 
-// TODO: Add unit test
+// TODO: This class is not thread-safe.
 public class InputPointers {
     private final ScalableIntArray mXCoordinates = new ScalableIntArray();
     private final ScalableIntArray mYCoordinates = new ScalableIntArray();
@@ -55,21 +55,15 @@ public class InputPointers {
 
     /**
      * Append the pointers in the specified {@link InputPointers} to the end of this.
-     * @param src the source {@link InputPointers} to append the pointers.
+     * @param src the source {@link InputPointers} to read the data from.
      * @param startPos the starting index of the pointers in {@code src}.
      * @param length the number of pointers to be appended.
      */
     public void append(InputPointers src, int startPos, int length) {
-        final int currentLength = getPointerSize();
-        final int newLength = currentLength + length;
-        mXCoordinates.ensureCapacity(newLength);
-        mYCoordinates.ensureCapacity(newLength);
-        mPointerIds.ensureCapacity(newLength);
-        mTimes.ensureCapacity(newLength);
-        System.arraycopy(src.getXCoordinates(), startPos, getXCoordinates(), currentLength, length);
-        System.arraycopy(src.getYCoordinates(), startPos, getYCoordinates(), currentLength, length);
-        System.arraycopy(src.getPointerIds(), startPos, getPointerIds(), currentLength, length);
-        System.arraycopy(src.getTimes(), startPos, getTimes(), currentLength, length);
+        mXCoordinates.append(src.mXCoordinates, startPos, length);
+        mYCoordinates.append(src.mYCoordinates, startPos, length);
+        mPointerIds.append(src.mPointerIds, startPos, length);
+        mTimes.append(src.mTimes, startPos, length);
     }
 
     public void reset() {
@@ -118,22 +112,21 @@ public class InputPointers {
         }
 
         public void add(int val) {
-            ensureCapacity(mLength);
+            final int nextLength = mLength + 1;
+            ensureCapacity(nextLength);
             mArray[mLength] = val;
-            ++mLength;
+            mLength = nextLength;
         }
 
-        public void ensureCapacity(int minimumCapacity) {
+        private void ensureCapacity(int minimumCapacity) {
             if (mArray.length < minimumCapacity) {
                 final int nextCapacity = mArray.length * 2;
-                grow(minimumCapacity > nextCapacity ? minimumCapacity : nextCapacity);
+                // The following is the same as newLength = Math.max(minimumCapacity, nextCapacity);
+                final int newLength = minimumCapacity > nextCapacity
+                        ? minimumCapacity
+                        : nextCapacity;
+                mArray = Arrays.copyOf(mArray, newLength);
             }
-        }
-
-        private void grow(int newCapacity) {
-            final int[] newArray = new int[newCapacity];
-            System.arraycopy(mArray, 0, newArray, 0, mLength);
-            mArray = newArray;
         }
 
         public int getLength() {
@@ -149,14 +142,23 @@ public class InputPointers {
             return mArray;
         }
 
-        public void copy(ScalableIntArray ip) {
-            mArray = Arrays.copyOf(ip.mArray, ip.mArray.length);
-            mLength = ip.mLength;
-        }
-
         public void set(ScalableIntArray ip) {
             mArray = ip.mArray;
             mLength = ip.mLength;
+        }
+
+        public void copy(ScalableIntArray ip) {
+            ensureCapacity(ip.mLength);
+            System.arraycopy(ip.mArray, 0, mArray, 0, ip.mLength);
+            mLength = ip.mLength;
+        }
+
+        public void append(ScalableIntArray src, int startPos, int length) {
+            final int currentLength = mLength;
+            final int newLength = currentLength + length;
+            ensureCapacity(newLength);
+            System.arraycopy(src.mArray, startPos, mArray, currentLength, length);
+            mLength = newLength;
         }
     }
 }

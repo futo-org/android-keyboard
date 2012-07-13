@@ -353,7 +353,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mPrefs = prefs;
         LatinImeLogger.init(this, prefs);
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.getInstance().init(this, prefs);
+            ResearchLogger.getInstance().init(this, prefs, mKeyboardSwitcher);
         }
         InputMethodManagerCompatWrapper.init(this);
         SubtypeSwitcher.init(this);
@@ -689,6 +689,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
 
+    // Callback for the TargetApplicationGetter
     @Override
     public void onTargetApplicationKnown(final ApplicationInfo info) {
         mTargetApplicationInfo = info;
@@ -997,7 +998,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
     }
 
-    public void commitTyped(final int separatorCode) {
+    private void commitTyped(final int separatorCode) {
         if (!mWordComposer.isComposingWord()) return;
         final CharSequence typedWord = mWordComposer.getTypedWord();
         if (typedWord.length() > 0) {
@@ -1013,6 +1014,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         updateSuggestionsOrPredictions();
     }
 
+    // Called from the KeyboardSwitcher which needs to know auto caps state to display
+    // the right layout.
     public int getCurrentAutoCapsState() {
         if (!mCurrentSettings.mAutoCap) return Constants.TextUtils.CAP_MODE_OFF;
 
@@ -1088,6 +1091,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 || codePoint == Keyboard.CODE_CLOSING_ANGLE_BRACKET;
     }
 
+    // Callback for the SuggestionsView, to call when the "add to dictionary" hint is pressed.
     @Override
     public boolean addWordToUserDictionary(String word) {
         mUserDictionary.addWordToUserDictionary(word, 128);
@@ -1285,6 +1289,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mConnection.endBatchEdit();
     }
 
+    // Called from PointerTracker through the KeyboardActionListener interface
     @Override
     public void onTextInput(CharSequence text) {
         mConnection.beginBatchEdit();
@@ -1348,6 +1353,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
+    // Called from PointerTracker through the KeyboardActionListener interface
     @Override
     public void onCancelInput() {
         // User released a finger outside any key
@@ -1505,7 +1511,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // it entirely and resume suggestions on the previous word, we'd like to still
             // have touch coordinates for it.
             resetComposingState(false /* alsoResetLastComposedWord */);
-            clearSuggestions();
         }
         if (isComposingWord) {
             final int keyX, keyY;
@@ -1621,12 +1626,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             inputView.closing();
     }
 
-    public boolean isShowingPunctuationList() {
+    // TODO: make this private
+    // Outside LatinIME, only used by the test suite.
+    /* package for tests */ boolean isShowingPunctuationList() {
         if (mSuggestionsView == null) return false;
         return mCurrentSettings.mSuggestPuncList == mSuggestionsView.getSuggestions();
     }
 
-    public boolean isSuggestionsStripVisible() {
+    private boolean isSuggestionsStripVisible() {
         if (mSuggestionsView == null)
             return false;
         if (mSuggestionsView.isShowingAddToDictionaryHint())
@@ -1638,7 +1645,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mCurrentSettings.isSuggestionsRequested(mDisplayOrientation);
     }
 
-    public void clearSuggestions() {
+    private void clearSuggestions() {
         setSuggestions(SuggestedWords.EMPTY, false);
         setAutoCorrectionIndicator(false);
     }
@@ -1661,7 +1668,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    public void updateSuggestionsOrPredictions() {
+    // TODO: rename this method to updateSuggestionStrip or simply updateSuggestions
+    private void updateSuggestionsOrPredictions() {
         mHandler.cancelUpdateSuggestionStrip();
 
         // Check if we have a suggestion engine attached.
@@ -1675,42 +1683,36 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         final String typedWord = mWordComposer.getTypedWord();
-        final SuggestedWords suggestions;
         if (!mWordComposer.isComposingWord() && !mCurrentSettings.mBigramPredictionEnabled) {
             setPunctuationSuggestions();
             return;
         }
 
-        if (!mWordComposer.isComposingWord()) {
-            suggestions = updateBigramPredictions();
-        } else {
-            suggestions = updateSuggestions(typedWord);
-        }
+        // Get the word on which we should search the bigrams. If we are composing a word, it's
+        // whatever is *before* the half-committed word in the buffer, hence 2; if we aren't, we
+        // should just skip whitespace if any, so 1.
+        // TODO: this is slow (2-way IPC) - we should probably cache this instead.
+        final CharSequence prevWord =
+                mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators,
+                mWordComposer.isComposingWord() ? 2 : 1);
+        SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
+                prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
+                mCurrentSettings.mCorrectionEnabled);
+        suggestedWords = maybeRetrieveOlderSuggestions(typedWord, suggestedWords);
 
-        if (null != suggestions && suggestions.size() > 0) {
-            showSuggestions(suggestions, typedWord);
-        } else {
-            clearSuggestions();
-        }
+        showSuggestions(suggestedWords, typedWord);
     }
 
-    private SuggestedWords updateSuggestions(final CharSequence typedWord) {
-        // TODO: May need a better way of retrieving previous word
-        final CharSequence prevWord =
-                mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators, 2);
-        // getSuggestedWords handles gracefully a null value of prevWord
-        final SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
-                prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
-                // !mWordComposer.isComposingWord() is known to be false
-                mCurrentSettings.mCorrectionEnabled, !mWordComposer.isComposingWord());
-
-        // Basically, we update the suggestion strip only when suggestion count > 1.  However,
-        // there is an exception: We update the suggestion strip whenever typed word's length
-        // is 1 or typed word is found in dictionary, regardless of suggestion count.  Actually,
-        // in most cases, suggestion count is 1 when typed word's length is 1, but we do always
-        // need to clear the previous state when the user starts typing a word (i.e. typed word's
-        // length == 1).
-        if (suggestedWords.size() > 1 || typedWord.length() == 1
+    private SuggestedWords maybeRetrieveOlderSuggestions(final CharSequence typedWord,
+            final SuggestedWords suggestedWords) {
+        // TODO: consolidate this into getSuggestedWords
+        // We update the suggestion strip only when we have some suggestions to show, i.e. when
+        // the suggestion count is > 1; else, we leave the old suggestions, with the typed word
+        // replaced with the new one. However, when the word is a dictionary word, or when the
+        // length of the typed word is 1 or 0 (after a deletion typically), we do want to remove the
+        // old suggestions. Also, if we are showing the "add to dictionary" hint, we need to
+        // revert to suggestions - although it is unclear how we can come here if it's displayed.
+        if (suggestedWords.size() > 1 || typedWord.length() <= 1
                 || !suggestedWords.mTypedWordValid
                 || mSuggestionsView.isShowingAddToDictionaryHint()) {
             return suggestedWords;
@@ -1733,7 +1735,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void showSuggestions(final SuggestedWords suggestedWords,
             final CharSequence typedWord) {
-        // This method is only ever called by updateSuggestions or updateBigramPredictions.
+        if (null == suggestedWords || suggestedWords.size() <= 0) {
+            clearSuggestions();
+            return;
+        }
         final CharSequence autoCorrection;
         if (suggestedWords.size() > 0) {
             if (suggestedWords.mWillAutoCorrect) {
@@ -1781,6 +1786,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
+    // Called from SuggestionsView through the SuggestionsView.Listener interface
     @Override
     public void pickSuggestionManually(final int index, final CharSequence suggestion,
             final int x, final int y) {
@@ -1891,16 +1897,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 separatorCode, prevWord);
     }
 
-    private SuggestedWords updateBigramPredictions() {
-        final CharSequence prevWord =
-                mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators, 1);
-        return mSuggest.getSuggestedWords(mWordComposer,
-                prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
-                // !mWordComposer.isComposingWord() is known to be true
-                mCurrentSettings.mCorrectionEnabled, !mWordComposer.isComposingWord());
-    }
-
-    public void setPunctuationSuggestions() {
+    private void setPunctuationSuggestions() {
         if (mCurrentSettings.mBigramPredictionEnabled) {
             clearSuggestions();
         } else {
@@ -2008,16 +2005,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mHandler.postUpdateSuggestionStrip();
     }
 
+    // Used by the RingCharBuffer
     public boolean isWordSeparator(int code) {
         return mCurrentSettings.isWordSeparator(code);
     }
 
-    public boolean preferCapitalization() {
-        return mWordComposer.isFirstCharCapitalized();
-    }
-
     // Notify that language or mode have been changed and toggleLanguage will update KeyboardID
-    // according to new language or mode.
+    // according to new language or mode. Called from SubtypeSwitcher.
     public void onRefreshKeyboard() {
         // When the device locale is changed in SetupWizard etc., this method may get called via
         // onConfigurationChanged before SoftInputWindow is shown.
@@ -2034,16 +2028,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     // TODO: Remove this method from {@link LatinIME} and move {@link FeedbackManager} to
-    // {@link KeyboardSwitcher}.
+    // {@link KeyboardSwitcher}. Called from KeyboardSwitcher
     public void hapticAndAudioFeedback(final int primaryCode) {
         mFeedbackManager.hapticAndAudioFeedback(primaryCode, mKeyboardSwitcher.getKeyboardView());
     }
 
+    // Callback called by PointerTracker through the KeyboardActionListener. This is called when a
+    // key is depressed; release matching call is onReleaseKey below.
     @Override
     public void onPressKey(int primaryCode) {
         mKeyboardSwitcher.onPressKey(primaryCode);
     }
 
+    // Callback by PointerTracker through the KeyboardActionListener. This is called when a key
+    // is released; press matching call is onPressKey above.
     @Override
     public void onReleaseKey(int primaryCode, boolean withSliding) {
         mKeyboardSwitcher.onReleaseKey(primaryCode, withSliding);
@@ -2088,6 +2086,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         launchSettingsClass(SettingsActivity.class);
     }
 
+    // Called from debug code only
     public void launchDebugSettings() {
         launchSettingsClass(DebugSettingsActivity.class);
     }
