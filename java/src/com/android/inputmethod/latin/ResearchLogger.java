@@ -19,9 +19,12 @@ package com.android.inputmethod.latin;
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.inputmethodservice.InputMethodService;
 import android.os.Build;
 import android.text.TextUtils;
@@ -101,6 +104,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private Suggest mSuggest;
     private Dictionary mDictionary;
     private KeyboardSwitcher mKeyboardSwitcher;
+    private Context mContext;
 
     private ResearchLogger() {
     }
@@ -115,6 +119,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (ims == null) {
             Log.w(TAG, "IMS is null; logging is off");
         } else {
+            mContext = ims;
             mFilesDir = ims.getFilesDir();
             if (mFilesDir == null || !mFilesDir.exists()) {
                 Log.w(TAG, "IME storage directory does not exist.");
@@ -678,18 +683,31 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
     private static final String[] EVENTKEYS_LATINIME_ONSTARTINPUTVIEWINTERNAL = {
         "LatinIMEOnStartInputViewInternal", "uuid", "packageName", "inputType", "imeOptions",
-        "fieldId", "display", "model", "prefs", "outputFormatVersion"
+        "fieldId", "display", "model", "prefs", "versionCode", "versionName", "outputFormatVersion"
     };
     public static void latinIME_onStartInputViewInternal(final EditorInfo editorInfo,
             final SharedPreferences prefs) {
+        final ResearchLogger researchLogger = getInstance();
+        researchLogger.start();
         if (editorInfo != null) {
-            final Object[] values = {
-                getInstance().mUUIDString, editorInfo.packageName,
-                Integer.toHexString(editorInfo.inputType),
-                Integer.toHexString(editorInfo.imeOptions), editorInfo.fieldId, Build.DISPLAY,
-                Build.MODEL, prefs, OUTPUT_FORMAT_VERSION
-            };
-            getInstance().enqueueEvent(EVENTKEYS_LATINIME_ONSTARTINPUTVIEWINTERNAL, values);
+            final Context context = researchLogger.mContext;
+            try {
+                final PackageInfo packageInfo;
+                packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(),
+                        0);
+                final Integer versionCode = packageInfo.versionCode;
+                final String versionName = packageInfo.versionName;
+                final Object[] values = {
+                        researchLogger.mUUIDString, editorInfo.packageName,
+                        Integer.toHexString(editorInfo.inputType),
+                        Integer.toHexString(editorInfo.imeOptions), editorInfo.fieldId,
+                        Build.DISPLAY, Build.MODEL, prefs, versionCode, versionName,
+                        OUTPUT_FORMAT_VERSION
+                };
+                researchLogger.enqueueEvent(EVENTKEYS_LATINIME_ONSTARTINPUTVIEWINTERNAL, values);
+            } catch (NameNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 
