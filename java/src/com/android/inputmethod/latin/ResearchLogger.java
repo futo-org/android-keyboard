@@ -25,6 +25,7 @@ import android.content.SharedPreferences.Editor;
 import android.inputmethodservice.InputMethodService;
 import android.os.Build;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.inputmethod.CompletionInfo;
@@ -40,6 +41,7 @@ import com.android.inputmethod.latin.RichInputConnection.Range;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -93,6 +95,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             Character.codePointAt("\uE000", 0);  // U+E000 is in the "private-use area"
     // U+E001 is in the "private-use area"
     /* package for test */ static final String WORD_REPLACEMENT_STRING = "\uE001";
+    private static final String PREF_LAST_CLEANUP_TIME = "pref_last_cleanup_time";
+    private static final long DURATION_BETWEEN_DIR_CLEANUP_IN_MS = DateUtils.DAY_IN_MILLIS;
+    private static final long MAX_LOGFILE_AGE_IN_MS = DateUtils.DAY_IN_MILLIS;
     // set when LatinIME should ignore an onUpdateSelection() callback that
     // arises from operations in this class
     private static boolean sLatinIMEExpectingUpdateSelection = false;
@@ -124,8 +129,27 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             mUUIDString = getUUID(prefs);
             sIsLogging = prefs.getBoolean(PREF_USABILITY_STUDY_MODE, false);
             prefs.registerOnSharedPreferenceChangeListener(this);
+
+            final long lastCleanupTime = prefs.getLong(PREF_LAST_CLEANUP_TIME, 0L);
+            final long now = System.currentTimeMillis();
+            if (lastCleanupTime + DURATION_BETWEEN_DIR_CLEANUP_IN_MS < now) {
+                final long timeHorizon = now - MAX_LOGFILE_AGE_IN_MS;
+                cleanupLoggingDir(mFilesDir, timeHorizon);
+                Editor e = prefs.edit();
+                e.putLong(PREF_LAST_CLEANUP_TIME, now);
+                e.apply();
+            }
         }
         mKeyboardSwitcher = keyboardSwitcher;
+    }
+
+    private void cleanupLoggingDir(final File dir, final long time) {
+        for (File file : dir.listFiles()) {
+            if (file.getName().startsWith(ResearchLogger.FILENAME_PREFIX) &&
+                    file.lastModified() < time) {
+                file.delete();
+            }
+        }
     }
 
     private File createLogFile(File filesDir) {
