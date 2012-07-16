@@ -112,8 +112,8 @@
     <string name="notify_session_log_deleting" msgid="3299507647764414623">"Isusa ifayela lokungena lesikhathi"</string>
     <string name="notify_session_log_deleted" msgid="8687927130100934686">"Ifayela lokungena lesikhathi lisusiwe"</string>
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Ifayela lokungena lesikhathi alisusiwe"</string>
-    <string name="notify_session_history_logged" msgid="7723983399468056391">"Umlando wesikhathi ukhiyiwe"</string>
-    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"Iphutha: Umlando wesikhathi awukhiyiwe"</string>
+    <string name="notify_session_history_logged" msgid="7723983399468056391">"Umlando wesikhathi ukufayela lokungena"</string>
+    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"Iphutha: Umlando wesikhathi awufakwanga kufayela lokungena"</string>
     <string name="notify_session_logging_enabled" msgid="8549561596936177661">"Ukungena kwesikhathi kunikwe amandla"</string>
     <string name="select_language" msgid="3693815588777926848">"Izilimi zokufakwayo"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Thinta futhi ukuze ulondoloze"</string>
