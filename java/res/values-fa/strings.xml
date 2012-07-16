@@ -21,7 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"صفحه کلید (Android (AOSP"</string>
-    <string name="english_ime_input_options" msgid="3909945612939668554">"گزینه های ورودی"</string>
+    <string name="english_ime_input_options" msgid="3909945612939668554">"گزینه‌های ورودی"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"فرمان‌های گزارش‌گیری پژوهش"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"غلط‌گیر املای Android (AOSP)"</string>
     <string name="use_contacts_for_spellchecking_option_title" msgid="5374120998125353898">"جستجوی نام مخاطبین"</string>
@@ -34,8 +34,8 @@
     <string name="misc_category" msgid="6894192814868233453">"سایر گزینه‌ها"</string>
     <string name="advanced_settings" msgid="362895144495591463">"تنظیمات پیشرفته"</string>
     <string name="advanced_settings_summary" msgid="4487980456152830271">"گزینه‌هایی برای حرفه‌ای‌ها"</string>
-    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"تغییر به دیگر روشهای ورودی"</string>
-    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"کلید تغییر زبان، سایر ورودیهای زبان را نیز پوشش می‌دهد"</string>
+    <string name="include_other_imes_in_language_switch_list" msgid="4533689960308565519">"تغییر به دیگر روش‌های ورودی"</string>
+    <string name="include_other_imes_in_language_switch_list_summary" msgid="840637129103317635">"کلید تغییر زبان، سایر ورودی‌های زبان را نیز پوشش می‌دهد"</string>
     <string name="suppress_language_switch_key" msgid="8003788410354806368">"کلید تغییر زبان را فشار دهید"</string>
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"تأخیر در رد کردن کلید نمایشی"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"بدون تأخیر"</string>
@@ -46,7 +46,7 @@
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"فرهنگ‌های لغت افزودنی"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"فرهنگ‌ لغت اصلی"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"نمایش پیشنهادات تصحیح"</string>
-    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"نمایش واژه های پیشنهادی در حین تایپ"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"نمایش واژه‌های پیشنهادی در حین تایپ"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"همیشه نمایش داده شود"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"نمایش در حالت عمودی"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"همیشه پنهان شود"</string>
@@ -106,8 +106,8 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"میکروفن در صفحه کلید اصلی"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"میکروفن در صفحه کلید نمادها"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"ورودی صدا غیرفعال است"</string>
-    <string name="configure_input_method" msgid="373356270290742459">"پیکربندی روش های ورودی"</string>
-    <string name="language_selection_title" msgid="1651299598555326750">"زبان های ورودی"</string>
+    <string name="configure_input_method" msgid="373356270290742459">"پیکربندی روش‌های ورودی"</string>
+    <string name="language_selection_title" msgid="1651299598555326750">"زبان‌های ورودی"</string>
     <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"یادداشت مهر زمان در گزارش"</string>
     <string name="notify_recorded_timestamp" msgid="8036429032449612051">"مهر زمان ثبت شده"</string>
     <string name="do_not_log_this_session" msgid="413762473641146336">"از این جلسه گزارش‌گیری نشود"</string>
@@ -123,7 +123,7 @@
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"برای ذخیره دوباره لمس کنید"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"دیکشنری موجود است"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"فعال کردن بازخورد کاربر"</string>
-    <string name="prefs_description_log" msgid="5827825607258246003">"با ارسال خودکار آمارهای کاربرد و گزارش های خرابی به Google، به بهبود این ویرایشگر روش ورودی کمک کنید."</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"با ارسال خودکار آمارهای کاربرد و گزارش‌های خرابی به Google، به بهبود این ویرایشگر روش ورودی کمک کنید."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"طرح زمینه صفحه کلید"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"انگلیسی (بریتانیا)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"انگلیسی (امریکا)"</string>

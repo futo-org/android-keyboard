@@ -107,19 +107,14 @@
     <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"标记记录中的时间"</string>
     <string name="notify_recorded_timestamp" msgid="8036429032449612051">"已标记时间"</string>
     <string name="do_not_log_this_session" msgid="413762473641146336">"不记录本次会话"</string>
-    <!-- no translation found for enable_session_logging (4202559020594036225) -->
-    <skip />
-    <!-- no translation found for log_whole_session_history (7087712461632081351) -->
-    <skip />
+    <string name="enable_session_logging" msgid="4202559020594036225">"启用会话记录"</string>
+    <string name="log_whole_session_history" msgid="7087712461632081351">"保存整个会话历史记录"</string>
     <string name="notify_session_log_deleting" msgid="3299507647764414623">"正在删除会话记录"</string>
     <string name="notify_session_log_deleted" msgid="8687927130100934686">"会话记录已删除"</string>
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"未能删除会话记录"</string>
-    <!-- no translation found for notify_session_history_logged (7723983399468056391) -->
-    <skip />
-    <!-- no translation found for notify_session_history_not_logged (6597910011368015361) -->
-    <skip />
-    <!-- no translation found for notify_session_logging_enabled (8549561596936177661) -->
-    <skip />
+    <string name="notify_session_history_logged" msgid="7723983399468056391">"会话历史记录已保存"</string>
+    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"错误：会话历史记录未保存"</string>
+    <string name="notify_session_logging_enabled" msgid="8549561596936177661">"会话记录已启用"</string>
     <string name="select_language" msgid="3693815588777926848">"输入语言"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"再次触摸即可保存"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"有可用词典"</string>
