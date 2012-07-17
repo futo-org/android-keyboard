@@ -108,7 +108,7 @@
     <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Data/hora registrada"</string>
     <string name="do_not_log_this_session" msgid="413762473641146336">"Não registrar esta sessão"</string>
     <string name="enable_session_logging" msgid="4202559020594036225">"Ativar registro de sessão"</string>
-    <string name="log_whole_session_history" msgid="7087712461632081351">"Registrar histórico de sessão compl."</string>
+    <string name="log_whole_session_history" msgid="7087712461632081351">"Regist. histórico de sessão inteiro"</string>
     <string name="notify_session_log_deleting" msgid="3299507647764414623">"Excluindo reg. de sessão"</string>
     <string name="notify_session_log_deleted" msgid="8687927130100934686">"Registro excluído"</string>
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Registro NÃO excluído"</string>
