@@ -113,7 +113,7 @@
     <string name="notify_session_log_deleted" msgid="8687927130100934686">"Log di sessione eliminato"</string>
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Log sessione non eliminato"</string>
     <string name="notify_session_history_logged" msgid="7723983399468056391">"Cronologia sessione registrata"</string>
-    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"Errore: cron. sessione NON registr."</string>
+    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"Errore: cronologia NON registrata"</string>
     <string name="notify_session_logging_enabled" msgid="8549561596936177661">"Registrazione sessioni attivata"</string>
     <string name="select_language" msgid="3693815588777926848">"Lingue comandi"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Tocca di nuovo per salvare"</string>
