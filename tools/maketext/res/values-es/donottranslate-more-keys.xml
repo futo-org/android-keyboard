@@ -69,15 +69,9 @@
     <string name="more_keys_for_c">&#x00E7;,&#x0107;,&#x010D;</string>
     <!-- U+00A1: "¡" INVERTED EXCLAMATION MARK
          U+00BF: "¿" INVERTED QUESTION MARK -->
-    <string name="more_keys_for_punctuation">"!fixedColumnOrder!9,\",\',#,-,&#x00A1;,!,&#x00BF;,\\,,\?,\@,&amp;,\\%,+,;,:,/,(,)"</string>
-    <string name="keyhintlabel_for_tablet_comma">&#x00A1;</string>
-    <string name="more_keys_for_tablet_comma">"&#x00A1;,!"</string>
-    <string name="keyhintlabel_for_tablet_period">&#x00BF;</string>
-    <string name="more_keys_for_tablet_period">"&#x00BF;,\?"</string>
+    <string name="more_keys_for_punctuation">"!fixedColumnOrder!9,&#x00A1;,\",\',#,-,:,!,\\,,\?,&#x00BF;,\@,&amp;,\\%,+,;,/,(,)"</string>
     <!-- U+00A1: "¡" INVERTED EXCLAMATION MARK -->
-    <string name="keylabel_for_symbols_exclamation">"&#x00A1;"</string>
+    <string name="more_keys_for_tablet_comma">"!,&#x00A1;"</string>
     <!-- U+00BF: "¿" INVERTED QUESTION MARK -->
-    <string name="keylabel_for_symbols_question">"&#x00BF;"</string>
-    <string name="more_keys_for_symbols_exclamation">"!"</string>
-    <string name="more_keys_for_symbols_question">"\?"</string>
+    <string name="more_keys_for_tablet_period">"\?,&#x00BF;"</string>
 </resources>
