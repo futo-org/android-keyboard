@@ -34,6 +34,7 @@
     <!--
         Configuration for LatinKeyboardView
     -->
+    <dimen name="config_key_hysteresis_distance">40.0dp</dimen>
     <bool name="config_sliding_key_input_enabled">false</bool>
     <!-- Showing more keys keyboard, just above the touched point if true, aligned to the key if
          false -->
