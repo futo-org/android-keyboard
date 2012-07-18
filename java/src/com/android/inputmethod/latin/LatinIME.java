@@ -618,7 +618,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     + ((editorInfo.inputType & InputType.TYPE_TEXT_FLAG_CAP_WORDS) != 0));
         }
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.getInstance().start();
             ResearchLogger.latinIME_onStartInputViewInternal(editorInfo, mPrefs);
         }
         if (InputAttributes.inPrivateImeOptions(null, NO_MICROPHONE_COMPAT, editorInfo)) {
@@ -711,7 +710,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         LatinImeLogger.commit();
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.getInstance().stop();
+            ResearchLogger.getInstance().latinIME_onFinishInputInternal();
         }
 
         KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();

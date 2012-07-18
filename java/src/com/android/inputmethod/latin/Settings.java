@@ -208,7 +208,8 @@ public class Settings extends InputMethodSettingsFragment
         if (ProductionFlag.IS_EXPERIMENTAL) {
             if (usabilityStudyPref instanceof CheckBoxPreference) {
                 CheckBoxPreference checkbox = (CheckBoxPreference)usabilityStudyPref;
-                checkbox.setChecked(prefs.getBoolean(PREF_USABILITY_STUDY_MODE, true));
+                checkbox.setChecked(prefs.getBoolean(PREF_USABILITY_STUDY_MODE,
+                        ResearchLogger.DEFAULT_USABILITY_STUDY_MODE));
                 checkbox.setSummary(R.string.settings_warning_researcher_mode);
             }
         }
