@@ -19,8 +19,10 @@ package com.android.inputmethod.latin;
 import android.test.AndroidTestCase;
 
 public class InputPointersTests extends AndroidTestCase {
+    private static final int DEFAULT_CAPACITY = 48;
+
     public void testNewInstance() {
-        final InputPointers src = new InputPointers();
+        final InputPointers src = new InputPointers(DEFAULT_CAPACITY);
         assertEquals("newInstance size", 0, src.getPointerSize());
         assertNotNull("new instance xCoordinates", src.getXCoordinates());
         assertNotNull("new instance yCoordinates", src.getYCoordinates());
@@ -29,7 +31,7 @@ public class InputPointersTests extends AndroidTestCase {
     }
 
     public void testReset() {
-        final InputPointers src = new InputPointers();
+        final InputPointers src = new InputPointers(DEFAULT_CAPACITY);
         final int[] xCoordinates = src.getXCoordinates();
         final int[] yCoordinates = src.getXCoordinates();
         final int[] pointerIds = src.getXCoordinates();
@@ -44,7 +46,7 @@ public class InputPointersTests extends AndroidTestCase {
     }
 
     public void testAdd() {
-        final InputPointers src = new InputPointers();
+        final InputPointers src = new InputPointers(DEFAULT_CAPACITY);
         final int limit = src.getXCoordinates().length * 2 + 10;
         for (int i = 0; i < limit; i++) {
             src.addPointer(i, i * 2, i * 3, i * 4);
@@ -59,7 +61,7 @@ public class InputPointersTests extends AndroidTestCase {
     }
 
     public void testAddAt() {
-        final InputPointers src = new InputPointers();
+        final InputPointers src = new InputPointers(DEFAULT_CAPACITY);
         final int limit = 1000, step = 100;
         for (int i = 0; i < limit; i += step) {
             src.addPointer(i, i, i * 2, i * 3, i * 4);
@@ -74,12 +76,12 @@ public class InputPointersTests extends AndroidTestCase {
     }
 
     public void testSet() {
-        final InputPointers src = new InputPointers();
+        final InputPointers src = new InputPointers(DEFAULT_CAPACITY);
         final int limit = src.getXCoordinates().length * 2 + 10;
         for (int i = 0; i < limit; i++) {
             src.addPointer(i, i * 2, i * 3, i * 4);
         }
-        final InputPointers dst = new InputPointers();
+        final InputPointers dst = new InputPointers(DEFAULT_CAPACITY);
         dst.set(src);
         assertEquals("after set size", dst.getPointerSize(), src.getPointerSize());
         assertSame("after set xCoordinates", dst.getXCoordinates(), src.getXCoordinates());
@@ -89,12 +91,12 @@ public class InputPointersTests extends AndroidTestCase {
     }
 
     public void testCopy() {
-        final InputPointers src = new InputPointers();
+        final InputPointers src = new InputPointers(DEFAULT_CAPACITY);
         final int limit = 100;
         for (int i = 0; i < limit; i++) {
             src.addPointer(i, i * 2, i * 3, i * 4);
         }
-        final InputPointers dst = new InputPointers();
+        final InputPointers dst = new InputPointers(DEFAULT_CAPACITY);
         dst.copy(src);
         assertEquals("after copy size", dst.getPointerSize(), src.getPointerSize());
         assertNotSame("after copy xCoordinates", dst.getXCoordinates(), src.getXCoordinates());
@@ -113,18 +115,18 @@ public class InputPointersTests extends AndroidTestCase {
     }
 
     public void testAppend() {
-        final InputPointers src = new InputPointers();
+        final InputPointers src = new InputPointers(DEFAULT_CAPACITY);
         final int srcLen = 100;
         for (int i = 0; i < srcLen; i++) {
             src.addPointer(i, i * 2, i * 3, i * 4);
         }
         final int dstLen = 50;
-        final InputPointers dst = new InputPointers();
+        final InputPointers dst = new InputPointers(DEFAULT_CAPACITY);
         for (int i = 0; i < dstLen; i++) {
             final int value = -i - 1;
             dst.addPointer(value * 4, value * 3, value * 2, value);
         }
-        final InputPointers dstCopy = new InputPointers();
+        final InputPointers dstCopy = new InputPointers(DEFAULT_CAPACITY);
         dstCopy.copy(dst);
 
         dst.append(src, 0, 0);

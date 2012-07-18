@@ -20,10 +20,19 @@ import java.util.Arrays;
 
 // TODO: This class is not thread-safe.
 public class InputPointers {
-    private final ScalableIntArray mXCoordinates = new ScalableIntArray();
-    private final ScalableIntArray mYCoordinates = new ScalableIntArray();
-    private final ScalableIntArray mPointerIds = new ScalableIntArray();
-    private final ScalableIntArray mTimes = new ScalableIntArray();
+    private final int mDefaultCapacity;
+    private final ScalableIntArray mXCoordinates;
+    private final ScalableIntArray mYCoordinates;
+    private final ScalableIntArray mPointerIds;
+    private final ScalableIntArray mTimes;
+
+    public InputPointers(int defaultCapacity) {
+        mDefaultCapacity = defaultCapacity;
+        mXCoordinates = new ScalableIntArray(defaultCapacity);
+        mYCoordinates = new ScalableIntArray(defaultCapacity);
+        mPointerIds = new ScalableIntArray(defaultCapacity);
+        mTimes = new ScalableIntArray(defaultCapacity);
+    }
 
     public void addPointer(int index, int x, int y, int pointerId, int time) {
         mXCoordinates.add(index, x);
@@ -70,10 +79,11 @@ public class InputPointers {
     }
 
     public void reset() {
-        mXCoordinates.reset();
-        mYCoordinates.reset();
-        mPointerIds.reset();
-        mTimes.reset();
+        final int defaultCapacity = mDefaultCapacity;
+        mXCoordinates.reset(defaultCapacity);
+        mYCoordinates.reset(defaultCapacity);
+        mPointerIds.reset(defaultCapacity);
+        mTimes.reset(defaultCapacity);
     }
 
     public int getPointerSize() {
@@ -97,12 +107,11 @@ public class InputPointers {
     }
 
     private static class ScalableIntArray {
-        private static final int DEFAULT_SIZE = BinaryDictionary.MAX_WORD_LENGTH;
         private int[] mArray;
         private int mLength;
 
-        public ScalableIntArray() {
-            reset();
+        public ScalableIntArray(int capacity) {
+            reset(capacity);
         }
 
         public void add(int index, int val) {
@@ -136,8 +145,8 @@ public class InputPointers {
             return mLength;
         }
 
-        public void reset() {
-            mArray = new int[DEFAULT_SIZE];
+        public void reset(int capacity) {
+            mArray = new int[capacity];
             mLength = 0;
         }
 

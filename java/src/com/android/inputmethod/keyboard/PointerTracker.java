@@ -234,9 +234,8 @@ public class PointerTracker {
     // TODO: To handle multi-touch gestures we may want to move this method to
     // {@link PointerTrackerQueue}.
     private static InputPointers getIncrementalBatchPoints() {
-        final InputPointers pointers = new InputPointers();
-        // TODO: Add a default capacity parameter for the InputPointers' constructor.
         // TODO: Avoid creating a new instance here?
+        final InputPointers pointers = new InputPointers(GestureStroke.DEFAULT_CAPACITY);
         for (final PointerTracker tracker : sTrackers) {
             tracker.mGestureStroke.appendIncrementalBatchPoints(pointers);
         }
@@ -246,9 +245,8 @@ public class PointerTracker {
     // TODO: To handle multi-touch gestures we may want to move this method to
     // {@link PointerTrackerQueue}.
     private static InputPointers getAllBatchPoints() {
-        // TODO: Add a default capacity parameter for the InputPointers' constructor.
         // TODO: Avoid creating a new instance here?
-        final InputPointers pointers = new InputPointers();
+        final InputPointers pointers = new InputPointers(GestureStroke.DEFAULT_CAPACITY);
         for (final PointerTracker tracker : sTrackers) {
             tracker.mGestureStroke.appendAllBatchPoints(pointers);
         }

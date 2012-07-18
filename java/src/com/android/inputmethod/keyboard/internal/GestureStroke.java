@@ -19,8 +19,11 @@ import android.util.FloatMath;
 import com.android.inputmethod.latin.InputPointers;
 
 public class GestureStroke {
+    public static final int DEFAULT_CAPACITY = 128;
+
     private final int mPointerId;
-    private final InputPointers mInputPointers = new InputPointers();
+    // TODO: Replace this {@link InputPointers} with a set of {@link ScalableIntArray}s.
+    private final InputPointers mInputPointers = new InputPointers(DEFAULT_CAPACITY);
     private float mLength;
     private float mAngle;
     private int mIncrementalRecognitionPoint;
