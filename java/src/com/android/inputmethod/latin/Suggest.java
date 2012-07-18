@@ -300,11 +300,27 @@ public class Suggest {
 
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 new ArrayList<SuggestedWordInfo>(suggestionsSet);
+        final int suggestionsCount = suggestionsContainer.size();
+        final boolean isFirstCharCapitalized = wordComposer.isAutoCapitalized();
+        // TODO: Handle the manual temporary shifted mode.
+        // TODO: Should handle TextUtils.CAP_MODE_CHARACTER.
+        final boolean isAllUpperCase = false;
+        if (isFirstCharCapitalized || isAllUpperCase) {
+            for (int i = 0; i < suggestionsCount; ++i) {
+                final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
+                final SuggestedWordInfo transformedWordInfo = getTransformedSuggestedWordInfo(
+                        wordInfo, mLocale, isAllUpperCase, isFirstCharCapitalized,
+                        0 /* trailingSingleQuotesCount */);
+                suggestionsContainer.set(i, transformedWordInfo);
+            }
+        }
 
         SuggestedWordInfo.removeDups(suggestionsContainer);
+        // In the batch input mode, the most relevant suggested word should act as a "typed word"
+        // (typedWordValid=true), not as an "auto correct word" (willAutoCorrect=false).
         return new SuggestedWords(suggestionsContainer,
                 true /* typedWordValid */,
-                true /* willAutoCorrect */,
+                false /* willAutoCorrect */,
                 false /* isPunctuationSuggestions */,
                 false /* isObsoleteSuggestions */,
                 false /* isPrediction */);

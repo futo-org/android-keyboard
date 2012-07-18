@@ -158,7 +158,6 @@
     <string name="more_keys_for_symbols_0">&#x207F;,&#x2205;</string>
     <string name="keylabel_for_comma">,</string>
     <string name="more_keys_for_comma"></string>
-    <string name="keylabel_for_symbols_exclamation">!</string>
     <string name="keylabel_for_symbols_question">\?</string>
     <string name="keylabel_for_symbols_semicolon">;</string>
     <string name="keylabel_for_symbols_percent">%</string>

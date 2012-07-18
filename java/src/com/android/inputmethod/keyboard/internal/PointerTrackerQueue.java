@@ -31,6 +31,10 @@ public class PointerTrackerQueue {
     // TODO: Use ring buffer instead of {@link LinkedList}.
     private final LinkedList<PointerTracker> mQueue = new LinkedList<PointerTracker>();
 
+    public int size() {
+        return mQueue.size();
+    }
+
     public synchronized void add(PointerTracker tracker) {
         mQueue.add(tracker);
     }

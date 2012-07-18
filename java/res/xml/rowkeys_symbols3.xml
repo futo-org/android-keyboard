@@ -22,7 +22,7 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Key
-        latin:keyLabel="!text/keylabel_for_symbols_exclamation"
+        latin:keyLabel="!"
         latin:moreKeys="!text/more_keys_for_symbols_exclamation" />
     <switch>
         <case

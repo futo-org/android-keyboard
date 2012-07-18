@@ -130,8 +130,13 @@ public class WordComposer {
         if (newIndex < BinaryDictionary.MAX_WORD_LENGTH) {
             mPrimaryKeyCodes[newIndex] = primaryCode >= Keyboard.CODE_SPACE
                     ? Character.toLowerCase(primaryCode) : primaryCode;
-            // TODO: Set correct pointer id and time
-            mInputPointers.addPointer(newIndex, keyX, keyY, 0, 0);
+            // In the batch input mode, the {@code mInputPointers} holds batch input points and
+            // shouldn't be overridden by the "typed key" coordinates
+            // (See {@link #setBatchInputWord}).
+            if (!mIsBatchMode) {
+                // TODO: Set correct pointer id and time
+                mInputPointers.addPointer(newIndex, keyX, keyY, 0, 0);
+            }
         }
         mIsFirstCharCapitalized = isFirstCharCapitalized(
                 newIndex, primaryCode, mIsFirstCharCapitalized);
@@ -144,10 +149,21 @@ public class WordComposer {
         mAutoCorrection = null;
     }
 
-    // TODO: We may want to have appendBatchInputPointers() as well.
     public void setBatchInputPointers(InputPointers batchPointers) {
-        mInputPointers.copy(batchPointers);
+        mInputPointers.set(batchPointers);
         mIsBatchMode = true;
+    }
+
+    public void setBatchInputWord(CharSequence word) {
+        reset();
+        mIsBatchMode = true;
+        final int length = word.length();
+        for (int i = 0; i < length; i = Character.offsetByCodePoints(word, i, 1)) {
+            final int codePoint = Character.codePointAt(word, i);
+            // We don't want to override the batch input points that are held in mInputPointers
+            // (See {@link #add(int,int,int)}).
+            add(codePoint, NOT_A_COORDINATE, NOT_A_COORDINATE);
+        }
     }
 
     /**
@@ -161,7 +177,7 @@ public class WordComposer {
             add(codePoint, x, y);
             return;
         }
-        add(codePoint, WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
+        add(codePoint, NOT_A_COORDINATE, NOT_A_COORDINATE);
     }
 
     /**
