@@ -60,6 +60,9 @@ public class InputPointers {
      * @param length the number of pointers to be appended.
      */
     public void append(InputPointers src, int startPos, int length) {
+        if (length == 0) {
+            return;
+        }
         mXCoordinates.append(src.mXCoordinates, startPos, length);
         mYCoordinates.append(src.mYCoordinates, startPos, length);
         mPointerIds.append(src.mPointerIds, startPos, length);
