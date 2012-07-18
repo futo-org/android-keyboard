@@ -22,8 +22,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.inputmethod.keyboard.internal.GestureStroke;
 import com.android.inputmethod.keyboard.internal.GestureTracker;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
+import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.ResearchLogger;
 import com.android.inputmethod.latin.define.ProductionFlag;
@@ -165,6 +167,8 @@ public class PointerTracker {
     // Gesture tracker singleton instance
     private static final GestureTracker sGestureTracker = GestureTracker.getInstance();
 
+    private final GestureStroke mGestureStroke;
+
     public static void init(boolean hasDistinctMultitouch,
             boolean needsPhantomSuddenMoveEventHack) {
         if (hasDistinctMultitouch) {
@@ -222,10 +226,43 @@ public class PointerTracker {
         }
     }
 
-    public PointerTracker(int id, KeyEventHandler handler) {
+    // The working and returning object of the following methods,
+    // {@link #getIncrementalBatchPoints()} and {@link #getAllBatchPoints()}.
+    private static final InputPointers mAggregatedPointers = new InputPointers();
+
+    // TODO: This method is called only from GestureTracker and should address the thread-safty
+    // issue soon.
+    public static InputPointers getIncrementalBatchPoints() {
+        final InputPointers pointers = mAggregatedPointers;
+        pointers.reset();
+        for (final PointerTracker tracker : sTrackers) {
+            tracker.getGestureStroke().appendIncrementalBatchPoints(pointers);
+        }
+        return pointers;
+    }
+
+    // TODO: This method is called only from GestureTracker and should address the thread-safety
+    // issue soon.
+    public static InputPointers getAllBatchPoints() {
+        final InputPointers pointers = mAggregatedPointers;
+        pointers.reset();
+        for (final PointerTracker tracker : sTrackers) {
+            tracker.getGestureStroke().appendAllBatchPoints(pointers);
+        }
+        return pointers;
+    }
+
+    public static void clearBatchInputPoints() {
+        for (final PointerTracker tracker : sTrackers) {
+            tracker.getGestureStroke().reset();
+        }
+    }
+
+    private PointerTracker(int id, KeyEventHandler handler) {
         if (handler == null)
             throw new NullPointerException();
         mPointerId = id;
+        mGestureStroke = new GestureStroke(id);
         setKeyDetectorInner(handler.getKeyDetector());
         mListener = handler.getKeyboardActionListener();
         mDrawingProxy = handler.getDrawingProxy();
@@ -235,6 +272,10 @@ public class PointerTracker {
 
     public TextView getKeyPreviewText() {
         return mKeyPreviewText;
+    }
+
+    public GestureStroke getGestureStroke() {
+        return mGestureStroke;
     }
 
     // Returns true if keyboard has been changed by this callback.
@@ -328,6 +369,8 @@ public class PointerTracker {
     private void setKeyDetectorInner(KeyDetector keyDetector) {
         mKeyDetector = keyDetector;
         mKeyboard = keyDetector.getKeyboard();
+        mGestureStroke.setGestureSampleLength(
+                mKeyboard.mMostCommonKeyWidth, mKeyboard.mMostCommonKeyHeight);
         final Key newKey = mKeyDetector.detectHitKey(mKeyX, mKeyY);
         if (newKey != mCurrentKey) {
             if (mDrawingProxy != null) {
