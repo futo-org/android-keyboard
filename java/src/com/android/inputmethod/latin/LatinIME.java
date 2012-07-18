@@ -1329,13 +1329,22 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public SuggestedWords onUpdateBatchInput(InputPointers batchPointers) {
+    public void onUpdateBatchInput(InputPointers batchPointers) {
         mWordComposer.setBatchInputPointers(batchPointers);
-        return updateSuggestionsOrPredictions();
+        updateSuggestionsOrPredictions();
     }
 
     @Override
-    public void onEndBatchInput(CharSequence text) {
+    public void onEndBatchInput(InputPointers batchPointers) {
+        mWordComposer.setBatchInputPointers(batchPointers);
+        final SuggestedWords suggestedWords = updateSuggestionsOrPredictions();
+        if (suggestedWords == null || suggestedWords.size() == 0) {
+            return;
+        }
+        final CharSequence text = suggestedWords.getWord(0);
+        if (TextUtils.isEmpty(text)) {
+            return;
+        }
         mWordComposer.setBatchInputWord(text);
         mConnection.beginBatchEdit();
         if (SPACE_STATE_PHANTOM == mSpaceState) {

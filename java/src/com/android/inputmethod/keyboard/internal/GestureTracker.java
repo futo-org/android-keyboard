@@ -21,7 +21,6 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.latin.InputPointers;
-import com.android.inputmethod.latin.SuggestedWords;
 
 // TODO: Remove this class by consolidating with PointerTracker
 public class GestureTracker {
@@ -40,7 +39,6 @@ public class GestureTracker {
     private boolean mInGesture = false;
 
     private KeyboardActionListener mListener;
-    private SuggestedWords mSuggestions;
 
     private int mLastRecognitionPointSize = 0;
     private long mLastRecognitionTime = 0;
@@ -66,17 +64,16 @@ public class GestureTracker {
         }
         mInGesture = true;
         mListener.onStartBatchInput();
-        mSuggestions = null;
     }
 
     // TODO: The corresponding startBatchInput() is a private method. Reorganize the code.
     public void endBatchInput() {
-        if (isInGesture() && mSuggestions != null && mSuggestions.size() > 0) {
-            final CharSequence text = mSuggestions.getWord(0);
+        if (isInGesture()) {
+            final InputPointers batchPoints = PointerTracker.getAllBatchPoints();
             if (DEBUG_LISTENER) {
-                Log.d(TAG, "onEndBatchInput: text=" + text);
+                Log.d(TAG, "onEndBatchInput: batchPoints=" + batchPoints.getPointerSize());
             }
-            mListener.onEndBatchInput(text);
+            mListener.onEndBatchInput(batchPoints);
         }
         mInGesture = false;
         clearBatchInputPoints();
@@ -117,7 +114,7 @@ public class GestureTracker {
                 if (DEBUG_LISTENER) {
                     Log.d(TAG, "onUpdateBatchInput: batchPoints=" + batchPoints.getPointerSize());
                 }
-                mSuggestions = mListener.onUpdateBatchInput(batchPoints);
+                mListener.onUpdateBatchInput(batchPoints);
             }
         }
     }
@@ -128,7 +125,7 @@ public class GestureTracker {
             if (DEBUG_LISTENER) {
                 Log.d(TAG, "onUpdateBatchInput: batchPoints=" + batchPoints.getPointerSize());
             }
-            mSuggestions = mListener.onUpdateBatchInput(batchPoints);
+            mListener.onUpdateBatchInput(batchPoints);
         }
     }
 
