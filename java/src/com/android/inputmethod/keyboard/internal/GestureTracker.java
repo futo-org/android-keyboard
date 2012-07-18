@@ -104,7 +104,8 @@ public class GestureTracker {
 
     public void onDownEvent(PointerTracker tracker, int x, int y, long eventTime, Key key) {
         mIsPossibleGesture = false;
-        if (GESTURE_ON && mIsAlphabetKeyboard && key != null && !key.isModifier()) {
+        // A gesture should start only from the letter key.
+        if (GESTURE_ON && mIsAlphabetKeyboard && key != null && Keyboard.isLetterCode(key.mCode)) {
             mIsPossibleGesture = true;
             addPointToStroke(x, y, 0, tracker.mPointerId, false);
         }
