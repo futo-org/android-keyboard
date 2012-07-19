@@ -26,19 +26,21 @@ public class GestureStroke {
     private final InputPointers mInputPointers = new InputPointers(DEFAULT_CAPACITY);
     private float mLength;
     private float mAngle;
-    private int mIncrementalRecognitionPoint;
-    private boolean mHasSharpCorner;
+    private int mIncrementalRecognitionSize;
     private long mLastPointTime;
     private int mLastPointX;
     private int mLastPointY;
 
     private int mMinGestureLength;
+    private int mMinGestureLengthWhileInGesture;
     private int mMinGestureSampleLength;
 
-    // TODO: Tune these parameters.
-    private static final float MIN_GESTURE_DETECTION_RATIO_TO_KEY_WIDTH = 1.0f / 4.0f;
+    // TODO: Move some of these to resource.
+    private static final float MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH = 1.0f;
+    private static final float MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH_WHILE_IN_GESTURE = 0.5f;
+    private static final int MIN_GESTURE_DURATION = 150; // msec
+    private static final int MIN_GESTURE_DURATION_WHILE_IN_GESTURE = 75; // msec
     private static final float MIN_GESTURE_SAMPLING_RATIO_TO_KEY_HEIGHT = 1.0f / 6.0f;
-    private static final int MIN_GESTURE_DURATION = 100; // msec
     private static final float GESTURE_RECOG_SPEED_THRESHOLD = 0.4f; // dip/msec
     private static final float GESTURE_RECOG_CURVATURE_THRESHOLD = (float)(Math.PI / 4.0f);
 
@@ -50,19 +52,27 @@ public class GestureStroke {
     }
 
     public void setGestureSampleLength(final int keyWidth, final int keyHeight) {
-        mMinGestureLength = (int)(keyWidth * MIN_GESTURE_DETECTION_RATIO_TO_KEY_WIDTH);
+        // TODO: Find an appropriate base metric for these length. Maybe diagonal length of the key?
+        mMinGestureLength = (int)(keyWidth * MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH);
+        mMinGestureLengthWhileInGesture = (int)(
+                keyWidth * MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH_WHILE_IN_GESTURE);
         mMinGestureSampleLength = (int)(keyHeight * MIN_GESTURE_SAMPLING_RATIO_TO_KEY_HEIGHT);
     }
 
-    public boolean isStartOfAGesture(int downDuration) {
+    public boolean isStartOfAGesture(final int downDuration, final boolean wasInGesture) {
+        // The tolerance of the time duration and the stroke length to detect the start of a
+        // gesture stroke should be eased when the previous input was a gesture input.
+        if (wasInGesture) {
+            return downDuration > MIN_GESTURE_DURATION_WHILE_IN_GESTURE
+                    && mLength > mMinGestureLengthWhileInGesture;
+        }
         return downDuration > MIN_GESTURE_DURATION && mLength > mMinGestureLength;
     }
 
     public void reset() {
         mLength = 0;
         mAngle = 0;
-        mIncrementalRecognitionPoint = 0;
-        mHasSharpCorner = false;
+        mIncrementalRecognitionSize = 0;
         mLastPointTime = 0;
         mInputPointers.reset();
     }
@@ -93,15 +103,11 @@ public class GestureStroke {
             mLength += dist;
             final float angle = getAngle(lastX, lastY, x, y);
             if (size > 1) {
-                float curvature = getAngleDiff(angle, mAngle);
+                final float curvature = getAngleDiff(angle, mAngle);
                 if (curvature > GESTURE_RECOG_CURVATURE_THRESHOLD) {
-                    if (size > mIncrementalRecognitionPoint) {
-                        mIncrementalRecognitionPoint = size;
+                    if (size > mIncrementalRecognitionSize) {
+                        mIncrementalRecognitionSize = size;
                     }
-                    mHasSharpCorner = true;
-                }
-                if (!mHasSharpCorner) {
-                    mIncrementalRecognitionPoint = size;
                 }
             }
             mAngle = angle;
@@ -112,7 +118,7 @@ public class GestureStroke {
             if (mLastPointTime != 0 && duration > 0) {
                 final float speed = getDistance(mLastPointX, mLastPointY, x, y) / duration;
                 if (speed < GESTURE_RECOG_SPEED_THRESHOLD) {
-                    mIncrementalRecognitionPoint = size;
+                    mIncrementalRecognitionSize = size;
                 }
             }
             updateLastPoint(x, y, time);
@@ -124,7 +130,7 @@ public class GestureStroke {
     }
 
     public void appendIncrementalBatchPoints(final InputPointers out) {
-        out.append(mInputPointers, 0, mIncrementalRecognitionPoint);
+        out.append(mInputPointers, 0, mIncrementalRecognitionSize);
     }
 
     private static float getDistance(final int p1x, final int p1y,

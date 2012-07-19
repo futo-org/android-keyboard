@@ -42,7 +42,7 @@ public class PointerTracker {
     // TODO: There should be an option to turn on/off the gesture input.
     private static boolean sIsGestureEnabled = true;
 
-    private static final int MIN_RECOGNITION_TIME = 100; // msec
+    private static final int MIN_GESTURE_RECOGNITION_TIME = 100; // msec
 
     public interface KeyEventHandler {
         /**
@@ -122,6 +122,10 @@ public class PointerTracker {
 
     private static final ArrayList<PointerTracker> sTrackers = new ArrayList<PointerTracker>();
     private static PointerTrackerQueue sPointerTrackerQueue;
+    // HACK: Change gesture detection criteria depending on this variable.
+    // TODO: Find more comprehensive ways to detect a gesture start.
+    // True when the previous user input was a gesture input, not a typing input.
+    private static boolean sWasInGesture;
 
     public final int mPointerId;
 
@@ -138,6 +142,7 @@ public class PointerTracker {
     private boolean mIsPossibleGesture = false;
     private boolean mInGesture = false;
 
+    // TODO: Remove these variables
     private int mLastRecognitionPointSize = 0;
     private long mLastRecognitionTime = 0;
 
@@ -273,7 +278,7 @@ public class PointerTracker {
 
     // TODO: To handle multi-touch gestures we may want to move this method to
     // {@link PointerTrackerQueue}.
-    public static void clearBatchInputPoints() {
+    public static void clearBatchInputPointsOfAllPointerTrackers() {
         for (final PointerTracker tracker : sTrackers) {
             tracker.mGestureStroke.reset();
         }
@@ -550,18 +555,26 @@ public class PointerTracker {
             Log.d(TAG, "onEndBatchInput: batchPoints=" + batchPoints.getPointerSize());
         }
         mListener.onEndBatchInput(batchPoints);
-        mInGesture = false;
-        clearBatchInputPoints();
+        clearBatchInputRecognitionStateOfThisPointerTracker();
+        clearBatchInputPointsOfAllPointerTrackers();
+        sWasInGesture = true;
     }
 
     private void abortBatchInput() {
+        clearBatchInputRecognitionStateOfThisPointerTracker();
+        clearBatchInputPointsOfAllPointerTrackers();
+    }
+
+    private void clearBatchInputRecognitionStateOfThisPointerTracker() {
         mIsPossibleGesture = false;
         mInGesture = false;
+        mLastRecognitionPointSize = 0;
+        mLastRecognitionTime = 0;
     }
 
     private boolean updateBatchInputRecognitionState(long eventTime, int size) {
         if (size > mLastRecognitionPointSize
-                && eventTime > mLastRecognitionTime + MIN_RECOGNITION_TIME) {
+                && eventTime > mLastRecognitionTime + MIN_GESTURE_RECOGNITION_TIME) {
             mLastRecognitionPointSize = size;
             mLastRecognitionTime = eventTime;
             return true;
@@ -675,7 +688,7 @@ public class PointerTracker {
         if (sIsGestureEnabled && mIsPossibleGesture) {
             final GestureStroke stroke = mGestureStroke;
             stroke.addPoint(x, y, gestureTime, isHistorical);
-            if (!mInGesture && stroke.isStartOfAGesture(gestureTime)) {
+            if (!mInGesture && stroke.isStartOfAGesture(gestureTime, sWasInGesture)) {
                 startBatchInput();
             }
         }
@@ -865,10 +878,10 @@ public class PointerTracker {
     }
 
     public void onShowMoreKeysPanel(int x, int y, KeyEventHandler handler) {
+        abortBatchInput();
         onLongPressed();
         onDownEvent(x, y, SystemClock.uptimeMillis(), handler);
         mIsShowingMoreKeysPanel = true;
-        abortBatchInput();
     }
 
     public void onLongPressed() {
@@ -947,6 +960,7 @@ public class PointerTracker {
         int code = key.mCode;
         callListenerOnCodeInput(key, code, x, y);
         callListenerOnRelease(key, code, false);
+        sWasInGesture = false;
     }
 
     private void printTouchEvent(String title, int x, int y, long eventTime) {
