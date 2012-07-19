@@ -113,8 +113,8 @@
     <string name="notify_session_log_deleted" msgid="8687927130100934686">"Kumbukumbu za kipindi zimefutwa"</string>
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Kumbukumbu za kipindi HAZIJAFUTWA"</string>
     <string name="notify_session_history_logged" msgid="7723983399468056391">"Historia ya kipindi imeingia"</string>
-    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"Hitilafu: Historia ya kipindi HAIJAINGIA"</string>
-    <string name="notify_session_logging_enabled" msgid="8549561596936177661">"Kuingia kwa kipindi kumewezeshwa"</string>
+    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"Hitilafu: Historia ya kipindi HAIJAINGIWA"</string>
+    <string name="notify_session_logging_enabled" msgid="8549561596936177661">"Kuingia katika kipindi kumewezeshwa"</string>
     <string name="select_language" msgid="3693815588777926848">"Lugha zinazoruhusiwa"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Gusa tena ili kuhifadhi"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Kamusi inapatikana"</string>

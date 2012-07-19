@@ -113,7 +113,7 @@
     <string name="notify_session_log_deleted" msgid="8687927130100934686">"Usunięto dziennik sesji"</string>
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Dziennik sesji NIEUSUNIĘTY"</string>
     <string name="notify_session_history_logged" msgid="7723983399468056391">"Historia sesji została zarejestrowana"</string>
-    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"Błąd: historia sesji nie została zarejestrowana."</string>
+    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"Błąd: historia sesji niezarejestrowana"</string>
     <string name="notify_session_logging_enabled" msgid="8549561596936177661">"Włączono rejestrowanie sesji"</string>
     <string name="select_language" msgid="3693815588777926848">"Języki wprowadzania"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Dotknij ponownie, aby zapisać"</string>
