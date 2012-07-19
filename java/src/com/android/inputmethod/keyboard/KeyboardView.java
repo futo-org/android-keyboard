@@ -43,6 +43,8 @@ import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.StringUtils;
+import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.HashSet;
 
@@ -516,6 +518,13 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                     drawDimRectangle(canvas, mInvalidatedKeysRect, mBackgroundDimAlpha, paint);
                 }
             }
+        }
+
+        // ResearchLogging indicator.
+        // TODO: Reimplement using a keyboard background image specific to the ResearchLogger,
+        // and remove this call.
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.getInstance().paintIndicator(this, paint, canvas, width, height);
         }
 
         mInvalidatedKeys.clear();
