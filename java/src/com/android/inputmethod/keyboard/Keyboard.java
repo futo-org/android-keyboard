@@ -87,7 +87,6 @@ public class Keyboard {
     public static final int CODE_CLOSING_SQUARE_BRACKET = ']';
     public static final int CODE_CLOSING_CURLY_BRACKET = '}';
     public static final int CODE_CLOSING_ANGLE_BRACKET = '>';
-    private static final int MINIMUM_LETTER_CODE = CODE_TAB;
 
     /** Special keys code. Must be negative.
      * These should be aligned with KeyboardCodesSet.ID_TO_NAME[],
@@ -217,7 +216,7 @@ public class Keyboard {
     }
 
     public static boolean isLetterCode(int code) {
-        return code >= MINIMUM_LETTER_CODE;
+        return code >= CODE_SPACE;
     }
 
     public static class Params {

@@ -195,38 +195,37 @@ public final class KeyboardTextsSet {
         /* 87 */ "more_keys_for_symbols_0",
         /* 88 */ "keylabel_for_comma",
         /* 89 */ "more_keys_for_comma",
-        /* 90 */ "keylabel_for_symbols_exclamation",
-        /* 91 */ "keylabel_for_symbols_question",
-        /* 92 */ "keylabel_for_symbols_semicolon",
-        /* 93 */ "keylabel_for_symbols_percent",
-        /* 94 */ "more_keys_for_symbols_exclamation",
-        /* 95 */ "more_keys_for_symbols_question",
-        /* 96 */ "more_keys_for_symbols_semicolon",
-        /* 97 */ "more_keys_for_symbols_percent",
-        /* 98 */ "keylabel_for_tablet_comma",
-        /* 99 */ "keyhintlabel_for_tablet_comma",
-        /* 100 */ "more_keys_for_tablet_comma",
-        /* 101 */ "keyhintlabel_for_tablet_period",
-        /* 102 */ "more_keys_for_tablet_period",
-        /* 103 */ "keylabel_for_apostrophe",
-        /* 104 */ "keyhintlabel_for_apostrophe",
-        /* 105 */ "more_keys_for_apostrophe",
-        /* 106 */ "more_keys_for_am_pm",
-        /* 107 */ "settings_as_more_key",
-        /* 108 */ "shortcut_as_more_key",
-        /* 109 */ "action_next_as_more_key",
-        /* 110 */ "action_previous_as_more_key",
-        /* 111 */ "label_to_more_symbol_key",
-        /* 112 */ "label_to_more_symbol_for_tablet_key",
-        /* 113 */ "label_tab_key",
-        /* 114 */ "label_to_phone_numeric_key",
-        /* 115 */ "label_to_phone_symbols_key",
-        /* 116 */ "label_time_am",
-        /* 117 */ "label_time_pm",
-        /* 118 */ "label_to_symbol_key_pcqwerty",
-        /* 119 */ "keylabel_for_popular_domain",
-        /* 120 */ "more_keys_for_popular_domain",
-        /* 121 */ "more_keys_for_smiley",
+        /* 90 */ "keylabel_for_symbols_question",
+        /* 91 */ "keylabel_for_symbols_semicolon",
+        /* 92 */ "keylabel_for_symbols_percent",
+        /* 93 */ "more_keys_for_symbols_exclamation",
+        /* 94 */ "more_keys_for_symbols_question",
+        /* 95 */ "more_keys_for_symbols_semicolon",
+        /* 96 */ "more_keys_for_symbols_percent",
+        /* 97 */ "keylabel_for_tablet_comma",
+        /* 98 */ "keyhintlabel_for_tablet_comma",
+        /* 99 */ "more_keys_for_tablet_comma",
+        /* 100 */ "keyhintlabel_for_tablet_period",
+        /* 101 */ "more_keys_for_tablet_period",
+        /* 102 */ "keylabel_for_apostrophe",
+        /* 103 */ "keyhintlabel_for_apostrophe",
+        /* 104 */ "more_keys_for_apostrophe",
+        /* 105 */ "more_keys_for_am_pm",
+        /* 106 */ "settings_as_more_key",
+        /* 107 */ "shortcut_as_more_key",
+        /* 108 */ "action_next_as_more_key",
+        /* 109 */ "action_previous_as_more_key",
+        /* 110 */ "label_to_more_symbol_key",
+        /* 111 */ "label_to_more_symbol_for_tablet_key",
+        /* 112 */ "label_tab_key",
+        /* 113 */ "label_to_phone_numeric_key",
+        /* 114 */ "label_to_phone_symbols_key",
+        /* 115 */ "label_time_am",
+        /* 116 */ "label_time_pm",
+        /* 117 */ "label_to_symbol_key_pcqwerty",
+        /* 118 */ "keylabel_for_popular_domain",
+        /* 119 */ "more_keys_for_popular_domain",
+        /* 120 */ "more_keys_for_smiley",
     };
 
     private static final String EMPTY = "";
@@ -331,52 +330,51 @@ public final class KeyboardTextsSet {
         /* 87 */ "\u207F,\u2205",
         /* 88 */ ",",
         /* 89 */ EMPTY,
-        /* 90 */ "!",
-        /* 91 */ "?",
-        /* 92 */ ";",
-        /* 93 */ "%",
+        /* 90 */ "?",
+        /* 91 */ ";",
+        /* 92 */ "%",
         // U+00A1: "¡" INVERTED EXCLAMATION MARK
-        /* 94 */ "\u00A1",
+        /* 93 */ "\u00A1",
         // U+00BF: "¿" INVERTED QUESTION MARK
-        /* 95 */ "\u00BF",
-        /* 96 */ EMPTY,
+        /* 94 */ "\u00BF",
+        /* 95 */ EMPTY,
         // U+2030: "‰" PER MILLE SIGN
-        /* 97 */ "\u2030",
-        /* 98 */ ",",
+        /* 96 */ "\u2030",
+        /* 97 */ ",",
+        /* 98 */ "!",
         /* 99 */ "!",
-        /* 100 */ "!",
+        /* 100 */ "?",
         /* 101 */ "?",
-        /* 102 */ "?",
-        /* 103 */ "\'",
+        /* 102 */ "\'",
+        /* 103 */ "\"",
         /* 104 */ "\"",
-        /* 105 */ "\"",
-        /* 106 */ "!fixedColumnOrder!2,!hasLabels!,!text/label_time_am,!text/label_time_pm",
-        /* 107 */ "!icon/settings_key|!code/key_settings",
-        /* 108 */ "!icon/shortcut_key|!code/key_shortcut",
-        /* 109 */ "!hasLabels!,!text/label_next_key|!code/key_action_next",
-        /* 110 */ "!hasLabels!,!text/label_previous_key|!code/key_action_previous",
+        /* 105 */ "!fixedColumnOrder!2,!hasLabels!,!text/label_time_am,!text/label_time_pm",
+        /* 106 */ "!icon/settings_key|!code/key_settings",
+        /* 107 */ "!icon/shortcut_key|!code/key_shortcut",
+        /* 108 */ "!hasLabels!,!text/label_next_key|!code/key_action_next",
+        /* 109 */ "!hasLabels!,!text/label_previous_key|!code/key_action_previous",
         // Label for "switch to more symbol" modifier key.  Must be short to fit on key!
-        /* 111 */ "= \\ <",
+        /* 110 */ "= \\ <",
         // Label for "switch to more symbol" modifier key on tablets.  Must be short to fit on key!
-        /* 112 */ "~ \\ {",
+        /* 111 */ "~ \\ {",
         // Label for "Tab" key.  Must be short to fit on key!
-        /* 113 */ "Tab",
+        /* 112 */ "Tab",
         // Label for "switch to phone numeric" key.  Must be short to fit on key!
-        /* 114 */ "123",
+        /* 113 */ "123",
         // Label for "switch to phone symbols" key.  Must be short to fit on key!
         // U+FF0A: "＊" FULLWIDTH ASTERISK
         // U+FF03: "＃" FULLWIDTH NUMBER SIGN
-        /* 115 */ "\uFF0A\uFF03",
+        /* 114 */ "\uFF0A\uFF03",
         // Key label for "ante meridiem"
-        /* 116 */ "AM",
+        /* 115 */ "AM",
         // Key label for "post meridiem"
-        /* 117 */ "PM",
+        /* 116 */ "PM",
         // Label for "switch to symbols" key on PC QWERTY layout
-        /* 118 */ "Sym",
-        /* 119 */ ".com",
+        /* 117 */ "Sym",
+        /* 118 */ ".com",
         // popular web domains for the locale - most popular, displayed on the keyboard
-        /* 120 */ "!hasLabels!,.net,.org,.gov,.edu",
-        /* 121 */ "!fixedColumnOrder!5,!hasLabels!,=-O|=-O ,:-P|:-P ,;-)|;-) ,:-(|:-( ,:-)|:-) ,:-!|:-! ,:-$|:-$ ,B-)|B-) ,:O|:O ,:-*|:-* ,:-D|:-D ,:\'(|:\'( ,:-\\\\|:-\\\\ ,O:-)|O:-) ,:-[|:-[ ",
+        /* 119 */ "!hasLabels!,.net,.org,.gov,.edu",
+        /* 120 */ "!fixedColumnOrder!5,!hasLabels!,=-O|=-O ,:-P|:-P ,;-)|;-) ,:-(|:-( ,:-)|:-) ,:-!|:-! ,:-$|:-$ ,B-)|B-) ,:O|:O ,:-*|:-* ,:-D|:-D ,:\'(|:\'( ,:-\\\\|:-\\\\ ,O:-)|O:-) ,:-[|:-[ ",
     };
 
     /* Language ar: Arabic */
@@ -483,25 +481,24 @@ public final class KeyboardTextsSet {
         // U+060C: "،" ARABIC COMMA
         /* 88 */ "\u060C",
         /* 89 */ "\\,",
-        /* 90 */ null,
-        /* 91 */ "\u061F",
-        /* 92 */ "\u061B",
+        /* 90 */ "\u061F",
+        /* 91 */ "\u061B",
         // U+066A: "٪" ARABIC PERCENT SIGN
-        /* 93 */ "\u066A",
-        /* 94 */ null,
-        /* 95 */ "?",
-        /* 96 */ ";",
+        /* 92 */ "\u066A",
+        /* 93 */ null,
+        /* 94 */ "?",
+        /* 95 */ ";",
         // U+2030: "‰" PER MILLE SIGN
-        /* 97 */ "\\%,\u2030",
-        /* 98~ */
+        /* 96 */ "\\%,\u2030",
+        /* 97~ */
         null, null, null, null, null,
-        /* ~102 */
+        /* ~101 */
         // U+060C: "،" ARABIC COMMA
         // U+061B: "؛" ARABIC SEMICOLON
         // U+061F: "؟" ARABIC QUESTION MARK
-        /* 103 */ "\u060C",
-        /* 104 */ "\u061F",
-        /* 105 */ "\u061F,\u061B,!,:,-,/,\',\"",
+        /* 102 */ "\u060C",
+        /* 103 */ "\u061F",
+        /* 104 */ "\u061F,\u061B,!,:,-,/,\',\"",
     };
 
     /* Language be: Belarusian */
@@ -861,27 +858,18 @@ public final class KeyboardTextsSet {
         /* ~47 */
         // U+00A1: "¡" INVERTED EXCLAMATION MARK
         // U+00BF: "¿" INVERTED QUESTION MARK
-        /* 48 */ "!fixedColumnOrder!9,\",\',#,-,\u00A1,!,\u00BF,\\,,?,@,&,\\%,+,;,:,/,(,)",
+        /* 48 */ "!fixedColumnOrder!9,\u00A1,\",\',#,-,:,!,\\,,?,\u00BF,@,&,\\%,+,;,/,(,)",
         /* 49~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null, null,
-        /* ~89 */
-        // U+00A1: "¡" INVERTED EXCLAMATION MARK
-        /* 90 */ "\u00A1",
-        // U+00BF: "¿" INVERTED QUESTION MARK
-        /* 91 */ "\u00BF",
-        /* 92 */ null,
-        /* 93 */ null,
-        /* 94 */ "!",
-        /* 95 */ "?",
-        /* 96~ */
-        null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null,
         /* ~98 */
-        /* 99 */ "\u00A1",
-        /* 100 */ "\u00A1,!",
-        /* 101 */ "\u00BF",
-        /* 102 */ "\u00BF,?",
+        // U+00A1: "¡" INVERTED EXCLAMATION MARK
+        /* 99 */ "!,\u00A1",
+        /* 100 */ null,
+        // U+00BF: "¿" INVERTED QUESTION MARK
+        /* 101 */ "?,\u00BF",
     };
 
     /* Language et: Estonian */
@@ -1088,29 +1076,28 @@ public final class KeyboardTextsSet {
         // U+060C: "،" ARABIC COMMA
         /* 88 */ "\u060C",
         /* 89 */ "\\,",
-        /* 90 */ null,
-        /* 91 */ "\u061F",
-        /* 92 */ "\u061B",
+        /* 90 */ "\u061F",
+        /* 91 */ "\u061B",
         // U+066A: "٪" ARABIC PERCENT SIGN
-        /* 93 */ "\u066A",
-        /* 94 */ null,
-        /* 95 */ "?",
-        /* 96 */ ";",
+        /* 92 */ "\u066A",
+        /* 93 */ null,
+        /* 94 */ "?",
+        /* 95 */ ";",
         // U+2030: "‰" PER MILLE SIGN
-        /* 97 */ "\\%,\u2030",
+        /* 96 */ "\\%,\u2030",
         // U+060C: "،" ARABIC COMMA
         // U+061B: "؛" ARABIC SEMICOLON
         // U+061F: "؟" ARABIC QUESTION MARK
         // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
         // U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
-        /* 98 */ "\u060C",
-        /* 99 */ "!",
-        /* 100 */ "!,\\,",
-        /* 101 */ "\u061F",
-        /* 102 */ "\u061F,?",
-        /* 103 */ "\u060C",
-        /* 104 */ "\u061F",
-        /* 105 */ "!fixedColumnOrder!4,:,!,\u061F,\u061B,-,/,\u00AB|\u00BB,\u00BB|\u00AB",
+        /* 97 */ "\u060C",
+        /* 98 */ "!",
+        /* 99 */ "!,\\,",
+        /* 100 */ "\u061F",
+        /* 101 */ "\u061F,?",
+        /* 102 */ "\u060C",
+        /* 103 */ "\u061F",
+        /* 104 */ "!fixedColumnOrder!4,:,!,\u061F,\u061B,-,/,\u00AB|\u00BB,\u00BB|\u00AB",
     };
 
     /* Language fi: Finnish */
