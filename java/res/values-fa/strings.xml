@@ -118,7 +118,7 @@
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"گزارش جلسه حذف نشد"</string>
     <string name="notify_session_history_logged" msgid="7723983399468056391">"سابقه جلسه گزارش شد"</string>
     <string name="notify_session_history_not_logged" msgid="6597910011368015361">"خطا: سابقه جلسه گزارش نشد"</string>
-    <string name="notify_session_logging_enabled" msgid="8549561596936177661">"گزارش جلسه توانا شد"</string>
+    <string name="notify_session_logging_enabled" msgid="8549561596936177661">"گزارش جلسه فعال شد"</string>
     <string name="select_language" msgid="3693815588777926848">"زبان‌های ورودی"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"برای ذخیره دوباره لمس کنید"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"دیکشنری موجود است"</string>
