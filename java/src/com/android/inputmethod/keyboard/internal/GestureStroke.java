@@ -27,6 +27,7 @@ public class GestureStroke {
     private float mLength;
     private float mAngle;
     private int mIncrementalRecognitionSize;
+    private int mLastIncrementalBatchSize;
     private long mLastPointTime;
     private int mLastPointX;
     private int mLastPointY;
@@ -73,6 +74,7 @@ public class GestureStroke {
         mLength = 0;
         mAngle = 0;
         mIncrementalRecognitionSize = 0;
+        mLastIncrementalBatchSize = 0;
         mLastPointTime = 0;
         mInputPointers.reset();
     }
@@ -126,11 +128,15 @@ public class GestureStroke {
     }
 
     public void appendAllBatchPoints(final InputPointers out) {
-        out.append(mInputPointers, 0, mInputPointers.getPointerSize());
+        final int size = mInputPointers.getPointerSize();
+        out.append(mInputPointers, mLastIncrementalBatchSize, size - mLastIncrementalBatchSize);
+        mLastIncrementalBatchSize = size;
     }
 
     public void appendIncrementalBatchPoints(final InputPointers out) {
-        out.append(mInputPointers, 0, mIncrementalRecognitionSize);
+        out.append(mInputPointers, mLastIncrementalBatchSize,
+                mIncrementalRecognitionSize - mLastIncrementalBatchSize);
+        mLastIncrementalBatchSize = mIncrementalRecognitionSize;
     }
 
     private static float getDistance(final int p1x, final int p1y,
