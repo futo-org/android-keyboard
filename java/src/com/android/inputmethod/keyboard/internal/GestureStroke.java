@@ -14,8 +14,12 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.FloatMath;
 
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.InputPointers;
 
 public class GestureStroke {
@@ -35,6 +39,7 @@ public class GestureStroke {
     private int mMinGestureLength;
     private int mMinGestureLengthWhileInGesture;
     private int mMinGestureSampleLength;
+    private final Rect mDrawingRect = new Rect();
 
     // TODO: Move some of these to resource.
     private static final float MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH = 1.0f;
@@ -46,6 +51,10 @@ public class GestureStroke {
     private static final float GESTURE_RECOG_CURVATURE_THRESHOLD = (float)(Math.PI / 4.0f);
 
     private static final float DOUBLE_PI = (float)(2 * Math.PI);
+
+    // Fade based on number of gesture samples, see MIN_GESTURE_SAMPLING_RATIO_TO_KEY_HEIGHT
+    private static final int DRAWING_GESTURE_FADE_START = 10;
+    private static final int DRAWING_GESTURE_FADE_RATE = 6;
 
     public GestureStroke(int pointerId) {
         mPointerId = pointerId;
@@ -77,6 +86,7 @@ public class GestureStroke {
         mLastIncrementalBatchSize = 0;
         mLastPointTime = 0;
         mInputPointers.reset();
+        mDrawingRect.setEmpty();
     }
 
     private void updateLastPoint(final int x, final int y, final int time) {
@@ -94,7 +104,6 @@ public class GestureStroke {
             }
             return;
         }
-
         final int[] xCoords = mInputPointers.getXCoordinates();
         final int[] yCoords = mInputPointers.getYCoordinates();
         final int lastX = xCoords[size - 1];
@@ -102,6 +111,11 @@ public class GestureStroke {
         final float dist = getDistance(lastX, lastY, x, y);
         if (dist > mMinGestureSampleLength) {
             mInputPointers.addPointer(x, y, mPointerId, time);
+            if (mDrawingRect.isEmpty()) {
+                mDrawingRect.set(x - 1, y - 1, x + 1, y + 1);
+            } else {
+                mDrawingRect.union(x, y);
+            }
             mLength += dist;
             final float angle = getAngle(lastX, lastY, x, y);
             if (size > 1) {
@@ -160,5 +174,28 @@ public class GestureStroke {
             return DOUBLE_PI - diff;
         }
         return diff;
+    }
+
+    public void drawGestureTrail(Canvas canvas, Paint paint, int lastX, int lastY) {
+        // TODO: These paint parameter interpolation should be tunable, possibly introduce an object
+        // that implements an interface such as Paint getPaint(int step, int strokePoints)
+        final int size = mInputPointers.getPointerSize();
+        int[] xCoords = mInputPointers.getXCoordinates();
+        int[] yCoords = mInputPointers.getYCoordinates();
+        int alpha = Constants.Color.ALPHA_OPAQUE;
+        for (int i = size - 1; i > 0 && alpha > 0; i--) {
+            paint.setAlpha(alpha);
+            if (size - i > DRAWING_GESTURE_FADE_START) {
+                alpha -= DRAWING_GESTURE_FADE_RATE;
+            }
+            canvas.drawLine(xCoords[i - 1], yCoords[i - 1], xCoords[i], yCoords[i], paint);
+            if (i == size - 1) {
+                canvas.drawLine(lastX, lastY, xCoords[i], yCoords[i], paint);
+            }
+        }
+    }
+
+    public Rect getDrawingRect() {
+        return mDrawingRect;
     }
 }
