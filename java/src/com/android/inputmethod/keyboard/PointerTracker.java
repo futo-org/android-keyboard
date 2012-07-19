@@ -22,6 +22,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.keyboard.internal.GestureStroke;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.InputPointers;
@@ -39,7 +40,8 @@ public class PointerTracker {
     private static boolean DEBUG_MODE = LatinImeLogger.sDBG;
 
     // TODO: There should be an option to turn on/off the gesture input.
-    private static final boolean GESTURE_ON = true;
+    private static boolean sIsGestureEnabled = true;
+
     private static final int MIN_RECOGNITION_TIME = 100; // msec
 
     public interface KeyEventHandler {
@@ -116,6 +118,7 @@ public class PointerTracker {
     private static LatinKeyboardView.PointerTrackerParams sParams;
     private static int sTouchNoiseThresholdDistanceSquared;
     private static boolean sNeedsPhantomSuddenMoveEventHack;
+    private static boolean sConfigGestureInputEnabledByBuildConfig;
 
     private static final ArrayList<PointerTracker> sTrackers = new ArrayList<PointerTracker>();
     private static PointerTrackerQueue sPointerTrackerQueue;
@@ -177,21 +180,34 @@ public class PointerTracker {
     private final GestureStroke mGestureStroke;
 
     public static void init(boolean hasDistinctMultitouch,
-            boolean needsPhantomSuddenMoveEventHack) {
+            boolean needsPhantomSuddenMoveEventHack,
+            boolean gestureInputEnabledByBuildConfig) {
         if (hasDistinctMultitouch) {
             sPointerTrackerQueue = new PointerTrackerQueue();
         } else {
             sPointerTrackerQueue = null;
         }
         sNeedsPhantomSuddenMoveEventHack = needsPhantomSuddenMoveEventHack;
+        sConfigGestureInputEnabledByBuildConfig = gestureInputEnabledByBuildConfig;
 
         setParameters(LatinKeyboardView.PointerTrackerParams.DEFAULT);
+        updateGestureInputEnabledState(null);
     }
 
     public static void setParameters(LatinKeyboardView.PointerTrackerParams params) {
         sParams = params;
         sTouchNoiseThresholdDistanceSquared = (int)(
                 params.mTouchNoiseThresholdDistance * params.mTouchNoiseThresholdDistance);
+    }
+
+    private static void updateGestureInputEnabledState(Keyboard keyboard) {
+        if (!sConfigGestureInputEnabledByBuildConfig
+                || AccessibilityUtils.getInstance().isTouchExplorationEnabled()
+                || (keyboard != null && keyboard.mId.passwordInput())) {
+            sIsGestureEnabled = false;
+        } else {
+            sIsGestureEnabled = true;
+        }
     }
 
     public static PointerTracker getPointerTracker(final int id, KeyEventHandler handler) {
@@ -222,6 +238,8 @@ public class PointerTracker {
             // Mark that keyboard layout has been changed.
             tracker.mKeyboardLayoutHasBeenChanged = true;
         }
+        final Keyboard keyboard = keyDetector.getKeyboard();
+        updateGestureInputEnabledState(keyboard);
     }
 
     public static void dismissAllKeyPreviews() {
@@ -611,7 +629,7 @@ public class PointerTracker {
         if (queue != null && queue.size() == 1) {
             mIsPossibleGesture = false;
             // A gesture should start only from the letter key.
-            if (GESTURE_ON && mIsAlphabetKeyboard && key != null
+            if (sIsGestureEnabled && mIsAlphabetKeyboard && key != null
                     && Keyboard.isLetterCode(key.mCode)) {
                 mIsPossibleGesture = true;
                 mGestureStroke.addPoint(x, y, 0, false);
@@ -654,7 +672,7 @@ public class PointerTracker {
     private void onGestureMoveEvent(PointerTracker tracker, int x, int y, long eventTime,
             boolean isHistorical, Key key) {
         final int gestureTime = (int)(eventTime - tracker.getDownTime());
-        if (GESTURE_ON && mIsPossibleGesture) {
+        if (sIsGestureEnabled && mIsPossibleGesture) {
             final GestureStroke stroke = mGestureStroke;
             stroke.addPoint(x, y, gestureTime, isHistorical);
             if (!mInGesture && stroke.isStartOfAGesture(gestureTime)) {
