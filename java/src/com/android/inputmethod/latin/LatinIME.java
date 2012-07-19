@@ -20,6 +20,7 @@ import static com.android.inputmethod.latin.Constants.ImeOption.FORCE_ASCII;
 import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE;
 import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE_COMPAT;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -38,7 +39,6 @@ import android.os.Debug;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -2111,18 +2111,26 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     };
 
     private void launchSettings() {
-        launchSettingsClass(SettingsActivity.class);
+        handleClose();
+        launchSubActivity(SettingsActivity.class);
     }
 
     // Called from debug code only
     public void launchDebugSettings() {
-        launchSettingsClass(DebugSettingsActivity.class);
+        handleClose();
+        launchSubActivity(DebugSettingsActivity.class);
     }
 
-    private void launchSettingsClass(Class<? extends PreferenceActivity> settingsClass) {
-        handleClose();
+    public void launchKeyboardedDialogActivity(Class<? extends Activity> activityClass) {
+        // Put the text in the attached EditText into a safe, saved state before switching to a
+        // new activity that will also use the soft keyboard.
+        commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+        launchSubActivity(activityClass);
+    }
+
+    private void launchSubActivity(Class<? extends Activity> activityClass) {
         Intent intent = new Intent();
-        intent.setClass(LatinIME.this, settingsClass);
+        intent.setClass(LatinIME.this, activityClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
