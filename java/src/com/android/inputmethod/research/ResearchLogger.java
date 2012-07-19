@@ -19,27 +19,36 @@ package com.android.inputmethod.research;
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.inputmethodservice.InputMethodService;
 import android.os.Build;
+import android.os.IBinder;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.keyboard.LatinKeyboardView;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.R;
@@ -73,6 +82,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     /* package */ static boolean sIsLogging = false;
     private static final int OUTPUT_FORMAT_VERSION = 1;
     private static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
+    private static final String PREF_RESEARCH_HAS_SEEN_SPLASH = "pref_research_has_seen_splash";
     /* package */ static final String FILENAME_PREFIX = "researchLog";
     private static final String FILENAME_SUFFIX = ".txt";
     private static final SimpleDateFormat TIMESTAMP_DATEFORMAT =
@@ -118,7 +128,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private Suggest mSuggest;
     private Dictionary mDictionary;
     private KeyboardSwitcher mKeyboardSwitcher;
-    private Context mContext;
+    private InputMethodService mInputMethodService;
 
     private ResearchLogUploader mResearchLogUploader;
 
@@ -163,11 +173,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mResearchLogUploader = new ResearchLogUploader(ims, mFilesDir);
         mResearchLogUploader.start();
         mKeyboardSwitcher = keyboardSwitcher;
-        mContext = ims;
+        mInputMethodService = ims;
         mPrefs = prefs;
-
-        // TODO: force user to decide at splash screen instead of defaulting to on.
-        setLoggingAllowed(true);
     }
 
     private void cleanupLoggingDir(final File dir, final long time) {
@@ -177,6 +184,73 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 file.delete();
             }
         }
+    }
+
+    public void latinKeyboardView_onAttachedToWindow() {
+        maybeShowSplashScreen();
+    }
+
+    private boolean hasSeenSplash() {
+        return mPrefs.getBoolean(PREF_RESEARCH_HAS_SEEN_SPLASH, false);
+    }
+
+    private Dialog mSplashDialog = null;
+
+    private void maybeShowSplashScreen() {
+        if (hasSeenSplash()) {
+            return;
+        }
+        if (mSplashDialog != null && mSplashDialog.isShowing()) {
+            return;
+        }
+        final IBinder windowToken = mKeyboardSwitcher.getKeyboardView().getWindowToken();
+        if (windowToken == null) {
+            return;
+        }
+        mSplashDialog = new Dialog(mInputMethodService, android.R.style.Theme_Holo_Dialog);
+        mSplashDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mSplashDialog.setContentView(R.layout.research_splash);
+        mSplashDialog.setCancelable(true);
+        final Window w = mSplashDialog.getWindow();
+        final WindowManager.LayoutParams lp = w.getAttributes();
+        lp.token = windowToken;
+        lp.type = WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG;
+        w.setAttributes(lp);
+        w.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        mSplashDialog.setOnCancelListener(new OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                mInputMethodService.requestHideSelf(0);
+            }
+        });
+        final Button doNotLogButton = (Button) mSplashDialog.findViewById(
+                R.id.research_do_not_log_button);
+        doNotLogButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onUserLoggingElection(false);
+                mSplashDialog.dismiss();
+            }
+        });
+        final Button doLogButton = (Button) mSplashDialog.findViewById(R.id.research_do_log_button);
+        doLogButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onUserLoggingElection(true);
+                mSplashDialog.dismiss();
+            }
+        });
+        mSplashDialog.show();
+    }
+
+    public void onUserLoggingElection(final boolean enableLogging) {
+        setLoggingAllowed(enableLogging);
+        if (mPrefs == null) {
+            return;
+        }
+        final Editor e = mPrefs.edit();
+        e.putBoolean(PREF_RESEARCH_HAS_SEEN_SPLASH, true);
+        e.apply();
     }
 
     private File createLogFile(File filesDir) {
@@ -189,6 +263,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void start() {
+        maybeShowSplashScreen();
         updateSuspendedState();
         requestIndicatorRedraw();
         if (!isAllowedToLog()) {
@@ -705,7 +780,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         researchLogger.start();
         if (editorInfo != null) {
-            final Context context = researchLogger.mContext;
+            final Context context = researchLogger.mInputMethodService;
             try {
                 final PackageInfo packageInfo;
                 packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(),
@@ -900,7 +975,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             // Play it safe.  Remove privacy-sensitive events.
             researchLogger.publishLogUnit(researchLogger.mCurrentLogUnit, true);
             researchLogger.mCurrentLogUnit = new LogUnit();
-            getInstance().restart();
+            getInstance().stop();
         }
     }
 

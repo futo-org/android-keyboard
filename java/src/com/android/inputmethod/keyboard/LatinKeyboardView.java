@@ -509,6 +509,17 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        // Notify the research logger that the keyboard view has been attached.  This is needed
+        // to properly show the splash screen, which requires that the window token of the
+        // KeyboardView be non-null.
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.getInstance().latinKeyboardView_onAttachedToWindow();
+        }
+    }
+
+    @Override
     public void cancelAllMessages() {
         mKeyTimerHandler.cancelAllMessages();
         super.cancelAllMessages();
