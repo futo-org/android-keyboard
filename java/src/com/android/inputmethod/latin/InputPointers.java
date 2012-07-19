@@ -16,22 +16,20 @@
 
 package com.android.inputmethod.latin;
 
-import java.util.Arrays;
-
 // TODO: This class is not thread-safe.
 public class InputPointers {
     private final int mDefaultCapacity;
-    private final ScalableIntArray mXCoordinates;
-    private final ScalableIntArray mYCoordinates;
-    private final ScalableIntArray mPointerIds;
-    private final ScalableIntArray mTimes;
+    private final ResizableIntArray mXCoordinates;
+    private final ResizableIntArray mYCoordinates;
+    private final ResizableIntArray mPointerIds;
+    private final ResizableIntArray mTimes;
 
     public InputPointers(int defaultCapacity) {
         mDefaultCapacity = defaultCapacity;
-        mXCoordinates = new ScalableIntArray(defaultCapacity);
-        mYCoordinates = new ScalableIntArray(defaultCapacity);
-        mPointerIds = new ScalableIntArray(defaultCapacity);
-        mTimes = new ScalableIntArray(defaultCapacity);
+        mXCoordinates = new ResizableIntArray(defaultCapacity);
+        mYCoordinates = new ResizableIntArray(defaultCapacity);
+        mPointerIds = new ResizableIntArray(defaultCapacity);
+        mTimes = new ResizableIntArray(defaultCapacity);
     }
 
     public void addPointer(int index, int x, int y, int pointerId, int time) {
@@ -104,73 +102,5 @@ public class InputPointers {
 
     public int[] getTimes() {
         return mTimes.getPrimitiveArray();
-    }
-
-    private static class ScalableIntArray {
-        private int[] mArray;
-        private int mLength;
-
-        public ScalableIntArray(int capacity) {
-            reset(capacity);
-        }
-
-        public void add(int index, int val) {
-            if (mLength < index + 1) {
-                mLength = index;
-                add(val);
-            } else {
-                mArray[index] = val;
-            }
-        }
-
-        public void add(int val) {
-            final int nextLength = mLength + 1;
-            ensureCapacity(nextLength);
-            mArray[mLength] = val;
-            mLength = nextLength;
-        }
-
-        private void ensureCapacity(int minimumCapacity) {
-            if (mArray.length < minimumCapacity) {
-                final int nextCapacity = mArray.length * 2;
-                // The following is the same as newLength = Math.max(minimumCapacity, nextCapacity);
-                final int newLength = minimumCapacity > nextCapacity
-                        ? minimumCapacity
-                        : nextCapacity;
-                mArray = Arrays.copyOf(mArray, newLength);
-            }
-        }
-
-        public int getLength() {
-            return mLength;
-        }
-
-        public void reset(int capacity) {
-            mArray = new int[capacity];
-            mLength = 0;
-        }
-
-        public int[] getPrimitiveArray() {
-            return mArray;
-        }
-
-        public void set(ScalableIntArray ip) {
-            mArray = ip.mArray;
-            mLength = ip.mLength;
-        }
-
-        public void copy(ScalableIntArray ip) {
-            ensureCapacity(ip.mLength);
-            System.arraycopy(ip.mArray, 0, mArray, 0, ip.mLength);
-            mLength = ip.mLength;
-        }
-
-        public void append(ScalableIntArray src, int startPos, int length) {
-            final int currentLength = mLength;
-            final int newLength = currentLength + length;
-            ensureCapacity(newLength);
-            System.arraycopy(src.mArray, startPos, mArray, currentLength, length);
-            mLength = newLength;
-        }
     }
 }
