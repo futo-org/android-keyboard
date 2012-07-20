@@ -24,6 +24,10 @@
   *;
 }
 
+-keep class com.android.inputmethod.latin.ResizableIntArray {
+  *;
+}
+
 -keep class com.android.inputmethod.latin.spellcheck.SpellCheckerSettingsFragment {
   *;
 }

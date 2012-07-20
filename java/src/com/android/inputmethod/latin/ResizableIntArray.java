@@ -23,11 +23,18 @@ public class ResizableIntArray {
     private int[] mArray;
     private int mLength;
 
-    public ResizableIntArray(int capacity) {
+    public ResizableIntArray(final int capacity) {
         reset(capacity);
     }
 
-    public void add(int index, int val) {
+    public int get(final int index) {
+        if (index < 0 || index >= mLength) {
+            throw new ArrayIndexOutOfBoundsException("length=" + mLength + "; index=" + index);
+        }
+        return mArray[index];
+    }
+
+    public void add(final int index, final int val) {
         if (mLength < index + 1) {
             mLength = index;
             add(val);
@@ -36,14 +43,14 @@ public class ResizableIntArray {
         }
     }
 
-    public void add(int val) {
+    public void add(final int val) {
         final int nextLength = mLength + 1;
         ensureCapacity(nextLength);
         mArray[mLength] = val;
         mLength = nextLength;
     }
 
-    private void ensureCapacity(int minimumCapacity) {
+    private void ensureCapacity(final int minimumCapacity) {
         if (mArray.length < minimumCapacity) {
             final int nextCapacity = mArray.length * 2;
             // The following is the same as newLength =
@@ -60,9 +67,12 @@ public class ResizableIntArray {
         return mLength;
     }
 
-    // TODO: Implement setLength(int).
+    public void setLength(final int newLength) {
+        ensureCapacity(newLength);
+        mLength = newLength;
+    }
 
-    public void reset(int capacity) {
+    public void reset(final int capacity) {
         // TODO: Implement primitive array pool.
         mArray = new int[capacity];
         mLength = 0;
@@ -72,20 +82,20 @@ public class ResizableIntArray {
         return mArray;
     }
 
-    public void set(ResizableIntArray ip) {
+    public void set(final ResizableIntArray ip) {
         // TODO: Implement primitive array pool.
         mArray = ip.mArray;
         mLength = ip.mLength;
     }
 
-    public void copy(ResizableIntArray ip) {
+    public void copy(final ResizableIntArray ip) {
         // TODO: Avoid useless coping of values.
         ensureCapacity(ip.mLength);
         System.arraycopy(ip.mArray, 0, mArray, 0, ip.mLength);
         mLength = ip.mLength;
     }
 
-    public void append(ResizableIntArray src, int startPos, int length) {
+    public void append(final ResizableIntArray src, final int startPos, final int length) {
         final int currentLength = mLength;
         final int newLength = currentLength + length;
         ensureCapacity(newLength);
