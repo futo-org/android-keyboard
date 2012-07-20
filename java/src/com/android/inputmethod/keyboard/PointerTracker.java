@@ -16,6 +16,9 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -76,6 +79,7 @@ public class PointerTracker {
         public TextView inflateKeyPreviewText();
         public void showKeyPreview(PointerTracker tracker);
         public void dismissKeyPreview(PointerTracker tracker);
+        public void showGestureTrail(PointerTracker tracker);
     }
 
     public interface TimerProxy {
@@ -281,6 +285,15 @@ public class PointerTracker {
             tracker.mGestureStroke.reset();
         }
         sAggregratedPointers.reset();
+    }
+
+    // TODO: To handle multi-touch gestures we may want to move this method to
+    // {@link PointerTrackerQueue}.
+    public static void drawGestureTrailForAllPointerTrackers(Canvas canvas, Paint paint) {
+        for (final PointerTracker tracker : sTrackers) {
+            tracker.mGestureStroke.drawGestureTrail(canvas, paint, tracker.getLastX(),
+                    tracker.getLastY());
+        }
     }
 
     private PointerTracker(int id, KeyEventHandler handler) {
@@ -511,6 +524,9 @@ public class PointerTracker {
     public long getDownTime() {
         return mDownTime;
     }
+    public Rect getDrawingRect() {
+        return mGestureStroke.getDrawingRect();
+    }
 
     private Key onDownKey(int x, int y, long eventTime) {
         mDownTime = eventTime;
@@ -696,6 +712,7 @@ public class PointerTracker {
 
         if (key != null && mInGesture) {
             final InputPointers batchPoints = getIncrementalBatchPoints();
+            mDrawingProxy.showGestureTrail(this);
             if (updateBatchInputRecognitionState(eventTime, batchPoints.getPointerSize())) {
                 updateBatchInput(batchPoints);
             }
@@ -868,6 +885,7 @@ public class PointerTracker {
                 callListenerOnRelease(mCurrentKey, mCurrentKey.mCode, true);
                 mCurrentKey = null;
             }
+            mDrawingProxy.showGestureTrail(this);
             return;
         }
         // This event will be recognized as a regular code input. Clear unused batch points so they

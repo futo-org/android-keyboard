@@ -19,6 +19,13 @@ package com.android.inputmethod.latin;
 import android.view.inputmethod.EditorInfo;
 
 public final class Constants {
+    public static final class Color {
+        /**
+         * The alpha value for fully opaque.
+         */
+        public final static int ALPHA_OPAQUE = 255;
+    }
+
     public static final class ImeOption {
         /**
          * The private IME option used to indicate that no microphone should be shown for a given

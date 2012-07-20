@@ -43,6 +43,7 @@ import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -82,7 +83,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     private ObjectAnimator mLanguageOnSpacebarFadeoutAnimator;
     private boolean mNeedsToDisplayLanguage;
     private boolean mHasMultipleEnabledIMEsOrSubtypes;
-    private int mLanguageOnSpacebarAnimAlpha = ALPHA_OPAQUE;
+    private int mLanguageOnSpacebarAnimAlpha = Constants.Color.ALPHA_OPAQUE;
     private final float mSpacebarTextRatio;
     private float mSpacebarTextSize;
     private final int mSpacebarTextColor;
@@ -98,7 +99,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     // Stuff to draw altCodeWhileTyping keys.
     private ObjectAnimator mAltCodeKeyWhileTypingFadeoutAnimator;
     private ObjectAnimator mAltCodeKeyWhileTypingFadeinAnimator;
-    private int mAltCodeKeyWhileTypingAnimAlpha = ALPHA_OPAQUE;
+    private int mAltCodeKeyWhileTypingAnimAlpha = Constants.Color.ALPHA_OPAQUE;
 
     // More keys keyboard
     private PopupWindow mMoreKeysWindow;
@@ -361,7 +362,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         mSpacebarTextShadowColor = a.getColor(
                 R.styleable.LatinKeyboardView_spacebarTextShadowColor, 0);
         mLanguageOnSpacebarFinalAlpha = a.getInt(
-                R.styleable.LatinKeyboardView_languageOnSpacebarFinalAlpha, ALPHA_OPAQUE);
+                R.styleable.LatinKeyboardView_languageOnSpacebarFinalAlpha,
+                Constants.Color.ALPHA_OPAQUE);
         final int languageOnSpacebarFadeoutAnimatorResId = a.getResourceId(
                 R.styleable.LatinKeyboardView_languageOnSpacebarFadeoutAnimator, 0);
         final int altCodeKeyWhileTypingFadeoutAnimatorResId = a.getResourceId(
@@ -468,7 +470,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         mSpaceKey = keyboard.getKey(Keyboard.CODE_SPACE);
         mSpaceIcon = (mSpaceKey != null)
-                ? mSpaceKey.getIcon(keyboard.mIconsSet, ALPHA_OPAQUE) : null;
+                ? mSpaceKey.getIcon(keyboard.mIconsSet, Constants.Color.ALPHA_OPAQUE) : null;
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mSpacebarTextSize = keyHeight * mSpacebarTextRatio;
         if (ProductionFlag.IS_EXPERIMENTAL) {
@@ -870,7 +872,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             mNeedsToDisplayLanguage = false;
         } else {
             if (subtypeChanged && needsToDisplayLanguage) {
-                setLanguageOnSpacebarAnimAlpha(ALPHA_OPAQUE);
+                setLanguageOnSpacebarAnimAlpha(Constants.Color.ALPHA_OPAQUE);
                 if (animator.isStarted()) {
                     animator.cancel();
                 }
