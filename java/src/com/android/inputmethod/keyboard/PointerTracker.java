@@ -121,6 +121,8 @@ public class PointerTracker {
     private static boolean sConfigGestureInputEnabledByBuildConfig;
 
     private static final ArrayList<PointerTracker> sTrackers = new ArrayList<PointerTracker>();
+    private static final InputPointers sAggregratedPointers = new InputPointers(
+            GestureStroke.DEFAULT_CAPACITY);
     private static PointerTrackerQueue sPointerTrackerQueue;
     // HACK: Change gesture detection criteria depending on this variable.
     // TODO: Find more comprehensive ways to detect a gesture start.
@@ -257,23 +259,19 @@ public class PointerTracker {
     // TODO: To handle multi-touch gestures we may want to move this method to
     // {@link PointerTrackerQueue}.
     private static InputPointers getIncrementalBatchPoints() {
-        // TODO: Avoid creating a new instance here?
-        final InputPointers pointers = new InputPointers(GestureStroke.DEFAULT_CAPACITY);
         for (final PointerTracker tracker : sTrackers) {
-            tracker.mGestureStroke.appendIncrementalBatchPoints(pointers);
+            tracker.mGestureStroke.appendIncrementalBatchPoints(sAggregratedPointers);
         }
-        return pointers;
+        return sAggregratedPointers;
     }
 
     // TODO: To handle multi-touch gestures we may want to move this method to
     // {@link PointerTrackerQueue}.
     private static InputPointers getAllBatchPoints() {
-        // TODO: Avoid creating a new instance here?
-        final InputPointers pointers = new InputPointers(GestureStroke.DEFAULT_CAPACITY);
         for (final PointerTracker tracker : sTrackers) {
-            tracker.mGestureStroke.appendAllBatchPoints(pointers);
+            tracker.mGestureStroke.appendAllBatchPoints(sAggregratedPointers);
         }
-        return pointers;
+        return sAggregratedPointers;
     }
 
     // TODO: To handle multi-touch gestures we may want to move this method to
@@ -282,6 +280,7 @@ public class PointerTracker {
         for (final PointerTracker tracker : sTrackers) {
             tracker.mGestureStroke.reset();
         }
+        sAggregratedPointers.reset();
     }
 
     private PointerTracker(int id, KeyEventHandler handler) {
@@ -645,6 +644,8 @@ public class PointerTracker {
             if (sIsGestureEnabled && mIsAlphabetKeyboard && key != null
                     && Keyboard.isLetterCode(key.mCode)) {
                 mIsPossibleGesture = true;
+                // TODO: pointer times should be relative to first down even in entire batch input
+                // instead of resetting to 0 for each new down event.
                 mGestureStroke.addPoint(x, y, 0, false);
             }
         }
@@ -869,7 +870,9 @@ public class PointerTracker {
             }
             return;
         }
-
+        // This event will be recognized as a regular code input. Clear unused batch points so they
+        // are not mistakenly included in the next batch event.
+        clearBatchInputPointsOfAllPointerTrackers();
         if (mKeyAlreadyProcessed)
             return;
         if (mCurrentKey != null && !mCurrentKey.isRepeatable()) {
