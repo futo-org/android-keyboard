@@ -20,7 +20,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"صفحه کلید (Android (AOSP"</string>
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"صفحه‌کلید (Android (AOSP"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"گزینه‌های ورودی"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"فرمان‌های گزارش‌گیری پژوهش"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"غلط‌گیر املای Android (AOSP)"</string>
@@ -100,11 +100,11 @@
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"حالت تلفن"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"حالت نمادهای تلفن"</string>
     <string name="voice_input" msgid="3583258583521397548">"کلید ورودی صدا"</string>
-    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"در صفحه کلید اصلی"</string>
-    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"در صفحه کلید نمادها"</string>
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"در صفحه‌کلید اصلی"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"در صفحه‌کلید نمادها"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"خاموش"</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"میکروفن در صفحه کلید اصلی"</string>
-    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"میکروفن در صفحه کلید نمادها"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"میکروفن در صفحه‌کلید اصلی"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"میکروفن در صفحه‌کلید نمادها"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"ورودی صدا غیرفعال است"</string>
     <string name="configure_input_method" msgid="373356270290742459">"پیکربندی روش‌های ورودی"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"زبان‌های ورودی"</string>
@@ -124,7 +124,7 @@
     <string name="has_dictionary" msgid="6071847973466625007">"دیکشنری موجود است"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"فعال کردن بازخورد کاربر"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"با ارسال خودکار آمارهای کاربرد و گزارش‌های خرابی به Google، به بهبود این ویرایشگر روش ورودی کمک کنید."</string>
-    <string name="keyboard_layout" msgid="8451164783510487501">"طرح زمینه صفحه کلید"</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"طرح زمینه صفحه‌کلید"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"انگلیسی (بریتانیا)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"انگلیسی (امریکا)"</string>
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"انگلیسی (انگلستان) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
