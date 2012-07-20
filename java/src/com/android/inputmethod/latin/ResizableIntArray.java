@@ -28,38 +28,49 @@ public class ResizableIntArray {
     }
 
     public int get(final int index) {
-        if (index < 0 || index >= mLength) {
-            throw new ArrayIndexOutOfBoundsException("length=" + mLength + "; index=" + index);
+        if (index < mLength) {
+            return mArray[index];
         }
-        return mArray[index];
+        throw new ArrayIndexOutOfBoundsException("length=" + mLength + "; index=" + index);
     }
 
     public void add(final int index, final int val) {
-        if (mLength < index + 1) {
+        if (index < mLength) {
+            mArray[index] = val;
+        } else {
             mLength = index;
             add(val);
-        } else {
-            mArray[index] = val;
         }
     }
 
     public void add(final int val) {
-        final int nextLength = mLength + 1;
-        ensureCapacity(nextLength);
-        mArray[mLength] = val;
-        mLength = nextLength;
+        final int currentLength = mLength;
+        ensureCapacity(currentLength + 1);
+        mArray[currentLength] = val;
+        mLength = currentLength + 1;
+    }
+
+    /**
+     * Calculate the new capacity of {@code mArray}.
+     * @param minimumCapacity the minimum capacity that the {@code mArray} should have.
+     * @return the new capacity that the {@code mArray} should have. Returns zero when there is no
+     * need to expand {@code mArray}.
+     */
+    private int calculateCapacity(final int minimumCapacity) {
+        final int currentCapcity = mArray.length;
+        if (currentCapcity < minimumCapacity) {
+            final int nextCapacity = currentCapcity * 2;
+            // The following is the same as return Math.max(minimumCapacity, nextCapacity);
+            return minimumCapacity > nextCapacity ? minimumCapacity : nextCapacity;
+        }
+        return 0;
     }
 
     private void ensureCapacity(final int minimumCapacity) {
-        if (mArray.length < minimumCapacity) {
-            final int nextCapacity = mArray.length * 2;
-            // The following is the same as newLength =
-            // Math.max(minimumCapacity, nextCapacity);
-            final int newLength = minimumCapacity > nextCapacity
-                    ? minimumCapacity
-                    : nextCapacity;
+        final int newCapacity = calculateCapacity(minimumCapacity);
+        if (newCapacity > 0) {
             // TODO: Implement primitive array pool.
-            mArray = Arrays.copyOf(mArray, newLength);
+            mArray = Arrays.copyOf(mArray, newCapacity);
         }
     }
 
@@ -89,17 +100,35 @@ public class ResizableIntArray {
     }
 
     public void copy(final ResizableIntArray ip) {
-        // TODO: Avoid useless coping of values.
-        ensureCapacity(ip.mLength);
+        final int newCapacity = calculateCapacity(ip.mLength);
+        if (newCapacity > 0) {
+            // TODO: Implement primitive array pool.
+            mArray = new int[newCapacity];
+        }
         System.arraycopy(ip.mArray, 0, mArray, 0, ip.mLength);
         mLength = ip.mLength;
     }
 
     public void append(final ResizableIntArray src, final int startPos, final int length) {
+        if (length == 0) {
+            return;
+        }
         final int currentLength = mLength;
         final int newLength = currentLength + length;
         ensureCapacity(newLength);
         System.arraycopy(src.mArray, startPos, mArray, currentLength, length);
         mLength = newLength;
+    }
+
+    public void fill(final int value, final int startPos, final int length) {
+        if (startPos < 0 || length < 0) {
+            throw new IllegalArgumentException("startPos=" + startPos + "; length=" + length);
+        }
+        final int endPos = startPos + length;
+        ensureCapacity(endPos);
+        Arrays.fill(mArray, startPos, endPos, value);
+        if (mLength < endPos) {
+            mLength = endPos;
+        }
     }
 }
