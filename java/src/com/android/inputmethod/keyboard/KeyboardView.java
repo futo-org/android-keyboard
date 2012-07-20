@@ -888,6 +888,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             super.onDraw(canvas);
             canvas.translate(mParams.mCoordinates[0], mParams.mCoordinates[1]);
             PointerTracker.drawGestureTrailForAllPointerTrackers(canvas, mGesturePaint);
+            canvas.translate(-mParams.mCoordinates[0], -mParams.mCoordinates[1]);
         }
     }
 
