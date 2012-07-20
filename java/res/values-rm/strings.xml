@@ -92,6 +92,10 @@
     <skip />
     <!-- no translation found for bigram_prediction_summary (3253961591626441019) -->
     <skip />
+    <!-- no translation found for gesture_input (3310827802759290774) -->
+    <skip />
+    <!-- no translation found for gesture_input_summary (7019742443455085809) -->
+    <skip />
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Memorisà"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Dai"</string>
     <string name="label_next_key" msgid="362972844525672568">"Vinavant"</string>
@@ -182,15 +186,15 @@
     <skip />
     <!-- no translation found for notify_recorded_timestamp (8036429032449612051) -->
     <skip />
-    <!-- no translation found for do_not_log_this_session (413762473641146336) -->
+    <!-- no translation found for do_not_log_this_session (6952150901437825793) -->
     <skip />
-    <!-- no translation found for enable_session_logging (4202559020594036225) -->
+    <!-- no translation found for enable_session_logging (1008866186953731748) -->
     <skip />
     <!-- no translation found for log_whole_session_history (7087712461632081351) -->
     <skip />
     <!-- no translation found for notify_session_log_deleting (3299507647764414623) -->
     <skip />
-    <!-- no translation found for notify_session_log_deleted (8687927130100934686) -->
+    <!-- no translation found for notify_logging_suspended (226629069639852930) -->
     <skip />
     <!-- no translation found for notify_session_log_not_deleted (2592908998810755970) -->
     <skip />

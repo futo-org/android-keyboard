@@ -58,6 +58,10 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Veľmi agresívne"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"Návrhy ďalšieho slova"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Na základe predchádzajúceho slova"</string>
+    <!-- no translation found for gesture_input (3310827802759290774) -->
+    <skip />
+    <!-- no translation found for gesture_input_summary (7019742443455085809) -->
+    <skip />
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Uložené"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Hľadať"</string>
     <string name="label_next_key" msgid="362972844525672568">"Ďalej"</string>
@@ -106,11 +110,14 @@
     <string name="language_selection_title" msgid="1651299598555326750">"Jazyky vstupu"</string>
     <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Časová pečiatka denníka"</string>
     <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Časová pečiatka zaznamenaná"</string>
-    <string name="do_not_log_this_session" msgid="413762473641146336">"Neukl. reláciu do denníka"</string>
-    <string name="enable_session_logging" msgid="4202559020594036225">"Povoliť zápis relácií do denníkov"</string>
+    <!-- no translation found for do_not_log_this_session (6952150901437825793) -->
+    <skip />
+    <!-- no translation found for enable_session_logging (1008866186953731748) -->
+    <skip />
     <string name="log_whole_session_history" msgid="7087712461632081351">"Celá história relácií v denníkoch"</string>
     <string name="notify_session_log_deleting" msgid="3299507647764414623">"Odstraň. denníka relácie"</string>
-    <string name="notify_session_log_deleted" msgid="8687927130100934686">"Denník relácie odstránený"</string>
+    <!-- no translation found for notify_logging_suspended (226629069639852930) -->
+    <skip />
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Denník relácie NIE JE odstr."</string>
     <string name="notify_session_history_logged" msgid="7723983399468056391">"Hist. relácií zapísaná do denníkov"</string>
     <string name="notify_session_history_not_logged" msgid="6597910011368015361">"Chyba: Hist. relácií NIE JE zapísaná"</string>

@@ -20,7 +20,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"صفحه کلید (Android (AOSP"</string>
+    <string name="aosp_android_keyboard_ime_name" msgid="7877134937939182296">"صفحه‌کلید (Android (AOSP"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"گزینه‌های ورودی"</string>
     <string name="english_ime_research_log" msgid="8492602295696577851">"فرمان‌های گزارش‌گیری پژوهش"</string>
     <string name="aosp_spell_checker_service_name" msgid="6985142605330377819">"غلط‌گیر املای Android (AOSP)"</string>
@@ -58,6 +58,10 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"بسیار پرخاشگرانه"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"پیشنهادات کلمه بعدی"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"بر اساس کلمه قبلی"</string>
+    <!-- no translation found for gesture_input (3310827802759290774) -->
+    <skip />
+    <!-- no translation found for gesture_input_summary (7019742443455085809) -->
+    <skip />
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : ذخیره شد"</string>
     <string name="label_go_key" msgid="1635148082137219148">"برو"</string>
     <string name="label_next_key" msgid="362972844525672568">"بعدی"</string>
@@ -100,21 +104,24 @@
     <string name="spoken_description_mode_phone" msgid="6520207943132026264">"حالت تلفن"</string>
     <string name="spoken_description_mode_phone_shift" msgid="5499629753962641227">"حالت نمادهای تلفن"</string>
     <string name="voice_input" msgid="3583258583521397548">"کلید ورودی صدا"</string>
-    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"در صفحه کلید اصلی"</string>
-    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"در صفحه کلید نمادها"</string>
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"در صفحه‌کلید اصلی"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"در صفحه‌کلید نمادها"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"خاموش"</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"میکروفن در صفحه کلید اصلی"</string>
-    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"میکروفن در صفحه کلید نمادها"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"میکروفن در صفحه‌کلید اصلی"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"میکروفن در صفحه‌کلید نمادها"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"ورودی صدا غیرفعال است"</string>
     <string name="configure_input_method" msgid="373356270290742459">"پیکربندی روش‌های ورودی"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"زبان‌های ورودی"</string>
     <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"یادداشت مهر زمان در گزارش"</string>
     <string name="notify_recorded_timestamp" msgid="8036429032449612051">"مهر زمان ثبت شده"</string>
-    <string name="do_not_log_this_session" msgid="413762473641146336">"از این جلسه گزارش‌گیری نشود"</string>
-    <string name="enable_session_logging" msgid="4202559020594036225">"تواناساختن گزارش جلسه"</string>
+    <!-- no translation found for do_not_log_this_session (6952150901437825793) -->
+    <skip />
+    <!-- no translation found for enable_session_logging (1008866186953731748) -->
+    <skip />
     <string name="log_whole_session_history" msgid="7087712461632081351">"گزارش همه سابقه جلسه"</string>
     <string name="notify_session_log_deleting" msgid="3299507647764414623">"در حال حذف گزارش جلسه"</string>
-    <string name="notify_session_log_deleted" msgid="8687927130100934686">"گزارش جلسه حذف شد"</string>
+    <!-- no translation found for notify_logging_suspended (226629069639852930) -->
+    <skip />
     <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"گزارش جلسه حذف نشد"</string>
     <string name="notify_session_history_logged" msgid="7723983399468056391">"سابقه جلسه گزارش شد"</string>
     <string name="notify_session_history_not_logged" msgid="6597910011368015361">"خطا: سابقه جلسه گزارش نشد"</string>
@@ -124,7 +131,7 @@
     <string name="has_dictionary" msgid="6071847973466625007">"دیکشنری موجود است"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"فعال کردن بازخورد کاربر"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"با ارسال خودکار آمارهای کاربرد و گزارش‌های خرابی به Google، به بهبود این ویرایشگر روش ورودی کمک کنید."</string>
-    <string name="keyboard_layout" msgid="8451164783510487501">"طرح زمینه صفحه کلید"</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"طرح زمینه صفحه‌کلید"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"انگلیسی (بریتانیا)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"انگلیسی (امریکا)"</string>
     <string name="subtype_with_layout_en_GB" msgid="2179097748724725906">"انگلیسی (انگلستان) (<xliff:g id="LAYOUT">%s</xliff:g>)"</string>
