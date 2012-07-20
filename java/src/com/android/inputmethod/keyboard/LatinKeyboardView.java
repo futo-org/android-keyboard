@@ -47,13 +47,13 @@ import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.ResearchLogger;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SubtypeLocale;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.Utils.UsabilityStudyLogUtils;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.Locale;
 import java.util.WeakHashMap;

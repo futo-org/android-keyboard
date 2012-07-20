@@ -22,9 +22,9 @@ import android.view.MotionEvent;
 
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.ResearchLogger;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.research.ResearchLogger;
 
 public class SuddenJumpingTouchEventHandler {
     private static final String TAG = SuddenJumpingTouchEventHandler.class.getSimpleName();

@@ -71,6 +71,7 @@ import com.android.inputmethod.keyboard.LatinKeyboardView;
 import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.suggestions.SuggestionsView;
+import com.android.inputmethod.research.ResearchLogger;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -2159,7 +2160,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         showOptionDialog(builder.create());
     }
 
-    /* package */ void showOptionDialog(AlertDialog dialog) {
+    public void showOptionDialog(AlertDialog dialog) {
         final IBinder windowToken = mKeyboardSwitcher.getKeyboardView().getWindowToken();
         if (windowToken == null) return;
 

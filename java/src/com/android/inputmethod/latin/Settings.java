@@ -39,6 +39,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.research.ResearchLogger;
 import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
 public class Settings extends InputMethodSettingsFragment

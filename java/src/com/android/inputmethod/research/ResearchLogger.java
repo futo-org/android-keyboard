@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.research;
 
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
 
@@ -40,7 +40,13 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.LatinIME;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.RichInputConnection;
 import com.android.inputmethod.latin.RichInputConnection.Range;
+import com.android.inputmethod.latin.Suggest;
+import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.io.File;
@@ -63,7 +69,7 @@ import java.util.UUID;
 public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = ResearchLogger.class.getSimpleName();
     private static final boolean OUTPUT_ENTIRE_BUFFER = false;  // true may disclose private info
-    /* package */ static final boolean DEFAULT_USABILITY_STUDY_MODE = false;
+    public static final boolean DEFAULT_USABILITY_STUDY_MODE = false;
     /* package */ static boolean sIsLogging = false;
     private static final int OUTPUT_FORMAT_VERSION = 1;
     private static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
@@ -314,7 +320,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         requestIndicatorRedraw();
     }
 
-    /* package */ void presentResearchDialog(final LatinIME latinIME) {
+    public void presentResearchDialog(final LatinIME latinIME) {
         final CharSequence title = latinIME.getString(R.string.english_ime_research_log);
         final boolean showEnable = mIsLoggingSuspended || !sIsLogging;
         final CharSequence[] items = new CharSequence[] {
@@ -770,7 +776,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 values);
     }
 
-    /* package */ static boolean getAndClearLatinIMEExpectingUpdateSelection() {
+    public static boolean getAndClearLatinIMEExpectingUpdateSelection() {
         boolean returnValue = sLatinIMEExpectingUpdateSelection;
         sLatinIMEExpectingUpdateSelection = false;
         return returnValue;
