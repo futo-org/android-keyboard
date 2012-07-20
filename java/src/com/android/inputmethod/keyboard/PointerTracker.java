@@ -30,8 +30,8 @@ import com.android.inputmethod.keyboard.internal.GestureStroke;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.ResearchLogger;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.ArrayList;
 

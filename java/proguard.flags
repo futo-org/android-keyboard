@@ -44,7 +44,7 @@
   <init>(...);
 }
 
--keep class com.android.inputmethod.latin.ResearchLogger {
+-keep class com.android.inputmethod.research.ResearchLogger {
   void flush();
   void publishCurrentLogUnit(...);
 }

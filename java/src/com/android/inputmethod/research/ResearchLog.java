@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.research;
 
 import android.content.SharedPreferences;
 import android.os.SystemClock;
@@ -23,9 +23,10 @@ import android.util.Log;
 import android.view.inputmethod.CompletionInfo;
 
 import com.android.inputmethod.keyboard.Key;
-import com.android.inputmethod.latin.ResearchLogger.LogUnit;
+import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.research.ResearchLogger.LogUnit;
 
 import java.io.BufferedWriter;
 import java.io.File;
