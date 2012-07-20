@@ -671,7 +671,7 @@ public class PointerTracker {
         if (queue != null && queue.size() == 1) {
             mIsPossibleGesture = false;
             // A gesture should start only from the letter key.
-            if (sIsGestureEnabled && mIsAlphabetKeyboard && key != null
+            if (sIsGestureEnabled && mIsAlphabetKeyboard && !mIsShowingMoreKeysPanel && key != null
                     && Keyboard.isLetterCode(key.mCode)) {
                 mIsPossibleGesture = true;
                 // TODO: pointer times should be relative to first down even in entire batch input
@@ -915,8 +915,8 @@ public class PointerTracker {
     public void onShowMoreKeysPanel(int x, int y, KeyEventHandler handler) {
         abortBatchInput();
         onLongPressed();
-        onDownEvent(x, y, SystemClock.uptimeMillis(), handler);
         mIsShowingMoreKeysPanel = true;
+        onDownEvent(x, y, SystemClock.uptimeMillis(), handler);
     }
 
     public void onLongPressed() {
