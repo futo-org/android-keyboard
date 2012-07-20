@@ -238,13 +238,17 @@ public class PointerTracker {
     }
 
     public static void setKeyboardActionListener(KeyboardActionListener listener) {
-        for (final PointerTracker tracker : sTrackers) {
+        final int trackersSize = sTrackers.size();
+        for (int i = 0; i < trackersSize; ++i) {
+            final PointerTracker tracker = sTrackers.get(i);
             tracker.mListener = listener;
         }
     }
 
     public static void setKeyDetector(KeyDetector keyDetector) {
-        for (final PointerTracker tracker : sTrackers) {
+        final int trackersSize = sTrackers.size();
+        for (int i = 0; i < trackersSize; ++i) {
+            final PointerTracker tracker = sTrackers.get(i);
             tracker.setKeyDetectorInner(keyDetector);
             // Mark that keyboard layout has been changed.
             tracker.mKeyboardLayoutHasBeenChanged = true;
@@ -254,7 +258,9 @@ public class PointerTracker {
     }
 
     public static void dismissAllKeyPreviews() {
-        for (final PointerTracker tracker : sTrackers) {
+        final int trackersSize = sTrackers.size();
+        for (int i = 0; i < trackersSize; ++i) {
+            final PointerTracker tracker = sTrackers.get(i);
             tracker.getKeyPreviewText().setVisibility(View.INVISIBLE);
             tracker.setReleasedKeyGraphics(tracker.mCurrentKey);
         }
@@ -263,7 +269,9 @@ public class PointerTracker {
     // TODO: To handle multi-touch gestures we may want to move this method to
     // {@link PointerTrackerQueue}.
     private static InputPointers getIncrementalBatchPoints() {
-        for (final PointerTracker tracker : sTrackers) {
+        final int trackersSize = sTrackers.size();
+        for (int i = 0; i < trackersSize; ++i) {
+            final PointerTracker tracker = sTrackers.get(i);
             tracker.mGestureStroke.appendIncrementalBatchPoints(sAggregratedPointers);
         }
         return sAggregratedPointers;
@@ -272,7 +280,9 @@ public class PointerTracker {
     // TODO: To handle multi-touch gestures we may want to move this method to
     // {@link PointerTrackerQueue}.
     private static InputPointers getAllBatchPoints() {
-        for (final PointerTracker tracker : sTrackers) {
+        final int trackersSize = sTrackers.size();
+        for (int i = 0; i < trackersSize; ++i) {
+            final PointerTracker tracker = sTrackers.get(i);
             tracker.mGestureStroke.appendAllBatchPoints(sAggregratedPointers);
         }
         return sAggregratedPointers;
@@ -281,7 +291,9 @@ public class PointerTracker {
     // TODO: To handle multi-touch gestures we may want to move this method to
     // {@link PointerTrackerQueue}.
     public static void clearBatchInputPointsOfAllPointerTrackers() {
-        for (final PointerTracker tracker : sTrackers) {
+        final int trackersSize = sTrackers.size();
+        for (int i = 0; i < trackersSize; ++i) {
+            final PointerTracker tracker = sTrackers.get(i);
             tracker.mGestureStroke.reset();
         }
         sAggregratedPointers.reset();
@@ -290,7 +302,9 @@ public class PointerTracker {
     // TODO: To handle multi-touch gestures we may want to move this method to
     // {@link PointerTrackerQueue}.
     public static void drawGestureTrailForAllPointerTrackers(Canvas canvas, Paint paint) {
-        for (final PointerTracker tracker : sTrackers) {
+        final int trackersSize = sTrackers.size();
+        for (int i = 0; i < trackersSize; ++i) {
+            final PointerTracker tracker = sTrackers.get(i);
             tracker.mGestureStroke.drawGestureTrail(canvas, paint, tracker.getLastX(),
                     tracker.getLastY());
         }
