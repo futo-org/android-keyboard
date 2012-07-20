@@ -94,7 +94,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     // The maximum key label width in the proportion to the key width.
     private static final float MAX_LABEL_RATIO = 0.90f;
 
-    private final static int ALPHA_OPAQUE = 255;
+    public final static int ALPHA_OPAQUE = 255;
 
     // Main keyboard
     private Keyboard mKeyboard;

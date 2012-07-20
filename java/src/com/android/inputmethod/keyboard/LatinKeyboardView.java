@@ -80,7 +80,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     // Stuff to draw language name on spacebar.
     private final int mLanguageOnSpacebarFinalAlpha;
     private ObjectAnimator mLanguageOnSpacebarFadeoutAnimator;
-    private static final int ALPHA_OPAQUE = 255;
     private boolean mNeedsToDisplayLanguage;
     private boolean mHasMultipleEnabledIMEsOrSubtypes;
     private int mLanguageOnSpacebarAnimAlpha = ALPHA_OPAQUE;
