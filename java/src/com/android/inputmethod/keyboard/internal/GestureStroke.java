@@ -21,13 +21,15 @@ import android.util.FloatMath;
 
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.InputPointers;
+import com.android.inputmethod.latin.ResizableIntArray;
 
 public class GestureStroke {
     public static final int DEFAULT_CAPACITY = 128;
 
     private final int mPointerId;
-    // TODO: Replace this {@link InputPointers} with a set of {@link ScalableIntArray}s.
-    private final InputPointers mInputPointers = new InputPointers(DEFAULT_CAPACITY);
+    private final ResizableIntArray mEventTimes = new ResizableIntArray(DEFAULT_CAPACITY);
+    private final ResizableIntArray mXCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
+    private final ResizableIntArray mYCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
     private float mLength;
     private float mAngle;
     private int mIncrementalRecognitionSize;
@@ -85,7 +87,9 @@ public class GestureStroke {
         mIncrementalRecognitionSize = 0;
         mLastIncrementalBatchSize = 0;
         mLastPointTime = 0;
-        mInputPointers.reset();
+        mEventTimes.setLength(0);
+        mXCoordinates.setLength(0);
+        mYCoordinates.setLength(0);
         mDrawingRect.setEmpty();
     }
 
@@ -96,26 +100,24 @@ public class GestureStroke {
     }
 
     public void addPoint(final int x, final int y, final int time, final boolean isHistorical) {
-        final int size = mInputPointers.getPointerSize();
+        final int size = mEventTimes.getLength();
         if (size == 0) {
-            mInputPointers.addPointer(x, y, mPointerId, time);
+            mEventTimes.add(time);
+            mXCoordinates.add(x);
+            mYCoordinates.add(y);
             if (!isHistorical) {
                 updateLastPoint(x, y, time);
             }
             return;
         }
-        final int[] xCoords = mInputPointers.getXCoordinates();
-        final int[] yCoords = mInputPointers.getYCoordinates();
-        final int lastX = xCoords[size - 1];
-        final int lastY = yCoords[size - 1];
+
+        final int lastX = mXCoordinates.get(size - 1);
+        final int lastY = mYCoordinates.get(size - 1);
         final float dist = getDistance(lastX, lastY, x, y);
         if (dist > mMinGestureSampleLength) {
-            mInputPointers.addPointer(x, y, mPointerId, time);
-            if (mDrawingRect.isEmpty()) {
-                mDrawingRect.set(x - 1, y - 1, x + 1, y + 1);
-            } else {
-                mDrawingRect.union(x, y);
-            }
+            mEventTimes.add(time);
+            mXCoordinates.add(x);
+            mYCoordinates.add(y);
             mLength += dist;
             final float angle = getAngle(lastX, lastY, x, y);
             if (size > 1) {
@@ -142,15 +144,17 @@ public class GestureStroke {
     }
 
     public void appendAllBatchPoints(final InputPointers out) {
-        final int size = mInputPointers.getPointerSize();
-        out.append(mInputPointers, mLastIncrementalBatchSize, size - mLastIncrementalBatchSize);
-        mLastIncrementalBatchSize = size;
+        appendBatchPoints(out, mEventTimes.getLength());
     }
 
     public void appendIncrementalBatchPoints(final InputPointers out) {
-        out.append(mInputPointers, mLastIncrementalBatchSize,
-                mIncrementalRecognitionSize - mLastIncrementalBatchSize);
-        mLastIncrementalBatchSize = mIncrementalRecognitionSize;
+        appendBatchPoints(out, mIncrementalRecognitionSize);
+    }
+
+    private void appendBatchPoints(final InputPointers out, final int size) {
+        out.append(mPointerId, mEventTimes, mXCoordinates, mYCoordinates,
+                mLastIncrementalBatchSize, size - mLastIncrementalBatchSize);
+        mLastIncrementalBatchSize = size;
     }
 
     private static float getDistance(final int p1x, final int p1y,
@@ -179,9 +183,9 @@ public class GestureStroke {
     public void drawGestureTrail(Canvas canvas, Paint paint, int lastX, int lastY) {
         // TODO: These paint parameter interpolation should be tunable, possibly introduce an object
         // that implements an interface such as Paint getPaint(int step, int strokePoints)
-        final int size = mInputPointers.getPointerSize();
-        int[] xCoords = mInputPointers.getXCoordinates();
-        int[] yCoords = mInputPointers.getYCoordinates();
+        final int size = mXCoordinates.getLength();
+        int[] xCoords = mXCoordinates.getPrimitiveArray();
+        int[] yCoords = mYCoordinates.getPrimitiveArray();
         int alpha = Constants.Color.ALPHA_OPAQUE;
         for (int i = size - 1; i > 0 && alpha > 0; i--) {
             paint.setAlpha(alpha);

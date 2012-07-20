@@ -76,6 +76,27 @@ public class InputPointers {
         mTimes.append(src.mTimes, startPos, length);
     }
 
+    /**
+     * Append the times, x-coordinates and y-coordinates in the specified {@link ResizableIntArray}
+     * to the end of this.
+     * @param pointerId the pointer id of the source.
+     * @param times the source {@link ResizableIntArray} to read the event times from.
+     * @param xCoordinates the source {@link ResizableIntArray} to read the x-coordinates from.
+     * @param yCoordinates the source {@link ResizableIntArray} to read the y-coordinates from.
+     * @param startPos the starting index of the data in {@code times} and etc.
+     * @param length the number of data to be appended.
+     */
+    public void append(int pointerId, ResizableIntArray times, ResizableIntArray xCoordinates,
+            ResizableIntArray yCoordinates, int startPos, int length) {
+        if (length == 0) {
+            return;
+        }
+        mXCoordinates.append(xCoordinates, startPos, length);
+        mYCoordinates.append(yCoordinates, startPos, length);
+        mPointerIds.fill(pointerId, startPos, length);
+        mTimes.append(times, startPos, length);
+    }
+
     public void reset() {
         final int defaultCapacity = mDefaultCapacity;
         mXCoordinates.reset(defaultCapacity);
