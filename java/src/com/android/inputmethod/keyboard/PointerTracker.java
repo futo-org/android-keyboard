@@ -18,7 +18,6 @@ package com.android.inputmethod.keyboard;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -296,17 +295,6 @@ public class PointerTracker {
         sAggregratedPointers.reset();
     }
 
-    // TODO: To handle multi-touch gestures we may want to move this method to
-    // {@link PointerTrackerQueue}.
-    public static void drawGestureTrailForAllPointerTrackers(Canvas canvas, Paint paint) {
-        final int trackersSize = sTrackers.size();
-        for (int i = 0; i < trackersSize; ++i) {
-            final PointerTracker tracker = sTrackers.get(i);
-            tracker.mGestureStroke.drawGestureTrail(canvas, paint, tracker.getLastX(),
-                    tracker.getLastY());
-        }
-    }
-
     private PointerTracker(int id, KeyEventHandler handler) {
         if (handler == null)
             throw new NullPointerException();
@@ -524,6 +512,12 @@ public class PointerTracker {
         mDrawingProxy.invalidateKey(key);
     }
 
+    public void drawGestureTrail(Canvas canvas, Paint paint) {
+        if (mInGesture) {
+            mGestureStroke.drawGestureTrail(canvas, paint, mLastX, mLastY);
+        }
+    }
+
     public int getLastX() {
         return mLastX;
     }
@@ -534,9 +528,6 @@ public class PointerTracker {
 
     public long getDownTime() {
         return mDownTime;
-    }
-    public Rect getBoundingBox() {
-        return mGestureStroke.getBoundingBox();
     }
 
     private Key onDownKey(int x, int y, long eventTime) {

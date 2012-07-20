@@ -35,9 +35,9 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.inputmethod.keyboard.internal.PreviewPlacerView;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -97,9 +97,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     // The maximum key label width in the proportion to the key width.
     private static final float MAX_LABEL_RATIO = 0.90f;
 
-    private final static int GESTURE_DRAWING_WIDTH = 5;
-    private final static int GESTURE_DRAWING_COLOR = 0xff33b5e5;
-
     // Main keyboard
     private Keyboard mKeyboard;
     protected final KeyDrawParams mKeyDrawParams;
@@ -109,7 +106,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     protected final KeyPreviewDrawParams mKeyPreviewDrawParams;
     private boolean mShowKeyPreviewPopup = true;
     private int mDelayAfterPreview;
-    private ViewGroup mPreviewPlacer;
+    private PreviewPlacerView mPreviewPlacer;
 
     /** True if {@link KeyboardView} should handle gesture events. */
     protected boolean mShouldHandleGesture;
@@ -125,14 +122,11 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private final HashSet<Key> mInvalidatedKeys = new HashSet<Key>();
     /** The region of invalidated keys */
     private final Rect mInvalidatedKeysRect = new Rect();
-    /** The region of invalidated gestures */
-    private final Rect mInvalidatedGesturesRect = new Rect();
     /** The keyboard bitmap buffer for faster updates */
     private Bitmap mBuffer;
     /** The canvas for the above mutable keyboard bitmap */
     private Canvas mCanvas;
     private final Paint mPaint = new Paint();
-    private final Paint mGesturePaint = new Paint();
     private final Paint.FontMetrics mFontMetrics = new Paint.FontMetrics();
     // This sparse array caches key label text height in pixel indexed by key label text size.
     private static final SparseArray<Float> sTextHeightCache = new SparseArray<Float>();
@@ -382,13 +376,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mDelayAfterPreview = mKeyPreviewDrawParams.mLingerTimeout;
 
         mPaint.setAntiAlias(true);
-
-        // TODO: These paint parameters should be specified via attribute of the view and styleable.
-        mGesturePaint.setAntiAlias(true);
-        mGesturePaint.setStyle(Paint.Style.STROKE);
-        mGesturePaint.setStrokeJoin(Paint.Join.ROUND);
-        mGesturePaint.setColor(GESTURE_DRAWING_COLOR);
-        mGesturePaint.setStrokeWidth(GESTURE_DRAWING_WIDTH);
     }
 
     // Read fraction value in TypedArray as float.
@@ -888,29 +875,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mDrawingHandler.dismissKeyPreview(mDelayAfterPreview, tracker);
     }
 
-    private static class PreviewPlacerView extends RelativeLayout {
-        private final Paint mGesturePaint;
-        final int mCoordinateX;
-        final int mCoordinateY;
-
-        public PreviewPlacerView(Context context, int coordinateX, int coordinateY,
-                Paint gesturePaint) {
-            super(context);
-            setWillNotDraw(false);
-            mGesturePaint = gesturePaint;
-            mCoordinateX = coordinateX;
-            mCoordinateY = coordinateY;
-        }
-
-        @Override
-        public void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
-            canvas.translate(mCoordinateX, mCoordinateY);
-            PointerTracker.drawGestureTrailForAllPointerTrackers(canvas, mGesturePaint);
-            canvas.translate(-mCoordinateX, -mCoordinateY);
-        }
-    }
-
     private void addKeyPreview(TextView keyPreview) {
         if (mPreviewPlacer == null) {
             createPreviewPlacer();
@@ -920,31 +884,31 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     private void createPreviewPlacer() {
-        getLocationInWindow(mKeyPreviewDrawParams.mCoordinates);
-        mPreviewPlacer = new PreviewPlacerView(getContext(), mKeyPreviewDrawParams.mCoordinates[0],
-                mKeyPreviewDrawParams.mCoordinates[1], mGesturePaint);
+        mPreviewPlacer = new PreviewPlacerView(getContext());
+        final int[] viewOrigin = new int[2];
+        getLocationInWindow(viewOrigin);
+        mPreviewPlacer.setOrigin(viewOrigin[0], viewOrigin[1]);
         final ViewGroup windowContentView =
                 (ViewGroup)getRootView().findViewById(android.R.id.content);
         windowContentView.addView(mPreviewPlacer);
     }
 
-    @Override
-    public void showGestureTrail(PointerTracker tracker) {
+    public void showGesturePreviewText(String gesturePreviewText) {
+        // TDOD: Add user settings option to control drawing gesture trail.
         if (mPreviewPlacer == null) {
             createPreviewPlacer();
         }
-        final Rect r = tracker.getBoundingBox();
-        if (!r.isEmpty()) {
-            // Invalidate the rectangular region encompassing the gesture. This is needed because
-            // past points along the gesture will fade and gradually disappear.
-            final KeyPreviewDrawParams params = mKeyPreviewDrawParams;
-            mInvalidatedGesturesRect.set(r);
-            mInvalidatedGesturesRect.offset(params.mCoordinates[0], params.mCoordinates[1]);
-            mInvalidatedGesturesRect.inset(-GESTURE_DRAWING_WIDTH, -GESTURE_DRAWING_WIDTH);
-            mPreviewPlacer.invalidate(mInvalidatedGesturesRect);
-        } else {
-            mPreviewPlacer.invalidate();
+        mPreviewPlacer.setGesturePreviewText(gesturePreviewText);
+        mPreviewPlacer.invalidate();
+    }
+
+    @Override
+    public void showGestureTrail(PointerTracker tracker) {
+        // TDOD: Add user settings option to control drawing gesture trail.
+        if (mPreviewPlacer == null) {
+            createPreviewPlacer();
         }
+        mPreviewPlacer.invalidatePointer(tracker);
     }
 
     @SuppressWarnings("deprecation") // setBackgroundDrawable is replaced by setBackground in API16

@@ -16,7 +16,6 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.util.FloatMath;
 
 import com.android.inputmethod.latin.Constants;
@@ -41,7 +40,6 @@ public class GestureStroke {
     private int mMinGestureLength;
     private int mMinGestureLengthWhileInGesture;
     private int mMinGestureSampleLength;
-    private final Rect mDrawingRect = new Rect();
 
     // TODO: Move some of these to resource.
     private static final float MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH = 1.0f;
@@ -90,7 +88,6 @@ public class GestureStroke {
         mEventTimes.setLength(0);
         mXCoordinates.setLength(0);
         mYCoordinates.setLength(0);
-        mDrawingRect.setEmpty();
     }
 
     private void updateLastPoint(final int x, final int y, final int time) {
@@ -197,9 +194,5 @@ public class GestureStroke {
                 canvas.drawLine(lastX, lastY, xCoords[i], yCoords[i], paint);
             }
         }
-    }
-
-    public Rect getBoundingBox() {
-        return mDrawingRect;
     }
 }

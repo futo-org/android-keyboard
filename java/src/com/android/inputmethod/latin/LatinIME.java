@@ -1343,6 +1343,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mWordComposer.setBatchInputPointers(batchPointers);
         final SuggestedWords suggestedWords = getSuggestedWords();
         showSuggestionStrip(suggestedWords, null);
+        final String gesturePreviewText = (suggestedWords.size() > 0)
+                ? suggestedWords.getWord(0) : null;
+        mKeyboardSwitcher.getKeyboardView().showGesturePreviewText(gesturePreviewText);
     }
 
     @Override
@@ -1350,6 +1353,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mWordComposer.setBatchInputPointers(batchPointers);
         final SuggestedWords suggestedWords = getSuggestedWords();
         showSuggestionStrip(suggestedWords, null);
+        mKeyboardSwitcher.getKeyboardView().showGesturePreviewText(null);
         if (suggestedWords == null || suggestedWords.size() == 0) {
             return;
         }

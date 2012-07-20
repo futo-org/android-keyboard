@@ -93,4 +93,12 @@
     <dimen name="more_suggestions_hint_text_size">27dp</dimen>
     <integer name="suggestions_count_in_strip">3</integer>
     <integer name="center_suggestion_percentile">36</integer>
+
+    <!-- Gesture preview parameters -->
+    <dimen name="gesture_preview_trail_width">2.5dp</dimen>
+    <dimen name="gesture_preview_text_size">35dp</dimen>
+    <dimen name="gesture_preview_text_offset">75dp</dimen>
+    <dimen name="gesture_preview_text_shadow_border">17.5dp</dimen>
+    <dimen name="gesture_preview_text_shading_border">7.5dp</dimen>
+    <dimen name="gesture_preview_text_connector_width">1.0dp</dimen>
 </resources>
