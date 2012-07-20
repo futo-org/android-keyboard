@@ -37,8 +37,12 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         for (int i = 0; i < limit; i++) {
             src.add(i);
             assertEquals("length after add " + i, i + 1, src.getLength());
-            if (i == DEFAULT_CAPACITY) array2 = src.getPrimitiveArray();
-            if (i == DEFAULT_CAPACITY * 2) array3 = src.getPrimitiveArray();
+            if (i == DEFAULT_CAPACITY) {
+                array2 = src.getPrimitiveArray();
+            }
+            if (i == DEFAULT_CAPACITY * 2) {
+                array3 = src.getPrimitiveArray();
+            }
             if (i < DEFAULT_CAPACITY) {
                 assertSame("array after add " + i, array, src.getPrimitiveArray());
             } else if (i < DEFAULT_CAPACITY * 2) {
@@ -110,7 +114,9 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         for (int i = 0; i < DEFAULT_CAPACITY; i++) {
             src.add(i);
             assertEquals("length after add " + i, i + 1, src.getLength());
-            if (i == smallerLength) array3 = src.getPrimitiveArray();
+            if (i == smallerLength) {
+                array3 = src.getPrimitiveArray();
+            }
             if (i < smallerLength) {
                 assertSame("array after add " + i, array2, src.getPrimitiveArray());
             } else if (i < smallerLength * 2) {
@@ -133,11 +139,13 @@ public class ResizableIntArrayTests extends AndroidTestCase {
         assertEquals("length after larger setLength", largerLength, src.getLength());
         assertNotSame("array after larger setLength", array, array2);
         assertEquals("array length after larger setLength", largerLength, array2.length);
-        for (int i = 0; i < DEFAULT_CAPACITY; i++) {
-            assertEquals("value at " + i, i, src.get(i));
-        }
-        for (int i = DEFAULT_CAPACITY; i < largerLength; i++) {
-            assertEquals("value at " + i, 0, src.get(i));
+        for (int i = 0; i < largerLength; i++) {
+            final int v = src.get(i);
+            if (i < DEFAULT_CAPACITY) {
+                assertEquals("value at " + i, i, v);
+            } else {
+                assertEquals("value at " + i, 0, v);
+            }
         }
 
         final int smallerLength = DEFAULT_CAPACITY / 2;
@@ -234,6 +242,79 @@ public class ResizableIntArrayTests extends AndroidTestCase {
                 src.getPrimitiveArray(), 0, dst.getPrimitiveArray(), dstLen, srcLen);
         assertArrayEquals("appended values after 2nd append",
                 src.getPrimitiveArray(), 0, dst.getPrimitiveArray(), dstLen + srcLen, srcLen);
+    }
+
+    public void testFill() {
+        final int srcLen = DEFAULT_CAPACITY;
+        final ResizableIntArray src = new ResizableIntArray(srcLen);
+        for (int i = 0; i < srcLen; i++) {
+            src.add(i);
+        }
+        final int[] array = src.getPrimitiveArray();
+
+        final int startPos = srcLen / 3;
+        final int length = srcLen / 3;
+        final int endPos = startPos + length;
+        assertTrue(startPos >= 1);
+        final int value = 123;
+        try {
+            src.fill(value, -1, length);
+            fail("fill from -1 shouldn't succeed");
+        } catch (IllegalArgumentException e) {
+            // success
+        }
+        try {
+            src.fill(value, startPos, -1);
+            fail("fill negative length shouldn't succeed");
+        } catch (IllegalArgumentException e) {
+            // success
+        }
+
+        src.fill(value, startPos, length);
+        assertEquals("length after fill", srcLen, src.getLength());
+        assertSame("array after fill", array, src.getPrimitiveArray());
+        for (int i = 0; i < srcLen; i++) {
+            final int v = src.get(i);
+            if (i >= startPos && i < endPos) {
+                assertEquals("new values after fill at " + i, value, v);
+            } else {
+                assertEquals("unmodified values after fill at " + i, i, v);
+            }
+        }
+
+        final int length2 = srcLen * 2 - startPos;
+        final int largeEnd = startPos + length2;
+        assertTrue(largeEnd > srcLen);
+        final int value2 = 456;
+        src.fill(value2, startPos, length2);
+        assertEquals("length after large fill", largeEnd, src.getLength());
+        assertNotSame("array after large fill", array, src.getPrimitiveArray());
+        for (int i = 0; i < largeEnd; i++) {
+            final int v = src.get(i);
+            if (i >= startPos && i < largeEnd) {
+                assertEquals("new values after large fill at " + i, value2, v);
+            } else {
+                assertEquals("unmodified values after large fill at " + i, i, v);
+            }
+        }
+
+        final int startPos2 = largeEnd + length2;
+        final int endPos2 = startPos2 + length2;
+        final int value3 = 789;
+        src.fill(value3, startPos2, length2);
+        assertEquals("length after disjoint fill", endPos2, src.getLength());
+        for (int i = 0; i < endPos2; i++) {
+            final int v = src.get(i);
+            if (i >= startPos2 && i < endPos2) {
+                assertEquals("new values after disjoint fill at " + i, value3, v);
+            } else if (i >= startPos && i < largeEnd) {
+                assertEquals("unmodified values after disjoint fill at " + i, value2, v);
+            } else if (i < startPos) {
+                assertEquals("unmodified values after disjoint fill at " + i, i, v);
+            } else {
+                assertEquals("gap values after disjoint fill at " + i, 0, v);
+            }
+        }
     }
 
     private static void assertArrayEquals(String message, int[] expecteds, int expectedPos,
