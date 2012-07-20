@@ -345,10 +345,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         final boolean needsPhantomSuddenMoveEventHack = Boolean.parseBoolean(
                 Utils.getDeviceOverrideValue(res,
                         R.array.phantom_sudden_move_event_device_list, "false"));
-        final boolean gestureInputEnabledByBuildConfig = res.getBoolean(
-                R.bool.config_gesture_input_enabled_by_build_config);
-        PointerTracker.init(mHasDistinctMultitouch, needsPhantomSuddenMoveEventHack,
-                gestureInputEnabledByBuildConfig);
+        PointerTracker.init(mHasDistinctMultitouch, needsPhantomSuddenMoveEventHack);
 
         final TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.LatinKeyboardView, defStyle, R.style.LatinKeyboardView);
@@ -464,7 +461,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(
                 keyboard, -getPaddingLeft(), -getPaddingTop() + mVerticalCorrection);
-        PointerTracker.setKeyDetector(mKeyDetector);
+        PointerTracker.setKeyDetector(mKeyDetector, mGestureInputEnabled);
         mTouchScreenRegulator.setKeyboard(keyboard);
         mMoreKeysPanelCache.clear();
 

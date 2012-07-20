@@ -61,7 +61,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
         new KeyboardTheme("Basic",            0, R.style.KeyboardTheme),
         new KeyboardTheme("HighContrast",     1, R.style.KeyboardTheme_HighContrast),
         new KeyboardTheme("Stone",            6, R.style.KeyboardTheme_Stone),
-        new KeyboardTheme("Stne.Bold",        7, R.style.KeyboardTheme_Stone_Bold),
+        new KeyboardTheme("Stone.Bold",       7, R.style.KeyboardTheme_Stone_Bold),
         new KeyboardTheme("GingerBread",      8, R.style.KeyboardTheme_Gingerbread),
         new KeyboardTheme("IceCreamSandwich", 5, R.style.KeyboardTheme_IceCreamSandwich),
     };
@@ -74,6 +74,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private LatinKeyboardView mKeyboardView;
     private LatinIME mLatinIME;
     private Resources mResources;
+    private SettingsValues mCurrentSettingsValues;
 
     private KeyboardState mState;
 
@@ -135,6 +136,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void loadKeyboard(EditorInfo editorInfo, SettingsValues settingsValues) {
+        mCurrentSettingsValues = settingsValues;
         final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
                 mThemeContext, editorInfo);
         builder.setScreenGeometry(mThemeContext.getResources().getConfiguration().orientation,
@@ -170,6 +172,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     private void setKeyboard(final Keyboard keyboard) {
         final Keyboard oldKeyboard = mKeyboardView.getKeyboard();
+        mKeyboardView.setGestureInputEnabled(mCurrentSettingsValues.mGestureInputEnabled);
         mKeyboardView.setKeyboard(keyboard);
         mCurrentInputView.setKeyboardGeometry(keyboard.mTopPadding);
         mKeyboardView.setKeyPreviewPopupEnabled(

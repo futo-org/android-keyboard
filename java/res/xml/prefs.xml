@@ -87,6 +87,12 @@
             android:persistent="true"
             android:defaultValue="true" />
         <CheckBoxPreference
+            android:key="gesture_input"
+            android:title="@string/gesture_input"
+            android:summary="@string/gesture_input_summary"
+            android:persistent="true"
+            android:defaultValue="true" />
+        <CheckBoxPreference
             android:key="usability_study_mode"
             android:title="@string/prefs_usability_study_mode"
             android:persistent="true"

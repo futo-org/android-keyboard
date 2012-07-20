@@ -122,7 +122,6 @@ public class PointerTracker {
     private static LatinKeyboardView.PointerTrackerParams sParams;
     private static int sTouchNoiseThresholdDistanceSquared;
     private static boolean sNeedsPhantomSuddenMoveEventHack;
-    private static boolean sConfigGestureInputEnabledByBuildConfig;
 
     private static final ArrayList<PointerTracker> sTrackers = new ArrayList<PointerTracker>();
     private static final InputPointers sAggregratedPointers = new InputPointers(
@@ -191,18 +190,16 @@ public class PointerTracker {
     private final GestureStroke mGestureStroke;
 
     public static void init(boolean hasDistinctMultitouch,
-            boolean needsPhantomSuddenMoveEventHack,
-            boolean gestureInputEnabledByBuildConfig) {
+            boolean needsPhantomSuddenMoveEventHack) {
         if (hasDistinctMultitouch) {
             sPointerTrackerQueue = new PointerTrackerQueue();
         } else {
             sPointerTrackerQueue = null;
         }
         sNeedsPhantomSuddenMoveEventHack = needsPhantomSuddenMoveEventHack;
-        sConfigGestureInputEnabledByBuildConfig = gestureInputEnabledByBuildConfig;
 
         setParameters(LatinKeyboardView.PointerTrackerParams.DEFAULT);
-        updateGestureInputEnabledState(null);
+        updateGestureInputEnabledState(null, false /* gestureInputEnabled */);
     }
 
     public static void setParameters(LatinKeyboardView.PointerTrackerParams params) {
@@ -211,8 +208,9 @@ public class PointerTracker {
                 params.mTouchNoiseThresholdDistance * params.mTouchNoiseThresholdDistance);
     }
 
-    private static void updateGestureInputEnabledState(Keyboard keyboard) {
-        if (!sConfigGestureInputEnabledByBuildConfig
+    private static void updateGestureInputEnabledState(Keyboard keyboard,
+            boolean gestureInputEnabled) {
+        if (!gestureInputEnabled
                 || AccessibilityUtils.getInstance().isTouchExplorationEnabled()
                 || (keyboard != null && keyboard.mId.passwordInput())) {
             sIsGestureEnabled = false;
@@ -245,7 +243,7 @@ public class PointerTracker {
         }
     }
 
-    public static void setKeyDetector(KeyDetector keyDetector) {
+    public static void setKeyDetector(KeyDetector keyDetector, boolean gestureInputEnabledByUser) {
         final int trackersSize = sTrackers.size();
         for (int i = 0; i < trackersSize; ++i) {
             final PointerTracker tracker = sTrackers.get(i);
@@ -254,7 +252,7 @@ public class PointerTracker {
             tracker.mKeyboardLayoutHasBeenChanged = true;
         }
         final Keyboard keyboard = keyDetector.getKeyboard();
-        updateGestureInputEnabledState(keyboard);
+        updateGestureInputEnabledState(keyboard, gestureInputEnabledByUser);
     }
 
     public static void dismissAllKeyPreviews() {

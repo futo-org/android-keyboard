@@ -83,6 +83,7 @@ public class SettingsValues {
     @SuppressWarnings("unused") // TODO: Use this
     private final float mKeypressSoundVolumeRawValue;
     private final InputMethodSubtype[] mAdditionalSubtypes;
+    public final boolean mGestureInputEnabled;
 
     // From the input box
     private final InputAttributes mInputAttributes;
@@ -169,6 +170,10 @@ public class SettingsValues {
         mVoiceKeyOnMain = mVoiceMode != null && mVoiceMode.equals(voiceModeMain);
         mAdditionalSubtypes = AdditionalSubtype.createAdditionalSubtypesArray(
                 getPrefAdditionalSubtypes(prefs, res));
+        final boolean gestureInputEnabledByBuildConfig = res.getBoolean(
+                R.bool.config_gesture_input_enabled_by_build_config);
+        mGestureInputEnabled = gestureInputEnabledByBuildConfig
+                && prefs.getBoolean(Settings.PREF_GESTURE_INPUT, true);
         mCorrectionEnabled = mAutoCorrectEnabled && !mInputAttributes.mInputTypeNoAutoCorrect;
         mSuggestionVisibility = createSuggestionVisibility(res);
     }
