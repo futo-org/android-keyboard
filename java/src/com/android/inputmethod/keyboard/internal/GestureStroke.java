@@ -199,7 +199,7 @@ public class GestureStroke {
         }
     }
 
-    public Rect getDrawingRect() {
+    public Rect getBoundingBox() {
         return mDrawingRect;
     }
 }

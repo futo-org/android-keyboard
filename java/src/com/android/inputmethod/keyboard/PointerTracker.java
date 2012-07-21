@@ -536,8 +536,8 @@ public class PointerTracker {
     public long getDownTime() {
         return mDownTime;
     }
-    public Rect getDrawingRect() {
-        return mGestureStroke.getDrawingRect();
+    public Rect getBoundingBox() {
+        return mGestureStroke.getBoundingBox();
     }
 
     private Key onDownKey(int x, int y, long eventTime) {

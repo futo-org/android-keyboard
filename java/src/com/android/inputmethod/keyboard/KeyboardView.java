@@ -919,15 +919,14 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         if (mPreviewPlacer == null) {
             createPreviewPlacer();
         }
-        final Rect r = tracker.getDrawingRect();
+        final Rect r = tracker.getBoundingBox();
         if (!r.isEmpty()) {
             // Invalidate the rectangular region encompassing the gesture. This is needed because
             // past points along the gesture will fade and gradually disappear.
             final KeyPreviewDrawParams params = mKeyPreviewDrawParams;
-            mInvalidatedGesturesRect.set(r.left + params.mCoordinates[0] - GESTURE_DRAWING_WIDTH,
-                    r.top + params.mCoordinates[1] - GESTURE_DRAWING_WIDTH,
-                    r.right + params.mCoordinates[0] + GESTURE_DRAWING_WIDTH,
-                    r.bottom + params.mCoordinates[1] + GESTURE_DRAWING_WIDTH);
+            mInvalidatedGesturesRect.set(r);
+            mInvalidatedGesturesRect.offset(params.mCoordinates[0], params.mCoordinates[1]);
+            mInvalidatedGesturesRect.inset(-GESTURE_DRAWING_WIDTH, -GESTURE_DRAWING_WIDTH);
             mPreviewPlacer.invalidate(mInvalidatedGesturesRect);
         } else {
             mPreviewPlacer.invalidate();
