@@ -120,6 +120,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private KeyboardSwitcher mKeyboardSwitcher;
     private Context mContext;
 
+    private ResearchLogUploader mResearchLogUploader;
+
     private ResearchLogger() {
     }
 
@@ -158,6 +160,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 e.apply();
             }
         }
+        mResearchLogUploader = new ResearchLogUploader(ims, mFilesDir);
+        mResearchLogUploader.start();
         mKeyboardSwitcher = keyboardSwitcher;
         mContext = ims;
         mPrefs = prefs;
@@ -327,7 +331,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 latinIME.getString(R.string.note_timestamp_for_researchlog),
                 showEnable ? latinIME.getString(R.string.enable_session_logging) :
                         latinIME.getString(R.string.do_not_log_this_session),
-                latinIME.getString(R.string.log_whole_session_history),
+                latinIME.getString(R.string.log_whole_session_history)
         };
         final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
@@ -536,6 +540,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             return;
         }
         if (mMainResearchLog == null) {
+            Log.w(TAG, "ResearchLog was not properly set up");
             return;
         }
         if (isPrivacySensitive) {
