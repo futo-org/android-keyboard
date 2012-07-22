@@ -19,7 +19,6 @@ include $(CLEAR_VARS)
 LOCAL_SRC_FILES += $(call all-java-files-under,src)
 LOCAL_JAR_MANIFEST := etc/manifest.txt
 LOCAL_JAVA_RESOURCE_DIRS := res
-LOCAL_MODULE_TAGS := eng
 LOCAL_MODULE := maketext
 
 include $(BUILD_HOST_JAVA_LIBRARY)
