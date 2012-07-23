@@ -1883,18 +1883,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mKeyboardSwitcher.updateShiftState();
 
         // We should show the "Touch again to save" hint if the user pressed the first entry
-        // AND either:
-        // - There is no dictionary (we know that because we tried to load it => null != mSuggest
-        //   AND mSuggest.hasMainDictionary() is false)
-        // - There is a dictionary and the word is not in it
+        // AND it's in none of our current dictionaries (main, user or otherwise).
         // Please note that if mSuggest is null, it means that everything is off: suggestion
         // and correction, so we shouldn't try to show the hint
         final boolean showingAddToDictionaryHint = index == 0 && mSuggest != null
-                // If there is no dictionary the hint should be shown.
-                && (!mSuggest.hasMainDictionary()
-                        // If "suggestion" is not in the dictionary, the hint should be shown.
-                        || !AutoCorrection.isValidWord(
-                                mSuggest.getUnigramDictionaries(), suggestion, true));
+                // If the suggestion is not in the dictionary, the hint should be shown.
+                && !AutoCorrection.isValidWord(mSuggest.getUnigramDictionaries(), suggestion, true);
 
         Utils.Stats.onSeparator((char)Keyboard.CODE_SPACE, WordComposer.NOT_A_COORDINATE,
                 WordComposer.NOT_A_COORDINATE);
