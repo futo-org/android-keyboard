@@ -83,7 +83,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final String WHITESPACE_SEPARATORS = " \t\n\r";
     private static final int MAX_INPUTVIEW_LENGTH_TO_CAPTURE = 8192; // must be >=1
     private static final String PREF_RESEARCH_LOGGER_UUID_STRING = "pref_research_logger_uuid";
-    private static final int ABORT_TIMEOUT_IN_MS = 10 * 1000;
+    private static final int ABORT_TIMEOUT_IN_MS = 10 * 1000; // timeout to notify user
 
     private static final ResearchLogger sInstance = new ResearchLogger();
     // to write to a different filename, e.g., for testing, set mFile before calling start()
@@ -95,7 +95,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // the system to do so.
     /* package */ ResearchLog mIntentionalResearchLog;
     // LogUnits are queued here and released only when the user requests the intentional log.
-    private final List<LogUnit> mIntentionalResearchLogQueue = new ArrayList<LogUnit>();
+    private List<LogUnit> mIntentionalResearchLogQueue = new ArrayList<LogUnit>();
 
     private boolean mIsPasswordView = false;
     private boolean mIsLoggingSuspended = false;
@@ -268,22 +268,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
-    private void logWholeSessionHistory() throws IOException {
-        try {
-            LogUnit headerLogUnit = new LogUnit();
-            headerLogUnit.addLogAtom(EVENTKEYS_INTENTIONAL_LOG, EVENTKEYS_NULLVALUES, false);
-            mIntentionalResearchLog.publishAllEvents(headerLogUnit);
-            for (LogUnit logUnit : mIntentionalResearchLogQueue) {
-                mIntentionalResearchLog.publishAllEvents(logUnit);
-            }
-            mIntentionalResearchLog.stop();
-            mIntentionalResearchLog = new ResearchLog(createLogFile(mFilesDir));
-            mIntentionalResearchLog.start();
-        } finally {
-            mIntentionalResearchLogQueue.clear();
-        }
-    }
-
     private void restart() {
         stop();
         start();
@@ -325,13 +309,17 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public void presentResearchDialog(final LatinIME latinIME) {
+        if (mInFeedbackDialog) {
+            Toast.makeText(latinIME, R.string.research_please_exit_feedback_form,
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
         final CharSequence title = latinIME.getString(R.string.english_ime_research_log);
         final boolean showEnable = mIsLoggingSuspended || !sIsLogging;
         final CharSequence[] items = new CharSequence[] {
-                latinIME.getString(R.string.note_timestamp_for_researchlog),
-                showEnable ? latinIME.getString(R.string.enable_session_logging) :
-                        latinIME.getString(R.string.do_not_log_this_session),
-                latinIME.getString(R.string.log_whole_session_history)
+                latinIME.getString(R.string.research_feedback_menu_option),
+                showEnable ? latinIME.getString(R.string.research_enable_session_logging) :
+                        latinIME.getString(R.string.research_do_not_log_this_session)
         };
         final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
@@ -339,9 +327,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 di.dismiss();
                 switch (position) {
                     case 0:
-                        userTimestamp();
-                        Toast.makeText(latinIME, R.string.notify_recorded_timestamp,
-                                Toast.LENGTH_LONG).show();
+                        presentFeedbackDialog(latinIME);
                         break;
                     case 1:
                         if (showEnable) {
@@ -349,11 +335,13 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                                 setLoggingAllowed(true);
                             }
                             resumeLogging();
-                            Toast.makeText(latinIME, R.string.notify_session_logging_enabled,
+                            Toast.makeText(latinIME,
+                                    R.string.research_notify_session_logging_enabled,
                                     Toast.LENGTH_LONG).show();
                         } else {
                             Toast toast = Toast.makeText(latinIME,
-                                    R.string.notify_session_log_deleting, Toast.LENGTH_LONG);
+                                    R.string.research_notify_session_log_deleting,
+                                    Toast.LENGTH_LONG);
                             toast.show();
                             boolean isLogDeleted = abort();
                             final long currentTime = System.currentTimeMillis();
@@ -361,19 +349,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                                     SUSPEND_DURATION_IN_MINUTES;
                             suspendLoggingUntil(resumeTime);
                             toast.cancel();
-                            Toast.makeText(latinIME, R.string.notify_logging_suspended,
+                            Toast.makeText(latinIME, R.string.research_notify_logging_suspended,
                                     Toast.LENGTH_LONG).show();
-                        }
-                        break;
-                    case 2:
-                        try {
-                            logWholeSessionHistory();
-                            Toast.makeText(latinIME, R.string.notify_session_history_logged,
-                                    Toast.LENGTH_LONG).show();
-                        } catch (IOException e) {
-                            Toast.makeText(latinIME, R.string.notify_session_history_not_logged,
-                                    Toast.LENGTH_LONG).show();
-                            e.printStackTrace();
                         }
                         break;
                 }
@@ -384,6 +361,83 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 .setItems(items, listener)
                 .setTitle(title);
         latinIME.showOptionDialog(builder.create());
+    }
+
+    private boolean mInFeedbackDialog = false;
+    public void presentFeedbackDialog(LatinIME latinIME) {
+        mInFeedbackDialog = true;
+        latinIME.launchKeyboardedDialogActivity(FeedbackActivity.class);
+    }
+
+    private ResearchLog mFeedbackLog;
+    private List<LogUnit> mFeedbackQueue;
+    private ResearchLog mSavedMainResearchLog;
+    private ResearchLog mSavedIntentionalResearchLog;
+    private List<LogUnit> mSavedIntentionalResearchLogQueue;
+
+    private void saveLogsForFeedback() {
+        mFeedbackLog = mIntentionalResearchLog;
+        if (mIntentionalResearchLogQueue != null) {
+            mFeedbackQueue = new ArrayList<LogUnit>(mIntentionalResearchLogQueue);
+        } else {
+            mFeedbackQueue = null;
+        }
+        mSavedMainResearchLog = mMainResearchLog;
+        mSavedIntentionalResearchLog = mIntentionalResearchLog;
+        mSavedIntentionalResearchLogQueue = mIntentionalResearchLogQueue;
+
+        mMainResearchLog = null;
+        mIntentionalResearchLog = null;
+        mIntentionalResearchLogQueue = new ArrayList<LogUnit>();
+    }
+
+    private static final int LOG_DRAIN_TIMEOUT_IN_MS = 1000 * 5;
+    public void sendFeedback(final String feedbackContents, final boolean includeHistory) {
+        if (includeHistory && mFeedbackLog != null) {
+            try {
+                LogUnit headerLogUnit = new LogUnit();
+                headerLogUnit.addLogAtom(EVENTKEYS_INTENTIONAL_LOG, EVENTKEYS_NULLVALUES, false);
+                mFeedbackLog.publishAllEvents(headerLogUnit);
+                for (LogUnit logUnit : mFeedbackQueue) {
+                    mFeedbackLog.publishAllEvents(logUnit);
+                }
+                userFeedback(mFeedbackLog, feedbackContents);
+                mFeedbackLog.stop();
+                try {
+                    mFeedbackLog.waitUntilStopped(LOG_DRAIN_TIMEOUT_IN_MS);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                mIntentionalResearchLog = new ResearchLog(createLogFile(mFilesDir));
+                mIntentionalResearchLog.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                mIntentionalResearchLogQueue.clear();
+            }
+            mResearchLogUploader.uploadNow(null);
+        } else {
+            // create a separate ResearchLog just for feedback
+            final ResearchLog feedbackLog = new ResearchLog(createLogFile(mFilesDir));
+            try {
+                feedbackLog.start();
+                userFeedback(feedbackLog, feedbackContents);
+                feedbackLog.stop();
+                feedbackLog.waitUntilStopped(LOG_DRAIN_TIMEOUT_IN_MS);
+                mResearchLogUploader.uploadNow(null);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void onLeavingSendFeedbackDialog() {
+        mInFeedbackDialog = false;
+        mMainResearchLog = mSavedMainResearchLog;
+        mIntentionalResearchLog = mSavedIntentionalResearchLog;
+        mIntentionalResearchLogQueue = mSavedIntentionalResearchLogQueue;
     }
 
     public void initSuggest(Suggest suggest) {
@@ -540,7 +594,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             return;
         }
         if (mMainResearchLog == null) {
-            Log.w(TAG, "ResearchLog was not properly set up");
             return;
         }
         if (isPrivacySensitive) {
@@ -647,6 +700,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void latinIME_onStartInputViewInternal(final EditorInfo editorInfo,
             final SharedPreferences prefs) {
         final ResearchLogger researchLogger = getInstance();
+        if (researchLogger.mInFeedbackDialog) {
+            researchLogger.saveLogsForFeedback();
+        }
         researchLogger.start();
         if (editorInfo != null) {
             final Context context = researchLogger.mContext;
@@ -686,6 +742,20 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_COMMITTEXT, values);
         researchLogger.onWordComplete(scrubbedWord);
+    }
+
+    private static final String[] EVENTKEYS_USER_FEEDBACK = {
+        "UserFeedback", "FeedbackContents"
+    };
+
+    private void userFeedback(ResearchLog researchLog, String feedbackContents) {
+        // this method is special; it directs the feedbackContents to a particular researchLog
+        final LogUnit logUnit = new LogUnit();
+        final Object[] values = {
+            feedbackContents
+        };
+        logUnit.addLogAtom(EVENTKEYS_USER_FEEDBACK, values, false);
+        researchLog.publishAllEvents(logUnit);
     }
 
     // Regular logging methods
