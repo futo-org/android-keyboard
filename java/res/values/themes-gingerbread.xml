@@ -18,7 +18,7 @@
     <style name="KeyboardTheme.Gingerbread" parent="KeyboardIcons">
         <item name="keyboardStyle">@style/Keyboard.Gingerbread</item>
         <item name="keyboardViewStyle">@style/KeyboardView.Gingerbread</item>
-        <item name="latinKeyboardViewStyle">@style/LatinKeyboardView.Gingerbread</item>
+        <item name="mainKeyboardViewStyle">@style/MainKeyboardView.Gingerbread</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.Gingerbread</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.Gingerbread</item>
         <item name="moreKeysKeyboardPanelStyle">@style/MoreKeysKeyboardPanelStyle</item>

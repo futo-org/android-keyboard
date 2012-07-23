@@ -67,7 +67,7 @@
         <item name="shadowColor">#BB000000</item>
         <item name="shadowRadius">2.75</item>
         <item name="backgroundDimAlpha">128</item>
-        <!-- Common attributes of LatinKeyboardView -->
+        <!-- Common attributes of MainKeyboardView -->
         <item name="keyHysteresisDistance">@dimen/config_key_hysteresis_distance</item>
         <item name="touchNoiseThresholdTime">@integer/config_touch_noise_threshold_time</item>
         <item name="touchNoiseThresholdDistance">@dimen/config_touch_noise_threshold_distance</item>
@@ -84,7 +84,7 @@
         <item name="altCodeKeyWhileTypingFadeinAnimator">@anim/alt_code_key_while_typing_fadein</item>
     </style>
     <style
-        name="LatinKeyboardView"
+        name="MainKeyboardView"
         parent="KeyboardView">
         <item name="autoCorrectionSpacebarLedEnabled">true</item>
         <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
@@ -155,7 +155,7 @@
         <item name="keyBackground">@drawable/btn_keyboard_key3</item>
     </style>
     <style
-        name="LatinKeyboardView.HighContrast"
+        name="MainKeyboardView.HighContrast"
         parent="KeyboardView.HighContrast"
     >
         <item name="autoCorrectionSpacebarLedEnabled">true</item>
@@ -190,7 +190,7 @@
         <item name="shadowColor">#FFFFFFFF</item>
     </style>
     <style
-        name="LatinKeyboardView.Stone"
+        name="MainKeyboardView.Stone"
         parent="KeyboardView.Stone"
     >
         <item name="autoCorrectionSpacebarLedEnabled">true</item>
@@ -230,7 +230,7 @@
         <item name="keyTextStyle">bold</item>
     </style>
     <style
-        name="LatinKeyboardView.Stone.Bold"
+        name="MainKeyboardView.Stone.Bold"
         parent="KeyboardView.Stone.Bold"
     >
         <item name="autoCorrectionSpacebarLedEnabled">true</item>
@@ -259,7 +259,7 @@
         <item name="keyTextStyle">bold</item>
     </style>
     <style
-        name="LatinKeyboardView.Gingerbread"
+        name="MainKeyboardView.Gingerbread"
         parent="KeyboardView.Gingerbread"
     >
         <item name="autoCorrectionSpacebarLedEnabled">true</item>
@@ -316,7 +316,7 @@
         <item name="shadowRadius">0.0</item>
     </style>
     <style
-        name="LatinKeyboardView.IceCreamSandwich"
+        name="MainKeyboardView.IceCreamSandwich"
         parent="KeyboardView.IceCreamSandwich"
     >
         <item name="autoCorrectionSpacebarLedEnabled">false</item>

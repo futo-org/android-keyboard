@@ -27,11 +27,11 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.inputmethodservice.InputMethodService;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.inputmethodservice.InputMethodService;
 import android.os.Build;
 import android.os.IBinder;
 import android.text.TextUtils;
@@ -53,7 +53,7 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
-import com.android.inputmethod.keyboard.LatinKeyboardView;
+import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.R;
@@ -192,7 +192,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
-    public void latinKeyboardView_onAttachedToWindow() {
+    public void mainKeyboardView_onAttachedToWindow() {
         maybeShowSplashScreen();
     }
 
@@ -552,9 +552,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             int height) {
         // TODO: Reimplement using a keyboard background image specific to the ResearchLogger
         // and remove this method.
-        // The check for LatinKeyboardView ensures that a red border is only placed around
+        // The check for MainKeyboardView ensures that a red border is only placed around
         // the main keyboard, not every keyboard.
-        if (IS_SHOWING_INDICATOR && isAllowedToLog() && view instanceof LatinKeyboardView) {
+        if (IS_SHOWING_INDICATOR && isAllowedToLog() && view instanceof MainKeyboardView) {
             final int savedColor = paint.getColor();
             paint.setColor(Color.RED);
             final Style savedStyle = paint.getStyle();
@@ -876,11 +876,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
     // Regular logging methods
 
-    private static final String[] EVENTKEYS_LATINKEYBOARDVIEW_PROCESSMOTIONEVENT = {
-        "LatinKeyboardViewProcessMotionEvent", "action", "eventTime", "id", "x", "y", "size",
+    private static final String[] EVENTKEYS_MAINKEYBOARDVIEW_PROCESSMOTIONEVENT = {
+        "MainKeyboardViewProcessMotionEvent", "action", "eventTime", "id", "x", "y", "size",
         "pressure"
     };
-    public static void latinKeyboardView_processMotionEvent(final MotionEvent me, final int action,
+    public static void mainKeyboardView_processMotionEvent(final MotionEvent me, final int action,
             final long eventTime, final int index, final int id, final int x, final int y) {
         if (me != null) {
             final String actionString;
@@ -900,7 +900,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 actionString, eventTime, id, x, y, size, pressure
             };
             getInstance().enqueuePotentiallyPrivateEvent(
-                    EVENTKEYS_LATINKEYBOARDVIEW_PROCESSMOTIONEVENT, values);
+                    EVENTKEYS_MAINKEYBOARDVIEW_PROCESSMOTIONEVENT, values);
         }
     }
 
@@ -1129,20 +1129,20 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 EVENTKEYS_NULLVALUES);
     }
 
-    private static final String[] EVENTKEYS_LATINKEYBOARDVIEW_ONLONGPRESS = {
-        "LatinKeyboardViewOnLongPress"
+    private static final String[] EVENTKEYS_MAINKEYBOARDVIEW_ONLONGPRESS = {
+        "MainKeyboardViewOnLongPress"
     };
-    public static void latinKeyboardView_onLongPress() {
-        getInstance().enqueueEvent(EVENTKEYS_LATINKEYBOARDVIEW_ONLONGPRESS, EVENTKEYS_NULLVALUES);
+    public static void mainKeyboardView_onLongPress() {
+        getInstance().enqueueEvent(EVENTKEYS_MAINKEYBOARDVIEW_ONLONGPRESS, EVENTKEYS_NULLVALUES);
     }
 
-    private static final String[] EVENTKEYS_LATINKEYBOARDVIEW_SETKEYBOARD = {
-        "LatinKeyboardViewSetKeyboard", "elementId", "locale", "orientation", "width",
+    private static final String[] EVENTKEYS_MAINKEYBOARDVIEW_SETKEYBOARD = {
+        "MainKeyboardViewSetKeyboard", "elementId", "locale", "orientation", "width",
         "modeName", "action", "navigateNext", "navigatePrevious", "clobberSettingsKey",
         "passwordInput", "shortcutKeyEnabled", "hasShortcutKey", "languageSwitchKeyEnabled",
         "isMultiLine", "tw", "th", "keys"
     };
-    public static void latinKeyboardView_setKeyboard(final Keyboard keyboard) {
+    public static void mainKeyboardView_setKeyboard(final Keyboard keyboard) {
         if (keyboard != null) {
             final KeyboardId kid = keyboard.mId;
             final boolean isPasswordView = kid.passwordInput();
@@ -1166,7 +1166,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                     keyboard.mOccupiedHeight,
                     keyboard.mKeys
                 };
-            getInstance().enqueueEvent(EVENTKEYS_LATINKEYBOARDVIEW_SETKEYBOARD, values);
+            getInstance().enqueueEvent(EVENTKEYS_MAINKEYBOARDVIEW_SETKEYBOARD, values);
             getInstance().setIsPasswordView(isPasswordView);
         }
     }

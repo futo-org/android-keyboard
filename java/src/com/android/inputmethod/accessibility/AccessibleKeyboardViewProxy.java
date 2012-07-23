@@ -29,7 +29,7 @@ import android.view.ViewConfiguration;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
-import com.android.inputmethod.keyboard.LatinKeyboardView;
+import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.latin.R;
 
@@ -37,7 +37,7 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
     private static final AccessibleKeyboardViewProxy sInstance = new AccessibleKeyboardViewProxy();
 
     private InputMethodService mInputMethod;
-    private LatinKeyboardView mView;
+    private MainKeyboardView mView;
     private AccessibilityEntityProvider mAccessibilityNodeProvider;
 
     private Key mLastHoverKey = null;
@@ -70,7 +70,7 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
      *
      * @param view The view to wrap.
      */
-    public void setView(LatinKeyboardView view) {
+    public void setView(MainKeyboardView view) {
         if (view == null) {
             // Ignore null views.
             return;

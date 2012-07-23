@@ -18,7 +18,7 @@
     <style name="KeyboardTheme" parent="KeyboardIcons">
         <item name="keyboardStyle">@style/Keyboard</item>
         <item name="keyboardViewStyle">@style/KeyboardView</item>
-        <item name="latinKeyboardViewStyle">@style/LatinKeyboardView</item>
+        <item name="mainKeyboardViewStyle">@style/MainKeyboardView</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView</item>
         <item name="moreKeysKeyboardPanelStyle">@style/MoreKeysKeyboardPanelStyle</item>

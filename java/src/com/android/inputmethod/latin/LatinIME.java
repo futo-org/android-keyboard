@@ -67,7 +67,7 @@ import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
-import com.android.inputmethod.keyboard.LatinKeyboardView;
+import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.latin.suggestions.SuggestionsView;
@@ -598,7 +598,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void onStartInputViewInternal(EditorInfo editorInfo, boolean restarting) {
         super.onStartInputView(editorInfo, restarting);
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
-        LatinKeyboardView inputView = switcher.getKeyboardView();
+        MainKeyboardView inputView = switcher.getKeyboardView();
 
         if (editorInfo == null) {
             Log.e(TAG, "Null EditorInfo in onStartInputView()");
@@ -889,7 +889,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void setSuggestionStripShownInternal(boolean shown, boolean needsInputViewShown) {
         // TODO: Modify this if we support suggestions with hard keyboard
         if (onEvaluateInputViewShown() && mSuggestionsContainer != null) {
-            final LatinKeyboardView keyboardView = mKeyboardSwitcher.getKeyboardView();
+            final MainKeyboardView keyboardView = mKeyboardSwitcher.getKeyboardView();
             final boolean inputViewShown = (keyboardView != null) ? keyboardView.isShown() : false;
             final boolean shouldShowSuggestions = shown
                     && (needsInputViewShown ? inputViewShown : true);
@@ -950,7 +950,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int extraHeight = extractHeight + backingHeight + suggestionsHeight;
         int touchY = extraHeight;
         // Need to set touchable region only if input view is being shown
-        final LatinKeyboardView keyboardView = mKeyboardSwitcher.getKeyboardView();
+        final MainKeyboardView keyboardView = mKeyboardSwitcher.getKeyboardView();
         if (keyboardView != null && keyboardView.isShown()) {
             if (mSuggestionsContainer.getVisibility() == View.VISIBLE) {
                 touchY -= suggestionsHeight;
@@ -1643,7 +1643,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void handleClose() {
         commitTyped(LastComposedWord.NOT_A_SEPARATOR);
         requestHideSelf(0);
-        LatinKeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
+        MainKeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null)
             inputView.closing();
     }

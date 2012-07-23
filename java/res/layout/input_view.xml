@@ -56,7 +56,7 @@
             style="?attr/suggestionsStripBackgroundStyle" />
     </LinearLayout>
 
-    <com.android.inputmethod.keyboard.LatinKeyboardView
+    <com.android.inputmethod.keyboard.MainKeyboardView
         android:id="@+id/keyboard_view"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"

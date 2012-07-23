@@ -119,7 +119,7 @@ public class PointerTracker {
     }
 
     // Parameters for pointer handling.
-    private static LatinKeyboardView.PointerTrackerParams sParams;
+    private static MainKeyboardView.PointerTrackerParams sParams;
     private static int sTouchNoiseThresholdDistanceSquared;
     private static boolean sNeedsPhantomSuddenMoveEventHack;
 
@@ -198,11 +198,11 @@ public class PointerTracker {
         }
         sNeedsPhantomSuddenMoveEventHack = needsPhantomSuddenMoveEventHack;
 
-        setParameters(LatinKeyboardView.PointerTrackerParams.DEFAULT);
+        setParameters(MainKeyboardView.PointerTrackerParams.DEFAULT);
         updateGestureInputEnabledState(null, false /* gestureInputEnabled */);
     }
 
-    public static void setParameters(LatinKeyboardView.PointerTrackerParams params) {
+    public static void setParameters(MainKeyboardView.PointerTrackerParams params) {
         sParams = params;
         sTouchNoiseThresholdDistanceSquared = (int)(
                 params.mTouchNoiseThresholdDistance * params.mTouchNoiseThresholdDistance);

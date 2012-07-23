@@ -71,7 +71,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private boolean mForceNonDistinctMultitouch;
 
     private InputView mCurrentInputView;
-    private LatinKeyboardView mKeyboardView;
+    private MainKeyboardView mKeyboardView;
     private LatinIME mLatinIME;
     private Resources mResources;
     private SettingsValues mCurrentSettingsValues;
@@ -268,7 +268,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void startDoubleTapTimer() {
-        final LatinKeyboardView keyboardView = getKeyboardView();
+        final MainKeyboardView keyboardView = getKeyboardView();
         if (keyboardView != null) {
             final TimerProxy timer = keyboardView.getTimerProxy();
             timer.startDoubleTapTimer();
@@ -278,7 +278,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void cancelDoubleTapTimer() {
-        final LatinKeyboardView keyboardView = getKeyboardView();
+        final MainKeyboardView keyboardView = getKeyboardView();
         if (keyboardView != null) {
             final TimerProxy timer = keyboardView.getTimerProxy();
             timer.cancelDoubleTapTimer();
@@ -288,7 +288,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public boolean isInDoubleTapTimeout() {
-        final LatinKeyboardView keyboardView = getKeyboardView();
+        final MainKeyboardView keyboardView = getKeyboardView();
         return (keyboardView != null)
                 ? keyboardView.getTimerProxy().isInDoubleTapTimeout() : false;
     }
@@ -296,7 +296,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void startLongPressTimer(int code) {
-        final LatinKeyboardView keyboardView = getKeyboardView();
+        final MainKeyboardView keyboardView = getKeyboardView();
         if (keyboardView != null) {
             final TimerProxy timer = keyboardView.getTimerProxy();
             timer.startLongPressTimer(code);
@@ -306,7 +306,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void cancelLongPressTimer() {
-        final LatinKeyboardView keyboardView = getKeyboardView();
+        final MainKeyboardView keyboardView = getKeyboardView();
         if (keyboardView != null) {
             final TimerProxy timer = keyboardView.getTimerProxy();
             timer.cancelLongPressTimer();
@@ -346,7 +346,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onCodeInput(code, isSinglePointer(), mLatinIME.getCurrentAutoCapsState());
     }
 
-    public LatinKeyboardView getKeyboardView() {
+    public MainKeyboardView getKeyboardView() {
         return mKeyboardView;
     }
 
@@ -372,7 +372,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
             }
         }
 
-        mKeyboardView = (LatinKeyboardView) mCurrentInputView.findViewById(R.id.keyboard_view);
+        mKeyboardView = (MainKeyboardView) mCurrentInputView.findViewById(R.id.keyboard_view);
         mKeyboardView.setKeyboardActionListener(mLatinIME);
         if (mForceNonDistinctMultitouch) {
             mKeyboardView.setDistinctMultitouch(false);

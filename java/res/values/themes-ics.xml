@@ -18,7 +18,7 @@
     <style name="KeyboardTheme.IceCreamSandwich" parent="KeyboardIcons.IceCreamSandwich">
         <item name="keyboardStyle">@style/Keyboard.IceCreamSandwich</item>
         <item name="keyboardViewStyle">@style/KeyboardView.IceCreamSandwich</item>
-        <item name="latinKeyboardViewStyle">@style/LatinKeyboardView.IceCreamSandwich</item>
+        <item name="mainKeyboardViewStyle">@style/MainKeyboardView.IceCreamSandwich</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.IceCreamSandwich</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.IceCreamSandwich</item>
         <item name="moreKeysKeyboardPanelStyle">@style/MoreKeysKeyboardPanelStyle.IceCreamSandwich</item>

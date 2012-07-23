@@ -70,7 +70,7 @@ public class SuddenJumpingTouchEventHandler {
      * the sudden moves subside, a DOWN event is simulated for the second key.
      * @param me the motion event
      * @return true if the event was consumed, so that it doesn't continue to be handled by
-     * {@link LatinKeyboardView}.
+     * {@link MainKeyboardView}.
      */
     private boolean handleSuddenJumping(MotionEvent me) {
         if (!mNeedsSuddenJumpingHack)

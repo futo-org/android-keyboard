@@ -32,7 +32,7 @@
   *;
 }
 
--keep class com.android.inputmethod.keyboard.LatinKeyboardView {
+-keep class com.android.inputmethod.keyboard.MainKeyboardView {
   # Keep getter/setter methods for ObjectAnimator
   int getLanguageOnSpacebarAnimAlpha();
   void setLanguageOnSpacebarAnimAlpha(int);
