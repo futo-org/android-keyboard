@@ -108,20 +108,6 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Intr. vocală dezact."</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configuraţi metodele de intrare"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Selectaţi limba"</string>
-    <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Înreg. marc. temp. jurnal"</string>
-    <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Marcaj temporal înregis."</string>
-    <!-- no translation found for do_not_log_this_session (6952150901437825793) -->
-    <skip />
-    <!-- no translation found for enable_session_logging (1008866186953731748) -->
-    <skip />
-    <string name="log_whole_session_history" msgid="7087712461632081351">"Înregistraţi istoric sesiune întreg"</string>
-    <string name="notify_session_log_deleting" msgid="3299507647764414623">"Se șterge jurnal sesiune"</string>
-    <!-- no translation found for notify_logging_suspended (226629069639852930) -->
-    <skip />
-    <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Jurnal sesiune neşters"</string>
-    <string name="notify_session_history_logged" msgid="7723983399468056391">"Istoric sesiune înregistrat"</string>
-    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"Eroare: istoric sesiune neînregis."</string>
-    <string name="notify_session_logging_enabled" msgid="8549561596936177661">"Înregistrare sesiune activată"</string>
     <string name="select_language" msgid="3693815588777926848">"Limbi de intrare"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Atingeţi din nou pentru a salva"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicţionar disponibil"</string>

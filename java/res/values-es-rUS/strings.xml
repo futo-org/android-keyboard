@@ -58,10 +58,8 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Muy agresivo"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"Sugerencias de palabra siguiente"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Según la palabra anterior"</string>
-    <!-- no translation found for gesture_input (3310827802759290774) -->
-    <skip />
-    <!-- no translation found for gesture_input_summary (7019742443455085809) -->
-    <skip />
+    <string name="gesture_input" msgid="3310827802759290774">"Entrada de gestos"</string>
+    <string name="gesture_input_summary" msgid="7019742443455085809">"Ingresa una palabra trazando sus letras."</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: guardada"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Ir"</string>
     <string name="label_next_key" msgid="362972844525672568">"Siguiente"</string>
@@ -108,20 +106,6 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"La entrada por voz está inhabilitada"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de entrada"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas de entrada"</string>
-    <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Marcar tiempo en registro"</string>
-    <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Marca tiempo registrada"</string>
-    <!-- no translation found for do_not_log_this_session (6952150901437825793) -->
-    <skip />
-    <!-- no translation found for enable_session_logging (1008866186953731748) -->
-    <skip />
-    <string name="log_whole_session_history" msgid="7087712461632081351">"Registrar hist. de sesión completo"</string>
-    <string name="notify_session_log_deleting" msgid="3299507647764414623">"Eliminando registro"</string>
-    <!-- no translation found for notify_logging_suspended (226629069639852930) -->
-    <skip />
-    <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"NO se eliminó el registro"</string>
-    <string name="notify_session_history_logged" msgid="7723983399468056391">"Se registró el historial de sesión."</string>
-    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"Error al registrar hist. de sesión"</string>
-    <string name="notify_session_logging_enabled" msgid="8549561596936177661">"Se activó el historial de sesión."</string>
     <string name="select_language" msgid="3693815588777926848">"Idiomas de entrada"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Vuelve a tocar para guardar."</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Diccionario disponible"</string>

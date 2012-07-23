@@ -108,20 +108,6 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Hlasový vstup vypnut"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurace metod zadávání"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Vstupní jazyky"</string>
-    <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Uložit čas do protokolu"</string>
-    <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Časové razítko vloženo"</string>
-    <!-- no translation found for do_not_log_this_session (6952150901437825793) -->
-    <skip />
-    <!-- no translation found for enable_session_logging (1008866186953731748) -->
-    <skip />
-    <string name="log_whole_session_history" msgid="7087712461632081351">"Protokolovat celou historii relace"</string>
-    <string name="notify_session_log_deleting" msgid="3299507647764414623">"Mazání protokolu relace"</string>
-    <!-- no translation found for notify_logging_suspended (226629069639852930) -->
-    <skip />
-    <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Protokol relace nesmazán"</string>
-    <string name="notify_session_history_logged" msgid="7723983399468056391">"Historie relace protokolována"</string>
-    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"Historie relace NENÍ protokolována"</string>
-    <string name="notify_session_logging_enabled" msgid="8549561596936177661">"Protokolování relace povoleno"</string>
     <string name="select_language" msgid="3693815588777926848">"Vstupní jazyky"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Opětovným dotykem provedete uložení"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Slovník k dispozici"</string>

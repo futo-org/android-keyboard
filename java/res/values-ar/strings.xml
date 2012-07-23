@@ -58,10 +58,8 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"شديد الصرامة"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"اقتراحات الكلمات التالية"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"استنادًا إلى الكلمة السابقة"</string>
-    <!-- no translation found for gesture_input (3310827802759290774) -->
-    <skip />
-    <!-- no translation found for gesture_input_summary (7019742443455085809) -->
-    <skip />
+    <string name="gesture_input" msgid="3310827802759290774">"إدخال الإيماءة"</string>
+    <string name="gesture_input_summary" msgid="7019742443455085809">"يمكنك إدخال كلمة من خلال تتبع أحرف كلمة ما"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : تم الحفظ"</string>
     <string name="label_go_key" msgid="1635148082137219148">"تنفيذ"</string>
     <string name="label_next_key" msgid="362972844525672568">"التالي"</string>
@@ -108,20 +106,6 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"الإدخال الصوتي مُعطل"</string>
     <string name="configure_input_method" msgid="373356270290742459">"تهيئة طرق الإدخال"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"لغات الإدخال"</string>
-    <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"ملاحظة طابع زمني في سجل"</string>
-    <string name="notify_recorded_timestamp" msgid="8036429032449612051">"تم تسجيل الطابع الزمني"</string>
-    <!-- no translation found for do_not_log_this_session (6952150901437825793) -->
-    <skip />
-    <!-- no translation found for enable_session_logging (1008866186953731748) -->
-    <skip />
-    <string name="log_whole_session_history" msgid="7087712461632081351">"تسجيل سجل الجلسة بالكامل"</string>
-    <string name="notify_session_log_deleting" msgid="3299507647764414623">"جارٍ حذف سجل الجلسة"</string>
-    <!-- no translation found for notify_logging_suspended (226629069639852930) -->
-    <skip />
-    <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"لم يتم حذف سجل الجلسة"</string>
-    <string name="notify_session_history_logged" msgid="7723983399468056391">"تم تسجيل سجل الجلسة"</string>
-    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"الخطأ: لم يتم تسجيل سجل الجلسة"</string>
-    <string name="notify_session_logging_enabled" msgid="8549561596936177661">"تم تمكين تسجيل الجلسة"</string>
     <string name="select_language" msgid="3693815588777926848">"لغات الإدخال"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"المس مرة أخرى للحفظ"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"القاموس متاح"</string>
