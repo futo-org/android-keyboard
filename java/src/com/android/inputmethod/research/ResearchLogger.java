@@ -28,6 +28,10 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.inputmethodservice.InputMethodService;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.os.Build;
 import android.os.IBinder;
 import android.text.TextUtils;
@@ -48,6 +52,7 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.LatinKeyboardView;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.LatinIME;
@@ -87,7 +92,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final String FILENAME_SUFFIX = ".txt";
     private static final SimpleDateFormat TIMESTAMP_DATEFORMAT =
             new SimpleDateFormat("yyyyMMddHHmmssS", Locale.US);
-    private static final boolean IS_SHOWING_INDICATOR = false;
+    private static final boolean IS_SHOWING_INDICATOR = true;
+    private static final boolean IS_SHOWING_INDICATOR_CLEARLY = false;
 
     // constants related to specific log points
     private static final String WHITESPACE_SEPARATORS = " \t\n\r";
@@ -528,11 +534,46 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public void requestIndicatorRedraw() {
-        // invalidate any existing graphics
-        if (IS_SHOWING_INDICATOR) {
-            if (mKeyboardSwitcher != null) {
-                mKeyboardSwitcher.getKeyboardView().invalidateAllKeys();
+        if (!IS_SHOWING_INDICATOR) {
+            return;
+        }
+        if (mKeyboardSwitcher == null) {
+            return;
+        }
+        final KeyboardView keyboardView = mKeyboardSwitcher.getKeyboardView();
+        if (keyboardView == null) {
+            return;
+        }
+        keyboardView.invalidateAllKeys();
+    }
+
+
+    public void paintIndicator(KeyboardView view, Paint paint, Canvas canvas, int width,
+            int height) {
+        // TODO: Reimplement using a keyboard background image specific to the ResearchLogger
+        // and remove this method.
+        // The check for LatinKeyboardView ensures that a red border is only placed around
+        // the main keyboard, not every keyboard.
+        if (IS_SHOWING_INDICATOR && isAllowedToLog() && view instanceof LatinKeyboardView) {
+            final int savedColor = paint.getColor();
+            paint.setColor(Color.RED);
+            final Style savedStyle = paint.getStyle();
+            paint.setStyle(Style.STROKE);
+            final float savedStrokeWidth = paint.getStrokeWidth();
+            if (IS_SHOWING_INDICATOR_CLEARLY) {
+                paint.setStrokeWidth(5);
+                canvas.drawRect(0, 0, width, height, paint);
+            } else {
+                // Put a tiny red dot on the screen so a knowledgeable user can check whether
+                // it is enabled.  The dot is actually a zero-width, zero-height rectangle,
+                // placed at the lower-right corner of the canvas, painted with a non-zero border
+                // width.
+                paint.setStrokeWidth(3);
+                canvas.drawRect(width, height, width, height, paint);
             }
+            paint.setColor(savedColor);
+            paint.setStyle(savedStyle);
+            paint.setStrokeWidth(savedStrokeWidth);
         }
     }
 
