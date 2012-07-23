@@ -74,7 +74,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private MainKeyboardView mKeyboardView;
     private LatinIME mLatinIME;
     private Resources mResources;
-    private SettingsValues mCurrentSettingsValues;
 
     private KeyboardState mState;
 
@@ -136,7 +135,6 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void loadKeyboard(EditorInfo editorInfo, SettingsValues settingsValues) {
-        mCurrentSettingsValues = settingsValues;
         final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
                 mThemeContext, editorInfo);
         builder.setScreenGeometry(mThemeContext.getResources().getConfiguration().orientation,
@@ -171,20 +169,20 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     private void setKeyboard(final Keyboard keyboard) {
-        final Keyboard oldKeyboard = mKeyboardView.getKeyboard();
-        mKeyboardView.setGestureInputEnabled(mCurrentSettingsValues.mGestureInputEnabled);
-        mKeyboardView.setKeyboard(keyboard);
+        final MainKeyboardView keyboardView = mKeyboardView;
+        final Keyboard oldKeyboard = keyboardView.getKeyboard();
+        keyboardView.setKeyboard(keyboard);
         mCurrentInputView.setKeyboardGeometry(keyboard.mTopPadding);
-        mKeyboardView.setKeyPreviewPopupEnabled(
+        keyboardView.setKeyPreviewPopupEnabled(
                 SettingsValues.isKeyPreviewPopupEnabled(mPrefs, mResources),
                 SettingsValues.getKeyPreviewPopupDismissDelay(mPrefs, mResources));
-        mKeyboardView.updateAutoCorrectionState(mIsAutoCorrectionActive);
-        mKeyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
+        keyboardView.updateAutoCorrectionState(mIsAutoCorrectionActive);
+        keyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
         final boolean subtypeChanged = (oldKeyboard == null)
                 || !keyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
         final boolean needsToDisplayLanguage = mSubtypeSwitcher.needsToDisplayLanguage(
                 keyboard.mId.mLocale);
-        mKeyboardView.startDisplayLanguageOnSpacebar(subtypeChanged, needsToDisplayLanguage,
+        keyboardView.startDisplayLanguageOnSpacebar(subtypeChanged, needsToDisplayLanguage,
                 ImfUtils.hasMultipleEnabledIMEsOrSubtypes(mLatinIME, true));
     }
 

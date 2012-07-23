@@ -111,8 +111,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private int mDelayAfterPreview;
     private ViewGroup mPreviewPlacer;
 
-    /** True if the gesture input is enabled. */
-    protected boolean mGestureInputEnabled;
+    /** True if {@link KeyboardView} should handle gesture events. */
+    protected boolean mShouldHandleGesture;
 
     // Drawing
     /** True if the entire keyboard needs to be dimmed. */
@@ -443,8 +443,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         return mShowKeyPreviewPopup;
     }
 
-    public void setGestureInputEnabled(boolean gestureInputEnabled) {
-        mGestureInputEnabled = gestureInputEnabled;
+    public void setGestureHandlingMode(boolean shouldHandleGesture) {
+        mShouldHandleGesture = shouldHandleGesture;
     }
 
     @Override

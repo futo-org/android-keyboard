@@ -430,7 +430,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onUpdateMainDictionaryAvailability(boolean isMainDictionaryAvailable) {
         mIsMainDictionaryAvailable = isMainDictionaryAvailable;
-        // TODO: Update gesture input enable state.
+        updateKeyboardViewGestureHandlingModeByMainDictionaryAvailability();
     }
 
     private void initSuggest() {
@@ -681,6 +681,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         switcher.loadKeyboard(editorInfo, mCurrentSettings);
+        updateKeyboardViewGestureHandlingModeByMainDictionaryAvailability();
 
         if (mSuggestionStripView != null)
             mSuggestionStripView.clear();
@@ -2052,16 +2053,26 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onRefreshKeyboard() {
         // When the device locale is changed in SetupWizard etc., this method may get called via
         // onConfigurationChanged before SoftInputWindow is shown.
+        initSuggest();
+        loadSettings();
         if (mKeyboardSwitcher.getKeyboardView() != null) {
             // Reload keyboard because the current language has been changed.
             mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(), mCurrentSettings);
+            updateKeyboardViewGestureHandlingModeByMainDictionaryAvailability();
         }
-        initSuggest();
-        loadSettings();
         // Since we just changed languages, we should re-evaluate suggestions with whatever word
         // we are currently composing. If we are not composing anything, we may want to display
         // predictions or punctuation signs (which is done by the updateSuggestionStrip anyway).
         mHandler.postUpdateSuggestionStrip();
+    }
+
+    private void updateKeyboardViewGestureHandlingModeByMainDictionaryAvailability() {
+        final MainKeyboardView keyboardView = mKeyboardSwitcher.getKeyboardView();
+        if (keyboardView != null) {
+            final boolean shouldHandleGesture = mCurrentSettings.mGestureInputEnabled
+                    && mIsMainDictionaryAvailable;
+            keyboardView.setGestureHandlingMode(shouldHandleGesture);
+        }
     }
 
     // TODO: Remove this method from {@link LatinIME} and move {@link FeedbackManager} to

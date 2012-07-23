@@ -42,8 +42,8 @@ public class PointerTracker {
     private static final boolean DEBUG_LISTENER = false;
     private static boolean DEBUG_MODE = LatinImeLogger.sDBG;
 
-    // TODO: There should be an option to turn on/off the gesture input.
-    private static boolean sIsGestureEnabled = true;
+    /** True if {@link PointerTracker}s should handle gesture events. */
+    private static boolean sShouldHandleGesture = false;
 
     private static final int MIN_GESTURE_RECOGNITION_TIME = 100; // msec
 
@@ -199,7 +199,7 @@ public class PointerTracker {
         sNeedsPhantomSuddenMoveEventHack = needsPhantomSuddenMoveEventHack;
 
         setParameters(MainKeyboardView.PointerTrackerParams.DEFAULT);
-        updateGestureInputEnabledState(null, false /* gestureInputEnabled */);
+        updateGestureHandlingMode(null, false /* shouldHandleGesture */);
     }
 
     public static void setParameters(MainKeyboardView.PointerTrackerParams params) {
@@ -208,14 +208,13 @@ public class PointerTracker {
                 params.mTouchNoiseThresholdDistance * params.mTouchNoiseThresholdDistance);
     }
 
-    private static void updateGestureInputEnabledState(Keyboard keyboard,
-            boolean gestureInputEnabled) {
-        if (!gestureInputEnabled
+    private static void updateGestureHandlingMode(Keyboard keyboard, boolean shouldHandleGesture) {
+        if (!shouldHandleGesture
                 || AccessibilityUtils.getInstance().isTouchExplorationEnabled()
                 || (keyboard != null && keyboard.mId.passwordInput())) {
-            sIsGestureEnabled = false;
+            sShouldHandleGesture = false;
         } else {
-            sIsGestureEnabled = true;
+            sShouldHandleGesture = true;
         }
     }
 
@@ -243,7 +242,7 @@ public class PointerTracker {
         }
     }
 
-    public static void setKeyDetector(KeyDetector keyDetector, boolean gestureInputEnabledByUser) {
+    public static void setKeyDetector(KeyDetector keyDetector, boolean shouldHandleGesture) {
         final int trackersSize = sTrackers.size();
         for (int i = 0; i < trackersSize; ++i) {
             final PointerTracker tracker = sTrackers.get(i);
@@ -252,7 +251,7 @@ public class PointerTracker {
             tracker.mKeyboardLayoutHasBeenChanged = true;
         }
         final Keyboard keyboard = keyDetector.getKeyboard();
-        updateGestureInputEnabledState(keyboard, gestureInputEnabledByUser);
+        updateGestureHandlingMode(keyboard, shouldHandleGesture);
     }
 
     public static void dismissAllKeyPreviews() {
@@ -669,8 +668,8 @@ public class PointerTracker {
         if (queue != null && queue.size() == 1) {
             mIsPossibleGesture = false;
             // A gesture should start only from the letter key.
-            if (sIsGestureEnabled && mIsAlphabetKeyboard && !mIsShowingMoreKeysPanel && key != null
-                    && Keyboard.isLetterCode(key.mCode)) {
+            if (sShouldHandleGesture && mIsAlphabetKeyboard && !mIsShowingMoreKeysPanel
+                    && key != null && Keyboard.isLetterCode(key.mCode)) {
                 mIsPossibleGesture = true;
                 // TODO: pointer times should be relative to first down even in entire batch input
                 // instead of resetting to 0 for each new down event.
@@ -714,7 +713,7 @@ public class PointerTracker {
     private void onGestureMoveEvent(PointerTracker tracker, int x, int y, long eventTime,
             boolean isHistorical, Key key) {
         final int gestureTime = (int)(eventTime - tracker.getDownTime());
-        if (sIsGestureEnabled && mIsPossibleGesture) {
+        if (sShouldHandleGesture && mIsPossibleGesture) {
             final GestureStroke stroke = mGestureStroke;
             stroke.addPoint(x, y, gestureTime, isHistorical);
             if (!mInGesture && stroke.isStartOfAGesture(gestureTime, sWasInGesture)) {

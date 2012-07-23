@@ -461,7 +461,7 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(
                 keyboard, -getPaddingLeft(), -getPaddingTop() + mVerticalCorrection);
-        PointerTracker.setKeyDetector(mKeyDetector, mGestureInputEnabled);
+        PointerTracker.setKeyDetector(mKeyDetector, mShouldHandleGesture);
         mTouchScreenRegulator.setKeyboard(keyboard);
         mMoreKeysPanelCache.clear();
 
@@ -477,6 +477,12 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
         // This always needs to be set since the accessibility state can
         // potentially change without the keyboard being set again.
         AccessibleKeyboardViewProxy.getInstance().setKeyboard(keyboard);
+    }
+
+    @Override
+    public void setGestureHandlingMode(final boolean shouldHandleGesture) {
+        super.setGestureHandlingMode(shouldHandleGesture);
+        PointerTracker.setKeyDetector(mKeyDetector, shouldHandleGesture);
     }
 
     /**
