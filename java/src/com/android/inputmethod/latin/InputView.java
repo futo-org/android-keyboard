@@ -24,7 +24,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 public class InputView extends LinearLayout {
-    private View mSuggestionsContainer;
+    private View mSuggestionStripContainer;
     private View mKeyboardView;
     private int mKeyboardTopPadding;
 
@@ -43,13 +43,13 @@ public class InputView extends LinearLayout {
 
     @Override
     protected void onFinishInflate() {
-        mSuggestionsContainer = findViewById(R.id.suggestions_container);
+        mSuggestionStripContainer = findViewById(R.id.suggestions_container);
         mKeyboardView = findViewById(R.id.keyboard_view);
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent me) {
-        if (mSuggestionsContainer.getVisibility() == VISIBLE
+        if (mSuggestionStripContainer.getVisibility() == VISIBLE
                 && mKeyboardView.getVisibility() == VISIBLE
                 && forwardTouchEvent(me)) {
             return true;
@@ -57,7 +57,8 @@ public class InputView extends LinearLayout {
         return super.dispatchTouchEvent(me);
     }
 
-    // The touch events that hit the top padding of keyboard should be forwarded to SuggestionsView.
+    // The touch events that hit the top padding of keyboard should be forwarded to
+    // {@link SuggestionStripView}.
     private boolean forwardTouchEvent(MotionEvent me) {
         final Rect rect = mInputViewRect;
         this.getGlobalVisibleRect(rect);
@@ -96,7 +97,7 @@ public class InputView extends LinearLayout {
         }
 
         final Rect receivingRect = mEventReceivingRect;
-        mSuggestionsContainer.getGlobalVisibleRect(receivingRect);
+        mSuggestionStripContainer.getGlobalVisibleRect(receivingRect);
         final int translatedX = x - receivingRect.left;
         final int translatedY;
         if (y < forwardingLimitY) {
@@ -106,7 +107,7 @@ public class InputView extends LinearLayout {
             translatedY = y - receivingRect.top;
         }
         me.setLocation(translatedX, translatedY);
-        mSuggestionsContainer.dispatchTouchEvent(me);
+        mSuggestionStripContainer.dispatchTouchEvent(me);
         return true;
     }
 }

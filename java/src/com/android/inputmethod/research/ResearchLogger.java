@@ -1258,16 +1258,16 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
-    private static final String[] EVENTKEYS_SUGGESTIONSVIEW_SETSUGGESTIONS = {
-        "SuggestionsViewSetSuggestions", "suggestedWords"
+    private static final String[] EVENTKEYS_SUGGESTIONSTRIPVIEW_SETSUGGESTIONS = {
+        "SuggestionStripViewSetSuggestions", "suggestedWords"
     };
-    public static void suggestionsView_setSuggestions(final SuggestedWords suggestedWords) {
+    public static void suggestionStripView_setSuggestions(final SuggestedWords suggestedWords) {
         if (suggestedWords != null) {
             final Object[] values = {
                 suggestedWords
             };
-            getInstance().enqueuePotentiallyPrivateEvent(EVENTKEYS_SUGGESTIONSVIEW_SETSUGGESTIONS,
-                    values);
+            getInstance().enqueuePotentiallyPrivateEvent(
+                    EVENTKEYS_SUGGESTIONSTRIPVIEW_SETSUGGESTIONS, values);
         }
     }
 

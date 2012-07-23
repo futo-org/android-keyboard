@@ -114,7 +114,7 @@
         <item name="android:background">@drawable/keyboard_suggest_strip</item>
     </style>
     <style
-        name="SuggestionsViewStyle"
+        name="SuggestionStripViewStyle"
         parent="SuggestionsStripBackgroundStyle"
     >
         <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
@@ -348,7 +348,7 @@
         <item name="android:background">@drawable/keyboard_suggest_strip_holo</item>
     </style>
     <style
-        name="SuggestionsViewStyle.IceCreamSandwich"
+        name="SuggestionStripViewStyle.IceCreamSandwich"
         parent="SuggestionsStripBackgroundStyle.IceCreamSandwich"
     >
         <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>

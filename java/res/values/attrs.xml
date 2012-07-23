@@ -29,7 +29,7 @@
         <attr name="moreKeysKeyboardPanelStyle" format="reference" />
         <!-- Suggestions strip style -->
         <attr name="suggestionsStripBackgroundStyle" format="reference" />
-        <attr name="suggestionsViewStyle" format="reference" />
+        <attr name="suggestionStripViewStyle" format="reference" />
         <attr name="moreSuggestionsViewStyle" format="reference" />
         <attr name="suggestionBackgroundStyle" format="reference" />
         <attr name="suggestionPreviewBackgroundStyle" format="reference" />
@@ -155,9 +155,9 @@
         <attr name="showMoreKeysKeyboardAtTouchedPoint" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="SuggestionsView">
+    <declare-styleable name="SuggestionStripView">
         <attr name="suggestionStripOption" format="integer">
-            <!-- This should be aligned with SuggestionsViewParams.AUTO_CORRECT_* and etc. -->
+            <!-- This should be aligned with SuggestionStripViewParams.AUTO_CORRECT_* and etc. -->
             <flag name="autoCorrectBold" value="0x01" />
             <flag name="autoCorrectUnderline" value="0x02" />
             <flag name="validTypedWordBold" value="0x04" />

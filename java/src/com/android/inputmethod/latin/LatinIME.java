@@ -70,7 +70,7 @@ import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 import com.android.inputmethod.latin.define.ProductionFlag;
-import com.android.inputmethod.latin.suggestions.SuggestionsView;
+import com.android.inputmethod.latin.suggestions.SuggestionStripView;
 import com.android.inputmethod.research.ResearchLogger;
 
 import java.io.FileDescriptor;
@@ -82,7 +82,7 @@ import java.util.Locale;
  * Input method implementation for Qwerty'ish keyboard.
  */
 public class LatinIME extends InputMethodService implements KeyboardActionListener,
-        SuggestionsView.Listener, TargetApplicationGetter.OnTargetApplicationKnownListener {
+        SuggestionStripView.Listener, TargetApplicationGetter.OnTargetApplicationKnownListener {
     private static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean TRACE = false;
     private static boolean DEBUG;
@@ -126,7 +126,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private View mExtractArea;
     private View mKeyPreviewBackingView;
     private View mSuggestionsContainer;
-    private SuggestionsView mSuggestionsView;
+    private SuggestionStripView mSuggestionStripView;
     /* package for tests */ Suggest mSuggest;
     private CompletionInfo[] mApplicationSpecifiedCompletions;
     private ApplicationInfo mTargetApplicationInfo;
@@ -549,9 +549,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 .findViewById(android.R.id.extractArea);
         mKeyPreviewBackingView = view.findViewById(R.id.key_preview_backing);
         mSuggestionsContainer = view.findViewById(R.id.suggestions_container);
-        mSuggestionsView = (SuggestionsView) view.findViewById(R.id.suggestions_view);
-        if (mSuggestionsView != null)
-            mSuggestionsView.setListener(this, view);
+        mSuggestionStripView = (SuggestionStripView)view.findViewById(R.id.suggestion_strip_view);
+        if (mSuggestionStripView != null)
+            mSuggestionStripView.setListener(this, view);
         if (LatinImeLogger.sVISUALDEBUG) {
             mKeyPreviewBackingView.setBackgroundColor(0x10FF0000);
         }
@@ -674,8 +674,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         switcher.loadKeyboard(editorInfo, mCurrentSettings);
 
-        if (mSuggestionsView != null)
-            mSuggestionsView.clear();
+        if (mSuggestionStripView != null)
+            mSuggestionStripView.clear();
         setSuggestionStripShownInternal(
                 isSuggestionsStripVisible(), /* needsInputViewShown */ false);
 
@@ -927,7 +927,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 - keyboardHeight;
 
         final LayoutParams params = mKeyPreviewBackingView.getLayoutParams();
-        params.height = mSuggestionsView.setMoreSuggestionsHeight(remainingHeight);
+        params.height = mSuggestionStripView.setMoreSuggestionsHeight(remainingHeight);
         mKeyPreviewBackingView.setLayoutParams(params);
         return params.height;
     }
@@ -1091,7 +1091,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 || codePoint == Keyboard.CODE_CLOSING_ANGLE_BRACKET;
     }
 
-    // Callback for the SuggestionsView, to call when the "add to dictionary" hint is pressed.
+    // Callback for the {@link SuggestionStripView}, to call when the "add to dictionary" hint is
+    // pressed.
     @Override
     public boolean addWordToUserDictionary(String word) {
         mUserDictionary.addWordToUserDictionary(word, 128);
@@ -1564,7 +1565,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mSpaceState = SPACE_STATE_WEAK;
             }
             // In case the "add to dictionary" hint was still displayed.
-            if (null != mSuggestionsView) mSuggestionsView.dismissAddToDictionaryHint();
+            if (null != mSuggestionStripView) mSuggestionStripView.dismissAddToDictionaryHint();
         }
         mHandler.postUpdateSuggestionStrip();
         Utils.Stats.onNonSeparator((char)primaryCode, x, y);
@@ -1651,14 +1652,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // TODO: make this private
     // Outside LatinIME, only used by the test suite.
     /* package for tests */ boolean isShowingPunctuationList() {
-        if (mSuggestionsView == null) return false;
-        return mCurrentSettings.mSuggestPuncList == mSuggestionsView.getSuggestions();
+        if (mSuggestionStripView == null) return false;
+        return mCurrentSettings.mSuggestPuncList == mSuggestionStripView.getSuggestions();
     }
 
     private boolean isSuggestionsStripVisible() {
-        if (mSuggestionsView == null)
+        if (mSuggestionStripView == null)
             return false;
-        if (mSuggestionsView.isShowingAddToDictionaryHint())
+        if (mSuggestionStripView.isShowingAddToDictionaryHint())
             return true;
         if (!mCurrentSettings.isSuggestionStripVisibleInOrientation(mDisplayOrientation))
             return false;
@@ -1673,8 +1674,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void setSuggestions(final SuggestedWords words, final boolean isAutoCorrection) {
-        if (mSuggestionsView != null) {
-            mSuggestionsView.setSuggestions(words);
+        if (mSuggestionStripView != null) {
+            mSuggestionStripView.setSuggestions(words);
             mKeyboardSwitcher.onAutoCorrectionStateChanged(isAutoCorrection);
         }
     }
@@ -1737,10 +1738,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // revert to suggestions - although it is unclear how we can come here if it's displayed.
         if (suggestedWords.size() > 1 || typedWord.length() <= 1
                 || !suggestedWords.mTypedWordValid
-                || mSuggestionsView.isShowingAddToDictionaryHint()) {
+                || mSuggestionStripView.isShowingAddToDictionaryHint()) {
             return suggestedWords;
         } else {
-            SuggestedWords previousSuggestions = mSuggestionsView.getSuggestions();
+            SuggestedWords previousSuggestions = mSuggestionStripView.getSuggestions();
             if (previousSuggestions == mCurrentSettings.mSuggestPuncList) {
                 previousSuggestions = SuggestedWords.EMPTY;
             }
@@ -1811,11 +1812,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    // Called from SuggestionsView through the SuggestionsView.Listener interface
+    // Called from {@link SuggestionStripView} through the {@link SuggestionStripView#Listener}
+    // interface
     @Override
     public void pickSuggestionManually(final int index, final CharSequence suggestion,
             final int x, final int y) {
-        final SuggestedWords suggestedWords = mSuggestionsView.getSuggestions();
+        final SuggestedWords suggestedWords = mSuggestionStripView.getSuggestions();
         // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
         if (suggestion.length() == 1 && isShowingPunctuationList()) {
             // Word separators are suggested before the user inputs something.
@@ -1847,8 +1849,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mCurrentSettings.isApplicationSpecifiedCompletionsOn()
                 && mApplicationSpecifiedCompletions != null
                 && index >= 0 && index < mApplicationSpecifiedCompletions.length) {
-            if (mSuggestionsView != null) {
-                mSuggestionsView.clear();
+            if (mSuggestionStripView != null) {
+                mSuggestionStripView.clear();
             }
             mKeyboardSwitcher.updateShiftState();
             resetComposingState(true /* alsoResetLastComposedWord */);
@@ -1897,7 +1899,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         Utils.Stats.onSeparator((char)Keyboard.CODE_SPACE, WordComposer.NOT_A_COORDINATE,
                 WordComposer.NOT_A_COORDINATE);
         if (showingAddToDictionaryHint && mIsUserDictionaryAvailable) {
-            mSuggestionsView.showAddToDictionaryHint(suggestion, mCurrentSettings.mHintToSaveText);
+            mSuggestionStripView.showAddToDictionaryHint(
+                    suggestion, mCurrentSettings.mHintToSaveText);
         } else {
             // If we're not showing the "Touch again to save", then update the suggestion strip.
             mHandler.postUpdateSuggestionStrip();
@@ -1909,7 +1912,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     private void commitChosenWord(final CharSequence chosenWord, final int commitType,
             final int separatorCode) {
-        final SuggestedWords suggestedWords = mSuggestionsView.getSuggestions();
+        final SuggestedWords suggestedWords = mSuggestionStripView.getSuggestions();
         mConnection.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(
                 this, chosenWord, suggestedWords, mIsMainDictionaryAvailable), 1);
         if (ProductionFlag.IS_EXPERIMENTAL) {
