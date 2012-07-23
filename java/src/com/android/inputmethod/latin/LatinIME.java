@@ -1332,13 +1332,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onUpdateBatchInput(InputPointers batchPointers) {
         mWordComposer.setBatchInputPointers(batchPointers);
-        updateSuggestionStrip();
+        final SuggestedWords suggestedWords = getSuggestedWords();
+        showSuggestionStrip(suggestedWords, null);
     }
 
     @Override
     public void onEndBatchInput(InputPointers batchPointers) {
         mWordComposer.setBatchInputPointers(batchPointers);
-        final SuggestedWords suggestedWords = updateSuggestionStrip();
+        final SuggestedWords suggestedWords = getSuggestedWords();
+        showSuggestionStrip(suggestedWords, null);
         if (suggestedWords == null || suggestedWords.size() == 0) {
             return;
         }
@@ -1691,8 +1693,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    // TODO: rename this method to updateSuggestionStrip or simply updateSuggestions
-    private SuggestedWords updateSuggestionStrip() {
+    private void updateSuggestionStrip() {
         mHandler.cancelUpdateSuggestionStrip();
 
         // Check if we have a suggestion engine attached.
@@ -1702,15 +1703,21 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         + "requested!");
                 mWordComposer.setAutoCorrection(mWordComposer.getTypedWord());
             }
-            return null;
+            return;
         }
 
-        final String typedWord = mWordComposer.getTypedWord();
         if (!mWordComposer.isComposingWord() && !mCurrentSettings.mBigramPredictionEnabled) {
             setPunctuationSuggestions();
-            return null;
+            return;
         }
 
+        final SuggestedWords suggestedWords = getSuggestedWords();
+        final String typedWord = mWordComposer.getTypedWord();
+        showSuggestionStrip(suggestedWords, typedWord);
+    }
+
+    private SuggestedWords getSuggestedWords() {
+        final String typedWord = mWordComposer.getTypedWord();
         // Get the word on which we should search the bigrams. If we are composing a word, it's
         // whatever is *before* the half-committed word in the buffer, hence 2; if we aren't, we
         // should just skip whitespace if any, so 1.
@@ -1718,13 +1725,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final CharSequence prevWord =
                 mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators,
                 mWordComposer.isComposingWord() ? 2 : 1);
-        SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
+        final SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
                 mCurrentSettings.mCorrectionEnabled);
-        suggestedWords = maybeRetrieveOlderSuggestions(typedWord, suggestedWords);
-
-        showSuggestionStrip(suggestedWords, typedWord);
-        return suggestedWords;
+        return maybeRetrieveOlderSuggestions(typedWord, suggestedWords);
     }
 
     private SuggestedWords maybeRetrieveOlderSuggestions(final CharSequence typedWord,
