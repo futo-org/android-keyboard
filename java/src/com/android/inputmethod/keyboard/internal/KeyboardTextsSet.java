@@ -2098,6 +2098,24 @@ public final class KeyboardTextsSet {
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null,
         /* ~34 */
+        // TODO: Move these to sr-Latn once we can handle IETF language tag with script name specified.
+        // BEGIN: More keys definitions for Serbian (Latin)
+        // U+0161: "š" LATIN SMALL LETTER S WITH CARON
+        // U+00DF: "ß" LATIN SMALL LETTER SHARP S
+        // U+015B: "ś" LATIN SMALL LETTER S WITH ACUTE
+        // <string name="more_keys_for_s">&#x0161;,&#x00DF;,&#x015B;</string>
+        // U+010D: "č" LATIN SMALL LETTER C WITH CARON
+        // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
+        // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
+        // <string name="more_keys_for_c">&#x010D;,&#x00E7;,&#x0107;</string>
+        // U+010F: "ď" LATIN SMALL LETTER D WITH CARON
+        // <string name="more_keys_for_d">&#x010F;</string>
+        // U+017E: "ž" LATIN SMALL LETTER Z WITH CARON
+        // U+017A: "ź" LATIN SMALL LETTER Z WITH ACUTE
+        // U+017C: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE
+        // <string name="more_keys_for_z">&#x017E;,&#x017A;,&#x017C;</string>
+        // END: More keys definitions for Serbian (Latin)
+        // BEGIN: More keys definitions for Serbian (Cyrillic)
         // U+0437: "з" CYRILLIC SMALL LETTER ZE
         /* 35 */ "\u0437",
         // U+045B: "ћ" CYRILLIC SMALL LETTER TSHE
@@ -2111,6 +2129,7 @@ public final class KeyboardTextsSet {
         // U+045D: "ѝ" CYRILLIC SMALL LETTER I WITH GRAVE
         /* 40 */ "\u045D",
         /* 41 */ null,
+        // END: More keys definitions for Serbian (Cyrillic)
         // U+2018: "‘" LEFT SINGLE QUOTATION MARK
         // U+2019: "’" RIGHT SINGLE QUOTATION MARK
         // U+201A: "‚" SINGLE LOW-9 QUOTATION MARK
