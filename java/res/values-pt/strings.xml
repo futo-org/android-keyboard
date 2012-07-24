@@ -58,10 +58,8 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Muito agressivo"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"Sugestões para a palavra seguinte"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Com base na palavra anterior"</string>
-    <!-- no translation found for gesture_input (3310827802759290774) -->
-    <skip />
-    <!-- no translation found for gesture_input_summary (7019742443455085809) -->
-    <skip />
+    <string name="gesture_input" msgid="3310827802759290774">"Entrada por gesto"</string>
+    <string name="gesture_input_summary" msgid="7019742443455085809">"Introduza uma palavra traçando suas letras"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Salvo"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Ir"</string>
     <string name="label_next_key" msgid="362972844525672568">"Avançar"</string>
