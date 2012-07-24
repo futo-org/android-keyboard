@@ -24,11 +24,15 @@
   *;
 }
 
+-keep class com.android.inputmethod.latin.ResizableIntArray {
+  *;
+}
+
 -keep class com.android.inputmethod.latin.spellcheck.SpellCheckerSettingsFragment {
   *;
 }
 
--keep class com.android.inputmethod.keyboard.LatinKeyboardView {
+-keep class com.android.inputmethod.keyboard.MainKeyboardView {
   # Keep getter/setter methods for ObjectAnimator
   int getLanguageOnSpacebarAnimAlpha();
   void setLanguageOnSpacebarAnimAlpha(int);
@@ -40,7 +44,7 @@
   <init>(...);
 }
 
--keep class com.android.inputmethod.latin.ResearchLogger {
+-keep class com.android.inputmethod.research.ResearchLogger {
   void flush();
   void publishCurrentLogUnit(...);
 }

@@ -43,20 +43,20 @@
             android:layout_width="@dimen/suggestions_strip_padding"
             android:layout_height="@dimen/suggestions_strip_height"
             style="?attr/suggestionsStripBackgroundStyle" />
-        <com.android.inputmethod.latin.suggestions.SuggestionsView
-            android:id="@+id/suggestions_view"
+        <com.android.inputmethod.latin.suggestions.SuggestionStripView
+            android:id="@+id/suggestion_strip_view"
             android:layout_weight="1.0"
             android:layout_width="0dp"
             android:layout_height="@dimen/suggestions_strip_height"
             android:gravity="center_vertical"
-            style="?attr/suggestionsViewStyle" />
+            style="?attr/suggestionStripViewStyle" />
         <View
             android:layout_width="@dimen/suggestions_strip_padding"
             android:layout_height="@dimen/suggestions_strip_height"
             style="?attr/suggestionsStripBackgroundStyle" />
     </LinearLayout>
 
-    <com.android.inputmethod.keyboard.LatinKeyboardView
+    <com.android.inputmethod.keyboard.MainKeyboardView
         android:id="@+id/keyboard_view"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"

@@ -60,15 +60,15 @@ import com.android.inputmethod.keyboard.ViewLayoutUtils;
 import com.android.inputmethod.latin.AutoCorrection;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.ResearchLogger;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.ArrayList;
 
-public class SuggestionsView extends RelativeLayout implements OnClickListener,
+public class SuggestionStripView extends RelativeLayout implements OnClickListener,
         OnLongClickListener {
     public interface Listener {
         public boolean addWordToUserDictionary(String word);
@@ -98,24 +98,24 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
     private Listener mListener;
     private SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
 
-    private final SuggestionsViewParams mParams;
+    private final SuggestionStripViewParams mParams;
     private static final float MIN_TEXT_XSCALE = 0.70f;
 
     private final UiHandler mHandler = new UiHandler(this);
 
-    private static class UiHandler extends StaticInnerHandlerWrapper<SuggestionsView> {
+    private static class UiHandler extends StaticInnerHandlerWrapper<SuggestionStripView> {
         private static final int MSG_HIDE_PREVIEW = 0;
 
-        public UiHandler(SuggestionsView outerInstance) {
+        public UiHandler(SuggestionStripView outerInstance) {
             super(outerInstance);
         }
 
         @Override
         public void dispatchMessage(Message msg) {
-            final SuggestionsView suggestionsView = getOuterInstance();
+            final SuggestionStripView suggestionStripView = getOuterInstance();
             switch (msg.what) {
             case MSG_HIDE_PREVIEW:
-                suggestionsView.hidePreview();
+                suggestionStripView.hidePreview();
                 break;
             }
         }
@@ -129,7 +129,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         }
     }
 
-    private static class SuggestionsViewParams {
+    private static class SuggestionStripViewParams {
         private static final int DEFAULT_SUGGESTIONS_COUNT_IN_STRIP = 3;
         private static final int DEFAULT_CENTER_SUGGESTION_PERCENTILE = 40;
         private static final int DEFAULT_MAX_MORE_SUGGESTIONS_ROW = 2;
@@ -175,7 +175,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         private final TextView mLeftwardsArrowView;
         private final TextView mHintToSaveView;
 
-        public SuggestionsViewParams(Context context, AttributeSet attrs, int defStyle,
+        public SuggestionStripViewParams(Context context, AttributeSet attrs, int defStyle,
                 ArrayList<TextView> words, ArrayList<View> dividers, ArrayList<TextView> infos) {
             mWords = words;
             mDividers = dividers;
@@ -191,38 +191,39 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             final Resources res = word.getResources();
             mSuggestionsStripHeight = res.getDimensionPixelSize(R.dimen.suggestions_strip_height);
 
-            final TypedArray a = context.obtainStyledAttributes(
-                    attrs, R.styleable.SuggestionsView, defStyle, R.style.SuggestionsViewStyle);
-            mSuggestionStripOption = a.getInt(R.styleable.SuggestionsView_suggestionStripOption, 0);
+            final TypedArray a = context.obtainStyledAttributes(attrs,
+                    R.styleable.SuggestionStripView, defStyle, R.style.SuggestionStripViewStyle);
+            mSuggestionStripOption = a.getInt(
+                    R.styleable.SuggestionStripView_suggestionStripOption, 0);
             final float alphaValidTypedWord = getPercent(a,
-                    R.styleable.SuggestionsView_alphaValidTypedWord, 100);
+                    R.styleable.SuggestionStripView_alphaValidTypedWord, 100);
             final float alphaTypedWord = getPercent(a,
-                    R.styleable.SuggestionsView_alphaTypedWord, 100);
+                    R.styleable.SuggestionStripView_alphaTypedWord, 100);
             final float alphaAutoCorrect = getPercent(a,
-                    R.styleable.SuggestionsView_alphaAutoCorrect, 100);
+                    R.styleable.SuggestionStripView_alphaAutoCorrect, 100);
             final float alphaSuggested = getPercent(a,
-                    R.styleable.SuggestionsView_alphaSuggested, 100);
-            mAlphaObsoleted = getPercent(a, R.styleable.SuggestionsView_alphaSuggested, 100);
-            mColorValidTypedWord = applyAlpha(
-                    a.getColor(R.styleable.SuggestionsView_colorValidTypedWord, 0),
-                    alphaValidTypedWord);
-            mColorTypedWord = applyAlpha(
-                    a.getColor(R.styleable.SuggestionsView_colorTypedWord, 0), alphaTypedWord);
-            mColorAutoCorrect = applyAlpha(
-                    a.getColor(R.styleable.SuggestionsView_colorAutoCorrect, 0), alphaAutoCorrect);
-            mColorSuggested = applyAlpha(
-                    a.getColor(R.styleable.SuggestionsView_colorSuggested, 0), alphaSuggested);
+                    R.styleable.SuggestionStripView_alphaSuggested, 100);
+            mAlphaObsoleted = getPercent(a,
+                    R.styleable.SuggestionStripView_alphaSuggested, 100);
+            mColorValidTypedWord = applyAlpha(a.getColor(
+                    R.styleable.SuggestionStripView_colorValidTypedWord, 0), alphaValidTypedWord);
+            mColorTypedWord = applyAlpha(a.getColor(
+                    R.styleable.SuggestionStripView_colorTypedWord, 0), alphaTypedWord);
+            mColorAutoCorrect = applyAlpha(a.getColor(
+                    R.styleable.SuggestionStripView_colorAutoCorrect, 0), alphaAutoCorrect);
+            mColorSuggested = applyAlpha(a.getColor(
+                    R.styleable.SuggestionStripView_colorSuggested, 0), alphaSuggested);
             mSuggestionsCountInStrip = a.getInt(
-                    R.styleable.SuggestionsView_suggestionsCountInStrip,
+                    R.styleable.SuggestionStripView_suggestionsCountInStrip,
                     DEFAULT_SUGGESTIONS_COUNT_IN_STRIP);
             mCenterSuggestionWeight = getPercent(a,
-                    R.styleable.SuggestionsView_centerSuggestionPercentile,
+                    R.styleable.SuggestionStripView_centerSuggestionPercentile,
                     DEFAULT_CENTER_SUGGESTION_PERCENTILE);
             mMaxMoreSuggestionsRow = a.getInt(
-                    R.styleable.SuggestionsView_maxMoreSuggestionsRow,
+                    R.styleable.SuggestionStripView_maxMoreSuggestionsRow,
                     DEFAULT_MAX_MORE_SUGGESTIONS_ROW);
             mMinMoreSuggestionsWidth = getRatio(a,
-                    R.styleable.SuggestionsView_minMoreSuggestionsWidth);
+                    R.styleable.SuggestionStripView_minMoreSuggestionsWidth);
             a.recycle();
 
             mMoreSuggestionsHint = getMoreSuggestionsHint(res,
@@ -596,15 +597,15 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
     }
 
     /**
-     * Construct a {@link SuggestionsView} for showing suggestions to be picked by the user.
+     * Construct a {@link SuggestionStripView} for showing suggestions to be picked by the user.
      * @param context
      * @param attrs
      */
-    public SuggestionsView(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.suggestionsViewStyle);
+    public SuggestionStripView(Context context, AttributeSet attrs) {
+        this(context, attrs, R.attr.suggestionStripViewStyle);
     }
 
-    public SuggestionsView(Context context, AttributeSet attrs, int defStyle) {
+    public SuggestionStripView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         final LayoutInflater inflater = LayoutInflater.from(context);
@@ -631,7 +632,8 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             mInfos.add((TextView)inflater.inflate(R.layout.suggestion_info, null));
         }
 
-        mParams = new SuggestionsViewParams(context, attrs, defStyle, mWords, mDividers, mInfos);
+        mParams = new SuggestionStripViewParams(
+                context, attrs, defStyle, mWords, mDividers, mInfos);
 
         mMoreSuggestionsContainer = inflater.inflate(R.layout.more_suggestions, null);
         mMoreSuggestionsView = (MoreSuggestionsView)mMoreSuggestionsContainer
@@ -677,7 +679,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         mSuggestedWords = suggestedWords;
         mParams.layout(mSuggestedWords, mSuggestionsStrip, this, getWidth());
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.suggestionsView_setSuggestions(mSuggestedWords);
+            ResearchLogger.suggestionStripView_setSuggestions(mSuggestedWords);
         }
     }
 
@@ -759,7 +761,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
     }
 
     private boolean showMoreSuggestions() {
-        final SuggestionsViewParams params = mParams;
+        final SuggestionStripViewParams params = mParams;
         if (params.mMoreSuggestionsAvailable) {
             final int stripWidth = getWidth();
             final View container = mMoreSuggestionsContainer;

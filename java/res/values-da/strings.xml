@@ -58,6 +58,8 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Meget aggressiv"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"Forslag til næste ord"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Baseret på tidligere ord"</string>
+    <string name="gesture_input" msgid="3310827802759290774">"Berøringsindtastning"</string>
+    <string name="gesture_input_summary" msgid="7019742443455085809">"Indtast et ord ved at skrive bogstaverne for et ord med fingeren"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: Gemt"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Gå"</string>
     <string name="label_next_key" msgid="362972844525672568">"Næste"</string>
@@ -104,17 +106,6 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Stemmeinput deaktiveret"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurer inputmetoder"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Inputsprog"</string>
-    <string name="note_timestamp_for_researchlog" msgid="1889446857977976026">"Notér tidsstempel i log"</string>
-    <string name="notify_recorded_timestamp" msgid="8036429032449612051">"Noteret tidsstempel"</string>
-    <string name="do_not_log_this_session" msgid="413762473641146336">"Logfør ikke denne session"</string>
-    <string name="enable_session_logging" msgid="4202559020594036225">"Aktivér logføring af sessioner"</string>
-    <string name="log_whole_session_history" msgid="7087712461632081351">"Logfør hele sessionshistorikken"</string>
-    <string name="notify_session_log_deleting" msgid="3299507647764414623">"Sletter sessionslogfil"</string>
-    <string name="notify_session_log_deleted" msgid="8687927130100934686">"Sessionslogfil slettet"</string>
-    <string name="notify_session_log_not_deleted" msgid="2592908998810755970">"Sessionslog IKKE slettet"</string>
-    <string name="notify_session_history_logged" msgid="7723983399468056391">"Sessionshistorikken er logført"</string>
-    <string name="notify_session_history_not_logged" msgid="6597910011368015361">"Fejl: sessionshistorik IKKE logført"</string>
-    <string name="notify_session_logging_enabled" msgid="8549561596936177661">"Logføring af sessioner er aktiveret"</string>
     <string name="select_language" msgid="3693815588777926848">"Inputsprog"</string>
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"Tryk igen for at gemme"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Ordbog er tilgængelig"</string>

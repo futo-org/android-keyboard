@@ -16,14 +16,21 @@
 
 package com.android.inputmethod.latin;
 
-import java.util.Arrays;
-
 // TODO: This class is not thread-safe.
 public class InputPointers {
-    private final ScalableIntArray mXCoordinates = new ScalableIntArray();
-    private final ScalableIntArray mYCoordinates = new ScalableIntArray();
-    private final ScalableIntArray mPointerIds = new ScalableIntArray();
-    private final ScalableIntArray mTimes = new ScalableIntArray();
+    private final int mDefaultCapacity;
+    private final ResizableIntArray mXCoordinates;
+    private final ResizableIntArray mYCoordinates;
+    private final ResizableIntArray mPointerIds;
+    private final ResizableIntArray mTimes;
+
+    public InputPointers(int defaultCapacity) {
+        mDefaultCapacity = defaultCapacity;
+        mXCoordinates = new ResizableIntArray(defaultCapacity);
+        mYCoordinates = new ResizableIntArray(defaultCapacity);
+        mPointerIds = new ResizableIntArray(defaultCapacity);
+        mTimes = new ResizableIntArray(defaultCapacity);
+    }
 
     public void addPointer(int index, int x, int y, int pointerId, int time) {
         mXCoordinates.add(index, x);
@@ -60,17 +67,42 @@ public class InputPointers {
      * @param length the number of pointers to be appended.
      */
     public void append(InputPointers src, int startPos, int length) {
+        if (length == 0) {
+            return;
+        }
         mXCoordinates.append(src.mXCoordinates, startPos, length);
         mYCoordinates.append(src.mYCoordinates, startPos, length);
         mPointerIds.append(src.mPointerIds, startPos, length);
         mTimes.append(src.mTimes, startPos, length);
     }
 
+    /**
+     * Append the times, x-coordinates and y-coordinates in the specified {@link ResizableIntArray}
+     * to the end of this.
+     * @param pointerId the pointer id of the source.
+     * @param times the source {@link ResizableIntArray} to read the event times from.
+     * @param xCoordinates the source {@link ResizableIntArray} to read the x-coordinates from.
+     * @param yCoordinates the source {@link ResizableIntArray} to read the y-coordinates from.
+     * @param startPos the starting index of the data in {@code times} and etc.
+     * @param length the number of data to be appended.
+     */
+    public void append(int pointerId, ResizableIntArray times, ResizableIntArray xCoordinates,
+            ResizableIntArray yCoordinates, int startPos, int length) {
+        if (length == 0) {
+            return;
+        }
+        mXCoordinates.append(xCoordinates, startPos, length);
+        mYCoordinates.append(yCoordinates, startPos, length);
+        mPointerIds.fill(pointerId, startPos, length);
+        mTimes.append(times, startPos, length);
+    }
+
     public void reset() {
-        mXCoordinates.reset();
-        mYCoordinates.reset();
-        mPointerIds.reset();
-        mTimes.reset();
+        final int defaultCapacity = mDefaultCapacity;
+        mXCoordinates.reset(defaultCapacity);
+        mYCoordinates.reset(defaultCapacity);
+        mPointerIds.reset(defaultCapacity);
+        mTimes.reset(defaultCapacity);
     }
 
     public int getPointerSize() {
@@ -91,74 +123,5 @@ public class InputPointers {
 
     public int[] getTimes() {
         return mTimes.getPrimitiveArray();
-    }
-
-    private static class ScalableIntArray {
-        private static final int DEFAULT_SIZE = BinaryDictionary.MAX_WORD_LENGTH;
-        private int[] mArray;
-        private int mLength;
-
-        public ScalableIntArray() {
-            reset();
-        }
-
-        public void add(int index, int val) {
-            if (mLength < index + 1) {
-                mLength = index;
-                add(val);
-            } else {
-                mArray[index] = val;
-            }
-        }
-
-        public void add(int val) {
-            final int nextLength = mLength + 1;
-            ensureCapacity(nextLength);
-            mArray[mLength] = val;
-            mLength = nextLength;
-        }
-
-        private void ensureCapacity(int minimumCapacity) {
-            if (mArray.length < minimumCapacity) {
-                final int nextCapacity = mArray.length * 2;
-                // The following is the same as newLength = Math.max(minimumCapacity, nextCapacity);
-                final int newLength = minimumCapacity > nextCapacity
-                        ? minimumCapacity
-                        : nextCapacity;
-                mArray = Arrays.copyOf(mArray, newLength);
-            }
-        }
-
-        public int getLength() {
-            return mLength;
-        }
-
-        public void reset() {
-            mArray = new int[DEFAULT_SIZE];
-            mLength = 0;
-        }
-
-        public int[] getPrimitiveArray() {
-            return mArray;
-        }
-
-        public void set(ScalableIntArray ip) {
-            mArray = ip.mArray;
-            mLength = ip.mLength;
-        }
-
-        public void copy(ScalableIntArray ip) {
-            ensureCapacity(ip.mLength);
-            System.arraycopy(ip.mArray, 0, mArray, 0, ip.mLength);
-            mLength = ip.mLength;
-        }
-
-        public void append(ScalableIntArray src, int startPos, int length) {
-            final int currentLength = mLength;
-            final int newLength = currentLength + length;
-            ensureCapacity(newLength);
-            System.arraycopy(src.mArray, startPos, mArray, currentLength, length);
-            mLength = newLength;
-        }
     }
 }

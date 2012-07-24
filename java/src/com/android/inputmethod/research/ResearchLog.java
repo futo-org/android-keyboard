@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.research;
 
 import android.content.SharedPreferences;
 import android.os.SystemClock;
@@ -23,9 +23,10 @@ import android.util.Log;
 import android.view.inputmethod.CompletionInfo;
 
 import com.android.inputmethod.keyboard.Key;
-import com.android.inputmethod.latin.ResearchLogger.LogUnit;
+import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.research.ResearchLogger.LogUnit;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -55,13 +56,14 @@ public class ResearchLog {
 
     final ScheduledExecutorService mExecutor;
     /* package */ final File mFile;
-    private JsonWriter mJsonWriter = NULL_JSON_WRITER; // should never be null
+    private JsonWriter mJsonWriter = NULL_JSON_WRITER;
 
     private int mLoggingState;
     private static final int LOGGING_STATE_UNSTARTED = 0;
-    private static final int LOGGING_STATE_RUNNING = 1;
-    private static final int LOGGING_STATE_STOPPING = 2;
-    private static final int LOGGING_STATE_STOPPED = 3;
+    private static final int LOGGING_STATE_READY = 1;   // don't create file until necessary
+    private static final int LOGGING_STATE_RUNNING = 2;
+    private static final int LOGGING_STATE_STOPPING = 3;
+    private static final int LOGGING_STATE_STOPPED = 4;
     private static final long FLUSH_DELAY_IN_MS = 1000 * 5;
 
     private static class NullOutputStream extends OutputStream {
@@ -94,11 +96,9 @@ public class ResearchLog {
     public synchronized void start() throws IOException {
         switch (mLoggingState) {
             case LOGGING_STATE_UNSTARTED:
-                mJsonWriter = new JsonWriter(new BufferedWriter(new FileWriter(mFile)));
-                mJsonWriter.setLenient(true);
-                mJsonWriter.beginArray();
-                mLoggingState = LOGGING_STATE_RUNNING;
+                mLoggingState = LOGGING_STATE_READY;
                 break;
+            case LOGGING_STATE_READY:
             case LOGGING_STATE_RUNNING:
             case LOGGING_STATE_STOPPING:
             case LOGGING_STATE_STOPPED:
@@ -111,6 +111,7 @@ public class ResearchLog {
             case LOGGING_STATE_UNSTARTED:
                 mLoggingState = LOGGING_STATE_STOPPED;
                 break;
+            case LOGGING_STATE_READY:
             case LOGGING_STATE_RUNNING:
                 mExecutor.submit(new Callable<Object>() {
                     @Override
@@ -120,14 +121,13 @@ public class ResearchLog {
                             mJsonWriter.flush();
                             mJsonWriter.close();
                         } finally {
-                            // the contentprovider only exports data if the writable
-                            // bit is cleared.
                             boolean success = mFile.setWritable(false, false);
                             mLoggingState = LOGGING_STATE_STOPPED;
                         }
                         return null;
                     }
                 });
+                removeAnyScheduledFlush();
                 mExecutor.shutdown();
                 mLoggingState = LOGGING_STATE_STOPPING;
                 break;
@@ -139,19 +139,17 @@ public class ResearchLog {
     public boolean isAlive() {
         switch (mLoggingState) {
             case LOGGING_STATE_UNSTARTED:
+            case LOGGING_STATE_READY:
             case LOGGING_STATE_RUNNING:
                 return true;
         }
         return false;
     }
 
-    public void waitUntilStopped(int timeoutInMs) throws InterruptedException {
+    public void waitUntilStopped(final int timeoutInMs) throws InterruptedException {
+        removeAnyScheduledFlush();
+        mExecutor.shutdown();
         mExecutor.awaitTermination(timeoutInMs, TimeUnit.MILLISECONDS);
-    }
-
-    private boolean isAbortSuccessful;
-    public boolean isAbortSuccessful() {
-        return isAbortSuccessful;
     }
 
     public synchronized void abort() {
@@ -160,6 +158,7 @@ public class ResearchLog {
                 mLoggingState = LOGGING_STATE_STOPPED;
                 isAbortSuccessful = true;
                 break;
+            case LOGGING_STATE_READY:
             case LOGGING_STATE_RUNNING:
                 mExecutor.submit(new Callable<Object>() {
                     @Override
@@ -173,6 +172,7 @@ public class ResearchLog {
                         return null;
                     }
                 });
+                removeAnyScheduledFlush();
                 mExecutor.shutdown();
                 mLoggingState = LOGGING_STATE_STOPPING;
                 break;
@@ -181,10 +181,16 @@ public class ResearchLog {
         }
     }
 
+    private boolean isAbortSuccessful;
+    public boolean isAbortSuccessful() {
+        return isAbortSuccessful;
+    }
+
     /* package */ synchronized void flush() {
         switch (mLoggingState) {
             case LOGGING_STATE_UNSTARTED:
                 break;
+            case LOGGING_STATE_READY:
             case LOGGING_STATE_RUNNING:
                 removeAnyScheduledFlush();
                 mExecutor.submit(mFlushCallable);
@@ -197,7 +203,9 @@ public class ResearchLog {
     private Callable<Object> mFlushCallable = new Callable<Object>() {
         @Override
         public Object call() throws Exception {
-            mJsonWriter.flush();
+            if (mLoggingState == LOGGING_STATE_RUNNING) {
+                mJsonWriter.flush();
+            }
             return null;
         }
     };
@@ -220,6 +228,7 @@ public class ResearchLog {
         switch (mLoggingState) {
             case LOGGING_STATE_UNSTARTED:
                 break;
+            case LOGGING_STATE_READY:
             case LOGGING_STATE_RUNNING:
                 mExecutor.submit(new Callable<Object>() {
                     @Override
@@ -239,6 +248,7 @@ public class ResearchLog {
         switch (mLoggingState) {
             case LOGGING_STATE_UNSTARTED:
                 break;
+            case LOGGING_STATE_READY:
             case LOGGING_STATE_RUNNING:
                 mExecutor.submit(new Callable<Object>() {
                     @Override
@@ -260,6 +270,11 @@ public class ResearchLog {
     void outputEvent(final String[] keys, final Object[] values) {
         // not thread safe.
         try {
+            if (mJsonWriter == NULL_JSON_WRITER) {
+                mJsonWriter = new JsonWriter(new BufferedWriter(new FileWriter(mFile)));
+                mJsonWriter.setLenient(true);
+                mJsonWriter.beginArray();
+            }
             mJsonWriter.beginObject();
             mJsonWriter.name(CURRENT_TIME_KEY).value(System.currentTimeMillis());
             mJsonWriter.name(UPTIME_KEY).value(SystemClock.uptimeMillis());

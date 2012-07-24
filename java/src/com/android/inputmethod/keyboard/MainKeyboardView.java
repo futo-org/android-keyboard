@@ -43,16 +43,17 @@ import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.ResearchLogger;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SubtypeLocale;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.Utils.UsabilityStudyLogUtils;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.Locale;
 import java.util.WeakHashMap;
@@ -64,9 +65,9 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#KeyboardView_verticalCorrection
  * @attr ref R.styleable#KeyboardView_popupLayout
  */
-public class LatinKeyboardView extends KeyboardView implements PointerTracker.KeyEventHandler,
+public class MainKeyboardView extends KeyboardView implements PointerTracker.KeyEventHandler,
         SuddenJumpingTouchEventHandler.ProcessMotionEvent {
-    private static final String TAG = LatinKeyboardView.class.getSimpleName();
+    private static final String TAG = MainKeyboardView.class.getSimpleName();
 
     // TODO: Kill process when the usability study mode was changed.
     private static final boolean ENABLE_USABILITY_STUDY_LOG = LatinImeLogger.sUsabilityStudy;
@@ -80,10 +81,9 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     // Stuff to draw language name on spacebar.
     private final int mLanguageOnSpacebarFinalAlpha;
     private ObjectAnimator mLanguageOnSpacebarFadeoutAnimator;
-    private static final int ALPHA_OPAQUE = 255;
     private boolean mNeedsToDisplayLanguage;
     private boolean mHasMultipleEnabledIMEsOrSubtypes;
-    private int mLanguageOnSpacebarAnimAlpha = ALPHA_OPAQUE;
+    private int mLanguageOnSpacebarAnimAlpha = Constants.Color.ALPHA_OPAQUE;
     private final float mSpacebarTextRatio;
     private float mSpacebarTextSize;
     private final int mSpacebarTextColor;
@@ -99,7 +99,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     // Stuff to draw altCodeWhileTyping keys.
     private ObjectAnimator mAltCodeKeyWhileTypingFadeoutAnimator;
     private ObjectAnimator mAltCodeKeyWhileTypingFadeinAnimator;
-    private int mAltCodeKeyWhileTypingAnimAlpha = ALPHA_OPAQUE;
+    private int mAltCodeKeyWhileTypingAnimAlpha = Constants.Color.ALPHA_OPAQUE;
 
     // More keys keyboard
     private PopupWindow mMoreKeysWindow;
@@ -119,7 +119,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
     private final KeyTimerHandler mKeyTimerHandler;
 
-    private static class KeyTimerHandler extends StaticInnerHandlerWrapper<LatinKeyboardView>
+    private static class KeyTimerHandler extends StaticInnerHandlerWrapper<MainKeyboardView>
             implements TimerProxy {
         private static final int MSG_REPEAT_KEY = 1;
         private static final int MSG_LONGPRESS_KEY = 2;
@@ -128,14 +128,14 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         private final KeyTimerParams mParams;
 
-        public KeyTimerHandler(LatinKeyboardView outerInstance, KeyTimerParams params) {
+        public KeyTimerHandler(MainKeyboardView outerInstance, KeyTimerParams params) {
             super(outerInstance);
             mParams = params;
         }
 
         @Override
         public void handleMessage(Message msg) {
-            final LatinKeyboardView keyboardView = getOuterInstance();
+            final MainKeyboardView keyboardView = getOuterInstance();
             final PointerTracker tracker = (PointerTracker) msg.obj;
             switch (msg.what) {
             case MSG_REPEAT_KEY:
@@ -249,7 +249,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             if (isTyping) {
                 return;
             }
-            final LatinKeyboardView keyboardView = getOuterInstance();
+            final MainKeyboardView keyboardView = getOuterInstance();
             cancelAndStartAnimators(keyboardView.mAltCodeKeyWhileTypingFadeinAnimator,
                     keyboardView.mAltCodeKeyWhileTypingFadeoutAnimator);
         }
@@ -299,13 +299,13 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             mTouchNoiseThresholdDistance = 0;
         }
 
-        public PointerTrackerParams(TypedArray latinKeyboardViewAttr) {
-            mSlidingKeyInputEnabled = latinKeyboardViewAttr.getBoolean(
-                    R.styleable.LatinKeyboardView_slidingKeyInputEnable, false);
-            mTouchNoiseThresholdTime = latinKeyboardViewAttr.getInt(
-                    R.styleable.LatinKeyboardView_touchNoiseThresholdTime, 0);
-            mTouchNoiseThresholdDistance = latinKeyboardViewAttr.getDimension(
-                    R.styleable.LatinKeyboardView_touchNoiseThresholdDistance, 0);
+        public PointerTrackerParams(TypedArray mainKeyboardViewAttr) {
+            mSlidingKeyInputEnabled = mainKeyboardViewAttr.getBoolean(
+                    R.styleable.MainKeyboardView_slidingKeyInputEnable, false);
+            mTouchNoiseThresholdTime = mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_touchNoiseThresholdTime, 0);
+            mTouchNoiseThresholdDistance = mainKeyboardViewAttr.getDimension(
+                    R.styleable.MainKeyboardView_touchNoiseThresholdDistance, 0);
         }
     }
 
@@ -316,65 +316,67 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         public final int mLongPressShiftKeyTimeout;
         public final int mIgnoreAltCodeKeyTimeout;
 
-        public KeyTimerParams(TypedArray latinKeyboardViewAttr) {
-            mKeyRepeatStartTimeout = latinKeyboardViewAttr.getInt(
-                    R.styleable.LatinKeyboardView_keyRepeatStartTimeout, 0);
-            mKeyRepeatInterval = latinKeyboardViewAttr.getInt(
-                    R.styleable.LatinKeyboardView_keyRepeatInterval, 0);
-            mLongPressKeyTimeout = latinKeyboardViewAttr.getInt(
-                    R.styleable.LatinKeyboardView_longPressKeyTimeout, 0);
-            mLongPressShiftKeyTimeout = latinKeyboardViewAttr.getInt(
-                    R.styleable.LatinKeyboardView_longPressShiftKeyTimeout, 0);
-            mIgnoreAltCodeKeyTimeout = latinKeyboardViewAttr.getInt(
-                    R.styleable.LatinKeyboardView_ignoreAltCodeKeyTimeout, 0);
+        public KeyTimerParams(TypedArray mainKeyboardViewAttr) {
+            mKeyRepeatStartTimeout = mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_keyRepeatStartTimeout, 0);
+            mKeyRepeatInterval = mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_keyRepeatInterval, 0);
+            mLongPressKeyTimeout = mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_longPressKeyTimeout, 0);
+            mLongPressShiftKeyTimeout = mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_longPressShiftKeyTimeout, 0);
+            mIgnoreAltCodeKeyTimeout = mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_ignoreAltCodeKeyTimeout, 0);
         }
     }
 
-    public LatinKeyboardView(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.latinKeyboardViewStyle);
+    public MainKeyboardView(Context context, AttributeSet attrs) {
+        this(context, attrs, R.attr.mainKeyboardViewStyle);
     }
 
-    public LatinKeyboardView(Context context, AttributeSet attrs, int defStyle) {
+    public MainKeyboardView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         mTouchScreenRegulator = new SuddenJumpingTouchEventHandler(getContext(), this);
 
         mHasDistinctMultitouch = context.getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT);
+        final Resources res = getResources();
         final boolean needsPhantomSuddenMoveEventHack = Boolean.parseBoolean(
-                Utils.getDeviceOverrideValue(context.getResources(),
+                Utils.getDeviceOverrideValue(res,
                         R.array.phantom_sudden_move_event_device_list, "false"));
         PointerTracker.init(mHasDistinctMultitouch, needsPhantomSuddenMoveEventHack);
 
         final TypedArray a = context.obtainStyledAttributes(
-                attrs, R.styleable.LatinKeyboardView, defStyle, R.style.LatinKeyboardView);
+                attrs, R.styleable.MainKeyboardView, defStyle, R.style.MainKeyboardView);
         mAutoCorrectionSpacebarLedEnabled = a.getBoolean(
-                R.styleable.LatinKeyboardView_autoCorrectionSpacebarLedEnabled, false);
+                R.styleable.MainKeyboardView_autoCorrectionSpacebarLedEnabled, false);
         mAutoCorrectionSpacebarLedIcon = a.getDrawable(
-                R.styleable.LatinKeyboardView_autoCorrectionSpacebarLedIcon);
-        mSpacebarTextRatio = a.getFraction(R.styleable.LatinKeyboardView_spacebarTextRatio,
+                R.styleable.MainKeyboardView_autoCorrectionSpacebarLedIcon);
+        mSpacebarTextRatio = a.getFraction(R.styleable.MainKeyboardView_spacebarTextRatio,
                 1000, 1000, 1) / 1000.0f;
-        mSpacebarTextColor = a.getColor(R.styleable.LatinKeyboardView_spacebarTextColor, 0);
+        mSpacebarTextColor = a.getColor(R.styleable.MainKeyboardView_spacebarTextColor, 0);
         mSpacebarTextShadowColor = a.getColor(
-                R.styleable.LatinKeyboardView_spacebarTextShadowColor, 0);
+                R.styleable.MainKeyboardView_spacebarTextShadowColor, 0);
         mLanguageOnSpacebarFinalAlpha = a.getInt(
-                R.styleable.LatinKeyboardView_languageOnSpacebarFinalAlpha, ALPHA_OPAQUE);
+                R.styleable.MainKeyboardView_languageOnSpacebarFinalAlpha,
+                Constants.Color.ALPHA_OPAQUE);
         final int languageOnSpacebarFadeoutAnimatorResId = a.getResourceId(
-                R.styleable.LatinKeyboardView_languageOnSpacebarFadeoutAnimator, 0);
+                R.styleable.MainKeyboardView_languageOnSpacebarFadeoutAnimator, 0);
         final int altCodeKeyWhileTypingFadeoutAnimatorResId = a.getResourceId(
-                R.styleable.LatinKeyboardView_altCodeKeyWhileTypingFadeoutAnimator, 0);
+                R.styleable.MainKeyboardView_altCodeKeyWhileTypingFadeoutAnimator, 0);
         final int altCodeKeyWhileTypingFadeinAnimatorResId = a.getResourceId(
-                R.styleable.LatinKeyboardView_altCodeKeyWhileTypingFadeinAnimator, 0);
+                R.styleable.MainKeyboardView_altCodeKeyWhileTypingFadeinAnimator, 0);
 
         final KeyTimerParams keyTimerParams = new KeyTimerParams(a);
         mPointerTrackerParams = new PointerTrackerParams(a);
 
         final float keyHysteresisDistance = a.getDimension(
-                R.styleable.LatinKeyboardView_keyHysteresisDistance, 0);
+                R.styleable.MainKeyboardView_keyHysteresisDistance, 0);
         mKeyDetector = new KeyDetector(keyHysteresisDistance);
         mKeyTimerHandler = new KeyTimerHandler(this, keyTimerParams);
         mConfigShowMoreKeysKeyboardAtTouchedPoint = a.getBoolean(
-                R.styleable.LatinKeyboardView_showMoreKeysKeyboardAtTouchedPoint, false);
+                R.styleable.MainKeyboardView_showMoreKeysKeyboardAtTouchedPoint, false);
         a.recycle();
 
         PointerTracker.setParameters(mPointerTrackerParams);
@@ -459,17 +461,17 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(
                 keyboard, -getPaddingLeft(), -getPaddingTop() + mVerticalCorrection);
-        PointerTracker.setKeyDetector(mKeyDetector);
+        PointerTracker.setKeyDetector(mKeyDetector, mGestureInputEnabled);
         mTouchScreenRegulator.setKeyboard(keyboard);
         mMoreKeysPanelCache.clear();
 
         mSpaceKey = keyboard.getKey(Keyboard.CODE_SPACE);
         mSpaceIcon = (mSpaceKey != null)
-                ? mSpaceKey.getIcon(keyboard.mIconsSet, ALPHA_OPAQUE) : null;
+                ? mSpaceKey.getIcon(keyboard.mIconsSet, Constants.Color.ALPHA_OPAQUE) : null;
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mSpacebarTextSize = keyHeight * mSpacebarTextRatio;
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinKeyboardView_setKeyboard(keyboard);
+            ResearchLogger.mainKeyboardView_setKeyboard(keyboard);
         }
 
         // This always needs to be set since the accessibility state can
@@ -504,6 +506,17 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
      */
     public boolean isProximityCorrectionEnabled() {
         return mKeyDetector.isProximityCorrectionEnabled();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        // Notify the research logger that the keyboard view has been attached.  This is needed
+        // to properly show the splash screen, which requires that the window token of the
+        // KeyboardView be non-null.
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.getInstance().mainKeyboardView_onAttachedToWindow();
+        }
     }
 
     @Override
@@ -555,7 +568,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
      */
     protected boolean onLongPress(Key parentKey, PointerTracker tracker) {
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinKeyboardView_onLongPress();
+            ResearchLogger.mainKeyboardView_onLongPress();
         }
         final int primaryCode = parentKey.mCode;
         if (parentKey.hasEmbeddedMoreKey()) {
@@ -706,7 +719,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             }
         }
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinKeyboardView_processMotionEvent(me, action, eventTime, index, id,
+            ResearchLogger.mainKeyboardView_processMotionEvent(me, action, eventTime, index, id,
                     x, y);
         }
 
@@ -778,7 +791,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                             + pointerSize + "," + pointerPressure);
                 }
                 if (ProductionFlag.IS_EXPERIMENTAL) {
-                    ResearchLogger.latinKeyboardView_processMotionEvent(me, action, eventTime,
+                    ResearchLogger.mainKeyboardView_processMotionEvent(me, action, eventTime,
                             i, pointerId, px, py);
                 }
             }
@@ -867,7 +880,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             mNeedsToDisplayLanguage = false;
         } else {
             if (subtypeChanged && needsToDisplayLanguage) {
-                setLanguageOnSpacebarAnimAlpha(ALPHA_OPAQUE);
+                setLanguageOnSpacebarAnimAlpha(Constants.Color.ALPHA_OPAQUE);
                 if (animator.isStarted()) {
                     animator.cancel();
                 }

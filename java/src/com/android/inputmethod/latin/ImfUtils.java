@@ -90,6 +90,13 @@ public class ImfUtils {
         return false;
     }
 
+    public static InputMethodSubtype getCurrentInputMethodSubtype(Context context,
+            InputMethodSubtype defaultSubtype) {
+        final InputMethodManager imm = getInputMethodManager(context);
+        final InputMethodSubtype currentSubtype = imm.getCurrentInputMethodSubtype();
+        return (currentSubtype != null) ? currentSubtype : defaultSubtype;
+    }
+
     public static boolean hasMultipleEnabledIMEsOrSubtypes(Context context,
             final boolean shouldIncludeAuxiliarySubtypes) {
         final InputMethodManager imm = getInputMethodManager(context);

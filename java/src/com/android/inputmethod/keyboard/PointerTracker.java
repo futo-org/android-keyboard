@@ -16,17 +16,22 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
-import com.android.inputmethod.keyboard.internal.GestureTracker;
+import com.android.inputmethod.accessibility.AccessibilityUtils;
+import com.android.inputmethod.keyboard.internal.GestureStroke;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
+import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.ResearchLogger;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.ArrayList;
 
@@ -36,6 +41,11 @@ public class PointerTracker {
     private static final boolean DEBUG_MOVE_EVENT = false;
     private static final boolean DEBUG_LISTENER = false;
     private static boolean DEBUG_MODE = LatinImeLogger.sDBG;
+
+    // TODO: There should be an option to turn on/off the gesture input.
+    private static boolean sIsGestureEnabled = true;
+
+    private static final int MIN_GESTURE_RECOGNITION_TIME = 100; // msec
 
     public interface KeyEventHandler {
         /**
@@ -69,6 +79,7 @@ public class PointerTracker {
         public TextView inflateKeyPreviewText();
         public void showKeyPreview(PointerTracker tracker);
         public void dismissKeyPreview(PointerTracker tracker);
+        public void showGestureTrail(PointerTracker tracker);
     }
 
     public interface TimerProxy {
@@ -108,12 +119,18 @@ public class PointerTracker {
     }
 
     // Parameters for pointer handling.
-    private static LatinKeyboardView.PointerTrackerParams sParams;
+    private static MainKeyboardView.PointerTrackerParams sParams;
     private static int sTouchNoiseThresholdDistanceSquared;
     private static boolean sNeedsPhantomSuddenMoveEventHack;
 
     private static final ArrayList<PointerTracker> sTrackers = new ArrayList<PointerTracker>();
+    private static final InputPointers sAggregratedPointers = new InputPointers(
+            GestureStroke.DEFAULT_CAPACITY);
     private static PointerTrackerQueue sPointerTrackerQueue;
+    // HACK: Change gesture detection criteria depending on this variable.
+    // TODO: Find more comprehensive ways to detect a gesture start.
+    // True when the previous user input was a gesture input, not a typing input.
+    private static boolean sWasInGesture;
 
     public final int mPointerId;
 
@@ -125,6 +142,14 @@ public class PointerTracker {
     private Keyboard mKeyboard;
     private int mKeyQuarterWidthSquared;
     private final TextView mKeyPreviewText;
+
+    private boolean mIsAlphabetKeyboard;
+    private boolean mIsPossibleGesture = false;
+    private boolean mInGesture = false;
+
+    // TODO: Remove these variables
+    private int mLastRecognitionPointSize = 0;
+    private long mLastRecognitionTime = 0;
 
     // The position and time at which first down event occurred.
     private long mDownTime;
@@ -162,8 +187,7 @@ public class PointerTracker {
     private static final KeyboardActionListener EMPTY_LISTENER =
             new KeyboardActionListener.Adapter();
 
-    // Gesture tracker singleton instance
-    private static final GestureTracker sGestureTracker = GestureTracker.getInstance();
+    private final GestureStroke mGestureStroke;
 
     public static void init(boolean hasDistinctMultitouch,
             boolean needsPhantomSuddenMoveEventHack) {
@@ -174,13 +198,25 @@ public class PointerTracker {
         }
         sNeedsPhantomSuddenMoveEventHack = needsPhantomSuddenMoveEventHack;
 
-        setParameters(LatinKeyboardView.PointerTrackerParams.DEFAULT);
+        setParameters(MainKeyboardView.PointerTrackerParams.DEFAULT);
+        updateGestureInputEnabledState(null, false /* gestureInputEnabled */);
     }
 
-    public static void setParameters(LatinKeyboardView.PointerTrackerParams params) {
+    public static void setParameters(MainKeyboardView.PointerTrackerParams params) {
         sParams = params;
         sTouchNoiseThresholdDistanceSquared = (int)(
                 params.mTouchNoiseThresholdDistance * params.mTouchNoiseThresholdDistance);
+    }
+
+    private static void updateGestureInputEnabledState(Keyboard keyboard,
+            boolean gestureInputEnabled) {
+        if (!gestureInputEnabled
+                || AccessibilityUtils.getInstance().isTouchExplorationEnabled()
+                || (keyboard != null && keyboard.mId.passwordInput())) {
+            sIsGestureEnabled = false;
+        } else {
+            sIsGestureEnabled = true;
+        }
     }
 
     public static PointerTracker getPointerTracker(final int id, KeyEventHandler handler) {
@@ -200,32 +236,83 @@ public class PointerTracker {
     }
 
     public static void setKeyboardActionListener(KeyboardActionListener listener) {
-        for (final PointerTracker tracker : sTrackers) {
+        final int trackersSize = sTrackers.size();
+        for (int i = 0; i < trackersSize; ++i) {
+            final PointerTracker tracker = sTrackers.get(i);
             tracker.mListener = listener;
         }
-        GestureTracker.init(listener);
     }
 
-    public static void setKeyDetector(KeyDetector keyDetector) {
-        for (final PointerTracker tracker : sTrackers) {
+    public static void setKeyDetector(KeyDetector keyDetector, boolean gestureInputEnabledByUser) {
+        final int trackersSize = sTrackers.size();
+        for (int i = 0; i < trackersSize; ++i) {
+            final PointerTracker tracker = sTrackers.get(i);
             tracker.setKeyDetectorInner(keyDetector);
             // Mark that keyboard layout has been changed.
             tracker.mKeyboardLayoutHasBeenChanged = true;
         }
-        sGestureTracker.setKeyboard(keyDetector.getKeyboard());
+        final Keyboard keyboard = keyDetector.getKeyboard();
+        updateGestureInputEnabledState(keyboard, gestureInputEnabledByUser);
     }
 
     public static void dismissAllKeyPreviews() {
-        for (final PointerTracker tracker : sTrackers) {
+        final int trackersSize = sTrackers.size();
+        for (int i = 0; i < trackersSize; ++i) {
+            final PointerTracker tracker = sTrackers.get(i);
             tracker.getKeyPreviewText().setVisibility(View.INVISIBLE);
             tracker.setReleasedKeyGraphics(tracker.mCurrentKey);
         }
     }
 
-    public PointerTracker(int id, KeyEventHandler handler) {
+    // TODO: To handle multi-touch gestures we may want to move this method to
+    // {@link PointerTrackerQueue}.
+    private static InputPointers getIncrementalBatchPoints() {
+        final int trackersSize = sTrackers.size();
+        for (int i = 0; i < trackersSize; ++i) {
+            final PointerTracker tracker = sTrackers.get(i);
+            tracker.mGestureStroke.appendIncrementalBatchPoints(sAggregratedPointers);
+        }
+        return sAggregratedPointers;
+    }
+
+    // TODO: To handle multi-touch gestures we may want to move this method to
+    // {@link PointerTrackerQueue}.
+    private static InputPointers getAllBatchPoints() {
+        final int trackersSize = sTrackers.size();
+        for (int i = 0; i < trackersSize; ++i) {
+            final PointerTracker tracker = sTrackers.get(i);
+            tracker.mGestureStroke.appendAllBatchPoints(sAggregratedPointers);
+        }
+        return sAggregratedPointers;
+    }
+
+    // TODO: To handle multi-touch gestures we may want to move this method to
+    // {@link PointerTrackerQueue}.
+    public static void clearBatchInputPointsOfAllPointerTrackers() {
+        final int trackersSize = sTrackers.size();
+        for (int i = 0; i < trackersSize; ++i) {
+            final PointerTracker tracker = sTrackers.get(i);
+            tracker.mGestureStroke.reset();
+        }
+        sAggregratedPointers.reset();
+    }
+
+    // TODO: To handle multi-touch gestures we may want to move this method to
+    // {@link PointerTrackerQueue}.
+    public static void drawGestureTrailForAllPointerTrackers(Canvas canvas, Paint paint) {
+        final int trackersSize = sTrackers.size();
+        for (int i = 0; i < trackersSize; ++i) {
+            final PointerTracker tracker = sTrackers.get(i);
+            tracker.mGestureStroke.drawGestureTrail(canvas, paint, tracker.getLastX(),
+                    tracker.getLastY());
+        }
+    }
+
+    private PointerTracker(int id, KeyEventHandler handler) {
         if (handler == null)
             throw new NullPointerException();
         mPointerId = id;
+        mGestureStroke = new GestureStroke(id);
         setKeyDetectorInner(handler.getKeyDetector());
         mListener = handler.getKeyboardActionListener();
         mDrawingProxy = handler.getDrawingProxy();
@@ -239,7 +326,7 @@ public class PointerTracker {
 
     // Returns true if keyboard has been changed by this callback.
     private boolean callListenerOnPressAndCheckKeyboardLayoutChange(Key key) {
-        if (sGestureTracker.isInGesture()) {
+        if (mInGesture) {
             return false;
         }
         final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
@@ -295,7 +382,7 @@ public class PointerTracker {
     // Note that we need primaryCode argument because the keyboard may in shifted state and the
     // primaryCode is different from {@link Key#mCode}.
     private void callListenerOnRelease(Key key, int primaryCode, boolean withSliding) {
-        if (sGestureTracker.isInGesture()) {
+        if (mInGesture) {
             return;
         }
         final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
@@ -328,6 +415,9 @@ public class PointerTracker {
     private void setKeyDetectorInner(KeyDetector keyDetector) {
         mKeyDetector = keyDetector;
         mKeyboard = keyDetector.getKeyboard();
+        mIsAlphabetKeyboard = mKeyboard.mId.isAlphabetKeyboard();
+        mGestureStroke.setGestureSampleLength(
+                mKeyboard.mMostCommonKeyWidth, mKeyboard.mMostCommonKeyHeight);
         final Key newKey = mKeyDetector.detectHitKey(mKeyX, mKeyY);
         if (newKey != mCurrentKey) {
             if (mDrawingProxy != null) {
@@ -398,7 +488,7 @@ public class PointerTracker {
             return;
         }
 
-        if (!key.noKeyPreview() && !sGestureTracker.isInGesture()) {
+        if (!key.noKeyPreview() && !mInGesture) {
             mDrawingProxy.showKeyPreview(this);
         }
         updatePressKeyGraphics(key);
@@ -446,6 +536,9 @@ public class PointerTracker {
     public long getDownTime() {
         return mDownTime;
     }
+    public Rect getBoundingBox() {
+        return mGestureStroke.getBoundingBox();
+    }
 
     private Key onDownKey(int x, int y, long eventTime) {
         mDownTime = eventTime;
@@ -467,6 +560,53 @@ public class PointerTracker {
         mKeyX = x;
         mKeyY = y;
         return newKey;
+    }
+
+    private void startBatchInput() {
+        if (DEBUG_LISTENER) {
+            Log.d(TAG, "onStartBatchInput");
+        }
+        mInGesture = true;
+        mListener.onStartBatchInput();
+    }
+
+    private void updateBatchInput(InputPointers batchPoints) {
+        if (DEBUG_LISTENER) {
+            Log.d(TAG, "onUpdateBatchInput: batchPoints=" + batchPoints.getPointerSize());
+        }
+        mListener.onUpdateBatchInput(batchPoints);
+    }
+
+    private void endBatchInput(InputPointers batchPoints) {
+        if (DEBUG_LISTENER) {
+            Log.d(TAG, "onEndBatchInput: batchPoints=" + batchPoints.getPointerSize());
+        }
+        mListener.onEndBatchInput(batchPoints);
+        clearBatchInputRecognitionStateOfThisPointerTracker();
+        clearBatchInputPointsOfAllPointerTrackers();
+        sWasInGesture = true;
+    }
+
+    private void abortBatchInput() {
+        clearBatchInputRecognitionStateOfThisPointerTracker();
+        clearBatchInputPointsOfAllPointerTrackers();
+    }
+
+    private void clearBatchInputRecognitionStateOfThisPointerTracker() {
+        mIsPossibleGesture = false;
+        mInGesture = false;
+        mLastRecognitionPointSize = 0;
+        mLastRecognitionTime = 0;
+    }
+
+    private boolean updateBatchInputRecognitionState(long eventTime, int size) {
+        if (size > mLastRecognitionPointSize
+                && eventTime > mLastRecognitionTime + MIN_GESTURE_RECOGNITION_TIME) {
+            mLastRecognitionPointSize = size;
+            mLastRecognitionTime = eventTime;
+            return true;
+        }
+        return false;
     }
 
     public void processMotionEvent(int action, int x, int y, long eventTime,
@@ -527,7 +667,15 @@ public class PointerTracker {
         }
         onDownEventInternal(x, y, eventTime);
         if (queue != null && queue.size() == 1) {
-            sGestureTracker.onDownEvent(this, x, y, eventTime, key);
+            mIsPossibleGesture = false;
+            // A gesture should start only from the letter key.
+            if (sIsGestureEnabled && mIsAlphabetKeyboard && !mIsShowingMoreKeysPanel && key != null
+                    && Keyboard.isLetterCode(key.mCode)) {
+                mIsPossibleGesture = true;
+                // TODO: pointer times should be relative to first down even in entire batch input
+                // instead of resetting to 0 for each new down event.
+                mGestureStroke.addPoint(x, y, 0, false);
+            }
         }
     }
 
@@ -563,6 +711,26 @@ public class PointerTracker {
         mIsInSlidingKeyInput = true;
     }
 
+    private void onGestureMoveEvent(PointerTracker tracker, int x, int y, long eventTime,
+            boolean isHistorical, Key key) {
+        final int gestureTime = (int)(eventTime - tracker.getDownTime());
+        if (sIsGestureEnabled && mIsPossibleGesture) {
+            final GestureStroke stroke = mGestureStroke;
+            stroke.addPoint(x, y, gestureTime, isHistorical);
+            if (!mInGesture && stroke.isStartOfAGesture(gestureTime, sWasInGesture)) {
+                startBatchInput();
+            }
+        }
+
+        if (key != null && mInGesture) {
+            final InputPointers batchPoints = getIncrementalBatchPoints();
+            mDrawingProxy.showGestureTrail(this);
+            if (updateBatchInputRecognitionState(eventTime, batchPoints.getPointerSize())) {
+                updateBatchInput(batchPoints);
+            }
+        }
+    }
+
     public void onMoveEvent(int x, int y, long eventTime, MotionEvent me) {
         if (DEBUG_MOVE_EVENT)
             printTouchEvent("onMoveEvent:", x, y, eventTime);
@@ -577,7 +745,7 @@ public class PointerTracker {
                 final int historicalX = (int)me.getHistoricalX(pointerIndex, h);
                 final int historicalY = (int)me.getHistoricalY(pointerIndex, h);
                 final long historicalTime = me.getHistoricalEventTime(h);
-                sGestureTracker.onMoveEvent(this, historicalX, historicalY, historicalTime,
+                onGestureMoveEvent(this, historicalX, historicalY, historicalTime,
                         true /* isHistorical */, null);
             }
         }
@@ -588,8 +756,8 @@ public class PointerTracker {
         Key key = onMoveKey(x, y);
 
         // Register move event on gesture tracker.
-        sGestureTracker.onMoveEvent(this, x, y, eventTime, false, key);
-        if (sGestureTracker.isInGesture()) {
+        onGestureMoveEvent(this, x, y, eventTime, false /* isHistorical */, key);
+        if (mInGesture) {
             mIgnoreModifierKey = true;
             mTimerProxy.cancelLongPressTimer();
             mIsInSlidingKeyInput = true;
@@ -686,7 +854,7 @@ public class PointerTracker {
 
         final PointerTrackerQueue queue = sPointerTrackerQueue;
         if (queue != null) {
-            if (!sGestureTracker.isInGesture()) {
+            if (!mInGesture) {
                 if (mCurrentKey != null && mCurrentKey.isModifier()) {
                     // Before processing an up event of modifier key, all pointers already being
                     // tracked should be released.
@@ -720,23 +888,21 @@ public class PointerTracker {
             mIsShowingMoreKeysPanel = false;
         }
 
-        if (sGestureTracker.isInGesture()) {
+        if (mInGesture) {
             // Register up event on gesture tracker.
-            sGestureTracker.onUpEvent(this, x, y, eventTime);
-            if (!sPointerTrackerQueue.isAnyInSlidingKeyInput()) {
-                // TODO: Calls to beginBatchInput() is missing in this class. Reorganize the code.
-                sGestureTracker.endBatchInput();
-            }
+            // TODO: Figure out how to deal with multiple fingers that are in gesture, sliding,
+            // and/or tapping mode?
+            endBatchInput(getAllBatchPoints());
             if (mCurrentKey != null) {
                 callListenerOnRelease(mCurrentKey, mCurrentKey.mCode, true);
+                mCurrentKey = null;
             }
-            mCurrentKey = null;
+            mDrawingProxy.showGestureTrail(this);
             return;
-        } else {
-            // TODO: Calls to beginBatchInput() is missing in this class. Reorganize the code.
-            sGestureTracker.endBatchInput();
         }
-
+        // This event will be recognized as a regular code input. Clear unused batch points so they
+        // are not mistakenly included in the next batch event.
+        clearBatchInputPointsOfAllPointerTrackers();
         if (mKeyAlreadyProcessed)
             return;
         if (mCurrentKey != null && !mCurrentKey.isRepeatable()) {
@@ -745,11 +911,10 @@ public class PointerTracker {
     }
 
     public void onShowMoreKeysPanel(int x, int y, KeyEventHandler handler) {
+        abortBatchInput();
         onLongPressed();
-        onDownEvent(x, y, SystemClock.uptimeMillis(), handler);
         mIsShowingMoreKeysPanel = true;
-        // TODO: Calls to beginBatchInput() is missing in this class. Reorganize the code.
-        sGestureTracker.abortBatchInput();
+        onDownEvent(x, y, SystemClock.uptimeMillis(), handler);
     }
 
     public void onLongPressed() {
@@ -784,7 +949,7 @@ public class PointerTracker {
     }
 
     private void startRepeatKey(Key key) {
-        if (key != null && key.isRepeatable() && !sGestureTracker.isInGesture()) {
+        if (key != null && key.isRepeatable() && !mInGesture) {
             onRegisterKey(key);
             mTimerProxy.startKeyRepeatTimer(this);
         }
@@ -814,7 +979,7 @@ public class PointerTracker {
     }
 
     private void startLongPressTimer(Key key) {
-        if (key != null && key.isLongPressEnabled() && !sGestureTracker.isInGesture()) {
+        if (key != null && key.isLongPressEnabled() && !mInGesture) {
             mTimerProxy.startLongPressTimer(this);
         }
     }
@@ -828,6 +993,7 @@ public class PointerTracker {
         int code = key.mCode;
         callListenerOnCodeInput(key, code, x, y);
         callListenerOnRelease(key, code, false);
+        sWasInGesture = false;
     }
 
     private void printTouchEvent(String title, int x, int y, long eventTime) {

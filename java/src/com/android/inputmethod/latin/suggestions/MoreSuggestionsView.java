@@ -68,7 +68,7 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
         @Override
         public void onCodeInput(int primaryCode, int x, int y) {
             final int index = primaryCode - MoreSuggestions.SUGGESTION_CODE_BASE;
-            if (index >= 0 && index < SuggestionsView.MAX_SUGGESTIONS) {
+            if (index >= 0 && index < SuggestionStripView.MAX_SUGGESTIONS) {
                 mListener.onCustomRequest(index);
             }
         }

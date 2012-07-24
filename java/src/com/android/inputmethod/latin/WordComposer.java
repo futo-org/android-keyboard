@@ -33,7 +33,7 @@ public class WordComposer {
     private static final int N = BinaryDictionary.MAX_WORD_LENGTH;
 
     private int[] mPrimaryKeyCodes;
-    private final InputPointers mInputPointers = new InputPointers();
+    private final InputPointers mInputPointers = new InputPointers(N);
     private final StringBuilder mTypedWord;
     private CharSequence mAutoCorrection;
     private boolean mIsResumed;

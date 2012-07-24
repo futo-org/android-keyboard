@@ -18,12 +18,12 @@
     <style name="KeyboardTheme.HighContrast" parent="KeyboardIcons">
         <item name="keyboardStyle">@style/Keyboard.HighContrast</item>
         <item name="keyboardViewStyle">@style/KeyboardView.HighContrast</item>
-        <item name="latinKeyboardViewStyle">@style/LatinKeyboardView.HighContrast</item>
+        <item name="mainKeyboardViewStyle">@style/MainKeyboardView.HighContrast</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard</item>
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView</item>
         <item name="moreKeysKeyboardPanelStyle">@style/MoreKeysKeyboardPanelStyle</item>
         <item name="suggestionsStripBackgroundStyle">@style/SuggestionsStripBackgroundStyle</item>
-        <item name="suggestionsViewStyle">@style/SuggestionsViewStyle</item>
+        <item name="suggestionStripViewStyle">@style/SuggestionStripViewStyle</item>
         <item name="moreSuggestionsViewStyle">@style/MoreSuggestionsViewStyle</item>
         <item name="suggestionBackgroundStyle">@style/SuggestionBackgroundStyle</item>
         <item name="suggestionPreviewBackgroundStyle">@style/SuggestionPreviewBackgroundStyle</item>

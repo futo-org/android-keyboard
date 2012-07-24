@@ -63,7 +63,7 @@ public class InputAttributes {
             final boolean flagAutoComplete =
                     0 != (inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
 
-            // Make sure that passwords are not displayed in {@link SuggestionsView}.
+            // Make sure that passwords are not displayed in {@link SuggestionStripView}.
             if (InputTypeUtils.isPasswordInputType(inputType)
                     || InputTypeUtils.isVisiblePasswordInputType(inputType)
                     || InputTypeUtils.isEmailVariation(variation)

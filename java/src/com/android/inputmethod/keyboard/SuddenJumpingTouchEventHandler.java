@@ -22,9 +22,9 @@ import android.view.MotionEvent;
 
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.ResearchLogger;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.research.ResearchLogger;
 
 public class SuddenJumpingTouchEventHandler {
     private static final String TAG = SuddenJumpingTouchEventHandler.class.getSimpleName();
@@ -70,7 +70,7 @@ public class SuddenJumpingTouchEventHandler {
      * the sudden moves subside, a DOWN event is simulated for the second key.
      * @param me the motion event
      * @return true if the event was consumed, so that it doesn't continue to be handled by
-     * {@link LatinKeyboardView}.
+     * {@link MainKeyboardView}.
      */
     private boolean handleSuddenJumping(MotionEvent me) {
         if (!mNeedsSuddenJumpingHack)

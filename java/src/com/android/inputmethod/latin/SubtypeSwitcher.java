@@ -98,9 +98,9 @@ public class SubtypeSwitcher {
         mConnectivityManager = (ConnectivityManager) service.getSystemService(
                 Context.CONNECTIVITY_SERVICE);
         mCurrentSystemLocale = mResources.getConfiguration().locale;
-        mCurrentSubtype = mImm.getCurrentInputMethodSubtype();
         mNoLanguageSubtype = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
                 service, SubtypeLocale.NO_LANGUAGE, SubtypeLocale.QWERTY);
+        mCurrentSubtype = ImfUtils.getCurrentInputMethodSubtype(service, mNoLanguageSubtype);
         if (mNoLanguageSubtype == null) {
             throw new RuntimeException("Can't find no lanugage with QWERTY subtype");
         }
@@ -113,7 +113,7 @@ public class SubtypeSwitcher {
     // Only configuration changed event is allowed to call this because this is heavy.
     private void updateAllParameters() {
         mCurrentSystemLocale = mResources.getConfiguration().locale;
-        updateSubtype(mImm.getCurrentInputMethodSubtype());
+        updateSubtype(ImfUtils.getCurrentInputMethodSubtype(mService, mNoLanguageSubtype));
         updateParametersOnStartInputView();
     }
 
@@ -142,7 +142,7 @@ public class SubtypeSwitcher {
                         + currentSubtype.getLocale() + "/" + currentSubtype.getExtraValue());
                 Log.w(TAG, "Last subtype was disabled. Update to the current one.");
             }
-            updateSubtype(mImm.getCurrentInputMethodSubtype());
+            updateSubtype(ImfUtils.getCurrentInputMethodSubtype(mService, mNoLanguageSubtype));
         }
     }
 

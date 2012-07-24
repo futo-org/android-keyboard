@@ -39,6 +39,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.research.ResearchLogger;
 import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
 public class Settings extends InputMethodSettingsFragment
@@ -70,6 +71,7 @@ public class Settings extends InputMethodSettingsFragment
             "pref_key_preview_popup_dismiss_delay";
     public static final String PREF_KEY_USE_CONTACTS_DICT = "pref_key_use_contacts_dict";
     public static final String PREF_BIGRAM_PREDICTIONS = "next_word_prediction";
+    public static final String PREF_GESTURE_INPUT = "gesture_input";
     public static final String PREF_VIBRATION_DURATION_SETTINGS =
             "pref_vibration_duration_settings";
     public static final String PREF_KEYPRESS_SOUND_VOLUME =
@@ -196,6 +198,12 @@ public class Settings extends InputMethodSettingsFragment
             textCorrectionGroup.removePreference(dictionaryLink);
         }
 
+        final boolean gestureInputEnabledByBuildConfig = res.getBoolean(
+                R.bool.config_gesture_input_enabled_by_build_config);
+        if (!gestureInputEnabledByBuildConfig) {
+            final Preference gestureInputPref = findPreference(PREF_GESTURE_INPUT);
+            miscSettings.removePreference(gestureInputPref);
+        }
         final boolean showUsabilityStudyModeOption =
                 res.getBoolean(R.bool.config_enable_usability_study_mode_option)
                         || ProductionFlag.IS_EXPERIMENTAL || ENABLE_EXPERIMENTAL_SETTINGS;
@@ -208,7 +216,8 @@ public class Settings extends InputMethodSettingsFragment
         if (ProductionFlag.IS_EXPERIMENTAL) {
             if (usabilityStudyPref instanceof CheckBoxPreference) {
                 CheckBoxPreference checkbox = (CheckBoxPreference)usabilityStudyPref;
-                checkbox.setChecked(prefs.getBoolean(PREF_USABILITY_STUDY_MODE, true));
+                checkbox.setChecked(prefs.getBoolean(PREF_USABILITY_STUDY_MODE,
+                        ResearchLogger.DEFAULT_USABILITY_STUDY_MODE));
                 checkbox.setSummary(R.string.settings_warning_researcher_mode);
             }
         }

@@ -28,6 +28,7 @@ import android.view.inputmethod.InputConnection;
 
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.define.ProductionFlag;
+import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.regex.Pattern;
 

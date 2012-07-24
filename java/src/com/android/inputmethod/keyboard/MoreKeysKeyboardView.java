@@ -25,6 +25,7 @@ import android.widget.PopupWindow;
 
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
+import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.R;
 
 /**
@@ -63,8 +64,13 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         }
 
         @Override
-        public void onEndBatchInput(CharSequence text) {
-            mListener.onEndBatchInput(text);
+        public void onUpdateBatchInput(InputPointers batchPointers) {
+            mListener.onUpdateBatchInput(batchPointers);
+        }
+
+        @Override
+        public void onEndBatchInput(InputPointers batchPointers) {
+            mListener.onEndBatchInput(batchPointers);
         }
 
         @Override
