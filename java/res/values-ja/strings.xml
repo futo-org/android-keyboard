@@ -58,10 +58,8 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"最も強い"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"次の入力候補"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"前の語句に基づいた入力候補表示"</string>
-    <!-- no translation found for gesture_input (3310827802759290774) -->
-    <skip />
-    <!-- no translation found for gesture_input_summary (7019742443455085809) -->
-    <skip />
+    <string name="gesture_input" msgid="3310827802759290774">"ジェスチャー入力"</string>
+    <string name="gesture_input_summary" msgid="7019742443455085809">"単語の文字をトレースして単語を入力"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>:保存しました"</string>
     <string name="label_go_key" msgid="1635148082137219148">"実行"</string>
     <string name="label_next_key" msgid="362972844525672568">"次へ"</string>

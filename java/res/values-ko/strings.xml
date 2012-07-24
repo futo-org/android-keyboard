@@ -58,10 +58,8 @@
     <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"강"</string>
     <string name="bigram_prediction" msgid="5809665643352206540">"다음 검색어 추천"</string>
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"이전 단어에 기반한 추천"</string>
-    <!-- no translation found for gesture_input (3310827802759290774) -->
-    <skip />
-    <!-- no translation found for gesture_input_summary (7019742443455085809) -->
-    <skip />
+    <string name="gesture_input" msgid="3310827802759290774">"동작 입력"</string>
+    <string name="gesture_input_summary" msgid="7019742443455085809">"단어를 구성하는 문자를 따라감으로써 단어를 입력"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: 저장됨"</string>
     <string name="label_go_key" msgid="1635148082137219148">"이동"</string>
     <string name="label_next_key" msgid="362972844525672568">"다음"</string>
