@@ -62,6 +62,7 @@
     sk: Slovak/qwerty
     sl: Slovenian/qwerty
     sr: Serbian/south_slavic
+    (sr-Latn: Serbian/qwerty) # not yet implemented.
     sv: Swedish/nordic
     th: Thai/thai
     tl: Tagalog/spanish
@@ -317,6 +318,20 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="SupportTouchPositionCorrection"
     />
+    <!-- TODO: Uncomment once we can handle IETF language tag with script name specified.
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_serbian_cyrillic"
+            android:imeSubtypeLocale="sr"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="SupportTouchPositionCorrection"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_serbian_latin"
+            android:imeSubtypeLocale="sr-Latn"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable"
+    />
+    -->
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
             android:imeSubtypeLocale="sv"
