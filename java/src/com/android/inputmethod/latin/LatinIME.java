@@ -82,7 +82,8 @@ import java.util.Locale;
  * Input method implementation for Qwerty'ish keyboard.
  */
 public class LatinIME extends InputMethodService implements KeyboardActionListener,
-        SuggestionStripView.Listener, TargetApplicationGetter.OnTargetApplicationKnownListener {
+        SuggestionStripView.Listener, TargetApplicationGetter.OnTargetApplicationKnownListener,
+        Suggest.SuggestInitializationListener {
     private static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean TRACE = false;
     private static boolean DEBUG;
@@ -426,6 +427,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
     }
 
+    @Override
+    public void onUpdateMainDictionaryAvailability(boolean isMainDictionaryAvailable) {
+        mIsMainDictionaryAvailable = isMainDictionaryAvailable;
+        // TODO: Update gesture input enable state.
+    }
+
     private void initSuggest() {
         final Locale subtypeLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
         final String localeStr = subtypeLocale.toString();
@@ -437,7 +444,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             oldContactsDictionary = null;
         }
-        mSuggest = new Suggest(this, subtypeLocale);
+        mSuggest = new Suggest(this /* Context */, subtypeLocale,
+                this /* SuggestInitializationListener */);
         if (mCurrentSettings.mCorrectionEnabled) {
             mSuggest.setAutoCorrectionThreshold(mCurrentSettings.mAutoCorrectionThreshold);
         }
