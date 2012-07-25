@@ -25,7 +25,6 @@ public class KeyDetector {
     private Keyboard mKeyboard;
     private int mCorrectionX;
     private int mCorrectionY;
-    private boolean mProximityCorrectOn;
 
     /**
      * This class handles key detection.
@@ -62,14 +61,6 @@ public class KeyDetector {
         if (mKeyboard == null)
             throw new IllegalStateException("keyboard isn't set");
         return mKeyboard;
-    }
-
-    public void setProximityCorrectionEnabled(boolean enabled) {
-        mProximityCorrectOn = enabled;
-    }
-
-    public boolean isProximityCorrectionEnabled() {
-        return mProximityCorrectOn;
     }
 
     public boolean alwaysAllowsSlidingInput() {
