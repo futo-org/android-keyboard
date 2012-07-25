@@ -28,8 +28,8 @@
 
 namespace latinime {
 void ProximityInfoState::initInputParams(
-        const ProximityInfo* proximityInfo, const int32_t* inputCodes, const int inputLength,
-        const int* xCoordinates, const int* yCoordinates) {
+        const ProximityInfo *proximityInfo, const int32_t *inputCodes, const int inputLength,
+        const int *xCoordinates, const int *yCoordinates) {
     mProximityInfo = proximityInfo;
     mHasTouchPositionCorrectionData = proximityInfo->hasTouchPositionCorrectionData();
     mMostCommonKeyWidthSquare = proximityInfo->getMostCommonKeyWidthSquare();

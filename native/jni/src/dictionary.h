@@ -113,5 +113,4 @@ inline int Dictionary::wideStrLen(unsigned short *str) {
     return end - str;
 }
 } // namespace latinime
-
 #endif // LATINIME_DICTIONARY_H

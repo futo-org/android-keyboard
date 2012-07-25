@@ -1,19 +1,19 @@
 /*
-**
-** Copyright 2010, The Android Open Source Project
-**
-** Licensed under the Apache License, Version 2.0 (the "License");
-** you may not use this file except in compliance with the License.
-** You may obtain a copy of the License at
-**
-**     http://www.apache.org/licenses/LICENSE-2.0
-**
-** Unless required by applicable law or agreed to in writing, software
-** distributed under the License is distributed on an "AS IS" BASIS,
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-** See the License for the specific language governing permissions and
-** limitations under the License.
-*/
+ *
+ * Copyright 2010, The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #include <assert.h>
 #include <string.h>
@@ -40,7 +40,7 @@ const UnigramDictionary::digraph_t UnigramDictionary::FRENCH_LIGATURES_DIGRAPHS[
         { 'o', 'e', 0x0153 } }; // U+0153 : LATIN SMALL LIGATURE OE
 
 // TODO: check the header
-UnigramDictionary::UnigramDictionary(const uint8_t* const streamStart, int typedLetterMultiplier,
+UnigramDictionary::UnigramDictionary(const uint8_t *const streamStart, int typedLetterMultiplier,
         int fullWordMultiplier, int maxWordLength, int maxWords, const unsigned int flags)
     : DICT_ROOT(streamStart), MAX_WORD_LENGTH(maxWordLength), MAX_WORDS(maxWords),
     TYPED_LETTER_MULTIPLIER(typedLetterMultiplier), FULL_WORD_MULTIPLIER(fullWordMultiplier),
@@ -68,7 +68,7 @@ static inline void addWord(
 
 // Return the replacement code point for a digraph, or 0 if none.
 int UnigramDictionary::getDigraphReplacement(const int *codes, const int i, const int codesSize,
-        const digraph_t* const digraphs, const unsigned int digraphsSize) const {
+        const digraph_t *const digraphs, const unsigned int digraphsSize) const {
 
     // There can't be a digraph if we don't have at least 2 characters to examine
     if (i + 2 > codesSize) return false;
@@ -103,7 +103,7 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
         const bool useFullEditDistance, const int *codesSrc,
         const int codesRemain, const int currentDepth, int *codesDest, Correction *correction,
         WordsPriorityQueuePool *queuePool,
-        const digraph_t* const digraphs, const unsigned int digraphsSize) const {
+        const digraph_t *const digraphs, const unsigned int digraphsSize) const {
 
     const int startIndex = codesDest - codesBuffer;
     if (currentDepth < MAX_DIGRAPH_SEARCH_DEPTH) {
@@ -222,7 +222,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
         AKLOGI("Returning %d words", suggestedWordsCount);
         /// Print the returned words
         for (int j = 0; j < suggestedWordsCount; ++j) {
-            short unsigned int* w = outWords + j * MAX_WORD_LENGTH;
+            short unsigned int *w = outWords + j * MAX_WORD_LENGTH;
             char s[MAX_WORD_LENGTH];
             for (int i = 0; i <= MAX_WORD_LENGTH; i++) s[i] = w[i];
             (void)s;
@@ -259,7 +259,7 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
 
     PROF_START(4);
     bool hasAutoCorrectionCandidate = false;
-    WordsPriorityQueue* masterQueue = queuePool->getMasterQueue();
+    WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
     if (masterQueue->size() > 0) {
         float nsForMaster = masterQueue->getHighestNormalizedScore(
                 correction->getPrimaryInputWord(), inputLength, 0, 0, 0);
@@ -284,11 +284,11 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
     if (DEBUG_DICT) {
         queuePool->dumpSubQueue1TopSuggestions();
         for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
-            WordsPriorityQueue* queue = queuePool->getSubQueue(FIRST_WORD_INDEX, i);
+            WordsPriorityQueue *queue = queuePool->getSubQueue(FIRST_WORD_INDEX, i);
             if (queue->size() > 0) {
-                WordsPriorityQueue::SuggestedWord* sw = queue->top();
+                WordsPriorityQueue::SuggestedWord *sw = queue->top();
                 const int score = sw->mScore;
-                const unsigned short* word = sw->mWord;
+                const unsigned short *word = sw->mWord;
                 const int wordLength = sw->mWordLength;
                 float ns = Correction::RankingAlgorithm::calcNormalizedScore(
                         correction->getPrimaryInputWord(), i, word, wordLength, score);
@@ -383,7 +383,7 @@ inline void UnigramDictionary::onTerminal(const int probability,
     const bool addToSubQueue = inputIndex < SUB_QUEUE_MAX_COUNT;
 
     int wordLength;
-    unsigned short* wordPointer;
+    unsigned short *wordPointer;
 
     if ((currentWordIndex == FIRST_WORD_INDEX) && addToMasterQueue) {
         WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
@@ -430,11 +430,11 @@ inline void UnigramDictionary::onTerminal(const int probability,
 int UnigramDictionary::getSubStringSuggestion(
         ProximityInfo *proximityInfo, const int *xcoordinates, const int *ycoordinates,
         const int *codes, const bool useFullEditDistance, Correction *correction,
-        WordsPriorityQueuePool* queuePool, const int inputLength,
+        WordsPriorityQueuePool *queuePool, const int inputLength,
         const bool hasAutoCorrectionCandidate, const int currentWordIndex,
         const int inputWordStartPos, const int inputWordLength,
         const int outputWordStartPos, const bool isSpaceProximity, int *freqArray,
-        int*wordLengthArray, unsigned short* outputWord, int *outputWordLength) const {
+        int*wordLengthArray, unsigned short *outputWord, int *outputWordLength) const {
     if (inputWordLength > MULTIPLE_WORDS_SUGGESTION_MAX_WORD_LENGTH) {
         return FLAG_MULTIPLE_SUGGEST_ABORT;
     }
@@ -477,7 +477,7 @@ int UnigramDictionary::getSubStringSuggestion(
     // TODO: Remove the safety net above        //
     //////////////////////////////////////////////
 
-    unsigned short* tempOutputWord = 0;
+    unsigned short *tempOutputWord = 0;
     int nextWordLength = 0;
     // TODO: Optimize init suggestion
     initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes,
@@ -508,7 +508,7 @@ int UnigramDictionary::getSubStringSuggestion(
                 }
             }
         }
-        WordsPriorityQueue* queue = queuePool->getSubQueue(currentWordIndex, inputWordLength);
+        WordsPriorityQueue *queue = queuePool->getSubQueue(currentWordIndex, inputWordLength);
         // TODO: Return the correct value depending on doAutoCompletion
         if (!queue || queue->size() <= 0) {
             return FLAG_MULTIPLE_SUGGEST_ABORT;
@@ -579,10 +579,10 @@ int UnigramDictionary::getSubStringSuggestion(
 void UnigramDictionary::getMultiWordsSuggestionRec(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codes,
         const bool useFullEditDistance, const int inputLength,
-        Correction *correction, WordsPriorityQueuePool* queuePool,
+        Correction *correction, WordsPriorityQueuePool *queuePool,
         const bool hasAutoCorrectionCandidate, const int startInputPos, const int startWordIndex,
-        const int outputWordLength, int *freqArray, int* wordLengthArray,
-        unsigned short* outputWord) const {
+        const int outputWordLength, int *freqArray, int *wordLengthArray,
+        unsigned short *outputWord) const {
     if (startWordIndex >= (MULTIPLE_WORDS_SUGGESTION_MAX_WORDS - 1)) {
         // Return if the last word index
         return;
@@ -660,7 +660,7 @@ void UnigramDictionary::getMultiWordsSuggestionRec(ProximityInfo *proximityInfo,
 void UnigramDictionary::getSplitMultipleWordsSuggestions(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codes,
         const bool useFullEditDistance, const int inputLength,
-        Correction *correction, WordsPriorityQueuePool* queuePool,
+        Correction *correction, WordsPriorityQueuePool *queuePool,
         const bool hasAutoCorrectionCandidate) const {
     if (inputLength >= MAX_WORD_LENGTH) return;
     if (DEBUG_DICT) {
@@ -705,9 +705,9 @@ inline int UnigramDictionary::getMostFrequentWordLike(const int startInputIndex,
 // In and out parameters may point to the same location. This function takes care
 // not to use any input parameters after it wrote into its outputs.
 static inline bool testCharGroupForContinuedLikeness(const uint8_t flags,
-        const uint8_t* const root, const int startPos,
-        const uint16_t* const inWord, const int startInputIndex,
-        int32_t* outNewWord, int* outInputIndex, int* outPos) {
+        const uint8_t *const root, const int startPos,
+        const uint16_t *const inWord, const int startInputIndex,
+        int32_t *outNewWord, int *outInputIndex, int *outPos) {
     const bool hasMultipleChars = (0 != (UnigramDictionary::FLAG_HAS_MULTIPLE_CHARS & flags));
     int pos = startPos;
     int32_t character = BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
@@ -743,8 +743,8 @@ static inline bool testCharGroupForContinuedLikeness(const uint8_t flags,
 // It will compare the frequency to the max frequency, and if greater, will
 // copy the word into the output buffer. In output value maxFreq, it will
 // write the new maximum frequency if it changed.
-static inline void onTerminalWordLike(const int freq, int32_t* newWord, const int length,
-        short unsigned int* outWord, int* maxFreq) {
+static inline void onTerminalWordLike(const int freq, int32_t *newWord, const int length,
+        short unsigned int *outWord, int *maxFreq) {
     if (freq > *maxFreq) {
         for (int q = 0; q < length; ++q)
             outWord[q] = newWord[q];
@@ -755,12 +755,12 @@ static inline void onTerminalWordLike(const int freq, int32_t* newWord, const in
 
 // Will find the highest frequency of the words like the one passed as an argument,
 // that is, everything that only differs by case/accents.
-int UnigramDictionary::getMostFrequentWordLikeInner(const uint16_t * const inWord,
-        const int length, short unsigned int* outWord) const {
+int UnigramDictionary::getMostFrequentWordLikeInner(const uint16_t *const inWord,
+        const int length, short unsigned int *outWord) const {
     int32_t newWord[MAX_WORD_LENGTH_INTERNAL];
     int depth = 0;
     int maxFreq = -1;
-    const uint8_t* const root = DICT_ROOT;
+    const uint8_t *const root = DICT_ROOT;
     int stackChildCount[MAX_WORD_LENGTH_INTERNAL];
     int stackInputIndex[MAX_WORD_LENGTH_INTERNAL];
     int stackSiblingPos[MAX_WORD_LENGTH_INTERNAL];
@@ -816,8 +816,8 @@ int UnigramDictionary::getMostFrequentWordLikeInner(const uint16_t * const inWor
     return maxFreq;
 }
 
-int UnigramDictionary::getFrequency(const int32_t* const inWord, const int length) const {
-    const uint8_t* const root = DICT_ROOT;
+int UnigramDictionary::getFrequency(const int32_t *const inWord, const int length) const {
+    const uint8_t *const root = DICT_ROOT;
     int pos = BinaryFormat::getTerminalPosition(root, inWord, length,
             false /* forceLowerCaseSearch */);
     if (NOT_VALID_WORD == pos) {
@@ -991,5 +991,4 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos,
     *newChildrenPosition = childrenPos;
     return true;
 }
-
 } // namespace latinime

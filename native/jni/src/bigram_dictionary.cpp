@@ -1,19 +1,19 @@
 /*
-**
-** Copyright 2010, The Android Open Source Project
-**
-** Licensed under the Apache License, Version 2.0 (the "License");
-** you may not use this file except in compliance with the License.
-** You may obtain a copy of the License at
-**
-**     http://www.apache.org/licenses/LICENSE-2.0
-**
-** Unless required by applicable law or agreed to in writing, software
-** distributed under the License is distributed on an "AS IS" BASIS,
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-** See the License for the specific language governing permissions and
-** limitations under the License.
-*/
+ *
+ * Copyright 2010, The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #include <string.h>
 
@@ -103,7 +103,7 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
     // TODO: remove unused arguments, and refrain from storing stuff in members of this class
     // TODO: have "in" arguments before "out" ones, and make out args explicit in the name
 
-    const uint8_t* const root = DICT;
+    const uint8_t *const root = DICT;
     int pos = getBigramListPositionForWord(prevWord, prevWordLength,
             false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
@@ -149,7 +149,7 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
 int BigramDictionary::getBigramListPositionForWord(const int32_t *prevWord,
         const int prevWordLength, const bool forceLowerCaseSearch) const {
     if (0 >= prevWordLength) return 0;
-    const uint8_t* const root = DICT;
+    const uint8_t *const root = DICT;
     int pos = BinaryFormat::getTerminalPosition(root, prevWord, prevWordLength,
             forceLowerCaseSearch);
 
@@ -170,7 +170,7 @@ int BigramDictionary::getBigramListPositionForWord(const int32_t *prevWord,
 void BigramDictionary::fillBigramAddressToFrequencyMapAndFilter(const int32_t *prevWord,
         const int prevWordLength, std::map<int, int> *map, uint8_t *filter) const {
     memset(filter, 0, BIGRAM_FILTER_BYTE_SIZE);
-    const uint8_t* const root = DICT;
+    const uint8_t *const root = DICT;
     int pos = getBigramListPositionForWord(prevWord, prevWordLength,
             false /* forceLowerCaseSearch */);
     if (0 == pos) {
@@ -209,7 +209,7 @@ bool BigramDictionary::checkFirstCharacter(unsigned short *word, int *inputCodes
 
 bool BigramDictionary::isValidBigram(const int32_t *word1, int length1, const int32_t *word2,
         int length2) const {
-    const uint8_t* const root = DICT;
+    const uint8_t *const root = DICT;
     int pos = getBigramListPositionForWord(word1, length1, false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
     if (0 == pos) return false;

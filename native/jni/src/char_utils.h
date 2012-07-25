@@ -62,7 +62,5 @@ inline static unsigned short toLowerCase(const unsigned short c) {
 inline static unsigned short toBaseLowerCase(const unsigned short c) {
     return toLowerCase(toBaseChar(c));
 }
-
 } // namespace latinime
-
 #endif // LATINIME_CHAR_UTILS_H

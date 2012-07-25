@@ -1,19 +1,19 @@
 /*
-**
-** Copyright 2010, The Android Open Source Project
-**
-** Licensed under the Apache License, Version 2.0 (the "License");
-** you may not use this file except in compliance with the License.
-** You may obtain a copy of the License at
-**
-**     http://www.apache.org/licenses/LICENSE-2.0
-**
-** Unless required by applicable law or agreed to in writing, software
-** distributed under the License is distributed on an "AS IS" BASIS,
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-** See the License for the specific language governing permissions and
-** limitations under the License.
-*/
+ *
+ * Copyright 2010, The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #ifndef LATINIME_DEFINES_H
 #define LATINIME_DEFINES_H
@@ -26,7 +26,7 @@
 #define DUMP_WORD(word, length) do { dumpWord(word, length); } while(0)
 #define DUMP_WORD_INT(word, length) do { dumpWordInt(word, length); } while(0)
 
-static inline void dumpWord(const unsigned short* word, const int length) {
+static inline void dumpWord(const unsigned short *word, const int length) {
     static char charBuf[50];
 
     for (int i = 0; i < length; ++i) {
@@ -36,7 +36,7 @@ static inline void dumpWord(const unsigned short* word, const int length) {
     AKLOGI("[ %s ]", charBuf);
 }
 
-static inline void dumpWordInt(const int* word, const int length) {
+static inline void dumpWordInt(const int *word, const int length) {
     static char charBuf[50];
 
     for (int i = 0; i < length; ++i) {
@@ -313,5 +313,4 @@ typedef enum {
     // Additional proximity char which can differ by language.
     ADDITIONAL_PROXIMITY_CHAR
 } ProximityType;
-
 #endif // LATINIME_DEFINES_H

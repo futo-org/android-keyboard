@@ -53,7 +53,5 @@ class BigramDictionary {
     // TODO: Re-implement proximity correction for bigram correction
     static const int MAX_ALTERNATIVES = 1;
 };
-
 } // namespace latinime
-
 #endif // LATINIME_BIGRAM_DICTIONARY_H

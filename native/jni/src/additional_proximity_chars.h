@@ -45,7 +45,7 @@ class AdditionalProximityChars {
     }
 
  public:
-    static int getAdditionalCharsSize(const std::string* locale_str, const int32_t c) {
+    static int getAdditionalCharsSize(const std::string *locale_str, const int32_t c) {
         if (!isEnLocale(locale_str)) {
             return 0;
         }
@@ -65,7 +65,7 @@ class AdditionalProximityChars {
         }
     }
 
-    static const int32_t* getAdditionalChars(const std::string *locale_str, const int32_t c) {
+    static const int32_t *getAdditionalChars(const std::string *locale_str, const int32_t c) {
         if (!isEnLocale(locale_str)) {
             return 0;
         }
@@ -89,7 +89,5 @@ class AdditionalProximityChars {
         return getAdditionalCharsSize(locale_str, c) > 0;
     }
 };
-
-}
-
+} // namespace latinime
 #endif // LATINIME_ADDITIONAL_PROXIMITY_CHARS_H
