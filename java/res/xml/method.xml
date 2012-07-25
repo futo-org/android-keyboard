@@ -42,10 +42,10 @@
     hi: Hindi/hindi
     hr: Croatian/qwertz
     hu: Hungarian/qwertz
-    id: Indonesian/qwerty
+    in: Indonesian/qwerty    # "id" is official language code of Indonesian.
     is: Icelandic/qwerty
     it: Italian/qwerty
-    iw: Hebrew/hebrew
+    iw: Hebrew/hebrew        # "he" is official language code of Hebrew.
     ka: Georgian/georgian
     ky: Kyrgyz/east_slavic
     lt: Lithuanian/qwerty
@@ -197,9 +197,10 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection"
     />
+    <!-- Java uses the deprecated "in" code instead of the standard "id" code for Indonesian. -->
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
-            android:imeSubtypeLocale="id"
+            android:imeSubtypeLocale="in"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable"
     />
