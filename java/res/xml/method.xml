@@ -64,6 +64,7 @@
     sr: Serbian/south_slavic
     (sr-Latn: Serbian/qwerty) # not yet implemented.
     sv: Swedish/nordic
+    sw: Swahili/qwerty
     th: Thai/thai
     tl: Tagalog/spanish
     tr: Turkish/qwerty
@@ -338,6 +339,12 @@
             android:imeSubtypeLocale="sv"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:imeSubtypeLocale="sw"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
