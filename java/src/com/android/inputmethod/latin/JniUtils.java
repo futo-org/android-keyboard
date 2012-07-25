@@ -31,11 +31,7 @@ public class JniUtils {
         try {
             System.loadLibrary(JniLibName.JNI_LIB_NAME);
         } catch (UnsatisfiedLinkError ule) {
-            Log.e(TAG, "Could not load native library " + JniLibName.JNI_LIB_NAME);
-            if (LatinImeLogger.sDBG) {
-                throw new RuntimeException(
-                        "Could not load native library " + JniLibName.JNI_LIB_NAME);
-            }
+            Log.e(TAG, "Could not load native library " + JniLibName.JNI_LIB_NAME, ule);
         }
     }
 }
