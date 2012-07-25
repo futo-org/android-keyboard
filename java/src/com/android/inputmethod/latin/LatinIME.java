@@ -659,34 +659,48 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             accessUtils.onStartInputViewInternal(editorInfo, restarting);
         }
 
-        mSubtypeSwitcher.updateParametersOnStartInputView();
+        if (!restarting) {
+            mSubtypeSwitcher.updateParametersOnStartInputView();
+        }
 
         // The EditorInfo might have a flag that affects fullscreen mode.
         // Note: This call should be done by InputMethodService?
         updateFullscreenMode();
-        mLastSelectionStart = editorInfo.initialSelStart;
-        mLastSelectionEnd = editorInfo.initialSelEnd;
         mApplicationSpecifiedCompletions = null;
 
-        inputView.closing();
-        mEnteredText = null;
-        resetComposingState(true /* alsoResetLastComposedWord */);
-        mDeleteCount = 0;
-        mSpaceState = SPACE_STATE_NONE;
+        final boolean selectionChanged = mLastSelectionStart != editorInfo.initialSelStart
+                || mLastSelectionEnd != editorInfo.initialSelEnd;
+        if (!restarting || selectionChanged) {
+            // If the selection changed, we reset the input state. Essentially, we come here with
+            // restarting == true when the app called setText() or similar. We should reset the
+            // state if the app set the text to something else, but keep it if it set a suggestion
+            // or something.
+            mEnteredText = null;
+            resetComposingState(true /* alsoResetLastComposedWord */);
+            mDeleteCount = 0;
+            mSpaceState = SPACE_STATE_NONE;
 
-        loadSettings();
-
-        if (mSuggest != null && mCurrentSettings.mCorrectionEnabled) {
-            mSuggest.setAutoCorrectionThreshold(mCurrentSettings.mAutoCorrectionThreshold);
+            if (mSuggestionStripView != null) {
+                mSuggestionStripView.clear();
+            }
         }
 
-        switcher.loadKeyboard(editorInfo, mCurrentSettings);
-        updateKeyboardViewGestureHandlingModeByMainDictionaryAvailability();
+        if (!restarting) {
+            inputView.closing();
+            loadSettings();
 
-        if (mSuggestionStripView != null)
-            mSuggestionStripView.clear();
+            if (mSuggest != null && mCurrentSettings.mCorrectionEnabled) {
+                mSuggest.setAutoCorrectionThreshold(mCurrentSettings.mAutoCorrectionThreshold);
+            }
+
+            switcher.loadKeyboard(editorInfo, mCurrentSettings);
+            updateKeyboardViewGestureHandlingModeByMainDictionaryAvailability();
+        }
         setSuggestionStripShownInternal(
                 isSuggestionsStripVisible(), /* needsInputViewShown */ false);
+
+        mLastSelectionStart = editorInfo.initialSelStart;
+        mLastSelectionEnd = editorInfo.initialSelEnd;
 
         mHandler.cancelUpdateSuggestionStrip();
         mHandler.cancelDoubleSpacesTimer();
