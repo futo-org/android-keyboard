@@ -32,7 +32,5 @@ static inline bool isInFilter(const uint8_t *filter, const int position) {
     const unsigned int bucket = position % BIGRAM_FILTER_MODULO;
     return filter[bucket >> 3] & (1 << (bucket & 0x7));
 }
-
 } // namespace latinime
-
 #endif // LATINIME_BLOOM_FILTER_H

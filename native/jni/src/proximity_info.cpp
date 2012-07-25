@@ -110,7 +110,7 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
     if (DEBUG_PROXIMITY_INFO) {
         AKLOGI("hasSpaceProximity: index %d, %d, %d", startIndex, x, y);
     }
-    int32_t* proximityCharsArray = mProximityCharsArray;
+    int32_t *proximityCharsArray = mProximityCharsArray;
     for (int i = 0; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
         if (DEBUG_PROXIMITY_INFO) {
             AKLOGI("Index: %d", mProximityCharsArray[startIndex + i]);
@@ -171,7 +171,7 @@ void ProximityInfo::calculateNearbyKeyCodes(
                 return;
             }
 
-            const int32_t* additionalProximityChars =
+            const int32_t *additionalProximityChars =
                     AdditionalProximityChars::getAdditionalChars(&mLocaleStr, primaryKey);
             for (int j = 0; j < additionalProximitySize; ++j) {
                 const int32_t ac = additionalProximityChars[j];

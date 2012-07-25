@@ -141,7 +141,5 @@ class ProximityInfo {
     int mCodeToKeyIndex[MAX_CHAR_CODE + 1];
     // TODO: move to correction.h
 };
-
 } // namespace latinime
-
 #endif // LATINIME_PROXIMITY_INFO_H

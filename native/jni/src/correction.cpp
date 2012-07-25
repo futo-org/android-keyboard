@@ -633,7 +633,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
 Correction::~Correction() {
 }
 
-inline static int getQuoteCount(const unsigned short* word, const int length) {
+inline static int getQuoteCount(const unsigned short *word, const int length) {
     int quoteCount = 0;
     for (int i = 0; i < length; ++i) {
         if(word[i] == '\'') {
@@ -653,7 +653,7 @@ inline static bool isUpperCase(unsigned short c) {
 
 /* static */
 int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex,
-        const int outputIndex, const int freq, int* editDistanceTable, const Correction* correction,
+        const int outputIndex, const int freq, int *editDistanceTable, const Correction *correction,
         const int inputLength) {
     const int excessivePos = correction->getExcessivePos();
     const int typedLetterMultiplier = correction->TYPED_LETTER_MULTIPLIER;
@@ -677,7 +677,7 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
     // TODO: use mExcessiveCount
     const int matchCount = inputLength - correction->mProximityCount - excessiveCount;
 
-    const unsigned short* word = correction->mWord;
+    const unsigned short *word = correction->mWord;
     const bool skipped = skippedCount > 0;
 
     const int quoteDiffCount = max(0, getQuoteCount(word, outputLength)
@@ -916,7 +916,7 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
 /* static */
 int Correction::RankingAlgorithm::calcFreqForSplitMultipleWords(
         const int *freqArray, const int *wordLengthArray, const int wordCount,
-        const Correction* correction, const bool isSpaceProximity, const unsigned short *word) {
+        const Correction *correction, const bool isSpaceProximity, const unsigned short *word) {
     const int typedLetterMultiplier = correction->TYPED_LETTER_MULTIPLIER;
 
     bool firstCapitalizedWordDemotion = false;
@@ -1046,10 +1046,10 @@ int Correction::RankingAlgorithm::calcFreqForSplitMultipleWords(
 
 /* Damerau-Levenshtein distance */
 inline static int editDistanceInternal(
-        int* editDistanceTable, const unsigned short* before,
-        const int beforeLength, const unsigned short* after, const int afterLength) {
+        int *editDistanceTable, const unsigned short *before,
+        const int beforeLength, const unsigned short *after, const int afterLength) {
     // dp[li][lo] dp[a][b] = dp[ a * lo + b]
-    int* dp = editDistanceTable;
+    int *dp = editDistanceTable;
     const int li = beforeLength + 1;
     const int lo = afterLength + 1;
     for (int i = 0; i < li; ++i) {
@@ -1085,8 +1085,8 @@ inline static int editDistanceInternal(
     return dp[li * lo - 1];
 }
 
-int Correction::RankingAlgorithm::editDistance(const unsigned short* before,
-        const int beforeLength, const unsigned short* after, const int afterLength) {
+int Correction::RankingAlgorithm::editDistance(const unsigned short *before,
+        const int beforeLength, const unsigned short *after, const int afterLength) {
     int table[(beforeLength + 1) * (afterLength + 1)];
     return editDistanceInternal(table, before, beforeLength, after, afterLength);
 }
@@ -1114,8 +1114,8 @@ int Correction::RankingAlgorithm::editDistance(const unsigned short* before,
 // So, we can normalize original score by dividing pow(2, min(b.l(),a.l())) * 255 * 2.
 
 /* static */
-float Correction::RankingAlgorithm::calcNormalizedScore(const unsigned short* before,
-        const int beforeLength, const unsigned short* after, const int afterLength,
+float Correction::RankingAlgorithm::calcNormalizedScore(const unsigned short *before,
+        const int beforeLength, const unsigned short *after, const int afterLength,
         const int score) {
     if (0 == beforeLength || 0 == afterLength) {
         return 0;

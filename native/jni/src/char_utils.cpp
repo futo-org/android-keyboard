@@ -895,5 +895,4 @@ unsigned short latin_tolower(unsigned short c) {
                     compare_pair_capital);
     return p ? p->small : c;
 }
-
 } // namespace latinime

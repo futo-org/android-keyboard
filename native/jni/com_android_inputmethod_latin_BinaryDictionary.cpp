@@ -1,19 +1,19 @@
 /*
-**
-** Copyright 2009, The Android Open Source Project
-**
-** Licensed under the Apache License, Version 2.0 (the "License");
-** you may not use this file except in compliance with the License.
-** You may obtain a copy of the License at
-**
-**     http://www.apache.org/licenses/LICENSE-2.0
-**
-** Unless required by applicable law or agreed to in writing, software
-** distributed under the License is distributed on an "AS IS" BASIS,
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-** See the License for the specific language governing permissions and
-** limitations under the License.
-*/
+ *
+ * Copyright 2009, The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #define LOG_TAG "LatinIME: jni: BinaryDictionary"
 
@@ -42,7 +42,7 @@
 
 namespace latinime {
 
-void releaseDictBuf(void* dictBuf, const size_t length, int fd);
+void releaseDictBuf(void *dictBuf, const size_t length, int fd);
 
 static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         jstring sourceDir, jlong dictOffset, jlong dictSize,
@@ -235,7 +235,7 @@ static void latinime_BinaryDictionary_close(JNIEnv *env, jobject object, jlong d
     delete dictionary;
 }
 
-void releaseDictBuf(void* dictBuf, const size_t length, int fd) {
+void releaseDictBuf(void *dictBuf, const size_t length, int fd) {
 #ifdef USE_MMAP_FOR_DICTIONARY
     int ret = munmap(dictBuf, length);
     if (ret != 0) {
@@ -263,9 +263,8 @@ static JNINativeMethod sMethods[] = {
 };
 
 int register_BinaryDictionary(JNIEnv *env) {
-    const char* const kClassPathName = "com/android/inputmethod/latin/BinaryDictionary";
+    const char *const kClassPathName = "com/android/inputmethod/latin/BinaryDictionary";
     return registerNativeMethods(env, kClassPathName, sMethods,
             sizeof(sMethods) / sizeof(sMethods[0]));
 }
-
 } // namespace latinime

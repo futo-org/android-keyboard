@@ -79,6 +79,5 @@ inline static void initCorrectionState(CorrectionState *state, const int rootPos
     state->mSkipping = false;
     state->mAdditionalProximityMatching = false;
 }
-
 } // namespace latinime
 #endif // LATINIME_CORRECTION_STATE_H
