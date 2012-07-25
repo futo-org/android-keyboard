@@ -888,23 +888,26 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mDrawingHandler.dismissKeyPreview(mDelayAfterPreview, tracker);
     }
 
-    private static class PreviewView extends RelativeLayout {
-        KeyPreviewDrawParams mParams;
-        Paint mGesturePaint;
+    private static class PreviewPlacerView extends RelativeLayout {
+        private final Paint mGesturePaint;
+        final int mCoordinateX;
+        final int mCoordinateY;
 
-        public PreviewView(Context context, KeyPreviewDrawParams params, Paint gesturePaint) {
+        public PreviewPlacerView(Context context, int coordinateX, int coordinateY,
+                Paint gesturePaint) {
             super(context);
             setWillNotDraw(false);
-            mParams = params;
             mGesturePaint = gesturePaint;
+            mCoordinateX = coordinateX;
+            mCoordinateY = coordinateY;
         }
 
         @Override
         public void onDraw(Canvas canvas) {
             super.onDraw(canvas);
-            canvas.translate(mParams.mCoordinates[0], mParams.mCoordinates[1]);
+            canvas.translate(mCoordinateX, mCoordinateY);
             PointerTracker.drawGestureTrailForAllPointerTrackers(canvas, mGesturePaint);
-            canvas.translate(-mParams.mCoordinates[0], -mParams.mCoordinates[1]);
+            canvas.translate(-mCoordinateX, -mCoordinateY);
         }
     }
 
@@ -917,7 +920,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     private void createPreviewPlacer() {
-        mPreviewPlacer = new PreviewView(getContext(), mKeyPreviewDrawParams, mGesturePaint);
+        getLocationInWindow(mKeyPreviewDrawParams.mCoordinates);
+        mPreviewPlacer = new PreviewPlacerView(getContext(), mKeyPreviewDrawParams.mCoordinates[0],
+                mKeyPreviewDrawParams.mCoordinates[1], mGesturePaint);
         final ViewGroup windowContentView =
                 (ViewGroup)getRootView().findViewById(android.R.id.content);
         windowContentView.addView(mPreviewPlacer);
