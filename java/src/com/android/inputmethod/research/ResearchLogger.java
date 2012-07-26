@@ -35,6 +35,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.inputmethodservice.InputMethodService;
+import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -43,15 +44,12 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.android.inputmethod.keyboard.Key;
@@ -251,44 +249,49 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (windowToken == null) {
             return;
         }
-        mSplashDialog = new Dialog(mInputMethodService, android.R.style.Theme_Holo_Dialog);
-        mSplashDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mSplashDialog.setContentView(R.layout.research_splash);
-        mSplashDialog.setCancelable(true);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(mInputMethodService)
+                .setTitle(R.string.research_splash_title)
+                .setMessage(R.string.research_splash_content)
+                .setPositiveButton(android.R.string.yes,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                onUserLoggingConsent();
+                                mSplashDialog.dismiss();
+                            }
+                })
+                .setNegativeButton(android.R.string.no,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                final String packageName = mInputMethodService.getPackageName();
+                                final Uri packageUri = Uri.parse("package:" + packageName);
+                                final Intent intent = new Intent(Intent.ACTION_UNINSTALL_PACKAGE,
+                                        packageUri);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                mInputMethodService.startActivity(intent);
+                            }
+                })
+                .setCancelable(true)
+                .setOnCancelListener(
+                        new OnCancelListener() {
+                            @Override
+                            public void onCancel(DialogInterface dialog) {
+                                mInputMethodService.requestHideSelf(0);
+                            }
+                });
+        mSplashDialog = builder.create();
         final Window w = mSplashDialog.getWindow();
         final WindowManager.LayoutParams lp = w.getAttributes();
         lp.token = windowToken;
         lp.type = WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG;
         w.setAttributes(lp);
         w.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-        mSplashDialog.setOnCancelListener(new OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                mInputMethodService.requestHideSelf(0);
-            }
-        });
-        final Button doNotLogButton = (Button) mSplashDialog.findViewById(
-                R.id.research_do_not_log_button);
-        doNotLogButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onUserLoggingElection(false);
-                mSplashDialog.dismiss();
-            }
-        });
-        final Button doLogButton = (Button) mSplashDialog.findViewById(R.id.research_do_log_button);
-        doLogButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onUserLoggingElection(true);
-                mSplashDialog.dismiss();
-            }
-        });
         mSplashDialog.show();
     }
 
-    public void onUserLoggingElection(final boolean enableLogging) {
-        setLoggingAllowed(enableLogging);
+    public void onUserLoggingConsent() {
+        setLoggingAllowed(true);
         if (mPrefs == null) {
             return;
         }
