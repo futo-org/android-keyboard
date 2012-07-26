@@ -450,12 +450,18 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         prefsChanged(prefs);
     }
 
-    public void presentResearchDialog(final LatinIME latinIME) {
+    public void onResearchKeySelected(final LatinIME latinIME) {
         if (mInFeedbackDialog) {
             Toast.makeText(latinIME, R.string.research_please_exit_feedback_form,
                     Toast.LENGTH_LONG).show();
             return;
         }
+        presentFeedbackDialog(latinIME);
+    }
+
+    // TODO: currently unreachable.  Remove after being sure no menu is needed.
+    /*
+    public void presentResearchDialog(final LatinIME latinIME) {
         final CharSequence title = latinIME.getString(R.string.english_ime_research_log);
         final boolean showEnable = mIsLoggingSuspended || !sIsLogging;
         final CharSequence[] items = new CharSequence[] {
@@ -472,28 +478,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                         presentFeedbackDialog(latinIME);
                         break;
                     case 1:
-                        if (showEnable) {
-                            if (!sIsLogging) {
-                                setLoggingAllowed(true);
-                            }
-                            resumeLogging();
-                            Toast.makeText(latinIME,
-                                    R.string.research_notify_session_logging_enabled,
-                                    Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast toast = Toast.makeText(latinIME,
-                                    R.string.research_notify_session_log_deleting,
-                                    Toast.LENGTH_LONG);
-                            toast.show();
-                            boolean isLogDeleted = abort();
-                            final long currentTime = System.currentTimeMillis();
-                            final long resumeTime = currentTime + 1000 * 60 *
-                                    SUSPEND_DURATION_IN_MINUTES;
-                            suspendLoggingUntil(resumeTime);
-                            toast.cancel();
-                            Toast.makeText(latinIME, R.string.research_notify_logging_suspended,
-                                    Toast.LENGTH_LONG).show();
-                        }
+                        enableOrDisable(showEnable, latinIME);
                         break;
                 }
             }
@@ -504,12 +489,42 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 .setTitle(title);
         latinIME.showOptionDialog(builder.create());
     }
+    */
 
     private boolean mInFeedbackDialog = false;
     public void presentFeedbackDialog(LatinIME latinIME) {
         mInFeedbackDialog = true;
         latinIME.launchKeyboardedDialogActivity(FeedbackActivity.class);
     }
+
+    // TODO: currently unreachable.  Remove after being sure enable/disable is
+    // not needed.
+    /*
+    public void enableOrDisable(final boolean showEnable, final LatinIME latinIME) {
+        if (showEnable) {
+            if (!sIsLogging) {
+                setLoggingAllowed(true);
+            }
+            resumeLogging();
+            Toast.makeText(latinIME,
+                    R.string.research_notify_session_logging_enabled,
+                    Toast.LENGTH_LONG).show();
+        } else {
+            Toast toast = Toast.makeText(latinIME,
+                    R.string.research_notify_session_log_deleting,
+                    Toast.LENGTH_LONG);
+            toast.show();
+            boolean isLogDeleted = abort();
+            final long currentTime = System.currentTimeMillis();
+            final long resumeTime = currentTime + 1000 * 60 *
+                    SUSPEND_DURATION_IN_MINUTES;
+            suspendLoggingUntil(resumeTime);
+            toast.cancel();
+            Toast.makeText(latinIME, R.string.research_notify_logging_suspended,
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+    */
 
     private static final String[] EVENTKEYS_FEEDBACK = {
         "UserTimestamp", "contents"
