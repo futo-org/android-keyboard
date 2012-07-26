@@ -794,13 +794,16 @@ public class PointerTracker {
                     final int dx = x - lastX;
                     final int dy = y - lastY;
                     final int lastMoveSquared = dx * dx + dy * dy;
+                    // TODO: Should find a way to balance gesture detection and this hack.
                     if (sNeedsPhantomSuddenMoveEventHack
-                            && lastMoveSquared >= mKeyQuarterWidthSquared) {
+                            && lastMoveSquared >= mKeyQuarterWidthSquared
+                            && !mIsPossibleGesture) {
                         if (DEBUG_MODE) {
                             Log.w(TAG, String.format("onMoveEvent:"
                                     + " phantom sudden move event is translated to "
                                     + "up[%d,%d]/down[%d,%d] events", lastX, lastY, x, y));
                         }
+                        // TODO: This should be moved to outside of this nested if-clause?
                         if (ProductionFlag.IS_EXPERIMENTAL) {
                             ResearchLogger.pointerTracker_onMoveEvent(x, y, lastX, lastY);
                         }
@@ -816,7 +819,9 @@ public class PointerTracker {
                                 && !sPointerTrackerQueue.hasModifierKeyOlderThan(this)) {
                             onUpEventInternal(x, y, eventTime);
                         }
-                        mKeyAlreadyProcessed = true;
+                        if (!mIsPossibleGesture) {
+                            mKeyAlreadyProcessed = true;
+                        }
                         setReleasedKeyGraphics(oldKey);
                     }
                 }
@@ -832,7 +837,9 @@ public class PointerTracker {
                 if (mIsAllowedSlidingKeyInput) {
                     onMoveToNewKey(key, x, y);
                 } else {
-                    mKeyAlreadyProcessed = true;
+                    if (!mIsPossibleGesture) {
+                        mKeyAlreadyProcessed = true;
+                    }
                 }
             }
         }
@@ -871,6 +878,7 @@ public class PointerTracker {
     private void onUpEventInternal(int x, int y, long eventTime) {
         mTimerProxy.cancelKeyTimers();
         mIsInSlidingKeyInput = false;
+        mIsPossibleGesture = false;
         // Release the last pressed key.
         setReleasedKeyGraphics(mCurrentKey);
         if (mIsShowingMoreKeysPanel) {
