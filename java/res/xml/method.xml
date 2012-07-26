@@ -22,6 +22,7 @@
 
 <!-- Supported subtypes
     keyboard_locale: script_name/keyboard_layout_set[:keyboard_locale]
+    af: Afrikaans/qwerty
     ar: Arabic/arabic
     be: Belarusian/east_slavic
     bg: Bulgarian/bulgarian
@@ -89,6 +90,12 @@
             android:imeSubtypeLocale="en_GB"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:imeSubtypeLocale="af"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"

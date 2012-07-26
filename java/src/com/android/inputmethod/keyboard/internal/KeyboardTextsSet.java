@@ -377,6 +377,58 @@ public final class KeyboardTextsSet {
         /* 120 */ "!fixedColumnOrder!5,!hasLabels!,=-O|=-O ,:-P|:-P ,;-)|;-) ,:-(|:-( ,:-)|:-) ,:-!|:-! ,:-$|:-$ ,B-)|B-) ,:O|:O ,:-*|:-* ,:-D|:-D ,:\'(|:\'( ,:-\\\\|:-\\\\ ,O:-)|O:-) ,:-[|:-[ ",
     };
 
+    /* Language af: Afrikaans */
+    private static final String[] LANGUAGE_af = {
+        // This is the same as Dutch except promoting vowels with circumflex and diaeresis.
+        // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
+        // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
+        // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
+        // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
+        // U+00E6: "æ" LATIN SMALL LETTER AE
+        // U+00E3: "ã" LATIN SMALL LETTER A WITH TILDE
+        // U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
+        // U+0101: "ā" LATIN SMALL LETTER A WITH MACRON
+        /* 0 */ "\u00E2,\u00E4,\u00E1,\u00E0,\u00E6,\u00E3,\u00E5,\u0101",
+        // U+00EA: "ê" LATIN SMALL LETTER E WITH CIRCUMFLEX
+        // U+00EB: "ë" LATIN SMALL LETTER E WITH DIAERESIS
+        // U+00E9: "é" LATIN SMALL LETTER E WITH ACUTE
+        // U+00E8: "è" LATIN SMALL LETTER E WITH GRAVE
+        // U+0119: "ę" LATIN SMALL LETTER E WITH OGONEK
+        // U+0117: "ė" LATIN SMALL LETTER E WITH DOT ABOVE
+        // U+0113: "ē" LATIN SMALL LETTER E WITH MACRON
+        /* 1 */ "\u00EA,\u00EB,\u00E9,\u00E8,\u0119,\u0117,\u0113",
+        // U+00EE: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
+        // U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
+        // U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE
+        // U+00EC: "ì" LATIN SMALL LETTER I WITH GRAVE
+        // U+012F: "į" LATIN SMALL LETTER I WITH OGONEK
+        // U+012B: "ī" LATIN SMALL LETTER I WITH MACRON
+        // U+0133: "ĳ" LATIN SMALL LIGATURE IJ
+        /* 2 */ "\u00EC,\u00EF,\u00ED,\u00EE,\u012F,\u012B,\u0133",
+        // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
+        // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
+        // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
+        // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
+        // U+00F5: "õ" LATIN SMALL LETTER O WITH TILDE
+        // U+0153: "œ" LATIN SMALL LIGATURE OE
+        // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
+        // U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
+        /* 3 */ "\u00F4,\u00F6,\u00F3,\u00F2,\u00F5,\u0153,\u00F8,\u014D",
+        // U+00FB: "û" LATIN SMALL LETTER U WITH CIRCUMFLEX
+        // U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS
+        // U+00FA: "ú" LATIN SMALL LETTER U WITH ACUTE
+        // U+00F9: "ù" LATIN SMALL LETTER U WITH GRAVE
+        // U+016B: "ū" LATIN SMALL LETTER U WITH MACRON
+        /* 4 */ "\u00FB,\u00FC,\u00FA,\u00F9,\u016B",
+        /* 5 */ null,
+        // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
+        // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
+        /* 6 */ "\u00F1,\u0144",
+        /* 7 */ null,
+        // U+0133: "ĳ" LATIN SMALL LIGATURE IJ
+        /* 8 */ "\u0133",
+    };
+
     /* Language ar: Arabic */
     private static final String[] LANGUAGE_ar = {
         /* 0~ */
@@ -2190,6 +2242,7 @@ public final class KeyboardTextsSet {
 
     /* Language sw: Swahili */
     private static final String[] LANGUAGE_sw = {
+        // This is the same as English except more_keys_for_g.
         // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
         // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
         // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
@@ -2567,6 +2620,7 @@ public final class KeyboardTextsSet {
 
     private static final Object[] LANGUAGES_AND_TEXTS = {
         "DEFAULT", LANGUAGE_DEFAULT, /* default */
+        "af", LANGUAGE_af, /* Afrikaans */
         "ar", LANGUAGE_ar, /* Arabic */
         "be", LANGUAGE_be, /* Belarusian */
         "ca", LANGUAGE_ca, /* Catalan */
