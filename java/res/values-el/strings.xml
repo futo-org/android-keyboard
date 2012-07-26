@@ -90,6 +90,12 @@
     <string name="spoken_description_return" msgid="8178083177238315647">"Πλήκτρο Return"</string>
     <string name="spoken_description_search" msgid="1247236163755920808">"Αναζήτηση"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"Κουκκίδα"</string>
+    <!-- no translation found for spoken_description_language_switch (5507091328222331316) -->
+    <skip />
+    <!-- no translation found for spoken_description_action_next (8636078276664150324) -->
+    <skip />
+    <!-- no translation found for spoken_description_action_previous (800872415009336208) -->
+    <skip />
     <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Το Shift ενεργοποιημένο"</string>
     <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Το Caps lock είναι ενεργοποιημένο"</string>
     <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Το Shift είναι απενεργοποιημένο"</string>

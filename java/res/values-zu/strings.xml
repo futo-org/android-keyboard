@@ -90,6 +90,9 @@
     <string name="spoken_description_return" msgid="8178083177238315647">"Buyisela"</string>
     <string name="spoken_description_search" msgid="1247236163755920808">"Sesha"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"Icashazi"</string>
+    <string name="spoken_description_language_switch" msgid="5507091328222331316">"Shintsha ulimi"</string>
+    <string name="spoken_description_action_next" msgid="8636078276664150324">"Okulandelayo"</string>
+    <string name="spoken_description_action_previous" msgid="800872415009336208">"Okwangaphambilini"</string>
     <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"U-Shift uvunyelwe"</string>
     <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Ofeleba bavunyelwe"</string>
     <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"U-Shift uvimbelwe"</string>
