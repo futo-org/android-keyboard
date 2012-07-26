@@ -497,23 +497,6 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
         mHasDistinctMultitouch = hasDistinctMultitouch;
     }
 
-    /**
-     * When enabled, calls to {@link KeyboardActionListener#onCodeInput} will include key
-     * codes for adjacent keys.  When disabled, only the primary key code will be
-     * reported.
-     * @param enabled whether or not the proximity correction is enabled
-     */
-    public void setProximityCorrectionEnabled(boolean enabled) {
-        mKeyDetector.setProximityCorrectionEnabled(enabled);
-    }
-
-    /**
-     * Returns true if proximity correction is enabled.
-     */
-    public boolean isProximityCorrectionEnabled() {
-        return mKeyDetector.isProximityCorrectionEnabled();
-    }
-
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();

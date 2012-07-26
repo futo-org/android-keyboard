@@ -693,7 +693,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         inputView.setKeyPreviewPopupEnabled(mCurrentSettings.mKeyPreviewPopupOn,
                 mCurrentSettings.mKeyPreviewPopupDismissDelay);
-        inputView.setProximityCorrectionEnabled(true);
 
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
