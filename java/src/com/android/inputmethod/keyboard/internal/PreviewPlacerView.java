@@ -51,6 +51,8 @@ public class PreviewPlacerView extends RelativeLayout {
     private final SparseArray<PointerTracker> mPointers = new SparseArray<PointerTracker>();
 
     private String mGesturePreviewText;
+    private boolean mDrawsGesturePreviewTrail;
+    private boolean mDrawsGestureFloatingPreviewText;
 
     public PreviewPlacerView(Context context) {
         super(context);
@@ -89,6 +91,12 @@ public class PreviewPlacerView extends RelativeLayout {
         mYOrigin = y;
     }
 
+    public void setGesturePreviewMode(boolean drawsGesturePreviewTrail,
+            boolean drawsGestureFloatingPreviewText) {
+        mDrawsGesturePreviewTrail = drawsGesturePreviewTrail;
+        mDrawsGestureFloatingPreviewText = drawsGestureFloatingPreviewText;
+    }
+
     public void invalidatePointer(PointerTracker tracker) {
         synchronized (mPointers) {
             mPointers.put(tracker.mPointerId, tracker);
@@ -100,18 +108,19 @@ public class PreviewPlacerView extends RelativeLayout {
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        // TDOD: Add user settings option to control drawing gesture trail and gesture preview.
         synchronized (mPointers) {
             canvas.translate(mXOrigin, mYOrigin);
             final int trackerCount = mPointers.size();
-            boolean floatingPreviewHasDrawn = false;
+            boolean hasDrawnFloatingPreviewText = false;
             for (int index = 0; index < trackerCount; index++) {
                 final PointerTracker tracker = mPointers.valueAt(index);
-                tracker.drawGestureTrail(canvas, mGesturePaint);
+                if (mDrawsGesturePreviewTrail) {
+                    tracker.drawGestureTrail(canvas, mGesturePaint);
+                }
                 // TODO: Figure out more cleaner way to draw gesture preview text.
-                if (!floatingPreviewHasDrawn) {
+                if (mDrawsGestureFloatingPreviewText && !hasDrawnFloatingPreviewText) {
                     drawGesturePreviewText(canvas, tracker, mGesturePreviewText);
-                    floatingPreviewHasDrawn = true;
+                    hasDrawnFloatingPreviewText = true;
                 }
             }
             canvas.translate(-mXOrigin, -mYOrigin);
