@@ -233,7 +233,7 @@ public class Suggest {
         // the current settings. It may also be useful to know, when the setting is off, whether
         // the word *would* have been auto-corrected.
         if (!isCorrectionEnabled || !allowsToBeAutoCorrected || !wordComposer.isComposingWord()
-                || suggestionsSet.isEmpty()
+                || suggestionsSet.isEmpty() || wordComposer.hasDigits()
                 || wordComposer.isMostlyCaps() || wordComposer.isResumed()
                 || !hasMainDictionary()) {
             // If we don't have a main dictionary, we never want to auto-correct. The reason for
