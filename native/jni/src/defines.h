@@ -19,9 +19,12 @@
 #define LATINIME_DEFINES_H
 
 #if defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
-#include <cutils/log.h>
-#define AKLOGE ALOGE
-#define AKLOGI ALOGI
+#include <android/log.h>
+#ifndef LOG_TAG
+#define LOG_TAG "LatinIME: "
+#endif
+#define AKLOGE(fmt, ...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##__VA_ARGS__)
+#define AKLOGI(fmt, ...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##__VA_ARGS__)
 
 #define DUMP_WORD(word, length) do { dumpWord(word, length); } while(0)
 #define DUMP_WORD_INT(word, length) do { dumpWordInt(word, length); } while(0)
@@ -116,10 +119,6 @@ static inline void prof_out(void) {
 #endif // FLAG_DO_PROFILE
 
 #ifdef FLAG_DBG
-#include <cutils/log.h>
-#ifndef LOG_TAG
-#define LOG_TAG "LatinIME: "
-#endif
 #define DEBUG_DICT true
 #define DEBUG_DICT_FULL false
 #define DEBUG_EDIT_DISTANCE false
@@ -145,7 +144,6 @@ static inline void prof_out(void) {
 #define DEBUG_CORRECTION false
 #define DEBUG_CORRECTION_FREQ false
 #define DEBUG_WORDS_PRIORITY_QUEUE false
-
 
 #endif // FLAG_DBG
 

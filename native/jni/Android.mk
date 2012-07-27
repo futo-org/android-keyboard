@@ -15,8 +15,8 @@
 LOCAL_PATH := $(call my-dir)
 
 ############ some local flags
-# If you change any of those flags, you need to rebuild both libjni_latinime_static
-# and the shared library.
+# If you change any of those flags, you need to rebuild both libjni_latinime_common_static
+# and the shared library that uses libjni_latinime_common_static.
 FLAG_DBG ?= false
 FLAG_DO_PROFILE ?= false
 
@@ -82,11 +82,11 @@ LOCAL_WHOLE_STATIC_LIBRARIES := libjni_latinime_common_static
 
 ifeq ($(FLAG_DO_PROFILE), true)
     $(warning Making profiling version of native library)
-    LOCAL_SHARED_LIBRARIES += libcutils libutils
+    LOCAL_SHARED_LIBRARIES += liblog
 else # FLAG_DO_PROFILE
 ifeq ($(FLAG_DBG), true)
     $(warning Making debug version of native library)
-    LOCAL_SHARED_LIBRARIES += libcutils libutils
+    LOCAL_SHARED_LIBRARIES += liblog
 endif # FLAG_DBG
 endif # FLAG_DO_PROFILE
 
