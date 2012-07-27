@@ -106,7 +106,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     protected final KeyPreviewDrawParams mKeyPreviewDrawParams;
     private boolean mShowKeyPreviewPopup = true;
     private int mDelayAfterPreview;
-    private PreviewPlacerView mPreviewPlacer;
+    private final PreviewPlacerView mPreviewPlacerView;
 
     /** True if {@link KeyboardView} should handle gesture events. */
     protected boolean mShouldHandleGesture;
@@ -376,6 +376,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mDelayAfterPreview = mKeyPreviewDrawParams.mLingerTimeout;
 
         mPaint.setAntiAlias(true);
+
+        mPreviewPlacerView = new PreviewPlacerView(context);
     }
 
     // Read fraction value in TypedArray as float.
@@ -876,39 +878,35 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     private void addKeyPreview(TextView keyPreview) {
-        if (mPreviewPlacer == null) {
-            createPreviewPlacer();
-        }
-        mPreviewPlacer.addView(
-                keyPreview, ViewLayoutUtils.newLayoutParam(mPreviewPlacer, 0, 0));
+        locatePreviewPlacerView();
+        mPreviewPlacerView.addView(
+                keyPreview, ViewLayoutUtils.newLayoutParam(mPreviewPlacerView, 0, 0));
     }
 
-    private void createPreviewPlacer() {
-        mPreviewPlacer = new PreviewPlacerView(getContext());
+    private void locatePreviewPlacerView() {
+        if (mPreviewPlacerView.getParent() != null) {
+            return;
+        }
         final int[] viewOrigin = new int[2];
         getLocationInWindow(viewOrigin);
-        mPreviewPlacer.setOrigin(viewOrigin[0], viewOrigin[1]);
+        mPreviewPlacerView.setOrigin(viewOrigin[0], viewOrigin[1]);
         final ViewGroup windowContentView =
                 (ViewGroup)getRootView().findViewById(android.R.id.content);
-        windowContentView.addView(mPreviewPlacer);
+        windowContentView.addView(mPreviewPlacerView);
     }
 
     public void showGesturePreviewText(String gesturePreviewText) {
         // TDOD: Add user settings option to control drawing gesture trail.
-        if (mPreviewPlacer == null) {
-            createPreviewPlacer();
-        }
-        mPreviewPlacer.setGesturePreviewText(gesturePreviewText);
-        mPreviewPlacer.invalidate();
+        locatePreviewPlacerView();
+        mPreviewPlacerView.setGesturePreviewText(gesturePreviewText);
+        mPreviewPlacerView.invalidate();
     }
 
     @Override
     public void showGestureTrail(PointerTracker tracker) {
         // TDOD: Add user settings option to control drawing gesture trail.
-        if (mPreviewPlacer == null) {
-            createPreviewPlacer();
-        }
-        mPreviewPlacer.invalidatePointer(tracker);
+        locatePreviewPlacerView();
+        mPreviewPlacerView.invalidatePointer(tracker);
     }
 
     @SuppressWarnings("deprecation") // setBackgroundDrawable is replaced by setBackground in API16
@@ -1051,9 +1049,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         closing();
-        if (mPreviewPlacer != null) {
-            mPreviewPlacer.removeAllViews();
-        }
+        mPreviewPlacerView.removeAllViews();
         if (mBuffer != null) {
             mBuffer.recycle();
             mBuffer = null;
