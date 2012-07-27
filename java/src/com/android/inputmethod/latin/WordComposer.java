@@ -41,6 +41,7 @@ public class WordComposer {
 
     // Cache these values for performance
     private int mCapsCount;
+    private int mDigitsCount;
     private boolean mAutoCapitalized;
     private int mTrailingSingleQuotesCount;
     private int mCodePointSize;
@@ -65,6 +66,7 @@ public class WordComposer {
         mTypedWord = new StringBuilder(source.mTypedWord);
         mInputPointers.copy(source.mInputPointers);
         mCapsCount = source.mCapsCount;
+        mDigitsCount = source.mDigitsCount;
         mIsFirstCharCapitalized = source.mIsFirstCharCapitalized;
         mAutoCapitalized = source.mAutoCapitalized;
         mTrailingSingleQuotesCount = source.mTrailingSingleQuotesCount;
@@ -80,6 +82,7 @@ public class WordComposer {
         mTypedWord.setLength(0);
         mAutoCorrection = null;
         mCapsCount = 0;
+        mDigitsCount = 0;
         mIsFirstCharCapitalized = false;
         mTrailingSingleQuotesCount = 0;
         mIsResumed = false;
@@ -141,6 +144,7 @@ public class WordComposer {
         mIsFirstCharCapitalized = isFirstCharCapitalized(
                 newIndex, primaryCode, mIsFirstCharCapitalized);
         if (Character.isUpperCase(primaryCode)) mCapsCount++;
+        if (Character.isDigit(primaryCode)) mDigitsCount++;
         if (Keyboard.CODE_SINGLE_QUOTE == primaryCode) {
             ++mTrailingSingleQuotesCount;
         } else {
@@ -213,6 +217,7 @@ public class WordComposer {
                 mTypedWord.deleteCharAt(stringBuilderLength - 1);
             }
             if (Character.isUpperCase(lastChar)) mCapsCount--;
+            if (Character.isDigit(lastChar)) mDigitsCount--;
             refreshSize();
         }
         // We may have deleted the last one.
@@ -265,6 +270,13 @@ public class WordComposer {
      */
     public boolean isMostlyCaps() {
         return mCapsCount > 1;
+    }
+
+    /**
+     * Returns true if we have digits in the composing word.
+     */
+    public boolean hasDigits() {
+        return mDigitsCount > 0;
     }
 
     /**
@@ -322,6 +334,7 @@ public class WordComposer {
             lastComposedWord.deactivate();
         }
         mCapsCount = 0;
+        mDigitsCount = 0;
         mIsBatchMode = false;
         mTypedWord.setLength(0);
         mTrailingSingleQuotesCount = 0;
