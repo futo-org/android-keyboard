@@ -60,6 +60,12 @@
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"ตามคำก่อนหน้า"</string>
     <string name="gesture_input" msgid="3310827802759290774">"ป้อนท่าทางสัมผัส"</string>
     <string name="gesture_input_summary" msgid="7019742443455085809">"ป้อนคำโดยลากนิ้วเป็นรูปตัวอักษรที่อยู่ในคำ โดยไม่ยกนิ้วขึ้น"</string>
+    <!-- no translation found for gesture_preview_trail (3802333369335722221) -->
+    <skip />
+    <!-- no translation found for gesture_floating_preview_text (6859416520117939680) -->
+    <skip />
+    <!-- no translation found for gesture_floating_preview_text_summary (3333754126434989709) -->
+    <skip />
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : บันทึกแล้ว"</string>
     <string name="label_go_key" msgid="1635148082137219148">"ไป"</string>
     <string name="label_next_key" msgid="362972844525672568">"ถัดไป"</string>
@@ -90,6 +96,9 @@
     <string name="spoken_description_return" msgid="8178083177238315647">"Return"</string>
     <string name="spoken_description_search" msgid="1247236163755920808">"ค้นหา"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"เครื่องหมายจุด"</string>
+    <string name="spoken_description_language_switch" msgid="5507091328222331316">"เปลี่ยนภาษา"</string>
+    <string name="spoken_description_action_next" msgid="8636078276664150324">"ถัดไป"</string>
+    <string name="spoken_description_action_previous" msgid="800872415009336208">"ก่อนหน้า"</string>
     <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"เปิดใช้งาน Shift แล้ว"</string>
     <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"เปิดใช้งาน Caps Lock แล้ว"</string>
     <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"ปิดใช้งาน Shift แล้ว"</string>
