@@ -432,8 +432,11 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         return mShowKeyPreviewPopup;
     }
 
-    public void setGestureHandlingMode(boolean shouldHandleGesture) {
+    public void setGestureHandlingMode(boolean shouldHandleGesture,
+            boolean drawsGesturePreviewTrail, boolean drawsGestureFloatingPreviewText) {
         mShouldHandleGesture = shouldHandleGesture;
+        mPreviewPlacerView.setGesturePreviewMode(
+                drawsGesturePreviewTrail, drawsGestureFloatingPreviewText);
     }
 
     @Override
@@ -896,15 +899,12 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     public void showGesturePreviewText(String gesturePreviewText) {
-        // TDOD: Add user settings option to control drawing gesture trail.
         locatePreviewPlacerView();
         mPreviewPlacerView.setGesturePreviewText(gesturePreviewText);
-        mPreviewPlacerView.invalidate();
     }
 
     @Override
     public void showGestureTrail(PointerTracker tracker) {
-        // TDOD: Add user settings option to control drawing gesture trail.
         locatePreviewPlacerView();
         mPreviewPlacerView.invalidatePointer(tracker);
     }

@@ -2095,7 +2095,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (keyboardView != null) {
             final boolean shouldHandleGesture = mCurrentSettings.mGestureInputEnabled
                     && mIsMainDictionaryAvailable;
-            keyboardView.setGestureHandlingMode(shouldHandleGesture);
+            keyboardView.setGestureHandlingMode(shouldHandleGesture,
+                    mCurrentSettings.mGesturePreviewTrailEnabled,
+                    mCurrentSettings.mGestureFloatingPreviewTextEnabled);
         }
     }
 

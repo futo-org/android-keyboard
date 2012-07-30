@@ -481,8 +481,10 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
     }
 
     @Override
-    public void setGestureHandlingMode(final boolean shouldHandleGesture) {
-        super.setGestureHandlingMode(shouldHandleGesture);
+    public void setGestureHandlingMode(final boolean shouldHandleGesture,
+            boolean drawsGesturePreviewTrail, boolean drawsGestureFloatingPreviewText) {
+        super.setGestureHandlingMode(shouldHandleGesture, drawsGesturePreviewTrail,
+                drawsGestureFloatingPreviewText);
         PointerTracker.setKeyDetector(mKeyDetector, shouldHandleGesture);
     }
 
