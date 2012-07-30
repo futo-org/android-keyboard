@@ -414,8 +414,14 @@ public class Key {
 
     @Override
     public String toString() {
-        return String.format("%s/%s %d,%d %dx%d %s/%s/%s",
-                Keyboard.printableCode(mCode), mLabel, mX, mY, mWidth, mHeight, mHintLabel,
+        final String label;
+        if (StringUtils.codePointCount(mLabel) == 1 && mLabel.codePointAt(0) == mCode) {
+            label = "";
+        } else {
+            label = "/" + mLabel;
+        }
+        return String.format("%s%s %d,%d %dx%d %s/%s/%s",
+                Keyboard.printableCode(mCode), label, mX, mY, mWidth, mHeight, mHintLabel,
                 KeyboardIconsSet.getIconName(mIconId), backgroundName(mBackgroundType));
     }
 
