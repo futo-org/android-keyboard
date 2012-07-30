@@ -55,10 +55,15 @@ public class KeyboardId {
     public static final int ELEMENT_PHONE_SYMBOLS = 8;
     public static final int ELEMENT_NUMBER = 9;
 
+    public static final int FORM_FACTOR_PHONE = 0;
+    public static final int FORM_FACTOR_TABLET7 = 1;
+    public static final int FORM_FACTOR_TABLET10 = 2;
+
     private static final int IME_ACTION_CUSTOM_LABEL = EditorInfo.IME_MASK_ACTION + 1;
 
     public final InputMethodSubtype mSubtype;
     public final Locale mLocale;
+    public final int mDeviceFormFactor;
     public final int mOrientation;
     public final int mWidth;
     public final int mMode;
@@ -72,11 +77,12 @@ public class KeyboardId {
 
     private final int mHashCode;
 
-    public KeyboardId(int elementId, InputMethodSubtype subtype, int orientation, int width,
-            int mode, EditorInfo editorInfo, boolean clobberSettingsKey, boolean shortcutKeyEnabled,
-            boolean hasShortcutKey, boolean languageSwitchKeyEnabled) {
+    public KeyboardId(int elementId, InputMethodSubtype subtype, int deviceFormFactor,
+            int orientation, int width, int mode, EditorInfo editorInfo, boolean clobberSettingsKey,
+            boolean shortcutKeyEnabled, boolean hasShortcutKey, boolean languageSwitchKeyEnabled) {
         mSubtype = subtype;
         mLocale = SubtypeLocale.getSubtypeLocale(subtype);
+        mDeviceFormFactor = deviceFormFactor;
         mOrientation = orientation;
         mWidth = width;
         mMode = mode;
@@ -94,6 +100,7 @@ public class KeyboardId {
 
     private static int computeHashCode(KeyboardId id) {
         return Arrays.hashCode(new Object[] {
+                id.mDeviceFormFactor,
                 id.mOrientation,
                 id.mElementId,
                 id.mMode,
@@ -115,7 +122,8 @@ public class KeyboardId {
     private boolean equals(KeyboardId other) {
         if (other == this)
             return true;
-        return other.mOrientation == mOrientation
+        return other.mDeviceFormFactor == mDeviceFormFactor
+                && other.mOrientation == mOrientation
                 && other.mElementId == mElementId
                 && other.mMode == mMode
                 && other.mWidth == mWidth
@@ -184,11 +192,11 @@ public class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format("[%s %s:%s %s%d %s %s %s%s%s%s%s%s%s%s]",
+        return String.format("[%s %s:%s %s-%s:%d %s %s %s%s%s%s%s%s%s%s]",
                 elementIdToName(mElementId),
                 mLocale,
                 mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
-                (mOrientation == 1 ? "port" : "land"), mWidth,
+                deviceFormFactor(mDeviceFormFactor), (mOrientation == 1 ? "port" : "land"), mWidth,
                 modeName(mMode),
                 imeAction(),
                 (navigateNext() ? "navigateNext" : ""),
@@ -222,6 +230,15 @@ public class KeyboardId {
         case ELEMENT_PHONE: return "phone";
         case ELEMENT_PHONE_SYMBOLS: return "phoneSymbols";
         case ELEMENT_NUMBER: return "number";
+        default: return null;
+        }
+    }
+
+    public static String deviceFormFactor(int devoceFormFactor) {
+        switch (devoceFormFactor) {
+        case FORM_FACTOR_PHONE: return "phone";
+        case FORM_FACTOR_TABLET7: return "tablet7";
+        case FORM_FACTOR_TABLET10: return "tablet10";
         default: return null;
         }
     }
