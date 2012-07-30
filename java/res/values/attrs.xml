@@ -118,6 +118,18 @@
             <enum name="italic" value="2" />
             <enum name="boldItalic" value="3" />
         </attr>
+
+        <attr name="gestureFloatingPreviewTextSize" format="dimension" />
+        <attr name="gestureFloatingPreviewTextColor" format="color" />
+        <attr name="gestureFloatingPreviewTextOffset" format="dimension" />
+        <attr name="gestureFloatingPreviewTextShadingColor" format="color" />
+        <attr name="gestureFloatingPreviewTextShadingBorder" format="dimension" />
+        <attr name="gestureFloatingPreviewTextShadowColor" format="color" />
+        <attr name="gestureFloatingPreviewTextShadowBorder" format="dimension" />
+        <attr name="gestureFloatingPreviewTextConnectorColor" format="color" />
+        <attr name="gestureFloatingPreviewTextConnectorWidth" format="dimension" />
+        <attr name="gesturePreviewTrailColor" format="color" />
+        <attr name="gesturePreviewTrailWidth" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="MainKeyboardView">

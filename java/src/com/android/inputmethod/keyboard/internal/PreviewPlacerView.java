@@ -17,9 +17,8 @@
 package com.android.inputmethod.keyboard.internal;
 
 import android.content.Context;
-import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.text.TextUtils;
@@ -30,60 +29,65 @@ import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.latin.R;
 
 public class PreviewPlacerView extends RelativeLayout {
-    // TODO: Move these parameters to attributes of {@link KeyboardView}.
-    private final static int GESTURE_DRAWING_COLOR = 0xff33b5e5;
-    private static final int GESTURE_PREVIEW_TEXT_COLOR = Color.WHITE;
-    private static final int GESTURE_PREVIEW_TEXT_SHADING_COLOR = 0xff33b5e5;
-    private static final int GESTURE_PREVIEW_TEXT_SHADOW_COLOR = 0xff252525;
-    private static final int GESTURE_PREVIEW_CONNECTOR_COLOR = Color.WHITE;
-
     private final Paint mGesturePaint;
-    private final int mGesturePreviewTraileWidth;
     private final Paint mTextPaint;
-    private final int mGesturePreviewTextOffset;
-    private final int mGesturePreviewTextShadowBorder;
-    private final int mGesturePreviewTextShadingBorder;
-    private final int mGesturePreviewTextConnectorWidth;
+    private final int mGestureFloatingPreviewTextColor;
+    private final int mGestureFloatingPreviewTextOffset;
+    private final int mGestureFloatingPreviewTextShadowColor;
+    private final int mGestureFloatingPreviewTextShadowBorder;
+    private final int mGestureFloatingPreviewTextShadingColor;
+    private final int mGestureFloatingPreviewTextShadingBorder;
+    private final int mGestureFloatingPreviewTextConnectorColor;
+    private final int mGestureFloatingPreviewTextConnectorWidth;
 
     private int mXOrigin;
     private int mYOrigin;
 
     private final SparseArray<PointerTracker> mPointers = new SparseArray<PointerTracker>();
 
-    private String mGesturePreviewText;
+    private String mGestureFloatingPreviewText;
     private boolean mDrawsGesturePreviewTrail;
     private boolean mDrawsGestureFloatingPreviewText;
 
-    public PreviewPlacerView(Context context) {
+    public PreviewPlacerView(Context context, TypedArray keyboardViewAttr) {
         super(context);
         setWillNotDraw(false);
 
-        final Resources res = getResources();
-        // TODO: Move these parameters to attributes of {@link KeyboardView}.
-        mGesturePreviewTraileWidth = res.getDimensionPixelSize(
-                R.dimen.gesture_preview_trail_width);
-        final int textSize = res.getDimensionPixelSize(R.dimen.gesture_preview_text_size);
-        mGesturePreviewTextOffset = res.getDimensionPixelSize(
-                R.dimen.gesture_preview_text_offset);
-        mGesturePreviewTextShadowBorder = res.getDimensionPixelOffset(
-                R.dimen.gesture_preview_text_shadow_border);
-        mGesturePreviewTextShadingBorder = res.getDimensionPixelOffset(
-                R.dimen.gesture_preview_text_shading_border);
-        mGesturePreviewTextConnectorWidth = res.getDimensionPixelOffset(
-                R.dimen.gesture_preview_text_connector_width);
+        final int gestureFloatingPreviewTextSize = keyboardViewAttr.getDimensionPixelSize(
+                R.styleable.KeyboardView_gestureFloatingPreviewTextSize, 0);
+        mGestureFloatingPreviewTextColor = keyboardViewAttr.getColor(
+                R.styleable.KeyboardView_gestureFloatingPreviewTextColor, 0);
+        mGestureFloatingPreviewTextOffset = keyboardViewAttr.getDimensionPixelOffset(
+                R.styleable.KeyboardView_gestureFloatingPreviewTextOffset, 0);
+        mGestureFloatingPreviewTextShadowColor = keyboardViewAttr.getColor(
+                R.styleable.KeyboardView_gestureFloatingPreviewTextShadowColor, 0);
+        mGestureFloatingPreviewTextShadowBorder = keyboardViewAttr.getDimensionPixelSize(
+                R.styleable.KeyboardView_gestureFloatingPreviewTextShadowBorder, 0);
+        mGestureFloatingPreviewTextShadingColor = keyboardViewAttr.getColor(
+                R.styleable.KeyboardView_gestureFloatingPreviewTextShadingColor, 0);
+        mGestureFloatingPreviewTextShadingBorder = keyboardViewAttr.getDimensionPixelSize(
+                R.styleable.KeyboardView_gestureFloatingPreviewTextShadingBorder, 0);
+        mGestureFloatingPreviewTextConnectorColor = keyboardViewAttr.getColor(
+                R.styleable.KeyboardView_gestureFloatingPreviewTextConnectorColor, 0);
+        mGestureFloatingPreviewTextConnectorWidth = keyboardViewAttr.getDimensionPixelSize(
+                R.styleable.KeyboardView_gestureFloatingPreviewTextConnectorWidth, 0);
+        final int gesturePreviewTrailColor = keyboardViewAttr.getColor(
+                R.styleable.KeyboardView_gesturePreviewTrailColor, 0);
+        final int gesturePreviewTrailWidth = keyboardViewAttr.getDimensionPixelSize(
+                R.styleable.KeyboardView_gesturePreviewTrailWidth, 0);
 
         mGesturePaint = new Paint();
         mGesturePaint.setAntiAlias(true);
         mGesturePaint.setStyle(Paint.Style.STROKE);
         mGesturePaint.setStrokeJoin(Paint.Join.ROUND);
-        mGesturePaint.setColor(GESTURE_DRAWING_COLOR);
-        mGesturePaint.setStrokeWidth(mGesturePreviewTraileWidth);
+        mGesturePaint.setColor(gesturePreviewTrailColor);
+        mGesturePaint.setStrokeWidth(gesturePreviewTrailWidth);
 
         mTextPaint = new Paint();
         mTextPaint.setAntiAlias(true);
         mTextPaint.setStrokeJoin(Paint.Join.ROUND);
         mTextPaint.setTextAlign(Align.CENTER);
-        mTextPaint.setTextSize(textSize);
+        mTextPaint.setTextSize(gestureFloatingPreviewTextSize);
     }
 
     public void setOrigin(int x, int y) {
@@ -119,7 +123,7 @@ public class PreviewPlacerView extends RelativeLayout {
                 }
                 // TODO: Figure out more cleaner way to draw gesture preview text.
                 if (mDrawsGestureFloatingPreviewText && !hasDrawnFloatingPreviewText) {
-                    drawGesturePreviewText(canvas, tracker, mGesturePreviewText);
+                    drawGestureFloatingPreviewText(canvas, tracker, mGestureFloatingPreviewText);
                     hasDrawnFloatingPreviewText = true;
                 }
             }
@@ -127,14 +131,14 @@ public class PreviewPlacerView extends RelativeLayout {
         }
     }
 
-    public void setGesturePreviewText(String gesturePreviewText) {
-        mGesturePreviewText = gesturePreviewText;
+    public void setGestureFloatingPreviewText(String gestureFloatingPreviewText) {
+        mGestureFloatingPreviewText = gestureFloatingPreviewText;
         invalidate();
     }
 
-    private void drawGesturePreviewText(Canvas canvas, PointerTracker tracker,
-            String gesturePreviewText) {
-        if (TextUtils.isEmpty(gesturePreviewText)) {
+    private void drawGestureFloatingPreviewText(Canvas canvas, PointerTracker tracker,
+            String gestureFloatingPreviewText) {
+        if (TextUtils.isEmpty(gestureFloatingPreviewText)) {
             return;
         }
 
@@ -144,22 +148,22 @@ public class PreviewPlacerView extends RelativeLayout {
         final int textSize = (int)paint.getTextSize();
         final int canvasWidth = canvas.getWidth();
 
-        final int halfTextWidth = (int)paint.measureText(gesturePreviewText) / 2 + textSize;
+        final int halfTextWidth = (int)paint.measureText(gestureFloatingPreviewText) / 2 + textSize;
         final int textX = Math.min(Math.max(lastX, halfTextWidth), canvasWidth - halfTextWidth);
 
-        int textY = Math.max(-textSize, lastY - mGesturePreviewTextOffset);
+        int textY = Math.max(-textSize, lastY - mGestureFloatingPreviewTextOffset);
         if (textY < 0) {
             // Paint black text shadow if preview extends above keyboard region.
             paint.setStyle(Paint.Style.FILL_AND_STROKE);
-            paint.setColor(GESTURE_PREVIEW_TEXT_SHADOW_COLOR);
-            paint.setStrokeWidth(mGesturePreviewTextShadowBorder);
-            canvas.drawText(gesturePreviewText, textX, textY, paint);
+            paint.setColor(mGestureFloatingPreviewTextShadowColor);
+            paint.setStrokeWidth(mGestureFloatingPreviewTextShadowBorder);
+            canvas.drawText(gestureFloatingPreviewText, textX, textY, paint);
         }
 
         // Paint the vertical line connecting the touch point to the preview text.
         paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(GESTURE_PREVIEW_CONNECTOR_COLOR);
-        paint.setStrokeWidth(mGesturePreviewTextConnectorWidth);
+        paint.setColor(mGestureFloatingPreviewTextConnectorColor);
+        paint.setStrokeWidth(mGestureFloatingPreviewTextConnectorWidth);
         final int lineTopY = textY - textSize / 4;
         canvas.drawLine(lastX, lastY, lastX, lineTopY, paint);
         if (lastX != textX) {
@@ -169,13 +173,13 @@ public class PreviewPlacerView extends RelativeLayout {
 
         // Paint the shading for the text preview
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        paint.setColor(GESTURE_PREVIEW_TEXT_SHADING_COLOR);
-        paint.setStrokeWidth(mGesturePreviewTextShadingBorder);
-        canvas.drawText(gesturePreviewText, textX, textY, paint);
+        paint.setColor(mGestureFloatingPreviewTextShadingColor);
+        paint.setStrokeWidth(mGestureFloatingPreviewTextShadingBorder);
+        canvas.drawText(gestureFloatingPreviewText, textX, textY, paint);
 
         // Paint the text preview
-        paint.setColor(GESTURE_PREVIEW_TEXT_COLOR);
+        paint.setColor(mGestureFloatingPreviewTextColor);
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawText(gesturePreviewText, textX, textY, paint);
+        canvas.drawText(gestureFloatingPreviewText, textX, textY, paint);
     }
 }

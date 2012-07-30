@@ -376,13 +376,12 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 R.styleable.KeyboardView_verticalCorrection, 0);
         mMoreKeysLayout = a.getResourceId(R.styleable.KeyboardView_moreKeysLayout, 0);
         mBackgroundDimAlpha = a.getInt(R.styleable.KeyboardView_backgroundDimAlpha, 0);
+        mPreviewPlacerView = new PreviewPlacerView(context, a);
         a.recycle();
 
         mDelayAfterPreview = mKeyPreviewDrawParams.mLingerTimeout;
 
         mPaint.setAntiAlias(true);
-
-        mPreviewPlacerView = new PreviewPlacerView(context);
     }
 
     // Read fraction value in TypedArray as float.
@@ -903,9 +902,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         windowContentView.addView(mPreviewPlacerView);
     }
 
-    public void showGesturePreviewText(String gesturePreviewText) {
+    public void showGestureFloatingPreviewText(String gestureFloatingPreviewText) {
         locatePreviewPlacerView();
-        mPreviewPlacerView.setGesturePreviewText(gesturePreviewText);
+        mPreviewPlacerView.setGestureFloatingPreviewText(gestureFloatingPreviewText);
     }
 
     @Override
