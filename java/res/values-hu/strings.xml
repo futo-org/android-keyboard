@@ -60,6 +60,12 @@
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Az előző szó alapján"</string>
     <string name="gesture_input" msgid="3310827802759290774">"Kézi bevitel"</string>
     <string name="gesture_input_summary" msgid="7019742443455085809">"Szó beírása a betűk megrajzolásával"</string>
+    <!-- no translation found for gesture_preview_trail (3802333369335722221) -->
+    <skip />
+    <!-- no translation found for gesture_floating_preview_text (6859416520117939680) -->
+    <skip />
+    <!-- no translation found for gesture_floating_preview_text_summary (3333754126434989709) -->
+    <skip />
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : mentve"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Ugrás"</string>
     <string name="label_next_key" msgid="362972844525672568">"Tovább"</string>

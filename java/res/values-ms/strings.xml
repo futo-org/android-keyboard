@@ -60,6 +60,12 @@
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Berdasarkan perkataan sebelumnya"</string>
     <string name="gesture_input" msgid="3310827802759290774">"Input gerak isyarat"</string>
     <string name="gesture_input_summary" msgid="7019742443455085809">"Masukkan perkataan dengan menyurih huruf perkataan itu."</string>
+    <!-- no translation found for gesture_preview_trail (3802333369335722221) -->
+    <skip />
+    <!-- no translation found for gesture_floating_preview_text (6859416520117939680) -->
+    <skip />
+    <!-- no translation found for gesture_floating_preview_text_summary (3333754126434989709) -->
+    <skip />
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Disimpan"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Pergi"</string>
     <string name="label_next_key" msgid="362972844525672568">"Seterusnya"</string>
@@ -90,12 +96,9 @@
     <string name="spoken_description_return" msgid="8178083177238315647">"Return"</string>
     <string name="spoken_description_search" msgid="1247236163755920808">"Carian"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"Titik"</string>
-    <!-- no translation found for spoken_description_language_switch (5507091328222331316) -->
-    <skip />
-    <!-- no translation found for spoken_description_action_next (8636078276664150324) -->
-    <skip />
-    <!-- no translation found for spoken_description_action_previous (800872415009336208) -->
-    <skip />
+    <string name="spoken_description_language_switch" msgid="5507091328222331316">"Tukar bahasa"</string>
+    <string name="spoken_description_action_next" msgid="8636078276664150324">"Seterusnya"</string>
+    <string name="spoken_description_action_previous" msgid="800872415009336208">"Sebelumnya"</string>
     <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Kunci anjak didayakan"</string>
     <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Kunci huruf besar didayakan"</string>
     <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Kunci anjak dilumpuhkan"</string>
