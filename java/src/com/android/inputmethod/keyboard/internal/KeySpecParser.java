@@ -90,8 +90,12 @@ public class KeySpecParser {
             final String label = (mIconId == KeyboardIconsSet.ICON_UNDEFINED ? mLabel
                     : PREFIX_ICON + KeyboardIconsSet.getIconName(mIconId));
             final String output = (mCode == Keyboard.CODE_OUTPUT_TEXT ? mOutputText
-                    : String.format("0x%04x", mCode));
-            return label + "/" + output;
+                    : Keyboard.printableCode(mCode));
+            if (StringUtils.codePointCount(label) == 1 && label.codePointAt(0) == mCode) {
+                return output;
+            } else {
+                return label + "|" + output;
+            }
         }
     }
 
