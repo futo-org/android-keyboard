@@ -1,6 +1,5 @@
 /*
- *
- * Copyright 2010, The Android Open Source Project
+ * Copyright (C) 2010, The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,7 +95,7 @@ static inline void prof_out(void) {
     }
     if (all == 0) all = 1;
     for (int i = 0; i < PROF_BUF_SIZE - 1; ++i) {
-        if (profile_buf[i] != 0) {
+        if (profile_buf[i]) {
             AKLOGI("(%d): Used %4.2f%%, %8.4f ms. Called %d times.",
                     i, (profile_buf[i] * 100 / all),
                     profile_buf[i] * 1000 / (float)CLOCKS_PER_SEC, profile_counter[i]);
