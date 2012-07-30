@@ -1651,13 +1651,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (swapWeakSpace) {
                 swapSwapperAndSpace();
                 mSpaceState = SPACE_STATE_SWAP_PUNCTUATION;
-            } else if (SPACE_STATE_PHANTOM == spaceState) {
+            } else if (SPACE_STATE_PHANTOM == spaceState
+                    && !mCurrentSettings.isWeakSpaceStripper(primaryCode)) {
                 // If we are in phantom space state, and the user presses a separator, we want to
                 // stay in phantom space state so that the next keypress has a chance to add the
                 // space. For example, if I type "Good dat", pick "day" from the suggestion strip
                 // then insert a comma and go on to typing the next word, I want the space to be
                 // inserted automatically before the next word, the same way it is when I don't
                 // input the comma.
+                // The case is a little different if the separator is a space stripper. Such a
+                // separator does not normally need a space on the right (that's the difference
+                // between swappers and strippers), so we should not stay in phantom space state if
+                // the separator is a stripper. Hence the additional test above.
                 mSpaceState = SPACE_STATE_PHANTOM;
             }
 

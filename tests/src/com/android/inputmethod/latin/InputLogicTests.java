@@ -216,6 +216,19 @@ public class InputLogicTests extends InputTestsBase {
         assertEquals("manual pick then separator", EXPECTED_RESULT, mTextView.getText().toString());
     }
 
+    public void testManualPickThenStripperThenPick() {
+        final String WORD_TO_TYPE = "this";
+        final String STRIPPER = "\n";
+        final String EXPECTED_RESULT = "this\nthis";
+        type(WORD_TO_TYPE);
+        pickSuggestionManually(0, WORD_TO_TYPE);
+        type(STRIPPER);
+        type(WORD_TO_TYPE);
+        pickSuggestionManually(0, WORD_TO_TYPE);
+        assertEquals("manual pick then \\n then manual pick", EXPECTED_RESULT,
+                mTextView.getText().toString());
+    }
+
     public void testManualPickThenSpaceThenType() {
         final String WORD1_TO_TYPE = "this";
         final String WORD2_TO_TYPE = " is";
