@@ -111,10 +111,16 @@
     <!-- Description for "next word suggestion" option. This displays suggestions even when there is no input, based on the previous word. -->
     <string name="bigram_prediction_summary">Based on previous word</string>
 
-    <!-- Option to enable gesture input. The user can input a word by tracing the letters of a word without releasing the finger from the screen. [CHAR LIMIT=20]-->
+    <!-- Option to enable gesture input. The user can input a word by tracing the letters of a word without releasing the finger from the screen. [CHAR LIMIT=30]-->
     <string name="gesture_input">Gesture input</string>
     <!-- Description for "gesture_input" option. The user can input a word by tracing the letters of a word without releasing the finger from the screen. [CHAR LIMIT=65]-->
     <string name="gesture_input_summary">Input a word by tracing the letters of a word</string>
+    <!-- Option to enable gesture trail preview. The user can see a trail of the gesture during gesture input. [CHAR LIMIT=30]-->
+    <string name="gesture_preview_trail">Show gesture trail</string>
+    <!-- Option to enable gesture floating text preview. The user can see a suggested word floating under the moving finger during a gesture input. [CHAR LIMIT=30]-->
+    <string name="gesture_floating_preview_text">Show gesture word</string>
+    <!-- Description for "gesture_floating_preview_text" option. The user can see a suggested word floating under the moving finger during a gesture input. [CHAR LIMIT=65]-->
+    <string name="gesture_floating_preview_text_summary">Show floating preview word with gesture</string>
 
     <!-- Indicates that a word has been added to the dictionary -->
     <string name="added_word"><xliff:g id="word">%s</xliff:g> : Saved</string>
