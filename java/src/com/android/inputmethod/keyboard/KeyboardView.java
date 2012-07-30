@@ -255,10 +255,12 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
 
         public void updateKeyHeight(int keyHeight) {
-            if (mKeyLetterRatio >= 0.0f)
+            if (mKeyLetterRatio >= 0.0f) {
                 mKeyLetterSize = (int)(keyHeight * mKeyLetterRatio);
-            if (mKeyLabelRatio >= 0.0f)
+            }
+            if (mKeyLabelRatio >= 0.0f) {
                 mKeyLabelSize = (int)(keyHeight * mKeyLabelRatio);
+            }
             mKeyLargeLabelSize = (int)(keyHeight * mKeyLargeLabelRatio);
             mKeyLargeLetterSize = (int)(keyHeight * mKeyLargeLetterRatio);
             mKeyHintLetterSize = (int)(keyHeight * mKeyHintLetterRatio);
@@ -340,13 +342,16 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
 
         public void updateKeyHeight(int keyHeight) {
-            mPreviewTextSize = (int)(keyHeight * mPreviewTextRatio);
-            mKeyLetterSize = (int)(keyHeight * mKeyLetterRatio);
+            if (mPreviewTextRatio >= 0.0f) {
+                mPreviewTextSize = (int)(keyHeight * mPreviewTextRatio);
+            }
+            if (mKeyLetterRatio >= 0.0f) {
+                mKeyLetterSize = (int)(keyHeight * mKeyLetterRatio);
+            }
         }
 
         private static void setAlpha(Drawable drawable, int alpha) {
-            if (drawable == null)
-                return;
+            if (drawable == null) return;
             drawable.setAlpha(alpha);
         }
     }
