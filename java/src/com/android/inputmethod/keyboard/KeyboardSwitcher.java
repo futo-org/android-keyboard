@@ -137,8 +137,9 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     public void loadKeyboard(EditorInfo editorInfo, SettingsValues settingsValues) {
         final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
                 mThemeContext, editorInfo);
-        builder.setScreenGeometry(mThemeContext.getResources().getConfiguration().orientation,
-                mThemeContext.getResources().getDisplayMetrics().widthPixels);
+        final Resources res = mThemeContext.getResources();
+        builder.setScreenGeometry(res.getInteger(R.integer.config_device_form_factor),
+                res.getConfiguration().orientation, res.getDisplayMetrics().widthPixels);
         builder.setSubtype(mSubtypeSwitcher.getCurrentSubtype());
         builder.setOptions(
                 settingsValues.isVoiceKeyEnabled(editorInfo),
