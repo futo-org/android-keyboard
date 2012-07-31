@@ -126,7 +126,7 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
 
         // codesSize == 0 means we are trying to find bigram predictions.
         if (codesSize < 1 || checkFirstCharacter(bigramBuffer, inputCodes)) {
-            const int bigramFreqTemp = UnigramDictionary::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
+            const int bigramFreqTemp = BinaryFormat::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
             // Due to space constraints, the frequency for bigrams is approximate - the lower the
             // unigram frequency, the worse the precision. The theoritical maximum error in
             // resulting frequency is 8 - although in the practice it's never bigger than 3 or 4
@@ -139,7 +139,7 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
                 ++bigramCount;
             }
         }
-    } while (UnigramDictionary::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags);
+    } while (BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags);
     return bigramCount;
 }
 
@@ -154,8 +154,8 @@ int BigramDictionary::getBigramListPositionForWord(const int32_t *prevWord,
 
     if (NOT_VALID_WORD == pos) return 0;
     const int flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
-    if (0 == (flags & UnigramDictionary::FLAG_HAS_BIGRAMS)) return 0;
-    if (0 == (flags & UnigramDictionary::FLAG_HAS_MULTIPLE_CHARS)) {
+    if (0 == (flags & BinaryFormat::FLAG_HAS_BIGRAMS)) return 0;
+    if (0 == (flags & BinaryFormat::FLAG_HAS_MULTIPLE_CHARS)) {
         BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
     } else {
         pos = BinaryFormat::skipOtherCharacters(root, pos);
@@ -182,12 +182,12 @@ void BigramDictionary::fillBigramAddressToFrequencyMapAndFilter(const int32_t *p
     int bigramFlags;
     do {
         bigramFlags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
-        const int frequency = UnigramDictionary::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
+        const int frequency = BinaryFormat::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
         const int bigramPos = BinaryFormat::getAttributeAddressAndForwardPointer(root, bigramFlags,
                 &pos);
         (*map)[bigramPos] = frequency;
         setInFilter(filter, bigramPos);
-    } while (0 != (UnigramDictionary::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags));
+    } while (0 != (BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags));
 }
 
 bool BigramDictionary::checkFirstCharacter(unsigned short *word, int *inputCodes) const {
@@ -223,7 +223,7 @@ bool BigramDictionary::isValidBigram(const int32_t *word1, int length1, const in
         if (bigramPos == nextWordPos) {
             return true;
         }
-    } while (UnigramDictionary::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags);
+    } while (BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags);
     return false;
 }
 

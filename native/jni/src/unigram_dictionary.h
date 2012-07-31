@@ -32,39 +32,6 @@ class UnigramDictionary {
     typedef struct { int first; int second; int replacement; } digraph_t;
 
  public:
-    // Mask and flags for children address type selection.
-    static const int MASK_GROUP_ADDRESS_TYPE = 0xC0;
-    static const int FLAG_GROUP_ADDRESS_TYPE_NOADDRESS = 0x00;
-    static const int FLAG_GROUP_ADDRESS_TYPE_ONEBYTE = 0x40;
-    static const int FLAG_GROUP_ADDRESS_TYPE_TWOBYTES = 0x80;
-    static const int FLAG_GROUP_ADDRESS_TYPE_THREEBYTES = 0xC0;
-
-    // Flag for single/multiple char group
-    static const int FLAG_HAS_MULTIPLE_CHARS = 0x20;
-
-    // Flag for terminal groups
-    static const int FLAG_IS_TERMINAL = 0x10;
-
-    // Flag for shortcut targets presence
-    static const int FLAG_HAS_SHORTCUT_TARGETS = 0x08;
-    // Flag for bigram presence
-    static const int FLAG_HAS_BIGRAMS = 0x04;
-
-    // Attribute (bigram/shortcut) related flags:
-    // Flag for presence of more attributes
-    static const int FLAG_ATTRIBUTE_HAS_NEXT = 0x80;
-    // Flag for sign of offset. If this flag is set, the offset value must be negated.
-    static const int FLAG_ATTRIBUTE_OFFSET_NEGATIVE = 0x40;
-
-    // Mask for attribute frequency, stored on 4 bits inside the flags byte.
-    static const int MASK_ATTRIBUTE_FREQUENCY = 0x0F;
-
-    // Mask and flags for attribute address type selection.
-    static const int MASK_ATTRIBUTE_ADDRESS_TYPE = 0x30;
-    static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE = 0x10;
-    static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES = 0x20;
-    static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES = 0x30;
-
     // Error tolerances
     static const int DEFAULT_MAX_ERRORS = 2;
     static const int MAX_ERRORS_FOR_TWO_WORDS = 1;
