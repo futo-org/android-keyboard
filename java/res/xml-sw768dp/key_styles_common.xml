@@ -76,7 +76,7 @@
     <key-style
         latin:styleName="spaceKeyStyle"
         latin:code="!code/key_space"
-        latin:keyActionFlags="noKeyPreview" />
+        latin:keyActionFlags="noKeyPreview|enableLongPress" />
     <!-- U+200C: ZERO WIDTH NON-JOINER
          U+200D: ZERO WIDTH JOINER -->
     <key-style
@@ -99,6 +99,12 @@
         latin:keyIconDisabled="!icon/shortcut_key_disabled"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
+    <key-style
+        latin:styleName="languageSwitchKeyStyle"
+        latin:code="!code/key_language_switch"
+        latin:keyIcon="!icon/language_switch_key"
+        latin:keyActionFlags="noKeyPreview|altCodeWhileTyping|enableLongPress"
+        latin:altCode="!code/key_space" />
     <key-style
         latin:styleName="settingsKeyStyle"
         latin:code="!code/key_settings"
