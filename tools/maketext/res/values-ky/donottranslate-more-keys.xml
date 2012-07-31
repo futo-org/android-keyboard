@@ -20,16 +20,20 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- U+0449: "щ" CYRILLIC SMALL LETTER SHCHA -->
     <string name="keylabel_for_east_slavic_row1_9">&#x0449;</string>
+    <!-- U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN -->
+    <string name="keylabel_for_east_slavic_row1_12">&#x044A;</string>
     <!-- U+044B: "ы" CYRILLIC SMALL LETTER YERU -->
     <string name="keylabel_for_east_slavic_row2_1">&#x044B;</string>
+    <!-- U+044D: "э" CYRILLIC SMALL LETTER E -->
+    <string name="keylabel_for_east_slavic_row2_11">&#x044D;</string>
     <!-- U+0438: "и" CYRILLIC SMALL LETTER I -->
     <string name="keylabel_for_east_slavic_row3_5">&#x0438;</string>
     <!-- U+04AF: "ү" CYRILLIC SMALL LETTER STRAIGHT U -->
     <string name="more_keys_for_cyrillic_u">&#x04AF;</string>
+    <!-- U+0451: "ё" CYRILLIC SMALL LETTER IO -->
+    <string name="more_keys_for_cyrillic_ie">&#x0451;</string>
     <!-- U+04A3: "ң" CYRILLIC SMALL LETTER EN WITH DESCENDER -->
     <string name="more_keys_for_cyrillic_en">&#x04A3;</string>
-    <!-- U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN -->
-    <string name="more_keys_for_cyrillic_ha">&#x044A;</string>
     <!-- U+04E9: "ө" CYRILLIC SMALL LETTER BARRED O -->
     <string name="more_keys_for_cyrillic_o">&#x04E9;</string>
     <!-- U+044A: "ъ" CYRILLIC SMALL LETTER HARD SIGN -->

@@ -21,10 +21,10 @@
 #include "jni_common.h"
 #include "proximity_info.h"
 
-#include <assert.h>
-#include <errno.h>
-#include <stdio.h>
-#include <string>
+#include <cassert>
+#include <cerrno>
+#include <cstdio>
+#include <cstring>
 
 namespace latinime {
 

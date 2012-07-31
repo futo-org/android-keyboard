@@ -17,7 +17,7 @@
 #ifndef LATINIME_PROXIMITY_INFO_STATE_H
 #define LATINIME_PROXIMITY_INFO_STATE_H
 
-#include <assert.h>
+#include <cassert>
 #include <stdint.h>
 #include <string>
 

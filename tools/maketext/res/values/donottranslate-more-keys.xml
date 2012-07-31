@@ -44,12 +44,13 @@
     <string name="more_keys_for_nordic_row2_10"></string>
     <string name="more_keys_for_nordic_row2_11"></string>
     <string name="keylabel_for_east_slavic_row1_9"></string>
+    <string name="keylabel_for_east_slavic_row1_12"></string>
     <string name="keylabel_for_east_slavic_row2_1"></string>
+    <string name="keylabel_for_east_slavic_row2_11"></string>
     <string name="keylabel_for_east_slavic_row3_5"></string>
     <string name="more_keys_for_cyrillic_u"></string>
-    <string name="more_keys_for_cyrillic_ye"></string>
     <string name="more_keys_for_cyrillic_en"></string>
-    <string name="more_keys_for_cyrillic_ha"></string>
+    <string name="more_keys_for_cyrillic_ghe"></string>
     <string name="more_keys_for_east_slavic_row2_1"></string>
     <string name="more_keys_for_cyrillic_o"></string>
     <string name="more_keys_for_cyrillic_soft_sign"></string>

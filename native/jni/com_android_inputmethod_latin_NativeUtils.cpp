@@ -18,7 +18,7 @@
 #include "jni.h"
 #include "jni_common.h"
 
-#include <math.h>
+#include <cmath>
 
 namespace latinime {
 
