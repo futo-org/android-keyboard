@@ -707,7 +707,7 @@ static inline bool testCharGroupForContinuedLikeness(const uint8_t flags,
         const uint8_t *const root, const int startPos,
         const uint16_t *const inWord, const int startInputIndex,
         int32_t *outNewWord, int *outInputIndex, int *outPos) {
-    const bool hasMultipleChars = (0 != (UnigramDictionary::FLAG_HAS_MULTIPLE_CHARS & flags));
+    const bool hasMultipleChars = (0 != (BinaryFormat::FLAG_HAS_MULTIPLE_CHARS & flags));
     int pos = startPos;
     int32_t character = BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
     int32_t baseChar = toBaseLowerCase(character);
@@ -780,7 +780,7 @@ int UnigramDictionary::getMostFrequentWordLikeInner(const uint16_t *const inWord
             // into inputIndex if there is a match.
             const bool isAlike = testCharGroupForContinuedLikeness(flags, root, pos, inWord,
                     inputIndex, newWord, &inputIndex, &pos);
-            if (isAlike && (FLAG_IS_TERMINAL & flags) && (inputIndex == length)) {
+            if (isAlike && (BinaryFormat::FLAG_IS_TERMINAL & flags) && (inputIndex == length)) {
                 const int frequency = BinaryFormat::readFrequencyWithoutMovingPointer(root, pos);
                 onTerminalWordLike(frequency, newWord, inputIndex, outWord, &maxFreq);
             }
@@ -823,7 +823,7 @@ int UnigramDictionary::getFrequency(const int32_t *const inWord, const int lengt
         return NOT_A_PROBABILITY;
     }
     const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
-    const bool hasMultipleChars = (0 != (FLAG_HAS_MULTIPLE_CHARS & flags));
+    const bool hasMultipleChars = (0 != (BinaryFormat::FLAG_HAS_MULTIPLE_CHARS & flags));
     if (hasMultipleChars) {
         pos = BinaryFormat::skipOtherCharacters(root, pos);
     } else {
@@ -871,8 +871,8 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos,
     // - FLAG_IS_TERMINAL: whether this node is a terminal or not (it may still have children)
     // - FLAG_HAS_BIGRAMS: whether this node has bigrams or not
     const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(DICT_ROOT, &pos);
-    const bool hasMultipleChars = (0 != (FLAG_HAS_MULTIPLE_CHARS & flags));
-    const bool isTerminalNode = (0 != (FLAG_IS_TERMINAL & flags));
+    const bool hasMultipleChars = (0 != (BinaryFormat::FLAG_HAS_MULTIPLE_CHARS & flags));
+    const bool isTerminalNode = (0 != (BinaryFormat::FLAG_IS_TERMINAL & flags));
 
     bool needsToInvokeOnTerminal = false;
 
