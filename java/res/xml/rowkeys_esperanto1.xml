@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2012, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+>
+    <!-- U+015D: "ŝ" LATIN SMALL LETTER S WITH CIRCUMFLEX -->
+    <Key
+        latin:keyLabel="&#x015D;"
+        latin:keyHintLabel="1"
+        latin:additionalMoreKeys="1"
+        latin:moreKeys="q" />
+    <!-- U+011D: "ĝ" LATIN SMALL LETTER G WITH CIRCUMFLEX
+         U+0175: "ŵ" LATIN SMALL LETTER W WITH CIRCUMFLEX -->
+    <Key
+        latin:keyLabel="&#x011D;"
+        latin:keyHintLabel="2"
+        latin:additionalMoreKeys="2"
+        latin:moreKeys="w,&#x0175;" />
+    <!-- U+00E9: "é" LATIN SMALL LETTER E WITH ACUTE
+         U+011B: "ě" LATIN SMALL LETTER E WITH CARON
+         U+00E8: "è" LATIN SMALL LETTER E WITH GRAVE
+         U+00EA: "ê" LATIN SMALL LETTER E WITH CIRCUMFLEX
+         U+00EB: "ë" LATIN SMALL LETTER E WITH DIAERESIS
+         U+0119: "ę" LATIN SMALL LETTER E WITH OGONEK
+         U+0117: "ė" LATIN SMALL LETTER E WITH DOT ABOVE
+         U+0113: "ē" LATIN SMALL LETTER E WITH MACRON -->
+    <Key
+        latin:keyLabel="e"
+        latin:keyHintLabel="3"
+        latin:additionalMoreKeys="3"
+        latin:moreKeys="&#x00E9;,&#x011B;,&#x00E8;,&#x00EA;,&#x00EB;,&#x0119;,&#x0117;,&#x0113;" />
+    <!-- U+0159: "ř" LATIN SMALL LETTER R WITH CARON
+         U+0155: "ŕ" LATIN SMALL LETTER R WITH ACUTE
+         U+0157: "ŗ" LATIN SMALL LETTER R WITH CEDILLA  -->
+    <Key
+        latin:keyLabel="r"
+        latin:keyHintLabel="4"
+        latin:additionalMoreKeys="4"
+        latin:moreKeys="&#x0159;,&#x0155;,&#x0157;" />
+    <!-- U+0165: "ť" LATIN SMALL LETTER T WITH CARON
+         U+021B: "ț" LATIN SMALL LETTER T WITH COMMA BELOW
+         U+0163: "ţ" LATIN SMALL LETTER T WITH CEDILLA
+         U+0167: "ŧ" LATIN SMALL LETTER T WITH STROKE -->
+    <Key
+        latin:keyLabel="t"
+        latin:keyHintLabel="5"
+        latin:additionalMoreKeys="5"
+        latin:moreKeys="&#x0165;,&#x021B;,&#x0163;,&#x0167;" />
+    <!-- U+016D: "ŭ" LATIN SMALL LETTER U WITH BREVE
+         U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
+         U+0177: "ŷ" LATIN SMALL LETTER Y WITH CIRCUMFLEX
+         U+00FF: "ÿ" LATIN SMALL LETTER Y WITH DIAERESIS
+         U+00FE: "þ" LATIN SMALL LETTER THORN -->
+    <Key
+        latin:keyLabel="&#x016D;"
+        latin:keyHintLabel="6"
+        latin:additionalMoreKeys="6"
+        latin:moreKeys="y,&#x00FD;,&#x0177;,&#x00FF;,&#x00FE;" />
+    <!-- U+00FA: "ú" LATIN SMALL LETTER U WITH ACUTE
+         U+016F: "ů" LATIN SMALL LETTER U WITH RING ABOVE
+         U+00FB: "û" LATIN SMALL LETTER U WITH CIRCUMFLEX
+         U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS
+         U+00F9: "ù" LATIN SMALL LETTER U WITH GRAVE
+         U+016B: "ū" LATIN SMALL LETTER U WITH MACRON
+         U+0169: "ũ" LATIN SMALL LETTER U WITH TILDE
+         U+0171: "ű" LATIN SMALL LETTER U WITH DOUBLE ACUTE
+         U+0173: "ų" LATIN SMALL LETTER U WITH OGONEK
+         U+00B5: "µ" MICRO SIGN -->
+    <Key
+        latin:keyLabel="u"
+        latin:keyHintLabel="7"
+        latin:additionalMoreKeys="7"
+        latin:moreKeys="&#x00FA;,&#x016F;,&#x00FB;,&#x00FC;,&#x00F9;,&#x016B;,&#x0169;,&#x0171;,&#x0173;,&#x00B5;" />
+    <!-- U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE
+         U+00EE: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
+         U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
+         U+0129: "ĩ" LATIN SMALL LETTER I WITH TILDE
+         U+00EC: "ì" LATIN SMALL LETTER I WITH GRAVE
+         U+012F: "į" LATIN SMALL LETTER I WITH OGONEK
+         U+012B: "ī" LATIN SMALL LETTER I WITH MACRON
+         U+0131: "ı" LATIN SMALL LETTER DOTLESS I
+         U+0133: "ĳ" LATIN SMALL LIGATURE IJ -->
+    <Key
+        latin:keyLabel="i"
+        latin:keyHintLabel="8"
+        latin:additionalMoreKeys="8"
+        latin:moreKeys="&#x00ED;,&#x00EE;,&#x00EF;,&#x0129;,&#x00EC;,&#x012F;,&#x012B;,&#x0131;,&#x0133;" />
+    <!-- U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
+         U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
+         U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
+         U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
+         U+00F5: "õ" LATIN SMALL LETTER O WITH TILDE
+         U+0153: "œ" LATIN SMALL LIGATURE OE
+         U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
+         U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
+         U+0151: "ő" LATIN SMALL LETTER O WITH DOUBLE ACUTE
+         U+00BA: "º" MASCULINE ORDINAL INDICATOR -->
+    <Key
+        latin:keyLabel="o"
+        latin:keyHintLabel="9"
+        latin:additionalMoreKeys="9"
+        latin:moreKeys="&#x00F3;,&#x00F6;,&#x00F4;,&#x00F2;,&#x00F5;,&#x0153;,&#x00F8;,&#x014D;,&#x0151;,&#x00BA;" />
+    <Key
+        latin:keyLabel="p"
+        latin:keyHintLabel="0"
+        latin:additionalMoreKeys="0" />
+</merge>
