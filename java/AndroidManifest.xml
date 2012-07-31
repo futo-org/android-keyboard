@@ -26,7 +26,8 @@
     <application android:label="@string/aosp_android_keyboard_ime_name"
             android:icon="@drawable/ic_ime_settings"
             android:backupAgent="BackupAgent"
-            android:killAfterRestore="false">
+            android:killAfterRestore="false"
+            android:supportsRtl="true">
 
         <service android:name="LatinIME"
                 android:label="@string/aosp_android_keyboard_ime_name"
