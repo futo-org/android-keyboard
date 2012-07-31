@@ -17,7 +17,7 @@
 #ifndef LATINIME_TERMINAL_ATTRIBUTES_H
 #define LATINIME_TERMINAL_ATTRIBUTES_H
 
-#include "unigram_dictionary.h"
+#include "binary_format.h"
 
 namespace latinime {
 
@@ -36,7 +36,7 @@ class TerminalAttributes {
      public:
         ShortcutIterator(const uint8_t *dict, const int pos, const uint8_t flags) : mDict(dict),
                 mPos(pos) {
-            mHasNextShortcutTarget = (0 != (flags & UnigramDictionary::FLAG_HAS_SHORTCUT_TARGETS));
+            mHasNextShortcutTarget = (0 != (flags & BinaryFormat::FLAG_HAS_SHORTCUT_TARGETS));
         }
 
         inline bool hasNextShortcutTarget() const {
@@ -49,7 +49,7 @@ class TerminalAttributes {
         inline int getNextShortcutTarget(const int maxDepth, uint16_t *outWord) {
             const int shortcutFlags = BinaryFormat::getFlagsAndForwardPointer(mDict, &mPos);
             mHasNextShortcutTarget =
-                    0 != (shortcutFlags & UnigramDictionary::FLAG_ATTRIBUTE_HAS_NEXT);
+                    0 != (shortcutFlags & BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT);
             unsigned int i;
             for (i = 0; i < MAX_WORD_LENGTH_INTERNAL; ++i) {
                 const int charCode = BinaryFormat::getCharCodeAndForwardPointer(mDict, &mPos);
