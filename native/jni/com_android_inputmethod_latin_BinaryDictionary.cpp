@@ -25,9 +25,9 @@
 #include "jni_common.h"
 #include "proximity_info.h"
 
-#include <assert.h>
-#include <errno.h>
-#include <stdio.h>
+#include <cassert>
+#include <cerrno>
+#include <cstdio>
 
 #ifdef USE_MMAP_FOR_DICTIONARY
 #include <sys/mman.h>
@@ -36,7 +36,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #else // USE_MMAP_FOR_DICTIONARY
-#include <stdlib.h>
+#include <cstdlib>
 #endif // USE_MMAP_FOR_DICTIONARY
 
 namespace latinime {

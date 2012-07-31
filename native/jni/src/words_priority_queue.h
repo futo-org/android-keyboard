@@ -20,6 +20,8 @@
 #include <cstring> // for memcpy()
 #include <iostream>
 #include <queue>
+
+#include "correction.h"
 #include "defines.h"
 
 namespace latinime {

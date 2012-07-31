@@ -24,7 +24,6 @@
 
 namespace latinime {
 
-class Dictionary;
 class BigramDictionary {
  public:
     BigramDictionary(const unsigned char *dict, int maxWordLength, int maxPredictions);

@@ -17,8 +17,7 @@
 #ifndef LATINIME_WORDS_PRIORITY_QUEUE_POOL_H
 #define LATINIME_WORDS_PRIORITY_QUEUE_POOL_H
 
-#include <assert.h>
-#include <new>
+#include <cassert>
 #include "words_priority_queue.h"
 
 namespace latinime {

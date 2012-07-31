@@ -17,7 +17,7 @@
 #ifndef LATINIME_CORRECTION_H
 #define LATINIME_CORRECTION_H
 
-#include <assert.h>
+#include <cassert>
 #include <stdint.h>
 
 #include "correction_state.h"

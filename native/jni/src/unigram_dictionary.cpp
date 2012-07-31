@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include <assert.h>
-#include <string.h>
+#include <cassert>
+#include <cstring>
 
 #define LOG_TAG "LatinIME: unigram_dictionary.cpp"
 

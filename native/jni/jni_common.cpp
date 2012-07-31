@@ -23,9 +23,9 @@
 #include "jni.h"
 #include "proximity_info.h"
 
-#include <assert.h>
-#include <errno.h>
-#include <stdio.h>
+#include <cassert>
+#include <cerrno>
+#include <cstdio>
 
 using namespace latinime;
 
