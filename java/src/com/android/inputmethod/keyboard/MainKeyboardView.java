@@ -154,8 +154,7 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
                 }
                 break;
             case MSG_TYPING_STATE_EXPIRED:
-                cancelAndStartAnimators(keyboardView.mAltCodeKeyWhileTypingFadeoutAnimator,
-                        keyboardView.mAltCodeKeyWhileTypingFadeinAnimator);
+                startWhileTypingFadeinAnimation(keyboardView);
                 break;
             }
         }
@@ -229,7 +228,7 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
             removeMessages(MSG_LONGPRESS_KEY);
         }
 
-        public static void cancelAndStartAnimators(final ObjectAnimator animatorToCancel,
+        private static void cancelAndStartAnimators(final ObjectAnimator animatorToCancel,
                 final ObjectAnimator animatorToStart) {
             float startFraction = 0.0f;
             if (animatorToCancel.isStarted()) {
@@ -241,18 +240,39 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
             animatorToStart.setCurrentPlayTime(startTime);
         }
 
+        private static void startWhileTypingFadeinAnimation(final MainKeyboardView keyboardView) {
+            cancelAndStartAnimators(keyboardView.mAltCodeKeyWhileTypingFadeoutAnimator,
+                    keyboardView.mAltCodeKeyWhileTypingFadeinAnimator);
+        }
+
+        private static void startWhileTypingFadeoutAnimation(final MainKeyboardView keyboardView) {
+            cancelAndStartAnimators(keyboardView.mAltCodeKeyWhileTypingFadeinAnimator,
+                    keyboardView.mAltCodeKeyWhileTypingFadeoutAnimator);
+        }
+
         @Override
-        public void startTypingStateTimer() {
+        public void startTypingStateTimer(Key typedKey) {
+            if (typedKey.isModifier() || typedKey.altCodeWhileTyping()) {
+                return;
+            }
+
             final boolean isTyping = isTypingState();
             removeMessages(MSG_TYPING_STATE_EXPIRED);
+            final MainKeyboardView keyboardView = getOuterInstance();
+
+            // When user hits the space or the enter key, just cancel the while-typing timer.
+            final int typedCode = typedKey.mCode;
+            if (typedCode == Keyboard.CODE_SPACE || typedCode == Keyboard.CODE_ENTER) {
+                startWhileTypingFadeinAnimation(keyboardView);
+                return;
+            }
+
             sendMessageDelayed(
                     obtainMessage(MSG_TYPING_STATE_EXPIRED), mParams.mIgnoreAltCodeKeyTimeout);
             if (isTyping) {
                 return;
             }
-            final MainKeyboardView keyboardView = getOuterInstance();
-            cancelAndStartAnimators(keyboardView.mAltCodeKeyWhileTypingFadeinAnimator,
-                    keyboardView.mAltCodeKeyWhileTypingFadeoutAnimator);
+            startWhileTypingFadeoutAnimation(keyboardView);
         }
 
         @Override
