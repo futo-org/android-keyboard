@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-#include <assert.h>
-#include <ctype.h>
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
+#include <cassert>
+#include <cctype>
+#include <cmath>
+#include <cstring>
 
 #define LOG_TAG "LatinIME: correction.cpp"
 

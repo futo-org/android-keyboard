@@ -17,8 +17,6 @@
 #ifndef LATINIME_JNI_COMMON_H
 #define LATINIME_JNI_COMMON_H
 
-#include <stdlib.h>
-
 #include "jni.h"
 
 namespace latinime {

@@ -82,7 +82,7 @@ public class PointerTracker {
     }
 
     public interface TimerProxy {
-        public void startTypingStateTimer();
+        public void startTypingStateTimer(Key typedKey);
         public boolean isTypingState();
         public void startKeyRepeatTimer(PointerTracker tracker);
         public void startLongPressTimer(PointerTracker tracker);
@@ -95,7 +95,7 @@ public class PointerTracker {
 
         public static class Adapter implements TimerProxy {
             @Override
-            public void startTypingStateTimer() {}
+            public void startTypingStateTimer(Key typedKey) {}
             @Override
             public boolean isTypingState() { return false; }
             @Override
@@ -329,9 +329,7 @@ public class PointerTracker {
             mListener.onPressKey(key.mCode);
             final boolean keyboardLayoutHasBeenChanged = mKeyboardLayoutHasBeenChanged;
             mKeyboardLayoutHasBeenChanged = false;
-            if (!key.altCodeWhileTyping() && !key.isModifier()) {
-                mTimerProxy.startTypingStateTimer();
-            }
+            mTimerProxy.startTypingStateTimer(key);
             return keyboardLayoutHasBeenChanged;
         }
         return false;
@@ -956,9 +954,7 @@ public class PointerTracker {
     public void onRegisterKey(Key key) {
         if (key != null) {
             detectAndSendKey(key, key.mX, key.mY);
-            if (!key.altCodeWhileTyping() && !key.isModifier()) {
-                mTimerProxy.startTypingStateTimer();
-            }
+            mTimerProxy.startTypingStateTimer(key);
         }
     }
 

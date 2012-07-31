@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-#include <assert.h>
-#include <math.h>
-#include <stdio.h>
+#include <cassert>
+#include <cmath>
+#include <cstring>
 #include <string>
 
 #define LOG_TAG "LatinIME: proximity_info.cpp"

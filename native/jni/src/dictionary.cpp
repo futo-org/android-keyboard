@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#include <stdio.h>
-
 #define LOG_TAG "LatinIME: dictionary.cpp"
 
 #include "binary_format.h"

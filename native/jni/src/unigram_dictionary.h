@@ -19,16 +19,15 @@
 
 #include <map>
 #include <stdint.h>
-#include "correction.h"
-#include "correction_state.h"
 #include "defines.h"
-#include "proximity_info.h"
-#include "words_priority_queue.h"
-#include "words_priority_queue_pool.h"
 
 namespace latinime {
 
+class Correction;
+class ProximityInfo;
 class TerminalAttributes;
+class WordsPriorityQueuePool;
+
 class UnigramDictionary {
     typedef struct { int first; int second; int replacement; } digraph_t;
 

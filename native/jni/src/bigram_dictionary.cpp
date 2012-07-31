@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <string.h>
+#include <cstring>
 
 #define LOG_TAG "LatinIME: bigram_dictionary.cpp"
 
