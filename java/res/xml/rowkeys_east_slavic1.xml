@@ -47,7 +47,7 @@
         latin:keyLabel="&#x0435;"
         latin:keyHintLabel="5"
         latin:additionalMoreKeys="5"
-        latin:moreKeys="!text/more_keys_for_cyrillic_ye" />
+        latin:moreKeys="!text/more_keys_for_cyrillic_ie" />
     <!-- U+043D: "н" CYRILLIC SMALL LETTER EN -->
     <Key
         latin:keyLabel="&#x043D;"
@@ -58,7 +58,8 @@
     <Key
         latin:keyLabel="&#x0433;"
         latin:keyHintLabel="7"
-        latin:additionalMoreKeys="7" />
+        latin:additionalMoreKeys="7"
+        latin:moreKeys="!text/more_keys_for_cyrillic_ghe" />
     <!-- U+0448: "ш" CYRILLIC SMALL LETTER SHA -->
     <Key
         latin:keyLabel="&#x0448;"
@@ -75,6 +76,5 @@
         latin:additionalMoreKeys="0" />
     <!-- U+0445: "х" CYRILLIC SMALL LETTER HA -->
     <Key
-        latin:keyLabel="&#x0445;"
-        latin:moreKeys="!text/more_keys_for_cyrillic_ha" />
+        latin:keyLabel="&#x0445;" />
 </merge>
