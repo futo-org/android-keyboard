@@ -17,29 +17,23 @@
 #define LOG_TAG "LatinIME: jni: BinaryDictionary"
 
 #include "binary_format.h"
-#include "correction.h"
 #include "com_android_inputmethod_latin_BinaryDictionary.h"
+#include "correction.h"
 #include "defines.h"
 #include "dictionary.h"
 #include "jni.h"
 #include "jni_common.h"
-#include "proximity_info.h"
-
-#include <cassert>
-#include <cerrno>
-#include <cstdio>
 
 #ifdef USE_MMAP_FOR_DICTIONARY
 #include <sys/mman.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-#include <unistd.h>
 #else // USE_MMAP_FOR_DICTIONARY
 #include <cstdlib>
 #endif // USE_MMAP_FOR_DICTIONARY
 
 namespace latinime {
+
+class ProximityInfo;
 
 void releaseDictBuf(void *dictBuf, const size_t length, int fd);
 
