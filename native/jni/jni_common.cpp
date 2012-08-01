@@ -21,6 +21,7 @@
 #include "com_android_inputmethod_latin_NativeUtils.h"
 #include "defines.h"
 #include "jni.h"
+#include "jni_common.h"
 #include "proximity_info.h"
 
 #include <cassert>
