@@ -60,12 +60,9 @@
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Dựa trên từ trước đó"</string>
     <string name="gesture_input" msgid="3310827802759290774">"Nhập bằng cử chỉ"</string>
     <string name="gesture_input_summary" msgid="7019742443455085809">"Nhập từ bằng cách lần theo các chữ cái của từ"</string>
-    <!-- no translation found for gesture_preview_trail (3802333369335722221) -->
-    <skip />
-    <!-- no translation found for gesture_floating_preview_text (6859416520117939680) -->
-    <skip />
-    <!-- no translation found for gesture_floating_preview_text_summary (3333754126434989709) -->
-    <skip />
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"Hiển thị vệt cử chỉ"</string>
+    <string name="gesture_floating_preview_text" msgid="6859416520117939680">"Hiển thị từ theo cử chỉ"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="3333754126434989709">"Hiển thị từ xem trước nổi bằng cử chỉ"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Đã lưu"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Tìm"</string>
     <string name="label_next_key" msgid="362972844525672568">"Tiếp theo"</string>
@@ -98,7 +95,7 @@
     <string name="spoken_description_dot" msgid="40711082435231673">"Dấu chấm"</string>
     <string name="spoken_description_language_switch" msgid="5507091328222331316">"Chuyển ngôn ngữ"</string>
     <string name="spoken_description_action_next" msgid="8636078276664150324">"Tiếp theo"</string>
-    <string name="spoken_description_action_previous" msgid="800872415009336208">"Trước đó"</string>
+    <string name="spoken_description_action_previous" msgid="800872415009336208">"Trước"</string>
     <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Đã bật Shift"</string>
     <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Đã bật Caps lock"</string>
     <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Đã tắt Shift"</string>
