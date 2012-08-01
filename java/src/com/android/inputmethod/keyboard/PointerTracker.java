@@ -408,7 +408,7 @@ public class PointerTracker {
             if (mDrawingProxy != null) {
                 setReleasedKeyGraphics(mCurrentKey);
             }
-            mCurrentKey = newKey;
+            // Keep {@link #mCurrentKey} that comes from previous keyboard.
         }
         final int keyQuarterWidth = mKeyboard.mMostCommonKeyWidth / 4;
         mKeyQuarterWidthSquared = keyQuarterWidth * keyQuarterWidth;
