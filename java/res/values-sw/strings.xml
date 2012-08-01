@@ -60,12 +60,9 @@
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Kulingana na neno la awali"</string>
     <string name="gesture_input" msgid="3310827802759290774">"Ingizo la ishara"</string>
     <string name="gesture_input_summary" msgid="7019742443455085809">"Ingiza neno kwa kufuatilia herufi za neno"</string>
-    <!-- no translation found for gesture_preview_trail (3802333369335722221) -->
-    <skip />
-    <!-- no translation found for gesture_floating_preview_text (6859416520117939680) -->
-    <skip />
-    <!-- no translation found for gesture_floating_preview_text_summary (3333754126434989709) -->
-    <skip />
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"Onyesha njia ya ishara"</string>
+    <string name="gesture_floating_preview_text" msgid="6859416520117939680">"Onyesha neno la ishara"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="3333754126434989709">"Onyesha neno hakiki linaloelea lililo na ishara"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Imehifadhiwa"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Nenda"</string>
     <string name="label_next_key" msgid="362972844525672568">"Ifuatayo"</string>
@@ -97,7 +94,7 @@
     <string name="spoken_description_search" msgid="1247236163755920808">"Tafuta"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"Nukta"</string>
     <string name="spoken_description_language_switch" msgid="5507091328222331316">"Badili lugha"</string>
-    <string name="spoken_description_action_next" msgid="8636078276664150324">"Ifuatayo"</string>
+    <string name="spoken_description_action_next" msgid="8636078276664150324">"Inayofuata"</string>
     <string name="spoken_description_action_previous" msgid="800872415009336208">"Iliyotangulia"</string>
     <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift imewezeshwa"</string>
     <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps lock imewezeshwa"</string>
