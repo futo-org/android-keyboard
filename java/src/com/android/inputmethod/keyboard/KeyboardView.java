@@ -25,7 +25,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.graphics.Region.Op;
+import android.graphics.Region;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
@@ -120,12 +120,12 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private boolean mInvalidateAllKeys;
     /** The keys that should be drawn */
     private final HashSet<Key> mInvalidatedKeys = new HashSet<Key>();
-    /** The region of invalidated keys */
-    private final Rect mInvalidatedKeysRect = new Rect();
+    /** The working rectangle variable */
+    private final Rect mWorkingRect = new Rect();
     /** The keyboard bitmap buffer for faster updates */
-    private Bitmap mBuffer;
+    private Bitmap mOffscreenBuffer;
     /** The canvas for the above mutable keyboard bitmap */
-    private Canvas mCanvas;
+    private Canvas mOffscreenCanvas;
     private final Paint mPaint = new Paint();
     private final Paint.FontMetrics mFontMetrics = new Paint.FontMetrics();
     // This sparse array caches key label text height in pixel indexed by key label text size.
@@ -457,46 +457,61 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (mBufferNeedsUpdate || mBuffer == null) {
+        if (mBufferNeedsUpdate || mOffscreenBuffer == null) {
             mBufferNeedsUpdate = false;
-            onBufferDraw();
+            if (maybeAllocateOffscreenBuffer()) {
+                mInvalidateAllKeys = true;
+                if (mOffscreenCanvas != null) {
+                    mOffscreenCanvas.setBitmap(mOffscreenBuffer);
+                } else {
+                    mOffscreenCanvas = new Canvas(mOffscreenBuffer);
+                }
+            }
+            onDrawKeyboard(mOffscreenCanvas);
         }
-        canvas.drawBitmap(mBuffer, 0, 0, null);
+        canvas.drawBitmap(mOffscreenBuffer, 0, 0, null);
     }
 
-    private void onBufferDraw() {
+    private boolean maybeAllocateOffscreenBuffer() {
         final int width = getWidth();
         final int height = getHeight();
-        if (width == 0 || height == 0)
-            return;
-        if (mBuffer == null || mBuffer.getWidth() != width || mBuffer.getHeight() != height) {
-            if (mBuffer != null)
-                mBuffer.recycle();
-            mBuffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            mInvalidateAllKeys = true;
-            if (mCanvas != null) {
-                mCanvas.setBitmap(mBuffer);
-            } else {
-                mCanvas = new Canvas(mBuffer);
-            }
+        if (width == 0 || height == 0) {
+            return false;
         }
+        if (mOffscreenBuffer != null && mOffscreenBuffer.getWidth() == width
+                && mOffscreenBuffer.getHeight() == height) {
+            return false;
+        }
+        freeOffscreenBuffer();
+        mOffscreenBuffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        return true;
+    }
 
+    private void freeOffscreenBuffer() {
+        if (mOffscreenBuffer != null) {
+            mOffscreenBuffer.recycle();
+            mOffscreenBuffer = null;
+        }
+    }
+
+    private void onDrawKeyboard(final Canvas canvas) {
         if (mKeyboard == null) return;
 
-        final Canvas canvas = mCanvas;
+        final int width = getWidth();
+        final int height = getHeight();
         final Paint paint = mPaint;
         final KeyDrawParams params = mKeyDrawParams;
 
         if (mInvalidateAllKeys || mInvalidatedKeys.isEmpty()) {
-            mInvalidatedKeysRect.set(0, 0, width, height);
-            canvas.clipRect(mInvalidatedKeysRect, Op.REPLACE);
+            mWorkingRect.set(0, 0, width, height);
+            canvas.clipRect(mWorkingRect, Region.Op.REPLACE);
             canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
             // Draw all keys.
             for (final Key key : mKeyboard.mKeys) {
                 onDrawKey(key, canvas, paint, params);
             }
             if (mNeedsToDimEntireKeyboard) {
-                drawDimRectangle(canvas, mInvalidatedKeysRect, mBackgroundDimAlpha, paint);
+                drawDimRectangle(canvas, mWorkingRect, mBackgroundDimAlpha, paint);
             }
         } else {
             // Draw invalidated keys.
@@ -506,12 +521,12 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 }
                 final int x = key.mX + getPaddingLeft();
                 final int y = key.mY + getPaddingTop();
-                mInvalidatedKeysRect.set(x, y, x + key.mWidth, y + key.mHeight);
-                canvas.clipRect(mInvalidatedKeysRect, Op.REPLACE);
+                mWorkingRect.set(x, y, x + key.mWidth, y + key.mHeight);
+                canvas.clipRect(mWorkingRect, Region.Op.REPLACE);
                 canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
                 onDrawKey(key, canvas, paint, params);
                 if (mNeedsToDimEntireKeyboard) {
-                    drawDimRectangle(canvas, mInvalidatedKeysRect, mBackgroundDimAlpha, paint);
+                    drawDimRectangle(canvas, mWorkingRect, mBackgroundDimAlpha, paint);
                 }
             }
         }
@@ -524,7 +539,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
 
         mInvalidatedKeys.clear();
-        mInvalidatedKeysRect.setEmpty();
         mInvalidateAllKeys = false;
     }
 
@@ -1026,9 +1040,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mInvalidatedKeys.add(key);
         final int x = key.mX + getPaddingLeft();
         final int y = key.mY + getPaddingTop();
-        mInvalidatedKeysRect.union(x, y, x + key.mWidth, y + key.mHeight);
+        mWorkingRect.set(x, y, x + key.mWidth, y + key.mHeight);
         mBufferNeedsUpdate = true;
-        invalidate(mInvalidatedKeysRect);
+        invalidate(mWorkingRect);
     }
 
     public void closing() {
@@ -1054,9 +1068,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         super.onDetachedFromWindow();
         closing();
         mPreviewPlacerView.removeAllViews();
-        if (mBuffer != null) {
-            mBuffer.recycle();
-            mBuffer = null;
-        }
+        freeOffscreenBuffer();
     }
 }
