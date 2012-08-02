@@ -123,6 +123,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     /** The working rectangle variable */
     private final Rect mWorkingRect = new Rect();
     /** The keyboard bitmap buffer for faster updates */
+    /** The clip region to draw keys */
+    private final Region mClipRegion = new Region();
     private Bitmap mOffscreenBuffer;
     /** The canvas for the above mutable keyboard bitmap */
     private Canvas mOffscreenCanvas;
@@ -457,10 +459,15 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (canvas.isHardwareAccelerated()) {
+            onDrawKeyboard(canvas);
+            return;
+        }
         if (mBufferNeedsUpdate || mOffscreenBuffer == null) {
             mBufferNeedsUpdate = false;
             if (maybeAllocateOffscreenBuffer()) {
                 mInvalidateAllKeys = true;
+                // TODO: Stop using the offscreen canvas even when in software rendering
                 if (mOffscreenCanvas != null) {
                     mOffscreenCanvas.setBitmap(mOffscreenBuffer);
                 } else {
@@ -502,33 +509,55 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         final Paint paint = mPaint;
         final KeyDrawParams params = mKeyDrawParams;
 
-        if (mInvalidateAllKeys || mInvalidatedKeys.isEmpty()) {
-            mWorkingRect.set(0, 0, width, height);
-            canvas.clipRect(mWorkingRect, Region.Op.REPLACE);
-            canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
+        // Calculate clip region and set.
+        final boolean drawAllKeys = mInvalidateAllKeys || mInvalidatedKeys.isEmpty();
+        final boolean isHardwareAccelerated = canvas.isHardwareAccelerated();
+        // TODO: Confirm if it's really required to draw all keys when hardware acceleration is on.
+        if (drawAllKeys || isHardwareAccelerated) {
+            mClipRegion.set(0, 0, width, height);
+        } else {
+            mClipRegion.setEmpty();
+            for (final Key key : mInvalidatedKeys) {
+                if (mKeyboard.hasKey(key)) {
+                    final int x = key.mX + getPaddingLeft();
+                    final int y = key.mY + getPaddingTop();
+                    mWorkingRect.set(x, y, x + key.mWidth, y + key.mHeight);
+                    mClipRegion.union(mWorkingRect);
+                }
+            }
+        }
+        if (!isHardwareAccelerated) {
+            canvas.clipRegion(mClipRegion, Region.Op.REPLACE);
+        }
+
+        // Draw keyboard background.
+        canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
+        final Drawable background = getBackground();
+        if (background != null) {
+            background.draw(canvas);
+        }
+
+        // TODO: Confirm if it's really required to draw all keys when hardware acceleration is on.
+        if (drawAllKeys || isHardwareAccelerated) {
             // Draw all keys.
             for (final Key key : mKeyboard.mKeys) {
                 onDrawKey(key, canvas, paint, params);
             }
-            if (mNeedsToDimEntireKeyboard) {
-                drawDimRectangle(canvas, mWorkingRect, mBackgroundDimAlpha, paint);
-            }
         } else {
             // Draw invalidated keys.
             for (final Key key : mInvalidatedKeys) {
-                if (!mKeyboard.hasKey(key)) {
-                    continue;
-                }
-                final int x = key.mX + getPaddingLeft();
-                final int y = key.mY + getPaddingTop();
-                mWorkingRect.set(x, y, x + key.mWidth, y + key.mHeight);
-                canvas.clipRect(mWorkingRect, Region.Op.REPLACE);
-                canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
-                onDrawKey(key, canvas, paint, params);
-                if (mNeedsToDimEntireKeyboard) {
-                    drawDimRectangle(canvas, mWorkingRect, mBackgroundDimAlpha, paint);
+                if (mKeyboard.hasKey(key)) {
+                    onDrawKey(key, canvas, paint, params);
                 }
             }
+        }
+
+        // Overlay a dark rectangle to dim.
+        if (mNeedsToDimEntireKeyboard) {
+            paint.setColor(Color.BLACK);
+            paint.setAlpha(mBackgroundDimAlpha);
+            // Note: clipRegion() above is in effect if it was called.
+            canvas.drawRect(0, 0, width, height, paint);
         }
 
         // ResearchLogging indicator.
@@ -861,13 +890,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         canvas.translate(x, y);
         canvas.drawRect(0, 0, w, h, paint);
         canvas.translate(-x, -y);
-    }
-
-    // Overlay a dark rectangle to dim.
-    private static void drawDimRectangle(Canvas canvas, Rect rect, int alpha, Paint paint) {
-        paint.setColor(Color.BLACK);
-        paint.setAlpha(alpha);
-        canvas.drawRect(rect, paint);
     }
 
     public Paint newDefaultLabelPaint() {
