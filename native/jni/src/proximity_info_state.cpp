@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-#include <cassert>
+#include <cstring> // for memset()
 #include <stdint.h>
 
 #define LOG_TAG "LatinIME: proximity_info_state.cpp"
 
-#include "additional_proximity_chars.h"
 #include "defines.h"
-#include "dictionary.h"
 #include "proximity_info.h"
 #include "proximity_info_state.h"
 
@@ -131,8 +129,8 @@ float ProximityInfoState::calculateSquaredDistanceFromSweetSpotCenter(
         const int keyIndex, const int inputIndex) const {
     const float sweetSpotCenterX = mProximityInfo->getSweetSpotCenterXAt(keyIndex);
     const float sweetSpotCenterY = mProximityInfo->getSweetSpotCenterYAt(keyIndex);
-    const float inputX = (float)mInputXCoordinates[inputIndex];
-    const float inputY = (float)mInputYCoordinates[inputIndex];
+    const float inputX = static_cast<float>(mInputXCoordinates[inputIndex]);
+    const float inputY = static_cast<float>(mInputYCoordinates[inputIndex]);
     return square(inputX - sweetSpotCenterX) + square(inputY - sweetSpotCenterY);
 }
 } // namespace latinime
