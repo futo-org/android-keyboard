@@ -17,11 +17,9 @@
 #ifndef LATINIME_PROXIMITY_INFO_STATE_H
 #define LATINIME_PROXIMITY_INFO_STATE_H
 
-#include <cassert>
 #include <stdint.h>
 #include <string>
 
-#include "additional_proximity_chars.h"
 #include "char_utils.h"
 #include "defines.h"
 

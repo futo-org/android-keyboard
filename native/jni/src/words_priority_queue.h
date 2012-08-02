@@ -18,7 +18,6 @@
 #define LATINIME_WORDS_PRIORITY_QUEUE_H
 
 #include <cstring> // for memcpy()
-#include <iostream>
 #include <queue>
 
 #include "correction.h"

@@ -197,7 +197,7 @@ class Correction {
     inline void incrementInputIndex();
     inline void incrementOutputIndex();
     inline void startToTraverseAllNodes();
-    inline bool isQuote(const unsigned short c);
+    inline bool isSingleQuote(const unsigned short c);
     inline CorrectionType processSkipChar(
             const int32_t c, const bool isTerminal, const bool inputIndexIncremented);
     inline CorrectionType processUnrelatedCorrectionType();

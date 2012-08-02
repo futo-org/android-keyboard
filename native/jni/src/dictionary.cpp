@@ -16,10 +16,14 @@
 
 #define LOG_TAG "LatinIME: dictionary.cpp"
 
+#include <stdint.h>
+
+#include "bigram_dictionary.h"
 #include "binary_format.h"
 #include "defines.h"
 #include "dictionary.h"
 #include "gesture_decoder_wrapper.h"
+#include "unigram_dictionary.h"
 
 namespace latinime {
 
@@ -50,6 +54,37 @@ Dictionary::~Dictionary() {
     delete mUnigramDictionary;
     delete mBigramDictionary;
     delete mGestureDecoder;
+}
+
+int Dictionary::getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
+        int *times, int *pointerIds, int *codes, int codesSize, int *prevWordChars,
+        int prevWordLength, int commitPoint, bool isGesture,
+        bool useFullEditDistance, unsigned short *outWords,
+        int *frequencies, int *spaceIndices, int *outputTypes) {
+    int result = 0;
+    if (isGesture) {
+        mGestureDecoder->setPrevWord(prevWordChars, prevWordLength);
+        result = mGestureDecoder->getSuggestions(proximityInfo, xcoordinates, ycoordinates,
+                times, pointerIds, codes, codesSize, commitPoint,
+                outWords, frequencies, spaceIndices, outputTypes);
+        return result;
+    } else {
+        std::map<int, int> bigramMap;
+        uint8_t bigramFilter[BIGRAM_FILTER_BYTE_SIZE];
+        mBigramDictionary->fillBigramAddressToFrequencyMapAndFilter(prevWordChars,
+                prevWordLength, &bigramMap, bigramFilter);
+        result = mUnigramDictionary->getSuggestions(proximityInfo, xcoordinates,
+                ycoordinates, codes, codesSize, &bigramMap, bigramFilter,
+                useFullEditDistance, outWords, frequencies, outputTypes);
+        return result;
+    }
+}
+
+int Dictionary::getBigrams(const int32_t *word, int length, int *codes, int codesSize,
+        unsigned short *outWords, int *frequencies, int *outputTypes) const {
+    if (length <= 0) return 0;
+    return mBigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies,
+            outputTypes);
 }
 
 int Dictionary::getFrequency(const int32_t *word, int length) const {

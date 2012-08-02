@@ -24,7 +24,6 @@
 #include "char_utils.h"
 #include "correction.h"
 #include "defines.h"
-#include "dictionary.h"
 #include "proximity_info_state.h"
 
 namespace latinime {
@@ -95,11 +94,11 @@ inline static int getCurrentEditDistance(int *editDistanceTable, const int editD
 //////////////////////
 // inline functions //
 //////////////////////
-static const char QUOTE = '\'';
+static const char SINGLE_QUOTE = '\'';
 
-inline bool Correction::isQuote(const unsigned short c) {
+inline bool Correction::isSingleQuote(const unsigned short c) {
     const unsigned short userTypedChar = mProximityInfoState.getPrimaryCharAt(mInputIndex);
-    return (c == QUOTE && userTypedChar != QUOTE);
+    return (c == SINGLE_QUOTE && userTypedChar != SINGLE_QUOTE);
 }
 
 ////////////////
@@ -326,7 +325,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
     mDistances[mOutputIndex] = NOT_A_DISTANCE;
 
     // Skip checking this node
-    if (mNeedsToTraverseAllNodes || isQuote(c)) {
+    if (mNeedsToTraverseAllNodes || isSingleQuote(c)) {
         bool incremented = false;
         if (mLastCharExceeded && mInputIndex == mInputLength - 1) {
             // TODO: Do not check the proximity if EditDistance exceeds the threshold
@@ -344,7 +343,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
                 mDistances[mOutputIndex] = mProximityInfoState.getNormalizedSquaredDistance(
                         mInputIndex, proximityIndex);
             }
-            if (!isQuote(c)) {
+            if (!isSingleQuote(c)) {
                 incrementInputIndex();
                 incremented = true;
             }
@@ -791,7 +790,7 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
                 static const float MIN = 0.3f;
                 static const float R1 = NEUTRAL_SCORE_SQUARED_RADIUS;
                 static const float R2 = HALF_SCORE_SQUARED_RADIUS;
-                const float x = (float)squaredDistance
+                const float x = static_cast<float>(squaredDistance)
                         / ProximityInfoState::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
                 const float factor = max((x < R1)
                     ? (A * (R1 - x) + B * x) / R1
@@ -1133,13 +1132,14 @@ float Correction::RankingAlgorithm::calcNormalizedScore(const unsigned short *be
     }
 
     const float maxScore = score >= S_INT_MAX ? S_INT_MAX : MAX_INITIAL_SCORE
-            * pow((float)TYPED_LETTER_MULTIPLIER,
-                    (float)min(beforeLength, afterLength - spaceCount)) * FULL_WORD_MULTIPLIER;
+            * pow(static_cast<float>(TYPED_LETTER_MULTIPLIER),
+                    static_cast<float>(min(beforeLength, afterLength - spaceCount)))
+            * FULL_WORD_MULTIPLIER;
 
     // add a weight based on edit distance.
     // distance <= max(afterLength, beforeLength) == afterLength,
     // so, 0 <= distance / afterLength <= 1
-    const float weight = 1.0 - (float) distance / afterLength;
+    const float weight = 1.0f - static_cast<float>(distance) / static_cast<float>(afterLength);
     return (score / maxScore) * weight;
 }
 } // namespace latinime
