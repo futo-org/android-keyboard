@@ -17,17 +17,16 @@
 #ifndef LATINIME_DICTIONARY_H
 #define LATINIME_DICTIONARY_H
 
-#include <map>
+#include <stdint.h>
 
-#include "bigram_dictionary.h"
-#include "char_utils.h"
 #include "defines.h"
-#include "incremental_decoder_interface.h"
-#include "proximity_info.h"
-#include "unigram_dictionary.h"
-#include "words_priority_queue_pool.h"
 
 namespace latinime {
+
+class BigramDictionary;
+class IncrementalDecoderInterface;
+class ProximityInfo;
+class UnigramDictionary;
 
 class Dictionary {
  public:
@@ -49,32 +48,10 @@ class Dictionary {
             int *times, int *pointerIds, int *codes, int codesSize, int *prevWordChars,
             int prevWordLength, int commitPoint, bool isGesture,
             bool useFullEditDistance, unsigned short *outWords,
-            int *frequencies, int *spaceIndices, int *outputTypes) {
-        int result = 0;
-        if (isGesture) {
-            mGestureDecoder->setPrevWord(prevWordChars, prevWordLength);
-            result = mGestureDecoder->getSuggestions(proximityInfo, xcoordinates, ycoordinates,
-                    times, pointerIds, codes, codesSize, commitPoint,
-                    outWords, frequencies, spaceIndices, outputTypes);
-            return result;
-        } else {
-            std::map<int, int> bigramMap;
-            uint8_t bigramFilter[BIGRAM_FILTER_BYTE_SIZE];
-            mBigramDictionary->fillBigramAddressToFrequencyMapAndFilter(prevWordChars,
-                    prevWordLength, &bigramMap, bigramFilter);
-            result = mUnigramDictionary->getSuggestions(proximityInfo, xcoordinates,
-                    ycoordinates, codes, codesSize, &bigramMap, bigramFilter,
-                    useFullEditDistance, outWords, frequencies, outputTypes);
-            return result;
-        }
-    }
+            int *frequencies, int *spaceIndices, int *outputTypes);
 
     int getBigrams(const int32_t *word, int length, int *codes, int codesSize,
-            unsigned short *outWords, int *frequencies, int *outputTypes) const {
-        if (length <= 0) return 0;
-        return mBigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies,
-                outputTypes);
-    }
+            unsigned short *outWords, int *frequencies, int *outputTypes) const;
 
     int getFrequency(const int32_t *word, int length) const;
     bool isValidBigram(const int32_t *word1, int length1, const int32_t *word2, int length2) const;
@@ -82,7 +59,7 @@ class Dictionary {
     int getDictSize() const { return mDictSize; }
     int getMmapFd() const { return mMmapFd; }
     int getDictBufAdjust() const { return mDictBufAdjust; }
-    ~Dictionary();
+    virtual ~Dictionary();
 
     // public static utility methods
     // static inline methods should be defined in the header file

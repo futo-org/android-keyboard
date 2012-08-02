@@ -88,7 +88,7 @@ static inline void prof_out(void) {
         AKLOGI("Error: You must call PROF_OPEN before PROF_CLOSE.");
     }
     AKLOGI("Total time is %6.3f ms.",
-            profile_buf[PROF_BUF_SIZE - 1] * 1000 / (float)CLOCKS_PER_SEC);
+            profile_buf[PROF_BUF_SIZE - 1] * 1000.0f / static_cast<float>(CLOCKS_PER_SEC));
     float all = 0;
     for (int i = 0; i < PROF_BUF_SIZE - 1; ++i) {
         all += profile_buf[i];
@@ -98,7 +98,8 @@ static inline void prof_out(void) {
         if (profile_buf[i]) {
             AKLOGI("(%d): Used %4.2f%%, %8.4f ms. Called %d times.",
                     i, (profile_buf[i] * 100 / all),
-                    profile_buf[i] * 1000 / (float)CLOCKS_PER_SEC, profile_counter[i]);
+                    profile_buf[i] * 1000.0f / static_cast<float>(CLOCKS_PER_SEC),
+                    profile_counter[i]);
         }
     }
 }

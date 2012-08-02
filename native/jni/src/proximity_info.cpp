@@ -22,10 +22,9 @@
 #define LOG_TAG "LatinIME: proximity_info.cpp"
 
 #include "additional_proximity_chars.h"
+#include "char_utils.h"
 #include "defines.h"
-#include "dictionary.h"
 #include "proximity_info.h"
-#include "proximity_info_state.h"
 
 namespace latinime {
 
@@ -216,7 +215,7 @@ int ProximityInfo::getKeyIndex(const int c) const {
 void ProximityInfo::getCenters(int *centerXs, int *centerYs, int *codeToKeyIndex,
         int *keyToCodeIndex, int *keyCount, int *keyWidth) const {
     *keyCount = KEY_COUNT;
-    *keyWidth = sqrt((float)MOST_COMMON_KEY_WIDTH_SQUARE);
+    *keyWidth = sqrt(static_cast<float>(MOST_COMMON_KEY_WIDTH_SQUARE));
 
     for (int i = 0; i < KEY_COUNT; ++i) {
         const int code = mKeyCharCodes[i];

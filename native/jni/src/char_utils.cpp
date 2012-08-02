@@ -16,6 +16,8 @@
 
 #include <cstdlib>
 
+#include "char_utils.h"
+
 namespace latinime {
 
 struct LatinCapitalSmallPair {
