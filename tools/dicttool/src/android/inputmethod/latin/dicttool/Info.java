@@ -17,6 +17,8 @@
 package com.android.inputmethod.latin.dicttool;
 
 public class Info extends Dicttool.Command {
+    public static final String COMMAND = "info";
+
     public Info() {
     }
 
@@ -24,12 +26,11 @@ public class Info extends Dicttool.Command {
         return "info <filename>: prints various information about a dictionary file";
     }
 
-    public int getArity() {
-        return 1;
-    }
-
     public void run() {
         // TODO: implement this
+        if (mArgs.length < 1) {
+            throw new RuntimeException("Not enough arguments for command " + COMMAND);
+        }
         System.out.println("Not implemented yet");
     }
 }

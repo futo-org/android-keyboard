@@ -27,7 +27,6 @@ public class Dicttool {
         public void setArgs(String[] args) throws IllegalArgumentException {
             mArgs = args;
         }
-        abstract public int getArity();
         abstract public String getHelp();
         abstract public void run() throws Exception;
     }
@@ -62,47 +61,29 @@ public class Dicttool {
         return sCommands.containsKey(commandName);
     }
 
-    private String mPreviousCommand = null; // local to the getNextCommand function
-    private Command getNextCommand(final ArrayList<String> arguments) {
+    private Command getCommand(final ArrayList<String> arguments) {
         final String firstArgument = arguments.get(0);
         final String commandName;
         if (isCommand(firstArgument)) {
             commandName = firstArgument;
             arguments.remove(0);
-        } else if (isCommand(mPreviousCommand)) {
-            commandName = mPreviousCommand;
         } else {
             throw new RuntimeException("Unknown command : " + firstArgument);
         }
         final Command command = getCommandInstance(commandName);
-        final int arity = command.getArity();
-        if (arguments.size() < arity) {
-            throw new RuntimeException("Not enough arguments to command " + commandName);
-        }
-        final String[] argsArray = new String[arity];
-        arguments.subList(0, arity).toArray(argsArray);
-        for (int i = 0; i < arity; ++i) {
-            // For some reason, ArrayList#removeRange is protected
-            arguments.remove(0);
-        }
+        final String[] argsArray = arguments.toArray(new String[arguments.size()]);
         command.setArgs(argsArray);
-        mPreviousCommand = commandName;
         return command;
     }
 
     private void execute(final ArrayList<String> arguments) {
-        ArrayList<Command> commandsToExecute = new ArrayList<Command>();
-        while (!arguments.isEmpty()) {
-            commandsToExecute.add(getNextCommand(arguments));
-        }
-        for (final Command command : commandsToExecute) {
-            try {
-                command.run();
-            } catch (Exception e) {
-                System.out.println("Exception while processing command "
-                        + command.getClass().getSimpleName() + " : " + e);
-                return;
-            }
+        final Command command = getCommand(arguments);
+        try {
+            command.run();
+        } catch (Exception e) {
+            System.out.println("Exception while processing command "
+                    + command.getClass().getSimpleName() + " : " + e);
+            return;
         }
     }
 
