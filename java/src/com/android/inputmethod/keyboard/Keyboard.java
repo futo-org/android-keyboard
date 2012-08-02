@@ -604,9 +604,6 @@ public class Keyboard {
             }
 
             public float getKeyX(TypedArray keyAttr) {
-                final int widthType = Builder.getEnumValue(keyAttr,
-                        R.styleable.Keyboard_Key_keyWidth, KEYWIDTH_NOT_ENUM);
-
                 final int keyboardRightEdge = mParams.mOccupiedWidth
                         - mParams.mHorizontalEdgesPadding;
                 if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyXPos)) {
