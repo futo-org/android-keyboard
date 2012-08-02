@@ -60,6 +60,7 @@ import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -174,6 +175,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean mIsAutoCorrectionIndicatorOn;
 
     private AlertDialog mOptionsDialog;
+
+    private final boolean mIsHardwareAcceleratedDrawingEnabled;
 
     public final UIHandler mHandler = new UIHandler(this);
 
@@ -347,6 +350,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         super();
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
+        mIsHardwareAcceleratedDrawingEnabled =
+                InputMethodServiceCompatUtils.enableHardwareAcceleration(this);
+        Log.i(TAG, "Hardware accelerated drawing: " + mIsHardwareAcceleratedDrawingEnabled);
     }
 
     @Override
