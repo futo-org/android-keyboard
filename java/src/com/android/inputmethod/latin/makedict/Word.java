@@ -27,10 +27,10 @@ import java.util.Arrays;
  * This is chiefly used to iterate a dictionary.
  */
 public class Word implements Comparable<Word> {
-    final String mWord;
-    final int mFrequency;
-    final ArrayList<WeightedString> mShortcutTargets;
-    final ArrayList<WeightedString> mBigrams;
+    public final String mWord;
+    public final int mFrequency;
+    public final ArrayList<WeightedString> mShortcutTargets;
+    public final ArrayList<WeightedString> mBigrams;
 
     private int mHashCode = 0;
 
