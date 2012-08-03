@@ -25,8 +25,9 @@
 #include "jni_common.h"
 
 #ifdef USE_MMAP_FOR_DICTIONARY
-#include <sys/mman.h>
+#include <cerrno>
 #include <fcntl.h>
+#include <sys/mman.h>
 #else // USE_MMAP_FOR_DICTIONARY
 #include <cstdlib>
 #endif // USE_MMAP_FOR_DICTIONARY
