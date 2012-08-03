@@ -1619,11 +1619,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         boolean didAutoCorrect = false;
         // Handle separator
         if (mWordComposer.isComposingWord()) {
-            // In certain languages where single quote is a separator, it's better
-            // not to auto correct, but accept the typed word. For instance,
-            // in Italian dov' should not be expanded to dove' because the elision
-            // requires the last vowel to be removed.
-            if (mCurrentSettings.mCorrectionEnabled && primaryCode != Keyboard.CODE_SINGLE_QUOTE) {
+            if (mCurrentSettings.mCorrectionEnabled) {
                 commitCurrentAutoCorrection(primaryCode);
                 didAutoCorrect = true;
             } else {
