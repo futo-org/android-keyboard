@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin.dicttool;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -61,22 +60,18 @@ public class Dicttool {
         return sCommands.containsKey(commandName);
     }
 
-    private Command getCommand(final ArrayList<String> arguments) {
-        final String firstArgument = arguments.get(0);
-        final String commandName;
-        if (isCommand(firstArgument)) {
-            commandName = firstArgument;
-            arguments.remove(0);
-        } else {
-            throw new RuntimeException("Unknown command : " + firstArgument);
+    private Command getCommand(final String[] arguments) {
+        final String commandName = arguments[0];
+        if (!isCommand(commandName)) {
+            throw new RuntimeException("Unknown command : " + commandName);
         }
         final Command command = getCommandInstance(commandName);
-        final String[] argsArray = arguments.toArray(new String[arguments.size()]);
+        final String[] argsArray = Arrays.copyOfRange(arguments, 1, arguments.length);
         command.setArgs(argsArray);
         return command;
     }
 
-    private void execute(final ArrayList<String> arguments) {
+    private void execute(final String[] arguments) {
         final Command command = getCommand(arguments);
         try {
             command.run();
@@ -87,15 +82,11 @@ public class Dicttool {
         }
     }
 
-    public static void main(final String[] args) {
-        if (0 == args.length) {
+    public static void main(final String[] arguments) {
+        if (0 == arguments.length) {
             help();
             return;
         }
-        if (!isCommand(args[0])) throw new RuntimeException("Unknown command : " + args[0]);
-
-        final ArrayList<String> arguments = new ArrayList<String>(args.length);
-        arguments.addAll(Arrays.asList(args));
         new Dicttool().execute(arguments);
     }
 }
