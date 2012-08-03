@@ -654,9 +654,12 @@ public class ExpandableDictionary extends Dictionary {
                 --index;
                 mLookedUpString[index] = node.mCode;
                 node = node.mParent;
-            } while (node != null);
+            } while (node != null && index > 0);
 
-            if (freq >= 0) {
+            // If node is null, we have a word longer than MAX_WORD_LENGTH in the dictionary.
+            // It's a little unclear how this can happen, but just in case it does it's safer
+            // to ignore the word in this case.
+            if (freq >= 0 && node == null) {
                 suggestions.add(new SuggestedWordInfo(new String(mLookedUpString, index,
                         BinaryDictionary.MAX_WORD_LENGTH - index),
                         freq, SuggestedWordInfo.KIND_CORRECTION, mDictType));
