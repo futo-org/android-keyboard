@@ -349,7 +349,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
         return mKeyboardView;
     }
 
-    public View onCreateInputView() {
+    public View onCreateInputView(boolean isHardwareAcceleratedDrawingEnabled) {
         if (mKeyboardView != null) {
             mKeyboardView.closing();
         }
@@ -372,6 +372,10 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
         }
 
         mKeyboardView = (MainKeyboardView) mCurrentInputView.findViewById(R.id.keyboard_view);
+        if (isHardwareAcceleratedDrawingEnabled) {
+            mKeyboardView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            // TODO: Should use LAYER_TYPE_SOFTWARE when hardware acceleration is off?
+        }
         mKeyboardView.setKeyboardActionListener(mLatinIME);
         if (mForceNonDistinctMultitouch) {
             mKeyboardView.setDistinctMultitouch(false);
