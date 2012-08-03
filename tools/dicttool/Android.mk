@@ -16,9 +16,16 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
-LOCAL_SRC_FILES := $(call all-java-files-under,src)
+MAKEDICT_CORE_SOURCE_DIRECTORY := ../../java/src/com/android/inputmethod/latin/makedict
+
+LOCAL_MAIN_SRC_FILES := $(call all-java-files-under,$(MAKEDICT_CORE_SOURCE_DIRECTORY))
+LOCAL_TOOL_SRC_FILES := $(call all-java-files-under,src)
+LOCAL_SRC_FILES := $(LOCAL_TOOL_SRC_FILES) \
+        $(filter-out $(addprefix %/, $(notdir $(LOCAL_TOOL_SRC_FILES))), $(LOCAL_MAIN_SRC_FILES)) \
+        $(call all-java-files-under,tests)
 LOCAL_JAR_MANIFEST := etc/manifest.txt
 LOCAL_MODULE := dicttool
+LOCAL_JAVA_LIBRARIES := junit
 LOCAL_MODULE_TAGS := eng
 
 include $(BUILD_HOST_JAVA_LIBRARY)

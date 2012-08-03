@@ -61,8 +61,8 @@ public class FusionDictionary implements Iterable<Word> {
      * This represents an "attribute", that is either a bigram or a shortcut.
      */
     public static class WeightedString {
-        final String mWord;
-        int mFrequency;
+        public final String mWord;
+        public int mFrequency;
         public WeightedString(String word, int frequency) {
             mWord = word;
             mFrequency = frequency;
