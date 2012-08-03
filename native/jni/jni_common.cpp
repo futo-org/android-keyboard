@@ -22,11 +22,8 @@
 #include "defines.h"
 #include "jni.h"
 #include "jni_common.h"
-#include "proximity_info.h"
 
 #include <cassert>
-#include <cerrno>
-#include <cstdio>
 
 using namespace latinime;
 
