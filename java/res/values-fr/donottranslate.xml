@@ -25,5 +25,7 @@
     <!-- Symbols that should promote magic spaces into real space -->
     <string name="phantom_space_promoting_symbols">;:!?([*&amp;@{&lt;&gt;+=|</string>
     <!-- Symbols that do NOT separate words -->
-    <string name="symbols_excluded_from_word_separators">\'</string>
+    <!-- Note that this is identical to the default value, but since the above ones are different
+         and those variables only make sense together, this is kept here for readability. -->
+    <string name="symbols_excluded_from_word_separators">\'-</string>
 </resources>
