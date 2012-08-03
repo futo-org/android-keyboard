@@ -35,6 +35,7 @@ public class Dicttool {
         sCommands.put("info", Info.class);
         sCommands.put("compress", Compress.Compressor.class);
         sCommands.put("uncompress", Compress.Uncompressor.class);
+        sCommands.put("makedict", Makedict.class);
     }
 
     private static Command getCommandInstance(final String commandName) {

@@ -14,11 +14,13 @@
  * the License.
  */
 
-package com.android.inputmethod.latin.makedict;
+package com.android.inputmethod.latin.dicttool;
 
+import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.makedict.Word;
 
 import java.io.IOException;
 import java.io.InputStream;
