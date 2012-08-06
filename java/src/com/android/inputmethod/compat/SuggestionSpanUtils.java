@@ -120,7 +120,6 @@ public class SuggestionSpanUtils {
             spannable = new SpannableString(pickedWord);
         }
         final ArrayList<String> suggestionsList = new ArrayList<String>();
-        boolean sameAsTyped = false;
         for (int i = 0; i < suggestedWords.size(); ++i) {
             if (suggestionsList.size() >= OBJ_SUGGESTIONS_MAX_SIZE) {
                 break;
@@ -128,8 +127,6 @@ public class SuggestionSpanUtils {
             final CharSequence word = suggestedWords.getWord(i);
             if (!TextUtils.equals(pickedWord, word)) {
                 suggestionsList.add(word.toString());
-            } else if (i == 0) {
-                sameAsTyped = true;
             }
         }
 
