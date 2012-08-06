@@ -545,8 +545,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             commitTyped(LastComposedWord.NOT_A_SEPARATOR);
             mConnection.finishComposingText();
             mConnection.endBatchEdit();
-            if (isShowingOptionDialog())
+            if (isShowingOptionDialog()) {
                 mOptionsDialog.dismiss();
+            }
         }
         super.onConfigurationChanged(conf);
     }
@@ -1046,7 +1047,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, typedWord.toString(),
                     separatorCode, prevWord);
         }
-        updateSuggestionStrip();
     }
 
     // Called from the KeyboardSwitcher which needs to know auto caps state to display
@@ -1319,10 +1319,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // Called from PointerTracker through the KeyboardActionListener interface
     @Override
-    public void onTextInput(CharSequence text) {
+    public void onTextInput(CharSequence rawText) {
         mConnection.beginBatchEdit();
         commitTyped(LastComposedWord.NOT_A_SEPARATOR);
-        text = specificTldProcessingOnTextInput(text);
+        mHandler.postUpdateSuggestionStrip();
+        final CharSequence text = specificTldProcessingOnTextInput(rawText);
         if (SPACE_STATE_PHANTOM == mSpaceState) {
             sendKeyCodePoint(Keyboard.CODE_SPACE);
         }
@@ -1659,8 +1660,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         commitTyped(LastComposedWord.NOT_A_SEPARATOR);
         requestHideSelf(0);
         MainKeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
-        if (inputView != null)
+        if (inputView != null) {
             inputView.closing();
+        }
     }
 
     // TODO: make this private
