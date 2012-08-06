@@ -25,17 +25,52 @@
 #define AKLOGE(fmt, ...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##__VA_ARGS__)
 #define AKLOGI(fmt, ...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##__VA_ARGS__)
 
+#define DUMP_RESULT(words, frequencies, maxWordCount, maxWordLength) do { \
+        dumpResult(words, frequencies, maxWordCount, maxWordLength); } while(0)
 #define DUMP_WORD(word, length) do { dumpWord(word, length); } while(0)
 #define DUMP_WORD_INT(word, length) do { dumpWordInt(word, length); } while(0)
 
+static inline void dumpWordInfo(const unsigned short *word, const int length,
+        const int rank, const int frequency) {
+    static char charBuf[50];
+    int i = 0;
+    for (; i < length; ++i) {
+        const unsigned short c = word[i];
+        if (c == 0) {
+            break;
+        }
+        charBuf[i] = c;
+    }
+    charBuf[i] = 0;
+    if (i > 1) {
+        AKLOGI("%2d [ %s ] (%d)", rank, charBuf, frequency);
+    }
+}
+
+static inline void dumpResult(
+        const unsigned short *outWords, const int *frequencies, const int maxWordCounts,
+        const int maxWordLength) {
+    AKLOGI("--- DUMP RESULT ---------");
+    for (int i = 0; i < maxWordCounts; ++i) {
+        dumpWordInfo(&outWords[i * maxWordLength], maxWordLength, i, frequencies[i]);
+    }
+    AKLOGI("-------------------------");
+}
+
 static inline void dumpWord(const unsigned short *word, const int length) {
     static char charBuf[50];
-
-    for (int i = 0; i < length; ++i) {
-        charBuf[i] = word[i];
+    int i = 0;
+    for (; i < length; ++i) {
+        const unsigned short c = word[i];
+        if (c == 0) {
+            break;
+        }
+        charBuf[i] = c;
     }
-    charBuf[length] = 0;
-    AKLOGI("[ %s ]", charBuf);
+    charBuf[i] = 0;
+    if (i > 1) {
+        AKLOGI("[ %s ]", charBuf);
+    }
 }
 
 static inline void dumpWordInt(const int *word, const int length) {
@@ -51,6 +86,7 @@ static inline void dumpWordInt(const int *word, const int length) {
 #else
 #define AKLOGE(fmt, ...)
 #define AKLOGI(fmt, ...)
+#define DUMP_RESULT(words, frequencies, maxWordCount, maxWordLength)
 #define DUMP_WORD(word, length)
 #define DUMP_WORD_INT(word, length)
 #endif
