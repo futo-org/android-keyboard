@@ -60,9 +60,9 @@
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"ตามคำก่อนหน้า"</string>
     <string name="gesture_input" msgid="3310827802759290774">"ป้อนท่าทางสัมผัส"</string>
     <string name="gesture_input_summary" msgid="7019742443455085809">"ป้อนคำโดยลากนิ้วเป็นรูปตัวอักษรที่อยู่ในคำ โดยไม่ยกนิ้วขึ้น"</string>
-    <string name="gesture_preview_trail" msgid="3802333369335722221">"แสดงรอยทางเดินของท่าทาง"</string>
-    <string name="gesture_floating_preview_text" msgid="6859416520117939680">"แสดงคำแนะนำท่าทาง"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="3333754126434989709">"แสดงตัวอย่างคำแนะนำพร้อมด้วยท่าทาง"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"แสดงรอยทางเดินของท่าทางสัมผัส"</string>
+    <string name="gesture_floating_preview_text" msgid="6859416520117939680">"แสดงคำแนะนำท่าทางสัมผัส"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="3333754126434989709">"แสดงตัวอย่างคำแนะนำพร้อมด้วยท่าทางสัมผัส"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : บันทึกแล้ว"</string>
     <string name="label_go_key" msgid="1635148082137219148">"ไป"</string>
     <string name="label_next_key" msgid="362972844525672568">"ถัดไป"</string>
