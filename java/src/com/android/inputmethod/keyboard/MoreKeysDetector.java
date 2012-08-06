@@ -39,7 +39,11 @@ public class MoreKeysDetector extends KeyDetector {
 
         Key nearestKey = null;
         int nearestDist = (y < 0) ? mSlideAllowanceSquareTop : mSlideAllowanceSquare;
-        for (final Key key : getKeyboard().mKeys) {
+        final Keyboard keyboard = getKeyboard();
+        if (keyboard == null) {
+            throw new NullPointerException("Keyboard isn't set");
+        }
+        for (final Key key : keyboard.mKeys) {
             final int dist = key.squaredDistanceToEdge(touchX, touchY);
             if (dist < nearestDist) {
                 nearestKey = key;
