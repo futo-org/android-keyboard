@@ -67,6 +67,9 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, 
         result = mGestureDecoder->getSuggestions(proximityInfo, xcoordinates, ycoordinates,
                 times, pointerIds, codes, codesSize, commitPoint,
                 outWords, frequencies, spaceIndices, outputTypes);
+        if (DEBUG_DICT) {
+            DUMP_RESULT(outWords, frequencies, 18 /* MAX_WORDS */, MAX_WORD_LENGTH_INTERNAL);
+        }
         return result;
     } else {
         std::map<int, int> bigramMap;
