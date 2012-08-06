@@ -220,7 +220,7 @@ public class Utils {
     }
 
     public static String getStackTrace() {
-        return getStackTrace(Integer.MAX_VALUE);
+        return getStackTrace(Integer.MAX_VALUE - 1);
     }
 
     public static class UsabilityStudyLogUtils {
