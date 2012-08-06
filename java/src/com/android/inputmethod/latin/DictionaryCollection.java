@@ -65,7 +65,7 @@ public class DictionaryCollection extends Dictionary {
                 prevWord, proximityInfo);
         if (null == suggestions) suggestions = new ArrayList<SuggestedWordInfo>();
         final int length = dictionaries.size();
-        for (int i = 0; i < length; ++ i) {
+        for (int i = 1; i < length; ++ i) {
             final ArrayList<SuggestedWordInfo> sugg = dictionaries.get(i).getSuggestions(composer,
                     prevWord, proximityInfo);
             if (null != sugg) suggestions.addAll(sugg);
