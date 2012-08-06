@@ -24,7 +24,6 @@
 
 namespace latinime {
 
-class Dictionary;
 class BigramDictionary {
  public:
     BigramDictionary(const unsigned char *dict, int maxWordLength, int maxPredictions);
@@ -53,7 +52,5 @@ class BigramDictionary {
     // TODO: Re-implement proximity correction for bigram correction
     static const int MAX_ALTERNATIVES = 1;
 };
-
 } // namespace latinime
-
 #endif // LATINIME_BIGRAM_DICTIONARY_H

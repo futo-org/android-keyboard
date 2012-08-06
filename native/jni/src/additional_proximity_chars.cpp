@@ -38,4 +38,4 @@ const int32_t AdditionalProximityChars::EN_US_ADDITIONAL_O[EN_US_ADDITIONAL_O_SI
 const int32_t AdditionalProximityChars::EN_US_ADDITIONAL_U[EN_US_ADDITIONAL_U_SIZE] = {
     'a', 'e', 'i', 'o'
 };
-}
+} // namespace latinime

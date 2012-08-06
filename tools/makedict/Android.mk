@@ -20,9 +20,7 @@ MAKEDICT_CORE_SOURCE_DIRECTORY := ../../java/src/com/android/inputmethod/latin/m
 
 LOCAL_MAIN_SRC_FILES := $(call all-java-files-under,$(MAKEDICT_CORE_SOURCE_DIRECTORY))
 LOCAL_TOOL_SRC_FILES := $(call all-java-files-under,src)
-LOCAL_SRC_FILES := $(LOCAL_TOOL_SRC_FILES) \
-        $(filter-out $(addprefix %, $(LOCAL_TOOL_SRC_FILES)), $(LOCAL_MAIN_SRC_FILES))
-LOCAL_SRC_FILES += $(call all-java-files-under,tests)
+LOCAL_SRC_FILES := $(LOCAL_TOOL_SRC_FILES)
 LOCAL_JAR_MANIFEST := etc/manifest.txt
 LOCAL_MODULE := makedict
 LOCAL_JAVA_LIBRARIES := junit

@@ -60,6 +60,9 @@
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Batay sa nakaraang salita"</string>
     <string name="gesture_input" msgid="3310827802759290774">"Pagpasok ng galaw"</string>
     <string name="gesture_input_summary" msgid="7019742443455085809">"Magpasok ng salita sa gamit ang pagsulat sa mga titik ng salita"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"Ipakita ang trail ng galaw"</string>
+    <string name="gesture_floating_preview_text" msgid="6859416520117939680">"Ipakita ang salita ng galaw"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="3333754126434989709">"Ipakita ang lumulutang na preview ng salita na may galaw"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Na-save"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Punta"</string>
     <string name="label_next_key" msgid="362972844525672568">"Susunod"</string>
@@ -90,6 +93,9 @@
     <string name="spoken_description_return" msgid="8178083177238315647">"Bumalik"</string>
     <string name="spoken_description_search" msgid="1247236163755920808">"Paghahanap"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"Tuldok"</string>
+    <string name="spoken_description_language_switch" msgid="5507091328222331316">"Magpalit ng wika"</string>
+    <string name="spoken_description_action_next" msgid="8636078276664150324">"Susunod"</string>
+    <string name="spoken_description_action_previous" msgid="800872415009336208">"Nakaraan"</string>
     <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Pinagana ang shift"</string>
     <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Pinagana ang caps lock"</string>
     <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Hindi pinagana ang shift"</string>

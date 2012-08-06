@@ -14,12 +14,14 @@
  * the License.
  */
 
-package com.android.inputmethod.keyboard;
+package com.android.inputmethod.keyboard.internal;
 
 import android.content.Context;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.Utils;

@@ -102,6 +102,12 @@
             android:title="@string/advanced_settings"
             android:summary="@string/advanced_settings_summary">
             <CheckBoxPreference
+                android:key="pref_key_use_contacts_dict"
+                android:title="@string/use_contacts_dict"
+                android:summary="@string/use_contacts_dict_summary"
+                android:persistent="true"
+                android:defaultValue="true" />
+            <CheckBoxPreference
                 android:key="pref_suppress_language_switch_key"
                 android:title="@string/suppress_language_switch_key"
                 android:persistent="true"
@@ -120,18 +126,23 @@
             <ListPreference
                 android:key="pref_key_preview_popup_dismiss_delay"
                 android:title="@string/key_preview_popup_dismiss_delay" />
-            <CheckBoxPreference
-                android:key="pref_key_use_contacts_dict"
-                android:title="@string/use_contacts_dict"
-                android:summary="@string/use_contacts_dict_summary"
-                android:persistent="true"
-                android:defaultValue="true" />
             <PreferenceScreen
                 android:key="pref_vibration_duration_settings"
                 android:title="@string/prefs_keypress_vibration_duration_settings"/>
             <PreferenceScreen
                 android:key="pref_keypress_sound_volume"
                 android:title="@string/prefs_keypress_sound_volume_settings" />
+            <CheckBoxPreference
+                android:key="pref_gesture_preview_trail"
+                android:title="@string/gesture_preview_trail"
+                android:persistent="true"
+                android:defaultValue="true" />
+            <CheckBoxPreference
+                android:key="pref_gesture_floating_preview_text"
+                android:title="@string/gesture_floating_preview_text"
+                android:summary="@string/gesture_floating_preview_text_summary"
+                android:persistent="true"
+                android:defaultValue="true" />
         </PreferenceScreen>
     </PreferenceCategory>
 </PreferenceScreen>

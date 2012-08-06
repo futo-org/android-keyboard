@@ -17,8 +17,7 @@
 #ifndef LATINIME_WORDS_PRIORITY_QUEUE_POOL_H
 #define LATINIME_WORDS_PRIORITY_QUEUE_POOL_H
 
-#include <assert.h>
-#include <new>
+#include <cassert>
 #include "words_priority_queue.h"
 
 namespace latinime {
@@ -44,11 +43,11 @@ class WordsPriorityQueuePool {
         }
     }
 
-    WordsPriorityQueue* getMasterQueue() {
+    WordsPriorityQueue *getMasterQueue() {
         return mMasterQueue;
     }
 
-    WordsPriorityQueue* getSubQueue(const int wordIndex, const int inputWordLength) {
+    WordsPriorityQueue *getSubQueue(const int wordIndex, const int inputWordLength) {
         if (wordIndex >= MULTIPLE_WORDS_SUGGESTION_MAX_WORDS) {
             return 0;
         }
@@ -70,7 +69,7 @@ class WordsPriorityQueuePool {
 
     inline void clearSubQueue(const int wordIndex) {
         for (int i = 0; i < SUB_QUEUE_MAX_COUNT; ++i) {
-            WordsPriorityQueue* queue = getSubQueue(wordIndex, i);
+            WordsPriorityQueue *queue = getSubQueue(wordIndex, i);
             if (queue) {
                 queue->clear();
             }
@@ -86,12 +85,11 @@ class WordsPriorityQueuePool {
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(WordsPriorityQueuePool);
-    WordsPriorityQueue* mMasterQueue;
-    WordsPriorityQueue* mSubQueues[SUB_QUEUE_MAX_COUNT * MULTIPLE_WORDS_SUGGESTION_MAX_WORDS];
+    WordsPriorityQueue *mMasterQueue;
+    WordsPriorityQueue *mSubQueues[SUB_QUEUE_MAX_COUNT * MULTIPLE_WORDS_SUGGESTION_MAX_WORDS];
     char mMasterQueueBuf[sizeof(WordsPriorityQueue)];
     char mSubQueueBuf[MULTIPLE_WORDS_SUGGESTION_MAX_WORDS
                       * SUB_QUEUE_MAX_COUNT * sizeof(WordsPriorityQueue)];
 };
-}
-
+} // namespace latinime
 #endif // LATINIME_WORDS_PRIORITY_QUEUE_POOL_H

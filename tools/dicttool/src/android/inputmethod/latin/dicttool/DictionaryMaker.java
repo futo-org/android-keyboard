@@ -14,7 +14,12 @@
  * the License.
  */
 
-package com.android.inputmethod.latin.makedict;
+package com.android.inputmethod.latin.dicttool;
+
+import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
+import com.android.inputmethod.latin.makedict.FusionDictionary;
+import com.android.inputmethod.latin.makedict.MakedictLog;
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -102,7 +107,11 @@ public class DictionaryMaker {
         }
 
         private void displayHelp() {
-            MakedictLog.i("Usage: makedict "
+            MakedictLog.i(getHelp());
+        }
+
+        public static String getHelp() {
+            return "Usage: makedict "
                     + "[-s <unigrams.xml> [-b <bigrams.xml>] [-c <shortcuts.xml>] "
                     + "| -s <binary input>] [-d <binary output format version 2>] "
                     + "[-d1 <binary output format version 1>] [-x <xml output>] [-2]\n"
@@ -114,7 +123,7 @@ public class DictionaryMaker {
                     + "  are supported. All three can be output at the same time, but the same\n"
                     + "  output format cannot be specified several times. The behavior is\n"
                     + "  unspecified if the same file is specified for input and output, or for\n"
-                    + "  several outputs.");
+                    + "  several outputs.";
         }
 
         public Arguments(String[] argsArray) throws IOException {

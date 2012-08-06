@@ -1,21 +1,20 @@
 /*
-**
-** Copyright 2010, The Android Open Source Project
-**
-** Licensed under the Apache License, Version 2.0 (the "License");
-** you may not use this file except in compliance with the License.
-** You may obtain a copy of the License at
-**
-**     http://www.apache.org/licenses/LICENSE-2.0
-**
-** Unless required by applicable law or agreed to in writing, software
-** distributed under the License is distributed on an "AS IS" BASIS,
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-** See the License for the specific language governing permissions and
-** limitations under the License.
-*/
+ * Copyright (C) 2010, The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-#include <string.h>
+#include <cstring>
 
 #define LOG_TAG "LatinIME: bigram_dictionary.cpp"
 
@@ -103,7 +102,7 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
     // TODO: remove unused arguments, and refrain from storing stuff in members of this class
     // TODO: have "in" arguments before "out" ones, and make out args explicit in the name
 
-    const uint8_t* const root = DICT;
+    const uint8_t *const root = DICT;
     int pos = getBigramListPositionForWord(prevWord, prevWordLength,
             false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
@@ -127,7 +126,7 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
 
         // codesSize == 0 means we are trying to find bigram predictions.
         if (codesSize < 1 || checkFirstCharacter(bigramBuffer, inputCodes)) {
-            const int bigramFreqTemp = UnigramDictionary::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
+            const int bigramFreqTemp = BinaryFormat::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
             // Due to space constraints, the frequency for bigrams is approximate - the lower the
             // unigram frequency, the worse the precision. The theoritical maximum error in
             // resulting frequency is 8 - although in the practice it's never bigger than 3 or 4
@@ -140,7 +139,7 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
                 ++bigramCount;
             }
         }
-    } while (UnigramDictionary::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags);
+    } while (BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags);
     return bigramCount;
 }
 
@@ -149,14 +148,14 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
 int BigramDictionary::getBigramListPositionForWord(const int32_t *prevWord,
         const int prevWordLength, const bool forceLowerCaseSearch) const {
     if (0 >= prevWordLength) return 0;
-    const uint8_t* const root = DICT;
+    const uint8_t *const root = DICT;
     int pos = BinaryFormat::getTerminalPosition(root, prevWord, prevWordLength,
             forceLowerCaseSearch);
 
     if (NOT_VALID_WORD == pos) return 0;
     const int flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
-    if (0 == (flags & UnigramDictionary::FLAG_HAS_BIGRAMS)) return 0;
-    if (0 == (flags & UnigramDictionary::FLAG_HAS_MULTIPLE_CHARS)) {
+    if (0 == (flags & BinaryFormat::FLAG_HAS_BIGRAMS)) return 0;
+    if (0 == (flags & BinaryFormat::FLAG_HAS_MULTIPLE_CHARS)) {
         BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
     } else {
         pos = BinaryFormat::skipOtherCharacters(root, pos);
@@ -170,7 +169,7 @@ int BigramDictionary::getBigramListPositionForWord(const int32_t *prevWord,
 void BigramDictionary::fillBigramAddressToFrequencyMapAndFilter(const int32_t *prevWord,
         const int prevWordLength, std::map<int, int> *map, uint8_t *filter) const {
     memset(filter, 0, BIGRAM_FILTER_BYTE_SIZE);
-    const uint8_t* const root = DICT;
+    const uint8_t *const root = DICT;
     int pos = getBigramListPositionForWord(prevWord, prevWordLength,
             false /* forceLowerCaseSearch */);
     if (0 == pos) {
@@ -183,12 +182,12 @@ void BigramDictionary::fillBigramAddressToFrequencyMapAndFilter(const int32_t *p
     int bigramFlags;
     do {
         bigramFlags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
-        const int frequency = UnigramDictionary::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
+        const int frequency = BinaryFormat::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
         const int bigramPos = BinaryFormat::getAttributeAddressAndForwardPointer(root, bigramFlags,
                 &pos);
         (*map)[bigramPos] = frequency;
         setInFilter(filter, bigramPos);
-    } while (0 != (UnigramDictionary::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags));
+    } while (0 != (BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags));
 }
 
 bool BigramDictionary::checkFirstCharacter(unsigned short *word, int *inputCodes) const {
@@ -209,7 +208,7 @@ bool BigramDictionary::checkFirstCharacter(unsigned short *word, int *inputCodes
 
 bool BigramDictionary::isValidBigram(const int32_t *word1, int length1, const int32_t *word2,
         int length2) const {
-    const uint8_t* const root = DICT;
+    const uint8_t *const root = DICT;
     int pos = getBigramListPositionForWord(word1, length1, false /* forceLowerCaseSearch */);
     // getBigramListPositionForWord returns 0 if this word isn't in the dictionary or has no bigrams
     if (0 == pos) return false;
@@ -224,7 +223,7 @@ bool BigramDictionary::isValidBigram(const int32_t *word1, int length1, const in
         if (bigramPos == nextWordPos) {
             return true;
         }
-    } while (UnigramDictionary::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags);
+    } while (BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags);
     return false;
 }
 

@@ -17,11 +17,9 @@
 #ifndef LATINIME_PROXIMITY_INFO_STATE_H
 #define LATINIME_PROXIMITY_INFO_STATE_H
 
-#include <assert.h>
 #include <stdint.h>
 #include <string>
 
-#include "additional_proximity_chars.h"
 #include "char_utils.h"
 #include "defines.h"
 
@@ -43,14 +41,14 @@ class ProximityInfoState {
     // Defined in proximity_info_state.cpp //
     /////////////////////////////////////////
     void initInputParams(
-            const ProximityInfo* proximityInfo, const int32_t* inputCodes, const int inputLength,
-            const int* xCoordinates, const int* yCoordinates);
+            const ProximityInfo *proximityInfo, const int32_t *inputCodes, const int inputLength,
+            const int *xCoordinates, const int *yCoordinates);
 
     /////////////////////////////////////////
     // Defined here                        //
     /////////////////////////////////////////
     ProximityInfoState() {};
-    inline const int* getProximityCharsAt(const int index) const {
+    inline const int *getProximityCharsAt(const int index) const {
         return mInputCodes + (index * MAX_PROXIMITY_CHARS_SIZE_INTERNAL);
     }
 
@@ -154,7 +152,7 @@ class ProximityInfoState {
                 inputIndex * MAX_PROXIMITY_CHARS_SIZE_INTERNAL + proximityIndex];
     }
 
-    inline const unsigned short* getPrimaryInputWord() const {
+    inline const unsigned short *getPrimaryInputWord() const {
         return mPrimaryInputWord;
     }
 
@@ -215,7 +213,5 @@ class ProximityInfoState {
     int mInputLength;
     unsigned short mPrimaryInputWord[MAX_WORD_LENGTH_INTERNAL];
 };
-
 } // namespace latinime
-
 #endif // LATINIME_PROXIMITY_INFO_STATE_H

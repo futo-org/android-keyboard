@@ -115,6 +115,7 @@ public class KeyboardLayoutSet {
         boolean mNoSettingsKey;
         boolean mLanguageSwitchKeyEnabled;
         InputMethodSubtype mSubtype;
+        int mDeviceFormFactor;
         int mOrientation;
         int mWidth;
         // Sparse array of KeyboardLayoutSet element parameters indexed by element's id.
@@ -211,9 +212,10 @@ public class KeyboardLayoutSet {
         final boolean noLanguage = SubtypeLocale.isNoLanguage(params.mSubtype);
         final boolean voiceKeyEnabled = params.mVoiceKeyEnabled && !noLanguage;
         final boolean hasShortcutKey = voiceKeyEnabled && (isSymbols != params.mVoiceKeyOnMain);
-        return new KeyboardId(keyboardLayoutSetElementId, params.mSubtype, params.mOrientation,
-                params.mWidth, params.mMode, params.mEditorInfo, params.mNoSettingsKey,
-                voiceKeyEnabled, hasShortcutKey, params.mLanguageSwitchKeyEnabled);
+        return new KeyboardId(keyboardLayoutSetElementId, params.mSubtype, params.mDeviceFormFactor,
+                params.mOrientation, params.mWidth, params.mMode, params.mEditorInfo,
+                params.mNoSettingsKey, voiceKeyEnabled, hasShortcutKey,
+                params.mLanguageSwitchKeyEnabled);
     }
 
     public static class Builder {
@@ -239,9 +241,11 @@ public class KeyboardLayoutSet {
                     mPackageName, NO_SETTINGS_KEY, mEditorInfo);
         }
 
-        public Builder setScreenGeometry(int orientation, int widthPixels) {
-            mParams.mOrientation = orientation;
-            mParams.mWidth = widthPixels;
+        public Builder setScreenGeometry(int deviceFormFactor, int orientation, int widthPixels) {
+            final Params params = mParams;
+            params.mDeviceFormFactor = deviceFormFactor;
+            params.mOrientation = orientation;
+            params.mWidth = widthPixels;
             return this;
         }
 

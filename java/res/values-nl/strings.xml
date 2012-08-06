@@ -60,6 +60,9 @@
     <string name="bigram_prediction_summary" msgid="3253961591626441019">"Op basis van het vorige woord"</string>
     <string name="gesture_input" msgid="3310827802759290774">"Invoer met gebaren"</string>
     <string name="gesture_input_summary" msgid="7019742443455085809">"Voer een woord in door de letters van een woord te volgen"</string>
+    <string name="gesture_preview_trail" msgid="3802333369335722221">"Gebarenspoor weergeven"</string>
+    <string name="gesture_floating_preview_text" msgid="6859416520117939680">"Woord met gebaar weergeven"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="3333754126434989709">"Zwevend voorbeeldwoord met gebaar weergeven"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: opgeslagen"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Start"</string>
     <string name="label_next_key" msgid="362972844525672568">"Verder"</string>
@@ -90,6 +93,9 @@
     <string name="spoken_description_return" msgid="8178083177238315647">"Return"</string>
     <string name="spoken_description_search" msgid="1247236163755920808">"Zoeken"</string>
     <string name="spoken_description_dot" msgid="40711082435231673">"Stip"</string>
+    <string name="spoken_description_language_switch" msgid="5507091328222331316">"Taal wijzigen"</string>
+    <string name="spoken_description_action_next" msgid="8636078276664150324">"Volgende"</string>
+    <string name="spoken_description_action_previous" msgid="800872415009336208">"Vorige"</string>
     <string name="spoken_description_shiftmode_on" msgid="5700440798609574589">"Shift ingeschakeld"</string>
     <string name="spoken_description_shiftmode_locked" msgid="593175803181701830">"Caps Lock ingeschakeld"</string>
     <string name="spoken_description_shiftmode_off" msgid="657219998449174808">"Shift uitgeschakeld"</string>

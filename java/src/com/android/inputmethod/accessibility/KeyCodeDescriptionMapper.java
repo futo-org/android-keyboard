@@ -60,10 +60,8 @@ public class KeyCodeDescriptionMapper {
         // Manual label substitutions for key labels with no string resource
         mKeyLabelMap.put(":-)", R.string.spoken_description_smiley);
 
-        // Symbols that most TTS engines can't speak
-        mKeyCodeMap.put(' ', R.string.spoken_description_space);
-
         // Special non-character codes defined in Keyboard
+        mKeyCodeMap.put(Keyboard.CODE_SPACE, R.string.spoken_description_space);
         mKeyCodeMap.put(Keyboard.CODE_DELETE, R.string.spoken_description_delete);
         mKeyCodeMap.put(Keyboard.CODE_ENTER, R.string.spoken_description_return);
         mKeyCodeMap.put(Keyboard.CODE_SETTINGS, R.string.spoken_description_settings);
@@ -71,6 +69,9 @@ public class KeyCodeDescriptionMapper {
         mKeyCodeMap.put(Keyboard.CODE_SHORTCUT, R.string.spoken_description_mic);
         mKeyCodeMap.put(Keyboard.CODE_SWITCH_ALPHA_SYMBOL, R.string.spoken_description_to_symbol);
         mKeyCodeMap.put(Keyboard.CODE_TAB, R.string.spoken_description_tab);
+        mKeyCodeMap.put(Keyboard.CODE_LANGUAGE_SWITCH, R.string.spoken_description_language_switch);
+        mKeyCodeMap.put(Keyboard.CODE_ACTION_NEXT, R.string.spoken_description_action_next);
+        mKeyCodeMap.put(Keyboard.CODE_ACTION_PREVIOUS, R.string.spoken_description_action_previous);
     }
 
     /**
@@ -274,8 +275,7 @@ public class KeyCodeDescriptionMapper {
             return context.getString(OBSCURED_KEY_RES_ID);
         }
 
-        final int resId = mKeyCodeMap.get(code);
-        if (resId != 0) {
+        if (mKeyCodeMap.indexOfKey(code) >= 0) {
             return context.getString(mKeyCodeMap.get(code));
         } else if (isDefinedNonCtrl) {
             return Character.toString((char) code);

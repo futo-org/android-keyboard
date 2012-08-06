@@ -19,6 +19,8 @@
 -->
 
 <resources>
+    <!-- Device form factor. This value must be aligned with {@link KeyboardId.DEVICE_FORM_FACTOR_PHONE} -->
+    <integer name="config_device_form_factor">0</integer>
     <bool name="config_use_fullscreen_mode">false</bool>
     <bool name="config_enable_show_voice_key_option">true</bool>
     <bool name="config_enable_show_popup_on_keypress_option">true</bool>

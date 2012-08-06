@@ -22,10 +22,12 @@
 
 <!-- Supported subtypes
     keyboard_locale: script_name/keyboard_layout_set[:keyboard_locale]
+    af: Afrikaans/qwerty
     ar: Arabic/arabic
     be: Belarusian/east_slavic
     bg: Bulgarian/bulgarian
     bg: Bulgarian/bulgarian_bds
+    ca: Catalan/spanish
     cs: Czech/qwertz
     da: Danish/nordic
     de: German/qwertz
@@ -41,14 +43,16 @@
     hi: Hindi/hindi
     hr: Croatian/qwertz
     hu: Hungarian/qwertz
+    in: Indonesian/qwerty    # "id" is official language code of Indonesian.
     is: Icelandic/qwerty
     it: Italian/qwerty
-    iw: Hebrew/hebrew
+    iw: Hebrew/hebrew        # "he" is official language code of Hebrew.
     ka: Georgian/georgian
     ky: Kyrgyz/east_slavic
     lt: Lithuanian/qwerty
     lv: Latvian/qwerty
     mk: Macedonian/south_slavic
+    ms: Malay/qwerty
     nb: Norwegian Bokmål/nordic
     nl: Dutch/qwerty
     pl: Polish/qwerty
@@ -59,11 +63,15 @@
     sk: Slovak/qwerty
     sl: Slovenian/qwerty
     sr: Serbian/south_slavic
+    (sr-Latn: Serbian/qwerty) # not yet implemented.
     sv: Swedish/nordic
+    sw: Swahili/qwerty
     th: Thai/thai
+    tl: Tagalog/spanish
     tr: Turkish/qwerty
     uk: Ukrainian/east_slavic
     vi: Vietnamese/qwerty
+    zu: Zulu/qwerty
     zz: QWERTY/qwerty
     -->
 <!-- TODO: use <lang>_keyboard icon instead of a common keyboard icon. -->
@@ -83,6 +91,12 @@
             android:imeSubtypeLocale="en_GB"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:imeSubtypeLocale="af"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
@@ -107,6 +121,12 @@
             android:imeSubtypeLocale="bg"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=bulgarian_bds"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:imeSubtypeLocale="ca"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=spanish,AsciiCapable"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
@@ -186,6 +206,13 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection"
     />
+    <!-- Java uses the deprecated "in" code instead of the standard "id" code for Indonesian. -->
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:imeSubtypeLocale="in"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable"
+    />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
             android:imeSubtypeLocale="is"
@@ -234,6 +261,12 @@
             android:imeSubtypeLocale="mk"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=south_slavic"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:imeSubtypeLocale="ms"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
@@ -295,6 +328,20 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="SupportTouchPositionCorrection"
     />
+    <!-- TODO: Uncomment once we can handle IETF language tag with script name specified.
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_serbian_cyrillic"
+            android:imeSubtypeLocale="sr"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="SupportTouchPositionCorrection"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_serbian_latin"
+            android:imeSubtypeLocale="sr-Latn"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable"
+    />
+    -->
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
             android:imeSubtypeLocale="sv"
@@ -303,9 +350,21 @@
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
+            android:imeSubtypeLocale="sw"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
             android:imeSubtypeLocale="th"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=thai"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:imeSubtypeLocale="tl"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=spanish,AsciiCapable"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
@@ -322,6 +381,12 @@
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
             android:imeSubtypeLocale="vi"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_generic"
+            android:imeSubtypeLocale="zu"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable"
     />

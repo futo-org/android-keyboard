@@ -1,42 +1,79 @@
 /*
-**
-** Copyright 2010, The Android Open Source Project
-**
-** Licensed under the Apache License, Version 2.0 (the "License");
-** you may not use this file except in compliance with the License.
-** You may obtain a copy of the License at
-**
-**     http://www.apache.org/licenses/LICENSE-2.0
-**
-** Unless required by applicable law or agreed to in writing, software
-** distributed under the License is distributed on an "AS IS" BASIS,
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-** See the License for the specific language governing permissions and
-** limitations under the License.
-*/
+ * Copyright (C) 2010, The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #ifndef LATINIME_DEFINES_H
 #define LATINIME_DEFINES_H
 
 #if defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
-#include <cutils/log.h>
-#define AKLOGE ALOGE
-#define AKLOGI ALOGI
+#include <android/log.h>
+#ifndef LOG_TAG
+#define LOG_TAG "LatinIME: "
+#endif
+#define AKLOGE(fmt, ...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##__VA_ARGS__)
+#define AKLOGI(fmt, ...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##__VA_ARGS__)
 
+#define DUMP_RESULT(words, frequencies, maxWordCount, maxWordLength) do { \
+        dumpResult(words, frequencies, maxWordCount, maxWordLength); } while(0)
 #define DUMP_WORD(word, length) do { dumpWord(word, length); } while(0)
 #define DUMP_WORD_INT(word, length) do { dumpWordInt(word, length); } while(0)
 
-static inline void dumpWord(const unsigned short* word, const int length) {
+static inline void dumpWordInfo(const unsigned short *word, const int length,
+        const int rank, const int frequency) {
     static char charBuf[50];
-
-    for (int i = 0; i < length; ++i) {
-        charBuf[i] = word[i];
+    int i = 0;
+    for (; i < length; ++i) {
+        const unsigned short c = word[i];
+        if (c == 0) {
+            break;
+        }
+        charBuf[i] = c;
     }
-    charBuf[length] = 0;
-    AKLOGI("[ %s ]", charBuf);
+    charBuf[i] = 0;
+    if (i > 1) {
+        AKLOGI("%2d [ %s ] (%d)", rank, charBuf, frequency);
+    }
 }
 
-static inline void dumpWordInt(const int* word, const int length) {
+static inline void dumpResult(
+        const unsigned short *outWords, const int *frequencies, const int maxWordCounts,
+        const int maxWordLength) {
+    AKLOGI("--- DUMP RESULT ---------");
+    for (int i = 0; i < maxWordCounts; ++i) {
+        dumpWordInfo(&outWords[i * maxWordLength], maxWordLength, i, frequencies[i]);
+    }
+    AKLOGI("-------------------------");
+}
+
+static inline void dumpWord(const unsigned short *word, const int length) {
+    static char charBuf[50];
+    int i = 0;
+    for (; i < length; ++i) {
+        const unsigned short c = word[i];
+        if (c == 0) {
+            break;
+        }
+        charBuf[i] = c;
+    }
+    charBuf[i] = 0;
+    if (i > 1) {
+        AKLOGI("[ %s ]", charBuf);
+    }
+}
+
+static inline void dumpWordInt(const int *word, const int length) {
     static char charBuf[50];
 
     for (int i = 0; i < length; ++i) {
@@ -49,6 +86,7 @@ static inline void dumpWordInt(const int* word, const int length) {
 #else
 #define AKLOGE(fmt, ...)
 #define AKLOGI(fmt, ...)
+#define DUMP_RESULT(words, frequencies, maxWordCount, maxWordLength)
 #define DUMP_WORD(word, length)
 #define DUMP_WORD_INT(word, length)
 #endif
@@ -86,17 +124,18 @@ static inline void prof_out(void) {
         AKLOGI("Error: You must call PROF_OPEN before PROF_CLOSE.");
     }
     AKLOGI("Total time is %6.3f ms.",
-            profile_buf[PROF_BUF_SIZE - 1] * 1000 / (float)CLOCKS_PER_SEC);
+            profile_buf[PROF_BUF_SIZE - 1] * 1000.0f / static_cast<float>(CLOCKS_PER_SEC));
     float all = 0;
     for (int i = 0; i < PROF_BUF_SIZE - 1; ++i) {
         all += profile_buf[i];
     }
     if (all == 0) all = 1;
     for (int i = 0; i < PROF_BUF_SIZE - 1; ++i) {
-        if (profile_buf[i] != 0) {
+        if (profile_buf[i]) {
             AKLOGI("(%d): Used %4.2f%%, %8.4f ms. Called %d times.",
                     i, (profile_buf[i] * 100 / all),
-                    profile_buf[i] * 1000 / (float)CLOCKS_PER_SEC, profile_counter[i]);
+                    profile_buf[i] * 1000.0f / static_cast<float>(CLOCKS_PER_SEC),
+                    profile_counter[i]);
         }
     }
 }
@@ -116,10 +155,6 @@ static inline void prof_out(void) {
 #endif // FLAG_DO_PROFILE
 
 #ifdef FLAG_DBG
-#include <cutils/log.h>
-#ifndef LOG_TAG
-#define LOG_TAG "LatinIME: "
-#endif
 #define DEBUG_DICT true
 #define DEBUG_DICT_FULL false
 #define DEBUG_EDIT_DISTANCE false
@@ -145,7 +180,6 @@ static inline void prof_out(void) {
 #define DEBUG_CORRECTION false
 #define DEBUG_CORRECTION_FREQ false
 #define DEBUG_WORDS_PRIORITY_QUEUE false
-
 
 #endif // FLAG_DBG
 
@@ -313,5 +347,4 @@ typedef enum {
     // Additional proximity char which can differ by language.
     ADDITIONAL_PROXIMITY_CHAR
 } ProximityType;
-
 #endif // LATINIME_DEFINES_H

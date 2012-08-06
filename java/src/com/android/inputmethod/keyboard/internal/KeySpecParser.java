@@ -84,6 +84,19 @@ public class KeySpecParser {
             }
             mIconId = getIconId(moreKeySpec);
         }
+
+        @Override
+        public String toString() {
+            final String label = (mIconId == KeyboardIconsSet.ICON_UNDEFINED ? mLabel
+                    : PREFIX_ICON + KeyboardIconsSet.getIconName(mIconId));
+            final String output = (mCode == Keyboard.CODE_OUTPUT_TEXT ? mOutputText
+                    : Keyboard.printableCode(mCode));
+            if (StringUtils.codePointCount(label) == 1 && label.codePointAt(0) == mCode) {
+                return output;
+            } else {
+                return label + "|" + output;
+            }
+        }
     }
 
     private KeySpecParser() {

@@ -55,11 +55,10 @@ public class Compress {
             return "compress <filename>: Compresses a file using gzip compression";
         }
 
-        public int getArity() {
-            return 1;
-        }
-
         public void run() throws IOException {
+            if (mArgs.length < 1) {
+                throw new RuntimeException("Not enough arguments for command " + COMMAND);
+            }
             final String inFilename = mArgs[0];
             final String outFilename = inFilename + SUFFIX;
             final FileInputStream input = new FileInputStream(new File(inFilename));
@@ -79,11 +78,10 @@ public class Compress {
             return "uncompress <filename>: Uncompresses a file compressed with gzip compression";
         }
 
-        public int getArity() {
-            return 1;
-        }
-
         public void run() throws IOException {
+            if (mArgs.length < 1) {
+                throw new RuntimeException("Not enough arguments for command " + COMMAND);
+            }
             final String inFilename = mArgs[0];
             final String outFilename = inFilename + SUFFIX;
             final FileInputStream input = new FileInputStream(new File(inFilename));

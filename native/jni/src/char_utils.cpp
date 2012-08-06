@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-#include <stdlib.h>
+#include <cstdlib>
+
+#include "char_utils.h"
 
 namespace latinime {
 
@@ -895,5 +897,4 @@ unsigned short latin_tolower(unsigned short c) {
                     compare_pair_capital);
     return p ? p->small : c;
 }
-
 } // namespace latinime

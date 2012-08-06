@@ -43,6 +43,7 @@ import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
+import com.android.inputmethod.keyboard.internal.SuddenJumpingTouchEventHandler;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
@@ -153,8 +154,7 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
                 }
                 break;
             case MSG_TYPING_STATE_EXPIRED:
-                cancelAndStartAnimators(keyboardView.mAltCodeKeyWhileTypingFadeoutAnimator,
-                        keyboardView.mAltCodeKeyWhileTypingFadeinAnimator);
+                startWhileTypingFadeinAnimation(keyboardView);
                 break;
             }
         }
@@ -228,7 +228,7 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
             removeMessages(MSG_LONGPRESS_KEY);
         }
 
-        public static void cancelAndStartAnimators(final ObjectAnimator animatorToCancel,
+        private static void cancelAndStartAnimators(final ObjectAnimator animatorToCancel,
                 final ObjectAnimator animatorToStart) {
             float startFraction = 0.0f;
             if (animatorToCancel.isStarted()) {
@@ -240,18 +240,39 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
             animatorToStart.setCurrentPlayTime(startTime);
         }
 
+        private static void startWhileTypingFadeinAnimation(final MainKeyboardView keyboardView) {
+            cancelAndStartAnimators(keyboardView.mAltCodeKeyWhileTypingFadeoutAnimator,
+                    keyboardView.mAltCodeKeyWhileTypingFadeinAnimator);
+        }
+
+        private static void startWhileTypingFadeoutAnimation(final MainKeyboardView keyboardView) {
+            cancelAndStartAnimators(keyboardView.mAltCodeKeyWhileTypingFadeinAnimator,
+                    keyboardView.mAltCodeKeyWhileTypingFadeoutAnimator);
+        }
+
         @Override
-        public void startTypingStateTimer() {
+        public void startTypingStateTimer(Key typedKey) {
+            if (typedKey.isModifier() || typedKey.altCodeWhileTyping()) {
+                return;
+            }
+
             final boolean isTyping = isTypingState();
             removeMessages(MSG_TYPING_STATE_EXPIRED);
+            final MainKeyboardView keyboardView = getOuterInstance();
+
+            // When user hits the space or the enter key, just cancel the while-typing timer.
+            final int typedCode = typedKey.mCode;
+            if (typedCode == Keyboard.CODE_SPACE || typedCode == Keyboard.CODE_ENTER) {
+                startWhileTypingFadeinAnimation(keyboardView);
+                return;
+            }
+
             sendMessageDelayed(
                     obtainMessage(MSG_TYPING_STATE_EXPIRED), mParams.mIgnoreAltCodeKeyTimeout);
             if (isTyping) {
                 return;
             }
-            final MainKeyboardView keyboardView = getOuterInstance();
-            cancelAndStartAnimators(keyboardView.mAltCodeKeyWhileTypingFadeinAnimator,
-                    keyboardView.mAltCodeKeyWhileTypingFadeoutAnimator);
+            startWhileTypingFadeoutAnimation(keyboardView);
         }
 
         @Override
@@ -461,7 +482,7 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(
                 keyboard, -getPaddingLeft(), -getPaddingTop() + mVerticalCorrection);
-        PointerTracker.setKeyDetector(mKeyDetector, mGestureInputEnabled);
+        PointerTracker.setKeyDetector(mKeyDetector, mShouldHandleGesture);
         mTouchScreenRegulator.setKeyboard(keyboard);
         mMoreKeysPanelCache.clear();
 
@@ -479,6 +500,14 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
         AccessibleKeyboardViewProxy.getInstance().setKeyboard(keyboard);
     }
 
+    @Override
+    public void setGestureHandlingMode(final boolean shouldHandleGesture,
+            boolean drawsGesturePreviewTrail, boolean drawsGestureFloatingPreviewText) {
+        super.setGestureHandlingMode(shouldHandleGesture, drawsGesturePreviewTrail,
+                drawsGestureFloatingPreviewText);
+        PointerTracker.setKeyDetector(mKeyDetector, shouldHandleGesture);
+    }
+
     /**
      * Returns whether the device has distinct multi-touch panel.
      * @return true if the device has distinct multi-touch panel.
@@ -489,23 +518,6 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
 
     public void setDistinctMultitouch(boolean hasDistinctMultitouch) {
         mHasDistinctMultitouch = hasDistinctMultitouch;
-    }
-
-    /**
-     * When enabled, calls to {@link KeyboardActionListener#onCodeInput} will include key
-     * codes for adjacent keys.  When disabled, only the primary key code will be
-     * reported.
-     * @param enabled whether or not the proximity correction is enabled
-     */
-    public void setProximityCorrectionEnabled(boolean enabled) {
-        mKeyDetector.setProximityCorrectionEnabled(enabled);
-    }
-
-    /**
-     * Returns true if proximity correction is enabled.
-     */
-    public boolean isProximityCorrectionEnabled() {
-        return mKeyDetector.isProximityCorrectionEnabled();
     }
 
     @Override

@@ -52,7 +52,6 @@
     <!-- U+0436: "ж" CYRILLIC SMALL LETTER ZHE -->
     <Key
         latin:keyLabel="&#x0436;" />
-    <!-- U+044D: "э" CYRILLIC SMALL LETTER E -->
     <Key
-        latin:keyLabel="&#x044D;" />
+        latin:keyLabel="!text/keylabel_for_east_slavic_row2_11" />
 </merge>

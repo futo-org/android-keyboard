@@ -62,6 +62,7 @@ public class Settings extends InputMethodSettingsFragment
     public static final String PREF_LAST_USER_DICTIONARY_WRITE_TIME =
             "last_user_dictionary_write_time";
     public static final String PREF_ADVANCED_SETTINGS = "pref_advanced_settings";
+    public static final String PREF_KEY_USE_CONTACTS_DICT = "pref_key_use_contacts_dict";
     public static final String PREF_SUPPRESS_LANGUAGE_SWITCH_KEY =
             "pref_suppress_language_switch_key";
     public static final String PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST =
@@ -69,13 +70,15 @@ public class Settings extends InputMethodSettingsFragment
     public static final String PREF_CUSTOM_INPUT_STYLES = "custom_input_styles";
     public static final String PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY =
             "pref_key_preview_popup_dismiss_delay";
-    public static final String PREF_KEY_USE_CONTACTS_DICT = "pref_key_use_contacts_dict";
     public static final String PREF_BIGRAM_PREDICTIONS = "next_word_prediction";
     public static final String PREF_GESTURE_INPUT = "gesture_input";
     public static final String PREF_VIBRATION_DURATION_SETTINGS =
             "pref_vibration_duration_settings";
     public static final String PREF_KEYPRESS_SOUND_VOLUME =
             "pref_keypress_sound_volume";
+    public static final String PREF_GESTURE_PREVIEW_TRAIL = "pref_gesture_preview_trail";
+    public static final String PREF_GESTURE_FLOATING_PREVIEW_TEXT =
+            "pref_gesture_floating_preview_text";
 
     public static final String PREF_INPUT_LANGUAGE = "input_language";
     public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
@@ -94,13 +97,17 @@ public class Settings extends InputMethodSettingsFragment
     private TextView mKeypressVibrationDurationSettingsTextView;
     private TextView mKeypressSoundVolumeSettingsTextView;
 
+    private static void setPreferenceEnabled(Preference preference, boolean enabled) {
+        if (preference != null) {
+            preference.setEnabled(enabled);
+        }
+    }
+
     private void ensureConsistencyOfAutoCorrectionSettings() {
         final String autoCorrectionOff = getResources().getString(
                 R.string.auto_correction_threshold_mode_index_off);
         final String currentSetting = mAutoCorrectionThresholdPreference.getValue();
-        if (null != mBigramPrediction) {
-            mBigramPrediction.setEnabled(!currentSetting.equals(autoCorrectionOff));
-        }
+        setPreferenceEnabled(mBigramPrediction, !currentSetting.equals(autoCorrectionOff));
     }
 
     @Override
@@ -180,13 +187,11 @@ public class Settings extends InputMethodSettingsFragment
             if (null == mKeyPreviewPopupDismissDelay.getValue()) {
                 mKeyPreviewPopupDismissDelay.setValue(popupDismissDelayDefaultValue);
             }
-            mKeyPreviewPopupDismissDelay.setEnabled(
+            setPreferenceEnabled(mKeyPreviewPopupDismissDelay,
                     SettingsValues.isKeyPreviewPopupEnabled(prefs, res));
         }
 
-        final CheckBoxPreference includeOtherImesInLanguageSwitchList =
-                (CheckBoxPreference)findPreference(PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST);
-        includeOtherImesInLanguageSwitchList.setEnabled(
+        setPreferenceEnabled(findPreference(PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST),
                 !SettingsValues.isLanguageSwitchKeySupressed(prefs));
 
         final PreferenceScreen dictionaryLink =
@@ -200,10 +205,19 @@ public class Settings extends InputMethodSettingsFragment
 
         final boolean gestureInputEnabledByBuildConfig = res.getBoolean(
                 R.bool.config_gesture_input_enabled_by_build_config);
+        final Preference gesturePreviewTrail = findPreference(PREF_GESTURE_PREVIEW_TRAIL);
+        final Preference gestureFloatingPreviewText = findPreference(
+                PREF_GESTURE_FLOATING_PREVIEW_TEXT);
         if (!gestureInputEnabledByBuildConfig) {
-            final Preference gestureInputPref = findPreference(PREF_GESTURE_INPUT);
-            miscSettings.removePreference(gestureInputPref);
+            miscSettings.removePreference(findPreference(PREF_GESTURE_INPUT));
+            miscSettings.removePreference(gesturePreviewTrail);
+            miscSettings.removePreference(gestureFloatingPreviewText);
+        } else {
+            final boolean gestureInputEnabledByUser = prefs.getBoolean(PREF_GESTURE_INPUT, true);
+            setPreferenceEnabled(gesturePreviewTrail, gestureInputEnabledByUser);
+            setPreferenceEnabled(gestureFloatingPreviewText, gestureInputEnabledByUser);
         }
+
         final boolean showUsabilityStudyModeOption =
                 res.getBoolean(R.bool.config_enable_usability_study_mode_option)
                         || ProductionFlag.IS_EXPERIMENTAL || ENABLE_EXPERIMENTAL_SETTINGS;
@@ -277,17 +291,22 @@ public class Settings extends InputMethodSettingsFragment
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         (new BackupManager(getActivity())).dataChanged();
         if (key.equals(PREF_POPUP_ON)) {
-            final ListPreference popupDismissDelay =
-                (ListPreference)findPreference(PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
-            if (null != popupDismissDelay) {
-                popupDismissDelay.setEnabled(prefs.getBoolean(PREF_POPUP_ON, true));
-            }
+            setPreferenceEnabled(findPreference(PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY),
+                    prefs.getBoolean(PREF_POPUP_ON, true));
         } else if (key.equals(PREF_SUPPRESS_LANGUAGE_SWITCH_KEY)) {
-            final CheckBoxPreference includeOtherImesInLanguageSwicthList =
-                    (CheckBoxPreference)findPreference(
-                            PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST);
-            includeOtherImesInLanguageSwicthList.setEnabled(
+            setPreferenceEnabled(findPreference(PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST),
                     !SettingsValues.isLanguageSwitchKeySupressed(prefs));
+        } else if (key.equals(PREF_GESTURE_INPUT)) {
+            final boolean gestureInputEnabledByConfig = getResources().getBoolean(
+                    R.bool.config_gesture_input_enabled_by_build_config);
+            if (gestureInputEnabledByConfig) {
+                final boolean gestureInputEnabledByUser = prefs.getBoolean(
+                        PREF_GESTURE_INPUT, true);
+                setPreferenceEnabled(findPreference(PREF_GESTURE_PREVIEW_TRAIL),
+                        gestureInputEnabledByUser);
+                setPreferenceEnabled(findPreference(PREF_GESTURE_FLOATING_PREVIEW_TEXT),
+                        gestureInputEnabledByUser);
+            }
         }
         ensureConsistencyOfAutoCorrectionSettings();
         updateVoiceModeSummary();
@@ -335,16 +354,18 @@ public class Settings extends InputMethodSettingsFragment
     private void refreshEnablingsOfKeypressSoundAndVibrationSettings(
             SharedPreferences sp, Resources res) {
         if (mKeypressVibrationDurationSettingsPref != null) {
-            final boolean hasVibrator = VibratorUtils.getInstance(getActivity()).hasVibrator();
-            final boolean vibrateOn = hasVibrator && sp.getBoolean(Settings.PREF_VIBRATE_ON,
+            final boolean hasVibratorHardware = VibratorUtils.getInstance(getActivity())
+                    .hasVibrator();
+            final boolean vibrateOnByUser = sp.getBoolean(Settings.PREF_VIBRATE_ON,
                     res.getBoolean(R.bool.config_default_vibration_enabled));
-            mKeypressVibrationDurationSettingsPref.setEnabled(vibrateOn);
+            setPreferenceEnabled(mKeypressVibrationDurationSettingsPref,
+                    hasVibratorHardware && vibrateOnByUser);
         }
 
         if (mKeypressSoundVolumeSettingsPref != null) {
             final boolean soundOn = sp.getBoolean(Settings.PREF_SOUND_ON,
                     res.getBoolean(R.bool.config_default_sound_enabled));
-            mKeypressSoundVolumeSettingsPref.setEnabled(soundOn);
+            setPreferenceEnabled(mKeypressSoundVolumeSettingsPref, soundOn);
         }
     }
 

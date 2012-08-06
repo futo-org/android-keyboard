@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-#include <assert.h>
-#include <math.h>
-#include <stdio.h>
+#include <cassert>
+#include <cmath>
+#include <cstring>
 #include <string>
 
 #define LOG_TAG "LatinIME: proximity_info.cpp"
 
 #include "additional_proximity_chars.h"
+#include "char_utils.h"
 #include "defines.h"
-#include "dictionary.h"
 #include "proximity_info.h"
-#include "proximity_info_state.h"
 
 namespace latinime {
 
@@ -110,7 +109,7 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
     if (DEBUG_PROXIMITY_INFO) {
         AKLOGI("hasSpaceProximity: index %d, %d, %d", startIndex, x, y);
     }
-    int32_t* proximityCharsArray = mProximityCharsArray;
+    int32_t *proximityCharsArray = mProximityCharsArray;
     for (int i = 0; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
         if (DEBUG_PROXIMITY_INFO) {
             AKLOGI("Index: %d", mProximityCharsArray[startIndex + i]);
@@ -171,7 +170,7 @@ void ProximityInfo::calculateNearbyKeyCodes(
                 return;
             }
 
-            const int32_t* additionalProximityChars =
+            const int32_t *additionalProximityChars =
                     AdditionalProximityChars::getAdditionalChars(&mLocaleStr, primaryKey);
             for (int j = 0; j < additionalProximitySize; ++j) {
                 const int32_t ac = additionalProximityChars[j];
@@ -216,7 +215,7 @@ int ProximityInfo::getKeyIndex(const int c) const {
 void ProximityInfo::getCenters(int *centerXs, int *centerYs, int *codeToKeyIndex,
         int *keyToCodeIndex, int *keyCount, int *keyWidth) const {
     *keyCount = KEY_COUNT;
-    *keyWidth = sqrt((float)MOST_COMMON_KEY_WIDTH_SQUARE);
+    *keyWidth = sqrt(static_cast<float>(MOST_COMMON_KEY_WIDTH_SQUARE));
 
     for (int i = 0; i < KEY_COUNT; ++i) {
         const int code = mKeyCharCodes[i];

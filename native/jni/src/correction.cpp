@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-#include <assert.h>
-#include <ctype.h>
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
+#include <cassert>
+#include <cctype>
+#include <cmath>
+#include <cstring>
 
 #define LOG_TAG "LatinIME: correction.cpp"
 
 #include "char_utils.h"
 #include "correction.h"
 #include "defines.h"
-#include "dictionary.h"
-#include "proximity_info.h"
 #include "proximity_info_state.h"
 
 namespace latinime {
+
+class ProximityInfo;
 
 /////////////////////////////
 // edit distance funcitons //
@@ -95,11 +94,11 @@ inline static int getCurrentEditDistance(int *editDistanceTable, const int editD
 //////////////////////
 // inline functions //
 //////////////////////
-static const char QUOTE = '\'';
+static const char SINGLE_QUOTE = '\'';
 
-inline bool Correction::isQuote(const unsigned short c) {
+inline bool Correction::isSingleQuote(const unsigned short c) {
     const unsigned short userTypedChar = mProximityInfoState.getPrimaryCharAt(mInputIndex);
-    return (c == QUOTE && userTypedChar != QUOTE);
+    return (c == SINGLE_QUOTE && userTypedChar != SINGLE_QUOTE);
 }
 
 ////////////////
@@ -326,7 +325,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
     mDistances[mOutputIndex] = NOT_A_DISTANCE;
 
     // Skip checking this node
-    if (mNeedsToTraverseAllNodes || isQuote(c)) {
+    if (mNeedsToTraverseAllNodes || isSingleQuote(c)) {
         bool incremented = false;
         if (mLastCharExceeded && mInputIndex == mInputLength - 1) {
             // TODO: Do not check the proximity if EditDistance exceeds the threshold
@@ -344,7 +343,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
                 mDistances[mOutputIndex] = mProximityInfoState.getNormalizedSquaredDistance(
                         mInputIndex, proximityIndex);
             }
-            if (!isQuote(c)) {
+            if (!isSingleQuote(c)) {
                 incrementInputIndex();
                 incremented = true;
             }
@@ -633,7 +632,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
 Correction::~Correction() {
 }
 
-inline static int getQuoteCount(const unsigned short* word, const int length) {
+inline static int getQuoteCount(const unsigned short *word, const int length) {
     int quoteCount = 0;
     for (int i = 0; i < length; ++i) {
         if(word[i] == '\'') {
@@ -653,7 +652,7 @@ inline static bool isUpperCase(unsigned short c) {
 
 /* static */
 int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex,
-        const int outputIndex, const int freq, int* editDistanceTable, const Correction* correction,
+        const int outputIndex, const int freq, int *editDistanceTable, const Correction *correction,
         const int inputLength) {
     const int excessivePos = correction->getExcessivePos();
     const int typedLetterMultiplier = correction->TYPED_LETTER_MULTIPLIER;
@@ -677,7 +676,7 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
     // TODO: use mExcessiveCount
     const int matchCount = inputLength - correction->mProximityCount - excessiveCount;
 
-    const unsigned short* word = correction->mWord;
+    const unsigned short *word = correction->mWord;
     const bool skipped = skippedCount > 0;
 
     const int quoteDiffCount = max(0, getQuoteCount(word, outputLength)
@@ -791,7 +790,7 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
                 static const float MIN = 0.3f;
                 static const float R1 = NEUTRAL_SCORE_SQUARED_RADIUS;
                 static const float R2 = HALF_SCORE_SQUARED_RADIUS;
-                const float x = (float)squaredDistance
+                const float x = static_cast<float>(squaredDistance)
                         / ProximityInfoState::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
                 const float factor = max((x < R1)
                     ? (A * (R1 - x) + B * x) / R1
@@ -916,7 +915,7 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
 /* static */
 int Correction::RankingAlgorithm::calcFreqForSplitMultipleWords(
         const int *freqArray, const int *wordLengthArray, const int wordCount,
-        const Correction* correction, const bool isSpaceProximity, const unsigned short *word) {
+        const Correction *correction, const bool isSpaceProximity, const unsigned short *word) {
     const int typedLetterMultiplier = correction->TYPED_LETTER_MULTIPLIER;
 
     bool firstCapitalizedWordDemotion = false;
@@ -1046,10 +1045,10 @@ int Correction::RankingAlgorithm::calcFreqForSplitMultipleWords(
 
 /* Damerau-Levenshtein distance */
 inline static int editDistanceInternal(
-        int* editDistanceTable, const unsigned short* before,
-        const int beforeLength, const unsigned short* after, const int afterLength) {
+        int *editDistanceTable, const unsigned short *before,
+        const int beforeLength, const unsigned short *after, const int afterLength) {
     // dp[li][lo] dp[a][b] = dp[ a * lo + b]
-    int* dp = editDistanceTable;
+    int *dp = editDistanceTable;
     const int li = beforeLength + 1;
     const int lo = afterLength + 1;
     for (int i = 0; i < li; ++i) {
@@ -1085,8 +1084,8 @@ inline static int editDistanceInternal(
     return dp[li * lo - 1];
 }
 
-int Correction::RankingAlgorithm::editDistance(const unsigned short* before,
-        const int beforeLength, const unsigned short* after, const int afterLength) {
+int Correction::RankingAlgorithm::editDistance(const unsigned short *before,
+        const int beforeLength, const unsigned short *after, const int afterLength) {
     int table[(beforeLength + 1) * (afterLength + 1)];
     return editDistanceInternal(table, before, beforeLength, after, afterLength);
 }
@@ -1114,8 +1113,8 @@ int Correction::RankingAlgorithm::editDistance(const unsigned short* before,
 // So, we can normalize original score by dividing pow(2, min(b.l(),a.l())) * 255 * 2.
 
 /* static */
-float Correction::RankingAlgorithm::calcNormalizedScore(const unsigned short* before,
-        const int beforeLength, const unsigned short* after, const int afterLength,
+float Correction::RankingAlgorithm::calcNormalizedScore(const unsigned short *before,
+        const int beforeLength, const unsigned short *after, const int afterLength,
         const int score) {
     if (0 == beforeLength || 0 == afterLength) {
         return 0;
@@ -1133,13 +1132,14 @@ float Correction::RankingAlgorithm::calcNormalizedScore(const unsigned short* be
     }
 
     const float maxScore = score >= S_INT_MAX ? S_INT_MAX : MAX_INITIAL_SCORE
-            * pow((float)TYPED_LETTER_MULTIPLIER,
-                    (float)min(beforeLength, afterLength - spaceCount)) * FULL_WORD_MULTIPLIER;
+            * pow(static_cast<float>(TYPED_LETTER_MULTIPLIER),
+                    static_cast<float>(min(beforeLength, afterLength - spaceCount)))
+            * FULL_WORD_MULTIPLIER;
 
     // add a weight based on edit distance.
     // distance <= max(afterLength, beforeLength) == afterLength,
     // so, 0 <= distance / afterLength <= 1
-    const float weight = 1.0 - (float) distance / afterLength;
+    const float weight = 1.0f - static_cast<float>(distance) / static_cast<float>(afterLength);
     return (score / maxScore) * weight;
 }
 } // namespace latinime

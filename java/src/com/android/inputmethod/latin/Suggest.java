@@ -42,6 +42,10 @@ public class Suggest {
     // TODO: rename this to CORRECTION_ON
     public static final int CORRECTION_FULL = 1;
 
+    public interface SuggestInitializationListener {
+        public void onUpdateMainDictionaryAvailability(boolean isMainDictionaryAvailable);
+    }
+
     private static final boolean DBG = LatinImeLogger.sDBG;
 
     private Dictionary mMainDictionary;
@@ -55,11 +59,14 @@ public class Suggest {
     private float mAutoCorrectionThreshold;
 
     // Locale used for upper- and title-casing words
-    final private Locale mLocale;
+    private final Locale mLocale;
+    private final SuggestInitializationListener mListener;
 
-    public Suggest(final Context context, final Locale locale) {
+    public Suggest(final Context context, final Locale locale,
+            final SuggestInitializationListener listener) {
         initAsynchronously(context, locale);
         mLocale = locale;
+        mListener = listener;
     }
 
     /* package for test */ Suggest(final Context context, final File dictionary,
@@ -67,6 +74,7 @@ public class Suggest {
         final Dictionary mainDict = DictionaryFactory.createDictionaryForTest(context, dictionary,
                 startOffset, length /* useFullEditDistance */, false, locale);
         mLocale = locale;
+        mListener = null;
         mMainDictionary = mainDict;
         addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_MAIN, mainDict);
         initWhitelistAndAutocorrectAndPool(context, locale);
@@ -98,6 +106,9 @@ public class Suggest {
 
     public void resetMainDict(final Context context, final Locale locale) {
         mMainDictionary = null;
+        if (mListener != null) {
+            mListener.onUpdateMainDictionaryAvailability(hasMainDictionary());
+        }
         new Thread("InitializeBinaryDictionary") {
             @Override
             public void run() {
@@ -105,6 +116,9 @@ public class Suggest {
                         DictionaryFactory.createMainDictionaryFromManager(context, locale);
                 addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_MAIN, newMainDict);
                 mMainDictionary = newMainDict;
+                if (mListener != null) {
+                    mListener.onUpdateMainDictionaryAvailability(hasMainDictionary());
+                }
             }
         }.start();
     }
@@ -219,7 +233,7 @@ public class Suggest {
         // the current settings. It may also be useful to know, when the setting is off, whether
         // the word *would* have been auto-corrected.
         if (!isCorrectionEnabled || !allowsToBeAutoCorrected || !wordComposer.isComposingWord()
-                || suggestionsSet.isEmpty()
+                || suggestionsSet.isEmpty() || wordComposer.hasDigits()
                 || wordComposer.isMostlyCaps() || wordComposer.isResumed()
                 || !hasMainDictionary()) {
             // If we don't have a main dictionary, we never want to auto-correct. The reason for
