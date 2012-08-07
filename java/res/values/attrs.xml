@@ -119,6 +119,7 @@
             <enum name="boldItalic" value="3" />
         </attr>
 
+        <!-- Attributes for PreviewPlacerView -->
         <attr name="gestureFloatingPreviewTextSize" format="dimension" />
         <attr name="gestureFloatingPreviewTextColor" format="color" />
         <attr name="gestureFloatingPreviewTextOffset" format="dimension" />
@@ -128,6 +129,8 @@
         <attr name="gestureFloatingPreviewTextShadowBorder" format="dimension" />
         <attr name="gestureFloatingPreviewTextConnectorColor" format="color" />
         <attr name="gestureFloatingPreviewTextConnectorWidth" format="dimension" />
+        <!-- Delay after gesture input and gesture floating preview text dismissing in millisecond -->
+        <attr name="gestureFloatingPreviewTextLingerTimeout" format="integer" />
         <attr name="gesturePreviewTrailColor" format="color" />
         <attr name="gesturePreviewTrailWidth" format="dimension" />
     </declare-styleable>
