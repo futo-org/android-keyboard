@@ -18,9 +18,6 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.util.Log;
 
-import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.PointerTracker;
-
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -28,37 +25,43 @@ public class PointerTrackerQueue {
     private static final String TAG = PointerTrackerQueue.class.getSimpleName();
     private static final boolean DEBUG = false;
 
+    public interface ElementActions {
+        public boolean isModifier();
+        public boolean isInSlidingKeyInput();
+        public void onPhantomUpEvent(long eventTime);
+    }
+
     // TODO: Use ring buffer instead of {@link LinkedList}.
-    private final LinkedList<PointerTracker> mQueue = new LinkedList<PointerTracker>();
+    private final LinkedList<ElementActions> mQueue = new LinkedList<ElementActions>();
 
     public int size() {
         return mQueue.size();
     }
 
-    public synchronized void add(PointerTracker tracker) {
+    public synchronized void add(ElementActions tracker) {
         mQueue.add(tracker);
     }
 
-    public synchronized void remove(PointerTracker tracker) {
+    public synchronized void remove(ElementActions tracker) {
         mQueue.remove(tracker);
     }
 
-    public synchronized void releaseAllPointersOlderThan(PointerTracker tracker,
+    public synchronized void releaseAllPointersOlderThan(ElementActions tracker,
             long eventTime) {
         if (DEBUG) {
-            Log.d(TAG, "releaseAllPoniterOlderThan: [" + tracker.mPointerId + "] " + this);
+            Log.d(TAG, "releaseAllPoniterOlderThan: " + tracker + " " + this);
         }
         if (!mQueue.contains(tracker)) {
             return;
         }
-        final Iterator<PointerTracker> it = mQueue.iterator();
+        final Iterator<ElementActions> it = mQueue.iterator();
         while (it.hasNext()) {
-            final PointerTracker t = it.next();
+            final ElementActions t = it.next();
             if (t == tracker) {
                 break;
             }
             if (!t.isModifier()) {
-                t.onPhantomUpEvent(t.getLastX(), t.getLastY(), eventTime);
+                t.onPhantomUpEvent(eventTime);
                 it.remove();
             }
         }
@@ -68,28 +71,28 @@ public class PointerTrackerQueue {
         releaseAllPointersExcept(null, eventTime);
     }
 
-    public synchronized void releaseAllPointersExcept(PointerTracker tracker, long eventTime) {
+    public synchronized void releaseAllPointersExcept(ElementActions tracker, long eventTime) {
         if (DEBUG) {
             if (tracker == null) {
                 Log.d(TAG, "releaseAllPoniters: " + this);
             } else {
-                Log.d(TAG, "releaseAllPoniterExcept: [" + tracker.mPointerId + "] " + this);
+                Log.d(TAG, "releaseAllPoniterExcept: " + tracker + " " + this);
             }
         }
-        final Iterator<PointerTracker> it = mQueue.iterator();
+        final Iterator<ElementActions> it = mQueue.iterator();
         while (it.hasNext()) {
-            final PointerTracker t = it.next();
+            final ElementActions t = it.next();
             if (t != tracker) {
-                t.onPhantomUpEvent(t.getLastX(), t.getLastY(), eventTime);
+                t.onPhantomUpEvent(eventTime);
                 it.remove();
             }
         }
     }
 
-    public synchronized boolean hasModifierKeyOlderThan(PointerTracker tracker) {
-        final Iterator<PointerTracker> it = mQueue.iterator();
+    public synchronized boolean hasModifierKeyOlderThan(ElementActions tracker) {
+        final Iterator<ElementActions> it = mQueue.iterator();
         while (it.hasNext()) {
-            final PointerTracker t = it.next();
+            final ElementActions t = it.next();
             if (t == tracker) {
                 break;
             }
@@ -101,7 +104,7 @@ public class PointerTrackerQueue {
     }
 
     public synchronized boolean isAnyInSlidingKeyInput() {
-        for (final PointerTracker tracker : mQueue) {
+        for (final ElementActions tracker : mQueue) {
             if (tracker.isInSlidingKeyInput()) {
                 return true;
             }
@@ -112,12 +115,11 @@ public class PointerTrackerQueue {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        for (final PointerTracker tracker : mQueue) {
+        for (final ElementActions tracker : mQueue) {
             if (sb.length() > 0)
                 sb.append(" ");
-            sb.append("[" + tracker.mPointerId + " "
-                + Keyboard.printableCode(tracker.getKey().mCode) + "]");
+            sb.append(tracker.toString());
         }
-        return sb.toString();
+        return "[" + sb.toString() + "]";
     }
 }

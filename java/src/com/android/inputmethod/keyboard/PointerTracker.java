@@ -34,7 +34,7 @@ import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.ArrayList;
 
-public class PointerTracker {
+public class PointerTracker implements PointerTrackerQueue.ElementActions {
     private static final String TAG = PointerTracker.class.getSimpleName();
     private static final boolean DEBUG_EVENT = false;
     private static final boolean DEBUG_MOVE_EVENT = false;
@@ -414,6 +414,7 @@ public class PointerTracker {
         mKeyQuarterWidthSquared = keyQuarterWidth * keyQuarterWidth;
     }
 
+    @Override
     public boolean isInSlidingKeyInput() {
         return mIsInSlidingKeyInput;
     }
@@ -422,6 +423,7 @@ public class PointerTracker {
         return mCurrentKey;
     }
 
+    @Override
     public boolean isModifier() {
         return mCurrentKey != null && mCurrentKey.isModifier();
     }
@@ -805,7 +807,7 @@ public class PointerTracker {
                         if (ProductionFlag.IS_EXPERIMENTAL) {
                             ResearchLogger.pointerTracker_onMoveEvent(x, y, lastX, lastY);
                         }
-                        onUpEventInternal(x, y, eventTime);
+                        onUpEventInternal();
                         onDownEventInternal(x, y, eventTime);
                     } else {
                         // HACK: If there are currently multiple touches, register the key even if
@@ -815,7 +817,7 @@ public class PointerTracker {
                         // this hack.
                         if (me != null && me.getPointerCount() > 1
                                 && !sPointerTrackerQueue.hasModifierKeyOlderThan(this)) {
-                            onUpEventInternal(x, y, eventTime);
+                            onUpEventInternal();
                         }
                         if (!mIsPossibleGesture) {
                             mKeyAlreadyProcessed = true;
@@ -860,20 +862,21 @@ public class PointerTracker {
             }
             queue.remove(this);
         }
-        onUpEventInternal(x, y, eventTime);
+        onUpEventInternal();
     }
 
     // Let this pointer tracker know that one of newer-than-this pointer trackers got an up event.
     // This pointer tracker needs to keep the key top graphics "pressed", but needs to get a
     // "virtual" up event.
-    public void onPhantomUpEvent(int x, int y, long eventTime) {
+    @Override
+    public void onPhantomUpEvent(long eventTime) {
         if (DEBUG_EVENT)
-            printTouchEvent("onPhntEvent:", x, y, eventTime);
-        onUpEventInternal(x, y, eventTime);
+            printTouchEvent("onPhntEvent:", getLastX(), getLastY(), eventTime);
+        onUpEventInternal();
         mKeyAlreadyProcessed = true;
     }
 
-    private void onUpEventInternal(int x, int y, long eventTime) {
+    private void onUpEventInternal() {
         mTimerProxy.cancelKeyTimers();
         mIsInSlidingKeyInput = false;
         mIsPossibleGesture = false;
