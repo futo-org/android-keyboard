@@ -62,7 +62,7 @@
     <string name="gesture_input_summary" msgid="7019742443455085809">"Ingresa una palabra trazando sus letras."</string>
     <string name="gesture_preview_trail" msgid="3802333369335722221">"Mostrar recorrido de gesto"</string>
     <string name="gesture_floating_preview_text" msgid="6859416520117939680">"Mostrar palabra de gesto"</string>
-    <string name="gesture_floating_preview_text_summary" msgid="3333754126434989709">"Mostrar palabra de vista previa flotante al realizar gestos"</string>
+    <string name="gesture_floating_preview_text_summary" msgid="3333754126434989709">"Mostrar palabra de vista previa flotante al realizar un gesto"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: guardada"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Ir"</string>
     <string name="label_next_key" msgid="362972844525672568">"Siguiente"</string>
