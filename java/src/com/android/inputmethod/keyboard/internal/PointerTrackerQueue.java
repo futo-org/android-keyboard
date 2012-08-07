@@ -18,85 +18,146 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.util.Log;
 
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class PointerTrackerQueue {
     private static final String TAG = PointerTrackerQueue.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    public interface ElementActions {
+    public interface Element {
         public boolean isModifier();
         public boolean isInSlidingKeyInput();
         public void onPhantomUpEvent(long eventTime);
     }
 
-    // TODO: Use ring buffer instead of {@link LinkedList}.
-    private final LinkedList<ElementActions> mQueue = new LinkedList<ElementActions>();
+    private static final int INITIAL_CAPACITY = 10;
+    private final ArrayList<Element> mExpandableArrayOfActivePointers =
+            new ArrayList<Element>(INITIAL_CAPACITY);
+    private int mArraySize = 0;
 
-    public int size() {
-        return mQueue.size();
+    public synchronized int size() {
+        return mArraySize;
     }
 
-    public synchronized void add(ElementActions tracker) {
-        mQueue.add(tracker);
+    public synchronized void add(final Element pointer) {
+        final ArrayList<Element> expandableArray = mExpandableArrayOfActivePointers;
+        final int arraySize = mArraySize;
+        if (arraySize < expandableArray.size()) {
+            expandableArray.set(arraySize, pointer);
+        } else {
+            expandableArray.add(pointer);
+        }
+        mArraySize = arraySize + 1;
     }
 
-    public synchronized void remove(ElementActions tracker) {
-        mQueue.remove(tracker);
+    public synchronized void remove(final Element pointer) {
+        final ArrayList<Element> expandableArray = mExpandableArrayOfActivePointers;
+        final int arraySize = mArraySize;
+        int newSize = 0;
+        for (int index = 0; index < arraySize; index++) {
+            final Element element = expandableArray.get(index);
+            if (element == pointer) {
+                if (newSize != index) {
+                    Log.w(TAG, "Found duplicated element in remove: " + pointer);
+                }
+                continue; // Remove this element from the expandableArray.
+            }
+            if (newSize != index) {
+                // Shift this element toward the beginning of the expandableArray.
+                expandableArray.set(newSize, element);
+            }
+            newSize++;
+        }
+        mArraySize = newSize;
     }
 
-    public synchronized void releaseAllPointersOlderThan(ElementActions tracker,
-            long eventTime) {
+    public synchronized void releaseAllPointersOlderThan(final Element pointer,
+            final long eventTime) {
         if (DEBUG) {
-            Log.d(TAG, "releaseAllPoniterOlderThan: " + tracker + " " + this);
+            Log.d(TAG, "releaseAllPoniterOlderThan: " + pointer + " " + this);
         }
-        if (!mQueue.contains(tracker)) {
-            return;
-        }
-        final Iterator<ElementActions> it = mQueue.iterator();
-        while (it.hasNext()) {
-            final ElementActions t = it.next();
-            if (t == tracker) {
-                break;
+        final ArrayList<Element> expandableArray = mExpandableArrayOfActivePointers;
+        final int arraySize = mArraySize;
+        int newSize, index;
+        for (newSize = index = 0; index < arraySize; index++) {
+            final Element element = expandableArray.get(index);
+            if (element == pointer) {
+                break; // Stop releasing elements.
             }
-            if (!t.isModifier()) {
-                t.onPhantomUpEvent(eventTime);
-                it.remove();
+            if (!element.isModifier()) {
+                element.onPhantomUpEvent(eventTime);
+                continue; // Remove this element from the expandableArray.
+            }
+            if (newSize != index) {
+                // Shift this element toward the beginning of the expandableArray.
+                expandableArray.set(newSize, element);
+            }
+            newSize++;
+        }
+        // Shift rest of the expandableArray.
+        int count = 0;
+        for (; index < arraySize; index++) {
+            final Element element = expandableArray.get(index);
+            if (element == pointer) {
+                if (count > 0) {
+                    Log.w(TAG, "Found duplicated element in releaseAllPointersOlderThan: "
+                            + pointer);
+                }
+                count++;
+            }
+            if (newSize != index) {
+                expandableArray.set(newSize, expandableArray.get(index));
+                newSize++;
             }
         }
+        mArraySize = newSize;
     }
 
-    public void releaseAllPointers(long eventTime) {
+    public void releaseAllPointers(final long eventTime) {
         releaseAllPointersExcept(null, eventTime);
     }
 
-    public synchronized void releaseAllPointersExcept(ElementActions tracker, long eventTime) {
+    public synchronized void releaseAllPointersExcept(final Element pointer,
+            final long eventTime) {
         if (DEBUG) {
-            if (tracker == null) {
+            if (pointer == null) {
                 Log.d(TAG, "releaseAllPoniters: " + this);
             } else {
-                Log.d(TAG, "releaseAllPoniterExcept: " + tracker + " " + this);
+                Log.d(TAG, "releaseAllPoniterExcept: " + pointer + " " + this);
             }
         }
-        final Iterator<ElementActions> it = mQueue.iterator();
-        while (it.hasNext()) {
-            final ElementActions t = it.next();
-            if (t != tracker) {
-                t.onPhantomUpEvent(eventTime);
-                it.remove();
+        final ArrayList<Element> expandableArray = mExpandableArrayOfActivePointers;
+        final int arraySize = mArraySize;
+        int newSize = 0, count = 0;
+        for (int index = 0; index < arraySize; index++) {
+            final Element element = expandableArray.get(index);
+            if (element == pointer) {
+                if (count > 0) {
+                    Log.w(TAG, "Found duplicated element in releaseAllPointersExcept: " + pointer);
+                }
+                count++;
+            } else {
+                element.onPhantomUpEvent(eventTime);
+                continue; // Remove this element from the expandableArray.
             }
+            if (newSize != index) {
+                // Shift this element toward the beginning of the expandableArray.
+                expandableArray.set(newSize, element);
+            }
+            newSize++;
         }
+        mArraySize = newSize;
     }
 
-    public synchronized boolean hasModifierKeyOlderThan(ElementActions tracker) {
-        final Iterator<ElementActions> it = mQueue.iterator();
-        while (it.hasNext()) {
-            final ElementActions t = it.next();
-            if (t == tracker) {
-                break;
+    public synchronized boolean hasModifierKeyOlderThan(final Element pointer) {
+        final ArrayList<Element> expandableArray = mExpandableArrayOfActivePointers;
+        final int arraySize = mArraySize;
+        for (int index = 0; index < arraySize; index++) {
+            final Element element = expandableArray.get(index);
+            if (element == pointer) {
+                return false; // Stop searching modifier key.
             }
-            if (t.isModifier()) {
+            if (element.isModifier()) {
                 return true;
             }
         }
@@ -104,8 +165,11 @@ public class PointerTrackerQueue {
     }
 
     public synchronized boolean isAnyInSlidingKeyInput() {
-        for (final ElementActions tracker : mQueue) {
-            if (tracker.isInSlidingKeyInput()) {
+        final ArrayList<Element> expandableArray = mExpandableArrayOfActivePointers;
+        final int arraySize = mArraySize;
+        for (int index = 0; index < arraySize; index++) {
+            final Element element = expandableArray.get(index);
+            if (element.isInSlidingKeyInput()) {
                 return true;
             }
         }
@@ -113,12 +177,15 @@ public class PointerTrackerQueue {
     }
 
     @Override
-    public String toString() {
+    public synchronized String toString() {
         final StringBuilder sb = new StringBuilder();
-        for (final ElementActions tracker : mQueue) {
+        final ArrayList<Element> expandableArray = mExpandableArrayOfActivePointers;
+        final int arraySize = mArraySize;
+        for (int index = 0; index < arraySize; index++) {
+            final Element element = expandableArray.get(index);
             if (sb.length() > 0)
                 sb.append(" ");
-            sb.append(tracker.toString());
+            sb.append(element.toString());
         }
         return "[" + sb.toString() + "]";
     }
