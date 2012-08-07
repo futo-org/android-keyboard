@@ -49,6 +49,7 @@
          Configuration for KeyboardView
     -->
     <integer name="config_key_preview_linger_timeout">70</integer>
+    <integer name="config_gesture_floating_preview_text_linger_timeout">200</integer>
     <!--
          Configuration for MainKeyboardView
     -->

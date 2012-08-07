@@ -267,7 +267,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void startDoubleTapTimer() {
-        final MainKeyboardView keyboardView = getKeyboardView();
+        final MainKeyboardView keyboardView = getMainKeyboardView();
         if (keyboardView != null) {
             final TimerProxy timer = keyboardView.getTimerProxy();
             timer.startDoubleTapTimer();
@@ -277,7 +277,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void cancelDoubleTapTimer() {
-        final MainKeyboardView keyboardView = getKeyboardView();
+        final MainKeyboardView keyboardView = getMainKeyboardView();
         if (keyboardView != null) {
             final TimerProxy timer = keyboardView.getTimerProxy();
             timer.cancelDoubleTapTimer();
@@ -287,7 +287,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public boolean isInDoubleTapTimeout() {
-        final MainKeyboardView keyboardView = getKeyboardView();
+        final MainKeyboardView keyboardView = getMainKeyboardView();
         return (keyboardView != null)
                 ? keyboardView.getTimerProxy().isInDoubleTapTimeout() : false;
     }
@@ -295,7 +295,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void startLongPressTimer(int code) {
-        final MainKeyboardView keyboardView = getKeyboardView();
+        final MainKeyboardView keyboardView = getMainKeyboardView();
         if (keyboardView != null) {
             final TimerProxy timer = keyboardView.getTimerProxy();
             timer.startLongPressTimer(code);
@@ -305,7 +305,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void cancelLongPressTimer() {
-        final MainKeyboardView keyboardView = getKeyboardView();
+        final MainKeyboardView keyboardView = getMainKeyboardView();
         if (keyboardView != null) {
             final TimerProxy timer = keyboardView.getTimerProxy();
             timer.cancelLongPressTimer();
@@ -345,7 +345,7 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mState.onCodeInput(code, isSinglePointer(), mLatinIME.getCurrentAutoCapsState());
     }
 
-    public MainKeyboardView getKeyboardView() {
+    public MainKeyboardView getMainKeyboardView() {
         return mKeyboardView;
     }
 

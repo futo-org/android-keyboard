@@ -140,7 +140,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private final DrawingHandler mDrawingHandler = new DrawingHandler(this);
 
     public static class DrawingHandler extends StaticInnerHandlerWrapper<KeyboardView> {
-        private static final int MSG_DISMISS_KEY_PREVIEW = 1;
+        private static final int MSG_DISMISS_KEY_PREVIEW = 0;
 
         public DrawingHandler(KeyboardView outerInstance) {
             super(outerInstance);
@@ -902,6 +902,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
     public void cancelAllMessages() {
         mDrawingHandler.cancelAllMessages();
+        if (mPreviewPlacerView != null) {
+            mPreviewPlacerView.cancelAllMessages();
+        }
     }
 
     // Called by {@link PointerTracker} constructor to create a TextView.
@@ -941,6 +944,11 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     public void showGestureFloatingPreviewText(String gestureFloatingPreviewText) {
         locatePreviewPlacerView();
         mPreviewPlacerView.setGestureFloatingPreviewText(gestureFloatingPreviewText);
+    }
+
+    public void dismissGestureFloatingPreviewText() {
+        locatePreviewPlacerView();
+        mPreviewPlacerView.dismissGestureFloatingPreviewText();
     }
 
     @Override

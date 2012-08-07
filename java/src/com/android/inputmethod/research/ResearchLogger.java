@@ -209,7 +209,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (mSplashDialog != null && mSplashDialog.isShowing()) {
             return;
         }
-        final IBinder windowToken = mKeyboardSwitcher.getKeyboardView().getWindowToken();
+        final IBinder windowToken = mKeyboardSwitcher.getMainKeyboardView().getWindowToken();
         if (windowToken == null) {
             return;
         }
@@ -540,11 +540,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (mKeyboardSwitcher == null) {
             return;
         }
-        final KeyboardView keyboardView = mKeyboardSwitcher.getKeyboardView();
-        if (keyboardView == null) {
+        final KeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        if (mainKeyboardView == null) {
             return;
         }
-        keyboardView.invalidateAllKeys();
+        mainKeyboardView.invalidateAllKeys();
     }
 
 
