@@ -16,8 +16,6 @@
 
 #define LOG_TAG "LatinIME: jni: ProximityInfo"
 
-#include <string>
-
 #include "com_android_inputmethod_keyboard_ProximityInfo.h"
 #include "jni.h"
 #include "jni_common.h"
@@ -26,14 +24,13 @@
 namespace latinime {
 
 static jlong latinime_Keyboard_setProximityInfo(JNIEnv *env, jobject object,
-        jstring localejStr, jint maxProximityCharsSize, jint displayWidth, jint displayHeight,
+        jstring localeJStr, jint maxProximityCharsSize, jint displayWidth, jint displayHeight,
         jint gridWidth, jint gridHeight, jint mostCommonkeyWidth, jintArray proximityCharsArray,
         jint keyCount, jintArray keyXCoordinateArray, jintArray keyYCoordinateArray,
         jintArray keyWidthArray, jintArray keyHeightArray, jintArray keyCharCodeArray,
         jfloatArray sweetSpotCenterXArray, jfloatArray sweetSpotCenterYArray,
         jfloatArray sweetSpotRadiusArray) {
-    const char *localeStrPtr = env->GetStringUTFChars(localejStr, 0);
-    const std::string localeStr(localeStrPtr);
+    const char *localeCStr = env->GetStringUTFChars(localeJStr, 0);
     jint *proximityChars = env->GetIntArrayElements(proximityCharsArray, 0);
     jint *keyXCoordinates = safeGetIntArrayElements(env, keyXCoordinateArray);
     jint *keyYCoordinates = safeGetIntArrayElements(env, keyYCoordinateArray);
@@ -44,7 +41,7 @@ static jlong latinime_Keyboard_setProximityInfo(JNIEnv *env, jobject object,
     jfloat *sweetSpotCenterYs = safeGetFloatArrayElements(env, sweetSpotCenterYArray);
     jfloat *sweetSpotRadii = safeGetFloatArrayElements(env, sweetSpotRadiusArray);
     ProximityInfo *proximityInfo = new ProximityInfo(
-            localeStr, maxProximityCharsSize, displayWidth, displayHeight, gridWidth, gridHeight,
+            localeCStr, maxProximityCharsSize, displayWidth, displayHeight, gridWidth, gridHeight,
             mostCommonkeyWidth, (const int32_t*)proximityChars, keyCount,
             (const int32_t*)keyXCoordinates, (const int32_t*)keyYCoordinates,
             (const int32_t*)keyWidths, (const int32_t*)keyHeights, (const int32_t*)keyCharCodes,
@@ -59,7 +56,7 @@ static jlong latinime_Keyboard_setProximityInfo(JNIEnv *env, jobject object,
     safeReleaseIntArrayElements(env, keyYCoordinateArray, keyYCoordinates);
     safeReleaseIntArrayElements(env, keyXCoordinateArray, keyXCoordinates);
     env->ReleaseIntArrayElements(proximityCharsArray, proximityChars, 0);
-    env->ReleaseStringUTFChars(localejStr, localeStrPtr);
+    env->ReleaseStringUTFChars(localeJStr, localeCStr);
     return (jlong)proximityInfo;
 }
 
