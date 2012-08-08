@@ -33,7 +33,7 @@ progdir=`pwd`
 prog="${progdir}"/`basename "${prog}"`
 cd "${oldwd}"
 
-jarfile=dicttool.jar
+jarfile=dicttool_aosp.jar
 frameworkdir="$progdir"
 if [ ! -r "$frameworkdir/$jarfile" ]
 then
