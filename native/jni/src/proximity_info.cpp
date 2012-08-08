@@ -36,7 +36,7 @@ inline void copyOrFillZero(void *to, const void *from, size_t size) {
     }
 }
 
-ProximityInfo::ProximityInfo(const std::string localeStr, const int maxProximityCharsSize,
+ProximityInfo::ProximityInfo(const char *localeCStr, const int maxProximityCharsSize,
         const int keyboardWidth, const int keyboardHeight, const int gridWidth,
         const int gridHeight, const int mostCommonKeyWidth,
         const int32_t *proximityCharsArray, const int keyCount, const int32_t *keyXCoordinates,
@@ -52,7 +52,7 @@ ProximityInfo::ProximityInfo(const std::string localeStr, const int maxProximity
           HAS_TOUCH_POSITION_CORRECTION_DATA(keyCount > 0 && keyXCoordinates && keyYCoordinates
                   && keyWidths && keyHeights && keyCharCodes && sweetSpotCenterXs
                   && sweetSpotCenterYs && sweetSpotRadii),
-          mLocaleStr(localeStr) {
+          mLocaleStr(localeCStr) {
     const int proximityGridLength = GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE;
     if (DEBUG_PROXIMITY_INFO) {
         AKLOGI("Create proximity info array %d", proximityGridLength);
