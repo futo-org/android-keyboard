@@ -16,14 +16,14 @@
 
 #define LOG_TAG "LatinIME: jni"
 
+#include <cassert>
+
 #include "com_android_inputmethod_keyboard_ProximityInfo.h"
 #include "com_android_inputmethod_latin_BinaryDictionary.h"
 #include "com_android_inputmethod_latin_NativeUtils.h"
 #include "defines.h"
 #include "jni.h"
 #include "jni_common.h"
-
-#include <cassert>
 
 using namespace latinime;
 

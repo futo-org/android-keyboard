@@ -28,7 +28,7 @@ class Correction;
 
 class ProximityInfo {
  public:
-    ProximityInfo(const std::string localeStr, const int maxProximityCharsSize,
+    ProximityInfo(const char *localeCStr, const int maxProximityCharsSize,
             const int keyboardWidth, const int keyboardHeight, const int gridWidth,
             const int gridHeight, const int mostCommonkeyWidth,
             const int32_t *proximityCharsArray, const int keyCount, const int32_t *keyXCoordinates,
