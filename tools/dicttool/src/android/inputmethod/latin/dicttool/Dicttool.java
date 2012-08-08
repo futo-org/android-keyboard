@@ -32,10 +32,11 @@ public class Dicttool {
     static HashMap<String, Class<? extends Command>> sCommands =
             new HashMap<String, Class<? extends Command>>();
     static {
-        sCommands.put("info", Info.class);
-        sCommands.put("compress", Compress.Compressor.class);
-        sCommands.put("uncompress", Compress.Uncompressor.class);
-        sCommands.put("makedict", Makedict.class);
+        CommandList.populate();
+        AdditionalCommandList.populate();
+    }
+    public static void addCommand(final String commandName, final Class<? extends Command> cls) {
+        sCommands.put(commandName, cls);
     }
 
     private static Command getCommandInstance(final String commandName) {

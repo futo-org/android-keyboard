@@ -15,4 +15,4 @@
 
 # Dicttool supports making the dictionary using the 'makedict' command and
 # the same arguments that the old 'makedict' command used to accept.
-dicttool makedict $@
+dicttool_aosp makedict $@
