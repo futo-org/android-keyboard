@@ -58,6 +58,7 @@ public class BinaryDictionary extends Dictionary {
     private final int[] mOutputTypes = new int[MAX_RESULTS];
 
     private final boolean mUseFullEditDistance;
+    private final DicTraverseSession mDicTraverseSession;
 
     /**
      * Constructor for the binary dictionary. This is supposed to be called from the
@@ -76,6 +77,7 @@ public class BinaryDictionary extends Dictionary {
         super(dictType);
         mUseFullEditDistance = useFullEditDistance;
         loadDictionary(filename, offset, length);
+        mDicTraverseSession = new DicTraverseSession(locale);
     }
 
     static {
@@ -187,6 +189,7 @@ public class BinaryDictionary extends Dictionary {
 
     @Override
     public synchronized void close() {
+        mDicTraverseSession.close();
         closeInternal();
     }
 
