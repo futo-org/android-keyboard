@@ -517,7 +517,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     /* package private */ void resetSuggestMainDict() {
         final Locale subtypeLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
-        mSuggest.resetMainDict(this, subtypeLocale);
+        mSuggest.resetMainDict(this, subtypeLocale, this /* SuggestInitializationListener */);
         mIsMainDictionaryAvailable = DictionaryFactory.isDictionaryAvailable(this, subtypeLocale);
     }
 
