@@ -376,11 +376,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
         if (mMainLogBuffer != null) {
             publishLogBuffer(mMainLogBuffer, mMainResearchLog, false /* isIncludingPrivateData */);
-            mMainResearchLog.close();
+            mMainResearchLog.close(null /* callback */);
             mMainLogBuffer = null;
         }
         if (mFeedbackLogBuffer != null) {
-            mFeedbackLog.close();
+            mFeedbackLog.close(null /* callback */);
             mFeedbackLogBuffer = null;
         }
     }
@@ -549,8 +549,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 false /* isPotentiallyPrivate */);
         mFeedbackLogBuffer.shiftIn(feedbackLogUnit);
         publishLogBuffer(mFeedbackLogBuffer, mFeedbackLog, true /* isIncludingPrivateData */);
-        mFeedbackLog.close();
-        uploadNow();
+        mFeedbackLog.close(new Runnable() {
+            @Override
+            public void run() {
+                uploadNow();
+            }
+        });
         mFeedbackLog = new ResearchLog(createLogFile(mFilesDir));
     }
 
