@@ -21,6 +21,7 @@
 #include <string>
 
 #include "defines.h"
+#include "jni.h"
 
 namespace latinime {
 
@@ -28,13 +29,13 @@ class Correction;
 
 class ProximityInfo {
  public:
-    ProximityInfo(const char *localeCStr, const int maxProximityCharsSize,
+    ProximityInfo(JNIEnv *env, const char *localeCStr, const int maxProximityCharsSize,
             const int keyboardWidth, const int keyboardHeight, const int gridWidth,
-            const int gridHeight, const int mostCommonkeyWidth,
-            const int32_t *proximityCharsArray, const int keyCount, const int32_t *keyXCoordinates,
-            const int32_t *keyYCoordinates, const int32_t *keyWidths, const int32_t *keyHeights,
-            const int32_t *keyCharCodes, const float *sweetSpotCenterXs,
-            const float *sweetSpotCenterYs, const float *sweetSpotRadii);
+            const int gridHeight, const int mostCommonKeyWidth, const jintArray proximityChars,
+            const int keyCount, const jintArray keyXCoordinates, const jintArray keyYCoordinates,
+            const jintArray keyWidths, const jintArray keyHeights, const jintArray keyCharCodes,
+            const jfloatArray sweetSpotCenterXs, const jfloatArray sweetSpotCenterYs,
+            const jfloatArray sweetSpotRadii);
     ~ProximityInfo();
     bool hasSpaceProximity(const int x, const int y) const;
     int getNormalizedSquaredDistance(const int inputIndex, const int proximityIndex) const;
