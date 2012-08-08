@@ -24,32 +24,5 @@ namespace latinime {
 int registerNativeMethods(JNIEnv *env, const char *className, JNINativeMethod *methods,
         int numMethods);
 
-inline jint *safeGetIntArrayElements(JNIEnv *env, jintArray jArray) {
-    if (jArray) {
-        return env->GetIntArrayElements(jArray, 0);
-    } else {
-        return 0;
-    }
-}
-
-inline jfloat *safeGetFloatArrayElements(JNIEnv *env, jfloatArray jArray) {
-    if (jArray) {
-        return env->GetFloatArrayElements(jArray, 0);
-    } else {
-        return 0;
-    }
-}
-
-inline void safeReleaseIntArrayElements(JNIEnv *env, jintArray jArray, jint *cArray) {
-    if (jArray) {
-        env->ReleaseIntArrayElements(jArray, cArray, 0);
-    }
-}
-
-inline void safeReleaseFloatArrayElements(JNIEnv *env, jfloatArray jArray, jfloat *cArray) {
-    if (jArray) {
-        env->ReleaseFloatArrayElements(jArray, cArray, 0);
-    }
-}
 } // namespace latinime
 #endif // LATINIME_JNI_COMMON_H
