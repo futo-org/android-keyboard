@@ -24,25 +24,36 @@
 #include "additional_proximity_chars.h"
 #include "char_utils.h"
 #include "defines.h"
+#include "jni.h"
 #include "proximity_info.h"
 
 namespace latinime {
 
-inline void copyOrFillZero(void *to, const void *from, size_t size) {
-    if (from) {
-        memcpy(to, from, size);
-    } else {
-        memset(to, 0, size);
+static inline void safeGetOrFillZeroIntArrayRegion(JNIEnv *env, jintArray jArray, jsize len,
+        jint *buffer) {
+    if (jArray && buffer) {
+        env->GetIntArrayRegion(jArray, 0, len, buffer);
+    } else if (buffer) {
+        memset(buffer, 0, len);
     }
 }
 
-ProximityInfo::ProximityInfo(const char *localeCStr, const int maxProximityCharsSize,
+static inline void safeGetOrFillZeroFloatArrayRegion(JNIEnv *env, jfloatArray jArray, jsize len,
+        jfloat *buffer) {
+    if (jArray && buffer) {
+        env->GetFloatArrayRegion(jArray, 0, len, buffer);
+    } else if (buffer) {
+        memset(buffer, 0, len);
+    }
+}
+
+ProximityInfo::ProximityInfo(JNIEnv *env, const char *localeCStr, const int maxProximityCharsSize,
         const int keyboardWidth, const int keyboardHeight, const int gridWidth,
-        const int gridHeight, const int mostCommonKeyWidth,
-        const int32_t *proximityCharsArray, const int keyCount, const int32_t *keyXCoordinates,
-        const int32_t *keyYCoordinates, const int32_t *keyWidths, const int32_t *keyHeights,
-        const int32_t *keyCharCodes, const float *sweetSpotCenterXs, const float *sweetSpotCenterYs,
-        const float *sweetSpotRadii)
+        const int gridHeight, const int mostCommonKeyWidth, const jintArray proximityChars,
+        const int keyCount, const jintArray keyXCoordinates, const jintArray keyYCoordinates,
+        const jintArray keyWidths, const jintArray keyHeights, const jintArray keyCharCodes,
+        const jfloatArray sweetSpotCenterXs, const jfloatArray sweetSpotCenterYs,
+        const jfloatArray sweetSpotRadii)
         : MAX_PROXIMITY_CHARS_SIZE(maxProximityCharsSize), KEYBOARD_WIDTH(keyboardWidth),
           KEYBOARD_HEIGHT(keyboardHeight), GRID_WIDTH(gridWidth), GRID_HEIGHT(gridHeight),
           MOST_COMMON_KEY_WIDTH_SQUARE(mostCommonKeyWidth * mostCommonKeyWidth),
@@ -58,20 +69,15 @@ ProximityInfo::ProximityInfo(const char *localeCStr, const int maxProximityChars
         AKLOGI("Create proximity info array %d", proximityGridLength);
     }
     mProximityCharsArray = new int32_t[proximityGridLength];
-    memcpy(mProximityCharsArray, proximityCharsArray,
-            proximityGridLength * sizeof(mProximityCharsArray[0]));
-
-    copyOrFillZero(mKeyXCoordinates, keyXCoordinates, KEY_COUNT * sizeof(mKeyXCoordinates[0]));
-    copyOrFillZero(mKeyYCoordinates, keyYCoordinates, KEY_COUNT * sizeof(mKeyYCoordinates[0]));
-    copyOrFillZero(mKeyWidths, keyWidths, KEY_COUNT * sizeof(mKeyWidths[0]));
-    copyOrFillZero(mKeyHeights, keyHeights, KEY_COUNT * sizeof(mKeyHeights[0]));
-    copyOrFillZero(mKeyCharCodes, keyCharCodes, KEY_COUNT * sizeof(mKeyCharCodes[0]));
-    copyOrFillZero(mSweetSpotCenterXs, sweetSpotCenterXs,
-            KEY_COUNT * sizeof(mSweetSpotCenterXs[0]));
-    copyOrFillZero(mSweetSpotCenterYs, sweetSpotCenterYs,
-            KEY_COUNT * sizeof(mSweetSpotCenterYs[0]));
-    copyOrFillZero(mSweetSpotRadii, sweetSpotRadii, KEY_COUNT * sizeof(mSweetSpotRadii[0]));
-
+    safeGetOrFillZeroIntArrayRegion(env, proximityChars, proximityGridLength, mProximityCharsArray);
+    safeGetOrFillZeroIntArrayRegion(env, keyXCoordinates, KEY_COUNT, mKeyXCoordinates);
+    safeGetOrFillZeroIntArrayRegion(env, keyYCoordinates, KEY_COUNT, mKeyYCoordinates);
+    safeGetOrFillZeroIntArrayRegion(env, keyWidths, KEY_COUNT, mKeyWidths);
+    safeGetOrFillZeroIntArrayRegion(env, keyHeights, KEY_COUNT, mKeyHeights);
+    safeGetOrFillZeroIntArrayRegion(env, keyCharCodes, KEY_COUNT, mKeyCharCodes);
+    safeGetOrFillZeroFloatArrayRegion(env, sweetSpotCenterXs, KEY_COUNT, mSweetSpotCenterXs);
+    safeGetOrFillZeroFloatArrayRegion(env, sweetSpotCenterYs, KEY_COUNT, mSweetSpotCenterYs);
+    safeGetOrFillZeroFloatArrayRegion(env, sweetSpotRadii, KEY_COUNT, mSweetSpotRadii);
     initializeCodeToKeyIndex();
 }
 
