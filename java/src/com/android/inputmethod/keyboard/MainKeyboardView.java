@@ -122,10 +122,10 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
 
     private static class KeyTimerHandler extends StaticInnerHandlerWrapper<MainKeyboardView>
             implements TimerProxy {
+        private static final int MSG_TYPING_STATE_EXPIRED = 0;
         private static final int MSG_REPEAT_KEY = 1;
         private static final int MSG_LONGPRESS_KEY = 2;
         private static final int MSG_DOUBLE_TAP = 3;
-        private static final int MSG_TYPING_STATE_EXPIRED = 4;
 
         private final KeyTimerParams mParams;
 
@@ -139,6 +139,9 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
             final MainKeyboardView keyboardView = getOuterInstance();
             final PointerTracker tracker = (PointerTracker) msg.obj;
             switch (msg.what) {
+            case MSG_TYPING_STATE_EXPIRED:
+                startWhileTypingFadeinAnimation(keyboardView);
+                break;
             case MSG_REPEAT_KEY:
                 final Key currentKey = tracker.getKey();
                 if (currentKey != null && currentKey.mCode == msg.arg1) {
@@ -152,9 +155,6 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
                 } else {
                     KeyboardSwitcher.getInstance().onLongPressTimeout(msg.arg1);
                 }
-                break;
-            case MSG_TYPING_STATE_EXPIRED:
-                startWhileTypingFadeinAnimation(keyboardView);
                 break;
             }
         }

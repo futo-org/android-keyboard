@@ -21,12 +21,14 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.SparseArray;
 import android.widget.RelativeLayout;
 
 import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
 public class PreviewPlacerView extends RelativeLayout {
     private final Paint mGesturePaint;
@@ -39,6 +41,7 @@ public class PreviewPlacerView extends RelativeLayout {
     private final int mGestureFloatingPreviewTextShadingBorder;
     private final int mGestureFloatingPreviewTextConnectorColor;
     private final int mGestureFloatingPreviewTextConnectorWidth;
+    /* package */ final int mGestureFloatingPreviewTextLingerTimeout;
 
     private int mXOrigin;
     private int mYOrigin;
@@ -48,6 +51,43 @@ public class PreviewPlacerView extends RelativeLayout {
     private String mGestureFloatingPreviewText;
     private boolean mDrawsGesturePreviewTrail;
     private boolean mDrawsGestureFloatingPreviewText;
+
+    private final DrawingHandler mDrawingHandler = new DrawingHandler(this);
+
+    private static class DrawingHandler extends StaticInnerHandlerWrapper<PreviewPlacerView> {
+        private static final int MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 0;
+
+        public DrawingHandler(PreviewPlacerView outerInstance) {
+            super(outerInstance);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            final PreviewPlacerView placerView = getOuterInstance();
+            if (placerView == null) return;
+            switch (msg.what) {
+            case MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT:
+                placerView.setGestureFloatingPreviewText(null);
+                break;
+            }
+        }
+
+        private void cancelDismissGestureFloatingPreviewText() {
+            removeMessages(MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT);
+        }
+
+        public void dismissGestureFloatingPreviewText() {
+            cancelDismissGestureFloatingPreviewText();
+            final PreviewPlacerView placerView = getOuterInstance();
+            sendMessageDelayed(
+                    obtainMessage(MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT),
+                    placerView.mGestureFloatingPreviewTextLingerTimeout);
+        }
+
+        public void cancelAllMessages() {
+            cancelDismissGestureFloatingPreviewText();
+        }
+    }
 
     public PreviewPlacerView(Context context, TypedArray keyboardViewAttr) {
         super(context);
@@ -71,6 +111,8 @@ public class PreviewPlacerView extends RelativeLayout {
                 R.styleable.KeyboardView_gestureFloatingPreviewTextConnectorColor, 0);
         mGestureFloatingPreviewTextConnectorWidth = keyboardViewAttr.getDimensionPixelSize(
                 R.styleable.KeyboardView_gestureFloatingPreviewTextConnectorWidth, 0);
+        mGestureFloatingPreviewTextLingerTimeout = keyboardViewAttr.getInt(
+                R.styleable.KeyboardView_gestureFloatingPreviewTextLingerTimeout, 0);
         final int gesturePreviewTrailColor = keyboardViewAttr.getColor(
                 R.styleable.KeyboardView_gesturePreviewTrailColor, 0);
         final int gesturePreviewTrailWidth = keyboardViewAttr.getDimensionPixelSize(
@@ -134,6 +176,14 @@ public class PreviewPlacerView extends RelativeLayout {
     public void setGestureFloatingPreviewText(String gestureFloatingPreviewText) {
         mGestureFloatingPreviewText = gestureFloatingPreviewText;
         invalidate();
+    }
+
+    public void dismissGestureFloatingPreviewText() {
+        mDrawingHandler.dismissGestureFloatingPreviewText();
+    }
+
+    public void cancelAllMessages() {
+        mDrawingHandler.cancelAllMessages();
     }
 
     private void drawGestureFloatingPreviewText(Canvas canvas, PointerTracker tracker,

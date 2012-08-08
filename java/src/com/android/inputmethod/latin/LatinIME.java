@@ -181,9 +181,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public final UIHandler mHandler = new UIHandler(this);
 
     public static class UIHandler extends StaticInnerHandlerWrapper<LatinIME> {
-        private static final int MSG_UPDATE_SHIFT_STATE = 1;
-        private static final int MSG_PENDING_IMS_CALLBACK = 6;
-        private static final int MSG_UPDATE_SUGGESTION_STRIP = 7;
+        private static final int MSG_UPDATE_SHIFT_STATE = 0;
+        private static final int MSG_PENDING_IMS_CALLBACK = 1;
+        private static final int MSG_UPDATE_SUGGESTION_STRIP = 2;
 
         private int mDelayUpdateSuggestions;
         private int mDelayUpdateShiftState;
@@ -613,7 +613,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void onStartInputViewInternal(EditorInfo editorInfo, boolean restarting) {
         super.onStartInputView(editorInfo, restarting);
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
-        MainKeyboardView inputView = switcher.getKeyboardView();
+        final MainKeyboardView mainKeyboardView = switcher.getMainKeyboardView();
 
         if (editorInfo == null) {
             Log.e(TAG, "Null EditorInfo in onStartInputView()");
@@ -656,7 +656,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         LatinImeLogger.onStartInputView(editorInfo);
         // In landscape mode, this method gets called without the input view being created.
-        if (inputView == null) {
+        if (mainKeyboardView == null) {
             return;
         }
 
@@ -693,7 +693,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         if (!restarting) {
-            inputView.closing();
+            mainKeyboardView.closing();
             loadSettings();
 
             if (mSuggest != null && mCurrentSettings.mCorrectionEnabled) {
@@ -719,7 +719,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mHandler.cancelUpdateSuggestionStrip();
         mHandler.cancelDoubleSpacesTimer();
 
-        inputView.setKeyPreviewPopupEnabled(mCurrentSettings.mKeyPreviewPopupOn,
+        mainKeyboardView.setKeyPreviewPopupEnabled(mCurrentSettings.mKeyPreviewPopupOn,
                 mCurrentSettings.mKeyPreviewPopupDismissDelay);
 
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
@@ -738,8 +738,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     getCurrentInputConnection());
         }
         super.onWindowHidden();
-        KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
-        if (inputView != null) inputView.closing();
+        final KeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        if (mainKeyboardView != null) {
+            mainKeyboardView.closing();
+        }
     }
 
     private void onFinishInputInternal() {
@@ -750,15 +752,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             ResearchLogger.getInstance().latinIME_onFinishInputInternal();
         }
 
-        KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
-        if (inputView != null) inputView.closing();
+        final KeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        if (mainKeyboardView != null) {
+            mainKeyboardView.closing();
+        }
     }
 
     private void onFinishInputViewInternal(boolean finishingInput) {
         super.onFinishInputView(finishingInput);
         mKeyboardSwitcher.onFinishInputView();
-        KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
-        if (inputView != null) inputView.cancelAllMessages();
+        final KeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        if (mainKeyboardView != null) {
+            mainKeyboardView.cancelAllMessages();
+        }
         // Remove pending messages related to update suggestions
         mHandler.cancelUpdateSuggestionStrip();
     }
@@ -928,8 +934,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void setSuggestionStripShownInternal(boolean shown, boolean needsInputViewShown) {
         // TODO: Modify this if we support suggestions with hard keyboard
         if (onEvaluateInputViewShown() && mSuggestionsContainer != null) {
-            final MainKeyboardView keyboardView = mKeyboardSwitcher.getKeyboardView();
-            final boolean inputViewShown = (keyboardView != null) ? keyboardView.isShown() : false;
+            final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+            final boolean inputViewShown = (mainKeyboardView != null)
+                    ? mainKeyboardView.isShown() : false;
             final boolean shouldShowSuggestions = shown
                     && (needsInputViewShown ? inputViewShown : true);
             if (isFullscreenMode()) {
@@ -952,11 +959,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return currentHeight;
         }
 
-        final KeyboardView keyboardView = mKeyboardSwitcher.getKeyboardView();
-        if (keyboardView == null) {
+        final KeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        if (mainKeyboardView == null) {
             return 0;
         }
-        final int keyboardHeight = keyboardView.getHeight();
+        final int keyboardHeight = mainKeyboardView.getHeight();
         final int suggestionsHeight = mSuggestionsContainer.getHeight();
         final int displayHeight = mResources.getDisplayMetrics().heightPixels;
         final Rect rect = new Rect();
@@ -974,9 +981,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onComputeInsets(InputMethodService.Insets outInsets) {
         super.onComputeInsets(outInsets);
-        final KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
-        if (inputView == null || mSuggestionsContainer == null)
+        final KeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        if (mainKeyboardView == null || mSuggestionsContainer == null) {
             return;
+        }
         final int adjustedBackingHeight = getAdjustedBackingViewHeight();
         final boolean backingGone = (mKeyPreviewBackingView.getVisibility() == View.GONE);
         final int backingHeight = backingGone ? 0 : adjustedBackingHeight;
@@ -989,13 +997,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int extraHeight = extractHeight + backingHeight + suggestionsHeight;
         int touchY = extraHeight;
         // Need to set touchable region only if input view is being shown
-        final MainKeyboardView keyboardView = mKeyboardSwitcher.getKeyboardView();
-        if (keyboardView != null && keyboardView.isShown()) {
+        if (mainKeyboardView.isShown()) {
             if (mSuggestionsContainer.getVisibility() == View.VISIBLE) {
                 touchY -= suggestionsHeight;
             }
-            final int touchWidth = inputView.getWidth();
-            final int touchHeight = inputView.getHeight() + extraHeight
+            final int touchWidth = mainKeyboardView.getWidth();
+            final int touchHeight = mainKeyboardView.getHeight() + extraHeight
                     // Extend touchable region below the keyboard.
                     + EXTENDED_TOUCHABLE_REGION_HEIGHT;
             outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION;
@@ -1358,7 +1365,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         showSuggestionStrip(suggestedWords, null);
         final String gestureFloatingPreviewText = (suggestedWords.size() > 0)
                 ? suggestedWords.getWord(0) : null;
-        mKeyboardSwitcher.getKeyboardView()
+        mKeyboardSwitcher.getMainKeyboardView()
                 .showGestureFloatingPreviewText(gestureFloatingPreviewText);
     }
 
@@ -1367,7 +1374,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mWordComposer.setBatchInputPointers(batchPointers);
         final SuggestedWords suggestedWords = getSuggestedWords();
         showSuggestionStrip(suggestedWords, null);
-        mKeyboardSwitcher.getKeyboardView().showGestureFloatingPreviewText(null);
+        final String gestureFloatingPreviewText = (suggestedWords.size() > 0)
+                ? suggestedWords.getWord(0) : null;
+        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        mainKeyboardView.showGestureFloatingPreviewText(gestureFloatingPreviewText);
+        mainKeyboardView.dismissGestureFloatingPreviewText();
         if (suggestedWords == null || suggestedWords.size() == 0) {
             return;
         }
@@ -1557,7 +1568,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 keyY = y;
             } else {
                 final KeyDetector keyDetector =
-                        mKeyboardSwitcher.getKeyboardView().getKeyDetector();
+                        mKeyboardSwitcher.getMainKeyboardView().getKeyDetector();
                 keyX = keyDetector.getTouchX(x);
                 keyY = keyDetector.getTouchY(y);
             }
@@ -1659,9 +1670,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void handleClose() {
         commitTyped(LastComposedWord.NOT_A_SEPARATOR);
         requestHideSelf(0);
-        MainKeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
-        if (inputView != null) {
-            inputView.closing();
+        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        if (mainKeyboardView != null) {
+            mainKeyboardView.closing();
         }
     }
 
@@ -2043,7 +2054,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // onConfigurationChanged before SoftInputWindow is shown.
         initSuggest();
         loadSettings();
-        if (mKeyboardSwitcher.getKeyboardView() != null) {
+        if (mKeyboardSwitcher.getMainKeyboardView() != null) {
             // Reload keyboard because the current language has been changed.
             mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(), mCurrentSettings);
             updateKeyboardViewGestureHandlingModeByMainDictionaryAvailability();
@@ -2055,11 +2066,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void updateKeyboardViewGestureHandlingModeByMainDictionaryAvailability() {
-        final MainKeyboardView keyboardView = mKeyboardSwitcher.getKeyboardView();
-        if (keyboardView != null) {
+        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        if (mainKeyboardView != null) {
             final boolean shouldHandleGesture = mCurrentSettings.mGestureInputEnabled
                     && mIsMainDictionaryAvailable;
-            keyboardView.setGestureHandlingMode(shouldHandleGesture,
+            mainKeyboardView.setGestureHandlingMode(shouldHandleGesture,
                     mCurrentSettings.mGesturePreviewTrailEnabled,
                     mCurrentSettings.mGestureFloatingPreviewTextEnabled);
         }
@@ -2068,7 +2079,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // TODO: Remove this method from {@link LatinIME} and move {@link FeedbackManager} to
     // {@link KeyboardSwitcher}. Called from KeyboardSwitcher
     public void hapticAndAudioFeedback(final int primaryCode) {
-        mFeedbackManager.hapticAndAudioFeedback(primaryCode, mKeyboardSwitcher.getKeyboardView());
+        mFeedbackManager.hapticAndAudioFeedback(
+                primaryCode, mKeyboardSwitcher.getMainKeyboardView());
     }
 
     // Callback called by PointerTracker through the KeyboardActionListener. This is called when a
@@ -2179,8 +2191,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public void showOptionDialog(AlertDialog dialog) {
-        final IBinder windowToken = mKeyboardSwitcher.getKeyboardView().getWindowToken();
-        if (windowToken == null) return;
+        final IBinder windowToken = mKeyboardSwitcher.getMainKeyboardView().getWindowToken();
+        if (windowToken == null) {
+            return;
+        }
 
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
