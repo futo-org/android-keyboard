@@ -26,12 +26,13 @@ void (*DicTraverseWrapper::sDicTraverseSessionReleaseMethod)(void *) = 0;
 
 static jlong latinime_setDicTraverseSession(JNIEnv *env, jobject object,
         jstring localejStr) {
-    void *session = DicTraverseWrapper::getDicTraverseSession();
-    return reinterpret_cast<jlong>(session);
+    void *traverseSession = DicTraverseWrapper::getDicTraverseSession();
+    return reinterpret_cast<jlong>(traverseSession);
 }
 
-static void latinime_DicTraverseSession_release(JNIEnv *env, jobject object, jlong session) {
-    void *pi = reinterpret_cast<void*>(session);
+static void latinime_DicTraverseSession_release(
+        JNIEnv *env, jobject object, jlong traverseSession) {
+    void *pi = reinterpret_cast<void*>(traverseSession);
     if (!pi) return;
     DicTraverseWrapper::releaseDicTraverseSession(pi);
 }
