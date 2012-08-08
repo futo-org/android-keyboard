@@ -56,16 +56,17 @@ Dictionary::~Dictionary() {
     delete mGestureDecoder;
 }
 
-int Dictionary::getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
-        int *times, int *pointerIds, int *codes, int codesSize, int *prevWordChars,
+int Dictionary::getSuggestions(ProximityInfo *proximityInfo, void *traverseSession,
+        int *xcoordinates, int *ycoordinates, int *times, int *pointerIds,
+        int *codes, int codesSize, int *prevWordChars,
         int prevWordLength, int commitPoint, bool isGesture,
         bool useFullEditDistance, unsigned short *outWords,
         int *frequencies, int *spaceIndices, int *outputTypes) {
     int result = 0;
     if (isGesture) {
         mGestureDecoder->setPrevWord(prevWordChars, prevWordLength);
-        result = mGestureDecoder->getSuggestions(proximityInfo, xcoordinates, ycoordinates,
-                times, pointerIds, codes, codesSize, commitPoint,
+        result = mGestureDecoder->getSuggestions(proximityInfo, traverseSession,
+                xcoordinates, ycoordinates, times, pointerIds, codes, codesSize, commitPoint,
                 outWords, frequencies, spaceIndices, outputTypes);
         if (DEBUG_DICT) {
             DUMP_RESULT(outWords, frequencies, 18 /* MAX_WORDS */, MAX_WORD_LENGTH_INTERNAL);

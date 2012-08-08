@@ -44,9 +44,9 @@ class Dictionary {
     Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int typedLetterMultipler,
             int fullWordMultiplier, int maxWordLength, int maxWords, int maxPredictions);
 
-    int getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
-            int *times, int *pointerIds, int *codes, int codesSize, int *prevWordChars,
-            int prevWordLength, int commitPoint, bool isGesture,
+    int getSuggestions(ProximityInfo *proximityInfo, void *traverseSession, int *xcoordinates,
+            int *ycoordinates, int *times, int *pointerIds, int *codes, int codesSize,
+            int *prevWordChars, int prevWordLength, int commitPoint, bool isGesture,
             bool useFullEditDistance, unsigned short *outWords,
             int *frequencies, int *spaceIndices, int *outputTypes);
 
