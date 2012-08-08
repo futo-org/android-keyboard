@@ -219,6 +219,11 @@ public class Keyboard {
         return code >= CODE_SPACE;
     }
 
+    @Override
+    public String toString() {
+        return mId.toString();
+    }
+
     public static class Params {
         public KeyboardId mId;
         public int mThemeId;
