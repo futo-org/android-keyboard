@@ -16,5 +16,5 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE_TAGS := eng
-LOCAL_PREBUILT_EXECUTABLES := dicttool
+LOCAL_PREBUILT_EXECUTABLES := dicttool makedict
 include $(BUILD_HOST_PREBUILT)
