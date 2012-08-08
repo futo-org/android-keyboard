@@ -37,15 +37,15 @@ class IncrementalDecoderWrapper : public IncrementalDecoderInterface {
         delete mIncrementalDecoderInterface;
     }
 
-    int getSuggestions(ProximityInfo *pInfo, int *inputXs, int *inputYs, int *times,
-            int *pointerIds, int *codes, int inputSize, int commitPoint,
+    int getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs, int *inputYs,
+            int *times, int *pointerIds, int *codes, int inputSize, int commitPoint,
             unsigned short *outWords, int *frequencies, int *outputIndices, int *outputTypes) {
         if (!mIncrementalDecoderInterface) {
             return 0;
         }
         return mIncrementalDecoderInterface->getSuggestions(
-                pInfo, inputXs, inputYs, times, pointerIds, codes, inputSize, commitPoint,
-                outWords, frequencies, outputIndices, outputTypes);
+                pInfo, traverseSession, inputXs, inputYs, times, pointerIds, codes,
+                inputSize, commitPoint, outWords, frequencies, outputIndices, outputTypes);
     }
 
     void reset() {

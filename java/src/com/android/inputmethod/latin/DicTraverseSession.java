@@ -30,6 +30,10 @@ public class DicTraverseSession {
                 locale != null ? locale.toString() : "");
     }
 
+    public long getSession() {
+        return mNativeDicTraverseSession;
+    }
+
     private native long setDicTraverseSessionNative(String locale);
     private native void releaseDicTraverseSessionNative(long nativeDicTraverseSession);
 

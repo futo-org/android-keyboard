@@ -31,9 +31,9 @@ class DicTraverseWrapper {
         }
         return 0;
     }
-    static void releaseDicTraverseSession(void *session) {
+    static void releaseDicTraverseSession(void *traverseSession) {
         if (sDicTraverseSessionReleaseMethod) {
-            sDicTraverseSessionReleaseMethod(session);
+            sDicTraverseSessionReleaseMethod(traverseSession);
         }
     }
  private:

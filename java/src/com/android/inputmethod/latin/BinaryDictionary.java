@@ -90,9 +90,9 @@ public class BinaryDictionary extends Dictionary {
     private native void closeNative(long dict);
     private native int getFrequencyNative(long dict, int[] word, int wordLength);
     private native boolean isValidBigramNative(long dict, int[] word1, int[] word2);
-    private native int getSuggestionsNative(long dict, long proximityInfo, int[] xCoordinates,
-            int[] yCoordinates, int[] times, int[] pointerIds, int[] inputCodes, int codesSize,
-            int commitPoint, boolean isGesture,
+    private native int getSuggestionsNative(long dict, long proximityInfo, long traverseSession,
+            int[] xCoordinates, int[] yCoordinates, int[] times, int[] pointerIds,
+            int[] inputCodes, int codesSize, int commitPoint, boolean isGesture,
             int[] prevWordCodePointArray, boolean useFullEditDistance, char[] outputChars,
             int[] outputScores, int[] outputIndices, int[] outputTypes);
     private static native float calcNormalizedScoreNative(
@@ -129,7 +129,8 @@ public class BinaryDictionary extends Dictionary {
         final int codesSize = isGesture ? ips.getPointerSize() : composerSize;
         // proximityInfo and/or prevWordForBigrams may not be null.
         final int tmpCount = getSuggestionsNative(mNativeDict,
-                proximityInfo.getNativeProximityInfo(), ips.getXCoordinates(),
+                proximityInfo.getNativeProximityInfo(),
+                mDicTraverseSession.getSession(), ips.getXCoordinates(),
                 ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
                 mInputCodes, codesSize, 0 /* commitPoint */, isGesture, prevWordCodePointArray,
                 mUseFullEditDistance, mOutputChars, mOutputScores, mSpaceIndices, mOutputTypes);
