@@ -60,13 +60,11 @@ public class Suggest {
 
     // Locale used for upper- and title-casing words
     private final Locale mLocale;
-    private final SuggestInitializationListener mListener;
 
     public Suggest(final Context context, final Locale locale,
             final SuggestInitializationListener listener) {
-        initAsynchronously(context, locale);
+        initAsynchronously(context, locale, listener);
         mLocale = locale;
-        mListener = listener;
     }
 
     /* package for test */ Suggest(final Context context, final File dictionary,
@@ -74,7 +72,6 @@ public class Suggest {
         final Dictionary mainDict = DictionaryFactory.createDictionaryForTest(context, dictionary,
                 startOffset, length /* useFullEditDistance */, false, locale);
         mLocale = locale;
-        mListener = null;
         mMainDictionary = mainDict;
         addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_MAIN, mainDict);
         initWhitelistAndAutocorrectAndPool(context, locale);
@@ -85,8 +82,9 @@ public class Suggest {
         addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_WHITELIST, mWhiteListDictionary);
     }
 
-    private void initAsynchronously(final Context context, final Locale locale) {
-        resetMainDict(context, locale);
+    private void initAsynchronously(final Context context, final Locale locale,
+            final SuggestInitializationListener listener) {
+        resetMainDict(context, locale, listener);
 
         // TODO: read the whitelist and init the pool asynchronously too.
         // initPool should be done asynchronously now that the pool is thread-safe.
@@ -104,10 +102,11 @@ public class Suggest {
         }
     }
 
-    public void resetMainDict(final Context context, final Locale locale) {
+    public void resetMainDict(final Context context, final Locale locale,
+            final SuggestInitializationListener listener) {
         mMainDictionary = null;
-        if (mListener != null) {
-            mListener.onUpdateMainDictionaryAvailability(hasMainDictionary());
+        if (listener != null) {
+            listener.onUpdateMainDictionaryAvailability(hasMainDictionary());
         }
         new Thread("InitializeBinaryDictionary") {
             @Override
@@ -116,8 +115,8 @@ public class Suggest {
                         DictionaryFactory.createMainDictionaryFromManager(context, locale);
                 addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_MAIN, newMainDict);
                 mMainDictionary = newMainDict;
-                if (mListener != null) {
-                    mListener.onUpdateMainDictionaryAvailability(hasMainDictionary());
+                if (listener != null) {
+                    listener.onUpdateMainDictionaryAvailability(hasMainDictionary());
                 }
             }
         }.start();
