@@ -19,7 +19,7 @@ package com.android.inputmethod.keyboard.internal;
 import android.test.AndroidTestCase;
 
 public class PointerTrackerQueueTests extends AndroidTestCase {
-    public static class Element implements PointerTrackerQueue.ElementActions {
+    public static class Element implements PointerTrackerQueue.Element {
         public static int sPhantomUpCount;
         public static final long NOT_HAPPENED = -1;
 

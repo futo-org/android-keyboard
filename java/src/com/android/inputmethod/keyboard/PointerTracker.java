@@ -34,7 +34,7 @@ import com.android.inputmethod.research.ResearchLogger;
 
 import java.util.ArrayList;
 
-public class PointerTracker implements PointerTrackerQueue.ElementActions {
+public class PointerTracker implements PointerTrackerQueue.Element {
     private static final String TAG = PointerTracker.class.getSimpleName();
     private static final boolean DEBUG_EVENT = false;
     private static final boolean DEBUG_MOVE_EVENT = false;
