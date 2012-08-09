@@ -47,7 +47,7 @@ static inline void safeGetOrFillZeroFloatArrayRegion(JNIEnv *env, jfloatArray jA
     }
 }
 
-ProximityInfo::ProximityInfo(JNIEnv *env, const char *localeCStr, const int maxProximityCharsSize,
+ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr, const int maxProximityCharsSize,
         const int keyboardWidth, const int keyboardHeight, const int gridWidth,
         const int gridHeight, const int mostCommonKeyWidth, const jintArray proximityChars,
         const int keyCount, const jintArray keyXCoordinates, const jintArray keyYCoordinates,
@@ -62,12 +62,16 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const char *localeCStr, const int maxP
           KEY_COUNT(min(keyCount, MAX_KEY_COUNT_IN_A_KEYBOARD)),
           HAS_TOUCH_POSITION_CORRECTION_DATA(keyCount > 0 && keyXCoordinates && keyYCoordinates
                   && keyWidths && keyHeights && keyCharCodes && sweetSpotCenterXs
-                  && sweetSpotCenterYs && sweetSpotRadii),
-          mLocaleStr(localeCStr) {
+                  && sweetSpotCenterYs && sweetSpotRadii) {
     const int proximityGridLength = GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE;
     if (DEBUG_PROXIMITY_INFO) {
         AKLOGI("Create proximity info array %d", proximityGridLength);
     }
+    const jsize localeCStrUtf8Length = env->GetStringUTFLength(localeJStr);
+    char localeCStr[localeCStrUtf8Length + 1];
+    env->GetStringUTFRegion(localeJStr, 0, env->GetStringLength(localeJStr), localeCStr);
+    localeCStr[localeCStrUtf8Length] = '\0';
+    mLocaleStr = new std::string(localeCStr);
     mProximityCharsArray = new int32_t[proximityGridLength];
     safeGetOrFillZeroIntArrayRegion(env, proximityChars, proximityGridLength, mProximityCharsArray);
     safeGetOrFillZeroIntArrayRegion(env, keyXCoordinates, KEY_COUNT, mKeyXCoordinates);
@@ -94,6 +98,7 @@ void ProximityInfo::initializeCodeToKeyIndex() {
 }
 
 ProximityInfo::~ProximityInfo() {
+    delete mLocaleStr;
     delete[] mProximityCharsArray;
 }
 
@@ -166,7 +171,7 @@ void ProximityInfo::calculateNearbyKeyCodes(
             }
         }
         const int additionalProximitySize =
-                AdditionalProximityChars::getAdditionalCharsSize(&mLocaleStr, primaryKey);
+                AdditionalProximityChars::getAdditionalCharsSize(mLocaleStr, primaryKey);
         if (additionalProximitySize > 0) {
             inputCodes[insertPos++] = ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE;
             if (insertPos >= MAX_PROXIMITY_CHARS_SIZE) {
@@ -177,7 +182,7 @@ void ProximityInfo::calculateNearbyKeyCodes(
             }
 
             const int32_t *additionalProximityChars =
-                    AdditionalProximityChars::getAdditionalChars(&mLocaleStr, primaryKey);
+                    AdditionalProximityChars::getAdditionalChars(mLocaleStr, primaryKey);
             for (int j = 0; j < additionalProximitySize; ++j) {
                 const int32_t ac = additionalProximityChars[j];
                 int k = 0;

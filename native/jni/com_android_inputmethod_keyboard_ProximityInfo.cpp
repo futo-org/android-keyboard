@@ -29,18 +29,15 @@ static jlong latinime_Keyboard_setProximityInfo(JNIEnv *env, jobject object,
         jint keyCount, jintArray keyXCoordinates, jintArray keyYCoordinates,
         jintArray keyWidths, jintArray keyHeights, jintArray keyCharCodes,
         jfloatArray sweetSpotCenterXs, jfloatArray sweetSpotCenterYs, jfloatArray sweetSpotRadii) {
-    const char *localeCStr = env->GetStringUTFChars(localeJStr, 0);
-    ProximityInfo *proximityInfo = new ProximityInfo(env, localeCStr, maxProximityCharsSize,
+    ProximityInfo *proximityInfo = new ProximityInfo(env, localeJStr, maxProximityCharsSize,
             displayWidth, displayHeight, gridWidth, gridHeight, mostCommonkeyWidth, proximityChars,
             keyCount, keyXCoordinates, keyYCoordinates, keyWidths, keyHeights, keyCharCodes,
             sweetSpotCenterXs, sweetSpotCenterYs, sweetSpotRadii);
-    env->ReleaseStringUTFChars(localeJStr, localeCStr);
     return reinterpret_cast<jlong>(proximityInfo);
 }
 
 static void latinime_Keyboard_release(JNIEnv *env, jobject object, jlong proximityInfo) {
     ProximityInfo *pi = reinterpret_cast<ProximityInfo*>(proximityInfo);
-    if (!pi) return;
     delete pi;
 }
 
