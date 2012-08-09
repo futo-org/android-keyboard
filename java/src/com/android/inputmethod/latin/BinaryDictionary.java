@@ -88,17 +88,15 @@ public class BinaryDictionary extends Dictionary {
             int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength, int maxWords,
             int maxPredictions);
     private native void closeNative(long dict);
-    private native int getFrequencyNative(long dict, int[] word, int wordLength);
+    private native int getFrequencyNative(long dict, int[] word);
     private native boolean isValidBigramNative(long dict, int[] word1, int[] word2);
     private native int getSuggestionsNative(long dict, long proximityInfo, long traverseSession,
             int[] xCoordinates, int[] yCoordinates, int[] times, int[] pointerIds,
             int[] inputCodes, int codesSize, int commitPoint, boolean isGesture,
             int[] prevWordCodePointArray, boolean useFullEditDistance, char[] outputChars,
             int[] outputScores, int[] outputIndices, int[] outputTypes);
-    private static native float calcNormalizedScoreNative(
-            char[] before, int beforeLength, char[] after, int afterLength, int score);
-    private static native int editDistanceNative(
-            char[] before, int beforeLength, char[] after, int afterLength);
+    private static native float calcNormalizedScoreNative(char[] before, char[] after, int score);
+    private static native int editDistanceNative(char[] before, char[] after);
 
     private final void loadDictionary(String path, long startOffset, long length) {
         mNativeDict = openNative(path, startOffset, length, TYPED_LETTER_MULTIPLIER,
@@ -158,13 +156,11 @@ public class BinaryDictionary extends Dictionary {
     }
 
     public static float calcNormalizedScore(String before, String after, int score) {
-        return calcNormalizedScoreNative(before.toCharArray(), before.length(),
-                after.toCharArray(), after.length(), score);
+        return calcNormalizedScoreNative(before.toCharArray(), after.toCharArray(), score);
     }
 
     public static int editDistance(String before, String after) {
-        return editDistanceNative(
-                before.toCharArray(), before.length(), after.toCharArray(), after.length());
+        return editDistanceNative(before.toCharArray(), after.toCharArray());
     }
 
     @Override
@@ -175,8 +171,8 @@ public class BinaryDictionary extends Dictionary {
     @Override
     public int getFrequency(CharSequence word) {
         if (word == null) return -1;
-        int[] chars = StringUtils.toCodePointArray(word.toString());
-        return getFrequencyNative(mNativeDict, chars, chars.length);
+        int[] codePoints = StringUtils.toCodePointArray(word.toString());
+        return getFrequencyNative(mNativeDict, codePoints);
     }
 
     // TODO: Add a batch process version (isValidBigramMultiple?) to avoid excessive numbers of jni
