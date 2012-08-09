@@ -29,7 +29,7 @@ class Correction;
 
 class ProximityInfo {
  public:
-    ProximityInfo(JNIEnv *env, const char *localeCStr, const int maxProximityCharsSize,
+    ProximityInfo(JNIEnv *env, const jstring localeJStr, const int maxProximityCharsSize,
             const int keyboardWidth, const int keyboardHeight, const int gridWidth,
             const int gridHeight, const int mostCommonKeyWidth, const jintArray proximityChars,
             const int keyCount, const jintArray keyXCoordinates, const jintArray keyYCoordinates,
@@ -76,7 +76,7 @@ class ProximityInfo {
     }
 
     std::string getLocaleStr() const {
-        return mLocaleStr;
+        return *mLocaleStr;
     }
 
     int getKeyCount() const {
@@ -129,7 +129,7 @@ class ProximityInfo {
     const int CELL_HEIGHT;
     const int KEY_COUNT;
     const bool HAS_TOUCH_POSITION_CORRECTION_DATA;
-    const std::string mLocaleStr;
+    const std::string *mLocaleStr;
     int32_t *mProximityCharsArray;
     int32_t mKeyXCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int32_t mKeyYCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];
