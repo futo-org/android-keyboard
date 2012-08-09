@@ -36,7 +36,7 @@ namespace latinime {
 
 class ProximityInfo;
 
-void releaseDictBuf(void *dictBuf, const size_t length, int fd);
+static void releaseDictBuf(void *dictBuf, const size_t length, int fd);
 
 static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         jstring sourceDir, jlong dictOffset, jlong dictSize,
@@ -44,11 +44,14 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         jint maxPredictions) {
     PROF_OPEN;
     PROF_START(66);
-    const char *sourceDirChars = env->GetStringUTFChars(sourceDir, 0);
-    if (sourceDirChars == 0) {
+    const jsize sourceDirUtf8Length = env->GetStringUTFLength(sourceDir);
+    if (sourceDirUtf8Length <= 0) {
         AKLOGE("DICT: Can't get sourceDir string");
         return 0;
     }
+    char sourceDirChars[sourceDirUtf8Length + 1];
+    env->GetStringUTFRegion(sourceDir, 0, env->GetStringLength(sourceDir), sourceDirChars);
+    sourceDirChars[sourceDirUtf8Length] = '\0';
     int fd = 0;
     void *dictBuf = 0;
     int adjust = 0;
@@ -98,8 +101,6 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         return 0;
     }
 #endif // USE_MMAP_FOR_DICTIONARY
-    env->ReleaseStringUTFChars(sourceDir, sourceDirChars);
-
     if (!dictBuf) {
         AKLOGE("DICT: dictBuf is null");
         return 0;
@@ -230,7 +231,7 @@ static void latinime_BinaryDictionary_close(JNIEnv *env, jobject object, jlong d
     delete dictionary;
 }
 
-void releaseDictBuf(void *dictBuf, const size_t length, int fd) {
+static void releaseDictBuf(void *dictBuf, const size_t length, int fd) {
 #ifdef USE_MMAP_FOR_DICTIONARY
     int ret = munmap(dictBuf, length);
     if (ret != 0) {
