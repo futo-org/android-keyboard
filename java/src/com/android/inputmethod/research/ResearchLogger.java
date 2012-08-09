@@ -84,6 +84,7 @@ import java.util.UUID;
  */
 public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = ResearchLogger.class.getSimpleName();
+    private static final boolean DEBUG = false;
     private static final boolean OUTPUT_ENTIRE_BUFFER = false;  // true may disclose private info
     public static final boolean DEFAULT_USABILITY_STUDY_MODE = false;
     /* package */ static boolean sIsLogging = false;
@@ -344,6 +345,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void start() {
+        if (DEBUG) {
+            Log.d(TAG, "start called");
+        }
         maybeShowSplashScreen();
         updateSuspendedState();
         requestIndicatorRedraw();
@@ -371,6 +375,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     /* package */ void stop() {
+        if (DEBUG) {
+            Log.d(TAG, "stop called");
+        }
         logStatistics();
         commitCurrentLogUnit();
 
@@ -386,6 +393,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public boolean abort() {
+        if (DEBUG) {
+            Log.d(TAG, "abort called");
+        }
         boolean didAbortMainLog = false;
         if (mMainLogBuffer != null) {
             mMainLogBuffer.clear();
@@ -559,6 +569,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public void uploadNow() {
+        if (DEBUG) {
+            Log.d(TAG, "calling uploadNow()");
+        }
         mInputMethodService.startService(mUploadIntent);
     }
 
@@ -578,6 +591,13 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private boolean isAllowedToLog() {
+        if (DEBUG) {
+            Log.d(TAG, "iatl: " +
+                "mipw=" + mIsPasswordView +
+                ", mils=" + mIsLoggingSuspended +
+                ", sil=" + sIsLogging +
+                ", mInFeedbackDialog=" + mInFeedbackDialog);
+        }
         return !mIsPasswordView && !mIsLoggingSuspended && sIsLogging && !mInFeedbackDialog;
     }
 
@@ -666,6 +686,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     /* package for test */ void commitCurrentLogUnit() {
+        if (DEBUG) {
+            Log.d(TAG, "commitCurrentLogUnit");
+        }
         if (!mCurrentLogUnit.isEmpty()) {
             if (mMainLogBuffer != null) {
                 mMainLogBuffer.shiftIn(mCurrentLogUnit);
