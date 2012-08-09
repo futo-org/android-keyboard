@@ -18,7 +18,6 @@
 #define LATINIME_PROXIMITY_INFO_H
 
 #include <stdint.h>
-#include <string>
 
 #include "defines.h"
 #include "jni.h"
@@ -75,8 +74,8 @@ class ProximityInfo {
         return MOST_COMMON_KEY_WIDTH_SQUARE;
     }
 
-    std::string getLocaleStr() const {
-        return *mLocaleStr;
+    const char *getLocaleStr() const {
+        return mLocaleStr;
     }
 
     int getKeyCount() const {
@@ -129,7 +128,7 @@ class ProximityInfo {
     const int CELL_HEIGHT;
     const int KEY_COUNT;
     const bool HAS_TOUCH_POSITION_CORRECTION_DATA;
-    const std::string *mLocaleStr;
+    char mLocaleStr[MAX_LOCALE_STRING_LENGTH];
     int32_t *mProximityCharsArray;
     int32_t mKeyXCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int32_t mKeyYCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];

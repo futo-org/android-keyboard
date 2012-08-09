@@ -17,7 +17,6 @@
 #include <cassert>
 #include <cmath>
 #include <cstring>
-#include <string>
 
 #define LOG_TAG "LatinIME: proximity_info.cpp"
 
@@ -68,10 +67,12 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr, const int ma
         AKLOGI("Create proximity info array %d", proximityGridLength);
     }
     const jsize localeCStrUtf8Length = env->GetStringUTFLength(localeJStr);
-    char localeCStr[localeCStrUtf8Length + 1];
-    env->GetStringUTFRegion(localeJStr, 0, env->GetStringLength(localeJStr), localeCStr);
-    localeCStr[localeCStrUtf8Length] = '\0';
-    mLocaleStr = new std::string(localeCStr);
+    if (localeCStrUtf8Length >= MAX_LOCALE_STRING_LENGTH) {
+        AKLOGI("Locale string length too long: length=%d", localeCStrUtf8Length);
+        assert(false);
+    }
+    memset(mLocaleStr, 0, sizeof(mLocaleStr));
+    env->GetStringUTFRegion(localeJStr, 0, env->GetStringLength(localeJStr), mLocaleStr);
     mProximityCharsArray = new int32_t[proximityGridLength];
     safeGetOrFillZeroIntArrayRegion(env, proximityChars, proximityGridLength, mProximityCharsArray);
     safeGetOrFillZeroIntArrayRegion(env, keyXCoordinates, KEY_COUNT, mKeyXCoordinates);
@@ -98,7 +99,6 @@ void ProximityInfo::initializeCodeToKeyIndex() {
 }
 
 ProximityInfo::~ProximityInfo() {
-    delete mLocaleStr;
     delete[] mProximityCharsArray;
 }
 
