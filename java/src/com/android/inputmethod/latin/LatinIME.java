@@ -433,10 +433,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
     }
 
+    // Note that this method is called from a non-UI thread.
     @Override
     public void onUpdateMainDictionaryAvailability(boolean isMainDictionaryAvailable) {
         mIsMainDictionaryAvailable = isMainDictionaryAvailable;
-        updateKeyboardViewGestureHandlingModeByMainDictionaryAvailability();
+        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        if (mainKeyboardView != null) {
+            mainKeyboardView.setMainDictionaryAvailability(isMainDictionaryAvailable);
+        }
     }
 
     private void initSuggest() {
@@ -701,7 +705,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
 
             switcher.loadKeyboard(editorInfo, mCurrentSettings);
-            updateKeyboardViewGestureHandlingModeByMainDictionaryAvailability();
         }
         setSuggestionStripShownInternal(
                 isSuggestionsStripVisible(), /* needsInputViewShown */ false);
@@ -721,6 +724,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         mainKeyboardView.setKeyPreviewPopupEnabled(mCurrentSettings.mKeyPreviewPopupOn,
                 mCurrentSettings.mKeyPreviewPopupDismissDelay);
+        mainKeyboardView.setGestureHandlingEnabledByUser(mCurrentSettings.mGestureInputEnabled);
+        mainKeyboardView.setGesturePreviewMode(mCurrentSettings.mGesturePreviewTrailEnabled,
+                mCurrentSettings.mGestureFloatingPreviewTextEnabled);
 
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
@@ -2103,23 +2109,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mKeyboardSwitcher.getMainKeyboardView() != null) {
             // Reload keyboard because the current language has been changed.
             mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(), mCurrentSettings);
-            updateKeyboardViewGestureHandlingModeByMainDictionaryAvailability();
         }
         // Since we just changed languages, we should re-evaluate suggestions with whatever word
         // we are currently composing. If we are not composing anything, we may want to display
         // predictions or punctuation signs (which is done by the updateSuggestionStrip anyway).
         mHandler.postUpdateSuggestionStrip();
-    }
-
-    private void updateKeyboardViewGestureHandlingModeByMainDictionaryAvailability() {
-        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
-        if (mainKeyboardView != null) {
-            final boolean shouldHandleGesture = mCurrentSettings.mGestureInputEnabled
-                    && mIsMainDictionaryAvailable;
-            mainKeyboardView.setGestureHandlingMode(shouldHandleGesture,
-                    mCurrentSettings.mGesturePreviewTrailEnabled,
-                    mCurrentSettings.mGestureFloatingPreviewTextEnabled);
-        }
     }
 
     // TODO: Remove this method from {@link LatinIME} and move {@link FeedbackManager} to

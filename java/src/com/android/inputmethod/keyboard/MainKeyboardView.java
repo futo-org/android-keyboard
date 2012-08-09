@@ -482,7 +482,7 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(
                 keyboard, -getPaddingLeft(), -getPaddingTop() + mVerticalCorrection);
-        PointerTracker.setKeyDetector(mKeyDetector, mShouldHandleGesture);
+        PointerTracker.setKeyDetector(mKeyDetector);
         mTouchScreenRegulator.setKeyboard(keyboard);
         mMoreKeysPanelCache.clear();
 
@@ -500,12 +500,13 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
         AccessibleKeyboardViewProxy.getInstance().setKeyboard(keyboard);
     }
 
-    @Override
-    public void setGestureHandlingMode(final boolean shouldHandleGesture,
-            boolean drawsGesturePreviewTrail, boolean drawsGestureFloatingPreviewText) {
-        super.setGestureHandlingMode(shouldHandleGesture, drawsGesturePreviewTrail,
-                drawsGestureFloatingPreviewText);
-        PointerTracker.setKeyDetector(mKeyDetector, shouldHandleGesture);
+    // Note that this method is called from a non-UI thread.
+    public void setMainDictionaryAvailability(boolean mainDictionaryAvailable) {
+        PointerTracker.setMainDictionaryAvailability(mainDictionaryAvailable);
+    }
+
+    public void setGestureHandlingEnabledByUser(boolean gestureHandlingEnabledByUser) {
+        PointerTracker.setGestureHandlingEnabledByUser(gestureHandlingEnabledByUser);
     }
 
     /**
