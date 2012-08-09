@@ -60,6 +60,7 @@ import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.InputTypeUtils;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputConnection;
@@ -791,8 +792,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void latinIME_onStartInputViewInternal(final EditorInfo editorInfo,
             final SharedPreferences prefs) {
         final ResearchLogger researchLogger = getInstance();
-        researchLogger.start();
         if (editorInfo != null) {
+            final boolean isPassword = InputTypeUtils.isPasswordInputType(editorInfo.inputType)
+                    || InputTypeUtils.isVisiblePasswordInputType(editorInfo.inputType);
+            getInstance().setIsPasswordView(isPassword);
+            researchLogger.start();
             final Context context = researchLogger.mInputMethodService;
             try {
                 final PackageInfo packageInfo;
@@ -1059,7 +1063,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 keyboard.mOccupiedHeight,
                 keyboard.mKeys
             };
-            getInstance().setIsPasswordView(isPasswordView);
             getInstance().enqueueEvent(EVENTKEYS_MAINKEYBOARDVIEW_SETKEYBOARD, values);
         }
     }
