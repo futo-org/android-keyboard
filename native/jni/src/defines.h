@@ -265,6 +265,9 @@ static inline void prof_out(void) {
 // This must be equal to ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE in KeyDetector.java
 #define ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE 2
 
+// Assuming locale strings such as en_US, sr-Latn etc.
+#define MAX_LOCALE_STRING_LENGTH 10
+
 // Word limit for sub queues used in WordsPriorityQueuePool.  Sub queues are temporary queues used
 // for better performance.
 // Holds up to 1 candidate for each word
