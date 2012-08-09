@@ -16,9 +16,14 @@
 
 package com.android.inputmethod.research;
 
+import android.util.Log;
+
 import com.android.inputmethod.latin.Constants;
 
 public class Statistics {
+    private static final String TAG = Statistics.class.getSimpleName();
+    private static final boolean DEBUG = false;
+
     // Number of characters entered during a typing session
     int mCharCount;
     // Number of letter characters entered during a typing session
@@ -103,6 +108,9 @@ public class Statistics {
     }
 
     public void recordChar(int codePoint, long time) {
+        if (DEBUG) {
+            Log.d(TAG, "recordChar() called");
+        }
         final long delta = time - mLastTapTime;
         if (codePoint == Constants.CODE_DELETE) {
             mDeleteKeyCount++;
