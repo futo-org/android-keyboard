@@ -17,8 +17,8 @@
 #ifndef LATINIME_ADDITIONAL_PROXIMITY_CHARS_H
 #define LATINIME_ADDITIONAL_PROXIMITY_CHARS_H
 
+#include <cstring>
 #include <stdint.h>
-#include <string>
 
 #include "defines.h"
 
@@ -27,7 +27,7 @@ namespace latinime {
 class AdditionalProximityChars {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(AdditionalProximityChars);
-    static const std::string LOCALE_EN_US;
+    static const char *LOCALE_EN_US;
     static const int EN_US_ADDITIONAL_A_SIZE = 4;
     static const int32_t EN_US_ADDITIONAL_A[];
     static const int EN_US_ADDITIONAL_E_SIZE = 4;
@@ -39,15 +39,15 @@ class AdditionalProximityChars {
     static const int EN_US_ADDITIONAL_U_SIZE = 4;
     static const int32_t EN_US_ADDITIONAL_U[];
 
-    static bool isEnLocale(const std::string *locale_str) {
-        const size_t LOCALE_EN_US_SIZE = LOCALE_EN_US.size();
-        return locale_str && locale_str->size() >= LOCALE_EN_US_SIZE
-                && locale_str->compare(0, LOCALE_EN_US_SIZE, LOCALE_EN_US) == 0;
+    static bool isEnLocale(const char *localeStr) {
+        const size_t LOCALE_EN_US_SIZE = strlen(LOCALE_EN_US);
+        return localeStr && strlen(localeStr) >= LOCALE_EN_US_SIZE
+                && strncmp(localeStr, LOCALE_EN_US, LOCALE_EN_US_SIZE) == 0;
     }
 
  public:
-    static int getAdditionalCharsSize(const std::string *locale_str, const int32_t c) {
-        if (!isEnLocale(locale_str)) {
+    static int getAdditionalCharsSize(const char *localeStr, const int32_t c) {
+        if (!isEnLocale(localeStr)) {
             return 0;
         }
         switch(c) {
@@ -66,8 +66,8 @@ class AdditionalProximityChars {
         }
     }
 
-    static const int32_t *getAdditionalChars(const std::string *locale_str, const int32_t c) {
-        if (!isEnLocale(locale_str)) {
+    static const int32_t *getAdditionalChars(const char *localeStr, const int32_t c) {
+        if (!isEnLocale(localeStr)) {
             return 0;
         }
         switch(c) {
