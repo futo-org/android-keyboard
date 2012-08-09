@@ -18,7 +18,7 @@ package com.android.inputmethod.research;
 
 import com.android.inputmethod.latin.CollectionUtils;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A group of log statements related to each other.
@@ -35,16 +35,39 @@ import java.util.ArrayList;
  * been published recently, or whether the LogUnit contains numbers, etc.
  */
 /* package */ class LogUnit {
-    private final ArrayList<String[]> mKeysList = CollectionUtils.newArrayList();
-    private final ArrayList<Object[]> mValuesList = CollectionUtils.newArrayList();
-    private final ArrayList<Boolean> mIsPotentiallyPrivate = CollectionUtils.newArrayList();
+    private final List<String[]> mKeysList;
+    private final List<Object[]> mValuesList;
+    // Assume that mTimeList is sorted in increasing order.  Do not insert null values into
+    // mTimeList.
+    private final List<Long> mTimeList;
+    private final List<Boolean> mIsPotentiallyPrivate;
     private String mWord;
     private boolean mContainsDigit;
 
+    public LogUnit() {
+        mKeysList = CollectionUtils.newArrayList();
+        mValuesList = CollectionUtils.newArrayList();
+        mTimeList = CollectionUtils.newArrayList();
+        mIsPotentiallyPrivate = CollectionUtils.newArrayList();
+    }
+
+    private LogUnit(final List<String[]> keysList, final List<Object[]> valuesList,
+            final List<Long> timeList, final List<Boolean> isPotentiallyPrivate) {
+        mKeysList = keysList;
+        mValuesList = valuesList;
+        mTimeList = timeList;
+        mIsPotentiallyPrivate = isPotentiallyPrivate;
+    }
+
+    /**
+     * Adds a new log statement.  The time parameter in successive calls to this method must be
+     * monotonically increasing, or splitByTime() will not work.
+     */
     public void addLogStatement(final String[] keys, final Object[] values,
-            final Boolean isPotentiallyPrivate) {
+            final long time, final boolean isPotentiallyPrivate) {
         mKeysList.add(keys);
         mValuesList.add(values);
+        mTimeList.add(time);
         mIsPotentiallyPrivate.add(isPotentiallyPrivate);
     }
 
@@ -52,7 +75,7 @@ import java.util.ArrayList;
         final int size = mKeysList.size();
         for (int i = 0; i < size; i++) {
             if (!mIsPotentiallyPrivate.get(i) || isIncludingPrivateData) {
-                researchLog.outputEvent(mKeysList.get(i), mValuesList.get(i));
+                researchLog.outputEvent(mKeysList.get(i), mValuesList.get(i), mTimeList.get(i));
             }
         }
     }
@@ -79,5 +102,27 @@ import java.util.ArrayList;
 
     public boolean isEmpty() {
         return mKeysList.isEmpty();
+    }
+
+    /**
+     * Split this logUnit, with all events before maxTime staying in the current logUnit, and all
+     * events after maxTime going into a new LogUnit that is returned.
+     */
+    public LogUnit splitByTime(final long maxTime) {
+        // Assume that mTimeList is in sorted order.
+        final int length = mTimeList.size();
+        for (int index = 0; index < length; index++) {
+            if (mTimeList.get(index) >= maxTime) {
+                final LogUnit newLogUnit = new LogUnit(
+                        mKeysList.subList(index, length),
+                        mValuesList.subList(index, length),
+                        mTimeList.subList(index, length),
+                        mIsPotentiallyPrivate.subList(index, length));
+                newLogUnit.mWord = null;
+                newLogUnit.mContainsDigit = mContainsDigit;
+                return newLogUnit;
+            }
+        }
+        return new LogUnit();
     }
 }
