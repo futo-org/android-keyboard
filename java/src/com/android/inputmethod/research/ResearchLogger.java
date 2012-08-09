@@ -1018,26 +1018,26 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final boolean isPasswordView = kid.passwordInput();
             getInstance().setIsPasswordView(isPasswordView);
             final Object[] values = {
-                    KeyboardId.elementIdToName(kid.mElementId),
-                    kid.mLocale + ":" + kid.mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
-                    kid.mOrientation,
-                    kid.mWidth,
-                    KeyboardId.modeName(kid.mMode),
-                    kid.imeAction(),
-                    kid.navigateNext(),
-                    kid.navigatePrevious(),
-                    kid.mClobberSettingsKey,
-                    isPasswordView,
-                    kid.mShortcutKeyEnabled,
-                    kid.mHasShortcutKey,
-                    kid.mLanguageSwitchKeyEnabled,
-                    kid.isMultiLine(),
-                    keyboard.mOccupiedWidth,
-                    keyboard.mOccupiedHeight,
-                    keyboard.mKeys
-                };
-            getInstance().enqueueEvent(EVENTKEYS_MAINKEYBOARDVIEW_SETKEYBOARD, values);
+                KeyboardId.elementIdToName(kid.mElementId),
+                kid.mLocale + ":" + kid.mSubtype.getExtraValueOf(KEYBOARD_LAYOUT_SET),
+                kid.mOrientation,
+                kid.mWidth,
+                KeyboardId.modeName(kid.mMode),
+                kid.imeAction(),
+                kid.navigateNext(),
+                kid.navigatePrevious(),
+                kid.mClobberSettingsKey,
+                isPasswordView,
+                kid.mShortcutKeyEnabled,
+                kid.mHasShortcutKey,
+                kid.mLanguageSwitchKeyEnabled,
+                kid.isMultiLine(),
+                keyboard.mOccupiedWidth,
+                keyboard.mOccupiedHeight,
+                keyboard.mKeys
+            };
             getInstance().setIsPasswordView(isPasswordView);
+            getInstance().enqueueEvent(EVENTKEYS_MAINKEYBOARDVIEW_SETKEYBOARD, values);
         }
     }
 
