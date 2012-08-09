@@ -111,8 +111,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     // Drawing
     /** True if the entire keyboard needs to be dimmed. */
     private boolean mNeedsToDimEntireKeyboard;
-    /** Whether the keyboard bitmap buffer needs to be redrawn before it's blitted. **/
-    private boolean mBufferNeedsUpdate;
     /** True if all keys should be drawn */
     private boolean mInvalidateAllKeys;
     /** The keys that should be drawn */
@@ -459,8 +457,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             onDrawKeyboard(canvas);
             return;
         }
-        if (mBufferNeedsUpdate || mOffscreenBuffer == null) {
-            mBufferNeedsUpdate = false;
+
+        final boolean bufferNeedsUpdates = mInvalidateAllKeys || !mInvalidatedKeys.isEmpty();
+        if (bufferNeedsUpdates || mOffscreenBuffer == null) {
             if (maybeAllocateOffscreenBuffer()) {
                 mInvalidateAllKeys = true;
                 // TODO: Stop using the offscreen canvas even when in software rendering
@@ -524,13 +523,12 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
         if (!isHardwareAccelerated) {
             canvas.clipRegion(mClipRegion, Region.Op.REPLACE);
-        }
-
-        // Draw keyboard background.
-        canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
-        final Drawable background = getBackground();
-        if (background != null) {
-            background.draw(canvas);
+            // Draw keyboard background.
+            canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
+            final Drawable background = getBackground();
+            if (background != null) {
+                background.draw(canvas);
+            }
         }
 
         // TODO: Confirm if it's really required to draw all keys when hardware acceleration is on.
@@ -1048,7 +1046,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     public void invalidateAllKeys() {
         mInvalidatedKeys.clear();
         mInvalidateAllKeys = true;
-        mBufferNeedsUpdate = true;
         invalidate();
     }
 
@@ -1066,9 +1063,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mInvalidatedKeys.add(key);
         final int x = key.mX + getPaddingLeft();
         final int y = key.mY + getPaddingTop();
-        mWorkingRect.set(x, y, x + key.mWidth, y + key.mHeight);
-        mBufferNeedsUpdate = true;
-        invalidate(mWorkingRect);
+        invalidate(x, y, x + key.mWidth, y + key.mHeight);
     }
 
     public void closing() {
