@@ -31,6 +31,12 @@ class DicTraverseWrapper {
         }
         return 0;
     }
+    static void initDicTraverseSession(JNIEnv *env, void *traverseSession,
+            const jintArray prevWord, const jint prevWordLength) {
+        if (sDicTraverseSessionInitMethod) {
+            sDicTraverseSessionInitMethod(env, traverseSession, prevWord, prevWordLength);
+        }
+    }
     static void releaseDicTraverseSession(void *traverseSession) {
         if (sDicTraverseSessionReleaseMethod) {
             sDicTraverseSessionReleaseMethod(traverseSession);
@@ -39,6 +45,7 @@ class DicTraverseWrapper {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DicTraverseWrapper);
     static void *(*sDicTraverseSessionFactoryMethod)();
+    static void (*sDicTraverseSessionInitMethod)(JNIEnv *, void *, const jintArray, const jint);
     static void (*sDicTraverseSessionReleaseMethod)(void *);
 };
 int register_DicTraverseSession(JNIEnv *env);
