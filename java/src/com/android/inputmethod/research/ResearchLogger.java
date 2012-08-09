@@ -731,20 +731,20 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         researchLog.publish(closingLogUnit, true /* isIncludingPrivateData */);
     }
 
-    private boolean hasOnlyLetters(final String word) {
+    private boolean hasLetters(final String word) {
         final int length = word.length();
         for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
             final int codePoint = word.codePointAt(i);
-            if (!Character.isLetter(codePoint)) {
-                return false;
+            if (Character.isLetter(codePoint)) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     private void onWordComplete(final String word) {
         Log.d(TAG, "onWordComplete: " + word);
-        if (word != null && word.length() > 0 && hasOnlyLetters(word)) {
+        if (word != null && word.length() > 0 && hasLetters(word)) {
             mCurrentLogUnit.setWord(word);
             mStatistics.recordWordEntered();
         }
