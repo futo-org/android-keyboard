@@ -29,6 +29,7 @@ import com.android.inputmethod.keyboard.internal.GestureStroke;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.research.ResearchLogger;
 
@@ -43,6 +44,9 @@ public class PointerTracker implements PointerTrackerQueue.Element {
 
     /** True if {@link PointerTracker}s should handle gesture events. */
     private static boolean sShouldHandleGesture = false;
+    private static boolean sMainDictionaryAvailable = false;
+    private static boolean sGestureHandlingEnabledByInputField = false;
+    private static boolean sGestureHandlingEnabledByUser = false;
 
     private static final int MIN_GESTURE_RECOGNITION_TIME = 100; // msec
 
@@ -198,7 +202,6 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         sNeedsPhantomSuddenMoveEventHack = needsPhantomSuddenMoveEventHack;
 
         setParameters(MainKeyboardView.PointerTrackerParams.DEFAULT);
-        updateGestureHandlingMode(null, false /* shouldHandleGesture */);
     }
 
     public static void setParameters(MainKeyboardView.PointerTrackerParams params) {
@@ -207,14 +210,22 @@ public class PointerTracker implements PointerTrackerQueue.Element {
                 params.mTouchNoiseThresholdDistance * params.mTouchNoiseThresholdDistance);
     }
 
-    private static void updateGestureHandlingMode(Keyboard keyboard, boolean shouldHandleGesture) {
-        if (!shouldHandleGesture
-                || AccessibilityUtils.getInstance().isTouchExplorationEnabled()
-                || (keyboard != null && keyboard.mId.passwordInput())) {
-            sShouldHandleGesture = false;
-        } else {
-            sShouldHandleGesture = true;
-        }
+    private static void updateGestureHandlingMode() {
+        sShouldHandleGesture = sMainDictionaryAvailable
+                && sGestureHandlingEnabledByInputField
+                && sGestureHandlingEnabledByUser
+                && !AccessibilityUtils.getInstance().isTouchExplorationEnabled();
+    }
+
+    // Note that this method is called from a non-UI thread.
+    public static void setMainDictionaryAvailability(boolean mainDictionaryAvailable) {
+        sMainDictionaryAvailable = mainDictionaryAvailable;
+        updateGestureHandlingMode();
+    }
+
+    public static void setGestureHandlingEnabledByUser(boolean gestureHandlingEnabledByUser) {
+        sGestureHandlingEnabledByUser = gestureHandlingEnabledByUser;
+        updateGestureHandlingMode();
     }
 
     public static PointerTracker getPointerTracker(final int id, KeyEventHandler handler) {
@@ -241,7 +252,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         }
     }
 
-    public static void setKeyDetector(KeyDetector keyDetector, boolean shouldHandleGesture) {
+    public static void setKeyDetector(KeyDetector keyDetector) {
         final int trackersSize = sTrackers.size();
         for (int i = 0; i < trackersSize; ++i) {
             final PointerTracker tracker = sTrackers.get(i);
@@ -250,7 +261,8 @@ public class PointerTracker implements PointerTrackerQueue.Element {
             tracker.mKeyboardLayoutHasBeenChanged = true;
         }
         final Keyboard keyboard = keyDetector.getKeyboard();
-        updateGestureHandlingMode(keyboard, shouldHandleGesture);
+        sGestureHandlingEnabledByInputField = !keyboard.mId.passwordInput();
+        updateGestureHandlingMode();
     }
 
     public static void dismissAllKeyPreviews() {
