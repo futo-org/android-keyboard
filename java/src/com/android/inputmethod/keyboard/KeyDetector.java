@@ -59,6 +59,9 @@ public class KeyDetector {
     }
 
     public Keyboard getKeyboard() {
+        if (mKeyboard == null) {
+            throw new IllegalStateException("keyboard isn't set");
+        }
         return mKeyboard;
     }
 

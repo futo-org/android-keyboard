@@ -108,9 +108,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private int mDelayAfterPreview;
     private final PreviewPlacerView mPreviewPlacerView;
 
-    /** True if {@link KeyboardView} should handle gesture events. */
-    protected boolean mShouldHandleGesture;
-
     // Drawing
     /** True if the entire keyboard needs to be dimmed. */
     private boolean mNeedsToDimEntireKeyboard;
@@ -438,9 +435,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         return mShowKeyPreviewPopup;
     }
 
-    public void setGestureHandlingMode(boolean shouldHandleGesture,
-            boolean drawsGesturePreviewTrail, boolean drawsGestureFloatingPreviewText) {
-        mShouldHandleGesture = shouldHandleGesture;
+    public void setGesturePreviewMode(boolean drawsGesturePreviewTrail,
+            boolean drawsGestureFloatingPreviewText) {
         mPreviewPlacerView.setGesturePreviewMode(
                 drawsGesturePreviewTrail, drawsGestureFloatingPreviewText);
     }
