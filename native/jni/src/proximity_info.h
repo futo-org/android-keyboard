@@ -49,6 +49,7 @@ class ProximityInfo {
         return left < right && top < bottom && x >= left && x < right && y >= top && y < bottom;
     }
     int getKeyIndex(const int c) const;
+    int getKeyCode(const int keyIndex) const;
     bool hasSweetSpotData(const int keyIndex) const {
         // When there are no calibration data for a key,
         // the radius of the key is assigned to zero.
@@ -68,6 +69,10 @@ class ProximityInfo {
 
     bool hasTouchPositionCorrectionData() const {
         return HAS_TOUCH_POSITION_CORRECTION_DATA;
+    }
+
+    int getMostCommonKeyWidth() const {
+        return MOST_COMMON_KEY_WIDTH;
     }
 
     int getMostCommonKeyWidthSquare() const {
@@ -98,6 +103,12 @@ class ProximityInfo {
         return GRID_HEIGHT;
     }
 
+    float getKeyCenterXOfCharG(int charCode) const;
+    float getKeyCenterYOfCharG(int charCode) const;
+    float getKeyCenterXOfIdG(int keyId) const;
+    float getKeyCenterYOfIdG(int keyId) const;
+    int getKeyKeyDistanceG(int key0, int key1) const;
+
     // Returns the keyboard key-center information.
     void getCenters(int *centersX, int *centersY, int *codeToKeyIndex, int *keyToCodeIndex,
             int *keyCount, int *keyWidth) const;
@@ -113,6 +124,7 @@ class ProximityInfo {
 
     int getStartIndexFromCoordinates(const int x, const int y) const;
     void initializeCodeToKeyIndex();
+    void initializeG();
     float calculateNormalizedSquaredDistance(const int keyIndex, const int inputIndex) const;
     float calculateSquaredDistanceFromSweetSpotCenter(
             const int keyIndex, const int inputIndex) const;
@@ -123,6 +135,7 @@ class ProximityInfo {
     const int KEYBOARD_HEIGHT;
     const int GRID_WIDTH;
     const int GRID_HEIGHT;
+    const int MOST_COMMON_KEY_WIDTH;
     const int MOST_COMMON_KEY_WIDTH_SQUARE;
     const int CELL_WIDTH;
     const int CELL_HEIGHT;
@@ -139,6 +152,11 @@ class ProximityInfo {
     float mSweetSpotCenterYs[MAX_KEY_COUNT_IN_A_KEYBOARD];
     float mSweetSpotRadii[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int mCodeToKeyIndex[MAX_CHAR_CODE + 1];
+
+    int mKeyToCodeIndexG[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    int mCenterXsG[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    int mCenterYsG[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    int mKeyKeyDistancesG[MAX_KEY_COUNT_IN_A_KEYBOARD][MAX_KEY_COUNT_IN_A_KEYBOARD];
     // TODO: move to correction.h
 };
 } // namespace latinime
