@@ -208,14 +208,6 @@ public class Suggest {
                     wordComposerForLookup, prevWordForBigram, proximityInfo));
         }
 
-        // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
-        // but still autocorrected from - in the case the whitelist only capitalizes the word.
-        // The whitelist should be case-insensitive, so it's not possible to be consistent with
-        // a boolean flag. Right now this is handled with a slight hack in
-        // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
-        final boolean allowsToBeAutoCorrected = AutoCorrection.isWhitelistedOrNotAWord(
-                mDictionaries, consideredWord, wordComposer.isFirstCharCapitalized());
-
         final CharSequence whitelistedWord =
                 mWhiteListDictionary.getWhitelistedWord(consideredWord);
         if (whitelistedWord != null) {
@@ -224,6 +216,16 @@ public class Suggest {
                     SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST,
                     Dictionary.TYPE_WHITELIST));
         }
+
+        // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
+        // but still autocorrected from - in the case the whitelist only capitalizes the word.
+        // The whitelist should be case-insensitive, so it's not possible to be consistent with
+        // a boolean flag. Right now this is handled with a slight hack in
+        // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
+        final boolean allowsToBeAutoCorrected = (null != whitelistedWord
+                && !whitelistedWord.equals(consideredWord))
+                || AutoCorrection.isNotAWord(mDictionaries, consideredWord,
+                        wordComposer.isFirstCharCapitalized());
 
         final boolean hasAutoCorrection;
         // TODO: using isCorrectionEnabled here is not very good. It's probably useless, because
