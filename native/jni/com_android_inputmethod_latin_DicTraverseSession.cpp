@@ -27,7 +27,7 @@ static jlong latinime_setDicTraverseSession(JNIEnv *env, jobject object, jstring
     return reinterpret_cast<jlong>(traverseSession);
 }
 
-static void latinime_initDicTraverseSession(JNIEnv *env, jlong traverseSession,
+static void latinime_initDicTraverseSession(JNIEnv *env, jobject object, jlong traverseSession,
         jlong dictionary, jintArray previousWord, jint previousWordLength) {
     void *ts = reinterpret_cast<void*>(traverseSession);
     Dictionary *dict = reinterpret_cast<Dictionary*>(dictionary);
