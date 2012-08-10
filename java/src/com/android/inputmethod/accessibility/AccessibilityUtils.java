@@ -19,10 +19,15 @@ package com.android.inputmethod.accessibility;
 import android.content.Context;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.SystemClock;
 import android.provider.Settings;
+import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.inputmethod.EditorInfo;
@@ -138,9 +143,10 @@ public class AccessibilityUtils {
      * Sends the specified text to the {@link AccessibilityManager} to be
      * spoken.
      *
-     * @param text the text to speak
+     * @param view The source view.
+     * @param text The text to speak.
      */
-    public void speak(CharSequence text) {
+    public void announceForAccessibility(View view, CharSequence text) {
         if (!mAccessibilityManager.isEnabled()) {
             Log.e(TAG, "Attempted to speak when accessibility was disabled!");
             return;
@@ -149,8 +155,7 @@ public class AccessibilityUtils {
         // The following is a hack to avoid using the heavy-weight TextToSpeech
         // class. Instead, we're just forcing a fake AccessibilityEvent into
         // the screen reader to make it speak.
-        final AccessibilityEvent event = AccessibilityEvent
-                .obtain(AccessibilityEvent.TYPE_VIEW_FOCUSED);
+        final AccessibilityEvent event = AccessibilityEvent.obtain();
 
         event.setPackageName(PACKAGE);
         event.setClassName(CLASS);
@@ -158,20 +163,34 @@ public class AccessibilityUtils {
         event.setEnabled(true);
         event.getText().add(text);
 
-        mAccessibilityManager.sendAccessibilityEvent(event);
+        // Platforms starting at SDK 16 should use announce events.
+        if (Build.VERSION.SDK_INT >= 16) {
+            event.setEventType(AccessibilityEventCompat.TYPE_ANNOUNCEMENT);
+        } else {
+            event.setEventType(AccessibilityEvent.TYPE_VIEW_FOCUSED);
+        }
+
+        final ViewParent viewParent = view.getParent();
+        if ((viewParent == null) || !(viewParent instanceof ViewGroup)) {
+            Log.e(TAG, "Failed to obtain ViewParent in announceForAccessibility");
+            return;
+        }
+
+        viewParent.requestSendAccessibilityEvent(view, event);
     }
 
     /**
      * Handles speaking the "connect a headset to hear passwords" notification
      * when connecting to a password field.
      *
+     * @param view The source view.
      * @param editorInfo The input connection's editor info attribute.
      * @param restarting Whether the connection is being restarted.
      */
-    public void onStartInputViewInternal(EditorInfo editorInfo, boolean restarting) {
+    public void onStartInputViewInternal(View view, EditorInfo editorInfo, boolean restarting) {
         if (shouldObscureInput(editorInfo)) {
             final CharSequence text = mContext.getText(R.string.spoken_use_headphones);
-            speak(text);
+            announceForAccessibility(view, text);
         }
     }
 
