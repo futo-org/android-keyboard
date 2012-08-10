@@ -368,9 +368,6 @@ public final class RichInputConnection {
         // TextView flash the text for a second based on indices contained in the argument.
         if (null != mIC) {
             mIC.commitCorrection(correctionInfo);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.richInputConnection_commitCorrection(correctionInfo);
-            }
         }
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
     }
