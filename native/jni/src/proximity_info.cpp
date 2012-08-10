@@ -23,6 +23,7 @@
 #include "additional_proximity_chars.h"
 #include "char_utils.h"
 #include "defines.h"
+#include "geometry_utils.h"
 #include "jni.h"
 #include "proximity_info.h"
 
@@ -55,6 +56,7 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr, const int ma
         const jfloatArray sweetSpotRadii)
         : MAX_PROXIMITY_CHARS_SIZE(maxProximityCharsSize), KEYBOARD_WIDTH(keyboardWidth),
           KEYBOARD_HEIGHT(keyboardHeight), GRID_WIDTH(gridWidth), GRID_HEIGHT(gridHeight),
+          MOST_COMMON_KEY_WIDTH(mostCommonKeyWidth),
           MOST_COMMON_KEY_WIDTH_SQUARE(mostCommonKeyWidth * mostCommonKeyWidth),
           CELL_WIDTH((keyboardWidth + gridWidth - 1) / gridWidth),
           CELL_HEIGHT((keyboardHeight + gridHeight - 1) / gridHeight),
@@ -84,6 +86,7 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr, const int ma
     safeGetOrFillZeroFloatArrayRegion(env, sweetSpotCenterYs, KEY_COUNT, mSweetSpotCenterYs);
     safeGetOrFillZeroFloatArrayRegion(env, sweetSpotRadii, KEY_COUNT, mSweetSpotRadii);
     initializeCodeToKeyIndex();
+    initializeG();
 }
 
 // Build the reversed look up table from the char code to the index in mKeyXCoordinates,
@@ -220,6 +223,67 @@ int ProximityInfo::getKeyIndex(const int c) const {
         return NOT_AN_INDEX;
     }
     return mCodeToKeyIndex[baseLowerC];
+}
+
+int ProximityInfo::getKeyCode(const int keyIndex) const {
+    if (keyIndex < 0 || keyIndex >= KEY_COUNT) {
+        return NOT_AN_INDEX;
+    }
+    return mKeyToCodeIndexG[keyIndex];
+}
+
+void ProximityInfo::initializeG() {
+    for (int i = 0; i < KEY_COUNT; ++i) {
+        const int code = mKeyCharCodes[i];
+        const int lowerCode = toBaseLowerCase(code);
+        mCenterXsG[i] = mKeyXCoordinates[i] + mKeyWidths[i] / 2;
+        mCenterYsG[i] = mKeyYCoordinates[i] + mKeyHeights[i] / 2;
+        if (code != lowerCode && lowerCode >= 0 && lowerCode <= MAX_CHAR_CODE) {
+            mCodeToKeyIndex[lowerCode] = i;
+            mKeyToCodeIndexG[i] = lowerCode;
+        } else {
+            mKeyToCodeIndexG[i] = code;
+        }
+    }
+    for (int i = 0; i < KEY_COUNT; i++) {
+        mKeyKeyDistancesG[i][i] = 0;
+        for (int j = i + 1; j < KEY_COUNT; j++) {
+            mKeyKeyDistancesG[i][j] = getDistance(
+                    mCenterXsG[i], mCenterYsG[i], mCenterXsG[j], mCenterYsG[j]);
+            mKeyKeyDistancesG[j][i] = mKeyKeyDistancesG[i][j];
+        }
+    }
+}
+
+float ProximityInfo::getKeyCenterXOfCharG(int charCode) const {
+    return getKeyCenterXOfIdG(getKeyIndex(charCode));
+}
+
+float ProximityInfo::getKeyCenterYOfCharG(int charCode) const {
+    return getKeyCenterYOfIdG(getKeyIndex(charCode));
+}
+
+float ProximityInfo::getKeyCenterXOfIdG(int keyId) const {
+    if (keyId >= 0) {
+        return mCenterXsG[keyId];
+    }
+    return 0;
+}
+
+float ProximityInfo::getKeyCenterYOfIdG(int keyId) const {
+    if (keyId >= 0) {
+        return mCenterYsG[keyId];
+    }
+    return 0;
+}
+
+int ProximityInfo::getKeyKeyDistanceG(int key0, int key1) const {
+    const int keyId0 = getKeyIndex(key0);
+    const int keyId1 = getKeyIndex(key1);
+    if (keyId0 >= 0 && keyId1 >= 0) {
+        return mKeyKeyDistancesG[keyId0][keyId1];
+    }
+    return 0;
 }
 
 // TODO: [Staging] Optimize
