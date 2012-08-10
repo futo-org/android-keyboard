@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
+
+#include <cstring> // for memset()
+
 #define LOG_TAG "LatinIME: jni: BinaryDictionary"
 
-#include "binary_format.h"
-#include "com_android_inputmethod_latin_BinaryDictionary.h"
-#include "correction.h"
-#include "defines.h"
-#include "dictionary.h"
-#include "jni.h"
-#include "jni_common.h"
+#include "defines.h" // for macros below
 
 #ifdef USE_MMAP_FOR_DICTIONARY
 #include <cerrno>
@@ -31,6 +28,13 @@
 #else // USE_MMAP_FOR_DICTIONARY
 #include <cstdlib>
 #endif // USE_MMAP_FOR_DICTIONARY
+
+#include "binary_format.h"
+#include "com_android_inputmethod_latin_BinaryDictionary.h"
+#include "correction.h"
+#include "dictionary.h"
+#include "jni.h"
+#include "jni_common.h"
 
 namespace latinime {
 
@@ -124,50 +128,71 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
 
 static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object, jlong dict,
         jlong proximityInfo, jlong dicTraverseSession, jintArray xCoordinatesArray,
-        jintArray yCoordinatesArray, jintArray timesArray, jintArray pointerIdArray,
-        jintArray inputArray, jint arraySize, jint commitPoint, jboolean isGesture,
-        jintArray prevWordForBigrams, jboolean useFullEditDistance, jcharArray outputArray,
-        jintArray frequencyArray, jintArray spaceIndexArray, jintArray outputTypesArray) {
+        jintArray yCoordinatesArray, jintArray timesArray, jintArray pointerIdsArray,
+        jintArray inputCodePointsArray, jint arraySize, jint commitPoint, jboolean isGesture,
+        jintArray prevWordCodePointsForBigrams, jboolean useFullEditDistance,
+        jcharArray outputCharsArray, jintArray scoresArray, jintArray spaceIndicesArray,
+        jintArray outputTypesArray) {
     Dictionary *dictionary = reinterpret_cast<Dictionary*>(dict);
     if (!dictionary) return 0;
     ProximityInfo *pInfo = reinterpret_cast<ProximityInfo*>(proximityInfo);
     void *traverseSession = reinterpret_cast<void*>(dicTraverseSession);
-    int *xCoordinates = env->GetIntArrayElements(xCoordinatesArray, 0);
-    int *yCoordinates = env->GetIntArrayElements(yCoordinatesArray, 0);
-    int *times = env->GetIntArrayElements(timesArray, 0);
-    int *pointerIds = env->GetIntArrayElements(pointerIdArray, 0);
-    int *frequencies = env->GetIntArrayElements(frequencyArray, 0);
-    int *inputCodes = env->GetIntArrayElements(inputArray, 0);
-    jchar *outputChars = env->GetCharArrayElements(outputArray, 0);
-    int *spaceIndices = env->GetIntArrayElements(spaceIndexArray, 0);
-    int *outputTypes = env->GetIntArrayElements(outputTypesArray, 0);
-    jint *prevWordChars = prevWordForBigrams
-            ? env->GetIntArrayElements(prevWordForBigrams, 0) : 0;
-    jsize prevWordLength = prevWordChars ? env->GetArrayLength(prevWordForBigrams) : 0;
+
+    // Input values
+    int xCoordinates[arraySize];
+    int yCoordinates[arraySize];
+    int times[arraySize];
+    int pointerIds[arraySize];
+    const jsize inputCodePointsLength = env->GetArrayLength(inputCodePointsArray);
+    int inputCodePoints[inputCodePointsLength];
+    const jsize prevWordCodePointsLength =
+            prevWordCodePointsForBigrams ? env->GetArrayLength(prevWordCodePointsForBigrams) : 0;
+    int prevWordCodePointsInternal[prevWordCodePointsLength];
+    int *prevWordCodePoints = 0;
+    env->GetIntArrayRegion(xCoordinatesArray, 0, arraySize, xCoordinates);
+    env->GetIntArrayRegion(yCoordinatesArray, 0, arraySize, yCoordinates);
+    env->GetIntArrayRegion(timesArray, 0, arraySize, times);
+    env->GetIntArrayRegion(pointerIdsArray, 0, arraySize, pointerIds);
+    env->GetIntArrayRegion(inputCodePointsArray, 0, inputCodePointsLength, inputCodePoints);
+    if (prevWordCodePointsForBigrams) {
+        env->GetIntArrayRegion(prevWordCodePointsForBigrams, 0, prevWordCodePointsLength,
+                prevWordCodePointsInternal);
+        prevWordCodePoints = prevWordCodePointsInternal;
+    }
+
+    // Output values
+    // TODO: Should be "outputCodePointsLength" and "int outputCodePoints[]"
+    const jsize outputCharsLength = env->GetArrayLength(outputCharsArray);
+    unsigned short outputChars[outputCharsLength];
+    const jsize scoresLength = env->GetArrayLength(scoresArray);
+    int scores[scoresLength];
+    const jsize spaceIndicesLength = env->GetArrayLength(spaceIndicesArray);
+    int spaceIndices[spaceIndicesLength];
+    const jsize outputTypesLength = env->GetArrayLength(outputTypesArray);
+    int outputTypes[outputTypesLength];
+    memset(outputChars, 0, outputCharsLength);
+    memset(scores, 0, scoresLength);
+    memset(spaceIndices, 0, spaceIndicesLength);
+    memset(outputTypes, 0, outputTypesLength);
 
     int count;
     if (isGesture || arraySize > 1) {
         count = dictionary->getSuggestions(pInfo, traverseSession, xCoordinates, yCoordinates,
-                times, pointerIds, inputCodes, arraySize, prevWordChars, prevWordLength,
-                commitPoint, isGesture, useFullEditDistance, (unsigned short*) outputChars,
-                frequencies, spaceIndices, outputTypes);
+                times, pointerIds, inputCodePoints, arraySize, prevWordCodePoints,
+                prevWordCodePointsLength, commitPoint, isGesture, useFullEditDistance, outputChars,
+                scores, spaceIndices, outputTypes);
     } else {
-        count = dictionary->getBigrams(prevWordChars, prevWordLength, inputCodes,
-                arraySize, (unsigned short*) outputChars, frequencies, outputTypes);
+        count = dictionary->getBigrams(prevWordCodePoints, prevWordCodePointsLength,
+                inputCodePoints, arraySize, outputChars, scores, outputTypes);
     }
 
-    if (prevWordChars) {
-        env->ReleaseIntArrayElements(prevWordForBigrams, prevWordChars, JNI_ABORT);
-    }
-    env->ReleaseIntArrayElements(outputTypesArray, outputTypes, 0);
-    env->ReleaseIntArrayElements(spaceIndexArray, spaceIndices, 0);
-    env->ReleaseCharArrayElements(outputArray, outputChars, 0);
-    env->ReleaseIntArrayElements(inputArray, inputCodes, JNI_ABORT);
-    env->ReleaseIntArrayElements(frequencyArray, frequencies, 0);
-    env->ReleaseIntArrayElements(pointerIdArray, pointerIds, 0);
-    env->ReleaseIntArrayElements(timesArray, times, 0);
-    env->ReleaseIntArrayElements(yCoordinatesArray, yCoordinates, 0);
-    env->ReleaseIntArrayElements(xCoordinatesArray, xCoordinates, 0);
+    // Copy back the output values
+    // TODO: Should be SetIntArrayRegion()
+    env->SetCharArrayRegion(outputCharsArray, 0, outputCharsLength, outputChars);
+    env->SetIntArrayRegion(scoresArray, 0, scoresLength, scores);
+    env->SetIntArrayRegion(spaceIndicesArray, 0, spaceIndicesLength, spaceIndices);
+    env->SetIntArrayRegion(outputTypesArray, 0, outputTypesLength, outputTypes);
+
     return count;
 }
 

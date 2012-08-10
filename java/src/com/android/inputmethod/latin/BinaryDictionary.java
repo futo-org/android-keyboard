@@ -51,7 +51,8 @@ public class BinaryDictionary extends Dictionary {
     private static final int TYPED_LETTER_MULTIPLIER = 2;
 
     private long mNativeDict;
-    private final int[] mInputCodes = new int[MAX_WORD_LENGTH];
+    private final int[] mInputCodePoints = new int[MAX_WORD_LENGTH];
+    // TODO: The below should be int[] mOutputCodePoints
     private final char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_RESULTS];
     private final int[] mSpaceIndices = new int[MAX_SPACES];
     private final int[] mOutputScores = new int[MAX_RESULTS];
@@ -92,7 +93,7 @@ public class BinaryDictionary extends Dictionary {
     private native boolean isValidBigramNative(long dict, int[] word1, int[] word2);
     private native int getSuggestionsNative(long dict, long proximityInfo, long traverseSession,
             int[] xCoordinates, int[] yCoordinates, int[] times, int[] pointerIds,
-            int[] inputCodes, int codesSize, int commitPoint, boolean isGesture,
+            int[] inputCodePoints, int codesSize, int commitPoint, boolean isGesture,
             int[] prevWordCodePointArray, boolean useFullEditDistance, char[] outputChars,
             int[] outputScores, int[] outputIndices, int[] outputTypes);
     private static native float calcNormalizedScoreNative(char[] before, char[] after, int score);
@@ -108,9 +109,7 @@ public class BinaryDictionary extends Dictionary {
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final CharSequence prevWord, final ProximityInfo proximityInfo) {
         if (!isValidDictionary()) return null;
-        Arrays.fill(mInputCodes, WordComposer.NOT_A_CODE);
-        Arrays.fill(mOutputChars, (char) 0);
-        Arrays.fill(mOutputScores, 0);
+        Arrays.fill(mInputCodePoints, WordComposer.NOT_A_CODE);
         // TODO: toLowerCase in the native code
         final int[] prevWordCodePointArray = (null == prevWord)
                 ? null : StringUtils.toCodePointArray(prevWord.toString());
@@ -120,7 +119,7 @@ public class BinaryDictionary extends Dictionary {
         if (composerSize <= 1 || !isGesture) {
             if (composerSize > MAX_WORD_LENGTH - 1) return null;
             for (int i = 0; i < composerSize; i++) {
-                mInputCodes[i] = composer.getCodeAt(i);
+                mInputCodePoints[i] = composer.getCodeAt(i);
             }
         }
 
@@ -128,10 +127,9 @@ public class BinaryDictionary extends Dictionary {
         final int codesSize = isGesture ? ips.getPointerSize() : composerSize;
         // proximityInfo and/or prevWordForBigrams may not be null.
         final int tmpCount = getSuggestionsNative(mNativeDict,
-                proximityInfo.getNativeProximityInfo(),
-                mDicTraverseSession.getSession(), ips.getXCoordinates(),
-                ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
-                mInputCodes, codesSize, 0 /* commitPoint */, isGesture, prevWordCodePointArray,
+                proximityInfo.getNativeProximityInfo(), mDicTraverseSession.getSession(),
+                ips.getXCoordinates(), ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
+                mInputCodePoints, codesSize, 0 /* commitPoint */, isGesture, prevWordCodePointArray,
                 mUseFullEditDistance, mOutputChars, mOutputScores, mSpaceIndices, mOutputTypes);
         final int count = Math.min(tmpCount, MAX_PREDICTIONS);
 
