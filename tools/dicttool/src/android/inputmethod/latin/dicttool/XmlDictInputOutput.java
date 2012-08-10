@@ -90,6 +90,10 @@ public class XmlDictInputOutput {
 
         public FusionDictionary getFinalDictionary() {
             final FusionDictionary dict = mDictionary;
+            for (final String shortcutOnly : mShortcutsMap.keySet()) {
+                if (dict.hasWord(shortcutOnly)) continue;
+                dict.add(shortcutOnly, 0, mShortcutsMap.get(shortcutOnly));
+            }
             mDictionary = null;
             mShortcutsMap.clear();
             mWord = "";
