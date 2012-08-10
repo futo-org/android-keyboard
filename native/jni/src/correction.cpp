@@ -154,8 +154,6 @@ void Correction::checkState() {
         if (mSkipPos >= 0) ++inputCount;
         if (mExcessivePos >= 0) ++inputCount;
         if (mTransposedPos >= 0) ++inputCount;
-        // TODO: remove this assert
-        assert(inputCount <= 1);
     }
 }
 
