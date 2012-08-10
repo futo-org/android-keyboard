@@ -48,13 +48,6 @@ class GestureDecoderWrapper : public IncrementalDecoderInterface {
                 inputSize, commitPoint, outWords, frequencies, outputIndices, outputTypes);
     }
 
-    void reset() {
-        if (!mIncrementalDecoderInterface) {
-            return;
-        }
-        mIncrementalDecoderInterface->reset();
-    }
-
     void setDict(const UnigramDictionary *dict, const BigramDictionary *bigram,
             const uint8_t *dictRoot, int rootPos) {
         if (!mIncrementalDecoderInterface) {
