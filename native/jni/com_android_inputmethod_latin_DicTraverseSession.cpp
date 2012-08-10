@@ -17,25 +17,23 @@
 #define LOG_TAG "LatinIME: jni: Session"
 
 #include "com_android_inputmethod_latin_DicTraverseSession.h"
+#include "dic_traverse_wrapper.h"
 #include "jni.h"
 #include "jni_common.h"
 
 namespace latinime {
-void *(*DicTraverseWrapper::sDicTraverseSessionFactoryMethod)() = 0;
-void (*DicTraverseWrapper::sDicTraverseSessionReleaseMethod)(void *) = 0;
-void (*DicTraverseWrapper::sDicTraverseSessionInitMethod)(
-        JNIEnv *, void *, const jintArray, const jint) = 0;
-
-static jlong latinime_setDicTraverseSession(JNIEnv *env, jobject object,
-        jstring localejStr) {
-    void *traverseSession = DicTraverseWrapper::getDicTraverseSession();
+static jlong latinime_setDicTraverseSession(JNIEnv *env, jobject object, jstring localeJStr) {
+    void *traverseSession = DicTraverseWrapper::getDicTraverseSession(env, localeJStr);
     return reinterpret_cast<jlong>(traverseSession);
 }
 
 static void latinime_initDicTraverseSession(JNIEnv *env, jlong traverseSession,
-        jintArray previousWord, jint previousWordLength) {
+        jlong dictionary, jintArray previousWord, jint previousWordLength) {
     void *ts = reinterpret_cast<void*>(traverseSession);
-    DicTraverseWrapper::initDicTraverseSession(env, ts, previousWord, previousWordLength);
+    Dictionary *dict = reinterpret_cast<Dictionary*>(dictionary);
+    int prevWord[previousWordLength];
+    env->GetIntArrayRegion(previousWord, 0, previousWordLength, prevWord);
+    DicTraverseWrapper::initDicTraverseSession(ts, dict, prevWord, previousWordLength);
 }
 
 static void latinime_DicTraverseSession_release(
@@ -46,7 +44,7 @@ static void latinime_DicTraverseSession_release(
 
 static JNINativeMethod sMethods[] = {
     {"setDicTraverseSessionNative", "(Ljava/lang/String;)J", (void*)latinime_setDicTraverseSession},
-    {"initDicTraverseSessionNative", "(J[II)V", (void*)latinime_initDicTraverseSession},
+    {"initDicTraverseSessionNative", "(JJ[II)V", (void*)latinime_initDicTraverseSession},
     {"releaseDicTraverseSessionNative", "(J)V", (void*)latinime_DicTraverseSession_release}
 };
 

@@ -35,8 +35,9 @@ class IncrementalDecoderInterface {
     virtual void reset() = 0;
     virtual void setDict(const UnigramDictionary *dict, const BigramDictionary *bigram,
             const uint8_t *dictRoot, int rootPos) = 0;
-    virtual void setPrevWord(const int32_t *prevWord, int prevWordLength) = 0;
     virtual ~IncrementalDecoderInterface() { };
+ private:
+    //DISALLOW_COPY_AND_ASSIGN(IncrementalDecoderInterface);
 };
 } // namespace latinime
 #endif // LATINIME_INCREMENTAL_DECODER_INTERFACE_H

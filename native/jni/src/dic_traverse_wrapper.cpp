@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-#ifndef _COM_ANDROID_INPUTMETHOD_LATIN_DICTRAVERSESESSION_H
-#define _COM_ANDROID_INPUTMETHOD_LATIN_DICTRAVERSESESSION_H
+#define LOG_TAG "LatinIME: jni: Session"
 
-#include "defines.h"
-#include "jni.h"
+#include "dic_traverse_wrapper.h"
 
 namespace latinime {
-int register_DicTraverseSession(JNIEnv *env);
+void *(*DicTraverseWrapper::sDicTraverseSessionFactoryMethod)(JNIEnv *env, jstring locale) = 0;
+void (*DicTraverseWrapper::sDicTraverseSessionReleaseMethod)(void *) = 0;
+void (*DicTraverseWrapper::sDicTraverseSessionInitMethod)(
+        void *, Dictionary *, const int *, const int) = 0;
 } // namespace latinime
-#endif // _COM_ANDROID_INPUTMETHOD_LATIN_DICTRAVERSESESSION_H

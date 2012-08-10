@@ -55,7 +55,8 @@ class Dictionary {
 
     int getFrequency(const int32_t *word, int length) const;
     bool isValidBigram(const int32_t *word1, int length1, const int32_t *word2, int length2) const;
-    void *getDict() const { return (void *)mDict; }
+    void *getDict() const { return (void *)mDict; } // required to release dictionary buffer
+    void *getOffsetDict() const { return (void *)mOffsetDict; }
     int getDictSize() const { return mDictSize; }
     int getMmapFd() const { return mMmapFd; }
     int getDictBufAdjust() const { return mDictBufAdjust; }
@@ -68,6 +69,7 @@ class Dictionary {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);
     const unsigned char *mDict;
+    const unsigned char *mOffsetDict;
 
     // Used only for the mmap version of dictionary loading, but we use these as dummy variables
     // also for the malloc version.
