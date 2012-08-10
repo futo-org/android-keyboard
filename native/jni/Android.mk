@@ -47,6 +47,7 @@ LATIN_IME_CORE_SRC_FILES := \
     char_utils.cpp \
     correction.cpp \
     dictionary.cpp \
+    dic_traverse_wrapper.cpp \
     proximity_info.cpp \
     proximity_info_state.cpp \
     unigram_dictionary.cpp \

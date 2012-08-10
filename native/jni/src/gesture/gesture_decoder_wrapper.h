@@ -63,13 +63,6 @@ class GestureDecoderWrapper : public IncrementalDecoderInterface {
         mIncrementalDecoderInterface->setDict(dict, bigram, dictRoot, rootPos);
     }
 
-    void setPrevWord(const int32_t *prevWord, int prevWordLength) {
-        if (!mIncrementalDecoderInterface) {
-            return;
-        }
-        mIncrementalDecoderInterface->setPrevWord(prevWord, prevWordLength);
-    }
-
     static void setGestureDecoderFactoryMethod(
             IncrementalDecoderInterface *(*factoryMethod)(int, int)) {
         sGestureDecoderFactoryMethod = factoryMethod;

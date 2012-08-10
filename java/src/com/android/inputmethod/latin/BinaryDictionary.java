@@ -98,6 +98,7 @@ public class BinaryDictionary extends Dictionary {
     private static native float calcNormalizedScoreNative(char[] before, char[] after, int score);
     private static native int editDistanceNative(char[] before, char[] after);
 
+    // TODO: Move native dict into session
     private final void loadDictionary(String path, long startOffset, long length) {
         mNativeDict = openNative(path, startOffset, length, TYPED_LETTER_MULTIPLIER,
                 FULL_WORD_SCORE_MULTIPLIER, MAX_WORD_LENGTH, MAX_WORDS, MAX_PREDICTIONS);
