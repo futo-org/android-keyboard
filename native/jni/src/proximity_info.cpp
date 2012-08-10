@@ -34,7 +34,7 @@ static inline void safeGetOrFillZeroIntArrayRegion(JNIEnv *env, jintArray jArray
     if (jArray && buffer) {
         env->GetIntArrayRegion(jArray, 0, len, buffer);
     } else if (buffer) {
-        memset(buffer, 0, len);
+        memset(buffer, 0, len * sizeof(jint));
     }
 }
 
@@ -43,7 +43,7 @@ static inline void safeGetOrFillZeroFloatArrayRegion(JNIEnv *env, jfloatArray jA
     if (jArray && buffer) {
         env->GetFloatArrayRegion(jArray, 0, len, buffer);
     } else if (buffer) {
-        memset(buffer, 0, len);
+        memset(buffer, 0, len * sizeof(jfloat));
     }
 }
 

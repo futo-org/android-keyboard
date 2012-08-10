@@ -170,10 +170,10 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object,
     int spaceIndices[spaceIndicesLength];
     const jsize outputTypesLength = env->GetArrayLength(outputTypesArray);
     int outputTypes[outputTypesLength];
-    memset(outputChars, 0, outputCharsLength);
-    memset(scores, 0, scoresLength);
-    memset(spaceIndices, 0, spaceIndicesLength);
-    memset(outputTypes, 0, outputTypesLength);
+    memset(outputChars, 0, outputCharsLength * sizeof(outputChars[0]));
+    memset(scores, 0, scoresLength * sizeof(scores[0]));
+    memset(spaceIndices, 0, spaceIndicesLength * sizeof(spaceIndices[0]));
+    memset(outputTypes, 0, outputTypesLength * sizeof(outputTypes[0]));
 
     int count;
     if (isGesture || arraySize > 1) {
