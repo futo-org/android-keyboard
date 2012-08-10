@@ -112,7 +112,7 @@ public class DictionaryMaker {
 
         public static String getHelp() {
             return "Usage: makedict "
-                    + "[-s <unigrams.xml> [-b <bigrams.xml>] [-c <shortcuts.xml>] "
+                    + "[-s <unigrams.xml> [-b <bigrams.xml>] [-c <shortcuts_and_whitelist.xml>] "
                     + "| -s <binary input>] [-d <binary output format version 2>] "
                     + "[-d1 <binary output format version 1>] [-x <xml output>] [-2]\n"
                     + "\n"
@@ -246,7 +246,7 @@ public class DictionaryMaker {
      * Read a dictionary from a unigram XML file, and optionally a bigram XML file.
      *
      * @param unigramXmlFilename the name of the unigram XML file. May not be null.
-     * @param shortcutXmlFilename the name of the shortcut XML file, or null if there is none.
+     * @param shortcutXmlFilename the name of the shortcut/whitelist XML file, or null if none.
      * @param bigramXmlFilename the name of the bigram XML file. Pass null if there are no bigrams.
      * @return the read dictionary.
      * @throws FileNotFoundException if one of the files can't be found
