@@ -75,17 +75,10 @@ public class AutoCorrection {
         return maxFreq;
     }
 
-    // Returns true if this is a whitelist entry, or it isn't in any dictionary.
-    public static boolean isWhitelistedOrNotAWord(
+    // Returns true if this isn't in any dictionary.
+    public static boolean isNotAWord(
             final ConcurrentHashMap<String, Dictionary> dictionaries,
             final CharSequence word, final boolean ignoreCase) {
-        final WhitelistDictionary whitelistDictionary =
-                (WhitelistDictionary)dictionaries.get(Dictionary.TYPE_WHITELIST);
-        // If "word" is in the whitelist dictionary, it should not be auto corrected.
-        if (whitelistDictionary != null
-                && whitelistDictionary.shouldForciblyAutoCorrectFrom(word)) {
-            return true;
-        }
         return !isValidWord(dictionaries, word, ignoreCase);
     }
 
