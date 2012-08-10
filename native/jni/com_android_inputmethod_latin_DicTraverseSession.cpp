@@ -28,18 +28,20 @@ static jlong latinime_setDicTraverseSession(JNIEnv *env, jobject object, jstring
     return reinterpret_cast<jlong>(traverseSession);
 }
 
-#if 0
 static void latinime_initDicTraverseSession(JNIEnv *env, jobject object, jlong traverseSession,
         jlong dictionary, jintArray previousWord, jint previousWordLength) {
     void *ts = reinterpret_cast<void*>(traverseSession);
     Dictionary *dict = reinterpret_cast<Dictionary*>(dictionary);
+    if (!previousWord) {
+        DicTraverseWrapper::initDicTraverseSession(ts, dict, 0, 0);
+        return;
+    }
     int prevWord[previousWordLength];
     env->GetIntArrayRegion(previousWord, 0, previousWordLength, prevWord);
     DicTraverseWrapper::initDicTraverseSession(ts, dict, prevWord, previousWordLength);
 }
-#endif
 
-static void latinime_DicTraverseSession_release(
+static void latinime_releaseDicTraverseSession(
         JNIEnv *env, jobject object, jlong traverseSession) {
     void *ts = reinterpret_cast<void*>(traverseSession);
     DicTraverseWrapper::releaseDicTraverseSession(ts);
@@ -47,8 +49,8 @@ static void latinime_DicTraverseSession_release(
 
 static JNINativeMethod sMethods[] = {
     {"setDicTraverseSessionNative", "(Ljava/lang/String;)J", (void*)latinime_setDicTraverseSession},
-    //{"initDicTraverseSessionNative", "(JJ[II)V", (void*)latinime_initDicTraverseSession},
-    {"releaseDicTraverseSessionNative", "(J)V", (void*)latinime_DicTraverseSession_release}
+    {"initDicTraverseSessionNative", "(JJ[II)V", (void*)latinime_initDicTraverseSession},
+    {"releaseDicTraverseSessionNative", "(J)V", (void*)latinime_releaseDicTraverseSession}
 };
 
 int register_DicTraverseSession(JNIEnv *env) {
