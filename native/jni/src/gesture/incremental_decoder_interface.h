@@ -32,7 +32,6 @@ class IncrementalDecoderInterface {
             int *inputXs, int *inputYs, int *times, int *pointerIds, int *codes,
             int inputSize, int commitPoint, unsigned short *outWords, int *frequencies,
             int *outputIndices, int *outputTypes) = 0;
-    virtual void reset() = 0;
     virtual void setDict(const UnigramDictionary *dict, const BigramDictionary *bigram,
             const uint8_t *dictRoot, int rootPos) = 0;
     virtual ~IncrementalDecoderInterface() { };
