@@ -208,13 +208,22 @@ public class Suggest {
                     wordComposerForLookup, prevWordForBigram, proximityInfo));
         }
 
-        final CharSequence whitelistedWord =
+        final CharSequence whitelistedWordFromWhitelistDictionary =
                 mWhiteListDictionary.getWhitelistedWord(consideredWord);
-        if (whitelistedWord != null) {
+        if (whitelistedWordFromWhitelistDictionary != null) {
             // MAX_SCORE ensures this will be considered strong enough to be auto-corrected
-            suggestionsSet.add(new SuggestedWordInfo(whitelistedWord,
+            suggestionsSet.add(new SuggestedWordInfo(whitelistedWordFromWhitelistDictionary,
                     SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST,
                     Dictionary.TYPE_WHITELIST));
+        }
+
+        final CharSequence whitelistedWord;
+        if (suggestionsSet.isEmpty()) {
+            whitelistedWord = null;
+        } else if (SuggestedWordInfo.KIND_WHITELIST != suggestionsSet.first().mKind) {
+            whitelistedWord = null;
+        } else {
+            whitelistedWord = suggestionsSet.first().mWord;
         }
 
         // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
