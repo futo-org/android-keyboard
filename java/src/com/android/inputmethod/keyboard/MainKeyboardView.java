@@ -835,20 +835,6 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
         return false;
     }
 
-    @Override
-    public void draw(Canvas c) {
-        Utils.GCUtils.getInstance().reset();
-        boolean tryGC = true;
-        for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
-            try {
-                super.draw(c);
-                tryGC = false;
-            } catch (OutOfMemoryError e) {
-                tryGC = Utils.GCUtils.getInstance().tryGCOrWait(TAG, e);
-            }
-        }
-    }
-
     /**
      * Receives hover events from the input framework.
      *
