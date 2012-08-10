@@ -33,12 +33,14 @@ class WordsPriorityQueue {
         unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];
         int mWordLength;
         bool mUsed;
+        int mType;
 
-        void setParams(int score, unsigned short *word, int wordLength) {
+        void setParams(int score, unsigned short *word, int wordLength, int type) {
             mScore = score;
             mWordLength = wordLength;
             memcpy(mWord, word, sizeof(unsigned short) * wordLength);
             mUsed = true;
+            mType = type;
         }
     };
 
@@ -56,7 +58,7 @@ class WordsPriorityQueue {
         delete[] mSuggestedWords;
     }
 
-    void push(int score, unsigned short *word, int wordLength) {
+    void push(int score, unsigned short *word, int wordLength, int type) {
         SuggestedWord *sw = 0;
         if (mSuggestions.size() >= MAX_WORDS) {
             sw = mSuggestions.top();
@@ -69,9 +71,9 @@ class WordsPriorityQueue {
             }
         }
         if (sw == 0) {
-            sw = getFreeSuggestedWord(score, word, wordLength);
+            sw = getFreeSuggestedWord(score, word, wordLength, type);
         } else {
-            sw->setParams(score, word, wordLength);
+            sw->setParams(score, word, wordLength, type);
         }
         if (sw == 0) {
             AKLOGE("SuggestedWord is accidentally null.");
@@ -94,7 +96,7 @@ class WordsPriorityQueue {
     }
 
     int outputSuggestions(const unsigned short *before, const int beforeLength,
-            int *frequencies, unsigned short *outputChars) {
+            int *frequencies, unsigned short *outputChars, int* outputTypes) {
         mHighestSuggestedWord = 0;
         const unsigned int size = min(
               MAX_WORDS, static_cast<unsigned int>(mSuggestions.size()));
@@ -140,6 +142,7 @@ class WordsPriorityQueue {
             const unsigned int wordLength = sw->mWordLength;
             char *targetAdr = (char*) outputChars + i * MAX_WORD_LENGTH * sizeof(short);
             frequencies[i] = sw->mScore;
+            outputTypes[i] = sw->mType;
             memcpy(targetAdr, sw->mWord, (wordLength) * sizeof(short));
             if (wordLength < MAX_WORD_LENGTH) {
                 ((unsigned short*) targetAdr)[wordLength] = 0;
@@ -191,10 +194,10 @@ class WordsPriorityQueue {
     };
 
     SuggestedWord *getFreeSuggestedWord(int score, unsigned short *word,
-            int wordLength) {
+            int wordLength, int type) {
         for (unsigned int i = 0; i < MAX_WORD_LENGTH; ++i) {
             if (!mSuggestedWords[i].mUsed) {
-                mSuggestedWords[i].setParams(score, word, wordLength);
+                mSuggestedWords[i].setParams(score, word, wordLength, type);
                 return &mSuggestedWords[i];
             }
         }

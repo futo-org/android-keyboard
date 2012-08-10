@@ -143,9 +143,10 @@ public class BinaryDictionary extends Dictionary {
                 ++len;
             }
             if (len > 0) {
+                final int score = SuggestedWordInfo.KIND_WHITELIST == mOutputTypes[j]
+                        ? SuggestedWordInfo.MAX_SCORE : mOutputScores[j];
                 suggestions.add(new SuggestedWordInfo(
-                        new String(mOutputChars, start, len),
-                        mOutputScores[j], SuggestedWordInfo.KIND_CORRECTION, mDictType));
+                        new String(mOutputChars, start, len), score, mOutputTypes[j], mDictType));
             }
         }
         return suggestions;
