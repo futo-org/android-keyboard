@@ -46,9 +46,9 @@
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"एड-ऑन डिक्शनरी"</string>
     <string name="main_dictionary" msgid="4798763781818361168">"मुख्‍य डिक्‍शनरी"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"सुधार सुझाव दिखाएं"</string>
-    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"लिखते समय सुझाए गए शब्‍द प्रदर्शित करें"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"लिखते समय सुझाए गए शब्‍द दिखाएं"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"हमेशा दिखाएं"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"र्पोट्रेट मोड पर प्रदर्शित करें"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"र्पोट्रेट मोड पर दिखाएं"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"हमेशा छुपाएं"</string>
     <string name="auto_correction" msgid="4979925752001319458">"स्‍वत: सुधार"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Spacebar और विराम चिह्न गलत लिखे गए शब्‍दों को स्‍वचालित रूप से ठीक करते हैं"</string>
