@@ -63,8 +63,8 @@ static inline unsigned int getCodesBufferSize(const int *codes, const int codesS
 
 // TODO: This needs to take a const unsigned short* and not tinker with its contents
 static inline void addWord(
-        unsigned short *word, int length, int frequency, WordsPriorityQueue *queue) {
-    queue->push(frequency, word, length);
+        unsigned short *word, int length, int frequency, WordsPriorityQueue *queue, int type) {
+    queue->push(frequency, word, length, type);
 }
 
 // Return the replacement code point for a digraph, or 0 if none.
@@ -213,8 +213,8 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
         AKLOGI("Max normalized score = %f", ns);
     }
     const int suggestedWordsCount =
-            queuePool.getMasterQueue()->outputSuggestions(
-                    masterCorrection.getPrimaryInputWord(), codesSize, frequencies, outWords);
+            queuePool.getMasterQueue()->outputSuggestions(masterCorrection.getPrimaryInputWord(),
+                    codesSize, frequencies, outWords, outputTypes);
 
     if (DEBUG_DICT) {
         float ns = queuePool.getMasterQueue()->getHighestNormalizedScore(
@@ -391,7 +391,8 @@ inline void UnigramDictionary::onTerminal(const int probability,
         const int finalProbability =
                 correction->getFinalProbability(probability, &wordPointer, &wordLength);
         if (finalProbability != NOT_A_PROBABILITY) {
-            addWord(wordPointer, wordLength, finalProbability, masterQueue);
+            addWord(wordPointer, wordLength, finalProbability, masterQueue,
+                    Dictionary::KIND_CORRECTION);
 
             const int shortcutProbability = finalProbability > 0 ? finalProbability - 1 : 0;
             // Please note that the shortcut candidates will be added to the master queue only.
@@ -409,7 +410,7 @@ inline void UnigramDictionary::onTerminal(const int probability,
                 const int shortcutTargetStringLength = iterator.getNextShortcutTarget(
                         MAX_WORD_LENGTH_INTERNAL, shortcutTarget);
                 addWord(shortcutTarget, shortcutTargetStringLength, shortcutProbability,
-                        masterQueue);
+                        masterQueue, Dictionary::KIND_CORRECTION);
             }
         }
     }
@@ -424,7 +425,7 @@ inline void UnigramDictionary::onTerminal(const int probability,
         }
         const int finalProbability = correction->getFinalProbabilityForSubQueue(
                 probability, &wordPointer, &wordLength, inputIndex);
-        addWord(wordPointer, wordLength, finalProbability, subQueue);
+        addWord(wordPointer, wordLength, finalProbability, subQueue, Dictionary::KIND_CORRECTION);
     }
 }
 
@@ -572,7 +573,8 @@ int UnigramDictionary::getSubStringSuggestion(
             AKLOGI("Split two words: freq = %d, length = %d, %d, isSpace ? %d", pairFreq,
                     inputLength, tempOutputWordLength, isSpaceProximity);
         }
-        addWord(outputWord, tempOutputWordLength, pairFreq, queuePool->getMasterQueue());
+        addWord(outputWord, tempOutputWordLength, pairFreq, queuePool->getMasterQueue(),
+                Dictionary::KIND_CORRECTION);
     }
     return FLAG_MULTIPLE_SUGGEST_CONTINUE;
 }
