@@ -75,7 +75,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         AKLOGE("DICT: Can't mmap dictionary. errno=%d", errno);
         return 0;
     }
-    dictBuf = (void *)((char *)dictBuf + adjust);
+    dictBuf = reinterpret_cast<void *>(reinterpret_cast<char *>(dictBuf) + adjust);
 #else // USE_MMAP_FOR_DICTIONARY
     /* malloc version */
     FILE *file = 0;
@@ -110,10 +110,11 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         return 0;
     }
     Dictionary *dictionary = 0;
-    if (BinaryFormat::UNKNOWN_FORMAT == BinaryFormat::detectFormat((uint8_t*)dictBuf)) {
+    if (BinaryFormat::UNKNOWN_FORMAT
+            == BinaryFormat::detectFormat(reinterpret_cast<uint8_t *>(dictBuf))) {
         AKLOGE("DICT: dictionary format is unknown, bad magic number");
 #ifdef USE_MMAP_FOR_DICTIONARY
-        releaseDictBuf(((char*)dictBuf) - adjust, adjDictSize, fd);
+        releaseDictBuf(reinterpret_cast<char *>(dictBuf) - adjust, adjDictSize, fd);
 #else // USE_MMAP_FOR_DICTIONARY
         releaseDictBuf(dictBuf, 0, 0);
 #endif // USE_MMAP_FOR_DICTIONARY
@@ -227,8 +228,9 @@ static jfloat latinime_BinaryDictionary_calcNormalizedScore(JNIEnv *env, jobject
     jchar afterChars[afterLength];
     env->GetCharArrayRegion(before, 0, beforeLength, beforeChars);
     env->GetCharArrayRegion(after, 0, afterLength, afterChars);
-    return Correction::RankingAlgorithm::calcNormalizedScore((unsigned short*)beforeChars,
-            beforeLength, (unsigned short*)afterChars, afterLength, score);
+    return Correction::RankingAlgorithm::calcNormalizedScore(
+            reinterpret_cast<unsigned short *>(beforeChars), beforeLength,
+            reinterpret_cast<unsigned short *>(afterChars), afterLength, score);
 }
 
 static jint latinime_BinaryDictionary_editDistance(JNIEnv *env, jobject object,
@@ -239,8 +241,9 @@ static jint latinime_BinaryDictionary_editDistance(JNIEnv *env, jobject object,
     jchar afterChars[afterLength];
     env->GetCharArrayRegion(before, 0, beforeLength, beforeChars);
     env->GetCharArrayRegion(after, 0, afterLength, afterChars);
-    return Correction::RankingAlgorithm::editDistance((unsigned short*)beforeChars, beforeLength,
-            (unsigned short*)afterChars, afterLength);
+    return Correction::RankingAlgorithm::editDistance(
+            reinterpret_cast<unsigned short *>(beforeChars), beforeLength,
+            reinterpret_cast<unsigned short *>(afterChars), afterLength);
 }
 
 static void latinime_BinaryDictionary_close(JNIEnv *env, jobject object, jlong dict) {
@@ -249,7 +252,9 @@ static void latinime_BinaryDictionary_close(JNIEnv *env, jobject object, jlong d
     void *dictBuf = dictionary->getDict();
     if (!dictBuf) return;
 #ifdef USE_MMAP_FOR_DICTIONARY
-    releaseDictBuf((void *)((char *)dictBuf - dictionary->getDictBufAdjust()),
+    releaseDictBuf(
+            reinterpret_cast<void *>(
+                    reinterpret_cast<char *>(dictBuf) - dictionary->getDictBufAdjust()),
             dictionary->getDictSize() + dictionary->getDictBufAdjust(), dictionary->getMmapFd());
 #else // USE_MMAP_FOR_DICTIONARY
     releaseDictBuf(dictBuf, 0, 0);
@@ -273,15 +278,19 @@ static void releaseDictBuf(void *dictBuf, const size_t length, int fd) {
 }
 
 static JNINativeMethod sMethods[] = {
-    {"openNative", "(Ljava/lang/String;JJIIIII)J", (void*)latinime_BinaryDictionary_open},
-    {"closeNative", "(J)V", (void*)latinime_BinaryDictionary_close},
+    {"openNative", "(Ljava/lang/String;JJIIIII)J",
+            reinterpret_cast<void *>(latinime_BinaryDictionary_open)},
+    {"closeNative", "(J)V", reinterpret_cast<void *>(latinime_BinaryDictionary_close)},
     {"getSuggestionsNative", "(JJJ[I[I[I[I[IIIZ[IZ[C[I[I[I)I",
-            (void*) latinime_BinaryDictionary_getSuggestions},
-    {"getFrequencyNative", "(J[I)I", (void*)latinime_BinaryDictionary_getFrequency},
-    {"isValidBigramNative", "(J[I[I)Z", (void*)latinime_BinaryDictionary_isValidBigram},
+            reinterpret_cast<void *>(latinime_BinaryDictionary_getSuggestions)},
+    {"getFrequencyNative", "(J[I)I",
+            reinterpret_cast<void *>(latinime_BinaryDictionary_getFrequency)},
+    {"isValidBigramNative", "(J[I[I)Z",
+            reinterpret_cast<void *>(latinime_BinaryDictionary_isValidBigram)},
     {"calcNormalizedScoreNative", "([C[CI)F",
-            (void*)latinime_BinaryDictionary_calcNormalizedScore},
-    {"editDistanceNative", "([C[C)I", (void*)latinime_BinaryDictionary_editDistance}
+            reinterpret_cast<void *>(latinime_BinaryDictionary_calcNormalizedScore)},
+    {"editDistanceNative", "([C[C)I",
+            reinterpret_cast<void *>(latinime_BinaryDictionary_editDistance)}
 };
 
 int register_BinaryDictionary(JNIEnv *env) {

@@ -129,7 +129,7 @@ class WordsPriorityQueue {
                 }
             }
             if (maxIndex > 0 && nsMaxSw) {
-                memmove(&swBuffer[1], &swBuffer[0], maxIndex * sizeof(SuggestedWord*));
+                memmove(&swBuffer[1], &swBuffer[0], maxIndex * sizeof(SuggestedWord *));
                 swBuffer[0] = nsMaxSw;
             }
         }
@@ -140,12 +140,13 @@ class WordsPriorityQueue {
                 continue;
             }
             const unsigned int wordLength = sw->mWordLength;
-            char *targetAdr = (char*) outputChars + i * MAX_WORD_LENGTH * sizeof(short);
+            char *targetAddress = reinterpret_cast<char *>(outputChars)
+                    + i * MAX_WORD_LENGTH * sizeof(short);
             frequencies[i] = sw->mScore;
             outputTypes[i] = sw->mType;
-            memcpy(targetAdr, sw->mWord, (wordLength) * sizeof(short));
+            memcpy(targetAddress, sw->mWord, (wordLength) * sizeof(short));
             if (wordLength < MAX_WORD_LENGTH) {
-                ((unsigned short*) targetAdr)[wordLength] = 0;
+                reinterpret_cast<unsigned short *>(targetAddress)[wordLength] = 0;
             }
             sw->mUsed = false;
         }

@@ -62,7 +62,7 @@ class GestureDecoderWrapper : public IncrementalDecoderInterface {
     }
 
  private:
-    DISALLOW_COPY_AND_ASSIGN(GestureDecoderWrapper);
+    DISALLOW_IMPLICIT_CONSTRUCTORS(GestureDecoderWrapper);
     static IncrementalDecoderInterface *getGestureDecoderInstance(int maxWordLength, int maxWords) {
         if (sGestureDecoderFactoryMethod) {
             return sGestureDecoderFactoryMethod(maxWordLength, maxWords);
