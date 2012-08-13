@@ -47,8 +47,6 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
             fullWordMultiplier, maxWordLength, maxWords, options);
     mBigramDictionary = new BigramDictionary(mOffsetDict, maxWordLength, maxPredictions);
     mGestureDecoder = new GestureDecoderWrapper(maxWordLength, maxWords);
-    mGestureDecoder->setDict(mUnigramDictionary, mBigramDictionary,
-            mOffsetDict /* dict root */, 0 /* root pos */);
 }
 
 Dictionary::~Dictionary() {
