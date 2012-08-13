@@ -29,7 +29,6 @@ import com.android.inputmethod.keyboard.internal.GestureStroke;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.research.ResearchLogger;
 
@@ -130,10 +129,6 @@ public class PointerTracker implements PointerTrackerQueue.Element {
     private static final InputPointers sAggregratedPointers = new InputPointers(
             GestureStroke.DEFAULT_CAPACITY);
     private static PointerTrackerQueue sPointerTrackerQueue;
-    // HACK: Change gesture detection criteria depending on this variable.
-    // TODO: Find more comprehensive ways to detect a gesture start.
-    // True when the previous user input was a gesture input, not a typing input.
-    private static boolean sWasInGesture;
 
     public final int mPointerId;
 
@@ -586,7 +581,6 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         mListener.onEndBatchInput(batchPoints);
         clearBatchInputRecognitionStateOfThisPointerTracker();
         clearBatchInputPointsOfAllPointerTrackers();
-        sWasInGesture = true;
     }
 
     private void abortBatchInput() {
@@ -719,7 +713,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         if (sShouldHandleGesture && mIsPossibleGesture) {
             final GestureStroke stroke = mGestureStroke;
             stroke.addPoint(x, y, gestureTime, isHistorical);
-            if (!mInGesture && stroke.isStartOfAGesture(gestureTime, sWasInGesture)) {
+            if (!mInGesture && stroke.isStartOfAGesture(gestureTime)) {
                 startBatchInput();
             }
         }
@@ -1002,7 +996,6 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         int code = key.mCode;
         callListenerOnCodeInput(key, code, x, y);
         callListenerOnRelease(key, code, false);
-        sWasInGesture = false;
     }
 
     private void printTouchEvent(String title, int x, int y, long eventTime) {
