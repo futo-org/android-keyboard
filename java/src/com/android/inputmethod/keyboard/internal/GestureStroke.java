@@ -37,14 +37,11 @@ public class GestureStroke {
     private int mLastPointY;
 
     private int mMinGestureLength;
-    private int mMinGestureLengthWhileInGesture;
     private int mMinGestureSampleLength;
 
     // TODO: Move some of these to resource.
-    private static final float MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH = 1.0f;
-    private static final float MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH_WHILE_IN_GESTURE = 0.5f;
-    private static final int MIN_GESTURE_DURATION = 150; // msec
-    private static final int MIN_GESTURE_DURATION_WHILE_IN_GESTURE = 75; // msec
+    private static final float MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH = 0.75f;
+    private static final int MIN_GESTURE_DURATION = 100; // msec
     private static final float MIN_GESTURE_SAMPLING_RATIO_TO_KEY_HEIGHT = 1.0f / 6.0f;
     private static final float GESTURE_RECOG_SPEED_THRESHOLD = 0.4f; // dip/msec
     private static final float GESTURE_RECOG_CURVATURE_THRESHOLD = (float)(Math.PI / 4.0f);
@@ -63,18 +60,10 @@ public class GestureStroke {
     public void setGestureSampleLength(final int keyWidth, final int keyHeight) {
         // TODO: Find an appropriate base metric for these length. Maybe diagonal length of the key?
         mMinGestureLength = (int)(keyWidth * MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH);
-        mMinGestureLengthWhileInGesture = (int)(
-                keyWidth * MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH_WHILE_IN_GESTURE);
         mMinGestureSampleLength = (int)(keyHeight * MIN_GESTURE_SAMPLING_RATIO_TO_KEY_HEIGHT);
     }
 
-    public boolean isStartOfAGesture(final int downDuration, final boolean wasInGesture) {
-        // The tolerance of the time duration and the stroke length to detect the start of a
-        // gesture stroke should be eased when the previous input was a gesture input.
-        if (wasInGesture) {
-            return downDuration > MIN_GESTURE_DURATION_WHILE_IN_GESTURE
-                    && mLength > mMinGestureLengthWhileInGesture;
-        }
+    public boolean isStartOfAGesture(final int downDuration) {
         return downDuration > MIN_GESTURE_DURATION && mLength > mMinGestureLength;
     }
 
