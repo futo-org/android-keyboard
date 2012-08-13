@@ -48,14 +48,6 @@ class GestureDecoderWrapper : public IncrementalDecoderInterface {
                 inputSize, commitPoint, outWords, frequencies, outputIndices, outputTypes);
     }
 
-    void setDict(const UnigramDictionary *dict, const BigramDictionary *bigram,
-            const uint8_t *dictRoot, int rootPos) {
-        if (!mIncrementalDecoderInterface) {
-            return;
-        }
-        mIncrementalDecoderInterface->setDict(dict, bigram, dictRoot, rootPos);
-    }
-
     static void setGestureDecoderFactoryMethod(
             IncrementalDecoderInterface *(*factoryMethod)(int, int)) {
         sGestureDecoderFactoryMethod = factoryMethod;
