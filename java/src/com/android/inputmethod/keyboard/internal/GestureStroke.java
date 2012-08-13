@@ -16,7 +16,6 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.FloatMath;
 
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.InputPointers;
@@ -50,7 +49,7 @@ public class GestureStroke {
     private static final float GESTURE_RECOG_SPEED_THRESHOLD = 0.4f; // dip/msec
     private static final float GESTURE_RECOG_CURVATURE_THRESHOLD = (float)(Math.PI / 4.0f);
 
-    private static final float DOUBLE_PI = (float)(2 * Math.PI);
+    private static final float DOUBLE_PI = (float)(2.0f * Math.PI);
 
     // Fade based on number of gesture samples, see MIN_GESTURE_SAMPLING_RATIO_TO_KEY_HEIGHT
     private static final int DRAWING_GESTURE_FADE_START = 10;
@@ -158,8 +157,9 @@ public class GestureStroke {
             final int p2x, final int p2y) {
         final float dx = p1x - p2x;
         final float dy = p1y - p2y;
-        // TODO: Optimize out this {@link FloatMath#sqrt(float)} call.
-        return FloatMath.sqrt(dx * dx + dy * dy);
+        // Note that, in recent versions of Android, FloatMath is actually slower than
+        // java.lang.Math due to the way the JIT optimizes java.lang.Math.
+        return (float)Math.sqrt(dx * dx + dy * dy);
     }
 
     private static float getAngle(final int p1x, final int p1y, final int p2x, final int p2y) {

@@ -32,8 +32,8 @@ namespace latinime {
 Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
         int typedLetterMultiplier, int fullWordMultiplier,
         int maxWordLength, int maxWords, int maxPredictions)
-    : mDict((unsigned char*) dict),
-      mOffsetDict(((unsigned char*) dict) + BinaryFormat::getHeaderSize(mDict)),
+    : mDict(reinterpret_cast<unsigned char *>(dict)),
+      mOffsetDict((reinterpret_cast<unsigned char *>(dict)) + BinaryFormat::getHeaderSize(mDict)),
       mDictSize(dictSize), mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust) {
     if (DEBUG_DICT) {
         if (MAX_WORD_LENGTH_INTERNAL < maxWordLength) {

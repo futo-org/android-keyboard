@@ -1092,7 +1092,7 @@ int Correction::RankingAlgorithm::editDistance(const unsigned short *before,
 // In dictionary.cpp, getSuggestion() method,
 // suggestion scores are computed using the below formula.
 // original score
-//  := pow(mTypedLetterMultiplier (this is defined 2),
+//  := powf(mTypedLetterMultiplier (this is defined 2),
 //         (the number of matched characters between typed word and suggested word))
 //     * (individual word's score which defined in the unigram dictionary,
 //         and this score is defined in range [0, 255].)
@@ -1104,11 +1104,11 @@ int Correction::RankingAlgorithm::editDistance(const unsigned short *before,
 //       capitalization, then treat it as if the score was 255.
 //     - If before.length() == after.length()
 //       => multiply by mFullWordMultiplier (this is defined 2))
-// So, maximum original score is pow(2, min(before.length(), after.length())) * 255 * 2 * 1.2
+// So, maximum original score is powf(2, min(before.length(), after.length())) * 255 * 2 * 1.2
 // For historical reasons we ignore the 1.2 modifier (because the measure for a good
 // autocorrection threshold was done at a time when it didn't exist). This doesn't change
 // the result.
-// So, we can normalize original score by dividing pow(2, min(b.l(),a.l())) * 255 * 2.
+// So, we can normalize original score by dividing powf(2, min(b.l(),a.l())) * 255 * 2.
 
 /* static */
 float Correction::RankingAlgorithm::calcNormalizedScore(const unsigned short *before,
@@ -1130,7 +1130,7 @@ float Correction::RankingAlgorithm::calcNormalizedScore(const unsigned short *be
     }
 
     const float maxScore = score >= S_INT_MAX ? S_INT_MAX : MAX_INITIAL_SCORE
-            * pow(static_cast<float>(TYPED_LETTER_MULTIPLIER),
+            * powf(static_cast<float>(TYPED_LETTER_MULTIPLIER),
                     static_cast<float>(min(beforeLength, afterLength - spaceCount)))
             * FULL_WORD_MULTIPLIER;
 

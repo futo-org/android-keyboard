@@ -43,8 +43,8 @@ static void latinime_Keyboard_release(JNIEnv *env, jobject object, jlong proximi
 
 static JNINativeMethod sKeyboardMethods[] = {
     {"setProximityInfoNative", "(Ljava/lang/String;IIIIII[II[I[I[I[I[I[F[F[F)J",
-            (void*)latinime_Keyboard_setProximityInfo},
-    {"releaseProximityInfoNative", "(J)V", (void*)latinime_Keyboard_release}
+            reinterpret_cast<void *>(latinime_Keyboard_setProximityInfo)},
+    {"releaseProximityInfoNative", "(J)V", reinterpret_cast<void *>(latinime_Keyboard_release)}
 };
 
 int register_ProximityInfo(JNIEnv *env) {

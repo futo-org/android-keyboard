@@ -58,11 +58,12 @@ static inline void LOGI_S16_PLUS(unsigned short *string, const unsigned int leng
 }
 
 static inline void printDebug(const char *tag, int *codes, int codesSize, int MAX_PROXIMITY_CHARS) {
-    unsigned char *buf = (unsigned char*)malloc((1 + codesSize) * sizeof(*buf));
+    unsigned char *buf = reinterpret_cast<unsigned char *>(malloc((1 + codesSize) * sizeof(*buf)));
 
     buf[codesSize] = 0;
-    while (--codesSize >= 0)
-        buf[codesSize] = (unsigned char)codes[codesSize * MAX_PROXIMITY_CHARS];
+    while (--codesSize >= 0) {
+        buf[codesSize] = static_cast<unsigned char>(codes[codesSize * MAX_PROXIMITY_CHARS]);
+    }
     AKLOGI("%s, WORD = %s", tag, buf);
 
     free(buf);

@@ -248,7 +248,7 @@ void ProximityInfo::initializeG() {
     for (int i = 0; i < KEY_COUNT; i++) {
         mKeyKeyDistancesG[i][i] = 0;
         for (int j = i + 1; j < KEY_COUNT; j++) {
-            mKeyKeyDistancesG[i][j] = getDistance(
+            mKeyKeyDistancesG[i][j] = getDistanceInt(
                     mCenterXsG[i], mCenterYsG[i], mCenterXsG[j], mCenterYsG[j]);
             mKeyKeyDistancesG[j][i] = mKeyKeyDistancesG[i][j];
         }
@@ -290,7 +290,7 @@ int ProximityInfo::getKeyKeyDistanceG(int key0, int key1) const {
 void ProximityInfo::getCenters(int *centerXs, int *centerYs, int *codeToKeyIndex,
         int *keyToCodeIndex, int *keyCount, int *keyWidth) const {
     *keyCount = KEY_COUNT;
-    *keyWidth = sqrt(static_cast<float>(MOST_COMMON_KEY_WIDTH_SQUARE));
+    *keyWidth = sqrtf(static_cast<float>(MOST_COMMON_KEY_WIDTH_SQUARE));
 
     for (int i = 0; i < KEY_COUNT; ++i) {
         const int code = mKeyCharCodes[i];
