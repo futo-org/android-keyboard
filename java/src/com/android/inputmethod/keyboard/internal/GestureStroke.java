@@ -166,12 +166,12 @@ public class GestureStroke {
         return diff;
     }
 
-    public void drawGestureTrail(Canvas canvas, Paint paint, int lastX, int lastY) {
+    public void drawGestureTrail(final Canvas canvas, final Paint paint) {
         // TODO: These paint parameter interpolation should be tunable, possibly introduce an object
         // that implements an interface such as Paint getPaint(int step, int strokePoints)
         final int size = mXCoordinates.getLength();
-        int[] xCoords = mXCoordinates.getPrimitiveArray();
-        int[] yCoords = mYCoordinates.getPrimitiveArray();
+        final int[] xCoords = mXCoordinates.getPrimitiveArray();
+        final int[] yCoords = mYCoordinates.getPrimitiveArray();
         int alpha = Constants.Color.ALPHA_OPAQUE;
         for (int i = size - 1; i > 0 && alpha > 0; i--) {
             paint.setAlpha(alpha);
@@ -179,9 +179,6 @@ public class GestureStroke {
                 alpha -= DRAWING_GESTURE_FADE_RATE;
             }
             canvas.drawLine(xCoords[i - 1], yCoords[i - 1], xCoords[i], yCoords[i], paint);
-            if (i == size - 1) {
-                canvas.drawLine(lastX, lastY, xCoords[i], yCoords[i], paint);
-            }
         }
     }
 }
