@@ -160,6 +160,21 @@ class ProximityInfoState {
         return mTouchPositionCorrectionEnabled;
     }
 
+    inline bool sameAsTyped(const unsigned short *word, int length) const {
+        if (length != mInputLength) {
+            return false;
+        }
+        const int *inputCodes = mInputCodes;
+        while (length--) {
+            if (static_cast<unsigned int>(*inputCodes) != static_cast<unsigned int>(*word)) {
+                return false;
+            }
+            inputCodes += MAX_PROXIMITY_CHARS_SIZE_INTERNAL;
+            word++;
+        }
+        return true;
+    }
+
  private:
     DISALLOW_COPY_AND_ASSIGN(ProximityInfoState);
     /////////////////////////////////////////
@@ -177,21 +192,6 @@ class ProximityInfoState {
 
     bool hasInputCoordinates() const {
         return mInputXCoordinates && mInputYCoordinates;
-    }
-
-    bool sameAsTyped(const unsigned short *word, int length) const {
-        if (length != mInputLength) {
-            return false;
-        }
-        const int *inputCodes = mInputCodes;
-        while (length--) {
-            if ((unsigned int) *inputCodes != (unsigned int) *word) {
-                return false;
-            }
-            inputCodes += MAX_PROXIMITY_CHARS_SIZE_INTERNAL;
-            word++;
-        }
-        return true;
     }
 
     // const

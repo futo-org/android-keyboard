@@ -105,6 +105,7 @@ class Correction {
             const int spaceProximityPos, const int missingSpacePos, const bool useFullEditDistance,
             const bool doAutoCompletion, const int maxErrors);
     void checkState();
+    bool sameAsTyped();
     bool initProcessState(const int index);
 
     int getInputIndex();
