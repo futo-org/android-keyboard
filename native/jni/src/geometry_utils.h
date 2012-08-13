@@ -28,38 +28,36 @@
 
 namespace latinime {
 
-static inline float sqrf(float x) {
+static inline float squareFloat(float x) {
     return x * x;
 }
 
-static inline float getNormalizedSqrDistanceFloat(int x1, int y1, int x2, int y2, int scale) {
-    return sqrf(static_cast<float>(x1 - x2) / static_cast<float>(scale))
-            + sqrf(static_cast<float>(y1 - y2) / static_cast<float>(scale));
+static inline float getNormalizedSquaredDistanceFloat(float x1, float y1, float x2, float y2,
+        float scale) {
+    return squareFloat((x1 - x2) / scale) + squareFloat((y1 - y2) / scale);
 }
 
-static inline float getDistanceSqrFloat(float x1, float y1, float x2, float y2) {
-    return sqrf(x2 - x1) + sqrf(y2 - y1);
+static inline float getSquaredDistanceFloat(float x1, float y1, float x2, float y2) {
+    return squareFloat(x1 - x2) + squareFloat(y1 - y2);
+}
+
+static inline float getDistanceFloat(float x1, float y1, float x2, float y2) {
+    return hypotf(x1 - x2, y1 - y2);
 }
 
 static inline int getDistanceInt(int x1, int y1, int x2, int y2) {
-    return static_cast<int>(
-            sqrtf(getDistanceSqrFloat(
-                    static_cast<float>(x1), static_cast<float>(y1),
-                    static_cast<float>(x2), static_cast<float>(y2))));
+    return static_cast<int>(getDistanceFloat(static_cast<float>(x1), static_cast<float>(y1),
+            static_cast<float>(x2), static_cast<float>(y2)));
 }
 
 static inline float getAngle(int x1, int y1, int x2, int y2) {
     const int dx = x1 - x2;
     const int dy = y1 - y2;
-    if (dx == 0 && dy == 0) {
-        return 0;
-    }
-    const float dxf = static_cast<float>(dx);
-    const float dyf = static_cast<float>(dy);
-    return atan2f(dyf, dxf);
+    if (dx == 0 && dy == 0) return 0;
+    return atan2f(static_cast<float>(dy), static_cast<float>(dx));
 }
 
-static inline float angleDiff(float a1, float a2) {
+static inline float getAngleDiff(float a1, float a2) {
     const float diff = fabsf(a1 - a2);
     if (diff > M_PI_F) {
         return 2.0f * M_PI_F - diff;
@@ -67,7 +65,7 @@ static inline float angleDiff(float a1, float a2) {
     return diff;
 }
 
-// static float pointToLineDistanceSqrFloat(
+// static float pointToLineSegSquaredDistanceFloat(
 //         float x, float y, float x1, float y1, float x2, float y2) {
 //     float A = x - x1;
 //     float B = y - y1;
@@ -76,7 +74,7 @@ static inline float angleDiff(float a1, float a2) {
 //     return fabsf(A * D - C * B) / sqrtf(C * C + D * D);
 // }
 
-static inline float pointToLineSegDistanceSqrFloat(
+static inline float pointToLineSegSquaredDistanceFloat(
         float x, float y, float x1, float y1, float x2, float y2) {
     const float ray1x = x - x1;
     const float ray1y = y - y1;
@@ -84,7 +82,7 @@ static inline float pointToLineSegDistanceSqrFloat(
     const float ray2y = y2 - y1;
 
     const float dotProduct = ray1x * ray2x + ray1y * ray2y;
-    const float lineLengthSqr = sqrf(ray2x) + sqrf(ray2y);
+    const float lineLengthSqr = squareFloat(ray2x) + squareFloat(ray2y);
     const float projectionLengthSqr = dotProduct / lineLengthSqr;
 
     float projectionX;
@@ -99,7 +97,7 @@ static inline float pointToLineSegDistanceSqrFloat(
         projectionX = x1 + projectionLengthSqr * ray2x;
         projectionY = y1 + projectionLengthSqr * ray2y;
     }
-    return getDistanceSqrFloat(x, y, projectionX, projectionY);
+    return getSquaredDistanceFloat(x, y, projectionX, projectionY);
 }
 } // namespace latinime
 #endif // LATINIME_GEOMETRY_UTILS_H
