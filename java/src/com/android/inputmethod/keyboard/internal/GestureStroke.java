@@ -42,7 +42,7 @@ public class GestureStroke {
     // TODO: Move some of these to resource.
     private static final float MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH = 0.75f;
     private static final int MIN_GESTURE_DURATION = 100; // msec
-    private static final float MIN_GESTURE_SAMPLING_RATIO_TO_KEY_HEIGHT = 1.0f / 6.0f;
+    private static final float MIN_GESTURE_SAMPLING_RATIO_TO_KEY_WIDTH = 1.0f / 6.0f;
     private static final float GESTURE_RECOG_SPEED_THRESHOLD = 0.4f; // dip/msec
     private static final float GESTURE_RECOG_CURVATURE_THRESHOLD = (float)(Math.PI / 4.0f);
 
@@ -57,13 +57,15 @@ public class GestureStroke {
         reset();
     }
 
-    public void setGestureSampleLength(final int keyWidth, final int keyHeight) {
+    public void setGestureSampleLength(final int keyWidth) {
         // TODO: Find an appropriate base metric for these length. Maybe diagonal length of the key?
         mMinGestureLength = (int)(keyWidth * MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH);
-        mMinGestureSampleLength = (int)(keyHeight * MIN_GESTURE_SAMPLING_RATIO_TO_KEY_HEIGHT);
+        mMinGestureSampleLength = (int)(keyWidth * MIN_GESTURE_SAMPLING_RATIO_TO_KEY_WIDTH);
     }
 
-    public boolean isStartOfAGesture(final int downDuration) {
+    public boolean isStartOfAGesture() {
+        final int size = mEventTimes.getLength();
+        final int downDuration = (size > 0) ? mEventTimes.get(size - 1) : 0;
         return downDuration > MIN_GESTURE_DURATION && mLength > mMinGestureLength;
     }
 
