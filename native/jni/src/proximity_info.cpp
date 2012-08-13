@@ -35,6 +35,8 @@ inline void copyOrFillZero(void *to, const void *from, size_t size) {
     }
 }
 
+const float ProximityInfo::NOT_A_DISTANCE_FLOAT = -1.0f;
+
 ProximityInfo::ProximityInfo(const std::string localeStr, const int maxProximityCharsSize,
         const int keyboardWidth, const int keyboardHeight, const int gridWidth,
         const int gridHeight, const int mostCommonKeyWidth,
