@@ -521,7 +521,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
 
     public void drawGestureTrail(Canvas canvas, Paint paint) {
         if (mInGesture) {
-            mGestureStroke.drawGestureTrail(canvas, paint, mLastX, mLastY);
+            mGestureStroke.drawGestureTrail(canvas, paint);
         }
     }
 
