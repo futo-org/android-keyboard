@@ -21,7 +21,6 @@
 #include "com_android_inputmethod_keyboard_ProximityInfo.h"
 #include "com_android_inputmethod_latin_BinaryDictionary.h"
 #include "com_android_inputmethod_latin_DicTraverseSession.h"
-#include "com_android_inputmethod_latin_NativeUtils.h"
 #include "defines.h"
 #include "jni.h"
 #include "jni_common.h"
@@ -53,11 +52,6 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
 
     if (!register_ProximityInfo(env)) {
         AKLOGE("ERROR: ProximityInfo native registration failed");
-        goto bail;
-    }
-
-    if (!register_NativeUtils(env)) {
-        AKLOGE("ERROR: NativeUtils native registration failed");
         goto bail;
     }
 

@@ -62,7 +62,7 @@ class IncrementalDecoderWrapper : public IncrementalDecoderInterface {
     }
 
  private:
-    DISALLOW_COPY_AND_ASSIGN(IncrementalDecoderWrapper);
+    DISALLOW_IMPLICIT_CONSTRUCTORS(IncrementalDecoderWrapper);
     static IncrementalDecoderInterface *getIncrementalDecoderInstance(int maxWordLength,
             int maxWords) {
         if (sIncrementalDecoderFactoryMethod) {

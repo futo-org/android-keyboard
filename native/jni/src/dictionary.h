@@ -55,8 +55,12 @@ class Dictionary {
 
     int getFrequency(const int32_t *word, int length) const;
     bool isValidBigram(const int32_t *word1, int length1, const int32_t *word2, int length2) const;
-    void *getDict() const { return (void *)mDict; } // required to release dictionary buffer
-    void *getOffsetDict() const { return (void *)mOffsetDict; }
+    void *getDict() const { // required to release dictionary buffer
+        return reinterpret_cast<void *>(const_cast<unsigned char *>(mDict));
+    }
+    void *getOffsetDict() const {
+        return reinterpret_cast<void *>(const_cast<unsigned char *>(mOffsetDict));
+    }
     int getDictSize() const { return mDictSize; }
     int getMmapFd() const { return mMmapFd; }
     int getDictBufAdjust() const { return mDictBufAdjust; }
@@ -87,8 +91,9 @@ class Dictionary {
 inline int Dictionary::wideStrLen(unsigned short *str) {
     if (!str) return 0;
     unsigned short *end = str;
-    while (*end)
+    while (*end) {
         end++;
+    }
     return end - str;
 }
 } // namespace latinime

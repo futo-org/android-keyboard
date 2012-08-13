@@ -885,16 +885,17 @@ static const struct LatinCapitalSmallPair SORTED_CHAR_MAP[] = {
 };
 
 static int compare_pair_capital(const void *a, const void *b) {
-    return (int)(*(unsigned short *)a)
-            - (int)((struct LatinCapitalSmallPair*)b)->capital;
+    return static_cast<int>(*reinterpret_cast<const unsigned short *>(a))
+            - static_cast<int>(
+                    (reinterpret_cast<const struct LatinCapitalSmallPair *>(b))->capital);
 }
 
 unsigned short latin_tolower(unsigned short c) {
     struct LatinCapitalSmallPair *p =
-            (struct LatinCapitalSmallPair *)bsearch(&c, SORTED_CHAR_MAP,
+            reinterpret_cast<struct LatinCapitalSmallPair *>(bsearch(&c, SORTED_CHAR_MAP,
                     sizeof(SORTED_CHAR_MAP) / sizeof(SORTED_CHAR_MAP[0]),
                     sizeof(SORTED_CHAR_MAP[0]),
-                    compare_pair_capital);
+                    compare_pair_capital));
     return p ? p->small : c;
 }
 } // namespace latinime

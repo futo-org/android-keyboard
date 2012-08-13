@@ -20,36 +20,43 @@
 #include <cmath>
 
 #define MAX_DISTANCE 10000000
-#define KEY_NUM 27
-#define SPACE_KEY 26
 #define MAX_PATHS 2
 
 #define DEBUG_DECODER false
 
+#define M_PI_F 3.14159265f
+
 namespace latinime {
 
-static inline float sqr(float x) {
+static inline float sqrf(float x) {
     return x * x;
 }
 
-static inline float getNormalizedSqrDistance(int x1, int y1, int x2, int y2, int scale) {
-    return sqr((x1 - x2) * 1.0 / scale) + sqr((y1 - y2) * 1.0 / scale);
+static inline float getNormalizedSqrDistanceFloat(int x1, int y1, int x2, int y2, int scale) {
+    return sqrf(static_cast<float>(x1 - x2) / static_cast<float>(scale))
+            + sqrf(static_cast<float>(y1 - y2) / static_cast<float>(scale));
 }
 
-static inline int getDistance(int x1, int y1, int x2, int y2) {
-    return (int) sqrt(sqr(x2 - x1) + sqr(y2 - y1));
+static inline float getDistanceSqrFloat(float x1, float y1, float x2, float y2) {
+    return sqrf(x2 - x1) + sqrf(y2 - y1);
 }
 
-static inline float getDistanceSq(float x1, float y1, float x2, float y2) {
-    return sqr(x2 - x1) + sqr(y2 - y1);
+static inline int getDistanceInt(int x1, int y1, int x2, int y2) {
+    return static_cast<int>(
+            sqrtf(getDistanceSqrFloat(
+                    static_cast<float>(x1), static_cast<float>(y1),
+                    static_cast<float>(x2), static_cast<float>(y2))));
 }
 
 static inline float getAngle(int x1, int y1, int x2, int y2) {
-    float dx = x1 - x2;
-    float dy = y1 - y2;
-    if (dx == 0 && dy == 0)
+    int dx = x1 - x2;
+    int dy = y1 - y2;
+    if (dx == 0 && dy == 0) {
         return 0;
-    return atan2(dy, dx);
+    }
+    float dxf = static_cast<float>(dx);
+    float dyf = static_cast<float>(dy);
+    return atan2f(dyf, dxf);
 }
 
 static inline float angleDiff(float a1, float a2) {
@@ -57,21 +64,22 @@ static inline float angleDiff(float a1, float a2) {
     if (diff < 0) {
         diff = -diff;
     }
-    if (diff > M_PI) {
-        return 2 * M_PI - diff;
+    if (diff > M_PI_F) {
+        return 2.0f * M_PI_F - diff;
     }
     return diff;
 }
 
-//static float pointToLineDistanceSq(float x, float y, float x1, float y1, float x2, float y2) {
-//    float A = x - x1;
-//    float B = y - y1;
-//    float C = x2 - x1;
-//    float D = y2 - y1;
-//    return abs(A * D - C * B) / sqrt(C * C + D * D);
-//}
+// static float pointToLineDistanceSqrFloat(
+//         float x, float y, float x1, float y1, float x2, float y2) {
+//     float A = x - x1;
+//     float B = y - y1;
+//     float C = x2 - x1;
+//     float D = y2 - y1;
+//     return abs(A * D - C * B) / sqrt(C * C + D * D);
+// }
 
-static inline float pointToLineSegDistanceSq(
+static inline float pointToLineSegDistanceSqrFloat(
         float x, float y, float x1, float y1, float x2, float y2) {
     float ray1x = x - x1;
     float ray1y = y - y1;
@@ -93,9 +101,7 @@ static inline float pointToLineSegDistanceSq(
         projectionX = x1 + projectionLengthSq * ray2x;
         projectionY = y1 + projectionLengthSq * ray2y;
     }
-
-    float dist = getDistanceSq(x, y, projectionX, projectionY);
-    return dist;
+    return getDistanceSqrFloat(x, y, projectionX, projectionY);
 }
 } // namespace latinime
 #endif // LATINIME_INCREMENTAL_GEOMETRY_UTILS_H
