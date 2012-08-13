@@ -140,7 +140,7 @@
     <string name="enable" msgid="5031294444630523247">"Aktifkan"</string>
     <string name="not_now" msgid="6172462888202790482">"Nanti saja"</string>
     <string name="custom_input_style_already_exists" msgid="8008728952215449707">"Sudah ada gaya masukan yang sama: <xliff:g id="INPUT_STYLE_NAME">%s</xliff:g>"</string>
-    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modus studi daya guna"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Mode studi daya guna"</string>
     <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Setelan durasi getaran saat tombol ditekan"</string>
     <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Setelan volume suara saat tombol ditekan"</string>
 </resources>
