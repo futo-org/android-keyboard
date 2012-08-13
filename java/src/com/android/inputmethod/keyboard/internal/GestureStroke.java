@@ -142,20 +142,21 @@ public class GestureStroke {
         mLastIncrementalBatchSize = size;
     }
 
-    private static float getDistance(final int p1x, final int p1y,
-            final int p2x, final int p2y) {
-        final float dx = p1x - p2x;
-        final float dy = p1y - p2y;
+    private static float getDistance(final int x1, final int y1, final int x2, final int y2) {
+        final float dx = x1 - x2;
+        final float dy = y1 - y2;
         // Note that, in recent versions of Android, FloatMath is actually slower than
         // java.lang.Math due to the way the JIT optimizes java.lang.Math.
         return (float)Math.sqrt(dx * dx + dy * dy);
     }
 
-    private static float getAngle(final int p1x, final int p1y, final int p2x, final int p2y) {
-        final int dx = p1x - p2x;
-        final int dy = p1y - p2y;
+    private static float getAngle(final int x1, final int y1, final int x2, final int y2) {
+        final int dx = x1 - x2;
+        final int dy = y1 - y2;
         if (dx == 0 && dy == 0) return 0;
-        return (float)Math.atan2(dy, dx);
+        // Would it be faster to call atan2f() directly via JNI?  Not sure about what the JIT
+        // does with Math.atan2().
+        return (float)Math.atan2((double)dy, (double)dx);
     }
 
     private static float getAngleDiff(final float a1, final float a2) {
