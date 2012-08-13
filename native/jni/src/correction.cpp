@@ -157,6 +157,10 @@ void Correction::checkState() {
     }
 }
 
+bool Correction::sameAsTyped() {
+    return mProximityInfoState.sameAsTyped(mWord, mOutputIndex);
+}
+
 int Correction::getFreqForSplitMultipleWords(const int *freqArray, const int *wordLengthArray,
         const int wordCount, const bool isSpaceProximity, const unsigned short *word) {
     return Correction::RankingAlgorithm::calcFreqForSplitMultipleWords(freqArray, wordLengthArray,
