@@ -19,13 +19,13 @@
 -->
 <shortcuts>
  <entry shortcut="ill">
-  <target replacement="I\'ll" priority="whitelist" />
+  <target replacement="I'll" priority="whitelist" />
  </entry>
  <entry shortcut="acomodate">
   <target replacement="accommodate" priority="whitelist" />
  </entry>
  <entry shortcut="aint">
-  <target replacement="ain\'t" priority="whitelist" />
+  <target replacement="ain't" priority="whitelist" />
  </entry>
  <entry shortcut="alot">
   <target replacement="a lot" priority="whitelist" />
@@ -34,7 +34,7 @@
   <target replacement="and the" priority="whitelist" />
  </entry>
  <entry shortcut="arent">
-  <target replacement="aren\'t" priority="whitelist" />
+  <target replacement="aren't" priority="whitelist" />
  </entry>
  <entry shortcut="bern">
   <target replacement="been" priority="whitelist" />
@@ -49,13 +49,13 @@
   <target replacement="can" priority="whitelist" />
  </entry>
  <entry shortcut="cant">
-  <target replacement="can\'t" priority="whitelist" />
+  <target replacement="can't" priority="whitelist" />
  </entry>
  <entry shortcut="dame">
   <target replacement="same" priority="whitelist" />
  </entry>
  <entry shortcut="didint">
-  <target replacement="didn\'t" priority="whitelist" />
+  <target replacement="didn't" priority="whitelist" />
  </entry>
  <entry shortcut="dormer">
   <target replacement="former" priority="whitelist" />
@@ -82,13 +82,13 @@
   <target replacement="too" priority="whitelist" />
  </entry>
  <entry shortcut="hed">
-  <target replacement="he\'d" priority="whitelist" />
+  <target replacement="he'd" priority="whitelist" />
  </entry>
  <entry shortcut="hel">
-  <target replacement="he\'ll" priority="whitelist" />
+  <target replacement="he'll" priority="whitelist" />
  </entry>
  <entry shortcut="heres">
-  <target replacement="here\'s" priority="whitelist" />
+  <target replacement="here's" priority="whitelist" />
  </entry>
  <entry shortcut="hew">
   <target replacement="new" priority="whitelist" />
@@ -97,19 +97,19 @@
   <target replacement="how" priority="whitelist" />
  </entry>
  <entry shortcut="hoes">
-  <target replacement="how\'s" priority="whitelist" />
+  <target replacement="how's" priority="whitelist" />
  </entry>
  <entry shortcut="howd">
-  <target replacement="how\'d" priority="whitelist" />
+  <target replacement="how'd" priority="whitelist" />
  </entry>
  <entry shortcut="howll">
-  <target replacement="how\'ll" priority="whitelist" />
+  <target replacement="how'll" priority="whitelist" />
  </entry>
  <entry shortcut="hows">
-  <target replacement="how\'s" priority="whitelist" />
+  <target replacement="how's" priority="whitelist" />
  </entry>
  <entry shortcut="howve">
-  <target replacement="how\'ve" priority="whitelist" />
+  <target replacement="how've" priority="whitelist" />
  </entry>
  <entry shortcut="hum">
   <target replacement="him" priority="whitelist" />
@@ -121,25 +121,25 @@
   <target replacement="its" priority="whitelist" />
  </entry>
  <entry shortcut="il">
-  <target replacement="I\'ll" priority="whitelist" />
+  <target replacement="I'll" priority="whitelist" />
  </entry>
  <entry shortcut="im">
-  <target replacement="I\'m" priority="whitelist" />
+  <target replacement="I'm" priority="whitelist" />
  </entry>
  <entry shortcut="inteh">
   <target replacement="in the" priority="whitelist" />
  </entry>
  <entry shortcut="itd">
-  <target replacement="it\'d" priority="whitelist" />
+  <target replacement="it'd" priority="whitelist" />
  </entry>
  <entry shortcut="itsa">
-  <target replacement="it\'s a" priority="whitelist" />
+  <target replacement="it's a" priority="whitelist" />
  </entry>
  <entry shortcut="lets">
-  <target replacement="let\'s" priority="whitelist" />
+  <target replacement="let's" priority="whitelist" />
  </entry>
  <entry shortcut="maam">
-  <target replacement="ma\'am" priority="whitelist" />
+  <target replacement="ma'am" priority="whitelist" />
  </entry>
  <entry shortcut="manu">
   <target replacement="many" priority="whitelist" />
@@ -196,10 +196,10 @@
   <target replacement="took" priority="whitelist" />
  </entry>
  <entry shortcut="shel">
-  <target replacement="she\'ll" priority="whitelist" />
+  <target replacement="she'll" priority="whitelist" />
  </entry>
  <entry shortcut="shouldent">
-  <target replacement="shouldn\'t" priority="whitelist" />
+  <target replacement="shouldn't" priority="whitelist" />
  </entry>
  <entry shortcut="sill">
   <target replacement="will" priority="whitelist" />
@@ -208,7 +208,7 @@
   <target replacement="down" priority="whitelist" />
  </entry>
  <entry shortcut="thatd">
-  <target replacement="that\'d" priority="whitelist" />
+  <target replacement="that'd" priority="whitelist" />
  </entry>
  <entry shortcut="tine">
   <target replacement="time" priority="whitelist" />
@@ -238,60 +238,60 @@
   <target replacement="weird" priority="whitelist" />
  </entry>
  <entry shortcut="wel">
-  <target replacement="we\'ll" priority="whitelist" />
+  <target replacement="we'll" priority="whitelist" />
  </entry>
  <entry shortcut="wer">
-  <target replacement="we\'re" priority="whitelist" />
+  <target replacement="we're" priority="whitelist" />
  </entry>
  <entry shortcut="whatd">
-  <target replacement="what\'d" priority="whitelist" />
+  <target replacement="what'd" priority="whitelist" />
  </entry>
  <entry shortcut="whatm">
-  <target replacement="what\'m" priority="whitelist" />
+  <target replacement="what'm" priority="whitelist" />
  </entry>
  <entry shortcut="whatre">
-  <target replacement="what\'re" priority="whitelist" />
+  <target replacement="what're" priority="whitelist" />
  </entry>
  <entry shortcut="whats">
-  <target replacement="what\'s" priority="whitelist" />
+  <target replacement="what's" priority="whitelist" />
  </entry>
  <entry shortcut="whens">
-  <target replacement="when\'s" priority="whitelist" />
+  <target replacement="when's" priority="whitelist" />
  </entry>
  <entry shortcut="whered">
-  <target replacement="where\'d" priority="whitelist" />
+  <target replacement="where'd" priority="whitelist" />
  </entry>
  <entry shortcut="wherell">
-  <target replacement="where\'ll" priority="whitelist" />
+  <target replacement="where'll" priority="whitelist" />
  </entry>
  <entry shortcut="wheres">
-  <target replacement="where\'s" priority="whitelist" />
+  <target replacement="where's" priority="whitelist" />
  </entry>
  <entry shortcut="wholl">
-  <target replacement="who\'ll" priority="whitelist" />
+  <target replacement="who'll" priority="whitelist" />
  </entry>
  <entry shortcut="whove">
-  <target replacement="who\'ve" priority="whitelist" />
+  <target replacement="who've" priority="whitelist" />
  </entry>
  <entry shortcut="whyd">
-  <target replacement="why\'d" priority="whitelist" />
+  <target replacement="why'd" priority="whitelist" />
  </entry>
  <entry shortcut="whyll">
-  <target replacement="why\'ll" priority="whitelist" />
+  <target replacement="why'll" priority="whitelist" />
  </entry>
  <entry shortcut="whys">
-  <target replacement="why\'s" priority="whitelist" />
+  <target replacement="why's" priority="whitelist" />
  </entry>
  <entry shortcut="whyve">
-  <target replacement="why\'ve" priority="whitelist" />
+  <target replacement="why've" priority="whitelist" />
  </entry>
  <entry shortcut="wont">
-  <target replacement="won\'t" priority="whitelist" />
+  <target replacement="won't" priority="whitelist" />
  </entry>
  <entry shortcut="yall">
-  <target replacement="y\'all" priority="whitelist" />
+  <target replacement="y'all" priority="whitelist" />
  </entry>
  <entry shortcut="youd">
-  <target replacement="you\'d" priority="whitelist" />
+  <target replacement="you'd" priority="whitelist" />
  </entry>
 </shortcuts>
