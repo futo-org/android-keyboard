@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_INCREMENTAL_GEOMETRY_UTILS_H
-#define LATINIME_INCREMENTAL_GEOMETRY_UTILS_H
+#ifndef LATINIME_GEOMETRY_UTILS_H
+#define LATINIME_GEOMETRY_UTILS_H
 
 #include <cmath>
 
@@ -49,21 +49,18 @@ static inline int getDistanceInt(int x1, int y1, int x2, int y2) {
 }
 
 static inline float getAngle(int x1, int y1, int x2, int y2) {
-    int dx = x1 - x2;
-    int dy = y1 - y2;
+    const int dx = x1 - x2;
+    const int dy = y1 - y2;
     if (dx == 0 && dy == 0) {
         return 0;
     }
-    float dxf = static_cast<float>(dx);
-    float dyf = static_cast<float>(dy);
+    const float dxf = static_cast<float>(dx);
+    const float dyf = static_cast<float>(dy);
     return atan2f(dyf, dxf);
 }
 
 static inline float angleDiff(float a1, float a2) {
-    float diff = a1 - a2;
-    if (diff < 0) {
-        diff = -diff;
-    }
+    const float diff = fabsf(a1 - a2);
     if (diff > M_PI_F) {
         return 2.0f * M_PI_F - diff;
     }
@@ -76,32 +73,33 @@ static inline float angleDiff(float a1, float a2) {
 //     float B = y - y1;
 //     float C = x2 - x1;
 //     float D = y2 - y1;
-//     return abs(A * D - C * B) / sqrt(C * C + D * D);
+//     return fabsf(A * D - C * B) / sqrtf(C * C + D * D);
 // }
 
 static inline float pointToLineSegDistanceSqrFloat(
         float x, float y, float x1, float y1, float x2, float y2) {
-    float ray1x = x - x1;
-    float ray1y = y - y1;
-    float ray2x = x2 - x1;
-    float ray2y = y2 - y1;
+    const float ray1x = x - x1;
+    const float ray1y = y - y1;
+    const float ray2x = x2 - x1;
+    const float ray2y = y2 - y1;
 
-    float dotProduct = ray1x * ray2x + ray1y * ray2y;
-    float lineLengthSq = ray2x * ray2x + ray2y * ray2y;
-    float projectionLengthSq = dotProduct / lineLengthSq;
+    const float dotProduct = ray1x * ray2x + ray1y * ray2y;
+    const float lineLengthSqr = sqrf(ray2x) + sqrf(ray2y);
+    const float projectionLengthSqr = dotProduct / lineLengthSqr;
 
-    float projectionX, projectionY;
-    if (projectionLengthSq < 0) {
+    float projectionX;
+    float projectionY;
+    if (projectionLengthSqr < 0.0f) {
         projectionX = x1;
         projectionY = y1;
-    } else if (projectionLengthSq > 1) {
+    } else if (projectionLengthSqr > 1.0f) {
         projectionX = x2;
         projectionY = y2;
     } else {
-        projectionX = x1 + projectionLengthSq * ray2x;
-        projectionY = y1 + projectionLengthSq * ray2y;
+        projectionX = x1 + projectionLengthSqr * ray2x;
+        projectionY = y1 + projectionLengthSqr * ray2y;
     }
     return getDistanceSqrFloat(x, y, projectionX, projectionY);
 }
 } // namespace latinime
-#endif // LATINIME_INCREMENTAL_GEOMETRY_UTILS_H
+#endif // LATINIME_GEOMETRY_UTILS_H
