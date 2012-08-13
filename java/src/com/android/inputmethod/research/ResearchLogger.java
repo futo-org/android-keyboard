@@ -136,7 +136,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
     // used to check whether words are not unique
     private Suggest mSuggest;
-    private Dictionary mDictionary;
     private MainKeyboardView mMainKeyboardView;
     private InputMethodService mInputMethodService;
     private final Statistics mStatistics;
@@ -597,6 +596,13 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
+    private Dictionary getDictionary() {
+        if (mSuggest == null) {
+            return null;
+        }
+        return mSuggest.getMainDictionary();
+    }
+
     private void setIsPasswordView(boolean isPasswordView) {
         mIsPasswordView = isPasswordView;
     }
@@ -726,10 +732,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final LogStatement LOGSTATEMENT_COMMIT_RECORD_SPLIT_WORDS =
             new LogStatement("recordSplitWords", true, false);
     private void onWordComplete(final String word, final long maxTime, final boolean isSplitWords) {
+        final Dictionary dictionary = getDictionary();
         if (word != null && word.length() > 0 && hasLetters(word)) {
             mCurrentLogUnit.setWord(word);
-            final boolean isDictionaryWord = mDictionary != null
-                    && mDictionary.isValidWord(word);
+            final boolean isDictionaryWord = dictionary != null
+                    && dictionary.isValidWord(word);
             mStatistics.recordWordEntered(isDictionaryWord);
         }
         final LogUnit newLogUnit = mCurrentLogUnit.splitByTime(maxTime);
@@ -784,10 +791,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private String scrubWord(String word) {
-        if (mDictionary == null) {
+        final Dictionary dictionary = getDictionary();
+        if (dictionary == null) {
             return WORD_REPLACEMENT_STRING;
         }
-        if (mDictionary.isValidWord(word)) {
+        if (dictionary.isValidWord(word)) {
             return word;
         }
         return WORD_REPLACEMENT_STRING;
