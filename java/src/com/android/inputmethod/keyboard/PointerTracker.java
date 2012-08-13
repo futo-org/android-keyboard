@@ -408,8 +408,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         mKeyDetector = keyDetector;
         mKeyboard = keyDetector.getKeyboard();
         mIsAlphabetKeyboard = mKeyboard.mId.isAlphabetKeyboard();
-        mGestureStroke.setGestureSampleLength(
-                mKeyboard.mMostCommonKeyWidth, mKeyboard.mMostCommonKeyHeight);
+        mGestureStroke.setGestureSampleLength(mKeyboard.mMostCommonKeyWidth);
         final Key newKey = mKeyDetector.detectHitKey(mKeyX, mKeyY);
         if (newKey != mCurrentKey) {
             if (mDrawingProxy != null) {
@@ -713,7 +712,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         if (sShouldHandleGesture && mIsPossibleGesture) {
             final GestureStroke stroke = mGestureStroke;
             stroke.addPoint(x, y, gestureTime, isHistorical);
-            if (!mInGesture && stroke.isStartOfAGesture(gestureTime)) {
+            if (!mInGesture && stroke.isStartOfAGesture()) {
                 startBatchInput();
             }
         }
