@@ -79,6 +79,7 @@ public class BinaryDictionary extends Dictionary {
         mUseFullEditDistance = useFullEditDistance;
         loadDictionary(filename, offset, length);
         mDicTraverseSession = new DicTraverseSession(locale);
+        mDicTraverseSession.initSession(mNativeDict);
     }
 
     static {
