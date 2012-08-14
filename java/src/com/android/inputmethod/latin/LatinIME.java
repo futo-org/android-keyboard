@@ -667,7 +667,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Forward this event to the accessibility utilities, if enabled.
         final AccessibilityUtils accessUtils = AccessibilityUtils.getInstance();
         if (accessUtils.isTouchExplorationEnabled()) {
-            accessUtils.onStartInputViewInternal(inputView, editorInfo, restarting);
+            accessUtils.onStartInputViewInternal(mainKeyboardView, editorInfo, restarting);
         }
 
         if (!restarting) {
