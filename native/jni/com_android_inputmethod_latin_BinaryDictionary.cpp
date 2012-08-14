@@ -27,6 +27,7 @@
 #include <sys/mman.h>
 #else // USE_MMAP_FOR_DICTIONARY
 #include <cstdlib>
+#include <cstdio> // for fopen() etc.
 #endif // USE_MMAP_FOR_DICTIONARY
 
 #include "binary_format.h"
@@ -40,7 +41,7 @@ namespace latinime {
 
 class ProximityInfo;
 
-static void releaseDictBuf(void *dictBuf, const size_t length, int fd);
+static void releaseDictBuf(const void *dictBuf, const size_t length, const int fd);
 
 static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         jstring sourceDir, jlong dictOffset, jlong dictSize,
@@ -75,7 +76,7 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         AKLOGE("DICT: Can't mmap dictionary. errno=%d", errno);
         return 0;
     }
-    dictBuf = reinterpret_cast<void *>(reinterpret_cast<char *>(dictBuf) + adjust);
+    dictBuf = static_cast<char *>(dictBuf) + adjust;
 #else // USE_MMAP_FOR_DICTIONARY
     /* malloc version */
     FILE *file = 0;
@@ -111,10 +112,10 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
     }
     Dictionary *dictionary = 0;
     if (BinaryFormat::UNKNOWN_FORMAT
-            == BinaryFormat::detectFormat(reinterpret_cast<uint8_t *>(dictBuf))) {
+            == BinaryFormat::detectFormat(static_cast<uint8_t *>(dictBuf))) {
         AKLOGE("DICT: dictionary format is unknown, bad magic number");
 #ifdef USE_MMAP_FOR_DICTIONARY
-        releaseDictBuf(reinterpret_cast<char *>(dictBuf) - adjust, adjDictSize, fd);
+        releaseDictBuf(static_cast<const char *>(dictBuf) - adjust, adjDictSize, fd);
 #else // USE_MMAP_FOR_DICTIONARY
         releaseDictBuf(dictBuf, 0, 0);
 #endif // USE_MMAP_FOR_DICTIONARY
@@ -134,10 +135,10 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object,
         jintArray prevWordCodePointsForBigrams, jboolean useFullEditDistance,
         jcharArray outputCharsArray, jintArray scoresArray, jintArray spaceIndicesArray,
         jintArray outputTypesArray) {
-    Dictionary *dictionary = reinterpret_cast<Dictionary*>(dict);
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return 0;
-    ProximityInfo *pInfo = reinterpret_cast<ProximityInfo*>(proximityInfo);
-    void *traverseSession = reinterpret_cast<void*>(dicTraverseSession);
+    ProximityInfo *pInfo = reinterpret_cast<ProximityInfo *>(proximityInfo);
+    void *traverseSession = reinterpret_cast<void *>(dicTraverseSession);
 
     // Input values
     int xCoordinates[arraySize];
@@ -199,7 +200,7 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object,
 
 static jint latinime_BinaryDictionary_getFrequency(JNIEnv *env, jobject object, jlong dict,
         jintArray wordArray) {
-    Dictionary *dictionary = reinterpret_cast<Dictionary*>(dict);
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return 0;
     const jsize codePointLength = env->GetArrayLength(wordArray);
     int codePoints[codePointLength];
@@ -209,7 +210,7 @@ static jint latinime_BinaryDictionary_getFrequency(JNIEnv *env, jobject object, 
 
 static jboolean latinime_BinaryDictionary_isValidBigram(JNIEnv *env, jobject object, jlong dict,
         jintArray wordArray1, jintArray wordArray2) {
-    Dictionary *dictionary = reinterpret_cast<Dictionary*>(dict);
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return (jboolean) false;
     const jsize codePointLength1 = env->GetArrayLength(wordArray1);
     const jsize codePointLength2 = env->GetArrayLength(wordArray2);
@@ -247,14 +248,12 @@ static jint latinime_BinaryDictionary_editDistance(JNIEnv *env, jobject object,
 }
 
 static void latinime_BinaryDictionary_close(JNIEnv *env, jobject object, jlong dict) {
-    Dictionary *dictionary = reinterpret_cast<Dictionary*>(dict);
+    Dictionary *dictionary = reinterpret_cast<Dictionary *>(dict);
     if (!dictionary) return;
-    void *dictBuf = dictionary->getDict();
+    const void *dictBuf = dictionary->getDict();
     if (!dictBuf) return;
 #ifdef USE_MMAP_FOR_DICTIONARY
-    releaseDictBuf(
-            reinterpret_cast<void *>(
-                    reinterpret_cast<char *>(dictBuf) - dictionary->getDictBufAdjust()),
+    releaseDictBuf(static_cast<const char *>(dictBuf) - dictionary->getDictBufAdjust(),
             dictionary->getDictSize() + dictionary->getDictBufAdjust(), dictionary->getMmapFd());
 #else // USE_MMAP_FOR_DICTIONARY
     releaseDictBuf(dictBuf, 0, 0);
@@ -262,9 +261,9 @@ static void latinime_BinaryDictionary_close(JNIEnv *env, jobject object, jlong d
     delete dictionary;
 }
 
-static void releaseDictBuf(void *dictBuf, const size_t length, int fd) {
+static void releaseDictBuf(const void *dictBuf, const size_t length, const int fd) {
 #ifdef USE_MMAP_FOR_DICTIONARY
-    int ret = munmap(dictBuf, length);
+    int ret = munmap(const_cast<void *>(dictBuf), length);
     if (ret != 0) {
         AKLOGE("DICT: Failure in munmap. ret=%d errno=%d", ret, errno);
     }
@@ -273,7 +272,7 @@ static void releaseDictBuf(void *dictBuf, const size_t length, int fd) {
         AKLOGE("DICT: Failure in close. ret=%d errno=%d", ret, errno);
     }
 #else // USE_MMAP_FOR_DICTIONARY
-    free(dictBuf);
+    free(const_cast<void *>(dictBuf));
 #endif // USE_MMAP_FOR_DICTIONARY
 }
 
