@@ -94,8 +94,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final String FILENAME_SUFFIX = ".txt";
     private static final SimpleDateFormat TIMESTAMP_DATEFORMAT =
             new SimpleDateFormat("yyyyMMddHHmmssS", Locale.US);
+    // Whether to show an indicator on the screen that logging is on.  Currently a very small red
+    // dot in the lower right hand corner.  Most users should not notice it.
     private static final boolean IS_SHOWING_INDICATOR = true;
-    private static final boolean IS_SHOWING_INDICATOR_CLEARLY = false;
+    // Change the default indicator to something very visible.  Currently two red vertical bars on
+    // either side of they keyboard.
+    private static final boolean IS_SHOWING_INDICATOR_CLEARLY = false || LOG_EVERYTHING;
     public static final int FEEDBACK_WORD_BUFFER_SIZE = 5;
 
     // constants related to specific log points
