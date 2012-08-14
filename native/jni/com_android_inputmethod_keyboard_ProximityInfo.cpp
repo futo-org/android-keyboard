@@ -37,7 +37,7 @@ static jlong latinime_Keyboard_setProximityInfo(JNIEnv *env, jobject object,
 }
 
 static void latinime_Keyboard_release(JNIEnv *env, jobject object, jlong proximityInfo) {
-    ProximityInfo *pi = reinterpret_cast<ProximityInfo*>(proximityInfo);
+    ProximityInfo *pi = reinterpret_cast<ProximityInfo *>(proximityInfo);
     delete pi;
 }
 
