@@ -230,8 +230,8 @@ static jfloat latinime_BinaryDictionary_calcNormalizedScore(JNIEnv *env, jobject
     env->GetCharArrayRegion(before, 0, beforeLength, beforeChars);
     env->GetCharArrayRegion(after, 0, afterLength, afterChars);
     return Correction::RankingAlgorithm::calcNormalizedScore(
-            reinterpret_cast<unsigned short *>(beforeChars), beforeLength,
-            reinterpret_cast<unsigned short *>(afterChars), afterLength, score);
+            static_cast<unsigned short *>(beforeChars), beforeLength,
+            static_cast<unsigned short *>(afterChars), afterLength, score);
 }
 
 static jint latinime_BinaryDictionary_editDistance(JNIEnv *env, jobject object,
@@ -243,8 +243,8 @@ static jint latinime_BinaryDictionary_editDistance(JNIEnv *env, jobject object,
     env->GetCharArrayRegion(before, 0, beforeLength, beforeChars);
     env->GetCharArrayRegion(after, 0, afterLength, afterChars);
     return Correction::RankingAlgorithm::editDistance(
-            reinterpret_cast<unsigned short *>(beforeChars), beforeLength,
-            reinterpret_cast<unsigned short *>(afterChars), afterLength);
+            static_cast<unsigned short *>(beforeChars), beforeLength,
+            static_cast<unsigned short *>(afterChars), afterLength);
 }
 
 static void latinime_BinaryDictionary_close(JNIEnv *env, jobject object, jlong dict) {
