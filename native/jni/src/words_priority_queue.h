@@ -140,13 +140,12 @@ class WordsPriorityQueue {
                 continue;
             }
             const unsigned int wordLength = sw->mWordLength;
-            char *targetAddress = reinterpret_cast<char *>(outputChars)
-                    + i * MAX_WORD_LENGTH * sizeof(short);
+            unsigned short *targetAddress = outputChars + i * MAX_WORD_LENGTH;
             frequencies[i] = sw->mScore;
             outputTypes[i] = sw->mType;
-            memcpy(targetAddress, sw->mWord, (wordLength) * sizeof(short));
+            memcpy(targetAddress, sw->mWord, wordLength * sizeof(unsigned short));
             if (wordLength < MAX_WORD_LENGTH) {
-                reinterpret_cast<unsigned short *>(targetAddress)[wordLength] = 0;
+                targetAddress[wordLength] = 0;
             }
             sw->mUsed = false;
         }

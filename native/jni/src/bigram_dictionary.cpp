@@ -60,16 +60,15 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
         AKLOGI("Bigram: InsertAt -> %d MAX_PREDICTIONS: %d", insertAt, MAX_PREDICTIONS);
     }
     if (insertAt < MAX_PREDICTIONS) {
-        memmove(reinterpret_cast<char *>(bigramFreq) + (insertAt + 1) * sizeof(bigramFreq[0]),
-                reinterpret_cast<char *>(bigramFreq) + insertAt * sizeof(bigramFreq[0]),
+        memmove(bigramFreq + (insertAt + 1),
+                bigramFreq + insertAt,
                 (MAX_PREDICTIONS - insertAt - 1) * sizeof(bigramFreq[0]));
         bigramFreq[insertAt] = frequency;
         outputTypes[insertAt] = Dictionary::KIND_PREDICTION;
-        memmove(reinterpret_cast<char *>(bigramChars)
-                + (insertAt + 1) * MAX_WORD_LENGTH * sizeof(short),
-                reinterpret_cast<char *>(bigramChars) + insertAt * MAX_WORD_LENGTH * sizeof(short),
-                (MAX_PREDICTIONS - insertAt - 1) * sizeof(short) * MAX_WORD_LENGTH);
-        unsigned short *dest = bigramChars + (insertAt    ) * MAX_WORD_LENGTH;
+        memmove(bigramChars + (insertAt + 1) * MAX_WORD_LENGTH,
+                bigramChars + insertAt * MAX_WORD_LENGTH,
+                (MAX_PREDICTIONS - insertAt - 1) * sizeof(bigramChars[0]) * MAX_WORD_LENGTH);
+        unsigned short *dest = bigramChars + insertAt * MAX_WORD_LENGTH;
         while (length--) {
             *dest++ = *word++;
         }
