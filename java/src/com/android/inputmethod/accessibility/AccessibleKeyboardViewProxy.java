@@ -250,7 +250,7 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
             text = context.getText(R.string.spoken_description_shiftmode_off);
         }
 
-        AccessibilityUtils.getInstance().speak(text);
+        AccessibilityUtils.getInstance().announceForAccessibility(mView, text);
     }
 
     /**
@@ -290,6 +290,6 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
         }
 
         final String text = context.getString(resId);
-        AccessibilityUtils.getInstance().speak(text);
+        AccessibilityUtils.getInstance().announceForAccessibility(mView, text);
     }
 }
