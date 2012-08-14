@@ -223,7 +223,7 @@ class WordsPriorityQueue {
                 before, beforeLength, word, wordLength, score);
     }
 
-    typedef std::priority_queue<SuggestedWord*, std::vector<SuggestedWord*>,
+    typedef std::priority_queue<SuggestedWord *, std::vector<SuggestedWord *>,
             wordComparator> Suggestions;
     Suggestions mSuggestions;
     const unsigned int MAX_WORDS;

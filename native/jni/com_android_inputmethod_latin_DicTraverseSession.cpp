@@ -30,8 +30,8 @@ static jlong latinime_setDicTraverseSession(JNIEnv *env, jobject object, jstring
 
 static void latinime_initDicTraverseSession(JNIEnv *env, jobject object, jlong traverseSession,
         jlong dictionary, jintArray previousWord, jint previousWordLength) {
-    void *ts = reinterpret_cast<void*>(traverseSession);
-    Dictionary *dict = reinterpret_cast<Dictionary*>(dictionary);
+    void *ts = reinterpret_cast<void *>(traverseSession);
+    Dictionary *dict = reinterpret_cast<Dictionary *>(dictionary);
     if (!previousWord) {
         DicTraverseWrapper::initDicTraverseSession(ts, dict, 0, 0);
         return;
@@ -42,7 +42,7 @@ static void latinime_initDicTraverseSession(JNIEnv *env, jobject object, jlong t
 }
 
 static void latinime_releaseDicTraverseSession(JNIEnv *env, jobject object, jlong traverseSession) {
-    void *ts = reinterpret_cast<void*>(traverseSession);
+    void *ts = reinterpret_cast<void *>(traverseSession);
     DicTraverseWrapper::releaseDicTraverseSession(ts);
 }
 
