@@ -32,11 +32,6 @@ static inline float squareFloat(float x) {
     return x * x;
 }
 
-static inline float getNormalizedSquaredDistanceFloat(float x1, float y1, float x2, float y2,
-        float scale) {
-    return squareFloat((x1 - x2) / scale) + squareFloat((y1 - y2) / scale);
-}
-
 static inline float getSquaredDistanceFloat(float x1, float y1, float x2, float y2) {
     return squareFloat(x1 - x2) + squareFloat(y1 - y2);
 }
