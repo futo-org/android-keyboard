@@ -69,7 +69,6 @@ endif # FLAG_DO_PROFILE
 LOCAL_MODULE := libjni_latinime_common_static
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_NDK_VERSION := 8
 LOCAL_SDK_VERSION := 14
 LOCAL_NDK_STL_VARIANT := stlport_static
 
@@ -93,7 +92,6 @@ endif # FLAG_DO_PROFILE
 LOCAL_MODULE := libjni_latinime
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_NDK_VERSION := 8
 LOCAL_SDK_VERSION := 14
 LOCAL_NDK_STL_VARIANT := stlport_static
 
