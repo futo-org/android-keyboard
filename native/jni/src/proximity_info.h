@@ -38,6 +38,8 @@ class ProximityInfo {
     ~ProximityInfo();
     bool hasSpaceProximity(const int x, const int y) const;
     int getNormalizedSquaredDistance(const int inputIndex, const int proximityIndex) const;
+    float getNormalizedSquaredDistanceFromCenterFloat(
+            const int keyId, const int x, const int y) const;
     bool sameAsTyped(const unsigned short *word, int length) const;
     int squaredDistanceToEdge(const int keyId, const int x, const int y) const;
     bool isOnKey(const int keyId, const int x, const int y) const {

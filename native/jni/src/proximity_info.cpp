@@ -135,6 +135,21 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
     return false;
 }
 
+static inline float getNormalizedSquaredDistanceFloat(float x1, float y1, float x2, float y2,
+        float scale) {
+    return squareFloat((x1 - x2) / scale) + squareFloat((y1 - y2) / scale);
+}
+
+float ProximityInfo::getNormalizedSquaredDistanceFromCenterFloat(
+        const int keyId, const int x, const int y) const {
+    const float centerX = static_cast<float>(getKeyCenterXOfIdG(keyId));
+    const float centerY = static_cast<float>(getKeyCenterYOfIdG(keyId));
+    const float touchX = static_cast<float>(x);
+    const float touchY = static_cast<float>(y);
+    const float keyWidth = static_cast<float>(getMostCommonKeyWidth());
+    return getNormalizedSquaredDistanceFloat(centerX, centerY, touchX, touchY, keyWidth);
+}
+
 int ProximityInfo::squaredDistanceToEdge(const int keyId, const int x, const int y) const {
     if (keyId < 0) return true; // NOT_A_ID is -1, but return whenever < 0 just in case
     const int left = mKeyXCoordinates[keyId];
@@ -233,6 +248,7 @@ int ProximityInfo::getKeyCode(const int keyIndex) const {
 }
 
 void ProximityInfo::initializeG() {
+    // TODO: Optimize
     for (int i = 0; i < KEY_COUNT; ++i) {
         const int code = mKeyCharCodes[i];
         const int lowerCode = toBaseLowerCase(code);
@@ -284,26 +300,5 @@ int ProximityInfo::getKeyKeyDistanceG(int key0, int key1) const {
         return mKeyKeyDistancesG[keyId0][keyId1];
     }
     return 0;
-}
-
-// TODO: [Staging] Optimize
-void ProximityInfo::getCenters(int *centerXs, int *centerYs, int *codeToKeyIndex,
-        int *keyToCodeIndex, int *keyCount, int *keyWidth) const {
-    *keyCount = KEY_COUNT;
-    *keyWidth = sqrtf(static_cast<float>(MOST_COMMON_KEY_WIDTH_SQUARE));
-
-    for (int i = 0; i < KEY_COUNT; ++i) {
-        const int code = mKeyCharCodes[i];
-        const int lowerCode = toBaseLowerCase(code);
-        centerXs[i] = mKeyXCoordinates[i] + mKeyWidths[i] / 2;
-        centerYs[i] = mKeyYCoordinates[i] + mKeyHeights[i] / 2;
-        codeToKeyIndex[code] = i;
-        if (code != lowerCode && lowerCode >= 0 && lowerCode <= MAX_CHAR_CODE) {
-            codeToKeyIndex[lowerCode] = i;
-            keyToCodeIndex[i] = lowerCode;
-        } else {
-            keyToCodeIndex[i] = code;
-        }
-    }
 }
 } // namespace latinime
