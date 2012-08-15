@@ -194,7 +194,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                 DictAndProximity dictInfo = null;
                 try {
                     dictInfo = mDictionaryPool.pollWithDefaultTimeout();
-                    if (null == dictInfo) {
+                    if (!DictionaryPool.isAValidDictionary(dictInfo)) {
                         return AndroidSpellCheckerService.getNotInDictEmptySuggestions();
                     }
                     return dictInfo.mDictionary.isValidWord(inText)
@@ -237,7 +237,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             DictAndProximity dictInfo = null;
             try {
                 dictInfo = mDictionaryPool.pollWithDefaultTimeout();
-                if (null == dictInfo) {
+                if (!DictionaryPool.isAValidDictionary(dictInfo)) {
                     return AndroidSpellCheckerService.getNotInDictEmptySuggestions();
                 }
                 final ArrayList<SuggestedWordInfo> suggestions =
