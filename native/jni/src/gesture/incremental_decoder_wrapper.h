@@ -39,7 +39,8 @@ class IncrementalDecoderWrapper : public IncrementalDecoderInterface {
 
     int getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs, int *inputYs,
             int *times, int *pointerIds, int *codes, int inputSize, int commitPoint,
-            unsigned short *outWords, int *frequencies, int *outputIndices, int *outputTypes) {
+            unsigned short *outWords, int *frequencies, int *outputIndices,
+            int *outputTypes) const {
         if (!mIncrementalDecoderInterface) {
             return 0;
         }
