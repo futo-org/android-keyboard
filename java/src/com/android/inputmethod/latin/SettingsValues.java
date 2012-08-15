@@ -417,6 +417,10 @@ public class SettingsValues {
         prefs.edit().putString(Settings.PREF_LAST_USER_DICTIONARY_WRITE_TIME, newStr).apply();
     }
 
+    public boolean isSameInputType(final EditorInfo editorInfo) {
+        return mInputAttributes.isSameInputType(editorInfo);
+    }
+
     // For debug.
     public String getInputAttributesDebugString() {
         return mInputAttributes.toString();
