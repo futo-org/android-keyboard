@@ -670,7 +670,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             accessUtils.onStartInputViewInternal(mainKeyboardView, editorInfo, restarting);
         }
 
-        if (!restarting) {
+        final boolean selectionChanged = mLastSelectionStart != editorInfo.initialSelStart
+                || mLastSelectionEnd != editorInfo.initialSelEnd;
+        final boolean inputTypeChanged = !mCurrentSettings.isSameInputType(editorInfo);
+        final boolean isDifferentTextField = !restarting || inputTypeChanged;
+        if (isDifferentTextField) {
             mSubtypeSwitcher.updateParametersOnStartInputView();
         }
 
@@ -679,9 +683,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         updateFullscreenMode();
         mApplicationSpecifiedCompletions = null;
 
-        final boolean selectionChanged = mLastSelectionStart != editorInfo.initialSelStart
-                || mLastSelectionEnd != editorInfo.initialSelEnd;
-        if (!restarting || selectionChanged) {
+        if (isDifferentTextField || selectionChanged) {
             // If the selection changed, we reset the input state. Essentially, we come here with
             // restarting == true when the app called setText() or similar. We should reset the
             // state if the app set the text to something else, but keep it if it set a suggestion
@@ -696,7 +698,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
 
-        if (!restarting) {
+        if (isDifferentTextField) {
             mainKeyboardView.closing();
             loadSettings();
 

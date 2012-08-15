@@ -29,10 +29,12 @@ public class InputAttributes {
     final public boolean mInputTypeNoAutoCorrect;
     final public boolean mIsSettingsSuggestionStripOn;
     final public boolean mApplicationSpecifiedCompletionOn;
+    final private int mInputType;
 
     public InputAttributes(final EditorInfo editorInfo, final boolean isFullscreenMode) {
         final int inputType = null != editorInfo ? editorInfo.inputType : 0;
         final int inputClass = inputType & InputType.TYPE_MASK_CLASS;
+        mInputType = inputType;
         if (inputClass != InputType.TYPE_CLASS_TEXT) {
             // If we are not looking at a TYPE_CLASS_TEXT field, the following strange
             // cases may arise, so we do a couple sanity checks for them. If it's a
@@ -91,6 +93,10 @@ public class InputAttributes {
 
             mApplicationSpecifiedCompletionOn = flagAutoComplete && isFullscreenMode;
         }
+    }
+
+    public boolean isSameInputType(final EditorInfo editorInfo) {
+        return editorInfo.inputType == mInputType;
     }
 
     @SuppressWarnings("unused")
