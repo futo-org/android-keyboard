@@ -60,7 +60,7 @@ int Dictionary::getSuggestions(ProximityInfo *proximityInfo, void *traverseSessi
         int *codes, int codesSize, int *prevWordChars,
         int prevWordLength, int commitPoint, bool isGesture,
         bool useFullEditDistance, unsigned short *outWords,
-        int *frequencies, int *spaceIndices, int *outputTypes) {
+        int *frequencies, int *spaceIndices, int *outputTypes) const {
     int result = 0;
     if (isGesture) {
         DicTraverseWrapper::initDicTraverseSession(
