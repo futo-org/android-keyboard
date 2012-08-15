@@ -19,8 +19,8 @@
 #include "dic_traverse_wrapper.h"
 
 namespace latinime {
-void *(*DicTraverseWrapper::sDicTraverseSessionFactoryMethod)(JNIEnv *env, jstring locale) = 0;
+void *(*DicTraverseWrapper::sDicTraverseSessionFactoryMethod)(JNIEnv *, jstring) = 0;
 void (*DicTraverseWrapper::sDicTraverseSessionReleaseMethod)(void *) = 0;
 void (*DicTraverseWrapper::sDicTraverseSessionInitMethod)(
-        void *, Dictionary *, const int *, const int) = 0;
+        void *, const Dictionary *const, const int *, const int) = 0;
 } // namespace latinime
