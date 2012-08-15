@@ -169,9 +169,17 @@ public class Suggest {
     public SuggestedWords getSuggestedWords(
             final WordComposer wordComposer, CharSequence prevWordForBigram,
             final ProximityInfo proximityInfo, final boolean isCorrectionEnabled) {
+        return getSuggestedWordsWithSessionId(
+                wordComposer, prevWordForBigram, proximityInfo, isCorrectionEnabled, 0);
+    }
+
+    public SuggestedWords getSuggestedWordsWithSessionId(
+            final WordComposer wordComposer, CharSequence prevWordForBigram,
+            final ProximityInfo proximityInfo, final boolean isCorrectionEnabled, int sessionId) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         if (wordComposer.isBatchMode()) {
-            return getSuggestedWordsForBatchInput(wordComposer, prevWordForBigram, proximityInfo);
+            return getSuggestedWordsForBatchInput(
+                    wordComposer, prevWordForBigram, proximityInfo, sessionId);
         } else {
             return getSuggestedWordsForTypingInput(wordComposer, prevWordForBigram, proximityInfo,
                     isCorrectionEnabled);
@@ -306,7 +314,7 @@ public class Suggest {
     // Retrieves suggestions for the batch input.
     private SuggestedWords getSuggestedWordsForBatchInput(
             final WordComposer wordComposer, CharSequence prevWordForBigram,
-            final ProximityInfo proximityInfo) {
+            final ProximityInfo proximityInfo, int sessionId) {
         final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
                 MAX_SUGGESTIONS);
 
@@ -318,8 +326,8 @@ public class Suggest {
                 continue;
             }
             final Dictionary dictionary = mDictionaries.get(key);
-            suggestionsSet.addAll(dictionary.getSuggestions(
-                    wordComposer, prevWordForBigram, proximityInfo));
+            suggestionsSet.addAll(dictionary.getSuggestionsWithSessionId(
+                    wordComposer, prevWordForBigram, proximityInfo, sessionId));
         }
 
         final ArrayList<SuggestedWordInfo> suggestionsContainer =

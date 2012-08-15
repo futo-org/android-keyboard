@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.SparseArray;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -51,6 +52,7 @@ public class BinaryDictionary extends Dictionary {
     private static final int TYPED_LETTER_MULTIPLIER = 2;
 
     private long mNativeDict;
+    private final Locale mLocale;
     private final int[] mInputCodePoints = new int[MAX_WORD_LENGTH];
     // TODO: The below should be int[] mOutputCodePoints
     private final char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_RESULTS];
@@ -59,7 +61,22 @@ public class BinaryDictionary extends Dictionary {
     private final int[] mOutputTypes = new int[MAX_RESULTS];
 
     private final boolean mUseFullEditDistance;
-    private final DicTraverseSession mDicTraverseSession;
+
+    private final SparseArray<DicTraverseSession> mDicTraverseSessions =
+            new SparseArray<DicTraverseSession>();
+    private DicTraverseSession getTraverseSession(int traverseSessionId) {
+        DicTraverseSession traverseSession = mDicTraverseSessions.get(traverseSessionId);
+        if (traverseSession == null) {
+            synchronized(mDicTraverseSessions) {
+                traverseSession = mDicTraverseSessions.get(traverseSessionId);
+                if (traverseSession == null) {
+                    traverseSession = new DicTraverseSession(mLocale, mNativeDict);
+                    mDicTraverseSessions.put(traverseSessionId, traverseSession);
+                }
+            }
+        }
+        return traverseSession;
+    }
 
     /**
      * Constructor for the binary dictionary. This is supposed to be called from the
@@ -76,10 +93,9 @@ public class BinaryDictionary extends Dictionary {
             final String filename, final long offset, final long length,
             final boolean useFullEditDistance, final Locale locale, final String dictType) {
         super(dictType);
+        mLocale = locale;
         mUseFullEditDistance = useFullEditDistance;
         loadDictionary(filename, offset, length);
-        mDicTraverseSession = new DicTraverseSession(locale);
-        mDicTraverseSession.initSession(mNativeDict);
     }
 
     static {
@@ -109,7 +125,14 @@ public class BinaryDictionary extends Dictionary {
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final CharSequence prevWord, final ProximityInfo proximityInfo) {
+        return getSuggestionsWithSessionId(composer, prevWord, proximityInfo, 0);
+    }
+
+    @Override
+    public ArrayList<SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
+            final CharSequence prevWord, final ProximityInfo proximityInfo, int sessionId) {
         if (!isValidDictionary()) return null;
+
         Arrays.fill(mInputCodePoints, WordComposer.NOT_A_CODE);
         // TODO: toLowerCase in the native code
         final int[] prevWordCodePointArray = (null == prevWord)
@@ -128,7 +151,7 @@ public class BinaryDictionary extends Dictionary {
         final int codesSize = isGesture ? ips.getPointerSize() : composerSize;
         // proximityInfo and/or prevWordForBigrams may not be null.
         final int tmpCount = getSuggestionsNative(mNativeDict,
-                proximityInfo.getNativeProximityInfo(), mDicTraverseSession.getSession(),
+                proximityInfo.getNativeProximityInfo(), getTraverseSession(sessionId).getSession(),
                 ips.getXCoordinates(), ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
                 mInputCodePoints, codesSize, 0 /* commitPoint */, isGesture, prevWordCodePointArray,
                 mUseFullEditDistance, mOutputChars, mOutputScores, mSpaceIndices, mOutputTypes);
@@ -187,7 +210,13 @@ public class BinaryDictionary extends Dictionary {
 
     @Override
     public synchronized void close() {
-        mDicTraverseSession.close();
+        for (int i = 0; i < mDicTraverseSessions.size(); ++i) {
+            final int key = mDicTraverseSessions.keyAt(i);
+            final DicTraverseSession traverseSession = mDicTraverseSessions.get(key);
+            if (traverseSession != null) {
+                traverseSession.close();
+            }
+        }
         closeInternal();
     }
 

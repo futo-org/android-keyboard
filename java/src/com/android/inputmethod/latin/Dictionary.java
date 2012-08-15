@@ -62,6 +62,13 @@ public abstract class Dictionary {
     abstract public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final CharSequence prevWord, final ProximityInfo proximityInfo);
 
+    // The default implementation of this method ignores sessionId.
+    // Subclasses that want to use sessionId need to override this method.
+    public ArrayList<SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
+            final CharSequence prevWord, final ProximityInfo proximityInfo, int sessionId) {
+        return getSuggestions(composer, prevWord, proximityInfo);
+    }
+
     /**
      * Checks if the given word occurs in the dictionary
      * @param word the word to search for. The search should be case-insensitive.
