@@ -516,13 +516,22 @@ public class FusionDictionary implements Iterable<Word> {
             int indexOfGroup = findIndexOfChar(node, s.codePointAt(index));
             if (CHARACTER_NOT_FOUND == indexOfGroup) return null;
             currentGroup = node.mData.get(indexOfGroup);
+
+            if (s.length() - index < currentGroup.mChars.length) return null;
+            int newIndex = index;
+            while (newIndex < s.length() && newIndex - index < currentGroup.mChars.length) {
+                if (currentGroup.mChars[newIndex - index] != s.codePointAt(newIndex)) return null;
+                newIndex++;
+            }
+            index = newIndex;
+
             if (DBG) checker.append(new String(currentGroup.mChars, 0, currentGroup.mChars.length));
-            index += currentGroup.mChars.length;
             if (index < s.length()) {
                 node = currentGroup.mChildren;
             }
         } while (null != node && index < s.length());
 
+        if (index < s.length()) return null;
         if (DBG && !s.equals(checker.toString())) return null;
         return currentGroup;
     }
