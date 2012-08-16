@@ -230,7 +230,7 @@ int Correction::goDownTree(
 }
 
 // TODO: remove
-int Correction::getInputIndex() {
+int Correction::getInputIndex() const {
     return mInputIndex;
 }
 

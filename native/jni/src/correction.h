@@ -38,63 +38,8 @@ class Correction {
         NOT_ON_TERMINAL
     } CorrectionType;
 
-    /////////////////////////
-    // static inline utils //
-    /////////////////////////
-
-    static const int TWO_31ST_DIV_255 = S_INT_MAX / 255;
-    static inline int capped255MultForFullMatchAccentsOrCapitalizationDifference(const int num) {
-        return (num < TWO_31ST_DIV_255 ? 255 * num : S_INT_MAX);
-    }
-
-    static const int TWO_31ST_DIV_2 = S_INT_MAX / 2;
-    inline static void multiplyIntCapped(const int multiplier, int *base) {
-        const int temp = *base;
-        if (temp != S_INT_MAX) {
-            // Branch if multiplier == 2 for the optimization
-            if (multiplier < 0) {
-                if (DEBUG_DICT) {
-                    assert(false);
-                }
-                AKLOGI("--- Invalid multiplier: %d", multiplier);
-            } else if (multiplier == 0) {
-                *base = 0;
-            } else if (multiplier == 2) {
-                *base = TWO_31ST_DIV_2 >= temp ? temp << 1 : S_INT_MAX;
-            } else {
-                // TODO: This overflow check gives a wrong answer when, for example,
-                //       temp = 2^16 + 1 and multiplier = 2^17 + 1.
-                //       Fix this behavior.
-                const int tempRetval = temp * multiplier;
-                *base = tempRetval >= temp ? tempRetval : S_INT_MAX;
-            }
-        }
-    }
-
-    inline static int powerIntCapped(const int base, const int n) {
-        if (n <= 0) return 1;
-        if (base == 2) {
-            return n < 31 ? 1 << n : S_INT_MAX;
-        } else {
-            int ret = base;
-            for (int i = 1; i < n; ++i) multiplyIntCapped(base, &ret);
-            return ret;
-        }
-    }
-
-    inline static void multiplyRate(const int rate, int *freq) {
-        if (*freq != S_INT_MAX) {
-            if (*freq > 1000000) {
-                *freq /= 100;
-                multiplyIntCapped(rate, freq);
-            } else {
-                multiplyIntCapped(rate, freq);
-                *freq /= 100;
-            }
-        }
-    }
-
     Correction() {};
+    virtual ~Correction();
     void resetCorrection();
     void initCorrection(
             const ProximityInfo *pi, const int inputLength, const int maxWordLength);
@@ -108,27 +53,7 @@ class Correction {
     bool sameAsTyped();
     bool initProcessState(const int index);
 
-    int getInputIndex();
-
-    virtual ~Correction();
-    int getSpaceProximityPos() const {
-        return mSpaceProximityPos;
-    }
-    int getMissingSpacePos() const {
-        return mMissingSpacePos;
-    }
-
-    int getSkipPos() const {
-        return mSkipPos;
-    }
-
-    int getExcessivePos() const {
-        return mExcessivePos;
-    }
-
-    int getTransposedPos() const {
-        return mTransposedPos;
-    }
+    int getInputIndex() const;
 
     bool needsToPrune() const;
 
@@ -195,6 +120,81 @@ class Correction {
 
  private:
     DISALLOW_COPY_AND_ASSIGN(Correction);
+
+    /////////////////////////
+    // static inline utils //
+    /////////////////////////
+    static const int TWO_31ST_DIV_255 = S_INT_MAX / 255;
+    static inline int capped255MultForFullMatchAccentsOrCapitalizationDifference(const int num) {
+        return (num < TWO_31ST_DIV_255 ? 255 * num : S_INT_MAX);
+    }
+
+    static const int TWO_31ST_DIV_2 = S_INT_MAX / 2;
+    inline static void multiplyIntCapped(const int multiplier, int *base) {
+        const int temp = *base;
+        if (temp != S_INT_MAX) {
+            // Branch if multiplier == 2 for the optimization
+            if (multiplier < 0) {
+                if (DEBUG_DICT) {
+                    assert(false);
+                }
+                AKLOGI("--- Invalid multiplier: %d", multiplier);
+            } else if (multiplier == 0) {
+                *base = 0;
+            } else if (multiplier == 2) {
+                *base = TWO_31ST_DIV_2 >= temp ? temp << 1 : S_INT_MAX;
+            } else {
+                // TODO: This overflow check gives a wrong answer when, for example,
+                //       temp = 2^16 + 1 and multiplier = 2^17 + 1.
+                //       Fix this behavior.
+                const int tempRetval = temp * multiplier;
+                *base = tempRetval >= temp ? tempRetval : S_INT_MAX;
+            }
+        }
+    }
+
+    inline static int powerIntCapped(const int base, const int n) {
+        if (n <= 0) return 1;
+        if (base == 2) {
+            return n < 31 ? 1 << n : S_INT_MAX;
+        } else {
+            int ret = base;
+            for (int i = 1; i < n; ++i) multiplyIntCapped(base, &ret);
+            return ret;
+        }
+    }
+
+    inline static void multiplyRate(const int rate, int *freq) {
+        if (*freq != S_INT_MAX) {
+            if (*freq > 1000000) {
+                *freq /= 100;
+                multiplyIntCapped(rate, freq);
+            } else {
+                multiplyIntCapped(rate, freq);
+                *freq /= 100;
+            }
+        }
+    }
+
+    inline int getSpaceProximityPos() const {
+        return mSpaceProximityPos;
+    }
+    inline int getMissingSpacePos() const {
+        return mMissingSpacePos;
+    }
+
+    inline int getSkipPos() const {
+        return mSkipPos;
+    }
+
+    inline int getExcessivePos() const {
+        return mExcessivePos;
+    }
+
+    inline int getTransposedPos() const {
+        return mTransposedPos;
+    }
+
     inline void incrementInputIndex();
     inline void incrementOutputIndex();
     inline void startToTraverseAllNodes();
