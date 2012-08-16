@@ -48,9 +48,6 @@ class ProximityInfoState {
     // Defined here                        //
     /////////////////////////////////////////
     ProximityInfoState() {};
-    inline const int *getProximityCharsAt(const int index) const {
-        return mInputCodes + (index * MAX_PROXIMITY_CHARS_SIZE_INTERNAL);
-    }
 
     inline unsigned short getPrimaryCharAt(const int index) const {
         return getProximityCharsAt(index)[0];
@@ -192,6 +189,10 @@ class ProximityInfoState {
 
     bool hasInputCoordinates() const {
         return mInputXCoordinates && mInputYCoordinates;
+    }
+
+    inline const int *getProximityCharsAt(const int index) const {
+        return mInputCodes + (index * MAX_PROXIMITY_CHARS_SIZE_INTERNAL);
     }
 
     // const
