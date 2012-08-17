@@ -17,21 +17,23 @@
 #ifndef LATINIME_CHAR_UTILS_H
 #define LATINIME_CHAR_UTILS_H
 
+#include <cctype>
+
 namespace latinime {
 
-inline static int isAsciiUpper(unsigned short c) {
-    return c >= 'A' && c <= 'Z';
+inline static bool isAsciiUpper(unsigned short c) {
+    return isupper(static_cast<int>(c)) != 0;
 }
 
 inline static unsigned short toAsciiLower(unsigned short c) {
     return c - 'A' + 'a';
 }
 
-inline static int isAscii(unsigned short c) {
-    return c <= 127;
+inline static bool isAscii(unsigned short c) {
+    return isascii(static_cast<int>(c)) != 0;
 }
 
-unsigned short latin_tolower(unsigned short c);
+unsigned short latin_tolower(const unsigned short c);
 
 /**
  * Table mapping most combined Latin, Greek, and Cyrillic characters
