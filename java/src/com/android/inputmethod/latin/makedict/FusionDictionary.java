@@ -532,6 +532,7 @@ public class FusionDictionary implements Iterable<Word> {
         } while (null != node && index < s.length());
 
         if (index < s.length()) return null;
+        if (!currentGroup.isTerminal()) return null;
         if (DBG && !s.equals(checker.toString())) return null;
         return currentGroup;
     }
