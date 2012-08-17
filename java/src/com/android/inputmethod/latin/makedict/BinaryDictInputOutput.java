@@ -1410,4 +1410,22 @@ public class BinaryDictInputOutput {
             return false;
         }
     }
+
+    /**
+     * Calculate bigram frequency from compressed value
+     *
+     * @see #makeBigramFlags
+     *
+     * @param unigramFrequency
+     * @param bigramFrequency compressed frequency
+     * @return approximate bigram frequency
+     */
+    public static int reconstructBigramFrequency(final int unigramFrequency,
+            final int bigramFrequency) {
+        final float stepSize = (MAX_TERMINAL_FREQUENCY - unigramFrequency)
+                / (1.5f + MAX_BIGRAM_FREQUENCY);
+        final float resultFreqFloat = (float)unigramFrequency
+                + stepSize * (bigramFrequency + 1.0f);
+        return (int)resultFreqFloat;
+    }
 }
