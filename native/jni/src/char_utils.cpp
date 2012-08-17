@@ -889,7 +889,7 @@ static int compare_pair_capital(const void *a, const void *b) {
             - static_cast<int>((static_cast<const struct LatinCapitalSmallPair *>(b))->capital);
 }
 
-unsigned short latin_tolower(unsigned short c) {
+unsigned short latin_tolower(const unsigned short c) {
     struct LatinCapitalSmallPair *p =
             static_cast<struct LatinCapitalSmallPair *>(bsearch(&c, SORTED_CHAR_MAP,
                     sizeof(SORTED_CHAR_MAP) / sizeof(SORTED_CHAR_MAP[0]),
