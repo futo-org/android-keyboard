@@ -22,7 +22,7 @@
 static inline unsigned char *convertToUnibyteString(unsigned short *input, unsigned char *output,
         const unsigned int length) {
     unsigned int i = 0;
-    for (; i <= length && input[i] != 0; ++i)
+    for (; i < length && input[i] != 0; ++i)
         output[i] = input[i] & 0xFF;
     output[i] = 0;
     return output;
@@ -31,7 +31,7 @@ static inline unsigned char *convertToUnibyteString(unsigned short *input, unsig
 static inline unsigned char *convertToUnibyteStringAndReplaceLastChar(unsigned short *input,
         unsigned char *output, const unsigned int length, unsigned char c) {
     unsigned int i = 0;
-    for (; i <= length && input[i] != 0; ++i)
+    for (; i < length && input[i] != 0; ++i)
         output[i] = input[i] & 0xFF;
     if (i > 0) output[i-1] = c;
     output[i] = 0;
