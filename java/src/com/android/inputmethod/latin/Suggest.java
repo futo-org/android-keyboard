@@ -50,7 +50,6 @@ public class Suggest {
 
     private Dictionary mMainDictionary;
     private ContactsBinaryDictionary mContactsDict;
-    private WhitelistDictionary mWhiteListDictionary;
     private final ConcurrentHashMap<String, Dictionary> mDictionaries =
             new ConcurrentHashMap<String, Dictionary>();
 
@@ -74,21 +73,11 @@ public class Suggest {
         mLocale = locale;
         mMainDictionary = mainDict;
         addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_MAIN, mainDict);
-        initWhitelistAndAutocorrectAndPool(context, locale);
-    }
-
-    private void initWhitelistAndAutocorrectAndPool(final Context context, final Locale locale) {
-        mWhiteListDictionary = new WhitelistDictionary(context, locale);
-        addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_WHITELIST, mWhiteListDictionary);
     }
 
     private void initAsynchronously(final Context context, final Locale locale,
             final SuggestInitializationListener listener) {
         resetMainDict(context, locale, listener);
-
-        // TODO: read the whitelist and init the pool asynchronously too.
-        // initPool should be done asynchronously now that the pool is thread-safe.
-        initWhitelistAndAutocorrectAndPool(context, locale);
     }
 
     private static void addOrReplaceDictionary(
@@ -225,11 +214,6 @@ public class Suggest {
             whitelistedWord = suggestionsSet.first().mWord;
         }
 
-        // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
-        // but still autocorrected from - in the case the whitelist only capitalizes the word.
-        // The whitelist should be case-insensitive, so it's not possible to be consistent with
-        // a boolean flag. Right now this is handled with a slight hack in
-        // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
         final boolean allowsToBeAutoCorrected = (null != whitelistedWord
                 && !whitelistedWord.equals(consideredWord))
                 || AutoCorrection.isNotAWord(mDictionaries, consideredWord,
@@ -311,9 +295,10 @@ public class Suggest {
 
         // At second character typed, search the unigrams (scores being affected by bigrams)
         for (final String key : mDictionaries.keySet()) {
-            // Skip UserUnigramDictionary and WhitelistDictionary to lookup
-            if (key.equals(Dictionary.TYPE_USER_HISTORY)
-                    || key.equals(Dictionary.TYPE_WHITELIST)) {
+            // Skip User history dictionary for lookup
+            // TODO: The user history dictionary should just override getSuggestionsWithSessionId
+            // to make sure it doesn't return anything and we should remove this test
+            if (key.equals(Dictionary.TYPE_USER_HISTORY)) {
                 continue;
             }
             final Dictionary dictionary = mDictionaries.get(key);
