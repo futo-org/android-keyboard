@@ -1961,6 +1961,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private CharSequence addToUserHistoryDictionary(final CharSequence suggestion) {
         if (TextUtils.isEmpty(suggestion)) return null;
+        if (mSuggest == null) return null;
 
         // If correction is not enabled, we don't add words to the user history dictionary.
         // That's to avoid unintended additions in some sensitive fields, or fields that
