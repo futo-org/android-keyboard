@@ -298,8 +298,6 @@ static inline void prof_out(void) {
 // word in the dictionary for languages with digraphs, like German and French
 #define DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH 5
 
-// Minimum suggest depth for one word for all cases except for missing space suggestions.
-#define MIN_SUGGEST_DEPTH 1
 #define MIN_USER_TYPED_LENGTH_FOR_MULTIPLE_WORD_SUGGESTION 3
 #define MIN_USER_TYPED_LENGTH_FOR_EXCESSIVE_CHARACTER_SUGGESTION 3
 

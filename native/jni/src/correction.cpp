@@ -181,10 +181,6 @@ int Correction::getFinalProbabilityInternal(const int probability, unsigned shor
     const int outputIndex = mTerminalOutputIndex;
     const int inputIndex = mTerminalInputIndex;
     *wordLength = outputIndex + 1;
-    if (outputIndex < MIN_SUGGEST_DEPTH) {
-        return NOT_A_PROBABILITY;
-    }
-
     *word = mWord;
     int finalProbability= Correction::RankingAlgorithm::calculateFinalProbability(
             inputIndex, outputIndex, probability, mEditDistanceTable, this, inputLength);
