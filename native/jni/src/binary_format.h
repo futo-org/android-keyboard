@@ -61,13 +61,6 @@ class BinaryFormat {
     static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES = 0x20;
     static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES = 0x30;
 
- private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryFormat);
-    const static int32_t MINIMAL_ONE_BYTE_CHARACTER_VALUE = 0x20;
-    const static int32_t CHARACTER_ARRAY_TERMINATOR = 0x1F;
-    const static int MULTIPLE_BYTE_CHARACTER_ADDITIONAL_SIZE = 2;
-
- public:
     const static int UNKNOWN_FORMAT = -1;
     // Originally, format version 1 had a 16-bit magic number, then the version number `01'
     // then options that must be 0. Hence the first 32-bits of the format are always as follow
@@ -94,7 +87,6 @@ class BinaryFormat {
     static int skipFrequency(const uint8_t flags, const int pos);
     static int skipShortcuts(const uint8_t *const dict, const uint8_t flags, const int pos);
     static int skipBigrams(const uint8_t *const dict, const uint8_t flags, const int pos);
-    static int skipAllAttributes(const uint8_t *const dict, const uint8_t flags, const int pos);
     static int skipChildrenPosAndAttributes(const uint8_t *const dict, const uint8_t flags,
             const int pos);
     static int readChildrenPosition(const uint8_t *const dict, const uint8_t flags, const int pos);
@@ -118,6 +110,13 @@ class BinaryFormat {
         REQUIRES_FRENCH_LIGATURES_PROCESSING = 0x4
     };
     const static unsigned int NO_FLAGS = 0;
+
+ private:
+    DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryFormat);
+    const static int32_t MINIMAL_ONE_BYTE_CHARACTER_VALUE = 0x20;
+    const static int32_t CHARACTER_ARRAY_TERMINATOR = 0x1F;
+    const static int MULTIPLE_BYTE_CHARACTER_ADDITIONAL_SIZE = 2;
+    static int skipAllAttributes(const uint8_t *const dict, const uint8_t flags, const int pos);
 };
 
 inline int BinaryFormat::detectFormat(const uint8_t *const dict) {

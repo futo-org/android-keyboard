@@ -29,8 +29,6 @@ class BigramDictionary {
     BigramDictionary(const unsigned char *dict, int maxWordLength, int maxPredictions);
     int getBigrams(const int32_t *word, int length, int *inputCodes, int codesSize,
             unsigned short *outWords, int *frequencies, int *outputTypes) const;
-    int getBigramListPositionForWord(const int32_t *prevWord, const int prevWordLength,
-            const bool forceLowerCaseSearch) const;
     void fillBigramAddressToFrequencyMapAndFilter(const int32_t *prevWord, const int prevWordLength,
             std::map<int, int> *map, uint8_t *filter) const;
     bool isValidBigram(const int32_t *word1, int length1, const int32_t *word2, int length2) const;
@@ -45,6 +43,8 @@ class BigramDictionary {
     bool getFirstBitOfByte(int *pos) { return (DICT[*pos] & 0x80) > 0; }
     bool getSecondBitOfByte(int *pos) { return (DICT[*pos] & 0x40) > 0; }
     bool checkFirstCharacter(unsigned short *word, int *inputCodes) const;
+    int getBigramListPositionForWord(const int32_t *prevWord, const int prevWordLength,
+            const bool forceLowerCaseSearch) const;
 
     const unsigned char *DICT;
     const int MAX_WORD_LENGTH;
