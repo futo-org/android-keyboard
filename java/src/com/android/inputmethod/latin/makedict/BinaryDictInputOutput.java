@@ -783,10 +783,10 @@ public class BinaryDictInputOutput {
         // their lower bound and exclude their higher bound so we need to have the first step
         // start at exactly 1 unit higher than floor(unigramFreq + half a step).
         // Note : to reconstruct the score, the dictionary reader will need to divide
-        // MAX_TERMINAL_FREQUENCY - unigramFreq by 16.5 likewise, and add
-        // (discretizedFrequency + 0.5) times this value to get the median value of the step,
-        // which is the best approximation. This is how we get the most precise result with
-        // only four bits.
+        // MAX_TERMINAL_FREQUENCY - unigramFreq by 16.5 likewise to get the value of the step,
+        // and add (discretizedFrequency + 0.5 + 0.5) times this value to get the best
+        // approximation. (0.5 to get the first step start, and 0.5 to get the middle of the
+        // step pointed by the discretized frequency.
         final float stepSize =
                 (MAX_TERMINAL_FREQUENCY - unigramFrequency) / (1.5f + MAX_BIGRAM_FREQUENCY);
         final float firstStepStart = 1 + unigramFrequency + (stepSize / 2.0f);
