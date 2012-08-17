@@ -390,43 +390,42 @@ inline void UnigramDictionary::onTerminal(const int probability,
         WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
         const int finalProbability =
                 correction->getFinalProbability(probability, &wordPointer, &wordLength);
-        if (finalProbability != NOT_A_PROBABILITY) {
-            if (0 != finalProbability) {
-                // If the probability is 0, we don't want to add this word. However we still
-                // want to add its shortcuts (including a possible whitelist entry) if any.
-                addWord(wordPointer, wordLength, finalProbability, masterQueue,
-                        Dictionary::KIND_CORRECTION);
-            }
 
-            const int shortcutProbability = finalProbability > 0 ? finalProbability - 1 : 0;
-            // Please note that the shortcut candidates will be added to the master queue only.
-            TerminalAttributes::ShortcutIterator iterator =
-                    terminalAttributes.getShortcutIterator();
-            while (iterator.hasNextShortcutTarget()) {
-                // TODO: addWord only supports weak ordering, meaning we have no means
-                // to control the order of the shortcuts relative to one another or to the word.
-                // We need to either modulate the probability of each shortcut according
-                // to its own shortcut probability or to make the queue
-                // so that the insert order is protected inside the queue for words
-                // with the same score. For the moment we use -1 to make sure the shortcut will
-                // never be in front of the word.
-                uint16_t shortcutTarget[MAX_WORD_LENGTH_INTERNAL];
-                int shortcutFrequency;
-                const int shortcutTargetStringLength = iterator.getNextShortcutTarget(
-                        MAX_WORD_LENGTH_INTERNAL, shortcutTarget, &shortcutFrequency);
-                int shortcutScore;
-                int kind;
-                if (shortcutFrequency == BinaryFormat::WHITELIST_SHORTCUT_FREQUENCY
-                        && correction->sameAsTyped()) {
-                    shortcutScore = S_INT_MAX;
-                    kind = Dictionary::KIND_WHITELIST;
-                } else {
-                    shortcutScore = shortcutProbability;
-                    kind = Dictionary::KIND_CORRECTION;
-                }
-                addWord(shortcutTarget, shortcutTargetStringLength, shortcutScore,
-                        masterQueue, kind);
+        if (0 != finalProbability) {
+            // If the probability is 0, we don't want to add this word. However we still
+            // want to add its shortcuts (including a possible whitelist entry) if any.
+            addWord(wordPointer, wordLength, finalProbability, masterQueue,
+                    Dictionary::KIND_CORRECTION);
+        }
+
+        const int shortcutProbability = finalProbability > 0 ? finalProbability - 1 : 0;
+        // Please note that the shortcut candidates will be added to the master queue only.
+        TerminalAttributes::ShortcutIterator iterator =
+                terminalAttributes.getShortcutIterator();
+        while (iterator.hasNextShortcutTarget()) {
+            // TODO: addWord only supports weak ordering, meaning we have no means
+            // to control the order of the shortcuts relative to one another or to the word.
+            // We need to either modulate the probability of each shortcut according
+            // to its own shortcut probability or to make the queue
+            // so that the insert order is protected inside the queue for words
+            // with the same score. For the moment we use -1 to make sure the shortcut will
+            // never be in front of the word.
+            uint16_t shortcutTarget[MAX_WORD_LENGTH_INTERNAL];
+            int shortcutFrequency;
+            const int shortcutTargetStringLength = iterator.getNextShortcutTarget(
+                    MAX_WORD_LENGTH_INTERNAL, shortcutTarget, &shortcutFrequency);
+            int shortcutScore;
+            int kind;
+            if (shortcutFrequency == BinaryFormat::WHITELIST_SHORTCUT_FREQUENCY
+                    && correction->sameAsTyped()) {
+                shortcutScore = S_INT_MAX;
+                kind = Dictionary::KIND_WHITELIST;
+            } else {
+                shortcutScore = shortcutProbability;
+                kind = Dictionary::KIND_CORRECTION;
             }
+            addWord(shortcutTarget, shortcutTargetStringLength, shortcutScore,
+                    masterQueue, kind);
         }
     }
 
