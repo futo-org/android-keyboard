@@ -178,7 +178,7 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object,
     memset(outputTypes, 0, outputTypesLength * sizeof(outputTypes[0]));
 
     int count;
-    if (isGesture || arraySize > 1) {
+    if (isGesture || arraySize > 0) {
         count = dictionary->getSuggestions(pInfo, traverseSession, xCoordinates, yCoordinates,
                 times, pointerIds, inputCodePoints, arraySize, prevWordCodePoints,
                 prevWordCodePointsLength, commitPoint, isGesture, useFullEditDistance, outputChars,
