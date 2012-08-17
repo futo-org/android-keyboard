@@ -162,7 +162,7 @@ public class BinaryDictionary extends Dictionary {
             if (composerSize > 0 && mOutputScores[j] < 1) break;
             final int start = j * MAX_WORD_LENGTH;
             int len = 0;
-            while (len <  MAX_WORD_LENGTH && mOutputChars[start + len] != 0) {
+            while (len < MAX_WORD_LENGTH && mOutputChars[start + len] != 0) {
                 ++len;
             }
             if (len > 0) {
