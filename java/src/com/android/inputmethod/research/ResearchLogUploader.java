@@ -27,7 +27,6 @@ import android.os.BatteryManager;
 import android.util.Log;
 
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.R.string;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -48,14 +47,13 @@ public final class ResearchLogUploader {
     private static final String TAG = ResearchLogUploader.class.getSimpleName();
     private static final int UPLOAD_INTERVAL_IN_MS = 1000 * 60 * 15; // every 15 min
     private static final int BUF_SIZE = 1024 * 8;
+    protected static final int TIMEOUT_IN_MS = 1000 * 4;
 
     private final boolean mCanUpload;
     private final Context mContext;
     private final File mFilesDir;
     private final URL mUrl;
     private final ScheduledExecutorService mExecutor;
-
-    private Runnable doUploadRunnable = new UploadRunnable(null, false);
 
     public ResearchLogUploader(final Context context, final File filesDir) {
         mContext = context;
@@ -93,11 +91,15 @@ public final class ResearchLogUploader {
 
     public void start() {
         if (mCanUpload) {
-            Log.d(TAG, "scheduling regular uploading");
-            mExecutor.scheduleWithFixedDelay(doUploadRunnable, UPLOAD_INTERVAL_IN_MS,
-                    UPLOAD_INTERVAL_IN_MS, TimeUnit.MILLISECONDS);
-        } else {
-            Log.d(TAG, "no permission to upload");
+            mExecutor.scheduleWithFixedDelay(new UploadRunnable(null /* logToWaitFor */,
+                    null /* callback */, false /* forceUpload */),
+                    UPLOAD_INTERVAL_IN_MS, UPLOAD_INTERVAL_IN_MS, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    public void uploadAfterCompletion(final ResearchLog researchLog, final Callback callback) {
+        if (mCanUpload) {
+            mExecutor.submit(new UploadRunnable(researchLog, callback, true /* forceUpload */));
         }
     }
 
@@ -106,7 +108,8 @@ public final class ResearchLogUploader {
         // another upload happening right now, as it may have missed the latest changes.
         // TODO: Reschedule regular upload tests starting from now.
         if (mCanUpload) {
-            mExecutor.submit(new UploadRunnable(callback, true));
+            mExecutor.submit(new UploadRunnable(null /* logToWaitFor */, callback,
+                    true /* forceUpload */));
         }
     }
 
@@ -130,17 +133,31 @@ public final class ResearchLogUploader {
     }
 
     class UploadRunnable implements Runnable {
+        private final ResearchLog mLogToWaitFor;
         private final Callback mCallback;
         private final boolean mForceUpload;
 
-        public UploadRunnable(final Callback callback, final boolean forceUpload) {
+        public UploadRunnable(final ResearchLog logToWaitFor, final Callback callback,
+                final boolean forceUpload) {
+            mLogToWaitFor = logToWaitFor;
             mCallback = callback;
             mForceUpload = forceUpload;
         }
 
         @Override
         public void run() {
+            if (mLogToWaitFor != null) {
+                waitFor(mLogToWaitFor);
+            }
             doUpload();
+        }
+
+        private void waitFor(final ResearchLog researchLog) {
+            try {
+                researchLog.awaitTermination(TIMEOUT_IN_MS, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         private void doUpload() {
