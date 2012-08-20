@@ -216,15 +216,6 @@ public class Suggest {
                     wordComposerForLookup, prevWordForBigram, proximityInfo));
         }
 
-        final CharSequence whitelistedWordFromWhitelistDictionary =
-                mWhiteListDictionary.getWhitelistedWord(consideredWord);
-        if (whitelistedWordFromWhitelistDictionary != null) {
-            // MAX_SCORE ensures this will be considered strong enough to be auto-corrected
-            suggestionsSet.add(new SuggestedWordInfo(whitelistedWordFromWhitelistDictionary,
-                    SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST,
-                    Dictionary.TYPE_WHITELIST));
-        }
-
         final CharSequence whitelistedWord;
         if (suggestionsSet.isEmpty()) {
             whitelistedWord = null;
