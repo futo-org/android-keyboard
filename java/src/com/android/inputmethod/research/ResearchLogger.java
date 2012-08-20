@@ -18,14 +18,11 @@ package com.android.inputmethod.research;
 
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
@@ -136,9 +133,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private KeyboardSwitcher mKeyboardSwitcher;
     private InputMethodService mInputMethodService;
     private final Statistics mStatistics;
-
-    private Intent mUploadIntent;
-    private PendingIntent mUploadPendingIntent;
+    private ResearchLogUploader mResearchLogUploader;
 
     private LogUnit mCurrentLogUnit = new LogUnit();
 
@@ -181,34 +176,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 e.apply();
             }
         }
+        mResearchLogUploader = new ResearchLogUploader(ims, mFilesDir);
+        mResearchLogUploader.start();
         mKeyboardSwitcher = keyboardSwitcher;
         mInputMethodService = ims;
         mPrefs = prefs;
-        mUploadIntent = new Intent(mInputMethodService, UploaderService.class);
-        mUploadPendingIntent = PendingIntent.getService(mInputMethodService, 0, mUploadIntent, 0);
-
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            scheduleUploadingService(mInputMethodService);
-        }
-    }
-
-    /**
-     * Arrange for the UploaderService to be run on a regular basis.
-     *
-     * Any existing scheduled invocation of UploaderService is removed and rescheduled.  This may
-     * cause problems if this method is called often and frequent updates are required, but since
-     * the user will likely be sleeping at some point, if the interval is less that the expected
-     * sleep duration and this method is not called during that time, the service should be invoked
-     * at some point.
-     */
-    public static void scheduleUploadingService(Context context) {
-        final Intent intent = new Intent(context, UploaderService.class);
-        final PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, 0);
-        final AlarmManager manager =
-                (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        manager.cancel(pendingIntent);
-        manager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                UploaderService.RUN_INTERVAL, UploaderService.RUN_INTERVAL, pendingIntent);
     }
 
     private void cleanupLoggingDir(final File dir, final long time) {
@@ -285,7 +257,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final Editor e = mPrefs.edit();
         e.putBoolean(PREF_RESEARCH_HAS_SEEN_SPLASH, true);
         e.apply();
-        restart();
     }
 
     private void setLoggingAllowed(boolean enableLogging) {
@@ -508,11 +479,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (mFeedbackLogBuffer == null) {
             return;
         }
-        if (includeHistory) {
-            commitCurrentLogUnit();
-        } else {
+        if (!includeHistory) {
             mFeedbackLogBuffer.clear();
         }
+        commitCurrentLogUnit();
         final LogUnit feedbackLogUnit = new LogUnit();
         final Object[] values = {
             feedbackContents
@@ -522,12 +492,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         mFeedbackLogBuffer.shiftIn(feedbackLogUnit);
         publishLogBuffer(mFeedbackLogBuffer, mFeedbackLog, true /* isIncludingPrivateData */);
         mFeedbackLog.close();
-        uploadNow();
+        mResearchLogUploader.uploadAfterCompletion(mFeedbackLog, null);
         mFeedbackLog = new ResearchLog(createLogFile(mFilesDir));
-    }
-
-    public void uploadNow() {
-        mInputMethodService.startService(mUploadIntent);
     }
 
     public void onLeavingSendFeedbackDialog() {
