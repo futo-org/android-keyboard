@@ -124,7 +124,7 @@ public class BinaryDictInputOutput {
      */
 
     private static final int VERSION_1_MAGIC_NUMBER = 0x78B1;
-    private static final int VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
+    public static final int VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
     private static final int MINIMUM_SUPPORTED_VERSION = 1;
     private static final int MAXIMUM_SUPPORTED_VERSION = 2;
     private static final int NOT_A_VERSION_NUMBER = -1;
@@ -1328,6 +1328,21 @@ public class BinaryDictInputOutput {
     }
 
     /**
+     * Reads options from a file and populate a map with their contents.
+     *
+     * The file is read at the current file pointer, so the caller must take care the pointer
+     * is in the right place before calling this.
+     */
+    public static void populateOptionsFromFile(final RandomAccessFile source, final long headerSize,
+            final HashMap<String, String> options) throws IOException {
+        while (source.getFilePointer() < headerSize) {
+            final String key = CharEncoding.readString(source);
+            final String value = CharEncoding.readString(source);
+            options.put(key, value);
+        }
+    }
+
+    /**
      * Reads a random access file and returns the memory representation of the dictionary.
      *
      * This high-level method takes a binary file and reads its contents, populating a
@@ -1358,11 +1373,7 @@ public class BinaryDictInputOutput {
         } else {
             headerSize = (source.readUnsignedByte() << 24) + (source.readUnsignedByte() << 16)
                     + (source.readUnsignedByte() << 8) + source.readUnsignedByte();
-            while (source.getFilePointer() < headerSize) {
-                final String key = CharEncoding.readString(source);
-                final String value = CharEncoding.readString(source);
-                options.put(key, value);
-            }
+            populateOptionsFromFile(source, headerSize, options);
             source.seek(headerSize);
         }
 

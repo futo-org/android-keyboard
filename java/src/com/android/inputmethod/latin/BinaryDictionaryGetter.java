@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -23,6 +25,7 @@ import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 
 import java.io.File;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -50,6 +53,9 @@ class BinaryDictionaryGetter {
     // Name of the category for the main dictionary
     private static final String MAIN_DICTIONARY_CATEGORY = "main";
     public static final String ID_CATEGORY_SEPARATOR = ":";
+
+    // The key considered to read the version attribute in a dictionary file.
+    private static String VERSION_KEY = "version";
 
     // Prevents this from being instantiated
     private BinaryDictionaryGetter() {}
@@ -336,6 +342,42 @@ class BinaryDictionaryGetter {
         return MAIN_DICTIONARY_CATEGORY.equals(idArray[0]);
     }
 
+    // ## HACK ## we prevent usage of a dictionary before version 18 for English only. The reason
+    // for this is, since those do not include whitelist entries, the new code with an old version
+    // of the dictionary would lose whitelist functionality.
+    private static boolean hackCanUseDictionaryFile(final Locale locale, final File f) {
+        // Only for English - other languages didn't have a whitelist, hence this
+        // ad-hock ## HACK ##
+        if (!Locale.ENGLISH.getLanguage().equals(locale.getLanguage())) return true;
+
+        try {
+            // Read the version of the file
+            final RandomAccessFile raf = new RandomAccessFile(f, "r");
+            final int magic = raf.readInt();
+            if (magic != BinaryDictInputOutput.VERSION_2_MAGIC_NUMBER) {
+                return false;
+            }
+            final int formatVersion = raf.readInt();
+            final int headerSize = raf.readInt();
+            final HashMap<String, String> options = new HashMap<String, String>();
+            BinaryDictInputOutput.populateOptionsFromFile(raf, headerSize, options);
+            final String version = options.get(VERSION_KEY);
+            if (null == version) {
+                // No version in the options : the format is unexpected
+                return false;
+            }
+            // Version 18 is the first one to include the whitelist
+            // Obviously this is a big ## HACK ##
+            return Integer.parseInt(version) >= 18;
+        } catch (java.io.FileNotFoundException e) {
+            return false;
+        } catch (java.io.IOException e) {
+            return false;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     /**
      * Returns a list of file addresses for a given locale, trying relevant methods in order.
      *
@@ -366,14 +408,15 @@ class BinaryDictionaryGetter {
         // cachedWordLists may not be null, see doc for getCachedDictionaryList
         for (final File f : cachedWordLists) {
             final String wordListId = getWordListIdFromFileName(f.getName());
-            if (isMainWordListId(wordListId)) {
+            final boolean canUse = f.canRead() && hackCanUseDictionaryFile(locale, f);
+            if (canUse && isMainWordListId(wordListId)) {
                 foundMainDict = true;
             }
             if (!dictPackSettings.isWordListActive(wordListId)) continue;
-            if (f.canRead()) {
+            if (canUse) {
                 fileList.add(AssetFileAddress.makeFromFileName(f.getPath()));
             } else {
-                Log.e(TAG, "Found a cached dictionary file but cannot read it");
+                Log.e(TAG, "Found a cached dictionary file but cannot read or use it");
             }
         }
 
