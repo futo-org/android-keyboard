@@ -1667,6 +1667,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         Utils.Stats.onSeparator((char)primaryCode, x, y);
 
+        mHandler.postUpdateShiftState();
         return didAutoCorrect;
     }
 
