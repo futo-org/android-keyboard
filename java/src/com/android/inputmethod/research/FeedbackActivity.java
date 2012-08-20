@@ -18,7 +18,10 @@ package com.android.inputmethod.research;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.view.View;
 import android.widget.CheckBox;
+import android.widget.EditText;
 
 import com.android.inputmethod.latin.R;
 
@@ -28,11 +31,6 @@ public class FeedbackActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.research_feedback_activity);
         final FeedbackLayout layout = (FeedbackLayout) findViewById(R.id.research_feedback_layout);
-        final CheckBox checkbox = (CheckBox) findViewById(R.id.research_feedback_include_history);
-        final CharSequence cs = checkbox.getText();
-        final String actualString = String.format(cs.toString(),
-                ResearchLogger.FEEDBACK_WORD_BUFFER_SIZE);
-        checkbox.setText(actualString);
         layout.setActivity(this);
     }
 

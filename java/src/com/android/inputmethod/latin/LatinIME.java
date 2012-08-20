@@ -1247,6 +1247,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         mLastKeyTime = when;
         mConnection.beginBatchEdit();
+
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_onCodeInput(primaryCode, x, y);
+        }
+
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         // The space state depends only on the last character pressed and its own previous
         // state. Here, we revert the space state to neutral if the key is actually modifying
@@ -1328,9 +1333,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mLastComposedWord.deactivate();
         mEnteredText = null;
         mConnection.endBatchEdit();
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_onCodeInput(primaryCode, x, y);
-        }
     }
 
     // Called from PointerTracker through the KeyboardActionListener interface

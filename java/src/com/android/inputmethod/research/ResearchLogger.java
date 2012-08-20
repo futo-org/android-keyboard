@@ -67,8 +67,11 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.define.ProductionFlag;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -94,21 +97,24 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             new SimpleDateFormat("yyyyMMddHHmmssS", Locale.US);
     private static final boolean IS_SHOWING_INDICATOR = true;
     private static final boolean IS_SHOWING_INDICATOR_CLEARLY = false;
-    public static final int FEEDBACK_WORD_BUFFER_SIZE = 5;
 
     // constants related to specific log points
     private static final String WHITESPACE_SEPARATORS = " \t\n\r";
     private static final int MAX_INPUTVIEW_LENGTH_TO_CAPTURE = 8192; // must be >=1
     private static final String PREF_RESEARCH_LOGGER_UUID_STRING = "pref_research_logger_uuid";
+    private static final int ABORT_TIMEOUT_IN_MS = 10 * 1000; // timeout to notify user
 
     private static final ResearchLogger sInstance = new ResearchLogger();
     // to write to a different filename, e.g., for testing, set mFile before calling start()
     /* package */ File mFilesDir;
     /* package */ String mUUIDString;
     /* package */ ResearchLog mMainResearchLog;
-    /* package */ ResearchLog mFeedbackLog;
-    /* package */ MainLogBuffer mMainLogBuffer;
-    /* package */ LogBuffer mFeedbackLogBuffer;
+    // The mIntentionalResearchLog records all events for the session, private or not (excepting
+    // passwords).  It is written to permanent storage only if the user explicitly commands
+    // the system to do so.
+    /* package */ ResearchLog mIntentionalResearchLog;
+    // LogUnits are queued here and released only when the user requests the intentional log.
+    private List<LogUnit> mIntentionalResearchLogQueue = new ArrayList<LogUnit>();
 
     private boolean mIsPasswordView = false;
     private boolean mIsLoggingSuspended = false;
@@ -133,9 +139,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private KeyboardSwitcher mKeyboardSwitcher;
     private InputMethodService mInputMethodService;
     private final Statistics mStatistics;
-    private ResearchLogUploader mResearchLogUploader;
 
-    private LogUnit mCurrentLogUnit = new LogUnit();
+    private ResearchLogUploader mResearchLogUploader;
 
     private ResearchLogger() {
         mStatistics = Statistics.getInstance();
@@ -259,16 +264,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         e.apply();
     }
 
-    private void setLoggingAllowed(boolean enableLogging) {
-        if (mPrefs == null) {
-            return;
-        }
-        Editor e = mPrefs.edit();
-        e.putBoolean(PREF_USABILITY_STUDY_MODE, enableLogging);
-        e.apply();
-        sIsLogging = enableLogging;
-    }
-
     private File createLogFile(File filesDir) {
         final StringBuilder sb = new StringBuilder();
         sb.append(FILENAME_PREFIX).append('-');
@@ -315,58 +310,97 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             Log.w(TAG, "IME storage directory does not exist.  Cannot start logging.");
             return;
         }
-        if (mMainLogBuffer == null) {
-            mMainResearchLog = new ResearchLog(createLogFile(mFilesDir));
-            mMainLogBuffer = new MainLogBuffer(mMainResearchLog);
-            mMainLogBuffer.setSuggest(mSuggest);
-        }
-        if (mFeedbackLogBuffer == null) {
-            mFeedbackLog = new ResearchLog(createLogFile(mFilesDir));
-            // LogBuffer is one more than FEEDBACK_WORD_BUFFER_SIZE, because it must also hold
-            // the feedback LogUnit itself.
-            mFeedbackLogBuffer = new LogBuffer(FEEDBACK_WORD_BUFFER_SIZE + 1);
+        try {
+            if (mMainResearchLog == null || !mMainResearchLog.isAlive()) {
+                mMainResearchLog = new ResearchLog(createLogFile(mFilesDir));
+            }
+            mMainResearchLog.start();
+            if (mIntentionalResearchLog == null || !mIntentionalResearchLog.isAlive()) {
+                mIntentionalResearchLog = new ResearchLog(createLogFile(mFilesDir));
+            }
+            mIntentionalResearchLog.start();
+        } catch (IOException e) {
+            Log.w(TAG, "Could not start ResearchLogger.");
         }
     }
 
     /* package */ void stop() {
         logStatistics();
-        commitCurrentLogUnit();
+        publishLogUnit(mCurrentLogUnit, true);
+        mCurrentLogUnit = new LogUnit();
 
-        if (mMainLogBuffer != null) {
-            publishLogBuffer(mMainLogBuffer, mMainResearchLog, false /* isIncludingPrivateData */);
-            mMainResearchLog.close();
-            mMainLogBuffer = null;
+        if (mMainResearchLog != null) {
+            mMainResearchLog.stop();
         }
-        if (mFeedbackLogBuffer != null) {
-            mFeedbackLog.close();
-            mFeedbackLogBuffer = null;
+        if (mIntentionalResearchLog != null) {
+            mIntentionalResearchLog.stop();
         }
+    }
+
+    private static final String[] EVENTKEYS_STATISTICS = {
+        "Statistics", "charCount", "letterCount", "numberCount", "spaceCount", "deleteOpsCount",
+        "wordCount", "isEmptyUponStarting", "isEmptinessStateKnown", "averageTimeBetweenKeys",
+        "averageTimeBeforeDelete", "averageTimeDuringRepeatedDelete", "averageTimeAfterDelete"
+    };
+    private static void logStatistics() {
+        final ResearchLogger researchLogger = getInstance();
+        final Statistics statistics = researchLogger.mStatistics;
+        final Object[] values = {
+                statistics.mCharCount, statistics.mLetterCount, statistics.mNumberCount,
+                statistics.mSpaceCount, statistics.mDeleteKeyCount,
+                statistics.mWordCount, statistics.mIsEmptyUponStarting,
+                statistics.mIsEmptinessStateKnown, statistics.mKeyCounter.getAverageTime(),
+                statistics.mBeforeDeleteKeyCounter.getAverageTime(),
+                statistics.mDuringRepeatedDeleteKeysCounter.getAverageTime(),
+                statistics.mAfterDeleteKeyCounter.getAverageTime()
+        };
+        researchLogger.enqueueEvent(EVENTKEYS_STATISTICS, values);
+    }
+
+    private void setLoggingAllowed(boolean enableLogging) {
+        if (mPrefs == null) {
+            return;
+        }
+        Editor e = mPrefs.edit();
+        e.putBoolean(PREF_USABILITY_STUDY_MODE, enableLogging);
+        e.apply();
+        sIsLogging = enableLogging;
     }
 
     public boolean abort() {
         boolean didAbortMainLog = false;
-        if (mMainLogBuffer != null) {
-            mMainLogBuffer.clear();
+        if (mMainResearchLog != null) {
+            mMainResearchLog.abort();
             try {
-                didAbortMainLog = mMainResearchLog.blockingAbort();
+                mMainResearchLog.waitUntilStopped(ABORT_TIMEOUT_IN_MS);
             } catch (InterruptedException e) {
-                // Don't know whether this succeeded or not.  We assume not; this is reported
-                // to the caller.
+                // interrupted early.  carry on.
             }
-            mMainLogBuffer = null;
+            if (mMainResearchLog.isAbortSuccessful()) {
+                didAbortMainLog = true;
+            }
+            mMainResearchLog = null;
         }
-        boolean didAbortFeedbackLog = false;
-        if (mFeedbackLogBuffer != null) {
-            mFeedbackLogBuffer.clear();
+        boolean didAbortIntentionalLog = false;
+        if (mIntentionalResearchLog != null) {
+            mIntentionalResearchLog.abort();
             try {
-                didAbortFeedbackLog = mFeedbackLog.blockingAbort();
+                mIntentionalResearchLog.waitUntilStopped(ABORT_TIMEOUT_IN_MS);
             } catch (InterruptedException e) {
-                // Don't know whether this succeeded or not.  We assume not; this is reported
-                // to the caller.
+                // interrupted early.  carry on.
             }
-            mFeedbackLogBuffer = null;
+            if (mIntentionalResearchLog.isAbortSuccessful()) {
+                didAbortIntentionalLog = true;
+            }
+            mIntentionalResearchLog = null;
         }
-        return didAbortMainLog && didAbortFeedbackLog;
+        return didAbortMainLog && didAbortIntentionalLog;
+    }
+
+    /* package */ void flush() {
+        if (mMainResearchLog != null) {
+            mMainResearchLog.flush();
+        }
     }
 
     private void restart() {
@@ -470,39 +504,79 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         latinIME.launchKeyboardedDialogActivity(FeedbackActivity.class);
     }
 
-    private static final String[] EVENTKEYS_FEEDBACK = {
-        "UserTimestamp", "contents"
-    };
+    private ResearchLog mFeedbackLog;
+    private List<LogUnit> mFeedbackQueue;
+    private ResearchLog mSavedMainResearchLog;
+    private ResearchLog mSavedIntentionalResearchLog;
+    private List<LogUnit> mSavedIntentionalResearchLogQueue;
+
+    private void saveLogsForFeedback() {
+        mFeedbackLog = mIntentionalResearchLog;
+        if (mIntentionalResearchLogQueue != null) {
+            mFeedbackQueue = new ArrayList<LogUnit>(mIntentionalResearchLogQueue);
+        } else {
+            mFeedbackQueue = null;
+        }
+        mSavedMainResearchLog = mMainResearchLog;
+        mSavedIntentionalResearchLog = mIntentionalResearchLog;
+        mSavedIntentionalResearchLogQueue = mIntentionalResearchLogQueue;
+
+        mMainResearchLog = null;
+        mIntentionalResearchLog = null;
+        mIntentionalResearchLogQueue = new ArrayList<LogUnit>();
+    }
+
+    private static final int LOG_DRAIN_TIMEOUT_IN_MS = 1000 * 5;
     public void sendFeedback(final String feedbackContents, final boolean includeHistory) {
-        if (mFeedbackLogBuffer == null) {
-            return;
+        if (includeHistory && mFeedbackLog != null) {
+            try {
+                LogUnit headerLogUnit = new LogUnit();
+                headerLogUnit.addLogAtom(EVENTKEYS_INTENTIONAL_LOG, EVENTKEYS_NULLVALUES, false);
+                mFeedbackLog.publishAllEvents(headerLogUnit);
+                for (LogUnit logUnit : mFeedbackQueue) {
+                    mFeedbackLog.publishAllEvents(logUnit);
+                }
+                userFeedback(mFeedbackLog, feedbackContents);
+                mFeedbackLog.stop();
+                try {
+                    mFeedbackLog.waitUntilStopped(LOG_DRAIN_TIMEOUT_IN_MS);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                mIntentionalResearchLog = new ResearchLog(createLogFile(mFilesDir));
+                mIntentionalResearchLog.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                mIntentionalResearchLogQueue.clear();
+            }
+            mResearchLogUploader.uploadNow(null);
+        } else {
+            // create a separate ResearchLog just for feedback
+            final ResearchLog feedbackLog = new ResearchLog(createLogFile(mFilesDir));
+            try {
+                feedbackLog.start();
+                userFeedback(feedbackLog, feedbackContents);
+                feedbackLog.stop();
+                feedbackLog.waitUntilStopped(LOG_DRAIN_TIMEOUT_IN_MS);
+                mResearchLogUploader.uploadNow(null);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        if (!includeHistory) {
-            mFeedbackLogBuffer.clear();
-        }
-        commitCurrentLogUnit();
-        final LogUnit feedbackLogUnit = new LogUnit();
-        final Object[] values = {
-            feedbackContents
-        };
-        feedbackLogUnit.addLogStatement(EVENTKEYS_FEEDBACK, values,
-                false /* isPotentiallyPrivate */);
-        mFeedbackLogBuffer.shiftIn(feedbackLogUnit);
-        publishLogBuffer(mFeedbackLogBuffer, mFeedbackLog, true /* isIncludingPrivateData */);
-        mFeedbackLog.close();
-        mResearchLogUploader.uploadAfterCompletion(mFeedbackLog, null);
-        mFeedbackLog = new ResearchLog(createLogFile(mFilesDir));
     }
 
     public void onLeavingSendFeedbackDialog() {
         mInFeedbackDialog = false;
+        mMainResearchLog = mSavedMainResearchLog;
+        mIntentionalResearchLog = mSavedIntentionalResearchLog;
+        mIntentionalResearchLogQueue = mSavedIntentionalResearchLogQueue;
     }
 
     public void initSuggest(Suggest suggest) {
         mSuggest = suggest;
-        if (mMainLogBuffer != null) {
-            mMainLogBuffer.setSuggest(mSuggest);
-        }
     }
 
     private void setIsPasswordView(boolean isPasswordView) {
@@ -510,7 +584,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private boolean isAllowedToLog() {
-        return !mIsPasswordView && !mIsLoggingSuspended && sIsLogging && !mInFeedbackDialog;
+        return !mIsPasswordView && !mIsLoggingSuspended && sIsLogging;
     }
 
     public void requestIndicatorRedraw() {
@@ -557,7 +631,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
+    private static final String CURRENT_TIME_KEY = "_ct";
+    private static final String UPTIME_KEY = "_ut";
+    private static final String EVENT_TYPE_KEY = "_ty";
     private static final Object[] EVENTKEYS_NULLVALUES = {};
+
+    private LogUnit mCurrentLogUnit = new LogUnit();
 
     /**
      * Buffer a research log event, flagging it as privacy-sensitive.
@@ -574,12 +653,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final Object[] values) {
         assert values.length + 1 == keys.length;
         if (isAllowedToLog()) {
-            mCurrentLogUnit.addLogStatement(keys, values, true /* isPotentiallyPrivate */);
+            mCurrentLogUnit.addLogAtom(keys, values, true);
         }
-    }
-
-    private void setCurrentLogUnitContainsDigitFlag() {
-        mCurrentLogUnit.setContainsDigit();
     }
 
     /**
@@ -597,54 +672,140 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private synchronized void enqueueEvent(final String[] keys, final Object[] values) {
         assert values.length + 1 == keys.length;
         if (isAllowedToLog()) {
-            mCurrentLogUnit.addLogStatement(keys, values, false /* isPotentiallyPrivate */);
+            mCurrentLogUnit.addLogAtom(keys, values, false);
         }
     }
 
-    /* package for test */ void commitCurrentLogUnit() {
-        if (!mCurrentLogUnit.isEmpty()) {
-            if (mMainLogBuffer != null) {
-                mMainLogBuffer.shiftIn(mCurrentLogUnit);
-                if (mMainLogBuffer.isSafeToLog() && mMainResearchLog != null) {
-                    publishLogBuffer(mMainLogBuffer, mMainResearchLog,
-                            true /* isIncludingPrivateData */);
-                    mMainLogBuffer.resetWordCounter();
+    // Used to track how often words are logged.  Too-frequent logging can leak
+    // semantics, disclosing private data.
+    /* package for test */ static class LoggingFrequencyState {
+        private static final int DEFAULT_WORD_LOG_FREQUENCY = 10;
+        private int mWordsRemainingToSkip;
+        private final int mFrequency;
+
+        /**
+         * Tracks how often words may be uploaded.
+         *
+         * @param frequency 1=Every word, 2=Every other word, etc.
+         */
+        public LoggingFrequencyState(int frequency) {
+            mFrequency = frequency;
+            mWordsRemainingToSkip = mFrequency;
+        }
+
+        public void onWordLogged() {
+            mWordsRemainingToSkip = mFrequency;
+        }
+
+        public void onWordNotLogged() {
+            if (mWordsRemainingToSkip > 1) {
+                mWordsRemainingToSkip--;
+            }
+        }
+
+        public boolean isSafeToLog() {
+            return mWordsRemainingToSkip <= 1;
+        }
+    }
+
+    /* package for test */ LoggingFrequencyState mLoggingFrequencyState =
+            new LoggingFrequencyState(LoggingFrequencyState.DEFAULT_WORD_LOG_FREQUENCY);
+
+    /* package for test */ boolean isPrivacyThreat(String word) {
+        // Current checks:
+        // - Word not in dictionary
+        // - Word contains numbers
+        // - Privacy-safe word not logged recently
+        if (TextUtils.isEmpty(word)) {
+            return false;
+        }
+        if (!mLoggingFrequencyState.isSafeToLog()) {
+            return true;
+        }
+        final int length = word.length();
+        boolean hasLetter = false;
+        for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
+            final int codePoint = Character.codePointAt(word, i);
+            if (Character.isDigit(codePoint)) {
+                return true;
+            }
+            if (Character.isLetter(codePoint)) {
+                hasLetter = true;
+                break; // Word may contain digits, but will only be allowed if in the dictionary.
+            }
+        }
+        if (hasLetter) {
+            if (mDictionary == null && mSuggest != null && mSuggest.hasMainDictionary()) {
+                mDictionary = mSuggest.getMainDictionary();
+            }
+            if (mDictionary == null) {
+                // Can't access dictionary.  Assume privacy threat.
+                return true;
+            }
+            return !(mDictionary.isValidWord(word));
+        }
+        // No letters, no numbers.  Punctuation, space, or something else.
+        return false;
+    }
+
+    private void onWordComplete(String word) {
+        if (isPrivacyThreat(word)) {
+            publishLogUnit(mCurrentLogUnit, true);
+            mLoggingFrequencyState.onWordNotLogged();
+        } else {
+            publishLogUnit(mCurrentLogUnit, false);
+            mLoggingFrequencyState.onWordLogged();
+        }
+        mCurrentLogUnit = new LogUnit();
+        mStatistics.recordWordEntered();
+    }
+
+    private void publishLogUnit(LogUnit logUnit, boolean isPrivacySensitive) {
+        if (!isAllowedToLog()) {
+            return;
+        }
+        if (mMainResearchLog == null) {
+            return;
+        }
+        if (isPrivacySensitive) {
+            mMainResearchLog.publishPublicEvents(logUnit);
+        } else {
+            mMainResearchLog.publishAllEvents(logUnit);
+        }
+        mIntentionalResearchLogQueue.add(logUnit);
+    }
+
+    /* package */ void publishCurrentLogUnit(ResearchLog researchLog, boolean isPrivacySensitive) {
+        publishLogUnit(mCurrentLogUnit, isPrivacySensitive);
+    }
+
+    static class LogUnit {
+        private final List<String[]> mKeysList = new ArrayList<String[]>();
+        private final List<Object[]> mValuesList = new ArrayList<Object[]>();
+        private final List<Boolean> mIsPotentiallyPrivate = new ArrayList<Boolean>();
+
+        private void addLogAtom(final String[] keys, final Object[] values,
+                final Boolean isPotentiallyPrivate) {
+            mKeysList.add(keys);
+            mValuesList.add(values);
+            mIsPotentiallyPrivate.add(isPotentiallyPrivate);
+        }
+
+        public void publishPublicEventsTo(ResearchLog researchLog) {
+            final int size = mKeysList.size();
+            for (int i = 0; i < size; i++) {
+                if (!mIsPotentiallyPrivate.get(i)) {
+                    researchLog.outputEvent(mKeysList.get(i), mValuesList.get(i));
                 }
             }
-            if (mFeedbackLogBuffer != null) {
-                mFeedbackLogBuffer.shiftIn(mCurrentLogUnit);
-            }
-            mCurrentLogUnit = new LogUnit();
-            Log.d(TAG, "commitCurrentLogUnit");
         }
-    }
 
-    /* package for test */ void publishLogBuffer(final LogBuffer logBuffer,
-            final ResearchLog researchLog, final boolean isIncludingPrivateData) {
-        LogUnit logUnit;
-        while ((logUnit = logBuffer.shiftOut()) != null) {
-            researchLog.publish(logUnit, isIncludingPrivateData);
-        }
-    }
-
-    private boolean hasOnlyLetters(final String word) {
-        final int length = word.length();
-        for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
-            final int codePoint = word.codePointAt(i);
-            if (!Character.isLetter(codePoint)) {
-                return false;
+        public void publishAllEventsTo(ResearchLog researchLog) {
+            final int size = mKeysList.size();
+            for (int i = 0; i < size; i++) {
+                researchLog.outputEvent(mKeysList.get(i), mValuesList.get(i));
             }
         }
-        return true;
-    }
-
-    private void onWordComplete(final String word) {
-        Log.d(TAG, "onWordComplete: " + word);
-        if (word != null && word.length() > 0 && hasOnlyLetters(word)) {
-            mCurrentLogUnit.setWord(word);
-            mStatistics.recordWordEntered();
-        }
-        commitCurrentLogUnit();
     }
 
     private static int scrubDigitFromCodePoint(int codePoint) {
@@ -697,6 +858,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         return WORD_REPLACEMENT_STRING;
     }
 
+    // Special methods related to startup, shutdown, logging itself
+
+    private static final String[] EVENTKEYS_INTENTIONAL_LOG = {
+        "IntentionalLog"
+    };
+
     private static final String[] EVENTKEYS_LATINIME_ONSTARTINPUTVIEWINTERNAL = {
         "LatinIMEOnStartInputViewInternal", "uuid", "packageName", "inputType", "imeOptions",
         "fieldId", "display", "model", "prefs", "versionCode", "versionName", "outputFormatVersion"
@@ -704,6 +871,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void latinIME_onStartInputViewInternal(final EditorInfo editorInfo,
             final SharedPreferences prefs) {
         final ResearchLogger researchLogger = getInstance();
+        if (researchLogger.mInFeedbackDialog) {
+            researchLogger.saveLogsForFeedback();
+        }
         researchLogger.start();
         if (editorInfo != null) {
             final Context context = researchLogger.mInputMethodService;
@@ -742,6 +912,16 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         researchLogger.enqueueEvent(EVENTKEYS_PREFS_CHANGED, values);
     }
 
+    private void userFeedback(ResearchLog researchLog, String feedbackContents) {
+        // this method is special; it directs the feedbackContents to a particular researchLog
+        final LogUnit logUnit = new LogUnit();
+        final Object[] values = {
+            feedbackContents
+        };
+        logUnit.addLogAtom(EVENTKEYS_USER_FEEDBACK, values, false);
+        researchLog.publishAllEvents(logUnit);
+    }
+
     // Regular logging methods
 
     private static final String[] EVENTKEYS_MAINKEYBOARDVIEW_PROCESSMOTIONEVENT = {
@@ -776,16 +956,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         "LatinIMEOnCodeInput", "code", "x", "y"
     };
     public static void latinIME_onCodeInput(final int code, final int x, final int y) {
-        final long time = SystemClock.uptimeMillis();
-        final ResearchLogger researchLogger = getInstance();
         final Object[] values = {
             Keyboard.printableCode(scrubDigitFromCodePoint(code)), x, y
         };
+        final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_ONCODEINPUT, values);
-        if (Character.isDigit(code)) {
-            researchLogger.setCurrentLogUnitContainsDigitFlag();
-        }
-        researchLogger.mStatistics.recordChar(code, time);
+        researchLogger.mStatistics.recordChar(code, SystemClock.uptimeMillis());
     }
 
     private static final String[] EVENTKEYS_LATINIME_ONDISPLAYCOMPLETIONS = {
@@ -850,7 +1026,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             }
             final ResearchLogger researchLogger = getInstance();
             researchLogger.enqueueEvent(EVENTKEYS_LATINIME_ONWINDOWHIDDEN, values);
-            researchLogger.commitCurrentLogUnit();
+            // Play it safe.  Remove privacy-sensitive events.
+            researchLogger.publishLogUnit(researchLogger.mCurrentLogUnit, true);
+            researchLogger.mCurrentLogUnit = new LogUnit();
             getInstance().stop();
         }
     }
@@ -915,11 +1093,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final Object[] values = {
             Keyboard.printableCode(scrubDigitFromCodePoint(code))
         };
-        final ResearchLogger researchLogger = getInstance();
-        researchLogger.enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_SENDKEYCODEPOINT, values);
-        if (Character.isDigit(code)) {
-            researchLogger.setCurrentLogUnitContainsDigitFlag();
-        }
+        getInstance().enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_SENDKEYCODEPOINT, values);
     }
 
     private static final String[] EVENTKEYS_LATINIME_SWAPSWAPPERANDSPACE = {
@@ -1057,21 +1231,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 EVENTKEYS_RICHINPUTCONNECTION_COMMITCOMPLETION, values);
     }
 
-    // Disabled for privacy-protection reasons.  Because this event comes after
-    // richInputConnection_commitText, which is the event used to separate LogUnits, the
-    // data in this event can be associated with the next LogUnit, revealing information
-    // about the current word even if it was supposed to be suppressed.  The occurrance of
-    // autocorrection can be determined by examining the difference between the text strings in
-    // the last call to richInputConnection_setComposingText before
-    // richInputConnection_commitText, so it's not a data loss.
-    // TODO: Figure out how to log this event without loss of privacy.
-    /*
     private static final String[] EVENTKEYS_RICHINPUTCONNECTION_COMMITCORRECTION = {
-        "RichInputConnectionCommitCorrection", "typedWord", "autoCorrection"
+        "RichInputConnectionCommitCorrection", "CorrectionInfo"
     };
-    */
     public static void richInputConnection_commitCorrection(CorrectionInfo correctionInfo) {
-        /*
         final String typedWord = correctionInfo.getOldText().toString();
         final String autoCorrection = correctionInfo.getNewText().toString();
         final Object[] values = {
@@ -1080,7 +1243,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueuePotentiallyPrivateEvent(
                 EVENTKEYS_RICHINPUTCONNECTION_COMMITCORRECTION, values);
-        */
     }
 
     private static final String[] EVENTKEYS_RICHINPUTCONNECTION_COMMITTEXT = {
@@ -1106,8 +1268,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final Object[] values = {
             beforeLength, afterLength
         };
-        getInstance().enqueuePotentiallyPrivateEvent(
-                EVENTKEYS_RICHINPUTCONNECTION_DELETESURROUNDINGTEXT, values);
+        getInstance().enqueueEvent(EVENTKEYS_RICHINPUTCONNECTION_DELETESURROUNDINGTEXT, values);
     }
 
     private static final String[] EVENTKEYS_RICHINPUTCONNECTION_FINISHCOMPOSINGTEXT = {
@@ -1137,8 +1298,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             keyEvent.getAction(),
             keyEvent.getKeyCode()
         };
-        getInstance().enqueuePotentiallyPrivateEvent(EVENTKEYS_RICHINPUTCONNECTION_SENDKEYEVENT,
-                values);
+        getInstance().enqueueEvent(EVENTKEYS_RICHINPUTCONNECTION_SENDKEYEVENT, values);
     }
 
     private static final String[] EVENTKEYS_RICHINPUTCONNECTION_SETCOMPOSINGTEXT = {
@@ -1146,14 +1306,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     };
     public static void richInputConnection_setComposingText(final CharSequence text,
             final int newCursorPosition) {
-        if (text == null) {
-            throw new RuntimeException("setComposingText is null");
-        }
         final Object[] values = {
             text, newCursorPosition
         };
-        getInstance().enqueuePotentiallyPrivateEvent(EVENTKEYS_RICHINPUTCONNECTION_SETCOMPOSINGTEXT,
-                values);
+        getInstance().enqueueEvent(EVENTKEYS_RICHINPUTCONNECTION_SETCOMPOSINGTEXT, values);
     }
 
     private static final String[] EVENTKEYS_RICHINPUTCONNECTION_SETSELECTION = {
@@ -1163,8 +1319,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final Object[] values = {
             from, to
         };
-        getInstance().enqueuePotentiallyPrivateEvent(EVENTKEYS_RICHINPUTCONNECTION_SETSELECTION,
-                values);
+        getInstance().enqueueEvent(EVENTKEYS_RICHINPUTCONNECTION_SETSELECTION, values);
     }
 
     private static final String[] EVENTKEYS_SUDDENJUMPINGTOUCHEVENTHANDLER_ONTOUCHEVENT = {
@@ -1198,25 +1353,5 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     };
     public void userTimestamp() {
         getInstance().enqueueEvent(EVENTKEYS_USER_TIMESTAMP, EVENTKEYS_NULLVALUES);
-    }
-
-    private static final String[] EVENTKEYS_STATISTICS = {
-        "Statistics", "charCount", "letterCount", "numberCount", "spaceCount", "deleteOpsCount",
-        "wordCount", "isEmptyUponStarting", "isEmptinessStateKnown", "averageTimeBetweenKeys",
-        "averageTimeBeforeDelete", "averageTimeDuringRepeatedDelete", "averageTimeAfterDelete"
-    };
-    private static void logStatistics() {
-        final ResearchLogger researchLogger = getInstance();
-        final Statistics statistics = researchLogger.mStatistics;
-        final Object[] values = {
-                statistics.mCharCount, statistics.mLetterCount, statistics.mNumberCount,
-                statistics.mSpaceCount, statistics.mDeleteKeyCount,
-                statistics.mWordCount, statistics.mIsEmptyUponStarting,
-                statistics.mIsEmptinessStateKnown, statistics.mKeyCounter.getAverageTime(),
-                statistics.mBeforeDeleteKeyCounter.getAverageTime(),
-                statistics.mDuringRepeatedDeleteKeysCounter.getAverageTime(),
-                statistics.mAfterDeleteKeyCounter.getAverageTime()
-        };
-        researchLogger.enqueueEvent(EVENTKEYS_STATISTICS, values);
     }
 }
