@@ -407,8 +407,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             abort();
         }
         requestIndicatorRedraw();
-        mPrefs = prefs;
-        prefsChanged(prefs);
     }
 
     public void presentResearchDialog(final LatinIME latinIME) {
@@ -731,17 +729,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
     public void latinIME_onFinishInputInternal() {
         stop();
-    }
-
-    private static final String[] EVENTKEYS_PREFS_CHANGED = {
-        "PrefsChanged", "prefs"
-    };
-    public static void prefsChanged(final SharedPreferences prefs) {
-        final ResearchLogger researchLogger = getInstance();
-        final Object[] values = {
-            prefs
-        };
-        researchLogger.enqueueEvent(EVENTKEYS_PREFS_CHANGED, values);
     }
 
     private static final String[] EVENTKEYS_PREFS_CHANGED = {
