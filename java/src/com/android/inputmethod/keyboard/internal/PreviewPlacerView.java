@@ -50,6 +50,9 @@ public class PreviewPlacerView extends RelativeLayout {
     private final SparseArray<PointerTracker> mPointers = new SparseArray<PointerTracker>();
 
     private String mGestureFloatingPreviewText;
+    private int mLastPointerX;
+    private int mLastPointerY;
+
     private boolean mDrawsGesturePreviewTrail;
     private boolean mDrawsGestureFloatingPreviewText;
 
@@ -154,31 +157,30 @@ public class PreviewPlacerView extends RelativeLayout {
     public void invalidatePointer(PointerTracker tracker) {
         synchronized (mPointers) {
             mPointers.put(tracker.mPointerId, tracker);
-            // TODO: Should narrow the invalidate region.
-            invalidate();
         }
+        mLastPointerX = tracker.getLastX();
+        mLastPointerY = tracker.getLastY();
+        // TODO: Should narrow the invalidate region.
+        invalidate();
     }
 
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        synchronized (mPointers) {
-            canvas.translate(mXOrigin, mYOrigin);
-            final int trackerCount = mPointers.size();
-            boolean hasDrawnFloatingPreviewText = false;
-            for (int index = 0; index < trackerCount; index++) {
-                final PointerTracker tracker = mPointers.valueAt(index);
-                if (mDrawsGesturePreviewTrail) {
+        canvas.translate(mXOrigin, mYOrigin);
+        if (mDrawsGesturePreviewTrail) {
+            synchronized (mPointers) {
+                final int trackerCount = mPointers.size();
+                for (int index = 0; index < trackerCount; index++) {
+                    final PointerTracker tracker = mPointers.valueAt(index);
                     tracker.drawGestureTrail(canvas, mGesturePaint);
                 }
-                // TODO: Figure out more cleaner way to draw gesture preview text.
-                if (mDrawsGestureFloatingPreviewText && !hasDrawnFloatingPreviewText) {
-                    drawGestureFloatingPreviewText(canvas, tracker, mGestureFloatingPreviewText);
-                    hasDrawnFloatingPreviewText = true;
-                }
             }
-            canvas.translate(-mXOrigin, -mYOrigin);
         }
+        if (mDrawsGestureFloatingPreviewText) {
+            drawGestureFloatingPreviewText(canvas, mGestureFloatingPreviewText);
+        }
+        canvas.translate(-mXOrigin, -mYOrigin);
     }
 
     public void setGestureFloatingPreviewText(String gestureFloatingPreviewText) {
@@ -194,15 +196,16 @@ public class PreviewPlacerView extends RelativeLayout {
         mDrawingHandler.cancelAllMessages();
     }
 
-    private void drawGestureFloatingPreviewText(Canvas canvas, PointerTracker tracker,
-            String gestureFloatingPreviewText) {
+    private void drawGestureFloatingPreviewText(Canvas canvas, String gestureFloatingPreviewText) {
         if (TextUtils.isEmpty(gestureFloatingPreviewText)) {
             return;
         }
 
         final Paint paint = mTextPaint;
-        final int lastX = tracker.getLastX();
-        final int lastY = tracker.getLastY();
+        // TODO: Figure out how we should deal with the floating preview text with multiple moving
+        // fingers.
+        final int lastX = mLastPointerX;
+        final int lastY = mLastPointerY;
         final int textSize = (int)paint.getTextSize();
         final int canvasWidth = canvas.getWidth();
 
