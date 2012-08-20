@@ -34,7 +34,6 @@ import android.graphics.Paint.Style;
 import android.inputmethodservice.InputMethodService;
 import android.os.Build;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -138,12 +137,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private Dictionary mDictionary;
     private KeyboardSwitcher mKeyboardSwitcher;
     private InputMethodService mInputMethodService;
-    private final Statistics mStatistics;
 
     private ResearchLogUploader mResearchLogUploader;
 
     private ResearchLogger() {
-        mStatistics = Statistics.getInstance();
     }
 
     public static ResearchLogger getInstance() {
@@ -273,35 +270,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         return new File(filesDir, sb.toString());
     }
 
-    private void checkForEmptyEditor() {
-        if (mInputMethodService == null) {
-            return;
-        }
-        final InputConnection ic = mInputMethodService.getCurrentInputConnection();
-        if (ic == null) {
-            return;
-        }
-        final CharSequence textBefore = ic.getTextBeforeCursor(1, 0);
-        if (!TextUtils.isEmpty(textBefore)) {
-            mStatistics.setIsEmptyUponStarting(false);
-            return;
-        }
-        final CharSequence textAfter = ic.getTextAfterCursor(1, 0);
-        if (!TextUtils.isEmpty(textAfter)) {
-            mStatistics.setIsEmptyUponStarting(false);
-            return;
-        }
-        if (textBefore != null && textAfter != null) {
-            mStatistics.setIsEmptyUponStarting(true);
-        }
-    }
-
     private void start() {
         maybeShowSplashScreen();
         updateSuspendedState();
         requestIndicatorRedraw();
-        mStatistics.reset();
-        checkForEmptyEditor();
         if (!isAllowedToLog()) {
             // Log.w(TAG, "not in usability mode; not logging");
             return;
@@ -325,36 +297,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     /* package */ void stop() {
-        logStatistics();
-        publishLogUnit(mCurrentLogUnit, true);
-        mCurrentLogUnit = new LogUnit();
-
         if (mMainResearchLog != null) {
             mMainResearchLog.stop();
         }
         if (mIntentionalResearchLog != null) {
             mIntentionalResearchLog.stop();
         }
-    }
-
-    private static final String[] EVENTKEYS_STATISTICS = {
-        "Statistics", "charCount", "letterCount", "numberCount", "spaceCount", "deleteOpsCount",
-        "wordCount", "isEmptyUponStarting", "isEmptinessStateKnown", "averageTimeBetweenKeys",
-        "averageTimeBeforeDelete", "averageTimeDuringRepeatedDelete", "averageTimeAfterDelete"
-    };
-    private static void logStatistics() {
-        final ResearchLogger researchLogger = getInstance();
-        final Statistics statistics = researchLogger.mStatistics;
-        final Object[] values = {
-                statistics.mCharCount, statistics.mLetterCount, statistics.mNumberCount,
-                statistics.mSpaceCount, statistics.mDeleteKeyCount,
-                statistics.mWordCount, statistics.mIsEmptyUponStarting,
-                statistics.mIsEmptinessStateKnown, statistics.mKeyCounter.getAverageTime(),
-                statistics.mBeforeDeleteKeyCounter.getAverageTime(),
-                statistics.mDuringRepeatedDeleteKeysCounter.getAverageTime(),
-                statistics.mAfterDeleteKeyCounter.getAverageTime()
-        };
-        researchLogger.enqueueEvent(EVENTKEYS_STATISTICS, values);
     }
 
     private void setLoggingAllowed(boolean enableLogging) {
@@ -757,7 +705,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             mLoggingFrequencyState.onWordLogged();
         }
         mCurrentLogUnit = new LogUnit();
-        mStatistics.recordWordEntered();
     }
 
     private void publishLogUnit(LogUnit logUnit, boolean isPrivacySensitive) {
@@ -959,9 +906,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final Object[] values = {
             Keyboard.printableCode(scrubDigitFromCodePoint(code)), x, y
         };
-        final ResearchLogger researchLogger = getInstance();
-        researchLogger.enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_ONCODEINPUT, values);
-        researchLogger.mStatistics.recordChar(code, SystemClock.uptimeMillis());
+        getInstance().enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_ONCODEINPUT, values);
     }
 
     private static final String[] EVENTKEYS_LATINIME_ONDISPLAYCOMPLETIONS = {
