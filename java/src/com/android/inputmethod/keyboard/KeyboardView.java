@@ -362,9 +362,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         final TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
-
         mKeyDrawParams = new KeyDrawParams(a);
         mKeyPreviewDrawParams = new KeyPreviewDrawParams(a, mKeyDrawParams);
+        mDelayAfterPreview = mKeyPreviewDrawParams.mLingerTimeout;
         mKeyPreviewLayoutId = a.getResourceId(R.styleable.KeyboardView_keyPreviewLayout, 0);
         if (mKeyPreviewLayoutId == 0) {
             mShowKeyPreviewPopup = false;
@@ -373,11 +373,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 R.styleable.KeyboardView_verticalCorrection, 0);
         mMoreKeysLayout = a.getResourceId(R.styleable.KeyboardView_moreKeysLayout, 0);
         mBackgroundDimAlpha = a.getInt(R.styleable.KeyboardView_backgroundDimAlpha, 0);
-        mPreviewPlacerView = new PreviewPlacerView(context, a);
         a.recycle();
 
-        mDelayAfterPreview = mKeyPreviewDrawParams.mLingerTimeout;
-
+        mPreviewPlacerView = new PreviewPlacerView(context, attrs);
         mPaint.setAntiAlias(true);
     }
 
@@ -462,12 +460,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         if (bufferNeedsUpdates || mOffscreenBuffer == null) {
             if (maybeAllocateOffscreenBuffer()) {
                 mInvalidateAllKeys = true;
-                // TODO: Stop using the offscreen canvas even when in software rendering
-                if (mOffscreenCanvas != null) {
-                    mOffscreenCanvas.setBitmap(mOffscreenBuffer);
-                } else {
-                    mOffscreenCanvas = new Canvas(mOffscreenBuffer);
-                }
+                maybeCreateOffscreenCanvas();
             }
             onDrawKeyboard(mOffscreenCanvas);
         }
@@ -493,6 +486,15 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         if (mOffscreenBuffer != null) {
             mOffscreenBuffer.recycle();
             mOffscreenBuffer = null;
+        }
+    }
+
+    private void maybeCreateOffscreenCanvas() {
+        // TODO: Stop using the offscreen canvas even when in software rendering
+        if (mOffscreenCanvas != null) {
+            mOffscreenCanvas.setBitmap(mOffscreenBuffer);
+        } else {
+            mOffscreenCanvas = new Canvas(mOffscreenBuffer);
         }
     }
 

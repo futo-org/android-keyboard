@@ -23,6 +23,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.widget.RelativeLayout;
 
@@ -89,10 +90,16 @@ public class PreviewPlacerView extends RelativeLayout {
         }
     }
 
-    public PreviewPlacerView(Context context, TypedArray keyboardViewAttr) {
+    public PreviewPlacerView(Context context, AttributeSet attrs) {
+        this(context, attrs, R.attr.keyboardViewStyle);
+    }
+
+    public PreviewPlacerView(Context context, AttributeSet attrs, int defStyle) {
         super(context);
         setWillNotDraw(false);
 
+        final TypedArray keyboardViewAttr = context.obtainStyledAttributes(
+                attrs, R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
         final int gestureFloatingPreviewTextSize = keyboardViewAttr.getDimensionPixelSize(
                 R.styleable.KeyboardView_gestureFloatingPreviewTextSize, 0);
         mGestureFloatingPreviewTextColor = keyboardViewAttr.getColor(
@@ -117,6 +124,7 @@ public class PreviewPlacerView extends RelativeLayout {
                 R.styleable.KeyboardView_gesturePreviewTrailColor, 0);
         final int gesturePreviewTrailWidth = keyboardViewAttr.getDimensionPixelSize(
                 R.styleable.KeyboardView_gesturePreviewTrailWidth, 0);
+        keyboardViewAttr.recycle();
 
         mGesturePaint = new Paint();
         mGesturePaint.setAntiAlias(true);
