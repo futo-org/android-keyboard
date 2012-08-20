@@ -64,18 +64,21 @@ public class BinaryDictionary extends Dictionary {
 
     private final SparseArray<DicTraverseSession> mDicTraverseSessions =
             new SparseArray<DicTraverseSession>();
+
+    // TODO: There should be a way to remove used DicTraverseSession objects from
+    // {@code mDicTraverseSessions}.
     private DicTraverseSession getTraverseSession(int traverseSessionId) {
-        DicTraverseSession traverseSession = mDicTraverseSessions.get(traverseSessionId);
-        if (traverseSession == null) {
-            synchronized(mDicTraverseSessions) {
+        synchronized(mDicTraverseSessions) {
+            DicTraverseSession traverseSession = mDicTraverseSessions.get(traverseSessionId);
+            if (traverseSession == null) {
                 traverseSession = mDicTraverseSessions.get(traverseSessionId);
                 if (traverseSession == null) {
                     traverseSession = new DicTraverseSession(mLocale, mNativeDict);
                     mDicTraverseSessions.put(traverseSessionId, traverseSession);
                 }
             }
+            return traverseSession;
         }
-        return traverseSession;
     }
 
     /**
@@ -209,18 +212,20 @@ public class BinaryDictionary extends Dictionary {
     }
 
     @Override
-    public synchronized void close() {
-        for (int i = 0; i < mDicTraverseSessions.size(); ++i) {
-            final int key = mDicTraverseSessions.keyAt(i);
-            final DicTraverseSession traverseSession = mDicTraverseSessions.get(key);
-            if (traverseSession != null) {
-                traverseSession.close();
+    public void close() {
+        synchronized (mDicTraverseSessions) {
+            final int sessionsSize = mDicTraverseSessions.size();
+            for (int index = 0; index < sessionsSize; ++index) {
+                final DicTraverseSession traverseSession = mDicTraverseSessions.valueAt(index);
+                if (traverseSession != null) {
+                    traverseSession.close();
+                }
             }
         }
         closeInternal();
     }
 
-    private void closeInternal() {
+    private synchronized void closeInternal() {
         if (mNativeDict != 0) {
             closeNative(mNativeDict);
             mNativeDict = 0;
