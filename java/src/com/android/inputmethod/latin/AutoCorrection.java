@@ -39,7 +39,6 @@ public class AutoCorrection {
         }
         final CharSequence lowerCasedWord = word.toString().toLowerCase();
         for (final String key : dictionaries.keySet()) {
-            if (key.equals(Dictionary.TYPE_WHITELIST)) continue;
             final Dictionary dictionary = dictionaries.get(key);
             // It's unclear how realistically 'dictionary' can be null, but the monkey is somehow
             // managing to get null in here. Presumably the language is changing to a language with
@@ -64,7 +63,6 @@ public class AutoCorrection {
         }
         int maxFreq = -1;
         for (final String key : dictionaries.keySet()) {
-            if (key.equals(Dictionary.TYPE_WHITELIST)) continue;
             final Dictionary dictionary = dictionaries.get(key);
             if (null == dictionary) continue;
             final int tempFreq = dictionary.getFrequency(word);
