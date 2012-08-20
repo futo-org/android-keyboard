@@ -35,7 +35,6 @@ import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SynchronouslyLoadedContactsBinaryDictionary;
 import com.android.inputmethod.latin.SynchronouslyLoadedUserBinaryDictionary;
 import com.android.inputmethod.latin.UserBinaryDictionary;
-import com.android.inputmethod.latin.WhitelistDictionary;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -67,8 +66,6 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             Collections.synchronizedMap(new TreeMap<String, DictionaryPool>());
     private Map<String, UserBinaryDictionary> mUserDictionaries =
             Collections.synchronizedMap(new TreeMap<String, UserBinaryDictionary>());
-    private Map<String, Dictionary> mWhitelistDictionaries =
-            Collections.synchronizedMap(new TreeMap<String, Dictionary>());
     private ContactsBinaryDictionary mContactsDictionary;
 
     // The threshold for a candidate to be offered as a suggestion.
@@ -366,8 +363,6 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         final Map<String, UserBinaryDictionary> oldUserDictionaries = mUserDictionaries;
         mUserDictionaries =
                 Collections.synchronizedMap(new TreeMap<String, UserBinaryDictionary>());
-        final Map<String, Dictionary> oldWhitelistDictionaries = mWhitelistDictionaries;
-        mWhitelistDictionaries = Collections.synchronizedMap(new TreeMap<String, Dictionary>());
         new Thread("spellchecker_close_dicts") {
             @Override
             public void run() {
@@ -375,9 +370,6 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                     pool.close();
                 }
                 for (Dictionary dict : oldUserDictionaries.values()) {
-                    dict.close();
-                }
-                for (Dictionary dict : oldWhitelistDictionaries.values()) {
                     dict.close();
                 }
                 synchronized (mUseContactsLock) {
@@ -423,12 +415,6 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             mUserDictionaries.put(localeStr, userDictionary);
         }
         dictionaryCollection.addDictionary(userDictionary);
-        Dictionary whitelistDictionary = mWhitelistDictionaries.get(localeStr);
-        if (null == whitelistDictionary) {
-            whitelistDictionary = new WhitelistDictionary(this, locale);
-            mWhitelistDictionaries.put(localeStr, whitelistDictionary);
-        }
-        dictionaryCollection.addDictionary(whitelistDictionary);
         synchronized (mUseContactsLock) {
             if (mUseContactsDictionary) {
                 if (null == mContactsDictionary) {
