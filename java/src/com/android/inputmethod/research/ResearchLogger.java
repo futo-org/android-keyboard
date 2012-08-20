@@ -778,6 +778,17 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         researchLogger.enqueueEvent(EVENTKEYS_PREFS_CHANGED, values);
     }
 
+    private static final String[] EVENTKEYS_PREFS_CHANGED = {
+        "PrefsChanged", "prefs"
+    };
+    public static void prefsChanged(final SharedPreferences prefs) {
+        final ResearchLogger researchLogger = getInstance();
+        final Object[] values = {
+            prefs
+        };
+        researchLogger.enqueueEvent(EVENTKEYS_PREFS_CHANGED, values);
+    }
+
     // Regular logging methods
 
     private static final String[] EVENTKEYS_MAINKEYBOARDVIEW_PROCESSMOTIONEVENT = {
