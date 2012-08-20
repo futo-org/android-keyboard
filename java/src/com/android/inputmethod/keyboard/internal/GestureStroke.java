@@ -14,10 +14,6 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-
-import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.ResizableIntArray;
 
@@ -48,13 +44,8 @@ public class GestureStroke {
 
     private static final float DOUBLE_PI = (float)(2.0f * Math.PI);
 
-    // Fade based on number of gesture samples, see MIN_GESTURE_SAMPLING_RATIO_TO_KEY_HEIGHT
-    private static final int DRAWING_GESTURE_FADE_START = 10;
-    private static final int DRAWING_GESTURE_FADE_RATE = 6;
-
-    public GestureStroke(int pointerId) {
+    public GestureStroke(final int pointerId) {
         mPointerId = pointerId;
-        reset();
     }
 
     public void setGestureSampleLength(final int keyWidth) {
@@ -158,7 +149,7 @@ public class GestureStroke {
         if (dx == 0 && dy == 0) return 0;
         // Would it be faster to call atan2f() directly via JNI?  Not sure about what the JIT
         // does with Math.atan2().
-        return (float)Math.atan2((double)dy, (double)dx);
+        return (float)Math.atan2(dy, dx);
     }
 
     private static float getAngleDiff(final float a1, final float a2) {
@@ -167,21 +158,5 @@ public class GestureStroke {
             return DOUBLE_PI - diff;
         }
         return diff;
-    }
-
-    public void drawGestureTrail(final Canvas canvas, final Paint paint) {
-        // TODO: These paint parameter interpolation should be tunable, possibly introduce an object
-        // that implements an interface such as Paint getPaint(int step, int strokePoints)
-        final int size = mXCoordinates.getLength();
-        final int[] xCoords = mXCoordinates.getPrimitiveArray();
-        final int[] yCoords = mYCoordinates.getPrimitiveArray();
-        int alpha = Constants.Color.ALPHA_OPAQUE;
-        for (int i = size - 1; i > 0 && alpha > 0; i--) {
-            paint.setAlpha(alpha);
-            if (size - i > DRAWING_GESTURE_FADE_START) {
-                alpha -= DRAWING_GESTURE_FADE_RATE;
-            }
-            canvas.drawLine(xCoords[i - 1], yCoords[i - 1], xCoords[i], yCoords[i], paint);
-        }
     }
 }
