@@ -39,6 +39,7 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SettingsValues;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.Utils;
+import com.android.inputmethod.latin.WordComposer;
 
 public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();
@@ -400,6 +401,18 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
             if (mKeyboardView != null) {
                 mKeyboardView.updateAutoCorrectionState(isAutoCorrection);
             }
+        }
+    }
+
+    public int getManualCapsMode() {
+        switch (getKeyboard().mId.mElementId) {
+        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED:
+        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED:
+            return WordComposer.CAPS_MODE_MANUAL_SHIFT_LOCKED;
+        case KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:
+            return WordComposer.CAPS_MODE_MANUAL_SHIFTED;
+        default:
+            return WordComposer.CAPS_MODE_OFF;
         }
     }
 }
