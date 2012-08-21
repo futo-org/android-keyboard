@@ -20,6 +20,7 @@ import android.graphics.Rect;
 import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.Keyboard.Params.TouchPositionCorrection;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.JniUtils;
 
 import java.util.Arrays;
@@ -111,7 +112,7 @@ public class ProximityInfo {
         final Key[] keys = mKeys;
         final TouchPositionCorrection touchPositionCorrection = mTouchPositionCorrection;
         final int[] proximityCharsArray = new int[mGridSize * MAX_PROXIMITY_CHARS_SIZE];
-        Arrays.fill(proximityCharsArray, KeyDetector.NOT_A_CODE);
+        Arrays.fill(proximityCharsArray, Constants.NOT_A_CODE);
         for (int i = 0; i < mGridSize; ++i) {
             final int proximityCharsLength = gridNeighborKeys[i].length;
             for (int j = 0; j < proximityCharsLength; ++j) {
@@ -234,7 +235,7 @@ public class ProximityInfo {
             dest[index++] = code;
         }
         if (index < destLength) {
-            dest[index] = KeyDetector.NOT_A_CODE;
+            dest[index] = Constants.NOT_A_CODE;
         }
     }
 

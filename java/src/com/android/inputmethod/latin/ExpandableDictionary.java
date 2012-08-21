@@ -19,7 +19,6 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -292,9 +291,9 @@ public class ExpandableDictionary extends Dictionary {
                 mCodes[i] = new int[ProximityInfo.MAX_PROXIMITY_CHARS_SIZE];
             }
             final int x = xCoordinates != null && i < xCoordinates.length ?
-                    xCoordinates[i] : WordComposer.NOT_A_COORDINATE;
+                    xCoordinates[i] : Constants.NOT_A_COORDINATE;
             final int y = xCoordinates != null && i < yCoordinates.length ?
-                    yCoordinates[i] : WordComposer.NOT_A_COORDINATE;
+                    yCoordinates[i] : Constants.NOT_A_COORDINATE;
             proximityInfo.fillArrayWithNearestKeyCodes(x, y, codes.getCodeAt(i), mCodes[i]);
         }
         mMaxDepth = mInputLength * 3;
@@ -487,7 +486,7 @@ public class ExpandableDictionary extends Dictionary {
                 for (int j = 0; j < alternativesSize; j++) {
                     final int addedAttenuation = (j > 0 ? 1 : 2);
                     final int currentChar = currentChars[j];
-                    if (currentChar == KeyDetector.NOT_A_CODE) {
+                    if (currentChar == Constants.NOT_A_CODE) {
                         break;
                     }
                     if (currentChar == lowerC || currentChar == c) {

@@ -50,11 +50,11 @@ import android.widget.Toast;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MainKeyboardView;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.R;
@@ -1065,9 +1065,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void latinIME_pickApplicationSpecifiedCompletion(final int index,
             final CharSequence cs) {
         final Object[] values = {
-            index, cs,
-            KeyboardActionListener.SUGGESTION_STRIP_COORDINATE,
-            KeyboardActionListener.SUGGESTION_STRIP_COORDINATE
+            index, cs, Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE
         };
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueuePotentiallyPrivateEvent(
@@ -1082,8 +1080,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         final Object[] values = {
             scrubDigitsFromString(replacedWord), index,
             (suggestion == null ? null : scrubDigitsFromString(suggestion.toString())),
-            KeyboardActionListener.SUGGESTION_STRIP_COORDINATE,
-            KeyboardActionListener.SUGGESTION_STRIP_COORDINATE
+            Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE
         };
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_PICKSUGGESTIONMANUALLY,
@@ -1097,8 +1094,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final CharSequence suggestion) {
         final Object[] values = {
             index, suggestion,
-            KeyboardActionListener.SUGGESTION_STRIP_COORDINATE,
-            KeyboardActionListener.SUGGESTION_STRIP_COORDINATE
+            Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE
         };
         getInstance().enqueueEvent(EVENTKEYS_LATINIME_PUNCTUATIONSUGGESTION, values);
     }

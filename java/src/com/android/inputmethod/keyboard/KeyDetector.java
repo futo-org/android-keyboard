@@ -16,10 +16,10 @@
 
 package com.android.inputmethod.keyboard;
 
+import com.android.inputmethod.latin.Constants;
+
 
 public class KeyDetector {
-    public static final int NOT_A_CODE = -1;
-
     private final int mKeyHysteresisDistanceSquared;
 
     private Keyboard mKeyboard;
@@ -103,7 +103,7 @@ public class KeyDetector {
         final StringBuilder sb = new StringBuilder();
         boolean addDelimiter = false;
         for (final int code : codes) {
-            if (code == NOT_A_CODE) break;
+            if (code == Constants.NOT_A_CODE) break;
             if (addDelimiter) sb.append(", ");
             sb.append(Keyboard.printableCode(code));
             addDelimiter = true;
