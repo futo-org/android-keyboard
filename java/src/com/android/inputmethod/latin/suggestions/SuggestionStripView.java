@@ -72,7 +72,7 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
         OnLongClickListener {
     public interface Listener {
         public boolean addWordToUserDictionary(String word);
-        public void pickSuggestionManually(int index, CharSequence word, int x, int y);
+        public void pickSuggestionManually(int index, CharSequence word);
     }
 
     // The maximum number of suggestions available. See {@link Suggest#mPrefMaxSuggestions}.
@@ -726,9 +726,7 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
         public boolean onCustomRequest(int requestCode) {
             final int index = requestCode;
             final CharSequence word = mSuggestedWords.getWord(index);
-            // TODO: change caller path so coordinates are passed through here
-            mListener.pickSuggestionManually(index, word, NOT_A_TOUCH_COORDINATE,
-                    NOT_A_TOUCH_COORDINATE);
+            mListener.pickSuggestionManually(index, word);
             dismissMoreSuggestions();
             return true;
         }
@@ -874,7 +872,7 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
             return;
 
         final CharSequence word = mSuggestedWords.getWord(index);
-        mListener.pickSuggestionManually(index, word, mLastX, mLastY);
+        mListener.pickSuggestionManually(index, word);
     }
 
     @Override
