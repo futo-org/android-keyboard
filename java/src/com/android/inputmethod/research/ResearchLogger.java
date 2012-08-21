@@ -50,6 +50,7 @@ import android.widget.Toast;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
@@ -1062,9 +1063,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         "LatinIMEPickApplicationSpecifiedCompletion", "index", "text", "x", "y"
     };
     public static void latinIME_pickApplicationSpecifiedCompletion(final int index,
-            final CharSequence cs, int x, int y) {
+            final CharSequence cs) {
         final Object[] values = {
-            index, cs, x, y
+            index, cs,
+            KeyboardActionListener.SUGGESTION_STRIP_COORDINATE,
+            KeyboardActionListener.SUGGESTION_STRIP_COORDINATE
         };
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueuePotentiallyPrivateEvent(
@@ -1075,10 +1078,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         "LatinIMEPickSuggestionManually", "replacedWord", "index", "suggestion", "x", "y"
     };
     public static void latinIME_pickSuggestionManually(final String replacedWord,
-            final int index, CharSequence suggestion, int x, int y) {
+            final int index, CharSequence suggestion) {
         final Object[] values = {
-            scrubDigitsFromString(replacedWord), index, suggestion == null ? null :
-                    scrubDigitsFromString(suggestion.toString()), x, y
+            scrubDigitsFromString(replacedWord), index,
+            (suggestion == null ? null : scrubDigitsFromString(suggestion.toString())),
+            KeyboardActionListener.SUGGESTION_STRIP_COORDINATE,
+            KeyboardActionListener.SUGGESTION_STRIP_COORDINATE
         };
         final ResearchLogger researchLogger = getInstance();
         researchLogger.enqueuePotentiallyPrivateEvent(EVENTKEYS_LATINIME_PICKSUGGESTIONMANUALLY,
@@ -1089,9 +1094,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         "LatinIMEPunctuationSuggestion", "index", "suggestion", "x", "y"
     };
     public static void latinIME_punctuationSuggestion(final int index,
-            final CharSequence suggestion, int x, int y) {
+            final CharSequence suggestion) {
         final Object[] values = {
-            index, suggestion, x, y
+            index, suggestion,
+            KeyboardActionListener.SUGGESTION_STRIP_COORDINATE,
+            KeyboardActionListener.SUGGESTION_STRIP_COORDINATE
         };
         getInstance().enqueueEvent(EVENTKEYS_LATINIME_PUNCTUATIONSUGGESTION, values);
     }
