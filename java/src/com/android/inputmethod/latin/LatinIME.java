@@ -361,7 +361,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mPrefs = prefs;
         LatinImeLogger.init(this, prefs);
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.getInstance().init(this, prefs, mKeyboardSwitcher);
+            ResearchLogger.getInstance().init(this, prefs);
         }
         InputMethodManagerCompatWrapper.init(this);
         SubtypeSwitcher.init(this);
