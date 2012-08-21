@@ -56,6 +56,7 @@ import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MainKeyboardView;
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.LatinIME;
@@ -114,7 +115,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // the system to do so.
     /* package */ ResearchLog mIntentionalResearchLog;
     // LogUnits are queued here and released only when the user requests the intentional log.
-    private List<LogUnit> mIntentionalResearchLogQueue = new ArrayList<LogUnit>();
+    private List<LogUnit> mIntentionalResearchLogQueue = CollectionUtils.newArrayList();
 
     private boolean mIsPasswordView = false;
     private boolean mIsLoggingSuspended = false;
@@ -462,7 +463,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private void saveLogsForFeedback() {
         mFeedbackLog = mIntentionalResearchLog;
         if (mIntentionalResearchLogQueue != null) {
-            mFeedbackQueue = new ArrayList<LogUnit>(mIntentionalResearchLogQueue);
+            mFeedbackQueue = CollectionUtils.newArrayList(mIntentionalResearchLogQueue);
         } else {
             mFeedbackQueue = null;
         }
@@ -472,7 +473,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
 
         mMainResearchLog = null;
         mIntentionalResearchLog = null;
-        mIntentionalResearchLogQueue = new ArrayList<LogUnit>();
+        mIntentionalResearchLogQueue = CollectionUtils.newArrayList();
     }
 
     private static final int LOG_DRAIN_TIMEOUT_IN_MS = 1000 * 5;
@@ -728,9 +729,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     static class LogUnit {
-        private final List<String[]> mKeysList = new ArrayList<String[]>();
-        private final List<Object[]> mValuesList = new ArrayList<Object[]>();
-        private final List<Boolean> mIsPotentiallyPrivate = new ArrayList<Boolean>();
+        private final List<String[]> mKeysList = CollectionUtils.newArrayList();
+        private final List<Object[]> mValuesList = CollectionUtils.newArrayList();
+        private final List<Boolean> mIsPotentiallyPrivate = CollectionUtils.newArrayList();
 
         private void addLogAtom(final String[] keys, final Object[] values,
                 final Boolean isPotentiallyPrivate) {

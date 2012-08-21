@@ -36,6 +36,7 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet.Params.ElementParams;
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.InputTypeUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
@@ -71,7 +72,7 @@ public class KeyboardLayoutSet {
     private final Params mParams;
 
     private static final HashMap<KeyboardId, SoftReference<Keyboard>> sKeyboardCache =
-            new HashMap<KeyboardId, SoftReference<Keyboard>>();
+            CollectionUtils.newHashMap();
     private static final KeysCache sKeysCache = new KeysCache();
 
     public static class KeyboardLayoutSetException extends RuntimeException {
@@ -84,11 +85,7 @@ public class KeyboardLayoutSet {
     }
 
     public static class KeysCache {
-        private final HashMap<Key, Key> mMap;
-
-        public KeysCache() {
-            mMap = new HashMap<Key, Key>();
-        }
+        private final HashMap<Key, Key> mMap = CollectionUtils.newHashMap();
 
         public void clear() {
             mMap.clear();

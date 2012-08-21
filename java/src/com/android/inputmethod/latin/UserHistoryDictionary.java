@@ -93,10 +93,10 @@ public class UserHistoryDictionary extends ExpandableDictionary {
 
     private final static HashMap<String, String> sDictProjectionMap;
     private final static ConcurrentHashMap<String, SoftReference<UserHistoryDictionary>>
-            sLangDictCache = new ConcurrentHashMap<String, SoftReference<UserHistoryDictionary>>();
+            sLangDictCache = CollectionUtils.newConcurrentHashMap();
 
     static {
-        sDictProjectionMap = new HashMap<String, String>();
+        sDictProjectionMap = CollectionUtils.newHashMap();
         sDictProjectionMap.put(MAIN_COLUMN_ID, MAIN_COLUMN_ID);
         sDictProjectionMap.put(MAIN_COLUMN_WORD1, MAIN_COLUMN_WORD1);
         sDictProjectionMap.put(MAIN_COLUMN_WORD2, MAIN_COLUMN_WORD2);

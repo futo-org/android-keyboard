@@ -33,6 +33,7 @@ import com.android.inputmethod.keyboard.internal.KeyStyles;
 import com.android.inputmethod.keyboard.internal.KeyboardCodesSet;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardTextsSet;
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 import com.android.inputmethod.latin.R;
@@ -254,9 +255,9 @@ public class Keyboard {
         public int GRID_WIDTH;
         public int GRID_HEIGHT;
 
-        public final HashSet<Key> mKeys = new HashSet<Key>();
-        public final ArrayList<Key> mShiftKeys = new ArrayList<Key>();
-        public final ArrayList<Key> mAltCodeKeysWhileTyping = new ArrayList<Key>();
+        public final HashSet<Key> mKeys = CollectionUtils.newHashSet();
+        public final ArrayList<Key> mShiftKeys = CollectionUtils.newArrayList();
+        public final ArrayList<Key> mAltCodeKeysWhileTyping = CollectionUtils.newArrayList();
         public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
         public final KeyboardCodesSet mCodesSet = new KeyboardCodesSet();
         public final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();

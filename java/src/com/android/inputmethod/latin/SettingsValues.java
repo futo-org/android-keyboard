@@ -185,7 +185,7 @@ public class SettingsValues {
 
     // Helper functions to create member values.
     private static SuggestedWords createSuggestPuncList(final String[] puncs) {
-        final ArrayList<SuggestedWordInfo> puncList = new ArrayList<SuggestedWordInfo>();
+        final ArrayList<SuggestedWordInfo> puncList = CollectionUtils.newArrayList();
         if (puncs != null) {
             for (final String puncSpec : puncs) {
                 puncList.add(new SuggestedWordInfo(KeySpecParser.getLabel(puncSpec),

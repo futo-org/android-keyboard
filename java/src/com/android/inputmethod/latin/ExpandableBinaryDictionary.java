@@ -62,7 +62,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * that filename.
      */
     private static final HashMap<String, DictionaryController> sSharedDictionaryControllers =
-            new HashMap<String, DictionaryController>();
+            CollectionUtils.newHashMap();
 
     /** The application context. */
     protected final Context mContext;
@@ -159,9 +159,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * the native side.
      */
     public void clearFusionDictionary() {
+        final HashMap<String, String> attributes = CollectionUtils.newHashMap();
         mFusionDictionary = new FusionDictionary(new Node(),
-                new FusionDictionary.DictionaryOptions(new HashMap<String, String>(), false, 
-                        false));
+                new FusionDictionary.DictionaryOptions(attributes, false, false));
     }
 
     /**
@@ -175,7 +175,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             mFusionDictionary.add(word, frequency, null);
         } else {
             // TODO: Do this in the subclass, with this class taking an arraylist.
-            final ArrayList<WeightedString> shortcutTargets = new ArrayList<WeightedString>();
+            final ArrayList<WeightedString> shortcutTargets = CollectionUtils.newArrayList();
             shortcutTargets.add(new WeightedString(shortcutTarget, frequency));
             mFusionDictionary.add(word, frequency, shortcutTargets);
         }

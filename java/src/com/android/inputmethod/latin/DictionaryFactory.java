@@ -53,7 +53,7 @@ public class DictionaryFactory {
                     createBinaryDictionary(context, locale));
         }
 
-        final LinkedList<Dictionary> dictList = new LinkedList<Dictionary>();
+        final LinkedList<Dictionary> dictList = CollectionUtils.newLinkedList();
         final ArrayList<AssetFileAddress> assetFileList =
                 BinaryDictionaryGetter.getDictionaryFiles(locale, context);
         if (null != assetFileList) {

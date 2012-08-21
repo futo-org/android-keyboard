@@ -29,9 +29,8 @@ import java.util.Set;
 public class UserHistoryDictionaryBigramList {
     public static final byte FORGETTING_CURVE_INITIAL_VALUE = 0;
     private static final String TAG = UserHistoryDictionaryBigramList.class.getSimpleName();
-    private static final HashMap<String, Byte> EMPTY_BIGRAM_MAP = new HashMap<String, Byte>();
-    private final HashMap<String, HashMap<String, Byte>> mBigramMap =
-            new HashMap<String, HashMap<String, Byte>>();
+    private static final HashMap<String, Byte> EMPTY_BIGRAM_MAP = CollectionUtils.newHashMap();
+    private final HashMap<String, HashMap<String, Byte>> mBigramMap = CollectionUtils.newHashMap();
     private int mSize = 0;
 
     public void evictAll() {
@@ -57,7 +56,7 @@ public class UserHistoryDictionaryBigramList {
         if (mBigramMap.containsKey(word1)) {
             map = mBigramMap.get(word1);
         } else {
-            map = new HashMap<String, Byte>();
+            map = CollectionUtils.newHashMap();
             mBigramMap.put(word1, map);
         }
         if (!map.containsKey(word2)) {

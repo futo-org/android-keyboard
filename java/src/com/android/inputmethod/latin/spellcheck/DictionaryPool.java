@@ -19,6 +19,7 @@ package com.android.inputmethod.latin.spellcheck;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.WordComposer;
@@ -45,7 +46,7 @@ public class DictionaryPool extends LinkedBlockingQueue<DictAndProximity> {
     private final Locale mLocale;
     private int mSize;
     private volatile boolean mClosed;
-    final static ArrayList<SuggestedWordInfo> noSuggestions = new ArrayList<SuggestedWordInfo>();
+    final static ArrayList<SuggestedWordInfo> noSuggestions = CollectionUtils.newArrayList();
     private final static DictAndProximity dummyDict = new DictAndProximity(
             new Dictionary(Dictionary.TYPE_MAIN) {
                 @Override
