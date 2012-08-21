@@ -30,6 +30,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -78,6 +79,8 @@ import java.util.HashSet;
  * @attr ref R.styleable#KeyboardView_shadowRadius
  */
 public class KeyboardView extends View implements PointerTracker.DrawingProxy {
+    private static final String TAG = KeyboardView.class.getSimpleName();
+
     // Miscellaneous constants
     private static final int[] LONG_PRESSABLE_STATE_SET = { android.R.attr.state_long_pressable };
 
@@ -932,9 +935,18 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         final int[] viewOrigin = new int[2];
         getLocationInWindow(viewOrigin);
         mPreviewPlacerView.setOrigin(viewOrigin[0], viewOrigin[1]);
-        final ViewGroup windowContentView =
-                (ViewGroup)getRootView().findViewById(android.R.id.content);
-        windowContentView.addView(mPreviewPlacerView);
+        final View rootView = getRootView();
+        if (rootView == null) {
+            Log.w(TAG, "Cannot find root view");
+            return;
+        }
+        final ViewGroup windowContentView = (ViewGroup)rootView.findViewById(android.R.id.content);
+        // Note: It'd be very weird if we get null by android.R.id.content.
+        if (windowContentView == null) {
+            Log.w(TAG, "Cannot find android.R.id.content view to add PreviewPlacerView");
+        } else {
+            windowContentView.addView(mPreviewPlacerView);
+        }
     }
 
     public void showGestureFloatingPreviewText(String gestureFloatingPreviewText) {
