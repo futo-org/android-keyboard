@@ -16,5 +16,4 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_PREBUILT_EXECUTABLES := dicttool_aosp makedict_aosp
-
 include $(BUILD_HOST_PREBUILT)

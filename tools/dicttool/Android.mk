@@ -24,7 +24,6 @@ LOCAL_SRC_FILES := $(LOCAL_TOOL_SRC_FILES) \
         $(filter-out $(addprefix %/, $(notdir $(LOCAL_TOOL_SRC_FILES))), $(LOCAL_MAIN_SRC_FILES)) \
         $(call all-java-files-under,tests)
 LOCAL_JAR_MANIFEST := etc/manifest.txt
-
 LOCAL_MODULE := dicttool_aosp
 LOCAL_JAVA_LIBRARIES := junit
 
