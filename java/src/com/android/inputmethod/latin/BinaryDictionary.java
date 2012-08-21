@@ -136,7 +136,7 @@ public class BinaryDictionary extends Dictionary {
             final CharSequence prevWord, final ProximityInfo proximityInfo, int sessionId) {
         if (!isValidDictionary()) return null;
 
-        Arrays.fill(mInputCodePoints, WordComposer.NOT_A_CODE);
+        Arrays.fill(mInputCodePoints, Constants.NOT_A_CODE);
         // TODO: toLowerCase in the native code
         final int[] prevWordCodePointArray = (null == prevWord)
                 ? null : StringUtils.toCodePointArray(prevWord.toString());

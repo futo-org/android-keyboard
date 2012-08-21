@@ -17,7 +17,6 @@
 package com.android.inputmethod.latin;
 
 import com.android.inputmethod.keyboard.Key;
-import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 
 import java.util.Arrays;
@@ -26,10 +25,6 @@ import java.util.Arrays;
  * A place to store the currently composing word with information such as adjacent key codes as well
  */
 public class WordComposer {
-
-    public static final int NOT_A_CODE = KeyDetector.NOT_A_CODE;
-    public static final int NOT_A_COORDINATE = -1;
-
     private static final int N = BinaryDictionary.MAX_WORD_LENGTH;
 
     private int[] mPrimaryKeyCodes;
@@ -166,7 +161,7 @@ public class WordComposer {
             final int codePoint = Character.codePointAt(word, i);
             // We don't want to override the batch input points that are held in mInputPointers
             // (See {@link #add(int,int,int)}).
-            add(codePoint, NOT_A_COORDINATE, NOT_A_COORDINATE);
+            add(codePoint, Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
     }
 
@@ -181,7 +176,7 @@ public class WordComposer {
             add(codePoint, x, y);
             return;
         }
-        add(codePoint, NOT_A_COORDINATE, NOT_A_COORDINATE);
+        add(codePoint, Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
     }
 
     /**

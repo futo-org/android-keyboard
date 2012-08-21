@@ -608,9 +608,8 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
     }
 
     private void invokeCodeInput(int primaryCode) {
-        mKeyboardActionListener.onCodeInput(primaryCode,
-                KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
-                KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
+        mKeyboardActionListener.onCodeInput(
+                primaryCode, Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
     }
 
     private void invokeReleaseKey(int primaryCode) {

@@ -16,14 +16,14 @@
 
 package com.android.inputmethod.latin.spellcheck;
 
-import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.Constants;
 
 import java.util.TreeMap;
 
 public class SpellCheckerProximityInfo {
     /* public for test */
-    final public static int NUL = KeyDetector.NOT_A_CODE;
+    final public static int NUL = Constants.NOT_A_CODE;
 
     // This must be the same as MAX_PROXIMITY_CHARS_SIZE else it will not work inside
     // native code - this value is passed at creation of the binary object and reused

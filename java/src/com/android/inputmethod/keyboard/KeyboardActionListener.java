@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.InputPointers;
 
 public interface KeyboardActionListener {
@@ -44,20 +45,15 @@ public interface KeyboardActionListener {
      *
      * @param primaryCode this is the code of the key that was pressed
      * @param x x-coordinate pixel of touched event. If {@link #onCodeInput} is not called by
-     *            {@link PointerTracker} or so, the value should be {@link #NOT_A_TOUCH_COORDINATE}.
-     *            If it's called on insertion from the suggestion strip, it should be
-     *            {@link #SUGGESTION_STRIP_COORDINATE}.
+     *            {@link PointerTracker} or so, the value should be
+     *            {@link Constants#NOT_A_COORDINATE}. If it's called on insertion from the
+     *            suggestion strip, it should be {@link Constants#SUGGESTION_STRIP_COORDINATE}.
      * @param y y-coordinate pixel of touched event. If {@link #onCodeInput} is not called by
-     *            {@link PointerTracker} or so, the value should be {@link #NOT_A_TOUCH_COORDINATE}.
-     *            If it's called on insertion from the suggestion strip, it should be
-     *            {@link #SUGGESTION_STRIP_COORDINATE}.
+     *            {@link PointerTracker} or so, the value should be
+     *            {@link Constants#NOT_A_COORDINATE}.If it's called on insertion from the
+     *            suggestion strip, it should be {@link Constants#SUGGESTION_STRIP_COORDINATE}.
      */
     public void onCodeInput(int primaryCode, int x, int y);
-
-    // See {@link Adapter#isInvalidCoordinate(int)}.
-    public static final int NOT_A_TOUCH_COORDINATE = -1;
-    public static final int SUGGESTION_STRIP_COORDINATE = -2;
-    public static final int SPELL_CHECKER_COORDINATE = -3;
 
     /**
      * Sends a sequence of characters to the listener.
@@ -119,9 +115,9 @@ public interface KeyboardActionListener {
 
         // TODO: Remove this method when the vertical correction is removed.
         public static boolean isInvalidCoordinate(int coordinate) {
-            // Detect {@link KeyboardActionListener#NOT_A_TOUCH_COORDINATE},
-            // {@link KeyboardActionListener#SUGGESTION_STRIP_COORDINATE}, and
-            // {@link KeyboardActionListener#SPELL_CHECKER_COORDINATE}.
+            // Detect {@link Constants#NOT_A_COORDINATE},
+            // {@link Constants#SUGGESTION_STRIP_COORDINATE}, and
+            // {@link Constants#SPELL_CHECKER_COORDINATE}.
             return coordinate < 0;
         }
     }
