@@ -32,6 +32,14 @@ public class WordComposer {
 
     private static final int N = BinaryDictionary.MAX_WORD_LENGTH;
 
+    public static final int CAPS_MODE_OFF = 0;
+    // 1 is shift bit, 2 is caps bit, 4 is auto bit but this is just a convention as these bits
+    // aren't used anywhere in the code
+    public static final int CAPS_MODE_MANUAL_SHIFTED = 0x1;
+    public static final int CAPS_MODE_MANUAL_SHIFT_LOCKED = 0x3;
+    public static final int CAPS_MODE_AUTO_SHIFTED = 0x5;
+    public static final int CAPS_MODE_AUTO_SHIFT_LOCKED = 0x7;
+
     private int[] mPrimaryKeyCodes;
     private final InputPointers mInputPointers = new InputPointers(N);
     private final StringBuilder mTypedWord;
@@ -42,7 +50,7 @@ public class WordComposer {
     // Cache these values for performance
     private int mCapsCount;
     private int mDigitsCount;
-    private boolean mAutoCapitalized;
+    private int mCapitalizedMode;
     private int mTrailingSingleQuotesCount;
     private int mCodePointSize;
 
@@ -68,7 +76,7 @@ public class WordComposer {
         mCapsCount = source.mCapsCount;
         mDigitsCount = source.mDigitsCount;
         mIsFirstCharCapitalized = source.mIsFirstCharCapitalized;
-        mAutoCapitalized = source.mAutoCapitalized;
+        mCapitalizedMode = source.mCapitalizedMode;
         mTrailingSingleQuotesCount = source.mTrailingSingleQuotesCount;
         mIsResumed = source.mIsResumed;
         mIsBatchMode = source.mIsBatchMode;
@@ -280,20 +288,27 @@ public class WordComposer {
     }
 
     /**
-     * Saves the reason why the word is capitalized - whether it was automatic or
-     * due to the user hitting shift in the middle of a sentence.
-     * @param auto whether it was an automatic capitalization due to start of sentence
+     * Saves the caps mode at the start of composing.
+     *
+     * WordComposer needs to know about this for several reasons. The first is, we need to know
+     * after the fact what the reason was, to register the correct form into the user history
+     * dictionary: if the word was automatically capitalized, we should insert it in all-lower
+     * case but if it's a manual pressing of shift, then it should be inserted as is.
+     * Also, batch input needs to know about the current caps mode to display correctly
+     * capitalized suggestions.
+     * @param mode the mode at the time of start
      */
-    public void setAutoCapitalized(boolean auto) {
-        mAutoCapitalized = auto;
+    public void setCapitalizedModeAtStartComposingTime(final int mode) {
+        mCapitalizedMode = mode;
     }
 
     /**
      * Returns whether the word was automatically capitalized.
      * @return whether the word was automatically capitalized
      */
-    public boolean isAutoCapitalized() {
-        return mAutoCapitalized;
+    public boolean wasAutoCapitalized() {
+        return mCapitalizedMode == CAPS_MODE_AUTO_SHIFT_LOCKED
+                || mCapitalizedMode == CAPS_MODE_AUTO_SHIFTED;
     }
 
     /**

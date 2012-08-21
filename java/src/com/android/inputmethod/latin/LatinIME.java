@@ -1093,6 +1093,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mConnection.getCursorCapsMode(inputType);
     }
 
+    // Factor in auto-caps and manual caps and compute the current caps mode.
+    private int getActualCapsMode() {
+        final int manual = mKeyboardSwitcher.getManualCapsMode();
+        if (manual != WordComposer.CAPS_MODE_OFF) return manual;
+        final int auto = getCurrentAutoCapsState();
+        if (0 != (auto & TextUtils.CAP_MODE_CHARACTERS)) {
+            return WordComposer.CAPS_MODE_AUTO_SHIFT_LOCKED;
+        }
+        if (0 != auto) return WordComposer.CAPS_MODE_AUTO_SHIFTED;
+        return WordComposer.CAPS_MODE_OFF;
+    }
+
     private void swapSwapperAndSpace() {
         CharSequence lastTwo = mConnection.getTextBeforeCursor(2, 0);
         // It is guaranteed lastTwo.charAt(1) is a swapper - else this method is not called.
@@ -1377,8 +1389,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         mConnection.endBatchEdit();
         // TODO: Should handle TextUtils.CAP_MODE_CHARACTER.
-        mWordComposer.setAutoCapitalized(
-                getCurrentAutoCapsState() != Constants.TextUtils.CAP_MODE_OFF);
+        mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode());
     }
 
     @Override
@@ -1613,8 +1624,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mWordComposer.add(primaryCode, keyX, keyY);
             // If it's the first letter, make note of auto-caps state
             if (mWordComposer.size() == 1) {
-                mWordComposer.setAutoCapitalized(
-                        getCurrentAutoCapsState() != Constants.TextUtils.CAP_MODE_OFF);
+                mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode());
             }
             mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
         } else {
@@ -2014,7 +2024,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final CharSequence prevWord
                     = mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators, 2);
             final String secondWord;
-            if (mWordComposer.isAutoCapitalized() && !mWordComposer.isMostlyCaps()) {
+            if (mWordComposer.wasAutoCapitalized() && !mWordComposer.isMostlyCaps()) {
                 secondWord = suggestion.toString().toLowerCase(
                         mSubtypeSwitcher.getCurrentSubtypeLocale());
             } else {
