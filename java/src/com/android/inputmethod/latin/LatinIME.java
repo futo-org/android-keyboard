@@ -1883,8 +1883,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Called from {@link SuggestionStripView} through the {@link SuggestionStripView#Listener}
     // interface
     @Override
-    public void pickSuggestionManually(final int index, final CharSequence suggestion,
-            final int x, final int y) {
+    public void pickSuggestionManually(final int index, final CharSequence suggestion) {
         final SuggestedWords suggestedWords = mSuggestionStripView.getSuggestions();
         // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
         if (suggestion.length() == 1 && isShowingPunctuationList()) {
@@ -1893,7 +1892,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             LatinImeLogger.logOnManualSuggestion("", suggestion.toString(), index, suggestedWords);
             // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
             if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIME_punctuationSuggestion(index, suggestion, x, y);
+                ResearchLogger.latinIME_punctuationSuggestion(index, suggestion);
             }
             final int primaryCode = suggestion.charAt(0);
             onCodeInput(primaryCode,
@@ -1926,8 +1925,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mConnection.commitCompletion(completionInfo);
             mConnection.endBatchEdit();
             if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIME_pickApplicationSpecifiedCompletion(index,
-                        completionInfo.getText(), x, y);
+                ResearchLogger.latinIME_pickApplicationSpecifiedCompletion(
+                        index, completionInfo.getText());
             }
             return;
         }
@@ -1938,7 +1937,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         LatinImeLogger.logOnManualSuggestion(replacedWord,
                 suggestion.toString(), index, suggestedWords);
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_pickSuggestionManually(replacedWord, index, suggestion, x, y);
+            ResearchLogger.latinIME_pickSuggestionManually(replacedWord, index, suggestion);
         }
         mExpectingUpdateSelection = true;
         commitChosenWord(suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,

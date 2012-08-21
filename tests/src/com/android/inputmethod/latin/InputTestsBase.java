@@ -260,9 +260,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
     }
 
     protected void pickSuggestionManually(final int index, final CharSequence suggestion) {
-        mLatinIME.pickSuggestionManually(index, suggestion,
-                KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
-                KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
+        mLatinIME.pickSuggestionManually(index, suggestion);
     }
 
     // Helper to avoid writing the try{}catch block each time
