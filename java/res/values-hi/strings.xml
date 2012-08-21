@@ -72,7 +72,7 @@
     <string name="label_to_alpha_key" msgid="4793983863798817523">"कखग"</string>
     <string name="label_to_symbol_key" msgid="8516904117128967293">"?१२३"</string>
     <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"१२३"</string>
-    <string name="label_pause_key" msgid="181098308428035340">"रोकें"</string>
+    <string name="label_pause_key" msgid="181098308428035340">"पॉज़ करें"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"प्रतीक्षा करें"</string>
     <string name="spoken_use_headphones" msgid="896961781287283493">"ज़ोर से बोली गई पासवर्ड कुंजियां सुनने के लिए हेडसेट प्‍लग इन करें."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"वर्तमान पाठ %s है"</string>
@@ -116,7 +116,7 @@
     <string name="hint_add_to_dictionary" msgid="573678656946085380">"सहेजने के लिए पुन: स्‍पर्श करें"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"शब्‍दकोश उपलब्‍ध है"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"उपयोगकर्ता फ़ीडबैक सक्षम करें"</string>
-    <string name="prefs_description_log" msgid="5827825607258246003">"उपयोग के आंकड़े और क्रैश रिपोर्ट Google को स्वचालित रूप से भेज कर इस इनपुट पद्धति संपादक को बेहतर बनाने में सहायता करें."</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"उपयोग के आंकड़े और क्रैश रिपोर्ट Google को अपने आप भेज कर इस इनपुट पद्धति संपादक को बेहतर बनाने में सहायता करें."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"कीबोर्ड थीम"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"अंग्रेज़ी (यूके)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"अंग्रेज़ी (यूएस)"</string>
