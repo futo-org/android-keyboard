@@ -309,7 +309,7 @@ public class Suggest {
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
                 new ArrayList<SuggestedWordInfo>(suggestionsSet);
         final int suggestionsCount = suggestionsContainer.size();
-        final boolean isFirstCharCapitalized = wordComposer.isAutoCapitalized();
+        final boolean isFirstCharCapitalized = wordComposer.wasAutoCapitalized();
         // TODO: Handle the manual temporary shifted mode.
         // TODO: Should handle TextUtils.CAP_MODE_CHARACTER.
         final boolean isAllUpperCase = false;
