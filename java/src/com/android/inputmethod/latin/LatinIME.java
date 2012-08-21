@@ -1326,8 +1326,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     keyX = x;
                     keyY = y;
                 } else {
-                    keyX = NOT_A_TOUCH_COORDINATE;
-                    keyY = NOT_A_TOUCH_COORDINATE;
+                    keyX = Constants.NOT_A_COORDINATE;
+                    keyY = Constants.NOT_A_COORDINATE;
                 }
                 handleCharacter(primaryCode, keyX, keyY, spaceState);
             }
@@ -1619,7 +1619,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
         } else {
             final boolean swapWeakSpace = maybeStripSpace(primaryCode,
-                    spaceState, KeyboardActionListener.SUGGESTION_STRIP_COORDINATE == x);
+                    spaceState, Constants.SUGGESTION_STRIP_COORDINATE == x);
 
             sendKeyCodePoint(primaryCode);
 
@@ -1649,7 +1649,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         final boolean swapWeakSpace = maybeStripSpace(primaryCode, spaceState,
-                KeyboardActionListener.SUGGESTION_STRIP_COORDINATE == x);
+                Constants.SUGGESTION_STRIP_COORDINATE == x);
 
         if (SPACE_STATE_PHANTOM == spaceState &&
                 mCurrentSettings.isPhantomSpacePromotingSymbol(primaryCode)) {
@@ -1896,8 +1896,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
             final int primaryCode = suggestion.charAt(0);
             onCodeInput(primaryCode,
-                    KeyboardActionListener.SUGGESTION_STRIP_COORDINATE,
-                    KeyboardActionListener.SUGGESTION_STRIP_COORDINATE);
+                    Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE);
             return;
         }
 
@@ -1957,8 +1956,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // If the suggestion is not in the dictionary, the hint should be shown.
                 && !AutoCorrection.isValidWord(mSuggest.getUnigramDictionaries(), suggestion, true);
 
-        Utils.Stats.onSeparator((char)Keyboard.CODE_SPACE, WordComposer.NOT_A_COORDINATE,
-                WordComposer.NOT_A_COORDINATE);
+        Utils.Stats.onSeparator((char)Keyboard.CODE_SPACE,
+                Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         if (showingAddToDictionaryHint && mIsUserDictionaryAvailable) {
             mSuggestionStripView.showAddToDictionaryHint(
                     suggestion, mCurrentSettings.mHintToSaveText);
@@ -2086,8 +2085,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mConnection.commitText(originallyTypedWord, 1);
         // Re-insert the separator
         sendKeyCodePoint(mLastComposedWord.mSeparatorCode);
-        Utils.Stats.onSeparator(mLastComposedWord.mSeparatorCode, WordComposer.NOT_A_COORDINATE,
-                WordComposer.NOT_A_COORDINATE);
+        Utils.Stats.onSeparator(mLastComposedWord.mSeparatorCode,
+                Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.latinIME_revertCommit(originallyTypedWord);
         }
