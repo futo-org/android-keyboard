@@ -381,18 +381,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         ImfUtils.setAdditionalInputMethodSubtypes(this, mCurrentSettings.getAdditionalSubtypes());
 
-        Utils.GCUtils.getInstance().reset();
-        boolean tryGC = true;
-        // Shouldn't this be removed? I think that from Honeycomb on, the GC is now actually working
-        // as expected and this code is useless.
-        for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
-            try {
-                initSuggest();
-                tryGC = false;
-            } catch (OutOfMemoryError e) {
-                tryGC = Utils.GCUtils.getInstance().tryGCOrWait("InitSuggest", e);
-            }
-        }
+        initSuggest();
 
         mDisplayOrientation = res.getConfiguration().orientation;
 
