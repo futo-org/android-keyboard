@@ -130,9 +130,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private final Paint mPaint = new Paint();
     private final Paint.FontMetrics mFontMetrics = new Paint.FontMetrics();
     // This sparse array caches key label text height in pixel indexed by key label text size.
-    private static final SparseArray<Float> sTextHeightCache = new SparseArray<Float>();
+    private static final SparseArray<Float> sTextHeightCache = CollectionUtils.newSparseArray();
     // This sparse array caches key label text width in pixel indexed by key label text size.
-    private static final SparseArray<Float> sTextWidthCache = new SparseArray<Float>();
+    private static final SparseArray<Float> sTextWidthCache = CollectionUtils.newSparseArray();
     private static final char[] KEY_LABEL_REFERENCE_CHAR = { 'M' };
     private static final char[] KEY_NUMERIC_HINT_LABEL_REFERENCE_CHAR = { '8' };
 

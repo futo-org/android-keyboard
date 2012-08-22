@@ -63,7 +63,7 @@ public class BinaryDictionary extends Dictionary {
     private final boolean mUseFullEditDistance;
 
     private final SparseArray<DicTraverseSession> mDicTraverseSessions =
-            new SparseArray<DicTraverseSession>();
+            CollectionUtils.newSparseArray();
 
     // TODO: There should be a way to remove used DicTraverseSession objects from
     // {@code mDicTraverseSessions}.

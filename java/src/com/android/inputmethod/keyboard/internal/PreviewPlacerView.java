@@ -28,6 +28,7 @@ import android.util.SparseArray;
 import android.widget.RelativeLayout;
 
 import com.android.inputmethod.keyboard.PointerTracker;
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
@@ -47,7 +48,7 @@ public class PreviewPlacerView extends RelativeLayout {
     private int mXOrigin;
     private int mYOrigin;
 
-    private final SparseArray<PointerTracker> mPointers = new SparseArray<PointerTracker>();
+    private final SparseArray<PointerTracker> mPointers = CollectionUtils.newSparseArray();
 
     private String mGestureFloatingPreviewText;
     private int mLastPointerX;

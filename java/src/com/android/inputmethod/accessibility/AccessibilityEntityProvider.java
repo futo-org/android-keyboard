@@ -35,6 +35,7 @@ import android.view.inputmethod.EditorInfo;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardView;
+import com.android.inputmethod.latin.CollectionUtils;
 
 /**
  * Exposes a virtual view sub-tree for {@link KeyboardView} and generates
@@ -55,7 +56,7 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
     private final AccessibilityUtils mAccessibilityUtils;
 
     /** A map of integer IDs to {@link Key}s. */
-    private final SparseArray<Key> mVirtualViewIdToKey = new SparseArray<Key>();
+    private final SparseArray<Key> mVirtualViewIdToKey = CollectionUtils.newSparseArray();
 
     /** Temporary rect used to calculate in-screen bounds. */
     private final Rect mTempBoundsInScreen = new Rect();

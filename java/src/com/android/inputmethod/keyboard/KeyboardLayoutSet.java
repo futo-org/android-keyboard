@@ -117,7 +117,7 @@ public class KeyboardLayoutSet {
         int mWidth;
         // Sparse array of KeyboardLayoutSet element parameters indexed by element's id.
         final SparseArray<ElementParams> mKeyboardLayoutSetElementIdToParamsMap =
-                new SparseArray<ElementParams>();
+                CollectionUtils.newSparseArray();
 
         static class ElementParams {
             int mKeyboardXmlId;
