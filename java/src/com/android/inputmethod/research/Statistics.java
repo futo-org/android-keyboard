@@ -66,8 +66,8 @@ public class Statistics {
 
     // To account for the interruptions when the user's attention is directed elsewhere, times
     // longer than MIN_TYPING_INTERMISSION are not counted when estimating this statistic.
-    public static final int MIN_TYPING_INTERMISSION = 5 * 1000;  // in milliseconds
-    public static final int MIN_DELETION_INTERMISSION = 15 * 1000;  // in milliseconds
+    public static final int MIN_TYPING_INTERMISSION = 2 * 1000;  // in milliseconds
+    public static final int MIN_DELETION_INTERMISSION = 10 * 1000;  // in milliseconds
 
     // The last time that a tap was performed
     private long mLastTapTime;
