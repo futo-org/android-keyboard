@@ -89,7 +89,7 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
             super(context, android.R.layout.simple_spinner_item);
             setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-            final TreeSet<SubtypeLocaleItem> items = new TreeSet<SubtypeLocaleItem>();
+            final TreeSet<SubtypeLocaleItem> items = CollectionUtils.newTreeSet();
             final InputMethodInfo imi = ImfUtils.getInputMethodInfoOfThisIme(context);
             final int count = imi.getSubtypeCount();
             for (int i = 0; i < count; i++) {
@@ -533,7 +533,7 @@ public class AdditionalSubtypeSettings extends PreferenceFragment {
 
     private InputMethodSubtype[] getSubtypes() {
         final PreferenceGroup group = getPreferenceScreen();
-        final ArrayList<InputMethodSubtype> subtypes = new ArrayList<InputMethodSubtype>();
+        final ArrayList<InputMethodSubtype> subtypes = CollectionUtils.newArrayList();
         final int count = group.getPreferenceCount();
         for (int i = 0; i < count; i++) {
             final Preference pref = group.getPreference(i);

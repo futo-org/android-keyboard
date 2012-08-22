@@ -53,7 +53,7 @@ public class StringUtils {
         if (TextUtils.isEmpty(csv)) return "";
         final String[] elements = csv.split(",");
         if (!containsInArray(key, elements)) return csv;
-        final ArrayList<String> result = new ArrayList<String>(elements.length - 1);
+        final ArrayList<String> result = CollectionUtils.newArrayList(elements.length - 1);
         for (final String element : elements) {
             if (!key.equals(element)) result.add(element);
         }

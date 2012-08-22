@@ -22,6 +22,8 @@ import android.view.textservice.SentenceSuggestionsInfo;
 import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
 
+import com.android.inputmethod.latin.CollectionUtils;
+
 import java.util.ArrayList;
 
 public class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheckerSession {
@@ -40,10 +42,10 @@ public class AndroidSpellCheckerSession extends AndroidWordLevelSpellCheckerSess
             return null;
         }
         final int N = ssi.getSuggestionsCount();
-        final ArrayList<Integer> additionalOffsets = new ArrayList<Integer>();
-        final ArrayList<Integer> additionalLengths = new ArrayList<Integer>();
+        final ArrayList<Integer> additionalOffsets = CollectionUtils.newArrayList();
+        final ArrayList<Integer> additionalLengths = CollectionUtils.newArrayList();
         final ArrayList<SuggestionsInfo> additionalSuggestionsInfos =
-                new ArrayList<SuggestionsInfo>();
+                CollectionUtils.newArrayList();
         String currentWord = null;
         for (int i = 0; i < N; ++i) {
             final SuggestionsInfo si = ssi.getSuggestionsInfoAt(i);

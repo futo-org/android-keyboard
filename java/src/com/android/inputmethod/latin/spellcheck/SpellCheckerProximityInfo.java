@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.spellcheck;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
 
 import java.util.TreeMap;
@@ -59,7 +60,7 @@ public class SpellCheckerProximityInfo {
         // character.
         // Since we need to build such an array, we want to be able to search in our big proximity
         // data quickly by character, and a map is probably the best way to do this.
-        final private static TreeMap<Integer, Integer> INDICES = new TreeMap<Integer, Integer>();
+        final private static TreeMap<Integer, Integer> INDICES = CollectionUtils.newTreeMap();
 
         // The proximity here is the union of
         // - the proximity for a QWERTY keyboard.
@@ -122,7 +123,7 @@ public class SpellCheckerProximityInfo {
     }
 
     private static class Cyrillic {
-        final private static TreeMap<Integer, Integer> INDICES = new TreeMap<Integer, Integer>();
+        final private static TreeMap<Integer, Integer> INDICES = CollectionUtils.newTreeMap();
         // TODO: The following table is solely based on the keyboard layout. Consult with Russian
         // speakers on commonly misspelled words/letters.
         final static int[] PROXIMITY = {
