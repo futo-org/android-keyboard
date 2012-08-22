@@ -135,7 +135,6 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         mLatinIME.onCreateInputView();
         mLatinIME.onStartInputView(ei, false);
         mInputConnection = ic;
-        mKeyboard = mLatinIME.mKeyboardSwitcher.getKeyboard();
         changeLanguage("en_US");
     }
 
@@ -253,6 +252,8 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
             fail("InputMethodSubtype for locale " + locale + " is not enabled");
         }
         SubtypeSwitcher.getInstance().updateSubtype(subtype);
+        mLatinIME.loadKeyboard();
+        mKeyboard = mLatinIME.mKeyboardSwitcher.getKeyboard();
         waitForDictionaryToBeLoaded();
     }
 
