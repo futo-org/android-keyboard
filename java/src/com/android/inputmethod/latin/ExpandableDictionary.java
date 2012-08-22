@@ -251,7 +251,7 @@ public class ExpandableDictionary extends Dictionary {
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final CharSequence prevWord, final ProximityInfo proximityInfo) {
         if (reloadDictionaryIfRequired()) return null;
-        if (composer.size() <= 1) {
+        if (composer.size() > 1) {
             if (composer.size() >= BinaryDictionary.MAX_WORD_LENGTH) {
                 return null;
             }
