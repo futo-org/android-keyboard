@@ -91,7 +91,7 @@ public class KeyStyles {
 
     private class DeclaredKeyStyle extends KeyStyle {
         private final String mParentStyleName;
-        private final SparseArray<Object> mStyleAttributes = new SparseArray<Object>();
+        private final SparseArray<Object> mStyleAttributes = CollectionUtils.newSparseArray();
 
         public DeclaredKeyStyle(String parentStyleName) {
             mParentStyleName = parentStyleName;

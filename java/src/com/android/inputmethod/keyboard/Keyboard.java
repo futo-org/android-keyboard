@@ -135,7 +135,7 @@ public class Keyboard {
     public final Key[] mAltCodeKeysWhileTyping;
     public final KeyboardIconsSet mIconsSet;
 
-    private final SparseArray<Key> mKeyCache = new SparseArray<Key>();
+    private final SparseArray<Key> mKeyCache = CollectionUtils.newSparseArray();
 
     private final ProximityInfo mProximityInfo;
     private final boolean mProximityCharsCorrectionEnabled;

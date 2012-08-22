@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import android.util.SparseArray;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -85,5 +87,9 @@ public class CollectionUtils {
 
     public static <E> CopyOnWriteArrayList<E> newCopyOnWriteArrayList(final E[] array) {
         return new CopyOnWriteArrayList<E>(array);
+    }
+
+    public static <E> SparseArray<E> newSparseArray() {
+        return new SparseArray<E>();
     }
 }
