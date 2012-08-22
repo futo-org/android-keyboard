@@ -58,6 +58,7 @@ import com.android.inputmethod.keyboard.MoreKeysPanel;
 import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.keyboard.ViewLayoutUtils;
 import com.android.inputmethod.latin.AutoCorrection;
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
@@ -88,9 +89,9 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
     private final MoreSuggestions.Builder mMoreSuggestionsBuilder;
     private final PopupWindow mMoreSuggestionsWindow;
 
-    private final ArrayList<TextView> mWords = new ArrayList<TextView>();
-    private final ArrayList<TextView> mInfos = new ArrayList<TextView>();
-    private final ArrayList<View> mDividers = new ArrayList<View>();
+    private final ArrayList<TextView> mWords = CollectionUtils.newArrayList();
+    private final ArrayList<TextView> mInfos = CollectionUtils.newArrayList();
+    private final ArrayList<View> mDividers = CollectionUtils.newArrayList();
 
     private final PopupWindow mPreviewPopup;
     private final TextView mPreviewText;
@@ -167,7 +168,7 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
 
         private final int mSuggestionStripOption;
 
-        private final ArrayList<CharSequence> mTexts = new ArrayList<CharSequence>();
+        private final ArrayList<CharSequence> mTexts = CollectionUtils.newArrayList();
 
         public boolean mMoreSuggestionsAvailable;
 

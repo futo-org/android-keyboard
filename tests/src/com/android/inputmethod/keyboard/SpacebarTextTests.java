@@ -22,6 +22,7 @@ import android.test.AndroidTestCase;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.latin.AdditionalSubtype;
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.ImfUtils;
 import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SubtypeLocale;
@@ -31,7 +32,7 @@ import java.util.Locale;
 
 public class SpacebarTextTests extends AndroidTestCase {
     // Locale to subtypes list.
-    private final ArrayList<InputMethodSubtype> mSubtypesList = new ArrayList<InputMethodSubtype>();
+    private final ArrayList<InputMethodSubtype> mSubtypesList = CollectionUtils.newArrayList();
 
     private Resources mRes;
 

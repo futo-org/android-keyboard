@@ -193,7 +193,7 @@ public class LocaleUtils {
         }
     }
 
-    private static final HashMap<String, Locale> sLocaleCache = new HashMap<String, Locale>();
+    private static final HashMap<String, Locale> sLocaleCache = CollectionUtils.newHashMap();
 
     /**
      * Creates a locale from a string specification.

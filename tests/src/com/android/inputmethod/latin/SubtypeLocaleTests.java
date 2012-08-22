@@ -28,7 +28,7 @@ import java.util.Locale;
 
 public class SubtypeLocaleTests extends AndroidTestCase {
     // Locale to subtypes list.
-    private final ArrayList<InputMethodSubtype> mSubtypesList = new ArrayList<InputMethodSubtype>();
+    private final ArrayList<InputMethodSubtype> mSubtypesList = CollectionUtils.newArrayList();
 
     private Resources mRes;
 

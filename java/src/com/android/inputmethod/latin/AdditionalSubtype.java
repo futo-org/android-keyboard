@@ -91,7 +91,7 @@ public class AdditionalSubtype {
         }
         final String[] prefSubtypeArray = prefSubtypes.split(PREF_SUBTYPE_SEPARATOR);
         final ArrayList<InputMethodSubtype> subtypesList =
-                new ArrayList<InputMethodSubtype>(prefSubtypeArray.length);
+                CollectionUtils.newArrayList(prefSubtypeArray.length);
         for (final String prefSubtype : prefSubtypeArray) {
             final InputMethodSubtype subtype = createAdditionalSubtype(prefSubtype);
             if (subtype.getNameResId() == SubtypeLocale.UNKNOWN_KEYBOARD_LAYOUT) {

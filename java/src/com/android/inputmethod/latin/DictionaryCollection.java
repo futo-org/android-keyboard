@@ -35,22 +35,22 @@ public class DictionaryCollection extends Dictionary {
 
     public DictionaryCollection(final String dictType) {
         super(dictType);
-        mDictionaries = new CopyOnWriteArrayList<Dictionary>();
+        mDictionaries = CollectionUtils.newCopyOnWriteArrayList();
     }
 
     public DictionaryCollection(final String dictType, Dictionary... dictionaries) {
         super(dictType);
         if (null == dictionaries) {
-            mDictionaries = new CopyOnWriteArrayList<Dictionary>();
+            mDictionaries = CollectionUtils.newCopyOnWriteArrayList();
         } else {
-            mDictionaries = new CopyOnWriteArrayList<Dictionary>(dictionaries);
+            mDictionaries = CollectionUtils.newCopyOnWriteArrayList(dictionaries);
             mDictionaries.removeAll(Collections.singleton(null));
         }
     }
 
     public DictionaryCollection(final String dictType, Collection<Dictionary> dictionaries) {
         super(dictType);
-        mDictionaries = new CopyOnWriteArrayList<Dictionary>(dictionaries);
+        mDictionaries = CollectionUtils.newCopyOnWriteArrayList(dictionaries);
         mDictionaries.removeAll(Collections.singleton(null));
     }
 
@@ -63,7 +63,7 @@ public class DictionaryCollection extends Dictionary {
         // dictionary and add the rest to it if not null, hence the get(0)
         ArrayList<SuggestedWordInfo> suggestions = dictionaries.get(0).getSuggestions(composer,
                 prevWord, proximityInfo);
-        if (null == suggestions) suggestions = new ArrayList<SuggestedWordInfo>();
+        if (null == suggestions) suggestions = CollectionUtils.newArrayList();
         final int length = dictionaries.size();
         for (int i = 1; i < length; ++ i) {
             final ArrayList<SuggestedWordInfo> sugg = dictionaries.get(i).getSuggestions(composer,

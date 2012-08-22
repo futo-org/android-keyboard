@@ -477,7 +477,7 @@ public class Utils {
 
     private static final String HARDWARE_PREFIX = Build.HARDWARE + ",";
     private static final HashMap<String, String> sDeviceOverrideValueMap =
-            new HashMap<String, String>();
+            CollectionUtils.newHashMap();
 
     public static String getDeviceOverrideValue(Resources res, int overrideResId, String defValue) {
         final int orientation = res.getConfiguration().orientation;
@@ -495,7 +495,7 @@ public class Utils {
         return sDeviceOverrideValueMap.get(key);
     }
 
-    private static final HashMap<String, Long> EMPTY_LT_HASH_MAP = new HashMap<String, Long>();
+    private static final HashMap<String, Long> EMPTY_LT_HASH_MAP = CollectionUtils.newHashMap();
     private static final String LOCALE_AND_TIME_STR_SEPARATER = ",";
     public static HashMap<String, Long> localeAndTimeStrToHashMap(String str) {
         if (TextUtils.isEmpty(str)) {
@@ -506,7 +506,7 @@ public class Utils {
         if (N < 2 || N % 2 != 0) {
             return EMPTY_LT_HASH_MAP;
         }
-        final HashMap<String, Long> retval = new HashMap<String, Long>();
+        final HashMap<String, Long> retval = CollectionUtils.newHashMap();
         for (int i = 0; i < N / 2; ++i) {
             final String localeStr = ss[i * 2];
             final long time = Long.valueOf(ss[i * 2 + 1]);
