@@ -528,7 +528,17 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
         // to properly show the splash screen, which requires that the window token of the
         // KeyboardView be non-null.
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.getInstance().mainKeyboardView_onAttachedToWindow();
+            ResearchLogger.getInstance().mainKeyboardView_onAttachedToWindow(this);
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        // Notify the research logger that the keyboard view has been detached.  This is needed
+        // to invalidate the reference of {@link MainKeyboardView} to null.
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.getInstance().mainKeyboardView_onDetachedFromWindow();
         }
     }
 
