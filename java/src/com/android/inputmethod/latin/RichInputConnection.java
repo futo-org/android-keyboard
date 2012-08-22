@@ -55,9 +55,7 @@ public class RichInputConnection {
     public void beginBatchEdit() {
         if (++mNestLevel == 1) {
             mIC = mParent.getCurrentInputConnection();
-            if (null != mIC) {
-                mIC.beginBatchEdit();
-            }
+            if (null != mIC) mIC.beginBatchEdit();
         } else {
             if (DBG) {
                 throw new RuntimeException("Nest level too deep");
@@ -68,9 +66,7 @@ public class RichInputConnection {
     }
     public void endBatchEdit() {
         if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
-        if (--mNestLevel == 0 && null != mIC) {
-            mIC.endBatchEdit();
-        }
+        if (--mNestLevel == 0 && null != mIC) mIC.endBatchEdit();
     }
 
     private void checkBatchEdit() {
@@ -83,22 +79,12 @@ public class RichInputConnection {
 
     public void finishComposingText() {
         checkBatchEdit();
-        if (null != mIC) {
-            mIC.finishComposingText();
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.richInputConnection_finishComposingText();
-            }
-        }
+        if (null != mIC) mIC.finishComposingText();
     }
 
     public void commitText(final CharSequence text, final int i) {
         checkBatchEdit();
-        if (null != mIC) {
-            mIC.commitText(text, i);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.richInputConnection_commitText(text, i);
-            }
-        }
+        if (null != mIC) mIC.commitText(text, i);
     }
 
     public int getCursorCapsMode(final int inputType) {
@@ -121,72 +107,37 @@ public class RichInputConnection {
 
     public void deleteSurroundingText(final int i, final int j) {
         checkBatchEdit();
-        if (null != mIC) {
-            mIC.deleteSurroundingText(i, j);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.richInputConnection_deleteSurroundingText(i, j);
-            }
-        }
+        if (null != mIC) mIC.deleteSurroundingText(i, j);
     }
 
     public void performEditorAction(final int actionId) {
         mIC = mParent.getCurrentInputConnection();
-        if (null != mIC) {
-            mIC.performEditorAction(actionId);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.richInputConnection_performEditorAction(actionId);
-            }
-        }
+        if (null != mIC) mIC.performEditorAction(actionId);
     }
 
     public void sendKeyEvent(final KeyEvent keyEvent) {
         checkBatchEdit();
-        if (null != mIC) {
-            mIC.sendKeyEvent(keyEvent);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.richInputConnection_sendKeyEvent(keyEvent);
-            }
-        }
+        if (null != mIC) mIC.sendKeyEvent(keyEvent);
     }
 
     public void setComposingText(final CharSequence text, final int i) {
         checkBatchEdit();
-        if (null != mIC) {
-            mIC.setComposingText(text, i);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.richInputConnection_setComposingText(text, i);
-            }
-        }
+        if (null != mIC) mIC.setComposingText(text, i);
     }
 
     public void setSelection(final int from, final int to) {
         checkBatchEdit();
-        if (null != mIC) {
-            mIC.setSelection(from, to);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.richInputConnection_setSelection(from, to);
-            }
-        }
+        if (null != mIC) mIC.setSelection(from, to);
     }
 
     public void commitCorrection(final CorrectionInfo correctionInfo) {
         checkBatchEdit();
-        if (null != mIC) {
-            mIC.commitCorrection(correctionInfo);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.richInputConnection_commitCorrection(correctionInfo);
-            }
-        }
+        if (null != mIC) mIC.commitCorrection(correctionInfo);
     }
 
     public void commitCompletion(final CompletionInfo completionInfo) {
         checkBatchEdit();
-        if (null != mIC) {
-            mIC.commitCompletion(completionInfo);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.richInputConnection_commitCompletion(completionInfo);
-            }
-        }
+        if (null != mIC) mIC.commitCompletion(completionInfo);
     }
 
     public CharSequence getNthPreviousWord(final String sentenceSeperators, final int n) {
@@ -364,6 +315,9 @@ public class RichInputConnection {
         if (lastOne != null && lastOne.length() == 1
                 && lastOne.charAt(0) == Keyboard.CODE_SPACE) {
             deleteSurroundingText(1, 0);
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.latinIME_deleteSurroundingText(1);
+            }
         }
     }
 
@@ -428,7 +382,13 @@ public class RichInputConnection {
             return false;
         }
         deleteSurroundingText(2, 0);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_deleteSurroundingText(2);
+        }
         commitText("  ", 1);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_revertDoubleSpaceWhileInBatchEdit();
+        }
         return true;
     }
 
@@ -449,7 +409,13 @@ public class RichInputConnection {
             return false;
         }
         deleteSurroundingText(2, 0);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_deleteSurroundingText(2);
+        }
         commitText(" " + textBeforeCursor.subSequence(0, 1), 1);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_revertSwapPunctuation();
+        }
         return true;
     }
 }
