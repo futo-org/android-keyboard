@@ -54,7 +54,6 @@ import android.widget.Toast;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.CollectionUtils;
@@ -138,7 +137,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     // used to check whether words are not unique
     private Suggest mSuggest;
     private Dictionary mDictionary;
-    private KeyboardSwitcher mKeyboardSwitcher;
+    private MainKeyboardView mMainKeyboardView;
     private InputMethodService mInputMethodService;
     private final Statistics mStatistics;
 
@@ -152,8 +151,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         return sInstance;
     }
 
-    public void init(final InputMethodService ims, final SharedPreferences prefs,
-            KeyboardSwitcher keyboardSwitcher) {
+    public void init(final InputMethodService ims, final SharedPreferences prefs) {
         assert ims != null;
         if (ims == null) {
             Log.w(TAG, "IMS is null; logging is off");
@@ -185,7 +183,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         mResearchLogUploader = new ResearchLogUploader(ims, mFilesDir);
         mResearchLogUploader.start();
-        mKeyboardSwitcher = keyboardSwitcher;
         mInputMethodService = ims;
         mPrefs = prefs;
     }
@@ -199,8 +196,13 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
-    public void mainKeyboardView_onAttachedToWindow() {
+    public void mainKeyboardView_onAttachedToWindow(final MainKeyboardView mainKeyboardView) {
+        mMainKeyboardView = mainKeyboardView;
         maybeShowSplashScreen();
+    }
+
+    public void mainKeyboardView_onDetachedFromWindow() {
+        mMainKeyboardView = null;
     }
 
     private boolean hasSeenSplash() {
@@ -216,7 +218,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (mSplashDialog != null && mSplashDialog.isShowing()) {
             return;
         }
-        final IBinder windowToken = mKeyboardSwitcher.getMainKeyboardView().getWindowToken();
+        final IBinder windowToken = mMainKeyboardView != null
+                ? mMainKeyboardView.getWindowToken() : null;
         if (windowToken == null) {
             return;
         }
@@ -593,14 +596,10 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         if (!IS_SHOWING_INDICATOR) {
             return;
         }
-        if (mKeyboardSwitcher == null) {
+        if (mMainKeyboardView == null) {
             return;
         }
-        final KeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
-        if (mainKeyboardView == null) {
-            return;
-        }
-        mainKeyboardView.invalidateAllKeys();
+        mMainKeyboardView.invalidateAllKeys();
     }
 
 
