@@ -21,8 +21,6 @@ import android.graphics.Paint;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
-import android.widget.TextView;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.keyboard.internal.GestureStroke;
@@ -79,7 +77,6 @@ public class PointerTracker implements PointerTrackerQueue.Element {
 
     public interface DrawingProxy extends MoreKeysPanel.Controller {
         public void invalidateKey(Key key);
-        public TextView inflateKeyPreviewText();
         public void showKeyPreview(PointerTracker tracker);
         public void dismissKeyPreview(PointerTracker tracker);
         public void showGestureTrail(PointerTracker tracker);
@@ -140,7 +137,6 @@ public class PointerTracker implements PointerTrackerQueue.Element {
 
     private Keyboard mKeyboard;
     private int mKeyQuarterWidthSquared;
-    private final TextView mKeyPreviewText;
 
     private boolean mIsAlphabetKeyboard;
     private boolean mIsPossibleGesture = false;
@@ -261,11 +257,10 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         updateGestureHandlingMode();
     }
 
-    public static void dismissAllKeyPreviews() {
+    public static void setReleasedKeyGraphicsToAllKeys() {
         final int trackersSize = sTrackers.size();
         for (int i = 0; i < trackersSize; ++i) {
             final PointerTracker tracker = sTrackers.get(i);
-            tracker.getKeyPreviewText().setVisibility(View.INVISIBLE);
             tracker.setReleasedKeyGraphics(tracker.mCurrentKey);
         }
     }
@@ -312,11 +307,6 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         mListener = handler.getKeyboardActionListener();
         mDrawingProxy = handler.getDrawingProxy();
         mTimerProxy = handler.getTimerProxy();
-        mKeyPreviewText = mDrawingProxy.inflateKeyPreviewText();
-    }
-
-    public TextView getKeyPreviewText() {
-        return mKeyPreviewText;
     }
 
     // Returns true if keyboard has been changed by this callback.
