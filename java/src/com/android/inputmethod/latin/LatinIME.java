@@ -405,7 +405,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     // Has to be package-visible for unit tests
-    /* package */ void loadSettings() {
+    /* package for test */
+    void loadSettings() {
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
         if (null == mPrefs) mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -529,7 +530,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onConfigurationChanged(Configuration conf) {
-        mSubtypeSwitcher.onConfigurationChanged(conf);
+        // System locale has been changed. Needs to reload keyboard.
+        if (mSubtypeSwitcher.onConfigurationChanged(conf, this)) {
+            loadKeyboard();
+        }
         // If orientation changed while predicting, commit the change
         if (mDisplayOrientation != conf.orientation) {
             mDisplayOrientation = conf.orientation;
@@ -596,6 +600,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
         mSubtypeSwitcher.updateSubtype(subtype);
+        loadKeyboard();
     }
 
     private void onStartInputInternal(EditorInfo editorInfo, boolean restarting) {
@@ -664,7 +669,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final boolean inputTypeChanged = !mCurrentSettings.isSameInputType(editorInfo);
         final boolean isDifferentTextField = !restarting || inputTypeChanged;
         if (isDifferentTextField) {
-            mSubtypeSwitcher.updateParametersOnStartInputView();
+            final boolean currentSubtypeEnabled = mSubtypeSwitcher
+                    .updateParametersOnStartInputViewAndReturnIfCurrentSubtypeEnabled();
+            if (!currentSubtypeEnabled) {
+                // Current subtype is disabled. Needs to update subtype and keyboard.
+                final InputMethodSubtype newSubtype = ImfUtils.getCurrentInputMethodSubtype(
+                        this, mSubtypeSwitcher.getNoLanguageSubtype());
+                mSubtypeSwitcher.updateSubtype(newSubtype);
+                loadKeyboard();
+            }
         }
 
         // The EditorInfo might have a flag that affects fullscreen mode.
@@ -1285,7 +1298,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             onSettingsKeyPressed();
             break;
         case Keyboard.CODE_SHORTCUT:
-            mSubtypeSwitcher.switchToShortcutIME();
+            mSubtypeSwitcher.switchToShortcutIME(this);
             break;
         case Keyboard.CODE_ACTION_ENTER:
             performEditorAction(getActionId(switcher.getKeyboard()));
@@ -1689,7 +1702,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // TODO: make this private
     // Outside LatinIME, only used by the test suite.
-    /* package for tests */ boolean isShowingPunctuationList() {
+    /* package for tests */
+    boolean isShowingPunctuationList() {
         if (mSuggestionStripView == null) return false;
         return mCurrentSettings.mSuggestPuncList == mSuggestionStripView.getSuggestions();
     }
@@ -2057,9 +2071,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mCurrentSettings.isWordSeparator(code);
     }
 
-    // Notify that language or mode have been changed and toggleLanguage will update KeyboardID
-    // according to new language or mode. Called from SubtypeSwitcher.
-    public void onRefreshKeyboard() {
+    // TODO: Make this private
+    // Outside LatinIME, only used by the {@link InputTestsBase} test suite.
+    /* package for test */
+    void loadKeyboard() {
         // When the device locale is changed in SetupWizard etc., this method may get called via
         // onConfigurationChanged before SoftInputWindow is shown.
         initSuggest();
