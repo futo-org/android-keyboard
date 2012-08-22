@@ -99,7 +99,7 @@ public class BinaryDictionaryFileDumper {
         }
 
         try {
-            final List<WordListInfo> list = new ArrayList<WordListInfo>();
+            final List<WordListInfo> list = CollectionUtils.newArrayList();
             do {
                 final String wordListId = c.getString(0);
                 final String wordListLocale = c.getString(1);
@@ -267,7 +267,7 @@ public class BinaryDictionaryFileDumper {
         final ContentResolver resolver = context.getContentResolver();
         final List<WordListInfo> idList = getWordListWordListInfos(locale, context,
                 hasDefaultWordList);
-        final List<AssetFileAddress> fileAddressList = new ArrayList<AssetFileAddress>();
+        final List<AssetFileAddress> fileAddressList = CollectionUtils.newArrayList();
         for (WordListInfo id : idList) {
             final AssetFileAddress afd = cacheWordList(id.mId, id.mLocale, resolver, context);
             if (null != afd) {

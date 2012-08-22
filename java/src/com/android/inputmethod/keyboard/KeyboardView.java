@@ -39,6 +39,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.internal.PreviewPlacerView;
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -117,7 +118,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     /** True if all keys should be drawn */
     private boolean mInvalidateAllKeys;
     /** The keys that should be drawn */
-    private final HashSet<Key> mInvalidatedKeys = new HashSet<Key>();
+    private final HashSet<Key> mInvalidatedKeys = CollectionUtils.newHashSet();
     /** The working rectangle variable */
     private final Rect mWorkingRect = new Rect();
     /** The keyboard bitmap buffer for faster updates */

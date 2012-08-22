@@ -24,8 +24,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 public class SuggestedWords {
+    private static final ArrayList<SuggestedWordInfo> EMPTY_WORD_INFO_LIST =
+            CollectionUtils.newArrayList(0);
     public static final SuggestedWords EMPTY = new SuggestedWords(
-            new ArrayList<SuggestedWordInfo>(0), false, false, false, false, false);
+            EMPTY_WORD_INFO_LIST, false, false, false, false, false);
 
     public final boolean mTypedWordValid;
     // Note: this INCLUDES cases where the word will auto-correct to itself. A good definition
@@ -83,7 +85,7 @@ public class SuggestedWords {
 
     public static ArrayList<SuggestedWordInfo> getFromApplicationSpecifiedCompletions(
             final CompletionInfo[] infos) {
-        final ArrayList<SuggestedWordInfo> result = new ArrayList<SuggestedWordInfo>();
+        final ArrayList<SuggestedWordInfo> result = CollectionUtils.newArrayList();
         for (CompletionInfo info : infos) {
             if (null != info && info.getText() != null) {
                 result.add(new SuggestedWordInfo(info.getText(), SuggestedWordInfo.MAX_SCORE,
@@ -97,8 +99,8 @@ public class SuggestedWords {
     // and replace it with what the user currently typed.
     public static ArrayList<SuggestedWordInfo> getTypedWordAndPreviousSuggestions(
             final CharSequence typedWord, final SuggestedWords previousSuggestions) {
-        final ArrayList<SuggestedWordInfo> suggestionsList = new ArrayList<SuggestedWordInfo>();
-        final HashSet<String> alreadySeen = new HashSet<String>();
+        final ArrayList<SuggestedWordInfo> suggestionsList = CollectionUtils.newArrayList();
+        final HashSet<String> alreadySeen = CollectionUtils.newHashSet();
         suggestionsList.add(new SuggestedWordInfo(typedWord, SuggestedWordInfo.MAX_SCORE,
                 SuggestedWordInfo.KIND_TYPED, Dictionary.TYPE_USER_TYPED));
         alreadySeen.add(typedWord.toString());

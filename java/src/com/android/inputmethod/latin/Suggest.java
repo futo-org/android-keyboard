@@ -51,7 +51,7 @@ public class Suggest {
     private Dictionary mMainDictionary;
     private ContactsBinaryDictionary mContactsDict;
     private final ConcurrentHashMap<String, Dictionary> mDictionaries =
-            new ConcurrentHashMap<String, Dictionary>();
+            CollectionUtils.newConcurrentHashMap();
 
     public static final int MAX_SUGGESTIONS = 18;
 
@@ -242,7 +242,7 @@ public class Suggest {
         }
 
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
-                new ArrayList<SuggestedWordInfo>(suggestionsSet);
+                CollectionUtils.newArrayList(suggestionsSet);
         final int suggestionsCount = suggestionsContainer.size();
         final boolean isFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
         final boolean isAllUpperCase = wordComposer.isAllUpperCase();
@@ -307,7 +307,7 @@ public class Suggest {
         }
 
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
-                new ArrayList<SuggestedWordInfo>(suggestionsSet);
+                CollectionUtils.newArrayList(suggestionsSet);
         final int suggestionsCount = suggestionsContainer.size();
         final boolean isFirstCharCapitalized = wordComposer.wasShiftedNoLock();
         final boolean isAllUpperCase = wordComposer.isAllUpperCase();
@@ -338,7 +338,7 @@ public class Suggest {
         typedWordInfo.setDebugString("+");
         final int suggestionsSize = suggestions.size();
         final ArrayList<SuggestedWordInfo> suggestionsList =
-                new ArrayList<SuggestedWordInfo>(suggestionsSize);
+                CollectionUtils.newArrayList(suggestionsSize);
         suggestionsList.add(typedWordInfo);
         // Note: i here is the index in mScores[], but the index in mSuggestions is one more
         // than i because we added the typed word to mSuggestions without touching mScores.
@@ -391,7 +391,7 @@ public class Suggest {
     }
 
     public void close() {
-        final HashSet<Dictionary> dictionaries = new HashSet<Dictionary>();
+        final HashSet<Dictionary> dictionaries = CollectionUtils.newHashSet();
         dictionaries.addAll(mDictionaries.values());
         for (final Dictionary dictionary : dictionaries) {
             dictionary.close();

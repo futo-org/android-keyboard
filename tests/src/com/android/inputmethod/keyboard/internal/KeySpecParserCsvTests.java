@@ -19,6 +19,8 @@ package com.android.inputmethod.keyboard.internal;
 import android.app.Instrumentation;
 import android.test.InstrumentationTestCase;
 
+import com.android.inputmethod.latin.CollectionUtils;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +44,7 @@ public class KeySpecParserCsvTests extends InstrumentationTestCase {
     }
 
     private static String[] getAllResourceIdNames(final Class<?> resourceIdClass) {
-        final ArrayList<String> names = new ArrayList<String>();
+        final ArrayList<String> names = CollectionUtils.newArrayList();
         for (final Field field : resourceIdClass.getFields()) {
             if (field.getType() == Integer.TYPE) {
                 names.add(field.getName());

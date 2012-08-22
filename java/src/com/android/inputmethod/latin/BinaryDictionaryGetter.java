@@ -260,8 +260,7 @@ class BinaryDictionaryGetter {
             final Context context) {
         final File[] directoryList = getCachedDirectoryList(context);
         if (null == directoryList) return EMPTY_FILE_ARRAY;
-        final HashMap<String, FileAndMatchLevel> cacheFiles =
-                new HashMap<String, FileAndMatchLevel>();
+        final HashMap<String, FileAndMatchLevel> cacheFiles = CollectionUtils.newHashMap();
         for (File directory : directoryList) {
             if (!directory.isDirectory()) continue;
             final String dirLocale = getWordListIdFromFileName(directory.getName());
@@ -359,7 +358,7 @@ class BinaryDictionaryGetter {
             }
             final int formatVersion = raf.readInt();
             final int headerSize = raf.readInt();
-            final HashMap<String, String> options = new HashMap<String, String>();
+            final HashMap<String, String> options = CollectionUtils.newHashMap();
             BinaryDictInputOutput.populateOptionsFromFile(raf, headerSize, options);
             final String version = options.get(VERSION_KEY);
             if (null == version) {
@@ -404,7 +403,7 @@ class BinaryDictionaryGetter {
         final DictPackSettings dictPackSettings = new DictPackSettings(context);
 
         boolean foundMainDict = false;
-        final ArrayList<AssetFileAddress> fileList = new ArrayList<AssetFileAddress>();
+        final ArrayList<AssetFileAddress> fileList = CollectionUtils.newArrayList();
         // cachedWordLists may not be null, see doc for getCachedDictionaryList
         for (final File f : cachedWordLists) {
             final String wordListId = getWordListIdFromFileName(f.getName());

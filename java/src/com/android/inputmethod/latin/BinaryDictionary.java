@@ -160,7 +160,7 @@ public class BinaryDictionary extends Dictionary {
                 mUseFullEditDistance, mOutputChars, mOutputScores, mSpaceIndices, mOutputTypes);
         final int count = Math.min(tmpCount, MAX_PREDICTIONS);
 
-        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
+        final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         for (int j = 0; j < count; ++j) {
             if (composerSize > 0 && mOutputScores[j] < 1) break;
             final int start = j * MAX_WORD_LENGTH;

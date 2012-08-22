@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.keyboard.internal.GestureStroke;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.define.ProductionFlag;
@@ -125,7 +126,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
     private static int sTouchNoiseThresholdDistanceSquared;
     private static boolean sNeedsPhantomSuddenMoveEventHack;
 
-    private static final ArrayList<PointerTracker> sTrackers = new ArrayList<PointerTracker>();
+    private static final ArrayList<PointerTracker> sTrackers = CollectionUtils.newArrayList();
     private static final InputPointers sAggregratedPointers = new InputPointers(
             GestureStroke.DEFAULT_CAPACITY);
     private static PointerTrackerQueue sPointerTrackerQueue;

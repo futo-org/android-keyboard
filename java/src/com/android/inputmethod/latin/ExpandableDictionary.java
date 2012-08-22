@@ -230,7 +230,7 @@ public class ExpandableDictionary extends Dictionary {
             childNode.mTerminal = true;
             if (isShortcutOnly) {
                 if (null == childNode.mShortcutTargets) {
-                    childNode.mShortcutTargets = new ArrayList<char[]>();
+                    childNode.mShortcutTargets = CollectionUtils.newArrayList();
                 }
                 childNode.mShortcutTargets.add(shortcutTarget.toCharArray());
             } else {
@@ -259,7 +259,7 @@ public class ExpandableDictionary extends Dictionary {
             return suggestions;
         } else {
             if (TextUtils.isEmpty(prevWord)) return null;
-            final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
+            final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
             runBigramReverseLookUp(prevWord, suggestions);
             return suggestions;
         }
@@ -278,7 +278,7 @@ public class ExpandableDictionary extends Dictionary {
 
     protected ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer codes,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
-        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
+        final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         mInputLength = codes.size();
         if (mCodes.length < mInputLength) mCodes = new int[mInputLength][];
         final InputPointers ips = codes.getInputPointers();
@@ -550,7 +550,7 @@ public class ExpandableDictionary extends Dictionary {
         Node secondWord = searchWord(mRoots, word2, 0, null);
         LinkedList<NextWord> bigrams = firstWord.mNGrams;
         if (bigrams == null || bigrams.size() == 0) {
-            firstWord.mNGrams = new LinkedList<NextWord>();
+            firstWord.mNGrams = CollectionUtils.newLinkedList();
             bigrams = firstWord.mNGrams;
         } else {
             for (NextWord nw : bigrams) {

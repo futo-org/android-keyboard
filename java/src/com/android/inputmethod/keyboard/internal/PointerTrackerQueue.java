@@ -18,6 +18,8 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.util.Log;
 
+import com.android.inputmethod.latin.CollectionUtils;
+
 import java.util.ArrayList;
 
 public class PointerTrackerQueue {
@@ -32,7 +34,7 @@ public class PointerTrackerQueue {
 
     private static final int INITIAL_CAPACITY = 10;
     private final ArrayList<Element> mExpandableArrayOfActivePointers =
-            new ArrayList<Element>(INITIAL_CAPACITY);
+            CollectionUtils.newArrayList(INITIAL_CAPACITY);
     private int mArraySize = 0;
 
     public synchronized int size() {

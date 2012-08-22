@@ -21,6 +21,7 @@ import static com.android.inputmethod.keyboard.Keyboard.CODE_UNSPECIFIED;
 import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.StringUtils;
 
@@ -258,7 +259,7 @@ public class KeySpecParser {
             throw new IllegalArgumentException();
         }
 
-        final ArrayList<T> list = new ArrayList<T>(end - start);
+        final ArrayList<T> list = CollectionUtils.newArrayList(end - start);
         for (int i = start; i < end; i++) {
             list.add(array[i]);
         }
@@ -438,7 +439,7 @@ public class KeySpecParser {
                 // Skip empty entry.
                 if (pos - start > 0) {
                     if (list == null) {
-                        list = new ArrayList<String>();
+                        list = CollectionUtils.newArrayList();
                     }
                     list.add(text.substring(start, pos));
                 }
