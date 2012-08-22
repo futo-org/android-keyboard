@@ -107,6 +107,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
     // Key preview
     private final int mKeyPreviewLayoutId;
+    private final SparseArray<TextView> mKeyPreviewTexts = CollectionUtils.newSparseArray();
     protected final KeyPreviewDrawParams mKeyPreviewDrawParams;
     private boolean mShowKeyPreviewPopup = true;
     private int mDelayAfterPreview;
@@ -152,7 +153,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             final PointerTracker tracker = (PointerTracker) msg.obj;
             switch (msg.what) {
             case MSG_DISMISS_KEY_PREVIEW:
-                tracker.getKeyPreviewText().setVisibility(View.INVISIBLE);
+                final TextView previewText = keyboardView.mKeyPreviewTexts.get(tracker.mPointerId);
+                if (previewText != null) {
+                    previewText.setVisibility(INVISIBLE);
+                }
                 break;
             }
         }
@@ -165,7 +169,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             removeMessages(MSG_DISMISS_KEY_PREVIEW, tracker);
         }
 
-        public void cancelAllDismissKeyPreviews() {
+        private void cancelAllDismissKeyPreviews() {
             removeMessages(MSG_DISMISS_KEY_PREVIEW);
         }
 
@@ -907,15 +911,30 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
     }
 
-    // Called by {@link PointerTracker} constructor to create a TextView.
-    @Override
-    public TextView inflateKeyPreviewText() {
+    private TextView getKeyPreviewText(final int pointerId) {
+        TextView previewText = mKeyPreviewTexts.get(pointerId);
+        if (previewText != null) {
+            return previewText;
+        }
         final Context context = getContext();
         if (mKeyPreviewLayoutId != 0) {
-            return (TextView)LayoutInflater.from(context).inflate(mKeyPreviewLayoutId, null);
+            previewText = (TextView)LayoutInflater.from(context).inflate(mKeyPreviewLayoutId, null);
         } else {
-            return new TextView(context);
+            previewText = new TextView(context);
         }
+        mKeyPreviewTexts.put(pointerId, previewText);
+        return previewText;
+    }
+
+    private void dismissAllKeyPreviews() {
+        final int pointerCount = mKeyPreviewTexts.size();
+        for (int id = 0; id < pointerCount; id++) {
+            final TextView previewText = mKeyPreviewTexts.get(id);
+            if (previewText != null) {
+                previewText.setVisibility(INVISIBLE);
+            }
+        }
+        PointerTracker.setReleasedKeyGraphicsToAllKeys();
     }
 
     @Override
@@ -971,7 +990,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     public void showKeyPreview(PointerTracker tracker) {
         if (!mShowKeyPreviewPopup) return;
 
-        final TextView previewText = tracker.getKeyPreviewText();
+        final TextView previewText = getKeyPreviewText(tracker.mPointerId);
         // If the key preview has no parent view yet, add it to the ViewGroup which can place
         // key preview absolutely in SoftInputWindow.
         if (previewText.getParent() == null) {
@@ -1082,7 +1101,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     public void closing() {
-        PointerTracker.dismissAllKeyPreviews();
+        dismissAllKeyPreviews();
         cancelAllMessages();
 
         mInvalidateAllKeys = true;
