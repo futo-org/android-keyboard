@@ -793,6 +793,21 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         return WORD_REPLACEMENT_STRING;
     }
 
+    // Specific logging methods follow below.  The comments for each logging method should
+    // indicate what specific method is logged, and how to trigger it from the user interface.
+    //
+    // Logging methods can be generally classified into two flavors, "UserAction", which should
+    // correspond closely to an event that is sensed by the IME, and is usually generated
+    // directly by the user, and "SystemResponse" which corresponds to an event that the IME
+    // generates, often after much processing of user input.  SystemResponses should correspond
+    // closely to user-visible events.
+    // TODO: Consider exposing the UserAction classification in the log output.
+
+    /**
+     * Log a call to LatinIME.onStartInputViewInternal().
+     *
+     * UserAction: called each time the keyboard is opened up.
+     */
     private static final LogStatement LOGSTATEMENT_LATIN_IME_ON_START_INPUT_VIEW_INTERNAL =
             new LogStatement("LatinImeOnStartInputViewInternal", false, false, "uuid",
                     "packageName", "inputType", "imeOptions", "fieldId", "display", "model",
@@ -830,6 +845,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         stop();
     }
 
+    /**
+     * Log a change in preferences.
+     *
+     * UserAction: called when the user changes the settings.
+     */
     private static final LogStatement LOGSTATEMENT_PREFS_CHANGED =
             new LogStatement("PrefsChanged", false, false, "prefs");
     public static void prefsChanged(final SharedPreferences prefs) {
@@ -837,8 +857,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         researchLogger.enqueueEvent(LOGSTATEMENT_PREFS_CHANGED, prefs);
     }
 
-    // Regular logging methods
-
+    /**
+     * Log a call to MainKeyboardView.processMotionEvent().
+     *
+     * UserAction: called when the user puts their finger onto the screen (ACTION_DOWN).
+     *
+     */
     private static final LogStatement LOGSTATEMENT_MAIN_KEYBOARD_VIEW_PROCESS_MOTION_EVENT =
             new LogStatement("MainKeyboardViewProcessMotionEvent", true, false, "action",
                     "eventTime", "id", "x", "y", "size", "pressure");
@@ -863,6 +887,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
+    /**
+     * Log a call to LatinIME.onCodeInput().
+     *
+     * SystemResponse: The main processing step for entering text.  Called when the user performs a
+     * tap, a flick, a long press, releases a gesture, or taps a punctuation suggestion.
+     */
     private static final LogStatement LOGSTATEMENT_LATIN_IME_ON_CODE_INPUT =
             new LogStatement("LatinImeOnCodeInput", true, false, "code", "x", "y");
     public static void latinIME_onCodeInput(final int code, final int x, final int y) {
@@ -875,6 +905,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         researchLogger.mStatistics.recordChar(code, time);
     }
+    /**
+     * Log a call to LatinIME.onDisplayCompletions().
+     *
+     * SystemResponse: The IME has displayed application-specific completions.  They may show up
+     * in the suggestion strip, such as a landscape phone.
+     */
     private static final LogStatement LOGSTATEMENT_LATINIME_ONDISPLAYCOMPLETIONS =
             new LogStatement("LatinIMEOnDisplayCompletions", true, true,
                     "applicationSpecifiedCompletions");
@@ -892,6 +928,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         return returnValue;
     }
 
+    /**
+     * Log a call to LatinIME.onWindowHidden().
+     *
+     * UserAction: The user has performed an action that has caused the IME to be closed.  They may
+     * have focused on something other than a text field, or explicitly closed it.
+     */
     private static final LogStatement LOGSTATEMENT_LATINIME_ONWINDOWHIDDEN =
             new LogStatement("LatinIMEOnWindowHidden", false, false, "isTextTruncated", "text");
     public static void latinIME_onWindowHidden(final int savedSelectionStart,
@@ -947,6 +989,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
+    /**
+     * Log a call to LatinIME.onUpdateSelection().
+     *
+     * UserAction/SystemResponse: The user has moved the cursor or selection.  This function may
+     * be called, however, when the system has moved the cursor, say by inserting a character.
+     */
     private static final LogStatement LOGSTATEMENT_LATINIME_ONUPDATESELECTION =
             new LogStatement("LatinIMEOnUpdateSelection", true, false, "lastSelectionStart",
                     "lastSelectionEnd", "oldSelStart", "oldSelEnd", "newSelStart", "newSelEnd",
@@ -973,6 +1021,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 expectingUpdateSelectionFromLogger, scrubbedWord);
     }
 
+    /**
+     * Log a call to LatinIME.pickSuggestionManually().
+     *
+     * UserAction: The user has chosen a specific word from the suggestion strip.
+     */
     private static final LogStatement LOGSTATEMENT_LATINIME_PICKSUGGESTIONMANUALLY =
             new LogStatement("LatinIMEPickSuggestionManually", true, false, "replacedWord", "index",
                     "suggestion", "x", "y");
@@ -985,6 +1038,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE);
     }
 
+    /**
+     * Log a call to LatinIME.punctuationSuggestion().
+     *
+     * UserAction: The user has chosen punctuation from the punctuation suggestion strip.
+     */
     private static final LogStatement LOGSTATEMENT_LATINIME_PUNCTUATIONSUGGESTION =
             new LogStatement("LatinIMEPunctuationSuggestion", false, false, "index", "suggestion",
                     "x", "y");
@@ -994,6 +1052,13 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE);
     }
 
+    /**
+     * Log a call to LatinIME.sendKeyCodePoint().
+     *
+     * SystemResponse: The IME is simulating a hardware keypress.  This happens for numbers; other
+     * input typically goes through RichInputConnection.setComposingText() and
+     * RichInputConnection.commitText().
+     */
     private static final LogStatement LOGSTATEMENT_LATINIME_SENDKEYCODEPOINT =
             new LogStatement("LatinIMESendKeyCodePoint", true, false, "code");
     public static void latinIME_sendKeyCodePoint(final int code) {
@@ -1005,18 +1070,36 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
+    /**
+     * Log a call to LatinIME.swapSwapperAndSpace().
+     *
+     * SystemResponse: A symbol has been swapped with a space character.  E.g. punctuation may swap
+     * if a soft space is inserted after a word.
+     */
     private static final LogStatement LOGSTATEMENT_LATINIME_SWAPSWAPPERANDSPACE =
             new LogStatement("LatinIMESwapSwapperAndSpace", false, false);
     public static void latinIME_swapSwapperAndSpace() {
         getInstance().enqueueEvent(LOGSTATEMENT_LATINIME_SWAPSWAPPERANDSPACE);
     }
 
+    /**
+     * Log a call to MainKeyboardView.onLongPress().
+     *
+     * UserAction: The user has performed a long-press on a key.
+     */
     private static final LogStatement LOGSTATEMENT_MAINKEYBOARDVIEW_ONLONGPRESS =
             new LogStatement("MainKeyboardViewOnLongPress", false, false);
     public static void mainKeyboardView_onLongPress() {
         getInstance().enqueueEvent(LOGSTATEMENT_MAINKEYBOARDVIEW_ONLONGPRESS);
     }
 
+    /**
+     * Log a call to MainKeyboardView.setKeyboard().
+     *
+     * SystemResponse: The IME has switched to a new keyboard (e.g. French, English).
+     * This is typically called right after LatinIME.onStartInputViewInternal (when starting a new
+     * IME), but may happen at other times if the user explicitly requests a keyboard change.
+     */
     private static final LogStatement LOGSTATEMENT_MAINKEYBOARDVIEW_SETKEYBOARD =
             new LogStatement("MainKeyboardViewSetKeyboard", false, false, "elementId", "locale",
                     "orientation", "width", "modeName", "action", "navigateNext",
@@ -1037,18 +1120,38 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 keyboard.mOccupiedHeight, keyboard.mKeys);
     }
 
+    /**
+     * Log a call to LatinIME.revertCommit().
+     *
+     * SystemResponse: The IME has reverted commited text.  This happens when the user enters
+     * a word, commits it by pressing space or punctuation, and then reverts the commit by hitting
+     * backspace.
+     */
     private static final LogStatement LOGSTATEMENT_LATINIME_REVERTCOMMIT =
             new LogStatement("LatinIMERevertCommit", true, false, "originallyTypedWord");
     public static void latinIME_revertCommit(final String originallyTypedWord) {
         getInstance().enqueueEvent(LOGSTATEMENT_LATINIME_REVERTCOMMIT, originallyTypedWord);
     }
 
+    /**
+     * Log a call to PointerTracker.callListenerOnCancelInput().
+     *
+     * UserAction: The user has canceled the input, e.g., by pressing down, but then removing
+     * outside the keyboard area.
+     * TODO: Verify
+     */
     private static final LogStatement LOGSTATEMENT_POINTERTRACKER_CALLLISTENERONCANCELINPUT =
             new LogStatement("PointerTrackerCallListenerOnCancelInput", false, false);
     public static void pointerTracker_callListenerOnCancelInput() {
         getInstance().enqueueEvent(LOGSTATEMENT_POINTERTRACKER_CALLLISTENERONCANCELINPUT);
     }
 
+    /**
+     * Log a call to PointerTracker.callListenerOnCodeInput().
+     *
+     * SystemResponse: The user has entered a key through the normal tapping mechanism.
+     * LatinIME.onCodeInput will also be called.
+     */
     private static final LogStatement LOGSTATEMENT_POINTERTRACKER_CALLLISTENERONCODEINPUT =
             new LogStatement("PointerTrackerCallListenerOnCodeInput", true, false, "code",
                     "outputText", "x", "y", "ignoreModifierKey", "altersCode", "isEnabled");
@@ -1064,6 +1167,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
+    /**
+     * Log a call to PointerTracker.callListenerCallListenerOnRelease().
+     *
+     * UserAction: The user has released their finger or thumb from the screen.
+     */
     private static final LogStatement LOGSTATEMENT_POINTERTRACKER_CALLLISTENERONRELEASE =
             new LogStatement("PointerTrackerCallListenerOnRelease", true, false, "code",
                     "withSliding", "ignoreModifierKey", "isEnabled");
@@ -1076,6 +1184,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
+    /**
+     * Log a call to PointerTracker.onDownEvent().
+     *
+     * UserAction: The user has pressed down on a key.
+     * TODO: Differentiate with LatinIME.processMotionEvent.
+     */
     private static final LogStatement LOGSTATEMENT_POINTERTRACKER_ONDOWNEVENT =
             new LogStatement("PointerTrackerOnDownEvent", true, false, "deltaT", "distanceSquared");
     public static void pointerTracker_onDownEvent(long deltaT, int distanceSquared) {
@@ -1083,6 +1197,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 distanceSquared);
     }
 
+    /**
+     * Log a call to PointerTracker.onMoveEvent().
+     *
+     * UserAction: The user has moved their finger while pressing on the screen.
+     * TODO: Differentiate with LatinIME.processMotionEvent().
+     */
     private static final LogStatement LOGSTATEMENT_POINTERTRACKER_ONMOVEEVENT =
             new LogStatement("PointerTrackerOnMoveEvent", true, false, "x", "y", "lastX", "lastY");
     public static void pointerTracker_onMoveEvent(final int x, final int y, final int lastX,
@@ -1090,6 +1210,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         getInstance().enqueueEvent(LOGSTATEMENT_POINTERTRACKER_ONMOVEEVENT, x, y, lastX, lastY);
     }
 
+    /**
+     * Log a call to RichInputConnection.commitCompletion().
+     *
+     * SystemResponse: The IME has committed a completion.  A completion is an application-
+     * specific suggestion that is presented in a pop-up menu in the TextView.
+     */
     private static final LogStatement LOGSTATEMENT_RICHINPUTCONNECTION_COMMITCOMPLETION =
             new LogStatement("RichInputConnectionCommitCompletion", true, false, "completionInfo");
     public static void richInputConnection_commitCompletion(final CompletionInfo completionInfo) {
@@ -1107,25 +1233,40 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         researchLogger.isExpectingCommitText = true;
     }
 
-    private static final LogStatement LOGSTATEMENT_COMMITTEXT_UPDATECURSOR =
-            new LogStatement("CommitTextUpdateCursor", true, false, "newCursorPosition");
+    /**
+     * Log a call to RichInputConnection.commitText().
+     *
+     * SystemResponse: The IME is committing text.  This happens after the user has typed a word
+     * and then a space or punctuation key.
+     */
+    private static final LogStatement LOGSTATEMENT_RICHINPUTCONNECTIONCOMMITTEXT =
+            new LogStatement("RichInputConnectionCommitText", true, false, "newCursorPosition");
     public static void richInputConnection_commitText(final CharSequence committedWord,
             final int newCursorPosition) {
         final ResearchLogger researchLogger = getInstance();
         final String scrubbedWord = scrubDigitsFromString(committedWord.toString());
         if (!researchLogger.isExpectingCommitText) {
             researchLogger.onWordComplete(scrubbedWord, Long.MAX_VALUE, false /* isPartial */);
-            researchLogger.enqueueEvent(LOGSTATEMENT_COMMITTEXT_UPDATECURSOR, newCursorPosition);
+            researchLogger.enqueueEvent(LOGSTATEMENT_RICHINPUTCONNECTIONCOMMITTEXT,
+                    newCursorPosition);
         }
         researchLogger.isExpectingCommitText = false;
     }
 
+    /**
+     * Shared event for logging committed text.
+     */
     private static final LogStatement LOGSTATEMENT_COMMITTEXT =
             new LogStatement("CommitText", true, false, "committedText");
     private void enqueueCommitText(final CharSequence word) {
         enqueueEvent(LOGSTATEMENT_COMMITTEXT, word);
     }
 
+    /**
+     * Log a call to RichInputConnection.deleteSurroundingText().
+     *
+     * SystemResponse: The IME has deleted text.
+     */
     private static final LogStatement LOGSTATEMENT_RICHINPUTCONNECTION_DELETESURROUNDINGTEXT =
             new LogStatement("RichInputConnectionDeleteSurroundingText", true, false,
                     "beforeLength", "afterLength");
@@ -1135,20 +1276,37 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 beforeLength, afterLength);
     }
 
+    /**
+     * Log a call to RichInputConnection.finishComposingText().
+     *
+     * SystemResponse: The IME has left the composing text as-is.
+     */
     private static final LogStatement LOGSTATEMENT_RICHINPUTCONNECTION_FINISHCOMPOSINGTEXT =
             new LogStatement("RichInputConnectionFinishComposingText", false, false);
     public static void richInputConnection_finishComposingText() {
         getInstance().enqueueEvent(LOGSTATEMENT_RICHINPUTCONNECTION_FINISHCOMPOSINGTEXT);
     }
 
+    /**
+     * Log a call to RichInputConnection.performEditorAction().
+     *
+     * SystemResponse: The IME is invoking an action specific to the editor.
+     */
     private static final LogStatement LOGSTATEMENT_RICHINPUTCONNECTION_PERFORMEDITORACTION =
             new LogStatement("RichInputConnectionPerformEditorAction", false, false,
-                    "imeActionNext");
-    public static void richInputConnection_performEditorAction(final int imeActionNext) {
+                    "imeActionId");
+    public static void richInputConnection_performEditorAction(final int imeActionId) {
         getInstance().enqueueEvent(LOGSTATEMENT_RICHINPUTCONNECTION_PERFORMEDITORACTION,
-                imeActionNext);
+                imeActionId);
     }
 
+    /**
+     * Log a call to RichInputConnection.sendKeyEvent().
+     *
+     * SystemResponse: The IME is telling the TextView that a key is being pressed through an
+     * alternate channel.
+     * TODO: only for hardware keys?
+     */
     private static final LogStatement LOGSTATEMENT_RICHINPUTCONNECTION_SENDKEYEVENT =
             new LogStatement("RichInputConnectionSendKeyEvent", true, false, "eventTime", "action",
                     "code");
@@ -1157,6 +1315,12 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 keyEvent.getEventTime(), keyEvent.getAction(), keyEvent.getKeyCode());
     }
 
+    /**
+     * Log a call to RichInputConnection.setComposingText().
+     *
+     * SystemResponse: The IME is setting the composing text.  Happens each time a character is
+     * entered.
+     */
     private static final LogStatement LOGSTATEMENT_RICHINPUTCONNECTION_SETCOMPOSINGTEXT =
             new LogStatement("RichInputConnectionSetComposingText", true, true, "text",
                     "newCursorPosition");
@@ -1169,12 +1333,24 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 newCursorPosition);
     }
 
+    /**
+     * Log a call to RichInputConnection.setSelection().
+     *
+     * SystemResponse: The IME is requesting that the selection change.  User-initiated selection-
+     * change requests do not go through this method -- it's only when the system wants to change
+     * the selection.
+     */
     private static final LogStatement LOGSTATEMENT_RICHINPUTCONNECTION_SETSELECTION =
             new LogStatement("RichInputConnectionSetSelection", true, false, "from", "to");
     public static void richInputConnection_setSelection(final int from, final int to) {
         getInstance().enqueueEvent(LOGSTATEMENT_RICHINPUTCONNECTION_SETSELECTION, from, to);
     }
 
+    /**
+     * Log a call to SuddenJumpingTouchEventHandler.onTouchEvent().
+     *
+     * SystemResponse: The IME has filtered input events in case of an erroneous sensor reading.
+     */
     private static final LogStatement LOGSTATEMENT_SUDDENJUMPINGTOUCHEVENTHANDLER_ONTOUCHEVENT =
             new LogStatement("SuddenJumpingTouchEventHandlerOnTouchEvent", true, false,
                     "motionEvent");
@@ -1185,6 +1361,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
+    /**
+     * Log a call to SuggestionsView.setSuggestions().
+     *
+     * SystemResponse: The IME is setting the suggestions in the suggestion strip.
+     */
     private static final LogStatement LOGSTATEMENT_SUGGESTIONSTRIPVIEW_SETSUGGESTIONS =
             new LogStatement("SuggestionStripViewSetSuggestions", true, true, "suggestedWords");
     public static void suggestionStripView_setSuggestions(final SuggestedWords suggestedWords) {
@@ -1194,12 +1375,22 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
+    /**
+     * The user has indicated a particular point in the log that is of interest.
+     *
+     * UserAction: From direct menu invocation.
+     */
     private static final LogStatement LOGSTATEMENT_USER_TIMESTAMP =
             new LogStatement("UserTimestamp", false, false);
     public void userTimestamp() {
         getInstance().enqueueEvent(LOGSTATEMENT_USER_TIMESTAMP);
     }
 
+    /**
+     * Log a call to LatinIME.onEndBatchInput().
+     *
+     * SystemResponse: The system has completed a gesture.
+     */
     private static final LogStatement LOGSTATEMENT_LATINIME_ONENDBATCHINPUT =
             new LogStatement("LatinIMEOnEndBatchInput", true, false, "enteredText",
                     "enteredWordPos");
@@ -1211,6 +1402,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         researchLogger.mStatistics.recordGestureInput(enteredText.length());
     }
 
+    /**
+     * Log a call to LatinIME.handleBackspace().
+     *
+     * UserInput: The user is deleting a gestured word by hitting the backspace key once.
+     */
     private static final LogStatement LOGSTATEMENT_LATINIME_HANDLEBACKSPACE_BATCH =
             new LogStatement("LatinIMEHandleBackspaceBatch", true, false, "deletedText");
     public static void latinIME_handleBackspace_batch(final CharSequence deletedText) {
@@ -1219,6 +1415,11 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
         researchLogger.mStatistics.recordGestureDelete();
     }
 
+    /**
+     * Log statistics.
+     *
+     * ContextualData, recorded at the end of a session.
+     */
     private static final LogStatement LOGSTATEMENT_STATISTICS =
             new LogStatement("Statistics", false, false, "charCount", "letterCount", "numberCount",
                     "spaceCount", "deleteOpsCount", "wordCount", "isEmptyUponStarting",
