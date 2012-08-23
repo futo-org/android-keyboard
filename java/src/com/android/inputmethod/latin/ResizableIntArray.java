@@ -131,4 +131,16 @@ public class ResizableIntArray {
             mLength = endPos;
         }
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < mLength; i++) {
+            if (i != 0) {
+                sb.append(",");
+            }
+            sb.append(mArray[i]);
+        }
+        return "[" + sb + "]";
+    }
 }
