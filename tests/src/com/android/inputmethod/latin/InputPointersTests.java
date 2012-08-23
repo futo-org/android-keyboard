@@ -18,6 +18,8 @@ package com.android.inputmethod.latin;
 
 import android.test.AndroidTestCase;
 
+import java.util.Arrays;
+
 public class InputPointersTests extends AndroidTestCase {
     private static final int DEFAULT_CAPACITY = 48;
 
@@ -160,6 +162,61 @@ public class InputPointersTests extends AndroidTestCase {
                 src.getPointerIds(), 0, dst.getPointerIds(), dstLen, srcLen);
         assertArrayEquals("appended times values after append",
                 src.getTimes(), 0, dst.getTimes(), dstLen, srcLen);
+    }
+
+    public void testAppendResizableIntArray() {
+        final int srcLen = 100;
+        final int srcPointerId = 1;
+        final int[] srcPointerIds = new int[srcLen];
+        Arrays.fill(srcPointerIds, srcPointerId);
+        final ResizableIntArray srcTimes = new ResizableIntArray(DEFAULT_CAPACITY);
+        final ResizableIntArray srcXCoords = new ResizableIntArray(DEFAULT_CAPACITY);
+        final ResizableIntArray srcYCoords= new ResizableIntArray(DEFAULT_CAPACITY);
+        for (int i = 0; i < srcLen; i++) {
+            srcTimes.add(i * 2);
+            srcXCoords.add(i * 3);
+            srcYCoords.add(i * 4);
+        }
+        final int dstLen = 50;
+        final InputPointers dst = new InputPointers(DEFAULT_CAPACITY);
+        for (int i = 0; i < dstLen; i++) {
+            final int value = -i - 1;
+            dst.addPointer(value * 4, value * 3, value * 2, value);
+        }
+        final InputPointers dstCopy = new InputPointers(DEFAULT_CAPACITY);
+        dstCopy.copy(dst);
+
+        dst.append(srcPointerId, srcTimes, srcXCoords, srcYCoords, 0, 0);
+        assertEquals("size after append zero", dstLen, dst.getPointerSize());
+        assertArrayEquals("xCoordinates after append zero",
+                dstCopy.getXCoordinates(), 0, dst.getXCoordinates(), 0, dstLen);
+        assertArrayEquals("yCoordinates after append zero",
+                dstCopy.getYCoordinates(), 0, dst.getYCoordinates(), 0, dstLen);
+        assertArrayEquals("pointerIds after append zero",
+                dstCopy.getPointerIds(), 0, dst.getPointerIds(), 0, dstLen);
+        assertArrayEquals("times after append zero",
+                dstCopy.getTimes(), 0, dst.getTimes(), 0, dstLen);
+
+        dst.append(srcPointerId, srcTimes, srcXCoords, srcYCoords, 0, srcLen);
+        assertEquals("size after append", dstLen + srcLen, dst.getPointerSize());
+        assertTrue("primitive length after append",
+                dst.getPointerIds().length >= dstLen + srcLen);
+        assertArrayEquals("original xCoordinates values after append",
+                dstCopy.getXCoordinates(), 0, dst.getXCoordinates(), 0, dstLen);
+        assertArrayEquals("original yCoordinates values after append",
+                dstCopy.getYCoordinates(), 0, dst.getYCoordinates(), 0, dstLen);
+        assertArrayEquals("original pointerIds values after append",
+                dstCopy.getPointerIds(), 0, dst.getPointerIds(), 0, dstLen);
+        assertArrayEquals("original times values after append",
+                dstCopy.getTimes(), 0, dst.getTimes(), 0, dstLen);
+        assertArrayEquals("appended xCoordinates values after append",
+                srcXCoords.getPrimitiveArray(), 0, dst.getXCoordinates(), dstLen, srcLen);
+        assertArrayEquals("appended yCoordinates values after append",
+                srcYCoords.getPrimitiveArray(), 0, dst.getYCoordinates(), dstLen, srcLen);
+        assertArrayEquals("appended pointerIds values after append",
+                srcPointerIds, 0, dst.getPointerIds(), dstLen, srcLen);
+        assertArrayEquals("appended times values after append",
+                srcTimes.getPrimitiveArray(), 0, dst.getTimes(), dstLen, srcLen);
     }
 
     private static void assertArrayEquals(String message, int[] expecteds, int expectedPos,

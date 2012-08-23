@@ -93,7 +93,7 @@ public class InputPointers {
         }
         mXCoordinates.append(xCoordinates, startPos, length);
         mYCoordinates.append(yCoordinates, startPos, length);
-        mPointerIds.fill(pointerId, startPos, length);
+        mPointerIds.fill(pointerId, mPointerIds.getLength(), length);
         mTimes.append(times, startPos, length);
     }
 
