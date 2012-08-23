@@ -18,6 +18,8 @@ package com.android.inputmethod.research;
 
 import static com.android.inputmethod.latin.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -30,6 +32,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -115,6 +118,8 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final String PREF_RESEARCH_LOGGER_UUID_STRING = "pref_research_logger_uuid";
 
     private static final ResearchLogger sInstance = new ResearchLogger();
+    private static String sAccountType = null;
+    private static String sAllowedAccountDomain = null;
     // to write to a different filename, e.g., for testing, set mFile before calling start()
     /* package */ File mFilesDir;
     /* package */ String mUUIDString;
@@ -199,6 +204,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 e.apply();
             }
         }
+        final Resources res = latinIME.getResources();
+        sAccountType = res.getString(R.string.research_account_type);
+        sAllowedAccountDomain = res.getString(R.string.research_allowed_account_domain);
         mLatinIME = latinIME;
         mPrefs = prefs;
         mUploadIntent = new Intent(mLatinIME, UploaderService.class);
@@ -593,6 +601,36 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
     */
 
+    /**
+     * Get the name of the first allowed account on the device.
+     *
+     * Allowed accounts must be in the domain given by ALLOWED_ACCOUNT_DOMAIN.
+     *
+     * @return The user's account name.
+     */
+    public String getAccountName() {
+        if (sAccountType == null || sAccountType.isEmpty()) {
+            return null;
+        }
+        if (sAllowedAccountDomain == null || sAllowedAccountDomain.isEmpty()) {
+            return null;
+        }
+        final AccountManager manager = AccountManager.get(mLatinIME);
+        // Filter first by account type.
+        final Account[] accounts = manager.getAccountsByType(sAccountType);
+
+        for (final Account account : accounts) {
+            if (DEBUG) {
+                Log.d(TAG, account.name);
+            }
+            final String[] parts = account.name.split("@");
+            if (parts.length > 1 && parts[1].equals(sAllowedAccountDomain)) {
+                return parts[0];
+            }
+        }
+        return null;
+    }
+
     static class LogStatement {
         final String mName;
 
@@ -626,8 +664,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final LogStatement LOGSTATEMENT_FEEDBACK =
-            new LogStatement("UserFeedback", false, false, "contents");
-    public void sendFeedback(final String feedbackContents, final boolean includeHistory) {
+            new LogStatement("UserFeedback", false, false, "contents", "accountName");
+    public void sendFeedback(final String feedbackContents, final boolean includeHistory,
+            final boolean isIncludingAccountName) {
         if (mSavedFeedbackLogBuffer == null) {
             return;
         }
@@ -635,8 +674,9 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             mSavedFeedbackLogBuffer.clear();
         }
         final LogUnit feedbackLogUnit = new LogUnit();
+        final String accountName = isIncludingAccountName ? getAccountName() : "";
         feedbackLogUnit.addLogStatement(LOGSTATEMENT_FEEDBACK, SystemClock.uptimeMillis(),
-                feedbackContents);
+                feedbackContents, accountName);
         mFeedbackLogBuffer.shiftIn(feedbackLogUnit);
         publishLogBuffer(mFeedbackLogBuffer, mSavedFeedbackLog, true /* isIncludingPrivateData */);
         mSavedFeedbackLog.close(new Runnable() {
