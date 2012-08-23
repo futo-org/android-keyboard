@@ -522,8 +522,25 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     */
 
     private boolean mInFeedbackDialog = false;
+
+    // The feedback dialog causes stop() to be called for the keyboard connected to the original
+    // window.  This is because the feedback dialog must present its own EditText box that displays
+    // a keyboard.  stop() normally causes mFeedbackLogBuffer, which contains the user's data, to be
+    // cleared, and causes mFeedbackLog, which is ready to collect information in case the user
+    // wants to upload, to be closed.  This is good because we don't need to log information about
+    // what the user is typing in the feedback dialog, but bad because this data must be uploaded.
+    // Here we save the LogBuffer and Log so the feedback dialog can later access their data.
+    private LogBuffer mSavedFeedbackLogBuffer;
+    private ResearchLog mSavedFeedbackLog;
+
     public void presentFeedbackDialog(LatinIME latinIME) {
         mInFeedbackDialog = true;
+        mSavedFeedbackLogBuffer = mFeedbackLogBuffer;
+        mSavedFeedbackLog = mFeedbackLog;
+        // Set the non-saved versions to null so that the stop() caused by switching to the
+        // Feedback dialog will not close them.
+        mFeedbackLogBuffer = null;
+        mFeedbackLog = null;
         latinIME.launchKeyboardedDialogActivity(FeedbackActivity.class);
     }
 
@@ -589,28 +606,25 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private static final LogStatement LOGSTATEMENT_FEEDBACK =
-            new LogStatement("UserTimestamp", false, false, "contents");
+            new LogStatement("UserFeedback", false, false, "contents");
     public void sendFeedback(final String feedbackContents, final boolean includeHistory) {
-        if (mFeedbackLogBuffer == null) {
+        if (mSavedFeedbackLogBuffer == null) {
             return;
         }
-        if (includeHistory) {
-            commitCurrentLogUnit();
-        } else {
-            mFeedbackLogBuffer.clear();
+        if (!includeHistory) {
+            mSavedFeedbackLogBuffer.clear();
         }
         final LogUnit feedbackLogUnit = new LogUnit();
         feedbackLogUnit.addLogStatement(LOGSTATEMENT_FEEDBACK, SystemClock.uptimeMillis(),
                 feedbackContents);
         mFeedbackLogBuffer.shiftIn(feedbackLogUnit);
-        publishLogBuffer(mFeedbackLogBuffer, mFeedbackLog, true /* isIncludingPrivateData */);
-        mFeedbackLog.close(new Runnable() {
+        publishLogBuffer(mFeedbackLogBuffer, mSavedFeedbackLog, true /* isIncludingPrivateData */);
+        mSavedFeedbackLog.close(new Runnable() {
             @Override
             public void run() {
                 uploadNow();
             }
         });
-        mFeedbackLog = new ResearchLog(createLogFile(mFilesDir), mLatinIME);
     }
 
     public void uploadNow() {
@@ -643,13 +657,6 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private boolean isAllowedToLog() {
-        if (DEBUG) {
-            Log.d(TAG, "iatl: " +
-                "mipw=" + mIsPasswordView +
-                ", mils=" + mIsLoggingSuspended +
-                ", sil=" + sIsLogging +
-                ", mInFeedbackDialog=" + mInFeedbackDialog);
-        }
         return !mIsPasswordView && !mIsLoggingSuspended && sIsLogging && !mInFeedbackDialog;
     }
 
