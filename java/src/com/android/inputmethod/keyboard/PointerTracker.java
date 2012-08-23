@@ -819,8 +819,9 @@ public class PointerTracker implements PointerTrackerQueue.Element {
                         // touch panels when there are close multiple touches.
                         // Caveat: When in chording input mode with a modifier key, we don't use
                         // this hack.
-                        if (me != null && me.getPointerCount() > 1
-                                && !sPointerTrackerQueue.hasModifierKeyOlderThan(this)) {
+                        final PointerTrackerQueue queue = sPointerTrackerQueue;
+                        if (queue != null && queue.size() > 1
+                                && !queue.hasModifierKeyOlderThan(this)) {
                             onUpEventInternal();
                         }
                         if (!mIsPossibleGesture) {
