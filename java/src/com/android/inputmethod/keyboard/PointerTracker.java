@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.SystemClock;
@@ -28,6 +29,7 @@ import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.research.ResearchLogger;
 
@@ -118,9 +120,36 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         }
     }
 
+    static class PointerTrackerParams {
+        public final boolean mSlidingKeyInputEnabled;
+        public final int mTouchNoiseThresholdTime;
+        public final float mTouchNoiseThresholdDistance;
+        public final int mTouchNoiseThresholdDistanceSquared;
+
+        public static final PointerTrackerParams DEFAULT = new PointerTrackerParams();
+
+        private PointerTrackerParams() {
+            mSlidingKeyInputEnabled = false;
+            mTouchNoiseThresholdTime = 0;
+            mTouchNoiseThresholdDistance = 0.0f;
+            mTouchNoiseThresholdDistanceSquared = 0;
+        }
+
+        public PointerTrackerParams(TypedArray mainKeyboardViewAttr) {
+            mSlidingKeyInputEnabled = mainKeyboardViewAttr.getBoolean(
+                    R.styleable.MainKeyboardView_slidingKeyInputEnable, false);
+            mTouchNoiseThresholdTime = mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_touchNoiseThresholdTime, 0);
+            final float touchNouseThresholdDistance = mainKeyboardViewAttr.getDimension(
+                    R.styleable.MainKeyboardView_touchNoiseThresholdDistance, 0);
+            mTouchNoiseThresholdDistance = touchNouseThresholdDistance;
+            mTouchNoiseThresholdDistanceSquared =
+                    (int)(touchNouseThresholdDistance * touchNouseThresholdDistance);
+        }
+    }
+
     // Parameters for pointer handling.
-    private static MainKeyboardView.PointerTrackerParams sParams;
-    private static int sTouchNoiseThresholdDistanceSquared;
+    private static PointerTrackerParams sParams;
     private static boolean sNeedsPhantomSuddenMoveEventHack;
 
     private static final ArrayList<PointerTracker> sTrackers = CollectionUtils.newArrayList();
@@ -192,14 +221,11 @@ public class PointerTracker implements PointerTrackerQueue.Element {
             sPointerTrackerQueue = null;
         }
         sNeedsPhantomSuddenMoveEventHack = needsPhantomSuddenMoveEventHack;
-
-        setParameters(MainKeyboardView.PointerTrackerParams.DEFAULT);
+        sParams = PointerTrackerParams.DEFAULT;
     }
 
-    public static void setParameters(final MainKeyboardView.PointerTrackerParams params) {
-        sParams = params;
-        sTouchNoiseThresholdDistanceSquared = (int)(
-                params.mTouchNoiseThresholdDistance * params.mTouchNoiseThresholdDistance);
+    public static void setParameters(final TypedArray mainKeyboardViewAttr) {
+        sParams = new PointerTrackerParams(mainKeyboardViewAttr);
     }
 
     private static void updateGestureHandlingMode() {
@@ -635,7 +661,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
             final int dx = x - mLastX;
             final int dy = y - mLastY;
             final int distanceSquared = (dx * dx + dy * dy);
-            if (distanceSquared < sTouchNoiseThresholdDistanceSquared) {
+            if (distanceSquared < sParams.mTouchNoiseThresholdDistanceSquared) {
                 if (DEBUG_MODE)
                     Log.w(TAG, "onDownEvent: ignore potential noise: time=" + deltaT
                             + " distance=" + distanceSquared);
