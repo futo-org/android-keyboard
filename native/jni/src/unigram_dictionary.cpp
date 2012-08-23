@@ -237,7 +237,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo,
 
 void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codes,
-        const int inputLength, const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
+        const int inputSize, const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
         const bool useFullEditDistance, Correction *correction,
         WordsPriorityQueuePool *queuePool) const {
 
@@ -247,7 +247,7 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
 
     PROF_START(1);
     getOneWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, bigramMap, bigramFilter,
-            useFullEditDistance, inputLength, correction, queuePool);
+            useFullEditDistance, inputSize, correction, queuePool);
     PROF_END(1);
 
     PROF_START(2);
@@ -263,7 +263,7 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
     WordsPriorityQueue *masterQueue = queuePool->getMasterQueue();
     if (masterQueue->size() > 0) {
         float nsForMaster = masterQueue->getHighestNormalizedScore(
-                correction->getPrimaryInputWord(), inputLength, 0, 0, 0);
+                correction->getPrimaryInputWord(), inputSize, 0, 0, 0);
         hasAutoCorrectionCandidate = (nsForMaster > START_TWO_WORDS_CORRECTION_THRESHOLD);
     }
     PROF_END(4);
@@ -271,9 +271,9 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
     PROF_START(5);
     // Multiple word suggestions
     if (SUGGEST_MULTIPLE_WORDS
-            && inputLength >= MIN_USER_TYPED_LENGTH_FOR_MULTIPLE_WORD_SUGGESTION) {
+            && inputSize >= MIN_USER_TYPED_LENGTH_FOR_MULTIPLE_WORD_SUGGESTION) {
         getSplitMultipleWordsSuggestions(proximityInfo, xcoordinates, ycoordinates, codes,
-                useFullEditDistance, inputLength, correction, queuePool,
+                useFullEditDistance, inputSize, correction, queuePool,
                 hasAutoCorrectionCandidate);
     }
     PROF_END(5);
@@ -304,15 +304,15 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
 }
 
 void UnigramDictionary::initSuggestions(ProximityInfo *proximityInfo, const int *xCoordinates,
-        const int *yCoordinates, const int *codes, const int inputLength,
+        const int *yCoordinates, const int *codes, const int inputSize,
         Correction *correction) const {
     if (DEBUG_DICT) {
         AKLOGI("initSuggest");
-        DUMP_WORD_INT(codes, inputLength);
+        DUMP_WORD_INT(codes, inputSize);
     }
-    correction->initInputParams(proximityInfo, codes, inputLength, xCoordinates, yCoordinates);
-    const int maxDepth = min(inputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
-    correction->initCorrection(proximityInfo, inputLength, maxDepth);
+    correction->initInputParams(proximityInfo, codes, inputSize, xCoordinates, yCoordinates);
+    const int maxDepth = min(inputSize * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
+    correction->initCorrection(proximityInfo, inputSize, maxDepth);
 }
 
 static const char QUOTE = '\'';
@@ -321,15 +321,15 @@ static const char SPACE = ' ';
 void UnigramDictionary::getOneWordSuggestions(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codes,
         const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
-        const bool useFullEditDistance, const int inputLength,
+        const bool useFullEditDistance, const int inputSize,
         Correction *correction, WordsPriorityQueuePool *queuePool) const {
-    initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, inputLength, correction);
-    getSuggestionCandidates(useFullEditDistance, inputLength, bigramMap, bigramFilter, correction,
+    initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, inputSize, correction);
+    getSuggestionCandidates(useFullEditDistance, inputSize, bigramMap, bigramFilter, correction,
             queuePool, true /* doAutoCompletion */, DEFAULT_MAX_ERRORS, FIRST_WORD_INDEX);
 }
 
 void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
-        const int inputLength, const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
+        const int inputSize, const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
         Correction *correction, WordsPriorityQueuePool *queuePool,
         const bool doAutoCompletion, const int maxErrors, const int currentWordIndex) const {
     uint8_t totalTraverseCount = correction->pushAndGetTotalTraverseCount();
@@ -351,7 +351,7 @@ void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance,
     int childCount = BinaryFormat::getGroupCountAndForwardPointer(DICT_ROOT, &rootPosition);
     int outputIndex = 0;
 
-    correction->initCorrectionState(rootPosition, childCount, (inputLength <= 0));
+    correction->initCorrectionState(rootPosition, childCount, (inputSize <= 0));
 
     // Depth first search
     while (outputIndex >= 0) {
@@ -446,7 +446,7 @@ inline void UnigramDictionary::onTerminal(const int probability,
 int UnigramDictionary::getSubStringSuggestion(
         ProximityInfo *proximityInfo, const int *xcoordinates, const int *ycoordinates,
         const int *codes, const bool useFullEditDistance, Correction *correction,
-        WordsPriorityQueuePool *queuePool, const int inputLength,
+        WordsPriorityQueuePool *queuePool, const int inputSize,
         const bool hasAutoCorrectionCandidate, const int currentWordIndex,
         const int inputWordStartPos, const int inputWordLength,
         const int outputWordStartPos, const bool isSpaceProximity, int *freqArray,
@@ -497,7 +497,7 @@ int UnigramDictionary::getSubStringSuggestion(
     int nextWordLength = 0;
     // TODO: Optimize init suggestion
     initSuggestions(proximityInfo, xcoordinates, ycoordinates, codes,
-            inputLength, correction);
+            inputSize, correction);
 
     unsigned short word[MAX_WORD_LENGTH_INTERNAL];
     int freq = getMostFrequentWordLike(
@@ -566,7 +566,7 @@ int UnigramDictionary::getSubStringSuggestion(
         *outputWordLength = tempOutputWordLength;
     }
 
-    if ((inputWordStartPos + inputWordLength) < inputLength) {
+    if ((inputWordStartPos + inputWordLength) < inputSize) {
         if (outputWordStartPos + nextWordLength >= MAX_WORD_LENGTH) {
             return FLAG_MULTIPLE_SUGGEST_SKIP;
         }
@@ -585,7 +585,7 @@ int UnigramDictionary::getSubStringSuggestion(
                         freqArray[i], wordLengthArray[i]);
             }
             AKLOGI("Split two words: freq = %d, length = %d, %d, isSpace ? %d", pairFreq,
-                    inputLength, tempOutputWordLength, isSpaceProximity);
+                    inputSize, tempOutputWordLength, isSpaceProximity);
         }
         addWord(outputWord, tempOutputWordLength, pairFreq, queuePool->getMasterQueue(),
                 Dictionary::KIND_CORRECTION);
@@ -595,7 +595,7 @@ int UnigramDictionary::getSubStringSuggestion(
 
 void UnigramDictionary::getMultiWordsSuggestionRec(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codes,
-        const bool useFullEditDistance, const int inputLength,
+        const bool useFullEditDistance, const int inputSize,
         Correction *correction, WordsPriorityQueuePool *queuePool,
         const bool hasAutoCorrectionCandidate, const int startInputPos, const int startWordIndex,
         const int outputWordLength, int *freqArray, int *wordLengthArray,
@@ -606,11 +606,11 @@ void UnigramDictionary::getMultiWordsSuggestionRec(ProximityInfo *proximityInfo,
     }
     if (startWordIndex >= 1
             && (hasAutoCorrectionCandidate
-                    || inputLength < MIN_INPUT_LENGTH_FOR_THREE_OR_MORE_WORDS_CORRECTION)) {
+                    || inputSize < MIN_INPUT_LENGTH_FOR_THREE_OR_MORE_WORDS_CORRECTION)) {
         // Do not suggest 3+ words if already has auto correction candidate
         return;
     }
-    for (int i = startInputPos + 1; i < inputLength; ++i) {
+    for (int i = startInputPos + 1; i < inputSize; ++i) {
         if (DEBUG_CORRECTION_FREQ) {
             AKLOGI("Multi words(%d), start in %d sep %d start out %d",
                     startWordIndex, startInputPos, i, outputWordLength);
@@ -621,7 +621,7 @@ void UnigramDictionary::getMultiWordsSuggestionRec(ProximityInfo *proximityInfo,
         int inputWordStartPos = startInputPos;
         int inputWordLength = i - startInputPos;
         const int suggestionFlag = getSubStringSuggestion(proximityInfo, xcoordinates, ycoordinates,
-                codes, useFullEditDistance, correction, queuePool, inputLength,
+                codes, useFullEditDistance, correction, queuePool, inputSize,
                 hasAutoCorrectionCandidate, startWordIndex, inputWordStartPos, inputWordLength,
                 outputWordLength, true /* not used */, freqArray, wordLengthArray, outputWord,
                 &tempOutputWordLength);
@@ -638,14 +638,14 @@ void UnigramDictionary::getMultiWordsSuggestionRec(ProximityInfo *proximityInfo,
         // Next word
         // Missing space
         inputWordStartPos = i;
-        inputWordLength = inputLength - i;
+        inputWordLength = inputSize - i;
         if(getSubStringSuggestion(proximityInfo, xcoordinates, ycoordinates, codes,
-                useFullEditDistance, correction, queuePool, inputLength, hasAutoCorrectionCandidate,
+                useFullEditDistance, correction, queuePool, inputSize, hasAutoCorrectionCandidate,
                 startWordIndex + 1, inputWordStartPos, inputWordLength, tempOutputWordLength,
                 false /* missing space */, freqArray, wordLengthArray, outputWord, 0)
                         != FLAG_MULTIPLE_SUGGEST_CONTINUE) {
             getMultiWordsSuggestionRec(proximityInfo, xcoordinates, ycoordinates, codes,
-                    useFullEditDistance, inputLength, correction, queuePool,
+                    useFullEditDistance, inputSize, correction, queuePool,
                     hasAutoCorrectionCandidate, inputWordStartPos, startWordIndex + 1,
                     tempOutputWordLength, freqArray, wordLengthArray, outputWord);
         }
@@ -668,7 +668,7 @@ void UnigramDictionary::getMultiWordsSuggestionRec(ProximityInfo *proximityInfo,
             AKLOGI("Do mistyped space correction");
         }
         getSubStringSuggestion(proximityInfo, xcoordinates, ycoordinates, codes,
-                useFullEditDistance, correction, queuePool, inputLength, hasAutoCorrectionCandidate,
+                useFullEditDistance, correction, queuePool, inputSize, hasAutoCorrectionCandidate,
                 startWordIndex + 1, inputWordStartPos, inputWordLength, tempOutputWordLength,
                 true /* mistyped space */, freqArray, wordLengthArray, outputWord, 0);
     }
@@ -676,10 +676,10 @@ void UnigramDictionary::getMultiWordsSuggestionRec(ProximityInfo *proximityInfo,
 
 void UnigramDictionary::getSplitMultipleWordsSuggestions(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codes,
-        const bool useFullEditDistance, const int inputLength,
+        const bool useFullEditDistance, const int inputSize,
         Correction *correction, WordsPriorityQueuePool *queuePool,
         const bool hasAutoCorrectionCandidate) const {
-    if (inputLength >= MAX_WORD_LENGTH) return;
+    if (inputSize >= MAX_WORD_LENGTH) return;
     if (DEBUG_DICT) {
         AKLOGI("--- Suggest multiple words");
     }
@@ -692,7 +692,7 @@ void UnigramDictionary::getSplitMultipleWordsSuggestions(ProximityInfo *proximit
     const int startInputPos = 0;
     const int startWordIndex = 0;
     getMultiWordsSuggestionRec(proximityInfo, xcoordinates, ycoordinates, codes,
-            useFullEditDistance, inputLength, correction, queuePool, hasAutoCorrectionCandidate,
+            useFullEditDistance, inputSize, correction, queuePool, hasAutoCorrectionCandidate,
             startInputPos, startWordIndex, outputWordLength, freqArray, wordLengthArray,
             outputWord);
 }
@@ -700,13 +700,13 @@ void UnigramDictionary::getSplitMultipleWordsSuggestions(ProximityInfo *proximit
 // Wrapper for getMostFrequentWordLikeInner, which matches it to the previous
 // interface.
 inline int UnigramDictionary::getMostFrequentWordLike(const int startInputIndex,
-        const int inputLength, Correction *correction, unsigned short *word) const {
-    uint16_t inWord[inputLength];
+        const int inputSize, Correction *correction, unsigned short *word) const {
+    uint16_t inWord[inputSize];
 
-    for (int i = 0; i < inputLength; ++i) {
+    for (int i = 0; i < inputSize; ++i) {
         inWord[i] = (uint16_t)correction->getPrimaryCharAt(startInputIndex + i);
     }
-    return getMostFrequentWordLikeInner(inWord, inputLength, word);
+    return getMostFrequentWordLikeInner(inWord, inputSize, word);
 }
 
 // This function will take the position of a character array within a CharGroup,
