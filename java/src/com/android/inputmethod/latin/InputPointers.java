@@ -124,4 +124,10 @@ public class InputPointers {
     public int[] getTimes() {
         return mTimes.getPrimitiveArray();
     }
+
+    @Override
+    public String toString() {
+        return "size=" + getPointerSize() + " id=" + mPointerIds + " time=" + mTimes
+                + " x=" + mXCoordinates + " y=" + mYCoordinates;
+    }
 }
