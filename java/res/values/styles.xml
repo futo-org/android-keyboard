@@ -78,6 +78,9 @@
         <item name="gestureFloatingPreviewTextConnectorColor">@android:color/white</item>
         <item name="gestureFloatingPreviewTextConnectorWidth">@dimen/gesture_floating_preview_text_connector_width</item>
         <item name="gestureFloatingPreviewTextLingerTimeout">@integer/config_gesture_floating_preview_text_linger_timeout</item>
+        <item name="gesturePreviewTrailFadeoutStartDelay">@integer/config_gesture_preview_trail_fadeout_start_delay</item>
+        <item name="gesturePreviewTrailFadeoutDuration">@integer/config_gesture_preview_trail_fadeout_duration</item>
+        <item name="gesturePreviewTrailUpdateInterval">@integer/config_gesture_preview_trail_update_interval</item>
         <item name="gesturePreviewTrailColor">@android:color/holo_blue_light</item>
         <item name="gesturePreviewTrailWidth">@dimen/gesture_preview_trail_width</item>
         <!-- Common attributes of MainKeyboardView -->

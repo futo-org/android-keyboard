@@ -17,14 +17,13 @@
 package com.android.inputmethod.keyboard;
 
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.keyboard.internal.GestureStroke;
+import com.android.inputmethod.keyboard.internal.GestureStrokeWithPreviewTrail;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.InputPointers;
@@ -211,7 +210,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
     private static final KeyboardActionListener EMPTY_LISTENER =
             new KeyboardActionListener.Adapter();
 
-    private final GestureStroke mGestureStroke;
+    private final GestureStrokeWithPreviewTrail mGestureStrokeWithPreviewTrail;
 
     public static void init(boolean hasDistinctMultitouch,
             boolean needsPhantomSuddenMoveEventHack) {
@@ -297,7 +296,8 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         final int trackersSize = sTrackers.size();
         for (int i = 0; i < trackersSize; ++i) {
             final PointerTracker tracker = sTrackers.get(i);
-            tracker.mGestureStroke.appendIncrementalBatchPoints(sAggregratedPointers);
+            tracker.mGestureStrokeWithPreviewTrail.appendIncrementalBatchPoints(
+                    sAggregratedPointers);
         }
         return sAggregratedPointers;
     }
@@ -308,7 +308,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         final int trackersSize = sTrackers.size();
         for (int i = 0; i < trackersSize; ++i) {
             final PointerTracker tracker = sTrackers.get(i);
-            tracker.mGestureStroke.appendAllBatchPoints(sAggregratedPointers);
+            tracker.mGestureStrokeWithPreviewTrail.appendAllBatchPoints(sAggregratedPointers);
         }
         return sAggregratedPointers;
     }
@@ -319,7 +319,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         final int trackersSize = sTrackers.size();
         for (int i = 0; i < trackersSize; ++i) {
             final PointerTracker tracker = sTrackers.get(i);
-            tracker.mGestureStroke.reset();
+            tracker.mGestureStrokeWithPreviewTrail.reset();
         }
         sAggregratedPointers.reset();
     }
@@ -329,7 +329,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
             throw new NullPointerException();
         }
         mPointerId = id;
-        mGestureStroke = new GestureStroke(id);
+        mGestureStrokeWithPreviewTrail = new GestureStrokeWithPreviewTrail(id);
         setKeyDetectorInner(handler.getKeyDetector());
         mListener = handler.getKeyboardActionListener();
         mDrawingProxy = handler.getDrawingProxy();
@@ -429,7 +429,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         mKeyDetector = keyDetector;
         mKeyboard = keyDetector.getKeyboard();
         mIsAlphabetKeyboard = mKeyboard.mId.isAlphabetKeyboard();
-        mGestureStroke.setGestureSampleLength(mKeyboard.mMostCommonKeyWidth);
+        mGestureStrokeWithPreviewTrail.setGestureSampleLength(mKeyboard.mMostCommonKeyWidth);
         final Key newKey = mKeyDetector.detectHitKey(mKeyX, mKeyY);
         if (newKey != mCurrentKey) {
             if (mDrawingProxy != null) {
@@ -539,10 +539,8 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         mDrawingProxy.invalidateKey(key);
     }
 
-    public void drawGestureTrail(final Canvas canvas, final Paint paint) {
-        if (mInGesture) {
-            mGestureStroke.drawGestureTrail(canvas, paint);
-        }
+    public GestureStrokeWithPreviewTrail getGestureStrokeWithPreviewTrail() {
+        return mGestureStrokeWithPreviewTrail;
     }
 
     public int getLastX() {
@@ -692,7 +690,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
                 mIsPossibleGesture = true;
                 // TODO: pointer times should be relative to first down even in entire batch input
                 // instead of resetting to 0 for each new down event.
-                mGestureStroke.addPoint(x, y, 0, false);
+                mGestureStrokeWithPreviewTrail.addPoint(x, y, 0, false);
             }
         }
     }
@@ -733,7 +731,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
             final long eventTime, final boolean isHistorical, final Key key) {
         final int gestureTime = (int)(eventTime - tracker.getDownTime());
         if (sShouldHandleGesture && mIsPossibleGesture) {
-            final GestureStroke stroke = mGestureStroke;
+            final GestureStroke stroke = mGestureStrokeWithPreviewTrail;
             stroke.addPoint(x, y, gestureTime, isHistorical);
             if (!mInGesture && stroke.isStartOfAGesture()) {
                 startBatchInput();
