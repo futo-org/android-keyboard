@@ -19,7 +19,6 @@
 
 #include <cmath>
 
-#define MAX_DISTANCE 10000000
 #define MAX_PATHS 2
 
 #define DEBUG_DECODER false

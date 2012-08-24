@@ -61,19 +61,19 @@ inline static void dumpEditDistance10ForDebug(int *editDistanceTable,
 }
 
 inline static void calcEditDistanceOneStep(int *editDistanceTable, const unsigned short *input,
-        const int inputLength, const unsigned short *output, const int outputLength) {
+        const int inputSize, const unsigned short *output, const int outputLength) {
     // TODO: Make sure that editDistance[0 ~ MAX_WORD_LENGTH_INTERNAL] is not touched.
-    // Let dp[i][j] be editDistanceTable[i * (inputLength + 1) + j].
-    // Assuming that dp[0][0] ... dp[outputLength - 1][inputLength] are already calculated,
-    // and calculate dp[ouputLength][0] ... dp[outputLength][inputLength].
-    int *const current = editDistanceTable + outputLength * (inputLength + 1);
-    const int *const prev = editDistanceTable + (outputLength - 1) * (inputLength + 1);
+    // Let dp[i][j] be editDistanceTable[i * (inputSize + 1) + j].
+    // Assuming that dp[0][0] ... dp[outputLength - 1][inputSize] are already calculated,
+    // and calculate dp[ouputLength][0] ... dp[outputLength][inputSize].
+    int *const current = editDistanceTable + outputLength * (inputSize + 1);
+    const int *const prev = editDistanceTable + (outputLength - 1) * (inputSize + 1);
     const int *const prevprev =
-            outputLength >= 2 ? editDistanceTable + (outputLength - 2) * (inputLength + 1) : 0;
+            outputLength >= 2 ? editDistanceTable + (outputLength - 2) * (inputSize + 1) : 0;
     current[0] = outputLength;
     const uint32_t co = toBaseLowerCase(output[outputLength - 1]);
     const uint32_t prevCO = outputLength >= 2 ? toBaseLowerCase(output[outputLength - 2]) : 0;
-    for (int i = 1; i <= inputLength; ++i) {
+    for (int i = 1; i <= inputSize; ++i) {
         const uint32_t ci = toBaseLowerCase(input[i - 1]);
         const uint16_t cost = (ci == co) ? 0 : 1;
         current[i] = min(current[i - 1] + 1, min(prev[i] + 1, prev[i - 1] + cost));
@@ -84,11 +84,11 @@ inline static void calcEditDistanceOneStep(int *editDistanceTable, const unsigne
 }
 
 inline static int getCurrentEditDistance(int *editDistanceTable, const int editDistanceTableWidth,
-        const int outputLength, const int inputLength) {
+        const int outputLength, const int inputSize) {
     if (DEBUG_EDIT_DISTANCE) {
-        AKLOGI("getCurrentEditDistance %d, %d", inputLength, outputLength);
+        AKLOGI("getCurrentEditDistance %d, %d", inputSize, outputLength);
     }
-    return editDistanceTable[(editDistanceTableWidth + 1) * (outputLength) + inputLength];
+    return editDistanceTable[(editDistanceTableWidth + 1) * (outputLength) + inputSize];
 }
 
 //////////////////////
@@ -109,12 +109,12 @@ void Correction::resetCorrection() {
     mTotalTraverseCount = 0;
 }
 
-void Correction::initCorrection(const ProximityInfo *pi, const int inputLength,
+void Correction::initCorrection(const ProximityInfo *pi, const int inputSize,
         const int maxDepth) {
     mProximityInfo = pi;
-    mInputLength = inputLength;
+    mInputSize = inputSize;
     mMaxDepth = maxDepth;
-    mMaxEditDistance = mInputLength < 5 ? 2 : mInputLength / 2;
+    mMaxEditDistance = mInputSize < 5 ? 2 : mInputSize / 2;
     // TODO: This is not supposed to be required.  Check what's going wrong with
     // editDistance[0 ~ MAX_WORD_LENGTH_INTERNAL]
     initEditDistance(mEditDistanceTable);
@@ -168,22 +168,22 @@ int Correction::getFreqForSplitMultipleWords(const int *freqArray, const int *wo
 }
 
 int Correction::getFinalProbability(const int probability, unsigned short **word, int *wordLength) {
-    return getFinalProbabilityInternal(probability, word, wordLength, mInputLength);
+    return getFinalProbabilityInternal(probability, word, wordLength, mInputSize);
 }
 
 int Correction::getFinalProbabilityForSubQueue(const int probability, unsigned short **word,
-        int *wordLength, const int inputLength) {
-    return getFinalProbabilityInternal(probability, word, wordLength, inputLength);
+        int *wordLength, const int inputSize) {
+    return getFinalProbabilityInternal(probability, word, wordLength, inputSize);
 }
 
 int Correction::getFinalProbabilityInternal(const int probability, unsigned short **word,
-        int *wordLength, const int inputLength) {
+        int *wordLength, const int inputSize) {
     const int outputIndex = mTerminalOutputIndex;
     const int inputIndex = mTerminalInputIndex;
     *wordLength = outputIndex + 1;
     *word = mWord;
     int finalProbability= Correction::RankingAlgorithm::calculateFinalProbability(
-            inputIndex, outputIndex, probability, mEditDistanceTable, this, inputLength);
+            inputIndex, outputIndex, probability, mEditDistanceTable, this, inputSize);
     return finalProbability;
 }
 
@@ -270,13 +270,13 @@ bool Correction::needsToPrune() const {
     // TODO: use edit distance here
     return mOutputIndex - 1 >= mMaxDepth || mProximityCount > mMaxEditDistance
             // Allow one char longer word for missing character
-            || (!mDoAutoCompletion && (mOutputIndex > mInputLength));
+            || (!mDoAutoCompletion && (mOutputIndex > mInputSize));
 }
 
 void Correction::addCharToCurrentWord(const int32_t c) {
     mWord[mOutputIndex] = c;
     const unsigned short *primaryInputWord = mProximityInfoState.getPrimaryInputWord();
-    calcEditDistanceOneStep(mEditDistanceTable, primaryInputWord, mInputLength,
+    calcEditDistanceOneStep(mEditDistanceTable, primaryInputWord, mInputSize,
             mWord, mOutputIndex + 1);
 }
 
@@ -325,7 +325,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
     // Skip checking this node
     if (mNeedsToTraverseAllNodes || isSingleQuote(c)) {
         bool incremented = false;
-        if (mLastCharExceeded && mInputIndex == mInputLength - 1) {
+        if (mLastCharExceeded && mInputIndex == mInputSize - 1) {
             // TODO: Do not check the proximity if EditDistance exceeds the threshold
             const ProximityType matchId = mProximityInfoState.getMatchedProximityId(
                     mInputIndex, c, true, &proximityIndex);
@@ -354,7 +354,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         if (mExcessiveCount == 0 && mExcessivePos < mOutputIndex) {
             mExcessivePos = mOutputIndex;
         }
-        if (mExcessivePos < mInputLength - 1) {
+        if (mExcessivePos < mInputSize - 1) {
             mExceeding = mExcessivePos == mInputIndex && canTryCorrection;
         }
     }
@@ -373,7 +373,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         if (mTransposedCount == 0 && mTransposedPos < mOutputIndex) {
             mTransposedPos = mOutputIndex;
         }
-        if (mTransposedPos < mInputLength - 1) {
+        if (mTransposedPos < mInputSize - 1) {
             mTransposing = mInputIndex == mTransposedPos && canTryCorrection;
         }
     }
@@ -392,7 +392,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         } else {
             --mTransposedCount;
             if (DEBUG_CORRECTION
-                    && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == mInputLength)
+                    && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == mInputSize)
                     && (MIN_OUTPUT_INDEX_FOR_DEBUG <= 0
                             || MIN_OUTPUT_INDEX_FOR_DEBUG < mOutputIndex)) {
                 DUMP_WORD(mWord, mOutputIndex);
@@ -423,7 +423,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
                 && isEquivalentChar(mProximityInfoState.getMatchedProximityId(
                         mInputIndex, mWord[mOutputIndex - 1], false))) {
             if (DEBUG_CORRECTION
-                    && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == mInputLength)
+                    && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == mInputSize)
                     && (MIN_OUTPUT_INDEX_FOR_DEBUG <= 0
                             || MIN_OUTPUT_INDEX_FOR_DEBUG < mOutputIndex)) {
                 AKLOGI("CONVERSION p->e %c", mWord[mOutputIndex - 1]);
@@ -453,7 +453,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         // As the current char turned out to be an unrelated char,
         // we will try other correction-types. Please note that mCorrectionStates[mOutputIndex]
         // here refers to the previous state.
-        if (mInputIndex < mInputLength - 1 && mOutputIndex > 0 && mTransposedCount > 0
+        if (mInputIndex < mInputSize - 1 && mOutputIndex > 0 && mTransposedCount > 0
                 && !mCorrectionStates[mOutputIndex].mTransposing
                 && mCorrectionStates[mOutputIndex - 1].mTransposing
                 && isEquivalentChar(mProximityInfoState.getMatchedProximityId(
@@ -490,7 +490,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
             ++mSkippedCount;
             --mProximityCount;
             return processSkipChar(c, isTerminal, false);
-        } else if (mInputIndex - 1 < mInputLength
+        } else if (mInputIndex - 1 < mInputSize
                 && mSkippedCount > 0
                 && mCorrectionStates[mOutputIndex].mSkipping
                 && mCorrectionStates[mOutputIndex].mAdditionalProximityMatching
@@ -502,7 +502,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
             mProximityMatching = true;
             ++mProximityCount;
             mDistances[mOutputIndex] = ADDITIONAL_PROXIMITY_CHAR_DISTANCE_INFO;
-        } else if ((mExceeding || mTransposing) && mInputIndex - 1 < mInputLength
+        } else if ((mExceeding || mTransposing) && mInputIndex - 1 < mInputSize
                 && isEquivalentChar(
                         mProximityInfoState.getMatchedProximityId(mInputIndex + 1, c, false))) {
             // 1.2. Excessive or transpose correction
@@ -513,7 +513,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
                 incrementInputIndex();
             }
             if (DEBUG_CORRECTION
-                    && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == mInputLength)
+                    && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == mInputSize)
                     && (MIN_OUTPUT_INDEX_FOR_DEBUG <= 0
                             || MIN_OUTPUT_INDEX_FOR_DEBUG < mOutputIndex)) {
                 DUMP_WORD(mWord, mOutputIndex);
@@ -529,7 +529,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
             // 3. Skip correction
             ++mSkippedCount;
             if (DEBUG_CORRECTION
-                    && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == mInputLength)
+                    && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == mInputSize)
                     && (MIN_OUTPUT_INDEX_FOR_DEBUG <= 0
                             || MIN_OUTPUT_INDEX_FOR_DEBUG < mOutputIndex)) {
                 AKLOGI("SKIP: %d, %d, %d, %d, %c", mProximityCount, mSkippedCount,
@@ -542,7 +542,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
             ++mProximityCount;
             mDistances[mOutputIndex] = ADDITIONAL_PROXIMITY_CHAR_DISTANCE_INFO;
             if (DEBUG_CORRECTION
-                    && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == mInputLength)
+                    && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == mInputSize)
                     && (MIN_OUTPUT_INDEX_FOR_DEBUG <= 0
                             || MIN_OUTPUT_INDEX_FOR_DEBUG < mOutputIndex)) {
                 AKLOGI("ADDITIONALPROX: %d, %d, %d, %d, %c", mProximityCount, mSkippedCount,
@@ -550,7 +550,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
             }
         } else {
             if (DEBUG_CORRECTION
-                    && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == mInputLength)
+                    && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == mInputSize)
                     && (MIN_OUTPUT_INDEX_FOR_DEBUG <= 0
                             || MIN_OUTPUT_INDEX_FOR_DEBUG < mOutputIndex)) {
                 DUMP_WORD(mWord, mOutputIndex);
@@ -560,7 +560,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
             return processUnrelatedCorrectionType();
         }
     } else if (secondTransposing) {
-        // If inputIndex is greater than mInputLength, that means there is no
+        // If inputIndex is greater than mInputSize, that means there is no
         // proximity chars. So, we don't need to check proximity.
         mMatching = true;
     } else if (isEquivalentChar(matchedProximityCharId)) {
@@ -573,7 +573,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         mDistances[mOutputIndex] =
                 mProximityInfoState.getNormalizedSquaredDistance(mInputIndex, proximityIndex);
         if (DEBUG_CORRECTION
-                && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == mInputLength)
+                && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == mInputSize)
                 && (MIN_OUTPUT_INDEX_FOR_DEBUG <= 0
                         || MIN_OUTPUT_INDEX_FOR_DEBUG < mOutputIndex)) {
             AKLOGI("PROX: %d, %d, %d, %d, %c", mProximityCount, mSkippedCount,
@@ -585,8 +585,8 @@ Correction::CorrectionType Correction::processCharAndCalcState(
 
     // 4. Last char excessive correction
     mLastCharExceeded = mExcessiveCount == 0 && mSkippedCount == 0 && mTransposedCount == 0
-            && mProximityCount == 0 && (mInputIndex == mInputLength - 2);
-    const bool isSameAsUserTypedLength = (mInputLength == mInputIndex + 1) || mLastCharExceeded;
+            && mProximityCount == 0 && (mInputIndex == mInputSize - 2);
+    const bool isSameAsUserTypedLength = (mInputSize == mInputIndex + 1) || mLastCharExceeded;
     if (mLastCharExceeded) {
         ++mExcessiveCount;
     }
@@ -597,7 +597,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
     }
 
     const bool needsToTryOnTerminalForTheLastPossibleExcessiveChar =
-            mExceeding && mInputIndex == mInputLength - 2;
+            mExceeding && mInputIndex == mInputSize - 2;
 
     // Finally, we are ready to go to the next character, the next "virtual node".
     // We should advance the input index.
@@ -613,7 +613,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         mTerminalInputIndex = mInputIndex - 1;
         mTerminalOutputIndex = mOutputIndex - 1;
         if (DEBUG_CORRECTION
-                && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == mInputLength)
+                && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == mInputSize)
                 && (MIN_OUTPUT_INDEX_FOR_DEBUG <= 0 || MIN_OUTPUT_INDEX_FOR_DEBUG < mOutputIndex)) {
             DUMP_WORD(mWord, mOutputIndex);
             AKLOGI("ONTERMINAL(1): %d, %d, %d, %d, %c", mProximityCount, mSkippedCount,
@@ -651,7 +651,7 @@ inline static bool isUpperCase(unsigned short c) {
 /* static */
 int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex,
         const int outputIndex, const int freq, int *editDistanceTable, const Correction *correction,
-        const int inputLength) {
+        const int inputSize) {
     const int excessivePos = correction->getExcessivePos();
     const int typedLetterMultiplier = correction->TYPED_LETTER_MULTIPLIER;
     const int fullWordMultiplier = correction->FULL_WORD_MULTIPLIER;
@@ -663,55 +663,55 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
     const bool lastCharExceeded = correction->mLastCharExceeded;
     const bool useFullEditDistance = correction->mUseFullEditDistance;
     const int outputLength = outputIndex + 1;
-    if (skippedCount >= inputLength || inputLength == 0) {
+    if (skippedCount >= inputSize || inputSize == 0) {
         return -1;
     }
 
     // TODO: find more robust way
-    bool sameLength = lastCharExceeded ? (inputLength == inputIndex + 2)
-            : (inputLength == inputIndex + 1);
+    bool sameLength = lastCharExceeded ? (inputSize == inputIndex + 2)
+            : (inputSize == inputIndex + 1);
 
     // TODO: use mExcessiveCount
-    const int matchCount = inputLength - correction->mProximityCount - excessiveCount;
+    const int matchCount = inputSize - correction->mProximityCount - excessiveCount;
 
     const unsigned short *word = correction->mWord;
     const bool skipped = skippedCount > 0;
 
     const int quoteDiffCount = max(0, getQuoteCount(word, outputLength)
-            - getQuoteCount(proximityInfoState->getPrimaryInputWord(), inputLength));
+            - getQuoteCount(proximityInfoState->getPrimaryInputWord(), inputSize));
 
     // TODO: Calculate edit distance for transposed and excessive
     int ed = 0;
     if (DEBUG_DICT_FULL) {
-        dumpEditDistance10ForDebug(editDistanceTable, correction->mInputLength, outputLength);
+        dumpEditDistance10ForDebug(editDistanceTable, correction->mInputSize, outputLength);
     }
     int adjustedProximityMatchedCount = proximityMatchedCount;
 
     int finalFreq = freq;
 
     if (DEBUG_CORRECTION_FREQ
-            && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == inputLength)) {
+            && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == inputSize)) {
         AKLOGI("FinalFreq0: %d", finalFreq);
     }
     // TODO: Optimize this.
     if (transposedCount > 0 || proximityMatchedCount > 0 || skipped || excessiveCount > 0) {
-        ed = getCurrentEditDistance(editDistanceTable, correction->mInputLength, outputLength,
-                inputLength) - transposedCount;
+        ed = getCurrentEditDistance(editDistanceTable, correction->mInputSize, outputLength,
+                inputSize) - transposedCount;
 
         const int matchWeight = powerIntCapped(typedLetterMultiplier,
-                max(inputLength, outputLength) - ed);
+                max(inputSize, outputLength) - ed);
         multiplyIntCapped(matchWeight, &finalFreq);
 
         // TODO: Demote further if there are two or more excessive chars with longer user input?
-        if (inputLength > outputLength) {
+        if (inputSize > outputLength) {
             multiplyRate(INPUT_EXCEEDS_OUTPUT_DEMOTION_RATE, &finalFreq);
         }
 
         ed = max(0, ed - quoteDiffCount);
-        adjustedProximityMatchedCount = min(max(0, ed - (outputLength - inputLength)),
+        adjustedProximityMatchedCount = min(max(0, ed - (outputLength - inputSize)),
                 proximityMatchedCount);
         if (transposedCount <= 0) {
-            if (ed == 1 && (inputLength == outputLength - 1 || inputLength == outputLength + 1)) {
+            if (ed == 1 && (inputSize == outputLength - 1 || inputSize == outputLength + 1)) {
                 // Promote a word with just one skipped or excessive char
                 if (sameLength) {
                     multiplyRate(WORDS_WITH_JUST_ONE_CORRECTION_PROMOTION_RATE
@@ -740,8 +740,8 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
     // Demotion for a word with missing character
     if (skipped) {
         const int demotionRate = WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE
-                * (10 * inputLength - WORDS_WITH_MISSING_CHARACTER_DEMOTION_START_POS_10X)
-                / (10 * inputLength
+                * (10 * inputSize - WORDS_WITH_MISSING_CHARACTER_DEMOTION_START_POS_10X)
+                / (10 * inputSize
                         - WORDS_WITH_MISSING_CHARACTER_DEMOTION_START_POS_10X + 10);
         if (DEBUG_DICT_FULL) {
             AKLOGI("Demotion rate for missing character is %d.", demotionRate);
@@ -843,7 +843,7 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
             ? adjustedProximityMatchedCount
             : (proximityMatchedCount + transposedCount);
     multiplyRate(
-            100 - CORRECTION_COUNT_RATE_DEMOTION_RATE_BASE * errorCount / inputLength, &finalFreq);
+            100 - CORRECTION_COUNT_RATE_DEMOTION_RATE_BASE * errorCount / inputSize, &finalFreq);
 
     // Promotion for an exactly matched word
     if (ed == 0) {
@@ -878,7 +878,7 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
          e ... exceeding
          p ... proximity matching
      */
-    if (matchCount == inputLength && matchCount >= 2 && !skipped
+    if (matchCount == inputSize && matchCount >= 2 && !skipped
             && word[matchCount] == word[matchCount - 1]) {
         multiplyRate(WORDS_WITH_MATCH_SKIP_PROMOTION_RATE, &finalFreq);
     }
@@ -888,8 +888,8 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
         multiplyIntCapped(fullWordMultiplier, &finalFreq);
     }
 
-    if (useFullEditDistance && outputLength > inputLength + 1) {
-        const int diff = outputLength - inputLength - 1;
+    if (useFullEditDistance && outputLength > inputSize + 1) {
+        const int diff = outputLength - inputSize - 1;
         const int divider = diff < 31 ? 1 << diff : S_INT_MAX;
         finalFreq = divider > finalFreq ? 1 : finalFreq / divider;
     }
@@ -899,8 +899,8 @@ int Correction::RankingAlgorithm::calculateFinalProbability(const int inputIndex
     }
 
     if (DEBUG_CORRECTION_FREQ
-            && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == inputLength)) {
-        DUMP_WORD(correction->getPrimaryInputWord(), inputLength);
+            && (INPUTLENGTH_FOR_DEBUG <= 0 || INPUTLENGTH_FOR_DEBUG == inputSize)) {
+        DUMP_WORD(correction->getPrimaryInputWord(), inputSize);
         DUMP_WORD(correction->mWord, outputLength);
         AKLOGI("FinalFreq: [P%d, S%d, T%d, E%d, A%d] %d, %d, %d, %d, %d, %d", proximityMatchedCount,
                 skippedCount, transposedCount, excessiveCount, additionalProximityCount,

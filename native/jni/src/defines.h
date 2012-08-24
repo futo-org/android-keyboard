@@ -294,6 +294,9 @@ static inline void prof_out(void) {
 
 #define MAX_SPACES_INTERNAL 16
 
+// Max Distance between point to key
+#define MAX_POINT_TO_KEY_LENGTH 10000000
+
 // TODO: Reduce this constant if possible; check the maximum number of digraphs in the same
 // word in the dictionary for languages with digraphs, like German and French
 #define DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH 5
