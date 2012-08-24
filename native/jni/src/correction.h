@@ -42,7 +42,7 @@ class Correction {
     virtual ~Correction();
     void resetCorrection();
     void initCorrection(
-            const ProximityInfo *pi, const int inputLength, const int maxWordLength);
+            const ProximityInfo *pi, const int inputSize, const int maxWordLength);
     void initCorrectionState(const int rootPos, const int childCount, const bool traverseAll);
 
     // TODO: remove
@@ -66,7 +66,7 @@ class Correction {
             const bool isSpaceProximity, const unsigned short *word);
     int getFinalProbability(const int probability, unsigned short **word, int *wordLength);
     int getFinalProbabilityForSubQueue(const int probability, unsigned short **word,
-            int *wordLength, const int inputLength);
+            int *wordLength, const int inputSize);
 
     CorrectionType processCharAndCalcState(const int32_t c, const bool isTerminal);
 
@@ -90,7 +90,7 @@ class Correction {
      public:
         static int calculateFinalProbability(const int inputIndex, const int depth,
                 const int probability, int *editDistanceTable, const Correction *correction,
-                const int inputLength);
+                const int inputSize);
         static int calcFreqForSplitMultipleWords(const int *freqArray, const int *wordLengthArray,
                 const int wordCount, const Correction *correction, const bool isSpaceProximity,
                 const unsigned short *word);
@@ -105,9 +105,9 @@ class Correction {
 
     // proximity info state
     void initInputParams(const ProximityInfo *proximityInfo, const int32_t *inputCodes,
-            const int inputLength, const int *xCoordinates, const int *yCoordinates) {
-        mProximityInfoState.initInputParams(
-                proximityInfo, inputCodes, inputLength, xCoordinates, yCoordinates);
+            const int inputSize, const int *xCoordinates, const int *yCoordinates) {
+        mProximityInfoState.initInputParams(0, MAX_POINT_TO_KEY_LENGTH,
+                proximityInfo, inputCodes, inputSize, xCoordinates, yCoordinates, 0, 0, false);
     }
 
     const unsigned short *getPrimaryInputWord() const {
@@ -204,7 +204,7 @@ class Correction {
     inline CorrectionType processUnrelatedCorrectionType();
     inline void addCharToCurrentWord(const int32_t c);
     inline int getFinalProbabilityInternal(const int probability, unsigned short **word,
-            int *wordLength, const int inputLength);
+            int *wordLength, const int inputSize);
 
     static const int TYPED_LETTER_MULTIPLIER = 2;
     static const int FULL_WORD_MULTIPLIER = 2;
@@ -214,7 +214,7 @@ class Correction {
     bool mDoAutoCompletion;
     int mMaxEditDistance;
     int mMaxDepth;
-    int mInputLength;
+    int mInputSize;
     int mSpaceProximityPos;
     int mMissingSpacePos;
     int mTerminalInputIndex;

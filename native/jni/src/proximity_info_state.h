@@ -19,6 +19,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <vector>
 
 #include "char_utils.h"
 #include "defines.h"
@@ -40,9 +41,10 @@ class ProximityInfoState {
     /////////////////////////////////////////
     // Defined in proximity_info_state.cpp //
     /////////////////////////////////////////
-    void initInputParams(
-            const ProximityInfo *proximityInfo, const int32_t *inputCodes, const int inputLength,
-            const int *xCoordinates, const int *yCoordinates);
+    void initInputParams(const int pointerId, const float maxLength,
+            const ProximityInfo *proximityInfo, const int32_t *inputCodes, const int inputSize,
+            const int *xCoordinates, const int *yCoordinates, const int *const times,
+            const int *const pointerIds, const bool isGeometric);
 
     /////////////////////////////////////////
     // Defined here                        //
@@ -65,14 +67,14 @@ class ProximityInfoState {
     }
 
     inline bool existsAdjacentProximityChars(const int index) const {
-        if (index < 0 || index >= mInputLength) return false;
+        if (index < 0 || index >= mInputSize) return false;
         const int currentChar = getPrimaryCharAt(index);
         const int leftIndex = index - 1;
         if (leftIndex >= 0 && existsCharInProximityAt(leftIndex, currentChar)) {
             return true;
         }
         const int rightIndex = index + 1;
-        if (rightIndex < mInputLength && existsCharInProximityAt(rightIndex, currentChar)) {
+        if (rightIndex < mInputSize && existsCharInProximityAt(rightIndex, currentChar)) {
             return true;
         }
         return false;
@@ -158,7 +160,7 @@ class ProximityInfoState {
     }
 
     inline bool sameAsTyped(const unsigned short *word, int length) const {
-        if (length != mInputLength) {
+        if (length != mInputSize) {
             return false;
         }
         const int *inputCodes = mInputCodes;
@@ -172,6 +174,18 @@ class ProximityInfoState {
         return true;
     }
 
+    int getDuration(const int index) const;
+
+    bool isUsed() const {
+        return mInputSize > 0;
+    }
+
+    float getPointToKeyLength(int inputIndex, int charCode, float scale);
+
+    int getKeyKeyDistance(int key0, int key1);
+
+    int getSpaceY();
+
  private:
     DISALLOW_COPY_AND_ASSIGN(ProximityInfoState);
     /////////////////////////////////////////
@@ -182,13 +196,14 @@ class ProximityInfoState {
     float calculateSquaredDistanceFromSweetSpotCenter(
             const int keyIndex, const int inputIndex) const;
 
+    void pushTouchPoint(const int nodeChar, int x, int y, const int time, const bool sample);
     /////////////////////////////////////////
     // Defined here                        //
     /////////////////////////////////////////
     inline float square(const float x) const { return x * x; }
 
     bool hasInputCoordinates() const {
-        return mInputXCoordinates && mInputYCoordinates;
+        return mInputXs.size() > 0 && mInputYs.size() > 0;
     }
 
     inline const int *getProximityCharsAt(const int index) const {
@@ -197,6 +212,7 @@ class ProximityInfoState {
 
     // const
     const ProximityInfo *mProximityInfo;
+    float mMaxPointToKeyLength;
     bool mHasTouchPositionCorrectionData;
     int mMostCommonKeyWidthSquare;
     std::string mLocaleStr;
@@ -206,12 +222,15 @@ class ProximityInfoState {
     int mGridHeight;
     int mGridWidth;
 
-    const int *mInputXCoordinates;
-    const int *mInputYCoordinates;
+    std::vector<int> mInputXs;
+    std::vector<int> mInputYs;
+    std::vector<int> mTimes;
+    std::vector<float> mDistanceCache;
+    std::vector<int>  mLengthCache;
     bool mTouchPositionCorrectionEnabled;
     int32_t mInputCodes[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH_INTERNAL];
     int mNormalizedSquaredDistances[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH_INTERNAL];
-    int mInputLength;
+    int mInputSize;
     unsigned short mPrimaryInputWord[MAX_WORD_LENGTH_INTERNAL];
 };
 } // namespace latinime

@@ -20,13 +20,15 @@
 #define LOG_TAG "LatinIME: proximity_info_state.cpp"
 
 #include "defines.h"
+#include "geometry_utils.h"
 #include "proximity_info.h"
 #include "proximity_info_state.h"
 
 namespace latinime {
-void ProximityInfoState::initInputParams(
-        const ProximityInfo *proximityInfo, const int32_t *inputCodes, const int inputLength,
-        const int *xCoordinates, const int *yCoordinates) {
+void ProximityInfoState::initInputParams(const int pointerId, const float maxLength,
+        const ProximityInfo *proximityInfo, const int32_t *inputCodes, const int inputSize,
+        const int *const xCoordinates, const int *const yCoordinates, const int *const times,
+        const int *const pointerIds, const bool isGeometric) {
     mProximityInfo = proximityInfo;
     mHasTouchPositionCorrectionData = proximityInfo->hasTouchPositionCorrectionData();
     mMostCommonKeyWidthSquare = proximityInfo->getMostCommonKeyWidthSquare();
@@ -45,7 +47,7 @@ void ProximityInfoState::initInputParams(
     memset(mInputCodes, 0,
             MAX_WORD_LENGTH_INTERNAL * MAX_PROXIMITY_CHARS_SIZE_INTERNAL * sizeof(mInputCodes[0]));
 
-    for (int i = 0; i < inputLength; ++i) {
+    for (int i = 0; i < inputSize; ++i) {
         const int32_t primaryKey = inputCodes[i];
         const int x = xCoordinates[i];
         const int y = yCoordinates[i];
@@ -54,7 +56,7 @@ void ProximityInfoState::initInputParams(
     }
 
     if (DEBUG_PROXIMITY_CHARS) {
-        for (int i = 0; i < inputLength; ++i) {
+        for (int i = 0; i < inputSize; ++i) {
             AKLOGI("---");
             for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE_INTERNAL; ++j) {
                 int icc = mInputCodes[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL + j];
@@ -65,19 +67,57 @@ void ProximityInfoState::initInputParams(
             }
         }
     }
-    mInputXCoordinates = xCoordinates;
-    mInputYCoordinates = yCoordinates;
-    mTouchPositionCorrectionEnabled =
-            mHasTouchPositionCorrectionData && xCoordinates && yCoordinates;
-    mInputLength = inputLength;
-    for (int i = 0; i < inputLength; ++i) {
+
+    mMaxPointToKeyLength = maxLength;
+    ///////////////////////
+    // Setup touch points
+    mInputXs.clear();
+    mInputYs.clear();
+    mTimes.clear();
+    mLengthCache.clear();
+    mDistanceCache.clear();
+
+    mInputSize = 0;
+    if (xCoordinates && yCoordinates) {
+        const bool proximityOnly = !isGeometric && (xCoordinates[0] < 0 || yCoordinates[0] < 0);
+        for (int i = 0; i < inputSize; ++i) {
+            ++mInputSize;
+            // Assuming pointerId == 0 if pointerIds is null.
+            const int pid = pointerIds ? pointerIds[i] : 0;
+            if (pointerId == pid) {
+                const int c = isGeometric ? NOT_A_COORDINATE : getPrimaryCharAt(i);
+                const int x = proximityOnly ? NOT_A_COORDINATE : xCoordinates[i];
+                const int y = proximityOnly ? NOT_A_COORDINATE : yCoordinates[i];
+                const int time = times ? times[i] : -1;
+                pushTouchPoint(c, x, y, time, isGeometric);
+            }
+        }
+    }
+
+    if (mInputSize > 0) {
+        const int keyCount = mProximityInfo->getKeyCount();
+        mDistanceCache.resize(mInputSize * keyCount);
+        for (int i = 0; i < mInputSize; ++i) {
+            for (int k = 0; k < keyCount; ++k) {
+                const int index = i * keyCount + k;
+                const int x = mInputXs[i];
+                const int y = mInputYs[i];
+                mDistanceCache[index] =
+                        mProximityInfo->getNormalizedSquaredDistanceFromCenterFloat(k, x, y);
+            }
+        }
+    }
+    // end
+    ///////////////////////
+
+    for (int i = 0; i < inputSize; ++i) {
         mPrimaryInputWord[i] = getPrimaryCharAt(i);
     }
-    mPrimaryInputWord[inputLength] = 0;
-    if (DEBUG_PROXIMITY_CHARS) {
-        AKLOGI("--- initInputParams");
-    }
-    for (int i = 0; i < mInputLength; ++i) {
+    mPrimaryInputWord[inputSize] = 0;
+
+    mTouchPositionCorrectionEnabled =
+            mHasTouchPositionCorrectionData && xCoordinates && yCoordinates && !isGeometric;
+    for (int i = 0; i < mInputSize && mTouchPositionCorrectionEnabled; ++i) {
         const int *proximityChars = getProximityCharsAt(i);
         const int primaryKey = proximityChars[0];
         const int x = xCoordinates[i];
@@ -108,6 +148,32 @@ void ProximityInfoState::initInputParams(
     }
 }
 
+void ProximityInfoState::pushTouchPoint(const int nodeChar, int x, int y,
+        const int time, const bool sample) {
+    const uint32_t size = mInputXs.size();
+    // TODO: Should have a const variable for 10
+    const int sampleRate = mProximityInfo->getMostCommonKeyWidth() / 10;
+    if (size > 0) {
+        const int dist = getDistanceInt(x, y, mInputXs[size - 1], mInputYs[size - 1]);
+        if (sample && dist < sampleRate) {
+            return;
+        }
+        mLengthCache.push_back(mLengthCache[size - 1] + dist);
+    } else {
+        mLengthCache.push_back(0);
+    }
+    if (nodeChar >= 0 && (x < 0 || y < 0)) {
+        const int keyId = mProximityInfo->getKeyIndex(nodeChar);
+        if (keyId >= 0) {
+            x = mProximityInfo->getKeyCenterXOfIdG(keyId);
+            y = mProximityInfo->getKeyCenterYOfIdG(keyId);
+        }
+    }
+    mInputXs.push_back(x);
+    mInputYs.push_back(y);
+    mTimes.push_back(time);
+}
+
 float ProximityInfoState::calculateNormalizedSquaredDistance(
         const int keyIndex, const int inputIndex) const {
     if (keyIndex == NOT_AN_INDEX) {
@@ -116,7 +182,7 @@ float ProximityInfoState::calculateNormalizedSquaredDistance(
     if (!mProximityInfo->hasSweetSpotData(keyIndex)) {
         return NOT_A_DISTANCE_FLOAT;
     }
-    if (NOT_A_COORDINATE == mInputXCoordinates[inputIndex]) {
+    if (NOT_A_COORDINATE == mInputXs[inputIndex]) {
         return NOT_A_DISTANCE_FLOAT;
     }
     const float squaredDistance = calculateSquaredDistanceFromSweetSpotCenter(
@@ -125,12 +191,37 @@ float ProximityInfoState::calculateNormalizedSquaredDistance(
     return squaredDistance / squaredRadius;
 }
 
+int ProximityInfoState::getDuration(const int index) const {
+    if (mTimes.size() == 0 || index <= 0 || index >= static_cast<int>(mInputSize) - 1) {
+        return 0;
+    }
+    return mTimes[index + 1] - mTimes[index - 1];
+}
+
+float ProximityInfoState::getPointToKeyLength(int inputIndex, int charCode, float scale) {
+    const int keyId = mProximityInfo->getKeyIndex(charCode);
+    if (keyId >= 0) {
+        const int index = inputIndex * mProximityInfo->getKeyCount() + keyId;
+        return min(mDistanceCache[index] * scale, mMaxPointToKeyLength);
+    }
+    return 0;
+}
+
+int ProximityInfoState::getKeyKeyDistance(int key0, int key1) {
+    return mProximityInfo->getKeyKeyDistanceG(key0, key1);
+}
+
+int ProximityInfoState::getSpaceY() {
+    const int keyId = mProximityInfo->getKeyIndex(' ');
+    return mProximityInfo->getKeyCenterYOfIdG(keyId);
+}
+
 float ProximityInfoState::calculateSquaredDistanceFromSweetSpotCenter(
         const int keyIndex, const int inputIndex) const {
     const float sweetSpotCenterX = mProximityInfo->getSweetSpotCenterXAt(keyIndex);
     const float sweetSpotCenterY = mProximityInfo->getSweetSpotCenterYAt(keyIndex);
-    const float inputX = static_cast<float>(mInputXCoordinates[inputIndex]);
-    const float inputY = static_cast<float>(mInputYCoordinates[inputIndex]);
+    const float inputX = static_cast<float>(mInputXs[inputIndex]);
+    const float inputY = static_cast<float>(mInputYs[inputIndex]);
     return square(inputX - sweetSpotCenterX) + square(inputY - sweetSpotCenterY);
 }
 } // namespace latinime
