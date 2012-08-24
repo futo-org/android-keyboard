@@ -44,17 +44,16 @@ class WordsPriorityQueue {
         }
     };
 
-    WordsPriorityQueue(int maxWords, int maxWordLength) :
-            MAX_WORDS((unsigned int) maxWords), MAX_WORD_LENGTH(
-                    (unsigned int) maxWordLength) {
-        mSuggestedWords = new SuggestedWord[maxWordLength];
+    WordsPriorityQueue(int maxWords, int maxWordLength)
+            : mSuggestions(), MAX_WORDS(static_cast<unsigned int>(maxWords)),
+              MAX_WORD_LENGTH(static_cast<unsigned int>(maxWordLength)),
+              mSuggestedWords(new SuggestedWord[maxWordLength]), mHighestSuggestedWord(0) {
         for (int i = 0; i < maxWordLength; ++i) {
             mSuggestedWords[i].mUsed = false;
         }
-        mHighestSuggestedWord = 0;
     }
 
-    ~WordsPriorityQueue() {
+    virtual ~WordsPriorityQueue() {
         delete[] mSuggestedWords;
     }
 
