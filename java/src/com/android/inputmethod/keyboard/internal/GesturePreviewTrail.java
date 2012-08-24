@@ -30,7 +30,7 @@ class GesturePreviewTrail {
     private final ResizableIntArray mXCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
     private final ResizableIntArray mYCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
     private final ResizableIntArray mEventTimes = new ResizableIntArray(DEFAULT_CAPACITY);
-    private int mCurrentStrokeId;
+    private int mCurrentStrokeId = -1;
     private long mCurrentDownTime;
 
     // Use this value as imaginary zero because x-coordinates may be zero.
