@@ -25,7 +25,10 @@ import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 
 import java.io.File;
-import java.io.RandomAccessFile;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -349,17 +352,21 @@ class BinaryDictionaryGetter {
         // ad-hock ## HACK ##
         if (!Locale.ENGLISH.getLanguage().equals(locale.getLanguage())) return true;
 
+        FileInputStream inStream = null;
         try {
             // Read the version of the file
-            final RandomAccessFile raf = new RandomAccessFile(f, "r");
-            final int magic = raf.readInt();
+            inStream = new FileInputStream(f);
+            final ByteBuffer buffer = inStream.getChannel().map(
+                    FileChannel.MapMode.READ_ONLY, 0, f.length());
+            final int magic = buffer.getInt();
             if (magic != BinaryDictInputOutput.VERSION_2_MAGIC_NUMBER) {
                 return false;
             }
-            final int formatVersion = raf.readInt();
-            final int headerSize = raf.readInt();
+            final int formatVersion = buffer.getInt();
+            final int headerSize = buffer.getInt();
             final HashMap<String, String> options = CollectionUtils.newHashMap();
-            BinaryDictInputOutput.populateOptionsFromFile(raf, headerSize, options);
+            BinaryDictInputOutput.populateOptions(buffer, headerSize, options);
+
             final String version = options.get(VERSION_KEY);
             if (null == version) {
                 // No version in the options : the format is unexpected
@@ -374,6 +381,14 @@ class BinaryDictionaryGetter {
             return false;
         } catch (NumberFormatException e) {
             return false;
+        } finally {
+            if (inStream != null) {
+                try {
+                    inStream.close();
+                } catch (IOException e) {
+                    // do nothing
+                }
+            }
         }
     }
 
