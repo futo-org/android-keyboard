@@ -27,7 +27,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -238,8 +239,23 @@ public class DictionaryMaker {
      */
     private static FusionDictionary readBinaryFile(final String binaryFilename)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
-        final RandomAccessFile inputFile = new RandomAccessFile(binaryFilename, "r");
-        return BinaryDictInputOutput.readDictionaryBinary(inputFile, null);
+        FileInputStream inStream = null;
+
+        try {
+            final File file = new File(binaryFilename);
+            inStream = new FileInputStream(file);
+            final ByteBuffer buffer = inStream.getChannel().map(
+                    FileChannel.MapMode.READ_ONLY, 0, file.length());
+            return BinaryDictInputOutput.readDictionaryBinary(buffer, null);
+        } finally {
+            if (inStream != null) {
+                try {
+                    inStream.close();
+                } catch (IOException e) {
+                    // do nothing
+                }
+            }
+        }
     }
 
     /**
