@@ -25,7 +25,7 @@
 #include "proximity_info_state.h"
 
 namespace latinime {
-void ProximityInfoState::initInputParams(const int pointerId, const float maxLength,
+void ProximityInfoState::initInputParams(const int pointerId, const float maxPointToKeyLength,
         const ProximityInfo *proximityInfo, const int32_t *inputCodes, const int inputSize,
         const int *const xCoordinates, const int *const yCoordinates, const int *const times,
         const int *const pointerIds, const bool isGeometric) {
@@ -68,7 +68,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxLen
         }
     }
 
-    mMaxPointToKeyLength = maxLength;
+    mMaxPointToKeyLength = maxPointToKeyLength;
     ///////////////////////
     // Setup touch points
     mInputXs.clear();
@@ -115,8 +115,8 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxLen
     }
     mPrimaryInputWord[inputSize] = 0;
 
-    mTouchPositionCorrectionEnabled =
-            mHasTouchPositionCorrectionData && xCoordinates && yCoordinates && !isGeometric;
+    mTouchPositionCorrectionEnabled = mInputSize > 0 && mHasTouchPositionCorrectionData
+            && xCoordinates && yCoordinates && !isGeometric;
     for (int i = 0; i < mInputSize && mTouchPositionCorrectionEnabled; ++i) {
         const int *proximityChars = getProximityCharsAt(i);
         const int primaryKey = proximityChars[0];
