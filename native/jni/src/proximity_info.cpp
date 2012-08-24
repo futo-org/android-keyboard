@@ -42,8 +42,8 @@ ProximityInfo::ProximityInfo(const std::string localeStr, const int maxProximity
         const int32_t *keyYCoordinates, const int32_t *keyWidths, const int32_t *keyHeights,
         const int32_t *keyCharCodes, const float *sweetSpotCenterXs, const float *sweetSpotCenterYs,
         const float *sweetSpotRadii)
-        : MAX_PROXIMITY_CHARS_SIZE(maxProximityCharsSize), KEYBOARD_WIDTH(keyboardWidth),
-          KEYBOARD_HEIGHT(keyboardHeight), GRID_WIDTH(gridWidth), GRID_HEIGHT(gridHeight),
+        : MAX_PROXIMITY_CHARS_SIZE(maxProximityCharsSize),
+          GRID_WIDTH(gridWidth), GRID_HEIGHT(gridHeight),
           MOST_COMMON_KEY_WIDTH_SQUARE(mostCommonKeyWidth * mostCommonKeyWidth),
           CELL_WIDTH((keyboardWidth + gridWidth - 1) / gridWidth),
           CELL_HEIGHT((keyboardHeight + gridHeight - 1) / gridHeight),
