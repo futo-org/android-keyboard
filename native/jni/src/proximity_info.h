@@ -98,8 +98,6 @@ class ProximityInfo {
             const int x, const int y, const int32_t primaryKey, int *inputCodes) const;
 
     const int MAX_PROXIMITY_CHARS_SIZE;
-    const int KEYBOARD_WIDTH;
-    const int KEYBOARD_HEIGHT;
     const int GRID_WIDTH;
     const int GRID_HEIGHT;
     const int MOST_COMMON_KEY_WIDTH_SQUARE;
@@ -108,8 +106,6 @@ class ProximityInfo {
     const int KEY_COUNT;
     const bool HAS_TOUCH_POSITION_CORRECTION_DATA;
     const std::string mLocaleStr;
-    // TODO: remove this
-    const int *mInputCodesFromJava;
     int32_t *mInputCodes;
     const int *mInputXCoordinates;
     const int *mInputYCoordinates;
