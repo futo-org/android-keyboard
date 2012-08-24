@@ -30,11 +30,15 @@ namespace latinime {
 
 // TODO: Change the type of all keyCodes to uint32_t
 Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
-        int typedLetterMultiplier, int fullWordMultiplier,
-        int maxWordLength, int maxWords, int maxPredictions)
-    : mDict(static_cast<unsigned char *>(dict)),
-      mOffsetDict((static_cast<unsigned char *>(dict)) + BinaryFormat::getHeaderSize(mDict)),
-      mDictSize(dictSize), mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust) {
+        int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength, int maxWords,
+        int maxPredictions)
+        : mDict(static_cast<unsigned char *>(dict)),
+          mOffsetDict((static_cast<unsigned char *>(dict)) + BinaryFormat::getHeaderSize(mDict)),
+          mDictSize(dictSize), mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust),
+          mUnigramDictionary(new UnigramDictionary(mOffsetDict, typedLetterMultiplier,
+                  fullWordMultiplier, maxWordLength, maxWords, BinaryFormat::getFlags(mDict))),
+          mBigramDictionary(new BigramDictionary(mOffsetDict, maxWordLength, maxPredictions)),
+          mGestureDecoder(new GestureDecoderWrapper(maxWordLength, maxWords)) {
     if (DEBUG_DICT) {
         if (MAX_WORD_LENGTH_INTERNAL < maxWordLength) {
             AKLOGI("Max word length (%d) is greater than %d",
@@ -42,11 +46,6 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
             AKLOGI("IN NATIVE SUGGEST Version: %d", (mDict[0] & 0xFF));
         }
     }
-    const unsigned int options = BinaryFormat::getFlags(mDict);
-    mUnigramDictionary = new UnigramDictionary(mOffsetDict, typedLetterMultiplier,
-            fullWordMultiplier, maxWordLength, maxWords, options);
-    mBigramDictionary = new BigramDictionary(mOffsetDict, maxWordLength, maxPredictions);
-    mGestureDecoder = new GestureDecoderWrapper(maxWordLength, maxWords);
 }
 
 Dictionary::~Dictionary() {

@@ -18,6 +18,7 @@
 #define LATINIME_CORRECTION_H
 
 #include <cassert>
+#include <cstring> // for memset()
 #include <stdint.h>
 
 #include "correction_state.h"
@@ -38,8 +39,24 @@ class Correction {
         NOT_ON_TERMINAL
     } CorrectionType;
 
-    Correction() {};
-    virtual ~Correction();
+    Correction()
+            : mProximityInfo(0), mUseFullEditDistance(false), mDoAutoCompletion(false),
+              mMaxEditDistance(0), mMaxDepth(0), mInputSize(0), mSpaceProximityPos(0),
+              mMissingSpacePos(0), mTerminalInputIndex(0), mTerminalOutputIndex(0), mMaxErrors(0),
+              mTotalTraverseCount(0), mNeedsToTraverseAllNodes(false), mOutputIndex(0),
+              mInputIndex(0), mEquivalentCharCount(0), mProximityCount(0), mExcessiveCount(0),
+              mTransposedCount(0), mSkippedCount(0), mTransposedPos(0), mExcessivePos(0),
+              mSkipPos(0), mLastCharExceeded(false), mMatching(false), mProximityMatching(false),
+              mAdditionalProximityMatching(false), mExceeding(false), mTransposing(false),
+              mSkipping(false), mProximityInfoState() {
+        memset(mWord, 0, sizeof(mWord));
+        memset(mDistances, 0, sizeof(mDistances));
+        memset(mEditDistanceTable, 0, sizeof(mEditDistanceTable));
+        // NOTE: mCorrectionStates is an array of instances.
+        // No need to initialize it explicitly here.
+    }
+
+    virtual ~Correction() {}
     void resetCorrection();
     void initCorrection(
             const ProximityInfo *pi, const int inputSize, const int maxWordLength);

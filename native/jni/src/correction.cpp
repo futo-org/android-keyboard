@@ -627,9 +627,6 @@ Correction::CorrectionType Correction::processCharAndCalcState(
     }
 }
 
-Correction::~Correction() {
-}
-
 inline static int getQuoteCount(const unsigned short *word, const int length) {
     int quoteCount = 0;
     for (int i = 0; i < length; ++i) {
