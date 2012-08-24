@@ -29,8 +29,8 @@ class ProximityInfo;
 
 class IncrementalDecoderWrapper : public IncrementalDecoderInterface {
  public:
-    IncrementalDecoderWrapper(const int maxWordLength, const int maxWords) {
-        mIncrementalDecoderInterface = getIncrementalDecoderInstance(maxWordLength, maxWords);
+    IncrementalDecoderWrapper(const int maxWordLength, const int maxWords)
+            : mIncrementalDecoderInterface(getIncrementalDecoderInstance(maxWordLength, maxWords)) {
     }
 
     virtual ~IncrementalDecoderWrapper() {

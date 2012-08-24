@@ -17,6 +17,7 @@
 #ifndef LATINIME_PROXIMITY_INFO_STATE_H
 #define LATINIME_PROXIMITY_INFO_STATE_H
 
+#include <cstring> // for memset()
 #include <stdint.h>
 #include <string>
 #include <vector>
@@ -49,7 +50,18 @@ class ProximityInfoState {
     /////////////////////////////////////////
     // Defined here                        //
     /////////////////////////////////////////
-    ProximityInfoState() {};
+    ProximityInfoState()
+            : mProximityInfo(0), mMaxPointToKeyLength(0),
+              mHasTouchPositionCorrectionData(false), mMostCommonKeyWidthSquare(0), mLocaleStr(),
+              mKeyCount(0), mCellHeight(0), mCellWidth(0), mGridHeight(0), mGridWidth(0),
+              mInputXs(), mInputYs(), mTimes(), mDistanceCache(), mLengthCache(),
+              mTouchPositionCorrectionEnabled(false), mInputSize(0) {
+        memset(mInputCodes, 0, sizeof(mInputCodes));
+        memset(mNormalizedSquaredDistances, 0, sizeof(mNormalizedSquaredDistances));
+        memset(mPrimaryInputWord, 0, sizeof(mPrimaryInputWord));
+    }
+
+    virtual ~ProximityInfoState() {}
 
     inline unsigned short getPrimaryCharAt(const int index) const {
         return getProximityCharsAt(index)[0];

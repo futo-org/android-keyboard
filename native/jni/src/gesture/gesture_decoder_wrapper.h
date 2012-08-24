@@ -29,8 +29,8 @@ class ProximityInfo;
 
 class GestureDecoderWrapper : public IncrementalDecoderInterface {
  public:
-    GestureDecoderWrapper(const int maxWordLength, const int maxWords) {
-        mIncrementalDecoderInterface = getGestureDecoderInstance(maxWordLength, maxWords);
+    GestureDecoderWrapper(const int maxWordLength, const int maxWords)
+            : mIncrementalDecoderInterface(getGestureDecoderInstance(maxWordLength, maxWords)) {
     }
 
     virtual ~GestureDecoderWrapper() {

@@ -29,6 +29,9 @@
 
 namespace latinime {
 
+/* static */ const int ProximityInfo::NOT_A_CODE = -1;
+/* static */ const float ProximityInfo::NOT_A_DISTANCE_FLOAT = -1.0f;
+
 static inline void safeGetOrFillZeroIntArrayRegion(JNIEnv *env, jintArray jArray, jsize len,
         jint *buffer) {
     if (jArray && buffer) {
@@ -54,16 +57,17 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr, const int ma
         const jintArray keyWidths, const jintArray keyHeights, const jintArray keyCharCodes,
         const jfloatArray sweetSpotCenterXs, const jfloatArray sweetSpotCenterYs,
         const jfloatArray sweetSpotRadii)
-        : MAX_PROXIMITY_CHARS_SIZE(maxProximityCharsSize), KEYBOARD_WIDTH(keyboardWidth),
-          KEYBOARD_HEIGHT(keyboardHeight), GRID_WIDTH(gridWidth), GRID_HEIGHT(gridHeight),
-          MOST_COMMON_KEY_WIDTH(mostCommonKeyWidth),
+        : MAX_PROXIMITY_CHARS_SIZE(maxProximityCharsSize), GRID_WIDTH(gridWidth),
+          GRID_HEIGHT(gridHeight), MOST_COMMON_KEY_WIDTH(mostCommonKeyWidth),
           MOST_COMMON_KEY_WIDTH_SQUARE(mostCommonKeyWidth * mostCommonKeyWidth),
           CELL_WIDTH((keyboardWidth + gridWidth - 1) / gridWidth),
           CELL_HEIGHT((keyboardHeight + gridHeight - 1) / gridHeight),
           KEY_COUNT(min(keyCount, MAX_KEY_COUNT_IN_A_KEYBOARD)),
           HAS_TOUCH_POSITION_CORRECTION_DATA(keyCount > 0 && keyXCoordinates && keyYCoordinates
                   && keyWidths && keyHeights && keyCharCodes && sweetSpotCenterXs
-                  && sweetSpotCenterYs && sweetSpotRadii) {
+                  && sweetSpotCenterYs && sweetSpotRadii),
+          mProximityCharsArray(new int32_t[GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE
+                  /* proximityGridLength */]) {
     const int proximityGridLength = GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE;
     if (DEBUG_PROXIMITY_INFO) {
         AKLOGI("Create proximity info array %d", proximityGridLength);
@@ -75,7 +79,6 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr, const int ma
     }
     memset(mLocaleStr, 0, sizeof(mLocaleStr));
     env->GetStringUTFRegion(localeJStr, 0, env->GetStringLength(localeJStr), mLocaleStr);
-    mProximityCharsArray = new int32_t[proximityGridLength];
     safeGetOrFillZeroIntArrayRegion(env, proximityChars, proximityGridLength, mProximityCharsArray);
     safeGetOrFillZeroIntArrayRegion(env, keyXCoordinates, KEY_COUNT, mKeyXCoordinates);
     safeGetOrFillZeroIntArrayRegion(env, keyYCoordinates, KEY_COUNT, mKeyYCoordinates);

@@ -24,9 +24,10 @@ namespace latinime {
 
 class WordsPriorityQueuePool {
  public:
-    WordsPriorityQueuePool(int mainQueueMaxWords, int subQueueMaxWords, int maxWordLength) {
-        // Note: using placement new() requires the caller to call the destructor explicitly.
-        mMasterQueue = new(mMasterQueueBuf) WordsPriorityQueue(mainQueueMaxWords, maxWordLength);
+    WordsPriorityQueuePool(int mainQueueMaxWords, int subQueueMaxWords, int maxWordLength)
+            // Note: using placement new() requires the caller to call the destructor explicitly.
+            : mMasterQueue(new(mMasterQueueBuf) WordsPriorityQueue(
+                      mainQueueMaxWords, maxWordLength)) {
         for (int i = 0, subQueueBufOffset = 0;
                 i < MULTIPLE_WORDS_SUGGESTION_MAX_WORDS * SUB_QUEUE_MAX_COUNT;
                 ++i, subQueueBufOffset += sizeof(WordsPriorityQueue)) {
@@ -88,8 +89,8 @@ class WordsPriorityQueuePool {
     WordsPriorityQueue *mMasterQueue;
     WordsPriorityQueue *mSubQueues[SUB_QUEUE_MAX_COUNT * MULTIPLE_WORDS_SUGGESTION_MAX_WORDS];
     char mMasterQueueBuf[sizeof(WordsPriorityQueue)];
-    char mSubQueueBuf[MULTIPLE_WORDS_SUGGESTION_MAX_WORDS
-                      * SUB_QUEUE_MAX_COUNT * sizeof(WordsPriorityQueue)];
+    char mSubQueueBuf[SUB_QUEUE_MAX_COUNT * MULTIPLE_WORDS_SUGGESTION_MAX_WORDS
+            * sizeof(WordsPriorityQueue)];
 };
 } // namespace latinime
 #endif // LATINIME_WORDS_PRIORITY_QUEUE_POOL_H
