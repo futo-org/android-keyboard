@@ -26,7 +26,7 @@
 
 namespace latinime {
 void ProximityInfoState::initInputParams(const int pointerId, const float maxPointToKeyLength,
-        const ProximityInfo *proximityInfo, const int32_t *inputCodes, const int inputSize,
+        const ProximityInfo *proximityInfo, const int32_t *const inputCodes, const int inputSize,
         const int *const xCoordinates, const int *const yCoordinates, const int *const times,
         const int *const pointerIds, const bool isGeometric) {
     mProximityInfo = proximityInfo;
@@ -38,39 +38,39 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     mCellWidth = proximityInfo->getCellWidth();
     mGridHeight = proximityInfo->getGridWidth();
     mGridWidth = proximityInfo->getGridHeight();
-    const int normalizedSquaredDistancesLength =
-            MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH_INTERNAL;
-    for (int i = 0; i < normalizedSquaredDistancesLength; ++i) {
-        mNormalizedSquaredDistances[i] = NOT_A_DISTANCE;
-    }
 
-    memset(mInputCodes, 0,
-            MAX_WORD_LENGTH_INTERNAL * MAX_PROXIMITY_CHARS_SIZE_INTERNAL * sizeof(mInputCodes[0]));
+    memset(mInputCodes, 0, sizeof(mInputCodes));
 
-    for (int i = 0; i < inputSize; ++i) {
-        const int32_t primaryKey = inputCodes[i];
-        const int x = xCoordinates[i];
-        const int y = yCoordinates[i];
-        int *proximities = &mInputCodes[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL];
-        mProximityInfo->calculateNearbyKeyCodes(x, y, primaryKey, proximities);
-    }
-
-    if (DEBUG_PROXIMITY_CHARS) {
+    if (!isGeometric && pointerId == 0) {
+        // Initialize
+        // - mInputCodes
+        // - mNormalizedSquaredDistances
+        // TODO: Merge
         for (int i = 0; i < inputSize; ++i) {
-            AKLOGI("---");
-            for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE_INTERNAL; ++j) {
-                int icc = mInputCodes[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL + j];
-                int icfjc = inputCodes[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL + j];
-                icc += 0;
-                icfjc += 0;
-                AKLOGI("--- (%d)%c,%c", i, icc, icfjc); AKLOGI("--- A<%d>,B<%d>", icc, icfjc);
+            const int32_t primaryKey = inputCodes[i];
+            const int x = xCoordinates[i];
+            const int y = yCoordinates[i];
+            int *proximities = &mInputCodes[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL];
+            mProximityInfo->calculateNearbyKeyCodes(x, y, primaryKey, proximities);
+        }
+
+        if (DEBUG_PROXIMITY_CHARS) {
+            for (int i = 0; i < inputSize; ++i) {
+                AKLOGI("---");
+                for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE_INTERNAL; ++j) {
+                    int icc = mInputCodes[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL + j];
+                    int icfjc = inputCodes[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL + j];
+                    icc += 0;
+                    icfjc += 0;
+                    AKLOGI("--- (%d)%c,%c", i, icc, icfjc); AKLOGI("--- A<%d>,B<%d>", icc, icfjc);
+                }
             }
         }
     }
 
-    mMaxPointToKeyLength = maxPointToKeyLength;
     ///////////////////////
     // Setup touch points
+    mMaxPointToKeyLength = maxPointToKeyLength;
     mInputXs.clear();
     mInputYs.clear();
     mTimes.clear();
@@ -81,10 +81,10 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     if (xCoordinates && yCoordinates) {
         const bool proximityOnly = !isGeometric && (xCoordinates[0] < 0 || yCoordinates[0] < 0);
         for (int i = 0; i < inputSize; ++i) {
-            ++mInputSize;
             // Assuming pointerId == 0 if pointerIds is null.
             const int pid = pointerIds ? pointerIds[i] : 0;
             if (pointerId == pid) {
+                ++mInputSize;
                 const int c = isGeometric ? NOT_A_COORDINATE : getPrimaryCharAt(i);
                 const int x = proximityOnly ? NOT_A_COORDINATE : xCoordinates[i];
                 const int y = proximityOnly ? NOT_A_COORDINATE : yCoordinates[i];
@@ -107,42 +107,46 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
             }
         }
     }
+
     // end
     ///////////////////////
 
-    for (int i = 0; i < inputSize; ++i) {
-        mPrimaryInputWord[i] = getPrimaryCharAt(i);
-    }
-    mPrimaryInputWord[inputSize] = 0;
-
+    memset(mNormalizedSquaredDistances, NOT_A_DISTANCE, sizeof(mNormalizedSquaredDistances));
+    memset(mPrimaryInputWord, 0, sizeof(mPrimaryInputWord));
     mTouchPositionCorrectionEnabled = mInputSize > 0 && mHasTouchPositionCorrectionData
             && xCoordinates && yCoordinates && !isGeometric;
-    for (int i = 0; i < mInputSize && mTouchPositionCorrectionEnabled; ++i) {
-        const int *proximityChars = getProximityCharsAt(i);
-        const int primaryKey = proximityChars[0];
-        const int x = xCoordinates[i];
-        const int y = yCoordinates[i];
-        if (DEBUG_PROXIMITY_CHARS) {
-            int a = x + y + primaryKey;
-            a += 0;
-            AKLOGI("--- Primary = %c, x = %d, y = %d", primaryKey, x, y);
+    if (!isGeometric && pointerId == 0) {
+        for (int i = 0; i < inputSize; ++i) {
+            mPrimaryInputWord[i] = getPrimaryCharAt(i);
         }
-        for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE_INTERNAL && proximityChars[j] > 0; ++j) {
-            const int currentChar = proximityChars[j];
-            const float squaredDistance =
-                    hasInputCoordinates() ? calculateNormalizedSquaredDistance(
-                            mProximityInfo->getKeyIndex(currentChar), i) :
-                            NOT_A_DISTANCE_FLOAT;
-            if (squaredDistance >= 0.0f) {
-                mNormalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL + j] =
-                        (int) (squaredDistance * NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR);
-            } else {
-                mNormalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL + j] =
-                        (j == 0) ? EQUIVALENT_CHAR_WITHOUT_DISTANCE_INFO :
-                                PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO;
-            }
+
+        for (int i = 0; i < mInputSize && mTouchPositionCorrectionEnabled; ++i) {
+            const int *proximityChars = getProximityCharsAt(i);
+            const int primaryKey = proximityChars[0];
+            const int x = xCoordinates[i];
+            const int y = yCoordinates[i];
             if (DEBUG_PROXIMITY_CHARS) {
-                AKLOGI("--- Proximity (%d) = %c", j, currentChar);
+                int a = x + y + primaryKey;
+                a += 0;
+                AKLOGI("--- Primary = %c, x = %d, y = %d", primaryKey, x, y);
+            }
+            for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE_INTERNAL && proximityChars[j] > 0; ++j) {
+                const int currentChar = proximityChars[j];
+                const float squaredDistance =
+                        hasInputCoordinates() ? calculateNormalizedSquaredDistance(
+                                mProximityInfo->getKeyIndex(currentChar), i) :
+                                NOT_A_DISTANCE_FLOAT;
+                if (squaredDistance >= 0.0f) {
+                    mNormalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL + j] =
+                            (int) (squaredDistance * NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR);
+                } else {
+                    mNormalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL + j] =
+                            (j == 0) ? EQUIVALENT_CHAR_WITHOUT_DISTANCE_INFO :
+                                    PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO;
+                }
+                if (DEBUG_PROXIMITY_CHARS) {
+                    AKLOGI("--- Proximity (%d) = %c", j, currentChar);
+                }
             }
         }
     }
