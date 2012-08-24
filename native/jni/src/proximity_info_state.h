@@ -42,9 +42,9 @@ class ProximityInfoState {
     // Defined in proximity_info_state.cpp //
     /////////////////////////////////////////
     void initInputParams(const int pointerId, const float maxPointToKeyLength,
-            const ProximityInfo *proximityInfo, const int32_t *inputCodes, const int inputSize,
-            const int *xCoordinates, const int *yCoordinates, const int *const times,
-            const int *const pointerIds, const bool isGeometric);
+            const ProximityInfo *proximityInfo, const int32_t *const inputCodes,
+            const int inputSize, const int *xCoordinates, const int *yCoordinates,
+            const int *const times, const int *const pointerIds, const bool isGeometric);
 
     /////////////////////////////////////////
     // Defined here                        //
