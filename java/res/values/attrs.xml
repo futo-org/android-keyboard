@@ -131,6 +131,12 @@
         <attr name="gestureFloatingPreviewTextConnectorWidth" format="dimension" />
         <!-- Delay after gesture input and gesture floating preview text dismissing in millisecond -->
         <attr name="gestureFloatingPreviewTextLingerTimeout" format="integer" />
+        <!-- Delay after gesture trail starts fading out in millisecond. -->
+        <attr name="gesturePreviewTrailFadeoutStartDelay" format="integer" />
+        <!-- Duration while gesture preview trail is fading out in millisecond. -->
+        <attr name="gesturePreviewTrailFadeoutDuration" format="integer" />
+        <!-- Interval of updating gesture preview trail in millisecond. -->
+        <attr name="gesturePreviewTrailUpdateInterval" format="integer" />
         <attr name="gesturePreviewTrailColor" format="color" />
         <attr name="gesturePreviewTrailWidth" format="dimension" />
     </declare-styleable>
