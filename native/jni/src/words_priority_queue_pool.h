@@ -86,11 +86,11 @@ class WordsPriorityQueuePool {
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(WordsPriorityQueuePool);
-    WordsPriorityQueue *mMasterQueue;
-    WordsPriorityQueue *mSubQueues[SUB_QUEUE_MAX_COUNT * MULTIPLE_WORDS_SUGGESTION_MAX_WORDS];
     char mMasterQueueBuf[sizeof(WordsPriorityQueue)];
     char mSubQueueBuf[SUB_QUEUE_MAX_COUNT * MULTIPLE_WORDS_SUGGESTION_MAX_WORDS
             * sizeof(WordsPriorityQueue)];
+    WordsPriorityQueue *mMasterQueue;
+    WordsPriorityQueue *mSubQueues[SUB_QUEUE_MAX_COUNT * MULTIPLE_WORDS_SUGGESTION_MAX_WORDS];
 };
 } // namespace latinime
 #endif // LATINIME_WORDS_PRIORITY_QUEUE_POOL_H
