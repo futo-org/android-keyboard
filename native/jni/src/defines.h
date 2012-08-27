@@ -211,7 +211,8 @@ static inline void prof_out(void) {
 
 #define DICTIONARY_VERSION_MIN 200
 #define NOT_VALID_WORD -99
-#define NOT_A_CHARACTER -1
+// TODO: NOT_A_CHARACTER should be -1
+#define NOT_A_CHARACTER 0xFFFF // tentative
 #define NOT_A_DISTANCE -1
 #define NOT_A_COORDINATE -1
 #define EQUIVALENT_CHAR_WITHOUT_DISTANCE_INFO -2
