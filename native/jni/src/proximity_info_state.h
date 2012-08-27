@@ -192,6 +192,22 @@ class ProximityInfoState {
         return mInputSize > 0;
     }
 
+    uint32_t size() const {
+        return mInputSize;
+    }
+
+    int getInputX(int index) const {
+        return mInputXs[index];
+    }
+
+    int getInputY(int index) const {
+        return mInputYs[index];
+    }
+
+    int getLengthCache(int index) const {
+        return mLengthCache[index];
+    }
+
     float getPointToKeyLength(int inputIndex, int charCode, float scale);
 
     int getKeyKeyDistance(int key0, int key1);
@@ -208,7 +224,7 @@ class ProximityInfoState {
     float calculateSquaredDistanceFromSweetSpotCenter(
             const int keyIndex, const int inputIndex) const;
 
-    void pushTouchPoint(const int nodeChar, int x, int y, const int time, const bool sample);
+    bool pushTouchPoint(const int nodeChar, int x, int y, const int time, const bool sample);
     /////////////////////////////////////////
     // Defined here                        //
     /////////////////////////////////////////

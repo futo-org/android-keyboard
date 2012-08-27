@@ -84,12 +84,13 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
             // Assuming pointerId == 0 if pointerIds is null.
             const int pid = pointerIds ? pointerIds[i] : 0;
             if (pointerId == pid) {
-                ++mInputSize;
                 const int c = isGeometric ? NOT_A_COORDINATE : getPrimaryCharAt(i);
                 const int x = proximityOnly ? NOT_A_COORDINATE : xCoordinates[i];
                 const int y = proximityOnly ? NOT_A_COORDINATE : yCoordinates[i];
                 const int time = times ? times[i] : -1;
-                pushTouchPoint(c, x, y, time, isGeometric);
+                if (pushTouchPoint(c, x, y, time, isGeometric)) {
+                    ++mInputSize;
+                }
             }
         }
     }
@@ -152,7 +153,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     }
 }
 
-void ProximityInfoState::pushTouchPoint(const int nodeChar, int x, int y,
+bool ProximityInfoState::pushTouchPoint(const int nodeChar, int x, int y,
         const int time, const bool sample) {
     const uint32_t size = mInputXs.size();
     // TODO: Should have a const variable for 10
@@ -160,7 +161,7 @@ void ProximityInfoState::pushTouchPoint(const int nodeChar, int x, int y,
     if (size > 0) {
         const int dist = getDistanceInt(x, y, mInputXs[size - 1], mInputYs[size - 1]);
         if (sample && dist < sampleRate) {
-            return;
+            return false;
         }
         mLengthCache.push_back(mLengthCache[size - 1] + dist);
     } else {
@@ -176,6 +177,7 @@ void ProximityInfoState::pushTouchPoint(const int nodeChar, int x, int y,
     mInputXs.push_back(x);
     mInputYs.push_back(y);
     mTimes.push_back(time);
+    return true;
 }
 
 float ProximityInfoState::calculateNormalizedSquaredDistance(
@@ -196,10 +198,10 @@ float ProximityInfoState::calculateNormalizedSquaredDistance(
 }
 
 int ProximityInfoState::getDuration(const int index) const {
-    if (mTimes.size() == 0 || index <= 0 || index >= static_cast<int>(mInputSize) - 1) {
-        return 0;
+    if (mInputSize > 0 && index > 0 && index < static_cast<int>(mInputSize) - 1) {
+        return mTimes[index + 1] - mTimes[index - 1];
     }
-    return mTimes[index + 1] - mTimes[index - 1];
+    return 0;
 }
 
 float ProximityInfoState::getPointToKeyLength(int inputIndex, int charCode, float scale) {
