@@ -32,6 +32,7 @@ class GesturePreviewTrail {
     private final ResizableIntArray mEventTimes = new ResizableIntArray(DEFAULT_CAPACITY);
     private int mCurrentStrokeId = -1;
     private long mCurrentDownTime;
+    private int mTrailStartIndex;
 
     // Use this value as imaginary zero because x-coordinates may be zero.
     private static final int DOWN_EVENT_MARKER = -128;
@@ -80,7 +81,7 @@ class GesturePreviewTrail {
         if (isNewStroke) {
             final int elapsedTime = (int)(downTime - mCurrentDownTime);
             final int[] eventTimes = mEventTimes.getPrimitiveArray();
-            for (int i = 0; i < trailSize; i++) {
+            for (int i = mTrailStartIndex; i < trailSize; i++) {
                 eventTimes[i] -= elapsedTime;
             }
 
@@ -122,13 +123,14 @@ class GesturePreviewTrail {
         final int lingeringDuration = mPreviewParams.mFadeoutStartDelay
                 + mPreviewParams.mFadeoutDuration;
         int startIndex;
-        for (startIndex = 0; startIndex < trailSize; startIndex++) {
+        for (startIndex = mTrailStartIndex; startIndex < trailSize; startIndex++) {
             final int elapsedTime = sinceDown - eventTimes[startIndex];
             // Skip too old trail points.
             if (elapsedTime < lingeringDuration) {
                 break;
             }
         }
+        mTrailStartIndex = startIndex;
 
         if (startIndex < trailSize) {
             int lastX = getXCoordValue(xCoords[startIndex]);
@@ -147,15 +149,18 @@ class GesturePreviewTrail {
             }
         }
 
-        // TODO: Implement ring buffer to avoid moving points.
-        // Discard faded out points.
         final int newSize = trailSize - startIndex;
-        System.arraycopy(eventTimes, startIndex, eventTimes, 0, newSize);
-        System.arraycopy(xCoords, startIndex, xCoords, 0, newSize);
-        System.arraycopy(yCoords, startIndex, yCoords, 0, newSize);
-        mEventTimes.setLength(newSize);
-        mXCoordinates.setLength(newSize);
-        mYCoordinates.setLength(newSize);
+        if (newSize < startIndex) {
+            mTrailStartIndex = 0;
+            if (newSize > 0) {
+                System.arraycopy(eventTimes, startIndex, eventTimes, 0, newSize);
+                System.arraycopy(xCoords, startIndex, xCoords, 0, newSize);
+                System.arraycopy(yCoords, startIndex, yCoords, 0, newSize);
+            }
+            mEventTimes.setLength(newSize);
+            mXCoordinates.setLength(newSize);
+            mYCoordinates.setLength(newSize);
+        }
         return newSize > 0;
     }
 }
