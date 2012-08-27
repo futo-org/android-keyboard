@@ -29,7 +29,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
 import android.text.TextUtils;
-import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -404,23 +403,39 @@ public class Utils {
     }
 
     public static class Stats {
+        static final int NOT_A_SEPARATOR_CODE_POINT = -1;
+
         public static void onNonSeparator(final char code, final int x,
                 final int y) {
             RingCharBuffer.getInstance().push(code, x, y);
             LatinImeLogger.logOnInputChar();
         }
 
-        public static void onSeparator(final int code, final int x,
-                final int y) {
-            // TODO: accept code points
-            RingCharBuffer.getInstance().push((char)code, x, y);
+        public static void onSeparator(final int code, final int x, final int y) {
+            // Helper method to log a single code point separator
+            // TODO: cache this mapping of a code point to a string in a sparse array in StringUtils
+            onSeparator(new String(new int[]{code}, 0, 1), x, y);
+        }
+
+        public static void onSeparator(final String separator, final int x, final int y) {
+            final int length = separator.length();
+            for (int i = 0; i < length; i = Character.offsetByCodePoints(separator, i, 1)) {
+                int codePoint = Character.codePointAt(separator, i);
+                // TODO: accept code points
+                RingCharBuffer.getInstance().push((char)codePoint, x, y);
+            }
             LatinImeLogger.logOnInputSeparator();
         }
 
         public static void onAutoCorrection(final String typedWord, final String correctedWord,
-                final int separatorCode) {
+                final String separatorString) {
             if (TextUtils.isEmpty(typedWord)) return;
-            LatinImeLogger.logOnAutoCorrection(typedWord, correctedWord, separatorCode);
+            // TODO: this fails when the separator is more than 1 code point long, but
+            // the backend can't handle it yet. The only case when this happens is with
+            // smileys and other multi-character keys.
+            final int codePoint = TextUtils.isEmpty(separatorString) ? NOT_A_SEPARATOR_CODE_POINT
+                    : separatorString.codePointAt(0);
+            LatinImeLogger.logOnAutoCorrection(typedWord, correctedWord, codePoint);
         }
 
         public static void onAutoCorrectionCancellation() {
