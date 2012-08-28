@@ -109,7 +109,7 @@
         <attr name="shadowRadius" format="float" />
         <attr name="backgroundDimAlpha" format="integer" />
 
-        <attr name="keyTextStyle" format="enum">
+        <attr name="keyTypeface" format="enum">
             <!-- This should be aligned with Typeface.NORMAL etc. -->
             <enum name="normal" value="0" />
             <enum name="bold" value="1" />

@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -120,6 +121,9 @@ public class Keyboard {
     /** Default gap between rows */
     public final int mVerticalGap;
 
+    /** Per keyboard key visual parameters */
+    public final Typeface mKeyTypeface;
+
     public final int mMostCommonKeyHeight;
     public final int mMostCommonKeyWidth;
 
@@ -149,6 +153,8 @@ public class Keyboard {
         mMostCommonKeyWidth = params.mMostCommonKeyWidth;
         mMoreKeysTemplate = params.mMoreKeysTemplate;
         mMaxMoreKeysKeyboardColumn = params.mMaxMoreKeysKeyboardColumn;
+
+        mKeyTypeface = params.mKeyTypeface;
 
         mTopPadding = params.mTopPadding;
         mVerticalGap = params.mVerticalGap;
@@ -225,6 +231,7 @@ public class Keyboard {
         return mId.toString();
     }
 
+    // TODO: Move this class to internal package
     public static class Params {
         public KeyboardId mId;
         public int mThemeId;
@@ -243,6 +250,8 @@ public class Keyboard {
         public int mBottomPadding;
         public int mHorizontalEdgesPadding;
         public int mHorizontalCenterPadding;
+
+        public Typeface mKeyTypeface = null;
 
         public int mDefaultRowHeight;
         public int mDefaultKeyWidth;
@@ -497,6 +506,7 @@ public class Keyboard {
      * </pre>
      */
 
+    // TODO: Move this class to internal package.
     public static class Builder<KP extends Params> {
         private static final String BUILDER_TAG = "Keyboard.Builder";
         private static final boolean DEBUG = false;
@@ -744,6 +754,8 @@ public class Keyboard {
                     R.style.Keyboard);
             final TypedArray keyAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.Keyboard_Key);
+            final TypedArray keyboardViewAttr = mResources.obtainAttributes(
+                    Xml.asAttributeSet(parser), R.styleable.KeyboardView);
             try {
                 final int displayHeight = mDisplayMetrics.heightPixels;
                 final String keyboardHeightString = ResourceUtils.getDeviceOverrideValue(
@@ -795,6 +807,11 @@ public class Keyboard {
                         R.styleable.Keyboard_rowHeight, params.mBaseHeight,
                         params.mBaseHeight / DEFAULT_KEYBOARD_ROWS);
 
+                if (keyboardViewAttr.hasValue(R.styleable.KeyboardView_keyTypeface)) {
+                    params.mKeyTypeface = Typeface.defaultFromStyle(keyboardViewAttr.getInt(
+                            R.styleable.KeyboardView_keyTypeface, Typeface.NORMAL));
+                }
+
                 params.mMoreKeysTemplate = keyboardAttr.getResourceId(
                         R.styleable.Keyboard_moreKeysTemplate, 0);
                 params.mMaxMoreKeysKeyboardColumn = keyAttr.getInt(
@@ -825,6 +842,7 @@ public class Keyboard {
                     params.mTouchPositionCorrection.load(data);
                 }
             } finally {
+                keyboardViewAttr.recycle();
                 keyAttr.recycle();
                 keyboardAttr.recycle();
             }
