@@ -992,7 +992,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     @Override
-    public void showGestureTrail(PointerTracker tracker) {
+    public void showGesturePreviewTrail(PointerTracker tracker) {
         locatePreviewPlacerView();
         mPreviewPlacerView.invalidatePointer(tracker);
     }
