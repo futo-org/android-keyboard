@@ -1045,7 +1045,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
             final int y, final boolean ignoreModifierKey, final boolean altersCode,
             final int code) {
         if (key != null) {
-            CharSequence outputText = key.mOutputText;
+            String outputText = key.getOutputText();
             final Object[] values = {
                 Keyboard.printableCode(scrubDigitFromCodePoint(code)), outputText == null ? null
                         : scrubDigitsFromString(outputText.toString()),

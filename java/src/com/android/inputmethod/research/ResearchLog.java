@@ -257,7 +257,7 @@ public class ResearchLog {
                     for (Key keyboardKey : keyboardKeys) {
                         mJsonWriter.beginObject();
                         mJsonWriter.name("code").value(keyboardKey.mCode);
-                        mJsonWriter.name("altCode").value(keyboardKey.mAltCode);
+                        mJsonWriter.name("altCode").value(keyboardKey.getAltCode());
                         mJsonWriter.name("x").value(keyboardKey.mX);
                         mJsonWriter.name("y").value(keyboardKey.mY);
                         mJsonWriter.name("w").value(keyboardKey.mWidth);
