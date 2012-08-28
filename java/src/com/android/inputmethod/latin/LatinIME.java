@@ -1351,7 +1351,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onTextInput(CharSequence rawText) {
         mConnection.beginBatchEdit();
-        commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+        if (mWordComposer.isComposingWord()) {
+            commitCurrentAutoCorrection(LastComposedWord.NOT_A_SEPARATOR);
+        }
         mHandler.postUpdateSuggestionStrip();
         final CharSequence text = specificTldProcessingOnTextInput(rawText);
         if (SPACE_STATE_PHANTOM == mSpaceState) {
@@ -1370,7 +1372,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onStartBatchInput() {
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
-            commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+            commitCurrentAutoCorrection(LastComposedWord.NOT_A_SEPARATOR);
             mExpectingUpdateSelection = true;
             // TODO: Can we remove this?
             mSpaceState = SPACE_STATE_PHANTOM;
