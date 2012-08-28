@@ -84,6 +84,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
     // Miscellaneous constants
     private static final int[] LONG_PRESSABLE_STATE_SET = { android.R.attr.state_long_pressable };
+    private static final float UNDEFINED_RATIO = -1.0f;
 
     // XML attributes
     protected final float mVerticalCorrection;
@@ -202,7 +203,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         private final float mKeyHintLetterRatio;
         private final float mKeyShiftedLetterHintRatio;
         private final float mKeyHintLabelRatio;
-        private static final float UNDEFINED_RATIO = -1.0f;
 
         public final Rect mPadding = new Rect();
         public int mKeyLetterSize;
@@ -220,20 +220,20 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 mKeyLetterRatio = UNDEFINED_RATIO;
                 mKeyLetterSize = a.getDimensionPixelSize(R.styleable.KeyboardView_keyLetterSize, 0);
             } else {
-                mKeyLetterRatio = getRatio(a, R.styleable.KeyboardView_keyLetterRatio);
+                mKeyLetterRatio = getFraction(a, R.styleable.KeyboardView_keyLetterRatio);
             }
             if (a.hasValue(R.styleable.KeyboardView_keyLabelSize)) {
                 mKeyLabelRatio = UNDEFINED_RATIO;
                 mKeyLabelSize = a.getDimensionPixelSize(R.styleable.KeyboardView_keyLabelSize, 0);
             } else {
-                mKeyLabelRatio = getRatio(a, R.styleable.KeyboardView_keyLabelRatio);
+                mKeyLabelRatio = getFraction(a, R.styleable.KeyboardView_keyLabelRatio);
             }
-            mKeyLargeLabelRatio = getRatio(a, R.styleable.KeyboardView_keyLargeLabelRatio);
-            mKeyLargeLetterRatio = getRatio(a, R.styleable.KeyboardView_keyLargeLetterRatio);
-            mKeyHintLetterRatio = getRatio(a, R.styleable.KeyboardView_keyHintLetterRatio);
-            mKeyShiftedLetterHintRatio = getRatio(a,
+            mKeyLargeLabelRatio = getFraction(a, R.styleable.KeyboardView_keyLargeLabelRatio);
+            mKeyLargeLetterRatio = getFraction(a, R.styleable.KeyboardView_keyLargeLetterRatio);
+            mKeyHintLetterRatio = getFraction(a, R.styleable.KeyboardView_keyHintLetterRatio);
+            mKeyShiftedLetterHintRatio = getFraction(a,
                     R.styleable.KeyboardView_keyShiftedLetterHintRatio);
-            mKeyHintLabelRatio = getRatio(a, R.styleable.KeyboardView_keyHintLabelRatio);
+            mKeyHintLabelRatio = getFraction(a, R.styleable.KeyboardView_keyHintLabelRatio);
             mKeyLabelHorizontalPadding = a.getDimension(
                     R.styleable.KeyboardView_keyLabelHorizontalPadding, 0);
             mKeyHintLetterPadding = a.getDimension(
@@ -260,10 +260,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
 
         public void updateKeyHeight(int keyHeight) {
-            if (mKeyLetterRatio >= 0.0f) {
+            if (isValidFraction(mKeyLetterRatio)) {
                 mKeyLetterSize = (int)(keyHeight * mKeyLetterRatio);
             }
-            if (mKeyLabelRatio >= 0.0f) {
+            if (isValidFraction(mKeyLabelRatio)) {
                 mKeyLabelSize = (int)(keyHeight * mKeyLabelRatio);
             }
             mKeyLargeLabelSize = (int)(keyHeight * mKeyLargeLabelRatio);
@@ -338,7 +338,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                     R.styleable.KeyboardView_keyPreviewOffset, 0);
             mPreviewHeight = a.getDimensionPixelSize(
                     R.styleable.KeyboardView_keyPreviewHeight, 80);
-            mPreviewTextRatio = getRatio(a, R.styleable.KeyboardView_keyPreviewTextRatio);
+            mPreviewTextRatio = getFraction(a, R.styleable.KeyboardView_keyPreviewTextRatio);
             mPreviewTextColor = a.getColor(R.styleable.KeyboardView_keyPreviewTextColor, 0);
             mLingerTimeout = a.getInt(R.styleable.KeyboardView_keyPreviewLingerTimeout, 0);
 
@@ -387,9 +387,12 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mPaint.setAntiAlias(true);
     }
 
-    // Read fraction value in TypedArray as float.
-    /* package */ static float getRatio(TypedArray a, int index) {
-        return a.getFraction(index, 1000, 1000, 1) / 1000.0f;
+    static boolean isValidFraction(final float fraction) {
+        return fraction >= 0.0f;
+    }
+
+    static float getFraction(final TypedArray a, final int index) {
+        return a.getFraction(index, 1, 1, UNDEFINED_RATIO);
     }
 
     /**

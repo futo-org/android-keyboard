@@ -132,7 +132,7 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
 
     private static class SuggestionStripViewParams {
         private static final int DEFAULT_SUGGESTIONS_COUNT_IN_STRIP = 3;
-        private static final int DEFAULT_CENTER_SUGGESTION_PERCENTILE = 40;
+        private static final float DEFAULT_CENTER_SUGGESTION_PERCENTILE = 0.40f;
         private static final int DEFAULT_MAX_MORE_SUGGESTIONS_ROW = 2;
         private static final int PUNCTUATIONS_IN_STRIP = 5;
 
@@ -196,16 +196,16 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
                     R.styleable.SuggestionStripView, defStyle, R.style.SuggestionStripViewStyle);
             mSuggestionStripOption = a.getInt(
                     R.styleable.SuggestionStripView_suggestionStripOption, 0);
-            final float alphaValidTypedWord = getPercent(a,
-                    R.styleable.SuggestionStripView_alphaValidTypedWord, 100);
-            final float alphaTypedWord = getPercent(a,
-                    R.styleable.SuggestionStripView_alphaTypedWord, 100);
-            final float alphaAutoCorrect = getPercent(a,
-                    R.styleable.SuggestionStripView_alphaAutoCorrect, 100);
-            final float alphaSuggested = getPercent(a,
-                    R.styleable.SuggestionStripView_alphaSuggested, 100);
-            mAlphaObsoleted = getPercent(a,
-                    R.styleable.SuggestionStripView_alphaSuggested, 100);
+            final float alphaValidTypedWord = getFraction(a,
+                    R.styleable.SuggestionStripView_alphaValidTypedWord, 1.0f);
+            final float alphaTypedWord = getFraction(a,
+                    R.styleable.SuggestionStripView_alphaTypedWord, 1.0f);
+            final float alphaAutoCorrect = getFraction(a,
+                    R.styleable.SuggestionStripView_alphaAutoCorrect, 1.0f);
+            final float alphaSuggested = getFraction(a,
+                    R.styleable.SuggestionStripView_alphaSuggested, 1.0f);
+            mAlphaObsoleted = getFraction(a,
+                    R.styleable.SuggestionStripView_alphaSuggested, 1.0f);
             mColorValidTypedWord = applyAlpha(a.getColor(
                     R.styleable.SuggestionStripView_colorValidTypedWord, 0), alphaValidTypedWord);
             mColorTypedWord = applyAlpha(a.getColor(
@@ -217,14 +217,14 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
             mSuggestionsCountInStrip = a.getInt(
                     R.styleable.SuggestionStripView_suggestionsCountInStrip,
                     DEFAULT_SUGGESTIONS_COUNT_IN_STRIP);
-            mCenterSuggestionWeight = getPercent(a,
+            mCenterSuggestionWeight = getFraction(a,
                     R.styleable.SuggestionStripView_centerSuggestionPercentile,
                     DEFAULT_CENTER_SUGGESTION_PERCENTILE);
             mMaxMoreSuggestionsRow = a.getInt(
                     R.styleable.SuggestionStripView_maxMoreSuggestionsRow,
                     DEFAULT_MAX_MORE_SUGGESTIONS_ROW);
-            mMinMoreSuggestionsWidth = getRatio(a,
-                    R.styleable.SuggestionStripView_minMoreSuggestionsWidth);
+            mMinMoreSuggestionsWidth = getFraction(a,
+                    R.styleable.SuggestionStripView_minMoreSuggestionsWidth, 1.0f);
             a.recycle();
 
             mMoreSuggestionsHint = getMoreSuggestionsHint(res,
@@ -278,14 +278,8 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
             return new BitmapDrawable(res, buffer);
         }
 
-        // Read integer value in TypedArray as percent.
-        private static float getPercent(TypedArray a, int index, int defValue) {
-            return a.getInt(index, defValue) / 100.0f;
-        }
-
-        // Read fraction value in TypedArray as float.
-        private static float getRatio(TypedArray a, int index) {
-            return a.getFraction(index, 1000, 1000, 1) / 1000.0f;
+        static float getFraction(final TypedArray a, final int index, final float defValue) {
+            return a.getFraction(index, 1, 1, defValue);
         }
 
         private CharSequence getStyledSuggestionWord(SuggestedWords suggestedWords, int pos) {

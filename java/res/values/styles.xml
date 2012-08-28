@@ -138,9 +138,9 @@
         <item name="colorTypedWord">@android:color/white</item>
         <item name="colorAutoCorrect">#FFFCAE00</item>
         <item name="colorSuggested">#FFFCAE00</item>
-        <item name="alphaObsoleted">50</item>
+        <item name="alphaObsoleted">50%</item>
         <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
-        <item name="centerSuggestionPercentile">@integer/center_suggestion_percentile</item>
+        <item name="centerSuggestionPercentile">@fraction/center_suggestion_percentile</item>
         <item name="maxMoreSuggestionsRow">@integer/max_more_suggestions_row</item>
         <item name="minMoreSuggestionsWidth">@fraction/min_more_suggestions_width</item>
     </style>
@@ -373,12 +373,12 @@
         <item name="colorTypedWord">@android:color/holo_blue_light</item>
         <item name="colorAutoCorrect">@android:color/holo_blue_light</item>
         <item name="colorSuggested">@android:color/holo_blue_light</item>
-        <item name="alphaValidTypedWord">85</item>
-        <item name="alphaTypedWord">85</item>
-        <item name="alphaSuggested">70</item>
-        <item name="alphaObsoleted">70</item>
+        <item name="alphaValidTypedWord">85%</item>
+        <item name="alphaTypedWord">85%</item>
+        <item name="alphaSuggested">70%</item>
+        <item name="alphaObsoleted">70%</item>
         <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
-        <item name="centerSuggestionPercentile">@integer/center_suggestion_percentile</item>
+        <item name="centerSuggestionPercentile">@fraction/center_suggestion_percentile</item>
         <item name="maxMoreSuggestionsRow">@integer/max_more_suggestions_row</item>
         <item name="minMoreSuggestionsWidth">@fraction/min_more_suggestions_width</item>
     </style>

@@ -344,8 +344,8 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
                 R.styleable.MainKeyboardView_autoCorrectionSpacebarLedEnabled, false);
         mAutoCorrectionSpacebarLedIcon = a.getDrawable(
                 R.styleable.MainKeyboardView_autoCorrectionSpacebarLedIcon);
-        mSpacebarTextRatio = a.getFraction(R.styleable.MainKeyboardView_spacebarTextRatio,
-                1000, 1000, 1) / 1000.0f;
+        mSpacebarTextRatio = a.getFraction(
+                R.styleable.MainKeyboardView_spacebarTextRatio, 1, 1, 1.0f);
         mSpacebarTextColor = a.getColor(R.styleable.MainKeyboardView_spacebarTextColor, 0);
         mSpacebarTextShadowColor = a.getColor(
                 R.styleable.MainKeyboardView_spacebarTextShadowColor, 0);
