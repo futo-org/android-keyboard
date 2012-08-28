@@ -187,13 +187,13 @@
         <attr name="colorTypedWord" format="color" />
         <attr name="colorAutoCorrect" format="color" />
         <attr name="colorSuggested" format="color" />
-        <attr name="alphaValidTypedWord" format="integer" />
-        <attr name="alphaTypedWord" format="integer" />
-        <attr name="alphaAutoCorrect" format="integer" />
-        <attr name="alphaSuggested" format="integer" />
-        <attr name="alphaObsoleted" format="integer" />
+        <attr name="alphaValidTypedWord" format="fraction" />
+        <attr name="alphaTypedWord" format="fraction" />
+        <attr name="alphaAutoCorrect" format="fraction" />
+        <attr name="alphaSuggested" format="fraction" />
+        <attr name="alphaObsoleted" format="fraction" />
         <attr name="suggestionsCountInStrip" format="integer" />
-        <attr name="centerSuggestionPercentile" format="integer" />
+        <attr name="centerSuggestionPercentile" format="fraction" />
         <attr name="maxMoreSuggestionsRow" format="integer" />
         <attr name="minMoreSuggestionsWidth" format="float" />
     </declare-styleable>

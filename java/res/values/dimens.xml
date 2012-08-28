@@ -92,7 +92,7 @@
     <dimen name="suggestion_text_size">18dp</dimen>
     <dimen name="more_suggestions_hint_text_size">27dp</dimen>
     <integer name="suggestions_count_in_strip">3</integer>
-    <integer name="center_suggestion_percentile">36</integer>
+    <fraction name="center_suggestion_percentile">36%</fraction>
 
     <!-- Gesture preview parameters -->
     <dimen name="gesture_preview_trail_width">2.5dp</dimen>
