@@ -130,8 +130,12 @@ public class GestureStroke {
     }
 
     private void appendBatchPoints(final InputPointers out, final int size) {
+        final int length = size - mLastIncrementalBatchSize;
+        if (length <= 0) {
+            return;
+        }
         out.append(mPointerId, mEventTimes, mXCoordinates, mYCoordinates,
-                mLastIncrementalBatchSize, size - mLastIncrementalBatchSize);
+                mLastIncrementalBatchSize, length);
         mLastIncrementalBatchSize = size;
     }
 
