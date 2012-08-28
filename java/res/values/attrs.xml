@@ -41,26 +41,24 @@
              checkable+checked+pressed. -->
         <attr name="keyBackground" format="reference" />
 
-        <!-- Size of the text for one letter keys. If not defined, keyLetterRatio takes effect. -->
-        <attr name="keyLetterSize" format="dimension" />
-        <!-- Size of the text for keys with multiple letters. If not defined, keyLabelRatio takes
-             effect. -->
-        <attr name="keyLabelSize" format="dimension" />
-        <!-- Size of the text for one letter keys, in the proportion of key height. -->
-        <attr name="keyLetterRatio" format="float" />
+        <!-- Size of the text for one letter keys. If specified as fraction, the text size is
+             measured in the proportion of key height. -->
+        <attr name="keyLetterSize" format="dimension|fraction" />
+        <!-- Size of the text for keys with multiple letters. If specified as fraction, the text
+             size is measured in the proportion of key height. -->
+        <attr name="keyLabelSize" format="dimension|fraction" />
         <!-- Large size of the text for one letter keys, in the proportion of key height. -->
-        <attr name="keyLargeLetterRatio" format="float" />
-        <!-- Size of the text for keys with multiple letters, in the proportion of key height. -->
-        <attr name="keyLabelRatio" format="float" />
+        <attr name="keyLargeLetterRatio" format="fraction" />
         <!-- Large size of the text for keys with multiple letters, in the proportion of key height. -->
-        <attr name="keyLargeLabelRatio" format="float" />
+        <attr name="keyLargeLabelRatio" format="fraction" />
         <!-- Size of the text for hint letter (= one character hint label), in the proportion of
              key height. -->
-        <attr name="keyHintLetterRatio" format="float" />
+        <attr name="keyHintLetterRatio" format="fraction" />
         <!-- Size of the text for hint label, in the proportion of key height. -->
-        <attr name="keyHintLabelRatio" format="float" />
+        <attr name="keyHintLabelRatio" format="fraction" />
         <!-- Size of the text for shifted letter hint, in the proportion of key height. -->
-        <attr name="keyShiftedLetterHintRatio" format="float" />
+        <attr name="keyShiftedLetterHintRatio" format="dimension|fraction" />
+
         <!-- Horizontal padding of left/right aligned key label to the edge of the key. -->
         <attr name="keyLabelHorizontalPadding" format="dimension" />
         <!-- Right padding of hint letter to the edge of the key.-->
@@ -96,8 +94,8 @@
         <attr name="keyPreviewOffset" format="dimension" />
         <!-- Height of the key press feedback popup. -->
         <attr name="keyPreviewHeight" format="dimension" />
-        <!-- Size of the text for key press feedback popup, int the proportion of key height -->
-        <attr name="keyPreviewTextRatio" format="float" />
+        <!-- Size of the text for key press feedback popup, in the proportion of key height. -->
+        <attr name="keyPreviewTextRatio" format="fraction" />
         <!-- Delay after key releasing and key press feedback dismissing in millisecond -->
         <attr name="keyPreviewLingerTimeout" format="integer" />
 
