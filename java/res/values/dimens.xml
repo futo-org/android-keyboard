@@ -101,4 +101,7 @@
     <dimen name="gesture_floating_preview_text_shadow_border">17.5dp</dimen>
     <dimen name="gesture_floating_preview_text_shading_border">7.5dp</dimen>
     <dimen name="gesture_floating_preview_text_connector_width">1.0dp</dimen>
+
+    <!-- Inset used in Accessibility mode to avoid accidental key presses when a finger slides off the screen. -->
+    <dimen name="accessibility_edge_slop">8dp</dimen>
 </resources>
