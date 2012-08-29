@@ -19,7 +19,7 @@ package com.android.inputmethod.latin;
 import android.text.format.DateUtils;
 import android.util.Log;
 
-public class UserHistoryForgettingCurveUtils {
+public final class UserHistoryForgettingCurveUtils {
     private static final String TAG = UserHistoryForgettingCurveUtils.class.getSimpleName();
     private static final boolean DEBUG = false;
     private static final int FC_FREQ_MAX = 127;

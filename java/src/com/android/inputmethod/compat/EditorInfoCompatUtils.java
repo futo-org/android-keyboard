@@ -20,7 +20,7 @@ import android.view.inputmethod.EditorInfo;
 
 import java.lang.reflect.Field;
 
-public class EditorInfoCompatUtils {
+public final class EditorInfoCompatUtils {
     // EditorInfo.IME_FLAG_FORCE_ASCII has been introduced since API#16 (JellyBean).
     private static final Field FIELD_IME_FLAG_FORCE_ASCII = CompatUtils.getField(
             EditorInfo.class, "IME_FLAG_FORCE_ASCII");

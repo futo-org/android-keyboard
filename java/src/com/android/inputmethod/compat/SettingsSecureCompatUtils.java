@@ -18,7 +18,7 @@ package com.android.inputmethod.compat;
 
 import java.lang.reflect.Field;
 
-public class SettingsSecureCompatUtils {
+public final class SettingsSecureCompatUtils {
     private static final Field FIELD_ACCESSIBILITY_SPEAK_PASSWORD = CompatUtils.getField(
             android.provider.Settings.Secure.class, "ACCESSIBILITY_SPEAK_PASSWORD");
 

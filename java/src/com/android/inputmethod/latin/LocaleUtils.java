@@ -31,7 +31,7 @@ import java.util.Locale;
  * update/bugfix to this file, consider also updating/fixing the version in the
  * dictionary pack.
  */
-public class LocaleUtils {
+public final class LocaleUtils {
     private static final HashMap<String, Long> EMPTY_LT_HASH_MAP = CollectionUtils.newHashMap();
     private static final String LOCALE_AND_TIME_STR_SEPARATER = ",";
 
