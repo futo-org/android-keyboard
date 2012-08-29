@@ -20,7 +20,7 @@ import android.util.Log;
 
 import com.android.inputmethod.latin.define.JniLibName;
 
-public class JniUtils {
+public final class JniUtils {
     private static final String TAG = JniUtils.class.getSimpleName();
 
     private JniUtils() {

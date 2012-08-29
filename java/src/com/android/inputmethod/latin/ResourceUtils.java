@@ -21,7 +21,7 @@ import android.os.Build;
 
 import java.util.HashMap;
 
-public class ResourceUtils {
+public final class ResourceUtils {
     private ResourceUtils() {
         // This utility class is not publicly instantiable.
     }

@@ -24,7 +24,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public class CompatUtils {
+public final class CompatUtils {
     private static final String TAG = CompatUtils.class.getSimpleName();
     private static final String EXTRA_INPUT_METHOD_ID = "input_method_id";
     // TODO: Can these be constants instead of literal String constants?

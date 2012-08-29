@@ -26,7 +26,7 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-public class JarUtils {
+public final class JarUtils {
     private JarUtils() {
         // This utility class is not publicly instantiable.
     }

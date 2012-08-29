@@ -23,7 +23,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-public class XmlParseUtils {
+public final class XmlParseUtils {
     private XmlParseUtils() {
         // This utility class is not publicly instantiable.
     }

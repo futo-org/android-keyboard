@@ -16,14 +16,11 @@
 
 package com.android.inputmethod.latin;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -44,9 +41,8 @@ import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 
-public class Utils {
+public final class Utils {
     private Utils() {
         // This utility class is not publicly instantiable.
     }
@@ -183,7 +179,7 @@ public class Utils {
         return getStackTrace(Integer.MAX_VALUE - 1);
     }
 
-    public static class UsabilityStudyLogUtils {
+    public static final class UsabilityStudyLogUtils {
         // TODO: remove code duplication with ResearchLog class
         private static final String USABILITY_TAG = UsabilityStudyLogUtils.class.getSimpleName();
         private static final String FILENAME = "log.txt";
@@ -392,9 +388,7 @@ public class Utils {
         }
     }
 
-    public static class Stats {
-        static final int NOT_A_SEPARATOR_CODE_POINT = -1;
-
+    public static final class Stats {
         public static void onNonSeparator(final char code, final int x,
                 final int y) {
             RingCharBuffer.getInstance().push(code, x, y);
@@ -423,7 +417,7 @@ public class Utils {
             // TODO: this fails when the separator is more than 1 code point long, but
             // the backend can't handle it yet. The only case when this happens is with
             // smileys and other multi-character keys.
-            final int codePoint = TextUtils.isEmpty(separatorString) ? NOT_A_SEPARATOR_CODE_POINT
+            final int codePoint = TextUtils.isEmpty(separatorString) ? Constants.NOT_A_CODE
                     : separatorString.codePointAt(0);
             LatinImeLogger.logOnAutoCorrection(typedWord, correctedWord, codePoint);
         }

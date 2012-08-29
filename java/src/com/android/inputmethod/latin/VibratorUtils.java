@@ -19,7 +19,7 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.os.Vibrator;
 
-public class VibratorUtils {
+public final class VibratorUtils {
     private static final VibratorUtils sInstance = new VibratorUtils();
     private Vibrator mVibrator;
 

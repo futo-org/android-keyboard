@@ -30,7 +30,7 @@ import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class CollectionUtils {
+public final class CollectionUtils {
     private CollectionUtils() {
         // This utility class is not publicly instantiable.
     }

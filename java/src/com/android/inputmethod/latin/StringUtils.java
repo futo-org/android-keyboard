@@ -21,7 +21,7 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class StringUtils {
+public final class StringUtils {
     private StringUtils() {
         // This utility class is not publicly instantiable.
     }
