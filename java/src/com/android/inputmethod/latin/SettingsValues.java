@@ -401,7 +401,7 @@ public class SettingsValues {
     public static long getLastUserHistoryWriteTime(
             final SharedPreferences prefs, final String locale) {
         final String str = prefs.getString(Settings.PREF_LAST_USER_DICTIONARY_WRITE_TIME, "");
-        final HashMap<String, Long> map = Utils.localeAndTimeStrToHashMap(str);
+        final HashMap<String, Long> map = LocaleUtils.localeAndTimeStrToHashMap(str);
         if (map.containsKey(locale)) {
             return map.get(locale);
         }
@@ -411,9 +411,9 @@ public class SettingsValues {
     public static void setLastUserHistoryWriteTime(
             final SharedPreferences prefs, final String locale) {
         final String oldStr = prefs.getString(Settings.PREF_LAST_USER_DICTIONARY_WRITE_TIME, "");
-        final HashMap<String, Long> map = Utils.localeAndTimeStrToHashMap(oldStr);
+        final HashMap<String, Long> map = LocaleUtils.localeAndTimeStrToHashMap(oldStr);
         map.put(locale, System.currentTimeMillis());
-        final String newStr = Utils.localeAndTimeHashMapToStr(map);
+        final String newStr = LocaleUtils.localeAndTimeHashMapToStr(map);
         prefs.edit().putString(Settings.PREF_LAST_USER_DICTIONARY_WRITE_TIME, newStr).apply();
     }
 
