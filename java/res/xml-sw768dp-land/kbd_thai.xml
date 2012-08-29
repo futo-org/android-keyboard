@@ -23,6 +23,8 @@
     latin:rowHeight="20%p"
     latin:verticalGap="2.65%p"
     latin:keyTypeface="normal"
+    latin:keyLetterSize="@fraction/key_letter_ratio_5rows"
+    latin:keyShiftedLetterHintRatio="@fraction/key_uppercase_letter_ratio_5rows"
     latin:touchPositionCorrectionData="@null"
 >
     <include
