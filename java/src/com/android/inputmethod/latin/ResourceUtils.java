@@ -55,16 +55,6 @@ public final class ResourceUtils {
         return fraction >= 0.0f;
     }
 
-    // {@link Resources#getDimensionPixelSize(int)} returns at least one pixel size.
-    public static boolean isValidDimensionPixelSize(final int dimension) {
-        return dimension > 0;
-    }
-
-    // {@link Resources#getDimensionPixelOffset(int)} may return zero pixel offset.
-    public static boolean isValidDimensionPixelOffset(final int dimension) {
-        return dimension >= 0;
-    }
-
     public static float getFraction(final TypedArray a, final int index, final float defValue) {
         final TypedValue value = a.peekValue(index);
         if (value == null || !isFractionValue(value)) {
