@@ -85,7 +85,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
     // Miscellaneous constants
     private static final int[] LONG_PRESSABLE_STATE_SET = { android.R.attr.state_long_pressable };
-
     // XML attributes
     protected final float mVerticalCorrection;
     protected final int mMoreKeysLayout;
@@ -198,7 +197,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         private final Typeface mKeyTypefaceFromKeyboardView;
         private final float mKeyLetterRatio;
-        private final int mKeyLetterSizeFromKeyboardView;
         private final float mKeyLargeLetterRatio;
         private final float mKeyLabelRatio;
         private final float mKeyLargeLabelRatio;
@@ -219,12 +217,16 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         public KeyDrawParams(final TypedArray a) {
             mKeyBackground = a.getDrawable(R.styleable.KeyboardView_keyBackground);
-            mKeyLetterRatio = ResourceUtils.getFraction(a, R.styleable.KeyboardView_keyLetterSize);
-            mKeyLetterSizeFromKeyboardView = ResourceUtils.getDimensionPixelSize(a,
-                    R.styleable.KeyboardView_keyLetterSize);
-            mKeyLabelRatio = ResourceUtils.getFraction(a, R.styleable.KeyboardView_keyLabelSize);
-            mKeyLabelSize = ResourceUtils.getDimensionPixelSize(a,
-                    R.styleable.KeyboardView_keyLabelSize);
+            if (!ResourceUtils.isValidFraction(mKeyLetterRatio = ResourceUtils.getFraction(a,
+                    R.styleable.KeyboardView_keyLetterSize))) {
+                mKeyLetterSize = ResourceUtils.getDimensionPixelSize(a,
+                        R.styleable.KeyboardView_keyLetterSize);
+            }
+            if (!ResourceUtils.isValidFraction(mKeyLabelRatio = ResourceUtils.getFraction(a,
+                    R.styleable.KeyboardView_keyLabelSize))) {
+                mKeyLabelSize = ResourceUtils.getDimensionPixelSize(a,
+                        R.styleable.KeyboardView_keyLabelSize);
+            }
             mKeyLargeLabelRatio = ResourceUtils.getFraction(a,
                     R.styleable.KeyboardView_keyLargeLabelRatio);
             mKeyLargeLetterRatio = ResourceUtils.getFraction(a,
@@ -243,23 +245,19 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                     R.styleable.KeyboardView_keyPopupHintLetterPadding, 0);
             mKeyShiftedLetterHintPadding = a.getDimension(
                     R.styleable.KeyboardView_keyShiftedLetterHintPadding, 0);
-            mKeyTextColor = a.getColor(
-                    R.styleable.KeyboardView_keyTextColor, Color.WHITE);
+            mKeyTextColor = a.getColor(R.styleable.KeyboardView_keyTextColor, 0xFF000000);
             mKeyTextInactivatedColor = a.getColor(
-                    R.styleable.KeyboardView_keyTextInactivatedColor, Color.WHITE);
-            mKeyHintLetterColor = a.getColor(
-                    R.styleable.KeyboardView_keyHintLetterColor, Color.TRANSPARENT);
-            mKeyHintLabelColor = a.getColor(
-                    R.styleable.KeyboardView_keyHintLabelColor, Color.TRANSPARENT);
+                    R.styleable.KeyboardView_keyTextInactivatedColor, 0xFF000000);
+            mKeyHintLetterColor = a.getColor(R.styleable.KeyboardView_keyHintLetterColor, 0);
+            mKeyHintLabelColor = a.getColor(R.styleable.KeyboardView_keyHintLabelColor, 0);
             mKeyShiftedLetterHintInactivatedColor = a.getColor(
-                    R.styleable.KeyboardView_keyShiftedLetterHintInactivatedColor,
-                    Color.TRANSPARENT);
+                    R.styleable.KeyboardView_keyShiftedLetterHintInactivatedColor, 0);
             mKeyShiftedLetterHintActivatedColor = a.getColor(
-                    R.styleable.KeyboardView_keyShiftedLetterHintActivatedColor, Color.TRANSPARENT);
+                    R.styleable.KeyboardView_keyShiftedLetterHintActivatedColor, 0);
             mKeyTypefaceFromKeyboardView = Typeface.defaultFromStyle(
                     a.getInt(R.styleable.KeyboardView_keyTypeface, Typeface.NORMAL));
             mKeyTypeface = mKeyTypefaceFromKeyboardView;
-            mShadowColor = a.getColor(R.styleable.KeyboardView_shadowColor, Color.TRANSPARENT);
+            mShadowColor = a.getColor(R.styleable.KeyboardView_shadowColor, 0);
             mShadowRadius = a.getFloat(R.styleable.KeyboardView_shadowRadius, 0f);
 
             mKeyBackground.getPadding(mPadding);
@@ -269,40 +267,17 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             mKeyTypeface = (keyboard.mKeyTypeface != null)
                     ? keyboard.mKeyTypeface : mKeyTypefaceFromKeyboardView;
             final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
-            mKeyLetterSize = selectTextSizeFromDimensionOrRatio(keyHeight,
-                    mKeyLetterSizeFromKeyboardView, mKeyLetterRatio,
-                    mKeyLetterSizeFromKeyboardView);
-            // Override if size/ratio is specified in Keyboard.
-            mKeyLetterSize = selectTextSizeFromDimensionOrRatio(keyHeight, keyboard.mKeyLetterSize,
-                    keyboard.mKeyLetterRatio, mKeyLetterSize);
+            if (ResourceUtils.isValidFraction(mKeyLetterRatio)) {
+                mKeyLetterSize = (int)(keyHeight * mKeyLetterRatio);
+            }
             if (ResourceUtils.isValidFraction(mKeyLabelRatio)) {
                 mKeyLabelSize = (int)(keyHeight * mKeyLabelRatio);
             }
             mKeyLargeLabelSize = (int)(keyHeight * mKeyLargeLabelRatio);
             mKeyLargeLetterSize = (int)(keyHeight * mKeyLargeLetterRatio);
-            mKeyHintLetterSize = selectTextSizeFromKeyboardOrView(keyHeight,
-                    keyboard.mKeyHintLetterRatio, mKeyHintLetterRatio);
-            mKeyShiftedLetterHintSize = selectTextSizeFromKeyboardOrView(keyHeight,
-                    keyboard.mKeyShiftedLetterHintRatio, mKeyShiftedLetterHintRatio);
+            mKeyHintLetterSize = (int)(keyHeight * mKeyHintLetterRatio);
+            mKeyShiftedLetterHintSize = (int)(keyHeight * mKeyShiftedLetterHintRatio);
             mKeyHintLabelSize = (int)(keyHeight * mKeyHintLabelRatio);
-        }
-
-        private static final int selectTextSizeFromDimensionOrRatio(final int keyHeight,
-                final int dimens, final float ratio, final int defaultDimens) {
-            if (ResourceUtils.isValidDimensionPixelSize(dimens)) {
-                return dimens;
-            }
-            if (ResourceUtils.isValidFraction(ratio)) {
-                return (int)(keyHeight * ratio);
-            }
-            return defaultDimens;
-        }
-
-        private static final int selectTextSizeFromKeyboardOrView(final int keyHeight,
-                final float ratioFromKeyboard, final float ratioFromView) {
-            final float ratio = ResourceUtils.isValidFraction(ratioFromKeyboard)
-                    ? ratioFromKeyboard : ratioFromView;
-            return (int)(keyHeight * ratio);
         }
 
         public void blendAlpha(final Paint paint) {
