@@ -65,7 +65,7 @@ import java.util.HashSet;
  * @attr ref R.styleable#KeyboardView_keyHintLetterPadding
  * @attr ref R.styleable#KeyboardView_keyPopupHintLetterPadding
  * @attr ref R.styleable#KeyboardView_keyShiftedLetterHintPadding
- * @attr ref R.styleable#KeyboardView_keyTextStyle
+ * @attr ref R.styleable#KeyboardView_keyTypeface
  * @attr ref R.styleable#KeyboardView_keyPreviewLayout
  * @attr ref R.styleable#KeyboardView_keyPreviewTextRatio
  * @attr ref R.styleable#KeyboardView_keyPreviewOffset
@@ -180,11 +180,11 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
     }
 
+    // Move this class to internal package
     protected static class KeyDrawParams {
         // XML attributes
         public final int mKeyTextColor;
         public final int mKeyTextInactivatedColor;
-        public final Typeface mKeyTextStyle;
         public final float mKeyLabelHorizontalPadding;
         public final float mKeyHintLetterPadding;
         public final float mKeyPopupHintLetterPadding;
@@ -197,7 +197,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         public final int mKeyShiftedLetterHintInactivatedColor;
         public final int mKeyShiftedLetterHintActivatedColor;
 
-        /* package */ final float mKeyLetterRatio;
+        private final Typeface mKeyTypefaceFromKeyboardView;
+        private final float mKeyLetterRatio;
         private final float mKeyLargeLetterRatio;
         private final float mKeyLabelRatio;
         private final float mKeyLargeLabelRatio;
@@ -206,6 +207,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         private final float mKeyHintLabelRatio;
 
         public final Rect mPadding = new Rect();
+        public Typeface mKeyTypeface;
         public int mKeyLetterSize;
         public int mKeyLargeLetterSize;
         public int mKeyLabelSize;
@@ -248,15 +250,19 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                     R.styleable.KeyboardView_keyShiftedLetterHintInactivatedColor, 0);
             mKeyShiftedLetterHintActivatedColor = a.getColor(
                     R.styleable.KeyboardView_keyShiftedLetterHintActivatedColor, 0);
-            mKeyTextStyle = Typeface.defaultFromStyle(
-                    a.getInt(R.styleable.KeyboardView_keyTextStyle, Typeface.NORMAL));
+            mKeyTypefaceFromKeyboardView = Typeface.defaultFromStyle(
+                    a.getInt(R.styleable.KeyboardView_keyTypeface, Typeface.NORMAL));
+            mKeyTypeface = mKeyTypefaceFromKeyboardView;
             mShadowColor = a.getColor(R.styleable.KeyboardView_shadowColor, 0);
             mShadowRadius = a.getFloat(R.styleable.KeyboardView_shadowRadius, 0f);
 
             mKeyBackground.getPadding(mPadding);
         }
 
-        public void updateKeyHeight(int keyHeight) {
+        public void updateParams(final Keyboard keyboard) {
+            mKeyTypeface = (keyboard.mKeyTypeface != null)
+                    ? keyboard.mKeyTypeface : mKeyTypefaceFromKeyboardView;
+            final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
             if (isValidFraction(mKeyLetterRatio)) {
                 mKeyLetterSize = (int)(keyHeight * mKeyLetterRatio);
             }
@@ -270,13 +276,14 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             mKeyHintLabelSize = (int)(keyHeight * mKeyHintLabelRatio);
         }
 
-        public void blendAlpha(Paint paint) {
+        public void blendAlpha(final Paint paint) {
             final int color = paint.getColor();
             paint.setARGB((paint.getAlpha() * mAnimAlpha) / Constants.Color.ALPHA_OPAQUE,
                     Color.red(color), Color.green(color), Color.blue(color));
         }
     }
 
+    // TODO: Move this class to internal package.
     /* package */ static class KeyPreviewDrawParams {
         // XML attributes.
         public final Drawable mPreviewBackground;
@@ -285,11 +292,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         public final int mPreviewTextColor;
         public final int mPreviewOffset;
         public final int mPreviewHeight;
-        public final Typeface mKeyTextStyle;
         public final int mLingerTimeout;
 
         private final float mPreviewTextRatio;
-        private final float mKeyLetterRatio;
 
         // The graphical geometry of the key preview.
         // <-width->
@@ -316,13 +321,14 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         // preview background.
         public int mPreviewVisibleOffset;
 
+        public Typeface mKeyTypeface;
         public int mPreviewTextSize;
         public int mKeyLetterSize;
         public final int[] mCoordinates = new int[2];
 
         private static final int PREVIEW_ALPHA = 240;
 
-        public KeyPreviewDrawParams(TypedArray a, KeyDrawParams keyDrawParams) {
+        public KeyPreviewDrawParams(final TypedArray a) {
             mPreviewBackground = a.getDrawable(R.styleable.KeyboardView_keyPreviewBackground);
             mPreviewLeftBackground = a.getDrawable(
                     R.styleable.KeyboardView_keyPreviewLeftBackground);
@@ -338,21 +344,18 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             mPreviewTextRatio = getFraction(a, R.styleable.KeyboardView_keyPreviewTextRatio);
             mPreviewTextColor = a.getColor(R.styleable.KeyboardView_keyPreviewTextColor, 0);
             mLingerTimeout = a.getInt(R.styleable.KeyboardView_keyPreviewLingerTimeout, 0);
-
-            mKeyLetterRatio = keyDrawParams.mKeyLetterRatio;
-            mKeyTextStyle = keyDrawParams.mKeyTextStyle;
         }
 
-        public void updateKeyHeight(int keyHeight) {
-            if (mPreviewTextRatio >= 0.0f) {
+        public void updateParams(final Keyboard keyboard, final KeyDrawParams keyDrawParams) {
+            final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
+            if (isValidFraction(mPreviewTextRatio)) {
                 mPreviewTextSize = (int)(keyHeight * mPreviewTextRatio);
             }
-            if (mKeyLetterRatio >= 0.0f) {
-                mKeyLetterSize = (int)(keyHeight * mKeyLetterRatio);
-            }
+            mKeyLetterSize = keyDrawParams.mKeyLetterSize;
+            mKeyTypeface = keyDrawParams.mKeyTypeface;
         }
 
-        private static void setAlpha(Drawable drawable, int alpha) {
+        private static void setAlpha(final Drawable drawable, final int alpha) {
             if (drawable == null) return;
             drawable.setAlpha(alpha);
         }
@@ -368,7 +371,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         final TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
         mKeyDrawParams = new KeyDrawParams(a);
-        mKeyPreviewDrawParams = new KeyPreviewDrawParams(a, mKeyDrawParams);
+        mKeyPreviewDrawParams = new KeyPreviewDrawParams(a);
         mDelayAfterPreview = mKeyPreviewDrawParams.mLingerTimeout;
         mKeyPreviewLayoutId = a.getResourceId(R.styleable.KeyboardView_keyPreviewLayout, 0);
         if (mKeyPreviewLayoutId == 0) {
@@ -416,9 +419,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         LatinImeLogger.onSetKeyboard(keyboard);
         requestLayout();
         invalidateAllKeys();
-        final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
-        mKeyDrawParams.updateKeyHeight(keyHeight);
-        mKeyPreviewDrawParams.updateKeyHeight(keyHeight);
+        mKeyDrawParams.updateParams(keyboard);
+        mKeyPreviewDrawParams.updateParams(keyboard, mKeyDrawParams);
     }
 
     /**
@@ -648,7 +650,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         if (key.mLabel != null) {
             final String label = key.mLabel;
             // For characters, use large font. For labels like "Done", use smaller font.
-            paint.setTypeface(key.selectTypeface(params.mKeyTextStyle));
+            paint.setTypeface(key.selectTypeface(params.mKeyTypeface));
             final int labelSize = key.selectTextSize(params.mKeyLetterSize,
                     params.mKeyLargeLetterSize, params.mKeyLabelSize, params.mKeyLargeLabelSize,
                     params.mKeyHintLabelSize);
@@ -812,7 +814,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         final int keyWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight;
         final int keyHeight = key.mHeight;
 
-        paint.setTypeface(params.mKeyTextStyle);
+        paint.setTypeface(params.mKeyTypeface);
         paint.setTextSize(params.mKeyHintLetterSize);
         paint.setColor(params.mKeyHintLabelColor);
         paint.setTextAlign(Align.CENTER);
@@ -911,7 +913,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     public Paint newDefaultLabelPaint() {
         final Paint paint = new Paint();
         paint.setAntiAlias(true);
-        paint.setTypeface(mKeyDrawParams.mKeyTextStyle);
+        paint.setTypeface(mKeyDrawParams.mKeyTypeface);
         paint.setTextSize(mKeyDrawParams.mKeyLabelSize);
         return paint;
     }
@@ -1019,7 +1021,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         final KeyPreviewDrawParams params = mKeyPreviewDrawParams;
         final String label = key.isShiftedLetterActivated() ? key.mHintLabel : key.mLabel;
-        // What we show as preview should match what we show on a key top in onBufferDraw().
+        // What we show as preview should match what we show on a key top in onDraw().
         if (label != null) {
             // TODO Should take care of temporaryShiftLabel here.
             previewText.setCompoundDrawables(null, null, null, null);
@@ -1028,7 +1030,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 previewText.setTypeface(Typeface.DEFAULT_BOLD);
             } else {
                 previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, params.mPreviewTextSize);
-                previewText.setTypeface(params.mKeyTextStyle);
+                previewText.setTypeface(params.mKeyTypeface);
             }
             previewText.setText(label);
         } else {
