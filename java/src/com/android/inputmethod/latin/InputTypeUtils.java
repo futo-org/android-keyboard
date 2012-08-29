@@ -18,7 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.text.InputType;
 
-public class InputTypeUtils implements InputType {
+public final class InputTypeUtils implements InputType {
     private static final int WEB_TEXT_PASSWORD_INPUT_TYPE =
             TYPE_CLASS_TEXT | TYPE_TEXT_VARIATION_WEB_PASSWORD;
     private static final int WEB_TEXT_EMAIL_ADDRESS_INPUT_TYPE =

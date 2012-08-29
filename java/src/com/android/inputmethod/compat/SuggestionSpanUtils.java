@@ -33,7 +33,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class SuggestionSpanUtils {
+public final class SuggestionSpanUtils {
     private static final String TAG = SuggestionSpanUtils.class.getSimpleName();
     // TODO: Use reflection to get field values
     public static final String ACTION_SUGGESTION_PICKED =

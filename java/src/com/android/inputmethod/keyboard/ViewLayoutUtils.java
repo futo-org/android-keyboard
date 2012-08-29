@@ -22,7 +22,7 @@ import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-public class ViewLayoutUtils {
+public final class ViewLayoutUtils {
     private ViewLayoutUtils() {
         // This utility class is not publicly instantiable.
     }
