@@ -21,6 +21,7 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.XmlParseUtils;
 
@@ -33,7 +34,7 @@ public class KeyStyles {
     private static final String TAG = KeyStyles.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    final HashMap<String, KeyStyle> mStyles = new HashMap<String, KeyStyle>();
+    final HashMap<String, KeyStyle> mStyles = CollectionUtils.newHashMap();
 
     final KeyboardTextsSet mTextsSet;
     private final KeyStyle mEmptyKeyStyle;
@@ -90,7 +91,7 @@ public class KeyStyles {
 
     private class DeclaredKeyStyle extends KeyStyle {
         private final String mParentStyleName;
-        private final SparseArray<Object> mStyleAttributes = new SparseArray<Object>();
+        private final SparseArray<Object> mStyleAttributes = CollectionUtils.newSparseArray();
 
         public DeclaredKeyStyle(String parentStyleName) {
             mParentStyleName = parentStyleName;

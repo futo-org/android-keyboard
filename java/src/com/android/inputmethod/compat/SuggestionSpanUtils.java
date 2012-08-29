@@ -16,16 +16,17 @@
 
 package com.android.inputmethod.compat;
 
-import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.SuggestedWords;
-import com.android.inputmethod.latin.SuggestionSpanPickedNotificationReceiver;
-
 import android.content.Context;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.android.inputmethod.latin.CollectionUtils;
+import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.SuggestionSpanPickedNotificationReceiver;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -119,7 +120,7 @@ public class SuggestionSpanUtils {
         } else {
             spannable = new SpannableString(pickedWord);
         }
-        final ArrayList<String> suggestionsList = new ArrayList<String>();
+        final ArrayList<String> suggestionsList = CollectionUtils.newArrayList();
         for (int i = 0; i < suggestedWords.size(); ++i) {
             if (suggestionsList.size() >= OBJ_SUGGESTIONS_MAX_SIZE) {
                 break;

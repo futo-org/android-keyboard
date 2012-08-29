@@ -22,7 +22,7 @@
 static inline unsigned char *convertToUnibyteString(unsigned short *input, unsigned char *output,
         const unsigned int length) {
     unsigned int i = 0;
-    for (; i <= length && input[i] != 0; ++i)
+    for (; i < length && input[i] != 0; ++i)
         output[i] = input[i] & 0xFF;
     output[i] = 0;
     return output;
@@ -31,7 +31,7 @@ static inline unsigned char *convertToUnibyteString(unsigned short *input, unsig
 static inline unsigned char *convertToUnibyteStringAndReplaceLastChar(unsigned short *input,
         unsigned char *output, const unsigned int length, unsigned char c) {
     unsigned int i = 0;
-    for (; i <= length && input[i] != 0; ++i)
+    for (; i < length && input[i] != 0; ++i)
         output[i] = input[i] & 0xFF;
     if (i > 0) output[i-1] = c;
     output[i] = 0;
@@ -58,11 +58,12 @@ static inline void LOGI_S16_PLUS(unsigned short *string, const unsigned int leng
 }
 
 static inline void printDebug(const char *tag, int *codes, int codesSize, int MAX_PROXIMITY_CHARS) {
-    unsigned char *buf = (unsigned char*)malloc((1 + codesSize) * sizeof(*buf));
+    unsigned char *buf = static_cast<unsigned char *>(malloc((1 + codesSize) * sizeof(*buf)));
 
     buf[codesSize] = 0;
-    while (--codesSize >= 0)
-        buf[codesSize] = (unsigned char)codes[codesSize * MAX_PROXIMITY_CHARS];
+    while (--codesSize >= 0) {
+        buf[codesSize] = static_cast<unsigned char>(codes[codesSize * MAX_PROXIMITY_CHARS]);
+    }
     AKLOGI("%s, WORD = %s", tag, buf);
 
     free(buf);

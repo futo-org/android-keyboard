@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard.internal;
 import android.content.Context;
 import android.content.res.Resources;
 
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.R;
 
 import java.util.HashMap;
@@ -45,14 +46,12 @@ import java.util.HashMap;
  */
 public final class KeyboardTextsSet {
     // Language to texts map.
-    private static final HashMap<String, String[]> sLocaleToTextsMap =
-            new HashMap<String, String[]>();
-    private static final HashMap<String, Integer> sNameToIdsMap =
-            new HashMap<String, Integer>();
+    private static final HashMap<String, String[]> sLocaleToTextsMap = CollectionUtils.newHashMap();
+    private static final HashMap<String, Integer> sNameToIdsMap = CollectionUtils.newHashMap();
 
     private String[] mTexts;
     // Resource name to text map.
-    private HashMap<String, String> mResourceNameToTextsMap = new HashMap<String, String>();
+    private HashMap<String, String> mResourceNameToTextsMap = CollectionUtils.newHashMap();
 
     public void setLanguage(final String language) {
         mTexts = sLocaleToTextsMap.get(language);

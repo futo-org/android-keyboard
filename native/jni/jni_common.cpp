@@ -16,14 +16,14 @@
 
 #define LOG_TAG "LatinIME: jni"
 
+#include <cassert>
+
 #include "com_android_inputmethod_keyboard_ProximityInfo.h"
 #include "com_android_inputmethod_latin_BinaryDictionary.h"
-#include "com_android_inputmethod_latin_NativeUtils.h"
+#include "com_android_inputmethod_latin_DicTraverseSession.h"
 #include "defines.h"
 #include "jni.h"
 #include "jni_common.h"
-
-#include <cassert>
 
 using namespace latinime;
 
@@ -34,7 +34,7 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
     JNIEnv *env = 0;
     jint result = -1;
 
-    if (vm->GetEnv(reinterpret_cast<void**>(&env), JNI_VERSION_1_6) != JNI_OK) {
+    if (vm->GetEnv(reinterpret_cast<void **>(&env), JNI_VERSION_1_6) != JNI_OK) {
         AKLOGE("ERROR: GetEnv failed");
         goto bail;
     }
@@ -45,13 +45,13 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
         goto bail;
     }
 
-    if (!register_ProximityInfo(env)) {
-        AKLOGE("ERROR: ProximityInfo native registration failed");
+    if (!register_DicTraverseSession(env)) {
+        AKLOGE("ERROR: DicTraverseSession native registration failed");
         goto bail;
     }
 
-    if (!register_NativeUtils(env)) {
-        AKLOGE("ERROR: NativeUtils native registration failed");
+    if (!register_ProximityInfo(env)) {
+        AKLOGE("ERROR: ProximityInfo native registration failed");
         goto bail;
     }
 

@@ -30,6 +30,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -38,6 +39,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.internal.PreviewPlacerView;
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -78,8 +80,12 @@ import java.util.HashSet;
  * @attr ref R.styleable#KeyboardView_shadowRadius
  */
 public class KeyboardView extends View implements PointerTracker.DrawingProxy {
+    private static final String TAG = KeyboardView.class.getSimpleName();
+
     // Miscellaneous constants
     private static final int[] LONG_PRESSABLE_STATE_SET = { android.R.attr.state_long_pressable };
+    private static final float UNDEFINED_RATIO = -1.0f;
+    private static final int UNDEFINED_DIMENSION = -1;
 
     // XML attributes
     protected final float mVerticalCorrection;
@@ -103,23 +109,19 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
     // Key preview
     private final int mKeyPreviewLayoutId;
+    private final SparseArray<TextView> mKeyPreviewTexts = CollectionUtils.newSparseArray();
     protected final KeyPreviewDrawParams mKeyPreviewDrawParams;
     private boolean mShowKeyPreviewPopup = true;
     private int mDelayAfterPreview;
     private final PreviewPlacerView mPreviewPlacerView;
 
-    /** True if {@link KeyboardView} should handle gesture events. */
-    protected boolean mShouldHandleGesture;
-
     // Drawing
     /** True if the entire keyboard needs to be dimmed. */
     private boolean mNeedsToDimEntireKeyboard;
-    /** Whether the keyboard bitmap buffer needs to be redrawn before it's blitted. **/
-    private boolean mBufferNeedsUpdate;
     /** True if all keys should be drawn */
     private boolean mInvalidateAllKeys;
     /** The keys that should be drawn */
-    private final HashSet<Key> mInvalidatedKeys = new HashSet<Key>();
+    private final HashSet<Key> mInvalidatedKeys = CollectionUtils.newHashSet();
     /** The working rectangle variable */
     private final Rect mWorkingRect = new Rect();
     /** The keyboard bitmap buffer for faster updates */
@@ -131,9 +133,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private final Paint mPaint = new Paint();
     private final Paint.FontMetrics mFontMetrics = new Paint.FontMetrics();
     // This sparse array caches key label text height in pixel indexed by key label text size.
-    private static final SparseArray<Float> sTextHeightCache = new SparseArray<Float>();
+    private static final SparseArray<Float> sTextHeightCache = CollectionUtils.newSparseArray();
     // This sparse array caches key label text width in pixel indexed by key label text size.
-    private static final SparseArray<Float> sTextWidthCache = new SparseArray<Float>();
+    private static final SparseArray<Float> sTextWidthCache = CollectionUtils.newSparseArray();
     private static final char[] KEY_LABEL_REFERENCE_CHAR = { 'M' };
     private static final char[] KEY_NUMERIC_HINT_LABEL_REFERENCE_CHAR = { '8' };
 
@@ -153,7 +155,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             final PointerTracker tracker = (PointerTracker) msg.obj;
             switch (msg.what) {
             case MSG_DISMISS_KEY_PREVIEW:
-                tracker.getKeyPreviewText().setVisibility(View.INVISIBLE);
+                final TextView previewText = keyboardView.mKeyPreviewTexts.get(tracker.mPointerId);
+                if (previewText != null) {
+                    previewText.setVisibility(INVISIBLE);
+                }
                 break;
             }
         }
@@ -166,7 +171,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             removeMessages(MSG_DISMISS_KEY_PREVIEW, tracker);
         }
 
-        public void cancelAllDismissKeyPreviews() {
+        private void cancelAllDismissKeyPreviews() {
             removeMessages(MSG_DISMISS_KEY_PREVIEW);
         }
 
@@ -199,7 +204,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         private final float mKeyHintLetterRatio;
         private final float mKeyShiftedLetterHintRatio;
         private final float mKeyHintLabelRatio;
-        private static final float UNDEFINED_RATIO = -1.0f;
 
         public final Rect mPadding = new Rect();
         public int mKeyLetterSize;
@@ -211,26 +215,22 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         public int mKeyHintLabelSize;
         public int mAnimAlpha;
 
-        public KeyDrawParams(TypedArray a) {
+        public KeyDrawParams(final TypedArray a) {
             mKeyBackground = a.getDrawable(R.styleable.KeyboardView_keyBackground);
-            if (a.hasValue(R.styleable.KeyboardView_keyLetterSize)) {
-                mKeyLetterRatio = UNDEFINED_RATIO;
-                mKeyLetterSize = a.getDimensionPixelSize(R.styleable.KeyboardView_keyLetterSize, 0);
-            } else {
-                mKeyLetterRatio = getRatio(a, R.styleable.KeyboardView_keyLetterRatio);
+            if (!isValidFraction(mKeyLetterRatio = getFraction(a,
+                    R.styleable.KeyboardView_keyLetterSize))) {
+                mKeyLetterSize = getDimensionPixelSize(a, R.styleable.KeyboardView_keyLetterSize);
             }
-            if (a.hasValue(R.styleable.KeyboardView_keyLabelSize)) {
-                mKeyLabelRatio = UNDEFINED_RATIO;
-                mKeyLabelSize = a.getDimensionPixelSize(R.styleable.KeyboardView_keyLabelSize, 0);
-            } else {
-                mKeyLabelRatio = getRatio(a, R.styleable.KeyboardView_keyLabelRatio);
+            if (!isValidFraction(mKeyLabelRatio = getFraction(a,
+                    R.styleable.KeyboardView_keyLabelSize))) {
+                mKeyLabelSize = getDimensionPixelSize(a, R.styleable.KeyboardView_keyLabelSize);
             }
-            mKeyLargeLabelRatio = getRatio(a, R.styleable.KeyboardView_keyLargeLabelRatio);
-            mKeyLargeLetterRatio = getRatio(a, R.styleable.KeyboardView_keyLargeLetterRatio);
-            mKeyHintLetterRatio = getRatio(a, R.styleable.KeyboardView_keyHintLetterRatio);
-            mKeyShiftedLetterHintRatio = getRatio(a,
+            mKeyLargeLabelRatio = getFraction(a, R.styleable.KeyboardView_keyLargeLabelRatio);
+            mKeyLargeLetterRatio = getFraction(a, R.styleable.KeyboardView_keyLargeLetterRatio);
+            mKeyHintLetterRatio = getFraction(a, R.styleable.KeyboardView_keyHintLetterRatio);
+            mKeyShiftedLetterHintRatio = getFraction(a,
                     R.styleable.KeyboardView_keyShiftedLetterHintRatio);
-            mKeyHintLabelRatio = getRatio(a, R.styleable.KeyboardView_keyHintLabelRatio);
+            mKeyHintLabelRatio = getFraction(a, R.styleable.KeyboardView_keyHintLabelRatio);
             mKeyLabelHorizontalPadding = a.getDimension(
                     R.styleable.KeyboardView_keyLabelHorizontalPadding, 0);
             mKeyHintLetterPadding = a.getDimension(
@@ -257,10 +257,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
 
         public void updateKeyHeight(int keyHeight) {
-            if (mKeyLetterRatio >= 0.0f) {
+            if (isValidFraction(mKeyLetterRatio)) {
                 mKeyLetterSize = (int)(keyHeight * mKeyLetterRatio);
             }
-            if (mKeyLabelRatio >= 0.0f) {
+            if (isValidFraction(mKeyLabelRatio)) {
                 mKeyLabelSize = (int)(keyHeight * mKeyLabelRatio);
             }
             mKeyLargeLabelSize = (int)(keyHeight * mKeyLargeLabelRatio);
@@ -335,7 +335,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                     R.styleable.KeyboardView_keyPreviewOffset, 0);
             mPreviewHeight = a.getDimensionPixelSize(
                     R.styleable.KeyboardView_keyPreviewHeight, 80);
-            mPreviewTextRatio = getRatio(a, R.styleable.KeyboardView_keyPreviewTextRatio);
+            mPreviewTextRatio = getFraction(a, R.styleable.KeyboardView_keyPreviewTextRatio);
             mPreviewTextColor = a.getColor(R.styleable.KeyboardView_keyPreviewTextColor, 0);
             mLingerTimeout = a.getInt(R.styleable.KeyboardView_keyPreviewLingerTimeout, 0);
 
@@ -367,9 +367,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         final TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
-
         mKeyDrawParams = new KeyDrawParams(a);
         mKeyPreviewDrawParams = new KeyPreviewDrawParams(a, mKeyDrawParams);
+        mDelayAfterPreview = mKeyPreviewDrawParams.mLingerTimeout;
         mKeyPreviewLayoutId = a.getResourceId(R.styleable.KeyboardView_keyPreviewLayout, 0);
         if (mKeyPreviewLayoutId == 0) {
             mShowKeyPreviewPopup = false;
@@ -378,17 +378,30 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 R.styleable.KeyboardView_verticalCorrection, 0);
         mMoreKeysLayout = a.getResourceId(R.styleable.KeyboardView_moreKeysLayout, 0);
         mBackgroundDimAlpha = a.getInt(R.styleable.KeyboardView_backgroundDimAlpha, 0);
-        mPreviewPlacerView = new PreviewPlacerView(context, a);
         a.recycle();
 
-        mDelayAfterPreview = mKeyPreviewDrawParams.mLingerTimeout;
-
+        mPreviewPlacerView = new PreviewPlacerView(context, attrs);
         mPaint.setAntiAlias(true);
     }
 
-    // Read fraction value in TypedArray as float.
-    /* package */ static float getRatio(TypedArray a, int index) {
-        return a.getFraction(index, 1000, 1000, 1) / 1000.0f;
+    static boolean isValidFraction(final float fraction) {
+        return fraction >= 0.0f;
+    }
+
+    static float getFraction(final TypedArray a, final int index) {
+        final TypedValue value = a.peekValue(index);
+        if (value == null || value.type != TypedValue.TYPE_FRACTION) {
+            return UNDEFINED_RATIO;
+        }
+        return a.getFraction(index, 1, 1, UNDEFINED_RATIO);
+    }
+
+    public static int getDimensionPixelSize(final TypedArray a, final int index) {
+        final TypedValue value = a.peekValue(index);
+        if (value == null || value.type != TypedValue.TYPE_DIMENSION) {
+            return UNDEFINED_DIMENSION;
+        }
+        return a.getDimensionPixelSize(index, UNDEFINED_DIMENSION);
     }
 
     /**
@@ -438,9 +451,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         return mShowKeyPreviewPopup;
     }
 
-    public void setGestureHandlingMode(boolean shouldHandleGesture,
-            boolean drawsGesturePreviewTrail, boolean drawsGestureFloatingPreviewText) {
-        mShouldHandleGesture = shouldHandleGesture;
+    public void setGesturePreviewMode(boolean drawsGesturePreviewTrail,
+            boolean drawsGestureFloatingPreviewText) {
         mPreviewPlacerView.setGesturePreviewMode(
                 drawsGesturePreviewTrail, drawsGestureFloatingPreviewText);
     }
@@ -463,16 +475,12 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             onDrawKeyboard(canvas);
             return;
         }
-        if (mBufferNeedsUpdate || mOffscreenBuffer == null) {
-            mBufferNeedsUpdate = false;
+
+        final boolean bufferNeedsUpdates = mInvalidateAllKeys || !mInvalidatedKeys.isEmpty();
+        if (bufferNeedsUpdates || mOffscreenBuffer == null) {
             if (maybeAllocateOffscreenBuffer()) {
                 mInvalidateAllKeys = true;
-                // TODO: Stop using the offscreen canvas even when in software rendering
-                if (mOffscreenCanvas != null) {
-                    mOffscreenCanvas.setBitmap(mOffscreenBuffer);
-                } else {
-                    mOffscreenCanvas = new Canvas(mOffscreenBuffer);
-                }
+                maybeCreateOffscreenCanvas();
             }
             onDrawKeyboard(mOffscreenCanvas);
         }
@@ -498,6 +506,15 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         if (mOffscreenBuffer != null) {
             mOffscreenBuffer.recycle();
             mOffscreenBuffer = null;
+        }
+    }
+
+    private void maybeCreateOffscreenCanvas() {
+        // TODO: Stop using the offscreen canvas even when in software rendering
+        if (mOffscreenCanvas != null) {
+            mOffscreenCanvas.setBitmap(mOffscreenBuffer);
+        } else {
+            mOffscreenCanvas = new Canvas(mOffscreenBuffer);
         }
     }
 
@@ -528,13 +545,12 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
         if (!isHardwareAccelerated) {
             canvas.clipRegion(mClipRegion, Region.Op.REPLACE);
-        }
-
-        // Draw keyboard background.
-        canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
-        final Drawable background = getBackground();
-        if (background != null) {
-            background.draw(canvas);
+            // Draw keyboard background.
+            canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
+            final Drawable background = getBackground();
+            if (background != null) {
+                background.draw(canvas);
+            }
         }
 
         // TODO: Confirm if it's really required to draw all keys when hardware acceleration is on.
@@ -907,15 +923,30 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
     }
 
-    // Called by {@link PointerTracker} constructor to create a TextView.
-    @Override
-    public TextView inflateKeyPreviewText() {
+    private TextView getKeyPreviewText(final int pointerId) {
+        TextView previewText = mKeyPreviewTexts.get(pointerId);
+        if (previewText != null) {
+            return previewText;
+        }
         final Context context = getContext();
         if (mKeyPreviewLayoutId != 0) {
-            return (TextView)LayoutInflater.from(context).inflate(mKeyPreviewLayoutId, null);
+            previewText = (TextView)LayoutInflater.from(context).inflate(mKeyPreviewLayoutId, null);
         } else {
-            return new TextView(context);
+            previewText = new TextView(context);
         }
+        mKeyPreviewTexts.put(pointerId, previewText);
+        return previewText;
+    }
+
+    private void dismissAllKeyPreviews() {
+        final int pointerCount = mKeyPreviewTexts.size();
+        for (int id = 0; id < pointerCount; id++) {
+            final TextView previewText = mKeyPreviewTexts.get(id);
+            if (previewText != null) {
+                previewText.setVisibility(INVISIBLE);
+            }
+        }
+        PointerTracker.setReleasedKeyGraphicsToAllKeys();
     }
 
     @Override
@@ -936,9 +967,18 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         final int[] viewOrigin = new int[2];
         getLocationInWindow(viewOrigin);
         mPreviewPlacerView.setOrigin(viewOrigin[0], viewOrigin[1]);
-        final ViewGroup windowContentView =
-                (ViewGroup)getRootView().findViewById(android.R.id.content);
-        windowContentView.addView(mPreviewPlacerView);
+        final View rootView = getRootView();
+        if (rootView == null) {
+            Log.w(TAG, "Cannot find root view");
+            return;
+        }
+        final ViewGroup windowContentView = (ViewGroup)rootView.findViewById(android.R.id.content);
+        // Note: It'd be very weird if we get null by android.R.id.content.
+        if (windowContentView == null) {
+            Log.w(TAG, "Cannot find android.R.id.content view to add PreviewPlacerView");
+        } else {
+            windowContentView.addView(mPreviewPlacerView);
+        }
     }
 
     public void showGestureFloatingPreviewText(String gestureFloatingPreviewText) {
@@ -952,7 +992,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     @Override
-    public void showGestureTrail(PointerTracker tracker) {
+    public void showGesturePreviewTrail(PointerTracker tracker) {
         locatePreviewPlacerView();
         mPreviewPlacerView.invalidatePointer(tracker);
     }
@@ -962,7 +1002,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     public void showKeyPreview(PointerTracker tracker) {
         if (!mShowKeyPreviewPopup) return;
 
-        final TextView previewText = tracker.getKeyPreviewText();
+        final TextView previewText = getKeyPreviewText(tracker.mPointerId);
         // If the key preview has no parent view yet, add it to the ViewGroup which can place
         // key preview absolutely in SoftInputWindow.
         if (previewText.getParent() == null) {
@@ -1052,7 +1092,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     public void invalidateAllKeys() {
         mInvalidatedKeys.clear();
         mInvalidateAllKeys = true;
-        mBufferNeedsUpdate = true;
         invalidate();
     }
 
@@ -1070,13 +1109,11 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mInvalidatedKeys.add(key);
         final int x = key.mX + getPaddingLeft();
         final int y = key.mY + getPaddingTop();
-        mWorkingRect.set(x, y, x + key.mWidth, y + key.mHeight);
-        mBufferNeedsUpdate = true;
-        invalidate(mWorkingRect);
+        invalidate(x, y, x + key.mWidth, y + key.mHeight);
     }
 
     public void closing() {
-        PointerTracker.dismissAllKeyPreviews();
+        dismissAllKeyPreviews();
         cancelAllMessages();
 
         mInvalidateAllKeys = true;

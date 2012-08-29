@@ -35,9 +35,9 @@
     <style name="KeyboardView">
         <item name="android:background">@drawable/keyboard_background</item>
         <item name="keyBackground">@drawable/btn_keyboard_key</item>
-        <item name="keyLetterRatio">@fraction/key_letter_ratio</item>
+        <item name="keyLetterSize">@fraction/key_letter_ratio</item>
         <item name="keyLargeLetterRatio">@fraction/key_large_letter_ratio</item>
-        <item name="keyLabelRatio">@fraction/key_label_ratio</item>
+        <item name="keyLabelSize">@fraction/key_label_ratio</item>
         <item name="keyLargeLabelRatio">@fraction/key_large_label_ratio</item>
         <item name="keyHintLetterRatio">@fraction/key_hint_letter_ratio</item>
         <item name="keyHintLabelRatio">@fraction/key_hint_label_ratio</item>
@@ -78,6 +78,9 @@
         <item name="gestureFloatingPreviewTextConnectorColor">@android:color/white</item>
         <item name="gestureFloatingPreviewTextConnectorWidth">@dimen/gesture_floating_preview_text_connector_width</item>
         <item name="gestureFloatingPreviewTextLingerTimeout">@integer/config_gesture_floating_preview_text_linger_timeout</item>
+        <item name="gesturePreviewTrailFadeoutStartDelay">@integer/config_gesture_preview_trail_fadeout_start_delay</item>
+        <item name="gesturePreviewTrailFadeoutDuration">@integer/config_gesture_preview_trail_fadeout_duration</item>
+        <item name="gesturePreviewTrailUpdateInterval">@integer/config_gesture_preview_trail_update_interval</item>
         <item name="gesturePreviewTrailColor">@android:color/holo_blue_light</item>
         <item name="gesturePreviewTrailWidth">@dimen/gesture_preview_trail_width</item>
         <!-- Common attributes of MainKeyboardView -->
@@ -135,9 +138,9 @@
         <item name="colorTypedWord">@android:color/white</item>
         <item name="colorAutoCorrect">#FFFCAE00</item>
         <item name="colorSuggested">#FFFCAE00</item>
-        <item name="alphaObsoleted">50</item>
+        <item name="alphaObsoleted">50%</item>
         <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
-        <item name="centerSuggestionPercentile">@integer/center_suggestion_percentile</item>
+        <item name="centerSuggestionPercentile">@fraction/center_suggestion_percentile</item>
         <item name="maxMoreSuggestionsRow">@integer/max_more_suggestions_row</item>
         <item name="minMoreSuggestionsWidth">@fraction/min_more_suggestions_width</item>
     </style>
@@ -370,12 +373,12 @@
         <item name="colorTypedWord">@android:color/holo_blue_light</item>
         <item name="colorAutoCorrect">@android:color/holo_blue_light</item>
         <item name="colorSuggested">@android:color/holo_blue_light</item>
-        <item name="alphaValidTypedWord">85</item>
-        <item name="alphaTypedWord">85</item>
-        <item name="alphaSuggested">70</item>
-        <item name="alphaObsoleted">70</item>
+        <item name="alphaValidTypedWord">85%</item>
+        <item name="alphaTypedWord">85%</item>
+        <item name="alphaSuggested">70%</item>
+        <item name="alphaObsoleted">70%</item>
         <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
-        <item name="centerSuggestionPercentile">@integer/center_suggestion_percentile</item>
+        <item name="centerSuggestionPercentile">@fraction/center_suggestion_percentile</item>
         <item name="maxMoreSuggestionsRow">@integer/max_more_suggestions_row</item>
         <item name="minMoreSuggestionsWidth">@fraction/min_more_suggestions_width</item>
     </style>

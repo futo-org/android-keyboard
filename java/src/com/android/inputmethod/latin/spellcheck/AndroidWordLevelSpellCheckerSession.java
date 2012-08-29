@@ -24,6 +24,7 @@ import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
 
 import com.android.inputmethod.compat.SuggestionsInfoCompatUtils;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -193,8 +194,8 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             if (shouldFilterOut(inText, mScript)) {
                 DictAndProximity dictInfo = null;
                 try {
-                    dictInfo = mDictionaryPool.takeOrGetNull();
-                    if (null == dictInfo) {
+                    dictInfo = mDictionaryPool.pollWithDefaultTimeout();
+                    if (!DictionaryPool.isAValidDictionary(dictInfo)) {
                         return AndroidSpellCheckerService.getNotInDictEmptySuggestions();
                     }
                     return dictInfo.mDictionary.isValidWord(inText)
@@ -225,8 +226,8 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                 final int xy = SpellCheckerProximityInfo.getXYForCodePointAndScript(
                         codePoint, mScript);
                 if (SpellCheckerProximityInfo.NOT_A_COORDINATE_PAIR == xy) {
-                    composer.add(codePoint, WordComposer.NOT_A_COORDINATE,
-                            WordComposer.NOT_A_COORDINATE);
+                    composer.add(codePoint,
+                            Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
                 } else {
                     composer.add(codePoint, xy & 0xFFFF, xy >> 16);
                 }
@@ -236,8 +237,8 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             boolean isInDict = true;
             DictAndProximity dictInfo = null;
             try {
-                dictInfo = mDictionaryPool.takeOrGetNull();
-                if (null == dictInfo) {
+                dictInfo = mDictionaryPool.pollWithDefaultTimeout();
+                if (!DictionaryPool.isAValidDictionary(dictInfo)) {
                     return AndroidSpellCheckerService.getNotInDictEmptySuggestions();
                 }
                 final ArrayList<SuggestedWordInfo> suggestions =

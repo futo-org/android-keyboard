@@ -19,7 +19,6 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -231,7 +230,7 @@ public class ExpandableDictionary extends Dictionary {
             childNode.mTerminal = true;
             if (isShortcutOnly) {
                 if (null == childNode.mShortcutTargets) {
-                    childNode.mShortcutTargets = new ArrayList<char[]>();
+                    childNode.mShortcutTargets = CollectionUtils.newArrayList();
                 }
                 childNode.mShortcutTargets.add(shortcutTarget.toCharArray());
             } else {
@@ -251,7 +250,7 @@ public class ExpandableDictionary extends Dictionary {
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final CharSequence prevWord, final ProximityInfo proximityInfo) {
         if (reloadDictionaryIfRequired()) return null;
-        if (composer.size() <= 1) {
+        if (composer.size() > 1) {
             if (composer.size() >= BinaryDictionary.MAX_WORD_LENGTH) {
                 return null;
             }
@@ -260,7 +259,7 @@ public class ExpandableDictionary extends Dictionary {
             return suggestions;
         } else {
             if (TextUtils.isEmpty(prevWord)) return null;
-            final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
+            final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
             runBigramReverseLookUp(prevWord, suggestions);
             return suggestions;
         }
@@ -279,7 +278,7 @@ public class ExpandableDictionary extends Dictionary {
 
     protected ArrayList<SuggestedWordInfo> getWordsInner(final WordComposer codes,
             final CharSequence prevWordForBigrams, final ProximityInfo proximityInfo) {
-        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
+        final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         mInputLength = codes.size();
         if (mCodes.length < mInputLength) mCodes = new int[mInputLength][];
         final InputPointers ips = codes.getInputPointers();
@@ -292,9 +291,9 @@ public class ExpandableDictionary extends Dictionary {
                 mCodes[i] = new int[ProximityInfo.MAX_PROXIMITY_CHARS_SIZE];
             }
             final int x = xCoordinates != null && i < xCoordinates.length ?
-                    xCoordinates[i] : WordComposer.NOT_A_COORDINATE;
+                    xCoordinates[i] : Constants.NOT_A_COORDINATE;
             final int y = xCoordinates != null && i < yCoordinates.length ?
-                    yCoordinates[i] : WordComposer.NOT_A_COORDINATE;
+                    yCoordinates[i] : Constants.NOT_A_COORDINATE;
             proximityInfo.fillArrayWithNearestKeyCodes(x, y, codes.getCodeAt(i), mCodes[i]);
         }
         mMaxDepth = mInputLength * 3;
@@ -487,7 +486,7 @@ public class ExpandableDictionary extends Dictionary {
                 for (int j = 0; j < alternativesSize; j++) {
                     final int addedAttenuation = (j > 0 ? 1 : 2);
                     final int currentChar = currentChars[j];
-                    if (currentChar == KeyDetector.NOT_A_CODE) {
+                    if (currentChar == Constants.NOT_A_CODE) {
                         break;
                     }
                     if (currentChar == lowerC || currentChar == c) {
@@ -551,7 +550,7 @@ public class ExpandableDictionary extends Dictionary {
         Node secondWord = searchWord(mRoots, word2, 0, null);
         LinkedList<NextWord> bigrams = firstWord.mNGrams;
         if (bigrams == null || bigrams.size() == 0) {
-            firstWord.mNGrams = new LinkedList<NextWord>();
+            firstWord.mNGrams = CollectionUtils.newLinkedList();
             bigrams = firstWord.mNGrams;
         } else {
             for (NextWord nw : bigrams) {

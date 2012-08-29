@@ -46,46 +46,52 @@ public class Compress {
 
     static public class Compressor extends Dicttool.Command {
         public static final String COMMAND = "compress";
-        private static final String SUFFIX = ".compressed";
+        public static final String STDIN_OR_STDOUT = "-";
 
         public Compressor() {
         }
 
         public String getHelp() {
-            return "compress <filename>: Compresses a file using gzip compression";
+            return COMMAND + " <src_filename> <dst_filename>: "
+                    + "Compresses a file using gzip compression";
         }
 
         public void run() throws IOException {
-            if (mArgs.length < 1) {
-                throw new RuntimeException("Not enough arguments for command " + COMMAND);
+            if (mArgs.length > 2) {
+                throw new RuntimeException("Too many arguments for command " + COMMAND);
             }
-            final String inFilename = mArgs[0];
-            final String outFilename = inFilename + SUFFIX;
-            final FileInputStream input = new FileInputStream(new File(inFilename));
-            final FileOutputStream output = new FileOutputStream(new File(outFilename));
+            final String inFilename = mArgs.length >= 1 ? mArgs[0] : STDIN_OR_STDOUT;
+            final String outFilename = mArgs.length >= 2 ? mArgs[1] : STDIN_OR_STDOUT;
+            final InputStream input = inFilename.equals(STDIN_OR_STDOUT) ? System.in
+                    : new FileInputStream(new File(inFilename));
+            final OutputStream output = outFilename.equals(STDIN_OR_STDOUT) ? System.out
+                    : new FileOutputStream(new File(outFilename));
             copy(input, new GZIPOutputStream(output));
         }
     }
 
     static public class Uncompressor extends Dicttool.Command {
         public static final String COMMAND = "uncompress";
-        private static final String SUFFIX = ".uncompressed";
+        public static final String STDIN_OR_STDOUT = "-";
 
         public Uncompressor() {
         }
 
         public String getHelp() {
-            return "uncompress <filename>: Uncompresses a file compressed with gzip compression";
+            return COMMAND + " <src_filename> <dst_filename>: "
+                    + "Uncompresses a file compressed with gzip compression";
         }
 
         public void run() throws IOException {
-            if (mArgs.length < 1) {
-                throw new RuntimeException("Not enough arguments for command " + COMMAND);
+            if (mArgs.length > 2) {
+                throw new RuntimeException("Too many arguments for command " + COMMAND);
             }
-            final String inFilename = mArgs[0];
-            final String outFilename = inFilename + SUFFIX;
-            final FileInputStream input = new FileInputStream(new File(inFilename));
-            final FileOutputStream output = new FileOutputStream(new File(outFilename));
+            final String inFilename = mArgs.length >= 1 ? mArgs[0] : STDIN_OR_STDOUT;
+            final String outFilename = mArgs.length >= 2 ? mArgs[1] : STDIN_OR_STDOUT;
+            final InputStream input = inFilename.equals(STDIN_OR_STDOUT) ? System.in
+                    : new FileInputStream(new File(inFilename));
+            final OutputStream output = outFilename.equals(STDIN_OR_STDOUT) ? System.out
+                    : new FileOutputStream(new File(outFilename));
             copy(new GZIPInputStream(input), output);
         }
     }

@@ -22,6 +22,7 @@
 #include "binary_format.h"
 #include "defines.h"
 #include "dictionary.h"
+#include "dic_traverse_wrapper.h"
 #include "gesture_decoder_wrapper.h"
 #include "unigram_dictionary.h"
 
@@ -29,10 +30,15 @@ namespace latinime {
 
 // TODO: Change the type of all keyCodes to uint32_t
 Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
-        int typedLetterMultiplier, int fullWordMultiplier,
-        int maxWordLength, int maxWords, int maxPredictions)
-    : mDict((unsigned char*) dict), mDictSize(dictSize),
-      mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust) {
+        int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength, int maxWords,
+        int maxPredictions)
+        : mDict(static_cast<unsigned char *>(dict)),
+          mOffsetDict((static_cast<unsigned char *>(dict)) + BinaryFormat::getHeaderSize(mDict)),
+          mDictSize(dictSize), mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust),
+          mUnigramDictionary(new UnigramDictionary(mOffsetDict, typedLetterMultiplier,
+                  fullWordMultiplier, maxWordLength, maxWords, BinaryFormat::getFlags(mDict))),
+          mBigramDictionary(new BigramDictionary(mOffsetDict, maxWordLength, maxPredictions)),
+          mGestureDecoder(new GestureDecoderWrapper(maxWordLength, maxWords)) {
     if (DEBUG_DICT) {
         if (MAX_WORD_LENGTH_INTERNAL < maxWordLength) {
             AKLOGI("Max word length (%d) is greater than %d",
@@ -40,14 +46,6 @@ Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
             AKLOGI("IN NATIVE SUGGEST Version: %d", (mDict[0] & 0xFF));
         }
     }
-    const unsigned int headerSize = BinaryFormat::getHeaderSize(mDict);
-    const unsigned int options = BinaryFormat::getFlags(mDict);
-    mUnigramDictionary = new UnigramDictionary(mDict + headerSize, typedLetterMultiplier,
-            fullWordMultiplier, maxWordLength, maxWords, options);
-    mBigramDictionary = new BigramDictionary(mDict + headerSize, maxWordLength, maxPredictions);
-    mGestureDecoder = new GestureDecoderWrapper(maxWordLength, maxWords);
-    mGestureDecoder->setDict(mUnigramDictionary, mBigramDictionary,
-            mDict + headerSize /* dict root */, 0 /* root pos */);
 }
 
 Dictionary::~Dictionary() {
@@ -56,16 +54,18 @@ Dictionary::~Dictionary() {
     delete mGestureDecoder;
 }
 
-int Dictionary::getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
-        int *times, int *pointerIds, int *codes, int codesSize, int *prevWordChars,
+int Dictionary::getSuggestions(ProximityInfo *proximityInfo, void *traverseSession,
+        int *xcoordinates, int *ycoordinates, int *times, int *pointerIds,
+        int *codes, int codesSize, int *prevWordChars,
         int prevWordLength, int commitPoint, bool isGesture,
         bool useFullEditDistance, unsigned short *outWords,
-        int *frequencies, int *spaceIndices, int *outputTypes) {
+        int *frequencies, int *spaceIndices, int *outputTypes) const {
     int result = 0;
     if (isGesture) {
-        mGestureDecoder->setPrevWord(prevWordChars, prevWordLength);
-        result = mGestureDecoder->getSuggestions(proximityInfo, xcoordinates, ycoordinates,
-                times, pointerIds, codes, codesSize, commitPoint,
+        DicTraverseWrapper::initDicTraverseSession(
+                traverseSession, this, prevWordChars, prevWordLength);
+        result = mGestureDecoder->getSuggestions(proximityInfo, traverseSession,
+                xcoordinates, ycoordinates, times, pointerIds, codes, codesSize, commitPoint,
                 outWords, frequencies, spaceIndices, outputTypes);
         if (DEBUG_DICT) {
             DUMP_RESULT(outWords, frequencies, 18 /* MAX_WORDS */, MAX_WORD_LENGTH_INTERNAL);

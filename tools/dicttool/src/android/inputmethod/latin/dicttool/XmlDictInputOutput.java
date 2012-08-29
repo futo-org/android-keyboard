@@ -90,6 +90,10 @@ public class XmlDictInputOutput {
 
         public FusionDictionary getFinalDictionary() {
             final FusionDictionary dict = mDictionary;
+            for (final String shortcutOnly : mShortcutsMap.keySet()) {
+                if (dict.hasWord(shortcutOnly)) continue;
+                dict.add(shortcutOnly, 0, mShortcutsMap.get(shortcutOnly));
+            }
             mDictionary = null;
             mShortcutsMap.clear();
             mWord = "";
@@ -179,13 +183,17 @@ public class XmlDictInputOutput {
                 mSrc = attrs.getValue(uri, SRC_ATTRIBUTE);
             } else if (DST_TAG.equals(localName)) {
                 String dst = attrs.getValue(uri, DST_ATTRIBUTE);
-                int freq = Integer.parseInt(attrs.getValue(uri, DST_FREQ));
+                int freq = getValueFromFreqString(attrs.getValue(uri, DST_FREQ));
                 WeightedString bigram = new WeightedString(dst, freq / XML_TO_MEMORY_RATIO);
                 ArrayList<WeightedString> bigramList = mAssocMap.get(mSrc);
                 if (null == bigramList) bigramList = new ArrayList<WeightedString>();
                 bigramList.add(bigram);
                 mAssocMap.put(mSrc, bigramList);
             }
+        }
+
+        protected int getValueFromFreqString(final String freqString) {
+            return Integer.parseInt(freqString);
         }
 
         // This may return an empty map, but will never return null.
@@ -216,22 +224,40 @@ public class XmlDictInputOutput {
     }
 
     /**
-     * SAX handler for a shortcut XML file.
+     * SAX handler for a shortcut & whitelist XML file.
      */
-    static private class ShortcutHandler extends AssociativeListHandler {
+    static private class ShortcutAndWhitelistHandler extends AssociativeListHandler {
         private final static String ENTRY_TAG = "entry";
         private final static String ENTRY_ATTRIBUTE = "shortcut";
         private final static String TARGET_TAG = "target";
         private final static String REPLACEMENT_ATTRIBUTE = "replacement";
         private final static String TARGET_PRIORITY_ATTRIBUTE = "priority";
+        private final static String WHITELIST_MARKER = "whitelist";
+        private final static int WHITELIST_FREQ_VALUE = 15;
+        private final static int MIN_FREQ = 0;
+        private final static int MAX_FREQ = 14;
 
-        public ShortcutHandler() {
+        public ShortcutAndWhitelistHandler() {
             super(ENTRY_TAG, ENTRY_ATTRIBUTE, TARGET_TAG, REPLACEMENT_ATTRIBUTE,
                     TARGET_PRIORITY_ATTRIBUTE);
         }
 
+        @Override
+        protected int getValueFromFreqString(final String freqString) {
+            if (WHITELIST_MARKER.equals(freqString)) {
+                return WHITELIST_FREQ_VALUE;
+            } else {
+                final int intValue = super.getValueFromFreqString(freqString);
+                if (intValue < MIN_FREQ || intValue > MAX_FREQ) {
+                    throw new RuntimeException("Shortcut freq out of range. Accepted range is "
+                            + MIN_FREQ + ".." + MAX_FREQ);
+                }
+                return intValue;
+            }
+        }
+
         // As per getAssocMap(), this never returns null.
-        public HashMap<String, ArrayList<WeightedString>> getShortcutMap() {
+        public HashMap<String, ArrayList<WeightedString>> getShortcutAndWhitelistMap() {
             return getAssocMap();
         }
     }
@@ -243,7 +269,7 @@ public class XmlDictInputOutput {
      * representation.
      *
      * @param unigrams the file to read the data from.
-     * @param shortcuts the file to read the shortcuts from, or null.
+     * @param shortcuts the file to read the shortcuts & whitelist from, or null.
      * @param bigrams the file to read the bigrams from, or null.
      * @return the in-memory representation of the dictionary.
      */
@@ -256,11 +282,12 @@ public class XmlDictInputOutput {
         final BigramHandler bigramHandler = new BigramHandler();
         if (null != bigrams) parser.parse(bigrams, bigramHandler);
 
-        final ShortcutHandler shortcutHandler = new ShortcutHandler();
-        if (null != shortcuts) parser.parse(shortcuts, shortcutHandler);
+        final ShortcutAndWhitelistHandler shortcutAndWhitelistHandler =
+                new ShortcutAndWhitelistHandler();
+        if (null != shortcuts) parser.parse(shortcuts, shortcutAndWhitelistHandler);
 
         final UnigramHandler unigramHandler =
-                new UnigramHandler(shortcutHandler.getShortcutMap());
+                new UnigramHandler(shortcutAndWhitelistHandler.getShortcutAndWhitelistMap());
         parser.parse(unigrams, unigramHandler);
         final FusionDictionary dict = unigramHandler.getFinalDictionary();
         final HashMap<String, ArrayList<WeightedString>> bigramMap = bigramHandler.getBigramMap();
@@ -280,7 +307,7 @@ public class XmlDictInputOutput {
      *
      * This method reads data from the parser and creates a new FusionDictionary with it.
      * The format parsed by this method is the format used before Ice Cream Sandwich,
-     * which has no support for bigrams or shortcuts.
+     * which has no support for bigrams or shortcuts/whitelist.
      * It is important to note that this method expects the parser to have already eaten
      * the first, all-encompassing tag.
      *
@@ -291,7 +318,7 @@ public class XmlDictInputOutput {
     /**
      * Writes a dictionary to an XML file.
      *
-     * The output format is the "second" format, which supports bigrams and shortcuts.
+     * The output format is the "second" format, which supports bigrams and shortcuts/whitelist.
      *
      * @param destination a destination stream to write to.
      * @param dict the dictionary to write.

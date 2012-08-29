@@ -52,14 +52,14 @@ public class UserHistoryDictionary extends ExpandableDictionary {
     private static final int FREQUENCY_FOR_TYPED = 2;
 
     /** Maximum number of pairs. Pruning will start when databases goes above this number. */
-    private static int sMaxHistoryBigrams = 10000;
+    public static final int sMaxHistoryBigrams = 10000;
 
     /**
      * When it hits maximum bigram pair, it will delete until you are left with
      * only (sMaxHistoryBigrams - sDeleteHistoryBigrams) pairs.
      * Do not keep this number small to avoid deleting too often.
      */
-    private static int sDeleteHistoryBigrams = 1000;
+    public static final int sDeleteHistoryBigrams = 1000;
 
     /**
      * Database version should increase if the database structure changes
@@ -93,10 +93,10 @@ public class UserHistoryDictionary extends ExpandableDictionary {
 
     private final static HashMap<String, String> sDictProjectionMap;
     private final static ConcurrentHashMap<String, SoftReference<UserHistoryDictionary>>
-            sLangDictCache = new ConcurrentHashMap<String, SoftReference<UserHistoryDictionary>>();
+            sLangDictCache = CollectionUtils.newConcurrentHashMap();
 
     static {
-        sDictProjectionMap = new HashMap<String, String>();
+        sDictProjectionMap = CollectionUtils.newHashMap();
         sDictProjectionMap.put(MAIN_COLUMN_ID, MAIN_COLUMN_ID);
         sDictProjectionMap.put(MAIN_COLUMN_WORD1, MAIN_COLUMN_WORD1);
         sDictProjectionMap.put(MAIN_COLUMN_WORD2, MAIN_COLUMN_WORD2);
@@ -109,12 +109,8 @@ public class UserHistoryDictionary extends ExpandableDictionary {
 
     private static DatabaseHelper sOpenHelper = null;
 
-    public void setDatabaseMax(int maxHistoryBigram) {
-        sMaxHistoryBigrams = maxHistoryBigram;
-    }
-
-    public void setDatabaseDelete(int deleteHistoryBigram) {
-        sDeleteHistoryBigrams = deleteHistoryBigram;
+    public String getLocale() {
+        return mLocale;
     }
 
     public synchronized static UserHistoryDictionary getInstance(
@@ -502,9 +498,11 @@ public class UserHistoryDictionary extends ExpandableDictionary {
                                     needsToSave(fc, isValid, addLevel0Bigram)) {
                                 freq = fc;
                             } else {
+                                // Delete this entry
                                 freq = -1;
                             }
                         } else {
+                            // Delete this entry
                             freq = -1;
                         }
                     }
@@ -541,6 +539,7 @@ public class UserHistoryDictionary extends ExpandableDictionary {
                                     getContentValues(word1, word2, mLocale));
                             pairId = pairIdLong.intValue();
                         }
+                        // Eliminate freq == 0 because that word is profanity.
                         if (freq > 0) {
                             if (PROFILE_SAVE_RESTORE) {
                                 ++profInsert;

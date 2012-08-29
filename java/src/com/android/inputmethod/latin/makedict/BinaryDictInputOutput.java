@@ -22,10 +22,13 @@ import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -124,7 +127,7 @@ public class BinaryDictInputOutput {
      */
 
     private static final int VERSION_1_MAGIC_NUMBER = 0x78B1;
-    private static final int VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
+    public static final int VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
     private static final int MINIMUM_SUPPORTED_VERSION = 1;
     private static final int MAXIMUM_SUPPORTED_VERSION = 2;
     private static final int NOT_A_VERSION_NUMBER = -1;
@@ -307,33 +310,32 @@ public class BinaryDictInputOutput {
         }
 
         /**
-         * Reads a string from a RandomAccessFile. This is the converse of the above method.
+         * Reads a string from a ByteBuffer. This is the converse of the above method.
          */
-        private static String readString(final RandomAccessFile source) throws IOException {
+        private static String readString(final ByteBuffer buffer) {
             final StringBuilder s = new StringBuilder();
-            int character = readChar(source);
+            int character = readChar(buffer);
             while (character != INVALID_CHARACTER) {
                 s.appendCodePoint(character);
-                character = readChar(source);
+                character = readChar(buffer);
             }
             return s.toString();
         }
 
         /**
-         * Reads a character from the file.
+         * Reads a character from the ByteBuffer.
          *
          * This follows the character format documented earlier in this source file.
          *
-         * @param source the file, positioned over an encoded character.
+         * @param buffer the buffer, positioned over an encoded character.
          * @return the character code.
          */
-        private static int readChar(RandomAccessFile source) throws IOException {
-            int character = source.readUnsignedByte();
+        private static int readChar(final ByteBuffer buffer) {
+            int character = readUnsignedByte(buffer);
             if (!fitsOnOneByte(character)) {
-                if (GROUP_CHARACTERS_TERMINATOR == character)
-                    return INVALID_CHARACTER;
+                if (GROUP_CHARACTERS_TERMINATOR == character) return INVALID_CHARACTER;
                 character <<= 16;
-                character += source.readUnsignedShort();
+                character += readUnsignedShort(buffer);
             }
             return character;
         }
@@ -783,10 +785,10 @@ public class BinaryDictInputOutput {
         // their lower bound and exclude their higher bound so we need to have the first step
         // start at exactly 1 unit higher than floor(unigramFreq + half a step).
         // Note : to reconstruct the score, the dictionary reader will need to divide
-        // MAX_TERMINAL_FREQUENCY - unigramFreq by 16.5 likewise, and add
-        // (discretizedFrequency + 0.5) times this value to get the median value of the step,
-        // which is the best approximation. This is how we get the most precise result with
-        // only four bits.
+        // MAX_TERMINAL_FREQUENCY - unigramFreq by 16.5 likewise to get the value of the step,
+        // and add (discretizedFrequency + 0.5 + 0.5) times this value to get the best
+        // approximation. (0.5 to get the first step start, and 0.5 to get the middle of the
+        // step pointed by the discretized frequency.
         final float stepSize =
                 (MAX_TERMINAL_FREQUENCY - unigramFrequency) / (1.5f + MAX_BIGRAM_FREQUENCY);
         final float firstStepStart = 1 + unigramFrequency + (stepSize / 2.0f);
@@ -1091,46 +1093,46 @@ public class BinaryDictInputOutput {
     // readDictionaryBinary is the public entry point for them.
 
     static final int[] characterBuffer = new int[MAX_WORD_LENGTH];
-    private static CharGroupInfo readCharGroup(RandomAccessFile source,
-            final int originalGroupAddress) throws IOException {
+    private static CharGroupInfo readCharGroup(final ByteBuffer buffer,
+            final int originalGroupAddress) {
         int addressPointer = originalGroupAddress;
-        final int flags = source.readUnsignedByte();
+        final int flags = readUnsignedByte(buffer);
         ++addressPointer;
         final int characters[];
         if (0 != (flags & FLAG_HAS_MULTIPLE_CHARS)) {
             int index = 0;
-            int character = CharEncoding.readChar(source);
+            int character = CharEncoding.readChar(buffer);
             addressPointer += CharEncoding.getCharSize(character);
             while (-1 != character) {
                 characterBuffer[index++] = character;
-                character = CharEncoding.readChar(source);
+                character = CharEncoding.readChar(buffer);
                 addressPointer += CharEncoding.getCharSize(character);
             }
             characters = Arrays.copyOfRange(characterBuffer, 0, index);
         } else {
-            final int character = CharEncoding.readChar(source);
+            final int character = CharEncoding.readChar(buffer);
             addressPointer += CharEncoding.getCharSize(character);
             characters = new int[] { character };
         }
         final int frequency;
         if (0 != (FLAG_IS_TERMINAL & flags)) {
             ++addressPointer;
-            frequency = source.readUnsignedByte();
+            frequency = readUnsignedByte(buffer);
         } else {
             frequency = CharGroup.NOT_A_TERMINAL;
         }
         int childrenAddress = addressPointer;
         switch (flags & MASK_GROUP_ADDRESS_TYPE) {
         case FLAG_GROUP_ADDRESS_TYPE_ONEBYTE:
-            childrenAddress += source.readUnsignedByte();
+            childrenAddress += readUnsignedByte(buffer);
             addressPointer += 1;
             break;
         case FLAG_GROUP_ADDRESS_TYPE_TWOBYTES:
-            childrenAddress += source.readUnsignedShort();
+            childrenAddress += readUnsignedShort(buffer);
             addressPointer += 2;
             break;
         case FLAG_GROUP_ADDRESS_TYPE_THREEBYTES:
-            childrenAddress += (source.readUnsignedByte() << 16) + source.readUnsignedShort();
+            childrenAddress += readUnsignedInt24(buffer);
             addressPointer += 3;
             break;
         case FLAG_GROUP_ADDRESS_TYPE_NOADDRESS:
@@ -1140,38 +1142,38 @@ public class BinaryDictInputOutput {
         }
         ArrayList<WeightedString> shortcutTargets = null;
         if (0 != (flags & FLAG_HAS_SHORTCUT_TARGETS)) {
-            final long pointerBefore = source.getFilePointer();
+            final int pointerBefore = buffer.position();
             shortcutTargets = new ArrayList<WeightedString>();
-            source.readUnsignedShort(); // Skip the size
+            buffer.getShort(); // Skip the size
             while (true) {
-                final int targetFlags = source.readUnsignedByte();
-                final String word = CharEncoding.readString(source);
+                final int targetFlags = readUnsignedByte(buffer);
+                final String word = CharEncoding.readString(buffer);
                 shortcutTargets.add(new WeightedString(word,
                         targetFlags & FLAG_ATTRIBUTE_FREQUENCY));
                 if (0 == (targetFlags & FLAG_ATTRIBUTE_HAS_NEXT)) break;
             }
-            addressPointer += (source.getFilePointer() - pointerBefore);
+            addressPointer += buffer.position() - pointerBefore;
         }
         ArrayList<PendingAttribute> bigrams = null;
         if (0 != (flags & FLAG_HAS_BIGRAMS)) {
             bigrams = new ArrayList<PendingAttribute>();
             while (true) {
-                final int bigramFlags = source.readUnsignedByte();
+                final int bigramFlags = readUnsignedByte(buffer);
                 ++addressPointer;
                 final int sign = 0 == (bigramFlags & FLAG_ATTRIBUTE_OFFSET_NEGATIVE) ? 1 : -1;
                 int bigramAddress = addressPointer;
                 switch (bigramFlags & MASK_ATTRIBUTE_ADDRESS_TYPE) {
                 case FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE:
-                    bigramAddress += sign * source.readUnsignedByte();
+                    bigramAddress += sign * readUnsignedByte(buffer);
                     addressPointer += 1;
                     break;
                 case FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES:
-                    bigramAddress += sign * source.readUnsignedShort();
+                    bigramAddress += sign * readUnsignedShort(buffer);
                     addressPointer += 2;
                     break;
                 case FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES:
-                    final int offset = ((source.readUnsignedByte() << 16)
-                            + source.readUnsignedShort());
+                    final int offset = (readUnsignedByte(buffer) << 16)
+                            + readUnsignedShort(buffer);
                     bigramAddress += sign * offset;
                     addressPointer += 3;
                     break;
@@ -1188,15 +1190,15 @@ public class BinaryDictInputOutput {
     }
 
     /**
-     * Reads and returns the char group count out of a file and forwards the pointer.
+     * Reads and returns the char group count out of a buffer and forwards the pointer.
      */
-    private static int readCharGroupCount(RandomAccessFile source) throws IOException {
-        final int msb = source.readUnsignedByte();
+    private static int readCharGroupCount(final ByteBuffer buffer) {
+        final int msb = readUnsignedByte(buffer);
         if (MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT >= msb) {
             return msb;
         } else {
             return ((MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT & msb) << 8)
-                    + source.readUnsignedByte();
+                    + readUnsignedByte(buffer);
         }
     }
 
@@ -1204,31 +1206,29 @@ public class BinaryDictInputOutput {
     // of this method. Since it performs direct, unbuffered random access to the file and
     // may be called hundreds of thousands of times, the resulting performance is not
     // reasonable without some kind of cache. Thus:
-    // TODO: perform buffered I/O here and in other places in the code.
     private static TreeMap<Integer, String> wordCache = new TreeMap<Integer, String>();
     /**
      * Finds, as a string, the word at the address passed as an argument.
      *
-     * @param source the file to read from.
+     * @param buffer the buffer to read from.
      * @param headerSize the size of the header.
      * @param address the address to seek.
      * @return the word, as a string.
-     * @throws IOException if the file can't be read.
      */
-    private static String getWordAtAddress(final RandomAccessFile source, final long headerSize,
-            int address) throws IOException {
+    private static String getWordAtAddress(final ByteBuffer buffer, final int headerSize,
+            final int address) {
         final String cachedString = wordCache.get(address);
         if (null != cachedString) return cachedString;
-        final long originalPointer = source.getFilePointer();
-        source.seek(headerSize);
-        final int count = readCharGroupCount(source);
+        final int originalPointer = buffer.position();
+        buffer.position(headerSize);
+        final int count = readCharGroupCount(buffer);
         int groupOffset = getGroupCountSize(count);
         final StringBuilder builder = new StringBuilder();
         String result = null;
 
         CharGroupInfo last = null;
         for (int i = count - 1; i >= 0; --i) {
-            CharGroupInfo info = readCharGroup(source, groupOffset);
+            CharGroupInfo info = readCharGroup(buffer, groupOffset);
             groupOffset = info.mEndAddress;
             if (info.mOriginalAddress == address) {
                 builder.append(new String(info.mCharacters, 0, info.mCharacters.length));
@@ -1239,9 +1239,9 @@ public class BinaryDictInputOutput {
                 if (info.mChildrenAddress > address) {
                     if (null == last) continue;
                     builder.append(new String(last.mCharacters, 0, last.mCharacters.length));
-                    source.seek(last.mChildrenAddress + headerSize);
+                    buffer.position(last.mChildrenAddress + headerSize);
                     groupOffset = last.mChildrenAddress + 1;
-                    i = source.readUnsignedByte();
+                    i = readUnsignedByte(buffer);
                     last = null;
                     continue;
                 }
@@ -1249,14 +1249,14 @@ public class BinaryDictInputOutput {
             }
             if (0 == i && hasChildrenAddress(last.mChildrenAddress)) {
                 builder.append(new String(last.mCharacters, 0, last.mCharacters.length));
-                source.seek(last.mChildrenAddress + headerSize);
+                buffer.position(last.mChildrenAddress + headerSize);
                 groupOffset = last.mChildrenAddress + 1;
-                i = source.readUnsignedByte();
+                i = readUnsignedByte(buffer);
                 last = null;
                 continue;
             }
         }
-        source.seek(originalPointer);
+        buffer.position(originalPointer);
         wordCache.put(address, result);
         return result;
     }
@@ -1269,44 +1269,47 @@ public class BinaryDictInputOutput {
      * This will recursively read other nodes into the structure, populating the reverse
      * maps on the fly and using them to keep track of already read nodes.
      *
-     * @param source the data file, correctly positioned at the start of a node.
+     * @param buffer the buffer, correctly positioned at the start of a node.
      * @param headerSize the size, in bytes, of the file header.
      * @param reverseNodeMap a mapping from addresses to already read nodes.
      * @param reverseGroupMap a mapping from addresses to already read character groups.
      * @return the read node with all his children already read.
      */
-    private static Node readNode(RandomAccessFile source, long headerSize,
-            Map<Integer, Node> reverseNodeMap, Map<Integer, CharGroup> reverseGroupMap)
+    private static Node readNode(final ByteBuffer buffer, final int headerSize,
+            final Map<Integer, Node> reverseNodeMap, final Map<Integer, CharGroup> reverseGroupMap)
             throws IOException {
-        final int nodeOrigin = (int)(source.getFilePointer() - headerSize);
-        final int count = readCharGroupCount(source);
+        final int nodeOrigin = buffer.position() - headerSize;
+        final int count = readCharGroupCount(buffer);
         final ArrayList<CharGroup> nodeContents = new ArrayList<CharGroup>();
         int groupOffset = nodeOrigin + getGroupCountSize(count);
         for (int i = count; i > 0; --i) {
-            CharGroupInfo info = readCharGroup(source, groupOffset);
+            CharGroupInfo info =readCharGroup(buffer, groupOffset);
             ArrayList<WeightedString> shortcutTargets = info.mShortcutTargets;
             ArrayList<WeightedString> bigrams = null;
             if (null != info.mBigrams) {
                 bigrams = new ArrayList<WeightedString>();
                 for (PendingAttribute bigram : info.mBigrams) {
-                    final String word = getWordAtAddress(source, headerSize, bigram.mAddress);
+                    final String word = getWordAtAddress(
+                            buffer, headerSize, bigram.mAddress);
                     bigrams.add(new WeightedString(word, bigram.mFrequency));
                 }
             }
             if (hasChildrenAddress(info.mChildrenAddress)) {
                 Node children = reverseNodeMap.get(info.mChildrenAddress);
                 if (null == children) {
-                    final long currentPosition = source.getFilePointer();
-                    source.seek(info.mChildrenAddress + headerSize);
-                    children = readNode(source, headerSize, reverseNodeMap, reverseGroupMap);
-                    source.seek(currentPosition);
+                    final int currentPosition = buffer.position();
+                    buffer.position(info.mChildrenAddress + headerSize);
+                    children = readNode(
+                            buffer, headerSize, reverseNodeMap, reverseGroupMap);
+                    buffer.position(currentPosition);
                 }
                 nodeContents.add(
-                        new CharGroup(info.mCharacters, shortcutTargets, bigrams, info.mFrequency,
-                                children));
+                        new CharGroup(info.mCharacters, shortcutTargets,
+                                bigrams, info.mFrequency, children));
             } else {
                 nodeContents.add(
-                        new CharGroup(info.mCharacters, shortcutTargets, bigrams, info.mFrequency));
+                        new CharGroup(info.mCharacters, shortcutTargets,
+                                bigrams, info.mFrequency));
             }
             groupOffset = info.mEndAddress;
         }
@@ -1318,57 +1321,76 @@ public class BinaryDictInputOutput {
 
     /**
      * Helper function to get the binary format version from the header.
+     * @throws IOException
      */
-    private static int getFormatVersion(final RandomAccessFile source) throws IOException {
-        final int magic_v1 = source.readUnsignedShort();
-        if (VERSION_1_MAGIC_NUMBER == magic_v1) return source.readUnsignedByte();
-        final int magic_v2 = (magic_v1 << 16) + source.readUnsignedShort();
-        if (VERSION_2_MAGIC_NUMBER == magic_v2) return source.readUnsignedShort();
+    private static int getFormatVersion(final ByteBuffer buffer) throws IOException {
+        final int magic_v1 = readUnsignedShort(buffer);
+        if (VERSION_1_MAGIC_NUMBER == magic_v1) return readUnsignedByte(buffer);
+        final int magic_v2 = (magic_v1 << 16) + readUnsignedShort(buffer);
+        if (VERSION_2_MAGIC_NUMBER == magic_v2) return readUnsignedShort(buffer);
         return NOT_A_VERSION_NUMBER;
     }
 
     /**
-     * Reads a random access file and returns the memory representation of the dictionary.
+     * Reads options from a file and populate a map with their contents.
+     *
+     * The file is read at the current file pointer, so the caller must take care the pointer
+     * is in the right place before calling this.
+     */
+    public static void populateOptions(final ByteBuffer buffer, final int headerSize,
+            final HashMap<String, String> options) {
+        while (buffer.position() < headerSize) {
+            final String key = CharEncoding.readString(buffer);
+            final String value = CharEncoding.readString(buffer);
+            options.put(key, value);
+        }
+    }
+
+    /**
+     * Reads a byte buffer and returns the memory representation of the dictionary.
      *
      * This high-level method takes a binary file and reads its contents, populating a
      * FusionDictionary structure. The optional dict argument is an existing dictionary to
      * which words from the file should be added. If it is null, a new dictionary is created.
      *
-     * @param source the file to read.
+     * @param buffer the buffer to read.
      * @param dict an optional dictionary to add words to, or null.
      * @return the created (or merged) dictionary.
      */
-    public static FusionDictionary readDictionaryBinary(final RandomAccessFile source,
+    public static FusionDictionary readDictionaryBinary(final ByteBuffer buffer,
             final FusionDictionary dict) throws IOException, UnsupportedFormatException {
         // Check file version
-        final int version = getFormatVersion(source);
-        if (version < MINIMUM_SUPPORTED_VERSION || version > MAXIMUM_SUPPORTED_VERSION ) {
+        final int version = getFormatVersion(buffer);
+        if (version < MINIMUM_SUPPORTED_VERSION || version > MAXIMUM_SUPPORTED_VERSION) {
             throw new UnsupportedFormatException("This file has version " + version
                     + ", but this implementation does not support versions above "
                     + MAXIMUM_SUPPORTED_VERSION);
         }
 
-        // Read options
-        final int optionsFlags = source.readUnsignedShort();
+        // clear cache
+        wordCache.clear();
 
-        final long headerSize;
+        // Read options
+        final int optionsFlags = readUnsignedShort(buffer);
+
+        final int headerSize;
         final HashMap<String, String> options = new HashMap<String, String>();
         if (version < FIRST_VERSION_WITH_HEADER_SIZE) {
-            headerSize = source.getFilePointer();
+            headerSize = buffer.position();
         } else {
-            headerSize = (source.readUnsignedByte() << 24) + (source.readUnsignedByte() << 16)
-                    + (source.readUnsignedByte() << 8) + source.readUnsignedByte();
-            while (source.getFilePointer() < headerSize) {
-                final String key = CharEncoding.readString(source);
-                final String value = CharEncoding.readString(source);
-                options.put(key, value);
-            }
-            source.seek(headerSize);
+            headerSize = buffer.getInt();
+            populateOptions(buffer, headerSize, options);
+            buffer.position(headerSize);
+        }
+
+        if (headerSize < 0) {
+            throw new UnsupportedFormatException("header size can't be negative.");
         }
 
         Map<Integer, Node> reverseNodeMapping = new TreeMap<Integer, Node>();
         Map<Integer, CharGroup> reverseGroupMapping = new TreeMap<Integer, CharGroup>();
-        final Node root = readNode(source, headerSize, reverseNodeMapping, reverseGroupMapping);
+        final Node root = readNode(
+                buffer, headerSize, reverseNodeMapping, reverseGroupMapping);
 
         FusionDictionary newDict = new FusionDictionary(root,
                 new FusionDictionary.DictionaryOptions(options,
@@ -1392,6 +1414,28 @@ public class BinaryDictInputOutput {
     }
 
     /**
+     * Helper function to read one byte from ByteBuffer.
+     */
+    private static int readUnsignedByte(final ByteBuffer buffer) {
+        return ((int)buffer.get()) & 0xFF;
+    }
+
+    /**
+     * Helper function to read two byte from ByteBuffer.
+     */
+    private static int readUnsignedShort(final ByteBuffer buffer) {
+        return ((int)buffer.getShort()) & 0xFFFF;
+    }
+
+    /**
+     * Helper function to read three byte from ByteBuffer.
+     */
+    private static int readUnsignedInt24(final ByteBuffer buffer) {
+        final int value = readUnsignedByte(buffer) << 16;
+        return value + readUnsignedShort(buffer);
+    }
+
+    /**
      * Basic test to find out whether the file is a binary dictionary or not.
      *
      * Concretely this only tests the magic number.
@@ -1400,14 +1444,44 @@ public class BinaryDictInputOutput {
      * @return true if it's a binary dictionary, false otherwise
      */
     public static boolean isBinaryDictionary(final String filename) {
+        FileInputStream inStream = null;
         try {
-            RandomAccessFile f = new RandomAccessFile(filename, "r");
-            final int version = getFormatVersion(f);
+            final File file = new File(filename);
+            inStream = new FileInputStream(file);
+            final ByteBuffer buffer = inStream.getChannel().map(
+                    FileChannel.MapMode.READ_ONLY, 0, file.length());
+            final int version = getFormatVersion(buffer);
             return (version >= MINIMUM_SUPPORTED_VERSION && version <= MAXIMUM_SUPPORTED_VERSION);
         } catch (FileNotFoundException e) {
             return false;
         } catch (IOException e) {
             return false;
+        } finally {
+            if (inStream != null) {
+                try {
+                    inStream.close();
+                } catch (IOException e) {
+                    // do nothing
+                }
+            }
         }
+    }
+
+    /**
+     * Calculate bigram frequency from compressed value
+     *
+     * @see #makeBigramFlags
+     *
+     * @param unigramFrequency
+     * @param bigramFrequency compressed frequency
+     * @return approximate bigram frequency
+     */
+    public static int reconstructBigramFrequency(final int unigramFrequency,
+            final int bigramFrequency) {
+        final float stepSize = (MAX_TERMINAL_FREQUENCY - unigramFrequency)
+                / (1.5f + MAX_BIGRAM_FREQUENCY);
+        final float resultFreqFloat = (float)unigramFrequency
+                + stepSize * (bigramFrequency + 1.0f);
+        return (int)resultFreqFloat;
     }
 }

@@ -29,45 +29,24 @@ class ProximityInfo;
 
 class IncrementalDecoderWrapper : public IncrementalDecoderInterface {
  public:
-    IncrementalDecoderWrapper(const int maxWordLength, const int maxWords) {
-        mIncrementalDecoderInterface = getIncrementalDecoderInstance(maxWordLength, maxWords);
+    IncrementalDecoderWrapper(const int maxWordLength, const int maxWords)
+            : mIncrementalDecoderInterface(getIncrementalDecoderInstance(maxWordLength, maxWords)) {
     }
 
     virtual ~IncrementalDecoderWrapper() {
         delete mIncrementalDecoderInterface;
     }
 
-    int getSuggestions(ProximityInfo *pInfo, int *inputXs, int *inputYs, int *times,
-            int *pointerIds, int *codes, int inputSize, int commitPoint,
-            unsigned short *outWords, int *frequencies, int *outputIndices, int *outputTypes) {
+    int getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs, int *inputYs,
+            int *times, int *pointerIds, int *codes, int inputSize, int commitPoint,
+            unsigned short *outWords, int *frequencies, int *outputIndices,
+            int *outputTypes) const {
         if (!mIncrementalDecoderInterface) {
             return 0;
         }
         return mIncrementalDecoderInterface->getSuggestions(
-                pInfo, inputXs, inputYs, times, pointerIds, codes, inputSize, commitPoint,
-                outWords, frequencies, outputIndices, outputTypes);
-    }
-
-    void reset() {
-        if (!mIncrementalDecoderInterface) {
-            return;
-        }
-        mIncrementalDecoderInterface->reset();
-    }
-
-    void setDict(const UnigramDictionary *dict, const BigramDictionary *bigram,
-            const uint8_t *dictRoot, int rootPos) {
-        if (!mIncrementalDecoderInterface) {
-            return;
-        }
-        mIncrementalDecoderInterface->setDict(dict, bigram, dictRoot, rootPos);
-    }
-
-    void setPrevWord(const int32_t *prevWord, int prevWordLength) {
-        if (!mIncrementalDecoderInterface) {
-            return;
-        }
-        mIncrementalDecoderInterface->setPrevWord(prevWord, prevWordLength);
+                pInfo, traverseSession, inputXs, inputYs, times, pointerIds, codes,
+                inputSize, commitPoint, outWords, frequencies, outputIndices, outputTypes);
     }
 
     static void setIncrementalDecoderFactoryMethod(
@@ -76,7 +55,7 @@ class IncrementalDecoderWrapper : public IncrementalDecoderInterface {
     }
 
  private:
-    DISALLOW_COPY_AND_ASSIGN(IncrementalDecoderWrapper);
+    DISALLOW_IMPLICIT_CONSTRUCTORS(IncrementalDecoderWrapper);
     static IncrementalDecoderInterface *getIncrementalDecoderInstance(int maxWordLength,
             int maxWords) {
         if (sIncrementalDecoderFactoryMethod) {

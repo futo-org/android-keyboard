@@ -24,9 +24,8 @@ LOCAL_SRC_FILES := $(LOCAL_TOOL_SRC_FILES) \
         $(filter-out $(addprefix %/, $(notdir $(LOCAL_TOOL_SRC_FILES))), $(LOCAL_MAIN_SRC_FILES)) \
         $(call all-java-files-under,tests)
 LOCAL_JAR_MANIFEST := etc/manifest.txt
-LOCAL_MODULE := dicttool
+LOCAL_MODULE := dicttool_aosp
 LOCAL_JAVA_LIBRARIES := junit
-LOCAL_MODULE_TAGS := eng
 
 include $(BUILD_HOST_JAVA_LIBRARY)
 include $(LOCAL_PATH)/etc/Android.mk

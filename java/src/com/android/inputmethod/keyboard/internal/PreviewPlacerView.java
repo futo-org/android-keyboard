@@ -23,10 +23,13 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.widget.RelativeLayout;
 
 import com.android.inputmethod.keyboard.PointerTracker;
+import com.android.inputmethod.keyboard.internal.GesturePreviewTrail.GesturePreviewTrailParams;
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
@@ -46,28 +49,41 @@ public class PreviewPlacerView extends RelativeLayout {
     private int mXOrigin;
     private int mYOrigin;
 
-    private final SparseArray<PointerTracker> mPointers = new SparseArray<PointerTracker>();
+    private final SparseArray<GesturePreviewTrail> mGesturePreviewTrails =
+            CollectionUtils.newSparseArray();
+    private final GesturePreviewTrailParams mGesturePreviewTrailParams;
 
     private String mGestureFloatingPreviewText;
+    private int mLastPointerX;
+    private int mLastPointerY;
+
     private boolean mDrawsGesturePreviewTrail;
     private boolean mDrawsGestureFloatingPreviewText;
 
-    private final DrawingHandler mDrawingHandler = new DrawingHandler(this);
+    private final DrawingHandler mDrawingHandler;
 
     private static class DrawingHandler extends StaticInnerHandlerWrapper<PreviewPlacerView> {
         private static final int MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 0;
+        private static final int MSG_UPDATE_GESTURE_PREVIEW_TRAIL = 1;
 
-        public DrawingHandler(PreviewPlacerView outerInstance) {
+        private final GesturePreviewTrailParams mGesturePreviewTrailParams;
+
+        public DrawingHandler(final PreviewPlacerView outerInstance,
+                final GesturePreviewTrailParams gesturePreviewTrailParams) {
             super(outerInstance);
+            mGesturePreviewTrailParams = gesturePreviewTrailParams;
         }
 
         @Override
-        public void handleMessage(Message msg) {
+        public void handleMessage(final Message msg) {
             final PreviewPlacerView placerView = getOuterInstance();
             if (placerView == null) return;
             switch (msg.what) {
             case MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT:
                 placerView.setGestureFloatingPreviewText(null);
+                break;
+            case MSG_UPDATE_GESTURE_PREVIEW_TRAIL:
+                placerView.invalidate();
                 break;
             }
         }
@@ -84,15 +100,32 @@ public class PreviewPlacerView extends RelativeLayout {
                     placerView.mGestureFloatingPreviewTextLingerTimeout);
         }
 
+        private void cancelUpdateGestureTrailPreview() {
+            removeMessages(MSG_UPDATE_GESTURE_PREVIEW_TRAIL);
+        }
+
+        public void postUpdateGestureTrailPreview() {
+            cancelUpdateGestureTrailPreview();
+            sendMessageDelayed(obtainMessage(MSG_UPDATE_GESTURE_PREVIEW_TRAIL),
+                    mGesturePreviewTrailParams.mUpdateInterval);
+        }
+
         public void cancelAllMessages() {
             cancelDismissGestureFloatingPreviewText();
+            cancelUpdateGestureTrailPreview();
         }
     }
 
-    public PreviewPlacerView(Context context, TypedArray keyboardViewAttr) {
+    public PreviewPlacerView(final Context context, final AttributeSet attrs) {
+        this(context, attrs, R.attr.keyboardViewStyle);
+    }
+
+    public PreviewPlacerView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context);
         setWillNotDraw(false);
 
+        final TypedArray keyboardViewAttr = context.obtainStyledAttributes(
+                attrs, R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
         final int gestureFloatingPreviewTextSize = keyboardViewAttr.getDimensionPixelSize(
                 R.styleable.KeyboardView_gestureFloatingPreviewTextSize, 0);
         mGestureFloatingPreviewTextColor = keyboardViewAttr.getColor(
@@ -117,6 +150,10 @@ public class PreviewPlacerView extends RelativeLayout {
                 R.styleable.KeyboardView_gesturePreviewTrailColor, 0);
         final int gesturePreviewTrailWidth = keyboardViewAttr.getDimensionPixelSize(
                 R.styleable.KeyboardView_gesturePreviewTrailWidth, 0);
+        mGesturePreviewTrailParams = new GesturePreviewTrailParams(keyboardViewAttr);
+        keyboardViewAttr.recycle();
+
+        mDrawingHandler = new DrawingHandler(this, mGesturePreviewTrailParams);
 
         mGesturePaint = new Paint();
         mGesturePaint.setAntiAlias(true);
@@ -132,48 +169,60 @@ public class PreviewPlacerView extends RelativeLayout {
         mTextPaint.setTextSize(gestureFloatingPreviewTextSize);
     }
 
-    public void setOrigin(int x, int y) {
+    public void setOrigin(final int x, final int y) {
         mXOrigin = x;
         mYOrigin = y;
     }
 
-    public void setGesturePreviewMode(boolean drawsGesturePreviewTrail,
-            boolean drawsGestureFloatingPreviewText) {
+    public void setGesturePreviewMode(final boolean drawsGesturePreviewTrail,
+            final boolean drawsGestureFloatingPreviewText) {
         mDrawsGesturePreviewTrail = drawsGesturePreviewTrail;
         mDrawsGestureFloatingPreviewText = drawsGestureFloatingPreviewText;
     }
 
-    public void invalidatePointer(PointerTracker tracker) {
-        synchronized (mPointers) {
-            mPointers.put(tracker.mPointerId, tracker);
-            // TODO: Should narrow the invalidate region.
-            invalidate();
+    public void invalidatePointer(final PointerTracker tracker) {
+        GesturePreviewTrail trail;
+        synchronized (mGesturePreviewTrails) {
+            trail = mGesturePreviewTrails.get(tracker.mPointerId);
+            if (trail == null) {
+                trail = new GesturePreviewTrail(mGesturePreviewTrailParams);
+                mGesturePreviewTrails.put(tracker.mPointerId, trail);
+            }
         }
+        trail.addStroke(tracker.getGestureStrokeWithPreviewTrail(), tracker.getDownTime());
+
+        mLastPointerX = tracker.getLastX();
+        mLastPointerY = tracker.getLastY();
+        // TODO: Should narrow the invalidate region.
+        invalidate();
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
+    public void onDraw(final Canvas canvas) {
         super.onDraw(canvas);
-        synchronized (mPointers) {
-            canvas.translate(mXOrigin, mYOrigin);
-            final int trackerCount = mPointers.size();
-            boolean hasDrawnFloatingPreviewText = false;
-            for (int index = 0; index < trackerCount; index++) {
-                final PointerTracker tracker = mPointers.valueAt(index);
-                if (mDrawsGesturePreviewTrail) {
-                    tracker.drawGestureTrail(canvas, mGesturePaint);
-                }
-                // TODO: Figure out more cleaner way to draw gesture preview text.
-                if (mDrawsGestureFloatingPreviewText && !hasDrawnFloatingPreviewText) {
-                    drawGestureFloatingPreviewText(canvas, tracker, mGestureFloatingPreviewText);
-                    hasDrawnFloatingPreviewText = true;
+        canvas.translate(mXOrigin, mYOrigin);
+        if (mDrawsGesturePreviewTrail) {
+            boolean needsUpdatingGesturePreviewTrail = false;
+            synchronized (mGesturePreviewTrails) {
+                // Trails count == fingers count that have ever been active.
+                final int trailsCount = mGesturePreviewTrails.size();
+                for (int index = 0; index < trailsCount; index++) {
+                    final GesturePreviewTrail trail = mGesturePreviewTrails.valueAt(index);
+                    needsUpdatingGesturePreviewTrail |=
+                            trail.drawGestureTrail(canvas, mGesturePaint);
                 }
             }
-            canvas.translate(-mXOrigin, -mYOrigin);
+            if (needsUpdatingGesturePreviewTrail) {
+                mDrawingHandler.postUpdateGestureTrailPreview();
+            }
         }
+        if (mDrawsGestureFloatingPreviewText) {
+            drawGestureFloatingPreviewText(canvas, mGestureFloatingPreviewText);
+        }
+        canvas.translate(-mXOrigin, -mYOrigin);
     }
 
-    public void setGestureFloatingPreviewText(String gestureFloatingPreviewText) {
+    public void setGestureFloatingPreviewText(final String gestureFloatingPreviewText) {
         mGestureFloatingPreviewText = gestureFloatingPreviewText;
         invalidate();
     }
@@ -186,15 +235,17 @@ public class PreviewPlacerView extends RelativeLayout {
         mDrawingHandler.cancelAllMessages();
     }
 
-    private void drawGestureFloatingPreviewText(Canvas canvas, PointerTracker tracker,
-            String gestureFloatingPreviewText) {
+    private void drawGestureFloatingPreviewText(final Canvas canvas,
+            final String gestureFloatingPreviewText) {
         if (TextUtils.isEmpty(gestureFloatingPreviewText)) {
             return;
         }
 
         final Paint paint = mTextPaint;
-        final int lastX = tracker.getLastX();
-        final int lastY = tracker.getLastY();
+        // TODO: Figure out how we should deal with the floating preview text with multiple moving
+        // fingers.
+        final int lastX = mLastPointerX;
+        final int lastY = mLastPointerY;
         final int textSize = (int)paint.getTextSize();
         final int canvasWidth = canvas.getWidth();
 

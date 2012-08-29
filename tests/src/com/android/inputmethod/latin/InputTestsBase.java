@@ -39,7 +39,6 @@ import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardActionListener;
 
 import java.util.HashMap;
 
@@ -136,7 +135,6 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
         mLatinIME.onCreateInputView();
         mLatinIME.onStartInputView(ei, false);
         mInputConnection = ic;
-        mKeyboard = mLatinIME.mKeyboardSwitcher.getKeyboard();
         changeLanguage("en_US");
     }
 
@@ -222,9 +220,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
                 return;
             }
         }
-        mLatinIME.onCodeInput(codePoint,
-                KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
-                KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
+        mLatinIME.onCodeInput(codePoint, Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         //mLatinIME.onReleaseKey(codePoint, false);
     }
 
@@ -256,13 +252,13 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
             fail("InputMethodSubtype for locale " + locale + " is not enabled");
         }
         SubtypeSwitcher.getInstance().updateSubtype(subtype);
+        mLatinIME.loadKeyboard();
+        mKeyboard = mLatinIME.mKeyboardSwitcher.getKeyboard();
         waitForDictionaryToBeLoaded();
     }
 
     protected void pickSuggestionManually(final int index, final CharSequence suggestion) {
-        mLatinIME.pickSuggestionManually(index, suggestion,
-                KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
-                KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
+        mLatinIME.pickSuggestionManually(index, suggestion);
     }
 
     // Helper to avoid writing the try{}catch block each time

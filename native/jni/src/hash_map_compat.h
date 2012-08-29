@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 
-#include "com_android_inputmethod_latin_NativeUtils.h"
-#include "jni.h"
-#include "jni_common.h"
+#ifndef LATINIME_HASH_MAP_COMPAT_H
+#define LATINIME_HASH_MAP_COMPAT_H
 
-#include <cmath>
+// TODO: Use std::unordered_map that has been standardized in C++11
 
-namespace latinime {
+#ifdef __APPLE__
+#include <ext/hash_map>
+#else // __APPLE__
+#include <hash_map>
+#endif // __APPLE__
 
-static float latinime_NativeUtils_powf(float x, float y) {
-    return powf(x, y);
-}
+#ifdef __SGI_STL_PORT
+#define hash_map_compat stlport::hash_map
+#else // __SGI_STL_PORT
+#define hash_map_compat __gnu_cxx::hash_map
+#endif // __SGI_STL_PORT
 
-static JNINativeMethod sMethods[] = {
-    {"powf", "(FF)F", (void*)latinime_NativeUtils_powf}
-};
-
-int register_NativeUtils(JNIEnv *env) {
-    const char *const kClassPathName = "com/android/inputmethod/latin/NativeUtils";
-    return registerNativeMethods(env, kClassPathName, sMethods,
-            sizeof(sMethods) / sizeof(sMethods[0]));
-}
-} // namespace latinime
+#endif // LATINIME_HASH_MAP_COMPAT_H

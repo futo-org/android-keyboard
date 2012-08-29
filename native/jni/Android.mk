@@ -36,7 +36,7 @@ LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
 LATIN_IME_JNI_SRC_FILES := \
     com_android_inputmethod_keyboard_ProximityInfo.cpp \
     com_android_inputmethod_latin_BinaryDictionary.cpp \
-    com_android_inputmethod_latin_NativeUtils.cpp \
+    com_android_inputmethod_latin_DicTraverseSession.cpp \
     jni_common.cpp
 
 LATIN_IME_CORE_SRC_FILES := \
@@ -46,6 +46,7 @@ LATIN_IME_CORE_SRC_FILES := \
     char_utils.cpp \
     correction.cpp \
     dictionary.cpp \
+    dic_traverse_wrapper.cpp \
     proximity_info.cpp \
     proximity_info_state.cpp \
     unigram_dictionary.cpp \

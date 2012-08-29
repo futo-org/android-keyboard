@@ -52,6 +52,8 @@ class BinaryFormat {
 
     // Mask for attribute frequency, stored on 4 bits inside the flags byte.
     static const int MASK_ATTRIBUTE_FREQUENCY = 0x0F;
+    // The numeric value of the shortcut frequency that means 'whitelist'.
+    static const int WHITELIST_SHORTCUT_FREQUENCY = 15;
 
     // Mask and flags for attribute address type selection.
     static const int MASK_ATTRIBUTE_ADDRESS_TYPE = 0x30;
@@ -59,13 +61,6 @@ class BinaryFormat {
     static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES = 0x20;
     static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES = 0x30;
 
- private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryFormat);
-    const static int32_t MINIMAL_ONE_BYTE_CHARACTER_VALUE = 0x20;
-    const static int32_t CHARACTER_ARRAY_TERMINATOR = 0x1F;
-    const static int MULTIPLE_BYTE_CHARACTER_ADDITIONAL_SIZE = 2;
-
- public:
     const static int UNKNOWN_FORMAT = -1;
     // Originally, format version 1 had a 16-bit magic number, then the version number `01'
     // then options that must be 0. Hence the first 32-bits of the format are always as follow
@@ -92,13 +87,13 @@ class BinaryFormat {
     static int skipFrequency(const uint8_t flags, const int pos);
     static int skipShortcuts(const uint8_t *const dict, const uint8_t flags, const int pos);
     static int skipBigrams(const uint8_t *const dict, const uint8_t flags, const int pos);
-    static int skipAllAttributes(const uint8_t *const dict, const uint8_t flags, const int pos);
     static int skipChildrenPosAndAttributes(const uint8_t *const dict, const uint8_t flags,
             const int pos);
     static int readChildrenPosition(const uint8_t *const dict, const uint8_t flags, const int pos);
     static bool hasChildrenInFlags(const uint8_t flags);
     static int getAttributeAddressAndForwardPointer(const uint8_t *const dict, const uint8_t flags,
             int *pos);
+    static int getAttributeFrequencyFromFlags(const int flags);
     static int getTerminalPosition(const uint8_t *const root, const int32_t *const inWord,
             const int length, const bool forceLowerCaseSearch);
     static int getWordAtAddress(const uint8_t *const root, const int address, const int maxDepth,
@@ -115,6 +110,13 @@ class BinaryFormat {
         REQUIRES_FRENCH_LIGATURES_PROCESSING = 0x4
     };
     const static unsigned int NO_FLAGS = 0;
+
+ private:
+    DISALLOW_IMPLICIT_CONSTRUCTORS(BinaryFormat);
+    const static int32_t MINIMAL_ONE_BYTE_CHARACTER_VALUE = 0x20;
+    const static int32_t CHARACTER_ARRAY_TERMINATOR = 0x1F;
+    const static int MULTIPLE_BYTE_CHARACTER_ADDITIONAL_SIZE = 2;
+    static int skipAllAttributes(const uint8_t *const dict, const uint8_t flags, const int pos);
 };
 
 inline int BinaryFormat::detectFormat(const uint8_t *const dict) {
@@ -338,6 +340,10 @@ inline int BinaryFormat::getAttributeAddressAndForwardPointer(const uint8_t *con
     } else {
         return origin + offset;
     }
+}
+
+inline int BinaryFormat::getAttributeFrequencyFromFlags(const int flags) {
+    return flags & MASK_ATTRIBUTE_FREQUENCY;
 }
 
 // This function gets the byte position of the last chargroup of the exact matching word in the

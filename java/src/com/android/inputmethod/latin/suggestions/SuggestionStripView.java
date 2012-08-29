@@ -58,6 +58,7 @@ import com.android.inputmethod.keyboard.MoreKeysPanel;
 import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.keyboard.ViewLayoutUtils;
 import com.android.inputmethod.latin.AutoCorrection;
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
@@ -72,7 +73,7 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
         OnLongClickListener {
     public interface Listener {
         public boolean addWordToUserDictionary(String word);
-        public void pickSuggestionManually(int index, CharSequence word, int x, int y);
+        public void pickSuggestionManually(int index, CharSequence word);
     }
 
     // The maximum number of suggestions available. See {@link Suggest#mPrefMaxSuggestions}.
@@ -88,9 +89,9 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
     private final MoreSuggestions.Builder mMoreSuggestionsBuilder;
     private final PopupWindow mMoreSuggestionsWindow;
 
-    private final ArrayList<TextView> mWords = new ArrayList<TextView>();
-    private final ArrayList<TextView> mInfos = new ArrayList<TextView>();
-    private final ArrayList<View> mDividers = new ArrayList<View>();
+    private final ArrayList<TextView> mWords = CollectionUtils.newArrayList();
+    private final ArrayList<TextView> mInfos = CollectionUtils.newArrayList();
+    private final ArrayList<View> mDividers = CollectionUtils.newArrayList();
 
     private final PopupWindow mPreviewPopup;
     private final TextView mPreviewText;
@@ -131,7 +132,7 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
 
     private static class SuggestionStripViewParams {
         private static final int DEFAULT_SUGGESTIONS_COUNT_IN_STRIP = 3;
-        private static final int DEFAULT_CENTER_SUGGESTION_PERCENTILE = 40;
+        private static final float DEFAULT_CENTER_SUGGESTION_PERCENTILE = 0.40f;
         private static final int DEFAULT_MAX_MORE_SUGGESTIONS_ROW = 2;
         private static final int PUNCTUATIONS_IN_STRIP = 5;
 
@@ -167,7 +168,7 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
 
         private final int mSuggestionStripOption;
 
-        private final ArrayList<CharSequence> mTexts = new ArrayList<CharSequence>();
+        private final ArrayList<CharSequence> mTexts = CollectionUtils.newArrayList();
 
         public boolean mMoreSuggestionsAvailable;
 
@@ -195,16 +196,16 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
                     R.styleable.SuggestionStripView, defStyle, R.style.SuggestionStripViewStyle);
             mSuggestionStripOption = a.getInt(
                     R.styleable.SuggestionStripView_suggestionStripOption, 0);
-            final float alphaValidTypedWord = getPercent(a,
-                    R.styleable.SuggestionStripView_alphaValidTypedWord, 100);
-            final float alphaTypedWord = getPercent(a,
-                    R.styleable.SuggestionStripView_alphaTypedWord, 100);
-            final float alphaAutoCorrect = getPercent(a,
-                    R.styleable.SuggestionStripView_alphaAutoCorrect, 100);
-            final float alphaSuggested = getPercent(a,
-                    R.styleable.SuggestionStripView_alphaSuggested, 100);
-            mAlphaObsoleted = getPercent(a,
-                    R.styleable.SuggestionStripView_alphaSuggested, 100);
+            final float alphaValidTypedWord = getFraction(a,
+                    R.styleable.SuggestionStripView_alphaValidTypedWord, 1.0f);
+            final float alphaTypedWord = getFraction(a,
+                    R.styleable.SuggestionStripView_alphaTypedWord, 1.0f);
+            final float alphaAutoCorrect = getFraction(a,
+                    R.styleable.SuggestionStripView_alphaAutoCorrect, 1.0f);
+            final float alphaSuggested = getFraction(a,
+                    R.styleable.SuggestionStripView_alphaSuggested, 1.0f);
+            mAlphaObsoleted = getFraction(a,
+                    R.styleable.SuggestionStripView_alphaSuggested, 1.0f);
             mColorValidTypedWord = applyAlpha(a.getColor(
                     R.styleable.SuggestionStripView_colorValidTypedWord, 0), alphaValidTypedWord);
             mColorTypedWord = applyAlpha(a.getColor(
@@ -216,14 +217,14 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
             mSuggestionsCountInStrip = a.getInt(
                     R.styleable.SuggestionStripView_suggestionsCountInStrip,
                     DEFAULT_SUGGESTIONS_COUNT_IN_STRIP);
-            mCenterSuggestionWeight = getPercent(a,
+            mCenterSuggestionWeight = getFraction(a,
                     R.styleable.SuggestionStripView_centerSuggestionPercentile,
                     DEFAULT_CENTER_SUGGESTION_PERCENTILE);
             mMaxMoreSuggestionsRow = a.getInt(
                     R.styleable.SuggestionStripView_maxMoreSuggestionsRow,
                     DEFAULT_MAX_MORE_SUGGESTIONS_ROW);
-            mMinMoreSuggestionsWidth = getRatio(a,
-                    R.styleable.SuggestionStripView_minMoreSuggestionsWidth);
+            mMinMoreSuggestionsWidth = getFraction(a,
+                    R.styleable.SuggestionStripView_minMoreSuggestionsWidth, 1.0f);
             a.recycle();
 
             mMoreSuggestionsHint = getMoreSuggestionsHint(res,
@@ -277,14 +278,8 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
             return new BitmapDrawable(res, buffer);
         }
 
-        // Read integer value in TypedArray as percent.
-        private static float getPercent(TypedArray a, int index, int defValue) {
-            return a.getInt(index, defValue) / 100.0f;
-        }
-
-        // Read fraction value in TypedArray as float.
-        private static float getRatio(TypedArray a, int index) {
-            return a.getFraction(index, 1000, 1000, 1) / 1000.0f;
+        static float getFraction(final TypedArray a, final int index, final float defValue) {
+            return a.getFraction(index, 1, 1, defValue);
         }
 
         private CharSequence getStyledSuggestionWord(SuggestedWords suggestedWords, int pos) {
@@ -726,9 +721,7 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
         public boolean onCustomRequest(int requestCode) {
             final int index = requestCode;
             final CharSequence word = mSuggestedWords.getWord(index);
-            // TODO: change caller path so coordinates are passed through here
-            mListener.pickSuggestionManually(index, word, NOT_A_TOUCH_COORDINATE,
-                    NOT_A_TOUCH_COORDINATE);
+            mListener.pickSuggestionManually(index, word);
             dismissMoreSuggestions();
             return true;
         }
@@ -874,7 +867,7 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
             return;
 
         final CharSequence word = mSuggestedWords.getWord(index);
-        mListener.pickSuggestionManually(index, word, mLastX, mLastY);
+        mListener.pickSuggestionManually(index, word);
     }
 
     @Override

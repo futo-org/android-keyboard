@@ -25,6 +25,7 @@ import android.view.inputmethod.EditorInfo;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.R;
 
 import java.util.HashMap;
@@ -38,7 +39,7 @@ public class KeyCodeDescriptionMapper {
     private static KeyCodeDescriptionMapper sInstance = new KeyCodeDescriptionMapper();
 
     // Map of key labels to spoken description resource IDs
-    private final HashMap<CharSequence, Integer> mKeyLabelMap;
+    private final HashMap<CharSequence, Integer> mKeyLabelMap = CollectionUtils.newHashMap();
 
     // Sparse array of spoken description resource IDs indexed by key codes
     private final SparseIntArray mKeyCodeMap;
@@ -52,7 +53,6 @@ public class KeyCodeDescriptionMapper {
     }
 
     private KeyCodeDescriptionMapper() {
-        mKeyLabelMap = new HashMap<CharSequence, Integer>();
         mKeyCodeMap = new SparseIntArray();
     }
 

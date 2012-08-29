@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.SparseArray;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -51,13 +52,34 @@ public class BinaryDictionary extends Dictionary {
     private static final int TYPED_LETTER_MULTIPLIER = 2;
 
     private long mNativeDict;
-    private final int[] mInputCodes = new int[MAX_WORD_LENGTH];
+    private final Locale mLocale;
+    private final int[] mInputCodePoints = new int[MAX_WORD_LENGTH];
+    // TODO: The below should be int[] mOutputCodePoints
     private final char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_RESULTS];
     private final int[] mSpaceIndices = new int[MAX_SPACES];
     private final int[] mOutputScores = new int[MAX_RESULTS];
     private final int[] mOutputTypes = new int[MAX_RESULTS];
 
     private final boolean mUseFullEditDistance;
+
+    private final SparseArray<DicTraverseSession> mDicTraverseSessions =
+            CollectionUtils.newSparseArray();
+
+    // TODO: There should be a way to remove used DicTraverseSession objects from
+    // {@code mDicTraverseSessions}.
+    private DicTraverseSession getTraverseSession(int traverseSessionId) {
+        synchronized(mDicTraverseSessions) {
+            DicTraverseSession traverseSession = mDicTraverseSessions.get(traverseSessionId);
+            if (traverseSession == null) {
+                traverseSession = mDicTraverseSessions.get(traverseSessionId);
+                if (traverseSession == null) {
+                    traverseSession = new DicTraverseSession(mLocale, mNativeDict);
+                    mDicTraverseSessions.put(traverseSessionId, traverseSession);
+                }
+            }
+            return traverseSession;
+        }
+    }
 
     /**
      * Constructor for the binary dictionary. This is supposed to be called from the
@@ -74,6 +96,7 @@ public class BinaryDictionary extends Dictionary {
             final String filename, final long offset, final long length,
             final boolean useFullEditDistance, final Locale locale, final String dictType) {
         super(dictType);
+        mLocale = locale;
         mUseFullEditDistance = useFullEditDistance;
         loadDictionary(filename, offset, length);
     }
@@ -86,18 +109,17 @@ public class BinaryDictionary extends Dictionary {
             int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength, int maxWords,
             int maxPredictions);
     private native void closeNative(long dict);
-    private native int getFrequencyNative(long dict, int[] word, int wordLength);
+    private native int getFrequencyNative(long dict, int[] word);
     private native boolean isValidBigramNative(long dict, int[] word1, int[] word2);
-    private native int getSuggestionsNative(long dict, long proximityInfo, int[] xCoordinates,
-            int[] yCoordinates, int[] times, int[] pointerIds, int[] inputCodes, int codesSize,
-            int commitPoint, boolean isGesture,
+    private native int getSuggestionsNative(long dict, long proximityInfo, long traverseSession,
+            int[] xCoordinates, int[] yCoordinates, int[] times, int[] pointerIds,
+            int[] inputCodePoints, int codesSize, int commitPoint, boolean isGesture,
             int[] prevWordCodePointArray, boolean useFullEditDistance, char[] outputChars,
             int[] outputScores, int[] outputIndices, int[] outputTypes);
-    private static native float calcNormalizedScoreNative(
-            char[] before, int beforeLength, char[] after, int afterLength, int score);
-    private static native int editDistanceNative(
-            char[] before, int beforeLength, char[] after, int afterLength);
+    private static native float calcNormalizedScoreNative(char[] before, char[] after, int score);
+    private static native int editDistanceNative(char[] before, char[] after);
 
+    // TODO: Move native dict into session
     private final void loadDictionary(String path, long startOffset, long length) {
         mNativeDict = openNative(path, startOffset, length, TYPED_LETTER_MULTIPLIER,
                 FULL_WORD_SCORE_MULTIPLIER, MAX_WORD_LENGTH, MAX_WORDS, MAX_PREDICTIONS);
@@ -106,10 +128,15 @@ public class BinaryDictionary extends Dictionary {
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final CharSequence prevWord, final ProximityInfo proximityInfo) {
+        return getSuggestionsWithSessionId(composer, prevWord, proximityInfo, 0);
+    }
+
+    @Override
+    public ArrayList<SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
+            final CharSequence prevWord, final ProximityInfo proximityInfo, int sessionId) {
         if (!isValidDictionary()) return null;
-        Arrays.fill(mInputCodes, WordComposer.NOT_A_CODE);
-        Arrays.fill(mOutputChars, (char) 0);
-        Arrays.fill(mOutputScores, 0);
+
+        Arrays.fill(mInputCodePoints, Constants.NOT_A_CODE);
         // TODO: toLowerCase in the native code
         final int[] prevWordCodePointArray = (null == prevWord)
                 ? null : StringUtils.toCodePointArray(prevWord.toString());
@@ -119,7 +146,7 @@ public class BinaryDictionary extends Dictionary {
         if (composerSize <= 1 || !isGesture) {
             if (composerSize > MAX_WORD_LENGTH - 1) return null;
             for (int i = 0; i < composerSize; i++) {
-                mInputCodes[i] = composer.getCodeAt(i);
+                mInputCodePoints[i] = composer.getCodeAt(i);
             }
         }
 
@@ -127,24 +154,25 @@ public class BinaryDictionary extends Dictionary {
         final int codesSize = isGesture ? ips.getPointerSize() : composerSize;
         // proximityInfo and/or prevWordForBigrams may not be null.
         final int tmpCount = getSuggestionsNative(mNativeDict,
-                proximityInfo.getNativeProximityInfo(), ips.getXCoordinates(),
-                ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
-                mInputCodes, codesSize, 0 /* commitPoint */, isGesture, prevWordCodePointArray,
+                proximityInfo.getNativeProximityInfo(), getTraverseSession(sessionId).getSession(),
+                ips.getXCoordinates(), ips.getYCoordinates(), ips.getTimes(), ips.getPointerIds(),
+                mInputCodePoints, codesSize, 0 /* commitPoint */, isGesture, prevWordCodePointArray,
                 mUseFullEditDistance, mOutputChars, mOutputScores, mSpaceIndices, mOutputTypes);
         final int count = Math.min(tmpCount, MAX_PREDICTIONS);
 
-        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<SuggestedWordInfo>();
+        final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         for (int j = 0; j < count; ++j) {
             if (composerSize > 0 && mOutputScores[j] < 1) break;
             final int start = j * MAX_WORD_LENGTH;
             int len = 0;
-            while (len <  MAX_WORD_LENGTH && mOutputChars[start + len] != 0) {
+            while (len < MAX_WORD_LENGTH && mOutputChars[start + len] != 0) {
                 ++len;
             }
             if (len > 0) {
+                final int score = SuggestedWordInfo.KIND_WHITELIST == mOutputTypes[j]
+                        ? SuggestedWordInfo.MAX_SCORE : mOutputScores[j];
                 suggestions.add(new SuggestedWordInfo(
-                        new String(mOutputChars, start, len),
-                        mOutputScores[j], SuggestedWordInfo.KIND_CORRECTION, mDictType));
+                        new String(mOutputChars, start, len), score, mOutputTypes[j], mDictType));
             }
         }
         return suggestions;
@@ -155,13 +183,11 @@ public class BinaryDictionary extends Dictionary {
     }
 
     public static float calcNormalizedScore(String before, String after, int score) {
-        return calcNormalizedScoreNative(before.toCharArray(), before.length(),
-                after.toCharArray(), after.length(), score);
+        return calcNormalizedScoreNative(before.toCharArray(), after.toCharArray(), score);
     }
 
     public static int editDistance(String before, String after) {
-        return editDistanceNative(
-                before.toCharArray(), before.length(), after.toCharArray(), after.length());
+        return editDistanceNative(before.toCharArray(), after.toCharArray());
     }
 
     @Override
@@ -172,8 +198,8 @@ public class BinaryDictionary extends Dictionary {
     @Override
     public int getFrequency(CharSequence word) {
         if (word == null) return -1;
-        int[] chars = StringUtils.toCodePointArray(word.toString());
-        return getFrequencyNative(mNativeDict, chars, chars.length);
+        int[] codePoints = StringUtils.toCodePointArray(word.toString());
+        return getFrequencyNative(mNativeDict, codePoints);
     }
 
     // TODO: Add a batch process version (isValidBigramMultiple?) to avoid excessive numbers of jni
@@ -186,11 +212,20 @@ public class BinaryDictionary extends Dictionary {
     }
 
     @Override
-    public synchronized void close() {
+    public void close() {
+        synchronized (mDicTraverseSessions) {
+            final int sessionsSize = mDicTraverseSessions.size();
+            for (int index = 0; index < sessionsSize; ++index) {
+                final DicTraverseSession traverseSession = mDicTraverseSessions.valueAt(index);
+                if (traverseSession != null) {
+                    traverseSession.close();
+                }
+            }
+        }
         closeInternal();
     }
 
-    private void closeInternal() {
+    private synchronized void closeInternal() {
         if (mNativeDict != 0) {
             closeNative(mNativeDict);
             mNativeDict = 0;

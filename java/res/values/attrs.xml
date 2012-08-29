@@ -41,26 +41,24 @@
              checkable+checked+pressed. -->
         <attr name="keyBackground" format="reference" />
 
-        <!-- Size of the text for one letter keys. If not defined, keyLetterRatio takes effect. -->
-        <attr name="keyLetterSize" format="dimension" />
-        <!-- Size of the text for keys with multiple letters. If not defined, keyLabelRatio takes
-             effect. -->
-        <attr name="keyLabelSize" format="dimension" />
-        <!-- Size of the text for one letter keys, in the proportion of key height. -->
-        <attr name="keyLetterRatio" format="float" />
+        <!-- Size of the text for one letter keys. If specified as fraction, the text size is
+             measured in the proportion of key height. -->
+        <attr name="keyLetterSize" format="dimension|fraction" />
+        <!-- Size of the text for keys with multiple letters. If specified as fraction, the text
+             size is measured in the proportion of key height. -->
+        <attr name="keyLabelSize" format="dimension|fraction" />
         <!-- Large size of the text for one letter keys, in the proportion of key height. -->
-        <attr name="keyLargeLetterRatio" format="float" />
-        <!-- Size of the text for keys with multiple letters, in the proportion of key height. -->
-        <attr name="keyLabelRatio" format="float" />
+        <attr name="keyLargeLetterRatio" format="fraction" />
         <!-- Large size of the text for keys with multiple letters, in the proportion of key height. -->
-        <attr name="keyLargeLabelRatio" format="float" />
+        <attr name="keyLargeLabelRatio" format="fraction" />
         <!-- Size of the text for hint letter (= one character hint label), in the proportion of
              key height. -->
-        <attr name="keyHintLetterRatio" format="float" />
+        <attr name="keyHintLetterRatio" format="fraction" />
         <!-- Size of the text for hint label, in the proportion of key height. -->
-        <attr name="keyHintLabelRatio" format="float" />
+        <attr name="keyHintLabelRatio" format="fraction" />
         <!-- Size of the text for shifted letter hint, in the proportion of key height. -->
-        <attr name="keyShiftedLetterHintRatio" format="float" />
+        <attr name="keyShiftedLetterHintRatio" format="dimension|fraction" />
+
         <!-- Horizontal padding of left/right aligned key label to the edge of the key. -->
         <attr name="keyLabelHorizontalPadding" format="dimension" />
         <!-- Right padding of hint letter to the edge of the key.-->
@@ -96,8 +94,8 @@
         <attr name="keyPreviewOffset" format="dimension" />
         <!-- Height of the key press feedback popup. -->
         <attr name="keyPreviewHeight" format="dimension" />
-        <!-- Size of the text for key press feedback popup, int the proportion of key height -->
-        <attr name="keyPreviewTextRatio" format="float" />
+        <!-- Size of the text for key press feedback popup, in the proportion of key height. -->
+        <attr name="keyPreviewTextRatio" format="fraction" />
         <!-- Delay after key releasing and key press feedback dismissing in millisecond -->
         <attr name="keyPreviewLingerTimeout" format="integer" />
 
@@ -131,6 +129,12 @@
         <attr name="gestureFloatingPreviewTextConnectorWidth" format="dimension" />
         <!-- Delay after gesture input and gesture floating preview text dismissing in millisecond -->
         <attr name="gestureFloatingPreviewTextLingerTimeout" format="integer" />
+        <!-- Delay after gesture trail starts fading out in millisecond. -->
+        <attr name="gesturePreviewTrailFadeoutStartDelay" format="integer" />
+        <!-- Duration while gesture preview trail is fading out in millisecond. -->
+        <attr name="gesturePreviewTrailFadeoutDuration" format="integer" />
+        <!-- Interval of updating gesture preview trail in millisecond. -->
+        <attr name="gesturePreviewTrailUpdateInterval" format="integer" />
         <attr name="gesturePreviewTrailColor" format="color" />
         <attr name="gesturePreviewTrailWidth" format="dimension" />
     </declare-styleable>
@@ -181,13 +185,13 @@
         <attr name="colorTypedWord" format="color" />
         <attr name="colorAutoCorrect" format="color" />
         <attr name="colorSuggested" format="color" />
-        <attr name="alphaValidTypedWord" format="integer" />
-        <attr name="alphaTypedWord" format="integer" />
-        <attr name="alphaAutoCorrect" format="integer" />
-        <attr name="alphaSuggested" format="integer" />
-        <attr name="alphaObsoleted" format="integer" />
+        <attr name="alphaValidTypedWord" format="fraction" />
+        <attr name="alphaTypedWord" format="fraction" />
+        <attr name="alphaAutoCorrect" format="fraction" />
+        <attr name="alphaSuggested" format="fraction" />
+        <attr name="alphaObsoleted" format="fraction" />
         <attr name="suggestionsCountInStrip" format="integer" />
-        <attr name="centerSuggestionPercentile" format="integer" />
+        <attr name="centerSuggestionPercentile" format="fraction" />
         <attr name="maxMoreSuggestionsRow" format="integer" />
         <attr name="minMoreSuggestionsWidth" format="float" />
     </declare-styleable>

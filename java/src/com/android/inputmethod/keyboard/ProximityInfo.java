@@ -18,9 +18,9 @@ package com.android.inputmethod.keyboard;
 
 import android.graphics.Rect;
 import android.text.TextUtils;
-import android.util.FloatMath;
 
 import com.android.inputmethod.keyboard.Keyboard.Params.TouchPositionCorrection;
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.JniUtils;
 
 import java.util.Arrays;
@@ -112,7 +112,7 @@ public class ProximityInfo {
         final Key[] keys = mKeys;
         final TouchPositionCorrection touchPositionCorrection = mTouchPositionCorrection;
         final int[] proximityCharsArray = new int[mGridSize * MAX_PROXIMITY_CHARS_SIZE];
-        Arrays.fill(proximityCharsArray, KeyDetector.NOT_A_CODE);
+        Arrays.fill(proximityCharsArray, Constants.NOT_A_CODE);
         for (int i = 0; i < mGridSize; ++i) {
             final int proximityCharsLength = gridNeighborKeys[i].length;
             for (int j = 0; j < proximityCharsLength; ++j) {
@@ -155,7 +155,9 @@ public class ProximityInfo {
                     final float radius = touchPositionCorrection.mRadii[row];
                     sweetSpotCenterXs[i] = hitBox.exactCenterX() + x * hitBoxWidth;
                     sweetSpotCenterYs[i] = hitBox.exactCenterY() + y * hitBoxHeight;
-                    sweetSpotRadii[i] = radius * FloatMath.sqrt(
+                    // Note that, in recent versions of Android, FloatMath is actually slower than
+                    // java.lang.Math due to the way the JIT optimizes java.lang.Math.
+                    sweetSpotRadii[i] = radius * (float)Math.sqrt(
                             hitBoxWidth * hitBoxWidth + hitBoxHeight * hitBoxHeight);
                 }
             }
@@ -233,7 +235,7 @@ public class ProximityInfo {
             dest[index++] = code;
         }
         if (index < destLength) {
-            dest[index] = KeyDetector.NOT_A_CODE;
+            dest[index] = Constants.NOT_A_CODE;
         }
     }
 

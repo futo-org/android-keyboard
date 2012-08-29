@@ -33,6 +33,7 @@ import com.android.inputmethod.keyboard.internal.KeyStyles;
 import com.android.inputmethod.keyboard.internal.KeyboardCodesSet;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardTextsSet;
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 import com.android.inputmethod.latin.R;
@@ -134,7 +135,7 @@ public class Keyboard {
     public final Key[] mAltCodeKeysWhileTyping;
     public final KeyboardIconsSet mIconsSet;
 
-    private final SparseArray<Key> mKeyCache = new SparseArray<Key>();
+    private final SparseArray<Key> mKeyCache = CollectionUtils.newSparseArray();
 
     private final ProximityInfo mProximityInfo;
     private final boolean mProximityCharsCorrectionEnabled;
@@ -219,6 +220,11 @@ public class Keyboard {
         return code >= CODE_SPACE;
     }
 
+    @Override
+    public String toString() {
+        return mId.toString();
+    }
+
     public static class Params {
         public KeyboardId mId;
         public int mThemeId;
@@ -249,9 +255,9 @@ public class Keyboard {
         public int GRID_WIDTH;
         public int GRID_HEIGHT;
 
-        public final HashSet<Key> mKeys = new HashSet<Key>();
-        public final ArrayList<Key> mShiftKeys = new ArrayList<Key>();
-        public final ArrayList<Key> mAltCodeKeysWhileTyping = new ArrayList<Key>();
+        public final HashSet<Key> mKeys = CollectionUtils.newHashSet();
+        public final ArrayList<Key> mShiftKeys = CollectionUtils.newArrayList();
+        public final ArrayList<Key> mAltCodeKeysWhileTyping = CollectionUtils.newArrayList();
         public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
         public final KeyboardCodesSet mCodesSet = new KeyboardCodesSet();
         public final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
@@ -278,9 +284,10 @@ public class Keyboard {
             public void load(String[] data) {
                 final int dataLength = data.length;
                 if (dataLength % TOUCH_POSITION_CORRECTION_RECORD_SIZE != 0) {
-                    if (LatinImeLogger.sDBG)
+                    if (LatinImeLogger.sDBG) {
                         throw new RuntimeException(
                                 "the size of touch position correction data is invalid");
+                    }
                     return;
                 }
 
@@ -319,7 +326,7 @@ public class Keyboard {
 
             public boolean isValid() {
                 return mEnabled && mXs != null && mYs != null && mRadii != null
-                    && mXs.length > 0 && mYs.length > 0 && mRadii.length > 0;
+                        && mXs.length > 0 && mYs.length > 0 && mRadii.length > 0;
             }
         }
 
@@ -865,10 +872,12 @@ public class Keyboard {
             final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.Keyboard);
             try {
-                if (a.hasValue(R.styleable.Keyboard_horizontalGap))
+                if (a.hasValue(R.styleable.Keyboard_horizontalGap)) {
                     throw new XmlParseUtils.IllegalAttribute(parser, "horizontalGap");
-                if (a.hasValue(R.styleable.Keyboard_verticalGap))
+                }
+                if (a.hasValue(R.styleable.Keyboard_verticalGap)) {
                     throw new XmlParseUtils.IllegalAttribute(parser, "verticalGap");
+                }
                 return new Row(mResources, mParams, parser, mCurrentY);
             } finally {
                 a.recycle();
@@ -916,7 +925,9 @@ public class Keyboard {
                 throws XmlPullParserException, IOException {
             if (skip) {
                 XmlParseUtils.checkEndTag(TAG_KEY, parser);
-                if (DEBUG) startEndTag("<%s /> skipped", TAG_KEY);
+                if (DEBUG) {
+                    startEndTag("<%s /> skipped", TAG_KEY);
+                }
             } else {
                 final Key key = new Key(mResources, mParams, row, parser);
                 if (DEBUG) {
@@ -1094,9 +1105,9 @@ public class Keyboard {
 
         private boolean parseCaseCondition(XmlPullParser parser) {
             final KeyboardId id = mParams.mId;
-            if (id == null)
+            if (id == null) {
                 return true;
-
+            }
             final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.Keyboard_Case);
             try {
@@ -1200,9 +1211,9 @@ public class Keyboard {
             // If <case> does not have "index" attribute, that means this <case> is wild-card for
             // the attribute.
             final TypedValue v = a.peekValue(index);
-            if (v == null)
+            if (v == null) {
                 return true;
-
+            }
             if (isIntegerValue(v)) {
                 return intValue == a.getInt(index, 0);
             } else if (isStringValue(v)) {
@@ -1213,8 +1224,9 @@ public class Keyboard {
 
         private static boolean stringArrayContains(String[] array, String value) {
             for (final String elem : array) {
-                if (elem.equals(value))
+                if (elem.equals(value)) {
                     return true;
+                }
             }
             return false;
         }
@@ -1237,16 +1249,18 @@ public class Keyboard {
             TypedArray keyAttrs = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.Keyboard_Key);
             try {
-                if (!keyStyleAttr.hasValue(R.styleable.Keyboard_KeyStyle_styleName))
+                if (!keyStyleAttr.hasValue(R.styleable.Keyboard_KeyStyle_styleName)) {
                     throw new XmlParseUtils.ParseException("<" + TAG_KEY_STYLE
                             + "/> needs styleName attribute", parser);
+                }
                 if (DEBUG) {
                     startEndTag("<%s styleName=%s />%s", TAG_KEY_STYLE,
-                        keyStyleAttr.getString(R.styleable.Keyboard_KeyStyle_styleName),
-                        skip ? " skipped" : "");
+                            keyStyleAttr.getString(R.styleable.Keyboard_KeyStyle_styleName),
+                            skip ? " skipped" : "");
                 }
-                if (!skip)
+                if (!skip) {
                     mParams.mKeyStyles.parseKeyStyleAttributes(keyStyleAttr, keyAttrs, parser);
+                }
             } finally {
                 keyStyleAttr.recycle();
                 keyAttrs.recycle();
@@ -1267,8 +1281,9 @@ public class Keyboard {
         }
 
         private void endRow(Row row) {
-            if (mCurrentRow == null)
+            if (mCurrentRow == null) {
                 throw new InflateException("orphan end row tag");
+            }
             if (mRightEdgeKey != null) {
                 mRightEdgeKey.markAsRightEdge(mParams);
                 mRightEdgeKey = null;
@@ -1304,8 +1319,9 @@ public class Keyboard {
         public static float getDimensionOrFraction(TypedArray a, int index, int base,
                 float defValue) {
             final TypedValue value = a.peekValue(index);
-            if (value == null)
+            if (value == null) {
                 return defValue;
+            }
             if (isFractionValue(value)) {
                 return a.getFraction(index, base, base, defValue);
             } else if (isDimensionValue(value)) {
@@ -1316,8 +1332,9 @@ public class Keyboard {
 
         public static int getEnumValue(TypedArray a, int index, int defValue) {
             final TypedValue value = a.peekValue(index);
-            if (value == null)
+            if (value == null) {
                 return defValue;
+            }
             if (isIntegerValue(value)) {
                 return a.getInt(index, defValue);
             }

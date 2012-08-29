@@ -93,7 +93,7 @@ public class InputPointers {
         }
         mXCoordinates.append(xCoordinates, startPos, length);
         mYCoordinates.append(yCoordinates, startPos, length);
-        mPointerIds.fill(pointerId, startPos, length);
+        mPointerIds.fill(pointerId, mPointerIds.getLength(), length);
         mTimes.append(times, startPos, length);
     }
 
@@ -123,5 +123,11 @@ public class InputPointers {
 
     public int[] getTimes() {
         return mTimes.getPrimitiveArray();
+    }
+
+    @Override
+    public String toString() {
+        return "size=" + getPointerSize() + " id=" + mPointerIds + " time=" + mTimes
+                + " x=" + mXCoordinates + " y=" + mYCoordinates;
     }
 }

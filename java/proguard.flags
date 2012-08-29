@@ -44,6 +44,10 @@
   <init>(...);
 }
 
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
 -keep class com.android.inputmethod.research.ResearchLogger {
   void flush();
   void publishCurrentLogUnit(...);

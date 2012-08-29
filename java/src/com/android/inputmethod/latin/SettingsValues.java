@@ -185,7 +185,7 @@ public class SettingsValues {
 
     // Helper functions to create member values.
     private static SuggestedWords createSuggestPuncList(final String[] puncs) {
-        final ArrayList<SuggestedWordInfo> puncList = new ArrayList<SuggestedWordInfo>();
+        final ArrayList<SuggestedWordInfo> puncList = CollectionUtils.newArrayList();
         if (puncs != null) {
             for (final String puncSpec : puncs) {
                 puncList.add(new SuggestedWordInfo(KeySpecParser.getLabel(puncSpec),
@@ -415,6 +415,10 @@ public class SettingsValues {
         map.put(locale, System.currentTimeMillis());
         final String newStr = Utils.localeAndTimeHashMapToStr(map);
         prefs.edit().putString(Settings.PREF_LAST_USER_DICTIONARY_WRITE_TIME, newStr).apply();
+    }
+
+    public boolean isSameInputType(final EditorInfo editorInfo) {
+        return mInputAttributes.isSameInputType(editorInfo);
     }
 
     // For debug.

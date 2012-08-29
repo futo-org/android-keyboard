@@ -28,14 +28,14 @@ class ProximityInfo;
 
 class IncrementalDecoderInterface {
  public:
-    virtual int getSuggestions(ProximityInfo *pInfo, int *inputXs, int *inputYs, int *times,
-            int *pointerIds, int *codes, int inputSize, int commitPoint,
-            unsigned short *outWords, int *frequencies, int *outputIndices, int *outputTypes) = 0;
-    virtual void reset() = 0;
-    virtual void setDict(const UnigramDictionary *dict, const BigramDictionary *bigram,
-            const uint8_t *dictRoot, int rootPos) = 0;
-    virtual void setPrevWord(const int32_t *prevWord, int prevWordLength) = 0;
+    virtual int getSuggestions(ProximityInfo *pInfo, void *traverseSession,
+            int *inputXs, int *inputYs, int *times, int *pointerIds, int *codes,
+            int inputSize, int commitPoint, unsigned short *outWords, int *frequencies,
+            int *outputIndices, int *outputTypes) const = 0;
+    IncrementalDecoderInterface() { };
     virtual ~IncrementalDecoderInterface() { };
+ private:
+    DISALLOW_COPY_AND_ASSIGN(IncrementalDecoderInterface);
 };
 } // namespace latinime
 #endif // LATINIME_INCREMENTAL_DECODER_INTERFACE_H

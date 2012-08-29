@@ -44,18 +44,23 @@ class Dictionary {
     Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int typedLetterMultipler,
             int fullWordMultiplier, int maxWordLength, int maxWords, int maxPredictions);
 
-    int getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
-            int *times, int *pointerIds, int *codes, int codesSize, int *prevWordChars,
-            int prevWordLength, int commitPoint, bool isGesture,
+    int getSuggestions(ProximityInfo *proximityInfo, void *traverseSession, int *xcoordinates,
+            int *ycoordinates, int *times, int *pointerIds, int *codes, int codesSize,
+            int *prevWordChars, int prevWordLength, int commitPoint, bool isGesture,
             bool useFullEditDistance, unsigned short *outWords,
-            int *frequencies, int *spaceIndices, int *outputTypes);
+            int *frequencies, int *spaceIndices, int *outputTypes) const;
 
     int getBigrams(const int32_t *word, int length, int *codes, int codesSize,
             unsigned short *outWords, int *frequencies, int *outputTypes) const;
 
     int getFrequency(const int32_t *word, int length) const;
     bool isValidBigram(const int32_t *word1, int length1, const int32_t *word2, int length2) const;
-    void *getDict() const { return (void *)mDict; }
+    const uint8_t *getDict() const { // required to release dictionary buffer
+        return mDict;
+    }
+    const uint8_t *getOffsetDict() const {
+        return mOffsetDict;
+    }
     int getDictSize() const { return mDictSize; }
     int getMmapFd() const { return mMmapFd; }
     int getDictBufAdjust() const { return mDictBufAdjust; }
@@ -67,7 +72,8 @@ class Dictionary {
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Dictionary);
-    const unsigned char *mDict;
+    const uint8_t *mDict;
+    const uint8_t *mOffsetDict;
 
     // Used only for the mmap version of dictionary loading, but we use these as dummy variables
     // also for the malloc version.
@@ -85,8 +91,9 @@ class Dictionary {
 inline int Dictionary::wideStrLen(unsigned short *str) {
     if (!str) return 0;
     unsigned short *end = str;
-    while (*end)
+    while (*end) {
         end++;
+    }
     return end - str;
 }
 } // namespace latinime

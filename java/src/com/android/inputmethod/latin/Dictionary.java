@@ -42,7 +42,6 @@ public abstract class Dictionary {
     public static final String TYPE_USER = "user";
     // User history dictionary internal to LatinIME.
     public static final String TYPE_USER_HISTORY = "history";
-    public static final String TYPE_WHITELIST ="whitelist";
     protected final String mDictType;
 
     public Dictionary(final String dictType) {
@@ -61,6 +60,13 @@ public abstract class Dictionary {
     // and more)
     abstract public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
             final CharSequence prevWord, final ProximityInfo proximityInfo);
+
+    // The default implementation of this method ignores sessionId.
+    // Subclasses that want to use sessionId need to override this method.
+    public ArrayList<SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
+            final CharSequence prevWord, final ProximityInfo proximityInfo, int sessionId) {
+        return getSuggestions(composer, prevWord, proximityInfo);
+    }
 
     /**
      * Checks if the given word occurs in the dictionary

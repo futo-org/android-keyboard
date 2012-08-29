@@ -110,7 +110,6 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
             new WeakHashMap<Key, MoreKeysPanel>();
     private final boolean mConfigShowMoreKeysKeyboardAtTouchedPoint;
 
-    private final PointerTrackerParams mPointerTrackerParams;
     private final SuddenJumpingTouchEventHandler mTouchScreenRegulator;
 
     protected KeyDetector mKeyDetector;
@@ -127,11 +126,26 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
         private static final int MSG_LONGPRESS_KEY = 2;
         private static final int MSG_DOUBLE_TAP = 3;
 
-        private final KeyTimerParams mParams;
+        private final int mKeyRepeatStartTimeout;
+        private final int mKeyRepeatInterval;
+        private final int mLongPressKeyTimeout;
+        private final int mLongPressShiftKeyTimeout;
+        private final int mIgnoreAltCodeKeyTimeout;
 
-        public KeyTimerHandler(MainKeyboardView outerInstance, KeyTimerParams params) {
+        public KeyTimerHandler(final MainKeyboardView outerInstance,
+                final TypedArray mainKeyboardViewAttr) {
             super(outerInstance);
-            mParams = params;
+
+            mKeyRepeatStartTimeout = mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_keyRepeatStartTimeout, 0);
+            mKeyRepeatInterval = mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_keyRepeatInterval, 0);
+            mLongPressKeyTimeout = mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_longPressKeyTimeout, 0);
+            mLongPressShiftKeyTimeout = mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_longPressShiftKeyTimeout, 0);
+            mIgnoreAltCodeKeyTimeout = mainKeyboardViewAttr.getInt(
+                    R.styleable.MainKeyboardView_ignoreAltCodeKeyTimeout, 0);
         }
 
         @Override
@@ -146,7 +160,7 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
                 final Key currentKey = tracker.getKey();
                 if (currentKey != null && currentKey.mCode == msg.arg1) {
                     tracker.onRegisterKey(currentKey);
-                    startKeyRepeatTimer(tracker, mParams.mKeyRepeatInterval);
+                    startKeyRepeatTimer(tracker, mKeyRepeatInterval);
                 }
                 break;
             case MSG_LONGPRESS_KEY:
@@ -167,7 +181,7 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
 
         @Override
         public void startKeyRepeatTimer(PointerTracker tracker) {
-            startKeyRepeatTimer(tracker, mParams.mKeyRepeatStartTimeout);
+            startKeyRepeatTimer(tracker, mKeyRepeatStartTimeout);
         }
 
         public void cancelKeyRepeatTimer() {
@@ -185,7 +199,7 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
             final int delay;
             switch (code) {
             case Keyboard.CODE_SHIFT:
-                delay = mParams.mLongPressShiftKeyTimeout;
+                delay = mLongPressShiftKeyTimeout;
                 break;
             default:
                 delay = 0;
@@ -206,15 +220,15 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
             final int delay;
             switch (key.mCode) {
             case Keyboard.CODE_SHIFT:
-                delay = mParams.mLongPressShiftKeyTimeout;
+                delay = mLongPressShiftKeyTimeout;
                 break;
             default:
                 if (KeyboardSwitcher.getInstance().isInMomentarySwitchState()) {
                     // We use longer timeout for sliding finger input started from the symbols
                     // mode key.
-                    delay = mParams.mLongPressKeyTimeout * 3;
+                    delay = mLongPressKeyTimeout * 3;
                 } else {
-                    delay = mParams.mLongPressKeyTimeout;
+                    delay = mLongPressKeyTimeout;
                 }
                 break;
             }
@@ -268,7 +282,7 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
             }
 
             sendMessageDelayed(
-                    obtainMessage(MSG_TYPING_STATE_EXPIRED), mParams.mIgnoreAltCodeKeyTimeout);
+                    obtainMessage(MSG_TYPING_STATE_EXPIRED), mIgnoreAltCodeKeyTimeout);
             if (isTyping) {
                 return;
             }
@@ -307,50 +321,6 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
         }
     }
 
-    public static class PointerTrackerParams {
-        public final boolean mSlidingKeyInputEnabled;
-        public final int mTouchNoiseThresholdTime;
-        public final float mTouchNoiseThresholdDistance;
-
-        public static final PointerTrackerParams DEFAULT = new PointerTrackerParams();
-
-        private PointerTrackerParams() {
-            mSlidingKeyInputEnabled = false;
-            mTouchNoiseThresholdTime =0;
-            mTouchNoiseThresholdDistance = 0;
-        }
-
-        public PointerTrackerParams(TypedArray mainKeyboardViewAttr) {
-            mSlidingKeyInputEnabled = mainKeyboardViewAttr.getBoolean(
-                    R.styleable.MainKeyboardView_slidingKeyInputEnable, false);
-            mTouchNoiseThresholdTime = mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_touchNoiseThresholdTime, 0);
-            mTouchNoiseThresholdDistance = mainKeyboardViewAttr.getDimension(
-                    R.styleable.MainKeyboardView_touchNoiseThresholdDistance, 0);
-        }
-    }
-
-    static class KeyTimerParams {
-        public final int mKeyRepeatStartTimeout;
-        public final int mKeyRepeatInterval;
-        public final int mLongPressKeyTimeout;
-        public final int mLongPressShiftKeyTimeout;
-        public final int mIgnoreAltCodeKeyTimeout;
-
-        public KeyTimerParams(TypedArray mainKeyboardViewAttr) {
-            mKeyRepeatStartTimeout = mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_keyRepeatStartTimeout, 0);
-            mKeyRepeatInterval = mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_keyRepeatInterval, 0);
-            mLongPressKeyTimeout = mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_longPressKeyTimeout, 0);
-            mLongPressShiftKeyTimeout = mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_longPressShiftKeyTimeout, 0);
-            mIgnoreAltCodeKeyTimeout = mainKeyboardViewAttr.getInt(
-                    R.styleable.MainKeyboardView_ignoreAltCodeKeyTimeout, 0);
-        }
-    }
-
     public MainKeyboardView(Context context, AttributeSet attrs) {
         this(context, attrs, R.attr.mainKeyboardViewStyle);
     }
@@ -374,8 +344,8 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
                 R.styleable.MainKeyboardView_autoCorrectionSpacebarLedEnabled, false);
         mAutoCorrectionSpacebarLedIcon = a.getDrawable(
                 R.styleable.MainKeyboardView_autoCorrectionSpacebarLedIcon);
-        mSpacebarTextRatio = a.getFraction(R.styleable.MainKeyboardView_spacebarTextRatio,
-                1000, 1000, 1) / 1000.0f;
+        mSpacebarTextRatio = a.getFraction(
+                R.styleable.MainKeyboardView_spacebarTextRatio, 1, 1, 1.0f);
         mSpacebarTextColor = a.getColor(R.styleable.MainKeyboardView_spacebarTextColor, 0);
         mSpacebarTextShadowColor = a.getColor(
                 R.styleable.MainKeyboardView_spacebarTextShadowColor, 0);
@@ -389,18 +359,14 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
         final int altCodeKeyWhileTypingFadeinAnimatorResId = a.getResourceId(
                 R.styleable.MainKeyboardView_altCodeKeyWhileTypingFadeinAnimator, 0);
 
-        final KeyTimerParams keyTimerParams = new KeyTimerParams(a);
-        mPointerTrackerParams = new PointerTrackerParams(a);
-
         final float keyHysteresisDistance = a.getDimension(
                 R.styleable.MainKeyboardView_keyHysteresisDistance, 0);
         mKeyDetector = new KeyDetector(keyHysteresisDistance);
-        mKeyTimerHandler = new KeyTimerHandler(this, keyTimerParams);
+        mKeyTimerHandler = new KeyTimerHandler(this, a);
         mConfigShowMoreKeysKeyboardAtTouchedPoint = a.getBoolean(
                 R.styleable.MainKeyboardView_showMoreKeysKeyboardAtTouchedPoint, false);
+        PointerTracker.setParameters(a);
         a.recycle();
-
-        PointerTracker.setParameters(mPointerTrackerParams);
 
         mLanguageOnSpacebarFadeoutAnimator = loadObjectAnimator(
                 languageOnSpacebarFadeoutAnimatorResId, this);
@@ -482,7 +448,7 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(
                 keyboard, -getPaddingLeft(), -getPaddingTop() + mVerticalCorrection);
-        PointerTracker.setKeyDetector(mKeyDetector, mShouldHandleGesture);
+        PointerTracker.setKeyDetector(mKeyDetector);
         mTouchScreenRegulator.setKeyboard(keyboard);
         mMoreKeysPanelCache.clear();
 
@@ -500,12 +466,13 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
         AccessibleKeyboardViewProxy.getInstance().setKeyboard(keyboard);
     }
 
-    @Override
-    public void setGestureHandlingMode(final boolean shouldHandleGesture,
-            boolean drawsGesturePreviewTrail, boolean drawsGestureFloatingPreviewText) {
-        super.setGestureHandlingMode(shouldHandleGesture, drawsGesturePreviewTrail,
-                drawsGestureFloatingPreviewText);
-        PointerTracker.setKeyDetector(mKeyDetector, shouldHandleGesture);
+    // Note that this method is called from a non-UI thread.
+    public void setMainDictionaryAvailability(boolean mainDictionaryAvailable) {
+        PointerTracker.setMainDictionaryAvailability(mainDictionaryAvailable);
+    }
+
+    public void setGestureHandlingEnabledByUser(boolean gestureHandlingEnabledByUser) {
+        PointerTracker.setGestureHandlingEnabledByUser(gestureHandlingEnabledByUser);
     }
 
     /**
@@ -527,7 +494,17 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
         // to properly show the splash screen, which requires that the window token of the
         // KeyboardView be non-null.
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.getInstance().mainKeyboardView_onAttachedToWindow();
+            ResearchLogger.getInstance().mainKeyboardView_onAttachedToWindow(this);
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        // Notify the research logger that the keyboard view has been detached.  This is needed
+        // to invalidate the reference of {@link MainKeyboardView} to null.
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.getInstance().mainKeyboardView_onDetachedFromWindow();
         }
     }
 
@@ -607,9 +584,8 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
     }
 
     private void invokeCodeInput(int primaryCode) {
-        mKeyboardActionListener.onCodeInput(primaryCode,
-                KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
-                KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
+        mKeyboardActionListener.onCodeInput(
+                primaryCode, Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
     }
 
     private void invokeReleaseKey(int primaryCode) {
@@ -832,20 +808,6 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void draw(Canvas c) {
-        Utils.GCUtils.getInstance().reset();
-        boolean tryGC = true;
-        for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
-            try {
-                super.draw(c);
-                tryGC = false;
-            } catch (OutOfMemoryError e) {
-                tryGC = Utils.GCUtils.getInstance().tryGCOrWait(TAG, e);
-            }
-        }
     }
 
     /**

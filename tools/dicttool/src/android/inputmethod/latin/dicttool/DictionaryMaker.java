@@ -27,7 +27,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -112,7 +113,7 @@ public class DictionaryMaker {
 
         public static String getHelp() {
             return "Usage: makedict "
-                    + "[-s <unigrams.xml> [-b <bigrams.xml>] [-c <shortcuts.xml>] "
+                    + "[-s <unigrams.xml> [-b <bigrams.xml>] [-c <shortcuts_and_whitelist.xml>] "
                     + "| -s <binary input>] [-d <binary output format version 2>] "
                     + "[-d1 <binary output format version 1>] [-x <xml output>] [-2]\n"
                     + "\n"
@@ -238,15 +239,30 @@ public class DictionaryMaker {
      */
     private static FusionDictionary readBinaryFile(final String binaryFilename)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
-        final RandomAccessFile inputFile = new RandomAccessFile(binaryFilename, "r");
-        return BinaryDictInputOutput.readDictionaryBinary(inputFile, null);
+        FileInputStream inStream = null;
+
+        try {
+            final File file = new File(binaryFilename);
+            inStream = new FileInputStream(file);
+            final ByteBuffer buffer = inStream.getChannel().map(
+                    FileChannel.MapMode.READ_ONLY, 0, file.length());
+            return BinaryDictInputOutput.readDictionaryBinary(buffer, null);
+        } finally {
+            if (inStream != null) {
+                try {
+                    inStream.close();
+                } catch (IOException e) {
+                    // do nothing
+                }
+            }
+        }
     }
 
     /**
      * Read a dictionary from a unigram XML file, and optionally a bigram XML file.
      *
      * @param unigramXmlFilename the name of the unigram XML file. May not be null.
-     * @param shortcutXmlFilename the name of the shortcut XML file, or null if there is none.
+     * @param shortcutXmlFilename the name of the shortcut/whitelist XML file, or null if none.
      * @param bigramXmlFilename the name of the bigram XML file. Pass null if there are no bigrams.
      * @return the read dictionary.
      * @throws FileNotFoundException if one of the files can't be found

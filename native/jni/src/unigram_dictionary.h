@@ -53,7 +53,7 @@ class UnigramDictionary {
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(UnigramDictionary);
     void getWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
-            const int *ycoordinates, const int *codes, const int inputLength,
+            const int *ycoordinates, const int *codes, const int inputSize,
             const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
             const bool useFullEditDistance, Correction *correction,
             WordsPriorityQueuePool *queuePool) const;
@@ -72,16 +72,16 @@ class UnigramDictionary {
             Correction *correction) const;
     void getOneWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const std::map<int, int> *bigramMap,
-            const uint8_t *bigramFilter, const bool useFullEditDistance, const int inputLength,
+            const uint8_t *bigramFilter, const bool useFullEditDistance, const int inputSize,
             Correction *correction, WordsPriorityQueuePool *queuePool) const;
     void getSuggestionCandidates(
-            const bool useFullEditDistance, const int inputLength,
+            const bool useFullEditDistance, const int inputSize,
             const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
             Correction *correction, WordsPriorityQueuePool *queuePool, const bool doAutoCompletion,
             const int maxErrors, const int currentWordIndex) const;
     void getSplitMultipleWordsSuggestions(ProximityInfo *proximityInfo,
             const int *xcoordinates, const int *ycoordinates, const int *codes,
-            const bool useFullEditDistance, const int inputLength,
+            const bool useFullEditDistance, const int inputSize,
             Correction *correction, WordsPriorityQueuePool *queuePool,
             const bool hasAutoCorrectionCandidate) const;
     void onTerminal(const int freq, const TerminalAttributes& terminalAttributes,
@@ -92,21 +92,21 @@ class UnigramDictionary {
             const uint8_t *bigramFilter, Correction *correction, int *newCount,
             int *newChildPosition, int *nextSiblingPosition, WordsPriorityQueuePool *queuePool,
             const int currentWordIndex) const;
-    int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
+    int getMostFrequentWordLike(const int startInputIndex, const int inputSize,
             Correction *correction, unsigned short *word) const;
     int getMostFrequentWordLikeInner(const uint16_t *const inWord, const int length,
             short unsigned int *outWord) const;
     int getSubStringSuggestion(
             ProximityInfo *proximityInfo, const int *xcoordinates, const int *ycoordinates,
             const int *codes, const bool useFullEditDistance, Correction *correction,
-            WordsPriorityQueuePool *queuePool, const int inputLength,
+            WordsPriorityQueuePool *queuePool, const int inputSize,
             const bool hasAutoCorrectionCandidate, const int currentWordIndex,
             const int inputWordStartPos, const int inputWordLength,
             const int outputWordStartPos, const bool isSpaceProximity, int *freqArray,
             int *wordLengthArray, unsigned short *outputWord, int *outputWordLength) const;
     void getMultiWordsSuggestionRec(ProximityInfo *proximityInfo,
             const int *xcoordinates, const int *ycoordinates, const int *codes,
-            const bool useFullEditDistance, const int inputLength,
+            const bool useFullEditDistance, const int inputSize,
             Correction *correction, WordsPriorityQueuePool *queuePool,
             const bool hasAutoCorrectionCandidate, const int startPos, const int startWordIndex,
             const int outputWordLength, int *freqArray, int *wordLengthArray,

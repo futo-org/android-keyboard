@@ -265,6 +265,9 @@ static inline void prof_out(void) {
 // This must be equal to ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE in KeyDetector.java
 #define ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE 2
 
+// Assuming locale strings such as en_US, sr-Latn etc.
+#define MAX_LOCALE_STRING_LENGTH 10
+
 // Word limit for sub queues used in WordsPriorityQueuePool.  Sub queues are temporary queues used
 // for better performance.
 // Holds up to 1 candidate for each word
@@ -291,12 +294,13 @@ static inline void prof_out(void) {
 
 #define MAX_SPACES_INTERNAL 16
 
+// Max Distance between point to key
+#define MAX_POINT_TO_KEY_LENGTH 10000000
+
 // TODO: Reduce this constant if possible; check the maximum number of digraphs in the same
 // word in the dictionary for languages with digraphs, like German and French
 #define DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH 5
 
-// Minimum suggest depth for one word for all cases except for missing space suggestions.
-#define MIN_SUGGEST_DEPTH 1
 #define MIN_USER_TYPED_LENGTH_FOR_MULTIPLE_WORD_SUGGESTION 3
 #define MIN_USER_TYPED_LENGTH_FOR_EXCESSIVE_CHARACTER_SUGGESTION 3
 

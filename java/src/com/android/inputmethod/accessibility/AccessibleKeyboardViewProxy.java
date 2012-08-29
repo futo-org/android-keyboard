@@ -24,7 +24,6 @@ import android.support.v4.view.accessibility.AccessibilityEventCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -44,7 +43,7 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
 
     /**
      * Inset in pixels to look for keys when the user's finger exits the
-     * keyboard area. See {@link ViewConfiguration#getScaledEdgeSlop()}.
+     * keyboard area.
      */
     private int mEdgeSlop;
 
@@ -62,7 +61,8 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
 
     private void initInternal(InputMethodService inputMethod) {
         mInputMethod = inputMethod;
-        mEdgeSlop = ViewConfiguration.get(inputMethod).getScaledEdgeSlop();
+        mEdgeSlop = inputMethod.getResources().getDimensionPixelSize(
+                R.dimen.accessibility_edge_slop);
     }
 
     /**
@@ -114,8 +114,14 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
     public boolean dispatchHoverEvent(MotionEvent event, PointerTracker tracker) {
         final int x = (int) event.getX();
         final int y = (int) event.getY();
-        final Key key = tracker.getKeyOn(x, y);
         final Key previousKey = mLastHoverKey;
+        final Key key;
+
+        if (pointInView(x, y)) {
+            key = tracker.getKeyOn(x, y);
+        } else {
+            key = null;
+        }
 
         mLastHoverKey = key;
 
@@ -123,7 +129,7 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
         case MotionEvent.ACTION_HOVER_EXIT:
             // Make sure we're not getting an EXIT event because the user slid
             // off the keyboard area, then force a key press.
-            if (pointInView(x, y) && (key != null)) {
+            if (key != null) {
                 getAccessibilityNodeProvider().simulateKeyPress(key);
             }
             //$FALL-THROUGH$
@@ -250,7 +256,7 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
             text = context.getText(R.string.spoken_description_shiftmode_off);
         }
 
-        AccessibilityUtils.getInstance().speak(text);
+        AccessibilityUtils.getInstance().announceForAccessibility(mView, text);
     }
 
     /**
@@ -290,6 +296,6 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
         }
 
         final String text = context.getString(resId);
-        AccessibilityUtils.getInstance().speak(text);
+        AccessibilityUtils.getInstance().announceForAccessibility(mView, text);
     }
 }

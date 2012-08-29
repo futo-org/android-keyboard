@@ -50,9 +50,8 @@ public class Suggest {
 
     private Dictionary mMainDictionary;
     private ContactsBinaryDictionary mContactsDict;
-    private WhitelistDictionary mWhiteListDictionary;
     private final ConcurrentHashMap<String, Dictionary> mDictionaries =
-            new ConcurrentHashMap<String, Dictionary>();
+            CollectionUtils.newConcurrentHashMap();
 
     public static final int MAX_SUGGESTIONS = 18;
 
@@ -60,13 +59,11 @@ public class Suggest {
 
     // Locale used for upper- and title-casing words
     private final Locale mLocale;
-    private final SuggestInitializationListener mListener;
 
     public Suggest(final Context context, final Locale locale,
             final SuggestInitializationListener listener) {
-        initAsynchronously(context, locale);
+        initAsynchronously(context, locale, listener);
         mLocale = locale;
-        mListener = listener;
     }
 
     /* package for test */ Suggest(final Context context, final File dictionary,
@@ -74,23 +71,13 @@ public class Suggest {
         final Dictionary mainDict = DictionaryFactory.createDictionaryForTest(context, dictionary,
                 startOffset, length /* useFullEditDistance */, false, locale);
         mLocale = locale;
-        mListener = null;
         mMainDictionary = mainDict;
         addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_MAIN, mainDict);
-        initWhitelistAndAutocorrectAndPool(context, locale);
     }
 
-    private void initWhitelistAndAutocorrectAndPool(final Context context, final Locale locale) {
-        mWhiteListDictionary = new WhitelistDictionary(context, locale);
-        addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_WHITELIST, mWhiteListDictionary);
-    }
-
-    private void initAsynchronously(final Context context, final Locale locale) {
-        resetMainDict(context, locale);
-
-        // TODO: read the whitelist and init the pool asynchronously too.
-        // initPool should be done asynchronously now that the pool is thread-safe.
-        initWhitelistAndAutocorrectAndPool(context, locale);
+    private void initAsynchronously(final Context context, final Locale locale,
+            final SuggestInitializationListener listener) {
+        resetMainDict(context, locale, listener);
     }
 
     private static void addOrReplaceDictionary(
@@ -104,10 +91,11 @@ public class Suggest {
         }
     }
 
-    public void resetMainDict(final Context context, final Locale locale) {
+    public void resetMainDict(final Context context, final Locale locale,
+            final SuggestInitializationListener listener) {
         mMainDictionary = null;
-        if (mListener != null) {
-            mListener.onUpdateMainDictionaryAvailability(hasMainDictionary());
+        if (listener != null) {
+            listener.onUpdateMainDictionaryAvailability(hasMainDictionary());
         }
         new Thread("InitializeBinaryDictionary") {
             @Override
@@ -116,8 +104,8 @@ public class Suggest {
                         DictionaryFactory.createMainDictionaryFromManager(context, locale);
                 addOrReplaceDictionary(mDictionaries, Dictionary.TYPE_MAIN, newMainDict);
                 mMainDictionary = newMainDict;
-                if (mListener != null) {
-                    mListener.onUpdateMainDictionaryAvailability(hasMainDictionary());
+                if (listener != null) {
+                    listener.onUpdateMainDictionaryAvailability(hasMainDictionary());
                 }
             }
         }.start();
@@ -170,9 +158,17 @@ public class Suggest {
     public SuggestedWords getSuggestedWords(
             final WordComposer wordComposer, CharSequence prevWordForBigram,
             final ProximityInfo proximityInfo, final boolean isCorrectionEnabled) {
+        return getSuggestedWordsWithSessionId(
+                wordComposer, prevWordForBigram, proximityInfo, isCorrectionEnabled, 0);
+    }
+
+    public SuggestedWords getSuggestedWordsWithSessionId(
+            final WordComposer wordComposer, CharSequence prevWordForBigram,
+            final ProximityInfo proximityInfo, final boolean isCorrectionEnabled, int sessionId) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         if (wordComposer.isBatchMode()) {
-            return getSuggestedWordsForBatchInput(wordComposer, prevWordForBigram, proximityInfo);
+            return getSuggestedWordsForBatchInput(
+                    wordComposer, prevWordForBigram, proximityInfo, sessionId);
         } else {
             return getSuggestedWordsForTypingInput(wordComposer, prevWordForBigram, proximityInfo,
                     isCorrectionEnabled);
@@ -209,22 +205,19 @@ public class Suggest {
                     wordComposerForLookup, prevWordForBigram, proximityInfo));
         }
 
-        // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
-        // but still autocorrected from - in the case the whitelist only capitalizes the word.
-        // The whitelist should be case-insensitive, so it's not possible to be consistent with
-        // a boolean flag. Right now this is handled with a slight hack in
-        // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
-        final boolean allowsToBeAutoCorrected = AutoCorrection.isWhitelistedOrNotAWord(
-                mDictionaries, consideredWord, wordComposer.isFirstCharCapitalized());
-
-        final CharSequence whitelistedWord =
-                mWhiteListDictionary.getWhitelistedWord(consideredWord);
-        if (whitelistedWord != null) {
-            // MAX_SCORE ensures this will be considered strong enough to be auto-corrected
-            suggestionsSet.add(new SuggestedWordInfo(whitelistedWord,
-                    SuggestedWordInfo.MAX_SCORE, SuggestedWordInfo.KIND_WHITELIST,
-                    Dictionary.TYPE_WHITELIST));
+        final CharSequence whitelistedWord;
+        if (suggestionsSet.isEmpty()) {
+            whitelistedWord = null;
+        } else if (SuggestedWordInfo.KIND_WHITELIST != suggestionsSet.first().mKind) {
+            whitelistedWord = null;
+        } else {
+            whitelistedWord = suggestionsSet.first().mWord;
         }
+
+        final boolean allowsToBeAutoCorrected = (null != whitelistedWord
+                && !whitelistedWord.equals(consideredWord))
+                || AutoCorrection.isNotAWord(mDictionaries, consideredWord,
+                        wordComposer.isFirstCharCapitalized());
 
         final boolean hasAutoCorrection;
         // TODO: using isCorrectionEnabled here is not very good. It's probably useless, because
@@ -249,7 +242,7 @@ public class Suggest {
         }
 
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
-                new ArrayList<SuggestedWordInfo>(suggestionsSet);
+                CollectionUtils.newArrayList(suggestionsSet);
         final int suggestionsCount = suggestionsContainer.size();
         final boolean isFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
         final boolean isAllUpperCase = wordComposer.isAllUpperCase();
@@ -296,29 +289,28 @@ public class Suggest {
     // Retrieves suggestions for the batch input.
     private SuggestedWords getSuggestedWordsForBatchInput(
             final WordComposer wordComposer, CharSequence prevWordForBigram,
-            final ProximityInfo proximityInfo) {
+            final ProximityInfo proximityInfo, int sessionId) {
         final BoundedTreeSet suggestionsSet = new BoundedTreeSet(sSuggestedWordInfoComparator,
                 MAX_SUGGESTIONS);
 
         // At second character typed, search the unigrams (scores being affected by bigrams)
         for (final String key : mDictionaries.keySet()) {
-            // Skip UserUnigramDictionary and WhitelistDictionary to lookup
-            if (key.equals(Dictionary.TYPE_USER_HISTORY)
-                    || key.equals(Dictionary.TYPE_WHITELIST)) {
+            // Skip User history dictionary for lookup
+            // TODO: The user history dictionary should just override getSuggestionsWithSessionId
+            // to make sure it doesn't return anything and we should remove this test
+            if (key.equals(Dictionary.TYPE_USER_HISTORY)) {
                 continue;
             }
             final Dictionary dictionary = mDictionaries.get(key);
-            suggestionsSet.addAll(dictionary.getSuggestions(
-                    wordComposer, prevWordForBigram, proximityInfo));
+            suggestionsSet.addAll(dictionary.getSuggestionsWithSessionId(
+                    wordComposer, prevWordForBigram, proximityInfo, sessionId));
         }
 
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
-                new ArrayList<SuggestedWordInfo>(suggestionsSet);
+                CollectionUtils.newArrayList(suggestionsSet);
         final int suggestionsCount = suggestionsContainer.size();
-        final boolean isFirstCharCapitalized = wordComposer.isAutoCapitalized();
-        // TODO: Handle the manual temporary shifted mode.
-        // TODO: Should handle TextUtils.CAP_MODE_CHARACTER.
-        final boolean isAllUpperCase = false;
+        final boolean isFirstCharCapitalized = wordComposer.wasShiftedNoLock();
+        final boolean isAllUpperCase = wordComposer.isAllUpperCase();
         if (isFirstCharCapitalized || isAllUpperCase) {
             for (int i = 0; i < suggestionsCount; ++i) {
                 final SuggestedWordInfo wordInfo = suggestionsContainer.get(i);
@@ -346,7 +338,7 @@ public class Suggest {
         typedWordInfo.setDebugString("+");
         final int suggestionsSize = suggestions.size();
         final ArrayList<SuggestedWordInfo> suggestionsList =
-                new ArrayList<SuggestedWordInfo>(suggestionsSize);
+                CollectionUtils.newArrayList(suggestionsSize);
         suggestionsList.add(typedWordInfo);
         // Note: i here is the index in mScores[], but the index in mSuggestions is one more
         // than i because we added the typed word to mSuggestions without touching mScores.
@@ -399,7 +391,7 @@ public class Suggest {
     }
 
     public void close() {
-        final HashSet<Dictionary> dictionaries = new HashSet<Dictionary>();
+        final HashSet<Dictionary> dictionaries = CollectionUtils.newHashSet();
         dictionaries.addAll(mDictionaries.values());
         for (final Dictionary dictionary : dictionaries) {
             dictionary.close();

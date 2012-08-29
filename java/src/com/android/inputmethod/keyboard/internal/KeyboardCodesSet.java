@@ -17,13 +17,13 @@
 package com.android.inputmethod.keyboard.internal;
 
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.latin.CollectionUtils;
 
 import java.util.HashMap;
 
 public class KeyboardCodesSet {
-    private static final HashMap<String, int[]> sLanguageToCodesMap =
-            new HashMap<String, int[]>();
-    private static final HashMap<String, Integer> sNameToIdMap = new HashMap<String, Integer>();
+    private static final HashMap<String, int[]> sLanguageToCodesMap = CollectionUtils.newHashMap();
+    private static final HashMap<String, Integer> sNameToIdMap = CollectionUtils.newHashMap();
 
     private int[] mCodes = DEFAULT;
 

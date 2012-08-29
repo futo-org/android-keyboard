@@ -361,7 +361,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mPrefs = prefs;
         LatinImeLogger.init(this, prefs);
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.getInstance().init(this, prefs, mKeyboardSwitcher);
+            ResearchLogger.getInstance().init(this, prefs);
         }
         InputMethodManagerCompatWrapper.init(this);
         SubtypeSwitcher.init(this);
@@ -381,18 +381,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         ImfUtils.setAdditionalInputMethodSubtypes(this, mCurrentSettings.getAdditionalSubtypes());
 
-        Utils.GCUtils.getInstance().reset();
-        boolean tryGC = true;
-        // Shouldn't this be removed? I think that from Honeycomb on, the GC is now actually working
-        // as expected and this code is useless.
-        for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
-            try {
-                initSuggest();
-                tryGC = false;
-            } catch (OutOfMemoryError e) {
-                tryGC = Utils.GCUtils.getInstance().tryGCOrWait("InitSuggest", e);
-            }
-        }
+        initSuggest();
 
         mDisplayOrientation = res.getConfiguration().orientation;
 
@@ -416,7 +405,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     // Has to be package-visible for unit tests
-    /* package */ void loadSettings() {
+    /* package for test */
+    void loadSettings() {
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
         if (null == mPrefs) mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -433,10 +423,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
     }
 
+    // Note that this method is called from a non-UI thread.
     @Override
     public void onUpdateMainDictionaryAvailability(boolean isMainDictionaryAvailable) {
         mIsMainDictionaryAvailable = isMainDictionaryAvailable;
-        updateKeyboardViewGestureHandlingModeByMainDictionaryAvailability();
+        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        if (mainKeyboardView != null) {
+            mainKeyboardView.setMainDictionaryAvailability(isMainDictionaryAvailable);
+        }
     }
 
     private void initSuggest() {
@@ -517,7 +511,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     /* package private */ void resetSuggestMainDict() {
         final Locale subtypeLocale = mSubtypeSwitcher.getCurrentSubtypeLocale();
-        mSuggest.resetMainDict(this, subtypeLocale);
+        mSuggest.resetMainDict(this, subtypeLocale, this /* SuggestInitializationListener */);
         mIsMainDictionaryAvailable = DictionaryFactory.isDictionaryAvailable(this, subtypeLocale);
     }
 
@@ -536,7 +530,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onConfigurationChanged(Configuration conf) {
-        mSubtypeSwitcher.onConfigurationChanged(conf);
+        // System locale has been changed. Needs to reload keyboard.
+        if (mSubtypeSwitcher.onConfigurationChanged(conf, this)) {
+            loadKeyboard();
+        }
         // If orientation changed while predicting, commit the change
         if (mDisplayOrientation != conf.orientation) {
             mDisplayOrientation = conf.orientation;
@@ -603,6 +600,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
         mSubtypeSwitcher.updateSubtype(subtype);
+        loadKeyboard();
     }
 
     private void onStartInputInternal(EditorInfo editorInfo, boolean restarting) {
@@ -663,11 +661,23 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Forward this event to the accessibility utilities, if enabled.
         final AccessibilityUtils accessUtils = AccessibilityUtils.getInstance();
         if (accessUtils.isTouchExplorationEnabled()) {
-            accessUtils.onStartInputViewInternal(editorInfo, restarting);
+            accessUtils.onStartInputViewInternal(mainKeyboardView, editorInfo, restarting);
         }
 
-        if (!restarting) {
-            mSubtypeSwitcher.updateParametersOnStartInputView();
+        final boolean selectionChanged = mLastSelectionStart != editorInfo.initialSelStart
+                || mLastSelectionEnd != editorInfo.initialSelEnd;
+        final boolean inputTypeChanged = !mCurrentSettings.isSameInputType(editorInfo);
+        final boolean isDifferentTextField = !restarting || inputTypeChanged;
+        if (isDifferentTextField) {
+            final boolean currentSubtypeEnabled = mSubtypeSwitcher
+                    .updateParametersOnStartInputViewAndReturnIfCurrentSubtypeEnabled();
+            if (!currentSubtypeEnabled) {
+                // Current subtype is disabled. Needs to update subtype and keyboard.
+                final InputMethodSubtype newSubtype = ImfUtils.getCurrentInputMethodSubtype(
+                        this, mSubtypeSwitcher.getNoLanguageSubtype());
+                mSubtypeSwitcher.updateSubtype(newSubtype);
+                loadKeyboard();
+            }
         }
 
         // The EditorInfo might have a flag that affects fullscreen mode.
@@ -675,9 +685,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         updateFullscreenMode();
         mApplicationSpecifiedCompletions = null;
 
-        final boolean selectionChanged = mLastSelectionStart != editorInfo.initialSelStart
-                || mLastSelectionEnd != editorInfo.initialSelEnd;
-        if (!restarting || selectionChanged) {
+        if (isDifferentTextField || selectionChanged) {
             // If the selection changed, we reset the input state. Essentially, we come here with
             // restarting == true when the app called setText() or similar. We should reset the
             // state if the app set the text to something else, but keep it if it set a suggestion
@@ -692,7 +700,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
 
-        if (!restarting) {
+        if (isDifferentTextField) {
             mainKeyboardView.closing();
             loadSettings();
 
@@ -701,7 +709,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
 
             switcher.loadKeyboard(editorInfo, mCurrentSettings);
-            updateKeyboardViewGestureHandlingModeByMainDictionaryAvailability();
         }
         setSuggestionStripShownInternal(
                 isSuggestionsStripVisible(), /* needsInputViewShown */ false);
@@ -719,8 +726,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mHandler.cancelUpdateSuggestionStrip();
         mHandler.cancelDoubleSpacesTimer();
 
+        mainKeyboardView.setMainDictionaryAvailability(mIsMainDictionaryAvailable);
         mainKeyboardView.setKeyPreviewPopupEnabled(mCurrentSettings.mKeyPreviewPopupOn,
                 mCurrentSettings.mKeyPreviewPopupDismissDelay);
+        mainKeyboardView.setGestureHandlingEnabledByUser(mCurrentSettings.mGestureInputEnabled);
+        mainKeyboardView.setGesturePreviewMode(mCurrentSettings.mGesturePreviewTrailEnabled,
+                mCurrentSettings.mGestureFloatingPreviewTextEnabled);
 
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
@@ -898,13 +909,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 }
             }
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_onDisplayCompletions(applicationSpecifiedCompletions);
-        }
         if (!mCurrentSettings.isApplicationSpecifiedCompletionsOn()) return;
         mApplicationSpecifiedCompletions = applicationSpecifiedCompletions;
         if (applicationSpecifiedCompletions == null) {
             clearSuggestionStrip();
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.latinIME_onDisplayCompletions(null);
+            }
             return;
         }
 
@@ -926,6 +937,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // this case? This says to keep whatever the user typed.
         mWordComposer.setAutoCorrection(mWordComposer.getTypedWord());
         setSuggestionStripShown(true);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_onDisplayCompletions(applicationSpecifiedCompletions);
+        }
     }
 
     private void setSuggestionStripShownInternal(boolean shown, boolean needsInputViewShown) {
@@ -1046,9 +1060,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final CharSequence typedWord = mWordComposer.getTypedWord();
         if (typedWord.length() > 0) {
             mConnection.commitText(typedWord, 1);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIME_commitText(typedWord);
-            }
             final CharSequence prevWord = addToUserHistoryDictionary(typedWord);
             mLastComposedWord = mWordComposer.commitWord(
                     LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, typedWord.toString(),
@@ -1084,18 +1095,27 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mConnection.getCursorCapsMode(inputType);
     }
 
+    // Factor in auto-caps and manual caps and compute the current caps mode.
+    private int getActualCapsMode() {
+        final int manual = mKeyboardSwitcher.getManualCapsMode();
+        if (manual != WordComposer.CAPS_MODE_OFF) return manual;
+        final int auto = getCurrentAutoCapsState();
+        if (0 != (auto & TextUtils.CAP_MODE_CHARACTERS)) {
+            return WordComposer.CAPS_MODE_AUTO_SHIFT_LOCKED;
+        }
+        if (0 != auto) return WordComposer.CAPS_MODE_AUTO_SHIFTED;
+        return WordComposer.CAPS_MODE_OFF;
+    }
+
     private void swapSwapperAndSpace() {
         CharSequence lastTwo = mConnection.getTextBeforeCursor(2, 0);
         // It is guaranteed lastTwo.charAt(1) is a swapper - else this method is not called.
         if (lastTwo != null && lastTwo.length() == 2
                 && lastTwo.charAt(0) == Keyboard.CODE_SPACE) {
             mConnection.deleteSurroundingText(2, 0);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIME_deleteSurroundingText(2);
-            }
             mConnection.commitText(lastTwo.charAt(1) + " ", 1);
             if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIME_swapSwapperAndSpaceWhileInBatchEdit();
+                ResearchLogger.latinIME_swapSwapperAndSpace();
             }
             mKeyboardSwitcher.updateShiftState();
         }
@@ -1112,9 +1132,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mHandler.cancelDoubleSpacesTimer();
             mConnection.deleteSurroundingText(2, 0);
             mConnection.commitText(". ", 1);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIME_doubleSpaceAutoPeriod();
-            }
             mKeyboardSwitcher.updateShiftState();
             return true;
         }
@@ -1178,9 +1195,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void performEditorAction(int actionId) {
         mConnection.performEditorAction(actionId);
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_performEditorAction(actionId);
-        }
     }
 
     private void handleLanguageSwitchKey() {
@@ -1217,6 +1231,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // For backward compatibility. See {@link InputMethodService#sendKeyChar(char)}.
         if (code >= '0' && code <= '9') {
             super.sendKeyChar((char)code);
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.latinIME_sendKeyCodePoint(code);
+            }
             return;
         }
 
@@ -1233,9 +1250,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final String text = new String(new int[] { code }, 0, 1);
             mConnection.commitText(text, text.length());
         }
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_sendKeyCodePoint(code);
-        }
     }
 
     // Implementation of {@link KeyboardActionListener}.
@@ -1247,11 +1261,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         mLastKeyTime = when;
         mConnection.beginBatchEdit();
-
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_onCodeInput(primaryCode, x, y);
-        }
-
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         // The space state depends only on the last character pressed and its own previous
         // state. Here, we revert the space state to neutral if the key is actually modifying
@@ -1284,7 +1293,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             onSettingsKeyPressed();
             break;
         case Keyboard.CODE_SHORTCUT:
-            mSubtypeSwitcher.switchToShortcutIME();
+            mSubtypeSwitcher.switchToShortcutIME(this);
             break;
         case Keyboard.CODE_ACTION_ENTER:
             performEditorAction(getActionId(switcher.getKeyboard()));
@@ -1317,8 +1326,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     keyX = x;
                     keyY = y;
                 } else {
-                    keyX = NOT_A_TOUCH_COORDINATE;
-                    keyY = NOT_A_TOUCH_COORDINATE;
+                    keyX = Constants.NOT_A_COORDINATE;
+                    keyY = Constants.NOT_A_COORDINATE;
                 }
                 handleCharacter(primaryCode, keyX, keyY, spaceState);
             }
@@ -1333,22 +1342,24 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mLastComposedWord.deactivate();
         mEnteredText = null;
         mConnection.endBatchEdit();
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_onCodeInput(primaryCode, x, y);
+        }
     }
 
     // Called from PointerTracker through the KeyboardActionListener interface
     @Override
     public void onTextInput(CharSequence rawText) {
         mConnection.beginBatchEdit();
-        commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+        if (mWordComposer.isComposingWord()) {
+            commitCurrentAutoCorrection(LastComposedWord.NOT_A_SEPARATOR);
+        }
         mHandler.postUpdateSuggestionStrip();
         final CharSequence text = specificTldProcessingOnTextInput(rawText);
         if (SPACE_STATE_PHANTOM == mSpaceState) {
             sendKeyCodePoint(Keyboard.CODE_SPACE);
         }
         mConnection.commitText(text, 1);
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_commitText(text);
-        }
         mConnection.endBatchEdit();
         mKeyboardSwitcher.updateShiftState();
         mKeyboardSwitcher.onCodeInput(Keyboard.CODE_OUTPUT_TEXT);
@@ -1361,15 +1372,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onStartBatchInput() {
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
-            commitTyped(LastComposedWord.NOT_A_SEPARATOR);
+            commitCurrentAutoCorrection(LastComposedWord.NOT_A_SEPARATOR);
             mExpectingUpdateSelection = true;
             // TODO: Can we remove this?
             mSpaceState = SPACE_STATE_PHANTOM;
         }
         mConnection.endBatchEdit();
         // TODO: Should handle TextUtils.CAP_MODE_CHARACTER.
-        mWordComposer.setAutoCapitalized(
-                getCurrentAutoCapsState() != Constants.TextUtils.CAP_MODE_OFF);
+        mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode());
     }
 
     @Override
@@ -1447,9 +1457,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // like the smiley key or the .com key.
             final int length = mEnteredText.length();
             mConnection.deleteSurroundingText(length, 0);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIME_deleteSurroundingText(length);
-            }
             // If we have mEnteredText, then we know that mHasUncommittedTypedChars == false.
             // In addition we know that spaceState is false, and that we should not be
             // reverting any autocorrect at this point. So we can safely return.
@@ -1469,9 +1476,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mHandler.postUpdateSuggestionStrip();
             } else {
                 mConnection.deleteSurroundingText(1, 0);
-                if (ProductionFlag.IS_EXPERIMENTAL) {
-                    ResearchLogger.latinIME_deleteSurroundingText(1);
-                }
             }
         } else {
             if (mLastComposedWord.canRevertCommit()) {
@@ -1500,9 +1504,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 final int lengthToDelete = mLastSelectionEnd - mLastSelectionStart;
                 mConnection.setSelection(mLastSelectionEnd, mLastSelectionEnd);
                 mConnection.deleteSurroundingText(lengthToDelete, 0);
-                if (ProductionFlag.IS_EXPERIMENTAL) {
-                    ResearchLogger.latinIME_deleteSurroundingText(lengthToDelete);
-                }
             } else {
                 // There is no selection, just delete one character.
                 if (NOT_A_CURSOR_POSITION == mLastSelectionEnd) {
@@ -1521,14 +1522,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 } else {
                     mConnection.deleteSurroundingText(1, 0);
                 }
-                if (ProductionFlag.IS_EXPERIMENTAL) {
-                    ResearchLogger.latinIME_deleteSurroundingText(1);
-                }
                 if (mDeleteCount > DELETE_ACCELERATE_AT) {
                     mConnection.deleteSurroundingText(1, 0);
-                    if (ProductionFlag.IS_EXPERIMENTAL) {
-                        ResearchLogger.latinIME_deleteSurroundingText(1);
-                    }
                 }
             }
             if (mCurrentSettings.isSuggestionsRequested(mDisplayOrientation)) {
@@ -1604,13 +1599,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mWordComposer.add(primaryCode, keyX, keyY);
             // If it's the first letter, make note of auto-caps state
             if (mWordComposer.size() == 1) {
-                mWordComposer.setAutoCapitalized(
-                        getCurrentAutoCapsState() != Constants.TextUtils.CAP_MODE_OFF);
+                mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode());
             }
             mConnection.setComposingText(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
         } else {
             final boolean swapWeakSpace = maybeStripSpace(primaryCode,
-                    spaceState, KeyboardActionListener.SUGGESTION_STRIP_COORDINATE == x);
+                    spaceState, Constants.SUGGESTION_STRIP_COORDINATE == x);
 
             sendKeyCodePoint(primaryCode);
 
@@ -1640,7 +1634,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         final boolean swapWeakSpace = maybeStripSpace(primaryCode, spaceState,
-                KeyboardActionListener.SUGGESTION_STRIP_COORDINATE == x);
+                Constants.SUGGESTION_STRIP_COORDINATE == x);
 
         if (SPACE_STATE_PHANTOM == spaceState &&
                 mCurrentSettings.isPhantomSpacePromotingSymbol(primaryCode)) {
@@ -1687,6 +1681,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         Utils.Stats.onSeparator((char)primaryCode, x, y);
 
+        mHandler.postUpdateShiftState();
         return didAutoCorrect;
     }
 
@@ -1707,7 +1702,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // TODO: make this private
     // Outside LatinIME, only used by the test suite.
-    /* package for tests */ boolean isShowingPunctuationList() {
+    /* package for tests */
+    boolean isShowingPunctuationList() {
         if (mSuggestionStripView == null) return false;
         return mCurrentSettings.mSuggestPuncList == mSuggestionStripView.getSuggestions();
     }
@@ -1853,10 +1849,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         + "is empty? Impossible! I must commit suicide.");
             }
             Utils.Stats.onAutoCorrection(typedWord, autoCorrection.toString(), separatorCodePoint);
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIME_commitCurrentAutoCorrection(typedWord,
-                        autoCorrection.toString());
-            }
             mExpectingUpdateSelection = true;
             commitChosenWord(autoCorrection, LastComposedWord.COMMIT_TYPE_DECIDED_WORD,
                     separatorCodePoint);
@@ -1873,8 +1865,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Called from {@link SuggestionStripView} through the {@link SuggestionStripView#Listener}
     // interface
     @Override
-    public void pickSuggestionManually(final int index, final CharSequence suggestion,
-            final int x, final int y) {
+    public void pickSuggestionManually(final int index, final CharSequence suggestion) {
         final SuggestedWords suggestedWords = mSuggestionStripView.getSuggestions();
         // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
         if (suggestion.length() == 1 && isShowingPunctuationList()) {
@@ -1882,13 +1873,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // So, LatinImeLogger logs "" as a user's input.
             LatinImeLogger.logOnManualSuggestion("", suggestion.toString(), index, suggestedWords);
             // Rely on onCodeInput to do the complicated swapping/stripping logic consistently.
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIME_punctuationSuggestion(index, suggestion, x, y);
-            }
             final int primaryCode = suggestion.charAt(0);
             onCodeInput(primaryCode,
-                    KeyboardActionListener.SUGGESTION_STRIP_COORDINATE,
-                    KeyboardActionListener.SUGGESTION_STRIP_COORDINATE);
+                    Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE);
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.latinIME_punctuationSuggestion(index, suggestion);
+            }
             return;
         }
 
@@ -1915,10 +1905,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final CompletionInfo completionInfo = mApplicationSpecifiedCompletions[index];
             mConnection.commitCompletion(completionInfo);
             mConnection.endBatchEdit();
-            if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.latinIME_pickApplicationSpecifiedCompletion(index,
-                        completionInfo.getText(), x, y);
-            }
             return;
         }
 
@@ -1927,12 +1913,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final String replacedWord = mWordComposer.getTypedWord().toString();
         LatinImeLogger.logOnManualSuggestion(replacedWord,
                 suggestion.toString(), index, suggestedWords);
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_pickSuggestionManually(replacedWord, index, suggestion, x, y);
-        }
         mExpectingUpdateSelection = true;
         commitChosenWord(suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,
                 LastComposedWord.NOT_A_SEPARATOR);
+        if (ProductionFlag.IS_EXPERIMENTAL) {
+            ResearchLogger.latinIME_pickSuggestionManually(replacedWord, index, suggestion);
+        }
         mConnection.endBatchEdit();
         // Don't allow cancellation of manual pick
         mLastComposedWord.deactivate();
@@ -1948,8 +1934,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 // If the suggestion is not in the dictionary, the hint should be shown.
                 && !AutoCorrection.isValidWord(mSuggest.getUnigramDictionaries(), suggestion, true);
 
-        Utils.Stats.onSeparator((char)Keyboard.CODE_SPACE, WordComposer.NOT_A_COORDINATE,
-                WordComposer.NOT_A_COORDINATE);
+        Utils.Stats.onSeparator((char)Keyboard.CODE_SPACE,
+                Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         if (showingAddToDictionaryHint && mIsUserDictionaryAvailable) {
             mSuggestionStripView.showAddToDictionaryHint(
                     suggestion, mCurrentSettings.mHintToSaveText);
@@ -1967,9 +1953,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final SuggestedWords suggestedWords = mSuggestionStripView.getSuggestions();
         mConnection.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(
                 this, chosenWord, suggestedWords, mIsMainDictionaryAvailable), 1);
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_commitText(chosenWord);
-        }
         // Add the word to the user history dictionary
         final CharSequence prevWord = addToUserHistoryDictionary(chosenWord);
         // TODO: figure out here if this is an auto-correct or if the best word is actually
@@ -1992,6 +1975,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private CharSequence addToUserHistoryDictionary(final CharSequence suggestion) {
         if (TextUtils.isEmpty(suggestion)) return null;
+        if (mSuggest == null) return null;
 
         // If correction is not enabled, we don't add words to the user history dictionary.
         // That's to avoid unintended additions in some sensitive fields, or fields that
@@ -2003,7 +1987,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final CharSequence prevWord
                     = mConnection.getNthPreviousWord(mCurrentSettings.mWordSeparators, 2);
             final String secondWord;
-            if (mWordComposer.isAutoCapitalized() && !mWordComposer.isMostlyCaps()) {
+            if (mWordComposer.wasAutoCapitalized() && !mWordComposer.isMostlyCaps()) {
                 secondWord = suggestion.toString().toLowerCase(
                         mSubtypeSwitcher.getCurrentSubtypeLocale());
             } else {
@@ -2036,9 +2020,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mWordComposer.setComposingWord(word, mKeyboardSwitcher.getKeyboard());
         final int length = word.length();
         mConnection.deleteSurroundingText(length, 0);
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_deleteSurroundingText(length);
-        }
         mConnection.setComposingText(word, 1);
         mHandler.postUpdateSuggestionStrip();
     }
@@ -2066,9 +2047,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
         mConnection.deleteSurroundingText(deleteLength, 0);
-        if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.latinIME_deleteSurroundingText(deleteLength);
-        }
         if (!TextUtils.isEmpty(previousWord) && !TextUtils.isEmpty(committedWord)) {
             mUserHistoryDictionary.cancelAddingUserHistory(
                     previousWord.toString(), committedWord.toString());
@@ -2076,8 +2054,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mConnection.commitText(originallyTypedWord, 1);
         // Re-insert the separator
         sendKeyCodePoint(mLastComposedWord.mSeparatorCode);
-        Utils.Stats.onSeparator(mLastComposedWord.mSeparatorCode, WordComposer.NOT_A_COORDINATE,
-                WordComposer.NOT_A_COORDINATE);
+        Utils.Stats.onSeparator(mLastComposedWord.mSeparatorCode,
+                Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.latinIME_revertCommit(originallyTypedWord);
         }
@@ -2093,9 +2071,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mCurrentSettings.isWordSeparator(code);
     }
 
-    // Notify that language or mode have been changed and toggleLanguage will update KeyboardID
-    // according to new language or mode. Called from SubtypeSwitcher.
-    public void onRefreshKeyboard() {
+    // TODO: Make this private
+    // Outside LatinIME, only used by the {@link InputTestsBase} test suite.
+    /* package for test */
+    void loadKeyboard() {
         // When the device locale is changed in SetupWizard etc., this method may get called via
         // onConfigurationChanged before SoftInputWindow is shown.
         initSuggest();
@@ -2103,23 +2082,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mKeyboardSwitcher.getMainKeyboardView() != null) {
             // Reload keyboard because the current language has been changed.
             mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(), mCurrentSettings);
-            updateKeyboardViewGestureHandlingModeByMainDictionaryAvailability();
         }
         // Since we just changed languages, we should re-evaluate suggestions with whatever word
         // we are currently composing. If we are not composing anything, we may want to display
         // predictions or punctuation signs (which is done by the updateSuggestionStrip anyway).
         mHandler.postUpdateSuggestionStrip();
-    }
-
-    private void updateKeyboardViewGestureHandlingModeByMainDictionaryAvailability() {
-        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
-        if (mainKeyboardView != null) {
-            final boolean shouldHandleGesture = mCurrentSettings.mGestureInputEnabled
-                    && mIsMainDictionaryAvailable;
-            mainKeyboardView.setGestureHandlingMode(shouldHandleGesture,
-                    mCurrentSettings.mGesturePreviewTrailEnabled,
-                    mCurrentSettings.mGestureFloatingPreviewTextEnabled);
-        }
     }
 
     // TODO: Remove this method from {@link LatinIME} and move {@link FeedbackManager} to

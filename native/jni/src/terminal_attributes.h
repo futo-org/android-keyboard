@@ -30,13 +30,13 @@ class TerminalAttributes {
  public:
     class ShortcutIterator {
         const uint8_t *const mDict;
-        bool mHasNextShortcutTarget;
         int mPos;
+        bool mHasNextShortcutTarget;
 
      public:
-        ShortcutIterator(const uint8_t *dict, const int pos, const uint8_t flags) : mDict(dict),
-                mPos(pos) {
-            mHasNextShortcutTarget = (0 != (flags & BinaryFormat::FLAG_HAS_SHORTCUT_TARGETS));
+        ShortcutIterator(const uint8_t *dict, const int pos, const uint8_t flags)
+                : mDict(dict), mPos(pos),
+                  mHasNextShortcutTarget(0 != (flags & BinaryFormat::FLAG_HAS_SHORTCUT_TARGETS)) {
         }
 
         inline bool hasNextShortcutTarget() const {
@@ -46,7 +46,7 @@ class TerminalAttributes {
         // Gets the shortcut target itself as a uint16_t string. For parameters and return value
         // see BinaryFormat::getWordAtAddress.
         // TODO: make the output an uint32_t* to handle the whole unicode range.
-        inline int getNextShortcutTarget(const int maxDepth, uint16_t *outWord) {
+        inline int getNextShortcutTarget(const int maxDepth, uint16_t *outWord, int *outFreq) {
             const int shortcutFlags = BinaryFormat::getFlagsAndForwardPointer(mDict, &mPos);
             mHasNextShortcutTarget =
                     0 != (shortcutFlags & BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT);
@@ -56,18 +56,12 @@ class TerminalAttributes {
                 if (NOT_A_CHARACTER == charCode) break;
                 outWord[i] = (uint16_t)charCode;
             }
+            *outFreq = BinaryFormat::getAttributeFrequencyFromFlags(shortcutFlags);
             mPos += BinaryFormat::CHARACTER_ARRAY_TERMINATOR_SIZE;
             return i;
         }
     };
 
- private:
-    DISALLOW_IMPLICIT_CONSTRUCTORS(TerminalAttributes);
-    const uint8_t *const mDict;
-    const uint8_t mFlags;
-    const int mStartPos;
-
- public:
     TerminalAttributes(const uint8_t *const dict, const uint8_t flags, const int pos) :
             mDict(dict), mFlags(flags), mStartPos(pos) {
     }
@@ -77,6 +71,12 @@ class TerminalAttributes {
         // skipped quickly, so we ignore it.
         return ShortcutIterator(mDict, mStartPos + BinaryFormat::SHORTCUT_LIST_SIZE_SIZE, mFlags);
     }
+
+ private:
+    DISALLOW_IMPLICIT_CONSTRUCTORS(TerminalAttributes);
+    const uint8_t *const mDict;
+    const uint8_t mFlags;
+    const int mStartPos;
 };
 } // namespace latinime
 #endif // LATINIME_TERMINAL_ATTRIBUTES_H

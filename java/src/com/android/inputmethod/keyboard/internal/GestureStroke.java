@@ -14,11 +14,6 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.util.FloatMath;
-
-import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.InputPointers;
 import com.android.inputmethod.latin.ResizableIntArray;
 
@@ -38,44 +33,30 @@ public class GestureStroke {
     private int mLastPointY;
 
     private int mMinGestureLength;
-    private int mMinGestureLengthWhileInGesture;
     private int mMinGestureSampleLength;
 
     // TODO: Move some of these to resource.
-    private static final float MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH = 1.0f;
-    private static final float MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH_WHILE_IN_GESTURE = 0.5f;
-    private static final int MIN_GESTURE_DURATION = 150; // msec
-    private static final int MIN_GESTURE_DURATION_WHILE_IN_GESTURE = 75; // msec
-    private static final float MIN_GESTURE_SAMPLING_RATIO_TO_KEY_HEIGHT = 1.0f / 6.0f;
+    private static final float MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH = 0.75f;
+    private static final int MIN_GESTURE_DURATION = 100; // msec
+    private static final float MIN_GESTURE_SAMPLING_RATIO_TO_KEY_WIDTH = 1.0f / 6.0f;
     private static final float GESTURE_RECOG_SPEED_THRESHOLD = 0.4f; // dip/msec
     private static final float GESTURE_RECOG_CURVATURE_THRESHOLD = (float)(Math.PI / 4.0f);
 
-    private static final float DOUBLE_PI = (float)(2 * Math.PI);
+    private static final float DOUBLE_PI = (float)(2.0f * Math.PI);
 
-    // Fade based on number of gesture samples, see MIN_GESTURE_SAMPLING_RATIO_TO_KEY_HEIGHT
-    private static final int DRAWING_GESTURE_FADE_START = 10;
-    private static final int DRAWING_GESTURE_FADE_RATE = 6;
-
-    public GestureStroke(int pointerId) {
+    public GestureStroke(final int pointerId) {
         mPointerId = pointerId;
-        reset();
     }
 
-    public void setGestureSampleLength(final int keyWidth, final int keyHeight) {
+    public void setGestureSampleLength(final int keyWidth) {
         // TODO: Find an appropriate base metric for these length. Maybe diagonal length of the key?
         mMinGestureLength = (int)(keyWidth * MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH);
-        mMinGestureLengthWhileInGesture = (int)(
-                keyWidth * MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH_WHILE_IN_GESTURE);
-        mMinGestureSampleLength = (int)(keyHeight * MIN_GESTURE_SAMPLING_RATIO_TO_KEY_HEIGHT);
+        mMinGestureSampleLength = (int)(keyWidth * MIN_GESTURE_SAMPLING_RATIO_TO_KEY_WIDTH);
     }
 
-    public boolean isStartOfAGesture(final int downDuration, final boolean wasInGesture) {
-        // The tolerance of the time duration and the stroke length to detect the start of a
-        // gesture stroke should be eased when the previous input was a gesture input.
-        if (wasInGesture) {
-            return downDuration > MIN_GESTURE_DURATION_WHILE_IN_GESTURE
-                    && mLength > mMinGestureLengthWhileInGesture;
-        }
+    public boolean isStartOfAGesture() {
+        final int size = mEventTimes.getLength();
+        final int downDuration = (size > 0) ? mEventTimes.get(size - 1) : 0;
         return downDuration > MIN_GESTURE_DURATION && mLength > mMinGestureLength;
     }
 
@@ -149,23 +130,29 @@ public class GestureStroke {
     }
 
     private void appendBatchPoints(final InputPointers out, final int size) {
+        final int length = size - mLastIncrementalBatchSize;
+        if (length <= 0) {
+            return;
+        }
         out.append(mPointerId, mEventTimes, mXCoordinates, mYCoordinates,
-                mLastIncrementalBatchSize, size - mLastIncrementalBatchSize);
+                mLastIncrementalBatchSize, length);
         mLastIncrementalBatchSize = size;
     }
 
-    private static float getDistance(final int p1x, final int p1y,
-            final int p2x, final int p2y) {
-        final float dx = p1x - p2x;
-        final float dy = p1y - p2y;
-        // TODO: Optimize out this {@link FloatMath#sqrt(float)} call.
-        return FloatMath.sqrt(dx * dx + dy * dy);
+    private static float getDistance(final int x1, final int y1, final int x2, final int y2) {
+        final float dx = x1 - x2;
+        final float dy = y1 - y2;
+        // Note that, in recent versions of Android, FloatMath is actually slower than
+        // java.lang.Math due to the way the JIT optimizes java.lang.Math.
+        return (float)Math.sqrt(dx * dx + dy * dy);
     }
 
-    private static float getAngle(final int p1x, final int p1y, final int p2x, final int p2y) {
-        final int dx = p1x - p2x;
-        final int dy = p1y - p2y;
+    private static float getAngle(final int x1, final int y1, final int x2, final int y2) {
+        final int dx = x1 - x2;
+        final int dy = y1 - y2;
         if (dx == 0 && dy == 0) return 0;
+        // Would it be faster to call atan2f() directly via JNI?  Not sure about what the JIT
+        // does with Math.atan2().
         return (float)Math.atan2(dy, dx);
     }
 
@@ -175,24 +162,5 @@ public class GestureStroke {
             return DOUBLE_PI - diff;
         }
         return diff;
-    }
-
-    public void drawGestureTrail(Canvas canvas, Paint paint, int lastX, int lastY) {
-        // TODO: These paint parameter interpolation should be tunable, possibly introduce an object
-        // that implements an interface such as Paint getPaint(int step, int strokePoints)
-        final int size = mXCoordinates.getLength();
-        int[] xCoords = mXCoordinates.getPrimitiveArray();
-        int[] yCoords = mYCoordinates.getPrimitiveArray();
-        int alpha = Constants.Color.ALPHA_OPAQUE;
-        for (int i = size - 1; i > 0 && alpha > 0; i--) {
-            paint.setAlpha(alpha);
-            if (size - i > DRAWING_GESTURE_FADE_START) {
-                alpha -= DRAWING_GESTURE_FADE_RATE;
-            }
-            canvas.drawLine(xCoords[i - 1], yCoords[i - 1], xCoords[i], yCoords[i], paint);
-            if (i == size - 1) {
-                canvas.drawLine(lastX, lastY, xCoords[i], yCoords[i], paint);
-            }
-        }
     }
 }

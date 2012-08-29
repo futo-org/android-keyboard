@@ -21,7 +21,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
-import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -38,7 +37,7 @@ import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SettingsValues;
 import com.android.inputmethod.latin.SubtypeSwitcher;
-import com.android.inputmethod.latin.Utils;
+import com.android.inputmethod.latin.WordComposer;
 
 public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();
@@ -46,24 +45,24 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
     public static final String PREF_KEYBOARD_LAYOUT = "pref_keyboard_layout_20110916";
 
     static class KeyboardTheme {
-        public final String mName;
         public final int mThemeId;
         public final int mStyleId;
 
-        public KeyboardTheme(String name, int themeId, int styleId) {
-            mName = name;
+        // Note: The themeId should be aligned with "themeId" attribute of Keyboard style
+        // in values/style.xml.
+        public KeyboardTheme(int themeId, int styleId) {
             mThemeId = themeId;
             mStyleId = styleId;
         }
     }
 
     private static final KeyboardTheme[] KEYBOARD_THEMES = {
-        new KeyboardTheme("Basic",            0, R.style.KeyboardTheme),
-        new KeyboardTheme("HighContrast",     1, R.style.KeyboardTheme_HighContrast),
-        new KeyboardTheme("Stone",            6, R.style.KeyboardTheme_Stone),
-        new KeyboardTheme("Stone.Bold",       7, R.style.KeyboardTheme_Stone_Bold),
-        new KeyboardTheme("GingerBread",      8, R.style.KeyboardTheme_Gingerbread),
-        new KeyboardTheme("IceCreamSandwich", 5, R.style.KeyboardTheme_IceCreamSandwich),
+        new KeyboardTheme(0, R.style.KeyboardTheme),
+        new KeyboardTheme(1, R.style.KeyboardTheme_HighContrast),
+        new KeyboardTheme(6, R.style.KeyboardTheme_Stone),
+        new KeyboardTheme(7, R.style.KeyboardTheme_Stone_Bold),
+        new KeyboardTheme(8, R.style.KeyboardTheme_Gingerbread),
+        new KeyboardTheme(5, R.style.KeyboardTheme_IceCreamSandwich),
     };
 
     private SubtypeSwitcher mSubtypeSwitcher;
@@ -354,22 +353,9 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
             mKeyboardView.closing();
         }
 
-        Utils.GCUtils.getInstance().reset();
-        boolean tryGC = true;
-        for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
-            try {
-                setContextThemeWrapper(mLatinIME, mKeyboardTheme);
-                mCurrentInputView = (InputView)LayoutInflater.from(mThemeContext).inflate(
-                        R.layout.input_view, null);
-                tryGC = false;
-            } catch (OutOfMemoryError e) {
-                Log.w(TAG, "load keyboard failed: " + e);
-                tryGC = Utils.GCUtils.getInstance().tryGCOrWait(mKeyboardTheme.mName, e);
-            } catch (InflateException e) {
-                Log.w(TAG, "load keyboard failed: " + e);
-                tryGC = Utils.GCUtils.getInstance().tryGCOrWait(mKeyboardTheme.mName, e);
-            }
-        }
+        setContextThemeWrapper(mLatinIME, mKeyboardTheme);
+        mCurrentInputView = (InputView)LayoutInflater.from(mThemeContext).inflate(
+                R.layout.input_view, null);
 
         mKeyboardView = (MainKeyboardView) mCurrentInputView.findViewById(R.id.keyboard_view);
         if (isHardwareAcceleratedDrawingEnabled) {
@@ -400,6 +386,18 @@ public class KeyboardSwitcher implements KeyboardState.SwitchActions {
             if (mKeyboardView != null) {
                 mKeyboardView.updateAutoCorrectionState(isAutoCorrection);
             }
+        }
+    }
+
+    public int getManualCapsMode() {
+        switch (getKeyboard().mId.mElementId) {
+        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED:
+        case KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED:
+            return WordComposer.CAPS_MODE_MANUAL_SHIFT_LOCKED;
+        case KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:
+            return WordComposer.CAPS_MODE_MANUAL_SHIFTED;
+        default:
+            return WordComposer.CAPS_MODE_OFF;
         }
     }
 }

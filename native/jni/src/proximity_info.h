@@ -18,9 +18,9 @@
 #define LATINIME_PROXIMITY_INFO_H
 
 #include <stdint.h>
-#include <string>
 
 #include "defines.h"
+#include "jni.h"
 
 namespace latinime {
 
@@ -28,31 +28,25 @@ class Correction;
 
 class ProximityInfo {
  public:
-    ProximityInfo(const std::string localeStr, const int maxProximityCharsSize,
+    ProximityInfo(JNIEnv *env, const jstring localeJStr, const int maxProximityCharsSize,
             const int keyboardWidth, const int keyboardHeight, const int gridWidth,
-            const int gridHeight, const int mostCommonkeyWidth,
-            const int32_t *proximityCharsArray, const int keyCount, const int32_t *keyXCoordinates,
-            const int32_t *keyYCoordinates, const int32_t *keyWidths, const int32_t *keyHeights,
-            const int32_t *keyCharCodes, const float *sweetSpotCenterXs,
-            const float *sweetSpotCenterYs, const float *sweetSpotRadii);
+            const int gridHeight, const int mostCommonKeyWidth, const jintArray proximityChars,
+            const int keyCount, const jintArray keyXCoordinates, const jintArray keyYCoordinates,
+            const jintArray keyWidths, const jintArray keyHeights, const jintArray keyCharCodes,
+            const jfloatArray sweetSpotCenterXs, const jfloatArray sweetSpotCenterYs,
+            const jfloatArray sweetSpotRadii);
     ~ProximityInfo();
     bool hasSpaceProximity(const int x, const int y) const;
     int getNormalizedSquaredDistance(const int inputIndex, const int proximityIndex) const;
+    float getNormalizedSquaredDistanceFromCenterFloat(
+            const int keyId, const int x, const int y) const;
     bool sameAsTyped(const unsigned short *word, int length) const;
-    int squaredDistanceToEdge(const int keyId, const int x, const int y) const;
-    bool isOnKey(const int keyId, const int x, const int y) const {
-        if (keyId < 0) return true; // NOT_A_ID is -1, but return whenever < 0 just in case
-        const int left = mKeyXCoordinates[keyId];
-        const int top = mKeyYCoordinates[keyId];
-        const int right = left + mKeyWidths[keyId] + 1;
-        const int bottom = top + mKeyHeights[keyId];
-        return left < right && top < bottom && x >= left && x < right && y >= top && y < bottom;
-    }
     int getKeyIndex(const int c) const;
+    int getKeyCode(const int keyIndex) const;
     bool hasSweetSpotData(const int keyIndex) const {
         // When there are no calibration data for a key,
         // the radius of the key is assigned to zero.
-        return mSweetSpotRadii[keyIndex] > 0.0;
+        return mSweetSpotRadii[keyIndex] > 0.0f;
     }
     float getSweetSpotRadiiAt(int keyIndex) const {
         return mSweetSpotRadii[keyIndex];
@@ -70,11 +64,15 @@ class ProximityInfo {
         return HAS_TOUCH_POSITION_CORRECTION_DATA;
     }
 
+    int getMostCommonKeyWidth() const {
+        return MOST_COMMON_KEY_WIDTH;
+    }
+
     int getMostCommonKeyWidthSquare() const {
         return MOST_COMMON_KEY_WIDTH_SQUARE;
     }
 
-    std::string getLocaleStr() const {
+    const char *getLocaleStr() const {
         return mLocaleStr;
     }
 
@@ -98,9 +96,11 @@ class ProximityInfo {
         return GRID_HEIGHT;
     }
 
-    // Returns the keyboard key-center information.
-    void getCenters(int *centersX, int *centersY, int *codeToKeyIndex, int *keyToCodeIndex,
-            int *keyCount, int *keyWidth) const;
+    float getKeyCenterXOfCharG(int charCode) const;
+    float getKeyCenterYOfCharG(int charCode) const;
+    float getKeyCenterXOfIdG(int keyId) const;
+    float getKeyCenterYOfIdG(int keyId) const;
+    int getKeyKeyDistanceG(int key0, int key1) const;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfo);
@@ -108,27 +108,36 @@ class ProximityInfo {
     static const int MAX_KEY_COUNT_IN_A_KEYBOARD = 64;
     // The upper limit of the char code in mCodeToKeyIndex
     static const int MAX_CHAR_CODE = 127;
-    static const float NOT_A_DISTANCE_FLOAT = -1.0f;
-    static const int NOT_A_CODE = -1;
+    static const int NOT_A_CODE;
+    static const float NOT_A_DISTANCE_FLOAT;
 
     int getStartIndexFromCoordinates(const int x, const int y) const;
     void initializeCodeToKeyIndex();
+    void initializeG();
     float calculateNormalizedSquaredDistance(const int keyIndex, const int inputIndex) const;
     float calculateSquaredDistanceFromSweetSpotCenter(
             const int keyIndex, const int inputIndex) const;
     bool hasInputCoordinates() const;
+    int squaredDistanceToEdge(const int keyId, const int x, const int y) const;
+    bool isOnKey(const int keyId, const int x, const int y) const {
+        if (keyId < 0) return true; // NOT_A_ID is -1, but return whenever < 0 just in case
+        const int left = mKeyXCoordinates[keyId];
+        const int top = mKeyYCoordinates[keyId];
+        const int right = left + mKeyWidths[keyId] + 1;
+        const int bottom = top + mKeyHeights[keyId];
+        return left < right && top < bottom && x >= left && x < right && y >= top && y < bottom;
+    }
 
     const int MAX_PROXIMITY_CHARS_SIZE;
-    const int KEYBOARD_WIDTH;
-    const int KEYBOARD_HEIGHT;
     const int GRID_WIDTH;
     const int GRID_HEIGHT;
+    const int MOST_COMMON_KEY_WIDTH;
     const int MOST_COMMON_KEY_WIDTH_SQUARE;
     const int CELL_WIDTH;
     const int CELL_HEIGHT;
     const int KEY_COUNT;
     const bool HAS_TOUCH_POSITION_CORRECTION_DATA;
-    const std::string mLocaleStr;
+    char mLocaleStr[MAX_LOCALE_STRING_LENGTH];
     int32_t *mProximityCharsArray;
     int32_t mKeyXCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int32_t mKeyYCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];
@@ -139,6 +148,11 @@ class ProximityInfo {
     float mSweetSpotCenterYs[MAX_KEY_COUNT_IN_A_KEYBOARD];
     float mSweetSpotRadii[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int mCodeToKeyIndex[MAX_CHAR_CODE + 1];
+
+    int mKeyToCodeIndexG[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    int mCenterXsG[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    int mCenterYsG[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    int mKeyKeyDistancesG[MAX_KEY_COUNT_IN_A_KEYBOARD][MAX_KEY_COUNT_IN_A_KEYBOARD];
     // TODO: move to correction.h
 };
 } // namespace latinime

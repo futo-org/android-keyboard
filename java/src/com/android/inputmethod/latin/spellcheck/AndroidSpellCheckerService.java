@@ -25,6 +25,7 @@ import android.view.textservice.SuggestionsInfo;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.BinaryDictionary;
+import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.ContactsBinaryDictionary;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryCollection;
@@ -35,7 +36,6 @@ import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SynchronouslyLoadedContactsBinaryDictionary;
 import com.android.inputmethod.latin.SynchronouslyLoadedUserBinaryDictionary;
 import com.android.inputmethod.latin.UserBinaryDictionary;
-import com.android.inputmethod.latin.WhitelistDictionary;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -63,12 +63,9 @@ public class AndroidSpellCheckerService extends SpellCheckerService
     public static final int CAPITALIZE_ALL = 2; // All caps
 
     private final static String[] EMPTY_STRING_ARRAY = new String[0];
-    private Map<String, DictionaryPool> mDictionaryPools =
-            Collections.synchronizedMap(new TreeMap<String, DictionaryPool>());
+    private Map<String, DictionaryPool> mDictionaryPools = CollectionUtils.newSynchronizedTreeMap();
     private Map<String, UserBinaryDictionary> mUserDictionaries =
-            Collections.synchronizedMap(new TreeMap<String, UserBinaryDictionary>());
-    private Map<String, Dictionary> mWhitelistDictionaries =
-            Collections.synchronizedMap(new TreeMap<String, Dictionary>());
+            CollectionUtils.newSynchronizedTreeMap();
     private ContactsBinaryDictionary mContactsDictionary;
 
     // The threshold for a candidate to be offered as a suggestion.
@@ -80,7 +77,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
     private final Object mUseContactsLock = new Object();
 
     private final HashSet<WeakReference<DictionaryCollection>> mDictionaryCollectionsList =
-            new HashSet<WeakReference<DictionaryCollection>>();
+            CollectionUtils.newHashSet();
 
     public static final int SCRIPT_LATIN = 0;
     public static final int SCRIPT_CYRILLIC = 1;
@@ -96,7 +93,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
         // proximity to pass to the dictionary descent algorithm.
         // IMPORTANT: this only contains languages - do not write countries in there.
         // Only the language is searched from the map.
-        mLanguageToScript = new TreeMap<String, Integer>();
+        mLanguageToScript = CollectionUtils.newTreeMap();
         mLanguageToScript.put("en", SCRIPT_LATIN);
         mLanguageToScript.put("fr", SCRIPT_LATIN);
         mLanguageToScript.put("de", SCRIPT_LATIN);
@@ -234,7 +231,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             mSuggestionThreshold = suggestionThreshold;
             mRecommendedThreshold = recommendedThreshold;
             mMaxLength = maxLength;
-            mSuggestions = new ArrayList<CharSequence>(maxLength + 1);
+            mSuggestions = CollectionUtils.newArrayList(maxLength + 1);
             mScores = new int[mMaxLength];
         }
 
@@ -362,12 +359,9 @@ public class AndroidSpellCheckerService extends SpellCheckerService
 
     private void closeAllDictionaries() {
         final Map<String, DictionaryPool> oldPools = mDictionaryPools;
-        mDictionaryPools = Collections.synchronizedMap(new TreeMap<String, DictionaryPool>());
+        mDictionaryPools = CollectionUtils.newSynchronizedTreeMap();
         final Map<String, UserBinaryDictionary> oldUserDictionaries = mUserDictionaries;
-        mUserDictionaries =
-                Collections.synchronizedMap(new TreeMap<String, UserBinaryDictionary>());
-        final Map<String, Dictionary> oldWhitelistDictionaries = mWhitelistDictionaries;
-        mWhitelistDictionaries = Collections.synchronizedMap(new TreeMap<String, Dictionary>());
+        mUserDictionaries = CollectionUtils.newSynchronizedTreeMap();
         new Thread("spellchecker_close_dicts") {
             @Override
             public void run() {
@@ -375,9 +369,6 @@ public class AndroidSpellCheckerService extends SpellCheckerService
                     pool.close();
                 }
                 for (Dictionary dict : oldUserDictionaries.values()) {
-                    dict.close();
-                }
-                for (Dictionary dict : oldWhitelistDictionaries.values()) {
                     dict.close();
                 }
                 synchronized (mUseContactsLock) {
@@ -423,12 +414,6 @@ public class AndroidSpellCheckerService extends SpellCheckerService
             mUserDictionaries.put(localeStr, userDictionary);
         }
         dictionaryCollection.addDictionary(userDictionary);
-        Dictionary whitelistDictionary = mWhitelistDictionaries.get(localeStr);
-        if (null == whitelistDictionary) {
-            whitelistDictionary = new WhitelistDictionary(this, locale);
-            mWhitelistDictionaries.put(localeStr, whitelistDictionary);
-        }
-        dictionaryCollection.addDictionary(whitelistDictionary);
         synchronized (mUseContactsLock) {
             if (mUseContactsDictionary) {
                 if (null == mContactsDictionary) {
