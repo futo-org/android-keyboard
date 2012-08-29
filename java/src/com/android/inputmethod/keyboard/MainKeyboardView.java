@@ -48,10 +48,10 @@ import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.ResourceUtils;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SubtypeLocale;
-import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.Utils.UsabilityStudyLogUtils;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.research.ResearchLogger;
@@ -334,7 +334,7 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
                 .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT);
         final Resources res = getResources();
         final boolean needsPhantomSuddenMoveEventHack = Boolean.parseBoolean(
-                Utils.getDeviceOverrideValue(res,
+               ResourceUtils.getDeviceOverrideValue(res,
                         R.array.phantom_sudden_move_event_device_list, "false"));
         PointerTracker.init(mHasDistinctMultitouch, needsPhantomSuddenMoveEventHack);
 

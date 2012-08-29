@@ -24,7 +24,7 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.Utils;
+import com.android.inputmethod.latin.ResourceUtils;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.research.ResearchLogger;
 
@@ -53,7 +53,7 @@ public class SuddenJumpingTouchEventHandler {
 
     public SuddenJumpingTouchEventHandler(Context context, ProcessMotionEvent view) {
         mView = view;
-        mNeedsSuddenJumpingHack = Boolean.parseBoolean(Utils.getDeviceOverrideValue(
+        mNeedsSuddenJumpingHack = Boolean.parseBoolean(ResourceUtils.getDeviceOverrideValue(
                 context.getResources(), R.array.sudden_jumping_touch_event_device_list, "false"));
     }
 
