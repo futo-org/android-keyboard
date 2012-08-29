@@ -38,12 +38,12 @@ public class LastComposedWord {
     // an auto-correction.
     public static final int COMMIT_TYPE_CANCEL_AUTO_CORRECT = 3;
 
-    public static final int NOT_A_SEPARATOR = -1;
+    public static final String NOT_A_SEPARATOR = "";
 
     public final int[] mPrimaryKeyCodes;
     public final String mTypedWord;
     public final String mCommittedWord;
-    public final int mSeparatorCode;
+    public final String mSeparatorString;
     public final CharSequence mPrevWord;
     public final InputPointers mInputPointers = new InputPointers(BinaryDictionary.MAX_WORD_LENGTH);
 
@@ -56,14 +56,14 @@ public class LastComposedWord {
     // immutable. Do not fiddle with their contents after you passed them to this constructor.
     public LastComposedWord(final int[] primaryKeyCodes, final InputPointers inputPointers,
             final String typedWord, final String committedWord,
-            final int separatorCode, final CharSequence prevWord) {
+            final String separatorString, final CharSequence prevWord) {
         mPrimaryKeyCodes = primaryKeyCodes;
         if (inputPointers != null) {
             mInputPointers.copy(inputPointers);
         }
         mTypedWord = typedWord;
         mCommittedWord = committedWord;
-        mSeparatorCode = separatorCode;
+        mSeparatorString = separatorString;
         mActive = true;
         mPrevWord = prevWord;
     }
@@ -80,7 +80,7 @@ public class LastComposedWord {
         return TextUtils.equals(mTypedWord, mCommittedWord);
     }
 
-    public static int getSeparatorLength(final int separatorCode) {
-        return NOT_A_SEPARATOR == separatorCode ? 0 : 1;
+    public static int getSeparatorLength(final String separatorString) {
+        return StringUtils.codePointCount(separatorString);
     }
 }

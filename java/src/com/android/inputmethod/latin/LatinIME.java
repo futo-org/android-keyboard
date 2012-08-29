@@ -1055,7 +1055,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
     }
 
-    private void commitTyped(final int separatorCode) {
+    private void commitTyped(final String separatorString) {
         if (!mWordComposer.isComposingWord()) return;
         final CharSequence typedWord = mWordComposer.getTypedWord();
         if (typedWord.length() > 0) {
@@ -1063,7 +1063,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final CharSequence prevWord = addToUserHistoryDictionary(typedWord);
             mLastComposedWord = mWordComposer.commitWord(
                     LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD, typedWord.toString(),
-                    separatorCode, prevWord);
+                    separatorString, prevWord);
         }
     }
 
@@ -1340,7 +1340,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!didAutoCorrect && primaryCode != Keyboard.CODE_SHIFT
                 && primaryCode != Keyboard.CODE_SWITCH_ALPHA_SYMBOL)
             mLastComposedWord.deactivate();
-        mEnteredText = null;
+        if (Keyboard.CODE_DELETE != primaryCode) {
+            mEnteredText = null;
+        }
         mConnection.endBatchEdit();
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.latinIME_onCodeInput(primaryCode, x, y);
@@ -1352,7 +1354,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onTextInput(CharSequence rawText) {
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
-            commitCurrentAutoCorrection(LastComposedWord.NOT_A_SEPARATOR);
+            commitCurrentAutoCorrection(rawText.toString());
+        } else {
+            resetComposingState(true /* alsoResetLastComposedWord */);
         }
         mHandler.postUpdateSuggestionStrip();
         final CharSequence text = specificTldProcessingOnTextInput(rawText);
@@ -1365,7 +1369,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mKeyboardSwitcher.onCodeInput(Keyboard.CODE_OUTPUT_TEXT);
         mSpaceState = SPACE_STATE_NONE;
         mEnteredText = text;
-        resetComposingState(true /* alsoResetLastComposedWord */);
     }
 
     @Override
@@ -1451,18 +1454,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // In many cases, we may have to put the keyboard in auto-shift state again.
         mHandler.postUpdateShiftState();
 
-        if (mEnteredText != null && mConnection.sameAsTextBeforeCursor(mEnteredText)) {
-            // Cancel multi-character input: remove the text we just entered.
-            // This is triggered on backspace after a key that inputs multiple characters,
-            // like the smiley key or the .com key.
-            final int length = mEnteredText.length();
-            mConnection.deleteSurroundingText(length, 0);
-            // If we have mEnteredText, then we know that mHasUncommittedTypedChars == false.
-            // In addition we know that spaceState is false, and that we should not be
-            // reverting any autocorrect at this point. So we can safely return.
-            return;
-        }
-
         if (mWordComposer.isComposingWord()) {
             final int length = mWordComposer.size();
             if (length > 0) {
@@ -1481,6 +1472,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (mLastComposedWord.canRevertCommit()) {
                 Utils.Stats.onAutoCorrectionCancellation();
                 revertCommit();
+                return;
+            }
+            if (mEnteredText != null && mConnection.sameAsTextBeforeCursor(mEnteredText)) {
+                // Cancel multi-character input: remove the text we just entered.
+                // This is triggered on backspace after a key that inputs multiple characters,
+                // like the smiley key or the .com key.
+                final int length = mEnteredText.length();
+                mConnection.deleteSurroundingText(length, 0);
+                mEnteredText = null;
+                // If we have mEnteredText, then we know that mHasUncommittedTypedChars == false.
+                // In addition we know that spaceState is false, and that we should not be
+                // reverting any autocorrect at this point. So we can safely return.
                 return;
             }
             if (SPACE_STATE_DOUBLE == spaceState) {
@@ -1626,10 +1629,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Handle separator
         if (mWordComposer.isComposingWord()) {
             if (mCurrentSettings.mCorrectionEnabled) {
-                commitCurrentAutoCorrection(primaryCode);
+                // TODO: maybe cache Strings in an <String> sparse array or something
+                commitCurrentAutoCorrection(new String(new int[]{primaryCode}, 0, 1));
                 didAutoCorrect = true;
             } else {
-                commitTyped(primaryCode);
+                commitTyped(new String(new int[]{primaryCode}, 0, 1));
             }
         }
 
@@ -1834,7 +1838,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         setSuggestionStripShown(isSuggestionsStripVisible());
     }
 
-    private void commitCurrentAutoCorrection(final int separatorCodePoint) {
+    private void commitCurrentAutoCorrection(final String separatorString) {
         // Complete any pending suggestions query first
         if (mHandler.hasPendingUpdateSuggestions()) {
             updateSuggestionStrip();
@@ -1848,10 +1852,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 throw new RuntimeException("We have an auto-correction but the typed word "
                         + "is empty? Impossible! I must commit suicide.");
             }
-            Utils.Stats.onAutoCorrection(typedWord, autoCorrection.toString(), separatorCodePoint);
+            Utils.Stats.onAutoCorrection(typedWord, autoCorrection.toString(), separatorString);
             mExpectingUpdateSelection = true;
             commitChosenWord(autoCorrection, LastComposedWord.COMMIT_TYPE_DECIDED_WORD,
-                    separatorCodePoint);
+                    separatorString);
             if (!typedWord.equals(autoCorrection)) {
                 // This will make the correction flash for a short while as a visual clue
                 // to the user that auto-correction happened.
@@ -1949,7 +1953,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      * Commits the chosen word to the text field and saves it for later retrieval.
      */
     private void commitChosenWord(final CharSequence chosenWord, final int commitType,
-            final int separatorCode) {
+            final String separatorString) {
         final SuggestedWords suggestedWords = mSuggestionStripView.getSuggestions();
         mConnection.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(
                 this, chosenWord, suggestedWords, mIsMainDictionaryAvailable), 1);
@@ -1960,7 +1964,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // LastComposedWord#didCommitTypedWord by string equality of the remembered
         // strings.
         mLastComposedWord = mWordComposer.commitWord(commitType, chosenWord.toString(),
-                separatorCode, prevWord);
+                separatorString, prevWord);
     }
 
     private void setPunctuationSuggestions() {
@@ -2030,7 +2034,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final CharSequence committedWord = mLastComposedWord.mCommittedWord;
         final int cancelLength = committedWord.length();
         final int separatorLength = LastComposedWord.getSeparatorLength(
-                mLastComposedWord.mSeparatorCode);
+                mLastComposedWord.mSeparatorString);
         // TODO: should we check our saved separator against the actual contents of the text view?
         final int deleteLength = cancelLength + separatorLength;
         if (DEBUG) {
@@ -2051,10 +2055,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mUserHistoryDictionary.cancelAddingUserHistory(
                     previousWord.toString(), committedWord.toString());
         }
-        mConnection.commitText(originallyTypedWord, 1);
-        // Re-insert the separator
-        sendKeyCodePoint(mLastComposedWord.mSeparatorCode);
-        Utils.Stats.onSeparator(mLastComposedWord.mSeparatorCode,
+        mConnection.commitText(originallyTypedWord + mLastComposedWord.mSeparatorString, 1);
+        Utils.Stats.onSeparator(mLastComposedWord.mSeparatorString,
                 Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.latinIME_revertCommit(originallyTypedWord);
