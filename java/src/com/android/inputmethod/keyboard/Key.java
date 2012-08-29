@@ -36,6 +36,7 @@ import com.android.inputmethod.keyboard.internal.KeySpecParser.MoreKeySpec;
 import com.android.inputmethod.keyboard.internal.KeyStyles.KeyStyle;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.ResourceUtils;
 import com.android.inputmethod.latin.StringUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -229,9 +230,9 @@ public class Key {
         mBackgroundType = style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_backgroundType, row.getDefaultBackgroundType());
 
-        mVisualInsetsLeft = Math.round(Keyboard.Builder.getDimensionOrFraction(keyAttr,
+        mVisualInsetsLeft = Math.round(ResourceUtils.getDimensionOrFraction(keyAttr,
                 R.styleable.Keyboard_Key_visualInsetsLeft, params.mBaseWidth, 0));
-        mVisualInsetsRight = Math.round(Keyboard.Builder.getDimensionOrFraction(keyAttr,
+        mVisualInsetsRight = Math.round(ResourceUtils.getDimensionOrFraction(keyAttr,
                 R.styleable.Keyboard_Key_visualInsetsRight, params.mBaseWidth, 0));
         mIconId = KeySpecParser.getIconId(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_keyIcon));
