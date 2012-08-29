@@ -105,8 +105,21 @@ public class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {
     }
 
     /**
-     * Receives hover events when accessibility is turned on in SDK versions ICS
-     * and higher.
+     * Receives motion events when touch exploration is turned on in SDK
+     * versions ICS and higher.
+     *
+     * @param event The motion event.
+     * @return {@code true} if the event is handled
+     */
+    public boolean onTouchEvent(MotionEvent event) {
+        // To avoid accidental key presses during touch exploration, always drop
+        // non-hover touch events.
+        return false;
+    }
+
+    /**
+     * Receives hover events when touch exploration is turned on in SDK versions
+     * ICS and higher.
      *
      * @param event The hover event.
      * @return {@code true} if the event is handled

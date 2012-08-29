@@ -195,8 +195,7 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
             info.setSource(mKeyboardView, virtualViewId);
             info.setBoundsInScreen(boundsInScreen);
             info.setEnabled(true);
-            info.setClickable(true);
-            info.addAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
+            info.setVisibleToUser(true);
 
             if (mAccessibilityFocusedView == virtualViewId) {
                 info.addAction(AccessibilityNodeInfoCompat.ACTION_CLEAR_ACCESSIBILITY_FOCUS);
@@ -225,6 +224,9 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
 
         mKeyboardView.onTouchEvent(downEvent);
         mKeyboardView.onTouchEvent(upEvent);
+
+        downEvent.recycle();
+        upEvent.recycle();
     }
 
     @Override
@@ -251,9 +253,6 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
         final int virtualViewId = generateVirtualViewIdForKey(key);
 
         switch (action) {
-        case AccessibilityNodeInfoCompat.ACTION_CLICK:
-            simulateKeyPress(key);
-            return true;
         case AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS:
             if (mAccessibilityFocusedView == virtualViewId) {
                 return false;
