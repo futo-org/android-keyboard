@@ -375,8 +375,8 @@ public class SettingsValues {
             return volume;
         }
 
-        return Float.parseFloat(
-                Utils.getDeviceOverrideValue(res, R.array.keypress_volumes, "-1.0f"));
+        return Float.parseFloat(ResourceUtils.getDeviceOverrideValue(
+                res, R.array.keypress_volumes, "-1.0f"));
     }
 
     // Likewise
@@ -388,8 +388,8 @@ public class SettingsValues {
             return ms;
         }
 
-        return Integer.parseInt(
-                Utils.getDeviceOverrideValue(res, R.array.keypress_vibration_durations, "-1"));
+        return Integer.parseInt(ResourceUtils.getDeviceOverrideValue(
+                res, R.array.keypress_vibration_durations, "-1"));
     }
 
     // Likewise
