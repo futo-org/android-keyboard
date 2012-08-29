@@ -42,7 +42,7 @@
         <item name="keyHintLetterRatio">@fraction/key_hint_letter_ratio</item>
         <item name="keyHintLabelRatio">@fraction/key_hint_label_ratio</item>
         <item name="keyShiftedLetterHintRatio">@fraction/key_uppercase_letter_ratio</item>
-        <item name="keyTextStyle">normal</item>
+        <item name="keyTypeface">normal</item>
         <item name="keyTextColor">#FFFFFFFF</item>
         <item name="keyTextInactivatedColor">#FFFFFFFF</item>
         <item name="keyHintLetterColor">#80000000</item>
@@ -243,7 +243,7 @@
         name="KeyboardView.Stone.Bold"
         parent="KeyboardView.Stone"
     >
-        <item name="keyTextStyle">bold</item>
+        <item name="keyTypeface">bold</item>
     </style>
     <style
         name="MainKeyboardView.Stone.Bold"
@@ -272,7 +272,7 @@
     >
         <item name="android:background">@drawable/keyboard_dark_background</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_gingerbread</item>
-        <item name="keyTextStyle">bold</item>
+        <item name="keyTypeface">bold</item>
     </style>
     <style
         name="MainKeyboardView.Gingerbread"
@@ -317,7 +317,7 @@
     >
         <item name="android:background">@drawable/keyboard_background_holo</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_ics</item>
-        <item name="keyTextStyle">bold</item>
+        <item name="keyTypeface">bold</item>
         <item name="keyTextInactivatedColor">#66E0E4E5</item>
         <item name="keyHintLetterColor">#80000000</item>
         <item name="keyHintLabelColor">#A0FFFFFF</item>
