@@ -37,8 +37,8 @@ import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.ResourceUtils;
 import com.android.inputmethod.latin.SubtypeLocale;
-import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.XmlParseUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -746,7 +746,7 @@ public class Keyboard {
                     R.styleable.Keyboard_Key);
             try {
                 final int displayHeight = mDisplayMetrics.heightPixels;
-                final String keyboardHeightString = Utils.getDeviceOverrideValue(
+                final String keyboardHeightString = ResourceUtils.getDeviceOverrideValue(
                         mResources, R.array.keyboard_heights, null);
                 final float keyboardHeight;
                 if (keyboardHeightString != null) {

@@ -426,24 +426,4 @@ public class Utils {
         if (TextUtils.isEmpty(info)) return null;
         return info;
     }
-
-    private static final String HARDWARE_PREFIX = Build.HARDWARE + ",";
-    private static final HashMap<String, String> sDeviceOverrideValueMap =
-            CollectionUtils.newHashMap();
-
-    public static String getDeviceOverrideValue(Resources res, int overrideResId, String defValue) {
-        final int orientation = res.getConfiguration().orientation;
-        final String key = overrideResId + "-" + orientation;
-        if (!sDeviceOverrideValueMap.containsKey(key)) {
-            String overrideValue = defValue;
-            for (final String element : res.getStringArray(overrideResId)) {
-                if (element.startsWith(HARDWARE_PREFIX)) {
-                    overrideValue = element.substring(HARDWARE_PREFIX.length());
-                    break;
-                }
-            }
-            sDeviceOverrideValueMap.put(key, overrideValue);
-        }
-        return sDeviceOverrideValueMap.get(key);
-    }
 }
