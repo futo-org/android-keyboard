@@ -336,14 +336,14 @@ public class WordComposer {
 
     // `type' should be one of the LastComposedWord.COMMIT_TYPE_* constants above.
     public LastComposedWord commitWord(final int type, final String committedWord,
-            final int separatorCode, final CharSequence prevWord) {
+            final String separatorString, final CharSequence prevWord) {
         // Note: currently, we come here whenever we commit a word. If it's a MANUAL_PICK
         // or a DECIDED_WORD we may cancel the commit later; otherwise, we should deactivate
         // the last composed word to ensure this does not happen.
         final int[] primaryKeyCodes = mPrimaryKeyCodes;
         mPrimaryKeyCodes = new int[N];
         final LastComposedWord lastComposedWord = new LastComposedWord(primaryKeyCodes,
-                mInputPointers, mTypedWord.toString(), committedWord, separatorCode,
+                mInputPointers, mTypedWord.toString(), committedWord, separatorString,
                 prevWord);
         mInputPointers.reset();
         if (type != LastComposedWord.COMMIT_TYPE_DECIDED_WORD
