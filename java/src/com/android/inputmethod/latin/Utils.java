@@ -393,16 +393,6 @@ public class Utils {
         }
     }
 
-    public static float getDipScale(Context context) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return scale;
-    }
-
-    /** Convert pixel to DIP */
-    public static int dipToPixel(float scale, int dip) {
-        return (int) (dip * scale + 0.5);
-    }
-
     public static class Stats {
         public static void onNonSeparator(final char code, final int x,
                 final int y) {
