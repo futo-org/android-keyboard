@@ -39,7 +39,6 @@ import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.LocaleUtils.RunInLocale;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.ResourceUtils;
-import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.SubtypeLocale;
 import com.android.inputmethod.latin.XmlParseUtils;
 
@@ -566,13 +565,13 @@ public class Keyboard {
                 mParams = params;
                 TypedArray keyboardAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                         R.styleable.Keyboard);
-                mRowHeight = (int)ResourceUtils.getDimensionOrFraction(keyboardAttr,
+                mRowHeight = (int)Builder.getDimensionOrFraction(keyboardAttr,
                         R.styleable.Keyboard_rowHeight,
                         params.mBaseHeight, params.mDefaultRowHeight);
                 keyboardAttr.recycle();
                 TypedArray keyAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                         R.styleable.Keyboard_Key);
-                mDefaultKeyWidth = ResourceUtils.getDimensionOrFraction(keyAttr,
+                mDefaultKeyWidth = Builder.getDimensionOrFraction(keyAttr,
                         R.styleable.Keyboard_Key_keyWidth,
                         params.mBaseWidth, params.mDefaultKeyWidth);
                 mDefaultBackgroundType = keyAttr.getInt(R.styleable.Keyboard_Key_backgroundType,
@@ -625,7 +624,7 @@ public class Keyboard {
                 final int keyboardRightEdge = mParams.mOccupiedWidth
                         - mParams.mHorizontalEdgesPadding;
                 if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyXPos)) {
-                    final float keyXPos = ResourceUtils.getDimensionOrFraction(keyAttr,
+                    final float keyXPos = Builder.getDimensionOrFraction(keyAttr,
                             R.styleable.Keyboard_Key_keyXPos, mParams.mBaseWidth, 0);
                     if (keyXPos < 0) {
                         // If keyXPos is negative, the actual x-coordinate will be
@@ -646,7 +645,7 @@ public class Keyboard {
             }
 
             public float getKeyWidth(TypedArray keyAttr, float keyXPos) {
-                final int widthType = ResourceUtils.getEnumValue(keyAttr,
+                final int widthType = Builder.getEnumValue(keyAttr,
                         R.styleable.Keyboard_Key_keyWidth, KEYWIDTH_NOT_ENUM);
                 switch (widthType) {
                 case KEYWIDTH_FILL_RIGHT:
@@ -656,7 +655,7 @@ public class Keyboard {
                     // out the area up to the right edge of the keyboard.
                     return keyboardRightEdge - keyXPos;
                 default: // KEYWIDTH_NOT_ENUM
-                    return ResourceUtils.getDimensionOrFraction(keyAttr,
+                    return Builder.getDimensionOrFraction(keyAttr,
                             R.styleable.Keyboard_Key_keyWidth,
                             mParams.mBaseWidth, mDefaultKeyWidth);
                 }
@@ -769,14 +768,14 @@ public class Keyboard {
                     keyboardHeight = keyboardAttr.getDimension(
                             R.styleable.Keyboard_keyboardHeight, displayHeight / 2);
                 }
-                final float maxKeyboardHeight = ResourceUtils.getDimensionOrFraction(keyboardAttr,
+                final float maxKeyboardHeight = getDimensionOrFraction(keyboardAttr,
                         R.styleable.Keyboard_maxKeyboardHeight, displayHeight, displayHeight / 2);
-                float minKeyboardHeight = ResourceUtils.getDimensionOrFraction(keyboardAttr,
+                float minKeyboardHeight = getDimensionOrFraction(keyboardAttr,
                         R.styleable.Keyboard_minKeyboardHeight, displayHeight, displayHeight / 2);
                 if (minKeyboardHeight < 0) {
                     // Specified fraction was negative, so it should be calculated against display
                     // width.
-                    minKeyboardHeight = -ResourceUtils.getDimensionOrFraction(keyboardAttr,
+                    minKeyboardHeight = -getDimensionOrFraction(keyboardAttr,
                             R.styleable.Keyboard_minKeyboardHeight, displayWidth, displayWidth / 2);
                 }
                 final Params params = mParams;
@@ -785,27 +784,26 @@ public class Keyboard {
                 params.mOccupiedHeight = (int)Math.max(
                         Math.min(keyboardHeight, maxKeyboardHeight), minKeyboardHeight);
                 params.mOccupiedWidth = params.mId.mWidth;
-                params.mTopPadding = (int)ResourceUtils.getDimensionOrFraction(keyboardAttr,
+                params.mTopPadding = (int)getDimensionOrFraction(keyboardAttr,
                         R.styleable.Keyboard_keyboardTopPadding, params.mOccupiedHeight, 0);
-                params.mBottomPadding = (int)ResourceUtils.getDimensionOrFraction(keyboardAttr,
+                params.mBottomPadding = (int)getDimensionOrFraction(keyboardAttr,
                         R.styleable.Keyboard_keyboardBottomPadding, params.mOccupiedHeight, 0);
-                params.mHorizontalEdgesPadding = (int)ResourceUtils.getDimensionOrFraction(
-                        keyboardAttr,
+                params.mHorizontalEdgesPadding = (int)getDimensionOrFraction(keyboardAttr,
                         R.styleable.Keyboard_keyboardHorizontalEdgesPadding,
                         mParams.mOccupiedWidth, 0);
 
                 params.mBaseWidth = params.mOccupiedWidth - params.mHorizontalEdgesPadding * 2
                         - params.mHorizontalCenterPadding;
-                params.mDefaultKeyWidth = (int)ResourceUtils.getDimensionOrFraction(keyAttr,
+                params.mDefaultKeyWidth = (int)getDimensionOrFraction(keyAttr,
                         R.styleable.Keyboard_Key_keyWidth, params.mBaseWidth,
                         params.mBaseWidth / DEFAULT_KEYBOARD_COLUMNS);
-                params.mHorizontalGap = (int)ResourceUtils.getDimensionOrFraction(keyboardAttr,
+                params.mHorizontalGap = (int)getDimensionOrFraction(keyboardAttr,
                         R.styleable.Keyboard_horizontalGap, params.mBaseWidth, 0);
-                params.mVerticalGap = (int)ResourceUtils.getDimensionOrFraction(keyboardAttr,
+                params.mVerticalGap = (int)getDimensionOrFraction(keyboardAttr,
                         R.styleable.Keyboard_verticalGap, params.mOccupiedHeight, 0);
                 params.mBaseHeight = params.mOccupiedHeight - params.mTopPadding
                         - params.mBottomPadding + params.mVerticalGap;
-                params.mDefaultRowHeight = (int)ResourceUtils.getDimensionOrFraction(keyboardAttr,
+                params.mDefaultRowHeight = (int)getDimensionOrFraction(keyboardAttr,
                         R.styleable.Keyboard_rowHeight, params.mBaseHeight,
                         params.mBaseHeight / DEFAULT_KEYBOARD_ROWS);
 
@@ -1223,7 +1221,7 @@ public class Keyboard {
             // If <case> does not have "index" attribute, that means this <case> is wild-card for
             // the attribute.
             return !a.hasValue(index)
-                    || StringUtils.containsInArray(value, a.getString(index).split("\\|"));
+                    || stringArrayContains(a.getString(index).split("\\|"), value);
         }
 
         private static boolean matchTypedValue(TypedArray a, int index, int intValue,
@@ -1234,10 +1232,19 @@ public class Keyboard {
             if (v == null) {
                 return true;
             }
-            if (ResourceUtils.isIntegerValue(v)) {
+            if (isIntegerValue(v)) {
                 return intValue == a.getInt(index, 0);
-            } else if (ResourceUtils.isStringValue(v)) {
-                return StringUtils.containsInArray(strValue, a.getString(index).split("\\|"));
+            } else if (isStringValue(v)) {
+                return stringArrayContains(a.getString(index).split("\\|"), strValue);
+            }
+            return false;
+        }
+
+        private static boolean stringArrayContains(String[] array, String value) {
+            for (final String elem : array) {
+                if (elem.equals(value)) {
+                    return true;
+                }
             }
             return false;
         }
@@ -1325,6 +1332,47 @@ public class Keyboard {
             row.advanceXPos(width);
             mLeftEdge = false;
             mRightEdgeKey = null;
+        }
+
+        public static float getDimensionOrFraction(TypedArray a, int index, int base,
+                float defValue) {
+            final TypedValue value = a.peekValue(index);
+            if (value == null) {
+                return defValue;
+            }
+            if (isFractionValue(value)) {
+                return a.getFraction(index, base, base, defValue);
+            } else if (isDimensionValue(value)) {
+                return a.getDimension(index, defValue);
+            }
+            return defValue;
+        }
+
+        public static int getEnumValue(TypedArray a, int index, int defValue) {
+            final TypedValue value = a.peekValue(index);
+            if (value == null) {
+                return defValue;
+            }
+            if (isIntegerValue(value)) {
+                return a.getInt(index, defValue);
+            }
+            return defValue;
+        }
+
+        private static boolean isFractionValue(TypedValue v) {
+            return v.type == TypedValue.TYPE_FRACTION;
+        }
+
+        private static boolean isDimensionValue(TypedValue v) {
+            return v.type == TypedValue.TYPE_DIMENSION;
+        }
+
+        private static boolean isIntegerValue(TypedValue v) {
+            return v.type >= TypedValue.TYPE_FIRST_INT && v.type <= TypedValue.TYPE_LAST_INT;
+        }
+
+        private static boolean isStringValue(TypedValue v) {
+            return v.type == TypedValue.TYPE_STRING;
         }
 
         private static String textAttr(String value, String name) {
