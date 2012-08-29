@@ -61,7 +61,6 @@ import com.android.inputmethod.latin.AutoCorrection;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.ResourceUtils;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.Utils;
@@ -197,15 +196,15 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
                     R.styleable.SuggestionStripView, defStyle, R.style.SuggestionStripViewStyle);
             mSuggestionStripOption = a.getInt(
                     R.styleable.SuggestionStripView_suggestionStripOption, 0);
-            final float alphaValidTypedWord = ResourceUtils.getFraction(a,
+            final float alphaValidTypedWord = getFraction(a,
                     R.styleable.SuggestionStripView_alphaValidTypedWord, 1.0f);
-            final float alphaTypedWord = ResourceUtils.getFraction(a,
+            final float alphaTypedWord = getFraction(a,
                     R.styleable.SuggestionStripView_alphaTypedWord, 1.0f);
-            final float alphaAutoCorrect = ResourceUtils.getFraction(a,
+            final float alphaAutoCorrect = getFraction(a,
                     R.styleable.SuggestionStripView_alphaAutoCorrect, 1.0f);
-            final float alphaSuggested = ResourceUtils.getFraction(a,
+            final float alphaSuggested = getFraction(a,
                     R.styleable.SuggestionStripView_alphaSuggested, 1.0f);
-            mAlphaObsoleted = ResourceUtils.getFraction(a,
+            mAlphaObsoleted = getFraction(a,
                     R.styleable.SuggestionStripView_alphaSuggested, 1.0f);
             mColorValidTypedWord = applyAlpha(a.getColor(
                     R.styleable.SuggestionStripView_colorValidTypedWord, 0), alphaValidTypedWord);
@@ -218,13 +217,13 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
             mSuggestionsCountInStrip = a.getInt(
                     R.styleable.SuggestionStripView_suggestionsCountInStrip,
                     DEFAULT_SUGGESTIONS_COUNT_IN_STRIP);
-            mCenterSuggestionWeight = ResourceUtils.getFraction(a,
+            mCenterSuggestionWeight = getFraction(a,
                     R.styleable.SuggestionStripView_centerSuggestionPercentile,
                     DEFAULT_CENTER_SUGGESTION_PERCENTILE);
             mMaxMoreSuggestionsRow = a.getInt(
                     R.styleable.SuggestionStripView_maxMoreSuggestionsRow,
                     DEFAULT_MAX_MORE_SUGGESTIONS_ROW);
-            mMinMoreSuggestionsWidth = ResourceUtils.getFraction(a,
+            mMinMoreSuggestionsWidth = getFraction(a,
                     R.styleable.SuggestionStripView_minMoreSuggestionsWidth, 1.0f);
             a.recycle();
 
@@ -277,6 +276,10 @@ public class SuggestionStripView extends RelativeLayout implements OnClickListen
             final Canvas canvas = new Canvas(buffer);
             canvas.drawText(MORE_SUGGESTIONS_HINT, width / 2, height, paint);
             return new BitmapDrawable(res, buffer);
+        }
+
+        static float getFraction(final TypedArray a, final int index, final float defValue) {
+            return a.getFraction(index, 1, 1, defValue);
         }
 
         private CharSequence getStyledSuggestionWord(SuggestedWords suggestedWords, int pos) {

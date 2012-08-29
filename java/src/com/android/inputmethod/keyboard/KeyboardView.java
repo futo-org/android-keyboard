@@ -43,7 +43,6 @@ import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.ResourceUtils;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 import com.android.inputmethod.latin.StringUtils;
 import com.android.inputmethod.latin.define.ProductionFlag;
@@ -85,6 +84,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
     // Miscellaneous constants
     private static final int[] LONG_PRESSABLE_STATE_SET = { android.R.attr.state_long_pressable };
+    private static final float UNDEFINED_RATIO = -1.0f;
+    private static final int UNDEFINED_DIMENSION = -1;
+
     // XML attributes
     protected final float mVerticalCorrection;
     protected final int mMoreKeysLayout;
@@ -217,26 +219,20 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         public KeyDrawParams(final TypedArray a) {
             mKeyBackground = a.getDrawable(R.styleable.KeyboardView_keyBackground);
-            if (!ResourceUtils.isValidFraction(mKeyLetterRatio = ResourceUtils.getFraction(a,
+            if (!isValidFraction(mKeyLetterRatio = getFraction(a,
                     R.styleable.KeyboardView_keyLetterSize))) {
-                mKeyLetterSize = ResourceUtils.getDimensionPixelSize(a,
-                        R.styleable.KeyboardView_keyLetterSize);
+                mKeyLetterSize = getDimensionPixelSize(a, R.styleable.KeyboardView_keyLetterSize);
             }
-            if (!ResourceUtils.isValidFraction(mKeyLabelRatio = ResourceUtils.getFraction(a,
+            if (!isValidFraction(mKeyLabelRatio = getFraction(a,
                     R.styleable.KeyboardView_keyLabelSize))) {
-                mKeyLabelSize = ResourceUtils.getDimensionPixelSize(a,
-                        R.styleable.KeyboardView_keyLabelSize);
+                mKeyLabelSize = getDimensionPixelSize(a, R.styleable.KeyboardView_keyLabelSize);
             }
-            mKeyLargeLabelRatio = ResourceUtils.getFraction(a,
-                    R.styleable.KeyboardView_keyLargeLabelRatio);
-            mKeyLargeLetterRatio = ResourceUtils.getFraction(a,
-                    R.styleable.KeyboardView_keyLargeLetterRatio);
-            mKeyHintLetterRatio = ResourceUtils.getFraction(a,
-                    R.styleable.KeyboardView_keyHintLetterRatio);
-            mKeyShiftedLetterHintRatio = ResourceUtils.getFraction(a,
+            mKeyLargeLabelRatio = getFraction(a, R.styleable.KeyboardView_keyLargeLabelRatio);
+            mKeyLargeLetterRatio = getFraction(a, R.styleable.KeyboardView_keyLargeLetterRatio);
+            mKeyHintLetterRatio = getFraction(a, R.styleable.KeyboardView_keyHintLetterRatio);
+            mKeyShiftedLetterHintRatio = getFraction(a,
                     R.styleable.KeyboardView_keyShiftedLetterHintRatio);
-            mKeyHintLabelRatio = ResourceUtils.getFraction(a,
-                    R.styleable.KeyboardView_keyHintLabelRatio);
+            mKeyHintLabelRatio = getFraction(a, R.styleable.KeyboardView_keyHintLabelRatio);
             mKeyLabelHorizontalPadding = a.getDimension(
                     R.styleable.KeyboardView_keyLabelHorizontalPadding, 0);
             mKeyHintLetterPadding = a.getDimension(
@@ -267,10 +263,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             mKeyTypeface = (keyboard.mKeyTypeface != null)
                     ? keyboard.mKeyTypeface : mKeyTypefaceFromKeyboardView;
             final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
-            if (ResourceUtils.isValidFraction(mKeyLetterRatio)) {
+            if (isValidFraction(mKeyLetterRatio)) {
                 mKeyLetterSize = (int)(keyHeight * mKeyLetterRatio);
             }
-            if (ResourceUtils.isValidFraction(mKeyLabelRatio)) {
+            if (isValidFraction(mKeyLabelRatio)) {
                 mKeyLabelSize = (int)(keyHeight * mKeyLabelRatio);
             }
             mKeyLargeLabelSize = (int)(keyHeight * mKeyLargeLabelRatio);
@@ -345,15 +341,14 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                     R.styleable.KeyboardView_keyPreviewOffset, 0);
             mPreviewHeight = a.getDimensionPixelSize(
                     R.styleable.KeyboardView_keyPreviewHeight, 80);
-            mPreviewTextRatio = ResourceUtils.getFraction(a,
-                    R.styleable.KeyboardView_keyPreviewTextRatio);
+            mPreviewTextRatio = getFraction(a, R.styleable.KeyboardView_keyPreviewTextRatio);
             mPreviewTextColor = a.getColor(R.styleable.KeyboardView_keyPreviewTextColor, 0);
             mLingerTimeout = a.getInt(R.styleable.KeyboardView_keyPreviewLingerTimeout, 0);
         }
 
         public void updateParams(final Keyboard keyboard, final KeyDrawParams keyDrawParams) {
             final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
-            if (ResourceUtils.isValidFraction(mPreviewTextRatio)) {
+            if (isValidFraction(mPreviewTextRatio)) {
                 mPreviewTextSize = (int)(keyHeight * mPreviewTextRatio);
             }
             mKeyLetterSize = keyDrawParams.mKeyLetterSize;
@@ -390,6 +385,26 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         mPreviewPlacerView = new PreviewPlacerView(context, attrs);
         mPaint.setAntiAlias(true);
+    }
+
+    static boolean isValidFraction(final float fraction) {
+        return fraction >= 0.0f;
+    }
+
+    static float getFraction(final TypedArray a, final int index) {
+        final TypedValue value = a.peekValue(index);
+        if (value == null || value.type != TypedValue.TYPE_FRACTION) {
+            return UNDEFINED_RATIO;
+        }
+        return a.getFraction(index, 1, 1, UNDEFINED_RATIO);
+    }
+
+    public static int getDimensionPixelSize(final TypedArray a, final int index) {
+        final TypedValue value = a.peekValue(index);
+        if (value == null || value.type != TypedValue.TYPE_DIMENSION) {
+            return UNDEFINED_DIMENSION;
+        }
+        return a.getDimensionPixelSize(index, UNDEFINED_DIMENSION);
     }
 
     /**
