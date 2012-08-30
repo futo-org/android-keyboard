@@ -124,6 +124,10 @@ public class Keyboard {
 
     /** Per keyboard key visual parameters */
     public final Typeface mKeyTypeface;
+    public final float mKeyLetterRatio;
+    public final int mKeyLetterSize;
+    public final float mKeyHintLetterRatio;
+    public final float mKeyShiftedLetterHintRatio;
 
     public final int mMostCommonKeyHeight;
     public final int mMostCommonKeyWidth;
@@ -156,6 +160,10 @@ public class Keyboard {
         mMaxMoreKeysKeyboardColumn = params.mMaxMoreKeysKeyboardColumn;
 
         mKeyTypeface = params.mKeyTypeface;
+        mKeyLetterRatio = params.mKeyLetterRatio;
+        mKeyLetterSize = params.mKeyLetterSize;
+        mKeyHintLetterRatio = params.mKeyHintLetterRatio;
+        mKeyShiftedLetterHintRatio = params.mKeyShiftedLetterHintRatio;
 
         mTopPadding = params.mTopPadding;
         mVerticalGap = params.mVerticalGap;
@@ -253,6 +261,10 @@ public class Keyboard {
         public int mHorizontalCenterPadding;
 
         public Typeface mKeyTypeface = null;
+        public float mKeyLetterRatio = ResourceUtils.UNDEFINED_RATIO;
+        public int mKeyLetterSize = ResourceUtils.UNDEFINED_DIMENSION;
+        public float mKeyHintLetterRatio = ResourceUtils.UNDEFINED_RATIO;;
+        public float mKeyShiftedLetterHintRatio = ResourceUtils.UNDEFINED_RATIO;
 
         public int mDefaultRowHeight;
         public int mDefaultKeyWidth;
@@ -813,6 +825,14 @@ public class Keyboard {
                     params.mKeyTypeface = Typeface.defaultFromStyle(keyboardViewAttr.getInt(
                             R.styleable.KeyboardView_keyTypeface, Typeface.NORMAL));
                 }
+                params.mKeyLetterRatio = ResourceUtils.getFraction(keyboardViewAttr,
+                        R.styleable.KeyboardView_keyLetterSize);
+                params.mKeyLetterSize = ResourceUtils.getDimensionPixelSize(keyboardViewAttr,
+                        R.styleable.KeyboardView_keyLetterSize);
+                params.mKeyHintLetterRatio = ResourceUtils.getFraction(keyboardViewAttr,
+                        R.styleable.KeyboardView_keyHintLetterRatio);
+                params.mKeyShiftedLetterHintRatio = ResourceUtils.getFraction(keyboardViewAttr,
+                        R.styleable.KeyboardView_keyShiftedLetterHintRatio);
 
                 params.mMoreKeysTemplate = keyboardAttr.getResourceId(
                         R.styleable.Keyboard_moreKeysTemplate, 0);

@@ -65,6 +65,8 @@
     <fraction name="key_uppercase_letter_ratio">35%</fraction>
     <fraction name="key_preview_text_ratio">82%</fraction>
     <fraction name="spacebar_text_ratio">33.735%</fraction>
+    <fraction name="key_letter_ratio_5rows">64%</fraction>
+    <fraction name="key_uppercase_letter_ratio_5rows">41%</fraction>
     <dimen name="key_preview_height">80dp</dimen>
     <dimen name="key_preview_offset">-8.0dp</dimen>
 
