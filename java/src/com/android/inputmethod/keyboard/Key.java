@@ -55,7 +55,6 @@ public class Key {
      * The key code (unicode or custom code) that this key generates.
      */
     public final int mCode;
-    public final int mAltCode;
 
     /** Label to display */
     public final String mLabel;
@@ -90,22 +89,11 @@ public class Key {
 
     /** Icon to display instead of a label. Icon takes precedence over a label */
     private final int mIconId;
-    /** Icon for disabled state */
-    private final int mDisabledIconId;
-    /** Preview version of the icon, for the preview popup */
-    private final int mPreviewIconId;
 
     /** Width of the key, not including the gap */
     public final int mWidth;
     /** Height of the key, not including the gap */
     public final int mHeight;
-    /** The horizontal gap around this key */
-    public final int mHorizontalGap;
-    /** The vertical gap below this key */
-    public final int mVerticalGap;
-    /** The visual insets */
-    public final int mVisualInsetsLeft;
-    public final int mVisualInsetsRight;
     /** X coordinate of the key in the keyboard layout */
     public final int mX;
     /** Y coordinate of the key in the keyboard layout */
@@ -113,8 +101,6 @@ public class Key {
     /** Hit bounding box of the key */
     public final Rect mHitBox = new Rect();
 
-    /** Text to output when pressed. This can be multiple characters, like ".com" */
-    public final CharSequence mOutputText;
     /** More keys */
     public final MoreKeySpec[] mMoreKeys;
     /** More keys column number and flags */
@@ -144,6 +130,32 @@ public class Key {
     private static final int ACTION_FLAGS_ALT_CODE_WHILE_TYPING = 0x04;
     private static final int ACTION_FLAGS_ENABLE_LONG_PRESS = 0x08;
 
+    private final OptionalAttributes mOptionalAttributes;
+
+    private static class OptionalAttributes {
+        /** Text to output when pressed. This can be multiple characters, like ".com" */
+        public final String mOutputText;
+        public final int mAltCode;
+        /** Icon for disabled state */
+        public final int mDisabledIconId;
+        /** Preview version of the icon, for the preview popup */
+        public final int mPreviewIconId;
+        /** The visual insets */
+        public final int mVisualInsetsLeft;
+        public final int mVisualInsetsRight;
+
+        public OptionalAttributes(final String outputText, final int altCode,
+                final int disabledIconId, final int previewIconId,
+                final int visualInsetsLeft, final int visualInsetsRight) {
+            mOutputText = outputText;
+            mAltCode = altCode;
+            mDisabledIconId = disabledIconId;
+            mPreviewIconId = previewIconId;
+            mVisualInsetsLeft = visualInsetsLeft;
+            mVisualInsetsRight = visualInsetsRight;
+        }
+    }
+
     private final int mHashCode;
 
     /** The current pressed state of this key */
@@ -166,10 +178,7 @@ public class Key {
     public Key(Keyboard.Params params, String label, String hintLabel, int iconId,
             int code, String outputText, int x, int y, int width, int height, int labelFlags) {
         mHeight = height - params.mVerticalGap;
-        mHorizontalGap = params.mHorizontalGap;
-        mVerticalGap = params.mVerticalGap;
-        mVisualInsetsLeft = mVisualInsetsRight = 0;
-        mWidth = width - mHorizontalGap;
+        mWidth = width - params.mHorizontalGap;
         mHintLabel = hintLabel;
         mLabelFlags = labelFlags;
         mBackgroundType = BACKGROUND_TYPE_NORMAL;
@@ -177,15 +186,17 @@ public class Key {
         mMoreKeys = null;
         mMoreKeysColumnAndFlags = 0;
         mLabel = label;
-        mOutputText = outputText;
+        if (outputText == null) {
+            mOptionalAttributes = null;
+        } else {
+            mOptionalAttributes = new OptionalAttributes(outputText, CODE_UNSPECIFIED,
+                    ICON_UNDEFINED, ICON_UNDEFINED, 0, 0);
+        }
         mCode = code;
         mEnabled = (code != CODE_UNSPECIFIED);
-        mAltCode = CODE_UNSPECIFIED;
         mIconId = iconId;
-        mDisabledIconId = ICON_UNDEFINED;
-        mPreviewIconId = ICON_UNDEFINED;
         // Horizontal gap is divided equally to both sides of the key.
-        mX = x + mHorizontalGap / 2;
+        mX = x + params.mHorizontalGap / 2;
         mY = y;
         mHitBox.set(x, y, x + width + 1, y + height);
 
@@ -206,8 +217,7 @@ public class Key {
             XmlPullParser parser) throws XmlPullParserException {
         final float horizontalGap = isSpacer() ? 0 : params.mHorizontalGap;
         final int keyHeight = row.mRowHeight;
-        mVerticalGap = params.mVerticalGap;
-        mHeight = keyHeight - mVerticalGap;
+        mHeight = keyHeight - params.mVerticalGap;
 
         final TypedArray keyAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_Key);
@@ -221,7 +231,6 @@ public class Key {
         mX = Math.round(keyXPos + horizontalGap / 2);
         mY = keyYPos;
         mWidth = Math.round(keyWidth - horizontalGap);
-        mHorizontalGap = Math.round(horizontalGap);
         mHitBox.set(Math.round(keyXPos), keyYPos, Math.round(keyXPos + keyWidth) + 1,
                 keyYPos + keyHeight);
         // Update row to have current x coordinate.
@@ -230,15 +239,15 @@ public class Key {
         mBackgroundType = style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_backgroundType, row.getDefaultBackgroundType());
 
-        mVisualInsetsLeft = Math.round(ResourceUtils.getDimensionOrFraction(keyAttr,
+        final int visualInsetsLeft = Math.round(ResourceUtils.getDimensionOrFraction(keyAttr,
                 R.styleable.Keyboard_Key_visualInsetsLeft, params.mBaseWidth, 0));
-        mVisualInsetsRight = Math.round(ResourceUtils.getDimensionOrFraction(keyAttr,
+        final int visualInsetsRight = Math.round(ResourceUtils.getDimensionOrFraction(keyAttr,
                 R.styleable.Keyboard_Key_visualInsetsRight, params.mBaseWidth, 0));
         mIconId = KeySpecParser.getIconId(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_keyIcon));
-        mDisabledIconId = KeySpecParser.getIconId(style.getString(keyAttr,
+        final int disabledIconId = KeySpecParser.getIconId(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_keyIconDisabled));
-        mPreviewIconId = KeySpecParser.getIconId(style.getString(keyAttr,
+        final int previewIconId = KeySpecParser.getIconId(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_keyIconPreview));
 
         mLabelFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags)
@@ -332,11 +341,20 @@ public class Key {
         } else {
             mCode = KeySpecParser.toUpperCaseOfCodeForLocale(code, needsToUpperCase, locale);
         }
-        mOutputText = outputText;
-        mAltCode = KeySpecParser.toUpperCaseOfCodeForLocale(
+        final int altCode = KeySpecParser.toUpperCaseOfCodeForLocale(
                 KeySpecParser.parseCode(style.getString(keyAttr,
                 R.styleable.Keyboard_Key_altCode), params.mCodesSet, CODE_UNSPECIFIED),
                 needsToUpperCase, locale);
+        if (outputText == null && altCode == CODE_UNSPECIFIED
+                && disabledIconId == ICON_UNDEFINED && previewIconId == ICON_UNDEFINED
+                && visualInsetsLeft == 0 && visualInsetsRight == 0) {
+            mOptionalAttributes = null;
+        } else {
+            mOptionalAttributes = new OptionalAttributes(outputText, altCode,
+                    disabledIconId, previewIconId,
+                    visualInsetsLeft, visualInsetsRight);
+        }
+
         mHashCode = computeHashCode(this);
 
         keyAttr.recycle();
@@ -371,17 +389,17 @@ public class Key {
                 key.mIconId,
                 key.mBackgroundType,
                 Arrays.hashCode(key.mMoreKeys),
-                key.mOutputText,
+                key.getOutputText(),
                 key.mActionFlags,
                 key.mLabelFlags,
                 // Key can be distinguishable without the following members.
-                // key.mAltCode,
-                // key.mDisabledIconId,
-                // key.mPreviewIconId,
+                // key.mOptionalAttributes.mAltCode,
+                // key.mOptionalAttributes.mDisabledIconId,
+                // key.mOptionalAttributes.mPreviewIconId,
                 // key.mHorizontalGap,
                 // key.mVerticalGap,
-                // key.mVisualInsetLeft,
-                // key.mVisualInsetRight,
+                // key.mOptionalAttributes.mVisualInsetLeft,
+                // key.mOptionalAttributes.mVisualInsetRight,
                 // key.mMaxMoreKeysColumn,
         });
     }
@@ -398,7 +416,7 @@ public class Key {
                 && o.mIconId == mIconId
                 && o.mBackgroundType == mBackgroundType
                 && Arrays.equals(o.mMoreKeys, mMoreKeys)
-                && TextUtils.equals(o.mOutputText, mOutputText)
+                && TextUtils.equals(o.getOutputText(), getOutputText())
                 && o.mActionFlags == mActionFlags
                 && o.mLabelFlags == mLabelFlags;
     }
@@ -578,8 +596,20 @@ public class Key {
         return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_EMBEDDED_MORE_KEY) != 0;
     }
 
+    public String getOutputText() {
+        final OptionalAttributes attrs = mOptionalAttributes;
+        return (attrs != null) ? attrs.mOutputText : null;
+    }
+
+    public int getAltCode() {
+        final OptionalAttributes attrs = mOptionalAttributes;
+        return (attrs != null) ? attrs.mAltCode : CODE_UNSPECIFIED;
+    }
+
     public Drawable getIcon(KeyboardIconsSet iconSet, int alpha) {
-        final int iconId = mEnabled ? mIconId : mDisabledIconId;
+        final OptionalAttributes attrs = mOptionalAttributes;
+        final int disabledIconId = (attrs != null) ? attrs.mDisabledIconId : ICON_UNDEFINED;
+        final int iconId = mEnabled ? mIconId : disabledIconId;
         final Drawable icon = iconSet.getIconDrawable(iconId);
         if (icon != null) {
             icon.setAlpha(alpha);
@@ -588,9 +618,21 @@ public class Key {
     }
 
     public Drawable getPreviewIcon(KeyboardIconsSet iconSet) {
-        return mPreviewIconId != ICON_UNDEFINED
-                ? iconSet.getIconDrawable(mPreviewIconId)
-                : iconSet.getIconDrawable(mIconId);
+        final OptionalAttributes attrs = mOptionalAttributes;
+        final int previewIconId = (attrs != null) ? attrs.mPreviewIconId : ICON_UNDEFINED;
+        return previewIconId != ICON_UNDEFINED
+                ? iconSet.getIconDrawable(previewIconId) : iconSet.getIconDrawable(mIconId);
+    }
+
+    public int getDrawX() {
+        final OptionalAttributes attrs = mOptionalAttributes;
+        return (attrs == null) ? mX : mX + attrs.mVisualInsetsLeft;
+    }
+
+    public int getDrawWidth() {
+        final OptionalAttributes attrs = mOptionalAttributes;
+        return (attrs == null) ? mWidth
+                : mWidth - attrs.mVisualInsetsLeft - attrs.mVisualInsetsRight;
     }
 
     /**

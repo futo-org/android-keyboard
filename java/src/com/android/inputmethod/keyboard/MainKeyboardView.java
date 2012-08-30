@@ -334,7 +334,7 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
                 .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT);
         final Resources res = getResources();
         final boolean needsPhantomSuddenMoveEventHack = Boolean.parseBoolean(
-               ResourceUtils.getDeviceOverrideValue(res,
+                ResourceUtils.getDeviceOverrideValue(res,
                         R.array.phantom_sudden_move_event_device_list, "false"));
         PointerTracker.init(mHasDistinctMultitouch, needsPhantomSuddenMoveEventHack);
 
@@ -618,9 +618,9 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
         // The more keys keyboard is usually vertically aligned with the top edge of the parent key
         // (plus vertical gap). If the key preview is enabled, the more keys keyboard is vertically
         // aligned with the bottom edge of the visible part of the key preview.
-        final int pointY = parentKey.mY + (keyPreviewEnabled
-                ? mKeyPreviewDrawParams.mPreviewVisibleOffset
-                : -parentKey.mVerticalGap);
+        // {@code mPreviewVisibleOffset} has been set appropriately in
+        // {@link KeyboardView#showKeyPreview(PointerTracker)}.
+        final int pointY = parentKey.mY + mKeyPreviewDrawParams.mPreviewVisibleOffset;
         moreKeysPanel.showMoreKeysPanel(
                 this, this, pointX, pointY, mMoreKeysWindow, mKeyboardActionListener);
         final int translatedX = moreKeysPanel.translateX(tracker.getLastX());
