@@ -1381,6 +1381,48 @@ public class BinaryDictInputOutput {
     }
 
     /**
+     * Helper function to get and validate the binary format version.
+     * @throws UnsupportedFormatException
+     * @throws IOException
+     */
+    private static int checkFormatVersion(final FusionDictionaryBufferInterface buffer)
+            throws IOException, UnsupportedFormatException {
+        final int version = getFormatVersion(buffer);
+        if (version < MINIMUM_SUPPORTED_VERSION || version > MAXIMUM_SUPPORTED_VERSION) {
+            throw new UnsupportedFormatException("This file has version " + version
+                    + ", but this implementation does not support versions above "
+                    + MAXIMUM_SUPPORTED_VERSION);
+        }
+        return version;
+    }
+
+    /**
+     * Reads a header from a buffer.
+     * @throws IOException
+     * @throws UnsupportedFormatException
+     */
+    private static int readHeader(final FusionDictionaryBufferInterface buffer,
+            final HashMap<String, String> options,
+            final int version)
+            throws IOException, UnsupportedFormatException {
+
+        final int headerSize;
+        if (version < FIRST_VERSION_WITH_HEADER_SIZE) {
+            headerSize = buffer.position();
+        } else {
+            headerSize = buffer.readInt();
+            populateOptions(buffer, headerSize, options);
+            buffer.position(headerSize);
+        }
+
+        if (headerSize < 0) {
+            throw new UnsupportedFormatException("header size can't be negative.");
+        }
+
+        return headerSize;
+    }
+
+    /**
      * Reads options from a buffer and populate a map with their contents.
      *
      * The buffer is read at the current position, so the caller must take care the pointer
@@ -1414,33 +1456,16 @@ public class BinaryDictInputOutput {
     public static FusionDictionary readDictionaryBinary(
             final FusionDictionaryBufferInterface buffer, final FusionDictionary dict)
                     throws IOException, UnsupportedFormatException {
-        // Check file version
-        final int version = getFormatVersion(buffer);
-        if (version < MINIMUM_SUPPORTED_VERSION || version > MAXIMUM_SUPPORTED_VERSION) {
-            throw new UnsupportedFormatException("This file has version " + version
-                    + ", but this implementation does not support versions above "
-                    + MAXIMUM_SUPPORTED_VERSION);
-        }
 
         // clear cache
         wordCache.clear();
 
-        // Read options
+        // Read header
+        final int version = checkFormatVersion(buffer);
         final int optionsFlags = buffer.readUnsignedShort();
 
-        final int headerSize;
         final HashMap<String, String> options = new HashMap<String, String>();
-        if (version < FIRST_VERSION_WITH_HEADER_SIZE) {
-            headerSize = buffer.position();
-        } else {
-            headerSize = buffer.readInt();
-            populateOptions(buffer, headerSize, options);
-            buffer.position(headerSize);
-        }
-
-        if (headerSize < 0) {
-            throw new UnsupportedFormatException("header size can't be negative.");
-        }
+        final int headerSize = readHeader(buffer, options, version);
 
         Map<Integer, Node> reverseNodeMapping = new TreeMap<Integer, Node>();
         Map<Integer, CharGroup> reverseGroupMapping = new TreeMap<Integer, CharGroup>();
