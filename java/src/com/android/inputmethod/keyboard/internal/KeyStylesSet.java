@@ -20,7 +20,6 @@ import android.content.res.TypedArray;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.XmlParseUtils;
@@ -30,75 +29,62 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.util.HashMap;
 
-public class KeyStyles {
-    private static final String TAG = KeyStyles.class.getSimpleName();
+public class KeyStylesSet {
+    private static final String TAG = KeyStylesSet.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    final HashMap<String, KeyStyle> mStyles = CollectionUtils.newHashMap();
+    private final HashMap<String, KeyStyle> mStyles = CollectionUtils.newHashMap();
 
-    final KeyboardTextsSet mTextsSet;
+    private final KeyboardTextsSet mTextsSet;
     private final KeyStyle mEmptyKeyStyle;
     private static final String EMPTY_STYLE_NAME = "<empty>";
 
-    public KeyStyles(KeyboardTextsSet textsSet) {
+    public KeyStylesSet(final KeyboardTextsSet textsSet) {
         mTextsSet = textsSet;
-        mEmptyKeyStyle = new EmptyKeyStyle();
+        mEmptyKeyStyle = new EmptyKeyStyle(textsSet);
         mStyles.put(EMPTY_STYLE_NAME, mEmptyKeyStyle);
     }
 
-    public abstract class KeyStyle {
-        public abstract String[] getStringArray(TypedArray a, int index);
-        public abstract String getString(TypedArray a, int index);
-        public abstract int getInt(TypedArray a, int index, int defaultValue);
-        public abstract int getFlag(TypedArray a, int index);
-
-        protected String parseString(TypedArray a, int index) {
-            if (a.hasValue(index)) {
-                return KeySpecParser.resolveTextReference(a.getString(index), mTextsSet);
-            }
-            return null;
+    private static class EmptyKeyStyle extends KeyStyle {
+        EmptyKeyStyle(final KeyboardTextsSet textsSet) {
+            super(textsSet);
         }
 
-        protected String[] parseStringArray(TypedArray a, int index) {
-            if (a.hasValue(index)) {
-                return KeySpecParser.parseCsvString(a.getString(index), mTextsSet);
-            }
-            return null;
-        }
-    }
-
-    class EmptyKeyStyle extends KeyStyle {
         @Override
-        public String[] getStringArray(TypedArray a, int index) {
+        public String[] getStringArray(final TypedArray a, final int index) {
             return parseStringArray(a, index);
         }
 
         @Override
-        public String getString(TypedArray a, int index) {
+        public String getString(final TypedArray a, final int index) {
             return parseString(a, index);
         }
 
         @Override
-        public int getInt(TypedArray a, int index, int defaultValue) {
+        public int getInt(final TypedArray a, final int index, final int defaultValue) {
             return a.getInt(index, defaultValue);
         }
 
         @Override
-        public int getFlag(TypedArray a, int index) {
+        public int getFlag(final TypedArray a, final int index) {
             return a.getInt(index, 0);
         }
     }
 
-    private class DeclaredKeyStyle extends KeyStyle {
+    private static class DeclaredKeyStyle extends KeyStyle {
+        private final HashMap<String, KeyStyle> mStyles;
         private final String mParentStyleName;
         private final SparseArray<Object> mStyleAttributes = CollectionUtils.newSparseArray();
 
-        public DeclaredKeyStyle(String parentStyleName) {
+        public DeclaredKeyStyle(final String parentStyleName, final KeyboardTextsSet textsSet,
+                final HashMap<String, KeyStyle> styles) {
+            super(textsSet);
             mParentStyleName = parentStyleName;
+            mStyles = styles;
         }
 
         @Override
-        public String[] getStringArray(TypedArray a, int index) {
+        public String[] getStringArray(final TypedArray a, final int index) {
             if (a.hasValue(index)) {
                 return parseStringArray(a, index);
             }
@@ -111,7 +97,7 @@ public class KeyStyles {
         }
 
         @Override
-        public String getString(TypedArray a, int index) {
+        public String getString(final TypedArray a, final int index) {
             if (a.hasValue(index)) {
                 return parseString(a, index);
             }
@@ -124,7 +110,7 @@ public class KeyStyles {
         }
 
         @Override
-        public int getInt(TypedArray a, int index, int defaultValue) {
+        public int getInt(final TypedArray a, final int index, final int defaultValue) {
             if (a.hasValue(index)) {
                 return a.getInt(index, defaultValue);
             }
@@ -137,7 +123,7 @@ public class KeyStyles {
         }
 
         @Override
-        public int getFlag(TypedArray a, int index) {
+        public int getFlag(final TypedArray a, final int index) {
             int flags = a.getInt(index, 0);
             final Object value = mStyleAttributes.get(index);
             if (value != null) {
@@ -147,7 +133,7 @@ public class KeyStyles {
             return flags | parentStyle.getFlag(a, index);
         }
 
-        void readKeyAttributes(TypedArray keyAttr) {
+        public void readKeyAttributes(final TypedArray keyAttr) {
             // TODO: Currently not all Key attributes can be declared as style.
             readString(keyAttr, R.styleable.Keyboard_Key_code);
             readString(keyAttr, R.styleable.Keyboard_Key_altCode);
@@ -165,38 +151,38 @@ public class KeyStyles {
             readFlag(keyAttr, R.styleable.Keyboard_Key_keyActionFlags);
         }
 
-        private void readString(TypedArray a, int index) {
+        private void readString(final TypedArray a, final int index) {
             if (a.hasValue(index)) {
                 mStyleAttributes.put(index, parseString(a, index));
             }
         }
 
-        private void readInt(TypedArray a, int index) {
+        private void readInt(final TypedArray a, final int index) {
             if (a.hasValue(index)) {
                 mStyleAttributes.put(index, a.getInt(index, 0));
             }
         }
 
-        private void readFlag(TypedArray a, int index) {
+        private void readFlag(final TypedArray a, final int index) {
             if (a.hasValue(index)) {
                 final Integer value = (Integer)mStyleAttributes.get(index);
                 mStyleAttributes.put(index, a.getInt(index, 0) | (value != null ? value : 0));
             }
         }
 
-        private void readStringArray(TypedArray a, int index) {
+        private void readStringArray(final TypedArray a, final int index) {
             if (a.hasValue(index)) {
                 mStyleAttributes.put(index, parseStringArray(a, index));
             }
         }
     }
 
-    public void parseKeyStyleAttributes(TypedArray keyStyleAttr, TypedArray keyAttrs,
-            XmlPullParser parser) throws XmlPullParserException {
+    public void parseKeyStyleAttributes(final TypedArray keyStyleAttr, final TypedArray keyAttrs,
+            final XmlPullParser parser) throws XmlPullParserException {
         final String styleName = keyStyleAttr.getString(R.styleable.Keyboard_KeyStyle_styleName);
         if (DEBUG) {
             Log.d(TAG, String.format("<%s styleName=%s />",
-                    Keyboard.Builder.TAG_KEY_STYLE, styleName));
+                    KeyboardBuilder.TAG_KEY_STYLE, styleName));
             if (mStyles.containsKey(styleName)) {
                 Log.d(TAG, "key-style " + styleName + " is overridden at "
                         + parser.getPositionDescription());
@@ -211,12 +197,12 @@ public class KeyStyles {
                         "Unknown parentStyle " + parentStyleName, parser);
             }
         }
-        final DeclaredKeyStyle style = new DeclaredKeyStyle(parentStyleName);
+        final DeclaredKeyStyle style = new DeclaredKeyStyle(parentStyleName, mTextsSet, mStyles);
         style.readKeyAttributes(keyAttrs);
         mStyles.put(styleName, style);
     }
 
-    public KeyStyle getKeyStyle(TypedArray keyAttr, XmlPullParser parser)
+    public KeyStyle getKeyStyle(final TypedArray keyAttr, final XmlPullParser parser)
             throws XmlParseUtils.ParseException {
         if (!keyAttr.hasValue(R.styleable.Keyboard_Key_keyStyle)) {
             return mEmptyKeyStyle;

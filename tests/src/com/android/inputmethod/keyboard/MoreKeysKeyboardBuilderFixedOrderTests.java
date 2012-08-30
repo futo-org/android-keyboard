@@ -18,7 +18,7 @@ package com.android.inputmethod.keyboard;
 
 import android.test.AndroidTestCase;
 
-import com.android.inputmethod.keyboard.MoreKeysKeyboard.Builder.MoreKeysKeyboardParams;
+import com.android.inputmethod.keyboard.MoreKeysKeyboard.MoreKeysKeyboardParams;
 
 public class MoreKeysKeyboardBuilderFixedOrderTests extends AndroidTestCase {
     private static final int WIDTH = 10;
