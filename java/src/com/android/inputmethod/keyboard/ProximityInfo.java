@@ -19,7 +19,7 @@ package com.android.inputmethod.keyboard;
 import android.graphics.Rect;
 import android.text.TextUtils;
 
-import com.android.inputmethod.keyboard.Keyboard.Params.TouchPositionCorrection;
+import com.android.inputmethod.keyboard.internal.TouchPositionCorrection;
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.JniUtils;
 
@@ -48,9 +48,10 @@ public class ProximityInfo {
     private final Key[][] mGridNeighbors;
     private final String mLocaleStr;
 
-    ProximityInfo(String localeStr, int gridWidth, int gridHeight, int minWidth, int height,
-            int mostCommonKeyWidth, int mostCommonKeyHeight, final Key[] keys,
-            TouchPositionCorrection touchPositionCorrection) {
+    ProximityInfo(final String localeStr, final int gridWidth, final int gridHeight,
+            final int minWidth, final int height, final int mostCommonKeyWidth,
+            final int mostCommonKeyHeight, final Key[] keys,
+            final TouchPositionCorrection touchPositionCorrection) {
         if (TextUtils.isEmpty(localeStr)) {
             mLocaleStr = "";
         } else {
@@ -81,7 +82,7 @@ public class ProximityInfo {
     }
 
     public static ProximityInfo createSpellCheckerProximityInfo(final int[] proximity,
-            int rowSize, int gridWidth, int gridHeight) {
+            final int rowSize, final int gridWidth, final int gridHeight) {
         final ProximityInfo spellCheckerProximityInfo = createDummyProximityInfo();
         spellCheckerProximityInfo.mNativeProximityInfo =
                 spellCheckerProximityInfo.setProximityInfoNative("",
