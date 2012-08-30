@@ -330,10 +330,10 @@ public class PointerTracker implements PointerTrackerQueue.Element {
             final int y) {
         final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
         final boolean altersCode = key.altCodeWhileTyping() && mTimerProxy.isTypingState();
-        final int code = altersCode ? key.mAltCode : primaryCode;
+        final int code = altersCode ? key.getAltCode() : primaryCode;
         if (DEBUG_LISTENER) {
-            Log.d(TAG, "onCodeInput: " + Keyboard.printableCode(code) + " text=" + key.mOutputText
-                    + " x=" + x + " y=" + y
+            Log.d(TAG, "onCodeInput: " + Keyboard.printableCode(code)
+                    + " text=" + key.getOutputText() + " x=" + x + " y=" + y
                     + " ignoreModifier=" + ignoreModifierKey + " altersCode=" + altersCode
                     + " enabled=" + key.isEnabled());
         }
@@ -347,7 +347,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         // Even if the key is disabled, it should respond if it is in the altCodeWhileTyping state.
         if (key.isEnabled() || altersCode) {
             if (code == Keyboard.CODE_OUTPUT_TEXT) {
-                mListener.onTextInput(key.mOutputText);
+                mListener.onTextInput(key.getOutputText());
             } else if (code != Keyboard.CODE_UNSPECIFIED) {
                 mListener.onCodeInput(code, x, y);
             }
@@ -440,13 +440,13 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         }
 
         if (key.altCodeWhileTyping()) {
-            final int altCode = key.mAltCode;
+            final int altCode = key.getAltCode();
             final Key altKey = mKeyboard.getKey(altCode);
             if (altKey != null) {
                 updateReleaseKeyGraphics(altKey);
             }
             for (final Key k : mKeyboard.mAltCodeKeysWhileTyping) {
-                if (k != key && k.mAltCode == altCode) {
+                if (k != key && k.getAltCode() == altCode) {
                     updateReleaseKeyGraphics(k);
                 }
             }
@@ -479,13 +479,13 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         }
 
         if (key.altCodeWhileTyping() && mTimerProxy.isTypingState()) {
-            final int altCode = key.mAltCode;
+            final int altCode = key.getAltCode();
             final Key altKey = mKeyboard.getKey(altCode);
             if (altKey != null) {
                 updatePressKeyGraphics(altKey);
             }
             for (final Key k : mKeyboard.mAltCodeKeysWhileTyping) {
-                if (k != key && k.mAltCode == altCode) {
+                if (k != key && k.getAltCode() == altCode) {
                     updatePressKeyGraphics(k);
                 }
             }

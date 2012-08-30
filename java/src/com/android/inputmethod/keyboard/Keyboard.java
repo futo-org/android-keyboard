@@ -396,14 +396,14 @@ public class Keyboard {
         }
 
         private void updateHistogram(Key key) {
-            final int height = key.mHeight + key.mVerticalGap;
+            final int height = key.mHeight + mVerticalGap;
             final int heightCount = updateHistogramCounter(mHeightHistogram, height);
             if (heightCount > mMaxHeightCount) {
                 mMaxHeightCount = heightCount;
                 mMostCommonKeyHeight = height;
             }
 
-            final int width = key.mWidth + key.mHorizontalGap;
+            final int width = key.mWidth + mHorizontalGap;
             final int widthCount = updateHistogramCounter(mWidthHistogram, width);
             if (widthCount > mMaxWidthCount) {
                 mMaxWidthCount = widthCount;
