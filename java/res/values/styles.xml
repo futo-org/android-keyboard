@@ -64,8 +64,8 @@
         <item name="keyPreviewLingerTimeout">@integer/config_key_preview_linger_timeout</item>
         <item name="moreKeysLayout">@layout/more_keys_keyboard</item>
         <item name="verticalCorrection">@dimen/keyboard_vertical_correction</item>
-        <item name="shadowColor">#BB000000</item>
-        <item name="shadowRadius">2.75</item>
+        <item name="keyTextShadowColor">#BB000000</item>
+        <item name="keyTextShadowRadius">2.75</item>
         <item name="backgroundDimAlpha">128</item>
         <!-- android:color/holo_blue_light=#FF33B5E5 -->
         <item name="gestureFloatingPreviewTextSize">@dimen/gesture_floating_preview_text_size</item>
@@ -203,7 +203,7 @@
         <item name="keyHintLabelColor">#E0000000</item>
         <item name="keyShiftedLetterHintInactivatedColor">#66000000</item>
         <item name="keyShiftedLetterHintActivatedColor">#CC000000</item>
-        <item name="shadowColor">#FFFFFFFF</item>
+        <item name="keyTextShadowColor">#FFFFFFFF</item>
     </style>
     <style
         name="MainKeyboardView.Stone"
@@ -229,7 +229,7 @@
     >
         <item name="keyBackground">@drawable/btn_keyboard_key_stone</item>
         <item name="keyTextColor">#FF000000</item>
-        <item name="shadowColor">#FFFFFFFF</item>
+        <item name="keyTextShadowColor">#FFFFFFFF</item>
     </style>
     <!-- Theme "Stone bold" -->
     <style
@@ -328,8 +328,8 @@
         <item name="keyPreviewRightBackground">@drawable/keyboard_key_feedback_right_ics</item>
         <item name="keyPreviewTextColor">#FFFFFFFF</item>
         <item name="keyPreviewOffset">@dimen/key_preview_offset_ics</item>
-        <item name="shadowColor">#00000000</item>
-        <item name="shadowRadius">0.0</item>
+        <item name="keyTextShadowColor">#00000000</item>
+        <item name="keyTextShadowRadius">0.0</item>
     </style>
     <style
         name="MainKeyboardView.IceCreamSandwich"

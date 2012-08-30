@@ -237,8 +237,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 R.style.Keyboard);
         final TypedArray keyAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_Key);
-        final TypedArray keyboardViewAttr = mResources.obtainAttributes(
-                Xml.asAttributeSet(parser), R.styleable.KeyboardView);
         try {
             final int displayHeight = mDisplayMetrics.heightPixels;
             final String keyboardHeightString = ResourceUtils.getDeviceOverrideValue(
@@ -291,18 +289,18 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     R.styleable.Keyboard_rowHeight, params.mBaseHeight,
                     params.mBaseHeight / DEFAULT_KEYBOARD_ROWS);
 
-            if (keyboardViewAttr.hasValue(R.styleable.KeyboardView_keyTypeface)) {
-                params.mKeyTypeface = Typeface.defaultFromStyle(keyboardViewAttr.getInt(
-                        R.styleable.KeyboardView_keyTypeface, Typeface.NORMAL));
+            if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyTypeface)) {
+                params.mKeyTypeface = Typeface.defaultFromStyle(keyAttr.getInt(
+                        R.styleable.Keyboard_Key_keyTypeface, Typeface.NORMAL));
             }
-            params.mKeyLetterRatio = ResourceUtils.getFraction(keyboardViewAttr,
-                    R.styleable.KeyboardView_keyLetterSize);
-            params.mKeyLetterSize = ResourceUtils.getDimensionPixelSize(keyboardViewAttr,
-                    R.styleable.KeyboardView_keyLetterSize);
-            params.mKeyHintLetterRatio = ResourceUtils.getFraction(keyboardViewAttr,
-                    R.styleable.KeyboardView_keyHintLetterRatio);
-            params.mKeyShiftedLetterHintRatio = ResourceUtils.getFraction(keyboardViewAttr,
-                    R.styleable.KeyboardView_keyShiftedLetterHintRatio);
+            params.mKeyLetterRatio = ResourceUtils.getFraction(keyAttr,
+                    R.styleable.Keyboard_Key_keyLetterSize);
+            params.mKeyLetterSize = ResourceUtils.getDimensionPixelSize(keyAttr,
+                    R.styleable.Keyboard_Key_keyLetterSize);
+            params.mKeyHintLetterRatio = ResourceUtils.getFraction(keyAttr,
+                    R.styleable.Keyboard_Key_keyHintLetterRatio);
+            params.mKeyShiftedLetterHintRatio = ResourceUtils.getFraction(keyAttr,
+                    R.styleable.Keyboard_Key_keyShiftedLetterHintRatio);
 
             params.mMoreKeysTemplate = keyboardAttr.getResourceId(
                     R.styleable.Keyboard_moreKeysTemplate, 0);
@@ -334,7 +332,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 params.mTouchPositionCorrection.load(data);
             }
         } finally {
-            keyboardViewAttr.recycle();
             keyAttr.recycle();
             keyboardAttr.recycle();
         }
