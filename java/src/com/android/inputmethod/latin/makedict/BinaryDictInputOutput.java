@@ -188,6 +188,54 @@ public class BinaryDictInputOutput {
     // suspicion that a bug might be causing an infinite loop.
     private static final int MAX_PASSES = 24;
 
+    private interface FusionDictionaryBufferInterface {
+        public int readUnsignedByte();
+        public int readUnsignedShort();
+        public int readUnsignedInt24();
+        public int readInt();
+        public int position();
+        public void position(int newPosition);
+    }
+
+    private static final class ByteBufferWrapper implements FusionDictionaryBufferInterface {
+        private ByteBuffer buffer;
+        ByteBufferWrapper(final ByteBuffer buffer) {
+            this.buffer = buffer;
+        }
+
+        @Override
+        public int readUnsignedByte() {
+            return ((int)buffer.get()) & 0xFF;
+        }
+
+        @Override
+        public int readUnsignedShort() {
+            return ((int)buffer.getShort()) & 0xFFFF;
+        }
+
+        @Override
+        public int readUnsignedInt24() {
+            final int retval = readUnsignedByte();
+            return (retval << 16) + readUnsignedShort();
+        }
+
+        @Override
+        public int readInt() {
+            return buffer.getInt();
+        }
+
+        @Override
+        public int position() {
+            return buffer.position();
+        }
+
+        @Override
+        public void position(int newPos) {
+            buffer.position(newPos);
+            return;
+        }
+    }
+
     /**
      * A class grouping utility function for our specific character encoding.
      */
@@ -310,9 +358,9 @@ public class BinaryDictInputOutput {
         }
 
         /**
-         * Reads a string from a ByteBuffer. This is the converse of the above method.
+         * Reads a string from a buffer. This is the converse of the above method.
          */
-        private static String readString(final ByteBuffer buffer) {
+        private static String readString(final FusionDictionaryBufferInterface buffer) {
             final StringBuilder s = new StringBuilder();
             int character = readChar(buffer);
             while (character != INVALID_CHARACTER) {
@@ -323,19 +371,19 @@ public class BinaryDictInputOutput {
         }
 
         /**
-         * Reads a character from the ByteBuffer.
+         * Reads a character from the buffer.
          *
          * This follows the character format documented earlier in this source file.
          *
          * @param buffer the buffer, positioned over an encoded character.
          * @return the character code.
          */
-        private static int readChar(final ByteBuffer buffer) {
-            int character = readUnsignedByte(buffer);
+        private static int readChar(final FusionDictionaryBufferInterface buffer) {
+            int character = buffer.readUnsignedByte();
             if (!fitsOnOneByte(character)) {
                 if (GROUP_CHARACTERS_TERMINATOR == character) return INVALID_CHARACTER;
                 character <<= 16;
-                character += readUnsignedShort(buffer);
+                character += buffer.readUnsignedShort();
             }
             return character;
         }
@@ -1093,10 +1141,10 @@ public class BinaryDictInputOutput {
     // readDictionaryBinary is the public entry point for them.
 
     static final int[] characterBuffer = new int[MAX_WORD_LENGTH];
-    private static CharGroupInfo readCharGroup(final ByteBuffer buffer,
+    private static CharGroupInfo readCharGroup(final FusionDictionaryBufferInterface buffer,
             final int originalGroupAddress) {
         int addressPointer = originalGroupAddress;
-        final int flags = readUnsignedByte(buffer);
+        final int flags = buffer.readUnsignedByte();
         ++addressPointer;
         final int characters[];
         if (0 != (flags & FLAG_HAS_MULTIPLE_CHARS)) {
@@ -1117,22 +1165,22 @@ public class BinaryDictInputOutput {
         final int frequency;
         if (0 != (FLAG_IS_TERMINAL & flags)) {
             ++addressPointer;
-            frequency = readUnsignedByte(buffer);
+            frequency = buffer.readUnsignedByte();
         } else {
             frequency = CharGroup.NOT_A_TERMINAL;
         }
         int childrenAddress = addressPointer;
         switch (flags & MASK_GROUP_ADDRESS_TYPE) {
         case FLAG_GROUP_ADDRESS_TYPE_ONEBYTE:
-            childrenAddress += readUnsignedByte(buffer);
+            childrenAddress += buffer.readUnsignedByte();
             addressPointer += 1;
             break;
         case FLAG_GROUP_ADDRESS_TYPE_TWOBYTES:
-            childrenAddress += readUnsignedShort(buffer);
+            childrenAddress += buffer.readUnsignedShort();
             addressPointer += 2;
             break;
         case FLAG_GROUP_ADDRESS_TYPE_THREEBYTES:
-            childrenAddress += readUnsignedInt24(buffer);
+            childrenAddress += buffer.readUnsignedInt24();
             addressPointer += 3;
             break;
         case FLAG_GROUP_ADDRESS_TYPE_NOADDRESS:
@@ -1144,9 +1192,9 @@ public class BinaryDictInputOutput {
         if (0 != (flags & FLAG_HAS_SHORTCUT_TARGETS)) {
             final int pointerBefore = buffer.position();
             shortcutTargets = new ArrayList<WeightedString>();
-            buffer.getShort(); // Skip the size
+            buffer.readUnsignedShort(); // Skip the size
             while (true) {
-                final int targetFlags = readUnsignedByte(buffer);
+                final int targetFlags = buffer.readUnsignedByte();
                 final String word = CharEncoding.readString(buffer);
                 shortcutTargets.add(new WeightedString(word,
                         targetFlags & FLAG_ATTRIBUTE_FREQUENCY));
@@ -1158,22 +1206,22 @@ public class BinaryDictInputOutput {
         if (0 != (flags & FLAG_HAS_BIGRAMS)) {
             bigrams = new ArrayList<PendingAttribute>();
             while (true) {
-                final int bigramFlags = readUnsignedByte(buffer);
+                final int bigramFlags = buffer.readUnsignedByte();
                 ++addressPointer;
                 final int sign = 0 == (bigramFlags & FLAG_ATTRIBUTE_OFFSET_NEGATIVE) ? 1 : -1;
                 int bigramAddress = addressPointer;
                 switch (bigramFlags & MASK_ATTRIBUTE_ADDRESS_TYPE) {
                 case FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE:
-                    bigramAddress += sign * readUnsignedByte(buffer);
+                    bigramAddress += sign * buffer.readUnsignedByte();
                     addressPointer += 1;
                     break;
                 case FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES:
-                    bigramAddress += sign * readUnsignedShort(buffer);
+                    bigramAddress += sign * buffer.readUnsignedShort();
                     addressPointer += 2;
                     break;
                 case FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES:
-                    final int offset = (readUnsignedByte(buffer) << 16)
-                            + readUnsignedShort(buffer);
+                    final int offset = (buffer.readUnsignedByte() << 16)
+                            + buffer.readUnsignedShort();
                     bigramAddress += sign * offset;
                     addressPointer += 3;
                     break;
@@ -1192,13 +1240,13 @@ public class BinaryDictInputOutput {
     /**
      * Reads and returns the char group count out of a buffer and forwards the pointer.
      */
-    private static int readCharGroupCount(final ByteBuffer buffer) {
-        final int msb = readUnsignedByte(buffer);
+    private static int readCharGroupCount(final FusionDictionaryBufferInterface buffer) {
+        final int msb = buffer.readUnsignedByte();
         if (MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT >= msb) {
             return msb;
         } else {
             return ((MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT & msb) << 8)
-                    + readUnsignedByte(buffer);
+                    + buffer.readUnsignedByte();
         }
     }
 
@@ -1215,8 +1263,8 @@ public class BinaryDictInputOutput {
      * @param address the address to seek.
      * @return the word, as a string.
      */
-    private static String getWordAtAddress(final ByteBuffer buffer, final int headerSize,
-            final int address) {
+    private static String getWordAtAddress(final FusionDictionaryBufferInterface buffer,
+            final int headerSize, final int address) {
         final String cachedString = wordCache.get(address);
         if (null != cachedString) return cachedString;
         final int originalPointer = buffer.position();
@@ -1241,7 +1289,7 @@ public class BinaryDictInputOutput {
                     builder.append(new String(last.mCharacters, 0, last.mCharacters.length));
                     buffer.position(last.mChildrenAddress + headerSize);
                     groupOffset = last.mChildrenAddress + 1;
-                    i = readUnsignedByte(buffer);
+                    i = buffer.readUnsignedByte();
                     last = null;
                     continue;
                 }
@@ -1251,7 +1299,7 @@ public class BinaryDictInputOutput {
                 builder.append(new String(last.mCharacters, 0, last.mCharacters.length));
                 buffer.position(last.mChildrenAddress + headerSize);
                 groupOffset = last.mChildrenAddress + 1;
-                i = readUnsignedByte(buffer);
+                i = buffer.readUnsignedByte();
                 last = null;
                 continue;
             }
@@ -1262,10 +1310,10 @@ public class BinaryDictInputOutput {
     }
 
     /**
-     * Reads a single node from a binary file.
+     * Reads a single node from a buffer.
      *
-     * This methods reads the file at the current position of its file pointer. A node is
-     * fully expected to start at the current position.
+     * This methods reads the file at the current position. A node is fully expected to start at
+     * the current position.
      * This will recursively read other nodes into the structure, populating the reverse
      * maps on the fly and using them to keep track of already read nodes.
      *
@@ -1275,7 +1323,7 @@ public class BinaryDictInputOutput {
      * @param reverseGroupMap a mapping from addresses to already read character groups.
      * @return the read node with all his children already read.
      */
-    private static Node readNode(final ByteBuffer buffer, final int headerSize,
+    private static Node readNode(final FusionDictionaryBufferInterface buffer, final int headerSize,
             final Map<Integer, Node> reverseNodeMap, final Map<Integer, CharGroup> reverseGroupMap)
             throws IOException {
         final int nodeOrigin = buffer.position() - headerSize;
@@ -1283,7 +1331,7 @@ public class BinaryDictInputOutput {
         final ArrayList<CharGroup> nodeContents = new ArrayList<CharGroup>();
         int groupOffset = nodeOrigin + getGroupCountSize(count);
         for (int i = count; i > 0; --i) {
-            CharGroupInfo info =readCharGroup(buffer, groupOffset);
+            CharGroupInfo info = readCharGroup(buffer, groupOffset);
             ArrayList<WeightedString> shortcutTargets = info.mShortcutTargets;
             ArrayList<WeightedString> bigrams = null;
             if (null != info.mBigrams) {
@@ -1323,42 +1371,49 @@ public class BinaryDictInputOutput {
      * Helper function to get the binary format version from the header.
      * @throws IOException
      */
-    private static int getFormatVersion(final ByteBuffer buffer) throws IOException {
-        final int magic_v1 = readUnsignedShort(buffer);
-        if (VERSION_1_MAGIC_NUMBER == magic_v1) return readUnsignedByte(buffer);
-        final int magic_v2 = (magic_v1 << 16) + readUnsignedShort(buffer);
-        if (VERSION_2_MAGIC_NUMBER == magic_v2) return readUnsignedShort(buffer);
+    private static int getFormatVersion(final FusionDictionaryBufferInterface buffer)
+            throws IOException {
+        final int magic_v1 = buffer.readUnsignedShort();
+        if (VERSION_1_MAGIC_NUMBER == magic_v1) return buffer.readUnsignedByte();
+        final int magic_v2 = (magic_v1 << 16) + buffer.readUnsignedShort();
+        if (VERSION_2_MAGIC_NUMBER == magic_v2) return buffer.readUnsignedShort();
         return NOT_A_VERSION_NUMBER;
     }
 
     /**
-     * Reads options from a file and populate a map with their contents.
+     * Reads options from a buffer and populate a map with their contents.
      *
-     * The file is read at the current file pointer, so the caller must take care the pointer
+     * The buffer is read at the current position, so the caller must take care the pointer
      * is in the right place before calling this.
      */
-    public static void populateOptions(final ByteBuffer buffer, final int headerSize,
-            final HashMap<String, String> options) {
+    public static void populateOptions(final FusionDictionaryBufferInterface buffer,
+            final int headerSize, final HashMap<String, String> options) {
         while (buffer.position() < headerSize) {
             final String key = CharEncoding.readString(buffer);
             final String value = CharEncoding.readString(buffer);
             options.put(key, value);
         }
     }
+    // TODO: remove this method.
+    public static void populateOptions(final ByteBuffer buffer, final int headerSize,
+            final HashMap<String, String> options) {
+        populateOptions(new ByteBufferWrapper(buffer), headerSize, options);
+    }
 
     /**
-     * Reads a byte buffer and returns the memory representation of the dictionary.
+     * Reads a buffer and returns the memory representation of the dictionary.
      *
-     * This high-level method takes a binary file and reads its contents, populating a
+     * This high-level method takes a buffer and reads its contents, populating a
      * FusionDictionary structure. The optional dict argument is an existing dictionary to
-     * which words from the file should be added. If it is null, a new dictionary is created.
+     * which words from the buffer should be added. If it is null, a new dictionary is created.
      *
      * @param buffer the buffer to read.
      * @param dict an optional dictionary to add words to, or null.
      * @return the created (or merged) dictionary.
      */
-    public static FusionDictionary readDictionaryBinary(final ByteBuffer buffer,
-            final FusionDictionary dict) throws IOException, UnsupportedFormatException {
+    public static FusionDictionary readDictionaryBinary(
+            final FusionDictionaryBufferInterface buffer, final FusionDictionary dict)
+                    throws IOException, UnsupportedFormatException {
         // Check file version
         final int version = getFormatVersion(buffer);
         if (version < MINIMUM_SUPPORTED_VERSION || version > MAXIMUM_SUPPORTED_VERSION) {
@@ -1371,14 +1426,14 @@ public class BinaryDictInputOutput {
         wordCache.clear();
 
         // Read options
-        final int optionsFlags = readUnsignedShort(buffer);
+        final int optionsFlags = buffer.readUnsignedShort();
 
         final int headerSize;
         final HashMap<String, String> options = new HashMap<String, String>();
         if (version < FIRST_VERSION_WITH_HEADER_SIZE) {
             headerSize = buffer.position();
         } else {
-            headerSize = buffer.getInt();
+            headerSize = buffer.readInt();
             populateOptions(buffer, headerSize, options);
             buffer.position(headerSize);
         }
@@ -1413,26 +1468,10 @@ public class BinaryDictInputOutput {
         return newDict;
     }
 
-    /**
-     * Helper function to read one byte from ByteBuffer.
-     */
-    private static int readUnsignedByte(final ByteBuffer buffer) {
-        return ((int)buffer.get()) & 0xFF;
-    }
-
-    /**
-     * Helper function to read two byte from ByteBuffer.
-     */
-    private static int readUnsignedShort(final ByteBuffer buffer) {
-        return ((int)buffer.getShort()) & 0xFFFF;
-    }
-
-    /**
-     * Helper function to read three byte from ByteBuffer.
-     */
-    private static int readUnsignedInt24(final ByteBuffer buffer) {
-        final int value = readUnsignedByte(buffer) << 16;
-        return value + readUnsignedShort(buffer);
+    // TODO: remove this method.
+    public static FusionDictionary readDictionaryBinary(final ByteBuffer buffer,
+            final FusionDictionary dict) throws IOException, UnsupportedFormatException {
+        return readDictionaryBinary(new ByteBufferWrapper(buffer), dict);
     }
 
     /**
@@ -1450,7 +1489,7 @@ public class BinaryDictInputOutput {
             inStream = new FileInputStream(file);
             final ByteBuffer buffer = inStream.getChannel().map(
                     FileChannel.MapMode.READ_ONLY, 0, file.length());
-            final int version = getFormatVersion(buffer);
+            final int version = getFormatVersion(new ByteBufferWrapper(buffer));
             return (version >= MINIMUM_SUPPORTED_VERSION && version <= MAXIMUM_SUPPORTED_VERSION);
         } catch (FileNotFoundException e) {
             return false;
