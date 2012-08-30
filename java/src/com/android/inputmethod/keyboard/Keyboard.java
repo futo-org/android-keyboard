@@ -16,10 +16,10 @@
 
 package com.android.inputmethod.keyboard;
 
-import android.graphics.Typeface;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.android.inputmethod.keyboard.internal.KeyVisualAttributes;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.latin.CollectionUtils;
@@ -97,11 +97,7 @@ public class Keyboard {
     public final int mVerticalGap;
 
     /** Per keyboard key visual parameters */
-    public final Typeface mKeyTypeface;
-    public final float mKeyLetterRatio;
-    public final int mKeyLetterSize;
-    public final float mKeyHintLetterRatio;
-    public final float mKeyShiftedLetterHintRatio;
+    public final KeyVisualAttributes mKeyVisualAttributes;
 
     public final int mMostCommonKeyHeight;
     public final int mMostCommonKeyWidth;
@@ -132,13 +128,7 @@ public class Keyboard {
         mMostCommonKeyWidth = params.mMostCommonKeyWidth;
         mMoreKeysTemplate = params.mMoreKeysTemplate;
         mMaxMoreKeysKeyboardColumn = params.mMaxMoreKeysKeyboardColumn;
-
-        mKeyTypeface = params.mKeyTypeface;
-        mKeyLetterRatio = params.mKeyLetterRatio;
-        mKeyLetterSize = params.mKeyLetterSize;
-        mKeyHintLetterRatio = params.mKeyHintLetterRatio;
-        mKeyShiftedLetterHintRatio = params.mKeyShiftedLetterHintRatio;
-
+        mKeyVisualAttributes = params.mKeyVisualAttributes;
         mTopPadding = params.mTopPadding;
         mVerticalGap = params.mVerticalGap;
 
