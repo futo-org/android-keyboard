@@ -56,59 +56,20 @@ public class KeySpecParser {
     private static final char ESCAPE_CHAR = '\\';
     private static final char LABEL_END = '|';
     private static final String PREFIX_TEXT = "!text/";
-    private static final String PREFIX_ICON = "!icon/";
+    static final String PREFIX_ICON = "!icon/";
     private static final String PREFIX_CODE = "!code/";
     private static final String PREFIX_HEX = "0x";
     private static final String ADDITIONAL_MORE_KEY_MARKER = "%";
-
-    public static class MoreKeySpec {
-        public final int mCode;
-        public final String mLabel;
-        public final String mOutputText;
-        public final int mIconId;
-
-        public MoreKeySpec(final String moreKeySpec, boolean needsToUpperCase, Locale locale,
-                final KeyboardCodesSet codesSet) {
-            mLabel = toUpperCaseOfStringForLocale(getLabel(moreKeySpec),
-                    needsToUpperCase, locale);
-            final int code = toUpperCaseOfCodeForLocale(getCode(moreKeySpec, codesSet),
-                    needsToUpperCase, locale);
-            if (code == Keyboard.CODE_UNSPECIFIED) {
-                // Some letter, for example German Eszett (U+00DF: "ß"), has multiple characters
-                // upper case representation ("SS").
-                mCode = Keyboard.CODE_OUTPUT_TEXT;
-                mOutputText = mLabel;
-            } else {
-                mCode = code;
-                mOutputText = toUpperCaseOfStringForLocale(getOutputText(moreKeySpec),
-                        needsToUpperCase, locale);
-            }
-            mIconId = getIconId(moreKeySpec);
-        }
-
-        @Override
-        public String toString() {
-            final String label = (mIconId == KeyboardIconsSet.ICON_UNDEFINED ? mLabel
-                    : PREFIX_ICON + KeyboardIconsSet.getIconName(mIconId));
-            final String output = (mCode == Keyboard.CODE_OUTPUT_TEXT ? mOutputText
-                    : Keyboard.printableCode(mCode));
-            if (StringUtils.codePointCount(label) == 1 && label.codePointAt(0) == mCode) {
-                return output;
-            } else {
-                return label + "|" + output;
-            }
-        }
-    }
 
     private KeySpecParser() {
         // Intentional empty constructor for utility class.
     }
 
-    private static boolean hasIcon(String moreKeySpec) {
+    private static boolean hasIcon(final String moreKeySpec) {
         return moreKeySpec.startsWith(PREFIX_ICON);
     }
 
-    private static boolean hasCode(String moreKeySpec) {
+    private static boolean hasCode(final String moreKeySpec) {
         final int end = indexOfLabelEnd(moreKeySpec, 0);
         if (end > 0 && end + 1 < moreKeySpec.length() && moreKeySpec.startsWith(
                 PREFIX_CODE, end + 1)) {
@@ -117,7 +78,7 @@ public class KeySpecParser {
         return false;
     }
 
-    private static String parseEscape(String text) {
+    private static String parseEscape(final String text) {
         if (text.indexOf(ESCAPE_CHAR) < 0) {
             return text;
         }
@@ -136,7 +97,7 @@ public class KeySpecParser {
         return sb.toString();
     }
 
-    private static int indexOfLabelEnd(String moreKeySpec, int start) {
+    private static int indexOfLabelEnd(final String moreKeySpec, final int start) {
         if (moreKeySpec.indexOf(ESCAPE_CHAR, start) < 0) {
             final int end = moreKeySpec.indexOf(LABEL_END, start);
             if (end == 0) {
@@ -157,7 +118,7 @@ public class KeySpecParser {
         return -1;
     }
 
-    public static String getLabel(String moreKeySpec) {
+    public static String getLabel(final String moreKeySpec) {
         if (hasIcon(moreKeySpec)) {
             return null;
         }
@@ -170,7 +131,7 @@ public class KeySpecParser {
         return label;
     }
 
-    private static String getOutputTextInternal(String moreKeySpec) {
+    private static String getOutputTextInternal(final String moreKeySpec) {
         final int end = indexOfLabelEnd(moreKeySpec, 0);
         if (end <= 0) {
             return null;
@@ -181,7 +142,7 @@ public class KeySpecParser {
         return parseEscape(moreKeySpec.substring(end + /* LABEL_END */1));
     }
 
-    static String getOutputText(String moreKeySpec) {
+    static String getOutputText(final String moreKeySpec) {
         if (hasCode(moreKeySpec)) {
             return null;
         }
@@ -205,7 +166,7 @@ public class KeySpecParser {
         return (StringUtils.codePointCount(label) == 1) ? null : label;
     }
 
-    static int getCode(String moreKeySpec, KeyboardCodesSet codesSet) {
+    static int getCode(final String moreKeySpec, final KeyboardCodesSet codesSet) {
         if (hasCode(moreKeySpec)) {
             final int end = indexOfLabelEnd(moreKeySpec, 0);
             if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0) {
@@ -230,7 +191,8 @@ public class KeySpecParser {
         return Keyboard.CODE_OUTPUT_TEXT;
     }
 
-    public static int parseCode(String text, KeyboardCodesSet codesSet, int defCode) {
+    public static int parseCode(final String text, final KeyboardCodesSet codesSet,
+            final int defCode) {
         if (text == null) return defCode;
         if (text.startsWith(PREFIX_CODE)) {
             return codesSet.getCode(text.substring(PREFIX_CODE.length()));
@@ -241,7 +203,7 @@ public class KeySpecParser {
         }
     }
 
-    public static int getIconId(String moreKeySpec) {
+    public static int getIconId(final String moreKeySpec) {
         if (moreKeySpec != null && hasIcon(moreKeySpec)) {
             final int end = moreKeySpec.indexOf(LABEL_END, PREFIX_ICON.length());
             final String name = (end < 0) ? moreKeySpec.substring(PREFIX_ICON.length())
@@ -251,7 +213,7 @@ public class KeySpecParser {
         return KeyboardIconsSet.ICON_UNDEFINED;
     }
 
-    private static <T> ArrayList<T> arrayAsList(T[] array, int start, int end) {
+    private static <T> ArrayList<T> arrayAsList(final T[] array, final int start, final int end) {
         if (array == null) {
             throw new NullPointerException();
         }
@@ -268,7 +230,7 @@ public class KeySpecParser {
 
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
-    private static String[] filterOutEmptyString(String[] array) {
+    private static String[] filterOutEmptyString(final String[] array) {
         if (array == null) {
             return EMPTY_STRING_ARRAY;
         }
@@ -289,8 +251,8 @@ public class KeySpecParser {
         return out.toArray(new String[out.size()]);
     }
 
-    public static String[] insertAdditionalMoreKeys(String[] moreKeySpecs,
-            String[] additionalMoreKeySpecs) {
+    public static String[] insertAdditionalMoreKeys(final String[] moreKeySpecs,
+            final String[] additionalMoreKeySpecs) {
         final String[] moreKeys = filterOutEmptyString(moreKeySpecs);
         final String[] additionalMoreKeys = filterOutEmptyString(additionalMoreKeySpecs);
         final int moreKeysCount = moreKeys.length;
@@ -357,12 +319,13 @@ public class KeySpecParser {
 
     @SuppressWarnings("serial")
     public static class KeySpecParserError extends RuntimeException {
-        public KeySpecParserError(String message) {
+        public KeySpecParserError(final String message) {
             super(message);
         }
     }
 
-    public static String resolveTextReference(String rawText, KeyboardTextsSet textsSet) {
+    public static String resolveTextReference(final String rawText,
+            final KeyboardTextsSet textsSet) {
         int level = 0;
         String text = rawText;
         StringBuilder sb;
@@ -408,7 +371,7 @@ public class KeySpecParser {
         return text;
     }
 
-    private static int searchTextNameEnd(String text, int start) {
+    private static int searchTextNameEnd(final String text, final int start) {
         final int size = text.length();
         for (int pos = start; pos < size; pos++) {
             final char c = text.charAt(pos);
@@ -421,7 +384,7 @@ public class KeySpecParser {
         return size;
     }
 
-    public static String[] parseCsvString(String rawText, KeyboardTextsSet textsSet) {
+    public static String[] parseCsvString(final String rawText, final KeyboardTextsSet textsSet) {
         final String text = resolveTextReference(rawText, textsSet);
         final int size = text.length();
         if (size == 0) {
@@ -460,7 +423,8 @@ public class KeySpecParser {
         return list.toArray(new String[list.size()]);
     }
 
-    public static int getIntValue(String[] moreKeys, String key, int defaultValue) {
+    public static int getIntValue(final String[] moreKeys, final String key,
+            final int defaultValue) {
         if (moreKeys == null) {
             return defaultValue;
         }
@@ -486,7 +450,7 @@ public class KeySpecParser {
         return value;
     }
 
-    public static boolean getBooleanValue(String[] moreKeys, String key) {
+    public static boolean getBooleanValue(final String[] moreKeys, final String key) {
         if (moreKeys == null) {
             return false;
         }
@@ -502,8 +466,8 @@ public class KeySpecParser {
         return value;
     }
 
-    public static int toUpperCaseOfCodeForLocale(int code, boolean needsToUpperCase,
-            Locale locale) {
+    public static int toUpperCaseOfCodeForLocale(final int code, final boolean needsToUpperCase,
+            final Locale locale) {
         if (!Keyboard.isLetterCode(code) || !needsToUpperCase) return code;
         final String text = new String(new int[] { code } , 0, 1);
         final String casedText = KeySpecParser.toUpperCaseOfStringForLocale(
@@ -512,8 +476,8 @@ public class KeySpecParser {
                 ? casedText.codePointAt(0) : CODE_UNSPECIFIED;
     }
 
-    public static String toUpperCaseOfStringForLocale(String text, boolean needsToUpperCase,
-            Locale locale) {
+    public static String toUpperCaseOfStringForLocale(final String text,
+            final boolean needsToUpperCase, final Locale locale) {
         if (text == null || !needsToUpperCase) return text;
         return text.toUpperCase(locale);
     }

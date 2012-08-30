@@ -23,7 +23,6 @@ import static com.android.inputmethod.keyboard.internal.KeyboardIconsSet.ICON_UN
 import android.test.AndroidTestCase;
 
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.internal.KeySpecParser.MoreKeySpec;
 
 import java.util.Arrays;
 import java.util.Locale;

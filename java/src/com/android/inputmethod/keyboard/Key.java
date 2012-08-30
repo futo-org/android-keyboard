@@ -32,9 +32,11 @@ import android.util.Log;
 import android.util.Xml;
 
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
-import com.android.inputmethod.keyboard.internal.KeySpecParser.MoreKeySpec;
-import com.android.inputmethod.keyboard.internal.KeyStyles.KeyStyle;
+import com.android.inputmethod.keyboard.internal.KeyStyle;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
+import com.android.inputmethod.keyboard.internal.KeyboardParams;
+import com.android.inputmethod.keyboard.internal.KeyboardRow;
+import com.android.inputmethod.keyboard.internal.MoreKeySpec;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.ResourceUtils;
 import com.android.inputmethod.latin.StringUtils;
@@ -166,8 +168,8 @@ public class Key {
     /**
      * This constructor is being used only for keys in more keys keyboard.
      */
-    public Key(Keyboard.Params params, MoreKeySpec moreKeySpec, int x, int y, int width, int height,
-            int labelFlags) {
+    public Key(final KeyboardParams params, final MoreKeySpec moreKeySpec, final int x, final int y,
+            final int width, final int height, final int labelFlags) {
         this(params, moreKeySpec.mLabel, null, moreKeySpec.mIconId, moreKeySpec.mCode,
                 moreKeySpec.mOutputText, x, y, width, height, labelFlags);
     }
@@ -175,8 +177,9 @@ public class Key {
     /**
      * This constructor is being used only for key in popup suggestions pane.
      */
-    public Key(Keyboard.Params params, String label, String hintLabel, int iconId,
-            int code, String outputText, int x, int y, int width, int height, int labelFlags) {
+    public Key(final KeyboardParams params, final String label, final String hintLabel,
+            final int iconId, final int code, final String outputText, final int x, final int y,
+            final int width, final int height, final int labelFlags) {
         mHeight = height - params.mVerticalGap;
         mWidth = width - params.mHorizontalGap;
         mHintLabel = hintLabel;
@@ -213,8 +216,8 @@ public class Key {
      * @param parser the XML parser containing the attributes for this key
      * @throws XmlPullParserException
      */
-    public Key(Resources res, Keyboard.Params params, Keyboard.Builder.Row row,
-            XmlPullParser parser) throws XmlPullParserException {
+    public Key(final Resources res, final KeyboardParams params, final KeyboardRow row,
+            final XmlPullParser parser) throws XmlPullParserException {
         final float horizontalGap = isSpacer() ? 0 : params.mHorizontalGap;
         final int keyHeight = row.mRowHeight;
         mHeight = keyHeight - params.mVerticalGap;
@@ -364,7 +367,7 @@ public class Key {
         }
     }
 
-    private static boolean needsToUpperCase(int labelFlags, int keyboardElementId) {
+    private static boolean needsToUpperCase(final int labelFlags, final int keyboardElementId) {
         if ((labelFlags & LABEL_FLAGS_PRESERVE_CASE) != 0) return false;
         switch (keyboardElementId) {
         case KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:
@@ -377,7 +380,7 @@ public class Key {
         }
     }
 
-    private static int computeHashCode(Key key) {
+    private static int computeHashCode(final Key key) {
         return Arrays.hashCode(new Object[] {
                 key.mX,
                 key.mY,
@@ -404,7 +407,7 @@ public class Key {
         });
     }
 
-    private boolean equals(Key o) {
+    private boolean equals(final Key o) {
         if (this == o) return true;
         return o.mX == mX
                 && o.mY == mY
@@ -427,7 +430,7 @@ public class Key {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         return o instanceof Key && equals((Key)o);
     }
 
@@ -444,7 +447,7 @@ public class Key {
                 KeyboardIconsSet.getIconName(mIconId), backgroundName(mBackgroundType));
     }
 
-    private static String backgroundName(int backgroundType) {
+    private static String backgroundName(final int backgroundType) {
         switch (backgroundType) {
         case BACKGROUND_TYPE_NORMAL: return "normal";
         case BACKGROUND_TYPE_FUNCTIONAL: return "functional";
@@ -455,19 +458,19 @@ public class Key {
         }
     }
 
-    public void markAsLeftEdge(Keyboard.Params params) {
+    public void markAsLeftEdge(final KeyboardParams params) {
         mHitBox.left = params.mHorizontalEdgesPadding;
     }
 
-    public void markAsRightEdge(Keyboard.Params params) {
+    public void markAsRightEdge(final KeyboardParams params) {
         mHitBox.right = params.mOccupiedWidth - params.mHorizontalEdgesPadding;
     }
 
-    public void markAsTopEdge(Keyboard.Params params) {
+    public void markAsTopEdge(final KeyboardParams params) {
         mHitBox.top = params.mTopPadding;
     }
 
-    public void markAsBottomEdge(Keyboard.Params params) {
+    public void markAsBottomEdge(final KeyboardParams params) {
         mHitBox.bottom = params.mOccupiedHeight + params.mBottomPadding;
     }
 
@@ -501,7 +504,7 @@ public class Key {
                 && (mLabelFlags & LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED) == 0;
     }
 
-    public Typeface selectTypeface(Typeface defaultTypeface) {
+    public Typeface selectTypeface(final Typeface defaultTypeface) {
         // TODO: Handle "bold" here too?
         if ((mLabelFlags & LABEL_FLAGS_FONT_NORMAL) != 0) {
             return Typeface.DEFAULT;
@@ -512,8 +515,8 @@ public class Key {
         }
     }
 
-    public int selectTextSize(int letterSize, int largeLetterSize, int labelSize,
-            int largeLabelSize, int hintLabelSize) {
+    public int selectTextSize(final int letterSize, final int largeLetterSize, final int labelSize,
+            final int largeLabelSize, final int hintLabelSize) {
         switch (mLabelFlags & LABEL_FLAGS_FOLLOW_KEY_TEXT_RATIO_MASK) {
         case LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO:
             return letterSize;
@@ -606,7 +609,7 @@ public class Key {
         return (attrs != null) ? attrs.mAltCode : CODE_UNSPECIFIED;
     }
 
-    public Drawable getIcon(KeyboardIconsSet iconSet, int alpha) {
+    public Drawable getIcon(final KeyboardIconsSet iconSet, final int alpha) {
         final OptionalAttributes attrs = mOptionalAttributes;
         final int disabledIconId = (attrs != null) ? attrs.mDisabledIconId : ICON_UNDEFINED;
         final int iconId = mEnabled ? mIconId : disabledIconId;
@@ -617,7 +620,7 @@ public class Key {
         return icon;
     }
 
-    public Drawable getPreviewIcon(KeyboardIconsSet iconSet) {
+    public Drawable getPreviewIcon(final KeyboardIconsSet iconSet) {
         final OptionalAttributes attrs = mOptionalAttributes;
         final int previewIconId = (attrs != null) ? attrs.mPreviewIconId : ICON_UNDEFINED;
         return previewIconId != ICON_UNDEFINED
@@ -657,7 +660,7 @@ public class Key {
         return mEnabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(final boolean enabled) {
         mEnabled = enabled;
     }
 
@@ -667,9 +670,9 @@ public class Key {
      * @param y the y-coordinate of the point
      * @return whether or not the point falls on the key. If the key is attached to an edge, it
      * will assume that all points between the key and the edge are considered to be on the key.
-     * @see #markAsLeftEdge(Keyboard.Params) etc.
+     * @see #markAsLeftEdge(KeyboardParams) etc.
      */
-    public boolean isOnKey(int x, int y) {
+    public boolean isOnKey(final int x, final int y) {
         return mHitBox.contains(x, y);
     }
 
@@ -679,7 +682,7 @@ public class Key {
      * @param y the y-coordinate of the point
      * @return the square of the distance of the point from the nearest edge of the key
      */
-    public int squaredDistanceToEdge(int x, int y) {
+    public int squaredDistanceToEdge(final int x, final int y) {
         final int left = mX;
         final int right = left + mWidth;
         final int top = mY;
@@ -761,15 +764,16 @@ public class Key {
     }
 
     public static class Spacer extends Key {
-        public Spacer(Resources res, Keyboard.Params params, Keyboard.Builder.Row row,
-                XmlPullParser parser) throws XmlPullParserException {
+        public Spacer(final Resources res, final KeyboardParams params, final KeyboardRow row,
+                final XmlPullParser parser) throws XmlPullParserException {
             super(res, params, row, parser);
         }
 
         /**
          * This constructor is being used only for divider in more keys keyboard.
          */
-        protected Spacer(Keyboard.Params params, int x, int y, int width, int height) {
+        protected Spacer(final KeyboardParams params, final int x, final int y, final int width,
+                final int height) {
             super(params, null, null, ICON_UNDEFINED, CODE_UNSPECIFIED,
                     null, x, y, width, height, 0);
         }
