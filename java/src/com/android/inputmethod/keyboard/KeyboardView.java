@@ -188,8 +188,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         public final float mKeyHintLetterPadding;
         public final float mKeyPopupHintLetterPadding;
         public final float mKeyShiftedLetterHintPadding;
-        public final int mShadowColor;
-        public final float mShadowRadius;
+        public final int mKeyTextShadowColor;
+        public final float mKeyTextShadowRadius;
         public final Drawable mKeyBackground;
         public final int mKeyHintLetterColor;
         public final int mKeyHintLabelColor;
@@ -217,52 +217,55 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         public int mKeyHintLabelSize;
         public int mAnimAlpha;
 
-        public KeyDrawParams(final TypedArray a) {
-            mKeyBackground = a.getDrawable(R.styleable.KeyboardView_keyBackground);
-            mKeyLetterRatio = ResourceUtils.getFraction(a, R.styleable.KeyboardView_keyLetterSize);
-            mKeyLetterSizeFromKeyboardView = ResourceUtils.getDimensionPixelSize(a,
-                    R.styleable.KeyboardView_keyLetterSize);
-            mKeyLabelRatio = ResourceUtils.getFraction(a, R.styleable.KeyboardView_keyLabelSize);
-            mKeyLabelSize = ResourceUtils.getDimensionPixelSize(a,
-                    R.styleable.KeyboardView_keyLabelSize);
-            mKeyLargeLabelRatio = ResourceUtils.getFraction(a,
-                    R.styleable.KeyboardView_keyLargeLabelRatio);
-            mKeyLargeLetterRatio = ResourceUtils.getFraction(a,
-                    R.styleable.KeyboardView_keyLargeLetterRatio);
-            mKeyHintLetterRatio = ResourceUtils.getFraction(a,
-                    R.styleable.KeyboardView_keyHintLetterRatio);
-            mKeyShiftedLetterHintRatio = ResourceUtils.getFraction(a,
-                    R.styleable.KeyboardView_keyShiftedLetterHintRatio);
-            mKeyHintLabelRatio = ResourceUtils.getFraction(a,
-                    R.styleable.KeyboardView_keyHintLabelRatio);
-            mKeyLabelHorizontalPadding = a.getDimension(
-                    R.styleable.KeyboardView_keyLabelHorizontalPadding, 0);
-            mKeyHintLetterPadding = a.getDimension(
-                    R.styleable.KeyboardView_keyHintLetterPadding, 0);
-            mKeyPopupHintLetterPadding = a.getDimension(
-                    R.styleable.KeyboardView_keyPopupHintLetterPadding, 0);
-            mKeyShiftedLetterHintPadding = a.getDimension(
-                    R.styleable.KeyboardView_keyShiftedLetterHintPadding, 0);
-            mKeyTextColor = a.getColor(
-                    R.styleable.KeyboardView_keyTextColor, Color.WHITE);
-            mKeyTextInactivatedColor = a.getColor(
-                    R.styleable.KeyboardView_keyTextInactivatedColor, Color.WHITE);
-            mKeyHintLetterColor = a.getColor(
-                    R.styleable.KeyboardView_keyHintLetterColor, Color.TRANSPARENT);
-            mKeyHintLabelColor = a.getColor(
-                    R.styleable.KeyboardView_keyHintLabelColor, Color.TRANSPARENT);
-            mKeyShiftedLetterHintInactivatedColor = a.getColor(
-                    R.styleable.KeyboardView_keyShiftedLetterHintInactivatedColor,
-                    Color.TRANSPARENT);
-            mKeyShiftedLetterHintActivatedColor = a.getColor(
-                    R.styleable.KeyboardView_keyShiftedLetterHintActivatedColor, Color.TRANSPARENT);
-            mKeyTypefaceFromKeyboardView = Typeface.defaultFromStyle(
-                    a.getInt(R.styleable.KeyboardView_keyTypeface, Typeface.NORMAL));
-            mKeyTypeface = mKeyTypefaceFromKeyboardView;
-            mShadowColor = a.getColor(R.styleable.KeyboardView_shadowColor, Color.TRANSPARENT);
-            mShadowRadius = a.getFloat(R.styleable.KeyboardView_shadowRadius, 0f);
-
+        public KeyDrawParams(final TypedArray keyboardViewAttr, final TypedArray keyAttr) {
+            mKeyBackground = keyboardViewAttr.getDrawable(R.styleable.KeyboardView_keyBackground);
             mKeyBackground.getPadding(mPadding);
+
+            mKeyLetterRatio = ResourceUtils.getFraction(keyAttr,
+                    R.styleable.Keyboard_Key_keyLetterSize);
+            mKeyLetterSizeFromKeyboardView = ResourceUtils.getDimensionPixelSize(keyAttr,
+                    R.styleable.Keyboard_Key_keyLetterSize);
+            mKeyLabelRatio = ResourceUtils.getFraction(keyAttr,
+                    R.styleable.Keyboard_Key_keyLabelSize);
+            mKeyLabelSize = ResourceUtils.getDimensionPixelSize(keyAttr,
+                    R.styleable.Keyboard_Key_keyLabelSize);
+            mKeyLargeLabelRatio = ResourceUtils.getFraction(keyAttr,
+                    R.styleable.Keyboard_Key_keyLargeLabelRatio);
+            mKeyLargeLetterRatio = ResourceUtils.getFraction(keyAttr,
+                    R.styleable.Keyboard_Key_keyLargeLetterRatio);
+            mKeyHintLetterRatio = ResourceUtils.getFraction(keyAttr,
+                    R.styleable.Keyboard_Key_keyHintLetterRatio);
+            mKeyShiftedLetterHintRatio = ResourceUtils.getFraction(keyAttr,
+                    R.styleable.Keyboard_Key_keyShiftedLetterHintRatio);
+            mKeyHintLabelRatio = ResourceUtils.getFraction(keyAttr,
+                    R.styleable.Keyboard_Key_keyHintLabelRatio);
+            mKeyLabelHorizontalPadding = keyAttr.getDimension(
+                    R.styleable.Keyboard_Key_keyLabelHorizontalPadding, 0);
+            mKeyHintLetterPadding = keyAttr.getDimension(
+                    R.styleable.Keyboard_Key_keyHintLetterPadding, 0);
+            mKeyPopupHintLetterPadding = keyAttr.getDimension(
+                    R.styleable.Keyboard_Key_keyPopupHintLetterPadding, 0);
+            mKeyShiftedLetterHintPadding = keyAttr.getDimension(
+                    R.styleable.Keyboard_Key_keyShiftedLetterHintPadding, 0);
+            mKeyTextColor = keyAttr.getColor(
+                    R.styleable.Keyboard_Key_keyTextColor, Color.WHITE);
+            mKeyTextInactivatedColor = keyAttr.getColor(
+                    R.styleable.Keyboard_Key_keyTextInactivatedColor, Color.WHITE);
+            mKeyHintLetterColor = keyAttr.getColor(
+                    R.styleable.Keyboard_Key_keyHintLetterColor, Color.TRANSPARENT);
+            mKeyHintLabelColor = keyAttr.getColor(
+                    R.styleable.Keyboard_Key_keyHintLabelColor, Color.TRANSPARENT);
+            mKeyShiftedLetterHintInactivatedColor = keyAttr.getColor(
+                    R.styleable.Keyboard_Key_keyShiftedLetterHintInactivatedColor,
+                    Color.TRANSPARENT);
+            mKeyShiftedLetterHintActivatedColor = keyAttr.getColor(
+                    R.styleable.Keyboard_Key_keyShiftedLetterHintActivatedColor, Color.TRANSPARENT);
+            mKeyTypefaceFromKeyboardView = Typeface.defaultFromStyle(
+                    keyAttr.getInt(R.styleable.Keyboard_Key_keyTypeface, Typeface.NORMAL));
+            mKeyTextShadowColor = keyAttr.getColor(
+                    R.styleable.Keyboard_Key_keyTextShadowColor, Color.TRANSPARENT);
+            mKeyTextShadowRadius = keyAttr.getFloat(
+                    R.styleable.Keyboard_Key_keyTextShadowRadius, 0f);
         }
 
         public void updateParams(final Keyboard keyboard) {
@@ -357,23 +360,26 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         private static final int PREVIEW_ALPHA = 240;
 
-        public KeyPreviewDrawParams(final TypedArray a) {
-            mPreviewBackground = a.getDrawable(R.styleable.KeyboardView_keyPreviewBackground);
-            mPreviewLeftBackground = a.getDrawable(
+        public KeyPreviewDrawParams(final TypedArray keyboardViewAttr, final TypedArray keyAttr) {
+            mPreviewBackground = keyboardViewAttr.getDrawable(
+                    R.styleable.KeyboardView_keyPreviewBackground);
+            mPreviewLeftBackground = keyboardViewAttr.getDrawable(
                     R.styleable.KeyboardView_keyPreviewLeftBackground);
-            mPreviewRightBackground = a.getDrawable(
+            mPreviewRightBackground = keyboardViewAttr.getDrawable(
                     R.styleable.KeyboardView_keyPreviewRightBackground);
             setAlpha(mPreviewBackground, PREVIEW_ALPHA);
             setAlpha(mPreviewLeftBackground, PREVIEW_ALPHA);
             setAlpha(mPreviewRightBackground, PREVIEW_ALPHA);
-            mPreviewOffset = a.getDimensionPixelOffset(
+            mPreviewOffset = keyboardViewAttr.getDimensionPixelOffset(
                     R.styleable.KeyboardView_keyPreviewOffset, 0);
-            mPreviewHeight = a.getDimensionPixelSize(
+            mPreviewHeight = keyboardViewAttr.getDimensionPixelSize(
                     R.styleable.KeyboardView_keyPreviewHeight, 80);
-            mPreviewTextRatio = ResourceUtils.getFraction(a,
-                    R.styleable.KeyboardView_keyPreviewTextRatio);
-            mPreviewTextColor = a.getColor(R.styleable.KeyboardView_keyPreviewTextColor, 0);
-            mLingerTimeout = a.getInt(R.styleable.KeyboardView_keyPreviewLingerTimeout, 0);
+            mLingerTimeout = keyboardViewAttr.getInt(
+                    R.styleable.KeyboardView_keyPreviewLingerTimeout, 0);
+
+            mPreviewTextRatio = ResourceUtils.getFraction(keyAttr,
+                    R.styleable.Keyboard_Key_keyPreviewTextRatio);
+            mPreviewTextColor = keyAttr.getColor(R.styleable.Keyboard_Key_keyPreviewTextColor, 0);
         }
 
         public void updateParams(final Keyboard keyboard, final KeyDrawParams keyDrawParams) {
@@ -398,20 +404,26 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     public KeyboardView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        final TypedArray a = context.obtainStyledAttributes(
-                attrs, R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
-        mKeyDrawParams = new KeyDrawParams(a);
-        mKeyPreviewDrawParams = new KeyPreviewDrawParams(a);
+        final TypedArray keyboardViewAttr = context.obtainStyledAttributes(attrs,
+                R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
+        final TypedArray keyAttr = context.obtainStyledAttributes(attrs,
+                R.styleable.Keyboard_Key, defStyle, R.style.KeyboardView);
+        mKeyDrawParams = new KeyDrawParams(keyboardViewAttr, keyAttr);
+        mKeyPreviewDrawParams = new KeyPreviewDrawParams(keyboardViewAttr, keyAttr);
         mDelayAfterPreview = mKeyPreviewDrawParams.mLingerTimeout;
-        mKeyPreviewLayoutId = a.getResourceId(R.styleable.KeyboardView_keyPreviewLayout, 0);
+        mKeyPreviewLayoutId = keyboardViewAttr.getResourceId(
+                R.styleable.KeyboardView_keyPreviewLayout, 0);
         if (mKeyPreviewLayoutId == 0) {
             mShowKeyPreviewPopup = false;
         }
-        mVerticalCorrection = a.getDimensionPixelOffset(
+        mVerticalCorrection = keyboardViewAttr.getDimensionPixelOffset(
                 R.styleable.KeyboardView_verticalCorrection, 0);
-        mMoreKeysLayout = a.getResourceId(R.styleable.KeyboardView_moreKeysLayout, 0);
-        mBackgroundDimAlpha = a.getInt(R.styleable.KeyboardView_backgroundDimAlpha, 0);
-        a.recycle();
+        mMoreKeysLayout = keyboardViewAttr.getResourceId(
+                R.styleable.KeyboardView_moreKeysLayout, 0);
+        mBackgroundDimAlpha = keyboardViewAttr.getInt(
+                R.styleable.KeyboardView_backgroundDimAlpha, 0);
+        keyboardViewAttr.recycle();
+        keyAttr.recycle();
 
         mPreviewPlacerView = new PreviewPlacerView(context, attrs);
         mPaint.setAntiAlias(true);
@@ -705,7 +717,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                     ? params.mKeyTextInactivatedColor : params.mKeyTextColor);
             if (key.isEnabled()) {
                 // Set a drop shadow for the text
-                paint.setShadowLayer(params.mShadowRadius, 0, 0, params.mShadowColor);
+                paint.setShadowLayer(params.mKeyTextShadowRadius, 0, 0, params.mKeyTextShadowColor);
             } else {
                 // Make label invisible
                 paint.setColor(Color.TRANSPARENT);
