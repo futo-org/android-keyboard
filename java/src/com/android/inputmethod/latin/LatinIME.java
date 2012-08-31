@@ -1309,7 +1309,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             break;
         case Keyboard.CODE_RESEARCH:
             if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.getInstance().presentResearchDialog(this);
+                ResearchLogger.getInstance().onResearchKeySelected(this);
             }
             break;
         default:
