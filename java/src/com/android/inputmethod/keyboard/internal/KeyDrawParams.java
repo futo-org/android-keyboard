@@ -32,10 +32,6 @@ public class KeyDrawParams {
     // XML attributes
     public final int mKeyTextColor;
     public final int mKeyTextInactivatedColor;
-    public final float mKeyLabelHorizontalPadding;
-    public final float mKeyHintLetterPadding;
-    public final float mKeyPopupHintLetterPadding;
-    public final float mKeyShiftedLetterHintPadding;
     public final int mKeyTextShadowColor;
     public final float mKeyTextShadowRadius;
     public final Drawable mKeyBackground;
@@ -87,14 +83,6 @@ public class KeyDrawParams {
                 R.styleable.Keyboard_Key_keyShiftedLetterHintRatio);
         mKeyHintLabelRatio = ResourceUtils.getFraction(keyAttr,
                 R.styleable.Keyboard_Key_keyHintLabelRatio);
-        mKeyLabelHorizontalPadding = keyAttr.getDimension(
-                R.styleable.Keyboard_Key_keyLabelHorizontalPadding, 0);
-        mKeyHintLetterPadding = keyAttr.getDimension(
-                R.styleable.Keyboard_Key_keyHintLetterPadding, 0);
-        mKeyPopupHintLetterPadding = keyAttr.getDimension(
-                R.styleable.Keyboard_Key_keyPopupHintLetterPadding, 0);
-        mKeyShiftedLetterHintPadding = keyAttr.getDimension(
-                R.styleable.Keyboard_Key_keyShiftedLetterHintPadding, 0);
         mKeyTextColor = keyAttr.getColor(
                 R.styleable.Keyboard_Key_keyTextColor, Color.WHITE);
         mKeyTextInactivatedColor = keyAttr.getColor(

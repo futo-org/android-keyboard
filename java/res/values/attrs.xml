@@ -41,6 +41,15 @@
              checkable+checked+pressed. -->
         <attr name="keyBackground" format="reference" />
 
+        <!-- Horizontal padding of left/right aligned key label to the edge of the key. -->
+        <attr name="keyLabelHorizontalPadding" format="dimension" />
+        <!-- Right padding of hint letter to the edge of the key.-->
+        <attr name="keyHintLetterPadding" format="dimension" />
+        <!-- Bottom padding of popup hint letter "..." to the edge of the key.-->
+        <attr name="keyPopupHintLetterPadding" format="dimension" />
+        <!-- Right padding of shifted letter hint to the edge of the key.-->
+        <attr name="keyShiftedLetterHintPadding" format="dimension" />
+
         <!-- Layout resource for key press feedback.-->
         <attr name="keyPreviewLayout" format="reference" />
         <!-- The background for key press feedback. -->
@@ -307,15 +316,7 @@
         <!-- Size of the text for hint label, in the proportion of key height. -->
         <attr name="keyHintLabelRatio" format="fraction" />
         <!-- Size of the text for shifted letter hint, in the proportion of key height. -->
-        <attr name="keyShiftedLetterHintRatio" format="dimension|fraction" />
-        <!-- Horizontal padding of left/right aligned key label to the edge of the key. -->
-        <attr name="keyLabelHorizontalPadding" format="dimension" />
-        <!-- Right padding of hint letter to the edge of the key.-->
-        <attr name="keyHintLetterPadding" format="dimension" />
-        <!-- Bottom padding of popup hint letter "..." to the edge of the key.-->
-        <attr name="keyPopupHintLetterPadding" format="dimension" />
-        <!-- Right padding of shifted letter hint to the edge of the key.-->
-        <attr name="keyShiftedLetterHintPadding" format="dimension" />
+        <attr name="keyShiftedLetterHintRatio" format="fraction" />
         <!-- Color to use for the label in a key. -->
         <attr name="keyTextColor" format="color" />
         <attr name="keyTextShadowColor" format="color" />
