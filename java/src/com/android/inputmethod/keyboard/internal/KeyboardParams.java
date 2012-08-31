@@ -16,14 +16,12 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import android.graphics.Typeface;
 import android.util.SparseIntArray;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.latin.CollectionUtils;
-import com.android.inputmethod.latin.ResourceUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -47,11 +45,7 @@ public class KeyboardParams {
     public int mHorizontalEdgesPadding;
     public int mHorizontalCenterPadding;
 
-    public Typeface mKeyTypeface = null;
-    public float mKeyLetterRatio = ResourceUtils.UNDEFINED_RATIO;
-    public int mKeyLetterSize = ResourceUtils.UNDEFINED_DIMENSION;
-    public float mKeyHintLetterRatio = ResourceUtils.UNDEFINED_RATIO;
-    public float mKeyShiftedLetterHintRatio = ResourceUtils.UNDEFINED_RATIO;
+    public KeyVisualAttributes mKeyVisualAttributes;
 
     public int mDefaultRowHeight;
     public int mDefaultKeyWidth;
