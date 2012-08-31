@@ -278,16 +278,11 @@
 
     <!-- Title of dialog shown at start informing users about contributing research usage data-->
     <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_splash_title" translatable="false">Usage Participation</string>
-    <!-- Contents of note explaining what data is collected and how. -->
+    <string name="research_splash_title" translatable="false">Warning</string>
+
+    <!-- Toast message informing users that logging has been disabled -->
     <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_splash_content" translatable="false">Thank you for dogfooding this keyboard.\n\nIf you like it, please help us make it better by sending us usage information.  When enabled, the keyboard uploads general statistics, such as how fast you type, and also occasional samples of how you type words.\n\nNo passwords or non-dictionary words are ever automatically uploaded, and words are sampled infrequently enough so that reconstructing the meaning of what you typed is highly unlikely.\n\nYou can disable and reenable logging through the RLog menu by long-pressing on the microphone or settings key.\n</string>
-    <!-- Button label text for opting out of research usage data collection [CHAR LIMIT=50] -->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_dont_send_usage_info" translatable="false">Do not send\nusage info</string>
-    <!-- Button label text for opting into research usage data collection [CHAR LIMIT=50] -->
-    <!-- TODO: remove translatable=false attribute once text is stable -->
-    <string name="research_send_usage_info" translatable="false">Send usage info</string>
+    <string name="research_logging_disabled" translatable="false">Logging Disabled</string>
 
     <!-- Name for the research uploading service to be displayed to users.  [CHAR LIMIT=50] -->
     <!-- TODO: remove translatable=false attribute once text is stable -->
