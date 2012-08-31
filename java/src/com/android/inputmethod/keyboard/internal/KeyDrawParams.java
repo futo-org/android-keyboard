@@ -43,6 +43,8 @@ public class KeyDrawParams {
 
     public int mAnimAlpha;
 
+    public KeyDrawParams() {}
+
     private KeyDrawParams(final KeyDrawParams copyFrom) {
         mTypeface = copyFrom.mTypeface;
 
