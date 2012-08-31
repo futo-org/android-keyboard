@@ -26,21 +26,25 @@
     <!-- TODO: DroidSansArabic lacks the glyph of U+069C ARABIC LETTER SEEN WITH THREE DOTS BELOW AND THREE DOTS ABOVE -->
     <Key
         latin:keyLabel="&#x0634;"
-        latin:moreKeys="&#x069C;" />
+        latin:moreKeys="&#x069C;"
+        latin:keyLabelFlags="fontNormal" />
     <!-- U+0633: "س" ARABIC LETTER SEEN -->
     <Key
-        latin:keyLabel="&#x0633;" />
+        latin:keyLabel="&#x0633;"
+        latin:keyLabelFlags="fontNormal" />
     <!-- U+064A: "ي" ARABIC LETTER YEH
          U+0626: "ئ" ARABIC LETTER YEH WITH HAMZA ABOVE
          U+0649: "ى" ARABIC LETTER ALEF MAKSURA -->
     <Key
         latin:keyLabel="&#x064A;"
-        latin:moreKeys="&#x0626;,&#x0649;" />
+        latin:moreKeys="&#x0626;,&#x0649;"
+        latin:keyLabelFlags="fontNormal" />
     <!-- U+0628: "ب" ARABIC LETTER BEH
          U+067E: "پ" ARABIC LETTER PEH -->
     <Key
         latin:keyLabel="&#x0628;"
-        latin:moreKeys="&#x067E;" />
+        latin:moreKeys="&#x067E;"
+        latin:keyLabelFlags="fontNormal" />
     <!-- U+0644: "ل" ARABIC LETTER LAM
          U+FEFB: "ﻻ" ARABIC LIGATURE LAM WITH ALEF ISOLATED FORM
          U+0627: "ا" ARABIC LETTER ALEF
@@ -52,7 +56,8 @@
          U+0622: "آ" ARABIC LETTER ALEF WITH MADDA ABOVE -->
     <Key
         latin:keyLabel="&#x0644;"
-        latin:moreKeys="&#xFEFB;|&#x0644;&#x0627;,&#xFEF7;|&#x0644;&#x0623;,&#xFEF9;|&#x0644;&#x0625;,&#xFEF5;|&#x0644;&#x0622;" />
+        latin:moreKeys="&#xFEFB;|&#x0644;&#x0627;,&#xFEF7;|&#x0644;&#x0623;,&#xFEF9;|&#x0644;&#x0625;,&#xFEF5;|&#x0644;&#x0622;"
+        latin:keyLabelFlags="fontNormal" />
     <!-- U+0627: "ا" ARABIC LETTER ALEF
          U+0621: "ء" ARABIC LETTER HAMZA
          U+0671: "ٱ" ARABIC LETTER ALEF WASLA
@@ -61,23 +66,29 @@
          U+0622: "آ" ARABIC LETTER ALEF WITH MADDA ABOVE -->
     <Key
         latin:keyLabel="&#x0627;"
-        latin:moreKeys="&#x0621;,&#x0671;,&#x0623;,&#x0625;,&#x0622;" />
+        latin:moreKeys="&#x0621;,&#x0671;,&#x0623;,&#x0625;,&#x0622;"
+        latin:keyLabelFlags="fontNormal" />
     <!-- U+062A: "ت" ARABIC LETTER TEH -->
     <Key
-        latin:keyLabel="&#x062A;" />
+        latin:keyLabel="&#x062A;"
+        latin:keyLabelFlags="fontNormal" />
     <!-- U+0646: "ن" ARABIC LETTER NOON -->
     <Key
-        latin:keyLabel="&#x0646;" />
+        latin:keyLabel="&#x0646;"
+        latin:keyLabelFlags="fontNormal" />
     <!-- U+0645: "م" ARABIC LETTER MEEM -->
     <Key
-        latin:keyLabel="&#x0645;" />
+        latin:keyLabel="&#x0645;"
+        latin:keyLabelFlags="fontNormal" />
     <!-- U+0643: "ك" ARABIC LETTER KAF
          U+06AF: "گ" ARABIC LETTER GAF
          U+06A9: "ک" ARABIC LETTER KEHEH -->
     <Key
         latin:keyLabel="&#x0643;"
-        latin:moreKeys="&#x06AF;,&#x06A9;" />
+        latin:moreKeys="&#x06AF;,&#x06A9;"
+        latin:keyLabelFlags="fontNormal" />
     <!-- U+0637: "ط" ARABIC LETTER TAH -->
     <Key
-        latin:keyLabel="&#x0637;" />
+        latin:keyLabel="&#x0637;"
+        latin:keyLabelFlags="fontNormal" />
 </merge>

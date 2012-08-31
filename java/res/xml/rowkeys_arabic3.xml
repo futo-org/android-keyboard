@@ -23,30 +23,38 @@
 >
     <!-- U+0638: "ظ" ARABIC LETTER ZAH -->
     <Key
-        latin:keyLabel="&#x0638;" />
+        latin:keyLabel="&#x0638;"
+        latin:keyLabelFlags="fontNormal" />
     <!-- U+0637: "ط" ARABIC LETTER TAH -->
     <Key
-        latin:keyLabel="&#x0637;" />
+        latin:keyLabel="&#x0637;"
+        latin:keyLabelFlags="fontNormal" />
     <!-- U+0630: "ذ" ARABIC LETTER THAL -->
     <Key
-        latin:keyLabel="&#x0630;" />
+        latin:keyLabel="&#x0630;"
+        latin:keyLabelFlags="fontNormal" />
     <!-- U+062F: "د" ARABIC LETTER DAL -->
     <Key
-        latin:keyLabel="&#x062F;" />
+        latin:keyLabel="&#x062F;"
+        latin:keyLabelFlags="fontNormal" />
     <!-- U+0632: "ز" ARABIC LETTER ZAIN
          U+0698: "ژ" ARABIC LETTER JEH -->
     <Key
         latin:keyLabel="&#x0632;"
-        latin:moreKeys="&#x0698;" />
+        latin:moreKeys="&#x0698;"
+        latin:keyLabelFlags="fontNormal" />
     <!-- U+0631: "ر" ARABIC LETTER REH -->
     <Key
-        latin:keyLabel="&#x0631;" />
+        latin:keyLabel="&#x0631;"
+        latin:keyLabelFlags="fontNormal" />
     <!-- U+0629: "ة" ARABIC LETTER TEH MARBUTA -->
     <Key
-        latin:keyLabel="&#x0629;" />
+        latin:keyLabel="&#x0629;"
+        latin:keyLabelFlags="fontNormal" />
     <!-- U+0648: "و" ARABIC LETTER WAW
          U+0624: "ﺅ" ARABIC LETTER WAW WITH HAMZA ABOVE -->
     <Key
         latin:keyLabel="&#x0648;"
-        latin:moreKeys="&#x0624;" />
+        latin:moreKeys="&#x0624;"
+        latin:keyLabelFlags="fontNormal" />
 </merge>
