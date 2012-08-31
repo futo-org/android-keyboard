@@ -55,31 +55,54 @@ import java.util.HashSet;
 /**
  * A view that renders a virtual {@link Keyboard}.
  *
- * @attr ref R.styleable#KeyboardView_backgroundDimAlpha
  * @attr ref R.styleable#KeyboardView_keyBackground
- * @attr ref R.styleable#KeyboardView_keyLetterRatio
- * @attr ref R.styleable#KeyboardView_keyLargeLetterRatio
- * @attr ref R.styleable#KeyboardView_keyLabelRatio
- * @attr ref R.styleable#KeyboardView_keyHintLetterRatio
- * @attr ref R.styleable#KeyboardView_keyShiftedLetterHintRatio
- * @attr ref R.styleable#KeyboardView_keyHintLabelRatio
+ * @attr ref R.styleable#KeyboardView_moreKeysLayout
+ * @attr ref R.styleable#KeyboardView_keyPreviewLayout
+ * @attr ref R.styleable#KeyboardView_keyPreviewBackground
+ * @attr ref R.styleable#KeyboardView_keyPreviewLeftBackground
+ * @attr ref R.styleable#KeyboardView_keyPreviewRightBackground
+ * @attr ref R.styleable#KeyboardView_keyPreviewOffset
+ * @attr ref R.styleable#KeyboardView_keyPreviewHeight
+ * @attr ref R.styleable#KeyboardView_keyPreviewLingerTimeout
  * @attr ref R.styleable#KeyboardView_keyLabelHorizontalPadding
  * @attr ref R.styleable#KeyboardView_keyHintLetterPadding
  * @attr ref R.styleable#KeyboardView_keyPopupHintLetterPadding
  * @attr ref R.styleable#KeyboardView_keyShiftedLetterHintPadding
- * @attr ref R.styleable#KeyboardView_keyTypeface
- * @attr ref R.styleable#KeyboardView_keyPreviewLayout
- * @attr ref R.styleable#KeyboardView_keyPreviewTextRatio
- * @attr ref R.styleable#KeyboardView_keyPreviewOffset
- * @attr ref R.styleable#KeyboardView_keyPreviewHeight
- * @attr ref R.styleable#KeyboardView_keyTextColor
- * @attr ref R.styleable#KeyboardView_keyTextColorDisabled
- * @attr ref R.styleable#KeyboardView_keyHintLetterColor
- * @attr ref R.styleable#KeyboardView_keyHintLabelColor
- * @attr ref R.styleable#KeyboardView_keyShiftedLetterHintInactivatedColor
- * @attr ref R.styleable#KeyboardView_keyShiftedLetterHintActivatedColor
- * @attr ref R.styleable#KeyboardView_shadowColor
- * @attr ref R.styleable#KeyboardView_shadowRadius
+ * @attr ref R.styleable#KeyboardView_backgroundDimAlpha
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextSize
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextColor
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextOffset
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextShadingColor
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextShadingBorder
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextShadowColor
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextShadowBorder
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextConnectorColor
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextConnectorWidth
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextLingerTimeout
+ * @attr ref R.styleable#KeyboardView_gesturePreviewTrailFadeoutStartDelay
+ * @attr ref R.styleable#KeyboardView_gesturePreviewTrailFadeoutDuration
+ * @attr ref R.styleable#KeyboardView_gesturePreviewTrailUpdateInterval
+ * @attr ref R.styleable#KeyboardView_gesturePreviewTrailColor
+ * @attr ref R.styleable#KeyboardView_gesturePreviewTrailWidth
+ * @attr ref R.styleable#KeyboardView_verticalCorrection
+ * @attr ref R.styleable#Keyboard_Key_keyTypeface
+ * @attr ref R.styleable#Keyboard_Key_keyLetterSize
+ * @attr ref R.styleable#Keyboard_Key_keyLabelSize
+ * @attr ref R.styleable#Keyboard_Key_keyLargeLetterRatio
+ * @attr ref R.styleable#Keyboard_Key_keyLargeLabelRatio
+ * @attr ref R.styleable#Keyboard_Key_keyHintLetterRatio
+ * @attr ref R.styleable#Keyboard_Key_keyShiftedLetterHintRatio
+ * @attr ref R.styleable#Keyboard_Key_keyHintLabelRatio
+ * @attr ref R.styleable#Keyboard_Key_keyPreviewTextRatio
+ * @attr ref R.styleable#Keyboard_Key_keyTextColor
+ * @attr ref R.styleable#Keyboard_Key_keyTextColorDisabled
+ * @attr ref R.styleable#Keyboard_Key_keyTextShadowColor
+ * @attr ref R.styleable#Keyboard_Key_keyTextShadowRadius
+ * @attr ref R.styleable#Keyboard_Key_keyHintLetterColor
+ * @attr ref R.styleable#Keyboard_Key_keyHintLabelColor
+ * @attr ref R.styleable#Keyboard_Key_keyShiftedLetterHintInactivatedColor
+ * @attr ref R.styleable#Keyboard_Key_keyShiftedLetterHintActivatedColor
+ * @attr ref R.styleable#Keyboard_Key_keyPreviewTextColor
  */
 public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private static final String TAG = KeyboardView.class.getSimpleName();
@@ -88,6 +111,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private static final int[] LONG_PRESSABLE_STATE_SET = { android.R.attr.state_long_pressable };
 
     // XML attributes
+    private final int mKeyLabelHorizontalPadding;
+    private final float mKeyHintLetterPadding;
+    private final float mKeyPopupHintLetterPadding;
+    private final float mKeyShiftedLetterHintPadding;
     protected final float mVerticalCorrection;
     protected final int mMoreKeysLayout;
     private final int mBackgroundDimAlpha;
@@ -194,6 +221,14 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mKeyDrawParams = new KeyDrawParams(keyboardViewAttr, keyAttr);
         mKeyPreviewDrawParams = new KeyPreviewDrawParams(keyboardViewAttr, keyAttr);
         mDelayAfterPreview = mKeyPreviewDrawParams.mLingerTimeout;
+        mKeyLabelHorizontalPadding = keyAttr.getDimensionPixelOffset(
+                R.styleable.KeyboardView_keyLabelHorizontalPadding, 0);
+        mKeyHintLetterPadding = keyAttr.getDimension(
+                R.styleable.KeyboardView_keyHintLetterPadding, 0);
+        mKeyPopupHintLetterPadding = keyAttr.getDimension(
+                R.styleable.KeyboardView_keyPopupHintLetterPadding, 0);
+        mKeyShiftedLetterHintPadding = keyAttr.getDimension(
+                R.styleable.KeyboardView_keyShiftedLetterHintPadding, 0);
         mKeyPreviewLayoutId = keyboardViewAttr.getResourceId(
                 R.styleable.KeyboardView_keyPreviewLayout, 0);
         if (mKeyPreviewLayoutId == 0) {
@@ -468,10 +503,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             // Horizontal label text alignment
             float labelWidth = 0;
             if (key.isAlignLeft()) {
-                positionX = (int)params.mKeyLabelHorizontalPadding;
+                positionX = mKeyLabelHorizontalPadding;
                 paint.setTextAlign(Align.LEFT);
             } else if (key.isAlignRight()) {
-                positionX = keyWidth - (int)params.mKeyLabelHorizontalPadding;
+                positionX = keyWidth - mKeyLabelHorizontalPadding;
                 paint.setTextAlign(Align.RIGHT);
             } else if (key.isAlignLeftOfCenter()) {
                 // TODO: Parameterise this?
@@ -562,14 +597,14 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 paint.setTextAlign(Align.LEFT);
             } else if (key.hasShiftedLetterHint()) {
                 // The hint label is placed at top-right corner of the key. Used mainly on tablet.
-                hintX = keyWidth - params.mKeyShiftedLetterHintPadding
+                hintX = keyWidth - mKeyShiftedLetterHintPadding
                         - getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) / 2;
                 paint.getFontMetrics(mFontMetrics);
                 hintY = -mFontMetrics.top;
                 paint.setTextAlign(Align.CENTER);
             } else { // key.hasHintLetter()
                 // The hint letter is placed at top-right corner of the key. Used mainly on phone.
-                hintX = keyWidth - params.mKeyHintLetterPadding
+                hintX = keyWidth - mKeyHintLetterPadding
                         - getCharWidth(KEY_NUMERIC_HINT_LABEL_REFERENCE_CHAR, paint) / 2;
                 hintY = -paint.ascent();
                 paint.setTextAlign(Align.CENTER);
@@ -590,10 +625,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             final int iconX, alignX;
             final int iconY = (keyHeight - iconHeight) / 2;
             if (key.isAlignLeft()) {
-                iconX = (int)params.mKeyLabelHorizontalPadding;
+                iconX = mKeyLabelHorizontalPadding;
                 alignX = iconX;
             } else if (key.isAlignRight()) {
-                iconX = keyWidth - (int)params.mKeyLabelHorizontalPadding - iconWidth;
+                iconX = keyWidth - mKeyLabelHorizontalPadding - iconWidth;
                 alignX = iconX + iconWidth;
             } else { // Align center
                 iconX = (keyWidth - iconWidth) / 2;
@@ -622,9 +657,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         paint.setTextSize(params.mKeyHintLetterSize);
         paint.setColor(params.mKeyHintLabelColor);
         paint.setTextAlign(Align.CENTER);
-        final float hintX = keyWidth - params.mKeyHintLetterPadding
+        final float hintX = keyWidth - mKeyHintLetterPadding
                 - getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) / 2;
-        final float hintY = keyHeight - params.mKeyPopupHintLetterPadding;
+        final float hintY = keyHeight - mKeyPopupHintLetterPadding;
         canvas.drawText(POPUP_HINT_CHAR, hintX, hintY, paint);
 
         if (LatinImeLogger.sVISUALDEBUG) {
