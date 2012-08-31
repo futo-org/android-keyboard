@@ -221,13 +221,13 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mKeyDrawParams = new KeyDrawParams(keyboardViewAttr, keyAttr);
         mKeyPreviewDrawParams = new KeyPreviewDrawParams(keyboardViewAttr, keyAttr);
         mDelayAfterPreview = mKeyPreviewDrawParams.mLingerTimeout;
-        mKeyLabelHorizontalPadding = keyAttr.getDimensionPixelOffset(
+        mKeyLabelHorizontalPadding = keyboardViewAttr.getDimensionPixelOffset(
                 R.styleable.KeyboardView_keyLabelHorizontalPadding, 0);
-        mKeyHintLetterPadding = keyAttr.getDimension(
+        mKeyHintLetterPadding = keyboardViewAttr.getDimension(
                 R.styleable.KeyboardView_keyHintLetterPadding, 0);
-        mKeyPopupHintLetterPadding = keyAttr.getDimension(
+        mKeyPopupHintLetterPadding = keyboardViewAttr.getDimension(
                 R.styleable.KeyboardView_keyPopupHintLetterPadding, 0);
-        mKeyShiftedLetterHintPadding = keyAttr.getDimension(
+        mKeyShiftedLetterHintPadding = keyboardViewAttr.getDimension(
                 R.styleable.KeyboardView_keyShiftedLetterHintPadding, 0);
         mKeyPreviewLayoutId = keyboardViewAttr.getResourceId(
                 R.styleable.KeyboardView_keyPreviewLayout, 0);
