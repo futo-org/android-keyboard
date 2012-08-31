@@ -1153,7 +1153,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             commitChosenWord(typedWord, LastComposedWord.COMMIT_TYPE_USER_TYPED_WORD,
                     separatorString);
             if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.getInstance().onWordComplete(typedWord, Long.MAX_VALUE);
+                ResearchLogger.getInstance().onWordFinished(typedWord);
             }
         }
     }
@@ -1193,8 +1193,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             final String text = lastTwo.charAt(1) + " ";
             mConnection.commitText(text, 1);
             if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.getInstance().onWordComplete(text, Long.MAX_VALUE);
-                ResearchLogger.latinIME_swapSwapperAndSpace();
+                ResearchLogger.latinIME_swapSwapperAndSpace(text);
             }
             mKeyboardSwitcher.updateShiftState();
         }
@@ -1214,7 +1213,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             final String textToInsert = ". ";
             mConnection.commitText(textToInsert, 1);
             if (ProductionFlag.IS_EXPERIMENTAL) {
-                ResearchLogger.getInstance().onWordComplete(textToInsert, Long.MAX_VALUE);
+                ResearchLogger.latinIME_maybeDoubleSpacePeriod(textToInsert);
             }
             mKeyboardSwitcher.updateShiftState();
             return true;
@@ -1465,7 +1464,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         }
         mConnection.commitText(text, 1);
         if (ProductionFlag.IS_EXPERIMENTAL) {
-            ResearchLogger.getInstance().onWordComplete(text, Long.MAX_VALUE);
+            ResearchLogger.latinIME_onTextInput(text);
         }
         mConnection.endBatchEdit();
         // Space state must be updated before calling updateShiftState
@@ -1726,7 +1725,7 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
             }
             if (SPACE_STATE_DOUBLE == spaceState) {
                 mHandler.cancelDoubleSpacePeriodTimer();
-                if (mConnection.revertDoubleSpace()) {
+                if (mConnection.revertDoubleSpacePeriod()) {
                     // No need to reset mSpaceState, it has already be done (that's why we
                     // receive it as a parameter)
                     return;
@@ -2324,7 +2323,6 @@ public final class LatinIME extends InputMethodService implements KeyboardAction
         }
         if (ProductionFlag.IS_EXPERIMENTAL) {
             ResearchLogger.latinIME_revertCommit(committedWord, originallyTypedWord);
-            ResearchLogger.getInstance().onWordComplete(originallyTypedWord, Long.MAX_VALUE);
         }
         // Don't restart suggestion yet. We'll restart if the user deletes the
         // separator.
