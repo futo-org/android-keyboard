@@ -189,7 +189,7 @@ public class BinaryDictInputOutput {
     // suspicion that a bug might be causing an infinite loop.
     private static final int MAX_PASSES = 24;
 
-    private interface FusionDictionaryBufferInterface {
+    public interface FusionDictionaryBufferInterface {
         public int readUnsignedByte();
         public int readUnsignedShort();
         public int readUnsignedInt24();
@@ -234,7 +234,6 @@ public class BinaryDictInputOutput {
         @Override
         public void position(int newPos) {
             mBuffer.position(newPos);
-            return;
         }
     }
 
@@ -1393,7 +1392,6 @@ public class BinaryDictInputOutput {
             final FusionDictionaryBufferInterface buffer, final int headerSize,
             final Map<Integer, String> words, final Map<Integer, Integer> frequencies,
             final Map<Integer, ArrayList<PendingAttribute>> bigrams) {
-
         int[] pushedChars = new int[MAX_WORD_LENGTH + 1];
 
         Stack<Position> stack = new Stack<Position>();
@@ -1443,8 +1441,6 @@ public class BinaryDictInputOutput {
                 stack.push(childrenPos);
             }
         }
-
-        return;
     }
 
     /**
@@ -1462,7 +1458,6 @@ public class BinaryDictInputOutput {
             final Map<Integer, String> words, final Map<Integer, Integer> frequencies,
             final Map<Integer, ArrayList<PendingAttribute>> bigrams) throws IOException,
             UnsupportedFormatException {
-
         // Read header
         final int version = checkFormatVersion(buffer);
         final int optionsFlags = buffer.readUnsignedShort();
@@ -1507,10 +1502,8 @@ public class BinaryDictInputOutput {
      * @throws UnsupportedFormatException
      */
     private static int readHeader(final FusionDictionaryBufferInterface buffer,
-            final HashMap<String, String> options,
-            final int version)
+            final HashMap<String, String> options, final int version)
             throws IOException, UnsupportedFormatException {
-
         final int headerSize;
         if (version < FIRST_VERSION_WITH_HEADER_SIZE) {
             headerSize = buffer.position();
@@ -1523,7 +1516,6 @@ public class BinaryDictInputOutput {
         if (headerSize < 0) {
             throw new UnsupportedFormatException("header size can't be negative.");
         }
-
         return headerSize;
     }
 
@@ -1561,7 +1553,6 @@ public class BinaryDictInputOutput {
     public static FusionDictionary readDictionaryBinary(
             final FusionDictionaryBufferInterface buffer, final FusionDictionary dict)
                     throws IOException, UnsupportedFormatException {
-
         // clear cache
         wordCache.clear();
 
