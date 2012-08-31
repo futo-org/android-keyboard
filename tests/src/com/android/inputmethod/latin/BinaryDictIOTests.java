@@ -20,6 +20,7 @@ import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
+import com.android.inputmethod.latin.makedict.PendingAttribute;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
 import android.test.AndroidTestCase;
@@ -34,7 +35,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
@@ -46,6 +50,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
     private static final int MAX_UNIGRAMS = 1000;
     private static final int UNIGRAM_FREQ = 10;
     private static final int BIGRAM_FREQ = 50;
+    private static final int TOLERANCE_OF_BIGRAM_FREQ = 5;
 
     private static final String[] CHARACTERS =
         {
@@ -53,6 +58,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
         "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
         };
 
+    // Utilities for test
     /**
      * Generates a random word.
      */
@@ -75,6 +81,9 @@ public class BinaryDictIOTests extends AndroidTestCase {
         return new ArrayList<String>(wordSet);
     }
 
+    /**
+     * Adds unigrams to the dictionary.
+     */
     private void addUnigrams(final int number,
             final FusionDictionary dict,
             final List<String> words) {
@@ -86,19 +95,17 @@ public class BinaryDictIOTests extends AndroidTestCase {
 
     private void addBigrams(final FusionDictionary dict,
             final List<String> words,
-            final SparseArray<List<Integer>> sparseArray) {
-        for (int i = 0; i < sparseArray.size(); ++i) {
-            final int w1 = sparseArray.keyAt(i);
-            for (int w2 : sparseArray.valueAt(i)) {
+            final SparseArray<List<Integer>> bigrams) {
+        for (int i = 0; i < bigrams.size(); ++i) {
+            final int w1 = bigrams.keyAt(i);
+            for (int w2 : bigrams.valueAt(i)) {
                 dict.setBigram(words.get(w1), words.get(w2), BIGRAM_FREQ);
             }
         }
     }
 
-    private long timeWritingDictToFile(final String fileName,
-            final FusionDictionary dict) {
+    private long timeWritingDictToFile(final File file, final FusionDictionary dict) {
 
-        final File file = new File(getContext().getFilesDir(), fileName);
         long now = -1, diff = -1;
 
         try {
@@ -140,15 +147,16 @@ public class BinaryDictIOTests extends AndroidTestCase {
         }
     }
 
-    private long timeReadingAndCheckDict(final String fileName,
-            final List<String> words,
+    // Tests for readDictionaryBinary and writeDictionaryBinary
+
+    private long timeReadingAndCheckDict(final File file, final List<String> words,
             final SparseArray<List<Integer>> bigrams) {
 
         long now, diff = -1;
 
+        FileInputStream inStream = null;
         try {
-            final File file = new File(getContext().getFilesDir(), fileName);
-            final FileInputStream inStream = new FileInputStream(file);
+            inStream = new FileInputStream(file);
             final ByteBuffer buffer = inStream.getChannel().map(
                     FileChannel.MapMode.READ_ONLY, 0, file.length());
 
@@ -166,6 +174,14 @@ public class BinaryDictIOTests extends AndroidTestCase {
             Log.e(TAG, "raise IOException while reading file " + e);
         } catch (UnsupportedFormatException e) {
             Log.e(TAG, "Unsupported format: " + e);
+        } finally {
+            if (inStream != null) {
+                try {
+                    inStream.close();
+                } catch (IOException e) {
+                    // do nothing
+                }
+            }
         }
 
         return diff;
@@ -178,23 +194,24 @@ public class BinaryDictIOTests extends AndroidTestCase {
                 new FusionDictionary.DictionaryOptions(
                         new HashMap<String,String>(), false, false));
 
-        final String fileName = generateWord((int)System.currentTimeMillis()) + ".dict";
+        File file = null;
+        try {
+            file = File.createTempFile("runReadAndWrite", ".dict");
+        } catch (IOException e) {
+            Log.e(TAG, "IOException: " + e);
+        }
+
+        assertNotNull(file);
 
         addUnigrams(words.size(), dict, words);
         addBigrams(dict, words, bigrams);
         // check original dictionary
         checkDictionary(dict, words, bigrams);
 
-        final long write = timeWritingDictToFile(fileName, dict);
-        final long read = timeReadingAndCheckDict(fileName, words, bigrams);
-        deleteFile(fileName);
+        final long write = timeWritingDictToFile(file, dict);
+        final long read = timeReadingAndCheckDict(file, words, bigrams);
 
         return "PROF: read=" + read + "ms, write=" + write + "ms    :" + message;
-    }
-
-    private void deleteFile(final String fileName) {
-        final File file = new File(getContext().getFilesDir(), fileName);
-        file.delete();
     }
 
     public void testReadAndWrite() {
@@ -220,5 +237,135 @@ public class BinaryDictIOTests extends AndroidTestCase {
         for (final String result : results) {
             Log.d(TAG, result);
         }
+    }
+
+    // Tests for readUnigramsAndBigramsBinary
+
+    private void checkWordMap(final List<String> expectedWords,
+            final SparseArray<List<Integer>> expectedBigrams,
+            final Map<Integer, String> resultWords,
+            final Map<Integer, Integer> resultFrequencies,
+            final Map<Integer, ArrayList<PendingAttribute>> resultBigrams) {
+        // check unigrams
+        final Set<String> actualWordsSet = new HashSet<String>(resultWords.values());
+        final Set<String> expectedWordsSet = new HashSet<String>(expectedWords);
+        assertEquals(actualWordsSet, expectedWordsSet);
+
+        for (int freq : resultFrequencies.values()) {
+            assertEquals(freq, UNIGRAM_FREQ);
+        }
+
+        // check bigrams
+        final Map<String, List<String>> expBigrams = new HashMap<String, List<String>>();
+        for (int i = 0; i < expectedBigrams.size(); ++i) {
+            final String word1 = expectedWords.get(expectedBigrams.keyAt(i));
+            for (int w2 : expectedBigrams.valueAt(i)) {
+                if (expBigrams.get(word1) == null) {
+                    expBigrams.put(word1, new ArrayList<String>());
+                }
+                expBigrams.get(word1).add(expectedWords.get(w2));
+            }
+        }
+
+        final Map<String, List<String>> actBigrams = new HashMap<String, List<String>>();
+        for (Entry<Integer, ArrayList<PendingAttribute>> entry : resultBigrams.entrySet()) {
+            final String word1 = resultWords.get(entry.getKey());
+            final int unigramFreq = resultFrequencies.get(entry.getKey());
+            for (PendingAttribute attr : entry.getValue()) {
+                final String word2 = resultWords.get(attr.mAddress);
+                if (actBigrams.get(word1) == null) {
+                    actBigrams.put(word1, new ArrayList<String>());
+                }
+                actBigrams.get(word1).add(word2);
+
+                final int bigramFreq = BinaryDictInputOutput.reconstructBigramFrequency(
+                        unigramFreq, attr.mFrequency);
+                assertTrue(Math.abs(bigramFreq - BIGRAM_FREQ) < TOLERANCE_OF_BIGRAM_FREQ);
+            }
+        }
+
+        assertEquals(actBigrams, expBigrams);
+    }
+
+    private long timeAndCheckReadUnigramsAndBigramsBinary(final File file, final List<String> words,
+            final SparseArray<List<Integer>> bigrams) {
+        FileInputStream inStream = null;
+
+        final Map<Integer, String> resultWords = CollectionUtils.newTreeMap();
+        final Map<Integer, ArrayList<PendingAttribute>> resultBigrams =
+                CollectionUtils.newTreeMap();
+        final Map<Integer, Integer> resultFreqs = CollectionUtils.newTreeMap();
+
+        long now = -1, diff = -1;
+        try {
+            inStream = new FileInputStream(file);
+            final ByteBuffer buffer = inStream.getChannel().map(
+                    FileChannel.MapMode.READ_ONLY, 0, file.length());
+
+            now = System.currentTimeMillis();
+            BinaryDictInputOutput.readUnigramsAndBigramsBinary(
+                    new BinaryDictInputOutput.ByteBufferWrapper(buffer), resultWords, resultFreqs,
+                    resultBigrams);
+            diff = System.currentTimeMillis() - now;
+            checkWordMap(words, bigrams, resultWords, resultFreqs, resultBigrams);
+        } catch (IOException e) {
+            Log.e(TAG, "IOException " + e);
+        } catch (UnsupportedFormatException e) {
+            Log.e(TAG, "UnsupportedFormatException: " + e);
+        } finally {
+            if (inStream != null) {
+                try {
+                    inStream.close();
+                } catch (IOException e) {
+                    // do nothing
+                }
+            }
+        }
+
+        return diff;
+    }
+
+    private void runReadUnigramsAndBigramsBinary(final List<String> words,
+            final SparseArray<List<Integer>> bigrams) {
+
+        // making the dictionary from lists of words.
+        final FusionDictionary dict = new FusionDictionary(new Node(),
+                new FusionDictionary.DictionaryOptions(
+                        new HashMap<String, String>(), false, false));
+
+        File file = null;
+        try {
+            file = File.createTempFile("runReadUnigrams", ".dict");
+        } catch (IOException e) {
+            Log.e(TAG, "IOException: " + e);
+        }
+
+        assertNotNull(file);
+
+        addUnigrams(words.size(), dict, words);
+        addBigrams(dict, words, bigrams);
+        timeWritingDictToFile(file, dict);
+
+        long wordMap = timeAndCheckReadUnigramsAndBigramsBinary(file, words, bigrams);
+        long fullReading = timeReadingAndCheckDict(file, words, bigrams);
+
+        Log.d(TAG, "read=" + fullReading + ", bytearray=" + wordMap);
+    }
+
+    public void testReadUnigramsAndBigramsBinary() {
+        final List<String> results = new ArrayList<String>();
+
+        final Random random = new Random(123456);
+        final List<String> words = generateWords(MAX_UNIGRAMS, random);
+        final SparseArray<List<Integer>> emptyArray = CollectionUtils.newSparseArray();
+
+        runReadUnigramsAndBigramsBinary(words, emptyArray);
+
+        final SparseArray<List<Integer>> star = CollectionUtils.newSparseArray();
+        for (int i = 1; i < words.size(); ++i) {
+            star.put(i-1, new ArrayList<Integer>());
+            star.get(i-1).add(i);
+        }
+        runReadUnigramsAndBigramsBinary(words, star);
     }
 }
