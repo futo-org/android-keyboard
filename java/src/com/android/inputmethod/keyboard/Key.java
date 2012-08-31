@@ -31,8 +31,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Xml;
 
+import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import com.android.inputmethod.keyboard.internal.KeyStyle;
+import com.android.inputmethod.keyboard.internal.KeyVisualAttributes;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.KeyboardRow;
@@ -132,6 +134,8 @@ public class Key {
     private static final int ACTION_FLAGS_ALT_CODE_WHILE_TYPING = 0x04;
     private static final int ACTION_FLAGS_ENABLE_LONG_PRESS = 0x08;
 
+    public final KeyVisualAttributes mKeyVisualAttributes;
+
     private final OptionalAttributes mOptionalAttributes;
 
     private static class OptionalAttributes {
@@ -202,6 +206,7 @@ public class Key {
         mX = x + params.mHorizontalGap / 2;
         mY = y;
         mHitBox.set(x, y, x + width + 1, y + height);
+        mKeyVisualAttributes = null;
 
         mHashCode = computeHashCode(this);
     }
@@ -357,11 +362,9 @@ public class Key {
                     disabledIconId, previewIconId,
                     visualInsetsLeft, visualInsetsRight);
         }
-
-        mHashCode = computeHashCode(this);
-
+        mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr);
         keyAttr.recycle();
-
+        mHashCode = computeHashCode(this);
         if (hasShiftedLetterHint() && TextUtils.isEmpty(mHintLabel)) {
             Log.w(TAG, "hasShiftedLetterHint specified without keyHintLabel: " + this);
         }
@@ -478,133 +481,161 @@ public class Key {
         return this instanceof Spacer;
     }
 
-    public boolean isShift() {
+    public final boolean isShift() {
         return mCode == CODE_SHIFT;
     }
 
-    public boolean isModifier() {
+    public final boolean isModifier() {
         return mCode == CODE_SHIFT || mCode == CODE_SWITCH_ALPHA_SYMBOL;
     }
 
-    public boolean isRepeatable() {
+    public final boolean isRepeatable() {
         return (mActionFlags & ACTION_FLAGS_IS_REPEATABLE) != 0;
     }
 
-    public boolean noKeyPreview() {
+    public final boolean noKeyPreview() {
         return (mActionFlags & ACTION_FLAGS_NO_KEY_PREVIEW) != 0;
     }
 
-    public boolean altCodeWhileTyping() {
+    public final boolean altCodeWhileTyping() {
         return (mActionFlags & ACTION_FLAGS_ALT_CODE_WHILE_TYPING) != 0;
     }
 
-    public boolean isLongPressEnabled() {
+    public final boolean isLongPressEnabled() {
         // We need not start long press timer on the key which has activated shifted letter.
         return (mActionFlags & ACTION_FLAGS_ENABLE_LONG_PRESS) != 0
                 && (mLabelFlags & LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED) == 0;
     }
 
-    public Typeface selectTypeface(final Typeface defaultTypeface) {
+    public final Typeface selectTypeface(final KeyDrawParams params) {
         // TODO: Handle "bold" here too?
         if ((mLabelFlags & LABEL_FLAGS_FONT_NORMAL) != 0) {
             return Typeface.DEFAULT;
         } else if ((mLabelFlags & LABEL_FLAGS_FONT_MONO_SPACE) != 0) {
             return Typeface.MONOSPACE;
         } else {
-            return defaultTypeface;
+            return params.mTypeface;
         }
     }
 
-    public int selectTextSize(final int letterSize, final int largeLetterSize, final int labelSize,
-            final int largeLabelSize, final int hintLabelSize) {
+    public final int selectTextSize(final KeyDrawParams params) {
         switch (mLabelFlags & LABEL_FLAGS_FOLLOW_KEY_TEXT_RATIO_MASK) {
         case LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO:
-            return letterSize;
+            return params.mLetterSize;
         case LABEL_FLAGS_FOLLOW_KEY_LARGE_LETTER_RATIO:
-            return largeLetterSize;
+            return params.mLargeLetterSize;
         case LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO:
-            return labelSize;
+            return params.mLabelSize;
         case LABEL_FLAGS_FOLLOW_KEY_LARGE_LABEL_RATIO:
-            return largeLabelSize;
+            return params.mLargeLabelSize;
         case LABEL_FLAGS_FOLLOW_KEY_HINT_LABEL_RATIO:
-            return hintLabelSize;
+            return params.mHintLabelSize;
         default: // No follow key ratio flag specified.
-            return StringUtils.codePointCount(mLabel) == 1 ? letterSize : labelSize;
+            return StringUtils.codePointCount(mLabel) == 1 ? params.mLetterSize : params.mLabelSize;
         }
     }
 
-    public boolean isAlignLeft() {
+    public final int selectTextColor(final KeyDrawParams params) {
+        return isShiftedLetterActivated() ? params.mTextInactivatedColor : params.mTextColor;
+    }
+
+    public final int selectHintTextSize(final KeyDrawParams params) {
+        if (hasHintLabel()) {
+            return params.mHintLabelSize;
+        } else if (hasShiftedLetterHint()) {
+            return params.mShiftedLetterHintSize;
+        } else {
+            return params.mHintLetterSize;
+        }
+    }
+
+    public final int selectHintTextColor(final KeyDrawParams params) {
+        if (hasHintLabel()) {
+            return params.mHintLabelColor;
+        } else if (hasShiftedLetterHint()) {
+            return isShiftedLetterActivated() ? params.mShiftedLetterHintActivatedColor
+                    : params.mShiftedLetterHintInactivatedColor;
+        } else {
+            return params.mHintLetterColor;
+        }
+    }
+
+    public final int selectMoreKeyTextSize(final KeyDrawParams params) {
+        return hasLabelsInMoreKeys() ? params.mLabelSize : params.mLetterSize;
+    }
+
+    public final boolean isAlignLeft() {
         return (mLabelFlags & LABEL_FLAGS_ALIGN_LEFT) != 0;
     }
 
-    public boolean isAlignRight() {
+    public final boolean isAlignRight() {
         return (mLabelFlags & LABEL_FLAGS_ALIGN_RIGHT) != 0;
     }
 
-    public boolean isAlignLeftOfCenter() {
+    public final boolean isAlignLeftOfCenter() {
         return (mLabelFlags & LABEL_FLAGS_ALIGN_LEFT_OF_CENTER) != 0;
     }
 
-    public boolean hasPopupHint() {
+    public final boolean hasPopupHint() {
         return (mLabelFlags & LABEL_FLAGS_HAS_POPUP_HINT) != 0;
     }
 
-    public boolean hasShiftedLetterHint() {
+    public final boolean hasShiftedLetterHint() {
         return (mLabelFlags & LABEL_FLAGS_HAS_SHIFTED_LETTER_HINT) != 0;
     }
 
-    public boolean hasHintLabel() {
+    public final boolean hasHintLabel() {
         return (mLabelFlags & LABEL_FLAGS_HAS_HINT_LABEL) != 0;
     }
 
-    public boolean hasLabelWithIconLeft() {
+    public final boolean hasLabelWithIconLeft() {
         return (mLabelFlags & LABEL_FLAGS_WITH_ICON_LEFT) != 0;
     }
 
-    public boolean hasLabelWithIconRight() {
+    public final boolean hasLabelWithIconRight() {
         return (mLabelFlags & LABEL_FLAGS_WITH_ICON_RIGHT) != 0;
     }
 
-    public boolean needsXScale() {
+    public final boolean needsXScale() {
         return (mLabelFlags & LABEL_FLAGS_AUTO_X_SCALE) != 0;
     }
 
-    public boolean isShiftedLetterActivated() {
+    public final boolean isShiftedLetterActivated() {
         return (mLabelFlags & LABEL_FLAGS_SHIFTED_LETTER_ACTIVATED) != 0;
     }
 
-    public int getMoreKeysColumn() {
+    public final int getMoreKeysColumn() {
         return mMoreKeysColumnAndFlags & MORE_KEYS_COLUMN_MASK;
     }
 
-    public boolean isFixedColumnOrderMoreKeys() {
+    public final boolean isFixedColumnOrderMoreKeys() {
         return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_FIXED_COLUMN_ORDER) != 0;
     }
 
-    public boolean hasLabelsInMoreKeys() {
+    public final boolean hasLabelsInMoreKeys() {
         return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_HAS_LABELS) != 0;
     }
 
-    public int getMoreKeyLabelFlags() {
+    public final int getMoreKeyLabelFlags() {
         return hasLabelsInMoreKeys()
                 ? LABEL_FLAGS_FOLLOW_KEY_LABEL_RATIO
                 : LABEL_FLAGS_FOLLOW_KEY_LETTER_RATIO;
     }
 
-    public boolean needsDividersInMoreKeys() {
+    public final boolean needsDividersInMoreKeys() {
         return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_NEEDS_DIVIDERS) != 0;
     }
 
-    public boolean hasEmbeddedMoreKey() {
+    public final boolean hasEmbeddedMoreKey() {
         return (mMoreKeysColumnAndFlags & MORE_KEYS_FLAGS_EMBEDDED_MORE_KEY) != 0;
     }
 
-    public String getOutputText() {
+    public final String getOutputText() {
         final OptionalAttributes attrs = mOptionalAttributes;
         return (attrs != null) ? attrs.mOutputText : null;
     }
 
-    public int getAltCode() {
+    public final int getAltCode() {
         final OptionalAttributes attrs = mOptionalAttributes;
         return (attrs != null) ? attrs.mAltCode : CODE_UNSPECIFIED;
     }
@@ -627,12 +658,12 @@ public class Key {
                 ? iconSet.getIconDrawable(previewIconId) : iconSet.getIconDrawable(mIconId);
     }
 
-    public int getDrawX() {
+    public final int getDrawX() {
         final OptionalAttributes attrs = mOptionalAttributes;
         return (attrs == null) ? mX : mX + attrs.mVisualInsetsLeft;
     }
 
-    public int getDrawWidth() {
+    public final int getDrawWidth() {
         final OptionalAttributes attrs = mOptionalAttributes;
         return (attrs == null) ? mWidth
                 : mWidth - attrs.mVisualInsetsLeft - attrs.mVisualInsetsRight;
@@ -656,7 +687,7 @@ public class Key {
         mPressed = false;
     }
 
-    public boolean isEnabled() {
+    public final boolean isEnabled() {
         return mEnabled;
     }
 
@@ -748,7 +779,7 @@ public class Key {
      * @return the drawable state of the key.
      * @see android.graphics.drawable.StateListDrawable#setState(int[])
      */
-    public int[] getCurrentDrawableState() {
+    public final int[] getCurrentDrawableState() {
         switch (mBackgroundType) {
         case BACKGROUND_TYPE_FUNCTIONAL:
             return mPressed ? KEY_STATE_FUNCTIONAL_PRESSED : KEY_STATE_FUNCTIONAL_NORMAL;

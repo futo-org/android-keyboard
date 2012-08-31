@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
-import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -289,18 +288,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     R.styleable.Keyboard_rowHeight, params.mBaseHeight,
                     params.mBaseHeight / DEFAULT_KEYBOARD_ROWS);
 
-            if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyTypeface)) {
-                params.mKeyTypeface = Typeface.defaultFromStyle(keyAttr.getInt(
-                        R.styleable.Keyboard_Key_keyTypeface, Typeface.NORMAL));
-            }
-            params.mKeyLetterRatio = ResourceUtils.getFraction(keyAttr,
-                    R.styleable.Keyboard_Key_keyLetterSize);
-            params.mKeyLetterSize = ResourceUtils.getDimensionPixelSize(keyAttr,
-                    R.styleable.Keyboard_Key_keyLetterSize);
-            params.mKeyHintLetterRatio = ResourceUtils.getFraction(keyAttr,
-                    R.styleable.Keyboard_Key_keyHintLetterRatio);
-            params.mKeyShiftedLetterHintRatio = ResourceUtils.getFraction(keyAttr,
-                    R.styleable.Keyboard_Key_keyShiftedLetterHintRatio);
+            params.mKeyVisualAttributes = KeyVisualAttributes.newInstance(keyAttr);
 
             params.mMoreKeysTemplate = keyboardAttr.getResourceId(
                     R.styleable.Keyboard_moreKeysTemplate, 0);

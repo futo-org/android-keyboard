@@ -311,9 +311,8 @@ public class MoreKeysKeyboard extends Keyboard {
                     .getDimension(R.dimen.more_keys_keyboard_key_horizontal_padding)
                     + (parentKey.hasLabelsInMoreKeys() ? minKeyWidth * LABEL_PADDING_RATIO : 0));
             final Paint paint = view.newDefaultLabelPaint();
-            paint.setTextSize(parentKey.hasLabelsInMoreKeys()
-                    ? view.mKeyDrawParams.mKeyLabelSize
-                    : view.mKeyDrawParams.mKeyLetterSize);
+            paint.setTypeface(parentKey.selectTypeface(view.mKeyDrawParams));
+            paint.setTextSize(parentKey.selectMoreKeyTextSize(view.mKeyDrawParams));
             int maxWidth = minKeyWidth;
             for (final MoreKeySpec spec : parentKey.mMoreKeys) {
                 final String label = spec.mLabel;
