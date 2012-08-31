@@ -31,16 +31,21 @@ public class Word implements Comparable<Word> {
     public final int mFrequency;
     public final ArrayList<WeightedString> mShortcutTargets;
     public final ArrayList<WeightedString> mBigrams;
+    public final boolean mIsNotAWord;
+    public final boolean mIsBlacklistEntry;
 
     private int mHashCode = 0;
 
     public Word(final String word, final int frequency,
             final ArrayList<WeightedString> shortcutTargets,
-            final ArrayList<WeightedString> bigrams) {
+            final ArrayList<WeightedString> bigrams,
+            final boolean isNotAWord, final boolean isBlacklistEntry) {
         mWord = word;
         mFrequency = frequency;
         mShortcutTargets = shortcutTargets;
         mBigrams = bigrams;
+        mIsNotAWord = isNotAWord;
+        mIsBlacklistEntry = isBlacklistEntry;
     }
 
     private static int computeHashCode(Word word) {
@@ -48,7 +53,9 @@ public class Word implements Comparable<Word> {
                 word.mWord,
                 word.mFrequency,
                 word.mShortcutTargets.hashCode(),
-                word.mBigrams.hashCode()
+                word.mBigrams.hashCode(),
+                word.mIsNotAWord,
+                word.mIsBlacklistEntry
         });
     }
 
@@ -78,7 +85,9 @@ public class Word implements Comparable<Word> {
         Word w = (Word)o;
         return mFrequency == w.mFrequency && mWord.equals(w.mWord)
                 && mShortcutTargets.equals(w.mShortcutTargets)
-                && mBigrams.equals(w.mBigrams);
+                && mBigrams.equals(w.mBigrams)
+                && mIsNotAWord == w.mIsNotAWord
+                && mIsBlacklistEntry == w.mIsBlacklistEntry;
     }
 
     @Override

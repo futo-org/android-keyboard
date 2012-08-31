@@ -50,6 +50,7 @@ public class XmlDictInputOutput {
     private static final String SHORTCUT_TAG = "shortcut";
     private static final String FREQUENCY_ATTR = "f";
     private static final String WORD_ATTR = "word";
+    private static final String NOT_A_WORD_ATTR = "not_a_word";
 
     private static final int SHORTCUT_ONLY_DEFAULT_FREQ = 1;
 
@@ -92,7 +93,7 @@ public class XmlDictInputOutput {
             final FusionDictionary dict = mDictionary;
             for (final String shortcutOnly : mShortcutsMap.keySet()) {
                 if (dict.hasWord(shortcutOnly)) continue;
-                dict.add(shortcutOnly, 0, mShortcutsMap.get(shortcutOnly));
+                dict.add(shortcutOnly, 0, mShortcutsMap.get(shortcutOnly), true /* isNotAWord */);
             }
             mDictionary = null;
             mShortcutsMap.clear();
@@ -144,7 +145,7 @@ public class XmlDictInputOutput {
         @Override
         public void endElement(String uri, String localName, String qName) {
             if (WORD == mState) {
-                mDictionary.add(mWord, mFreq, mShortcutsMap.get(mWord));
+                mDictionary.add(mWord, mFreq, mShortcutsMap.get(mWord), false /* isNotAWord */);
                 mState = START;
             }
         }
@@ -345,7 +346,8 @@ public class XmlDictInputOutput {
         destination.write("<!-- Warning: there is no code to read this format yet. -->\n");
         for (Word word : set) {
             destination.write("  <" + WORD_TAG + " " + WORD_ATTR + "=\"" + word.mWord + "\" "
-                    + FREQUENCY_ATTR + "=\"" + word.mFrequency + "\">");
+                    + FREQUENCY_ATTR + "=\"" + word.mFrequency
+                    + (word.mIsNotAWord ? "\" " + NOT_A_WORD_ATTR + "=\"true" : "") + "\">");
             if (null != word.mShortcutTargets) {
                 destination.write("\n");
                 for (WeightedString target : word.mShortcutTargets) {
