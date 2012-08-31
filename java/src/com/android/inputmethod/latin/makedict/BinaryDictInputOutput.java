@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Stack;
 import java.util.TreeMap;
 
 /**
@@ -197,20 +198,21 @@ public class BinaryDictInputOutput {
         public void position(int newPosition);
     }
 
-    private static final class ByteBufferWrapper implements FusionDictionaryBufferInterface {
-        private ByteBuffer buffer;
-        ByteBufferWrapper(final ByteBuffer buffer) {
-            this.buffer = buffer;
+    public static final class ByteBufferWrapper implements FusionDictionaryBufferInterface {
+        private ByteBuffer mBuffer;
+
+        public ByteBufferWrapper(final ByteBuffer buffer) {
+            mBuffer = buffer;
         }
 
         @Override
         public int readUnsignedByte() {
-            return ((int)buffer.get()) & 0xFF;
+            return ((int)mBuffer.get()) & 0xFF;
         }
 
         @Override
         public int readUnsignedShort() {
-            return ((int)buffer.getShort()) & 0xFFFF;
+            return ((int)mBuffer.getShort()) & 0xFFFF;
         }
 
         @Override
@@ -221,17 +223,17 @@ public class BinaryDictInputOutput {
 
         @Override
         public int readInt() {
-            return buffer.getInt();
+            return mBuffer.getInt();
         }
 
         @Override
         public int position() {
-            return buffer.position();
+            return mBuffer.position();
         }
 
         @Override
         public void position(int newPos) {
-            buffer.position(newPos);
+            mBuffer.position(newPos);
             return;
         }
     }
@@ -1365,6 +1367,109 @@ public class BinaryDictInputOutput {
         node.mCachedAddress = nodeOrigin;
         reverseNodeMap.put(node.mCachedAddress, node);
         return node;
+    }
+
+    // TODO: move these methods (readUnigramsAndBigramsBinary(|Inner)) and an inner class (Position)
+    // out of this class.
+    private static class Position {
+        public static final int NOT_READ_GROUPCOUNT = -1;
+
+        public int mAddress;
+        public int mNumOfCharGroup;
+        public int mPosition;
+        public int mLength;
+
+        public Position(int address, int length) {
+            mAddress = address;
+            mLength = length;
+            mNumOfCharGroup = NOT_READ_GROUPCOUNT;
+        }
+    }
+
+    /**
+     * Tours all node without recursive call.
+     */
+    private static void readUnigramsAndBigramsBinaryInner(
+            final FusionDictionaryBufferInterface buffer, final int headerSize,
+            final Map<Integer, String> words, final Map<Integer, Integer> frequencies,
+            final Map<Integer, ArrayList<PendingAttribute>> bigrams) {
+
+        int[] pushedChars = new int[MAX_WORD_LENGTH + 1];
+
+        Stack<Position> stack = new Stack<Position>();
+        int index = 0;
+
+        Position initPos = new Position(headerSize, 0);
+        stack.push(initPos);
+
+        while (!stack.empty()) {
+            Position p = stack.peek();
+
+            if (DBG) {
+                MakedictLog.d("read: address=" + p.mAddress + ", numOfCharGroup=" +
+                        p.mNumOfCharGroup + ", position=" + p.mPosition + ", length=" + p.mLength);
+            }
+
+            if (buffer.position() != p.mAddress) buffer.position(p.mAddress);
+            if (index != p.mLength) index = p.mLength;
+
+            if (p.mNumOfCharGroup == Position.NOT_READ_GROUPCOUNT) {
+                p.mNumOfCharGroup = readCharGroupCount(buffer);
+                p.mAddress += getGroupCountSize(p.mNumOfCharGroup);
+                p.mPosition = 0;
+            }
+
+            CharGroupInfo info = readCharGroup(buffer, p.mAddress - headerSize);
+            for (int i = 0; i < info.mCharacters.length; ++i) {
+                pushedChars[index++] = info.mCharacters[i];
+            }
+            p.mPosition++;
+
+            if (info.mFrequency != FusionDictionary.CharGroup.NOT_A_TERMINAL) { // found word
+                words.put(info.mOriginalAddress, new String(pushedChars, 0, index));
+                frequencies.put(info.mOriginalAddress, info.mFrequency);
+                if (info.mBigrams != null) bigrams.put(info.mOriginalAddress, info.mBigrams);
+            }
+
+            if (p.mPosition == p.mNumOfCharGroup) {
+                stack.pop();
+            } else {
+                // the node has more groups.
+                p.mAddress = buffer.position();
+            }
+
+            if (hasChildrenAddress(info.mChildrenAddress)) {
+                Position childrenPos = new Position(info.mChildrenAddress + headerSize, index);
+                stack.push(childrenPos);
+            }
+        }
+
+        return;
+    }
+
+    /**
+     * Reads unigrams and bigrams from the binary file.
+     * Doesn't make the memory representation of the dictionary.
+     *
+     * @param buffer the buffer to read.
+     * @param words the map to store the address as a key and the word as a value.
+     * @param frequencies the map to store the address as a key and the frequency as a value.
+     * @param bigrams the map to store the address as a key and the list of address as a value.
+     * @throws IOException
+     * @throws UnsupportedFormatException
+     */
+    public static void readUnigramsAndBigramsBinary(final FusionDictionaryBufferInterface buffer,
+            final Map<Integer, String> words, final Map<Integer, Integer> frequencies,
+            final Map<Integer, ArrayList<PendingAttribute>> bigrams) throws IOException,
+            UnsupportedFormatException {
+
+        // Read header
+        final int version = checkFormatVersion(buffer);
+        final int optionsFlags = buffer.readUnsignedShort();
+        final HashMap<String, String> options = new HashMap<String, String>();
+        final int headerSize = readHeader(buffer, options, version);
+
+        readUnigramsAndBigramsBinaryInner(buffer, headerSize, words, frequencies, bigrams);
     }
 
     /**
