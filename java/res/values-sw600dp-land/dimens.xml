@@ -51,9 +51,12 @@
     <fraction name="key_hint_label_ratio">34%</fraction>
     <fraction name="key_uppercase_letter_ratio">29%</fraction>
     <fraction name="spacebar_text_ratio">30.0%</fraction>
+    <dimen name="key_uppercase_letter_padding">4dp</dimen>
+
+    <!-- For 50rows keyboard -->
+    <fraction name="key_bottom_gap_5rows">3.20%p</fraction>
     <fraction name="key_letter_ratio_5rows">62%</fraction>
     <fraction name="key_uppercase_letter_ratio_5rows">36%</fraction>
-    <dimen name="key_uppercase_letter_padding">4dp</dimen>
 
     <dimen name="suggestions_strip_padding">252.0dp</dimen>
     <integer name="max_more_suggestions_row">5</integer>

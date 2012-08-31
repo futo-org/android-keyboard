@@ -65,8 +65,6 @@
     <fraction name="key_uppercase_letter_ratio">35%</fraction>
     <fraction name="key_preview_text_ratio">82%</fraction>
     <fraction name="spacebar_text_ratio">33.735%</fraction>
-    <fraction name="key_letter_ratio_5rows">64%</fraction>
-    <fraction name="key_uppercase_letter_ratio_5rows">41%</fraction>
     <dimen name="key_preview_height">80dp</dimen>
     <dimen name="key_preview_offset">-8.0dp</dimen>
 
@@ -74,6 +72,11 @@
     <dimen name="key_hint_letter_padding">1dp</dimen>
     <dimen name="key_popup_hint_letter_padding">2dp</dimen>
     <dimen name="key_uppercase_letter_padding">2dp</dimen>
+
+    <!-- For 5-rows keyboard -->
+    <fraction name="key_bottom_gap_5rows">3.20%p</fraction>
+    <fraction name="key_letter_ratio_5rows">64%</fraction>
+    <fraction name="key_uppercase_letter_ratio_5rows">41%</fraction>
 
     <dimen name="key_preview_offset_ics">8.0dp</dimen>
     <!-- popup_key_height x -0.5 -->
