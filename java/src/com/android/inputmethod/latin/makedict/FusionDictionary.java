@@ -43,17 +43,15 @@ public class FusionDictionary implements Iterable<Word> {
     public static class Node {
         ArrayList<CharGroup> mData;
         // To help with binary generation
-        int mCachedSize;
-        int mCachedAddress;
+        int mCachedSize = Integer.MIN_VALUE;
+        int mCachedAddress = Integer.MIN_VALUE;
+        int mCachedParentAddress = 0;
+
         public Node() {
             mData = new ArrayList<CharGroup>();
-            mCachedSize = Integer.MIN_VALUE;
-            mCachedAddress = Integer.MIN_VALUE;
         }
         public Node(ArrayList<CharGroup> data) {
             mData = data;
-            mCachedSize = Integer.MIN_VALUE;
-            mCachedAddress = Integer.MIN_VALUE;
         }
     }
 
