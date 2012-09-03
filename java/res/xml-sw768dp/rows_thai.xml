@@ -28,7 +28,7 @@
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_thai1"
-            latin:keyXPos="11.508%p" />
+            latin:keyXPos="3.799%p" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight"/>
@@ -42,9 +42,11 @@
             latin:keyWidth="7.969%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_thai2" />
+        <include
+            latin:keyboardLayout="@xml/key_thai_kho_khuat" />
     </Row>
     <Row
-        latin:keyWidth="7.125%p"
+        latin:keyWidth="7.079%p"
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"

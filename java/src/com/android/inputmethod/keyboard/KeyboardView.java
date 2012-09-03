@@ -647,7 +647,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         // Draw key icon.
         if (key.mLabel == null && icon != null) {
-            final int iconWidth = icon.getIntrinsicWidth();
+            final int iconWidth = Math.min(icon.getIntrinsicWidth(), keyWidth);
             final int iconHeight = icon.getIntrinsicHeight();
             final int iconX, alignX;
             final int iconY = (keyHeight - iconHeight) / 2;
