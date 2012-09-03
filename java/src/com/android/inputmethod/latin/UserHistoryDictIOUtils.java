@@ -135,7 +135,7 @@ public class UserHistoryDictIOUtils {
                 }
 
                 if (word1 == null) { // unigram
-                    fusionDict.add(word2, freq, null);
+                    fusionDict.add(word2, freq, null, false /* isNotAWord */);
                 } else { // bigram
                     fusionDict.setBigram(word1, word2, freq);
                 }
