@@ -43,6 +43,10 @@ class BinaryFormat {
     static const int FLAG_HAS_SHORTCUT_TARGETS = 0x08;
     // Flag for bigram presence
     static const int FLAG_HAS_BIGRAMS = 0x04;
+    // Flag for non-words (typically, shortcut only entries)
+    static const int FLAG_IS_NOT_A_WORD = 0x02;
+    // Flag for blacklist
+    static const int FLAG_IS_BLACKLISTED = 0x01;
 
     // Attribute (bigram/shortcut) related flags:
     // Flag for presence of more attributes

@@ -72,6 +72,10 @@ class TerminalAttributes {
         return ShortcutIterator(mDict, mStartPos + BinaryFormat::SHORTCUT_LIST_SIZE_SIZE, mFlags);
     }
 
+    bool isBlacklistedOrNotAWord() const {
+        return mFlags & (BinaryFormat::FLAG_IS_BLACKLISTED | BinaryFormat::FLAG_IS_NOT_A_WORD);
+    }
+
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(TerminalAttributes);
     const uint8_t *const mDict;

@@ -43,11 +43,11 @@ public class BinaryDictInputOutputTest extends TestCase {
         final FusionDictionary dict = new FusionDictionary(new Node(),
                 new DictionaryOptions(new HashMap<String, String>(),
                         false /* germanUmlautProcessing */, false /* frenchLigatureProcessing */));
-        dict.add("foo", 1, null);
-        dict.add("fta", 1, null);
-        dict.add("ftb", 1, null);
-        dict.add("bar", 1, null);
-        dict.add("fool", 1, null);
+        dict.add("foo", 1, null, false /* isNotAWord */);
+        dict.add("fta", 1, null, false /* isNotAWord */);
+        dict.add("ftb", 1, null, false /* isNotAWord */);
+        dict.add("bar", 1, null, false /* isNotAWord */);
+        dict.add("fool", 1, null, false /* isNotAWord */);
         final ArrayList<Node> result = BinaryDictInputOutput.flattenTree(dict.mRoot);
         assertEquals(4, result.size());
         while (!result.isEmpty()) {

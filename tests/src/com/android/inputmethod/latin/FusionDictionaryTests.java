@@ -31,16 +31,16 @@ public class FusionDictionaryTests extends AndroidTestCase {
         FusionDictionary dict = new FusionDictionary(new Node(),
                 new FusionDictionary.DictionaryOptions(new HashMap<String,String>(), false, false));
 
-        dict.add("abc", 10, null);
+        dict.add("abc", 10, null, false /* isNotAWord */);
         assertNull(FusionDictionary.findWordInTree(dict.mRoot, "aaa"));
         assertNotNull(FusionDictionary.findWordInTree(dict.mRoot, "abc"));
 
-        dict.add("aa", 10, null);
+        dict.add("aa", 10, null, false /* isNotAWord */);
         assertNull(FusionDictionary.findWordInTree(dict.mRoot, "aaa"));
         assertNotNull(FusionDictionary.findWordInTree(dict.mRoot, "aa"));
 
-        dict.add("babcd", 10, null);
-        dict.add("bacde", 10, null);
+        dict.add("babcd", 10, null, false /* isNotAWord */);
+        dict.add("bacde", 10, null, false /* isNotAWord */);
         assertNull(FusionDictionary.findWordInTree(dict.mRoot, "ba"));
         assertNotNull(FusionDictionary.findWordInTree(dict.mRoot, "babcd"));
         assertNotNull(FusionDictionary.findWordInTree(dict.mRoot, "bacde"));

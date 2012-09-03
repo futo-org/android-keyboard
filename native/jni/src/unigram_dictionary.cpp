@@ -391,9 +391,11 @@ inline void UnigramDictionary::onTerminal(const int probability,
         const int finalProbability =
                 correction->getFinalProbability(probability, &wordPointer, &wordLength);
 
-        if (0 != finalProbability) {
+        if (0 != finalProbability && !terminalAttributes.isBlacklistedOrNotAWord()) {
             // If the probability is 0, we don't want to add this word. However we still
             // want to add its shortcuts (including a possible whitelist entry) if any.
+            // Furthermore, if this is not a word (shortcut only for example) or a blacklisted
+            // entry then we never want to suggest this.
             addWord(wordPointer, wordLength, finalProbability, masterQueue,
                     Dictionary::KIND_CORRECTION);
         }
@@ -841,6 +843,12 @@ int UnigramDictionary::getFrequency(const int32_t *const inWord, const int lengt
         return NOT_A_PROBABILITY;
     }
     const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
+    if (flags & (BinaryFormat::FLAG_IS_BLACKLISTED | BinaryFormat::FLAG_IS_NOT_A_WORD)) {
+        // If this is not a word, or if it's a blacklisted entry, it should behave as
+        // having no frequency outside of the suggestion process (where it should be used
+        // for shortcuts).
+        return NOT_A_PROBABILITY;
+    }
     const bool hasMultipleChars = (0 != (BinaryFormat::FLAG_HAS_MULTIPLE_CHARS & flags));
     if (hasMultipleChars) {
         pos = BinaryFormat::skipOtherCharacters(root, pos);
