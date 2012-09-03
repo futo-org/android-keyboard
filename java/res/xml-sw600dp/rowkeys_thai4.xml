@@ -31,59 +31,92 @@
                 latin:keyLabel=")" />
             <!-- U+0E09: "ฉ" THAI CHARACTER CHO CHING -->
             <Key
-                latin:keyLabel="&#x0E09;" />
+                latin:keyLabel="&#x0E09;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- U+0E2E: "ฮ" THAI CHARACTER HO NOKHUK -->
             <Key
-                latin:keyLabel="&#x0E2E;" />
-            <!-- U+0E3A: " ฺ" THAI CHARACTER PHINTHU -->
+                latin:keyLabel="&#x0E2E;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+0020: " " SPACE
+                 U+0E3A: " ฺ" THAI CHARACTER PHINTHU -->
+            <!-- Note: The space character is needed as a preceding letter to draw some Thai
+                 composing characters correctly. -->
             <Key
-                latin:keyLabel="&#x0E3A;" />
-            <!-- U+0E4C: " ์" THAI CHARACTER THANTHAKHAT -->
+                latin:keyLabel="&#x20;&#x0E3A;"
+                latin:code="0x0E3A"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- U+0020: " " SPACE
+                 U+0E4C: " ์" THAI CHARACTER THANTHAKHAT -->
+            <!-- Note: The space character is needed as a preceding letter to draw some Thai
+                 composing characters correctly. -->
             <Key
-                latin:keyLabel="&#x0E4C;" />
+                latin:keyLabel="&#x20;&#x0E4C;"
+                latin:code="0x0E4C"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
                 latin:keyLabel="\?" />
             <!-- U+0E12: "ฒ" THAI CHARACTER THO PHUTHAO -->
             <Key
-                latin:keyLabel="&#x0E12;" />
+                latin:keyLabel="&#x0E12;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- U+0E2C: "ฬ" THAI CHARACTER LO CHULA -->
             <Key
-                latin:keyLabel="&#x0E2C;" />
+                latin:keyLabel="&#x0E2C;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- U+0E26: "ฦ" THAI CHARACTER LU -->
             <Key
-                latin:keyLabel="&#x0E26;" />
+                latin:keyLabel="&#x0E26;"
+                latin:keyLabelFlags="fontNormal" />
         </case>
         <default>
             <!-- U+0E1C: "ผ" THAI CHARACTER PHO PHUNG -->
             <Key
-                latin:keyLabel="&#x0E1C;" />
+                latin:keyLabel="&#x0E1C;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- U+0E1B: "ป" THAI CHARACTER PO PLA -->
             <Key
-                latin:keyLabel="&#x0E1B;" />
+                latin:keyLabel="&#x0E1B;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- U+0E41: "แ" THAI CHARACTER SARA AE -->
             <Key
-                latin:keyLabel="&#x0E41;" />
+                latin:keyLabel="&#x0E41;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- U+0E2D: "อ" THAI CHARACTER O ANG -->
             <Key
-                latin:keyLabel="&#x0E2D;" />
-            <!-- U+0E34: " ิ" THAI CHARACTER SARA I -->
+                latin:keyLabel="&#x0E2D;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+0020: " " SPACE
+                 U+0E34: " ิ" THAI CHARACTER SARA I -->
+            <!-- Note: The space character is needed as a preceding letter to draw some Thai
+                 composing characters correctly. -->
             <Key
-                latin:keyLabel="&#x0E34;" />
-            <!-- U+0E37: " ื" THAI CHARACTER SARA UEE -->
+                latin:keyLabel="&#x20;&#x0E34;"
+                latin:code="0x0E34"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- U+0020: " " SPACE
+                 U+0E37: " ื" THAI CHARACTER SARA UEE -->
+            <!-- Note: The space character is needed as a preceding letter to draw some Thai
+                 composing characters correctly. -->
             <Key
-                latin:keyLabel="&#x0E37;" />
+                latin:keyLabel="&#x20;&#x0E37;"
+                latin:code="0x0E37"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- U+0E17: "ท" THAI CHARACTER THO THAHAN -->
             <Key
-                latin:keyLabel="&#x0E17;" />
+                latin:keyLabel="&#x0E17;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- U+0E21: "ม" THAI CHARACTER MO MA -->
             <Key
-                latin:keyLabel="&#x0E21;" />
+                latin:keyLabel="&#x0E21;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- U+0E43: "ใ" THAI CHARACTER SARA AI MAIMUAN -->
             <Key
-                latin:keyLabel="&#x0E43;" />
+                latin:keyLabel="&#x0E43;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- U+0E1D: "ฝ" THAI CHARACTER FO FA -->
             <Key
-                latin:keyLabel="&#x0E1D;" />
+                latin:keyLabel="&#x0E1D;"
+                latin:keyLabelFlags="fontNormal" />
         </default>
     </switch>
 </merge>
