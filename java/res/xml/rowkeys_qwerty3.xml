@@ -25,7 +25,8 @@
         latin:keyLabel="z"
         latin:moreKeys="!text/more_keys_for_z" />
     <Key
-        latin:keyLabel="x" />
+        latin:keyLabel="!text/keylabel_for_x"
+        latin:moreKeys="!text/more_keys_for_x" />
     <Key
         latin:keyLabel="c"
         latin:moreKeys="!text/more_keys_for_c" />

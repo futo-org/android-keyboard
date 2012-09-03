@@ -210,22 +210,29 @@ public final class KeyboardTextsSet {
         /* 103 */ "keylabel_for_apostrophe",
         /* 104 */ "keyhintlabel_for_apostrophe",
         /* 105 */ "more_keys_for_apostrophe",
-        /* 106 */ "more_keys_for_am_pm",
-        /* 107 */ "settings_as_more_key",
-        /* 108 */ "shortcut_as_more_key",
-        /* 109 */ "action_next_as_more_key",
-        /* 110 */ "action_previous_as_more_key",
-        /* 111 */ "label_to_more_symbol_key",
-        /* 112 */ "label_to_more_symbol_for_tablet_key",
-        /* 113 */ "label_tab_key",
-        /* 114 */ "label_to_phone_numeric_key",
-        /* 115 */ "label_to_phone_symbols_key",
-        /* 116 */ "label_time_am",
-        /* 117 */ "label_time_pm",
-        /* 118 */ "label_to_symbol_key_pcqwerty",
-        /* 119 */ "keylabel_for_popular_domain",
-        /* 120 */ "more_keys_for_popular_domain",
-        /* 121 */ "more_keys_for_smiley",
+        /* 106 */ "more_keys_for_q",
+        /* 107 */ "more_keys_for_x",
+        /* 108 */ "keylabel_for_q",
+        /* 109 */ "keylabel_for_w",
+        /* 110 */ "keylabel_for_y",
+        /* 111 */ "keylabel_for_x",
+        /* 112 */ "keylabel_for_spanish_row2_10",
+        /* 113 */ "more_keys_for_am_pm",
+        /* 114 */ "settings_as_more_key",
+        /* 115 */ "shortcut_as_more_key",
+        /* 116 */ "action_next_as_more_key",
+        /* 117 */ "action_previous_as_more_key",
+        /* 118 */ "label_to_more_symbol_key",
+        /* 119 */ "label_to_more_symbol_for_tablet_key",
+        /* 120 */ "label_tab_key",
+        /* 121 */ "label_to_phone_numeric_key",
+        /* 122 */ "label_to_phone_symbols_key",
+        /* 123 */ "label_time_am",
+        /* 124 */ "label_time_pm",
+        /* 125 */ "label_to_symbol_key_pcqwerty",
+        /* 126 */ "keylabel_for_popular_domain",
+        /* 127 */ "more_keys_for_popular_domain",
+        /* 128 */ "more_keys_for_smiley",
     };
 
     private static final String EMPTY = "";
@@ -348,33 +355,41 @@ public final class KeyboardTextsSet {
         /* 103 */ "\'",
         /* 104 */ "\"",
         /* 105 */ "\"",
-        /* 106 */ "!fixedColumnOrder!2,!hasLabels!,!text/label_time_am,!text/label_time_pm",
-        /* 107 */ "!icon/settings_key|!code/key_settings",
-        /* 108 */ "!icon/shortcut_key|!code/key_shortcut",
-        /* 109 */ "!hasLabels!,!text/label_next_key|!code/key_action_next",
-        /* 110 */ "!hasLabels!,!text/label_previous_key|!code/key_action_previous",
+        /* 106 */ EMPTY,
+        /* 107 */ EMPTY,
+        /* 108 */ "q",
+        /* 109 */ "w",
+        /* 110 */ "y",
+        /* 111 */ "x",
+        // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
+        /* 112 */ "\u00F1",
+        /* 113 */ "!fixedColumnOrder!2,!hasLabels!,!text/label_time_am,!text/label_time_pm",
+        /* 114 */ "!icon/settings_key|!code/key_settings",
+        /* 115 */ "!icon/shortcut_key|!code/key_shortcut",
+        /* 116 */ "!hasLabels!,!text/label_next_key|!code/key_action_next",
+        /* 117 */ "!hasLabels!,!text/label_previous_key|!code/key_action_previous",
         // Label for "switch to more symbol" modifier key.  Must be short to fit on key!
-        /* 111 */ "= \\ <",
+        /* 118 */ "= \\ <",
         // Label for "switch to more symbol" modifier key on tablets.  Must be short to fit on key!
-        /* 112 */ "~ \\ {",
+        /* 119 */ "~ \\ {",
         // Label for "Tab" key.  Must be short to fit on key!
-        /* 113 */ "Tab",
+        /* 120 */ "Tab",
         // Label for "switch to phone numeric" key.  Must be short to fit on key!
-        /* 114 */ "123",
+        /* 121 */ "123",
         // Label for "switch to phone symbols" key.  Must be short to fit on key!
         // U+FF0A: "＊" FULLWIDTH ASTERISK
         // U+FF03: "＃" FULLWIDTH NUMBER SIGN
-        /* 115 */ "\uFF0A\uFF03",
+        /* 122 */ "\uFF0A\uFF03",
         // Key label for "ante meridiem"
-        /* 116 */ "AM",
+        /* 123 */ "AM",
         // Key label for "post meridiem"
-        /* 117 */ "PM",
+        /* 124 */ "PM",
         // Label for "switch to symbols" key on PC QWERTY layout
-        /* 118 */ "Sym",
-        /* 119 */ ".com",
+        /* 125 */ "Sym",
+        /* 126 */ ".com",
         // popular web domains for the locale - most popular, displayed on the keyboard
-        /* 120 */ "!hasLabels!,.net,.org,.gov,.edu",
-        /* 121 */ "!fixedColumnOrder!5,!hasLabels!,=-O|=-O ,:-P|:-P ,;-)|;-) ,:-(|:-( ,:-)|:-) ,:-!|:-! ,:-$|:-$ ,B-)|B-) ,:O|:O ,:-*|:-* ,:-D|:-D ,:\'(|:\'( ,:-\\\\|:-\\\\ ,O:-)|O:-) ,:-[|:-[ ",
+        /* 127 */ "!hasLabels!,.net,.org,.gov,.edu",
+        /* 128 */ "!fixedColumnOrder!5,!hasLabels!,=-O|=-O ,:-P|:-P ,;-)|;-) ,:-(|:-( ,:-)|:-) ,:-!|:-! ,:-$|:-$ ,B-)|B-) ,:O|:O ,:-*|:-* ,:-D|:-D ,:\'(|:\'( ,:-\\\\|:-\\\\ ,O:-)|O:-) ,:-[|:-[ ",
     };
 
     /* Language af: Afrikaans */
@@ -855,6 +870,144 @@ public final class KeyboardTextsSet {
         /* 6 */ "\u00F1",
         // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
         /* 7 */ "\u00E7",
+    };
+
+    /* Language eo: Esperanto */
+    private static final String[] LANGUAGE_eo = {
+        // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
+        // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
+        // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
+        // U+00E4: "ä" LATIN SMALL LETTER A WITH DIAERESIS
+        // U+00E6: "æ" LATIN SMALL LETTER AE
+        // U+00E3: "ã" LATIN SMALL LETTER A WITH TILDE
+        // U+00E5: "å" LATIN SMALL LETTER A WITH RING ABOVE
+        // U+0101: "ā" LATIN SMALL LETTER A WITH MACRON
+        // U+0103: "ă" LATIN SMALL LETTER A WITH BREVE
+        // U+0105: "ą" LATIN SMALL LETTER A WITH OGONEK
+        // U+00AA: "ª" FEMININE ORDINAL INDICATOR
+        /* 0 */ "\u00E1,\u00E0,\u00E2,\u00E4,\u00E6,\u00E3,\u00E5,\u0101,\u0103,\u0105,\u00AA",
+        // U+00E9: "é" LATIN SMALL LETTER E WITH ACUTE
+        // U+011B: "ě" LATIN SMALL LETTER E WITH CARON
+        // U+00E8: "è" LATIN SMALL LETTER E WITH GRAVE
+        // U+00EA: "ê" LATIN SMALL LETTER E WITH CIRCUMFLEX
+        // U+00EB: "ë" LATIN SMALL LETTER E WITH DIAERESIS
+        // U+0119: "ę" LATIN SMALL LETTER E WITH OGONEK
+        // U+0117: "ė" LATIN SMALL LETTER E WITH DOT ABOVE
+        // U+0113: "ē" LATIN SMALL LETTER E WITH MACRON
+        /* 1 */ "\u00E9,\u011B,\u00E8,\u00EA,\u00EB,\u0119,\u0117,\u0113",
+        // U+00ED: "í" LATIN SMALL LETTER I WITH ACUTE
+        // U+00EE: "î" LATIN SMALL LETTER I WITH CIRCUMFLEX
+        // U+00EF: "ï" LATIN SMALL LETTER I WITH DIAERESIS
+        // U+0129: "ĩ" LATIN SMALL LETTER I WITH TILDE
+        // U+00EC: "ì" LATIN SMALL LETTER I WITH GRAVE
+        // U+012F: "į" LATIN SMALL LETTER I WITH OGONEK
+        // U+012B: "ī" LATIN SMALL LETTER I WITH MACRON
+        // U+0131: "ı" LATIN SMALL LETTER DOTLESS I
+        // U+0133: "ĳ" LATIN SMALL LIGATURE IJ
+        /* 2 */ "\u00ED,\u00EE,\u00EF,\u0129,\u00EC,\u012F,\u012B,\u0131,\u0133",
+        // U+00F3: "ó" LATIN SMALL LETTER O WITH ACUTE
+        // U+00F6: "ö" LATIN SMALL LETTER O WITH DIAERESIS
+        // U+00F4: "ô" LATIN SMALL LETTER O WITH CIRCUMFLEX
+        // U+00F2: "ò" LATIN SMALL LETTER O WITH GRAVE
+        // U+00F5: "õ" LATIN SMALL LETTER O WITH TILDE
+        // U+0153: "œ" LATIN SMALL LIGATURE OE
+        // U+00F8: "ø" LATIN SMALL LETTER O WITH STROKE
+        // U+014D: "ō" LATIN SMALL LETTER O WITH MACRON
+        // U+0151: "ő" LATIN SMALL LETTER O WITH DOUBLE ACUTE
+        // U+00BA: "º" MASCULINE ORDINAL INDICATOR
+        /* 3 */ "\u00F3,\u00F6,\u00F4,\u00F2,\u00F5,\u0153,\u00F8,\u014D,\u0151,\u00BA",
+        // U+00FA: "ú" LATIN SMALL LETTER U WITH ACUTE
+        // U+016F: "ů" LATIN SMALL LETTER U WITH RING ABOVE
+        // U+00FB: "û" LATIN SMALL LETTER U WITH CIRCUMFLEX
+        // U+00FC: "ü" LATIN SMALL LETTER U WITH DIAERESIS
+        // U+00F9: "ù" LATIN SMALL LETTER U WITH GRAVE
+        // U+016B: "ū" LATIN SMALL LETTER U WITH MACRON
+        // U+0169: "ũ" LATIN SMALL LETTER U WITH TILDE
+        // U+0171: "ű" LATIN SMALL LETTER U WITH DOUBLE ACUTE
+        // U+0173: "ų" LATIN SMALL LETTER U WITH OGONEK
+        // U+00B5: "µ" MICRO SIGN
+        /* 4 */ "\u00FA,\u016F,\u00FB,\u00FC,\u00F9,\u016B,\u0169,\u0171,\u0173,\u00B5",
+        // U+00DF: "ß" LATIN SMALL LETTER SHARP S
+        // U+0161: "š" LATIN SMALL LETTER S WITH CARON
+        // U+015B: "ś" LATIN SMALL LETTER S WITH ACUTE
+        // U+0219: "ș" LATIN SMALL LETTER S WITH COMMA BELOW
+        // U+015F: "ş" LATIN SMALL LETTER S WITH CEDILLA
+        /* 5 */ "\u00DF,\u0161,\u015B,\u0219,\u015F",
+        // U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE
+        // U+0144: "ń" LATIN SMALL LETTER N WITH ACUTE
+        // U+0146: "ņ" LATIN SMALL LETTER N WITH CEDILLA
+        // U+0148: "ň" LATIN SMALL LETTER N WITH CARON
+        // U+0149: "ŉ" LATIN SMALL LETTER N PRECEDED BY APOSTROPHE
+        // U+014B: "ŋ" LATIN SMALL LETTER ENG
+        /* 6 */ "\u00F1,\u0144,\u0146,\u0148,\u0149,\u014B",
+        // U+0107: "ć" LATIN SMALL LETTER C WITH ACUTE
+        // U+010D: "č" LATIN SMALL LETTER C WITH CARON
+        // U+00E7: "ç" LATIN SMALL LETTER C WITH CEDILLA
+        // U+010B: "ċ" LATIN SMALL LETTER C WITH DOT ABOVE
+        /* 7 */ "\u0107,\u010D,\u00E7,\u010B",
+        // U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
+        // U+0177: "ŷ" LATIN SMALL LETTER Y WITH CIRCUMFLEX
+        // U+00FF: "ÿ" LATIN SMALL LETTER Y WITH DIAERESIS
+        // U+00FE: "þ" LATIN SMALL LETTER THORN
+        /* 8 */ "y,\u00FD,\u0177,\u00FF,\u00FE",
+        // U+00F0: "ð" LATIN SMALL LETTER ETH
+        // U+010F: "ď" LATIN SMALL LETTER D WITH CARON
+        // U+0111: "đ" LATIN SMALL LETTER D WITH STROKE
+        /* 9 */ "\u00F0,\u010F,\u0111",
+        // U+0159: "ř" LATIN SMALL LETTER R WITH CARON
+        // U+0155: "ŕ" LATIN SMALL LETTER R WITH ACUTE
+        // U+0157: "ŗ" LATIN SMALL LETTER R WITH CEDILLA
+        /* 10 */ "\u0159,\u0155,\u0157",
+        // U+0165: "ť" LATIN SMALL LETTER T WITH CARON
+        // U+021B: "ț" LATIN SMALL LETTER T WITH COMMA BELOW
+        // U+0163: "ţ" LATIN SMALL LETTER T WITH CEDILLA
+        // U+0167: "ŧ" LATIN SMALL LETTER T WITH STROKE
+        /* 11 */ "\u0165,\u021B,\u0163,\u0167",
+        // U+017A: "ź" LATIN SMALL LETTER Z WITH ACUTE
+        // U+017C: "ż" LATIN SMALL LETTER Z WITH DOT ABOVE
+        // U+017E: "ž" LATIN SMALL LETTER Z WITH CARON
+        /* 12 */ "\u017A,\u017C,\u017E",
+        // U+0137: "ķ" LATIN SMALL LETTER K WITH CEDILLA
+        // U+0138: "ĸ" LATIN SMALL LETTER KRA
+        /* 13 */ "\u0137,\u0138",
+        // U+013A: "ĺ" LATIN SMALL LETTER L WITH ACUTE
+        // U+013C: "ļ" LATIN SMALL LETTER L WITH CEDILLA
+        // U+013E: "ľ" LATIN SMALL LETTER L WITH CARON
+        // U+0140: "ŀ" LATIN SMALL LETTER L WITH MIDDLE DOT
+        // U+0142: "ł" LATIN SMALL LETTER L WITH STROKE
+        /* 14 */ "\u013A,\u013C,\u013E,\u0140,\u0142",
+        // U+011F: "ğ" LATIN SMALL LETTER G WITH BREVE
+        // U+0121: "ġ" LATIN SMALL LETTER G WITH DOT ABOVE
+        // U+0123: "ģ" LATIN SMALL LETTER G WITH CEDILLA
+        /* 15 */ "\u011F,\u0121,\u0123",
+        // U+0175: "ŵ" LATIN SMALL LETTER W WITH CIRCUMFLEX
+        /* 16 */ "w,\u0175",
+        // U+0125: "ĥ" LATIN SMALL LETTER H WITH CIRCUMFLEX
+        // U+0127: "ħ" LATIN SMALL LETTER H WITH STROKE
+        /* 17 */ "\u0125,\u0127",
+        /* 18 */ null,
+        // U+0175: "ŵ" LATIN SMALL LETTER W WITH CIRCUMFLEX
+        /* 19 */ "w,\u0175",
+        /* 20~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null,
+        /* ~105 */
+        /* 106 */ "q",
+        /* 107 */ "x",
+        // U+015D: "ŝ" LATIN SMALL LETTER S WITH CIRCUMFLEX
+        /* 108 */ "\u015D",
+        // U+011D: "ĝ" LATIN SMALL LETTER G WITH CIRCUMFLEX
+        /* 109 */ "\u011D",
+        // U+016D: "ŭ" LATIN SMALL LETTER U WITH BREVE
+        /* 110 */ "\u016D",
+        // U+0109: "ĉ" LATIN SMALL LETTER C WITH CIRCUMFLEX
+        /* 111 */ "\u0109",
+        // U+0135: "ĵ" LATIN SMALL LETTER J WITH CIRCUMFLEX
+        /* 112 */ "\u0135",
     };
 
     /* Language es: Spanish */
@@ -2695,6 +2848,7 @@ public final class KeyboardTextsSet {
         "da", LANGUAGE_da, /* Danish */
         "de", LANGUAGE_de, /* German */
         "en", LANGUAGE_en, /* English */
+        "eo", LANGUAGE_eo, /* Esperanto */
         "es", LANGUAGE_es, /* Spanish */
         "et", LANGUAGE_et, /* Estonian */
         "fa", LANGUAGE_fa, /* Persian */
