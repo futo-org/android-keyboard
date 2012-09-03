@@ -20,7 +20,6 @@
 
 <Keyboard
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-    latin:keyTypeface="normal"
 >
     <include
         latin:keyboardLayout="@xml/rows_thai" />

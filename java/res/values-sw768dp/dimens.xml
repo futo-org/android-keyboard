@@ -67,10 +67,10 @@
     <dimen name="key_preview_height">94.5dp</dimen>
     <dimen name="key_preview_offset">16.0dp</dimen>
 
-    <!-- For 5-rows keyboard -->
-    <fraction name="key_bottom_gap_5rows">2.95%p</fraction>
-    <fraction name="key_letter_ratio_5rows">51%</fraction>
-    <fraction name="key_uppercase_letter_ratio_5rows">33%</fraction>
+    <!-- For 5-row keyboard -->
+    <fraction name="key_bottom_gap_5row">2.95%p</fraction>
+    <fraction name="key_letter_ratio_5row">51%</fraction>
+    <fraction name="key_uppercase_letter_ratio_5row">33%</fraction>
 
     <dimen name="key_preview_offset_ics">8.0dp</dimen>
     <!-- popup_key_height x -0.5 -->
