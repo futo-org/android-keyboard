@@ -83,12 +83,38 @@ static inline void dumpWordInt(const int *word, const int length) {
     AKLOGI("i[ %s ]", charBuf);
 }
 
+#ifndef __ANDROID__
+#define ASSERT(success) do { if(!success) { showStackTrace(); assert(success);};} while (0)
+#define SHOW_STACK_TRACE do { showStackTrace(); } while (0)
+
+#include <execinfo.h>
+#include <stdlib.h>
+static inline void showStackTrace() {
+    void *callstack[128];
+    int i, frames = backtrace(callstack, 128);
+    char **strs = backtrace_symbols(callstack, frames);
+    for (i = 0; i < frames; ++i) {
+        if (i == 0) {
+            AKLOGI("=== Trace ===");
+            continue;
+        }
+        AKLOGI("%s", strs[i]);
+    }
+    free(strs);
+}
+#else
+#define ASSERT(success)
+#define SHOW_STACK_TRACE
+#endif
+
 #else
 #define AKLOGE(fmt, ...)
 #define AKLOGI(fmt, ...)
 #define DUMP_RESULT(words, frequencies, maxWordCount, maxWordLength)
 #define DUMP_WORD(word, length)
 #define DUMP_WORD_INT(word, length)
+#define ASSERT(success)
+#define SHOW_STACK_TRACE
 #endif
 
 #ifdef FLAG_DO_PROFILE
