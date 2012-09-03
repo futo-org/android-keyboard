@@ -25,5 +25,5 @@
         latin:keyboardLayout="@xml/rowkeys_qwerty2" />
     <!-- U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE -->
     <Key
-        latin:keyLabel="&#x00F1;" />
+        latin:keyLabel="!text/keylabel_for_spanish_row2_10" />
  </merge>

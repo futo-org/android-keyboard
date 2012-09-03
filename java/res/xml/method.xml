@@ -34,7 +34,7 @@
     el: Greek/greek
     en_US: English United States/qwerty
     en_GB: English Great Britain/qwerty
-    eo: Esperanto/esperanto
+    eo: Esperanto/spanish
     es: Spanish/spanish
     et: Estonian/nordic
     fa: Persian/arabic
@@ -157,7 +157,7 @@
             android:label="@string/subtype_generic"
             android:imeSubtypeLocale="eo"
             android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=esperanto,AsciiCapable"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=spanish"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"

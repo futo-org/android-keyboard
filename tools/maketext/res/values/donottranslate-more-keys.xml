@@ -177,6 +177,14 @@
     <string name="keylabel_for_apostrophe">\'</string>
     <string name="keyhintlabel_for_apostrophe">\"</string>
     <string name="more_keys_for_apostrophe">\"</string>
+    <string name="more_keys_for_q"></string>
+    <string name="more_keys_for_x"></string>
+    <string name="keylabel_for_q">q</string>
+    <string name="keylabel_for_w">w</string>
+    <string name="keylabel_for_y">y</string>
+    <string name="keylabel_for_x">x</string>
+    <!-- U+00F1: "ñ" LATIN SMALL LETTER N WITH TILDE -->
+    <string name="keylabel_for_spanish_row2_10">&#x00F1;</string>
     <string name="more_keys_for_am_pm">!fixedColumnOrder!2,!hasLabels!,\@string/label_time_am,\@string/label_time_pm</string>
     <string name="settings_as_more_key">!icon/settings_key|!code/key_settings</string>
     <string name="shortcut_as_more_key">!icon/shortcut_key|!code/key_shortcut</string>
