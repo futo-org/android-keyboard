@@ -89,7 +89,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
             final List<String> words) {
         for (int i = 0; i < number; ++i) {
             final String word = words.get(i);
-            dict.add(word, UNIGRAM_FREQ, null);
+            dict.add(word, UNIGRAM_FREQ, null, false /* isNotAWord */);
         }
     }
 

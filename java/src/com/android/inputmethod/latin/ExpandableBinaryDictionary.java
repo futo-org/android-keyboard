@@ -172,12 +172,12 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     // considering performance regression.
     protected void addWord(final String word, final String shortcutTarget, final int frequency) {
         if (shortcutTarget == null) {
-            mFusionDictionary.add(word, frequency, null);
+            mFusionDictionary.add(word, frequency, null, false /* isNotAWord */);
         } else {
             // TODO: Do this in the subclass, with this class taking an arraylist.
             final ArrayList<WeightedString> shortcutTargets = CollectionUtils.newArrayList();
             shortcutTargets.add(new WeightedString(shortcutTarget, frequency));
-            mFusionDictionary.add(word, frequency, shortcutTargets);
+            mFusionDictionary.add(word, frequency, shortcutTargets, false /* isNotAWord */);
         }
     }
 
