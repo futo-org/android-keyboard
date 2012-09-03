@@ -24,6 +24,7 @@
 
 #include "char_utils.h"
 #include "defines.h"
+#include "hash_map_compat.h"
 
 namespace latinime {
 
@@ -216,6 +217,7 @@ class ProximityInfoState {
 
  private:
     DISALLOW_COPY_AND_ASSIGN(ProximityInfoState);
+    typedef hash_map_compat<int, float> NearKeysDistanceMap;
     /////////////////////////////////////////
     // Defined in proximity_info_state.cpp //
     /////////////////////////////////////////
@@ -224,7 +226,11 @@ class ProximityInfoState {
     float calculateSquaredDistanceFromSweetSpotCenter(
             const int keyIndex, const int inputIndex) const;
 
-    bool pushTouchPoint(const int nodeChar, int x, int y, const int time, const bool sample);
+    bool pushTouchPoint(const int nodeChar, int x, int y, const int time,
+            const bool sample, const bool isLastPoint,
+            NearKeysDistanceMap *const currentNearKeysDistances,
+            const NearKeysDistanceMap *const prevNearKeysDistances,
+            const NearKeysDistanceMap *const prevPrevNearKeysDistances);
     /////////////////////////////////////////
     // Defined here                        //
     /////////////////////////////////////////
@@ -237,6 +243,17 @@ class ProximityInfoState {
     inline const int *getProximityCharsAt(const int index) const {
         return mInputCodes + (index * MAX_PROXIMITY_CHARS_SIZE_INTERNAL);
     }
+
+    float updateNearKeysDistances(const int x, const int y,
+            NearKeysDistanceMap *const currentNearKeysDistances);
+    bool isPrevLocalMin(const NearKeysDistanceMap *const currentNearKeysDistances,
+            const NearKeysDistanceMap *const prevNearKeysDistances,
+            const NearKeysDistanceMap *const prevPrevNearKeysDistances) const;
+    float getPointScore(
+            const int x, const int y, const int time, const bool last, const float nearest,
+            const NearKeysDistanceMap *const currentNearKeysDistances,
+            const NearKeysDistanceMap *const prevNearKeysDistances,
+            const NearKeysDistanceMap *const prevPrevNearKeysDistances) const;
 
     // const
     const ProximityInfo *mProximityInfo;

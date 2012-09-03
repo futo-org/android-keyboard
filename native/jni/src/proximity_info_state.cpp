@@ -76,10 +76,24 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     mTimes.clear();
     mLengthCache.clear();
     mDistanceCache.clear();
-
     mInputSize = 0;
+
     if (xCoordinates && yCoordinates) {
         const bool proximityOnly = !isGeometric && (xCoordinates[0] < 0 || yCoordinates[0] < 0);
+        int lastInputIndex = 0;
+        for (int i = 0; i < inputSize; ++i) {
+            const int pid = pointerIds ? pointerIds[i] : 0;
+            if (pointerId == pid) {
+                lastInputIndex = i;
+            }
+        }
+        // Working space to save near keys distances for current, prev and prevprev input point.
+        NearKeysDistanceMap nearKeysDistances[3];
+        // These pointers are swapped for each inputs points.
+        NearKeysDistanceMap *currentNearKeysDistances = &nearKeysDistances[0];
+        NearKeysDistanceMap *prevNearKeysDistances = &nearKeysDistances[1];
+        NearKeysDistanceMap *prevPrevNearKeysDistances = &nearKeysDistances[2];
+
         for (int i = 0; i < inputSize; ++i) {
             // Assuming pointerId == 0 if pointerIds is null.
             const int pid = pointerIds ? pointerIds[i] : 0;
@@ -88,11 +102,22 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 const int x = proximityOnly ? NOT_A_COORDINATE : xCoordinates[i];
                 const int y = proximityOnly ? NOT_A_COORDINATE : yCoordinates[i];
                 const int time = times ? times[i] : -1;
-                if (pushTouchPoint(c, x, y, time, isGeometric)) {
-                    ++mInputSize;
+                if (pushTouchPoint(c, x, y, time, isGeometric, i == lastInputIndex,
+                        currentNearKeysDistances, prevNearKeysDistances,
+                        prevPrevNearKeysDistances)) {
+                    // Previous point information was popped.
+                    NearKeysDistanceMap *tmp = prevNearKeysDistances;
+                    prevNearKeysDistances = currentNearKeysDistances;
+                    currentNearKeysDistances = tmp;
+                } else {
+                    NearKeysDistanceMap *tmp = prevPrevNearKeysDistances;
+                    prevPrevNearKeysDistances = prevNearKeysDistances;
+                    prevNearKeysDistances = currentNearKeysDistances;
+                    currentNearKeysDistances = tmp;
                 }
             }
         }
+        mInputSize = mInputXs.size();
     }
 
     if (mInputSize > 0) {
@@ -153,20 +178,151 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     }
 }
 
-bool ProximityInfoState::pushTouchPoint(const int nodeChar, int x, int y,
-        const int time, const bool sample) {
-    const uint32_t size = mInputXs.size();
-    // TODO: Should have a const variable for 10
-    const int sampleRate = mProximityInfo->getMostCommonKeyWidth() / 10;
-    if (size > 0) {
-        const int dist = getDistanceInt(x, y, mInputXs[size - 1], mInputYs[size - 1]);
-        if (sample && dist < sampleRate) {
-            return false;
+// Calculating point to key distance for all near keys and returning the distance between
+// the given point and the nearest key position.
+float ProximityInfoState::updateNearKeysDistances(const int x, const int y,
+        NearKeysDistanceMap *const currentNearKeysDistances) {
+    static const float NEAR_KEY_THRESHOLD = 10.0f;
+
+    currentNearKeysDistances->clear();
+    const int keyCount = mProximityInfo->getKeyCount();
+    float nearestKeyDistance = mMaxPointToKeyLength;
+    for (int k = 0; k < keyCount; ++k) {
+        const float dist = mProximityInfo->getNormalizedSquaredDistanceFromCenterFloat(k, x, y);
+        if (dist < NEAR_KEY_THRESHOLD) {
+            currentNearKeysDistances->insert(std::pair<int, float>(k, dist));
         }
-        mLengthCache.push_back(mLengthCache[size - 1] + dist);
-    } else {
-        mLengthCache.push_back(0);
+        if (nearestKeyDistance > dist) {
+            nearestKeyDistance = dist;
+        }
     }
+    return nearestKeyDistance;
+}
+
+// Check if previous point is at local minimum position to near keys.
+bool ProximityInfoState::isPrevLocalMin(const NearKeysDistanceMap *const currentNearKeysDistances,
+        const NearKeysDistanceMap *const prevNearKeysDistances,
+        const NearKeysDistanceMap *const prevPrevNearKeysDistances) const {
+    static const float MARGIN = 0.5f;
+
+    for (NearKeysDistanceMap::const_iterator it = prevNearKeysDistances->begin();
+        it != prevNearKeysDistances->end(); ++it) {
+        NearKeysDistanceMap::const_iterator itPP = prevPrevNearKeysDistances->find(it->first);
+        NearKeysDistanceMap::const_iterator itC = currentNearKeysDistances->find(it->first);
+        if ((itPP == prevPrevNearKeysDistances->end() || itPP->second > it->second + MARGIN)
+                && (itC == currentNearKeysDistances->end() || itC->second > it->second + MARGIN)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Calculating a point score that indicates usefulness of the point.
+float ProximityInfoState::getPointScore(
+        const int x, const int y, const int time, const bool lastPoint, const float nearest,
+        const NearKeysDistanceMap *const currentNearKeysDistances,
+        const NearKeysDistanceMap *const prevNearKeysDistances,
+        const NearKeysDistanceMap *const prevPrevNearKeysDistances) const {
+    static const float BASE_SAMPLE_RATE_SCALE = 0.1f;
+    static const float SAVE_DISTANCE_SCALE = 12.0f;
+    static const float SAVE_DISTANCE_SCORE = 2.0f;
+    static const float SKIP_DISTANCE_SCALE = 1.5f;
+    static const float SKIP_DISTANCE_SCORE = -1.0f;
+    static const float CHECK_LOCALMIN_DISTANCE_THRESHOLD_SCALE = 2.5f;
+    static const float CHECK_LOCALMIN_DISTANCE_SCORE = -1.0f;
+    static const float STRAIGHT_ANGLE_THRESHOLD = M_PI_F / 32.0f;
+    static const float STRAIGHT_SKIP_DISTANCE_THRESHOLD_SCALE = 4.0f;
+    static const float STRAIGHT_SKIP_NEAREST_DISTANCE_THRESHOLD = 0.5f;
+    static const float STRAIGHT_SKIP_SCORE = -1.0f;
+
+    const std::size_t size = mInputXs.size();
+    if (size <= 1) {
+        return 0;
+    }
+    const float baseSampleRate = mProximityInfo->getMostCommonKeyWidth() * BASE_SAMPLE_RATE_SCALE;
+    const float distNext = getDistanceFloat(x, y, mInputXs.back(), mInputYs.back());
+    const float distPrev = getDistanceFloat(mInputXs.back(), mInputYs.back(),
+            mInputXs[size - 2], mInputYs[size - 2]);
+    float score = 0.0f;
+
+    // Sum of distances
+    if (distPrev + distNext > baseSampleRate * SAVE_DISTANCE_SCALE) {
+        score +=  SAVE_DISTANCE_SCORE;
+    }
+    // Distance
+    if (distPrev < baseSampleRate * SKIP_DISTANCE_SCALE) {
+        score += SKIP_DISTANCE_SCORE;
+    }
+    // Location
+    if (!isPrevLocalMin(currentNearKeysDistances, currentNearKeysDistances,
+            prevPrevNearKeysDistances)) {
+        if (distPrev < baseSampleRate * CHECK_LOCALMIN_DISTANCE_THRESHOLD_SCALE) {
+            score += CHECK_LOCALMIN_DISTANCE_SCORE;
+        }
+    }
+    // Angle
+    const float angle1 = getAngle(x, y, mInputXs.back(), mInputYs.back());
+    const float angle2 = getAngle(mInputXs.back(), mInputYs.back(),
+            mInputXs[size - 2], mInputYs[size - 2]);
+    if (getAngleDiff(angle1, angle2) < STRAIGHT_ANGLE_THRESHOLD) {
+        if (nearest > STRAIGHT_SKIP_NEAREST_DISTANCE_THRESHOLD
+                && distPrev < baseSampleRate * STRAIGHT_SKIP_DISTANCE_THRESHOLD_SCALE) {
+            score += STRAIGHT_SKIP_SCORE;
+        }
+    }
+    return score;
+}
+
+// Sampling touch point and pushing information to vectors.
+// Returning if previous point is popped or not.
+bool ProximityInfoState::pushTouchPoint(const int nodeChar, int x, int y, const int time,
+        const bool sample, const bool isLastPoint,
+        NearKeysDistanceMap *const currentNearKeysDistances,
+        const NearKeysDistanceMap *const prevNearKeysDistances,
+        const NearKeysDistanceMap *const prevPrevNearKeysDistances) {
+    static const float LAST_POINT_SKIP_DISTANCE_SCALE = 0.25f;
+
+    uint32_t size = mInputXs.size();
+    bool popped = false;
+    if (nodeChar < 0 && sample) {
+        const float nearest = updateNearKeysDistances(x, y, currentNearKeysDistances);
+        const float score = getPointScore(x, y, time, isLastPoint, nearest,
+                currentNearKeysDistances, prevNearKeysDistances, prevPrevNearKeysDistances);
+        if (score < 0) {
+            // Pop previous point because it would be useless.
+            mInputXs.pop_back();
+            mInputYs.pop_back();
+            mTimes.pop_back();
+            mLengthCache.pop_back();
+            size = mInputXs.size();
+            popped = true;
+        } else {
+            popped = false;
+        }
+        // Check if the last point should be skipped.
+        if (isLastPoint) {
+            if (size > 0 && getDistanceFloat(x, y, mInputXs.back(), mInputYs.back())
+                    < mProximityInfo->getMostCommonKeyWidth() * LAST_POINT_SKIP_DISTANCE_SCALE) {
+                return popped;
+            } else if (size > 1) {
+                int minChar = 0;
+                float minDist = mMaxPointToKeyLength;
+                for (NearKeysDistanceMap::const_iterator it = currentNearKeysDistances->begin();
+                        it != currentNearKeysDistances->end(); ++it) {
+                    if(minDist > it->second){
+                        minChar = it->first;
+                        minDist = it->second;
+                    }
+                }
+                NearKeysDistanceMap::const_iterator itPP =
+                        prevNearKeysDistances->find(minChar);
+                if (itPP != prevNearKeysDistances->end() && minDist > itPP->second) {
+                    return popped;
+                }
+            }
+        }
+    }
+
     if (nodeChar >= 0 && (x < 0 || y < 0)) {
         const int keyId = mProximityInfo->getKeyIndex(nodeChar);
         if (keyId >= 0) {
@@ -174,10 +330,18 @@ bool ProximityInfoState::pushTouchPoint(const int nodeChar, int x, int y,
             y = mProximityInfo->getKeyCenterYOfIdG(keyId);
         }
     }
+
+    // Pushing point information.
+    if (size > 0) {
+        mLengthCache.push_back(
+                mLengthCache.back() + getDistanceInt(x, y, mInputXs.back(), mInputYs.back()));
+    } else {
+        mLengthCache.push_back(0);
+    }
     mInputXs.push_back(x);
     mInputYs.push_back(y);
     mTimes.push_back(time);
-    return true;
+    return popped;
 }
 
 float ProximityInfoState::calculateNormalizedSquaredDistance(
