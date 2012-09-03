@@ -67,7 +67,8 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr, const int ma
                   && keyWidths && keyHeights && keyCharCodes && sweetSpotCenterXs
                   && sweetSpotCenterYs && sweetSpotRadii),
           mProximityCharsArray(new int32_t[GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE
-                  /* proximityGridLength */]) {
+                  /* proximityGridLength */]),
+          mCodeToKeyMap() {
     const int proximityGridLength = GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE;
     if (DEBUG_PROXIMITY_INFO) {
         AKLOGI("Create proximity info array %d", proximityGridLength);
@@ -88,20 +89,7 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr, const int ma
     safeGetOrFillZeroFloatArrayRegion(env, sweetSpotCenterXs, KEY_COUNT, mSweetSpotCenterXs);
     safeGetOrFillZeroFloatArrayRegion(env, sweetSpotCenterYs, KEY_COUNT, mSweetSpotCenterYs);
     safeGetOrFillZeroFloatArrayRegion(env, sweetSpotRadii, KEY_COUNT, mSweetSpotRadii);
-    initializeCodePointToKeyIndex();
     initializeG();
-}
-
-// Build the reversed look up table from the char code to the index in mKeyXCoordinates,
-// mKeyYCoordinates, mKeyWidths, mKeyHeights, mKeyCharCodes.
-void ProximityInfo::initializeCodePointToKeyIndex() {
-    memset(mCodePointToKeyIndex, -1, sizeof(mCodePointToKeyIndex));
-    for (int i = 0; i < KEY_COUNT; ++i) {
-        const int code = mKeyCodePoints[i];
-        if (0 <= code && code <= MAX_CHAR_CODE) {
-            mCodePointToKeyIndex[code] = i;
-        }
-    }
 }
 
 ProximityInfo::~ProximityInfo() {
@@ -237,11 +225,12 @@ int ProximityInfo::getKeyIndexOf(const int c) const {
         // We do not have the coordinate data
         return NOT_AN_INDEX;
     }
-    const unsigned short baseLowerC = toBaseLowerCase(c);
-    if (baseLowerC > MAX_CHAR_CODE) {
-        return NOT_AN_INDEX;
+    const int baseLowerC = static_cast<int>(toBaseLowerCase(c));
+    hash_map_compat<int, int>::const_iterator mapPos = mCodeToKeyMap.find(baseLowerC);
+    if (mapPos != mCodeToKeyMap.end()) {
+        return mapPos->second;
     }
-    return mCodePointToKeyIndex[baseLowerC];
+    return NOT_AN_INDEX;
 }
 
 int ProximityInfo::getCodePointOf(const int keyIndex) const {
@@ -258,12 +247,8 @@ void ProximityInfo::initializeG() {
         const int lowerCode = toBaseLowerCase(code);
         mCenterXsG[i] = mKeyXCoordinates[i] + mKeyWidths[i] / 2;
         mCenterYsG[i] = mKeyYCoordinates[i] + mKeyHeights[i] / 2;
-        if (code != lowerCode && lowerCode >= 0 && lowerCode <= MAX_CHAR_CODE) {
-            mCodePointToKeyIndex[lowerCode] = i;
-            mKeyIndexToCodePointG[i] = lowerCode;
-        } else {
-            mKeyIndexToCodePointG[i] = code;
-        }
+        mCodeToKeyMap[lowerCode] = i;
+        mKeyIndexToCodePointG[i] = lowerCode;
     }
     for (int i = 0; i < KEY_COUNT; i++) {
         mKeyKeyDistancesG[i][i] = 0;
