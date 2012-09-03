@@ -56,6 +56,8 @@ public class BinaryDictInputOutput {
      * s | has a terminal ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_TERMINAL
      *   | has shortcut targets ?      1 bit, 1 = yes, 0 = no   : FLAG_HAS_SHORTCUT_TARGETS
      *   | has bigrams ?               1 bit, 1 = yes, 0 = no   : FLAG_HAS_BIGRAMS
+     *   | is not a word ?             1 bit, 1 = yes, 0 = no   : FLAG_IS_NOT_A_WORD
+     *   | is blacklisted ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_BLACKLISTED
      *
      * c | IF FLAG_HAS_MULTIPLE_CHARS
      * h |   char, char, char, char    n * (1 or 3 bytes) : use CharGroupInfo for i/o helpers
@@ -154,6 +156,8 @@ public class BinaryDictInputOutput {
     private static final int FLAG_IS_TERMINAL = 0x10;
     private static final int FLAG_HAS_SHORTCUT_TARGETS = 0x08;
     private static final int FLAG_HAS_BIGRAMS = 0x04;
+    private static final int FLAG_IS_NOT_A_WORD = 0x02;
+    private static final int FLAG_IS_BLACKLISTED = 0x01;
 
     private static final int FLAG_ATTRIBUTE_HAS_NEXT = 0x80;
     private static final int FLAG_ATTRIBUTE_OFFSET_NEGATIVE = 0x40;
@@ -779,6 +783,12 @@ public class BinaryDictInputOutput {
             }
             flags |= FLAG_HAS_BIGRAMS;
         }
+        if (group.mIsNotAWord) {
+            flags |= FLAG_IS_NOT_A_WORD;
+        }
+        if (group.mIsBlacklistEntry) {
+            flags |= FLAG_IS_BLACKLISTED;
+        }
         return flags;
     }
 
@@ -1353,12 +1363,14 @@ public class BinaryDictInputOutput {
                     buffer.position(currentPosition);
                 }
                 nodeContents.add(
-                        new CharGroup(info.mCharacters, shortcutTargets,
-                                bigrams, info.mFrequency, children));
+                        new CharGroup(info.mCharacters, shortcutTargets, bigrams, info.mFrequency,
+                                0 != (info.mFlags & FLAG_IS_NOT_A_WORD),
+                                0 != (info.mFlags & FLAG_IS_BLACKLISTED), children));
             } else {
                 nodeContents.add(
-                        new CharGroup(info.mCharacters, shortcutTargets,
-                                bigrams, info.mFrequency));
+                        new CharGroup(info.mCharacters, shortcutTargets, bigrams, info.mFrequency,
+                                0 != (info.mFlags & FLAG_IS_NOT_A_WORD),
+                                0 != (info.mFlags & FLAG_IS_BLACKLISTED)));
             }
             groupOffset = info.mEndAddress;
         }
@@ -1574,7 +1586,11 @@ public class BinaryDictInputOutput {
                         0 != (optionsFlags & FRENCH_LIGATURE_PROCESSING_FLAG)));
         if (null != dict) {
             for (final Word w : dict) {
-                newDict.add(w.mWord, w.mFrequency, w.mShortcutTargets);
+                if (w.mIsBlacklistEntry) {
+                    newDict.addBlacklistEntry(w.mWord, w.mShortcutTargets, w.mIsNotAWord);
+                } else {
+                    newDict.add(w.mWord, w.mFrequency, w.mShortcutTargets, w.mIsNotAWord);
+                }
             }
             for (final Word w : dict) {
                 // By construction a binary dictionary may not have bigrams pointing to
