@@ -68,9 +68,9 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         return 0;
     }
     int pagesize = getpagesize();
-    adjust = dictOffset % pagesize;
-    int adjDictOffset = dictOffset - adjust;
-    int adjDictSize = dictSize + adjust;
+    adjust = static_cast<int>(dictOffset) % pagesize;
+    int adjDictOffset = static_cast<int>(dictOffset) - adjust;
+    int adjDictSize = static_cast<int>(dictSize) + adjust;
     dictBuf = mmap(0, sizeof(char) * adjDictSize, PROT_READ, MAP_PRIVATE, fd, adjDictOffset);
     if (dictBuf == MAP_FAILED) {
         AKLOGE("DICT: Can't mmap dictionary. errno=%d", errno);
@@ -120,8 +120,8 @@ static jlong latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         releaseDictBuf(dictBuf, 0, 0);
 #endif // USE_MMAP_FOR_DICTIONARY
     } else {
-        dictionary = new Dictionary(dictBuf, dictSize, fd, adjust, typedLetterMultiplier,
-                fullWordMultiplier, maxWordLength, maxWords, maxPredictions);
+        dictionary = new Dictionary(dictBuf, static_cast<int>(dictSize), fd, adjust,
+                typedLetterMultiplier, fullWordMultiplier, maxWordLength, maxWords, maxPredictions);
     }
     PROF_END(66);
     PROF_CLOSE;
