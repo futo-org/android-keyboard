@@ -182,6 +182,10 @@ public class UserHistoryDictionary extends ExpandableDictionary {
      * The second word may not be null (a NullPointerException would be thrown).
      */
     public int addToUserHistory(final String word1, String word2, boolean isValid) {
+        if (word2.length() >= BinaryDictionary.MAX_WORD_LENGTH ||
+                (word1 != null && word1.length() >= BinaryDictionary.MAX_WORD_LENGTH)) {
+            return -1;
+        }
         if (mBigramListLock.tryLock()) {
             try {
                 super.addWord(
