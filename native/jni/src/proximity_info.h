@@ -41,8 +41,8 @@ class ProximityInfo {
     float getNormalizedSquaredDistanceFromCenterFloat(
             const int keyId, const int x, const int y) const;
     bool sameAsTyped(const unsigned short *word, int length) const;
-    int getKeyIndex(const int c) const;
-    int getKeyCode(const int keyIndex) const;
+    int getKeyIndexOf(const int c) const;
+    int getCodePointOf(const int keyIndex) const;
     bool hasSweetSpotData(const int keyIndex) const {
         // When there are no calibration data for a key,
         // the radius of the key is assigned to zero.
@@ -96,23 +96,23 @@ class ProximityInfo {
         return GRID_HEIGHT;
     }
 
-    float getKeyCenterXOfCharG(int charCode) const;
-    float getKeyCenterYOfCharG(int charCode) const;
-    float getKeyCenterXOfIdG(int keyId) const;
-    float getKeyCenterYOfIdG(int keyId) const;
+    // TODO: These should return int.
+    float getKeyCenterXOfCodePointG(int charCode) const;
+    float getKeyCenterYOfCodePointG(int charCode) const;
+    float getKeyCenterXOfKeyIdG(int keyId) const;
+    float getKeyCenterYOfKeyIdG(int keyId) const;
     int getKeyKeyDistanceG(int key0, int key1) const;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfo);
     // The max number of the keys in one keyboard layout
     static const int MAX_KEY_COUNT_IN_A_KEYBOARD = 64;
-    // The upper limit of the char code in mCodeToKeyIndex
+    // The upper limit of the char code in mCodePointToKeyIndex
     static const int MAX_CHAR_CODE = 127;
-    static const int NOT_A_CODE;
     static const float NOT_A_DISTANCE_FLOAT;
 
     int getStartIndexFromCoordinates(const int x, const int y) const;
-    void initializeCodeToKeyIndex();
+    void initializeCodePointToKeyIndex();
     void initializeG();
     float calculateNormalizedSquaredDistance(const int keyIndex, const int inputIndex) const;
     float calculateSquaredDistanceFromSweetSpotCenter(
@@ -143,13 +143,13 @@ class ProximityInfo {
     int32_t mKeyYCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int32_t mKeyWidths[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int32_t mKeyHeights[MAX_KEY_COUNT_IN_A_KEYBOARD];
-    int32_t mKeyCharCodes[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    int32_t mKeyCodePoints[MAX_KEY_COUNT_IN_A_KEYBOARD];
     float mSweetSpotCenterXs[MAX_KEY_COUNT_IN_A_KEYBOARD];
     float mSweetSpotCenterYs[MAX_KEY_COUNT_IN_A_KEYBOARD];
     float mSweetSpotRadii[MAX_KEY_COUNT_IN_A_KEYBOARD];
-    int mCodeToKeyIndex[MAX_CHAR_CODE + 1];
+    int mCodePointToKeyIndex[MAX_CHAR_CODE + 1];
 
-    int mKeyToCodeIndexG[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    int mKeyIndexToCodePointG[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int mCenterXsG[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int mCenterYsG[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int mKeyKeyDistancesG[MAX_KEY_COUNT_IN_A_KEYBOARD][MAX_KEY_COUNT_IN_A_KEYBOARD];

@@ -156,7 +156,7 @@ int BigramDictionary::getBigramListPositionForWord(const int32_t *prevWord,
     const int flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
     if (0 == (flags & BinaryFormat::FLAG_HAS_BIGRAMS)) return 0;
     if (0 == (flags & BinaryFormat::FLAG_HAS_MULTIPLE_CHARS)) {
-        BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
+        BinaryFormat::getCodePointAndForwardPointer(root, &pos);
     } else {
         pos = BinaryFormat::skipOtherCharacters(root, pos);
     }

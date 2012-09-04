@@ -728,7 +728,7 @@ public class FusionDictionary implements Iterable<Word> {
 //      StringBuilder s = new StringBuilder();
 //      for (CharGroup g : node.data) {
 //          s.append(g.frequency);
-//          for (int ch : g.chars){
+//          for (int ch : g.chars) {
 //              s.append(Character.toChars(ch));
 //          }
 //      }
@@ -794,7 +794,7 @@ public class FusionDictionary implements Iterable<Word> {
                     currentPos = mPositions.getLast();
                     mCurrentString.setLength(mCurrentString.length() - mPositions.getLast().length);
                 }
-            } while(true);
+            } while (true);
         }
 
         @Override

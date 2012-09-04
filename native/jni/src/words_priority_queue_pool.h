@@ -30,7 +30,7 @@ class WordsPriorityQueuePool {
                       mainQueueMaxWords, maxWordLength)) {
         for (int i = 0, subQueueBufOffset = 0;
                 i < MULTIPLE_WORDS_SUGGESTION_MAX_WORDS * SUB_QUEUE_MAX_COUNT;
-                ++i, subQueueBufOffset += sizeof(WordsPriorityQueue)) {
+                ++i, subQueueBufOffset += static_cast<int>(sizeof(WordsPriorityQueue))) {
             mSubQueues[i] = new(mSubQueueBuf + subQueueBufOffset)
                     WordsPriorityQueue(subQueueMaxWords, maxWordLength);
         }
