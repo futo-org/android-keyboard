@@ -51,7 +51,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
 
     protected LatinIME mLatinIME;
     protected Keyboard mKeyboard;
-    protected TextView mTextView;
+    protected MyTextView mTextView;
     protected InputConnection mInputConnection;
     private final HashMap<String, InputMethodSubtype> mSubtypeMap =
             new HashMap<String, InputMethodSubtype>();
@@ -86,6 +86,19 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
             return (mSpan instanceof SuggestionSpan) &&
                     0 != (SuggestionSpan.FLAG_AUTO_CORRECTION & ((SuggestionSpan)mSpan).getFlags());
         }
+        public String[] getSuggestions() {
+            return ((SuggestionSpan)mSpan).getSuggestions();
+        }
+    }
+
+    // A helper class to increase control over the TextView
+    public static class MyTextView extends TextView {
+        public MyTextView(final Context c) {
+            super(c);
+        }
+        public void onAttachedToWindow() {
+            super.onAttachedToWindow();
+        }
     }
 
     public InputTestsBase() {
@@ -112,7 +125,7 @@ public class InputTestsBase extends ServiceTestCase<LatinIME> {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        mTextView = new TextView(getContext());
+        mTextView = new MyTextView(getContext());
         mTextView.setInputType(InputType.TYPE_CLASS_TEXT);
         mTextView.setEnabled(true);
         setupService();
