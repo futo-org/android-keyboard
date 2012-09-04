@@ -25,8 +25,10 @@
         latin:keyWidth="8.047%p"
         latin:backgroundType="functional"
     >
+        <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
+        <Spacer
+            latin:keyWidth="13.829%p" />
         <Key
-            latin:keyXPos="13.829%p"
             latin:keyLabel="/" />
         <include
             latin:keyboardLayout="@xml/key_f1" />
@@ -39,6 +41,8 @@
             latin:moreKeys="!text/more_keys_for_tablet_double_quote" />
         <Key
             latin:keyLabel="_" />
-        <!-- Here is empty space. -->
+        <!-- Note: This Spacer prevents the above key from being marked as a right edge key. -->
+        <Spacer
+            latin:keyWidth="fillRight" />
     </Row>
 </merge>
