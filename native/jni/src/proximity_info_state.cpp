@@ -160,7 +160,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 const int currentChar = proximityChars[j];
                 const float squaredDistance =
                         hasInputCoordinates() ? calculateNormalizedSquaredDistance(
-                                mProximityInfo->getKeyIndex(currentChar), i) :
+                                mProximityInfo->getKeyIndexOf(currentChar), i) :
                                 NOT_A_DISTANCE_FLOAT;
                 if (squaredDistance >= 0.0f) {
                     mNormalizedSquaredDistances[i * MAX_PROXIMITY_CHARS_SIZE_INTERNAL + j] =
@@ -282,7 +282,7 @@ bool ProximityInfoState::pushTouchPoint(const int nodeChar, int x, int y, const 
         const NearKeysDistanceMap *const prevPrevNearKeysDistances) {
     static const float LAST_POINT_SKIP_DISTANCE_SCALE = 0.25f;
 
-    uint32_t size = mInputXs.size();
+    size_t size = mInputXs.size();
     bool popped = false;
     if (nodeChar < 0 && sample) {
         const float nearest = updateNearKeysDistances(x, y, currentNearKeysDistances);
@@ -309,7 +309,7 @@ bool ProximityInfoState::pushTouchPoint(const int nodeChar, int x, int y, const 
                 float minDist = mMaxPointToKeyLength;
                 for (NearKeysDistanceMap::const_iterator it = currentNearKeysDistances->begin();
                         it != currentNearKeysDistances->end(); ++it) {
-                    if(minDist > it->second){
+                    if (minDist > it->second) {
                         minChar = it->first;
                         minDist = it->second;
                     }
@@ -324,10 +324,10 @@ bool ProximityInfoState::pushTouchPoint(const int nodeChar, int x, int y, const 
     }
 
     if (nodeChar >= 0 && (x < 0 || y < 0)) {
-        const int keyId = mProximityInfo->getKeyIndex(nodeChar);
+        const int keyId = mProximityInfo->getKeyIndexOf(nodeChar);
         if (keyId >= 0) {
-            x = mProximityInfo->getKeyCenterXOfIdG(keyId);
-            y = mProximityInfo->getKeyCenterYOfIdG(keyId);
+            x = mProximityInfo->getKeyCenterXOfKeyIdG(keyId);
+            y = mProximityInfo->getKeyCenterYOfKeyIdG(keyId);
         }
     }
 
@@ -368,8 +368,8 @@ int ProximityInfoState::getDuration(const int index) const {
     return 0;
 }
 
-float ProximityInfoState::getPointToKeyLength(int inputIndex, int charCode, float scale) {
-    const int keyId = mProximityInfo->getKeyIndex(charCode);
+float ProximityInfoState::getPointToKeyLength(int inputIndex, int codePoint, float scale) {
+    const int keyId = mProximityInfo->getKeyIndexOf(codePoint);
     if (keyId >= 0) {
         const int index = inputIndex * mProximityInfo->getKeyCount() + keyId;
         return min(mDistanceCache[index] * scale, mMaxPointToKeyLength);
@@ -382,8 +382,8 @@ int ProximityInfoState::getKeyKeyDistance(int key0, int key1) {
 }
 
 int ProximityInfoState::getSpaceY() {
-    const int keyId = mProximityInfo->getKeyIndex(' ');
-    return mProximityInfo->getKeyCenterYOfIdG(keyId);
+    const int keyId = mProximityInfo->getKeyIndexOf(' ');
+    return mProximityInfo->getKeyCenterYOfKeyIdG(keyId);
 }
 
 float ProximityInfoState::calculateSquaredDistanceFromSweetSpotCenter(

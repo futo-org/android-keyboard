@@ -43,11 +43,11 @@ class UnigramDictionary {
             int fullWordMultiplier, int maxWordLength, int maxWords, const unsigned int flags);
     int getFrequency(const int32_t *const inWord, const int length) const;
     int getBigramPosition(int pos, unsigned short *word, int offset, int length) const;
-    int getSuggestions(
-            ProximityInfo *proximityInfo, const int *xcoordinates, const int *ycoordinates,
-            const int *codes, const int codesSize, const std::map<int, int> *bigramMap,
-            const uint8_t *bigramFilter, const bool useFullEditDistance, unsigned short *outWords,
-            int *frequencies, int *outputTypes) const;
+    int getSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
+            const int *ycoordinates, const int *codes, const int codesSize,
+            const std::map<int, int> *bigramMap, const uint8_t *bigramFilter,
+            const bool useFullEditDistance, unsigned short *outWords, int *frequencies,
+            int *outputTypes) const;
     virtual ~UnigramDictionary();
 
  private:
@@ -94,7 +94,7 @@ class UnigramDictionary {
             const int currentWordIndex) const;
     int getMostFrequentWordLike(const int startInputIndex, const int inputSize,
             Correction *correction, unsigned short *word) const;
-    int getMostFrequentWordLikeInner(const uint16_t *const inWord, const int length,
+    int getMostFrequentWordLikeInner(const uint16_t *const inWord, const int inputSize,
             short unsigned int *outWord) const;
     int getSubStringSuggestion(
             ProximityInfo *proximityInfo, const int *xcoordinates, const int *ycoordinates,

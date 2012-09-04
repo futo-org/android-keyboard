@@ -50,7 +50,7 @@ class AdditionalProximityChars {
         if (!isEnLocale(localeStr)) {
             return 0;
         }
-        switch(c) {
+        switch (c) {
         case 'a':
             return EN_US_ADDITIONAL_A_SIZE;
         case 'e':
@@ -70,7 +70,7 @@ class AdditionalProximityChars {
         if (!isEnLocale(localeStr)) {
             return 0;
         }
-        switch(c) {
+        switch (c) {
         case 'a':
             return EN_US_ADDITIONAL_A;
         case 'e':
