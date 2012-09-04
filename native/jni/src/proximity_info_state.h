@@ -17,6 +17,7 @@
 #ifndef LATINIME_PROXIMITY_INFO_STATE_H
 #define LATINIME_PROXIMITY_INFO_STATE_H
 
+#include <bitset>
 #include <cstring> // for memset()
 #include <stdint.h>
 #include <string>
@@ -32,6 +33,7 @@ class ProximityInfo;
 
 class ProximityInfoState {
  public:
+    typedef std::bitset<MAX_KEY_COUNT_IN_A_KEYBOARD> NearKeycodesSet;
     static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2 = 10;
     static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR =
             1 << NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
@@ -56,7 +58,8 @@ class ProximityInfoState {
               mHasTouchPositionCorrectionData(false), mMostCommonKeyWidthSquare(0), mLocaleStr(),
               mKeyCount(0), mCellHeight(0), mCellWidth(0), mGridHeight(0), mGridWidth(0),
               mInputXs(), mInputYs(), mTimes(), mDistanceCache(), mLengthCache(),
-              mTouchPositionCorrectionEnabled(false), mInputSize(0) {
+              mNearKeysVector(), mTouchPositionCorrectionEnabled(false),
+              mInputSize(0) {
         memset(mInputCodes, 0, sizeof(mInputCodes));
         memset(mNormalizedSquaredDistances, 0, sizeof(mNormalizedSquaredDistances));
         memset(mPrimaryInputWord, 0, sizeof(mPrimaryInputWord));
@@ -215,6 +218,9 @@ class ProximityInfoState {
 
     int getSpaceY();
 
+    int32_t getAllPossibleChars(
+            const size_t startIndex, int32_t *const filter, int32_t filterSize) const;
+
  private:
     DISALLOW_COPY_AND_ASSIGN(ProximityInfoState);
     typedef hash_map_compat<int, float> NearKeysDistanceMap;
@@ -272,6 +278,7 @@ class ProximityInfoState {
     std::vector<int> mTimes;
     std::vector<float> mDistanceCache;
     std::vector<int>  mLengthCache;
+    std::vector<NearKeycodesSet> mNearKeysVector;
     bool mTouchPositionCorrectionEnabled;
     int32_t mInputCodes[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH_INTERNAL];
     int mNormalizedSquaredDistances[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH_INTERNAL];
