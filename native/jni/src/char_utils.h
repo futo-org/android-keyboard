@@ -18,6 +18,7 @@
 #define LATINIME_CHAR_UTILS_H
 
 #include <cctype>
+#include <stdint.h>
 
 namespace latinime {
 
@@ -43,7 +44,7 @@ unsigned short latin_tolower(const unsigned short c);
  */
 
 static const int BASE_CHARS_SIZE = 0x0500;
-extern const unsigned short BASE_CHARS[BASE_CHARS_SIZE];
+extern const uint16_t BASE_CHARS[BASE_CHARS_SIZE];
 
 inline static unsigned short toBaseChar(unsigned short c) {
     if (c < BASE_CHARS_SIZE) {

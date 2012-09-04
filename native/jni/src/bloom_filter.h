@@ -23,14 +23,16 @@
 
 namespace latinime {
 
-static inline void setInFilter(uint8_t *filter, const int position) {
-    const unsigned int bucket = position % BIGRAM_FILTER_MODULO;
-    filter[bucket >> 3] |= (1 << (bucket & 0x7));
+// TODO: uint32_t position
+static inline void setInFilter(uint8_t *filter, const int32_t position) {
+    const uint32_t bucket = static_cast<uint32_t>(position % BIGRAM_FILTER_MODULO);
+    filter[bucket >> 3] |= static_cast<uint8_t>(1 << (bucket & 0x7));
 }
 
-static inline bool isInFilter(const uint8_t *filter, const int position) {
-    const unsigned int bucket = position % BIGRAM_FILTER_MODULO;
-    return filter[bucket >> 3] & (1 << (bucket & 0x7));
+// TODO: uint32_t position
+static inline bool isInFilter(const uint8_t *filter, const int32_t position) {
+    const uint32_t bucket = static_cast<uint32_t>(position % BIGRAM_FILTER_MODULO);
+    return filter[bucket >> 3] & static_cast<uint8_t>(1 << (bucket & 0x7));
 }
 } // namespace latinime
 #endif // LATINIME_BLOOM_FILTER_H
