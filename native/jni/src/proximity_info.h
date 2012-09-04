@@ -96,6 +96,14 @@ class ProximityInfo {
         return GRID_HEIGHT;
     }
 
+    int getKeyboardWidth() const {
+        return KEYBOARD_WIDTH;
+    }
+
+    int getKeyboardHeight() const {
+        return KEYBOARD_HEIGHT;
+    }
+
     // TODO: These should return int.
     float getKeyCenterXOfCodePointG(int charCode) const;
     float getKeyCenterYOfCodePointG(int charCode) const;
@@ -105,8 +113,6 @@ class ProximityInfo {
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfo);
-    // The max number of the keys in one keyboard layout
-    static const int MAX_KEY_COUNT_IN_A_KEYBOARD = 64;
     // The upper limit of the char code in mCodePointToKeyIndex
     static const int MAX_CHAR_CODE = 127;
     static const float NOT_A_DISTANCE_FLOAT;
@@ -136,6 +142,8 @@ class ProximityInfo {
     const int CELL_WIDTH;
     const int CELL_HEIGHT;
     const int KEY_COUNT;
+    const int KEYBOARD_WIDTH;
+    const int KEYBOARD_HEIGHT;
     const bool HAS_TOUCH_POSITION_CORRECTION_DATA;
     char mLocaleStr[MAX_LOCALE_STRING_LENGTH];
     int32_t *mProximityCharsArray;

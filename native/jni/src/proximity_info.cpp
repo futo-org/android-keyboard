@@ -62,6 +62,7 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr, const int ma
           CELL_WIDTH((keyboardWidth + gridWidth - 1) / gridWidth),
           CELL_HEIGHT((keyboardHeight + gridHeight - 1) / gridHeight),
           KEY_COUNT(min(keyCount, MAX_KEY_COUNT_IN_A_KEYBOARD)),
+          KEYBOARD_WIDTH(keyboardWidth), KEYBOARD_HEIGHT(keyboardHeight),
           HAS_TOUCH_POSITION_CORRECTION_DATA(keyCount > 0 && keyXCoordinates && keyYCoordinates
                   && keyWidths && keyHeights && keyCharCodes && sweetSpotCenterXs
                   && sweetSpotCenterYs && sweetSpotRadii),

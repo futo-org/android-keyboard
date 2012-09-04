@@ -76,6 +76,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
     mTimes.clear();
     mLengthCache.clear();
     mDistanceCache.clear();
+    mNearKeysVector.clear();
     mInputSize = 0;
 
     if (xCoordinates && yCoordinates) {
@@ -122,14 +123,34 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
 
     if (mInputSize > 0) {
         const int keyCount = mProximityInfo->getKeyCount();
+        mNearKeysVector.resize(mInputSize);
         mDistanceCache.resize(mInputSize * keyCount);
         for (int i = 0; i < mInputSize; ++i) {
+            mNearKeysVector[i].reset();
+            static const float NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD = 4.0f;
             for (int k = 0; k < keyCount; ++k) {
                 const int index = i * keyCount + k;
                 const int x = mInputXs[i];
                 const int y = mInputYs[i];
-                mDistanceCache[index] =
+                const float normalizedSquaredDistance =
                         mProximityInfo->getNormalizedSquaredDistanceFromCenterFloat(k, x, y);
+                mDistanceCache[index] = normalizedSquaredDistance;
+                if (normalizedSquaredDistance < NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD) {
+                    mNearKeysVector[i].set(k, 1);
+                }
+            }
+        }
+
+        static const float READ_FORWORD_LENGTH_SCALE = 0.95f;
+        const int readForwordLength = static_cast<int>(
+                hypotf(mProximityInfo->getKeyboardWidth(), mProximityInfo->getKeyboardHeight())
+                * READ_FORWORD_LENGTH_SCALE);
+        for (int i = 0; i < mInputSize; ++i) {
+            for (int j = i + 1; j < mInputSize; ++j) {
+                if (mLengthCache[j] - mLengthCache[i] >= readForwordLength) {
+                    break;
+                }
+                mNearKeysVector[i] |= mNearKeysVector[j];
             }
         }
     }
@@ -182,7 +203,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
 // the given point and the nearest key position.
 float ProximityInfoState::updateNearKeysDistances(const int x, const int y,
         NearKeysDistanceMap *const currentNearKeysDistances) {
-    static const float NEAR_KEY_THRESHOLD = 10.0f;
+    static const float NEAR_KEY_THRESHOLD = 4.0f;
 
     currentNearKeysDistances->clear();
     const int keyCount = mProximityInfo->getKeyCount();
@@ -393,5 +414,31 @@ float ProximityInfoState::calculateSquaredDistanceFromSweetSpotCenter(
     const float inputX = static_cast<float>(mInputXs[inputIndex]);
     const float inputY = static_cast<float>(mInputYs[inputIndex]);
     return square(inputX - sweetSpotCenterX) + square(inputY - sweetSpotCenterY);
+}
+
+// Puts possible characters into filter and returns new filter size.
+int32_t ProximityInfoState::getAllPossibleChars(
+        const size_t index, int32_t *const filter, const int32_t filterSize) const {
+    if (index >= mInputXs.size()) {
+        return filterSize;
+    }
+    int i = filterSize;
+    for (int j = 0; j < mProximityInfo->getKeyCount(); ++j) {
+        if (mNearKeysVector[index].test(j)) {
+            const int32_t keyCodePoint = mProximityInfo->getCodePointOf(j);
+            bool insert = true;
+            // TODO: Avoid linear search
+            for (int k = 0; k < filterSize; ++k) {
+                if (filter[k] == keyCodePoint) {
+                    insert = false;
+                    break;
+                }
+            }
+            if (insert) {
+                filter[i++] = keyCodePoint;
+            }
+        }
+    }
+    return i;
 }
 } // namespace latinime
