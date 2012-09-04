@@ -40,4 +40,24 @@ public class AndroidSpellCheckerServiceTest extends InputTestsBase {
         // We also assume the top suggestion should be "this".
         assertEquals("", "this", suggestions[0]);
     }
+
+    public void testRussianSpellchecker() {
+        changeLanguage("ru");
+        mTextView.onAttachedToWindow();
+        mTextView.setText("годп");
+        type(" ");
+        sleep(1000);
+        runMessages();
+        sleep(1000);
+
+        final SpanGetter span = new SpanGetter(mTextView.getText(), SuggestionSpan.class);
+        // If no span, the following will crash
+        final String[] suggestions = span.getSuggestions();
+        // For this test we consider "годп" should yield at least 2 suggestions (at this moment
+        // it yields 5).
+        assertTrue(suggestions.length >= 2);
+        // We also assume the top suggestion should be "года", which is the top word in the
+        // Russian dictionary.
+        assertEquals("", "года", suggestions[0]);
+    }
 }
