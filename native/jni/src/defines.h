@@ -327,6 +327,9 @@ static inline void prof_out(void) {
 // Max Distance between point to key
 #define MAX_POINT_TO_KEY_LENGTH 10000000
 
+// The max number of the keys in one keyboard layout
+#define MAX_KEY_COUNT_IN_A_KEYBOARD 64
+
 // TODO: Reduce this constant if possible; check the maximum number of digraphs in the same
 // word in the dictionary for languages with digraphs, like German and French
 #define DEFAULT_MAX_DIGRAPH_SEARCH_DEPTH 5
