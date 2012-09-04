@@ -25,8 +25,10 @@
         latin:keyWidth="8.047%p"
         latin:backgroundType="functional"
     >
+        <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
+        <Spacer
+            latin:keyWidth="5.782%p" />
         <include
-            latin:keyXPos="5.782%p"
             latin:keyboardLayout="@xml/key_settings" />
         <include
             latin:keyboardLayout="@xml/key_shortcut" />
@@ -42,5 +44,8 @@
             latin:keyboardLayout="@xml/key_dash" />
         <include
             latin:keyboardLayout="@xml/key_f2" />
+        <!-- Note: This Spacer prevents the above key from being marked as a right edge key. -->
+        <Spacer
+            latin:keyWidth="fillRight" />
     </Row>
 </merge>

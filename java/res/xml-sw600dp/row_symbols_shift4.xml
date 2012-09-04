@@ -33,6 +33,8 @@
             latin:keyXPos="28.0%p"
             latin:keyboardLayout="@xml/key_space"
             latin:backgroundType="normal" />
-        <!-- Here is empty space. -->
+        <!-- Note: This Spacer prevents the above key from being marked as a right edge key. -->
+        <Spacer
+            latin:keyWidth="fillRight" />
     </Row>
 </merge>
