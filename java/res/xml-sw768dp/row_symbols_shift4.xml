@@ -25,11 +25,14 @@
         latin:keyWidth="8.047%p"
         latin:backgroundType="functional"
     >
-        <!-- Here is empty space. -->
+        <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
+        <Spacer
+            latin:keyWidth="29.923%p" />
         <include
-            latin:keyXPos="29.923%p"
             latin:keyboardLayout="@xml/key_space"
             latin:backgroundType="normal" />
-        <!-- Here is empty space. -->
+        <!-- Note: This Spacer prevents the above key from being marked as a right edge key. -->
+        <Spacer
+            latin:keyWidth="fillRight" />
     </Row>
 </merge>
