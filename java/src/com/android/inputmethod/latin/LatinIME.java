@@ -1045,7 +1045,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // the composing word, reset the last composed word, tell the inputconnection about it.
     private void resetEntireInputState() {
         resetComposingState(true /* alsoResetLastComposedWord */);
-        clearSuggestionStrip();
+        if (mCurrentSettings.mBigramPredictionEnabled) {
+            clearSuggestionStrip();
+        } else {
+            setSuggestionStrip(mCurrentSettings.mSuggestPuncList, false);
+        }
         mConnection.finishComposingText();
     }
 
