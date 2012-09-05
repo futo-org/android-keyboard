@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.latin.UserHistoryDictIOUtils.BigramDictionaryInterface;
 import com.android.inputmethod.latin.UserHistoryDictIOUtils.OnAddWordListener;
+import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 
@@ -44,6 +45,8 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
     private static final int UNIGRAM_FREQUENCY = 50;
     private static final int BIGRAM_FREQUENCY = 100;
     private static final ArrayList<String> NOT_HAVE_BIGRAM = new ArrayList<String>();
+    private static final BinaryDictInputOutput.FormatOptions FORMAT_OPTIONS =
+            new BinaryDictInputOutput.FormatOptions(2);
 
     /**
      * Return same frequency for all words and bigrams
@@ -132,7 +135,7 @@ public class UserHistoryDictIOUtilsTests extends AndroidTestCase
             final UserHistoryDictionaryBigramList bigramList) {
         try {
             final FileOutputStream out = new FileOutputStream(file);
-            UserHistoryDictIOUtils.writeDictionaryBinary(out, this, bigramList, 2);
+            UserHistoryDictIOUtils.writeDictionaryBinary(out, this, bigramList, FORMAT_OPTIONS);
             out.flush();
             out.close();
         } catch (IOException e) {
