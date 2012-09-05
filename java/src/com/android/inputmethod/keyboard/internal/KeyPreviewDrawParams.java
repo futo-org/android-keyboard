@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-public class KeyPreviewDrawParams {
+public final class KeyPreviewDrawParams {
     // The graphical geometry of the key preview.
     // <-width->
     // +-------+   ^
@@ -41,6 +41,4 @@ public class KeyPreviewDrawParams {
     // offset between the top edge of parent key and the bottom of the visible part of key
     // preview background.
     public int mPreviewVisibleOffset;
-
-    public final int[] mCoordinates = new int[2];
 }
