@@ -391,11 +391,12 @@ int ProximityInfoState::getDuration(const int index) const {
 
 float ProximityInfoState::getPointToKeyLength(int inputIndex, int codePoint, float scale) {
     const int keyId = mProximityInfo->getKeyIndexOf(codePoint);
-    if (keyId >= 0) {
+    if (keyId != NOT_AN_INDEX) {
         const int index = inputIndex * mProximityInfo->getKeyCount() + keyId;
         return min(mDistanceCache[index] * scale, mMaxPointToKeyLength);
     }
-    return 0;
+    // If the char is not a key on the keyboard then return the max length.
+    return MAX_POINT_TO_KEY_LENGTH;
 }
 
 int ProximityInfoState::getKeyKeyDistance(int key0, int key1) {
