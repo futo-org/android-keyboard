@@ -84,4 +84,13 @@
     <dimen name="suggestion_padding">12dp</dimen>
     <dimen name="suggestion_text_size">22dp</dimen>
     <dimen name="more_suggestions_hint_text_size">33dp</dimen>
+
+    <!-- Gesture preview trail parameters -->
+    <dimen name="gesture_preview_trail_width">2.5dp</dimen>
+    <!-- Gesture floating preview text parameters -->
+    <dimen name="gesture_floating_preview_text_size">28dp</dimen>
+    <dimen name="gesture_floating_preview_text_offset">87dp</dimen>
+    <dimen name="gesture_floating_preview_horizontal_padding">28dp</dimen>
+    <dimen name="gesture_floating_preview_vertical_padding">19dp</dimen>
+    <dimen name="gesture_floating_preview_round_radius">3dp</dimen>
 </resources>
