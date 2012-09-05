@@ -20,7 +20,7 @@ import android.graphics.Typeface;
 
 import com.android.inputmethod.latin.ResourceUtils;
 
-public class KeyDrawParams {
+public final class KeyDrawParams {
     public Typeface mTypeface;
 
     public int mLetterSize;

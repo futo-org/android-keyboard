@@ -14,9 +14,11 @@
      limitations under the License.
 -->
 
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_long_pressable="true"
-            android:drawable="@drawable/keyboard_key_feedback_more_background" />
-
+<selector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+>
+    <item latin:state_has_morekeys="true"
+          android:drawable="@drawable/keyboard_key_feedback_more_background" />
     <item android:drawable="@drawable/keyboard_key_feedback_background" />
 </selector>

@@ -14,8 +14,23 @@
      limitations under the License.
 -->
 
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_long_pressable="true"
-            android:drawable="@drawable/keyboard_key_feedback_more_background_holo" />
+<selector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+>
+    <!-- Left edge -->
+    <item latin:state_left_edge="true" latin:state_has_morekeys="true"
+          android:drawable="@drawable/keyboard_key_feedback_left_more_background_holo" />
+    <item latin:state_left_edge="true"
+          android:drawable="@drawable/keyboard_key_feedback_left_background_holo" />
+
+    <!-- Right edge -->
+    <item latin:state_right_edge="true" latin:state_has_morekeys="true"
+          android:drawable="@drawable/keyboard_key_feedback_right_more_background_holo" />
+    <item latin:state_right_edge="true"
+          android:drawable="@drawable/keyboard_key_feedback_right_background_holo" />
+
+    <item latin:state_has_morekeys="true"
+          android:drawable="@drawable/keyboard_key_feedback_more_background_holo" />
     <item android:drawable="@drawable/keyboard_key_feedback_background_holo" />
 </selector>
