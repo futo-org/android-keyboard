@@ -242,6 +242,31 @@ public class BinaryDictInputOutput {
     }
 
     /**
+     * Options about file format.
+     */
+    public static class FormatOptions {
+        public final int mVersion;
+        public FormatOptions(final int version) {
+            mVersion = version;
+        }
+    }
+
+    /**
+     * Class representing file header.
+     */
+    private static final class FileHeader {
+        public final int mHeaderSize;
+        public final DictionaryOptions mDictionaryOptions;
+        public final FormatOptions mFormatOptions;
+        public FileHeader(final int headerSize, final DictionaryOptions dictionaryOptions,
+                final FormatOptions formatOptions) {
+            mHeaderSize = headerSize;
+            mDictionaryOptions = dictionaryOptions;
+            mFormatOptions = formatOptions;
+        }
+    }
+
+    /**
      * A class grouping utility function for our specific character encoding.
      */
     private static class CharEncoding {
@@ -1051,10 +1076,10 @@ public class BinaryDictInputOutput {
      *
      * @param destination the stream to write the binary data to.
      * @param dict the dictionary to write.
-     * @param version the version of the format to write, currently either 1 or 2.
+     * @param formatOptions the options of file format.
      */
     public static void writeDictionaryBinary(final OutputStream destination,
-            final FusionDictionary dict, final int version)
+            final FusionDictionary dict, final FormatOptions formatOptions)
             throws IOException, UnsupportedFormatException {
 
         // Addresses are limited to 3 bytes, but since addresses can be relative to each node, the
@@ -1063,6 +1088,7 @@ public class BinaryDictInputOutput {
         // does not have a size limit, each node must still be within 16MB of all its children and
         // parents. As long as this is ensured, the dictionary file may grow to any size.
 
+        final int version = formatOptions.mVersion;
         if (version < MINIMUM_SUPPORTED_VERSION || version > MAXIMUM_SUPPORTED_VERSION) {
             throw new UnsupportedFormatException("Requested file format version " + version
                     + ", but this implementation only supports versions "
@@ -1471,12 +1497,11 @@ public class BinaryDictInputOutput {
             final Map<Integer, ArrayList<PendingAttribute>> bigrams) throws IOException,
             UnsupportedFormatException {
         // Read header
-        final int version = checkFormatVersion(buffer);
-        final int optionsFlags = buffer.readUnsignedShort();
-        final HashMap<String, String> options = new HashMap<String, String>();
-        final int headerSize = readHeader(buffer, options, version);
+        FormatOptions formatOptions = null;
+        DictionaryOptions dictionaryOptions = null;
+        final FileHeader header = readHeader(buffer);
 
-        readUnigramsAndBigramsBinaryInner(buffer, headerSize, words, frequencies, bigrams);
+        readUnigramsAndBigramsBinaryInner(buffer, header.mHeaderSize, words, frequencies, bigrams);
     }
 
     /**
@@ -1510,25 +1535,35 @@ public class BinaryDictInputOutput {
 
     /**
      * Reads a header from a buffer.
+     * @param buffer the buffer to read.
      * @throws IOException
      * @throws UnsupportedFormatException
      */
-    private static int readHeader(final FusionDictionaryBufferInterface buffer,
-            final HashMap<String, String> options, final int version)
+    private static FileHeader readHeader(final FusionDictionaryBufferInterface buffer)
             throws IOException, UnsupportedFormatException {
+        final int version = checkFormatVersion(buffer);
+        final int optionsFlags = buffer.readUnsignedShort();
+
+        final HashMap<String, String> attributes = new HashMap<String, String>();
         final int headerSize;
         if (version < FIRST_VERSION_WITH_HEADER_SIZE) {
             headerSize = buffer.position();
         } else {
             headerSize = buffer.readInt();
-            populateOptions(buffer, headerSize, options);
+            populateOptions(buffer, headerSize, attributes);
             buffer.position(headerSize);
         }
 
         if (headerSize < 0) {
             throw new UnsupportedFormatException("header size can't be negative.");
         }
-        return headerSize;
+
+        final FileHeader header = new FileHeader(headerSize,
+                new FusionDictionary.DictionaryOptions(attributes,
+                        0 != (optionsFlags & GERMAN_UMLAUT_PROCESSING_FLAG),
+                        0 != (optionsFlags & FRENCH_LIGATURE_PROCESSING_FLAG)),
+                new FormatOptions(version));
+        return header;
     }
 
     /**
@@ -1569,21 +1604,14 @@ public class BinaryDictInputOutput {
         wordCache.clear();
 
         // Read header
-        final int version = checkFormatVersion(buffer);
-        final int optionsFlags = buffer.readUnsignedShort();
-
-        final HashMap<String, String> options = new HashMap<String, String>();
-        final int headerSize = readHeader(buffer, options, version);
+        final FileHeader header = readHeader(buffer);
 
         Map<Integer, Node> reverseNodeMapping = new TreeMap<Integer, Node>();
         Map<Integer, CharGroup> reverseGroupMapping = new TreeMap<Integer, CharGroup>();
-        final Node root = readNode(
-                buffer, headerSize, reverseNodeMapping, reverseGroupMapping);
+        final Node root = readNode(buffer, header.mHeaderSize, reverseNodeMapping,
+                reverseGroupMapping);
 
-        FusionDictionary newDict = new FusionDictionary(root,
-                new FusionDictionary.DictionaryOptions(options,
-                        0 != (optionsFlags & GERMAN_UMLAUT_PROCESSING_FLAG),
-                        0 != (optionsFlags & FRENCH_LIGATURE_PROCESSING_FLAG)));
+        FusionDictionary newDict = new FusionDictionary(root, header.mDictionaryOptions);
         if (null != dict) {
             for (final Word w : dict) {
                 if (w.mIsBlacklistEntry) {

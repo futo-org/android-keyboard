@@ -52,6 +52,9 @@ public class BinaryDictIOTests extends AndroidTestCase {
     private static final int BIGRAM_FREQ = 50;
     private static final int TOLERANCE_OF_BIGRAM_FREQ = 5;
 
+    private static final BinaryDictInputOutput.FormatOptions VERSION2 =
+            new BinaryDictInputOutput.FormatOptions(2);
+
     private static final String[] CHARACTERS =
         {
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
@@ -112,7 +115,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
             final FileOutputStream out = new FileOutputStream(file);
 
             now = System.currentTimeMillis();
-            BinaryDictInputOutput.writeDictionaryBinary(out, dict, 2);
+            BinaryDictInputOutput.writeDictionaryBinary(out, dict, VERSION2);
             diff = System.currentTimeMillis() - now;
 
             out.flush();

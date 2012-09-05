@@ -317,8 +317,10 @@ public class DictionaryMaker {
             final FusionDictionary dict, final int version)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         final File outputFile = new File(outputFilename);
+        final BinaryDictInputOutput.FormatOptions formatOptions =
+                new BinaryDictInputOutput.FormatOptions(version);
         BinaryDictInputOutput.writeDictionaryBinary(new FileOutputStream(outputFilename), dict,
-                version);
+                formatOptions);
     }
 
     /**

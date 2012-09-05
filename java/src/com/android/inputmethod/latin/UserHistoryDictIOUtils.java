@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.util.Log;
 
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
+import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FormatOptions;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
@@ -97,12 +98,12 @@ public class UserHistoryDictIOUtils {
      */
     public static void writeDictionaryBinary(final OutputStream destination,
             final BigramDictionaryInterface dict, final UserHistoryDictionaryBigramList bigrams,
-            final int version) {
+            final FormatOptions formatOptions) {
 
         final FusionDictionary fusionDict = constructFusionDictionary(dict, bigrams);
 
         try {
-            BinaryDictInputOutput.writeDictionaryBinary(destination, fusionDict, version);
+            BinaryDictInputOutput.writeDictionaryBinary(destination, fusionDict, formatOptions);
         } catch (IOException e) {
             Log.e(TAG, "IO exception while writing file: " + e);
         } catch (UnsupportedFormatException e) {
