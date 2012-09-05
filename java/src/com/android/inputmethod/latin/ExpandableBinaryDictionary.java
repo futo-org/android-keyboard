@@ -89,6 +89,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /** Controls access to the local binary dictionary for this instance. */
     private final DictionaryController mLocalDictionaryController = new DictionaryController();
 
+    private static final int BINARY_DICT_VERSION = 1;
+    private static final BinaryDictInputOutput.FormatOptions FORMAT_OPTIONS =
+            new BinaryDictInputOutput.FormatOptions(BINARY_DICT_VERSION);
+
     /**
      * Abstract method for loading the unigrams and bigrams of a given dictionary in a background
      * thread.
@@ -310,7 +314,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(tempFile);
-            BinaryDictInputOutput.writeDictionaryBinary(out, mFusionDictionary, 1);
+            BinaryDictInputOutput.writeDictionaryBinary(out, mFusionDictionary, FORMAT_OPTIONS);
             out.flush();
             out.close();
             tempFile.renameTo(file);
