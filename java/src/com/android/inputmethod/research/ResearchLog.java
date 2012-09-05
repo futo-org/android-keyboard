@@ -93,7 +93,7 @@ public class ResearchLog {
         mFile = outputFile;
     }
 
-    public synchronized void close() {
+    public synchronized void close(final Runnable onClosed) {
         mExecutor.submit(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
@@ -110,6 +110,9 @@ public class ResearchLog {
                 } finally {
                     if (mFile.exists()) {
                         mFile.setWritable(false, false);
+                    }
+                    if (onClosed != null) {
+                        onClosed.run();
                     }
                 }
                 return null;
