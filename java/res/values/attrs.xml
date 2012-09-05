@@ -54,12 +54,10 @@
 
         <!-- Layout resource for key press feedback.-->
         <attr name="keyPreviewLayout" format="reference" />
-        <!-- The background for key press feedback. -->
-        <attr name="keyPreviewBackground" format="reference" />
-        <!-- The background for the left edge key press feedback. -->
-        <attr name="keyPreviewLeftBackground" format="reference" />
-        <!-- The background for the right edge key press feedback. -->
-        <attr name="keyPreviewRightBackground" format="reference" />
+        <!-- Key preview background states -->
+        <attr name="state_left_edge" format="boolean" />
+        <attr name="state_right_edge" format="boolean" />
+        <attr name="state_has_morekeys" format="boolean" />
         <!-- Vertical offset of the key press feedback from the key. -->
         <attr name="keyPreviewOffset" format="dimension" />
         <!-- Height of the key press feedback popup. -->

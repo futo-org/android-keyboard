@@ -54,9 +54,6 @@
         <item name="keyPopupHintLetterPadding">@dimen/key_popup_hint_letter_padding</item>
         <item name="keyShiftedLetterHintPadding">@dimen/key_uppercase_letter_padding</item>
         <item name="keyPreviewLayout">@layout/key_preview</item>
-        <item name="keyPreviewBackground">@drawable/keyboard_key_feedback</item>
-        <item name="keyPreviewLeftBackground">@null</item>
-        <item name="keyPreviewRightBackground">@null</item>
         <item name="keyPreviewTextColor">#FFFFFFFF</item>
         <item name="keyPreviewOffset">@dimen/key_preview_offset</item>
         <item name="keyPreviewHeight">@dimen/key_preview_height</item>
@@ -323,9 +320,7 @@
         <item name="keyHintLabelColor">#A0FFFFFF</item>
         <item name="keyShiftedLetterHintInactivatedColor">#66E0E4E5</item>
         <item name="keyShiftedLetterHintActivatedColor">#FFFFFFFF</item>
-        <item name="keyPreviewBackground">@drawable/keyboard_key_feedback_ics</item>
-        <item name="keyPreviewLeftBackground">@drawable/keyboard_key_feedback_left_ics</item>
-        <item name="keyPreviewRightBackground">@drawable/keyboard_key_feedback_right_ics</item>
+        <item name="keyPreviewLayout">@layout/key_preview_ics</item>
         <item name="keyPreviewTextColor">#FFFFFFFF</item>
         <item name="keyPreviewOffset">@dimen/key_preview_offset_ics</item>
         <item name="keyTextShadowColor">#00000000</item>
