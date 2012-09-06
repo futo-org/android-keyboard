@@ -360,7 +360,7 @@ inline int BinaryFormat::getTerminalPosition(const uint8_t *const root,
     while (true) {
         // If we already traversed the tree further than the word is long, there means
         // there was no match (or we would have found it).
-        if (wordPos > length) return NOT_VALID_WORD;
+        if (wordPos >= length) return NOT_VALID_WORD;
         int charGroupCount = BinaryFormat::getGroupCountAndForwardPointer(root, &pos);
         const int32_t wChar = forceLowerCaseSearch ? toLowerCase(inWord[wordPos]) : inWord[wordPos];
         while (true) {
@@ -383,7 +383,7 @@ inline int BinaryFormat::getTerminalPosition(const uint8_t *const root,
                         // character that does not match, as explained above, it means the word is
                         // not in the dictionary (by virtue of this chargroup being the only one to
                         // match the word on the first character, but not matching the whole word).
-                        if (wordPos > length) return NOT_VALID_WORD;
+                        if (wordPos >= length) return NOT_VALID_WORD;
                         if (inWord[wordPos] != character) return NOT_VALID_WORD;
                         character = BinaryFormat::getCodePointAndForwardPointer(root, &pos);
                     }
