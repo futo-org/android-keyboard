@@ -90,7 +90,8 @@
         <!-- Interval of updating gesture preview trail in millisecond. -->
         <attr name="gesturePreviewTrailUpdateInterval" format="integer" />
         <attr name="gesturePreviewTrailColor" format="color" />
-        <attr name="gesturePreviewTrailWidth" format="dimension" />
+        <attr name="gesturePreviewTrailStartWidth" format="dimension" />
+        <attr name="gesturePreviewTrailEndWidth" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="MainKeyboardView">

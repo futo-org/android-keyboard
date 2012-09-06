@@ -17,16 +17,18 @@ package com.android.inputmethod.keyboard.internal;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Xfermode;
 import android.os.SystemClock;
 
 import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.ResizableIntArray;
 
-class GesturePreviewTrail {
+final class GesturePreviewTrail {
     private static final int DEFAULT_CAPACITY = GestureStrokeWithPreviewTrail.PREVIEW_CAPACITY;
 
-    private final GesturePreviewTrailParams mPreviewParams;
     private final ResizableIntArray mXCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
     private final ResizableIntArray mYCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
     private final ResizableIntArray mEventTimes = new ResizableIntArray(DEFAULT_CAPACITY);
@@ -34,26 +36,37 @@ class GesturePreviewTrail {
     private long mCurrentDownTime;
     private int mTrailStartIndex;
 
+    private final static Xfermode PORTER_DUFF_MODE_SRC =
+            new PorterDuffXfermode(PorterDuff.Mode.SRC);
+
     // Use this value as imaginary zero because x-coordinates may be zero.
     private static final int DOWN_EVENT_MARKER = -128;
 
-    static class GesturePreviewTrailParams {
+    static final class Params {
+        public final int mTrailColor;
+        public final float mTrailStartWidth;
+        public final float mTrailEndWidth;
         public final int mFadeoutStartDelay;
         public final int mFadeoutDuration;
         public final int mUpdateInterval;
 
-        public GesturePreviewTrailParams(final TypedArray keyboardViewAttr) {
+        public final int mTrailLingerDuration;
+
+        public Params(final TypedArray keyboardViewAttr) {
+            mTrailColor = keyboardViewAttr.getColor(
+                    R.styleable.KeyboardView_gesturePreviewTrailColor, 0);
+            mTrailStartWidth = keyboardViewAttr.getDimension(
+                    R.styleable.KeyboardView_gesturePreviewTrailStartWidth, 0.0f);
+            mTrailEndWidth = keyboardViewAttr.getDimension(
+                    R.styleable.KeyboardView_gesturePreviewTrailEndWidth, 0.0f);
             mFadeoutStartDelay = keyboardViewAttr.getInt(
                     R.styleable.KeyboardView_gesturePreviewTrailFadeoutStartDelay, 0);
             mFadeoutDuration = keyboardViewAttr.getInt(
                     R.styleable.KeyboardView_gesturePreviewTrailFadeoutDuration, 0);
+            mTrailLingerDuration = mFadeoutStartDelay + mFadeoutDuration;
             mUpdateInterval = keyboardViewAttr.getInt(
                     R.styleable.KeyboardView_gesturePreviewTrailUpdateInterval, 0);
         }
-    }
-
-    public GesturePreviewTrail(final GesturePreviewTrailParams params) {
-        mPreviewParams = params;
     }
 
     private static int markAsDownEvent(final int xCoord) {
@@ -94,23 +107,30 @@ class GesturePreviewTrail {
         }
     }
 
-    private int getAlpha(final int elapsedTime) {
-        if (elapsedTime < mPreviewParams.mFadeoutStartDelay) {
+    private static int getAlpha(final int elapsedTime, final Params params) {
+        if (elapsedTime < params.mFadeoutStartDelay) {
             return Constants.Color.ALPHA_OPAQUE;
         }
         final int decreasingAlpha = Constants.Color.ALPHA_OPAQUE
-                * (elapsedTime - mPreviewParams.mFadeoutStartDelay)
-                / mPreviewParams.mFadeoutDuration;
+                * (elapsedTime - params.mFadeoutStartDelay)
+                / params.mFadeoutDuration;
         return Constants.Color.ALPHA_OPAQUE - decreasingAlpha;
+    }
+
+    private static float getWidth(final int elapsedTime, final Params params) {
+        return Math.max((params.mTrailLingerDuration - elapsedTime)
+                * (params.mTrailStartWidth - params.mTrailEndWidth)
+                / params.mTrailLingerDuration, 0.0f);
     }
 
     /**
      * Draw gesture preview trail
      * @param canvas The canvas to draw the gesture preview trail
      * @param paint The paint object to be used to draw the gesture preview trail
+     * @param params The drawing parameters of gesture preview trail
      * @return true if some gesture preview trails remain to be drawn
      */
-    public boolean drawGestureTrail(final Canvas canvas, final Paint paint) {
+    public boolean drawGestureTrail(final Canvas canvas, final Paint paint, final Params params) {
         final int trailSize = mEventTimes.getLength();
         if (trailSize == 0) {
             return false;
@@ -120,13 +140,11 @@ class GesturePreviewTrail {
         final int[] xCoords = mXCoordinates.getPrimitiveArray();
         final int[] yCoords = mYCoordinates.getPrimitiveArray();
         final int sinceDown = (int)(SystemClock.uptimeMillis() - mCurrentDownTime);
-        final int lingeringDuration = mPreviewParams.mFadeoutStartDelay
-                + mPreviewParams.mFadeoutDuration;
         int startIndex;
         for (startIndex = mTrailStartIndex; startIndex < trailSize; startIndex++) {
             final int elapsedTime = sinceDown - eventTimes[startIndex];
             // Skip too old trail points.
-            if (elapsedTime < lingeringDuration) {
+            if (elapsedTime < params.mTrailLingerDuration) {
                 break;
             }
         }
@@ -135,13 +153,20 @@ class GesturePreviewTrail {
         if (startIndex < trailSize) {
             int lastX = getXCoordValue(xCoords[startIndex]);
             int lastY = yCoords[startIndex];
+            paint.setColor(params.mTrailColor);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeCap(Paint.Cap.ROUND);
+            paint.setXfermode(PORTER_DUFF_MODE_SRC);
             for (int i = startIndex + 1; i < trailSize - 1; i++) {
                 final int x = xCoords[i];
                 final int y = yCoords[i];
                 final int elapsedTime = sinceDown - eventTimes[i];
                 // Draw trail line only when the current point isn't a down point.
                 if (!isDownEventXCoord(x)) {
-                    paint.setAlpha(getAlpha(elapsedTime));
+                    final int alpha = getAlpha(elapsedTime, params);
+                    paint.setAlpha(alpha);
+                    final float width = getWidth(elapsedTime, params);
+                    paint.setStrokeWidth(width);
                     canvas.drawLine(lastX, lastY, x, y, paint);
                 }
                 lastX = getXCoordValue(x);
