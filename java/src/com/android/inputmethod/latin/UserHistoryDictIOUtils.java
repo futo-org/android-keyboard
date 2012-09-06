@@ -54,7 +54,7 @@ public class UserHistoryDictIOUtils {
         private byte[] mBuffer;
         private int mPosition;
 
-        ByteArrayWrapper(final byte[] buffer) {
+        public ByteArrayWrapper(final byte[] buffer) {
             mBuffer = buffer;
             mPosition = 0;
         }
