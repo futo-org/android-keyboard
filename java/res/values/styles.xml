@@ -77,7 +77,8 @@
         <item name="gesturePreviewTrailFadeoutDuration">@integer/config_gesture_preview_trail_fadeout_duration</item>
         <item name="gesturePreviewTrailUpdateInterval">@integer/config_gesture_preview_trail_update_interval</item>
         <item name="gesturePreviewTrailColor">@android:color/holo_blue_light</item>
-        <item name="gesturePreviewTrailWidth">@dimen/gesture_preview_trail_width</item>
+        <item name="gesturePreviewTrailStartWidth">@dimen/gesture_preview_trail_start_width</item>
+        <item name="gesturePreviewTrailEndWidth">@dimen/gesture_preview_trail_end_width</item>
         <!-- Common attributes of MainKeyboardView -->
         <item name="keyHysteresisDistance">@dimen/config_key_hysteresis_distance</item>
         <item name="touchNoiseThresholdTime">@integer/config_touch_noise_threshold_time</item>
