@@ -54,14 +54,40 @@ public class BinaryDictIOTests extends AndroidTestCase {
     private static final int BIGRAM_FREQ = 50;
     private static final int TOLERANCE_OF_BIGRAM_FREQ = 5;
 
+    private static final List<String> sWords = CollectionUtils.newArrayList();
+    private static final SparseArray<List<Integer>> sEmptyBigrams =
+            CollectionUtils.newSparseArray();
+    private static final SparseArray<List<Integer>> sStarBigrams = CollectionUtils.newSparseArray();
+    private static final SparseArray<List<Integer>> sChainBigrams =
+            CollectionUtils.newSparseArray();
+
     private static final BinaryDictInputOutput.FormatOptions VERSION2 =
             new BinaryDictInputOutput.FormatOptions(2);
 
-    private static final String[] CHARACTERS =
-        {
+    private static final String[] CHARACTERS = {
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
         "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
-        };
+    };
+
+    public BinaryDictIOTests() {
+        super();
+
+        final Random random = new Random(123456);
+        sWords.clear();
+        generateWords(MAX_UNIGRAMS, random);
+
+        for (int i = 0; i < sWords.size(); ++i) {
+            sChainBigrams.put(i, new ArrayList<Integer>());
+            if (i > 0) {
+                sChainBigrams.get(i-1).add(i);
+            }
+        }
+
+        sStarBigrams.put(0, new ArrayList<Integer>());
+        for (int i = 1; i < sWords.size(); ++i) {
+            sStarBigrams.get(0).add(i);
+        }
+    }
 
     // Utilities for test
     /**
@@ -78,12 +104,12 @@ public class BinaryDictIOTests extends AndroidTestCase {
         return builder.toString();
     }
 
-    private List<String> generateWords(final int number, final Random random) {
+    private void generateWords(final int number, final Random random) {
         final Set<String> wordSet = CollectionUtils.newHashSet();
         while (wordSet.size() < number) {
             wordSet.add(generateWord(random.nextInt()));
         }
-        return new ArrayList<String>(wordSet);
+        sWords.addAll(wordSet);
     }
 
     /**
@@ -182,10 +208,8 @@ public class BinaryDictIOTests extends AndroidTestCase {
                     FileChannel.MapMode.READ_ONLY, 0, file.length());
 
             now = System.currentTimeMillis();
-
             final FusionDictionary dict =
                     BinaryDictInputOutput.readDictionaryBinary(buffer, null);
-
             diff = System.currentTimeMillis() - now;
 
             checkDictionary(dict, words, bigrams, shortcutMap);
@@ -212,22 +236,19 @@ public class BinaryDictIOTests extends AndroidTestCase {
     private String runReadAndWrite(final List<String> words,
             final SparseArray<List<Integer>> bigrams, final Map<String, List<String>> shortcuts,
             final String message) {
-        final FusionDictionary dict = new FusionDictionary(new Node(),
-                new FusionDictionary.DictionaryOptions(
-                        new HashMap<String,String>(), false, false));
-
         File file = null;
         try {
             file = File.createTempFile("runReadAndWrite", ".dict");
         } catch (IOException e) {
             Log.e(TAG, "IOException: " + e);
         }
-
         assertNotNull(file);
 
+        final FusionDictionary dict = new FusionDictionary(new Node(),
+                new FusionDictionary.DictionaryOptions(
+                        new HashMap<String,String>(), false, false));
         addUnigrams(words.size(), dict, words, shortcuts);
         addBigrams(dict, words, bigrams);
-        // check original dictionary
         checkDictionary(dict, words, bigrams, shortcuts);
 
         final long write = timeWritingDictToFile(file, dict);
@@ -239,22 +260,9 @@ public class BinaryDictIOTests extends AndroidTestCase {
     public void testReadAndWrite() {
         final List<String> results = new ArrayList<String>();
 
-        final Random random = new Random(123456);
-        final List<String> words = generateWords(MAX_UNIGRAMS, random);
-        final SparseArray<List<Integer>> emptyArray = CollectionUtils.newSparseArray();
-
-        final SparseArray<List<Integer>> chain = CollectionUtils.newSparseArray();
-        for (int i = 0; i < words.size(); ++i) chain.put(i, new ArrayList<Integer>());
-        for (int i = 1; i < words.size(); ++i) chain.get(i-1).add(i);
-
-        final SparseArray<List<Integer>> star = CollectionUtils.newSparseArray();
-        final List<Integer> list0 = CollectionUtils.newArrayList();
-        star.put(0, list0);
-        for (int i = 1; i < words.size(); ++i) star.get(0).add(i);
-
-        results.add(runReadAndWrite(words, emptyArray, null /* shortcuts */ , "only unigram"));
-        results.add(runReadAndWrite(words, chain, null /* shortcuts */ , "chain"));
-        results.add(runReadAndWrite(words, star, null /* shortcuts */ , "star"));
+        results.add(runReadAndWrite(sWords, sEmptyBigrams, null /* shortcuts */ , "unigram"));
+        results.add(runReadAndWrite(sWords, sChainBigrams, null /* shortcuts */ , "chain"));
+        results.add(runReadAndWrite(sWords, sStarBigrams, null /* shortcuts */ , "star"));
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -347,47 +355,41 @@ public class BinaryDictIOTests extends AndroidTestCase {
         return diff;
     }
 
-    private void runReadUnigramsAndBigramsBinary(final List<String> words,
-            final SparseArray<List<Integer>> bigrams) {
-
-        // making the dictionary from lists of words.
-        final FusionDictionary dict = new FusionDictionary(new Node(),
-                new FusionDictionary.DictionaryOptions(
-                        new HashMap<String, String>(), false, false));
-
+    private String runReadUnigramsAndBigramsBinary(final List<String> words,
+            final SparseArray<List<Integer>> bigrams, final String message) {
         File file = null;
         try {
             file = File.createTempFile("runReadUnigrams", ".dict");
         } catch (IOException e) {
             Log.e(TAG, "IOException: " + e);
         }
-
         assertNotNull(file);
 
+        // making the dictionary from lists of words.
+        final FusionDictionary dict = new FusionDictionary(new Node(),
+                new FusionDictionary.DictionaryOptions(
+                        new HashMap<String, String>(), false, false));
         addUnigrams(words.size(), dict, words, null /* shortcutMap */);
         addBigrams(dict, words, bigrams);
+
         timeWritingDictToFile(file, dict);
 
         long wordMap = timeAndCheckReadUnigramsAndBigramsBinary(file, words, bigrams);
         long fullReading = timeReadingAndCheckDict(file, words, bigrams, null /* shortcutMap */);
 
-        Log.d(TAG, "read=" + fullReading + ", bytearray=" + wordMap);
+        return "readDictionaryBinary=" + fullReading + ", readUnigramsAndBigramsBinary=" + wordMap
+                + " : " + message;
     }
 
     public void testReadUnigramsAndBigramsBinary() {
         final List<String> results = new ArrayList<String>();
 
-        final Random random = new Random(123456);
-        final List<String> words = generateWords(MAX_UNIGRAMS, random);
-        final SparseArray<List<Integer>> emptyArray = CollectionUtils.newSparseArray();
+        results.add(runReadUnigramsAndBigramsBinary(sWords, sEmptyBigrams, "unigram"));
+        results.add(runReadUnigramsAndBigramsBinary(sWords, sChainBigrams, "chain"));
+        results.add(runReadUnigramsAndBigramsBinary(sWords, sStarBigrams, "star"));
 
-        runReadUnigramsAndBigramsBinary(words, emptyArray);
-
-        final SparseArray<List<Integer>> star = CollectionUtils.newSparseArray();
-        for (int i = 1; i < words.size(); ++i) {
-            star.put(i-1, new ArrayList<Integer>());
-            star.get(i-1).add(i);
+        for (final String result : results) {
+            Log.d(TAG, result);
         }
-        runReadUnigramsAndBigramsBinary(words, star);
     }
 }
