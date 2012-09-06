@@ -224,7 +224,7 @@ float ProximityInfoState::updateNearKeysDistances(const int x, const int y,
 bool ProximityInfoState::isPrevLocalMin(const NearKeysDistanceMap *const currentNearKeysDistances,
         const NearKeysDistanceMap *const prevNearKeysDistances,
         const NearKeysDistanceMap *const prevPrevNearKeysDistances) const {
-    static const float MARGIN = 0.5f;
+    static const float MARGIN = 0.05f;
 
     for (NearKeysDistanceMap::const_iterator it = prevNearKeysDistances->begin();
         it != prevNearKeysDistances->end(); ++it) {
@@ -245,14 +245,14 @@ float ProximityInfoState::getPointScore(
         const NearKeysDistanceMap *const prevNearKeysDistances,
         const NearKeysDistanceMap *const prevPrevNearKeysDistances) const {
     static const float BASE_SAMPLE_RATE_SCALE = 0.1f;
-    static const float SAVE_DISTANCE_SCALE = 12.0f;
+    static const float SAVE_DISTANCE_SCALE = 14.0f;
     static const float SAVE_DISTANCE_SCORE = 2.0f;
     static const float SKIP_DISTANCE_SCALE = 1.5f;
     static const float SKIP_DISTANCE_SCORE = -1.0f;
-    static const float CHECK_LOCALMIN_DISTANCE_THRESHOLD_SCALE = 2.5f;
+    static const float CHECK_LOCALMIN_DISTANCE_THRESHOLD_SCALE = 3.5f;
     static const float CHECK_LOCALMIN_DISTANCE_SCORE = -1.0f;
     static const float STRAIGHT_ANGLE_THRESHOLD = M_PI_F / 32.0f;
-    static const float STRAIGHT_SKIP_DISTANCE_THRESHOLD_SCALE = 4.0f;
+    static const float STRAIGHT_SKIP_DISTANCE_THRESHOLD_SCALE = 5.0f;
     static const float STRAIGHT_SKIP_NEAREST_DISTANCE_THRESHOLD = 0.5f;
     static const float STRAIGHT_SKIP_SCORE = -1.0f;
 
@@ -275,19 +275,19 @@ float ProximityInfoState::getPointScore(
         score += SKIP_DISTANCE_SCORE;
     }
     // Location
-    if (!isPrevLocalMin(currentNearKeysDistances, currentNearKeysDistances,
+    if (distPrev < baseSampleRate * CHECK_LOCALMIN_DISTANCE_THRESHOLD_SCALE) {
+        if (!isPrevLocalMin(currentNearKeysDistances, currentNearKeysDistances,
             prevPrevNearKeysDistances)) {
-        if (distPrev < baseSampleRate * CHECK_LOCALMIN_DISTANCE_THRESHOLD_SCALE) {
             score += CHECK_LOCALMIN_DISTANCE_SCORE;
         }
     }
     // Angle
-    const float angle1 = getAngle(x, y, mInputXs.back(), mInputYs.back());
-    const float angle2 = getAngle(mInputXs.back(), mInputYs.back(),
-            mInputXs[size - 2], mInputYs[size - 2]);
-    if (getAngleDiff(angle1, angle2) < STRAIGHT_ANGLE_THRESHOLD) {
-        if (nearest > STRAIGHT_SKIP_NEAREST_DISTANCE_THRESHOLD
-                && distPrev < baseSampleRate * STRAIGHT_SKIP_DISTANCE_THRESHOLD_SCALE) {
+    if (nearest > STRAIGHT_SKIP_NEAREST_DISTANCE_THRESHOLD
+            && distPrev < baseSampleRate * STRAIGHT_SKIP_DISTANCE_THRESHOLD_SCALE) {
+        const float angle1 = getAngle(x, y, mInputXs.back(), mInputYs.back());
+        const float angle2 = getAngle(mInputXs.back(), mInputYs.back(),
+                mInputXs[size - 2], mInputYs[size - 2]);
+        if (getAngleDiff(angle1, angle2) < STRAIGHT_ANGLE_THRESHOLD) {
             score += STRAIGHT_SKIP_SCORE;
         }
     }
@@ -383,13 +383,14 @@ float ProximityInfoState::calculateNormalizedSquaredDistance(
 }
 
 int ProximityInfoState::getDuration(const int index) const {
-    if (mInputSize > 0 && index > 0 && index < static_cast<int>(mInputSize) - 1) {
+    if (mInputSize > 0 && index > 0 && index < mInputSize - 1) {
         return mTimes[index + 1] - mTimes[index - 1];
     }
     return 0;
 }
 
-float ProximityInfoState::getPointToKeyLength(int inputIndex, int codePoint, float scale) {
+float ProximityInfoState::getPointToKeyLength(const int inputIndex, const int codePoint,
+        const float scale) const {
     const int keyId = mProximityInfo->getKeyIndexOf(codePoint);
     if (keyId != NOT_AN_INDEX) {
         const int index = inputIndex * mProximityInfo->getKeyCount() + keyId;
@@ -404,11 +405,7 @@ float ProximityInfoState::getPointToKeyLength(int inputIndex, int codePoint, flo
     return MAX_POINT_TO_KEY_LENGTH;
 }
 
-int ProximityInfoState::getKeyKeyDistance(int key0, int key1) {
-    return mProximityInfo->getKeyKeyDistanceG(key0, key1);
-}
-
-int ProximityInfoState::getSpaceY() {
+int ProximityInfoState::getSpaceY() const {
     const int keyId = mProximityInfo->getKeyIndexOf(' ');
     return mProximityInfo->getKeyCenterYOfKeyIdG(keyId);
 }
@@ -447,4 +444,12 @@ int32_t ProximityInfoState::getAllPossibleChars(
     }
     return i;
 }
+
+float ProximityInfoState::getAveragePointDuration() const {
+    if (mInputSize == 0) {
+        return 0;
+    }
+    return (mTimes[mInputSize - 1] - mTimes[0]) / static_cast<float>(mInputSize);
+}
+
 } // namespace latinime

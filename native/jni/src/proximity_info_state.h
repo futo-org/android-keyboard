@@ -200,27 +200,26 @@ class ProximityInfoState {
         return mInputSize;
     }
 
-    int getInputX(int index) const {
+    int getInputX(const int index) const {
         return mInputXs[index];
     }
 
-    int getInputY(int index) const {
+    int getInputY(const int index) const {
         return mInputYs[index];
     }
 
-    int getLengthCache(int index) const {
+    int getLengthCache(const int index) const {
         return mLengthCache[index];
     }
 
-    float getPointToKeyLength(int inputIndex, int charCode, float scale);
+    float getPointToKeyLength(const int inputIndex, const int charCode, const float scale) const;
 
-    int getKeyKeyDistance(int key0, int key1);
-
-    int getSpaceY();
+    int getSpaceY() const;
 
     int32_t getAllPossibleChars(
-            const size_t startIndex, int32_t *const filter, int32_t filterSize) const;
+            const size_t startIndex, int32_t *const filter, const int32_t filterSize) const;
 
+    float getAveragePointDuration() const;
  private:
     DISALLOW_COPY_AND_ASSIGN(ProximityInfoState);
     typedef hash_map_compat<int, float> NearKeysDistanceMap;
