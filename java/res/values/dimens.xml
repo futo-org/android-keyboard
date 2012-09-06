@@ -100,7 +100,8 @@
     <fraction name="center_suggestion_percentile">36%</fraction>
 
     <!-- Gesture preview trail parameters -->
-    <dimen name="gesture_preview_trail_width">2.5dp</dimen>
+    <dimen name="gesture_preview_trail_start_width">18.0dp</dimen>
+    <dimen name="gesture_preview_trail_end_width">2.5dp</dimen>
     <!-- Gesture floating preview text parameters -->
     <dimen name="gesture_floating_preview_text_size">24dp</dimen>
     <dimen name="gesture_floating_preview_text_offset">73dp</dimen>

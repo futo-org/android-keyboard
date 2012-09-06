@@ -21,6 +21,8 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Message;
@@ -30,14 +32,12 @@ import android.util.SparseArray;
 import android.widget.RelativeLayout;
 
 import com.android.inputmethod.keyboard.PointerTracker;
-import com.android.inputmethod.keyboard.internal.GesturePreviewTrail.GesturePreviewTrailParams;
+import com.android.inputmethod.keyboard.internal.GesturePreviewTrail.Params;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
 public class PreviewPlacerView extends RelativeLayout {
-    private final Paint mGesturePaint;
-    private final Paint mTextPaint;
     private final int mGestureFloatingPreviewTextColor;
     private final int mGestureFloatingPreviewTextOffset;
     private final int mGestureFloatingPreviewColor;
@@ -51,8 +51,11 @@ public class PreviewPlacerView extends RelativeLayout {
 
     private final SparseArray<GesturePreviewTrail> mGesturePreviewTrails =
             CollectionUtils.newSparseArray();
-    private final GesturePreviewTrailParams mGesturePreviewTrailParams;
+    private final Params mGesturePreviewTrailParams;
+    private final Paint mGesturePaint;
+    private boolean mDrawsGesturePreviewTrail;
 
+    private final Paint mTextPaint;
     private String mGestureFloatingPreviewText;
     private final int mGestureFloatingPreviewTextHeight;
     // {@link RectF} is needed for {@link Canvas#drawRoundRect(RectF, float, float, Paint)}.
@@ -60,8 +63,6 @@ public class PreviewPlacerView extends RelativeLayout {
     private int mLastPointerX;
     private int mLastPointerY;
     private static final char[] TEXT_HEIGHT_REFERENCE_CHAR = { 'M' };
-
-    private boolean mDrawsGesturePreviewTrail;
     private boolean mDrawsGestureFloatingPreviewText;
 
     private final DrawingHandler mDrawingHandler;
@@ -70,10 +71,10 @@ public class PreviewPlacerView extends RelativeLayout {
         private static final int MSG_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 0;
         private static final int MSG_UPDATE_GESTURE_PREVIEW_TRAIL = 1;
 
-        private final GesturePreviewTrailParams mGesturePreviewTrailParams;
+        private final Params mGesturePreviewTrailParams;
 
         public DrawingHandler(final PreviewPlacerView outerInstance,
-                final GesturePreviewTrailParams gesturePreviewTrailParams) {
+                final Params gesturePreviewTrailParams) {
             super(outerInstance);
             mGesturePreviewTrailParams = gesturePreviewTrailParams;
         }
@@ -146,21 +147,13 @@ public class PreviewPlacerView extends RelativeLayout {
                 R.styleable.KeyboardView_gestureFloatingPreviewRoundRadius, 0.0f);
         mGestureFloatingPreviewTextLingerTimeout = keyboardViewAttr.getInt(
                 R.styleable.KeyboardView_gestureFloatingPreviewTextLingerTimeout, 0);
-        final int gesturePreviewTrailColor = keyboardViewAttr.getColor(
-                R.styleable.KeyboardView_gesturePreviewTrailColor, 0);
-        final int gesturePreviewTrailWidth = keyboardViewAttr.getDimensionPixelSize(
-                R.styleable.KeyboardView_gesturePreviewTrailWidth, 0);
-        mGesturePreviewTrailParams = new GesturePreviewTrailParams(keyboardViewAttr);
+        mGesturePreviewTrailParams = new Params(keyboardViewAttr);
         keyboardViewAttr.recycle();
 
         mDrawingHandler = new DrawingHandler(this, mGesturePreviewTrailParams);
 
         final Paint gesturePaint = new Paint();
         gesturePaint.setAntiAlias(true);
-        gesturePaint.setStyle(Paint.Style.STROKE);
-        gesturePaint.setStrokeJoin(Paint.Join.ROUND);
-        gesturePaint.setColor(gesturePreviewTrailColor);
-        gesturePaint.setStrokeWidth(gesturePreviewTrailWidth);
         mGesturePaint = gesturePaint;
 
         final Paint textPaint = new Paint();
@@ -172,6 +165,10 @@ public class PreviewPlacerView extends RelativeLayout {
         final Rect textRect = new Rect();
         textPaint.getTextBounds(TEXT_HEIGHT_REFERENCE_CHAR, 0, 1, textRect);
         mGestureFloatingPreviewTextHeight = textRect.height();
+
+        final Paint layerPaint = new Paint();
+        layerPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
+        setLayerType(LAYER_TYPE_HARDWARE, layerPaint);
     }
 
     public void setOrigin(final int x, final int y) {
@@ -190,7 +187,7 @@ public class PreviewPlacerView extends RelativeLayout {
         synchronized (mGesturePreviewTrails) {
             trail = mGesturePreviewTrails.get(tracker.mPointerId);
             if (trail == null) {
-                trail = new GesturePreviewTrail(mGesturePreviewTrailParams);
+                trail = new GesturePreviewTrail();
                 mGesturePreviewTrails.put(tracker.mPointerId, trail);
             }
         }
@@ -214,7 +211,8 @@ public class PreviewPlacerView extends RelativeLayout {
                 for (int index = 0; index < trailsCount; index++) {
                     final GesturePreviewTrail trail = mGesturePreviewTrails.valueAt(index);
                     needsUpdatingGesturePreviewTrail |=
-                            trail.drawGestureTrail(canvas, mGesturePaint);
+                            trail.drawGestureTrail(canvas, mGesturePaint,
+                                    mGesturePreviewTrailParams);
                 }
             }
             if (needsUpdatingGesturePreviewTrail) {
