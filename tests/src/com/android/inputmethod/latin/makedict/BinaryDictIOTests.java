@@ -21,6 +21,7 @@ import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
+import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
 import com.android.inputmethod.latin.makedict.PendingAttribute;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
@@ -88,12 +89,18 @@ public class BinaryDictIOTests extends AndroidTestCase {
     /**
      * Adds unigrams to the dictionary.
      */
-    private void addUnigrams(final int number,
-            final FusionDictionary dict,
-            final List<String> words) {
+    private void addUnigrams(final int number, final FusionDictionary dict,
+            final List<String> words, final Map<String, List<String>> shortcutMap) {
         for (int i = 0; i < number; ++i) {
             final String word = words.get(i);
-            dict.add(word, UNIGRAM_FREQ, null, false /* isNotAWord */);
+            final ArrayList<WeightedString> shortcuts = CollectionUtils.newArrayList();
+            if (shortcutMap != null && shortcutMap.containsKey(word)) {
+                for (final String shortcut : shortcutMap.get(word)) {
+                    shortcuts.add(new WeightedString(shortcut, UNIGRAM_FREQ));
+                }
+            }
+            dict.add(word, UNIGRAM_FREQ, (shortcutMap == null) ? null : shortcuts,
+                    false /* isNotAWord */);
         }
     }
 
@@ -130,9 +137,8 @@ public class BinaryDictIOTests extends AndroidTestCase {
         return diff;
     }
 
-    private void checkDictionary(final FusionDictionary dict,
-            final List<String> words,
-            final SparseArray<List<Integer>> bigrams) {
+    private void checkDictionary(final FusionDictionary dict, final List<String> words,
+            final SparseArray<List<Integer>> bigrams, final Map<String, List<String>> shortcutMap) {
         assertNotNull(dict);
 
         // check unigram
@@ -149,12 +155,23 @@ public class BinaryDictIOTests extends AndroidTestCase {
                 assertNotNull(words.get(w1) + "," + words.get(w2), cg.getBigram(words.get(w2)));
             }
         }
+
+        // check shortcut
+        if (shortcutMap != null) {
+            for (final Map.Entry<String, List<String>> entry : shortcutMap.entrySet()) {
+                final CharGroup group = FusionDictionary.findWordInTree(dict.mRoot, entry.getKey());
+                for (final String word : entry.getValue()) {
+                    assertNotNull("shortcut not found: " + entry.getKey() + ", " + word,
+                            group.getShortcut(word));
+                }
+            }
+        }
     }
 
     // Tests for readDictionaryBinary and writeDictionaryBinary
 
     private long timeReadingAndCheckDict(final File file, final List<String> words,
-            final SparseArray<List<Integer>> bigrams) {
+            final SparseArray<List<Integer>> bigrams, final Map<String, List<String>> shortcutMap) {
 
         long now, diff = -1;
 
@@ -171,7 +188,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
 
             diff = System.currentTimeMillis() - now;
 
-            checkDictionary(dict, words, bigrams);
+            checkDictionary(dict, words, bigrams, shortcutMap);
             return diff;
 
         } catch (IOException e) {
@@ -191,8 +208,9 @@ public class BinaryDictIOTests extends AndroidTestCase {
         return diff;
     }
 
+    // Tests for readDictionaryBinary and writeDictionaryBinary
     private String runReadAndWrite(final List<String> words,
-            final SparseArray<List<Integer>> bigrams,
+            final SparseArray<List<Integer>> bigrams, final Map<String, List<String>> shortcuts,
             final String message) {
         final FusionDictionary dict = new FusionDictionary(new Node(),
                 new FusionDictionary.DictionaryOptions(
@@ -207,13 +225,13 @@ public class BinaryDictIOTests extends AndroidTestCase {
 
         assertNotNull(file);
 
-        addUnigrams(words.size(), dict, words);
+        addUnigrams(words.size(), dict, words, shortcuts);
         addBigrams(dict, words, bigrams);
         // check original dictionary
-        checkDictionary(dict, words, bigrams);
+        checkDictionary(dict, words, bigrams, shortcuts);
 
         final long write = timeWritingDictToFile(file, dict);
-        final long read = timeReadingAndCheckDict(file, words, bigrams);
+        final long read = timeReadingAndCheckDict(file, words, bigrams, shortcuts);
 
         return "PROF: read=" + read + "ms, write=" + write + "ms    :" + message;
     }
@@ -234,9 +252,9 @@ public class BinaryDictIOTests extends AndroidTestCase {
         star.put(0, list0);
         for (int i = 1; i < words.size(); ++i) star.get(0).add(i);
 
-        results.add(runReadAndWrite(words, emptyArray, "only unigram"));
-        results.add(runReadAndWrite(words, chain, "chain"));
-        results.add(runReadAndWrite(words, star, "star"));
+        results.add(runReadAndWrite(words, emptyArray, null /* shortcuts */ , "only unigram"));
+        results.add(runReadAndWrite(words, chain, null /* shortcuts */ , "chain"));
+        results.add(runReadAndWrite(words, star, null /* shortcuts */ , "star"));
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -346,12 +364,12 @@ public class BinaryDictIOTests extends AndroidTestCase {
 
         assertNotNull(file);
 
-        addUnigrams(words.size(), dict, words);
+        addUnigrams(words.size(), dict, words, null /* shortcutMap */);
         addBigrams(dict, words, bigrams);
         timeWritingDictToFile(file, dict);
 
         long wordMap = timeAndCheckReadUnigramsAndBigramsBinary(file, words, bigrams);
-        long fullReading = timeReadingAndCheckDict(file, words, bigrams);
+        long fullReading = timeReadingAndCheckDict(file, words, bigrams, null /* shortcutMap */);
 
         Log.d(TAG, "read=" + fullReading + ", bytearray=" + wordMap);
     }
