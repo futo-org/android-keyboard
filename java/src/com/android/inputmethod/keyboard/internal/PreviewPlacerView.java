@@ -21,6 +21,8 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -38,12 +40,10 @@ public class PreviewPlacerView extends RelativeLayout {
     private final Paint mTextPaint;
     private final int mGestureFloatingPreviewTextColor;
     private final int mGestureFloatingPreviewTextOffset;
-    private final int mGestureFloatingPreviewTextShadowColor;
-    private final int mGestureFloatingPreviewTextShadowBorder;
-    private final int mGestureFloatingPreviewTextShadingColor;
-    private final int mGestureFloatingPreviewTextShadingBorder;
-    private final int mGestureFloatingPreviewTextConnectorColor;
-    private final int mGestureFloatingPreviewTextConnectorWidth;
+    private final int mGestureFloatingPreviewColor;
+    private final float mGestureFloatingPreviewHorizontalPadding;
+    private final float mGestureFloatingPreviewVerticalPadding;
+    private final float mGestureFloatingPreviewRoundRadius;
     /* package */ final int mGestureFloatingPreviewTextLingerTimeout;
 
     private int mXOrigin;
@@ -54,8 +54,12 @@ public class PreviewPlacerView extends RelativeLayout {
     private final GesturePreviewTrailParams mGesturePreviewTrailParams;
 
     private String mGestureFloatingPreviewText;
+    private final int mGestureFloatingPreviewTextHeight;
+    // {@link RectF} is needed for {@link Canvas#drawRoundRect(RectF, float, float, Paint)}.
+    private final RectF mGestureFloatingPreviewRectangle = new RectF();
     private int mLastPointerX;
     private int mLastPointerY;
+    private static final char[] TEXT_HEIGHT_REFERENCE_CHAR = { 'M' };
 
     private boolean mDrawsGesturePreviewTrail;
     private boolean mDrawsGestureFloatingPreviewText;
@@ -132,18 +136,14 @@ public class PreviewPlacerView extends RelativeLayout {
                 R.styleable.KeyboardView_gestureFloatingPreviewTextColor, 0);
         mGestureFloatingPreviewTextOffset = keyboardViewAttr.getDimensionPixelOffset(
                 R.styleable.KeyboardView_gestureFloatingPreviewTextOffset, 0);
-        mGestureFloatingPreviewTextShadowColor = keyboardViewAttr.getColor(
-                R.styleable.KeyboardView_gestureFloatingPreviewTextShadowColor, 0);
-        mGestureFloatingPreviewTextShadowBorder = keyboardViewAttr.getDimensionPixelSize(
-                R.styleable.KeyboardView_gestureFloatingPreviewTextShadowBorder, 0);
-        mGestureFloatingPreviewTextShadingColor = keyboardViewAttr.getColor(
-                R.styleable.KeyboardView_gestureFloatingPreviewTextShadingColor, 0);
-        mGestureFloatingPreviewTextShadingBorder = keyboardViewAttr.getDimensionPixelSize(
-                R.styleable.KeyboardView_gestureFloatingPreviewTextShadingBorder, 0);
-        mGestureFloatingPreviewTextConnectorColor = keyboardViewAttr.getColor(
-                R.styleable.KeyboardView_gestureFloatingPreviewTextConnectorColor, 0);
-        mGestureFloatingPreviewTextConnectorWidth = keyboardViewAttr.getDimensionPixelSize(
-                R.styleable.KeyboardView_gestureFloatingPreviewTextConnectorWidth, 0);
+        mGestureFloatingPreviewColor = keyboardViewAttr.getColor(
+                R.styleable.KeyboardView_gestureFloatingPreviewColor, 0);
+        mGestureFloatingPreviewHorizontalPadding = keyboardViewAttr.getDimension(
+                R.styleable.KeyboardView_gestureFloatingPreviewHorizontalPadding, 0.0f);
+        mGestureFloatingPreviewVerticalPadding = keyboardViewAttr.getDimension(
+                R.styleable.KeyboardView_gestureFloatingPreviewVerticalPadding, 0.0f);
+        mGestureFloatingPreviewRoundRadius = keyboardViewAttr.getDimension(
+                R.styleable.KeyboardView_gestureFloatingPreviewRoundRadius, 0.0f);
         mGestureFloatingPreviewTextLingerTimeout = keyboardViewAttr.getInt(
                 R.styleable.KeyboardView_gestureFloatingPreviewTextLingerTimeout, 0);
         final int gesturePreviewTrailColor = keyboardViewAttr.getColor(
@@ -155,18 +155,23 @@ public class PreviewPlacerView extends RelativeLayout {
 
         mDrawingHandler = new DrawingHandler(this, mGesturePreviewTrailParams);
 
-        mGesturePaint = new Paint();
-        mGesturePaint.setAntiAlias(true);
-        mGesturePaint.setStyle(Paint.Style.STROKE);
-        mGesturePaint.setStrokeJoin(Paint.Join.ROUND);
-        mGesturePaint.setColor(gesturePreviewTrailColor);
-        mGesturePaint.setStrokeWidth(gesturePreviewTrailWidth);
+        final Paint gesturePaint = new Paint();
+        gesturePaint.setAntiAlias(true);
+        gesturePaint.setStyle(Paint.Style.STROKE);
+        gesturePaint.setStrokeJoin(Paint.Join.ROUND);
+        gesturePaint.setColor(gesturePreviewTrailColor);
+        gesturePaint.setStrokeWidth(gesturePreviewTrailWidth);
+        mGesturePaint = gesturePaint;
 
-        mTextPaint = new Paint();
-        mTextPaint.setAntiAlias(true);
-        mTextPaint.setStrokeJoin(Paint.Join.ROUND);
-        mTextPaint.setTextAlign(Align.CENTER);
-        mTextPaint.setTextSize(gestureFloatingPreviewTextSize);
+        final Paint textPaint = new Paint();
+        textPaint.setAntiAlias(true);
+        textPaint.setStyle(Paint.Style.FILL);
+        textPaint.setTextAlign(Align.CENTER);
+        textPaint.setTextSize(gestureFloatingPreviewTextSize);
+        mTextPaint = textPaint;
+        final Rect textRect = new Rect();
+        textPaint.getTextBounds(TEXT_HEIGHT_REFERENCE_CHAR, 0, 1, textRect);
+        mGestureFloatingPreviewTextHeight = textRect.height();
     }
 
     public void setOrigin(final int x, final int y) {
@@ -242,45 +247,30 @@ public class PreviewPlacerView extends RelativeLayout {
         }
 
         final Paint paint = mTextPaint;
+        final RectF rectangle = mGestureFloatingPreviewRectangle;
         // TODO: Figure out how we should deal with the floating preview text with multiple moving
         // fingers.
-        final int lastX = mLastPointerX;
-        final int lastY = mLastPointerY;
-        final int textSize = (int)paint.getTextSize();
+
+        // Paint the round rectangle background.
+        final int textHeight = mGestureFloatingPreviewTextHeight;
+        final float textWidth = paint.measureText(gestureFloatingPreviewText);
+        final float hPad = mGestureFloatingPreviewHorizontalPadding;
+        final float vPad = mGestureFloatingPreviewVerticalPadding;
+        final float rectWidth = textWidth + hPad * 2.0f;
+        final float rectHeight = textHeight + vPad * 2.0f;
         final int canvasWidth = canvas.getWidth();
-
-        final int halfTextWidth = (int)paint.measureText(gestureFloatingPreviewText) / 2 + textSize;
-        final int textX = Math.min(Math.max(lastX, halfTextWidth), canvasWidth - halfTextWidth);
-
-        int textY = Math.max(-textSize, lastY - mGestureFloatingPreviewTextOffset);
-        if (textY < 0) {
-            // Paint black text shadow if preview extends above keyboard region.
-            paint.setStyle(Paint.Style.FILL_AND_STROKE);
-            paint.setColor(mGestureFloatingPreviewTextShadowColor);
-            paint.setStrokeWidth(mGestureFloatingPreviewTextShadowBorder);
-            canvas.drawText(gestureFloatingPreviewText, textX, textY, paint);
-        }
-
-        // Paint the vertical line connecting the touch point to the preview text.
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(mGestureFloatingPreviewTextConnectorColor);
-        paint.setStrokeWidth(mGestureFloatingPreviewTextConnectorWidth);
-        final int lineTopY = textY - textSize / 4;
-        canvas.drawLine(lastX, lastY, lastX, lineTopY, paint);
-        if (lastX != textX) {
-            // Paint the horizontal line connection the touch point to the preview text.
-            canvas.drawLine(lastX, lineTopY, textX, lineTopY, paint);
-        }
-
-        // Paint the shading for the text preview
-        paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        paint.setColor(mGestureFloatingPreviewTextShadingColor);
-        paint.setStrokeWidth(mGestureFloatingPreviewTextShadingBorder);
-        canvas.drawText(gestureFloatingPreviewText, textX, textY, paint);
+        final float rectX = Math.min(Math.max(mLastPointerX - rectWidth / 2.0f, 0.0f),
+                canvasWidth - rectWidth);
+        final float rectY = mLastPointerY - mGestureFloatingPreviewTextOffset - rectHeight;
+        rectangle.set(rectX, rectY, rectX + rectWidth, rectY + rectHeight);
+        final float round = mGestureFloatingPreviewRoundRadius;
+        paint.setColor(mGestureFloatingPreviewColor);
+        canvas.drawRoundRect(rectangle, round, round, paint);
 
         // Paint the text preview
         paint.setColor(mGestureFloatingPreviewTextColor);
-        paint.setStyle(Paint.Style.FILL);
+        final float textX = rectX + hPad + textWidth / 2.0f;
+        final float textY = rectY + vPad + textHeight;
         canvas.drawText(gestureFloatingPreviewText, textX, textY, paint);
     }
 }

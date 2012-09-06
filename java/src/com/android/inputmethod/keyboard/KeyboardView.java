@@ -71,12 +71,10 @@ import java.util.HashSet;
  * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextSize
  * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextColor
  * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextOffset
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextShadingColor
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextShadingBorder
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextShadowColor
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextShadowBorder
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextConnectorColor
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextConnectorWidth
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewColor
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewHorizontalPadding
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewVerticalPadding
+ * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewRoundRadius
  * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextLingerTimeout
  * @attr ref R.styleable#KeyboardView_gesturePreviewTrailFadeoutStartDelay
  * @attr ref R.styleable#KeyboardView_gesturePreviewTrailFadeoutDuration
