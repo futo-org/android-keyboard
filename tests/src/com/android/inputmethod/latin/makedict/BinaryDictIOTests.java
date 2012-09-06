@@ -17,24 +17,22 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.latin.CollectionUtils;
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
-import com.android.inputmethod.latin.makedict.FusionDictionary;
+import com.android.inputmethod.latin.UserHistoryDictIOUtils;
+import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
-import com.android.inputmethod.latin.makedict.PendingAttribute;
-import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
 import android.test.AndroidTestCase;
 import android.util.Log;
 import android.util.SparseArray;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -53,6 +51,9 @@ public class BinaryDictIOTests extends AndroidTestCase {
     private static final int UNIGRAM_FREQ = 10;
     private static final int BIGRAM_FREQ = 50;
     private static final int TOLERANCE_OF_BIGRAM_FREQ = 5;
+
+    private static final int USE_BYTE_ARRAY = 1;
+    private static final int USE_BYTE_BUFFER = 2;
 
     private static final List<String> sWords = CollectionUtils.newArrayList();
     private static final SparseArray<List<Integer>> sEmptyBigrams =
@@ -90,6 +91,37 @@ public class BinaryDictIOTests extends AndroidTestCase {
     }
 
     // Utilities for test
+
+    /**
+     * Makes new buffer according to BUFFER_TYPE.
+     */
+    private FusionDictionaryBufferInterface getBuffer(final File file,final int bufferType) {
+        FileInputStream inStream = null;
+        try {
+            inStream = new FileInputStream(file);
+            if (bufferType == USE_BYTE_ARRAY) {
+                final byte[] array = new byte[(int)file.length()];
+                inStream.read(array);
+                return new UserHistoryDictIOUtils.ByteArrayWrapper(array);
+            } else if (bufferType == USE_BYTE_BUFFER){
+                final ByteBuffer buffer = inStream.getChannel().map(
+                        FileChannel.MapMode.READ_ONLY, 0, file.length());
+                return new BinaryDictInputOutput.ByteBufferWrapper(buffer);
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "IOException while making buffer: " + e);
+        } finally {
+            if (inStream != null) {
+                try {
+                    inStream.close();
+                } catch (IOException e) {
+                    Log.e(TAG, "IOException while closing stream: " + e);
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * Generates a random word.
      */
@@ -197,45 +229,31 @@ public class BinaryDictIOTests extends AndroidTestCase {
     // Tests for readDictionaryBinary and writeDictionaryBinary
 
     private long timeReadingAndCheckDict(final File file, final List<String> words,
-            final SparseArray<List<Integer>> bigrams, final Map<String, List<String>> shortcutMap) {
-
+            final SparseArray<List<Integer>> bigrams, final Map<String, List<String>> shortcutMap,
+            final int bufferType) {
         long now, diff = -1;
+        final FusionDictionaryBufferInterface buffer = getBuffer(file, bufferType);
+        assertNotNull(buffer);
 
-        FileInputStream inStream = null;
+        FusionDictionary dict = null;
         try {
-            inStream = new FileInputStream(file);
-            final ByteBuffer buffer = inStream.getChannel().map(
-                    FileChannel.MapMode.READ_ONLY, 0, file.length());
-
             now = System.currentTimeMillis();
-            final FusionDictionary dict =
-                    BinaryDictInputOutput.readDictionaryBinary(buffer, null);
-            diff = System.currentTimeMillis() - now;
-
-            checkDictionary(dict, words, bigrams, shortcutMap);
-            return diff;
-
+            dict = BinaryDictInputOutput.readDictionaryBinary(buffer, null);
+            diff  = System.currentTimeMillis() - now;
         } catch (IOException e) {
-            Log.e(TAG, "raise IOException while reading file " + e);
+            Log.e(TAG, "IOException while reading dictionary: " + e);
         } catch (UnsupportedFormatException e) {
-            Log.e(TAG, "Unsupported format: " + e);
-        } finally {
-            if (inStream != null) {
-                try {
-                    inStream.close();
-                } catch (IOException e) {
-                    // do nothing
-                }
-            }
+            Log.e(TAG, "Unsupported format: "+ e);
         }
 
+        checkDictionary(dict, words, bigrams, shortcutMap);
         return diff;
     }
 
     // Tests for readDictionaryBinary and writeDictionaryBinary
     private String runReadAndWrite(final List<String> words,
             final SparseArray<List<Integer>> bigrams, final Map<String, List<String>> shortcuts,
-            final String message) {
+            final int bufferType, final String message) {
         File file = null;
         try {
             file = File.createTempFile("runReadAndWrite", ".dict");
@@ -252,17 +270,36 @@ public class BinaryDictIOTests extends AndroidTestCase {
         checkDictionary(dict, words, bigrams, shortcuts);
 
         final long write = timeWritingDictToFile(file, dict);
-        final long read = timeReadingAndCheckDict(file, words, bigrams, shortcuts);
+        final long read = timeReadingAndCheckDict(file, words, bigrams, shortcuts, bufferType);
 
-        return "PROF: read=" + read + "ms, write=" + write + "ms    :" + message;
+        return "PROF: read=" + read + "ms, write=" + write + "ms    :" + message +
+                " : buffer type = " + bufferType;
     }
 
-    public void testReadAndWrite() {
-        final List<String> results = new ArrayList<String>();
+    public void testReadAndWriteWithByteBuffer() {
+        final List<String> results = CollectionUtils.newArrayList();
 
-        results.add(runReadAndWrite(sWords, sEmptyBigrams, null /* shortcuts */ , "unigram"));
-        results.add(runReadAndWrite(sWords, sChainBigrams, null /* shortcuts */ , "chain"));
-        results.add(runReadAndWrite(sWords, sStarBigrams, null /* shortcuts */ , "star"));
+        results.add(runReadAndWrite(sWords, sEmptyBigrams, null /* shortcuts */, USE_BYTE_BUFFER,
+                "unigram"));
+        results.add(runReadAndWrite(sWords, sChainBigrams, null /* shortcuts */, USE_BYTE_BUFFER,
+                "chain"));
+        results.add(runReadAndWrite(sWords, sStarBigrams, null /* shortcuts */, USE_BYTE_BUFFER,
+                "star"));
+
+        for (final String result : results) {
+            Log.d(TAG, result);
+        }
+    }
+
+    public void testReadAndWriteWithByteArray() {
+        final List<String> results = CollectionUtils.newArrayList();
+
+        results.add(runReadAndWrite(sWords, sEmptyBigrams, null /* shortcuts */, USE_BYTE_ARRAY,
+                "unigram"));
+        results.add(runReadAndWrite(sWords, sChainBigrams, null /* shortcuts */, USE_BYTE_ARRAY,
+                "chain"));
+        results.add(runReadAndWrite(sWords, sStarBigrams, null /* shortcuts */, USE_BYTE_ARRAY,
+                "star"));
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -318,7 +355,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
     }
 
     private long timeAndCheckReadUnigramsAndBigramsBinary(final File file, final List<String> words,
-            final SparseArray<List<Integer>> bigrams) {
+            final SparseArray<List<Integer>> bigrams, final int bufferType) {
         FileInputStream inStream = null;
 
         final Map<Integer, String> resultWords = CollectionUtils.newTreeMap();
@@ -327,17 +364,13 @@ public class BinaryDictIOTests extends AndroidTestCase {
         final Map<Integer, Integer> resultFreqs = CollectionUtils.newTreeMap();
 
         long now = -1, diff = -1;
+        final FusionDictionaryBufferInterface buffer = getBuffer(file, bufferType);
+        assertNotNull("Can't get buffer.", buffer);
         try {
-            inStream = new FileInputStream(file);
-            final ByteBuffer buffer = inStream.getChannel().map(
-                    FileChannel.MapMode.READ_ONLY, 0, file.length());
-
             now = System.currentTimeMillis();
-            BinaryDictInputOutput.readUnigramsAndBigramsBinary(
-                    new BinaryDictInputOutput.ByteBufferWrapper(buffer), resultWords, resultFreqs,
+            BinaryDictInputOutput.readUnigramsAndBigramsBinary(buffer, resultWords, resultFreqs,
                     resultBigrams);
             diff = System.currentTimeMillis() - now;
-            checkWordMap(words, bigrams, resultWords, resultFreqs, resultBigrams);
         } catch (IOException e) {
             Log.e(TAG, "IOException " + e);
         } catch (UnsupportedFormatException e) {
@@ -352,11 +385,13 @@ public class BinaryDictIOTests extends AndroidTestCase {
             }
         }
 
+        checkWordMap(words, bigrams, resultWords, resultFreqs, resultBigrams);
         return diff;
     }
 
     private String runReadUnigramsAndBigramsBinary(final List<String> words,
-            final SparseArray<List<Integer>> bigrams, final String message) {
+            final SparseArray<List<Integer>> bigrams, final int bufferType,
+            final String message) {
         File file = null;
         try {
             file = File.createTempFile("runReadUnigrams", ".dict");
@@ -374,19 +409,37 @@ public class BinaryDictIOTests extends AndroidTestCase {
 
         timeWritingDictToFile(file, dict);
 
-        long wordMap = timeAndCheckReadUnigramsAndBigramsBinary(file, words, bigrams);
-        long fullReading = timeReadingAndCheckDict(file, words, bigrams, null /* shortcutMap */);
+        long wordMap = timeAndCheckReadUnigramsAndBigramsBinary(file, words, bigrams, bufferType);
+        long fullReading = timeReadingAndCheckDict(file, words, bigrams, null /* shortcutMap */,
+                bufferType);
 
         return "readDictionaryBinary=" + fullReading + ", readUnigramsAndBigramsBinary=" + wordMap
-                + " : " + message;
+                + " : " + message + " : buffer type = " + bufferType;
     }
 
-    public void testReadUnigramsAndBigramsBinary() {
-        final List<String> results = new ArrayList<String>();
+    public void testReadUnigramsAndBigramsBinaryWithByteBuffer() {
+        final List<String> results = CollectionUtils.newArrayList();
 
-        results.add(runReadUnigramsAndBigramsBinary(sWords, sEmptyBigrams, "unigram"));
-        results.add(runReadUnigramsAndBigramsBinary(sWords, sChainBigrams, "chain"));
-        results.add(runReadUnigramsAndBigramsBinary(sWords, sStarBigrams, "star"));
+        results.add(runReadUnigramsAndBigramsBinary(sWords, sEmptyBigrams, USE_BYTE_BUFFER,
+                "unigram"));
+        results.add(runReadUnigramsAndBigramsBinary(sWords, sChainBigrams, USE_BYTE_BUFFER,
+                "chain"));
+        results.add(runReadUnigramsAndBigramsBinary(sWords, sStarBigrams, USE_BYTE_BUFFER,
+                "star"));
+
+        for (final String result : results) {
+            Log.d(TAG, result);
+        }
+    }
+
+    public void testReadUnigramsAndBigramsBinaryWithByteArray() {
+        final List<String> results = CollectionUtils.newArrayList();
+
+        results.add(runReadUnigramsAndBigramsBinary(sWords, sEmptyBigrams, USE_BYTE_ARRAY,
+                "unigram"));
+        results.add(runReadUnigramsAndBigramsBinary(sWords, sChainBigrams, USE_BYTE_ARRAY,
+                "chain"));
+        results.add(runReadUnigramsAndBigramsBinary(sWords, sStarBigrams, USE_BYTE_ARRAY, "star"));
 
         for (final String result : results) {
             Log.d(TAG, result);
