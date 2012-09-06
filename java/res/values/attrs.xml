@@ -77,12 +77,10 @@
         <attr name="gestureFloatingPreviewTextSize" format="dimension" />
         <attr name="gestureFloatingPreviewTextColor" format="color" />
         <attr name="gestureFloatingPreviewTextOffset" format="dimension" />
-        <attr name="gestureFloatingPreviewTextShadingColor" format="color" />
-        <attr name="gestureFloatingPreviewTextShadingBorder" format="dimension" />
-        <attr name="gestureFloatingPreviewTextShadowColor" format="color" />
-        <attr name="gestureFloatingPreviewTextShadowBorder" format="dimension" />
-        <attr name="gestureFloatingPreviewTextConnectorColor" format="color" />
-        <attr name="gestureFloatingPreviewTextConnectorWidth" format="dimension" />
+        <attr name="gestureFloatingPreviewColor" format="color" />
+        <attr name="gestureFloatingPreviewHorizontalPadding" format="dimension" />
+        <attr name="gestureFloatingPreviewVerticalPadding" format="dimension" />
+        <attr name="gestureFloatingPreviewRoundRadius" format="dimension" />
         <!-- Delay after gesture input and gesture floating preview text dismissing in millisecond -->
         <attr name="gestureFloatingPreviewTextLingerTimeout" format="integer" />
         <!-- Delay after gesture trail starts fading out in millisecond. -->

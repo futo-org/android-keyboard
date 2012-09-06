@@ -99,13 +99,14 @@
     <integer name="suggestions_count_in_strip">3</integer>
     <fraction name="center_suggestion_percentile">36%</fraction>
 
-    <!-- Gesture preview parameters -->
+    <!-- Gesture preview trail parameters -->
     <dimen name="gesture_preview_trail_width">2.5dp</dimen>
-    <dimen name="gesture_floating_preview_text_size">35dp</dimen>
-    <dimen name="gesture_floating_preview_text_offset">75dp</dimen>
-    <dimen name="gesture_floating_preview_text_shadow_border">17.5dp</dimen>
-    <dimen name="gesture_floating_preview_text_shading_border">7.5dp</dimen>
-    <dimen name="gesture_floating_preview_text_connector_width">1.0dp</dimen>
+    <!-- Gesture floating preview text parameters -->
+    <dimen name="gesture_floating_preview_text_size">24dp</dimen>
+    <dimen name="gesture_floating_preview_text_offset">73dp</dimen>
+    <dimen name="gesture_floating_preview_horizontal_padding">24dp</dimen>
+    <dimen name="gesture_floating_preview_vertical_padding">16dp</dimen>
+    <dimen name="gesture_floating_preview_round_radius">3dp</dimen>
 
     <!-- Inset used in Accessibility mode to avoid accidental key presses when a finger slides off the screen. -->
     <dimen name="accessibility_edge_slop">8dp</dimen>
