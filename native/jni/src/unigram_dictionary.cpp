@@ -225,7 +225,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, const int *x
             short unsigned int *w = outWords + j * MAX_WORD_LENGTH;
             char s[MAX_WORD_LENGTH];
             for (int i = 0; i <= MAX_WORD_LENGTH; i++) s[i] = w[i];
-            (void)s;
+            (void)s; // To suppress compiler warning
             AKLOGI("%s %i", s, frequencies[j]);
         }
     }
