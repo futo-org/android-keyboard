@@ -451,7 +451,7 @@ int UnigramDictionary::getSubStringSuggestion(
         const bool hasAutoCorrectionCandidate, const int currentWordIndex,
         const int inputWordStartPos, const int inputWordLength,
         const int outputWordStartPos, const bool isSpaceProximity, int *freqArray,
-        int*wordLengthArray, unsigned short *outputWord, int *outputWordLength) const {
+        int *wordLengthArray, unsigned short *outputWord, int *outputWordLength) const {
     if (inputWordLength > MULTIPLE_WORDS_SUGGESTION_MAX_WORD_LENGTH) {
         return FLAG_MULTIPLE_SUGGEST_ABORT;
     }
@@ -546,9 +546,9 @@ int UnigramDictionary::getSubStringSuggestion(
         freq = score >> (nextWordLength + TWO_WORDS_PLUS_OTHER_ERROR_CORRECTION_DEMOTION_DIVIDER);
     }
     if (DEBUG_DICT) {
-        AKLOGI("Freq(%d): %d, length: %d, input length: %d, input start: %d (%d)"
-                , currentWordIndex, freq, nextWordLength, inputWordLength, inputWordStartPos,
-                wordLengthArray[0]);
+        AKLOGI("Freq(%d): %d, length: %d, input length: %d, input start: %d (%d)",
+                currentWordIndex, freq, nextWordLength, inputWordLength, inputWordStartPos,
+                (currentWordIndex > 0) ? wordLengthArray[0] : 0);
     }
     if (freq <= 0 || nextWordLength <= 0
             || MAX_WORD_LENGTH <= (outputWordStartPos + nextWordLength)) {
