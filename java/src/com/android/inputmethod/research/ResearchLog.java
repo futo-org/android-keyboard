@@ -102,7 +102,14 @@ public class ResearchLog {
                         mJsonWriter.endArray();
                         mJsonWriter.flush();
                         mJsonWriter.close();
+                        if (DEBUG) {
+                            Log.d(TAG, "wrote log to " + mFile);
+                        }
                         mHasWrittenData = false;
+                    } else {
+                        if (DEBUG) {
+                            Log.d(TAG, "close() called, but no data, not outputting");
+                        }
                     }
                 } catch (Exception e) {
                     Log.d(TAG, "error when closing ResearchLog:");
