@@ -61,4 +61,10 @@
     <dimen name="suggestions_strip_padding">252.0dp</dimen>
     <integer name="max_more_suggestions_row">5</integer>
     <fraction name="min_more_suggestions_width">50%</fraction>
+
+    <!-- Gesture floating preview text parameters -->
+    <dimen name="gesture_floating_preview_text_size">26dp</dimen>
+    <dimen name="gesture_floating_preview_text_offset">76dp</dimen>
+    <dimen name="gesture_floating_preview_horizontal_padding">26dp</dimen>
+    <dimen name="gesture_floating_preview_vertical_padding">17dp</dimen>
 </resources>

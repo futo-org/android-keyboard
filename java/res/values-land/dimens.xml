@@ -73,4 +73,10 @@
     <dimen name="more_keys_keyboard_slide_allowance">53.76dp</dimen>
     <!-- popup_key_height x -1.0 -->
     <dimen name="more_keys_keyboard_vertical_correction">-44.8dp</dimen>
+
+    <!-- Gesture floating preview text parameters -->
+    <dimen name="gesture_floating_preview_text_size">23dp</dimen>
+    <dimen name="gesture_floating_preview_text_offset">54dp</dimen>
+    <dimen name="gesture_floating_preview_horizontal_padding">23dp</dimen>
+    <dimen name="gesture_floating_preview_vertical_padding">15dp</dimen>
 </resources>
