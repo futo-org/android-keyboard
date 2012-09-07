@@ -573,6 +573,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
     private void endBatchInput() {
         synchronized (sAggregratedPointers) {
             mGestureStrokeWithPreviewTrail.appendAllBatchPoints(sAggregratedPointers);
+            mGestureStrokeWithPreviewTrail.reset();
             if (getActivePointerTrackerCount() == 1) {
                 if (DEBUG_LISTENER) {
                     Log.d(TAG, "onEndBatchInput: batchPoints="
