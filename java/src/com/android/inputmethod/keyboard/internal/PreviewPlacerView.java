@@ -158,7 +158,6 @@ public class PreviewPlacerView extends RelativeLayout {
 
         final Paint textPaint = new Paint();
         textPaint.setAntiAlias(true);
-        textPaint.setStyle(Paint.Style.FILL);
         textPaint.setTextAlign(Align.CENTER);
         textPaint.setTextSize(gestureFloatingPreviewTextSize);
         mTextPaint = textPaint;
