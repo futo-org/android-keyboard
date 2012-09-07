@@ -33,14 +33,9 @@ final class GesturePreviewTrail {
     private final ResizableIntArray mYCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
     private final ResizableIntArray mEventTimes = new ResizableIntArray(DEFAULT_CAPACITY);
     private int mCurrentStrokeId = -1;
-    private long mCurrentDownTime;
+    // The wall time of the zero value in {@link #mEventTimes}
+    private long mCurrentTimeBase;
     private int mTrailStartIndex;
-
-    private final static Xfermode PORTER_DUFF_MODE_SRC =
-            new PorterDuffXfermode(PorterDuff.Mode.SRC);
-
-    // Use this value as imaginary zero because x-coordinates may be zero.
-    private static final int DOWN_EVENT_MARKER = -128;
 
     static final class Params {
         public final int mTrailColor;
@@ -69,6 +64,9 @@ final class GesturePreviewTrail {
         }
     }
 
+    // Use this value as imaginary zero because x-coordinates may be zero.
+    private static final int DOWN_EVENT_MARKER = -128;
+
     private static int markAsDownEvent(final int xCoord) {
         return DOWN_EVENT_MARKER - xCoord;
     }
@@ -83,26 +81,23 @@ final class GesturePreviewTrail {
     }
 
     public void addStroke(final GestureStrokeWithPreviewTrail stroke, final long downTime) {
-        final int strokeId = stroke.getGestureStrokeId();
-        final boolean isNewStroke = strokeId != mCurrentStrokeId;
         final int trailSize = mEventTimes.getLength();
         stroke.appendPreviewStroke(mEventTimes, mXCoordinates, mYCoordinates);
-        final int newTrailSize = mEventTimes.getLength();
-        if (stroke.getGestureStrokePreviewSize() == 0) {
+        if (mEventTimes.getLength() == trailSize) {
             return;
         }
-        if (isNewStroke) {
-            final int elapsedTime = (int)(downTime - mCurrentDownTime);
-            final int[] eventTimes = mEventTimes.getPrimitiveArray();
+        final int[] eventTimes = mEventTimes.getPrimitiveArray();
+        final int strokeId = stroke.getGestureStrokeId();
+        if (strokeId != mCurrentStrokeId) {
+            final int elapsedTime = (int)(downTime - mCurrentTimeBase);
             for (int i = mTrailStartIndex; i < trailSize; i++) {
+                // Decay the previous strokes' event times.
                 eventTimes[i] -= elapsedTime;
             }
-
-            if (newTrailSize > trailSize) {
-                final int[] xCoords = mXCoordinates.getPrimitiveArray();
-                xCoords[trailSize] = markAsDownEvent(xCoords[trailSize]);
-            }
-            mCurrentDownTime = downTime;
+            final int[] xCoords = mXCoordinates.getPrimitiveArray();
+            final int downIndex = trailSize;
+            xCoords[downIndex] = markAsDownEvent(xCoords[downIndex]);
+            mCurrentTimeBase = downTime - eventTimes[downIndex];
             mCurrentStrokeId = strokeId;
         }
     }
@@ -123,6 +118,9 @@ final class GesturePreviewTrail {
                 / params.mTrailLingerDuration, 0.0f);
     }
 
+    private final static Xfermode PORTER_DUFF_MODE_SRC =
+            new PorterDuffXfermode(PorterDuff.Mode.SRC);
+
     /**
      * Draw gesture preview trail
      * @param canvas The canvas to draw the gesture preview trail
@@ -139,7 +137,7 @@ final class GesturePreviewTrail {
         final int[] eventTimes = mEventTimes.getPrimitiveArray();
         final int[] xCoords = mXCoordinates.getPrimitiveArray();
         final int[] yCoords = mYCoordinates.getPrimitiveArray();
-        final int sinceDown = (int)(SystemClock.uptimeMillis() - mCurrentDownTime);
+        final int sinceDown = (int)(SystemClock.uptimeMillis() - mCurrentTimeBase);
         int startIndex;
         for (startIndex = mTrailStartIndex; startIndex < trailSize; startIndex++) {
             final int elapsedTime = sinceDown - eventTimes[startIndex];
