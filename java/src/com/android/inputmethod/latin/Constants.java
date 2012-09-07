@@ -128,6 +128,14 @@ public final class Constants {
         }
     }
 
+    public static class Dictionary {
+        public static final int MAX_WORD_LENGTH = 48;
+
+        private Dictionary() {
+             // This utility class is no publicly instantiable.
+        }
+    }
+
     public static final int NOT_A_CODE = -1;
 
     // See {@link KeyboardActionListener.Adapter#isInvalidCoordinate(int)}.
