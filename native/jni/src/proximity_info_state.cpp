@@ -224,7 +224,7 @@ float ProximityInfoState::updateNearKeysDistances(const int x, const int y,
 bool ProximityInfoState::isPrevLocalMin(const NearKeysDistanceMap *const currentNearKeysDistances,
         const NearKeysDistanceMap *const prevNearKeysDistances,
         const NearKeysDistanceMap *const prevPrevNearKeysDistances) const {
-    static const float MARGIN = 0.05f;
+    static const float MARGIN = 0.01f;
 
     for (NearKeysDistanceMap::const_iterator it = prevNearKeysDistances->begin();
         it != prevNearKeysDistances->end(); ++it) {
@@ -245,16 +245,19 @@ float ProximityInfoState::getPointScore(
         const NearKeysDistanceMap *const prevNearKeysDistances,
         const NearKeysDistanceMap *const prevPrevNearKeysDistances) const {
     static const float BASE_SAMPLE_RATE_SCALE = 0.1f;
-    static const float SAVE_DISTANCE_SCALE = 14.0f;
+    static const float SAVE_DISTANCE_SCALE = 20.0f;
     static const float SAVE_DISTANCE_SCORE = 2.0f;
-    static const float SKIP_DISTANCE_SCALE = 1.5f;
+    static const float SKIP_DISTANCE_SCALE = 2.5f;
     static const float SKIP_DISTANCE_SCORE = -1.0f;
-    static const float CHECK_LOCALMIN_DISTANCE_THRESHOLD_SCALE = 3.5f;
+    static const float CHECK_LOCALMIN_DISTANCE_THRESHOLD_SCALE = 4.0f;
     static const float CHECK_LOCALMIN_DISTANCE_SCORE = -1.0f;
-    static const float STRAIGHT_ANGLE_THRESHOLD = M_PI_F / 32.0f;
+    static const float STRAIGHT_ANGLE_THRESHOLD = M_PI_F / 36.0f;
     static const float STRAIGHT_SKIP_DISTANCE_THRESHOLD_SCALE = 5.0f;
     static const float STRAIGHT_SKIP_NEAREST_DISTANCE_THRESHOLD = 0.5f;
     static const float STRAIGHT_SKIP_SCORE = -1.0f;
+    static const float CORNER_ANGLE_THRESHOLD = M_PI_F / 2.0f;
+    static const float CORNER_CHECK_DISTANCE_THRESHOLD_SCALE = 2.7f;
+    static const float CORNER_SCORE = 1.0f;
 
     const std::size_t size = mInputXs.size();
     if (size <= 1) {
@@ -276,20 +279,26 @@ float ProximityInfoState::getPointScore(
     }
     // Location
     if (distPrev < baseSampleRate * CHECK_LOCALMIN_DISTANCE_THRESHOLD_SCALE) {
-        if (!isPrevLocalMin(currentNearKeysDistances, currentNearKeysDistances,
+        if (!isPrevLocalMin(currentNearKeysDistances, prevNearKeysDistances,
             prevPrevNearKeysDistances)) {
             score += CHECK_LOCALMIN_DISTANCE_SCORE;
         }
     }
     // Angle
+    const float angle1 = getAngle(x, y, mInputXs.back(), mInputYs.back());
+    const float angle2 = getAngle(mInputXs.back(), mInputYs.back(),
+            mInputXs[size - 2], mInputYs[size - 2]);
+    const float angleDiff = getAngleDiff(angle1, angle2);
+    // Skip straight
     if (nearest > STRAIGHT_SKIP_NEAREST_DISTANCE_THRESHOLD
-            && distPrev < baseSampleRate * STRAIGHT_SKIP_DISTANCE_THRESHOLD_SCALE) {
-        const float angle1 = getAngle(x, y, mInputXs.back(), mInputYs.back());
-        const float angle2 = getAngle(mInputXs.back(), mInputYs.back(),
-                mInputXs[size - 2], mInputYs[size - 2]);
-        if (getAngleDiff(angle1, angle2) < STRAIGHT_ANGLE_THRESHOLD) {
-            score += STRAIGHT_SKIP_SCORE;
-        }
+            && distPrev < baseSampleRate * STRAIGHT_SKIP_DISTANCE_THRESHOLD_SCALE
+            && angleDiff < STRAIGHT_ANGLE_THRESHOLD) {
+        score += STRAIGHT_SKIP_SCORE;
+    }
+    // Save corner
+    if (distPrev > baseSampleRate * CORNER_CHECK_DISTANCE_THRESHOLD_SCALE
+            && angleDiff > CORNER_ANGLE_THRESHOLD) {
+        score += CORNER_SCORE;
     }
     return score;
 }
@@ -447,9 +456,9 @@ int32_t ProximityInfoState::getAllPossibleChars(
 
 float ProximityInfoState::getAveragePointDuration() const {
     if (mInputSize == 0) {
-        return 0;
+        return 0.0f;
     }
-    return (mTimes[mInputSize - 1] - mTimes[0]) / static_cast<float>(mInputSize);
+    return static_cast<float>(mTimes[mInputSize - 1] - mTimes[0]) / static_cast<float>(mInputSize);
 }
 
 } // namespace latinime
