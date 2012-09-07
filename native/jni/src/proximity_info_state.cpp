@@ -29,6 +29,14 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         const ProximityInfo *proximityInfo, const int32_t *const inputCodes, const int inputSize,
         const int *const xCoordinates, const int *const yCoordinates, const int *const times,
         const int *const pointerIds, const bool isGeometric) {
+
+    if (isGeometric) {
+        mIsContinuationPossible = checkAndReturnIsContinuationPossible(
+                inputSize, xCoordinates, yCoordinates, times);
+    } else {
+        mIsContinuationPossible = false;
+    }
+
     mProximityInfo = proximityInfo;
     mHasTouchPositionCorrectionData = proximityInfo->hasTouchPositionCorrectionData();
     mMostCommonKeyWidthSquare = proximityInfo->getMostCommonKeyWidthSquare();
@@ -70,19 +78,32 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
 
     ///////////////////////
     // Setup touch points
+    int pushTouchPointStartIndex = 0;
+    int lastSavedInputSize = 0;
     mMaxPointToKeyLength = maxPointToKeyLength;
-    mInputXs.clear();
-    mInputYs.clear();
-    mTimes.clear();
-    mLengthCache.clear();
-    mDistanceCache.clear();
-    mNearKeysVector.clear();
+    if (mIsContinuationPossible && mInputIndice.size() > 1) {
+        // Just update difference.
+        // Two points prior is never skipped. Thus, we pop 2 input point data here.
+        pushTouchPointStartIndex = mInputIndice[mInputIndice.size() - 2];
+        popInputData();
+        popInputData();
+        lastSavedInputSize = mInputXs.size();
+    } else {
+        // Clear all data.
+        mInputXs.clear();
+        mInputYs.clear();
+        mTimes.clear();
+        mInputIndice.clear();
+        mLengthCache.clear();
+        mDistanceCache.clear();
+        mNearKeysVector.clear();
+    }
     mInputSize = 0;
 
     if (xCoordinates && yCoordinates) {
         const bool proximityOnly = !isGeometric && (xCoordinates[0] < 0 || yCoordinates[0] < 0);
-        int lastInputIndex = 0;
-        for (int i = 0; i < inputSize; ++i) {
+        int lastInputIndex = pushTouchPointStartIndex;
+        for (int i = lastInputIndex; i < inputSize; ++i) {
             const int pid = pointerIds ? pointerIds[i] : 0;
             if (pointerId == pid) {
                 lastInputIndex = i;
@@ -95,7 +116,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         NearKeysDistanceMap *prevNearKeysDistances = &nearKeysDistances[1];
         NearKeysDistanceMap *prevPrevNearKeysDistances = &nearKeysDistances[2];
 
-        for (int i = 0; i < inputSize; ++i) {
+        for (int i = pushTouchPointStartIndex; i <= lastInputIndex; ++i) {
             // Assuming pointerId == 0 if pointerIds is null.
             const int pid = pointerIds ? pointerIds[i] : 0;
             if (pointerId == pid) {
@@ -103,7 +124,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 const int x = proximityOnly ? NOT_A_COORDINATE : xCoordinates[i];
                 const int y = proximityOnly ? NOT_A_COORDINATE : yCoordinates[i];
                 const int time = times ? times[i] : -1;
-                if (pushTouchPoint(c, x, y, time, isGeometric, i == lastInputIndex,
+                if (pushTouchPoint(i, c, x, y, time, isGeometric, i == lastInputIndex,
                         currentNearKeysDistances, prevNearKeysDistances,
                         prevPrevNearKeysDistances)) {
                     // Previous point information was popped.
@@ -125,7 +146,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         const int keyCount = mProximityInfo->getKeyCount();
         mNearKeysVector.resize(mInputSize);
         mDistanceCache.resize(mInputSize * keyCount);
-        for (int i = 0; i < mInputSize; ++i) {
+        for (int i = lastSavedInputSize; i < mInputSize; ++i) {
             mNearKeysVector[i].reset();
             static const float NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD = 4.0f;
             for (int k = 0; k < keyCount; ++k) {
@@ -146,7 +167,7 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 hypotf(mProximityInfo->getKeyboardWidth(), mProximityInfo->getKeyboardHeight())
                 * READ_FORWORD_LENGTH_SCALE);
         for (int i = 0; i < mInputSize; ++i) {
-            for (int j = i + 1; j < mInputSize; ++j) {
+            for (int j = max(i + 1, lastSavedInputSize); j < mInputSize; ++j) {
                 if (mLengthCache[j] - mLengthCache[i] >= readForwordLength) {
                     break;
                 }
@@ -197,6 +218,18 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
             }
         }
     }
+}
+
+bool ProximityInfoState::checkAndReturnIsContinuationPossible(const int inputSize,
+        const int *const xCoordinates, const int *const yCoordinates, const int *const times) {
+    for (int i = 0; i < mInputSize; ++i) {
+        const int index = mInputIndice[i];
+        if (index > inputSize || xCoordinates[index] != mInputXs[i] ||
+                yCoordinates[index] != mInputYs[i] || times[index] != mTimes[i]) {
+            return false;
+        }
+    }
+    return true;
 }
 
 // Calculating point to key distance for all near keys and returning the distance between
@@ -305,8 +338,8 @@ float ProximityInfoState::getPointScore(
 
 // Sampling touch point and pushing information to vectors.
 // Returning if previous point is popped or not.
-bool ProximityInfoState::pushTouchPoint(const int nodeChar, int x, int y, const int time,
-        const bool sample, const bool isLastPoint,
+bool ProximityInfoState::pushTouchPoint(const int inputIndex, const int nodeChar, int x, int y,
+        const int time, const bool sample, const bool isLastPoint,
         NearKeysDistanceMap *const currentNearKeysDistances,
         const NearKeysDistanceMap *const prevNearKeysDistances,
         const NearKeysDistanceMap *const prevPrevNearKeysDistances) {
@@ -320,10 +353,7 @@ bool ProximityInfoState::pushTouchPoint(const int nodeChar, int x, int y, const 
                 currentNearKeysDistances, prevNearKeysDistances, prevPrevNearKeysDistances);
         if (score < 0) {
             // Pop previous point because it would be useless.
-            mInputXs.pop_back();
-            mInputYs.pop_back();
-            mTimes.pop_back();
-            mLengthCache.pop_back();
+            popInputData();
             size = mInputXs.size();
             popped = true;
         } else {
@@ -371,6 +401,7 @@ bool ProximityInfoState::pushTouchPoint(const int nodeChar, int x, int y, const 
     mInputXs.push_back(x);
     mInputYs.push_back(y);
     mTimes.push_back(time);
+    mInputIndice.push_back(inputIndex);
     return popped;
 }
 
@@ -459,6 +490,14 @@ float ProximityInfoState::getAveragePointDuration() const {
         return 0.0f;
     }
     return static_cast<float>(mTimes[mInputSize - 1] - mTimes[0]) / static_cast<float>(mInputSize);
+}
+
+void ProximityInfoState::popInputData() {
+    mInputXs.pop_back();
+    mInputYs.pop_back();
+    mTimes.pop_back();
+    mLengthCache.pop_back();
+    mInputIndice.pop_back();
 }
 
 } // namespace latinime
