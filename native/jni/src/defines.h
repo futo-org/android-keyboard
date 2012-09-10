@@ -200,6 +200,8 @@ static inline void prof_out(void) {
 #define DEBUG_CORRECTION_FREQ false
 #define DEBUG_WORDS_PRIORITY_QUEUE false
 
+#define DEBUG_GEO_FULL false
+
 #else // FLAG_DBG
 
 #define DEBUG_DICT false
@@ -213,6 +215,8 @@ static inline void prof_out(void) {
 #define DEBUG_CORRECTION false
 #define DEBUG_CORRECTION_FREQ false
 #define DEBUG_WORDS_PRIORITY_QUEUE false
+
+#define DEBUG_GEO_FULL false
 
 #endif // FLAG_DBG
 
