@@ -57,9 +57,9 @@ class ProximityInfoState {
             : mProximityInfo(0), mMaxPointToKeyLength(0),
               mHasTouchPositionCorrectionData(false), mMostCommonKeyWidthSquare(0), mLocaleStr(),
               mKeyCount(0), mCellHeight(0), mCellWidth(0), mGridHeight(0), mGridWidth(0),
-              mInputXs(), mInputYs(), mTimes(), mDistanceCache(), mLengthCache(),
-              mNearKeysVector(), mTouchPositionCorrectionEnabled(false),
-              mInputSize(0) {
+              mIsContinuationPossible(false), mInputXs(), mInputYs(), mTimes(), mInputIndice(),
+              mDistanceCache(), mLengthCache(), mNearKeysVector(),
+              mTouchPositionCorrectionEnabled(false), mInputSize(0) {
         memset(mInputCodes, 0, sizeof(mInputCodes));
         memset(mNormalizedSquaredDistances, 0, sizeof(mNormalizedSquaredDistances));
         memset(mPrimaryInputWord, 0, sizeof(mPrimaryInputWord));
@@ -212,6 +212,10 @@ class ProximityInfoState {
         return mLengthCache[index];
     }
 
+    bool isContinuationPossible() const {
+        return mIsContinuationPossible;
+    }
+
     float getPointToKeyLength(const int inputIndex, const int charCode, const float scale) const;
 
     int getSpaceY() const;
@@ -231,7 +235,7 @@ class ProximityInfoState {
     float calculateSquaredDistanceFromSweetSpotCenter(
             const int keyIndex, const int inputIndex) const;
 
-    bool pushTouchPoint(const int nodeChar, int x, int y, const int time,
+    bool pushTouchPoint(const int inputIndex, const int nodeChar, int x, int y, const int time,
             const bool sample, const bool isLastPoint,
             NearKeysDistanceMap *const currentNearKeysDistances,
             const NearKeysDistanceMap *const prevNearKeysDistances,
@@ -259,6 +263,9 @@ class ProximityInfoState {
             const NearKeysDistanceMap *const currentNearKeysDistances,
             const NearKeysDistanceMap *const prevNearKeysDistances,
             const NearKeysDistanceMap *const prevPrevNearKeysDistances) const;
+    bool checkAndReturnIsContinuationPossible(const int inputSize, const int *const xCoordinates,
+            const int *const yCoordinates, const int *const times);
+    void popInputData();
 
     // const
     const ProximityInfo *mProximityInfo;
@@ -271,10 +278,12 @@ class ProximityInfoState {
     int mCellWidth;
     int mGridHeight;
     int mGridWidth;
+    bool mIsContinuationPossible;
 
     std::vector<int> mInputXs;
     std::vector<int> mInputYs;
     std::vector<int> mTimes;
+    std::vector<int> mInputIndice;
     std::vector<float> mDistanceCache;
     std::vector<int>  mLengthCache;
     std::vector<NearKeycodesSet> mNearKeysVector;
