@@ -700,6 +700,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
 
+        mConnection.resetCachesUponCursorMove(mLastSelectionStart);
+
         if (isDifferentTextField) {
             mainKeyboardView.closing();
             loadSettings();
@@ -732,8 +734,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mainKeyboardView.setGestureHandlingEnabledByUser(mCurrentSettings.mGestureInputEnabled);
         mainKeyboardView.setGesturePreviewMode(mCurrentSettings.mGesturePreviewTrailEnabled,
                 mCurrentSettings.mGestureFloatingPreviewTextEnabled);
-
-        mConnection.resetCachesUponCursorMove(mLastSelectionStart);
 
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
