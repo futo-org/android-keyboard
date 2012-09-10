@@ -104,11 +104,10 @@ class ProximityInfo {
         return KEYBOARD_HEIGHT;
     }
 
-    // TODO: These should return int.
-    float getKeyCenterXOfCodePointG(int charCode) const;
-    float getKeyCenterYOfCodePointG(int charCode) const;
-    float getKeyCenterXOfKeyIdG(int keyId) const;
-    float getKeyCenterYOfKeyIdG(int keyId) const;
+    int getKeyCenterXOfCodePointG(int charCode) const;
+    int getKeyCenterYOfCodePointG(int charCode) const;
+    int getKeyCenterXOfKeyIdG(int keyId) const;
+    int getKeyCenterYOfKeyIdG(int keyId) const;
     int getKeyKeyDistanceG(int key0, int key1) const;
 
  private:

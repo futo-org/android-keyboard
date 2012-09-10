@@ -275,22 +275,22 @@ void ProximityInfo::initializeG() {
     }
 }
 
-float ProximityInfo::getKeyCenterXOfCodePointG(int charCode) const {
+int ProximityInfo::getKeyCenterXOfCodePointG(int charCode) const {
     return getKeyCenterXOfKeyIdG(getKeyIndexOf(charCode));
 }
 
-float ProximityInfo::getKeyCenterYOfCodePointG(int charCode) const {
+int ProximityInfo::getKeyCenterYOfCodePointG(int charCode) const {
     return getKeyCenterYOfKeyIdG(getKeyIndexOf(charCode));
 }
 
-float ProximityInfo::getKeyCenterXOfKeyIdG(int keyId) const {
+int ProximityInfo::getKeyCenterXOfKeyIdG(int keyId) const {
     if (keyId >= 0) {
         return mCenterXsG[keyId];
     }
     return 0;
 }
 
-float ProximityInfo::getKeyCenterYOfKeyIdG(int keyId) const {
+int ProximityInfo::getKeyCenterYOfKeyIdG(int keyId) const {
     if (keyId >= 0) {
         return mCenterYsG[keyId];
     }
