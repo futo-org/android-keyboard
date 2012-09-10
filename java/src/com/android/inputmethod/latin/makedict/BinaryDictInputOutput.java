@@ -45,9 +45,28 @@ import java.util.TreeMap;
  */
 public class BinaryDictInputOutput {
 
-    final static boolean DBG = MakedictLog.DBG;
+    private static final boolean DBG = MakedictLog.DBG;
 
-    /* Node layout is as follows:
+    /*
+     * Array of Node(FusionDictionary.Node) layout is as follows:
+     *
+     * g |
+     * r | the number of groups, 1 or 2 bytes.
+     * o | 1 byte = bbbbbbbb match
+     * u |   case 1xxxxxxx => xxxxxxx << 8 + next byte
+     * p |   otherwise => bbbbbbbb
+     * c |
+     * ount
+     *
+     * g |
+     * r | sequence of groups,
+     * o | the layout of each group is described below.
+     * u |
+     * ps
+     *
+     */
+
+    /* Node(CharGroup) layout is as follows:
      *   | addressType                         xx     : mask with MASK_GROUP_ADDRESS_TYPE
      *                                 2 bits, 00 = no children : FLAG_GROUP_ADDRESS_TYPE_NOADDRESS
      * f |                                     01 = 1 byte      : FLAG_GROUP_ADDRESS_TYPE_ONEBYTE
@@ -59,6 +78,13 @@ public class BinaryDictInputOutput {
      *   | has bigrams ?               1 bit, 1 = yes, 0 = no   : FLAG_HAS_BIGRAMS
      *   | is not a word ?             1 bit, 1 = yes, 0 = no   : FLAG_IS_NOT_A_WORD
      *   | is blacklisted ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_BLACKLISTED
+     *
+     * p |
+     * a | IF HAS_PARENT_ADDRESS (defined in the file header)
+     * r |     parent address, 3byte
+     * e | the address must be negative, so the absolute value of the address is stored.
+     * n |
+     * taddress
      *
      * c | IF FLAG_HAS_MULTIPLE_CHARS
      * h |   char, char, char, char    n * (1 or 3 bytes) : use CharGroupInfo for i/o helpers
@@ -133,18 +159,22 @@ public class BinaryDictInputOutput {
     private static final int VERSION_1_MAGIC_NUMBER = 0x78B1;
     public static final int VERSION_2_MAGIC_NUMBER = 0x9BC13AFE;
     private static final int MINIMUM_SUPPORTED_VERSION = 1;
-    private static final int MAXIMUM_SUPPORTED_VERSION = 2;
+    private static final int MAXIMUM_SUPPORTED_VERSION = 3;
     private static final int NOT_A_VERSION_NUMBER = -1;
     private static final int FIRST_VERSION_WITH_HEADER_SIZE = 2;
+    private static final int FIRST_VERSION_WITH_PARENT_ADDRESS = 3;
 
     // These options need to be the same numeric values as the one in the native reading code.
     private static final int GERMAN_UMLAUT_PROCESSING_FLAG = 0x1;
+    private static final int HAS_PARENT_ADDRESS = 0x2;
     private static final int FRENCH_LIGATURE_PROCESSING_FLAG = 0x4;
     private static final int CONTAINS_BIGRAMS_FLAG = 0x8;
 
     // TODO: Make this value adaptative to content data, store it in the header, and
     // use it in the reading code.
     private static final int MAX_WORD_LENGTH = Constants.Dictionary.MAX_WORD_LENGTH;
+
+    private static final int PARENT_ADDRESS_SIZE = 3;
 
     private static final int MASK_GROUP_ADDRESS_TYPE = 0xC0;
     private static final int FLAG_GROUP_ADDRESS_TYPE_NOADDRESS = 0x00;
@@ -179,6 +209,7 @@ public class BinaryDictInputOutput {
     private static final int GROUP_SHORTCUT_LIST_SIZE_SIZE = 2;
 
     private static final int NO_CHILDREN_ADDRESS = Integer.MIN_VALUE;
+    private static final int NO_PARENT_ADDRESS = 0;
     private static final int INVALID_CHARACTER = -1;
 
     private static final int MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT = 0x7F; // 127
@@ -247,8 +278,17 @@ public class BinaryDictInputOutput {
      */
     public static class FormatOptions {
         public final int mVersion;
+        public final boolean mHasParentAddress;
         public FormatOptions(final int version) {
+            this(version, false);
+        }
+        public FormatOptions(final int version, final boolean hasParentAddress) {
             mVersion = version;
+            if (version < FIRST_VERSION_WITH_PARENT_ADDRESS && hasParentAddress) {
+                throw new RuntimeException("Parent addresses are only supported with versions "
+                        + FIRST_VERSION_WITH_PARENT_ADDRESS + " and ulterior.");
+            }
+            mHasParentAddress = hasParentAddress;
         }
     }
 
@@ -278,7 +318,7 @@ public class BinaryDictInputOutput {
         /**
          * Helper method to find out whether this code fits on one byte
          */
-        private static boolean fitsOnOneByte(int character) {
+        private static boolean fitsOnOneByte(final int character) {
             return character >= MINIMAL_ONE_BYTE_CHARACTER_VALUE
                     && character <= MAXIMAL_ONE_BYTE_CHARACTER_VALUE;
         }
@@ -300,7 +340,7 @@ public class BinaryDictInputOutput {
          * @param character the character code.
          * @return the size in binary encoded-form, either 1 or 3 bytes.
          */
-        private static int getCharSize(int character) {
+        private static int getCharSize(final int character) {
             // See char encoding in FusionDictionary.java
             if (fitsOnOneByte(character)) return 1;
             if (INVALID_CHARACTER == character) return 1;
@@ -373,7 +413,7 @@ public class BinaryDictInputOutput {
          * @param buffer the ByteArrayOutputStream to write to.
          * @param word the string to write.
          */
-        private static void writeString(ByteArrayOutputStream buffer, final String word) {
+        private static void writeString(final ByteArrayOutputStream buffer, final String word) {
             final int length = word.length();
             for (int i = 0; i < length; i = word.offsetByCodePoints(i, 1)) {
                 final int codePoint = word.codePointAt(i);
@@ -429,7 +469,7 @@ public class BinaryDictInputOutput {
      * @param group the group
      * @return the size of the char array, including the terminator if any
      */
-    private static int getGroupCharactersSize(CharGroup group) {
+    private static int getGroupCharactersSize(final CharGroup group) {
         int size = CharEncoding.getCharArraySize(group.mChars);
         if (group.hasSeveralChars()) size += GROUP_TERMINATOR_SIZE;
         return size;
@@ -447,7 +487,7 @@ public class BinaryDictInputOutput {
             return 2;
         } else {
             throw new RuntimeException("Can't have more than " + MAX_CHARGROUPS_IN_A_NODE
-                    + " groups in a node (found " + count +")");
+                    + " groups in a node (found " + count + ")");
         }
     }
 
@@ -494,10 +534,11 @@ public class BinaryDictInputOutput {
      * Compute the maximum size of a CharGroup, assuming 3-byte addresses for everything.
      *
      * @param group the CharGroup to compute the size of.
+     * @param options file format options.
      * @return the maximum size of the group.
      */
-    private static int getCharGroupMaximumSize(CharGroup group) {
-        int size = getGroupCharactersSize(group) + GROUP_FLAGS_SIZE;
+    private static int getCharGroupMaximumSize(final CharGroup group, final FormatOptions options) {
+        int size = getGroupHeaderSize(group, options);
         // If terminal, one byte for the frequency
         if (group.isTerminal()) size += GROUP_FREQUENCY_SIZE;
         size += GROUP_MAX_ADDRESS_SIZE; // For children address
@@ -514,11 +555,12 @@ public class BinaryDictInputOutput {
      * it in the 'actualSize' member of the node.
      *
      * @param node the node to compute the maximum size of.
+     * @param options file format options.
      */
-    private static void setNodeMaximumSize(Node node) {
+    private static void setNodeMaximumSize(final Node node, final FormatOptions options) {
         int size = getGroupCountSize(node);
         for (CharGroup g : node.mData) {
-            final int groupSize = getCharGroupMaximumSize(g);
+            final int groupSize = getCharGroupMaximumSize(g, options);
             g.mCachedSize = groupSize;
             size += groupSize;
         }
@@ -528,8 +570,30 @@ public class BinaryDictInputOutput {
     /**
      * Helper method to hide the actual value of the no children address.
      */
-    private static boolean hasChildrenAddress(int address) {
+    private static boolean hasChildrenAddress(final int address) {
         return NO_CHILDREN_ADDRESS != address;
+    }
+
+    /**
+     * Helper method to check whether the CharGroup has a parent address.
+     */
+    private static boolean hasParentAddress(final FormatOptions options) {
+        return options.mVersion >= FIRST_VERSION_WITH_PARENT_ADDRESS
+                && options.mHasParentAddress;
+    }
+
+    /**
+     * Compute the size of the header (flag + [parent address] + characters size) of a CharGroup.
+     *
+     * @param group the group of which to compute the size of the header
+     * @param options file format options.
+     */
+    private static int getGroupHeaderSize(final CharGroup group, final FormatOptions options) {
+        if (hasParentAddress(options)) {
+            return GROUP_FLAGS_SIZE + PARENT_ADDRESS_SIZE + getGroupCharactersSize(group);
+        } else {
+            return GROUP_FLAGS_SIZE + getGroupCharactersSize(group);
+        }
     }
 
     /**
@@ -542,7 +606,7 @@ public class BinaryDictInputOutput {
      * @param address the address
      * @return the byte size.
      */
-    private static int getByteSize(int address) {
+    private static int getByteSize(final int address) {
         assert(address < 0x1000000);
         if (!hasChildrenAddress(address)) {
             return 0;
@@ -558,14 +622,14 @@ public class BinaryDictInputOutput {
 
     // This method is responsible for finding a nice ordering of the nodes that favors run-time
     // cache performance and dictionary size.
-    /* package for tests */ static ArrayList<Node> flattenTree(Node root) {
+    /* package for tests */ static ArrayList<Node> flattenTree(final Node root) {
         final int treeSize = FusionDictionary.countCharGroups(root);
         MakedictLog.i("Counted nodes : " + treeSize);
         final ArrayList<Node> flatTree = new ArrayList<Node>(treeSize);
         return flattenTreeInner(flatTree, root);
     }
 
-    private static ArrayList<Node> flattenTreeInner(ArrayList<Node> list, Node node) {
+    private static ArrayList<Node> flattenTreeInner(final ArrayList<Node> list, final Node node) {
         // Removing the node is necessary if the tails are merged, because we would then
         // add the same node several times when we only want it once. A number of places in
         // the code also depends on any node being only once in the list.
@@ -615,9 +679,11 @@ public class BinaryDictInputOutput {
      *
      * @param node the node to compute the size of.
      * @param dict the dictionary in which the word/attributes are to be found.
+     * @param formatOptions file format options.
      * @return false if none of the cached addresses inside the node changed, true otherwise.
      */
-    private static boolean computeActualNodeSize(Node node, FusionDictionary dict) {
+    private static boolean computeActualNodeSize(final Node node, final FusionDictionary dict,
+            final FormatOptions formatOptions) {
         boolean changed = false;
         int size = getGroupCountSize(node);
         for (CharGroup group : node.mData) {
@@ -625,11 +691,14 @@ public class BinaryDictInputOutput {
                 changed = true;
                 group.mCachedAddress = node.mCachedAddress + size;
             }
-            int groupSize = GROUP_FLAGS_SIZE + getGroupCharactersSize(group);
+            int groupSize = getGroupHeaderSize(group, formatOptions);
             if (group.isTerminal()) groupSize += GROUP_FREQUENCY_SIZE;
             if (null != group.mChildren) {
-                final int offsetBasePoint= groupSize + node.mCachedAddress + size;
+                final int offsetBasePoint = groupSize + node.mCachedAddress + size;
                 final int offset = group.mChildren.mCachedAddress - offsetBasePoint;
+                // assign my address to children's parent address
+                group.mChildren.mCachedParentAddress = group.mCachedAddress
+                        - group.mChildren.mCachedAddress;
                 groupSize += getByteSize(offset);
             }
             groupSize += getShortcutListSize(group.mShortcutTargets);
@@ -658,7 +727,7 @@ public class BinaryDictInputOutput {
      * @param flatNodes the array of nodes.
      * @return the byte size of the entire stack.
      */
-    private static int stackNodes(ArrayList<Node> flatNodes) {
+    private static int stackNodes(final ArrayList<Node> flatNodes) {
         int nodeOffset = 0;
         for (Node n : flatNodes) {
             n.mCachedAddress = nodeOffset;
@@ -688,12 +757,13 @@ public class BinaryDictInputOutput {
      *
      * @param dict the dictionary
      * @param flatNodes the ordered array of nodes
+     * @param formatOptions file format options.
      * @return the same array it was passed. The nodes have been updated for address and size.
      */
-    private static ArrayList<Node> computeAddresses(FusionDictionary dict,
-            ArrayList<Node> flatNodes) {
+    private static ArrayList<Node> computeAddresses(final FusionDictionary dict,
+            final ArrayList<Node> flatNodes, final FormatOptions formatOptions) {
         // First get the worst sizes and offsets
-        for (Node n : flatNodes) setNodeMaximumSize(n);
+        for (Node n : flatNodes) setNodeMaximumSize(n, formatOptions);
         final int offset = stackNodes(flatNodes);
 
         MakedictLog.i("Compressing the array addresses. Original size : " + offset);
@@ -705,7 +775,7 @@ public class BinaryDictInputOutput {
             changesDone = false;
             for (Node n : flatNodes) {
                 final int oldNodeSize = n.mCachedSize;
-                final boolean changed = computeActualNodeSize(n, dict);
+                final boolean changed = computeActualNodeSize(n, dict, formatOptions);
                 final int newNodeSize = n.mCachedSize;
                 if (oldNodeSize < newNodeSize) throw new RuntimeException("Increased size ?!");
                 changesDone |= changed;
@@ -733,7 +803,7 @@ public class BinaryDictInputOutput {
      *
      * @param array the array node to check
      */
-    private static void checkFlatNodeArray(ArrayList<Node> array) {
+    private static void checkFlatNodeArray(final ArrayList<Node> array) {
         int offset = 0;
         int index = 0;
         for (Node n : array) {
@@ -891,12 +961,14 @@ public class BinaryDictInputOutput {
     /**
      * Makes the 2-byte value for options flags.
      */
-    private static final int makeOptionsValue(final FusionDictionary dictionary) {
+    private static final int makeOptionsValue(final FusionDictionary dictionary,
+            final FormatOptions formatOptions) {
         final DictionaryOptions options = dictionary.mOptions;
         final boolean hasBigrams = dictionary.hasBigrams();
         return (options.mFrenchLigatureProcessing ? FRENCH_LIGATURE_PROCESSING_FLAG : 0)
                 + (options.mGermanUmlautProcessing ? GERMAN_UMLAUT_PROCESSING_FLAG : 0)
-                + (hasBigrams ? CONTAINS_BIGRAMS_FLAG : 0);
+                + (hasBigrams ? CONTAINS_BIGRAMS_FLAG : 0)
+                + (formatOptions.mHasParentAddress ? HAS_PARENT_ADDRESS : 0);
     }
 
     /**
@@ -919,13 +991,16 @@ public class BinaryDictInputOutput {
      * @param dict the dictionary the node is a part of (for relative offsets).
      * @param buffer the memory buffer to write to.
      * @param node the node to write.
+     * @param formatOptions file format options.
      * @return the address of the END of the node.
      */
-    private static int writePlacedNode(FusionDictionary dict, byte[] buffer, Node node) {
+    private static int writePlacedNode(final FusionDictionary dict, byte[] buffer,
+            final Node node, final FormatOptions formatOptions) {
         int index = node.mCachedAddress;
 
         final int groupCount = node.mData.size();
         final int countSize = getGroupCountSize(node);
+        final int parentAddress = node.mCachedParentAddress;
         if (1 == countSize) {
             buffer[index++] = (byte)groupCount;
         } else if (2 == countSize) {
@@ -942,7 +1017,7 @@ public class BinaryDictInputOutput {
             if (index != group.mCachedAddress) throw new RuntimeException("Bug: write index is not "
                     + "the same as the cached address of the group : "
                     + index + " <> " + group.mCachedAddress);
-            groupAddress += GROUP_FLAGS_SIZE + getGroupCharactersSize(group);
+            groupAddress += getGroupHeaderSize(group, formatOptions);
             // Sanity checks.
             if (DBG && group.mFrequency > MAX_TERMINAL_FREQUENCY) {
                 throw new RuntimeException("A node has a frequency > " + MAX_TERMINAL_FREQUENCY
@@ -953,6 +1028,22 @@ public class BinaryDictInputOutput {
                     ? NO_CHILDREN_ADDRESS : group.mChildren.mCachedAddress - groupAddress;
             byte flags = makeCharGroupFlags(group, groupAddress, childrenOffset);
             buffer[index++] = flags;
+
+            if (hasParentAddress(formatOptions)) {
+                if (parentAddress == NO_PARENT_ADDRESS) {
+                    // this node is the root node.
+                    buffer[index] = buffer[index + 1] = buffer[index + 2] = 0;
+                } else {
+                    // write parent address. (version 3)
+                    final int actualParentAddress = Math.abs(parentAddress
+                            + (node.mCachedAddress - group.mCachedAddress));
+                    buffer[index] = (byte)((actualParentAddress >> 16) & 0xFF);
+                    buffer[index + 1] = (byte)((actualParentAddress >> 8) & 0xFF);
+                    buffer[index + 2] = (byte)(actualParentAddress & 0xFF);
+                }
+                index += 3;
+            }
+
             index = CharEncoding.writeCharArray(group.mChars, buffer, index);
             if (group.hasSeveralChars()) {
                 buffer[index++] = GROUP_CHARACTERS_TERMINATOR;
@@ -1077,7 +1168,7 @@ public class BinaryDictInputOutput {
      *
      * @param destination the stream to write the binary data to.
      * @param dict the dictionary to write.
-     * @param formatOptions the options of file format.
+     * @param formatOptions file format options.
      */
     public static void writeDictionaryBinary(final OutputStream destination,
             final FusionDictionary dict, final FormatOptions formatOptions)
@@ -1116,7 +1207,7 @@ public class BinaryDictInputOutput {
             headerBuffer.write((byte) (0xFF & version));
         }
         // Options flags
-        final int options = makeOptionsValue(dict);
+        final int options = makeOptionsValue(dict, formatOptions);
         headerBuffer.write((byte) (0xFF & (options >> 8)));
         headerBuffer.write((byte) (0xFF & options));
         if (version >= FIRST_VERSION_WITH_HEADER_SIZE) {
@@ -1150,20 +1241,20 @@ public class BinaryDictInputOutput {
         ArrayList<Node> flatNodes = flattenTree(dict.mRoot);
 
         MakedictLog.i("Computing addresses...");
-        computeAddresses(dict, flatNodes);
+        computeAddresses(dict, flatNodes, formatOptions);
         MakedictLog.i("Checking array...");
         if (DBG) checkFlatNodeArray(flatNodes);
 
         // Create a buffer that matches the final dictionary size.
         final Node lastNode = flatNodes.get(flatNodes.size() - 1);
-        final int bufferSize =(lastNode.mCachedAddress + lastNode.mCachedSize);
+        final int bufferSize = lastNode.mCachedAddress + lastNode.mCachedSize;
         final byte[] buffer = new byte[bufferSize];
         int index = 0;
 
         MakedictLog.i("Writing file...");
         int dataEndOffset = 0;
         for (Node n : flatNodes) {
-            dataEndOffset = writePlacedNode(dict, buffer, n);
+            dataEndOffset = writePlacedNode(dict, buffer, n, formatOptions);
         }
 
         if (DBG) showStatistics(flatNodes);
@@ -1178,23 +1269,36 @@ public class BinaryDictInputOutput {
     // Input methods: Read a binary dictionary to memory.
     // readDictionaryBinary is the public entry point for them.
 
-    static final int[] characterBuffer = new int[MAX_WORD_LENGTH];
+    private static final int[] CHARACTER_BUFFER = new int[MAX_WORD_LENGTH];
     private static CharGroupInfo readCharGroup(final FusionDictionaryBufferInterface buffer,
-            final int originalGroupAddress) {
+            final int originalGroupAddress, final FormatOptions options) {
         int addressPointer = originalGroupAddress;
         final int flags = buffer.readUnsignedByte();
         ++addressPointer;
+
+        final int parentAddress;
+        if (hasParentAddress(options)) {
+            // read the parent address. (version 3)
+            parentAddress = -buffer.readUnsignedInt24();
+            addressPointer += 3;
+        } else {
+            parentAddress = NO_PARENT_ADDRESS;
+        }
+
         final int characters[];
         if (0 != (flags & FLAG_HAS_MULTIPLE_CHARS)) {
             int index = 0;
             int character = CharEncoding.readChar(buffer);
             addressPointer += CharEncoding.getCharSize(character);
             while (-1 != character) {
-                characterBuffer[index++] = character;
+                // FusionDictionary is making sure that the length of the word is smaller than
+                // MAX_WORD_LENGTH.
+                // So we'll never write past the end of CHARACTER_BUFFER.
+                CHARACTER_BUFFER[index++] = character;
                 character = CharEncoding.readChar(buffer);
                 addressPointer += CharEncoding.getCharSize(character);
             }
-            characters = Arrays.copyOfRange(characterBuffer, 0, index);
+            characters = Arrays.copyOfRange(CHARACTER_BUFFER, 0, index);
         } else {
             final int character = CharEncoding.readChar(buffer);
             addressPointer += CharEncoding.getCharSize(character);
@@ -1272,7 +1376,7 @@ public class BinaryDictInputOutput {
             }
         }
         return new CharGroupInfo(originalGroupAddress, addressPointer, flags, characters, frequency,
-                childrenAddress, shortcutTargets, bigrams);
+                parentAddress, childrenAddress, shortcutTargets, bigrams);
     }
 
     /**
@@ -1299,13 +1403,56 @@ public class BinaryDictInputOutput {
      * @param buffer the buffer to read from.
      * @param headerSize the size of the header.
      * @param address the address to seek.
+     * @param formatOptions file format options.
      * @return the word, as a string.
      */
     private static String getWordAtAddress(final FusionDictionaryBufferInterface buffer,
-            final int headerSize, final int address) {
+            final int headerSize, final int address, final FormatOptions formatOptions) {
         final String cachedString = wordCache.get(address);
         if (null != cachedString) return cachedString;
+
+        final String result;
         final int originalPointer = buffer.position();
+
+        if (hasParentAddress(formatOptions)) {
+            result = getWordAtAddressWithParentAddress(buffer, headerSize, address, formatOptions);
+        } else {
+            result = getWordAtAddressWithoutParentAddress(buffer, headerSize, address,
+                    formatOptions);
+        }
+
+        wordCache.put(address, result);
+        buffer.position(originalPointer);
+        return result;
+    }
+
+    private static int[] sGetWordBuffer = new int[MAX_WORD_LENGTH];
+    private static String getWordAtAddressWithParentAddress(
+            final FusionDictionaryBufferInterface buffer, final int headerSize, final int address,
+            final FormatOptions options) {
+        final StringBuilder builder = new StringBuilder();
+
+        int currentAddress = address;
+        int index = MAX_WORD_LENGTH - 1;
+        // the length of the path from the root to the leaf is limited by MAX_WORD_LENGTH
+        for (int count = 0; count < MAX_WORD_LENGTH; ++count) {
+            buffer.position(currentAddress + headerSize);
+            final CharGroupInfo currentInfo = readCharGroup(buffer, currentAddress, options);
+            for (int i = 0; i < currentInfo.mCharacters.length; ++i) {
+                sGetWordBuffer[index--] =
+                        currentInfo.mCharacters[currentInfo.mCharacters.length - i - 1];
+            }
+
+            if (currentInfo.mParentAddress == NO_PARENT_ADDRESS) break;
+            currentAddress = currentInfo.mParentAddress + currentInfo.mOriginalAddress;
+        }
+
+        return new String(sGetWordBuffer, index + 1, MAX_WORD_LENGTH - index - 1);
+    }
+
+    private static String getWordAtAddressWithoutParentAddress(
+            final FusionDictionaryBufferInterface buffer, final int headerSize, final int address,
+            final FormatOptions options) {
         buffer.position(headerSize);
         final int count = readCharGroupCount(buffer);
         int groupOffset = getGroupCountSize(count);
@@ -1314,7 +1461,7 @@ public class BinaryDictInputOutput {
 
         CharGroupInfo last = null;
         for (int i = count - 1; i >= 0; --i) {
-            CharGroupInfo info = readCharGroup(buffer, groupOffset);
+            CharGroupInfo info = readCharGroup(buffer, groupOffset, options);
             groupOffset = info.mEndAddress;
             if (info.mOriginalAddress == address) {
                 builder.append(new String(info.mCharacters, 0, info.mCharacters.length));
@@ -1342,8 +1489,6 @@ public class BinaryDictInputOutput {
                 continue;
             }
         }
-        buffer.position(originalPointer);
-        wordCache.put(address, result);
         return result;
     }
 
@@ -1359,24 +1504,26 @@ public class BinaryDictInputOutput {
      * @param headerSize the size, in bytes, of the file header.
      * @param reverseNodeMap a mapping from addresses to already read nodes.
      * @param reverseGroupMap a mapping from addresses to already read character groups.
+     * @param options file format options.
      * @return the read node with all his children already read.
      */
     private static Node readNode(final FusionDictionaryBufferInterface buffer, final int headerSize,
-            final Map<Integer, Node> reverseNodeMap, final Map<Integer, CharGroup> reverseGroupMap)
+            final Map<Integer, Node> reverseNodeMap, final Map<Integer, CharGroup> reverseGroupMap,
+            final FormatOptions options)
             throws IOException {
         final int nodeOrigin = buffer.position() - headerSize;
         final int count = readCharGroupCount(buffer);
         final ArrayList<CharGroup> nodeContents = new ArrayList<CharGroup>();
         int groupOffset = nodeOrigin + getGroupCountSize(count);
         for (int i = count; i > 0; --i) {
-            CharGroupInfo info = readCharGroup(buffer, groupOffset);
+            CharGroupInfo info = readCharGroup(buffer, groupOffset, options);
             ArrayList<WeightedString> shortcutTargets = info.mShortcutTargets;
             ArrayList<WeightedString> bigrams = null;
             if (null != info.mBigrams) {
                 bigrams = new ArrayList<WeightedString>();
                 for (PendingAttribute bigram : info.mBigrams) {
                     final String word = getWordAtAddress(
-                            buffer, headerSize, bigram.mAddress);
+                            buffer, headerSize, bigram.mAddress, options);
                     bigrams.add(new WeightedString(word, bigram.mFrequency));
                 }
             }
@@ -1386,7 +1533,7 @@ public class BinaryDictInputOutput {
                     final int currentPosition = buffer.position();
                     buffer.position(info.mChildrenAddress + headerSize);
                     children = readNode(
-                            buffer, headerSize, reverseNodeMap, reverseGroupMap);
+                            buffer, headerSize, reverseNodeMap, reverseGroupMap, options);
                     buffer.position(currentPosition);
                 }
                 nodeContents.add(
@@ -1430,7 +1577,8 @@ public class BinaryDictInputOutput {
     private static void readUnigramsAndBigramsBinaryInner(
             final FusionDictionaryBufferInterface buffer, final int headerSize,
             final Map<Integer, String> words, final Map<Integer, Integer> frequencies,
-            final Map<Integer, ArrayList<PendingAttribute>> bigrams) {
+            final Map<Integer, ArrayList<PendingAttribute>> bigrams,
+            final FormatOptions formatOptions) {
         int[] pushedChars = new int[MAX_WORD_LENGTH + 1];
 
         Stack<Position> stack = new Stack<Position>();
@@ -1456,7 +1604,7 @@ public class BinaryDictInputOutput {
                 p.mPosition = 0;
             }
 
-            CharGroupInfo info = readCharGroup(buffer, p.mAddress - headerSize);
+            CharGroupInfo info = readCharGroup(buffer, p.mAddress - headerSize, formatOptions);
             for (int i = 0; i < info.mCharacters.length; ++i) {
                 pushedChars[index++] = info.mCharacters[i];
             }
@@ -1498,11 +1646,9 @@ public class BinaryDictInputOutput {
             final Map<Integer, ArrayList<PendingAttribute>> bigrams) throws IOException,
             UnsupportedFormatException {
         // Read header
-        FormatOptions formatOptions = null;
-        DictionaryOptions dictionaryOptions = null;
         final FileHeader header = readHeader(buffer);
-
-        readUnigramsAndBigramsBinaryInner(buffer, header.mHeaderSize, words, frequencies, bigrams);
+        readUnigramsAndBigramsBinaryInner(buffer, header.mHeaderSize, words, frequencies, bigrams,
+                header.mFormatOptions);
     }
 
     /**
@@ -1563,7 +1709,8 @@ public class BinaryDictInputOutput {
                 new FusionDictionary.DictionaryOptions(attributes,
                         0 != (optionsFlags & GERMAN_UMLAUT_PROCESSING_FLAG),
                         0 != (optionsFlags & FRENCH_LIGATURE_PROCESSING_FLAG)),
-                new FormatOptions(version));
+                new FormatOptions(version,
+                        0 != (optionsFlags & HAS_PARENT_ADDRESS)));
         return header;
     }
 
@@ -1610,7 +1757,7 @@ public class BinaryDictInputOutput {
         Map<Integer, Node> reverseNodeMapping = new TreeMap<Integer, Node>();
         Map<Integer, CharGroup> reverseGroupMapping = new TreeMap<Integer, CharGroup>();
         final Node root = readNode(buffer, header.mHeaderSize, reverseNodeMapping,
-                reverseGroupMapping);
+                reverseGroupMapping, header.mFormatOptions);
 
         FusionDictionary newDict = new FusionDictionary(root, header.mDictionaryOptions);
         if (null != dict) {
