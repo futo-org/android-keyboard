@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin.makedict;
 
+import com.android.inputmethod.latin.Constants;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -382,6 +384,11 @@ public class FusionDictionary implements Iterable<Word> {
             final ArrayList<WeightedString> shortcutTargets,
             final boolean isNotAWord, final boolean isBlacklistEntry) {
         assert(frequency >= 0 && frequency <= 255);
+        if (word.length >= Constants.Dictionary.MAX_WORD_LENGTH) {
+            MakedictLog.w("Ignoring a word that is too long: word.length = " + word.length);
+            return;
+        }
+
         Node currentNode = mRoot;
         int charIndex = 0;
 
