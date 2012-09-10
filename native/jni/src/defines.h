@@ -31,6 +31,9 @@
         dumpResult(words, frequencies, maxWordCount, maxWordLength); } while (0)
 #define DUMP_WORD(word, length) do { dumpWord(word, length); } while (0)
 #define DUMP_WORD_INT(word, length) do { dumpWordInt(word, length); } while (0)
+// TODO: INTS_TO_CHARS
+#define SHORTS_TO_CHARS(input, length, output) do { \
+        shortArrayToCharArray(input, length, output); } while (0)
 
 static inline void dumpWordInfo(const unsigned short *word, const int length,
         const int rank, const int frequency) {
@@ -87,6 +90,21 @@ static inline void dumpWordInt(const int *word, const int length) {
     AKLOGI("i[ %s ]", charBuf);
 }
 
+// TODO: Change this to intArrayToCharArray
+static inline void shortArrayToCharArray(
+        const unsigned short *input, const int length, char *output) {
+    int i = 0;
+    for (;i < length; ++i) {
+        const unsigned short c = input[i];
+        if (c == 0) {
+            break;
+        }
+        // static_cast only for debugging
+        output[i] = static_cast<char>(c);
+    }
+    output[i] = 0;
+}
+
 #ifndef __ANDROID__
 #include <cassert>
 #include <execinfo.h>
@@ -122,6 +140,8 @@ static inline void showStackTrace() {
 #define DUMP_WORD_INT(word, length)
 #define ASSERT(success)
 #define SHOW_STACK_TRACE
+// TODO: INTS_TO_CHARS
+#define SHORTS_TO_CHARS(input, length, output)
 #endif
 
 #ifdef FLAG_DO_PROFILE
