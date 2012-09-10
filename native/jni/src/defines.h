@@ -88,11 +88,13 @@ static inline void dumpWordInt(const int *word, const int length) {
 }
 
 #ifndef __ANDROID__
-#define ASSERT(success) do { if (!success) { showStackTrace(); assert(success);};} while (0)
-#define SHOW_STACK_TRACE do { showStackTrace(); } while (0)
-
+#include <cassert>
 #include <execinfo.h>
 #include <stdlib.h>
+
+#define ASSERT(success) do { if (!(success)) { showStackTrace(); assert(success);} } while (0)
+#define SHOW_STACK_TRACE do { showStackTrace(); } while (0)
+
 static inline void showStackTrace() {
     void *callstack[128];
     int i, frames = backtrace(callstack, 128);
@@ -107,7 +109,8 @@ static inline void showStackTrace() {
     free(strs);
 }
 #else
-#define ASSERT(success)
+#include <cassert>
+#define ASSERT(success) assert(success)
 #define SHOW_STACK_TRACE
 #endif
 
