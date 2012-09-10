@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import android.view.inputmethod.EditorInfo;
-
 public final class Constants {
     public static final class Color {
         /**
@@ -54,7 +52,7 @@ public final class Constants {
          * The private IME option used to indicate that the given text field needs ASCII code points
          * input.
          *
-         * @deprecated Use {@link EditorInfo#IME_FLAG_FORCE_ASCII}.
+         * @deprecated Use EditorInfo#IME_FLAG_FORCE_ASCII.
          */
         @SuppressWarnings("dep-ann")
         public static final String FORCE_ASCII = "forceAscii";
