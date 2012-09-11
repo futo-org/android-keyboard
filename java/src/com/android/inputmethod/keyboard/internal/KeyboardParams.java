@@ -24,7 +24,7 @@ import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.latin.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.TreeSet;
 
 public class KeyboardParams {
     public KeyboardId mId;
@@ -58,7 +58,7 @@ public class KeyboardParams {
     public int GRID_WIDTH;
     public int GRID_HEIGHT;
 
-    public final HashSet<Key> mKeys = CollectionUtils.newHashSet();
+    public final TreeSet<Key> mKeys = CollectionUtils.newTreeSet(); // ordered set
     public final ArrayList<Key> mShiftKeys = CollectionUtils.newArrayList();
     public final ArrayList<Key> mAltCodeKeysWhileTyping = CollectionUtils.newArrayList();
     public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
