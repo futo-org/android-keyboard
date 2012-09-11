@@ -220,7 +220,11 @@ static inline void prof_out(void) {
 #define DEBUG_CORRECTION_FREQ false
 #define DEBUG_WORDS_PRIORITY_QUEUE false
 
+#ifdef FLAG_FULL_DBG
+#define DEBUG_GEO_FULL true
+#else
 #define DEBUG_GEO_FULL false
+#endif
 
 #else // FLAG_DBG
 
