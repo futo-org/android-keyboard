@@ -124,8 +124,8 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 const int x = proximityOnly ? NOT_A_COORDINATE : xCoordinates[i];
                 const int y = proximityOnly ? NOT_A_COORDINATE : yCoordinates[i];
                 const int time = times ? times[i] : -1;
-                if (pushTouchPoint(i, c, x, y, time, isGeometric, i == lastInputIndex,
-                        currentNearKeysDistances, prevNearKeysDistances,
+                if (pushTouchPoint(i, c, x, y, time, isGeometric /* do sampling */,
+                        i == lastInputIndex, currentNearKeysDistances, prevNearKeysDistances,
                         prevPrevNearKeysDistances)) {
                     // Previous point information was popped.
                     NearKeysDistanceMap *tmp = prevNearKeysDistances;
@@ -217,6 +217,10 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 }
             }
         }
+    }
+
+    if (DEBUG_GEO_FULL) {
+        AKLOGI("ProximityState init finished: %d points out of %d", mInputSize, inputSize);
     }
 }
 
@@ -402,6 +406,10 @@ bool ProximityInfoState::pushTouchPoint(const int inputIndex, const int nodeChar
     mInputYs.push_back(y);
     mTimes.push_back(time);
     mInputIndice.push_back(inputIndex);
+    if (DEBUG_GEO_FULL) {
+        AKLOGI("pushTouchPoint: x = %03d, y = %03d, time = %d, index = %d, popped ? %01d",
+                x, y, time, inputIndex, popped);
+    }
     return popped;
 }
 
