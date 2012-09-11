@@ -52,7 +52,7 @@ import java.util.Locale;
 /**
  * Class for describing the position and characteristics of a single key in the keyboard.
  */
-public class Key {
+public class Key implements Comparable<Key> {
     private static final String TAG = Key.class.getSimpleName();
 
     /**
@@ -410,7 +410,7 @@ public class Key {
         });
     }
 
-    private boolean equals(final Key o) {
+    private boolean equalsInternal(final Key o) {
         if (this == o) return true;
         return o.mX == mX
                 && o.mY == mY
@@ -428,13 +428,20 @@ public class Key {
     }
 
     @Override
+    public int compareTo(Key o) {
+        if (equalsInternal(o)) return 0;
+        if (mHashCode > o.mHashCode) return 1;
+        return -1;
+    }
+
+    @Override
     public int hashCode() {
         return mHashCode;
     }
 
     @Override
     public boolean equals(final Object o) {
-        return o instanceof Key && equals((Key)o);
+        return o instanceof Key && equalsInternal((Key)o);
     }
 
     @Override
