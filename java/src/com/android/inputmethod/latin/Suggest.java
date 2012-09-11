@@ -214,10 +214,12 @@ public class Suggest {
             whitelistedWord = suggestionsSet.first().mWord;
         }
 
+        // The word can be auto-corrected if it has a whitelist entry that is not itself,
+        // or if it's a 2+ characters non-word (i.e. it's not in the dictionary).
         final boolean allowsToBeAutoCorrected = (null != whitelistedWord
                 && !whitelistedWord.equals(consideredWord))
-                || AutoCorrection.isNotAWord(mDictionaries, consideredWord,
-                        wordComposer.isFirstCharCapitalized());
+                || (consideredWord.length() > 1 && !AutoCorrection.isInTheDictionary(mDictionaries,
+                        consideredWord, wordComposer.isFirstCharCapitalized()));
 
         final boolean hasAutoCorrection;
         // TODO: using isCorrectionEnabled here is not very good. It's probably useless, because
