@@ -661,12 +661,17 @@ public class MainKeyboardView extends KeyboardView implements PointerTracker.Key
     }
 
     @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
+            return AccessibleKeyboardViewProxy.getInstance().dispatchTouchEvent(event);
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
+    @Override
     public boolean onTouchEvent(final MotionEvent me) {
         if (getKeyboard() == null) {
             return false;
-        }
-        if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
-            return AccessibleKeyboardViewProxy.getInstance().onTouchEvent(me);
         }
         return mTouchScreenRegulator.onTouchEvent(me);
     }
