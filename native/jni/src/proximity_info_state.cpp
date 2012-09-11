@@ -98,6 +98,10 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         mDistanceCache.clear();
         mNearKeysVector.clear();
     }
+    if (DEBUG_GEO_FULL) {
+        AKLOGI("Init ProximityInfoState: reused points =  %d, last input size = %d",
+                pushTouchPointStartIndex, lastSavedInputSize);
+    }
     mInputSize = 0;
 
     if (xCoordinates && yCoordinates) {
@@ -109,6 +113,9 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 lastInputIndex = i;
             }
         }
+        if (DEBUG_GEO_FULL) {
+            AKLOGI("Init ProximityInfoState: last input index = %d", lastInputIndex);
+        }
         // Working space to save near keys distances for current, prev and prevprev input point.
         NearKeysDistanceMap nearKeysDistances[3];
         // These pointers are swapped for each inputs points.
@@ -119,6 +126,9 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
         for (int i = pushTouchPointStartIndex; i <= lastInputIndex; ++i) {
             // Assuming pointerId == 0 if pointerIds is null.
             const int pid = pointerIds ? pointerIds[i] : 0;
+            if (DEBUG_GEO_FULL) {
+                AKLOGI("Init ProximityInfoState: (%d)PID = %d", i, pid);
+            }
             if (pointerId == pid) {
                 const int c = isGeometric ? NOT_A_COORDINATE : getPrimaryCharAt(i);
                 const int x = proximityOnly ? NOT_A_COORDINATE : xCoordinates[i];
@@ -367,6 +377,13 @@ bool ProximityInfoState::pushTouchPoint(const int inputIndex, const int nodeChar
         if (isLastPoint) {
             if (size > 0 && getDistanceFloat(x, y, mInputXs.back(), mInputYs.back())
                     < mProximityInfo->getMostCommonKeyWidth() * LAST_POINT_SKIP_DISTANCE_SCALE) {
+                if (DEBUG_GEO_FULL) {
+                    AKLOGI("p0: size = %zd, x = %d, y = %d, lx = %d, ly = %d, dist = %f, "
+                           "width = %f", size, x, y, mInputXs.back(), mInputYs.back(),
+                           getDistanceFloat(x, y, mInputXs.back(), mInputYs.back()),
+                           mProximityInfo->getMostCommonKeyWidth()
+                                   * LAST_POINT_SKIP_DISTANCE_SCALE);
+                }
                 return popped;
             } else if (size > 1) {
                 int minChar = 0;
@@ -380,6 +397,10 @@ bool ProximityInfoState::pushTouchPoint(const int inputIndex, const int nodeChar
                 }
                 NearKeysDistanceMap::const_iterator itPP =
                         prevNearKeysDistances->find(minChar);
+                if (DEBUG_GEO_FULL) {
+                    AKLOGI("p1: char = %c, minDist = %f, prevNear key minDist = %f",
+                            minChar, itPP->second, minDist);
+                }
                 if (itPP != prevNearKeysDistances->end() && minDist > itPP->second) {
                     return popped;
                 }
