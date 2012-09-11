@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.makedict;
 
+import com.android.inputmethod.latin.Constants;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
@@ -143,7 +144,7 @@ public class BinaryDictInputOutput {
 
     // TODO: Make this value adaptative to content data, store it in the header, and
     // use it in the reading code.
-    private static final int MAX_WORD_LENGTH = 48;
+    private static final int MAX_WORD_LENGTH = Constants.Dictionary.MAX_WORD_LENGTH;
 
     private static final int MASK_GROUP_ADDRESS_TYPE = 0xC0;
     private static final int FLAG_GROUP_ADDRESS_TYPE_NOADDRESS = 0x00;
