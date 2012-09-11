@@ -73,11 +73,11 @@ public class AutoCorrection {
         return maxFreq;
     }
 
-    // Returns true if this isn't in any dictionary.
-    public static boolean isNotAWord(
+    // Returns true if this is in any of the dictionaries.
+    public static boolean isInTheDictionary(
             final ConcurrentHashMap<String, Dictionary> dictionaries,
             final CharSequence word, final boolean ignoreCase) {
-        return !isValidWord(dictionaries, word, ignoreCase);
+        return isValidWord(dictionaries, word, ignoreCase);
     }
 
     public static boolean suggestionExceedsAutoCorrectionThreshold(SuggestedWordInfo suggestion,
