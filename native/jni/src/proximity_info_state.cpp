@@ -177,6 +177,10 @@ void ProximityInfoState::initInputParams(const int pointerId, const float maxPoi
                 hypotf(mProximityInfo->getKeyboardWidth(), mProximityInfo->getKeyboardHeight())
                 * READ_FORWORD_LENGTH_SCALE);
         for (int i = 0; i < mInputSize; ++i) {
+            if (DEBUG_GEO_FULL) {
+                AKLOGI("Sampled(%d): x = %d, y = %d, time = %d", i, mInputXs[i], mInputYs[i],
+                        mTimes[i]);
+            }
             for (int j = max(i + 1, lastSavedInputSize); j < mInputSize; ++j) {
                 if (mLengthCache[j] - mLengthCache[i] >= readForwordLength) {
                     break;
