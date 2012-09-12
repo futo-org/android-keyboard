@@ -16,12 +16,14 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import android.text.TextUtils;
+
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.StringUtils;
 
 import java.util.Locale;
 
-public class MoreKeySpec {
+public final class MoreKeySpec {
     public final int mCode;
     public final String mLabel;
     public final String mOutputText;
@@ -44,6 +46,29 @@ public class MoreKeySpec {
                     KeySpecParser.getOutputText(moreKeySpec), needsToUpperCase, locale);
         }
         mIconId = KeySpecParser.getIconId(moreKeySpec);
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = 1;
+        hashCode = 31 + mCode;
+        hashCode = hashCode * 31 + mIconId;
+        hashCode = hashCode * 31 + (mLabel == null ? 0 : mLabel.hashCode());
+        hashCode = hashCode * 31 + (mOutputText == null ? 0 : mOutputText.hashCode());
+        return hashCode;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o instanceof MoreKeySpec) {
+            final MoreKeySpec other = (MoreKeySpec)o;
+            return mCode == other.mCode
+                    && mIconId == other.mIconId
+                    && TextUtils.equals(mLabel, other.mLabel)
+                    && TextUtils.equals(mOutputText, other.mOutputText);
+        }
+        return false;
     }
 
     @Override
