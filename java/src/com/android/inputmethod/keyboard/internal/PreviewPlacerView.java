@@ -18,7 +18,9 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.PorterDuff;
@@ -54,6 +56,10 @@ public class PreviewPlacerView extends RelativeLayout {
     private final Params mGesturePreviewTrailParams;
     private final Paint mGesturePaint;
     private boolean mDrawsGesturePreviewTrail;
+    private Bitmap mOffscreenBuffer;
+    private final Canvas mOffscreenCanvas = new Canvas();
+    private final Rect mOffscreenDirtyRect = new Rect();
+    private final Rect mGesturePreviewTrailBoundsRect = new Rect(); // per trail
 
     private final Paint mTextPaint;
     private String mGestureFloatingPreviewText;
@@ -154,6 +160,7 @@ public class PreviewPlacerView extends RelativeLayout {
 
         final Paint gesturePaint = new Paint();
         gesturePaint.setAntiAlias(true);
+        gesturePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
         mGesturePaint = gesturePaint;
 
         final Paint textPaint = new Paint();
@@ -199,10 +206,30 @@ public class PreviewPlacerView extends RelativeLayout {
     }
 
     @Override
+    protected void onDetachedFromWindow() {
+        if (mOffscreenBuffer != null) {
+            mOffscreenBuffer.recycle();
+            mOffscreenBuffer = null;
+        }
+    }
+
+    @Override
     public void onDraw(final Canvas canvas) {
         super.onDraw(canvas);
         canvas.translate(mXOrigin, mYOrigin);
         if (mDrawsGesturePreviewTrail) {
+            if (mOffscreenBuffer == null) {
+                mOffscreenBuffer = Bitmap.createBitmap(
+                        getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+                mOffscreenCanvas.setBitmap(mOffscreenBuffer);
+            }
+            if (!mOffscreenDirtyRect.isEmpty()) {
+                // Clear previous dirty rectangle.
+                mGesturePaint.setColor(Color.TRANSPARENT);
+                mGesturePaint.setStyle(Paint.Style.FILL);
+                mOffscreenCanvas.drawRect(mOffscreenDirtyRect, mGesturePaint);
+                mOffscreenDirtyRect.setEmpty();
+            }
             boolean needsUpdatingGesturePreviewTrail = false;
             synchronized (mGesturePreviewTrails) {
                 // Trails count == fingers count that have ever been active.
@@ -210,9 +237,17 @@ public class PreviewPlacerView extends RelativeLayout {
                 for (int index = 0; index < trailsCount; index++) {
                     final GesturePreviewTrail trail = mGesturePreviewTrails.valueAt(index);
                     needsUpdatingGesturePreviewTrail |=
-                            trail.drawGestureTrail(canvas, mGesturePaint,
-                                    mGesturePreviewTrailParams);
+                            trail.drawGestureTrail(mOffscreenCanvas, mGesturePaint,
+                                    mGesturePreviewTrailBoundsRect, mGesturePreviewTrailParams);
+                    // {@link #mGesturePreviewTrailBoundsRect} has bounding box of the trail.
+                    mOffscreenDirtyRect.union(mGesturePreviewTrailBoundsRect);
                 }
+            }
+            if (!mOffscreenDirtyRect.isEmpty()) {
+                canvas.drawBitmap(mOffscreenBuffer, mOffscreenDirtyRect, mOffscreenDirtyRect,
+                        mGesturePaint);
+                // Note: Defer clearing the dirty rectangle here because we will get cleared
+                // rectangle on the canvas.
             }
             if (needsUpdatingGesturePreviewTrail) {
                 mDrawingHandler.postUpdateGestureTrailPreview();
@@ -263,7 +298,6 @@ public class PreviewPlacerView extends RelativeLayout {
         final float round = mGestureFloatingPreviewRoundRadius;
         paint.setColor(mGestureFloatingPreviewColor);
         canvas.drawRoundRect(rectangle, round, round, paint);
-
         // Paint the text preview
         paint.setColor(mGestureFloatingPreviewTextColor);
         final float textX = rectX + hPad + textWidth / 2.0f;

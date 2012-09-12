@@ -17,9 +17,7 @@ package com.android.inputmethod.keyboard.internal;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Xfermode;
+import android.graphics.Rect;
 import android.os.SystemClock;
 
 import com.android.inputmethod.latin.Constants;
@@ -118,17 +116,16 @@ final class GesturePreviewTrail {
                 / params.mTrailLingerDuration, 0.0f);
     }
 
-    private final static Xfermode PORTER_DUFF_MODE_SRC =
-            new PorterDuffXfermode(PorterDuff.Mode.SRC);
-
     /**
      * Draw gesture preview trail
      * @param canvas The canvas to draw the gesture preview trail
      * @param paint The paint object to be used to draw the gesture preview trail
+     * @param outBoundsRect the bounding box of this gesture trail drawing
      * @param params The drawing parameters of gesture preview trail
      * @return true if some gesture preview trails remain to be drawn
      */
-    public boolean drawGestureTrail(final Canvas canvas, final Paint paint, final Params params) {
+    public boolean drawGestureTrail(final Canvas canvas, final Paint paint,
+            final Rect outBoundsRect, final Params params) {
         final int trailSize = mEventTimes.getLength();
         if (trailSize == 0) {
             return false;
@@ -149,12 +146,14 @@ final class GesturePreviewTrail {
         mTrailStartIndex = startIndex;
 
         if (startIndex < trailSize) {
-            int lastX = getXCoordValue(xCoords[startIndex]);
-            int lastY = yCoords[startIndex];
             paint.setColor(params.mTrailColor);
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeCap(Paint.Cap.ROUND);
-            paint.setXfermode(PORTER_DUFF_MODE_SRC);
+            int lastX = getXCoordValue(xCoords[startIndex]);
+            int lastY = yCoords[startIndex];
+            float maxWidth = getWidth(sinceDown - eventTimes[startIndex], params);
+            // Initialize bounds rectangle.
+            outBoundsRect.set(lastX, lastY, lastX, lastY);
             for (int i = startIndex + 1; i < trailSize - 1; i++) {
                 final int x = xCoords[i];
                 final int y = yCoords[i];
@@ -166,10 +165,16 @@ final class GesturePreviewTrail {
                     final float width = getWidth(elapsedTime, params);
                     paint.setStrokeWidth(width);
                     canvas.drawLine(lastX, lastY, x, y, paint);
+                    // Take union for the bounds.
+                    outBoundsRect.union(x, y);
+                    maxWidth = Math.max(maxWidth, width);
                 }
                 lastX = getXCoordValue(x);
                 lastY = y;
             }
+            // Take care of trail line width.
+            final int inset = -((int)maxWidth + 1);
+            outBoundsRect.inset(inset, inset);
         }
 
         final int newSize = trailSize - startIndex;

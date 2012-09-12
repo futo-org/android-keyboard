@@ -182,7 +182,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private final Region mClipRegion = new Region();
     private Bitmap mOffscreenBuffer;
     /** The canvas for the above mutable keyboard bitmap */
-    private Canvas mOffscreenCanvas;
+    private final Canvas mOffscreenCanvas = new Canvas();
     private final Paint mPaint = new Paint();
     private final Paint.FontMetrics mFontMetrics = new Paint.FontMetrics();
     // This sparse array caches key label text height in pixel indexed by key label text size.
@@ -365,7 +365,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         if (bufferNeedsUpdates || mOffscreenBuffer == null) {
             if (maybeAllocateOffscreenBuffer()) {
                 mInvalidateAllKeys = true;
-                maybeCreateOffscreenCanvas();
+                // TODO: Stop using the offscreen canvas even when in software rendering
+                mOffscreenCanvas.setBitmap(mOffscreenBuffer);
             }
             onDrawKeyboard(mOffscreenCanvas);
         }
@@ -391,15 +392,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         if (mOffscreenBuffer != null) {
             mOffscreenBuffer.recycle();
             mOffscreenBuffer = null;
-        }
-    }
-
-    private void maybeCreateOffscreenCanvas() {
-        // TODO: Stop using the offscreen canvas even when in software rendering
-        if (mOffscreenCanvas != null) {
-            mOffscreenCanvas.setBitmap(mOffscreenBuffer);
-        } else {
-            mOffscreenCanvas = new Canvas(mOffscreenBuffer);
         }
     }
 
