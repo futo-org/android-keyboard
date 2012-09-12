@@ -33,15 +33,46 @@ import com.android.inputmethod.research.ResearchLogger;
 import java.util.regex.Pattern;
 
 /**
- * Wrapper for InputConnection to simplify interaction
+ * Enrichment class for InputConnection to simplify interaction and add functionality.
+ *
+ * This class serves as a wrapper to be able to simply add hooks to any calls to the underlying
+ * InputConnection. It also keeps track of a number of things to avoid having to call upon IPC
+ * all the time to find out what text is in the buffer, when we need it to determine caps mode
+ * for example.
  */
 public class RichInputConnection {
     private static final String TAG = RichInputConnection.class.getSimpleName();
     private static final boolean DBG = false;
+    private static final boolean DEBUG_PREVIOUS_TEXT = false;
     // Provision for a long word pair and a separator
     private static final int LOOKBACK_CHARACTER_NUM = BinaryDictionary.MAX_WORD_LENGTH * 2 + 1;
     private static final Pattern spaceRegex = Pattern.compile("\\s+");
     private static final int INVALID_CURSOR_POSITION = -1;
+
+    /**
+     * This variable contains the value LatinIME thinks the cursor position should be at now.
+     * This is a few steps in advance of what the TextView thinks it is, because TextView will
+     * only know after the IPC calls gets through.
+     */
+    private int mCurrentCursorPosition = INVALID_CURSOR_POSITION; // in chars, not code points
+    /**
+     * This contains the committed text immediately preceding the cursor and the composing
+     * text if any. It is refreshed when the cursor moves by calling upon the TextView.
+     */
+    private StringBuilder mCommittedTextBeforeComposingText = new StringBuilder();
+    /**
+     * This contains the currently composing text, as LatinIME thinks the TextView is seeing it.
+     */
+    private StringBuilder mComposingText = new StringBuilder();
+    /**
+     * This is a one-character string containing the character after the cursor. Since LatinIME
+     * never touches it directly, it's never modified by any means other than re-reading from the
+     * TextView when the cursor position is changed by the user.
+     */
+    private CharSequence mCharAfterTheCursor = "";
+    // A hint on how many characters to cache from the TextView. A good value of this is given by
+    // how many characters we need to be able to almost always find the caps mode.
+    private static final int DEFAULT_TEXT_CACHE_SIZE = 100;
 
     private final InputMethodService mParent;
     InputConnection mIC;
@@ -50,6 +81,37 @@ public class RichInputConnection {
         mParent = parent;
         mIC = null;
         mNestLevel = 0;
+    }
+
+    private void checkConsistencyForDebug() {
+        final ExtractedTextRequest r = new ExtractedTextRequest();
+        r.hintMaxChars = 0;
+        r.hintMaxLines = 0;
+        r.token = 1;
+        r.flags = 0;
+        final ExtractedText et = mIC.getExtractedText(r, 0);
+        final CharSequence beforeCursor = getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE, 0);
+        final StringBuilder internal = new StringBuilder().append(mCommittedTextBeforeComposingText)
+                .append(mComposingText);
+        if (null == et || null == beforeCursor) return;
+        final int actualLength = Math.min(beforeCursor.length(), internal.length());
+        if (internal.length() > actualLength) {
+            internal.delete(0, internal.length() - actualLength);
+        }
+        final String reference = (beforeCursor.length() <= actualLength) ? beforeCursor.toString()
+                : beforeCursor.subSequence(beforeCursor.length() - actualLength,
+                        beforeCursor.length()).toString();
+        if (et.selectionStart != mCurrentCursorPosition
+                || !(reference.equals(internal.toString()))) {
+            final String context = "Expected cursor position = " + mCurrentCursorPosition
+                    + "\nActual cursor position = " + et.selectionStart
+                    + "\nExpected text = " + internal.length() + " " + internal
+                    + "\nActual text = " + reference.length() + " " + reference;
+            ((LatinIME)mParent).debugDumpStateAndCrashWithException(context);
+        } else {
+            Log.e(TAG, Utils.getStackTrace(2));
+            Log.e(TAG, "Exp <> Actual : " + mCurrentCursorPosition + " <> " + et.selectionStart);
+        }
     }
 
     public void beginBatchEdit() {
@@ -65,11 +127,29 @@ public class RichInputConnection {
                 Log.e(TAG, "Nest level too deep : " + mNestLevel);
             }
         }
+        checkBatchEdit();
+        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
     }
+
     public void endBatchEdit() {
         if (mNestLevel <= 0) Log.e(TAG, "Batch edit not in progress!"); // TODO: exception instead
         if (--mNestLevel == 0 && null != mIC) {
             mIC.endBatchEdit();
+        }
+        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
+    }
+
+    public void resetCachesUponCursorMove(final int newCursorPosition) {
+        mCurrentCursorPosition = newCursorPosition;
+        mComposingText.setLength(0);
+        mCommittedTextBeforeComposingText.setLength(0);
+        mCommittedTextBeforeComposingText.append(getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE, 0));
+        mCharAfterTheCursor = getTextAfterCursor(1, 0);
+        if (null != mIC) {
+            mIC.finishComposingText();
+            if (ProductionFlag.IS_EXPERIMENTAL) {
+                ResearchLogger.richInputConnection_finishComposingText();
+            }
         }
     }
 
@@ -83,6 +163,10 @@ public class RichInputConnection {
 
     public void finishComposingText() {
         checkBatchEdit();
+        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
+        mCommittedTextBeforeComposingText.append(mComposingText);
+        mCurrentCursorPosition += mComposingText.length();
+        mComposingText.setLength(0);
         if (null != mIC) {
             mIC.finishComposingText();
             if (ProductionFlag.IS_EXPERIMENTAL) {
@@ -93,6 +177,10 @@ public class RichInputConnection {
 
     public void commitText(final CharSequence text, final int i) {
         checkBatchEdit();
+        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
+        mCommittedTextBeforeComposingText.append(text);
+        mCurrentCursorPosition += text.length() - mComposingText.length();
+        mComposingText.setLength(0);
         if (null != mIC) {
             mIC.commitText(text, i);
             if (ProductionFlag.IS_EXPERIMENTAL) {
@@ -121,12 +209,28 @@ public class RichInputConnection {
 
     public void deleteSurroundingText(final int i, final int j) {
         checkBatchEdit();
+        final int remainingChars = mComposingText.length() - i;
+        if (remainingChars >= 0) {
+            mComposingText.setLength(remainingChars);
+        } else {
+            mComposingText.setLength(0);
+            // Never cut under 0
+            final int len = Math.max(mCommittedTextBeforeComposingText.length()
+                    + remainingChars, 0);
+            mCommittedTextBeforeComposingText.setLength(len);
+        }
+        if (mCurrentCursorPosition > i) {
+            mCurrentCursorPosition -= i;
+        } else {
+            mCurrentCursorPosition = 0;
+        }
         if (null != mIC) {
             mIC.deleteSurroundingText(i, j);
             if (ProductionFlag.IS_EXPERIMENTAL) {
                 ResearchLogger.richInputConnection_deleteSurroundingText(i, j);
             }
         }
+        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
     }
 
     public void performEditorAction(final int actionId) {
@@ -141,6 +245,44 @@ public class RichInputConnection {
 
     public void sendKeyEvent(final KeyEvent keyEvent) {
         checkBatchEdit();
+        if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+            if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
+            // This method is only called for enter or backspace when speaking to old
+            // applications (target SDK <= 15), or for digits.
+            // When talking to new applications we never use this method because it's inherently
+            // racy and has unpredictable results, but for backward compatibility we continue
+            // sending the key events for only Enter and Backspace because some applications
+            // mistakenly catch them to do some stuff.
+            switch (keyEvent.getKeyCode()) {
+                case KeyEvent.KEYCODE_ENTER:
+                    mCommittedTextBeforeComposingText.append("\n");
+                    mCurrentCursorPosition += 1;
+                    break;
+                case KeyEvent.KEYCODE_DEL:
+                    if (0 == mComposingText.length()) {
+                        if (mCommittedTextBeforeComposingText.length() > 0) {
+                            mCommittedTextBeforeComposingText.delete(
+                                    mCommittedTextBeforeComposingText.length() - 1,
+                                    mCommittedTextBeforeComposingText.length());
+                        }
+                    } else {
+                        mComposingText.delete(mComposingText.length() - 1, mComposingText.length());
+                    }
+                    if (mCurrentCursorPosition > 0) mCurrentCursorPosition -= 1;
+                    break;
+                case KeyEvent.KEYCODE_UNKNOWN:
+                    if (null != keyEvent.getCharacters()) {
+                        mCommittedTextBeforeComposingText.append(keyEvent.getCharacters());
+                        mCurrentCursorPosition += keyEvent.getCharacters().length();
+                    }
+                    break;
+                default:
+                    final String text = new String(new int[] { keyEvent.getUnicodeChar() }, 0, 1);
+                    mCommittedTextBeforeComposingText.append(text);
+                    mCurrentCursorPosition += text.length();
+                    break;
+            }
+        }
         if (null != mIC) {
             mIC.sendKeyEvent(keyEvent);
             if (ProductionFlag.IS_EXPERIMENTAL) {
@@ -151,48 +293,83 @@ public class RichInputConnection {
 
     public void setComposingText(final CharSequence text, final int i) {
         checkBatchEdit();
+        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
+        mCurrentCursorPosition += text.length() - mComposingText.length();
+        mComposingText.setLength(0);
+        mComposingText.append(text);
+        // TODO: support values of i != 1. At this time, this is never called with i != 1.
         if (null != mIC) {
             mIC.setComposingText(text, i);
             if (ProductionFlag.IS_EXPERIMENTAL) {
                 ResearchLogger.richInputConnection_setComposingText(text, i);
             }
         }
+        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
     }
 
     public void setSelection(final int from, final int to) {
         checkBatchEdit();
+        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         if (null != mIC) {
             mIC.setSelection(from, to);
             if (ProductionFlag.IS_EXPERIMENTAL) {
                 ResearchLogger.richInputConnection_setSelection(from, to);
             }
         }
+        mCurrentCursorPosition = from;
+        mCommittedTextBeforeComposingText.setLength(0);
+        mCommittedTextBeforeComposingText.append(getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE, 0));
     }
 
     public void commitCorrection(final CorrectionInfo correctionInfo) {
         checkBatchEdit();
+        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
+        // This has no effect on the text field and does not change its content. It only makes
+        // TextView flash the text for a second based on indices contained in the argument.
         if (null != mIC) {
             mIC.commitCorrection(correctionInfo);
             if (ProductionFlag.IS_EXPERIMENTAL) {
                 ResearchLogger.richInputConnection_commitCorrection(correctionInfo);
             }
         }
+        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
     }
 
     public void commitCompletion(final CompletionInfo completionInfo) {
         checkBatchEdit();
+        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
+        final CharSequence text = completionInfo.getText();
+        mCommittedTextBeforeComposingText.append(text);
+        mCurrentCursorPosition += text.length() - mComposingText.length();
+        mComposingText.setLength(0);
         if (null != mIC) {
             mIC.commitCompletion(completionInfo);
             if (ProductionFlag.IS_EXPERIMENTAL) {
                 ResearchLogger.richInputConnection_commitCompletion(completionInfo);
             }
         }
+        if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
     }
 
     public CharSequence getNthPreviousWord(final String sentenceSeperators, final int n) {
         mIC = mParent.getCurrentInputConnection();
         if (null == mIC) return null;
         final CharSequence prev = mIC.getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
+        if (DEBUG_PREVIOUS_TEXT && null != prev) {
+            final int checkLength = LOOKBACK_CHARACTER_NUM - 1;
+            final String reference = prev.length() <= checkLength ? prev.toString()
+                    : prev.subSequence(prev.length() - checkLength, prev.length()).toString();
+            final StringBuilder internal = new StringBuilder()
+                    .append(mCommittedTextBeforeComposingText).append(mComposingText);
+            if (internal.length() > checkLength) {
+                internal.delete(0, internal.length() - checkLength);
+                if (!(reference.equals(internal.toString()))) {
+                    final String context =
+                            "Expected text = " + internal + "\nActual text = " + reference;
+                    ((LatinIME)mParent).debugDumpStateAndCrashWithException(context);
+                }
+            }
+        }
         return getNthPreviousWord(prev, sentenceSeperators, n);
     }
 

@@ -733,6 +733,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mainKeyboardView.setGesturePreviewMode(mCurrentSettings.mGesturePreviewTrailEnabled,
                 mCurrentSettings.mGestureFloatingPreviewTextEnabled);
 
+        mConnection.resetCachesUponCursorMove(mLastSelectionStart);
+
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
 
@@ -839,7 +841,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSpaceState = SPACE_STATE_NONE;
 
             if ((!mWordComposer.isComposingWord()) || selectionChanged || noComposingSpan) {
-                resetEntireInputState();
+                resetEntireInputState(newSelStart);
             }
 
             mHandler.postUpdateShiftState();
@@ -1043,14 +1045,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // This will reset the whole input state to the starting state. It will clear
     // the composing word, reset the last composed word, tell the inputconnection about it.
-    private void resetEntireInputState() {
+    private void resetEntireInputState(final int newCursorPosition) {
         resetComposingState(true /* alsoResetLastComposedWord */);
         if (mCurrentSettings.mBigramPredictionEnabled) {
             clearSuggestionStrip();
         } else {
             setSuggestionStrip(mCurrentSettings.mSuggestPuncList, false);
         }
-        mConnection.finishComposingText();
+        mConnection.resetCachesUponCursorMove(newCursorPosition);
     }
 
     private void resetComposingState(final boolean alsoResetLastComposedWord) {
@@ -1220,7 +1222,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void sendUpDownEnterOrBackspace(final int code) {
+    private void sendDownUpKeyEventForBackwardCompatibility(final int code) {
         final long eventTime = SystemClock.uptimeMillis();
         mConnection.sendKeyEvent(new KeyEvent(eventTime, eventTime,
                 KeyEvent.ACTION_DOWN, code, 0, 0, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
@@ -1234,7 +1236,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // TODO: Remove this special handling of digit letters.
         // For backward compatibility. See {@link InputMethodService#sendKeyChar(char)}.
         if (code >= '0' && code <= '9') {
-            super.sendKeyChar((char)code);
+            sendDownUpKeyEventForBackwardCompatibility(code - '0' + KeyEvent.KEYCODE_0);
             if (ProductionFlag.IS_EXPERIMENTAL) {
                 ResearchLogger.latinIME_sendKeyCodePoint(code);
             }
@@ -1249,7 +1251,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // a hardware keyboard event on pressing enter or delete. This is bad for many
             // reasons (there are race conditions with commits) but some applications are
             // relying on this behavior so we continue to support it for older apps.
-            sendUpDownEnterOrBackspace(KeyEvent.KEYCODE_ENTER);
+            sendDownUpKeyEventForBackwardCompatibility(KeyEvent.KEYCODE_ENTER);
         } else {
             final String text = new String(new int[] { code }, 0, 1);
             mConnection.commitText(text, text.length());
@@ -1525,7 +1527,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     // a hardware keyboard event on pressing enter or delete. This is bad for many
                     // reasons (there are race conditions with commits) but some applications are
                     // relying on this behavior so we continue to support it for older apps.
-                    sendUpDownEnterOrBackspace(KeyEvent.KEYCODE_DEL);
+                    sendDownUpKeyEventForBackwardCompatibility(KeyEvent.KEYCODE_DEL);
                 } else {
                     mConnection.deleteSurroundingText(1, 0);
                 }
@@ -1862,7 +1864,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     separatorString);
             if (!typedWord.equals(autoCorrection)) {
                 // This will make the correction flash for a short while as a visual clue
-                // to the user that auto-correction happened.
+                // to the user that auto-correction happened. It has no other effect; in particular
+                // note that this won't affect the text inside the text field AT ALL: it only makes
+                // the segment of text starting at the supplied index and running for the length
+                // of the auto-correction flash. At this moment, the "typedWord" argument is
+                // ignored by TextView.
                 mConnection.commitCorrection(
                         new CorrectionInfo(mLastSelectionEnd - typedWord.length(),
                         typedWord, autoCorrection));
@@ -2227,6 +2233,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         mOptionsDialog = dialog;
         dialog.show();
+    }
+
+    public void debugDumpStateAndCrashWithException(final String context) {
+        final StringBuilder s = new StringBuilder();
+        s.append("Target application : ").append(mTargetApplicationInfo.name)
+                .append("\nPackage : ").append(mTargetApplicationInfo.packageName)
+                .append("\nTarget app sdk version : ")
+                .append(mTargetApplicationInfo.targetSdkVersion)
+                .append("\nAttributes : ").append(mCurrentSettings.getInputAttributesDebugString())
+                .append("\nContext : ").append(context);
+        throw new RuntimeException(s.toString());
     }
 
     @Override
