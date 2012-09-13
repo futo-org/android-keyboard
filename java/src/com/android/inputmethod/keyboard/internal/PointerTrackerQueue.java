@@ -73,6 +73,10 @@ public class PointerTrackerQueue {
         mArraySize = newSize;
     }
 
+    public synchronized Element getOldestElement() {
+        return (mArraySize == 0) ? null : mExpandableArrayOfActivePointers.get(0);
+    }
+
     public synchronized void releaseAllPointersOlderThan(final Element pointer,
             final long eventTime) {
         if (DEBUG) {
