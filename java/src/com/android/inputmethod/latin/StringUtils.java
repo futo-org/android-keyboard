@@ -218,8 +218,6 @@ public final class StringUtils {
      * {@link #CAP_MODE_SENTENCES}.
      */
     public static int getCapsMode(CharSequence cs, int reqModes) {
-        int i;
-        char c;
         // Quick description of what we want to do:
         // CAP_MODE_CHARACTERS is always on.
         // CAP_MODE_WORDS is on if there is some whitespace before the cursor.
@@ -245,8 +243,9 @@ public final class StringUtils {
         // it may look like a right parenthesis for example. We also include double quote and
         // single quote since they aren't start punctuation in the unicode sense, but should still
         // be skipped for English. TODO: does this depend on the language?
+        int i;
         for (i = cs.length(); i > 0; i--) {
-            c = cs.charAt(i - 1);
+            final char c = cs.charAt(i - 1);
             if (c != '"' && c != '\'' && Character.getType(c) != Character.START_PUNCTUATION) {
                 break;
             }
@@ -294,14 +293,14 @@ public final class StringUtils {
             // it's wrong for German, it's wrong for Spanish, and possibly everything else.
             // (note that American rules and British rules have nothing to do with en_US and en_GB,
             // as both rules are used in both countries - it's merely a name for the set of rules)
-            c = cs.charAt(j - 1);
+            final char c = cs.charAt(j - 1);
             if (c != '"' && c != '\'' && Character.getType(c) != Character.END_PUNCTUATION) {
                 break;
             }
         }
 
         if (j <= 0) return TextUtils.CAP_MODE_CHARACTERS & reqModes;
-        c = cs.charAt(j - 1);
+        char c = cs.charAt(j - 1);
         if (c == '.' || c == '?' || c == '!') {
             // Here we found a marker for sentence end (we consider these to be one of
             // either . or ? or ! only). So this is probably the end of a sentence, but if we
