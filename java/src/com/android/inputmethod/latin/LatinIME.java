@@ -825,7 +825,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // we know for sure the cursor moved while we were composing and we should reset
         // the state.
         final boolean noComposingSpan = composingSpanStart == -1 && composingSpanEnd == -1;
-        if (!mExpectingUpdateSelection) {
+        if (!mExpectingUpdateSelection
+                && !mConnection.isBelatedExpectedUpdate(oldSelStart, newSelStart)) {
             // TAKE CARE: there is a race condition when we enter this test even when the user
             // did not explicitly move the cursor. This happens when typing fast, where two keys
             // turn this flag on in succession and both onUpdateSelection() calls arrive after
