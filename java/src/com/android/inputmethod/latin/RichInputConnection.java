@@ -629,4 +629,34 @@ public class RichInputConnection {
         commitText(" " + textBeforeCursor.subSequence(0, 1), 1);
         return true;
     }
+
+    /**
+     * Heuristic to determine if this is an expected update of the cursor.
+     *
+     * Sometimes updates to the cursor position are late because of their asynchronous nature.
+     * This method tries to determine if this update is one, based on the values of the cursor
+     * position in the update, and the currently expected position of the cursor according to
+     * LatinIME's internal accounting. If this is not a belated expected update, then it should
+     * mean that the user moved the cursor explicitly.
+     * This is quite robust, but of course it's not perfect. In particular, it will fail in the
+     * case we get an update A, the user types in N characters so as to move the cursor to A+N but
+     * we don't get those, and then the user places the cursor between A and A+N, and we get only
+     * this update and not the ones in-between. This is almost impossible to achieve even trying
+     * very very hard.
+     *
+     * @param oldSelStart The value of the old cursor position in the update.
+     * @param newSelStart The value of the new cursor position in the update.
+     * @return whether this is a belated expected update or not.
+     */
+    public boolean isBelatedExpectedUpdate(final int oldSelStart, final int newSelStart) {
+        // If this is an update that arrives at our expected position, it's a belated update.
+        if (newSelStart == mCurrentCursorPosition) return true;
+        // If this is an update that moves the cursor from our expected position, it must be
+        // an explicit move.
+        if (oldSelStart == mCurrentCursorPosition) return false;
+        // The following returns true if newSelStart is between oldSelStart and
+        // mCurrentCursorPosition. We assume that if the updated position is between the old
+        // position and the expected position, then it must be a belated update.
+        return (newSelStart - oldSelStart) * (mCurrentCursorPosition - newSelStart) >= 0;
+    }
 }
