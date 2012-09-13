@@ -188,7 +188,7 @@ public class PreviewPlacerView extends RelativeLayout {
         mDrawsGestureFloatingPreviewText = drawsGestureFloatingPreviewText;
     }
 
-    public void invalidatePointer(final PointerTracker tracker) {
+    public void invalidatePointer(final PointerTracker tracker, final boolean isOldestTracker) {
         GesturePreviewTrail trail;
         synchronized (mGesturePreviewTrails) {
             trail = mGesturePreviewTrails.get(tracker.mPointerId);
@@ -199,8 +199,10 @@ public class PreviewPlacerView extends RelativeLayout {
         }
         trail.addStroke(tracker.getGestureStrokeWithPreviewTrail(), tracker.getDownTime());
 
-        mLastPointerX = tracker.getLastX();
-        mLastPointerY = tracker.getLastY();
+        if (isOldestTracker) {
+            mLastPointerX = tracker.getLastX();
+            mLastPointerY = tracker.getLastY();
+        }
         // TODO: Should narrow the invalidate region.
         invalidate();
     }
