@@ -25,14 +25,17 @@
 
 #define M_PI_F 3.14159265f
 
+#define ROUND_FLOAT_10000(f) ((f) < 1000.0f && (f) > 0.001f) \
+        ? (floorf((f) * 10000.0f) / 10000.0f) : (f)
+
+#define SQUARE_FLOAT(x) ((x) * (x))
+
 namespace latinime {
 
-static inline float squareFloat(float x) {
-    return x * x;
-}
-
 static inline float getSquaredDistanceFloat(float x1, float y1, float x2, float y2) {
-    return squareFloat(x1 - x2) + squareFloat(y1 - y2);
+    const float deltaX = x1 - x2;
+    const float deltaY = y1 - y2;
+    return SQUARE_FLOAT(deltaX) + SQUARE_FLOAT(deltaY);
 }
 
 static inline float getDistanceFloat(float x1, float y1, float x2, float y2) {
@@ -52,9 +55,11 @@ static inline float getAngle(int x1, int y1, int x2, int y2) {
 }
 
 static inline float getAngleDiff(float a1, float a2) {
-    const float diff = fabsf(a1 - a2);
+    const float deltaA = fabsf(a1 - a2);
+    const float diff = ROUND_FLOAT_10000(deltaA);
     if (diff > M_PI_F) {
-        return 2.0f * M_PI_F - diff;
+        const float normalizedDiff = 2.0f * M_PI_F - diff;
+        return ROUND_FLOAT_10000(normalizedDiff);
     }
     return diff;
 }
@@ -76,7 +81,7 @@ static inline float pointToLineSegSquaredDistanceFloat(
     const float ray2y = y2 - y1;
 
     const float dotProduct = ray1x * ray2x + ray1y * ray2y;
-    const float lineLengthSqr = squareFloat(ray2x) + squareFloat(ray2y);
+    const float lineLengthSqr = SQUARE_FLOAT(ray2x) + SQUARE_FLOAT(ray2y);
     const float projectionLengthSqr = dotProduct / lineLengthSqr;
 
     float projectionX;
