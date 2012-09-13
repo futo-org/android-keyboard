@@ -80,7 +80,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         public void invalidateKey(Key key);
         public void showKeyPreview(PointerTracker tracker);
         public void dismissKeyPreview(PointerTracker tracker);
-        public void showGesturePreviewTrail(PointerTracker tracker);
+        public void showGesturePreviewTrail(PointerTracker tracker, boolean isOldestTracker);
     }
 
     public interface TimerProxy {
@@ -550,7 +550,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         }
         sInGesture = true;
         mListener.onStartBatchInput();
-        mDrawingProxy.showGesturePreviewTrail(this);
+        mDrawingProxy.showGesturePreviewTrail(this, true /* isOldestTracker */);
     }
 
     private void updateBatchInput(final long eventTime) {
@@ -567,7 +567,8 @@ public class PointerTracker implements PointerTrackerQueue.Element {
                 mListener.onUpdateBatchInput(sAggregratedPointers);
             }
         }
-        mDrawingProxy.showGesturePreviewTrail(this);
+        final boolean isOldestTracker = sPointerTrackerQueue.getOldestElement() == this;
+        mDrawingProxy.showGesturePreviewTrail(this, isOldestTracker);
     }
 
     private void endBatchInput() {
@@ -584,7 +585,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
                 clearBatchInputPointsOfAllPointerTrackers();
             }
         }
-        mDrawingProxy.showGesturePreviewTrail(this);
+        mDrawingProxy.showGesturePreviewTrail(this,  true /* isOldestTracker */);
     }
 
     private static void abortBatchInput() {
