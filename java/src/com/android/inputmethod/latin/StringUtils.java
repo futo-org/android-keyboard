@@ -208,7 +208,6 @@ public final class StringUtils {
      * issues). This will change in the future as we simplify the code for our use and fix bugs.
      *
      * @param cs The text that should be checked for caps modes.
-     * @param off Location in the text at which to check.
      * @param reqModes The modes to be checked: may be any combination of
      * {@link #CAP_MODE_CHARACTERS}, {@link #CAP_MODE_WORDS}, and
      * {@link #CAP_MODE_SENTENCES}.
@@ -218,52 +217,93 @@ public final class StringUtils {
      * {@link #CAP_MODE_CHARACTERS}, {@link #CAP_MODE_WORDS}, and
      * {@link #CAP_MODE_SENTENCES}.
      */
-    public static int getCapsMode(CharSequence cs, int off, int reqModes) {
-        if (off < 0) {
-            return 0;
-        }
-
+    public static int getCapsMode(CharSequence cs, int reqModes) {
         int i;
         char c;
         int mode = 0;
 
+        // Quick description of what we want to do:
+        // CAP_MODE_CHARACTERS is always on.
+        // CAP_MODE_WORDS is on if there is some whitespace before the cursor.
+        // CAP_MODE_SENTENCES is on if there is some whitespace before the cursor, and the end
+        //   of a sentence just before that.
+        // We ignore opening parentheses and the like just before the cursor for purposes of
+        // finding whitespace for WORDS and SENTENCES modes.
+        // The end of a sentence ends with a period, question mark or exclamation mark. If it's
+        // a period, it also needs not to be an abbreviation, which means it also needs to either
+        // be immediately preceded by punctuation, or by a string of only letters with single
+        // periods interleaved.
+
+        // Step 1 : check for cap mode characters. If it's looked for, it's always on.
         if ((reqModes & TextUtils.CAP_MODE_CHARACTERS) != 0) {
             mode |= TextUtils.CAP_MODE_CHARACTERS;
         }
         if ((reqModes & (TextUtils.CAP_MODE_WORDS | TextUtils.CAP_MODE_SENTENCES)) == 0) {
+            // Here we are not looking for words or sentences modes, so since we already evaluated
+            // mode characters, we can return.
             return mode;
         }
 
-        // Back over allowed opening punctuation.
-        for (i = off; i > 0; i--) {
+        // Step 2 : Skip (ignore at the end of input) any opening punctuation. This includes
+        // opening parentheses, brackets, opening quotes, everything that *opens* a span of
+        // text in the linguistic sense. In RTL languages, this is still an opening sign, although
+        // it may look like a right parenthesis for example. We also include double quote and
+        // single quote since they aren't start punctuation in the unicode sense, but should still
+        // be skipped for English. TODO: does this depend on the language?
+        for (i = cs.length(); i > 0; i--) {
             c = cs.charAt(i - 1);
             if (c != '"' && c != '\'' && Character.getType(c) != Character.START_PUNCTUATION) {
                 break;
             }
         }
 
-        // Start of paragraph, with optional whitespace.
+        // We are now on the character that precedes any starting punctuation, so in the most
+        // frequent case this will be whitespace or a letter, although it may occasionally be a
+        // start of line, or some symbol.
+
+        // Step 3 : Search for the start of a paragraph. From the starting point computed in step 2,
+        // we go back over any space or tab char sitting there. We find the start of a paragraph
+        // if the first char that's not a space or tab is a start of line (as in, either \n or
+        // start of text).
         int j = i;
         while (j > 0 && ((c = cs.charAt(j - 1)) == ' ' || c == '\t')) {
             j--;
         }
         if (j == 0 || cs.charAt(j - 1) == '\n') {
+            // Here we know we are at the start of a paragraph, so we turn on word mode.
+            // Note: I think this is entirely buggy. It will return mode words even if the app
+            // didn't request it, and it will fail to return sentence mode even if this is actually
+            // the start of a sentence. As it happens, Latin IME client code considers that mode
+            // word *implies* mode sentence and tests for non-zeroness, so it happens to work.
             return mode | TextUtils.CAP_MODE_WORDS;
         }
-
-        // Or start of word if we are that style.
         if ((reqModes & TextUtils.CAP_MODE_SENTENCES) == 0) {
+            // If we don't have to check for mode sentence, then we know all we need to know
+            // already. Either we have whitespace immediately before index i and we are at the
+            // start of a word, or we don't and we aren't. But we just went over any whitespace
+            // just before i and in fact j points before any whitespace, so if i != j that means
+            // there is such whitespace. In this case, we have mode words.
             if (i != j) mode |= TextUtils.CAP_MODE_WORDS;
             return mode;
         }
-
-        // There must be a space if not the start of paragraph.
         if (i == j) {
+            // Finally, if we don't have whitespace before index i, it means neither mode words
+            // nor mode sentences should be on so we can return right away.
             return mode;
         }
+        // Please note that because of the reqModes & CAP_MODE_SENTENCES test a few lines above,
+        // we know that mode sentences is being requested.
 
-        // Back over allowed closing punctuation.
+        // Step 4 : Search for sentence mode.
         for (; j > 0; j--) {
+            // Here we look to go over any closing punctuation. This is because in dominant variants
+            // of English, the final period is placed within double quotes and maybe other closing
+            // punctuation signs.
+            // TODO: this is wrong for almost everything except American typography rules for
+            // English. It's wrong for British typography rules for English, it's wrong for French,
+            // it's wrong for German, it's wrong for Spanish, and possibly everything else.
+            // (note that American rules and British rules have nothing to do with en_US and en_GB,
+            // as both rules are used in both countries - it's merely a name for the set of rules)
             c = cs.charAt(j - 1);
             if (c != '"' && c != '\'' && Character.getType(c) != Character.END_PUNCTUATION) {
                 break;
@@ -273,8 +313,18 @@ public final class StringUtils {
         if (j > 0) {
             c = cs.charAt(j - 1);
             if (c == '.' || c == '?' || c == '!') {
-                // Do not capitalize if the word ends with a period but
-                // also contains a period, in which case it is an abbreviation.
+                // Here we found a marker for sentence end (we consider these to be one of
+                // either . or ? or ! only). So this is probably the end of a sentence, but if we
+                // found a period, we still want to check the case where this is a abbreviation
+                // period rather than a full stop. To do this, we look for a period within a word
+                // before the period we just found; if any, we take that to mean it was an
+                // abbreviation.
+                // A typical example of the above is "In the U.S. ", where the last period is
+                // not a full stop and we should not capitalize.
+                // TODO: the rule below is broken. In particular it fails for runs of periods,
+                // whatever the reason. In the example "in the U.S..", the last period is a full
+                // stop following the abbreviation period, and we should capitalize but we don't.
+                // Likewise, "I don't know... " should capitalize, but fails to do so.
                 if (c == '.') {
                     for (int k = j - 2; k >= 0; k--) {
                         c = cs.charAt(k);
