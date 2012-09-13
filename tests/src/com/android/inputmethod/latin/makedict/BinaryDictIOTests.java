@@ -19,6 +19,7 @@ package com.android.inputmethod.latin.makedict;
 import com.android.inputmethod.latin.CollectionUtils;
 import com.android.inputmethod.latin.UserHistoryDictIOUtils;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
+import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary.CharGroup;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
@@ -62,8 +63,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
     private static final SparseArray<List<Integer>> sChainBigrams =
             CollectionUtils.newSparseArray();
 
-    private static final BinaryDictInputOutput.FormatOptions VERSION2 =
-            new BinaryDictInputOutput.FormatOptions(2);
+    private static final FormatSpec.FormatOptions VERSION2 = new FormatSpec.FormatOptions(2);
 
     private static final String[] CHARACTERS = {
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
