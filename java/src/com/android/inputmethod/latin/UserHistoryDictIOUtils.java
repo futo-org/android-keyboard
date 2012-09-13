@@ -19,8 +19,8 @@ package com.android.inputmethod.latin;
 import android.util.Log;
 
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
-import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FormatOptions;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput.FusionDictionaryBufferInterface;
+import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 import com.android.inputmethod.latin.makedict.PendingAttribute;

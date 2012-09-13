@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 
 /**
  * Dictionary File Format Specification.
@@ -193,6 +194,40 @@ public final class FormatSpec {
 
     static final int MAX_TERMINAL_FREQUENCY = 255;
     static final int MAX_BIGRAM_FREQUENCY = 15;
+
+    /**
+     * Options about file format.
+     */
+    public static class FormatOptions {
+        public final int mVersion;
+        public final boolean mHasParentAddress;
+        public FormatOptions(final int version) {
+            this(version, false);
+        }
+        public FormatOptions(final int version, final boolean hasParentAddress) {
+            mVersion = version;
+            if (version < FormatSpec.FIRST_VERSION_WITH_PARENT_ADDRESS && hasParentAddress) {
+                throw new RuntimeException("Parent addresses are only supported with versions "
+                        + FormatSpec.FIRST_VERSION_WITH_PARENT_ADDRESS + " and ulterior.");
+            }
+            mHasParentAddress = hasParentAddress;
+        }
+    }
+
+    /**
+     * Class representing file header.
+     */
+    static final class FileHeader {
+        public final int mHeaderSize;
+        public final DictionaryOptions mDictionaryOptions;
+        public final FormatOptions mFormatOptions;
+        public FileHeader(final int headerSize, final DictionaryOptions dictionaryOptions,
+                final FormatOptions formatOptions) {
+            mHeaderSize = headerSize;
+            mDictionaryOptions = dictionaryOptions;
+            mFormatOptions = formatOptions;
+        }
+    }
 
     private FormatSpec() {
         // This utility class is not publicly instantiable.

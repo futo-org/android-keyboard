@@ -21,6 +21,7 @@ import android.util.Log;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
+import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
@@ -90,8 +91,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     private final DictionaryController mLocalDictionaryController = new DictionaryController();
 
     private static final int BINARY_DICT_VERSION = 1;
-    private static final BinaryDictInputOutput.FormatOptions FORMAT_OPTIONS =
-            new BinaryDictInputOutput.FormatOptions(BINARY_DICT_VERSION);
+    private static final FormatSpec.FormatOptions FORMAT_OPTIONS =
+            new FormatSpec.FormatOptions(BINARY_DICT_VERSION);
 
     /**
      * Abstract method for loading the unigrams and bigrams of a given dictionary in a background
