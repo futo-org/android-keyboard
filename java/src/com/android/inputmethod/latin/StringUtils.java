@@ -197,4 +197,98 @@ public final class StringUtils {
         codePoints[dsti] = codePoint;
         return codePoints;
     }
+
+    /**
+     * Determine what caps mode should be in effect at the current offset in
+     * the text. Only the mode bits set in <var>reqModes</var> will be
+     * checked. Note that the caps mode flags here are explicitly defined
+     * to match those in {@link InputType}.
+     *
+     * This code is a straight copy of TextUtils.getCapsMode (modulo namespace and formatting
+     * issues). This will change in the future as we simplify the code for our use and fix bugs.
+     *
+     * @param cs The text that should be checked for caps modes.
+     * @param off Location in the text at which to check.
+     * @param reqModes The modes to be checked: may be any combination of
+     * {@link #CAP_MODE_CHARACTERS}, {@link #CAP_MODE_WORDS}, and
+     * {@link #CAP_MODE_SENTENCES}.
+     *
+     * @return Returns the actual capitalization modes that can be in effect
+     * at the current position, which is any combination of
+     * {@link #CAP_MODE_CHARACTERS}, {@link #CAP_MODE_WORDS}, and
+     * {@link #CAP_MODE_SENTENCES}.
+     */
+    public static int getCapsMode(CharSequence cs, int off, int reqModes) {
+        if (off < 0) {
+            return 0;
+        }
+
+        int i;
+        char c;
+        int mode = 0;
+
+        if ((reqModes & TextUtils.CAP_MODE_CHARACTERS) != 0) {
+            mode |= TextUtils.CAP_MODE_CHARACTERS;
+        }
+        if ((reqModes & (TextUtils.CAP_MODE_WORDS | TextUtils.CAP_MODE_SENTENCES)) == 0) {
+            return mode;
+        }
+
+        // Back over allowed opening punctuation.
+        for (i = off; i > 0; i--) {
+            c = cs.charAt(i - 1);
+            if (c != '"' && c != '\'' && Character.getType(c) != Character.START_PUNCTUATION) {
+                break;
+            }
+        }
+
+        // Start of paragraph, with optional whitespace.
+        int j = i;
+        while (j > 0 && ((c = cs.charAt(j - 1)) == ' ' || c == '\t')) {
+            j--;
+        }
+        if (j == 0 || cs.charAt(j - 1) == '\n') {
+            return mode | TextUtils.CAP_MODE_WORDS;
+        }
+
+        // Or start of word if we are that style.
+        if ((reqModes & TextUtils.CAP_MODE_SENTENCES) == 0) {
+            if (i != j) mode |= TextUtils.CAP_MODE_WORDS;
+            return mode;
+        }
+
+        // There must be a space if not the start of paragraph.
+        if (i == j) {
+            return mode;
+        }
+
+        // Back over allowed closing punctuation.
+        for (; j > 0; j--) {
+            c = cs.charAt(j - 1);
+            if (c != '"' && c != '\'' && Character.getType(c) != Character.END_PUNCTUATION) {
+                break;
+            }
+        }
+
+        if (j > 0) {
+            c = cs.charAt(j - 1);
+            if (c == '.' || c == '?' || c == '!') {
+                // Do not capitalize if the word ends with a period but
+                // also contains a period, in which case it is an abbreviation.
+                if (c == '.') {
+                    for (int k = j - 2; k >= 0; k--) {
+                        c = cs.charAt(k);
+                        if (c == '.') {
+                            return mode;
+                        }
+                        if (!Character.isLetter(c)) {
+                            break;
+                        }
+                    }
+                }
+                return mode | TextUtils.CAP_MODE_SENTENCES;
+            }
+        }
+        return mode;
+    }
 }

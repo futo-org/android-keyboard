@@ -192,7 +192,20 @@ public class RichInputConnection {
     public int getCursorCapsMode(final int inputType) {
         mIC = mParent.getCurrentInputConnection();
         if (null == mIC) return Constants.TextUtils.CAP_MODE_OFF;
-        return mIC.getCursorCapsMode(inputType);
+        if (!TextUtils.isEmpty(mComposingText)) return Constants.TextUtils.CAP_MODE_OFF;
+        // TODO: this will generally work, but there may be cases where the buffer contains SOME
+        // information but not enough to determine the caps mode accurately. This may happen after
+        // heavy pressing of delete, for example DEFAULT_TEXT_CACHE_SIZE - 5 times or so.
+        // getCapsMode should be updated to be able to return a "not enough info" result so that
+        // we can get more context only when needed.
+        if (TextUtils.isEmpty(mCommittedTextBeforeComposingText) && 0 != mCurrentCursorPosition) {
+            mCommittedTextBeforeComposingText.append(
+                    getTextBeforeCursor(DEFAULT_TEXT_CACHE_SIZE, 0));
+        }
+        // This never calls InputConnection#getCapsMode - in fact, it's a static method that
+        // never blocks or initiates IPC.
+        return StringUtils.getCapsMode(mCommittedTextBeforeComposingText,
+                mCommittedTextBeforeComposingText.length(), inputType);
     }
 
     public CharSequence getTextBeforeCursor(final int i, final int j) {
