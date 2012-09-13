@@ -545,12 +545,15 @@ public class PointerTracker implements PointerTrackerQueue.Element {
     }
 
     private void startBatchInput() {
-        if (DEBUG_LISTENER) {
-            Log.d(TAG, "onStartBatchInput");
+        if (!sInGesture && mGestureStrokeWithPreviewTrail.isStartOfAGesture()) {
+            if (DEBUG_LISTENER) {
+                Log.d(TAG, "onStartBatchInput");
+            }
+            sInGesture = true;
+            mListener.onStartBatchInput();
         }
-        sInGesture = true;
-        mListener.onStartBatchInput();
-        mDrawingProxy.showGesturePreviewTrail(this, true /* isOldestTracker */);
+        final boolean isOldestTracker = sPointerTrackerQueue.getOldestElement() == this;
+        mDrawingProxy.showGesturePreviewTrail(this, isOldestTracker);
     }
 
     private void updateBatchInput(final long eventTime) {
@@ -585,7 +588,8 @@ public class PointerTracker implements PointerTrackerQueue.Element {
                 clearBatchInputPointsOfAllPointerTrackers();
             }
         }
-        mDrawingProxy.showGesturePreviewTrail(this,  true /* isOldestTracker */);
+        final boolean isOldestTracker = sPointerTrackerQueue.getOldestElement() == this;
+        mDrawingProxy.showGesturePreviewTrail(this, isOldestTracker);
     }
 
     private static void abortBatchInput() {
@@ -721,12 +725,8 @@ public class PointerTracker implements PointerTrackerQueue.Element {
             final boolean isHistorical, final Key key) {
         final int gestureTime = (int)(eventTime - sGestureFirstDownTime);
         if (mIsDetectingGesture) {
-            final GestureStroke stroke = mGestureStrokeWithPreviewTrail;
-            stroke.addPoint(x, y, gestureTime, isHistorical);
-            if (!sInGesture && stroke.isStartOfAGesture()) {
-                startBatchInput();
-            }
-
+            mGestureStrokeWithPreviewTrail.addPoint(x, y, gestureTime, isHistorical);
+            startBatchInput();
             if (sInGesture && key != null) {
                 updateBatchInput(eventTime);
             }
