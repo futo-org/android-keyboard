@@ -141,7 +141,9 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
 
 static inline float getNormalizedSquaredDistanceFloat(float x1, float y1, float x2, float y2,
         float scale) {
-    return squareFloat((x1 - x2) / scale) + squareFloat((y1 - y2) / scale);
+    const float deltaX = x1 - x2;
+    const float deltaY = y1 - y2;
+    return (SQUARE_FLOAT(deltaX) + SQUARE_FLOAT(deltaY)) / SQUARE_FLOAT(scale);
 }
 
 float ProximityInfo::getNormalizedSquaredDistanceFromCenterFloat(
