@@ -20,6 +20,7 @@
 #include <stdint.h>
 
 #include "defines.h"
+#include "hash_map_compat.h"
 #include "jni.h"
 
 namespace latinime {
@@ -112,12 +113,9 @@ class ProximityInfo {
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfo);
-    // The upper limit of the char code in mCodePointToKeyIndex
-    static const int MAX_CHAR_CODE = 127;
     static const float NOT_A_DISTANCE_FLOAT;
 
     int getStartIndexFromCoordinates(const int x, const int y) const;
-    void initializeCodePointToKeyIndex();
     void initializeG();
     float calculateNormalizedSquaredDistance(const int keyIndex, const int inputIndex) const;
     float calculateSquaredDistanceFromSweetSpotCenter(
@@ -154,7 +152,7 @@ class ProximityInfo {
     float mSweetSpotCenterXs[MAX_KEY_COUNT_IN_A_KEYBOARD];
     float mSweetSpotCenterYs[MAX_KEY_COUNT_IN_A_KEYBOARD];
     float mSweetSpotRadii[MAX_KEY_COUNT_IN_A_KEYBOARD];
-    int mCodePointToKeyIndex[MAX_CHAR_CODE + 1];
+    hash_map_compat<int, int> mCodeToKeyMap;
 
     int mKeyIndexToCodePointG[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int mCenterXsG[MAX_KEY_COUNT_IN_A_KEYBOARD];
