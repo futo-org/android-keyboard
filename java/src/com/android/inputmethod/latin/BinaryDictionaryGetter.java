@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
+import com.android.inputmethod.latin.makedict.FormatSpec;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -359,7 +360,7 @@ class BinaryDictionaryGetter {
             final ByteBuffer buffer = inStream.getChannel().map(
                     FileChannel.MapMode.READ_ONLY, 0, f.length());
             final int magic = buffer.getInt();
-            if (magic != BinaryDictInputOutput.VERSION_2_MAGIC_NUMBER) {
+            if (magic != FormatSpec.VERSION_2_MAGIC_NUMBER) {
                 return false;
             }
             final int formatVersion = buffer.getInt();
