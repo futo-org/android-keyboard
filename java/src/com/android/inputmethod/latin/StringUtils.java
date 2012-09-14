@@ -220,7 +220,7 @@ public final class StringUtils {
     public static int getCapsMode(CharSequence cs, int reqModes) {
         int i;
         char c;
-        int mode = 0;
+        int mode = TextUtils.CAP_MODE_CHARACTERS;
 
         // Quick description of what we want to do:
         // CAP_MODE_CHARACTERS is always on.
@@ -235,13 +235,10 @@ public final class StringUtils {
         // periods interleaved.
 
         // Step 1 : check for cap mode characters. If it's looked for, it's always on.
-        if ((reqModes & TextUtils.CAP_MODE_CHARACTERS) != 0) {
-            mode |= TextUtils.CAP_MODE_CHARACTERS;
-        }
         if ((reqModes & (TextUtils.CAP_MODE_WORDS | TextUtils.CAP_MODE_SENTENCES)) == 0) {
             // Here we are not looking for words or sentences modes, so since we already evaluated
             // mode characters, we can return.
-            return mode;
+            return mode & reqModes;
         }
 
         // Step 2 : Skip (ignore at the end of input) any opening punctuation. This includes
