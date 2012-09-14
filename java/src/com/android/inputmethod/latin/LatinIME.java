@@ -741,6 +741,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // switcher.loadKeyboard; in apps like Talk, we come here when the text is sent and the
         // field gets emptied and we need to re-evaluate the shift state, but not the whole layout
         // which would be disruptive.
+        // Space state must be updated before calling updateShiftState
         mKeyboardSwitcher.updateShiftState();
 
         mHandler.cancelUpdateSuggestionStrip();
@@ -1114,11 +1115,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // unless needed.
         if (mWordComposer.isComposingWord()) return Constants.TextUtils.CAP_MODE_OFF;
 
-        // TODO: This blocking IPC call is heavy. Consider doing this without using IPC calls.
-        // Note: getCursorCapsMode() returns the current capitalization mode that is any
-        // combination of CAP_MODE_CHARACTERS, CAP_MODE_WORDS, and CAP_MODE_SENTENCES. 0 means none
-        // of them.
-        return mConnection.getCursorCapsMode(inputType, mSubtypeSwitcher.getCurrentSubtypeLocale());
+        // Warning: this depends on mSpaceState, which may not be the most current value. If
+        // mSpaceState gets updated later, whoever called this may need to be told about it.
+        return mConnection.getCursorCapsMode(inputType, mSubtypeSwitcher.getCurrentSubtypeLocale(),
+                SPACE_STATE_PHANTOM == mSpaceState);
     }
 
     // Factor in auto-caps and manual caps and compute the current caps mode.
@@ -1391,9 +1391,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         mConnection.commitText(text, 1);
         mConnection.endBatchEdit();
+        // Space state must be updated before calling updateShiftState
+        mSpaceState = SPACE_STATE_NONE;
         mKeyboardSwitcher.updateShiftState();
         mKeyboardSwitcher.onCodeInput(Keyboard.CODE_OUTPUT_TEXT);
-        mSpaceState = SPACE_STATE_NONE;
         mEnteredText = text;
     }
 
@@ -1509,8 +1510,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mConnection.setComposingText(batchInputText, 1);
         mExpectingUpdateSelection = true;
         mConnection.endBatchEdit();
-        mKeyboardSwitcher.updateShiftState();
+        // Space state must be updated before calling updateShiftState
         mSpaceState = SPACE_STATE_PHANTOM;
+        mKeyboardSwitcher.updateShiftState();
     }
 
     private CharSequence specificTldProcessingOnTextInput(final CharSequence text) {
@@ -2019,8 +2021,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mConnection.endBatchEdit();
         // Don't allow cancellation of manual pick
         mLastComposedWord.deactivate();
+        // Space state must be updated before calling updateShiftState
         mSpaceState = SPACE_STATE_PHANTOM;
-        // TODO: is this necessary?
         mKeyboardSwitcher.updateShiftState();
 
         // We should show the "Touch again to save" hint if the user pressed the first entry

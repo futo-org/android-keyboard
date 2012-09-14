@@ -190,7 +190,23 @@ public class RichInputConnection {
         }
     }
 
-    public int getCursorCapsMode(final int inputType, final Locale locale) {
+    /**
+     * Gets the caps modes we should be in after this specific string.
+     *
+     * This returns a bit set of TextUtils#CAP_MODE_*, masked by the inputType argument.
+     * This method also supports faking an additional space after the string passed in argument,
+     * to support cases where a space will be added automatically, like in phantom space
+     * state for example.
+     * Note that for English, we are using American typography rules (which are not specific to
+     * American English, it's just the most common set of rules for English).
+     *
+     * @param inputType a mask of the caps modes to test for.
+     * @param locale what language should be considered.
+     * @param hasSpaceBefore if we should consider there should be a space after the string.
+     * @return the caps modes that should be on as a set of bits
+     */
+    public int getCursorCapsMode(final int inputType, final Locale locale,
+            final boolean hasSpaceBefore) {
         mIC = mParent.getCurrentInputConnection();
         if (null == mIC) return Constants.TextUtils.CAP_MODE_OFF;
         if (!TextUtils.isEmpty(mComposingText)) return Constants.TextUtils.CAP_MODE_OFF;
@@ -205,7 +221,8 @@ public class RichInputConnection {
         }
         // This never calls InputConnection#getCapsMode - in fact, it's a static method that
         // never blocks or initiates IPC.
-        return StringUtils.getCapsMode(mCommittedTextBeforeComposingText, inputType, locale);
+        return StringUtils.getCapsMode(mCommittedTextBeforeComposingText, inputType, locale,
+                hasSpaceBefore);
     }
 
     public CharSequence getTextBeforeCursor(final int i, final int j) {

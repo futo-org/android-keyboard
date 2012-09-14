@@ -93,22 +93,24 @@ public class StringUtilsTests extends AndroidTestCase {
     }
 
     private void onePathForCaps(final CharSequence cs, final int expectedResult, final int mask,
-            final Locale l) {
+            final Locale l, final boolean hasSpaceBefore) {
         int oneTimeResult = expectedResult & mask;
-        assertEquals("After >" + cs + "<", oneTimeResult, StringUtils.getCapsMode(cs, mask, l));
+        assertEquals("After >" + cs + "<", oneTimeResult,
+                StringUtils.getCapsMode(cs, mask, l, hasSpaceBefore));
     }
 
-    private void allPathsForCaps(final CharSequence cs, final int expectedResult, final Locale l) {
+    private void allPathsForCaps(final CharSequence cs, final int expectedResult, final Locale l,
+            final boolean hasSpaceBefore) {
         final int c = TextUtils.CAP_MODE_CHARACTERS;
         final int w = TextUtils.CAP_MODE_WORDS;
         final int s = TextUtils.CAP_MODE_SENTENCES;
-        onePathForCaps(cs, expectedResult, c | w | s, l);
-        onePathForCaps(cs, expectedResult, w | s, l);
-        onePathForCaps(cs, expectedResult, c | s, l);
-        onePathForCaps(cs, expectedResult, c | w, l);
-        onePathForCaps(cs, expectedResult, c, l);
-        onePathForCaps(cs, expectedResult, w, l);
-        onePathForCaps(cs, expectedResult, s, l);
+        onePathForCaps(cs, expectedResult, c | w | s, l, hasSpaceBefore);
+        onePathForCaps(cs, expectedResult, w | s, l, hasSpaceBefore);
+        onePathForCaps(cs, expectedResult, c | s, l, hasSpaceBefore);
+        onePathForCaps(cs, expectedResult, c | w, l, hasSpaceBefore);
+        onePathForCaps(cs, expectedResult, c, l, hasSpaceBefore);
+        onePathForCaps(cs, expectedResult, w, l, hasSpaceBefore);
+        onePathForCaps(cs, expectedResult, s, l, hasSpaceBefore);
     }
 
     public void testGetCapsMode() {
@@ -116,26 +118,31 @@ public class StringUtilsTests extends AndroidTestCase {
         final int w = TextUtils.CAP_MODE_WORDS;
         final int s = TextUtils.CAP_MODE_SENTENCES;
         Locale l = Locale.ENGLISH;
-        allPathsForCaps("", c | w | s, l);
-        allPathsForCaps("Word", c, l);
-        allPathsForCaps("Word.", c, l);
-        allPathsForCaps("Word ", c | w, l);
-        allPathsForCaps("Word. ", c | w | s, l);
-        allPathsForCaps("Word..", c, l);
-        allPathsForCaps("Word.. ", c | w | s, l);
-        allPathsForCaps("Word... ", c | w | s, l);
-        allPathsForCaps("Word ... ", c | w | s, l);
-        allPathsForCaps("Word . ", c | w, l);
-        allPathsForCaps("In the U.S ", c | w, l);
-        allPathsForCaps("In the U.S. ", c | w, l);
-        allPathsForCaps("Some stuff (e.g. ", c | w, l);
-        allPathsForCaps("In the U.S.. ", c | w | s, l);
-        allPathsForCaps("\"Word.\" ", c | w | s, l);
-        allPathsForCaps("\"Word\". ", c | w | s, l);
-        allPathsForCaps("\"Word\" ", c | w, l);
+        allPathsForCaps("", c | w | s, l, false);
+        allPathsForCaps("Word", c, l, false);
+        allPathsForCaps("Word.", c, l, false);
+        allPathsForCaps("Word ", c | w, l, false);
+        allPathsForCaps("Word. ", c | w | s, l, false);
+        allPathsForCaps("Word..", c, l, false);
+        allPathsForCaps("Word.. ", c | w | s, l, false);
+        allPathsForCaps("Word... ", c | w | s, l, false);
+        allPathsForCaps("Word ... ", c | w | s, l, false);
+        allPathsForCaps("Word . ", c | w, l, false);
+        allPathsForCaps("In the U.S ", c | w, l, false);
+        allPathsForCaps("In the U.S. ", c | w, l, false);
+        allPathsForCaps("Some stuff (e.g. ", c | w, l, false);
+        allPathsForCaps("In the U.S.. ", c | w | s, l, false);
+        allPathsForCaps("\"Word.\" ", c | w | s, l, false);
+        allPathsForCaps("\"Word\". ", c | w | s, l, false);
+        allPathsForCaps("\"Word\" ", c | w, l, false);
+
+        // Test for phantom space
+        allPathsForCaps("Word", c | w, l, true);
+        allPathsForCaps("Word.", c | w | s, l, true);
+
         l = Locale.FRENCH;
-        allPathsForCaps("\"Word.\" ", c | w, l);
-        allPathsForCaps("\"Word\". ", c | w | s, l);
-        allPathsForCaps("\"Word\" ", c | w, l);
+        allPathsForCaps("\"Word.\" ", c | w, l, false);
+        allPathsForCaps("\"Word\". ", c | w | s, l, false);
+        allPathsForCaps("\"Word\" ", c | w, l, false);
     }
 }

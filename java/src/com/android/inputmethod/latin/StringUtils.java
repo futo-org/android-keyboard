@@ -197,13 +197,15 @@ public final class StringUtils {
      * {@link TextUtils#CAP_MODE_CHARACTERS}, {@link TextUtils#CAP_MODE_WORDS}, and
      * {@link TextUtils#CAP_MODE_SENTENCES}.
      * @param locale The locale to consider for capitalization rules
+     * @param hasSpaceBefore Whether we should consider there is a space inserted at the end of cs
      *
      * @return Returns the actual capitalization modes that can be in effect
      * at the current position, which is any combination of
      * {@link TextUtils#CAP_MODE_CHARACTERS}, {@link TextUtils#CAP_MODE_WORDS}, and
      * {@link TextUtils#CAP_MODE_SENTENCES}.
      */
-    public static int getCapsMode(final CharSequence cs, final int reqModes, final Locale locale) {
+    public static int getCapsMode(final CharSequence cs, final int reqModes, final Locale locale,
+            final boolean hasSpaceBefore) {
         // Quick description of what we want to do:
         // CAP_MODE_CHARACTERS is always on.
         // CAP_MODE_WORDS is on if there is some whitespace before the cursor.
@@ -230,11 +232,15 @@ public final class StringUtils {
         // single quote since they aren't start punctuation in the unicode sense, but should still
         // be skipped for English. TODO: does this depend on the language?
         int i;
-        for (i = cs.length(); i > 0; i--) {
-            final char c = cs.charAt(i - 1);
-            if (c != Keyboard.CODE_DOUBLE_QUOTE && c != Keyboard.CODE_SINGLE_QUOTE
-                    && Character.getType(c) != Character.START_PUNCTUATION) {
-                break;
+        if (hasSpaceBefore) {
+            i = cs.length() + 1;
+        } else {
+            for (i = cs.length(); i > 0; i--) {
+                final char c = cs.charAt(i - 1);
+                if (c != Keyboard.CODE_DOUBLE_QUOTE && c != Keyboard.CODE_SINGLE_QUOTE
+                        && Character.getType(c) != Character.START_PUNCTUATION) {
+                    break;
+                }
             }
         }
 
@@ -247,6 +253,7 @@ public final class StringUtils {
         // if the first char that's not a space or tab is a start of line (as in, either \n or
         // start of text).
         int j = i;
+        if (hasSpaceBefore) --j;
         while (j > 0 && Character.isWhitespace(cs.charAt(j - 1))) {
             j--;
         }
