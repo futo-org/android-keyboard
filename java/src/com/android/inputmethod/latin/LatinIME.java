@@ -1118,7 +1118,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Note: getCursorCapsMode() returns the current capitalization mode that is any
         // combination of CAP_MODE_CHARACTERS, CAP_MODE_WORDS, and CAP_MODE_SENTENCES. 0 means none
         // of them.
-        return mConnection.getCursorCapsMode(inputType);
+        return mConnection.getCursorCapsMode(inputType, mSubtypeSwitcher.getCurrentSubtypeLocale());
     }
 
     // Factor in auto-caps and manual caps and compute the current caps mode.
