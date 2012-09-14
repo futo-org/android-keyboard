@@ -220,8 +220,6 @@ public final class StringUtils {
     public static int getCapsMode(CharSequence cs, int reqModes) {
         int i;
         char c;
-        int mode = TextUtils.CAP_MODE_CHARACTERS;
-
         // Quick description of what we want to do:
         // CAP_MODE_CHARACTERS is always on.
         // CAP_MODE_WORDS is on if there is some whitespace before the cursor.
@@ -234,11 +232,11 @@ public final class StringUtils {
         // be immediately preceded by punctuation, or by a string of only letters with single
         // periods interleaved.
 
-        // Step 1 : check for cap mode characters. If it's looked for, it's always on.
+        // Step 1 : check for cap MODE_CHARACTERS. If it's looked for, it's always on.
         if ((reqModes & (TextUtils.CAP_MODE_WORDS | TextUtils.CAP_MODE_SENTENCES)) == 0) {
-            // Here we are not looking for words or sentences modes, so since we already evaluated
-            // mode characters, we can return.
-            return mode & reqModes;
+            // Here we are not looking for MODE_WORDS or MODE_SENTENCES, so since we already
+            // evaluated MODE_CHARACTERS, we can return.
+            return TextUtils.CAP_MODE_CHARACTERS & reqModes;
         }
 
         // Step 2 : Skip (ignore at the end of input) any opening punctuation. This includes
@@ -263,35 +261,30 @@ public final class StringUtils {
         // if the first char that's not a space or tab is a start of line (as in, either \n or
         // start of text).
         int j = i;
-        while (j > 0 && ((c = cs.charAt(j - 1)) == ' ' || c == '\t')) {
+        while (j > 0 && Character.isWhitespace(cs.charAt(j - 1))) {
             j--;
         }
-        if (j == 0 || cs.charAt(j - 1) == '\n') {
-            // Here we know we are at the start of a paragraph, so we turn on word mode.
-            // Note: I think this is entirely buggy. It will return mode words even if the app
-            // didn't request it, and it will fail to return sentence mode even if this is actually
-            // the start of a sentence. As it happens, Latin IME client code considers that mode
-            // word *implies* mode sentence and tests for non-zeroness, so it happens to work.
-            return mode | TextUtils.CAP_MODE_WORDS;
-        }
-        if ((reqModes & TextUtils.CAP_MODE_SENTENCES) == 0) {
-            // If we don't have to check for mode sentence, then we know all we need to know
-            // already. Either we have whitespace immediately before index i and we are at the
-            // start of a word, or we don't and we aren't. But we just went over any whitespace
-            // just before i and in fact j points before any whitespace, so if i != j that means
-            // there is such whitespace. In this case, we have mode words.
-            if (i != j) mode |= TextUtils.CAP_MODE_WORDS;
-            return mode;
+        if (j == 0) {
+            // There is only whitespace between the start of the text and the cursor. Both
+            // MODE_WORDS and MODE_SENTENCES should be active.
+            return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS
+                    | TextUtils.CAP_MODE_SENTENCES) & reqModes;
         }
         if (i == j) {
-            // Finally, if we don't have whitespace before index i, it means neither mode words
+            // If we don't have whitespace before index i, it means neither MODE_WORDS
             // nor mode sentences should be on so we can return right away.
-            return mode;
+            return TextUtils.CAP_MODE_CHARACTERS & reqModes;
+        }
+        if ((reqModes & TextUtils.CAP_MODE_SENTENCES) == 0) {
+            // Here we know we have whitespace before the cursor (if not, we returned in the above
+            // if i == j clause), so we need MODE_WORDS to be on. And we don't need to evaluate
+            // MODE_SENTENCES so we can return right away.
+            return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS) & reqModes;
         }
         // Please note that because of the reqModes & CAP_MODE_SENTENCES test a few lines above,
-        // we know that mode sentences is being requested.
+        // we know that MODE_SENTENCES is being requested.
 
-        // Step 4 : Search for sentence mode.
+        // Step 4 : Search for MODE_SENTENCES.
         for (; j > 0; j--) {
             // Here we look to go over any closing punctuation. This is because in dominant variants
             // of English, the final period is placed within double quotes and maybe other closing
@@ -307,35 +300,34 @@ public final class StringUtils {
             }
         }
 
-        if (j > 0) {
-            c = cs.charAt(j - 1);
-            if (c == '.' || c == '?' || c == '!') {
-                // Here we found a marker for sentence end (we consider these to be one of
-                // either . or ? or ! only). So this is probably the end of a sentence, but if we
-                // found a period, we still want to check the case where this is a abbreviation
-                // period rather than a full stop. To do this, we look for a period within a word
-                // before the period we just found; if any, we take that to mean it was an
-                // abbreviation.
-                // A typical example of the above is "In the U.S. ", where the last period is
-                // not a full stop and we should not capitalize.
-                // TODO: the rule below is broken. In particular it fails for runs of periods,
-                // whatever the reason. In the example "in the U.S..", the last period is a full
-                // stop following the abbreviation period, and we should capitalize but we don't.
-                // Likewise, "I don't know... " should capitalize, but fails to do so.
-                if (c == '.') {
-                    for (int k = j - 2; k >= 0; k--) {
-                        c = cs.charAt(k);
-                        if (c == '.') {
-                            return mode;
-                        }
-                        if (!Character.isLetter(c)) {
-                            break;
-                        }
+        if (j <= 0) return TextUtils.CAP_MODE_CHARACTERS & reqModes;
+        c = cs.charAt(j - 1);
+        if (c == '.' || c == '?' || c == '!') {
+            // Here we found a marker for sentence end (we consider these to be one of
+            // either . or ? or ! only). So this is probably the end of a sentence, but if we
+            // found a period, we still want to check the case where this is a abbreviation
+            // period rather than a full stop. To do this, we look for a period within a word
+            // before the period we just found; if any, we take that to mean it was an
+            // abbreviation.
+            // A typical example of the above is "In the U.S. ", where the last period is
+            // not a full stop and we should not capitalize.
+            // TODO: the rule below is broken. In particular it fails for runs of periods,
+            // whatever the reason. In the example "in the U.S..", the last period is a full
+            // stop following the abbreviation period, and we should capitalize but we don't.
+            // Likewise, "I don't know... " should capitalize, but fails to do so.
+            if (c == '.') {
+                for (int k = j - 2; k >= 0; k--) {
+                    c = cs.charAt(k);
+                    if (c == '.') {
+                        return TextUtils.CAP_MODE_CHARACTERS & reqModes;
+                    }
+                    if (!Character.isLetter(c)) {
+                        break;
                     }
                 }
-                return mode | TextUtils.CAP_MODE_SENTENCES;
             }
+            return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_SENTENCES) & reqModes;
         }
-        return mode;
+        return TextUtils.CAP_MODE_CHARACTERS & reqModes;
     }
 }
