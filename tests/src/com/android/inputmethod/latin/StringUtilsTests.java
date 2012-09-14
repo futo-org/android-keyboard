@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.test.AndroidTestCase;
+import android.text.TextUtils;
 
 public class StringUtilsTests extends AndroidTestCase {
     public void testContainsInArray() {
@@ -98,5 +99,45 @@ public class StringUtilsTests extends AndroidTestCase {
         assertFalse("empty string", StringUtils.hasUpperCase(""));
         assertFalse("lower-case string", StringUtils.hasUpperCase("string"));
         assertFalse("lower-case string with non-letters", StringUtils.hasUpperCase("he's"));
+    }
+
+    private void onePathForCaps(final CharSequence cs, final int expectedResult, final int mask) {
+        int oneTimeResult = expectedResult & mask;
+        assertEquals("After >" + cs + "<", oneTimeResult, StringUtils.getCapsMode(cs, mask));
+    }
+
+    private void allPathsForCaps(final CharSequence cs, final int expectedResult) {
+        final int c = TextUtils.CAP_MODE_CHARACTERS;
+        final int w = TextUtils.CAP_MODE_WORDS;
+        final int s = TextUtils.CAP_MODE_SENTENCES;
+        onePathForCaps(cs, expectedResult, c | w | s);
+        onePathForCaps(cs, expectedResult, w | s);
+        onePathForCaps(cs, expectedResult, c | s);
+        onePathForCaps(cs, expectedResult, c | w);
+        onePathForCaps(cs, expectedResult, c);
+        onePathForCaps(cs, expectedResult, w);
+        onePathForCaps(cs, expectedResult, s);
+    }
+
+    public void testGetCapsMode() {
+        final int c = TextUtils.CAP_MODE_CHARACTERS;
+        final int w = TextUtils.CAP_MODE_WORDS;
+        final int s = TextUtils.CAP_MODE_SENTENCES;
+        allPathsForCaps("", c | w | s);
+        allPathsForCaps("Word", c);
+        allPathsForCaps("Word.", c);
+        allPathsForCaps("Word ", c | w);
+        allPathsForCaps("Word. ", c | w | s);
+        allPathsForCaps("Word..", c);
+        allPathsForCaps("Word.. ", c | w | s);
+        allPathsForCaps("Word... ", c | w | s);
+        allPathsForCaps("Word ... ", c | w | s);
+        allPathsForCaps("Word . ", c | w);
+        allPathsForCaps("In the U.S ", c | w);
+        allPathsForCaps("In the U.S. ", c | w);
+        allPathsForCaps("Some stuff (e.g. ", c | w);
+        allPathsForCaps("In the U.S.. ", c | w | s);
+        allPathsForCaps("\"Word.\" ", c | w | s);
+        allPathsForCaps("\"Word\" ", c | w);
     }
 }

@@ -304,34 +304,89 @@ public final class StringUtils {
         }
 
         if (j <= 0) return TextUtils.CAP_MODE_CHARACTERS & reqModes;
-        char c = cs.charAt(j - 1);
-        if (c == Keyboard.CODE_PERIOD || c == Keyboard.CODE_QUESTION_MARK
-                || c == Keyboard.CODE_EXCLAMATION_MARK) {
-            // Here we found a marker for sentence end (we consider these to be one of
-            // either . or ? or ! only). So this is probably the end of a sentence, but if we
-            // found a period, we still want to check the case where this is a abbreviation
-            // period rather than a full stop. To do this, we look for a period within a word
-            // before the period we just found; if any, we take that to mean it was an
-            // abbreviation.
-            // A typical example of the above is "In the U.S. ", where the last period is
-            // not a full stop and we should not capitalize.
-            // TODO: the rule below is broken. In particular it fails for runs of periods,
-            // whatever the reason. In the example "in the U.S..", the last period is a full
-            // stop following the abbreviation period, and we should capitalize but we don't.
-            // Likewise, "I don't know... " should capitalize, but fails to do so.
-            if (c == Keyboard.CODE_PERIOD) {
-                for (int k = j - 2; k >= 0; k--) {
-                    c = cs.charAt(k);
-                    if (c == Keyboard.CODE_PERIOD) {
-                        return TextUtils.CAP_MODE_CHARACTERS & reqModes;
-                    }
-                    if (!Character.isLetter(c)) {
-                        break;
-                    }
-                }
-            }
+        char c = cs.charAt(--j);
+
+        // We found the next interesting chunk of text ; next we need to determine if it's the
+        // end of a sentence. If we have a question mark or an exclamation mark, it's the end of
+        // a sentence. If it's neither, the only remaining case is the period so we get the opposite
+        // case out of the way.
+        if (c == Keyboard.CODE_QUESTION_MARK || c == Keyboard.CODE_EXCLAMATION_MARK) {
             return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_SENTENCES) & reqModes;
         }
-        return TextUtils.CAP_MODE_CHARACTERS & reqModes;
+        if (c != Keyboard.CODE_PERIOD || j <= 0) {
+            return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS) & reqModes;
+        }
+
+        // We found out that we have a period. We need to determine if this is a full stop or
+        // otherwise sentence-ending period, or an abbreviation like "e.g.". An abbreviation
+        // looks like (\w\.){2,}
+        // To find out, we will have a simple state machine with the following states :
+        // START, WORD, PERIOD, ABBREVIATION
+        // On START : (just before the first period)
+        //           letter => WORD
+        //           whitespace => end with no caps (it was a stand-alone period)
+        //           otherwise => end with caps (several periods/symbols in a row)
+        // On WORD : (within the word just before the first period)
+        //           letter => WORD
+        //           period => PERIOD
+        //           otherwise => end with caps (it was a word with a full stop at the end)
+        // On PERIOD : (period within a potential abbreviation)
+        //           letter => LETTER
+        //           otherwise => end with caps (it was not an abbreviation)
+        // On LETTER : (letter within a potential abbreviation)
+        //           letter => LETTER
+        //           period => PERIOD
+        //           otherwise => end with no caps (it was an abbreviation)
+        // "Not an abbreviation" in the above chart essentially covers cases like "...yes.". This
+        // should capitalize.
+
+        final int START = 0;
+        final int WORD = 1;
+        final int PERIOD = 2;
+        final int LETTER = 3;
+        final int caps = (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS
+                | TextUtils.CAP_MODE_SENTENCES) & reqModes;
+        final int noCaps = (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS) & reqModes;
+        int state = START;
+        while (j > 0) {
+            c = cs.charAt(--j);
+            switch (state) {
+            case START:
+                if (Character.isLetter(c)) {
+                    state = WORD;
+                } else if (Character.isWhitespace(c)) {
+                    return noCaps;
+                } else {
+                    return caps;
+                }
+                break;
+            case WORD:
+                if (Character.isLetter(c)) {
+                    state = WORD;
+                } else if (c == Keyboard.CODE_PERIOD) {
+                    state = PERIOD;
+                } else {
+                    return caps;
+                }
+                break;
+            case PERIOD:
+                if (Character.isLetter(c)) {
+                    state = LETTER;
+                } else {
+                    return caps;
+                }
+                break;
+            case LETTER:
+                if (Character.isLetter(c)) {
+                    state = LETTER;
+                } else if (c == Keyboard.CODE_PERIOD) {
+                    state = PERIOD;
+                } else {
+                    return noCaps;
+                }
+            }
+        }
+        // Here we arrived at the start of the line. This should behave exactly like whitespace.
+        return (START == state || LETTER == state) ? noCaps : caps;
     }
 }
