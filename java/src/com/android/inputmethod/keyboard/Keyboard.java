@@ -57,6 +57,8 @@ public class Keyboard {
     public static final int CODE_DASH = '-';
     public static final int CODE_SINGLE_QUOTE = '\'';
     public static final int CODE_DOUBLE_QUOTE = '"';
+    public static final int CODE_QUESTION_MARK = '?';
+    public static final int CODE_EXCLAMATION_MARK = '!';
     // TODO: Check how this should work for right-to-left languages. It seems to stand
     // that for rtl languages, a closing parenthesis is a left parenthesis. Is this
     // managed by the font? Or is it a different char?
