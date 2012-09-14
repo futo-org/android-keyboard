@@ -196,13 +196,14 @@ public final class StringUtils {
      * @param reqModes The modes to be checked: may be any combination of
      * {@link TextUtils#CAP_MODE_CHARACTERS}, {@link TextUtils#CAP_MODE_WORDS}, and
      * {@link TextUtils#CAP_MODE_SENTENCES}.
+     * @param locale The locale to consider for capitalization rules
      *
      * @return Returns the actual capitalization modes that can be in effect
      * at the current position, which is any combination of
      * {@link TextUtils#CAP_MODE_CHARACTERS}, {@link TextUtils#CAP_MODE_WORDS}, and
      * {@link TextUtils#CAP_MODE_SENTENCES}.
      */
-    public static int getCapsMode(final CharSequence cs, final int reqModes) {
+    public static int getCapsMode(final CharSequence cs, final int reqModes, final Locale locale) {
         // Quick description of what we want to do:
         // CAP_MODE_CHARACTERS is always on.
         // CAP_MODE_WORDS is on if there is some whitespace before the cursor.
@@ -270,19 +271,24 @@ public final class StringUtils {
         // we know that MODE_SENTENCES is being requested.
 
         // Step 4 : Search for MODE_SENTENCES.
-        for (; j > 0; j--) {
-            // Here we look to go over any closing punctuation. This is because in dominant variants
-            // of English, the final period is placed within double quotes and maybe other closing
-            // punctuation signs.
-            // TODO: this is wrong for almost everything except American typography rules for
-            // English. It's wrong for British typography rules for English, it's wrong for French,
-            // it's wrong for German, it's wrong for Spanish, and possibly everything else.
-            // (note that American rules and British rules have nothing to do with en_US and en_GB,
-            // as both rules are used in both countries - it's merely a name for the set of rules)
-            final char c = cs.charAt(j - 1);
-            if (c != Keyboard.CODE_DOUBLE_QUOTE && c != Keyboard.CODE_SINGLE_QUOTE
-                    && Character.getType(c) != Character.END_PUNCTUATION) {
-                break;
+        // English is a special case in that "American typography" rules, which are the most common
+        // in English, state that a sentence terminator immediately following a quotation mark
+        // should be swapped with it and de-duplicated (included in the quotation mark),
+        // e.g. <<Did he say, "let's go home?">>
+        // No other language has such a rule as far as I know, instead putting inside the quotation
+        // mark as the exact thing quoted and handling the surrounding punctuation independently,
+        // e.g. <<Did he say, "let's go home"?>>
+        // Hence, specifically for English, we treat this special case here.
+        if (Locale.ENGLISH.getLanguage().equals(locale.getLanguage())) {
+            for (; j > 0; j--) {
+                // Here we look to go over any closing punctuation. This is because in dominant
+                // variants of English, the final period is placed within double quotes and maybe
+                // other closing punctuation signs. This is generally not true in other languages.
+                final char c = cs.charAt(j - 1);
+                if (c != Keyboard.CODE_DOUBLE_QUOTE && c != Keyboard.CODE_SINGLE_QUOTE
+                        && Character.getType(c) != Character.END_PUNCTUATION) {
+                    break;
+                }
             }
         }
 

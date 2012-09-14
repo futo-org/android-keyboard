@@ -30,6 +30,7 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.define.ProductionFlag;
 import com.android.inputmethod.research.ResearchLogger;
 
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
@@ -189,7 +190,7 @@ public class RichInputConnection {
         }
     }
 
-    public int getCursorCapsMode(final int inputType) {
+    public int getCursorCapsMode(final int inputType, final Locale locale) {
         mIC = mParent.getCurrentInputConnection();
         if (null == mIC) return Constants.TextUtils.CAP_MODE_OFF;
         if (!TextUtils.isEmpty(mComposingText)) return Constants.TextUtils.CAP_MODE_OFF;
@@ -204,7 +205,7 @@ public class RichInputConnection {
         }
         // This never calls InputConnection#getCapsMode - in fact, it's a static method that
         // never blocks or initiates IPC.
-        return StringUtils.getCapsMode(mCommittedTextBeforeComposingText, inputType);
+        return StringUtils.getCapsMode(mCommittedTextBeforeComposingText, inputType, locale);
     }
 
     public CharSequence getTextBeforeCursor(final int i, final int j) {
