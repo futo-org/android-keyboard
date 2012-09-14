@@ -194,15 +194,15 @@ public final class StringUtils {
      *
      * @param cs The text that should be checked for caps modes.
      * @param reqModes The modes to be checked: may be any combination of
-     * {@link #CAP_MODE_CHARACTERS}, {@link #CAP_MODE_WORDS}, and
-     * {@link #CAP_MODE_SENTENCES}.
+     * {@link TextUtils#CAP_MODE_CHARACTERS}, {@link TextUtils#CAP_MODE_WORDS}, and
+     * {@link TextUtils#CAP_MODE_SENTENCES}.
      *
      * @return Returns the actual capitalization modes that can be in effect
      * at the current position, which is any combination of
-     * {@link #CAP_MODE_CHARACTERS}, {@link #CAP_MODE_WORDS}, and
-     * {@link #CAP_MODE_SENTENCES}.
+     * {@link TextUtils#CAP_MODE_CHARACTERS}, {@link TextUtils#CAP_MODE_WORDS}, and
+     * {@link TextUtils#CAP_MODE_SENTENCES}.
      */
-    public static int getCapsMode(CharSequence cs, int reqModes) {
+    public static int getCapsMode(final CharSequence cs, final int reqModes) {
         // Quick description of what we want to do:
         // CAP_MODE_CHARACTERS is always on.
         // CAP_MODE_WORDS is on if there is some whitespace before the cursor.
