@@ -545,13 +545,14 @@ public class PointerTracker implements PointerTrackerQueue.Element {
     }
 
     private void startBatchInput() {
-        if (!sInGesture && mGestureStrokeWithPreviewTrail.isStartOfAGesture()) {
-            if (DEBUG_LISTENER) {
-                Log.d(TAG, "onStartBatchInput");
-            }
-            sInGesture = true;
-            mListener.onStartBatchInput();
+        if (sInGesture || !mGestureStrokeWithPreviewTrail.isStartOfAGesture()) {
+            return;
         }
+        if (DEBUG_LISTENER) {
+            Log.d(TAG, "onStartBatchInput");
+        }
+        sInGesture = true;
+        mListener.onStartBatchInput();
         final boolean isOldestTracker = sPointerTrackerQueue.getOldestElement() == this;
         mDrawingProxy.showGesturePreviewTrail(this, isOldestTracker);
     }
