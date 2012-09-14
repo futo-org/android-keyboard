@@ -244,7 +244,8 @@ public class DictionaryMaker {
             inStream = new FileInputStream(file);
             final ByteBuffer buffer = inStream.getChannel().map(
                     FileChannel.MapMode.READ_ONLY, 0, file.length());
-            return BinaryDictInputOutput.readDictionaryBinary(buffer, null);
+            return BinaryDictInputOutput.readDictionaryBinary(
+                    new BinaryDictInputOutput.ByteBufferWrapper(buffer), null);
         } finally {
             if (inStream != null) {
                 try {
