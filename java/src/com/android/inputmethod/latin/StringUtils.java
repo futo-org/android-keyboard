@@ -125,23 +125,6 @@ public final class StringUtils {
     }
 
     /**
-     * Returns true if cs contains any upper case characters.
-     *
-     * @param cs the CharSequence to check
-     * @return {@code true} if cs contains any upper case characters, {@code false} otherwise.
-     */
-    public static boolean hasUpperCase(final CharSequence cs) {
-        final int length = cs.length();
-        for (int i = 0, cp = 0; i < length; i += Character.charCount(cp)) {
-            cp = Character.codePointAt(cs, i);
-            if (Character.isUpperCase(cp)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Remove duplicates from an array of strings.
      *
      * This method will always keep the first occurrence of all strings at their position
