@@ -18,6 +18,8 @@ package com.android.inputmethod.latin;
 
 import android.text.TextUtils;
 
+import com.android.inputmethod.keyboard.Keyboard; // For character constants
+
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -246,7 +248,8 @@ public final class StringUtils {
         int i;
         for (i = cs.length(); i > 0; i--) {
             final char c = cs.charAt(i - 1);
-            if (c != '"' && c != '\'' && Character.getType(c) != Character.START_PUNCTUATION) {
+            if (c != Keyboard.CODE_DOUBLE_QUOTE && c != Keyboard.CODE_SINGLE_QUOTE
+                    && Character.getType(c) != Character.START_PUNCTUATION) {
                 break;
             }
         }
@@ -294,14 +297,16 @@ public final class StringUtils {
             // (note that American rules and British rules have nothing to do with en_US and en_GB,
             // as both rules are used in both countries - it's merely a name for the set of rules)
             final char c = cs.charAt(j - 1);
-            if (c != '"' && c != '\'' && Character.getType(c) != Character.END_PUNCTUATION) {
+            if (c != Keyboard.CODE_DOUBLE_QUOTE && c != Keyboard.CODE_SINGLE_QUOTE
+                    && Character.getType(c) != Character.END_PUNCTUATION) {
                 break;
             }
         }
 
         if (j <= 0) return TextUtils.CAP_MODE_CHARACTERS & reqModes;
         char c = cs.charAt(j - 1);
-        if (c == '.' || c == '?' || c == '!') {
+        if (c == Keyboard.CODE_PERIOD || c == Keyboard.CODE_QUESTION_MARK
+                || c == Keyboard.CODE_EXCLAMATION_MARK) {
             // Here we found a marker for sentence end (we consider these to be one of
             // either . or ? or ! only). So this is probably the end of a sentence, but if we
             // found a period, we still want to check the case where this is a abbreviation
@@ -314,10 +319,10 @@ public final class StringUtils {
             // whatever the reason. In the example "in the U.S..", the last period is a full
             // stop following the abbreviation period, and we should capitalize but we don't.
             // Likewise, "I don't know... " should capitalize, but fails to do so.
-            if (c == '.') {
+            if (c == Keyboard.CODE_PERIOD) {
                 for (int k = j - 2; k >= 0; k--) {
                     c = cs.charAt(k);
-                    if (c == '.') {
+                    if (c == Keyboard.CODE_PERIOD) {
                         return TextUtils.CAP_MODE_CHARACTERS & reqModes;
                     }
                     if (!Character.isLetter(c)) {
