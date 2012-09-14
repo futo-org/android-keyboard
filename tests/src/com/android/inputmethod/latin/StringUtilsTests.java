@@ -19,6 +19,8 @@ package com.android.inputmethod.latin;
 import android.test.AndroidTestCase;
 import android.text.TextUtils;
 
+import java.util.Locale;
+
 public class StringUtilsTests extends AndroidTestCase {
     public void testContainsInArray() {
         assertFalse("empty array", StringUtils.containsInArray("key", new String[0]));
@@ -90,43 +92,50 @@ public class StringUtilsTests extends AndroidTestCase {
                 StringUtils.removeFromCsvIfExists("key", "key1,key,key3,key,key5"));
     }
 
-    private void onePathForCaps(final CharSequence cs, final int expectedResult, final int mask) {
+    private void onePathForCaps(final CharSequence cs, final int expectedResult, final int mask,
+            final Locale l) {
         int oneTimeResult = expectedResult & mask;
-        assertEquals("After >" + cs + "<", oneTimeResult, StringUtils.getCapsMode(cs, mask));
+        assertEquals("After >" + cs + "<", oneTimeResult, StringUtils.getCapsMode(cs, mask, l));
     }
 
-    private void allPathsForCaps(final CharSequence cs, final int expectedResult) {
+    private void allPathsForCaps(final CharSequence cs, final int expectedResult, final Locale l) {
         final int c = TextUtils.CAP_MODE_CHARACTERS;
         final int w = TextUtils.CAP_MODE_WORDS;
         final int s = TextUtils.CAP_MODE_SENTENCES;
-        onePathForCaps(cs, expectedResult, c | w | s);
-        onePathForCaps(cs, expectedResult, w | s);
-        onePathForCaps(cs, expectedResult, c | s);
-        onePathForCaps(cs, expectedResult, c | w);
-        onePathForCaps(cs, expectedResult, c);
-        onePathForCaps(cs, expectedResult, w);
-        onePathForCaps(cs, expectedResult, s);
+        onePathForCaps(cs, expectedResult, c | w | s, l);
+        onePathForCaps(cs, expectedResult, w | s, l);
+        onePathForCaps(cs, expectedResult, c | s, l);
+        onePathForCaps(cs, expectedResult, c | w, l);
+        onePathForCaps(cs, expectedResult, c, l);
+        onePathForCaps(cs, expectedResult, w, l);
+        onePathForCaps(cs, expectedResult, s, l);
     }
 
     public void testGetCapsMode() {
         final int c = TextUtils.CAP_MODE_CHARACTERS;
         final int w = TextUtils.CAP_MODE_WORDS;
         final int s = TextUtils.CAP_MODE_SENTENCES;
-        allPathsForCaps("", c | w | s);
-        allPathsForCaps("Word", c);
-        allPathsForCaps("Word.", c);
-        allPathsForCaps("Word ", c | w);
-        allPathsForCaps("Word. ", c | w | s);
-        allPathsForCaps("Word..", c);
-        allPathsForCaps("Word.. ", c | w | s);
-        allPathsForCaps("Word... ", c | w | s);
-        allPathsForCaps("Word ... ", c | w | s);
-        allPathsForCaps("Word . ", c | w);
-        allPathsForCaps("In the U.S ", c | w);
-        allPathsForCaps("In the U.S. ", c | w);
-        allPathsForCaps("Some stuff (e.g. ", c | w);
-        allPathsForCaps("In the U.S.. ", c | w | s);
-        allPathsForCaps("\"Word.\" ", c | w | s);
-        allPathsForCaps("\"Word\" ", c | w);
+        Locale l = Locale.ENGLISH;
+        allPathsForCaps("", c | w | s, l);
+        allPathsForCaps("Word", c, l);
+        allPathsForCaps("Word.", c, l);
+        allPathsForCaps("Word ", c | w, l);
+        allPathsForCaps("Word. ", c | w | s, l);
+        allPathsForCaps("Word..", c, l);
+        allPathsForCaps("Word.. ", c | w | s, l);
+        allPathsForCaps("Word... ", c | w | s, l);
+        allPathsForCaps("Word ... ", c | w | s, l);
+        allPathsForCaps("Word . ", c | w, l);
+        allPathsForCaps("In the U.S ", c | w, l);
+        allPathsForCaps("In the U.S. ", c | w, l);
+        allPathsForCaps("Some stuff (e.g. ", c | w, l);
+        allPathsForCaps("In the U.S.. ", c | w | s, l);
+        allPathsForCaps("\"Word.\" ", c | w | s, l);
+        allPathsForCaps("\"Word\". ", c | w | s, l);
+        allPathsForCaps("\"Word\" ", c | w, l);
+        l = Locale.FRENCH;
+        allPathsForCaps("\"Word.\" ", c | w, l);
+        allPathsForCaps("\"Word\". ", c | w | s, l);
+        allPathsForCaps("\"Word\" ", c | w, l);
     }
 }
