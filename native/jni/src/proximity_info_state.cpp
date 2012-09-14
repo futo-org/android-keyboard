@@ -295,29 +295,30 @@ float ProximityInfoState::getPointScore(
         const NearKeysDistanceMap *const currentNearKeysDistances,
         const NearKeysDistanceMap *const prevNearKeysDistances,
         const NearKeysDistanceMap *const prevPrevNearKeysDistances) const {
-    static const float BASE_SAMPLE_RATE_SCALE = 0.1f;
-    static const float SAVE_DISTANCE_SCALE = 20.0f;
+    static const int DISTANCE_BASE_SCALE = 100;
+    static const int SAVE_DISTANCE_SCALE = 200;
+    static const int SKIP_DISTANCE_SCALE = 25;
+    static const int CHECK_LOCALMIN_DISTANCE_THRESHOLD_SCALE = 40;
+    static const int STRAIGHT_SKIP_DISTANCE_THRESHOLD_SCALE = 50;
+    static const int CORNER_CHECK_DISTANCE_THRESHOLD_SCALE = 27;
     static const float SAVE_DISTANCE_SCORE = 2.0f;
-    static const float SKIP_DISTANCE_SCALE = 2.5f;
     static const float SKIP_DISTANCE_SCORE = -1.0f;
-    static const float CHECK_LOCALMIN_DISTANCE_THRESHOLD_SCALE = 4.0f;
     static const float CHECK_LOCALMIN_DISTANCE_SCORE = -1.0f;
     static const float STRAIGHT_ANGLE_THRESHOLD = M_PI_F / 36.0f;
-    static const float STRAIGHT_SKIP_DISTANCE_THRESHOLD_SCALE = 5.0f;
     static const float STRAIGHT_SKIP_NEAREST_DISTANCE_THRESHOLD = 0.5f;
     static const float STRAIGHT_SKIP_SCORE = -1.0f;
     static const float CORNER_ANGLE_THRESHOLD = M_PI_F / 2.0f;
-    static const float CORNER_CHECK_DISTANCE_THRESHOLD_SCALE = 2.7f;
     static const float CORNER_SCORE = 1.0f;
 
     const std::size_t size = mInputXs.size();
     if (size <= 1) {
-        return 0;
+        return 0.0f;
     }
-    const float baseSampleRate = mProximityInfo->getMostCommonKeyWidth() * BASE_SAMPLE_RATE_SCALE;
-    const float distNext = getDistanceFloat(x, y, mInputXs.back(), mInputYs.back());
-    const float distPrev = getDistanceFloat(mInputXs.back(), mInputYs.back(),
-            mInputXs[size - 2], mInputYs[size - 2]);
+    const int baseSampleRate = mProximityInfo->getMostCommonKeyWidth();
+    const int distNext = getDistanceInt(x, y, mInputXs.back(), mInputYs.back())
+            * DISTANCE_BASE_SCALE;
+    const int distPrev = getDistanceInt(mInputXs.back(), mInputYs.back(),
+            mInputXs[size - 2], mInputYs[size - 2]) * DISTANCE_BASE_SCALE;
     float score = 0.0f;
 
     // Sum of distances
