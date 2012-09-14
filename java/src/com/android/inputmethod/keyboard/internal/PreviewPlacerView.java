@@ -205,7 +205,7 @@ public class PreviewPlacerView extends RelativeLayout {
                     mGesturePreviewTrails.put(tracker.mPointerId, trail);
                 }
             }
-            trail.addStroke(tracker.getGestureStrokeWithPreviewTrail(), tracker.getDownTime());
+            trail.addStroke(tracker.getGestureStrokeWithPreviewPoints(), tracker.getDownTime());
         }
 
         // TODO: Should narrow the invalidate region.

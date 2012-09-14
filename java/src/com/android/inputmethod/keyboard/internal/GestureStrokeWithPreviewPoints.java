@@ -16,7 +16,7 @@ package com.android.inputmethod.keyboard.internal;
 
 import com.android.inputmethod.latin.ResizableIntArray;
 
-public class GestureStrokeWithPreviewTrail extends GestureStroke {
+public class GestureStrokeWithPreviewPoints extends GestureStroke {
     public static final int PREVIEW_CAPACITY = 256;
 
     private final ResizableIntArray mPreviewEventTimes = new ResizableIntArray(PREVIEW_CAPACITY);
@@ -26,7 +26,14 @@ public class GestureStrokeWithPreviewTrail extends GestureStroke {
     private int mStrokeId;
     private int mLastPreviewSize;
 
-    public GestureStrokeWithPreviewTrail(final int pointerId) {
+    private int mMinPreviewSampleLengthSquare;
+    private int mLastX;
+    private int mLastY;
+
+    // TODO: Move this to resource.
+    private static final float MIN_PREVIEW_SAMPLE_LENGTH_RATIO_TO_KEY_WIDTH = 0.1f;
+
+    public GestureStrokeWithPreviewPoints(final int pointerId) {
         super(pointerId);
     }
 
@@ -49,11 +56,31 @@ public class GestureStrokeWithPreviewTrail extends GestureStroke {
     }
 
     @Override
+    public void setKeyboardGeometry(final int keyWidth) {
+        super.setKeyboardGeometry(keyWidth);
+        final float sampleLength = keyWidth * MIN_PREVIEW_SAMPLE_LENGTH_RATIO_TO_KEY_WIDTH;
+        mMinPreviewSampleLengthSquare = (int)(sampleLength * sampleLength);
+    }
+
+    private boolean needsSampling(final int x, final int y) {
+        final int dx = x - mLastX;
+        final int dy = y - mLastY;
+        final boolean needsSampling = (dx * dx + dy * dy >= mMinPreviewSampleLengthSquare);
+        if (needsSampling) {
+            mLastX = x;
+            mLastY = y;
+        }
+        return needsSampling;
+    }
+
+    @Override
     public void addPoint(final int x, final int y, final int time, final boolean isHistorical) {
         super.addPoint(x, y, time, isHistorical);
-        mPreviewEventTimes.add(time);
-        mPreviewXCoordinates.add(x);
-        mPreviewYCoordinates.add(y);
+        if (mPreviewEventTimes.getLength() == 0 || isHistorical || needsSampling(x, y)) {
+            mPreviewEventTimes.add(time);
+            mPreviewXCoordinates.add(x);
+            mPreviewYCoordinates.add(y);
+        }
     }
 
     public void appendPreviewStroke(final ResizableIntArray eventTimes,

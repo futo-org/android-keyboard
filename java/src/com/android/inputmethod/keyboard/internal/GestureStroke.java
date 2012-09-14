@@ -44,7 +44,7 @@ public class GestureStroke {
         mPointerId = pointerId;
     }
 
-    public void setGestureSampleLength(final int keyWidth) {
+    public void setKeyboardGeometry(final int keyWidth) {
         // TODO: Find an appropriate base metric for these length. Maybe diagonal length of the key?
         mMinGestureLength = (int)(keyWidth * MIN_GESTURE_LENGTH_RATIO_TO_KEY_WIDTH);
         mMinGestureSampleLength = (int)(keyWidth * MIN_GESTURE_SAMPLING_RATIO_TO_KEY_WIDTH);
