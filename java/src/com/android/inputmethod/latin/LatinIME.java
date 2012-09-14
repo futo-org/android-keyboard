@@ -1382,7 +1382,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onStartBatchInput() {
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
-            commitCurrentAutoCorrection(LastComposedWord.NOT_A_SEPARATOR);
+            commitTyped(LastComposedWord.NOT_A_SEPARATOR);
             mExpectingUpdateSelection = true;
             // TODO: Can we remove this?
             mSpaceState = SPACE_STATE_PHANTOM;
