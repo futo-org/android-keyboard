@@ -36,6 +36,8 @@ import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.os.Debug;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
@@ -184,13 +186,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private static final int MSG_UPDATE_SHIFT_STATE = 0;
         private static final int MSG_PENDING_IMS_CALLBACK = 1;
         private static final int MSG_UPDATE_SUGGESTION_STRIP = 2;
+        private static final int MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP = 3;
+
+        private static final int ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT = 1;
 
         private int mDelayUpdateSuggestions;
         private int mDelayUpdateShiftState;
         private long mDoubleSpacesTurnIntoPeriodTimeout;
         private long mDoubleSpaceTimerStart;
 
-        public UIHandler(LatinIME outerInstance) {
+        public UIHandler(final LatinIME outerInstance) {
             super(outerInstance);
         }
 
@@ -205,7 +210,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         @Override
-        public void handleMessage(Message msg) {
+        public void handleMessage(final Message msg) {
             final LatinIME latinIme = getOuterInstance();
             final KeyboardSwitcher switcher = latinIme.mKeyboardSwitcher;
             switch (msg.what) {
@@ -214,6 +219,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 break;
             case MSG_UPDATE_SHIFT_STATE:
                 switcher.updateShiftState();
+                break;
+            case MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP:
+                latinIme.showGesturePreviewAndSuggestionStrip((SuggestedWords)msg.obj,
+                        msg.arg1 == ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT);
                 break;
             }
         }
@@ -237,6 +246,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         public void cancelUpdateShiftState() {
             removeMessages(MSG_UPDATE_SHIFT_STATE);
+        }
+
+        public void showGesturePreviewAndSuggestionStrip(final SuggestedWords suggestedWords,
+                final boolean dismissGestureFloatingPreviewText) {
+            removeMessages(MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP);
+            final int arg1 = dismissGestureFloatingPreviewText
+                    ? ARG1_DISMISS_GESTURE_FLOATING_PREVIEW_TEXT : 0;
+            obtainMessage(MSG_SHOW_GESTURE_PREVIEW_AND_SUGGESTION_STRIP, arg1, 0, suggestedWords)
+                    .sendToTarget();
         }
 
         public void startDoubleSpacesTimer() {
@@ -276,7 +294,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mHasPendingStartInput = false;
         }
 
-        private void executePendingImsCallback(LatinIME latinIme, EditorInfo editorInfo,
+        private void executePendingImsCallback(final LatinIME latinIme, final EditorInfo editorInfo,
                 boolean restarting) {
             if (mHasPendingFinishInputView)
                 latinIme.onFinishInputViewInternal(mHasPendingFinishInput);
@@ -287,7 +305,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             resetPendingImsCallback();
         }
 
-        public void onStartInput(EditorInfo editorInfo, boolean restarting) {
+        public void onStartInput(final EditorInfo editorInfo, final boolean restarting) {
             if (hasMessages(MSG_PENDING_IMS_CALLBACK)) {
                 // Typically this is the second onStartInput after orientation changed.
                 mHasPendingStartInput = true;
@@ -303,7 +321,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
 
-        public void onStartInputView(EditorInfo editorInfo, boolean restarting) {
+        public void onStartInputView(final EditorInfo editorInfo, final boolean restarting) {
             if (hasMessages(MSG_PENDING_IMS_CALLBACK)
                     && KeyboardId.equivalentEditorInfoForKeyboard(editorInfo, mAppliedEditorInfo)) {
                 // Typically this is the second onStartInputView after orientation changed.
@@ -323,7 +341,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
 
-        public void onFinishInputView(boolean finishingInput) {
+        public void onFinishInputView(final boolean finishingInput) {
             if (hasMessages(MSG_PENDING_IMS_CALLBACK)) {
                 // Typically this is the first onFinishInputView after orientation changed.
                 mHasPendingFinishInputView = true;
@@ -425,7 +443,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // Note that this method is called from a non-UI thread.
     @Override
-    public void onUpdateMainDictionaryAvailability(boolean isMainDictionaryAvailable) {
+    public void onUpdateMainDictionaryAvailability(final boolean isMainDictionaryAvailable) {
         mIsMainDictionaryAvailable = isMainDictionaryAvailable;
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (mainKeyboardView != null) {
@@ -529,7 +547,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public void onConfigurationChanged(Configuration conf) {
+    public void onConfigurationChanged(final Configuration conf) {
         // System locale has been changed. Needs to reload keyboard.
         if (mSubtypeSwitcher.onConfigurationChanged(conf, this)) {
             loadKeyboard();
@@ -555,7 +573,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public void setInputView(View view) {
+    public void setInputView(final View view) {
         super.setInputView(view);
         mExtractArea = getWindow().getWindow().getDecorView()
                 .findViewById(android.R.id.extractArea);
@@ -570,23 +588,23 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public void setCandidatesView(View view) {
+    public void setCandidatesView(final View view) {
         // To ensure that CandidatesView will never be set.
         return;
     }
 
     @Override
-    public void onStartInput(EditorInfo editorInfo, boolean restarting) {
+    public void onStartInput(final EditorInfo editorInfo, final boolean restarting) {
         mHandler.onStartInput(editorInfo, restarting);
     }
 
     @Override
-    public void onStartInputView(EditorInfo editorInfo, boolean restarting) {
+    public void onStartInputView(final EditorInfo editorInfo, final boolean restarting) {
         mHandler.onStartInputView(editorInfo, restarting);
     }
 
     @Override
-    public void onFinishInputView(boolean finishingInput) {
+    public void onFinishInputView(final boolean finishingInput) {
         mHandler.onFinishInputView(finishingInput);
     }
 
@@ -596,19 +614,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype subtype) {
+    public void onCurrentInputMethodSubtypeChanged(final InputMethodSubtype subtype) {
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
         mSubtypeSwitcher.updateSubtype(subtype);
         loadKeyboard();
     }
 
-    private void onStartInputInternal(EditorInfo editorInfo, boolean restarting) {
+    private void onStartInputInternal(final EditorInfo editorInfo, final boolean restarting) {
         super.onStartInput(editorInfo, restarting);
     }
 
     @SuppressWarnings("deprecation")
-    private void onStartInputViewInternal(EditorInfo editorInfo, boolean restarting) {
+    private void onStartInputViewInternal(final EditorInfo editorInfo, final boolean restarting) {
         super.onStartInputView(editorInfo, restarting);
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         final MainKeyboardView mainKeyboardView = switcher.getMainKeyboardView();
@@ -751,7 +769,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     getCurrentInputConnection());
         }
         super.onWindowHidden();
-        final KeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (mainKeyboardView != null) {
             mainKeyboardView.closing();
         }
@@ -765,16 +783,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             ResearchLogger.getInstance().latinIME_onFinishInputInternal();
         }
 
-        final KeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (mainKeyboardView != null) {
             mainKeyboardView.closing();
         }
     }
 
-    private void onFinishInputViewInternal(boolean finishingInput) {
+    private void onFinishInputViewInternal(final boolean finishingInput) {
         super.onFinishInputView(finishingInput);
         mKeyboardSwitcher.onFinishInputView();
-        final KeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (mainKeyboardView != null) {
             mainKeyboardView.cancelAllMessages();
         }
@@ -783,9 +801,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public void onUpdateSelection(int oldSelStart, int oldSelEnd,
-            int newSelStart, int newSelEnd,
-            int composingSpanStart, int composingSpanEnd) {
+    public void onUpdateSelection(final int oldSelStart, final int oldSelEnd,
+            final int newSelStart, final int newSelEnd,
+            final int composingSpanStart, final int composingSpanEnd) {
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd,
                 composingSpanStart, composingSpanEnd);
         if (DEBUG) {
@@ -883,7 +901,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      * cause the suggestions strip to disappear and re-appear.
      */
     @Override
-    public void onExtractedCursorMovement(int dx, int dy) {
+    public void onExtractedCursorMovement(final int dx, final int dy) {
         if (mCurrentSettings.isSuggestionsRequested(mDisplayOrientation)) return;
 
         super.onExtractedCursorMovement(dx, dy);
@@ -903,7 +921,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public void onDisplayCompletions(CompletionInfo[] applicationSpecifiedCompletions) {
+    public void onDisplayCompletions(final CompletionInfo[] applicationSpecifiedCompletions) {
         if (DEBUG) {
             Log.i(TAG, "Received completions:");
             if (applicationSpecifiedCompletions != null) {
@@ -945,7 +963,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void setSuggestionStripShownInternal(boolean shown, boolean needsInputViewShown) {
+    private void setSuggestionStripShownInternal(final boolean shown,
+            final boolean needsInputViewShown) {
         // TODO: Modify this if we support suggestions with hard keyboard
         if (onEvaluateInputViewShown() && mSuggestionsContainer != null) {
             final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
@@ -963,7 +982,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void setSuggestionStripShown(boolean shown) {
+    private void setSuggestionStripShown(final boolean shown) {
         setSuggestionStripShownInternal(shown, /* needsInputViewShown */true);
     }
 
@@ -973,7 +992,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return currentHeight;
         }
 
-        final KeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (mainKeyboardView == null) {
             return 0;
         }
@@ -993,9 +1012,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public void onComputeInsets(InputMethodService.Insets outInsets) {
+    public void onComputeInsets(final InputMethodService.Insets outInsets) {
         super.onComputeInsets(outInsets);
-        final KeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (mainKeyboardView == null || mSuggestionsContainer == null) {
             return;
         }
@@ -1160,12 +1179,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Callback for the {@link SuggestionStripView}, to call when the "add to dictionary" hint is
     // pressed.
     @Override
-    public boolean addWordToUserDictionary(String word) {
+    public boolean addWordToUserDictionary(final String word) {
         mUserDictionary.addWordToUserDictionary(word, 128);
         return true;
     }
 
-    private static boolean isAlphabet(int code) {
+    private static boolean isAlphabet(final int code) {
         return Character.isLetter(code);
     }
 
@@ -1178,7 +1197,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public static final int CODE_SHOW_INPUT_METHOD_PICKER = 1;
 
     @Override
-    public boolean onCustomRequest(int requestCode) {
+    public boolean onCustomRequest(final int requestCode) {
         if (isShowingOptionDialog()) return false;
         switch (requestCode) {
         case CODE_SHOW_INPUT_METHOD_PICKER:
@@ -1196,11 +1215,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mOptionsDialog != null && mOptionsDialog.isShowing();
     }
 
-    private static int getActionId(Keyboard keyboard) {
+    private static int getActionId(final Keyboard keyboard) {
         return keyboard != null ? keyboard.mId.imeActionId() : EditorInfo.IME_ACTION_NONE;
     }
 
-    private void performEditorAction(int actionId) {
+    private void performEditorAction(final int actionId) {
         mConnection.performEditorAction(actionId);
     }
 
@@ -1233,7 +1252,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
     }
 
-    private void sendKeyCodePoint(int code) {
+    private void sendKeyCodePoint(final int code) {
         // TODO: Remove this special handling of digit letters.
         // For backward compatibility. See {@link InputMethodService#sendKeyChar(char)}.
         if (code >= '0' && code <= '9') {
@@ -1261,7 +1280,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // Implementation of {@link KeyboardActionListener}.
     @Override
-    public void onCodeInput(int primaryCode, int x, int y) {
+    public void onCodeInput(final int primaryCode, final int x, final int y) {
         final long when = SystemClock.uptimeMillis();
         if (primaryCode != Keyboard.CODE_DELETE || when > mLastKeyTime + QUICK_PRESS) {
             mDeleteCount = 0;
@@ -1358,7 +1377,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // Called from PointerTracker through the KeyboardActionListener interface
     @Override
-    public void onTextInput(CharSequence rawText) {
+    public void onTextInput(final CharSequence rawText) {
         mConnection.beginBatchEdit();
         if (mWordComposer.isComposingWord()) {
             commitCurrentAutoCorrection(rawText.toString());
@@ -1392,40 +1411,102 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode());
     }
 
-    @Override
-    public void onUpdateBatchInput(InputPointers batchPointers) {
-        mWordComposer.setBatchInputPointers(batchPointers);
-        final SuggestedWords suggestedWords = getSuggestedWords();
-        showSuggestionStrip(suggestedWords, null);
-        final String gestureFloatingPreviewText = (suggestedWords.size() > 0)
+    private static final class BatchInputUpdater implements Handler.Callback {
+        private final Handler mHandler;
+        private LatinIME mLatinIme;
+
+        private BatchInputUpdater() {
+            final HandlerThread handlerThread = new HandlerThread(
+                    BatchInputUpdater.class.getSimpleName());
+            handlerThread.start();
+            mHandler = new Handler(handlerThread.getLooper(), this);
+        }
+
+        // Initialization-on-demand holder
+        private static final class OnDemandInitializationHolder {
+            public static final BatchInputUpdater sInstance = new BatchInputUpdater();
+        }
+
+        public static BatchInputUpdater getInstance() {
+            return OnDemandInitializationHolder.sInstance;
+        }
+
+        private static final int MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP = 1;
+
+        @Override
+        public boolean handleMessage(final Message msg) {
+            switch (msg.what) {
+            case MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP:
+                final SuggestedWords suggestedWords = getSuggestedWordsGesture(
+                        (InputPointers)msg.obj, mLatinIme);
+                showGesturePreviewAndSuggestionStrip(
+                        suggestedWords, false /* dismissGestureFloatingPreviewText */, mLatinIme);
+                break;
+            }
+            return true;
+        }
+
+        public void updateGesturePreviewAndSuggestionStrip(final InputPointers batchPointers,
+                final LatinIME latinIme) {
+            mLatinIme = latinIme;
+            if (mHandler.hasMessages(MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP)) {
+                return;
+            }
+            mHandler.obtainMessage(
+                    MSG_UPDATE_GESTURE_PREVIEW_AND_SUGGESTION_STRIP, batchPointers)
+                    .sendToTarget();
+        }
+
+        public void showGesturePreviewAndSuggestionStrip(final SuggestedWords suggestedWords,
+                final boolean dismissGestureFloatingPreviewText, final LatinIME latinIme) {
+            latinIme.mHandler.showGesturePreviewAndSuggestionStrip(
+                    suggestedWords, dismissGestureFloatingPreviewText);
+        }
+
+        // {@link LatinIME#getSuggestedWords(int)} method calls with same session id have to
+        // be synchronized.
+        public synchronized SuggestedWords getSuggestedWordsGesture(
+                final InputPointers batchPointers, final LatinIME latinIme) {
+            latinIme.mWordComposer.setBatchInputPointers(batchPointers);
+            return latinIme.getSuggestedWords(Suggest.SESSION_GESTURE);
+        }
+    }
+
+    private void showGesturePreviewAndSuggestionStrip(final SuggestedWords suggestedWords,
+            final boolean dismissGestureFloatingPreviewText) {
+        final String batchInputText = (suggestedWords.size() > 0)
                 ? suggestedWords.getWord(0) : null;
-        mKeyboardSwitcher.getMainKeyboardView()
-                .showGestureFloatingPreviewText(gestureFloatingPreviewText);
+        final KeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        mainKeyboardView.showGestureFloatingPreviewText(batchInputText);
+        showSuggestionStrip(suggestedWords, null);
+        if (dismissGestureFloatingPreviewText) {
+            mainKeyboardView.dismissGestureFloatingPreviewText();
+        }
     }
 
     @Override
-    public void onEndBatchInput(InputPointers batchPointers) {
-        mWordComposer.setBatchInputPointers(batchPointers);
-        final SuggestedWords suggestedWords = getSuggestedWords();
-        showSuggestionStrip(suggestedWords, null);
-        final String gestureFloatingPreviewText = (suggestedWords.size() > 0)
+    public void onUpdateBatchInput(final InputPointers batchPointers) {
+        BatchInputUpdater.getInstance().updateGesturePreviewAndSuggestionStrip(batchPointers, this);
+    }
+
+    @Override
+    public void onEndBatchInput(final InputPointers batchPointers) {
+        final BatchInputUpdater batchInputUpdater = BatchInputUpdater.getInstance();
+        final SuggestedWords suggestedWords = batchInputUpdater.getSuggestedWordsGesture(
+                batchPointers, this);
+        batchInputUpdater.showGesturePreviewAndSuggestionStrip(
+                suggestedWords, true /* dismissGestureFloatingPreviewText */, this);
+        final String batchInputText = (suggestedWords.size() > 0)
                 ? suggestedWords.getWord(0) : null;
-        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
-        mainKeyboardView.showGestureFloatingPreviewText(gestureFloatingPreviewText);
-        mainKeyboardView.dismissGestureFloatingPreviewText();
-        if (suggestedWords == null || suggestedWords.size() == 0) {
+        if (TextUtils.isEmpty(batchInputText)) {
             return;
         }
-        final CharSequence text = suggestedWords.getWord(0);
-        if (TextUtils.isEmpty(text)) {
-            return;
-        }
-        mWordComposer.setBatchInputWord(text);
+        mWordComposer.setBatchInputWord(batchInputText);
         mConnection.beginBatchEdit();
         if (SPACE_STATE_PHANTOM == mSpaceState) {
             sendKeyCodePoint(Keyboard.CODE_SPACE);
         }
-        mConnection.setComposingText(text, 1);
+        mConnection.setComposingText(batchInputText, 1);
         mExpectingUpdateSelection = true;
         mConnection.endBatchEdit();
         mKeyboardSwitcher.updateShiftState();
@@ -1772,12 +1853,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
 
-        final SuggestedWords suggestedWords = getSuggestedWords();
+        final SuggestedWords suggestedWords = getSuggestedWords(Suggest.SESSION_TYPING);
         final String typedWord = mWordComposer.getTypedWord();
         showSuggestionStrip(suggestedWords, typedWord);
     }
 
-    private SuggestedWords getSuggestedWords() {
+    private SuggestedWords getSuggestedWords(final int sessionId) {
         final String typedWord = mWordComposer.getTypedWord();
         // Get the word on which we should search the bigrams. If we are composing a word, it's
         // whatever is *before* the half-committed word in the buffer, hence 2; if we aren't, we
@@ -1788,7 +1869,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mWordComposer.isComposingWord() ? 2 : 1);
         final SuggestedWords suggestedWords = mSuggest.getSuggestedWords(mWordComposer,
                 prevWord, mKeyboardSwitcher.getKeyboard().getProximityInfo(),
-                mCurrentSettings.mCorrectionEnabled);
+                mCurrentSettings.mCorrectionEnabled, sessionId);
         return maybeRetrieveOlderSuggestions(typedWord, suggestedWords);
     }
 
@@ -2080,7 +2161,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     // Used by the RingCharBuffer
-    public boolean isWordSeparator(int code) {
+    public boolean isWordSeparator(final int code) {
         return mCurrentSettings.isWordSeparator(code);
     }
 
@@ -2112,14 +2193,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Callback called by PointerTracker through the KeyboardActionListener. This is called when a
     // key is depressed; release matching call is onReleaseKey below.
     @Override
-    public void onPressKey(int primaryCode) {
+    public void onPressKey(final int primaryCode) {
         mKeyboardSwitcher.onPressKey(primaryCode);
     }
 
     // Callback by PointerTracker through the KeyboardActionListener. This is called when a key
     // is released; press matching call is onPressKey above.
     @Override
-    public void onReleaseKey(int primaryCode, boolean withSliding) {
+    public void onReleaseKey(final int primaryCode, final boolean withSliding) {
         mKeyboardSwitcher.onReleaseKey(primaryCode, withSliding);
 
         // If accessibility is on, ensure the user receives keyboard state updates.
@@ -2148,7 +2229,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // receive ringer mode change and network state change.
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(final Context context, final Intent intent) {
             final String action = intent.getAction();
             if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
                 mSubtypeSwitcher.onNetworkStateChanged(intent);
@@ -2169,14 +2250,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         launchSubActivity(DebugSettingsActivity.class);
     }
 
-    public void launchKeyboardedDialogActivity(Class<? extends Activity> activityClass) {
+    public void launchKeyboardedDialogActivity(final Class<? extends Activity> activityClass) {
         // Put the text in the attached EditText into a safe, saved state before switching to a
         // new activity that will also use the soft keyboard.
         commitTyped(LastComposedWord.NOT_A_SEPARATOR);
         launchSubActivity(activityClass);
     }
 
-    private void launchSubActivity(Class<? extends Activity> activityClass) {
+    private void launchSubActivity(final Class<? extends Activity> activityClass) {
         Intent intent = new Intent();
         intent.setClass(LatinIME.this, activityClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -2216,7 +2297,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         showOptionDialog(builder.create());
     }
 
-    public void showOptionDialog(AlertDialog dialog) {
+    public void showOptionDialog(final AlertDialog dialog) {
         final IBinder windowToken = mKeyboardSwitcher.getMainKeyboardView().getWindowToken();
         if (windowToken == null) {
             return;
@@ -2248,7 +2329,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    protected void dump(FileDescriptor fd, PrintWriter fout, String[] args) {
+    protected void dump(final FileDescriptor fd, final PrintWriter fout, final String[] args) {
         super.dump(fd, fout, args);
 
         final Printer p = new PrintWriterPrinter(fout);

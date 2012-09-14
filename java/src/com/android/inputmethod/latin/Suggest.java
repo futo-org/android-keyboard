@@ -37,6 +37,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Suggest {
     public static final String TAG = Suggest.class.getSimpleName();
 
+    // Session id for
+    // {@link #getSuggestedWords(WordComposer,CharSequence,ProximityInfo,boolean,int)}.
+    public static final int SESSION_TYPING = 0;
+    public static final int SESSION_GESTURE = 1;
+
     // TODO: rename this to CORRECTION_OFF
     public static final int CORRECTION_NONE = 0;
     // TODO: rename this to CORRECTION_ON
@@ -156,13 +161,6 @@ public class Suggest {
     }
 
     public SuggestedWords getSuggestedWords(
-            final WordComposer wordComposer, CharSequence prevWordForBigram,
-            final ProximityInfo proximityInfo, final boolean isCorrectionEnabled) {
-        return getSuggestedWordsWithSessionId(
-                wordComposer, prevWordForBigram, proximityInfo, isCorrectionEnabled, 0);
-    }
-
-    public SuggestedWords getSuggestedWordsWithSessionId(
             final WordComposer wordComposer, CharSequence prevWordForBigram,
             final ProximityInfo proximityInfo, final boolean isCorrectionEnabled, int sessionId) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
