@@ -314,7 +314,6 @@ void UnigramDictionary::initSuggestions(ProximityInfo *proximityInfo, const int 
     correction->initCorrection(proximityInfo, inputSize, maxDepth);
 }
 
-static const char QUOTE = '\'';
 static const char SPACE = ' ';
 
 void UnigramDictionary::getOneWordSuggestions(ProximityInfo *proximityInfo,
