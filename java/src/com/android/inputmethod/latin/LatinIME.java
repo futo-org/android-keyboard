@@ -1752,7 +1752,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 swapSwapperAndSpace();
                 mSpaceState = SPACE_STATE_SWAP_PUNCTUATION;
             } else if (SPACE_STATE_PHANTOM == spaceState
-                    && !mCurrentSettings.isWeakSpaceStripper(primaryCode)) {
+                    && !mCurrentSettings.isWeakSpaceStripper(primaryCode)
+                    && !mCurrentSettings.isPhantomSpacePromotingSymbol(primaryCode)) {
                 // If we are in phantom space state, and the user presses a separator, we want to
                 // stay in phantom space state so that the next keypress has a chance to add the
                 // space. For example, if I type "Good dat", pick "day" from the suggestion strip
