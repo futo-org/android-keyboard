@@ -90,17 +90,6 @@ public class StringUtilsTests extends AndroidTestCase {
                 StringUtils.removeFromCsvIfExists("key", "key1,key,key3,key,key5"));
     }
 
-    public void testHasUpperCase() {
-        assertTrue("single upper-case string", StringUtils.hasUpperCase("String"));
-        assertTrue("multi upper-case string", StringUtils.hasUpperCase("stRInG"));
-        assertTrue("all upper-case string", StringUtils.hasUpperCase("STRING"));
-        assertTrue("upper-case string with non-letters", StringUtils.hasUpperCase("He's"));
-
-        assertFalse("empty string", StringUtils.hasUpperCase(""));
-        assertFalse("lower-case string", StringUtils.hasUpperCase("string"));
-        assertFalse("lower-case string with non-letters", StringUtils.hasUpperCase("he's"));
-    }
-
     private void onePathForCaps(final CharSequence cs, final int expectedResult, final int mask) {
         int oneTimeResult = expectedResult & mask;
         assertEquals("After >" + cs + "<", oneTimeResult, StringUtils.getCapsMode(cs, mask));
