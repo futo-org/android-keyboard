@@ -1596,12 +1596,6 @@ public class BinaryDictInputOutput {
         return newDict;
     }
 
-    // TODO: remove this method.
-    public static FusionDictionary readDictionaryBinary(final ByteBuffer buffer,
-            final FusionDictionary dict) throws IOException, UnsupportedFormatException {
-        return readDictionaryBinary(new ByteBufferWrapper(buffer), dict);
-    }
-
     /**
      * Basic test to find out whether the file is a binary dictionary or not.
      *
