@@ -34,11 +34,10 @@ class ProximityInfo;
 class ProximityInfoState {
  public:
     typedef std::bitset<MAX_KEY_COUNT_IN_A_KEYBOARD> NearKeycodesSet;
-    static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2 = 10;
-    static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR =
-            1 << NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
-    static const float NOT_A_DISTANCE_FLOAT = -1.0f;
-    static const int NOT_A_CODE = -1;
+    static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
+    static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
+    static const float NOT_A_DISTANCE_FLOAT;
+    static const int NOT_A_CODE;
 
     /////////////////////////////////////////
     // Defined in proximity_info_state.cpp //

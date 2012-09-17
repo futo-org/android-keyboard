@@ -25,6 +25,13 @@
 #include "proximity_info_state.h"
 
 namespace latinime {
+
+const int ProximityInfoState::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2 = 10;
+const int ProximityInfoState::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR =
+        1 << NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
+const float ProximityInfoState::NOT_A_DISTANCE_FLOAT = -1.0f;
+const int ProximityInfoState::NOT_A_CODE = -1;
+
 void ProximityInfoState::initInputParams(const int pointerId, const float maxPointToKeyLength,
         const ProximityInfo *proximityInfo, const int32_t *const inputCodes, const int inputSize,
         const int *const xCoordinates, const int *const yCoordinates, const int *const times,
