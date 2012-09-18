@@ -65,9 +65,12 @@ public class BinaryDictIOTests extends AndroidTestCase {
 
     private static final FormatSpec.FormatOptions VERSION2 = new FormatSpec.FormatOptions(2);
     private static final FormatSpec.FormatOptions VERSION3_WITHOUT_PARENTADDRESS =
-            new FormatSpec.FormatOptions(3, false);
+            new FormatSpec.FormatOptions(3, false /* hasParentAddress */);
     private static final FormatSpec.FormatOptions VERSION3_WITH_PARENTADDRESS =
-            new FormatSpec.FormatOptions(3, true);
+            new FormatSpec.FormatOptions(3, true /* hasParentAddress */);
+    private static final FormatSpec.FormatOptions VERSION3_WITH_LINKEDLIST_NODE =
+            new FormatSpec.FormatOptions(3, true /* hasParentAddress */,
+                    true /* hasLinkedListNode */);
 
     private static final String[] CHARACTERS = {
         "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
@@ -236,7 +239,8 @@ public class BinaryDictIOTests extends AndroidTestCase {
         String result = " : buffer type = "
                 + ((bufferType == USE_BYTE_BUFFER) ? "byte buffer" : "byte array");
         result += " : version = " + formatOptions.mVersion;
-        return result + ", hasParentAddress = " + formatOptions.mHasParentAddress;
+        return result + ", hasParentAddress = " + formatOptions.mHasParentAddress
+                + ", hasLinkedListNode = " + formatOptions.mHasLinkedListNode;
     }
 
     // Tests for readDictionaryBinary and writeDictionaryBinary
@@ -305,6 +309,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
         runReadAndWriteTests(results, USE_BYTE_BUFFER, VERSION2);
         runReadAndWriteTests(results, USE_BYTE_BUFFER, VERSION3_WITHOUT_PARENTADDRESS);
         runReadAndWriteTests(results, USE_BYTE_BUFFER, VERSION3_WITH_PARENTADDRESS);
+        runReadAndWriteTests(results, USE_BYTE_BUFFER, VERSION3_WITH_LINKEDLIST_NODE);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -317,6 +322,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
         runReadAndWriteTests(results, USE_BYTE_ARRAY, VERSION2);
         runReadAndWriteTests(results, USE_BYTE_ARRAY, VERSION3_WITHOUT_PARENTADDRESS);
         runReadAndWriteTests(results, USE_BYTE_ARRAY, VERSION3_WITH_PARENTADDRESS);
+        runReadAndWriteTests(results, USE_BYTE_ARRAY, VERSION3_WITH_LINKEDLIST_NODE);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -450,6 +456,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
         runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION2);
         runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION3_WITHOUT_PARENTADDRESS);
         runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION3_WITH_PARENTADDRESS);
+        runReadUnigramsAndBigramsTests(results, USE_BYTE_BUFFER, VERSION3_WITH_LINKEDLIST_NODE);
 
         for (final String result : results) {
             Log.d(TAG, result);
@@ -462,6 +469,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
         runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION2);
         runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION3_WITHOUT_PARENTADDRESS);
         runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION3_WITH_PARENTADDRESS);
+        runReadUnigramsAndBigramsTests(results, USE_BYTE_ARRAY, VERSION3_WITH_LINKEDLIST_NODE);
 
         for (final String result : results) {
             Log.d(TAG, result);
