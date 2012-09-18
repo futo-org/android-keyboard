@@ -28,6 +28,7 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
@@ -381,6 +382,8 @@ class BinaryDictionaryGetter {
         } catch (java.io.IOException e) {
             return false;
         } catch (NumberFormatException e) {
+            return false;
+        } catch (BufferUnderflowException e) {
             return false;
         } finally {
             if (inStream != null) {
