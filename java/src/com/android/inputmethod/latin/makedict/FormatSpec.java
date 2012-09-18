@@ -41,6 +41,12 @@ public final class FormatSpec {
      * u |
      * ps
      *
+     * f |
+     * o | IF HAS_LINKEDLIST_NODE (defined in the file header)
+     * r |     forward link address, 3byte
+     * w | the address must be positive.
+     * a |
+     * rdlinkaddress
      */
 
     /* Node(CharGroup) layout is as follows:
@@ -140,6 +146,7 @@ public final class FormatSpec {
     static final int NOT_A_VERSION_NUMBER = -1;
     static final int FIRST_VERSION_WITH_HEADER_SIZE = 2;
     static final int FIRST_VERSION_WITH_PARENT_ADDRESS = 3;
+    static final int FIRST_VERSION_WITH_LINKEDLIST_NODE = 3;
 
     // These options need to be the same numeric values as the one in the native reading code.
     static final int GERMAN_UMLAUT_PROCESSING_FLAG = 0x1;
@@ -152,6 +159,7 @@ public final class FormatSpec {
     static final int MAX_WORD_LENGTH = Constants.Dictionary.MAX_WORD_LENGTH;
 
     static final int PARENT_ADDRESS_SIZE = 3;
+    static final int FORWARD_LINK_ADDRESS_SIZE = 3;
 
     static final int MASK_GROUP_ADDRESS_TYPE = 0xC0;
     static final int FLAG_GROUP_ADDRESS_TYPE_NOADDRESS = 0x00;
@@ -187,6 +195,7 @@ public final class FormatSpec {
 
     static final int NO_CHILDREN_ADDRESS = Integer.MIN_VALUE;
     static final int NO_PARENT_ADDRESS = 0;
+    static final int NO_FORWARD_LINK_ADDRESS = 0;
     static final int INVALID_CHARACTER = -1;
 
     static final int MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT = 0x7F; // 127
@@ -201,16 +210,30 @@ public final class FormatSpec {
     public static class FormatOptions {
         public final int mVersion;
         public final boolean mHasParentAddress;
+        public final boolean mHasLinkedListNode;
         public FormatOptions(final int version) {
             this(version, false);
         }
         public FormatOptions(final int version, final boolean hasParentAddress) {
+            this(version, hasParentAddress, false);
+        }
+        public FormatOptions(final int version, final boolean hasParentAddress,
+                final boolean hasLinkedListNode) {
             mVersion = version;
-            if (version < FormatSpec.FIRST_VERSION_WITH_PARENT_ADDRESS && hasParentAddress) {
+            if (version < FIRST_VERSION_WITH_PARENT_ADDRESS && hasParentAddress) {
                 throw new RuntimeException("Parent addresses are only supported with versions "
-                        + FormatSpec.FIRST_VERSION_WITH_PARENT_ADDRESS + " and ulterior.");
+                        + FIRST_VERSION_WITH_PARENT_ADDRESS + " and ulterior.");
             }
             mHasParentAddress = hasParentAddress;
+
+            if (version < FIRST_VERSION_WITH_LINKEDLIST_NODE && hasLinkedListNode) {
+                throw new RuntimeException("Linked list nodes are only supported with versions "
+                        + FIRST_VERSION_WITH_LINKEDLIST_NODE + " and ulterior.");
+            }
+            if (!hasParentAddress && hasLinkedListNode) {
+                throw new RuntimeException("Linked list nodes need parent addresses.");
+            }
+            mHasLinkedListNode = hasLinkedListNode;
         }
     }
 
