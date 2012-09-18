@@ -419,7 +419,7 @@ public final class Utils {
             // smileys and other multi-character keys.
             final int codePoint = TextUtils.isEmpty(separatorString) ? Constants.NOT_A_CODE
                     : separatorString.codePointAt(0);
-            LatinImeLogger.logOnAutoCorrection(typedWord, correctedWord, codePoint);
+            LatinImeLogger.logOnAutoCorrectionForTyping(typedWord, correctedWord, codePoint);
         }
 
         public static void onAutoCorrectionCancellation() {
