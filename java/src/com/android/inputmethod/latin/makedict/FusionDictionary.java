@@ -556,6 +556,7 @@ public class FusionDictionary implements Iterable<Word> {
         final StringBuilder checker = DBG ? new StringBuilder() : null;
 
         CharGroup currentGroup;
+        final int codePointCountInS = s.codePointCount(0, s.length());
         do {
             int indexOfGroup = findIndexOfChar(node, s.codePointAt(index));
             if (CHARACTER_NOT_FOUND == indexOfGroup) return null;
@@ -570,12 +571,12 @@ public class FusionDictionary implements Iterable<Word> {
             index = newIndex;
 
             if (DBG) checker.append(new String(currentGroup.mChars, 0, currentGroup.mChars.length));
-            if (index < s.length()) {
+            if (index < codePointCountInS) {
                 node = currentGroup.mChildren;
             }
-        } while (null != node && index < s.length());
+        } while (null != node && index < codePointCountInS);
 
-        if (index < s.length()) return null;
+        if (index < codePointCountInS) return null;
         if (!currentGroup.isTerminal()) return null;
         if (DBG && !s.equals(checker.toString())) return null;
         return currentGroup;
