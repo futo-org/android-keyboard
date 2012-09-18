@@ -22,4 +22,5 @@ public final class ProductionFlag {
     }
 
     public static final boolean IS_EXPERIMENTAL = false;
+    public static final boolean IS_INTERNAL = false;
 }
