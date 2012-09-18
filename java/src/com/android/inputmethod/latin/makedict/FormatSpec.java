@@ -150,9 +150,12 @@ public final class FormatSpec {
 
     // These options need to be the same numeric values as the one in the native reading code.
     static final int GERMAN_UMLAUT_PROCESSING_FLAG = 0x1;
+    // TODO: Make the native reading code read this variable.
     static final int HAS_PARENT_ADDRESS = 0x2;
     static final int FRENCH_LIGATURE_PROCESSING_FLAG = 0x4;
     static final int CONTAINS_BIGRAMS_FLAG = 0x8;
+    // TODO: Make the native reading code read this variable.
+    static final int HAS_LINKEDLIST_NODE = 0x10;
 
     // TODO: Make this value adaptative to content data, store it in the header, and
     // use it in the reading code.

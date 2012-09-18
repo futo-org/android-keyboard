@@ -786,7 +786,8 @@ public class BinaryDictInputOutput {
         return (options.mFrenchLigatureProcessing ? FormatSpec.FRENCH_LIGATURE_PROCESSING_FLAG : 0)
                 + (options.mGermanUmlautProcessing ? FormatSpec.GERMAN_UMLAUT_PROCESSING_FLAG : 0)
                 + (hasBigrams ? FormatSpec.CONTAINS_BIGRAMS_FLAG : 0)
-                + (formatOptions.mHasParentAddress ? FormatSpec.HAS_PARENT_ADDRESS : 0);
+                + (formatOptions.mHasParentAddress ? FormatSpec.HAS_PARENT_ADDRESS : 0)
+                + (formatOptions.mHasLinkedListNode ? FormatSpec.HAS_LINKEDLIST_NODE : 0);
     }
 
     /**
@@ -1540,7 +1541,8 @@ public class BinaryDictInputOutput {
                         0 != (optionsFlags & FormatSpec.GERMAN_UMLAUT_PROCESSING_FLAG),
                         0 != (optionsFlags & FormatSpec.FRENCH_LIGATURE_PROCESSING_FLAG)),
                 new FormatOptions(version,
-                        0 != (optionsFlags & FormatSpec.HAS_PARENT_ADDRESS)));
+                        0 != (optionsFlags & FormatSpec.HAS_PARENT_ADDRESS),
+                        0 != (optionsFlags & FormatSpec.HAS_LINKEDLIST_NODE)));
         return header;
     }
 
