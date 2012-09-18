@@ -44,7 +44,7 @@ import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
 public class Settings extends InputMethodSettingsFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
-    public static final boolean ENABLE_EXPERIMENTAL_SETTINGS = false;
+    public static final boolean ENABLE_INTERNAL_SETTINGS = ProductionFlag.IS_INTERNAL;
 
     // In the same order as xml/prefs.xml
     public static final String PREF_GENERAL_SETTINGS = "general_settings";
@@ -220,7 +220,7 @@ public class Settings extends InputMethodSettingsFragment
 
         final boolean showUsabilityStudyModeOption =
                 res.getBoolean(R.bool.config_enable_usability_study_mode_option)
-                        || ProductionFlag.IS_EXPERIMENTAL || ENABLE_EXPERIMENTAL_SETTINGS;
+                        || ProductionFlag.IS_EXPERIMENTAL || ENABLE_INTERNAL_SETTINGS;
         final Preference usabilityStudyPref = findPreference(PREF_USABILITY_STUDY_MODE);
         if (!showUsabilityStudyModeOption) {
             if (usabilityStudyPref != null) {
