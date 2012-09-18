@@ -177,7 +177,7 @@ public class SuggestedWords {
                 return;
             }
             int i = 1;
-            while(i < candidates.size()) {
+            while (i < candidates.size()) {
                 final SuggestedWordInfo cur = candidates.get(i);
                 for (int j = 0; j < i; ++j) {
                     final SuggestedWordInfo previous = candidates.get(j);

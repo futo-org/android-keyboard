@@ -43,6 +43,10 @@ class BinaryFormat {
     static const int FLAG_HAS_SHORTCUT_TARGETS = 0x08;
     // Flag for bigram presence
     static const int FLAG_HAS_BIGRAMS = 0x04;
+    // Flag for non-words (typically, shortcut only entries)
+    static const int FLAG_IS_NOT_A_WORD = 0x02;
+    // Flag for blacklist
+    static const int FLAG_IS_BLACKLISTED = 0x01;
 
     // Attribute (bigram/shortcut) related flags:
     // Flag for presence of more attributes
@@ -80,7 +84,7 @@ class BinaryFormat {
     static unsigned int getFlags(const uint8_t *const dict);
     static int getGroupCountAndForwardPointer(const uint8_t *const dict, int *pos);
     static uint8_t getFlagsAndForwardPointer(const uint8_t *const dict, int *pos);
-    static int32_t getCharCodeAndForwardPointer(const uint8_t *const dict, int *pos);
+    static int32_t getCodePointAndForwardPointer(const uint8_t *const dict, int *pos);
     static int readFrequencyWithoutMovingPointer(const uint8_t *const dict, const int pos);
     static int skipOtherCharacters(const uint8_t *const dict, const int pos);
     static int skipChildrenPosition(const uint8_t flags, const int pos);
@@ -172,22 +176,22 @@ inline uint8_t BinaryFormat::getFlagsAndForwardPointer(const uint8_t *const dict
     return dict[(*pos)++];
 }
 
-inline int32_t BinaryFormat::getCharCodeAndForwardPointer(const uint8_t *const dict, int *pos) {
+inline int32_t BinaryFormat::getCodePointAndForwardPointer(const uint8_t *const dict, int *pos) {
     const int origin = *pos;
-    const int32_t character = dict[origin];
-    if (character < MINIMAL_ONE_BYTE_CHARACTER_VALUE) {
-        if (character == CHARACTER_ARRAY_TERMINATOR) {
+    const int32_t codePoint = dict[origin];
+    if (codePoint < MINIMAL_ONE_BYTE_CHARACTER_VALUE) {
+        if (codePoint == CHARACTER_ARRAY_TERMINATOR) {
             *pos = origin + 1;
-            return NOT_A_CHARACTER;
+            return NOT_A_CODE_POINT;
         } else {
             *pos = origin + 3;
-            const int32_t char_1 = character << 16;
+            const int32_t char_1 = codePoint << 16;
             const int32_t char_2 = char_1 + (dict[origin + 1] << 8);
             return char_2 + dict[origin + 2];
         }
     } else {
         *pos = origin + 1;
-        return character;
+        return codePoint;
     }
 }
 
@@ -356,7 +360,7 @@ inline int BinaryFormat::getTerminalPosition(const uint8_t *const root,
     while (true) {
         // If we already traversed the tree further than the word is long, there means
         // there was no match (or we would have found it).
-        if (wordPos > length) return NOT_VALID_WORD;
+        if (wordPos >= length) return NOT_VALID_WORD;
         int charGroupCount = BinaryFormat::getGroupCountAndForwardPointer(root, &pos);
         const int32_t wChar = forceLowerCaseSearch ? toLowerCase(inWord[wordPos]) : inWord[wordPos];
         while (true) {
@@ -365,23 +369,23 @@ inline int BinaryFormat::getTerminalPosition(const uint8_t *const root,
             if (0 >= charGroupCount) return NOT_VALID_WORD;
             const int charGroupPos = pos;
             const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
-            int32_t character = BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
+            int32_t character = BinaryFormat::getCodePointAndForwardPointer(root, &pos);
             if (character == wChar) {
                 // This is the correct node. Only one character group may start with the same
                 // char within a node, so either we found our match in this node, or there is
                 // no match and we can return NOT_VALID_WORD. So we will check all the characters
                 // in this character group indeed does match.
                 if (FLAG_HAS_MULTIPLE_CHARS & flags) {
-                    character = BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
-                    while (NOT_A_CHARACTER != character) {
+                    character = BinaryFormat::getCodePointAndForwardPointer(root, &pos);
+                    while (NOT_A_CODE_POINT != character) {
                         ++wordPos;
                         // If we shoot the length of the word we search for, or if we find a single
                         // character that does not match, as explained above, it means the word is
                         // not in the dictionary (by virtue of this chargroup being the only one to
                         // match the word on the first character, but not matching the whole word).
-                        if (wordPos > length) return NOT_VALID_WORD;
+                        if (wordPos >= length) return NOT_VALID_WORD;
                         if (inWord[wordPos] != character) return NOT_VALID_WORD;
-                        character = BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
+                        character = BinaryFormat::getCodePointAndForwardPointer(root, &pos);
                     }
                 }
                 // If we come here we know that so far, we do match. Either we are on a terminal
@@ -453,19 +457,19 @@ inline int BinaryFormat::getWordAtAddress(const uint8_t *const root, const int a
                  --charGroupCount) {
             const int startPos = pos;
             const uint8_t flags = getFlagsAndForwardPointer(root, &pos);
-            const int32_t character = getCharCodeAndForwardPointer(root, &pos);
+            const int32_t character = getCodePointAndForwardPointer(root, &pos);
             if (address == startPos) {
                 // We found the address. Copy the rest of the word in the buffer and return
                 // the length.
                 outWord[wordPos] = character;
                 if (FLAG_HAS_MULTIPLE_CHARS & flags) {
-                    int32_t nextChar = getCharCodeAndForwardPointer(root, &pos);
+                    int32_t nextChar = getCodePointAndForwardPointer(root, &pos);
                     // We count chars in order to avoid infinite loops if the file is broken or
                     // if there is some other bug
                     int charCount = maxDepth;
-                    while (NOT_A_CHARACTER != nextChar && --charCount > 0) {
+                    while (NOT_A_CODE_POINT != nextChar && --charCount > 0) {
                         outWord[++wordPos] = nextChar;
-                        nextChar = getCharCodeAndForwardPointer(root, &pos);
+                        nextChar = getCodePointAndForwardPointer(root, &pos);
                     }
                 }
                 *outUnigramFrequency = readFrequencyWithoutMovingPointer(root, pos);
@@ -519,16 +523,16 @@ inline int BinaryFormat::getWordAtAddress(const uint8_t *const root, const int a
                     const uint8_t lastFlags =
                             getFlagsAndForwardPointer(root, &lastCandidateGroupPos);
                     const int32_t lastChar =
-                            getCharCodeAndForwardPointer(root, &lastCandidateGroupPos);
+                            getCodePointAndForwardPointer(root, &lastCandidateGroupPos);
                     // We copy all the characters in this group to the buffer
                     outWord[wordPos] = lastChar;
                     if (FLAG_HAS_MULTIPLE_CHARS & lastFlags) {
                         int32_t nextChar =
-                                getCharCodeAndForwardPointer(root, &lastCandidateGroupPos);
+                                getCodePointAndForwardPointer(root, &lastCandidateGroupPos);
                         int charCount = maxDepth;
                         while (-1 != nextChar && --charCount > 0) {
                             outWord[++wordPos] = nextChar;
-                            nextChar = getCharCodeAndForwardPointer(root, &lastCandidateGroupPos);
+                            nextChar = getCodePointAndForwardPointer(root, &lastCandidateGroupPos);
                         }
                     }
                     ++wordPos;
@@ -578,8 +582,8 @@ inline int BinaryFormat::computeFrequencyForBigram(const int unigramFreq, const 
     // 0 for the bigram frequency represents the middle of the 16th step from the top,
     // while a value of 15 represents the middle of the top step.
     // See makedict.BinaryDictInputOutput for details.
-    const float stepSize = (static_cast<float>(MAX_FREQ) - unigramFreq) / (1.5f + MAX_BIGRAM_FREQ);
-    return static_cast<int>(unigramFreq + (bigramFreq + 1) * stepSize);
+    const float stepSize = static_cast<float>(MAX_FREQ - unigramFreq) / (1.5f + MAX_BIGRAM_FREQ);
+    return unigramFreq + static_cast<int>(static_cast<float>(bigramFreq + 1) * stepSize);
 }
 
 // This returns a probability in log space.

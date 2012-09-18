@@ -153,5 +153,8 @@
         <Key
             latin:keyLabel="#"
             latin:keyStyle="numKeyStyle" />
+        <!-- Note: This Spacer prevents the above key from being marked as a right edge key. -->
+        <Spacer
+            latin:keyWidth="fillRight" />
     </Row>
 </merge>

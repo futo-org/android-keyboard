@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-/* 
+/*
 **
 ** Copyright 2008, The Android Open Source Project
 **
-** Licensed under the Apache License, Version 2.0 (the "License"); 
-** you may not use this file except in compliance with the License. 
-** You may obtain a copy of the License at 
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
 **
-**     http://www.apache.org/licenses/LICENSE-2.0 
+**     http://www.apache.org/licenses/LICENSE-2.0
 **
-** Unless required by applicable law or agreed to in writing, software 
-** distributed under the License is distributed on an "AS IS" BASIS, 
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-** See the License for the specific language governing permissions and 
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
 ** limitations under the License.
 */
 -->
@@ -73,6 +73,11 @@
     <dimen name="key_popup_hint_letter_padding">2dp</dimen>
     <dimen name="key_uppercase_letter_padding">2dp</dimen>
 
+    <!-- For 5-row keyboard -->
+    <fraction name="key_bottom_gap_5row">3.20%p</fraction>
+    <fraction name="key_letter_ratio_5row">64%</fraction>
+    <fraction name="key_uppercase_letter_ratio_5row">41%</fraction>
+
     <dimen name="key_preview_offset_ics">8.0dp</dimen>
     <!-- popup_key_height x -0.5 -->
     <dimen name="more_keys_keyboard_vertical_correction_ics">-26.4dp</dimen>
@@ -94,13 +99,15 @@
     <integer name="suggestions_count_in_strip">3</integer>
     <fraction name="center_suggestion_percentile">36%</fraction>
 
-    <!-- Gesture preview parameters -->
-    <dimen name="gesture_preview_trail_width">2.5dp</dimen>
-    <dimen name="gesture_floating_preview_text_size">35dp</dimen>
-    <dimen name="gesture_floating_preview_text_offset">75dp</dimen>
-    <dimen name="gesture_floating_preview_text_shadow_border">17.5dp</dimen>
-    <dimen name="gesture_floating_preview_text_shading_border">7.5dp</dimen>
-    <dimen name="gesture_floating_preview_text_connector_width">1.0dp</dimen>
+    <!-- Gesture preview trail parameters -->
+    <dimen name="gesture_preview_trail_start_width">18.0dp</dimen>
+    <dimen name="gesture_preview_trail_end_width">2.5dp</dimen>
+    <!-- Gesture floating preview text parameters -->
+    <dimen name="gesture_floating_preview_text_size">24dp</dimen>
+    <dimen name="gesture_floating_preview_text_offset">73dp</dimen>
+    <dimen name="gesture_floating_preview_horizontal_padding">24dp</dimen>
+    <dimen name="gesture_floating_preview_vertical_padding">16dp</dimen>
+    <dimen name="gesture_floating_preview_round_radius">3dp</dimen>
 
     <!-- Inset used in Accessibility mode to avoid accidental key presses when a finger slides off the screen. -->
     <dimen name="accessibility_edge_slop">8dp</dimen>

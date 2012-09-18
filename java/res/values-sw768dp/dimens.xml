@@ -67,6 +67,11 @@
     <dimen name="key_preview_height">94.5dp</dimen>
     <dimen name="key_preview_offset">16.0dp</dimen>
 
+    <!-- For 5-row keyboard -->
+    <fraction name="key_bottom_gap_5row">2.95%p</fraction>
+    <fraction name="key_letter_ratio_5row">51%</fraction>
+    <fraction name="key_uppercase_letter_ratio_5row">33%</fraction>
+
     <dimen name="key_preview_offset_ics">8.0dp</dimen>
     <!-- popup_key_height x -0.5 -->
     <dimen name="more_keys_keyboard_vertical_correction_ics">-31.5dp</dimen>
@@ -80,4 +85,13 @@
     <dimen name="suggestion_padding">8dp</dimen>
     <dimen name="suggestion_text_size">22dp</dimen>
     <dimen name="more_suggestions_hint_text_size">33dp</dimen>
+
+    <!-- Gesture preview trail parameters -->
+    <dimen name="gesture_preview_trail_width">2.5dp</dimen>
+    <!-- Gesture floating preview text parameters -->
+    <dimen name="gesture_floating_preview_text_size">26dp</dimen>
+    <dimen name="gesture_floating_preview_text_offset">86dp</dimen>
+    <dimen name="gesture_floating_preview_horizontal_padding">26dp</dimen>
+    <dimen name="gesture_floating_preview_vertical_padding">17dp</dimen>
+    <dimen name="gesture_floating_preview_round_radius">3dp</dimen>
 </resources>

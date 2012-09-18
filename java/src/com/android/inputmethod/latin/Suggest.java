@@ -37,6 +37,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Suggest {
     public static final String TAG = Suggest.class.getSimpleName();
 
+    // Session id for
+    // {@link #getSuggestedWords(WordComposer,CharSequence,ProximityInfo,boolean,int)}.
+    public static final int SESSION_TYPING = 0;
+    public static final int SESSION_GESTURE = 1;
+
     // TODO: rename this to CORRECTION_OFF
     public static final int CORRECTION_NONE = 0;
     // TODO: rename this to CORRECTION_ON
@@ -157,13 +162,6 @@ public class Suggest {
 
     public SuggestedWords getSuggestedWords(
             final WordComposer wordComposer, CharSequence prevWordForBigram,
-            final ProximityInfo proximityInfo, final boolean isCorrectionEnabled) {
-        return getSuggestedWordsWithSessionId(
-                wordComposer, prevWordForBigram, proximityInfo, isCorrectionEnabled, 0);
-    }
-
-    public SuggestedWords getSuggestedWordsWithSessionId(
-            final WordComposer wordComposer, CharSequence prevWordForBigram,
             final ProximityInfo proximityInfo, final boolean isCorrectionEnabled, int sessionId) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         if (wordComposer.isBatchMode()) {
@@ -214,10 +212,12 @@ public class Suggest {
             whitelistedWord = suggestionsSet.first().mWord;
         }
 
+        // The word can be auto-corrected if it has a whitelist entry that is not itself,
+        // or if it's a 2+ characters non-word (i.e. it's not in the dictionary).
         final boolean allowsToBeAutoCorrected = (null != whitelistedWord
                 && !whitelistedWord.equals(consideredWord))
-                || AutoCorrection.isNotAWord(mDictionaries, consideredWord,
-                        wordComposer.isFirstCharCapitalized());
+                || (consideredWord.length() > 1 && !AutoCorrection.isInTheDictionary(mDictionaries,
+                        consideredWord, wordComposer.isFirstCharCapitalized()));
 
         final boolean hasAutoCorrection;
         // TODO: using isCorrectionEnabled here is not very good. It's probably useless, because

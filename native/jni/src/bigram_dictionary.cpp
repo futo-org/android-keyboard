@@ -113,7 +113,7 @@ int BigramDictionary::getBigrams(const int32_t *prevWord, int prevWordLength, in
     }
     // If still no bigrams, we really don't have them!
     if (0 == pos) return 0;
-    int bigramFlags;
+    uint8_t bigramFlags;
     int bigramCount = 0;
     do {
         bigramFlags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
@@ -153,10 +153,10 @@ int BigramDictionary::getBigramListPositionForWord(const int32_t *prevWord,
             forceLowerCaseSearch);
 
     if (NOT_VALID_WORD == pos) return 0;
-    const int flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
+    const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
     if (0 == (flags & BinaryFormat::FLAG_HAS_BIGRAMS)) return 0;
     if (0 == (flags & BinaryFormat::FLAG_HAS_MULTIPLE_CHARS)) {
-        BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
+        BinaryFormat::getCodePointAndForwardPointer(root, &pos);
     } else {
         pos = BinaryFormat::skipOtherCharacters(root, pos);
     }
@@ -179,7 +179,7 @@ void BigramDictionary::fillBigramAddressToFrequencyMapAndFilter(const int32_t *p
     }
     if (0 == pos) return;
 
-    int bigramFlags;
+    uint8_t bigramFlags;
     do {
         bigramFlags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
         const int frequency = BinaryFormat::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
@@ -215,7 +215,7 @@ bool BigramDictionary::isValidBigram(const int32_t *word1, int length1, const in
     int nextWordPos = BinaryFormat::getTerminalPosition(root, word2, length2,
             false /* forceLowerCaseSearch */);
     if (NOT_VALID_WORD == nextWordPos) return false;
-    int bigramFlags;
+    uint8_t bigramFlags;
     do {
         bigramFlags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
         const int bigramPos = BinaryFormat::getAttributeAddressAndForwardPointer(root, bigramFlags,

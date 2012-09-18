@@ -80,7 +80,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         public void invalidateKey(Key key);
         public void showKeyPreview(PointerTracker tracker);
         public void dismissKeyPreview(PointerTracker tracker);
-        public void showGesturePreviewTrail(PointerTracker tracker);
+        public void showGesturePreviewTrail(PointerTracker tracker, boolean isOldestTracker);
     }
 
     public interface TimerProxy {
@@ -330,10 +330,10 @@ public class PointerTracker implements PointerTrackerQueue.Element {
             final int y) {
         final boolean ignoreModifierKey = mIgnoreModifierKey && key.isModifier();
         final boolean altersCode = key.altCodeWhileTyping() && mTimerProxy.isTypingState();
-        final int code = altersCode ? key.mAltCode : primaryCode;
+        final int code = altersCode ? key.getAltCode() : primaryCode;
         if (DEBUG_LISTENER) {
-            Log.d(TAG, "onCodeInput: " + Keyboard.printableCode(code) + " text=" + key.mOutputText
-                    + " x=" + x + " y=" + y
+            Log.d(TAG, "onCodeInput: " + Keyboard.printableCode(code)
+                    + " text=" + key.getOutputText() + " x=" + x + " y=" + y
                     + " ignoreModifier=" + ignoreModifierKey + " altersCode=" + altersCode
                     + " enabled=" + key.isEnabled());
         }
@@ -347,7 +347,7 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         // Even if the key is disabled, it should respond if it is in the altCodeWhileTyping state.
         if (key.isEnabled() || altersCode) {
             if (code == Keyboard.CODE_OUTPUT_TEXT) {
-                mListener.onTextInput(key.mOutputText);
+                mListener.onTextInput(key.getOutputText());
             } else if (code != Keyboard.CODE_UNSPECIFIED) {
                 mListener.onCodeInput(code, x, y);
             }
@@ -440,13 +440,13 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         }
 
         if (key.altCodeWhileTyping()) {
-            final int altCode = key.mAltCode;
+            final int altCode = key.getAltCode();
             final Key altKey = mKeyboard.getKey(altCode);
             if (altKey != null) {
                 updateReleaseKeyGraphics(altKey);
             }
             for (final Key k : mKeyboard.mAltCodeKeysWhileTyping) {
-                if (k != key && k.mAltCode == altCode) {
+                if (k != key && k.getAltCode() == altCode) {
                     updateReleaseKeyGraphics(k);
                 }
             }
@@ -479,13 +479,13 @@ public class PointerTracker implements PointerTrackerQueue.Element {
         }
 
         if (key.altCodeWhileTyping() && mTimerProxy.isTypingState()) {
-            final int altCode = key.mAltCode;
+            final int altCode = key.getAltCode();
             final Key altKey = mKeyboard.getKey(altCode);
             if (altKey != null) {
                 updatePressKeyGraphics(altKey);
             }
             for (final Key k : mKeyboard.mAltCodeKeysWhileTyping) {
-                if (k != key && k.mAltCode == altCode) {
+                if (k != key && k.getAltCode() == altCode) {
                     updatePressKeyGraphics(k);
                 }
             }
@@ -545,12 +545,16 @@ public class PointerTracker implements PointerTrackerQueue.Element {
     }
 
     private void startBatchInput() {
+        if (sInGesture || !mGestureStrokeWithPreviewTrail.isStartOfAGesture()) {
+            return;
+        }
         if (DEBUG_LISTENER) {
             Log.d(TAG, "onStartBatchInput");
         }
         sInGesture = true;
         mListener.onStartBatchInput();
-        mDrawingProxy.showGesturePreviewTrail(this);
+        final boolean isOldestTracker = sPointerTrackerQueue.getOldestElement() == this;
+        mDrawingProxy.showGesturePreviewTrail(this, isOldestTracker);
     }
 
     private void updateBatchInput(final long eventTime) {
@@ -567,12 +571,14 @@ public class PointerTracker implements PointerTrackerQueue.Element {
                 mListener.onUpdateBatchInput(sAggregratedPointers);
             }
         }
-        mDrawingProxy.showGesturePreviewTrail(this);
+        final boolean isOldestTracker = sPointerTrackerQueue.getOldestElement() == this;
+        mDrawingProxy.showGesturePreviewTrail(this, isOldestTracker);
     }
 
     private void endBatchInput() {
         synchronized (sAggregratedPointers) {
             mGestureStrokeWithPreviewTrail.appendAllBatchPoints(sAggregratedPointers);
+            mGestureStrokeWithPreviewTrail.reset();
             if (getActivePointerTrackerCount() == 1) {
                 if (DEBUG_LISTENER) {
                     Log.d(TAG, "onEndBatchInput: batchPoints="
@@ -583,7 +589,8 @@ public class PointerTracker implements PointerTrackerQueue.Element {
                 clearBatchInputPointsOfAllPointerTrackers();
             }
         }
-        mDrawingProxy.showGesturePreviewTrail(this);
+        final boolean isOldestTracker = sPointerTrackerQueue.getOldestElement() == this;
+        mDrawingProxy.showGesturePreviewTrail(this, isOldestTracker);
     }
 
     private static void abortBatchInput() {
@@ -719,12 +726,8 @@ public class PointerTracker implements PointerTrackerQueue.Element {
             final boolean isHistorical, final Key key) {
         final int gestureTime = (int)(eventTime - sGestureFirstDownTime);
         if (mIsDetectingGesture) {
-            final GestureStroke stroke = mGestureStrokeWithPreviewTrail;
-            stroke.addPoint(x, y, gestureTime, isHistorical);
-            if (!sInGesture && stroke.isStartOfAGesture()) {
-                startBatchInput();
-            }
-
+            mGestureStrokeWithPreviewTrail.addPoint(x, y, gestureTime, isHistorical);
+            startBatchInput();
             if (sInGesture && key != null) {
                 updateBatchInput(eventTime);
             }

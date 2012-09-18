@@ -17,6 +17,7 @@
 #ifndef LATINIME_PROXIMITY_INFO_STATE_H
 #define LATINIME_PROXIMITY_INFO_STATE_H
 
+#include <bitset>
 #include <cstring> // for memset()
 #include <stdint.h>
 #include <string>
@@ -24,6 +25,7 @@
 
 #include "char_utils.h"
 #include "defines.h"
+#include "hash_map_compat.h"
 
 namespace latinime {
 
@@ -31,13 +33,11 @@ class ProximityInfo;
 
 class ProximityInfoState {
  public:
-    static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2 = 10;
-    static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR =
-            1 << NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
-    // The upper limit of the char code in mCodeToKeyIndex
-    static const int MAX_CHAR_CODE = 127;
-    static const float NOT_A_DISTANCE_FLOAT = -1.0f;
-    static const int NOT_A_CODE = -1;
+    typedef std::bitset<MAX_KEY_COUNT_IN_A_KEYBOARD> NearKeycodesSet;
+    static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
+    static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
+    static const float NOT_A_DISTANCE_FLOAT;
+    static const int NOT_A_CODE;
 
     /////////////////////////////////////////
     // Defined in proximity_info_state.cpp //
@@ -54,7 +54,8 @@ class ProximityInfoState {
             : mProximityInfo(0), mMaxPointToKeyLength(0),
               mHasTouchPositionCorrectionData(false), mMostCommonKeyWidthSquare(0), mLocaleStr(),
               mKeyCount(0), mCellHeight(0), mCellWidth(0), mGridHeight(0), mGridWidth(0),
-              mInputXs(), mInputYs(), mTimes(), mDistanceCache(), mLengthCache(),
+              mIsContinuationPossible(false), mInputXs(), mInputYs(), mTimes(), mInputIndice(),
+              mDistanceCache(), mLengthCache(), mNearKeysVector(),
               mTouchPositionCorrectionEnabled(false), mInputSize(0) {
         memset(mInputCodes, 0, sizeof(mInputCodes));
         memset(mNormalizedSquaredDistances, 0, sizeof(mNormalizedSquaredDistances));
@@ -196,26 +197,33 @@ class ProximityInfoState {
         return mInputSize;
     }
 
-    int getInputX(int index) const {
+    int getInputX(const int index) const {
         return mInputXs[index];
     }
 
-    int getInputY(int index) const {
+    int getInputY(const int index) const {
         return mInputYs[index];
     }
 
-    int getLengthCache(int index) const {
+    int getLengthCache(const int index) const {
         return mLengthCache[index];
     }
 
-    float getPointToKeyLength(int inputIndex, int charCode, float scale);
+    bool isContinuationPossible() const {
+        return mIsContinuationPossible;
+    }
 
-    int getKeyKeyDistance(int key0, int key1);
+    float getPointToKeyLength(const int inputIndex, const int charCode, const float scale) const;
 
-    int getSpaceY();
+    int getSpaceY() const;
 
+    int32_t getAllPossibleChars(
+            const size_t startIndex, int32_t *const filter, const int32_t filterSize) const;
+
+    float getAveragePointDuration() const;
  private:
     DISALLOW_COPY_AND_ASSIGN(ProximityInfoState);
+    typedef hash_map_compat<int, float> NearKeysDistanceMap;
     /////////////////////////////////////////
     // Defined in proximity_info_state.cpp //
     /////////////////////////////////////////
@@ -224,7 +232,11 @@ class ProximityInfoState {
     float calculateSquaredDistanceFromSweetSpotCenter(
             const int keyIndex, const int inputIndex) const;
 
-    bool pushTouchPoint(const int nodeChar, int x, int y, const int time, const bool sample);
+    bool pushTouchPoint(const int inputIndex, const int nodeChar, int x, int y, const int time,
+            const bool sample, const bool isLastPoint,
+            NearKeysDistanceMap *const currentNearKeysDistances,
+            const NearKeysDistanceMap *const prevNearKeysDistances,
+            const NearKeysDistanceMap *const prevPrevNearKeysDistances);
     /////////////////////////////////////////
     // Defined here                        //
     /////////////////////////////////////////
@@ -238,6 +250,20 @@ class ProximityInfoState {
         return mInputCodes + (index * MAX_PROXIMITY_CHARS_SIZE_INTERNAL);
     }
 
+    float updateNearKeysDistances(const int x, const int y,
+            NearKeysDistanceMap *const currentNearKeysDistances);
+    bool isPrevLocalMin(const NearKeysDistanceMap *const currentNearKeysDistances,
+            const NearKeysDistanceMap *const prevNearKeysDistances,
+            const NearKeysDistanceMap *const prevPrevNearKeysDistances) const;
+    float getPointScore(
+            const int x, const int y, const int time, const bool last, const float nearest,
+            const NearKeysDistanceMap *const currentNearKeysDistances,
+            const NearKeysDistanceMap *const prevNearKeysDistances,
+            const NearKeysDistanceMap *const prevPrevNearKeysDistances) const;
+    bool checkAndReturnIsContinuationPossible(const int inputSize, const int *const xCoordinates,
+            const int *const yCoordinates, const int *const times);
+    void popInputData();
+
     // const
     const ProximityInfo *mProximityInfo;
     float mMaxPointToKeyLength;
@@ -249,12 +275,15 @@ class ProximityInfoState {
     int mCellWidth;
     int mGridHeight;
     int mGridWidth;
+    bool mIsContinuationPossible;
 
     std::vector<int> mInputXs;
     std::vector<int> mInputYs;
     std::vector<int> mTimes;
+    std::vector<int> mInputIndice;
     std::vector<float> mDistanceCache;
     std::vector<int>  mLengthCache;
+    std::vector<NearKeycodesSet> mNearKeysVector;
     bool mTouchPositionCorrectionEnabled;
     int32_t mInputCodes[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH_INTERNAL];
     int mNormalizedSquaredDistances[MAX_PROXIMITY_CHARS_SIZE_INTERNAL * MAX_WORD_LENGTH_INTERNAL];

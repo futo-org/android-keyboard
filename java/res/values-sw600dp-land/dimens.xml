@@ -53,7 +53,18 @@
     <fraction name="spacebar_text_ratio">30.0%</fraction>
     <dimen name="key_uppercase_letter_padding">4dp</dimen>
 
+    <!-- For 5-row keyboard -->
+    <fraction name="key_bottom_gap_5row">3.20%p</fraction>
+    <fraction name="key_letter_ratio_5row">62%</fraction>
+    <fraction name="key_uppercase_letter_ratio_5row">36%</fraction>
+
     <dimen name="suggestions_strip_padding">252.0dp</dimen>
     <integer name="max_more_suggestions_row">5</integer>
     <fraction name="min_more_suggestions_width">50%</fraction>
+
+    <!-- Gesture floating preview text parameters -->
+    <dimen name="gesture_floating_preview_text_size">26dp</dimen>
+    <dimen name="gesture_floating_preview_text_offset">76dp</dimen>
+    <dimen name="gesture_floating_preview_horizontal_padding">26dp</dimen>
+    <dimen name="gesture_floating_preview_vertical_padding">17dp</dimen>
 </resources>

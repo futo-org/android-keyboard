@@ -90,11 +90,12 @@ class Dictionary {
 // static inline methods should be defined in the header file
 inline int Dictionary::wideStrLen(unsigned short *str) {
     if (!str) return 0;
-    unsigned short *end = str;
-    while (*end) {
-        end++;
+    int length = 0;
+    while (*str) {
+        str++;
+        length++;
     }
-    return end - str;
+    return length;
 }
 } // namespace latinime
 #endif // LATINIME_DICTIONARY_H

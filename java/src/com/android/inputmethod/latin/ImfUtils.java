@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * Utility class for Input Method Framework
  */
-public class ImfUtils {
+public final class ImfUtils {
     private ImfUtils() {
         // This utility class is not publicly instantiable.
     }

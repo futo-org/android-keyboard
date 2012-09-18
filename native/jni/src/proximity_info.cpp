@@ -29,7 +29,6 @@
 
 namespace latinime {
 
-/* static */ const int ProximityInfo::NOT_A_CODE = -1;
 /* static */ const float ProximityInfo::NOT_A_DISTANCE_FLOAT = -1.0f;
 
 static inline void safeGetOrFillZeroIntArrayRegion(JNIEnv *env, jintArray jArray, jsize len,
@@ -63,11 +62,13 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr, const int ma
           CELL_WIDTH((keyboardWidth + gridWidth - 1) / gridWidth),
           CELL_HEIGHT((keyboardHeight + gridHeight - 1) / gridHeight),
           KEY_COUNT(min(keyCount, MAX_KEY_COUNT_IN_A_KEYBOARD)),
+          KEYBOARD_WIDTH(keyboardWidth), KEYBOARD_HEIGHT(keyboardHeight),
           HAS_TOUCH_POSITION_CORRECTION_DATA(keyCount > 0 && keyXCoordinates && keyYCoordinates
                   && keyWidths && keyHeights && keyCharCodes && sweetSpotCenterXs
                   && sweetSpotCenterYs && sweetSpotRadii),
           mProximityCharsArray(new int32_t[GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE
-                  /* proximityGridLength */]) {
+                  /* proximityGridLength */]),
+          mCodeToKeyMap() {
     const int proximityGridLength = GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE;
     if (DEBUG_PROXIMITY_INFO) {
         AKLOGI("Create proximity info array %d", proximityGridLength);
@@ -84,24 +85,11 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr, const int ma
     safeGetOrFillZeroIntArrayRegion(env, keyYCoordinates, KEY_COUNT, mKeyYCoordinates);
     safeGetOrFillZeroIntArrayRegion(env, keyWidths, KEY_COUNT, mKeyWidths);
     safeGetOrFillZeroIntArrayRegion(env, keyHeights, KEY_COUNT, mKeyHeights);
-    safeGetOrFillZeroIntArrayRegion(env, keyCharCodes, KEY_COUNT, mKeyCharCodes);
+    safeGetOrFillZeroIntArrayRegion(env, keyCharCodes, KEY_COUNT, mKeyCodePoints);
     safeGetOrFillZeroFloatArrayRegion(env, sweetSpotCenterXs, KEY_COUNT, mSweetSpotCenterXs);
     safeGetOrFillZeroFloatArrayRegion(env, sweetSpotCenterYs, KEY_COUNT, mSweetSpotCenterYs);
     safeGetOrFillZeroFloatArrayRegion(env, sweetSpotRadii, KEY_COUNT, mSweetSpotRadii);
-    initializeCodeToKeyIndex();
     initializeG();
-}
-
-// Build the reversed look up table from the char code to the index in mKeyXCoordinates,
-// mKeyYCoordinates, mKeyWidths, mKeyHeights, mKeyCharCodes.
-void ProximityInfo::initializeCodeToKeyIndex() {
-    memset(mCodeToKeyIndex, -1, (MAX_CHAR_CODE + 1) * sizeof(mCodeToKeyIndex[0]));
-    for (int i = 0; i < KEY_COUNT; ++i) {
-        const int code = mKeyCharCodes[i];
-        if (0 <= code && code <= MAX_CHAR_CODE) {
-            mCodeToKeyIndex[code] = i;
-        }
-    }
 }
 
 ProximityInfo::~ProximityInfo() {
@@ -117,7 +105,8 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
     if (x < 0 || y < 0) {
         if (DEBUG_DICT) {
             AKLOGI("HasSpaceProximity: Illegal coordinates (%d, %d)", x, y);
-            assert(false);
+            // TODO: Enable this assertion.
+            //assert(false);
         }
         return false;
     }
@@ -140,13 +129,15 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
 
 static inline float getNormalizedSquaredDistanceFloat(float x1, float y1, float x2, float y2,
         float scale) {
-    return squareFloat((x1 - x2) / scale) + squareFloat((y1 - y2) / scale);
+    const float deltaX = x1 - x2;
+    const float deltaY = y1 - y2;
+    return (SQUARE_FLOAT(deltaX) + SQUARE_FLOAT(deltaY)) / SQUARE_FLOAT(scale);
 }
 
 float ProximityInfo::getNormalizedSquaredDistanceFromCenterFloat(
         const int keyId, const int x, const int y) const {
-    const float centerX = static_cast<float>(getKeyCenterXOfIdG(keyId));
-    const float centerY = static_cast<float>(getKeyCenterYOfIdG(keyId));
+    const float centerX = static_cast<float>(getKeyCenterXOfKeyIdG(keyId));
+    const float centerY = static_cast<float>(getKeyCenterYOfKeyIdG(keyId));
     const float touchX = static_cast<float>(x);
     const float touchY = static_cast<float>(y);
     const float keyWidth = static_cast<float>(getMostCommonKeyWidth());
@@ -178,7 +169,7 @@ void ProximityInfo::calculateNearbyKeyCodes(
             if (c < KEYCODE_SPACE || c == primaryKey) {
                 continue;
             }
-            const int keyIndex = getKeyIndex(c);
+            const int keyIndex = getKeyIndexOf(c);
             const bool onKey = isOnKey(keyIndex, x, y);
             const int distance = squaredDistanceToEdge(keyIndex, x, y);
             if (onKey || distance < MOST_COMMON_KEY_WIDTH_SQUARE) {
@@ -208,7 +199,7 @@ void ProximityInfo::calculateNearbyKeyCodes(
                 const int32_t ac = additionalProximityChars[j];
                 int k = 0;
                 for (; k < insertPos; ++k) {
-                    if ((int)ac == inputCodes[k]) {
+                    if (static_cast<int>(ac) == inputCodes[k]) {
                         break;
                     }
                 }
@@ -227,42 +218,39 @@ void ProximityInfo::calculateNearbyKeyCodes(
     }
     // Add a delimiter for the proximity characters
     for (int i = insertPos; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
-        inputCodes[i] = NOT_A_CODE;
+        inputCodes[i] = NOT_A_CODE_POINT;
     }
 }
 
-int ProximityInfo::getKeyIndex(const int c) const {
+int ProximityInfo::getKeyIndexOf(const int c) const {
     if (KEY_COUNT == 0) {
         // We do not have the coordinate data
         return NOT_AN_INDEX;
     }
-    const unsigned short baseLowerC = toBaseLowerCase(c);
-    if (baseLowerC > MAX_CHAR_CODE) {
-        return NOT_AN_INDEX;
+    const int baseLowerC = static_cast<int>(toBaseLowerCase(c));
+    hash_map_compat<int, int>::const_iterator mapPos = mCodeToKeyMap.find(baseLowerC);
+    if (mapPos != mCodeToKeyMap.end()) {
+        return mapPos->second;
     }
-    return mCodeToKeyIndex[baseLowerC];
+    return NOT_AN_INDEX;
 }
 
-int ProximityInfo::getKeyCode(const int keyIndex) const {
+int ProximityInfo::getCodePointOf(const int keyIndex) const {
     if (keyIndex < 0 || keyIndex >= KEY_COUNT) {
-        return NOT_AN_INDEX;
+        return NOT_A_CODE_POINT;
     }
-    return mKeyToCodeIndexG[keyIndex];
+    return mKeyIndexToCodePointG[keyIndex];
 }
 
 void ProximityInfo::initializeG() {
     // TODO: Optimize
     for (int i = 0; i < KEY_COUNT; ++i) {
-        const int code = mKeyCharCodes[i];
+        const int code = mKeyCodePoints[i];
         const int lowerCode = toBaseLowerCase(code);
         mCenterXsG[i] = mKeyXCoordinates[i] + mKeyWidths[i] / 2;
         mCenterYsG[i] = mKeyYCoordinates[i] + mKeyHeights[i] / 2;
-        if (code != lowerCode && lowerCode >= 0 && lowerCode <= MAX_CHAR_CODE) {
-            mCodeToKeyIndex[lowerCode] = i;
-            mKeyToCodeIndexG[i] = lowerCode;
-        } else {
-            mKeyToCodeIndexG[i] = code;
-        }
+        mCodeToKeyMap[lowerCode] = i;
+        mKeyIndexToCodePointG[i] = lowerCode;
     }
     for (int i = 0; i < KEY_COUNT; i++) {
         mKeyKeyDistancesG[i][i] = 0;
@@ -274,22 +262,22 @@ void ProximityInfo::initializeG() {
     }
 }
 
-float ProximityInfo::getKeyCenterXOfCharG(int charCode) const {
-    return getKeyCenterXOfIdG(getKeyIndex(charCode));
+int ProximityInfo::getKeyCenterXOfCodePointG(int charCode) const {
+    return getKeyCenterXOfKeyIdG(getKeyIndexOf(charCode));
 }
 
-float ProximityInfo::getKeyCenterYOfCharG(int charCode) const {
-    return getKeyCenterYOfIdG(getKeyIndex(charCode));
+int ProximityInfo::getKeyCenterYOfCodePointG(int charCode) const {
+    return getKeyCenterYOfKeyIdG(getKeyIndexOf(charCode));
 }
 
-float ProximityInfo::getKeyCenterXOfIdG(int keyId) const {
+int ProximityInfo::getKeyCenterXOfKeyIdG(int keyId) const {
     if (keyId >= 0) {
         return mCenterXsG[keyId];
     }
     return 0;
 }
 
-float ProximityInfo::getKeyCenterYOfIdG(int keyId) const {
+int ProximityInfo::getKeyCenterYOfKeyIdG(int keyId) const {
     if (keyId >= 0) {
         return mCenterYsG[keyId];
     }
@@ -297,11 +285,11 @@ float ProximityInfo::getKeyCenterYOfIdG(int keyId) const {
 }
 
 int ProximityInfo::getKeyKeyDistanceG(int key0, int key1) const {
-    const int keyId0 = getKeyIndex(key0);
-    const int keyId1 = getKeyIndex(key1);
+    const int keyId0 = getKeyIndexOf(key0);
+    const int keyId1 = getKeyIndexOf(key1);
     if (keyId0 >= 0 && keyId1 >= 0) {
         return mKeyKeyDistancesG[keyId0][keyId1];
     }
-    return 0;
+    return MAX_POINT_TO_KEY_LENGTH;
 }
 } // namespace latinime

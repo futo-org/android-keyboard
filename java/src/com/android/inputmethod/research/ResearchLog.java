@@ -93,7 +93,7 @@ public class ResearchLog {
         mFile = outputFile;
     }
 
-    public synchronized void close() {
+    public synchronized void close(final Runnable onClosed) {
         mExecutor.submit(new Callable<Object>() {
             @Override
             public Object call() throws Exception {
@@ -102,7 +102,14 @@ public class ResearchLog {
                         mJsonWriter.endArray();
                         mJsonWriter.flush();
                         mJsonWriter.close();
+                        if (DEBUG) {
+                            Log.d(TAG, "wrote log to " + mFile);
+                        }
                         mHasWrittenData = false;
+                    } else {
+                        if (DEBUG) {
+                            Log.d(TAG, "close() called, but no data, not outputting");
+                        }
                     }
                 } catch (Exception e) {
                     Log.d(TAG, "error when closing ResearchLog:");
@@ -110,6 +117,9 @@ public class ResearchLog {
                 } finally {
                     if (mFile.exists()) {
                         mFile.setWritable(false, false);
+                    }
+                    if (onClosed != null) {
+                        onClosed.run();
                     }
                 }
                 return null;
@@ -257,7 +267,7 @@ public class ResearchLog {
                     for (Key keyboardKey : keyboardKeys) {
                         mJsonWriter.beginObject();
                         mJsonWriter.name("code").value(keyboardKey.mCode);
-                        mJsonWriter.name("altCode").value(keyboardKey.mAltCode);
+                        mJsonWriter.name("altCode").value(keyboardKey.getAltCode());
                         mJsonWriter.name("x").value(keyboardKey.mX);
                         mJsonWriter.name("y").value(keyboardKey.mY);
                         mJsonWriter.name("w").value(keyboardKey.mWidth);

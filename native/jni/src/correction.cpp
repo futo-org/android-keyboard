@@ -55,7 +55,7 @@ inline static void dumpEditDistance10ForDebug(int *editDistanceTable,
             }
             AKLOGI("[ %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d ]",
                     c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8], c[9], c[10]);
-            (void)c;
+            (void)c; // To suppress compiler warning
         }
     }
 }
@@ -362,7 +362,8 @@ Correction::CorrectionType Correction::processCharAndCalcState(
     if (mSkipPos >= 0) {
         if (mSkippedCount == 0 && mSkipPos < mOutputIndex) {
             if (DEBUG_DICT) {
-                assert(mSkipPos == mOutputIndex - 1);
+                // TODO: Enable this assertion.
+                //assert(mSkipPos == mOutputIndex - 1);
             }
             mSkipPos = mOutputIndex;
         }
@@ -630,7 +631,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
 inline static int getQuoteCount(const unsigned short *word, const int length) {
     int quoteCount = 0;
     for (int i = 0; i < length; ++i) {
-        if(word[i] == '\'') {
+        if (word[i] == SINGLE_QUOTE) {
             ++quoteCount;
         }
     }
@@ -936,7 +937,7 @@ int Correction::RankingAlgorithm::calcFreqForSplitMultipleWords(
 
     int totalLength = 0;
     int totalFreq = 0;
-    for (int i = 0; i < wordCount; ++i){
+    for (int i = 0; i < wordCount; ++i) {
         const int wordLength = wordLengthArray[i];
         if (wordLength <= 0) {
             return 0;
@@ -1126,15 +1127,16 @@ float Correction::RankingAlgorithm::calcNormalizedScore(const unsigned short *be
         return 0;
     }
 
-    const float maxScore = score >= S_INT_MAX ? S_INT_MAX : MAX_INITIAL_SCORE
-            * powf(static_cast<float>(TYPED_LETTER_MULTIPLIER),
-                    static_cast<float>(min(beforeLength, afterLength - spaceCount)))
-            * FULL_WORD_MULTIPLIER;
+    const float maxScore = score >= S_INT_MAX ? static_cast<float>(S_INT_MAX)
+            : static_cast<float>(MAX_INITIAL_SCORE)
+                    * powf(static_cast<float>(TYPED_LETTER_MULTIPLIER),
+                            static_cast<float>(min(beforeLength, afterLength - spaceCount)))
+                    * static_cast<float>(FULL_WORD_MULTIPLIER);
 
     // add a weight based on edit distance.
     // distance <= max(afterLength, beforeLength) == afterLength,
     // so, 0 <= distance / afterLength <= 1
     const float weight = 1.0f - static_cast<float>(distance) / static_cast<float>(afterLength);
-    return (score / maxScore) * weight;
+    return (static_cast<float>(score) / maxScore) * weight;
 }
 } // namespace latinime

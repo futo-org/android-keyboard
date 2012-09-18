@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.dicttool;
 
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
+import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.MakedictLog;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
@@ -42,40 +43,35 @@ import org.xml.sax.SAXException;
 public class DictionaryMaker {
 
     static class Arguments {
-        private final static String OPTION_VERSION_2 = "-2";
-        private final static String OPTION_INPUT_SOURCE = "-s";
-        private final static String OPTION_INPUT_BIGRAM_XML = "-b";
-        private final static String OPTION_INPUT_SHORTCUT_XML = "-c";
-        private final static String OPTION_OUTPUT_BINARY = "-d";
-        private final static String OPTION_OUTPUT_BINARY_FORMAT_VERSION_1 = "-d1";
-        private final static String OPTION_OUTPUT_XML = "-x";
-        private final static String OPTION_HELP = "-h";
+        private static final String OPTION_VERSION_1 = "-1";
+        private static final String OPTION_VERSION_2 = "-2";
+        private static final String OPTION_VERSION_3 = "-3";
+        private static final String OPTION_INPUT_SOURCE = "-s";
+        private static final String OPTION_INPUT_BIGRAM_XML = "-b";
+        private static final String OPTION_INPUT_SHORTCUT_XML = "-c";
+        private static final String OPTION_OUTPUT_BINARY = "-d";
+        private static final String OPTION_OUTPUT_XML = "-x";
+        private static final String OPTION_HELP = "-h";
         public final String mInputBinary;
         public final String mInputUnigramXml;
         public final String mInputShortcutXml;
         public final String mInputBigramXml;
         public final String mOutputBinary;
-        public final String mOutputBinaryFormat1;
         public final String mOutputXml;
+        public final int mOutputBinaryFormatVersion;
 
         private void checkIntegrity() throws IOException {
             checkHasExactlyOneInput();
             checkHasAtLeastOneOutput();
             checkNotSameFile(mInputBinary, mOutputBinary);
-            checkNotSameFile(mInputBinary, mOutputBinaryFormat1);
             checkNotSameFile(mInputBinary, mOutputXml);
             checkNotSameFile(mInputUnigramXml, mOutputBinary);
-            checkNotSameFile(mInputUnigramXml, mOutputBinaryFormat1);
             checkNotSameFile(mInputUnigramXml, mOutputXml);
             checkNotSameFile(mInputShortcutXml, mOutputBinary);
-            checkNotSameFile(mInputShortcutXml, mOutputBinaryFormat1);
             checkNotSameFile(mInputShortcutXml, mOutputXml);
             checkNotSameFile(mInputBigramXml, mOutputBinary);
-            checkNotSameFile(mInputBigramXml, mOutputBinaryFormat1);
             checkNotSameFile(mInputBigramXml, mOutputXml);
-            checkNotSameFile(mOutputBinary, mOutputBinaryFormat1);
             checkNotSameFile(mOutputBinary, mOutputXml);
-            checkNotSameFile(mOutputBinaryFormat1, mOutputXml);
         }
 
         private void checkHasExactlyOneInput() {
@@ -90,7 +86,7 @@ public class DictionaryMaker {
         }
 
         private void checkHasAtLeastOneOutput() {
-            if (null == mOutputBinary && null == mOutputBinaryFormat1 && null == mOutputXml) {
+            if (null == mOutputBinary && null == mOutputXml) {
                 throw new RuntimeException("No output specified");
             }
         }
@@ -114,13 +110,13 @@ public class DictionaryMaker {
         public static String getHelp() {
             return "Usage: makedict "
                     + "[-s <unigrams.xml> [-b <bigrams.xml>] [-c <shortcuts_and_whitelist.xml>] "
-                    + "| -s <binary input>] [-d <binary output format version 2>] "
-                    + "[-d1 <binary output format version 1>] [-x <xml output>] [-2]\n"
+                    + "| [-s <binary input>] [-d <binary output>] [-x <xml output>] "
+                    + "[-1] [-2] [-3]\n"
                     + "\n"
                     + "  Converts a source dictionary file to one or several outputs.\n"
                     + "  Source can be an XML file, with an optional XML bigrams file, or a\n"
                     + "  binary dictionary file.\n"
-                    + "  Binary version 1 (Ice Cream Sandwich), 2 (Jelly Bean) and XML outputs\n"
+                    + "  Binary version 1 (Ice Cream Sandwich), 2 (Jelly Bean), 3 and XML outputs\n"
                     + "  are supported. All three can be output at the same time, but the same\n"
                     + "  output format cannot be specified several times. The behavior is\n"
                     + "  unspecified if the same file is specified for input and output, or for\n"
@@ -137,8 +133,8 @@ public class DictionaryMaker {
             String inputShortcutXml = null;
             String inputBigramXml = null;
             String outputBinary = null;
-            String outputBinaryFormat1 = null;
             String outputXml = null;
+            int outputBinaryFormatVersion = 2; // the default version is 2.
 
             while (!args.isEmpty()) {
                 final String arg = args.get(0);
@@ -146,6 +142,10 @@ public class DictionaryMaker {
                 if (arg.charAt(0) == '-') {
                     if (OPTION_VERSION_2.equals(arg)) {
                         // Do nothing, this is the default
+                    } else if (OPTION_VERSION_3.equals(arg)) {
+                        outputBinaryFormatVersion = 3;
+                    } else if (OPTION_VERSION_1.equals(arg)) {
+                        outputBinaryFormatVersion = 1;
                     } else if (OPTION_HELP.equals(arg)) {
                         displayHelp();
                     } else {
@@ -168,8 +168,6 @@ public class DictionaryMaker {
                             inputBigramXml = filename;
                         } else if (OPTION_OUTPUT_BINARY.equals(arg)) {
                             outputBinary = filename;
-                        } else if (OPTION_OUTPUT_BINARY_FORMAT_VERSION_1.equals(arg)) {
-                            outputBinaryFormat1 = filename;
                         } else if (OPTION_OUTPUT_XML.equals(arg)) {
                             outputXml = filename;
                         } else {
@@ -196,8 +194,8 @@ public class DictionaryMaker {
             mInputShortcutXml = inputShortcutXml;
             mInputBigramXml = inputBigramXml;
             mOutputBinary = outputBinary;
-            mOutputBinaryFormat1 = outputBinaryFormat1;
             mOutputXml = outputXml;
+            mOutputBinaryFormatVersion = outputBinaryFormatVersion;
             checkIntegrity();
         }
     }
@@ -246,7 +244,8 @@ public class DictionaryMaker {
             inStream = new FileInputStream(file);
             final ByteBuffer buffer = inStream.getChannel().map(
                     FileChannel.MapMode.READ_ONLY, 0, file.length());
-            return BinaryDictInputOutput.readDictionaryBinary(buffer, null);
+            return BinaryDictInputOutput.readDictionaryBinary(
+                    new BinaryDictInputOutput.ByteBufferWrapper(buffer), null);
         } finally {
             if (inStream != null) {
                 try {
@@ -294,10 +293,7 @@ public class DictionaryMaker {
             throws FileNotFoundException, IOException, UnsupportedFormatException,
             IllegalArgumentException {
         if (null != args.mOutputBinary) {
-            writeBinaryDictionary(args.mOutputBinary, dict, 2);
-        }
-        if (null != args.mOutputBinaryFormat1) {
-            writeBinaryDictionary(args.mOutputBinaryFormat1, dict, 1);
+            writeBinaryDictionary(args.mOutputBinary, dict, args.mOutputBinaryFormatVersion);
         }
         if (null != args.mOutputXml) {
             writeXmlDictionary(args.mOutputXml, dict);
@@ -317,8 +313,9 @@ public class DictionaryMaker {
             final FusionDictionary dict, final int version)
             throws FileNotFoundException, IOException, UnsupportedFormatException {
         final File outputFile = new File(outputFilename);
+        final FormatSpec.FormatOptions formatOptions = new FormatSpec.FormatOptions(version);
         BinaryDictInputOutput.writeDictionaryBinary(new FileOutputStream(outputFilename), dict,
-                version);
+                formatOptions);
     }
 
     /**

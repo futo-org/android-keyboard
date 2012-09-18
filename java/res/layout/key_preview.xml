@@ -20,8 +20,8 @@
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="80dp"
-    android:textSize="40dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/keyboard_key_feedback"
     android:minWidth="32dp"
     android:gravity="center"
-    />
+/>

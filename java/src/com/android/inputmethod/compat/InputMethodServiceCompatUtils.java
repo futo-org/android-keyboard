@@ -20,7 +20,7 @@ import android.inputmethodservice.InputMethodService;
 
 import java.lang.reflect.Method;
 
-public class InputMethodServiceCompatUtils {
+public final class InputMethodServiceCompatUtils {
     private static final Method METHOD_enableHardwareAcceleration =
             CompatUtils.getMethod(InputMethodService.class, "enableHardwareAcceleration");
 

@@ -41,24 +41,6 @@
              checkable+checked+pressed. -->
         <attr name="keyBackground" format="reference" />
 
-        <!-- Size of the text for one letter keys. If specified as fraction, the text size is
-             measured in the proportion of key height. -->
-        <attr name="keyLetterSize" format="dimension|fraction" />
-        <!-- Size of the text for keys with multiple letters. If specified as fraction, the text
-             size is measured in the proportion of key height. -->
-        <attr name="keyLabelSize" format="dimension|fraction" />
-        <!-- Large size of the text for one letter keys, in the proportion of key height. -->
-        <attr name="keyLargeLetterRatio" format="fraction" />
-        <!-- Large size of the text for keys with multiple letters, in the proportion of key height. -->
-        <attr name="keyLargeLabelRatio" format="fraction" />
-        <!-- Size of the text for hint letter (= one character hint label), in the proportion of
-             key height. -->
-        <attr name="keyHintLetterRatio" format="fraction" />
-        <!-- Size of the text for hint label, in the proportion of key height. -->
-        <attr name="keyHintLabelRatio" format="fraction" />
-        <!-- Size of the text for shifted letter hint, in the proportion of key height. -->
-        <attr name="keyShiftedLetterHintRatio" format="dimension|fraction" />
-
         <!-- Horizontal padding of left/right aligned key label to the edge of the key. -->
         <attr name="keyLabelHorizontalPadding" format="dimension" />
         <!-- Right padding of hint letter to the edge of the key.-->
@@ -67,35 +49,19 @@
         <attr name="keyPopupHintLetterPadding" format="dimension" />
         <!-- Right padding of shifted letter hint to the edge of the key.-->
         <attr name="keyShiftedLetterHintPadding" format="dimension" />
-
-        <!-- Color to use for the label in a key. -->
-        <attr name="keyTextColor" format="color" />
-        <!-- Color to use for the label in a key when in inactivated state. -->
-        <attr name="keyTextInactivatedColor" format="color" />
-        <!-- Key hint letter (= one character hint label) color -->
-        <attr name="keyHintLetterColor" format="color" />
-        <!-- Key hint label color -->
-        <attr name="keyHintLabelColor" format="color" />
-        <!-- Shifted letter hint colors -->
-        <attr name="keyShiftedLetterHintInactivatedColor" format="color" />
-        <attr name="keyShiftedLetterHintActivatedColor" format="color" />
+        <!-- Blur radius of key text shadow. -->
+        <attr name="keyTextShadowRadius" format="float" />
 
         <!-- Layout resource for key press feedback.-->
         <attr name="keyPreviewLayout" format="reference" />
-        <!-- The background for key press feedback. -->
-        <attr name="keyPreviewBackground" format="reference" />
-        <!-- The background for the left edge key press feedback. -->
-        <attr name="keyPreviewLeftBackground" format="reference" />
-        <!-- The background for the right edge key press feedback. -->
-        <attr name="keyPreviewRightBackground" format="reference" />
-        <!-- The text color for key press feedback. -->
-        <attr name="keyPreviewTextColor" format="color" />
+        <!-- Key preview background states -->
+        <attr name="state_left_edge" format="boolean" />
+        <attr name="state_right_edge" format="boolean" />
+        <attr name="state_has_morekeys" format="boolean" />
         <!-- Vertical offset of the key press feedback from the key. -->
         <attr name="keyPreviewOffset" format="dimension" />
         <!-- Height of the key press feedback popup. -->
         <attr name="keyPreviewHeight" format="dimension" />
-        <!-- Size of the text for key press feedback popup, in the proportion of key height. -->
-        <attr name="keyPreviewTextRatio" format="fraction" />
         <!-- Delay after key releasing and key press feedback dismissing in millisecond -->
         <attr name="keyPreviewLingerTimeout" format="integer" />
 
@@ -105,28 +71,16 @@
         <!-- Layout resource for more keys panel -->
         <attr name="moreKeysLayout" format="reference" />
 
-        <attr name="shadowColor" format="color" />
-        <attr name="shadowRadius" format="float" />
         <attr name="backgroundDimAlpha" format="integer" />
-
-        <attr name="keyTextStyle" format="enum">
-            <!-- This should be aligned with Typeface.NORMAL etc. -->
-            <enum name="normal" value="0" />
-            <enum name="bold" value="1" />
-            <enum name="italic" value="2" />
-            <enum name="boldItalic" value="3" />
-        </attr>
 
         <!-- Attributes for PreviewPlacerView -->
         <attr name="gestureFloatingPreviewTextSize" format="dimension" />
         <attr name="gestureFloatingPreviewTextColor" format="color" />
         <attr name="gestureFloatingPreviewTextOffset" format="dimension" />
-        <attr name="gestureFloatingPreviewTextShadingColor" format="color" />
-        <attr name="gestureFloatingPreviewTextShadingBorder" format="dimension" />
-        <attr name="gestureFloatingPreviewTextShadowColor" format="color" />
-        <attr name="gestureFloatingPreviewTextShadowBorder" format="dimension" />
-        <attr name="gestureFloatingPreviewTextConnectorColor" format="color" />
-        <attr name="gestureFloatingPreviewTextConnectorWidth" format="dimension" />
+        <attr name="gestureFloatingPreviewColor" format="color" />
+        <attr name="gestureFloatingPreviewHorizontalPadding" format="dimension" />
+        <attr name="gestureFloatingPreviewVerticalPadding" format="dimension" />
+        <attr name="gestureFloatingPreviewRoundRadius" format="dimension" />
         <!-- Delay after gesture input and gesture floating preview text dismissing in millisecond -->
         <attr name="gestureFloatingPreviewTextLingerTimeout" format="integer" />
         <!-- Delay after gesture trail starts fading out in millisecond. -->
@@ -136,7 +90,8 @@
         <!-- Interval of updating gesture preview trail in millisecond. -->
         <attr name="gesturePreviewTrailUpdateInterval" format="integer" />
         <attr name="gesturePreviewTrailColor" format="color" />
-        <attr name="gesturePreviewTrailWidth" format="dimension" />
+        <attr name="gesturePreviewTrailStartWidth" format="dimension" />
+        <attr name="gesturePreviewTrailEndWidth" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="MainKeyboardView">
@@ -335,6 +290,50 @@
         <!-- The X-coordinate of upper right corner of this key including horizontal gap.
              If the value is negative, the origin is the right edge of the keyboard. -->
         <attr name="keyXPos" format="dimension|fraction" />
+
+        <!-- Key top visual attributes -->
+        <attr name="keyTypeface" format="enum">
+            <!-- This should be aligned with Typeface.NORMAL etc. -->
+            <enum name="normal" value="0" />
+            <enum name="bold" value="1" />
+            <enum name="italic" value="2" />
+            <enum name="boldItalic" value="3" />
+        </attr>
+        <!-- Size of the text for one letter keys. If specified as fraction, the text size is
+             measured in the proportion of key height. -->
+        <attr name="keyLetterSize" format="dimension|fraction" />
+        <!-- Size of the text for keys with multiple letters. If specified as fraction, the text
+             size is measured in the proportion of key height. -->
+        <attr name="keyLabelSize" format="dimension|fraction" />
+        <!-- Large size of the text for one letter keys, in the proportion of key height. -->
+        <attr name="keyLargeLetterRatio" format="fraction" />
+        <!-- Large size of the text for keys with multiple letters, in the proportion of key height. -->
+        <attr name="keyLargeLabelRatio" format="fraction" />
+        <!-- Size of the text for hint letter (= one character hint label), in the proportion of
+             key height. -->
+        <attr name="keyHintLetterRatio" format="fraction" />
+        <!-- Size of the text for hint label, in the proportion of key height. -->
+        <attr name="keyHintLabelRatio" format="fraction" />
+        <!-- Size of the text for shifted letter hint, in the proportion of key height. -->
+        <attr name="keyShiftedLetterHintRatio" format="fraction" />
+        <!-- Color to use for the label in a key. -->
+        <attr name="keyTextColor" format="color" />
+        <attr name="keyTextShadowColor" format="color" />
+        <!-- Color to use for the label in a key when in inactivated state. -->
+        <attr name="keyTextInactivatedColor" format="color" />
+        <!-- Key hint letter (= one character hint label) color -->
+        <attr name="keyHintLetterColor" format="color" />
+        <!-- Key hint label color -->
+        <attr name="keyHintLabelColor" format="color" />
+        <!-- Shifted letter hint colors -->
+        <attr name="keyShiftedLetterHintInactivatedColor" format="color" />
+        <attr name="keyShiftedLetterHintActivatedColor" format="color" />
+
+        <!-- Key preview visual parameters -->
+        <!-- The text color for key press feedback. -->
+        <attr name="keyPreviewTextColor" format="color" />
+        <!-- Size of the text for key press feedback popup, in the proportion of key height. -->
+        <attr name="keyPreviewTextRatio" format="fraction" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Include">

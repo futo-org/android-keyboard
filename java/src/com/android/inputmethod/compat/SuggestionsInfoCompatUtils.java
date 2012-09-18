@@ -20,7 +20,7 @@ import android.view.textservice.SuggestionsInfo;
 
 import java.lang.reflect.Field;
 
-public class SuggestionsInfoCompatUtils {
+public final class SuggestionsInfoCompatUtils {
     private static final Field FIELD_RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS = CompatUtils.getField(
             SuggestionsInfo.class, "RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS");
     private static final Integer OBJ_RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS = (Integer) CompatUtils

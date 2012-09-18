@@ -16,20 +16,16 @@
 
 package com.android.inputmethod.latin;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
 import android.text.TextUtils;
-import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -45,9 +41,8 @@ import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 
-public class Utils {
+public final class Utils {
     private Utils() {
         // This utility class is not publicly instantiable.
     }
@@ -184,7 +179,7 @@ public class Utils {
         return getStackTrace(Integer.MAX_VALUE - 1);
     }
 
-    public static class UsabilityStudyLogUtils {
+    public static final class UsabilityStudyLogUtils {
         // TODO: remove code duplication with ResearchLog class
         private static final String USABILITY_TAG = UsabilityStudyLogUtils.class.getSimpleName();
         private static final String FILENAME = "log.txt";
@@ -393,34 +388,38 @@ public class Utils {
         }
     }
 
-    public static float getDipScale(Context context) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return scale;
-    }
-
-    /** Convert pixel to DIP */
-    public static int dipToPixel(float scale, int dip) {
-        return (int) (dip * scale + 0.5);
-    }
-
-    public static class Stats {
+    public static final class Stats {
         public static void onNonSeparator(final char code, final int x,
                 final int y) {
             RingCharBuffer.getInstance().push(code, x, y);
             LatinImeLogger.logOnInputChar();
         }
 
-        public static void onSeparator(final int code, final int x,
-                final int y) {
-            // TODO: accept code points
-            RingCharBuffer.getInstance().push((char)code, x, y);
+        public static void onSeparator(final int code, final int x, final int y) {
+            // Helper method to log a single code point separator
+            // TODO: cache this mapping of a code point to a string in a sparse array in StringUtils
+            onSeparator(new String(new int[]{code}, 0, 1), x, y);
+        }
+
+        public static void onSeparator(final String separator, final int x, final int y) {
+            final int length = separator.length();
+            for (int i = 0; i < length; i = Character.offsetByCodePoints(separator, i, 1)) {
+                int codePoint = Character.codePointAt(separator, i);
+                // TODO: accept code points
+                RingCharBuffer.getInstance().push((char)codePoint, x, y);
+            }
             LatinImeLogger.logOnInputSeparator();
         }
 
         public static void onAutoCorrection(final String typedWord, final String correctedWord,
-                final int separatorCode) {
+                final String separatorString) {
             if (TextUtils.isEmpty(typedWord)) return;
-            LatinImeLogger.logOnAutoCorrection(typedWord, correctedWord, separatorCode);
+            // TODO: this fails when the separator is more than 1 code point long, but
+            // the backend can't handle it yet. The only case when this happens is with
+            // smileys and other multi-character keys.
+            final int codePoint = TextUtils.isEmpty(separatorString) ? Constants.NOT_A_CODE
+                    : separatorString.codePointAt(0);
+            LatinImeLogger.logOnAutoCorrection(typedWord, correctedWord, codePoint);
         }
 
         public static void onAutoCorrectionCancellation() {
@@ -435,61 +434,5 @@ public class Utils {
         final String info = wordInfo.getDebugString();
         if (TextUtils.isEmpty(info)) return null;
         return info;
-    }
-
-    private static final String HARDWARE_PREFIX = Build.HARDWARE + ",";
-    private static final HashMap<String, String> sDeviceOverrideValueMap =
-            CollectionUtils.newHashMap();
-
-    public static String getDeviceOverrideValue(Resources res, int overrideResId, String defValue) {
-        final int orientation = res.getConfiguration().orientation;
-        final String key = overrideResId + "-" + orientation;
-        if (!sDeviceOverrideValueMap.containsKey(key)) {
-            String overrideValue = defValue;
-            for (final String element : res.getStringArray(overrideResId)) {
-                if (element.startsWith(HARDWARE_PREFIX)) {
-                    overrideValue = element.substring(HARDWARE_PREFIX.length());
-                    break;
-                }
-            }
-            sDeviceOverrideValueMap.put(key, overrideValue);
-        }
-        return sDeviceOverrideValueMap.get(key);
-    }
-
-    private static final HashMap<String, Long> EMPTY_LT_HASH_MAP = CollectionUtils.newHashMap();
-    private static final String LOCALE_AND_TIME_STR_SEPARATER = ",";
-    public static HashMap<String, Long> localeAndTimeStrToHashMap(String str) {
-        if (TextUtils.isEmpty(str)) {
-            return EMPTY_LT_HASH_MAP;
-        }
-        final String[] ss = str.split(LOCALE_AND_TIME_STR_SEPARATER);
-        final int N = ss.length;
-        if (N < 2 || N % 2 != 0) {
-            return EMPTY_LT_HASH_MAP;
-        }
-        final HashMap<String, Long> retval = CollectionUtils.newHashMap();
-        for (int i = 0; i < N / 2; ++i) {
-            final String localeStr = ss[i * 2];
-            final long time = Long.valueOf(ss[i * 2 + 1]);
-            retval.put(localeStr, time);
-        }
-        return retval;
-    }
-
-    public static String localeAndTimeHashMapToStr(HashMap<String, Long> map) {
-        if (map == null || map.isEmpty()) {
-            return "";
-        }
-        final StringBuilder builder = new StringBuilder();
-        for (String localeStr : map.keySet()) {
-            if (builder.length() > 0) {
-                builder.append(LOCALE_AND_TIME_STR_SEPARATER);
-            }
-            final Long time = map.get(localeStr);
-            builder.append(localeStr).append(LOCALE_AND_TIME_STR_SEPARATER);
-            builder.append(String.valueOf(time));
-        }
-        return builder.toString();
     }
 }

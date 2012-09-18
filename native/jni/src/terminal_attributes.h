@@ -52,9 +52,9 @@ class TerminalAttributes {
                     0 != (shortcutFlags & BinaryFormat::FLAG_ATTRIBUTE_HAS_NEXT);
             unsigned int i;
             for (i = 0; i < MAX_WORD_LENGTH_INTERNAL; ++i) {
-                const int charCode = BinaryFormat::getCharCodeAndForwardPointer(mDict, &mPos);
-                if (NOT_A_CHARACTER == charCode) break;
-                outWord[i] = (uint16_t)charCode;
+                const int codePoint = BinaryFormat::getCodePointAndForwardPointer(mDict, &mPos);
+                if (NOT_A_CODE_POINT == codePoint) break;
+                outWord[i] = (uint16_t)codePoint;
             }
             *outFreq = BinaryFormat::getAttributeFrequencyFromFlags(shortcutFlags);
             mPos += BinaryFormat::CHARACTER_ARRAY_TERMINATOR_SIZE;
@@ -62,14 +62,18 @@ class TerminalAttributes {
         }
     };
 
-    TerminalAttributes(const uint8_t *const dict, const uint8_t flags, const int pos) :
-            mDict(dict), mFlags(flags), mStartPos(pos) {
+    TerminalAttributes(const uint8_t *const dict, const uint8_t flags, const int pos)
+            : mDict(dict), mFlags(flags), mStartPos(pos) {
     }
 
     inline ShortcutIterator getShortcutIterator() const {
         // The size of the shortcuts is stored here so that the whole shortcut chunk can be
         // skipped quickly, so we ignore it.
         return ShortcutIterator(mDict, mStartPos + BinaryFormat::SHORTCUT_LIST_SIZE_SIZE, mFlags);
+    }
+
+    bool isBlacklistedOrNotAWord() const {
+        return mFlags & (BinaryFormat::FLAG_IS_BLACKLISTED | BinaryFormat::FLAG_IS_NOT_A_WORD);
     }
 
  private:

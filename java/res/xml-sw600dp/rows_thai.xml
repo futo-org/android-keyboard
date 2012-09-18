@@ -27,8 +27,7 @@
         latin:keyWidth="7.5%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_thai1"
-            latin:keyXPos="3.75%p" />
+            latin:keyboardLayout="@xml/rowkeys_thai1" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight" />
@@ -38,14 +37,16 @@
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_thai2"
-            latin:keyXPos="0.719%p" />
+            latin:keyXPos="2.5%p" />
+        <include
+            latin:keyboardLayout="@xml/key_thai_kho_khuat" />
     </Row>
     <Row
         latin:keyWidth="7.5%p"
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_thai3"
-            latin:keyXPos="3.75%p" />
+            latin:keyXPos="5.0%p" />
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillRight" />

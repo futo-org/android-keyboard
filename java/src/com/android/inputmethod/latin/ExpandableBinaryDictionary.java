@@ -21,6 +21,7 @@ import android.util.Log;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.makedict.BinaryDictInputOutput;
+import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.Node;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
@@ -88,6 +89,10 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     /** Controls access to the local binary dictionary for this instance. */
     private final DictionaryController mLocalDictionaryController = new DictionaryController();
+
+    private static final int BINARY_DICT_VERSION = 1;
+    private static final FormatSpec.FormatOptions FORMAT_OPTIONS =
+            new FormatSpec.FormatOptions(BINARY_DICT_VERSION);
 
     /**
      * Abstract method for loading the unigrams and bigrams of a given dictionary in a background
@@ -172,12 +177,12 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     // considering performance regression.
     protected void addWord(final String word, final String shortcutTarget, final int frequency) {
         if (shortcutTarget == null) {
-            mFusionDictionary.add(word, frequency, null);
+            mFusionDictionary.add(word, frequency, null, false /* isNotAWord */);
         } else {
             // TODO: Do this in the subclass, with this class taking an arraylist.
             final ArrayList<WeightedString> shortcutTargets = CollectionUtils.newArrayList();
             shortcutTargets.add(new WeightedString(shortcutTarget, frequency));
-            mFusionDictionary.add(word, frequency, shortcutTargets);
+            mFusionDictionary.add(word, frequency, shortcutTargets, false /* isNotAWord */);
         }
     }
 
@@ -310,7 +315,7 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(tempFile);
-            BinaryDictInputOutput.writeDictionaryBinary(out, mFusionDictionary, 1);
+            BinaryDictInputOutput.writeDictionaryBinary(out, mFusionDictionary, FORMAT_OPTIONS);
             out.flush();
             out.close();
             tempFile.renameTo(file);
