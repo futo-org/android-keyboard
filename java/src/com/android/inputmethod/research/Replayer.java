@@ -1,22 +1,23 @@
 /*
  * Copyright (C) 2012 The Android Open Source Project
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.android.inputmethod.research;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
@@ -40,6 +41,14 @@ public class Replayer {
     private boolean mIsReplaying = false;
     private KeyboardSwitcher mKeyboardSwitcher;
 
+    private Replayer() {
+    }
+
+    private static final Replayer sInstance = new Replayer();
+    public static Replayer getInstance() {
+        return sInstance;
+    }
+
     public void setKeyboardSwitcher(final KeyboardSwitcher keyboardSwitcher) {
         mKeyboardSwitcher = keyboardSwitcher;
     }
@@ -49,7 +58,7 @@ public class Replayer {
     private static final int COMPLETION_TIME_MS = 500;
 
     // TODO: Support historical events and multi-touch.
-    public void replay(final ReplayData replayData) {
+    public void replay(final ReplayData replayData, final Runnable callback) {
         if (mIsReplaying) {
             return;
         }
@@ -72,7 +81,7 @@ public class Replayer {
         // The adjustment needed to translate times from the original recorded time to the current
         // time.
         final long timeAdjustment = currentStartTime - origStartTime;
-        final Handler handler = new Handler() {
+        final Handler handler = new Handler(Looper.getMainLooper()) {
             // Track the time of the most recent DOWN event, to be passed as a parameter when
             // constructing a MotionEvent.  It's initialized here to the origStartTime, but this is
             // only a precaution.  The value should be overwritten by the first ACTION_DOWN event
@@ -113,8 +122,12 @@ public class Replayer {
                 Log.d(TAG, "queuing event at " + msgTime);
             }
         }
+
         final long presentDoneTime = replayData.mTimes.get(numActions - 1) + timeAdjustment
                 + COMPLETION_TIME_MS;
         handler.sendMessageAtTime(Message.obtain(handler, MSG_DONE), presentDoneTime);
+        if (callback != null) {
+            handler.postAtTime(callback, presentDoneTime + 1);
+        }
     }
 }

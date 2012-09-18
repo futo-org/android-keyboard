@@ -187,7 +187,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
     private LatinIME mLatinIME;
     private final Statistics mStatistics;
     private final MotionEventReader mMotionEventReader = new MotionEventReader();
-    private final Replayer mReplayer = new Replayer();
+    private final Replayer mReplayer = Replayer.getInstance();
 
     private Intent mUploadIntent;
     private Intent mUploadNowIntent;
@@ -783,7 +783,7 @@ public class ResearchLogger implements SharedPreferences.OnSharedPreferenceChang
                 public void run() {
                     final ReplayData replayData =
                             mMotionEventReader.readMotionEventData(mUserRecordingFile);
-                    mReplayer.replay(replayData);
+                    mReplayer.replay(replayData, null);
                 }
             }, 1000);
         }
