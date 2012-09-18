@@ -1543,11 +1543,6 @@ public class BinaryDictInputOutput {
             options.put(key, value);
         }
     }
-    // TODO: remove this method.
-    public static void populateOptions(final ByteBuffer buffer, final int headerSize,
-            final HashMap<String, String> options) {
-        populateOptions(new ByteBufferWrapper(buffer), headerSize, options);
-    }
 
     /**
      * Reads a buffer and returns the memory representation of the dictionary.

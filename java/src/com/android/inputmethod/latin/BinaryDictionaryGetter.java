@@ -29,7 +29,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -358,14 +357,15 @@ class BinaryDictionaryGetter {
         try {
             // Read the version of the file
             inStream = new FileInputStream(f);
-            final ByteBuffer buffer = inStream.getChannel().map(
-                    FileChannel.MapMode.READ_ONLY, 0, f.length());
-            final int magic = buffer.getInt();
+            final BinaryDictInputOutput.ByteBufferWrapper buffer =
+                    new BinaryDictInputOutput.ByteBufferWrapper(inStream.getChannel().map(
+                            FileChannel.MapMode.READ_ONLY, 0, f.length()));
+            final int magic = buffer.readInt();
             if (magic != FormatSpec.VERSION_2_MAGIC_NUMBER) {
                 return false;
             }
-            final int formatVersion = buffer.getInt();
-            final int headerSize = buffer.getInt();
+            final int formatVersion = buffer.readInt();
+            final int headerSize = buffer.readInt();
             final HashMap<String, String> options = CollectionUtils.newHashMap();
             BinaryDictInputOutput.populateOptions(buffer, headerSize, options);
 
