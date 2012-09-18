@@ -409,11 +409,11 @@ bool ProximityInfoState::pushTouchPoint(const int inputIndex, const int nodeChar
                 }
                 NearKeysDistanceMap::const_iterator itPP =
                         prevNearKeysDistances->find(minChar);
-                if (DEBUG_GEO_FULL) {
-                    AKLOGI("p1: char = %c, minDist = %f, prevNear key minDist = %f",
-                            minChar, itPP->second, minDist);
-                }
                 if (itPP != prevNearKeysDistances->end() && minDist > itPP->second) {
+                    if (DEBUG_GEO_FULL) {
+                        AKLOGI("p1: char = %c, minDist = %f, prevNear key minDist = %f",
+                                minChar, itPP->second, minDist);
+                    }
                     return popped;
                 }
             }
