@@ -267,7 +267,7 @@ public class WordComposer {
     public boolean isAllUpperCase() {
         return mCapitalizedMode == CAPS_MODE_AUTO_SHIFT_LOCKED
                 || mCapitalizedMode == CAPS_MODE_MANUAL_SHIFT_LOCKED
-                || (mCapsCount > 0) && (mCapsCount == size());
+                || (mCapsCount > 1) && (mCapsCount == size());
     }
 
     public boolean wasShiftedNoLock() {
