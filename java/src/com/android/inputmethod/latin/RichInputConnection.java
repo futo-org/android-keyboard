@@ -209,7 +209,16 @@ public class RichInputConnection {
             final boolean hasSpaceBefore) {
         mIC = mParent.getCurrentInputConnection();
         if (null == mIC) return Constants.TextUtils.CAP_MODE_OFF;
-        if (!TextUtils.isEmpty(mComposingText)) return Constants.TextUtils.CAP_MODE_OFF;
+        if (!TextUtils.isEmpty(mComposingText)) {
+            if (hasSpaceBefore) {
+                // If we have some composing text and a space before, then we should have
+                // MODE_CHARACTERS and MODE_WORDS on.
+                return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS) & inputType;
+            } else {
+                // We have some composing text - we should be in MODE_CHARACTERS only.
+                return TextUtils.CAP_MODE_CHARACTERS & inputType;
+            }
+        }
         // TODO: this will generally work, but there may be cases where the buffer contains SOME
         // information but not enough to determine the caps mode accurately. This may happen after
         // heavy pressing of delete, for example DEFAULT_TEXT_CACHE_SIZE - 5 times or so.
