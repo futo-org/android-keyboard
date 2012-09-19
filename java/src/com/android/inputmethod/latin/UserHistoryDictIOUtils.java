@@ -96,6 +96,11 @@ public class UserHistoryDictIOUtils {
         public void put(final byte b) {
             mBuffer[mPosition++] = b;
         }
+
+        @Override
+        public int limit() {
+            return mBuffer.length;
+        }
     }
 
     /**
