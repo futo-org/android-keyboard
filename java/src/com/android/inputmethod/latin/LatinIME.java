@@ -1391,11 +1391,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mWordComposer.isComposingWord()) {
             commitTyped(LastComposedWord.NOT_A_SEPARATOR);
             mExpectingUpdateSelection = true;
-            // TODO: Can we remove this?
+            // The following is necessary for the case where the user typed something but didn't
+            // manual pick it and didn't input any separator.
             mSpaceState = SPACE_STATE_PHANTOM;
         }
         mConnection.endBatchEdit();
-        // TODO: Should handle TextUtils.CAP_MODE_CHARACTER.
         mWordComposer.setCapitalizedModeAtStartComposingTime(getActualCapsMode());
     }
 
