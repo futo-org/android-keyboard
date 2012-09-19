@@ -1347,43 +1347,61 @@ public class BinaryDictInputOutput {
             final Map<Integer, Node> reverseNodeMap, final Map<Integer, CharGroup> reverseGroupMap,
             final FormatOptions options)
             throws IOException {
-        final int nodeOrigin = buffer.position() - headerSize;
-        final int count = readCharGroupCount(buffer);
         final ArrayList<CharGroup> nodeContents = new ArrayList<CharGroup>();
-        int groupOffset = nodeOrigin + getGroupCountSize(count);
-        for (int i = count; i > 0; --i) {
-            CharGroupInfo info = readCharGroup(buffer, groupOffset, options);
-            ArrayList<WeightedString> shortcutTargets = info.mShortcutTargets;
-            ArrayList<WeightedString> bigrams = null;
-            if (null != info.mBigrams) {
-                bigrams = new ArrayList<WeightedString>();
-                for (PendingAttribute bigram : info.mBigrams) {
-                    final String word = getWordAtAddress(
-                            buffer, headerSize, bigram.mAddress, options);
-                    bigrams.add(new WeightedString(word, bigram.mFrequency));
+        final int nodeOrigin = buffer.position() - headerSize;
+
+        do { // Scan the linked-list node.
+            final int nodeHeadPosition = buffer.position() - headerSize;
+            final int count = readCharGroupCount(buffer);
+            int groupOffset = nodeHeadPosition + getGroupCountSize(count);
+            for (int i = count; i > 0; --i) { // Scan the array of CharGroup.
+                CharGroupInfo info = readCharGroup(buffer, groupOffset, options);
+                ArrayList<WeightedString> shortcutTargets = info.mShortcutTargets;
+                ArrayList<WeightedString> bigrams = null;
+                if (null != info.mBigrams) {
+                    bigrams = new ArrayList<WeightedString>();
+                    for (PendingAttribute bigram : info.mBigrams) {
+                        final String word = getWordAtAddress(
+                                buffer, headerSize, bigram.mAddress, options);
+                        bigrams.add(new WeightedString(word, bigram.mFrequency));
+                    }
+                }
+                if (hasChildrenAddress(info.mChildrenAddress)) {
+                    Node children = reverseNodeMap.get(info.mChildrenAddress);
+                    if (null == children) {
+                        final int currentPosition = buffer.position();
+                        buffer.position(info.mChildrenAddress + headerSize);
+                        children = readNode(
+                                buffer, headerSize, reverseNodeMap, reverseGroupMap, options);
+                        buffer.position(currentPosition);
+                    }
+                    nodeContents.add(
+                            new CharGroup(info.mCharacters, shortcutTargets, bigrams,
+                                    info.mFrequency,
+                                    0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
+                                    0 != (info.mFlags & FormatSpec.FLAG_IS_BLACKLISTED), children));
+                } else {
+                    nodeContents.add(
+                            new CharGroup(info.mCharacters, shortcutTargets, bigrams,
+                                    info.mFrequency,
+                                    0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
+                                    0 != (info.mFlags & FormatSpec.FLAG_IS_BLACKLISTED)));
+                }
+                groupOffset = info.mEndAddress;
+            }
+
+            // reach the end of the array.
+            if (options.mHasLinkedListNode) {
+                final int nextAddress = buffer.readUnsignedInt24();
+                if (nextAddress >= 0 && nextAddress < buffer.limit()) {
+                    buffer.position(nextAddress);
+                } else {
+                    break;
                 }
             }
-            if (hasChildrenAddress(info.mChildrenAddress)) {
-                Node children = reverseNodeMap.get(info.mChildrenAddress);
-                if (null == children) {
-                    final int currentPosition = buffer.position();
-                    buffer.position(info.mChildrenAddress + headerSize);
-                    children = readNode(
-                            buffer, headerSize, reverseNodeMap, reverseGroupMap, options);
-                    buffer.position(currentPosition);
-                }
-                nodeContents.add(
-                        new CharGroup(info.mCharacters, shortcutTargets, bigrams, info.mFrequency,
-                                0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
-                                0 != (info.mFlags & FormatSpec.FLAG_IS_BLACKLISTED), children));
-            } else {
-                nodeContents.add(
-                        new CharGroup(info.mCharacters, shortcutTargets, bigrams, info.mFrequency,
-                                0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
-                                0 != (info.mFlags & FormatSpec.FLAG_IS_BLACKLISTED)));
-            }
-            groupOffset = info.mEndAddress;
-        }
+        } while (options.mHasLinkedListNode &&
+                buffer.position() != FormatSpec.NO_FORWARD_LINK_ADDRESS);
+
         final Node node = new Node(nodeContents);
         node.mCachedAddress = nodeOrigin;
         reverseNodeMap.put(node.mCachedAddress, node);
