@@ -25,7 +25,6 @@ public class GestureStroke {
     private final ResizableIntArray mXCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
     private final ResizableIntArray mYCoordinates = new ResizableIntArray(DEFAULT_CAPACITY);
     private float mLength;
-    private float mAngle;
     private int mIncrementalRecognitionSize;
     private int mLastIncrementalBatchSize;
     private long mLastPointTime;
@@ -40,9 +39,6 @@ public class GestureStroke {
     private static final int MIN_GESTURE_DURATION = 100; // msec
     private static final float MIN_GESTURE_SAMPLING_RATIO_TO_KEY_WIDTH = 1.0f / 6.0f;
     private static final float GESTURE_RECOG_SPEED_THRESHOLD = 0.4f; // dip/msec
-    private static final float GESTURE_RECOG_CURVATURE_THRESHOLD = (float)(Math.PI / 4.0f);
-
-    private static final float DOUBLE_PI = (float)(2.0f * Math.PI);
 
     public GestureStroke(final int pointerId) {
         mPointerId = pointerId;
@@ -62,7 +58,6 @@ public class GestureStroke {
 
     public void reset() {
         mLength = 0;
-        mAngle = 0;
         mIncrementalRecognitionSize = 0;
         mLastIncrementalBatchSize = 0;
         mLastPointTime = 0;
@@ -97,16 +92,6 @@ public class GestureStroke {
             mXCoordinates.add(x);
             mYCoordinates.add(y);
             mLength += dist;
-            final float angle = getAngle(lastX, lastY, x, y);
-            if (size > 1) {
-                final float curvature = getAngleDiff(angle, mAngle);
-                if (curvature > GESTURE_RECOG_CURVATURE_THRESHOLD) {
-                    if (size > mIncrementalRecognitionSize) {
-                        mIncrementalRecognitionSize = size;
-                    }
-                }
-            }
-            mAngle = angle;
         }
 
         if (!isHistorical) {
@@ -145,22 +130,5 @@ public class GestureStroke {
         // Note that, in recent versions of Android, FloatMath is actually slower than
         // java.lang.Math due to the way the JIT optimizes java.lang.Math.
         return (float)Math.sqrt(dx * dx + dy * dy);
-    }
-
-    private static float getAngle(final int x1, final int y1, final int x2, final int y2) {
-        final int dx = x1 - x2;
-        final int dy = y1 - y2;
-        if (dx == 0 && dy == 0) return 0;
-        // Would it be faster to call atan2f() directly via JNI?  Not sure about what the JIT
-        // does with Math.atan2().
-        return (float)Math.atan2(dy, dx);
-    }
-
-    private static float getAngleDiff(final float a1, final float a2) {
-        final float diff = Math.abs(a1 - a2);
-        if (diff > Math.PI) {
-            return DOUBLE_PI - diff;
-        }
-        return diff;
     }
 }
