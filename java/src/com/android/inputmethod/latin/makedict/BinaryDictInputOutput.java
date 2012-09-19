@@ -290,7 +290,7 @@ public class BinaryDictInputOutput {
      * @param count the group count
      * @return the size of the group count, either 1 or 2 bytes.
      */
-    private static int getGroupCountSize(final int count) {
+    public static int getGroupCountSize(final int count) {
         if (FormatSpec.MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT >= count) {
             return 1;
         } else if (FormatSpec.MAX_CHARGROUPS_IN_A_NODE >= count) {
@@ -385,7 +385,7 @@ public class BinaryDictInputOutput {
     /**
      * Helper method to hide the actual value of the no children address.
      */
-    private static boolean hasChildrenAddress(final int address) {
+    public static boolean hasChildrenAddress(final int address) {
         return FormatSpec.NO_CHILDREN_ADDRESS != address;
     }
 
@@ -1105,7 +1105,7 @@ public class BinaryDictInputOutput {
     // readDictionaryBinary is the public entry point for them.
 
     private static final int[] CHARACTER_BUFFER = new int[FormatSpec.MAX_WORD_LENGTH];
-    private static CharGroupInfo readCharGroup(final FusionDictionaryBufferInterface buffer,
+    public static CharGroupInfo readCharGroup(final FusionDictionaryBufferInterface buffer,
             final int originalGroupAddress, final FormatOptions options) {
         int addressPointer = originalGroupAddress;
         final int flags = buffer.readUnsignedByte();
@@ -1218,7 +1218,7 @@ public class BinaryDictInputOutput {
     /**
      * Reads and returns the char group count out of a buffer and forwards the pointer.
      */
-    private static int readCharGroupCount(final FusionDictionaryBufferInterface buffer) {
+    public static int readCharGroupCount(final FusionDictionaryBufferInterface buffer) {
         final int msb = buffer.readUnsignedByte();
         if (FormatSpec.MAX_CHARGROUPS_FOR_ONE_BYTE_CHARGROUP_COUNT >= msb) {
             return msb;
@@ -1408,103 +1408,6 @@ public class BinaryDictInputOutput {
         return node;
     }
 
-    // TODO: move these methods (readUnigramsAndBigramsBinary(|Inner)) and an inner class (Position)
-    // out of this class.
-    private static class Position {
-        public static final int NOT_READ_GROUPCOUNT = -1;
-
-        public int mAddress;
-        public int mNumOfCharGroup;
-        public int mPosition;
-        public int mLength;
-
-        public Position(int address, int length) {
-            mAddress = address;
-            mLength = length;
-            mNumOfCharGroup = NOT_READ_GROUPCOUNT;
-        }
-    }
-
-    /**
-     * Tours all node without recursive call.
-     */
-    private static void readUnigramsAndBigramsBinaryInner(
-            final FusionDictionaryBufferInterface buffer, final int headerSize,
-            final Map<Integer, String> words, final Map<Integer, Integer> frequencies,
-            final Map<Integer, ArrayList<PendingAttribute>> bigrams,
-            final FormatOptions formatOptions) {
-        int[] pushedChars = new int[FormatSpec.MAX_WORD_LENGTH + 1];
-
-        Stack<Position> stack = new Stack<Position>();
-        int index = 0;
-
-        Position initPos = new Position(headerSize, 0);
-        stack.push(initPos);
-
-        while (!stack.empty()) {
-            Position p = stack.peek();
-
-            if (DBG) {
-                MakedictLog.d("read: address=" + p.mAddress + ", numOfCharGroup=" +
-                        p.mNumOfCharGroup + ", position=" + p.mPosition + ", length=" + p.mLength);
-            }
-
-            if (buffer.position() != p.mAddress) buffer.position(p.mAddress);
-            if (index != p.mLength) index = p.mLength;
-
-            if (p.mNumOfCharGroup == Position.NOT_READ_GROUPCOUNT) {
-                p.mNumOfCharGroup = readCharGroupCount(buffer);
-                p.mAddress += getGroupCountSize(p.mNumOfCharGroup);
-                p.mPosition = 0;
-            }
-
-            CharGroupInfo info = readCharGroup(buffer, p.mAddress - headerSize, formatOptions);
-            for (int i = 0; i < info.mCharacters.length; ++i) {
-                pushedChars[index++] = info.mCharacters[i];
-            }
-            p.mPosition++;
-
-            if (info.mFrequency != FusionDictionary.CharGroup.NOT_A_TERMINAL) { // found word
-                words.put(info.mOriginalAddress, new String(pushedChars, 0, index));
-                frequencies.put(info.mOriginalAddress, info.mFrequency);
-                if (info.mBigrams != null) bigrams.put(info.mOriginalAddress, info.mBigrams);
-            }
-
-            if (p.mPosition == p.mNumOfCharGroup) {
-                stack.pop();
-            } else {
-                // the node has more groups.
-                p.mAddress = buffer.position();
-            }
-
-            if (hasChildrenAddress(info.mChildrenAddress)) {
-                Position childrenPos = new Position(info.mChildrenAddress + headerSize, index);
-                stack.push(childrenPos);
-            }
-        }
-    }
-
-    /**
-     * Reads unigrams and bigrams from the binary file.
-     * Doesn't make the memory representation of the dictionary.
-     *
-     * @param buffer the buffer to read.
-     * @param words the map to store the address as a key and the word as a value.
-     * @param frequencies the map to store the address as a key and the frequency as a value.
-     * @param bigrams the map to store the address as a key and the list of address as a value.
-     * @throws IOException
-     * @throws UnsupportedFormatException
-     */
-    public static void readUnigramsAndBigramsBinary(final FusionDictionaryBufferInterface buffer,
-            final Map<Integer, String> words, final Map<Integer, Integer> frequencies,
-            final Map<Integer, ArrayList<PendingAttribute>> bigrams) throws IOException,
-            UnsupportedFormatException {
-        // Read header
-        final FileHeader header = readHeader(buffer);
-        readUnigramsAndBigramsBinaryInner(buffer, header.mHeaderSize, words, frequencies, bigrams,
-                header.mFormatOptions);
-    }
-
     /**
      * Helper function to get the binary format version from the header.
      * @throws IOException
@@ -1541,7 +1444,7 @@ public class BinaryDictInputOutput {
      * @throws IOException
      * @throws UnsupportedFormatException
      */
-    private static FileHeader readHeader(final FusionDictionaryBufferInterface buffer)
+    public static FileHeader readHeader(final FusionDictionaryBufferInterface buffer)
             throws IOException, UnsupportedFormatException {
         final int version = checkFormatVersion(buffer);
         final int optionsFlags = buffer.readUnsignedShort();

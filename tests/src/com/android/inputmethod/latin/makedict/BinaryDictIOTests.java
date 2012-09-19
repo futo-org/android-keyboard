@@ -391,7 +391,7 @@ public class BinaryDictIOTests extends AndroidTestCase {
         assertNotNull("Can't get buffer.", buffer);
         try {
             now = System.currentTimeMillis();
-            BinaryDictInputOutput.readUnigramsAndBigramsBinary(buffer, resultWords, resultFreqs,
+            BinaryDictIOUtils.readUnigramsAndBigramsBinary(buffer, resultWords, resultFreqs,
                     resultBigrams);
             diff = System.currentTimeMillis() - now;
         } catch (IOException e) {
