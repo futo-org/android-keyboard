@@ -64,17 +64,8 @@ static inline float getAngleDiff(float a1, float a2) {
     return diff;
 }
 
-// static float pointToLineSegSquaredDistanceFloat(
-//         float x, float y, float x1, float y1, float x2, float y2) {
-//     float A = x - x1;
-//     float B = y - y1;
-//     float C = x2 - x1;
-//     float D = y2 - y1;
-//     return fabsf(A * D - C * B) / sqrtf(C * C + D * D);
-// }
-
 static inline float pointToLineSegSquaredDistanceFloat(
-        float x, float y, float x1, float y1, float x2, float y2) {
+        float x, float y, float x1, float y1, float x2, float y2, bool extend) {
     const float ray1x = x - x1;
     const float ray1y = y - y1;
     const float ray2x = x2 - x1;
@@ -86,10 +77,10 @@ static inline float pointToLineSegSquaredDistanceFloat(
 
     float projectionX;
     float projectionY;
-    if (projectionLengthSqr < 0.0f) {
+    if (!extend && projectionLengthSqr < 0.0f) {
         projectionX = x1;
         projectionY = y1;
-    } else if (projectionLengthSqr > 1.0f) {
+    } else if (!extend && projectionLengthSqr > 1.0f) {
         projectionX = x2;
         projectionY = y2;
     } else {

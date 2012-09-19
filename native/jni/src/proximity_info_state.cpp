@@ -504,7 +504,7 @@ int32_t ProximityInfoState::getAllPossibleChars(
     if (index >= mInputXs.size()) {
         return filterSize;
     }
-    int i = filterSize;
+    int newFilterSize = filterSize;
     for (int j = 0; j < mProximityInfo->getKeyCount(); ++j) {
         if (mNearKeysVector[index].test(j)) {
             const int32_t keyCodePoint = mProximityInfo->getCodePointOf(j);
@@ -517,11 +517,11 @@ int32_t ProximityInfoState::getAllPossibleChars(
                 }
             }
             if (insert) {
-                filter[i++] = keyCodePoint;
+                filter[newFilterSize++] = keyCodePoint;
             }
         }
     }
-    return i;
+    return newFilterSize;
 }
 
 float ProximityInfoState::getAveragePointDuration() const {
